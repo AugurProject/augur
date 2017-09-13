@@ -227,7 +227,7 @@ export function constructSubmitReportTransaction(log, marketID, market, outcomes
 export const constructTakeOrderTransaction = (trade, marketID, marketType, minPrice, description, outcomeID, outcomeName, status) => (dispatch, getState) => {
 //   console.log('constructLogFillTransaction:', trade);
 //   if (!trade.amount || !trade.price || (!trade.makerFee && !trade.settlementFee)) return null;
-//   const transactionID = `${trade.transactionHash}-${trade.tradeid}`;
+//   const transactionID = `${trade.transactionHash}-${trade.orderId}`;
 //   const tradeGroupID = trade.tradeGroupID;
 //   const price = formatEtherTokens(trade.price);
 //   const shares = formatShares(trade.amount);
@@ -354,7 +354,7 @@ export const constructMakeOrderTransaction = (trade, marketID, marketType, descr
 //       totalReturn: type === TYPES.ASK ? formatEtherTokens(speedomatic.unfix(totalReturn)) : undefined,
 //       gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
 //       blockNumber: trade.blockNumber,
-//       tradeID: trade.tradeid
+//       orderId: trade.orderId
 //     }
 //   };
 };
@@ -384,7 +384,7 @@ export const constructCancelOrderTransaction = (trade, marketID, marketType, des
       totalReturn: trade.inProgress ? null : formatEtherTokens(trade.cashRefund),
       gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
       blockNumber: trade.blockNumber,
-      tradeID: trade.tradeid
+      orderId: trade.orderId
     }
   };
 };

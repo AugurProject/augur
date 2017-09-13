@@ -19,14 +19,19 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
       augur: {
         trading: {
           simulation: {
-            getTradingActions: augur.trading.simulation.getTradingActions
+            simulateTrade: augur.trading.simulation.simulateTrade
           }
         },
-        api: { Markets: { getParticipantSharesPurchased: () => {} } },
+        api: {
+          MarketFetcher: {
+            getPositionInMarket: (p, callback) => {
+              callback(null, ['0x0', '0x0']);
+            }
+          }
+        },
         rpc: { gasPrice: 20000000000 }
       }
     };
-    mockAugurJS.augur.api.Markets.getParticipantSharesPurchased = sinon.stub().yields('0');
     const mockSelectMarket = {};
     mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testBinaryMarketID);
 
@@ -314,14 +319,19 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
       augur: {
         trading: {
           simulation: {
-            getTradingActions: augur.trading.simulation.getTradingActions
+            simulateTrade: augur.trading.simulation.simulateTrade
           }
         },
-        api: { Markets: { getParticipantSharesPurchased: () => {} } },
+        api: {
+          MarketFetcher: {
+            getPositionInMarket: (p, callback) => {
+              callback(null, ['0x0', '0x0']);
+            }
+          }
+        },
         rpc: { gasPrice: 20000000000 }
       }
     };
-    mockAugurJS.augur.api.Markets.getParticipantSharesPurchased = sinon.stub().yields('0');
     const mockSelectMarket = {};
     mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testCategoricalMarketID);
 
@@ -609,14 +619,19 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
       augur: {
         trading: {
           simulation: {
-            getTradingActions: augur.trading.simulation.getTradingActions
+            simulateTrade: augur.trading.simulation.simulateTrade
           }
         },
-        api: { Markets: { getParticipantSharesPurchased: () => {} } },
+        api: {
+          MarketFetcher: {
+            getPositionInMarket: (p, callback) => {
+              callback(null, ['0x0', '0x0']);
+            }
+          }
+        },
         rpc: { gasPrice: 20000000000 }
       }
     };
-    mockAugurJS.augur.api.Markets.getParticipantSharesPurchased = sinon.stub().yields('0');
     const mockSelectMarket = {};
     mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testScalarMarketID);
 

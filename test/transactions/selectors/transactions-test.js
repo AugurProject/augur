@@ -179,7 +179,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
           rep: formatRep(5) },
         {
           status: 'failed',
-          message: 'Buy 30 shares of test outcome',
+          message: 'Sell 30 shares of test outcome',
           description: 'test description',
           timestamp: formatDate(new Date(2017, 1, 4)),
           transactions: [

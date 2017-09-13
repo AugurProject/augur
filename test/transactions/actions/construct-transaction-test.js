@@ -6,10 +6,9 @@ import proxyquire from 'proxyquire';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 
-import { augur } from 'services/augurjs';
 import speedomatic from 'speedomatic';
 
-import { formatEther, formatEtherTokens, formatRep, formatPercent, formatShares } from 'utils/format-number';
+import { formatEther, formatEtherTokens, formatRep, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
 
 import {
@@ -17,15 +16,12 @@ import {
   constructDefaultTransaction,
   constructApprovalTransaction,
   // constructCollectedFeesTransaction,
-  constructDepositTransaction,
   constructRegistrationTransaction,
-  constructWithdrawTransaction,
   constructTransferTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
-import { CREATE_MARKET, SUBMIT_REPORT, BUY, SELL, MATCH_BID, MATCH_ASK, BID, ASK, CANCEL_ORDER } from 'modules/transactions/constants/types';
-import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
-import { ZERO } from 'modules/trade/constants/numbers';
+import { CREATE_MARKET, SUBMIT_REPORT, SELL, CANCEL_ORDER } from 'modules/transactions/constants/types';
+import { BINARY } from 'modules/markets/constants/market-types';
 
 chai.use(chaiSubset);
 
@@ -176,7 +172,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expected = [
           {
-            type: MOCK_ACTION_TYPES.LOOKUP_EVENT_MARKETS_THEN_RETRY_CONVERSION
+            type: MOCK_ACTION_TYPES.LOAD_MARKET_THEN_RETRY_CONVERSION
           }
         ];
 
@@ -648,52 +644,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
   //   });
   // });
 
-  describe('constructDepositTransaction', () => {
-    const test = t => it(t.description, () => t.assertions());
-
-    test({
-      description: `should return the expected object with inProgress false`,
-      assertions: () => {
-        const log = {
-          inProgress: false,
-          value: '10'
-        };
-
-        const actual = constructDepositTransaction(log);
-
-        const expected = {
-          data: {},
-          type: 'Deposit Ether',
-          description: 'Convert Ether to tradeable Ether token',
-          message: `deposited ${formatEtherTokens(log.value).full}`
-        };
-
-        assert.deepEqual(actual, expected, `Didn't return the expected object`);
-      }
-    });
-
-    test({
-      description: `should return the expected object with inProgress`,
-      assertions: () => {
-        const log = {
-          inProgress: true,
-          value: '10'
-        };
-
-        const actual = constructDepositTransaction(log);
-
-        const expected = {
-          data: {},
-          type: 'Deposit Ether',
-          description: 'Convert Ether to tradeable Ether token',
-          message: `depositing ${formatEtherTokens(log.value).full}`
-        };
-
-        assert.deepEqual(actual, expected, `Didn't return the expected object`);
-      }
-    });
-  });
-
   describe('constructRegistrationTransaction', () => {
     const test = t => it(t.description, () => t.assertions());
 
@@ -733,52 +683,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           type: 'Register New Account',
           description: `Register account ${log.sender.replace('0x', '')}`,
           message: `saving registration timestamp`
-        };
-
-        assert.deepEqual(actual, expected, `Didn't return the expected object`);
-      }
-    });
-  });
-
-  describe('constructWithdrawTransaction', () => {
-    const test = t => it(t.description, () => t.assertions());
-
-    test({
-      description: `should return the expected object with inProgress false`,
-      assertions: () => {
-        const log = {
-          inProgress: false,
-          value: '10'
-        };
-
-        const actual = constructWithdrawTransaction(log);
-
-        const expected = {
-          data: {},
-          type: 'Withdraw Ether',
-          description: 'Convert tradeable Ether token to Ether',
-          message: `withdrew ${formatEtherTokens(log.value).full}`
-        };
-
-        assert.deepEqual(actual, expected, `Didn't return the expected object`);
-      }
-    });
-
-    test({
-      description: `should return the expected object with inProgress`,
-      assertions: () => {
-        const log = {
-          inProgress: true,
-          value: '10'
-        };
-
-        const actual = constructWithdrawTransaction(log);
-
-        const expected = {
-          data: {},
-          type: 'Withdraw Ether',
-          description: 'Convert tradeable Ether token to Ether',
-          message: `withdrawing ${formatEtherTokens(log.value).full}`
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -1379,909 +1283,909 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
     });
   });
 
-  describe('constructTakeOrderTransaction', () => {
-    const action = require('../../../src/modules/transactions/actions/construct-transaction');
-
-    const test = t => it(t.description, () => {
-      const store = mockStore();
-      t.assertions(store);
-    });
-
-    test({
-      description: `should return the expected transaction object with necessary data missing`,
-      assertions: (store) => {
-        const trade = {};
-
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade));
-
-        const expected = null;
-
-        assert.strictEqual(actual, expected, `Didn't return the expected value`);
-      }
-    });
-
-    test({
-      description: `should return the expected transaction object with maker and type BUY and inProgress false`,
-      assertions: (store) => {
-        const trade = {
-          transactionHash: '0xHASH',
-          orderId: '0xORDERID',
-          tradeGroupID: '0xTRADEGROUPID',
-          price: '0.1',
-          amount: '2',
-          maker: true,
-          makerFee: '0.01',
-          type: BUY,
-          timestamp: 1491843278,
-          blockNumber: 123456,
-          gasFees: 0.001
-        };
-        const marketID = '0xMARKETID';
-        const marketType = BINARY;
-        const minPrice = '0';
-        const description = 'test description';
-        const outcomeID = '1';
-        const status = 'testing';
-
-        const price = formatEtherTokens(trade.price);
-        const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
-        const bnShares = speedomatic.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
-        const totalCost = bnPrice.times(bnShares).plus(tradingFees);
-        const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
-        const totalCostPerShare = totalCost.dividedBy(bnShares);
-
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
-
-        const expected = {
-          '0xHASH-0xORDERID': {
-            type: MATCH_ASK,
-            hash: trade.transactionHash,
-            tradeGroupID: trade.tradeGroupID,
-            status,
-            description,
-            data: {
-              marketType,
-              outcomeName: outcomeID,
-              outcomeID,
-              marketID
-            },
-            message: `sold ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
-            numShares: shares,
-            noFeePrice: price,
-            avgPrice: price,
-            timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEtherTokens(tradingFees),
-            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-            totalCost: undefined,
-            totalReturn: formatEtherTokens(totalReturn),
-            gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
-            blockNumber: trade.blockNumber
-          }
-        };
-
-        assert.deepEqual(actual, expected, `Didn't return the expected value`);
-      }
-    });
-
-    test({
-      description: `should return the expected transaction object with maker and type BUY and inProgress`,
-      assertions: (store) => {
-        const trade = {
-          transactionHash: '0xHASH',
-          orderId: '0xORDERID',
-          tradeGroupID: '0xTRADEGROUPID',
-          price: '0.1',
-          amount: '2',
-          maker: true,
-          makerFee: '0.01',
-          type: BUY,
-          timestamp: 1491843278,
-          blockNumber: 123456,
-          gasFees: 0.001,
-          inProgress: true
-        };
-        const marketID = '0xMARKETID';
-        const marketType = BINARY;
-        const minPrice = '0';
-        const description = 'test description';
-        const outcomeID = '1';
-        const status = 'testing';
-
-        const price = formatEtherTokens(trade.price);
-        const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
-        const bnShares = speedomatic.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
-        const totalCost = bnPrice.times(bnShares).plus(tradingFees);
-        const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
-        const totalCostPerShare = totalCost.dividedBy(bnShares);
-
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
-
-        const expected = {
-          '0xHASH-0xORDERID': {
-            type: MATCH_ASK,
-            hash: trade.transactionHash,
-            tradeGroupID: trade.tradeGroupID,
-            status,
-            description,
-            data: {
-              marketType,
-              outcomeName: outcomeID,
-              outcomeID,
-              marketID
-            },
-            message: `${MATCH_ASK} ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
-            numShares: shares,
-            noFeePrice: price,
-            avgPrice: price,
-            timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEtherTokens(tradingFees),
-            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-            totalCost: undefined,
-            totalReturn: formatEtherTokens(totalReturn),
-            gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
-            blockNumber: trade.blockNumber
-          }
-        };
-
-        assert.deepEqual(actual, expected, `Didn't return the expected value`);
-      }
-    });
-
-    test({
-      description: `should return the expected transaction object with maker and type SELL and inProgress false`,
-      assertions: (store) => {
-        const trade = {
-          transactionHash: '0xHASH',
-          orderId: '0xORDERID',
-          tradeGroupID: '0xTRADEGROUPID',
-          price: '0.1',
-          amount: '2',
-          maker: true,
-          makerFee: '0.01',
-          type: SELL,
-          timestamp: 1491843278,
-          blockNumber: 123456,
-          gasFees: 0.001
-        };
-        const marketID = '0xMARKETID';
-        const marketType = BINARY;
-        const minPrice = '0';
-        const description = 'test description';
-        const outcomeID = '1';
-        const status = 'testing';
-
-        const price = formatEtherTokens(trade.price);
-        const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
-        const bnShares = speedomatic.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
-        const totalCost = bnPrice.times(bnShares).plus(tradingFees);
-        const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
-        const totalReturnPerShare = totalReturn.dividedBy(bnShares);
-
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
-
-        const expected = {
-          '0xHASH-0xORDERID': {
-            type: MATCH_BID,
-            hash: trade.transactionHash,
-            tradeGroupID: trade.tradeGroupID,
-            status,
-            description,
-            data: {
-              marketType,
-              outcomeName: outcomeID,
-              outcomeID,
-              marketID
-            },
-            message: `bought ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
-            numShares: shares,
-            noFeePrice: price,
-            avgPrice: price,
-            timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEtherTokens(tradingFees),
-            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-            totalCost: formatEtherTokens(totalCost),
-            totalReturn: undefined,
-            gasFees: formatEther(trade.gasFees),
-            blockNumber: trade.blockNumber
-          }
-        };
-
-        assert.deepEqual(actual, expected, `Didn't return the expected value`);
-      }
-    });
-
-    test({
-      description: `should return the expected transaction object with maker and type SELL and inProgress`,
-      assertions: (store) => {
-        const trade = {
-          transactionHash: '0xHASH',
-          orderId: '0xORDERID',
-          tradeGroupID: '0xTRADEGROUPID',
-          price: '0.1',
-          amount: '2',
-          maker: true,
-          makerFee: '0.01',
-          type: SELL,
-          timestamp: 1491843278,
-          blockNumber: 123456,
-          gasFees: 0.001,
-          inProgress: true
-        };
-        const marketID = '0xMARKETID';
-        const marketType = BINARY;
-        const minPrice = '0';
-        const description = 'test description';
-        const outcomeID = '1';
-        const status = 'testing';
-
-        const price = formatEtherTokens(trade.price);
-        const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
-        const bnShares = speedomatic.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
-        const totalCost = bnPrice.times(bnShares).plus(tradingFees);
-        const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
-        const totalReturnPerShare = totalReturn.dividedBy(bnShares);
-
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
-
-        const expected = {
-          '0xHASH-0xORDERID': {
-            type: MATCH_BID,
-            hash: trade.transactionHash,
-            tradeGroupID: trade.tradeGroupID,
-            status,
-            description,
-            data: {
-              marketType,
-              outcomeName: outcomeID,
-              outcomeID,
-              marketID
-            },
-            message: `${MATCH_BID} ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
-            numShares: shares,
-            noFeePrice: price,
-            avgPrice: price,
-            timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEtherTokens(tradingFees),
-            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-            totalCost: formatEtherTokens(totalCost),
-            totalReturn: undefined,
-            gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
-            blockNumber: trade.blockNumber
-          }
-        };
-
-        assert.deepEqual(actual, expected, `Didn't return the expected value`);
-      }
-    });
-
-    test({
-      description: `should return the expected transaction object with taker and type BUY and inProgress false`,
-      assertions: (store) => {
-        const trade = {
-          transactionHash: '0xHASH',
-          orderId: '0xORDERID',
-          tradeGroupID: '0xTRADEGROUPID',
-          price: '0.1',
-          amount: '2',
-          maker: false,
-          settlementFee: '0.01',
-          type: BUY,
-          timestamp: 1491843278,
-          blockNumber: 123456,
-          gasFees: 0.001
-        };
-        const marketID = '0xMARKETID';
-        const marketType = BINARY;
-        const minPrice = '0';
-        const description = 'test description';
-        const outcomeID = '1';
-        const status = 'testing';
-
-        const price = formatEtherTokens(trade.price);
-        const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
-        const bnShares = speedomatic.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
-        const totalCost = bnPrice.times(bnShares).plus(tradingFees);
-        const totalCostPerShare = totalCost.dividedBy(bnShares);
-
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
-
-        const expected = {
-          '0xHASH-0xORDERID': {
-            type: BUY,
-            hash: trade.transactionHash,
-            tradeGroupID: trade.tradeGroupID,
-            status,
-            description,
-            data: {
-              marketType,
-              outcomeName: outcomeID,
-              outcomeID,
-              marketID
-            },
-            message: `bought ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
-            numShares: shares,
-            noFeePrice: price,
-            avgPrice: price,
-            timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEtherTokens(tradingFees),
-            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-            totalCost: formatEtherTokens(totalCost),
-            totalReturn: undefined,
-            gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
-            blockNumber: trade.blockNumber
-          }
-        };
-
-        assert.deepEqual(actual, expected, `Didn't return the expected value`);
-      }
-    });
-
-    test({
-      description: `should return the expected transaction object with taker and type BUY and inProgress`,
-      assertions: (store) => {
-        const trade = {
-          transactionHash: '0xHASH',
-          orderId: '0xORDERID',
-          tradeGroupID: '0xTRADEGROUPID',
-          price: '0.1',
-          amount: '2',
-          maker: false,
-          settlementFee: '0.01',
-          type: BUY,
-          timestamp: 1491843278,
-          blockNumber: 123456,
-          gasFees: 0.001,
-          inProgress: true
-        };
-        const marketID = '0xMARKETID';
-        const marketType = BINARY;
-        const minPrice = '0';
-        const description = 'test description';
-        const outcomeID = '1';
-        const status = 'testing';
-
-        const price = formatEtherTokens(trade.price);
-        const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
-        const bnShares = speedomatic.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
-        const totalCost = bnPrice.times(bnShares).plus(tradingFees);
-        const totalCostPerShare = totalCost.dividedBy(bnShares);
-
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
-
-        const expected = {
-          '0xHASH-0xORDERID': {
-            type: BUY,
-            hash: trade.transactionHash,
-            tradeGroupID: trade.tradeGroupID,
-            status,
-            description,
-            data: {
-              marketType,
-              outcomeName: outcomeID,
-              outcomeID,
-              marketID
-            },
-            message: `${BUY} ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
-            numShares: shares,
-            noFeePrice: price,
-            avgPrice: price,
-            timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEtherTokens(tradingFees),
-            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-            totalCost: formatEtherTokens(totalCost),
-            totalReturn: undefined,
-            gasFees: formatEther(trade.gasFees),
-            blockNumber: trade.blockNumber
-          }
-        };
-
-        assert.deepEqual(actual, expected, `Didn't return the expected value`);
-      }
-    });
-
-    test({
-      description: `should return the expected transaction object with taker and type SELL and inProgress false`,
-      assertions: (store) => {
-        const trade = {
-          transactionHash: '0xHASH',
-          orderId: '0xORDERID',
-          tradeGroupID: '0xTRADEGROUPID',
-          price: '0.1',
-          amount: '2',
-          maker: false,
-          settlementFee: '0.01',
-          type: SELL,
-          timestamp: 1491843278,
-          blockNumber: 123456,
-          gasFees: 0.001
-        };
-        const marketID = '0xMARKETID';
-        const marketType = BINARY;
-        const minPrice = '0';
-        const description = 'test description';
-        const outcomeID = '1';
-        const status = 'testing';
-
-        const price = formatEtherTokens(trade.price);
-        const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
-        const bnShares = speedomatic.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
-        const totalCost = bnPrice.times(bnShares).plus(tradingFees);
-        const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
-        const totalReturnPerShare = totalReturn.dividedBy(bnShares);
-
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
-
-        const expected = {
-          '0xHASH-0xORDERID': {
-            type: SELL,
-            hash: trade.transactionHash,
-            tradeGroupID: trade.tradeGroupID,
-            status,
-            description,
-            data: {
-              marketType,
-              outcomeName: outcomeID,
-              outcomeID,
-              marketID
-            },
-            message: `sold ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
-            numShares: shares,
-            noFeePrice: price,
-            avgPrice: price,
-            timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEtherTokens(tradingFees),
-            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-            totalCost: undefined,
-            totalReturn: formatEtherTokens(totalReturn),
-            gasFees: formatEther(trade.gasFees),
-            blockNumber: trade.blockNumber
-          }
-        };
-
-        assert.deepEqual(actual, expected, `Didn't return the expected value`);
-      }
-    });
-
-    test({
-      description: `should return the expected transaction object with taker and type SELL and inProgress`,
-      assertions: (store) => {
-        const trade = {
-          transactionHash: '0xHASH',
-          orderId: '0xORDERID',
-          tradeGroupID: '0xTRADEGROUPID',
-          price: '0.1',
-          amount: '2',
-          maker: false,
-          settlementFee: '0.01',
-          type: SELL,
-          timestamp: 1491843278,
-          blockNumber: 123456,
-          gasFees: 0.001,
-          inProgress: true
-        };
-        const marketID = '0xMARKETID';
-        const marketType = BINARY;
-        const minPrice = '0';
-        const description = 'test description';
-        const outcomeID = '1';
-        const status = 'testing';
-
-        const price = formatEtherTokens(trade.price);
-        const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
-        const bnShares = speedomatic.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
-        const totalCost = bnPrice.times(bnShares).plus(tradingFees);
-        const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
-        const totalReturnPerShare = totalReturn.dividedBy(bnShares);
-
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
-
-        const expected = {
-          '0xHASH-0xORDERID': {
-            type: SELL,
-            hash: trade.transactionHash,
-            tradeGroupID: trade.tradeGroupID,
-            status,
-            description,
-            data: {
-              marketType,
-              outcomeName: outcomeID,
-              outcomeID,
-              marketID
-            },
-            message: `${SELL} ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
-            numShares: shares,
-            noFeePrice: price,
-            avgPrice: price,
-            timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEtherTokens(tradingFees),
-            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-            totalCost: undefined,
-            totalReturn: formatEtherTokens(totalReturn),
-            gasFees: formatEther(trade.gasFees),
-            blockNumber: trade.blockNumber
-          }
-        };
-
-        assert.deepEqual(actual, expected, `Didn't return the expected value`);
-      }
-    });
-
-    test({
-      description: `should return the expected transaction object with type scalar and taker and type SELL and inProgress`,
-      assertions: (store) => {
-        const trade = {
-          transactionHash: '0xHASH',
-          orderId: '0xORDERID',
-          tradeGroupID: '0xTRADEGROUPID',
-          price: '0.1',
-          amount: '2',
-          maker: false,
-          settlementFee: '0.01',
-          type: SELL,
-          timestamp: 1491843278,
-          blockNumber: 123456,
-          gasFees: 0.001,
-          inProgress: true
-        };
-        const marketID = '0xMARKETID';
-        const marketType = SCALAR;
-        const minPrice = '0';
-        const description = 'test description';
-        const outcomeID = '1';
-        const status = 'testing';
-
-        const price = formatEtherTokens(trade.price);
-        const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
-        const bnShares = speedomatic.bignum(trade.amount);
-        const bnPrice = speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price));
-        const totalCost = bnPrice.times(bnShares).plus(tradingFees);
-        const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
-        const totalReturnPerShare = totalReturn.dividedBy(bnShares);
-
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
-
-        const expected = {
-          '0xHASH-0xORDERID': {
-            type: SELL,
-            hash: trade.transactionHash,
-            tradeGroupID: trade.tradeGroupID,
-            status,
-            description,
-            data: {
-              marketType,
-              outcomeName: outcomeID,
-              outcomeID,
-              marketID
-            },
-            message: `${SELL} ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
-            numShares: shares,
-            noFeePrice: price,
-            avgPrice: price,
-            timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEtherTokens(tradingFees),
-            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-            totalCost: undefined,
-            totalReturn: formatEtherTokens(totalReturn),
-            gasFees: formatEther(trade.gasFees),
-            blockNumber: trade.blockNumber
-          }
-        };
-
-        assert.deepEqual(actual, expected, `Didn't return the expected value`);
-      }
-    });
-  });
-
-  describe('constructMakeOrderTransaction', () => {
-    const action = require('../../../src/modules/transactions/actions/construct-transaction');
-
-    const test = t => it(t.description, () => {
-      const store = mockStore();
-      t.assertions(store);
-    });
-
-    describe('related conditionals: trade type, isShortAsk, and inProgress', () => {
-      let trade = {
-        transactionHash: '0xHASH',
-        orderId: '0xORDERID',
-        tradeGroupID: '0xTRADEGROUPID',
-        price: '0.1',
-        amount: '2',
-        maker: false,
-        settlementFee: '0.01',
-        type: SELL,
-        timestamp: 1491843278,
-        blockNumber: 123456,
-        gasFees: 0.001
-      };
-      const marketID = '0xMARKETID';
-      const marketType = BINARY;
-      const description = 'test description';
-      const outcomeID = '1';
-      const market = {
-        makerFee: '0.025',
-        settlementFee: '0.05',
-        minPrice: '0',
-        maxPrice: '1'
-      };
-      const status = 'testing';
-
-      test({
-        description: `BUY, false, false`,
-        assertions: (store) => {
-          trade = {
-            ...trade,
-            type: BUY,
-            isShortAsk: false,
-            inProgress: false
-          };
-
-          const actual = store.dispatch(action.constructMakeOrderTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
-
-          const expected = {
-            '0xHASH': {
-              type: BID,
-              message: 'bid 2 shares for 0.1009 ETH Tokens / share',
-              freeze: {
-                verb: 'froze',
-                noFeeCost: formatEtherTokens(0.2)
-              },
-              totalCost: formatEtherTokens(0.2018),
-              totalReturn: undefined
-            }
-          };
-
-          assert.containSubset(actual, expected, `Didn't contain the expected subset`);
-        }
-      });
-
-      test({
-        description: `BUY, false, true`,
-        assertions: (store) => {
-          trade = {
-            ...trade,
-            type: BUY,
-            isShortAsk: false,
-            inProgress: true
-          };
-
-          const actual = store.dispatch(action.constructMakeOrderTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
-
-          const expected = {
-            '0xHASH': {
-              type: BID,
-              message: 'bidding 2 shares for 0.1009 ETH Tokens / share',
-              freeze: {
-                verb: 'freezing',
-                noFeeCost: formatEtherTokens(0.2)
-              },
-              totalCost: formatEtherTokens(0.2018),
-              totalReturn: undefined
-            }
-          };
-
-          assert.containSubset(actual, expected, `Didn't contain the expected subset`);
-        }
-      });
-
-      test({
-        description: `SELL, false, false`,
-        assertions: (store) => {
-          trade = {
-            ...trade,
-            type: SELL,
-            isShortAsk: false,
-            inProgress: false
-          };
-
-          const actual = store.dispatch(action.constructMakeOrderTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
-
-          const expected = {
-            '0xHASH': {
-              type: ASK,
-              message: 'ask 2 shares for 0.0991 ETH Tokens / share',
-              freeze: {
-                verb: 'froze',
-                noFeeCost: undefined
-              },
-              totalCost: undefined,
-              totalReturn: formatEtherTokens(0.1982)
-            }
-          };
-
-          assert.containSubset(actual, expected, `Didn't contain the expected subset`);
-        }
-      });
-
-      test({
-        description: `SELL, false, true`,
-        assertions: (store) => {
-          trade = {
-            ...trade,
-            type: SELL,
-            isShortAsk: false,
-            inProgress: true
-          };
-
-          const actual = store.dispatch(action.constructMakeOrderTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
-
-          const expected = {
-            '0xHASH': {
-              type: ASK,
-              message: 'asking 2 shares for 0.0991 ETH Tokens / share',
-              freeze: {
-                verb: 'freezing',
-                noFeeCost: undefined
-              },
-              totalCost: undefined,
-              totalReturn: formatEtherTokens(0.1982)
-            }
-          };
-
-          assert.containSubset(actual, expected, `Didn't contain the expected subset`);
-        }
-      });
-    });
-
-    describe('conditionals: market type', () => {
-      const trade = {
-        transactionHash: '0xHASH',
-        orderId: '0xORDERID',
-        tradeGroupID: '0xTRADEGROUPID',
-        price: '0.1',
-        amount: '2',
-        maker: false,
-        settlementFee: '0.01',
-        type: SELL,
-        timestamp: 1491843278,
-        blockNumber: 123456,
-        gasFees: 0.001
-      };
-      const marketID = '0xMARKETID';
-      let marketType = BINARY;
-      const description = 'test description';
-      const outcomeID = '1';
-      let market = {
-        makerFee: '0.025',
-        settlementFee: '0.05',
-        minPrice: '0',
-        maxPrice: '1'
-      };
-      const status = 'testing';
-
-      test({
-        description: 'BINARY',
-        assertions: (store) => {
-          const actual = store.dispatch(action.constructMakeOrderTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
-
-          const expected = {
-            '0xHASH': {
-              noFeePrice: formatEtherTokens(0.1),
-              freeze: {
-                tradingFees: formatEtherTokens(0.0018)
-              },
-              feePercent: formatPercent(0.8919722497522299),
-              message: 'ask 2 shares for 0.0991 ETH Tokens / share'
-            }
-          };
-
-          assert.containSubset(actual, expected, `Didn't contain the expected subset`);
-        }
-      });
-
-      test({
-        description: 'SCALAR',
-        assertions: (store) => {
-          marketType = SCALAR;
-          market = {
-            ...market,
-            minPrice: -1,
-            maxPrice: 1
-          };
-
-          const actual = store.dispatch(action.constructMakeOrderTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
-
-          const expected = {
-            '0xHASH': {
-              noFeePrice: formatEtherTokens(-0.9),
-              freeze: {
-                tradingFees: formatEtherTokens(0.00095)
-              },
-              feePercent: formatPercent(0.4727544165215227),
-              message: 'ask 2 shares for 0.0995 ETH Tokens / share'
-            }
-          };
-
-          assert.containSubset(actual, expected, `Didn't contain the expected subset`);
-        }
-      });
-    });
-
-    describe('general calculations', () => {
-      const trade = {
-        transactionHash: '0xHASH',
-        orderId: '0xORDERID',
-        tradeGroupID: '0xTRADEGROUPID',
-        price: '0.1',
-        amount: '2',
-        maker: false,
-        settlementFee: '0.01',
-        type: SELL,
-        timestamp: 1491843278,
-        blockNumber: 123456,
-        gasFees: 0.001,
-        inProgress: false
-      };
-      const marketID = '0xMARKETID';
-      const marketType = BINARY;
-      const description = 'test description';
-      const outcomeID = '1';
-      const market = {
-        makerFee: '0.025',
-        settlementFee: '0.05',
-        minPrice: '0',
-        maxPrice: '1'
-      };
-      const status = 'testing';
-
-      test({
-        description: `should return the expected object`,
-        assertions: (store) => {
-          const actual = store.dispatch(action.constructMakeOrderTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
-
-          const expected = {
-            '0xHASH': {
-              type: ASK,
-              status,
-              description,
-              data: {
-                marketType,
-                outcomeName: outcomeID,
-                outcomeID,
-                marketID
-              },
-              message: 'ask 2 shares for 0.0991 ETH Tokens / share',
-              numShares: formatShares(trade.amount),
-              noFeePrice: formatEtherTokens(trade.price),
-              freeze: {
-                verb: 'froze',
-                noFeeCost: undefined,
-                tradingFees: formatEtherTokens(0.0018)
-              },
-              avgPrice: formatEtherTokens(trade.price),
-              timestamp: formatDate(new Date(trade.timestamp * 1000)),
-              hash: trade.transactionHash,
-              feePercent: formatPercent(0.8919722497522299),
-              totalCost: undefined,
-              totalReturn: formatEtherTokens(0.1982),
-              gasFees: formatEther(trade.gasFees),
-              blockNumber: trade.blockNumber,
-              tradeID: trade.orderId
-            }
-          };
-
-          assert.deepEqual(actual, expected, `Didn't return the expected object`);
-        }
-      });
-    });
-  });
+  // describe('constructTakeOrderTransaction', () => {
+  //   const action = require('../../../src/modules/transactions/actions/construct-transaction');
+
+  //   const test = t => it(t.description, () => {
+  //     const store = mockStore();
+  //     t.assertions(store);
+  //   });
+
+  //   test({
+  //     description: `should return the expected transaction object with necessary data missing`,
+  //     assertions: (store) => {
+  //       const trade = {};
+
+  //       const actual = store.dispatch(action.constructTakeOrderTransaction(trade));
+
+  //       const expected = null;
+
+  //       assert.strictEqual(actual, expected, `Didn't return the expected value`);
+  //     }
+  //   });
+
+  //   test({
+  //     description: `should return the expected transaction object with maker and type BUY and inProgress false`,
+  //     assertions: (store) => {
+  //       const trade = {
+  //         transactionHash: '0xHASH',
+  //         orderId: '0xORDERID',
+  //         tradeGroupID: '0xTRADEGROUPID',
+  //         price: '0.1',
+  //         amount: '2',
+  //         maker: true,
+  //         makerFee: '0.01',
+  //         type: BUY,
+  //         timestamp: 1491843278,
+  //         blockNumber: 123456,
+  //         gasFees: 0.001
+  //       };
+  //       const marketID = '0xMARKETID';
+  //       const marketType = BINARY;
+  //       const minPrice = '0';
+  //       const description = 'test description';
+  //       const outcomeID = '1';
+  //       const status = 'testing';
+
+  //       const price = formatEtherTokens(trade.price);
+  //       const shares = formatShares(trade.amount);
+  //       const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
+  //       const bnShares = speedomatic.bignum(trade.amount);
+  //       const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
+  //       const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+  //       const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
+  //       const totalCostPerShare = totalCost.dividedBy(bnShares);
+
+  //       const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
+
+  //       const expected = {
+  //         '0xHASH-0xORDERID': {
+  //           type: MATCH_ASK,
+  //           hash: trade.transactionHash,
+  //           tradeGroupID: trade.tradeGroupID,
+  //           status,
+  //           description,
+  //           data: {
+  //             marketType,
+  //             outcomeName: outcomeID,
+  //             outcomeID,
+  //             marketID
+  //           },
+  //           message: `sold ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
+  //           numShares: shares,
+  //           noFeePrice: price,
+  //           avgPrice: price,
+  //           timestamp: formatDate(new Date(trade.timestamp * 1000)),
+  //           tradingFees: formatEtherTokens(tradingFees),
+  //           feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+  //           totalCost: undefined,
+  //           totalReturn: formatEtherTokens(totalReturn),
+  //           gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
+  //           blockNumber: trade.blockNumber
+  //         }
+  //       };
+
+  //       assert.deepEqual(actual, expected, `Didn't return the expected value`);
+  //     }
+  //   });
+
+  //   test({
+  //     description: `should return the expected transaction object with maker and type BUY and inProgress`,
+  //     assertions: (store) => {
+  //       const trade = {
+  //         transactionHash: '0xHASH',
+  //         orderId: '0xORDERID',
+  //         tradeGroupID: '0xTRADEGROUPID',
+  //         price: '0.1',
+  //         amount: '2',
+  //         maker: true,
+  //         makerFee: '0.01',
+  //         type: BUY,
+  //         timestamp: 1491843278,
+  //         blockNumber: 123456,
+  //         gasFees: 0.001,
+  //         inProgress: true
+  //       };
+  //       const marketID = '0xMARKETID';
+  //       const marketType = BINARY;
+  //       const minPrice = '0';
+  //       const description = 'test description';
+  //       const outcomeID = '1';
+  //       const status = 'testing';
+
+  //       const price = formatEtherTokens(trade.price);
+  //       const shares = formatShares(trade.amount);
+  //       const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
+  //       const bnShares = speedomatic.bignum(trade.amount);
+  //       const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
+  //       const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+  //       const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
+  //       const totalCostPerShare = totalCost.dividedBy(bnShares);
+
+  //       const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
+
+  //       const expected = {
+  //         '0xHASH-0xORDERID': {
+  //           type: MATCH_ASK,
+  //           hash: trade.transactionHash,
+  //           tradeGroupID: trade.tradeGroupID,
+  //           status,
+  //           description,
+  //           data: {
+  //             marketType,
+  //             outcomeName: outcomeID,
+  //             outcomeID,
+  //             marketID
+  //           },
+  //           message: `${MATCH_ASK} ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
+  //           numShares: shares,
+  //           noFeePrice: price,
+  //           avgPrice: price,
+  //           timestamp: formatDate(new Date(trade.timestamp * 1000)),
+  //           tradingFees: formatEtherTokens(tradingFees),
+  //           feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+  //           totalCost: undefined,
+  //           totalReturn: formatEtherTokens(totalReturn),
+  //           gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
+  //           blockNumber: trade.blockNumber
+  //         }
+  //       };
+
+  //       assert.deepEqual(actual, expected, `Didn't return the expected value`);
+  //     }
+  //   });
+
+  //   test({
+  //     description: `should return the expected transaction object with maker and type SELL and inProgress false`,
+  //     assertions: (store) => {
+  //       const trade = {
+  //         transactionHash: '0xHASH',
+  //         orderId: '0xORDERID',
+  //         tradeGroupID: '0xTRADEGROUPID',
+  //         price: '0.1',
+  //         amount: '2',
+  //         maker: true,
+  //         makerFee: '0.01',
+  //         type: SELL,
+  //         timestamp: 1491843278,
+  //         blockNumber: 123456,
+  //         gasFees: 0.001
+  //       };
+  //       const marketID = '0xMARKETID';
+  //       const marketType = BINARY;
+  //       const minPrice = '0';
+  //       const description = 'test description';
+  //       const outcomeID = '1';
+  //       const status = 'testing';
+
+  //       const price = formatEtherTokens(trade.price);
+  //       const shares = formatShares(trade.amount);
+  //       const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
+  //       const bnShares = speedomatic.bignum(trade.amount);
+  //       const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
+  //       const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+  //       const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
+  //       const totalReturnPerShare = totalReturn.dividedBy(bnShares);
+
+  //       const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
+
+  //       const expected = {
+  //         '0xHASH-0xORDERID': {
+  //           type: MATCH_BID,
+  //           hash: trade.transactionHash,
+  //           tradeGroupID: trade.tradeGroupID,
+  //           status,
+  //           description,
+  //           data: {
+  //             marketType,
+  //             outcomeName: outcomeID,
+  //             outcomeID,
+  //             marketID
+  //           },
+  //           message: `bought ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
+  //           numShares: shares,
+  //           noFeePrice: price,
+  //           avgPrice: price,
+  //           timestamp: formatDate(new Date(trade.timestamp * 1000)),
+  //           tradingFees: formatEtherTokens(tradingFees),
+  //           feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+  //           totalCost: formatEtherTokens(totalCost),
+  //           totalReturn: undefined,
+  //           gasFees: formatEther(trade.gasFees),
+  //           blockNumber: trade.blockNumber
+  //         }
+  //       };
+
+  //       assert.deepEqual(actual, expected, `Didn't return the expected value`);
+  //     }
+  //   });
+
+  //   test({
+  //     description: `should return the expected transaction object with maker and type SELL and inProgress`,
+  //     assertions: (store) => {
+  //       const trade = {
+  //         transactionHash: '0xHASH',
+  //         orderId: '0xORDERID',
+  //         tradeGroupID: '0xTRADEGROUPID',
+  //         price: '0.1',
+  //         amount: '2',
+  //         maker: true,
+  //         makerFee: '0.01',
+  //         type: SELL,
+  //         timestamp: 1491843278,
+  //         blockNumber: 123456,
+  //         gasFees: 0.001,
+  //         inProgress: true
+  //       };
+  //       const marketID = '0xMARKETID';
+  //       const marketType = BINARY;
+  //       const minPrice = '0';
+  //       const description = 'test description';
+  //       const outcomeID = '1';
+  //       const status = 'testing';
+
+  //       const price = formatEtherTokens(trade.price);
+  //       const shares = formatShares(trade.amount);
+  //       const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
+  //       const bnShares = speedomatic.bignum(trade.amount);
+  //       const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
+  //       const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+  //       const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
+  //       const totalReturnPerShare = totalReturn.dividedBy(bnShares);
+
+  //       const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
+
+  //       const expected = {
+  //         '0xHASH-0xORDERID': {
+  //           type: MATCH_BID,
+  //           hash: trade.transactionHash,
+  //           tradeGroupID: trade.tradeGroupID,
+  //           status,
+  //           description,
+  //           data: {
+  //             marketType,
+  //             outcomeName: outcomeID,
+  //             outcomeID,
+  //             marketID
+  //           },
+  //           message: `${MATCH_BID} ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
+  //           numShares: shares,
+  //           noFeePrice: price,
+  //           avgPrice: price,
+  //           timestamp: formatDate(new Date(trade.timestamp * 1000)),
+  //           tradingFees: formatEtherTokens(tradingFees),
+  //           feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+  //           totalCost: formatEtherTokens(totalCost),
+  //           totalReturn: undefined,
+  //           gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
+  //           blockNumber: trade.blockNumber
+  //         }
+  //       };
+
+  //       assert.deepEqual(actual, expected, `Didn't return the expected value`);
+  //     }
+  //   });
+
+  //   test({
+  //     description: `should return the expected transaction object with taker and type BUY and inProgress false`,
+  //     assertions: (store) => {
+  //       const trade = {
+  //         transactionHash: '0xHASH',
+  //         orderId: '0xORDERID',
+  //         tradeGroupID: '0xTRADEGROUPID',
+  //         price: '0.1',
+  //         amount: '2',
+  //         maker: false,
+  //         settlementFee: '0.01',
+  //         type: BUY,
+  //         timestamp: 1491843278,
+  //         blockNumber: 123456,
+  //         gasFees: 0.001
+  //       };
+  //       const marketID = '0xMARKETID';
+  //       const marketType = BINARY;
+  //       const minPrice = '0';
+  //       const description = 'test description';
+  //       const outcomeID = '1';
+  //       const status = 'testing';
+
+  //       const price = formatEtherTokens(trade.price);
+  //       const shares = formatShares(trade.amount);
+  //       const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
+  //       const bnShares = speedomatic.bignum(trade.amount);
+  //       const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
+  //       const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+  //       const totalCostPerShare = totalCost.dividedBy(bnShares);
+
+  //       const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
+
+  //       const expected = {
+  //         '0xHASH-0xORDERID': {
+  //           type: BUY,
+  //           hash: trade.transactionHash,
+  //           tradeGroupID: trade.tradeGroupID,
+  //           status,
+  //           description,
+  //           data: {
+  //             marketType,
+  //             outcomeName: outcomeID,
+  //             outcomeID,
+  //             marketID
+  //           },
+  //           message: `bought ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
+  //           numShares: shares,
+  //           noFeePrice: price,
+  //           avgPrice: price,
+  //           timestamp: formatDate(new Date(trade.timestamp * 1000)),
+  //           tradingFees: formatEtherTokens(tradingFees),
+  //           feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+  //           totalCost: formatEtherTokens(totalCost),
+  //           totalReturn: undefined,
+  //           gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
+  //           blockNumber: trade.blockNumber
+  //         }
+  //       };
+
+  //       assert.deepEqual(actual, expected, `Didn't return the expected value`);
+  //     }
+  //   });
+
+  //   test({
+  //     description: `should return the expected transaction object with taker and type BUY and inProgress`,
+  //     assertions: (store) => {
+  //       const trade = {
+  //         transactionHash: '0xHASH',
+  //         orderId: '0xORDERID',
+  //         tradeGroupID: '0xTRADEGROUPID',
+  //         price: '0.1',
+  //         amount: '2',
+  //         maker: false,
+  //         settlementFee: '0.01',
+  //         type: BUY,
+  //         timestamp: 1491843278,
+  //         blockNumber: 123456,
+  //         gasFees: 0.001,
+  //         inProgress: true
+  //       };
+  //       const marketID = '0xMARKETID';
+  //       const marketType = BINARY;
+  //       const minPrice = '0';
+  //       const description = 'test description';
+  //       const outcomeID = '1';
+  //       const status = 'testing';
+
+  //       const price = formatEtherTokens(trade.price);
+  //       const shares = formatShares(trade.amount);
+  //       const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
+  //       const bnShares = speedomatic.bignum(trade.amount);
+  //       const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
+  //       const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+  //       const totalCostPerShare = totalCost.dividedBy(bnShares);
+
+  //       const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
+
+  //       const expected = {
+  //         '0xHASH-0xORDERID': {
+  //           type: BUY,
+  //           hash: trade.transactionHash,
+  //           tradeGroupID: trade.tradeGroupID,
+  //           status,
+  //           description,
+  //           data: {
+  //             marketType,
+  //             outcomeName: outcomeID,
+  //             outcomeID,
+  //             marketID
+  //           },
+  //           message: `${BUY} ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
+  //           numShares: shares,
+  //           noFeePrice: price,
+  //           avgPrice: price,
+  //           timestamp: formatDate(new Date(trade.timestamp * 1000)),
+  //           tradingFees: formatEtherTokens(tradingFees),
+  //           feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+  //           totalCost: formatEtherTokens(totalCost),
+  //           totalReturn: undefined,
+  //           gasFees: formatEther(trade.gasFees),
+  //           blockNumber: trade.blockNumber
+  //         }
+  //       };
+
+  //       assert.deepEqual(actual, expected, `Didn't return the expected value`);
+  //     }
+  //   });
+
+  //   test({
+  //     description: `should return the expected transaction object with taker and type SELL and inProgress false`,
+  //     assertions: (store) => {
+  //       const trade = {
+  //         transactionHash: '0xHASH',
+  //         orderId: '0xORDERID',
+  //         tradeGroupID: '0xTRADEGROUPID',
+  //         price: '0.1',
+  //         amount: '2',
+  //         maker: false,
+  //         settlementFee: '0.01',
+  //         type: SELL,
+  //         timestamp: 1491843278,
+  //         blockNumber: 123456,
+  //         gasFees: 0.001
+  //       };
+  //       const marketID = '0xMARKETID';
+  //       const marketType = BINARY;
+  //       const minPrice = '0';
+  //       const description = 'test description';
+  //       const outcomeID = '1';
+  //       const status = 'testing';
+
+  //       const price = formatEtherTokens(trade.price);
+  //       const shares = formatShares(trade.amount);
+  //       const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
+  //       const bnShares = speedomatic.bignum(trade.amount);
+  //       const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
+  //       const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+  //       const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
+  //       const totalReturnPerShare = totalReturn.dividedBy(bnShares);
+
+  //       const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
+
+  //       const expected = {
+  //         '0xHASH-0xORDERID': {
+  //           type: SELL,
+  //           hash: trade.transactionHash,
+  //           tradeGroupID: trade.tradeGroupID,
+  //           status,
+  //           description,
+  //           data: {
+  //             marketType,
+  //             outcomeName: outcomeID,
+  //             outcomeID,
+  //             marketID
+  //           },
+  //           message: `sold ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
+  //           numShares: shares,
+  //           noFeePrice: price,
+  //           avgPrice: price,
+  //           timestamp: formatDate(new Date(trade.timestamp * 1000)),
+  //           tradingFees: formatEtherTokens(tradingFees),
+  //           feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+  //           totalCost: undefined,
+  //           totalReturn: formatEtherTokens(totalReturn),
+  //           gasFees: formatEther(trade.gasFees),
+  //           blockNumber: trade.blockNumber
+  //         }
+  //       };
+
+  //       assert.deepEqual(actual, expected, `Didn't return the expected value`);
+  //     }
+  //   });
+
+  //   test({
+  //     description: `should return the expected transaction object with taker and type SELL and inProgress`,
+  //     assertions: (store) => {
+  //       const trade = {
+  //         transactionHash: '0xHASH',
+  //         orderId: '0xORDERID',
+  //         tradeGroupID: '0xTRADEGROUPID',
+  //         price: '0.1',
+  //         amount: '2',
+  //         maker: false,
+  //         settlementFee: '0.01',
+  //         type: SELL,
+  //         timestamp: 1491843278,
+  //         blockNumber: 123456,
+  //         gasFees: 0.001,
+  //         inProgress: true
+  //       };
+  //       const marketID = '0xMARKETID';
+  //       const marketType = BINARY;
+  //       const minPrice = '0';
+  //       const description = 'test description';
+  //       const outcomeID = '1';
+  //       const status = 'testing';
+
+  //       const price = formatEtherTokens(trade.price);
+  //       const shares = formatShares(trade.amount);
+  //       const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
+  //       const bnShares = speedomatic.bignum(trade.amount);
+  //       const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
+  //       const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+  //       const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
+  //       const totalReturnPerShare = totalReturn.dividedBy(bnShares);
+
+  //       const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
+
+  //       const expected = {
+  //         '0xHASH-0xORDERID': {
+  //           type: SELL,
+  //           hash: trade.transactionHash,
+  //           tradeGroupID: trade.tradeGroupID,
+  //           status,
+  //           description,
+  //           data: {
+  //             marketType,
+  //             outcomeName: outcomeID,
+  //             outcomeID,
+  //             marketID
+  //           },
+  //           message: `${SELL} ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
+  //           numShares: shares,
+  //           noFeePrice: price,
+  //           avgPrice: price,
+  //           timestamp: formatDate(new Date(trade.timestamp * 1000)),
+  //           tradingFees: formatEtherTokens(tradingFees),
+  //           feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+  //           totalCost: undefined,
+  //           totalReturn: formatEtherTokens(totalReturn),
+  //           gasFees: formatEther(trade.gasFees),
+  //           blockNumber: trade.blockNumber
+  //         }
+  //       };
+
+  //       assert.deepEqual(actual, expected, `Didn't return the expected value`);
+  //     }
+  //   });
+
+  //   test({
+  //     description: `should return the expected transaction object with type scalar and taker and type SELL and inProgress`,
+  //     assertions: (store) => {
+  //       const trade = {
+  //         transactionHash: '0xHASH',
+  //         orderId: '0xORDERID',
+  //         tradeGroupID: '0xTRADEGROUPID',
+  //         price: '0.1',
+  //         amount: '2',
+  //         maker: false,
+  //         settlementFee: '0.01',
+  //         type: SELL,
+  //         timestamp: 1491843278,
+  //         blockNumber: 123456,
+  //         gasFees: 0.001,
+  //         inProgress: true
+  //       };
+  //       const marketID = '0xMARKETID';
+  //       const marketType = SCALAR;
+  //       const minPrice = '0';
+  //       const description = 'test description';
+  //       const outcomeID = '1';
+  //       const status = 'testing';
+
+  //       const price = formatEtherTokens(trade.price);
+  //       const shares = formatShares(trade.amount);
+  //       const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
+  //       const bnShares = speedomatic.bignum(trade.amount);
+  //       const bnPrice = speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price));
+  //       const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+  //       const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
+  //       const totalReturnPerShare = totalReturn.dividedBy(bnShares);
+
+  //       const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
+
+  //       const expected = {
+  //         '0xHASH-0xORDERID': {
+  //           type: SELL,
+  //           hash: trade.transactionHash,
+  //           tradeGroupID: trade.tradeGroupID,
+  //           status,
+  //           description,
+  //           data: {
+  //             marketType,
+  //             outcomeName: outcomeID,
+  //             outcomeID,
+  //             marketID
+  //           },
+  //           message: `${SELL} ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
+  //           numShares: shares,
+  //           noFeePrice: price,
+  //           avgPrice: price,
+  //           timestamp: formatDate(new Date(trade.timestamp * 1000)),
+  //           tradingFees: formatEtherTokens(tradingFees),
+  //           feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+  //           totalCost: undefined,
+  //           totalReturn: formatEtherTokens(totalReturn),
+  //           gasFees: formatEther(trade.gasFees),
+  //           blockNumber: trade.blockNumber
+  //         }
+  //       };
+
+  //       assert.deepEqual(actual, expected, `Didn't return the expected value`);
+  //     }
+  //   });
+  // });
+
+  // describe('constructMakeOrderTransaction', () => {
+  //   const action = require('../../../src/modules/transactions/actions/construct-transaction');
+
+  //   const test = t => it(t.description, () => {
+  //     const store = mockStore();
+  //     t.assertions(store);
+  //   });
+
+  //   describe('related conditionals: trade type, isShortAsk, and inProgress', () => {
+  //     let trade = {
+  //       transactionHash: '0xHASH',
+  //       orderId: '0xORDERID',
+  //       tradeGroupID: '0xTRADEGROUPID',
+  //       price: '0.1',
+  //       amount: '2',
+  //       maker: false,
+  //       settlementFee: '0.01',
+  //       type: SELL,
+  //       timestamp: 1491843278,
+  //       blockNumber: 123456,
+  //       gasFees: 0.001
+  //     };
+  //     const marketID = '0xMARKETID';
+  //     const marketType = BINARY;
+  //     const description = 'test description';
+  //     const outcomeID = '1';
+  //     const market = {
+  //       makerFee: '0.025',
+  //       settlementFee: '0.05',
+  //       minPrice: '0',
+  //       maxPrice: '1'
+  //     };
+  //     const status = 'testing';
+
+  //     test({
+  //       description: `BUY, false, false`,
+  //       assertions: (store) => {
+  //         trade = {
+  //           ...trade,
+  //           type: BUY,
+  //           isShortAsk: false,
+  //           inProgress: false
+  //         };
+
+  //         const actual = store.dispatch(action.constructMakeOrderTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
+
+  //         const expected = {
+  //           '0xHASH': {
+  //             type: BID,
+  //             message: 'bid 2 shares for 0.1009 ETH Tokens / share',
+  //             freeze: {
+  //               verb: 'froze',
+  //               noFeeCost: formatEtherTokens(0.2)
+  //             },
+  //             totalCost: formatEtherTokens(0.2018),
+  //             totalReturn: undefined
+  //           }
+  //         };
+
+  //         assert.containSubset(actual, expected, `Didn't contain the expected subset`);
+  //       }
+  //     });
+
+  //     test({
+  //       description: `BUY, false, true`,
+  //       assertions: (store) => {
+  //         trade = {
+  //           ...trade,
+  //           type: BUY,
+  //           isShortAsk: false,
+  //           inProgress: true
+  //         };
+
+  //         const actual = store.dispatch(action.constructMakeOrderTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
+
+  //         const expected = {
+  //           '0xHASH': {
+  //             type: BID,
+  //             message: 'bidding 2 shares for 0.1009 ETH Tokens / share',
+  //             freeze: {
+  //               verb: 'freezing',
+  //               noFeeCost: formatEtherTokens(0.2)
+  //             },
+  //             totalCost: formatEtherTokens(0.2018),
+  //             totalReturn: undefined
+  //           }
+  //         };
+
+  //         assert.containSubset(actual, expected, `Didn't contain the expected subset`);
+  //       }
+  //     });
+
+  //     test({
+  //       description: `SELL, false, false`,
+  //       assertions: (store) => {
+  //         trade = {
+  //           ...trade,
+  //           type: SELL,
+  //           isShortAsk: false,
+  //           inProgress: false
+  //         };
+
+  //         const actual = store.dispatch(action.constructMakeOrderTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
+
+  //         const expected = {
+  //           '0xHASH': {
+  //             type: ASK,
+  //             message: 'ask 2 shares for 0.0991 ETH Tokens / share',
+  //             freeze: {
+  //               verb: 'froze',
+  //               noFeeCost: undefined
+  //             },
+  //             totalCost: undefined,
+  //             totalReturn: formatEtherTokens(0.1982)
+  //           }
+  //         };
+
+  //         assert.containSubset(actual, expected, `Didn't contain the expected subset`);
+  //       }
+  //     });
+
+  //     test({
+  //       description: `SELL, false, true`,
+  //       assertions: (store) => {
+  //         trade = {
+  //           ...trade,
+  //           type: SELL,
+  //           isShortAsk: false,
+  //           inProgress: true
+  //         };
+
+  //         const actual = store.dispatch(action.constructMakeOrderTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
+
+  //         const expected = {
+  //           '0xHASH': {
+  //             type: ASK,
+  //             message: 'asking 2 shares for 0.0991 ETH Tokens / share',
+  //             freeze: {
+  //               verb: 'freezing',
+  //               noFeeCost: undefined
+  //             },
+  //             totalCost: undefined,
+  //             totalReturn: formatEtherTokens(0.1982)
+  //           }
+  //         };
+
+  //         assert.containSubset(actual, expected, `Didn't contain the expected subset`);
+  //       }
+  //     });
+  //   });
+
+  //   describe('conditionals: market type', () => {
+  //     const trade = {
+  //       transactionHash: '0xHASH',
+  //       orderId: '0xORDERID',
+  //       tradeGroupID: '0xTRADEGROUPID',
+  //       price: '0.1',
+  //       amount: '2',
+  //       maker: false,
+  //       settlementFee: '0.01',
+  //       type: SELL,
+  //       timestamp: 1491843278,
+  //       blockNumber: 123456,
+  //       gasFees: 0.001
+  //     };
+  //     const marketID = '0xMARKETID';
+  //     let marketType = BINARY;
+  //     const description = 'test description';
+  //     const outcomeID = '1';
+  //     let market = {
+  //       makerFee: '0.025',
+  //       settlementFee: '0.05',
+  //       minPrice: '0',
+  //       maxPrice: '1'
+  //     };
+  //     const status = 'testing';
+
+  //     test({
+  //       description: 'BINARY',
+  //       assertions: (store) => {
+  //         const actual = store.dispatch(action.constructMakeOrderTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
+
+  //         const expected = {
+  //           '0xHASH': {
+  //             noFeePrice: formatEtherTokens(0.1),
+  //             freeze: {
+  //               tradingFees: formatEtherTokens(0.0018)
+  //             },
+  //             feePercent: formatPercent(0.8919722497522299),
+  //             message: 'ask 2 shares for 0.0991 ETH Tokens / share'
+  //           }
+  //         };
+
+  //         assert.containSubset(actual, expected, `Didn't contain the expected subset`);
+  //       }
+  //     });
+
+  //     test({
+  //       description: 'SCALAR',
+  //       assertions: (store) => {
+  //         marketType = SCALAR;
+  //         market = {
+  //           ...market,
+  //           minPrice: -1,
+  //           maxPrice: 1
+  //         };
+
+  //         const actual = store.dispatch(action.constructMakeOrderTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
+
+  //         const expected = {
+  //           '0xHASH': {
+  //             noFeePrice: formatEtherTokens(-0.9),
+  //             freeze: {
+  //               tradingFees: formatEtherTokens(0.00095)
+  //             },
+  //             feePercent: formatPercent(0.4727544165215227),
+  //             message: 'ask 2 shares for 0.0995 ETH Tokens / share'
+  //           }
+  //         };
+
+  //         assert.containSubset(actual, expected, `Didn't contain the expected subset`);
+  //       }
+  //     });
+  //   });
+
+  //   describe('general calculations', () => {
+  //     const trade = {
+  //       transactionHash: '0xHASH',
+  //       orderId: '0xORDERID',
+  //       tradeGroupID: '0xTRADEGROUPID',
+  //       price: '0.1',
+  //       amount: '2',
+  //       maker: false,
+  //       settlementFee: '0.01',
+  //       type: SELL,
+  //       timestamp: 1491843278,
+  //       blockNumber: 123456,
+  //       gasFees: 0.001,
+  //       inProgress: false
+  //     };
+  //     const marketID = '0xMARKETID';
+  //     const marketType = BINARY;
+  //     const description = 'test description';
+  //     const outcomeID = '1';
+  //     const market = {
+  //       makerFee: '0.025',
+  //       settlementFee: '0.05',
+  //       minPrice: '0',
+  //       maxPrice: '1'
+  //     };
+  //     const status = 'testing';
+
+  //     test({
+  //       description: `should return the expected object`,
+  //       assertions: (store) => {
+  //         const actual = store.dispatch(action.constructMakeOrderTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
+
+  //         const expected = {
+  //           '0xHASH': {
+  //             type: ASK,
+  //             status,
+  //             description,
+  //             data: {
+  //               marketType,
+  //               outcomeName: outcomeID,
+  //               outcomeID,
+  //               marketID
+  //             },
+  //             message: 'ask 2 shares for 0.0991 ETH Tokens / share',
+  //             numShares: formatShares(trade.amount),
+  //             noFeePrice: formatEtherTokens(trade.price),
+  //             freeze: {
+  //               verb: 'froze',
+  //               noFeeCost: undefined,
+  //               tradingFees: formatEtherTokens(0.0018)
+  //             },
+  //             avgPrice: formatEtherTokens(trade.price),
+  //             timestamp: formatDate(new Date(trade.timestamp * 1000)),
+  //             hash: trade.transactionHash,
+  //             feePercent: formatPercent(0.8919722497522299),
+  //             totalCost: undefined,
+  //             totalReturn: formatEtherTokens(0.1982),
+  //             gasFees: formatEther(trade.gasFees),
+  //             blockNumber: trade.blockNumber,
+  //             orderId: trade.orderId
+  //           }
+  //         };
+
+  //         assert.deepEqual(actual, expected, `Didn't return the expected object`);
+  //       }
+  //     });
+  //   });
+  // });
 
   describe('constructCancelOrderTransaction', () => {
     const action = require('../../../src/modules/transactions/actions/construct-transaction');
@@ -2346,7 +2250,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
             totalReturn: formatEtherTokens(trade.cashRefund),
             gasFees: formatEther(trade.gasFees),
             blockNumber: trade.blockNumber,
-            tradeID: trade.orderId
+            orderId: trade.orderId
           }
         };
 
@@ -2393,7 +2297,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
             totalReturn: null,
             gasFees: formatEther(trade.gasFees),
             blockNumber: trade.blockNumber,
-            tradeID: trade.orderId
+            orderId: trade.orderId
           }
         };
 
@@ -2519,284 +2423,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const expected = null;
 
         assert.strictEqual(actual, expected, `Didn't return the expected value`);
-      }
-    });
-  });
-
-  describe('constructReportingTransaction', () => {
-    const { __RewireAPI__, constructReportingTransaction } = require('../../../src/modules/transactions/actions/construct-transaction');
-
-    const test = t => it(t.description, () => {
-      const store = mockStore({
-        loginAccount: {
-          address: '',
-          derivedKey: ''
-        }
-      });
-      t.assertions(store);
-    });
-
-    test({
-      description: `should dispatch the expected actions for label 'SubmitReport'`,
-      assertions: (store) => {
-        __RewireAPI__.__set__('constructSubmitReportTransaction', () => 'constructSubmitReportTransaction');
-
-        const actual = store.dispatch(constructReportingTransaction('SubmitReport'));
-
-        const expected = 'constructSubmitReportTransaction';
-
-        assert.strictEqual(actual, expected, `Didn't call the expected method`);
-      }
-    });
-
-    test({
-      description: `should dispatch the expected method for default label`,
-      assertions: (store) => {
-        const actual = store.dispatch(constructReportingTransaction(undefined));
-
-        const expected = null;
-
-        assert.strictEqual(actual, expected, `Didn't return the expected value`);
-      }
-    });
-  });
-
-  describe('constructTransaction', () => {
-    const { __RewireAPI__, constructTransaction } = require('../../../src/modules/transactions/actions/construct-transaction');
-
-    const test = t => it(t.description, () => {
-      const store = mockStore(t.state || {});
-      t.assertions(store);
-    });
-
-    test({
-      description: `should dispatch the expected actions for label 'Approval'`,
-      assertions: (store) => {
-        __RewireAPI__.__set__('constructApprovalTransaction', () => 'constructApprovalTransaction');
-
-        const actual = store.dispatch(constructTransaction('Approval'));
-
-        const expected = 'constructApprovalTransaction';
-
-        assert.strictEqual(actual, expected, `Didn't call the expected method`);
-      }
-    });
-
-    // test({
-    //   description: `should dispatch the expected actions for label 'collectedFees'`,
-    //   assertions: (store) => {
-    //     __RewireAPI__.__set__('constructCollectedFeesTransaction', () => 'constructCollectedFeesTransaction');
-
-    //     const actual = store.dispatch(constructTransaction('collectedFees'));
-
-    //     const expected = 'constructCollectedFeesTransaction';
-
-    //     assert.strictEqual(actual, expected, `Didn't call the expected method`);
-    //   }
-    // });
-
-    test({
-      description: `should dispatch the expected actions for label 'Deposit'`,
-      assertions: (store) => {
-        __RewireAPI__.__set__('constructConvertEthToEthTokenTransaction', () => 'constructConvertEthToEthTokenTransaction');
-
-        const actual = store.dispatch(constructTransaction('Deposit'));
-
-        const expected = 'constructConvertEthToEthTokenTransaction';
-
-        assert.strictEqual(actual, expected, `Didn't call the expected method`);
-      }
-    });
-
-    test({
-      description: `should dispatch the expected actions for label 'registration'`,
-      assertions: (store) => {
-        __RewireAPI__.__set__('constructRegistrationTransaction', () => 'constructRegistrationTransaction');
-
-        const actual = store.dispatch(constructTransaction('registration'));
-
-        const expected = 'constructRegistrationTransaction';
-
-        assert.strictEqual(actual, expected, `Didn't call the expected method`);
-      }
-    });
-
-    test({
-      description: `should dispatch the expected actions for label 'withdraw'`,
-      assertions: (store) => {
-        __RewireAPI__.__set__('constructWithdrawTransaction', () => 'constructWithdrawTransaction');
-
-        const actual = store.dispatch(constructTransaction('withdraw'));
-
-        const expected = 'constructWithdrawTransaction';
-
-        assert.strictEqual(actual, expected, `Didn't call the expected method`);
-      }
-    });
-
-    test({
-      description: `should dispatch the expected actions for label 'Transfer' with trasnactionHash in state`,
-      state: {
-        transactionsData: {
-          '0xHASH': {}
-        }
-      },
-      assertions: (store) => {
-        const actual = store.dispatch(constructTransaction('Transfer', {
-          transactionHash: '0xHASH'
-        }));
-
-        const expected = null;
-
-        assert.strictEqual(actual, expected, `Didn't return the expected value`);
-      }
-    });
-
-    test({
-      description: `should dispatch the expected actions for label 'Transfer' without trasnactionHash in state`,
-      state: {
-        transactionsData: {},
-        loginAccount: {}
-      },
-      assertions: (store) => {
-        __RewireAPI__.__set__('constructTransferTransaction', () => 'constructTransferTransaction');
-
-        const actual = store.dispatch(constructTransaction('Transfer', {
-          transactionHash: '0xHASH'
-        }));
-
-        const expected = 'constructTransferTransaction';
-
-        assert.strictEqual(actual, expected, `Didn't call the expected method`);
-      }
-    });
-
-    test({
-      description: `should dispatch the expected actions for label 'CreateMarket' without description in log`,
-      assertions: (store) => {
-        __RewireAPI__.__set__('constructCreateMarketTransaction', () => 'constructCreateMarketTransaction');
-
-        const actual = store.dispatch(constructTransaction('CreateMarket', {
-          description: 'testing'
-        }));
-
-        const expected = 'constructCreateMarketTransaction';
-
-        assert.strictEqual(actual, expected, `Didn't call the expected method`);
-      }
-    });
-
-    test({
-      description: `should dispatch the expected actions for label 'CreateMarket' without description in returned market`,
-      assertions: (store) => {
-        __RewireAPI__.__set__('loadDataForMarketTransaction', () => dispatch => ({}));
-
-        const actual = store.dispatch(constructTransaction('CreateMarket', {}));
-
-        const expected = undefined;
-
-        assert.strictEqual(actual, expected, `Didn't return the expected value`);
-      }
-    });
-
-    test({
-      description: `should dispatch the expected actions for label 'CreateMarket' with description in returned market`,
-      assertions: (store) => {
-        __RewireAPI__.__set__('loadDataForMarketTransaction', () => dispatch => ({
-          description: 'testing'
-        }));
-        __RewireAPI__.__set__('constructCreateMarketTransaction', () => 'constructCreateMarketTransaction');
-
-        const actual = store.dispatch(constructTransaction('CreateMarket', {}));
-
-        const expected = 'constructCreateMarketTransaction';
-
-        assert.strictEqual(actual, expected, `Didn't call the expected method`);
-      }
-    });
-
-    test({
-      description: `should dispatch the expected actions for label 'Payout' without description in returned market`,
-      assertions: (store) => {
-        __RewireAPI__.__set__('loadDataForMarketTransaction', () => dispatch => ({}));
-
-        const actual = store.dispatch(constructTransaction('Payout', {}));
-
-        const expected = undefined;
-
-        assert.strictEqual(actual, expected, `Didn't return the expected value`);
-      }
-    });
-
-    test({
-      description: `should dispatch the expected actions for label 'Payout' with description in returned market`,
-      assertions: (store) => {
-        __RewireAPI__.__set__('loadDataForMarketTransaction', () => dispatch => ({
-          description: 'testing'
-        }));
-        __RewireAPI__.__set__('constructMarketTransaction', sinon.stub().returns({
-          type: MOCK_ACTION_TYPES.CONSTRUCT_MARKET_TRANSACTION
-        }));
-
-        store.dispatch(constructTransaction('Payout', {}));
-
-        const actual = store.getActions();
-
-        const expected = [
-          {
-            type: MOCK_ACTION_TYPES.CONSTRUCT_MARKET_TRANSACTION
-          }
-        ];
-
-        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
-      }
-    });
-
-    test({
-      description: `should dispatch the expected actions for label 'SubmitReport' without aux`,
-      assertions: (store) => {
-        __RewireAPI__.__set__('loadDataForReportingTransaction', () => dispatch => undefined);
-
-        const actual = store.dispatch(constructTransaction('SubmitReport', {}));
-
-        const expected = undefined;
-
-        assert.strictEqual(actual, expected, `Didn't return the expected value`);
-      }
-    });
-
-    test({
-      description: `should dispatch the expected actions for label 'SubmitReport' with description in returned market`,
-      assertions: (store) => {
-        __RewireAPI__.__set__('loadDataForReportingTransaction', () => dispatch => ({}));
-        __RewireAPI__.__set__('constructReportingTransaction', sinon.stub().returns({
-          type: MOCK_ACTION_TYPES.CONSTRUCT_REPORTING_TRANSACTION
-        }));
-
-        store.dispatch(constructTransaction('SubmitReport', {}));
-
-        const actual = store.getActions();
-
-        const expected = [
-          {
-            type: MOCK_ACTION_TYPES.CONSTRUCT_REPORTING_TRANSACTION
-          }
-        ];
-
-        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
-      }
-    });
-
-    test({
-      description: `should dispatch the expected actions for default label`,
-      assertions: (store) => {
-        __RewireAPI__.__set__('constructDefaultTransaction', () => 'constructDefaultTransaction');
-
-        const actual = store.dispatch(constructTransaction(undefined));
-
-        const expected = 'constructDefaultTransaction';
-
-        assert.strictEqual(actual, expected, `Didn't call the expected method`);
       }
     });
   });

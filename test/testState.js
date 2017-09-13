@@ -53,6 +53,7 @@ const testState = {
     prettyAddress: '0xte...t123',
     linkText: 'testTesterson',
     prettyLoginID: 'test...reID',
+    ethTokens: 0,
     ether: 0,
     realEther: 0,
     rep: 0

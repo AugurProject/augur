@@ -88,7 +88,7 @@ export const selectClosePositionStatus = createSelector(
   }
 );
 
-// waits, then clears tradeIDs from closePositionTradeGroups
+// waits, then clears orderIds from closePositionTradeGroups
 // This will ultimately clear the outcome status and allow for the
 // user to try again if an action is available
 function delayClearTradeGroupIDs(marketID, outcomeID) {

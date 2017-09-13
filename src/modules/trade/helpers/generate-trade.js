@@ -76,11 +76,11 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, o
 
     tradeSummary: generateTradeSummary(generateTradeOrders(market, outcome, outcomeTradeInProgress)),
     updateTradeOrder: (shares, limitPrice, side) => store.dispatch(updateTradesInProgress(market.id, outcome.id, side, shares, limitPrice)),
-    totalSharesUpToOrder: (orderIndex, side) => totalSharesUpToOrder(market.id, outcome.id, side, orderIndex, orderBooks)
+    totalSharesUpToOrder: (orderIndex, side) => totalSharesUpToOrder(outcome.id, side, orderIndex, orderBooks)
   };
 }, { max: 5 });
 
-const totalSharesUpToOrder = memoize((marketID, outcomeID, side, orderIndex, orderBooks) => {
+const totalSharesUpToOrder = memoize((outcomeID, side, orderIndex, orderBooks) => {
   const { orderCancellation } = store.getState();
 
   const sideOrders = selectAggregateOrderBook(outcomeID, orderBooks, orderCancellation)[side === TRANSACTIONS_TYPES.BUY ? BIDS : ASKS];
@@ -125,9 +125,7 @@ export const generateTradeOrders = memoize((market, outcome, outcomeTradeInProgr
   return tradeActions.map((tradeAction) => {
     const numShares = speedomatic.bignum(tradeAction.shares);
     const costEth = speedomatic.bignum(tradeAction.costEth).abs();
-    const avgPrice = tradeAction.action === 'SHORT_SELL' ?
-      costEth.minus(numShares).dividedBy(numShares) :
-      speedomatic.bignum(costEth).dividedBy(speedomatic.bignum(numShares));
+    const avgPrice = speedomatic.bignum(costEth).dividedBy(speedomatic.bignum(numShares));
     const noFeePrice = market.type === 'scalar' ? outcomeTradeInProgress.limitPrice : tradeAction.noFeePrice;
     return {
       type: TRANSACTIONS_TYPES[tradeAction.action],

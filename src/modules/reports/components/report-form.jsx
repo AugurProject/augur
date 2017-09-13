@@ -14,6 +14,7 @@ export default class ReportForm extends Component {
     maxPrice: PropTypes.string,
     // reportableOutcomes: React.PropTypes.array,
     reportedOutcomeID: PropTypes.any,
+    amountToStake: PropTypes.any,
     isIndeterminate: PropTypes.bool,
     isReported: PropTypes.bool,
     onClickSubmit: PropTypes.func
@@ -26,6 +27,7 @@ export default class ReportForm extends Component {
       minPrice: props.minPrice,
       maxPrice: props.maxPrice,
       reportedOutcomeID: props.reportedOutcomeID,
+      amountToStake: props.amountToStake,
       isIndeterminate: props.isIndeterminate,
       isReported: props.isReported
     };
@@ -42,7 +44,8 @@ export default class ReportForm extends Component {
   handleOutcomeChange = e => this.setState({ reportedOutcomeID: e.target.value });
 
   handleSubmit() {
-    this.props.onClickSubmit(this.state.reportedOutcomeID, this.state.isIndeterminate, this.props.history);
+    // TODO add amount to stake to form
+    this.props.onClickSubmit(this.state.reportedOutcomeID, this.state.amountToStake, this.state.isIndeterminate, this.props.history);
     this.setState({ reportedOutcomeID: '', isIndeterminate: undefined, isReported: false });
   }
 

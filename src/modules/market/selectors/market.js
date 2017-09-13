@@ -204,7 +204,7 @@ export function assembleMarket(
 
       market.report = {
         ...marketReport,
-        onSubmitReport: (reportedOutcomeID, isIndeterminate, history) => dispatch(submitReport(market, reportedOutcomeID, isIndeterminate, history))
+        onSubmitReport: (reportedOutcomeID, amountToStake, isIndeterminate, history) => dispatch(submitReport(market, reportedOutcomeID, amountToStake, isIndeterminate, history))
       };
 
       market.outcomes = [];
