@@ -28,13 +28,13 @@ export const AuthLander = asyncComponent({
 
 export const AuthConnect = asyncComponent({
   moduleName: 'AuthConnect',
-  loader: () => import(/* webpackChunkName: 'auth-connect' */ 'modules/auth/components/connect/connect')
+  loader: () => import(/* webpackChunkName: 'auth-connect' */ 'modules/auth/containers/connect')
     .then(module => module.default)
 })
 
 export const AuthCreate = asyncComponent({
   moduleName: 'AuthCreate',
-  loader: () => import(/* webpackChunkName: 'auth-create' */ 'modules/auth/components/create/create')
+  loader: () => import(/* webpackChunkName: 'auth-create' */ 'modules/auth/containers/create')
     .then(module => module.default)
 })
 
