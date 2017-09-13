@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 
-import App from 'modules/app/container'
+import App from 'modules/app/containers/app'
 
 import AuthenticatedRoute from 'modules/routes/components/authenticated-route/authenticated-route'
 import makePath from 'modules/routes/helpers/make-path'

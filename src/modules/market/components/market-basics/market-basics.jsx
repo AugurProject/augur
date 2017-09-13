@@ -3,7 +3,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import MarketPreviewOutcomes from 'modules/market/components/market-preview-outcomes/market-preview-outcomes'
+import MarketOutcomesBinaryScalar from 'modules/market/components/market-outcomes-binary-scalar/market-outcomes-binary-scalar'
+import MarketOutcomesCategorical from 'modules/market/components/market-outcomes-categorical/market-outcomes-categorical'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import { MarketStatusOpen, MarketStatusReported, MarketStatusClosed } from 'modules/common/components/icons/icons'
 
@@ -58,7 +59,11 @@ const MarketBasics = (p) => {
         </h1>
 
         {(p.type === BINARY || p.type === SCALAR) &&
-          <MarketPreviewOutcomes outcomes={p.outcomes} min={p.minValue} max={p.maxValue} type={p.type} />
+          <MarketOutcomesBinaryScalar outcomes={p.outcomes} min={p.minValue} max={p.maxValue} type={p.type} />
+        }
+
+        {p.type === 'categorical' &&
+          <MarketOutcomesCategorical outcomes={p.outcomes} />
         }
       </div>
     </article>
