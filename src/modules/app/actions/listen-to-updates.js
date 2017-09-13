@@ -6,7 +6,7 @@ import { syncBranch } from 'modules/branch/actions/sync-branch';
 import { fillOrder } from 'modules/bids-asks/actions/update-order-book';
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import { updateOutcomePrice } from 'modules/markets/actions/update-outcome-price';
-import { claimProceeds } from 'modules/my-positions/actions/claim-proceeds';
+import claimProceeds from 'modules/my-positions/actions/claim-proceeds';
 import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
 import { updateMarketTopicPopularity } from 'modules/topics/actions/update-topics';
 import * as TYPES from 'modules/transactions/constants/types';

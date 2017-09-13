@@ -1,6 +1,7 @@
 import cancelOrder from 'modules/bids-asks/actions/cancel-order';
+import logError from 'utils/log-error';
 
-export const cancelOpenOrdersInClosedMarkets = () => (dispatch) => {
+const cancelOpenOrdersInClosedMarkets = (callback = logError) => (dispatch) => {
   const openOrders = require('modules/user-open-orders/selectors/open-orders');
   if (openOrders && openOrders.length) {
     const numMarketsWithOpenOrders = openOrders.length;
@@ -24,3 +25,5 @@ export const cancelOpenOrdersInClosedMarkets = () => (dispatch) => {
     }
   }
 };
+
+export default cancelOpenOrdersInClosedMarkets;

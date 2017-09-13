@@ -3,7 +3,7 @@ import { augur } from 'services/augurjs';
 import getReportingCycle from 'modules/branch/selectors/reporting-cycle';
 import { updateBranch } from 'modules/branch/actions/update-branch';
 import { updateAssets } from 'modules/auth/actions/update-assets';
-import { claimProceeds } from 'modules/my-positions/actions/claim-proceeds';
+import claimProceeds from 'modules/my-positions/actions/claim-proceeds';
 import logError from 'utils/log-error';
 
 // Synchronize front-end branch state with blockchain branch state.

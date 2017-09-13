@@ -2,12 +2,12 @@ import { each } from 'async';
 import { augur } from 'services/augurjs';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
-import { cancelOpenOrdersInClosedMarkets } from 'modules/user-open-orders/actions/cancel-open-orders-in-closed-markets';
+import cancelOpenOrdersInClosedMarkets from 'modules/user-open-orders/actions/cancel-open-orders-in-closed-markets';
 import selectWinningPositions from 'modules/my-positions/selectors/winning-positions';
 import noop from 'utils/noop';
 import logError from 'utils/log-error';
 
-export const claimProceeds = (callback = logError) => (dispatch, getState) => {
+const claimProceeds = (callback = logError) => (dispatch, getState) => {
   const { loginAccount } = getState();
   if (!loginAccount.address) return callback(null);
   const winningPositions = selectWinningPositions();
@@ -28,3 +28,5 @@ export const claimProceeds = (callback = logError) => (dispatch, getState) => {
   }
   dispatch(cancelOpenOrdersInClosedMarkets());
 };
+
+export default claimProceeds;
