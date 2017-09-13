@@ -2,12 +2,14 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import isEqual from 'lodash/isEqual'
 
-import FilterMarketState from 'modules/filter-sort/components/filter-market-state'
-import SortMarketParam from 'modules/filter-sort/components/sort-market-param'
+import FilterMarketState from 'modules/filter-sort/components/filter-market-state/filter-market-state'
+import SortMarketParam from 'modules/filter-sort/components/sort-market-param/sort-market-param'
 import FilterSearch from 'modules/filter-sort/components/filter-search'
 
 import filterByMarketFavorites from 'modules/filter-sort/helpers/filter-by-market-favorites'
 import filterByTags from 'modules/filter-sort/helpers/filter-by-tags'
+
+import Styles from 'modules/filter-sort/components/filter-sort-view/filter-sort-view.styles'
 
 export default class FilterSortView extends Component {
   static propTypes = {
@@ -132,18 +134,9 @@ export default class FilterSortView extends Component {
     const p = this.props
 
     return (
-      <article className="view-header filter-sort">
+      <article className={Styles.FilterSort}>
         {((!!p.filterByMarketState && !!p.currentReportingPeriod) || !!p.sortByMarketParam) &&
-          <div className="view-header-group">
-            {!!p.filterByMarketState && !!p.currentReportingPeriod &&
-              <FilterMarketState
-                location={p.location}
-                history={p.history}
-                items={p.items}
-                currentReportingPeriod={p.currentReportingPeriod}
-                updateFilter={marketStateItems => this.setState({ marketStateItems })}
-              />
-            }
+          <div className={Styles.FilterSort__wrapper}>
             {!!p.sortByMarketParam &&
               <SortMarketParam
                 location={p.location}
@@ -153,21 +146,30 @@ export default class FilterSortView extends Component {
                 updateSort={marketParamItems => this.setState({ marketParamItems })}
               />
             }
-          </div>
-        }
-
-          {!!p.filterBySearch &&
-            <div className="view-header-group">
-              <FilterSearch
+            {!!p.filterByMarketState && !!p.currentReportingPeriod &&
+              <FilterMarketState
                 location={p.location}
                 history={p.history}
                 items={p.items}
-                keys={p.searchKeys}
-                searchPlaceholder={p.searchPlaceholder}
-                updateFilter={searchItems => this.setState({ searchItems })}
+                currentReportingPeriod={p.currentReportingPeriod}
+                updateFilter={marketStateItems => this.setState({ marketStateItems })}
               />
-            </div>
-          }
+            }
+          </div>
+        }
+
+        {!!p.filterBySearch &&
+          <div className={Styles.FilterSort__wrapper}>
+            <FilterSearch
+              location={p.location}
+              history={p.history}
+              items={p.items}
+              keys={p.searchKeys}
+              searchPlaceholder={p.searchPlaceholder}
+              updateFilter={searchItems => this.setState({ searchItems })}
+            />
+          </div>
+        }
 
       </article>
     )
