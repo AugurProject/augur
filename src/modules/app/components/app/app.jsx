@@ -47,9 +47,6 @@ const MAIN_MENU = 'mainMenu'
 
 // TODO -- this component needs to be broken up and also restructured
 
-// get toggle working again (dummy data)
-// integrate real data
-
 export default class AppView extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
@@ -258,8 +255,6 @@ export default class AppView extends Component {
       // ensure origami fold-out moves perfectly with submenu
       origamiScalar = Math.max(0, (subMenu.scalar + mainMenu.scalar) - 1)
     }
-
-    // console.log('state -- ', s)
 
     return (
       <main className={Styles.App}>
