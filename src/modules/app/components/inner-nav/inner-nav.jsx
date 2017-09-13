@@ -147,12 +147,6 @@ export default class InnerNav extends Component {
 
     return (
       <ul className={classNames(Styles.InnerNav__menu, Styles['InnerNav__menu--main'])}>
-        <MenuItem isSelected={(!selectedCategory || selectedCategory === '')}>
-          <Link to={{ pathname: makePath(MARKETS) }}>
-            All Markets
-          </Link>
-        </MenuItem>
-
         {this.props.categories.map((item, index) => {
           const isSelected = item.topic === selectedCategory
           return (

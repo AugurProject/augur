@@ -5,7 +5,7 @@
 }
 
 .SideNav__nav {
-  border: 1px solid #553580;
+  border: 0.0625rem solid #553580;
   border-left: none;
   border-right: none;
   list-style: none;
@@ -13,7 +13,7 @@
   padding: 0;
 
   > li {
-    border-bottom: 1px solid #553580;
+    border-bottom: 0.0625rem solid #553580;
 
     &:last-child { border: none; }
   }
@@ -72,11 +72,11 @@
 @media @breakpoint-mobile {
   .SideNav {
     height: 100vh;
-    left: -200px;
-    padding-top: 70px;
+    left: -12.5rem;
+    padding-top: 2.8125rem;
     position: absolute;
     transition: left 0.2s ease-in-out;
-    width: 200px;
+    width: 12.5rem;
 
     &.mobileShow {
       left: 0;
@@ -85,25 +85,31 @@
 
   .SideNav__nav {
     border: none;
-    padding-left: 16px;
+    padding-left: 1rem;
 
     > li {
       border: none;
-      height: 70px;
       padding: 0;
-      text-align: left;
 
-      &:hover { background: none; }
+      a {
+        font-size: 0.75rem;
+        height: 3.75rem;
+        text-align: left;
 
-      svg {
-        vertical-align: middle;
-        width: 30px;
-      }
+        &:hover { background: none; }
 
-      span {
-        line-height: 70px;
-        padding-left: 18px;
-        position: static;
+        svg {
+          width: 1.875rem;
+        }
+
+        span {
+          display: inline-block;
+          font-weight: 400;
+          line-height: 3.75rem;
+          padding-left: 1rem;
+          position: static;
+          text-align: left;
+        }
       }
     }
   }

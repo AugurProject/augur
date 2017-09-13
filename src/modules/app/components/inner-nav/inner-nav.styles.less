@@ -11,7 +11,7 @@
   margin: 0;
   overflow-x: hidden;
   overflow-y: auto;
-  padding: 42px 0;
+  padding: 2.625rem 0;
   text-transform: uppercase;
 }
 
@@ -32,13 +32,13 @@
     cursor: pointer;
     display: block;
     font-size: 0.75rem;
-    letter-spacing: 0.3px;
-    line-height: 29px;
+    letter-spacing: 0.01875rem;
+    line-height: 1.8125rem;
     margin: 0;
-    min-height: 26px;
+    min-height: 1.625rem;
     outline: 0;
     overflow: hidden;
-    padding: 0 5px 0 11px;
+    padding: 0 0.3125rem 0 0.6875rem;
     text-align: inherit;
     text-decoration: none;
     text-overflow: ellipsis;
@@ -55,7 +55,7 @@
 }
 
 .InnerNav__menu-item--visible {
-  height: 26px;
+  height: 1.625rem;
   opacity: 1;
 
   a,
@@ -79,34 +79,48 @@
   left: 0;
   position: absolute;
   top: 0;
-  width: 110px;
+  width: 6.875rem;
   z-index: @above-all-content;
 }
 
 @media @breakpoint-mobile {
   .InnerNav {
-    left: -200px;
+    left: -12.5rem;
     overflow-x: hidden;
     transition: left 0.2s ease-in-out;
-    width: 200px;
+    width: 12.5rem;
 
     &.mobileShow {
       left: 0;
     }
   }
 
-  .InnerNav__menu-item {
-    font-size: 0.87rem;
-    line-height: 55px;
-    padding-left: 50px;
+  .InnerNav__menu {
+    padding-top: 2rem;
+  }
 
-    &:hover {
-      background: none;
+  .InnerNav__menu-item {
+    a,
+    button {
+      font-size: 0.75rem;
+      line-height: 3.4375rem;
+      padding-left: 2.5rem;
+
+      &:hover {
+        background: none;
+      }
     }
   }
 
+  .InnerNav__menu-item--visible {
+    height: 3.4375rem;
+  }
+
   .InnerNav__menu-item--selected:hover {
-    background: @color-lightpurple;
+    a,
+    button {
+      background: @color-lightpurple;
+    }
   }
 
   .InnerNav__menu--main,
@@ -116,7 +130,7 @@
   }
 
   .InnerNav__menu--submenu {
-    left: 200px;
+    left: 12.5rem;
     transition: left 0.2s ease-in-out;
     z-index: @mask;
   }
