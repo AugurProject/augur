@@ -1,0 +1,21 @@
+@import '~assets/styles/shared.less';
+
+.Dropdown {
+  color: @color-lightgray;
+  cursor: pointer;
+  display: flex;
+  position: relative;
+}
+
+.Dropdown__angle-down {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.Dropdown__select {
+  &:extend(.caps--medium);
+
+  padding: 0 0.7rem 0 0;
+}

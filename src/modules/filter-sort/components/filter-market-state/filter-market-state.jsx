@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import Dropdown from 'modules/common/components/dropdown'
+import Dropdown from 'modules/common/components/dropdown/dropdown'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 import makeQuery from 'modules/routes/helpers/make-query'
