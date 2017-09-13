@@ -10,6 +10,9 @@ import isEqual from 'lodash/isEqual'
 
 import { SORT_MARKET_PARAM, SORT_MARKET_ORDER_PARAM } from 'modules/routes/constants/param-names'
 
+import Styles from 'modules/filter-sort/components/sort-market-param/sort-market-param.styles'
+// import Styles_FA from 'assets/styles/_typ_font-awesome.css'
+
 export default class SortMarketParam extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
@@ -134,7 +137,7 @@ export default class SortMarketParam extends Component {
     const s = this.state
 
     return (
-      <article className="market-sort-param companion-fields">
+      <article className={Styles.SortMarketParam}>
         <Dropdown
           className="companion-field"
           default={s.selectedMarketParam}
@@ -142,7 +145,7 @@ export default class SortMarketParam extends Component {
           onChange={selectedMarketParam => this.setState({ selectedMarketParam })}
         />
         <button
-          className="unstyled"
+          className={Styles.SortMarketParam__order}
           onClick={() => this.setState({ selectedSort: !s.selectedSort })}
         >
           {s.selectedSort ? <i className="fa fa-sort-amount-desc" /> : <i className="fa fa-sort-amount-asc" />}
