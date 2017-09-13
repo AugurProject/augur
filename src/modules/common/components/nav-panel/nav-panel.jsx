@@ -5,17 +5,16 @@ import classNames from 'classnames'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 import makeQuery from 'modules/routes/helpers/make-query'
-import { CONNECT_NAV } from 'modules/routes/constants/param-names'
 
 import Styles from 'modules/common/components/nav-panel/nav-panel.styles'
 
-function makeSearch(location, param, isItemDefault) {
+function makeSearch(location, param, value, isItemDefault) {
   const updatedSearch = parseQuery(location.search)
 
   if (isItemDefault) {
-    delete updatedSearch[CONNECT_NAV]
+    delete updatedSearch[param]
   } else {
-    updatedSearch[CONNECT_NAV] = param
+    updatedSearch[param] = value
   }
 
   return makeQuery(updatedSearch)
@@ -38,7 +37,7 @@ export default function NavPanel(p) {
                 }
               )}
               to={{
-                search: makeSearch(p.location, item.param, item.default)
+                search: makeSearch(p.location, p.param, item.param, item.default)
               }}
             >
               <div className={Styles.NavPanel__icon}>
