@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
-import MarketsHeader from 'modules/markets/components/markets-header'
+import MarketsHeader from 'modules/markets/components/markets-header/markets-header'
 import MarketsList from 'modules/markets/components/markets-list'
 import Branch from 'modules/branch/components/branch'
 

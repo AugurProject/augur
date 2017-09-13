@@ -12,6 +12,8 @@ import parsePath from 'modules/routes/helpers/parse-path'
 import { CREATE_MARKET, MARKETS, FAVORITES } from 'modules/routes/constants/views'
 import { TOPIC_PARAM_NAME } from 'modules/routes/constants/param-names'
 
+import Styles from 'modules/markets/components/markets-header/markets-header.styles'
+
 export default class MarketsHeader extends Component {
   static propTypes = {
     isLogged: PropTypes.bool.isRequired,
@@ -82,32 +84,14 @@ export default class MarketsHeader extends Component {
     const s = this.state
 
     return (
-      <article>
-        <div className="view-header markets-header">
-          <div className="view-header-group">
-            <h2 className={classNames({ capitalized: s.capitalizeTitle })}>
-              {s.headerTitle}
-            </h2>
-          </div>
-          <div className="view-header-group">
-            {p.isLogged &&
-              <Link
-                to={makePath(CREATE_MARKET)}
-                className="button imperative navigational"
-                disabled={!p.isLogged}
-              >
-                + Create New Market
-              </Link>
-            }
-          </div>
-        </div>
+      <article className={Styles.MarketsHeader}>
+        <h1 className={Styles.MarketsHeader__heading}>{s.headerTitle}</h1>
         <FilterSort
           items={p.markets}
           updateFilteredItems={p.updateFilteredItems}
           filterByMarketFavorites={s.filterByMarketFavorites}
           searchPlaceholder="Search Markets"
           searchKeys={this.searchKeys}
-          filterBySearch
           filterByMarketState
           sortByMarketParam
           filterByTags
