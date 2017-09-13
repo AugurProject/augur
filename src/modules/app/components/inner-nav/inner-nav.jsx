@@ -25,6 +25,7 @@ export default class InnerNav extends Component {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     isMobile: PropTypes.bool.isRequired,
+    mobileCategoryClick: PropTypes.func.isRequired,
     mobileMenuState: PropTypes.number.isRequired,
     subMenuScalar: PropTypes.number.isRequired
   }
@@ -167,6 +168,7 @@ export default class InnerNav extends Component {
                     [TOPIC_PARAM_NAME]: item.topic
                   })
                 }}
+                onClick={() => { if (this.props.isMobile) this.props.mobileCategoryClick() }}
               >
                 {item.topic}
               </Link>

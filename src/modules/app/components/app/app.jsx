@@ -74,6 +74,7 @@ export default class AppView extends Component {
       {
         title: 'Markets',
         icon: NavMarketsIcon,
+        mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.CATEGORIES_OPEN }),
         route: MARKETS
       },
       {
@@ -109,14 +110,8 @@ export default class AppView extends Component {
     const selectedCategory = parseQuery(this.props.location.search)[TOPIC_PARAM_NAME]
 
     if (currentPath === MARKETS) {
-      if (this.props.isMobile && !selectedCategory) {
-        this.setState({ mobileMenuState: mobileMenuStates.CATEGORIES_OPEN })
-      } else if (this.props.isMobile && selectedCategory) {
-        this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN })
-      } else {
-        this.toggleMenuTween(MAIN_MENU, true)
-        if (selectedCategory) this.toggleMenuTween(SUB_MENU, true)
-      }
+      this.toggleMenuTween(MAIN_MENU, true)
+      if (selectedCategory) this.toggleMenuTween(SUB_MENU, true)
     }
   }
 
@@ -129,9 +124,7 @@ export default class AppView extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.isMobile !== nextProps.isMobile) {
       this.setState({
-        mobileMenuState: mobileMenuStates.CLOSED,
-        mainMenu: { scalar: 0, open: false },
-        subMenu: { scalar: 0, open: false }
+        mobileMenuState: mobileMenuStates.CLOSED
       })
     }
 
@@ -143,31 +136,19 @@ export default class AppView extends Component {
 
       // navigate to markets page
       if (lastPath !== MARKETS && nextPath === MARKETS) {
-        if (this.props.isMobile && !selectedCategory) {
-          this.setState({ mobileMenuState: mobileMenuStates.CATEGORIES_OPEN })
-        } else if (this.props.isMobile && selectedCategory) {
-          this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN })
-        } else {
-          this.toggleMenuTween(MAIN_MENU, true)
-        }
+        this.toggleMenuTween(MAIN_MENU, true)
         this.setState({ keywordState: { loaded: true, openOnLoad: false } })
       }
 
       // on markets page, new category selected
       if (nextPath === MARKETS && selectedCategory) {
-        if (this.props.isMobile) {
-          this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN })
-        } else {
-          this.toggleMenuTween(SUB_MENU, true)
-        }
+        this.toggleMenuTween(SUB_MENU, true)
       }
 
       // navigate away from markets page
       if (lastPath === MARKETS && nextPath !== MARKETS) {
-        if (!this.props.isMobile) {
-          this.toggleMenuTween(MAIN_MENU, false)
-          this.toggleMenuTween(SUB_MENU, false)
-        }
+        this.toggleMenuTween(MAIN_MENU, false)
+        this.toggleMenuTween(SUB_MENU, false)
         this.setState({ keywordState: { loaded: false, openOnLoad: true } })
       }
     }
@@ -316,6 +297,7 @@ export default class AppView extends Component {
           >
             <InnerNav
               isMobile={p.isMobile}
+              mobileCategoryClick={() => this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN })}
               mobileMenuState={s.mobileMenuState}
               subMenuScalar={subMenu.scalar}
               categories={p.categories}
