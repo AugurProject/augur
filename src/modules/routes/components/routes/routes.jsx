@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 
-import App from 'modules/app/container'
+import App from 'modules/app/containers/app'
 
 import asyncComponent from 'modules/common/components/async-component'
 import AuthenticatedRoute from 'modules/routes/components/authenticated-route/authenticated-route'
@@ -82,7 +82,7 @@ const Routes = p => (
       <AuthenticatedRoute path={makePath(VIEWS.ACCOUNT)} component={Account} />
       <AuthenticatedRoute path={makePath(VIEWS.TRANSACTIONS)} component={Transactions} />
       <AuthenticatedRoute path={makePath(VIEWS.CREATE_MARKET)} component={CreateMarket} />
-      <Redirect to={makePath(VIEWS.TOPICS)} />
+      <Redirect to={makePath(VIEWS.CATEGORIES)} />
     </Switch>
   </App>
 )

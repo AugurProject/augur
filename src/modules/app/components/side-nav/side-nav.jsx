@@ -58,40 +58,35 @@ export default class SideNav extends Component {
     this.setState({ selectedItem: item, selectedKey: item.title })
   }
 
-  renderSidebarMenu() {
+  render() {
     const mobile = this.props.isMobile
     const logged = this.props.isLogged
 
     const accessFilteredMenu = this.props.menuData.filter(item => !(item.requireLogin && !logged))
 
     return (
-      <ul className={Styles.SideNav__nav}>
-        {accessFilteredMenu.map((item, index) => {
-          const Icon = item.icon
-          const selected = !mobile && this.isCurrentItem(item)
-
-          return (
-            <li
-              className={classNames({ [`${Styles.selected}`]: selected })}
-              key={item.title}
-            >
-              <Link
-                to={makePath(item.route)}
-              >
-                <Icon />
-                <span className="item-title">{item.title}</span>
-              </Link>
-            </li>
-          )
-        })}
-      </ul>
-    )
-  }
-
-  render() {
-    return (
       <aside className={classNames(Styles.SideNav, { [`${Styles.mobileShow}`]: this.props.mobileShow })}>
-        {this.renderSidebarMenu()}
+        <ul className={Styles.SideNav__nav}>
+          {accessFilteredMenu.map((item, index) => {
+            const Icon = item.icon
+            const selected = !mobile && this.isCurrentItem(item)
+
+            return (
+              <li
+                className={classNames({ [Styles['SideNav__item--selected']]: selected })}
+                key={item.title}
+              >
+                <Link
+                  to={makePath(item.route)}
+                  onClick={() => { if (mobile) item.mobileClick() }}
+                >
+                  <Icon />
+                  <span className="item-title">{item.title}</span>
+                </Link>
+              </li>
+            )
+          })}
+        </ul>
       </aside>
     )
   }
