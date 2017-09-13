@@ -1,5 +1,3 @@
-/* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance as order remains the same
-
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
@@ -13,7 +11,7 @@ const CategoricalOutcome = ({ className, outcome }) => (
     <span className={Styles['MarketOutcomesCategorical__outcome-name']}>{outcome.name}</span>
     <span className={Styles['MarketOutcomesCategorical__outcome-value']}>{getValue(outcome, 'lastPricePercent.full')}</span>
   </div>
-  )
+)
 
 class MarketOutcomesCategorical extends Component {
   constructor(props) {
