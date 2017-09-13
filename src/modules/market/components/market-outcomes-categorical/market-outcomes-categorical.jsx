@@ -8,8 +8,12 @@ import Styles from 'modules/market/components/market-outcomes-categorical/market
 
 const CategoricalOutcome = ({ className, outcome }) => (
   <div className={className || Styles.MarketOutcomesCategorical__outcome}>
-    <span className={Styles['MarketOutcomesCategorical__outcome-name']}>{outcome.name}</span>
-    <span className={Styles['MarketOutcomesCategorical__outcome-value']}>{getValue(outcome, 'lastPricePercent.full')}</span>
+    <span className={Styles['MarketOutcomesCategorical__outcome-name']}>
+      {outcome.name}
+    </span>
+    <span className={Styles['MarketOutcomesCategorical__outcome-value']}>
+      {getValue(outcome, 'lastPricePercent.full')}
+    </span>
   </div>
 )
 
@@ -46,17 +50,38 @@ class MarketOutcomesCategorical extends Component {
     }
 
     return (
-      <div className={Styles.MarketOutcomesCategorical} style={outcomeWrapperStyle}>
+      <div
+        className={Styles.MarketOutcomesCategorical}
+        style={outcomeWrapperStyle}
+      >
         { outcomes.length > 0 &&
-          <CategoricalOutcome className={Styles['MarketOutcomesCategorical__height-sentinel']} outcome={outcomes[0]} />
+          <CategoricalOutcome
+            className={Styles['MarketOutcomesCategorical__height-sentinel']}
+            outcome={outcomes[0]}
+          />
         }
-        <div className={classNames(Styles['MarketOutcomesCategorical__outcomes-container'], { [`${Styles['show-more']}`]: displayShowMore })}>
+        <div
+          className={classNames(Styles['MarketOutcomesCategorical__outcomes-container'], {
+            [`${Styles['show-more']}`]: displayShowMore
+          })}
+        >
           { displayShowMore &&
-            <button className={Styles['MarketOutcomesCategorical__show-more']} onClick={this.showMore}>{ showMoreText }</button>
+            <button
+              className={Styles['MarketOutcomesCategorical__show-more']}
+              onClick={this.showMore}
+            >
+              { showMoreText }
+            </button>
           }
-          <div className={Styles.MarketOutcomesCategorical__outcomes} ref={(outcomeTable) => { this.outcomeTable = outcomeTable }}>
+          <div
+            ref={(outcomeTable) => { this.outcomeTable = outcomeTable }}
+            className={Styles.MarketOutcomesCategorical__outcomes}
+          >
             {outcomes.length > 0 && outcomes.map(outcome => (
-              <CategoricalOutcome key={outcome.id} outcome={outcome} />
+              <CategoricalOutcome
+                key={outcome.id}
+                outcome={outcome}
+              />
             ))}
           </div>
         </div>
@@ -66,10 +91,7 @@ class MarketOutcomesCategorical extends Component {
 }
 
 MarketOutcomesCategorical.propTypes = {
-  outcomes: PropTypes.array.isRequired,
-  max: PropTypes.string,
-  min: PropTypes.string,
-  type: PropTypes.string
+  outcomes: PropTypes.array.isRequired
 }
 
 CategoricalOutcome.propTypes = {

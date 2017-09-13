@@ -28,9 +28,16 @@ const MarketOutcomes = (p) => {
   return (
     <div className={Styles.MarketOutcomes}>
       <div className={Styles.MarketOutcomes__range} />
-      <span className={Styles.MarketOutcomes__min}>{minValue}</span>
-      <span className={Styles.MarketOutcomes__max}>{maxValue}</span>
-      <span className={Styles.MarketOutcomes__current} style={currentValuePosition}>
+      <span className={Styles.MarketOutcomes__min}>
+        {minValue}
+      </span>
+      <span className={Styles.MarketOutcomes__max}>
+        {maxValue}
+      </span>
+      <span
+        className={Styles.MarketOutcomes__current}
+        style={currentValuePosition}
+      >
         <span className={Styles['MarketOutcomes__current-value']}>
           {getValue(p.outcomes[0], 'lastPricePercent.formatted')}
         </span>
