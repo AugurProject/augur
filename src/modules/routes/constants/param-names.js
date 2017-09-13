@@ -9,6 +9,7 @@ export const PAGINATION_PARAM_NAME = 'page'
 
 // Auth
 export const CONNECT_NAV = 'connect-nav'
+export const CREATE_NAV = 'create-nav'
 
 // Unorg'd
 export const TAGS_PARAM_NAME = 'tags'
