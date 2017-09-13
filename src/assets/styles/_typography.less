@@ -15,12 +15,14 @@ h1 {
 //  VARS
 @din-pro: 'DINPro', sans-serif;
 
+// TODO -- full review of applicable font sizes
 //    Font Sizes (based on 16px base)
 @font-size-extra-small: 0.625rem; // 10px
 @font-size-small: 0.75rem; // 12px
 @font-size-medium: 0.875rem; // 14px
 @font-size-normal: 1rem; // 16px
 @font-size-large: 1.125rem; // 18px
+@font-size-rather-large: 1.5rem; // 24px
 @font-size-extra-large: 1.875rem; // 30px
 @font-size-massive: 2.43rem; // 39px
 
@@ -74,6 +76,6 @@ h1 {
 }
 
 .number--large {
-  font-size: 1.5rem; // 24px
-  line-height: 1.5rem;
+  font-size: @font-size-rather-large;
+  line-height: @font-size-rather-large;
 }
