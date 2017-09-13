@@ -155,18 +155,20 @@ export default class FilterSortView extends Component {
             }
           </div>
         }
-        <div className="view-header-group">
+
           {!!p.filterBySearch &&
-            <FilterSearch
-              location={p.location}
-              history={p.history}
-              items={p.items}
-              keys={p.searchKeys}
-              searchPlaceholder={p.searchPlaceholder}
-              updateFilter={searchItems => this.setState({ searchItems })}
-            />
+            <div className="view-header-group">
+              <FilterSearch
+                location={p.location}
+                history={p.history}
+                items={p.items}
+                keys={p.searchKeys}
+                searchPlaceholder={p.searchPlaceholder}
+                updateFilter={searchItems => this.setState({ searchItems })}
+              />
+            </div>
           }
-        </div>
+
       </article>
     )
   }

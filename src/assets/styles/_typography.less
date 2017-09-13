@@ -6,10 +6,15 @@
 // site-wide typographic rules + values
 
 h1 {
-  font-size: 1.875rem;
+  font-size: 1.875rem; // 30px
   font-weight: 400;
   line-height: 2.1875rem;
   margin-bottom: 1.25rem;
+}
+
+.h1--heavy {
+  font-weight: 500;
+  text-transform: uppercase;
 }
 
 //  VARS
@@ -35,6 +40,7 @@ h1 {
   &:extend(.caps);
 
   font-size: @font-size-extra-small;
+  font-weight: 400;
   line-height: @font-size-extra-small;
 }
 
@@ -49,6 +55,7 @@ h1 {
   &:extend(.caps);
 
   font-size: @font-size-medium;
+  font-weight: 400;
   line-height: @font-size-medium;
 }
 
