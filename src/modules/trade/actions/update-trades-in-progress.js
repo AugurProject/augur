@@ -4,6 +4,7 @@ import { BUY, SELL } from 'modules/transactions/constants/types';
 import { TWO } from 'modules/trade/constants/numbers';
 import { SCALAR } from 'modules/markets/constants/market-types';
 
+import { loadAccountPositions } from 'modules/my-positions/actions/load-account-positions';
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from 'modules/bids-asks/helpers/select-order-book';
 import { selectMarket } from 'modules/market/selectors/market';
 import logError from 'utils/log-error';
@@ -109,7 +110,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
     // trade actions
     if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.address) {
       const market = selectMarket(marketID);
-      augur.api.MarketFetcher.getPositionInMarket({ _market: marketID, _account: loginAccount.address }, (err, positionInMarket) => {
+      dispatch(loadAccountPositions({ market: marketID }, (err, positionInMarket) => {
         if (err) return dispatch({ type: UPDATE_TRADE_IN_PROGRESS, data: { marketID, outcomeID, details: newTradeDetails } });
         const simulatedTrade = augur.trading.simulation.simulateTrade({
           orderType: newTradeDetails.side === BUY ? 0 : 1,
@@ -131,7 +132,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
           data: { marketID, outcomeID, details: simulatedTrade }
         });
         callback(null, { ...newTradeDetails, ...simulatedTrade });
-      });
+      }));
     } else {
       dispatch({
         type: UPDATE_TRADE_IN_PROGRESS,

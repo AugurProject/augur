@@ -26,7 +26,7 @@ export const loadMarketDetails = (marketID, callback = logError) => dispatch => 
     if (err) return callback(err);
     dispatch(loadAccountTrades({ market: marketID }, (err) => {
       if (err) return callback(err);
-      dispatch(loadPriceHistory(marketID, (err) => {
+      dispatch(loadPriceHistory({ market: marketID }, (err) => {
         if (err) return callback(err);
         dispatch(removeMarketLoading(marketID));
         callback(null);
