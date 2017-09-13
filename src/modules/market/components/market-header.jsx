@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Dropdown from 'modules/common/components/dropdown'
+import Dropdown from 'modules/common/components/dropdown/dropdown'
 import MarketProperties from 'modules/market/components/market-properties/market-properties'
 import Spinner from 'modules/common/components/spinner'
 

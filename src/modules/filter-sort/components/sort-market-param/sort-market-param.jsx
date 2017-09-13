@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
-import Dropdown from 'modules/common/components/dropdown'
+import Dropdown from 'modules/common/components/dropdown/dropdown'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 import makeQuery from 'modules/routes/helpers/make-query'
@@ -142,18 +143,21 @@ export default class SortMarketParam extends Component {
 
     return (
       <article className={Styles.SortMarketParam}>
+        <button
+          className={Styles.SortMarketParam__order}
+          onClick={() => this.setState({ selectedSort: !s.selectedSort })}
+        >
+          {s.selectedSort ?
+            <i className={classNames(Styles.fa, Styles['fa-sort-amount-desc'])} /> :
+            <i className={classNames(Styles.fa, Styles['fa-sort-amount-asc'])} />
+          }
+        </button>
         <Dropdown
           className="companion-field"
           default={s.selectedMarketParam}
           options={this.marketSortParams}
           onChange={selectedMarketParam => this.setState({ selectedMarketParam })}
         />
-        <button
-          className={Styles.SortMarketParam__order}
-          onClick={() => this.setState({ selectedSort: !s.selectedSort })}
-        >
-          {s.selectedSort ? <i className="fa fa-sort-amount-desc" /> : <i className="fa fa-sort-amount-asc" />}
-        </button>
       </article>
     )
   }
