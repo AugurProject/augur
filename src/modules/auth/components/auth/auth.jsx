@@ -1,63 +1,23 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import { Link } from 'react-router-dom'
-
-import GraphBG from 'modules/common/components/graph-background/graph-background'
+import { Route } from 'react-router-dom'
 
 import makePath from 'modules/routes/helpers/make-path'
 
-import { CONNECT, CREATE } from 'modules/routes/constants/views'
+import { AUTHENTICATION, CONNECT, CREATE } from 'modules/routes/constants/views'
+import { AuthLander, AuthConnect, AuthCreate } from 'modules/routes/constants/components'
 
 import Styles from 'modules/auth/components/auth/auth.styles'
 
-export default function AuthLander(p) {
+export default function Auth(p) {
   return (
-    <section className={Styles.AuthView}>
+    <section className={Styles.Auth}>
       <Helmet>
         <title>Authentication</title>
       </Helmet>
-      <GraphBG />
-      <div className={Styles.AuthView__content}>
-        <div className={Styles.AuthView__spacer}>
-          <h1 className={Styles.AuthView__header}>Link an ethereum account {!p.isMobile && <br />} to bet on anything from anywhere</h1>
-        </div>
-        <div className={Styles.AuthView__actions}>
-
-          <Link
-            className={Styles.AuthView__button}
-            to={makePath(CONNECT)}
-          >
-            connect account
-          </Link>
-          <Link
-            className={Styles.AuthView__button}
-            to={makePath(CREATE)}
-          >
-            create account
-          </Link>
-        </div>
-        <div className={Styles.AuthView__spacer} />
-        <div className={Styles.AuthView__footer}>
-          <a
-            href="https://augur.net/terms.txt"
-            target="blank"
-          >
-            Terms & Conditions
-          </a>
-          <a
-            href="http://terms.augur.net/"
-            target="blank"
-          >
-            Privacy Policy
-          </a>
-          <a
-            href="https://augur.net/license.txt"
-            target="blank"
-          >
-            Licensing Agreement
-          </a>
-        </div>
-      </div>
+      <Route exact path={makePath(AUTHENTICATION)} component={AuthLander} />
+      <Route path={makePath([AUTHENTICATION, CONNECT])} component={AuthConnect} />
+      <Route path={makePath([AUTHENTICATION, CREATE])} component={AuthCreate} />
     </section>
   )
 }

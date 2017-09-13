@@ -1,22 +1,52 @@
 @import '~assets/styles/shared.less';
 
-.AuthLogin__id {
-  z-index: 40;
+.Connect {
+  &:extend(.view);
+
+  align-items: center;
+  display: flex;
+  flex-direction: column;
 }
 
-.AuthLogin__password {
-  border-top: 0;
-  z-index: 30;
+.Connect--constrained {
+  &:extend(.view--constrained);
 
-  input[disabled] {
-    background-color: @color-gray-light;
+  align-items: flex-start;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+}
+
+.Connect__header {
+  h1 {
+    &:extend(.caps);
+
+    color: @color-text-light;
+  }
+
+  align-items: flex-end;
+  display: flex;
+  flex: 1;
+}
+
+.Connect__content {
+  display: flex;
+  min-height: 500px;
+  width: 100%;
+
+  @media @breakpoint-mobile {
+    & {
+      flex-direction: column;
+    }
   }
 }
 
-.AuthLogin__actions {
-  display: flex;
-  flex-direction: column;
-  height: 0;
-  opacity: 0;
-  z-index: 20;
+.Connect__connections {
+  background: @color-white;
+  flex: 1;
+}
+
+.Connect__faq {
+  flex: 1;
 }

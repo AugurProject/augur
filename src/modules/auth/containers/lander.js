@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import AuthLander from 'modules/auth/components/auth/auth'
+import AuthLander from 'modules/auth/components/lander/lander'
 
 // import { register, setupAndFundNewAccount } from 'modules/auth/actions/register'
 // import { login } from 'modules/auth/actions/login'
