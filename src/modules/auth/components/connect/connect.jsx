@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import NavPanel from 'modules/common/containers/nav-panel'
+import NavPanel from 'modules/common/components/nav-panel/nav-panel'
 import Airbitz from 'modules/auth/containers/airbitz'
 import Ledger from 'modules/auth/containers/ledger'
 import Uport from 'modules/auth/containers/uport'
