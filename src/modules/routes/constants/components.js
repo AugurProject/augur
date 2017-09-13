@@ -16,7 +16,25 @@ export const Markets = asyncComponent({
 
 export const Auth = asyncComponent({
   moduleName: 'Auth',
-  loader: () => import(/* webpackChunkName: 'auth' */ 'modules/auth/containers/auth')
+  loader: () => import(/* webpackChunkName: 'auth' */ 'modules/auth/components/auth/auth')
+    .then(module => module.default)
+})
+
+export const AuthLander = asyncComponent({
+  moduleName: 'AuthLander',
+  loader: () => import(/* webpackChunkName: 'auth-lander' */ 'modules/auth/containers/lander')
+    .then(module => module.default)
+})
+
+export const AuthConnect = asyncComponent({
+  moduleName: 'AuthConnect',
+  loader: () => import(/* webpackChunkName: 'auth-connect' */ 'modules/auth/components/connect/connect')
+    .then(module => module.default)
+})
+
+export const AuthCreate = asyncComponent({
+  moduleName: 'AuthCreate',
+  loader: () => import(/* webpackChunkName: 'auth-create' */ 'modules/auth/components/create/create')
     .then(module => module.default)
 })
 
