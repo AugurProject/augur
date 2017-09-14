@@ -7,14 +7,6 @@
   justify-content: center;
 }
 
-.Auth__sub {
-  &:extend(.view);
-
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-}
-
 .Auth--constrained {
   &:extend(.view--constrained);
 
@@ -32,9 +24,7 @@
     color: @color-text-light;
   }
 
-  align-items: flex-end;
-  display: flex;
-  flex: 1;
+  margin-top: 5rem;
 
   @media @breakpoint-mobile {
     padding-left: 2em;
@@ -55,9 +45,5 @@
 
 .Auth__connections {
   background: @color-white;
-  flex: 1;
-}
-
-.Auth__faq {
   flex: 1;
 }

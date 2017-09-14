@@ -3,3 +3,16 @@
 .Help {
   color: @color-text-light;
 }
+
+.Help__Header {
+  &:extend(.caps--large);
+
+  margin: 1em 0;
+}
+
+.Help__Definition {
+  span {
+    color: @color-text-light-muted;
+    display: block;
+  }
+}
