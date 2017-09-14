@@ -7,13 +7,20 @@
 .FilterSearch__input {
   .caps--medium;
 
+  align-items: center;
   color: @color-lightgray;
   display: flex;
 
+  > svg {
+    height: 0.75rem;
+    margin: 1px 0.75rem 0 0;
+    width: 0.75rem;
+  }
+
   > input {
-    color: inherit;
     background: none;
     border: none;
+    color: inherit;
     font-size: inherit;
     line-height: inherit;
     text-transform: none;
