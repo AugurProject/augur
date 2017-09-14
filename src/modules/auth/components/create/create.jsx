@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import NavPanel from 'modules/common/components/nav-panel/nav-panel'
+import Help from 'modules/auth/components/help/help'
 import Airbitz from 'modules/auth/containers/airbitz'
 import Uport from 'modules/auth/containers/uport'
 import Keystore from 'modules/auth/containers/keystore'
@@ -45,6 +46,7 @@ export default function AuthCreate(p) {
         <div className={Styles.Auth__faq}>
           <span>After</span>
         </div>
+        <Help />
       </div>
     </div>
   )
