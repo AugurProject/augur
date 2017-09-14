@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-import Input from 'modules/common/components/input'
+import Input from 'modules/common/components/input/input'
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
 import { NEW_MARKET_EXPIRY_SOURCE } from 'modules/create-market/constants/new-market-creation-steps'

@@ -1,0 +1,26 @@
+@import '~assets/styles/shared.less';
+
+.FilterSearch {
+  width: 100%;
+}
+
+.FilterSearch__input {
+  .caps--medium;
+
+  color: @color-lightgray;
+  display: flex;
+
+  > input {
+    color: inherit;
+    background: none;
+    border: none;
+    font-size: inherit;
+    line-height: inherit;
+    text-transform: none;
+
+    &::placeholder {
+      color: @color-lightgray;
+      text-transform: uppercase;
+    }
+  }
+}

@@ -35,6 +35,13 @@ a {
   text-decoration: inherit;
 }
 
+select,
+input {
+  &:focus {
+    outline: none;
+  }
+}
+
 select {
   appearance: none;
   background-color: transparent;
@@ -42,8 +49,8 @@ select {
   color: inherit;
   cursor: pointer;
   font-family: inherit;
+}
 
-  &:focus {
-    outline: none;
-  }
+input {
+  font-family: inherit;
 }

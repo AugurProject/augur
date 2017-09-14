@@ -1,9 +1,6 @@
 @import '~assets/styles/shared.less';
 
 .MarketsHeader {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
   padding: 2rem;
 }
 
@@ -14,8 +11,18 @@
   margin-bottom: 0;
 }
 
+.MarketsHeader__search {
+  margin-bottom: 4.5rem;
+}
+
+.MarketsHeader__wrapper {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
 @media @breakpoint-mobile-small {
-  .MarketsHeader {
+  .MarketsHeader__wrapper {
     display: block;
   }
 

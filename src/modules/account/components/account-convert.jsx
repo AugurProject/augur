@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-import Input from 'modules/common/components/input'
+import Input from 'modules/common/components/input/input'
 import EtherLogo from 'modules/common/components/ether-logo'
 import EtherTokenLogo from 'modules/common/components/ether-token-logo'
 

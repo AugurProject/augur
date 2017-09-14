@@ -4,7 +4,7 @@ import isEqual from 'lodash/isEqual'
 
 import FilterMarketState from 'modules/filter-sort/components/filter-market-state/filter-market-state'
 import SortMarketParam from 'modules/filter-sort/components/sort-market-param/sort-market-param'
-import FilterSearch from 'modules/filter-sort/components/filter-search'
+import FilterSearch from 'modules/filter-sort/components/filter-search/filter-search'
 
 import filterByMarketFavorites from 'modules/filter-sort/helpers/filter-by-market-favorites'
 import filterByTags from 'modules/filter-sort/helpers/filter-by-tags'

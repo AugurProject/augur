@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Input from 'modules/common/components/input'
+import Input from 'modules/common/components/input/input'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 import makeQuery from 'modules/routes/helpers/make-query'
@@ -10,6 +10,8 @@ import getValue from 'utils/get-value'
 import isEqual from 'lodash/isEqual'
 
 import { FILTER_SEARCH_PARAM } from 'modules/routes/constants/param-names'
+
+import Styles from 'modules/filter-sort/components/filter-search/filter-search.styles'
 
 // NOTE --  Currently the searchKeys can accomodate target's of type string and array
 export default class FilterSearch extends Component {
@@ -119,8 +121,9 @@ export default class FilterSearch extends Component {
     const s = this.state
 
     return (
-      <article className="filter-search" >
+      <article className={Styles.FilterSearch}>
         <Input
+          className={Styles.FilterSearch__input}
           isSearch
           isClearable
           placeholder={p.searchPlaceholder || 'Search'}

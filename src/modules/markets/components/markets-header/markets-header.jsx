@@ -81,17 +81,28 @@ export default class MarketsHeader extends Component {
 
     return (
       <article className={Styles.MarketsHeader}>
-        <h1 className={Styles.MarketsHeader__heading}>{s.headerTitle}</h1>
-        <FilterSort
-          items={p.markets}
-          updateFilteredItems={p.updateFilteredItems}
-          filterByMarketFavorites={s.filterByMarketFavorites}
-          searchPlaceholder="Search Markets"
-          searchKeys={this.searchKeys}
-          filterByMarketState
-          sortByMarketParam
-          filterByTags
-        />
+        <div className={Styles.MarketsHeader__search}>
+          <FilterSort
+            items={p.markets}
+            updateFilteredItems={p.updateFilteredItems}
+            filterByMarketFavorites={s.filterByMarketFavorites}
+            searchPlaceholder="Search"
+            searchKeys={this.searchKeys}
+            filterBySearch
+            filterByTags
+          />
+        </div>
+        <div className={Styles.MarketsHeader__wrapper}>
+          <h1 className={Styles.MarketsHeader__heading}>{s.headerTitle}</h1>
+          <FilterSort
+            items={p.markets}
+            updateFilteredItems={p.updateFilteredItems}
+            filterByMarketFavorites={s.filterByMarketFavorites}
+            filterByMarketState
+            sortByMarketParam
+            filterByTags
+          />
+        </div>
       </article>
     )
   }
