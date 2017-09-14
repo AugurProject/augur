@@ -1,12 +1,12 @@
 @import '~assets/styles/shared.less';
 
-.AuthView {
-  &:extend(.view);
-
+.Lander {
   display: flex;
+  height: 100%;
+  width: 100%;
 }
 
-.AuthView__content {
+.Lander__content {
   align-items: center;
   display: flex;
   flex: 1 0 auto;
@@ -17,12 +17,12 @@
   z-index: @default-z-index;
 }
 
-.AuthView__spacer {
+.Lander__spacer {
   display: flex;
   flex: 1 0 auto;
 }
 
-.AuthView__header {
+.Lander__header {
   .caps();
 
   align-items: center;
@@ -37,7 +37,7 @@
   }
 }
 
-.AuthView__actions {
+.Lander__actions {
   align-items: center;
   display: flex;
 
@@ -46,7 +46,7 @@
   }
 }
 
-.AuthView__button {
+.Lander__button {
   &:extend(.button--white);
   &:extend(.caps--extra-large);
 
@@ -60,7 +60,7 @@
   }
 }
 
-.AuthView__footer {
+.Lander__footer {
   color: @color-text-light;
   font-size: @font-size-large;
   margin-top: 1em;
@@ -75,7 +75,7 @@
     content: "|";
     padding: 0 0.5em;
 
-    @media @breakpoint-tablet {
+    @media @breakpoint-mobile-medium {
       content: "";
       padding: none;
     }
@@ -85,7 +85,7 @@
     content: "";
   }
 
-  @media @breakpoint-tablet {
+  @media @breakpoint-mobile-medium {
     & {
       display: flex;
       flex-direction: column;

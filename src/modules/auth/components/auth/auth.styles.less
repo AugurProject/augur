@@ -1,0 +1,60 @@
+@import '~assets/styles/shared.less';
+
+.Auth {
+  &:extend(.view);
+}
+
+.Auth__sub {
+  &:extend(.view);
+
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.Auth--constrained {
+  &:extend(.view--constrained);
+
+  align-items: flex-start;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+}
+
+.Auth__header {
+  h1 {
+    &:extend(.caps);
+
+    color: @color-text-light;
+  }
+
+  align-items: flex-end;
+  display: flex;
+  flex: 1;
+
+  @media @breakpoint-mobile {
+    padding-left: 2em;
+  }
+}
+
+.Auth__content {
+  display: flex;
+  min-height: 500px;
+  width: 100%;
+
+  @media @breakpoint-mobile {
+    & {
+      flex-direction: column;
+    }
+  }
+}
+
+.Auth__connections {
+  background: @color-white;
+  flex: 1;
+}
+
+.Auth__faq {
+  flex: 1;
+}

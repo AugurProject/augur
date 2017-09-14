@@ -1,5 +1,3 @@
-/* eslint-disable indent */
-
 // NOTE --  if a view is only accessible when logged in, be sure to add it
 //          to the `authenticated-views` array under app/constants
 
@@ -12,10 +10,15 @@ export const CREATE_MARKET = 'create-market'
 export const TRANSACTIONS = 'transactions'
 export const ACCOUNT = 'account'
 export const AUTHENTICATION = 'authentication'
+export const CONNECT = 'connect'
+export const CREATE = 'create'
 export const PORTFOLIO = 'portfolio'
-export const TOPICS = 'topics'
+export const CATEGORIES = 'categories'
 
-export const DEFAULT_VIEW = TOPICS
+export const DEFAULT_VIEW = CATEGORIES
+
+// NOTE -- if the view is conditionally displayed based on a param, it's value should be housed withint the resepective constant file
+// Most of these will be progressively being refactored out
 
 // SUB VIEWS
 //  Portfolio
@@ -37,10 +40,6 @@ export const MARKET_USER_DATA_NAV_OPEN_ORDERS = 'open-orders'
 export const ACCOUNT_DEPOSIT = 'deposit-funds'
 export const ACCOUNT_TRANSFER = 'transfer-funds'
 export const ACCOUNT_EXPORT = 'export-account'
-
-// Authentication
-export const SIGNUP = 'sign-up'
-export const LOGIN = 'login'
 
 // Dev only
 export const STYLE_SANDBOX = 'style-sandbox'

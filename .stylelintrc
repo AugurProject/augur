@@ -13,6 +13,7 @@
     "value-no-vendor-prefix": true,
     "declaration-block-no-duplicate-properties": true,
     "no-duplicate-selectors": true,
-    "plugin/no-browser-hacks": true
+    "plugin/no-browser-hacks": true,
+    # "declaration-block-trailing-semicolon": "never"
   }
 }
