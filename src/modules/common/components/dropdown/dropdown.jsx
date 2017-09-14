@@ -6,20 +6,17 @@ import Styles from 'modules/common/components/dropdown/dropdown.styles'
 
 const Dropdown = p => (
   <div className={Styles.Dropdown}>
-    <select
-      className={Styles.Dropdown__select}
-      onChange={(event) => { p.onChange(event.target.value) }}
-      defaultValue={p.default}
-    >
+    <span className={Styles.Dropdown__label}>{p.options[0].label}</span>
+    <ul className={Styles.Dropdown__list}>
       {p.options.map(option => (
-        <option
+        <li
           key={option.value}
           value={option.value}
         >
           {option.label}
-        </option>
+        </li>
       ))}
-    </select>
+    </ul>
     <i className={classNames(Styles['Dropdown__angle-down'], Styles.fa, Styles['fa-angle-down'])} />
   </div>
 )
