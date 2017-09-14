@@ -77,8 +77,8 @@ export default class Help extends Component {
                     leave: Styles.Help__DefinitionLeave,
                     leaveActive: Styles.Help__DefinitionLeaveActive
                   }}
-                  transitionEnterTimeout={2000}
-                  transitionLeaveTimeout={2000}
+                  transitionEnterTimeout={300}
+                  transitionLeaveTimeout={300}
                 >
                   {s.visibleDefinitions.indexOf(i) !== -1 &&
                     <p>
