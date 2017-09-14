@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import Input from 'modules/common/components/input'
+import Input from 'modules/common/components/input/input'
 import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications'
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'

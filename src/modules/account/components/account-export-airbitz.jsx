@@ -7,7 +7,7 @@ import QRCode from 'qrcode.react'
 
 import encryptPrivateKeyWithPassword from 'modules/auth/helpers/encrypt-privatekey-with-password'
 import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-account-link'
-import Input from 'modules/common/components/input'
+import Input from 'modules/common/components/input/input'
 import Spinner from 'modules/common/components/spinner'
 
 import { REQUIRED_PASSWORD_STRENGTH } from 'modules/auth/constants/password-strength'

@@ -9,7 +9,7 @@ import noData from 'highcharts/modules/no-data-to-display'
 // import { augur, constants } from 'services/augurjs';
 
 import ComponentNav from 'modules/common/components/component-nav'
-import Input from 'modules/common/components/input'
+import Input from 'modules/common/components/input/input'
 import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications'
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'

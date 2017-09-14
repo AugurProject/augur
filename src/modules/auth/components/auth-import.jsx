@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
 
-import Input from 'modules/common/components/input'
+import Input from 'modules/common/components/input/input'
 
 import makePath from 'modules/routes/helpers/make-path'
 import { DEFAULT_VIEW } from 'modules/routes/constants/views'

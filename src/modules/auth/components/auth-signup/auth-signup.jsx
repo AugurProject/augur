@@ -8,7 +8,7 @@ export default function AuthSignup(p) {
 // import PropTypes from 'prop-types'
 // import classNames from 'classnames'
 // import zxcvbn from 'zxcvbn'
-// import Input from 'modules/common/components/input'
+// import Input from 'modules/common/components/input/input'
 // import Spinner from 'modules/common/components/spinner'
 //
 // import makePath from 'modules/app/helpers/make-path'
