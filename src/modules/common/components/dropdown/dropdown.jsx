@@ -14,11 +14,11 @@ class Dropdown extends Component {
       showList: false
     }
 
-    this.onListItemClick = this.onListItemClick.bind(this)
+    this.dropdownSelect = this.dropdownSelect.bind(this)
     this.toggleList = this.toggleList.bind(this)
   }
 
-  onListItemClick(label, value) {
+  dropdownSelect(label, value) {
     if (value !== this.state.value) {
       this.setState({
         label,
@@ -50,7 +50,7 @@ class Dropdown extends Component {
               className={classNames({ [`${Styles.active}`]: option.value === this.state.value })}
               key={option.value}
               value={option.value}
-              onClick={() => this.onListItemClick(option.label, option.value)}
+              onClick={() => this.dropdownSelect(option.label, option.value)}
             >
               {option.label}
             </button>
@@ -58,6 +58,7 @@ class Dropdown extends Component {
         </div>
         <select
           className={Styles.Dropdown__select}
+          onChange={(e) => { this.dropdownSelect(e.target.options[e.target.selectedIndex].text, e.target.value) }}
           value={this.state.value}
         >
           {p.options.map(option => (
