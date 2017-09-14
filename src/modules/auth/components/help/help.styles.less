@@ -10,8 +10,9 @@
   margin: 1em 0;
 }
 
-.Help__Definition {
+.Help__Item {
   font-size: @font-size-large;
+  position: relative;
 
   span {
     color: @color-text-light-muted;
@@ -23,4 +24,24 @@
     line-height: 1.3em;
     margin: 0 0 1.5em;
   }
+}
+
+.Help__ItemEnter {
+  transform: scaleY(0);
+}
+
+.Help__ItemEnterActive {
+  transform: scaleY(1);
+  transform-origin: top;
+  transition: transform 2s ease-in-out;
+}
+
+.Help__ItemLeave {
+  transform: scaleY(1);
+}
+
+.Help__ItemLeaveActive {
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 2s ease-in-out;
 }
