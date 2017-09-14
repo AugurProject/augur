@@ -55,7 +55,9 @@ export default function AuthConnect(p) {
             }
           </div>
         </div>
-        <Help />
+        <div className={Styles.Auth__faq}>
+          <Help />
+        </div>
       </div>
     </div>
   )

@@ -44,9 +44,8 @@ export default function AuthCreate(p) {
           </div>
         </div>
         <div className={Styles.Auth__faq}>
-          <span>After</span>
+          <Help />
         </div>
-        <Help />
       </div>
     </div>
   )
