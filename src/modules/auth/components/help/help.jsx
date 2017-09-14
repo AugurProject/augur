@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { CSSTransitionGroup } from 'react-transition-group'
-import classNames from 'classnames'
 
 import Styles from 'modules/auth/components/help/help.styles'
 
@@ -27,15 +26,15 @@ export default class Help extends Component {
       areQuestionsVisible: false,
       visibleDefinitions: []
     }
+
+    this.toggleDefinition = this.toggleDefinition.bind(this)
   }
 
-  toggleDefinition(definition) {
-    const exists = this.state.visibleDefinitions.indexOf(definition)
-
+  toggleDefinition(index) {
     this.setState({
-      visibleDefinitions: exists ?
-        this.state.visibleDefinitions.filter(item => item !== definition) :
-        [...this.state.visibleDefinitions, definition]
+      visibleDefinitions: this.state.visibleDefinitions.indexOf(index) !== -1 ?
+        this.state.visibleDefinitions.filter(item => item !== index) :
+        [...this.state.visibleDefinitions, index]
     })
   }
 
@@ -57,21 +56,36 @@ export default class Help extends Component {
             leave: Styles.Help__ItemLeave,
             leaveActive: Styles.Help__ItemLeaveActive
           }}
-          transitionEnterTimeout={2000}
-          transitionLeaveTimeout={2000}
+          transitionEnterTimeout={300}
+          transitionLeaveTimeout={300}
         >
           {s.areQuestionsVisible &&
-            helps.map(help => (
+            helps.map((help, i) => (
               <div
                 key={help.title}
                 className={Styles.Help__Item}
               >
-                <span>
+                <button
+                  onClick={() => this.toggleDefinition(i)}
+                >
                   {help.title} +
-                </span>
-                <p>
-                  {help.def}
-                </p>
+                </button>
+                <CSSTransitionGroup
+                  transitionName={{
+                    enter: Styles.Help__DefinitionEnter,
+                    enterActive: Styles.Help__DefinitionEnterActive,
+                    leave: Styles.Help__DefinitionLeave,
+                    leaveActive: Styles.Help__DefinitionLeaveActive
+                  }}
+                  transitionEnterTimeout={2000}
+                  transitionLeaveTimeout={2000}
+                >
+                  {s.visibleDefinitions.indexOf(i) !== -1 &&
+                    <p>
+                      {help.def}
+                    </p>
+                  }
+                </CSSTransitionGroup>
               </div>
             ))
           }
