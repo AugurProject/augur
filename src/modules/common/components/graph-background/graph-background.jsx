@@ -32,6 +32,11 @@ export default class GraphBG extends Component {
     return false
   }
 
+  componentWillUnmount() {
+    this.p5Renderer.remove()
+    window.removeEventListener('resize', this.debouncedResizeHandler)
+  }
+
   setupScreen(p, width, height) {
     this.idealScreen = 1440
     this.screenScale = Math.max(width, height) / this.idealScreen
@@ -201,7 +206,8 @@ export default class GraphBG extends Component {
         this.drawScene(p)
       }
 
-      window.addEventListener('resize', debounce(() => this.handleWindowResize(p), 50))
+      this.debouncedResizeHandler = debounce(() => this.handleWindowResize(p), 50)
+      window.addEventListener('resize', this.debouncedResizeHandler)
     }
 
     if (this.hasWebGL) {
