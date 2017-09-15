@@ -1,0 +1,55 @@
+@import '~assets/styles/shared.less';
+
+.Help {
+  color: @color-text-light;
+
+  @media @breakpoint-mobile {
+    padding: 0 2em;
+  }
+}
+
+.Help__Header {
+  &:extend(.caps--large);
+
+  margin: 1em 0;
+}
+
+.Help__Item {
+  font-size: @font-size-large;
+  position: relative;
+
+  button {
+    color: @color-text-light-muted;
+    display: block;
+    margin-bottom: 1em;
+  }
+
+  p {
+    line-height: 1.3em;
+    margin: 0 0 1.5em;
+  }
+}
+
+.Help__ItemEnter,
+.Help__DefinitionEnter {
+  transform: scaleY(0);
+}
+
+.Help__ItemEnterActive,
+.Help__DefinitionEnterActive {
+  transform: scaleY(1);
+  transform-origin: top;
+  transition: transform 300ms ease-in-out;
+}
+
+.Help__ItemLeave,
+.Help__DefinitionLeave {
+  transform: scaleY(1);
+}
+
+.Help__ItemLeaveActive,
+.Help__DefinitionLeaveActive {
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 300ms ease-in-out;
+}
