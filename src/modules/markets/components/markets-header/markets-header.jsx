@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import FilterSort from 'modules/filter-sort/containers/filter-sort-controller'
-// import FilterSearch from 'modules/filter-sort/components/filter-search/filter-search'
+import FilterSearch from 'modules/filter-sort/containers/filter-search'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 import parsePath from 'modules/routes/helpers/parse-path'
@@ -89,7 +89,9 @@ export default class MarketsHeader extends Component {
           searchKeys={this.searchKeys}
         />
         <div className={Styles.MarketsHeader__search}>
-
+          <FilterSearch
+            searchPlaceholder="Search"
+          />
         </div>
         <div className={Styles.MarketsHeader__wrapper}>
           <h1 className={Styles.MarketsHeader__heading}>{s.headerTitle}</h1>
@@ -108,10 +110,4 @@ export default class MarketsHeader extends Component {
 //   searchKeys={this.searchKeys}
 //   filterBySearch
 //   filterByTags
-// />
-
-// <FilterSearch
-//   location={p.location}
-//   history={p.history}
-//   searchPlaceholder="Search"
 // />
