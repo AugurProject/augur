@@ -14,7 +14,7 @@ import parsePath from 'modules/routes/helpers/parse-path'
 import makePath from 'modules/routes/helpers/make-path'
 
 import { FAVORITES, MARKETS } from 'modules/routes/constants/views'
-import { TOPIC_PARAM_NAME } from 'modules/routes/constants/param-names'
+import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 export default class MarketsView extends Component {
   static propTypes = {

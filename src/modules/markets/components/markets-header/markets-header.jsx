@@ -8,7 +8,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 import parsePath from 'modules/routes/helpers/parse-path'
 
 import { MARKETS, FAVORITES } from 'modules/routes/constants/views'
-import { TOPIC_PARAM_NAME } from 'modules/routes/constants/param-names'
+import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/markets/components/markets-header/markets-header.styles'
 

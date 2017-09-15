@@ -10,7 +10,7 @@ import makeQuery from 'modules/routes/helpers/make-query'
 
 import { TOPIC_VOLUME_INCREASED, TOPIC_VOLUME_DECREASED } from 'modules/topics/constants/topic-popularity-change'
 import { MARKETS } from 'modules/routes/constants/views'
-import { TOPIC_PARAM_NAME } from 'modules/routes/constants/param-names'
+import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 export default class Topic extends Component {
   static propTypes = {

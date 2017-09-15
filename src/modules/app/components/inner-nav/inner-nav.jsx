@@ -12,7 +12,7 @@ import parseStringToArray from 'modules/routes/helpers/parse-string-to-array'
 import makeQuery from 'modules/routes/helpers/make-query'
 import makePath from 'modules/routes/helpers/make-path'
 
-import { TOPIC_PARAM_NAME, TAGS_PARAM_NAME } from 'modules/routes/constants/param-names'
+import { TOPIC_PARAM_NAME, TAGS_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 import { MARKETS } from 'modules/routes/constants/views'
 
 import MenuItem from 'modules/app/components/inner-nav/menu-item'

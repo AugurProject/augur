@@ -2,7 +2,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 import makeQuery from 'modules/routes/helpers/make-query'
 import parseStringToArray from 'modules/routes/helpers/parse-string-to-array'
 
-import { TAGS_PARAM_NAME } from 'modules/routes/constants/param-names'
+import { TAGS_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 export default function (tag, location, history) {
   let searchParams = parseQuery(location.search)
