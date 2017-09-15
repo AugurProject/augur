@@ -8,9 +8,11 @@ class Dropdown extends Component {
   constructor(props) {
     super(props)
 
+    const defaultOption = props.options.find(option => option.value === props.default) || false
+
     this.state = {
-      label: props.options[0].label,
-      value: props.options[0].value,
+      label: (defaultOption && defaultOption.label) || props.options[0].label,
+      value: (defaultOption && defaultOption.value) || props.options[0].value,
       showList: false
     }
 
