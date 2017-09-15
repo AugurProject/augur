@@ -6,7 +6,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 import makeQuery from 'modules/routes/helpers/make-query'
 import debounce from 'utils/debounce'
 
-import { FILTER_SEARCH_PARAM } from 'modules/routes/constants/param-names'
+import { FILTER_SEARCH_PARAM } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/filter-sort/components/filter-search/filter-search.styles'
 

@@ -31,7 +31,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 import getValue from 'utils/get-value'
 
 import { MARKETS, ACCOUNT, MY_POSITIONS, CREATE_MARKET, CATEGORIES } from 'modules/routes/constants/views'
-import { TOPIC_PARAM_NAME } from 'modules/routes/constants/param-names'
+import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
 
