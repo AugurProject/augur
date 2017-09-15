@@ -8,6 +8,7 @@ import { isEqual } from 'lodash'
 import filterByMarketFavorites from 'modules/filter-sort/helpers/filter-by-market-favorites'
 import filterByTags from 'modules/filter-sort/helpers/filter-by-tags'
 import filterBySearch from 'modules/filter-sort/helpers/filter-by-search'
+import filterByMarketState from 'modules/filter-sort/helpers/filter-by-market-state'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 
@@ -53,7 +54,7 @@ export default class FilterSortController extends Component {
     this.updateCombinedFilters({
       filters: {
         searchItems: this.state.searchItems,
-        // marketStateItems: this.state.marketStateItems,
+        marketStateItems: this.state.marketStateItems,
         // marketTagItems: this.state.marketTagItems,
         // marketFavoriteItems: this.state.marketFavoriteItems
       },
@@ -83,6 +84,15 @@ export default class FilterSortController extends Component {
           searchItems: filterBySearch(newSearch[PARAMS.FILTER_SEARCH_PARAM], nextProps.searchKeys, nextProps.items)
         })
       }
+
+      if (
+        itemsChanged ||
+        !isEqual(oldSearch[PARAMS.FILTER_MARKET_STATE_PARAM], newSearch[PARAMS.FILTER_MARKET_STATE_PARAM])
+      ) {
+        this.setState({
+          marketStateItems: filterByMarketState(newSearch[PARAMS.FILTER_MARKET_STATE_PARAM], nextProps.currentReportingPeriod, nextProps.items)
+        })
+      }
     }
     // if (
     //   nextProps.filterByTags &&
@@ -110,7 +120,7 @@ export default class FilterSortController extends Component {
 
     if (
       !isEqual(this.state.searchItems, nextState.searchItems) ||
-      // !isEqual(this.state.marketStateItems, nextState.marketStateItems) ||
+      !isEqual(this.state.marketStateItems, nextState.marketStateItems) ||
       // !isEqual(this.state.marketTagItems, nextState.marketTagItems) ||
       // !isEqual(this.state.marketFavoriteItems, nextState.marketFavoriteItems) ||
       !isEqual(this.props.items, nextProps.items)
@@ -118,7 +128,7 @@ export default class FilterSortController extends Component {
       this.updateCombinedFilters({
         filters: {
           searchItems: nextState.searchItems,
-          // marketStateItems: nextState.marketStateItems,
+          marketStateItems: nextState.marketStateItems,
           // marketTagItems: nextState.marketTagItems,
           // marketFavoriteItems: nextState.marketFavoriteItems
         },

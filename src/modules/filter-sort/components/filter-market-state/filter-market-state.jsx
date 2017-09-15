@@ -5,18 +5,13 @@ import Dropdown from 'modules/common/components/dropdown/dropdown'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 import makeQuery from 'modules/routes/helpers/make-query'
-import { isMarketDataOpen } from 'utils/is-market-data-open'
-import isEqual from 'lodash/isEqual'
 
-import { FILTER_MARKET_STATE_PARAM } from 'modules/routes/constants/param-names'
+import { FILTER_MARKET_STATE_PARAM } from 'modules/filter-sort/constants/param-names'
 
 export default class FilterMarketState extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
-    items: PropTypes.array.isRequired,
-    currentReportingPeriod: PropTypes.number.isRequired,
-    updateFilter: PropTypes.func.isRequired
+    history: PropTypes.object.isRequired
   }
 
   constructor(props) {
@@ -43,49 +38,18 @@ export default class FilterMarketState extends Component {
       selectedMarketState: this.defaultMarketState
     }
 
-    this.filterByMarketState = this.filterByMarketState.bind(this)
     this.updateQuery = this.updateQuery.bind(this)
   }
 
   componentWillMount() {
     const selectedMarketState = parseQuery(this.props.location.search)[FILTER_MARKET_STATE_PARAM]
     if (selectedMarketState) this.setState({ selectedMarketState })
-    this.filterByMarketState(selectedMarketState || this.state.selectedMarketState, this.props.currentReportingPeriod, this.props.items, this.props.location)
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (
-      this.state.selectedMarketState !== nextState.selectedMarketState ||
-      !isEqual(this.props.items, nextProps.items)
-    ) {
-      this.filterByMarketState(nextState.selectedMarketState, nextProps.currentReportingPeriod, nextProps.items, nextProps.location)
-    }
-
     if (this.state.selectedMarketState !== nextState.selectedMarketState) {
       this.updateQuery(nextState.selectedMarketState, nextProps.location)
     }
-  }
-
-  filterByMarketState(selectedMarketState, currentReportingPeriod, items, location) {
-    const matchedItems = items.reduce((p, market, i) => {
-      switch (selectedMarketState) {
-        case 'open':
-          if (isMarketDataOpen(market)) return [...p, i]
-          break
-        case 'reporting':
-          if (market.tradingPeriod === currentReportingPeriod) return [...p, i]
-          break
-        case 'closed':
-          if (!isMarketDataOpen(market)) return [...p, i]
-          break
-        default:
-          return p
-      }
-
-      return p
-    }, [])
-
-    this.props.updateFilter(matchedItems)
   }
 
   updateQuery(selectedMarketState, location) {
