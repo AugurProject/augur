@@ -8,7 +8,7 @@ var ZERO = constants.ZERO;
 
 function simulateTakeBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedBids, outcome, shareBalances) {
   var numOutcomes = shareBalances.length;
-  if (outcome <= 0 || outcome > numOutcomes) throw new Error("Invalid outcome ID");
+  if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
   if (sharesToCover.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
   var settlementFees = ZERO;
   var gasFees = ZERO;
@@ -23,7 +23,7 @@ function simulateTakeBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
     var sharePriceLong = orderDisplayPrice.minus(minPrice);
     var makerSharesEscrowed = BigNumber.min(new BigNumber(matchingBid.sharesEscrowed, 10), sharesToCover);
     sharesToCover = sharesToCover.minus(takerDesiredSharesForThisOrder);
-    var takerSharesAvailable = BigNumber.min(takerDesiredSharesForThisOrder, shareBalances[outcome - 1]);
+    var takerSharesAvailable = BigNumber.min(takerDesiredSharesForThisOrder, shareBalances[outcome]);
 
     // maker is closing a short, taker is closing a long: complete sets sold
     if (makerSharesEscrowed.gt(PRECISION.zero) && takerSharesAvailable.gt(PRECISION.zero)) {
@@ -63,7 +63,7 @@ function simulateTakeBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
       takerDesiredSharesForThisOrder = ZERO;
     }
   });
-  shareBalances[outcome - 1] = shareBalances[outcome - 1].minus(takerSharesDepleted);
+  shareBalances[outcome] = shareBalances[outcome].minus(takerSharesDepleted);
   return {
     sharesToCover: sharesToCover,
     settlementFees: settlementFees,

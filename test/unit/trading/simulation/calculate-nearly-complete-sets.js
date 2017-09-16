@@ -13,9 +13,9 @@ describe("trading/simulation/calculate-nearly-complete-sets", function () {
     });
   };
   test({
-    description: "Two outcomes, 1 desired share, exclude outcome 2",
+    description: "Two outcomes, 1 desired share, exclude outcome 1",
     params: {
-      outcome: 2,
+      outcome: 1,
       desiredShares: new BigNumber("1", 10),
       shareBalances: [new BigNumber("3", 10), new BigNumber("3", 10)]
     },
@@ -24,9 +24,9 @@ describe("trading/simulation/calculate-nearly-complete-sets", function () {
     }
   });
   test({
-    description: "Two outcomes, 10 desired shares, exclude outcome 2",
+    description: "Two outcomes, 10 desired shares, exclude outcome 1",
     params: {
-      outcome: 2,
+      outcome: 1,
       desiredShares: new BigNumber("10", 10),
       shareBalances: [new BigNumber("4", 10), new BigNumber("3", 10)]
     },
@@ -35,9 +35,9 @@ describe("trading/simulation/calculate-nearly-complete-sets", function () {
     }
   });
   test({
-    description: "Five outcomes, 10 desired shares, exclude outcome 1",
+    description: "Five outcomes, 10 desired shares, exclude outcome 0",
     params: {
-      outcome: 1,
+      outcome: 0,
       desiredShares: new BigNumber("2", 10),
       shareBalances: [
         new BigNumber("4", 10),

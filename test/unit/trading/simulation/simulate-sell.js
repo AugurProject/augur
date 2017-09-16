@@ -17,7 +17,7 @@ describe("trading/simulation/simulate-sell", function () {
   test({
     description: "single matching bid, taker partially filled",
     params: {
-      outcome: 1,
+      outcome: 0,
       sharesToCover: new BigNumber("3", 10),
       shareBalances: [ZERO, new BigNumber("5", 10)],
       tokenBalance: ZERO,
@@ -33,7 +33,7 @@ describe("trading/simulation/simulate-sell", function () {
           amount: "2",
           fullPrecisionPrice: "0.7",
           sharesEscrowed: "2",
-          outcome: 1,
+          outcome: 0,
           owner: "OWNER_ADDRESS"
         }
       }
@@ -52,7 +52,7 @@ describe("trading/simulation/simulate-sell", function () {
   test({
     description: "no matching bids",
     params: {
-      outcome: 1,
+      outcome: 0,
       sharesToCover: new BigNumber("3", 10),
       shareBalances: [ZERO, new BigNumber("5", 10)],
       tokenBalance: ZERO,
@@ -68,7 +68,7 @@ describe("trading/simulation/simulate-sell", function () {
           amount: "2",
           fullPrecisionPrice: "0.8",
           sharesEscrowed: "2",
-          outcome: 1,
+          outcome: 0,
           owner: "OWNER_ADDRESS"
         }
       }
@@ -87,7 +87,7 @@ describe("trading/simulation/simulate-sell", function () {
   test({
     description: "two matching bids, complete fill",
     params: {
-      outcome: 1,
+      outcome: 0,
       sharesToCover: new BigNumber("3", 10),
       shareBalances: [ZERO, new BigNumber("5", 10)],
       tokenBalance: ZERO,
@@ -103,14 +103,14 @@ describe("trading/simulation/simulate-sell", function () {
           amount: "2",
           fullPrecisionPrice: "0.6",
           sharesEscrowed: "2",
-          outcome: 1,
+          outcome: 0,
           owner: "OWNER_ADDRESS"
         },
         ORDER_1: {
           amount: "1",
           fullPrecisionPrice: "0.7",
           sharesEscrowed: "2",
-          outcome: 1,
+          outcome: 0,
           owner: "OWNER_ADDRESS"
         }
       }

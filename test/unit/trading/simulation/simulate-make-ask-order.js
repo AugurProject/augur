@@ -21,12 +21,12 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     });
   };
   test({
-    description: "[0, 0] shares held, 1 maximum price, ask 2 shares of outcome 1 @ 0.6",
+    description: "[0, 0] shares held, 1 maximum price, ask 2 shares of outcome 0 @ 0.6",
     params: {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("0.6", 10),
       maxPrice: new BigNumber("1", 10),
-      outcome: 1,
+      outcome: 0,
       shareBalances: [ZERO, ZERO]
     },
     assertions: function (output) {
@@ -39,12 +39,12 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     }
   });
   test({
-    description: "[0, 4] shares held, 5 maximum price, ask 2 shares of outcome 1 @ 0.6",
+    description: "[0, 4] shares held, 5 maximum price, ask 2 shares of outcome 0 @ 0.6",
     params: {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("0.6", 10),
       maxPrice: new BigNumber("5", 10),
-      outcome: 1,
+      outcome: 0,
       shareBalances: [ZERO, new BigNumber("4", 10)]
     },
     assertions: function (output) {
@@ -57,12 +57,12 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     }
   });
   test({
-    description: "[3, 0] shares held, 5 maximum price, ask 2 shares of outcome 1 @ 0.6",
+    description: "[3, 0] shares held, 5 maximum price, ask 2 shares of outcome 0 @ 0.6",
     params: {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("0.6", 10),
       maxPrice: new BigNumber("5", 10),
-      outcome: 1,
+      outcome: 0,
       shareBalances: [new BigNumber("3", 10), ZERO]
     },
     assertions: function (output) {
@@ -75,12 +75,12 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     }
   });
   test({
-    description: "[1, 0] shares held, 5 maximum price, ask 2 shares of outcome 1 @ 0.6",
+    description: "[1, 0] shares held, 5 maximum price, ask 2 shares of outcome 0 @ 0.6",
     params: {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("0.6", 10),
       maxPrice: new BigNumber("5", 10),
-      outcome: 1,
+      outcome: 0,
       shareBalances: [new BigNumber("1", 10), ZERO]
     },
     assertions: function (output) {
@@ -93,12 +93,12 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     }
   });
   test({
-    description: "[1.2, 3.3] shares held, -2.1 maximum price, ask 1.9 shares of outcome 1 @ -2.6",
+    description: "[1.2, 3.3] shares held, -2.1 maximum price, ask 1.9 shares of outcome 0 @ -2.6",
     params: {
       numShares: new BigNumber("1.9", 10),
       price: new BigNumber("-2.6", 10),
       maxPrice: new BigNumber("-2.1", 10),
-      outcome: 1,
+      outcome: 0,
       shareBalances: [new BigNumber("1.2", 10), new BigNumber("3.3", 10)]
     },
     assertions: function (output) {
@@ -111,12 +111,12 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     }
   });
   test({
-    description: "[1, 0] shares held, 5 maximum price, ask 0 shares of outcome 1 @ 0.6",
+    description: "[1, 0] shares held, 5 maximum price, ask 0 shares of outcome 0 @ 0.6",
     params: {
       numShares: ZERO,
       price: new BigNumber("0.6", 10),
       maxPrice: new BigNumber("5", 10),
-      outcome: 1,
+      outcome: 0,
       shareBalances: [new BigNumber("1", 10), ZERO]
     },
     assertions: function (output) {
@@ -124,12 +124,12 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     }
   });
   test({
-    description: "[1, 0] shares held, 5 maximum price, ask 2 shares of outcome 1 @ 5.1",
+    description: "[1, 0] shares held, 5 maximum price, ask 2 shares of outcome 0 @ 5.1",
     params: {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("5.1", 10),
       maxPrice: new BigNumber("5", 10),
-      outcome: 1,
+      outcome: 0,
       shareBalances: [new BigNumber("1", 10), ZERO]
     },
     assertions: function (output) {
@@ -142,7 +142,7 @@ describe("trading/simulation/simulate-make-ask-order", function () {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("6", 10),
       minPrice: new BigNumber("7", 10),
-      outcome: 0,
+      outcome: -1,
       shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
     },
     assertions: function (output) {
@@ -155,7 +155,7 @@ describe("trading/simulation/simulate-make-ask-order", function () {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("6", 10),
       minPrice: new BigNumber("7", 10),
-      outcome: 3,
+      outcome: 2,
       shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
     },
     assertions: function (output) {

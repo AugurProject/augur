@@ -32,7 +32,7 @@ describe("trading/simulation/simulate-take-bid-order", function () {
         fullPrecisionPrice: "0.7",
         sharesEscrowed: "2"
       }],
-      outcome: 1,
+      outcome: 0,
       shareBalances: [new BigNumber("5", 10), new BigNumber("0", 10)]
     },
     assertions: function (output) {
@@ -60,7 +60,7 @@ describe("trading/simulation/simulate-take-bid-order", function () {
         fullPrecisionPrice: "0.7",
         sharesEscrowed: "2"
       }],
-      outcome: 1,
+      outcome: 0,
       shareBalances: [new BigNumber("0", 10), new BigNumber("0", 10)]
     },
     assertions: function (output) {
@@ -88,7 +88,7 @@ describe("trading/simulation/simulate-take-bid-order", function () {
         fullPrecisionPrice: "0.7",
         sharesEscrowed: "0"
       }],
-      outcome: 1,
+      outcome: 0,
       shareBalances: [new BigNumber("5", 10), new BigNumber("2", 10)]
     },
     assertions: function (output) {
@@ -116,7 +116,7 @@ describe("trading/simulation/simulate-take-bid-order", function () {
         fullPrecisionPrice: "0.7",
         sharesEscrowed: "0"
       }],
-      outcome: 1,
+      outcome: 0,
       shareBalances: [new BigNumber("0", 10), new BigNumber("0", 10)]
     },
     assertions: function (output) {

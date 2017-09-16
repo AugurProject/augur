@@ -3,8 +3,8 @@
 function depleteOtherShareBalances(outcomeID, sharesDepleted, shareBalances) {
   var numOutcomes = shareBalances.length;
   var depletedShareBalances = new Array(numOutcomes);
-  for (var i = 1; i <= numOutcomes; ++i) {
-    depletedShareBalances[i - 1] = (i === outcomeID) ? shareBalances[i - 1] : shareBalances[i - 1].minus(sharesDepleted);
+  for (var i = 0; i < numOutcomes; ++i) {
+    depletedShareBalances[i] = (i === outcomeID) ? shareBalances[i] : shareBalances[i].minus(sharesDepleted);
   }
   return depletedShareBalances;
 }

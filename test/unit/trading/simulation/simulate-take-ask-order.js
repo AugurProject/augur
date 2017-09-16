@@ -34,7 +34,7 @@ describe("trading/simulation/simulate-take-ask-order", function () {
         fullPrecisionPrice: "0.7",
         sharesEscrowed: "2"
       }],
-      outcome: 1,
+      outcome: 0,
       shareBalances: [ZERO, new BigNumber("5", 10)]
     },
     assertions: function (output) {
@@ -62,7 +62,7 @@ describe("trading/simulation/simulate-take-ask-order", function () {
         fullPrecisionPrice: "0.7",
         sharesEscrowed: "2"
       }],
-      outcome: 1,
+      outcome: 0,
       shareBalances: [ZERO, ZERO]
     },
     assertions: function (output) {
@@ -90,7 +90,7 @@ describe("trading/simulation/simulate-take-ask-order", function () {
         fullPrecisionPrice: "0.7",
         sharesEscrowed: "0"
       }],
-      outcome: 1,
+      outcome: 0,
       shareBalances: [ZERO, new BigNumber("5", 10)]
     },
     assertions: function (output) {
@@ -118,7 +118,7 @@ describe("trading/simulation/simulate-take-ask-order", function () {
         fullPrecisionPrice: "0.7",
         sharesEscrowed: "0"
       }],
-      outcome: 1,
+      outcome: 0,
       shareBalances: [ZERO, ZERO]
     },
     assertions: function (output) {

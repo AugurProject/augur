@@ -4,9 +4,9 @@ var BigNumber = require("bignumber.js");
 
 function calculateNearlyCompleteSets(outcomeID, desiredShares, shareBalances) {
   var sharesAvailable = desiredShares;
-  for (var i = 1; i <= shareBalances.length; ++i) {
+  for (var i = 0; i < shareBalances.length; ++i) {
     if (i !== outcomeID) {
-      sharesAvailable = BigNumber.min(shareBalances[i - 1], sharesAvailable);
+      sharesAvailable = BigNumber.min(shareBalances[i], sharesAvailable);
     }
   }
   return sharesAvailable;

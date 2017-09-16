@@ -19,7 +19,7 @@ describe("trading/simulation/simulate-trade", function () {
     description: "simulate trade (buy)",
     params: {
       orderType: 0,
-      outcome: 1,
+      outcome: 0,
       shares: "3",
       shareBalances: ["0", "5"],
       tokenBalance: "0",
@@ -64,7 +64,7 @@ describe("trading/simulation/simulate-trade", function () {
     description: "simulate trade (sell)",
     params: {
       orderType: 1,
-      outcome: 1,
+      outcome: 0,
       shares: "3",
       shareBalances: ["0", "5"],
       tokenBalance: "0",
@@ -109,7 +109,7 @@ describe("trading/simulation/simulate-trade", function () {
     description: "throw if order type is not defined",
     params: {
       orderType: undefined,
-      outcome: 1,
+      outcome: 0,
       shares: "3",
       shareBalances: ["0", "5"],
       tokenBalance: "0",
@@ -147,7 +147,7 @@ describe("trading/simulation/simulate-trade", function () {
     description: "throw if order type is not 1 or 2",
     params: {
       orderType: 3,
-      outcome: 1,
+      outcome: 0,
       shares: "3",
       shareBalances: ["0", "5"],
       tokenBalance: "0",

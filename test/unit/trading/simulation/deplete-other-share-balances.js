@@ -13,9 +13,9 @@ describe("trading/simulation/deplete-other-share-balances", function () {
     });
   };
   test({
-    description: "Two outcomes, deplete all but outcome 2",
+    description: "Two outcomes, deplete all but outcome 1",
     params: {
-      outcome: 2,
+      outcome: 1,
       sharesDepleted: new BigNumber("1", 10),
       shareBalances: [new BigNumber("3", 10), new BigNumber("3", 10)]
     },
@@ -24,9 +24,9 @@ describe("trading/simulation/deplete-other-share-balances", function () {
     }
   });
   test({
-    description: "Five outcomes, deplete all but outcome 1",
+    description: "Five outcomes, deplete all but outcome 0",
     params: {
-      outcome: 1,
+      outcome: 0,
       sharesDepleted: new BigNumber("2", 10),
       shareBalances: [
         new BigNumber("4", 10),
