@@ -103,8 +103,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
       side: cleanSide,
       numShares: cleanNumShares === '0' ? undefined : cleanNumShares,
       limitPrice: cleanLimitPrice,
-      totalFee: 0,
-      totalCost: 0
+      totalFee: '0',
+      totalCost: '0'
     };
 
     // trade actions
@@ -121,7 +121,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
           orderType: newTradeDetails.side === BUY ? 0 : 1,
           outcome: parseInt(outcomeID, 10),
           shareBalances: accountPositions,
-          tokenBalance: loginAccount.ethTokens.toString(),
+          tokenBalance: (loginAccount.ethTokens && loginAccount.ethTokens.toString()) || '0',
           userAddress: loginAccount.address,
           minPrice: market.minPrice,
           maxPrice: market.maxPrice,
@@ -129,12 +129,18 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
           shares: newTradeDetails.numShares,
           marketCreatorFeeRate: market.settlementFee,
           marketOrderBook: (orderBooks && orderBooks[marketID]) || {},
-          shouldCollectReportingFees: !market.isDisowned
+          shouldCollectReportingFees: !market.isDisowned,
+          reportingFeeRate: market.reportingFeeRate
         });
-        console.log('simulated trade:', JSON.stringify(simulatedTrade, null, 2));
+        // console.log('simulated trade:', JSON.stringify(simulatedTrade, null, 2));
+        const totalFee = new BigNumber(simulatedTrade.settlementFees, 10).plus(new BigNumber(simulatedTrade.gasFees, 10));
+        newTradeDetails.totalFee = totalFee.toFixed();
+        newTradeDetails.totalCost = new BigNumber(simulatedTrade.tokensDepleted, 10).neg().toFixed();
+        newTradeDetails.feePercent = totalFee.dividedBy(new BigNumber(simulatedTrade.tokensDepleted, 10)).toFixed();
+        if (isNaN(newTradeDetails.feePercent)) newTradeDetails.feePercent = '0';
         dispatch({
           type: UPDATE_TRADE_IN_PROGRESS,
-          data: { marketID, outcomeID, details: simulatedTrade }
+          data: { marketID, outcomeID, details: { ...newTradeDetails, ...simulatedTrade } }
         });
         callback(null, { ...newTradeDetails, ...simulatedTrade });
       }));

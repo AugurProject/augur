@@ -7,13 +7,12 @@ export { BUY, SELL } from 'modules/transactions/constants/types';
 export const tradeTestState = {
   loginAccount: {
     address: 'testUser1',
-    name: 'test',
     loginID: 'longLoginID',
     localNode: false,
-    prettyAddress: '0000...ser1',
-    prettyLoginID: 'long...inID',
-    ether: '10000.00',
-    realEther: '5.0',
+    // ether: '10000.00',
+    // realEther: '5.0',
+    eth: '5',
+    ethTokens: '10000',
     rep: '50.0'
   },
   selectedMarketID: 'testBinaryMarketID',
@@ -29,16 +28,18 @@ export const tradeTestState = {
       eventID: 'testEventID1',
       consensus: null,
       isLoadedMarketInfo: true,
-      maxPrice: '2',
-      minPrice: '1',
+      maxPrice: '1',
+      minPrice: '0',
       network: '2',
       numOutcomes: 2,
       topic: 'binary',
       tags: ['binary', 'markets', null],
       settlementFee: '0.01',
+      reportingFeeRate: '0.02',
       tradingPeriod: 8653,
       type: 'binary',
-      volume: '3030'
+      volume: '3030',
+      isDisowned: false
     },
     testCategoricalMarketID: {
       author: 'testAuthor2',
@@ -52,17 +53,19 @@ export const tradeTestState = {
       extraInfo: 'extra info',
       consensus: null,
       isLoadedMarketInfo: true,
-      maxPrice: '2',
-      minPrice: '1',
+      maxPrice: '1',
+      minPrice: '0',
       network: '2',
       numOutcomes: 4,
       resolution: 'http://lmgtfy.com',
       topic: 'categorical',
       tags: ['categorical', 'markets', 'test'],
       settlementFee: '0.019999999999999999994',
+      reportingFeeRate: '0.02',
       tradingPeriod: 11959,
       type: 'categorical',
-      volume: '0'
+      volume: '0',
+      isDisowned: false
     },
     testScalarMarketID: {
       author: 'testAuthor3',
@@ -83,22 +86,24 @@ export const tradeTestState = {
       topic: 'scalar',
       tags: ['scalar', 'markets', 'test'],
       settlementFee: '0.02',
+      reportingFeeRate: '0.02',
       tradingPeriod: 8544,
       type: 'scalar',
-      volume: '0'
+      volume: '0',
+      isDisowned: false
     },
   },
   outcomesData: {
     testBinaryMarketID: {
-      2: {
-        id: 2,
+      1: {
+        id: 1,
         name: 'Yes',
         outstandingShares: '1005',
         price: '0.5',
         sharesPurchased: '0'
       },
-      1: {
-        id: 1,
+      0: {
+        id: 0,
         name: 'No',
         outstandingShares: '2025',
         price: '0.5',
@@ -106,25 +111,25 @@ export const tradeTestState = {
       }
     },
     testCategoricalMarketID: {
-      1: {
+      0: {
         name: 'Democratic',
         outstandingShares: '0',
         price: '0',
         sharesPurchased: '0'
       },
-      2: {
+      1: {
         name: 'Republican',
         outstandingShares: '0',
         price: '0',
         sharesPurchased: '0'
       },
-      3: {
+      2: {
         name: 'Libertarian',
         outstandingShares: '0',
         price: '0',
         sharesPurchased: '0'
       },
-      4: {
+      3: {
         name: 'Other',
         outstandingShares: '0',
         price: '0',
@@ -132,15 +137,15 @@ export const tradeTestState = {
       }
     },
     testScalarMarketID: {
-      1: {
-        id: 1,
+      0: {
+        id: 0,
         name: '',
         outstandingShares: '0',
         price: '65',
         sharesPurchased: '0'
       },
-      2: {
-        id: 2,
+      1: {
+        id: 1,
         name: '',
         outstandingShares: '0',
         price: '65',
@@ -153,7 +158,7 @@ export const tradeTestState = {
     trans1: {
       data: {
         marketID: 'testBinaryMarketID',
-        outcomeID: '2',
+        outcomeID: 1,
         marketType: 'binary',
         marketDescription: 'test binary market',
         outcomeName: 'YES'
@@ -165,7 +170,7 @@ export const tradeTestState = {
     trans2: {
       data: {
         marketID: 'testCategoricalMarketID',
-        outcomeID: '1',
+        outcomeID: 0,
         marketType: 'categorical',
         marketDescription: 'test categorical market',
         outcomeName: 'Democratic'
@@ -177,7 +182,7 @@ export const tradeTestState = {
     trans3: {
       data: {
         marketID: 'testScalarMarketID',
-        outcomeID: '1',
+        outcomeID: 0,
         marketType: 'scalar',
         marketDescription: 'test scalar market',
         outcomeName: ''
@@ -196,42 +201,42 @@ export const tradeConstOrderBooks = {
         id: 'orderID1',
         price: '0.45',
         numShares: '10',
-        outcome: '2',
+        outcome: 1,
         owner: 'owner1'
       },
       orderID2: {
         id: 'orderID2',
         price: '0.45',
         numShares: '5',
-        outcome: '2',
+        outcome: 1,
         owner: 'owner2'
       },
       orderID3: {
         id: 'orderID3',
         price: '0.45',
         numShares: '3',
-        outcome: '2',
+        outcome: 1,
         owner: 'owner3'
       },
       orderID4: {
         id: 'orderID4',
         price: '0.44',
         numShares: '10',
-        outcome: '2',
+        outcome: 1,
         owner: 'owner4'
       },
       orderID5: {
         id: 'orderID5',
         price: '0.46',
         numShares: '15',
-        outcome: '2',
+        outcome: 1,
         owner: 'owner5'
       },
       orderID6: {
         id: 'orderID6',
         price: '0.43',
         numShares: '5',
-        outcome: '2',
+        outcome: 1,
         owner: 'owner6'
       }
     },
@@ -240,42 +245,42 @@ export const tradeConstOrderBooks = {
         id: 'orderID1',
         price: '0.4',
         numShares: '10',
-        outcome: '2',
+        outcome: 1,
         owner: 'owner1'
       },
       orderID2: {
         id: 'orderID2',
         price: '0.4',
         numShares: '5',
-        outcome: '2',
+        outcome: 1,
         owner: 'owner2'
       },
       orderID3: {
         id: 'orderID3',
         price: '0.4',
         numShares: '10',
-        outcome: '2',
+        outcome: 1,
         owner: 'owner3'
       },
       orderID4: {
         id: 'orderID4',
         price: '0.39',
         numShares: '3',
-        outcome: '2',
+        outcome: 1,
         owner: 'owner4'
       },
       orderID5: {
         id: 'orderID5',
         price: '0.41',
         numShares: '15',
-        outcome: '2',
+        outcome: 1,
         owner: 'owner5'
       },
       orderID6: {
         id: 'orderID6',
         price: '0.415',
         numShares: '20',
-        outcome: '2',
+        outcome: 1,
         owner: 'owner6'
       }
     }
@@ -285,41 +290,41 @@ export const tradeConstOrderBooks = {
       orderID1: {
         id: 'orderID1',
         price: '0.45',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner1'
       },
       orderID2: {
         id: 'orderID2',
         price: '0.45',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner1'
       },
       orderID3: {
         id: 'orderID3',
         price: '0.45',
         numShares: '3',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner3'
       },
       orderID4: {
         id: 'orderID4',
         price: '0.44',
         numShares: '10',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner4'
       },
       orderID5: {
         id: 'orderID5',
         price: '0.46',
         numShares: '15',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner5'
       },
       orderID6: {
         id: 'orderID6',
         price: '0.43',
         numShares: '5',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner6'
       }
     },
@@ -328,42 +333,42 @@ export const tradeConstOrderBooks = {
         id: 'orderID1',
         price: '0.4',
         numShares: '10',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner1'
       },
       orderID2: {
         id: 'orderID2',
         price: '0.4',
         numShares: '5',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner2'
       },
       orderID3: {
         id: 'orderID3',
         price: '0.4',
         numShares: '10',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner3'
       },
       orderID4: {
         id: 'orderID4',
         price: '0.39',
         numShares: '3',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner4'
       },
       orderID5: {
         id: 'orderID5',
         price: '0.41',
         numShares: '15',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner5'
       },
       orderID6: {
         id: 'orderID6',
         price: '0.415',
         numShares: '20',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner6'
       }
     }
@@ -373,41 +378,41 @@ export const tradeConstOrderBooks = {
       orderID1: {
         id: 'orderID1',
         price: '45',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner1'
       },
       orderID2: {
         id: 'orderID2',
         price: '45',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner1'
       },
       orderID3: {
         id: 'orderID3',
         price: '45',
         numShares: '3',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner3'
       },
       orderID4: {
         id: 'orderID4',
         price: '44',
         numShares: '10',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner4'
       },
       orderID5: {
         id: 'orderID5',
         price: '46',
         numShares: '15',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner5'
       },
       orderID6: {
         id: 'orderID6',
         price: '43',
         numShares: '5',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner6'
       }
     },
@@ -416,42 +421,42 @@ export const tradeConstOrderBooks = {
         id: 'orderID1',
         price: '40',
         numShares: '10',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner1'
       },
       orderID2: {
         id: 'orderID2',
         price: '40',
         numShares: '5',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner2'
       },
       orderID3: {
         id: 'orderID3',
         price: '40',
         numShares: '10',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner3'
       },
       orderID4: {
         id: 'orderID4',
         price: '39',
         numShares: '3',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner4'
       },
       orderID5: {
         id: 'orderID5',
         price: '41',
         numShares: '15',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner5'
       },
       orderID6: {
         id: 'orderID6',
         price: '415',
         numShares: '20',
-        outcome: '1',
+        outcome: 0,
         owner: 'owner6'
       }
     }
@@ -498,7 +503,6 @@ export const stubLoadAccountTrades = (marketID, cb) => {
 export const updateTradesInProgressActionShapeAssertion = (UpdateTradesInProgressAction) => {
   const Data = UpdateTradesInProgressAction.data;
   const tradeDetails = Data.details;
-  const action = tradeDetails.tradeActions[0];
 
   assert.isDefined(UpdateTradesInProgressAction.type, `UpdateTradesInProgressAction.type isn't defined`);
   assert.isString(UpdateTradesInProgressAction.type, `UpdateTradesInProgressAction.type isn't a String`);
@@ -508,7 +512,7 @@ export const updateTradesInProgressActionShapeAssertion = (UpdateTradesInProgres
   assert.isDefined(Data.marketID, `UpdateTradesInProgressAction.data.marketID isn't defined`);
   assert.isString(Data.marketID, `UpdateTradesInProgressAction.data.marketID isn't a String`);
   assert.isDefined(Data.outcomeID, `UpdateTradesInProgressAction.data.outcomeID isn't defined`);
-  assert.isString(Data.outcomeID, `UpdateTradesInProgressAction.data.outcomeID isn't a String`);
+  assert.isNumber(Data.outcomeID, `UpdateTradesInProgressAction.data.outcomeID isn't a number`);
   assert.isDefined(Data.details, `UpdateTradesInProgressAction.data.details isn't defined`);
   assert.isObject(Data.details, `UpdateTradesInProgressAction.data.details isn't a Object`);
 
@@ -522,40 +526,6 @@ export const updateTradesInProgressActionShapeAssertion = (UpdateTradesInProgres
   assert.isString(tradeDetails.totalFee, `tradeDetails.totalFee isn't a string`);
   assert.isDefined(tradeDetails.totalCost, `tradeDetails.totalCost isn't defined`);
   assert.isString(tradeDetails.totalCost, `tradeDetails.totalCost isn't a string`);
-  assert.isDefined(tradeDetails.tradingFeesEth, `tradeDetails.tradingFeesEth isn't defined`);
-  assert.isString(tradeDetails.tradingFeesEth, `tradeDetails.tradingFeesEth isn't a string`);
-  assert.isDefined(tradeDetails.gasFeesRealEth, `tradeDetails.gasFeesRealEth isn't defined`);
-  assert.isString(tradeDetails.gasFeesRealEth, `tradeDetails.gasFeesRealEth isn't a string`);
   assert.isDefined(tradeDetails.feePercent, `tradeDetails.feePercent isn't defined`);
   assert.isString(tradeDetails.feePercent, `tradeDetails.feePercent isn't a string`);
-
-  assert.isDefined(tradeDetails.tradeActions, `tradeDetails.tradeActions isn't defined`);
-  assert.isArray(tradeDetails.tradeActions, `tradeDetails.tradeActions isn't an array`);
-
-  assert.isDefined(action, `tradeDetails.tradeActions[0] isn't defined`);
-  assert.isObject(action, `tradeDetails.tradeActions[0] isn't an object`);
-
-  assert.isDefined(action.action, `tradeDetails.tradeActions[0].action isn't defined`);
-  assert.isString(action.action, `tradeDetails.tradeActions[0].action isn't a string`);
-
-  assert.isDefined(action.shares, `tradeDetails.tradeActions[0].shares isn't defined`);
-  assert.isString(action.shares, `tradeDetails.tradeActions[0].shares isn't a string`);
-
-  assert.isDefined(action.gasEth, `tradeDetails.tradeActions[0].gasEth isn't defined`);
-  assert.isString(action.gasEth, `tradeDetails.tradeActions[0].gasEth isn't a string`);
-
-  assert.isDefined(action.feeEth, `tradeDetails.tradeActions[0].feeEth isn't defined`);
-  assert.isString(action.feeEth, `tradeDetails.tradeActions[0].feeEth isn't a string`);
-
-  assert.isDefined(action.feePercent, `tradeDetails.tradeActions[0].feePercent isn't defined`);
-  assert.isString(action.feePercent, `tradeDetails.tradeActions[0].feePercent isn't a string`);
-
-  assert.isDefined(action.costEth, `tradeDetails.tradeActions[0].costEth isn't defined`);
-  assert.isString(action.costEth, `tradeDetails.tradeActions[0].costEth isn't a string`);
-
-  assert.isDefined(action.avgPrice, `tradeDetails.tradeActions[0].avgPrice isn't defined`);
-  assert.isString(action.avgPrice, `tradeDetails.tradeActions[0].avgPrice isn't a string`);
-
-  assert.isDefined(action.noFeePrice, `tradeDetails.tradeActions[0].noFeePrice isn't defined`);
-  assert.isString(action.noFeePrice, `tradeDetails.tradeActions[0].noFeePrice isn't a string`);
 };
