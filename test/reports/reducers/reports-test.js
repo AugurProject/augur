@@ -21,13 +21,13 @@ describe(`modules/reports/reducers/reports.js`, () => {
         reports: {
           [testState.branch.id]: {
             test: {
-              eventID: 'test',
+              marketID: 'test',
               example: 'example',
               isScalar: false,
               isIndeterminate: false
             },
             example: {
-              eventID: 'example',
+              marketID: 'example',
               test: 'test',
               isScalar: false,
               isIndeterminate: false
@@ -38,20 +38,21 @@ describe(`modules/reports/reducers/reports.js`, () => {
       const out = {
         [testState.branch.id]: {
           test: {
-            eventID: 'test',
+            marketID: 'test',
             example: 'example',
             isScalar: false,
             isIndeterminate: false
           },
           example: {
-            eventID: 'example',
+            marketID: 'example',
             test: 'test',
             isScalar: false,
             isIndeterminate: false
           },
-          testEventID: {
-            eventID: 'testEventID',
+          testMarketID: {
+            marketID: 'testMarketID',
             isScalar: false,
+            isSubmitted: false,
             isIndeterminate: false
           }
         }
@@ -65,25 +66,25 @@ describe(`modules/reports/reducers/reports.js`, () => {
     const test = t => it(t.description, () => t.assertions(reducer(t.state.reports, {
       type: 'UPDATE_REPORT',
       branchID: t.params.branchID,
-      eventID: t.params.eventID,
+      marketID: t.params.marketID,
       report: t.params.report
     })));
     test({
       description: 'no report data',
       params: {
         branchID: '0xb1',
-        eventID: '0xe3',
+        marketID: '0xe3',
         report: {}
       },
       state: {
         reports: {
           '0xb1': {
             '0xe1': {
-              eventID: '0xe1',
+              marketID: '0xe1',
               period: 6
             },
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 7
             }
           }
@@ -93,15 +94,15 @@ describe(`modules/reports/reducers/reports.js`, () => {
         assert.deepEqual(reduced, {
           '0xb1': {
             '0xe1': {
-              eventID: '0xe1',
+              marketID: '0xe1',
               period: 6
             },
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 7
             },
             '0xe3': {
-              eventID: '0xe3'
+              marketID: '0xe3'
             }
           }
         });
@@ -111,7 +112,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
       description: 'insert new report',
       params: {
         branchID: '0xb1',
-        eventID: '0xe3',
+        marketID: '0xe3',
         report: {
           period: 7
         }
@@ -120,11 +121,11 @@ describe(`modules/reports/reducers/reports.js`, () => {
         reports: {
           '0xb1': {
             '0xe1': {
-              eventID: '0xe1',
+              marketID: '0xe1',
               period: 6
             },
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 7
             }
           }
@@ -134,15 +135,15 @@ describe(`modules/reports/reducers/reports.js`, () => {
         assert.deepEqual(reduced, {
           '0xb1': {
             '0xe1': {
-              eventID: '0xe1',
+              marketID: '0xe1',
               period: 6
             },
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 7
             },
             '0xe3': {
-              eventID: '0xe3',
+              marketID: '0xe3',
               period: 7
             }
           }
@@ -153,7 +154,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
       description: 'update existing report',
       params: {
         branchID: '0xb1',
-        eventID: '0xe2',
+        marketID: '0xe2',
         report: {
           period: 8,
           reportedOutcomeID: '2'
@@ -163,11 +164,11 @@ describe(`modules/reports/reducers/reports.js`, () => {
         reports: {
           '0xb1': {
             '0xe1': {
-              eventID: '0xe1',
+              marketID: '0xe1',
               period: 6
             },
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 7
             }
           }
@@ -177,11 +178,11 @@ describe(`modules/reports/reducers/reports.js`, () => {
         assert.deepEqual(reduced, {
           '0xb1': {
             '0xe1': {
-              eventID: '0xe1',
+              marketID: '0xe1',
               period: 6
             },
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 8,
               reportedOutcomeID: '2'
             }
@@ -193,7 +194,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
       description: 'insert first report on branch',
       params: {
         branchID: '0xb1',
-        eventID: '0xe1',
+        marketID: '0xe1',
         report: {
           period: 7
         }
@@ -205,7 +206,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         assert.deepEqual(reduced, {
           '0xb1': {
             '0xe1': {
-              eventID: '0xe1',
+              marketID: '0xe1',
               period: 7
             }
           }
@@ -230,7 +231,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         reports: {
           '0xb1': {
             '0xe1': {
-              eventID: '0xe1',
+              marketID: '0xe1',
               period: 6,
               marketID: '0xa1',
               reportedOutcomeID: '2',
@@ -239,7 +240,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 7,
               marketID: '0xa2',
               reportedOutcomeID: '2',
@@ -254,7 +255,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         assert.deepEqual(reduced, {
           '0xb1': {
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 7,
               marketID: '0xa2',
               reportedOutcomeID: '2',
@@ -276,7 +277,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         reports: {
           '0xb1': {
             '0xe1': {
-              eventID: '0xe1',
+              marketID: '0xe1',
               period: 6,
               marketID: '0xa1',
               reportedOutcomeID: null,
@@ -285,7 +286,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 7,
               marketID: '0xa2',
               reportedOutcomeID: null,
@@ -300,7 +301,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         assert.deepEqual(reduced, {
           '0xb1': {
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 7,
               marketID: '0xa2',
               reportedOutcomeID: null,
@@ -322,7 +323,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         reports: {
           '0xb1': {
             '0xe1': {
-              eventID: '0xe1',
+              marketID: '0xe1',
               period: 6,
               marketID: '0xa1',
               reportedOutcomeID: '2',
@@ -331,7 +332,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 7,
               marketID: '0xa2',
               reportedOutcomeID: null,
@@ -346,7 +347,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         assert.deepEqual(reduced, {
           '0xb1': {
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 7,
               marketID: '0xa2',
               reportedOutcomeID: null,
@@ -368,7 +369,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         reports: {
           '0xb1': {
             '0xe1': {
-              eventID: '0xe1',
+              marketID: '0xe1',
               period: 6,
               marketID: '0xa1',
               reportedOutcomeID: '2',
@@ -377,7 +378,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 7,
               marketID: '0xa2',
               reportedOutcomeID: null,
@@ -392,7 +393,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         assert.deepEqual(reduced, {
           '0xb1': {
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 7,
               marketID: '0xa2',
               reportedOutcomeID: null,
@@ -414,7 +415,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         reports: {
           '0xb1': {
             '0xe1': {
-              eventID: '0xe1',
+              marketID: '0xe1',
               period: 6,
               marketID: '0xa1',
               reportedOutcomeID: '2',
@@ -423,7 +424,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 6,
               marketID: '0xa2',
               reportedOutcomeID: null,
@@ -450,7 +451,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         reports: {
           '0xb1': {
             '0xe1': {
-              eventID: '0xe1',
+              marketID: '0xe1',
               period: 7,
               marketID: '0xa1',
               reportedOutcomeID: '2',
@@ -459,7 +460,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 7,
               marketID: '0xa2',
               reportedOutcomeID: null,
@@ -474,7 +475,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         assert.deepEqual(reduced, {
           '0xb1': {
             '0xe1': {
-              eventID: '0xe1',
+              marketID: '0xe1',
               period: 7,
               marketID: '0xa1',
               reportedOutcomeID: '2',
@@ -483,7 +484,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 7,
               marketID: '0xa2',
               reportedOutcomeID: null,
@@ -505,7 +506,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         reports: {
           '0xb1': {
             '0xe1': {
-              eventID: '0xe1',
+              marketID: '0xe1',
               period: 6,
               marketID: '0xa1',
               reportedOutcomeID: '2',
@@ -514,7 +515,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 6,
               marketID: '0xa2',
               reportedOutcomeID: null,
@@ -523,7 +524,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe3': {
-              eventID: '0xe3',
+              marketID: '0xe3',
               period: 7,
               marketID: '0xa3',
               reportedOutcomeID: '2',
@@ -532,7 +533,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe4': {
-              eventID: '0xe4',
+              marketID: '0xe4',
               period: 7,
               marketID: '0xa4',
               reportedOutcomeID: null,
@@ -547,7 +548,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         assert.deepEqual(reduced, {
           '0xb1': {
             '0xe3': {
-              eventID: '0xe3',
+              marketID: '0xe3',
               period: 7,
               marketID: '0xa3',
               reportedOutcomeID: '2',
@@ -556,7 +557,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe4': {
-              eventID: '0xe4',
+              marketID: '0xe4',
               period: 7,
               marketID: '0xa4',
               reportedOutcomeID: null,
@@ -578,7 +579,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         reports: {
           '0xb1': {
             '0xe1': {
-              eventID: '0xe1',
+              marketID: '0xe1',
               period: 6,
               marketID: '0xa1',
               reportedOutcomeID: '2',
@@ -587,7 +588,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe2': {
-              eventID: '0xe2',
+              marketID: '0xe2',
               period: 6,
               marketID: '0xa2',
               reportedOutcomeID: null,
@@ -596,7 +597,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe3': {
-              eventID: '0xe3',
+              marketID: '0xe3',
               period: 7,
               marketID: '0xa3',
               reportedOutcomeID: '2',
@@ -605,7 +606,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe4': {
-              eventID: '0xe4',
+              marketID: '0xe4',
               period: 7,
               marketID: '0xa4',
               reportedOutcomeID: null,
@@ -616,7 +617,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
           },
           '0xb2': {
             '0xe5': {
-              eventID: '0xe5',
+              marketID: '0xe5',
               period: 6,
               marketID: '0xa5',
               reportedOutcomeID: '2',
@@ -625,7 +626,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe6': {
-              eventID: '0xe6',
+              marketID: '0xe6',
               period: 6,
               marketID: '0xa6',
               reportedOutcomeID: null,
@@ -634,7 +635,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe7': {
-              eventID: '0xe7',
+              marketID: '0xe7',
               period: 6,
               marketID: '0xa7',
               reportedOutcomeID: '2',
@@ -643,7 +644,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe8': {
-              eventID: '0xe8',
+              marketID: '0xe8',
               period: 7,
               marketID: '0xa8',
               reportedOutcomeID: null,
@@ -658,7 +659,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         assert.deepEqual(reduced, {
           '0xb1': {
             '0xe3': {
-              eventID: '0xe3',
+              marketID: '0xe3',
               period: 7,
               marketID: '0xa3',
               reportedOutcomeID: '2',
@@ -667,7 +668,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe4': {
-              eventID: '0xe4',
+              marketID: '0xe4',
               period: 7,
               marketID: '0xa4',
               reportedOutcomeID: null,
@@ -678,7 +679,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
           },
           '0xb2': {
             '0xe5': {
-              eventID: '0xe5',
+              marketID: '0xe5',
               period: 6,
               marketID: '0xa5',
               reportedOutcomeID: '2',
@@ -687,7 +688,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe6': {
-              eventID: '0xe6',
+              marketID: '0xe6',
               period: 6,
               marketID: '0xa6',
               reportedOutcomeID: null,
@@ -696,7 +697,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe7': {
-              eventID: '0xe7',
+              marketID: '0xe7',
               period: 6,
               marketID: '0xa7',
               reportedOutcomeID: '2',
@@ -705,7 +706,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             },
             '0xe8': {
-              eventID: '0xe8',
+              marketID: '0xe8',
               period: 7,
               marketID: '0xa8',
               reportedOutcomeID: null,
@@ -727,13 +728,13 @@ describe(`modules/reports/reducers/reports.js`, () => {
       const fakeState = {
         [testState.branch.id]: {
           test: {
-            eventID: 'test',
+            marketID: 'test',
             example: 'example',
             isScalar: false,
             isIndeterminate: false
           },
           example: {
-            eventID: 'example',
+            marketID: 'example',
             test: 'test',
             isScalar: false,
             isIndeterminate: false

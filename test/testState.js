@@ -62,7 +62,7 @@ const testState = {
   marketsData: {
     testMarketID: {
       author: '0x0000000000000000000000000000000000000001',
-      eventID: 'testEventID',
+    
       name: 'testMarket',
       description: 'some test description',
       endDate: 123,
@@ -80,7 +80,6 @@ const testState = {
     },
     testMarketID2: {
       author: '0x0000000000000000000000000000000000000001',
-      eventID: 'testEventID2',
       name: 'testMarket2',
       description: 'some test description',
       endDate: 123,
@@ -232,8 +231,8 @@ const testState = {
   },
   reports: {
     '0xf69b5': {
-      testEventID: {
-        eventID: 'testEventID',
+      testMarketID: {
+        marketID: 'testMarketID',
         isScalar: false,
         isIndeterminate: false,
         isSubmitted: false
