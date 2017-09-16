@@ -233,7 +233,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe1': {
               marketID: '0xe1',
               period: 6,
-              marketID: '0xa1',
               reportedOutcomeID: '2',
               isScalar: false,
               isCategorical: false,
@@ -242,7 +241,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe2': {
               marketID: '0xe2',
               period: 7,
-              marketID: '0xa2',
               reportedOutcomeID: '2',
               isScalar: false,
               isCategorical: false,
@@ -257,7 +255,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe2': {
               marketID: '0xe2',
               period: 7,
-              marketID: '0xa2',
               reportedOutcomeID: '2',
               isScalar: false,
               isCategorical: false,
@@ -279,7 +276,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe1': {
               marketID: '0xe1',
               period: 6,
-              marketID: '0xa1',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -288,7 +284,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe2': {
               marketID: '0xe2',
               period: 7,
-              marketID: '0xa2',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -303,7 +298,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe2': {
               marketID: '0xe2',
               period: 7,
-              marketID: '0xa2',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -325,7 +319,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe1': {
               marketID: '0xe1',
               period: 6,
-              marketID: '0xa1',
               reportedOutcomeID: '2',
               isScalar: false,
               isCategorical: false,
@@ -334,7 +327,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe2': {
               marketID: '0xe2',
               period: 7,
-              marketID: '0xa2',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -349,7 +341,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe2': {
               marketID: '0xe2',
               period: 7,
-              marketID: '0xa2',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -371,7 +362,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe1': {
               marketID: '0xe1',
               period: 6,
-              marketID: '0xa1',
               reportedOutcomeID: '2',
               isScalar: false,
               isCategorical: false,
@@ -380,7 +370,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe2': {
               marketID: '0xe2',
               period: 7,
-              marketID: '0xa2',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -395,7 +384,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe2': {
               marketID: '0xe2',
               period: 7,
-              marketID: '0xa2',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -417,7 +405,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe1': {
               marketID: '0xe1',
               period: 6,
-              marketID: '0xa1',
               reportedOutcomeID: '2',
               isScalar: false,
               isCategorical: false,
@@ -426,7 +413,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe2': {
               marketID: '0xe2',
               period: 6,
-              marketID: '0xa2',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -453,7 +439,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe1': {
               marketID: '0xe1',
               period: 7,
-              marketID: '0xa1',
               reportedOutcomeID: '2',
               isScalar: false,
               isCategorical: false,
@@ -462,7 +447,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe2': {
               marketID: '0xe2',
               period: 7,
-              marketID: '0xa2',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -477,7 +461,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe1': {
               marketID: '0xe1',
               period: 7,
-              marketID: '0xa1',
               reportedOutcomeID: '2',
               isScalar: false,
               isCategorical: false,
@@ -486,7 +469,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe2': {
               marketID: '0xe2',
               period: 7,
-              marketID: '0xa2',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -508,7 +490,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe1': {
               marketID: '0xe1',
               period: 6,
-              marketID: '0xa1',
               reportedOutcomeID: '2',
               isScalar: false,
               isCategorical: false,
@@ -517,7 +498,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe2': {
               marketID: '0xe2',
               period: 6,
-              marketID: '0xa2',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -526,7 +506,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe3': {
               marketID: '0xe3',
               period: 7,
-              marketID: '0xa3',
               reportedOutcomeID: '2',
               isScalar: false,
               isCategorical: false,
@@ -535,7 +514,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe4': {
               marketID: '0xe4',
               period: 7,
-              marketID: '0xa4',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -550,7 +528,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe3': {
               marketID: '0xe3',
               period: 7,
-              marketID: '0xa3',
               reportedOutcomeID: '2',
               isScalar: false,
               isCategorical: false,
@@ -559,7 +536,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe4': {
               marketID: '0xe4',
               period: 7,
-              marketID: '0xa4',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -581,7 +557,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe1': {
               marketID: '0xe1',
               period: 6,
-              marketID: '0xa1',
               reportedOutcomeID: '2',
               isScalar: false,
               isCategorical: false,
@@ -590,7 +565,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe2': {
               marketID: '0xe2',
               period: 6,
-              marketID: '0xa2',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -599,7 +573,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe3': {
               marketID: '0xe3',
               period: 7,
-              marketID: '0xa3',
               reportedOutcomeID: '2',
               isScalar: false,
               isCategorical: false,
@@ -608,7 +581,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe4': {
               marketID: '0xe4',
               period: 7,
-              marketID: '0xa4',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -619,7 +591,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe5': {
               marketID: '0xe5',
               period: 6,
-              marketID: '0xa5',
               reportedOutcomeID: '2',
               isScalar: false,
               isCategorical: false,
@@ -628,7 +599,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe6': {
               marketID: '0xe6',
               period: 6,
-              marketID: '0xa6',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -637,7 +607,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe7': {
               marketID: '0xe7',
               period: 6,
-              marketID: '0xa7',
               reportedOutcomeID: '2',
               isScalar: false,
               isCategorical: false,
@@ -646,7 +615,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe8': {
               marketID: '0xe8',
               period: 7,
-              marketID: '0xa8',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -661,7 +629,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe3': {
               marketID: '0xe3',
               period: 7,
-              marketID: '0xa3',
               reportedOutcomeID: '2',
               isScalar: false,
               isCategorical: false,
@@ -670,7 +637,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe4': {
               marketID: '0xe4',
               period: 7,
-              marketID: '0xa4',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -681,7 +647,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe5': {
               marketID: '0xe5',
               period: 6,
-              marketID: '0xa5',
               reportedOutcomeID: '2',
               isScalar: false,
               isCategorical: false,
@@ -690,7 +655,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe6': {
               marketID: '0xe6',
               period: 6,
-              marketID: '0xa6',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,
@@ -699,7 +663,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe7': {
               marketID: '0xe7',
               period: 6,
-              marketID: '0xa7',
               reportedOutcomeID: '2',
               isScalar: false,
               isCategorical: false,
@@ -708,7 +671,6 @@ describe(`modules/reports/reducers/reports.js`, () => {
             '0xe8': {
               marketID: '0xe8',
               period: 7,
-              marketID: '0xa8',
               reportedOutcomeID: null,
               isScalar: false,
               isCategorical: false,

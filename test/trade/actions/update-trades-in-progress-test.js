@@ -58,7 +58,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '5',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
@@ -88,7 +88,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '5',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
@@ -162,7 +162,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '1.5',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, `Didn't update the tradeDetails object to the new calcs given new limit`);
@@ -188,7 +188,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '0',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, "Didn't produce the expected tradeDetails object");
@@ -213,7 +213,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '12.5',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, "Didn't produce the expected tradeDetails object");
@@ -238,7 +238,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '12.5',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, "Didn't produce the expected tradeDetails object");
@@ -295,7 +295,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '5',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
@@ -325,7 +325,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '5',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
@@ -413,7 +413,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '1.5',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, `Didn't update the tradeDetails object to the new calcs given new limit`);
@@ -438,7 +438,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '0',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, "Didn't produce the expected tradeDetails object");
@@ -463,7 +463,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '12.5',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, "Didn't produce the expected tradeDetails object");
@@ -488,7 +488,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '12.5',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, "Didn't produce the expected tradeDetails object");
@@ -545,7 +545,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '650',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
@@ -575,7 +575,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '650',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
@@ -649,7 +649,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '800',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, `Didn't update the tradeDetails object to the new calcs given new limit`);
@@ -674,7 +674,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '100',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
@@ -699,7 +699,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '1625',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, `Didn't update the tradeDetails object to the new calcs given new limit`);
@@ -724,7 +724,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '1625',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, `Didn't update the tradeDetails object to the new calcs given new limit`);
@@ -749,7 +749,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '50',
-            shareBalances: [ '0', '0' ]
+            shareBalances: ['0', '0']
           }
         }
       }, `Didn't update the tradeDetails object to the new calcs given new limit`);

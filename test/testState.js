@@ -62,7 +62,6 @@ const testState = {
   marketsData: {
     testMarketID: {
       author: '0x0000000000000000000000000000000000000001',
-    
       name: 'testMarket',
       description: 'some test description',
       endDate: 123,
