@@ -18,21 +18,14 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     const mockAugurJS = {
       augur: {
         trading: {
-          simulation: {
-            simulateTrade: augur.trading.simulation.simulateTrade
-          }
-        },
-        api: {
-          MarketFetcher: {
-            getPositionInMarket: (p, callback) => {
-              callback(null, ['0x0', '0x0']);
-            }
-          }
-        },
-        rpc: { gasPrice: 20000000000 }
+          simulateTrade: augur.trading.simulation.simulateTrade
+        }
       }
     };
     const mockSelectMarket = {};
+    const mockLoadAccountPositions = {
+
+    };
     mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testBinaryMarketID);
 
     const action = proxyquire('../../../src/modules/trade/actions/update-trades-in-progress', {
@@ -318,9 +311,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     const mockAugurJS = {
       augur: {
         trading: {
-          simulation: {
-            simulateTrade: augur.trading.simulation.simulateTrade
-          }
+          simulateTrade: augur.trading.simulation.simulateTrade
         },
         api: {
           MarketFetcher: {
@@ -618,9 +609,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     const mockAugurJS = {
       augur: {
         trading: {
-          simulation: {
-            simulateTrade: augur.trading.simulation.simulateTrade
-          }
+          simulateTrade: augur.trading.simulation.simulateTrade
         },
         api: {
           MarketFetcher: {

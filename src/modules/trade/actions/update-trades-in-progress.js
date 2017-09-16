@@ -110,12 +110,17 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
     // trade actions
     if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.address) {
       const market = selectMarket(marketID);
-      dispatch(loadAccountPositions({ market: marketID }, (err, positionInMarket) => {
-        if (err) return dispatch({ type: UPDATE_TRADE_IN_PROGRESS, data: { marketID, outcomeID, details: newTradeDetails } });
-        const simulatedTrade = augur.trading.simulation.simulateTrade({
+      dispatch(loadAccountPositions({ market: marketID }, (err, accountPositions) => {
+        if (err) {
+          return dispatch({
+            type: UPDATE_TRADE_IN_PROGRESS,
+            data: { marketID, outcomeID, details: newTradeDetails }
+          });
+        }
+        const simulatedTrade = augur.trading.simulateTrade({
           orderType: newTradeDetails.side === BUY ? 0 : 1,
           outcome: parseInt(outcomeID, 10),
-          shareBalances: positionInMarket.map(position => new BigNumber(position, 16).toFixed()),
+          shareBalances: accountPositions,
           tokenBalance: loginAccount.ethTokens.toString(),
           userAddress: loginAccount.address,
           minPrice: market.minPrice,
