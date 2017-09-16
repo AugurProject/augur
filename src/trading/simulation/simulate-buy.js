@@ -1,9 +1,9 @@
 "use strict";
 
-var filterByPriceAndOutcomeAndUserSortByPrice = require("./filter-by-price-and-outcome-and-user-sort-by-price");
 var simulateMakeBidOrder = require("./simulate-make-bid-order");
 var simulateTakeAskOrder = require("./simulate-take-ask-order");
 var sumSimulatedResults = require("./sum-simulated-results");
+var filterByPriceAndOutcomeAndUserSortByPrice = require("../order-book/filter-by-price-and-outcome-and-user-sort-by-price");
 var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;

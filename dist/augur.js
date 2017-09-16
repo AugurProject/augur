@@ -1340,7 +1340,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.1.7";
+  this.version = "4.1.8";
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
@@ -2419,13 +2419,13 @@ module.exports = getTradeAmountRemaining;
 module.exports = {
   orderBook: require("./order-book"),
   claimMarketsProceeds: require("./claim-markets-proceeds"),
-  simulation: require("./simulation"),
+  simulateTrade: require("./simulation"),
   calculateProfitLoss: require("./profit-loss"),
   normalizePrice: require("./normalize-price"),
   denormalizePrice: require("./denormalize-price"),
   tradeUntilAmountIsZero: require("./trade-until-amount-is-zero")
 };
-},{"./claim-markets-proceeds":77,"./denormalize-price":78,"./normalize-price":81,"./order-book":86,"./profit-loss":94,"./simulation":105,"./trade-until-amount-is-zero":114}],81:[function(require,module,exports){
+},{"./claim-markets-proceeds":77,"./denormalize-price":78,"./normalize-price":81,"./order-book":88,"./profit-loss":96,"./simulation":105,"./trade-until-amount-is-zero":114}],81:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -2472,6 +2472,17 @@ module.exports = addOrder;
 },{"clone":214}],83:[function(require,module,exports){
 "use strict";
 
+module.exports = {
+  1: function _(order1, order2) {
+    return order1.fullPrecisionPrice - order2.fullPrecisionPrice;
+  },
+  2: function _(order1, order2) {
+    return order2.fullPrecisionPrice - order1.fullPrecisionPrice;
+  }
+};
+},{}],84:[function(require,module,exports){
+"use strict";
+
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var roundToPrecision = require("../../utils/round-to-precision");
@@ -2495,7 +2506,41 @@ function fillOrder(orderID, amount, filledOrderType, orderBook) {
 }
 
 module.exports = fillOrder;
-},{"../../constants":18,"../../utils/round-to-precision":122,"bignumber.js":176,"clone":214}],84:[function(require,module,exports){
+},{"../../constants":18,"../../utils/round-to-precision":122,"bignumber.js":176,"clone":214}],85:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var compareOrdersByPrice = require("./compare-orders-by-price");
+
+/**
+ * Bids are sorted descendingly, asks are sorted ascendingly.
+ * @param {require("./simulate-trade").OrderBook} orderBook Bids or asks
+ * @param {number} orderType Order type (0 for "buy", 1 for "sell").
+ * @param {string} price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
+ * @param {string} userAddress The user's Ethereum address, as a hexadecimal string.
+ * @return {require("./simulate-trade").OrderBook} Filtered and sorted orders.
+ */
+function filterByPriceAndOutcomeAndUserSortByPrice(orderBook, orderType, price, userAddress) {
+  var isMarketOrder, filteredOrders;
+  if (!orderBook) return [];
+  isMarketOrder = price == null;
+  filteredOrders = Object.keys(orderBook).map(function (orderId) {
+    return orderBook[orderId];
+  }).filter(function (order) {
+    var isMatchingPrice;
+    if (!order || !order.fullPrecisionPrice) return false;
+    if (isMarketOrder) {
+      isMatchingPrice = true;
+    } else {
+      isMatchingPrice = orderType === 0 ? new BigNumber(order.fullPrecisionPrice, 10).lte(price) : new BigNumber(order.fullPrecisionPrice, 10).gte(price);
+    }
+    return order.owner !== userAddress && isMatchingPrice;
+  });
+  return filteredOrders.sort(compareOrdersByPrice[orderType]);
+}
+
+module.exports = filterByPriceAndOutcomeAndUserSortByPrice;
+},{"./compare-orders-by-price":83,"bignumber.js":176}],86:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -2551,7 +2596,7 @@ function getOrderBookChunked(p, onChunkReceived, onComplete) {
 }
 
 module.exports = getOrderBookChunked;
-},{"../../api":11,"../../constants":18,"../../utils/is-function":116,"../../utils/noop":120,"./get-order-book":85,"lodash.assign":436}],85:[function(require,module,exports){
+},{"../../api":11,"../../constants":18,"../../utils/is-function":116,"../../utils/noop":120,"./get-order-book":87,"lodash.assign":436}],87:[function(require,module,exports){
 "use strict";
 
 /** Type definition for SingleOutcomeOrderBookSide.
@@ -2594,7 +2639,7 @@ function getOrderBook(p, callback) {
 }
 
 module.exports = getOrderBook;
-},{"../../api":11,"../../parsers/order-book":62}],86:[function(require,module,exports){
+},{"../../api":11,"../../parsers/order-book":62}],88:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -2602,9 +2647,10 @@ module.exports = {
   fillOrder: require("./fill-order"),
   getOrderBook: require("./get-order-book"),
   getOrderBookChunked: require("./get-order-book-chunked"),
-  removeOrder: require("./remove-order")
+  removeOrder: require("./remove-order"),
+  filterByPriceAndOutcomeAndUserSortByPrice: require("./filter-by-price-and-outcome-and-user-sort-by-price")
 };
-},{"./add-order":82,"./fill-order":83,"./get-order-book":85,"./get-order-book-chunked":84,"./remove-order":87}],87:[function(require,module,exports){
+},{"./add-order":82,"./fill-order":84,"./filter-by-price-and-outcome-and-user-sort-by-price":85,"./get-order-book":87,"./get-order-book-chunked":86,"./remove-order":89}],89:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -2621,7 +2667,7 @@ function removeOrder(orderID, orderType, orderBook) {
 }
 
 module.exports = removeOrder;
-},{"immutable-delete":413,"lodash.assign":436}],88:[function(require,module,exports){
+},{"immutable-delete":413,"lodash.assign":436}],90:[function(require,module,exports){
 "use strict";
 
 var longerPositionPL = require("./longer-position-pl");
@@ -2644,7 +2690,7 @@ function calculateMakerPL(PL, type, price, shares) {
 }
 
 module.exports = calculateMakerPL;
-},{"./longer-position-pl":95,"./shorter-position-pl":97}],89:[function(require,module,exports){
+},{"./longer-position-pl":97,"./shorter-position-pl":99}],91:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -2707,7 +2753,7 @@ function calculateProfitLoss(p) {
 }
 
 module.exports = calculateProfitLoss;
-},{"../../constants":18,"./calculate-trades-pl":92,"./calculate-unrealized-pl":93,"./update-realized-pl":99,"bignumber.js":176,"immutable-delete":413}],90:[function(require,module,exports){
+},{"../../constants":18,"./calculate-trades-pl":94,"./calculate-unrealized-pl":95,"./update-realized-pl":101,"bignumber.js":176,"immutable-delete":413}],92:[function(require,module,exports){
 "use strict";
 
 var longerPositionPL = require("./longer-position-pl");
@@ -2730,7 +2776,7 @@ function calculateTakerPL(PL, type, price, shares) {
 }
 
 module.exports = calculateTakerPL;
-},{"./longer-position-pl":95,"./shorter-position-pl":97}],91:[function(require,module,exports){
+},{"./longer-position-pl":97,"./shorter-position-pl":99}],93:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -2753,7 +2799,7 @@ function calculateTradePL(PL, trade) {
 }
 
 module.exports = calculateTradePL;
-},{"./calculate-maker-pl":88,"./calculate-taker-pl":90,"./sell-complete-sets-pl":96,"speedomatic":532}],92:[function(require,module,exports){
+},{"./calculate-maker-pl":90,"./calculate-taker-pl":92,"./sell-complete-sets-pl":98,"speedomatic":532}],94:[function(require,module,exports){
 "use strict";
 
 var calculateTradePL = require("./calculate-trade-pl");
@@ -2770,7 +2816,7 @@ function calculateTradesPL(PL, trades) {
 }
 
 module.exports = calculateTradesPL;
-},{"./calculate-trade-pl":91}],93:[function(require,module,exports){
+},{"./calculate-trade-pl":93}],95:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -2783,11 +2829,11 @@ function calculateUnrealizedPL(position, meanOpenPrice, lastTradePrice) {
 }
 
 module.exports = calculateUnrealizedPL;
-},{"../../constants":18,"speedomatic":532}],94:[function(require,module,exports){
+},{"../../constants":18,"speedomatic":532}],96:[function(require,module,exports){
 "use strict";
 
 module.exports = require("./calculate-profit-loss");
-},{"./calculate-profit-loss":89}],95:[function(require,module,exports){
+},{"./calculate-profit-loss":91}],97:[function(require,module,exports){
 "use strict";
 
 var updateMeanOpenPrice = require("./update-mean-open-price");
@@ -2846,7 +2892,7 @@ function longerPositionPL(PL, shares, price) {
 }
 
 module.exports = longerPositionPL;
-},{"../../constants":18,"./update-mean-open-price":98}],96:[function(require,module,exports){
+},{"../../constants":18,"./update-mean-open-price":100}],98:[function(require,module,exports){
 "use strict";
 
 var updateRealizedPL = require("./update-realized-pl");
@@ -2889,7 +2935,7 @@ function sellCompleteSetsPL(PL, shares, price) {
 }
 
 module.exports = sellCompleteSetsPL;
-},{"../../constants":18,"./update-realized-pl":99}],97:[function(require,module,exports){
+},{"../../constants":18,"./update-realized-pl":101}],99:[function(require,module,exports){
 "use strict";
 
 var updateMeanOpenPrice = require("./update-mean-open-price");
@@ -2937,7 +2983,7 @@ function shorterPositionPL(PL, shares, price) {
 }
 
 module.exports = shorterPositionPL;
-},{"../../constants":18,"./update-mean-open-price":98,"./update-realized-pl":99}],98:[function(require,module,exports){
+},{"../../constants":18,"./update-mean-open-price":100,"./update-realized-pl":101}],100:[function(require,module,exports){
 "use strict";
 
 function updateMeanOpenPrice(position, meanOpenPrice, shares, price) {
@@ -2945,7 +2991,7 @@ function updateMeanOpenPrice(position, meanOpenPrice, shares, price) {
 }
 
 module.exports = updateMeanOpenPrice;
-},{}],99:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 "use strict";
 
 function updateRealizedPL(meanOpenPrice, realized, shares, price) {
@@ -2953,7 +2999,7 @@ function updateRealizedPL(meanOpenPrice, realized, shares, price) {
 }
 
 module.exports = updateRealizedPL;
-},{}],100:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -2969,7 +3015,7 @@ function calculateNearlyCompleteSets(outcomeID, desiredShares, shareBalances) {
 }
 
 module.exports = calculateNearlyCompleteSets;
-},{"bignumber.js":176}],101:[function(require,module,exports){
+},{"bignumber.js":176}],103:[function(require,module,exports){
 "use strict";
 
 var constants = require("../../constants");
@@ -2986,18 +3032,7 @@ function calculateSettlementFee(completeSets, marketCreatorFeeRate, range, shoul
 }
 
 module.exports = calculateSettlementFee;
-},{"../../constants":18}],102:[function(require,module,exports){
-"use strict";
-
-module.exports = {
-  1: function _(order1, order2) {
-    return order1.fullPrecisionPrice - order2.fullPrecisionPrice;
-  },
-  2: function _(order1, order2) {
-    return order2.fullPrecisionPrice - order1.fullPrecisionPrice;
-  }
-};
-},{}],103:[function(require,module,exports){
+},{"../../constants":18}],104:[function(require,module,exports){
 "use strict";
 
 function depleteOtherShareBalances(outcomeID, sharesDepleted, shareBalances) {
@@ -3010,54 +3045,17 @@ function depleteOtherShareBalances(outcomeID, sharesDepleted, shareBalances) {
 }
 
 module.exports = depleteOtherShareBalances;
-},{}],104:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 "use strict";
 
-var BigNumber = require("bignumber.js");
-var compareOrdersByPrice = require("./compare-orders-by-price");
-
-/**
- * Bids are sorted descendingly, asks are sorted ascendingly.
- * @param {require("./simulate-trade").OrderBook} orderBook Bids or asks
- * @param {number} orderType Order type (0 for "buy", 1 for "sell").
- * @param {string} price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
- * @param {string} userAddress The user's Ethereum address, as a hexadecimal string.
- * @return {require("./simulate-trade").OrderBook} Filtered and sorted orders.
- */
-function filterByPriceAndOutcomeAndUserSortByPrice(orderBook, orderType, price, userAddress) {
-  var isMarketOrder, filteredOrders;
-  if (!orderBook) return [];
-  isMarketOrder = price == null;
-  filteredOrders = Object.keys(orderBook).map(function (orderId) {
-    return orderBook[orderId];
-  }).filter(function (order) {
-    var isMatchingPrice;
-    if (!order || !order.fullPrecisionPrice) return false;
-    if (isMarketOrder) {
-      isMatchingPrice = true;
-    } else {
-      isMatchingPrice = orderType === 0 ? new BigNumber(order.fullPrecisionPrice, 10).lte(price) : new BigNumber(order.fullPrecisionPrice, 10).gte(price);
-    }
-    return order.owner !== userAddress && isMatchingPrice;
-  });
-  return filteredOrders.sort(compareOrdersByPrice[orderType]);
-}
-
-module.exports = filterByPriceAndOutcomeAndUserSortByPrice;
-},{"./compare-orders-by-price":102,"bignumber.js":176}],105:[function(require,module,exports){
+module.exports = require("./simulate-trade");
+},{"./simulate-trade":112}],106:[function(require,module,exports){
 "use strict";
 
-module.exports = {
-  filterByPriceAndOutcomeAndUserSortByPrice: require("./filter-by-price-and-outcome-and-user-sort-by-price"),
-  simulateTrade: require("./simulate-trade")
-};
-},{"./filter-by-price-and-outcome-and-user-sort-by-price":104,"./simulate-trade":112}],106:[function(require,module,exports){
-"use strict";
-
-var filterByPriceAndOutcomeAndUserSortByPrice = require("./filter-by-price-and-outcome-and-user-sort-by-price");
 var simulateMakeBidOrder = require("./simulate-make-bid-order");
 var simulateTakeAskOrder = require("./simulate-take-ask-order");
 var sumSimulatedResults = require("./sum-simulated-results");
+var filterByPriceAndOutcomeAndUserSortByPrice = require("../order-book/filter-by-price-and-outcome-and-user-sort-by-price");
 var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
@@ -3090,7 +3088,7 @@ function simulateBuy(outcome, sharesToCover, shareBalances, tokenBalance, userAd
 }
 
 module.exports = simulateBuy;
-},{"../../constants":18,"./filter-by-price-and-outcome-and-user-sort-by-price":104,"./simulate-make-bid-order":108,"./simulate-take-ask-order":110,"./sum-simulated-results":113}],107:[function(require,module,exports){
+},{"../../constants":18,"../order-book/filter-by-price-and-outcome-and-user-sort-by-price":85,"./simulate-make-bid-order":108,"./simulate-take-ask-order":110,"./sum-simulated-results":113}],107:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -3165,10 +3163,10 @@ module.exports = simulateMakeBidOrder;
 },{"../../constants":18,"bignumber.js":176}],109:[function(require,module,exports){
 "use strict";
 
-var filterByPriceAndOutcomeAndUserSortByPrice = require("./filter-by-price-and-outcome-and-user-sort-by-price");
 var simulateMakeAskOrder = require("./simulate-make-ask-order");
 var simulateTakeBidOrder = require("./simulate-take-bid-order");
 var sumSimulatedResults = require("./sum-simulated-results");
+var filterByPriceAndOutcomeAndUserSortByPrice = require("../order-book/filter-by-price-and-outcome-and-user-sort-by-price");
 var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
@@ -3201,7 +3199,7 @@ function simulateSell(outcome, sharesToCover, shareBalances, tokenBalance, userA
 }
 
 module.exports = simulateSell;
-},{"../../constants":18,"./filter-by-price-and-outcome-and-user-sort-by-price":104,"./simulate-make-ask-order":107,"./simulate-take-bid-order":111,"./sum-simulated-results":113}],110:[function(require,module,exports){
+},{"../../constants":18,"../order-book/filter-by-price-and-outcome-and-user-sort-by-price":85,"./simulate-make-ask-order":107,"./simulate-take-bid-order":111,"./sum-simulated-results":113}],110:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -3282,7 +3280,7 @@ function simulateTakeAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
 }
 
 module.exports = simulateTakeAskOrder;
-},{"../../constants":18,"./calculate-nearly-complete-sets":100,"./calculate-settlement-fee":101,"./deplete-other-share-balances":103,"bignumber.js":176}],111:[function(require,module,exports){
+},{"../../constants":18,"./calculate-nearly-complete-sets":102,"./calculate-settlement-fee":103,"./deplete-other-share-balances":104,"bignumber.js":176}],111:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -3360,7 +3358,7 @@ function simulateTakeBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
 }
 
 module.exports = simulateTakeBidOrder;
-},{"../../constants":18,"./calculate-settlement-fee":101,"bignumber.js":176}],112:[function(require,module,exports){
+},{"../../constants":18,"./calculate-settlement-fee":103,"bignumber.js":176}],112:[function(require,module,exports){
 "use strict";
 
 /** Type definition for SingleOutcomeOrderBook.
