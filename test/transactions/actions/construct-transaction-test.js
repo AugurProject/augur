@@ -33,7 +33,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
   const MOCK_ACTION_TYPES = {
     LOAD_MARKET_THEN_RETRY_CONVERSION: 'LOAD_MARKET_THEN_RETRY_CONVERSION',
-    LOOKUP_EVENT_MARKETS_THEN_RETRY_CONVERSION: 'LOOKUP_EVENT_MARKETS_THEN_RETRY_CONVERSION',
     UPDATE_MARKETS_WITH_ACCOUNT_REPORT_DATA: 'UPDATE_MARKETS_WITH_ACCOUNT_REPORT_DATA',
     CONSTRUCT_TAKE_ORDER_TRANSACTION: 'CONSTRUCT_TAKE_ORDER_TRANSACTION',
     CONSTRUCT_MAKE_ORDER_TRANSACTION: 'CONSTRUCT_MAKE_ORDER_TRANSACTION',
@@ -210,8 +209,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       assertions: (store) => {
         const label = 'label';
         const log = {
-          market: '0xMARKETID',
-          event: '0xEVENTID'
+          market: '0xMARKETID'
         };
         const isRetry = false;
         const callback = () => {};
@@ -239,8 +237,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       assertions: (store) => {
         const label = 'label';
         const log = {
-          market: '0xMARKETID',
-          event: '0xEVENTID'
+          market: '0xMARKETID'
         };
         const isRetry = true;
         const callback = sinon.stub();
@@ -266,8 +263,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       assertions: (store) => {
         const label = 'label';
         const log = {
-          market: '0xMARKETID',
-          event: '0xEVENTID'
+          market: '0xMARKETID'
         };
         const isRetry = false;
         const callback = sinon.stub();
@@ -619,7 +615,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           topic: 'Testing',
           marketCreationFee: formatEtherTokens(log.marketCreationFee),
           bond: {
-            label: 'event validity',
+            label: 'validity',
             value: formatEtherTokens(log.validityBond)
           },
           message: 'created market'
@@ -652,7 +648,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           topic: 'Testing',
           marketCreationFee: formatEtherTokens(log.marketCreationFee),
           bond: {
-            label: 'event validity',
+            label: 'validity',
             value: formatEtherTokens(log.validityBond)
           },
           message: 'creating market'
