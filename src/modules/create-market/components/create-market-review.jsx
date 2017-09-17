@@ -24,10 +24,6 @@ export default class CreateMarketReview extends Component {
       PropTypes.string,
       PropTypes.number
     ]).isRequired,
-    makerFee: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ]).isRequired,
   };
 
   constructor(props) {

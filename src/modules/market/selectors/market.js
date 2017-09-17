@@ -190,7 +190,6 @@ export function assembleMarket(
       market.isFavorite = isFavorite;
 
       market.settlementFeePercent = formatPercent(marketData.settlementFee * 100, { positiveSign: false });
-      market.makerFeePercent = formatPercent(marketData.makerFee * 100, { positiveSign: false });
       market.volume = formatShares(marketData.volume, { positiveSign: false });
 
       market.isRequiredToReportByAccount = !!marketReport; // was the user chosen to report on this market
