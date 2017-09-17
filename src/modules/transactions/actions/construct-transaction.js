@@ -1,7 +1,5 @@
 import BigNumber from 'bignumber.js';
 import { strip0xPrefix } from 'speedomatic';
-import { constants } from 'services/augurjs';
-import { ZERO } from 'modules/trade/constants/numbers';
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
 import * as TYPES from 'modules/transactions/constants/types';
 import { formatEtherTokens, formatEther, formatRep, formatShares } from 'utils/format-number';
@@ -12,8 +10,9 @@ import { updateMarketsWithAccountReportData } from 'modules/my-reports/actions/u
 
 export function loadDataForMarketTransaction(label, log, isRetry, callback) {
   return (dispatch, getState) => {
+    const { marketsData } = getState();
     const marketID = log.marketID || log.market;
-    const market = getState().marketsData[marketID];
+    const market = marketsData[marketID];
     if (!market || !market.description) {
       if (isRetry) return callback(log);
       return dispatch(loadMarketThenRetryConversion(marketID, label, log, callback));
@@ -121,60 +120,6 @@ export function constructPayoutTransaction(log, market, dispatch) {
   return transaction;
 }
 
-export function constructPenalizeTransaction(log, marketID, market, outcomes, dispatch) {
-  const transaction = { data: {} };
-  transaction.type = 'Compare Report To Consensus';
-  const formattedReport = formatReportedOutcome(log.reportValue, market.minPrice, market.maxPrice, market.type, outcomes);
-  const formattedOutcome = formatReportedOutcome(log.outcome, market.minPrice, market.maxPrice, market.type, outcomes);
-  console.log('formattedReport:', formattedReport);
-  console.log('formattedOutcome:', formattedOutcome);
-  transaction.description = market.description;
-  transaction.data.marketID = marketID || null;
-  if (log.repchange) {
-    let repPenalty;
-    let repBalance;
-    const repChange = new BigNumber(log.repchange, 10);
-    if (repChange.lt(constants.ZERO)) {
-      repPenalty = repChange;
-      repBalance = new BigNumber(log.oldrep).plus(new BigNumber(log.repchange, 10)).toFixed();
-    } else {
-      repPenalty = constants.ZERO;
-      repBalance = log.oldrep;
-    }
-    transaction.data.balances = [{
-      change: formatRep(repPenalty, { positiveSign: true }),
-      balance: formatRep(repBalance)
-    }];
-    if (!log.inProgress) {
-      dispatch(updateMarketsWithAccountReportData({
-        [marketID]: {
-          repEarned: repPenalty,
-          repBalance
-        }
-      }));
-    }
-  }
-  if (log.inProgress) {
-    transaction.message = 'comparing report to consensus';
-  } else if (log.reportValue === log.outcome) {
-    transaction.message = `✔ report ${formattedReport} matches consensus`;
-  } else {
-    transaction.message = `✘ report ${formattedReport} does not match consensus ${formattedOutcome}`;
-  }
-  if (!log.inProgress) {
-    dispatch(updateMarketsWithAccountReportData({
-      [marketID]: {
-        marketOutcome: formattedOutcome,
-        proportionCorrect: market.proportionCorrect,
-        isIndeterminate: market.isIndeterminate,
-        isChallenged: false,
-        isChallengeable: false
-      }
-    }));
-  }
-  return transaction;
-}
-
 export function constructSubmitReportTransaction(log, marketID, market, outcomes, dispatch) {
   const transaction = { data: {} };
   transaction.type = TYPES.SUBMIT_REPORT;
@@ -206,33 +151,7 @@ export const constructMakeOrderTransaction = (trade, marketID, marketType, descr
 };
 
 export const constructCancelOrderTransaction = (trade, marketID, marketType, description, outcomeID, outcomeName, status) => (dispatch, getState) => {
-  const price = formatEtherTokens(trade.price);
-  const shares = formatShares(trade.amount);
-  const action = trade.inProgress ? 'canceling' : 'canceled';
-  return {
-    [trade.transactionHash]: {
-      type: TYPES.CANCEL_ORDER,
-      status,
-      description,
-      data: {
-        order: { type: trade.type, shares },
-        marketType,
-        outcome: { name: outcomeName || outcomeID },
-        outcomeID,
-        marketID
-      },
-      message: `${action} order to ${trade.type} ${shares.full} for ${price.full} each`,
-      numShares: shares,
-      noFeePrice: price,
-      avgPrice: price,
-      timestamp: formatDate(new Date(trade.timestamp * 1000)),
-      hash: trade.transactionHash,
-      totalReturn: trade.inProgress ? null : formatEtherTokens(trade.cashRefund),
-      gasFees: trade.gasFees && new BigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
-      blockNumber: trade.blockNumber,
-      orderId: trade.orderId
-    }
-  };
+
 };
 
 export const constructTradingTransaction = (label, trade, marketID, outcomeID, status) => (dispatch, getState) => {
@@ -263,26 +182,17 @@ export const constructTradingTransaction = (label, trade, marketID, outcomeID, s
   }
 };
 
-export const constructMarketTransaction = (label, log, market) => (dispatch, getState) => {
-  switch (label) {
-    case TYPES.PAYOUT:
-      return constructPayoutTransaction(log, market, dispatch);
-    default:
-      return null;
-  }
-};
-
 export const constructTransaction = (label, log, isRetry, callback) => (dispatch, getState) => {
   switch (label) {
     case TYPES.APPROVAL:
       return constructApprovalTransaction(log);
     case TYPES.REGISTRATION:
       return constructRegistrationTransaction(log);
-    case TYPES.TRANSFER:
-      if (getState().transactionsData[log.transactionHash]) return null;
-      return constructTransferTransaction(log, getState().loginAccount.address);
+    case TYPES.TRANSFER: {
+      const { loginAccount } = getState();
+      return constructTransferTransaction(log, loginAccount.address);
+    }
     case TYPES.CREATE_MARKET: {
-      if (log.description) return constructCreateMarketTransaction(log, log.description, dispatch);
       const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
       if (!market || !market.description) break;
       return constructCreateMarketTransaction(log, market.description, dispatch);
@@ -290,7 +200,7 @@ export const constructTransaction = (label, log, isRetry, callback) => (dispatch
     case TYPES.PAYOUT: {
       const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
       if (!market || !market.description) break;
-      return dispatch(constructMarketTransaction(label, log, market));
+      return constructPayoutTransaction(log, market, dispatch);
     }
     case TYPES.SUBMIT_REPORT: {
       const aux = dispatch(loadDataForReportingTransaction(label, log, isRetry, callback));

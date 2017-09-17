@@ -1015,37 +1015,4 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       }
     });
   });
-
-  describe('constructMarketTransaction', () => {
-    const { __RewireAPI__, constructMarketTransaction } = require('../../../src/modules/transactions/actions/construct-transaction');
-
-    const test = t => it(t.description, () => {
-      const store = mockStore();
-      t.assertions(store);
-    });
-
-    test({
-      description: `should call the expected method for label 'Payout'`,
-      assertions: (store) => {
-        __RewireAPI__.__set__('constructPayoutTransaction', () => 'constructPayoutTransaction');
-
-        const actual = store.dispatch(constructMarketTransaction('Payout'));
-
-        const expected = 'constructPayoutTransaction';
-
-        assert.strictEqual(actual, expected, `Didn't call the expected method`);
-      }
-    });
-
-    test({
-      description: `should dispatch the expected method for default label`,
-      assertions: (store) => {
-        const actual = store.dispatch(constructMarketTransaction(undefined));
-
-        const expected = null;
-
-        assert.strictEqual(actual, expected, `Didn't return the expected value`);
-      }
-    });
-  });
 });

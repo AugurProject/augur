@@ -7,6 +7,7 @@ import getReportingCycle from 'modules/branch/selectors/reporting-cycle';
 import { syncBlockchain } from 'modules/app/actions/sync-blockchain';
 import { listenToUpdates } from 'modules/app/actions/listen-to-updates';
 import { loadTopics } from 'modules/topics/actions/load-topics';
+import { loadMarketsToReportOn } from 'modules/reports/actions/load-markets-to-report-on';
 import logError from 'utils/log-error';
 
 export const loadBranch = (branchID, callback = logError) => (dispatch, getState) => {
@@ -35,5 +36,6 @@ export const loadBranch = (branchID, callback = logError) => (dispatch, getState
       callback(null);
     }));
     dispatch(loadTopics());
+    dispatch(loadMarketsToReportOn());
   });
 };

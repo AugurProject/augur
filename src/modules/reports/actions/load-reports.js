@@ -6,6 +6,7 @@ import logError from 'utils/log-error';
 export const loadReports = (options, callback = logError) => (dispatch, getState) => {
   const { branch, env, loginAccount } = getState();
   if (!loginAccount.address) return callback(null);
+  if (!loginAccount.rep || loginAccount.rep === '0') return callback(null);
   if (!branch.id) return callback(null);
   const query = { ...options, branch: branch.id, reporter: loginAccount.address };
   loadDataFromAugurNode(env.augurNodeURL, 'getReports', query, (err, reports) => {

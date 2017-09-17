@@ -146,9 +146,7 @@ export function assembleMarket(
       orderCancellation,
       smallestPosition,
       loginAccount,
-      dispatch) => { // console.log('>>assembleMarket<<');
-
-      // console.log('### Assemble Market ### -- ', marketID);
+      dispatch) => {
 
       const market = {
         ...marketData,
