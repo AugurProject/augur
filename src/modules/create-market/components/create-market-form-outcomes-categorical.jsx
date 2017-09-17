@@ -73,7 +73,7 @@ export default class CreateMarketFormOutcomesCategorical extends Component {
         <div className="create-market-form-part-input">
           <aside>
             <h3>Potential Outcomes</h3>
-            <span>Input between <strong>two</strong> - <strong>eight</strong> potential outcomes for this event.</span>
+            <span>Input between <strong>two</strong> - <strong>eight</strong> potential outcomes for this market.</span>
           </aside>
           <div className="vertical-form-divider" />
           <form

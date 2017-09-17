@@ -21,7 +21,6 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
         outcomes: {
           test: {}
         },
-        eventID: 'testEvent',
         volume: {
           value: 5
         }
@@ -31,7 +30,6 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
         outcomes: {
           test2: {}
         },
-        eventID: 'testEvent2',
         volume: {
           value: 10
         }
@@ -41,7 +39,6 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
         outcomes: {
           test3: {}
         },
-        eventID: 'testEvent3',
         volume: {
           value: 7
         }

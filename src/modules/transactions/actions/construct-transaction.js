@@ -8,7 +8,7 @@ import { formatEtherTokens, formatEther, formatRep, formatShares } from 'utils/f
 import { formatDate } from 'utils/format-date';
 import { formatReportedOutcome } from 'modules/reports/selectors/reportable-outcomes';
 import { loadMarketThenRetryConversion } from 'modules/transactions/actions/retry-conversion';
-import { updateEventsWithAccountReportData } from 'modules/my-reports/actions/update-events-with-account-report-data';
+import { updateMarketsWithAccountReportData } from 'modules/my-reports/actions/update-markets-with-account-report-data';
 
 export function loadDataForMarketTransaction(label, log, isRetry, callback) {
   return (dispatch, getState) => {
@@ -97,7 +97,7 @@ export function constructCreateMarketTransaction(log, description, dispatch) {
   transaction.topic = log.topic;
   transaction.marketCreationFee = formatEtherTokens(log.marketCreationFee);
   transaction.data.marketID = log.marketID ? log.marketID : null;
-  transaction.bond = { label: 'event validity', value: formatEtherTokens(log.eventBond) };
+  transaction.bond = { label: 'validity', value: formatEtherTokens(log.validityBond) };
   const action = log.inProgress ? 'creating' : 'created';
   transaction.message = `${action} market`;
   return transaction;
@@ -146,8 +146,8 @@ export function constructPenalizeTransaction(log, marketID, market, outcomes, di
       balance: formatRep(repBalance)
     }];
     if (!log.inProgress) {
-      dispatch(updateEventsWithAccountReportData({
-        [market.eventID]: {
+      dispatch(updateMarketsWithAccountReportData({
+        [marketID]: {
           repEarned: repPenalty,
           repBalance
         }
@@ -162,8 +162,8 @@ export function constructPenalizeTransaction(log, marketID, market, outcomes, di
     transaction.message = `✘ report ${formattedReport} does not match consensus ${formattedOutcome}`;
   }
   if (!log.inProgress) {
-    dispatch(updateEventsWithAccountReportData({
-      [market.eventID]: {
+    dispatch(updateMarketsWithAccountReportData({
+      [marketID]: {
         marketOutcome: formattedOutcome,
         proportionCorrect: market.proportionCorrect,
         isIndeterminate: market.isIndeterminate,
@@ -187,8 +187,8 @@ export function constructSubmitReportTransaction(log, marketID, market, outcomes
   const action = log.inProgress ? 'revealing' : 'revealed';
   transaction.message = `${action} report: ${formatReportedOutcome(log.report, market.minPrice, market.maxPrice, market.type, outcomes)}`;
   if (!log.inProgress) {
-    dispatch(updateEventsWithAccountReportData({
-      [market.eventID]: {
+    dispatch(updateMarketsWithAccountReportData({
+      [marketID]: {
         accountReport: formattedReport,
         isSubmitted: true
       }

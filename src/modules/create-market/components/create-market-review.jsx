@@ -31,7 +31,6 @@ export default class CreateMarketReview extends Component {
 
     this.state = {
       creationFee: null,
-      marketEventBond: null,
       gasCost: null,
       initialLiquidity: {
         gas: null,
@@ -69,7 +68,7 @@ export default class CreateMarketReview extends Component {
       self.setState({
         gasCost: formatEtherEstimate(0), // FIXME real gas cost lookup
         creationFee: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
-        eventBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond)
+        validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond)
       });
     });
   }
@@ -79,7 +78,7 @@ export default class CreateMarketReview extends Component {
     const s = this.state;
 
     const creationFee = getValue(s, 'creationFee.formatted');
-    const eventBond = getValue(s, 'eventBond.formatted');
+    const validityBond = getValue(s, 'validityBond.formatted');
     const gasCost = getValue(s, 'gasCost.formatted');
     const liquidityEth = getValue(s, 'formattedInitialLiquidityEth.formatted');
     const liquidityGas = getValue(s, 'formattedInitialLiquidityGas.formatted');
@@ -111,8 +110,8 @@ export default class CreateMarketReview extends Component {
                     Bond (refundable):
                   </span>
                   <span>
-                    {eventBond}
-                    <span className="cost-denomination">{eventBond && 'ETH'}</span>
+                    {validityBond}
+                    <span className="cost-denomination">{validityBond && 'ETH'}</span>
                   </span>
                 </li>
                 <li>

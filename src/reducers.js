@@ -22,7 +22,7 @@ import marketsFilteredSorted from 'modules/markets/reducers/markets-filtered-sor
 
 import reports from 'modules/reports/reducers/reports';
 import hasLoadedReports from 'modules/reports/reducers/has-loaded-reports';
-import eventsWithAccountReport from 'modules/my-reports/reducers/events-with-account-report';
+import marketsWithAccountReport from 'modules/my-reports/reducers/markets-with-account-report';
 
 import orderBooks from 'modules/bids-asks/reducers/order-books';
 import isFirstOrderBookChunkLoaded from 'modules/bids-asks/reducers/is-first-order-book-chunk-loaded';
@@ -77,7 +77,7 @@ export function createReducer() {
 
     reports,
     hasLoadedReports,
-    eventsWithAccountReport,
+    marketsWithAccountReport,
 
     selectedMarketID,
     topics,

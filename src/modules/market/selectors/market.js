@@ -192,8 +192,8 @@ export function assembleMarket(
       market.settlementFeePercent = formatPercent(marketData.settlementFee * 100, { positiveSign: false });
       market.volume = formatShares(marketData.volume, { positiveSign: false });
 
-      market.isRequiredToReportByAccount = !!marketReport; // was the user chosen to report on this market
-      market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportHash; // account is required to report on this unreported market during reporting phase
+      market.isRequiredToReportByAccount = !!marketReport;
+      market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportedOutcomeID; // account is required to report on this market
       market.isReported = market.isRequiredToReportByAccount && !!marketReport.reportedOutcomeID; // the user has reported on this market
       market.isReportTabVisible = market.isRequiredToReportByAccount;
 
@@ -309,11 +309,11 @@ export function assembleMarket(
 
 export const selectMarketReport = (marketID, branchReports) => {
   if (marketID && branchReports) {
-    const branchReportsEventIDs = Object.keys(branchReports);
-    const numBranchReports = branchReportsEventIDs.length;
+    const branchReportsMarketIDs = Object.keys(branchReports);
+    const numBranchReports = branchReportsMarketIDs.length;
     for (let i = 0; i < numBranchReports; ++i) {
-      if (branchReports[branchReportsEventIDs[i]].marketID === marketID) {
-        return branchReports[branchReportsEventIDs[i]];
+      if (branchReports[branchReportsMarketIDs[i]].marketID === marketID) {
+        return branchReports[branchReportsMarketIDs[i]];
       }
     }
   }
