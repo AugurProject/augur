@@ -9,9 +9,9 @@ describe('modules/account/actions/load-funding-history', () => {
   proxyquire.noPreserveCache();
   const middleware = [thunk];
   const mockStore = configureMockStore(middleware);
-  const loginAccountAddress = "0x1824c06d9a2fd617a0fd59d0bee8641c1a787bf1";
-  const branchId = "0x2714c06d9a2fd617a0fd59d0bee8641c1a787bf1";
-  const augurNodeUrl = "http://blah.blah.com";
+  const loginAccountAddress = '0x1824c06d9a2fd617a0fd59d0bee8641c1a787bf1';
+  const branchId = '0x2714c06d9a2fd617a0fd59d0bee8641c1a787bf1';
+  const augurNodeUrl = 'http://blah.blah.com';
 
   const mainState = {
     env: {
@@ -30,17 +30,17 @@ describe('modules/account/actions/load-funding-history', () => {
   }
 
   const LOGS_CONV_ACTIONS = {
-    ACTION_TRANSFER_HISTORY: { type: "CONVERT_TRANSFER_LOGS_TO_TRANSACTIONS" },
-    ACTION_APPROVAL_HISTORY: { type: "CONVERT_APPROVAL_LOGS_TO_TRANSACTIONS" },
-    ACTION_DEPOSIT_HISTORY: { type: "CONVERT_DEPOSIT_LOGS_TO_TRANSACTIONS" },
-    ACTION_WITHDRAW_HISTORY: { type: "CONVERT_WITHDRAW_LOGS_TO_TRANSACTIONS" }
+    ACTION_TRANSFER_HISTORY: { type: 'CONVERT_TRANSFER_LOGS_TO_TRANSACTIONS' },
+    ACTION_APPROVAL_HISTORY: { type: 'CONVERT_APPROVAL_LOGS_TO_TRANSACTIONS' },
+    ACTION_DEPOSIT_HISTORY: { type: 'CONVERT_DEPOSIT_LOGS_TO_TRANSACTIONS' },
+    ACTION_WITHDRAW_HISTORY: { type: 'CONVERT_WITHDRAW_LOGS_TO_TRANSACTIONS' }
   }
 
   const METHOD_LABEL_NAMES = {
-    TRANSFER_HISTORY: "getTransferHistory",
-    APPROVAL_HISTORY: "getApprovalHistory",
-    DEPOSIT_HISTORY: "getDepositEtherHistory",
-    WITHDRAW_HISTORY: "getWithdrawEtherHistory"
+    TRANSFER_HISTORY: 'getTransferHistory',
+    APPROVAL_HISTORY: 'getApprovalHistory',
+    DEPOSIT_HISTORY: 'getDepositEtherHistory',
+    WITHDRAW_HISTORY: 'getWithdrawEtherHistory'
   }
 
   const allConvertLogToTransaction = (label) => {
@@ -63,7 +63,7 @@ describe('modules/account/actions/load-funding-history', () => {
   }
 
   const configLoadDataFromAugurNode = (method, inclusive, returnError, returnVal, callback) => {
-    const entry = [{ log: "item one" }];
+    const entry = [{ log: 'item one' }];
     if (inclusive.includes(method)) {
       switch (method) {
         case METHOD_LABEL_NAMES.TRANSFER_HISTORY:
@@ -121,8 +121,8 @@ describe('modules/account/actions/load-funding-history', () => {
       configLoadDataFromAugurNode(method, inclusiveValues, null, null, callback);
     },
     assertions: (err, store) => {
-      assert.deepEqual(err, null, "no error is suppose to be");
-      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY, LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY, LOGS_CONV_ACTIONS.ACTION_DEPOSIT_HISTORY, LOGS_CONV_ACTIONS.ACTION_WITHDRAW_HISTORY], "all four actions fired");
+      assert.deepEqual(err, null, 'no error is suppose to be');
+      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY, LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY, LOGS_CONV_ACTIONS.ACTION_DEPOSIT_HISTORY, LOGS_CONV_ACTIONS.ACTION_WITHDRAW_HISTORY], 'all four actions fired');
     }
   });
 
@@ -137,8 +137,8 @@ describe('modules/account/actions/load-funding-history', () => {
       configLoadDataFromAugurNode(method, inclusiveValues, null, null, callback);
     },
     assertions: (err, store) => {
-      assert.deepEqual(err, NO_HISTORY_MESSAGES.NO_WITHDRAW_HISTORY, "error is suppose to be no deposit history");
-      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY, LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY, LOGS_CONV_ACTIONS.ACTION_DEPOSIT_HISTORY], "only three action fired");
+      assert.deepEqual(err, NO_HISTORY_MESSAGES.NO_WITHDRAW_HISTORY, 'error is suppose to be no deposit history');
+      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY, LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY, LOGS_CONV_ACTIONS.ACTION_DEPOSIT_HISTORY], 'only three action fired');
     }
   });
 
@@ -153,8 +153,8 @@ describe('modules/account/actions/load-funding-history', () => {
       configLoadDataFromAugurNode(method, inclusiveValues, null, null, callback);
     },
     assertions: (err, store) => {
-      assert.deepEqual(err, NO_HISTORY_MESSAGES.NO_DEPOSIT_HISTORY, "error is suppose to be no deposit history");
-      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY, LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY], "only two action fired");
+      assert.deepEqual(err, NO_HISTORY_MESSAGES.NO_DEPOSIT_HISTORY, 'error is suppose to be no deposit history');
+      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY, LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY], 'only two action fired');
     }
   });
 
@@ -166,11 +166,11 @@ describe('modules/account/actions/load-funding-history', () => {
     },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.TRANSFER_HISTORY, METHOD_LABEL_NAMES.APPROVAL_HISTORY, METHOD_LABEL_NAMES.DEPOSIT_HISTORY];
-      configLoadDataFromAugurNode(method, inclusiveValues, "ERROR", null, callback);
+      configLoadDataFromAugurNode(method, inclusiveValues, 'ERROR', null, callback);
     },
     assertions: (err, store) => {
-      assert.deepEqual(err, "ERROR", "error is suppose to happen");
-      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY, LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY, LOGS_CONV_ACTIONS.ACTION_DEPOSIT_HISTORY], "all four actions fired");
+      assert.deepEqual(err, 'ERROR', 'error is suppose to happen');
+      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY, LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY, LOGS_CONV_ACTIONS.ACTION_DEPOSIT_HISTORY], 'all four actions fired');
     }
   });
 
@@ -182,11 +182,11 @@ describe('modules/account/actions/load-funding-history', () => {
     },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.TRANSFER_HISTORY, METHOD_LABEL_NAMES.APPROVAL_HISTORY];
-      configLoadDataFromAugurNode(method, inclusiveValues, "ERROR", null, callback);
+      configLoadDataFromAugurNode(method, inclusiveValues, 'ERROR', null, callback);
     },
     assertions: (err, store) => {
-      assert.deepEqual(err, "ERROR", "error is suppose to happen");
-      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY, LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY], "only two action fired");
+      assert.deepEqual(err, 'ERROR', 'error is suppose to happen');
+      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY, LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY], 'only two action fired');
     }
   });
 
@@ -198,11 +198,11 @@ describe('modules/account/actions/load-funding-history', () => {
     },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.TRANSFER_HISTORY];
-      configLoadDataFromAugurNode(method, inclusiveValues, "ERROR", null, callback);
+      configLoadDataFromAugurNode(method, inclusiveValues, 'ERROR', null, callback);
     },
     assertions: (err, store) => {
-      assert.deepEqual(err, "ERROR", "error is suppose to occur");
-      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY], "only one action fired");
+      assert.deepEqual(err, 'ERROR', 'error is suppose to occur');
+      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY], 'only one action fired');
     }
   });
 
@@ -214,10 +214,10 @@ describe('modules/account/actions/load-funding-history', () => {
     },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [];
-      configLoadDataFromAugurNode(method, inclusiveValues, "ERROR", null, callback);
+      configLoadDataFromAugurNode(method, inclusiveValues, 'ERROR', null, callback);
     },
     assertions: (err, store) => {
-      assert.deepEqual(err, "ERROR", `error was returned`);
+      assert.deepEqual(err, 'ERROR', `error was returned`);
       assert.deepEqual(store.getActions(), [], `Didn't fire the expected empty actions array`);
     }
   });
@@ -233,8 +233,8 @@ describe('modules/account/actions/load-funding-history', () => {
       configLoadDataFromAugurNode(method, inclusiveValues, null, null, callback);
     },
     assertions: (err, store) => {
-      assert.deepEqual(err, NO_HISTORY_MESSAGES.NO_APPROVAL_HISTORY, "error is suppose no approaval history");
-      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY], "only one action fired");
+      assert.deepEqual(err, NO_HISTORY_MESSAGES.NO_APPROVAL_HISTORY, 'error is suppose no approaval history');
+      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY], 'only one action fired');
     }
   });
 
@@ -248,8 +248,8 @@ describe('modules/account/actions/load-funding-history', () => {
       configLoadDataFromAugurNode(method, inclusiveValues, null, [], callback);
     },
     assertions: (err, store) => {
-      assert.isNull(err, "error is suppose to be null");
-      assert.deepEqual(store.getActions(), [], "no actions fired");
+      assert.isNull(err, 'error is suppose to be null');
+      assert.deepEqual(store.getActions(), [], 'no actions fired');
     }
   });
 
@@ -264,8 +264,8 @@ describe('modules/account/actions/load-funding-history', () => {
       configLoadDataFromAugurNode(method, inclusiveValues, null, [], callback);
     },
     assertions: (err, store) => {
-      assert.deepEqual(err, null, "no error is suppose to be");
-      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY, LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY, LOGS_CONV_ACTIONS.ACTION_DEPOSIT_HISTORY], "only three actions fired");
+      assert.deepEqual(err, null, 'no error is suppose to be');
+      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY, LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY, LOGS_CONV_ACTIONS.ACTION_DEPOSIT_HISTORY], 'only three actions fired');
     }
   });
 
@@ -280,8 +280,8 @@ describe('modules/account/actions/load-funding-history', () => {
       configLoadDataFromAugurNode(method, inclusiveValues, null, [], callback);
     },
     assertions: (err, store) => {
-      assert.deepEqual(err, null, "no error is suppose to be");
-      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY, LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY, LOGS_CONV_ACTIONS.ACTION_WITHDRAW_HISTORY], "only three actions fired");
+      assert.deepEqual(err, null, 'no error is suppose to be');
+      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY, LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY, LOGS_CONV_ACTIONS.ACTION_WITHDRAW_HISTORY], 'only three actions fired');
     }
   });
 
@@ -293,11 +293,11 @@ describe('modules/account/actions/load-funding-history', () => {
     },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.WITHDRAW_HISTORY, METHOD_LABEL_NAMES.APPROVAL_HISTORY, METHOD_LABEL_NAMES.DEPOSIT_HISTORY];
-      configLoadDataFromAugurNode(method, inclusiveValues, null, { log: "blah" }, callback);
+      configLoadDataFromAugurNode(method, inclusiveValues, null, { log: 'blah' }, callback);
     },
     assertions: (err, store) => {
-      assert.deepEqual(err, null, "no error is suppose to be");
-      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY, LOGS_CONV_ACTIONS.ACTION_DEPOSIT_HISTORY, LOGS_CONV_ACTIONS.ACTION_WITHDRAW_HISTORY], "only three actions fired");
+      assert.deepEqual(err, null, 'no error is suppose to be');
+      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY, LOGS_CONV_ACTIONS.ACTION_DEPOSIT_HISTORY, LOGS_CONV_ACTIONS.ACTION_WITHDRAW_HISTORY], 'only three actions fired');
     }
   });
 
@@ -309,11 +309,11 @@ describe('modules/account/actions/load-funding-history', () => {
     },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.TRANSFER_HISTORY, METHOD_LABEL_NAMES.APPROVAL_HISTORY, METHOD_LABEL_NAMES.DEPOSIT_HISTORY];
-      configLoadDataFromAugurNode(method, inclusiveValues, null, { log: "blah" }, callback);
+      configLoadDataFromAugurNode(method, inclusiveValues, null, { log: 'blah' }, callback);
     },
     assertions: (err, store) => {
-      assert.deepEqual(err, null, "no error is suppose to be");
-      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY, LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY, LOGS_CONV_ACTIONS.ACTION_DEPOSIT_HISTORY], "only three actions fired");
+      assert.deepEqual(err, null, 'no error is suppose to be');
+      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY, LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY, LOGS_CONV_ACTIONS.ACTION_DEPOSIT_HISTORY], 'only three actions fired');
     }
   });
 
@@ -325,11 +325,11 @@ describe('modules/account/actions/load-funding-history', () => {
     },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.TRANSFER_HISTORY, METHOD_LABEL_NAMES.APPROVAL_HISTORY, METHOD_LABEL_NAMES.WITHDRAW_HISTORY];
-      configLoadDataFromAugurNode(method, inclusiveValues, null, { log: "blah" }, callback);
+      configLoadDataFromAugurNode(method, inclusiveValues, null, { log: 'blah' }, callback);
     },
     assertions: (err, store) => {
-      assert.deepEqual(err, null, "no error is suppose to be");
-      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY, LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY, LOGS_CONV_ACTIONS.ACTION_WITHDRAW_HISTORY], "only three actions fired");
+      assert.deepEqual(err, null, 'no error is suppose to be');
+      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY, LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY, LOGS_CONV_ACTIONS.ACTION_WITHDRAW_HISTORY], 'only three actions fired');
     }
   });
 
@@ -341,11 +341,11 @@ describe('modules/account/actions/load-funding-history', () => {
     },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.TRANSFER_HISTORY];
-      configLoadDataFromAugurNode(method, inclusiveValues, null, { log: "blah" }, callback);
+      configLoadDataFromAugurNode(method, inclusiveValues, null, { log: 'blah' }, callback);
     },
     assertions: (err, store) => {
-      assert.deepEqual(err, null, "no error is returned");
-      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY], "only one action fired");
+      assert.deepEqual(err, null, 'no error is returned');
+      assert.deepEqual(store.getActions(), [LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY], 'only one action fired');
     }
   });
 
@@ -356,11 +356,11 @@ describe('modules/account/actions/load-funding-history', () => {
     convertLogsToTransactions: null,
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [];
-      configLoadDataFromAugurNode(method, inclusiveValues, null, { log: "blah" }, callback);
+      configLoadDataFromAugurNode(method, inclusiveValues, null, { log: 'blah' }, callback);
     },
     assertions: (err, store) => {
-      assert.isNull(err, "error is suppose to be null");
-      assert.deepEqual(store.getActions(), [], "no actions fired");
+      assert.isNull(err, 'error is suppose to be null');
+      assert.deepEqual(store.getActions(), [], 'no actions fired');
     }
   });
 
