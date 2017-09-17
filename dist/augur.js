@@ -1340,7 +1340,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.1.8";
+  this.version = "4.1.9";
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
@@ -2779,7 +2779,7 @@ module.exports = calculateTakerPL;
 },{"./longer-position-pl":97,"./shorter-position-pl":99}],93:[function(require,module,exports){
 "use strict";
 
-var speedomatic = require("speedomatic");
+var BigNumber = require("bignumber.js");
 var calculateTakerPL = require("./calculate-taker-pl");
 var sellCompleteSetsPL = require("./sell-complete-sets-pl");
 var calculateMakerPL = require("./calculate-maker-pl");
@@ -2787,19 +2787,17 @@ var calculateMakerPL = require("./calculate-maker-pl");
 function calculateTradePL(PL, trade) {
   if (trade.isCompleteSet) {
     if (trade.type === "buy") {
-      // console.log('buy complete sets:', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), trade.amount, JSON.stringify(PL.tradeQueue));
-      return calculateTakerPL(PL, trade.type, speedomatic.bignum(trade.price), speedomatic.bignum(trade.amount));
+      return calculateTakerPL(PL, trade.type, new BigNumber(trade.price, 10), new BigNumber(trade.amount, 10));
     }
-    // console.log('sell complete sets:', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), trade.amount, JSON.stringify(PL.tradeQueue));
-    return sellCompleteSetsPL(PL, speedomatic.bignum(trade.amount), speedomatic.bignum(trade.price));
+    return sellCompleteSetsPL(PL, new BigNumber(trade.amount, 10), new BigNumber(trade.price, 10));
   } else if (trade.maker) {
-    return calculateMakerPL(PL, trade.type, speedomatic.bignum(trade.price), speedomatic.bignum(trade.amount));
+    return calculateMakerPL(PL, trade.type, new BigNumber(trade.price, 10), new BigNumber(trade.amount, 10));
   }
-  return calculateTakerPL(PL, trade.type, speedomatic.bignum(trade.price), speedomatic.bignum(trade.amount));
+  return calculateTakerPL(PL, trade.type, new BigNumber(trade.price, 10), new BigNumber(trade.amount, 10));
 }
 
 module.exports = calculateTradePL;
-},{"./calculate-maker-pl":90,"./calculate-taker-pl":92,"./sell-complete-sets-pl":98,"speedomatic":532}],94:[function(require,module,exports){
+},{"./calculate-maker-pl":90,"./calculate-taker-pl":92,"./sell-complete-sets-pl":98,"bignumber.js":176}],94:[function(require,module,exports){
 "use strict";
 
 var calculateTradePL = require("./calculate-trade-pl");
@@ -2819,17 +2817,17 @@ module.exports = calculateTradesPL;
 },{"./calculate-trade-pl":93}],95:[function(require,module,exports){
 "use strict";
 
-var speedomatic = require("speedomatic");
+var BigNumber = require("bignumber.js");
 var ZERO = require("../../constants").ZERO;
 
 // unrealized P/L: shares held * (last trade price - price on buy in)
 function calculateUnrealizedPL(position, meanOpenPrice, lastTradePrice) {
   if (lastTradePrice.eq(ZERO)) return ZERO;
-  return position.times(speedomatic.bignum(lastTradePrice).minus(meanOpenPrice));
+  return position.times(new BigNumber(lastTradePrice, 10).minus(meanOpenPrice));
 }
 
 module.exports = calculateUnrealizedPL;
-},{"../../constants":18,"speedomatic":532}],96:[function(require,module,exports){
+},{"../../constants":18,"bignumber.js":176}],96:[function(require,module,exports){
 "use strict";
 
 module.exports = require("./calculate-profit-loss");

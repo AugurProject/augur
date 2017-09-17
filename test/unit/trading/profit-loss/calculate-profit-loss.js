@@ -1211,7 +1211,8 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
       }, {
         isCompleteSet: true,
         type: "sell",
-        amount: "10"
+        amount: "10",
+        price: "0.2"
       }],
       lastPrice: "0.05",
       assertions: function (output) {
