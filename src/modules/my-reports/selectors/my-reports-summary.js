@@ -1,5 +1,5 @@
+import BigNumber from 'bignumber.js';
 import selectMyReports from 'modules/my-reports/selectors/my-reports';
-import speedomatic from 'speedomatic';
 import { ZERO } from 'modules/trade/constants/numbers';
 
 export default function () {
@@ -8,7 +8,7 @@ export default function () {
   const numReports = reports.length;
   const netRep = reports.reduce((prevNet, report) => (
         report.repEarned && report.repEarned.value ?
-            prevNet.plus(speedomatic.bignum(report.repEarned.value)) :
+            prevNet.plus(new BigNumber(report.repEarned.value, 10)) :
             prevNet
     ), ZERO).toNumber();
 

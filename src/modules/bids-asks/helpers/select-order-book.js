@@ -1,8 +1,7 @@
+import BigNumber from 'bignumber.js';
 import memoize from 'memoizee';
 
 import store from 'src/store';
-
-import speedomatic from 'speedomatic';
 
 import { ZERO } from 'modules/trade/constants/numbers';
 import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user';
@@ -105,14 +104,14 @@ const selectAggregatePricePoints = memoize((outcomeID, orders, orderCancellation
  */
 function reduceSharesCountByPrice(aggregateOrdersPerPrice, order) {
   if (order && order.price && order.amount) {
-    const key = speedomatic.bignum(order.price).toFixed();
+    const key = new BigNumber(order.price, 10).toFixed();
     if (aggregateOrdersPerPrice[key] == null) {
       aggregateOrdersPerPrice[key] = {
         shares: ZERO,
         isOfCurrentUser: false
       };
     }
-    aggregateOrdersPerPrice[key].shares = aggregateOrdersPerPrice[key].shares.plus(speedomatic.bignum(order.amount));
+    aggregateOrdersPerPrice[key].shares = aggregateOrdersPerPrice[key].shares.plus(new BigNumber(order.amount, 10));
     aggregateOrdersPerPrice[key].isOfCurrentUser = aggregateOrdersPerPrice[key].isOfCurrentUser || order.isOfCurrentUser; // TODO -- we need to segregate orders @ the same price that are of user
   } else {
     console.debug('reduceSharesCountByPrice:', order);

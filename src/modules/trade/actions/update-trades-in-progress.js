@@ -6,7 +6,6 @@ import { SCALAR } from 'modules/markets/constants/market-types';
 
 import { loadAccountPositions } from 'modules/my-positions/actions/load-account-positions';
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from 'modules/bids-asks/helpers/select-order-book';
-import { selectMarket } from 'modules/market/selectors/market';
 import logError from 'utils/log-error';
 
 export const UPDATE_TRADE_IN_PROGRESS = 'UPDATE_TRADE_IN_PROGRESS';
@@ -109,7 +108,6 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 
     // trade actions
     if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.address) {
-      const market = selectMarket(marketID);
       dispatch(loadAccountPositions({ market: marketID }, (err, accountPositions) => {
         if (err) {
           return dispatch({

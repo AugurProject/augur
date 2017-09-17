@@ -1,5 +1,6 @@
-import { constants } from 'services/augurjs';
+import BigNumber from 'bignumber.js';
 import speedomatic from 'speedomatic';
+import { constants } from 'services/augurjs';
 import { ZERO } from 'modules/trade/constants/numbers';
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
 import * as TYPES from 'modules/transactions/constants/types';
@@ -60,15 +61,15 @@ export function constructApprovalTransaction(log) {
 
 // export function constructCollectedFeesTransaction(log) {
 //   const transaction = { data: {} };
-//   const repGain = speedomatic.bignum(log.repGain);
-//   const initialRepBalance = log.initialRepBalance !== undefined ? log.initialRepBalance : speedomatic.bignum(log.newRepBalance).minus(repGain).toFixed();
+//   const repGain = new BigNumber(log.repGain, 10);
+//   const initialRepBalance = log.initialRepBalance !== undefined ? log.initialRepBalance : new BigNumber(log.newRepBalance, 10).minus(repGain).toFixed();
 //   const action = log.inProgress ? 'reporting' : 'reported';
 //   transaction.message = `${action} with ${formatRep(initialRepBalance).full}`;
 //   transaction.type = `Reporting Payment`;
 //   if (log.totalReportingRep) {
-//     const totalReportingRep = speedomatic.bignum(log.totalReportingRep);
+//     const totalReportingRep = new BigNumber(log.totalReportingRep, 10);
 //     if (!totalReportingRep.eq(constants.ZERO)) {
-//       const percentRep = formatPercent(speedomatic.bignum(initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
+//       const percentRep = formatPercent(new BigNumber(initialRepBalance, 10).dividedBy(totalReportingRep).times(100), { decimals: 0 });
 //       transaction.message = `${transaction.message} (${percentRep.full})`;
 //     }
 //   }
@@ -102,7 +103,7 @@ export function constructTransferTransaction(log, address) {
     transaction.type = 'Send Reputation';
     transaction.description = `Send Reputation to ${speedomatic.strip0xPrefix(log._to)}`;
     transaction.data.balances = [{
-      change: formatRep(speedomatic.bignum(log._value).neg(), { positiveSign: true })
+      change: formatRep(new BigNumber(log._value, 10).neg(), { positiveSign: true })
     }];
     action = log.inProgress ? 'sending' : 'sent';
   } else if (log._to === address) {
@@ -160,10 +161,10 @@ export function constructPenalizeTransaction(log, marketID, market, outcomes, di
   if (log.repchange) {
     let repPenalty;
     let repBalance;
-    const repChange = speedomatic.bignum(log.repchange);
+    const repChange = new BigNumber(log.repchange, 10);
     if (repChange.lt(constants.ZERO)) {
       repPenalty = repChange;
-      repBalance = speedomatic.bignum(log.oldrep).plus(speedomatic.bignum(log.repchange)).toFixed();
+      repBalance = new BigNumber(log.oldrep).plus(new BigNumber(log.repchange, 10)).toFixed();
     } else {
       repPenalty = constants.ZERO;
       repBalance = log.oldrep;
@@ -231,9 +232,9 @@ export const constructTakeOrderTransaction = (trade, marketID, marketType, minPr
 //   const tradeGroupID = trade.tradeGroupID;
 //   const price = formatEtherTokens(trade.price);
 //   const shares = formatShares(trade.amount);
-//   const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
-//   const bnShares = speedomatic.bignum(trade.amount);
-//   const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
+//   const tradingFees = trade.maker ? new BigNumber(trade.makerFee, 10) : new BigNumber(trade.settlementFee, 10);
+//   const bnShares = new BigNumber(trade.amount, 10);
+//   const bnPrice = marketType === SCALAR ? new BigNumber(augur.trading.shrinkScalarPrice(minPrice, trade.price), 10) : new BigNumber(trade.price, 10);
 //   const totalCost = bnPrice.times(bnShares).plus(tradingFees);
 //   const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
 //   const totalCostPerShare = totalCost.dividedBy(bnShares);
@@ -277,7 +278,7 @@ export const constructTakeOrderTransaction = (trade, marketID, marketType, minPr
 //       feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
 //       totalCost: formattedTotalCost,
 //       totalReturn: formattedTotalReturn,
-//       gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
+//       gasFees: trade.gasFees && new BigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
 //       blockNumber: trade.blockNumber
 //     }
 //   };
@@ -301,8 +302,8 @@ export const constructMakeOrderTransaction = (trade, marketID, marketType, descr
 //   const shares = formatShares(trade.amount);
 //   const makerFee = market.makerFee;
 //   const settlementFee = market.settlementFee;
-//   const maxPrice = speedomatic.bignum(market.maxPrice);
-//   const minPrice = speedomatic.bignum(market.minPrice);
+//   const maxPrice = new BigNumber(market.maxPrice, 10);
+//   const minPrice = new BigNumber(market.minPrice, 10);
 //   const fees = augur.trading.fees.calculateFxpTradingFees(makerFee, settlementFee);
 //   const rawPrice = marketType === SCALAR ? augur.trading.expandScalarPrice(minPrice, trade.price) : trade.price;
 //   const range = marketType === SCALAR ? speedomatic.fix(maxPrice.minus(minPrice)) : constants.ONE;
@@ -352,7 +353,7 @@ export const constructMakeOrderTransaction = (trade, marketID, marketType, descr
 //       feePercent: formatPercent(speedomatic.unfix(tradingFees.dividedBy(totalCost).times(constants.ONE).floor()).times(100)),
 //       totalCost: type === TYPES.BID ? formatEtherTokens(speedomatic.unfix(totalCost)) : undefined,
 //       totalReturn: type === TYPES.ASK ? formatEtherTokens(speedomatic.unfix(totalReturn)) : undefined,
-//       gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
+//       gasFees: trade.gasFees && new BigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
 //       blockNumber: trade.blockNumber,
 //       orderId: trade.orderId
 //     }
@@ -382,7 +383,7 @@ export const constructCancelOrderTransaction = (trade, marketID, marketType, des
       timestamp: formatDate(new Date(trade.timestamp * 1000)),
       hash: trade.transactionHash,
       totalReturn: trade.inProgress ? null : formatEtherTokens(trade.cashRefund),
-      gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
+      gasFees: trade.gasFees && new BigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
       blockNumber: trade.blockNumber,
       orderId: trade.orderId
     }

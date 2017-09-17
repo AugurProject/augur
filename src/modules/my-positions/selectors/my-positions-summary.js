@@ -1,6 +1,5 @@
 import memoize from 'memoizee';
 import BigNumber from 'bignumber.js';
-import speedomatic from 'speedomatic';
 
 import store from 'src/store';
 
@@ -49,9 +48,9 @@ export const generateMarketsPositionsSummary = memoize((markets) => {
       if (!outcome || !outcome.position || !outcome.position.numPositions || !outcome.position.numPositions.value) {
         return;
       }
-      qtyShares = qtyShares.plus(speedomatic.bignum(outcome.position.qtyShares.value));
-      totalRealizedNet = totalRealizedNet.plus(speedomatic.bignum(outcome.position.realizedNet.value));
-      totalUnrealizedNet = totalUnrealizedNet.plus(speedomatic.bignum(outcome.position.unrealizedNet.value));
+      qtyShares = qtyShares.plus(new BigNumber(outcome.position.qtyShares.value, 10));
+      totalRealizedNet = totalRealizedNet.plus(new BigNumber(outcome.position.realizedNet.value, 10));
+      totalUnrealizedNet = totalUnrealizedNet.plus(new BigNumber(outcome.position.unrealizedNet.value, 10));
       positionOutcomes.push(outcome);
     });
   });
@@ -63,7 +62,7 @@ export const generateMarketsPositionsSummary = memoize((markets) => {
 }, { max: 50 });
 
 export const generatePositionsSummary = memoize((numPositions, qtyShares, meanTradePrice, realizedNet, unrealizedNet) => {
-  const totalNet = speedomatic.bignum(realizedNet).plus(speedomatic.bignum(unrealizedNet));
+  const totalNet = new BigNumber(realizedNet, 10).plus(new BigNumber(unrealizedNet, 10));
   return {
     numPositions: formatNumber(numPositions, {
       decimals: 0,

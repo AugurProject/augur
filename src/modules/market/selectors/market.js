@@ -20,6 +20,7 @@ That way the market only gets re-assembled when that specific favorite changes.
 This is true for all selectors, but especially important for this one.
 */
 
+import BigNumber from 'bignumber.js';
 import memoize from 'memoizee';
 import { formatShares, formatEtherTokens, formatPercent, formatNumber } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
@@ -28,7 +29,6 @@ import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open
 import { BRANCH_ID } from 'modules/app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from 'modules/markets/constants/market-outcomes';
-import speedomatic from 'speedomatic';
 
 import { placeTrade } from 'modules/trade/actions/place-trade';
 import { submitReport } from 'modules/reports/actions/submit-report';
@@ -233,7 +233,7 @@ export function assembleMarket(
               zeroStyled: true
             });
           } else {
-            const midPoint = (speedomatic.bignum(market.minPrice).plus(speedomatic.bignum(market.maxPrice))).dividedBy(2);
+            const midPoint = (new BigNumber(market.minPrice, 10).plus(new BigNumber(market.maxPrice, 10))).dividedBy(2);
             outcome.lastPricePercent = formatNumber(midPoint, {
               decimals: 2,
               decimalsRounded: 1,
@@ -297,7 +297,7 @@ export function assembleMarket(
           if (marketOutcome) market.consensus.outcomeName = marketOutcome.name;
         }
         if (market.consensus.proportionCorrect) {
-          market.consensus.percentCorrect = formatPercent(speedomatic.bignum(market.consensus.proportionCorrect).times(100));
+          market.consensus.percentCorrect = formatPercent(new BigNumber(market.consensus.proportionCorrect, 10).times(100));
         }
       } else {
         market.consensus = null;

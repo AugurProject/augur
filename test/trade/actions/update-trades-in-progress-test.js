@@ -5,7 +5,37 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from 'test/testState';
-import { BUY, SELL, updateTradesInProgressActionShapeAssertion, tradeTestState } from 'test/trade/constants';
+import { BUY, SELL, tradeTestState } from 'test/trade/constants';
+
+function updateTradesInProgressActionShapeAssertion(updateTradesInProgressAction) {
+  const updateTradesInProgressData = updateTradesInProgressAction.data;
+  const tradeDetails = updateTradesInProgressData.details;
+
+  assert.isDefined(updateTradesInProgressAction.type, `updateTradesInProgressAction.type isn't defined`);
+  assert.isString(updateTradesInProgressAction.type, `updateTradesInProgressAction.type isn't a String`);
+  assert.isDefined(updateTradesInProgressAction.data, `updateTradesInProgressAction.data isn't defined`);
+  assert.isObject(updateTradesInProgressAction.data, `updateTradesInProgressAction.data isn't a Object`);
+
+  assert.isDefined(updateTradesInProgressData.marketID, `UpdateTradesInProgressAction.data.marketID isn't defined`);
+  assert.isString(updateTradesInProgressData.marketID, `UpdateTradesInProgressAction.data.marketID isn't a String`);
+  assert.isDefined(updateTradesInProgressData.outcomeID, `UpdateTradesInProgressAction.data.outcomeID isn't defined`);
+  assert.isNumber(updateTradesInProgressData.outcomeID, `UpdateTradesInProgressAction.data.outcomeID isn't a number`);
+  assert.isDefined(updateTradesInProgressData.details, `UpdateTradesInProgressAction.data.details isn't defined`);
+  assert.isObject(updateTradesInProgressData.details, `UpdateTradesInProgressAction.data.details isn't a Object`);
+
+  assert.isDefined(tradeDetails.side, `tradeDetails.side isn't defined`);
+  assert.isString(tradeDetails.side, `tradeDetails.side isn't a string`);
+  assert.isDefined(tradeDetails.numShares, `tradeDetails.numShares isn't defined`);
+  assert.isString(tradeDetails.numShares, `tradeDetails.numShares isn't a string`);
+  assert.isDefined(tradeDetails.limitPrice, `tradeDetails.limitPrice isn't defined`);
+  assert.isString(tradeDetails.limitPrice, `tradeDetails.limitPrice isn't a string`);
+  assert.isDefined(tradeDetails.totalFee, `tradeDetails.totalFee isn't defined`);
+  assert.isString(tradeDetails.totalFee, `tradeDetails.totalFee isn't a string`);
+  assert.isDefined(tradeDetails.totalCost, `tradeDetails.totalCost isn't defined`);
+  assert.isString(tradeDetails.totalCost, `tradeDetails.totalCost isn't a string`);
+  assert.isDefined(tradeDetails.feePercent, `tradeDetails.feePercent isn't defined`);
+  assert.isString(tradeDetails.feePercent, `tradeDetails.feePercent isn't a string`);
+}
 
 describe('modules/trade/actions/update-trades-in-progress.js', () => {
   describe('should update a trade in progress for a binary market', () => {

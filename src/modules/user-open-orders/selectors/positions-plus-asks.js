@@ -1,8 +1,8 @@
+import BigNumber from 'bignumber.js';
 import { createBigCacheSelector } from 'utils/big-cache-selector';
 import store from 'src/store';
 import { selectLoginAccountAddress, selectAccountPositionsState, selectOrderBooksState } from 'src/select-state';
 import { ZERO } from 'modules/trade/constants/numbers';
-import speedomatic from 'speedomatic';
 import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user';
 
 import getValue from 'utils/get-value';
@@ -58,7 +58,7 @@ export const selectMarketPositionPlusAsks = (account, position, asks) => {
     const adjustedOutcomes = Object.keys(position);
     const numAdjustedOutcomes = adjustedOutcomes.length;
     for (let j = 0; j < numAdjustedOutcomes; ++j) {
-      positionPlusAsks[adjustedOutcomes[j]] = speedomatic.bignum(position[adjustedOutcomes[j]]).plus(getOpenAskShares(account, adjustedOutcomes[j], asks)).toFixed();
+      positionPlusAsks[adjustedOutcomes[j]] = new BigNumber(position[adjustedOutcomes[j]], 10).plus(getOpenAskShares(account, adjustedOutcomes[j], asks)).toFixed();
     }
   }
   return positionPlusAsks;
@@ -79,7 +79,7 @@ export function getOpenAskShares(account, outcomeID, askOrders) {
   for (let i = 0; i < numOrders; ++i) {
     order = askOrders[orderIDs[i]];
     if (isOrderOfUser(order, account) && order.outcome === outcomeID) {
-      askShares = askShares.plus(speedomatic.bignum(order.amount));
+      askShares = askShares.plus(new BigNumber(order.amount, 10));
     }
   }
   return askShares;

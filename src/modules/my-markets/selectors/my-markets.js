@@ -1,9 +1,9 @@
+import BigNumber from 'bignumber.js';
 import { createSelector } from 'reselect';
 import memoize from 'memoizee';
 import store from 'src/store';
 import { selectLoginAccountAddress, selectPriceHistoryState, selectMarketCreatorFeesState } from 'src/select-state';
 import selectAllMarkets from 'modules/markets/selectors/markets-all';
-import speedomatic from 'speedomatic';
 import { ZERO } from 'modules/trade/constants/numbers';
 import { formatNumber, formatEtherTokens } from 'utils/format-number';
 
@@ -58,7 +58,7 @@ export const selectOpenVolume = (market) => {
   market.outcomes.forEach((outcome) => {
     Object.keys(outcome.orderBook).forEach((orderType) => {
       outcome.orderBook[orderType].forEach((type) => {
-        openVolume = openVolume.plus(speedomatic.bignum(type.shares.value));
+        openVolume = openVolume.plus(new BigNumber(type.shares.value, 10));
       });
     });
   });
@@ -73,7 +73,7 @@ export const selectAverageTradeSize = memoize((marketPriceHistory) => {
   };
   const priceHistoryTotals = Object.keys(marketPriceHistory).reduce((historyTotals, currentOutcome) => {
     const outcomeTotals = marketPriceHistory[currentOutcome].reduce((outcomeTotals, trade) => ({
-      shares: speedomatic.bignum(outcomeTotals.shares).plus(speedomatic.bignum(trade.amount)),
+      shares: new BigNumber(outcomeTotals.shares, 10).plus(new BigNumber(trade.amount, 10)),
       trades: outcomeTotals.trades + 1
     }), initialState);
     return {
@@ -81,5 +81,5 @@ export const selectAverageTradeSize = memoize((marketPriceHistory) => {
       trades: historyTotals.trades + outcomeTotals.trades
     };
   }, initialState);
-  return priceHistoryTotals.shares.dividedBy(speedomatic.bignum(priceHistoryTotals.trades));
+  return priceHistoryTotals.shares.dividedBy(new BigNumber(priceHistoryTotals.trades, 10));
 }, { max: 1 });

@@ -2,20 +2,20 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 
+import BigNumber from 'bignumber.js';
+
 import * as mockStore from 'test/mockStore';
 
 import { formatNumber, formatEtherTokens, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
-
-import speedomatic from 'speedomatic';
 
 describe('modules/portfolio/selectors/login-account-markets', () => {
   proxyquire.noPreserveCache().noCallThru();
 
   const { store, state } = mockStore.default;
   state.marketCreatorFees = {
-    '0xMARKET1': speedomatic.bignum('10'),
-    '0xMARKET2': speedomatic.bignum('11')
+    '0xMARKET1': new BigNumber('10', 10),
+    '0xMARKET2': new BigNumber('11', 10)
   };
 
   const { allMarkets } = store.getState();
@@ -36,7 +36,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
       description: 'test-market-1',
       endDate: formatDate(new Date('2017/12/12')),
       volume: formatNumber(100),
-      fees: formatEtherTokens(speedomatic.bignum('10')),
+      fees: formatEtherTokens(new BigNumber('10', 10)),
       numberOfTrades: formatNumber(8),
       averageTradeSize: formatNumber(15),
       openVolume: formatNumber(80),
@@ -89,7 +89,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
       description: 'test-market-2',
       endDate: formatDate(new Date('2017/12/12')),
       volume: formatNumber(100),
-      fees: formatEtherTokens(speedomatic.bignum('11')),
+      fees: formatEtherTokens(new BigNumber('11', 10)),
       numberOfTrades: formatNumber(8),
       averageTradeSize: formatNumber(15),
       openVolume: formatNumber(80),

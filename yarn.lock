@@ -522,9 +522,9 @@ augur-contracts@3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-3.0.1.tgz#fa648d8353593e4dcc55d1b3d2e346143d312734"
 
-augur.js@4.1.8:
-  version "4.1.8"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.1.8.tgz#46d631230c2f1bb87d7c981fc73e263e5f6a498a"
+augur.js@4.1.9:
+  version "4.1.9"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.1.9.tgz#b5240bad46a79972067a330695fd9fd0a783705b"
   dependencies:
     async "1.5.2"
     augur-contracts "3.0.1"
