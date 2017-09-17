@@ -195,8 +195,7 @@ export function assembleMarket(
 
       market.isRequiredToReportByAccount = !!marketReport; // was the user chosen to report on this market
       market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportHash; // account is required to report on this unreported market during reporting phase
-      market.isReportSubmitted = market.isRequiredToReportByAccount && !!marketReport.reportHash; // the user submitted a report that is not yet confirmed (reportHash === true)
-      market.isReported = market.isReportSubmitted && !!marketReport.reportHash.length; // the user fully reported on this market (reportHash === [string])
+      market.isReported = market.isRequiredToReportByAccount && !!marketReport.reportedOutcomeID; // the user has reported on this market
       market.isReportTabVisible = market.isRequiredToReportByAccount;
 
       market.onSubmitPlaceTrade = outcomeID => dispatch(placeTrade(marketID, outcomeID, marketTradeInProgress[outcomeID]));

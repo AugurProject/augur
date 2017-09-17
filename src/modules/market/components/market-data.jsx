@@ -125,7 +125,7 @@ export default class MarketData extends Component {
             {...p.market}
             branch={p.branch}
             history={p.history}
-            isReported={p.market.isReported || p.market.isReportSubmitted}
+            isReported={p.market.isReported}
             onClickSubmit={p.market.report.onSubmitReport}
           />
         }
