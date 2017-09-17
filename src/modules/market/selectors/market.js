@@ -198,7 +198,6 @@ export function assembleMarket(
       market.isReportSubmitted = market.isRequiredToReportByAccount && !!marketReport.reportHash; // the user submitted a report that is not yet confirmed (reportHash === true)
       market.isReported = market.isReportSubmitted && !!marketReport.reportHash.length; // the user fully reported on this market (reportHash === [string])
       market.isReportTabVisible = market.isRequiredToReportByAccount;
-      market.isSnitchTabVisible = market.tradingPeriod === currentReportingWindowAddress;
 
       market.onSubmitPlaceTrade = outcomeID => dispatch(placeTrade(marketID, outcomeID, marketTradeInProgress[outcomeID]));
 
