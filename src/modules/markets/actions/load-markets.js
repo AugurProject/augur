@@ -8,15 +8,15 @@ const loadMarkets = (callback = logError) => (dispatch, getState) => {
   const { branch, env } = getState();
   loadDataFromAugurNode(env.augurNodeURL, 'getMarketsInfo', { branch: branch.id, active: true, sort: 'most_volume' }, (err, marketsData) => {
     if (err) return callback(err);
-    if (marketsData == null) {
+    if (marketsData == null || !isObject(marketsData)) {
       dispatch(updateHasLoadedMarkets(false));
-      callback(`no markets data received from ${env.augurNodeURL}`);
-    } else if (isObject(marketsData) && Object.keys(marketsData).length) {
-      dispatch(clearMarketsData());
-      dispatch(updateMarketsData(marketsData));
-      dispatch(updateHasLoadedMarkets(true));
-      callback(null, marketsData);
+      return callback(`no markets data received from ${env.augurNodeURL}`);
     }
+    if (!Object.keys(marketsData).length) return callback(null);
+    dispatch(clearMarketsData());
+    dispatch(updateMarketsData(marketsData));
+    dispatch(updateHasLoadedMarkets(true));
+    callback(null, marketsData);
   });
 };
 

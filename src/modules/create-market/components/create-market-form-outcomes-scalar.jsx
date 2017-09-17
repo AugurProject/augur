@@ -126,7 +126,7 @@ export default class CreateMarketFormOutcomesScalar extends Component {
         <div className="create-market-form-part-input">
           <aside>
             <h3>Minimum Value</h3>
-            <span>What is the <strong>minimum</strong> value possible for this event.</span>
+            <span>What is the <strong>minimum</strong> value possible for this market.</span>
           </aside>
           <div className="vertical-form-divider" />
           <form
@@ -152,7 +152,7 @@ export default class CreateMarketFormOutcomesScalar extends Component {
         <div className="create-market-form-part-input">
           <aside>
             <h3>Maximum Value</h3>
-            <span>What is the <strong>maximum</strong> value possible for this event.</span>
+            <span>What is the <strong>maximum</strong> value possible for this market.</span>
           </aside>
           <div className="vertical-form-divider" />
           <form onSubmit={e => e.preventDefault()} >

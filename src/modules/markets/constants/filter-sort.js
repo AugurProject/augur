@@ -37,12 +37,8 @@ export const SELECT_SORT_OPTIONS = [
     value: 'endDate'
   },
   {
-    label: 'Taker Fee',
+    label: 'Settlement Fee',
     value: 'settlementFeePercent'
-  },
-  {
-    label: 'Maker Fee',
-    value: 'makerFeePercent'
   }
 ];
 

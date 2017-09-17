@@ -12,7 +12,7 @@ export function nextReportPage(history) {
     const branchReports = reports[branch.id];
     if (!branchReports) return history.push(makePath(MARKETS));
     const nextPendingReportMarket = selectMarket(Reflect.ownKeys(branchReports).find(
-      eventID => !branchReports[eventID].reportHash
+      marketID => !branchReports[marketID].isSubmitted
     ));
     if (!nextPendingReportMarket || !nextPendingReportMarket.id) return history.push(makePath(MARKETS));
 

@@ -146,9 +146,7 @@ export function assembleMarket(
       orderCancellation,
       smallestPosition,
       loginAccount,
-      dispatch) => { // console.log('>>assembleMarket<<');
-
-      // console.log('### Assemble Market ### -- ', marketID);
+      dispatch) => {
 
       const market = {
         ...marketData,
@@ -190,15 +188,12 @@ export function assembleMarket(
       market.isFavorite = isFavorite;
 
       market.settlementFeePercent = formatPercent(marketData.settlementFee * 100, { positiveSign: false });
-      market.makerFeePercent = formatPercent(marketData.makerFee * 100, { positiveSign: false });
       market.volume = formatShares(marketData.volume, { positiveSign: false });
 
-      market.isRequiredToReportByAccount = !!marketReport; // was the user chosen to report on this market
-      market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportHash; // account is required to report on this unreported market during reporting phase
-      market.isReportSubmitted = market.isRequiredToReportByAccount && !!marketReport.reportHash; // the user submitted a report that is not yet confirmed (reportHash === true)
-      market.isReported = market.isReportSubmitted && !!marketReport.reportHash.length; // the user fully reported on this market (reportHash === [string])
+      market.isRequiredToReportByAccount = !!marketReport;
+      market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportedOutcomeID; // account is required to report on this market
+      market.isReported = market.isRequiredToReportByAccount && !!marketReport.reportedOutcomeID; // the user has reported on this market
       market.isReportTabVisible = market.isRequiredToReportByAccount;
-      market.isSnitchTabVisible = market.tradingPeriod === currentReportingWindowAddress;
 
       market.onSubmitPlaceTrade = outcomeID => dispatch(placeTrade(marketID, outcomeID, marketTradeInProgress[outcomeID]));
 
@@ -312,11 +307,11 @@ export function assembleMarket(
 
 export const selectMarketReport = (marketID, branchReports) => {
   if (marketID && branchReports) {
-    const branchReportsEventIDs = Object.keys(branchReports);
-    const numBranchReports = branchReportsEventIDs.length;
+    const branchReportsMarketIDs = Object.keys(branchReports);
+    const numBranchReports = branchReportsMarketIDs.length;
     for (let i = 0; i < numBranchReports; ++i) {
-      if (branchReports[branchReportsEventIDs[i]].marketID === marketID) {
-        return branchReports[branchReportsEventIDs[i]];
+      if (branchReports[branchReportsMarketIDs[i]].marketID === marketID) {
+        return branchReports[branchReportsMarketIDs[i]];
       }
     }
   }

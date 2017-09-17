@@ -327,21 +327,12 @@ export default class CreateMarketPreview extends Component {
                     <ul>
                       <li
                         className={classNames('prop-container', {
-                          'is-null': !newMarket.makerFee || newMarket.validations.indexOf(NEW_MARKET_FEES) === -1,
-                          'has-value': newMarket.makerFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES)
-                        })}
-                      >
-                        <span className="null-mask" />
-                        <span className="prop-value">{(newMarket.makerFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES) && <span>Maker Fee: <span className="market-property-value">{newMarket.makerFee}%</span></span>) || '\u00a0'}</span>
-                      </li>
-                      <li
-                        className={classNames('prop-container', {
                           'is-null': !newMarket.settlementFee || newMarket.validations.indexOf(NEW_MARKET_FEES) === -1,
                           'has-value': newMarket.settlementFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES)
                         })}
                       >
                         <span className="null-mask" />
-                        <span className="prop-value">{(newMarket.settlementFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES) && <span>Taker Fee: <span className="market-property-value">{newMarket.settlementFee}%</span></span>) || '\u00a0'}</span>
+                        <span className="prop-value">{(newMarket.settlementFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES) && <span>Settlement Fee: <span className="market-property-value">{newMarket.settlementFee}%</span></span>) || '\u00a0'}</span>
                       </li>
                     </ul>
                   </button>

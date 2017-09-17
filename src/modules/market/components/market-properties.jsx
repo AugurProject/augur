@@ -41,42 +41,21 @@ const MarketProperties = (p) => {
       <li className="property fee">
         <a
           data-tip
-          data-for={`${p.id}-maker-fee-tooltip`}
+          data-for={`${p.id}-settlement-fee-tooltip`}
           data-event="click focus"
         >
-          <span className="property-label">Maker Fee:</span>
-          <ValueDenomination className="property-value" {...p.makerFeePercent} />
-        </a>
-        <ReactTooltip
-          id={`${p.id}-maker-fee-tooltip`}
-          type="light"
-          effect="solid"
-          place="top"
-          globalEventOff="click"
-        >
-          <span className="tooltip-text">
-            {p.makerFeePercent.full} discounted fee for placing bids or asks on the books
-          </span>
-        </ReactTooltip>
-      </li>
-      <li className="property fee">
-        <a
-          data-tip
-          data-for={`${p.id}-taker-fee-tooltip`}
-          data-event="click focus"
-        >
-          <span className="property-label">Taker Fee:</span>
+          <span className="property-label">Settlement Fee:</span>
           <ValueDenomination className="property-value" {...p.settlementFeePercent} />
         </a>
         <ReactTooltip
-          id={`${p.id}-taker-fee-tooltip`}
+          id={`${p.id}-settlement-fee-tooltip`}
           type="light"
           effect="solid"
           place="top"
           globalEventOff="click"
         >
           <span className="tooltip-text">
-            {p.settlementFeePercent.full} fee for taking bids or asks from the books
+            {p.settlementFeePercent.full} fee for closing out positions
           </span>
         </ReactTooltip>
       </li>
