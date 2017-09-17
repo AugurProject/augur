@@ -9,24 +9,26 @@ import configureMockStore from 'redux-mock-store';
 import BigNumber from 'bignumber.js';
 import { strip0xPrefix } from 'speedomatic';
 
-import { formatEther, formatEtherTokens, formatRep, formatShares } from 'utils/format-number';
+import * as TYPES from 'modules/transactions/constants/types';
+
+import { formatEther, formatEtherTokens, formatPercent, formatRep, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
 
 import {
   constructBasicTransaction,
   constructDefaultTransaction,
+  constructCollectedFeesTransaction,
   constructApprovalTransaction,
   constructRegistrationTransaction,
   constructTransferTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
-import { CREATE_MARKET, SUBMIT_REPORT, SELL, CANCEL_ORDER } from 'modules/transactions/constants/types';
 import { BINARY } from 'modules/markets/constants/market-types';
 
 chai.use(chaiSubset);
 
-describe('modules/transactions/actions/contruct-transaction.js', () => {
-  proxyquire.noPreserveCache().noCallThru();
+describe('modules/transactions/actions/construct-transaction.js', () => {
+  proxyquire.noPreserveCache();
 
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
@@ -386,8 +388,8 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expected = {
           data: {},
-          type: 'Approved to Send Reputation',
-          description: `Approve ${log._spender} to send Reputation`,
+          type: 'Approved to Send Tokens',
+          description: `Approve ${log._spender} to send tokens`,
           message: 'approved'
         };
 
@@ -407,8 +409,8 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expected = {
           data: {},
-          type: 'Approved to Send Reputation',
-          description: `Approve ${log._spender} to send Reputation`,
+          type: 'Approved to Send Tokens',
+          description: `Approve ${log._spender} to send tokens`,
           message: 'approving'
         };
 
@@ -463,6 +465,181 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
     });
   });
 
+  describe('constructCollectedFeesTransaction', () => {
+    const test = t => it(t.description, () => t.assertions());
+
+    test({
+      description: `should return the expected object with initialRepBalance undefined and no totalReportingRep and no cashFeesCollected and inProgress false`,
+      assertions: () => {
+        const log = {
+          repGain: '1',
+          inProgress: false,
+          newRepBalance: '1',
+          period: 1234,
+          notReportingBond: '1'
+        };
+
+        const actual = constructCollectedFeesTransaction(log);
+
+        const repGain = new BigNumber(log.repGain);
+        const initialRepBalance = new BigNumber(log.newRepBalance).minus(repGain).toFixed();
+
+        const expected = {
+          data: {},
+          type: 'Reporting Payment',
+          description: `Reporting cycle #${log.period}`,
+          bond: {
+            label: 'reporting',
+            value: formatEther(log.notReportingBond)
+          },
+          message: `reported with ${formatRep(initialRepBalance).full}`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with initialRepBalance and no totalReportingRep and no cashFeesCollected and inProgress false`,
+      assertions: () => {
+        const log = {
+          repGain: '1',
+          inProgress: false,
+          newRepBalance: '1',
+          period: 1234,
+          notReportingBond: '1',
+          initialRepBalance: '1'
+        };
+
+        const actual = constructCollectedFeesTransaction(log);
+
+        const expected = {
+          data: {},
+          type: 'Reporting Payment',
+          description: `Reporting cycle #${log.period}`,
+          bond: {
+            label: 'reporting',
+            value: formatEther(log.notReportingBond)
+          },
+          message: `reported with ${formatRep(log.initialRepBalance).full}`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with initialRepBalance and totalReportingRep equals zero and no cashFeesCollected and inProgress false`,
+      assertions: () => {
+        const log = {
+          repGain: '1',
+          inProgress: false,
+          newRepBalance: '1',
+          period: 1234,
+          notReportingBond: '1',
+          initialRepBalance: '1',
+          totalReportingRep: '0'
+        };
+
+        const actual = constructCollectedFeesTransaction(log);
+
+        const expected = {
+          data: {},
+          type: 'Reporting Payment',
+          description: `Reporting cycle #${log.period}`,
+          bond: {
+            label: 'reporting',
+            value: formatEther(log.notReportingBond)
+          },
+          message: `reported with ${formatRep(log.initialRepBalance).full}`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with initialRepBalance and totalReportingRep and no cashFeesCollected and inProgress false`,
+      assertions: () => {
+        const log = {
+          repGain: '1',
+          inProgress: false,
+          newRepBalance: '1',
+          period: 1234,
+          notReportingBond: '1',
+          initialRepBalance: '1',
+          totalReportingRep: '100'
+        };
+
+        const actual = constructCollectedFeesTransaction(log);
+
+        const totalReportingRep = new BigNumber(log.totalReportingRep);
+        const percentRep = formatPercent(new BigNumber(log.initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
+
+        const expected = {
+          data: {},
+          type: 'Reporting Payment',
+          description: `Reporting cycle #${log.period}`,
+          bond: {
+            label: 'reporting',
+            value: formatEther(log.notReportingBond)
+          },
+          message: `reported with ${formatRep(log.initialRepBalance).full} (${percentRep.full})`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with initialRepBalance and totalReportingRep and cashFeesCollected and inProgress false`,
+      assertions: () => {
+        const log = {
+          repGain: '1',
+          inProgress: false,
+          period: 1234,
+          notReportingBond: '1',
+          initialRepBalance: '1',
+          newRepBalance: '1',
+          totalReportingRep: '100',
+          cashFeesCollected: '100',
+          newCashBalance: '101'
+        };
+
+        const actual = constructCollectedFeesTransaction(log);
+
+        const repGain = new BigNumber(log.repGain);
+
+        const totalReportingRep = new BigNumber(log.totalReportingRep);
+        const percentRep = formatPercent(new BigNumber(log.initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
+
+        const expected = {
+          data: {
+            balances: [
+              {
+                change: formatEtherTokens(log.cashFeesCollected, { positiveSign: true }),
+                balance: formatEtherTokens(log.newCashBalance)
+              },
+              {
+                change: formatRep(repGain, { positiveSign: true }),
+                balance: formatRep(log.newRepBalance)
+              }
+            ]
+          },
+          type: 'Reporting Payment',
+          description: `Reporting cycle #${log.period}`,
+          bond: {
+            label: 'reporting',
+            value: formatEther(log.notReportingBond)
+          },
+          message: `reported with ${formatRep(log.initialRepBalance).full} (${percentRep.full})`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
+
   describe('constructTransferTransaction', () => {
     const test = t => it(t.description, () => t.assertions());
 
@@ -487,9 +664,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               }
             ]
           },
-          type: 'Send Reputation',
-          description: `Send Reputation to ${strip0xPrefix(log._to)}`,
-          message: 'sent REP'
+          type: 'Send Tokens',
+          description: `Send tokens to ${strip0xPrefix(log._to)}`,
+          message: 'sent tokens'
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -517,9 +694,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               }
             ]
           },
-          type: 'Send Reputation',
-          description: `Send Reputation to ${strip0xPrefix(log._to)}`,
-          message: 'sending REP'
+          type: 'Send Tokens',
+          description: `Send tokens to ${strip0xPrefix(log._to)}`,
+          message: 'sending tokens'
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -547,9 +724,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               }
             ]
           },
-          type: 'Receive Reputation',
-          description: `Receive Reputation from ${strip0xPrefix(log._from)}`,
-          message: 'received REP'
+          type: 'Receive Tokens',
+          description: `Receive tokens from ${strip0xPrefix(log._from)}`,
+          message: 'received tokens'
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -577,9 +754,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               }
             ]
           },
-          type: 'Receive Reputation',
-          description: `Receive Reputation from ${strip0xPrefix(log._from)}`,
-          message: 'receiving REP'
+          type: 'Receive Tokens',
+          description: `Receive tokens from ${strip0xPrefix(log._from)}`,
+          message: 'receiving tokens'
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -610,7 +787,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             marketID: log.marketID
           },
-          type: CREATE_MARKET,
+          type: TYPES.CREATE_MARKET,
           description: 'test description',
           topic: 'Testing',
           marketCreationFee: formatEtherTokens(log.marketCreationFee),
@@ -643,7 +820,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             marketID: log.marketID
           },
-          type: CREATE_MARKET,
+          type: TYPES.CREATE_MARKET,
           description: 'test description',
           topic: 'Testing',
           marketCreationFee: formatEtherTokens(log.marketCreationFee),
@@ -799,13 +976,348 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               name: 'formatted reported outcome'
             }
           },
-          type: SUBMIT_REPORT,
+          type: TYPES.SUBMIT_REPORT,
           description: market.description,
           message: 'revealing report: formatted reported outcome'
         };
 
         assert.deepEqual(result, expectedResult, `Didn't return the expected object`);
       }
+    });
+  });
+
+  describe('constructTakeOrderTransaction', () => {
+    const action = require('../../../src/modules/transactions/actions/construct-transaction');
+
+    const test = t => it(t.description, () => {
+      t.assertions(mockStore());
+    });
+
+    test({
+      description: `should return the expected transaction object with necessary data missing`,
+      assertions: (store) => {
+        assert.isNull(store.dispatch(action.constructTakeOrderTransaction({})));
+      }
+    });
+
+    test({
+      description: `should return the expected transaction object with isMaker and type BUY`,
+      assertions: (store) => {
+        const order = {
+          transactionHash: '0xHASH',
+          orderId: '0xORDERID',
+          tradeGroupID: '0xTRADEGROUPID',
+          price: '0.1',
+          amount: '2',
+          isMaker: true,
+          orderType: TYPES.BUY,
+          timestamp: 1491843278,
+          blockNumber: 123456,
+          gasFees: '0.001'
+        };
+        const marketID = '0xMARKETID';
+        const marketType = BINARY;
+        const minPrice = '0';
+        const maxPrice = '1';
+        const settlementFee = '0.01';
+        const description = 'test description';
+        const outcomeID = '1';
+        const status = 'testing';
+        assert.deepEqual(store.dispatch(action.constructTakeOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
+          '0xHASH-0xORDERID': {
+            type: TYPES.MATCH_ASK,
+            hash: '0xHASH',
+            tradeGroupID: '0xTRADEGROUPID',
+            status: 'testing',
+            description: 'test description',
+            data: {
+              marketType: BINARY,
+              outcomeName: '1',
+              outcomeID: '1',
+              marketID: '0xMARKETID'
+            },
+            message: 'sold 2 shares for 0.1050 ETH Tokens / share',
+            numShares: formatShares('2'),
+            noFeePrice: formatEtherTokens('0.1'),
+            timestamp: formatDate(new Date(order.timestamp * 1000)),
+            settlementFee: formatEtherTokens('0.01'),
+            feePercent: formatPercent('4.761904761904762'),
+            totalReturn: formatEtherTokens('0.19'),
+            gasFees: formatEther('0.001'),
+            avgPrice: formatEtherTokens('0.1'),
+            totalCost: undefined,
+            blockNumber: 123456
+          }
+        });
+      }
+    });
+
+    test({
+      description: `should return the expected transaction object with isMaker and type SELL`,
+      assertions: (store) => {
+        const order = {
+          transactionHash: '0xHASH',
+          orderId: '0xORDERID',
+          tradeGroupID: '0xTRADEGROUPID',
+          price: '0.1',
+          amount: '2',
+          isMaker: true,
+          orderType: TYPES.SELL,
+          timestamp: 1491843278,
+          blockNumber: 123456,
+          gasFees: '0.001'
+        };
+        const marketID = '0xMARKETID';
+        const marketType = BINARY;
+        const minPrice = '0';
+        const maxPrice = '1';
+        const settlementFee = '0.01';
+        const description = 'test description';
+        const outcomeID = '1';
+        const status = 'testing';
+        assert.deepEqual(store.dispatch(action.constructTakeOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
+          '0xHASH-0xORDERID': {
+            type: TYPES.MATCH_BID,
+            hash: '0xHASH',
+            tradeGroupID: '0xTRADEGROUPID',
+            status: 'testing',
+            description: 'test description',
+            data: {
+              marketType: BINARY,
+              outcomeName: '1',
+              outcomeID: '1',
+              marketID: '0xMARKETID'
+            },
+            message: 'bought 2 shares for 0.0950 ETH Tokens / share',
+            numShares: formatShares('2'),
+            avgPrice: formatEtherTokens('0.1'),
+            timestamp: formatDate(new Date(order.timestamp * 1000)),
+            noFeePrice: formatEtherTokens('0.1'),
+            totalCost: formatEtherTokens('0.21'),
+            totalReturn: undefined,
+            settlementFee: formatEtherTokens('0.01'),
+            feePercent: formatPercent('4.761904761904762'),
+            gasFees: formatEther('0.001'),
+            blockNumber: 123456
+          }
+        });
+      }
+    });
+
+    test({
+      description: `should return the expected transaction object with taker and type BUY`,
+      assertions: (store) => {
+        const order = {
+          transactionHash: '0xHASH',
+          orderId: '0xORDERID',
+          tradeGroupID: '0xTRADEGROUPID',
+          price: '0.1',
+          amount: '2',
+          isMaker: false,
+          orderType: TYPES.BUY,
+          timestamp: 1491843278,
+          blockNumber: 123456,
+          gasFees: '0.001'
+        };
+        const marketID = '0xMARKETID';
+        const marketType = BINARY;
+        const minPrice = '0';
+        const maxPrice = '1';
+        const settlementFee = '0.01';
+        const description = 'test description';
+        const outcomeID = '1';
+        const status = 'testing';
+        assert.deepEqual(store.dispatch(action.constructTakeOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
+          '0xHASH-0xORDERID': {
+            type: TYPES.BUY,
+            hash: '0xHASH',
+            tradeGroupID: '0xTRADEGROUPID',
+            status: 'testing',
+            description: 'test description',
+            data: {
+              marketType: BINARY,
+              outcomeName: '1',
+              outcomeID: '1',
+              marketID: '0xMARKETID'
+            },
+            message: 'bought 2 shares for 0.1050 ETH Tokens / share',
+            numShares: formatShares('2'),
+            avgPrice: formatEtherTokens('0.1'),
+            noFeePrice: formatEtherTokens('0.1'),
+            timestamp: formatDate(new Date(order.timestamp * 1000)),
+            settlementFee: formatEtherTokens('0.01'),
+            feePercent: formatPercent('4.761904761904762'),
+            totalCost: formatEtherTokens('0.21'),
+            totalReturn: undefined,
+            gasFees: formatEther('0.001'),
+            blockNumber: 123456
+          }
+        });
+      }
+    });
+
+    test({
+      description: `should return the expected transaction object with taker and type TYPES.SELL`,
+      assertions: (store) => {
+        const order = {
+          transactionHash: '0xHASH',
+          orderId: '0xORDERID',
+          tradeGroupID: '0xTRADEGROUPID',
+          price: '0.1',
+          amount: '2',
+          isMaker: false,
+          orderType: TYPES.SELL,
+          timestamp: 1491843278,
+          blockNumber: 123456,
+          gasFees: '0.001'
+        };
+        const marketID = '0xMARKETID';
+        const marketType = BINARY;
+        const minPrice = '0';
+        const maxPrice = '1';
+        const settlementFee = '0.01';
+        const description = 'test description';
+        const outcomeID = '1';
+        const status = 'testing';
+        assert.deepEqual(store.dispatch(action.constructTakeOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
+          '0xHASH-0xORDERID': {
+            type: TYPES.SELL,
+            hash: '0xHASH',
+            tradeGroupID: '0xTRADEGROUPID',
+            status: 'testing',
+            description: 'test description',
+            data: {
+              marketType: 'binary',
+              outcomeName: '1',
+              outcomeID: '1',
+              marketID: '0xMARKETID'
+            },
+            message: 'sold 2 shares for 0.0950 ETH Tokens / share',
+            numShares: formatShares('2'),
+            avgPrice: formatEtherTokens('0.1'),
+            noFeePrice: formatEtherTokens('0.1'),
+            timestamp: formatDate(new Date(order.timestamp * 1000)),
+            settlementFee: formatEtherTokens('0.01'),
+            feePercent: formatPercent('4.761904761904762'),
+            totalCost: undefined,
+            totalReturn: formatEtherTokens('0.19'),
+            gasFees: formatEther('0.001'),
+            blockNumber: 123456
+          }
+        });
+      }
+    });
+  });
+
+  describe('constructMakeOrderTransaction', () => {
+    const action = require('../../../src/modules/transactions/actions/construct-transaction');
+
+    const test = t => it(t.description, () => {
+      const store = mockStore();
+      t.assertions(store);
+    });
+
+    describe('related conditionals: order type', () => {
+      let order = {
+        transactionHash: '0xHASH',
+        orderId: '0xORDERID',
+        tradeGroupID: '0xTRADEGROUPID',
+        price: '0.1',
+        amount: '2',
+        isMaker: false,
+        orderType: TYPES.SELL,
+        timestamp: 1491843278,
+        blockNumber: 123456,
+        gasFees: '0.001'
+      };
+      const marketID = '0xMARKETID';
+      const marketType = BINARY;
+      const minPrice = '0';
+      const maxPrice = '1';
+      const settlementFee = '0.05';
+      const description = 'test description';
+      const outcomeID = '1';
+      const status = 'testing';
+
+      test({
+        description: `BUY`,
+        assertions: (store) => {
+          order = {
+            ...order,
+            orderType: TYPES.BUY
+          };
+          assert.deepEqual(store.dispatch(action.constructMakeOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
+            '0xHASH': {
+              type: 'buy',
+              status: 'testing',
+              description: 'test description',
+              data: {
+                marketType: 'binary',
+                outcomeName: '1',
+                outcomeID: '1',
+                marketID: '0xMARKETID'
+              },
+              message: 'bid 2 shares for 0.1250 ETH Tokens / share',
+              numShares: formatShares('2'),
+              avgPrice: formatEtherTokens('0.1'),
+              noFeePrice: formatEtherTokens('0.1'),
+              freeze: {
+                noFeeCost: formatEtherTokens('0.2'),
+                settlementFee: formatEtherTokens('0.05'),
+                verb: 'froze'
+              },
+              timestamp: formatDate(new Date(order.timestamp * 1000)),
+              hash: '0xHASH',
+              feePercent: formatPercent('20'),
+              totalCost: formatEtherTokens('0.25'),
+              totalReturn: undefined,
+              gasFees: formatEther('0.001'),
+              blockNumber: 123456,
+              orderId: '0xORDERID'
+            }
+          });
+        }
+      });
+
+      test({
+        description: `SELL`,
+        assertions: (store) => {
+          order = {
+            ...order,
+            orderType: TYPES.SELL
+          };
+          assert.deepEqual(store.dispatch(action.constructMakeOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
+            '0xHASH': {
+              type: TYPES.SELL,
+              status: 'testing',
+              description: 'test description',
+              data: {
+                marketType: BINARY,
+                outcomeName: '1',
+                outcomeID: '1',
+                marketID: '0xMARKETID'
+              },
+              message: 'ask 2 shares for 0.0750 ETH Tokens / share',
+              numShares: formatShares('2'),
+              noFeePrice: formatEtherTokens('0.1'),
+              avgPrice: formatEtherTokens('0.1'),
+              freeze: {
+                noFeeCost: undefined,
+                settlementFee: formatEtherTokens('0.05'),
+                verb: 'froze'
+              },
+              timestamp: formatDate(new Date(order.timestamp * 1000)),
+              hash: '0xHASH',
+              feePercent: formatPercent('20'),
+              totalCost: undefined,
+              totalReturn: formatEtherTokens('0.15'),
+              gasFees: formatEther('0.001'),
+              blockNumber: 123456,
+              orderId: '0xORDERID'
+            }
+          });
+        }
+      });
     });
   });
 
@@ -818,12 +1330,11 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       tradeGroupID: '0xTRADEGROUPID',
       price: '0.1',
       amount: '2',
-      maker: false,
-      settlementFee: '0.01',
-      type: SELL,
+      isMaker: false,
+      orderType: TYPES.SELL,
       timestamp: 1491843278,
       blockNumber: 123456,
-      gasFees: 0.001,
+      gasFees: '0.001',
       inProgress: false,
       cashRefund: '10'
     };
@@ -831,6 +1342,8 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
     const marketType = BINARY;
     const description = 'test description';
     const outcomeID = '1';
+    const minPrice = '0';
+    const maxPrice = '1';
     const status = 'testing';
 
     const test = t => it(t.description, () => {
@@ -841,19 +1354,19 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
     test({
       description: `should return the expected object with inProgress false`,
       assertions: (store) => {
-        const actual = store.dispatch(action.constructCancelOrderTransaction(trade, marketID, marketType, description, outcomeID, null, status));
+        const actual = store.dispatch(action.constructCancelOrderTransaction(trade, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, status));
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
 
         const expected = {
           '0xHASH': {
-            type: CANCEL_ORDER,
+            type: TYPES.CANCEL_ORDER,
             status,
             description,
             data: {
               order: {
-                type: trade.type,
+                type: trade.orderType,
                 shares
               },
               marketType,
@@ -863,7 +1376,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               outcomeID,
               marketID
             },
-            message: `canceled order to ${trade.type} ${shares.full} for ${price.full} each`,
+            message: `canceled order to ${trade.orderType} ${shares.full} for ${price.full} each`,
             numShares: shares,
             noFeePrice: price,
             avgPrice: price,
@@ -888,19 +1401,19 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           inProgress: true
         };
 
-        const actual = store.dispatch(action.constructCancelOrderTransaction(trade, marketID, marketType, description, outcomeID, null, status));
+        const actual = store.dispatch(action.constructCancelOrderTransaction(trade, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, status));
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
 
         const expected = {
           '0xHASH': {
-            type: CANCEL_ORDER,
+            type: TYPES.CANCEL_ORDER,
             status,
             description,
             data: {
               order: {
-                type: trade.type,
+                type: trade.orderType,
                 shares
               },
               marketType,
@@ -910,7 +1423,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               outcomeID,
               marketID
             },
-            message: `canceling order to ${trade.type} ${shares.full} for ${price.full} each`,
+            message: `canceling order to ${trade.orderType} ${shares.full} for ${price.full} each`,
             numShares: shares,
             noFeePrice: price,
             avgPrice: price,
