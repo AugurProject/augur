@@ -10,7 +10,7 @@ describe('modules/account/actions/load-funding-history', () => {
   const middleware = [thunk];
   const mockStore = configureMockStore(middleware);
   const loginAccountAddress = '0x1824c06d9a2fd617a0fd59d0bee8641c1a787bf1';
-  const branchId = '0x2714c06d9a2fd617a0fd59d0bee8641c1a787bf1';
+
   const augurNodeUrl = 'http://blah.blah.com';
 
   const mainState = {
@@ -20,30 +20,30 @@ describe('modules/account/actions/load-funding-history', () => {
     loginAccount: {
       address: loginAccountAddress
     }
-  }
+  };
 
   const NO_HISTORY_MESSAGES = {
     NO_TRANSFER_HISTORY: `no transfer history data received from ${augurNodeUrl}`,
     NO_APPROVAL_HISTORY: `no approval history data received from ${augurNodeUrl}`,
     NO_DEPOSIT_HISTORY: `no deposit ether history data received from ${augurNodeUrl}`,
     NO_WITHDRAW_HISTORY: `no deposit ether history data received from ${augurNodeUrl}`
-  }
+  };
 
   const LOGS_CONV_ACTIONS = {
     ACTION_TRANSFER_HISTORY: { type: 'CONVERT_TRANSFER_LOGS_TO_TRANSACTIONS' },
     ACTION_APPROVAL_HISTORY: { type: 'CONVERT_APPROVAL_LOGS_TO_TRANSACTIONS' },
     ACTION_DEPOSIT_HISTORY: { type: 'CONVERT_DEPOSIT_LOGS_TO_TRANSACTIONS' },
     ACTION_WITHDRAW_HISTORY: { type: 'CONVERT_WITHDRAW_LOGS_TO_TRANSACTIONS' }
-  }
+  };
 
   const METHOD_LABEL_NAMES = {
     TRANSFER_HISTORY: 'getTransferHistory',
     APPROVAL_HISTORY: 'getApprovalHistory',
     DEPOSIT_HISTORY: 'getDepositEtherHistory',
     WITHDRAW_HISTORY: 'getWithdrawEtherHistory'
-  }
+  };
 
-  const allConvertLogToTransaction = (label) => {
+  const allConvertLogToTransaction = (label, log) => {
     switch (label) {
       case TRANSFER:
         return LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY;
@@ -60,7 +60,7 @@ describe('modules/account/actions/load-funding-history', () => {
         return null;
         break;
     }
-  }
+  };
 
   const configLoadDataFromAugurNode = (method, inclusive, returnError, returnVal, callback) => {
     const entry = [{ log: 'item one' }];
@@ -77,6 +77,7 @@ describe('modules/account/actions/load-funding-history', () => {
           break;
         case METHOD_LABEL_NAMES.WITHDRAW_HISTORY:
           callback(null, entry);
+          break;
         default:
           callback(null, null);
           break;
@@ -84,13 +85,13 @@ describe('modules/account/actions/load-funding-history', () => {
     } else {
       callback(returnError, returnVal);
     }
-  }
+  };
 
   const test = (t) => {
     it(t.description, (done) => {
       const convertLogsToTransactionsMock = {};
 
-      convertLogsToTransactionsMock.convertLogsToTransactions = t.convertLogsToTransactions;
+      convertLogsToTransactionsMock.convertLogsToTransactions = allConvertLogToTransaction;
       const loadDataFromAugurNodeMock = {
         default: t.loadDataFromAugurNode
       }
@@ -113,9 +114,6 @@ describe('modules/account/actions/load-funding-history', () => {
   test({
     description: `should load transfer, approval and deposit history, return all 4 actions from store`,
     state: mainState,
-    convertLogsToTransactions: (label, logs) => {
-      return allConvertLogToTransaction(label);
-    },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.TRANSFER_HISTORY, METHOD_LABEL_NAMES.APPROVAL_HISTORY, METHOD_LABEL_NAMES.DEPOSIT_HISTORY, METHOD_LABEL_NAMES.WITHDRAW_HISTORY];
       configLoadDataFromAugurNode(method, inclusiveValues, null, null, callback);
@@ -129,9 +127,6 @@ describe('modules/account/actions/load-funding-history', () => {
   test({
     description: `should load transfer, approval and deposit history, return 3 actions from store`,
     state: mainState,
-    convertLogsToTransactions: (label, logs) => {
-      return allConvertLogToTransaction(label);
-    },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.TRANSFER_HISTORY, METHOD_LABEL_NAMES.APPROVAL_HISTORY, METHOD_LABEL_NAMES.DEPOSIT_HISTORY];
       configLoadDataFromAugurNode(method, inclusiveValues, null, null, callback);
@@ -145,9 +140,6 @@ describe('modules/account/actions/load-funding-history', () => {
   test({
     description: `should load transfer and approval history, return 2 actions from store`,
     state: mainState,
-    convertLogsToTransactions: (label, logs) => {
-      return allConvertLogToTransaction(label);
-    },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.TRANSFER_HISTORY, METHOD_LABEL_NAMES.APPROVAL_HISTORY];
       configLoadDataFromAugurNode(method, inclusiveValues, null, null, callback);
@@ -161,9 +153,6 @@ describe('modules/account/actions/load-funding-history', () => {
   test({
     description: `should load transfer, approval and deposit history error in withdraw, return 3 actions from store`,
     state: mainState,
-    convertLogsToTransactions: (label, logs) => {
-      return allConvertLogToTransaction(label);
-    },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.TRANSFER_HISTORY, METHOD_LABEL_NAMES.APPROVAL_HISTORY, METHOD_LABEL_NAMES.DEPOSIT_HISTORY];
       configLoadDataFromAugurNode(method, inclusiveValues, 'ERROR', null, callback);
@@ -177,9 +166,6 @@ describe('modules/account/actions/load-funding-history', () => {
   test({
     description: `should load transfer, approval and deposit history, error with Deposit, return 2 actions from store`,
     state: mainState,
-    convertLogsToTransactions: (label, logs) => {
-      return allConvertLogToTransaction(label);
-    },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.TRANSFER_HISTORY, METHOD_LABEL_NAMES.APPROVAL_HISTORY];
       configLoadDataFromAugurNode(method, inclusiveValues, 'ERROR', null, callback);
@@ -193,9 +179,6 @@ describe('modules/account/actions/load-funding-history', () => {
   test({
     description: `should load approval history, error with approval history, 1 action from store`,
     state: mainState,
-    convertLogsToTransactions: (label, logs) => {
-      return allConvertLogToTransaction(label);
-    },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.TRANSFER_HISTORY];
       configLoadDataFromAugurNode(method, inclusiveValues, 'ERROR', null, callback);
@@ -209,9 +192,6 @@ describe('modules/account/actions/load-funding-history', () => {
   test({
     description: `should load funding history with error from load data from augur node, no actions`,
     state: mainState,
-    convertLogsToTransactions: (label, data, marketID) => {
-      return allConvertLogToTransaction(label);
-    },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [];
       configLoadDataFromAugurNode(method, inclusiveValues, 'ERROR', null, callback);
@@ -225,9 +205,6 @@ describe('modules/account/actions/load-funding-history', () => {
   test({
     description: `should load funding transfer history, return 1 action from store`,
     state: mainState,
-    convertLogsToTransactions: (label, logs) => {
-      return allConvertLogToTransaction(label);
-    },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.TRANSFER_HISTORY];
       configLoadDataFromAugurNode(method, inclusiveValues, null, null, callback);
@@ -242,7 +219,6 @@ describe('modules/account/actions/load-funding-history', () => {
   test({
     description: `should load funding transfer history empty array object, no actions`,
     state: mainState,
-    convertLogsToTransactions: null,
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [];
       configLoadDataFromAugurNode(method, inclusiveValues, null, [], callback);
@@ -256,9 +232,6 @@ describe('modules/account/actions/load-funding-history', () => {
   test({
     description: `should load transfer, approval, deposit history and widthdraw history is empty array, return all 3 actions from store`,
     state: mainState,
-    convertLogsToTransactions: (label, logs) => {
-      return allConvertLogToTransaction(label);
-    },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.TRANSFER_HISTORY, METHOD_LABEL_NAMES.APPROVAL_HISTORY, METHOD_LABEL_NAMES.DEPOSIT_HISTORY];
       configLoadDataFromAugurNode(method, inclusiveValues, null, [], callback);
@@ -272,9 +245,6 @@ describe('modules/account/actions/load-funding-history', () => {
   test({
     description: `should load transfer, approval and deposit history is empty array, return all 3 actions from store`,
     state: mainState,
-    convertLogsToTransactions: (label, logs) => {
-      return allConvertLogToTransaction(label);
-    },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.TRANSFER_HISTORY, METHOD_LABEL_NAMES.APPROVAL_HISTORY, METHOD_LABEL_NAMES.WITHDRAW_HISTORY];
       configLoadDataFromAugurNode(method, inclusiveValues, null, [], callback);
@@ -288,9 +258,6 @@ describe('modules/account/actions/load-funding-history', () => {
   test({
     description: `should load approval, deposit and widthdraw history, transfer is not array, return all 3 actions from store`,
     state: mainState,
-    convertLogsToTransactions: (label, logs) => {
-      return allConvertLogToTransaction(label);
-    },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.WITHDRAW_HISTORY, METHOD_LABEL_NAMES.APPROVAL_HISTORY, METHOD_LABEL_NAMES.DEPOSIT_HISTORY];
       configLoadDataFromAugurNode(method, inclusiveValues, null, { log: 'blah' }, callback);
@@ -304,9 +271,6 @@ describe('modules/account/actions/load-funding-history', () => {
   test({
     description: `should load transfer, approval, deposit history and only widthdraw history is not array, return all 3 actions from store`,
     state: mainState,
-    convertLogsToTransactions: (label, logs) => {
-      return allConvertLogToTransaction(label);
-    },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.TRANSFER_HISTORY, METHOD_LABEL_NAMES.APPROVAL_HISTORY, METHOD_LABEL_NAMES.DEPOSIT_HISTORY];
       configLoadDataFromAugurNode(method, inclusiveValues, null, { log: 'blah' }, callback);
@@ -320,9 +284,6 @@ describe('modules/account/actions/load-funding-history', () => {
   test({
     description: `should load transfer, approval, withdraw, only deposit history is not array, return all 3 actions from store`,
     state: mainState,
-    convertLogsToTransactions: (label, logs) => {
-      return allConvertLogToTransaction(label);
-    },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.TRANSFER_HISTORY, METHOD_LABEL_NAMES.APPROVAL_HISTORY, METHOD_LABEL_NAMES.WITHDRAW_HISTORY];
       configLoadDataFromAugurNode(method, inclusiveValues, null, { log: 'blah' }, callback);
@@ -336,9 +297,6 @@ describe('modules/account/actions/load-funding-history', () => {
   test({
     description: `should load transfer, approval and deposit and withdraw logs not array, return 1 actions from store`,
     state: mainState,
-    convertLogsToTransactions: (label, logs) => {
-      return allConvertLogToTransaction(label);
-    },
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [METHOD_LABEL_NAMES.TRANSFER_HISTORY];
       configLoadDataFromAugurNode(method, inclusiveValues, null, { log: 'blah' }, callback);
@@ -353,7 +311,6 @@ describe('modules/account/actions/load-funding-history', () => {
   test({
     description: `should load funding transfer history is not an array, no actions`,
     state: mainState,
-    convertLogsToTransactions: null,
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [];
       configLoadDataFromAugurNode(method, inclusiveValues, null, { log: 'blah' }, callback);
@@ -367,7 +324,6 @@ describe('modules/account/actions/load-funding-history', () => {
   test({
     description: `should load funding transfer history has null history, no actions fired`,
     state: mainState,
-    convertLogsToTransactions: null,
     loadDataFromAugurNode: (url, method, query, callback) => {
       const inclusiveValues = [];
       configLoadDataFromAugurNode(method, inclusiveValues, null, null, callback);
@@ -388,7 +344,6 @@ describe('modules/account/actions/load-funding-history', () => {
         address: undefined
       }
     },
-    convertLogsToTransactions: null,
     loadDataFromAugurNode: (url, method, query, callback) => {
       return (null, null);
     },
@@ -397,5 +352,4 @@ describe('modules/account/actions/load-funding-history', () => {
       assert.deepEqual(store.getActions(), [], `Didn't fire the expected empty actions array`);
     }
   });
-
 });
