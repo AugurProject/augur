@@ -47,18 +47,14 @@ describe('modules/account/actions/load-funding-history', () => {
     switch (label) {
       case TRANSFER:
         return LOGS_CONV_ACTIONS.ACTION_TRANSFER_HISTORY;
-        break;
       case APPROVAL:
         return LOGS_CONV_ACTIONS.ACTION_APPROVAL_HISTORY;
-        break;
       case DEPOSIT_ETHER:
         return LOGS_CONV_ACTIONS.ACTION_DEPOSIT_HISTORY;
-        break;
       case WITHDRAW_ETHER:
         return LOGS_CONV_ACTIONS.ACTION_WITHDRAW_HISTORY;
       default:
         return null;
-        break;
     }
   };
 
@@ -94,7 +90,7 @@ describe('modules/account/actions/load-funding-history', () => {
       convertLogsToTransactionsMock.convertLogsToTransactions = allConvertLogToTransaction;
       const loadDataFromAugurNodeMock = {
         default: t.loadDataFromAugurNode
-      }
+      };
 
       const action = proxyquire('../../../src/modules/account/actions/load-funding-history', {
         '../../app/actions/load-data-from-augur-node': loadDataFromAugurNodeMock,
@@ -345,7 +341,8 @@ describe('modules/account/actions/load-funding-history', () => {
       }
     },
     loadDataFromAugurNode: (url, method, query, callback) => {
-      return (null, null);
+      const inclusiveValues = [];
+      configLoadDataFromAugurNode(method, inclusiveValues, null, null, callback);
     },
     assertions: (err, store) => {
       assert.isNull(err, `error is null`);
