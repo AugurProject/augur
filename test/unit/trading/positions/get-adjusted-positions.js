@@ -3,6 +3,7 @@
 "use strict";
 
 var assert = require("chai").assert;
+var BigNumber = require("bignumber.js");
 var proxyquire = require("proxyquire").noPreserveCache();
 var fix = require("./utils").fix;
 
@@ -78,17 +79,17 @@ describe("trading/positions/get-adjusted-positions", function () {
     },
     assertions: function (err, output) {
       assert.isNull(err);
-      assert.strictEqual(JSON.stringify(output), JSON.stringify({
+      assert.deepEqual(output, {
         account: "0xb0b",
         marketIDs: ["0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"],
         shareTotals: {
           shortAskBuyCompleteSets: {
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "3"
+            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("3", 10)
           },
           shortSellBuyCompleteSets: {},
           sellCompleteSets: {}
         }
-      }));
+      });
     }
   });
   test({
@@ -115,17 +116,17 @@ describe("trading/positions/get-adjusted-positions", function () {
     },
     assertions: function (err, output) {
       assert.isNull(err);
-      assert.strictEqual(JSON.stringify(output), JSON.stringify({
+      assert.deepEqual(output, {
         account: "0xb0b",
         marketIDs: ["0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"],
         shareTotals: {
           shortAskBuyCompleteSets: {},
           shortSellBuyCompleteSets: {
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "1"
+            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("1", 10)
           },
           sellCompleteSets: {}
         }
-      }));
+      });
     }
   });
   test({
@@ -156,17 +157,17 @@ describe("trading/positions/get-adjusted-positions", function () {
     },
     assertions: function (err, output) {
       assert.isNull(err);
-      assert.strictEqual(JSON.stringify(output), JSON.stringify({
+      assert.deepEqual(output, {
         account: "0xb0b",
         marketIDs: ["0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"],
         shareTotals: {
           shortAskBuyCompleteSets: {},
           shortSellBuyCompleteSets: {},
           sellCompleteSets: {
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "-5.1"
+            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("-5.1", 10)
           }
         }
-      }));
+      });
     }
   });
   test({
@@ -206,19 +207,19 @@ describe("trading/positions/get-adjusted-positions", function () {
     },
     assertions: function (err, output) {
       assert.isNull(err);
-      assert.strictEqual(JSON.stringify(output), JSON.stringify({
+      assert.deepEqual(output, {
         account: "0xb0b",
         marketIDs: ["0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"],
         shareTotals: {
           shortAskBuyCompleteSets: {
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "6"
+            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("6", 10)
           },
           shortSellBuyCompleteSets: {},
           sellCompleteSets: {
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "-5.1"
+            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("-5.1", 10)
           }
         }
-      }));
+      });
     }
   });
   test({
@@ -238,10 +239,10 @@ describe("trading/positions/get-adjusted-positions", function () {
       }],
       shortSellBuyCompleteSets: [{
         data: "0x"+
-                      "1000000000000000000000000000000000000000000000000000000000000000"+
-                      fix("1").replace("0x", "")+
-                      "0000000000000000000000000000000100000000000000000000000000000000"+
-                      "0000000000000000000000000000000000000000000000000000000000000001", // outcome
+              "1000000000000000000000000000000000000000000000000000000000000000"+
+              fix("1").replace("0x", "")+
+              "0000000000000000000000000000000100000000000000000000000000000000"+
+              "0000000000000000000000000000000000000000000000000000000000000001", // outcome
         topics: [
           "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
@@ -261,21 +262,21 @@ describe("trading/positions/get-adjusted-positions", function () {
     },
     assertions: function (err, output) {
       assert.isNull(err);
-      assert.strictEqual(JSON.stringify(output), JSON.stringify({
+      assert.deepEqual(output, {
         account: "0xb0b",
         marketIDs: ["0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"],
         shareTotals: {
           shortAskBuyCompleteSets: {
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "3"
+            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("3", 10)
           },
           shortSellBuyCompleteSets: {
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "1"
+            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("1", 10)
           },
           sellCompleteSets: {
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "0.9"
+            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("0.9", 10)
           }
         }
-      }));
+      });
     }
   });
   test({
@@ -330,21 +331,21 @@ describe("trading/positions/get-adjusted-positions", function () {
     },
     assertions: function (err, output) {
       assert.isNull(err);
-      assert.strictEqual(JSON.stringify(output), JSON.stringify({
+      assert.deepEqual(output, {
         account: "0xb0b",
         marketIDs: ["0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"],
         shareTotals: {
           shortAskBuyCompleteSets: {
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "3"
+            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("3", 10)
           },
           shortSellBuyCompleteSets: {
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "0.3"
+            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("0.3", 10)
           },
           sellCompleteSets: {
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "0.9"
+            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("0.9", 10)
           }
         }
-      }));
+      });
     }
   });
   test({
@@ -407,21 +408,21 @@ describe("trading/positions/get-adjusted-positions", function () {
     },
     assertions: function (err, output) {
       assert.isNull(err);
-      assert.strictEqual(JSON.stringify(output), JSON.stringify({
+      assert.deepEqual(output, {
         account: "0xb0b",
         marketIDs: ["0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"],
         shareTotals: {
           shortAskBuyCompleteSets: {
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "3"
+            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("3", 10)
           },
           shortSellBuyCompleteSets: {
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "0.2"
+            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("0.2", 10)
           },
           sellCompleteSets: {
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "0.9"
+            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("0.9", 10)
           }
         }
-      }));
+      });
     }
   });
   test({
@@ -468,7 +469,7 @@ describe("trading/positions/get-adjusted-positions", function () {
     },
     assertions: function (err, output) {
       assert.isNull(err);
-      assert.strictEqual(JSON.stringify(output), JSON.stringify({
+      assert.deepEqual(output, {
         account: "0xb0b",
         marketIDs: [
           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
@@ -477,14 +478,14 @@ describe("trading/positions/get-adjusted-positions", function () {
         shareTotals: {
           shortAskBuyCompleteSets: {},
           shortSellBuyCompleteSets: {
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "0.1",
-            "0x8000000000000000000000000000000000000000000000000000000000000000": "0.2"
+            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("0.1", 10),
+            "0x8000000000000000000000000000000000000000000000000000000000000000": new BigNumber("0.2", 10)
           },
           sellCompleteSets: {
-            "0x8000000000000000000000000000000000000000000000000000000000000000": "-1"
+            "0x8000000000000000000000000000000000000000000000000000000000000000": new BigNumber("-1", 10)
           }
         }
-      }));
+      });
     }
   });
   test({
@@ -543,7 +544,7 @@ describe("trading/positions/get-adjusted-positions", function () {
     },
     assertions: function (err, output) {
       assert.isNull(err);
-      assert.strictEqual(JSON.stringify(output), JSON.stringify({
+      assert.deepEqual(output, {
         account: "0xb0b",
         marketIDs: [
           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
@@ -552,14 +553,14 @@ describe("trading/positions/get-adjusted-positions", function () {
         shareTotals: {
           shortAskBuyCompleteSets: {},
           shortSellBuyCompleteSets: {
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "0.1",
-            "0x8000000000000000000000000000000000000000000000000000000000000000": "10000.00001"
+            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("0.1", 10),
+            "0x8000000000000000000000000000000000000000000000000000000000000000": new BigNumber("10000.00001", 10)
           },
           sellCompleteSets: {
-            "0x8000000000000000000000000000000000000000000000000000000000000000": "-1.2"
+            "0x8000000000000000000000000000000000000000000000000000000000000000": new BigNumber("-1.2", 10)
           }
         }
-      }));
+      });
     }
   });
 });
