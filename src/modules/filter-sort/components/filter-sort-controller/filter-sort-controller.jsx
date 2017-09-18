@@ -9,6 +9,7 @@ import filterByMarketFavorites from 'modules/filter-sort/helpers/filter-by-marke
 import filterByTags from 'modules/filter-sort/helpers/filter-by-tags'
 import filterBySearch from 'modules/filter-sort/helpers/filter-by-search'
 import filterByMarketState from 'modules/filter-sort/helpers/filter-by-market-state'
+import filterByMarketParam from 'modules/filter-sort/helpers/filter-by-market-param'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 
@@ -93,6 +94,17 @@ export default class FilterSortController extends Component {
           marketStateItems: filterByMarketState(newSearch[PARAMS.FILTER_MARKET_STATE_PARAM], nextProps.currentReportingPeriod, nextProps.items)
         })
       }
+
+      if (
+        itemsChanged ||
+        !isEqual(oldSearch[PARAMS.SORT_MARKET_PARAM], newSearch[PARAMS.SORT_MARKET_PARAM] ||
+        !isEqual(oldSearch[PARAMS.SORT_MARKET_ORDER_PARAM], newSearch[PARAMS.SORT_MARKET_ORDER_PARAM])
+      ) {
+          this.setState({
+            marketParamItems: filterByMarketParam(newSearch[PARAMS.SORT_MARKET_PARAM], newSearch[PARAMS.SORT_MARKET_ORDER_PARAM], nextProps.items, this.state.combinedFiltered)
+          })
+        }
+      )
     }
     // if (
     //   nextProps.filterByTags &&

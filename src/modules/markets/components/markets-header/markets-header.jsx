@@ -103,6 +103,8 @@ export default class MarketsHeader extends Component {
   }
 }
 
+// <FilterMarketParam />
+
 // <FilterSort
 //   items={p.markets}
 //   updateFilteredItems={p.updateFilteredItems}

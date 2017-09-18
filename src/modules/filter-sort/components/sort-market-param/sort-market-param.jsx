@@ -6,21 +6,15 @@ import Dropdown from 'modules/common/components/dropdown/dropdown'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 import makeQuery from 'modules/routes/helpers/make-query'
-import getValue from 'utils/get-value'
-import isEqual from 'lodash/isEqual'
 
-import { SORT_MARKET_PARAM, SORT_MARKET_ORDER_PARAM } from 'modules/routes/constants/param-names'
+import { SORT_MARKET_PARAM, SORT_MARKET_ORDER_PARAM } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/filter-sort/components/sort-market-param/sort-market-param.styles'
-// import Styles_FA from 'assets/styles/_typ_font-awesome.css'
 
 export default class SortMarketParam extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
-    items: PropTypes.array.isRequired,
-    combinedFiltered: PropTypes.array.isRequired,
-    updateSort: PropTypes.func.isRequired
+    history: PropTypes.object.isRequired
   }
 
   constructor(props) {
@@ -69,50 +63,12 @@ export default class SortMarketParam extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    // call respective methods
-    if (
-      this.state.selectedMarketParam !== nextState.selectedMarketParam ||
-      this.state.selectedSort !== nextState.selectedSort ||
-      !isEqual(this.props.items, nextProps.items) ||
-      !isEqual(this.props.combinedFiltered, nextProps.combinedFiltered)
-    ) {
-      this.sortByMarketParam(nextState.selectedMarketParam, nextState.selectedSort, nextProps.items, nextProps.combinedFiltered, nextProps.location)
-    }
-
     if (
       this.state.selectedMarketParam !== nextState.selectedMarketParam ||
       this.state.selectedSort !== nextState.selectedSort
     ) {
       this.updateQuery(nextState.selectedMarketParam, nextState.selectedSort, nextProps.location)
     }
-  }
-
-  sortByMarketParam(selectedMarketParam, selectedSort, items, combinedFiltered, location) {
-    const sortedItems = combinedFiltered.slice().sort((a, b) => {
-      switch (selectedMarketParam) {
-        case 'creationTime':
-        case 'endDate': {
-          if (selectedSort) {
-            return getValue(items, `${b}.${selectedMarketParam}.timestamp`) - getValue(items, `${a}.${selectedMarketParam}.timestamp`)
-          }
-
-          return getValue(items, `${a}.${selectedMarketParam}.timestamp`) - getValue(items, `${b}.${selectedMarketParam}.timestamp`)
-        }
-        case 'volume':
-        case 'takerFeePercent':
-        case 'makerFeePercent': {
-          if (selectedSort) {
-            return getValue(items, `${b}.${selectedMarketParam}.value`) - getValue(items, `${a}.${selectedMarketParam}.value`)
-          }
-
-          return getValue(items, `${a}.${selectedMarketParam}.value`) - getValue(items, `${b}.${selectedMarketParam}.value`)
-        }
-        default:
-          return 0 // No sorting
-      }
-    })
-
-    this.props.updateSort(sortedItems)
   }
 
   updateQuery(selectedMarketParam, selectedSort, location) {
