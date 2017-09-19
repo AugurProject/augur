@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet'
 
 // import CreateMarketMainTitle from 'modules/create-market/components/create-market-main-title'
 import CreateMarketPreview from 'modules/create-market/components/create-market-preview/create-market-preview'
-// import CreateMarketForm from 'modules/create-market/components/create-market-form'
+import CreateMarketForm from 'modules/create-market/components/create-market-form/create-market-form'
 // import CreateMarketFormButtons from 'modules/create-market/components/create-market-form-buttons'
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
@@ -50,14 +50,11 @@ export default class CreateMarketView extends Component {
     const s = this.state
 
     return (
-      <section
-        id="create_market_view"
-        style={{ marginBottom: s.buttonHeight + p.footerHeight }}
-      >
+      <section>
         <Helmet>
           <title>Create Market</title>
         </Helmet>
-        <div className="create-market-container">
+        <div>
           {/* <CreateMarketMainTitle
             type={p.newMarket.type}
             validations={p.newMarket.validations}
@@ -69,7 +66,7 @@ export default class CreateMarketView extends Component {
             newMarket={p.newMarket}
             updateNewMarket={p.updateNewMarket}
           />
-          {/* <CreateMarketForm
+          <CreateMarketForm
             branch={p.branch}
             availableEth={p.availableEth}
             newMarket={p.newMarket}
@@ -81,7 +78,7 @@ export default class CreateMarketView extends Component {
             addValidationToNewMarket={p.addValidationToNewMarket}
             removeValidationFromNewMarket={p.removeValidationFromNewMarket}
           />
-          <CreateMarketFormButtons
+          {/*<CreateMarketFormButtons
             footerHeight={p.footerHeight}
             currentStep={p.newMarket.currentStep}
             type={p.newMarket.type}
