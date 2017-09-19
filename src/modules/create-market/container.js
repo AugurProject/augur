@@ -9,7 +9,7 @@ import {
   updateNewMarket,
   clearNewMarket
 } from 'modules/create-market/actions/update-new-market'
-import CreateMarketView from 'modules/create-market/components/create-market-view'
+import CreateMarketView from 'modules/create-market/components/create-market-view/create-market-view'
 
 import getValue from 'utils/get-value'
 

@@ -114,7 +114,7 @@ export default class CreateMarketPreview extends Component {
     }
 
     if (prevState.selectedOutcome !== this.state.selectedOutcome) {
-      this.updateChart()
+      // this.updateChart()
     }
   }
 
