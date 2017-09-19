@@ -1,1 +1,83 @@
 @import '~assets/styles/shared.less';
+
+.CreateMarketPreview {
+  background-color: @color-white;
+  padding: 4.25rem 0 3.5rem;
+}
+
+.CreateMarketPreview__header,
+.CreateMarketPreview__meta {
+  margin: auto;
+  max-width: 70rem;
+  padding: 0 1.25rem;
+}
+
+.CreateMarketPreview__header {
+  padding-bottom: 2.5rem;
+}
+
+.CreateMarketPreview__footer {
+  border-top: 1px solid @color-lightest-gray;
+  padding-top: 1rem;
+}
+
+.CreateMarketPreview__meta {
+  display: flex;
+
+  > li {
+    margin-left: 1.25em;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    > span {
+      &:extend(.caps--medium);
+
+      color: @color-purple;
+      display: block;
+
+      &:first-child {
+        &:extend(.caps--small);
+
+        color: @color-lightgray;
+        margin-bottom: 0.625rem;
+      }
+    }
+  }
+}
+
+.CreateMarketPreview__tags {
+  display: flex;
+  margin-bottom: 1.625rem;
+
+  > ul {
+    &:extend(.caps--medium);
+
+    &:not(:first-child) {
+      margin-left: 2rem;
+    }
+
+    > li {
+      display: inline-block;
+      text-transform: uppercase;
+
+      &::after {
+        content: "/";
+        margin: 0 4px;
+      }
+
+      &:last-child::after {
+        display: none;
+      }
+
+      &:first-child {
+        color: @color-lightgray;
+
+        &::after {
+          display: inline-block;
+        }
+      }
+    }
+  }
+}

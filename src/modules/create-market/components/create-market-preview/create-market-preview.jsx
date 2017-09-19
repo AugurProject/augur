@@ -3,28 +3,28 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
-import Highcharts from 'highcharts'
-import classNames from 'classnames'
+// import Highcharts from 'highcharts'
+// import classNames from 'classnames'
 
-import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints'
-import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
-import {
-  NEW_MARKET_DESCRIPTION,
-  NEW_MARKET_OUTCOMES,
-  NEW_MARKET_EXPIRY_SOURCE,
-  NEW_MARKET_END_DATE,
-  NEW_MARKET_DETAILS,
-  NEW_MARKET_TOPIC,
-  NEW_MARKET_KEYWORDS,
-  NEW_MARKET_FEES,
-  NEW_MARKET_ORDER_BOOK,
-  NEW_MARKET_REVIEW
-} from 'modules/create-market/constants/new-market-creation-steps'
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
-import { BUY, SELL } from 'modules/transactions/constants/types'
+// import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints'
+// import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
+// import {
+//   NEW_MARKET_DESCRIPTION,
+//   NEW_MARKET_OUTCOMES,
+//   NEW_MARKET_EXPIRY_SOURCE,
+//   NEW_MARKET_END_DATE,
+//   NEW_MARKET_DETAILS,
+//   NEW_MARKET_TOPIC,
+//   NEW_MARKET_KEYWORDS,
+//   NEW_MARKET_FEES,
+//   NEW_MARKET_ORDER_BOOK,
+//   NEW_MARKET_REVIEW
+// } from 'modules/create-market/constants/new-market-creation-steps'
+// import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+// import { BID, ASK } from 'modules/transactions/constants/types'
 
-import getValue from 'utils/get-value'
-import debounce from 'utils/debounce'
+// import getValue from 'utils/get-value'
+// import debounce from 'utils/debounce'
 
 import Styles from 'modules/create-market/components/create-market-preview/create-market-preview.styles'
 
@@ -181,22 +181,50 @@ export default class CreateMarketPreview extends Component {
   // }
 
   render() {
-    const p = this.props
-    const s = this.state
-    const newMarket = this.props.newMarket
+    // const p = this.props
+    // const s = this.state
+    // const newMarket = this.props.newMarket
 
-    const bids = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${BUY}`)
-    const asks = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${SELL}`)
+    // const bids = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${BID}`)
+    // const asks = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${ASK}`)
 
     return (
-      <article
-        ref={(marketPreview) => { this.marketPreview = marketPreview }}
-        className={classNames('create-market-preview', {
-          'preview-is-visible': newMarket.currentStep > 0,
-          'preview-is-hidden': newMarket.currentStep === 0
-        })}
-      >
-        <div className="create-market-preview-container">
+      <article className={Styles.CreateMarketPreview}>
+        {/* <article className={Styles.CreateMarketPreview}
+          ref={(marketPreview) => { this.marketPreview = marketPreview }}
+          className={classNames('create-market-preview', {
+            'preview-is-visible': newMarket.currentStep > 0,
+            'preview-is-hidden': newMarket.currentStep === 0
+          })}
+        > */}
+        <div className={Styles.CreateMarketPreview__header}>
+          <div className={Styles.CreateMarketPreview__tags}>
+            <ul>
+              <li>Categories</li>
+            </ul>
+            <ul>
+              <li>Tags</li>
+            </ul>
+          </div>
+          <h1>How much wood will a woodchuck chuck?</h1>
+          <div className={Styles.CreateMarketPreview__outcome}>
+            Outcome
+          </div>
+        </div>
+        <div className={Styles.CreateMarketPreview__footer}>
+          <ul className={Styles.CreateMarketPreview__meta}>
+            <li>
+              <span>Volume</span>
+            </li>
+            <li>
+              <span>Fee</span>
+            </li>
+            <li>
+              <span>Expires</span>
+            </li>
+          </ul>
+        </div>
+        {/* <div className="create-market-preview-container">
           <div className="create-market-preview-content">
             <div className="create-market-details">
               <ul className="create-market-tags">
@@ -481,7 +509,7 @@ export default class CreateMarketPreview extends Component {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </article>
     )
   }
