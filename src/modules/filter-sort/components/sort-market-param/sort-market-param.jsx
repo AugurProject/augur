@@ -7,14 +7,24 @@ import Dropdown from 'modules/common/components/dropdown/dropdown'
 import parseQuery from 'modules/routes/helpers/parse-query'
 import makeQuery from 'modules/routes/helpers/make-query'
 
+import sortByMarketParam from 'modules/filter-sort/helpers/sort-by-market-param'
+import { isEqual } from 'lodash'
+
 import { SORT_MARKET_PARAM, SORT_MARKET_ORDER_PARAM } from 'modules/filter-sort/constants/param-names'
+import * as PARAMS from 'modules/filter-sort/constants/market-sort-params'
 
 import Styles from 'modules/filter-sort/components/sort-market-param/sort-market-param.styles'
 
-export class SortMarketParam extends Component { // NOTE -- intentionally excluded `default` for enforced function name comparison
+export default class SortMarketParam extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired,
+    items: PropTypes.array.isRequired,
+    updateIndices: PropTypes.func.isRequired,
+    combinedFiltered: PropTypes.oneOfType([
+      null,
+      PropTypes.array
+    ]).isRequired
   }
 
   constructor(props) {
@@ -26,23 +36,23 @@ export class SortMarketParam extends Component { // NOTE -- intentionally exclud
     this.marketSortParams = [
       {
         label: 'Volume',
-        value: 'volume'
+        value: PARAMS.MARKET_VOLUME
       },
       {
         label: 'Newest',
-        value: 'creationTime'
+        value: PARAMS.MARKET_CREATE_TIME
       },
       {
         label: 'Expiration',
-        value: 'endDate'
+        value: PARAMS.MARKET_END_DATE
       },
       {
         label: 'Taker Fee',
-        value: 'takerFeePercent'
+        value: PARAMS.MARKET_TAKER_FEE
       },
       {
         label: 'Maker Fee',
-        value: 'makerFeePercent'
+        value: PARAMS.MARKET_MAKER_FEE
       }
     ]
 
@@ -60,6 +70,13 @@ export class SortMarketParam extends Component { // NOTE -- intentionally exclud
 
     const selectedSort = queryParams[SORT_MARKET_ORDER_PARAM]
     if (selectedSort) this.setState({ selectedSort: selectedSort !== 'false' })
+
+    if (!selectedMarketParam || !selectedSort) {
+      this.props.updateIndices({
+        indices: sortByMarketParam(this.state.selectedMarketParam, this.state.selectedSort, this.props.items, this.props.combinedFiltered),
+        type: SORT_MARKET_PARAM
+      })
+    }
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -68,6 +85,19 @@ export class SortMarketParam extends Component { // NOTE -- intentionally exclud
       this.state.selectedSort !== nextState.selectedSort
     ) {
       this.updateQuery(nextState.selectedMarketParam, nextState.selectedSort, nextProps.location)
+    }
+
+    if (
+      !isEqual(this.props.combinedFiltered, nextProps.combinedFiltered) ||
+      !isEqual(this.props.items, nextProps.items) ||
+      this.state.selectedMarketParam !== nextState.selectedMarketParam ||
+      this.state.selectedSort !== nextState.selectedSort
+    ) {
+      console.log('updateIndices -- ', nextProps.combinedFiltered)
+      this.props.updateIndices({
+        indices: sortByMarketParam(nextState.selectedMarketParam, nextState.selectedSort, nextProps.items, nextProps.combinedFiltered),
+        type: SORT_MARKET_PARAM
+      })
     }
   }
 

@@ -1,0 +1,5 @@
+export const MARKET_VOLUME = 'volume'
+export const MARKET_CREATE_TIME = 'createTime'
+export const MARKET_END_DATE = 'endDate'
+export const MARKET_TAKER_FEE = 'takerFeePercent'
+export const MARKET_MAKER_FEE = 'makerFeePercent'

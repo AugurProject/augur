@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import FilterSort from 'modules/filter-sort/containers/filter-sort-controller'
 import FilterSearch from 'modules/filter-sort/containers/filter-search'
 import FilterMarketState from 'modules/filter-sort/containers/filter-market-state'
+import SortMarketParam from 'modules/filter-sort/containers/sort-market-param'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 import parsePath from 'modules/routes/helpers/parse-path'
@@ -95,14 +96,13 @@ export default class MarketsHeader extends Component {
           <div className={Styles.MarketsHeader__wrapper}>
             <h1 className={Styles.MarketsHeader__heading}>{s.headerTitle}</h1>
             <FilterMarketState />
+            <SortMarketParam />
           </div>
         </FilterSort>
       </article>
     )
   }
 }
-
-// <FilterMarketParam />
 
 // <FilterSort
 //   items={p.markets}

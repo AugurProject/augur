@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { isEqual } from 'lodash'
 
 // import FilterMarketState from 'modules/filter-sort/components/filter-market-state/filter-market-state'
-// import SortMarketParam from 'modules/filter-sort/components/sort-market-param/sort-market-param'
+import SortMarketParam from 'modules/filter-sort/containers/sort-market-param'
 
 import filterByMarketFavorites from 'modules/filter-sort/helpers/filter-by-market-favorites'
 import filterByTags from 'modules/filter-sort/helpers/filter-by-tags'
@@ -17,6 +17,7 @@ import isArray from 'utils/is-array'
 import isObject from 'utils/is-object'
 
 import * as PARAMS from 'modules/filter-sort/constants/param-names'
+import { SORT_MARKET_PARAM } from 'modules/filter-sort/constants/param-names'
 
 export default class FilterSortController extends Component {
   static propTypes = {
@@ -43,11 +44,13 @@ export default class FilterSortController extends Component {
     // NOTE -- any filter or sort that is `null` will be ignored when combining arrays
     this.state = {
       // Filters
-      filters: {},
+      results: {},
       // Aggregated Items
       combinedFiltered: null,
       // Sorted Items
-      marketParamItems: null
+      marketParamItems: null,
+      // ReRender
+      reRender: new Date().now
     }
 
     this.injectChild = this.injectChild.bind(this)
@@ -137,9 +140,16 @@ export default class FilterSortController extends Component {
 
     if (
       !isEqual(this.props.items, nextProps.items) ||
-      !isEqual(this.state.filters, nextState.filters)
+      !isEqual(this.state.results, nextState.results)
     ) {
-      this.updateCombinedFilters(nextProps.items, nextState.filters)
+      this.updateCombinedFilters(nextProps.items, nextState.results)
+    }
+
+    if (!isEqual(this.state.combinedFiltered, nextState.combinedFiltered)) {
+      console.log('now -- ', nextState.reRender, new Date().now)
+      this.setState({
+        reRender: new Date().now
+      })
     }
 
     // if (
@@ -160,45 +170,59 @@ export default class FilterSortController extends Component {
     //   })
     // }
     //
-    if (
-      !isEqual(this.state.marketParamItems, nextState.marketParamItems) ||
-      !isEqual(this.state.combinedFiltered, nextState.combinedFiltered)
-    ) {
-      this.updateSortedFiltered({
-        sorts: {
-          marketParamItems: nextState.marketParamItems
-        },
-        combinedFiltered: nextState.combinedFiltered
-      })
-    }
+    // if (
+    //   !isEqual(this.state.marketParamItems, nextState.marketParamItems) ||
+    //   !isEqual(this.state.combinedFiltered, nextState.combinedFiltered)
+    // ) {
+    //   this.updateSortedFiltered({
+    //     sorts: {
+    //       marketParamItems: nextState.marketParamItems
+    //     },
+    //     combinedFiltered: nextState.combinedFiltered
+    //   })
+    // }
 
     // if (!isEqual(this.state.filtersSorts, nextState.filtersSorts))
   }
 
-  updateCombinedFilters(items, filters) {
-    const combinedFiltered = Object.keys(filters).reduce((p, filterType) => {
-      if (p.length === 0 || (filters[filterType] !== null && filters[filterType].length === 0)) return []
-      if (filters[filterType] === null) return p
+  updateCombinedFilters(items, results) {
+    const combinedFiltered = Object.keys(results).reduce((p, filterType) => {
+      if (filterType === SORT_MARKET_PARAM) return p // Don't include sorted array
+      if (p.length === 0 || (results[filterType] !== null && results[filterType].length === 0)) return []
+      if (results[filterType] === null) return p
 
-      return filters[filterType].filter(item => p.includes(item))
+      return results[filterType].filter(item => p.includes(item))
     }, items.map((_, i) => i))
 
-    // console.log('combinedFiltered -- ', combinedFiltered)
+    this.updateSortedFiltered(
+      results[SORT_MARKET_PARAM] || null,
+      combinedFiltered
+    )
 
-    this.setState({ combinedFiltered })
+    this.setState({
+      combinedFiltered
+    })
   }
 
-  updateSortedFiltered(options) { // If we want to accomodate more than one sorting mechanism across a filtered list, we'll need to re-architect things a bit
-    // console.log('options -- ', options)
+  updateSortedFiltered(rawSorted, combined) { // If we want to accomodate more than one sorting mechanism across a filtered list, we'll need to re-architect things a bit
+    // console.log('options -- ', rawSorted, combined)
 
-    this.props.updateFilteredItems(options.sorts.marketParamItems !== null ? options.sorts.marketParamItems : options.combinedFiltered)
+    this.props.updateFilteredItems(rawSorted !== null ?
+      rawSorted.reduce((p, itemIndex) => {
+        if (combined.indexOf(itemIndex) !== -1) return [...p, combined.indexOf(itemIndex)]
+        return p
+      }, []) :
+      combined
+    )
+
+    // this.props.updateFilteredItems(options.sorts.marketParamItems !== null ? options.sorts.marketParamItems : options.combinedFiltered)
   }
 
 
   updateIndices(options) {
     this.setState({
-      filters: {
-        ...this.state.filters,
+      results: {
+        ...this.state.results,
         [options.type]: options.indices
       }
     })
@@ -214,19 +238,28 @@ export default class FilterSortController extends Component {
 
       const name = getValue(subChild, 'type.displayName')
 
-      if (
-        React.isValidElement(subChild) &&
-        (
+      if (React.isValidElement(subChild)) {
+        if (
           name &&
           (
             name.toLowerCase().indexOf('filter') !== -1 ||
             name.toLowerCase().indexOf('sort') !== -1
           )
-        )
-      ) {
-        subChildProps = {
-          updateIndices: this.updateIndices,
-          items: this.props.items
+        ) {
+          subChildProps = {
+            updateIndices: this.updateIndices,
+            items: this.props.items
+          }
+        }
+
+        if (
+          name &&
+          name.indexOf('SortMarketParam') !== -1
+        ) {
+          subChildProps = {
+            ...subChildProps,
+            combinedFiltered: this.state.combinedFiltered
+          }
         }
       }
       if (subChild.props) {
@@ -243,7 +276,9 @@ export default class FilterSortController extends Component {
 
   render() {
     return (
-      <section>
+      <section
+        key={this.state.reRender}
+      >
         {this.injectChild(this.props.children)}
       </section>
     )
