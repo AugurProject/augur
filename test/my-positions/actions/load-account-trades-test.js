@@ -10,10 +10,8 @@ describe('modules/my-positions/actions/load-account-trades.js', () => {
 
   const MOCK_ACTION_TYPES = {
     CLEAR_ACCOUNT_TRADES: 'CLEAR_ACCOUNT_TRADES',
-    SELL_COMPLETE_SETS: 'SELL_COMPLETE_SETS',
     UPDATE_ACCOUNT_TRADES_DATA: 'UPDATE_ACCOUNT_TRADES_DATA',
-    CONVERT_LOGS_TO_TRANSACTIONS: 'CONVERT_LOGS_TO_TRANSACTIONS',
-    UPDATE_COMPLETE_SETS_BOUGHT: 'UPDATE_COMPLETE_SETS_BOUGHT'
+    CONVERT_LOGS_TO_TRANSACTIONS: 'CONVERT_LOGS_TO_TRANSACTIONS'
   };
 
   const test = t => it(t.description, () => {
@@ -46,12 +44,6 @@ describe('modules/my-positions/actions/load-account-trades.js', () => {
       type: MOCK_ACTION_TYPES.CLEAR_ACCOUNT_TRADES
     }));
     __RewireAPI__.__Rewire__('augur', mockAugur);
-    __RewireAPI__.__Rewire__('sellCompleteSets', market => ({
-      type: MOCK_ACTION_TYPES.SELL_COMPLETE_SETS,
-      data: {
-        market
-      }
-    }));
     __RewireAPI__.__Rewire__('updateAccountTradesData', (trades, market) => ({
       type: MOCK_ACTION_TYPES.UPDATE_ACCOUNT_TRADES_DATA,
       data: {
@@ -64,13 +56,6 @@ describe('modules/my-positions/actions/load-account-trades.js', () => {
       data: {
         type,
         payouts
-      }
-    }));
-    __RewireAPI__.__Rewire__('updateCompleteSetsBought', (parsedCompleteSetsLogs, market) => ({
-      type: MOCK_ACTION_TYPES.UPDATE_COMPLETE_SETS_BOUGHT,
-      data: {
-        parsedCompleteSetsLogs,
-        market
       }
     }));
 
@@ -125,13 +110,6 @@ describe('modules/my-positions/actions/load-account-trades.js', () => {
               type: 'payout',
               payouts: ['test']
             }
-          },
-          {
-            type: MOCK_ACTION_TYPES.UPDATE_COMPLETE_SETS_BOUGHT,
-            data: {
-              parsedCompleteSetsLogs: true,
-              market: undefined
-            }
           }
         ];
 
@@ -169,13 +147,6 @@ describe('modules/my-positions/actions/load-account-trades.js', () => {
             data: {
               type: 'payout',
               payouts: ['test']
-            }
-          },
-          {
-            type: MOCK_ACTION_TYPES.UPDATE_COMPLETE_SETS_BOUGHT,
-            data: {
-              parsedCompleteSetsLogs: true,
-              market: '0xMARKETID'
             }
           }
         ];
@@ -215,13 +186,6 @@ describe('modules/my-positions/actions/load-account-trades.js', () => {
             data: {
               type: 'payout',
               payouts: ['test']
-            }
-          },
-          {
-            type: MOCK_ACTION_TYPES.UPDATE_COMPLETE_SETS_BOUGHT,
-            data: {
-              parsedCompleteSetsLogs: true,
-              market: '0xMARKETID'
             }
           }
         ];

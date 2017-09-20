@@ -29,7 +29,6 @@ import isFirstOrderBookChunkLoaded from 'modules/bids-asks/reducers/is-first-ord
 import orderCancellation from 'modules/bids-asks/reducers/order-cancellation';
 import accountTrades from 'modules/my-positions/reducers/account-trades';
 import accountPositions from 'modules/my-positions/reducers/account-positions';
-import completeSetsBought from 'modules/my-positions/reducers/complete-sets-bought';
 import transactionsData from 'modules/transactions/reducers/transactions-data';
 import transactionsOldestLoadedBlock from 'modules/transactions/reducers/transactions-oldest-loaded-block';
 import transactionsLoading from 'modules/transactions/reducers/transactions-loading';
@@ -91,7 +90,6 @@ export function createReducer() {
     orderCancellation,
     accountTrades,
     accountPositions,
-    completeSetsBought,
     transactionsData,
     transactionsOldestLoadedBlock,
     transactionsLoading,
