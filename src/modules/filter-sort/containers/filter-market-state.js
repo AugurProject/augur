@@ -1,5 +1,5 @@
 import { withRouter } from 'react-router-dom'
 
-import FilterMarketState from 'modules/filter-sort/components/filter-market-state/filter-market-state'
+import Component from 'modules/filter-sort/components/filter-market-state/filter-market-state'
 
-export default withRouter(FilterMarketState)
+export const FilterMarketState = withRouter(Component) // NOTE -- intentionally excluded `default` for enforced function name comparison

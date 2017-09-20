@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import FilterSort from 'modules/filter-sort/containers/filter-sort-controller'
 import FilterSearch from 'modules/filter-sort/containers/filter-search'
-import FilterMarketState from 'modules/filter-sort/containers/filter-market-state'
+import { FilterMarketState } from 'modules/filter-sort/containers/filter-market-state'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 import parsePath from 'modules/routes/helpers/parse-path'
@@ -87,17 +87,18 @@ export default class MarketsHeader extends Component {
         <FilterSort
           items={p.markets}
           updateFilteredItems={p.updateFilteredItems}
-          searchKeys={this.searchKeys}
-        />
-        <div className={Styles.MarketsHeader__search}>
-          <FilterSearch
-            searchPlaceholder="Search"
-          />
-        </div>
-        <div className={Styles.MarketsHeader__wrapper}>
-          <h1 className={Styles.MarketsHeader__heading}>{s.headerTitle}</h1>
-          <FilterMarketState />
-        </div>
+        >
+          <div className={Styles.MarketsHeader__search}>
+            <FilterSearch
+              searchPlaceholder="Search"
+              searchKeys={this.searchKeys}
+            />
+          </div>
+          <div className={Styles.MarketsHeader__wrapper}>
+            <h1 className={Styles.MarketsHeader__heading}>{s.headerTitle}</h1>
+            <FilterMarketState />
+          </div>
+        </FilterSort>
       </article>
     )
   }

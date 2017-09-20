@@ -3,7 +3,7 @@ import parseStringToArray from 'modules/routes/helpers/parse-string-to-array'
 
 import { TAGS_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
-export default function filterByTags(location, items) {
+export function filterByTags(location, items) { // NOTE -- intentionally excluded `default` for enforced function name comparison
   // NOTE -- tag filtering is case sensitive
 
   const selectedTags = parseQuery(location.search)[TAGS_PARAM_NAME]
