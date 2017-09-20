@@ -6,7 +6,7 @@ import syncBranch from 'modules/branch/actions/sync-branch';
 import getReportingCycle from 'modules/branch/selectors/reporting-cycle';
 import { syncBlockchain } from 'modules/app/actions/sync-blockchain';
 import { listenToUpdates } from 'modules/app/actions/listen-to-updates';
-import { loadTopics } from 'modules/topics/actions/load-topics';
+import loadTopics from 'modules/topics/actions/load-topics';
 import { loadMarketsToReportOn } from 'modules/reports/actions/load-markets-to-report-on';
 import logError from 'utils/log-error';
 

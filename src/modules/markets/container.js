@@ -9,7 +9,7 @@ import { updateMarketsFilteredSorted, clearMarketsFilteredSorted } from 'modules
 
 import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 
-import { loadMarkets } from 'modules/markets/actions/load-markets';
+import loadMarkets from 'modules/markets/actions/load-markets';
 import { loadMarketsByTopic } from 'modules/markets/actions/load-markets-by-topic';
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 
