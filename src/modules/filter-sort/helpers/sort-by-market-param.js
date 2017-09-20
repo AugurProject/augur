@@ -7,7 +7,7 @@ export default function (selectedMarketParam, selectedSort, items, combinedFilte
 
   return combinedFiltered.slice().sort((a, b) => {
     switch (selectedMarketParam) {
-      case PARAMS.MARKET_CREATE_TIME:
+      case PARAMS.MARKET_CREATION_TIME:
       case PARAMS.MARKET_END_DATE: {
         if (selectedSort) {
           return getValue(items, `${b}.${selectedMarketParam}.timestamp`) - getValue(items, `${a}.${selectedMarketParam}.timestamp`)
