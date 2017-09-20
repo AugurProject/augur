@@ -40,67 +40,67 @@ import debounce from 'utils/debounce'
 import Styles from 'modules/create-market/components/create-market-form/create-market-form.styles'
 
 export default class CreateMarketForm extends Component {
-  static propTypes = {
-    newMarket: PropTypes.object.isRequired,
-    updateNewMarket: PropTypes.func.isRequired
-  }
+  // static propTypes = {
+  //   newMarket: PropTypes.object.isRequired,
+  //   updateNewMarket: PropTypes.func.isRequired
+  // }
 
   constructor(props) {
     super(props)
 
-    this.state = {
-      lastStep: props.newMarket.currentStep,
-      currentStep: props.newMarket.currentStep
-    }
+    // this.state = {
+    //   lastStep: props.newMarket.currentStep,
+    //   currentStep: props.newMarket.currentStep
+    // }
 
-    this.updateFormHeight = debounce(this.updateFormHeight.bind(this))
-    this.updateValidity = this.updateValidity.bind(this)
+    // this.updateFormHeight = debounce(this.updateFormHeight.bind(this))
+    // this.updateValidity = this.updateValidity.bind(this)
   }
 
-  componentDidMount() {
-    this.updateFormHeight()
+  // componentDidMount() {
+  //   this.updateFormHeight()
 
-    window.addEventListener('resize', this.updateFormHeight)
-  }
+  //   window.addEventListener('resize', this.updateFormHeight)
+  // }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) {
-      this.setState({
-        lastStep: this.props.newMarket.currentStep,
-        currentStep: nextProps.newMarket.currentStep
-      }, () => {
-        this.updateFormHeight()
-      })
-    }
+  // componentWillReceiveProps(nextProps) {
+  //   if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) {
+  //     this.setState({
+  //       lastStep: this.props.newMarket.currentStep,
+  //       currentStep: nextProps.newMarket.currentStep
+  //     }, () => {
+  //       this.updateFormHeight()
+  //     })
+  //   }
 
-    if (this.props.newMarket !== nextProps.newMarket) {
-      this.updateFormHeight()
-    }
-  }
+  //   if (this.props.newMarket !== nextProps.newMarket) {
+  //     this.updateFormHeight()
+  //   }
+  // }
 
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateFormHeight)
-  }
+  // componentWillUnmount() {
+  //   window.removeEventListener('resize', this.updateFormHeight)
+  // }
 
-  updateFormHeight() {
-    if (this.createMarketForm) {
-      let newHeight = 0
+  // updateFormHeight() {
+  //   if (this.createMarketForm) {
+  //     let newHeight = 0
 
-      if (this.state.currentStep === 0) { // Initial form height
-        newHeight = this.createMarketForm.children[0].clientHeight
-        this.createMarketForm.style.height = `${newHeight}px`
-      } else {
-        newHeight = this.createMarketForm.getElementsByClassName('display-form-part')[0].clientHeight
-      }
+  //     if (this.state.currentStep === 0) { // Initial form height
+  //       newHeight = this.createMarketForm.children[0].clientHeight
+  //       this.createMarketForm.style.height = `${newHeight}px`
+  //     } else {
+  //       newHeight = this.createMarketForm.getElementsByClassName('display-form-part')[0].clientHeight
+  //     }
 
-      this.createMarketForm.style.height = `${newHeight}px`
-    }
-  }
+  //     this.createMarketForm.style.height = `${newHeight}px`
+  //   }
+  // }
 
-  updateValidity(isValid, holdForUserAction = false) {
-    // holdForUserAction will prevent the state from adding the form part to the validated forms array until both the form is valid + the user selects 'next'
-    this.props.updateNewMarket({ isValid, holdForUserAction })
-  }
+  // updateValidity(isValid, holdForUserAction = false) {
+  //   // holdForUserAction will prevent the state from adding the form part to the validated forms array until both the form is valid + the user selects 'next'
+  //   this.props.updateNewMarket({ isValid, holdForUserAction })
+  // }
 
   render() {
     const p = this.props
@@ -121,11 +121,9 @@ export default class CreateMarketForm extends Component {
               id="cm__input--desc"
               className={Styles.CreateMarketFormDesc__input}
               type="text"
-              value={p.description}
               placeholder="What question do you want the world to predict?"
               maxLength={DESCRIPTION_MAX_LENGTH}
-              debounceMS={0}
-              onChange={description => this.validateForm(description)}
+              onChange={e => p.updateDescription(e.target.value)}
             />
           </li>
           <li className={Styles['field--50']}>
@@ -134,11 +132,7 @@ export default class CreateMarketForm extends Component {
               id="cm__input--cat"
               className={Styles.CreateMarketFormDesc__input}
               type="text"
-              value={p.description}
               placeholder="Help users find your market by defining its category"
-              maxLength={DESCRIPTION_MAX_LENGTH}
-              debounceMS={0}
-              onChange={description => this.validateForm(description)}
             />
           </li>
           <li className={Styles['field--50']}>
@@ -150,11 +144,7 @@ export default class CreateMarketForm extends Component {
               id="cm__input--tag1"
               className={Styles.CreateMarketFormDesc__input}
               type="text"
-              value={p.description}
               placeholder="Tag 1"
-              maxLength={DESCRIPTION_MAX_LENGTH}
-              debounceMS={0}
-              onChange={description => this.validateForm(description)}
             />
           </li>
           <li className={Styles['field--50']}>
@@ -163,11 +153,7 @@ export default class CreateMarketForm extends Component {
               id="cm__input--tag2"
               className={Styles.CreateMarketFormDesc__input}
               type="text"
-              value={p.description}
               placeholder="Tag 2"
-              maxLength={DESCRIPTION_MAX_LENGTH}
-              debounceMS={0}
-              onChange={description => this.validateForm(description)}
             />
           </li>
         </ul>
