@@ -42,8 +42,6 @@ export default class FilterSortController extends Component {
 
     // NOTE -- any filter or sort that is `null` will be ignored when combining arrays
     this.state = {
-      // List of employed filters + sorts
-      filtersSorts: [],
       // Aggregated Items
       combinedFiltered: null,
       // Sorted Items
@@ -56,60 +54,60 @@ export default class FilterSortController extends Component {
   componentWillMount() {
     this.props.updateFilteredItems(this.props.items.map((_, i) => i)) // Initialize indices
 
-    this.updateCombinedFilters({
-      filters: {
-        searchItems: this.state.searchItems,
-        marketStateItems: this.state.marketStateItems,
-        // marketTagItems: this.state.marketTagItems,
-        // marketFavoriteItems: this.state.marketFavoriteItems
-      },
-      items: this.props.items
-    })
+    // this.updateCombinedFilters({
+    //   filters: {
+    //     searchItems: this.state.searchItems,
+    //     marketStateItems: this.state.marketStateItems,
+    //     // marketTagItems: this.state.marketTagItems,
+    //     // marketFavoriteItems: this.state.marketFavoriteItems
+    //   },
+    //   items: this.props.items
+    // })
     //
     // if (this.props.filterByTags) this.setState({ marketTagItems: filterByTags(this.props.location, this.props.items) })
     // if (this.props.filterByMarketFavorites) this.setState({ marketFavoriteItems: filterByMarketFavorites(this.props.items) })
   }
 
   componentWillReceiveProps(nextProps) {
-    const itemsChanged = !isEqual(this.props.items, nextProps.items)
-
-    if (
-      itemsChanged ||
-      !isEqual(this.props.location.search, nextProps.location.search)
-    ) {
-      // Check respective filters/sorts for changes + update accordingly
-      const oldSearch = parseQuery(this.props.location.search)
-      const newSearch = parseQuery(nextProps.location.search)
-
-      if (
-        itemsChanged ||
-        !isEqual(oldSearch[PARAMS.FILTER_SEARCH_PARAM], newSearch[PARAMS.FILTER_SEARCH_PARAM])
-      ) {
-        this.setState({
-          searchItems: filterBySearch(newSearch[PARAMS.FILTER_SEARCH_PARAM], nextProps.searchKeys, nextProps.items)
-        })
-      }
-
-      if (
-        itemsChanged ||
-        !isEqual(oldSearch[PARAMS.FILTER_MARKET_STATE_PARAM], newSearch[PARAMS.FILTER_MARKET_STATE_PARAM])
-      ) {
-        this.setState({
-          marketStateItems: filterByMarketState(newSearch[PARAMS.FILTER_MARKET_STATE_PARAM], nextProps.currentReportingPeriod, nextProps.items)
-        })
-      }
-
-      if (
-        itemsChanged ||
-        !isEqual(oldSearch[PARAMS.FILTER_SEARCH_PARAM], newSearch[PARAMS.FILTER_SEARCH_PARAM]) ||
-        !isEqual(oldSearch[PARAMS.SORT_MARKET_PARAM], newSearch[PARAMS.SORT_MARKET_PARAM]) ||
-        !isEqual(oldSearch[PARAMS.SORT_MARKET_ORDER_PARAM], newSearch[PARAMS.SORT_MARKET_ORDER_PARAM])
-      ) {
-        this.setState({
-          marketParamItems: sortByMarketParam(newSearch[PARAMS.SORT_MARKET_PARAM], newSearch[PARAMS.SORT_MARKET_ORDER_PARAM], nextProps.items, this.state.combinedFiltered)
-        })
-      }
-    }
+    // const itemsChanged = !isEqual(this.props.items, nextProps.items)
+    //
+    // if (
+    //   itemsChanged ||
+    //   !isEqual(this.props.location.search, nextProps.location.search)
+    // ) {
+    //   // Check respective filters/sorts for changes + update accordingly
+    //   const oldSearch = parseQuery(this.props.location.search)
+    //   const newSearch = parseQuery(nextProps.location.search)
+    //
+    //   if (
+    //     itemsChanged ||
+    //     !isEqual(oldSearch[PARAMS.FILTER_SEARCH_PARAM], newSearch[PARAMS.FILTER_SEARCH_PARAM])
+    //   ) {
+    //     this.setState({
+    //       searchItems: filterBySearch(newSearch[PARAMS.FILTER_SEARCH_PARAM], nextProps.searchKeys, nextProps.items)
+    //     })
+    //   }
+    //
+    //   if (
+    //     itemsChanged ||
+    //     !isEqual(oldSearch[PARAMS.FILTER_MARKET_STATE_PARAM], newSearch[PARAMS.FILTER_MARKET_STATE_PARAM])
+    //   ) {
+    //     this.setState({
+    //       marketStateItems: filterByMarketState(newSearch[PARAMS.FILTER_MARKET_STATE_PARAM], nextProps.currentReportingPeriod, nextProps.items)
+    //     })
+    //   }
+    //
+    //   if (
+    //     itemsChanged ||
+    //     !isEqual(oldSearch[PARAMS.FILTER_SEARCH_PARAM], newSearch[PARAMS.FILTER_SEARCH_PARAM]) ||
+    //     !isEqual(oldSearch[PARAMS.SORT_MARKET_PARAM], newSearch[PARAMS.SORT_MARKET_PARAM]) ||
+    //     !isEqual(oldSearch[PARAMS.SORT_MARKET_ORDER_PARAM], newSearch[PARAMS.SORT_MARKET_ORDER_PARAM])
+    //   ) {
+    //     this.setState({
+    //       marketParamItems: sortByMarketParam(newSearch[PARAMS.SORT_MARKET_PARAM], newSearch[PARAMS.SORT_MARKET_ORDER_PARAM], nextProps.items, this.state.combinedFiltered)
+    //     })
+    //   }
+    // }
     // if (
     //   nextProps.filterByTags &&
     //   (
@@ -134,35 +132,35 @@ export default class FilterSortController extends Component {
   componentWillUpdate(nextProps, nextState) {
     // console.log('componentWillUpdate -- ', nextState)
 
-    if (
-      !isEqual(this.state.searchItems, nextState.searchItems) ||
-      !isEqual(this.state.marketStateItems, nextState.marketStateItems) ||
-      // !isEqual(this.state.marketTagItems, nextState.marketTagItems) ||
-      // !isEqual(this.state.marketFavoriteItems, nextState.marketFavoriteItems) ||
-      !isEqual(this.props.items, nextProps.items)
-    ) {
-      this.updateCombinedFilters({
-        filters: {
-          searchItems: nextState.searchItems,
-          marketStateItems: nextState.marketStateItems,
-          // marketTagItems: nextState.marketTagItems,
-          // marketFavoriteItems: nextState.marketFavoriteItems
-        },
-        items: nextProps.items
-      })
-    }
-
-    if (
-      !isEqual(this.state.marketParamItems, nextState.marketParamItems) ||
-      !isEqual(this.state.combinedFiltered, nextState.combinedFiltered)
-    ) {
-      this.updateSortedFiltered({
-        sorts: {
-          marketParamItems: nextState.marketParamItems
-        },
-        combinedFiltered: nextState.combinedFiltered
-      })
-    }
+    // if (
+    //   !isEqual(this.state.searchItems, nextState.searchItems) ||
+    //   !isEqual(this.state.marketStateItems, nextState.marketStateItems) ||
+    //   // !isEqual(this.state.marketTagItems, nextState.marketTagItems) ||
+    //   // !isEqual(this.state.marketFavoriteItems, nextState.marketFavoriteItems) ||
+    //   !isEqual(this.props.items, nextProps.items)
+    // ) {
+    //   this.updateCombinedFilters({
+    //     filters: {
+    //       searchItems: nextState.searchItems,
+    //       marketStateItems: nextState.marketStateItems,
+    //       // marketTagItems: nextState.marketTagItems,
+    //       // marketFavoriteItems: nextState.marketFavoriteItems
+    //     },
+    //     items: nextProps.items
+    //   })
+    // }
+    //
+    // if (
+    //   !isEqual(this.state.marketParamItems, nextState.marketParamItems) ||
+    //   !isEqual(this.state.combinedFiltered, nextState.combinedFiltered)
+    // ) {
+    //   this.updateSortedFiltered({
+    //     sorts: {
+    //       marketParamItems: nextState.marketParamItems
+    //     },
+    //     combinedFiltered: nextState.combinedFiltered
+    //   })
+    // }
 
     // if (!isEqual(this.state.filtersSorts, nextState.filtersSorts))
   }
@@ -187,8 +185,11 @@ export default class FilterSortController extends Component {
   }
 
 
-  updateIndices(indices, filterSortName) {
-    // TODO
+  updateIndices(options) {
+    // indices
+    // type
+
+    console.log('updateIndices -- ', options)
   }
 
   injectChild(children) {
@@ -212,7 +213,8 @@ export default class FilterSortController extends Component {
         )
       ) {
         subChildProps = {
-          updateIndices: this.updateIndices
+          updateIndices: this.updateIndices,
+          items: this.props.items
         }
       }
       if (subChild.props) {
