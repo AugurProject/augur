@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import FilterSort from 'modules/filter-sort/containers/filter-sort-controller'
 import FilterSearch from 'modules/filter-sort/containers/filter-search'
-import { FilterMarketState } from 'modules/filter-sort/containers/filter-market-state'
+import FilterMarketState from 'modules/filter-sort/containers/filter-market-state'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 import parsePath from 'modules/routes/helpers/parse-path'
@@ -28,12 +28,6 @@ export default class MarketsHeader extends Component {
       capitalizeTitle: false,
       filterByMarketFavorites: false
     }
-
-    this.searchKeys = [
-      'description',
-      ['outcomes', 'name'],
-      ['tags', 'name']
-    ]
 
     this.setHeaderTitle = this.setHeaderTitle.bind(this)
     this.setPathDependentFilters = this.setPathDependentFilters.bind(this)
@@ -90,9 +84,12 @@ export default class MarketsHeader extends Component {
         >
           <div className={Styles.MarketsHeader__search}>
             <FilterSearch
-              items={p.markets}
               searchPlaceholder="Search"
-              searchKeys={this.searchKeys}
+              searchKeys={[
+                'description',
+                ['outcomes', 'name'],
+                ['tags', 'name']
+              ]}
             />
           </div>
           <div className={Styles.MarketsHeader__wrapper}>

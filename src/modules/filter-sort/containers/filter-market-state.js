@@ -1,5 +1,12 @@
+import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import Component from 'modules/filter-sort/components/filter-market-state/filter-market-state'
+import FilterMarketState from 'modules/filter-sort/components/filter-market-state/filter-market-state'
 
-export const FilterMarketState = withRouter(Component) // NOTE -- intentionally excluded `default` for enforced function name comparison
+import getValue from 'utils/get-value'
+
+const mapStateToProps = state => ({
+  currentReportingPeriod: getValue(state, 'branch.reportPeriod')
+})
+
+export default withRouter(connect(mapStateToProps)(FilterMarketState))
