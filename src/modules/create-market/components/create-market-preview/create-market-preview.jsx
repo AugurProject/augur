@@ -29,94 +29,94 @@ import BigNumber from 'bignumber.js'
 import Styles from 'modules/create-market/components/create-market-preview/create-market-preview.styles'
 
 export default class CreateMarketPreview extends Component {
-  static propTypes = {
-    newMarket: PropTypes.object.isRequired,
-    updateNewMarket: PropTypes.func.isRequired
-  };
+  // static propTypes = {
+  //   newMarket: PropTypes.object.isRequired,
+  //   updateNewMarket: PropTypes.func.isRequired
+  // };
 
   constructor(props) {
     super(props)
 
-    this.state = {
-      previousStep: null,
-      initialLiquidity: null,
-      selectedOutcome: props.newMarket.outcomes[0],
-      shouldUpdateHeight: false
-    }
+    // this.state = {
+    //   previousStep: null,
+    //   initialLiquidity: null,
+    //   selectedOutcome: props.newMarket.outcomes[0],
+    //   shouldUpdateHeight: false
+    // }
 
     // this.shouldUpdateHeight = debounce(this.shouldUpdateHeight.bind(this))
     // this.updatePreviewHeight = debounce(this.updatePreviewHeight.bind(this))
     // this.updateChart = debounce(this.updateChart.bind(this))
   }
 
-  componentDidMount() {
-    // this.updatePreviewHeight(this.props.newMarket.currentStep)
+  // componentDidMount() {
+  //   this.updatePreviewHeight(this.props.newMarket.currentStep)
 
-    // this.orderBookPreviewChart = new Highcharts.Chart('order_book_preview_chart_preview', {
-    //   chart: {
-    //     width: 0,
-    //     height: 0
-    //   },
-    //   lang: {
-    //     noData: 'No orders to display'
-    //   },
-    //   yAxis: {
-    //     title: {
-    //       text: 'Shares'
-    //     }
-    //   },
-    //   xAxis: {
-    //     title: {
-    //       text: 'Price'
-    //     }
-    //   },
-    //   series: [
-    //     {
-    //       type: 'area',
-    //       name: 'Bids',
-    //       step: 'right',
-    //       data: []
-    //     },
-    //     {
-    //       type: 'area',
-    //       name: 'Asks',
-    //       step: 'left',
-    //       data: []
-    //     }
-    //   ],
-    //   credits: {
-    //     enabled: false
-    //   }
-    // })
+  //   this.orderBookPreviewChart = new Highcharts.Chart('order_book_preview_chart_preview', {
+  //     chart: {
+  //       width: 0,
+  //       height: 0
+  //     },
+  //     lang: {
+  //       noData: 'No orders to display'
+  //     },
+  //     yAxis: {
+  //       title: {
+  //         text: 'Shares'
+  //       }
+  //     },
+  //     xAxis: {
+  //       title: {
+  //         text: 'Price'
+  //       }
+  //     },
+  //     series: [
+  //       {
+  //         type: 'area',
+  //         name: 'Bids',
+  //         step: 'right',
+  //         data: []
+  //       },
+  //       {
+  //         type: 'area',
+  //         name: 'Asks',
+  //         step: 'left',
+  //         data: []
+  //       }
+  //     ],
+  //     credits: {
+  //       enabled: false
+  //     }
+  //   })
 
-    // this.shouldUpdateHeight(true)
+  //   this.shouldUpdateHeight(true)
 
-    // window.addEventListener('resize', this.updatePreviewHeight)
-  }
+  //   window.addEventListener('resize', this.updatePreviewHeight)
+  // }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) this.setState({ previousStep: this.props.newMarket.currentStep })
+  // componentWillReceiveProps(nextProps) {
+  //   if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) this.setState({ previousStep: this.props.newMarket.currentStep })
 
-    // if (this.props.newMarket !== nextProps.newMarket) {
-    //   this.updatePreviewHeight(nextProps.newMarket.currentStep)
-    // }
+  //   // if (this.props.newMarket !== nextProps.newMarket) {
+  //   //   this.updatePreviewHeight(nextProps.newMarket.currentStep)
+  //   // }
 
-    if (this.props.newMarket.orderBook !== nextProps.newMarket.orderBook) this.updateMarketLiquidity(nextProps.newMarket.orderBook)
-    if (this.props.newMarket.outcomes !== nextProps.newMarket.outcomes) this.setState({ selectedOutcome: nextProps.newMarket.outcomes[0] })
-    if (this.props.newMarket.orderBookSeries !== nextProps.newMarket.orderBookSeries) this.updateChart()
-  }
+  //   if (this.props.newMarket.orderBook !== nextProps.newMarket.orderBook) this.updateMarketLiquidity(nextProps.newMarket.orderBook)
+  //   if (this.props.newMarket.outcomes !== nextProps.newMarket.outcomes) this.setState({ selectedOutcome: nextProps.newMarket.outcomes[0] })
+  //   if (this.props.newMarket.orderBookSeries !== nextProps.newMarket.orderBookSeries) this.updateChart()
+  // }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.shouldUpdateHeight && prevState.shouldUpdateHeight !== this.state.shouldUpdateHeight) {
-      // this.updatePreviewHeight(this.props.newMarket.currentStep)
-      // this.updateChart()
-      // this.shouldUpdateHeight(false)
-    }
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (this.state.shouldUpdateHeight && prevState.shouldUpdateHeight !== this.state.shouldUpdateHeight) {
+  //     // this.updatePreviewHeight(this.props.newMarket.currentStep)
+  //     // this.updateChart()
+  //     // this.shouldUpdateHeight(false)
+  //   }
 
-    if (prevState.selectedOutcome !== this.state.selectedOutcome) {
-      // this.updateChart()
-    }
-  }
+  //   if (prevState.selectedOutcome !== this.state.selectedOutcome) {
+  //     // this.updateChart()
+  //   }
+  // }
 
   // componentWillUnmount() {
   //   window.removeEventListener('resize', this.updatePreviewHeight)
@@ -168,11 +168,11 @@ export default class CreateMarketPreview extends Component {
   //   }
   // }
 
-  updateMarketLiquidity(orderBook) {
-    const initialLiquidity = Object.keys(orderBook).reduce((p, outcome) => p.plus(orderBook[outcome].reduce((p, order) => p.plus(order.quantity.times(order.price)), new BigNumber(0))), new BigNumber(0)).toNumber().toLocaleString()
+  // updateMarketLiquidity(orderBook) {
+  //   const initialLiquidity = Object.keys(orderBook).reduce((p, outcome) => p.plus(orderBook[outcome].reduce((p, order) => p.plus(order.quantity.times(order.price)), new BigNumber(0))), new BigNumber(0)).toNumber().toLocaleString()
 
-    this.setState({ initialLiquidity })
-  }
+  //   this.setState({ initialLiquidity })
+  // }
 
   // shouldUpdateHeight(shouldUpdateHeight) {
   //   if (this.marketPreview) {
@@ -181,7 +181,7 @@ export default class CreateMarketPreview extends Component {
   // }
 
   render() {
-    // const p = this.props
+    const p = this.props
     // const s = this.state
     // const newMarket = this.props.newMarket
 
@@ -206,7 +206,7 @@ export default class CreateMarketPreview extends Component {
               <li>Tags</li>
             </ul>
           </div>
-          <h1>How much wood will a woodchuck chuck?</h1>
+          <h1>{p.description}</h1>
           <div className={Styles.CreateMarketPreview__outcome}>
             Outcome
           </div>

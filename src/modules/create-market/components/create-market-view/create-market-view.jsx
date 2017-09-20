@@ -24,27 +24,33 @@ export default class CreateMarketView extends Component {
     super(props)
 
     this.state = {
-      buttonHeight: 0
+      description: 'New Market Question',
     }
 
-    this.updateValidations = this.updateValidations.bind(this)
+    // this.updateValidations = this.updateValidations.bind(this)
+
+    this.updateDescription = this.updateDescription.bind(this)
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.newMarket.isValid !== nextProps.newMarket.isValid ||
-      (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep && nextProps.newMarket.isValid) ||
-      (this.props.newMarket.holdForUserAction !== nextProps.newMarket.holdForUserAction)
-    ) {
-      this.updateValidations(nextProps.newMarket.isValid, nextProps.newMarket.currentStep, nextProps.newMarket.holdForUserAction)
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   if (this.props.newMarket.isValid !== nextProps.newMarket.isValid ||
+  //     (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep && nextProps.newMarket.isValid) ||
+  //     (this.props.newMarket.holdForUserAction !== nextProps.newMarket.holdForUserAction)
+  //   ) {
+  //     this.updateValidations(nextProps.newMarket.isValid, nextProps.newMarket.currentStep, nextProps.newMarket.holdForUserAction)
+  //   }
+  // }
 
-  updateValidations(isValid, currentStep, isHolding = false) {
-    if (isValid && !isHolding) {
-      this.props.addValidationToNewMarket(newMarketCreationOrder[currentStep])
-    } else {
-      this.props.removeValidationFromNewMarket(newMarketCreationOrder[currentStep])
-    }
+  // updateValidations(isValid, currentStep, isHolding = false) {
+  //   if (isValid && !isHolding) {
+  //     this.props.addValidationToNewMarket(newMarketCreationOrder[currentStep])
+  //   } else {
+  //     this.props.removeValidationFromNewMarket(newMarketCreationOrder[currentStep])
+  //   }
+  // }
+
+  updateDescription(description) {
+    this.setState({ description })
   }
 
   render() {
@@ -65,14 +71,18 @@ export default class CreateMarketView extends Component {
             clearNewMarket={p.clearNewMarket}
           /> */}
           <CreateMarketPreview
+            description={s.description}
+
             newMarket={p.newMarket}
             updateNewMarket={p.updateNewMarket}
           />
           <CreateMarketForm
+            description={s.description}
+            updateDescription={this.updateDescription}
+
             branch={p.branch}
             availableEth={p.availableEth}
             newMarket={p.newMarket}
-            buttonHeight={s.buttonHeight}
             addOrderToNewMarket={p.addOrderToNewMarket}
             removeOrderFromNewMarket={p.removeOrderFromNewMarket}
             updateNewMarket={p.updateNewMarket}
