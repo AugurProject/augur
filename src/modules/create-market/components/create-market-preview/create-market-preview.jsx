@@ -204,6 +204,8 @@ export default class CreateMarketPreview extends Component {
             </ul>
             <ul>
               <li>Tags</li>
+              <li>{p.tag1}</li>
+              <li>{p.tag2}</li>
             </ul>
           </div>
           <h1>{p.description}</h1>

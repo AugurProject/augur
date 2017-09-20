@@ -25,11 +25,13 @@ export default class CreateMarketView extends Component {
 
     this.state = {
       description: 'New Market Question',
+      tag1: '',
+      tag2: '',
     }
 
     // this.updateValidations = this.updateValidations.bind(this)
 
-    this.updateDescription = this.updateDescription.bind(this)
+    this.updateState = this.updateState.bind(this)
   }
 
   // componentWillReceiveProps(nextProps) {
@@ -49,8 +51,10 @@ export default class CreateMarketView extends Component {
   //   }
   // }
 
-  updateDescription(description) {
-    this.setState({ description })
+  updateState(property, value) {
+    const newState = { ...this.state }
+    newState[property] = value
+    this.setState(newState)
   }
 
   render() {
@@ -72,13 +76,14 @@ export default class CreateMarketView extends Component {
           /> */}
           <CreateMarketPreview
             description={s.description}
+            tag1={s.tag1}
+            tag2={s.tag2}
 
             newMarket={p.newMarket}
             updateNewMarket={p.updateNewMarket}
           />
           <CreateMarketForm
-            description={s.description}
-            updateDescription={this.updateDescription}
+            updateState={this.updateState}
 
             branch={p.branch}
             availableEth={p.availableEth}
