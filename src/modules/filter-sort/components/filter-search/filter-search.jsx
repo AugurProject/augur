@@ -6,6 +6,8 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 import makeQuery from 'modules/routes/helpers/make-query'
 import debounce from 'utils/debounce'
 
+import filterBySearch from 'modules/filter-sort/helpers/filter-by-search'
+
 import { FILTER_SEARCH_PARAM } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/filter-sort/components/filter-search/filter-search.styles'
@@ -14,7 +16,9 @@ export default class FilterSearch extends Component { // NOTE -- intentionally e
   static propTypes = {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
+    items: PropTypes.array.isRequired,
     updateIndices: PropTypes.func.isRequired,
+    searchKeys: PropTypes.array.isRequired,
     searchPlaceholder: PropTypes.string
   }
 
@@ -34,7 +38,14 @@ export default class FilterSearch extends Component { // NOTE -- intentionally e
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (this.state.search !== nextState.search) this.updateQuery(nextState.search, nextProps.location)
+    if (this.state.search !== nextState.search) {
+      this.updateQuery(nextState.search, nextProps.location)
+      console.log('searchKeys -- ', nextProps)
+      nextProps.updateIndices({
+        indices: filterBySearch(nextState.search, nextProps.searchKeys, nextProps.items),
+        type: FILTER_SEARCH_PARAM
+      })
+    }
   }
 
   updateQuery(search, location) {
@@ -59,7 +70,7 @@ export default class FilterSearch extends Component { // NOTE -- intentionally e
     const s = this.state
 
     return (
-      <article className={Styles.FilterSearch} isFilterSort>
+      <article className={Styles.FilterSearch}>
         <Input
           className={Styles.FilterSearch__input}
           isSearch
