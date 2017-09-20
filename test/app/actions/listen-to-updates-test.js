@@ -26,7 +26,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
   };
 
   const SyncBranch = {
-    syncBranch: sinon.stub().returns({ type: 'SYNC_BRANCH' })
+    default: sinon.stub().returns({ type: 'SYNC_BRANCH' })
   };
 
   const UpdateBranch = {

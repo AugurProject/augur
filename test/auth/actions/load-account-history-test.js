@@ -121,7 +121,7 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
   }));
 
   const SyncBranch = {};
-  SyncBranch.syncBranch = sinon.stub().returns({ type: MOCK_ACTION_TYPES.SYNC_BRANCH });
+  SyncBranch.default = sinon.stub().returns({ type: MOCK_ACTION_TYPES.SYNC_BRANCH });
 
   const UpdateReports = {};
   UpdateReports.clearReports = sinon.stub().returns({ type: MOCK_ACTION_TYPES.CLEAR_REPORTS });
