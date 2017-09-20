@@ -2,21 +2,11 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { isEqual } from 'lodash'
 
-// import FilterMarketState from 'modules/filter-sort/components/filter-market-state/filter-market-state'
-import SortMarketParam from 'modules/filter-sort/containers/sort-market-param'
-
-import filterByMarketFavorites from 'modules/filter-sort/helpers/filter-by-market-favorites'
-import filterByTags from 'modules/filter-sort/helpers/filter-by-tags'
-import filterBySearch from 'modules/filter-sort/helpers/filter-by-search'
-import filterByMarketState from 'modules/filter-sort/helpers/filter-by-market-state'
-import sortByMarketParam from 'modules/filter-sort/helpers/sort-by-market-param'
-
 import parseQuery from 'modules/routes/helpers/parse-query'
 import getValue from 'utils/get-value'
 import isArray from 'utils/is-array'
 import isObject from 'utils/is-object'
 
-import * as PARAMS from 'modules/filter-sort/constants/param-names'
 import { SORT_MARKET_PARAM } from 'modules/filter-sort/constants/param-names'
 
 export default class FilterSortController extends Component {
@@ -25,17 +15,7 @@ export default class FilterSortController extends Component {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     items: PropTypes.array.isRequired,
-    updateFilteredItems: PropTypes.func.isRequired,
-    currentReportingPeriod: PropTypes.number,
-    //  Optional Configuration
-    searchKeys: PropTypes.array,
-    marketSort: PropTypes.bool
-    // filterByTags: PropTypes.bool,
-    // filterByMarketFavorites: PropTypes.bool,
-    // filterByMarketState: PropTypes.bool,
-    // sortByMarketParam: PropTypes.bool,
-    // searchPlaceholder: PropTypes.string,
-    // filterBySearch: PropTypes.bool
+    updateFilteredItems: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -49,95 +29,21 @@ export default class FilterSortController extends Component {
       combinedFiltered: null,
       // Sorted Items
       marketParamItems: null,
-      // ReRender
-      reRender: new Date().now
+      // Children Components
+      children: null
     }
 
-    this.injectChild = this.injectChild.bind(this)
+    this.injectChildren = this.injectChildren.bind(this)
     this.updateIndices = this.updateIndices.bind(this)
   }
 
   componentWillMount() {
     this.props.updateFilteredItems(this.props.items.map((_, i) => i)) // Initialize indices
 
-    // this.updateCombinedFilters({
-    //   filters: {
-    //     searchItems: this.state.searchItems,
-    //     marketStateItems: this.state.marketStateItems,
-    //     // marketTagItems: this.state.marketTagItems,
-    //     // marketFavoriteItems: this.state.marketFavoriteItems
-    //   },
-    //   items: this.props.items
-    // })
-    //
-    // if (this.props.filterByTags) this.setState({ marketTagItems: filterByTags(this.props.location, this.props.items) })
-    // if (this.props.filterByMarketFavorites) this.setState({ marketFavoriteItems: filterByMarketFavorites(this.props.items) })
-  }
-
-  componentWillReceiveProps(nextProps) {
-    // const itemsChanged = !isEqual(this.props.items, nextProps.items)
-    //
-    // if (
-    //   itemsChanged ||
-    //   !isEqual(this.props.location.search, nextProps.location.search)
-    // ) {
-    //   // Check respective filters/sorts for changes + update accordingly
-    //   const oldSearch = parseQuery(this.props.location.search)
-    //   const newSearch = parseQuery(nextProps.location.search)
-    //
-    //   if (
-    //     itemsChanged ||
-    //     !isEqual(oldSearch[PARAMS.FILTER_SEARCH_PARAM], newSearch[PARAMS.FILTER_SEARCH_PARAM])
-    //   ) {
-    //     this.setState({
-    //       searchItems: filterBySearch(newSearch[PARAMS.FILTER_SEARCH_PARAM], nextProps.searchKeys, nextProps.items)
-    //     })
-    //   }
-    //
-    //   if (
-    //     itemsChanged ||
-    //     !isEqual(oldSearch[PARAMS.FILTER_MARKET_STATE_PARAM], newSearch[PARAMS.FILTER_MARKET_STATE_PARAM])
-    //   ) {
-    //     this.setState({
-    //       marketStateItems: filterByMarketState(newSearch[PARAMS.FILTER_MARKET_STATE_PARAM], nextProps.currentReportingPeriod, nextProps.items)
-    //     })
-    //   }
-    //
-    //   if (
-    //     itemsChanged ||
-    //     !isEqual(oldSearch[PARAMS.FILTER_SEARCH_PARAM], newSearch[PARAMS.FILTER_SEARCH_PARAM]) ||
-    //     !isEqual(oldSearch[PARAMS.SORT_MARKET_PARAM], newSearch[PARAMS.SORT_MARKET_PARAM]) ||
-    //     !isEqual(oldSearch[PARAMS.SORT_MARKET_ORDER_PARAM], newSearch[PARAMS.SORT_MARKET_ORDER_PARAM])
-    //   ) {
-    //     this.setState({
-    //       marketParamItems: sortByMarketParam(newSearch[PARAMS.SORT_MARKET_PARAM], newSearch[PARAMS.SORT_MARKET_ORDER_PARAM], nextProps.items, this.state.combinedFiltered)
-    //     })
-    //   }
-    // }
-    // if (
-    //   nextProps.filterByTags &&
-    //   (
-    //     !isEqual(this.props.items, nextProps.items) ||
-    //     !isEqual(this.props.location.search, nextProps.location.search)
-    //   )
-    // ) {
-    //   this.setState({ marketTagItems: filterByTags(nextProps.location, nextProps.items) })
-    // }
-    //
-    // if (
-    //   nextProps.filterByMarketFavorites &&
-    //   (
-    //     !isEqual(this.props.items, nextProps.items) ||
-    //     !isEqual(this.props.location.search, nextProps.location.search)
-    //   )
-    // ) {
-    //   this.setState({ marketFavoriteItems: filterByMarketFavorites(nextProps.items) })
-    // }
+    this.injectChildren(this.props.children, this.state.combinedFiltered)
   }
 
   componentWillUpdate(nextProps, nextState) {
-    // console.log('componentWillUpdate -- ', nextState)
-
     if (
       !isEqual(this.props.items, nextProps.items) ||
       !isEqual(this.state.results, nextState.results)
@@ -146,43 +52,8 @@ export default class FilterSortController extends Component {
     }
 
     if (!isEqual(this.state.combinedFiltered, nextState.combinedFiltered)) {
-      console.log('now -- ', nextState.reRender, new Date().now)
-      this.setState({
-        reRender: new Date().now
-      })
+      this.injectChildren(nextProps.children, nextState.combinedFiltered)
     }
-
-    // if (
-    //   !isEqual(this.state.searchItems, nextState.searchItems) ||
-    //   !isEqual(this.state.marketStateItems, nextState.marketStateItems) ||
-    //   // !isEqual(this.state.marketTagItems, nextState.marketTagItems) ||
-    //   // !isEqual(this.state.marketFavoriteItems, nextState.marketFavoriteItems) ||
-    //   !isEqual(this.props.items, nextProps.items)
-    // ) {
-    //   this.updateCombinedFilters({
-    //     filters: {
-    //       searchItems: nextState.searchItems,
-    //       marketStateItems: nextState.marketStateItems,
-    //       // marketTagItems: nextState.marketTagItems,
-    //       // marketFavoriteItems: nextState.marketFavoriteItems
-    //     },
-    //     items: nextProps.items
-    //   })
-    // }
-    //
-    // if (
-    //   !isEqual(this.state.marketParamItems, nextState.marketParamItems) ||
-    //   !isEqual(this.state.combinedFiltered, nextState.combinedFiltered)
-    // ) {
-    //   this.updateSortedFiltered({
-    //     sorts: {
-    //       marketParamItems: nextState.marketParamItems
-    //     },
-    //     combinedFiltered: nextState.combinedFiltered
-    //   })
-    // }
-
-    // if (!isEqual(this.state.filtersSorts, nextState.filtersSorts))
   }
 
   updateCombinedFilters(items, results) {
@@ -205,8 +76,6 @@ export default class FilterSortController extends Component {
   }
 
   updateSortedFiltered(rawSorted, combined) { // If we want to accomodate more than one sorting mechanism across a filtered list, we'll need to re-architect things a bit
-    // console.log('options -- ', rawSorted, combined)
-
     this.props.updateFilteredItems(rawSorted !== null ?
       rawSorted.reduce((p, itemIndex) => {
         if (combined.indexOf(itemIndex) !== -1) return [...p, combined.indexOf(itemIndex)]
@@ -214,8 +83,6 @@ export default class FilterSortController extends Component {
       }, []) :
       combined
     )
-
-    // this.props.updateFilteredItems(options.sorts.marketParamItems !== null ? options.sorts.marketParamItems : options.combinedFiltered)
   }
 
 
@@ -228,7 +95,7 @@ export default class FilterSortController extends Component {
     })
   }
 
-  injectChild(children) {
+  injectChildren(children, combinedFiltered) {
     // NOTE --  keep an eye on this...might be a performance bottleneck if goes too deep
     //          Ideally the children of the controller are fairly shallow
     //          This method name also sounds terrible
@@ -258,7 +125,7 @@ export default class FilterSortController extends Component {
         ) {
           subChildProps = {
             ...subChildProps,
-            combinedFiltered: this.state.combinedFiltered
+            combinedFiltered
           }
         }
       }
@@ -271,55 +138,18 @@ export default class FilterSortController extends Component {
       return subChild
     })
 
-    return React.Children.map(children, traverseChildren)
+    const updatedChildren = React.Children.map(children, traverseChildren)
+
+    this.setState({
+      children: updatedChildren
+    })
   }
 
   render() {
     return (
-      <section
-        key={this.state.reRender}
-      >
-        {this.injectChild(this.props.children)}
+      <section>
+        {this.state.children}
       </section>
     )
   }
 }
-
-// <article className={Styles.FilterSort}>
-//   {((!!p.filterByMarketState && !!p.currentReportingPeriod) || !!p.sortByMarketParam) &&
-//     <div className={Styles.FilterSort__wrapper}>
-//       {!!p.sortByMarketParam &&
-//         <SortMarketParam
-//           location={p.location}
-//           history={p.history}
-//           items={p.items}
-//           combinedFiltered={this.state.combinedFiltered}
-//           updateSort={marketParamItems => this.setState({ marketParamItems })}
-//         />
-//       }
-//       {!!p.filterByMarketState && !!p.currentReportingPeriod &&
-//         <FilterMarketState
-//           location={p.location}
-//           history={p.history}
-//           items={p.items}
-//           currentReportingPeriod={p.currentReportingPeriod}
-//           updateFilter={marketStateItems => this.setState({ marketStateItems })}
-//         />
-//       }
-//     </div>
-//   }
-//
-//   {!!p.filterBySearch &&
-//     <div className={Styles.FilterSort__wrapper}>
-//       <FilterSearch
-//         location={p.location}
-//         history={p.history}
-//         items={p.items}
-//         keys={p.searchKeys}
-//         searchPlaceholder={p.searchPlaceholder}
-//         updateFilter={searchItems => this.setState({ searchItems })}
-//       />
-//     </div>
-//   }
-//
-// </article>
