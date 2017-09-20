@@ -10,10 +10,11 @@ import { FILTER_SEARCH_PARAM } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/filter-sort/components/filter-search/filter-search.styles'
 
-export default class FilterSearch extends Component {
+export default class FilterSearch extends Component { // NOTE -- intentionally excluded `default` for enforced function name comparison
   static propTypes = {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
+    updateIndices: PropTypes.func.isRequired,
     searchPlaceholder: PropTypes.string
   }
 
@@ -58,7 +59,7 @@ export default class FilterSearch extends Component {
     const s = this.state
 
     return (
-      <article className={Styles.FilterSearch}>
+      <article className={Styles.FilterSearch} isFilterSort>
         <Input
           className={Styles.FilterSearch__input}
           isSearch

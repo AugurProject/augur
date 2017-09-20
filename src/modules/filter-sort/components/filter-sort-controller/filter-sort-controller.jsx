@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { isEqual } from 'lodash'
 
@@ -9,21 +9,26 @@ import filterByMarketFavorites from 'modules/filter-sort/helpers/filter-by-marke
 import filterByTags from 'modules/filter-sort/helpers/filter-by-tags'
 import filterBySearch from 'modules/filter-sort/helpers/filter-by-search'
 import filterByMarketState from 'modules/filter-sort/helpers/filter-by-market-state'
-import filterByMarketParam from 'modules/filter-sort/helpers/filter-by-market-param'
+import sortByMarketParam from 'modules/filter-sort/helpers/sort-by-market-param'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
+import getValue from 'utils/get-value'
+import isArray from 'utils/is-array'
+import isObject from 'utils/is-object'
 
 import * as PARAMS from 'modules/filter-sort/constants/param-names'
 
 export default class FilterSortController extends Component {
   static propTypes = {
+    children: PropTypes.array.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     items: PropTypes.array.isRequired,
     updateFilteredItems: PropTypes.func.isRequired,
     currentReportingPeriod: PropTypes.number,
-    //  Optional Filters + Sorts Configurations
-    searchKeys: PropTypes.array
+    //  Optional Configuration
+    searchKeys: PropTypes.array,
+    marketSort: PropTypes.bool
     // filterByTags: PropTypes.bool,
     // filterByMarketFavorites: PropTypes.bool,
     // filterByMarketState: PropTypes.bool,
@@ -37,16 +42,15 @@ export default class FilterSortController extends Component {
 
     // NOTE -- any filter or sort that is `null` will be ignored when combining arrays
     this.state = {
-      // Filters
-      searchItems: null,
-      marketStateItems: null,
-      marketTagItems: null,
-      marketFavoriteItems: null,
-      // Sorts
-      marketParamItems: null,
-      // Aggregated
-      combinedFiltered: null
+      // List of employed filters + sorts
+      filtersSorts: [],
+      // Aggregated Items
+      combinedFiltered: null,
+      // Sorted Items
+      marketParamItems: null
     }
+
+    this.injectChild = this.injectChild.bind(this)
   }
 
   componentWillMount() {
@@ -97,14 +101,14 @@ export default class FilterSortController extends Component {
 
       if (
         itemsChanged ||
-        !isEqual(oldSearch[PARAMS.SORT_MARKET_PARAM], newSearch[PARAMS.SORT_MARKET_PARAM] ||
+        !isEqual(oldSearch[PARAMS.FILTER_SEARCH_PARAM], newSearch[PARAMS.FILTER_SEARCH_PARAM]) ||
+        !isEqual(oldSearch[PARAMS.SORT_MARKET_PARAM], newSearch[PARAMS.SORT_MARKET_PARAM]) ||
         !isEqual(oldSearch[PARAMS.SORT_MARKET_ORDER_PARAM], newSearch[PARAMS.SORT_MARKET_ORDER_PARAM])
       ) {
-          this.setState({
-            marketParamItems: filterByMarketParam(newSearch[PARAMS.SORT_MARKET_PARAM], newSearch[PARAMS.SORT_MARKET_ORDER_PARAM], nextProps.items, this.state.combinedFiltered)
-          })
-        }
-      )
+        this.setState({
+          marketParamItems: sortByMarketParam(newSearch[PARAMS.SORT_MARKET_PARAM], newSearch[PARAMS.SORT_MARKET_ORDER_PARAM], nextProps.items, this.state.combinedFiltered)
+        })
+      }
     }
     // if (
     //   nextProps.filterByTags &&
@@ -159,6 +163,8 @@ export default class FilterSortController extends Component {
         combinedFiltered: nextState.combinedFiltered
       })
     }
+
+    // if (!isEqual(this.state.filtersSorts, nextState.filtersSorts))
   }
 
   updateCombinedFilters(options) {
@@ -175,11 +181,58 @@ export default class FilterSortController extends Component {
   }
 
   updateSortedFiltered(options) { // If we want to accomodate more than one sorting mechanism across a filtered list, we'll need to re-architect things a bit
+    // console.log('options -- ', options)
+
     this.props.updateFilteredItems(options.sorts.marketParamItems !== null ? options.sorts.marketParamItems : options.combinedFiltered)
   }
 
+
+  updateIndices(indices, filterSortName) {
+    // TODO
+  }
+
+  injectChild(children) {
+    // NOTE --  keep an eye on this...might be a performance bottleneck if goes too deep
+    //          Ideally the children of the controller are fairly shallow
+    //          This method name also sounds terrible
+
+    const traverseChildren = child => React.Children.map(child, (subChild) => {
+      let subChildProps = {}
+
+      const name = getValue(subChild, 'type.displayName')
+
+      if (
+        React.isValidElement(subChild) &&
+        (
+          name &&
+          (
+            name.toLowerCase().indexOf('filter') !== -1 ||
+            name.toLowerCase().indexOf('sort') !== -1
+          )
+        )
+      ) {
+        subChildProps = {
+          updateIndices: this.updateIndices
+        }
+      }
+      if (subChild.props) {
+        if (getValue(subChild, 'props.children')) {
+          subChildProps.children = traverseChildren(subChild.props.children)
+        }
+        return React.cloneElement(subChild, subChildProps)
+      }
+      return subChild
+    })
+
+    return React.Children.map(children, traverseChildren)
+  }
+
   render() {
-    return null
+    return (
+      <section>
+        {this.injectChild(this.props.children)}
+      </section>
+    )
   }
 }
 

@@ -11,7 +11,7 @@ import { SORT_MARKET_PARAM, SORT_MARKET_ORDER_PARAM } from 'modules/filter-sort/
 
 import Styles from 'modules/filter-sort/components/sort-market-param/sort-market-param.styles'
 
-export default class SortMarketParam extends Component {
+export class SortMarketParam extends Component { // NOTE -- intentionally excluded `default` for enforced function name comparison
   static propTypes = {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired
