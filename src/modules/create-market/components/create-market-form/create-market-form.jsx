@@ -123,7 +123,7 @@ export default class CreateMarketForm extends Component {
               type="text"
               placeholder="What question do you want the world to predict?"
               maxLength={DESCRIPTION_MAX_LENGTH}
-              onChange={e => p.updateDescription(e.target.value)}
+              onChange={e => p.updateState('description', e.target.value)}
             />
           </li>
           <li className={Styles['field--50']}>
@@ -145,6 +145,7 @@ export default class CreateMarketForm extends Component {
               className={Styles.CreateMarketFormDesc__input}
               type="text"
               placeholder="Tag 1"
+              onChange={e => p.updateState('tag1', e.target.value)}
             />
           </li>
           <li className={Styles['field--50']}>
@@ -154,6 +155,7 @@ export default class CreateMarketForm extends Component {
               className={Styles.CreateMarketFormDesc__input}
               type="text"
               placeholder="Tag 2"
+              onChange={e => p.updateState('tag2', e.target.value)}
             />
           </li>
         </ul>

@@ -61,7 +61,7 @@
       display: inline-block;
       text-transform: uppercase;
 
-      &::after {
+      &:not(:empty)::after {
         content: "/";
         margin: 0 4px;
       }
@@ -72,6 +72,7 @@
 
       &:first-child {
         color: @color-lightgray;
+        margin-right: 1rem;
 
         &::after {
           display: inline-block;
