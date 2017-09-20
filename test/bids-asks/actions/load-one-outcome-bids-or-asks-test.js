@@ -251,7 +251,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
             Orders: {
               getBestOrderId: (p, callback) => {
                 assert.deepEqual(p, {
-                  _type: 2,
+                  _orderType: 2,
                   _market: 'MARKET_0',
                   _outcome: 3
                 });
@@ -298,7 +298,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
             Orders: {
               getBestOrderId: (p, callback) => {
                 assert.deepEqual(p, {
-                  _type: 2,
+                  _orderType: 2,
                   _market: 'MARKET_0',
                   _outcome: 3
                 });
@@ -310,7 +310,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
             orderBook: {
               getOrderBookChunked: (p, onChunkReceived, onComplete) => {
                 assert.deepEqual(p, {
-                  _type: 2,
+                  _orderType: 2,
                   _market: 'MARKET_0',
                   _outcome: 3,
                   _startingOrderId: '0x1',
@@ -369,7 +369,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
             Orders: {
               getBestOrderId: (p, callback) => {
                 assert.deepEqual(p, {
-                  _type: 2,
+                  _orderType: 2,
                   _market: 'MARKET_0',
                   _outcome: 3
                 });
@@ -381,7 +381,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
             orderBook: {
               getOrderBookChunked: (p, onChunkReceived, onComplete) => {
                 assert.deepEqual(p, {
-                  _type: 2,
+                  _orderType: 2,
                   _market: 'MARKET_0',
                   _outcome: 3,
                   _startingOrderId: '0x1',
