@@ -4,7 +4,6 @@ import Input from 'modules/common/components/input/input'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 import makeQuery from 'modules/routes/helpers/make-query'
-import debounce from 'utils/debounce'
 
 import filterBySearch from 'modules/filter-sort/helpers/filter-by-search'
 
@@ -29,7 +28,7 @@ export default class FilterSearch extends Component { // NOTE -- intentionally e
       search: ''
     }
 
-    this.updateQuery = debounce(this.updateQuery.bind(this))
+    this.updateQuery = this.updateQuery.bind(this)
   }
 
   componentWillMount() {
@@ -40,7 +39,6 @@ export default class FilterSearch extends Component { // NOTE -- intentionally e
   componentWillUpdate(nextProps, nextState) {
     if (this.state.search !== nextState.search) {
       this.updateQuery(nextState.search, nextProps.location)
-      console.log('searchKeys -- ', nextProps)
       nextProps.updateIndices({
         indices: filterBySearch(nextState.search, nextProps.searchKeys, nextProps.items),
         type: FILTER_SEARCH_PARAM

@@ -42,6 +42,8 @@ export default class FilterSortController extends Component {
 
     // NOTE -- any filter or sort that is `null` will be ignored when combining arrays
     this.state = {
+      // Filters
+      filters: {},
       // Aggregated Items
       combinedFiltered: null,
       // Sorted Items
@@ -49,6 +51,7 @@ export default class FilterSortController extends Component {
     }
 
     this.injectChild = this.injectChild.bind(this)
+    this.updateIndices = this.updateIndices.bind(this)
   }
 
   componentWillMount() {
@@ -132,6 +135,13 @@ export default class FilterSortController extends Component {
   componentWillUpdate(nextProps, nextState) {
     // console.log('componentWillUpdate -- ', nextState)
 
+    if (
+      !isEqual(this.props.items, nextProps.items) ||
+      !isEqual(this.state.filters, nextState.filters)
+    ) {
+      this.updateCombinedFilters(nextProps.items, nextState.filters)
+    }
+
     // if (
     //   !isEqual(this.state.searchItems, nextState.searchItems) ||
     //   !isEqual(this.state.marketStateItems, nextState.marketStateItems) ||
@@ -150,28 +160,28 @@ export default class FilterSortController extends Component {
     //   })
     // }
     //
-    // if (
-    //   !isEqual(this.state.marketParamItems, nextState.marketParamItems) ||
-    //   !isEqual(this.state.combinedFiltered, nextState.combinedFiltered)
-    // ) {
-    //   this.updateSortedFiltered({
-    //     sorts: {
-    //       marketParamItems: nextState.marketParamItems
-    //     },
-    //     combinedFiltered: nextState.combinedFiltered
-    //   })
-    // }
+    if (
+      !isEqual(this.state.marketParamItems, nextState.marketParamItems) ||
+      !isEqual(this.state.combinedFiltered, nextState.combinedFiltered)
+    ) {
+      this.updateSortedFiltered({
+        sorts: {
+          marketParamItems: nextState.marketParamItems
+        },
+        combinedFiltered: nextState.combinedFiltered
+      })
+    }
 
     // if (!isEqual(this.state.filtersSorts, nextState.filtersSorts))
   }
 
-  updateCombinedFilters(options) {
-    const combinedFiltered = Object.keys(options.filters).reduce((p, filterType) => {
-      if (p.length === 0 || (options.filters[filterType] !== null && options.filters[filterType].length === 0)) return []
-      if (options.filters[filterType] === null) return p
+  updateCombinedFilters(items, filters) {
+    const combinedFiltered = Object.keys(filters).reduce((p, filterType) => {
+      if (p.length === 0 || (filters[filterType] !== null && filters[filterType].length === 0)) return []
+      if (filters[filterType] === null) return p
 
-      return options.filters[filterType].filter(item => p.includes(item))
-    }, options.items.map((_, i) => i))
+      return filters[filterType].filter(item => p.includes(item))
+    }, items.map((_, i) => i))
 
     // console.log('combinedFiltered -- ', combinedFiltered)
 
@@ -186,10 +196,12 @@ export default class FilterSortController extends Component {
 
 
   updateIndices(options) {
-    // indices
-    // type
-
-    console.log('updateIndices -- ', options)
+    this.setState({
+      filters: {
+        ...this.state.filters,
+        [options.type]: options.indices
+      }
+    })
   }
 
   injectChild(children) {
