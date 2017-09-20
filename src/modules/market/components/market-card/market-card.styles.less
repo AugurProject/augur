@@ -6,6 +6,11 @@
   padding-bottom: 0.3125rem;
 }
 
+.MarketCard__topstats {
+  overflow: hidden;
+  position: relative;
+}
+
 .MarketCard__statlabel {
   .MarketCommon__small-label();
 }
@@ -22,15 +27,51 @@
   margin-right: 0.208em;
 }
 
+.MarketCard__stat,
+.MarketCard__statlabel {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.MarketCard__expiration {
+  float: right;
+  text-align: right;
+}
+
+.MarketCard__expirationlabel {
+  .MarketCommon__small-label();
+
+  display: block;
+  margin-bottom: 0.25rem;
+  margin-right: 0;
+}
+
+.MarketCard__expirationvalue {
+  color: @color-darkpurple;
+  display: block;
+  font-size: 1rem;
+  font-weight: 300;
+}
+
 .MarketCard__tablesection {
   padding: 1.5rem 2rem;
 }
 
+.MarketCard__headingcontainer {
+  clear: both;
+}
+
 .MarketCard__tableheading {
   color: @color-darkpurple;
+  float: left;
   font-size: 1.125rem;
   font-weight: 500;
   line-height: unset;
   margin: 0 0 1rem;
+  padding-left: 0.5rem;
   text-transform: uppercase;
+}
+
+.MarketCard__tabletoggle {
+  float: right;
 }
