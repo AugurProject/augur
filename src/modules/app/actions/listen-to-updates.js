@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { augur } from 'services/augurjs';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { syncBlockchain } from 'modules/app/actions/sync-blockchain';
-import { syncBranch } from 'modules/branch/actions/sync-branch';
+import syncBranch from 'modules/branch/actions/sync-branch';
 import { fillOrder } from 'modules/bids-asks/actions/update-order-book';
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import { updateOutcomePrice } from 'modules/markets/actions/update-outcome-price';

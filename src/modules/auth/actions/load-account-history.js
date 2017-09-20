@@ -5,7 +5,7 @@ import { loadBidsAsksHistory } from 'modules/bids-asks/actions/load-bids-asks-hi
 import { loadCreateMarketHistory } from 'modules/create-market/actions/load-create-market-history';
 import { loadFundingHistory } from 'modules/account/actions/load-funding-history';
 import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-history';
-import { syncBranch } from 'modules/branch/actions/sync-branch';
+import syncBranch from 'modules/branch/actions/sync-branch';
 import { updateTransactionsOldestLoadedBlock } from 'modules/transactions/actions/update-transactions-oldest-loaded-block';
 import { updateTransactionsLoading } from 'modules/transactions/actions/update-transactions-loading';
 
