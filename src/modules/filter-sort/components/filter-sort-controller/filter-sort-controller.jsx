@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { isEqual } from 'lodash'
 
+import filterByTags from 'modules/filter-sort/helpers/filter-by-tags'
+import parseStringToArray from 'modules/routes/helpers/parse-string-to-array'
 import parseQuery from 'modules/routes/helpers/parse-query'
 import getValue from 'utils/get-value'
-import isArray from 'utils/is-array'
-import isObject from 'utils/is-object'
 
-import { SORT_MARKET_PARAM } from 'modules/filter-sort/constants/param-names'
+import { SORT_MARKET_PARAM, TAGS_PARAM_NAME, TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 export default class FilterSortController extends Component {
   static propTypes = {
@@ -53,6 +53,24 @@ export default class FilterSortController extends Component {
 
     if (!isEqual(this.state.combinedFiltered, nextState.combinedFiltered)) {
       this.injectChildren(nextProps.children, nextState.combinedFiltered)
+    }
+
+    // Helper Function Filters ONLY via query string params (no components directly associated with filter/sort)
+    const oldSearch = parseQuery(this.props.location.search)
+    const newSearch = parseQuery(nextProps.location.search)
+
+    if (
+      !isEqual(this.props.items, nextProps.items) ||
+      !isEqual(oldSearch[TAGS_PARAM_NAME], newSearch[TAGS_PARAM_NAME]) ||
+      !isEqual(oldSearch[TOPIC_PARAM_NAME], newSearch[TOPIC_PARAM_NAME])
+    ) {
+      const keywordsArray = parseStringToArray(decodeURIComponent(newSearch[TAGS_PARAM_NAME] || ''), '+')
+      const category = decodeURIComponent(newSearch[TOPIC_PARAM_NAME] || '') || ''
+
+      this.updateIndices({
+        type: TAGS_PARAM_NAME,
+        indices: filterByTags([category, ...keywordsArray], nextProps.items)
+      })
     }
   }
 

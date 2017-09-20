@@ -37,7 +37,7 @@ export default class SortMarketParam extends Component {
       },
       {
         label: 'Newest',
-        value: PARAMS.MARKET_CREATE_TIME
+        value: PARAMS.MARKET_CREATION_TIME
       },
       {
         label: 'Expiration',
