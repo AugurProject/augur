@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
+// import classNames from 'classnames'
 
 // import CreateMarketFormType from 'modules/create-market/components/create-market-form-type'
 // import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description/create-market-form-description'
@@ -14,10 +14,10 @@ import classNames from 'classnames'
 // import CreateMarketFormOrderBook from 'modules/create-market/components/create-market-form-order-book'
 // import CreateMarketReview from 'modules/create-market/components/create-market-review'
 
-import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications'
+// import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications'
 
-import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
-import { NEW_MARKET_DESCRIPTION } from 'modules/create-market/constants/new-market-creation-steps'
+// import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
+// import { NEW_MARKET_DESCRIPTION } from 'modules/create-market/constants/new-market-creation-steps'
 import { DESCRIPTION_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints'
 
 // import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
@@ -104,20 +104,21 @@ export default class CreateMarketForm extends Component {
 
   render() {
     const p = this.props
-    const s = this.state
+    // const s = this.state
 
     return (
       <article className={Styles.CreateMarketForm}>
-      {/*<article
+        {/* <article
         ref={(createMarketForm) => { this.createMarketForm = createMarketForm }}
         className={classNames('create-market-form', {
           'no-preview': s.currentStep === 0
         })}
-      >*/}
-        <ul>
+      > */}
+        <ul className={Styles.CreateMarketForm__fields}>
           <li>
-            <label>Market Question</label>
+            <label htmlFor="cm__input--desc">Market Question</label>
             <input
+              id="cm__input--desc"
               className={Styles.CreateMarketFormDesc__input}
               type="text"
               value={p.description}
@@ -127,8 +128,51 @@ export default class CreateMarketForm extends Component {
               onChange={description => this.validateForm(description)}
             />
           </li>
+          <li className={Styles['field--50']}>
+            <label htmlFor="cm__input--cat">Category</label>
+            <input
+              id="cm__input--cat"
+              className={Styles.CreateMarketFormDesc__input}
+              type="text"
+              value={p.description}
+              placeholder="Help users find your market by defining its category"
+              maxLength={DESCRIPTION_MAX_LENGTH}
+              debounceMS={0}
+              onChange={description => this.validateForm(description)}
+            />
+          </li>
+          <li className={Styles['field--50']}>
+            <label htmlFor="cm__suggested-categories">Suggested Categories:</label>
+          </li>
+          <li className={Styles['field--50']}>
+            <label htmlFor="cm__input--tag1">Tags:</label>
+            <input
+              id="cm__input--tag1"
+              className={Styles.CreateMarketFormDesc__input}
+              type="text"
+              value={p.description}
+              placeholder="Tag 1"
+              maxLength={DESCRIPTION_MAX_LENGTH}
+              debounceMS={0}
+              onChange={description => this.validateForm(description)}
+            />
+          </li>
+          <li className={Styles['field--50']}>
+            <label htmlFor="cm__input--tag2">&nbsp;</label>
+            <input
+              id="cm__input--tag2"
+              className={Styles.CreateMarketFormDesc__input}
+              type="text"
+              value={p.description}
+              placeholder="Tag 2"
+              maxLength={DESCRIPTION_MAX_LENGTH}
+              debounceMS={0}
+              onChange={description => this.validateForm(description)}
+            />
+          </li>
         </ul>
-        {/*<CreateMarketFormDescription
+        <button className={Styles.CreateMarketForm__next} disabled>Next: Outcome</button>
+        {/* <CreateMarketFormDescription
           className={classNames({
             'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
             'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION)
@@ -274,7 +318,7 @@ export default class CreateMarketForm extends Component {
           initialLiquidityEth={p.newMarket.initialLiquidityEth}
           initialLiquidityGas={p.newMarket.initialLiquidityGas}
           initialLiquidityFees={p.newMarket.initialLiquidityFees}
-        />*/}
+        /> */}
       </article>
     )
   }

@@ -1,6 +1,50 @@
 @import '~assets/styles/shared.less';
 
 .CreateMarketForm {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   max-width: 70rem;
+  min-height: 24.75rem;
   padding: 3.75rem 1.25rem 0 11.25rem;
+}
+
+.CreateMarketForm__fields {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  > li {
+    margin-bottom: 3.75rem;
+    width: 100%;
+
+    &.field--50 {
+      width: 48%;
+    }
+
+    > label {
+      &:extend(.caps--small);
+
+      color: @color-white;
+      display: block;
+      margin-bottom: 0.625rem;
+    }
+
+    > input {
+      color: @color-darkpurple;
+      display: block;
+      font-size: 1.125rem;
+      line-height: 1.125rem;
+      padding: 1rem 1rem 0.875rem;
+      width: 100%;
+
+      &::placeholder {
+        color: @color-lightgray;
+      }
+    }
+  }
+}
+
+.CreateMarketForm__next {
+  &:extend(.button--white all);
 }
