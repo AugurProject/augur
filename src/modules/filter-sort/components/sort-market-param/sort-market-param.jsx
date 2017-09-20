@@ -21,10 +21,7 @@ export default class SortMarketParam extends Component {
     history: PropTypes.object.isRequired,
     items: PropTypes.array.isRequired,
     updateIndices: PropTypes.func.isRequired,
-    combinedFiltered: PropTypes.oneOfType([
-      null,
-      PropTypes.array
-    ]).isRequired
+    combinedFiltered: PropTypes.array
   }
 
   constructor(props) {
@@ -89,7 +86,6 @@ export default class SortMarketParam extends Component {
       this.state.selectedMarketParam !== nextState.selectedMarketParam ||
       this.state.selectedSort !== nextState.selectedSort
     ) {
-      console.log('updateIndices -- ', nextProps.combinedFiltered)
       this.props.updateIndices({
         indices: sortByMarketParam(nextState.selectedMarketParam, nextState.selectedSort, nextProps.items, nextProps.combinedFiltered),
         type: SORT_MARKET_PARAM
