@@ -9,6 +9,8 @@ import CreateMarketForm from 'modules/create-market/components/create-market-for
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
 
+import Styles from 'modules/create-market/components/create-market-view/create-market-view.styles'
+
 export default class CreateMarketView extends Component {
   static propTypes = {
     newMarket: PropTypes.object.isRequired,
@@ -50,7 +52,7 @@ export default class CreateMarketView extends Component {
     const s = this.state
 
     return (
-      <section>
+      <section className={Styles.CreateMarketView}>
         <Helmet>
           <title>Create Market</title>
         </Helmet>
@@ -78,7 +80,7 @@ export default class CreateMarketView extends Component {
             addValidationToNewMarket={p.addValidationToNewMarket}
             removeValidationFromNewMarket={p.removeValidationFromNewMarket}
           />
-          {/*<CreateMarketFormButtons
+          {/* <CreateMarketFormButtons
             footerHeight={p.footerHeight}
             currentStep={p.newMarket.currentStep}
             type={p.newMarket.type}

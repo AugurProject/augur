@@ -73,8 +73,9 @@ export default class CreateMarketFormDescription extends Component {
           ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus }}
           onSubmit={e => e.preventDefault()}
         >
-          <label>Market Question</label>
+          <label htmlFor="cm__input--desc">Market Question</label>
           <input
+            id="cm__input--desc"
             className={Styles.CreateMarketFormDesc__input}
             type="text"
             value={p.description}
