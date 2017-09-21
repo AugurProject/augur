@@ -53,8 +53,8 @@ export default class InnerNav extends Component {
     // make sure all selected tags are displayed, even if markets haven't loaded yet
     const selectedKeywords = parseStringToArray(decodeURIComponent(parseQuery(location.search)[TAGS_PARAM_NAME] || ''), '+')
 
-    let filteredKeywords = flatMap(marketsFilteredSorted, index => (markets[index] ? markets[index].tags : null))
-    .filter(keyword => Boolean(keyword))
+    let filteredKeywords = flatMap(marketsFilteredSorted, index => (markets[index] ? [markets[index].tags[1] || '', markets[index].tags[2] || ''] : null))
+    .filter(keyword => !!keyword)
 
     filteredKeywords = concat(filteredKeywords, selectedKeywords)
     // TODO: discuss uppercase/lowercase variant keywords and how they function differently
