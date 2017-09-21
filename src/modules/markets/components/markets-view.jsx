@@ -91,7 +91,6 @@ export default class MarketsView extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     if (!isEqual(this.state.filteredMarkets, nextState.filteredMarkets)) {
-      console.log('should update -- ', nextState.filteredMarkets)
       this.props.updateMarketsFilteredSorted(nextState.filteredMarkets)
       checkFavoriteMarketsCount(nextState.filteredMarkets, nextProps.location, nextProps.history)
     }
