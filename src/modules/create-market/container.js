@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { selectTopics } from 'modules/topics/selectors/topics'
 import { submitNewMarket } from 'modules/create-market/actions/submit-new-market'
 import {
   addValidationToNewMarket,
@@ -17,7 +18,8 @@ const mapStateToProps = state => ({
   branch: state.branch,
   availableEth: getValue(state, 'loginAccount.ethTokens'),
   newMarket: state.newMarket,
-  footerHeight: state.footerHeight
+  footerHeight: state.footerHeight,
+  categories: selectTopics(state),
 })
 
 const mapDispatchToProps = dispatch => ({
