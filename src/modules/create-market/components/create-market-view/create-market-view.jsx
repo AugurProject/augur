@@ -25,13 +25,12 @@ export default class CreateMarketView extends Component {
 
     this.state = {
       description: 'New Market Question',
+      category: '',
       tag1: '',
       tag2: '',
     }
 
     // this.updateValidations = this.updateValidations.bind(this)
-
-    this.updateState = this.updateState.bind(this)
   }
 
   // componentWillReceiveProps(nextProps) {
@@ -50,12 +49,6 @@ export default class CreateMarketView extends Component {
   //     this.props.removeValidationFromNewMarket(newMarketCreationOrder[currentStep])
   //   }
   // }
-
-  updateState(property, value) {
-    const newState = { ...this.state }
-    newState[property] = value
-    this.setState(newState)
-  }
 
   render() {
     const p = this.props
@@ -76,6 +69,7 @@ export default class CreateMarketView extends Component {
           /> */}
           <CreateMarketPreview
             description={s.description}
+            category={s.category}
             tag1={s.tag1}
             tag2={s.tag2}
 
@@ -83,7 +77,9 @@ export default class CreateMarketView extends Component {
             updateNewMarket={p.updateNewMarket}
           />
           <CreateMarketForm
-            updateState={this.updateState}
+            updateState={(property, value) => this.setState({ [property]: value })}
+            category={s.category}
+            categories={p.categories}
 
             branch={p.branch}
             availableEth={p.availableEth}

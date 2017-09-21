@@ -35,7 +35,7 @@ import { DESCRIPTION_MAX_LENGTH } from 'modules/create-market/constants/new-mark
 //   NEW_MARKET_REVIEW
 // } from 'modules/create-market/constants/new-market-creation-steps'
 
-import debounce from 'utils/debounce'
+// import debounce from 'utils/debounce'
 
 import Styles from 'modules/create-market/components/create-market-form/create-market-form.styles'
 
@@ -45,6 +45,11 @@ export default class CreateMarketForm extends Component {
   //   updateNewMarket: PropTypes.func.isRequired
   // }
 
+  static propTypes = {
+    category: PropTypes.string.isRequired,
+    categories: PropTypes.array.isRequired
+  }
+
   constructor(props) {
     super(props)
 
@@ -53,8 +58,15 @@ export default class CreateMarketForm extends Component {
     //   currentStep: props.newMarket.currentStep
     // }
 
+    this.state = {
+      suggestedCategories: this.filterCategories(this.props.category),
+      shownSuggestions: 2,
+    }
+
     // this.updateFormHeight = debounce(this.updateFormHeight.bind(this))
     // this.updateValidity = this.updateValidity.bind(this)
+
+    this.filterCategories = this.filterCategories.bind(this)
   }
 
   // componentDidMount() {
@@ -62,6 +74,15 @@ export default class CreateMarketForm extends Component {
 
   //   window.addEventListener('resize', this.updateFormHeight)
   // }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.category !== nextProps.category) {
+      this.setState({ suggestedCategories: this.filterCategories(nextProps.category) })
+      if (nextProps.category === '' || this.props.category.slice(0, 1) !== nextProps.category.slice(0, 1)) {
+        this.setState({ shownSuggestions: 2 })
+      }
+    }
+  }
 
   // componentWillReceiveProps(nextProps) {
   //   if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) {
@@ -102,9 +123,14 @@ export default class CreateMarketForm extends Component {
   //   this.props.updateNewMarket({ isValid, holdForUserAction })
   // }
 
+  filterCategories(category) {
+    const userString = category.toLowerCase()
+    return this.props.categories.filter(cat => cat.topic.toLowerCase().indexOf(userString) === 0)
+  }
+
   render() {
     const p = this.props
-    // const s = this.state
+    const s = this.state
 
     return (
       <article className={Styles.CreateMarketForm}>
@@ -119,7 +145,6 @@ export default class CreateMarketForm extends Component {
             <label htmlFor="cm__input--desc">Market Question</label>
             <input
               id="cm__input--desc"
-              className={Styles.CreateMarketFormDesc__input}
               type="text"
               placeholder="What question do you want the world to predict?"
               maxLength={DESCRIPTION_MAX_LENGTH}
@@ -129,14 +154,29 @@ export default class CreateMarketForm extends Component {
           <li className={Styles['field--50']}>
             <label htmlFor="cm__input--cat">Category</label>
             <input
-              id="cm__input--cat"
               className={Styles.CreateMarketFormDesc__input}
+              ref={catInput => this.catInput = catInput}
+              id="cm__input--cat"
               type="text"
               placeholder="Help users find your market by defining its category"
+              onChange={(e) => { p.updateState('category', e.target.value) }}
             />
           </li>
           <li className={Styles['field--50']}>
             <label htmlFor="cm__suggested-categories">Suggested Categories:</label>
+            <ul className={Styles['CreateMarketForm__suggested-categories']}>
+              {p.category && s.suggestedCategories.slice(0, s.shownSuggestions).map((cat, i) => (
+                <li key={i}>
+                  <button onClick={() => { this.catInput.value = cat.topic; p.updateState('category', cat.topic) }}>{cat.topic}</button>
+                </li>
+                )
+              )}
+              {p.category && s.suggestedCategories.length > s.shownSuggestions &&
+                <li>
+                  <button onClick={() => this.setState({ shownSuggestions: s.suggestedCategories.length })}>+ {s.suggestedCategories.length - 2} more</button>
+                </li>
+              }
+            </ul>
           </li>
           <li className={Styles['field--50']}>
             <label htmlFor="cm__input--tag1">Tags:</label>

@@ -201,6 +201,7 @@ export default class CreateMarketPreview extends Component {
           <div className={Styles.CreateMarketPreview__tags}>
             <ul>
               <li>Categories</li>
+              <li>{p.category}</li>
             </ul>
             <ul>
               <li>Tags</li>

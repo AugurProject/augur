@@ -48,3 +48,19 @@
 .CreateMarketForm__next {
   &:extend(.button--white all);
 }
+
+.CreateMarketForm__suggested-categories {
+  color: @color-white;
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-top: 1.5rem;
+
+  > li {
+    display: inline-block;
+    margin-right: 0.25rem;
+
+    &:not(:last-child)::after {
+      content: ",";
+    }
+  }
+}
