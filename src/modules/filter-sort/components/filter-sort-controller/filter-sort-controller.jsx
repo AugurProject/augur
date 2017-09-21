@@ -27,8 +27,6 @@ export default class FilterSortController extends Component {
       results: {},
       // Aggregated Items
       combinedFiltered: null,
-      // Sorted Items
-      marketParamItems: null,
       // Children Components
       children: null
     }
@@ -95,10 +93,7 @@ export default class FilterSortController extends Component {
 
   updateSortedFiltered(rawSorted, combined) { // If we want to accomodate more than one sorting mechanism across a filtered list, we'll need to re-architect things a bit
     this.props.updateFilteredItems(rawSorted !== null ?
-      rawSorted.reduce((p, itemIndex) => {
-        if (combined.indexOf(itemIndex) !== -1) return [...p, combined.indexOf(itemIndex)]
-        return p
-      }, []) :
+      (rawSorted || []).filter(itemIndex => combined.indexOf(itemIndex) !== -1) :
       combined
     )
   }
