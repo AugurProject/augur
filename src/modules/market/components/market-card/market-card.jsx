@@ -32,14 +32,21 @@ export default class MarketCard extends React.Component {
             Styles.MarketCard__topcontent
           )}
         >
-          <div className={classNames(
-            CommonStyles.MarketCommon__header,
-            Styles.MarketCard__header
-          )}>
-            <h1 className={CommonStyles.MarketCommon__description}>
-              Market Title
-            </h1>
-            <MarketStatusIcon isOpen isReported />
+          <div
+            className={classNames(
+              CommonStyles.MarketCommon__header,
+              Styles.MarketCard__header
+            )}
+          >
+            <div className={Styles.MarketCard__headertext}>
+              <span className={Styles['MarketCard__expiration--mobile']}>
+                Expires June 31, 2017 7:00 AM
+              </span>
+              <h1 className={CommonStyles.MarketCommon__description}>
+                Market Title
+              </h1>
+            </div>
+            <MarketStatusIcon className={Styles.MarketCard__statusicon} isOpen isReported />
           </div>
           <div className={Styles.MarketCard__topstats}>
             <div className={Styles.MarketCard__leftstats}>

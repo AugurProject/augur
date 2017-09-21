@@ -10,6 +10,10 @@
   margin-left: 0.4rem;
 }
 
+.MarketCard__headertext {
+  display: inline-block;
+}
+
 .MarketCard__topstats {
   overflow: hidden;
   position: relative;
@@ -103,8 +107,21 @@
 }
 
 @media @breakpoint-mobile {
+  .MarketCard__topcontent {
+    padding: 1rem 1rem 0.625rem;
+  }
+
   .MarketCard__header h1 {
     font-size: 1.25rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .MarketCard__statusicon {
+    height: 1rem;
+    position: relative;
+    right: -8px;
+    top: -8px;
+    width: 1rem;
   }
 
   .MarketCard__leftstats {
@@ -144,6 +161,10 @@
   }
 
   .MarketCard__expiration--mobile {
+    color: @color-darkpurple;
     display: block;
+    font-size: 0.625rem;
+    font-weight: 500;
+    text-transform: uppercase;
   }
 }
