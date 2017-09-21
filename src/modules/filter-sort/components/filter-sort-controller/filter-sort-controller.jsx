@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { isEqual } from 'lodash'
 
 import filterByTags from 'modules/filter-sort/helpers/filter-by-tags'
+import filterByCategory from 'modules/filter-sort/helpers/filter-by-category'
 import parseStringToArray from 'modules/routes/helpers/parse-string-to-array'
 import parseQuery from 'modules/routes/helpers/parse-query'
 import getValue from 'utils/get-value'
@@ -33,12 +34,18 @@ export default class FilterSortController extends Component {
 
     this.injectChildren = this.injectChildren.bind(this)
     this.updateIndices = this.updateIndices.bind(this)
+    this.callFilterByCategory = this.callFilterByCategory.bind(this)
+    this.callFilterByKeywords = this.callFilterByKeywords.bind(this)
   }
 
   componentWillMount() {
     this.props.updateFilteredItems(this.props.items.map((_, i) => i)) // Initialize indices
 
     this.injectChildren(this.props.children, this.state.combinedFiltered)
+
+    const search = parseQuery(this.props.location.search)
+    this.callFilterByCategory(search, this.props.items)
+    this.callFilterByKeywords(search, this.props.items)
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -57,19 +64,39 @@ export default class FilterSortController extends Component {
     const oldSearch = parseQuery(this.props.location.search)
     const newSearch = parseQuery(nextProps.location.search)
 
+    // Catgories
     if (
       !isEqual(this.props.items, nextProps.items) ||
-      !isEqual(oldSearch[TAGS_PARAM_NAME], newSearch[TAGS_PARAM_NAME]) ||
       !isEqual(oldSearch[TOPIC_PARAM_NAME], newSearch[TOPIC_PARAM_NAME])
     ) {
-      const keywordsArray = parseStringToArray(decodeURIComponent(newSearch[TAGS_PARAM_NAME] || ''), '+')
-      const category = decodeURIComponent(newSearch[TOPIC_PARAM_NAME] || '') || ''
-
-      this.updateIndices({
-        type: TAGS_PARAM_NAME,
-        indices: filterByTags([category, ...keywordsArray], nextProps.items)
-      })
+      this.callFilterByCategory(newSearch, nextProps.items)
     }
+
+    // Keywords
+    if (
+      !isEqual(this.props.items, nextProps.items) ||
+      !isEqual(oldSearch[TAGS_PARAM_NAME], newSearch[TAGS_PARAM_NAME])
+    ) {
+      this.callFilterByKeywords(newSearch, nextProps.items)
+    }
+  }
+
+  callFilterByCategory(query, items) {
+    const category = query[TOPIC_PARAM_NAME] != null ? decodeURIComponent(query[TOPIC_PARAM_NAME]) : null
+
+    this.updateIndices({
+      type: TOPIC_PARAM_NAME,
+      indices: filterByCategory(category, items)
+    })
+  }
+
+  callFilterByKeywords(query, items) {
+    const keywordsArray = parseStringToArray(decodeURIComponent(query[TAGS_PARAM_NAME] || ''), '+')
+
+    this.updateIndices({
+      type: TAGS_PARAM_NAME,
+      indices: filterByTags(keywordsArray, items)
+    })
   }
 
   updateCombinedFilters(items, results) {

@@ -3,11 +3,14 @@ export default function filterByTags(tags, items) {
 
   if (tags == null || !tags.length) return null
 
-  const filteredItems = items.reduce((p, item, i) => {
-    if (tags.every(filterTag => item.tags.some(tag => tag.indexOf(filterTag) !== -1))) return [...p, i]
+  return items.reduce((p, item, i) => {
+    if (tags.every(filterTag =>
+      item.tags.some((tag, tagIndex) =>
+        tagIndex !== 0 && tag === filterTag))
+    ) {
+      return [...p, i]
+    }
 
     return p
   }, [])
-
-  return filteredItems
 }
