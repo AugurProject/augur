@@ -1,4 +1,5 @@
 import React from 'react'
+import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
 import { MarketStatusOpen, MarketStatusReported, MarketStatusClosed } from 'modules/common/components/icons/icons'
@@ -19,7 +20,7 @@ const MarketStatusIcon = (p) => {
       marketStatusIcon = MarketStatusClosed
   }
   return (
-    <span className={Styles.MarketStatusIcon}>
+    <span className={classNames(Styles.MarketStatusIcon, p.className)}>
       {marketStatusIcon}
     </span>
   )
