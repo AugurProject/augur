@@ -32,40 +32,51 @@ export default class MarketCard extends React.Component {
             Styles.MarketCard__topcontent
           )}
         >
-          <div className={CommonStyles.MarketCommon__header}>
+          <div className={classNames(
+            CommonStyles.MarketCommon__header,
+            Styles.MarketCard__header
+          )}>
             <h1 className={CommonStyles.MarketCommon__description}>
               Market Title
             </h1>
             <MarketStatusIcon isOpen isReported />
           </div>
           <div className={Styles.MarketCard__topstats}>
-            <span className={Styles.MarketCard__statlabel}>
-              Realized P/L
-            </span>
-            <span className={Styles.MarketCard__stat}>
-              <span className={Styles.MarketCard__statvalue}>
-                0
-              </span>
-              ETH
-            </span>
-            <span className={Styles.MarketCard__statlabel}>
-              Unrealized P/L
-            </span>
-            <span className={Styles.MarketCard__stat}>
-              <span className={Styles.MarketCard__statvalue}>
-                0
-              </span>
-              ETH
-            </span>
-            <span className={Styles.MarketCard__statlabel}>
-              Total P/L
-            </span>
-            <span className={Styles.MarketCard__stat}>
-              <span className={Styles.MarketCard__statvalue}>
-                0
-              </span>
-              ETH
-            </span>
+            <div className={Styles.MarketCard__leftstats}>
+              <div className={Styles.MarketCard__stat}>
+                <span className={Styles.MarketCard__statlabel}>
+                  Realized P/L
+                </span>
+                <span className={Styles.MarketCard__statvalue}>
+                  0
+                </span>
+                <span className={Styles.MarketCard__statunit}>
+                  ETH
+                </span>
+              </div>
+              <div className={Styles.MarketCard__stat}>
+                <span className={Styles.MarketCard__statlabel}>
+                  Unrealized P/L
+                </span>
+                <span className={Styles.MarketCard__statvalue}>
+                  0
+                </span>
+                <span className={Styles.MarketCard__statunit}>
+                  ETH
+                </span>
+              </div>
+              <div className={Styles.MarketCard__stat}>
+                <span className={Styles.MarketCard__statlabel}>
+                  Total P/L
+                </span>
+                <span className={Styles.MarketCard__statvalue}>
+                  0
+                </span>
+                <span className={Styles.MarketCard__statunit}>
+                  ETH
+                </span>
+              </div>
+            </div>
             <span className={Styles.MarketCard__expiration}>
               <span className={Styles.MarketCard__expirationlabel}>
                 Expires
