@@ -130,7 +130,6 @@ export default class FilterSortController extends Component {
 
 
   updateIndices(options) {
-    console.log('update -- ', options.type, options.indices)
     this.setState({
       results: {
         ...this.state.results,
