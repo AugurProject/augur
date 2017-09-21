@@ -117,6 +117,15 @@ export default class MarketCard extends React.Component {
                 'Total P/L',
                 'Action'
               ]}
+              mobileTitles={[
+                'Outcome',
+                'Qty',
+                'Last',
+                null,
+                null,
+                'Total P/L',
+                'Action'
+              ]}
               data={[
                 [
                   'Hong Kong',
