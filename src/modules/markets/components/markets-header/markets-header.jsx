@@ -95,8 +95,10 @@ export default class MarketsHeader extends Component {
           </div>
           <div className={Styles.MarketsHeader__wrapper}>
             <h1 className={Styles.MarketsHeader__heading}>{s.headerTitle}</h1>
-            <FilterMarketState />
-            <SortMarketParam />
+            <div className={Styles.MarketsHeader__filters}>
+              <SortMarketParam />
+              <FilterMarketState />
+            </div>
           </div>
         </FilterSort>
       </article>
