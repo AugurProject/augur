@@ -56,7 +56,10 @@ export default class FilterSortController extends Component {
       this.updateCombinedFilters(nextProps.items, nextState.results)
     }
 
-    if (!isEqual(this.state.combinedFiltered, nextState.combinedFiltered)) {
+    if (
+      !isEqual(this.props.items, nextProps.items) ||
+      !isEqual(this.state.combinedFiltered, nextState.combinedFiltered)
+    ) {
       this.injectChildren(nextProps.children, nextState.combinedFiltered)
     }
 
@@ -127,6 +130,7 @@ export default class FilterSortController extends Component {
 
 
   updateIndices(options) {
+    console.log('update -- ', options.type, options.indices)
     this.setState({
       results: {
         ...this.state.results,

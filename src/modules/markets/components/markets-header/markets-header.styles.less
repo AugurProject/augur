@@ -9,6 +9,7 @@
   &:extend(.h1--heavy);
 
   color: @color-white;
+  flex: 1;
   margin-bottom: 0;
 }
 
@@ -16,10 +17,15 @@
   margin-bottom: 3.875em;
 }
 
+.MarketsHeader__filters {
+  align-self: flex-end;
+  display: flex;
+}
+
 .MarketsHeader__wrapper {
   align-items: center;
   display: flex;
-  justify-content: space-between;
+  width: 100%;
 }
 
 @media @breakpoint-mobile-medium {
