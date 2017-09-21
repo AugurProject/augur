@@ -1,4 +1,4 @@
-export function filterByMarketFavorites(items) { // NOTE -- intentionally excluded `default` for enforced function name comparison
+export default function filterByMarketFavorites(items) {
   if (items == null || !items.length) return null
 
   return items.reduce((p, item, i) => {
