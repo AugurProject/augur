@@ -49,3 +49,37 @@
   margin: 0;
 }
 
+.MarketTable__titlestring--mobile {
+  display: none;
+}
+
+@media @breakpoint-mobile {
+  .MarketTable__row {
+    font-size: 0.75rem;
+    line-height: 3rem;
+
+    > :first-child {
+      padding-left: 0.75rem;
+    }
+
+    > :last-child {
+      padding-right: 1rem;
+    }
+  }
+
+  .MarketTable__title--mobilehide {
+    display: none;
+  }
+
+  .MarketTable__titlestring--desktop {
+    display: none;
+  }
+
+  .MarketTable__titlestring--mobile {
+    display: inline;
+  }
+
+  .MarketTable__value--mobilehide {
+    display: none;
+  }
+}
