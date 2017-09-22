@@ -9,6 +9,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 import getValue from 'utils/get-value'
 
 import { SORT_MARKET_PARAM, TAGS_PARAM_NAME, TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
+import { QUERY_VALUE_DELIMITER } from 'modules/routes/constants/query-value-delimiter'
 
 export default class FilterSortController extends Component {
   static propTypes = {
@@ -96,7 +97,7 @@ export default class FilterSortController extends Component {
   }
 
   callFilterByKeywords(query, items) {
-    const keywordsArray = parseStringToArray(decodeURIComponent(query[TAGS_PARAM_NAME] || ''), '+')
+    const keywordsArray = parseStringToArray(decodeURIComponent(query[TAGS_PARAM_NAME] || ''), QUERY_VALUE_DELIMITER)
 
     this.updateIndices({
       type: TAGS_PARAM_NAME,
