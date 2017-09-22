@@ -95,6 +95,7 @@ let config = {
     ]
   },
   plugins: [
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.OccurrenceOrderPlugin(true),
     new CopyWebpackPlugin([
       {
