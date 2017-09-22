@@ -34,14 +34,16 @@ const MarketBasics = (p) => {
       <div className={Styles.MarketBasics__content}>
         <div className={Styles.MarketBasics__header}>
           <ul className={Styles.MarketBasics__tags}>
-            <li>Tags</li>
-            {(p.tags || []).map((tag, i) => (
+            {p.tags.length > 1 &&
+              <li>Tags</li>
+            }
+            {(p.tags || []).map((tag, i) => i !== 0 &&
               <li key={i}>
                 <button onClick={() => toggleTag(tag, p.location, p.history)}>
                   {tag}
                 </button>
               </li>
-            ))}
+            )}
           </ul>
 
           <span className={Styles.MarketBasics__status}>
