@@ -8,7 +8,7 @@ import MarketOutcomesCategorical from 'modules/market/components/market-outcomes
 import MarketLink from 'modules/market/components/market-link/market-link'
 import { MarketStatusOpen, MarketStatusReported, MarketStatusClosed } from 'modules/common/components/icons/icons'
 
-import toggleTag from 'utils/toggle-tag'
+import toggleTag from 'modules/routes/helpers/toggle-tag'
 
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 
