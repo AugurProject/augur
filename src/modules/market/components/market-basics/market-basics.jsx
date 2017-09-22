@@ -15,42 +15,63 @@ import { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-ty
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-basics/market-basics.styles'
 
-const MarketBasics = p => (
-  <article>
-    <div className={CommonStyles.MarketCommon__topcontent}>
-      <div className={CommonStyles.MarketCommon__header}>
-        <ul className={Styles.MarketBasics__tags}>
-          <li>Tags</li>
-          {(p.tags || []).map((tag, i) => (
-            <li key={i}>
-              <button onClick={() => toggleTag(tag, p.location, p.history)}>
-                {tag}
-              </button>
-            </li>
-          ))}
-        </ul>
-        <MarketStatusIcon isOpen={p.isOpen} isReported={p.isReported} />
+const MarketBasics = (p) => {
+
+  let marketStatusIcon
+
+  switch (true) {
+    case p.isOpen && p.isReported:
+      marketStatusIcon = MarketStatusReported
+      break
+    case p.isOpen:
+      marketStatusIcon = MarketStatusOpen
+      break
+    default:
+      marketStatusIcon = MarketStatusClosed
+  }
+
+  return (
+    <article className={Styles.MarketBasics}>
+      <div className={Styles.MarketBasics__content}>
+        <div className={Styles.MarketBasics__header}>
+          <ul className={Styles.MarketBasics__tags}>
+            {p.tags.length > 1 &&
+              <li>Tags</li>
+            }
+            {(p.tags || []).map((tag, i) => i !== 0 &&
+              <li key={i}>
+                <button onClick={() => toggleTag(tag, p.location, p.history)}>
+                  {tag}
+                </button>
+              </li>
+            )}
+          </ul>
+
+          <span className={Styles.MarketBasics__status}>
+            {marketStatusIcon}
+          </span>
+        </div>
+
+        <h1 className={Styles.MarketBasics__description}>
+          <MarketLink
+            id={p.id}
+            formattedDescription={p.formattedDescription}
+          >
+            {p.description}
+          </MarketLink>
+        </h1>
+
+        {(p.type === BINARY || p.type === SCALAR) &&
+          <MarketOutcomesBinaryScalar outcomes={p.outcomes} min={p.minValue} max={p.maxValue} type={p.type} />
+        }
+
+        {p.type === 'categorical' &&
+          <MarketOutcomesCategorical outcomes={p.outcomes} />
+        }
       </div>
-
-      <h1 className={CommonStyles.MarketCommon__description}>
-        <MarketLink
-          id={p.id}
-          formattedDescription={p.formattedDescription}
-        >
-          {p.description}
-        </MarketLink>
-      </h1>
-
-      {(p.type === BINARY || p.type === SCALAR) &&
-        <MarketOutcomesBinaryScalar outcomes={p.outcomes} min={p.minValue} max={p.maxValue} type={p.type} />
-      }
-
-      {p.type === 'categorical' &&
-        <MarketOutcomesCategorical outcomes={p.outcomes} />
-      }
-    </div>
-  </article>
-)
+    </article>
+  )
+}
 
 MarketBasics.propTypes = {
   history: PropTypes.object.isRequired,
