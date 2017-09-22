@@ -3,6 +3,7 @@ import makeQuery from 'modules/routes/helpers/make-query'
 import parseStringToArray from 'modules/routes/helpers/parse-string-to-array'
 
 import { TAGS_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
+import { QUERY_VALUE_DELIMITER } from 'modules/routes/constants/query-value-delimiter'
 
 export default function (tag, location, history) {
   let searchParams = parseQuery(location.search)
@@ -17,7 +18,7 @@ export default function (tag, location, history) {
     })
   }
 
-  const tags = parseStringToArray(decodeURIComponent(searchParams[TAGS_PARAM_NAME]), '+')
+  const tags = parseStringToArray(decodeURIComponent(searchParams[TAGS_PARAM_NAME]), QUERY_VALUE_DELIMITER)
 
   if (tags.indexOf(tag) !== -1) { // Remove Tag
     tags.splice(tags.indexOf(tag), 1)
@@ -26,7 +27,7 @@ export default function (tag, location, history) {
   }
 
   if (tags.length) {
-    searchParams[TAGS_PARAM_NAME] = tags.join('+')
+    searchParams[TAGS_PARAM_NAME] = tags.join(QUERY_VALUE_DELIMITER)
   } else {
     delete searchParams[TAGS_PARAM_NAME]
   }
