@@ -17,7 +17,7 @@ export default function (tag, location, history) {
     })
   }
 
-  const tags = parseStringToArray(decodeURIComponent(searchParams[TAGS_PARAM_NAME]), '')
+  const tags = parseStringToArray(decodeURIComponent(searchParams[TAGS_PARAM_NAME]), '+')
 
   if (tags.indexOf(tag) !== -1) { // Remove Tag
     tags.splice(tags.indexOf(tag), 1)
@@ -26,7 +26,7 @@ export default function (tag, location, history) {
   }
 
   if (tags.length) {
-    searchParams[TAGS_PARAM_NAME] = tags.join('')
+    searchParams[TAGS_PARAM_NAME] = tags.join('+')
   } else {
     delete searchParams[TAGS_PARAM_NAME]
   }
