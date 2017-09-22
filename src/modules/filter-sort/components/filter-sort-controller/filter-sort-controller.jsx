@@ -24,8 +24,7 @@ export default class FilterSortController extends Component {
 
     // NOTE -- any filter or sort that is `null` will be ignored when combining arrays
     this.state = {
-      // Filters
-      results: {},
+      // Filters are dynamically added
       // Aggregated Items
       combinedFiltered: null,
       // Children Components
@@ -49,11 +48,14 @@ export default class FilterSortController extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
+    const oldResults = Object.keys(this.state).filter(key => key.indexOf('filter-sort-results--') !== -1).reduce((p, key) => ({ ...p, [key]: this.state[key] }), {})
+    const newResults = Object.keys(nextState).filter(key => key.indexOf('filter-sort-results--') !== -1).reduce((p, key) => ({ ...p, [key]: nextState[key] }), {})
+
     if (
       !isEqual(this.props.items, nextProps.items) ||
-      !isEqual(this.state.results, nextState.results)
+      !isEqual(oldResults, newResults)
     ) {
-      this.updateCombinedFilters(nextProps.items, nextState.results)
+      this.updateCombinedFilters(nextProps.items, newResults)
     }
 
     if (
@@ -104,7 +106,7 @@ export default class FilterSortController extends Component {
 
   updateCombinedFilters(items, results) {
     const combinedFiltered = Object.keys(results).reduce((p, filterType) => {
-      if (filterType === SORT_MARKET_PARAM) return p // Don't include sorted array
+      if (filterType === `filter-sort-results--${SORT_MARKET_PARAM}`) return p // Don't include sorted array
       if (p.length === 0 || (results[filterType] !== null && results[filterType].length === 0)) return []
       if (results[filterType] === null) return p
 
@@ -112,7 +114,7 @@ export default class FilterSortController extends Component {
     }, items.map((_, i) => i))
 
     this.updateSortedFiltered(
-      results[SORT_MARKET_PARAM] || null,
+      results[`filter-sort-results--${SORT_MARKET_PARAM}`] || null,
       combinedFiltered
     )
 
@@ -131,10 +133,7 @@ export default class FilterSortController extends Component {
 
   updateIndices(options) {
     this.setState({
-      results: {
-        ...this.state.results,
-        [options.type]: options.indices
-      }
+      [`filter-sort-results--${options.type}`]: options.indices // NOTE -- done this way to prevent race conditions since multiple filters/sorts could call this method simultaneously
     })
   }
 
