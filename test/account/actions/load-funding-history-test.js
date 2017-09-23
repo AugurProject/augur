@@ -81,6 +81,9 @@ describe('loadFundingHistory', () => {
     }
   };
 
+  const convertLogs = (label, log) => {
+    return allConvertLogToTransaction(label, log);
+  };
 
   afterEach(() => {
     ReWireModule.__ResetDependency__('loadDataFromAugurNode', 'convertLogsToTransactions');
@@ -89,14 +92,12 @@ describe('loadFundingHistory', () => {
 
   const test = (t) => {
     it(t.description, (done) => {
-      var convert = (label, log) => {
-        return allConvertLogToTransaction(label, log);
-      };
-      var load = (augurNodeUrl, restApiEndpoint, queryObject, callback) => {
+
+      const load = (augurNodeUrl, restApiEndpoint, queryObject, callback) => {
         return t.loadDataFromAugurNode(augurNodeUrl, restApiEndpoint, queryObject, callback);
       };
 
-      ReWireModule.__Rewire__('convertLogsToTransactions', convert);
+      ReWireModule.__Rewire__('convertLogsToTransactions', convertLogs);
 
       ReWireModule.__Rewire__('loadDataFromAugurNode', load);
 
