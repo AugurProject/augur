@@ -100,6 +100,11 @@ describe("logs/get-all-augur-logs", function () {
             }]);
           }
         },
+        getCurrentBlock: function () {
+          return {
+            number: "0x3e9"
+          };
+        },
         getNetworkID: function () {
           return "4";
         }

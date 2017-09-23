@@ -15,7 +15,7 @@ var constants = require("../constants");
 /**
  * @param {Object} p Parameters object.
  * @param {number=} p.fromBlock Block number to start looking up logs (default: constants.AUGUR_UPLOAD_BLOCK_NUMBER).
- * @param {number=} p.toBlock Block number where the log lookup should stop (default: latest).
+ * @param {number=} p.toBlock Block number where the log lookup should stop (default: current block number).
  * @param {function} callback Called when all data has been received and parsed.
  * @return { contractName => { eventName => [parsed event logs] } }
  */
@@ -27,7 +27,7 @@ function getAllAugurLogs(p, callback) {
   var eventSignatureToNameMap = mapEventSignaturesToNames(eventsAbi);
   var filterParams = { address: listContracts(contractNameToAddressMap) };
   var fromBlock = p.fromBlock ? encodeNumberAsJSNumber(p.fromBlock) : constants.AUGUR_UPLOAD_BLOCK_NUMBER;
-  var toBlock = p.toBlock ? encodeNumberAsJSNumber(p.toBlock) : "latest";
+  var toBlock = p.toBlock ? encodeNumberAsJSNumber(p.toBlock) : parseInt(ethrpc.getCurrentBlock().number, 16);
   async.eachSeries(chunkBlocks(fromBlock, toBlock), function (chunkOfBlocks, nextChunkOfBlocks) {
     ethrpc.getLogs(assign({}, filterParams, chunkOfBlocks), function (logs) {
       if (logs && logs.error) return nextChunkOfBlocks(logs);
