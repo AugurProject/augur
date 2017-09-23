@@ -1,9 +1,9 @@
+import { loadFundingHistory, __RewireAPI__ as ReWireModule } from 'modules/account/actions/load-funding-history';
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { APPROVAL, TRANSFER, DEPOSIT_ETHER, WITHDRAW_ETHER } from '../../../src/modules/transactions/constants/types';
-import { loadFundingHistory, __RewireAPI__ as ReWireModule } from 'modules/account/actions/load-funding-history';
 
 describe('loadFundingHistory', () => {
 
@@ -28,14 +28,12 @@ describe('loadFundingHistory', () => {
     NO_DEPOSIT_HISTORY: `no deposit ether history data received from ${augurNodeUrl}`,
     NO_WITHDRAW_HISTORY: `no deposit ether history data received from ${augurNodeUrl}`
   };
-
   const LOGS_CONV_ACTIONS = {
     ACTION_TRANSFER_HISTORY: { type: 'CONVERT_TRANSFER_LOGS_TO_TRANSACTIONS' },
     ACTION_APPROVAL_HISTORY: { type: 'CONVERT_APPROVAL_LOGS_TO_TRANSACTIONS' },
     ACTION_DEPOSIT_HISTORY: { type: 'CONVERT_DEPOSIT_LOGS_TO_TRANSACTIONS' },
     ACTION_WITHDRAW_HISTORY: { type: 'CONVERT_WITHDRAW_LOGS_TO_TRANSACTIONS' }
   };
-  
   const METHOD_LABEL_NAMES = {
     TRANSFER_HISTORY: 'getTransferHistory',
     APPROVAL_HISTORY: 'getApprovalHistory',
@@ -91,14 +89,16 @@ describe('loadFundingHistory', () => {
 
   const test = (t) => {
     it(t.description, (done) => {
-
-      ReWireModule.__Rewire__('convertLogsToTransactions', (label, log) => {
+      var convert = (label, log) => {
         return allConvertLogToTransaction(label, log);
-      });
-
-      ReWireModule.__Rewire__('loadDataFromAugurNode', (augurNodeUrl, restApiEndpoint, queryObject, callback) => {
+      };
+      var load = (augurNodeUrl, restApiEndpoint, queryObject, callback) => {
         return t.loadDataFromAugurNode(augurNodeUrl, restApiEndpoint, queryObject, callback);
-      });
+      };
+
+      ReWireModule.__Rewire__('convertLogsToTransactions', convert);
+
+      ReWireModule.__Rewire__('loadDataFromAugurNode', load);
 
       const store = mockStore(t.state || {});
 
