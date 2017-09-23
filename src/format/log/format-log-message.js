@@ -5,9 +5,10 @@ var speedomatic = require("speedomatic");
 var clone = require("clone");
 var formatCommonFields = require("./format-common-fields");
 
-var formatLogMessage = function (label, msg) {
+var formatLogMessage = function (contractName, eventName, msg) {
   var fmt;
-  switch (label) {
+  // TODO use contractName and eventName for formatting
+  switch (eventName) {
     case "Approval":
       fmt = clone(msg);
       fmt._owner = speedomatic.formatEthereumAddress(msg._owner);

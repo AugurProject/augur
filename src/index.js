@@ -18,7 +18,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.1.10";
+  this.version = "4.1.11";
   this.options = {
     debug: {
       broadcast: false,   // broadcast debug logging in ethrpc
@@ -36,6 +36,7 @@ function Augur() {
   this.assets = require("./assets");
   this.connect = require("./connect").bind(this);
   this.constants = require("./constants");
+  this.contracts = require("./contracts");
   this.create = require("./create");
   this.filters = require("./filters");
   this.format = require("./format");

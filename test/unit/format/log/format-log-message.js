@@ -9,11 +9,12 @@ var formatLogMessage = require("../../../../src/format/log/format-log-message");
 describe("format/log/format-log-message", function () {
   var test = function (t) {
     it(JSON.stringify(t), function () {
-      t.assertions(formatLogMessage(t.label, t.msg));
+      t.assertions(formatLogMessage(t.contractName, t.eventName, t.msg));
     });
   };
   test({
-    label: "Approval",
+    contractName: "ReputationToken",
+    eventName: "Approval",
     msg: {
       _owner: "0x1",
       _spender: "0x2",
@@ -28,7 +29,8 @@ describe("format/log/format-log-message", function () {
     }
   });
   test({
-    label: "CancelOrder",
+    contractName: "Orders",
+    eventName: "CancelOrder",
     msg: {
       outcome: speedomatic.hex("2"),
       cashRefund: speedomatic.fix("100.5034")
@@ -41,7 +43,8 @@ describe("format/log/format-log-message", function () {
     }
   });
   test({
-    label: "CreateMarket",
+    contractName: "Branch",
+    eventName: "CreateMarket",
     msg: {
       branch: "0xb",
       market: "0xa",
@@ -74,7 +77,8 @@ describe("format/log/format-log-message", function () {
     }
   });
   test({
-    label: "DepositEther",
+    contractName: "Cash",
+    eventName: "DepositEther",
     msg: {
       value: speedomatic.fix("100")
     },
@@ -85,7 +89,8 @@ describe("format/log/format-log-message", function () {
     }
   });
   test({
-    label: "MakeOrder",
+    contractName: "Orders",
+    eventName: "MakeOrder",
     msg: {
       outcome: speedomatic.hex("1")
     },
@@ -96,18 +101,8 @@ describe("format/log/format-log-message", function () {
     }
   });
   test({
-    label: "MakeOrder",
-    msg: {
-      outcome: speedomatic.hex("2")
-    },
-    assertions: function (msg) {
-      assert.deepEqual(msg, {
-        outcome: 2
-      });
-    }
-  });
-  test({
-    label: "RedeemWinningTokens",
+    contractName: "ReportingToken",
+    eventName: "RedeemWinningTokens",
     msg: {
       reporter: "0xb0b",
       market: "0xa",
@@ -128,7 +123,8 @@ describe("format/log/format-log-message", function () {
     }
   });
   test({
-    label: "SubmitReport",
+    contractName: "ReportingToken",
+    eventName: "SubmitReport",
     msg: {
       reporter: "0xb0b",
       market: "0xa",
@@ -149,7 +145,8 @@ describe("format/log/format-log-message", function () {
     }
   });
   test({
-    label: "TakeOrder",
+    contractName: "Orders",
+    eventName: "TakeOrder",
     msg: {
       owner: "0x1",
       outcome: "1",
@@ -164,7 +161,8 @@ describe("format/log/format-log-message", function () {
     }
   });
   test({
-    label: "Transfer",
+    contractName: "Cash",
+    eventName: "Transfer",
     msg: {
       _from: "3",
       _to: "4",
@@ -179,7 +177,8 @@ describe("format/log/format-log-message", function () {
     }
   });
   test({
-    label: "WithdrawEther",
+    contractName: "Cash",
+    eventName: "WithdrawEther",
     msg: {
       to: "0x1",
       value: speedomatic.fix("153.25")
@@ -192,7 +191,8 @@ describe("format/log/format-log-message", function () {
     }
   });
   test({
-    label: "a label we dont recognize in this function",
+    contractName: "Cash",
+    eventName: "a eventName we dont recognize in this function",
     msg: {
       sender: "0x1",
       amount: speedomatic.fix("10"),

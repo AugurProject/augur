@@ -9,7 +9,7 @@ function getTradeAmountRemaining(transactionHash, callback) {
     if (!transactionReceipt || !Array.isArray(transactionReceipt.logs) || !transactionReceipt.logs.length) {
       return callback("logs not found");
     }
-    var tradeAmountRemainingSignature = eventsAbi.TradeAmountRemaining.signature;
+    var tradeAmountRemainingSignature = eventsAbi.Trade.TradeAmountRemaining.signature;
     transactionReceipt.logs.forEach(function (log) {
       if (log.topics[0] === tradeAmountRemainingSignature) {
         hasTradeAmountRemainingLog = true;

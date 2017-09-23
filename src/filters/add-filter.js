@@ -2,32 +2,24 @@
 
 var parseBlockMessage = require("./parse-message/parse-block-message");
 var parseLogMessage = require("./parse-message/parse-log-message");
-var parseAllLogsMessage = require("./parse-message/parse-all-logs-message");
-var listContracts = require("../utils/list-contracts");
 
-function addFilter(blockStream, label, eventAPI, contracts, addSubscription, onMessage) {
-  switch (label) {
+function addFilter(blockStream, contractName, eventName, eventAbi, contracts, addSubscription, onMessage) {
+  switch (contractName) {
     case "block":
       blockStream.subscribeToOnBlockAdded(function (message) {
         parseBlockMessage(message, onMessage);
       });
       break;
-    case "allLogs":
-      addSubscription(label, blockStream.addLogFilter({
-        address: listContracts(contracts)
-      }), function (message) {
-        parseAllLogsMessage(message, onMessage);
-      });
-      break;
     default:
-      if (!eventAPI) return null;
-      if (!eventAPI.contract || !eventAPI.signature || !eventAPI.inputs) return null;
-      if (!contracts[eventAPI.contract]) return null;
-      addSubscription(eventAPI.signature, blockStream.addLogFilter({
-        address: contracts[eventAPI.contract],
-        topics: [eventAPI.signature]
+      if (!eventAbi) return null;
+      if (!eventAbi.contract || !eventAbi.signature || !eventAbi.inputs) return null;
+      if (!contracts[eventAbi.contract]) return null;
+      var contractAddress = contracts[eventAbi.contract];
+      addSubscription(contractAddress, eventAbi.signature, blockStream.addLogFilter({
+        address: contractAddress,
+        topics: [eventAbi.signature]
       }), function (message) {
-        parseLogMessage(label, message, eventAPI.inputs, onMessage);
+        parseLogMessage(contractName, eventName, message, eventAbi.inputs, onMessage);
       });
   }
 }

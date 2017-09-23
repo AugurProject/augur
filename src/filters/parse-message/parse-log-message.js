@@ -3,13 +3,13 @@
 var speedomatic = require("speedomatic");
 var formatLogMessage = require("../../format/log/format-log-message");
 
-var parseLogMessage = function (label, msg, inputs, onMessage) {
+var parseLogMessage = function (contractName, eventName, msg, inputs, onMessage) {
   var i, parsed, topicIndex, dataIndex, topics, data;
   if (msg) {
     switch (msg.constructor) {
       case Array:
         for (i = 0; i < msg.length; ++i) {
-          parseLogMessage(label, msg[i], inputs, onMessage);
+          parseLogMessage(contractName, eventName, msg[i], inputs, onMessage);
         }
         break;
       case Object:
@@ -33,8 +33,8 @@ var parseLogMessage = function (label, msg, inputs, onMessage) {
           parsed.blockNumber = parseInt(msg.blockNumber, 16);
           parsed.transactionHash = msg.transactionHash;
           parsed.removed = msg.removed;
-          if (!onMessage) return formatLogMessage(label, parsed);
-          onMessage(formatLogMessage(label, parsed));
+          if (!onMessage) return formatLogMessage(contractName, eventName, parsed);
+          onMessage(formatLogMessage(contractName, eventName, parsed));
         }
         break;
       default:
