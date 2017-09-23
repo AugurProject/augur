@@ -3,10 +3,12 @@ import { assert } from 'chai';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import proxyquire from 'proxyquire';
+import rewire from 'babel-plugin-rewire';
 import { APPROVAL, TRANSFER, DEPOSIT_ETHER, WITHDRAW_ETHER } from '../../../src/modules/transactions/constants/types';
+import { loadFundingHistory, __RewireAPI__ as ReWireModule } from 'modules/account/actions/load-funding-history';
 
-describe('modules/account/actions/load-funding-history', () => {
-  proxyquire.noPreserveCache();
+describe('loadFundingHistory', () => {
+
   const middleware = [thunk];
   const mockStore = configureMockStore(middleware);
   const loginAccountAddress = '0x1824c06d9a2fd617a0fd59d0bee8641c1a787bf1';
@@ -83,29 +85,31 @@ describe('modules/account/actions/load-funding-history', () => {
     }
   };
 
+
+  afterEach(() => {
+    ReWireModule.__ResetDependency__('loadDataFromAugurNode', 'convertLogsToTransactions');
+  });
+
+
   const test = (t) => {
     it(t.description, (done) => {
-      const convertLogsToTransactionsMock = {};
 
-      convertLogsToTransactionsMock.convertLogsToTransactions = allConvertLogToTransaction;
-      const loadDataFromAugurNodeMock = {
-        default: t.loadDataFromAugurNode
-      };
+      ReWireModule.__Rewire__('convertLogsToTransactions', (label, log) => {
+        return allConvertLogToTransaction(label, log);
+      });
 
-      const action = proxyquire('../../../src/modules/account/actions/load-funding-history', {
-        '../../app/actions/load-data-from-augur-node': loadDataFromAugurNodeMock,
-        '../../transactions/actions/convert-logs-to-transactions': convertLogsToTransactionsMock
+      ReWireModule.__Rewire__('loadDataFromAugurNode', (augurNodeUrl, restApiEndpoint, queryObject, callback)=>{
+        return t.loadDataFromAugurNode(augurNodeUrl, restApiEndpoint, queryObject, callback);
       });
 
       const store = mockStore(t.state || {});
 
-      store.dispatch(action.loadFundingHistory(t.options, (err) => {
+      store.dispatch(loadFundingHistory(t.options, (err) => {
         t.assertions(err, store);
         done();
       }));
     });
   };
-
 
   test({
     description: `should load transfer, approval and deposit history, return all 4 actions from store`,
@@ -348,5 +352,5 @@ describe('modules/account/actions/load-funding-history', () => {
       assert.isNull(err, `error is null`);
       assert.deepEqual(store.getActions(), [], `Didn't fire the expected empty actions array`);
     }
-  });
+  });  
 });
