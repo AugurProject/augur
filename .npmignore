@@ -1,0 +1,7 @@
+node_modules/
+.git/
+test/
+.gitignore
+.travis.yml
+tsconfig.json
+augur.db

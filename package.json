@@ -1,0 +1,42 @@
+{
+  "name": "augur-node",
+  "version": "0.0.1",
+  "description": "Augur Node",
+  "author": "The Augur Developers <team@augur.net>",
+  "license": "MIT",
+  "main": "build/index.js",
+  "directories": {
+    "src": "src",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha",
+    "lint": "eslint src && eslint test",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AugurProject/augur-node.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AugurProject/augur-node/issues"
+  },
+  "homepage": "https://github.com/AugurProject/augur-node#readme",
+  "dependencies": {
+    "async": "1.5.2",
+    "augur.js": "4.1.18",
+    "jsonrpc-dispatch": "2.1.0",
+    "sqlite3": "^3.1.12",
+    "ws": "3.2.0"
+  },
+  "devDependencies": {
+    "chai": "3.5.0",
+    "coveralls": "2.11.3",
+    "eslint": "3.17.1",
+    "istanbul": "0.4.1",
+    "mocha": "3.2.0",
+    "mocha-lcov-reporter": "0.0.2",
+    "proxyquire": "1.7.11",
+    "typescript": "2.5.2"
+  }
+}
