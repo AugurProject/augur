@@ -3,13 +3,13 @@
 "use strict";
 
 var assert = require("chai").assert;
-var abiMap = require("../../../../src/contracts").abi;
+var eventsAbi = require("../../../../src/contracts").abi.events;
 var parseLogMessage = require("../../../../src/filters/parse-message/parse-log-message");
 
 describe("filters/parse-message/parse-log-message", function () {
   var test = function (t) {
     it(t.contractName + "." + t.eventName + ": " + JSON.stringify(t.msg), function (done) {
-      var inputs = abiMap.events[t.eventName].inputs;
+      var inputs = eventsAbi[t.contractName][t.eventName].inputs;
       parseLogMessage(t.contractName, t.eventName, t.msg, inputs, function (parsed) {
         for (var i = 0; i < inputs.length; ++i) {
           assert.property(parsed, inputs[i].name);

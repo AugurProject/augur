@@ -76,22 +76,24 @@ describe("contracts/generate-abi-map", function () {
     assertions: function (output) {
       assert.deepEqual(output, {
         events: {
-          Transfer: {
-            contract: "Contract2",
-            inputs: [{
-              indexed: true,
-              type: "address",
-              name: "from"
-            }, {
-              indexed: true,
-              type: "address",
-              name: "to"
-            }, {
-              indexed: false,
-              type: "uint256",
-              name: "value"
-            }],
-            signature: "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+          Contract2: {
+            Transfer: {
+              contract: "Contract2",
+              inputs: [{
+                indexed: true,
+                type: "address",
+                name: "from"
+              }, {
+                indexed: true,
+                type: "address",
+                name: "to"
+              }, {
+                indexed: false,
+                type: "uint256",
+                name: "value"
+              }],
+              signature: "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+            }
           }
         },
         functions: {

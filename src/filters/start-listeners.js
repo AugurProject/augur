@@ -14,7 +14,7 @@ var subscriptions = require("./subscriptions");
  * @param {function=} onSetupComplete Called when all listeners are successfully set up.
  */
 function startListeners(p, onSetupComplete) {
-  var eventsAbi = contracts.events.abi;
+  var eventsAbi = contracts.abi.events;
   var blockStream = ethrpc.getBlockStream();
   Object.keys(p.subscriptionCallbacks).forEach(function (contractName) {
     Object.keys(p.subscriptionCallbacks[contractName]).forEach(function (eventName) {

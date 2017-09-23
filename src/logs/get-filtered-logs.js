@@ -1,11 +1,11 @@
 "use strict";
 
-var eventsABI = require("../contracts").abi.events;
+var eventsAbi = require("../contracts").abi.events;
 var parametrizeFilter = require("./parametrize-filter");
 var ethrpc = require("../rpc-interface");
 
-function getFilteredLogs(label, filterParams, callback) {
-  var filter = parametrizeFilter(eventsABI[label], filterParams || {});
+function getFilteredLogs(contractName, eventName, filterParams, callback) {
+  var filter = parametrizeFilter(eventsAbi[eventName], filterParams || {});
   ethrpc.getLogs(filter, function (logs) {
     if (logs && logs.error) return callback(logs, null);
     if (!logs || !logs.length) return callback(null, []);

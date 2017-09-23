@@ -1,7 +1,7 @@
 "use strict";
 
 var api = require("../api");
-var abiMap = require("../contracts").abi;
+var eventsAbi = require("../contracts").abi.events;
 var getLogs = require("../logs/get-logs");
 var parseLogMessage = require("../filters/parse-message/parse-log-message");
 
@@ -9,9 +9,9 @@ var parseLogMessage = require("../filters/parse-message/parse-log-message");
 function getLoggedMarketInfo(p, callback) {
   api().Market.getReportingWindow({ tx: { to: p.market } }, function (err, reportingWindowAddress) {
     if (err) return callback(err);
-    var label = "CreateMarket";
+    var eventName = "CreateMarket";
     getLogs({
-      label: label,
+      label: eventName,
       filter: {
         fromBlock: p.creationBlock,
         toBlock: p.creationBlock,
@@ -21,7 +21,7 @@ function getLoggedMarketInfo(p, callback) {
     }, function (err, marketCreationLogs) {
       if (err) return callback(err);
       if (!Array.isArray(marketCreationLogs) || !marketCreationLogs.length) return callback(null);
-      callback(null, parseLogMessage(label, marketCreationLogs[0], abiMap.events[label].inputs));
+      callback(null, parseLogMessage("Branch", eventName, marketCreationLogs[0], eventsAbi.Branch[eventName].inputs));
     });
   });
 }

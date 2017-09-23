@@ -10,7 +10,7 @@ var insertIndexedLog = require("./insert-indexed-log");
 var ethrpc = require("../rpc-interface");
 var GET_LOGS_DEFAULT_FROM_BLOCK = require("../constants").GET_LOGS_DEFAULT_FROM_BLOCK;
 
-// { label, filter, aux }
+// { contractName, eventName, filter, aux }
 function getLogsChunked(p, onChunkReceived, onComplete) {
   p.aux = p.aux || {};
   p.filter = p.filter || {};

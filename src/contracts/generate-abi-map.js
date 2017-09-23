@@ -39,7 +39,8 @@ function generateAbiMap(abi) {
         if (!functions[contractName]) functions[contractName] = {};
         functions[contractName][shortName] = functionAbiMap;
       } else if (functionOrEvent.type === "event") {
-        events[shortName] = {
+        if (!events[contractName]) events[contractName] = {};
+        events[contractName][shortName] = {
           contract: contractName,
           inputs: functionOrEvent.inputs,
           signature: "0x" + keccak256(Buffer.from(functionOrEvent.name, "utf8")).toString("hex")

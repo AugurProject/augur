@@ -27,8 +27,10 @@ describe("trading/get-trade-amount-remaining", function () {
       contracts: {
         abi: {
           events: {
-            TradeAmountRemaining: {
-              signature: "TRADE_AMOUNT_REMAINING_SIGNATURE"
+            Trade: {
+              TradeAmountRemaining: {
+                signature: "TRADE_AMOUNT_REMAINING_SIGNATURE"
+              }
             }
           }
         }
@@ -60,8 +62,10 @@ describe("trading/get-trade-amount-remaining", function () {
       contracts: {
         abi: {
           events: {
-            TradeAmountRemaining: {
-              signature: "TRADE_AMOUNT_REMAINING_SIGNATURE"
+            Trade: {
+              TradeAmountRemaining: {
+                signature: "TRADE_AMOUNT_REMAINING_SIGNATURE"
+              }
             }
           }
         }
@@ -86,8 +90,10 @@ describe("trading/get-trade-amount-remaining", function () {
       contracts: {
         abi: {
           events: {
-            TradeAmountRemaining: {
-              signature: "TRADE_AMOUNT_REMAINING_SIGNATURE"
+            Trade: {
+              TradeAmountRemaining: {
+                signature: "TRADE_AMOUNT_REMAINING_SIGNATURE"
+              }
             }
           }
         }
