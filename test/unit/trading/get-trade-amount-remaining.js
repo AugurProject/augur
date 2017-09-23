@@ -10,7 +10,7 @@ describe("trading/get-trade-amount-remaining", function () {
     it(t.description, function (done) {
       var getTradeAmountRemaining = proxyquire("../../../src/trading/get-trade-amount-remaining", {
         "../contracts": t.mock.contracts,
-        "../rpc-interface": t.mock.rpcInterface
+        "../rpc-interface": t.mock.ethrpc
       });
       getTradeAmountRemaining(t.params.transactionHash, function (err, tradeAmountRemaining) {
         t.assertions(err, tradeAmountRemaining);
@@ -33,7 +33,7 @@ describe("trading/get-trade-amount-remaining", function () {
           }
         }
       },
-      rpcInterface: {
+      ethrpc: {
         getTransactionReceipt: function (transactionHash, callback) {
           callback({
             logs: [{
@@ -66,7 +66,7 @@ describe("trading/get-trade-amount-remaining", function () {
           }
         }
       },
-      rpcInterface: {
+      ethrpc: {
         getTransactionReceipt: function (transactionHash, callback) {
           callback({});
         }
@@ -92,7 +92,7 @@ describe("trading/get-trade-amount-remaining", function () {
           }
         }
       },
-      rpcInterface: {
+      ethrpc: {
         getTransactionReceipt: function (transactionHash, callback) {
           callback({
             logs: [{

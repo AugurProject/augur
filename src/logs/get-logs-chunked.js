@@ -7,7 +7,7 @@ var clone = require("clone");
 var chunkBlocks = require("./chunk-blocks");
 var getLogs = require("./get-logs");
 var insertIndexedLog = require("./insert-indexed-log");
-var rpcInterface = require("../rpc-interface");
+var ethrpc = require("../rpc-interface");
 var GET_LOGS_DEFAULT_FROM_BLOCK = require("../constants").GET_LOGS_DEFAULT_FROM_BLOCK;
 
 // { label, filter, aux }
@@ -18,7 +18,7 @@ function getLogsChunked(p, onChunkReceived, onComplete) {
     p.filter.fromBlock = parseInt(GET_LOGS_DEFAULT_FROM_BLOCK, 16);
   }
   if (!p.filter.toBlock) {
-    p.filter.toBlock = parseInt(rpcInterface.getCurrentBlock().number, 16);
+    p.filter.toBlock = parseInt(ethrpc.getCurrentBlock().number, 16);
   }
   var index = p.aux.index;
   var mergedLogs = {};

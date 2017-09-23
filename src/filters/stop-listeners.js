@@ -1,6 +1,6 @@
 "use strict";
 
-var rpcInterface = require("../rpc-interface");
+var ethrpc = require("../rpc-interface");
 var subscriptions = require("./subscriptions");
 
 /**
@@ -8,7 +8,7 @@ var subscriptions = require("./subscriptions");
  * @return {boolean} True if listeners were successfully stopped; false otherwise.
  */
 function stopListeners() {
-  var token, blockStream = rpcInterface.getBlockStream();
+  var token, blockStream = ethrpc.getBlockStream();
   if (!blockStream) return false;
   for (token in blockStream.onLogAddedSubscribers) {
     if (blockStream.onLogAddedSubscribers.hasOwnProperty(token)) {

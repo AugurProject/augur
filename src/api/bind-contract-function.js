@@ -2,7 +2,7 @@
 
 var assign = require("lodash.assign");
 var encodeTransactionInputs = require("./encode-transaction-inputs");
-var rpcInterface = require("../rpc-interface");
+var ethrpc = require("../rpc-interface");
 var isFunction = require("../utils/is-function");
 var isObject = require("../utils/is-object");
 
@@ -10,8 +10,8 @@ function bindContractFunction(functionAbi) {
   return function () {
     var payload = assign({}, functionAbi);
     if (!arguments || !arguments.length) {
-      if (payload.constant) return rpcInterface.callContractFunction(payload);
-      return rpcInterface.transact(payload);
+      if (payload.constant) return ethrpc.callContractFunction(payload);
+      return ethrpc.transact(payload);
     }
     var params = Array.prototype.slice.call(arguments);
     if (payload.constant || (params[0] && params[0].tx && params[0].tx.send === false)) {
@@ -21,8 +21,8 @@ function bindContractFunction(functionAbi) {
         if (isObject(params[0].tx)) assign(payload, params[0].tx);
       }
       if (isFunction(params[params.length - 1])) callback = params.pop();
-      if (!isFunction(callback)) return rpcInterface.callContractFunction(payload);
-      return rpcInterface.callContractFunction(payload, function (response) {
+      if (!isFunction(callback)) return ethrpc.callContractFunction(payload);
+      return ethrpc.callContractFunction(payload, function (response) {
         if (!response) return callback("No response");
         if (response.error) return callback(response.error);
         callback(null, response);
@@ -37,7 +37,7 @@ function bindContractFunction(functionAbi) {
       if (isObject(params[0].tx)) assign(payload, params[0].tx);
       signer = params[0]._signer;
     }
-    rpcInterface.transact(payload, signer, onSent, onSuccess, onFailed);
+    ethrpc.transact(payload, signer, onSent, onSuccess, onFailed);
   };
 }
 

@@ -1,7 +1,7 @@
 "use strict";
 
 var speedomatic = require("speedomatic");
-var rpcInterface = require("../rpc-interface");
+var ethrpc = require("../rpc-interface");
 
 /**
  * @param {Object} p Parameters object.
@@ -13,7 +13,7 @@ var rpcInterface = require("../rpc-interface");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function sendEther(p) {
-  return rpcInterface.transact({
+  return ethrpc.transact({
     from: p.from,
     to: p.to,
     value: speedomatic.fix(p.etherToSend, "hex"),

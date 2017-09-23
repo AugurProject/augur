@@ -1,10 +1,10 @@
 "use strict";
 
 var eventsAbi = require("../contracts").abi.events;
-var rpcInterface = require("../rpc-interface");
+var ethrpc = require("../rpc-interface");
 
 function getTradeAmountRemaining(transactionHash, callback) {
-  rpcInterface.getTransactionReceipt(transactionHash, function (transactionReceipt) {
+  ethrpc.getTransactionReceipt(transactionHash, function (transactionReceipt) {
     var hasTradeAmountRemainingLog = false;
     if (!transactionReceipt || !Array.isArray(transactionReceipt.logs) || !transactionReceipt.logs.length) {
       return callback("logs not found");

@@ -1,7 +1,7 @@
 "use strict";
 
 var addFilter = require("./add-filter");
-var rpcInterface = require("../rpc-interface");
+var ethrpc = require("../rpc-interface");
 var isFunction = require("../utils/is-function");
 var subscriptions = require("./subscriptions");
 
@@ -14,7 +14,7 @@ var subscriptions = require("./subscriptions");
  * @param {function=} onSetupComplete Called when all listeners are successfully set up.
  */
 function startListeners(p, onSetupComplete) {
-  var blockStream = rpcInterface.getBlockStream();
+  var blockStream = ethrpc.getBlockStream();
   Object.keys(p.subscriptionCallbacks).map(function (eventName) {
     if (isFunction(p.subscriptionCallbacks[eventName])) {
       addFilter(blockStream, eventName, p.eventsAbi[eventName], p.contracts, subscriptions.addSubscription, p.subscriptionCallbacks[eventName]);
