@@ -122,7 +122,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should NOT dispatch actions from Payout callback if sender IS NOT logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.Payout({
+        p.subscriptionCallbacks.ClaimProceeds.Payout({
           sender: '0xNOTUSER'
         });
       });
@@ -139,7 +139,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from Payout callback if sender IS logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.Payout({
+        p.subscriptionCallbacks.ClaimProceeds.Payout({
           sender: '0x0000000000000000000000000000000000000001'
         });
       });
@@ -163,7 +163,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should NOT dispatch actions from Registration callback if sender IS NOT logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.Registration({
+        p.subscriptionCallbacks.Registration.Registration({
           sender: '0xNOTUSER'
         });
       });
@@ -180,7 +180,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from Registration callback if sender IS logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.Registration({
+        p.subscriptionCallbacks.Registration.Registration({
           sender: '0x0000000000000000000000000000000000000001'
         });
       });
@@ -201,7 +201,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should NOT dispatch actions from SubmitReport callback if sender IS NOT logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.SubmitReport({
+        p.subscriptionCallbacks.ReportingToken.SubmitReport({
           sender: '0xNOTUSER'
         });
       });
@@ -218,7 +218,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from SubmitReport callback if sender IS logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.SubmitReport({
+        p.subscriptionCallbacks.ReportingToken.SubmitReport({
           sender: '0x0000000000000000000000000000000000000001'
         });
       });
@@ -242,7 +242,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should NOT dispatch actions from TakeOrder callback WITHOUT correct argument properties`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.TakeOrder({});
+        p.subscriptionCallbacks.Orders.TakeOrder({});
       });
 
       store.dispatch(action.listenToUpdates());
@@ -257,7 +257,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from TakeOrder callback WITH correct argument properties AND sender AND owner ARE NOT logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.TakeOrder({
+        p.subscriptionCallbacks.Orders.TakeOrder({
           market: '0xMARKET',
           price: '0.2',
           outcome: '1',
@@ -288,7 +288,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from TakeOrder callback WITH correct argument properties AND sender IS logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.TakeOrder({
+        p.subscriptionCallbacks.Orders.TakeOrder({
           market: '0xMARKET',
           price: '0.2',
           outcome: '1',
@@ -325,7 +325,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from TakeOrder callback WITH correct argument properties AND owner IS logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.TakeOrder({
+        p.subscriptionCallbacks.Orders.TakeOrder({
           market: '0xMARKET',
           price: '0.2',
           outcome: '1',
@@ -365,7 +365,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should NOT dispatch actions from MakeOrder callback WITHOUT correct argument properties`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.MakeOrder({});
+        p.subscriptionCallbacks.Orders.MakeOrder({});
       });
 
       store.dispatch(action.listenToUpdates());
@@ -380,7 +380,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from MakeOrder callback WITH correct argument properties AND sender IS NOT logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.MakeOrder({
+        p.subscriptionCallbacks.Orders.MakeOrder({
           market: '0xMARKET',
           outcome: '1',
           sender: '0xNOTUSER'
@@ -399,7 +399,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from MakeOrder callback WITH correct argument properties AND sender IS logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.MakeOrder({
+        p.subscriptionCallbacks.Orders.MakeOrder({
           market: 'testMarketID3',
           outcome: '1',
           amount: '0.2',
@@ -426,7 +426,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should NOT dispatch actions from CancelOrder callback WITHOUT correct argument properties`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.CancelOrder({});
+        p.subscriptionCallbacks.Orders.CancelOrder({});
       });
 
       store.dispatch(action.listenToUpdates());
@@ -441,7 +441,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from CancelOrder callback WITH correct argument properties AND sender IS NOT logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.CancelOrder({
+        p.subscriptionCallbacks.Orders.CancelOrder({
           market: '0xMARKET',
           outcome: '1',
           sender: '0xNOTUSER'
@@ -460,7 +460,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from CancelOrder callback WITH correct argument properties AND sender IS logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.CancelOrder({
+        p.subscriptionCallbacks.Orders.CancelOrder({
           market: '0xMARKET',
           outcome: '1',
           sender: '0x0000000000000000000000000000000000000001'
@@ -486,7 +486,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should NOT dispatch actions from CreateMarket callback WITHOUT correct argument properties`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.CreateMarket();
+        p.subscriptionCallbacks.Branch.CreateMarket();
       });
 
       store.dispatch(action.listenToUpdates());
@@ -501,7 +501,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from CreateMarket callback WITH correct argument properties AND sender IS NOT logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.CreateMarket({
+        p.subscriptionCallbacks.Branch.CreateMarket({
           marketID: '0xMARKET',
           sender: '0xNOTUSER'
         });
@@ -523,7 +523,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from CreateMarket callback WITH correct argument properties AND sender IS logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.CreateMarket({
+        p.subscriptionCallbacks.Branch.CreateMarket({
           marketID: '0xMARKET',
           sender: '0x0000000000000000000000000000000000000001'
         });
@@ -551,7 +551,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should NOT dispatch actions from DepositEther callback WITHOUT sender as logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.DepositEther({
+        p.subscriptionCallbacks.Cash.DepositEther({
           sender: '0xNOTUSER'
         });
       });
@@ -568,7 +568,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from DepositEther callback WITH sender as logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.DepositEther({
+        p.subscriptionCallbacks.Cash.DepositEther({
           sender: '0x0000000000000000000000000000000000000001'
         });
       });
@@ -592,7 +592,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should NOT dispatch actions from WithdrawEther callback WITHOUT sender as logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.WithdrawEther({
+        p.subscriptionCallbacks.Cash.WithdrawEther({
           sender: '0xNOTUSER'
         });
       });
@@ -609,7 +609,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from WithdrawEther callback WITH sender as logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.WithdrawEther({
+        p.subscriptionCallbacks.Cash.WithdrawEther({
           sender: '0x0000000000000000000000000000000000000001'
         });
       });
@@ -633,7 +633,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should NOT dispatch actions from Transfer callback WITHOUT correct argument properties`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.Transfer();
+        p.subscriptionCallbacks.ReputationToken.Transfer();
       });
 
       store.dispatch(action.listenToUpdates());
@@ -648,7 +648,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from Transfer callback WITH correct argument properties AND _from IS logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.Transfer({
+        p.subscriptionCallbacks.ReputationToken.Transfer({
           _from: '0x0000000000000000000000000000000000000001',
           _to: '0xNOTUSER'
         });
@@ -673,7 +673,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from Transfer callback WITH correct argument properties AND _to IS logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.Transfer({
+        p.subscriptionCallbacks.ReputationToken.Transfer({
           _from: '0xNOTUSER',
           _to: '0x0000000000000000000000000000000000000001'
         });
@@ -698,7 +698,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should NOT dispatch actions from Approval callback WITHOUT correct argument properties`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.Approval();
+        p.subscriptionCallbacks.ReputationToken.Approval();
       });
 
       store.dispatch(action.listenToUpdates());
@@ -713,7 +713,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from Approval callback WITH correct argument properties AND _owner IS logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.Approval({
+        p.subscriptionCallbacks.ReputationToken.Approval({
           _owner: '0x0000000000000000000000000000000000000001',
           _spender: '0xNOTUSER'
         });
@@ -738,7 +738,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from Approval callback WITH correct argument properties AND _spender IS logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.Approval({
+        p.subscriptionCallbacks.ReputationToken.Approval({
           _owner: '0xNOTUSER',
           _spender: '0x0000000000000000000000000000000000000001'
         });
@@ -763,7 +763,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should NOT dispatch actions from Finalize callback WITHOUT correct argument properties`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.Finalize();
+        p.subscriptionCallbacks.Market.Finalize();
       });
 
       store.dispatch(action.listenToUpdates());
@@ -778,7 +778,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should NOT dispatch actions from Finalize callback WITHOUT matched branch`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.Finalize({
+        p.subscriptionCallbacks.Market.Finalize({
           market: '0xMARKET',
           branch: '0xNOTMATCH'
         });
@@ -796,7 +796,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     description: `should dispatch actions from Finalize callback WITH matched branch`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'startListeners', (p) => {
-        p.subscriptionCallbacks.Finalize({
+        p.subscriptionCallbacks.Market.Finalize({
           market: '0xMARKET',
           branch: '0xf69b5'
         });
