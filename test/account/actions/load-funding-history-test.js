@@ -2,8 +2,6 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import proxyquire from 'proxyquire';
-import rewire from 'babel-plugin-rewire';
 import { APPROVAL, TRANSFER, DEPOSIT_ETHER, WITHDRAW_ETHER } from '../../../src/modules/transactions/constants/types';
 import { loadFundingHistory, __RewireAPI__ as ReWireModule } from 'modules/account/actions/load-funding-history';
 
@@ -37,7 +35,7 @@ describe('loadFundingHistory', () => {
     ACTION_DEPOSIT_HISTORY: { type: 'CONVERT_DEPOSIT_LOGS_TO_TRANSACTIONS' },
     ACTION_WITHDRAW_HISTORY: { type: 'CONVERT_WITHDRAW_LOGS_TO_TRANSACTIONS' }
   };
-
+  
   const METHOD_LABEL_NAMES = {
     TRANSFER_HISTORY: 'getTransferHistory',
     APPROVAL_HISTORY: 'getApprovalHistory',
@@ -98,7 +96,7 @@ describe('loadFundingHistory', () => {
         return allConvertLogToTransaction(label, log);
       });
 
-      ReWireModule.__Rewire__('loadDataFromAugurNode', (augurNodeUrl, restApiEndpoint, queryObject, callback)=>{
+      ReWireModule.__Rewire__('loadDataFromAugurNode', (augurNodeUrl, restApiEndpoint, queryObject, callback) => {
         return t.loadDataFromAugurNode(augurNodeUrl, restApiEndpoint, queryObject, callback);
       });
 
@@ -352,5 +350,5 @@ describe('loadFundingHistory', () => {
       assert.isNull(err, `error is null`);
       assert.deepEqual(store.getActions(), [], `Didn't fire the expected empty actions array`);
     }
-  });  
+  });
 });
