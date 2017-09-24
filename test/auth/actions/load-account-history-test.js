@@ -42,7 +42,7 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
   };
 
   const LoadAccountTrades = {
-    loadAccountTrades: () => {}
+    loadAccountTrades: () => { }
   };
   sinon.stub(LoadAccountTrades, 'loadAccountTrades', (options, cb) => {
     cb();
@@ -53,7 +53,7 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
   });
 
   const LoadBidsAsksHistory = {
-    loadBidsAsksHistory: () => {}
+    loadBidsAsksHistory: () => { }
   };
   sinon.stub(LoadBidsAsksHistory, 'loadBidsAsksHistory', (options, cb) => {
     cb();
@@ -64,7 +64,7 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
   });
 
   const LoadCreateMarketHistory = {
-    loadCreateMarketHistory: () => {}
+    loadCreateMarketHistory: () => { }
   };
   sinon.stub(LoadCreateMarketHistory, 'loadCreateMarketHistory', (options, cb) => {
     cb();
@@ -75,8 +75,8 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
   });
 
   const LoadFundingHistory = {
-    loadFundingHistory: () => {},
-    loadTransferHistory: () => {}
+    loadFundingHistory: () => { },
+    loadTransferHistory: () => { }
   };
   sinon.stub(LoadFundingHistory, 'loadFundingHistory', (options, cb) => {
     cb();
@@ -94,7 +94,7 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
   });
 
   const LoadReportingHistory = {
-    loadReportingHistory: () => {}
+    loadReportingHistory: () => { }
   };
   sinon.stub(LoadReportingHistory, 'loadReportingHistory', (options, cb) => {
     cb();
@@ -105,7 +105,7 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
   });
 
   const UpdateTransactionsOldestLoadedBlock = {
-    updateTransactionsOldestLoadedBlock: () => {}
+    updateTransactionsOldestLoadedBlock: () => { }
   };
   sinon.stub(UpdateTransactionsOldestLoadedBlock, 'updateTransactionsOldestLoadedBlock', block => ({
     type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_OLDEST_LOADED_BLOCK,
@@ -113,7 +113,7 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
   }));
 
   const UpdateTransactionsLoading = {
-    updateTransactionsLoading: () => {}
+    updateTransactionsLoading: () => { }
   };
   sinon.stub(UpdateTransactionsLoading, 'updateTransactionsLoading', isLoading => ({
     type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_LOADING,
@@ -231,10 +231,6 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
           options: {}
         },
         {
-          type: MOCK_ACTION_TYPES.LOAD_TRANSFER_HISTORY,
-          options: {}
-        },
-        {
           type: MOCK_ACTION_TYPES.LOAD_CREATE_MARKET_HISTORY,
           options: {}
         },
@@ -301,13 +297,6 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
           }
         },
         {
-          type: 'LOAD_TRANSFER_HISTORY',
-          options: {
-            toBlock: 10000,
-            fromBlock: 4240
-          }
-        },
-        {
           type: 'LOAD_CREATE_MARKET_HISTORY',
           options: {
             toBlock: 10000,
@@ -338,13 +327,6 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
         },
         {
           type: 'LOAD_FUNDING_HISTORY',
-          options: {
-            toBlock: 4239,
-            fromBlock: 1
-          }
-        },
-        {
-          type: 'LOAD_TRANSFER_HISTORY',
           options: {
             toBlock: 4239,
             fromBlock: 1
@@ -519,13 +501,6 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
           },
           {
             type: MOCK_ACTION_TYPES.LOAD_FUNDING_HISTORY,
-            options: {
-              fromBlock: 1,
-              toBlock: 999
-            }
-          },
-          {
-            type: MOCK_ACTION_TYPES.LOAD_TRANSFER_HISTORY,
             options: {
               fromBlock: 1,
               toBlock: 999
