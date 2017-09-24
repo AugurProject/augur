@@ -44,7 +44,7 @@ describe('init-augur', () => {
   const mockUpdateContractAddresses = sinon.stub().returns(ACTIONS.UPDATE_CONTRACT_ADDRESSES);
   const mockUpdateFunctionsAPI = sinon.stub().returns(ACTIONS.UPDATE_FUNCTIONS_API);
   const mockUpdateEventsAPI = sinon.stub().returns(ACTIONS.UPDATE_EVENTS_API);
-  const mockBranchId = sinon.stub().returns("blah");
+  const mockBranchId = sinon.stub().returns('blah');
 
   ReWireModule.__Rewire__('updateEnv', mockUpdateEnv);
   ReWireModule.__Rewire__('updateConnectionStatus', mockUpdateConnectionStatus);
@@ -55,14 +55,15 @@ describe('init-augur', () => {
   ReWireModule.__Rewire__('registerTransactionRelay', mockRegisterTransactionRelay);
   ReWireModule.__Rewire__('setLoginAccount', mockSetLoginAccount);
   ReWireModule.__Rewire__('loadBranch', mockLoadBranch);
-  ReWireModule.__Rewire__('BRANCH_ID', mockBranchId)
+  ReWireModule.__Rewire__('BRANCH_ID', mockBranchId);
 
 
   beforeEach(() => {
     global.XMLHttpRequest = sinon.useFakeXMLHttpRequest();
-    const requests = global.requests = [];
+    global.requests = [];
+    const requests = global.requests;
 
-    global.XMLHttpRequest.onCreate = function (xhr) {
+    global.XMLHttpRequest.onCreate = (xhr) => {
       requests.push(xhr);
     };
     store.clearActions();
@@ -71,17 +72,16 @@ describe('init-augur', () => {
   afterEach(() => {
     global.XMLHttpRequest.restore();
     store.clearActions();
-    ReWireModule.__ResetDependency__('augur', 'setLoginAccount', 'registerTransactionRelay', 'loadBranch', 'updateEnv', 'updateConnectionStatus',
-      'updateAugurNodeConnectionStatus', 'updateContractAddresses', 'updateFunctionsAPI', 'updateEventsAPI', 'BRANCH_ID');
-      mockUpdateEnv.reset();
-      mockUpdateConnectionStatus.reset();
-      mockUpdateContractAddresses.reset();
-      mockUpdateFunctionsAPI.reset();
-      mockUpdateEventsAPI.reset();
-      mockUpdateAugurNodeConnectionStatus.reset();
-      mockRegisterTransactionRelay.reset();
-      mockSetLoginAccount.reset();
-      mockLoadBranch.reset();
+    ReWireModule.__ResetDependency__('augur', 'setLoginAccount', 'registerTransactionRelay', 'loadBranch', 'updateEnv', 'updateConnectionStatus', 'updateAugurNodeConnectionStatus', 'updateContractAddresses', 'updateFunctionsAPI', 'updateEventsAPI', 'BRANCH_ID');
+    mockUpdateEnv.reset();
+    mockUpdateConnectionStatus.reset();
+    mockUpdateContractAddresses.reset();
+    mockUpdateFunctionsAPI.reset();
+    mockUpdateEventsAPI.reset();
+    mockUpdateAugurNodeConnectionStatus.reset();
+    mockRegisterTransactionRelay.reset();
+    mockSetLoginAccount.reset();
+    mockLoadBranch.reset();
   });
 
   const test = (t) => {
@@ -109,8 +109,7 @@ describe('init-augur', () => {
       global.requests[0].respond(200, { contentType: 'text/json' }, `{ "reportingTest": false, "augurNodeURL":"blah.com", "autoLogin":true }`);
     },
     assertions: (err, store) => {
-      const out = [ACTIONS.UPDATE_ENV, ACTIONS.UPDATE_CONNECTION_STATUS, ACTIONS.UPDATE_CONTRACT_ADDRESSES, ACTIONS.UPDATE_FUNCTIONS_API, ACTIONS.UPDATE_EVENTS_API, ACTIONS.UPDATE_AUGUR_NODE_CONN_STATUS,
-      ACTIONS.REGISTER_TRANSACTION_RELAY, ACTIONS.SET_LOGIN_ACCOUNT, ACTIONS.LOAD_BRANCH];
+      const out = [ACTIONS.UPDATE_ENV, ACTIONS.UPDATE_CONNECTION_STATUS, ACTIONS.UPDATE_CONTRACT_ADDRESSES, ACTIONS.UPDATE_FUNCTIONS_API, ACTIONS.UPDATE_EVENTS_API, ACTIONS.UPDATE_AUGUR_NODE_CONN_STATUS, ACTIONS.REGISTER_TRANSACTION_RELAY, ACTIONS.SET_LOGIN_ACCOUNT, ACTIONS.LOAD_BRANCH];
       assert.deepEqual(err, undefined, 'no error is suppose to be');
       assert(mockUpdateEnv.calledOnce, `Didn't call updateEnv once as expected`);
       assert(mockUpdateConnectionStatus.calledOnce, `Didn't call updateConnectionStatus exactly once as expected`);
@@ -133,8 +132,7 @@ describe('init-augur', () => {
       global.requests[0].respond(200, { contentType: 'text/json' }, `{ "reportingTest": false, "autoLogin":true }`);
     },
     assertions: (err, store) => {
-      const out = [ACTIONS.UPDATE_ENV, ACTIONS.UPDATE_CONNECTION_STATUS, ACTIONS.UPDATE_CONTRACT_ADDRESSES, ACTIONS.UPDATE_FUNCTIONS_API, ACTIONS.UPDATE_EVENTS_API,
-      ACTIONS.REGISTER_TRANSACTION_RELAY, ACTIONS.SET_LOGIN_ACCOUNT, ACTIONS.LOAD_BRANCH];
+      const out = [ACTIONS.UPDATE_ENV, ACTIONS.UPDATE_CONNECTION_STATUS, ACTIONS.UPDATE_CONTRACT_ADDRESSES, ACTIONS.UPDATE_FUNCTIONS_API, ACTIONS.UPDATE_EVENTS_API, ACTIONS.REGISTER_TRANSACTION_RELAY, ACTIONS.SET_LOGIN_ACCOUNT, ACTIONS.LOAD_BRANCH];
       assert.deepEqual(err, undefined, 'no error is suppose to be');
       assert(mockUpdateEnv.calledOnce, `Didn't call updateEnv once as expected`);
       assert(mockUpdateConnectionStatus.calledOnce, `Didn't call updateConnectionStatus exactly once as expected`);
@@ -151,14 +149,14 @@ describe('init-augur', () => {
   test({
     description: 'should throw error durring initiate the augur app, augur node url is blank, only update env action fired',
     connect: (env, callback) => {
-      callback("ERROR", mainState.vitals);
+      callback('ERROR', mainState.vitals);
     },
     resolve: () => {
       global.requests[0].respond(200, { contentType: 'text/json' }, `{ "reportingTest": false, "autoLogin":true }`);
     },
     assertions: (err, store) => {
       const out = [ACTIONS.UPDATE_ENV];
-      assert.deepEqual(err, "ERROR", 'error is suppose to happen');
+      assert.deepEqual(err, 'ERROR', 'error is suppose to happen');
       assert(mockUpdateEnv.calledOnce, `Didn't call updateEnv once as expected`);
       assert(mockUpdateConnectionStatus.notCalled, `Did call updateConnectionStatus not expected`);
       assert(mockUpdateContractAddresses.notCalled, `Did call updateContractAddresses not expected`);
@@ -179,7 +177,7 @@ describe('init-augur', () => {
     },
     assertions: (err, store) => {
       const out = [];
-      assert.deepEqual(err, "Not Found", 'error is suppose to happen');
+      assert.deepEqual(err, 'Not Found', 'error is suppose to happen');
       assert(mockUpdateEnv.notCalled, `Did call updateEnv not expected`);
       assert(mockUpdateConnectionStatus.notCalled, `Did call updateConnectionStatus not expected`);
       assert(mockUpdateContractAddresses.notCalled, `Did call updateContractAddresses not expected`);
