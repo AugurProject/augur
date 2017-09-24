@@ -40,7 +40,7 @@ export function initAugur(callback = logError) {
           callback(xhttp.statusText);
         }
       }
-    }
+    };
     xhttp.open('GET', '/config/env.json', true);
     xhttp.send();
   };
