@@ -18,7 +18,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.1.13";
+  this.version = "4.1.14";
   this.options = {
     debug: {
       broadcast: false,   // broadcast debug logging in ethrpc

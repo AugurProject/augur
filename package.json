@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "4.1.13",
+  "version": "4.1.14",
   "description": "Augur JavaScript API",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -17,11 +17,11 @@
   },
   "dependencies": {
     "async": "1.5.2",
-    "augur-contracts": "3.0.1",
+    "augur-contracts": "3.1.0",
     "bignumber.js": "2.3.0",
     "clone": "1.0.2",
-    "ethereumjs-connect": "4.3.0",
-    "ethrpc": "4.2.3",
+    "ethereumjs-connect": "4.3.2",
+    "ethrpc": "4.3.0",
     "immutable-delete": "1.0.1",
     "keccak": "1.2.0",
     "keythereum": "1.0.2",

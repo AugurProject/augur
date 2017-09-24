@@ -11,9 +11,9 @@ var formatLogMessage = function (contractName, eventName, msg) {
   switch (eventName) {
     case "Approval":
       fmt = clone(msg);
-      fmt._owner = speedomatic.formatEthereumAddress(msg._owner);
-      fmt._spender = speedomatic.formatEthereumAddress(msg._spender);
-      fmt.value = speedomatic.unfix(msg.value, "string");
+      fmt.owner = speedomatic.formatEthereumAddress(msg.owner);
+      fmt.spender = speedomatic.formatEthereumAddress(msg.spender);
+      fmt.fxpValue = speedomatic.unfix(msg.fxpValue, "string");
       return fmt;
     case "CancelOrder":
       fmt = formatCommonFields(msg);
@@ -69,9 +69,9 @@ var formatLogMessage = function (contractName, eventName, msg) {
       return fmt;
     case "Transfer":
       fmt = clone(msg);
-      fmt._from = speedomatic.formatEthereumAddress(msg._from);
-      fmt._to = speedomatic.formatEthereumAddress(msg._to);
-      fmt._value = speedomatic.unfix(msg._value, "string");
+      fmt.from = speedomatic.formatEthereumAddress(msg.from);
+      fmt.to = speedomatic.formatEthereumAddress(msg.to);
+      fmt.value = speedomatic.unfix(msg.value, "string");
       return fmt;
     case "WithdrawEther":
       fmt = formatCommonFields(msg);

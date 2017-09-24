@@ -16,15 +16,15 @@ describe("format/log/format-log-message", function () {
     contractName: "ReputationToken",
     eventName: "Approval",
     msg: {
-      _owner: "0x1",
-      _spender: "0x2",
-      value: speedomatic.fix("10")
+      owner: "0x1",
+      spender: "0x2",
+      fxpValue: speedomatic.fix("10")
     },
     assertions: function (msg) {
       assert.deepEqual(msg, {
-        _owner: "0x0000000000000000000000000000000000000001",
-        _spender: "0x0000000000000000000000000000000000000002",
-        value: "10"
+        owner: "0x0000000000000000000000000000000000000001",
+        spender: "0x0000000000000000000000000000000000000002",
+        fxpValue: "10"
       });
     }
   });
@@ -164,15 +164,15 @@ describe("format/log/format-log-message", function () {
     contractName: "Cash",
     eventName: "Transfer",
     msg: {
-      _from: "3",
-      _to: "4",
-      _value: speedomatic.fix("312")
+      from: "3",
+      to: "4",
+      value: speedomatic.fix("312")
     },
     assertions: function (msg) {
       assert.deepEqual(msg, {
-        _from: "0x0000000000000000000000000000000000000003",
-        _to: "0x0000000000000000000000000000000000000004",
-        _value: "312"
+        from: "0x0000000000000000000000000000000000000003",
+        to: "0x0000000000000000000000000000000000000004",
+        value: "312"
       });
     }
   });
