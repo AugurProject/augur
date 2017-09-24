@@ -1,94 +1,194 @@
+import { initAugur, __RewireAPI__ as ReWireModule } from 'modules/app/actions/init-augur';
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
-import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import mocks from 'test/mockStore';
+import thunk from 'redux-thunk';
+import configureMockStore from 'redux-mock-store';
 
-describe(`modules/app/actions/init-augur.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
-  const { store } = mocks;
-
-  const mockAugurJS = {
-    connect: () => {}
+describe('init-augur', () => {
+  const augurNodeUrl = 'http://blah.blah.com';
+  const middleware = [thunk];
+  const mockStore = configureMockStore(middleware);
+  const mainState = {
+    env: {
+      augurNodeURL: augurNodeUrl
+    },
+    vitals: {
+      contracts: {},
+      abi: {
+        functions: {},
+        events: {}
+      },
+      coinbase: {}
+    }
   };
-  const mockSetLoginAccount = {};
-  const mockRegisterTransactionRelay = {};
-  const mockLoadChatMessages = { loadChatMessages: () => {} };
-  const mockLoadBranch = { loadBranch: () => {} };
-  const mockUserLogin = sinon.stub().returns(false);
+  const store = mockStore(mainState || {});
+  const ACTIONS = {
+    SET_LOGIN_ACCOUNT: { type: 'SET_LOGIN_ACCOUNT' },
+    REGISTER_TRANSACTION_RELAY: { type: 'REGISTER_TRANSACTION_RELAY' },
+    UPDATE_ENV: { type: 'UPDATE_ENV', env: { reportingTest: false } },
+    UPDATE_CONNECTION_STATUS: { isConnected: true, type: 'UPDATE_CONNECTION_STATUS' },
+    UPDATE_AUGUR_NODE_CONN_STATUS: { type: 'UPDATE_AUGUR_NODE_CONN_STATUS' },
+    UPDATE_CONTRACT_ADDRESSES: { type: 'UPDATE_CONTRACT_ADDRESSES' },
+    UPDATE_FUNCTIONS_API: { type: 'UPDATE_FUNCTIONS_API' },
+    UPDATE_EVENTS_API: { type: 'UPDATE_EVENTS_API' },
+    LOAD_BRANCH: { type: 'LOAD_BRANCH' }
+  };
 
-  mockLoadBranch.loadBranch = sinon.stub().returns({ type: 'LOAD_BRANCH' });
-  mockLoadChatMessages.loadChatMessages = sinon.stub().returns({ type: 'LOAD_CHAT_MESSAGES' });
+  const mockLoadBranch = sinon.stub().returns(ACTIONS.LOAD_BRANCH);
+  const mockSetLoginAccount = sinon.stub().returns(ACTIONS.SET_LOGIN_ACCOUNT);
+  const mockRegisterTransactionRelay = sinon.stub().returns(ACTIONS.REGISTER_TRANSACTION_RELAY);
+  const mockUpdateEnv = sinon.stub().returns(ACTIONS.UPDATE_ENV);
+  const mockUpdateConnectionStatus = sinon.stub().returns(ACTIONS.UPDATE_CONNECTION_STATUS);
+  const mockUpdateAugurNodeConnectionStatus = sinon.stub().returns(ACTIONS.UPDATE_AUGUR_NODE_CONN_STATUS);
+  const mockUpdateContractAddresses = sinon.stub().returns(ACTIONS.UPDATE_CONTRACT_ADDRESSES);
+  const mockUpdateFunctionsAPI = sinon.stub().returns(ACTIONS.UPDATE_FUNCTIONS_API);
+  const mockUpdateEventsAPI = sinon.stub().returns(ACTIONS.UPDATE_EVENTS_API);
+  const mockBranchId = sinon.stub().returns("blah");
 
-  sinon.stub(mockAugurJS, 'connect', (env, cb) => {
-    console.log('in connect', env);
-    cb(null, { contracts: {}, api: { functions: {}, events: {} } });
-  });
-  mockSetLoginAccount.setLoginAccount = sinon.stub().returns({
-    type: 'SET_LOGIN_ACCOUNT'
-  });
-  mockLoadChatMessages.loadChatMessages = sinon.stub().returns({
-    type: 'LOAD_CHAT_MESSAGES'
-  });
-  mockRegisterTransactionRelay.registerTransactionRelay = sinon.stub().returns({
-    type: 'REGISTER_TRANSACTION_RELAY'
-  });
+  ReWireModule.__Rewire__('updateEnv', mockUpdateEnv);
+  ReWireModule.__Rewire__('updateConnectionStatus', mockUpdateConnectionStatus);
+  ReWireModule.__Rewire__('updateContractAddresses', mockUpdateContractAddresses);
+  ReWireModule.__Rewire__('updateFunctionsAPI', mockUpdateFunctionsAPI);
+  ReWireModule.__Rewire__('updateEventsAPI', mockUpdateEventsAPI);
+  ReWireModule.__Rewire__('updateAugurNodeConnectionStatus', mockUpdateAugurNodeConnectionStatus);
+  ReWireModule.__Rewire__('registerTransactionRelay', mockRegisterTransactionRelay);
+  ReWireModule.__Rewire__('setLoginAccount', mockSetLoginAccount);
+  ReWireModule.__Rewire__('loadBranch', mockLoadBranch);
+  ReWireModule.__Rewire__('BRANCH_ID', mockBranchId)
 
-  const action = proxyquire('../../../src/modules/app/actions/init-augur.js', {
-    '../../../services/augurjs': mockAugurJS,
-    '../../auth/actions/set-login-account': mockSetLoginAccount,
-    '../../transactions/actions/register-transaction-relay': mockRegisterTransactionRelay,
-    '../../chat/actions/load-chat-messages': mockLoadChatMessages,
-    './load-branch': mockLoadBranch,
-    '../../auth/helpers/is-user-logged-in': mockUserLogin
-  });
 
   beforeEach(() => {
-    store.clearActions();
     global.XMLHttpRequest = sinon.useFakeXMLHttpRequest();
-    global.requests = [];
-    const requests = global.requests;
-    global.XMLHttpRequest.onCreate = (xhr) => {
+    const requests = global.requests = [];
+
+    global.XMLHttpRequest.onCreate = function (xhr) {
       requests.push(xhr);
     };
+    store.clearActions();
   });
 
   afterEach(() => {
     global.XMLHttpRequest.restore();
     store.clearActions();
+    ReWireModule.__ResetDependency__('augur', 'setLoginAccount', 'registerTransactionRelay', 'loadBranch', 'updateEnv', 'updateConnectionStatus',
+      'updateAugurNodeConnectionStatus', 'updateContractAddresses', 'updateFunctionsAPI', 'updateEventsAPI', 'BRANCH_ID');
+      mockUpdateEnv.reset();
+      mockUpdateConnectionStatus.reset();
+      mockUpdateContractAddresses.reset();
+      mockUpdateFunctionsAPI.reset();
+      mockUpdateEventsAPI.reset();
+      mockUpdateAugurNodeConnectionStatus.reset();
+      mockRegisterTransactionRelay.reset();
+      mockSetLoginAccount.reset();
+      mockLoadBranch.reset();
   });
 
-  it(`should initiate the augur app`, () => {
-    const out = [{ type: 'UPDATE_ENV', env: { reportingTest: false } }, {
-      isConnected: true,
-      type: 'UPDATE_CONNECTION_STATUS'
-    }, {
-      contractAddresses: {},
-      type: 'UPDATE_CONTRACT_ADDRESSES'
-    }, {
-      functionsAPI: {},
-      type: 'UPDATE_FUNCTIONS_API'
-    }, {
-      eventsAPI: {},
-      type: 'UPDATE_EVENTS_API'
-    }, {
-      type: 'REGISTER_TRANSACTION_RELAY'
-    }, {
-      type: 'LOAD_CHAT_MESSAGES'
-    }, {
-      type: 'SET_LOGIN_ACCOUNT'
-    }, {
-      type: 'LOAD_BRANCH'
-    }];
+  const test = (t) => {
+    it(t.description, (done) => {
 
-    store.dispatch(action.initAugur());
+      const mockAugurJS = {
+        connect: t.connect
+      };
+      ReWireModule.__Rewire__('augur', mockAugurJS);
 
-    global.requests[0].respond(200, { contentType: 'text/json' }, `{ "reportingTest": false }`);
+      store.dispatch(initAugur((err) => {
+        t.assertions(err, store);
+        done();
+      }));
+      t.resolve();
+    });
+  };
 
-    assert(mockAugurJS.connect.calledOnce, `Didn't call AugurJS.connect() exactly once`);
-    assert(mockRegisterTransactionRelay.registerTransactionRelay.calledOnce, `Didn't call registerTransactionRelay exactly once as expected`);
-    assert(mockSetLoginAccount.setLoginAccount.calledOnce, `Didn't call setLoginAccount exactly once as expected`);
-    assert(mockLoadChatMessages.loadChatMessages.calledOnce, `Didn't call loadChatMessages exactly once as expected`);
-    assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct action objects`);
+  test({
+    description: 'should initiate the augur app, successfully with all actions returned',
+    connect: (env, callback) => {
+      callback(null, mainState.vitals);
+    },
+    resolve: () => {
+      global.requests[0].respond(200, { contentType: 'text/json' }, `{ "reportingTest": false, "augurNodeURL":"blah.com", "autoLogin":true }`);
+    },
+    assertions: (err, store) => {
+      const out = [ACTIONS.UPDATE_ENV, ACTIONS.UPDATE_CONNECTION_STATUS, ACTIONS.UPDATE_CONTRACT_ADDRESSES, ACTIONS.UPDATE_FUNCTIONS_API, ACTIONS.UPDATE_EVENTS_API, ACTIONS.UPDATE_AUGUR_NODE_CONN_STATUS,
+      ACTIONS.REGISTER_TRANSACTION_RELAY, ACTIONS.SET_LOGIN_ACCOUNT, ACTIONS.LOAD_BRANCH];
+      assert.deepEqual(err, undefined, 'no error is suppose to be');
+      assert(mockUpdateEnv.calledOnce, `Didn't call updateEnv once as expected`);
+      assert(mockUpdateConnectionStatus.calledOnce, `Didn't call updateConnectionStatus exactly once as expected`);
+      assert(mockUpdateContractAddresses.calledOnce, `Didn't call updateContractAddresses exactly once as expected`);
+      assert(mockUpdateFunctionsAPI.calledOnce, `Didn't call updateFunctionsAPI exactly once as expected`);
+      assert(mockUpdateEventsAPI.calledOnce, `Didn't call updateEventsAPI exactly once as expected`);
+      assert(mockUpdateAugurNodeConnectionStatus.calledOnce, `Didn't call updateAugurNodeConnectionStatus exactly once as expected`);
+      assert(mockRegisterTransactionRelay.calledOnce, `Didn't call registerTransactionRelay exactly once as expected`);
+      assert(mockSetLoginAccount.calledOnce, `Didn't call setLoginAccount exactly once as expected`);
+      assert(mockLoadBranch.calledOnce, `Didn't call loadBranch exactly once as expected`);
+      assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct action objects`);
+    }
+  });
+  test({
+    description: 'should initiate the augur app, augur node url is blank, all but update augur node connect status actions fired',
+    connect: (env, callback) => {
+      callback(null, mainState.vitals);
+    },
+    resolve: () => {
+      global.requests[0].respond(200, { contentType: 'text/json' }, `{ "reportingTest": false, "autoLogin":true }`);
+    },
+    assertions: (err, store) => {
+      const out = [ACTIONS.UPDATE_ENV, ACTIONS.UPDATE_CONNECTION_STATUS, ACTIONS.UPDATE_CONTRACT_ADDRESSES, ACTIONS.UPDATE_FUNCTIONS_API, ACTIONS.UPDATE_EVENTS_API,
+      ACTIONS.REGISTER_TRANSACTION_RELAY, ACTIONS.SET_LOGIN_ACCOUNT, ACTIONS.LOAD_BRANCH];
+      assert.deepEqual(err, undefined, 'no error is suppose to be');
+      assert(mockUpdateEnv.calledOnce, `Didn't call updateEnv once as expected`);
+      assert(mockUpdateConnectionStatus.calledOnce, `Didn't call updateConnectionStatus exactly once as expected`);
+      assert(mockUpdateContractAddresses.calledOnce, `Didn't call updateContractAddresses exactly once as expected`);
+      assert(mockUpdateFunctionsAPI.calledOnce, `Didn't call updateFunctionsAPI exactly once as expected`);
+      assert(mockUpdateEventsAPI.calledOnce, `Didn't call updateEventsAPI exactly once as expected`);
+      assert(mockRegisterTransactionRelay.calledOnce, `Didn't call registerTransactionRelay exactly once as expected`);
+      assert(mockSetLoginAccount.calledOnce, `Didn't call setLoginAccount exactly once as expected`);
+      assert(mockLoadBranch.calledOnce, `Didn't call loadBranch exactly once as expected`);
+      assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct action objects`);
+    }
+  });
+
+  test({
+    description: 'should throw error durring initiate the augur app, augur node url is blank, only update env action fired',
+    connect: (env, callback) => {
+      callback("ERROR", mainState.vitals);
+    },
+    resolve: () => {
+      global.requests[0].respond(200, { contentType: 'text/json' }, `{ "reportingTest": false, "autoLogin":true }`);
+    },
+    assertions: (err, store) => {
+      const out = [ACTIONS.UPDATE_ENV];
+      assert.deepEqual(err, "ERROR", 'error is suppose to happen');
+      assert(mockUpdateEnv.calledOnce, `Didn't call updateEnv once as expected`);
+      assert(mockUpdateConnectionStatus.notCalled, `Did call updateConnectionStatus not expected`);
+      assert(mockUpdateContractAddresses.notCalled, `Did call updateContractAddresses not expected`);
+      assert(mockUpdateFunctionsAPI.notCalled, `Did call updateFunctionsAPI not expected`);
+      assert(mockUpdateEventsAPI.notCalled, `Did call updateEventsAPI not expected`);
+      assert(mockRegisterTransactionRelay.notCalled, `Did call registerTransactionRelay not expected`);
+      assert(mockSetLoginAccount.notCalled, `Did call setLoginAccount not expected`);
+      assert(mockLoadBranch.notCalled, `Did call loadBranch not expected`);
+      assert.deepEqual(store.getActions(), out, `one dispatch action object fired`);
+    }
+  });
+
+  test({
+    description: 'should not initiate the augur app, http request returns 404, no actions fired',
+    connect: null,
+    resolve: () => {
+      global.requests[0].respond(404, { contentType: 'text/json' }, `{ "reportingTest": false, "autoLogin":true }`);
+    },
+    assertions: (err, store) => {
+      const out = [];
+      assert.deepEqual(err, "Not Found", 'error is suppose to happen');
+      assert(mockUpdateEnv.notCalled, `Did call updateEnv not expected`);
+      assert(mockUpdateConnectionStatus.notCalled, `Did call updateConnectionStatus not expected`);
+      assert(mockUpdateContractAddresses.notCalled, `Did call updateContractAddresses not expected`);
+      assert(mockUpdateFunctionsAPI.notCalled, `Did call updateFunctionsAPI not expected`);
+      assert(mockUpdateEventsAPI.notCalled, `Did call updateEventsAPI not expected`);
+      assert(mockRegisterTransactionRelay.notCalled, `Did call registerTransactionRelay not expected`);
+      assert(mockSetLoginAccount.notCalled, `Did call setLoginAccount not expected`);
+      assert(mockLoadBranch.notCalled, `Did call loadBranch not expected`);
+      assert.deepEqual(store.getActions(), out, `one dispatch action object fired`);
+    }
   });
 });

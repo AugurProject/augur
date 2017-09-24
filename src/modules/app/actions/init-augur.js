@@ -16,27 +16,31 @@ export function initAugur(callback = logError) {
   return (dispatch, getState) => {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = () => {
-      if (xhttp.readyState === 4 && xhttp.status === 200) {
-        const env = JSON.parse(xhttp.responseText);
-        dispatch(updateEnv(env));
-        augur.connect(env, (err, vitals) => {
-          if (err) return callback(err);
-          dispatch(updateConnectionStatus(true));
-          dispatch(updateContractAddresses(vitals.contracts));
-          dispatch(updateFunctionsAPI(vitals.abi.functions));
-          dispatch(updateEventsAPI(vitals.abi.events));
-          if (env.augurNodeURL) {
-            // TODO ping the augur-node to make sure it's there
-            // TODO list of default augur-nodes and/or augur-node discovery process
-            dispatch(updateAugurNodeConnectionStatus(true));
-          }
-          dispatch(registerTransactionRelay());
-          dispatch(setLoginAccount(env.autoLogin, vitals.coinbase));
-          dispatch(loadBranch(env.branchID || BRANCH_ID));
-          callback();
-        });
+      if (xhttp.readyState === 4) {
+        if (xhttp.status === 200) {
+          const env = JSON.parse(xhttp.responseText);
+          dispatch(updateEnv(env));
+          augur.connect(env, (err, vitals) => {
+            if (err) return callback(err);
+            dispatch(updateConnectionStatus(true));
+            dispatch(updateContractAddresses(vitals.contracts));
+            dispatch(updateFunctionsAPI(vitals.abi.functions));
+            dispatch(updateEventsAPI(vitals.abi.events));
+            if (env.augurNodeURL) {
+              // TODO ping the augur-node to make sure it's there
+              // TODO list of default augur-nodes and/or augur-node discovery process
+              dispatch(updateAugurNodeConnectionStatus(true));
+            }
+            dispatch(registerTransactionRelay());
+            dispatch(setLoginAccount(env.autoLogin, vitals.coinbase));
+            dispatch(loadBranch(env.branchID || BRANCH_ID));
+            callback();
+          });
+        } else {
+          callback(xhttp.statusText);
+        }
       }
-    };
+    }
     xhttp.open('GET', '/config/env.json', true);
     xhttp.send();
   };
