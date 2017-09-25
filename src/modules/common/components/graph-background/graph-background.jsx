@@ -173,7 +173,7 @@ export default class GraphBG extends Component {
 
   handleWindowResize(p) {
     const width = document.body.offsetWidth
-    const height = this.refs.canvascontaineroffsetHeight
+    const height = this.refs.canvascontainer.offsetHeight
 
     this.setupScreen(p, width, height)
     this.readjustScene()
