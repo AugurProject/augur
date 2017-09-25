@@ -114,4 +114,24 @@ describe(`modules/auth/actions/login.js`, () => {
     }
   });
 
+
+  test({
+    description: `should attempt to login account is empty no address, no actions fired`,
+    base58Decode: (value) => {
+      const result = { keystore: 'blah' };
+      return result;
+    },
+    login: (value, callback) => {
+      callback(null, {});
+    },
+    assertions: (err, store) => {
+
+      const expectedOutput = [];
+      assert.deepEqual(err, {}, 'error should be null');
+      assert(updateIsLoggedStub.notCalled, 'should call updateIsLoggedStub once');
+      assert(loadAccountData.notCalled, 'should call loadAccountData once');
+      assert.deepEqual(store.getActions(), expectedOutput, `didn't login to the account correcty`);
+    }
+  });
+
 });
