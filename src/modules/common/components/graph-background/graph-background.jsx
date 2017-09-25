@@ -172,9 +172,8 @@ export default class GraphBG extends Component {
 
 
   handleWindowResize(p) {
-    const { offsetWidth, offsetHeight } = this.refs.canvascontainer
-    const width = offsetWidth
-    const height = offsetHeight
+    const width = document.body.offsetWidth
+    const height = this.refs.canvascontainer.offsetHeight
 
     this.setupScreen(p, width, height)
     this.readjustScene()
@@ -183,9 +182,8 @@ export default class GraphBG extends Component {
 
   sketch(p) {
     p.setup = () => {
-      const { offsetWidth, offsetHeight } = this.refs.canvascontainer
-      const width = offsetWidth
-      const height = offsetHeight
+      const width = document.body.offsetWidth
+      const height = this.refs.canvascontainer.offsetHeight
 
       if (this.hasWebGL) {
         p.createCanvas(width, height, P5.prototype.WEBGL)
