@@ -15,7 +15,7 @@
   justify-content: space-between;
 
   > li {
-    margin-bottom: 3.75rem;
+    margin-bottom: 3.7rem;
     width: 100%;
 
     &.field--50 {
@@ -26,11 +26,28 @@
       &:extend(.caps--small);
 
       color: @color-white;
-      display: block;
+      display: inline-block;
       margin-bottom: 0.625rem;
+      position: relative;
+
+      > span {
+        background-color: @color-purple;
+        border-radius: 3px;
+        color: @color-white;
+        left: 100%;
+        font-size: 0.625rem;
+        line-height: 0.625rem;
+        margin-left: 0.5rem;
+        padding: 0.2rem .5rem;
+        position: absolute;
+        text-transform: none;
+        top: -3px;
+        white-space: nowrap;
+      }
     }
 
     > input {
+      background-color: @color-lightergray;
       color: @color-darkpurple;
       display: block;
       font-size: 1.125rem;
