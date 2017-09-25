@@ -40,13 +40,10 @@ import { DESCRIPTION_MAX_LENGTH } from 'modules/create-market/constants/new-mark
 import Styles from 'modules/create-market/components/create-market-form/create-market-form.styles'
 
 export default class CreateMarketForm extends Component {
-  // static propTypes = {
-  //   newMarket: PropTypes.object.isRequired,
-  //   updateNewMarket: PropTypes.func.isRequired
-  // }
 
   static propTypes = {
-    category: PropTypes.string.isRequired,
+    newMarket: PropTypes.object.isRequired,
+    updateNewMarket: PropTypes.func.isRequired,
     categories: PropTypes.array.isRequired
   }
 
@@ -59,26 +56,19 @@ export default class CreateMarketForm extends Component {
     // }
 
     this.state = {
-      suggestedCategories: this.filterCategories(this.props.category),
+      suggestedCategories: this.filterCategories(this.props.newMarket.category),
       shownSuggestions: 2,
     }
 
-    // this.updateFormHeight = debounce(this.updateFormHeight.bind(this))
     // this.updateValidity = this.updateValidity.bind(this)
 
     this.filterCategories = this.filterCategories.bind(this)
   }
 
-  // componentDidMount() {
-  //   this.updateFormHeight()
-
-  //   window.addEventListener('resize', this.updateFormHeight)
-  // }
-
   componentWillReceiveProps(nextProps) {
-    if (this.props.category !== nextProps.category) {
-      this.setState({ suggestedCategories: this.filterCategories(nextProps.category) })
-      if (nextProps.category === '' || this.props.category.slice(0, 1) !== nextProps.category.slice(0, 1)) {
+    if (this.props.newMarket.category !== nextProps.newMarket.category) {
+      this.setState({ suggestedCategories: this.filterCategories(nextProps.newMarket.category) })
+      if (nextProps.newMarket.category === '' || this.props.newMarket.category.slice(0, 1) !== nextProps.newMarket.category.slice(0, 1)) {
         this.setState({ shownSuggestions: 2 })
       }
     }
@@ -118,14 +108,35 @@ export default class CreateMarketForm extends Component {
   //   }
   // }
 
-  // updateValidity(isValid, holdForUserAction = false) {
-  //   // holdForUserAction will prevent the state from adding the form part to the validated forms array until both the form is valid + the user selects 'next'
-  //   this.props.updateNewMarket({ isValid, holdForUserAction })
-  // }
+  updateValidity(isValid, holdForUserAction = false) {
+    // holdForUserAction will prevent the state from adding the form part to the validated forms array
+    // until both the form is valid + the user selects 'next'
+    this.props.updateNewMarket({ isValid, holdForUserAction })
+  }
 
   filterCategories(category) {
     const userString = category.toLowerCase()
     return this.props.categories.filter(cat => cat.topic.toLowerCase().indexOf(userString) === 0)
+  }
+
+  validateForm(description = '') {
+    const warnings = []
+
+    // Error Check
+    if (!description.length) {
+      this.props.updateValidity(false)
+    } else {
+      this.props.updateValidity(true)
+    }
+
+    // Warning Check
+    if (description.length === DESCRIPTION_MAX_LENGTH) {
+      warnings.push(`Maximum length is ${DESCRIPTION_MAX_LENGTH}`)
+    }
+
+    this.setState({ warnings })
+
+    this.props.updateNewMarket({ description })
   }
 
   render() {
@@ -148,7 +159,7 @@ export default class CreateMarketForm extends Component {
               type="text"
               placeholder="What question do you want the world to predict?"
               maxLength={DESCRIPTION_MAX_LENGTH}
-              onChange={e => p.updateState('description', e.target.value)}
+              onChange={e => p.updateNewMarket({ description: e.target.value })}
             />
           </li>
           <li className={Styles['field--50']}>
@@ -159,19 +170,19 @@ export default class CreateMarketForm extends Component {
               id="cm__input--cat"
               type="text"
               placeholder="Help users find your market by defining its category"
-              onChange={(e) => { p.updateState('category', e.target.value) }}
+              onChange={e => p.updateNewMarket({ category: e.target.value })}
             />
           </li>
           <li className={Styles['field--50']}>
             <label htmlFor="cm__suggested-categories">Suggested Categories:</label>
             <ul className={Styles['CreateMarketForm__suggested-categories']}>
-              {p.category && s.suggestedCategories.slice(0, s.shownSuggestions).map((cat, i) => (
+              {p.newMarket.category && s.suggestedCategories.slice(0, s.shownSuggestions).map((cat, i) => (
                 <li key={i}>
-                  <button onClick={() => { this.catInput.value = cat.topic; p.updateState('category', cat.topic) }}>{cat.topic}</button>
+                  <button onClick={() => { this.catInput.value = cat.topic; p.updateNewMarket({ category: cat.topic }) }}>{cat.topic}</button>
                 </li>
                 )
               )}
-              {p.category && s.suggestedCategories.length > s.shownSuggestions &&
+              {p.newMarket.category && s.suggestedCategories.length > s.shownSuggestions &&
                 <li>
                   <button onClick={() => this.setState({ shownSuggestions: s.suggestedCategories.length })}>+ {s.suggestedCategories.length - 2} more</button>
                 </li>
@@ -185,7 +196,7 @@ export default class CreateMarketForm extends Component {
               className={Styles.CreateMarketFormDesc__input}
               type="text"
               placeholder="Tag 1"
-              onChange={e => p.updateState('tag1', e.target.value)}
+              onChange={e => p.updateNewMarket({ tag1: e.target.value })}
             />
           </li>
           <li className={Styles['field--50']}>
@@ -195,7 +206,7 @@ export default class CreateMarketForm extends Component {
               className={Styles.CreateMarketFormDesc__input}
               type="text"
               placeholder="Tag 2"
-              onChange={e => p.updateState('tag2', e.target.value)}
+              onChange={e => p.updateNewMarket({ tag2: e.target.value })}
             />
           </li>
         </ul>

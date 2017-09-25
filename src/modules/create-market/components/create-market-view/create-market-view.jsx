@@ -24,7 +24,6 @@ export default class CreateMarketView extends Component {
     super(props)
 
     this.state = {
-      description: 'New Market Question',
       category: '',
       tag1: '',
       tag2: '',
@@ -68,25 +67,25 @@ export default class CreateMarketView extends Component {
             clearNewMarket={p.clearNewMarket}
           /> */}
           <CreateMarketPreview
-            description={s.description}
+            newMarket={p.newMarket}
+
             category={s.category}
             tag1={s.tag1}
             tag2={s.tag2}
 
-            newMarket={p.newMarket}
             updateNewMarket={p.updateNewMarket}
           />
           <CreateMarketForm
+            updateNewMarket={p.updateNewMarket}
+            newMarket={p.newMarket}
             updateState={(property, value) => this.setState({ [property]: value })}
             category={s.category}
             categories={p.categories}
 
             branch={p.branch}
             availableEth={p.availableEth}
-            newMarket={p.newMarket}
             addOrderToNewMarket={p.addOrderToNewMarket}
             removeOrderFromNewMarket={p.removeOrderFromNewMarket}
-            updateNewMarket={p.updateNewMarket}
             updateValidations={this.updateValidations}
             addValidationToNewMarket={p.addValidationToNewMarket}
             removeValidationFromNewMarket={p.removeValidationFromNewMarket}

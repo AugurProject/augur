@@ -34,6 +34,10 @@ export default class CreateMarketPreview extends Component {
   //   updateNewMarket: PropTypes.func.isRequired
   // };
 
+  static propTypes = {
+    newMarket: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props)
 
@@ -201,15 +205,15 @@ export default class CreateMarketPreview extends Component {
           <div className={Styles.CreateMarketPreview__tags}>
             <ul>
               <li>Categories</li>
-              <li>{p.category}</li>
+              <li>{p.newMarket.category}</li>
             </ul>
             <ul>
               <li>Tags</li>
-              <li>{p.tag1}</li>
-              <li>{p.tag2}</li>
+              <li>{p.newMarket.tag1}</li>
+              <li>{p.newMarket.tag2}</li>
             </ul>
           </div>
-          <h1>{p.description}</h1>
+          <h1>{p.newMarket.description || 'New Market Question'}</h1>
           <div className={Styles.CreateMarketPreview__outcome}>
             Outcome
           </div>
