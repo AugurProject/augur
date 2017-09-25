@@ -1,22 +1,27 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
-import Dropdown from 'modules/common/components/dropdown'
+import Dropdown from 'modules/common/components/dropdown/dropdown'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 import makeQuery from 'modules/routes/helpers/make-query'
-import getValue from 'utils/get-value'
-import isEqual from 'lodash/isEqual'
 
-import { SORT_MARKET_PARAM, SORT_MARKET_ORDER_PARAM } from 'modules/routes/constants/param-names'
+import sortByMarketParam from 'modules/filter-sort/helpers/sort-by-market-param'
+import { isEqual } from 'lodash'
+
+import { SORT_MARKET_PARAM, SORT_MARKET_ORDER_PARAM } from 'modules/filter-sort/constants/param-names'
+import * as PARAMS from 'modules/filter-sort/constants/market-sort-params'
+
+import Styles from 'modules/filter-sort/components/sort-market-param/sort-market-param.styles'
 
 export default class SortMarketParam extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     items: PropTypes.array.isRequired,
-    combinedFiltered: PropTypes.array.isRequired,
-    updateSort: PropTypes.func.isRequired
+    updateIndices: PropTypes.func.isRequired,
+    combinedFiltered: PropTypes.array
   }
 
   constructor(props) {
@@ -28,23 +33,23 @@ export default class SortMarketParam extends Component {
     this.marketSortParams = [
       {
         label: 'Volume',
-        value: 'volume'
+        value: PARAMS.MARKET_VOLUME
       },
       {
         label: 'Newest',
-        value: 'creationTime'
+        value: PARAMS.MARKET_CREATION_TIME
       },
       {
         label: 'Expiration',
-        value: 'endDate'
+        value: PARAMS.MARKET_END_DATE
       },
       {
         label: 'Taker Fee',
-        value: 'takerFeePercent'
+        value: PARAMS.MARKET_TAKER_FEE
       },
       {
         label: 'Maker Fee',
-        value: 'makerFeePercent'
+        value: PARAMS.MARKET_MAKER_FEE
       }
     ]
 
@@ -62,53 +67,34 @@ export default class SortMarketParam extends Component {
 
     const selectedSort = queryParams[SORT_MARKET_ORDER_PARAM]
     if (selectedSort) this.setState({ selectedSort: selectedSort !== 'false' })
+
+    if (!selectedMarketParam || !selectedSort) {
+      this.props.updateIndices({
+        indices: sortByMarketParam(this.state.selectedMarketParam, this.state.selectedSort, this.props.items, this.props.combinedFiltered),
+        type: SORT_MARKET_PARAM
+      })
+    }
   }
 
   componentWillUpdate(nextProps, nextState) {
-    // call respective methods
-    if (
-      this.state.selectedMarketParam !== nextState.selectedMarketParam ||
-      this.state.selectedSort !== nextState.selectedSort ||
-      !isEqual(this.props.items, nextProps.items) ||
-      !isEqual(this.props.combinedFiltered, nextProps.combinedFiltered)
-    ) {
-      this.sortByMarketParam(nextState.selectedMarketParam, nextState.selectedSort, nextProps.items, nextProps.combinedFiltered, nextProps.location)
-    }
-
     if (
       this.state.selectedMarketParam !== nextState.selectedMarketParam ||
       this.state.selectedSort !== nextState.selectedSort
     ) {
       this.updateQuery(nextState.selectedMarketParam, nextState.selectedSort, nextProps.location)
     }
-  }
 
-  sortByMarketParam(selectedMarketParam, selectedSort, items, combinedFiltered, location) {
-    const sortedItems = combinedFiltered.slice().sort((a, b) => {
-      switch (selectedMarketParam) {
-        case 'creationTime':
-        case 'endDate': {
-          if (selectedSort) {
-            return getValue(items, `${b}.${selectedMarketParam}.timestamp`) - getValue(items, `${a}.${selectedMarketParam}.timestamp`)
-          }
-
-          return getValue(items, `${a}.${selectedMarketParam}.timestamp`) - getValue(items, `${b}.${selectedMarketParam}.timestamp`)
-        }
-        case 'volume':
-        case 'takerFeePercent':
-        case 'makerFeePercent': {
-          if (selectedSort) {
-            return getValue(items, `${b}.${selectedMarketParam}.value`) - getValue(items, `${a}.${selectedMarketParam}.value`)
-          }
-
-          return getValue(items, `${a}.${selectedMarketParam}.value`) - getValue(items, `${b}.${selectedMarketParam}.value`)
-        }
-        default:
-          return 0 // No sorting
-      }
-    })
-
-    this.props.updateSort(sortedItems)
+    if (
+      !isEqual(this.props.combinedFiltered, nextProps.combinedFiltered) ||
+      !isEqual(this.props.items, nextProps.items) ||
+      this.state.selectedMarketParam !== nextState.selectedMarketParam ||
+      this.state.selectedSort !== nextState.selectedSort
+    ) {
+      this.props.updateIndices({
+        indices: sortByMarketParam(nextState.selectedMarketParam, nextState.selectedSort, nextProps.items, nextProps.combinedFiltered),
+        type: SORT_MARKET_PARAM
+      })
+    }
   }
 
   updateQuery(selectedMarketParam, selectedSort, location) {
@@ -138,19 +124,22 @@ export default class SortMarketParam extends Component {
     const s = this.state
 
     return (
-      <article className="market-sort-param companion-fields">
+      <article className={Styles.SortMarketParam}>
+        <button
+          className={Styles.SortMarketParam__order}
+          onClick={() => this.setState({ selectedSort: !s.selectedSort })}
+        >
+          {s.selectedSort ?
+            <i className={classNames(Styles.fa, Styles['fa-sort-amount-desc'])} /> :
+            <i className={classNames(Styles.fa, Styles['fa-sort-amount-asc'])} />
+          }
+        </button>
         <Dropdown
           className="companion-field"
           default={s.selectedMarketParam}
           options={this.marketSortParams}
           onChange={selectedMarketParam => this.setState({ selectedMarketParam })}
         />
-        <button
-          className="unstyled"
-          onClick={() => this.setState({ selectedSort: !s.selectedSort })}
-        >
-          {s.selectedSort ? <i className="fa fa-sort-amount-desc" /> : <i className="fa fa-sort-amount-asc" />}
-        </button>
       </article>
     )
   }

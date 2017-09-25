@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
 
-import Input from 'modules/common/components/input'
+import Input from 'modules/common/components/input/input'
 import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications'
 
 import { formatPercent } from 'utils/format-number'

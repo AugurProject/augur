@@ -1,22 +1,25 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import Dropdown from 'modules/common/components/dropdown'
+import Dropdown from 'modules/common/components/dropdown/dropdown'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 import makeQuery from 'modules/routes/helpers/make-query'
-import { isMarketDataOpen } from 'utils/is-market-data-open'
-import isEqual from 'lodash/isEqual'
 
-import { FILTER_MARKET_STATE_PARAM } from 'modules/routes/constants/param-names'
+import filterByMarketState from 'modules/filter-sort/helpers/filter-by-market-state'
+
+import { isEqual } from 'lodash'
+
+import { FILTER_MARKET_STATE_PARAM } from 'modules/filter-sort/constants/param-names'
+import * as STATES from 'modules/filter-sort/constants/market-states'
 
 export default class FilterMarketState extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     items: PropTypes.array.isRequired,
-    currentReportingPeriod: PropTypes.number.isRequired,
-    updateFilter: PropTypes.func.isRequired
+    updateIndices: PropTypes.func.isRequired,
+    currentReportingPeriod: PropTypes.number
   }
 
   constructor(props) {
@@ -25,15 +28,15 @@ export default class FilterMarketState extends Component {
     this.marketStateOptions = [
       {
         label: 'Open',
-        value: 'open'
+        value: STATES.MARKET_OPEN
       },
       {
         label: 'Reporting',
-        value: 'reporting'
+        value: STATES.MARKET_REPORTING
       },
       {
         label: 'Closed',
-        value: 'closed'
+        value: STATES.MARKET_CLOSED
       }
     ]
 
@@ -43,49 +46,36 @@ export default class FilterMarketState extends Component {
       selectedMarketState: this.defaultMarketState
     }
 
-    this.filterByMarketState = this.filterByMarketState.bind(this)
     this.updateQuery = this.updateQuery.bind(this)
   }
 
   componentWillMount() {
     const selectedMarketState = parseQuery(this.props.location.search)[FILTER_MARKET_STATE_PARAM]
-    if (selectedMarketState) this.setState({ selectedMarketState })
-    this.filterByMarketState(selectedMarketState || this.state.selectedMarketState, this.props.currentReportingPeriod, this.props.items, this.props.location)
+    if (selectedMarketState) {
+      this.setState({ selectedMarketState })
+    } else {
+      this.props.updateIndices({
+        indices: filterByMarketState(this.state.selectedMarketState, this.props.currentReportingPeriod, this.props.items),
+        type: FILTER_MARKET_STATE_PARAM
+      })
+    }
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (
-      this.state.selectedMarketState !== nextState.selectedMarketState ||
-      !isEqual(this.props.items, nextProps.items)
-    ) {
-      this.filterByMarketState(nextState.selectedMarketState, nextProps.currentReportingPeriod, nextProps.items, nextProps.location)
-    }
-
     if (this.state.selectedMarketState !== nextState.selectedMarketState) {
       this.updateQuery(nextState.selectedMarketState, nextProps.location)
+      this.props.updateIndices({
+        indices: filterByMarketState(nextState.selectedMarketState, nextProps.currentReportingPeriod, nextProps.items),
+        type: FILTER_MARKET_STATE_PARAM
+      })
     }
-  }
 
-  filterByMarketState(selectedMarketState, currentReportingPeriod, items, location) {
-    const matchedItems = items.reduce((p, market, i) => {
-      switch (selectedMarketState) {
-        case 'open':
-          if (isMarketDataOpen(market)) return [...p, i]
-          break
-        case 'reporting':
-          if (market.tradingPeriod === currentReportingPeriod) return [...p, i]
-          break
-        case 'closed':
-          if (!isMarketDataOpen(market)) return [...p, i]
-          break
-        default:
-          return p
-      }
-
-      return p
-    }, [])
-
-    this.props.updateFilter(matchedItems)
+    if (!isEqual(this.props.items, nextProps.items)) {
+      this.props.updateIndices({
+        indices: filterByMarketState(nextState.selectedMarketState, nextProps.currentReportingPeriod, nextProps.items),
+        type: FILTER_MARKET_STATE_PARAM
+      })
+    }
   }
 
   updateQuery(selectedMarketState, location) {

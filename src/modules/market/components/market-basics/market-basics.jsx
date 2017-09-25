@@ -8,7 +8,7 @@ import MarketOutcomesCategorical from 'modules/market/components/market-outcomes
 import MarketLink from 'modules/market/components/market-link/market-link'
 import MarketStatusIcon from 'modules/market/components/common/market-status-icon/market-status-icon'
 
-import toggleTag from 'utils/toggle-tag'
+import toggleTag from 'modules/routes/helpers/toggle-tag'
 
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 
@@ -20,14 +20,16 @@ const MarketBasics = p => (
     <div className={CommonStyles.MarketCommon__topcontent}>
       <div className={CommonStyles.MarketCommon__header}>
         <ul className={Styles.MarketBasics__tags}>
-          <li>Tags</li>
-          {(p.tags || []).map((tag, i) => (
+          {p.tags.length > 1 &&
+            <li>Tags</li>
+          }
+          {(p.tags || []).map((tag, i) => i !== 0 &&
             <li key={i}>
               <button onClick={() => toggleTag(tag, p.location, p.history)}>
                 {tag}
               </button>
             </li>
-          ))}
+          )}
         </ul>
         <MarketStatusIcon isOpen={p.isOpen} isReported={p.isReported} />
       </div>

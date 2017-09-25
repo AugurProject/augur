@@ -3,7 +3,11 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import BigNumber from 'bignumber.js'
 
+import { IconSearch } from 'modules/common/components/icons/icons'
+
 import debounce from 'utils/debounce'
+
+import Styles from 'modules/common/components/input/input.styles'
 
 export default class Input extends Component {
   // TODO -- Prop Validations
@@ -90,9 +94,7 @@ export default class Input extends Component {
 
     return (
       <div className={classNames('input', p.className, { 'is-incrementable': isIncrementable, 'can-toggle-visibility': canToggleVisibility })} >
-        {isSearch &&
-          <i className="fa fa-search" />
-        }
+        {isSearch && IconSearch}
         {!p.isMultiline &&
           <input
             {...p}
@@ -177,7 +179,7 @@ export default class Input extends Component {
                 }
               }}
             >
-              <i className="fa fa-angle-up" />
+              <i className={classNames(Styles.fa, Styles['fa-angle-up'])} />
             </button>
             <button
               type="button"

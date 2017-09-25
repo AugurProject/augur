@@ -14,7 +14,7 @@ import makeQuery from 'modules/routes/helpers/make-query'
 
 import Styles from 'modules/topics/components/topics-view/topics-view.styles'
 
-import { TOPIC_PARAM_NAME } from 'modules/routes/constants/param-names'
+import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 import { MARKETS } from 'modules/routes/constants/views'
 
 import { tween } from 'shifty'

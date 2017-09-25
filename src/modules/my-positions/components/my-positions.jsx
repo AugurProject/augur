@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet'
 import NullStateMessage from 'modules/common/components/null-state-message'
 import MyPositionsMarket from 'modules/my-positions/components/my-positions-market'
 import TransactionsLoadingActions from 'modules/transactions/components/transactions-loading-actions'
-import FilterSort from 'modules/filter-sort/container'
+// import FilterSort from 'modules/filter-sort/container'
 
 export default class MyPositions extends Component {
   static propTypes = {
@@ -55,17 +55,7 @@ export default class MyPositions extends Component {
             />
           </div>
         </div>
-        <FilterSort
-          locaiton={p.location}
-          history={p.history}
-          items={p.markets}
-          updateFilteredItems={filteredMarkets => this.setState({ filteredMarkets })}
-          searchPlaceholder="Search Traded Markets"
-          searchKeys={this.searchKeys}
-          filterBySearch
-          filterByMarketState
-          sortByMarketParam
-        />
+
         {s.filteredMarkets && s.filteredMarkets.length ?
           s.filteredMarkets.map(marketIndex => (
             <MyPositionsMarket
@@ -87,3 +77,15 @@ export default class MyPositions extends Component {
     )
   }
 }
+
+// <FilterSort
+//   locaiton={p.location}
+//   history={p.history}
+//   items={p.markets}
+//   updateFilteredItems={filteredMarkets => this.setState({ filteredMarkets })}
+//   searchPlaceholder="Search Traded Markets"
+//   searchKeys={this.searchKeys}
+//   filterBySearch
+//   filterByMarketState
+//   sortByMarketParam
+// />

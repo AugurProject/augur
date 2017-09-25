@@ -1,16 +1,18 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import FilterSort from 'modules/filter-sort/container'
-import classNames from 'classnames'
 
-import makePath from 'modules/routes/helpers/make-path'
+import FilterSort from 'modules/filter-sort/containers/filter-sort-controller'
+import FilterSearch from 'modules/filter-sort/containers/filter-search'
+import FilterMarketState from 'modules/filter-sort/containers/filter-market-state'
+import SortMarketParam from 'modules/filter-sort/containers/sort-market-param'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 import parsePath from 'modules/routes/helpers/parse-path'
 
-import { CREATE_MARKET, MARKETS, FAVORITES } from 'modules/routes/constants/views'
-import { TOPIC_PARAM_NAME } from 'modules/routes/constants/param-names'
+import { MARKETS, FAVORITES } from 'modules/routes/constants/views'
+import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
+
+import Styles from 'modules/markets/components/markets-header/markets-header.styles'
 
 export default class MarketsHeader extends Component {
   static propTypes = {
@@ -27,12 +29,6 @@ export default class MarketsHeader extends Component {
       capitalizeTitle: false,
       filterByMarketFavorites: false
     }
-
-    this.searchKeys = [
-      'description',
-      ['outcomes', 'name'],
-      ['tags', 'name']
-    ]
 
     this.setHeaderTitle = this.setHeaderTitle.bind(this)
     this.setPathDependentFilters = this.setPathDependentFilters.bind(this)
@@ -82,37 +78,40 @@ export default class MarketsHeader extends Component {
     const s = this.state
 
     return (
-      <article>
-        <div className="view-header markets-header">
-          <div className="view-header-group">
-            <h2 className={classNames({ capitalized: s.capitalizeTitle })}>
-              {s.headerTitle}
-            </h2>
-          </div>
-          <div className="view-header-group">
-            {p.isLogged &&
-              <Link
-                to={makePath(CREATE_MARKET)}
-                className="button imperative navigational"
-                disabled={!p.isLogged}
-              >
-                + Create New Market
-              </Link>
-            }
-          </div>
-        </div>
+      <article className={Styles.MarketsHeader}>
         <FilterSort
           items={p.markets}
           updateFilteredItems={p.updateFilteredItems}
-          filterByMarketFavorites={s.filterByMarketFavorites}
-          searchPlaceholder="Search Markets"
-          searchKeys={this.searchKeys}
-          filterBySearch
-          filterByMarketState
-          sortByMarketParam
-          filterByTags
-        />
+        >
+          <div className={Styles.MarketsHeader__search}>
+            <FilterSearch
+              searchPlaceholder="Search"
+              searchKeys={[
+                'description',
+                ['outcomes', 'name'],
+                ['tags', 'name']
+              ]}
+            />
+          </div>
+          <div className={Styles.MarketsHeader__wrapper}>
+            <h1 className={Styles.MarketsHeader__heading}>{s.headerTitle}</h1>
+            <div className={Styles.MarketsHeader__filters}>
+              <SortMarketParam />
+              <FilterMarketState />
+            </div>
+          </div>
+        </FilterSort>
       </article>
     )
   }
 }
+
+// <FilterSort
+//   items={p.markets}
+//   updateFilteredItems={p.updateFilteredItems}
+//   filterByMarketFavorites={s.filterByMarketFavorites}
+//   searchPlaceholder="Search"
+//   searchKeys={this.searchKeys}
+//   filterBySearch
+//   filterByTags
+// />

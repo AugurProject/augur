@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import Identicon from 'react-blockies'
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
 
-import Input from 'modules/common/components/input'
+import Input from 'modules/common/components/input/input'
 import AirbitzLogoIcon from 'modules/common/components/airbitz-logo-icon'
 
 export default class AccountDetails extends Component {
