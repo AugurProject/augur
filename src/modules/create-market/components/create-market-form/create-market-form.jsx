@@ -58,10 +58,12 @@ export default class CreateMarketForm extends Component {
     this.state = {
       suggestedCategories: this.filterCategories(this.props.newMarket.category),
       shownSuggestions: 2,
+      requiredFields: Array(4).fill(false)
     }
 
     // this.updateValidity = this.updateValidity.bind(this)
 
+    this.validateField = this.validateField.bind(this)
     this.filterCategories = this.filterCategories.bind(this)
   }
 
@@ -83,60 +85,42 @@ export default class CreateMarketForm extends Component {
   //       this.updateFormHeight()
   //     })
   //   }
-
-  //   if (this.props.newMarket !== nextProps.newMarket) {
-  //     this.updateFormHeight()
-  //   }
   // }
 
   // componentWillUnmount() {
   //   window.removeEventListener('resize', this.updateFormHeight)
   // }
 
-  // updateFormHeight() {
-  //   if (this.createMarketForm) {
-  //     let newHeight = 0
-
-  //     if (this.state.currentStep === 0) { // Initial form height
-  //       newHeight = this.createMarketForm.children[0].clientHeight
-  //       this.createMarketForm.style.height = `${newHeight}px`
-  //     } else {
-  //       newHeight = this.createMarketForm.getElementsByClassName('display-form-part')[0].clientHeight
-  //     }
-
-  //     this.createMarketForm.style.height = `${newHeight}px`
-  //   }
+  // updateValidity(isValid, holdForUserAction = false) {
+  //   // holdForUserAction will prevent the state from adding the form part to the validated forms array
+  //   // until both the form is valid + the user selects 'next'
+  //   this.props.updateNewMarket({ isValid, holdForUserAction })
   // }
-
-  updateValidity(isValid, holdForUserAction = false) {
-    // holdForUserAction will prevent the state from adding the form part to the validated forms array
-    // until both the form is valid + the user selects 'next'
-    this.props.updateNewMarket({ isValid, holdForUserAction })
-  }
 
   filterCategories(category) {
     const userString = category.toLowerCase()
     return this.props.categories.filter(cat => cat.topic.toLowerCase().indexOf(userString) === 0)
   }
 
-  validateForm(description = '') {
-    const warnings = []
+  validateField(fieldKey, fieldName, value) {
+    const requiredFields = this.state.requiredFields
 
-    // Error Check
-    if (!description.length) {
-      this.props.updateValidity(false)
-    } else {
-      this.props.updateValidity(true)
+    if (!value.length) {
+      requiredFields[fieldKey] = 'This field is required.'
+      this.setState({ requiredFields  })
+      return
     }
 
-    // Warning Check
-    if (description.length === DESCRIPTION_MAX_LENGTH) {
-      warnings.push(`Maximum length is ${DESCRIPTION_MAX_LENGTH}`)
+    if (value.length > DESCRIPTION_MAX_LENGTH) {
+      requiredFields[fieldKey] = `Maximum length is ${DESCRIPTION_MAX_LENGTH}`
+      this.setState({ requiredFields  })
+      return
     }
 
-    this.setState({ warnings })
+    requiredFields[fieldKey] = true
+    this.setState({ requiredFields  })
 
-    this.props.updateNewMarket({ description })
+    this.props.updateNewMarket({ [fieldName] : value })
   }
 
   render() {
@@ -153,13 +137,18 @@ export default class CreateMarketForm extends Component {
       > */}
         <ul className={Styles.CreateMarketForm__fields}>
           <li>
-            <label htmlFor="cm__input--desc">Market Question</label>
+            <label htmlFor="cm__input--desc">
+              Market Question
+              { s.requiredFields[0].length &&
+                <span className={Styles.CreateMarketForm__error}>{ s.requiredFields[0] }</span>
+              }
+            </label>
             <input
               id="cm__input--desc"
               type="text"
               placeholder="What question do you want the world to predict?"
               maxLength={DESCRIPTION_MAX_LENGTH}
-              onChange={e => p.updateNewMarket({ description: e.target.value })}
+              onChange={e => this.validateField(0, 'description', e.target.value )}
             />
           </li>
           <li className={Styles['field--50']}>
@@ -210,7 +199,7 @@ export default class CreateMarketForm extends Component {
             />
           </li>
         </ul>
-        <button className={Styles.CreateMarketForm__next} disabled>Next: Outcome</button>
+        <button className={Styles.CreateMarketForm__next} disabled={!s.requiredFields.every(field => field === true)}>Next: Outcome</button>
         {/* <CreateMarketFormDescription
           className={classNames({
             'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),

@@ -23,12 +23,6 @@ export default class CreateMarketView extends Component {
   constructor(props) {
     super(props)
 
-    this.state = {
-      category: '',
-      tag1: '',
-      tag2: '',
-    }
-
     // this.updateValidations = this.updateValidations.bind(this)
   }
 
@@ -69,17 +63,11 @@ export default class CreateMarketView extends Component {
           <CreateMarketPreview
             newMarket={p.newMarket}
 
-            category={s.category}
-            tag1={s.tag1}
-            tag2={s.tag2}
-
             updateNewMarket={p.updateNewMarket}
           />
           <CreateMarketForm
             updateNewMarket={p.updateNewMarket}
             newMarket={p.newMarket}
-            updateState={(property, value) => this.setState({ [property]: value })}
-            category={s.category}
             categories={p.categories}
 
             branch={p.branch}
