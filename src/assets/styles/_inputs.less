@@ -1,0 +1,29 @@
+label {
+  &:extend(.caps--small);
+
+  color: @color-text-light;
+  display: block;
+  margin-bottom: 0.625rem;
+}
+
+.Label--dark {
+  color: @color-text-dark;
+}
+
+input {
+  .border(true, @border-all, transparent, @border-width-2);
+
+  background-color: @color-input-background;
+  color: @color-text-dark;
+  display: block;
+  padding: 1rem 1rem 0.875rem;
+  width: 100%;
+
+  &:focus {
+    .border(true, @border-all, @color-input-border, @border-width-2);
+  }
+
+  &::placeholder {
+    color: @color-offwhite;
+  }
+}

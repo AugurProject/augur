@@ -22,7 +22,7 @@ export default function AuthCreate(p) {
   return (
     <div className={Styles.Auth}>
       <Helmet
-        titleTemplate={`Create -- %s ${TITLE_SUFFIX}`}
+        titleTemplate={`Create %s ${TITLE_SUFFIX}`}
       />
       <div className={Styles['Auth--constrained']}>
         <div className={Styles.Auth__header}>
