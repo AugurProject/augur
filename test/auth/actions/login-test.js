@@ -53,7 +53,8 @@ describe(`modules/auth/actions/login.js`, () => {
   test({
     description: `should attempt to login an account given user/pass, two actions fired`,
     base58Decode: (value) => {
-      return { keystore: 'blah' };
+      const result = { keystore: 'blah' };
+      return result;
     },
     login: (value, callback) => {
       const account = { address: '0x812e463089332df61e96b8ce663a66e61aadecd3' };
@@ -76,7 +77,8 @@ describe(`modules/auth/actions/login.js`, () => {
   test({
     description: `should attempt to login and get error, no actions fired`,
     base58Decode: (value) => {
-      return null;
+      const result = null;
+      return result;
     },
     login: (value, callback) => {
       callback();
