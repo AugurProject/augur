@@ -1,3 +1,4 @@
+button,
 .button {
   .border();
 
@@ -17,8 +18,10 @@
   text-transform: uppercase;
   transition: background-color 0.15s ease;
 
-  &.disabled {
-    background-color: @color-gray;
+  &:disabled {
+    background-color: @color-disabled;
+    color: @color-text-disabled;
+    cursor: default;
   }
 
   &.imperative {
@@ -47,7 +50,7 @@
   background-color: @color-purple;
   color: @color-white;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background-color: @color-lightpurple;
   }
 }
