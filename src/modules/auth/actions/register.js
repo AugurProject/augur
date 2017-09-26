@@ -8,7 +8,7 @@ export const register = (password, callback = logError) => dispatch => (
   augur.accounts.register({ password }, (err, account) => {
     if (err) return callback(err)
     dispatch(updateIsLoggedIn(true))
-    callback(null, base58Encode(account))
+    callback(null, account)
   })
 )
 

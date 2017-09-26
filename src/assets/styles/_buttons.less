@@ -37,6 +37,12 @@ button,
   }
 }
 
+// .button--disabled {
+//   background-color: @color-disabled;
+//   color: @color-text-disabled;
+//   cursor: default;
+// }
+
 .button--text-only {
   &:extend(.button);
 
@@ -50,8 +56,18 @@ button,
   background-color: @color-purple;
   color: @color-white;
 
-  &:hover:not(:disabled) {
+  &:hover {
     background-color: @color-lightpurple;
+  }
+}
+
+.button--disabled {
+  background-color: @color-disabled;
+  color: @color-text-disabled;
+  cursor: default;
+
+  &:hover {
+    background-color: @color-disabled;
   }
 }
 
