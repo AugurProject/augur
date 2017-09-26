@@ -1,7 +1,7 @@
 "use strict";
 
 var speedomatic = require("speedomatic");
-var formatLoggedEventInput = require("./format-logged-event-input");
+var formatLoggedEventTopic = require("./format-logged-event-topic");
 
 function formatLoggedEventInputs(loggedTopics, loggedData, abiEventInputs) {
   var decodedData = speedomatic.abiDecodeData(abiEventInputs, loggedData);
@@ -9,7 +9,7 @@ function formatLoggedEventInputs(loggedTopics, loggedData, abiEventInputs) {
   var dataIndex = 0;
   return abiEventInputs.reduce(function (p, eventInput) {
     if (eventInput.indexed) {
-      p[eventInput.name] = formatLoggedEventInput(loggedTopics[topicIndex + 1], eventInput.type);
+      p[eventInput.name] = formatLoggedEventTopic(loggedTopics[topicIndex + 1], eventInput.type);
       ++topicIndex;
     } else {
       p[eventInput.name] = decodedData[dataIndex];

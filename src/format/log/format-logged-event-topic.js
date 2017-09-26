@@ -3,12 +3,8 @@
 var BigNumber = require("bignumber.js");
 var speedomatic = require("speedomatic");
 
-function formatLoggedEventInput(unformattedValue, inputType) {
+function formatLoggedEventTopic(unformattedValue, inputType) {
   switch (inputType) {
-    case "bytes":
-      return unformattedValue;
-    case "string":
-      return speedomatic.byteArrayToUtf8String(unformattedValue);
     case "int256":
       return new BigNumber(unformattedValue, 16).toFixed();
     case "uint256":
@@ -16,7 +12,7 @@ function formatLoggedEventInput(unformattedValue, inputType) {
     case "int256[]":
     case "uint256[]":
       return unformattedValue.map(function (value) {
-        return formatLoggedEventInput(value, inputType.slice(0, -2));
+        return formatLoggedEventTopic(value, inputType.slice(0, -2));
       });
     case "address":
     case "address[]":
@@ -29,4 +25,4 @@ function formatLoggedEventInput(unformattedValue, inputType) {
   }
 }
 
-module.exports = formatLoggedEventInput;
+module.exports = formatLoggedEventTopic;
