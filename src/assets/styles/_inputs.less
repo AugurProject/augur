@@ -23,6 +23,11 @@ input {
     .border(true, @border-all, @color-input-border, @border-width-2);
   }
 
+  &:disabled {
+    background-color: @color-disabled;
+    cursor: default;
+  }
+
   &::placeholder {
     color: @color-offwhite;
   }
