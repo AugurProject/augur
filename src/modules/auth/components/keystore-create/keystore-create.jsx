@@ -5,6 +5,8 @@ import zxcvbn from 'zxcvbn'
 import Clipboard from 'clipboard'
 import classNames from 'classnames'
 
+import { Alert } from 'modules/common/components/icons/icons'
+
 import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-account-link'
 
 import Styles from 'modules/auth/components/keystore-create/keystore-create.styles'
@@ -27,8 +29,9 @@ export default class Keystore extends Component {
       keystore: null,
       isStrongPass: null,
       copiedText: false,
-      downloadAccountDataString: '',
-      downloadAccountFileName: ''
+      downloadAccountDataString: null,
+      downloadAccountFileName: null,
+      assertedCompetence: false
     }
 
     this.scorePassword = this.scorePassword.bind(this)
@@ -38,9 +41,9 @@ export default class Keystore extends Component {
     const clipboard = new Clipboard('#copy_keystore') // eslint-disable-line
 
     clipboard.on('success', () => this.setState({ copiedText: true }, () => {
-      this.timeout = setTimeout(() => {
+      this.copiedTextTimeout = setTimeout(() => {
         this.setState({ copiedText: false })
-        this.timeout = null
+        this.copiedTextTimeout = null
       }, 2000)
     }))
   }
@@ -72,15 +75,20 @@ export default class Keystore extends Component {
       !nextState.passwordsMatch
     ) {
       this.setState({
-        keystore: null
+        keystore: null,
+        downloadAccountDataString: null,
+        downloadAccountFileName: null
       })
     }
   }
 
   componentWillUnmount() {
-    if (this.timeout !== null) {
-      clearTimeout(this.timeout)
-      this.timeout = null
+    if (this.copiedTextTimeout !== null || this.downloadedTimeout !== null) {
+      clearTimeout(this.copiedTextTimeout)
+      this.copiedTextTimeout = null
+
+      clearTimeout(this.downloadedTimeout)
+      this.downloadedTimeout = null
     }
   }
 
@@ -218,6 +226,28 @@ export default class Keystore extends Component {
             }
             {s.keystoreCreationError !== null &&
               <span>{s.keystoreCreationError}</span>
+            }
+            {true &&
+              <div className={Styles.Keystore__confirmation}>
+                {Alert}
+                <span className={Styles.Keystore__emplorement}>
+                  Store your passphrase and private key in a secure place. They cannot be recovered if lost or stolen!
+                </span>
+                <div className={Styles.Keystore__confirm}>
+                  <input
+                    id="assert_competence"
+                    type="checkbox"
+                    checked={s.assertedCompetence}
+                    value={s.assertedCompetence}
+                    onChange={() => this.setState({ assertedCompetence: !s.assertedCompetence })}
+                  />
+                  <label
+                    htmlFor="assert_competence"
+                  >
+                    Accept & Connect
+                  </label>
+                </div>
+              </div>
             }
           </div>
         </div>

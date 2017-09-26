@@ -252,3 +252,31 @@ export const Metamask = (
     </g>
   </svg>
 )
+
+export const Alert = (
+  <svg id="a26f05d9-644c-4f17-afbc-46d4647e9dc7" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37.48 37.48">
+    <defs>
+      <style>
+        {`
+          .d4f2b59f-7178-4786-9bb7-fd6cf8b75d6d {
+            fill: none;
+            stroke: #fff;
+          }
+
+          .ce4ea548-02b7-4ef0-aceb-1c5c55ba77a5 {
+            fill: #fff;
+          }
+        `}
+      </style>
+    </defs>
+    <title>Alert</title>
+    <g id="77f1ff9b-fa1c-4c5c-8c21-5153f0872de8" data-name="Symbols">
+      <g id="20f98d0f-af34-46a2-9e12-54de87a1d961" data-name="Icon/Alert">
+        <g id="4d653298-4d39-40cf-88e1-0ea89eb0f0a5" data-name="Page-1">
+          <path id="c113668e-527a-4708-a6e6-731f7cebddbe" data-name="Stroke-1" className="d4f2b59f-7178-4786-9bb7-fd6cf8b75d6d" d="M18.78,2.54a1.31,1.31,0,0,1,2.41,0l8.43,16.65L38,35.84a1.6,1.6,0,0,1-1.2,2.38H3.13a1.6,1.6,0,0,1-1.2-2.38l8.42-16.65Z" transform="translate(-1.24 -1.24)" />
+          <path id="2100dda0-6ebb-4d99-bf1e-7c24d4217c99" data-name="Fill-3" className="ce4ea548-02b7-4ef0-aceb-1c5c55ba77a5" d="M20.6,27.52H19.36l-.2-11.71h1.66ZM19.12,32.1h1.72V30.17H19.12Z" transform="translate(-1.24 -1.24)" />
+        </g>
+      </g>
+    </g>
+  </svg>
+)
