@@ -1,6 +1,6 @@
 /* eslint react/no-array-index-key: 0 */  // due to potential for dup orders
 
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 // import BigNumber from 'bignumber.js'
 // import Highcharts from 'highcharts'
@@ -28,33 +28,25 @@ import PropTypes from 'prop-types'
 
 import Styles from 'modules/create-market/components/create-market-preview/create-market-preview.styles'
 
-export default class CreateMarketPreview extends Component {
+const CreateMarketPreview = p => (
   // static propTypes = {
   //   newMarket: PropTypes.object.isRequired,
   //   updateNewMarket: PropTypes.func.isRequired
   // };
 
-  static propTypes = {
-    newMarket: PropTypes.object.isRequired,
-  };
+  // constructor(props) {
+  //   super(props)
 
-  constructor(props) {
-    super(props)
+  //   this.state = {
+  //     previousStep: null,
+  //     initialLiquidity: null,
+  //     selectedOutcome: props.newMarket.outcomes[0],
+  //   }
 
-    // this.state = {
-    //   previousStep: null,
-    //   initialLiquidity: null,
-    //   selectedOutcome: props.newMarket.outcomes[0],
-    //   shouldUpdateHeight: false
-    // }
-
-    // this.shouldUpdateHeight = debounce(this.shouldUpdateHeight.bind(this))
-    // this.updatePreviewHeight = debounce(this.updatePreviewHeight.bind(this))
-    // this.updateChart = debounce(this.updateChart.bind(this))
-  }
+  //   this.updateChart = debounce(this.updateChart.bind(this))
+  // }
 
   // componentDidMount() {
-  //   this.updatePreviewHeight(this.props.newMarket.currentStep)
 
   //   this.orderBookPreviewChart = new Highcharts.Chart('order_book_preview_chart_preview', {
   //     chart: {
@@ -92,54 +84,18 @@ export default class CreateMarketPreview extends Component {
   //       enabled: false
   //     }
   //   })
-
-  //   this.shouldUpdateHeight(true)
-
-  //   window.addEventListener('resize', this.updatePreviewHeight)
   // }
 
   // componentWillReceiveProps(nextProps) {
   //   if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) this.setState({ previousStep: this.props.newMarket.currentStep })
-
-  //   // if (this.props.newMarket !== nextProps.newMarket) {
-  //   //   this.updatePreviewHeight(nextProps.newMarket.currentStep)
-  //   // }
 
   //   if (this.props.newMarket.orderBook !== nextProps.newMarket.orderBook) this.updateMarketLiquidity(nextProps.newMarket.orderBook)
   //   if (this.props.newMarket.outcomes !== nextProps.newMarket.outcomes) this.setState({ selectedOutcome: nextProps.newMarket.outcomes[0] })
   //   if (this.props.newMarket.orderBookSeries !== nextProps.newMarket.orderBookSeries) this.updateChart()
   // }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (this.state.shouldUpdateHeight && prevState.shouldUpdateHeight !== this.state.shouldUpdateHeight) {
-  //     // this.updatePreviewHeight(this.props.newMarket.currentStep)
-  //     // this.updateChart()
-  //     // this.shouldUpdateHeight(false)
-  //   }
-
   //   if (prevState.selectedOutcome !== this.state.selectedOutcome) {
   //     // this.updateChart()
-  //   }
-  // }
-
-  // componentWillUnmount() {
-  //   window.removeEventListener('resize', this.updatePreviewHeight)
-  // }
-
-  // updatePreviewHeight(step) {
-  //   if (this.marketPreview) {
-  //     let newHeight = 0
-  //     if (step) newHeight = this.marketPreview.getElementsByClassName('create-market-preview-content')[0].clientHeight + 13 // + value to accomodate padding + borders
-
-  //     if (step === 0) {
-  //       this.marketPreview.style.height = `${newHeight}px`
-  //     } else {
-  //       setTimeout(() => {
-  //         if (this.marketPreview) {
-  //           this.marketPreview.style.height = `${newHeight}px`
-  //         }
-  //       }, 1500)
-  //     }
   //   }
   // }
 
@@ -178,60 +134,53 @@ export default class CreateMarketPreview extends Component {
   //   this.setState({ initialLiquidity })
   // }
 
-  // shouldUpdateHeight(shouldUpdateHeight) {
-  //   if (this.marketPreview) {
-  //     this.setState({ shouldUpdateHeight })
-  //   }
-  // }
-
-  render() {
-    const p = this.props
+  // render() {
+    // const p = this.props
     // const s = this.state
     // const newMarket = this.props.newMarket
 
     // const bids = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${BID}`)
     // const asks = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${ASK}`)
 
-    return (
-      <article className={Styles.CreateMarketPreview}>
-        {/* <article className={Styles.CreateMarketPreview}
-          ref={(marketPreview) => { this.marketPreview = marketPreview }}
-          className={classNames('create-market-preview', {
-            'preview-is-visible': newMarket.currentStep > 0,
-            'preview-is-hidden': newMarket.currentStep === 0
-          })}
-        > */}
-        <div className={Styles.CreateMarketPreview__header}>
-          <div className={Styles.CreateMarketPreview__tags}>
-            <ul>
-              <li>Categories</li>
-              <li>{p.newMarket.category}</li>
-            </ul>
-            <ul>
-              <li>Tags</li>
-              <li>{p.newMarket.tag1}</li>
-              <li>{p.newMarket.tag2}</li>
-            </ul>
-          </div>
-          <h1>{p.newMarket.description || 'New Market Question'}</h1>
-          <div className={Styles.CreateMarketPreview__outcome}>
-            Outcome
-          </div>
-        </div>
-        <div className={Styles.CreateMarketPreview__footer}>
-          <ul className={Styles.CreateMarketPreview__meta}>
-            <li>
-              <span>Volume</span>
-            </li>
-            <li>
-              <span>Fee</span>
-            </li>
-            <li>
-              <span>Expires</span>
-            </li>
-          </ul>
-        </div>
-        {/* <div className="create-market-preview-container">
+  <article className={Styles.CreateMarketPreview}>
+    {/* <article className={Styles.CreateMarketPreview}
+      ref={(marketPreview) => { this.marketPreview = marketPreview }}
+      className={classNames('create-market-preview', {
+        'preview-is-visible': newMarket.currentStep > 0,
+        'preview-is-hidden': newMarket.currentStep === 0
+      })}
+    > */}
+    <div className={Styles.CreateMarketPreview__header}>
+      <div className={Styles.CreateMarketPreview__tags}>
+        <ul>
+          <li>Categories</li>
+          <li>{p.newMarket.category}</li>
+        </ul>
+        <ul>
+          <li>Tags</li>
+          <li>{p.newMarket.tag1}</li>
+          <li>{p.newMarket.tag2}</li>
+        </ul>
+      </div>
+      <h1>{p.newMarket.description || 'New Market Question'}</h1>
+      <div className={Styles.CreateMarketPreview__outcome}>
+        Outcome
+      </div>
+    </div>
+    <div className={Styles.CreateMarketPreview__footer}>
+      <ul className={Styles.CreateMarketPreview__meta}>
+        <li>
+          <span>Volume</span>
+        </li>
+        <li>
+          <span>Fee</span>
+        </li>
+        <li>
+          <span>Expires</span>
+        </li>
+      </ul>
+    </div>
+    {/* <div className="create-market-preview-container">
           <div className="create-market-preview-content">
             <div className="create-market-details">
               <ul className="create-market-tags">
@@ -526,7 +475,12 @@ export default class CreateMarketPreview extends Component {
             </div>
           </div>
         </div> */}
-      </article>
-    )
-  }
+  </article>
+  // }
+)
+
+CreateMarketPreview.propTypes = {
+  newMarket: PropTypes.object.isRequired,
 }
+
+export default CreateMarketPreview
