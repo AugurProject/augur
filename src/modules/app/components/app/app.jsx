@@ -104,10 +104,10 @@ export default class AppView extends Component {
 
   componentWillMount() {
     const currentPath = parsePath(this.props.location.pathname)[0]
-    const selectedCategory = parseQuery(this.props.location.search)[TOPIC_PARAM_NAME]
 
+    this.changeMenu(currentPath)
     if (currentPath === MARKETS) {
-      this.toggleMenuTween(MAIN_MENU, true)
+      const selectedCategory = parseQuery(this.props.location.search)[TOPIC_PARAM_NAME]
       if (selectedCategory) this.toggleMenuTween(SUB_MENU, true)
     }
   }
@@ -126,29 +126,50 @@ export default class AppView extends Component {
     }
 
     if (!_.isEqual(this.props.location, nextProps.location)) {
-      const lastPath = parsePath(this.props.location.pathname)[0]
-      const nextPath = parsePath(nextProps.location.pathname)[0]
+      const lastBasePath = parsePath(this.props.location.pathname)[0]
+      const nextBasePath = parsePath(nextProps.location.pathname)[0]
 
       const selectedCategory = parseQuery(nextProps.location.search)[TOPIC_PARAM_NAME]
 
-      // navigate to markets page
-      if (lastPath !== MARKETS && nextPath === MARKETS) {
-        this.toggleMenuTween(MAIN_MENU, true)
-        this.setState({ keywordState: { loaded: true, openOnLoad: false } })
+      if (lastBasePath !== nextBasePath) {
+        this.changeMenu(nextBasePath)
       }
 
-      // on markets page, new category selected
       if (nextPath === MARKETS && selectedCategory) {
         this.toggleMenuTween(SUB_MENU, true)
       }
+      // navigate to markets page
+      /*if (lastPath !== MARKETS && nextPath === MARKETS) {
+        this.toggleMenuTween(MAIN_MENU, true)
+      }
+
+      // on markets page, new category selected
 
       // navigate away from markets page
       if (lastPath === MARKETS && nextPath !== MARKETS) {
         this.toggleMenuTween(MAIN_MENU, false)
         this.toggleMenuTween(SUB_MENU, false)
-        this.setState({ keywordState: { loaded: false, openOnLoad: true } })
-      }
+      }*/
     }
+  }
+
+  changeMenu(nextBasePath) {
+    const menuExitPromise = new Promise()
+    const submenuExitPromise = new Promise()
+
+    this.toggleMenuTween(MAIN_MENU, false, () => menuExitPromise.resolve())
+    this.toggleMenuTween(SUB_MENU, false, () => submenuExitPromise.resolve())
+
+    Promise.all([menuExitPromise, submenuExitPromise], () => {
+      switch (nextBasePath) {
+        case MARKETS:
+        case PORTFOLIO:
+          this.setState({ menuDataProvider: menuDataProviders[nextBasePath] })
+          this.toggleMenuTween(MAIN_MENU, true)
+          break
+        default:
+      }
+    });
   }
 
   handleWindowResize() {
@@ -164,8 +185,6 @@ export default class AppView extends Component {
   }
 
   toggleMenuTween(menuKey, forceOpen, cb) {
-    // console.log('this.state -- ', menuKey, this.state[menuKey])
-
     if (getValue(this.state[menuKey], 'currentTween.stop')) this.state[menuKey].currentTween.stop()
 
     let nowOpen = !this.state[menuKey].open
@@ -180,32 +199,27 @@ export default class AppView extends Component {
       })
     }
 
-    const baseMenuState = { open: nowOpen }
-    const currentTween = tween({
-      from: { value: this.state[menuKey].scalar },
-      to: { value: (nowOpen ? 1 : 0) },
-      duration: 500,
-      easing: 'easeOutQuad',
-      step: (newState) => {
-        setMenuState(Object.assign({}, baseMenuState, { scalar: newState.value }))
-      }
-    }).then(
-      () => {
-        if (cb && (typeof cb) === 'function') cb()
-        setMenuState({ locked: false, currentTween: null })
-      }
-    )
-    setMenuState({ currentTween })
-  }
-
-  toggleMainMenu() {
-    const { selectedCategory } = this.props
-    if (!this.state.mainMenu.open && selectedCategory && this.state.keywordState.loaded) {
-      this.toggleMenuTween(SUB_MENU, true)
+    const closingAlreadyClosed = !nowOpen && (this.state[menuKey].scalar === 0);
+    if (closingAlreadyClosed) {
+      cb()
     } else {
-      this.toggleMenuTween(SUB_MENU, false)
+      const baseMenuState = { open: nowOpen }
+      const currentTween = tween({
+        from: { value: this.state[menuKey].scalar },
+        to: { value: (nowOpen ? 1 : 0) },
+        duration: 500,
+        easing: 'easeOutQuad',
+        step: (newState) => {
+          setMenuState(Object.assign({}, baseMenuState, { scalar: newState.value }))
+        }
+      }).then(
+        () => {
+          if (cb && (typeof cb) === 'function') cb()
+          setMenuState({ locked: false, currentTween: null })
+        }
+      )
+      setMenuState({ currentTween })
     }
-    this.toggleMenuTween(MAIN_MENU)
   }
 
   mobileMenuButtonClick() {
