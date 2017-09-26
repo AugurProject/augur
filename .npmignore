@@ -7,7 +7,7 @@ old
 lib
 test/browser
 test/core
-test/create
+test/create-market
 test/reporting
 test/trading
 test/markets

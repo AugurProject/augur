@@ -1,14 +1,12 @@
 {
   "name": "augur.js",
-  "version": "4.1.15",
+  "version": "4.1.16",
   "description": "Augur JavaScript API",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
   "main": "src/index.js",
   "scripts": {
     "test": "mocha test/unit",
-    "integration-test": "mocha test/integration/core test/integration/create test/integration/markets test/integration/trading test/integration/reporting",
-    "reporting-sequence": "mocha test/integration/reporting/sequence.js -R spec",
     "lint": "eslint src test/unit",
     "coverage-save": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit/",
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit/ --report lcovonly -- -R min && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",

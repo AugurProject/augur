@@ -5,22 +5,21 @@
 var assert = require("chai").assert;
 var proxyquire = require("proxyquire").noPreserveCache();
 
-describe("create/create-categorical-market", function () {
+describe("create-market/create-scalar-market", function () {
   var extraInfo = {
-    marketType: "categorical",
-    shortDescription: "Will this market be the One Market?",
-    longDescription: "One Market to rule them all, One Market to bind them, One Market to bring them all, and in the darkness bind them.",
-    outcomeNames: ["Yes", "Strong Yes", "Emphatic Yes"],
-    tags: ["Ancient evil", "Large flaming eyes"],
+    marketType: "scalar",
+    shortDescription: "How many drops of rain will fall on San Francisco in 2018?",
+    longDescription: "",
+    tags: ["Rainy McRainface"],
     creationTimestamp: 1234567890
   };
   var test = function (t) {
     it(t.description, function (done) {
-      var createCategoricalMarket = proxyquire("../../../src/create/create-categorical-market", {
+      var createScalarMarket = proxyquire("../../../src/create-market/create-scalar-market", {
         "./get-market-creation-cost": t.stub.getMarketCreationCost,
         "../api": t.stub.api
       });
-      createCategoricalMarket(Object.assign({}, t.params, {
+      createScalarMarket(Object.assign({}, t.params, {
         onSuccess: function (res) {
           t.params.onSuccess(res);
           done();
@@ -29,14 +28,15 @@ describe("create/create-categorical-market", function () {
     });
   };
   test({
-    description: "create a categorical market",
+    description: "create a scalar market",
     params: {
       _signer: Buffer.from("PRIVATE_KEY", "utf8"),
       _branch: "BRANCH_ADDRESS",
       _endTime: 2345678901,
-      _numOutcomes: 3,
       _feePerEthInWei: "4321",
       _denominationToken: "TOKEN_ADDRESS",
+      _minDisplayPrice: "0",
+      _maxDisplayPrice: "100000000000000000",
       _automatedReporterAddress: "AUTOMATED_REPORTER_ADDRESS",
       _topic: "TOPIC",
       _extraInfo: extraInfo,
@@ -61,13 +61,14 @@ describe("create/create-categorical-market", function () {
       api: function () {
         return {
           MarketCreation: {
-            createCategoricalMarket: function (p) {
+            createScalarMarket: function (p) {
               assert.deepEqual(p.tx, { value: "MARKET_CREATION_COST" });
               assert.strictEqual(p._branch, "BRANCH_ADDRESS");
               assert.strictEqual(p._endTime, 2345678901);
-              assert.strictEqual(p._numOutcomes, 3);
               assert.strictEqual(p._feePerEthInWei, "4321");
               assert.strictEqual(p._denominationToken, "TOKEN_ADDRESS");
+              assert.strictEqual(p._minDisplayPrice, "0x0");
+              assert.strictEqual(p._maxDisplayPrice, "0x13426172c74d822b878fe800000000");
               assert.strictEqual(p._automatedReporterAddress, "AUTOMATED_REPORTER_ADDRESS");
               assert.strictEqual(p._topic, "0x544f504943000000000000000000000000000000000000000000000000000000");
               assert.strictEqual(p._extraInfo, JSON.stringify(extraInfo));

@@ -5,20 +5,20 @@
 var assert = require("chai").assert;
 var proxyquire = require("proxyquire").noPreserveCache();
 
-describe("create/get-market-creation-cost", function () {
+describe("create-market/get-market-creation-cost-breakdown", function () {
   var test = function (t) {
     it(t.description, function (done) {
-      var getMarketCreationCost = proxyquire("../../../src/create/get-market-creation-cost", {
+      var getMarketCreationCostBreakdown = proxyquire("../../../src/create-market/get-market-creation-cost-breakdown", {
         "../api": t.stub.api
       });
-      getMarketCreationCost(t.params, function (err, marketCreationCost) {
-        t.assertions(err, marketCreationCost);
+      getMarketCreationCostBreakdown(t.params, function (err, marketCreationCostBreakdown) {
+        t.assertions(err, marketCreationCostBreakdown);
         done();
       });
     });
   };
   test({
-    description: "total market creation cost",
+    description: "market creation cost breakdown",
     params: {
       branchID: "BRANCH_ADDRESS",
       _endTime: 1234567890
@@ -36,17 +36,23 @@ describe("create/get-market-creation-cost", function () {
             }
           },
           MarketFeeCalculator: {
-            getMarketCreationCost: function (p, callback) {
+            getTargetReporterGasCosts: function (callback) {
+              callback(null, "0x10a741a462780000");
+            },
+            getValidityBond: function (p, callback) {
               assert.deepEqual(p, { _reportingWindow: "REPORTING_WINDOW_ADDRESS" });
-              callback(null, "0x3a4965bf58a40000");
+              callback(null, "0x29a2241af62c0000");
             }
           }
         };
       }
     },
-    assertions: function (err, marketCreationCost) {
+    assertions: function (err, marketCreationCostBreakdown) {
       assert.isNull(err);
-      assert.strictEqual(marketCreationCost, "4.2");
+      assert.deepEqual(marketCreationCostBreakdown, {
+        targetReporterGasCosts: "1.2",
+        validityBond: "3"
+      });
     }
   });
 });
