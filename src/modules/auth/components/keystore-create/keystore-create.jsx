@@ -3,6 +3,9 @@ import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import zxcvbn from 'zxcvbn'
 import Clipboard from 'clipboard'
+import classNames from 'classnames'
+
+import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-account-link'
 
 import Styles from 'modules/auth/components/keystore-create/keystore-create.styles'
 
@@ -23,7 +26,9 @@ export default class Keystore extends Component {
       passwordsMatch: false,
       keystore: null,
       isStrongPass: null,
-      copiedText: false
+      copiedText: false,
+      downloadAccountDataString: '',
+      downloadAccountFileName: ''
     }
 
     this.scorePassword = this.scorePassword.bind(this)
@@ -45,11 +50,20 @@ export default class Keystore extends Component {
       this.state.passwordsMatch !== nextState.passwordsMatch &&
       nextState.passwordsMatch
     ) {
-      nextProps.register(nextState.password, (err, keystore) => {
+      nextProps.register(nextState.password, (err, account) => {
         this.setState({
           keystoreCreationError: err === null ? null : err.message,
-          keystore: err === null ? JSON.stringify(keystore) : null
+          keystore: err === null ? JSON.stringify(account.keystore) : null
         })
+
+        if (err === null) {
+          const { downloadAccountDataString, downloadAccountFileName } = generateDownloadAccountLink(account.address, account.keystore, account.privateKey)
+
+          this.setState({
+            downloadAccountDataString,
+            downloadAccountFileName
+          })
+        }
       })
     }
 
@@ -106,11 +120,7 @@ export default class Keystore extends Component {
         <div className={Styles.Keystore__content}>
           <form
             className={Styles.Keystore__form}
-            onSubmit={(e) => {
-              e.preventDefault()
-
-              console.log('e --- ', e)
-            }}
+            onSubmit={e => e.preventDefault()}
           >
             <h3>We will generate a keystore that is only accessible with your passphrase.</h3>
             <div
@@ -162,19 +172,33 @@ export default class Keystore extends Component {
               { document.queryCommandSupported('copy') &&
                 <button
                   id="copy_keystore"
-                  className={Styles[`button--purple`]}
+                  className={
+                    classNames(
+                      Styles[`button--purple`],
+                      {
+                        [Styles[`button--disabled`]]: s.keystore === null
+                      }
+                    )
+                  }
                   disabled={s.keystore === null}
                   data-clipboard-text={s.keystore}
                 >
                   { s.copiedText ? 'copied' : 'copy' }
                 </button>
               }
-              <button
-                className={Styles[`button--purple`]}
-                disabled={s.keystore === null}
+              <a
+                className={
+                  classNames(Styles[`button--purple`],
+                    {
+                      [Styles[`button--disabled`]]: s.keystore === null
+                    }
+                  )
+                }
+                href={s.downloadAccountDataString}
+                download={s.downloadAccountFileName}
               >
                 download
-              </button>
+              </a>
             </div>
           </form>
           <div className={Styles.Keystore__instruction}>

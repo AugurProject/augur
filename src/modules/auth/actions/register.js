@@ -13,7 +13,7 @@ export const register = (password, callback = logError) => dispatch => (
     }
 
     dispatch(updateIsLogged(true))
-    callback(null, account.keystore)
+    callback(null, account)
   })
 )
 
