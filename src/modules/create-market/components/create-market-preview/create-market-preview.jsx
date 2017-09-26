@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import BigNumber from 'bignumber.js'
+// import BigNumber from 'bignumber.js'
 // import Highcharts from 'highcharts'
 // import classNames from 'classnames'
 

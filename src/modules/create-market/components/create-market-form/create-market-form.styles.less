@@ -9,6 +9,17 @@
   padding: 3.75rem 1.25rem 0 11.25rem;
 }
 
+.CreateMarketForm__error {
+  background-color: @color-purple;
+  border-radius: 3px;
+  color: @color-white;
+  font-size: 0.625rem;
+  line-height: 0.625rem;
+  padding: 0.2rem 0.5rem;
+  text-transform: none;
+  white-space: nowrap;
+}
+
 .CreateMarketForm__fields {
   display: flex;
   flex-wrap: wrap;
@@ -30,19 +41,8 @@
       margin-bottom: 0.625rem;
       position: relative;
 
-      > span {
-        background-color: @color-purple;
-        border-radius: 3px;
-        color: @color-white;
-        left: 100%;
-        font-size: 0.625rem;
-        line-height: 0.625rem;
-        margin-left: 0.5rem;
-        padding: 0.2rem .5rem;
-        position: absolute;
-        text-transform: none;
-        top: -3px;
-        white-space: nowrap;
+      > span:first-child {
+        margin-right: 0.5rem;
       }
     }
 
