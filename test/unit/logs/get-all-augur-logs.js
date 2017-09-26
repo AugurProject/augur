@@ -35,7 +35,7 @@ describe("logs/get-all-augur-logs", function () {
               TestEventName: {
                 inputs: [{
                   indexed: true,
-                  type: "int256",
+                  type: "bytes32",
                   name: "testEventInputIndexed"
                 }, {
                   indexed: false,
@@ -116,19 +116,19 @@ describe("logs/get-all-augur-logs", function () {
         TestContractName: {
           TestEventName: [{
             testEventInputIndexed: "0x3000000000000000000000000000000000000000000000000000000000000000",
-            testEventInputData: "0x0000000000000000000000000000000000000000000000000000000000000003",
+            testEventInputData: "0x0000000000000000000000000000000000000003",
             blockNumber: 901,
             transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000aaa",
             removed: false
           }, {
             testEventInputIndexed: "0x3000000000000000000000000000000000000000000000000000000000000000",
-            testEventInputData: "0x0000000000000000000000000000000000000000000000000000000000000002",
+            testEventInputData: "0x0000000000000000000000000000000000000002",
             blockNumber: 900,
             transactionHash: "0x00000000000000000000000000000000000000000000000000000000000000aa",
             removed: false
           }, {
             testEventInputIndexed: "0x2000000000000000000000000000000000000000000000000000000000000000",
-            testEventInputData: "0x0000000000000000000000000000000000000000000000000000000000000001",
+            testEventInputData: "0x0000000000000000000000000000000000000001",
             blockNumber: 14,
             transactionHash: "0x000000000000000000000000000000000000000000000000000000000000000a",
             removed: false

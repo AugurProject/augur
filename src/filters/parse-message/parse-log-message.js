@@ -1,46 +1,29 @@
 "use strict";
 
-var speedomatic = require("speedomatic");
+var assign = require("lodash.assign");
+var formatLoggedEventInputs = require("../../format/log/format-logged-event-inputs");
 var formatLogMessage = require("../../format/log/format-log-message");
+var isFunction = require("../../utils/is-function");
+var isObject = require("../../utils/is-object");
 
-var parseLogMessage = function (contractName, eventName, msg, inputs, onMessage) {
-  var i, parsed, topicIndex, dataIndex, topics, data;
-  if (msg) {
-    switch (msg.constructor) {
-      case Array:
-        for (i = 0; i < msg.length; ++i) {
-          parseLogMessage(contractName, eventName, msg[i], inputs, onMessage);
-        }
-        break;
-      case Object:
-        if (!msg.error && msg.topics && msg.data) {
-          parsed = {};
-          topicIndex = 0;
-          dataIndex = 0;
-          topics = msg.topics;
-          data = speedomatic.unrollArray(msg.data);
-          if (data && !Array.isArray(data)) data = [data];
-          for (i = 0; i < inputs.length; ++i) {
-            parsed[inputs[i].name] = 0;
-            if (inputs[i].indexed) {
-              parsed[inputs[i].name] = topics[topicIndex + 1];
-              ++topicIndex;
-            } else {
-              parsed[inputs[i].name] = data[dataIndex];
-              ++dataIndex;
-            }
-          }
-          parsed.blockNumber = parseInt(msg.blockNumber, 16);
-          parsed.transactionHash = msg.transactionHash;
-          parsed.removed = msg.removed;
-          if (!onMessage) return formatLogMessage(contractName, eventName, parsed);
-          onMessage(formatLogMessage(contractName, eventName, parsed));
-        }
-        break;
-      default:
-        console.warn("unknown event message:", msg);
+function parseLogMessage(contractName, eventName, message, abiEventInputs, onMessage) {
+  if (message != null) {
+    if (Array.isArray(message)) {
+      message.map(function (singleMessage) {
+        return parseLogMessage(contractName, eventName, singleMessage, abiEventInputs, onMessage);
+      });
+    } else if (isObject(message) && !message.error && message.topics && message.data) {
+      var parsedMessage = assign(formatLoggedEventInputs(message.topics, message.data, abiEventInputs), {
+        removed: message.removed,
+        transactionHash: message.transactionHash,
+        blockNumber: parseInt(message.blockNumber, 16)
+      });
+      if (!isFunction(onMessage)) return formatLogMessage(contractName, eventName, parsedMessage);
+      onMessage(formatLogMessage(contractName, eventName, parsedMessage));
+    } else {
+      throw new Error("Bad event log(s) received: " + JSON.stringify(message));
     }
   }
-};
+}
 
 module.exports = parseLogMessage;

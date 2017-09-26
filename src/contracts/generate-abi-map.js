@@ -1,6 +1,6 @@
 "use strict";
 
-var keccak256 = require("../utils/keccak256");
+var convertEventNameToSignature = require("../utils/convert-event-name-to-signature");
 
 function generateAbiMap(abi) {
   var functions = {};
@@ -43,7 +43,7 @@ function generateAbiMap(abi) {
         events[contractName][shortName] = {
           contract: contractName,
           inputs: functionOrEvent.inputs,
-          signature: "0x" + keccak256(Buffer.from(functionOrEvent.name, "utf8")).toString("hex")
+          signature: convertEventNameToSignature(functionOrEvent.name)
         };
       }
     });

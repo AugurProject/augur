@@ -7,7 +7,6 @@ module.exports = {
   noop: require("./noop"),
   pass: require("./pass"),
   roundToPrecision: require("./round-to-precision"),
-  serialize: require("./serialize"),
   sha3: require("./sha3"),
   sha256: require("./sha256"),
   unique: require("./unique")
