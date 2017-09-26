@@ -1,83 +1,12 @@
 @import '~assets/styles/shared.less';
 
-.CreateMarketForm {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  max-width: 70rem;
-  min-height: 24.75rem;
-  padding: 3.75rem 1.25rem 0 11.25rem;
-}
+.CreateMarketForm__page {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
 
-.CreateMarketForm__error {
-  background-color: @color-purple;
-  border-radius: 3px;
-  color: @color-white;
-  font-size: 0.625rem;
-  line-height: 0.625rem;
-  padding: 0.2rem 0.5rem;
-  text-transform: none;
-  white-space: nowrap;
-}
-
-.CreateMarketForm__fields {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-
-  > li {
-    margin-bottom: 3.7rem;
-    width: 100%;
-
-    &.field--50 {
-      width: 48%;
-    }
-
-    > label {
-      &:extend(.caps--small);
-
-      color: @color-white;
-      display: inline-block;
-      margin-bottom: 0.625rem;
-      position: relative;
-
-      > span:first-child {
-        margin-right: 0.5rem;
-      }
-    }
-
-    > input {
-      background-color: @color-lightergray;
-      color: @color-darkpurple;
-      display: block;
-      font-size: 1.125rem;
-      line-height: 1.125rem;
-      padding: 1rem 1rem 0.875rem;
-      width: 100%;
-
-      &::placeholder {
-        color: @color-lightgray;
-      }
-    }
-  }
-}
-
-.CreateMarketForm__next {
-  &:extend(.button--white all);
-}
-
-.CreateMarketForm__suggested-categories {
-  color: @color-white;
-  font-size: 1.125rem;
-  font-weight: 500;
-  margin-top: 1.5rem;
-
-  > li {
-    display: inline-block;
-    margin-right: 0.25rem;
-
-    &:not(:last-child)::after {
-      content: ",";
-    }
+  &.show-page {
+    opacity: 1;
+    pointer-events: auto;
   }
 }

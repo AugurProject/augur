@@ -7,7 +7,7 @@ import CreateMarketPreview from 'modules/create-market/components/create-market-
 import CreateMarketForm from 'modules/create-market/components/create-market-form/create-market-form'
 // import CreateMarketFormButtons from 'modules/create-market/components/create-market-form-buttons'
 
-import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
+// import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
 
 import Styles from 'modules/create-market/components/create-market-view/create-market-view.styles'
 
@@ -18,12 +18,6 @@ export default class CreateMarketView extends Component {
     addValidationToNewMarket: PropTypes.func.isRequired,
     removeValidationFromNewMarket: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired
-  }
-
-  constructor(props) {
-    super(props)
-
-    // this.updateValidations = this.updateValidations.bind(this)
   }
 
   // componentWillReceiveProps(nextProps) {
@@ -45,7 +39,7 @@ export default class CreateMarketView extends Component {
 
   render() {
     const p = this.props
-    const s = this.state
+    // const s = this.state
 
     return (
       <section className={Styles.CreateMarketView}>
