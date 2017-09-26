@@ -1,23 +1,54 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import zxcvbn from 'zxcvbn'
 
 import Styles from 'modules/auth/components/keystore-create/keystore-create.styles'
 
 export default class Keystore extends Component {
+  propTypes = {
+    register: PropTypes.func.isRequired
+  }
+
   constructor() {
     super()
 
     this.state = {
       password: '',
       passwordConfirm: '',
-      currentScore: null,
+      currentScore: 0,
       passwordSuggestions: [],
+      keystoreCreationError: null,
+      passwordsMatch: false,
       keystore: null,
       isStrongPass: null
     }
 
     this.scorePassword = this.scorePassword.bind(this)
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (
+      this.state.passwordsMatch !== nextState.passwordsMatch &&
+      nextState.passwordsMatch
+    ) {
+      console.log('register!')
+      nextProps.register(nextState.password, (err, keystore) => {
+        this.setState({
+          keystoreCreationError: err === null ? null : err.message,
+          keystore: err === null ? JSON.stringify(keystore) : null
+        })
+      })
+    }
+
+    if (
+      nextState.keystore !== null &&
+      !nextState.passwordsMatch
+    ) {
+      this.setState({
+        keystore: null
+      })
+    }
   }
 
   scorePassword = (password) => {
@@ -48,8 +79,6 @@ export default class Keystore extends Component {
   render() {
     const s = this.state
 
-    console.log('s -- ', s)
-
     return (
       <section className={Styles.Keystore}>
         <Helmet>
@@ -79,7 +108,11 @@ export default class Keystore extends Component {
                 value={s.password}
                 onChange={(e) => {
                   const password = e.target.value
-                  this.setState({ password })
+                  this.setState({
+                    password,
+                    passwordConfirm: '',
+                    passwordsMatch: false
+                  })
                   this.scorePassword(password)
                 }}
               />
@@ -95,10 +128,14 @@ export default class Keystore extends Component {
               <input
                 id="keyword_create_passphrase_confirm"
                 type="password"
+                value={s.passwordConfirm}
                 disabled={!s.isStrongPass}
                 onChange={(e) => {
                   const passwordConfirm = e.target.value
-                  this.setState({ passwordConfirm })
+                  this.setState({
+                    passwordConfirm,
+                    passwordsMatch: s.password === passwordConfirm
+                  })
                 }}
               />
             </div>
@@ -125,10 +162,17 @@ export default class Keystore extends Component {
                 <h3>Suggestions:</h3>
                 <ul>
                   {s.passwordSuggestions.map(suggestion => (
-                    <li>{suggestion}</li>
+                    <li
+                      key={suggestion}
+                    >
+                      {suggestion}
+                    </li>
                   ))}
                 </ul>
               </div>
+            }
+            {s.keystoreCreationError !== null &&
+              <span>{s.keystoreCreationError}</span>
             }
           </div>
         </div>
