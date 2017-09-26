@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import zxcvbn from 'zxcvbn'
+import Clipboard from 'clipboard'
 
 import Styles from 'modules/auth/components/keystore-create/keystore-create.styles'
 
@@ -21,10 +22,22 @@ export default class Keystore extends Component {
       keystoreCreationError: null,
       passwordsMatch: false,
       keystore: null,
-      isStrongPass: null
+      isStrongPass: null,
+      copiedText: false
     }
 
     this.scorePassword = this.scorePassword.bind(this)
+  }
+
+  componentDidMount() {
+    const clipboard = new Clipboard('#copy_keystore') // eslint-disable-line
+
+    clipboard.on('success', () => this.setState({ copiedText: true }, () => {
+      this.timeout = setTimeout(() => {
+        this.setState({ copiedText: false })
+        this.timeout = null
+      }, 2000)
+    }))
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -32,7 +45,6 @@ export default class Keystore extends Component {
       this.state.passwordsMatch !== nextState.passwordsMatch &&
       nextState.passwordsMatch
     ) {
-      console.log('register!')
       nextProps.register(nextState.password, (err, keystore) => {
         this.setState({
           keystoreCreationError: err === null ? null : err.message,
@@ -48,6 +60,13 @@ export default class Keystore extends Component {
       this.setState({
         keystore: null
       })
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.timeout !== null) {
+      clearTimeout(this.timeout)
+      this.timeout = null
     }
   }
 
@@ -142,10 +161,12 @@ export default class Keystore extends Component {
             <div className={Styles.Keystore__actions}>
               { document.queryCommandSupported('copy') &&
                 <button
+                  id="copy_keystore"
                   className={Styles[`button--purple`]}
                   disabled={s.keystore === null}
+                  data-clipboard-text={s.keystore}
                 >
-                  copy
+                  { s.copiedText ? 'copied' : 'copy' }
                 </button>
               }
               <button
