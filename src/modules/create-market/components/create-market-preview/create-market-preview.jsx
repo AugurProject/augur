@@ -6,6 +6,8 @@ import PropTypes from 'prop-types'
 // import Highcharts from 'highcharts'
 // import classNames from 'classnames'
 
+import { CreateMarketEdit } from 'modules/common/components/icons/icons'
+
 // import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints'
 // import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
 // import {
@@ -166,6 +168,9 @@ const CreateMarketPreview = p => (
       <div className={Styles.CreateMarketPreview__outcome}>
         Outcome
       </div>
+      <span className={Styles.CreateMarketPreview__icon}>
+        {CreateMarketEdit}
+      </span>
     </div>
     <div className={Styles.CreateMarketPreview__footer}>
       <ul className={Styles.CreateMarketPreview__meta}>
