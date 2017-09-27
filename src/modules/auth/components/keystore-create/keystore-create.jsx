@@ -5,7 +5,7 @@ import zxcvbn from 'zxcvbn'
 import Clipboard from 'clipboard'
 import classNames from 'classnames'
 
-import { Alert } from 'modules/common/components/icons/icons'
+import { Alert, CheckboxOff, CheckboxOn } from 'modules/common/components/icons/icons'
 
 import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-account-link'
 
@@ -79,6 +79,10 @@ export default class Keystore extends Component {
         downloadAccountDataString: null,
         downloadAccountFileName: null
       })
+    }
+
+    if (nextState.assertedCompetence) {
+      console.log('asserts competence');
     }
   }
 
@@ -227,7 +231,7 @@ export default class Keystore extends Component {
             {s.keystoreCreationError !== null &&
               <span>{s.keystoreCreationError}</span>
             }
-            {true &&
+            {!!s.keystore &&
               <div className={Styles.Keystore__confirmation}>
                 {Alert}
                 <span className={Styles.Keystore__emplorement}>
@@ -236,6 +240,7 @@ export default class Keystore extends Component {
                 <div className={Styles.Keystore__confirm}>
                   <input
                     id="assert_competence"
+                    className={Styles.Keystore__competence}
                     type="checkbox"
                     checked={s.assertedCompetence}
                     value={s.assertedCompetence}
@@ -244,6 +249,12 @@ export default class Keystore extends Component {
                   <label
                     htmlFor="assert_competence"
                   >
+                    <span>
+                      {s.assertedCompetence ?
+                        CheckboxOn :
+                        CheckboxOff
+                      }
+                    </span>
                     Accept & Connect
                   </label>
                 </div>
