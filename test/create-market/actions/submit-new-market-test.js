@@ -388,7 +388,9 @@ describe('modules/create-market/actions/submit-new-market', () => {
       const mockAugur = {
         create: {
           createCategoricalMarket: (createCategoricalMarket) => {
-            createCategoricalMarket.onSuccess({callReturn: '0x11111111'});
+            createCategoricalMarket.onSuccess({
+              callReturn: '0x11111111'
+            });
           }
         }
       };
