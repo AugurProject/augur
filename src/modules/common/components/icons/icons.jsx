@@ -340,3 +340,30 @@ export const CheckboxOn = (
     </g>
   </svg>
 )
+
+export const Export = (
+  <svg id="953e0014-1cef-4429-aafa-e42c291ab42f" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21.56">
+    <defs>
+      <style>
+        {`
+          .\\32 275d31d-f7ee-42a6-8027-90262a5b4750 {
+            fill: none;
+            stroke: #372e4b;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+          }
+        `}
+      </style>
+    </defs>
+    <title>Export</title>
+    <g id="ed372e3a-954b-40ff-afe2-e288566f7a6d" data-name="Symbols">
+      <g id="80e4e169-eff0-41bb-9bea-04faeddf2370" data-name="Icon/Export">
+        <g id="c8ed4e46-376e-479a-9db9-b46166ee0f07" data-name="Page-1">
+          <path id="1bdd6f72-b4f9-413d-ac0e-f8501b5edd93" data-name="Stroke-1" className="2275d31d-f7ee-42a6-8027-90262a5b4750" d="M12.12,19.52,12,2.62" transform="translate(-1 -2)" />
+          <polyline id="16a19ee2-560a-4a11-903f-2c575013af1c" data-name="Stroke-3" className="2275d31d-f7ee-42a6-8027-90262a5b4750" points="6.89 4.61 11 0.5 15.11 4.61" />
+          <polyline id="55f5846e-8998-413d-b85b-e148ec0042c5" data-name="Stroke-5" className="2275d31d-f7ee-42a6-8027-90262a5b4750" points="5.5 9.06 0.5 9.06 0.5 21.06 21.5 21.06 21.5 9.06 16.5 9.06" />
+        </g>
+      </g>
+    </g>
+  </svg>
+)
