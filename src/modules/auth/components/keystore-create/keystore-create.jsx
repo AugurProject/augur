@@ -82,7 +82,7 @@ export default class Keystore extends Component {
     }
 
     if (nextState.assertedCompetence) {
-      console.log('asserts competence');
+      console.log('asserts competence')
     }
   }
 
