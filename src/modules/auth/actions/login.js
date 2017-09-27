@@ -1,5 +1,4 @@
 import { augur } from 'services/augurjs'
-import { base58Decode } from 'utils/base-58'
 import { loadAccountData } from 'modules/auth/actions/load-account-data'
 import { updateIsLoggedIn } from 'modules/auth/actions/update-is-logged-in'
 import logError from 'utils/log-error'
