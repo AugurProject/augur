@@ -1,15 +1,13 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import BigNumber from 'bignumber.js';
 
 describe('<whatever>', () => {
   // TODO: need to add test after fee calcuation logic has been updated
-  const { calculateMaxPossibleShares, __RewireAPI__ } = require('modules/market/selectors/helpers/calculate-max-possible-shares');
+  //const { calculateMaxPossibleShares, __RewireAPI__ } = require('modules/market/selectors/helpers/calculate-max-possible-shares');
   const augur = {
     trading: {
       fees: {
         calculateFxpTradingCost: (amt, num, tradingFee, makerPropFee, range) => {
-          const fees = tradingFee;
           return {
             fee: tradingFee,
             cost: amt
@@ -23,7 +21,7 @@ describe('<whatever>', () => {
         return (fullPrecisionPrice);
       }
     }
-  }
+  };
   __RewireAPI__.__Rewire__('augur', augur);
   const test = (t) => {
     it(t.description, (done) => {

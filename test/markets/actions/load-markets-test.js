@@ -14,7 +14,7 @@ describe(`modules/markets/actions/load-markets`, () => {
       augurNodeURL: augurNodeURL
     },
     branch: { id: 'branchid' }
-  }
+  };
   const ACTIONS = {
     UPDATE_HAS_LOADED_MARKETS_TRUE: { type: 'UPDATE_HAS_LOADED_MARKETS', hasLoadedMarkets: true },
     UPDATE_HAS_LOADED_MARKETS_FALSE: { type: 'UPDATE_HAS_LOADED_MARKETS', hasLoadedMarkets: false },
@@ -52,7 +52,7 @@ describe(`modules/markets/actions/load-markets`, () => {
   test({
     description: 'should dispatch the expected two actions and history is null err',
     loadDataFromAugurNode: (url, method, options, callback) => {
-      callback(null, null)
+      callback(null, null);
     },
     assertions: (err, actions, data) => {
       const expected = [ACTIONS.UPDATE_HAS_LOADED_MARKETS_FALSE];
@@ -65,7 +65,7 @@ describe(`modules/markets/actions/load-markets`, () => {
   test({
     description: 'should dispatch the expected no actions with error from loader from augur node',
     loadDataFromAugurNode: (url, method, options, callback) => {
-      callback('ERROR', null)
+      callback('ERROR', null);
     },
     assertions: (err, actions, data) => {
       assert.deepEqual(err, 'ERROR', 'error should be ERROR');
@@ -77,7 +77,7 @@ describe(`modules/markets/actions/load-markets`, () => {
   test({
     description: 'should dispatch no actions with no error with empty marketsData',
     loadDataFromAugurNode: (url, method, options, callback) => {
-      callback(null, {})
+      callback(null, {});
     },
     assertions: (err, actions, data) => {
       const expected = [];
@@ -90,7 +90,7 @@ describe(`modules/markets/actions/load-markets`, () => {
   test({
     description: 'should dispatch the expected all actions with no error and populated marketsData',
     loadDataFromAugurNode: (url, method, options, callback) => {
-      callback(null, { key: 'key', value: 'value' })
+      callback(null, { key: 'key', value: 'value' });
     },
     assertions: (err, actions, data) => {
       const expected = [
