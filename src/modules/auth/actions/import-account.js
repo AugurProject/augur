@@ -2,9 +2,7 @@ import { augur } from 'services/augurjs'
 import { login } from 'modules/auth/actions/login'
 import logError from 'utils/log-error'
 
-export const importAccount = (password, keystore, callback = logError) => (dispatch, getState) => {
-  console.log('importAccount -- ', password, keystore, callback)
-
+export const importAccount = (password, keystore, callback = logError) => (dispatch, getState) => (
   augur.accounts.importAccount(password, keystore, (account) => {
     if (!account || !account.keystore) {
       callback(true)
@@ -13,4 +11,4 @@ export const importAccount = (password, keystore, callback = logError) => (dispa
 
     dispatch(login(keystore, password, err => callback(err)))
   })
-}
+)
