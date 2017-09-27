@@ -177,17 +177,16 @@ describe('modules/auth/actions/update-assets.js', () => {
             allAssetsLoaded.onFirstCall().returns(false)
               .onSecondCall().returns(false)
               .onThirdCall().returns(true);
+            const unfixMethod = (value, str) => { return value; }
             updateAssetsRewireAPI.__Rewire__('allAssetsLoaded', allAssetsLoaded);
             updateAssetsRewireAPI.__Rewire__('speedomatic', {
-              unfix: (value, str) => {
-                return value;
-              }
+              unfix: unfixMethod
             });
             const testValue = {
               eth: 10,
               rep: 20,
               ethTokens: 30
-            }
+            };
             updateAssetsRewireAPI.__Rewire__('augur', {
               api: {
                 Cash: {
