@@ -39,7 +39,6 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
     }
   });
 
-
   test({
     description: 'Reporting cycle is 0% complete',
     state: {
@@ -64,8 +63,6 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
       });
     }
   });
-
-
 
   test({
     description: 'Reporting cycle is 100% complete',
