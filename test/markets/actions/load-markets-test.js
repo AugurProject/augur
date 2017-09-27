@@ -7,11 +7,11 @@ import thunk from 'redux-thunk';
 
 describe(`modules/markets/actions/load-markets`, () => {
   const middlewares = [thunk];
-  const augurNodeURL = 'blah.com';
+  const augurNodeUrl = 'blah.com';
   const mockStore = configureMockStore(middlewares);
   const state = {
     env: {
-      augurNodeURL: augurNodeURL
+      augurNodeURL: augurNodeUrl
     },
     branch: { id: 'branchid' }
   };
@@ -56,7 +56,7 @@ describe(`modules/markets/actions/load-markets`, () => {
     },
     assertions: (err, actions, data) => {
       const expected = [ACTIONS.UPDATE_HAS_LOADED_MARKETS_FALSE];
-      assert.deepEqual(err, `no markets data received from ${augurNodeURL}`);
+      assert.deepEqual(err, `no markets data received from ${augurNodeUrl}`);
       assert.deepEqual(actions, expected, 'error was not handled as expected');
       assert.isUndefined(data, 'no market data provided');
     }

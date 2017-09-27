@@ -3,7 +3,8 @@ import { assert } from 'chai';
 
 describe('<whatever>', () => {
   // TODO: need to add test after fee calcuation logic has been updated
-  //const { calculateMaxPossibleShares, __RewireAPI__ } = require('modules/market/selectors/helpers/calculate-max-possible-shares');
+  /*
+  const { calculateMaxPossibleShares, __RewireAPI__ } = require('modules/market/selectors/helpers/calculate-max-possible-shares');
   const augur = {
     trading: {
       fees: {
@@ -23,6 +24,7 @@ describe('<whatever>', () => {
     }
   };
   __RewireAPI__.__Rewire__('augur', augur);
+  */
   const test = (t) => {
     it(t.description, (done) => {
       t.assertions(null);
