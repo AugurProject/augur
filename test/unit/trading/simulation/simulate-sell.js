@@ -44,7 +44,7 @@ describe("trading/simulation/simulate-sell", function () {
         gasFees: ZERO,
         otherSharesDepleted: ZERO,
         sharesDepleted: ZERO,
-        tokensDepleted: new BigNumber("1.5", 10),
+        tokensDepleted: new BigNumber("0.9", 10),
         shareBalances: [ZERO, new BigNumber("5", 10)]
       });
     }
@@ -79,7 +79,7 @@ describe("trading/simulation/simulate-sell", function () {
         gasFees: ZERO,
         otherSharesDepleted: ZERO,
         sharesDepleted: ZERO,
-        tokensDepleted: new BigNumber("1.3", 10),
+        tokensDepleted: new BigNumber("0.7", 10),
         shareBalances: [ZERO, new BigNumber("5", 10)]
       });
     }
@@ -121,7 +121,7 @@ describe("trading/simulation/simulate-sell", function () {
         gasFees: ZERO,
         otherSharesDepleted: ZERO,
         sharesDepleted: ZERO,
-        tokensDepleted: new BigNumber("1.5", 10),
+        tokensDepleted: new BigNumber("1.2", 10),
         shareBalances: [ZERO, new BigNumber("5", 10)]
       });
     }

@@ -100,7 +100,7 @@ describe("trading/simulation/simulate-trade", function () {
         gasFees: "0",
         otherSharesDepleted: "0",
         sharesDepleted: "0",
-        tokensDepleted: "1.5",
+        tokensDepleted: "0.9",
         shareBalances: ["0", "5"]
       });
     }
