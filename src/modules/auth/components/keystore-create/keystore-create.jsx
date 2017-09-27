@@ -9,11 +9,17 @@ import { Alert, CheckboxOff, CheckboxOn } from 'modules/common/components/icons/
 
 import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-account-link'
 
+import makePath from 'modules/routes/helpers/make-path'
+
+import { MARKETS } from 'modules/routes/constants/views'
+
 import Styles from 'modules/auth/components/keystore-create/keystore-create.styles'
 
 export default class Keystore extends Component {
   propTypes = {
-    register: PropTypes.func.isRequired
+    history: PropTypes.object.isRequired,
+    register: PropTypes.func.isRequired,
+    login: PropTypes.func.isRequired
   }
 
   constructor() {
@@ -81,8 +87,15 @@ export default class Keystore extends Component {
       })
     }
 
-    if (nextState.assertedCompetence) {
-      console.log('asserts competence')
+    if (
+      this.state.assertedCompetence !== nextState.assertedCompetence &&
+      nextState.assertedCompetence
+    ) {
+      nextProps.login(JSON.parse(nextState.keystore), nextState.password, (err) => {
+        if (err === null) {
+          nextProps.history.push(makePath(MARKETS))
+        }
+      })
     }
   }
 

@@ -1,7 +1,6 @@
 import { augur } from 'services/augurjs'
 import { base58Decode } from 'utils/base-58'
 import { loadAccountData } from 'modules/auth/actions/load-account-data'
-import { updateIsLogged } from 'modules/auth/actions/update-is-logged'
 import logError from 'utils/log-error'
 
 export const register = (password, callback = logError) => dispatch => (
@@ -12,7 +11,6 @@ export const register = (password, callback = logError) => dispatch => (
       return callback({ code: account.error, message: account.message })
     }
 
-    dispatch(updateIsLogged(true))
     callback(null, account)
   })
 )
