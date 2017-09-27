@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import Input from 'modules/common/components/input/input'
@@ -7,6 +8,10 @@ import makePath from 'modules/routes/helpers/make-path'
 import { DEFAULT_VIEW } from 'modules/routes/constants/views'
 
 export default class AuthImport extends Component {
+  propTypes = {
+    importAccount: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props)
 
@@ -52,13 +57,11 @@ export default class AuthImport extends Component {
         onSubmit={(e) => {
           e.preventDefault()
 
-          if (s.loginAccount && s.password) {
-            p.importAccount(s.password, s.loginAccount, (err) => {
-              if (err) {
+          if (s.keystore && s.password) {
+            this.props.importAccount(s.password, s.loginAccount, (err) => {
+              if (err !== null) {
                 return this.setState({
-                  authError: true,
-                  errorMessage: 'Account Import Failed',
-                  isAuthErrorDisplayable: true
+                  error: 'Account Import Failed'
                 })
               }
 

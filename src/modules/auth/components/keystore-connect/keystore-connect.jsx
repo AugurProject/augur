@@ -5,20 +5,17 @@ import classNames from 'classnames'
 
 import { Export } from 'modules/common/components/icons/icons'
 
-import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-account-link'
-
 import makePath from 'modules/routes/helpers/make-path'
 import trimString from 'utils/trim-string'
 
-import { MARKETS } from 'modules/routes/constants/views'
+import { DEFAULT_VIEW } from 'modules/routes/constants/views'
 
 import Styles from 'modules/auth/components/keystore-connect/keystore-connect.styles'
 
 export default class KeystoreConnect extends Component {
-  propTypes = {
+  static propTypes = {
     history: PropTypes.object.isRequired,
-    register: PropTypes.func.isRequired,
-    login: PropTypes.func.isRequired
+    importAccount: PropTypes.func.isRequired
   }
 
   constructor() {
@@ -29,13 +26,28 @@ export default class KeystoreConnect extends Component {
       password: '',
       keystore: null
     }
+
+    this.handleRecoverError = this.handleRecoverError.bind(this)
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    console.log('nextState -- ', nextState)
+  componentDidMount() {
+    // NOTE --  keythereum (as of implementation) simply throws when a private key
+    //          is unable to be recovered, so this error is handled thusly
+    window.addEventListener('error', this.handleRecoverError)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('error', this.handleRecoverError)
+  }
+
+  handleRecoverError(err) {
+    this.setState({
+      error: 'Unable to recover account from file'
+    })
   }
 
   render() {
+    const p = this.props
     const s = this.state
 
     return (
@@ -46,7 +58,24 @@ export default class KeystoreConnect extends Component {
         <div className={Styles.Keystore__content}>
           <form
             className={Styles.Keystore__form}
-            onSubmit={e => e.preventDefault()}
+            onSubmit={(e) => {
+              e.preventDefault()
+
+              if (s.keystore && s.password) {
+                console.log('keystore -- ', s.keystore)
+                p.importAccount(s.password, s.keystore, (err) => {
+                  console.log('importAccount cb -- ', err)
+
+                  if (err) {
+                    return this.setState({
+                      error: 'Account Import Failed'
+                    })
+                  }
+
+                  p.history.push(makePath(DEFAULT_VIEW))
+                })
+              }
+            }}
           >
             <div
               className={Styles.Keystore__input}
@@ -126,19 +155,22 @@ export default class KeystoreConnect extends Component {
                   classNames(
                     Styles[`button--purple`],
                     {
-                      [Styles[`button--disabled`]]: s.password !== '' || s.keystore === null
+                      [Styles[`button--disabled`]]: s.password === '' || s.keystore === null
                     }
                   )
                 }
-                disabled={s.password || s.keystore === null}
+                disabled={s.password === '' || s.keystore === null}
               >
                 connect
               </button>
             </div>
           </form>
           <div className={Styles.Keystore__instruction}>
-            {s.keystoreConnectionError !== null &&
-              <span>{s.keystoreConnectionError}</span>
+            {s.error !== null &&
+              <div>
+                <h3>Error:</h3>
+                <span>{s.error}</span>
+              </div>
             }
           </div>
         </div>

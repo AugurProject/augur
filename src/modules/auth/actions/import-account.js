@@ -1,18 +1,16 @@
 import { augur } from 'services/augurjs'
-import { base58Encode } from 'utils/base-58'
-import { loadAccountData } from 'modules/auth/actions/load-account-data'
-import { updateIsLogged } from 'modules/auth/actions/update-is-logged'
+import { login } from 'modules/auth/actions/login'
+import logError from 'utils/log-error'
 
-export const importAccount = (password, keystore, callback) => (dispatch, getState) => (
+export const importAccount = (password, keystore, callback = logError) => (dispatch, getState) => {
+  console.log('importAccount -- ', password, keystore, callback)
+
   augur.accounts.importAccount(password, keystore, (account) => {
     if (!account || !account.keystore) {
-      callback && callback(true)
+      callback(true)
       return console.error('importAccount failed:', account)
     }
 
-    dispatch(updateIsLogged(true))
-    const loginID = base58Encode(account)
-    dispatch(loadAccountData({ ...account, loginID }, true))
-    callback && callback()
+    dispatch(login(keystore, password, err => callback(err)))
   })
-)
+}
