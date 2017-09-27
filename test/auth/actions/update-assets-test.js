@@ -177,7 +177,9 @@ describe('modules/auth/actions/update-assets.js', () => {
             allAssetsLoaded.onFirstCall().returns(false)
               .onSecondCall().returns(false)
               .onThirdCall().returns(true);
-            const unfixMethod = (value, str) => { return value; }
+            const unfixMethod = (value, str) => {
+              return value;
+            };
             updateAssetsRewireAPI.__Rewire__('allAssetsLoaded', allAssetsLoaded);
             updateAssetsRewireAPI.__Rewire__('speedomatic', {
               unfix: unfixMethod
