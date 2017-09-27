@@ -62,10 +62,7 @@ export default class KeystoreConnect extends Component {
               e.preventDefault()
 
               if (s.keystore && s.password) {
-                console.log('keystore -- ', s.keystore)
                 p.importAccount(s.password, s.keystore, (err) => {
-                  console.log('importAccount cb -- ', err)
-
                   if (err) {
                     return this.setState({
                       error: 'Account Import Failed'
