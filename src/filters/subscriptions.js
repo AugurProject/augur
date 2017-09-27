@@ -18,6 +18,7 @@ module.exports.getSubscriptions = function () {
 };
 
 module.exports.addSubscription = function (contractAddress, eventSignature, token, callback) {
+  if (!subscriptions[contractAddress]) subscriptions[contractAddress] = {};
   subscriptions[contractAddress][eventSignature] = { token: token, callback: callback };
 };
 
