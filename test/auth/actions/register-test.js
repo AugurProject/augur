@@ -46,7 +46,6 @@ describe(`modules/auth/actions/register.js`, () => {
 
   it(`should register a new account`, () => {
     const expectedOutput = [
-      { type: 'update-is-logged' },
       { type: loadAccountDataTestString }
     ]
     store.dispatch(action.register('password', fakeCallback))
