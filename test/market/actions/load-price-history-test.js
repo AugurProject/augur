@@ -2,7 +2,6 @@ import { describe, it } from 'mocha';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from 'test/testState';
 import { assert } from 'chai';
 
 describe(`modules/market/actions/load-price-history.js`, () => {
@@ -26,8 +25,8 @@ describe(`modules/market/actions/load-price-history.js`, () => {
       __RewireAPI__.__Rewire__('loadDataFromAugurNode', t.loadDataFromAugurNode);
       const store = mockStore(t.state || {});
 
-      store.dispatch(loadPriceHistory(t.options, (err) => {
-        t.assertions(err, store);
+      store.dispatch(loadPriceHistory(t.options, (err, history) => {
+        t.assertions(err, store, history);
         done();
       }));
     });
@@ -52,9 +51,10 @@ describe(`modules/market/actions/load-price-history.js`, () => {
     loadDataFromAugurNode: (url, method, query, callback) => {
       callback(null, { value: 'test' });
     },
-    assertions: (err, store) => {
+    assertions: (err, store, history) => {
       assert.isNull(err, 'no error is suppose to be');
       assert.deepEqual(store.getActions(), [ACTIONS.UPDATE_PRICE_HISTORY], 'one action fired');
+      assert.deepEqual(history, { value: 'test' }, 'history should be returned');
     }
   });
 
@@ -77,9 +77,10 @@ describe(`modules/market/actions/load-price-history.js`, () => {
     loadDataFromAugurNode: (url, method, query, callback) => {
       callback('ERROR', null);
     },
-    assertions: (err, store) => {
+    assertions: (err, store, history) => {
       assert.deepEqual(err, 'ERROR', 'yes error occured');
       assert.deepEqual(store.getActions(), [], 'no actions fired');
+      assert.isUndefined(history, 'history should be undefined');
     }
   });
 
@@ -95,9 +96,10 @@ describe(`modules/market/actions/load-price-history.js`, () => {
     loadDataFromAugurNode: (url, method, query, callback) => {
       callback(null, null);
     },
-    assertions: (err, store) => {
+    assertions: (err, store, history) => {
       assert.isNull(err, 'no error is suppose to be');
       assert.deepEqual(store.getActions(), [], 'no actions fired');
+      assert.isUndefined(history, 'history should be undefined');
     }
   });
 
@@ -120,9 +122,10 @@ describe(`modules/market/actions/load-price-history.js`, () => {
     loadDataFromAugurNode: (url, method, query, callback) => {
       callback(null, null);
     },
-    assertions: (err, store) => {
+    assertions: (err, store, history) => {
       assert.deepEqual(err, 'no price history data received from blah.com', 'yes error occured');
       assert.deepEqual(store.getActions(), [], 'no actions fired');
+      assert.isUndefined(history, 'history should be undefined');
     }
   });
 
