@@ -4,13 +4,15 @@ var BigNumber = require("bignumber.js");
 var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
+var calculateCreatorSettlementFee = require("./calculate-creator-settlement-fee");
 
-function simulateMakeAskOrder(numShares, price, maxPrice, outcome, shareBalances) {
+function simulateMakeAskOrder(numShares, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances) {
   var numOutcomes = shareBalances.length;
   if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
   if (numShares.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
   if (price.gt(maxPrice)) throw new Error("Price is above the maximum price");
   var gasFees = ZERO;
+  var worstCaseFees = ZERO;
   var tokensEscrowed = ZERO;
   var sharesEscrowed = ZERO;
   if (shareBalances[outcome].gt(ZERO)) {
@@ -19,8 +21,10 @@ function simulateMakeAskOrder(numShares, price, maxPrice, outcome, shareBalances
     shareBalances[outcome] = shareBalances[outcome].minus(sharesEscrowed);
   }
   if (numShares.gt(ZERO)) tokensEscrowed = numShares.times(maxPrice.minus(price));
+  if (sharesEscrowed.gt(ZERO)) worstCaseFees = calculateCreatorSettlementFee(sharesEscrowed, marketCreatorFeeRate, maxPrice.minus(minPrice), shouldCollectReportingFees, reportingFeeRate, price);
   return {
     gasFees: gasFees,
+    worstCaseFees: worstCaseFees,
     sharesDepleted: sharesEscrowed,
     tokensDepleted: tokensEscrowed,
     shareBalances: shareBalances

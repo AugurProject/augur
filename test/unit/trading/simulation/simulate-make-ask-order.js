@@ -13,7 +13,7 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     it(t.description, function () {
       var output;
       try {
-        output = simulateMakeAskOrder(t.params.numShares, t.params.price, t.params.maxPrice, t.params.outcome, t.params.shareBalances);
+        output = simulateMakeAskOrder(t.params.numShares, t.params.price, t.params.minPrice, t.params.maxPrice, t.params.marketCreatorFeeRate, t.params.reportingFeeRate, t.params.shouldCollectReportingFees, t.params.outcome, t.params.shareBalances);
       } catch (exc) {
         output = exc;
       }
@@ -25,6 +25,7 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     params: {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("0.6", 10),
+      minPrice: ZERO,
       maxPrice: new BigNumber("1", 10),
       outcome: 0,
       shareBalances: [ZERO, ZERO]
@@ -32,6 +33,7 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
+        worstCaseFees: ZERO,
         sharesDepleted: ZERO,
         tokensDepleted: new BigNumber("0.8", 10),
         shareBalances: [ZERO, ZERO]
@@ -43,6 +45,7 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     params: {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("0.6", 10),
+      minPrice: ZERO,
       maxPrice: new BigNumber("5", 10),
       outcome: 0,
       shareBalances: [ZERO, new BigNumber("4", 10)]
@@ -61,6 +64,7 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     params: {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("0.6", 10),
+      minPrice: ZERO,
       maxPrice: new BigNumber("5", 10),
       outcome: 0,
       shareBalances: [new BigNumber("3", 10), ZERO]
@@ -68,6 +72,7 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
+        worstCaseFees: ZERO,
         sharesDepleted: new BigNumber("2", 10),
         tokensDepleted: ZERO,
         shareBalances: [new BigNumber("1", 10), ZERO]
@@ -79,6 +84,7 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     params: {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("0.6", 10),
+      minPrice: ZERO,
       maxPrice: new BigNumber("5", 10),
       outcome: 0,
       shareBalances: [new BigNumber("1", 10), ZERO]
@@ -86,6 +92,7 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
+        worstCaseFees: ZERO,
         sharesDepleted: new BigNumber("1", 10),
         tokensDepleted: new BigNumber("4.4", 10),
         shareBalances: [ZERO, ZERO]
@@ -97,6 +104,7 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     params: {
       numShares: new BigNumber("1.9", 10),
       price: new BigNumber("-2.6", 10),
+      minPrice: ZERO,
       maxPrice: new BigNumber("-2.1", 10),
       outcome: 0,
       shareBalances: [new BigNumber("1.2", 10), new BigNumber("3.3", 10)]
@@ -104,6 +112,7 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
+        worstCaseFees: ZERO,
         sharesDepleted: new BigNumber("1.2", 10),
         tokensDepleted: new BigNumber("0.35", 10),
         shareBalances: [ZERO, new BigNumber("3.3", 10)]
@@ -115,6 +124,7 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     params: {
       numShares: ZERO,
       price: new BigNumber("0.6", 10),
+      minPrice: ZERO,
       maxPrice: new BigNumber("5", 10),
       outcome: 0,
       shareBalances: [new BigNumber("1", 10), ZERO]
@@ -128,6 +138,7 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     params: {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("5.1", 10),
+      minPrice: ZERO,
       maxPrice: new BigNumber("5", 10),
       outcome: 0,
       shareBalances: [new BigNumber("1", 10), ZERO]

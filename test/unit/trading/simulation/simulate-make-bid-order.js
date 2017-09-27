@@ -13,7 +13,7 @@ describe("trading/simulation/simulate-make-bid-order", function () {
     it(t.description, function () {
       var output;
       try {
-        output = simulateMakeBidOrder(t.params.numShares, t.params.price, t.params.minPrice, t.params.outcome, t.params.shareBalances);
+        output = simulateMakeBidOrder(t.params.numShares, t.params.price, t.params.minPrice, t.params.maxPrice, t.params.marketCreatorFeeRate, t.params.reportingFeeRate, t.params.shouldCollectReportingFees, t.params.outcome, t.params.shareBalances);
       } catch (exc) {
         output = exc;
       }
@@ -26,6 +26,7 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("0.6", 10),
       minPrice: ZERO,
+      maxPrice: new BigNumber("1", 10),
       outcome: 1,
       shareBalances: [ZERO, ZERO]
     },
@@ -44,6 +45,7 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("7.6", 10),
       minPrice: new BigNumber("7", 10),
+      maxPrice: new BigNumber("10", 10),
       outcome: 1,
       shareBalances: [ZERO, ZERO]
     },
@@ -62,6 +64,7 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("7.6", 10),
       minPrice: new BigNumber("7", 10),
+      maxPrice: new BigNumber("10", 10),
       outcome: 0,
       shareBalances: [new BigNumber("3", 10), ZERO]
     },
@@ -80,6 +83,7 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("7.6", 10),
       minPrice: new BigNumber("7", 10),
+      maxPrice: new BigNumber("10", 10),
       outcome: 0,
       shareBalances: [new BigNumber("3", 10), new BigNumber("4", 10)]
     },
@@ -98,6 +102,7 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("7.6", 10),
       minPrice: new BigNumber("7", 10),
+      maxPrice: new BigNumber("10", 10),
       outcome: 1,
       shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
     },
@@ -116,6 +121,7 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("7.6", 10),
       minPrice: new BigNumber("7", 10),
+      maxPrice: new BigNumber("10", 10),
       outcome: 1,
       shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10), new BigNumber("4", 10), new BigNumber("1.2", 10)]
     },
@@ -134,6 +140,7 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       numShares: new BigNumber("2.4", 10),
       price: new BigNumber("7.6", 10),
       minPrice: new BigNumber("6.9", 10),
+      maxPrice: new BigNumber("10", 10),
       outcome: 0,
       shareBalances: [new BigNumber("3.1", 10), new BigNumber("1.2", 10)]
     },
@@ -152,6 +159,7 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       numShares: ZERO,
       price: new BigNumber("7.6", 10),
       minPrice: new BigNumber("7", 10),
+      maxPrice: new BigNumber("10", 10),
       outcome: 0,
       shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
     },
@@ -165,6 +173,7 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("6", 10),
       minPrice: new BigNumber("7", 10),
+      maxPrice: new BigNumber("10", 10),
       outcome: 0,
       shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
     },
@@ -178,6 +187,7 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("6", 10),
       minPrice: new BigNumber("7", 10),
+      maxPrice: new BigNumber("10", 10),
       outcome: -1,
       shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
     },
@@ -191,6 +201,7 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("6", 10),
       minPrice: new BigNumber("7", 10),
+      maxPrice: new BigNumber("10", 10),
       outcome: 2,
       shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
     },
