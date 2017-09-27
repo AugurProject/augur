@@ -37,5 +37,5 @@ describe('<whatever>', () => {
     assertions: (result) => {
       assert.deepEqual(true, true, 'need better test');
     }
-  })
+  });
 });
