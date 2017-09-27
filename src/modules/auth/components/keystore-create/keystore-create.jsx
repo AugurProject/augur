@@ -16,7 +16,7 @@ import { MARKETS } from 'modules/routes/constants/views'
 import Styles from 'modules/auth/components/keystore-create/keystore-create.styles'
 
 export default class KeystoreCreate extends Component {
-  propTypes = {
+  static propTypes = {
     history: PropTypes.object.isRequired,
     register: PropTypes.func.isRequired,
     login: PropTypes.func.isRequired
