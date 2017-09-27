@@ -14,8 +14,10 @@ function parseLogMessage(contractName, eventName, message, abiEventInputs, onMes
       });
     } else if (isObject(message) && !message.error && message.topics && message.data) {
       var parsedMessage = assign(formatLoggedEventInputs(message.topics, message.data, abiEventInputs), {
+        address: message.address,
         removed: message.removed,
         transactionHash: message.transactionHash,
+        logIndex: parseInt(message.logIndex, 16),
         blockNumber: parseInt(message.blockNumber, 16)
       });
       if (!isFunction(onMessage)) return formatLogMessage(contractName, eventName, parsedMessage);

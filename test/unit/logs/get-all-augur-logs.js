@@ -115,22 +115,28 @@ describe("logs/get-all-augur-logs", function () {
       assert.deepEqual(allAugurLogs, {
         TestContractName: {
           TestEventName: [{
+            address: "0x000000000000000000000000000000000000000c",
             testEventInputIndexed: "0x3000000000000000000000000000000000000000000000000000000000000000",
             testEventInputData: "0x0000000000000000000000000000000000000003",
             blockNumber: 901,
             transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000aaa",
+            logIndex: 0,
             removed: false
           }, {
+            address: "0x000000000000000000000000000000000000000c",
             testEventInputIndexed: "0x3000000000000000000000000000000000000000000000000000000000000000",
             testEventInputData: "0x0000000000000000000000000000000000000002",
             blockNumber: 900,
             transactionHash: "0x00000000000000000000000000000000000000000000000000000000000000aa",
+            logIndex: 0,
             removed: false
           }, {
+            address: "0x000000000000000000000000000000000000000c",
             testEventInputIndexed: "0x2000000000000000000000000000000000000000000000000000000000000000",
             testEventInputData: "0x0000000000000000000000000000000000000001",
             blockNumber: 14,
             transactionHash: "0x000000000000000000000000000000000000000000000000000000000000000a",
+            logIndex: 0,
             removed: false
           }]
         }
