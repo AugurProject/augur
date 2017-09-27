@@ -8,6 +8,7 @@ import { Export } from 'modules/common/components/icons/icons'
 import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-account-link'
 
 import makePath from 'modules/routes/helpers/make-path'
+import trimString from 'utils/trim-string'
 
 import { MARKETS } from 'modules/routes/constants/views'
 
@@ -24,65 +25,14 @@ export default class KeystoreConnect extends Component {
     super()
 
     this.state = {
+      error: null,
       password: '',
-      fileContents: null,
-      keystoreConnectionError: null
+      keystore: null
     }
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (
-      this.state.passwordsMatch !== nextState.passwordsMatch &&
-      nextState.passwordsMatch
-    ) {
-      nextProps.register(nextState.password, (err, account) => {
-        this.setState({
-          keystoreCreationError: err === null ? null : err.message,
-          keystore: err === null ? JSON.stringify(account.keystore) : null
-        })
-
-        if (err === null) {
-          const { downloadAccountDataString, downloadAccountFileName } = generateDownloadAccountLink(account.address, account.keystore, account.privateKey)
-
-          this.setState({
-            downloadAccountDataString,
-            downloadAccountFileName
-          })
-        }
-      })
-    }
-
-    if (
-      nextState.keystore !== null &&
-      !nextState.passwordsMatch
-    ) {
-      this.setState({
-        keystore: null,
-        downloadAccountDataString: null,
-        downloadAccountFileName: null
-      })
-    }
-
-    if (
-      this.state.assertedCompetence !== nextState.assertedCompetence &&
-      nextState.assertedCompetence
-    ) {
-      nextProps.login(JSON.parse(nextState.keystore), nextState.password, (err) => {
-        if (err === null) {
-          nextProps.history.push(makePath(MARKETS))
-        }
-      })
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.copiedTextTimeout !== null || this.downloadedTimeout !== null) {
-      clearTimeout(this.copiedTextTimeout)
-      this.copiedTextTimeout = null
-
-      clearTimeout(this.downloadedTimeout)
-      this.downloadedTimeout = null
-    }
+    console.log('nextState -- ', nextState)
   }
 
   render() {
@@ -109,11 +59,9 @@ export default class KeystoreConnect extends Component {
                   if (e.target.files.length) {
                     if (e.target.files[0].type !== '') {
                       this.setState({
-                        authError: true,
-                        errorMessage: 'Incorrect file type',
-                        isAuthErrorDisplayable: true,
+                        error: 'Incorrect file type',
                         password: '',
-                        loginAccount: null
+                        keystore: null
                       })
                     }
                     const fileReader = new FileReader()
@@ -122,31 +70,25 @@ export default class KeystoreConnect extends Component {
 
                     fileReader.onload = (e) => {
                       try {
-                        const loginAccount = JSON.parse(e.target.result)
+                        const keystore = JSON.parse(e.target.result)
                         this.setState({
-                          loginAccount,
+                          error: null,
                           password: '',
-                          authError: false
+                          keystore,
                         })
-
-                        if (!this.state.isPasswordDisplayable) {
-                          this.setState({ isPasswordDisplayable: true })
-                        }
                       } catch (err) {
                         this.setState({
-                          authError: true,
-                          errorMessage: 'Malformed account file',
-                          isAuthErrorDisplayable: true,
+                          error: 'Malformed account file',
                           password: '',
-                          loginAccount: null
+                          keystore: null
                         })
                       }
                     }
                   } else {
                     this.setState({
-                      loginAccount: null,
+                      error: null,
                       password: '',
-                      authError: false
+                      keystore: null
                     })
                   }
                 }}
@@ -155,7 +97,10 @@ export default class KeystoreConnect extends Component {
                 htmlFor="keystore_connect_file"
               >
                 <span>{Export}</span>
-                Upload File
+                {s.keystore === null ?
+                  'Upload File' :
+                  trimString(s.keystore.address)
+                }
               </label>
             </div>
             <div
@@ -171,27 +116,24 @@ export default class KeystoreConnect extends Component {
                 type="password"
                 value={s.password}
                 placeholder="Passphrase"
+                disabled={s.keystore === null}
                 onChange={e => this.setState({ password: e.target.value })}
               />
             </div>
             <div className={Styles.Keystore__actions}>
-              { document.queryCommandSupported('copy') &&
-                <button
-                  id="copy_keystore"
-                  className={
-                    classNames(
-                      Styles[`button--purple`],
-                      {
-                        [Styles[`button--disabled`]]: s.keystore === null
-                      }
-                    )
-                  }
-                  disabled={s.keystore === null}
-                  data-clipboard-text={s.keystore}
-                >
-                  connect
-                </button>
-              }
+              <button
+                className={
+                  classNames(
+                    Styles[`button--purple`],
+                    {
+                      [Styles[`button--disabled`]]: s.password !== '' || s.keystore === null
+                    }
+                  )
+                }
+                disabled={s.password || s.keystore === null}
+              >
+                connect
+              </button>
             </div>
           </form>
           <div className={Styles.Keystore__instruction}>
