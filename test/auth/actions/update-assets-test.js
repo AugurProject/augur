@@ -181,9 +181,7 @@ describe('modules/auth/actions/update-assets.js', () => {
               {
                 unfix: (value, str) => { }
               };
-            sinon.stub(speedomatic, 'unfix', (value, str) => {
-              return value;
-            });
+            sinon.stub(speedomatic, 'unfix').returnsArg(0);
             updateAssetsRewireAPI.__Rewire__('allAssetsLoaded', allAssetsLoaded);
             updateAssetsRewireAPI.__Rewire__('speedomatic', speedomatic);
             const testValue = {
