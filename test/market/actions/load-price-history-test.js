@@ -9,7 +9,7 @@ describe(`modules/market/actions/load-price-history.js`, () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const state = Object.assign({}, testState);
-  const store = mockStore(state);
+
   const ACTIONS = {
     UPDATE_PRICE_HISTORY: { type: 'UPDATE_PRICE_HISTORY' }
   };
