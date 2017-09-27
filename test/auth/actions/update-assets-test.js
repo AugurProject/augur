@@ -177,13 +177,15 @@ describe('modules/auth/actions/update-assets.js', () => {
             allAssetsLoaded.onFirstCall().returns(false)
               .onSecondCall().returns(false)
               .onThirdCall().returns(true);
-            const unfixMethod = (value, str) => {
+            const speedomatic =
+              {
+                unfix: (value, str) => { }
+              };
+            sinon.stub(speedomatic, 'unfix', (value, str) => {
               return value;
-            };
-            updateAssetsRewireAPI.__Rewire__('allAssetsLoaded', allAssetsLoaded);
-            updateAssetsRewireAPI.__Rewire__('speedomatic', {
-              unfix: unfixMethod
             });
+            updateAssetsRewireAPI.__Rewire__('allAssetsLoaded', allAssetsLoaded);
+            updateAssetsRewireAPI.__Rewire__('speedomatic', speedomatic);
             const testValue = {
               eth: 10,
               rep: 20,
