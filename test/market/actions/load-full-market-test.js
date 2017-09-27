@@ -88,9 +88,7 @@ describe('modules/market/actions/load-full-market.js', () => {
       },
       assertions: (store) => {
         store.dispatch(loadFullMarket('0xMARKETID'));
-    
         const actual = store.getActions();
-    
         const expected = [
           {
             type: MOCK_ACTION_TYPES.ADD_MARKET_LOADING
@@ -102,7 +100,7 @@ describe('modules/market/actions/load-full-market.js', () => {
             }
           }
         ];
-    
+
         assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
       }
     });
@@ -156,7 +154,7 @@ describe('modules/market/actions/load-full-market.js', () => {
           {
             type: MOCK_ACTION_TYPES.REMOVE_MARKET_LOADING,
             data: {
-              marketID:  '0xMARKETID'
+              marketID: '0xMARKETID'
             }
           },
           {
@@ -170,7 +168,7 @@ describe('modules/market/actions/load-full-market.js', () => {
           {
             type: MOCK_ACTION_TYPES.LOAD_ACCOUNT_TRADES,
             data: {
-              market:  '0xMARKETID'
+              market: '0xMARKETID'
             }
           },
           {
