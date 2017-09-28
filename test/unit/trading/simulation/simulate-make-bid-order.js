@@ -27,12 +27,16 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       price: new BigNumber("0.6", 10),
       minPrice: ZERO,
       maxPrice: new BigNumber("1", 10),
+      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      shouldCollectReportingFees: true,
+      reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 1,
       shareBalances: [ZERO, ZERO]
     },
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
+        worstCaseFees: ZERO,
         otherSharesDepleted: ZERO,
         tokensDepleted: new BigNumber("1.2", 10),
         shareBalances: [ZERO, ZERO]
@@ -46,12 +50,16 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       price: new BigNumber("7.6", 10),
       minPrice: new BigNumber("7", 10),
       maxPrice: new BigNumber("10", 10),
+      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      shouldCollectReportingFees: true,
+      reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 1,
       shareBalances: [ZERO, ZERO]
     },
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
+        worstCaseFees: ZERO,
         otherSharesDepleted: ZERO,
         tokensDepleted: new BigNumber("1.2", 10),
         shareBalances: [ZERO, ZERO]
@@ -65,12 +73,16 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       price: new BigNumber("7.6", 10),
       minPrice: new BigNumber("7", 10),
       maxPrice: new BigNumber("10", 10),
+      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      shouldCollectReportingFees: true,
+      reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
       shareBalances: [new BigNumber("3", 10), ZERO]
     },
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
+        worstCaseFees: ZERO,
         otherSharesDepleted: ZERO,
         tokensDepleted: new BigNumber("1.2", 10),
         shareBalances: [new BigNumber("3", 10), ZERO]
@@ -84,12 +96,16 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       price: new BigNumber("7.6", 10),
       minPrice: new BigNumber("7", 10),
       maxPrice: new BigNumber("10", 10),
+      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      shouldCollectReportingFees: true,
+      reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
       shareBalances: [new BigNumber("3", 10), new BigNumber("4", 10)]
     },
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
+        worstCaseFees: new BigNumber("0.078", 10),
         otherSharesDepleted: new BigNumber("2", 10),
         tokensDepleted: ZERO,
         shareBalances: [new BigNumber("3", 10), new BigNumber("2", 10)]
@@ -103,12 +119,16 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       price: new BigNumber("7.6", 10),
       minPrice: new BigNumber("7", 10),
       maxPrice: new BigNumber("10", 10),
+      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      shouldCollectReportingFees: true,
+      reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 1,
       shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
     },
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
+        worstCaseFees: new BigNumber("0.078", 10),
         otherSharesDepleted: new BigNumber("2", 10),
         tokensDepleted: ZERO,
         shareBalances: [new BigNumber("1", 10), new BigNumber("1", 10)]
@@ -122,12 +142,16 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       price: new BigNumber("7.6", 10),
       minPrice: new BigNumber("7", 10),
       maxPrice: new BigNumber("10", 10),
+      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      shouldCollectReportingFees: true,
+      reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 1,
       shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10), new BigNumber("4", 10), new BigNumber("1.2", 10)]
     },
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
+        worstCaseFees: new BigNumber("0.0468", 10),
         otherSharesDepleted: new BigNumber("1.2", 10),
         tokensDepleted: new BigNumber("0.48", 10),
         shareBalances: [new BigNumber("1.8", 10), new BigNumber("1", 10), new BigNumber("2.8", 10), ZERO]
@@ -141,12 +165,16 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       price: new BigNumber("7.6", 10),
       minPrice: new BigNumber("6.9", 10),
       maxPrice: new BigNumber("10", 10),
+      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      shouldCollectReportingFees: true,
+      reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
       shareBalances: [new BigNumber("3.1", 10), new BigNumber("1.2", 10)]
     },
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
+        worstCaseFees: new BigNumber("0.0546", 10),
         otherSharesDepleted: new BigNumber("1.2", 10),
         tokensDepleted: new BigNumber("0.84", 10),
         shareBalances: [new BigNumber("3.1", 10), ZERO]
@@ -160,6 +188,9 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       price: new BigNumber("7.6", 10),
       minPrice: new BigNumber("7", 10),
       maxPrice: new BigNumber("10", 10),
+      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      shouldCollectReportingFees: true,
+      reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
       shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
     },
@@ -174,6 +205,9 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       price: new BigNumber("6", 10),
       minPrice: new BigNumber("7", 10),
       maxPrice: new BigNumber("10", 10),
+      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      shouldCollectReportingFees: true,
+      reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
       shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
     },
@@ -188,6 +222,9 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       price: new BigNumber("6", 10),
       minPrice: new BigNumber("7", 10),
       maxPrice: new BigNumber("10", 10),
+      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      shouldCollectReportingFees: true,
+      reportingFeeRate: new BigNumber("0.05", 10),
       outcome: -1,
       shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
     },
@@ -202,6 +239,9 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       price: new BigNumber("6", 10),
       minPrice: new BigNumber("7", 10),
       maxPrice: new BigNumber("10", 10),
+      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      shouldCollectReportingFees: true,
+      reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 2,
       shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
     },
