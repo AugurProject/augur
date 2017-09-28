@@ -4,7 +4,7 @@ var BigNumber = require("bignumber.js");
 var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
-var calculateCreatorSettlementFee = require("./calculate-creator-settlement-fee");
+var calculateSettlementFee = require("./calculate-creator-settlement-fee");
 
 function simulateMakeAskOrder(numShares, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances) {
   var numOutcomes = shareBalances.length;
@@ -15,13 +15,14 @@ function simulateMakeAskOrder(numShares, price, minPrice, maxPrice, marketCreato
   var worstCaseFees = ZERO;
   var tokensEscrowed = ZERO;
   var sharesEscrowed = ZERO;
+  var sharePriceLong = price.minus(minPrice);
   if (shareBalances[outcome].gt(ZERO)) {
     sharesEscrowed = BigNumber.min(shareBalances[outcome], numShares);
     numShares = numShares.minus(sharesEscrowed);
     shareBalances[outcome] = shareBalances[outcome].minus(sharesEscrowed);
   }
   if (numShares.gt(ZERO)) tokensEscrowed = numShares.times(maxPrice.minus(price));
-  if (sharesEscrowed.gt(ZERO)) worstCaseFees = calculateCreatorSettlementFee(sharesEscrowed, marketCreatorFeeRate, maxPrice.minus(minPrice), shouldCollectReportingFees, reportingFeeRate, price);
+  if (sharesEscrowed.gt(ZERO)) worstCaseFees = calculateSettlementFee(sharesEscrowed, marketCreatorFeeRate, maxPrice.minus(minPrice), shouldCollectReportingFees, reportingFeeRate, sharePriceLong);
   return {
     gasFees: gasFees,
     worstCaseFees: worstCaseFees,

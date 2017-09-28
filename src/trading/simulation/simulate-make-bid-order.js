@@ -4,7 +4,7 @@ var BigNumber = require("bignumber.js");
 var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
-var calculateCreatorSettlementFee = require("./calculate-creator-settlement-fee");
+var calculateSettlementFee = require("./calculate-settlement-fee");
 
 function simulateMakeBidOrder(numShares, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances) {
   var numOutcomes = shareBalances.length;
@@ -14,6 +14,7 @@ function simulateMakeBidOrder(numShares, price, minPrice, maxPrice, marketCreato
   var gasFees = ZERO;
   var worstCaseFees = ZERO;
   var sharePriceLong = price.minus(minPrice);
+  var sharePriceShort = maxPrice.minus(price);
   var tokensEscrowed = ZERO;
   var sharesEscrowed = new BigNumber(2, 10).toPower(254);
   for (var i = 0; i < numOutcomes; ++i) {
@@ -30,7 +31,7 @@ function simulateMakeBidOrder(numShares, price, minPrice, maxPrice, marketCreato
       }
     }
 
-    worstCaseFees = calculateCreatorSettlementFee(sharesEscrowed, marketCreatorFeeRate, maxPrice.minus(minPrice), shouldCollectReportingFees, reportingFeeRate, price);
+    worstCaseFees = calculateSettlementFee(sharesEscrowed, marketCreatorFeeRate, maxPrice.minus(minPrice), shouldCollectReportingFees, reportingFeeRate, sharePriceShort);
   }
   if (numShares.gt(ZERO)) tokensEscrowed = numShares.times(sharePriceLong);
   return {
