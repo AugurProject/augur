@@ -23,9 +23,9 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
     LOAD_BIDS_ASKS_HISTORY: 'LOAD_BIDS_ASKS_HISTORY'
   };
   const mockloadAccountPositions = {
-    loadAccountPositions : () => { }
+    loadAccountPositions: () => { }
   };
-  mockloadAccountPositions.loadAccountPositions = sinon.stub().returns({type: 'LOAD_ACCOUNT_POSITIONS'})
+  mockloadAccountPositions.loadAccountPositions = sinon.stub().returns({ type: 'LOAD_ACCOUNT_POSITIONS' });
   const mockConvertTradeLogsToTransactions = {
     convertTradeLogsToTransactions: () => { }
   };
