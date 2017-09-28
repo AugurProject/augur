@@ -15,7 +15,9 @@
   min-width: 9.75rem;
   padding: 0 0.4em 0.166em;
   text-transform: uppercase;
-  transition: background-color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 
   &.disabled {
     background-color: @color-gray;
@@ -61,6 +63,7 @@
 
   &:hover {
     background-color: @color-lightpurple;
+    color: @color-white;
   }
 
   &:disabled,
