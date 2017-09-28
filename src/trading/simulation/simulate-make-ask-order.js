@@ -4,7 +4,7 @@ var BigNumber = require("bignumber.js");
 var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
-var calculateSettlementFee = require("./calculate-creator-settlement-fee");
+var calculateSettlementFee = require("./calculate-settlement-fee");
 
 function simulateMakeAskOrder(numShares, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances) {
   var numOutcomes = shareBalances.length;
