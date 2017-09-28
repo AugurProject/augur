@@ -145,45 +145,45 @@ const CreateMarketPreview = p => (
     // const asks = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${ASK}`)
 
   <article className={Styles.CreateMarketPreview}>
-    {/* <article className={Styles.CreateMarketPreview}
-      ref={(marketPreview) => { this.marketPreview = marketPreview }}
-      className={classNames('create-market-preview', {
-        'preview-is-visible': newMarket.currentStep > 0,
-        'preview-is-hidden': newMarket.currentStep === 0
-      })}
-    > */}
     <div className={Styles.CreateMarketPreview__header}>
-      <div className={Styles.CreateMarketPreview__tags}>
-        <ul>
-          <li>Categories</li>
-          <li>{p.newMarket.category}</li>
-        </ul>
-        <ul>
-          <li>Tags</li>
-          <li>{p.newMarket.tag1}</li>
-          <li>{p.newMarket.tag2}</li>
-        </ul>
+      <div className={Styles['CreateMarketPreview__header-wrapper']}>
+        <div className={Styles.CreateMarketPreview__tags}>
+          <ul>
+            <li>Categories</li>
+            <li>{p.newMarket.category}</li>
+          </ul>
+          <ul>
+            <li>Tags</li>
+            <li>{p.newMarket.tag1}</li>
+            <li>{p.newMarket.tag2}</li>
+          </ul>
+        </div>
+        <h1 className={Styles.CreateMarketPreview__description}>{p.newMarket.description || 'New Market Question'}</h1>
+        <div className={Styles.CreateMarketPreview__outcome}>
+          Outcome
+        </div>
+        <span className={Styles.CreateMarketPreview__icon}>
+          {CreateMarketEdit}
+        </span>
       </div>
-      <h1>{p.newMarket.description || 'New Market Question'}</h1>
-      <div className={Styles.CreateMarketPreview__outcome}>
-        Outcome
-      </div>
-      <span className={Styles.CreateMarketPreview__icon}>
-        {CreateMarketEdit}
-      </span>
     </div>
     <div className={Styles.CreateMarketPreview__footer}>
-      <ul className={Styles.CreateMarketPreview__meta}>
-        <li>
-          <span>Volume</span>
-        </li>
-        <li>
-          <span>Fee</span>
-        </li>
-        <li>
-          <span>Expires</span>
-        </li>
-      </ul>
+      <div className={Styles['CreateMarketPreview__footer-wrapper']}>
+        <ul className={Styles.CreateMarketPreview__meta}>
+          <li>
+            <span>Volume</span>
+            <span>- Shares</span>
+          </li>
+          <li>
+            <span>Fee</span>
+            <span>0.0%</span>
+          </li>
+          <li>
+            <span>Expires</span>
+            <span>-</span>
+          </li>
+        </ul>
+      </div>
     </div>
     {/* <div className="create-market-preview-container">
           <div className="create-market-preview-content">

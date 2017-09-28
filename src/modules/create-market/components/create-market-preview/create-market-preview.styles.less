@@ -5,15 +5,27 @@
   padding: 4.25rem 0 3.5rem;
 }
 
+.CreateMarketPreview__description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .CreateMarketPreview__header,
+.CreateMarketPreview__footer-wrapper {
+  max-width: 81.25rem;
+}
+
+.CreateMarketPreview__header-wrapper,
 .CreateMarketPreview__meta {
-  max-width: 70rem;
-  padding: 0 1.25rem 0 11.25rem;
+  margin: auto;
+  max-width: 62.75rem;
+  padding: 0 2rem;
+  position: relative;
 }
 
 .CreateMarketPreview__header {
   padding-bottom: 2.5rem;
-  position: relative;
 }
 
 .CreateMarketPreview__footer {
@@ -24,7 +36,7 @@
 .CreateMarketPreview__icon {
   height: 1.5rem;
   position: absolute;
-  right: 0;
+  right: 2rem;
   top: 0;
   width: 1.5rem;
 }
@@ -33,7 +45,7 @@
   display: flex;
 
   > li {
-    margin-left: 1.25em;
+    margin-left: 2em;
 
     &:first-child {
       margin-left: 0;
@@ -58,16 +70,21 @@
 .CreateMarketPreview__tags {
   display: flex;
   margin-bottom: 1.625rem;
+  padding-right: 2.125rem;
 
   > ul {
     &:extend(.caps--medium);
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
     &:not(:first-child) {
       margin-left: 2rem;
     }
 
     > li {
-      display: inline-block;
+      display: inline;
       text-transform: uppercase;
 
       &:not(:empty)::after {
@@ -87,6 +104,17 @@
           display: inline-block;
         }
       }
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .CreateMarketPreview__tags {
+    display: block;
+
+    > ul:not(:first-child) {
+      margin-left: 0;
+      margin-top: 0.5rem;
     }
   }
 }
