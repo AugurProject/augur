@@ -25,7 +25,9 @@
 
 .CreateMarketDefine__error--tag2 {
   left: 52%;
+  line-height: 0.8rem;
   position: absolute;
+  top: -3px;
 }
 
 .CreateMarketDefine__form {
@@ -116,9 +118,19 @@
 }
 
 @media @breakpoint-mobile-medium {
+  .CreateMarketDefine__button-inner-wrapper,
+  .CreateMarketDefine__form-inner-wrapper {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
   .CreateMarketDefine__button-inner-wrapper {
     padding-left: 0;
     padding-right: 0;
+  }
+
+  .CreateMarketDefine__error--tag2 {
+    left: 2.3125rem;
   }
 
   .CreateMarketDefine__fields > li {
