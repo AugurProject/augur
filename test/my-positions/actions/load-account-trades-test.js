@@ -1,6 +1,5 @@
-import { describe, it, beforeEach } from 'mocha';
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import sinon from 'sinon';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 
@@ -11,7 +10,7 @@ describe('modules/my-positions/actions/load-account-trades.js', () => {
   const METHODS = {
     getTradeHistory: 'getTradeHistory',
     getPayoutHistory: 'getPayoutHistory'
-  }
+  };
   const MOCK_ACTION_TYPES = {
     CLEAR_ACCOUNT_TRADES: 'CLEAR_ACCOUNT_TRADES',
     UPDATE_ACCOUNT_TRADES_DATA: 'UPDATE_ACCOUNT_TRADES_DATA',
@@ -93,7 +92,7 @@ describe('modules/my-positions/actions/load-account-trades.js', () => {
         {
           type: MOCK_ACTION_TYPES.UPDATE_ACCOUNT_TRADES_DATA
         }
-        ]
+        ];
         assert.isNull(err, 'no error returned');
         assert.deepEqual(actualActions, expected, 'only clear action fired');
       }

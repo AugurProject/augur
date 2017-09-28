@@ -6,12 +6,9 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import {
-  UPDATE_SMALLEST_POSITIONS,
   UPDATE_ACCOUNT_TRADES_DATA,
   UPDATE_ACCOUNT_POSITIONS_DATA,
-  UPDATE_COMPLETE_SETS_BOUGHT,
-  updateAccountPositionsData,
-  updateCompleteSetsBought
+  updateAccountPositionsData
 } from 'modules/my-positions/actions/update-account-trades-data';
 
 describe('modules/my-positions/actions/update-account-trades-data.js', () => {
@@ -26,10 +23,9 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
     LOAD_BIDS_ASKS_HISTORY: 'LOAD_BIDS_ASKS_HISTORY'
   };
   const mockloadAccountPositions = {
-    loadAccountPositions: (value, callback) => {
-      return { type: 'LOAD_ACCOUNT_POSITIONS' };
-    }
-  }
+    loadAccountPositions : () => { }
+  };
+  mockloadAccountPositions.loadAccountPositions = sinon.stub().returns({type: 'LOAD_ACCOUNT_POSITIONS'})
   const mockConvertTradeLogsToTransactions = {
     convertTradeLogsToTransactions: () => { }
   };
