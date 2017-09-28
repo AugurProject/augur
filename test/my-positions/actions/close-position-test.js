@@ -34,7 +34,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
     })
   };
 
-  const loadBidsAsks =  (marketID, cb) => dispatch => cb();
+  const loadBidsAsks = (marketID, cb) => dispatch => cb();
 
   const selectAllMarkets = sinon.stub().returns([
     {
@@ -63,7 +63,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
 
   describe('closePosition', () => {
 
-    
+
     afterEach(() => {
       mockPlaceTrade.placeTrade.restore();
     });
