@@ -10,7 +10,8 @@ import { tween } from 'shifty'
 import _ from 'lodash'
 
 import TopBar from 'modules/app/components/top-bar/top-bar'
-import InnerNav from 'modules/app/components/inner-nav/inner-nav'
+import MarketsInnerNav from 'modules/app/components/inner-nav/marktes-inner-nav'
+import PortfolioInnerNav from 'modules/app/components/inner-nav/portfolio-inner-nav'
 import SideNav from 'modules/app/components/side-nav/side-nav'
 import Origami from 'modules/app/components/origami-svg/origami-svg'
 import Logo from 'modules/app/components/logo/logo'
@@ -30,7 +31,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 
 import getValue from 'utils/get-value'
 
-import { MARKETS, ACCOUNT, MY_POSITIONS, CREATE_MARKET, CATEGORIES } from 'modules/routes/constants/views'
+import { MARKETS, PORTFOLIO, ACCOUNT, MY_POSITIONS, CREATE_MARKET, CATEGORIES } from 'modules/routes/constants/views'
 import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
@@ -64,7 +65,8 @@ export default class AppView extends Component {
     this.state = {
       mainMenu: { scalar: 0, open: false, currentTween: null },
       subMenu: { scalar: 0, open: false, currentTween: null },
-      mobileMenuState: mobileMenuStates.CLOSED
+      mobileMenuState: mobileMenuStates.CLOSED,
+      currentInnerNavType: null
     }
 
     this.sideNavMenuData = [
@@ -153,7 +155,7 @@ export default class AppView extends Component {
     }
   }
 
-  changeMenu(nextBasePath) {
+  changeMenu(nextBasePath, callback) {
     const menuExitPromise = new Promise()
     const submenuExitPromise = new Promise()
 
@@ -164,10 +166,11 @@ export default class AppView extends Component {
       switch (nextBasePath) {
         case MARKETS:
         case PORTFOLIO:
-          this.setState({ menuDataProvider: menuDataProviders[nextBasePath] })
-          this.toggleMenuTween(MAIN_MENU, true)
+          this.setState({ currentInnerNavType: nextBasePath })
+          this.toggleMenuTween(MAIN_MENU, true, callback)
           break
         default:
+          callback()
       }
     });
   }
@@ -258,6 +261,11 @@ export default class AppView extends Component {
 
     const { mainMenu, subMenu } = this.state
 
+    const InnerNav = ({
+      [MARKETS]: MarketsInnerNav,
+      [PORTFOLIO] PortolioInnerNav
+    })[this.state.currentInnerNavType];
+
     let categoriesMargin
     let keywordsMargin
     let origamiScalar = 0
@@ -304,17 +312,18 @@ export default class AppView extends Component {
             className={Styles.Main__wrap}
             style={{ marginLeft: categoriesMargin }}
           >
-            <InnerNav
-              isMobile={p.isMobile}
-              mobileCategoryClick={() => this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN })}
-              mobileMenuState={s.mobileMenuState}
-              subMenuScalar={subMenu.scalar}
-              categories={p.categories}
-              markets={p.markets}
-              marketsFilteredSorted={p.marketsFilteredSorted}
-              location={p.location}
-              history={p.history}
-            />
+            {InnerNav &&
+              <InnerNav
+                isMobile={p.isMobile}
+                mobileMenuState={s.mobileMenuState}
+                subMenuScalar={subMenu.scalar}
+                categories={p.categories}
+                markets={p.markets}
+                marketsFilteredSorted={p.marketsFilteredSorted}
+                location={p.location}
+                history={p.history}
+              />
+            }
             <section
               className={Styles.Main__content}
               style={{ marginLeft: keywordsMargin }}
