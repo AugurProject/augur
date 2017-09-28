@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
+import { SCALAR } from '../../../src/modules/markets/constants/market-types';
 
 describe(`modules/my-positions/selectors/winning-positions.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
@@ -119,6 +120,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           id: '0xa1',
           isOpen: false,
           description: 'test market 1',
+          type: SCALAR,
           consensus: {
             outcomeID: '0.5',
             isIndeterminate: false

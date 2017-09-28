@@ -9,7 +9,7 @@ import logError from 'utils/log-error';
 export function loadAccountTrades(options, callback = logError) {
   return (dispatch, getState) => {
     const { branch, env, loginAccount } = getState();
-    if (!loginAccount.address) return callback(null);
+    if (!loginAccount.address || !options) return callback(null);
     if (!options.market) dispatch(clearAccountTrades());
     const query = { ...options, account: loginAccount.address, branch: branch.id };
     parallel([
@@ -23,6 +23,7 @@ export function loadAccountTrades(options, callback = logError) {
         if (Array.isArray(payoutHistory) && payoutHistory.length) {
           dispatch(convertLogsToTransactions(PAYOUT, payoutHistory));
         }
+        next(null);
       })
     ], callback);
   };
