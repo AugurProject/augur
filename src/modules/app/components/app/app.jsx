@@ -263,7 +263,7 @@ export default class AppView extends Component {
 
     const InnerNav = ({
       [MARKETS]: MarketsInnerNav,
-      [PORTFOLIO] PortolioInnerNav
+      [PORTFOLIO]: PortolioInnerNav
     })[this.state.currentInnerNavType];
 
     let categoriesMargin

@@ -17,6 +17,7 @@ import { MARKETS } from 'modules/routes/constants/views'
 
 export default class MarketsInnerNav extends BaseInnerNav {
   static propTypes = {
+    ... BaseInnerNav.propTypes,
     categories: PropTypes.array.isRequired,
     markets: PropTypes.array.isRequired,
     marketsFilteredSorted: PropTypes.array.isRequired,
