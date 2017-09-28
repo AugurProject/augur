@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import Identicon from 'react-blockies'
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
+import { CSSTransitionGroup } from 'react-transition-group'
 
-import Input from 'modules/common/components/input'
+import Input from 'modules/common/components/input/input'
 import AirbitzLogoIcon from 'modules/common/components/airbitz-logo-icon'
 
 export default class AccountDetails extends Component {

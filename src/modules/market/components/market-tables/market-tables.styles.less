@@ -1,0 +1,85 @@
+@import '~assets/styles/shared.less';
+@import '~modules/market/components/common/market-common.styles.less';
+
+.MarketTable {
+  border-spacing: 0;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.MarketTable__row {
+  background: @color-offwhite;
+  color: @color-darkpurple;
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 3.5rem;
+
+  > * {
+    border-bottom: 1px solid @color-lightergray;
+    text-align: right;
+  }
+
+  &:last-child > * {
+    border-bottom: none;
+  }
+
+  > :first-child {
+    padding-left: 0.5rem;
+    text-align: left;
+    width: 30%;
+  }
+
+  > :last-child {
+    padding-right: 4.1875rem;
+  }
+}
+
+.MarketTable__titlerow {
+  background: none;
+  line-height: 3rem;
+
+  > * {
+    border-bottom: none;
+  }
+}
+
+.MarketTable__title {
+  .MarketCommon__small-label();
+
+  margin: 0;
+}
+
+.MarketTable__titlestring--mobile {
+  display: none;
+}
+
+@media @breakpoint-mobile {
+  .MarketTable__row {
+    font-size: 0.75rem;
+    line-height: 3rem;
+
+    > :first-child {
+      padding-left: 0.75rem;
+    }
+
+    > :last-child {
+      padding-right: 1rem;
+    }
+  }
+
+  .MarketTable__title--mobilehide {
+    display: none;
+  }
+
+  .MarketTable__titlestring--desktop {
+    display: none;
+  }
+
+  .MarketTable__titlestring--mobile {
+    display: inline;
+  }
+
+  .MarketTable__value--mobilehide {
+    display: none;
+  }
+}

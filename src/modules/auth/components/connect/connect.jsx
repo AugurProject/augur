@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import Helmet from 'react-helmet'
 
 import NavPanel from 'modules/common/components/nav-panel/nav-panel'
 import Help from 'modules/auth/components/help/help'
 import Airbitz from 'modules/auth/containers/airbitz'
 import Ledger from 'modules/auth/containers/ledger'
 import Uport from 'modules/auth/containers/uport'
-import Keystore from 'modules/auth/containers/keystore'
+import KeystoreConnect from 'modules/auth/containers/keystore-connect'
 import Trezor from 'modules/auth/containers/trezor'
 import Metamask from 'modules/auth/components/metamask/metamask'
 
@@ -14,6 +15,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 
 import { CONNECT_NAV } from 'modules/routes/constants/param-names'
 import { ITEMS, PARAMS } from 'modules/auth/constants/connect-nav'
+import { TITLE_SUFFIX } from 'modules/app/constants/title-suffix'
 
 import Styles from 'modules/auth/components/auth/auth.styles'
 
@@ -22,6 +24,9 @@ export default function AuthConnect(p) {
 
   return (
     <div className={Styles.Auth}>
+      <Helmet
+        titleTemplate={`Connect -- %s ${TITLE_SUFFIX}`}
+      />
       <div className={Styles['Auth--constrained']}>
         <div className={Styles.Auth__header}>
           <h1>Connect An Account</h1>
@@ -48,7 +53,7 @@ export default function AuthConnect(p) {
               <Uport />
             }
             {selectedNav === PARAMS.KEYSTORE &&
-              <Keystore />
+              <KeystoreConnect />
             }
             {selectedNav === PARAMS.TREZOR &&
               <Trezor />

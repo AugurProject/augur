@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet'
 import NullStateMessage from 'modules/common/components/null-state-message'
 import MyReport from 'modules/my-reports/components/my-report'
 import TransactionsLoadingActions from 'modules/transactions/components/transactions-loading-actions'
-import FilterSort from 'modules/filter-sort/container'
+// import FilterSort from 'modules/filter-sort/container'
 
 import makePath from 'modules/routes/helpers/make-path'
 import makeQuery from 'modules/routes/helpers/make-query'
@@ -61,17 +61,7 @@ export default class MyReports extends Component {
             />
           </div>
         </div>
-        <FilterSort
-          locaiton={p.location}
-          history={p.history}
-          items={p.reports}
-          updateFilteredItems={filteredMarkets => this.setState({ filteredMarkets })}
-          searchPlaceholder="Search Created Markets"
-          searchKeys={this.searchKeys}
-          filterBySearch
-          filterByMarketState
-          sortByMarketParam
-        />
+
         {s.filteredMarkets && s.filteredMarkets.length ?
           <div>
             {s.filteredMarkets.map(marketIndex => (
@@ -122,3 +112,15 @@ export default class MyReports extends Component {
     )
   }
 }
+//
+// <FilterSort
+//   locaiton={p.location}
+//   history={p.history}
+//   items={p.reports}
+//   updateFilteredItems={filteredMarkets => this.setState({ filteredMarkets })}
+//   searchPlaceholder="Search Created Markets"
+//   searchKeys={this.searchKeys}
+//   filterBySearch
+//   filterByMarketState
+//   sortByMarketParam
+// />

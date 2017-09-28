@@ -95,6 +95,7 @@ let config = {
     ]
   },
   plugins: [
+    // new webpack.optimize.ModuleConcatenationPlugin(), // NOTE -- was causing hot-reload errors, removing until diagnosed
     new webpack.optimize.OccurrenceOrderPlugin(true),
     new CopyWebpackPlugin([
       {

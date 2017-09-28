@@ -24,6 +24,12 @@ export const CreateMarketEdit = (
   </svg>
 )
 
+export const IconSearch = (
+  <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+    <g id="Symbols" fill="none" fillRule="evenodd" fillOpacity=".5"><g id="Markets/Header" fill="#FFF"><g id="Group-5"><path d="M8.337 7.402h-.494l-.172-.17c.608-.707.977-1.624.977-2.63C8.647 2.37 6.837.56 4.604.56 2.37.56.56 2.37.56 4.603s1.81 4.043 4.044 4.043c1.004 0 1.92-.368 2.628-.974l.17.17v.493l3.11 3.105.928-.928-3.103-3.11zm-3.733 0c-1.547 0-2.8-1.252-2.8-2.8 0-1.544 1.253-2.798 2.8-2.798 1.545 0 2.8 1.254 2.8 2.8 0 1.546-1.255 2.798-2.8 2.798z" id="Shape" /></g></g></g>
+  </svg>
+)
+
 export const Ledger = (
   <svg id="851e3d33-36d6-418a-b807-c2fa479dc650" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25">
     <defs>
@@ -247,6 +253,121 @@ export const Metamask = (
           <polyline id="8940912d-65b4-40d4-899b-a86fe3b92c36" data-name="Stroke-9" className="a77395d2-2c0c-4381-9940-a909fb55ffd3" points="21.48 33.16 36.88 37.94 17.88 39.91" />
           <polyline id="0ea7cb76-fe1b-4713-b139-91e8a28603e9" data-name="Stroke-10" className="a77395d2-2c0c-4381-9940-a909fb55ffd3" points="21.48 33.16 15.1 26.79 13.51 22.54" />
           <polyline id="cbfb7bf6-3149-4b6a-9cc4-f2dec64acb3b" data-name="Stroke-11" className="a77395d2-2c0c-4381-9940-a909fb55ffd3" points="36.88 37.94 28.91 30.5 27.32 26.25 22.01 12.98" />
+        </g>
+      </g>
+    </g>
+  </svg>
+)
+
+export const Alert = (
+  <svg id="a26f05d9-644c-4f17-afbc-46d4647e9dc7" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37.48 37.48">
+    <defs>
+      <style>
+        {`
+          .d4f2b59f-7178-4786-9bb7-fd6cf8b75d6d {
+            fill: none;
+            stroke: #fff;
+          }
+
+          .ce4ea548-02b7-4ef0-aceb-1c5c55ba77a5 {
+            fill: #fff;
+          }
+        `}
+      </style>
+    </defs>
+    <title>Alert</title>
+    <g id="77f1ff9b-fa1c-4c5c-8c21-5153f0872de8" data-name="Symbols">
+      <g id="20f98d0f-af34-46a2-9e12-54de87a1d961" data-name="Icon/Alert">
+        <g id="4d653298-4d39-40cf-88e1-0ea89eb0f0a5" data-name="Page-1">
+          <path id="c113668e-527a-4708-a6e6-731f7cebddbe" data-name="Stroke-1" className="d4f2b59f-7178-4786-9bb7-fd6cf8b75d6d" d="M18.78,2.54a1.31,1.31,0,0,1,2.41,0l8.43,16.65L38,35.84a1.6,1.6,0,0,1-1.2,2.38H3.13a1.6,1.6,0,0,1-1.2-2.38l8.42-16.65Z" transform="translate(-1.24 -1.24)" />
+          <path id="2100dda0-6ebb-4d99-bf1e-7c24d4217c99" data-name="Fill-3" className="ce4ea548-02b7-4ef0-aceb-1c5c55ba77a5" d="M20.6,27.52H19.36l-.2-11.71h1.66ZM19.12,32.1h1.72V30.17H19.12Z" transform="translate(-1.24 -1.24)" />
+        </g>
+      </g>
+    </g>
+  </svg>
+)
+
+export const CheckboxOff = (
+  <svg id="13de3723-afc4-43e5-966e-01b702ca5297" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21.16 21.16">
+    <defs>
+      <style>
+        {`
+          .\\32 c905fc7-7c65-4dc2-9b42-80d0c16bf440 {
+            fill: none;
+            stroke: #dbdae1;
+          }
+        `}
+      </style>
+    </defs>
+    <title>Checkbox off</title>
+    <g id="6247de90-74a6-45ea-a21d-97996a0bbca7" data-name="Symbols">
+      <g id="311a987f-edbc-411a-82a6-6412bd7ac823" data-name="Icon/Checkbox-off">
+        <path id="27769802-1472-48d7-b9ce-ebd8904a8e2b" data-name="Page-1" className="2c905fc7-7c65-4dc2-9b42-80d0c16bf440" d="M21.32,22H2.84A.84.84,0,0,1,2,21.16V2.68a.84.84,0,0,1,.84-.84H21.32a.84.84,0,0,1,.84.84V21.16A.84.84,0,0,1,21.32,22Z" transform="translate(-1.5 -1.34)" />
+      </g>
+    </g>
+  </svg>
+)
+
+export const CheckboxOn = (
+  <svg id="9777b652-807f-44b2-b0f5-08d8f20182df" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21.95 21.95">
+    <defs>
+      <style>
+        {`
+          .ca26950d-c854-49b5-8612-bc2195287f01 {
+            fill: #fff;
+          }
+
+          .b4f8e674-bfe0-4f87-834c-84e3e215014d {
+            mask: url(#74980403-58c9-4bea-810f-348232e431af);
+          }
+
+          .f24bbc3a-6b13-49c2-b214-429ae7463706 {
+            fill: #dbdae1;
+          }
+        `}
+      </style>
+      <mask id="74980403-58c9-4bea-810f-348232e431af" x="0" y="0" width="21.95" height="21.95" maskUnits="userSpaceOnUse">
+        <g transform="translate(-1 -1)">
+          <g id="bee4a8b8-354e-4a0d-a6fa-c5b8ef851f5d" data-name="mask-2">
+            <polygon id="b7cecb15-2e1f-4a3e-bfa1-d12baa16cf98" data-name="path-1" className="ca26950d-c854-49b5-8612-bc2195287f01" points="1 1 1 22.95 22.95 22.95 22.95 1 1 1" />
+          </g>
+        </g>
+      </mask>
+    </defs>
+    <title>Checkbox on</title>
+    <g id="67926e8a-f89e-418a-8b1c-59a389273db0" data-name="Symbols">
+      <g id="baee6728-b48c-40bf-819c-51fbe34fc671" data-name="Icon/Checkbox-on">
+        <g id="db803d01-815f-436a-8d94-24b56c85a525" data-name="Page-1">
+          <g className="b4f8e674-bfe0-4f87-834c-84e3e215014d">
+            <path id="ce747c73-65f8-49f8-841a-d76674045203" data-name="Fill-1" className="f24bbc3a-6b13-49c2-b214-429ae7463706" d="M20.54,6.89l-10,10.8a.46.46,0,0,1-.61.06L3.47,13A.46.46,0,1,1,4,12.29l6.13,4.48,9.73-10.5a.46.46,0,1,1,.67.62M22,1H1.91A.91.91,0,0,0,1,1.91V22a.91.91,0,0,0,.91.91H22A.91.91,0,0,0,23,22V1.91A.91.91,0,0,0,22,1" transform="translate(-1 -1)" />
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+)
+
+export const Export = (
+  <svg id="953e0014-1cef-4429-aafa-e42c291ab42f" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21.56">
+    <defs>
+      <style>
+        {`
+          .\\32 275d31d-f7ee-42a6-8027-90262a5b4750 {
+            fill: none;
+            stroke: #372e4b;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+          }
+        `}
+      </style>
+    </defs>
+    <title>Export</title>
+    <g id="ed372e3a-954b-40ff-afe2-e288566f7a6d" data-name="Symbols">
+      <g id="80e4e169-eff0-41bb-9bea-04faeddf2370" data-name="Icon/Export">
+        <g id="c8ed4e46-376e-479a-9db9-b46166ee0f07" data-name="Page-1">
+          <path id="1bdd6f72-b4f9-413d-ac0e-f8501b5edd93" data-name="Stroke-1" className="2275d31d-f7ee-42a6-8027-90262a5b4750" d="M12.12,19.52,12,2.62" transform="translate(-1 -2)" />
+          <polyline id="16a19ee2-560a-4a11-903f-2c575013af1c" data-name="Stroke-3" className="2275d31d-f7ee-42a6-8027-90262a5b4750" points="6.89 4.61 11 0.5 15.11 4.61" />
+          <polyline id="55f5846e-8998-413d-b85b-e148ec0042c5" data-name="Stroke-5" className="2275d31d-f7ee-42a6-8027-90262a5b4750" points="5.5 9.06 0.5 9.06 0.5 21.06 21.5 21.06 21.5 9.06 16.5 9.06" />
         </g>
       </g>
     </g>

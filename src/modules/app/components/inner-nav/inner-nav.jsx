@@ -12,7 +12,8 @@ import parseStringToArray from 'modules/routes/helpers/parse-string-to-array'
 import makeQuery from 'modules/routes/helpers/make-query'
 import makePath from 'modules/routes/helpers/make-path'
 
-import { TOPIC_PARAM_NAME, TAGS_PARAM_NAME } from 'modules/routes/constants/param-names'
+import { QUERY_VALUE_DELIMITER } from 'modules/routes/constants/query-value-delimiter'
+import { TOPIC_PARAM_NAME, TAGS_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 import { MARKETS } from 'modules/routes/constants/views'
 
 import MenuItem from 'modules/app/components/inner-nav/menu-item'
@@ -51,10 +52,10 @@ export default class InnerNav extends Component {
 
   updateFilteredKeywords(markets, marketsFilteredSorted, location) {
     // make sure all selected tags are displayed, even if markets haven't loaded yet
-    const selectedKeywords = parseStringToArray(decodeURIComponent(parseQuery(location.search)[TAGS_PARAM_NAME] || ''), '+')
+    const selectedKeywords = parseStringToArray(decodeURIComponent(parseQuery(location.search)[TAGS_PARAM_NAME] || ''), QUERY_VALUE_DELIMITER)
 
-    let filteredKeywords = flatMap(marketsFilteredSorted, index => (markets[index] ? markets[index].tags : null))
-    .filter(keyword => Boolean(keyword))
+    let filteredKeywords = flatMap(marketsFilteredSorted, index => (markets[index] ? [markets[index].tags[1] || '', markets[index].tags[2] || ''] : null))
+    .filter(keyword => !!keyword)
 
     filteredKeywords = concat(filteredKeywords, selectedKeywords)
     // TODO: discuss uppercase/lowercase variant keywords and how they function differently
@@ -119,7 +120,7 @@ export default class InnerNav extends Component {
       })
     }
 
-    const keywords = parseStringToArray(decodeURIComponent(searchParams[TAGS_PARAM_NAME]), '+')
+    const keywords = parseStringToArray(decodeURIComponent(searchParams[TAGS_PARAM_NAME]), QUERY_VALUE_DELIMITER)
 
     if (keywords.indexOf(keyword) !== -1) { // Remove Tag
       keywords.splice(keywords.indexOf(keyword), 1)
@@ -128,7 +129,7 @@ export default class InnerNav extends Component {
     }
 
     if (keywords.length) {
-      searchParams[TAGS_PARAM_NAME] = keywords.join('+')
+      searchParams[TAGS_PARAM_NAME] = keywords.join(QUERY_VALUE_DELIMITER)
     } else {
       delete searchParams[TAGS_PARAM_NAME]
     }

@@ -1,12 +1,15 @@
+// NOTE -- There is import order dependence, so please don't reorder before checking inheritence
+// This is so that there is not circular dependencies amoung these stylesheets
 @import '_normalize';
+@import '_colors_OLD';
+@import '_colors';
+@import '_typography';
 @import '_animations';
 @import '_arrangement';
 @import '_borders';
 @import '_buttons';
-@import '_colors_OLD';
-@import '_colors';
 @import '_responsive';
-@import '_typography';
+@import '_inputs';
 
 html {
   font-size: 16px;

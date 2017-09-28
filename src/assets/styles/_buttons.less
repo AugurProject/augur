@@ -19,8 +19,10 @@
     background-color 0.15s ease,
     color 0.15s ease;
 
-  &.disabled {
-    background-color: @color-gray;
+  &:disabled {
+    background-color: @color-disabled;
+    color: @color-text-disabled;
+    cursor: default;
   }
 
   &.imperative {
@@ -35,6 +37,12 @@
     color: @color-text-light;
   }
 }
+
+// .button--disabled {
+//   background-color: @color-disabled;
+//   color: @color-text-disabled;
+//   cursor: default;
+// }
 
 .button--text-only {
   &:extend(.button);
@@ -51,6 +59,16 @@
 
   &:hover {
     background-color: @color-lightpurple;
+  }
+}
+
+.button--disabled {
+  background-color: @color-disabled;
+  color: @color-text-disabled;
+  cursor: default;
+
+  &:hover {
+    background-color: @color-disabled;
   }
 }
 

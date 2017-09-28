@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import BigNumber from 'bignumber.js'
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
 
-import Input from 'modules/common/components/input'
+import Input from 'modules/common/components/input/input'
 import EtherLogo from 'modules/common/components/ether-logo'
 import AugurLogoIcon from 'modules/common/components/augur-logo-icon/augur-logo-icon'
 
