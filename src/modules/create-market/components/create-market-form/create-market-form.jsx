@@ -89,12 +89,6 @@ export default class CreateMarketForm extends Component {
 
     return (
       <article className={Styles.CreateMarketForm}>
-        {/* <article
-        ref={(createMarketForm) => { this.createMarketForm = createMarketForm }}
-        className={classNames('create-market-form', {
-          'no-preview': s.currentStep === 0
-        })}
-      > */}
         <div className={classNames(Styles.CreateMarketForm__page, { [`${Styles['show-page']}`]: s.currentPage === 0 })}>
           <CreateMarketDefine
             newMarket={p.newMarket}
@@ -102,9 +96,6 @@ export default class CreateMarketForm extends Component {
             categories={p.categories}
             updatePage={this.updatePage}
           />
-        </div>
-        <div className={classNames(Styles.CreateMarketForm__page, { [`${Styles['show-page']}`]: s.currentPage === 1 })}>
-          <p>Next page</p>
         </div>
         {/* <CreateMarketFormDescription
           className={classNames({
