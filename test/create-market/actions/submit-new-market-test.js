@@ -52,10 +52,10 @@ describe('modules/create-market/actions/submit-new-market', () => {
       const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
 
       const mockAugur = {
-        create: { createCategoricalMarket: () => { } }
+        createMarket: { createCategoricalMarket: () => { } }
       };
       let formattedNewMarket = null;
-      sinon.stub(mockAugur.create, 'createCategoricalMarket', (createMarketObject) => {
+      sinon.stub(mockAugur.createMarket, 'createCategoricalMarket', (createMarketObject) => {
         delete createMarketObject.onSent;
         delete createMarketObject.onSuccess;
         delete createMarketObject.onFailed;
@@ -125,10 +125,10 @@ describe('modules/create-market/actions/submit-new-market', () => {
       const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
 
       const mockAugur = {
-        create: { createCategoricalMarket: () => { } }
+        createMarket: { createCategoricalMarket: () => { } }
       };
       let formattedNewMarket = null;
-      sinon.stub(mockAugur.create, 'createCategoricalMarket', (createMarketObject) => {
+      sinon.stub(mockAugur.createMarket, 'createCategoricalMarket', (createMarketObject) => {
         delete createMarketObject.onSent;
         delete createMarketObject.onSuccess;
         delete createMarketObject.onFailed;
@@ -196,10 +196,10 @@ describe('modules/create-market/actions/submit-new-market', () => {
       const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
 
       const mockAugur = {
-        create: { createScalarMarket: () => { } }
+        createMarket: { createScalarMarket: () => { } }
       };
       let formattedNewMarket = null;
-      sinon.stub(mockAugur.create, 'createScalarMarket', (createMarketObject) => {
+      sinon.stub(mockAugur.createMarket, 'createScalarMarket', (createMarketObject) => {
         delete createMarketObject.onSent;
         delete createMarketObject.onSuccess;
         delete createMarketObject.onFailed;
@@ -273,7 +273,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }));
 
       const mockAugur = {
-        create: {
+        createMarket: {
           createCategoricalMarket: (createCategoricalMarket) => {
             createCategoricalMarket.onSent();
           }
@@ -332,7 +332,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }));
 
       const mockAugur = {
-        create: {
+        createMarket: {
           createCategoricalMarket: (createCategoricalMarket) => {
             createCategoricalMarket.onFailed({ message: null });
           }
@@ -386,7 +386,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
 
       const mockAugur = {
-        create: {
+        createMarket: {
           createCategoricalMarket: (createCategoricalMarket) => {
             createCategoricalMarket.onSuccess({
               callReturn: '0x11111111'
@@ -525,7 +525,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       });
 
       const mockAugur = {
-        create: {
+        createMarket: {
           createCategoricalMarket: (createCategoricalMarket) => {
             createCategoricalMarket.onSuccess({});
           }
@@ -675,7 +675,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }));
 
       const mockAugur = {
-        create: {
+        createMarket: {
           createCategoricalMarket: (createCategoricalMarket) => {
             createCategoricalMarket.onFailed({ message: null });
           }
