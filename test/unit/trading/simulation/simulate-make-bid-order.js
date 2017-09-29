@@ -105,7 +105,7 @@ describe("trading/simulation/simulate-make-bid-order", function () {
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
-        worstCaseFees: new BigNumber("0.078", 10),
+        worstCaseFees: new BigNumber("0.312", 10),
         otherSharesDepleted: new BigNumber("2", 10),
         tokensDepleted: ZERO,
         shareBalances: [new BigNumber("3", 10), new BigNumber("2", 10)]
@@ -128,7 +128,7 @@ describe("trading/simulation/simulate-make-bid-order", function () {
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
-        worstCaseFees: new BigNumber("0.078", 10),
+        worstCaseFees: new BigNumber("0.312", 10),
         otherSharesDepleted: new BigNumber("2", 10),
         tokensDepleted: ZERO,
         shareBalances: [new BigNumber("1", 10), new BigNumber("1", 10)]
@@ -151,7 +151,7 @@ describe("trading/simulation/simulate-make-bid-order", function () {
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
-        worstCaseFees: new BigNumber("0.0468", 10),
+        worstCaseFees: new BigNumber("0.1872", 10),
         otherSharesDepleted: new BigNumber("1.2", 10),
         tokensDepleted: new BigNumber("0.48", 10),
         shareBalances: [new BigNumber("1.8", 10), new BigNumber("1", 10), new BigNumber("2.8", 10), ZERO]
@@ -174,7 +174,7 @@ describe("trading/simulation/simulate-make-bid-order", function () {
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
-        worstCaseFees: new BigNumber("0.0546", 10),
+        worstCaseFees: new BigNumber("0.1872", 10),
         otherSharesDepleted: new BigNumber("1.2", 10),
         tokensDepleted: new BigNumber("0.84", 10),
         shareBalances: [new BigNumber("3.1", 10), ZERO]
