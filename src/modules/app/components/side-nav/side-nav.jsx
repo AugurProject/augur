@@ -77,7 +77,7 @@ export default class SideNav extends Component {
                 key={item.title}
               >
                 <Link
-                  to={makePath(item.route)}
+                  to={item.route ? makePath(item.route) : null}
                   onClick={() => { if (mobile) item.mobileClick() }}
                 >
                   <Icon />
