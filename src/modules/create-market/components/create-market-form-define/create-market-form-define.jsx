@@ -31,10 +31,16 @@ export default class CreateMarketDefine extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.newMarket.category !== nextProps.newMarket.category) {
-      this.setState({ suggestedCategories: this.filterCategories(nextProps.newMarket.category) })
-      if (nextProps.newMarket.category === '' || this.props.newMarket.category.slice(0, 1) !== nextProps.newMarket.category.slice(0, 1)) {
-        this.setState({ shownSuggestions: 2 })
+      let filteredCategories = this.filterCategories(nextProps.newMarket.category)
+
+      if (nextProps.newMarket.category === '') {
+        filteredCategories = []
       }
+
+      this.setState({
+        suggestedCategories: filteredCategories,
+        shownSuggestions: 2
+      })
     }
   }
 
@@ -43,25 +49,20 @@ export default class CreateMarketDefine extends Component {
     return this.props.categories.filter(cat => cat.topic.toLowerCase().indexOf(userString) === 0)
   }
 
-  // I'd like to move this function up to create-market-form and to do that I'll need to adjust how
-  // state.requiredFields is used. I'll do that in the next PR when I need to handle validating
-  // fields for Page 2 of this form.
   validateField(fieldKey, fieldName, value, maxLength) {
     const requiredFields = this.state.requiredFields
 
-    if (!value.length) {
-      requiredFields[fieldKey] = 'This field is required.'
-      this.setState({ requiredFields })
-      return
+    switch (true) {
+      case !value.length:
+        requiredFields[fieldKey] = 'This field is required.'
+        break
+      case value.length > maxLength:
+        requiredFields[fieldKey] = `Maximum length is ${maxLength}`
+        break
+      default:
+        requiredFields[fieldKey] = true
     }
 
-    if (value.length > maxLength) {
-      requiredFields[fieldKey] = `Maximum length is ${maxLength}`
-      this.setState({ requiredFields })
-      return
-    }
-
-    requiredFields[fieldKey] = true
     this.setState({ requiredFields })
 
     this.props.updateNewMarket({ [fieldName]: value })
