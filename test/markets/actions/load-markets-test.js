@@ -1,116 +1,105 @@
+import loadMarkets from 'modules/markets/actions/load-markets';
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from 'test/testState';
 
-import { UPDATE_MARKETS_DATA } from 'modules/markets/actions/update-markets-data';
-import { UPDATE_HAS_LOADED_MARKETS } from 'modules/markets/actions/update-has-loaded-markets';
-
-describe(`modules/markets/actions/load-markets.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
+describe(`modules/markets/actions/load-markets`, () => {
   const middlewares = [thunk];
+  const augurNodeUrl = 'blah.com';
   const mockStore = configureMockStore(middlewares);
-  const state = Object.assign({}, testState);
+  const state = {
+    env: {
+      augurNodeURL: augurNodeUrl
+    },
+    branch: { id: 'branchid' }
+  };
+  const ACTIONS = {
+    UPDATE_HAS_LOADED_MARKETS_TRUE: { type: 'UPDATE_HAS_LOADED_MARKETS', hasLoadedMarkets: true },
+    UPDATE_HAS_LOADED_MARKETS_FALSE: { type: 'UPDATE_HAS_LOADED_MARKETS', hasLoadedMarkets: false },
+    CLEAR_MARKET_DATA: { type: 'CLEAR_MARKET_DATA' },
+    UPDATE_MARKET_DATA: { type: 'UPDATE_MARKETS_DATA' }
+  };
+
+  const updateHasLoadedMarkets = sinon.stub();
+  updateHasLoadedMarkets.withArgs(true).returns(ACTIONS.UPDATE_HAS_LOADED_MARKETS_TRUE);
+  updateHasLoadedMarkets.withArgs(false).returns(ACTIONS.UPDATE_HAS_LOADED_MARKETS_FALSE);
+
+  const clearMarketsData = sinon.stub().returns(ACTIONS.CLEAR_MARKET_DATA);
+  const updateMarketsData = sinon.stub().returns(ACTIONS.UPDATE_MARKET_DATA);
+
+  loadMarkets.__Rewire__('updateHasLoadedMarkets', updateHasLoadedMarkets);
+  loadMarkets.__Rewire__('clearMarketsData', clearMarketsData);
+  loadMarkets.__Rewire__('updateMarketsData', updateMarketsData);
+
+  afterEach(() => {
+    loadMarkets.__ResetDependency__('loadDataFromAugurNode');
+  });
 
   const test = (t) => {
-    it(t.description, () => {
+    it(t.description, (done) => {
       const store = mockStore(state);
-      const AugurJS = {
-        augur: { markets: {} }
-      };
+      loadMarkets.__Rewire__('loadDataFromAugurNode', t.loadDataFromAugurNode);
 
-      AugurJS.augur.markets.loadMarkets = sinon.stub();
-
-      if (t.toTest === 'err') AugurJS.augur.markets.loadMarkets.yields('fails', null);
-      if (t.toTest === 'null-markets-data') AugurJS.augur.markets.loadMarkets.yields(null, null);
-      if (t.toTest === 'object') AugurJS.augur.markets.loadMarkets.yields(null, { test: 'test' });
-      if (t.toTest === 'empty-object') AugurJS.augur.markets.loadMarkets.yields(null, {});
-
-      const action = proxyquire('../../../src/modules/markets/actions/load-markets', {
-        '../../../services/augurjs': AugurJS
-      });
-
-      store.dispatch(action.loadMarkets());
-
-      t.assertions(store.getActions());
+      store.dispatch(loadMarkets((err, data) => {
+        t.assertions(err, store.getActions(), data);
+        done();
+      }));
     });
   };
 
   test({
-    description: 'should dispatch the expected actions of err',
-    toTest: 'err',
-    assertions: (actions) => {
-      const expected = [
-        {
-          type: UPDATE_HAS_LOADED_MARKETS,
-          hasLoadedMarkets: true
-        },
-        {
-          type: UPDATE_HAS_LOADED_MARKETS,
-          hasLoadedMarkets: false
-        }
-      ];
-
+    description: 'should dispatch the expected two actions and history is null err',
+    loadDataFromAugurNode: (url, method, options, callback) => {
+      callback(null, null);
+    },
+    assertions: (err, actions, data) => {
+      const expected = [ACTIONS.UPDATE_HAS_LOADED_MARKETS_FALSE];
+      assert.deepEqual(err, `no markets data received from ${augurNodeUrl}`);
       assert.deepEqual(actions, expected, 'error was not handled as expected');
+      assert.isUndefined(data, 'no market data provided');
     }
   });
 
   test({
-    description: 'should dispatch the expected actions with no error + no marketsData returned',
-    toTest: 'null-markets-data',
-    assertions: (actions) => {
-      const expected = [
-        {
-          type: UPDATE_HAS_LOADED_MARKETS,
-          hasLoadedMarkets: true
-        },
-        {
-          type: UPDATE_HAS_LOADED_MARKETS,
-          hasLoadedMarkets: false
-        }
-      ];
-
-      // console.log('actions -- ', actions);
-      assert.deepEqual(actions, expected, 'error was not handled as expected');
+    description: 'should dispatch the expected no actions with error from loader from augur node',
+    loadDataFromAugurNode: (url, method, options, callback) => {
+      callback('ERROR', null);
+    },
+    assertions: (err, actions, data) => {
+      assert.deepEqual(err, 'ERROR', 'error should be ERROR');
+      assert.deepEqual(actions, [], 'error was not handled as expected');
+      assert.isUndefined(data, 'no market data provided');
     }
   });
 
   test({
-    description: 'should dispatch the expected actions with no error + object of returned marketsData',
-    toTest: 'object',
-    assertions: (actions) => {
-      const expected = [
-        {
-          type: UPDATE_HAS_LOADED_MARKETS,
-          hasLoadedMarkets: true
-        },
-        {
-          type: UPDATE_MARKETS_DATA,
-          marketsData: {
-            test: 'test'
-          }
-        }
-      ];
+    description: 'should dispatch no actions with no error with empty marketsData',
+    loadDataFromAugurNode: (url, method, options, callback) => {
+      callback(null, {});
+    },
+    assertions: (err, actions, data) => {
+      const expected = [];
+      assert.isNull(err, 'no error returned');
+      assert.deepEqual(actions, expected, 'no actions fired');
+      assert.isUndefined(data, 'no market data provided');
+    }
+  });
 
+  test({
+    description: 'should dispatch the expected all actions with no error and populated marketsData',
+    loadDataFromAugurNode: (url, method, options, callback) => {
+      callback(null, { key: 'key', value: 'value' });
+    },
+    assertions: (err, actions, data) => {
+      const expected = [
+        ACTIONS.CLEAR_MARKET_DATA, ACTIONS.UPDATE_MARKET_DATA, ACTIONS.UPDATE_HAS_LOADED_MARKETS_TRUE
+      ];
+      assert.isNull(err, 'no error returned');
       assert.deepEqual(actions, expected, 'returned object was not handled as expected');
+      assert.deepEqual(data, { key: 'key', value: 'value' }, 'market data should equal object');
     }
   });
 
-  test({
-    description: 'should dispatch the expected actions with no error + an empty object of marketsData',
-    toTest: 'empty-object',
-    assertions: (actions) => {
-      const expected = [
-        {
-          type: UPDATE_HAS_LOADED_MARKETS,
-          hasLoadedMarkets: true
-        }
-      ];
-
-      assert.deepEqual(actions, expected, 'returned object was not handled as expected');
-    }
-  });
 });

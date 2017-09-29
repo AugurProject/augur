@@ -79,33 +79,31 @@ describe('modules/market/actions/load-full-market.js', () => {
       }
     });
 
-    // test({
-    //   description: `should dispatch the expected actions when basic market data IS loaded`,
-    //   state: {
-    //     marketsData: {
-    //       '0xMARKETID': {}
-    //     }
-    //   },
-    //   assertions: (store) => {
-    //     store.dispatch(loadFullMarket('0xMARKETID'));
-    //
-    //     const actual = store.getActions();
-    //
-    //     const expected = [
-    //       {
-    //         type: MOCK_ACTION_TYPES.ADD_MARKET_LOADING
-    //       },
-    //       {
-    //         type: MOCK_ACTION_TYPES.LOAD_MARKET_DETAILS,
-    //         data: {
-    //           marketID: '0xMARKETID'
-    //         }
-    //       }
-    //     ];
-    //
-    //     assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
-    //   }
-    // });
+    test({
+      description: `should dispatch the expected actions when basic market data IS loaded`,
+      state: {
+        marketsData: {
+          '0xMARKETID': {}
+        }
+      },
+      assertions: (store) => {
+        store.dispatch(loadFullMarket('0xMARKETID'));
+        const actual = store.getActions();
+        const expected = [
+          {
+            type: MOCK_ACTION_TYPES.ADD_MARKET_LOADING
+          },
+          {
+            type: MOCK_ACTION_TYPES.LOAD_MARKET_DETAILS,
+            data: {
+              marketID: '0xMARKETID'
+            }
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      }
+    });
   });
 
   describe('loadMarketsDetails', () => {
@@ -162,7 +160,9 @@ describe('modules/market/actions/load-full-market.js', () => {
           {
             type: MOCK_ACTION_TYPES.LOAD_PRICE_HISTORY,
             data: {
-              marketID: '0xMARKETID'
+              marketID: {
+                market: '0xMARKETID'
+              }
             }
           },
           {

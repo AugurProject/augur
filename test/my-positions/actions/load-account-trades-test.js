@@ -1,82 +1,100 @@
-import { describe, it, beforeEach } from 'mocha';
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import sinon from 'sinon';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 
 describe('modules/my-positions/actions/load-account-trades.js', () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
-
+  const { loadAccountTrades, __RewireAPI__ } = require('modules/my-positions/actions/load-account-trades');
+  const METHODS = {
+    getTradeHistory: 'getTradeHistory',
+    getPayoutHistory: 'getPayoutHistory'
+  };
   const MOCK_ACTION_TYPES = {
     CLEAR_ACCOUNT_TRADES: 'CLEAR_ACCOUNT_TRADES',
     UPDATE_ACCOUNT_TRADES_DATA: 'UPDATE_ACCOUNT_TRADES_DATA',
     CONVERT_LOGS_TO_TRANSACTIONS: 'CONVERT_LOGS_TO_TRANSACTIONS'
   };
 
-  const test = t => it(t.description, () => {
+  __RewireAPI__.__Rewire__('clearAccountTrades', () => ({
+    type: MOCK_ACTION_TYPES.CLEAR_ACCOUNT_TRADES
+  }));
+  __RewireAPI__.__Rewire__('updateAccountTradesData', (trades, market) => (
+    { type: MOCK_ACTION_TYPES.UPDATE_ACCOUNT_TRADES_DATA }
+  ));
+  __RewireAPI__.__Rewire__('convertLogsToTransactions', (type, payouts) => ({
+    type: MOCK_ACTION_TYPES.CONVERT_LOGS_TO_TRANSACTIONS,
+    data: {
+      type,
+      payouts
+    }
+  }));
+
+  afterEach(() => {
+    __RewireAPI__.__ResetDependency__('loadDataFromAugurNode', 'convertLogsToTransactions', 'clearAccountTrades', 'updateAccountTradesData');
+  });
+
+  const test = t => it(t.description, (done) => {
+    __RewireAPI__.__Rewire__('loadDataFromAugurNode', t.loadDataFromAugurNode);
+
     const store = mockStore(t.state || {});
-    t.assertions(store);
+    store.dispatch(loadAccountTrades(t.params, (err) => {
+      t.assertions(err, store);
+      done();
+    }));
   });
 
   describe('loadAccountTrades', () => {
-    const { loadAccountTrades, __RewireAPI__ } = require('modules/my-positions/actions/load-account-trades');
-
-    const mockAugur = {
-      logs: {
-        getAccountTrades: () => {},
-        getLogsChunked: () => {},
-        getBuyCompleteSetsLogs: () => {},
-        parseCompleteSetsLogs: sinon.stub().returns(true)
+    test({
+      description: `should call callback if no account present, no actions fired`,
+      state: {
+        loginAccount: {},
+        branch: {
+          id: '0x12345'
+        },
+        env: {
+          augurNodeURL: 'blah.com'
+        }
+      },
+      params: {},
+      assertions: (err, store) => {
+        const actualActions = store.getActions();
+        const expected = [];
+        assert.isNull(err, 'no error returned');
+        assert.deepEqual(actualActions, expected, 'only clear action fired');
       }
-    };
-    sinon.stub(mockAugur.logs, 'getAccountTrades', (filter, cb) => {
-      cb(null, []);
-    });
-    sinon.stub(mockAugur.logs, 'getLogsChunked', (filter, cb) => {
-      cb(['test']);
-    });
-    sinon.stub(mockAugur.logs, 'getBuyCompleteSetsLogs', (filter, cb) => {
-      cb(null, {});
-    });
-
-    __RewireAPI__.__Rewire__('clearAccountTrades', () => ({
-      type: MOCK_ACTION_TYPES.CLEAR_ACCOUNT_TRADES
-    }));
-    __RewireAPI__.__Rewire__('augur', mockAugur);
-    __RewireAPI__.__Rewire__('updateAccountTradesData', (trades, market) => ({
-      type: MOCK_ACTION_TYPES.UPDATE_ACCOUNT_TRADES_DATA,
-      data: {
-        trades,
-        market
-      }
-    }));
-    __RewireAPI__.__Rewire__('convertLogsToTransactions', (type, payouts) => ({
-      type: MOCK_ACTION_TYPES.CONVERT_LOGS_TO_TRANSACTIONS,
-      data: {
-        type,
-        payouts
-      }
-    }));
-
-    beforeEach(() => {
-      mockAugur.logs.getAccountTrades.reset();
-      mockAugur.logs.getLogsChunked.reset();
-      mockAugur.logs.getBuyCompleteSetsLogs.reset();
-      mockAugur.logs.parseCompleteSetsLogs.reset();
     });
 
     test({
-      description: `should call callback if no account present`,
+      description: `should call callback if no market present, clear action fired`,
       state: {
-        loginAccount: {}
+        loginAccount: {
+          address: '0xUSERADDRESS',
+          registerBlockNumber: 123
+        },
+        branch: {
+          id: '0x12345'
+        },
+        env: {
+          augurNodeURL: 'blah.com'
+        }
       },
-      assertions: (store) => {
-        const callback = sinon.stub();
-
-        store.dispatch(loadAccountTrades({}, callback));
-
-        assert.isTrue(callback.calledOnce);
+      loadDataFromAugurNode: (url, method, query, callback) => {
+        callback(null, null);
+      },
+      params: {},
+      assertions: (err, store) => {
+        const actualActions = store.getActions();
+        const expected = [{
+          type: MOCK_ACTION_TYPES.CLEAR_ACCOUNT_TRADES
+        },
+        {
+          type: MOCK_ACTION_TYPES.UPDATE_ACCOUNT_TRADES_DATA
+        }
+        ];
+        assert.isNull(err, 'no error returned');
+        assert.deepEqual(actualActions, expected, 'only clear action fired');
       }
     });
 
@@ -86,11 +104,19 @@ describe('modules/my-positions/actions/load-account-trades.js', () => {
         loginAccount: {
           address: '0xUSERADDRESS',
           registerBlockNumber: 123
+        },
+        branch: {
+          id: '0x12345'
+        },
+        env: {
+          augurNodeURL: 'blah.com'
         }
       },
-      assertions: (store) => {
-        store.dispatch(loadAccountTrades({}, () => {}));
-
+      loadDataFromAugurNode: (url, method, query, callback) => {
+        callback(null, []);
+      },
+      params: {},
+      assertions: (err, store) => {
         const actualActions = store.getActions();
 
         const expectedActions = [
@@ -98,104 +124,191 @@ describe('modules/my-positions/actions/load-account-trades.js', () => {
             type: MOCK_ACTION_TYPES.CLEAR_ACCOUNT_TRADES
           },
           {
-            type: MOCK_ACTION_TYPES.UPDATE_ACCOUNT_TRADES_DATA,
-            data: {
-              trades: [],
-              market: undefined
-            }
-          },
-          {
-            type: MOCK_ACTION_TYPES.CONVERT_LOGS_TO_TRANSACTIONS,
-            data: {
-              type: 'payout',
-              payouts: ['test']
-            }
+            type: MOCK_ACTION_TYPES.UPDATE_ACCOUNT_TRADES_DATA
           }
         ];
 
+        assert.isNull(err, 'no error returned');
         assert.deepEqual(actualActions, expectedActions, `Didn't dispatch the expected actions`);
-        assert.isTrue(mockAugur.logs.getAccountTrades.calledOnce, `Didn't call 'getAccountTrades' once as expected`);
-        assert.isTrue(mockAugur.logs.getLogsChunked.calledOnce, `Didn't call 'getLogsChunked' once as expected`);
-        assert.isTrue(mockAugur.logs.getBuyCompleteSetsLogs.calledOnce, `Didn't call 'getBuyCompleteSetsLogs' once as expected`);
-        assert.isTrue(mockAugur.logs.parseCompleteSetsLogs.calledOnce, `Didn't call 'parseCompleteSetsLogs' once as expected`);
+
       }
     });
 
     test({
-      description: `should dispatch the expected actions WITH market param`,
+      description: `should dispatch the expected actions WITH market param, empty trade history`,
       state: {
         loginAccount: {
           address: '0xUSERADDRESS',
           registerBlockNumber: 123
+        },
+        branch: {
+          id: '0x12345'
+        },
+        env: {
+          augurNodeURL: 'blah.com'
         }
       },
-      assertions: (store) => {
-        store.dispatch(loadAccountTrades({ market: '0xMARKETID' }, () => {}));
-
+      loadDataFromAugurNode: (url, method, query, callback) => {
+        if (method === METHODS.getTradeHistory) {
+          callback(null, []);
+        } else {
+          callback(null, [
+            { type: 'payout', payouts: ['test'] }
+          ]);
+        }
+      },
+      params: { market: '0xMARKETID' },
+      assertions: (err, store) => {
         const actualActions = store.getActions();
 
         const expectedActions = [
           {
             type: MOCK_ACTION_TYPES.UPDATE_ACCOUNT_TRADES_DATA,
-            data: {
-              trades: [],
-              market: '0xMARKETID'
-            }
           },
           {
             type: MOCK_ACTION_TYPES.CONVERT_LOGS_TO_TRANSACTIONS,
             data: {
-              type: 'payout',
-              payouts: ['test']
+              payouts: [{
+                type: 'payout',
+                payouts: ['test']
+              }],
+              type: 'Payout'
             }
           }
         ];
 
+        assert.isNull(err, 'no error returned');
         assert.deepEqual(actualActions, expectedActions, `Didn't dispatch the expected actions`);
-        assert.isTrue(mockAugur.logs.getAccountTrades.calledOnce, `Didn't call 'getAccountTrades' once as expected`);
-        assert.isTrue(mockAugur.logs.getLogsChunked.calledOnce, `Didn't call 'getLogsChunked' once as expected`);
-        assert.isTrue(mockAugur.logs.getBuyCompleteSetsLogs.calledOnce, `Didn't call 'getBuyCompleteSetsLogs' once as expected`);
-        assert.isTrue(mockAugur.logs.parseCompleteSetsLogs.calledOnce, `Didn't call 'parseCompleteSetsLogs' once as expected`);
+
       }
     });
 
     test({
-      description: `should dispatch the expected actions WITH market param AND err returned`,
+      description: `should dispatch the expected actions WITH market param AND err returned for trade history`,
       state: {
         loginAccount: {
           address: '0xUSERADDRESS',
           registerBlockNumber: 123
+        },
+        branch: {
+          id: '0x12345'
+        },
+        env: {
+          augurNodeURL: 'blah.com'
         }
       },
-      assertions: (store) => {
-        const callback = sinon.stub();
-
-        mockAugur.logs.getAccountTrades.restore();
-
-        sinon.stub(mockAugur.logs, 'getAccountTrades', (filter, cb) => {
-          cb(true);
-        });
-
-        store.dispatch(loadAccountTrades({ market: '0xMARKETID' }, callback));
-
+      loadDataFromAugurNode: (url, method, query, callback) => {
+        if (method === METHODS.getTradeHistory) {
+          callback('ERROR', null);
+        } else {
+          callback(null, [
+            { type: 'payout', payouts: ['test'] }
+          ]);
+        }
+      },
+      params: { market: '0xMARKETID' },
+      assertions: (err, store) => {
         const actualActions = store.getActions();
+        const expectedActions = [];
 
-        const expectedActions = [
-          {
-            type: MOCK_ACTION_TYPES.CONVERT_LOGS_TO_TRANSACTIONS,
-            data: {
-              type: 'payout',
-              payouts: ['test']
-            }
+        assert.deepEqual(err, 'ERROR', 'error was returned');
+        assert.deepEqual(actualActions, expectedActions, `Didn't dispatch the expected no actions`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions WITH market param AND payout history is array and trade history populated`,
+      state: {
+        loginAccount: {
+          address: '0xUSERADDRESS',
+          registerBlockNumber: 123
+        },
+        branch: {
+          id: '0x12345'
+        },
+        env: {
+          augurNodeURL: 'blah.com'
+        }
+      },
+      loadDataFromAugurNode: (url, method, query, callback) => {
+        if (method === METHODS.getTradeHistory) {
+          callback(null, { type: MOCK_ACTION_TYPES.UPDATE_ACCOUNT_TRADES_DATA });
+        } else {
+          callback(null,
+            [{ type: 'payout', payouts: ['test'] }]
+          );
+        }
+      },
+      params: { market: '0xMARKETID' },
+      assertions: (err, store) => {
+        const actualActions = store.getActions();
+        const expectedActions = [{ type: MOCK_ACTION_TYPES.UPDATE_ACCOUNT_TRADES_DATA }, {
+          type: MOCK_ACTION_TYPES.CONVERT_LOGS_TO_TRANSACTIONS,
+          data: {
+            type: 'Payout',
+            payouts: [{ type: 'payout', payouts: ['test'] }]
           }
-        ];
+        }];
 
-        assert.deepEqual(actualActions, expectedActions, `Didn't dispatch the expected actions`);
-        assert.isTrue(mockAugur.logs.getAccountTrades.calledOnce, `Didn't call 'getAccountTrades' once as expected`);
-        assert.isTrue(mockAugur.logs.getLogsChunked.calledOnce, `Didn't call 'getLogsChunked' once as expected`);
-        assert.isTrue(mockAugur.logs.getBuyCompleteSetsLogs.calledOnce, `Didn't call 'getBuyCompleteSetsLogs' once as expected`);
-        assert.isTrue(mockAugur.logs.parseCompleteSetsLogs.calledOnce, `Didn't call 'parseCompleteSetsLogs' once as expected`);
-        assert.isTrue(callback.calledOnce, `Didn't call the callback once as expected`);
+        assert.isNull(err, 'error not returned');
+        assert.deepEqual(actualActions, expectedActions, `Didn't dispatch the expected no actions`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions with NULL options`,
+      state: {
+        loginAccount: {
+          address: '0xUSERADDRESS',
+          registerBlockNumber: 123
+        },
+        branch: {
+          id: '0x12345'
+        },
+        env: {
+          augurNodeURL: 'blah.com'
+        }
+      },
+      loadDataFromAugurNode: null,
+      params: null,
+      assertions: (err, store) => {
+        const actualActions = store.getActions();
+        const expectedActions = [];
+        assert.isNull(err, 'no error returned');
+        assert.deepEqual(actualActions, expectedActions, `Didn't dispatch the expected no actions`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions WITH market param AND payout history is not array and trade history is not empty`,
+      state: {
+        loginAccount: {
+          address: '0xUSERADDRESS',
+          registerBlockNumber: 123
+        },
+        branch: {
+          id: '0x12345'
+        },
+        env: {
+          augurNodeURL: 'blah.com'
+        }
+      },
+      loadDataFromAugurNode: (url, method, query, callback) => {
+        if (method === METHODS.getTradeHistory) {
+          callback(null, { type: MOCK_ACTION_TYPES.UPDATE_ACCOUNT_TRADES_DATA });
+        } else {
+          callback(null,
+            { type: 'payout', payouts: ['test'] }
+          );
+        }
+      },
+      params: { market: '0xMARKETID' },
+      assertions: (err, store) => {
+        const actualActions = store.getActions();
+        const expectedActions = [{ type: MOCK_ACTION_TYPES.UPDATE_ACCOUNT_TRADES_DATA }];
+
+        assert.isNull(err, 'error not returned');
+        assert.deepEqual(actualActions, expectedActions, `Didn't dispatch the expected no actions`);
       }
     });
   });

@@ -6,8 +6,6 @@ import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import BigNumber from 'bignumber.js';
 
-import { getBestFill } from 'modules/my-positions/actions/close-position';
-
 import { BUY, SELL } from 'modules/transactions/constants/types';
 
 describe('modules/my-positions/actions/close-position.js', () => {
@@ -20,51 +18,51 @@ describe('modules/my-positions/actions/close-position.js', () => {
     CLEAR_CLOSE_POSITION_OUTCOME: 'CLEAR_CLOSE_POSITION_OUTCOME',
     ADD_CLOSE_POSITION_TRADE_GROUP: 'ADD_CLOSE_POSITION_TRADE_GROUP'
   };
+  const mockUpdateTradesInProgress = {
+    updateTradesInProgress: () => { }
+  };
+  sinon.stub(mockUpdateTradesInProgress, 'updateTradesInProgress', (marketID, outcomeID, side, numShares, limitPrice, maxCost, cb) => (dispatch, getState) => cb());
+  const mockClearClosePositionOutcome = {
+    clearClosePositionOutcome: sinon.stub().returns({ type: MOCK_ACTION_TYPES.CLEAR_CLOSE_POSITION_OUTCOME })
+  };
+  const mockPlaceTrade = {
+    placeTrade: () => { }
+  };
+  const mockAddClosePositionTradeGroup = {
+    addClosePositionTradeGroup: sinon.stub().returns({
+      type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
+    })
+  };
 
-  describe('closePosition', () => {
-    const mockUpdateTradesInProgress = {
-      updateTradesInProgress: () => {}
-    };
-    sinon.stub(mockUpdateTradesInProgress, 'updateTradesInProgress', (marketID, outcomeID, side, numShares, limitPrice, maxCost, cb) => (dispatch, getState) => cb());
-    const mockClearClosePositionOutcome = {
-      clearClosePositionOutcome: sinon.stub().returns({ type: MOCK_ACTION_TYPES.CLEAR_CLOSE_POSITION_OUTCOME })
-    };
-    const mockPlaceTrade = {
-      placeTrade: () => {}
-    };
-    const mockAddClosePositionTradeGroup = {
-      addClosePositionTradeGroup: sinon.stub().returns({
-        type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
-      })
-    };
-    const mockLoadBidsAsks = {
-      loadBidsAsks: () => {}
-    };
-    sinon.stub(mockLoadBidsAsks, 'loadBidsAsks', (marketID, cb) => dispatch => cb());
-    const mockMarkets = sinon.stub().returns([
-      {
-        id: '0xMARKETID',
-        myPositionOutcomes: [
-          {
-            id: '1',
-            position: {
-              qtyShares: {
-                value: 10
-              }
+  const loadBidsAsks = (marketID, cb) => dispatch => cb();
+
+  const selectAllMarkets = sinon.stub().returns([
+    {
+      id: '0xMARKETID',
+      myPositionOutcomes: [
+        {
+          id: '1',
+          position: {
+            qtyShares: {
+              value: 10
             }
           }
-        ]
-      }
-    ]);
+        }
+      ]
+    }
+  ]);
 
-    const action = proxyquire('../../../src/modules/my-positions/actions/close-position.js', {
-      '../../trade/actions/update-trades-in-progress': mockUpdateTradesInProgress,
-      '../../trade/actions/place-trade': mockPlaceTrade,
-      './add-close-position-trade-group': mockAddClosePositionTradeGroup,
-      './clear-close-position-outcome': mockClearClosePositionOutcome,
-      '../../bids-asks/actions/load-bids-asks': mockLoadBidsAsks,
-      '../../markets/selectors/markets-all': mockMarkets
-    });
+  const action = proxyquire('../../../src/modules/my-positions/actions/close-position.js', {
+    '../../trade/actions/update-trades-in-progress': mockUpdateTradesInProgress,
+    '../../trade/actions/place-trade': mockPlaceTrade,
+    './add-close-position-trade-group': mockAddClosePositionTradeGroup,
+    './clear-close-position-outcome': mockClearClosePositionOutcome,
+    '../../bids-asks/actions/load-bids-asks': loadBidsAsks,
+    '../../markets/selectors/markets-all': selectAllMarkets
+  });
+
+  describe('closePosition', () => {
+
 
     afterEach(() => {
       mockPlaceTrade.placeTrade.restore();
@@ -263,7 +261,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
   describe('getBestFill', () => {
     const test = (t) => {
       it(t.description, () => {
-        const bestFill = getBestFill(t.state.orderBook, t.arguments.side, t.arguments.shares, t.arguments.marketID, t.arguments.outcomeID, t.arguments.userAddress);
+        const bestFill = action.getBestFill(t.state.orderBook, t.arguments.side, t.arguments.shares, t.arguments.marketID, t.arguments.outcomeID, t.arguments.userAddress);
 
         t.assertions(bestFill);
       });

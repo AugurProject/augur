@@ -1,12 +1,12 @@
+import { loadFundingHistory, __RewireAPI__ as ReWireModule } from 'modules/account/actions/load-funding-history';
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import proxyquire from 'proxyquire';
 import { APPROVAL, TRANSFER, DEPOSIT_ETHER, WITHDRAW_ETHER } from '../../../src/modules/transactions/constants/types';
 
-describe('modules/account/actions/load-funding-history', () => {
-  proxyquire.noPreserveCache();
+describe('loadFundingHistory', () => {
+
   const middleware = [thunk];
   const mockStore = configureMockStore(middleware);
   const loginAccountAddress = '0x1824c06d9a2fd617a0fd59d0bee8641c1a787bf1';
@@ -28,14 +28,12 @@ describe('modules/account/actions/load-funding-history', () => {
     NO_DEPOSIT_HISTORY: `no deposit ether history data received from ${augurNodeUrl}`,
     NO_WITHDRAW_HISTORY: `no deposit ether history data received from ${augurNodeUrl}`
   };
-
   const LOGS_CONV_ACTIONS = {
     ACTION_TRANSFER_HISTORY: { type: 'CONVERT_TRANSFER_LOGS_TO_TRANSACTIONS' },
     ACTION_APPROVAL_HISTORY: { type: 'CONVERT_APPROVAL_LOGS_TO_TRANSACTIONS' },
     ACTION_DEPOSIT_HISTORY: { type: 'CONVERT_DEPOSIT_LOGS_TO_TRANSACTIONS' },
     ACTION_WITHDRAW_HISTORY: { type: 'CONVERT_WITHDRAW_LOGS_TO_TRANSACTIONS' }
   };
-
   const METHOD_LABEL_NAMES = {
     TRANSFER_HISTORY: 'getTransferHistory',
     APPROVAL_HISTORY: 'getApprovalHistory',
@@ -83,29 +81,26 @@ describe('modules/account/actions/load-funding-history', () => {
     }
   };
 
+  afterEach(() => {
+    ReWireModule.__ResetDependency__('loadDataFromAugurNode', 'convertLogsToTransactions');
+  });
+
+
   const test = (t) => {
     it(t.description, (done) => {
-      const convertLogsToTransactionsMock = {};
 
-      convertLogsToTransactionsMock.convertLogsToTransactions = allConvertLogToTransaction;
-      const loadDataFromAugurNodeMock = {
-        default: t.loadDataFromAugurNode
-      };
+      ReWireModule.__Rewire__('convertLogsToTransactions', allConvertLogToTransaction);
 
-      const action = proxyquire('../../../src/modules/account/actions/load-funding-history', {
-        '../../app/actions/load-data-from-augur-node': loadDataFromAugurNodeMock,
-        '../../transactions/actions/convert-logs-to-transactions': convertLogsToTransactionsMock
-      });
+      ReWireModule.__Rewire__('loadDataFromAugurNode', t.loadDataFromAugurNode);
 
       const store = mockStore(t.state || {});
 
-      store.dispatch(action.loadFundingHistory(t.options, (err) => {
+      store.dispatch(loadFundingHistory(t.options, (err) => {
         t.assertions(err, store);
         done();
       }));
     });
   };
-
 
   test({
     description: `should load transfer, approval and deposit history, return all 4 actions from store`,
