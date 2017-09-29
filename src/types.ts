@@ -1,6 +1,13 @@
 export type AugurJs = any;
 export type SqlLiteDb = any;
 
+export interface EthereumNodeEndpoints {
+  [protocol: string]: string
+}
+export interface UploadBlockNumbers {
+  [networkId: string]: number
+}
+
 export type AbiEncodedData = string;
 export type Address = string;
 export type Int256 = string;
@@ -29,3 +36,7 @@ export interface AugurLogs {
     [eventName: string]: FormattedLog[]
   }
 }
+
+export type ErrorCallback = (err?: Error|null) => void;
+
+export type LogProcessor = (db: SqlLiteDb, log: FormattedLog, callback: ErrorCallback) => void;

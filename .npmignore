@@ -4,4 +4,4 @@ test/
 .gitignore
 .travis.yml
 tsconfig.json
-augur.db
+augur.db*

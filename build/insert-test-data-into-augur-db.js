@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function insertTestDataIntoAugurDb(db, callback) {
     db.parallelize(() => {
         db.run(`INSERT INTO markets
-            (contractAddress, universe, marketType, numOutcomes, minPrice, maxPrice, marketCreator, creationTime, creationBlockNumber, creationFee, marketCreatorFeeRate, topic, tag1, tag2, reportingWindow, endTime, shortDescription, designatedReporter, resolutionSource)
+            (contract_address, universe, market_type, num_outcomes, min_price, max_price, market_creator, creation_time, creation_block_number, creation_fee, market_creator_fee_rate, topic, tag1, tag2, reporting_window, end_time, short_description, designated_reporter, resolution_source)
             VALUES (
               '0x0000000000000000000000000000000000000001',
               '0x000000000000000000000000000000000000000b',
@@ -26,7 +26,7 @@ function insertTestDataIntoAugurDb(db, callback) {
               'http://www.trusted-third-party.com'
             )`)
             .run(`INSERT INTO orders
-            (orderId, market, outcome, orderType, orderCreator, creationTime, creationBlockNumber, price, amount, moneyEscrowed, sharesEscrowed, betterOrderId, worseOrderId)
+            (order_id, market, outcome, order_type, order_creator, creation_time, creation_block_number, price, amount, money_escrowed, shares_escrowed, better_order_id, worse_order_id)
             VALUES (
               '0x1000000000000000000000000000000000000000000000000000000000000000',
               '0x0000000000000000000000000000000000000001',

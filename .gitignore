@@ -2,4 +2,4 @@
 /output/
 *.log
 coverage
-augur.db
+augur.db*
