@@ -6,23 +6,23 @@ export function createAugurDbTables(db: SqlLiteDb, callback: ErrorCallback): voi
       .run(`CREATE TABLE markets (
               contract_address varchar(66) PRIMARY KEY NOT NULL,
               universe varchar(66) NOT NULL,
-              market_type varchar(11) NOT NULL,
-              num_outcomes integer NOT NULL,
-              min_price integer NOT NULL,
-              max_price integer NOT NULL,
+              market_type varchar(11) NOT NULL CONSTRAINT enum_market_types CHECK (market_type = 'binary' OR market_type = 'categorical' OR market_type = 'scalar'),
+              num_outcomes integer NOT NULL CONSTRAINT positive_num_outcomes CHECK (num_outcomes > 0),
+              min_price numeric NOT NULL,
+              max_price numeric NOT NULL CONSTRAINT max_price_gt_min_price CHECK (max_price > min_price),
               market_creator varchar(66) NOT NULL,
-              creation_time integer NOT NULL,
-              creation_block_number integer NOT NULL,
-              creation_fee integer NOT NULL,
-              market_creator_fee_rate integer NOT NULL,
-              market_creator_fees_collected integer DEFAULT 0,
+              creation_time integer NOT NULL CONSTRAINT positive_market_creation_time CHECK (creation_time > 0),
+              creation_block_number integer NOT NULL CONSTRAINT positive_market_creation_block_number CHECK (creation_block_number > 0),
+              creation_fee numeric NOT NULL CONSTRAINT nonnegative_creation_fee CHECK (creation_fee >= 0),
+              market_creator_fee_rate numeric NOT NULL CONSTRAINT nonnegative_market_creator_fee_rate CHECK (market_creator_fee_rate >= 0),
+              market_creator_fees_collected numeric DEFAULT 0 CONSTRAINT nonnegative_market_creator_fees_collected CHECK (market_creator_fees_collected >= 0),
               topic varchar(255) NOT NULL,
               tag1 varchar(255),
               tag2 varchar(255),
-              volume integer DEFAULT 0,
-              shares_outstanding integer DEFAULT 0,
+              volume numeric DEFAULT 0 CONSTRAINT nonnegative_volume CHECK (volume >= 0),
+              shares_outstanding numeric DEFAULT 0 CONSTRAINT nonnegative_shares_outstanding CHECK (shares_outstanding >= 0),
               reporting_window varchar(66),
-              end_time integer NOT NULL,
+              end_time integer NOT NULL CONSTRAINT positive_end_time CHECK (end_time > 0),
               finalization_time integer,
               short_description varchar(1000) NOT NULL,
               long_description text,
@@ -33,15 +33,15 @@ export function createAugurDbTables(db: SqlLiteDb, callback: ErrorCallback): voi
       .run(`CREATE TABLE orders (
               order_id varchar(66) PRIMARY KEY NOT NULL,
               market varchar(66) NOT NULL,
-              outcome integer NOT NULL,
-              order_type integer NOT NULL,
+              outcome integer NOT NULL CONSTRAINT nonnegative_outcome CHECK (outcome >= 0),
+              order_type varchar(4) NOT NULL CONSTRAINT enum_order_types CHECK (order_type = 'buy' OR order_type = 'sell'),
               order_creator varchar(66) NOT NULL,
-              creation_time integer NOT NULL,
-              creation_block_number integer NOT NULL,
-              price integer NOT NULL,
-              amount integer NOT NULL,
-              money_escrowed integer NOT NULL,
-              shares_escrowed integer NOT NULL,
+              creation_time integer NOT NULL CONSTRAINT positive_order_creation_time CHECK (creation_time > 0),
+              creation_block_number integer NOT NULL CONSTRAINT positive_order_creation_block_number CHECK (creation_block_number > 0),
+              price numeric NOT NULL,
+              amount numeric NOT NULL CONSTRAINT nonnegative_amount CHECK (amount >= 0),
+              money_escrowed numeric NOT NULL CONSTRAINT nonnegative_money_escrowed CHECK (money_escrowed >= 0),
+              shares_escrowed numeric NOT NULL CONSTRAINT nonnegative_shares_escrowed CHECK (shares_escrowed >= 0),
               better_order_id varchar(66),
               worse_order_id varchar(66)
             )`)
@@ -49,15 +49,16 @@ export function createAugurDbTables(db: SqlLiteDb, callback: ErrorCallback): voi
       .run(`CREATE TABLE balances (
               owner varchar(66) NOT NULL,
               token varchar(66) NOT NULL,
-              balance integer NOT NULL DEFAULT 0,
+              balance numeric NOT NULL DEFAULT 0 CONSTRAINT nonnegative_balance CHECK (balance >= 0),
               UNIQUE(owner, token)
             )`)
       .run(`DROP TABLE IF EXISTS tokens`)
       .run(`CREATE TABLE tokens (
-              symbol varchar(10) PRIMARY KEY NOT NULL,
-              contract_address varchar(66) NOT NULL,
-              network_id integer NOT NULL,
-              UNIQUE(network_id, contract_address)
+              contract_address varchar(66) PRIMARY KEY NOT NULL,
+              symbol varchar(255) NOT NULL,
+              market varchar(66),
+              outcome integer,
+              UNIQUE(symbol)
             )`)
       .run(`DROP TABLE IF EXISTS topics`)
       .run(`CREATE TABLE topics (
@@ -67,18 +68,18 @@ export function createAugurDbTables(db: SqlLiteDb, callback: ErrorCallback): voi
       .run(`DROP TABLE IF EXISTS blockchain_sync_history`)
       .run(`CREATE TABLE blockchain_sync_history (
               id integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-              highest_block_number integer NOT NULL,
+              highest_block_number integer NOT NULL CONSTRAINT nonnegative_highest_block_number CHECK (highest_block_number >= 0),
               sync_time timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
             )`)
       .run(`DROP TABLE IF EXISTS transfers`)
       .run(`CREATE TABLE transfers (
               transaction_hash varchar(66) NOT NULL,
-              log_index integer NOT NULL,
+              log_index integer NOT NULL CONSTRAINT nonnegative_log_index CHECK (log_index >= 0),
               sender varchar(66) NOT NULL,
               recipient varchar(66) NOT NULL,
               token varchar(66) NOT NULL,
-              value integer NOT NULL,
-              block_number integer NOT NULL,
+              value numeric NOT NULL CONSTRAINT positive_value CHECK (value > 0),
+              block_number integer NOT NULL CONSTRAINT positive_block_number CHECK (block_number > 0),
               UNIQUE(transaction_hash, log_index)
             )`, callback);
   });

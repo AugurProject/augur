@@ -14,5 +14,5 @@ export function startAugurListeners(db: SqlLiteDb, augur: AugurJs, callback: () 
         logProcessors.Augur.TokensTransferred(db, log, logError);
       }
     }
-  }, (blockNumber: string) => console.log("block", blockNumber), callback);
+  }, (blockNumber: string) => console.log("new block received:", blockNumber), callback);
 }

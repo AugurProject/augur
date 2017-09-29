@@ -18,9 +18,11 @@ export const logProcessors: {[contractName: string]: {[eventName: string]: LogPr
   LegacyRepContract: {
     Transfer: (db: SqlLiteDb, log: FormattedLog, callback: ErrorCallback): void => {
       const dataToInsert = [log.transactionHash, log.logIndex, log.from, log.to, log.address, log.value, log.blockNumber];
-      db.run(`INSERT INTO transfers
-        (transaction_hash, log_index, sender, recipient, token, value, block_number)
-        VALUES (${dataToInsert.map(() => '?').join(',')})`, dataToInsert, callback);
+      db.get(`SELECT symbol FROM tokens WHERE contract_address = ?`, [], (err?: Error, row?: Object) => {
+        db.run(`INSERT INTO transfers
+          (transaction_hash, log_index, sender, recipient, token, value, block_number)
+          VALUES (${dataToInsert.map(() => '?').join(',')})`, dataToInsert, callback);
+      });
     }
   }
 };

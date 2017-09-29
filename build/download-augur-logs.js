@@ -3,8 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const async_1 = require("async");
 const process_logs_1 = require("./process-logs");
 const log_processors_1 = require("./log-processors");
-function downloadAugurLogs(db, augur, uploadBlockNumbers, toBlock, callback) {
-    const fromBlock = uploadBlockNumbers[augur.rpc.getNetworkID()];
+function downloadAugurLogs(db, augur, fromBlock, toBlock, callback) {
     augur.logs.getAllAugurLogs({ fromBlock, toBlock }, (err, allAugurLogs) => {
         if (err)
             return callback(err instanceof Error ? err : new Error(JSON.stringify(err)));

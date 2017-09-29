@@ -14,7 +14,7 @@ function startAugurListeners(db, augur, callback) {
                 log_processors_1.logProcessors.Augur.TokensTransferred(db, log, log_error_1.logError);
             }
         }
-    }, (blockNumber) => console.log("block", blockNumber), callback);
+    }, (blockNumber) => console.log("new block received:", blockNumber), callback);
 }
 exports.startAugurListeners = startAugurListeners;
 //# sourceMappingURL=start-augur-listeners.js.map
