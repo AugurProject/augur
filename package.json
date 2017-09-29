@@ -24,7 +24,7 @@
   "dependencies": {
     "airbitz-core-js-ui": "0.1.3",
     "async": "2.4.1",
-    "augur.js": "4.1.12",
+    "augur.js": "4.1.18",
     "bignumber.js": "4.0.2",
     "bs58": "4.0.1",
     "classnames": "2.2.5",
@@ -60,7 +60,7 @@
     "reselect": "3.0.1",
     "secure-random": "1.1.1",
     "shelljs": "0.7.8",
-    "speedomatic": "2.0.0",
+    "speedomatic": "2.0.3",
     "zxcvbn": "4.4.2"
   },
   "devDependencies": {

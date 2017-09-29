@@ -39,20 +39,20 @@ export function submitNewMarket(newMarket, history) {
         formattedNewMarket._maxDisplayPrice = '1';
         formattedNewMarket._numOutcomes = newMarket.outcomes.length;
         formattedNewMarket._extraInfo.outcomeNames = newMarket.outcomes;
-        createMarket = augur.create.createCategoricalMarket;
+        createMarket = augur.createMarket.createCategoricalMarket;
         break;
       case SCALAR:
         formattedNewMarket._minDisplayPrice = newMarket.scalarSmallNum.toString();
         formattedNewMarket._maxDisplayPrice = newMarket.scalarBigNum.toString();
         formattedNewMarket._numOutcomes = 2;
-        createMarket = augur.create.createScalarMarket;
+        createMarket = augur.createMarket.createScalarMarket;
         break;
       case BINARY:
       default:
         formattedNewMarket._minDisplayPrice = '0';
         formattedNewMarket._maxDisplayPrice = '1';
         formattedNewMarket._numOutcomes = 2;
-        createMarket = augur.create.createCategoricalMarket;
+        createMarket = augur.createMarket.createCategoricalMarket;
     }
 
     createMarket({
