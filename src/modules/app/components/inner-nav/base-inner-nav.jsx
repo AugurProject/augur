@@ -2,20 +2,28 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
+import { mobileMenuStates } from 'modules/app/components/app/app'
 
 import Styles from 'modules/app/components/inner-nav/inner-nav.styles'
 
-import parseStringToArray from 'modules/routes/helpers/parse-string-to-array'
-import makeQuery from 'modules/routes/helpers/make-query'
-import makePath from 'modules/routes/helpers/make-path'
-
-import { QUERY_VALUE_DELIMITER } from 'modules/routes/constants/query-value-delimiter'
-import { TOPIC_PARAM_NAME, TAGS_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
-import { MARKETS } from 'modules/routes/constants/views'
-
 import MenuItem from 'modules/app/components/inner-nav/menu-item'
 
-export default class BaseInnerNav extends React.Component {
+export default class BaseInnerNav extends Component {
+  static propTypes = {
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+    isMobile: PropTypes.bool.isRequired,
+    mobileMenuState: PropTypes.number.isRequired,
+    subMenuScalar: PropTypes.number.isRequired
+  }
+
+  getMainMenuData() {
+    return [];
+  }
+
+  getSubMenuData() {
+    return [];
+  }
 
   render() {
     const showMainMenu = this.props.mobileMenuState >= mobileMenuStates.SUBMENU_OPEN
@@ -23,7 +31,7 @@ export default class BaseInnerNav extends React.Component {
 
     let subMenuAnimatedStyle
     if (!this.props.isMobile) {
-      animatedStyle = { left: (110 * this.props.subMenuScalar) }
+      subMenuAnimatedStyle = { left: (110 * this.props.subMenuScalar) }
     }
 
     const dataToItem = (item) => (
@@ -52,25 +60,25 @@ export default class BaseInnerNav extends React.Component {
       <aside
         className={classNames(
           Styles.InnerNav,
-          { [Styles.mobileShow]: showCategories }
+          { [Styles.mobileShow]: showMainMenu }
         )}
       >
         <ul
           className={classNames(
             Styles.InnerNav__menu,
             Styles['InnerNav__menu--submenu'],
-            { [Styles['InnerNav__menu--submenu--mobileshow']]: showKeywords }
+            { [Styles['InnerNav__menu--submenu--mobileshow']]: showSubMenu }
           )}
           style={subMenuAnimatedStyle}
         >
-          {map(this.getSubMenuData(), dataToItem)}
+          {this.getSubMenuData().map(dataToItem)}
         </ul>
         <ul
           className={classNames(
             Styles.InnerNav__menu, Styles['InnerNav__menu--main']
           )}
         >
-          {map(this.getMainMenuData(), dataToItem)}
+          {this.getMainMenuData().map(dataToItem)}
         </ul>
       </aside>
     )

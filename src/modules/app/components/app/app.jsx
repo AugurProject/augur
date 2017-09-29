@@ -10,7 +10,7 @@ import { tween } from 'shifty'
 import _ from 'lodash'
 
 import TopBar from 'modules/app/components/top-bar/top-bar'
-import MarketsInnerNav from 'modules/app/components/inner-nav/marktes-inner-nav'
+import MarketsInnerNav from 'modules/app/components/inner-nav/markets-inner-nav'
 import PortfolioInnerNav from 'modules/app/components/inner-nav/portfolio-inner-nav'
 import SideNav from 'modules/app/components/side-nav/side-nav'
 import Origami from 'modules/app/components/origami-svg/origami-svg'
@@ -137,7 +137,7 @@ export default class AppView extends Component {
         this.changeMenu(nextBasePath)
       }
 
-      if (nextPath === MARKETS && selectedCategory) {
+      if (nextBasePath === MARKETS && selectedCategory) {
         this.toggleMenuTween(SUB_MENU, true)
       }
       // navigate to markets page
@@ -156,21 +156,22 @@ export default class AppView extends Component {
   }
 
   changeMenu(nextBasePath, callback) {
-    const menuExitPromise = new Promise()
-    const submenuExitPromise = new Promise()
+    const menuExitPromise = new Promise((resolve)=>{
+      this.toggleMenuTween(MAIN_MENU, false, () => resolve())
+    })
+    const submenuExitPromise = new Promise((resolve)=>{
+      this.toggleMenuTween(SUB_MENU, false, () => resolve())
+    })
 
-    this.toggleMenuTween(MAIN_MENU, false, () => menuExitPromise.resolve())
-    this.toggleMenuTween(SUB_MENU, false, () => submenuExitPromise.resolve())
-
-    Promise.all([menuExitPromise, submenuExitPromise], () => {
+    Promise.all([menuExitPromise, submenuExitPromise]).then(() => {
       switch (nextBasePath) {
         case MARKETS:
-        case PORTFOLIO:
+        case MY_POSITIONS:
           this.setState({ currentInnerNavType: nextBasePath })
           this.toggleMenuTween(MAIN_MENU, true, callback)
           break
         default:
-          callback()
+          if (callback) callback()
       }
     });
   }
@@ -263,7 +264,7 @@ export default class AppView extends Component {
 
     const InnerNav = ({
       [MARKETS]: MarketsInnerNav,
-      [PORTFOLIO]: PortolioInnerNav
+      [MY_POSITIONS]: PortfolioInnerNav
     })[this.state.currentInnerNavType];
 
     let categoriesMargin
@@ -323,6 +324,9 @@ export default class AppView extends Component {
                 location={p.location}
                 history={p.history}
               />
+            }
+            {!InnerNav &&
+              <div className="no-nav-placehold" />
             }
             <section
               className={Styles.Main__content}

@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
-import classNames from 'classnames'
 
-import Styles from 'modules/app/components/inner-nav/inner-nav.styles'
+import BaseInnerNav from 'modules/app/components/inner-nav/base-inner-nav'
 
 import { concat, difference, map, flatMap, uniq, isEqual } from 'lodash'
 import parseQuery from 'modules/routes/helpers/parse-query'
@@ -142,6 +140,7 @@ export default class MarketsInnerNav extends BaseInnerNav {
     return this.props.categories.map((item) => ({
       label: item.topic,
       isSelected: item.topic === selectedCategory,
+      visible: true,
       link: {
         pathname: makePath(MARKETS),
         search: makeQuery({
@@ -152,7 +151,7 @@ export default class MarketsInnerNav extends BaseInnerNav {
   }
 
   getSubMenuData() {
-    return this.state.visibleKeywords.map((keywordState, keyword) => ({
+    return map(this.state.visibleKeywords, (keywordState, keyword) => ({
       label: keyword,
       isSelected: (this.state.selectedKeywords.indexOf(keyword) > -1),
       onClick: () => this.toggleKeyword(keyword),
