@@ -2,12 +2,14 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
-import CreateMarketMainTitle from 'modules/create-market/components/create-market-main-title'
-import CreateMarketPreview from 'modules/create-market/components/create-market-preview'
-import CreateMarketForm from 'modules/create-market/components/create-market-form'
-import CreateMarketFormButtons from 'modules/create-market/components/create-market-form-buttons'
+// import CreateMarketMainTitle from 'modules/create-market/components/create-market-main-title'
+import CreateMarketPreview from 'modules/create-market/components/create-market-preview/create-market-preview'
+import CreateMarketForm from 'modules/create-market/components/create-market-form/create-market-form'
+// import CreateMarketFormButtons from 'modules/create-market/components/create-market-form-buttons'
 
-import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
+// import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
+
+import Styles from 'modules/create-market/components/create-market-view/create-market-view.styles'
 
 export default class CreateMarketView extends Component {
   static propTypes = {
@@ -18,70 +20,59 @@ export default class CreateMarketView extends Component {
     history: PropTypes.object.isRequired
   }
 
-  constructor(props) {
-    super(props)
+  // componentWillReceiveProps(nextProps) {
+  //   if (this.props.newMarket.isValid !== nextProps.newMarket.isValid ||
+  //     (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep && nextProps.newMarket.isValid) ||
+  //     (this.props.newMarket.holdForUserAction !== nextProps.newMarket.holdForUserAction)
+  //   ) {
+  //     this.updateValidations(nextProps.newMarket.isValid, nextProps.newMarket.currentStep, nextProps.newMarket.holdForUserAction)
+  //   }
+  // }
 
-    this.state = {
-      buttonHeight: 0
-    }
-
-    this.updateValidations = this.updateValidations.bind(this)
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.newMarket.isValid !== nextProps.newMarket.isValid ||
-      (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep && nextProps.newMarket.isValid) ||
-      (this.props.newMarket.holdForUserAction !== nextProps.newMarket.holdForUserAction)
-    ) {
-      this.updateValidations(nextProps.newMarket.isValid, nextProps.newMarket.currentStep, nextProps.newMarket.holdForUserAction)
-    }
-  }
-
-  updateValidations(isValid, currentStep, isHolding = false) {
-    if (isValid && !isHolding) {
-      this.props.addValidationToNewMarket(newMarketCreationOrder[currentStep])
-    } else {
-      this.props.removeValidationFromNewMarket(newMarketCreationOrder[currentStep])
-    }
-  }
+  // updateValidations(isValid, currentStep, isHolding = false) {
+  //   if (isValid && !isHolding) {
+  //     this.props.addValidationToNewMarket(newMarketCreationOrder[currentStep])
+  //   } else {
+  //     this.props.removeValidationFromNewMarket(newMarketCreationOrder[currentStep])
+  //   }
+  // }
 
   render() {
     const p = this.props
-    const s = this.state
+    // const s = this.state
 
     return (
-      <section
-        id="create_market_view"
-        style={{ marginBottom: s.buttonHeight + p.footerHeight }}
-      >
+      <section className={Styles.CreateMarketView}>
         <Helmet>
           <title>Create Market</title>
         </Helmet>
-        <div className="create-market-container">
-          <CreateMarketMainTitle
+        <div>
+          {/* <CreateMarketMainTitle
             type={p.newMarket.type}
             validations={p.newMarket.validations}
             currentStep={p.newMarket.currentStep}
             updateNewMarket={p.updateNewMarket}
             clearNewMarket={p.clearNewMarket}
-          />
+          /> */}
           <CreateMarketPreview
             newMarket={p.newMarket}
+
             updateNewMarket={p.updateNewMarket}
           />
           <CreateMarketForm
+            updateNewMarket={p.updateNewMarket}
+            newMarket={p.newMarket}
+            categories={p.categories}
+
             branch={p.branch}
             availableEth={p.availableEth}
-            newMarket={p.newMarket}
-            buttonHeight={s.buttonHeight}
             addOrderToNewMarket={p.addOrderToNewMarket}
             removeOrderFromNewMarket={p.removeOrderFromNewMarket}
-            updateNewMarket={p.updateNewMarket}
             updateValidations={this.updateValidations}
             addValidationToNewMarket={p.addValidationToNewMarket}
             removeValidationFromNewMarket={p.removeValidationFromNewMarket}
           />
-          <CreateMarketFormButtons
+          {/* <CreateMarketFormButtons
             footerHeight={p.footerHeight}
             currentStep={p.newMarket.currentStep}
             type={p.newMarket.type}
@@ -94,7 +85,7 @@ export default class CreateMarketView extends Component {
             history={p.history}
             updateButtonHeight={buttonHeight => this.setState({ buttonHeight })}
             updateValidations={this.updateValidations}
-          />
+          /> */}
         </div>
       </section>
     )

@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import Input from 'modules/common/components/input/input'
 import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications'
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
 import { NEW_MARKET_DESCRIPTION } from 'modules/create-market/constants/new-market-creation-steps'
 import { DESCRIPTION_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints'
+
+import Styles from 'modules/create-market/components/create-market-form-description/create-market-form-description.styles'
 
 export default class CreateMarketFormDescription extends Component {
   static propTypes = {
@@ -67,31 +68,26 @@ export default class CreateMarketFormDescription extends Component {
     const s = this.state
 
     return (
-      <article className={`create-market-form-part ${p.className || ''}`}>
-        <div className="create-market-form-part-content">
-          <div className="create-market-form-part-input">
-            <aside>
-              <h3>Event Question</h3>
-              <span>What is the question the market should attempt to answer?</span>
-            </aside>
-            <div className="vertical-form-divider" />
-            <form
-              ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus }}
-              onSubmit={e => e.preventDefault()}
-            >
-              <Input
-                type="text"
-                value={p.description}
-                maxLength={DESCRIPTION_MAX_LENGTH}
-                debounceMS={0}
-                onChange={description => this.validateForm(description)}
-              />
-              <CreateMarketFormInputNotifications
-                warnings={s.warnings}
-              />
-            </form>
-          </div>
-        </div>
+      <article>
+        <form
+          ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus }}
+          onSubmit={e => e.preventDefault()}
+        >
+          <label htmlFor="cm__input--desc">Market Question</label>
+          <input
+            id="cm__input--desc"
+            className={Styles.CreateMarketFormDesc__input}
+            type="text"
+            value={p.description}
+            placeholder="What question do you want the world to predict?"
+            maxLength={DESCRIPTION_MAX_LENGTH}
+            debounceMS={0}
+            onChange={description => this.validateForm(description)}
+          />
+          <CreateMarketFormInputNotifications
+            warnings={s.warnings}
+          />
+        </form>
       </article>
     )
   }

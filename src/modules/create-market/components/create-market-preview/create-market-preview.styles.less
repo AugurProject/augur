@@ -1,0 +1,127 @@
+@import '~assets/styles/shared.less';
+
+.CreateMarketPreview {
+  background-color: @color-white;
+  padding: 4.25rem 0 3.5rem;
+}
+
+.CreateMarketPreview__description {
+  line-height: 2.4rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.CreateMarketPreview__header,
+.CreateMarketPreview__footer-wrapper {
+  max-width: 81.25rem;
+}
+
+.CreateMarketPreview__header-wrapper,
+.CreateMarketPreview__meta {
+  margin: auto;
+  max-width: 62.75rem;
+  padding: 0 2rem;
+  position: relative;
+}
+
+.CreateMarketPreview__header {
+  padding-bottom: 2.5rem;
+}
+
+.CreateMarketPreview__footer {
+  border-top: 1px solid @color-lightest-gray;
+  padding-top: 1rem;
+}
+
+.CreateMarketPreview__icon {
+  height: 1.5rem;
+  position: absolute;
+  right: 2rem;
+  top: 0;
+  width: 1.5rem;
+}
+
+.CreateMarketPreview__meta {
+  display: flex;
+
+  > li {
+    margin-left: 2em;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    > span {
+      &:extend(.caps--medium);
+
+      color: @color-purple;
+      display: block;
+
+      &:first-child {
+        &:extend(.caps--small);
+
+        color: @color-lightgray;
+        margin-bottom: 0.625rem;
+      }
+    }
+  }
+}
+
+.CreateMarketPreview__tags {
+  display: flex;
+  margin-bottom: 1.625rem;
+  padding-right: 2.125rem;
+
+  > ul {
+    &:extend(.caps--medium);
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:not(:first-child) {
+      margin-left: 2rem;
+    }
+
+    > li {
+      display: inline;
+      text-transform: uppercase;
+
+      &:not(:empty)::after {
+        content: "/";
+        margin: 0 4px;
+      }
+
+      &:last-child::after {
+        display: none;
+      }
+
+      &:first-child {
+        color: @color-lightgray;
+        margin-right: 1rem;
+
+        &::after {
+          display: inline-block;
+        }
+      }
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .CreateMarketPreview__header-wrapper,
+  .CreateMarketPreview__meta {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .CreateMarketPreview__tags {
+    display: block;
+
+    > ul:not(:first-child) {
+      margin-left: 0;
+      margin-top: 0.5rem;
+    }
+  }
+}

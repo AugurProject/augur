@@ -28,7 +28,8 @@ export default class Input extends Component {
     canToggleVisibility: PropTypes.bool,
     shouldMatchValue: PropTypes.bool,
     comparisonValue: PropTypes.string,
-    isSearch: PropTypes.bool
+    isSearch: PropTypes.bool,
+    placeholder: PropTypes.string
   };
 
   constructor(props) {
@@ -103,6 +104,7 @@ export default class Input extends Component {
             value={s.value}
             onChange={this.handleOnChange}
             onBlur={this.handleOnBlur}
+            placeholder={p.placeholder}
           />
         }
 

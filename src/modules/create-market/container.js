@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { selectTopics } from 'modules/topics/selectors/topics'
 import { submitNewMarket } from 'modules/create-market/actions/submit-new-market'
 import {
   addValidationToNewMarket,
@@ -9,7 +10,7 @@ import {
   updateNewMarket,
   clearNewMarket
 } from 'modules/create-market/actions/update-new-market'
-import CreateMarketView from 'modules/create-market/components/create-market-view'
+import CreateMarketView from 'modules/create-market/components/create-market-view/create-market-view'
 
 import getValue from 'utils/get-value'
 
@@ -17,7 +18,8 @@ const mapStateToProps = state => ({
   branch: state.branch,
   availableEth: getValue(state, 'loginAccount.ethTokens'),
   newMarket: state.newMarket,
-  footerHeight: state.footerHeight
+  footerHeight: state.footerHeight,
+  categories: selectTopics(state),
 })
 
 const mapDispatchToProps = dispatch => ({

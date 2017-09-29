@@ -25,8 +25,9 @@ const DEFAULT_STATE = {
   expirySource: '',
   endDate: {},
   detailsText: '',
-  topic: '',
-  keywords: [],
+  category: '',
+  tag1: '',
+  tag2: '',
   takerFee: TAKER_FEE_DEFAULT,
   makerFee: MAKER_FEE_DEFAULT,
   orderBook: {}, // for submit orders

@@ -18,6 +18,12 @@ export const MarketStatusClosed = (
   </svg>
 )
 
+export const CreateMarketEdit = (
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <g id="Symbols" fill="none" fillRule="evenodd" strokeLinejoin="round"><g id="New-Market/Market-Card/2" stroke="#A7A2B2" fillRule="nonzero"><g id="Icon/Edit"><path d="M1 18.417V23h4.583l12.703-12.57-4.583-4.584L1 18.416zM22.643 5.94c.476-.476.476-1.246 0-1.723l-2.86-2.86c-.477-.476-1.247-.476-1.723 0l-2.237 2.237 4.583 4.583 2.237-2.237z" id="Shape" /></g></g></g>
+  </svg>
+)
+
 export const IconSearch = (
   <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
     <g id="Symbols" fill="none" fillRule="evenodd" fillOpacity=".5"><g id="Markets/Header" fill="#FFF"><g id="Group-5"><path d="M8.337 7.402h-.494l-.172-.17c.608-.707.977-1.624.977-2.63C8.647 2.37 6.837.56 4.604.56 2.37.56.56 2.37.56 4.603s1.81 4.043 4.044 4.043c1.004 0 1.92-.368 2.628-.974l.17.17v.493l3.11 3.105.928-.928-3.103-3.11zm-3.733 0c-1.547 0-2.8-1.252-2.8-2.8 0-1.544 1.253-2.798 2.8-2.798 1.545 0 2.8 1.254 2.8 2.8 0 1.546-1.255 2.798-2.8 2.798z" id="Shape" /></g></g></g>
@@ -224,7 +230,7 @@ export const Metamask = (
           .\\36 2c8b009-d5dc-4d34-b47d-9b2663c59e03, .a77395d2-2c0c-4381-9940-a909fb55ffd3 {
             fill: none;
             stroke: #fff;
-            stroke-linejoin: round;
+            strokeLinejoin: round;
           }
 
           .a77395d2-2c0c-4381-9940-a909fb55ffd3 {

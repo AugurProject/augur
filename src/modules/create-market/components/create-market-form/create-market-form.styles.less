@@ -1,0 +1,12 @@
+@import '~assets/styles/shared.less';
+
+.CreateMarketForm__page {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+
+  &.show-page {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
