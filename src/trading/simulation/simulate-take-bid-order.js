@@ -67,6 +67,7 @@ function simulateTakeBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
   return {
     sharesToCover: sharesToCover,
     settlementFees: settlementFees,
+    worstCaseFees: settlementFees,
     gasFees: gasFees,
     sharesDepleted: takerSharesDepleted,
     tokensDepleted: takerTokensDepleted,

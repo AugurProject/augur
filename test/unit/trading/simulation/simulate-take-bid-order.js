@@ -39,6 +39,7 @@ describe("trading/simulation/simulate-take-bid-order", function () {
       assert.deepEqual(output, {
         sharesToCover: new BigNumber("1", 10),
         settlementFees: new BigNumber("0.014", 10),
+        worstCaseFees: new BigNumber("0.014", 10),
         gasFees: new BigNumber("0", 10),
         sharesDepleted: new BigNumber("2", 10),
         tokensDepleted: new BigNumber("0", 10),
@@ -67,6 +68,7 @@ describe("trading/simulation/simulate-take-bid-order", function () {
       assert.deepEqual(output, {
         sharesToCover: new BigNumber("0", 10),
         settlementFees: new BigNumber("0", 10),
+        worstCaseFees: new BigNumber("0", 10),
         gasFees: new BigNumber("0", 10),
         sharesDepleted: new BigNumber("0", 10),
         tokensDepleted: new BigNumber("0.6", 10),
@@ -95,6 +97,7 @@ describe("trading/simulation/simulate-take-bid-order", function () {
       assert.deepEqual(output, {
         sharesToCover: new BigNumber("0", 10),
         settlementFees: new BigNumber("0", 10),
+        worstCaseFees: new BigNumber("0", 10),
         gasFees: new BigNumber("0", 10),
         sharesDepleted: new BigNumber("1.5", 10),
         tokensDepleted: new BigNumber("0", 10),
@@ -123,6 +126,7 @@ describe("trading/simulation/simulate-take-bid-order", function () {
       assert.deepEqual(output, {
         sharesToCover: new BigNumber("0", 10),
         settlementFees: new BigNumber("0", 10),
+        worstCaseFees: new BigNumber("0", 10),
         gasFees: new BigNumber("0", 10),
         sharesDepleted: new BigNumber("0", 10),
         tokensDepleted: new BigNumber("0.6", 10),
