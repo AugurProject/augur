@@ -16,8 +16,7 @@ bootnodes=""
 optargs=""
 
 if [ "${network}" = "3" ]; then
-  optargs="--testnet --nodiscover"
-  # optargs="--testnet"
+  optargs="--testnet"
   # address="0x15f6400a88fb320822b689607d425272bea2175f"
   # address="0x7c0d52faab596c08f484e3478aebc6205f3f5d8c"
   address="0x15f6400a88fb320822b689607d425272bea2175f"
@@ -45,4 +44,4 @@ fi
 ln -s "$HOME/.ethereum-${network}" $symlink
 
 # geth $optargs --shh --ws --wsapi "eth,net,web3,admin,personal,miner,txpool,shh" --wsport 8546 --wsorigins "*" --cache 2048 --networkid $network --rpc --rpcapi "eth,net,web3,admin,personal,miner,txpool,shh" --rpccorsdomain "*" --maxpeers $maxpeers --etherbase $address --unlock $address --password $passfile console
-geth --fast $optargs --cache 2048 --networkid $network --rpc --rpcapi "eth,net,web3,admin,personal,miner,txpool,shh" --maxpeers $maxpeers --etherbase $address --unlock $address console
+geth --fast $optargs --cache 2048 --networkid $network --wsorigins "*" --ws --wsapi "eth,net,web3" --wsport 8546 --rpc --rpcapi "eth,net,web3" --maxpeers $maxpeers --etherbase $address console

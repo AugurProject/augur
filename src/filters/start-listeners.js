@@ -14,17 +14,18 @@ var isFunction = require("../utils/is-function");
  * @param {function=} onSetupComplete Called when all listeners are successfully set up.
  */
 function startListeners(onLogAddedCallbacks, onNewBlock, onSetupComplete) {
-  var eventsAbi = contracts.abi.events;
   var blockStream = ethrpc.getBlockStream();
   if (isFunction(onNewBlock)) {
-    blockStream.subscribeToOnBlockAdded(function (message) {
-      parseBlockMessage(message, onNewBlock);
+    blockStream.subscribeToOnBlockAdded(function (newBlock) {
+      parseBlockMessage(newBlock, onNewBlock);
     });
   }
+  var eventsAbi = contracts.abi.events;
+  var activeContracts = contracts[ethrpc.getNetworkID()];
   Object.keys(onLogAddedCallbacks).forEach(function (contractName) {
     Object.keys(onLogAddedCallbacks[contractName]).forEach(function (eventName) {
       if (isFunction(onLogAddedCallbacks[contractName][eventName]) && eventsAbi[contractName] && eventsAbi[contractName][eventName]) {
-        addFilter(blockStream, contractName, eventName, eventsAbi[contractName][eventName], contracts[ethrpc.getNetworkID()], subscriptions.addSubscription, onLogAddedCallbacks[contractName][eventName]);
+        addFilter(blockStream, contractName, eventName, eventsAbi[contractName][eventName], activeContracts, subscriptions.addSubscription, onLogAddedCallbacks[contractName][eventName]);
       }
     });
   });
