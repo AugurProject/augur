@@ -41,6 +41,7 @@ describe("trading/simulation/simulate-take-ask-order", function () {
       assert.deepEqual(output, {
         sharesToCover: new BigNumber("1", 10),
         settlementFees: new BigNumber("0.006", 10),
+        worstCaseFees: new BigNumber("0.006", 10),
         gasFees: ZERO,
         otherSharesDepleted: new BigNumber("2", 10),
         tokensDepleted: ZERO,
@@ -69,6 +70,7 @@ describe("trading/simulation/simulate-take-ask-order", function () {
       assert.deepEqual(output, {
         sharesToCover: ZERO,
         settlementFees: ZERO,
+        worstCaseFees: ZERO,
         gasFees: ZERO,
         otherSharesDepleted: ZERO,
         tokensDepleted: new BigNumber("1.4", 10),
@@ -97,6 +99,7 @@ describe("trading/simulation/simulate-take-ask-order", function () {
       assert.deepEqual(output, {
         sharesToCover: ZERO,
         settlementFees: ZERO,
+        worstCaseFees: ZERO,
         gasFees: ZERO,
         otherSharesDepleted: new BigNumber("1.5", 10),
         tokensDepleted: ZERO,
@@ -125,6 +128,7 @@ describe("trading/simulation/simulate-take-ask-order", function () {
       assert.deepEqual(output, {
         sharesToCover: ZERO,
         settlementFees: ZERO,
+        worstCaseFees: ZERO,
         gasFees: ZERO,
         otherSharesDepleted: ZERO,
         tokensDepleted: new BigNumber("1.4", 10),

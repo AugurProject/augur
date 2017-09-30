@@ -11,6 +11,7 @@ var ZERO = constants.ZERO;
 function simulateSell(outcome, sharesToCover, shareBalances, tokenBalance, userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, buyOrderBook) {
   var simulatedSell = {
     settlementFees: ZERO,
+    worstCaseFees: ZERO,
     gasFees: ZERO,
     sharesDepleted: ZERO,
     otherSharesDepleted: ZERO,
@@ -21,14 +22,14 @@ function simulateSell(outcome, sharesToCover, shareBalances, tokenBalance, userA
 
   // if no matching bids, then user is asking: no settlement fees
   if (!matchingSortedBids.length) {
-    simulatedSell = sumSimulatedResults(simulatedSell, simulateMakeAskOrder(sharesToCover, price, maxPrice, outcome, shareBalances));
+    simulatedSell = sumSimulatedResults(simulatedSell, simulateMakeAskOrder(sharesToCover, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances));
 
   // if there are matching bids, user is selling
   } else {
     var simulatedTakeBidOrder = simulateTakeBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedBids, outcome, shareBalances);
     simulatedSell = sumSimulatedResults(simulatedSell, simulatedTakeBidOrder);
     if (simulatedTakeBidOrder.sharesToCover.gt(PRECISION.zero)) {
-      simulatedSell = sumSimulatedResults(simulatedSell, simulateMakeAskOrder(simulatedTakeBidOrder.sharesToCover, price, maxPrice, outcome, shareBalances));
+      simulatedSell = sumSimulatedResults(simulatedSell, simulateMakeAskOrder(simulatedTakeBidOrder.sharesToCover, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances));
     }
   }
 

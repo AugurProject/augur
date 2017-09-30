@@ -31,7 +31,7 @@ describe("trading/simulation/calculate-settlement-fee", function () {
       sharePrice: new BigNumber("0.6", 10)
     },
     assertions: function (output) {
-      assert.deepEqual(output, new BigNumber("0.008", 10));
+      assert.deepEqual(output, new BigNumber("0.012", 10));
     }
   });
   test({
@@ -45,7 +45,7 @@ describe("trading/simulation/calculate-settlement-fee", function () {
       sharePrice: new BigNumber("0.6", 10)
     },
     assertions: function (output) {
-      assert.deepEqual(output, new BigNumber("0.02", 10));
+      assert.deepEqual(output, new BigNumber("0.03", 10));
     }
   });
   test({
@@ -59,7 +59,7 @@ describe("trading/simulation/calculate-settlement-fee", function () {
       sharePrice: new BigNumber("0.6", 10)
     },
     assertions: function (output) {
-      assert.deepEqual(output, new BigNumber("0.012", 10));
+      assert.deepEqual(output, new BigNumber("0.018", 10));
     }
   });
   test({
@@ -87,7 +87,7 @@ describe("trading/simulation/calculate-settlement-fee", function () {
       sharePrice: ZERO
     },
     assertions: function (output) {
-      assert.deepEqual(output, new BigNumber("0.06", 10));
+      assert.deepEqual(output, ZERO);
     }
   });
   test({
@@ -101,7 +101,7 @@ describe("trading/simulation/calculate-settlement-fee", function () {
       sharePrice: new BigNumber("3", 10)
     },
     assertions: function (output) {
-      assert.deepEqual(output, ZERO);
+      assert.deepEqual(output, new BigNumber("0.06", 10));
     }
   });
 });
