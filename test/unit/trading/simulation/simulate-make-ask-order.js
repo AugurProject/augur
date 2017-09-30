@@ -13,7 +13,7 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     it(t.description, function () {
       var output;
       try {
-        output = simulateMakeAskOrder(t.params.numShares, t.params.price, t.params.maxPrice, t.params.outcome, t.params.shareBalances);
+        output = simulateMakeAskOrder(t.params.numShares, t.params.price, t.params.minPrice, t.params.maxPrice, t.params.marketCreatorFeeRate, t.params.reportingFeeRate, t.params.shouldCollectReportingFees, t.params.outcome, t.params.shareBalances);
       } catch (exc) {
         output = exc;
       }
@@ -25,13 +25,18 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     params: {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("0.6", 10),
+      minPrice: ZERO,
       maxPrice: new BigNumber("1", 10),
+      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      shouldCollectReportingFees: true,
+      reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
       shareBalances: [ZERO, ZERO]
     },
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
+        worstCaseFees: ZERO,
         sharesDepleted: ZERO,
         tokensDepleted: new BigNumber("0.8", 10),
         shareBalances: [ZERO, ZERO]
@@ -43,13 +48,18 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     params: {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("0.6", 10),
+      minPrice: ZERO,
       maxPrice: new BigNumber("5", 10),
+      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      shouldCollectReportingFees: true,
+      reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
       shareBalances: [ZERO, new BigNumber("4", 10)]
     },
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
+        worstCaseFees: ZERO,
         sharesDepleted: ZERO,
         tokensDepleted: new BigNumber("8.8", 10),
         shareBalances: [ZERO, new BigNumber("4", 10)]
@@ -61,13 +71,18 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     params: {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("0.6", 10),
+      minPrice: ZERO,
       maxPrice: new BigNumber("5", 10),
+      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      shouldCollectReportingFees: true,
+      reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
       shareBalances: [new BigNumber("3", 10), ZERO]
     },
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
+        worstCaseFees: new BigNumber("0.078", 10),
         sharesDepleted: new BigNumber("2", 10),
         tokensDepleted: ZERO,
         shareBalances: [new BigNumber("1", 10), ZERO]
@@ -79,31 +94,42 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     params: {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("0.6", 10),
+      minPrice: ZERO,
       maxPrice: new BigNumber("5", 10),
+      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      shouldCollectReportingFees: true,
+      reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
       shareBalances: [new BigNumber("1", 10), ZERO]
     },
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
+        worstCaseFees: new BigNumber("0.039", 10),
         sharesDepleted: new BigNumber("1", 10),
         tokensDepleted: new BigNumber("4.4", 10),
         shareBalances: [ZERO, ZERO]
       });
     }
   });
+  //NB - PG: Negative values? What is this testing
   test({
     description: "[1.2, 3.3] shares held, -2.1 maximum price, ask 1.9 shares of outcome 0 @ -2.6",
     params: {
       numShares: new BigNumber("1.9", 10),
       price: new BigNumber("-2.6", 10),
+      minPrice: new BigNumber("-3.1", 10),
       maxPrice: new BigNumber("-2.1", 10),
+      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      shouldCollectReportingFees: true,
+      reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
       shareBalances: [new BigNumber("1.2", 10), new BigNumber("3.3", 10)]
     },
     assertions: function (output) {
       assert.deepEqual(output, {
         gasFees: ZERO,
+        worstCaseFees: new BigNumber("0.039", 10),
         sharesDepleted: new BigNumber("1.2", 10),
         tokensDepleted: new BigNumber("0.35", 10),
         shareBalances: [ZERO, new BigNumber("3.3", 10)]
@@ -115,7 +141,11 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     params: {
       numShares: ZERO,
       price: new BigNumber("0.6", 10),
+      minPrice: ZERO,
       maxPrice: new BigNumber("5", 10),
+      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      shouldCollectReportingFees: true,
+      reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
       shareBalances: [new BigNumber("1", 10), ZERO]
     },
@@ -128,7 +158,11 @@ describe("trading/simulation/simulate-make-ask-order", function () {
     params: {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("5.1", 10),
+      minPrice: ZERO,
       maxPrice: new BigNumber("5", 10),
+      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      shouldCollectReportingFees: true,
+      reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
       shareBalances: [new BigNumber("1", 10), ZERO]
     },
