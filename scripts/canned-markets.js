@@ -12,8 +12,6 @@ var noop = require("../src/utils/noop");
 var augur = new Augur();
 var DEBUG = false;
 
-augur.options.debug.trading = DEBUG;
-
 var DEFAULT_PERIOD_LENGTH = 172800;
 
 var closingBell = new Date();

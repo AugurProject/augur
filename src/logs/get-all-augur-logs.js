@@ -28,11 +28,10 @@ function getAllAugurLogs(p, callback) {
   var filterParams = { address: listContracts(contractNameToAddressMap) };
   var fromBlock = p.fromBlock ? encodeNumberAsJSNumber(p.fromBlock) : constants.AUGUR_UPLOAD_BLOCK_NUMBER;
   var toBlock = p.toBlock ? encodeNumberAsJSNumber(p.toBlock) : parseInt(ethrpc.getCurrentBlock().number, 16);
-  async.eachSeries(chunkBlocks(fromBlock, toBlock), function (chunkOfBlocks, nextChunkOfBlocks) {
+  async.eachSeries(chunkBlocks(fromBlock, toBlock).reverse(), function (chunkOfBlocks, nextChunkOfBlocks) {
     ethrpc.getLogs(assign({}, filterParams, chunkOfBlocks), function (logs) {
       if (logs && logs.error) return nextChunkOfBlocks(logs);
       if (!Array.isArray(logs) || !logs.length) return nextChunkOfBlocks(null);
-      logs = logs.reverse();
       logs.forEach(function (log) {
         if (log && Array.isArray(log.topics) && log.topics.length) {
           var contractName = contractAddressToNameMap[log.address];

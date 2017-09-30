@@ -18,17 +18,12 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.1.20";
+  this.version = "4.2.0";
   this.options = {
     debug: {
-      broadcast: false,   // broadcast debug logging in ethrpc
-      connect: false,     // connection debug logging in ethrpc and ethereumjs-connect
-      trading: false,     // trading-related debug logging
-      reporting: false,   // reporting-related debug logging
-      filters: false,     // filters-related debug logging
-      sync: false         // show warning on synchronous RPC request
-    },
-    loadZeroVolumeMarkets: true
+      broadcast: false, // broadcast debug logging in ethrpc
+      connect: false    // connection debug logging in ethrpc and ethereumjs-connect
+    }
   };
   this.accounts = require("./accounts");
   this.api = require("./api")();

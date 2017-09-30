@@ -6422,17 +6422,12 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.1.20";
+  this.version = "4.2.0";
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
-      connect: false, // connection debug logging in ethrpc and ethereumjs-connect
-      trading: false, // trading-related debug logging
-      reporting: false, // reporting-related debug logging
-      filters: false, // filters-related debug logging
-      sync: false // show warning on synchronous RPC request
-    },
-    loadZeroVolumeMarkets: true
+      connect: false // connection debug logging in ethrpc and ethereumjs-connect
+    }
   };
   this.accounts = require("./accounts");
   this.api = require("./api")();
@@ -6533,11 +6528,10 @@ function getAllAugurLogs(p, callback) {
   var filterParams = { address: listContracts(contractNameToAddressMap) };
   var fromBlock = p.fromBlock ? encodeNumberAsJSNumber(p.fromBlock) : constants.AUGUR_UPLOAD_BLOCK_NUMBER;
   var toBlock = p.toBlock ? encodeNumberAsJSNumber(p.toBlock) : parseInt(ethrpc.getCurrentBlock().number, 16);
-  async.eachSeries(chunkBlocks(fromBlock, toBlock), function (chunkOfBlocks, nextChunkOfBlocks) {
+  async.eachSeries(chunkBlocks(fromBlock, toBlock).reverse(), function (chunkOfBlocks, nextChunkOfBlocks) {
     ethrpc.getLogs(assign({}, filterParams, chunkOfBlocks), function (logs) {
       if (logs && logs.error) return nextChunkOfBlocks(logs);
       if (!Array.isArray(logs) || !logs.length) return nextChunkOfBlocks(null);
-      logs = logs.reverse();
       logs.forEach(function (log) {
         if (log && Array.isArray(log.topics) && log.topics.length) {
           var contractName = contractAddressToNameMap[log.address];
