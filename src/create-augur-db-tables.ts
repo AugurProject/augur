@@ -40,7 +40,7 @@ export function createAugurDbTables(db: SqlLiteDb, callback: ErrorCallback): voi
               creation_block_number integer NOT NULL CONSTRAINT positive_order_creation_block_number CHECK (creation_block_number > 0),
               price numeric NOT NULL,
               amount numeric NOT NULL CONSTRAINT nonnegative_amount CHECK (amount >= 0),
-              money_escrowed numeric NOT NULL CONSTRAINT nonnegative_money_escrowed CHECK (money_escrowed >= 0),
+              tokens_escrowed numeric NOT NULL CONSTRAINT nonnegative_tokens_escrowed CHECK (tokens_escrowed >= 0),
               shares_escrowed numeric NOT NULL CONSTRAINT nonnegative_shares_escrowed CHECK (shares_escrowed >= 0),
               better_order_id varchar(66),
               worse_order_id varchar(66)

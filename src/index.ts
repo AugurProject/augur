@@ -5,19 +5,19 @@ import { checkAugurDbSetup } from "./check-augur-db-setup";
 import { syncAugurNodeWithBlockchain } from "./sync-augur-node-with-blockchain";
 import { getMarketInfo } from "./get-market-info";
 import { getAccountTransferHistory } from "./get-account-transfer-history";
+import { runWebsocketServer } from "./run-websocket-server";
 
-const { augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers } = require("../config");
+const { augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers, websocketPort } = require("../config");
 
 sqlite3.verbose();
 
 const db: SqlLiteDb = new sqlite3.Database(augurDbPath);
 const augur: AugurJs = new Augur();
 
-augur.rpc.setDebugOptions({ broadcast: true });
-
 checkAugurDbSetup(db, (err?: Error|null) => {
   if (err) return console.error("checkAugurDbSetup:", err);
   syncAugurNodeWithBlockchain(db, augur, ethereumNodeEndpoints, uploadBlockNumbers, (err?: Error|null) => {
     if (err) return console.error("syncAugurNodeWithBlockchain:", err);
+    runWebsocketServer(db, websocketPort);
   });
 });

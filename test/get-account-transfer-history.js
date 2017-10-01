@@ -86,4 +86,15 @@ describe("getAccountTransferHistory", () => {
       assert.deepEqual(accountTransferHistory, []);
     }
   });
+  test({
+    description: "get account transfer history for nonexistent account",
+    params: {
+      account: "0x0000000000000000000000000000000000000bbb",
+      token: null
+    },
+    assertions: (err, accountTransferHistory) => {
+      assert.isNull(err);
+      assert.deepEqual(accountTransferHistory, []);
+    }
+  });
 });

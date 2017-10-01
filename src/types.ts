@@ -117,3 +117,34 @@ export interface TransferLog {
 }
 
 export type TransferHistory = TransferLog[];
+
+export interface JsonRpcRequest {
+  jsonrpc: string,
+  id: string|number,
+  method: string,
+  params: any
+}
+
+export interface JsonRpcResponse {
+  jsonrpc: string,
+  result: any
+}
+
+export interface GetMarketInfoRequest {
+  jsonrpc: string,
+  id: string|number,
+  method: string,
+  params: {
+    market: string
+  }
+}
+
+export interface GetAccountTransferHistoryRequest {
+  jsonrpc: string,
+  id: string|number,
+  method: string,
+  params: {
+    account: Address,
+    token: Address|null
+  }
+}

@@ -1,7 +1,7 @@
 import { SqlLiteDb, MarketsRow, MarketInfo } from "./types";
 
-export function getMarketInfo(db: SqlLiteDb, marketId: string, callback: (err?: Error|null, result?: MarketInfo) => void) {
-  db.get(`SELECT * FROM markets WHERE contract_address = ?`, [marketId], (err?: Error|null, row?: MarketsRow) => {
+export function getMarketInfo(db: SqlLiteDb, market: string, callback: (err?: Error|null, result?: MarketInfo) => void) {
+  db.get(`SELECT * FROM markets WHERE contract_address = ?`, [market], (err?: Error|null, row?: MarketsRow) => {
     if (err) return callback(err);
     if (!row) return callback(null);
     const marketInfo: MarketInfo = {

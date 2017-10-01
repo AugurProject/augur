@@ -26,7 +26,7 @@ export function insertTestDataIntoAugurDb(db: SqlLiteDb, callback: ErrorCallback
               'http://www.trusted-third-party.com'
             )`)
       .run(`INSERT INTO orders
-            (order_id, market, outcome, order_type, order_creator, creation_time, creation_block_number, price, amount, money_escrowed, shares_escrowed, better_order_id, worse_order_id)
+            (order_id, market, outcome, order_type, order_creator, creation_time, creation_block_number, price, amount, tokens_escrowed, shares_escrowed, better_order_id, worse_order_id)
             VALUES (
               '0x1000000000000000000000000000000000000000000000000000000000000000',
               '0x0000000000000000000000000000000000000001',
