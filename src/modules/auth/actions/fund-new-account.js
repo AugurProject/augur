@@ -5,8 +5,10 @@ import noop from 'utils/noop';
 
 export function fundNewAccount(callback = LogError) {
   return (dispatch, getState) => {
+    const { loginAccount } = getState();
     if (augur.rpc.getNetworkID() !== '1') {
       augur.api.LegacyRepContract.faucet({
+        _signer: loginAccount.privateKey,
         onSent: noop,
         onSuccess: (res) => {
           console.log('LegacyRepContract.faucet', res);
