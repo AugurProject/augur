@@ -6,7 +6,7 @@ var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
 var calculateSettlementFee = require("./calculate-settlement-fee");
 
-function simulateMakeBidOrder(numShares, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances) {
+function simulateCreateBidOrder(numShares, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances) {
   var numOutcomes = shareBalances.length;
   if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
   if (numShares.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
@@ -43,4 +43,4 @@ function simulateMakeBidOrder(numShares, price, minPrice, maxPrice, marketCreato
   };
 }
 
-module.exports = simulateMakeBidOrder;
+module.exports = simulateCreateBidOrder;

@@ -16,7 +16,7 @@ var constants = require("../constants");
  * @param {string} p._fxpAmount Number of shares to trade, as a base-10 string.
  * @param {string} p._fxpPrice Normalized limit price for this trade, as a base-10 string.
  * @param {string=} p._tradeGroupID ID logged with each trade transaction (can be used to group trades client-side), as a hex string.
- * @param {boolean=} p.doNotMakeOrders If set to true, this trade will only take existing orders off the book, not create new ones (default: false).
+ * @param {boolean=} p.doNotCreateOrders If set to true, this trade will only take existing orders off the book, not create new ones (default: false).
  * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
  * @param {function} p.onSent Called when the first trading transaction is broadcast to the network.
  * @param {function} p.onSuccess Called when the full trade completes successfully.
@@ -26,7 +26,7 @@ function tradeUntilAmountIsZero(p) {
   if (speedomatic.unfix(p._fxpAmount).lte(constants.PRECISION.zero)) {
     return p.onSuccess(null);
   }
-  var tradePayload = assign({}, immutableDelete(p, "doNotMakeOrders"), {
+  var tradePayload = assign({}, immutableDelete(p, "doNotCreateOrders"), {
     _fxpAmount: speedomatic.fix(p._fxpAmount, "hex"),
     _fxpPrice: speedomatic.fix(p._fxpPrice, "hex"),
     onSuccess: function (res) {
@@ -39,7 +39,7 @@ function tradeUntilAmountIsZero(p) {
       });
     }
   });
-  if (p.doNotMakeOrders) {
+  if (p.doNotCreateOrders) {
     api().Trade.publicTakeBestOrder(tradePayload);
   } else {
     api().Trade.publicTrade(tradePayload);

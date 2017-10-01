@@ -33,7 +33,7 @@ var noop = require("../utils/noop");
 function getMarketPriceHistory(p, onChunkReceived, onComplete) {
   if (!isFunction(onChunkReceived)) onChunkReceived = noop;
   if (!isFunction(onComplete)) onComplete = noop;
-  getLogsChunked({ label: "TakeOrder", filter: p }, onChunkReceived, function (err, logs) {
+  getLogsChunked({ label: "FillOrder", filter: p }, onChunkReceived, function (err, logs) {
     if (err) return onComplete(err);
     var mergedLogs = {};
     logs.forEach(function (log) {

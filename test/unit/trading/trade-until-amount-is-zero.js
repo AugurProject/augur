@@ -30,7 +30,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _fxpAmount: "10",
       _fxpPrice: "0.5",
       _tradeGroupID: "0x1",
-      doNotMakeOrders: false,
+      doNotCreateOrders: false,
       onSent: function (res) {
         assert.strictEqual(res.hash, "TRANSACTION_HASH");
       },
@@ -80,7 +80,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _fxpAmount: "10",
       _fxpPrice: "0.5",
       _tradeGroupID: "0x1",
-      doNotMakeOrders: false,
+      doNotCreateOrders: false,
       onSent: function (res) {
         assert.strictEqual(res.hash, "TRANSACTION_HASH_1");
       },
@@ -139,7 +139,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _fxpAmount: "10",
       _fxpPrice: "0.5",
       _tradeGroupID: "0x1",
-      doNotMakeOrders: false,
+      doNotCreateOrders: false,
       onSent: function (res) {
         assert.strictEqual(res.hash, "TRANSACTION_HASH");
       },
@@ -189,7 +189,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _fxpAmount: "10",
       _fxpPrice: "0.5",
       _tradeGroupID: "0x1",
-      doNotMakeOrders: true,
+      doNotCreateOrders: true,
       onSent: function (res) {
         assert.strictEqual(res.hash, "TRANSACTION_HASH");
       },

@@ -5,7 +5,7 @@
 var assert = require("chai").assert;
 var proxyquire = require("proxyquire").noPreserveCache();
 
-var mockTakeOrderLogs = [{
+var mockFillOrderLogs = [{
   market: "MARKET_ADDRESS",
   outcome: "OUTCOME_ID",
   orderType: "buy",
@@ -57,13 +57,13 @@ describe("logs/get-market-price-history", function () {
         toBlock: 20
       },
       onChunkReceived: function (orderBookChunk) {
-        assert.deepEqual(orderBookChunk, mockTakeOrderLogs);
+        assert.deepEqual(orderBookChunk, mockFillOrderLogs);
       }
     },
     stub: {
       getLogsChunked: function (p, onChunkReceived, onComplete) {
         assert.deepEqual(p, {
-          label: "TakeOrder",
+          label: "FillOrder",
           filter: {
             market: "MARKET_ADDRESS",
             outcome: "OUTCOME_ID",
@@ -73,8 +73,8 @@ describe("logs/get-market-price-history", function () {
         });
         assert.isFunction(onChunkReceived);
         assert.isFunction(onComplete);
-        onChunkReceived(mockTakeOrderLogs);
-        onComplete(null, mockTakeOrderLogs);
+        onChunkReceived(mockFillOrderLogs);
+        onComplete(null, mockFillOrderLogs);
       }
     },
     assertions: function (err, marketPriceHistory) {

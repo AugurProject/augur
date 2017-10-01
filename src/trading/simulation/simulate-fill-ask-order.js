@@ -8,7 +8,7 @@ var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
 
-function simulateTakeAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedAsks, outcome, shareBalances) {
+function simulateFillAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedAsks, outcome, shareBalances) {
   var numOutcomes = shareBalances.length;
   if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
   if (sharesToCover.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
@@ -78,4 +78,4 @@ function simulateTakeAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
   };
 }
 
-module.exports = simulateTakeAskOrder;
+module.exports = simulateFillAskOrder;

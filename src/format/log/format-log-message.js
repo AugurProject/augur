@@ -19,16 +19,16 @@ function formatLogMessage(contractName, eventName, message) {
             extraInfo: extraInfo,
             marketCreationFee: unfix(message.marketCreationFee, "string")
           });
-        case "RedeemWinningTokens":
+        case "WinningTokensRedeemed":
           return assign({}, message, {
             amountRedeemed: unfix(message.amountRedeemed, "string"),
             reportingFeesReceived: unfix(message.reportingFeesReceived, "string")
           });
-        case "SubmitReport":
+        case "ReportSubmitted":
           return assign({}, message, {
             amountStaked: unfix(message.amountStaked, "string")
           });
-        case "Transfer":
+        case "TokensTransferred":
           return assign({}, message, {
             value: unfix(message.value, "string")
           });

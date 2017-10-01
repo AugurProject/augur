@@ -16,10 +16,10 @@ describe("trading/positions/get-adjusted-positions", function () {
         },
         "../../logs/get-logs": function (p, callback) {
           switch (p.label) {
-            case "MakeAskOrder":
+            case "CreateAskOrder":
               callback(null, t.logs.shortAskBuyCompleteSets);
               break;
-            case "TakeBidOrder":
+            case "FillBidOrder":
               callback(null, t.logs.shortSellBuyCompleteSets);
               break;
             case "SellCompleteSets":

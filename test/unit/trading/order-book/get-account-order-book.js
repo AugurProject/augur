@@ -6,7 +6,7 @@ var assert = require("chai").assert;
 var proxyquire = require("proxyquire").noPreserveCache();
 var insertIndexedLog = require("../../../../src/logs/insert-indexed-log");
 
-var mockMakeOrderLogs = [{
+var mockCreateOrderLogs = [{
   market: "MARKET_ADDRESS",
   sender: "SENDER_ADDRESS",
   orderType: "buy",
@@ -90,7 +90,7 @@ describe("trading/order-book/get-account-order-book", function () {
     stub: {
       getLogsChunked: function (p, onChunkReceived, onComplete) {
         assert.deepEqual(p, {
-          label: "MakeOrder",
+          label: "CreateOrder",
           filter: {
             sender: "SENDER_ADDRESS",
             market: "MARKET_ADDRESS",
@@ -106,8 +106,8 @@ describe("trading/order-book/get-account-order-book", function () {
         });
         assert.isFunction(onChunkReceived);
         assert.isFunction(onComplete);
-        mockMakeOrderLogs.forEach(function (mockMakeOrderLog) {
-          insertIndexedLog(p.aux.mergedLogs, mockMakeOrderLog, p.aux.index);
+        mockCreateOrderLogs.forEach(function (mockCreateOrderLog) {
+          insertIndexedLog(p.aux.mergedLogs, mockCreateOrderLog, p.aux.index);
         });
         onChunkReceived(p.aux.mergedLogs);
         onComplete(null, p.aux.mergedLogs);

@@ -4,14 +4,14 @@
 
 var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
-var simulateTakeBidOrder = require("../../../../src/trading/simulation/simulate-take-bid-order");
+var simulateFillBidOrder = require("../../../../src/trading/simulation/simulate-fill-bid-order");
 
-describe("trading/simulation/simulate-take-bid-order", function () {
+describe("trading/simulation/simulate-fill-bid-order", function () {
   var test = function (t) {
     it(t.description, function () {
       var output;
       try {
-        output = simulateTakeBidOrder(t.params.sharesToCover, t.params.minPrice, t.params.maxPrice, t.params.marketCreatorFeeRate, t.params.reportingFeeRate, t.params.shouldCollectReportingFees, t.params.matchingSortedBids, t.params.outcome, t.params.shareBalances);
+        output = simulateFillBidOrder(t.params.sharesToCover, t.params.minPrice, t.params.maxPrice, t.params.marketCreatorFeeRate, t.params.reportingFeeRate, t.params.shouldCollectReportingFees, t.params.matchingSortedBids, t.params.outcome, t.params.shareBalances);
       } catch (exc) {
         output = exc;
       }

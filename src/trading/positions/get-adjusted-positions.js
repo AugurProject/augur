@@ -19,10 +19,10 @@ function getAdjustedPositions(p, callback) {
   // TODO these log lookups add lots of overhead; instead of looking up here,
   //      should be chunked, pre-fetched, stored, then passed in from the UI.
   async.parallel({
-    // MakeAskOrder events where the maker does not own shares of the outcome they're selling
+    // CreateAskOrder events where the maker does not own shares of the outcome they're selling
     shortAskBuyCompleteSets: function (next) {
       getLogs({
-        label: "MakeAskOrder",
+        label: "CreateAskOrder",
         filter: {
           fromBlock: p.marketCreationBlockNumber,
           sender: p.account,
@@ -31,10 +31,10 @@ function getAdjustedPositions(p, callback) {
         }
       }, next);
     },
-    // TakeBidOrder events where the taker does not own shares of the outcome they're selling
+    // FillBidOrder events where the taker does not own shares of the outcome they're selling
     shortSellBuyCompleteSets: function (next) {
       getLogs({
-        label: "TakeBidOrder",
+        label: "FillBidOrder",
         filter: {
           fromBlock: p.marketCreationBlockNumber,
           sender: p.account,
