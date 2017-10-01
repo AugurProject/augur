@@ -9,7 +9,7 @@ export const loadBidsAsksHistory = (options, callback = logError) => (dispatch, 
   const query = { ...options, account: loginAccount.address, branch: branch.id };
   // TODO should these be combined into a single augur-node lookup?
   parallel([
-    next => loadDataFromAugurNode(env.augurNodeURL, 'getMakeOrderHistory', query, (err, makeOrderHistory) => {
+    next => loadDataFromAugurNode(env.augurNodeURL, 'getCreateOrderHistory', query, (err, makeOrderHistory) => {
       if (err) return next(err);
       if (makeOrderHistory == null) return next(`no make order history data received from ${env.augurNodeURL}`);
       dispatch(updateAccountBidsAsksData(makeOrderHistory, options.market));

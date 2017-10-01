@@ -72,7 +72,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
       it(t.description, () => {
         const store = mockStore(t.state || {});
 
-        sinon.stub(mockPlaceTrade, 'placeTrade', (marketID, outcomeID, tradesInProgress, doNotMakeOrders, cb) => (dispatch, getState) => {
+        sinon.stub(mockPlaceTrade, 'placeTrade', (marketID, outcomeID, tradesInProgress, doNotCreateOrders, cb) => (dispatch, getState) => {
           if (t.placeTradeFails) {
             cb(true);
           } else {

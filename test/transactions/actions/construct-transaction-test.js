@@ -36,8 +36,8 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
   const MOCK_ACTION_TYPES = {
     LOAD_MARKET_THEN_RETRY_CONVERSION: 'LOAD_MARKET_THEN_RETRY_CONVERSION',
     UPDATE_MARKETS_WITH_ACCOUNT_REPORT_DATA: 'UPDATE_MARKETS_WITH_ACCOUNT_REPORT_DATA',
-    CONSTRUCT_TAKE_ORDER_TRANSACTION: 'CONSTRUCT_TAKE_ORDER_TRANSACTION',
-    CONSTRUCT_MAKE_ORDER_TRANSACTION: 'CONSTRUCT_MAKE_ORDER_TRANSACTION',
+    CONSTRUCT_FILL_ORDER_TRANSACTION: 'CONSTRUCT_FILL_ORDER_TRANSACTION',
+    CONSTRUCT_CREATE_ORDER_TRANSACTION: 'CONSTRUCT_CREATE_ORDER_TRANSACTION',
     CONSTRUCT_CANCEL_ORDER_TRANSACTION: 'CONSTRUCT_CANCEL_ORDER_TRANSACTION',
     CONSTRUCT_PAYOUT_TRANSACTION: 'CONSTRUCT_PAYOUT_TRANSACTION',
     CONSTRUCT_MARKET_TRANSACTION: 'CONSTRUCT_MARKET_TRANSACTION',
@@ -836,13 +836,13 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
     });
   });
 
-  describe('constructPayoutTransaction', () => {
+  describe('constructSharesPaidOutTransaction', () => {
     const action = require('../../../src/modules/transactions/actions/construct-transaction');
 
     const test = t => it(t.description, () => t.assertions());
 
     test({
-      description: `should return the expected object with no cashPayout and no log.market and inProgress false`,
+      description: `should return the expected object with no payoutTokens and no log.market and inProgress false`,
       assertions: () => {
         const log = {
           shares: '10',
@@ -852,7 +852,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           description: 'test description'
         };
 
-        const actual = action.constructPayoutTransaction(log, market);
+        const actual = action.constructSharesPaidOutTransaction(log, market);
 
         const expected = {
           data: {
@@ -869,7 +869,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
     });
 
     test({
-      description: `should return the expected object with no cashPayout and log.market and inProgress false`,
+      description: `should return the expected object with no payoutTokens and log.market and inProgress false`,
       assertions: () => {
         const log = {
           shares: '10',
@@ -880,7 +880,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           description: 'test description'
         };
 
-        const actual = action.constructPayoutTransaction(log, market);
+        const actual = action.constructSharesPaidOutTransaction(log, market);
 
         const expected = {
           data: {
@@ -897,20 +897,20 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
     });
 
     test({
-      description: `should return the expected object with cashPayout and log.market and inProgress false`,
+      description: `should return the expected object with payoutTokens and log.market and inProgress false`,
       assertions: () => {
         const log = {
           shares: '10',
           inProgress: false,
           market: '0xMARKETID',
-          cashPayout: '10',
-          cashBalance: '10'
+          payoutTokens: '10',
+          tokenBalance: '10'
         };
         const market = {
           description: 'test description'
         };
 
-        const actual = action.constructPayoutTransaction(log, market);
+        const actual = action.constructSharesPaidOutTransaction(log, market);
 
         const expected = {
           data: {
@@ -918,8 +918,8 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
             marketID: '0xMARKETID',
             balances: [
               {
-                change: formatEtherTokens(log.cashPayout, { positiveSign: true }),
-                balance: formatEtherTokens(log.cashBalance)
+                change: formatEtherTokens(log.payoutTokens, { positiveSign: true }),
+                balance: formatEtherTokens(log.tokenBalance)
               }
             ]
           },
@@ -986,7 +986,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
     });
   });
 
-  describe('constructTakeOrderTransaction', () => {
+  describe('constructFillOrderTransaction', () => {
     const action = require('../../../src/modules/transactions/actions/construct-transaction');
 
     const test = t => it(t.description, () => {
@@ -996,7 +996,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
     test({
       description: `should return the expected transaction object with necessary data missing`,
       assertions: (store) => {
-        assert.isNull(store.dispatch(action.constructTakeOrderTransaction({})));
+        assert.isNull(store.dispatch(action.constructFillOrderTransaction({})));
       }
     });
 
@@ -1023,7 +1023,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const description = 'test description';
         const outcomeID = '1';
         const status = 'testing';
-        assert.deepEqual(store.dispatch(action.constructTakeOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
+        assert.deepEqual(store.dispatch(action.constructFillOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
           '0xHASH-0xORDERID': {
             type: TYPES.MATCH_ASK,
             hash: '0xHASH',
@@ -1075,7 +1075,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const description = 'test description';
         const outcomeID = '1';
         const status = 'testing';
-        assert.deepEqual(store.dispatch(action.constructTakeOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
+        assert.deepEqual(store.dispatch(action.constructFillOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
           '0xHASH-0xORDERID': {
             type: TYPES.MATCH_BID,
             hash: '0xHASH',
@@ -1127,7 +1127,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const description = 'test description';
         const outcomeID = '1';
         const status = 'testing';
-        assert.deepEqual(store.dispatch(action.constructTakeOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
+        assert.deepEqual(store.dispatch(action.constructFillOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
           '0xHASH-0xORDERID': {
             type: TYPES.BUY,
             hash: '0xHASH',
@@ -1179,7 +1179,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const description = 'test description';
         const outcomeID = '1';
         const status = 'testing';
-        assert.deepEqual(store.dispatch(action.constructTakeOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
+        assert.deepEqual(store.dispatch(action.constructFillOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
           '0xHASH-0xORDERID': {
             type: TYPES.SELL,
             hash: '0xHASH',
@@ -1209,7 +1209,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
     });
   });
 
-  describe('constructMakeOrderTransaction', () => {
+  describe('constructCreateOrderTransaction', () => {
     const action = require('../../../src/modules/transactions/actions/construct-transaction');
 
     const test = t => it(t.description, () => {
@@ -1246,7 +1246,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
             ...order,
             orderType: TYPES.BUY
           };
-          assert.deepEqual(store.dispatch(action.constructMakeOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
+          assert.deepEqual(store.dispatch(action.constructCreateOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
             '0xHASH': {
               type: 'buy',
               status: 'testing',
@@ -1286,7 +1286,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
             ...order,
             orderType: TYPES.SELL
           };
-          assert.deepEqual(store.dispatch(action.constructMakeOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
+          assert.deepEqual(store.dispatch(action.constructCreateOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
             '0xHASH': {
               type: TYPES.SELL,
               status: 'testing',
@@ -1444,11 +1444,11 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
   describe('constructTradingTransaction', () => {
     const constructTransaction = require('../../../src/modules/transactions/actions/construct-transaction');
 
-    constructTransaction.__set__('constructTakeOrderTransaction', sinon.stub().returns({
-      type: MOCK_ACTION_TYPES.CONSTRUCT_TAKE_ORDER_TRANSACTION
+    constructTransaction.__set__('constructFillOrderTransaction', sinon.stub().returns({
+      type: MOCK_ACTION_TYPES.CONSTRUCT_FILL_ORDER_TRANSACTION
     }));
-    constructTransaction.__set__('constructMakeOrderTransaction', sinon.stub().returns({
-      type: MOCK_ACTION_TYPES.CONSTRUCT_MAKE_ORDER_TRANSACTION
+    constructTransaction.__set__('constructCreateOrderTransaction', sinon.stub().returns({
+      type: MOCK_ACTION_TYPES.CONSTRUCT_CREATE_ORDER_TRANSACTION
     }));
     constructTransaction.__set__('constructCancelOrderTransaction', sinon.stub().returns({
       type: MOCK_ACTION_TYPES.CONSTRUCT_CANCEL_ORDER_TRANSACTION
@@ -1460,7 +1460,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
     });
 
     test({
-      description: `should dispatch the expected actions for label 'TakeOrder'`,
+      description: `should dispatch the expected actions for label 'FillOrder'`,
       state: {
         marketsData: {
           '0xMARKETID': {}
@@ -1468,13 +1468,13 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         outcomesData: {}
       },
       assertions: (store) => {
-        store.dispatch(constructTransaction.constructTradingTransaction('TakeOrder', {}, '0xMARKETID'));
+        store.dispatch(constructTransaction.constructTradingTransaction('FillOrder', {}, '0xMARKETID'));
 
         const actual = store.getActions();
 
         const expected = [
           {
-            type: MOCK_ACTION_TYPES.CONSTRUCT_TAKE_ORDER_TRANSACTION
+            type: MOCK_ACTION_TYPES.CONSTRUCT_FILL_ORDER_TRANSACTION
           }
         ];
 
@@ -1483,7 +1483,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
     });
 
     test({
-      description: `should dispatch the expected actions for label 'MakeOrder'`,
+      description: `should dispatch the expected actions for label 'CreateOrder'`,
       state: {
         marketsData: {
           '0xMARKETID': {}
@@ -1491,13 +1491,13 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         outcomesData: {}
       },
       assertions: (store) => {
-        store.dispatch(constructTransaction.constructTradingTransaction('MakeOrder', {}, '0xMARKETID'));
+        store.dispatch(constructTransaction.constructTradingTransaction('CreateOrder', {}, '0xMARKETID'));
 
         const actual = store.getActions();
 
         const expected = [
           {
-            type: MOCK_ACTION_TYPES.CONSTRUCT_MAKE_ORDER_TRANSACTION
+            type: MOCK_ACTION_TYPES.CONSTRUCT_CREATE_ORDER_TRANSACTION
           }
         ];
 

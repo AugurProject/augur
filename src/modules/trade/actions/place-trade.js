@@ -3,7 +3,7 @@ import { BUY } from 'modules/transactions/constants/types';
 import { clearTradeInProgress } from 'modules/trade/actions/update-trades-in-progress';
 import logError from 'utils/log-error';
 
-export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotMakeOrders, callback = logError, onComplete = logError) => (dispatch, getState) => {
+export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotCreateOrders, callback = logError, onComplete = logError) => (dispatch, getState) => {
   if (!marketID) return null;
   const { loginAccount, marketsData } = getState();
   const market = marketsData[marketID];
@@ -20,7 +20,7 @@ export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotMakeOrders
     _fxpAmount: tradeInProgress.numShares,
     _fxpPrice: limitPrice,
     _tradeGroupID: tradeInProgress.tradeGroupID,
-    doNotMakeOrders,
+    doNotCreateOrders,
     onSent: () => callback(null, tradeInProgress.tradeGroupID),
     onFailed: callback
   }, (err) => {

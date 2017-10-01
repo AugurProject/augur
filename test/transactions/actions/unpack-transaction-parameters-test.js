@@ -18,7 +18,7 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
         status: 'sent',
         data: {
           events: [
-            'MakeOrder',
+            'CreateOrder',
             'sentCash'
           ],
           gas: 725202,
@@ -79,7 +79,7 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
         status: 'success',
         data: {
           events: [
-            'MakeOrder',
+            'CreateOrder',
             'sentCash'
           ],
           gas: 725202,

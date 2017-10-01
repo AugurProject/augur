@@ -90,7 +90,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
         const expected = [
           {
             type: MOCK_ACTION_TYPES.CONVERT_TRADE_LOGS_TO_TRANSACTIONS,
-            logType: 'MakeOrder',
+            logType: 'CreateOrder',
             data: {
               market: [
                 {
@@ -153,7 +153,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
         const expected = [
           {
             type: MOCK_ACTION_TYPES.CONVERT_TRADE_LOGS_TO_TRANSACTIONS,
-            logType: 'MakeOrder',
+            logType: 'CreateOrder',
             data: {
               '0xMARKETID': {}
             },
@@ -236,7 +236,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
         const expected = [
           {
             type: MOCK_ACTION_TYPES.CONVERT_TRADE_LOGS_TO_TRANSACTIONS,
-            logType: 'TakeOrder',
+            logType: 'FillOrder',
             data: {
               '0xMARKETID': {}
             },
@@ -284,7 +284,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
         const expected = [
           {
             type: MOCK_ACTION_TYPES.CONVERT_TRADE_LOGS_TO_TRANSACTIONS,
-            logType: 'TakeOrder',
+            logType: 'FillOrder',
             data: {
               '0xMARKETID': {
                 type: 'something'

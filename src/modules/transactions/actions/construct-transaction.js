@@ -101,30 +101,20 @@ export function constructCreateMarketTransaction(log, description, dispatch) {
   return transaction;
 }
 
-export function constructPayoutTransaction(log, market, dispatch) {
+export function constructSharesPaidOutTransaction(log, market, dispatch) {
   const transaction = { data: {} };
-  transaction.type = 'Claim Trading Payout';
-  console.log('payout:', log, market);
+  transaction.type = 'Shares Paid Out';
   transaction.description = market.description;
-  if (log.cashPayout) {
+  if (log.tokensGained) {
     transaction.data.balances = [{
-      change: formatEtherTokens(log.cashPayout, { positiveSign: true }),
-      balance: formatEtherTokens(log.cashBalance)
+      change: formatEtherTokens(log.tokensGained, { positiveSign: true }),
+      balance: formatEtherTokens(log.tokenBalance)
     }];
   }
   transaction.data.shares = log.shares;
   transaction.data.marketID = log.market ? log.market : null;
   const action = log.inProgress ? 'closing out' : 'closed out';
   transaction.message = `${action} ${formatShares(log.shares).full}`;
-  return transaction;
-}
-
-export function constructRegistrationTransaction(log) {
-  const transaction = { data: {} };
-  transaction.type = 'Register New Account';
-  transaction.description = `Register account ${log.sender.replace('0x', '')}`;
-  const action = log.inProgress ? 'saving' : 'saved';
-  transaction.message = `${action} registration timestamp`;
   return transaction;
 }
 
@@ -203,7 +193,7 @@ export const constructCancelOrderTransaction = (trade, marketID, marketType, des
   };
 };
 
-export const constructMakeOrderTransaction = (trade, marketID, marketType, description, outcomeID, outcomeName, minPrice, maxPrice, settlementFee, status) => (dispatch, getState) => {
+export const constructCreateOrderTransaction = (trade, marketID, marketType, description, outcomeID, outcomeName, minPrice, maxPrice, settlementFee, status) => (dispatch, getState) => {
   let orderType;
   let action;
   if (trade.orderType === TYPES.BUY) {
@@ -258,7 +248,7 @@ export const constructMakeOrderTransaction = (trade, marketID, marketType, descr
   };
 };
 
-export const constructTakeOrderTransaction = (trade, marketID, marketType, description, outcomeID, outcomeName, minPrice, maxPrice, settlementFee, status) => (dispatch, getState) => {
+export const constructFillOrderTransaction = (trade, marketID, marketType, description, outcomeID, outcomeName, minPrice, maxPrice, settlementFee, status) => (dispatch, getState) => {
   if (!trade.amount) return null;
   if (!trade.price) return null;
   const transactionID = `${trade.transactionHash}-${trade.orderId}`;
@@ -333,11 +323,11 @@ export const constructTradingTransaction = (label, trade, marketID, outcomeID, s
     case TYPES.CANCEL_ORDER: {
       return dispatch(constructCancelOrderTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, minPrice, maxPrice, status));
     }
-    case TYPES.MAKE_ORDER: {
-      return dispatch(constructMakeOrderTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, minPrice, maxPrice, settlementFee, status));
+    case TYPES.CREATE_ORDER: {
+      return dispatch(constructCreateOrderTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, minPrice, maxPrice, settlementFee, status));
     }
-    case TYPES.TAKE_ORDER: {
-      return dispatch(constructTakeOrderTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, minPrice, maxPrice, settlementFee, status));
+    case TYPES.FILL_ORDER: {
+      return dispatch(constructFillOrderTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, minPrice, maxPrice, settlementFee, status));
     }
     default:
       return null;
@@ -362,7 +352,7 @@ export const constructTransaction = (label, log, isRetry, callback) => (dispatch
     case TYPES.PAYOUT: {
       const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
       if (!market || !market.description) break;
-      return constructPayoutTransaction(log, market, dispatch);
+      return constructSharesPaidOutTransaction(log, market, dispatch);
     }
     case TYPES.SUBMIT_REPORT: {
       const aux = dispatch(loadDataForReportingTransaction(label, log, isRetry, callback));

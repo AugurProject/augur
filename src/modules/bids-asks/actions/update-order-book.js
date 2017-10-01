@@ -28,7 +28,7 @@ export const addOrder = log => (dispatch, getState) => {
   const market = marketsData[marketID];
   const orderBook = selectOrderBook(marketID, outcome, orderTypeLabel, orderBooks);
   if (market && orderBook) {
-    const order = augur.trading.orderBook.convertMakeOrderLogToOrder(log, market.type, market.minPrice);
+    const order = augur.trading.orderBook.convertCreateOrderLogToOrder(log, market.type, market.minPrice);
     const updatedOrderBook = augur.trading.orderBook.addOrder(order, orderBook);
     dispatch(replaceOrderBook(marketID, outcome, orderTypeLabel, updatedOrderBook));
   }

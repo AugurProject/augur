@@ -4,13 +4,13 @@ export const BUY_COMPLETE_SETS = 'BuyCompleteSets';
 export const CANCEL_ORDER = 'CancelOrder';
 export const CREATE_MARKET = 'CreateMarket';
 export const DEPOSIT_ETHER = 'DepositEther';
-export const MAKE_ORDER = 'MakeOrder';
+export const CREATE_ORDER = 'CreateOrder';
 export const PAYOUT = 'Payout';
 export const REGISTRATION = 'Registration';
 export const REDEEM_WINNING_TOKENS = 'RedeemWinningTokens';
 export const SELL_COMPLETE_SETS = 'SellCompleteSets';
 export const SUBMIT_REPORT = 'SubmitReport';
-export const TAKE_ORDER = 'TakeOrder';
+export const FILL_ORDER = 'FillOrder';
 export const TRANSFER = 'Transfer';
 export const WITHDRAW_ETHER = 'WithdrawEther';
 
