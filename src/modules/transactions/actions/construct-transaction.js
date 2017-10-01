@@ -101,13 +101,13 @@ export function constructCreateMarketTransaction(log, description, dispatch) {
   return transaction;
 }
 
-export function constructSharesPaidOutTransaction(log, market, dispatch) {
+export function constructProceedsClaimedTransaction(log, market, dispatch) {
   const transaction = { data: {} };
-  transaction.type = 'Shares Paid Out';
+  transaction.type = 'Claim Trading Payout';
   transaction.description = market.description;
-  if (log.tokensGained) {
+  if (log.payoutTokens) {
     transaction.data.balances = [{
-      change: formatEtherTokens(log.tokensGained, { positiveSign: true }),
+      change: formatEtherTokens(log.payoutTokens, { positiveSign: true }),
       balance: formatEtherTokens(log.tokenBalance)
     }];
   }
@@ -338,8 +338,6 @@ export const constructTransaction = (label, log, isRetry, callback) => (dispatch
   switch (label) {
     case TYPES.APPROVAL:
       return constructApprovalTransaction(log);
-    case TYPES.REGISTRATION:
-      return constructRegistrationTransaction(log);
     case TYPES.TRANSFER: {
       const { loginAccount } = getState();
       return constructTransferTransaction(log, loginAccount.address);
@@ -352,7 +350,7 @@ export const constructTransaction = (label, log, isRetry, callback) => (dispatch
     case TYPES.PAYOUT: {
       const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
       if (!market || !market.description) break;
-      return constructSharesPaidOutTransaction(log, market, dispatch);
+      return constructProceedsClaimedTransaction(log, market, dispatch);
     }
     case TYPES.SUBMIT_REPORT: {
       const aux = dispatch(loadDataForReportingTransaction(label, log, isRetry, callback));

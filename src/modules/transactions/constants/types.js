@@ -6,7 +6,6 @@ export const CREATE_MARKET = 'CreateMarket';
 export const DEPOSIT_ETHER = 'DepositEther';
 export const CREATE_ORDER = 'CreateOrder';
 export const PAYOUT = 'Payout';
-export const REGISTRATION = 'Registration';
 export const REDEEM_WINNING_TOKENS = 'RedeemWinningTokens';
 export const SELL_COMPLETE_SETS = 'SellCompleteSets';
 export const SUBMIT_REPORT = 'SubmitReport';
@@ -15,7 +14,6 @@ export const TRANSFER = 'Transfer';
 export const WITHDRAW_ETHER = 'WithdrawEther';
 
 // Other
-export const REGISTER_ACCOUNT = 'register_account';
 export const TRANSFER_FUNDS = 'transfer_funds';
 export const SENT_CASH = 'sent_cash';
 export const SENT_ETHER = 'sent_ether';

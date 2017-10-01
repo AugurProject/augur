@@ -19,7 +19,6 @@ import {
   constructDefaultTransaction,
   constructCollectedFeesTransaction,
   constructApprovalTransaction,
-  constructRegistrationTransaction,
   constructTransferTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
@@ -419,52 +418,6 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
     });
   });
 
-  describe('constructRegistrationTransaction', () => {
-    const test = t => it(t.description, () => t.assertions());
-
-    test({
-      description: `should return the expected object with inProgress false`,
-      assertions: () => {
-        const log = {
-          inProgress: false,
-          sender: '0xSENDER'
-        };
-
-        const actual = constructRegistrationTransaction(log);
-
-        const expected = {
-          data: {},
-          type: 'Register New Account',
-          description: `Register account ${log.sender.replace('0x', '')}`,
-          message: `saved registration timestamp`
-        };
-
-        assert.deepEqual(actual, expected, `Didn't return the expected object`);
-      }
-    });
-
-    test({
-      description: `should return the expected object with inProgress`,
-      assertions: () => {
-        const log = {
-          inProgress: true,
-          sender: '0xSENDER'
-        };
-
-        const actual = constructRegistrationTransaction(log);
-
-        const expected = {
-          data: {},
-          type: 'Register New Account',
-          description: `Register account ${log.sender.replace('0x', '')}`,
-          message: `saving registration timestamp`
-        };
-
-        assert.deepEqual(actual, expected, `Didn't return the expected object`);
-      }
-    });
-  });
-
   describe('constructCollectedFeesTransaction', () => {
     const test = t => it(t.description, () => t.assertions());
 
@@ -836,7 +789,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
     });
   });
 
-  describe('constructSharesPaidOutTransaction', () => {
+  describe('constructProceedsClaimedTransaction', () => {
     const action = require('../../../src/modules/transactions/actions/construct-transaction');
 
     const test = t => it(t.description, () => t.assertions());
@@ -852,7 +805,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           description: 'test description'
         };
 
-        const actual = action.constructSharesPaidOutTransaction(log, market);
+        const actual = action.constructProceedsClaimedTransaction(log, market);
 
         const expected = {
           data: {
@@ -880,7 +833,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           description: 'test description'
         };
 
-        const actual = action.constructSharesPaidOutTransaction(log, market);
+        const actual = action.constructProceedsClaimedTransaction(log, market);
 
         const expected = {
           data: {
@@ -910,7 +863,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           description: 'test description'
         };
 
-        const actual = action.constructSharesPaidOutTransaction(log, market);
+        const actual = action.constructProceedsClaimedTransaction(log, market);
 
         const expected = {
           data: {
