@@ -16,6 +16,42 @@
   padding: 0 2rem;
 }
 
+.CreateMarketForm__fields {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  min-height: 24.75rem;
+
+  > li {
+    margin-bottom: 3.7rem;
+    position: relative;
+    width: 100%;
+
+    &.field--50 {
+      width: 48%;
+    }
+
+   > label {
+      display: inline-block;
+      position: relative;
+
+      > span:first-child {
+        margin-right: 0.5rem;
+      }
+    }
+
+    input[type="text"] {
+      background-color: @color-lightergray;
+      font-size: 1.125rem;
+      line-height: 1.125rem;
+
+      &::placeholder {
+        color: @color-lightgray;
+      }
+    }
+  }
+}
+
 .CreateMarketForm__navigation {
   display: flex;
   justify-content: flex-end;

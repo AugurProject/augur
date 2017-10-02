@@ -1,10 +1,17 @@
 @import '~assets/styles/shared.less';
 
-.CreateMarketOutcome__fields {
+.CreateMarketOutcome__categorical {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  min-height: 24.75rem;
+
+  > input {
+    width: 24%;
+
+    &:nth-child(-n+4) {
+      margin-bottom: 1rem;
+    }
+  }
 }
 
 .CreateMarketOutcome__type {
