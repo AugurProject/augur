@@ -1,10 +1,6 @@
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
-import classNames from 'classnames'
-import { mobileMenuStates } from 'modules/app/components/app/app'
 
-import Styles from 'modules/app/components/inner-nav/inner-nav.styles'
+import BaseInnerNav from 'modules/app/components/inner-nav/base-inner-nav'
 
 import { concat, difference, map, flatMap, uniq, isEqual } from 'lodash'
 import parseQuery from 'modules/routes/helpers/parse-query'
@@ -16,19 +12,14 @@ import { QUERY_VALUE_DELIMITER } from 'modules/routes/constants/query-value-deli
 import { TOPIC_PARAM_NAME, TAGS_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 import { MARKETS } from 'modules/routes/constants/views'
 
-import MenuItem from 'modules/app/components/inner-nav/menu-item'
-
-export default class InnerNav extends Component {
+export default class MarketsInnerNav extends BaseInnerNav {
   static propTypes = {
+    ...BaseInnerNav.propTypes,
     categories: PropTypes.array.isRequired,
     markets: PropTypes.array.isRequired,
     marketsFilteredSorted: PropTypes.array.isRequired,
     location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
-    isMobile: PropTypes.bool.isRequired,
-    mobileCategoryClick: PropTypes.func.isRequired,
-    mobileMenuState: PropTypes.number.isRequired,
-    subMenuScalar: PropTypes.number.isRequired
+    history: PropTypes.object.isRequired
   }
 
   constructor() {
@@ -142,75 +133,28 @@ export default class InnerNav extends Component {
     })
   }
 
-  renderCategoriesList() {
+  getMainMenuData() {
     const searchParams = parseQuery(this.props.location.search)
     const selectedCategory = searchParams[TOPIC_PARAM_NAME]
-
-    return (
-      <ul className={classNames(Styles.InnerNav__menu, Styles['InnerNav__menu--main'])}>
-        {this.props.categories.map((item, index) => {
-          const isSelected = item.topic === selectedCategory
-          return (
-            <MenuItem
-              isSelected={isSelected}
-              key={item.topic}
-              visible
-            >
-              <Link
-                to={{
-                  pathname: makePath(MARKETS),
-                  search: makeQuery({
-                    [TOPIC_PARAM_NAME]: item.topic
-                  })
-                }}
-                onClick={() => { if (this.props.isMobile) this.props.mobileCategoryClick() }}
-              >
-                {item.topic}
-              </Link>
-            </MenuItem>
-          )
-        })}
-      </ul>
-    )
+    return this.props.categories.map(item => ({
+      label: item.topic,
+      isSelected: item.topic === selectedCategory,
+      visible: true,
+      link: {
+        pathname: makePath(MARKETS),
+        search: makeQuery({
+          [TOPIC_PARAM_NAME]: item.topic
+        })
+      }
+    }))
   }
 
-  renderSubMenu() {
-    const showKeywords = this.props.mobileMenuState === mobileMenuStates.KEYWORDS_OPEN
-    let animatedStyle
-    if (!this.props.isMobile) {
-      animatedStyle = { left: (110 * this.props.subMenuScalar) }
-    }
-
-    return (
-      <ul
-        className={classNames({
-          [Styles.InnerNav__menu]: true,
-          [Styles['InnerNav__menu--submenu']]: true,
-          [Styles['InnerNav__menu--submenu--mobileshow']]: showKeywords })}
-        style={animatedStyle}
-      >
-        {map(this.state.visibleKeywords, (keywordState, keyword) => (
-          <MenuItem
-            isSelected={(this.state.selectedKeywords.indexOf(keyword) > -1)}
-            key={keyword}
-            visible={keywordState.visible}
-          >
-            <button onClick={() => this.toggleKeyword(keyword)}>
-              {keyword}
-            </button>
-          </MenuItem>
-        ))}
-      </ul>
-    )
-  }
-
-  render() {
-    const showCategories = this.props.mobileMenuState >= mobileMenuStates.CATEGORIES_OPEN
-    return (
-      <aside className={classNames(Styles.InnerNav, { [Styles.mobileShow]: showCategories })}>
-        {this.renderSubMenu()}
-        {this.renderCategoriesList()}
-      </aside>
-    )
+  getSubMenuData() {
+    return map(this.state.visibleKeywords, (keywordState, keyword) => ({
+      label: keyword,
+      isSelected: (this.state.selectedKeywords.indexOf(keyword) > -1),
+      onClick: () => this.toggleKeyword(keyword),
+      visible: keywordState.visible
+    }))
   }
 }
