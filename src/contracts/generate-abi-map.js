@@ -12,27 +12,21 @@ function generateAbiMap(abi) {
       if (functionOrEvent.type === "function") {
         var functionAbiMap = {
           constant: functionOrEvent.constant,
-          name: functionOrEvent.name,
-          label: shortName.replace(/([A-Z])/g, " $1").replace(/^./, function (letter) {
-            return letter.toUpperCase();
-          })
+          name: functionOrEvent.name
         };
         var inputs = [];
         var signature = [];
-        var fixed = [];
         if (functionOrEvent.inputs) {
-          functionOrEvent.inputs.forEach(function (input, index) {
+          functionOrEvent.inputs.forEach(function (input) {
             inputs.push(input.name);
             signature.push(input.type);
-            if (input.name.slice(0, 3) === "fxp") fixed.push(index);
           });
         }
         if (inputs.length) functionAbiMap.inputs = inputs;
         if (signature.length) functionAbiMap.signature = signature;
-        if (fixed.length) functionAbiMap.fixed = fixed;
         if (functionOrEvent.outputs && functionOrEvent.outputs.length) {
           var output = functionOrEvent.outputs[0];
-          functionAbiMap.returns = (output.name === "fxp") ? "unfix" : output.type;
+          functionAbiMap.returns = output.type;
         } else {
           functionAbiMap.returns = "null";
         }

@@ -2,7 +2,6 @@
 
 var connector = require("ethereumjs-connect");
 var ethrpc = require("ethrpc");
-var immutableDelete = require("immutable-delete");
 var contracts = require("./contracts");
 var api = require("./api");
 var rpcInterface = require("./rpc-interface");
@@ -22,7 +21,7 @@ var DEFAULT_NETWORK_ID = require("./constants").DEFAULT_NETWORK_ID;
 function connect(connectOptions, callback) {
   var vitals, options = {
       rpc: ethrpc,
-      contracts: immutableDelete(contracts, "abi"),
+      contracts: contracts.addresses,
       abi: contracts.abi,
       httpAddresses: [],
       wsAddresses: [],
@@ -40,15 +39,15 @@ function connect(connectOptions, callback) {
   if (!isFunction(callback)) {
     vitals = connector.connect(options);
     if (vitals instanceof Error) throw vitals;
-    vitals.contracts = vitals.contracts || contracts[DEFAULT_NETWORK_ID];
-    this.api = api.generateContractAPI(vitals.abi.functions);
+    vitals.contracts = vitals.contracts || contracts.addresses[DEFAULT_NETWORK_ID];
+    this.api = api.generateContractApi(vitals.abi.functions);
     rpcInterface.createRpcInterface(vitals.rpc);
     return vitals;
   }
   connector.connect(options, function (err, vitals) {
     if (err) return callback(err);
-    vitals.contracts = vitals.contracts || contracts[DEFAULT_NETWORK_ID];
-    this.api = api.generateContractAPI(vitals.abi.functions);
+    vitals.contracts = vitals.contracts || contracts.addresses[DEFAULT_NETWORK_ID];
+    this.api = api.generateContractApi(vitals.abi.functions);
     this.rpc = rpcInterface.createRpcInterface(vitals.rpc);
     callback(vitals);
   }.bind(this));

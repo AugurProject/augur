@@ -10,16 +10,16 @@
 
 "use strict";
 
-var generateContractAPI = require("./generate-contract-api");
+var generateContractApi = require("./generate-contract-api");
 
-var api = generateContractAPI(require("../contracts").abi.functions);
+var api = generateContractApi(require("../contracts").abi.functions);
 
 function getAPI() {
   return api;
 }
 
-getAPI.generateContractAPI = function (functionsABI) {
-  api = generateContractAPI(functionsABI);
+getAPI.generateContractApi = function (functionsAbi) {
+  api = generateContractApi(functionsAbi);
   return api;
 };
 

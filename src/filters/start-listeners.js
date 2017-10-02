@@ -21,7 +21,7 @@ function startListeners(onLogAddedCallbacks, onNewBlock, onSetupComplete) {
     });
   }
   var eventsAbi = contracts.abi.events;
-  var activeContracts = contracts[ethrpc.getNetworkID()];
+  var activeContracts = contracts.addresses[ethrpc.getNetworkID()];
   Object.keys(onLogAddedCallbacks).forEach(function (contractName) {
     Object.keys(onLogAddedCallbacks[contractName]).forEach(function (eventName) {
       if (isFunction(onLogAddedCallbacks[contractName][eventName]) && eventsAbi[contractName] && eventsAbi[contractName][eventName]) {

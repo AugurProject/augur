@@ -11,7 +11,6 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 module.exports = {
-  getRegisterBlockNumber: require("./get-register-block-number"),
   importAccount: require("./import-account"),
   login: require("./login"),
   loginWithMasterKey: require("./login-with-master-key"),

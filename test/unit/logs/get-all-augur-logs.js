@@ -26,8 +26,10 @@ describe("logs/get-all-augur-logs", function () {
     },
     mock: {
       contracts: {
-        4: {
-          TestContractName: "0x000000000000000000000000000000000000000c"
+        addresses: {
+          4: {
+            TestContractName: "0x000000000000000000000000000000000000000c"
+          }
         },
         abi: {
           events: {

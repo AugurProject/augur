@@ -101,7 +101,6 @@ describe("contracts/generate-abi-map", function () {
             allowance: {
               constant: false,
               name: "allowance(address,address)",
-              label: "Allowance",
               returns: "null",
               inputs: ["owner", "spender"],
               signature: ["address", "address"]
@@ -109,19 +108,16 @@ describe("contracts/generate-abi-map", function () {
             approve: {
               constant: false,
               name: "approve(address,uint256)",
-              label: "Approve",
               returns: "uint256",
               inputs: ["spender", "fxpAmount"],
-              signature: ["address", "uint256"],
-              fixed: [1]
+              signature: ["address", "uint256"]
             }
           },
           Contract2: {
             balanceOf: {
               constant: false,
               name: "balanceOf(address)",
-              label: "Balance Of",
-              returns: "unfix",
+              returns: "uint256",
               inputs: ["address"],
               signature: ["address"]
             }

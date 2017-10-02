@@ -21,7 +21,7 @@ var constants = require("../constants");
  */
 function getAllAugurLogs(p, callback) {
   var allAugurLogs = {};
-  var contractNameToAddressMap = contracts[ethrpc.getNetworkID()];
+  var contractNameToAddressMap = contracts.addresses[ethrpc.getNetworkID()];
   var eventsAbi = contracts.abi.events;
   var contractAddressToNameMap = mapContractAddressesToNames(contractNameToAddressMap);
   var eventSignatureToNameMap = mapEventSignaturesToNames(eventsAbi);
