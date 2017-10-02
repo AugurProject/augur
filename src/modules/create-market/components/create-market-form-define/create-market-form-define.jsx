@@ -7,6 +7,7 @@ import classNames from 'classnames'
 import { DESCRIPTION_MAX_LENGTH, TAGS_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints'
 
 import Styles from 'modules/create-market/components/create-market-form-define/create-market-form-define.styles'
+import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'
 
 export default class CreateMarketDefine extends Component {
 
@@ -73,7 +74,7 @@ export default class CreateMarketDefine extends Component {
     const s = this.state
 
     return (
-      <ul className={classNames(Styles.CreateMarketDefine__fields, p.className)}>
+      <ul className={StylesForm.CreateMarketForm__fields}>
         <li>
           <label htmlFor="cm__input--desc">
             <span>Market Question</span>
@@ -87,7 +88,7 @@ export default class CreateMarketDefine extends Component {
             onChange={e => this.validateField(0, 'description', e.target.value, DESCRIPTION_MAX_LENGTH)}
           />
         </li>
-        <li className={Styles['field--50']}>
+        <li className={StylesForm['field--50']}>
           <label htmlFor="cm__input--cat">
             <span>Category</span>
             { s.requiredFields[1].length && <span className={Styles.CreateMarketDefine__error}>{ s.requiredFields[1] }</span> }
@@ -101,7 +102,7 @@ export default class CreateMarketDefine extends Component {
             onChange={e => this.validateField(1, 'category', e.target.value, TAGS_MAX_LENGTH)}
           />
         </li>
-        <li className={Styles['field--50']}>
+        <li className={StylesForm['field--50']}>
           <label htmlFor="cm__suggested-categories">
             <span>Suggested Categories</span>
           </label>
