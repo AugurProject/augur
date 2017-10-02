@@ -1,0 +1,6 @@
+import { SqlLiteDb, Address } from "./types";
+
+// Should return the total amount of fees earned so far by the market creator.
+export function getMarketsCreatedByUser(db: SqlLiteDb, account: Address, callback: (err?: Error|null, result?: any) => void) {
+
+}
