@@ -1,0 +1,68 @@
+@import '~assets/styles/shared.less';
+
+.CreateMarketOutcome__fields {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  min-height: 24.75rem;
+}
+
+.CreateMarketOutcome__type {
+  display: flex;
+  padding: 0.25rem;
+
+  > li {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+
+    &:not(:first-child) {
+      margin-left: 4.75rem;
+    }
+
+    > input {
+      display: none;
+    }
+
+    > label {
+      font-size: 1.125rem;
+      line-height: 1.125rem;
+      margin-bottom: 0;
+      padding-left: 2.5rem;
+      position: relative;
+      text-transform: none;
+
+      &::before {
+        border: 1px solid @color-lightgray;
+        border-radius: 100%;
+        bottom: 0;
+        content: "";
+        height: 1.5rem;
+        left: 0;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        width: 1.5rem;
+      }
+
+      &::after {
+        background-color: @color-lightgray;
+        border-radius: 100%;
+        bottom: 0;
+        content: "";
+        display: none;
+        height: 0.875rem;
+        left: 0.35rem;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        width: 0.875rem;
+      }
+    }
+
+    > input:checked + label::after {
+      display: block;
+    }
+  }
+}
