@@ -53,7 +53,7 @@ export default class CreateMarketDefine extends Component {
         </li>
         <li>
           <label htmlFor="cm__input--outcome1">
-            <span>Additional Details</span>
+            <span>Potential Outcomes</span>
           </label>
           <div className={Styles.CreateMarketOutcome__categorical}>
             <input
@@ -95,6 +95,23 @@ export default class CreateMarketDefine extends Component {
               id="cm__input--outcome1"
               type="text"
               placeholder="Optional Outcome"
+            />
+          </div>
+        </li>
+        <li>
+          <label htmlFor="cm__input--min">
+            <span>Range Values</span>
+          </label>
+          <div className={Styles.CreateMarketOutcome__scalar}>
+            <input
+              id="cm__input--min"
+              type="number"
+              placeholder="Min Value"
+            />
+            <input
+              id="cm__input--max"
+              type="number"
+              placeholder="Max Value"
             />
           </div>
         </li>
