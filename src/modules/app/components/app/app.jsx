@@ -31,7 +31,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 
 import getValue from 'utils/get-value'
 
-import { MARKETS, PORTFOLIO, ACCOUNT, MY_POSITIONS, CREATE_MARKET, CATEGORIES } from 'modules/routes/constants/views'
+import { MARKETS, ACCOUNT, MY_MARKETS, MY_POSITIONS, WATCHLIST, CREATE_MARKET, CATEGORIES } from 'modules/routes/constants/views'
 import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
@@ -39,12 +39,19 @@ import Styles from 'modules/app/components/app/app.styles'
 export const mobileMenuStates = {
   CLOSED: 0,
   SIDEBAR_OPEN: 1,
-  CATEGORIES_OPEN: 2,
-  KEYWORDS_OPEN: 3
+  FIRSTMENU_OPEN: 2,
+  SUBMENU_OPEN: 3
 }
 
 const SUB_MENU = 'subMenu'
 const MAIN_MENU = 'mainMenu'
+
+const navTypes = {
+  [MARKETS]: MarketsInnerNav,
+  [MY_MARKETS]: PortfolioInnerNav,
+  [MY_POSITIONS]: PortfolioInnerNav,
+  [WATCHLIST]: PortfolioInnerNav
+}
 
 // TODO -- this component needs to be broken up and also restructured
 
@@ -66,6 +73,7 @@ export default class AppView extends Component {
       mainMenu: { scalar: 0, open: false, currentTween: null },
       subMenu: { scalar: 0, open: false, currentTween: null },
       mobileMenuState: mobileMenuStates.CLOSED,
+      currentBasePath: null,
       currentInnerNavType: null
     }
 
@@ -73,7 +81,7 @@ export default class AppView extends Component {
       {
         title: 'Markets',
         icon: NavMarketsIcon,
-        mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.CATEGORIES_OPEN }),
+        mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
         route: MARKETS
       },
       {
@@ -106,6 +114,8 @@ export default class AppView extends Component {
 
   componentWillMount() {
     const currentPath = parsePath(this.props.location.pathname)[0]
+    // TODO: centralize path parsing (including "previous" path + query) in redux
+    this.setState({ currentBasePath: currentPath })
 
     this.changeMenu(currentPath)
     if (currentPath === MARKETS) {
@@ -134,46 +144,55 @@ export default class AppView extends Component {
       const selectedCategory = parseQuery(nextProps.location.search)[TOPIC_PARAM_NAME]
 
       if (lastBasePath !== nextBasePath) {
+        // TODO: centralize path parsing (including "previous" path + query) in redux
+        this.setState({ currentBasePath: nextBasePath })
         this.changeMenu(nextBasePath)
       }
 
       if (nextBasePath === MARKETS && selectedCategory) {
         this.toggleMenuTween(SUB_MENU, true)
       }
-      // navigate to markets page
-      /*if (lastPath !== MARKETS && nextPath === MARKETS) {
-        this.toggleMenuTween(MAIN_MENU, true)
-      }
-
-      // on markets page, new category selected
-
-      // navigate away from markets page
-      if (lastPath === MARKETS && nextPath !== MARKETS) {
-        this.toggleMenuTween(MAIN_MENU, false)
-        this.toggleMenuTween(SUB_MENU, false)
-      }*/
     }
   }
 
   changeMenu(nextBasePath, callback) {
-    const menuExitPromise = new Promise((resolve)=>{
+    const oldType = this.state.currentInnerNavType
+    const newType = navTypes[nextBasePath]
+
+    if (oldType === newType) {
+      if (callback) callback()
+      return
+    }
+
+    const openNewMenu = () => {
+      this.setState({ currentInnerNavType: newType })
+      if (newType) this.toggleMenuTween(MAIN_MENU, true, callback)
+    }
+
+    if (!oldType) {
+      openNewMenu()
+      return
+    }
+
+    const menuExitPromise = new Promise((resolve) => {
       this.toggleMenuTween(MAIN_MENU, false, () => resolve())
     })
-    const submenuExitPromise = new Promise((resolve)=>{
+    const submenuExitPromise = new Promise((resolve) => {
       this.toggleMenuTween(SUB_MENU, false, () => resolve())
     })
 
     Promise.all([menuExitPromise, submenuExitPromise]).then(() => {
       switch (nextBasePath) {
         case MARKETS:
+        case MY_MARKETS:
         case MY_POSITIONS:
-          this.setState({ currentInnerNavType: nextBasePath })
-          this.toggleMenuTween(MAIN_MENU, true, callback)
+        case WATCHLIST:
+          openNewMenu()
           break
         default:
           if (callback) callback()
       }
-    });
+    })
   }
 
   handleWindowResize() {
@@ -203,7 +222,7 @@ export default class AppView extends Component {
       })
     }
 
-    const closingAlreadyClosed = !nowOpen && (this.state[menuKey].scalar === 0);
+    const closingAlreadyClosed = !nowOpen && (this.state[menuKey].scalar === 0)
     if (closingAlreadyClosed) {
       cb()
     } else {
@@ -244,7 +263,7 @@ export default class AppView extends Component {
     let icon = null
     if (menuState === mobileMenuStates.CLOSED) icon = <MobileNavHamburgerIcon />
     else if (menuState === mobileMenuStates.SIDEBAR_OPEN) icon = <MobileNavCloseIcon />
-    else if (menuState >= mobileMenuStates.CATEGORIES_OPEN) icon = <MobileNavBackIcon />
+    else if (menuState >= mobileMenuStates.FIRSTMENU_OPEN) icon = <MobileNavBackIcon />
 
     return (
       <button
@@ -262,10 +281,13 @@ export default class AppView extends Component {
 
     const { mainMenu, subMenu } = this.state
 
-    const InnerNav = ({
-      [MARKETS]: MarketsInnerNav,
-      [MY_POSITIONS]: PortfolioInnerNav
-    })[this.state.currentInnerNavType];
+    const InnerNav = this.state.currentInnerNavType
+    let innerNavMenuMobileClick
+    if (InnerNav === MarketsInnerNav) {
+      innerNavMenuMobileClick = () => {
+        this.setState({ mobileMenuState: mobileMenuStates.SUBMENU_OPEN })
+      }
+    }
 
     let categoriesMargin
     let keywordsMargin
@@ -315,8 +337,10 @@ export default class AppView extends Component {
           >
             {InnerNav &&
               <InnerNav
+                currentBasePath={this.state.currentBasePath}
                 isMobile={p.isMobile}
                 mobileMenuState={s.mobileMenuState}
+                mobileMenuClick={innerNavMenuMobileClick}
                 subMenuScalar={subMenu.scalar}
                 categories={p.categories}
                 markets={p.markets}

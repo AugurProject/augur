@@ -1,4 +1,3 @@
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import BaseInnerNav from 'modules/app/components/inner-nav/base-inner-nav'
@@ -15,7 +14,7 @@ import { MARKETS } from 'modules/routes/constants/views'
 
 export default class MarketsInnerNav extends BaseInnerNav {
   static propTypes = {
-    ... BaseInnerNav.propTypes,
+    ...BaseInnerNav.propTypes,
     categories: PropTypes.array.isRequired,
     markets: PropTypes.array.isRequired,
     marketsFilteredSorted: PropTypes.array.isRequired,
@@ -137,7 +136,7 @@ export default class MarketsInnerNav extends BaseInnerNav {
   getMainMenuData() {
     const searchParams = parseQuery(this.props.location.search)
     const selectedCategory = searchParams[TOPIC_PARAM_NAME]
-    return this.props.categories.map((item) => ({
+    return this.props.categories.map(item => ({
       label: item.topic,
       isSelected: item.topic === selectedCategory,
       visible: true,

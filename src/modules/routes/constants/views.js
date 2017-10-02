@@ -12,7 +12,6 @@ export const ACCOUNT = 'account'
 export const AUTHENTICATION = 'authentication'
 export const CONNECT = 'connect'
 export const CREATE = 'create'
-export const PORTFOLIO = 'portfolio'
 export const CATEGORIES = 'categories'
 
 export const DEFAULT_VIEW = CATEGORIES

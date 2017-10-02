@@ -1,30 +1,31 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-
 import BaseInnerNav from 'modules/app/components/inner-nav/base-inner-nav'
+import { MY_POSITIONS, MY_MARKETS, WATCHLIST } from 'modules/routes/constants/views'
 
 export default class PorfolioInnerNav extends BaseInnerNav {
   getMainMenuData() {
     return [
       {
-        label: 'testone',
+        label: 'Positions',
         visible: true,
+        isSelected: (this.props.currentBasePath === MY_POSITIONS),
         link: {
-          pathname: '#'
+          pathname: MY_POSITIONS
         }
       },
       {
-        label: 'testtwo',
+        label: 'My Markets',
         visible: true,
+        isSelected: (this.props.currentBasePath === MY_MARKETS),
         link: {
-          pathname: '#'
+          pathname: MY_MARKETS
         }
       },
       {
-        label: 'testthree',
+        label: 'Watching',
         visible: true,
+        isSelected: (this.props.currentBasePath === WATCHLIST),
         link: {
-          pathname: '#'
+          pathname: WATCHLIST
         }
       }
     ]
