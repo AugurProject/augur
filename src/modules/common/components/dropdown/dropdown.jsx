@@ -18,6 +18,15 @@ class Dropdown extends Component {
 
     this.dropdownSelect = this.dropdownSelect.bind(this)
     this.toggleList = this.toggleList.bind(this)
+    this.handleWindowOnClick = this.handleWindowOnClick.bind(this)
+  }
+
+  componentDidMount() {
+    window.addEventListener('click', this.handleWindowOnClick)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('click', this.handleWindowOnClick)
   }
 
   dropdownSelect(label, value) {
@@ -33,6 +42,12 @@ class Dropdown extends Component {
 
   toggleList() {
     this.setState({ showList: !this.state.showList })
+  }
+
+  handleWindowOnClick(event) {
+    if (this.refDropdown && !this.refDropdown.contains(event.target)) {
+      this.setState({ showList: false })
+    }
   }
 
   render() {
