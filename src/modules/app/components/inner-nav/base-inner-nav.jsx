@@ -1,3 +1,4 @@
+/* eslint class-methods-use-this: 0 */ // need "blank" class methods to exist to avoid potential crash
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
@@ -18,11 +19,11 @@ export default class BaseInnerNav extends Component {
   }
 
   getMainMenuData() {
-    return [];
+    return []
   }
 
   getSubMenuData() {
-    return [];
+    return []
   }
 
   render() {
@@ -34,7 +35,7 @@ export default class BaseInnerNav extends Component {
       subMenuAnimatedStyle = { left: (110 * this.props.subMenuScalar) }
     }
 
-    const dataToItem = (item) => (
+    const dataToItem = item => (
       <MenuItem
         isSelected={item.isSelected}
         key={item.label}
@@ -54,7 +55,7 @@ export default class BaseInnerNav extends Component {
           </button>
         }
       </MenuItem>
-    );
+    )
 
     return (
       <aside
