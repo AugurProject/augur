@@ -2,9 +2,9 @@
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
 
 import CreateMarketDefine from 'modules/create-market/components/create-market-form-define/create-market-form-define'
+import CreateMarketOutcome from 'modules/create-market/components/create-market-form-outcome/create-market-form-outcome'
 // import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description/create-market-form-description'
 // import CreateMarketFormOutcomes from 'modules/create-market/components/create-market-form-outcomes'
 // import CreateMarketFormExpirySource from 'modules/create-market/components/create-market-form-expiry-source'
@@ -89,13 +89,37 @@ export default class CreateMarketForm extends Component {
 
     return (
       <article className={Styles.CreateMarketForm}>
-        <div className={classNames(Styles.CreateMarketForm__page, { [`${Styles['show-page']}`]: s.currentPage === 0 })}>
-          <CreateMarketDefine
-            newMarket={p.newMarket}
-            updateNewMarket={p.updateNewMarket}
-            categories={p.categories}
-            updatePage={this.updatePage}
-          />
+        <div className={Styles['CreateMarketForm__form-outer-wrapper']}>
+          <div className={Styles['CreateMarketForm__form-inner-wrapper']}>
+            { s.currentPage === 0 &&
+              <CreateMarketDefine
+                newMarket={p.newMarket}
+                updateNewMarket={p.updateNewMarket}
+                categories={p.categories}
+              />
+            }
+            { s.currentPage === 1 &&
+              <CreateMarketOutcome
+                newMarket={p.newMarket}
+                updateNewMarket={p.updateNewMarket}
+              />
+            }
+          </div>
+          <div className={Styles['CreateMarketForm__button-outer-wrapper']}>
+            <div className={Styles['CreateMarketForm__button-inner-wrapper']}>
+              <div className={Styles.CreateMarketForm__navigation}>
+                <button
+                  className={Styles.CreateMarketForm__next}
+                  onClick={() => { this.updatePage('next') }}
+                >Next: Outcome</button>
+                {/* <button
+                  className={Styles.CreateMarketForm__next}
+                  disabled={!s.requiredFields.every(field => field === true)}
+                  onClick={() => { s.requiredFields.every(field => field === true) && p.updatePage('next') }}
+                >Next: Outcome</button> */}
+              </div>
+            </div>
+          </div>
         </div>
         {/* <CreateMarketFormDescription
           className={classNames({

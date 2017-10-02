@@ -1,17 +1,5 @@
 @import '~assets/styles/shared.less';
 
-.CreateMarketDefine__button-outer-wrapper,
-.CreateMarketDefine__form-outer-wrapper {
-  max-width: 81.25rem;
-}
-
-.CreateMarketDefine__button-inner-wrapper,
-.CreateMarketDefine__form-inner-wrapper {
-  margin: auto;
-  max-width: 62.75rem;
-  padding: 0 2rem;
-}
-
 .CreateMarketDefine__error {
   background-color: @color-purple;
   border-radius: 3px;
@@ -30,15 +18,11 @@
   top: -3px;
 }
 
-.CreateMarketDefine__form {
-  min-height: 24.75rem;
-  padding: 3.75rem 0 0;
-}
-
 .CreateMarketDefine__fields {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  min-height: 24.75rem;
 
   > li {
     margin-bottom: 3.7rem;
@@ -63,12 +47,8 @@
       }
     }
 
-    > label {
-      &:extend(.caps--small);
-
-      color: @color-white;
+   > label {
       display: inline-block;
-      margin-bottom: 0.625rem;
       position: relative;
 
       > span:first-child {
@@ -78,27 +58,14 @@
 
     > input {
       background-color: @color-lightergray;
-      color: @color-darkpurple;
-      display: block;
       font-size: 1.125rem;
       line-height: 1.125rem;
-      padding: 1rem 1rem 0.875rem;
-      width: 100%;
 
       &::placeholder {
         color: @color-lightgray;
       }
     }
   }
-}
-
-.CreateMarketDefine__navigation {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.CreateMarketDefine__next {
-  &:extend(.button--white all);
 }
 
 .CreateMarketDefine__suggested-categories {
@@ -118,17 +85,6 @@
 }
 
 @media @breakpoint-mobile-medium {
-  .CreateMarketDefine__button-inner-wrapper,
-  .CreateMarketDefine__form-inner-wrapper {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  .CreateMarketDefine__button-inner-wrapper {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
   .CreateMarketDefine__error--tag2 {
     left: 2.3125rem;
   }
@@ -145,10 +101,5 @@
         margin-bottom: 0.75rem;
       }
     }
-  }
-
-  .CreateMarketDefine__next {
-    border-radius: 0;
-    width: 100%;
   }
 }

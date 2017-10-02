@@ -73,97 +73,78 @@ export default class CreateMarketDefine extends Component {
     const s = this.state
 
     return (
-      <article className={Styles.CreateMarketDefine}>
-        <div className={Styles.CreateMarketDefine__form}>
-          <div className={Styles['CreateMarketDefine__form-outer-wrapper']}>
-            <div className={Styles['CreateMarketDefine__form-inner-wrapper']}>
-              <ul className={Styles.CreateMarketDefine__fields}>
-                <li>
-                  <label htmlFor="cm__input--desc">
-                    <span>Market Question</span>
-                    { s.requiredFields[0].length && <span className={Styles.CreateMarketDefine__error}>{ s.requiredFields[0] }</span> }
-                  </label>
-                  <input
-                    id="cm__input--desc"
-                    type="text"
-                    maxLength={DESCRIPTION_MAX_LENGTH}
-                    placeholder="What question do you want the world to predict?"
-                    onChange={e => this.validateField(0, 'description', e.target.value, DESCRIPTION_MAX_LENGTH)}
-                  />
-                </li>
-                <li className={Styles['field--50']}>
-                  <label htmlFor="cm__input--cat">
-                    <span>Category</span>
-                    { s.requiredFields[1].length && <span className={Styles.CreateMarketDefine__error}>{ s.requiredFields[1] }</span> }
-                  </label>
-                  <input
-                    ref={(catInput) => { this.catInput = catInput }}
-                    id="cm__input--cat"
-                    type="text"
-                    maxLength={TAGS_MAX_LENGTH}
-                    placeholder="Help users find your market by defining its category"
-                    onChange={e => this.validateField(1, 'category', e.target.value, TAGS_MAX_LENGTH)}
-                  />
-                </li>
-                <li className={Styles['field--50']}>
-                  <label htmlFor="cm__suggested-categories">
-                    <span>Suggested Categories</span>
-                  </label>
-                  <ul className={Styles['CreateMarketDefine__suggested-categories']}>
-                    {p.newMarket.category && s.suggestedCategories.slice(0, s.shownSuggestions).map((cat, i) => (
-                      <li key={i}>
-                        <button onClick={() => { this.catInput.value = cat.topic; this.validateField(1, 'category', cat.topic, TAGS_MAX_LENGTH) }}>{cat.topic}</button>
-                      </li>
-                      )
-                    )}
-                    {p.newMarket.category && s.suggestedCategories.length > s.shownSuggestions &&
-                      <li>
-                        <button onClick={() => this.setState({ shownSuggestions: s.suggestedCategories.length })}>+ {s.suggestedCategories.length - 2} more</button>
-                      </li>
-                    }
-                  </ul>
-                </li>
-                <li className={Styles.CreateMarketDefine__tags}>
-                  <label htmlFor="cm__input--tag1">
-                    <span>Tags</span>
-                    { s.requiredFields[2].length &&
-                      <span className={Styles.CreateMarketDefine__error}>{ s.requiredFields[2] }</span>
-                    }
-                    { s.requiredFields[3].length &&
-                      <span className={classNames(Styles['CreateMarketDefine__error--tag2'], Styles.CreateMarketDefine__error)}>{ s.requiredFields[3] }</span>
-                    }
-                  </label>
-                  <input
-                    id="cm__input--tag1"
-                    type="text"
-                    maxLength={TAGS_MAX_LENGTH}
-                    placeholder="Tag 1"
-                    onChange={e => this.validateField(2, 'tag1', e.target.value, TAGS_MAX_LENGTH)}
-                  />
-                  <input
-                    id="cm__input--tag2"
-                    type="text"
-                    maxLength={TAGS_MAX_LENGTH}
-                    placeholder="Tag 2"
-                    onChange={e => this.validateField(3, 'tag2', e.target.value, TAGS_MAX_LENGTH)}
-                  />
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div className={Styles['CreateMarketDefine__button-outer-wrapper']}>
-          <div className={Styles['CreateMarketDefine__button-inner-wrapper']}>
-            <div className={Styles.CreateMarketDefine__navigation}>
-              <button
-                className={Styles.CreateMarketDefine__next}
-                disabled={!s.requiredFields.every(field => field === true)}
-                onClick={() => { s.requiredFields.every(field => field === true) && p.updatePage('next') }}
-              >Next: Outcome</button>
-            </div>
-          </div>
-        </div>
-      </article>
+      <ul className={classNames(Styles.CreateMarketDefine__fields, p.className)}>
+        <li>
+          <label htmlFor="cm__input--desc">
+            <span>Market Question</span>
+            { s.requiredFields[0].length && <span className={Styles.CreateMarketDefine__error}>{ s.requiredFields[0] }</span> }
+          </label>
+          <input
+            id="cm__input--desc"
+            type="text"
+            maxLength={DESCRIPTION_MAX_LENGTH}
+            placeholder="What question do you want the world to predict?"
+            onChange={e => this.validateField(0, 'description', e.target.value, DESCRIPTION_MAX_LENGTH)}
+          />
+        </li>
+        <li className={Styles['field--50']}>
+          <label htmlFor="cm__input--cat">
+            <span>Category</span>
+            { s.requiredFields[1].length && <span className={Styles.CreateMarketDefine__error}>{ s.requiredFields[1] }</span> }
+          </label>
+          <input
+            ref={(catInput) => { this.catInput = catInput }}
+            id="cm__input--cat"
+            type="text"
+            maxLength={TAGS_MAX_LENGTH}
+            placeholder="Help users find your market by defining its category"
+            onChange={e => this.validateField(1, 'category', e.target.value, TAGS_MAX_LENGTH)}
+          />
+        </li>
+        <li className={Styles['field--50']}>
+          <label htmlFor="cm__suggested-categories">
+            <span>Suggested Categories</span>
+          </label>
+          <ul className={Styles['CreateMarketDefine__suggested-categories']}>
+            {p.newMarket.category && s.suggestedCategories.slice(0, s.shownSuggestions).map((cat, i) => (
+              <li key={i}>
+                <button onClick={() => { this.catInput.value = cat.topic; this.validateField(1, 'category', cat.topic, TAGS_MAX_LENGTH) }}>{cat.topic}</button>
+              </li>
+              )
+            )}
+            {p.newMarket.category && s.suggestedCategories.length > s.shownSuggestions &&
+              <li>
+                <button onClick={() => this.setState({ shownSuggestions: s.suggestedCategories.length })}>+ {s.suggestedCategories.length - 2} more</button>
+              </li>
+            }
+          </ul>
+        </li>
+        <li className={Styles.CreateMarketDefine__tags}>
+          <label htmlFor="cm__input--tag1">
+            <span>Tags</span>
+            { s.requiredFields[2].length &&
+              <span className={Styles.CreateMarketDefine__error}>{ s.requiredFields[2] }</span>
+            }
+            { s.requiredFields[3].length &&
+              <span className={classNames(Styles['CreateMarketDefine__error--tag2'], Styles.CreateMarketDefine__error)}>{ s.requiredFields[3] }</span>
+            }
+          </label>
+          <input
+            id="cm__input--tag1"
+            type="text"
+            maxLength={TAGS_MAX_LENGTH}
+            placeholder="Tag 1"
+            onChange={e => this.validateField(2, 'tag1', e.target.value, TAGS_MAX_LENGTH)}
+          />
+          <input
+            id="cm__input--tag2"
+            type="text"
+            maxLength={TAGS_MAX_LENGTH}
+            placeholder="Tag 2"
+            onChange={e => this.validateField(3, 'tag2', e.target.value, TAGS_MAX_LENGTH)}
+          />
+        </li>
+      </ul>
     )
   }
 }

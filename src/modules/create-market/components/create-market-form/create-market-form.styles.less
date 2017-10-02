@@ -1,5 +1,30 @@
 @import '~assets/styles/shared.less';
 
+.CreateMarketForm {
+  padding: 3.75rem 0 0;
+}
+
+.CreateMarketForm__button-outer-wrapper,
+.CreateMarketForm__form-outer-wrapper {
+  max-width: 81.25rem;
+}
+
+.CreateMarketForm__button-inner-wrapper,
+.CreateMarketForm__form-inner-wrapper {
+  margin: auto;
+  max-width: 62.75rem;
+  padding: 0 2rem;
+}
+
+.CreateMarketForm__navigation {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.CreateMarketForm__next {
+  &:extend(.button--white all);
+}
+
 .CreateMarketForm__page {
   opacity: 0;
   pointer-events: none;
@@ -8,5 +33,23 @@
   &.show-page {
     opacity: 1;
     pointer-events: auto;
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .CreateMarketDefine__button-inner-wrapper,
+  .CreateMarketDefine__form-inner-wrapper {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .CreateMarketDefine__button-inner-wrapper {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .CreateMarketDefine__next {
+    border-radius: 0;
+    width: 100%;
   }
 }
