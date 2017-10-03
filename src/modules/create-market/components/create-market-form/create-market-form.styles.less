@@ -56,11 +56,17 @@
 
 .CreateMarketForm__navigation {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
-.CreateMarketForm__next {
+.CreateMarketForm__next,
+.CreateMarketForm__prev {
   &:extend(.button--white all);
+
+  &.hide-button {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 .CreateMarketForm__page {
