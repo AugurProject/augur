@@ -27,8 +27,8 @@ export default class BaseInnerNav extends Component {
   }
 
   render() {
-    const showMainMenu = this.props.mobileMenuState >= mobileMenuStates.SUBMENU_OPEN
-    const showSubMenu = this.props.mobileMenuState === mobileMenuStates.MAINMENU_OPEN
+    const showMainMenu = this.props.mobileMenuState >= mobileMenuStates.FIRSTMENU_OPEN
+    const showSubMenu = this.props.mobileMenuState === mobileMenuStates.SUBMENU_OPEN
 
     let subMenuAnimatedStyle
     if (!this.props.isMobile) {
