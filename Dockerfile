@@ -3,6 +3,7 @@ FROM node:6-alpine
 ENV PATH /root/.yarn/bin:$PATH
 
 # begin install yarn
+# Using --nightly yarn due to this bug: https://github.com/yarnpkg/yarn/issues/4363
 RUN apk update \
   && apk add git python make g++ bash curl binutils tar \
   && rm -rf /var/cache/apk/* \
