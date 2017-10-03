@@ -5976,7 +5976,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.2.5";
+  this.version = "4.2.6";
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
@@ -37446,7 +37446,7 @@ var setupFunctionsABI = require("./setup-functions-abi");
 var connect = require("./connect");
 
 module.exports = {
-  version: "4.3.5",
+  version: "4.3.6",
   setFrom: setFrom,
   setupEventsABI: setupEventsABI,
   setupFunctionsABI: setupFunctionsABI,
@@ -63912,9 +63912,11 @@ WsTransport.prototype.connect = function (callback) {
     // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
     messageHandler(new Error("Web socket error."), null);
   };
-  this.webSocketClient.onclose = function (err) {
-    console.error("websocket.onclose:", err);
-    callback(new Error("Web socket closed without opening, usually means failed connection."));
+  this.webSocketClient.onclose = function (event) {
+    if (event && event.code !== 1000) {
+      console.error("websocket.onclose:", event.code, event.reason);
+      callback(new Error("Web socket closed without opening, usually means failed connection."));
+    }
     callback = function () { };
   };
 };
