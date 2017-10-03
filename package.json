@@ -1,6 +1,6 @@
 {
   "name": "augur-ui",
-  "version": "3.18.0",
+  "version": "3.19.1",
   "description": "Augur UI",
   "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
@@ -42,7 +42,6 @@
     "lodash": "4.17.4",
     "memoizee": "0.4.5",
     "moment": "2.18.1",
-    "newrelic": "^2.2.2",
     "p5": "0.5.11",
     "prerender-node": "2.7.1",
     "prop-types": "15.5.10",
