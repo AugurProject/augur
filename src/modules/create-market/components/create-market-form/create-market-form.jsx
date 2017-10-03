@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
 import CreateMarketDefine from 'modules/create-market/components/create-market-form-define/create-market-form-define'
 import CreateMarketOutcome from 'modules/create-market/components/create-market-form-outcome/create-market-form-outcome'
@@ -59,7 +60,7 @@ export default class CreateMarketForm extends Component {
 
     this.state = {
       currentPage: 0,
-      totalPages: 5,
+      pages: ['Define', 'Outcome', 'Resolution', 'Details', 'Review'],
     }
 
     this.updatePage = this.updatePage.bind(this)
@@ -79,7 +80,7 @@ export default class CreateMarketForm extends Component {
   updatePage(direction) {
     let currentPage = direction === 'next' ? this.state.currentPage + 1 : this.state.currentPage - 1
     currentPage = currentPage < 0 ? 0 : currentPage
-    currentPage = currentPage > this.state.totalPages ? this.state.totalPages : currentPage
+    currentPage = currentPage > this.state.pages.length ? this.state.pages.length : currentPage
     this.setState({ currentPage })
   }
 
@@ -109,9 +110,13 @@ export default class CreateMarketForm extends Component {
             <div className={Styles['CreateMarketForm__button-inner-wrapper']}>
               <div className={Styles.CreateMarketForm__navigation}>
                 <button
+                  className={classNames(Styles.CreateMarketForm__prev, {[`${Styles['hide-button']}`] : s.currentPage === 0})}
+                  onClick={() => { this.updatePage('prev') }}
+                >Previous: {s.pages[s.currentPage - 1]}</button>
+                <button
                   className={Styles.CreateMarketForm__next}
                   onClick={() => { this.updatePage('next') }}
-                >Next: Outcome</button>
+                >Next: {s.pages[s.currentPage + 1]}</button>
                 {/* <button
                   className={Styles.CreateMarketForm__next}
                   disabled={!s.requiredFields.every(field => field === true)}
