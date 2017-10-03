@@ -23,31 +23,31 @@ export default class CreateMarketDefine extends Component {
     this.state = {
       suggestedCategories: this.filterCategories(this.props.newMarket.category),
       shownSuggestions: 2,
+      suggestedCatClicked: false,
       requiredFields: Array(4).fill(false)
     }
 
     this.filterCategories = this.filterCategories.bind(this)
     this.validateField = this.validateField.bind(this)
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.newMarket.category !== nextProps.newMarket.category) {
-      let filteredCategories = this.filterCategories(nextProps.newMarket.category)
-
-      if (nextProps.newMarket.category === '') {
-        filteredCategories = []
-      }
-
-      this.setState({
-        suggestedCategories: filteredCategories,
-        shownSuggestions: 2
-      })
-    }
+    this.updateFilteredCategories = this.updateFilteredCategories.bind(this)
   }
 
   filterCategories(category) {
     const userString = category.toLowerCase()
     return this.props.categories.filter(cat => cat.topic.toLowerCase().indexOf(userString) === 0)
+  }
+
+  updateFilteredCategories(userString, clearSuggestions = false) {
+    let filteredCategories = this.filterCategories(userString)
+
+    if (userString === '' || clearSuggestions) {
+      filteredCategories = []
+    }
+
+    this.setState({
+      suggestedCategories: filteredCategories,
+      shownSuggestions: 2,
+    })
   }
 
   validateField(fieldKey, fieldName, value, maxLength) {
@@ -101,7 +101,7 @@ export default class CreateMarketDefine extends Component {
             value={p.newMarket.category}
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Help users find your market by defining its category"
-            onChange={e => this.validateField(1, 'category', e.target.value, TAGS_MAX_LENGTH)}
+            onChange={(e) => { this.updateFilteredCategories(e.target.value); this.validateField(1, 'category', e.target.value, TAGS_MAX_LENGTH); }}
           />
         </li>
         <li className={StylesForm['field--50']}>
@@ -111,7 +111,11 @@ export default class CreateMarketDefine extends Component {
           <ul className={Styles['CreateMarketDefine__suggested-categories']}>
             {p.newMarket.category && s.suggestedCategories.slice(0, s.shownSuggestions).map((cat, i) => (
               <li key={i}>
-                <button onClick={() => { this.catInput.value = cat.topic; this.validateField(1, 'category', cat.topic, TAGS_MAX_LENGTH) }}>{cat.topic}</button>
+                <button onClick={() => {
+                  this.updateFilteredCategories(cat.topic, true);
+                  this.catInput.value = cat.topic;
+                  this.validateField(1, 'category', cat.topic, TAGS_MAX_LENGTH);
+                }}>{cat.topic}</button>
               </li>
               )
             )}
