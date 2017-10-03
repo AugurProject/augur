@@ -1,26 +1,46 @@
-import React from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import Helmet from 'react-helmet'
 
 import Styles from 'modules/auth/components/airbitz-create/airbitz-create.styles'
 
-export default function Airbitz() {
-  return (
-    <section className={Styles.Airbitz}>
-      <Helmet>
-        <title>Airbitz</title>
-      </Helmet>
-      <button
-        className={
-          classNames(
-            Styles.button,
-            Styles[`button--purple`],
-            Styles.Airbitz__button
-          )
-        }
-      >
-        Create Account with Airbitz
-      </button>
-    </section>
-  )
+export default class Airbitz extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    airbitzLoginLink: PropTypes.func.isRequired,
+    airbitzOnLoad: PropTypes.func.isRequired
+  }
+
+  componentWillMount() {
+    this.props.airbitzOnLoad(this.props.history)
+  }
+
+  componentDidMount() {
+    // this.props.airbitzLoginLink(this.props.history)
+  }
+
+  render() {
+    const p = this.props
+
+    return (
+      <section className={Styles.Airbitz}>
+        <Helmet>
+          <title>Airbitz</title>
+        </Helmet>
+        <button
+          className={
+            classNames(
+              Styles.button,
+              Styles[`button--purple`],
+              Styles.Airbitz__button
+            )
+          }
+          onClick={() => p.airbitzLoginLink(p.history)}
+        >
+          Create Account with Airbitz
+        </button>
+      </section>
+    )
+  }
 }
