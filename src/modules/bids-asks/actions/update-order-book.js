@@ -1,7 +1,3 @@
-import { augur } from 'services/augurjs';
-import { updateMarketPriceHistory } from 'modules/market/actions/update-market-price-history';
-import selectOrderBook from 'modules/bids-asks/selectors/select-order-book';
-
 export const UPDATE_ORDER_BOOK = 'UPDATE_ORDER_BOOK';
 export const REPLACE_ORDER_BOOK = 'REPLACE_ORDER_BOOK';
 export const CLEAR_ORDER_BOOK = 'CLEAR_ORDER_BOOK';

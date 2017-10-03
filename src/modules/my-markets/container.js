@@ -9,8 +9,7 @@ import { triggerTransactionsExport } from 'modules/transactions/actions/trigger-
 const mapStateToProps = state => ({
   myMarkets: getMyMarkets(),
   transactionsLoading: state.transactionsLoading,
-  hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber,
-  registerBlockNumber: state.loginAccount.registerBlockNumber
+  hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber // FIXME
 });
 
 const mapDispatchToProps = dispatch => ({

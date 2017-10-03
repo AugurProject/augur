@@ -17,7 +17,7 @@ export const loadAccountHistory = (loadAllHistory, triggerTransactionsExport) =>
   const blockChunkSize = 5760; // ~1 Day based on 15 second blocks
   const transactionSoftLimit = 40; // Used if blockChunkSize does not load # of transactions up to the soft limit (approximately two UI pages of transactions)
 
-  const registerBlock = loginAccount.registerBlockNumber;
+  const registerBlock = loginAccount.registerBlockNumber; // FIXME
   const oldestLoadedBlock = transactionsOldestLoadedBlock || blockchain.currentBlockNumber;
 
   if (!transactionsOldestLoadedBlock) { // Denotes nothing has loaded yet

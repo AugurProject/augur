@@ -14,8 +14,7 @@ export default class MyPositions extends Component {
     markets: PropTypes.array.isRequired,
     closePositionStatus: PropTypes.object.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired,
-    orderCancellation: PropTypes.object.isRequired,
-    registerBlockNumber: PropTypes.number
+    orderCancellation: PropTypes.object.isRequired
   }
 
   constructor(props) {
@@ -50,7 +49,6 @@ export default class MyPositions extends Component {
               transactionsLoading={p.transactionsLoading}
               hasAllTransactionsLoaded={p.hasAllTransactionsLoaded}
               triggerTransactionsExport={p.triggerTransactionsExport}
-              registerBlockNumber={p.registerBlockNumber}
             />
           </div>
         </div>

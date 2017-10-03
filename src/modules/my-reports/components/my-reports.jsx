@@ -22,7 +22,6 @@ export default class MyReports extends Component {
     history: PropTypes.object.isRequired,
     branch: PropTypes.object.isRequired,
     reports: PropTypes.array.isRequired,
-    registerBlockNumber: PropTypes.number,
   }
 
   constructor(props) {
@@ -57,7 +56,6 @@ export default class MyReports extends Component {
               transactionsLoading={p.transactionsLoading}
               hasAllTransactionsLoaded={p.hasAllTransactionsLoaded}
               triggerTransactionsExport={p.triggerTransactionsExport}
-              registerBlockNumber={p.registerBlockNumber}
             />
           </div>
         </div>

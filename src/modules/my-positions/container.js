@@ -22,8 +22,7 @@ const mapStateToProps = (state) => {
     scalarShareDenomination: getScalarShareDenomination(),
     orderCancellation: getOrderCancellation(),
     transactionsLoading: state.transactionsLoading,
-    hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber,
-    registerBlockNumber: state.loginAccount.registerBlockNumber
+    hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber // FIXME
   };
 };
 

@@ -12,9 +12,6 @@ export function loadReportingHistory(options, callback = logError) {
       sender: loginAccount.address,
       branch: branch.id
     };
-    if (!filter.fromBlock && loginAccount.registerBlockNumber) {
-      filter.fromBlock = loginAccount.registerBlockNumber;
-    }
     async.eachLimit([
       SUBMIT_REPORT // TODO insert other reporting events here
     ], constants.PARALLEL_LIMIT, (label, nextLabel) => {

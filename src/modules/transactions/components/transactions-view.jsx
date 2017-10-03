@@ -116,7 +116,6 @@ export default class TransactionsView extends Component {
               transactionsLoading={p.transactionsLoading}
               hasAllTransactionsLoaded={p.hasAllTransactionsLoaded}
               triggerTransactionsExport={p.triggerTransactionsExport}
-              registerBlockNumber={p.loginAccount.registerBlockNumber}
               allowExport
             />
           </div>
