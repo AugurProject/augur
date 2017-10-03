@@ -14,14 +14,12 @@ RUN apk update \
 
 # begin create caching layer
 COPY package.json /augur/package.json
-COPY scripts/lifecycle/post-install.js /augur/scripts/lifecycle/post-install.js
 WORKDIR /augur
 RUN git init \
   && yarn \
   && rm -rf .git \
   && rm package.json \
-  && rm yarn.lock \
-  && rm scripts/lifecycle/post-install.js
+  && rm yarn.lock
 # end create caching layer
 
 COPY . /augur
