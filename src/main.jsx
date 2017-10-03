@@ -13,6 +13,7 @@ import store from 'src/store'
 
 import { augur } from 'services/augurjs'
 
+require('newrelic')
 require('core-js/fn/array/find')
 require('core-js/fn/string/starts-with')
 
