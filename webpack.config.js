@@ -43,9 +43,9 @@ let config = {
     extensions: [
       '.html',
       '.less',
+      '.json',
       '.js',
-      '.jsx',
-      '.json'
+      '.jsx'
     ],
     alias: {
       src: PATHS.APP,
@@ -131,10 +131,6 @@ let config = {
         to: PATHS.BUILD
       },
       // TODO -- move these to production debug config prior to release
-      {
-        from: path.resolve(PATHS.APP, 'newrelic.js'),
-        to: PATHS.BUILD
-      },
       {
         from: path.resolve(PATHS.APP, 'loaderio-e6f0536ecc4759035b4106efb3b1f225.txt'),
         to: PATHS.BUILD
