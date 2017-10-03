@@ -4,7 +4,7 @@ import Helmet from 'react-helmet'
 
 import NavPanel from 'modules/common/components/nav-panel/nav-panel'
 import Help from 'modules/auth/components/help/help'
-import Airbitz from 'modules/auth/containers/airbitz'
+import Airbitz from 'modules/auth/containers/airbitz-create'
 import Uport from 'modules/auth/containers/uport'
 import KeystoreCreate from 'modules/auth/containers/keystore-create'
 
