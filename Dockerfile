@@ -8,7 +8,7 @@ RUN apk update \
   && rm -rf /var/cache/apk/* \
   && /bin/bash \
   && touch ~/.bashrc \
-  && curl -o- -L https://yarnpkg.com/install.sh | bash \
+  && curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --nightly \
   && apk del curl tar binutils
 # end install yarn
 
