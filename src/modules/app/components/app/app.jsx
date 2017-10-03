@@ -317,6 +317,7 @@ export default class AppView extends Component {
           </Link>
           {this.renderMobileMenuButton()}
           <SideNav
+            defaultMobileClick={() => this.setState({ mobileMenuState: mobileMenuStates.CLOSED })}
             isMobile={p.isMobile}
             isLogged={p.isLogged}
             mobileShow={s.mobileMenuState === mobileMenuStates.SIDEBAR_OPEN}
@@ -345,6 +346,7 @@ export default class AppView extends Component {
                 categories={p.categories}
                 markets={p.markets}
                 marketsFilteredSorted={p.marketsFilteredSorted}
+                openSubMenu={() => this.setState({ mobileMenuState: mobileMenuStates.SUBMENU_OPEN })}
                 location={p.location}
                 history={p.history}
               />

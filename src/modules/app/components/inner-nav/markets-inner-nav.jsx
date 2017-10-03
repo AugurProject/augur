@@ -140,6 +140,9 @@ export default class MarketsInnerNav extends BaseInnerNav {
       label: item.topic,
       isSelected: item.topic === selectedCategory,
       visible: true,
+      onClick: () => {
+        if (this.props.isMobile) this.props.openSubMenu()
+      },
       link: {
         pathname: makePath(MARKETS),
         search: makeQuery({
