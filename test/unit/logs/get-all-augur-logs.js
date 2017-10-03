@@ -19,10 +19,10 @@ describe("logs/get-all-augur-logs", function () {
     });
   };
   test({
-    description: "from block 10 to block 1000, 2 chunks, 3 event logs",
+    description: "from block 10 to block 200, 2 chunks, 3 event logs",
     params: {
       fromBlock: 10,
-      toBlock: 1000
+      toBlock: 200
     },
     mock: {
       contracts: {
@@ -80,7 +80,7 @@ describe("logs/get-all-augur-logs", function () {
                 "0x3000000000000000000000000000000000000000000000000000000000000000"
               ],
               data: "0x0000000000000000000000000000000000000000000000000000000000000002",
-              blockNumber: "0x384",
+              blockNumber: "0x96",
               transactionIndex: "0x0",
               transactionHash: "0x00000000000000000000000000000000000000000000000000000000000000aa",
               blockHash: "0x00000000000000000000000000000000000000000000000000000000000000bb",
@@ -93,7 +93,7 @@ describe("logs/get-all-augur-logs", function () {
                 "0x3000000000000000000000000000000000000000000000000000000000000000"
               ],
               data: "0x0000000000000000000000000000000000000000000000000000000000000003",
-              blockNumber: "0x385",
+              blockNumber: "0x97",
               transactionIndex: "0x0",
               transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000aaa",
               blockHash: "0x0000000000000000000000000000000000000000000000000000000000000bbb",
@@ -128,7 +128,7 @@ describe("logs/get-all-augur-logs", function () {
             address: "0x000000000000000000000000000000000000000c",
             testEventInputIndexed: "0x3000000000000000000000000000000000000000000000000000000000000000",
             testEventInputData: "0x0000000000000000000000000000000000000002",
-            blockNumber: 900,
+            blockNumber: 150,
             transactionHash: "0x00000000000000000000000000000000000000000000000000000000000000aa",
             logIndex: 0,
             removed: false
@@ -136,7 +136,7 @@ describe("logs/get-all-augur-logs", function () {
             address: "0x000000000000000000000000000000000000000c",
             testEventInputIndexed: "0x3000000000000000000000000000000000000000000000000000000000000000",
             testEventInputData: "0x0000000000000000000000000000000000000003",
-            blockNumber: 901,
+            blockNumber: 151,
             transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000aaa",
             logIndex: 0,
             removed: false

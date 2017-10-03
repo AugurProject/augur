@@ -15,6 +15,7 @@ var isFunction = require("../utils/is-function");
  */
 function startListeners(onLogAddedCallbacks, onNewBlock, onSetupComplete) {
   var blockStream = ethrpc.getBlockStream();
+  if (!blockStream) return console.error("Not connected");
   if (isFunction(onNewBlock)) {
     blockStream.subscribeToOnBlockAdded(function (newBlock) {
       parseBlockMessage(newBlock, onNewBlock);
