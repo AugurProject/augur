@@ -1,6 +1,7 @@
-import { SqlLiteDb, ErrorCallback } from "./types";
+import { Database } from "sqlite3";
+import { ErrorCallback } from "./types";
 
-export function createAugurDbTables(db: SqlLiteDb, callback: ErrorCallback): void {
+export function createAugurDbTables(db: Database, callback: ErrorCallback): void {
   db.serialize(() => {
     db.run(`DROP TABLE IF EXISTS markets`)
       .run(`CREATE TABLE markets (

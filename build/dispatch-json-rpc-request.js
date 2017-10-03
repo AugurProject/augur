@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const get_market_info_1 = require("./get-market-info");
 const get_account_transfer_history_1 = require("./get-account-transfer-history");
+const get_topics_1 = require("./get-topics");
 const get_markets_created_by_user_1 = require("./get-markets-created-by-user");
 const get_reporting_history_1 = require("./get-reporting-history");
 const get_markets_awaiting_designated_reporting_1 = require("./get-markets-awaiting-designated-reporting");
@@ -21,11 +22,14 @@ const get_detailed_market_info_1 = require("./get-detailed-market-info");
 const get_markets_info_1 = require("./get-markets-info");
 const get_open_orders_1 = require("./get-open-orders");
 function dispatchJsonRpcRequest(db, request, callback) {
+    console.log("dispatchJsonRpcRequest:", request);
     switch (request.method) {
         case "getMarketInfo":
             return get_market_info_1.getMarketInfo(db, request.params.market, callback);
         case "getAccountTransferHistory":
             return get_account_transfer_history_1.getAccountTransferHistory(db, request.params.account, request.params.token, callback);
+        case "getTopics":
+            return get_topics_1.getTopics(db, request.params.universe, callback);
         case "getMarketsCreatedByUser":
             return get_markets_created_by_user_1.getMarketsCreatedByUser(db, request.params.account, callback);
         case "getReportingHistory":

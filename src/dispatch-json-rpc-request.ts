@@ -1,6 +1,8 @@
-import { SqlLiteDb, JsonRpcRequest } from "./types";
+import { Database } from "sqlite3";
+import { JsonRpcRequest } from "./types";
 import { getMarketInfo } from "./get-market-info";
 import { getAccountTransferHistory } from "./get-account-transfer-history";
+import { getTopics } from "./get-topics";
 import { getMarketsCreatedByUser } from "./get-markets-created-by-user";
 import { getReportingHistory } from "./get-reporting-history";
 import { getMarketsAwaitingDesignatedReporting } from "./get-markets-awaiting-designated-reporting";
@@ -20,12 +22,15 @@ import { getDetailedMarketInfo } from "./get-detailed-market-info";
 import { getMarketsInfo } from "./get-markets-info";
 import { getOpenOrders } from "./get-open-orders";
 
-export function dispatchJsonRpcRequest(db: SqlLiteDb, request: JsonRpcRequest, callback: (err?: Error|null, result?: any) => void) {
+export function dispatchJsonRpcRequest(db: Database, request: JsonRpcRequest, callback: (err?: Error|null, result?: any) => void) {
+  console.log("dispatchJsonRpcRequest:", request);
   switch (request.method) {
     case "getMarketInfo":
       return getMarketInfo(db, request.params.market, callback);
     case "getAccountTransferHistory":
       return getAccountTransferHistory(db, request.params.account, request.params.token, callback);
+    case "getTopics":
+      return getTopics(db, request.params.universe, callback);
     case "getMarketsCreatedByUser":
       return getMarketsCreatedByUser(db, request.params.account, callback);
     case "getReportingHistory":

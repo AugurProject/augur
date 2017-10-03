@@ -1,6 +1,7 @@
-import { SqlLiteDb, MarketsRow, MarketInfo } from "./types";
+import { Database } from "sqlite3";
+import { MarketsRow, MarketInfo } from "./types";
 
-export function getMarketInfo(db: SqlLiteDb, market: string, callback: (err?: Error|null, result?: MarketInfo) => void) {
+export function getMarketInfo(db: Database, market: string, callback: (err?: Error|null, result?: MarketInfo) => void) {
   db.get(`SELECT * FROM markets WHERE contract_address = ?`, [market], (err?: Error|null, row?: MarketsRow) => {
     if (err) return callback(err);
     if (!row) return callback(null);

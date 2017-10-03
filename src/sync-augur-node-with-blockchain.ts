@@ -1,8 +1,10 @@
-import { AugurJs, SqlLiteDb, EthereumNodeEndpoints, UploadBlockNumbers, FormattedLog, ErrorCallback } from "./types";
+import Augur = require("augur.js");
+import { Database } from "sqlite3";
+import { EthereumNodeEndpoints, UploadBlockNumbers, FormattedLog, ErrorCallback } from "./types";
 import { startAugurListeners } from "./start-augur-listeners";
 import { downloadAugurLogs } from "./download-augur-logs";
 
-export function syncAugurNodeWithBlockchain(db: SqlLiteDb, augur: AugurJs, ethereumNodeEndpoints: EthereumNodeEndpoints, uploadBlockNumbers: UploadBlockNumbers, callback: ErrorCallback): void {
+export function syncAugurNodeWithBlockchain(db: Database, augur: Augur, ethereumNodeEndpoints: EthereumNodeEndpoints, uploadBlockNumbers: UploadBlockNumbers, callback: ErrorCallback): void {
   augur.connect(ethereumNodeEndpoints, () => startAugurListeners(db, augur, () => {
     db.get(`SELECT highest_block_number FROM blockchain_sync_history ORDER BY highest_block_number DESC LIMIT 1`, (err?: Error|null, row?: {highest_block_number: number}) => {
       if (err) return callback(err);

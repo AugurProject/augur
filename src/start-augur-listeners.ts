@@ -1,8 +1,10 @@
-import { AugurJs, SqlLiteDb, FormattedLog } from "./types";
+import Augur = require("augur.js");
+import { Database } from "sqlite3";
+import { FormattedLog } from "./types";
 import { logProcessors } from "./log-processors";
 import { logError } from "./log-error";
 
-export function startAugurListeners(db: SqlLiteDb, augur: AugurJs, callback: () => void): void {
+export function startAugurListeners(db: Database, augur: Augur, callback: () => void): void {
   augur.filters.startListeners({
     Augur: {
       MarketCreated: (log: FormattedLog) => {

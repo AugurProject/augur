@@ -1,16 +1,17 @@
 import * as WebSocket from "ws";
-import { SqlLiteDb, JsonRpcRequest } from "./types";
+import { Database } from "sqlite3";
+import { JsonRpcRequest } from "./types";
 import { isJsonRpcRequest } from "./is-json-rpc-request";
 import { dispatchJsonRpcRequest } from "./dispatch-json-rpc-request";
 import { makeJsonRpcResponse } from "./make-json-rpc-response";
 
-export function runWebsocketServer(db: SqlLiteDb, port: number) {
+export function runWebsocketServer(db: Database, port: number) {
   const websocketServer: WebSocket.Server = new WebSocket.Server({ port });
   websocketServer.on("connection", (websocket: WebSocket) => {
     console.log("websocket connected");
     websocket.on("message", (data: WebSocket.Data) => {
       try {
-        const message = JSON.parse(data);
+        const message = JSON.parse(<string>data);
         console.log("received message:", message);
         if (isJsonRpcRequest(message)) {
           dispatchJsonRpcRequest(db, <JsonRpcRequest>message, (err?: Error|null, result?: any) => {

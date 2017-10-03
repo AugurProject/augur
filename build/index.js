@@ -9,6 +9,7 @@ const { augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers, websocketPort } 
 sqlite3.verbose();
 const db = new sqlite3.Database(augurDbPath);
 const augur = new Augur();
+augur.rpc.setDebugOptions({ broadcast: false });
 check_augur_db_setup_1.checkAugurDbSetup(db, (err) => {
     if (err)
         return console.error("checkAugurDbSetup:", err);

@@ -1,6 +1,7 @@
-import { SqlLiteDb, Address, TransferRow, TransferLog, TransferHistory } from "./types";
+import { Database } from "sqlite3";
+import { Address, TransferRow, TransferLog, TransferHistory } from "./types";
 
-export function getAccountTransferHistory(db: SqlLiteDb, account: Address, token: Address|null, callback: (err?: Error|null, result?: TransferHistory) => void) {
+export function getAccountTransferHistory(db: Database, account: Address, token: Address|null, callback: (err?: Error|null, result?: TransferHistory) => void) {
   let query: string;
   let dataToSelect: Address[];
   if (token == null) {

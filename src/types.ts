@@ -1,5 +1,4 @@
-export type AugurJs = any;
-export type SqlLiteDb = any;
+import { Database } from "sqlite3";
 
 export interface EthereumNodeEndpoints {
   [protocol: string]: string
@@ -40,7 +39,7 @@ export interface AugurLogs {
 
 export type ErrorCallback = (err?: Error|null) => void;
 
-export type LogProcessor = (db: SqlLiteDb, log: FormattedLog, callback: ErrorCallback) => void;
+export type LogProcessor = (db: Database, log: FormattedLog, callback: ErrorCallback) => void;
 
 export interface MarketInfo {
   contractAddress: Address,

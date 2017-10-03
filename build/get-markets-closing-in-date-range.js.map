@@ -1,1 +1,1 @@
-{"version":3,"file":"get-markets-closing-in-date-range.js","sourceRoot":"","sources":["../src/get-markets-closing-in-date-range.ts"],"names":[],"mappings":";;AAEA,oBAAoB;AACpB,mCAAmC;AACnC,sCAA6C,EAAa,EAAE,SAAwB,EAAE,QAAkD;AAExI,CAAC;AAFD,oEAEC"}
+{"version":3,"file":"get-markets-closing-in-date-range.js","sourceRoot":"","sources":["../src/get-markets-closing-in-date-range.ts"],"names":[],"mappings":";;AAEA,oBAAoB;AACpB,mCAAmC;AACnC,sCAA6C,EAAY,EAAE,SAAwB,EAAE,QAAkD;AAEvI,CAAC;AAFD,oEAEC"}

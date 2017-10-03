@@ -1,1 +1,1 @@
-{"version":3,"file":"get-markets-info.js","sourceRoot":"","sources":["../src/get-markets-info.ts"],"names":[],"mappings":";;AAEA,wBAA+B,EAAa,EAAE,QAAiB,EAAE,QAAkD;AAEnH,CAAC;AAFD,wCAEC"}
+{"version":3,"file":"get-markets-info.js","sourceRoot":"","sources":["../src/get-markets-info.ts"],"names":[],"mappings":";;AAGA,wBAA+B,EAAY,EAAE,QAAiB,EAAE,QAAkD;AAElH,CAAC;AAFD,wCAEC"}

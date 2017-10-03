@@ -1,1 +1,0 @@
-{"version":3,"file":"is-augur-db-already-setup.js","sourceRoot":"","sources":["../src/is-augur-db-already-setup.ts"],"names":[],"mappings":";;AAEA,2BAAkC,EAAa,EAAE,QAAuB;IACtE,EAAE,CAAC,GAAG,CAAC,8GAA8G,EAAE,CAAC,GAAgB,EAAE,GAAgC;QACxK,EAAE,CAAC,CAAC,GAAG,CAAC;YAAC,MAAM,CAAC,QAAQ,CAAC,GAAG,CAAC,CAAC;IAEhC,CAAC,CAAC,CAAC;AACL,CAAC;AALD,8CAKC"}

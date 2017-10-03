@@ -1,5 +1,6 @@
-import { SqlLiteDb, Address } from "./types";
+import { Database } from "sqlite3";
+import { Address } from "./types";
 
-export function getMarketsInfo(db: SqlLiteDb, universe: Address, callback: (err?: Error|null, result?: any) => void) {
+export function getMarketsInfo(db: Database, universe: Address, callback: (err?: Error|null, result?: any) => void) {
 
 }

@@ -1,6 +1,7 @@
 import { each } from "async";
-import { SqlLiteDb, FormattedLog, ErrorCallback } from "./types";
+import { Database } from "sqlite3";
+import { FormattedLog, LogProcessor, ErrorCallback } from "./types";
 
-export function processLogs(db: SqlLiteDb, logs: FormattedLog[], processLog, callback: ErrorCallback): void {
+export function processLogs(db: Database, logs: FormattedLog[], processLog: LogProcessor, callback: ErrorCallback): void {
   each(logs, (log: FormattedLog, nextLog) => processLog(db, log, nextLog), callback);
 }
