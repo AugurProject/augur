@@ -328,6 +328,7 @@ export default class AppView extends Component {
           <section>
             <TopBar
               isMobile={p.isMobile}
+              isLogged={p.isLogged}
               stats={p.coreStats}
             />
           </section>
