@@ -60,10 +60,11 @@ export default class CreateMarketForm extends Component {
 
     this.state = {
       currentPage: 0,
-      pages: ['Define', 'Outcome', 'Resolution', 'Details', 'Review'],
+      pages: ['Define', 'Outcome', 'Resolution', 'Liquidity', 'Review'],
     }
 
-    this.updatePage = this.updatePage.bind(this)
+    this.prevPage = this.prevPage.bind(this)
+    this.nextPage = this.nextPage.bind(this)
   }
 
   // componentWillReceiveProps(nextProps) {
@@ -77,11 +78,14 @@ export default class CreateMarketForm extends Component {
   //   }
   // }
 
-  updatePage(direction) {
-    let currentPage = direction === 'next' ? this.state.currentPage + 1 : this.state.currentPage - 1
-    currentPage = currentPage < 0 ? 0 : currentPage
-    currentPage = currentPage > this.state.pages.length ? this.state.pages.length : currentPage
-    this.setState({ currentPage })
+  prevPage() {
+    const newStep = this.props.newMarket.currentStep <= 0 ? 0 : this.props.newMarket.currentStep - 1
+    this.props.updateNewMarket({ currentStep : newStep })
+  }
+
+  nextPage() {
+    const newStep = this.props.newMarket.currentStep >= (this.state.pages.length - 1) ? this.state.pages.length - 1 : this.props.newMarket.currentStep + 1
+    this.props.updateNewMarket({ currentStep : newStep })
   }
 
   render() {
@@ -92,14 +96,14 @@ export default class CreateMarketForm extends Component {
       <article className={Styles.CreateMarketForm}>
         <div className={Styles['CreateMarketForm__form-outer-wrapper']}>
           <div className={Styles['CreateMarketForm__form-inner-wrapper']}>
-            { s.currentPage === 0 &&
+            { p.newMarket.currentStep === 0 &&
               <CreateMarketDefine
                 newMarket={p.newMarket}
                 updateNewMarket={p.updateNewMarket}
                 categories={p.categories}
               />
             }
-            { s.currentPage === 1 &&
+            { p.newMarket.currentStep === 1 &&
               <CreateMarketOutcome
                 newMarket={p.newMarket}
                 updateNewMarket={p.updateNewMarket}
@@ -110,13 +114,13 @@ export default class CreateMarketForm extends Component {
             <div className={Styles['CreateMarketForm__button-inner-wrapper']}>
               <div className={Styles.CreateMarketForm__navigation}>
                 <button
-                  className={classNames(Styles.CreateMarketForm__prev, {[`${Styles['hide-button']}`] : s.currentPage === 0})}
-                  onClick={() => { this.updatePage('prev') }}
-                >Previous: {s.pages[s.currentPage - 1]}</button>
+                  className={classNames(Styles.CreateMarketForm__prev, {[`${Styles['hide-button']}`] : p.newMarket.currentStep === 0})}
+                  onClick={this.prevPage}
+                >Previous: {s.pages[p.newMarket.currentStep - 1]}</button>
                 <button
-                  className={Styles.CreateMarketForm__next}
-                  onClick={() => { this.updatePage('next') }}
-                >Next: {s.pages[s.currentPage + 1]}</button>
+                  className={classNames(Styles.CreateMarketForm__next, {[`${Styles['hide-button']}`] : p.newMarket.currentStep === s.pages.length - 1})}
+                  onClick={this.nextPage}
+                >Next: {s.pages[p.newMarket.currentStep + 1]}</button>
                 {/* <button
                   className={Styles.CreateMarketForm__next}
                   disabled={!s.requiredFields.every(field => field === true)}

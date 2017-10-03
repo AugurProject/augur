@@ -83,6 +83,7 @@ export default class CreateMarketDefine extends Component {
           <input
             id="cm__input--desc"
             type="text"
+            value={p.newMarket.description}
             maxLength={DESCRIPTION_MAX_LENGTH}
             placeholder="What question do you want the world to predict?"
             onChange={e => this.validateField(0, 'description', e.target.value, DESCRIPTION_MAX_LENGTH)}
@@ -97,6 +98,7 @@ export default class CreateMarketDefine extends Component {
             ref={(catInput) => { this.catInput = catInput }}
             id="cm__input--cat"
             type="text"
+            value={p.newMarket.category}
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Help users find your market by defining its category"
             onChange={e => this.validateField(1, 'category', e.target.value, TAGS_MAX_LENGTH)}
@@ -133,6 +135,7 @@ export default class CreateMarketDefine extends Component {
           <input
             id="cm__input--tag1"
             type="text"
+            value={p.newMarket.tag1}
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Tag 1"
             onChange={e => this.validateField(2, 'tag1', e.target.value, TAGS_MAX_LENGTH)}
@@ -140,6 +143,7 @@ export default class CreateMarketDefine extends Component {
           <input
             id="cm__input--tag2"
             type="text"
+            value={p.newMarket.tag2}
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Tag 2"
             onChange={e => this.validateField(3, 'tag2', e.target.value, TAGS_MAX_LENGTH)}

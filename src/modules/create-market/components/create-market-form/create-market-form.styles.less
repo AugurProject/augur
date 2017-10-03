@@ -42,7 +42,8 @@
     }
 
     input[type="text"],
-    input[type="number"] {
+    input[type="number"],
+    textarea {
       background-color: @color-lightergray;
       font-size: 1.125rem;
       line-height: 1.125rem;
@@ -50,6 +51,11 @@
       &::placeholder {
         color: @color-lightgray;
       }
+    }
+
+    textarea {
+      height: 3.25rem;
+      padding-top: 1rem;
     }
   }
 }
