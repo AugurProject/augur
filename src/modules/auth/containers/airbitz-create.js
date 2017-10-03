@@ -16,7 +16,6 @@ const mapDispatchToProps = dispatch => ({
     const abcUi = selectABCUIContext()
     const abcContext = abcUi.abcContext
     const usernames = abcContext.listUsernames()
-    console.log('abcUi -- ', abcUi)
     if (usernames.length > 0) {
       abcUi.openLoginWindow((result, airbitzAccount) => {
         if (airbitzAccount) {

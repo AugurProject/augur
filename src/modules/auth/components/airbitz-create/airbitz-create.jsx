@@ -16,10 +16,6 @@ export default class Airbitz extends Component {
     this.props.airbitzOnLoad(this.props.history)
   }
 
-  componentDidMount() {
-    // this.props.airbitzLoginLink(this.props.history)
-  }
-
   render() {
     const p = this.props
 
