@@ -1,6 +1,6 @@
-import { Database } from "sqlite3";
+import * as Knex from "knex";
 import { FormattedLog, ErrorCallback } from "../../types";
 
-export function processMarketFinalizedLog(db: Database, log: FormattedLog, callback: ErrorCallback): void {
+export function processMarketFinalizedLog(db: Knex, log: FormattedLog, callback: ErrorCallback): void {
 
 }

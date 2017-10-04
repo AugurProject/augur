@@ -1,7 +1,7 @@
-import { Database } from "sqlite3";
+import * as Knex from "knex";
 
 // Input: Date Range
 // Output: Markets Closing in Range
-export function getMarketsClosingInDateRange(db: Database, dateRange: number[]|null, callback: (err?: Error|null, result?: any) => void): void {
+export function getMarketsClosingInDateRange(db: Knex, dateRange: number[]|null, callback: (err?: Error|null, result?: any) => void): void {
 
 }

@@ -1,4 +1,4 @@
-import { Database } from "sqlite3";
+import * as Knex from "knex";
 import { Address, Bytes32 } from "../../types";
 
 interface TransferRow {
@@ -23,7 +23,7 @@ interface TransferLog {
 
 type TransferHistory = TransferLog[];
 
-export function getAccountTransferHistory(db: Database, account: Address, token: Address|null, callback: (err?: Error|null, result?: TransferHistory) => void): void {
+export function getAccountTransferHistory(db: Knex, account: Address, token: Address|null, callback: (err?: Error|null, result?: TransferHistory) => void): void {
   let query: string;
   let dataToSelect: Address[];
   if (token == null) {

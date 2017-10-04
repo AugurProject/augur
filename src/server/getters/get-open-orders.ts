@@ -1,4 +1,4 @@
-import { Database } from "sqlite3";
+import * as Knex from "knex";
 import { Address, Bytes32 } from "../../types";
 
 interface OrdersRow {
@@ -39,7 +39,7 @@ interface Orders {
 }
 
 // market, outcome, creator, orderType, limit, sort
-export function getOpenOrders(db: Database, market: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, callback: (err?: Error|null, result?: any) => void): void {
+export function getOpenOrders(db: Knex, market: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, callback: (err?: Error|null, result?: any) => void): void {
   const conditions = [{
     name: "market",
     value: market
