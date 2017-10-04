@@ -1,28 +1,29 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const log_processors_1 = require("./log-processors");
-const log_error_1 = require("../utils/log-error");
+const make_log_listener_1 = require("./make-log-listener");
+const on_new_block_1 = require("./on-new-block");
 function startAugurListeners(db, augur, callback) {
     augur.filters.startListeners({
         Augur: {
-            MarketCreated: (log) => {
-                console.log("MarketCreated", log);
-                log_processors_1.logProcessors.Augur.MarketCreated(db, log, log_error_1.logError);
-            },
-            TokensTransferred: (log) => {
-                console.log("TokensTransferred", log);
-                log_processors_1.logProcessors.Augur.TokensTransferred(db, log, log_error_1.logError);
-            }
+            MarketCreated: make_log_listener_1.makeLogListener(db, "Augur", "MarketCreated"),
+            TokensTransferred: make_log_listener_1.makeLogListener(db, "Augur", "TokensTransferred"),
+            OrderCanceled: make_log_listener_1.makeLogListener(db, "Augur", ""),
+            OrderCreated: make_log_listener_1.makeLogListener(db, "Augur", "OrderCreated"),
+            OrderFilled: make_log_listener_1.makeLogListener(db, "Augur", "OrderFilled"),
+            ProceedsClaimed: make_log_listener_1.makeLogListener(db, "Augur", "ProceedsClaimed"),
+            ReporterRegistered: make_log_listener_1.makeLogListener(db, "Augur", "ReporterRegistered"),
+            DesignatedReportSubmitted: make_log_listener_1.makeLogListener(db, "Augur", "DesignatedReportSubmitted"),
+            ReportSubmitted: make_log_listener_1.makeLogListener(db, "Augur", "ReportSubmitted"),
+            WinningTokensRedeemed: make_log_listener_1.makeLogListener(db, "Augur", "WinningTokensRedeemed"),
+            ReportsDisputed: make_log_listener_1.makeLogListener(db, "Augur", "ReportsDisputed"),
+            MarketFinalized: make_log_listener_1.makeLogListener(db, "Augur", "MarketFinalized"),
+            UniverseForked: make_log_listener_1.makeLogListener(db, "Augur", "UniverseForked")
+        },
+        LegacyRepContract: {
+            Transfer: make_log_listener_1.makeLogListener(db, "LegacyRepContract", "Transfer"),
+            Approval: make_log_listener_1.makeLogListener(db, "LegacyRepContract", "Approval")
         }
-    }, (blockNumber) => {
-        augur.rpc.eth.getBlockByNumber([blockNumber, false], (block) => {
-            if (!block || block.error || !block.timestamp)
-                return log_error_1.logError(new Error(JSON.stringify(block)));
-            console.log("new block received:", parseInt(blockNumber, 16), parseInt(block.timestamp, 16));
-            const dataToInsertOrReplace = [parseInt(blockNumber, 16), parseInt(block.timestamp, 16)];
-            db.run(`INSERT OR REPLACE INTO blocks (block_number, block_timestamp) VALUES (?, ?)`, dataToInsertOrReplace, log_error_1.logError);
-        });
-    }, callback);
+    }, (blockNumber) => on_new_block_1.onNewBlock(db, augur, blockNumber), callback);
 }
 exports.startAugurListeners = startAugurListeners;
 //# sourceMappingURL=start-augur-listeners.js.map
