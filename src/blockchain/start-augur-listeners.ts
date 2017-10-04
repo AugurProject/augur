@@ -9,7 +9,7 @@ export function startAugurListeners(db: Database, augur: Augur, callback: () => 
     Augur: {
       MarketCreated: makeLogListener(db, "Augur", "MarketCreated"),
       TokensTransferred: makeLogListener(db, "Augur", "TokensTransferred"),
-      OrderCanceled: makeLogListener(db, "Augur", ""),
+      OrderCanceled: makeLogListener(db, "Augur", "OrderCanceled"),
       OrderCreated: makeLogListener(db, "Augur", "OrderCreated"),
       OrderFilled: makeLogListener(db, "Augur", "OrderFilled"),
       ProceedsClaimed: makeLogListener(db, "Augur", "ProceedsClaimed"),

@@ -7,7 +7,7 @@ function startAugurListeners(db, augur, callback) {
         Augur: {
             MarketCreated: make_log_listener_1.makeLogListener(db, "Augur", "MarketCreated"),
             TokensTransferred: make_log_listener_1.makeLogListener(db, "Augur", "TokensTransferred"),
-            OrderCanceled: make_log_listener_1.makeLogListener(db, "Augur", ""),
+            OrderCanceled: make_log_listener_1.makeLogListener(db, "Augur", "OrderCanceled"),
             OrderCreated: make_log_listener_1.makeLogListener(db, "Augur", "OrderCreated"),
             OrderFilled: make_log_listener_1.makeLogListener(db, "Augur", "OrderFilled"),
             ProceedsClaimed: make_log_listener_1.makeLogListener(db, "Augur", "ProceedsClaimed"),
