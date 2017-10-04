@@ -1,4 +1,5 @@
 import Augur = require("augur.js");
+import knex = require('knex');
 import * as sqlite3 from "sqlite3";
 import { EthereumNodeEndpoints, FormattedLog } from "./types";
 import { checkAugurDbSetup } from "./setup/check-augur-db-setup";
@@ -7,17 +8,28 @@ import { runWebsocketServer } from "./server/run-websocket-server";
 
 const { augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers, websocketPort } = require("../config");
 
-sqlite3.verbose();
+var db: Knex;
+if(process.env['DATABASE'] == null) {
+  sqlite3.verbose();
+  db = knex({
+    client: 'sqlite3',
+    connection: {
+      filename: augurDbPath
+    }
+  });
+} else {
+  db = knex({
+    client: 'pg',
+    connection: process.env['DATABASE']
+  });
+}
 
-const db: sqlite3.Database = new sqlite3.Database(augurDbPath);
 const augur: Augur = new Augur();
 
 augur.rpc.setDebugOptions({ broadcast: false });
 
-checkAugurDbSetup(db, (err?: Error|null) => {
-  if (err) return console.error("checkAugurDbSetup:", err);
-  syncAugurNodeWithBlockchain(db, augur, ethereumNodeEndpoints, uploadBlockNumbers, (err?: Error|null) => {
-    if (err) return console.error("syncAugurNodeWithBlockchain:", err);
-    runWebsocketServer(db, websocketPort);
-  });
+// Run Migrations?
+syncAugurNodeWithBlockchain(db, augur, ethereumNodeEndpoints, uploadBlockNumbers, (err?: Error|null) => {
+  if (err) return console.error("syncAugurNodeWithBlockchain:", err);
+  runWebsocketServer(db, websocketPort);
 });
