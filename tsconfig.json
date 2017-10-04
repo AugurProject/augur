@@ -13,7 +13,8 @@
     "rootDir": "src",
     "typeRoots": [
       "@types",
-      "./@types"
+      "./@types",
+      "node_modules/@types"
     ]
   },
   "include": [
