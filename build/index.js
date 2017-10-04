@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Augur = require("augur.js");
 const sqlite3 = require("sqlite3");
-const check_augur_db_setup_1 = require("./check-augur-db-setup");
-const sync_augur_node_with_blockchain_1 = require("./sync-augur-node-with-blockchain");
-const run_websocket_server_1 = require("./run-websocket-server");
+const check_augur_db_setup_1 = require("./setup/check-augur-db-setup");
+const sync_augur_node_with_blockchain_1 = require("./blockchain/sync-augur-node-with-blockchain");
+const run_websocket_server_1 = require("./server/run-websocket-server");
 const { augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers, websocketPort } = require("../config");
 sqlite3.verbose();
 const db = new sqlite3.Database(augurDbPath);

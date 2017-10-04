@@ -1,11 +1,9 @@
 import Augur = require("augur.js");
 import * as sqlite3 from "sqlite3";
 import { EthereumNodeEndpoints, FormattedLog } from "./types";
-import { checkAugurDbSetup } from "./check-augur-db-setup";
-import { syncAugurNodeWithBlockchain } from "./sync-augur-node-with-blockchain";
-import { getMarketInfo } from "./get-market-info";
-import { getAccountTransferHistory } from "./get-account-transfer-history";
-import { runWebsocketServer } from "./run-websocket-server";
+import { checkAugurDbSetup } from "./setup/check-augur-db-setup";
+import { syncAugurNodeWithBlockchain } from "./blockchain/sync-augur-node-with-blockchain";
+import { runWebsocketServer } from "./server/run-websocket-server";
 
 const { augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers, websocketPort } = require("../config");
 

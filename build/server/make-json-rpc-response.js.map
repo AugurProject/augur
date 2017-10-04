@@ -1,0 +1,1 @@
+{"version":3,"file":"make-json-rpc-response.js","sourceRoot":"","sources":["../../src/server/make-json-rpc-response.ts"],"names":[],"mappings":";;AAAA,6BAAoC,EAAU,EAAE,MAAc;IAC5D,MAAM,CAAC,IAAI,CAAC,SAAS,CAAC,EAAE,EAAE,EAAE,MAAM,EAAE,OAAO,EAAE,KAAK,EAAE,CAAC,CAAC;AACxD,CAAC;AAFD,kDAEC"}

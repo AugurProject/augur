@@ -14,7 +14,15 @@ function startAugurListeners(db, augur, callback) {
                 log_processors_1.logProcessors.Augur.TokensTransferred(db, log, log_error_1.logError);
             }
         }
-    }, (blockNumber) => console.log("new block received:", parseInt(blockNumber, 16)), callback);
+    }, (blockNumber) => {
+        augur.rpc.eth.getBlockByNumber([blockNumber, false], (block) => {
+            if (!block || block.error || !block.timestamp)
+                return log_error_1.logError(new Error(JSON.stringify(block)));
+            console.log("new block received:", parseInt(blockNumber, 16), parseInt(block.timestamp, 16));
+            const dataToInsertOrReplace = [parseInt(blockNumber, 16), parseInt(block.timestamp, 16)];
+            db.run(`INSERT OR REPLACE INTO blocks (block_number, block_timestamp) VALUES (?, ?)`, dataToInsertOrReplace, log_error_1.logError);
+        });
+    }, callback);
 }
 exports.startAugurListeners = startAugurListeners;
 //# sourceMappingURL=start-augur-listeners.js.map
