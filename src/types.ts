@@ -1,4 +1,4 @@
-import { Database } from "sqlite3";
+import * as Knex from "knex";
 
 export interface EthereumNodeEndpoints {
   [protocol: string]: string
@@ -39,7 +39,7 @@ export interface AugurLogs {
 
 export type ErrorCallback = (err?: Error|null) => void;
 
-export type LogProcessor = (db: Database, log: FormattedLog, callback: ErrorCallback) => void;
+export type LogProcessor = (db: Knex, log: FormattedLog, callback: ErrorCallback) => void;
 
 export interface JsonRpcRequest {
   id: string|number|null,

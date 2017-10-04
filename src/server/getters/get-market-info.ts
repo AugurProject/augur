@@ -1,4 +1,4 @@
-import { Database } from "sqlite3";
+import * as Knex from "knex";
 import { Address } from "../../types";
 
 interface MarketsRow {
@@ -55,8 +55,8 @@ interface MarketInfo {
   resolutionSource: string|null
 }
 
-export function getMarketInfo(db: Database, market: string, callback: (err?: Error|null, result?: MarketInfo) => void): void {
-  db.get(`SELECT * FROM markets WHERE contract_address = ?`, [market], (err?: Error|null, row?: MarketsRow) => {
+export function getMarketInfo(db: Knex, market: string, callback: (err?: Error|null, result?: MarketInfo) => void): void {
+  db.select().from("markers").where({contract_address: market}).asCallback((err?: Error|null, row?: MarketsRow) => {
     if (err) return callback(err);
     if (!row) return callback(null);
     const marketInfo: MarketInfo = {
