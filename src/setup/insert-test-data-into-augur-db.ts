@@ -1,7 +1,7 @@
-import { Database } from "sqlite3";
+import * as Knex from "knex";
 import { ErrorCallback } from "../types";
 
-export function insertTestDataIntoAugurDb(db: Database, callback: ErrorCallback): void {
+export function insertTestDataIntoAugurDb(db: Knex, callback: ErrorCallback): void {
   db.serialize(() => {
     db.run(`INSERT INTO markets
             (contract_address, universe, market_type, num_outcomes, min_price, max_price, market_creator, creation_time, creation_block_number, creation_fee, market_creator_fee_rate, topic, tag1, tag2, reporting_window, end_time, short_description, designated_reporter, resolution_source)
