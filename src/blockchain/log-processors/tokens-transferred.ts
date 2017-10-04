@@ -1,11 +1,16 @@
-import { Database } from "sqlite3";
+import * as Knex from "knex";
 import { FormattedLog, ErrorCallback } from "../../types";
 
-export function processTokensTransferredLog(db: Database, log: FormattedLog, callback: ErrorCallback): void {
-  const dataToInsert: (string|number)[] = [
-    log.transactionHash, log.logIndex, log.from, log.to, log.token, log.value, log.blockNumber
-  ];
-  db.run(`INSERT INTO transfers
-    (transaction_hash, log_index, sender, recipient, token, value, block_number)
-    VALUES (${dataToInsert.map(() => '?').join(',')})`, dataToInsert, callback);
+export function processTokensTransferredLog(db: Knex, log: FormattedLog, callback: ErrorCallback): void {
+  const dataToInsert: {}  = {
+    transaction_hash: log.transactionHash,
+    log_index: log.logIndex,
+    sender: log.from,
+    recipient: log.to,
+    token: log.token,
+    value: log.value,
+    block_number: log.blockNumber
+  };
+
+  db.insert(dataToInsert).into("transfers").asCallback(callback);
 }
