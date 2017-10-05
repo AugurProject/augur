@@ -56,7 +56,8 @@ interface MarketInfo {
 }
 
 export function getMarketInfo(db: Knex, market: string, callback: (err?: Error|null, result?: MarketInfo) => void): void {
-  db.select().from("markers").where({contract_address: market}).asCallback((err?: Error|null, row?: MarketsRow) => {
+  db.raw("select * from markers where contract_address = ?", [market])
+  .asCallback((err?: Error|null, row?: MarketsRow) => {
     if (err) return callback(err);
     if (!row) return callback(null);
     const marketInfo: MarketInfo = {

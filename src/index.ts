@@ -1,5 +1,5 @@
 import Augur = require("augur.js");
-import knex = require('knex');
+import * as Knex from "knex";
 import * as sqlite3 from "sqlite3";
 import { EthereumNodeEndpoints, FormattedLog } from "./types";
 import { checkAugurDbSetup } from "./setup/check-augur-db-setup";
@@ -11,14 +11,14 @@ const { augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers, websocketPort } 
 var db: Knex;
 if(process.env['DATABASE'] == null) {
   sqlite3.verbose();
-  db = knex({
+  db = Knex({
     client: 'sqlite3',
     connection: {
       filename: augurDbPath
     }
   });
 } else {
-  db = knex({
+  db = Knex({
     client: 'pg',
     connection: process.env['DATABASE']
   });
