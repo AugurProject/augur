@@ -14,10 +14,20 @@ import BigNumber from 'bignumber.js'
 const DEFAULT_STATE = {
   isValid: false,
   holdForUserAction: false,
-  validations: [],
+  validations: [
+    {
+      description: false,
+      category: false,
+      tag1: false,
+      tag2: false,
+    },
+    {
+      type: false,
+    },
+  ],
   currentStep: 0,
   type: '',
-  outcomes: [],
+  outcomes: Array(8).fill(''),
   scalarSmallNum: '',
   scalarBigNum: '',
   description: '',

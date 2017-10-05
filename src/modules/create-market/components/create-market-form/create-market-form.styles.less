@@ -16,6 +16,26 @@
   padding: 0 2rem;
 }
 
+.CreateMarketForm__error {
+  background-color: @color-purple;
+  border-radius: 3px;
+  color: @color-white;
+  font-size: 0.625rem;
+  line-height: 0.625rem;
+  padding: 0.2rem 0.5rem;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.CreateMarketForm__error--field-50 {
+  &:extend(.CreateMarketForm__error);
+
+  left: 52%;
+  line-height: 0.8rem;
+  position: absolute;
+  top: -3px;
+}
+
 .CreateMarketForm__fields {
   align-content: flex-start;
   display: flex;
@@ -100,6 +120,14 @@
 
   .CreateMarketDefine__next {
     border-radius: 0;
+    width: 100%;
+  }
+
+  .CreateMarketForm__error--field-50 {
+    left: 2.3125rem;
+  }
+
+  .CreateMarketForm__fields > li.field--50 {
     width: 100%;
   }
 }
