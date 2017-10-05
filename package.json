@@ -23,15 +23,15 @@
   "homepage": "https://github.com/AugurProject/augur-node#readme",
   "dependencies": {
     "async": "1.5.2",
-    "augur.js": "4.2.6",
-    "sqlite3": "3.1.12",
+    "augur.js": "4.2.8",
+    "sqlite3": "3.1.8",
     "ws": "3.2.0"
   },
   "devDependencies": {
-    "@types/async": "^2.0.43",
-    "@types/node": "^8.0.31",
-    "@types/sqlite3": "^3.1.1",
-    "@types/ws": "^3.0.2",
+    "@types/async": "2.0.43",
+    "@types/node": "8.0.31",
+    "@types/sqlite3": "3.1.1",
+    "@types/ws": "3.0.2",
     "chai": "3.5.0",
     "coveralls": "2.11.3",
     "eslint": "3.17.1",
