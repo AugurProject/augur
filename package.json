@@ -9,7 +9,7 @@
     "test": "mocha test/unit",
     "lint": "eslint src test/unit",
     "coverage-save": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit/",
-    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit/ --report lcovonly -- -R min && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
+    "coverage": "istanbul cover --include-all-sources --root ./src ./node_modules/mocha/bin/_mocha test/unit",
     "link": "npm link ethrpc && npm link ethereumjs-connect && npm link keythereum && npm link speedomatic && npm link augur-contracts",
     "build": "babel ./node_modules/uuid-parse --source-root ./node_modules/uuid-parse -d ./node_modules/uuid-parse && babel ./src --source-root ./src -d ./build && browserify ./exports.js > ./dist/augur.js && uglifyjs ./dist/augur.js > ./dist/augur.min.js"
   },

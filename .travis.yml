@@ -23,4 +23,4 @@ before_script:
 
 script:
   - npm run lint
-  - npm run coverage
+  - istanbul cover --include-all-sources --root ./src ./node_modules/mocha/bin/_mocha test/unit/ --report lcovonly -- -R min && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
