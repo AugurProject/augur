@@ -78,23 +78,23 @@ active-event-stack@^1.0.0:
     immutable "^3.7.4"
     lodash "^3.9.3"
 
-aes-js@^2.1.0:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/aes-js/-/aes-js-2.1.1.tgz#68989763bbade2a39172ea48f4953d1272ff38a7"
+aes-js@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/aes-js/-/aes-js-3.1.0.tgz#f5f7588494526997cc635cc334c8bb8e967a5d82"
 
 after@0.8.2:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/after/-/after-0.8.2.tgz#fedb394f9f0e02aa9768e702bda23b505fae7e1f"
 
-airbitz-core-js-ui@0.1.3:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/airbitz-core-js-ui/-/airbitz-core-js-ui-0.1.3.tgz#0d683e976696caefe72c107e19a2bfab34f009d3"
+airbitz-core-js-ui@0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/airbitz-core-js-ui/-/airbitz-core-js-ui-0.1.7.tgz#0a78986797c12de3175916780cb551314351d8ee"
   dependencies:
-    airbitz-core-js "^0.2.1"
+    airbitz-core-js "^0.3.6"
     async "~2.0.1"
+    babel-preset-stage-2 "^6.24.1"
     classnames "^2.2.5"
     file-loader "~0.9.0"
-    html-webpack-plugin "~2.28.0"
     joi-browser "~9.0.1"
     jsbarcode "~3.5.8"
     lodash "~4.17.4"
@@ -117,21 +117,20 @@ airbitz-core-js-ui@0.1.3:
     superagent "~2.1.0"
     whatwg-fetch "^2.0.3"
 
-airbitz-core-js@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/airbitz-core-js/-/airbitz-core-js-0.2.1.tgz#57ad2d2733674981c56aaf536948db0bf0f9b46d"
+airbitz-core-js@^0.3.6:
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/airbitz-core-js/-/airbitz-core-js-0.3.6.tgz#d97e40b18503401df1e2e62b816be88b137da87c"
   dependencies:
-    aes-js "^2.1.0"
+    aes-js "^3.1.0"
     base-x "^1.0.4"
-    chalk "^1.1.3"
+    disklet "^0.1.3"
     elliptic "^6.4.0"
     hash.js "^1.0.3"
-    hmac-drbg "^1.0.0"
-    node-fetch "^1.6.3"
-    node-getopt "^0.2.3"
-    node-localstorage "^1.3.0"
+    redux "^3.6.0"
+    redux-thunk "^2.2.0"
+    rfc4648 "^0.9.1"
     scrypt-js "^2.0.3"
-    xdg-basedir "^2.0.0"
+    utf8 "^2.1.2"
 
 ajv-keywords@^1.0.0:
   version "1.5.1"
@@ -2557,6 +2556,12 @@ diffie-hellman@^5.0.0:
     miller-rabin "^4.0.0"
     randombytes "^2.0.0"
 
+disklet@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/disklet/-/disklet-0.1.3.tgz#1f32db40723c714a56851a22e48f9332f207d888"
+  dependencies:
+    rfc4648 "^0.9.1"
+
 dns-prefetch-control@0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/dns-prefetch-control/-/dns-prefetch-control-0.1.0.tgz#60ddb457774e178f1f9415f0cabb0e85b0b300b2"
@@ -4045,17 +4050,6 @@ html-webpack-plugin@2.30.1:
     pretty-error "^2.0.2"
     toposort "^1.0.0"
 
-html-webpack-plugin@~2.28.0:
-  version "2.28.0"
-  resolved "https://registry.yarnpkg.com/html-webpack-plugin/-/html-webpack-plugin-2.28.0.tgz#2e7863b57e5fd48fe263303e2ffc934c3064d009"
-  dependencies:
-    bluebird "^3.4.7"
-    html-minifier "^3.2.3"
-    loader-utils "^0.2.16"
-    lodash "^4.17.3"
-    pretty-error "^2.0.2"
-    toposort "^1.0.0"
-
 htmlescape@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/htmlescape/-/htmlescape-1.1.1.tgz#3a03edc2214bca3b66424a3e7959349509cb0351"
@@ -5496,16 +5490,12 @@ node-dir@^0.1.10:
   dependencies:
     minimatch "^3.0.2"
 
-node-fetch@^1.0.1, node-fetch@^1.6.3:
+node-fetch@^1.0.1:
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-1.7.2.tgz#c54e9aac57e432875233525f3c891c4159ffefd7"
   dependencies:
     encoding "^0.1.11"
     is-stream "^1.0.1"
-
-node-getopt@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/node-getopt/-/node-getopt-0.2.3.tgz#69abbc7e5400600d1dacf00db8cb79b5487e924b"
 
 node-libs-browser@^1.0.0:
   version "1.1.1"
@@ -5562,12 +5552,6 @@ node-libs-browser@^2.0.0:
     url "^0.11.0"
     util "^0.10.3"
     vm-browserify "0.0.4"
-
-node-localstorage@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/node-localstorage/-/node-localstorage-1.3.0.tgz#2e436aae8dcc9ace97b43c65c16c0d577be0a55c"
-  dependencies:
-    write-file-atomic "^1.1.4"
 
 node-pre-gyp@^0.6.36:
   version "0.6.36"
@@ -7275,7 +7259,7 @@ redux-thunk-subscribe@1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/redux-thunk-subscribe/-/redux-thunk-subscribe-1.0.3.tgz#2e00f82e71a35c07caaa7d206e3945d21e5929e6"
 
-redux-thunk@2.2.0:
+redux-thunk@2.2.0, redux-thunk@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.2.0.tgz#e615a16e16b47a19a515766133d1e3e99b7852e5"
 
@@ -7307,7 +7291,7 @@ redux@3.7.0:
     loose-envify "^1.1.0"
     symbol-observable "^1.0.3"
 
-redux@^3.0.2:
+redux@^3.0.2, redux@^3.6.0:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/redux/-/redux-3.7.2.tgz#06b73123215901d25d065be342eb026bc1c8537b"
   dependencies:
@@ -7568,6 +7552,10 @@ restore-cursor@^1.0.1:
   dependencies:
     exit-hook "^1.0.0"
     onetime "^1.0.0"
+
+rfc4648@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/rfc4648/-/rfc4648-0.9.1.tgz#6dff84c2ed0e63381424da2a7caa9b750fa7e477"
 
 rgb-regex@^1.0.1:
   version "1.0.1"
@@ -8691,6 +8679,10 @@ user-home@^2.0.0:
   dependencies:
     os-homedir "^1.0.0"
 
+utf8@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/utf8/-/utf8-2.1.2.tgz#1fa0d9270e9be850d9b05027f63519bf46457d96"
+
 util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
@@ -8957,12 +8949,6 @@ wtf-8@1.0.0:
 x-xss-protection@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/x-xss-protection/-/x-xss-protection-1.0.0.tgz#898afb93869b24661cf9c52f9ee8db8ed0764dd9"
-
-xdg-basedir@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/xdg-basedir/-/xdg-basedir-2.0.0.tgz#edbc903cc385fc04523d966a335504b5504d1bd2"
-  dependencies:
-    os-homedir "^1.0.0"
 
 xml-char-classes@^1.0.0:
   version "1.0.0"

@@ -43,9 +43,9 @@ let config = {
     extensions: [
       '.html',
       '.less',
+      '.json',
       '.js',
-      '.jsx',
-      '.json'
+      '.jsx'
     ],
     alias: {
       src: PATHS.APP,
@@ -130,8 +130,9 @@ let config = {
         from: path.resolve(PATHS.APP, 'sitemap.xml'),
         to: PATHS.BUILD
       },
+      // TODO -- move these to production debug config prior to release
       {
-        from: path.resolve(PATHS.APP, 'loaderio-e6f0536ecc4759035b4106efb3b1f225.txt'),
+        from: path.resolve(PATHS.APP, 'loaderio-19ff0e903f99bf12abe6b8dce1bd7382.txt'),
         to: PATHS.BUILD
       }
     ]),

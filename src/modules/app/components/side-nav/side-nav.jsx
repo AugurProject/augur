@@ -9,6 +9,7 @@ import Styles from 'modules/app/components/side-nav/side-nav.styles'
 
 export default class SideNav extends Component {
   static propTypes = {
+    defaultMobileClick: PropTypes.func.isRequired,
     isMobile: PropTypes.bool.isRequired,
     isLogged: PropTypes.bool,
     menuData: PropTypes.array.isRequired,
@@ -71,14 +72,24 @@ export default class SideNav extends Component {
             const Icon = item.icon
             const selected = !mobile && this.isCurrentItem(item)
 
+            const linkClickHandler = () => {
+              if (mobile) {
+                if (item.mobileClick) {
+                  item.mobileClick()
+                } else {
+                  this.props.defaultMobileClick()
+                }
+              }
+            }
+
             return (
               <li
                 className={classNames({ [Styles['SideNav__item--selected']]: selected })}
                 key={item.title}
               >
                 <Link
-                  to={makePath(item.route)}
-                  onClick={() => { if (mobile) item.mobileClick() }}
+                  to={item.route ? makePath(item.route) : null}
+                  onClick={linkClickHandler}
                 >
                   <Icon />
                   <span className="item-title">{item.title}</span>
@@ -92,6 +103,7 @@ export default class SideNav extends Component {
   }
 }
 
+// TODO: remove this during cleanup phase
 // NOTE -- historical ref
 
 // import React, { Component } from 'react';

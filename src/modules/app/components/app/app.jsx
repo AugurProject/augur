@@ -10,7 +10,8 @@ import { tween } from 'shifty'
 import _ from 'lodash'
 
 import TopBar from 'modules/app/components/top-bar/top-bar'
-import InnerNav from 'modules/app/components/inner-nav/inner-nav'
+import MarketsInnerNav from 'modules/app/components/inner-nav/markets-inner-nav'
+import PortfolioInnerNav from 'modules/app/components/inner-nav/portfolio-inner-nav'
 import SideNav from 'modules/app/components/side-nav/side-nav'
 import Origami from 'modules/app/components/origami-svg/origami-svg'
 import Logo from 'modules/app/components/logo/logo'
@@ -30,7 +31,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 
 import getValue from 'utils/get-value'
 
-import { MARKETS, ACCOUNT, MY_POSITIONS, CREATE_MARKET, CATEGORIES } from 'modules/routes/constants/views'
+import { MARKETS, ACCOUNT, MY_MARKETS, MY_POSITIONS, WATCHLIST, CREATE_MARKET, CATEGORIES } from 'modules/routes/constants/views'
 import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
@@ -38,12 +39,19 @@ import Styles from 'modules/app/components/app/app.styles'
 export const mobileMenuStates = {
   CLOSED: 0,
   SIDEBAR_OPEN: 1,
-  CATEGORIES_OPEN: 2,
-  KEYWORDS_OPEN: 3
+  FIRSTMENU_OPEN: 2,
+  SUBMENU_OPEN: 3
 }
 
 const SUB_MENU = 'subMenu'
 const MAIN_MENU = 'mainMenu'
+
+const navTypes = {
+  [MARKETS]: MarketsInnerNav,
+  [MY_MARKETS]: PortfolioInnerNav,
+  [MY_POSITIONS]: PortfolioInnerNav,
+  [WATCHLIST]: PortfolioInnerNav
+}
 
 // TODO -- this component needs to be broken up and also restructured
 
@@ -66,14 +74,16 @@ export default class AppView extends Component {
     this.state = {
       mainMenu: { scalar: 0, open: false, currentTween: null },
       subMenu: { scalar: 0, open: false, currentTween: null },
-      mobileMenuState: mobileMenuStates.CLOSED
+      mobileMenuState: mobileMenuStates.CLOSED,
+      currentBasePath: null,
+      currentInnerNavType: null
     }
 
     this.sideNavMenuData = [
       {
         title: 'Markets',
         icon: NavMarketsIcon,
-        mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.CATEGORIES_OPEN }),
+        mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
         route: MARKETS
       },
       {
@@ -106,10 +116,12 @@ export default class AppView extends Component {
 
   componentWillMount() {
     const currentPath = parsePath(this.props.location.pathname)[0]
-    const selectedCategory = parseQuery(this.props.location.search)[TOPIC_PARAM_NAME]
+    // TODO: centralize path parsing (including "previous" path + query) in redux
+    this.setState({ currentBasePath: currentPath })
 
+    this.changeMenu(currentPath)
     if (currentPath === MARKETS) {
-      this.toggleMenuTween(MAIN_MENU, true)
+      const selectedCategory = parseQuery(this.props.location.search)[TOPIC_PARAM_NAME]
       if (selectedCategory) this.toggleMenuTween(SUB_MENU, true)
     }
   }
@@ -128,29 +140,61 @@ export default class AppView extends Component {
     }
 
     if (!_.isEqual(this.props.location, nextProps.location)) {
-      const lastPath = parsePath(this.props.location.pathname)[0]
-      const nextPath = parsePath(nextProps.location.pathname)[0]
+      const lastBasePath = parsePath(this.props.location.pathname)[0]
+      const nextBasePath = parsePath(nextProps.location.pathname)[0]
 
       const selectedCategory = parseQuery(nextProps.location.search)[TOPIC_PARAM_NAME]
 
-      // navigate to markets page
-      if (lastPath !== MARKETS && nextPath === MARKETS) {
-        this.toggleMenuTween(MAIN_MENU, true)
-        this.setState({ keywordState: { loaded: true, openOnLoad: false } })
+      if (lastBasePath !== nextBasePath) {
+        // TODO: centralize path parsing (including "previous" path + query) in redux
+        this.setState({ currentBasePath: nextBasePath })
+        this.changeMenu(nextBasePath)
       }
 
-      // on markets page, new category selected
-      if (nextPath === MARKETS && selectedCategory) {
+      if (nextBasePath === MARKETS && selectedCategory) {
         this.toggleMenuTween(SUB_MENU, true)
       }
-
-      // navigate away from markets page
-      if (lastPath === MARKETS && nextPath !== MARKETS) {
-        this.toggleMenuTween(MAIN_MENU, false)
-        this.toggleMenuTween(SUB_MENU, false)
-        this.setState({ keywordState: { loaded: false, openOnLoad: true } })
-      }
     }
+  }
+
+  changeMenu(nextBasePath, callback) {
+    const oldType = this.state.currentInnerNavType
+    const newType = navTypes[nextBasePath]
+
+    if (oldType === newType) {
+      if (callback) callback()
+      return
+    }
+
+    const openNewMenu = () => {
+      this.setState({ currentInnerNavType: newType })
+      if (newType) this.toggleMenuTween(MAIN_MENU, true, callback)
+    }
+
+    if (!oldType) {
+      openNewMenu()
+      return
+    }
+
+    const menuExitPromise = new Promise((resolve) => {
+      this.toggleMenuTween(MAIN_MENU, false, () => resolve())
+    })
+    const submenuExitPromise = new Promise((resolve) => {
+      this.toggleMenuTween(SUB_MENU, false, () => resolve())
+    })
+
+    Promise.all([menuExitPromise, submenuExitPromise]).then(() => {
+      switch (nextBasePath) {
+        case MARKETS:
+        case MY_MARKETS:
+        case MY_POSITIONS:
+        case WATCHLIST:
+          openNewMenu()
+          break
+        default:
+          if (callback) callback()
+      }
+    })
   }
 
   handleWindowResize() {
@@ -168,8 +212,6 @@ export default class AppView extends Component {
   }
 
   toggleMenuTween(menuKey, forceOpen, cb) {
-    // console.log('this.state -- ', menuKey, this.state[menuKey])
-
     if (getValue(this.state[menuKey], 'currentTween.stop')) this.state[menuKey].currentTween.stop()
 
     let nowOpen = !this.state[menuKey].open
@@ -184,32 +226,27 @@ export default class AppView extends Component {
       })
     }
 
-    const baseMenuState = { open: nowOpen }
-    const currentTween = tween({
-      from: { value: this.state[menuKey].scalar },
-      to: { value: (nowOpen ? 1 : 0) },
-      duration: 500,
-      easing: 'easeOutQuad',
-      step: (newState) => {
-        setMenuState(Object.assign({}, baseMenuState, { scalar: newState.value }))
-      }
-    }).then(
-      () => {
-        if (cb && (typeof cb) === 'function') cb()
-        setMenuState({ locked: false, currentTween: null })
-      }
-    )
-    setMenuState({ currentTween })
-  }
-
-  toggleMainMenu() {
-    const { selectedCategory } = this.props
-    if (!this.state.mainMenu.open && selectedCategory && this.state.keywordState.loaded) {
-      this.toggleMenuTween(SUB_MENU, true)
+    const closingAlreadyClosed = !nowOpen && (this.state[menuKey].scalar === 0)
+    if (closingAlreadyClosed) {
+      cb()
     } else {
-      this.toggleMenuTween(SUB_MENU, false)
+      const baseMenuState = { open: nowOpen }
+      const currentTween = tween({
+        from: { value: this.state[menuKey].scalar },
+        to: { value: (nowOpen ? 1 : 0) },
+        duration: 500,
+        easing: 'easeOutQuad',
+        step: (newState) => {
+          setMenuState(Object.assign({}, baseMenuState, { scalar: newState.value }))
+        }
+      }).then(
+        () => {
+          if (cb && (typeof cb) === 'function') cb()
+          setMenuState({ locked: false, currentTween: null })
+        }
+      )
+      setMenuState({ currentTween })
     }
-    this.toggleMenuTween(MAIN_MENU)
   }
 
   mobileMenuButtonClick() {
@@ -230,7 +267,7 @@ export default class AppView extends Component {
     let icon = null
     if (menuState === mobileMenuStates.CLOSED) icon = <MobileNavHamburgerIcon />
     else if (menuState === mobileMenuStates.SIDEBAR_OPEN) icon = <MobileNavCloseIcon />
-    else if (menuState >= mobileMenuStates.CATEGORIES_OPEN) icon = <MobileNavBackIcon />
+    else if (menuState >= mobileMenuStates.FIRSTMENU_OPEN) icon = <MobileNavBackIcon />
 
     return (
       <button
@@ -247,6 +284,14 @@ export default class AppView extends Component {
     const s = this.state
 
     const { mainMenu, subMenu } = this.state
+
+    const InnerNav = this.state.currentInnerNavType
+    let innerNavMenuMobileClick
+    if (InnerNav === MarketsInnerNav) {
+      innerNavMenuMobileClick = () => {
+        this.setState({ mobileMenuState: mobileMenuStates.SUBMENU_OPEN })
+      }
+    }
 
     let categoriesMargin
     let keywordsMargin
@@ -276,6 +321,7 @@ export default class AppView extends Component {
           </Link>
           {this.renderMobileMenuButton()}
           <SideNav
+            defaultMobileClick={() => this.setState({ mobileMenuState: mobileMenuStates.CLOSED })}
             isMobile={p.isMobile}
             isLogged={p.isLogged}
             mobileShow={s.mobileMenuState === mobileMenuStates.SIDEBAR_OPEN}
@@ -287,6 +333,7 @@ export default class AppView extends Component {
           <section>
             <TopBar
               isMobile={p.isMobile}
+              isLogged={p.isLogged}
               stats={p.coreStats}
             />
           </section>
@@ -294,17 +341,24 @@ export default class AppView extends Component {
             className={Styles.Main__wrap}
             style={{ marginLeft: categoriesMargin }}
           >
-            <InnerNav
-              isMobile={p.isMobile}
-              mobileCategoryClick={() => this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN })}
-              mobileMenuState={s.mobileMenuState}
-              subMenuScalar={subMenu.scalar}
-              categories={p.categories}
-              markets={p.markets}
-              marketsFilteredSorted={p.marketsFilteredSorted}
-              location={p.location}
-              history={p.history}
-            />
+            {InnerNav &&
+              <InnerNav
+                currentBasePath={this.state.currentBasePath}
+                isMobile={p.isMobile}
+                mobileMenuState={s.mobileMenuState}
+                mobileMenuClick={innerNavMenuMobileClick}
+                subMenuScalar={subMenu.scalar}
+                categories={p.categories}
+                markets={p.markets}
+                marketsFilteredSorted={p.marketsFilteredSorted}
+                openSubMenu={() => this.setState({ mobileMenuState: mobileMenuStates.SUBMENU_OPEN })}
+                location={p.location}
+                history={p.history}
+              />
+            }
+            {!InnerNav &&
+              <div className="no-nav-placehold" />
+            }
             <section
               className={Styles.Main__content}
               style={{ marginLeft: keywordsMargin }}
