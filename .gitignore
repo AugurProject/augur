@@ -1,6 +1,5 @@
-/node_modules/
-/output/
+node_modules/
 *.log
-coverage
-augur.db*
+coverage/
+*.db*
 *.sh

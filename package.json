@@ -10,8 +10,9 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha test/**/**/*",
-    "build": "tsc"
+    "test": "mocha test",
+    "build": "tsc",
+    "coverage": "istanbul cover --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test"
   },
   "repository": {
     "type": "git",
