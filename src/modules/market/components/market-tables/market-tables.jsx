@@ -8,7 +8,8 @@ const MarketTable = p => (
   <table className={Styles.MarketTable}>
     <thead>
       <tr className={classNames(Styles.MarketTable__row, Styles.MarketTable__titlerow)}>
-        {p.titles.map((title, ind) => {
+        {p.titles.map((titlePair, ind) => {
+          const title = titlePair[0]
           const mobileTitle = p.mobileTitles[ind]
           const mobileHide = mobileTitle === null
           return (
@@ -28,7 +29,8 @@ const MarketTable = p => (
     <tbody>
       {p.data.map(dataRow => (
         <tr className={Styles.MarketTable__row}>
-          {p.titles.map((title, ind) => {
+          {p.titles.map((titlePair, ind) => {
+            const dataKey = titlePair[1]
             const mobileTitle = p.mobileTitles[ind]
             const mobileHide = mobileTitle === null
 
@@ -39,7 +41,7 @@ const MarketTable = p => (
                   { [Styles['MarketTable__value--mobilehide']]: mobileHide }
                 )}
               >
-                {dataRow[ind] || 'Not Found'}
+                {(p.data[ind] ||{})[dataKey] || ''}
               </td>
             )
           })}

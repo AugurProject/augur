@@ -1,14 +1,25 @@
 import React from 'react'
 import classNames from 'classnames'
+import PropTypes from 'prop-types'
 
 import MarketStatusIcon from 'modules/market/components/common/market-status-icon/market-status-icon'
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 import MarketTable from 'modules/market/components/market-tables/market-tables'
 import CaretDropdown from 'modules/common/components/caret-dropdown/caret-dropdown'
 
 import CommonStyles from 'modules/market/components/common/market-common.styles'
-import Styles from 'modules/market/components/market-card/market-card.styles'
+import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 
-export default class MarketCard extends React.Component {
+export default class MarketPortfolioCard extends React.Component {
+  static propTypes = {
+    market: PropTypes.object.isRequired,
+    isTradeCommitLocked: PropTypes.bool,
+    closePositionStatus: PropTypes.object.isRequired,
+    scalarShareDenomination: PropTypes.object.isRequired,
+    orderCancellation: PropTypes.object.isRequired,
+    orderData: PropTypes.object.isRequired,
+    positionData: PropTypes.object.isRequired
+  };
   constructor() {
     super()
     this.state = {
@@ -24,6 +35,8 @@ export default class MarketCard extends React.Component {
   }
 
   render() {
+    const myPositionsSummary = getValue(this.props, 'market.myPositionsSummary')
+
     return (
       <article className={CommonStyles.MarketCommon__container}>
         <section
@@ -55,7 +68,7 @@ export default class MarketCard extends React.Component {
                   Realized P/L
                 </span>
                 <span className={Styles.MarketCard__statvalue}>
-                  0
+                  <ValueDenomination {...myPositionsSummary.realizedNet} />
                 </span>
                 <span className={Styles.MarketCard__statunit}>
                   ETH
@@ -66,7 +79,7 @@ export default class MarketCard extends React.Component {
                   Unrealized P/L
                 </span>
                 <span className={Styles.MarketCard__statvalue}>
-                  0
+                  <ValueDenomination {...myPositionsSummary.unrealizedNet} />
                 </span>
                 <span className={Styles.MarketCard__statunit}>
                   ETH
@@ -77,7 +90,7 @@ export default class MarketCard extends React.Component {
                   Total P/L
                 </span>
                 <span className={Styles.MarketCard__statvalue}>
-                  0
+                  <ValueDenomination {...myPositionsSummary.totalNet} />
                 </span>
                 <span className={Styles.MarketCard__statunit}>
                   ETH
@@ -109,48 +122,41 @@ export default class MarketCard extends React.Component {
           {this.state.tableOpen.myPositions &&
             <MarketTable
               titles={[
-                'Outcome',
-                'Quantity',
-                'Last Price',
-                'Realized P/L',
-                'Unrealized P/L',
-                'Total P/L',
-                'Action'
+                ['Outcome', 'name'],
+                ['Quantity', 'qtyShares'],
+                ['Avg Price', 'purchasePrice'],
+                ['Last Price', 'lastPrice'],
+                ['Realized P/L', 'realizedNet'],
+                ['Unrealized P/L', 'unrealizedNet'],
+                ['Total P/L', 'totalNet'],
+                ['Action', 'closeButton']
               ]}
               mobileTitles={[
                 'Outcome',
                 'Qty',
+                null,
                 'Last',
                 null,
                 null,
                 'Total P/L',
                 'Action'
               ]}
-              data={[
-                [
-                  'Hong Kong',
-                  '10',
-                  '10',
-                  '20',
-                  '129',
-                  '129',
-                  'Close',
-                ],
-                [
-                  'Hong Kong',
-                  '10',
-                  '10',
-                  '20',
-                  '129',
-                  '129',
-                  'Close',
-                ]
-              ]}
+              data={
+                (myPositionOutcomes || []).map(outcome => ({
+                  ...outcome,
+                  ...outcome.position,
+                  closeButton: (<button
+                    onClick={outcome.position.closePosition}
+                  >
+                    Close
+                  </button>)
+                }))
+              }
             />
           }
           <div className={Styles.MarketCard__headingcontainer}>
             <h1 className={Styles.MarketCard__tableheading}>
-              Open Positions
+              Open Orders
             </h1>
             <button
               className={Styles.MarketCard__tabletoggle}
@@ -161,35 +167,28 @@ export default class MarketCard extends React.Component {
           </div>
           {this.state.tableOpen.openPositions &&
             <MarketTable
+              hideTitles
               titles={[
+                ['Outcome', 'name'],
+                ['Quantity', 'qtyShares'],
+                ['Avg Price', 'purchasePrice'],
+                ['Last Price', null],
+                ['Realized P/L', null],
+                ['Unrealized P/L', null],
+                ['Total P/L', null],
+                ['Action', 'actionComponent']
+              ]}
+              mobileTitles={[
                 'Outcome',
-                'Quantity',
-                'Last Price',
-                'Realized P/L',
-                'Unrealized P/L',
+                'Qty',
+                null,
+                'Last',
+                null,
+                null,
                 'Total P/L',
                 'Action'
               ]}
-              data={[
-                [
-                  'Hong Kong',
-                  '10',
-                  '10',
-                  '20',
-                  '129',
-                  '129',
-                  'Close',
-                ],
-                [
-                  'Hong Kong',
-                  '10',
-                  '10',
-                  '20',
-                  '129',
-                  '129',
-                  'Close',
-                ]
-              ]}
+              data={[]}
             />
           }
         </section>

@@ -6,7 +6,7 @@ import Styles from 'modules/style-sandbox/components/style-sandbox/style-sandbox
 import NavPanel from 'modules/common/components/nav-panel/nav-panel'
 import AccIcon from 'modules/common/components/nav-account-icon'
 
-import MarketCard from 'modules/market/components/market-card/market-card'
+import MarketPortfolioCard from 'modules/market/components/market-portfolio-card/market-portfolio-card'
 
 export default class StyleSandbox extends React.Component {
   static propTypes = {
@@ -45,7 +45,7 @@ export default class StyleSandbox extends React.Component {
             <button onClick={() => this.setState({ flipNav: !this.state.flipNav })}>Flip Nav</button>
           </NavPanel>
         </div>
-        <MarketCard />
+        <MarketPortfolioCard />
       </div>
     )
   }
