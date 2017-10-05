@@ -21,7 +21,7 @@ contract AugurEventEmitter {
     event MarketFinalized(address indexed market);
     event UniverseForked(address indexed universe);
     // trading events
-    event OrderCanceled(address indexed market, address indexed sender, uint8 outcome, bytes32 orderId, uint8 orderType, uint256 tokenRefund, uint256 sharesRefund);
+    event OrderCanceled(address indexed shareToken, address indexed sender, bytes32 orderId, uint8 orderType, uint256 tokenRefund, uint256 sharesRefund);
     event OrderCreated(address indexed shareToken, address indexed creator, bytes32 indexed orderId, int256 price, uint256 amount, uint256 numTokensEscrowed, uint256 numSharesEscrowed, bytes32 tradeGroupId);
     event OrderFilled(address indexed shareToken, address indexed creator, address indexed filler, int256 price, uint256 numCreatorShares, uint256 numCreatorTokens, uint256 numFillerShares, uint256 numFillerTokens, uint256 settlementFees, bytes32 tradeGroupId);
     event ProceedsClaimed(address indexed sender, address indexed market, uint256 numShares, uint256 numPayoutTokens, uint256 finalTokenBalance);
@@ -64,8 +64,8 @@ contract AugurEventEmitter {
     }
 
     // trading events
-    function orderCanceled(address market, address sender, uint8 outcome, bytes32 orderId, uint8 orderType, uint256 tokenRefund, uint256 sharesRefund) {
-        OrderCanceled(market, sender, outcome, orderId, orderType, tokenRefund, sharesRefund);
+    function orderCanceled(address shareToken, address sender, bytes32 orderId, uint8 orderType, uint256 tokenRefund, uint256 sharesRefund) {
+        OrderCanceled(shareToken, sender, orderId, orderType, tokenRefund, sharesRefund);
     }
 
     function orderCreated(address shareToken, address creator, bytes32 orderId, int256 price, uint256 amount, uint256 numTokensEscrowed, uint256 numSharesEscrowed, bytes32 tradeGroupId) {
