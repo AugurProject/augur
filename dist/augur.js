@@ -168,16 +168,12 @@ module.exports=[{
   "anonymous": false,
   "inputs": [{
     "indexed": true,
-    "name": "market",
+    "name": "shareToken",
     "type": "address"
   }, {
     "indexed": true,
     "name": "sender",
     "type": "address"
-  }, {
-    "indexed": false,
-    "name": "outcome",
-    "type": "uint8"
   }, {
     "indexed": false,
     "name": "orderId",
@@ -5976,7 +5972,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.2.6";
+  this.version = "4.2.7";
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
@@ -37446,7 +37442,7 @@ var setupFunctionsABI = require("./setup-functions-abi");
 var connect = require("./connect");
 
 module.exports = {
-  version: "4.3.6",
+  version: "4.3.7",
   setFrom: setFrom,
   setupEventsABI: setupEventsABI,
   setupFunctionsABI: setupFunctionsABI,
@@ -63561,9 +63557,16 @@ HttpTransport.prototype.submitRpcRequest = function (rpcObject, errorCallback) {
       if (error.code === "ECONNRESET") error.retryable = true;
       if (error.code === "ECONNREFUSED") error.retryable = true;
       if (error.code === "ETIMEDOUT") error.retryable = true;
+      if (error.code === "EAI_AGAIN") error.retryable = true;
       errorCallback(error);
     } else if (response.statusCode === 200) {
       this.messageHandler(null, body);
+    } else if (response.statusCode === 405) { // to handle INFURA's 405 Method Not Allowed response
+      this.messageHandler(null, {
+        id: rpcObject.id,
+        jsonrpc: "2.0",
+        error: {"code": -32601, "message": "Method not found"}
+      });
     } else {
       error = new Error("Unexpected status code.");
       error.code = response.statusCode;
