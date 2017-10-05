@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import * as Knex from "knex";
 import { Address, Bytes32 } from "../../types";
 
@@ -40,21 +41,14 @@ interface Orders {
 
 // market, outcome, creator, orderType, limit, sort
 export function getOpenOrders(db: Knex, market: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, callback: (err?: Error|null, result?: any) => void): void {
-  const conditions = [{
-    name: "market",
-    value: market
-  }, {
-    name: "outcome",
-    value: outcome
-  }, {
-    name: "order_type",
-    value: orderType
-  }, {
-    name: "order_creator",
-    value: creator
-  }].filter((condition) => condition.value != null);
-  const whereClause = conditions.map((condition) => `${condition.name} = ?`).join(" AND ");
-  db.all(`SELECT * FROM orders WHERE ${whereClause}`, conditions.map((condition) => condition.value), (err?: Error|null, ordersRows?: OrdersRow[]): void => {
+  const queryData: {} = _.omit({
+    market: market,
+    outcome: outcome,
+    order_type: orderType,
+    order_creator: creator
+  }, _.isNull);
+
+  db("orders").where(queryData).asCallback((err?: Error|null, ordersRows?: OrdersRow[]): void => {
     if (err) return callback(err);
     if (!ordersRows) return callback(null);
     const orders: Orders = {};
