@@ -165,6 +165,9 @@ describe('modules/create-market/actions/submit-new-market', () => {
         takerFee: 2,
         makerFee: 1,
         detailsText: '',
+        category: 'cat',
+        tag1: 'tag1',
+        tag2: 'tag2',
         type: SCALAR,
         scalarSmallNum: '-10', // String for the test case, normally a BigNumber
         scalarBigNum: '10' // String for the test case, normally a BigNumber
@@ -198,7 +201,11 @@ describe('modules/create-market/actions/submit-new-market', () => {
         takerFee: 0.02,
         makerFee: 0.01,
         extraInfo: '',
-        tags: ['test topic'],
+        tags: [
+          'cat',
+          'tag1',
+          'tag2'
+        ],
         minValue: '-10',
         maxValue: '10',
         numOutcomes: 2
