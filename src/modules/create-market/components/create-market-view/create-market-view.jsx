@@ -17,7 +17,8 @@ export default class CreateMarketView extends Component {
     updateNewMarket: PropTypes.func.isRequired,
     addValidationToNewMarket: PropTypes.func.isRequired,
     removeValidationFromNewMarket: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired,
+    isMobileSmall: PropTypes.bool.isRequired,
   }
 
   // componentWillReceiveProps(nextProps) {
@@ -63,6 +64,7 @@ export default class CreateMarketView extends Component {
             updateNewMarket={p.updateNewMarket}
             newMarket={p.newMarket}
             categories={p.categories}
+            isMobileSmall={p.isMobileSmall}
 
             branch={p.branch}
             availableEth={p.availableEth}
@@ -90,8 +92,4 @@ export default class CreateMarketView extends Component {
       </section>
     )
   }
-}
-
-CreateMarketView.propTypes = {
-
 }
