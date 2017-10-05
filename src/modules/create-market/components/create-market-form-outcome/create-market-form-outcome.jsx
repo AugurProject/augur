@@ -1,4 +1,5 @@
 /* eslint jsx-a11y/label-has-for: 0 */
+/* eslint react/no-array-index-key: 0 */
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
@@ -197,70 +198,21 @@ export default class CreateMarketOutcome extends Component {
               </span>
             }
             <div className={Styles.CreateMarketOutcome__categorical}>
-              <input
-                id="cm__input--outcome1"
-                type="text"
-                value={p.newMarket.outcomes[0]}
-                placeholder="Outcome"
-                maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
-                onChange={(e) => { this.validateOutcomes(e.target.value, 0) }}
-              />
-              <input
-                id="cm__input--outcome1"
-                type="text"
-                value={p.newMarket.outcomes[1]}
-                placeholder="Outcome"
-                maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
-                onChange={(e) => { this.validateOutcomes(e.target.value, 1) }}
-              />
-              <input
-                id="cm__input--outcome1"
-                type="text"
-                value={p.newMarket.outcomes[2]}
-                placeholder="Optional Outcome"
-                maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
-                onChange={(e) => { this.validateOutcomes(e.target.value, 2) }}
-              />
-              <input
-                id="cm__input--outcome1"
-                type="text"
-                value={p.newMarket.outcomes[3]}
-                placeholder="Optional Outcome"
-                maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
-                onChange={(e) => { this.validateOutcomes(e.target.value, 3) }}
-              />
-              <input
-                id="cm__input--outcome1"
-                type="text"
-                value={p.newMarket.outcomes[4]}
-                placeholder="Optional Outcome"
-                maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
-                onChange={(e) => { this.validateOutcomes(e.target.value, 4) }}
-              />
-              <input
-                id="cm__input--outcome1"
-                type="text"
-                value={p.newMarket.outcomes[5]}
-                placeholder="Optional Outcome"
-                maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
-                onChange={(e) => { this.validateOutcomes(e.target.value, 5) }}
-              />
-              <input
-                id="cm__input--outcome1"
-                type="text"
-                value={p.newMarket.outcomes[6]}
-                placeholder="Optional Outcome"
-                maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
-                onChange={(e) => { this.validateOutcomes(e.target.value, 6) }}
-              />
-              <input
-                id="cm__input--outcome1"
-                type="text"
-                value={p.newMarket.outcomes[7]}
-                placeholder="Optional Outcome"
-                maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
-                onChange={(e) => { this.validateOutcomes(e.target.value, 7) }}
-              />
+              {
+                p.newMarket.outcomes.map((outcome, i) => {
+                  const placeholderText = i < 2 ? 'Outcome' : 'Optional Outcome'
+                  return (
+                    <input
+                      key={i}
+                      type="text"
+                      value={p.newMarket.outcomes[i]}
+                      placeholder={placeholderText}
+                      maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
+                      onChange={e => this.validateOutcomes(e.target.value, i)}
+                    />
+                  )
+                })
+              }
             </div>
           </li>
         }
