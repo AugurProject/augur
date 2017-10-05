@@ -25,12 +25,12 @@ type TransferHistory = TransferLog[];
 
 export function getAccountTransferHistory(db: Knex, account: Address, token: Address|null, callback: (err?: Error|null, result?: TransferHistory) => void): void {
   let dataToSelect: Address[];
-  let query: Knex.QueryBuilder;
+  let query: Knex.Raw;
   
   if(token === null) { 
-    query = db.select().from("transfer").whereRaw("sender = ? OR recipient = ?", [account, account]);
+    query = db.raw("select * from transfer where sender =? OR recipient = ?", [account, account]);
   } else {
-    query = db.select().from("transfer").whereRaw("(sender = ? OR recipient = ?) AND token = ?", [account, account, token]);
+    query = db.raw("(select * from transfer where sender =? OR recipient = ?) AND token = ?", [account, account, token]);
   }
 
   query.map((transferRow: TransferRow): TransferLog => ({
