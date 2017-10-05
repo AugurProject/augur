@@ -1,23 +1,5 @@
 @import '~assets/styles/shared.less';
 
-.CreateMarketDefine__error {
-  background-color: @color-purple;
-  border-radius: 3px;
-  color: @color-white;
-  font-size: 0.625rem;
-  line-height: 0.625rem;
-  padding: 0.2rem 0.5rem;
-  text-transform: none;
-  white-space: nowrap;
-}
-
-.CreateMarketDefine__error--tag2 {
-  left: 52%;
-  line-height: 0.8rem;
-  position: absolute;
-  top: -3px;
-}
-
 .CreateMarketDefine__tags {
   display: flex;
   flex-wrap: wrap;
@@ -50,21 +32,11 @@
 }
 
 @media @breakpoint-mobile-medium {
-  .CreateMarketDefine__error--tag2 {
-    left: 2.3125rem;
-  }
+  .CreateMarketDefine__tags > input {
+    width: 100%;
 
-  .CreateMarketDefine__fields > li {
-    &.field--50 {
-      width: 100%;
-    }
-
-    &.CreateMarketDefine__tags > input {
-      width: 100%;
-
-      &:not(:last-child) {
-        margin-bottom: 0.75rem;
-      }
+    &:not(:last-child) {
+      margin-bottom: 0.75rem;
     }
   }
 }

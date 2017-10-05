@@ -1,18 +1,15 @@
+/* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance as order remains the same
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-
-import getValue from 'utils/get-value'
 
 import Styles from 'modules/create-market/components/create-market-preview-categorical/create-market-preview-categorical.styles'
 
 const CategoricalOutcome = ({ className, outcome }) => (
   <div className={className || Styles.MarketPreviewCategorical__outcome}>
     <span className={Styles['MarketPreviewCategorical__outcome-name']}>
-      {outcome.name}
-    </span>
-    <span className={Styles['MarketPreviewCategorical__outcome-value']}>
-      {getValue(outcome, 'lastPricePercent.full')}
+      {outcome}
     </span>
   </div>
 )
@@ -40,7 +37,8 @@ class MarketPreviewCategorical extends Component {
 
   render() {
     const { outcomes } = this.props.newMarket
-    const totalOutcomes = outcomes.length
+    const cleanedOutcomes = outcomes.filter(outcome => outcome !== '')
+    const totalOutcomes = cleanedOutcomes.length
 
     const displayShowMore = totalOutcomes > 3
     const showMoreText = this.state.isOpen ? `- ${totalOutcomes - 3} less` : `+ ${totalOutcomes - 3} more`
@@ -54,10 +52,10 @@ class MarketPreviewCategorical extends Component {
         className={Styles.MarketPreviewCategorical}
         style={outcomeWrapperStyle}
       >
-        { outcomes.length > 0 &&
+        { cleanedOutcomes.length > 0 &&
           <CategoricalOutcome
             className={Styles['MarketPreviewCategorical__height-sentinel']}
-            outcome={outcomes[0]}
+            outcome={cleanedOutcomes[0]}
           />
         }
         <div
@@ -77,9 +75,9 @@ class MarketPreviewCategorical extends Component {
             ref={(outcomeTable) => { this.outcomeTable = outcomeTable }}
             className={Styles.MarketPreviewCategorical__outcomes}
           >
-            {outcomes.length > 0 && outcomes.map(outcome => (
+            {cleanedOutcomes.length > 0 && cleanedOutcomes.map((outcome, i) => (
               <CategoricalOutcome
-                key={outcome.id}
+                key={i}
                 outcome={outcome}
               />
             ))}
@@ -95,7 +93,7 @@ MarketPreviewCategorical.propTypes = {
 }
 
 CategoricalOutcome.propTypes = {
-  outcome: PropTypes.object.isRequired,
+  outcome: PropTypes.string.isRequired,
   className: PropTypes.string
 }
 

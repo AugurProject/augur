@@ -53,39 +53,59 @@ export default class CreateMarketForm extends Component {
   constructor(props) {
     super(props)
 
-    // this.state = {
-    //   lastStep: props.newMarket.currentStep,
-    //   currentStep: props.newMarket.currentStep
-    // }
-
     this.state = {
-      currentPage: 0,
       pages: ['Define', 'Outcome', 'Resolution', 'Liquidity', 'Review'],
     }
 
     this.prevPage = this.prevPage.bind(this)
     this.nextPage = this.nextPage.bind(this)
+    this.validateField = this.validateField.bind(this)
+    this.isValid = this.isValid.bind(this)
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) {
-  //     this.setState({
-  //       lastStep: this.props.newMarket.currentStep,
-  //       currentStep: nextProps.newMarket.currentStep
-  //     }, () => {
-  //       this.updateFormHeight()
-  //     })
-  //   }
-  // }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) {
+      this.props.updateNewMarket({ isValid: this.isValid(nextProps.newMarket.currentStep) })
+    }
+  }
 
   prevPage() {
     const newStep = this.props.newMarket.currentStep <= 0 ? 0 : this.props.newMarket.currentStep - 1
-    this.props.updateNewMarket({ currentStep : newStep })
+    this.props.updateNewMarket({ currentStep: newStep })
   }
 
   nextPage() {
     const newStep = this.props.newMarket.currentStep >= (this.state.pages.length - 1) ? this.state.pages.length - 1 : this.props.newMarket.currentStep + 1
-    this.props.updateNewMarket({ currentStep : newStep })
+    this.props.updateNewMarket({ currentStep: newStep })
+  }
+
+  validateField(fieldName, value, maxLength) {
+    const p = this.props
+    const currentStep = p.newMarket.currentStep
+
+    const updatedMarket = p.newMarket
+
+    switch (true) {
+      case !value.length:
+        updatedMarket.validations[currentStep][fieldName] = 'This field is required.'
+        break
+      case maxLength && value.length > maxLength:
+        updatedMarket.validations[currentStep][fieldName] = `Maximum length is ${maxLength}.`
+        break
+      default:
+        updatedMarket.validations[currentStep][fieldName] = true
+    }
+
+    updatedMarket[fieldName] = value
+    updatedMarket.isValid = this.isValid(currentStep)
+
+    p.updateNewMarket(updatedMarket)
+  }
+
+  isValid(currentStep) {
+    const validations = this.props.newMarket.validations[currentStep]
+    const validationsArray = Object.keys(validations)
+    return validationsArray.every(key => validations[key] === true)
   }
 
   render() {
@@ -100,6 +120,7 @@ export default class CreateMarketForm extends Component {
               <CreateMarketDefine
                 newMarket={p.newMarket}
                 updateNewMarket={p.updateNewMarket}
+                validateField={this.validateField}
                 categories={p.categories}
               />
             }
@@ -107,6 +128,8 @@ export default class CreateMarketForm extends Component {
               <CreateMarketOutcome
                 newMarket={p.newMarket}
                 updateNewMarket={p.updateNewMarket}
+                validateField={this.validateField}
+                isValid={this.isValid}
               />
             }
           </div>
@@ -114,18 +137,14 @@ export default class CreateMarketForm extends Component {
             <div className={Styles['CreateMarketForm__button-inner-wrapper']}>
               <div className={Styles.CreateMarketForm__navigation}>
                 <button
-                  className={classNames(Styles.CreateMarketForm__prev, {[`${Styles['hide-button']}`] : p.newMarket.currentStep === 0})}
+                  className={classNames(Styles.CreateMarketForm__prev, { [`${Styles['hide-button']}`]: p.newMarket.currentStep === 0 })}
                   onClick={this.prevPage}
                 >Previous: {s.pages[p.newMarket.currentStep - 1]}</button>
                 <button
-                  className={classNames(Styles.CreateMarketForm__next, {[`${Styles['hide-button']}`] : p.newMarket.currentStep === s.pages.length - 1})}
-                  onClick={this.nextPage}
+                  className={classNames(Styles.CreateMarketForm__next, { [`${Styles['hide-button']}`]: p.newMarket.currentStep === s.pages.length - 1 })}
+                  disabled={!p.newMarket.isValid}
+                  onClick={p.newMarket.isValid && this.nextPage}
                 >Next: {s.pages[p.newMarket.currentStep + 1]}</button>
-                {/* <button
-                  className={Styles.CreateMarketForm__next}
-                  disabled={!s.requiredFields.every(field => field === true)}
-                  onClick={() => { s.requiredFields.every(field => field === true) && p.updatePage('next') }}
-                >Next: Outcome</button> */}
               </div>
             </div>
           </div>
