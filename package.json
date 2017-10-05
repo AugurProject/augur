@@ -23,9 +23,12 @@
   "homepage": "https://github.com/AugurProject/augur-node#readme",
   "dependencies": {
     "@types/knex": "0.0.61",
+    "@types/lodash": "^4.14.77",
     "async": "1.5.2",
     "augur.js": "4.2.6",
     "knex": "^0.13.0",
+    "lodash.isnull": "^3.0.0",
+    "lodash.omit": "^4.5.0",
     "pg": "^7.3.0",
     "sqlite3": "^3.1.8",
     "ws": "3.2.0"
