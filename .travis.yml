@@ -3,6 +3,7 @@ sudo: false
 language: node_js
 
 node_js:
+  - "8"
   - "7"
   - "6"
 
@@ -11,4 +12,4 @@ before_script:
 
 script:
   - npm test
-  - istanbul cover ./node_modules/mocha/bin/_mocha test --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
+  - istanbul cover --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
