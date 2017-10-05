@@ -25,24 +25,26 @@ type TransferHistory = TransferLog[];
 
 export function getAccountTransferHistory(db: Knex, account: Address, token: Address|null, callback: (err?: Error|null, result?: TransferHistory) => void): void {
   let dataToSelect: Address[];
-  let query: Knex.QueryBuilder = db("transfer")
-    .select()
-    .where({sender: account})
-    .orWhere({recipient: account});
+  let query: Knex.QueryBuilder;
+  
+  if(token === null) { 
+    query = db.select().from("transfer").whereRaw("sender = ? OR recipient = ?", [account, account]);
+  } else {
+    query = db.select().from("transfer").whereRaw("(sender = ? OR recipient = ?) AND token = ?", [account, account, token]);
+  }
 
-  (token === null ? query : query.andWhere({token: token}))
-    .map((transferRow: TransferRow): TransferLog => ({
-      transactionHash: transferRow.transaction_hash,
-      logIndex: transferRow.log_index,
-      sender: transferRow.sender,
-      recipient: transferRow.recipient,
-      token: transferRow.token,
-      value: transferRow.value,
-      blockNumber: transferRow.block_number
-    }))
-    .then((transferHistory: TransferLog[]) => {
-      if(!transferHistory) return callback(null);
-      callback(null, transferHistory);
-    })
-    .error(callback);
+  query.map((transferRow: TransferRow): TransferLog => ({
+    transactionHash: transferRow.transaction_hash,
+    logIndex: transferRow.log_index,
+    sender: transferRow.sender,
+    recipient: transferRow.recipient,
+    token: transferRow.token,
+    value: transferRow.value,
+    blockNumber: transferRow.block_number
+  }))
+  .then((transferHistory: TransferLog[]) => {
+    if(!transferHistory) return callback(null);
+    callback(null, transferHistory);
+  })
+  .error(callback);
 }
