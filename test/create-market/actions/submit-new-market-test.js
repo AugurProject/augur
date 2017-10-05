@@ -33,8 +33,9 @@ describe('modules/create-market/actions/submit-new-market', () => {
         takerFee: 2,
         makerFee: 1,
         detailsText: '',
-        topic: 'test topic',
-        keywords: [],
+        category: 'testing',
+        tag1: 'tag1',
+        tag2: 'tag2',
         type: CATEGORICAL,
         outcomes: [
           'one',
@@ -70,7 +71,11 @@ describe('modules/create-market/actions/submit-new-market', () => {
         takerFee: 0.02,
         makerFee: 0.01,
         extraInfo: '',
-        tags: ['test topic'],
+        tags: [
+          'testing',
+          'tag1',
+          'tag2'
+        ],
         minValue: 1,
         maxValue: 2,
         numOutcomes: 2
