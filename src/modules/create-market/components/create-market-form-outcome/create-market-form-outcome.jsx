@@ -20,6 +20,13 @@ export default class CreateMarketOutcome extends Component {
     updateNewMarket: PropTypes.func.isRequired,
     validateField: PropTypes.func.isRequired,
     isValid: PropTypes.func.isRequired,
+    isMobileSmall: PropTypes.bool.isRequired,
+  }
+
+  static calculateOutcomeFieldCount(p) {
+    const numCleanedOutcomes = p.newMarket.outcomes.filter(outcome => outcome !== '').length
+    const totalOutcomes = p.newMarket.outcomes.length
+    return !p.isMobileSmall ? totalOutcomes : Math.min(Math.max(3, numCleanedOutcomes + 1), totalOutcomes)
   }
 
   constructor(props) {
@@ -27,13 +34,31 @@ export default class CreateMarketOutcome extends Component {
 
     this.state = {
       marketType: false,
+      outcomeFieldCount: CreateMarketOutcome.calculateOutcomeFieldCount(this.props),
+      showAddOutcome: CreateMarketOutcome.calculateOutcomeFieldCount(this.props) < 8,
       scalarMin: abi.unfix(abi.constants.SERPINT_MIN).round(18, BigNumber.ROUND_DOWN),
       scalarMax: abi.unfix(abi.constants.SERPINT_MAX).round(18, BigNumber.ROUND_DOWN),
     }
 
+    this.handleAddOutcomeClick = this.handleAddOutcomeClick.bind(this)
     this.validateType = this.validateType.bind(this)
     this.validateScalarNum = this.validateScalarNum.bind(this)
     this.validateOutcomes = this.validateOutcomes.bind(this)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.isMobileSmall !== nextProps.isMobileSmall) {
+      const outcomeFieldCount = CreateMarketOutcome.calculateOutcomeFieldCount(nextProps)
+      const showAddOutcome = nextProps.isMobileSmall ? !(outcomeFieldCount >= nextProps.newMarket.outcomes.length) : false
+      this.setState({ outcomeFieldCount, showAddOutcome })
+    }
+  }
+
+  handleAddOutcomeClick() {
+    const totalOutcomes = this.props.newMarket.outcomes.length
+    const outcomeFieldCount = Math.min(this.state.outcomeFieldCount + 1, totalOutcomes)
+    const showAddOutcome = !(outcomeFieldCount >= totalOutcomes)
+    this.setState({ outcomeFieldCount, showAddOutcome })
   }
 
   validateType(value) {
@@ -199,7 +224,7 @@ export default class CreateMarketOutcome extends Component {
             }
             <div className={Styles.CreateMarketOutcome__categorical}>
               {
-                p.newMarket.outcomes.map((outcome, i) => {
+                [...Array(s.outcomeFieldCount).keys()].map((i) => {
                   const placeholderText = i < 2 ? 'Outcome' : 'Optional Outcome'
                   return (
                     <input
@@ -212,6 +237,14 @@ export default class CreateMarketOutcome extends Component {
                     />
                   )
                 })
+              }
+              { s.showAddOutcome &&
+                <button
+                  className={Styles['CreateMarketOutcome__show-more']}
+                  onClick={this.handleAddOutcomeClick}
+                >
+                  + Add Outcome
+                </button>
               }
             </div>
           </li>

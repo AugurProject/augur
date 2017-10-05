@@ -47,7 +47,8 @@ export default class CreateMarketForm extends Component {
   static propTypes = {
     newMarket: PropTypes.object.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
-    categories: PropTypes.array.isRequired
+    categories: PropTypes.array.isRequired,
+    isMobileSmall: PropTypes.bool.isRequired,
   }
 
   constructor(props) {
@@ -130,6 +131,7 @@ export default class CreateMarketForm extends Component {
                 updateNewMarket={p.updateNewMarket}
                 validateField={this.validateField}
                 isValid={this.isValid}
+                isMobileSmall={p.isMobileSmall}
               />
             }
           </div>
