@@ -2,7 +2,7 @@ import { Database } from "sqlite3";
 import { Address, MarketsRow, MarketInfo } from "../../types";
 
 export function getMarketInfo(db: Database, marketID: string, callback: (err?: Error|null, result?: MarketInfo) => void): void {
-  db.get(`SELECT * FROM markets WHERE market_id = ?`, [marketID], (err?: Error|null, row?: MarketsRow) => {
+  db.get(`SELECT * FROM markets WHERE market_id = ?`, [marketID], (err?: Error|null, row?: MarketsRow): void => {
     if (err) return callback(err);
     if (!row) return callback(null);
     const marketInfo: MarketInfo = {

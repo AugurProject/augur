@@ -44,6 +44,15 @@ var request = {
 //   }
 // };
 
+// var request = {
+//   id: 5,
+//   jsonrpc: "2.0",
+//   method: "getTopics",
+//   params: {
+//     universe: "0x000000000000000000000000000000000000000b"
+//   }
+// };
+
 var ws = new WebSocket("ws://127.0.0.1:8080");
 
 ws.on("open", function () {

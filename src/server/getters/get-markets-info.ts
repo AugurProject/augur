@@ -6,11 +6,11 @@ interface MarketsInfo {
 }
 
 export function getMarketsInfo(db: Database, universe: Address, callback: (err?: Error|null, result?: MarketsInfo) => void): void {
-  db.all(`SELECT * FROM markets WHERE universe = ?`, [universe], (err?: Error|null, rows?: MarketsRow[]) => {
+  db.all(`SELECT * FROM markets WHERE universe = ?`, [universe], (err?: Error|null, rows?: MarketsRow[]): void => {
     if (err) return callback(err);
     if (!rows || !rows.length) return callback(null);
     const marketsInfo: MarketsInfo = {};
-    callback(null, rows.reduce((p: MarketsInfo, row: MarketsRow) => {
+    callback(null, rows.reduce((p: MarketsInfo, row: MarketsRow): MarketsInfo => {
       p[row.market_id] = <MarketInfo>{
         marketID: row.market_id,
         universe: row.universe,

@@ -60,7 +60,7 @@ function createAugurDbTables(db, callback) {
             )`)
             .run(`DROP TABLE IF EXISTS topics`)
             .run(`CREATE TABLE topics (
-              name varchar(255) PRIMARY KEY NOT NULL,
+              topic varchar(255) PRIMARY KEY NOT NULL,
               popularity integer DEFAULT 0,
               universe varchar(66) NOT NULL
             )`)

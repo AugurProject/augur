@@ -107,7 +107,7 @@ describe("server/getters/get-markets-info", () => {
           designatedReporter: "0x000000000000000000000000000000000000d00d",
           resolutionSource: "http://www.ttp-inc.com/0000000000000000000000000000000000000003"
         }
-    });
+      });
     }
   });
   test({

@@ -9,12 +9,12 @@ function processMarketCreatedLog(db, log, callback) {
     VALUES (${dataToInsert.map(() => '?').join(',')})`, dataToInsert, (err) => {
         if (err)
             return callback(err);
-        db.get(`SELECT popularity FROM topics WHERE name = ?`, [log.topic], (err, row) => {
+        db.get(`SELECT popularity FROM topics WHERE topic = ?`, [log.topic], (err, row) => {
             if (err)
                 return callback(err);
             if (row)
                 return callback(null);
-            db.run(`INSERT INTO topics (name, universe) VALUES (?, ?)`, [log.topic, log.address], callback);
+            db.run(`INSERT INTO topics (topic, universe) VALUES (?, ?)`, [log.topic, log.address], callback);
         });
     });
 }

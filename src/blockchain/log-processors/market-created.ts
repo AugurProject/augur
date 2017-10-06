@@ -9,10 +9,10 @@ export function processMarketCreatedLog(db: Database, log: FormattedLog, callbac
     (market_id, universe, market_type, num_outcomes, min_price, max_price, market_creator, creation_time, creation_block_number, creation_fee, market_creator_fee_rate, topic, tag1, tag2, reporting_window, end_time, short_description, designated_reporter, resolution_source)
     VALUES (${dataToInsert.map(() => '?').join(',')})`, dataToInsert, (err?: Error|null): void => {
       if (err) return callback(err);
-      db.get(`SELECT popularity FROM topics WHERE name = ?`, [log.topic], (err?: Error|null, row?: {popularity: number}): void => {
+      db.get(`SELECT popularity FROM topics WHERE topic = ?`, [log.topic], (err?: Error|null, row?: {popularity: number}): void => {
         if (err) return callback(err);
         if (row) return callback(null);
-        db.run(`INSERT INTO topics (name, universe) VALUES (?, ?)`, [log.topic, log.address], callback);
+        db.run(`INSERT INTO topics (topic, universe) VALUES (?, ?)`, [log.topic, log.address], callback);
       });
   });
 }

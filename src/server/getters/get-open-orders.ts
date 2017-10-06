@@ -58,7 +58,7 @@ export function getOpenOrders(db: Database, marketID: Address|null, outcome: num
     if (err) return callback(err);
     if (!ordersRows || !ordersRows.length) return callback(null);
     const orders: Orders = {};
-    ordersRows.forEach((row: OrdersRow) => {
+    ordersRows.forEach((row: OrdersRow): void => {
       if (!orders[row.market_id]) orders[row.market_id] = {};
       if (!orders[row.market_id][row.outcome]) orders[row.market_id][row.outcome] = {};
       if (!orders[row.market_id][row.outcome][row.order_type]) orders[row.market_id][row.outcome][row.order_type] = {};

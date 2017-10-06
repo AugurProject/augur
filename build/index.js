@@ -16,6 +16,7 @@ check_augur_db_setup_1.checkAugurDbSetup(db, (err) => {
     sync_augur_node_with_blockchain_1.syncAugurNodeWithBlockchain(db, augur, ethereumNodeEndpoints, uploadBlockNumbers, (err) => {
         if (err)
             return console.error("syncAugurNodeWithBlockchain:", err);
+        console.log("Sync with blockchain complete, starting websocket server...");
         run_websocket_server_1.runWebsocketServer(db, websocketPort);
     });
 });
