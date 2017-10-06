@@ -1,4 +1,3 @@
 --recursive
 --reporter spec
---require ./test.bootstrap
-# --require ./server.bootstrap
+--require ./test/test.bootstrap
