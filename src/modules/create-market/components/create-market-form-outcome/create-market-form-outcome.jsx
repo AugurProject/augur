@@ -191,22 +191,22 @@ export default class CreateMarketOutcome extends Component {
           <label>
             <span>Market Type</span>
           </label>
-          <ul className={Styles.CreateMarketOutcome__type}>
+          <ul className={StylesForm['CreateMarketForm__radio-buttons']}>
             <li>
               <button
-                className={classNames({ [`${Styles.active}`]: p.newMarket.type === BINARY })}
+                className={classNames({ [`${StylesForm.active}`]: p.newMarket.type === BINARY })}
                 onClick={(e) => { this.setState({ marketType: BINARY }); this.validateType(BINARY) }}
               >Yes/No</button>
             </li>
             <li>
               <button
-                className={classNames({ [`${Styles.active}`]: p.newMarket.type === CATEGORICAL })}
+                className={classNames({ [`${StylesForm.active}`]: p.newMarket.type === CATEGORICAL })}
                 onClick={(e) => { this.setState({ marketType: CATEGORICAL }); this.validateType(CATEGORICAL) }}
               >Multiple Choice</button>
             </li>
             <li>
               <button
-                className={classNames({ [`${Styles.active}`]: p.newMarket.type === SCALAR })}
+                className={classNames({ [`${StylesForm.active}`]: p.newMarket.type === SCALAR })}
                 onClick={(e) => { this.setState({ marketType: SCALAR }); this.validateType(SCALAR) }}
               >Numerical Range</button>
             </li>

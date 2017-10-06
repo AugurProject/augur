@@ -16,14 +16,20 @@ const DEFAULT_STATE = {
   holdForUserAction: false,
   validations: [
     {
-      description: false,
-      category: false,
-      tag1: false,
-      tag2: false,
+      description: true,
+      category: true,
+      tag1: true,
+      tag2: true,
     },
     {
-      type: false,
+      type: true,
+      scalarSmallNum: true,
+      scalarBigNum: true,
+      outcomes: true,
     },
+    {
+      source: false,
+    }
   ],
   currentStep: 0,
   type: '',

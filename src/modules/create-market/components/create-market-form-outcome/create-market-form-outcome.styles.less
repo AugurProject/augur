@@ -29,82 +29,12 @@
   text-transform: uppercase;
 }
 
-.CreateMarketOutcome__type {
-  display: flex;
-
-  > li {
-    align-items: center;
-    display: flex;
-    flex-wrap: nowrap;
-    min-height: 1.75rem;
-    white-space: nowrap;
-
-    &:not(:first-child) {
-      margin-left: 4.75rem;
-    }
-
-    > input {
-      display: none;
-    }
-
-    > button {
-      color: @color-white;
-      cursor: pointer;
-      display: block;
-      font-size: 1.125rem;
-      line-height: 1.125rem;
-      padding-left: 2.5rem;
-      position: relative;
-
-      &::before {
-        border: 1px solid @color-lightgray;
-        border-radius: 100%;
-        bottom: 0;
-        content: "";
-        height: 1.5rem;
-        left: 0;
-        margin: auto;
-        position: absolute;
-        top: 0;
-        width: 1.5rem;
-      }
-
-      &::after {
-        background-color: @color-lightgray;
-        border-radius: 100%;
-        bottom: 0;
-        content: "";
-        display: none;
-        height: 0.875rem;
-        left: 0.4rem;
-        margin: auto;
-        position: absolute;
-        top: 0;
-        width: 0.875rem;
-      }
-
-      &.active::after {
-        display: block;
-      }
-    }
-  }
-}
-
 @media @breakpoint-mobile {
   .CreateMarketOutcome__categorical > input {
     width: 48%;
 
     &:nth-child(-n+6) {
       margin-bottom: 1rem;
-    }
-  }
-
-  .CreateMarketOutcome__type {
-    display: block;
-
-    > li:not(:first-child) {
-      margin-left: 0;
-      margin-top: 1rem;
     }
   }
 }

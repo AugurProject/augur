@@ -1,0 +1,25 @@
+@import '~assets/styles/shared.less';
+
+.CreateMarketResolution__expiry-source-specific {
+  > button {
+    align-self: flex-start;
+  }
+
+  > input {
+    margin-left: 3.75rem;
+    max-width: 50%;
+  }
+}
+
+@media @breakpoint-mobile {
+  li.CreateMarketResolution__expiry-source-specific {
+    flex-wrap: wrap;
+
+    > input {
+      margin-left: 0;
+      margin-top: 2rem;
+      max-width: none;
+      width: 100%;
+    }
+  }
+}
