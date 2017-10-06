@@ -128,6 +128,13 @@ export function insertTestDataIntoAugurDb(db: Database, callback: ErrorCallback)
             ('0x7a305d9b681fb164dc5ad628b5992177dc66aec8', 'REP', NULL, NULL),
             ('0x2000000000000000000000000000000000000000', 'shares', '0x0000000000000000000000000000000000000001', 1),
             ('0x1000000000000000000000000000000000000000', 'shares', '0x0000000000000000000000000000000000000001', 0)`)
+      .run(`INSERT INTO topics
+            (name, popularity, universe)
+            VALUES
+            ('politics', 5000, '0x000000000000000000000000000000000000000b'),
+            ('ethereum', 1000, '0x000000000000000000000000000000000000000b'),
+            ('augur', 500, '0x000000000000000000000000000000000000000b'),
+            ('finance', 12345, '0x000000000000000000000000000000000000000b')`)
       .run(`INSERT INTO transfers
             (transaction_hash, log_index, sender, recipient, token, value, block_number)
             VALUES (
