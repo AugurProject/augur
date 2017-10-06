@@ -1,4 +1,5 @@
 import * as Knex from "knex";
+import Promise = require("bluebird");
 
 exports.up = function (knex: Knex): Promise<any> {
   return knex.schema.dropTableIfExists("blockchain_sync_history").then(() => {
