@@ -50,7 +50,7 @@ export function dispatchJsonRpcRequest(db: Database, request: JsonRpcRequest, ca
     case "getUserTradingPositions":
       return getUserTradingPositions(db, request.params.account, request.params.marketID, request.params.outcome, callback);
     case "getClosedOrders":
-      return getClosedOrders(db, request.params.account, request.params.dateRange, callback);
+      return getClosedOrders(db, request.params.account, request.params.dateRange, callback); // TODO change dateRange to separate earliestTime and latestTime params?
     case "getReportingWindowsWithUnclaimedFees":
       return getReportingWindowsWithUnclaimedFees(db, request.params.account, callback);
     case "getUnclaimedReportingTokens":
@@ -58,9 +58,9 @@ export function dispatchJsonRpcRequest(db: Database, request: JsonRpcRequest, ca
     case "getUnfinalizedReportingTokens":
       return getUnfinalizedReportingTokens(db, request.params.account, callback);
     case "getAllReportingTokens":
-      return getAllReportingTokens(db, request.params.account, request.params.dateRange, callback);
+      return getAllReportingTokens(db, request.params.account, request.params.dateRange, callback); // TODO change dateRange to separate earliestTime and latestTime params?
     case "getMarketsClosingInDateRange":
-      return getMarketsClosingInDateRange(db, request.params.dateRange, callback);
+      return getMarketsClosingInDateRange(db, request.params.earliestClosingTime, request.params.latestClosingTime, request.params.universe, request.params.limit, callback);
     case "getDetailedMarketInfo":
       return getDetailedMarketInfo(db, request.params.marketID, callback);
     case "getMarketsInfo":

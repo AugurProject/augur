@@ -49,7 +49,7 @@ function dispatchJsonRpcRequest(db, request, callback) {
         case "getUserTradingPositions":
             return get_user_trading_positions_1.getUserTradingPositions(db, request.params.account, request.params.marketID, request.params.outcome, callback);
         case "getClosedOrders":
-            return get_closed_orders_1.getClosedOrders(db, request.params.account, request.params.dateRange, callback);
+            return get_closed_orders_1.getClosedOrders(db, request.params.account, request.params.dateRange, callback); // TODO change dateRange to separate earliestTime and latestTime params?
         case "getReportingWindowsWithUnclaimedFees":
             return get_reporting_windows_with_unclaimed_fees_1.getReportingWindowsWithUnclaimedFees(db, request.params.account, callback);
         case "getUnclaimedReportingTokens":
@@ -57,9 +57,9 @@ function dispatchJsonRpcRequest(db, request, callback) {
         case "getUnfinalizedReportingTokens":
             return get_unfinalized_reporting_tokens_1.getUnfinalizedReportingTokens(db, request.params.account, callback);
         case "getAllReportingTokens":
-            return get_all_reporting_tokens_1.getAllReportingTokens(db, request.params.account, request.params.dateRange, callback);
+            return get_all_reporting_tokens_1.getAllReportingTokens(db, request.params.account, request.params.dateRange, callback); // TODO change dateRange to separate earliestTime and latestTime params?
         case "getMarketsClosingInDateRange":
-            return get_markets_closing_in_date_range_1.getMarketsClosingInDateRange(db, request.params.dateRange, callback);
+            return get_markets_closing_in_date_range_1.getMarketsClosingInDateRange(db, request.params.earliestClosingTime, request.params.latestClosingTime, request.params.universe, request.params.limit, callback);
         case "getDetailedMarketInfo":
             return get_detailed_market_info_1.getDetailedMarketInfo(db, request.params.marketID, callback);
         case "getMarketsInfo":

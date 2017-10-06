@@ -47,7 +47,7 @@ describe("server/getters/get-market-info", () => {
         volume: 0,
         sharesOutstanding: 0,
         reportingWindow: "0x1000000000000000000000000000000000000000",
-        endTime: 1506573474,
+        endTime: 1506573470,
         finalizationTime: null,
         shortDescription: "This is a categorical test market created by b0b.",
         longDescription: null,

@@ -20,7 +20,7 @@ function insertTestDataIntoAugurDb(db, callback) {
               'test tag 1',
               'test tag 2',
               '0x1000000000000000000000000000000000000000',
-              1506573474,
+              1506573470,
               'This is a categorical test market created by b0b.',
               '0x0000000000000000000000000000000000000b0b',
               'http://www.trusted-third-party.com'
@@ -40,7 +40,7 @@ function insertTestDataIntoAugurDb(db, callback) {
               'test tag 1',
               'test tag 2',
               '0x1000000000000000000000000000000000000000',
-              1506573474,
+              1506573480,
               'This is a binary test market created by b0b.',
               '0x0000000000000000000000000000000000000b0b',
               'http://www.trusted-third-party.com'
@@ -60,7 +60,7 @@ function insertTestDataIntoAugurDb(db, callback) {
               'test tag 1',
               'test tag 2',
               '0x1000000000000000000000000000000000000000',
-              1506573474,
+              1506573500,
               'This is another binary test market created by d00d.',
               '0x000000000000000000000000000000000000d00d',
               'http://www.ttp-inc.com/0000000000000000000000000000000000000003'
