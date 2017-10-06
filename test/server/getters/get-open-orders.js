@@ -14,7 +14,7 @@ describe("server/getters/get-open-orders", () => {
     it(t.description, (done) => {
       const db = new sqlite3.Database(augurDbPath);
       checkAugurDbSetup(db, (err) => {
-        getOpenOrders(db, t.params.market, t.params.outcome, t.params.orderType, t.params.creator, (err, openOrders) => {
+        getOpenOrders(db, t.params.marketID, t.params.outcome, t.params.orderType, t.params.creator, (err, openOrders) => {
           t.assertions(err, openOrders);
           unlink(augurDbPath, done);
         });
@@ -24,7 +24,7 @@ describe("server/getters/get-open-orders", () => {
   test({
     description: "get open buy orders for market 1",
     params: {
-      market: "0x0000000000000000000000000000000000000001",
+      marketID: "0x0000000000000000000000000000000000000001",
       outcome: null,
       orderType: "buy",
       creator: null
@@ -78,7 +78,7 @@ describe("server/getters/get-open-orders", () => {
   test({
     description: "get open sell orders for market 1",
     params: {
-      market: "0x0000000000000000000000000000000000000001",
+      marketID: "0x0000000000000000000000000000000000000001",
       outcome: null,
       orderType: "sell",
       creator: null
@@ -108,7 +108,7 @@ describe("server/getters/get-open-orders", () => {
   test({
     description: "get orders created by user b0b",
     params: {
-      market: null,
+      marketID: null,
       outcome: null,
       orderType: null,
       creator: "0x0000000000000000000000000000000000000b0b"
@@ -138,7 +138,7 @@ describe("server/getters/get-open-orders", () => {
   test({
     description: "get open orders for nonexistent market",
     params: {
-      market: "0x1010101010101010101010101010101010101010",
+      marketID: "0x1010101010101010101010101010101010101010",
       outcome: null,
       orderType: null,
       creator: null

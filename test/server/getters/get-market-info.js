@@ -14,7 +14,7 @@ describe("server/getters/get-market-info", () => {
     it(t.description, (done) => {
       const db = new sqlite3.Database(augurDbPath);
       checkAugurDbSetup(db, (err) => {
-        getMarketInfo(db, t.params.marketId, (err, marketInfo) => {
+        getMarketInfo(db, t.params.marketID, (err, marketInfo) => {
           t.assertions(err, marketInfo);
           unlink(augurDbPath, done);
         });
@@ -24,12 +24,12 @@ describe("server/getters/get-market-info", () => {
   test({
     description: "get market info if market exists",
     params: {
-      marketId: "0x0000000000000000000000000000000000000001"
+      marketID: "0x0000000000000000000000000000000000000001"
     },
     assertions: (err, marketInfo) => {
       assert.isNull(err);
       assert.deepEqual(marketInfo, {
-        contractAddress: "0x0000000000000000000000000000000000000001",
+        marketID: "0x0000000000000000000000000000000000000001",
         universe: "0x000000000000000000000000000000000000000b",
         marketType: "categorical",
         numOutcomes: 8,
@@ -59,7 +59,7 @@ describe("server/getters/get-market-info", () => {
   test({
     description: "market does not exist",
     params: {
-      marketId: "0x1010101010101010101010101010101010101010"
+      marketID: "0x1010101010101010101010101010101010101010"
     },
     assertions: (err, marketInfo) => {
       assert.isNull(err);

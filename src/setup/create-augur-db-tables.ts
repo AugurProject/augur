@@ -5,7 +5,7 @@ export function createAugurDbTables(db: Database, callback: ErrorCallback): void
   db.serialize(() => {
     db.run(`DROP TABLE IF EXISTS markets`)
       .run(`CREATE TABLE markets (
-              contract_address varchar(66) PRIMARY KEY NOT NULL,
+              market_id varchar(66) PRIMARY KEY NOT NULL,
               universe varchar(66) NOT NULL,
               market_type varchar(11) NOT NULL CONSTRAINT enum_market_types CHECK (market_type = 'binary' OR market_type = 'categorical' OR market_type = 'scalar'),
               num_outcomes integer NOT NULL CONSTRAINT positive_num_outcomes CHECK (num_outcomes > 0),
@@ -33,7 +33,7 @@ export function createAugurDbTables(db: Database, callback: ErrorCallback): void
       .run(`DROP TABLE IF EXISTS orders`)
       .run(`CREATE TABLE orders (
               order_id varchar(66) PRIMARY KEY NOT NULL,
-              market varchar(66) NOT NULL,
+              market_id varchar(66) NOT NULL,
               outcome integer NOT NULL CONSTRAINT nonnegative_outcome CHECK (outcome >= 0),
               share_token varchar(66) NOT NULL,
               order_type varchar(4) NOT NULL CONSTRAINT enum_order_types CHECK (order_type = 'buy' OR order_type = 'sell'),
@@ -45,13 +45,6 @@ export function createAugurDbTables(db: Database, callback: ErrorCallback): void
               tokens_escrowed numeric NOT NULL CONSTRAINT nonnegative_tokens_escrowed CHECK (tokens_escrowed >= 0),
               shares_escrowed numeric NOT NULL CONSTRAINT nonnegative_shares_escrowed CHECK (shares_escrowed >= 0),
               trade_group_id varchar(66)
-            )`)
-      .run(`DROP TABLE IF EXISTS balances`)
-      .run(`CREATE TABLE balances (
-              owner varchar(66) NOT NULL,
-              token varchar(66) NOT NULL,
-              balance numeric NOT NULL DEFAULT 0 CONSTRAINT nonnegative_balance CHECK (balance >= 0),
-              UNIQUE(owner, token)
             )`)
       .run(`DROP TABLE IF EXISTS tokens`)
       .run(`CREATE TABLE tokens (

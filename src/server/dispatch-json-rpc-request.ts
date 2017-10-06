@@ -26,7 +26,7 @@ export function dispatchJsonRpcRequest(db: Database, request: JsonRpcRequest, ca
   console.log(request);
   switch (request.method) {
     case "getMarketInfo":
-      return getMarketInfo(db, request.params.market, callback);
+      return getMarketInfo(db, request.params.marketID, callback);
     case "getAccountTransferHistory":
       return getAccountTransferHistory(db, request.params.account, request.params.token, callback);
     case "getTopics":
@@ -34,7 +34,7 @@ export function dispatchJsonRpcRequest(db: Database, request: JsonRpcRequest, ca
     case "getMarketsCreatedByUser":
       return getMarketsCreatedByUser(db, request.params.creator, callback);
     case "getReportingHistory":
-      return getReportingHistory(db, request.params.account, request.params.market, request.params.universe, request.params.reportingWindow, callback);
+      return getReportingHistory(db, request.params.account, request.params.marketID, request.params.universe, request.params.reportingWindow, callback);
     case "getMarketsAwaitingDesignatedReporting":
       return getMarketsAwaitingDesignatedReporting(db, request.params.designatedReporter, callback);
     case "getMarketsAwaitingLimitedReporting":
@@ -46,9 +46,9 @@ export function dispatchJsonRpcRequest(db: Database, request: JsonRpcRequest, ca
     case "getReportingSummary":
       return getReportingSummary(db, request.params.reportingWindow, callback);
     case "getUserTradingHistory":
-      return getUserTradingHistory(db, request.params.account, request.params.market, request.params.outcome, request.params.orderType, callback);
+      return getUserTradingHistory(db, request.params.account, request.params.marketID, request.params.outcome, request.params.orderType, callback);
     case "getUserTradingPositions":
-      return getUserTradingPositions(db, request.params.account, request.params.market, request.params.outcome, callback);
+      return getUserTradingPositions(db, request.params.account, request.params.marketID, request.params.outcome, callback);
     case "getClosedOrders":
       return getClosedOrders(db, request.params.account, request.params.dateRange, callback);
     case "getReportingWindowsWithUnclaimedFees":
@@ -62,11 +62,11 @@ export function dispatchJsonRpcRequest(db: Database, request: JsonRpcRequest, ca
     case "getMarketsClosingInDateRange":
       return getMarketsClosingInDateRange(db, request.params.dateRange, callback);
     case "getDetailedMarketInfo":
-      return getDetailedMarketInfo(db, request.params.market, callback);
+      return getDetailedMarketInfo(db, request.params.marketID, callback);
     case "getMarketsInfo":
       return getMarketsInfo(db, request.params.universe, callback);
     case "getOpenOrders":
-      return getOpenOrders(db, request.params.market, request.params.outcome, request.params.orderType, request.params.creator, callback);
+      return getOpenOrders(db, request.params.marketID, request.params.outcome, request.params.orderType, request.params.creator, callback);
     default:
       callback(new Error("unknown json rpc method"));
   }

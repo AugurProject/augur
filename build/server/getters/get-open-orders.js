@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 // market, outcome, creator, orderType, limit, sort
-function getOpenOrders(db, market, outcome, orderType, creator, callback) {
+function getOpenOrders(db, marketID, outcome, orderType, creator, callback) {
     const conditions = [{
-            name: "market",
-            value: market
+            name: "market_id",
+            value: marketID
         }, {
             name: "outcome",
             value: outcome
@@ -23,13 +23,13 @@ function getOpenOrders(db, market, outcome, orderType, creator, callback) {
             return callback(null);
         const orders = {};
         ordersRows.forEach((row) => {
-            if (!orders[row.market])
-                orders[row.market] = {};
-            if (!orders[row.market][row.outcome])
-                orders[row.market][row.outcome] = {};
-            if (!orders[row.market][row.outcome][row.order_type])
-                orders[row.market][row.outcome][row.order_type] = {};
-            orders[row.market][row.outcome][row.order_type][row.order_id] = {
+            if (!orders[row.market_id])
+                orders[row.market_id] = {};
+            if (!orders[row.market_id][row.outcome])
+                orders[row.market_id][row.outcome] = {};
+            if (!orders[row.market_id][row.outcome][row.order_type])
+                orders[row.market_id][row.outcome][row.order_type] = {};
+            orders[row.market_id][row.outcome][row.order_type][row.order_id] = {
                 shareToken: row.share_token,
                 orderCreator: row.order_creator,
                 creationTime: row.creation_time,

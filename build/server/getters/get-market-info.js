@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function getMarketInfo(db, market, callback) {
-    db.get(`SELECT * FROM markets WHERE contract_address = ?`, [market], (err, row) => {
+function getMarketInfo(db, marketID, callback) {
+    db.get(`SELECT * FROM markets WHERE market_id = ?`, [marketID], (err, row) => {
         if (err)
             return callback(err);
         if (!row)
             return callback(null);
         const marketInfo = {
-            contractAddress: row.contract_address,
+            marketID: row.market_id,
             universe: row.universe,
             marketType: row.market_type,
             numOutcomes: row.num_outcomes,

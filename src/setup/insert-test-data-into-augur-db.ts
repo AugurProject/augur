@@ -4,7 +4,7 @@ import { ErrorCallback } from "../types";
 export function insertTestDataIntoAugurDb(db: Database, callback: ErrorCallback): void {
   db.serialize(() => {
     db.run(`INSERT INTO markets
-            (contract_address, universe, market_type, num_outcomes, min_price, max_price, market_creator, creation_time, creation_block_number, creation_fee, market_creator_fee_rate, topic, tag1, tag2, reporting_window, end_time, short_description, designated_reporter, resolution_source)
+            (market_id, universe, market_type, num_outcomes, min_price, max_price, market_creator, creation_time, creation_block_number, creation_fee, market_creator_fee_rate, topic, tag1, tag2, reporting_window, end_time, short_description, designated_reporter, resolution_source)
             VALUES (
               '0x0000000000000000000000000000000000000001',
               '0x000000000000000000000000000000000000000b',
@@ -67,7 +67,7 @@ export function insertTestDataIntoAugurDb(db: Database, callback: ErrorCallback)
               'http://www.ttp-inc.com/0000000000000000000000000000000000000003'
             )`)
       .run(`INSERT INTO orders
-            (order_id, market, outcome, share_token, order_type, order_creator, creation_time, creation_block_number, price, amount, tokens_escrowed, shares_escrowed)
+            (order_id, market_id, outcome, share_token, order_type, order_creator, creation_time, creation_block_number, price, amount, tokens_escrowed, shares_escrowed)
             VALUES (
               '0x1000000000000000000000000000000000000000000000000000000000000000',
               '0x0000000000000000000000000000000000000001',
@@ -154,13 +154,6 @@ export function insertTestDataIntoAugurDb(db: Database, callback: ErrorCallback)
               '0x7a305d9b681fb164dc5ad628b5992177dc66aec8',
               47,
               1400001
-            )`)
-      .run(`INSERT INTO balances
-            (owner, token, balance)
-            VALUES
-            ('0x0000000000000000000000000000000000000b0b', '0x7a305d9b681fb164dc5ad628b5992177dc66aec8', 1000000000000000000),
-            ('0x000000000000000000000000000000000000d00d', '0x7a305d9b681fb164dc5ad628b5992177dc66aec8', 500000000000000000),
-            ('0x0000000000000000000000000000000000000b0b', '0x1000000000000000000000000000000000000000', 7000000000000000000),
-            ('0x000000000000000000000000000000000000d00d', '0x1000000000000000000000000000000000000000', 3500000000000000000)`, callback);
+            )`, callback);
   });
 }
