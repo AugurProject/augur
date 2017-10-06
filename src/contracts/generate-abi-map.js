@@ -34,10 +34,12 @@ function generateAbiMap(abi) {
         functions[contractName][shortName] = functionAbiMap;
       } else if (functionOrEvent.type === "event") {
         if (!events[contractName]) events[contractName] = {};
+        var methodSignature = functionOrEvent.name + 
+          "(" + functionOrEvent.inputs.map(input => input.type).join(",") + ")";
         events[contractName][shortName] = {
           contract: contractName,
           inputs: functionOrEvent.inputs,
-          signature: convertEventNameToSignature(functionOrEvent.name)
+          signature: convertEventNameToSignature(methodSignature)
         };
       }
     });
