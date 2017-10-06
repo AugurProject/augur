@@ -49,7 +49,7 @@ describe("server/getters/get-market-info", () => {
         reportingWindow: "0x1000000000000000000000000000000000000000",
         endTime: 1506573474,
         finalizationTime: null,
-        shortDescription: "This is a test market created by the augur-node.",
+        shortDescription: "This is a categorical test market created by b0b.",
         longDescription: null,
         designatedReporter: "0x0000000000000000000000000000000000000b0b",
         resolutionSource: "http://www.trusted-third-party.com"
@@ -59,7 +59,7 @@ describe("server/getters/get-market-info", () => {
   test({
     description: "market does not exist",
     params: {
-      marketId: "0x0000000000000000000000000000000000000002"
+      marketId: "0x1010101010101010101010101010101010101010"
     },
     assertions: (err, marketInfo) => {
       assert.isNull(err);

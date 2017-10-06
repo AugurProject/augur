@@ -31,7 +31,7 @@ function dispatchJsonRpcRequest(db, request, callback) {
         case "getTopics":
             return get_topics_1.getTopics(db, request.params.universe, callback);
         case "getMarketsCreatedByUser":
-            return get_markets_created_by_user_1.getMarketsCreatedByUser(db, request.params.account, callback);
+            return get_markets_created_by_user_1.getMarketsCreatedByUser(db, request.params.creator, callback);
         case "getReportingHistory":
             return get_reporting_history_1.getReportingHistory(db, request.params.account, request.params.market, request.params.universe, request.params.reportingWindow, callback);
         case "getMarketsAwaitingDesignatedReporting":

@@ -72,3 +72,7 @@ export interface GetAccountTransferHistoryRequest {
     token: Address|null
   }
 }
+
+export interface MarketsContractAddressRow {
+  contract_address: string
+}

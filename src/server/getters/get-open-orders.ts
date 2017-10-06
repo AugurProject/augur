@@ -56,7 +56,7 @@ export function getOpenOrders(db: Database, market: Address|null, outcome: numbe
   const whereClause = conditions.map((condition) => `${condition.name} = ?`).join(" AND ");
   db.all(`SELECT * FROM orders WHERE ${whereClause}`, conditions.map((condition) => condition.value), (err?: Error|null, ordersRows?: OrdersRow[]): void => {
     if (err) return callback(err);
-    if (!ordersRows) return callback(null);
+    if (!ordersRows || !ordersRows.length) return callback(null);
     const orders: Orders = {};
     ordersRows.forEach((row: OrdersRow) => {
       if (!orders[row.market]) orders[row.market] = {};

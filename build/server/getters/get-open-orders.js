@@ -19,7 +19,7 @@ function getOpenOrders(db, market, outcome, orderType, creator, callback) {
     db.all(`SELECT * FROM orders WHERE ${whereClause}`, conditions.map((condition) => condition.value), (err, ordersRows) => {
         if (err)
             return callback(err);
-        if (!ordersRows)
+        if (!ordersRows || !ordersRows.length)
             return callback(null);
         const orders = {};
         ordersRows.forEach((row) => {
