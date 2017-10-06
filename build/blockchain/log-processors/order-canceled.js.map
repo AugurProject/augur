@@ -1,1 +1,0 @@
-{"version":3,"file":"order-canceled.js","sourceRoot":"","sources":["../../../src/blockchain/log-processors/order-canceled.ts"],"names":[],"mappings":";;AAGA,iCAAwC,EAAY,EAAE,GAAiB,EAAE,QAAuB;IAC9F,EAAE,CAAC,GAAG,CAAC,uCAAuC,EAAE,CAAC,GAAG,CAAC,OAAO,CAAC,EAAE,QAAQ,CAAC,CAAC;AAC3E,CAAC;AAFD,0DAEC"}

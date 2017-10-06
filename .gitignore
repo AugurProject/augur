@@ -1,5 +1,6 @@
 node_modules/
 *.log
 coverage/
+build/
 *.db*
 *.sh
