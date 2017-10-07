@@ -28,16 +28,17 @@ function bindContractFunction(functionAbi) {
         callback(null, response);
       });
     }
-    var onSent, onSuccess, onFailed, signer;
+    var onSent, onSuccess, onFailed, signer, accountType;
     if (params && isObject(params[0])) {
       onSent = params[0].onSent;
       onSuccess = params[0].onSuccess;
       onFailed = params[0].onFailed;
       payload.params = encodeTransactionInputs(params[0], payload.inputs, payload.signature, payload.fixed);
       if (isObject(params[0].tx)) assign(payload, params[0].tx);
-      signer = params[0]._signer;
+      signer = (params[0].meta || {}).signer;
+      accountType = (params[0].meta || {}).accountType;
     }
-    ethrpc.transact(payload, signer, onSent, onSuccess, onFailed);
+    ethrpc.transact(payload, signer, accountType, onSent, onSuccess, onFailed);
   };
 }
 

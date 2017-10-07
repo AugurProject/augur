@@ -40,7 +40,7 @@ function importAccount(p, callback) {
 }
 
 module.exports = importAccount;
-},{"../rpc-interface":65,"keythereum":417,"speedomatic":537}],2:[function(require,module,exports){
+},{"../rpc-interface":65,"keythereum":417,"speedomatic":531}],2:[function(require,module,exports){
 /**
  * Client-side / in-browser accounts.
  */
@@ -93,7 +93,7 @@ function loginWithMasterKey(p) {
 
 module.exports = loginWithMasterKey;
 }).call(this,require("buffer").Buffer)
-},{"../utils/sha256":119,"buffer":202,"keythereum":417,"speedomatic":537}],4:[function(require,module,exports){
+},{"../utils/sha256":119,"buffer":202,"keythereum":417,"speedomatic":531}],4:[function(require,module,exports){
 "use strict";
 
 /** Type definition for Pbkdf2Params.
@@ -183,7 +183,7 @@ function login(p, callback) {
 }
 
 module.exports = login;
-},{"../rpc-interface":65,"keythereum":417,"speedomatic":537}],5:[function(require,module,exports){
+},{"../rpc-interface":65,"keythereum":417,"speedomatic":531}],5:[function(require,module,exports){
 "use strict";
 
 module.exports = require("../rpc-interface").clear;
@@ -264,7 +264,7 @@ function register(p, callback) {
 }
 
 module.exports = register;
-},{"../constants":17,"../rpc-interface":65,"keythereum":417,"speedomatic":537,"uuid":568}],7:[function(require,module,exports){
+},{"../constants":17,"../rpc-interface":65,"keythereum":417,"speedomatic":531,"uuid":562}],7:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -295,21 +295,22 @@ function bindContractFunction(functionAbi) {
         callback(null, response);
       });
     }
-    var onSent, onSuccess, onFailed, signer;
+    var onSent, onSuccess, onFailed, signer, accountType;
     if (params && isObject(params[0])) {
       onSent = params[0].onSent;
       onSuccess = params[0].onSuccess;
       onFailed = params[0].onFailed;
       payload.params = encodeTransactionInputs(params[0], payload.inputs, payload.signature, payload.fixed);
       if (isObject(params[0].tx)) assign(payload, params[0].tx);
-      signer = params[0]._signer;
+      signer = (params[0].meta || {}).signer;
+      accountType = (params[0].meta || {}).accountType;
     }
-    ethrpc.transact(payload, signer, onSent, onSuccess, onFailed);
+    ethrpc.transact(payload, signer, accountType, onSent, onSuccess, onFailed);
   };
 }
 
 module.exports = bindContractFunction;
-},{"../rpc-interface":65,"../utils/is-function":111,"../utils/is-object":112,"./encode-transaction-inputs":8,"lodash.assign":425}],8:[function(require,module,exports){
+},{"../rpc-interface":65,"../utils/is-function":111,"../utils/is-object":112,"./encode-transaction-inputs":8,"lodash.assign":419}],8:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -332,7 +333,7 @@ function encodeTransactionInputs(p, inputs, signature, fixedPointIndex) {
 }
 
 module.exports = encodeTransactionInputs;
-},{"./transaction-input-encoders":11,"speedomatic":537}],9:[function(require,module,exports){
+},{"./transaction-input-encoders":11,"speedomatic":531}],9:[function(require,module,exports){
 "use strict";
 
 var bindContractFunction = require("./bind-contract-function");
@@ -390,7 +391,7 @@ module.exports = {
   "uint256[]": speedomatic.formatInt256.bind(speedomatic),
   "bytes32[]": speedomatic.formatInt256.bind(speedomatic)
 };
-},{"speedomatic":537}],12:[function(require,module,exports){
+},{"speedomatic":531}],12:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -412,7 +413,7 @@ function depositEther(p) {
 }
 
 module.exports = depositEther;
-},{"../api":10,"lodash.assign":425,"speedomatic":537}],13:[function(require,module,exports){
+},{"../api":10,"lodash.assign":419,"speedomatic":531}],13:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -446,7 +447,7 @@ function sendEther(p) {
 }
 
 module.exports = sendEther;
-},{"../rpc-interface":65,"speedomatic":537}],15:[function(require,module,exports){
+},{"../rpc-interface":65,"speedomatic":531}],15:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -475,7 +476,7 @@ function sendReputation(p) {
 }
 
 module.exports = sendReputation;
-},{"../api":10,"lodash.assign":425,"speedomatic":537}],16:[function(require,module,exports){
+},{"../api":10,"lodash.assign":419,"speedomatic":531}],16:[function(require,module,exports){
 "use strict";
 
 var connector = require("ethereumjs-connect");
@@ -668,7 +669,7 @@ var contracts = require("augur-contracts");
 var generateAbiMap = require("./generate-abi-map");
 
 module.exports = assign({}, contracts, { abi: generateAbiMap(contracts.abi) });
-},{"./generate-abi-map":18,"augur-contracts":164,"lodash.assign":425}],20:[function(require,module,exports){
+},{"./generate-abi-map":18,"augur-contracts":164,"lodash.assign":419}],20:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -703,7 +704,7 @@ function createCategoricalMarket(p) {
 }
 
 module.exports = createCategoricalMarket;
-},{"../api":10,"../format/tag/encode-tag":36,"./get-market-creation-cost":23,"lodash.assign":425}],21:[function(require,module,exports){
+},{"../api":10,"../format/tag/encode-tag":36,"./get-market-creation-cost":23,"lodash.assign":419}],21:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -742,7 +743,7 @@ function createScalarMarket(p) {
 }
 
 module.exports = createScalarMarket;
-},{"../api":10,"../format/tag/encode-tag":36,"./get-market-creation-cost":23,"lodash.assign":425,"speedomatic":537}],22:[function(require,module,exports){
+},{"../api":10,"../format/tag/encode-tag":36,"./get-market-creation-cost":23,"lodash.assign":419,"speedomatic":531}],22:[function(require,module,exports){
 "use strict";
 
 /** Type definition for MarketCreationCosts.
@@ -789,7 +790,7 @@ function getMarketCreationCostBreakdown(p, callback) {
 }
 
 module.exports = getMarketCreationCostBreakdown;
-},{"../api":10,"async":137,"speedomatic":537}],23:[function(require,module,exports){
+},{"../api":10,"async":137,"speedomatic":531}],23:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -816,7 +817,7 @@ function getMarketCreationCost(p, callback) {
 }
 
 module.exports = getMarketCreationCost;
-},{"../api":10,"speedomatic":537}],24:[function(require,module,exports){
+},{"../api":10,"speedomatic":531}],24:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -904,7 +905,7 @@ function parseLogMessage(contractName, eventName, message, abiEventInputs, onMes
 }
 
 module.exports = parseLogMessage;
-},{"../../format/log/format-log-message":32,"../../format/log/format-logged-event-inputs":33,"../../utils/is-function":111,"../../utils/is-object":112,"lodash.assign":425}],29:[function(require,module,exports){
+},{"../../format/log/format-log-message":32,"../../format/log/format-logged-event-inputs":33,"../../utils/is-function":111,"../../utils/is-object":112,"lodash.assign":419}],29:[function(require,module,exports){
 "use strict";
 
 var addFilter = require("./add-filter");
@@ -1070,7 +1071,7 @@ function formatLogMessage(contractName, eventName, message) {
 }
 
 module.exports = formatLogMessage;
-},{"lodash.assign":425,"speedomatic":537}],33:[function(require,module,exports){
+},{"lodash.assign":419,"speedomatic":531}],33:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -1093,7 +1094,7 @@ function formatLoggedEventInputs(loggedTopics, loggedData, abiEventInputs) {
 }
 
 module.exports = formatLoggedEventInputs;
-},{"./format-logged-event-topic":34,"speedomatic":537}],34:[function(require,module,exports){
+},{"./format-logged-event-topic":34,"speedomatic":531}],34:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -1122,7 +1123,7 @@ function formatLoggedEventTopic(unformattedValue, inputType) {
 }
 
 module.exports = formatLoggedEventTopic;
-},{"bignumber.js":166,"speedomatic":537}],35:[function(require,module,exports){
+},{"bignumber.js":166,"speedomatic":531}],35:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -1137,7 +1138,7 @@ var decodeTag = function decodeTag(tag) {
 };
 
 module.exports = decodeTag;
-},{"speedomatic":537}],36:[function(require,module,exports){
+},{"speedomatic":531}],36:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -1148,7 +1149,7 @@ var encodeTag = function encodeTag(tag) {
 };
 
 module.exports = encodeTag;
-},{"speedomatic":537}],37:[function(require,module,exports){
+},{"speedomatic":531}],37:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -1169,7 +1170,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.2.8";
+  this.version = "4.3.0";
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
@@ -1214,7 +1215,7 @@ function buildTopicsList(eventSignature, eventInputs, params) {
 }
 
 module.exports = buildTopicsList;
-},{"speedomatic":537}],39:[function(require,module,exports){
+},{"speedomatic":531}],39:[function(require,module,exports){
 "use strict";
 
 var BLOCKS_PER_CHUNK = require("../constants").BLOCKS_PER_CHUNK;
@@ -1295,7 +1296,7 @@ function getAllAugurLogs(p, callback) {
 }
 
 module.exports = getAllAugurLogs;
-},{"../constants":17,"../contracts":19,"../filters/parse-message/parse-log-message":28,"../rpc-interface":65,"../utils/list-contracts":114,"../utils/map-contract-addresses-to-names":115,"../utils/map-event-signatures-to-names":116,"./chunk-blocks":39,"async":137,"lodash.assign":425,"speedomatic":537}],41:[function(require,module,exports){
+},{"../constants":17,"../contracts":19,"../filters/parse-message/parse-log-message":28,"../rpc-interface":65,"../utils/list-contracts":114,"../utils/map-contract-addresses-to-names":115,"../utils/map-event-signatures-to-names":116,"./chunk-blocks":39,"async":137,"lodash.assign":419,"speedomatic":531}],41:[function(require,module,exports){
 "use strict";
 
 var eventsAbi = require("../contracts").abi.events;
@@ -1362,7 +1363,7 @@ function getLogsChunked(p, onChunkReceived, onComplete) {
 }
 
 module.exports = getLogsChunked;
-},{"../constants":17,"../rpc-interface":65,"./chunk-blocks":39,"./get-logs":43,"./insert-indexed-log":46,"async":137,"clone":204,"lodash.assign":425,"speedomatic":537}],43:[function(require,module,exports){
+},{"../constants":17,"../rpc-interface":65,"./chunk-blocks":39,"./get-logs":43,"./insert-indexed-log":46,"async":137,"clone":204,"lodash.assign":419,"speedomatic":531}],43:[function(require,module,exports){
 "use strict";
 
 var getFilteredLogs = require("./get-filtered-logs");
@@ -1551,7 +1552,7 @@ function batchGetMarketInfo(p, callback) {
 }
 
 module.exports = batchGetMarketInfo;
-},{"../api":10,"../parsers/batch-market-info":54,"./get-logged-market-info":50,"async":137,"lodash.assign":425}],50:[function(require,module,exports){
+},{"../api":10,"../parsers/batch-market-info":54,"./get-logged-market-info":50,"async":137,"lodash.assign":419}],50:[function(require,module,exports){
 "use strict";
 
 var api = require("../api");
@@ -1606,7 +1607,7 @@ function getMarketInfo(p, callback) {
 }
 
 module.exports = getMarketInfo;
-},{"../api":10,"../parsers/market-info":55,"./get-logged-market-info":50,"lodash.assign":425}],52:[function(require,module,exports){
+},{"../api":10,"../parsers/market-info":55,"./get-logged-market-info":50,"lodash.assign":419}],52:[function(require,module,exports){
 "use strict";
 
 var api = require("../api");
@@ -1652,7 +1653,7 @@ module.exports = function (batchMarketInfoArray, numMarkets) {
   }
   return batchMarketInfo;
 };
-},{"./market-info":55,"speedomatic":537}],55:[function(require,module,exports){
+},{"./market-info":55,"speedomatic":531}],55:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -1695,7 +1696,7 @@ module.exports = function (marketInfoArray) {
   }
   return marketInfo;
 };
-},{"../format/tag/decode-tag":35,"../rpc-interface":65,"speedomatic":537}],56:[function(require,module,exports){
+},{"../format/tag/decode-tag":35,"../rpc-interface":65,"speedomatic":531}],56:[function(require,module,exports){
 "use strict";
 
 var parseOrder = require("./order");
@@ -1763,7 +1764,7 @@ module.exports = function (orderType, minPrice, maxPrice, order) {
     gasPrice: speedomatic.encodeNumberAsBase10String(order[7])
   };
 };
-},{"../constants":17,"../trading/denormalize-price":67,"../utils/round-to-precision":118,"bignumber.js":166,"speedomatic":537}],58:[function(require,module,exports){
+},{"../constants":17,"../trading/denormalize-price":67,"../utils/round-to-precision":118,"bignumber.js":166,"speedomatic":531}],58:[function(require,module,exports){
 "use strict";
 
 var api = require("../api");
@@ -2047,7 +2048,7 @@ function submitReport(p) {
 }
 
 module.exports = submitReport;
-},{"../api":10,"speedomatic":537}],65:[function(require,module,exports){
+},{"../api":10,"speedomatic":531}],65:[function(require,module,exports){
 "use strict";
 
 var createRpcInterface = function createRpcInterface(ethrpc) {
@@ -2116,7 +2117,7 @@ function claimMarketsProceeds(p) {
 }
 
 module.exports = claimMarketsProceeds;
-},{"../api":10,"async":137,"immutable-delete":402,"lodash.assign":425}],67:[function(require,module,exports){
+},{"../api":10,"async":137,"immutable-delete":402,"lodash.assign":419}],67:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -2308,7 +2309,7 @@ function getOrderBookChunked(p, onChunkReceived, onComplete) {
 }
 
 module.exports = getOrderBookChunked;
-},{"../../api":10,"../../constants":17,"../../utils/is-function":111,"../../utils/noop":117,"./get-order-book":74,"lodash.assign":425}],74:[function(require,module,exports){
+},{"../../api":10,"../../constants":17,"../../utils/is-function":111,"../../utils/noop":117,"./get-order-book":74,"lodash.assign":419}],74:[function(require,module,exports){
 "use strict";
 
 /** Type definition for SingleOutcomeOrderBookSide.
@@ -2431,7 +2432,7 @@ function calculateCompleteSetsShareTotals(logs) {
 }
 
 module.exports = calculateCompleteSetsShareTotals;
-},{"../../constants":17,"./modify-position":84,"speedomatic":537}],78:[function(require,module,exports){
+},{"../../constants":17,"./modify-position":84,"speedomatic":531}],78:[function(require,module,exports){
 "use strict";
 
 var calculateCompleteSetsShareTotals = require("./calculate-complete-sets-share-totals");
@@ -2483,7 +2484,7 @@ function calculateShortSellShareTotals(logs) {
 }
 
 module.exports = calculateShortSellShareTotals;
-},{"../../constants":17,"bignumber.js":166,"speedomatic":537}],80:[function(require,module,exports){
+},{"../../constants":17,"bignumber.js":166,"speedomatic":531}],80:[function(require,module,exports){
 
 "use strict";
 
@@ -2613,7 +2614,7 @@ function modifyPosition(typeCode, position, numShares) {
 }
 
 module.exports = modifyPosition;
-},{"speedomatic":537}],85:[function(require,module,exports){
+},{"speedomatic":531}],85:[function(require,module,exports){
 "use strict";
 
 var longerPositionPL = require("./longer-position-pl");
@@ -3466,7 +3467,7 @@ function tradeUntilAmountIsZero(p) {
 }
 
 module.exports = tradeUntilAmountIsZero;
-},{"../api":10,"../constants":17,"../utils/noop":117,"./get-trade-amount-remaining":68,"immutable-delete":402,"lodash.assign":425,"speedomatic":537}],110:[function(require,module,exports){
+},{"../api":10,"../constants":17,"../utils/noop":117,"./get-trade-amount-remaining":68,"immutable-delete":402,"lodash.assign":419,"speedomatic":531}],110:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -3479,7 +3480,7 @@ function convertEventNameToSignature(eventName) {
 
 module.exports = convertEventNameToSignature;
 }).call(this,require("buffer").Buffer)
-},{"../utils/keccak256":113,"buffer":202,"speedomatic":537}],111:[function(require,module,exports){
+},{"../utils/keccak256":113,"buffer":202,"speedomatic":531}],111:[function(require,module,exports){
 "use strict";
 
 var isFunction = function isFunction(f) {
@@ -3570,7 +3571,7 @@ var sha256 = function sha256(hashable) {
 };
 
 module.exports = sha256;
-},{"crypto":212,"speedomatic":537}],120:[function(require,module,exports){
+},{"crypto":212,"speedomatic":531}],120:[function(require,module,exports){
 "use strict";
 
 var unique = function unique(value, index, self) {
@@ -3658,7 +3659,7 @@ Entity.prototype.encode = function encode(data, enc, /* internal */ reporter) {
   return this._getEncoder(enc).encode(data, reporter);
 };
 
-},{"../asn1":122,"inherits":405,"vm":569}],124:[function(require,module,exports){
+},{"../asn1":122,"inherits":405,"vm":563}],124:[function(require,module,exports){
 var inherits = require('inherits');
 var Reporter = require('../base').Reporter;
 var Buffer = require('buffer').Buffer;
@@ -4420,7 +4421,7 @@ Node.prototype._isPrintstr = function isPrintstr(str) {
   return /^[A-Za-z0-9 '\(\)\+,\-\.\/:=\?]*$/.test(str);
 };
 
-},{"../base":125,"minimalistic-assert":442}],127:[function(require,module,exports){
+},{"../base":125,"minimalistic-assert":436}],127:[function(require,module,exports){
 var inherits = require('inherits');
 
 function Reporter(options) {
@@ -5678,7 +5679,7 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-},{"util/":566}],137:[function(require,module,exports){
+},{"util/":560}],137:[function(require,module,exports){
 (function (process,global){
 /*!
  * async
@@ -6947,7 +6948,7 @@ var objectKeys = Object.keys || function (obj) {
 }());
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":457}],138:[function(require,module,exports){
+},{"_process":451}],138:[function(require,module,exports){
 module.exports=[{
   "anonymous": false,
   "inputs": [{
@@ -14730,7 +14731,7 @@ module.exports = {
   encode: encode
 }
 
-},{"safe-buffer":488}],168:[function(require,module,exports){
+},{"safe-buffer":482}],168:[function(require,module,exports){
 (function (module, exports) {
   'use strict';
 
@@ -18954,7 +18955,7 @@ AES.prototype.scrub = function () {
 
 module.exports.AES = AES
 
-},{"safe-buffer":488}],173:[function(require,module,exports){
+},{"safe-buffer":482}],173:[function(require,module,exports){
 var aes = require('./aes')
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('cipher-base')
@@ -19048,7 +19049,7 @@ StreamCipher.prototype.setAAD = function setAAD (buf) {
 
 module.exports = StreamCipher
 
-},{"./aes":172,"./ghash":177,"buffer-xor":201,"cipher-base":203,"inherits":405,"safe-buffer":488}],174:[function(require,module,exports){
+},{"./aes":172,"./ghash":177,"buffer-xor":201,"cipher-base":203,"inherits":405,"safe-buffer":482}],174:[function(require,module,exports){
 var ciphers = require('./encrypter')
 var deciphers = require('./decrypter')
 var modes = require('./modes/list.json')
@@ -19186,7 +19187,7 @@ function createDecipher (suite, password) {
 exports.createDecipher = createDecipher
 exports.createDecipheriv = createDecipheriv
 
-},{"./aes":172,"./authCipher":173,"./modes":184,"./streamCipher":187,"cipher-base":203,"evp_bytestokey":385,"inherits":405,"safe-buffer":488}],176:[function(require,module,exports){
+},{"./aes":172,"./authCipher":173,"./modes":184,"./streamCipher":187,"cipher-base":203,"evp_bytestokey":385,"inherits":405,"safe-buffer":482}],176:[function(require,module,exports){
 var MODES = require('./modes')
 var AuthCipher = require('./authCipher')
 var Buffer = require('safe-buffer').Buffer
@@ -19302,7 +19303,7 @@ function createCipher (suite, password) {
 exports.createCipheriv = createCipheriv
 exports.createCipher = createCipher
 
-},{"./aes":172,"./authCipher":173,"./modes":184,"./streamCipher":187,"cipher-base":203,"evp_bytestokey":385,"inherits":405,"safe-buffer":488}],177:[function(require,module,exports){
+},{"./aes":172,"./authCipher":173,"./modes":184,"./streamCipher":187,"cipher-base":203,"evp_bytestokey":385,"inherits":405,"safe-buffer":482}],177:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var ZEROES = Buffer.alloc(16, 0)
 
@@ -19393,7 +19394,7 @@ GHASH.prototype.final = function (abl, bl) {
 
 module.exports = GHASH
 
-},{"safe-buffer":488}],178:[function(require,module,exports){
+},{"safe-buffer":482}],178:[function(require,module,exports){
 var xor = require('buffer-xor')
 
 exports.encrypt = function (self, block) {
@@ -19447,7 +19448,7 @@ exports.encrypt = function (self, data, decrypt) {
   return out
 }
 
-},{"buffer-xor":201,"safe-buffer":488}],180:[function(require,module,exports){
+},{"buffer-xor":201,"safe-buffer":482}],180:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 function encryptByte (self, byteParam, decrypt) {
@@ -19491,7 +19492,7 @@ exports.encrypt = function (self, chunk, decrypt) {
   return out
 }
 
-},{"safe-buffer":488}],181:[function(require,module,exports){
+},{"safe-buffer":482}],181:[function(require,module,exports){
 (function (Buffer){
 function encryptByte (self, byteParam, decrypt) {
   var pad = self._cipher.encryptBlock(self._prev)
@@ -19836,7 +19837,7 @@ StreamCipher.prototype._final = function () {
 
 module.exports = StreamCipher
 
-},{"./aes":172,"cipher-base":203,"inherits":405,"safe-buffer":488}],188:[function(require,module,exports){
+},{"./aes":172,"cipher-base":203,"inherits":405,"safe-buffer":482}],188:[function(require,module,exports){
 var ebtk = require('evp_bytestokey')
 var aes = require('browserify-aes/browser')
 var DES = require('browserify-des')
@@ -20028,7 +20029,7 @@ function getr(priv) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":168,"buffer":202,"randombytes":464}],192:[function(require,module,exports){
+},{"bn.js":168,"buffer":202,"randombytes":458}],192:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -20328,7 +20329,7 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./algorithms.json":194,"./sign":197,"./verify":198,"buffer":202,"create-hash":207,"inherits":405,"stream":550}],197:[function(require,module,exports){
+},{"./algorithms.json":194,"./sign":197,"./verify":198,"buffer":202,"create-hash":207,"inherits":405,"stream":544}],197:[function(require,module,exports){
 (function (Buffer){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var createHmac = require('create-hmac')
@@ -20477,7 +20478,7 @@ module.exports.getKey = getKey
 module.exports.makeKey = makeKey
 
 }).call(this,require("buffer").Buffer)
-},{"./curves.json":195,"bn.js":168,"browserify-rsa":191,"buffer":202,"create-hmac":210,"elliptic":223,"parse-asn1":449}],198:[function(require,module,exports){
+},{"./curves.json":195,"bn.js":168,"browserify-rsa":191,"buffer":202,"create-hmac":210,"elliptic":223,"parse-asn1":443}],198:[function(require,module,exports){
 (function (Buffer){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var BN = require('bn.js')
@@ -20564,7 +20565,7 @@ function checkValue (b, q) {
 module.exports = verify
 
 }).call(this,require("buffer").Buffer)
-},{"./curves.json":195,"bn.js":168,"buffer":202,"elliptic":223,"parse-asn1":449}],199:[function(require,module,exports){
+},{"./curves.json":195,"bn.js":168,"buffer":202,"elliptic":223,"parse-asn1":443}],199:[function(require,module,exports){
 arguments[4][171][0].apply(exports,arguments)
 },{"dup":171}],200:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
@@ -22456,7 +22457,7 @@ CipherBase.prototype._toString = function (value, enc, fin) {
 
 module.exports = CipherBase
 
-},{"inherits":405,"safe-buffer":488,"stream":550,"string_decoder":200}],204:[function(require,module,exports){
+},{"inherits":405,"safe-buffer":482,"stream":544,"string_decoder":200}],204:[function(require,module,exports){
 (function (Buffer){
 var clone = (function() {
 'use strict';
@@ -22913,7 +22914,7 @@ module.exports = function createHash (alg) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./md5":209,"buffer":202,"cipher-base":203,"inherits":405,"ripemd160":486,"sha.js":496}],208:[function(require,module,exports){
+},{"./md5":209,"buffer":202,"cipher-base":203,"inherits":405,"ripemd160":480,"sha.js":490}],208:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var intSize = 4
@@ -23164,7 +23165,7 @@ module.exports = function createHmac (alg, key) {
   return new Hmac(alg, key)
 }
 
-},{"./legacy":211,"cipher-base":203,"create-hash/md5":209,"inherits":405,"ripemd160":486,"safe-buffer":488,"sha.js":496}],211:[function(require,module,exports){
+},{"./legacy":211,"cipher-base":203,"create-hash/md5":209,"inherits":405,"ripemd160":480,"safe-buffer":482,"sha.js":490}],211:[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
 var Buffer = require('safe-buffer').Buffer
@@ -23212,7 +23213,7 @@ Hmac.prototype._final = function () {
 }
 module.exports = Hmac
 
-},{"cipher-base":203,"inherits":405,"safe-buffer":488}],212:[function(require,module,exports){
+},{"cipher-base":203,"inherits":405,"safe-buffer":482}],212:[function(require,module,exports){
 'use strict'
 
 exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = require('randombytes')
@@ -23306,7 +23307,7 @@ exports.constants = {
   'POINT_CONVERSION_HYBRID': 6
 }
 
-},{"browserify-cipher":188,"browserify-sign":196,"browserify-sign/algos":193,"create-ecdh":206,"create-hash":207,"create-hmac":210,"diffie-hellman":219,"pbkdf2":451,"public-encrypt":458,"randombytes":464}],213:[function(require,module,exports){
+},{"browserify-cipher":188,"browserify-sign":196,"browserify-sign/algos":193,"create-ecdh":206,"create-hash":207,"create-hmac":210,"diffie-hellman":219,"pbkdf2":445,"public-encrypt":452,"randombytes":458}],213:[function(require,module,exports){
 'use strict';
 
 exports.utils = require('./des/utils');
@@ -23382,7 +23383,7 @@ proto._update = function _update(inp, inOff, out, outOff) {
   }
 };
 
-},{"inherits":405,"minimalistic-assert":442}],215:[function(require,module,exports){
+},{"inherits":405,"minimalistic-assert":436}],215:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -23525,7 +23526,7 @@ Cipher.prototype._finalDecrypt = function _finalDecrypt() {
   return this._unpad(out);
 };
 
-},{"minimalistic-assert":442}],216:[function(require,module,exports){
+},{"minimalistic-assert":436}],216:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -23670,7 +23671,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
   utils.rip(l, r, out, off);
 };
 
-},{"../des":213,"inherits":405,"minimalistic-assert":442}],217:[function(require,module,exports){
+},{"../des":213,"inherits":405,"minimalistic-assert":436}],217:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -23727,7 +23728,7 @@ EDE.prototype._update = function _update(inp, inOff, out, outOff) {
 EDE.prototype._pad = DES.prototype._pad;
 EDE.prototype._unpad = DES.prototype._unpad;
 
-},{"../des":213,"inherits":405,"minimalistic-assert":442}],218:[function(require,module,exports){
+},{"../des":213,"inherits":405,"minimalistic-assert":436}],218:[function(require,module,exports){
 'use strict';
 
 exports.readUInt32BE = function readUInt32BE(bytes, off) {
@@ -24199,7 +24200,7 @@ function formatReturnValue(bn, enc) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./generatePrime":221,"bn.js":168,"buffer":202,"miller-rabin":441,"randombytes":464}],221:[function(require,module,exports){
+},{"./generatePrime":221,"bn.js":168,"buffer":202,"miller-rabin":435,"randombytes":458}],221:[function(require,module,exports){
 var randomBytes = require('randombytes');
 module.exports = findPrime;
 findPrime.simpleSieve = simpleSieve;
@@ -24306,7 +24307,7 @@ function findPrime(bits, gen) {
 
 }
 
-},{"bn.js":168,"miller-rabin":441,"randombytes":464}],222:[function(require,module,exports){
+},{"bn.js":168,"miller-rabin":435,"randombytes":458}],222:[function(require,module,exports){
 module.exports={
     "modp1": {
         "gen": "02",
@@ -28197,7 +28198,7 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":168,"minimalistic-assert":442,"minimalistic-crypto-utils":443}],238:[function(require,module,exports){
+},{"bn.js":168,"minimalistic-assert":436,"minimalistic-crypto-utils":437}],238:[function(require,module,exports){
 module.exports={
   "_args": [
     [
@@ -29797,7 +29798,7 @@ exports.defineProperties = function (self, fields, data) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":136,"bn.js":168,"buffer":202,"create-hash":207,"keccakjs":416,"rlp":487,"secp256k1":489}],243:[function(require,module,exports){
+},{"assert":136,"bn.js":168,"buffer":202,"create-hash":207,"keccakjs":416,"rlp":481,"secp256k1":483}],243:[function(require,module,exports){
 var v1 = require('./v1');
 var v4 = require('./v4');
 
@@ -30390,7 +30391,7 @@ sourceMapSupport.install();
 var block_and_log_streamer_1 = require("./block-and-log-streamer");
 exports.BlockAndLogStreamer = block_and_log_streamer_1.BlockAndLogStreamer;
 
-},{"./block-and-log-streamer":248,"source-map-support":504}],251:[function(require,module,exports){
+},{"./block-and-log-streamer":248,"source-map-support":498}],251:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -30643,7 +30644,7 @@ function createConfiguration(options) {
 
 module.exports = createConfiguration;
 
-},{"lodash.assign":425}],255:[function(require,module,exports){
+},{"lodash.assign":419}],255:[function(require,module,exports){
 "use strict";
 
 function createEthrpcConfiguration(configuration) {
@@ -30669,7 +30670,7 @@ var setupFunctionsABI = require("./setup-functions-abi");
 var connect = require("./connect");
 
 module.exports = {
-  version: "4.3.7",
+  version: "4.3.8",
   setFrom: setFrom,
   setupEventsABI: setupEventsABI,
   setupFunctionsABI: setupFunctionsABI,
@@ -31875,7 +31876,7 @@ exports.defineProperties = function (self, fields, data) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"assert":136,"bn.js":168,"buffer":202,"create-hash":207,"ethjs-util":268,"keccak":410,"rlp":487,"secp256k1":489}],268:[function(require,module,exports){
+},{"assert":136,"bn.js":168,"buffer":202,"create-hash":207,"ethjs-util":268,"keccak":410,"rlp":481,"secp256k1":483}],268:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -32098,7 +32099,7 @@ module.exports = {
   isHexString: isHexString
 };
 }).call(this,require("buffer").Buffer)
-},{"buffer":202,"is-hex-prefixed":407,"strip-hex-prefix":552}],269:[function(require,module,exports){
+},{"buffer":202,"is-hex-prefixed":407,"strip-hex-prefix":546}],269:[function(require,module,exports){
 "use strict";
 
 var Notifier = require("./notifier.js");
@@ -32586,6 +32587,13 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID, ROUNDING_MODE: BigNumber.ROUND
 
 module.exports = {
 
+  ACCOUNT_TYPES: {
+    U_PORT: "uPort",
+    LEDGER: "ledger",
+    PRIVATE_KEY: "privateKey",
+    UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode"
+  },
+
   // Number of required confirmations for transact sequence
   REQUIRED_CONFIRMATIONS: 0,
 
@@ -32826,11 +32834,11 @@ var createEthrpc = function (reducer) {
     signRawTransactionWithKey: signRawTransactionWithKey,
     packageRawTransaction: packageRawTransaction,
     packageRequest: packageRequest,
-    packageAndSubmitRawTransaction: function (payload, address, privateKeyOrSigner, callback) {
-      return dispatch(packageAndSubmitRawTransaction(payload, address, privateKeyOrSigner, callback));
+    packageAndSubmitRawTransaction: function (payload, address, privateKeyOrSigner, accountType, callback) {
+      return dispatch(packageAndSubmitRawTransaction(payload, address, privateKeyOrSigner, accountType, callback));
     },
-    packageAndSignRawTransaction: function (payload, address, privateKeyOrSigner, callback) {
-      return dispatch(packageAndSignRawTransaction(payload, address, privateKeyOrSigner, callback));
+    packageAndSignRawTransaction: function (payload, address, privateKeyOrSigner, accountType, callback) {
+      return dispatch(packageAndSignRawTransaction(payload, address, privateKeyOrSigner, accountType, callback));
     },
 
     handleRPCError: handleRPCError,
@@ -32844,13 +32852,13 @@ var createEthrpc = function (reducer) {
 
     callOrSendTransaction: function (payload, callback) { return dispatch(callOrSendTransaction(payload, callback)); },
     callContractFunction: function (payload, callback, wrapper, aux) { return dispatch(callContractFunction(payload, callback, wrapper, aux)); },
-    transact: function (payload, privateKeyOrSigner, onSent, onSuccess, onFailed) { return dispatch(transact(payload, privateKeyOrSigner, onSent, onSuccess, onFailed)); }
+    transact: function (payload, privateKeyOrSigner, accountType, onSent, onSuccess, onFailed) { return dispatch(transact(payload, privateKeyOrSigner, accountType, onSent, onSuccess, onFailed)); }
   };
 };
 
 module.exports = createEthrpc;
 
-},{"./block-management/ensure-latest-block":271,"./block-management/wait-for-next-blocks":277,"./clear-transactions":278,"./connect":279,"./constants":280,"./debug/set-debug-options":282,"./decode-response/handle-rpc-error":283,"./encode-request/package-request":287,"./errors/codes":289,"./internal-state":294,"./raw-transactions/package-and-sign-raw-transaction":300,"./raw-transactions/package-and-submit-raw-transaction":301,"./raw-transactions/package-raw-transaction":302,"./raw-transactions/sign-raw-transaction":306,"./raw-transactions/sign-raw-transaction-with-key":305,"./reset-state":321,"./transact/call-contract-function":329,"./transact/call-or-send-transaction":330,"./transact/transact":334,"./transaction-relay/exclude-from-transaction-relay":339,"./transaction-relay/include-in-transaction-relay":340,"./transaction-relay/register-transaction-relay":341,"./transaction-relay/unregister-transaction-relay":342,"./utils/is-function":353,"./utils/sha3":360,"./validate/validate-and-default-block-number":362,"./validate/validate-transaction":366,"./wrappers/bind-dispatch":368,"./wrappers/eth":369,"./wrappers/is-unlocked":370,"./wrappers/miner":372,"./wrappers/net":373,"./wrappers/personal":374,"./wrappers/publish":375,"./wrappers/raw":376,"./wrappers/resend-raw-transaction":377,"./wrappers/resend-transaction":378,"./wrappers/send-ether":379,"./wrappers/shh":382,"./wrappers/web3":383,"redux":484,"redux-thunk-subscribe":478}],282:[function(require,module,exports){
+},{"./block-management/ensure-latest-block":271,"./block-management/wait-for-next-blocks":277,"./clear-transactions":278,"./connect":279,"./constants":280,"./debug/set-debug-options":282,"./decode-response/handle-rpc-error":283,"./encode-request/package-request":287,"./errors/codes":289,"./internal-state":294,"./raw-transactions/package-and-sign-raw-transaction":300,"./raw-transactions/package-and-submit-raw-transaction":301,"./raw-transactions/package-raw-transaction":302,"./raw-transactions/sign-raw-transaction":306,"./raw-transactions/sign-raw-transaction-with-key":305,"./reset-state":321,"./transact/call-contract-function":329,"./transact/call-or-send-transaction":330,"./transact/transact":334,"./transaction-relay/exclude-from-transaction-relay":339,"./transaction-relay/include-in-transaction-relay":340,"./transaction-relay/register-transaction-relay":341,"./transaction-relay/unregister-transaction-relay":342,"./utils/is-function":353,"./utils/sha3":360,"./validate/validate-and-default-block-number":362,"./validate/validate-transaction":366,"./wrappers/bind-dispatch":368,"./wrappers/eth":369,"./wrappers/is-unlocked":370,"./wrappers/miner":372,"./wrappers/net":373,"./wrappers/personal":374,"./wrappers/publish":375,"./wrappers/raw":376,"./wrappers/resend-raw-transaction":377,"./wrappers/resend-transaction":378,"./wrappers/send-ether":379,"./wrappers/shh":382,"./wrappers/web3":383,"redux":478,"redux-thunk-subscribe":472}],282:[function(require,module,exports){
 "use strict";
 
 module.exports = function (debugOptions) {
@@ -32892,7 +32900,7 @@ var handleRPCError = function (method, returns, response) {
 
 module.exports = handleRPCError;
 
-},{"../errors/codes":289,"speedomatic":537}],284:[function(require,module,exports){
+},{"../errors/codes":289,"speedomatic":531}],284:[function(require,module,exports){
 "use strict";
 
 var clone = require("clone");
@@ -33081,7 +33089,7 @@ var packageRequest = function (payload) {
 
 module.exports = packageRequest;
 
-},{"../constants":280,"../errors/codes":289,"../errors/rpc-error":292,"clone":204,"speedomatic":537}],288:[function(require,module,exports){
+},{"../constants":280,"../errors/codes":289,"../errors/rpc-error":292,"clone":204,"speedomatic":531}],288:[function(require,module,exports){
 "use strict";
 
 var stripReturnsTypeAndInvocation = function (tx) {
@@ -33526,14 +33534,14 @@ module.exports.setState = function (newState) { assign(state, newState); };
 module.exports.set = function (path, newState) { set(state, path, newState); };
 module.exports.unset = function (path) { unset(state, path); };
 
-},{"lodash.assign":425,"lodash.get":426,"lodash.set":427,"lodash.unset":428}],295:[function(require,module,exports){
+},{"lodash.assign":419,"lodash.get":420,"lodash.set":421,"lodash.unset":422}],295:[function(require,module,exports){
 (function (process){
 "use strict";
 
 module.exports = (typeof module !== "undefined") && process && !process.browser;
 
 }).call(this,require('_process'))
-},{"_process":457}],296:[function(require,module,exports){
+},{"_process":451}],296:[function(require,module,exports){
 "use strict";
 
 var isNodeJs = require("./is-node-js");
@@ -33553,7 +33561,7 @@ module.exports = function (method, uri, options) {
   return syncRequest(method, uri, options);
 };
 
-},{"sync-request":556}],298:[function(require,module,exports){
+},{"sync-request":550}],298:[function(require,module,exports){
 "use strict";
 
 var isNode = require("./is-node-js.js");
@@ -33599,37 +33607,22 @@ var errors = require("../errors/codes");
  * @param {Object} payload Static API data with "params" and "from" set.
  * @param {string} address The sender's Ethereum address.
  * @param {buffer|function} privateKeyOrSigner Sender's plaintext private key or signing function.
- * @param {function=} callback Callback function (optional).
+ * @param {string} accountType One of "privateKey", "uPort", or "ledger".
+ * @param {function} callback Callback function.
  * @return {string|void} Signed transaction.
  */
-function packageAndSignRawTransaction(payload, address, privateKeyOrSigner, callback) {
+function packageAndSignRawTransaction(payload, address, privateKeyOrSigner, accountType, callback) {
   return function (dispatch, getState) {
-    var packaged, state;
-    state = getState();
-    if (!payload || payload.constructor !== Object) {
-      if (!isFunction(callback)) throw new RPCError(errors.TRANSACTION_FAILED);
-      return callback(errors.TRANSACTION_FAILED);
-    }
-    if (!address || !privateKeyOrSigner) {
-      if (!isFunction(callback)) throw new RPCError(errors.NOT_LOGGED_IN);
-      return callback(errors.NOT_LOGGED_IN);
-    }
+    var packaged, state = getState();
+    if (!payload || payload.constructor !== Object) return callback(errors.TRANSACTION_FAILED);
+    if (!address || !privateKeyOrSigner) return callback(errors.NOT_LOGGED_IN);
     packaged = packageRawTransaction(payload, address, state.networkID, state.currentBlock);
-    if (state.debug.broadcast) {
-      console.log("[ethrpc] packaged:", JSON.stringify(packaged, null, 2));
-    }
-    if (!isFunction(callback)) {
-      if (isFunction(privateKeyOrSigner)) {
-        throw new Error("Cannot do synchronous signing with a signer function.");
-      }
-      packaged = dispatch(setRawTransactionGasPrice(packaged));
-      packaged = dispatch(setRawTransactionNonce(packaged, address));
-      return signRawTransaction(packaged, privateKeyOrSigner);
-    }
+    if (state.debug.broadcast) console.log("[ethrpc] packaged:", JSON.stringify(packaged, null, 2));
     dispatch(setRawTransactionGasPrice(packaged, function (packaged) {
       if (packaged.error) return callback(packaged);
       dispatch(setRawTransactionNonce(packaged, address, function (packaged) {
-        signRawTransaction(packaged, privateKeyOrSigner, function (err, result) {
+        if (packaged.error) return callback(packaged);
+        signRawTransaction(packaged, privateKeyOrSigner, accountType, function (err, result) {
           callback(err || result);
         });
       }));
@@ -33648,51 +33641,45 @@ var handleRawTransactionError = require("./handle-raw-transaction-error");
 var RPCError = require("../errors/rpc-error");
 var isFunction = require("../utils/is-function");
 var errors = require("../errors/codes");
+var ACCOUNT_TYPES = require("../constants").ACCOUNT_TYPES;
 
 /**
  * Package, sign, and submit a raw transaction to Ethereum.
  * @param {Object} payload Static API data with "params" and "from" set.
  * @param {string} address The sender's Ethereum address.
- * @param {buffer} privateKey The sender's plaintext private key.
- * @param {function=} callback Callback function (optional).
+ * @param {buffer|function} privateKeyOrSigner Sender's plaintext private key or signing function.
+ * @param {string} accountType One of "privateKey", "uPort", or "ledger".
+ * @param {function} callback Callback function.
  * @return {string|void} Transaction hash (if successful).
  */
-function packageAndSubmitRawTransaction(payload, address, privateKey, callback) {
+function packageAndSubmitRawTransaction(payload, address, privateKeyOrSigner, accountType, callback) {
   return function (dispatch, getState) {
-    var debug, response, err;
-    debug = getState().debug;
-    if (!isFunction(callback)) {
-      response = dispatch(eth_sendRawTransaction(dispatch(packageAndSignRawTransaction(payload, address, privateKey))));
-      if (debug.broadcast) console.log("[ethrpc] sendRawTransaction", response);
-      if (!response) throw new RPCError(errors.RAW_TRANSACTION_ERROR);
-      if (response.error) {
-        err = dispatch(handleRawTransactionError(response));
-        if (err !== null) throw new RPCError(err);
-        return dispatch(packageAndSubmitRawTransaction(payload, address, privateKey));
-      }
-      return response;
-    }
-    dispatch(packageAndSignRawTransaction(payload, address, privateKey, function (signedRawTransaction) {
-      if (signedRawTransaction.error) return callback(signedRawTransaction);
-      dispatch(eth_sendRawTransaction(signedRawTransaction, function (response) {
+    dispatch(packageAndSignRawTransaction(payload, address, privateKeyOrSigner, accountType, function (signedRawTransaction) {
+      function handleRawTransactionResponse(response) {
         var err;
-        if (debug.broadcast) console.log("[ethrpc] sendRawTransaction", response);
+        if (getState().debug.broadcast) console.log("[ethrpc] sendRawTransaction", response);
         if (!response) return callback(errors.RAW_TRANSACTION_ERROR);
         if (response.error) {
           err = dispatch(handleRawTransactionError(response));
-          if (err !== null) return callback(err);
-          dispatch(packageAndSubmitRawTransaction(payload, address, privateKey, callback));
+          if (err != null) return callback(err);
+          dispatch(packageAndSubmitRawTransaction(payload, address, privateKeyOrSigner, accountType, callback));
         } else {
           callback(response);
         }
-      }));
+      }
+      if (signedRawTransaction.error) return callback(signedRawTransaction);
+      if (accountType === ACCOUNT_TYPES.U_PORT) { // signedRawTransaction is transaction hash for uPort
+        handleRawTransactionResponse(signedRawTransaction);
+      } else {
+        dispatch(eth_sendRawTransaction(signedRawTransaction, handleRawTransactionResponse));
+      }
     }));
   };
 }
 
 module.exports = packageAndSubmitRawTransaction;
 
-},{"../errors/codes":289,"../errors/rpc-error":292,"../utils/is-function":353,"../wrappers/eth":369,"./handle-raw-transaction-error":299,"./package-and-sign-raw-transaction":300}],302:[function(require,module,exports){
+},{"../constants":280,"../errors/codes":289,"../errors/rpc-error":292,"../utils/is-function":353,"../wrappers/eth":369,"./handle-raw-transaction-error":299,"./package-and-sign-raw-transaction":300}],302:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -33728,7 +33715,7 @@ function packageRawTransaction(payload, address, networkID, currentBlock) {
 
 module.exports = packageRawTransaction;
 
-},{"../constants":280,"../encode-request/package-request":287,"speedomatic":537}],303:[function(require,module,exports){
+},{"../constants":280,"../encode-request/package-request":287,"speedomatic":531}],303:[function(require,module,exports){
 "use strict";
 
 var eth_gasPrice = require("../wrappers/eth").gasPrice;
@@ -33836,25 +33823,35 @@ function signRawTransactionWithKey(packaged, privateKey, callback) {
 module.exports = signRawTransactionWithKey;
 
 }).call(this,require("buffer").Buffer)
-},{"../errors/codes":289,"../errors/rpc-error":292,"../utils/is-function":353,"buffer":202,"ethereumjs-tx":266,"speedomatic":537}],306:[function(require,module,exports){
+},{"../errors/codes":289,"../errors/rpc-error":292,"../utils/is-function":353,"buffer":202,"ethereumjs-tx":266,"speedomatic":531}],306:[function(require,module,exports){
 "use strict";
 
 var immutableDelete = require("immutable-delete");
 var signRawTransactionWithKey = require("./sign-raw-transaction-with-key");
 var isFunction = require("../utils/is-function");
+var ACCOUNT_TYPES = require("../constants").ACCOUNT_TYPES;
 
 /**
  * Sign the transaction using either a private key or a signing function.
  * @param {Object} packaged Unsigned transaction.
  * @param {buffer|function} privateKeyOrSigner Sender's plaintext private key or signing function.
+ * @param {string} accountType One of "privateKey", "uPort", or "ledger".
  * @param {function=} callback Callback function (optional).
  * @return {string} Signed and serialized raw transaction.
  */
-function signRawTransaction(packaged, privateKeyOrSigner, callback) {
+function signRawTransaction(packaged, privateKeyOrSigner, accountType, callback) {
   try {
-    return (isFunction(privateKeyOrSigner))
-      ? privateKeyOrSigner(immutableDelete(packaged, "returns"), callback)
-      : signRawTransactionWithKey(packaged, privateKeyOrSigner, callback);
+    if (accountType === ACCOUNT_TYPES.PRIVATE_KEY) {
+      return signRawTransactionWithKey(packaged, privateKeyOrSigner, callback);
+    } else if (accountType === ACCOUNT_TYPES.LEDGER) {
+      privateKeyOrSigner(immutableDelete(packaged, "returns"), callback);
+    } else if (accountType === ACCOUNT_TYPES.U_PORT) {
+      privateKeyOrSigner(immutableDelete(packaged, "returns")).then(function (txHash) {
+        callback(null, txHash);
+      });
+    } else {
+      callback({ error: "unknown account type" });
+    }
   } catch (error) {
     if (!isFunction(callback)) throw error;
     return callback(error);
@@ -33863,7 +33860,7 @@ function signRawTransaction(packaged, privateKeyOrSigner, callback) {
 
 module.exports = signRawTransaction;
 
-},{"../utils/is-function":353,"./sign-raw-transaction-with-key":305,"immutable-delete":402}],307:[function(require,module,exports){
+},{"../constants":280,"../utils/is-function":353,"./sign-raw-transaction-with-key":305,"immutable-delete":402}],307:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -33888,7 +33885,7 @@ function verifyRawTransactionNonce(nonce) {
 
 module.exports = verifyRawTransactionNonce;
 
-},{"speedomatic":537}],308:[function(require,module,exports){
+},{"speedomatic":531}],308:[function(require,module,exports){
 "use strict";
 
 var initialState = require("./initial-state").coinbase;
@@ -33924,7 +33921,7 @@ function composeReducers(customReducer, reducer) {
 
 module.exports = composeReducers;
 
-},{"lodash.assign":425}],310:[function(require,module,exports){
+},{"lodash.assign":419}],310:[function(require,module,exports){
 "use strict";
 
 var isFunction = require("../utils/is-function");
@@ -33993,7 +33990,7 @@ module.exports = function (debug, action) {
   }
 };
 
-},{"./initial-state":316,"lodash.assign":425}],313:[function(require,module,exports){
+},{"./initial-state":316,"lodash.assign":419}],313:[function(require,module,exports){
 "use strict";
 
 var initialState = require("./initial-state").gasPrice;
@@ -34145,7 +34142,7 @@ module.exports = function (noRelay, action) {
   }
 };
 
-},{"./initial-state":316,"lodash.assign":425}],319:[function(require,module,exports){
+},{"./initial-state":316,"lodash.assign":419}],319:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -34175,7 +34172,7 @@ module.exports = function (subscriptions, action) {
   }
 };
 
-},{"./initial-state":316,"immutable-delete":402,"lodash.assign":425}],320:[function(require,module,exports){
+},{"./initial-state":316,"immutable-delete":402,"lodash.assign":419}],320:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -34259,7 +34256,7 @@ module.exports = function (transactions, action) {
   }
 };
 
-},{"../utils/is-object":357,"./initial-state":316,"immutable-delete":402,"lodash.assign":425}],321:[function(require,module,exports){
+},{"../utils/is-object":357,"./initial-state":316,"immutable-delete":402,"lodash.assign":419}],321:[function(require,module,exports){
 "use strict";
 
 var blockchainMessageHandler = require("./rpc/blockchain-message-handler");
@@ -34576,7 +34573,7 @@ module.exports.addStoreListener = addStoreListener;
 module.exports.removeStoreListener = removeStoreListener;
 module.exports.removeAllStoreListeners = removeAllStoreListeners;
 
-},{"../utils/is-function":353,"immutable-delete":402,"lodash.assign":425}],329:[function(require,module,exports){
+},{"../utils/is-function":353,"immutable-delete":402,"lodash.assign":419}],329:[function(require,module,exports){
 "use strict";
 
 var clone = require("clone");
@@ -34628,7 +34625,7 @@ function callContractFunction(payload, callback, callbackWrapper, extraArgument)
 
 module.exports = callContractFunction;
 
-},{"../decode-response/handle-rpc-error":283,"../errors/codes":289,"../errors/rpc-error":292,"../transact/call-or-send-transaction":330,"../utils/is-function":353,"clone":204,"speedomatic":537}],330:[function(require,module,exports){
+},{"../decode-response/handle-rpc-error":283,"../errors/codes":289,"../errors/rpc-error":292,"../transact/call-or-send-transaction":330,"../utils/is-function":353,"clone":204,"speedomatic":531}],330:[function(require,module,exports){
 "use strict";
 
 var eth = require("../wrappers/eth");
@@ -34733,10 +34730,10 @@ var errors = require("../errors/codes");
  *  - call onSuccess when the transaction has REQUIRED_CONFIRMATIONS
  *  - call onFailed if the transaction fails
  */
-function transactAsync(payload, callReturn, privateKeyOrSigner, onSent, onSuccess, onFailed) {
+function transactAsync(payload, callReturn, privateKeyOrSigner, accountType, onSent, onSuccess, onFailed) {
   return function (dispatch, getState) {
     var invoke = (privateKeyOrSigner == null) ? callOrSendTransaction : function (payload, callback) {
-      return packageAndSubmitRawTransaction(payload, payload.from, privateKeyOrSigner, callback);
+      return packageAndSubmitRawTransaction(payload, payload.from, privateKeyOrSigner, accountType, callback);
     };
     payload.send = true;
     dispatch(invoke(immutableDelete(payload, "returns"), function (txHash) {
@@ -34749,7 +34746,7 @@ function transactAsync(payload, callReturn, privateKeyOrSigner, onSent, onSucces
       // to the client, using the onSent callback
       onSent({ hash: txHash, callReturn: callReturn });
 
-      dispatch(verifyTxSubmitted(payload, txHash, callReturn, privateKeyOrSigner, onSent, onSuccess, onFailed, function (err) {
+      dispatch(verifyTxSubmitted(payload, txHash, callReturn, privateKeyOrSigner, accountType, onSent, onSuccess, onFailed, function (err) {
         if (err != null) {
           err.hash = txHash;
           return onFailed(err);
@@ -34761,7 +34758,7 @@ function transactAsync(payload, callReturn, privateKeyOrSigner, onSent, onSucces
 
 module.exports = transactAsync;
 
-},{"../errors/codes":289,"../raw-transactions/package-and-submit-raw-transaction":301,"../transact/call-or-send-transaction":330,"../transact/verify-tx-submitted":338,"immutable-delete":402,"speedomatic":537}],334:[function(require,module,exports){
+},{"../errors/codes":289,"../raw-transactions/package-and-submit-raw-transaction":301,"../transact/call-or-send-transaction":330,"../transact/verify-tx-submitted":338,"immutable-delete":402,"speedomatic":531}],334:[function(require,module,exports){
 /**
  * Send-call-confirm callback sequence
  */
@@ -34776,7 +34773,7 @@ var isFunction = require("../utils/is-function");
 var noop = require("../utils/noop");
 var errors = require("../errors/codes");
 
-function transact(payload, privateKeyOrSigner, onSent, onSuccess, onFailed) {
+function transact(payload, privateKeyOrSigner, accountType, onSent, onSuccess, onFailed) {
   return function (dispatch, getState) {
     var onSentCallback, onSuccessCallback, onFailedCallback, debug = getState().debug;
     if (debug.tx) console.log("payload transact:", payload);
@@ -34793,7 +34790,7 @@ function transact(payload, privateKeyOrSigner, onSent, onSuccess, onFailed) {
     };
     payload.send = false;
     if (payload.mutable || payload.returns === "null") {
-      return dispatch(transactAsync(payload, null, privateKeyOrSigner, onSentCallback, onSuccessCallback, onFailedCallback));
+      return dispatch(transactAsync(payload, null, privateKeyOrSigner, accountType, onSentCallback, onSuccessCallback, onFailedCallback));
     }
     dispatch(callContractFunction(payload, function (callReturn) {
       if (debug.tx) console.log("callReturn:", callReturn);
@@ -34802,7 +34799,7 @@ function transact(payload, privateKeyOrSigner, onSent, onSuccess, onFailed) {
       } else if (callReturn.error) {
         return onFailedCallback(callReturn);
       }
-      dispatch(transactAsync(payload, callReturn, privateKeyOrSigner, onSentCallback, onSuccessCallback, onFailedCallback));
+      dispatch(transactAsync(payload, callReturn, privateKeyOrSigner, accountType, onSentCallback, onSuccessCallback, onFailedCallback));
     }));
   };
 }
@@ -34879,7 +34876,7 @@ function updateMinedTx(txHash) {
 
 module.exports = updateMinedTx;
 
-},{"../constants":280,"../decode-response/handle-rpc-error":283,"../errors/codes":289,"../transact/call-contract-function":329,"../transact/get-logged-return-value":331,"../utils/is-function":353,"../wrappers/eth":369,"bignumber.js":166,"speedomatic":537}],336:[function(require,module,exports){
+},{"../constants":280,"../decode-response/handle-rpc-error":283,"../errors/codes":289,"../transact/call-contract-function":329,"../transact/get-logged-return-value":331,"../utils/is-function":353,"../wrappers/eth":369,"bignumber.js":166,"speedomatic":531}],336:[function(require,module,exports){
 "use strict";
 
 var clone = require("clone");
@@ -34921,7 +34918,7 @@ function updatePendingTx(txHash) {
           dispatch({ type: "UNLOCK_TRANSACTION", hash: txHash });
           storedTransaction = getState().transactions[txHash];
           if (getState().debug.tx) console.log("resubmitting tx:", txHash);
-          dispatch(transact(storedTransaction.payload, storedTransaction.signer, storedTransaction.onSent, storedTransaction.onSuccess, storedTransaction.onFailed));
+          dispatch(transact(storedTransaction.payload, (storedTransaction.meta || {}).signer, (storedTransaction.meta || {}).accountType, storedTransaction.onSent, storedTransaction.onSuccess, storedTransaction.onFailed));
         }
 
       // non-null transaction: transaction still alive and kicking!
@@ -35009,7 +35006,7 @@ var RPCError = require("../errors/rpc-error");
 var isFunction = require("../utils/is-function");
 var errors = require("../errors/codes");
 
-function verifyTxSubmitted(payload, txHash, callReturn, privateKeyOrSigner, onSent, onSuccess, onFailed, callback) {
+function verifyTxSubmitted(payload, txHash, callReturn, privateKeyOrSigner, accountType, onSent, onSuccess, onFailed, callback) {
   return function (dispatch, getState) {
     if (!payload || txHash == null) {
       return callback(errors.TRANSACTION_FAILED);
@@ -35023,7 +35020,10 @@ function verifyTxSubmitted(payload, txHash, callReturn, privateKeyOrSigner, onSe
         hash: txHash,
         payload: payload,
         tx: { callReturn: callReturn },
-        signer: privateKeyOrSigner,
+        meta: {
+          signer: privateKeyOrSigner,
+          accountType: accountType
+        },
         onSent: onSent,
         onSuccess: onSuccess,
         onFailed: onFailed,
@@ -35520,7 +35520,7 @@ IpcTransport.prototype.submitRpcRequest = function (rpcJso, errorCallback) {
 
 module.exports = IpcTransport;
 
-},{"./abstract-transport.js":343,"net":199,"oboe":444}],348:[function(require,module,exports){
+},{"./abstract-transport.js":343,"net":199,"oboe":438}],348:[function(require,module,exports){
 "use strict";
 
 var AbstractTransport = require("./abstract-transport.js");
@@ -35853,7 +35853,7 @@ module.exports = function (str) {
   return false;
 };
 
-},{"speedomatic":537}],355:[function(require,module,exports){
+},{"speedomatic":531}],355:[function(require,module,exports){
 "use strict";
 
 var isNotNull = function (value) {
@@ -35919,7 +35919,7 @@ module.exports = function (data, encoding, callback) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../utils/is-function":353,"buffer":202,"keccak/js":410,"speedomatic":537}],361:[function(require,module,exports){
+},{"../utils/is-function":353,"buffer":202,"keccak/js":410,"speedomatic":531}],361:[function(require,module,exports){
 "use strict";
 
 var validateAddress = function (address) {
@@ -36264,7 +36264,7 @@ function resendRawTransaction(transaction, privateKey, gasPrice, gasLimit, callb
 
 module.exports = resendRawTransaction;
 
-},{"../raw-transactions/sign-raw-transaction-with-key":305,"../wrappers/eth":369,"clone":204,"speedomatic":537}],378:[function(require,module,exports){
+},{"../raw-transactions/sign-raw-transaction-with-key":305,"../wrappers/eth":369,"clone":204,"speedomatic":531}],378:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -36282,7 +36282,7 @@ function resendTransaction(transaction, gasPrice, gasLimit, callback) {
 
 module.exports = resendTransaction;
 
-},{"../wrappers/eth":369,"clone":204,"speedomatic":537}],379:[function(require,module,exports){
+},{"../wrappers/eth":369,"clone":204,"speedomatic":531}],379:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -36312,7 +36312,7 @@ function sendEther(to, value, from, onSent, onSuccess, onFailed) {
 
 module.exports = sendEther;
 
-},{"../transact/transact":334,"../utils/is-object":357,"speedomatic":537}],380:[function(require,module,exports){
+},{"../transact/transact":334,"../utils/is-object":357,"speedomatic":531}],380:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -36332,7 +36332,7 @@ function setCoinbase(callback) {
 
 module.exports = setCoinbase;
 
-},{"../utils/is-function":353,"./eth":369,"speedomatic":537}],381:[function(require,module,exports){
+},{"../utils/is-function":353,"./eth":369,"speedomatic":531}],381:[function(require,module,exports){
 "use strict";
 
 var eth_gasPrice = require("./eth").gasPrice;
@@ -36736,7 +36736,7 @@ function EVP_BytesToKey (password, salt, keyBits, ivLen) {
 
 module.exports = EVP_BytesToKey
 
-},{"md5.js":439,"safe-buffer":488}],386:[function(require,module,exports){
+},{"md5.js":433,"safe-buffer":482}],386:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var Transform = require('stream').Transform
@@ -36823,7 +36823,7 @@ HashBase.prototype._digest = function () {
 module.exports = HashBase
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":202,"inherits":405,"stream":550}],387:[function(require,module,exports){
+},{"buffer":202,"inherits":405,"stream":544}],387:[function(require,module,exports){
 var hash = exports;
 
 hash.utils = require('./hash/utils');
@@ -36934,7 +36934,7 @@ BlockHash.prototype._pad = function pad() {
   return res;
 };
 
-},{"./utils":398,"minimalistic-assert":442}],389:[function(require,module,exports){
+},{"./utils":398,"minimalistic-assert":436}],389:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -36983,7 +36983,7 @@ Hmac.prototype.digest = function digest(enc) {
   return this.outer.digest(enc);
 };
 
-},{"./utils":398,"minimalistic-assert":442}],390:[function(require,module,exports){
+},{"./utils":398,"minimalistic-assert":436}],390:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -37355,7 +37355,7 @@ SHA256.prototype._digest = function digest(enc) {
     return utils.split32(this.h, 'big');
 };
 
-},{"../common":388,"../utils":398,"./common":397,"minimalistic-assert":442}],395:[function(require,module,exports){
+},{"../common":388,"../utils":398,"./common":397,"minimalistic-assert":436}],395:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -37724,7 +37724,7 @@ function g1_512_lo(xh, xl) {
   return r;
 }
 
-},{"../common":388,"../utils":398,"minimalistic-assert":442}],397:[function(require,module,exports){
+},{"../common":388,"../utils":398,"minimalistic-assert":436}],397:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -38030,7 +38030,7 @@ function shr64_lo(ah, al, num) {
 }
 exports.shr64_lo = shr64_lo;
 
-},{"inherits":405,"minimalistic-assert":442}],399:[function(require,module,exports){
+},{"inherits":405,"minimalistic-assert":436}],399:[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
@@ -38145,7 +38145,7 @@ HmacDRBG.prototype.generate = function generate(len, enc, add, addEnc) {
   return utils.encode(res, enc);
 };
 
-},{"hash.js":387,"minimalistic-assert":442,"minimalistic-crypto-utils":443}],400:[function(require,module,exports){
+},{"hash.js":387,"minimalistic-assert":436,"minimalistic-crypto-utils":437}],400:[function(require,module,exports){
 'use strict';
 
 module.exports = Response;
@@ -43911,7 +43911,7 @@ module.exports = function (KeccakState) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":202,"inherits":405,"stream":550}],413:[function(require,module,exports){
+},{"buffer":202,"inherits":405,"stream":544}],413:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var Transform = require('stream').Transform
@@ -43989,7 +43989,7 @@ module.exports = function (KeccakState) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":202,"inherits":405,"stream":550}],414:[function(require,module,exports){
+},{"buffer":202,"inherits":405,"stream":544}],414:[function(require,module,exports){
 'use strict'
 var P1600_ROUND_CONSTANTS = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649, 0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0, 2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771, 2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648, 2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648]
 
@@ -44802,7 +44802,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/scrypt":418,"_process":457,"buffer":202,"crypto":212,"fs":199,"keccak/js":410,"path":450,"secp256k1/elliptic":419,"sjcl":503,"uuid":568}],418:[function(require,module,exports){
+},{"./lib/scrypt":418,"_process":451,"buffer":202,"crypto":212,"fs":199,"keccak/js":410,"path":444,"secp256k1/elliptic":483,"sjcl":497,"uuid":562}],418:[function(require,module,exports){
 (function (process,__dirname){
 // https://github.com/tonyg/js-scrypt
 module.exports = function (requested_total_memory) {
@@ -56523,782 +56523,7 @@ module.exports = function (requested_total_memory) {
 };
 
 }).call(this,require('_process'),"/node_modules/keythereum/lib")
-},{"_process":457,"fs":199,"path":450}],419:[function(require,module,exports){
-'use strict'
-module.exports = require('./lib')(require('./lib/elliptic'))
-
-},{"./lib":423,"./lib/elliptic":422}],420:[function(require,module,exports){
-(function (Buffer){
-'use strict'
-var toString = Object.prototype.toString
-
-// TypeError
-exports.isArray = function (value, message) {
-  if (!Array.isArray(value)) throw TypeError(message)
-}
-
-exports.isBoolean = function (value, message) {
-  if (toString.call(value) !== '[object Boolean]') throw TypeError(message)
-}
-
-exports.isBuffer = function (value, message) {
-  if (!Buffer.isBuffer(value)) throw TypeError(message)
-}
-
-exports.isFunction = function (value, message) {
-  if (toString.call(value) !== '[object Function]') throw TypeError(message)
-}
-
-exports.isNumber = function (value, message) {
-  if (toString.call(value) !== '[object Number]') throw TypeError(message)
-}
-
-exports.isObject = function (value, message) {
-  if (toString.call(value) !== '[object Object]') throw TypeError(message)
-}
-
-// RangeError
-exports.isBufferLength = function (buffer, length, message) {
-  if (buffer.length !== length) throw RangeError(message)
-}
-
-exports.isBufferLength2 = function (buffer, length1, length2, message) {
-  if (buffer.length !== length1 && buffer.length !== length2) throw RangeError(message)
-}
-
-exports.isLengthGTZero = function (value, message) {
-  if (value.length === 0) throw RangeError(message)
-}
-
-exports.isNumberInInterval = function (number, x, y, message) {
-  if (number <= x || number >= y) throw RangeError(message)
-}
-
-}).call(this,{"isBuffer":require("../../../../is-buffer/index.js")})
-},{"../../../../is-buffer/index.js":406}],421:[function(require,module,exports){
-(function (Buffer){
-'use strict'
-var bip66 = require('bip66')
-
-var EC_PRIVKEY_EXPORT_DER_COMPRESSED = new Buffer([
-  // begin
-  0x30, 0x81, 0xd3, 0x02, 0x01, 0x01, 0x04, 0x20,
-  // private key
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  // middle
-  0xa0, 0x81, 0x85, 0x30, 0x81, 0x82, 0x02, 0x01, 0x01, 0x30, 0x2c, 0x06, 0x07, 0x2a, 0x86, 0x48,
-  0xcE, 0x3d, 0x01, 0x01, 0x02, 0x21, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-  0xff, 0xff, 0xfE, 0xff, 0xff, 0xfc, 0x2f, 0x30, 0x06, 0x04, 0x01, 0x00, 0x04, 0x01, 0x07, 0x04,
-  0x21, 0x02, 0x79, 0xbE, 0x66, 0x7E, 0xf9, 0xdc, 0xbb, 0xac, 0x55, 0xa0, 0x62, 0x95, 0xcE, 0x87,
-  0x0b, 0x07, 0x02, 0x9b, 0xfc, 0xdb, 0x2d, 0xcE, 0x28, 0xd9, 0x59, 0xf2, 0x81, 0x5b, 0x16, 0xf8,
-  0x17, 0x98, 0x02, 0x21, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-  0xff, 0xff, 0xff, 0xff, 0xfE, 0xba, 0xaE, 0xdc, 0xE6, 0xaf, 0x48, 0xa0, 0x3b, 0xbf, 0xd2, 0x5E,
-  0x8c, 0xd0, 0x36, 0x41, 0x41, 0x02, 0x01, 0x01, 0xa1, 0x24, 0x03, 0x22, 0x00,
-  // public key
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00
-])
-
-var EC_PRIVKEY_EXPORT_DER_UNCOMPRESSED = new Buffer([
-  // begin
-  0x30, 0x82, 0x01, 0x13, 0x02, 0x01, 0x01, 0x04, 0x20,
-  // private key
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  // middle
-  0xa0, 0x81, 0xa5, 0x30, 0x81, 0xa2, 0x02, 0x01, 0x01, 0x30, 0x2c, 0x06, 0x07, 0x2a, 0x86, 0x48,
-  0xcE, 0x3d, 0x01, 0x01, 0x02, 0x21, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-  0xff, 0xff, 0xfE, 0xff, 0xff, 0xfc, 0x2f, 0x30, 0x06, 0x04, 0x01, 0x00, 0x04, 0x01, 0x07, 0x04,
-  0x41, 0x04, 0x79, 0xbE, 0x66, 0x7E, 0xf9, 0xdc, 0xbb, 0xac, 0x55, 0xa0, 0x62, 0x95, 0xcE, 0x87,
-  0x0b, 0x07, 0x02, 0x9b, 0xfc, 0xdb, 0x2d, 0xcE, 0x28, 0xd9, 0x59, 0xf2, 0x81, 0x5b, 0x16, 0xf8,
-  0x17, 0x98, 0x48, 0x3a, 0xda, 0x77, 0x26, 0xa3, 0xc4, 0x65, 0x5d, 0xa4, 0xfb, 0xfc, 0x0E, 0x11,
-  0x08, 0xa8, 0xfd, 0x17, 0xb4, 0x48, 0xa6, 0x85, 0x54, 0x19, 0x9c, 0x47, 0xd0, 0x8f, 0xfb, 0x10,
-  0xd4, 0xb8, 0x02, 0x21, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-  0xff, 0xff, 0xff, 0xff, 0xfE, 0xba, 0xaE, 0xdc, 0xE6, 0xaf, 0x48, 0xa0, 0x3b, 0xbf, 0xd2, 0x5E,
-  0x8c, 0xd0, 0x36, 0x41, 0x41, 0x02, 0x01, 0x01, 0xa1, 0x44, 0x03, 0x42, 0x00,
-  // public key
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00
-])
-
-var ZERO_BUFFER_32 = new Buffer([
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-])
-
-exports.privateKeyExport = function (privateKey, publicKey, compressed) {
-  var result = new Buffer(compressed ? EC_PRIVKEY_EXPORT_DER_COMPRESSED : EC_PRIVKEY_EXPORT_DER_UNCOMPRESSED)
-  privateKey.copy(result, compressed ? 8 : 9)
-  publicKey.copy(result, compressed ? 181 : 214)
-  return result
-}
-
-exports.privateKeyImport = function (privateKey) {
-  var length = privateKey.length
-
-  // sequence header
-  var index = 0
-  if (length < index + 1 || privateKey[index] !== 0x30) return
-  index += 1
-
-  // sequence length constructor
-  if (length < index + 1 || !(privateKey[index] & 0x80)) return
-
-  var lenb = privateKey[index] & 0x7f
-  index += 1
-  if (lenb < 1 || lenb > 2) return
-  if (length < index + lenb) return
-
-  // sequence length
-  var len = privateKey[index + lenb - 1] | (lenb > 1 ? privateKey[index + lenb - 2] << 8 : 0)
-  index += lenb
-  if (length < index + len) return
-
-  // sequence element 0: version number (=1)
-  if (length < index + 3 ||
-      privateKey[index] !== 0x02 ||
-      privateKey[index + 1] !== 0x01 ||
-      privateKey[index + 2] !== 0x01) {
-    return
-  }
-  index += 3
-
-  // sequence element 1: octet string, up to 32 bytes
-  if (length < index + 2 ||
-      privateKey[index] !== 0x04 ||
-      privateKey[index + 1] > 0x20 ||
-      length < index + 2 + privateKey[index + 1]) {
-    return
-  }
-
-  return privateKey.slice(index + 2, index + 2 + privateKey[index + 1])
-}
-
-exports.signatureExport = function (sigObj) {
-  var r = Buffer.concat([new Buffer([0]), sigObj.r])
-  for (var lenR = 33, posR = 0; lenR > 1 && r[posR] === 0x00 && !(r[posR + 1] & 0x80); --lenR, ++posR);
-
-  var s = Buffer.concat([new Buffer([0]), sigObj.s])
-  for (var lenS = 33, posS = 0; lenS > 1 && s[posS] === 0x00 && !(s[posS + 1] & 0x80); --lenS, ++posS);
-
-  return bip66.encode(r.slice(posR), s.slice(posS))
-}
-
-exports.signatureImport = function (sig) {
-  var r = new Buffer(ZERO_BUFFER_32)
-  var s = new Buffer(ZERO_BUFFER_32)
-
-  try {
-    var sigObj = bip66.decode(sig)
-    if (sigObj.r.length === 33 && sigObj.r[0] === 0x00) sigObj.r = sigObj.r.slice(1)
-    if (sigObj.r.length > 32) throw new Error('R length is too long')
-    if (sigObj.s.length === 33 && sigObj.s[0] === 0x00) sigObj.s = sigObj.s.slice(1)
-    if (sigObj.s.length > 32) throw new Error('S length is too long')
-  } catch (err) {
-    return
-  }
-
-  sigObj.r.copy(r, 32 - sigObj.r.length)
-  sigObj.s.copy(s, 32 - sigObj.s.length)
-
-  return { r: r, s: s }
-}
-
-exports.signatureImportLax = function (sig) {
-  var r = new Buffer(ZERO_BUFFER_32)
-  var s = new Buffer(ZERO_BUFFER_32)
-
-  var length = sig.length
-  var index = 0
-
-  // sequence tag byte
-  if (sig[index++] !== 0x30) return
-
-  // sequence length byte
-  var lenbyte = sig[index++]
-  if (lenbyte & 0x80) {
-    index += lenbyte - 0x80
-    if (index > length) return
-  }
-
-  // sequence tag byte for r
-  if (sig[index++] !== 0x02) return
-
-  // length for r
-  var rlen = sig[index++]
-  if (rlen & 0x80) {
-    lenbyte = rlen - 0x80
-    if (index + lenbyte > length) return
-    for (; lenbyte > 0 && sig[index] === 0x00; index += 1, lenbyte -= 1);
-    for (rlen = 0; lenbyte > 0; index += 1, lenbyte -= 1) rlen = (rlen << 8) + sig[index]
-  }
-  if (rlen > length - index) return
-  var rindex = index
-  index += rlen
-
-  // sequence tag byte for s
-  if (sig[index++] !== 0x02) return
-
-  // length for s
-  var slen = sig[index++]
-  if (slen & 0x80) {
-    lenbyte = slen - 0x80
-    if (index + lenbyte > length) return
-    for (; lenbyte > 0 && sig[index] === 0x00; index += 1, lenbyte -= 1);
-    for (slen = 0; lenbyte > 0; index += 1, lenbyte -= 1) slen = (slen << 8) + sig[index]
-  }
-  if (slen > length - index) return
-  var sindex = index
-  index += slen
-
-  // ignore leading zeros in r
-  for (; rlen > 0 && sig[rindex] === 0x00; rlen -= 1, rindex += 1);
-  // copy r value
-  if (rlen > 32) return
-  var rvalue = sig.slice(rindex, rindex + rlen)
-  rvalue.copy(r, 32 - rvalue.length)
-
-  // ignore leading zeros in s
-  for (; slen > 0 && sig[sindex] === 0x00; slen -= 1, sindex += 1);
-  // copy s value
-  if (slen > 32) return
-  var svalue = sig.slice(sindex, sindex + slen)
-  svalue.copy(s, 32 - svalue.length)
-
-  return { r: r, s: s }
-}
-
-}).call(this,require("buffer").Buffer)
-},{"bip66":167,"buffer":202}],422:[function(require,module,exports){
-(function (Buffer){
-'use strict'
-var createHash = require('create-hash')
-var BN = require('bn.js')
-var EC = require('elliptic').ec
-
-var messages = require('../messages.json')
-
-var ec = new EC('secp256k1')
-var ecparams = ec.curve
-
-function loadCompressedPublicKey (first, xBuffer) {
-  var x = new BN(xBuffer)
-
-  // overflow
-  if (x.cmp(ecparams.p) >= 0) return null
-  x = x.toRed(ecparams.red)
-
-  // compute corresponding Y
-  var y = x.redSqr().redIMul(x).redIAdd(ecparams.b).redSqrt()
-  if ((first === 0x03) !== y.isOdd()) y = y.redNeg()
-
-  return ec.keyPair({ pub: { x: x, y: y } })
-}
-
-function loadUncompressedPublicKey (first, xBuffer, yBuffer) {
-  var x = new BN(xBuffer)
-  var y = new BN(yBuffer)
-
-  // overflow
-  if (x.cmp(ecparams.p) >= 0 || y.cmp(ecparams.p) >= 0) return null
-
-  x = x.toRed(ecparams.red)
-  y = y.toRed(ecparams.red)
-
-  // is odd flag
-  if ((first === 0x06 || first === 0x07) && y.isOdd() !== (first === 0x07)) return null
-
-  // x*x*x + b = y*y
-  var x3 = x.redSqr().redIMul(x)
-  if (!y.redSqr().redISub(x3.redIAdd(ecparams.b)).isZero()) return null
-
-  return ec.keyPair({ pub: { x: x, y: y } })
-}
-
-function loadPublicKey (publicKey) {
-  var first = publicKey[0]
-  switch (first) {
-    case 0x02:
-    case 0x03:
-      if (publicKey.length !== 33) return null
-      return loadCompressedPublicKey(first, publicKey.slice(1, 33))
-    case 0x04:
-    case 0x06:
-    case 0x07:
-      if (publicKey.length !== 65) return null
-      return loadUncompressedPublicKey(first, publicKey.slice(1, 33), publicKey.slice(33, 65))
-    default:
-      return null
-  }
-}
-
-exports.privateKeyVerify = function (privateKey) {
-  var bn = new BN(privateKey)
-  return bn.cmp(ecparams.n) < 0 && !bn.isZero()
-}
-
-exports.privateKeyExport = function (privateKey, compressed) {
-  var d = new BN(privateKey)
-  if (d.cmp(ecparams.n) >= 0 || d.isZero()) throw new Error(messages.EC_PRIVATE_KEY_EXPORT_DER_FAIL)
-
-  return new Buffer(ec.keyFromPrivate(privateKey).getPublic(compressed, true))
-}
-
-exports.privateKeyTweakAdd = function (privateKey, tweak) {
-  var bn = new BN(tweak)
-  if (bn.cmp(ecparams.n) >= 0) throw new Error(messages.EC_PRIVATE_KEY_TWEAK_ADD_FAIL)
-
-  bn.iadd(new BN(privateKey))
-  if (bn.cmp(ecparams.n) >= 0) bn.isub(ecparams.n)
-  if (bn.isZero()) throw new Error(messages.EC_PRIVATE_KEY_TWEAK_ADD_FAIL)
-
-  return bn.toArrayLike(Buffer, 'be', 32)
-}
-
-exports.privateKeyTweakMul = function (privateKey, tweak) {
-  var bn = new BN(tweak)
-  if (bn.cmp(ecparams.n) >= 0 || bn.isZero()) throw new Error(messages.EC_PRIVATE_KEY_TWEAK_MUL_FAIL)
-
-  bn.imul(new BN(privateKey))
-  if (bn.cmp(ecparams.n)) bn = bn.umod(ecparams.n)
-
-  return bn.toArrayLike(Buffer, 'be', 32)
-}
-
-exports.publicKeyCreate = function (privateKey, compressed) {
-  var d = new BN(privateKey)
-  if (d.cmp(ecparams.n) >= 0 || d.isZero()) throw new Error(messages.EC_PUBLIC_KEY_CREATE_FAIL)
-
-  return new Buffer(ec.keyFromPrivate(privateKey).getPublic(compressed, true))
-}
-
-exports.publicKeyConvert = function (publicKey, compressed) {
-  var pair = loadPublicKey(publicKey)
-  if (pair === null) throw new Error(messages.EC_PUBLIC_KEY_PARSE_FAIL)
-
-  return new Buffer(pair.getPublic(compressed, true))
-}
-
-exports.publicKeyVerify = function (publicKey) {
-  return loadPublicKey(publicKey) !== null
-}
-
-exports.publicKeyTweakAdd = function (publicKey, tweak, compressed) {
-  var pair = loadPublicKey(publicKey)
-  if (pair === null) throw new Error(messages.EC_PUBLIC_KEY_PARSE_FAIL)
-
-  tweak = new BN(tweak)
-  if (tweak.cmp(ecparams.n) >= 0) throw new Error(messages.EC_PUBLIC_KEY_TWEAK_ADD_FAIL)
-
-  return new Buffer(ecparams.g.mul(tweak).add(pair.pub).encode(true, compressed))
-}
-
-exports.publicKeyTweakMul = function (publicKey, tweak, compressed) {
-  var pair = loadPublicKey(publicKey)
-  if (pair === null) throw new Error(messages.EC_PUBLIC_KEY_PARSE_FAIL)
-
-  tweak = new BN(tweak)
-  if (tweak.cmp(ecparams.n) >= 0 || tweak.isZero()) throw new Error(messages.EC_PUBLIC_KEY_TWEAK_MUL_FAIL)
-
-  return new Buffer(pair.pub.mul(tweak).encode(true, compressed))
-}
-
-exports.publicKeyCombine = function (publicKeys, compressed) {
-  var pairs = new Array(publicKeys.length)
-  for (var i = 0; i < publicKeys.length; ++i) {
-    pairs[i] = loadPublicKey(publicKeys[i])
-    if (pairs[i] === null) throw new Error(messages.EC_PUBLIC_KEY_PARSE_FAIL)
-  }
-
-  var point = pairs[0].pub
-  for (var j = 1; j < pairs.length; ++j) point = point.add(pairs[j].pub)
-  if (point.isInfinity()) throw new Error(messages.EC_PUBLIC_KEY_COMBINE_FAIL)
-
-  return new Buffer(point.encode(true, compressed))
-}
-
-exports.signatureNormalize = function (signature) {
-  var r = new BN(signature.slice(0, 32))
-  var s = new BN(signature.slice(32, 64))
-  if (r.cmp(ecparams.n) >= 0 || s.cmp(ecparams.n) >= 0) throw new Error(messages.ECDSA_SIGNATURE_PARSE_FAIL)
-
-  var result = new Buffer(signature)
-  if (s.cmp(ec.nh) === 1) ecparams.n.sub(s).toArrayLike(Buffer, 'be', 32).copy(result, 32)
-
-  return result
-}
-
-exports.signatureExport = function (signature) {
-  var r = signature.slice(0, 32)
-  var s = signature.slice(32, 64)
-  if (new BN(r).cmp(ecparams.n) >= 0 || new BN(s).cmp(ecparams.n) >= 0) throw new Error(messages.ECDSA_SIGNATURE_PARSE_FAIL)
-
-  return { r: r, s: s }
-}
-
-exports.signatureImport = function (sigObj) {
-  var r = new BN(sigObj.r)
-  if (r.cmp(ecparams.n) >= 0) r = new BN(0)
-
-  var s = new BN(sigObj.s)
-  if (s.cmp(ecparams.n) >= 0) s = new BN(0)
-
-  return Buffer.concat([
-    r.toArrayLike(Buffer, 'be', 32),
-    s.toArrayLike(Buffer, 'be', 32)
-  ])
-}
-
-exports.sign = function (message, privateKey, noncefn, data) {
-  if (typeof noncefn === 'function') {
-    var getNonce = noncefn
-    noncefn = function (counter) {
-      var nonce = getNonce(message, privateKey, null, data, counter)
-      if (!Buffer.isBuffer(nonce) || nonce.length !== 32) throw new Error(messages.ECDSA_SIGN_FAIL)
-
-      return new BN(nonce)
-    }
-  }
-
-  var d = new BN(privateKey)
-  if (d.cmp(ecparams.n) >= 0 || d.isZero()) throw new Error(messages.ECDSA_SIGN_FAIL)
-
-  var result = ec.sign(message, privateKey, { canonical: true, k: noncefn, pers: data })
-  return {
-    signature: Buffer.concat([
-      result.r.toArrayLike(Buffer, 'be', 32),
-      result.s.toArrayLike(Buffer, 'be', 32)
-    ]),
-    recovery: result.recoveryParam
-  }
-}
-
-exports.verify = function (message, signature, publicKey) {
-  var sigObj = {r: signature.slice(0, 32), s: signature.slice(32, 64)}
-
-  var sigr = new BN(sigObj.r)
-  var sigs = new BN(sigObj.s)
-  if (sigr.cmp(ecparams.n) >= 0 || sigs.cmp(ecparams.n) >= 0) throw new Error(messages.ECDSA_SIGNATURE_PARSE_FAIL)
-  if (sigs.cmp(ec.nh) === 1 || sigr.isZero() || sigs.isZero()) return false
-
-  var pair = loadPublicKey(publicKey)
-  if (pair === null) throw new Error(messages.EC_PUBLIC_KEY_PARSE_FAIL)
-
-  return ec.verify(message, sigObj, {x: pair.pub.x, y: pair.pub.y})
-}
-
-exports.recover = function (message, signature, recovery, compressed) {
-  var sigObj = {r: signature.slice(0, 32), s: signature.slice(32, 64)}
-
-  var sigr = new BN(sigObj.r)
-  var sigs = new BN(sigObj.s)
-  if (sigr.cmp(ecparams.n) >= 0 || sigs.cmp(ecparams.n) >= 0) throw new Error(messages.ECDSA_SIGNATURE_PARSE_FAIL)
-
-  try {
-    if (sigr.isZero() || sigs.isZero()) throw new Error()
-
-    var point = ec.recoverPubKey(message, sigObj, recovery)
-    return new Buffer(point.encode(true, compressed))
-  } catch (err) {
-    throw new Error(messages.ECDSA_RECOVER_FAIL)
-  }
-}
-
-exports.ecdh = function (publicKey, privateKey) {
-  var shared = exports.ecdhUnsafe(publicKey, privateKey, true)
-  return createHash('sha256').update(shared).digest()
-}
-
-exports.ecdhUnsafe = function (publicKey, privateKey, compressed) {
-  var pair = loadPublicKey(publicKey)
-  if (pair === null) throw new Error(messages.EC_PUBLIC_KEY_PARSE_FAIL)
-
-  var scalar = new BN(privateKey)
-  if (scalar.cmp(ecparams.n) >= 0 || scalar.isZero()) throw new Error(messages.ECDH_FAIL)
-
-  return new Buffer(pair.pub.mul(scalar).encode(true, compressed))
-}
-
-}).call(this,require("buffer").Buffer)
-},{"../messages.json":424,"bn.js":168,"buffer":202,"create-hash":207,"elliptic":223}],423:[function(require,module,exports){
-'use strict'
-var assert = require('./assert')
-var der = require('./der')
-var messages = require('./messages.json')
-
-function initCompressedValue (value, defaultValue) {
-  if (value === undefined) return defaultValue
-
-  assert.isBoolean(value, messages.COMPRESSED_TYPE_INVALID)
-  return value
-}
-
-module.exports = function (secp256k1) {
-  return {
-    privateKeyVerify: function (privateKey) {
-      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
-      return privateKey.length === 32 && secp256k1.privateKeyVerify(privateKey)
-    },
-
-    privateKeyExport: function (privateKey, compressed) {
-      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
-      assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
-
-      compressed = initCompressedValue(compressed, true)
-      var publicKey = secp256k1.privateKeyExport(privateKey, compressed)
-
-      return der.privateKeyExport(privateKey, publicKey, compressed)
-    },
-
-    privateKeyImport: function (privateKey) {
-      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
-
-      privateKey = der.privateKeyImport(privateKey)
-      if (privateKey && privateKey.length === 32 && secp256k1.privateKeyVerify(privateKey)) return privateKey
-
-      throw new Error(messages.EC_PRIVATE_KEY_IMPORT_DER_FAIL)
-    },
-
-    privateKeyTweakAdd: function (privateKey, tweak) {
-      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
-      assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
-
-      assert.isBuffer(tweak, messages.TWEAK_TYPE_INVALID)
-      assert.isBufferLength(tweak, 32, messages.TWEAK_LENGTH_INVALID)
-
-      return secp256k1.privateKeyTweakAdd(privateKey, tweak)
-    },
-
-    privateKeyTweakMul: function (privateKey, tweak) {
-      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
-      assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
-
-      assert.isBuffer(tweak, messages.TWEAK_TYPE_INVALID)
-      assert.isBufferLength(tweak, 32, messages.TWEAK_LENGTH_INVALID)
-
-      return secp256k1.privateKeyTweakMul(privateKey, tweak)
-    },
-
-    publicKeyCreate: function (privateKey, compressed) {
-      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
-      assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
-
-      compressed = initCompressedValue(compressed, true)
-
-      return secp256k1.publicKeyCreate(privateKey, compressed)
-    },
-
-    publicKeyConvert: function (publicKey, compressed) {
-      assert.isBuffer(publicKey, messages.EC_PUBLIC_KEY_TYPE_INVALID)
-      assert.isBufferLength2(publicKey, 33, 65, messages.EC_PUBLIC_KEY_LENGTH_INVALID)
-
-      compressed = initCompressedValue(compressed, true)
-
-      return secp256k1.publicKeyConvert(publicKey, compressed)
-    },
-
-    publicKeyVerify: function (publicKey) {
-      assert.isBuffer(publicKey, messages.EC_PUBLIC_KEY_TYPE_INVALID)
-      return secp256k1.publicKeyVerify(publicKey)
-    },
-
-    publicKeyTweakAdd: function (publicKey, tweak, compressed) {
-      assert.isBuffer(publicKey, messages.EC_PUBLIC_KEY_TYPE_INVALID)
-      assert.isBufferLength2(publicKey, 33, 65, messages.EC_PUBLIC_KEY_LENGTH_INVALID)
-
-      assert.isBuffer(tweak, messages.TWEAK_TYPE_INVALID)
-      assert.isBufferLength(tweak, 32, messages.TWEAK_LENGTH_INVALID)
-
-      compressed = initCompressedValue(compressed, true)
-
-      return secp256k1.publicKeyTweakAdd(publicKey, tweak, compressed)
-    },
-
-    publicKeyTweakMul: function (publicKey, tweak, compressed) {
-      assert.isBuffer(publicKey, messages.EC_PUBLIC_KEY_TYPE_INVALID)
-      assert.isBufferLength2(publicKey, 33, 65, messages.EC_PUBLIC_KEY_LENGTH_INVALID)
-
-      assert.isBuffer(tweak, messages.TWEAK_TYPE_INVALID)
-      assert.isBufferLength(tweak, 32, messages.TWEAK_LENGTH_INVALID)
-
-      compressed = initCompressedValue(compressed, true)
-
-      return secp256k1.publicKeyTweakMul(publicKey, tweak, compressed)
-    },
-
-    publicKeyCombine: function (publicKeys, compressed) {
-      assert.isArray(publicKeys, messages.EC_PUBLIC_KEYS_TYPE_INVALID)
-      assert.isLengthGTZero(publicKeys, messages.EC_PUBLIC_KEYS_LENGTH_INVALID)
-      for (var i = 0; i < publicKeys.length; ++i) {
-        assert.isBuffer(publicKeys[i], messages.EC_PUBLIC_KEY_TYPE_INVALID)
-        assert.isBufferLength2(publicKeys[i], 33, 65, messages.EC_PUBLIC_KEY_LENGTH_INVALID)
-      }
-
-      compressed = initCompressedValue(compressed, true)
-
-      return secp256k1.publicKeyCombine(publicKeys, compressed)
-    },
-
-    signatureNormalize: function (signature) {
-      assert.isBuffer(signature, messages.ECDSA_SIGNATURE_TYPE_INVALID)
-      assert.isBufferLength(signature, 64, messages.ECDSA_SIGNATURE_LENGTH_INVALID)
-
-      return secp256k1.signatureNormalize(signature)
-    },
-
-    signatureExport: function (signature) {
-      assert.isBuffer(signature, messages.ECDSA_SIGNATURE_TYPE_INVALID)
-      assert.isBufferLength(signature, 64, messages.ECDSA_SIGNATURE_LENGTH_INVALID)
-
-      var sigObj = secp256k1.signatureExport(signature)
-      return der.signatureExport(sigObj)
-    },
-
-    signatureImport: function (sig) {
-      assert.isBuffer(sig, messages.ECDSA_SIGNATURE_TYPE_INVALID)
-      assert.isLengthGTZero(sig, messages.ECDSA_SIGNATURE_LENGTH_INVALID)
-
-      var sigObj = der.signatureImport(sig)
-      if (sigObj) return secp256k1.signatureImport(sigObj)
-
-      throw new Error(messages.ECDSA_SIGNATURE_PARSE_DER_FAIL)
-    },
-
-    signatureImportLax: function (sig) {
-      assert.isBuffer(sig, messages.ECDSA_SIGNATURE_TYPE_INVALID)
-      assert.isLengthGTZero(sig, messages.ECDSA_SIGNATURE_LENGTH_INVALID)
-
-      var sigObj = der.signatureImportLax(sig)
-      if (sigObj) return secp256k1.signatureImport(sigObj)
-
-      throw new Error(messages.ECDSA_SIGNATURE_PARSE_DER_FAIL)
-    },
-
-    sign: function (message, privateKey, options) {
-      assert.isBuffer(message, messages.MSG32_TYPE_INVALID)
-      assert.isBufferLength(message, 32, messages.MSG32_LENGTH_INVALID)
-
-      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
-      assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
-
-      var data = null
-      var noncefn = null
-      if (options !== undefined) {
-        assert.isObject(options, messages.OPTIONS_TYPE_INVALID)
-
-        if (options.data !== undefined) {
-          assert.isBuffer(options.data, messages.OPTIONS_DATA_TYPE_INVALID)
-          assert.isBufferLength(options.data, 32, messages.OPTIONS_DATA_LENGTH_INVALID)
-          data = options.data
-        }
-
-        if (options.noncefn !== undefined) {
-          assert.isFunction(options.noncefn, messages.OPTIONS_NONCEFN_TYPE_INVALID)
-          noncefn = options.noncefn
-        }
-      }
-
-      return secp256k1.sign(message, privateKey, noncefn, data)
-    },
-
-    verify: function (message, signature, publicKey) {
-      assert.isBuffer(message, messages.MSG32_TYPE_INVALID)
-      assert.isBufferLength(message, 32, messages.MSG32_LENGTH_INVALID)
-
-      assert.isBuffer(signature, messages.ECDSA_SIGNATURE_TYPE_INVALID)
-      assert.isBufferLength(signature, 64, messages.ECDSA_SIGNATURE_LENGTH_INVALID)
-
-      assert.isBuffer(publicKey, messages.EC_PUBLIC_KEY_TYPE_INVALID)
-      assert.isBufferLength2(publicKey, 33, 65, messages.EC_PUBLIC_KEY_LENGTH_INVALID)
-
-      return secp256k1.verify(message, signature, publicKey)
-    },
-
-    recover: function (message, signature, recovery, compressed) {
-      assert.isBuffer(message, messages.MSG32_TYPE_INVALID)
-      assert.isBufferLength(message, 32, messages.MSG32_LENGTH_INVALID)
-
-      assert.isBuffer(signature, messages.ECDSA_SIGNATURE_TYPE_INVALID)
-      assert.isBufferLength(signature, 64, messages.ECDSA_SIGNATURE_LENGTH_INVALID)
-
-      assert.isNumber(recovery, messages.RECOVERY_ID_TYPE_INVALID)
-      assert.isNumberInInterval(recovery, -1, 4, messages.RECOVERY_ID_VALUE_INVALID)
-
-      compressed = initCompressedValue(compressed, true)
-
-      return secp256k1.recover(message, signature, recovery, compressed)
-    },
-
-    ecdh: function (publicKey, privateKey) {
-      assert.isBuffer(publicKey, messages.EC_PUBLIC_KEY_TYPE_INVALID)
-      assert.isBufferLength2(publicKey, 33, 65, messages.EC_PUBLIC_KEY_LENGTH_INVALID)
-
-      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
-      assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
-
-      return secp256k1.ecdh(publicKey, privateKey)
-    },
-
-    ecdhUnsafe: function (publicKey, privateKey, compressed) {
-      assert.isBuffer(publicKey, messages.EC_PUBLIC_KEY_TYPE_INVALID)
-      assert.isBufferLength2(publicKey, 33, 65, messages.EC_PUBLIC_KEY_LENGTH_INVALID)
-
-      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
-      assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
-
-      compressed = initCompressedValue(compressed, true)
-
-      return secp256k1.ecdhUnsafe(publicKey, privateKey, compressed)
-    }
-  }
-}
-
-},{"./assert":420,"./der":421,"./messages.json":424}],424:[function(require,module,exports){
-module.exports={
-  "COMPRESSED_TYPE_INVALID": "compressed should be a boolean",
-  "EC_PRIVATE_KEY_TYPE_INVALID": "private key should be a Buffer",
-  "EC_PRIVATE_KEY_LENGTH_INVALID": "private key length is invalid",
-  "EC_PRIVATE_KEY_TWEAK_ADD_FAIL": "tweak out of range or resulting private key is invalid",
-  "EC_PRIVATE_KEY_TWEAK_MUL_FAIL": "tweak out of range",
-  "EC_PRIVATE_KEY_EXPORT_DER_FAIL": "couldn't export to DER format",
-  "EC_PRIVATE_KEY_IMPORT_DER_FAIL": "couldn't import from DER format",
-  "EC_PUBLIC_KEYS_TYPE_INVALID": "public keys should be an Array",
-  "EC_PUBLIC_KEYS_LENGTH_INVALID": "public keys Array should have at least 1 element",
-  "EC_PUBLIC_KEY_TYPE_INVALID": "public key should be a Buffer",
-  "EC_PUBLIC_KEY_LENGTH_INVALID": "public key length is invalid",
-  "EC_PUBLIC_KEY_PARSE_FAIL": "the public key could not be parsed or is invalid",
-  "EC_PUBLIC_KEY_CREATE_FAIL": "private was invalid, try again",
-  "EC_PUBLIC_KEY_TWEAK_ADD_FAIL": "tweak out of range or resulting public key is invalid",
-  "EC_PUBLIC_KEY_TWEAK_MUL_FAIL": "tweak out of range",
-  "EC_PUBLIC_KEY_COMBINE_FAIL": "the sum of the public keys is not valid",
-  "ECDH_FAIL": "scalar was invalid (zero or overflow)",
-  "ECDSA_SIGNATURE_TYPE_INVALID": "signature should be a Buffer",
-  "ECDSA_SIGNATURE_LENGTH_INVALID": "signature length is invalid",
-  "ECDSA_SIGNATURE_PARSE_FAIL": "couldn't parse signature",
-  "ECDSA_SIGNATURE_PARSE_DER_FAIL": "couldn't parse DER signature",
-  "ECDSA_SIGNATURE_SERIALIZE_DER_FAIL": "couldn't serialize signature to DER format",
-  "ECDSA_SIGN_FAIL": "nonce generation function failed or private key is invalid",
-  "ECDSA_RECOVER_FAIL": "couldn't recover public key from signature",
-  "MSG32_TYPE_INVALID": "message should be a Buffer",
-  "MSG32_LENGTH_INVALID": "message length is invalid",
-  "OPTIONS_TYPE_INVALID": "options should be an Object",
-  "OPTIONS_DATA_TYPE_INVALID": "options.data should be a Buffer",
-  "OPTIONS_DATA_LENGTH_INVALID": "options.data length is invalid",
-  "OPTIONS_NONCEFN_TYPE_INVALID": "options.noncefn should be a Function",
-  "RECOVERY_ID_TYPE_INVALID": "recovery should be a Number",
-  "RECOVERY_ID_VALUE_INVALID": "recovery should have value between -1 and 4",
-  "TWEAK_TYPE_INVALID": "tweak should be a Buffer",
-  "TWEAK_LENGTH_INVALID": "tweak length is invalid"
-}
-
-},{}],425:[function(require,module,exports){
+},{"_process":451,"fs":199,"path":444}],419:[function(require,module,exports){
 /**
  * lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -57937,7 +57162,7 @@ function keys(object) {
 
 module.exports = assign;
 
-},{}],426:[function(require,module,exports){
+},{}],420:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -58872,7 +58097,7 @@ function get(object, path, defaultValue) {
 module.exports = get;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],427:[function(require,module,exports){
+},{}],421:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -59866,7 +59091,7 @@ function set(object, path, value) {
 module.exports = set;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],428:[function(require,module,exports){
+},{}],422:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -60879,7 +60104,7 @@ function unset(object, path) {
 module.exports = unset;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],429:[function(require,module,exports){
+},{}],423:[function(require,module,exports){
 var root = require('./_root');
 
 /** Built-in value references. */
@@ -60887,7 +60112,7 @@ var Symbol = root.Symbol;
 
 module.exports = Symbol;
 
-},{"./_root":436}],430:[function(require,module,exports){
+},{"./_root":430}],424:[function(require,module,exports){
 var Symbol = require('./_Symbol'),
     getRawTag = require('./_getRawTag'),
     objectToString = require('./_objectToString');
@@ -60917,7 +60142,7 @@ function baseGetTag(value) {
 
 module.exports = baseGetTag;
 
-},{"./_Symbol":429,"./_getRawTag":433,"./_objectToString":434}],431:[function(require,module,exports){
+},{"./_Symbol":423,"./_getRawTag":427,"./_objectToString":428}],425:[function(require,module,exports){
 (function (global){
 /** Detect free variable `global` from Node.js. */
 var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
@@ -60925,7 +60150,7 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 module.exports = freeGlobal;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],432:[function(require,module,exports){
+},{}],426:[function(require,module,exports){
 var overArg = require('./_overArg');
 
 /** Built-in value references. */
@@ -60933,7 +60158,7 @@ var getPrototype = overArg(Object.getPrototypeOf, Object);
 
 module.exports = getPrototype;
 
-},{"./_overArg":435}],433:[function(require,module,exports){
+},{"./_overArg":429}],427:[function(require,module,exports){
 var Symbol = require('./_Symbol');
 
 /** Used for built-in method references. */
@@ -60981,7 +60206,7 @@ function getRawTag(value) {
 
 module.exports = getRawTag;
 
-},{"./_Symbol":429}],434:[function(require,module,exports){
+},{"./_Symbol":423}],428:[function(require,module,exports){
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
 
@@ -61005,7 +60230,7 @@ function objectToString(value) {
 
 module.exports = objectToString;
 
-},{}],435:[function(require,module,exports){
+},{}],429:[function(require,module,exports){
 /**
  * Creates a unary function that invokes `func` with its argument transformed.
  *
@@ -61022,7 +60247,7 @@ function overArg(func, transform) {
 
 module.exports = overArg;
 
-},{}],436:[function(require,module,exports){
+},{}],430:[function(require,module,exports){
 var freeGlobal = require('./_freeGlobal');
 
 /** Detect free variable `self`. */
@@ -61033,7 +60258,7 @@ var root = freeGlobal || freeSelf || Function('return this')();
 
 module.exports = root;
 
-},{"./_freeGlobal":431}],437:[function(require,module,exports){
+},{"./_freeGlobal":425}],431:[function(require,module,exports){
 /**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
  * and has a `typeof` result of "object".
@@ -61064,7 +60289,7 @@ function isObjectLike(value) {
 
 module.exports = isObjectLike;
 
-},{}],438:[function(require,module,exports){
+},{}],432:[function(require,module,exports){
 var baseGetTag = require('./_baseGetTag'),
     getPrototype = require('./_getPrototype'),
     isObjectLike = require('./isObjectLike');
@@ -61128,7 +60353,7 @@ function isPlainObject(value) {
 
 module.exports = isPlainObject;
 
-},{"./_baseGetTag":430,"./_getPrototype":432,"./isObjectLike":437}],439:[function(require,module,exports){
+},{"./_baseGetTag":424,"./_getPrototype":426,"./isObjectLike":431}],433:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var inherits = require('inherits')
@@ -61277,7 +60502,7 @@ function fnI (a, b, c, d, m, k, s) {
 module.exports = MD5
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":202,"hash-base":440,"inherits":405}],440:[function(require,module,exports){
+},{"buffer":202,"hash-base":434,"inherits":405}],434:[function(require,module,exports){
 'use strict'
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('stream').Transform
@@ -61374,7 +60599,7 @@ HashBase.prototype._digest = function () {
 
 module.exports = HashBase
 
-},{"inherits":405,"safe-buffer":488,"stream":550}],441:[function(require,module,exports){
+},{"inherits":405,"safe-buffer":482,"stream":544}],435:[function(require,module,exports){
 var bn = require('bn.js');
 var brorand = require('brorand');
 
@@ -61491,7 +60716,7 @@ MillerRabin.prototype.getDivisor = function getDivisor(n, k) {
   return false;
 };
 
-},{"bn.js":168,"brorand":169}],442:[function(require,module,exports){
+},{"bn.js":168,"brorand":169}],436:[function(require,module,exports){
 module.exports = assert;
 
 function assert(val, msg) {
@@ -61504,7 +60729,7 @@ assert.equal = function assertEqual(l, r, msg) {
     throw new Error(msg || ('Assertion failed: ' + l + ' != ' + r));
 };
 
-},{}],443:[function(require,module,exports){
+},{}],437:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -61564,7 +60789,7 @@ utils.encode = function encode(arr, enc) {
     return arr;
 };
 
-},{}],444:[function(require,module,exports){
+},{}],438:[function(require,module,exports){
 // This file is the concatenation of many js files.
 // See http://github.com/jimhigson/oboe.js for the raw source
 
@@ -64268,7 +63493,7 @@ oboe.drop = function() {
       }
    }()), Object, Array, Error, JSON);
 
-},{}],445:[function(require,module,exports){
+},{}],439:[function(require,module,exports){
 module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.2": "aes-128-cbc",
 "2.16.840.1.101.3.4.1.3": "aes-128-ofb",
@@ -64282,7 +63507,7 @@ module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.43": "aes-256-ofb",
 "2.16.840.1.101.3.4.1.44": "aes-256-cfb"
 }
-},{}],446:[function(require,module,exports){
+},{}],440:[function(require,module,exports){
 // from https://github.com/indutny/self-signed/blob/gh-pages/lib/asn1.js
 // Fedor, you are amazing.
 'use strict'
@@ -64406,7 +63631,7 @@ exports.signature = asn1.define('signature', function () {
   )
 })
 
-},{"./certificate":447,"asn1.js":122}],447:[function(require,module,exports){
+},{"./certificate":441,"asn1.js":122}],441:[function(require,module,exports){
 // from https://github.com/Rantanen/node-dtls/blob/25a7dc861bda38cfeac93a723500eea4f0ac2e86/Certificate.js
 // thanks to @Rantanen
 
@@ -64496,7 +63721,7 @@ var X509Certificate = asn.define('X509Certificate', function () {
 
 module.exports = X509Certificate
 
-},{"asn1.js":122}],448:[function(require,module,exports){
+},{"asn1.js":122}],442:[function(require,module,exports){
 (function (Buffer){
 // adapted from https://github.com/apatil/pemstrip
 var findProc = /Proc-Type: 4,ENCRYPTED\n\r?DEK-Info: AES-((?:128)|(?:192)|(?:256))-CBC,([0-9A-H]+)\n\r?\n\r?([0-9A-z\n\r\+\/\=]+)\n\r?/m
@@ -64530,7 +63755,7 @@ module.exports = function (okey, password) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"browserify-aes":174,"buffer":202,"evp_bytestokey":385}],449:[function(require,module,exports){
+},{"browserify-aes":174,"buffer":202,"evp_bytestokey":385}],443:[function(require,module,exports){
 (function (Buffer){
 var asn1 = require('./asn1')
 var aesid = require('./aesid.json')
@@ -64640,7 +63865,7 @@ function decrypt (data, password) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./aesid.json":445,"./asn1":446,"./fixProc":448,"browserify-aes":174,"buffer":202,"pbkdf2":451}],450:[function(require,module,exports){
+},{"./aesid.json":439,"./asn1":440,"./fixProc":442,"browserify-aes":174,"buffer":202,"pbkdf2":445}],444:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -64868,13 +64093,13 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":457}],451:[function(require,module,exports){
+},{"_process":451}],445:[function(require,module,exports){
 
 exports.pbkdf2 = require('./lib/async')
 
 exports.pbkdf2Sync = require('./lib/sync')
 
-},{"./lib/async":452,"./lib/sync":455}],452:[function(require,module,exports){
+},{"./lib/async":446,"./lib/sync":449}],446:[function(require,module,exports){
 (function (process,global){
 var checkParameters = require('./precondition')
 var defaultEncoding = require('./default-encoding')
@@ -64976,7 +64201,7 @@ module.exports = function (password, salt, iterations, keylen, digest, callback)
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./default-encoding":453,"./precondition":454,"./sync":455,"_process":457,"safe-buffer":488}],453:[function(require,module,exports){
+},{"./default-encoding":447,"./precondition":448,"./sync":449,"_process":451,"safe-buffer":482}],447:[function(require,module,exports){
 (function (process){
 var defaultEncoding
 /* istanbul ignore next */
@@ -64990,7 +64215,7 @@ if (process.browser) {
 module.exports = defaultEncoding
 
 }).call(this,require('_process'))
-},{"_process":457}],454:[function(require,module,exports){
+},{"_process":451}],448:[function(require,module,exports){
 var MAX_ALLOC = Math.pow(2, 30) - 1 // default in iojs
 module.exports = function (iterations, keylen) {
   if (typeof iterations !== 'number') {
@@ -65010,7 +64235,7 @@ module.exports = function (iterations, keylen) {
   }
 }
 
-},{}],455:[function(require,module,exports){
+},{}],449:[function(require,module,exports){
 var md5 = require('create-hash/md5')
 var rmd160 = require('ripemd160')
 var sha = require('sha.js')
@@ -65113,7 +64338,7 @@ function pbkdf2 (password, salt, iterations, keylen, digest) {
 
 module.exports = pbkdf2
 
-},{"./default-encoding":453,"./precondition":454,"create-hash/md5":209,"ripemd160":486,"safe-buffer":488,"sha.js":496}],456:[function(require,module,exports){
+},{"./default-encoding":447,"./precondition":448,"create-hash/md5":209,"ripemd160":480,"safe-buffer":482,"sha.js":490}],450:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -65160,7 +64385,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 }
 
 }).call(this,require('_process'))
-},{"_process":457}],457:[function(require,module,exports){
+},{"_process":451}],451:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -65346,7 +64571,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],458:[function(require,module,exports){
+},{}],452:[function(require,module,exports){
 exports.publicEncrypt = require('./publicEncrypt');
 exports.privateDecrypt = require('./privateDecrypt');
 
@@ -65357,7 +64582,7 @@ exports.privateEncrypt = function privateEncrypt(key, buf) {
 exports.publicDecrypt = function publicDecrypt(key, buf) {
   return exports.privateDecrypt(key, buf, true);
 };
-},{"./privateDecrypt":460,"./publicEncrypt":461}],459:[function(require,module,exports){
+},{"./privateDecrypt":454,"./publicEncrypt":455}],453:[function(require,module,exports){
 (function (Buffer){
 var createHash = require('create-hash');
 module.exports = function (seed, len) {
@@ -65376,7 +64601,7 @@ function i2ops(c) {
   return out;
 }
 }).call(this,require("buffer").Buffer)
-},{"buffer":202,"create-hash":207}],460:[function(require,module,exports){
+},{"buffer":202,"create-hash":207}],454:[function(require,module,exports){
 (function (Buffer){
 var parseKeys = require('parse-asn1');
 var mgf = require('./mgf');
@@ -65487,7 +64712,7 @@ function compare(a, b){
   return dif;
 }
 }).call(this,require("buffer").Buffer)
-},{"./mgf":459,"./withPublic":462,"./xor":463,"bn.js":168,"browserify-rsa":191,"buffer":202,"create-hash":207,"parse-asn1":449}],461:[function(require,module,exports){
+},{"./mgf":453,"./withPublic":456,"./xor":457,"bn.js":168,"browserify-rsa":191,"buffer":202,"create-hash":207,"parse-asn1":443}],455:[function(require,module,exports){
 (function (Buffer){
 var parseKeys = require('parse-asn1');
 var randomBytes = require('randombytes');
@@ -65585,7 +64810,7 @@ function nonZero(len, crypto) {
   return out;
 }
 }).call(this,require("buffer").Buffer)
-},{"./mgf":459,"./withPublic":462,"./xor":463,"bn.js":168,"browserify-rsa":191,"buffer":202,"create-hash":207,"parse-asn1":449,"randombytes":464}],462:[function(require,module,exports){
+},{"./mgf":453,"./withPublic":456,"./xor":457,"bn.js":168,"browserify-rsa":191,"buffer":202,"create-hash":207,"parse-asn1":443,"randombytes":458}],456:[function(require,module,exports){
 (function (Buffer){
 var bn = require('bn.js');
 function withPublic(paddedMsg, key) {
@@ -65598,7 +64823,7 @@ function withPublic(paddedMsg, key) {
 
 module.exports = withPublic;
 }).call(this,require("buffer").Buffer)
-},{"bn.js":168,"buffer":202}],463:[function(require,module,exports){
+},{"bn.js":168,"buffer":202}],457:[function(require,module,exports){
 module.exports = function xor(a, b) {
   var len = a.length;
   var i = -1;
@@ -65607,7 +64832,7 @@ module.exports = function xor(a, b) {
   }
   return a
 };
-},{}],464:[function(require,module,exports){
+},{}],458:[function(require,module,exports){
 (function (process,global){
 'use strict'
 
@@ -65649,10 +64874,10 @@ function randomBytes (size, cb) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":457,"safe-buffer":488}],465:[function(require,module,exports){
+},{"_process":451,"safe-buffer":482}],459:[function(require,module,exports){
 module.exports = require('./lib/_stream_duplex.js');
 
-},{"./lib/_stream_duplex.js":466}],466:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":460}],460:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -65777,7 +65002,7 @@ function forEach(xs, f) {
     f(xs[i], i);
   }
 }
-},{"./_stream_readable":468,"./_stream_writable":470,"core-util-is":205,"inherits":405,"process-nextick-args":456}],467:[function(require,module,exports){
+},{"./_stream_readable":462,"./_stream_writable":464,"core-util-is":205,"inherits":405,"process-nextick-args":450}],461:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -65825,7 +65050,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":469,"core-util-is":205,"inherits":405}],468:[function(require,module,exports){
+},{"./_stream_transform":463,"core-util-is":205,"inherits":405}],462:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -66835,7 +66060,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":466,"./internal/streams/BufferList":471,"./internal/streams/destroy":472,"./internal/streams/stream":473,"_process":457,"core-util-is":205,"events":384,"inherits":405,"isarray":408,"process-nextick-args":456,"safe-buffer":488,"string_decoder/":551,"util":171}],469:[function(require,module,exports){
+},{"./_stream_duplex":460,"./internal/streams/BufferList":465,"./internal/streams/destroy":466,"./internal/streams/stream":467,"_process":451,"core-util-is":205,"events":384,"inherits":405,"isarray":408,"process-nextick-args":450,"safe-buffer":482,"string_decoder/":545,"util":171}],463:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -67050,7 +66275,7 @@ function done(stream, er, data) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":466,"core-util-is":205,"inherits":405}],470:[function(require,module,exports){
+},{"./_stream_duplex":460,"core-util-is":205,"inherits":405}],464:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -67717,7 +66942,7 @@ Writable.prototype._destroy = function (err, cb) {
   cb(err);
 };
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":466,"./internal/streams/destroy":472,"./internal/streams/stream":473,"_process":457,"core-util-is":205,"inherits":405,"process-nextick-args":456,"safe-buffer":488,"util-deprecate":563}],471:[function(require,module,exports){
+},{"./_stream_duplex":460,"./internal/streams/destroy":466,"./internal/streams/stream":467,"_process":451,"core-util-is":205,"inherits":405,"process-nextick-args":450,"safe-buffer":482,"util-deprecate":557}],465:[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -67792,7 +67017,7 @@ module.exports = function () {
 
   return BufferList;
 }();
-},{"safe-buffer":488}],472:[function(require,module,exports){
+},{"safe-buffer":482}],466:[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -67865,13 +67090,13 @@ module.exports = {
   destroy: destroy,
   undestroy: undestroy
 };
-},{"process-nextick-args":456}],473:[function(require,module,exports){
+},{"process-nextick-args":450}],467:[function(require,module,exports){
 module.exports = require('events').EventEmitter;
 
-},{"events":384}],474:[function(require,module,exports){
+},{"events":384}],468:[function(require,module,exports){
 module.exports = require('./readable').PassThrough
 
-},{"./readable":475}],475:[function(require,module,exports){
+},{"./readable":469}],469:[function(require,module,exports){
 exports = module.exports = require('./lib/_stream_readable.js');
 exports.Stream = exports;
 exports.Readable = exports;
@@ -67880,13 +67105,13 @@ exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":466,"./lib/_stream_passthrough.js":467,"./lib/_stream_readable.js":468,"./lib/_stream_transform.js":469,"./lib/_stream_writable.js":470}],476:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":460,"./lib/_stream_passthrough.js":461,"./lib/_stream_readable.js":462,"./lib/_stream_transform.js":463,"./lib/_stream_writable.js":464}],470:[function(require,module,exports){
 module.exports = require('./readable').Transform
 
-},{"./readable":475}],477:[function(require,module,exports){
+},{"./readable":469}],471:[function(require,module,exports){
 module.exports = require('./lib/_stream_writable.js');
 
-},{"./lib/_stream_writable.js":470}],478:[function(require,module,exports){
+},{"./lib/_stream_writable.js":464}],472:[function(require,module,exports){
 "use strict";
 
 var createThunkSubscribeEnhancer = function (extraArgument) {
@@ -67910,7 +67135,7 @@ thunkSubscribeEnhancer.withExtraArgument = createThunkSubscribeEnhancer;
 
 module.exports = thunkSubscribeEnhancer;
 
-},{}],479:[function(require,module,exports){
+},{}],473:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -67969,7 +67194,7 @@ function applyMiddleware() {
     };
   };
 }
-},{"./compose":482}],480:[function(require,module,exports){
+},{"./compose":476}],474:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -68021,7 +67246,7 @@ function bindActionCreators(actionCreators, dispatch) {
   }
   return boundActionCreators;
 }
-},{}],481:[function(require,module,exports){
+},{}],475:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -68166,7 +67391,7 @@ function combineReducers(reducers) {
   };
 }
 }).call(this,require('_process'))
-},{"./createStore":483,"./utils/warning":485,"_process":457,"lodash/isPlainObject":438}],482:[function(require,module,exports){
+},{"./createStore":477,"./utils/warning":479,"_process":451,"lodash/isPlainObject":432}],476:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -68205,7 +67430,7 @@ function compose() {
     }, last.apply(undefined, arguments));
   };
 }
-},{}],483:[function(require,module,exports){
+},{}],477:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -68467,7 +67692,7 @@ function createStore(reducer, preloadedState, enhancer) {
     replaceReducer: replaceReducer
   }, _ref2[_symbolObservable2['default']] = observable, _ref2;
 }
-},{"lodash/isPlainObject":438,"symbol-observable":553}],484:[function(require,module,exports){
+},{"lodash/isPlainObject":432,"symbol-observable":547}],478:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -68516,7 +67741,7 @@ exports.bindActionCreators = _bindActionCreators2['default'];
 exports.applyMiddleware = _applyMiddleware2['default'];
 exports.compose = _compose2['default'];
 }).call(this,require('_process'))
-},{"./applyMiddleware":479,"./bindActionCreators":480,"./combineReducers":481,"./compose":482,"./createStore":483,"./utils/warning":485,"_process":457}],485:[function(require,module,exports){
+},{"./applyMiddleware":473,"./bindActionCreators":474,"./combineReducers":475,"./compose":476,"./createStore":477,"./utils/warning":479,"_process":451}],479:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -68542,7 +67767,7 @@ function warning(message) {
   } catch (e) {}
   /* eslint-enable no-empty */
 }
-},{}],486:[function(require,module,exports){
+},{}],480:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var inherits = require('inherits')
@@ -68837,7 +68062,7 @@ function fn5 (a, b, c, d, e, m, k, s) {
 module.exports = RIPEMD160
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":202,"hash-base":386,"inherits":405}],487:[function(require,module,exports){
+},{"buffer":202,"hash-base":386,"inherits":405}],481:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -69070,7 +68295,7 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":136,"buffer":202}],488:[function(require,module,exports){
+},{"assert":136,"buffer":202}],482:[function(require,module,exports){
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
 var Buffer = buffer.Buffer
@@ -69134,9 +68359,11 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
-},{"buffer":202}],489:[function(require,module,exports){
-arguments[4][419][0].apply(exports,arguments)
-},{"./lib":493,"./lib/elliptic":492,"dup":419}],490:[function(require,module,exports){
+},{"buffer":202}],483:[function(require,module,exports){
+'use strict'
+module.exports = require('./lib')(require('./lib/elliptic'))
+
+},{"./lib":487,"./lib/elliptic":486}],484:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var toString = Object.prototype.toString
@@ -69184,7 +68411,7 @@ exports.isNumberInInterval = function (number, x, y, message) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":406}],491:[function(require,module,exports){
+},{"../../is-buffer/index.js":406}],485:[function(require,module,exports){
 'use strict'
 var Buffer = require('safe-buffer').Buffer
 var bip66 = require('bip66')
@@ -69384,7 +68611,7 @@ exports.signatureImportLax = function (sig) {
   return { r: r, s: s }
 }
 
-},{"bip66":167,"safe-buffer":488}],492:[function(require,module,exports){
+},{"bip66":167,"safe-buffer":482}],486:[function(require,module,exports){
 'use strict'
 var Buffer = require('safe-buffer').Buffer
 var createHash = require('create-hash')
@@ -69634,11 +68861,278 @@ exports.ecdhUnsafe = function (publicKey, privateKey, compressed) {
   return Buffer.from(pair.pub.mul(scalar).encode(true, compressed))
 }
 
-},{"../messages.json":494,"bn.js":168,"create-hash":207,"elliptic":223,"safe-buffer":488}],493:[function(require,module,exports){
-arguments[4][423][0].apply(exports,arguments)
-},{"./assert":490,"./der":491,"./messages.json":494,"dup":423}],494:[function(require,module,exports){
-arguments[4][424][0].apply(exports,arguments)
-},{"dup":424}],495:[function(require,module,exports){
+},{"../messages.json":488,"bn.js":168,"create-hash":207,"elliptic":223,"safe-buffer":482}],487:[function(require,module,exports){
+'use strict'
+var assert = require('./assert')
+var der = require('./der')
+var messages = require('./messages.json')
+
+function initCompressedValue (value, defaultValue) {
+  if (value === undefined) return defaultValue
+
+  assert.isBoolean(value, messages.COMPRESSED_TYPE_INVALID)
+  return value
+}
+
+module.exports = function (secp256k1) {
+  return {
+    privateKeyVerify: function (privateKey) {
+      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
+      return privateKey.length === 32 && secp256k1.privateKeyVerify(privateKey)
+    },
+
+    privateKeyExport: function (privateKey, compressed) {
+      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
+      assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
+
+      compressed = initCompressedValue(compressed, true)
+      var publicKey = secp256k1.privateKeyExport(privateKey, compressed)
+
+      return der.privateKeyExport(privateKey, publicKey, compressed)
+    },
+
+    privateKeyImport: function (privateKey) {
+      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
+
+      privateKey = der.privateKeyImport(privateKey)
+      if (privateKey && privateKey.length === 32 && secp256k1.privateKeyVerify(privateKey)) return privateKey
+
+      throw new Error(messages.EC_PRIVATE_KEY_IMPORT_DER_FAIL)
+    },
+
+    privateKeyTweakAdd: function (privateKey, tweak) {
+      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
+      assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
+
+      assert.isBuffer(tweak, messages.TWEAK_TYPE_INVALID)
+      assert.isBufferLength(tweak, 32, messages.TWEAK_LENGTH_INVALID)
+
+      return secp256k1.privateKeyTweakAdd(privateKey, tweak)
+    },
+
+    privateKeyTweakMul: function (privateKey, tweak) {
+      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
+      assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
+
+      assert.isBuffer(tweak, messages.TWEAK_TYPE_INVALID)
+      assert.isBufferLength(tweak, 32, messages.TWEAK_LENGTH_INVALID)
+
+      return secp256k1.privateKeyTweakMul(privateKey, tweak)
+    },
+
+    publicKeyCreate: function (privateKey, compressed) {
+      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
+      assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
+
+      compressed = initCompressedValue(compressed, true)
+
+      return secp256k1.publicKeyCreate(privateKey, compressed)
+    },
+
+    publicKeyConvert: function (publicKey, compressed) {
+      assert.isBuffer(publicKey, messages.EC_PUBLIC_KEY_TYPE_INVALID)
+      assert.isBufferLength2(publicKey, 33, 65, messages.EC_PUBLIC_KEY_LENGTH_INVALID)
+
+      compressed = initCompressedValue(compressed, true)
+
+      return secp256k1.publicKeyConvert(publicKey, compressed)
+    },
+
+    publicKeyVerify: function (publicKey) {
+      assert.isBuffer(publicKey, messages.EC_PUBLIC_KEY_TYPE_INVALID)
+      return secp256k1.publicKeyVerify(publicKey)
+    },
+
+    publicKeyTweakAdd: function (publicKey, tweak, compressed) {
+      assert.isBuffer(publicKey, messages.EC_PUBLIC_KEY_TYPE_INVALID)
+      assert.isBufferLength2(publicKey, 33, 65, messages.EC_PUBLIC_KEY_LENGTH_INVALID)
+
+      assert.isBuffer(tweak, messages.TWEAK_TYPE_INVALID)
+      assert.isBufferLength(tweak, 32, messages.TWEAK_LENGTH_INVALID)
+
+      compressed = initCompressedValue(compressed, true)
+
+      return secp256k1.publicKeyTweakAdd(publicKey, tweak, compressed)
+    },
+
+    publicKeyTweakMul: function (publicKey, tweak, compressed) {
+      assert.isBuffer(publicKey, messages.EC_PUBLIC_KEY_TYPE_INVALID)
+      assert.isBufferLength2(publicKey, 33, 65, messages.EC_PUBLIC_KEY_LENGTH_INVALID)
+
+      assert.isBuffer(tweak, messages.TWEAK_TYPE_INVALID)
+      assert.isBufferLength(tweak, 32, messages.TWEAK_LENGTH_INVALID)
+
+      compressed = initCompressedValue(compressed, true)
+
+      return secp256k1.publicKeyTweakMul(publicKey, tweak, compressed)
+    },
+
+    publicKeyCombine: function (publicKeys, compressed) {
+      assert.isArray(publicKeys, messages.EC_PUBLIC_KEYS_TYPE_INVALID)
+      assert.isLengthGTZero(publicKeys, messages.EC_PUBLIC_KEYS_LENGTH_INVALID)
+      for (var i = 0; i < publicKeys.length; ++i) {
+        assert.isBuffer(publicKeys[i], messages.EC_PUBLIC_KEY_TYPE_INVALID)
+        assert.isBufferLength2(publicKeys[i], 33, 65, messages.EC_PUBLIC_KEY_LENGTH_INVALID)
+      }
+
+      compressed = initCompressedValue(compressed, true)
+
+      return secp256k1.publicKeyCombine(publicKeys, compressed)
+    },
+
+    signatureNormalize: function (signature) {
+      assert.isBuffer(signature, messages.ECDSA_SIGNATURE_TYPE_INVALID)
+      assert.isBufferLength(signature, 64, messages.ECDSA_SIGNATURE_LENGTH_INVALID)
+
+      return secp256k1.signatureNormalize(signature)
+    },
+
+    signatureExport: function (signature) {
+      assert.isBuffer(signature, messages.ECDSA_SIGNATURE_TYPE_INVALID)
+      assert.isBufferLength(signature, 64, messages.ECDSA_SIGNATURE_LENGTH_INVALID)
+
+      var sigObj = secp256k1.signatureExport(signature)
+      return der.signatureExport(sigObj)
+    },
+
+    signatureImport: function (sig) {
+      assert.isBuffer(sig, messages.ECDSA_SIGNATURE_TYPE_INVALID)
+      assert.isLengthGTZero(sig, messages.ECDSA_SIGNATURE_LENGTH_INVALID)
+
+      var sigObj = der.signatureImport(sig)
+      if (sigObj) return secp256k1.signatureImport(sigObj)
+
+      throw new Error(messages.ECDSA_SIGNATURE_PARSE_DER_FAIL)
+    },
+
+    signatureImportLax: function (sig) {
+      assert.isBuffer(sig, messages.ECDSA_SIGNATURE_TYPE_INVALID)
+      assert.isLengthGTZero(sig, messages.ECDSA_SIGNATURE_LENGTH_INVALID)
+
+      var sigObj = der.signatureImportLax(sig)
+      if (sigObj) return secp256k1.signatureImport(sigObj)
+
+      throw new Error(messages.ECDSA_SIGNATURE_PARSE_DER_FAIL)
+    },
+
+    sign: function (message, privateKey, options) {
+      assert.isBuffer(message, messages.MSG32_TYPE_INVALID)
+      assert.isBufferLength(message, 32, messages.MSG32_LENGTH_INVALID)
+
+      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
+      assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
+
+      var data = null
+      var noncefn = null
+      if (options !== undefined) {
+        assert.isObject(options, messages.OPTIONS_TYPE_INVALID)
+
+        if (options.data !== undefined) {
+          assert.isBuffer(options.data, messages.OPTIONS_DATA_TYPE_INVALID)
+          assert.isBufferLength(options.data, 32, messages.OPTIONS_DATA_LENGTH_INVALID)
+          data = options.data
+        }
+
+        if (options.noncefn !== undefined) {
+          assert.isFunction(options.noncefn, messages.OPTIONS_NONCEFN_TYPE_INVALID)
+          noncefn = options.noncefn
+        }
+      }
+
+      return secp256k1.sign(message, privateKey, noncefn, data)
+    },
+
+    verify: function (message, signature, publicKey) {
+      assert.isBuffer(message, messages.MSG32_TYPE_INVALID)
+      assert.isBufferLength(message, 32, messages.MSG32_LENGTH_INVALID)
+
+      assert.isBuffer(signature, messages.ECDSA_SIGNATURE_TYPE_INVALID)
+      assert.isBufferLength(signature, 64, messages.ECDSA_SIGNATURE_LENGTH_INVALID)
+
+      assert.isBuffer(publicKey, messages.EC_PUBLIC_KEY_TYPE_INVALID)
+      assert.isBufferLength2(publicKey, 33, 65, messages.EC_PUBLIC_KEY_LENGTH_INVALID)
+
+      return secp256k1.verify(message, signature, publicKey)
+    },
+
+    recover: function (message, signature, recovery, compressed) {
+      assert.isBuffer(message, messages.MSG32_TYPE_INVALID)
+      assert.isBufferLength(message, 32, messages.MSG32_LENGTH_INVALID)
+
+      assert.isBuffer(signature, messages.ECDSA_SIGNATURE_TYPE_INVALID)
+      assert.isBufferLength(signature, 64, messages.ECDSA_SIGNATURE_LENGTH_INVALID)
+
+      assert.isNumber(recovery, messages.RECOVERY_ID_TYPE_INVALID)
+      assert.isNumberInInterval(recovery, -1, 4, messages.RECOVERY_ID_VALUE_INVALID)
+
+      compressed = initCompressedValue(compressed, true)
+
+      return secp256k1.recover(message, signature, recovery, compressed)
+    },
+
+    ecdh: function (publicKey, privateKey) {
+      assert.isBuffer(publicKey, messages.EC_PUBLIC_KEY_TYPE_INVALID)
+      assert.isBufferLength2(publicKey, 33, 65, messages.EC_PUBLIC_KEY_LENGTH_INVALID)
+
+      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
+      assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
+
+      return secp256k1.ecdh(publicKey, privateKey)
+    },
+
+    ecdhUnsafe: function (publicKey, privateKey, compressed) {
+      assert.isBuffer(publicKey, messages.EC_PUBLIC_KEY_TYPE_INVALID)
+      assert.isBufferLength2(publicKey, 33, 65, messages.EC_PUBLIC_KEY_LENGTH_INVALID)
+
+      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
+      assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
+
+      compressed = initCompressedValue(compressed, true)
+
+      return secp256k1.ecdhUnsafe(publicKey, privateKey, compressed)
+    }
+  }
+}
+
+},{"./assert":484,"./der":485,"./messages.json":488}],488:[function(require,module,exports){
+module.exports={
+  "COMPRESSED_TYPE_INVALID": "compressed should be a boolean",
+  "EC_PRIVATE_KEY_TYPE_INVALID": "private key should be a Buffer",
+  "EC_PRIVATE_KEY_LENGTH_INVALID": "private key length is invalid",
+  "EC_PRIVATE_KEY_TWEAK_ADD_FAIL": "tweak out of range or resulting private key is invalid",
+  "EC_PRIVATE_KEY_TWEAK_MUL_FAIL": "tweak out of range",
+  "EC_PRIVATE_KEY_EXPORT_DER_FAIL": "couldn't export to DER format",
+  "EC_PRIVATE_KEY_IMPORT_DER_FAIL": "couldn't import from DER format",
+  "EC_PUBLIC_KEYS_TYPE_INVALID": "public keys should be an Array",
+  "EC_PUBLIC_KEYS_LENGTH_INVALID": "public keys Array should have at least 1 element",
+  "EC_PUBLIC_KEY_TYPE_INVALID": "public key should be a Buffer",
+  "EC_PUBLIC_KEY_LENGTH_INVALID": "public key length is invalid",
+  "EC_PUBLIC_KEY_PARSE_FAIL": "the public key could not be parsed or is invalid",
+  "EC_PUBLIC_KEY_CREATE_FAIL": "private was invalid, try again",
+  "EC_PUBLIC_KEY_TWEAK_ADD_FAIL": "tweak out of range or resulting public key is invalid",
+  "EC_PUBLIC_KEY_TWEAK_MUL_FAIL": "tweak out of range",
+  "EC_PUBLIC_KEY_COMBINE_FAIL": "the sum of the public keys is not valid",
+  "ECDH_FAIL": "scalar was invalid (zero or overflow)",
+  "ECDSA_SIGNATURE_TYPE_INVALID": "signature should be a Buffer",
+  "ECDSA_SIGNATURE_LENGTH_INVALID": "signature length is invalid",
+  "ECDSA_SIGNATURE_PARSE_FAIL": "couldn't parse signature",
+  "ECDSA_SIGNATURE_PARSE_DER_FAIL": "couldn't parse DER signature",
+  "ECDSA_SIGNATURE_SERIALIZE_DER_FAIL": "couldn't serialize signature to DER format",
+  "ECDSA_SIGN_FAIL": "nonce generation function failed or private key is invalid",
+  "ECDSA_RECOVER_FAIL": "couldn't recover public key from signature",
+  "MSG32_TYPE_INVALID": "message should be a Buffer",
+  "MSG32_LENGTH_INVALID": "message length is invalid",
+  "OPTIONS_TYPE_INVALID": "options should be an Object",
+  "OPTIONS_DATA_TYPE_INVALID": "options.data should be a Buffer",
+  "OPTIONS_DATA_LENGTH_INVALID": "options.data length is invalid",
+  "OPTIONS_NONCEFN_TYPE_INVALID": "options.noncefn should be a Function",
+  "RECOVERY_ID_TYPE_INVALID": "recovery should be a Number",
+  "RECOVERY_ID_VALUE_INVALID": "recovery should have value between -1 and 4",
+  "TWEAK_TYPE_INVALID": "tweak should be a Buffer",
+  "TWEAK_LENGTH_INVALID": "tweak length is invalid"
+}
+
+},{}],489:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 // prototype class for hash functions
@@ -69721,7 +69215,7 @@ Hash.prototype._update = function () {
 
 module.exports = Hash
 
-},{"safe-buffer":488}],496:[function(require,module,exports){
+},{"safe-buffer":482}],490:[function(require,module,exports){
 var exports = module.exports = function SHA (algorithm) {
   algorithm = algorithm.toLowerCase()
 
@@ -69738,7 +69232,7 @@ exports.sha256 = require('./sha256')
 exports.sha384 = require('./sha384')
 exports.sha512 = require('./sha512')
 
-},{"./sha":497,"./sha1":498,"./sha224":499,"./sha256":500,"./sha384":501,"./sha512":502}],497:[function(require,module,exports){
+},{"./sha":491,"./sha1":492,"./sha224":493,"./sha256":494,"./sha384":495,"./sha512":496}],491:[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-0, as defined
  * in FIPS PUB 180-1
@@ -69834,7 +69328,7 @@ Sha.prototype._hash = function () {
 
 module.exports = Sha
 
-},{"./hash":495,"inherits":405,"safe-buffer":488}],498:[function(require,module,exports){
+},{"./hash":489,"inherits":405,"safe-buffer":482}],492:[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
  * in FIPS PUB 180-1
@@ -69935,7 +69429,7 @@ Sha1.prototype._hash = function () {
 
 module.exports = Sha1
 
-},{"./hash":495,"inherits":405,"safe-buffer":488}],499:[function(require,module,exports){
+},{"./hash":489,"inherits":405,"safe-buffer":482}],493:[function(require,module,exports){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
  * in FIPS 180-2
@@ -69990,7 +69484,7 @@ Sha224.prototype._hash = function () {
 
 module.exports = Sha224
 
-},{"./hash":495,"./sha256":500,"inherits":405,"safe-buffer":488}],500:[function(require,module,exports){
+},{"./hash":489,"./sha256":494,"inherits":405,"safe-buffer":482}],494:[function(require,module,exports){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
  * in FIPS 180-2
@@ -70127,7 +69621,7 @@ Sha256.prototype._hash = function () {
 
 module.exports = Sha256
 
-},{"./hash":495,"inherits":405,"safe-buffer":488}],501:[function(require,module,exports){
+},{"./hash":489,"inherits":405,"safe-buffer":482}],495:[function(require,module,exports){
 var inherits = require('inherits')
 var SHA512 = require('./sha512')
 var Hash = require('./hash')
@@ -70186,7 +69680,7 @@ Sha384.prototype._hash = function () {
 
 module.exports = Sha384
 
-},{"./hash":495,"./sha512":502,"inherits":405,"safe-buffer":488}],502:[function(require,module,exports){
+},{"./hash":489,"./sha512":496,"inherits":405,"safe-buffer":482}],496:[function(require,module,exports){
 var inherits = require('inherits')
 var Hash = require('./hash')
 var Buffer = require('safe-buffer').Buffer
@@ -70448,7 +69942,7 @@ Sha512.prototype._hash = function () {
 
 module.exports = Sha512
 
-},{"./hash":495,"inherits":405,"safe-buffer":488}],503:[function(require,module,exports){
+},{"./hash":489,"inherits":405,"safe-buffer":482}],497:[function(require,module,exports){
 "use strict";var sjcl={cipher:{},hash:{},keyexchange:{},mode:{},misc:{},codec:{},exception:{corrupt:function(a){this.toString=function(){return"CORRUPT: "+this.message};this.message=a},invalid:function(a){this.toString=function(){return"INVALID: "+this.message};this.message=a},bug:function(a){this.toString=function(){return"BUG: "+this.message};this.message=a},notReady:function(a){this.toString=function(){return"NOT READY: "+this.message};this.message=a}}};
 sjcl.cipher.aes=function(a){this.s[0][0][0]||this.O();var b,c,d,e,f=this.s[0][4],g=this.s[1];b=a.length;var h=1;if(4!==b&&6!==b&&8!==b)throw new sjcl.exception.invalid("invalid aes key size");this.b=[d=a.slice(0),e=[]];for(a=b;a<4*b+28;a++){c=d[a-1];if(0===a%b||8===b&&4===a%b)c=f[c>>>24]<<24^f[c>>16&255]<<16^f[c>>8&255]<<8^f[c&255],0===a%b&&(c=c<<8^c>>>24^h<<24,h=h<<1^283*(h>>7));d[a]=d[a-b]^c}for(b=0;a;b++,a--)c=d[b&3?a:a-4],e[b]=4>=a||4>b?c:g[0][f[c>>>24]]^g[1][f[c>>16&255]]^g[2][f[c>>8&255]]^g[3][f[c&
 255]]};
@@ -70510,7 +70004,7 @@ null!=d[3]?b[d[2]]=parseInt(d[3],10):null!=d[4]?b[d[2]]=d[2].match(/^(ct|adata|s
 b){var c={},d;for(d=0;d<b.length;d++)void 0!==a[b[d]]&&(c[b[d]]=a[b[d]]);return c}};sjcl.encrypt=sjcl.json.encrypt;sjcl.decrypt=sjcl.json.decrypt;sjcl.misc.pa={};sjcl.misc.cachedPbkdf2=function(a,b){var c=sjcl.misc.pa,d;b=b||{};d=b.iter||1E3;c=c[a]=c[a]||{};d=c[d]=c[d]||{firstSalt:b.salt&&b.salt.length?b.salt.slice(0):sjcl.random.randomWords(2,0)};c=void 0===b.salt?d.firstSalt:b.salt;d[c]=d[c]||sjcl.misc.pbkdf2(a,c,b.iter);return{key:d[c].slice(0),salt:c.slice(0)}};
 "undefined"!==typeof module&&module.exports&&(module.exports=sjcl);"function"===typeof define&&define([],function(){return sjcl});
 
-},{"crypto":212}],504:[function(require,module,exports){
+},{"crypto":212}],498:[function(require,module,exports){
 (function (process,Buffer){
 var SourceMapConsumer = require('source-map').SourceMapConsumer;
 var path = require('path');
@@ -71032,7 +70526,7 @@ exports.install = function(options) {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"_process":457,"buffer":202,"fs":199,"module":199,"path":450,"source-map":515}],505:[function(require,module,exports){
+},{"_process":451,"buffer":202,"fs":199,"module":199,"path":444,"source-map":509}],499:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -71155,7 +70649,7 @@ ArraySet.prototype.toArray = function ArraySet_toArray() {
 
 exports.ArraySet = ArraySet;
 
-},{"./util":514}],506:[function(require,module,exports){
+},{"./util":508}],500:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -71297,7 +70791,7 @@ exports.decode = function base64VLQ_decode(aStr, aIndex, aOutParam) {
   aOutParam.rest = aIndex;
 };
 
-},{"./base64":507}],507:[function(require,module,exports){
+},{"./base64":501}],501:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -71366,7 +70860,7 @@ exports.decode = function (charCode) {
   return -1;
 };
 
-},{}],508:[function(require,module,exports){
+},{}],502:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -71479,7 +70973,7 @@ exports.search = function search(aNeedle, aHaystack, aCompare, aBias) {
   return index;
 };
 
-},{}],509:[function(require,module,exports){
+},{}],503:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2014 Mozilla Foundation and contributors
@@ -71560,7 +71054,7 @@ MappingList.prototype.toArray = function MappingList_toArray() {
 
 exports.MappingList = MappingList;
 
-},{"./util":514}],510:[function(require,module,exports){
+},{"./util":508}],504:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -71676,7 +71170,7 @@ exports.quickSort = function (ary, comparator) {
   doQuickSort(ary, comparator, 0, ary.length - 1);
 };
 
-},{}],511:[function(require,module,exports){
+},{}],505:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -72760,7 +72254,7 @@ IndexedSourceMapConsumer.prototype._parseMappings =
 
 exports.IndexedSourceMapConsumer = IndexedSourceMapConsumer;
 
-},{"./array-set":505,"./base64-vlq":506,"./binary-search":508,"./quick-sort":510,"./util":514}],512:[function(require,module,exports){
+},{"./array-set":499,"./base64-vlq":500,"./binary-search":502,"./quick-sort":504,"./util":508}],506:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -73178,7 +72672,7 @@ SourceMapGenerator.prototype.toString =
 
 exports.SourceMapGenerator = SourceMapGenerator;
 
-},{"./array-set":505,"./base64-vlq":506,"./mapping-list":509,"./util":514}],513:[function(require,module,exports){
+},{"./array-set":499,"./base64-vlq":500,"./mapping-list":503,"./util":508}],507:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -73593,7 +73087,7 @@ SourceNode.prototype.toStringWithSourceMap = function SourceNode_toStringWithSou
 
 exports.SourceNode = SourceNode;
 
-},{"./source-map-generator":512,"./util":514}],514:[function(require,module,exports){
+},{"./source-map-generator":506,"./util":508}],508:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -74012,7 +73506,7 @@ function compareByGeneratedPositionsInflated(mappingA, mappingB) {
 }
 exports.compareByGeneratedPositionsInflated = compareByGeneratedPositionsInflated;
 
-},{}],515:[function(require,module,exports){
+},{}],509:[function(require,module,exports){
 /*
  * Copyright 2009-2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE.txt or:
@@ -74022,7 +73516,7 @@ exports.SourceMapGenerator = require('./lib/source-map-generator').SourceMapGene
 exports.SourceMapConsumer = require('./lib/source-map-consumer').SourceMapConsumer;
 exports.SourceNode = require('./lib/source-node').SourceNode;
 
-},{"./lib/source-map-consumer":511,"./lib/source-map-generator":512,"./lib/source-node":513}],516:[function(require,module,exports){
+},{"./lib/source-map-consumer":505,"./lib/source-map-generator":506,"./lib/source-node":507}],510:[function(require,module,exports){
 "use strict";
 
 var byteArrayToUtf8String = require("./byte-array-to-utf8-string");
@@ -74042,7 +73536,7 @@ function abiDecodeBytes(abiEncodedBytes, strip) {
 
 module.exports = abiDecodeBytes;
 
-},{"./byte-array-to-utf8-string":526,"./remove-trailing-zeros":542}],517:[function(require,module,exports){
+},{"./byte-array-to-utf8-string":520,"./remove-trailing-zeros":536}],511:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -74063,7 +73557,7 @@ function abiDecodeData(inputs, abiEncodedData) {
 module.exports = abiDecodeData;
 
 }).call(this,require("buffer").Buffer)
-},{"./format-abi-raw-decoded-data-array":532,"./strip-0x-prefix":544,"buffer":202,"ethereumjs-abi":240}],518:[function(require,module,exports){
+},{"./format-abi-raw-decoded-data-array":526,"./strip-0x-prefix":538,"buffer":202,"ethereumjs-abi":240}],512:[function(require,module,exports){
 "use strict";
 
 var abiDecodeData = require("./abi-decode-data");
@@ -74074,7 +73568,7 @@ function abiDecodeRpcResponse(responseType, abiEncodedRpcResponse) {
 
 module.exports = abiDecodeRpcResponse;
 
-},{"./abi-decode-data":517}],519:[function(require,module,exports){
+},{"./abi-decode-data":511}],513:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -74088,7 +73582,7 @@ function abiDecodeShortStringAsInt256(int256) {
 module.exports = abiDecodeShortStringAsInt256;
 
 }).call(this,require("buffer").Buffer)
-},{"./remove-trailing-zeros":542,"./strip-0x-prefix":544,"buffer":202}],520:[function(require,module,exports){
+},{"./remove-trailing-zeros":536,"./strip-0x-prefix":538,"buffer":202}],514:[function(require,module,exports){
 "use strict";
 
 var rawEncode = require("ethereumjs-abi").rawEncode;
@@ -74103,7 +73597,7 @@ function abiEncodeBytes(bytesToEncode, toArray, isPadded) {
 
 module.exports = abiEncodeBytes;
 
-},{"./remove-trailing-zeros":542,"ethereumjs-abi":240}],521:[function(require,module,exports){
+},{"./remove-trailing-zeros":536,"ethereumjs-abi":240}],515:[function(require,module,exports){
 "use strict";
 
 var rawEncode = require("ethereumjs-abi").rawEncode;
@@ -74114,7 +73608,7 @@ function abiEncodeInt256(value) {
 
 module.exports = abiEncodeInt256;
 
-},{"ethereumjs-abi":240}],522:[function(require,module,exports){
+},{"ethereumjs-abi":240}],516:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -74130,7 +73624,7 @@ function abiEncodeShortStringAsInt256(shortString) {
 module.exports = abiEncodeShortStringAsInt256;
 
 }).call(this,require("buffer").Buffer)
-},{"./pad-right":540,"./prefix-hex":541,"buffer":202}],523:[function(require,module,exports){
+},{"./pad-right":534,"./prefix-hex":535,"buffer":202}],517:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -74149,7 +73643,7 @@ function abiEncodeTransactionPayload(payload) {
 module.exports = abiEncodeTransactionPayload;
 
 }).call(this,require("buffer").Buffer)
-},{"./prefix-hex":541,"buffer":202,"ethereumjs-abi":240}],524:[function(require,module,exports){
+},{"./prefix-hex":535,"buffer":202,"ethereumjs-abi":240}],518:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -74211,7 +73705,7 @@ function bignum(n, encoding, isWrapped) {
 
 module.exports = bignum;
 
-},{"./is-hex":538,"./prefix-hex":541,"./wrap":549,"bignumber.js":166}],525:[function(require,module,exports){
+},{"./is-hex":532,"./prefix-hex":535,"./wrap":543,"bignumber.js":166}],519:[function(require,module,exports){
 "use strict";
 
 var strip0xPrefix = require("./strip-0x-prefix");
@@ -74228,7 +73722,7 @@ function byteArrayToHexString(b) {
 
 module.exports = byteArrayToHexString;
 
-},{"./strip-0x-prefix":544}],526:[function(require,module,exports){
+},{"./strip-0x-prefix":538}],520:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -74276,7 +73770,7 @@ function byteArrayToUtf8String(byteArray) {
 module.exports = byteArrayToUtf8String;
 
 }).call(this,require("buffer").Buffer)
-},{"./strip-0x-prefix":544,"bignumber.js":166,"buffer":202}],527:[function(require,module,exports){
+},{"./strip-0x-prefix":538,"bignumber.js":166,"buffer":202}],521:[function(require,module,exports){
 "use strict";
 
 function chunk(totalLength, chunkLength) {
@@ -74286,7 +73780,7 @@ function chunk(totalLength, chunkLength) {
 
 module.exports = chunk;
 
-},{}],528:[function(require,module,exports){
+},{}],522:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -74301,7 +73795,7 @@ module.exports = {
   UINT256_MAX_VALUE: TWO.toPower(new BigNumber(256, 10))
 };
 
-},{"bignumber.js":166}],529:[function(require,module,exports){
+},{"bignumber.js":166}],523:[function(require,module,exports){
 "use strict";
 
 var bignum = require("./bignum");
@@ -74312,7 +73806,7 @@ function encodeNumberAsBase10String(n, isWrapped) {
 
 module.exports = encodeNumberAsBase10String;
 
-},{"./bignum":524}],530:[function(require,module,exports){
+},{"./bignum":518}],524:[function(require,module,exports){
 "use strict";
 
 var bignum = require("./bignum");
@@ -74323,7 +73817,7 @@ function encodeNumberAsJSNumber(s, isWrapped) {
 
 module.exports = encodeNumberAsJSNumber;
 
-},{"./bignum":524}],531:[function(require,module,exports){
+},{"./bignum":518}],525:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -74369,7 +73863,7 @@ function fix(n, encoding, isWrapped) {
 
 module.exports = fix;
 
-},{"./bignum":524,"./constants":528,"./prefix-hex":541,"./wrap":549,"bignumber.js":166}],532:[function(require,module,exports){
+},{"./bignum":518,"./constants":522,"./prefix-hex":535,"./wrap":543,"bignumber.js":166}],526:[function(require,module,exports){
 "use strict";
 
 var formatAbiRawDecodedData = require("./format-abi-raw-decoded-data");
@@ -74382,7 +73876,7 @@ function formatAbiRawDecodedDataArray(dataInputTypes, decodedDataArray) {
 
 module.exports = formatAbiRawDecodedDataArray;
 
-},{"./format-abi-raw-decoded-data":533}],533:[function(require,module,exports){
+},{"./format-abi-raw-decoded-data":527}],527:[function(require,module,exports){
 "use strict";
 
 var formatEthereumAddress = require("./format-ethereum-address");
@@ -74408,7 +73902,7 @@ function formatAbiRawDecodedData(inputType, decodedData) {
 
 module.exports = formatAbiRawDecodedData;
 
-},{"./format-ethereum-address":534,"./hex":536,"./prefix-hex":541}],534:[function(require,module,exports){
+},{"./format-ethereum-address":528,"./hex":530,"./prefix-hex":535}],528:[function(require,module,exports){
 "use strict";
 
 var prefixHex = require("./prefix-hex");
@@ -74436,7 +73930,7 @@ function formatEthereumAddress(addr) {
 
 module.exports = formatEthereumAddress;
 
-},{"./prefix-hex":541,"./strip-0x-prefix":544}],535:[function(require,module,exports){
+},{"./prefix-hex":535,"./strip-0x-prefix":538}],529:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -74459,7 +73953,7 @@ function formatInt256(s) {
 module.exports = formatInt256;
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":406,"./pad-left":539,"./prefix-hex":541,"./strip-0x-prefix":544,"./unfork":547}],536:[function(require,module,exports){
+},{"../../is-buffer/index.js":406,"./pad-left":533,"./prefix-hex":535,"./strip-0x-prefix":538,"./unfork":541}],530:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -74517,7 +74011,7 @@ function hex(n, isWrapped) {
 module.exports = hex;
 
 }).call(this,require("buffer").Buffer)
-},{"./abi-encode-bytes":520,"./bignum":524,"./prefix-hex":541,"./wrap":549,"bignumber.js":166,"buffer":202}],537:[function(require,module,exports){
+},{"./abi-encode-bytes":514,"./bignum":518,"./prefix-hex":535,"./wrap":543,"bignumber.js":166,"buffer":202}],531:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -74558,7 +74052,7 @@ module.exports = {
   serialize: require("./serialize")
 };
 
-},{"./abi-decode-bytes":516,"./abi-decode-data":517,"./abi-decode-rpc-response":518,"./abi-decode-short-string-as-int256":519,"./abi-encode-bytes":520,"./abi-encode-int256":521,"./abi-encode-short-string-as-int256":522,"./abi-encode-transaction-payload":523,"./bignum":524,"./byte-array-to-hex-string":525,"./byte-array-to-utf8-string":526,"./constants":528,"./encode-number-as-base10-string":529,"./encode-number-as-js-number":530,"./fix":531,"./format-abi-raw-decoded-data":533,"./format-abi-raw-decoded-data-array":532,"./format-ethereum-address":534,"./format-int256":535,"./hex":536,"./is-hex":538,"./pad-left":539,"./pad-right":540,"./prefix-hex":541,"./serialize":543,"./strip-0x-prefix":544,"./unfix":546,"./unfix-signed":545,"./unfork":547,"./unroll-array":548,"bignumber.js":166}],538:[function(require,module,exports){
+},{"./abi-decode-bytes":510,"./abi-decode-data":511,"./abi-decode-rpc-response":512,"./abi-decode-short-string-as-int256":513,"./abi-encode-bytes":514,"./abi-encode-int256":515,"./abi-encode-short-string-as-int256":516,"./abi-encode-transaction-payload":517,"./bignum":518,"./byte-array-to-hex-string":519,"./byte-array-to-utf8-string":520,"./constants":522,"./encode-number-as-base10-string":523,"./encode-number-as-js-number":524,"./fix":525,"./format-abi-raw-decoded-data":527,"./format-abi-raw-decoded-data-array":526,"./format-ethereum-address":528,"./format-int256":529,"./hex":530,"./is-hex":532,"./pad-left":533,"./pad-right":534,"./prefix-hex":535,"./serialize":537,"./strip-0x-prefix":538,"./unfix":540,"./unfix-signed":539,"./unfork":541,"./unroll-array":542,"bignumber.js":166}],532:[function(require,module,exports){
 "use strict";
 
 function isHex(str) {
@@ -74573,7 +74067,7 @@ function isHex(str) {
 
 module.exports = isHex;
 
-},{}],539:[function(require,module,exports){
+},{}],533:[function(require,module,exports){
 "use strict";
 
 var chunk = require("./chunk");
@@ -74593,7 +74087,7 @@ function padLeft(s, chunkLength, hasPrefix) {
 
 module.exports = padLeft;
 
-},{"./chunk":527,"./prefix-hex":541,"./strip-0x-prefix":544}],540:[function(require,module,exports){
+},{"./chunk":521,"./prefix-hex":535,"./strip-0x-prefix":538}],534:[function(require,module,exports){
 "use strict";
 
 var chunk = require("./chunk");
@@ -74613,7 +74107,7 @@ function padRight(s, chunkLength, hasPrefix) {
 
 module.exports = padRight;
 
-},{"./chunk":527,"./prefix-hex":541,"./strip-0x-prefix":544}],541:[function(require,module,exports){
+},{"./chunk":521,"./prefix-hex":535,"./strip-0x-prefix":538}],535:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -74635,7 +74129,7 @@ function prefixHex(n) {
 
 module.exports = prefixHex;
 
-},{"bignumber.js":166}],542:[function(require,module,exports){
+},{"bignumber.js":166}],536:[function(require,module,exports){
 "use strict";
 
 function removeTrailingZeros(h, isUtf8) {
@@ -74654,7 +74148,7 @@ function removeTrailingZeros(h, isUtf8) {
 
 module.exports = removeTrailingZeros;
 
-},{}],543:[function(require,module,exports){
+},{}],537:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -74702,7 +74196,7 @@ function serialize(x) {
 module.exports = serialize;
 
 }).call(this,require("buffer").Buffer)
-},{"./abi-encode-int256":521,"./pad-left":539,"bignumber.js":166,"buffer":202}],544:[function(require,module,exports){
+},{"./abi-encode-int256":515,"./pad-left":533,"bignumber.js":166,"buffer":202}],538:[function(require,module,exports){
 "use strict";
 
 var isHex = require("./is-hex");
@@ -74725,7 +74219,7 @@ function strip0xPrefix(str) {
 
 module.exports = strip0xPrefix;
 
-},{"./is-hex":538}],545:[function(require,module,exports){
+},{"./is-hex":532}],539:[function(require,module,exports){
 "use strict";
 
 var hex = require("./hex");
@@ -74737,7 +74231,7 @@ function unfixSigned(n, encoding) {
 
 module.exports = unfixSigned;
 
-},{"./hex":536,"./unfix":546}],546:[function(require,module,exports){
+},{"./hex":530,"./unfix":540}],540:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -74778,7 +74272,7 @@ function unfix(n, encoding) {
 
 module.exports = unfix;
 
-},{"./bignum":524,"./constants":528,"./prefix-hex":541,"bignumber.js":166}],547:[function(require,module,exports){
+},{"./bignum":518,"./constants":522,"./prefix-hex":535,"bignumber.js":166}],541:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -74807,7 +74301,7 @@ function unfork(forked, prefix) {
 
 module.exports = unfork;
 
-},{"./bignum":524,"./constants":528,"./pad-left":539,"./prefix-hex":541,"bignumber.js":166}],548:[function(require,module,exports){
+},{"./bignum":518,"./constants":522,"./pad-left":533,"./prefix-hex":535,"bignumber.js":166}],542:[function(require,module,exports){
 "use strict";
 
 var encodeNumberAsBase10String = require("./encode-number-as-base10-string");
@@ -74844,7 +74338,7 @@ function unrollArray(string, returns, stride, init) {
 
 module.exports = unrollArray;
 
-},{"./encode-number-as-base10-string":529,"./prefix-hex":541,"./unfix-signed":545}],549:[function(require,module,exports){
+},{"./encode-number-as-base10-string":523,"./prefix-hex":535,"./unfix-signed":539}],543:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -74864,7 +74358,7 @@ function wrap(bn) {
 
 module.exports = wrap;
 
-},{"./bignum":524,"./constants":528,"bignumber.js":166}],550:[function(require,module,exports){
+},{"./bignum":518,"./constants":522,"bignumber.js":166}],544:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -74993,7 +74487,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":384,"inherits":405,"readable-stream/duplex.js":465,"readable-stream/passthrough.js":474,"readable-stream/readable.js":475,"readable-stream/transform.js":476,"readable-stream/writable.js":477}],551:[function(require,module,exports){
+},{"events":384,"inherits":405,"readable-stream/duplex.js":459,"readable-stream/passthrough.js":468,"readable-stream/readable.js":469,"readable-stream/transform.js":470,"readable-stream/writable.js":471}],545:[function(require,module,exports){
 'use strict';
 
 var Buffer = require('safe-buffer').Buffer;
@@ -75266,7 +74760,7 @@ function simpleWrite(buf) {
 function simpleEnd(buf) {
   return buf && buf.length ? this.write(buf) : '';
 }
-},{"safe-buffer":488}],552:[function(require,module,exports){
+},{"safe-buffer":482}],546:[function(require,module,exports){
 var isHexPrefixed = require('is-hex-prefixed');
 
 /**
@@ -75282,10 +74776,10 @@ module.exports = function stripHexPrefix(str) {
   return isHexPrefixed(str) ? str.slice(2) : str;
 }
 
-},{"is-hex-prefixed":407}],553:[function(require,module,exports){
+},{"is-hex-prefixed":407}],547:[function(require,module,exports){
 module.exports = require('./lib/index');
 
-},{"./lib/index":554}],554:[function(require,module,exports){
+},{"./lib/index":548}],548:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -75317,7 +74811,7 @@ if (typeof self !== 'undefined') {
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ponyfill":555}],555:[function(require,module,exports){
+},{"./ponyfill":549}],549:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -75341,7 +74835,7 @@ function symbolObservablePonyfill(root) {
 
 	return result;
 };
-},{}],556:[function(require,module,exports){
+},{}],550:[function(require,module,exports){
 'use strict';
 
 var Response = require('http-response-object');
@@ -75414,7 +74908,7 @@ function doRequest(method, url, options, callback) {
   return new Response(xhr.status, headers, xhr.responseText);
 }
 
-},{"http-response-object":400,"then-request/lib/handle-qs.js":557}],557:[function(require,module,exports){
+},{"http-response-object":400,"then-request/lib/handle-qs.js":551}],551:[function(require,module,exports){
 'use strict';
 
 var parse = require('qs').parse;
@@ -75438,7 +74932,7 @@ function handleQs(url, query) {
   return start + qs + end;
 }
 
-},{"qs":559}],558:[function(require,module,exports){
+},{"qs":553}],552:[function(require,module,exports){
 'use strict';
 
 var replace = String.prototype.replace;
@@ -75458,7 +74952,7 @@ module.exports = {
     RFC3986: 'RFC3986'
 };
 
-},{}],559:[function(require,module,exports){
+},{}],553:[function(require,module,exports){
 'use strict';
 
 var stringify = require('./stringify');
@@ -75471,7 +74965,7 @@ module.exports = {
     stringify: stringify
 };
 
-},{"./formats":558,"./parse":560,"./stringify":561}],560:[function(require,module,exports){
+},{"./formats":552,"./parse":554,"./stringify":555}],554:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -75647,7 +75141,7 @@ module.exports = function (str, opts) {
     return utils.compact(obj);
 };
 
-},{"./utils":562}],561:[function(require,module,exports){
+},{"./utils":556}],555:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -75859,7 +75353,7 @@ module.exports = function (object, opts) {
     return joined.length > 0 ? prefix + joined : '';
 };
 
-},{"./formats":558,"./utils":562}],562:[function(require,module,exports){
+},{"./formats":552,"./utils":556}],556:[function(require,module,exports){
 'use strict';
 
 var has = Object.prototype.hasOwnProperty;
@@ -76063,7 +75557,7 @@ exports.isBuffer = function isBuffer(obj) {
     return !!(obj.constructor && obj.constructor.isBuffer && obj.constructor.isBuffer(obj));
 };
 
-},{}],563:[function(require,module,exports){
+},{}],557:[function(require,module,exports){
 (function (global){
 
 /**
@@ -76134,16 +75628,16 @@ function config (name) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],564:[function(require,module,exports){
+},{}],558:[function(require,module,exports){
 arguments[4][405][0].apply(exports,arguments)
-},{"dup":405}],565:[function(require,module,exports){
+},{"dup":405}],559:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],566:[function(require,module,exports){
+},{}],560:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -76733,7 +76227,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":565,"_process":457,"inherits":564}],567:[function(require,module,exports){
+},{"./support/isBuffer":559,"_process":451,"inherits":558}],561:[function(require,module,exports){
 (function (global){
 
 var rng;
@@ -76769,7 +76263,7 @@ module.exports = rng;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],568:[function(require,module,exports){
+},{}],562:[function(require,module,exports){
 // Unique ID creation requires a high quality random # generator.  We feature
 // detect to determine the best RNG source, normalizing to a function that
 // returns 128-bits of randomness, since that's what's usually required
@@ -76928,7 +76422,7 @@ uuid.v4 = v4;
 
 module.exports = uuid;
 
-},{"./lib/rng":567}],569:[function(require,module,exports){
+},{"./lib/rng":561}],563:[function(require,module,exports){
 var indexOf = require('indexof');
 
 var Object_keys = function (obj) {
