@@ -29,6 +29,7 @@ const DEFAULT_STATE = {
     },
     {
       source: false,
+      endDate: false,
     }
   ],
   currentStep: 0,
