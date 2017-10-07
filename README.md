@@ -4,13 +4,9 @@
 [![Coverage Status](https://coveralls.io/repos/AugurProject/augur-node/badge.svg?branch=master&service=github)](https://coveralls.io/github/AugurProject/augur-node?branch=master)
 [![npm version](https://badge.fury.io/js/augur-node.svg)](http://badge.fury.io/js/augur-node)
 
-## Usage
-
-```
 Augur Node is designed to be a standalone application, including a local
 database setup that supports sqlite as well as postgresql. We use knex to
 manage the local migrations and schema changes.
-```
 
 ## Building
 This project uses typescript and can be safely built via: `npm run build` or directly with `tsc`
@@ -20,7 +16,7 @@ Migrations are managed via knex and behave similarly to ActiveRecord
 migrations. As you add migrations, knex tracks the currect applied state in the
 database, and allows you to apply new migrations as they come in.
 
-See: [The Knex Documentation](knex migrations)
+See: [http://knexjs.org/#Migrations-CLI]
 
 ### Creating Migrations
 New migrations are in typescript and are store in:
@@ -42,7 +38,7 @@ and re-create the tables with each application.
 
 Seeds are stored in src/seeds/`<environment>`/*.ts.
 
-See: [The Knex Documentation](knex seeds)
+See: [http://knexjs.org/#Seeds-CLI]
 
 ### Creating seeds
 This is similar to creating new migrations, but only one should exist per table for clarity.
@@ -51,7 +47,7 @@ This is similar to creating new migrations, but only one should exist per table 
 
 ### Running seeds (For Test Env)
 
-```knex seed:run --env test`
+```knex seed:run --env test```
 
 ## Tests
 Test requre a local sqlite database created with the migration and seed
@@ -70,9 +66,4 @@ knex seed:run --env test
 ```
 npm test
 ```
-
-
-[knex]: http://knexjs.org
-[knex migrations]: http://knexjs.org/#Migrations-CLI
-[knex seeds]: http://knexjs.org/#Seeds-CLI
 
