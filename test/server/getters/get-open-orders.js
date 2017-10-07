@@ -15,7 +15,7 @@ describe("server/getters/get-open-orders", () => {
       checkAugurDbSetup(db, (err) => {
         getOpenOrders(db, t.params.marketID, t.params.outcome, t.params.orderType, t.params.creator, (err, openOrders) => {
           t.assertions(err, openOrders);
-          db.seed.run();
+          db.seed.run().then(function() { done(); });
         });
       });
     });

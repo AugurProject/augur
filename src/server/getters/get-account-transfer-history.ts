@@ -24,7 +24,6 @@ interface TransferLog {
 type TransferHistory = TransferLog[];
 
 export function getAccountTransferHistory(db: Knex, account: Address, token: Address|null, callback: (err?: Error|null, result?: TransferHistory) => void): void {
-  let dataToSelect: Address[];
   let query: Knex.Raw;
   
   if(token === null) { 

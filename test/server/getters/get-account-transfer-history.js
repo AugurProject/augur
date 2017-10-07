@@ -13,7 +13,7 @@ describe("server/getters/get-account-transfer-history", () => {
       checkAugurDbSetup(db, (err) => {
         getAccountTransferHistory(db, t.params.account, t.params.token, (err, accountTransferHistory) => {
           t.assertions(err, accountTransferHistory);
-          db.seed.run();
+          db.seed.run().then(function() { done(); });
         });
       });
     });

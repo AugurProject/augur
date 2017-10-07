@@ -4,6 +4,7 @@ const unlink = require("fs").unlink;
 const join = require("path").join;
 const assert = require("chai").assert;
 const sqlite3 = require("sqlite3").verbose();
+const db = require("../../test.database");
 const { checkAugurDbSetup } = require("../../../build/setup/check-augur-db-setup");
 const { getMarketsCreatedByUser } = require("../../../build/server/getters/get-markets-created-by-user");
 
@@ -12,11 +13,10 @@ const augurDbPath = join(__dirname, "augur.db");
 describe("server/getters/get-markets-created-by-user", () => {
   const test = (t) => {
     it(t.description, (done) => {
-      const db = new sqlite3.Database(augurDbPath);
       checkAugurDbSetup(db, (err) => {
         getMarketsCreatedByUser(db, t.params.creator, (err, marketsCreatedByUser) => {
           t.assertions(err, marketsCreatedByUser);
-          unlink(augurDbPath, done);
+          db.seed.run().then(function() { done(); });
         });
       });
     });

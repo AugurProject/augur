@@ -4,7 +4,7 @@ import Promise = require("bluebird");
 exports.up = function (knex: Knex): Promise<any> {
   return knex.schema.dropTableIfExists("markets").then(() => {
     return knex.schema.raw(`CREATE TABLE markets (
-              contract_address varchar(66) PRIMARY KEY NOT NULL,
+							market_id varchar(66) PRIMARY KEY NOT NULL,
               universe varchar(66) NOT NULL,
               market_type varchar(11) NOT NULL CONSTRAINT enum_market_types CHECK (market_type = 'binary' OR market_type = 'categorical' OR market_type = 'scalar'),
               num_outcomes integer NOT NULL CONSTRAINT positive_num_outcomes CHECK (num_outcomes > 0),
