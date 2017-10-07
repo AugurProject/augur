@@ -4,3 +4,4 @@ coverage/
 build/
 *.db*
 *.sh
+tags
