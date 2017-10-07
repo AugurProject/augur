@@ -32,11 +32,7 @@ export function getAccountTransferHistory(db: Knex, account: Address, token: Add
     query = db.raw("select * from transfers where (sender = ? OR recipient = ?) AND token = ?", [account, account, token]);
   }
 
-  query.on('query-error', (error?: Error | null, obj?: any) => {
-    console.log(error);
-    callback(error);
-  })
-  .map((transferRow: TransferRow): TransferLog => ({
+  query.map((transferRow: TransferRow): TransferLog => ({
     transactionHash: transferRow.transaction_hash,
     logIndex: transferRow.log_index,
     sender: transferRow.sender,
