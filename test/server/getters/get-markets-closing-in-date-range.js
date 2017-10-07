@@ -3,7 +3,7 @@
 const unlink = require("fs").unlink;
 const join = require("path").join;
 const assert = require("chai").assert;
-const db = require("../../test.database");
+const setupTestDb = require("../../test.database");
 const { getMarketsClosingInDateRange } = require("../../../build/server/getters/get-markets-closing-in-date-range");
 
 const augurDbPath = join(__dirname, "augur.db");
@@ -11,7 +11,8 @@ const augurDbPath = join(__dirname, "augur.db");
 describe("server/getters/get-markets-closing-in-date-range", () => {
   const test = (t) => {
     it(t.description, (done) => {
-      checkAugurDbSetup(db, (err) => {
+      setupTestDb((err, db) => {
+        if (err) asset.error(err);
         getMarketsClosingInDateRange(db, t.params.earliestClosingTime, t.params.latestClosingTime, t.params.universe, t.params.limit, (err, marketsClosingInDateRange) => {
           t.assertions(err, marketsClosingInDateRange);
           db.seed.run().then(function() { done(); });

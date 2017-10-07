@@ -3,8 +3,7 @@
 const unlink = require("fs").unlink;
 const join = require("path").join;
 const assert = require("chai").assert;
-const db = require("../../test.database");
-const { checkAugurDbSetup } = require("../../../build/setup/check-augur-db-setup");
+const setupTestDb = require("../../test.database");
 const { getOpenOrders } = require("../../../build/server/getters/get-open-orders");
 
 const augurDbPath = join(__dirname, "augur.db");
@@ -12,7 +11,8 @@ const augurDbPath = join(__dirname, "augur.db");
 describe("server/getters/get-open-orders", () => {
   const test = (t) => {
     it(t.description, (done) => {
-      checkAugurDbSetup(db, (err) => {
+      setupTestDb((err, db) => {
+        if (err) asset.error(err);
         getOpenOrders(db, t.params.marketID, t.params.outcome, t.params.orderType, t.params.creator, (err, openOrders) => {
           t.assertions(err, openOrders);
           db.seed.run().then(function() { done(); });

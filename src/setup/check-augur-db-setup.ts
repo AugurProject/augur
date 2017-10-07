@@ -6,8 +6,8 @@ export function checkAugurDbSetup(db: Knex, callback: ErrorCallback): void {
     if(version === null) {
       callback(new Error("Database not setup, run knex `migrate:latest && knex seed:run` before continuing"));
     } else {
-      callback(null);
+      callback();
     }
   })
-  .error(callback);
+  .catch(callback);
 }

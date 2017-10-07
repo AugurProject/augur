@@ -3,14 +3,14 @@
 const unlink = require("fs").unlink;
 const join = require("path").join;
 const assert = require("chai").assert;
-const db = require("../../test.database");
-const { checkAugurDbSetup } = require("../../../build/setup/check-augur-db-setup");
+const setupTestDb = require("../../test.database");
 const { getMarketInfo } = require("../../../build/server/getters/get-market-info");
 
 describe("server/getters/get-market-info", () => {
   const test = (t) => {
     it(t.description, (done) => {
-      checkAugurDbSetup(db, (err) => {
+      setupTestDb((err, db) => {
+        if (err) asset.error(err);
         getMarketInfo(db, t.params.marketID, (err, marketInfo) => {
           t.assertions(err, marketInfo);
           db.seed.run().then(function() { done(); });

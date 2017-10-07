@@ -1,19 +1,18 @@
 "use strict";
 
-const unlink = require("fs").unlink;
 const join = require("path").join;
 const assert = require("chai").assert;
-const db = require("../../test.database");
-const { checkAugurDbSetup } = require("../../../build/setup/check-augur-db-setup");
+const setupTestDb = require("../../test.database");
 const { getAccountTransferHistory } = require("../../../build/server/getters/get-account-transfer-history");
 
 describe("server/getters/get-account-transfer-history", () => {
   const test = (t) => {
     it(t.description, (done) => {
-      checkAugurDbSetup(db, (err) => {
+      setupTestDb((err, db) => {
+        if (err) asset.error(err);
         getAccountTransferHistory(db, t.params.account, t.params.token, (err, accountTransferHistory) => {
           t.assertions(err, accountTransferHistory);
-          db.seed.run().then(function() { done(); });
+          done();
         });
       });
     });
