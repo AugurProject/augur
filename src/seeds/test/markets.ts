@@ -5,27 +5,68 @@ exports.seed = function (knex: Knex): Promise<any> {
     // Deletes ALL existing entries
     return knex("markets").del()
         .then(function () {
-          // Inserts seed entries
-          return knex('markets').insert([{
-            contract_address:        '0x0000000000000000000000000000000000000001',
-            universe:                '0x000000000000000000000000000000000000000b',
-            market_type:             'categorical',
-            num_outcomes:            8,
-            min_price:               0,
-            max_price:               1000000000000000000,
-            market_creator:          '0x0000000000000000000000000000000000000b0b',
-            creation_time:           1506473474,
-            creation_block_number:   1400000,
-            creation_fee:            1000000000000000000,
-            market_creator_fee_rate: 1,
-            topic:                   'test topic',
-            tag1:                    'test tag 1',
-            tag2:                    'test tag 2',
-            reporting_window:        '0x1000000000000000000000000000000000000000',
-            end_time:                1506573474,
-            short_description:       'This is a test market created by the augur-node.',
-            designated_reporter:     '0x0000000000000000000000000000000000000b0b',
-            resolution_source:       'http://www.trusted-third-party.com'
-          }]);
+          return knex.raw(`INSERT INTO markets
+            (market_id, universe, market_type, num_outcomes, min_price, max_price, market_creator, creation_time, creation_block_number, creation_fee, market_creator_fee_rate, topic, tag1, tag2, reporting_window, end_time, short_description, designated_reporter, resolution_source)
+            VALUES (
+              '0x0000000000000000000000000000000000000001',
+              '0x000000000000000000000000000000000000000b',
+              'categorical',
+              8,
+              0,
+              1000000000000000000,
+              '0x0000000000000000000000000000000000000b0b',
+              1506473474,
+              1400000,
+              1000000000000000000,
+              1,
+              'test topic',
+              'test tag 1',
+              'test tag 2',
+              '0x1000000000000000000000000000000000000000',
+              1506573470,
+              'This is a categorical test market created by b0b.',
+              '0x0000000000000000000000000000000000000b0b',
+              'http://www.trusted-third-party.com'
+            ), (
+              '0x0000000000000000000000000000000000000002',
+              '0x000000000000000000000000000000000000000b',
+              'binary',
+              2,
+              0,
+              1000000000000000000,
+              '0x0000000000000000000000000000000000000b0b',
+              1506480000,
+              1400100,
+              1000000000000000000,
+              1,
+              'test topic',
+              'test tag 1',
+              'test tag 2',
+              '0x1000000000000000000000000000000000000000',
+              1506573480,
+              'This is a binary test market created by b0b.',
+              '0x0000000000000000000000000000000000000b0b',
+              'http://www.trusted-third-party.com'
+            ), (
+              '0x0000000000000000000000000000000000000003',
+              '0x000000000000000000000000000000000000000b',
+              'binary',
+              2,
+              0,
+              1000000000000000000,
+              '0x000000000000000000000000000000000000d00d',
+              1506480015,
+              1400101,
+              1000000000000000000,
+              1,
+              'test topic',
+              'test tag 1',
+              'test tag 2',
+              '0x1000000000000000000000000000000000000000',
+              1506573500,
+              'This is another binary test market created by d00d.',
+              '0x000000000000000000000000000000000000d00d',
+              'http://www.ttp-inc.com/0000000000000000000000000000000000000003'
+            )`);
         });
 };
