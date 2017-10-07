@@ -3,7 +3,7 @@ import { Address, MarketsRow, MarketInfo } from "../../types";
 
 
 export function getMarketInfo(db: Knex, market: string, callback: (err?: Error|null, result?: MarketInfo) => void): void {
-  db.raw("select * from markers where contract_address = ?", [market])
+  db.raw("select * from markets where contract_address = ?", [market])
   .asCallback((err?: Error|null, row?: MarketsRow) => {
     if (err) return callback(err);
     if (!row) return callback(null);
