@@ -5,10 +5,10 @@ module.exports = {
       filename: './augur.dev.db',
     },
     seeds: {
-      directory: './build/seeds/test'
+      directory: './src/seeds/test'
     },
     migrations: {
-      directory: './build/migrations'
+      directory: './src/migrations'
     }
   },
   test: {
