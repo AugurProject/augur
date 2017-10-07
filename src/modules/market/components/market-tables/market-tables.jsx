@@ -2,13 +2,15 @@ import React from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
+import getValue from 'utils/get-value'
+
 import Styles from 'modules/market/components/market-tables/market-tables.styles'
 
 const MarketTable = p => (
   <table className={Styles.MarketTable}>
     <thead>
       <tr className={classNames(Styles.MarketTable__row, Styles.MarketTable__titlerow)}>
-        {p.titles.map((titlePair, ind) => {
+        {p.titleKeyPairs.map((titlePair, ind) => {
           const title = titlePair[0]
           const mobileTitle = p.mobileTitles[ind]
           const mobileHide = mobileTitle === null
@@ -29,10 +31,11 @@ const MarketTable = p => (
     <tbody>
       {p.data.map(dataRow => (
         <tr className={Styles.MarketTable__row}>
-          {p.titles.map((titlePair, ind) => {
+          {p.titleKeyPairs.map((titlePair, ind) => {
             const dataKey = titlePair[1]
             const mobileTitle = p.mobileTitles[ind]
             const mobileHide = mobileTitle === null
+            const data = getValue(dataRow, dataKey)
 
             return (
               <td
@@ -41,7 +44,7 @@ const MarketTable = p => (
                   { [Styles['MarketTable__value--mobilehide']]: mobileHide }
                 )}
               >
-                {(p.data[ind] ||{})[dataKey] || ''}
+                {data || ''}
               </td>
             )
           })}
@@ -54,7 +57,7 @@ const MarketTable = p => (
 MarketTable.propTypes = {
   data: PropTypes.array.isRequired,
   isMobile: PropTypes.bool,
-  titles: PropTypes.array.isRequired
+  titleKeyPairs: PropTypes.array.isRequired
 }
 
 export default MarketTable

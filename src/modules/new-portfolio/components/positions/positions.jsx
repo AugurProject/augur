@@ -20,7 +20,6 @@ export default class Positions extends Component {
 
     return (
       <article className="my-positions">
-        big honk zone
         {p.markets.map((market) => (
           <MarketPortfolioCard
             key={market.id}

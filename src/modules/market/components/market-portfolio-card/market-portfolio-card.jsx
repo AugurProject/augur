@@ -2,6 +2,8 @@ import React from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
+import getValue from 'utils/get-value'
+
 import MarketStatusIcon from 'modules/market/components/common/market-status-icon/market-status-icon'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 import MarketTable from 'modules/market/components/market-tables/market-tables'
@@ -36,6 +38,7 @@ export default class MarketPortfolioCard extends React.Component {
 
   render() {
     const myPositionsSummary = getValue(this.props, 'market.myPositionsSummary')
+    const myPositionOutcomes = getValue(this.props, 'market.myPositionOutcomes')
 
     return (
       <article className={CommonStyles.MarketCommon__container}>
@@ -56,7 +59,7 @@ export default class MarketPortfolioCard extends React.Component {
                 Expires June 31, 2017 7:00 AM
               </span>
               <h1 className={CommonStyles.MarketCommon__description}>
-                Market Title
+                {this.props.market.description}
               </h1>
             </div>
             <MarketStatusIcon className={Styles.MarketCard__statusicon} isOpen isReported />
@@ -68,7 +71,7 @@ export default class MarketPortfolioCard extends React.Component {
                   Realized P/L
                 </span>
                 <span className={Styles.MarketCard__statvalue}>
-                  <ValueDenomination {...myPositionsSummary.realizedNet} />
+                  {getValue(myPositionsSummary, 'realizedNet.formatted')}
                 </span>
                 <span className={Styles.MarketCard__statunit}>
                   ETH
@@ -79,7 +82,7 @@ export default class MarketPortfolioCard extends React.Component {
                   Unrealized P/L
                 </span>
                 <span className={Styles.MarketCard__statvalue}>
-                  <ValueDenomination {...myPositionsSummary.unrealizedNet} />
+                  {getValue(myPositionsSummary, 'unrealizedNet.formatted')}
                 </span>
                 <span className={Styles.MarketCard__statunit}>
                   ETH
@@ -90,7 +93,7 @@ export default class MarketPortfolioCard extends React.Component {
                   Total P/L
                 </span>
                 <span className={Styles.MarketCard__statvalue}>
-                  <ValueDenomination {...myPositionsSummary.totalNet} />
+                  {getValue(myPositionsSummary, 'totalNet.formatted')}
                 </span>
                 <span className={Styles.MarketCard__statunit}>
                   ETH
@@ -99,10 +102,10 @@ export default class MarketPortfolioCard extends React.Component {
             </div>
             <span className={Styles.MarketCard__expiration}>
               <span className={Styles.MarketCard__expirationlabel}>
-                Expires
+                {this.props.market.endDateLabel}
               </span>
               <span className={Styles.MarketCard__expirationvalue}>
-                June 31, 2017 7:00 AM
+                {getValue(this.props.market, 'endDate.formatted')}
               </span>
             </span>
           </div>
@@ -121,14 +124,14 @@ export default class MarketPortfolioCard extends React.Component {
           </div>
           {this.state.tableOpen.myPositions &&
             <MarketTable
-              titles={[
+              titleKeyPairs={[
                 ['Outcome', 'name'],
-                ['Quantity', 'qtyShares'],
-                ['Avg Price', 'purchasePrice'],
-                ['Last Price', 'lastPrice'],
-                ['Realized P/L', 'realizedNet'],
-                ['Unrealized P/L', 'unrealizedNet'],
-                ['Total P/L', 'totalNet'],
+                ['Quantity', 'qtyShares.formatted'],
+                ['Avg Price', 'purchasePrice.formatted'],
+                ['Last Price', 'lastPrice.formatted'],
+                ['Realized P/L', 'realizedNet.formatted'],
+                ['Unrealized P/L', 'unrealizedNet.formatted'],
+                ['Total P/L', 'totalNet.formatted'],
                 ['Action', 'closeButton']
               ]}
               mobileTitles={[
@@ -168,15 +171,15 @@ export default class MarketPortfolioCard extends React.Component {
           {this.state.tableOpen.openPositions &&
             <MarketTable
               hideTitles
-              titles={[
-                ['Outcome', 'name'],
-                ['Quantity', 'qtyShares'],
-                ['Avg Price', 'purchasePrice'],
+              titleKeyPairs={[
+                ['Outcome', 'name.formatted'],
+                ['Quantity', 'qtyShares.formatted'],
+                ['Avg Price', 'purchasePrice.formatted'],
                 ['Last Price', null],
                 ['Realized P/L', null],
                 ['Unrealized P/L', null],
                 ['Total P/L', null],
-                ['Action', 'actionComponent']
+                ['Action', 'actionComponent.formatted']
               ]}
               mobileTitles={[
                 'Outcome',
