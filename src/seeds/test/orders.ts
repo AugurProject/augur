@@ -7,7 +7,7 @@ exports.seed = function (knex: Knex): Promise<any> {
         .then(() => {
           // Inserts seed entries
           return knex.raw(`INSERT INTO orders
-            (order_id, market, outcome, share_token, order_type, order_creator, creation_time, creation_block_number, price, amount, tokens_escrowed, shares_escrowed)
+            (order_id, market_id, outcome, share_token, order_type, order_creator, creation_time, creation_block_number, price, amount, tokens_escrowed, shares_escrowed)
             VALUES (
               '0x1000000000000000000000000000000000000000000000000000000000000000',
               '0x0000000000000000000000000000000000000001',

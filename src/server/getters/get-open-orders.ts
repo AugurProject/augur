@@ -41,12 +41,14 @@ interface Orders {
 
 // market, outcome, creator, orderType, limit, sort
 export function getOpenOrders(db: Knex, marketID: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, callback: (err?: Error|null, result?: any) => void): void {
-  const queryData: {} = _.omit({
+  const queryData: {} = _.omitBy({
     market_id: marketID,
     outcome: outcome,
     order_type: orderType,
     order_creator: creator
   }, _.isNull);
+
+  console.log(db("orders").where(queryData).toString());
 
   db("orders").where(queryData).asCallback((err?: Error|null, ordersRows?: OrdersRow[]): void => {
     if (err) return callback(err);

@@ -5,7 +5,7 @@ exports.up = function (knex: Knex): Promise<any> {
   return knex.schema.dropTableIfExists("orders").then(() => {
     return knex.schema.raw(`CREATE TABLE orders (
               order_id varchar(66) PRIMARY KEY NOT NULL,
-              market varchar(66) NOT NULL,
+              market_id varchar(66) NOT NULL,
               outcome integer NOT NULL CONSTRAINT nonnegative_outcome CHECK (outcome >= 0),
               share_token varchar(66) NOT NULL,
               order_type varchar(4) NOT NULL CONSTRAINT enum_order_types CHECK (order_type = 'buy' OR order_type = 'sell'),
