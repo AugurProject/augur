@@ -9,6 +9,8 @@ node_js:
 before_script:
   - npm install
   - npm run build
+  - knex migrate:latest --env test
+  - knex seed:run --env test
 
 script:
   - npm test
