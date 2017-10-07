@@ -34,7 +34,7 @@ function generateAbiMap(abi) {
         functions[contractName][shortName] = functionAbiMap;
       } else if (functionOrEvent.type === "event") {
         if (!events[contractName]) events[contractName] = {};
-        var methodSignature = functionOrEvent.name + 
+        var methodSignature = functionOrEvent.name +
           "(" + functionOrEvent.inputs.map(function (input) { return input.type; }).join(",") + ")";
         events[contractName][shortName] = {
           contract: contractName,
