@@ -69,7 +69,7 @@ describe("contracts/generate-abi-map", function () {
             "name": "value"
           }],
           "type": "event",
-          "name": "Transfer(address,address,uint256)"
+          "name": "Transfer"
         }]
       }
     },
