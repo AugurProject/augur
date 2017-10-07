@@ -2,8 +2,8 @@ import * as Knex from "knex";
 import { Address, MarketsRow, MarketInfo } from "../../types";
 
 
-export function getMarketInfo(db: Knex, market: string, callback: (err?: Error|null, result?: MarketInfo) => void): void {
-  db.raw("select * from markets where contract_address = ?", [market])
+export function getMarketInfo(db: Knex, marketID: string, callback: (err?: Error|null, result?: MarketInfo) => void): void {
+  db.raw("select * from markets where market_id = ?", [marketID])
   .asCallback((err?: Error|null, row?: MarketsRow) => {
     if (err) return callback(err);
     if (!row) return callback(null);
