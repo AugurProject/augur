@@ -1,4 +1,4 @@
-import { addOrder, removeOrder } from 'modules/bids-asks/actions/update-order-book';
+// import { addOrder, removeOrder } from 'modules/bids-asks/actions/update-order-book';
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 
 import { CANCEL_ORDER } from 'modules/transactions/constants/types';
@@ -24,9 +24,9 @@ function dispatchOrderUpdates(marketOrderData, isAddition, dispatch, getState) {
       const transactionsData = getState().transactionsData;
       const cancelledOrder = Object.keys(transactionsData).find(id => transactionsData[id].orderId === orderLog.orderId && transactionsData[id].type === CANCEL_ORDER);
       if (isAddition && !cancelledOrder) {
-        dispatch(addOrder(orderLog));
+        // dispatch(addOrder(orderLog));
       } else {
-        dispatch(removeOrder(orderLog));
+        // dispatch(removeOrder(orderLog));
       }
     });
   });
