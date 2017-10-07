@@ -6,8 +6,7 @@ import { Address, MarketsContractAddressRow } from "../../types";
 export function getMarketsClosingInDateRange(db: Knex, earliestClosingTime: number, latestClosingTime: number, universe: Address, limit: number|null|undefined, callback: (err?: Error|null, result?: any) => void): void {
 
   let query: Knex.QueryBuilder = db
-  .select('marker_id')
-  .from('markets')
+  .select('market_id').from('markets')
   .whereRaw("end_time >= ? and end_time <= ? and universe = ?",
       [earliestClosingTime, latestClosingTime, universe])
   .orderBy('end_time', 'desc');
