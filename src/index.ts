@@ -31,5 +31,6 @@ augur.rpc.setDebugOptions({ broadcast: false });
 // Run Migrations?
 syncAugurNodeWithBlockchain(db, augur, ethereumNodeEndpoints, uploadBlockNumbers, (err?: Error|null) => {
   if (err) return console.error("syncAugurNodeWithBlockchain:", err);
+  console.log("Sync with blockchain complete, starting websocket server...");
   runWebsocketServer(db, websocketPort);
 });

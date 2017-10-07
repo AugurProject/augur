@@ -4,7 +4,7 @@ import { Address, Bytes32 } from "../../types";
 
 interface OrdersRow {
   order_id: Bytes32,
-  market: Address,
+  market_id: Address,
   outcome: number,
   share_token: Address,
   order_type: string,
@@ -30,7 +30,7 @@ interface Order {
 }
 
 interface Orders {
-  [market: string]: {
+  [marketID: string]: {
     [outcome: number]: {
       [orderType: string]: {
         [orderId: string]: Order
@@ -40,9 +40,9 @@ interface Orders {
 }
 
 // market, outcome, creator, orderType, limit, sort
-export function getOpenOrders(db: Knex, market: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, callback: (err?: Error|null, result?: any) => void): void {
+export function getOpenOrders(db: Knex, marketID: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, callback: (err?: Error|null, result?: any) => void): void {
   const queryData: {} = _.omit({
-    market: market,
+    market_id: marketID,
     outcome: outcome,
     order_type: orderType,
     order_creator: creator
@@ -50,13 +50,13 @@ export function getOpenOrders(db: Knex, market: Address|null, outcome: number|nu
 
   db("orders").where(queryData).asCallback((err?: Error|null, ordersRows?: OrdersRow[]): void => {
     if (err) return callback(err);
-    if (!ordersRows) return callback(null);
+    if (!ordersRows || !ordersRows.length) return callback(null);
     const orders: Orders = {};
-    ordersRows.forEach((row: OrdersRow) => {
-      if (!orders[row.market]) orders[row.market] = {};
-      if (!orders[row.market][row.outcome]) orders[row.market][row.outcome] = {};
-      if (!orders[row.market][row.outcome][row.order_type]) orders[row.market][row.outcome][row.order_type] = {};
-      orders[row.market][row.outcome][row.order_type][row.order_id] = {
+    ordersRows.forEach((row: OrdersRow): void => {
+      if (!orders[row.market_id]) orders[row.market_id] = {};
+      if (!orders[row.market_id][row.outcome]) orders[row.market_id][row.outcome] = {};
+      if (!orders[row.market_id][row.outcome][row.order_type]) orders[row.market_id][row.outcome][row.order_type] = {};
+      orders[row.market_id][row.outcome][row.order_type][row.order_id] = {
         shareToken: row.share_token,
         orderCreator: row.order_creator,
         creationTime: row.creation_time,

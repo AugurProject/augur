@@ -9,7 +9,7 @@ var WebSocket = require("ws");
 //   jsonrpc: "2.0",
 //   method: "getMarketInfo",
 //   params: {
-//     market: "0x0000000000000000000000000000000000000001"
+//     marketID: "0x0000000000000000000000000000000000000001"
 //   }
 // };
 
@@ -28,12 +28,30 @@ var request = {
   jsonrpc: "2.0",
   method: "getOpenOrders",
   params: {
-    market: "0x0000000000000000000000000000000000000001",
+    marketID: "0x0000000000000000000000000000000000000001",
     outcome: null,
     orderType: "buy",
     creator: null
   }
 };
+
+// var request = {
+//   id: 4,
+//   jsonrpc: "2.0",
+//   method: "getMarketsInfo",
+//   params: {
+//     universe: "0x000000000000000000000000000000000000000b"
+//   }
+// };
+
+// var request = {
+//   id: 5,
+//   jsonrpc: "2.0",
+//   method: "getTopics",
+//   params: {
+//     universe: "0x000000000000000000000000000000000000000b"
+//   }
+// };
 
 var ws = new WebSocket("ws://127.0.0.1:8080");
 
