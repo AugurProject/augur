@@ -4,7 +4,6 @@ const unlink = require("fs").unlink;
 const join = require("path").join;
 const assert = require("chai").assert;
 const sqlite3 = require("sqlite3").verbose();
-const { checkAugurDbSetup } = require("../../../build/setup/check-augur-db-setup");
 const { getMarketsClosingInDateRange } = require("../../../build/server/getters/get-markets-closing-in-date-range");
 
 const augurDbPath = join(__dirname, "augur.db");

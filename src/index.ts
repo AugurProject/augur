@@ -5,6 +5,7 @@ import { EthereumNodeEndpoints, FormattedLog } from "./types";
 import { checkAugurDbSetup } from "./setup/check-augur-db-setup";
 import { syncAugurNodeWithBlockchain } from "./blockchain/sync-augur-node-with-blockchain";
 import { runWebsocketServer } from "./server/run-websocket-server";
+import { ErrorCallback } from "./types";
 
 const { augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers, websocketPort } = require("../config");
 
@@ -28,9 +29,10 @@ const augur: Augur = new Augur();
 
 augur.rpc.setDebugOptions({ broadcast: false });
 
-// Run Migrations?
-syncAugurNodeWithBlockchain(db, augur, ethereumNodeEndpoints, uploadBlockNumbers, (err?: Error|null) => {
-  if (err) return console.error("syncAugurNodeWithBlockchain:", err);
-  console.log("Sync with blockchain complete, starting websocket server...");
-  runWebsocketServer(db, websocketPort);
+checkAugurDbSetup(db, ErrorCallback  => {
+  syncAugurNodeWithBlockchain(db, augur, ethereumNodeEndpoints, uploadBlockNumbers, (err?: Error|null) => {
+    if (err) return console.error("syncAugurNodeWithBlockchain:", err);
+    console.log("Sync with blockchain complete, starting websocket server...");
+    runWebsocketServer(db, websocketPort);
+  });
 });

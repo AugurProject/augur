@@ -28,9 +28,9 @@ export function getAccountTransferHistory(db: Knex, account: Address, token: Add
   let query: Knex.Raw;
   
   if(token === null) { 
-    query = db.raw("select * from transfer where sender = ? OR recipient = ?", [account, account]);
+    query = db.raw("select * from transfers where sender = ? OR recipient = ?", [account, account]);
   } else {
-    query = db.raw("select * from transfer where (sender = ? OR recipient = ?) AND token = ?", [account, account, token]);
+    query = db.raw("select * from transfers where (sender = ? OR recipient = ?) AND token = ?", [account, account, token]);
   }
 
   query.map((transferRow: TransferRow): TransferLog => ({

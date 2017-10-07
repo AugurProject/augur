@@ -1,9 +1,4 @@
 "use strict";
+var knex = require("./test.database");
 
-var knex = require("knex");
-
-knex.migrate.latest();
-before(function() {
-  knex.seed.run();
-});
-
+knex.migrate.latest()
