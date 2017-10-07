@@ -24,7 +24,7 @@
   "homepage": "https://github.com/AugurProject/augur-node#readme",
   "dependencies": {
     "async": "1.5.2",
-    "augur.js": "4.2.8",
+    "augur.js": "4.3.0",
     "sqlite3": "3.1.8",
     "ws": "3.2.0"
   },
