@@ -19,16 +19,20 @@ database, and allows you to apply new migrations as they come in.
 See: [http://knexjs.org/#Migrations-CLI]
 
 ### Creating Migrations
-New migrations are in typescript and are store in:
-```src/migrations/```
+New migrations are in typescript and are store in: ```src/migrations/```
 
 To use the knex tool to generate a migration in this directly, use the *development* enironment:
-```knex migrate:make -x ts --env development name```
+
+```
+knex migrate:make -x ts --env development name
+```
 
 ### Running Migrations (For Test Env)
 *Make sure your typescript is built before running migrations*
 
-```knex migrate:latest --env test```
+```
+knex migrate:latest --env test
+```
 
 ## Data Seeds
 Seed files are used to seed the test database. Unlike migrations, seeds are
@@ -43,11 +47,15 @@ See: [http://knexjs.org/#Seeds-CLI]
 ### Creating seeds
 This is similar to creating new migrations, but only one should exist per table for clarity.
 
-```knex seed:make seed_name --env development```
+```
+knex seed:make seed_name --env development
+```
 
 ### Running seeds (For Test Env)
 
-```knex seed:run --env test```
+```
+knex seed:run --env test
+```
 
 ## Tests
 Test requre a local sqlite database created with the migration and seed
