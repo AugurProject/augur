@@ -10,7 +10,7 @@ describe("server/getters/get-market-info", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        if (err) asset.error(err);
+        if (err) assert.fail(err);
         getMarketInfo(db, t.params.marketID, (err, marketInfo) => {
           t.assertions(err, marketInfo);
           db.seed.run().then(function() { done(); });

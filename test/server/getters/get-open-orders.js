@@ -12,7 +12,7 @@ describe("server/getters/get-open-orders", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        if (err) asset.error(err);
+        if (err) assert.fail(err);
         getOpenOrders(db, t.params.marketID, t.params.outcome, t.params.orderType, t.params.creator, (err, openOrders) => {
           t.assertions(err, openOrders);
           db.seed.run().then(function() { done(); });

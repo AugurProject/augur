@@ -11,7 +11,7 @@ describe("server/getters/get-markets-info", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        if (err) asset.error(err);
+        if (err) assert.fail(err);
         getMarketsInfo(db, t.params.universe, (err, marketsInfo) => {
           t.assertions(err, marketsInfo);
           db.seed.run().then(function() { done(); });

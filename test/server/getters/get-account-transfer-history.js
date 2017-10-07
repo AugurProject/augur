@@ -9,7 +9,7 @@ describe("server/getters/get-account-transfer-history", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        if (err) asset.error(err);
+        if (err) assert.fail(err);
         getAccountTransferHistory(db, t.params.account, t.params.token, (err, accountTransferHistory) => {
           t.assertions(err, accountTransferHistory);
           done();

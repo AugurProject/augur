@@ -10,7 +10,7 @@ describe("server/getters/get-topics", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        if (err) asset.error(err);
+        if (err) assert.fail(err);
         getTopics(db, t.params.universe, (err, topicsInfo) => {
           t.assertions(err, topicsInfo);
           db.seed.run().then(function() { done(); });
