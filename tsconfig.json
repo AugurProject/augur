@@ -3,7 +3,7 @@
     "module": "commonjs",
     "target": "es6",
     "sourceMap": true,
-    "watch": true,
+    "watch": false,
     "strictNullChecks": true,
     "alwaysStrict": true,
     "noImplicitAny": true,
