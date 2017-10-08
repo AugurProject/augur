@@ -27,11 +27,11 @@ To use the knex tool to generate a migration in this directly, use the *developm
 knex migrate:make -x ts --env development name
 ```
 
-### Running Migrations (For Test Env)
+### Running Migrations
 *Make sure your typescript is built before running migrations*
 
 ```
-knex migrate:latest --env test
+knex migrate:latest --env build
 ```
 
 ## Data Seeds
@@ -51,23 +51,21 @@ This is similar to creating new migrations, but only one should exist per table 
 knex seed:make seed_name --env development
 ```
 
-### Running seeds (For Test Env)
+### Running seeds (For Build Env)
 
 ```
-knex seed:run --env test
+knex seed:run --env build
 ```
 
 ## Tests
-Test requre a local sqlite database created with the migration and seed
-commands above, as well as a compiled set of typescript. Our test framework
-mocha will run tests out of the `tests/` directory recursively.
+Tests run with in-memory SQLite DBs for each test execution so they won't
+overlap each other. The framework will automatically initialize and seed the
+tests with the data in seed/test for each test.
 
 ### Complete Pre-Test Setup
 ```
 npm install
 npm run build
-knex migrate:latest --env test
-knex seed:run --env test
 ```
 
 # Running Tests

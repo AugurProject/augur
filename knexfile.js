@@ -1,3 +1,5 @@
+const { augurDbPath } = require("./config.json");
+
 module.exports = {
   development: {
     client: 'sqlite3',
@@ -11,10 +13,22 @@ module.exports = {
       directory: './src/migrations'
     }
   },
+  build: {
+    client: 'sqlite3',
+    connection: {
+      filename: augurDbPath,
+    },
+    seeds: {
+      directory: './build/seeds/test'
+    },
+    migrations: {
+      directory: './build/migrations'
+    }
+  },
   test: {
     client: 'sqlite3',
     connection: {
-      filename: './augur.test.db',
+      filename: ':memory:',
     },
     seeds: {
       directory: './build/seeds/test'
