@@ -12,7 +12,6 @@ import { getDisputableMarkets } from "./getters/get-disputable-markets";
 import { getReportingSummary } from "./getters/get-reporting-summary";
 import { getUserTradingHistory } from "./getters/get-user-trading-history";
 import { getUserTradingPositions } from "./getters/get-user-trading-positions";
-import { getClosedOrders } from "./getters/get-closed-orders";
 import { getReportingWindowsWithUnclaimedFees } from "./getters/get-reporting-windows-with-unclaimed-fees";
 import { getUnclaimedReportingTokens } from "./getters/get-unclaimed-reporting-tokens";
 import { getUnfinalizedReportingTokens } from "./getters/get-unfinalized-reporting-tokens";
@@ -49,8 +48,6 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callba
       return getUserTradingHistory(db, request.params.account, request.params.marketID, request.params.outcome, request.params.orderType, callback);
     case "getUserTradingPositions":
       return getUserTradingPositions(db, request.params.account, request.params.marketID, request.params.outcome, callback);
-    case "getClosedOrders":
-      return getClosedOrders(db, request.params.account, request.params.dateRange, callback); // TODO change dateRange to separate earliestTime and latestTime params?
     case "getReportingWindowsWithUnclaimedFees":
       return getReportingWindowsWithUnclaimedFees(db, request.params.account, callback);
     case "getUnclaimedReportingTokens":

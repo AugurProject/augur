@@ -126,6 +126,7 @@ declare module "augur.js" {
     version: string;
     options: AugurJsOptions;
     accounts: {
+      getAccountTransferHistory: ApiFunction,
       importAccount: ApiFunction,
       login: ApiFunction,
       loginWithMasterKey: (p: ApiParams) => {
@@ -152,22 +153,21 @@ declare module "augur.js" {
     createMarket: {
       [functionName: string]: ApiFunction
     };
-    filters: {
+    events: {
+      getAllAugurLogs: ApiFunction,
       startListeners: (onLogAddedCallbacks?: EventSubscriptionCallbacks, onNewBlock?: (blockNumber: string) => void, onSetupComplete?: () => void) => void,
       stopListeners: () => boolean
     };
-    logs: {
-      getLogs: ApiFunction,
-      getLogsChunked: ApiChunkedFunction,
-      getMarketPriceHistory: ApiChunkedFunction,
-      getAllAugurLogs: ApiFunction
-    };
     markets: {
-      [functionName: string]: ApiFunction
+      getMarketInfo: ApiFunction,
+      getMarketsInfo: ApiFunction,
+      batchGetMarketInfo: ApiFunction,
+      getMarketPriceHistory: ApiFunction,
+      getMarketsCreatedByUser: ApiFunction
     };
     reporting: {
+      getReportingHistory: ApiFunction,
       getCurrentPeriodProgress: (reportingPeriodDurationInSeconds: number, timestamp?: number|null) => number,
-      registerToReport: ApiFunction,
       submitReport: ApiFunction,
       finalizeMarket: ApiFunction,
       migrateLosingTokens: ApiFunction,
@@ -181,10 +181,8 @@ declare module "augur.js" {
       normalizePrice: (p: ApiParams) => string,
       denormalizePrice: (p: ApiParams) => string,
       tradeUntilAmountIsZero: ApiFunction,
-      getAdjustedPositions: ApiFunction,
       orderBook: {
         getOrderBook: ApiFunction,
-        getOrderBookChunked: ApiChunkedFunction,
         filterByPriceAndOutcomeAndUserSortByPrice: (orderBook: any, orderType: number, price: any, userAddress: Address) => any // TODO define order book type, import BigNumber type for price
       }
     }
