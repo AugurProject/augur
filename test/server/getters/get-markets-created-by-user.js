@@ -15,7 +15,7 @@ describe("server/getters/get-markets-created-by-user", () => {
         if (err) assert.fail(err);
         getMarketsCreatedByUser(db, t.params.creator, (err, marketsCreatedByUser) => {
           t.assertions(err, marketsCreatedByUser);
-          db.seed.run().then(function() { done(); });
+          done();
         });
       });
     });

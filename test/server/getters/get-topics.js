@@ -13,7 +13,7 @@ describe("server/getters/get-topics", () => {
         if (err) assert.fail(err);
         getTopics(db, t.params.universe, (err, topicsInfo) => {
           t.assertions(err, topicsInfo);
-          db.seed.run().then(function() { done(); });
+          done();
         });
       });
     });

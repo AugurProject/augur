@@ -13,7 +13,7 @@ describe("server/getters/get-market-info", () => {
         if (err) assert.fail(err);
         getMarketInfo(db, t.params.marketID, (err, marketInfo) => {
           t.assertions(err, marketInfo);
-          db.seed.run().then(function() { done(); });
+          done();
         });
       });
     });

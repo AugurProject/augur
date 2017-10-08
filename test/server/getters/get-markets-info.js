@@ -14,7 +14,7 @@ describe("server/getters/get-markets-info", () => {
         if (err) assert.fail(err);
         getMarketsInfo(db, t.params.universe, (err, marketsInfo) => {
           t.assertions(err, marketsInfo);
-          db.seed.run().then(function() { done(); });
+          done();
         });
       });
     });

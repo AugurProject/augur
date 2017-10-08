@@ -15,7 +15,7 @@ describe("server/getters/get-open-orders", () => {
         if (err) assert.fail(err);
         getOpenOrders(db, t.params.marketID, t.params.outcome, t.params.orderType, t.params.creator, (err, openOrders) => {
           t.assertions(err, openOrders);
-          db.seed.run().then(function() { done(); });
+          done();
         });
       });
     });
