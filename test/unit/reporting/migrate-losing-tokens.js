@@ -12,7 +12,7 @@ describe("reporting/migrate-losing-tokens", function () {
     it(t.description, function (done) {
       var migrateLosingTokens = proxyquire("../../../src/reporting/migrate-losing-tokens", {
         "../api": t.mock.api,
-        "../logs/get-logs": t.mock.getLogs
+        "../events/get-logs": t.mock.getLogs
       });
       migrateLosingTokens(assign(t.params, {
         onSent: noop,

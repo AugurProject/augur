@@ -2,7 +2,7 @@
 
 var async = require("async");
 var api = require("../api");
-var getLogs = require("../logs/get-logs");
+var getLogs = require("../events/get-logs");
 
 /**
  * @param {Object} p Parameters object.

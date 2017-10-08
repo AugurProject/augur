@@ -11,6 +11,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 module.exports = {
+  getAccountTransferHistory: require("./get-account-transfer-history"),
   importAccount: require("./import-account"),
   login: require("./login"),
   loginWithMasterKey: require("./login-with-master-key"),

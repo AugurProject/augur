@@ -1,56 +1,77 @@
 "use strict";
 
-var connector = require("ethereumjs-connect");
+var async = require("async");
+var ethereumConnector = require("ethereumjs-connect");
 var ethrpc = require("ethrpc");
 var contracts = require("./contracts");
 var api = require("./api");
 var rpcInterface = require("./rpc-interface");
+var connectToAugurNode = require("./augur-node").connect;
 var isFunction = require("./utils/is-function");
 var isObject = require("./utils/is-object");
+var noop = require("./utils/noop");
 var DEFAULT_NETWORK_ID = require("./constants").DEFAULT_NETWORK_ID;
 
 /**
- * @param connectOptions {Object|string=} Two forms accepted:
- *    1. Object with connection info fields:
- *       { http: "https://eth3.augur.net",
- *         ipc: "/path/to/geth.ipc",
- *         ws: "wss://ws.augur.net" }
- *    2. URL string for HTTP RPC: "https://eth3.augur.net"
+ * @param {ethereumNode, augurNode} connectOptions
  * @param callback {function=} Callback function.
  */
 function connect(connectOptions, callback) {
-  var vitals, options = {
-      rpc: ethrpc,
-      contracts: contracts.addresses,
-      abi: contracts.abi,
-      httpAddresses: [],
-      wsAddresses: [],
-      ipcAddresses: []
-    };
-  if (isObject(connectOptions)) {
-    if (connectOptions.httpAddresses) options.httpAddresses = connectOptions.httpAddresses;
-    if (connectOptions.wsAddresses) options.wsAddresses = connectOptions.wsAddresses;
-    if (connectOptions.ipcAddresses) options.ipcAddresses = connectOptions.ipcAddresses;
-    if (connectOptions.http) options.httpAddresses.push(connectOptions.http);
-    if (connectOptions.ws) options.wsAddresses.push(connectOptions.ws);
-    if (connectOptions.ipc) options.ipcAddresses.push(connectOptions.ipc);
-    if (connectOptions.networkID) options.networkID = connectOptions.networkID;
+  if (!isFunction(callback)) callback = noop;
+  if (!isObject(connectOptions)) {
+    return callback("Connection info required, e.g. { ethereumNode: { http: 'http://ethereum.node.url', ws: 'ws://ethereum.node.websocket' }, augurNode: 'ws://augur.node.websocket' }");
   }
-  if (!isFunction(callback)) {
-    vitals = connector.connect(options);
-    if (vitals instanceof Error) throw vitals;
-    vitals.contracts = vitals.contracts || contracts.addresses[DEFAULT_NETWORK_ID];
-    this.api = api.generateContractApi(vitals.abi.functions);
-    rpcInterface.createRpcInterface(vitals.rpc);
-    return vitals;
+  var self = this;
+  var ethereumNodeConnectOptions = {
+    rpc: ethrpc,
+    contracts: contracts.addresses,
+    abi: contracts.abi,
+    httpAddresses: [],
+    wsAddresses: [],
+    ipcAddresses: []
+  };
+  if (isObject(connectOptions.ethereumNode)) {
+    if (connectOptions.ethereumNode.http) {
+      ethereumNodeConnectOptions.httpAddresses = [connectOptions.ethereumNode.http];
+    } else if (connectOptions.ethereumNode.httpAddresses) {
+      ethereumNodeConnectOptions.httpAddresses = connectOptions.ethereumNode.httpAddresses;
+    }
+    if (connectOptions.ethereumNode.wsAddresses) {
+      ethereumNodeConnectOptions.wsAddresses = connectOptions.ethereumNode.wsAddresses;
+    } else if (connectOptions.ethereumNode.ws) {
+      ethereumNodeConnectOptions.wsAddresses = [connectOptions.ethereumNode.ws];
+    }
+    if (connectOptions.ethereumNode.ipcAddresses) {
+      ethereumNodeConnectOptions.ipcAddresses = connectOptions.ethereumNode.ipcAddresses;
+    } else if (connectOptions.ethereumNode.ipc) {
+      ethereumNodeConnectOptions.ipcAddresses = [connectOptions.ethereumNode.ipc];
+    }
+    if (connectOptions.ethereumNode.networkID) {
+      ethereumNodeConnectOptions.networkID = connectOptions.ethereumNode.networkID;
+    }
   }
-  connector.connect(options, function (err, vitals) {
+  async.parallel({
+    augurNode: function (next) {
+      if (!connectOptions.augurNode) return next(null);
+      connectToAugurNode(connectOptions.augurNode, function (err) {
+        if (err) return next(err);
+        next(null, connectOptions.augurNode);
+      });
+    },
+    ethereumNode: function (next) {
+      if (!connectOptions.ethereumNode) return next(null);
+      ethereumConnector.connect(ethereumNodeConnectOptions, function (err, ethereumConnectionInfo) {
+        if (err) return next(err);
+        ethereumConnectionInfo.contracts = ethereumConnectionInfo.contracts || contracts.addresses[DEFAULT_NETWORK_ID];
+        self.api = api.generateContractApi(ethereumConnectionInfo.abi.functions);
+        self.rpc = rpcInterface.createRpcInterface(ethereumConnectionInfo.rpc);
+        next(null, ethereumConnectionInfo);
+      });
+    }
+  }, function (err, connectionInfo) {
     if (err) return callback(err);
-    vitals.contracts = vitals.contracts || contracts.addresses[DEFAULT_NETWORK_ID];
-    this.api = api.generateContractApi(vitals.abi.functions);
-    this.rpc = rpcInterface.createRpcInterface(vitals.rpc);
-    callback(vitals);
-  }.bind(this));
+    callback(null, connectionInfo);
+  });
 }
 
 module.exports = connect;

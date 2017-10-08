@@ -16,7 +16,10 @@ npm install augur.js
 var Augur = require("augur.js");
 var augur = new Augur();
 
-augur.connect({ http: "https://eth9000.augur.net", ws: "wss://ws9000.augur.net" }, () => {
+var ethereumNode = { http: "http://127.0.0.1:8545", ws: "ws://127.0.0.1:8546" };
+var augurNode = "ws://127.0.0.1:9001";
+
+augur.connect({ ethereumNode, augurNode }, (err) => {
   // do stuff
 });
 ```

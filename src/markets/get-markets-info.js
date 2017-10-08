@@ -1,14 +1,14 @@
 "use strict";
 
-var api = require("../api");
-var parseBatchMarketInfo = require("../parsers/batch-market-info");
+var augurNode = require("../augur-node");
 
-// { marketIDs }
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p.universe Universe address for which to get markets.
+ * @return {Object} Market info object.
+ */
 function getMarketsInfo(p, callback) {
-  api().MarketFetcher.batchGetMarketInfo(p, function (err, marketInfoArray) {
-    if (err) return callback(err);
-    callback(null, parseBatchMarketInfo(marketInfoArray, p.marketIDs.length));
-  });
+  augurNode.submitRequest("getMarketsInfo", p, callback);
 }
 
 module.exports = getMarketsInfo;

@@ -308,8 +308,8 @@ augur.connect({
   http: "http://127.0.0.1:8545",
   ipc: process.env.GETH_IPC,
   ws: "ws://127.0.0.1:8546"
-}, function (connected) {
-  if (!connected) return console.error("connect failed:", connected);
+}, function (err, connectionInfo) {
+  if (err) return console.error("connect failed:", err, connectionInfo);
   async.eachSeries(cannedMarkets, function (market, nextMarket) {
     // if (!market.orderBook && parseInt(augur.rpc.getNetworkID()) === 9000) return nextMarket();
     market.branch = augur.constants.DEFAULT_BRANCH_ID;
