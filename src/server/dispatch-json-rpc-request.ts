@@ -1,4 +1,4 @@
-import { Database } from "sqlite3";
+import * as Knex from "knex";
 import { JsonRpcRequest } from "../types";
 import { getMarketInfo } from "./getters/get-market-info";
 import { getAccountTransferHistory } from "./getters/get-account-transfer-history";
@@ -21,7 +21,7 @@ import { getDetailedMarketInfo } from "./getters/get-detailed-market-info";
 import { getMarketsInfo } from "./getters/get-markets-info";
 import { getOpenOrders } from "./getters/get-open-orders";
 
-export function dispatchJsonRpcRequest(db: Database, request: JsonRpcRequest, callback: (err?: Error|null, result?: any) => void): void {
+export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callback: (err?: Error|null, result?: any) => void): void {
   console.log(request);
   switch (request.method) {
     case "getMarketInfo":

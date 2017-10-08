@@ -1,10 +1,15 @@
-import { Database } from "sqlite3";
+import * as Knex from "knex";
 import { Address, MarketsRow, MarketInfo } from "../../types";
 
-export function getMarketInfo(db: Database, marketID: string, callback: (err?: Error|null, result?: MarketInfo) => void): void {
-  db.get(`SELECT * FROM markets WHERE market_id = ?`, [marketID], (err?: Error|null, row?: MarketsRow): void => {
+
+export function getMarketInfo(db: Knex, marketID: string, callback: (err?: Error|null, result?: MarketInfo) => void): void {
+  db.raw("select * from markets where market_id = ? LIMIT 1", [marketID])
+  .asCallback((err?: Error|null, rows?: MarketsRow[]) => {
     if (err) return callback(err);
-    if (!row) return callback(null);
+    if (!rows || rows.length == 0) return callback(null);
+
+    const row: MarketsRow = rows[0];
+
     const marketInfo: MarketInfo = {
       marketID: row.market_id,
       universe: row.universe,

@@ -1,11 +1,16 @@
-import { Database } from "sqlite3";
+import * as Knex from "knex";
 import { FormattedLog, ErrorCallback } from "../../../types";
 
-export function processApprovalLog(db: Database, log: FormattedLog, callback: ErrorCallback): void {
-  const dataToInsert: (string|number)[] = [
-    log.transactionHash, log.logIndex, log.owner, log.spender, log.address, log.value, log.blockNumber
-  ];
-  db.run(`INSERT INTO approvals
-    (transaction_hash, log_index, owner, spender, token, value, block_number)
-    VALUES (${dataToInsert.map(() => '?').join(',')})`, dataToInsert, callback);
+export function processApprovalLog(db: Knex, log: FormattedLog, callback: ErrorCallback): void {
+  const dataToInsert: {} = {
+    transaction_hash: log.transactionHash,
+    log_index:        log.logIndex,
+    owner:            log.owner,
+    spender:          log.spender,
+    token:            log.address,
+    value:            log.value,
+    block_number:     log.blockNumber
+  };
+
+  db.insert(dataToInsert).into("approvals").asCallback(callback);
 }

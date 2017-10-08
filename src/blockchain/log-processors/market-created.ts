@@ -1,18 +1,35 @@
-import { Database } from "sqlite3";
+import * as Knex from "knex";
 import { FormattedLog, ErrorCallback } from "../../types";
 
-export function processMarketCreatedLog(db: Database, log: FormattedLog, callback: ErrorCallback): void {
-  const dataToInsert: (string|number)[] = [
-    log.market, log.address, log.marketType, log.numOutcomes, log.minPrice, log.maxPrice, log.marketCreator, log.creationTime, log.blockNumber, log.creationFee, log.marketCreatorFeeRate, log.topic, log.tag1, log.tag2, log.reportingWindow, log.endTime, log.shortDescription, log.designatedReporter, log.resolutionSource
-  ];
-  db.run(`INSERT INTO markets
-    (market_id, universe, market_type, num_outcomes, min_price, max_price, market_creator, creation_time, creation_block_number, creation_fee, market_creator_fee_rate, topic, tag1, tag2, reporting_window, end_time, short_description, designated_reporter, resolution_source)
-    VALUES (${dataToInsert.map(() => '?').join(',')})`, dataToInsert, (err?: Error|null): void => {
+export function processMarketCreatedLog(db: Knex, log: FormattedLog, callback: ErrorCallback): void {
+  const dataToInsert: {} = {
+    contract_address:        log.market,
+    universe:                log.address,
+    market_type:             log.marketType,
+    num_outcomes:            log.numOutcomes,
+    min_price:               log.minPrice,
+    max_price:               log.maxPrice,
+    market_creator:          log.marketCreator,
+    creation_time:           log.creationTime,
+    creation_block_number:   log.blockNumber,
+    creation_fee:            log.creationFee,
+    market_creator_fee_rate: log.marketCreatorFeeRate,
+    topic:                   log.topic,
+    tag1:                    log.tag1,
+    tag2:                    log.tag2,
+    reporting_window:        log.reportingWindow,
+    end_time:                log.endTime,
+    short_description:       log.shortDescription,
+    designated_reporter:     log.designatedReporter,
+    resolution_source:       log.resolutionSource
+  };
+  db.insert(dataToInsert).into("markets").asCallback((err?: Error|null): void => {
       if (err) return callback(err);
-      db.get(`SELECT popularity FROM topics WHERE topic = ?`, [log.topic], (err?: Error|null, row?: {popularity: number}): void => {
+      db.raw(`SELECT popularity FROM topics WHERE topic = ?`, [log.topic]).asCallback((err?: Error|null, row?: {popularity: number}): void => {
         if (err) return callback(err);
         if (row) return callback(null);
-        db.run(`INSERT INTO topics (topic, universe) VALUES (?, ?)`, [log.topic, log.address], callback);
+
+        db.insert({topic: log.topic, universe: log.address}).into("topics").asCallback(callback);
       });
   });
 }

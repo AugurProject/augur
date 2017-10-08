@@ -1,4 +1,4 @@
-import { Database } from "sqlite3";
+import * as Knex from "knex";
 import { Address } from "../../types";
 
 interface TopicsRow {
@@ -8,8 +8,8 @@ interface TopicsRow {
 
 type TopicsInfo = TopicsRow[];
 
-export function getTopics(db: Database, universe: Address, callback: (err?: Error|null, result?: TopicsInfo) => void): void {
-  db.all(`SELECT topic, popularity FROM topics WHERE universe = ? ORDER BY popularity DESC`, [universe], (err?: Error|null, topicsInfo?: TopicsInfo): void => {
+export function getTopics(db: Knex, universe: Address, callback: (err?: Error|null, result?: TopicsInfo) => void): void {
+  db.raw(`SELECT topic, popularity FROM topics WHERE universe = ? ORDER BY popularity DESC`, [universe]).asCallback((err?: Error|null, topicsInfo?: TopicsInfo): void => {
     if (err) return callback(err);
     if (!topicsInfo || !topicsInfo.length) return callback(null);
     callback(null, topicsInfo);

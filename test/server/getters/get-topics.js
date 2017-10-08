@@ -3,20 +3,17 @@
 const unlink = require("fs").unlink;
 const join = require("path").join;
 const assert = require("chai").assert;
-const sqlite3 = require("sqlite3").verbose();
-const { checkAugurDbSetup } = require("../../../build/setup/check-augur-db-setup");
+const setupTestDb = require("../../test.database");
 const { getTopics } = require("../../../build/server/getters/get-topics");
-
-const augurDbPath = join(__dirname, "augur.db");
 
 describe("server/getters/get-topics", () => {
   const test = (t) => {
     it(t.description, (done) => {
-      const db = new sqlite3.Database(augurDbPath);
-      checkAugurDbSetup(db, (err) => {
+      setupTestDb((err, db) => {
+        if (err) assert.fail(err);
         getTopics(db, t.params.universe, (err, topicsInfo) => {
           t.assertions(err, topicsInfo);
-          unlink(augurDbPath, done);
+          done();
         });
       });
     });

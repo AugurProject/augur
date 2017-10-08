@@ -1,12 +1,12 @@
-import { Database } from "sqlite3";
+import * as Knex from "knex";
 import { Address, MarketsRow, MarketInfo } from "../../types";
 
 interface MarketsInfo {
   [marketID: string]: MarketInfo
 }
 
-export function getMarketsInfo(db: Database, universe: Address, callback: (err?: Error|null, result?: MarketsInfo) => void): void {
-  db.all(`SELECT * FROM markets WHERE universe = ?`, [universe], (err?: Error|null, rows?: MarketsRow[]): void => {
+export function getMarketsInfo(db: Knex, universe: Address, callback: (err?: Error|null, result?: MarketsInfo) => void): void {
+  db.raw(`SELECT * FROM markets WHERE universe = ?`, [universe]).asCallback((err?: Error|null, rows?: MarketsRow[]): void => {
     if (err) return callback(err);
     if (!rows || !rows.length) return callback(null);
     const marketsInfo: MarketsInfo = {};
