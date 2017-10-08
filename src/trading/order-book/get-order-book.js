@@ -38,7 +38,7 @@ function getOrderBook(p, callback) {
   if (p.minPrice == null || p.maxPrice == null) {
     return callback("Must specify minPrice and maxPrice");
   }
-  augurNode.submitRequest("getOrderBook", p, callback);
+  augurNode.submitRequest("getOpenOrders", p, callback);
   // api().OrderBook.getOrderBook({
   //   _type: p._type,
   //   _market: p._market,
