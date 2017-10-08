@@ -15,7 +15,7 @@ export const connect = (env, callback = logError) => {
   if (env.hostedNodeFallback) options.httpAddresses.push('https://eth9000.augur.net');
   if (env.hostedNodeFallback) options.wsAddresses.push('wss://ws9000.augur.net');
   Object.keys(env.debug).forEach((opt) => { augur.options.debug[opt] = env.debug[opt]; });
-  augur.connect(options, (err, connectionInfo) => {
+  augur.connect({ ethereumNode: options, augurNode: env.augurNodeUrl }, (err, connectionInfo) => {
     if (err) return callback(err);
     console.log('connected:', connectionInfo);
     callback(null, connectionInfo.ethereumNode);

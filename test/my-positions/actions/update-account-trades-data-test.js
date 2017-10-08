@@ -71,7 +71,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
           id: '0x12345'
         },
         env: {
-          augurNodeURL: 'blah.com'
+          augurNodeUrl: 'blah.com'
         }
       },
       assertions: (store) => {

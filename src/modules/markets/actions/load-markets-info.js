@@ -1,12 +1,12 @@
-import loadDataFromAugurNode from 'modules/app/actions/load-data-from-augur-node';
+import { augur } from 'services/augurjs';
 import { updateMarketsData, updateMarketsLoadingStatus } from 'modules/markets/actions/update-markets-data';
 import { loadMarketDetails } from 'modules/market/actions/load-full-market';
 import logError from 'utils/log-error';
 
 export const loadMarketsInfo = (marketIDs, callback = logError) => (dispatch, getState) => {
-  const { branch, env, loginAccount } = getState();
+  const { loginAccount } = getState();
   dispatch(updateMarketsLoadingStatus(marketIDs, true));
-  loadDataFromAugurNode(env.augurNodeURL, 'getMarketsInfo', { branch: branch.id, markets: marketIDs }, (err, marketsData) => {
+  augur.markets.getMarketsInfo({ marketIDs }, (err, marketsData) => {
     if (err) return callback(err);
     const marketInfoIDs = Object.keys(marketsData);
     if (!marketInfoIDs.length) return callback(null);

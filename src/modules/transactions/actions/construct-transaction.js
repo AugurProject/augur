@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { fix, strip0xPrefix, unfix } from 'speedomatic';
-import { augur, constants } from 'services/augurjs';
-import { ZERO } from 'modules/trade/constants/numbers';
+import { augur } from 'services/augurjs';
+import { ZERO, TEN_TO_THE_EIGHTEENTH_POWER } from 'modules/trade/constants/numbers';
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
 import * as TYPES from 'modules/transactions/constants/types';
 import { formatEtherTokens, formatEther, formatPercent, formatRep, formatShares } from 'utils/format-number';
@@ -209,13 +209,13 @@ export const constructCreateOrderTransaction = (trade, marketID, marketType, des
   const fxpShares = fix(trade.amount);
   const fxpPrice = fix(trade.price);
   const fxpSettlementFee = fix(settlementFee);
-  const fxpNoFeeCost = fxpPrice.times(fxpShares).dividedBy(constants.ONE).floor();
+  const fxpNoFeeCost = fxpPrice.times(fxpShares).dividedBy(TEN_TO_THE_EIGHTEENTH_POWER).floor();
   const fxpTotalCost = fxpNoFeeCost.plus(fxpSettlementFee);
-  const fxpTotalCostPerShare = fxpTotalCost.dividedBy(fxpShares).times(constants.ONE).floor();
-  const fxpTotalReturn = fxpPrice.times(fxpShares).dividedBy(constants.ONE)
+  const fxpTotalCostPerShare = fxpTotalCost.dividedBy(fxpShares).times(TEN_TO_THE_EIGHTEENTH_POWER).floor();
+  const fxpTotalReturn = fxpPrice.times(fxpShares).dividedBy(TEN_TO_THE_EIGHTEENTH_POWER)
     .floor()
     .minus(fxpSettlementFee);
-  const fxpTotalReturnPerShare = fxpTotalReturn.dividedBy(fxpShares).times(constants.ONE).floor();
+  const fxpTotalReturnPerShare = fxpTotalReturn.dividedBy(fxpShares).times(TEN_TO_THE_EIGHTEENTH_POWER).floor();
   return {
     [trade.transactionHash]: {
       type: orderType,
@@ -238,7 +238,7 @@ export const constructCreateOrderTransaction = (trade, marketID, marketType, des
       avgPrice: formattedPrice,
       timestamp: formatDate(new Date(trade.timestamp * 1000)),
       hash: trade.transactionHash,
-      feePercent: formatPercent(unfix(fxpSettlementFee.dividedBy(fxpTotalCost).times(constants.ONE).floor()).times(100)),
+      feePercent: formatPercent(unfix(fxpSettlementFee.dividedBy(fxpTotalCost).times(TEN_TO_THE_EIGHTEENTH_POWER).floor()).times(100)),
       totalCost: orderType === TYPES.BUY ? formatEtherTokens(unfix(fxpTotalCost)) : undefined,
       totalReturn: orderType === TYPES.SELL ? formatEtherTokens(unfix(fxpTotalReturn)) : undefined,
       gasFees: trade.gasFees && new BigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,

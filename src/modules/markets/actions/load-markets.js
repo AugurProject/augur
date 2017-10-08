@@ -1,16 +1,16 @@
-import loadDataFromAugurNode from 'modules/app/actions/load-data-from-augur-node';
+import { augur } from 'services/augurjs';
 import { updateHasLoadedMarkets } from 'modules/markets/actions/update-has-loaded-markets';
 import { clearMarketsData, updateMarketsData } from 'modules/markets/actions/update-markets-data';
 import isObject from 'utils/is-object';
 import logError from 'utils/log-error';
 
 const loadMarkets = (callback = logError) => (dispatch, getState) => {
-  const { branch, env } = getState();
-  loadDataFromAugurNode(env.augurNodeURL, 'getMarketsInfo', { branch: branch.id, active: true, sort: 'most_volume' }, (err, marketsData) => {
+  const { branch } = getState();
+  augur.markets.getMarketsInfo({ universe: branch.id }, (err, marketsData) => {
     if (err) return callback(err);
     if (marketsData == null || !isObject(marketsData)) {
       dispatch(updateHasLoadedMarkets(false));
-      return callback(`no markets data received from ${env.augurNodeURL}`);
+      return callback(`no markets data received`);
     }
     if (!Object.keys(marketsData).length) return callback(null);
     dispatch(clearMarketsData());

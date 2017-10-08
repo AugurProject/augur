@@ -1,7 +1,7 @@
 import memoize from 'memoizee';
 import BigNumber from 'bignumber.js';
-import { ZERO } from 'modules/trade/constants/numbers';
-import { augur, constants } from 'services/augurjs';
+import { ZERO, TEN_TO_THE_EIGHTEENTH_POWER } from 'modules/trade/constants/numbers';
+import { augur } from 'services/augurjs';
 import speedomatic from 'speedomatic';
 
 /**
@@ -55,17 +55,17 @@ export const calculateMaxPossibleShares = memoize((loginAccount, orders, makerFe
       let remainingShares;
       const feePerShare = speedomatic.fix(orderCost.fee.abs())
         .dividedBy(speedomatic.fix(orderAmount))
-        .times(constants.ONE)
+        .times(TEN_TO_THE_EIGHTEENTH_POWER)
         .floor();
       if (order.type === 'buy') {
         remainingShares = speedomatic.unfix(
           remainingEther.dividedBy(feePerShare)
-            .times(constants.ONE)
+            .times(TEN_TO_THE_EIGHTEENTH_POWER)
             .floor());
       } else {
         remainingShares = speedomatic.unfix(
           remainingEther.dividedBy(feePerShare.plus(speedomatic.fix(fullPrecisionPrice)))
-            .times(constants.ONE)
+            .times(TEN_TO_THE_EIGHTEENTH_POWER)
             .floor());
       }
       maxPossibleShares = maxPossibleShares.plus(remainingShares);
