@@ -1,4 +1,4 @@
-import { augur } from 'services/augurjs';
+import { connect } from 'services/augurjs';
 import { BRANCH_ID } from 'modules/app/constants/network';
 import { updateEnv } from 'modules/app/actions/update-env';
 import { updateConnectionStatus, updateAugurNodeConnectionStatus } from 'modules/app/actions/update-connection';
@@ -20,19 +20,19 @@ export function initAugur(callback = logError) {
         if (xhttp.status === 200) {
           const env = JSON.parse(xhttp.responseText);
           dispatch(updateEnv(env));
-          augur.connect(env, (err, vitals) => {
+          connect(env, (err, ethereumNodeConnectionInfo) => {
             if (err) return callback(err);
             dispatch(updateConnectionStatus(true));
-            dispatch(updateContractAddresses(vitals.contracts));
-            dispatch(updateFunctionsAPI(vitals.abi.functions));
-            dispatch(updateEventsAPI(vitals.abi.events));
+            dispatch(updateContractAddresses(ethereumNodeConnectionInfo.contracts));
+            dispatch(updateFunctionsAPI(ethereumNodeConnectionInfo.abi.functions));
+            dispatch(updateEventsAPI(ethereumNodeConnectionInfo.abi.events));
             if (env.augurNodeURL) {
               // TODO ping the augur-node to make sure it's there
               // TODO list of default augur-nodes and/or augur-node discovery process
               dispatch(updateAugurNodeConnectionStatus(true));
             }
             dispatch(registerTransactionRelay());
-            dispatch(setLoginAccount(env.autoLogin, vitals.coinbase));
+            dispatch(setLoginAccount(env.autoLogin, ethereumNodeConnectionInfo.coinbase));
             dispatch(loadBranch(env.branchID || BRANCH_ID));
             callback();
           });

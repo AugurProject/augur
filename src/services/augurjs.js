@@ -15,11 +15,10 @@ export const connect = (env, callback = logError) => {
   if (env.hostedNodeFallback) options.httpAddresses.push('https://eth9000.augur.net');
   if (env.hostedNodeFallback) options.wsAddresses.push('wss://ws9000.augur.net');
   Object.keys(env.debug).forEach((opt) => { augur.options.debug[opt] = env.debug[opt]; });
-  if (env.loadZeroVolumeMarkets != null) augur.options.loadZeroVolumeMarkets = env.loadZeroVolumeMarkets;
-  augur.connect(options, (vitals) => {
-    if (!vitals) return callback('could not connect to ethereum:' + JSON.stringify(vitals));
-    console.log('connected:', vitals);
-    callback(null, vitals);
+  augur.connect(options, (err, connectionInfo) => {
+    if (err) return callback(err);
+    console.log('connected:', connectionInfo);
+    callback(null, connectionInfo.ethereumNode);
   });
 };
 
