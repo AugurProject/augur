@@ -5,7 +5,7 @@ import { onNewBlock } from "./on-new-block";
 import { logError } from "../utils/log-error";
 
 export function startAugurListeners(db: Database, augur: Augur, callback: () => void): void {
-  augur.filters.startListeners({
+  augur.events.startListeners({
     Augur: {
       MarketCreated: makeLogListener(db, "Augur", "MarketCreated"),
       TokensTransferred: makeLogListener(db, "Augur", "TokensTransferred"),
