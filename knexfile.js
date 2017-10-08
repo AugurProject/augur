@@ -35,6 +35,7 @@ module.exports = {
     },
     migrations: {
       directory: './build/migrations'
-    }
+    },
+    useNullAsDefault: true
   }
 };
