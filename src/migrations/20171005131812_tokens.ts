@@ -1,7 +1,6 @@
 import * as Knex from "knex";
-import Promise = require("bluebird");
 
-exports.up = function (knex: Knex): Promise<any> {
+exports.up = async function (knex: Knex): Promise<any> {
   return knex.schema.dropTableIfExists("tokens").then(() => {
     return knex.schema.raw(`CREATE TABLE tokens (
               contract_address varchar(66) PRIMARY KEY NOT NULL,
@@ -13,6 +12,6 @@ exports.up = function (knex: Knex): Promise<any> {
   });
 };
 
-exports.down = function (knex: Knex): Promise<any> {
+exports.down = async function (knex: Knex): Promise<any> {
   return knex.schema.dropTableIfExists("tokens");
 };

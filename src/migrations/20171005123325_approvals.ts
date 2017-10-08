@@ -1,7 +1,6 @@
 import * as Knex from "knex";
-import Promise = require("bluebird");
 
-exports.up = function (knex: Knex): Promise<any> {
+exports.up = async function (knex: Knex): Promise<any> {
   return knex.schema.dropTableIfExists("approvals").then(() => {
     return knex.schema.raw(`CREATE TABLE approvals (
               transaction_hash varchar(66) NOT NULL,
@@ -16,6 +15,6 @@ exports.up = function (knex: Knex): Promise<any> {
   });
 };
 
-exports.down = function (knex: Knex): Promise<any> {
+exports.down = async function (knex: Knex): Promise<any> {
   return knex.schema.dropTableIfExists("approvals");
 };
