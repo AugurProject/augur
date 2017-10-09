@@ -12,6 +12,8 @@
   "scripts": {
     "test": "mocha test",
     "build": "tsc",
+    "migrate": "node node_modules/knex/bin/cli.js migrate:latest --env build",
+    "seed": "node node_modules/knex/bin/cli.js seed:run --env build",
     "coverage": "istanbul cover --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test"
   },
   "repository": {
