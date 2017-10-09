@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import moment from 'moment'
 
 import 'react-dates/initialize'
 import 'react-dates/lib/css/_datepicker.css'
@@ -40,7 +41,7 @@ export default class CreateMarketResolution extends Component {
 
     this.state = {
       expirySourceType: false,
-      date: null,
+      date: Object.keys(this.props.newMarket.endDate).length ? moment(this.props.newMarket.endDate.timestamp) : null,
       focused: false,
     }
 
@@ -105,9 +106,10 @@ export default class CreateMarketResolution extends Component {
           </label>
           <SingleDatePicker
             date={this.state.date}
-            onDateChange={date => this.setState({ date })}
+            onDateChange={(date) => { this.setState({ date }); p.updateNewMarket({ endDate: formatDate(date.toDate()) }) }}
             focused={this.state.focused}
             onFocusChange={({ focused }) => this.setState({ focused })}
+            displayFormat="MMM D, YYYY"
             numberOfMonths={1}
             navPrev={<ChevronLeft />}
             navNext={<ChevronRight />}
