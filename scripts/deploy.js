@@ -1,3 +1,5 @@
+// TODO -- exit deploy if actual errors occur -- right now getting false positives from git
+
 const path = require('path');
 const { eachOfSeries } = require('../node_modules/async');
 const { spawn } = require('child_process');
