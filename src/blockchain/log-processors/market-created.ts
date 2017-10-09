@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 import { FormattedLog, ErrorCallback } from "../../types";
 
-export function processMarketCreatedLog(db: Knex, log: FormattedLog, callback: ErrorCallback): void {
+export function processMarketCreatedLog(db: Knex, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
   const dataToInsert: {} = {
     contract_address:        log.market,
     universe:                log.address,
@@ -23,13 +23,13 @@ export function processMarketCreatedLog(db: Knex, log: FormattedLog, callback: E
     designated_reporter:     log.designatedReporter,
     resolution_source:       log.resolutionSource
   };
-  db.insert(dataToInsert).into("markets").asCallback((err?: Error|null): void => {
+  db.transacting(trx).insert(dataToInsert).into("markets").asCallback((err?: Error|null): void => {
       if (err) return callback(err);
-      db.raw(`SELECT popularity FROM topics WHERE topic = ?`, [log.topic]).asCallback((err?: Error|null, row?: {popularity: number}): void => {
+      trx.raw(`SELECT popularity FROM topics WHERE topic = ?`, [log.topic]).asCallback((err?: Error|null, row?: {popularity: number}): void => {
         if (err) return callback(err);
         if (row) return callback(null);
 
-        db.insert({topic: log.topic, universe: log.address}).into("topics").asCallback(callback);
+        db.transacting(trx).insert({topic: log.topic, universe: log.address}).into("topics").asCallback(callback);
       });
   });
 }

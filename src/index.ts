@@ -16,7 +16,8 @@ if(process.env['DATABASE'] == null) {
     client: 'sqlite3',
     connection: {
       filename: augurDbPath
-    }
+    },
+    acquireConnectionTimeout: 5*60*1000
   });
 } else {
   db = Knex({

@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 import { FormattedLog, ErrorCallback } from "../../../types";
 
-export function processApprovalLog(db: Knex, log: FormattedLog, callback: ErrorCallback): void {
+export function processApprovalLog(db: Knex, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
   const dataToInsert: {} = {
     transaction_hash: log.transactionHash,
     log_index:        log.logIndex,
@@ -12,5 +12,5 @@ export function processApprovalLog(db: Knex, log: FormattedLog, callback: ErrorC
     block_number:     log.blockNumber
   };
 
-  db.insert(dataToInsert).into("approvals").asCallback(callback);
+  db.transacting(trx).insert(dataToInsert).into("approvals").asCallback(callback);
 }
