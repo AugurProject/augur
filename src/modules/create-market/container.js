@@ -20,6 +20,7 @@ const mapStateToProps = state => ({
   newMarket: state.newMarket,
   footerHeight: state.footerHeight,
   categories: selectTopics(state),
+  isMobileSmall: state.isMobileSmall,
 })
 
 const mapDispatchToProps = dispatch => ({

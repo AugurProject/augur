@@ -61,7 +61,9 @@ export default class AppView extends Component {
     history: PropTypes.object.isRequired,
     coreStats: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
+    isMobileSmall: PropTypes.bool.isRequired,
     updateIsMobile: PropTypes.func.isRequired,
+    updateIsMobileSmall: PropTypes.func.isRequired,
     selectedCategory: PropTypes.string,
     url: PropTypes.string
   }
@@ -203,8 +205,10 @@ export default class AppView extends Component {
     // This method sets up the side bar's state + calls the method to attach the touch event handler for when a user is mobile
     // CSS breakpoint sets the value when a user is mobile
     const isMobile = window.getComputedStyle(document.body).getPropertyValue('--is-mobile').indexOf('true') !== -1
+    const isMobileSmall = window.getComputedStyle(document.body).getPropertyValue('--is-mobile-small').indexOf('true') !== -1
 
     this.props.updateIsMobile(isMobile)
+    this.props.updateIsMobileSmall(isMobileSmall)
   }
 
   toggleMenuTween(menuKey, forceOpen, cb) {

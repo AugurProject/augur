@@ -31,10 +31,8 @@ describe('modules/create-market/reducers/new-market.js', () => {
       const expected = {
         isValid: false,
         holdForUserAction: false,
-        validations: [],
         currentStep: 0,
         type: '',
-        outcomes: [],
         scalarSmallNum: '',
         scalarBigNum: '',
         description: '',
@@ -42,8 +40,10 @@ describe('modules/create-market/reducers/new-market.js', () => {
         expirySource: '',
         endDate: {},
         detailsText: '',
-        topic: '',
-        keywords: [],
+        category: '',
+        tag1: '',
+        tag2: '',
+        outcomes: Array(8).fill(''),
         takerFee: TAKER_FEE_DEFAULT,
         makerFee: MAKER_FEE_DEFAULT,
         orderBook: {},
@@ -52,6 +52,17 @@ describe('modules/create-market/reducers/new-market.js', () => {
         initialLiquidityEth: new BigNumber(0),
         initialLiquidityGas: new BigNumber(0),
         initialLiquidityFees: new BigNumber(0),
+        validations: [
+          {
+            description: false,
+            category: false,
+            tag1: false,
+            tag2: false,
+          },
+          {
+            type: false,
+          },
+        ],
         creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.'
       }
 
@@ -369,10 +380,8 @@ describe('modules/create-market/reducers/new-market.js', () => {
       const expected = {
         isValid: false,
         holdForUserAction: false,
-        validations: [],
         currentStep: 0,
         type: '',
-        outcomes: [],
         scalarSmallNum: '',
         scalarBigNum: '',
         description: '',
@@ -380,8 +389,10 @@ describe('modules/create-market/reducers/new-market.js', () => {
         expirySource: '',
         endDate: {},
         detailsText: '',
-        topic: '',
-        keywords: [],
+        category: '',
+        tag1: '',
+        tag2: '',
+        outcomes: Array(8).fill(''),
         takerFee: TAKER_FEE_DEFAULT,
         makerFee: MAKER_FEE_DEFAULT,
         orderBook: {},
@@ -390,6 +401,17 @@ describe('modules/create-market/reducers/new-market.js', () => {
         initialLiquidityEth: new BigNumber(0),
         initialLiquidityGas: new BigNumber(0),
         initialLiquidityFees: new BigNumber(0),
+        validations: [
+          {
+            description: false,
+            category: false,
+            tag1: false,
+            tag2: false,
+          },
+          {
+            type: false,
+          },
+        ],
         creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.'
       }
 

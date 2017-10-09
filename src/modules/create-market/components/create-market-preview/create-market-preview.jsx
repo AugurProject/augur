@@ -6,7 +6,12 @@ import PropTypes from 'prop-types'
 // import Highcharts from 'highcharts'
 // import classNames from 'classnames'
 
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+
 import { CreateMarketEdit } from 'modules/common/components/icons/icons'
+
+import CreateMarketPreviewRange from 'modules/create-market/components/create-market-preview-range/create-market-preview-range'
+import CreateMarketPreviewCategorical from 'modules/create-market/components/create-market-preview-categorical/create-market-preview-categorical'
 
 // import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints'
 // import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
@@ -160,7 +165,17 @@ const CreateMarketPreview = p => (
         </div>
         <h1 className={Styles.CreateMarketPreview__description}>{p.newMarket.description || 'New Market Question'}</h1>
         <div className={Styles.CreateMarketPreview__outcome}>
-          Outcome
+          { (p.newMarket.type === BINARY || p.newMarket.type === SCALAR) &&
+            <CreateMarketPreviewRange
+              newMarket={p.newMarket}
+            />
+          }
+          { p.newMarket.type === CATEGORICAL && p.newMarket.outcomes.length > 0 &&
+            <CreateMarketPreviewCategorical
+              newMarket={p.newMarket}
+            />
+          }
+          { (p.newMarket.type === '' || (p.newMarket.type === CATEGORICAL && p.newMarket.outcomes.length === 0)) && 'Outcome' }
         </div>
         <span className={Styles.CreateMarketPreview__icon}>
           {CreateMarketEdit}
