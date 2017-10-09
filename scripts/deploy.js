@@ -10,8 +10,10 @@ const DEVELOPMENT_SERVERS = [
   '45.33.54.37', // IPFS Node 2
   '23.239.21.136' // IPFS Node 3
 ];
+const DEVELOPMENT_LOAD_BALANCER = '173.255.208.40';
 
 const PRODUCTION_SERVERS = []; // TODO
+const PRODUCTION_LOAD_BALANCER = ''; // TODO
 
 const FLAGS = process.argv.filter(arg => arg.indexOf('--') !== -1);
 
@@ -35,7 +37,10 @@ if (isProduction) {
     (item, key, callback) => deployBuild(item, callback),
     e => e == null ?
       console.log('Succesfully deployed to all servers.') :
-      console.log('Failed to deployed to all servers, code: ', e));
+      console.log('Failed to deployed to all servers, code: ', e)
+  );
+
+  purgeLoadBalancerCache(DEVELOPMENT_LOAD_BALANCER);
 }
 
 function deployBuild(server, callback) {
@@ -76,6 +81,31 @@ function deployBuild(server, callback) {
       callback();
     } else {
       console.log(`App failed to deploy to ${server} -- code: ${code}`);
+      callback(code);
+    }
+  });
+}
+
+function purgeLoadBalancerCache(ip) {
+  const purge = spawn('ssh',
+    [
+      `${USER}@${server}`,
+      "echo '-- LOGGED IN --';",
+      "echo '-- PURGING NGINX CACHE --';",
+      "cd /etc/nginx && sudo rm -rf ./cache/* && sudo mkdir ./cache/temp && sudo chown www-data ./cache/temp;",
+      "sudo service nginx restart;"
+    ]
+  )
+
+  purge.stdout.on('data', data => console.log(`${data}`));
+  purge.stderr.on('data', data => console.log(`ERR -- ${data}`));
+
+  purge.on('close', (code) => {
+    if (code === 0) {
+      console.log(`Load Balancer Cache Purged Successfully For: ${server}.`);
+      callback();
+    } else {
+      console.log(`Load Balancer Failed to Purge Cache For: ${server} -- code: ${code}`);
       callback(code);
     }
   });
