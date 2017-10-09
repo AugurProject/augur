@@ -62,7 +62,7 @@ function deployBuild(server, callback) {
       "echo '-- UPDATE HASH FOR IPFS REPUBLISH CRON JOB --';",
       "echo $NEW_BUILD_HASH > ~/ipfs-deploy/NEW_BUILD_HASH;",
       "echo '-- PURGING NGINX CACHE --';",
-      "cd /etc/nginx && sudo rm -rf ./cache/* && sudo mkdir temp && sudo chown www-data temp;",
+      "cd /etc/nginx && sudo rm -rf ./cache/* && sudo mkdir ./cache/temp && sudo chown www-data ./cache/temp;",
       "sudo service nginx restart;"
     ]
   )
