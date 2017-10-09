@@ -4,7 +4,7 @@ const path = require('path');
 const { eachOfSeries } = require('../node_modules/async');
 const { spawn } = require('child_process');
 
-const USER = 'ua';
+const USER = process.env.DU;
 const DEVELOPMENT_SERVERS = [
   process.env.IPFS1,
   process.env.IPFS2,
