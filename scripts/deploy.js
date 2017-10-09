@@ -60,7 +60,10 @@ function deployBuild(server, callback) {
       "echo '-- PUBLISHING BUILD --';",
       "/home/"+USER+"/bin/ipfs name publish --key=augur-dev $NEW_BUILD_HASH;",
       "echo '-- UPDATE HASH FOR IPFS REPUBLISH CRON JOB --';",
-      "echo $NEW_BUILD_HASH > ~/ipfs-deploy/NEW_BUILD_HASH;"
+      "echo $NEW_BUILD_HASH > ~/ipfs-deploy/NEW_BUILD_HASH;",
+      "echo '-- PURGING NGINX CACHE --';",
+      "cd /etc/nginx && sudo rm -rf ./cache/* && sudo mkdir temp && sudo chown www-data temp;",
+      "sudo service nginx restart;"
     ]
   )
 
