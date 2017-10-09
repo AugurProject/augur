@@ -25,11 +25,11 @@ export function processMarketCreatedLog(db: Knex, trx: Knex.Transaction, log: Fo
   };
   db.transacting(trx).insert(dataToInsert).into("markets").asCallback((err?: Error|null): void => {
       if (err) return callback(err);
-      db.raw(`SELECT popularity FROM topics WHERE topic = ?`, [log.topic]).asCallback((err?: Error|null, row?: {popularity: number}): void => {
+      trx.raw(`SELECT popularity FROM topics WHERE topic = ?`, [log.topic]).asCallback((err?: Error|null, row?: {popularity: number}): void => {
         if (err) return callback(err);
         if (row) return callback(null);
 
-        db.insert({topic: log.topic, universe: log.address}).into("topics").asCallback(callback);
+        db.transacting(trx).insert({topic: log.topic, universe: log.address}).into("topics").asCallback(callback);
       });
   });
 }
