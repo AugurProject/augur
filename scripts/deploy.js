@@ -5,12 +5,12 @@ const { eachOfSeries } = require('../node_modules/async');
 const { spawn } = require('child_process');
 
 const USER = 'ua';
-const DEVELOPMENT_SERVERS = [ // TODO -- make these env vars
-  '173.230.146.39', // IPFS Node 1
-  '45.33.54.37', // IPFS Node 2
-  '23.239.21.136' // IPFS Node 3
+const DEVELOPMENT_SERVERS = [
+  process.env.IPFS1,
+  process.env.IPFS2,
+  process.env.IPFS3
 ];
-const DEVELOPMENT_LOAD_BALANCER = '173.255.208.40';
+const DEVELOPMENT_LOAD_BALANCER = process.env.DLB1;
 
 const PRODUCTION_SERVERS = []; // TODO
 const PRODUCTION_LOAD_BALANCER = ''; // TODO
