@@ -12,5 +12,5 @@ export function processTransferLog(db: Knex, log: FormattedLog, callback: ErrorC
     block_number:      log.blockNumber
   };
 
-  db.insert(dataToInsert).into('transfers').asCallback(callback);
+  db.insert(dataToInsert).into("transfers").asCallback(callback);
 }
