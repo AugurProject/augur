@@ -8,6 +8,12 @@ export function onNewBlock(db: Knex, augur: Augur, blockNumber: string) {
     console.log("new block:", parseInt(blockNumber, 16), parseInt(block.timestamp, 16));
     const dataToInsertOrReplace: (string|number)[] = [parseInt(blockNumber, 16), parseInt(block.timestamp, 16)];
     // PG NB: Does this work on pgsql?
-    db.raw(`INSERT OR REPLACE INTO blocks (block_number, block_timestamp) VALUES (?, ?)`, dataToInsertOrReplace).asCallback(logError);
+    db.transaction((trx) => {
+      trx.raw(`INSERT OR REPLACE INTO blocks (block_number, block_timestamp) VALUES (?, ?)`, dataToInsertOrReplace)
+        .then(trx.commit)
+        .catch(trx.rollback);
+    })
+    .then(() => logError())
+    .catch(logError);
   });
 }
