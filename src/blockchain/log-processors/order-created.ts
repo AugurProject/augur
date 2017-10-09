@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 import { FormattedLog, ErrorCallback } from "../../types";
 
-export function processOrderCreatedLog(db: Knex, log: FormattedLog, callback: ErrorCallback): void {
+export function processOrderCreatedLog(db: Knex, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
   db.raw("SELECT block_timestamp FROM blocks WHERE block_number = ?", [log.blockNumber])
   .asCallback((err?: Error|null, blocksRow?: {block_timestamp: number}): void => {
     if (err) return callback(err);
@@ -27,7 +27,7 @@ export function processOrderCreatedLog(db: Knex, log: FormattedLog, callback: Er
           trade_group_id: log.tradeGroupId
         };
 
-      db.insert(dataToInsert).into("orders").asCallback(callback);
+      db.transacting(trx).insert(dataToInsert).into("orders").asCallback(callback);
     });
   });
 }

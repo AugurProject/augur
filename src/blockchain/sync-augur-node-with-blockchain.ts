@@ -12,10 +12,20 @@ export function syncAugurNodeWithBlockchain(db: Knex, augur: Augur, ethereumNode
         const fromBlock: number = (!row || !row.highest_block_number) ? uploadBlockNumbers[augur.rpc.getNetworkID()] : row.highest_block_number + 1;
         const highestBlockNumber: number = parseInt(augur.rpc.getCurrentBlock().number, 16);
         if (fromBlock >= highestBlockNumber) return callback(null); // augur-node is already up-to-date
-        downloadAugurLogs(db, augur, fromBlock, highestBlockNumber, (err?: Error|null) => {
-          if (err) return callback(err);
-          db.raw(`INSERT INTO blockchain_sync_history (highest_block_number) VALUES (?)`, [highestBlockNumber]).asCallback(callback);
-        });
-      })
+        
+        db.transaction((trx) => {
+          downloadAugurLogs(db, trx, augur, fromBlock, highestBlockNumber, (err?: Error|null) => {
+            if (err) {
+              trx.rollback();
+              return callback(err);
+            }
+
+            db.transacting(trx).insert({highest_block_number: highestBlockNumber}).into("blockchain_sync_history")
+              .catch(trx.rollback)
+              .then(trx.commit)
+              .then(callback);
+          });
+        })
+      });
   }));
 }
