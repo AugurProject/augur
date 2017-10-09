@@ -1,13 +1,13 @@
 import * as Knex from "knex";
 import { FormattedLog, ErrorCallback } from "../../types";
 
-export function processOrderCreatedLog(db: Knex, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
-  trx.raw("SELECT block_timestamp FROM blocks WHERE block_number = ?", [log.blockNumber])
+export function processOrderCreatedLog(db: Knex, log: FormattedLog, callback: ErrorCallback): void {
+  db.raw("SELECT block_timestamp FROM blocks WHERE block_number = ?", [log.blockNumber])
   .asCallback((err?: Error|null, blocksRow?: {block_timestamp: number}): void => {
     if (err) return callback(err);
     if (!blocksRow) return callback(new Error("block timestamp not found"));
 
-    trx.raw("SELECT market_id, outcome FROM token WHERE contract_address = ?", [log.shareToken])
+    db.raw("SELECT market_id, outcome FROM token WHERE contract_address = ?", [log.shareToken])
       .asCallback((err?: Error|null, tokensRow?: {market_id: string, outcome: number}): void => {
         if (err) return callback(err);
         if (!tokensRow) return callback(new Error("market and outcome not found"));
@@ -27,7 +27,7 @@ export function processOrderCreatedLog(db: Knex, trx: Knex.Transaction, log: For
           trade_group_id: log.tradeGroupId
         };
 
-      db.transacting(trx).insert(dataToInsert).into("orders").asCallback(callback);
+      db.insert(dataToInsert).into("orders").asCallback(callback);
     });
   });
 }

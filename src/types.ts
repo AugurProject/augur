@@ -39,7 +39,7 @@ export interface AugurLogs {
 
 export type ErrorCallback = (err?: Error|null) => void;
 
-export type LogProcessor = (db: Knex, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback) => void;
+export type LogProcessor = (db: Knex, log: FormattedLog, callback: ErrorCallback) => void;
 
 export interface JsonRpcRequest {
   id: string|number|null,
