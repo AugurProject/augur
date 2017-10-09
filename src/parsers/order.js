@@ -11,7 +11,7 @@ var constants = require("../constants");
  * @param {string} minPrice This market's minimum possible price, as a base-10 string.
  * @param {string} maxPrice This market's maximum possible price, as a base-10 string.
  * @param {string[]} order Raw order info received from the contract, as an array of base-10 strings.
- * @return {require("../trading/order-book/get-order").Order} Parsed order object.
+ * @return {require("../trading/get-open-orders").Order} Parsed order object.
  */
 module.exports = function (orderType, minPrice, maxPrice, order) {
   if (!Array.isArray(order) || !order.length || !parseInt(order[0], 16)) return null;

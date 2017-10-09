@@ -1,7 +1,15 @@
 "use strict";
 
 var BigNumber = require("bignumber.js");
-var compareOrdersByPrice = require("./compare-orders-by-price");
+
+var compareOrdersByPrice = {
+  1: function (order1, order2) {
+    return order1.fullPrecisionPrice - order2.fullPrecisionPrice;
+  },
+  2: function (order1, order2) {
+    return order2.fullPrecisionPrice - order1.fullPrecisionPrice;
+  }
+};
 
 /**
  * Bids are sorted descendingly, asks are sorted ascendingly.
