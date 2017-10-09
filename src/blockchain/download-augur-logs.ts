@@ -10,7 +10,7 @@ export function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, toB
     if (err) return callback(err instanceof Error ? err : new Error(JSON.stringify(err)));
     each(Object.keys(allAugurLogs!), (contractName: string, nextContractName: ErrorCallback) => (
       each(Object.keys(allAugurLogs![contractName]!), (eventName: string, nextEventName: ErrorCallback) => (
-        processLogs(db, allAugurLogs![contractName]![eventName]!, logProcessors[contractName][eventName], callback)
+        processLogs(db, allAugurLogs![contractName]![eventName]!, logProcessors[contractName][eventName], nextEventName)
       ), nextContractName)
     ), callback);
   });
