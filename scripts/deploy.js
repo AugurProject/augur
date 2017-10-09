@@ -5,7 +5,7 @@ const { eachOfSeries } = require('../node_modules/async');
 const { spawn } = require('child_process');
 
 const USER = 'ua';
-const DEVELOPMENT_SERVERS = [
+const DEVELOPMENT_SERVERS = [ // TODO -- make these env vars
   '173.230.146.39', // IPFS Node 1
   '45.33.54.37', // IPFS Node 2
   '23.239.21.136' // IPFS Node 3
@@ -35,12 +35,13 @@ if (isProduction) {
   eachOfSeries(
     DEVELOPMENT_SERVERS,
     (item, key, callback) => deployBuild(item, callback),
-    e => e == null ?
-      console.log('Succesfully deployed to all servers.') :
-      console.log('Failed to deployed to all servers, code: ', e)
-  );
+    e => {
+      if (e != null) return console.log('Failed to deployed to all servers, code: ', e);
 
-  purgeLoadBalancerCache(DEVELOPMENT_LOAD_BALANCER);
+      console.log('Succesfully deployed to all servers.');
+      purgeLoadBalancerCache(DEVELOPMENT_LOAD_BALANCER);
+    }
+  );
 }
 
 function deployBuild(server, callback) {
@@ -86,12 +87,12 @@ function deployBuild(server, callback) {
   });
 }
 
-function purgeLoadBalancerCache(ip) {
+function purgeLoadBalancerCache(server) {
   const purge = spawn('ssh',
     [
       `${USER}@${server}`,
       "echo '-- LOGGED IN --';",
-      "echo '-- PURGING NGINX CACHE --';",
+      "echo '-- PURGING LOAD BALANCER NGINX CACHE --';",
       "cd /etc/nginx && sudo rm -rf ./cache/* && sudo mkdir ./cache/temp && sudo chown www-data ./cache/temp;",
       "sudo service nginx restart;"
     ]
@@ -103,10 +104,8 @@ function purgeLoadBalancerCache(ip) {
   purge.on('close', (code) => {
     if (code === 0) {
       console.log(`Load Balancer Cache Purged Successfully For: ${server}.`);
-      callback();
     } else {
       console.log(`Load Balancer Failed to Purge Cache For: ${server} -- code: ${code}`);
-      callback(code);
     }
   });
 }
