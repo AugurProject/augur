@@ -234,7 +234,7 @@ export const Metamask = (
           }
 
           .a77395d2-2c0c-4381-9940-a909fb55ffd3 {
-            stroke-linecap: round;
+            strokeLinecap: round;
           }
         `}
       </style>
@@ -355,8 +355,8 @@ export const Export = (
           .\\32 275d31d-f7ee-42a6-8027-90262a5b4750 {
             fill: none;
             stroke: #372e4b;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+            strokeLinecap: round;
+            strokeLinejoin: round;
           }
         `}
       </style>

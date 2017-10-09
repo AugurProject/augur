@@ -189,6 +189,13 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
             'postcss-loader',
             'less-loader'
           ]
+        },
+        {
+          test: /\.css/,
+          use: [
+            'style-loader',
+            'postcss-loader',
+          ]
         }
       ]
     },
@@ -220,6 +227,13 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
             'postcss-loader',
             'less-loader'
           ]
+        },
+        {
+          test: /\.css/,
+          use: [
+            'style-loader',
+            'postcss-loader',
+          ]
         }
       ]
     },
@@ -248,6 +262,13 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
             ],
             fallback: 'style-loader'
           }),
+        },
+        {
+          test: /\.css/,
+          use: [
+            'style-loader',
+            'postcss-loader',
+          ]
         }
       ]
     },

@@ -4,13 +4,27 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-import Datetime from 'react-datetime'
+import 'react-dates/initialize'
+import 'react-dates/lib/css/_datepicker.css'
+import { SingleDatePicker } from 'react-dates'
 
 import { formatDate } from 'utils/format-date'
 import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints'
 
 import Styles from 'modules/create-market/components/create-market-form-resolution/create-market-form-resolution.styles'
 import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'
+
+export const ChevronLeft = () => (
+  <svg viewBox="0 0 8 14" xmlns="http://www.w3.org/2000/svg">
+    <g id="Symbols" fill="none" fillRule="evenodd" strokeLinecap="round" opacity=".54" strokeLinejoin="round"><g id="Selector/Calendar" stroke="#231A3A"><g id="Group-2"><g id="Icon/chevron-left"><path id="Stroke-3" d="M7.362 13.228L.998 6.864 7.362.5" /></g></g></g></g>
+  </svg>
+)
+
+export const ChevronRight = () => (
+  <svg viewBox="0 0 9 14" xmlns="http://www.w3.org/2000/svg">
+    <g id="Symbols" fill="none" fillRule="evenodd" strokeLinecap="round" opacity=".54" strokeLinejoin="round"><g id="Selector/Calendar" stroke="#231A3A"><g id="Group-2"><g id="Icon/chevron-right"><path id="Stroke-3" d="M1.16 13.228l6.363-6.364L1.16.5" /></g></g></g></g>
+  </svg>
+)
 
 export default class CreateMarketResolution extends Component {
 
@@ -26,6 +40,8 @@ export default class CreateMarketResolution extends Component {
 
     this.state = {
       expirySourceType: false,
+      date: null,
+      focused: false,
     }
 
     this.validateExpiryType = this.validateExpiryType.bind(this)
@@ -53,9 +69,6 @@ export default class CreateMarketResolution extends Component {
 
   render() {
     const p = this.props
-
-    const yesterday = Datetime.moment().subtract(1, 'day')
-    const valid = current => current.isAfter(yesterday)
 
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
@@ -90,15 +103,14 @@ export default class CreateMarketResolution extends Component {
           <label htmlFor="cm__input--date">
             <span>Expiration Date</span>
           </label>
-          <Datetime
-            isValidDate={valid}
-            dateFormat="MMM D, YYYY"
-            timeFormat={false}
-            defaultValue={Object.keys(p.newMarket.endDate).length ? p.newMarket.endDate : ''}
-            inputProps={{ placeholder: 'Date' }}
-            onChange={(date) => {
-              p.validateField('endDate', formatDate(new Date(date)))
-            }}
+          <SingleDatePicker
+            date={this.state.date}
+            onDateChange={date => this.setState({ date })}
+            focused={this.state.focused}
+            onFocusChange={({ focused }) => this.setState({ focused })}
+            numberOfMonths={1}
+            navPrev={<ChevronLeft />}
+            navNext={<ChevronRight />}
           />
         </li>
       </ul>
