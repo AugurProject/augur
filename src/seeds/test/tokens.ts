@@ -1,6 +1,6 @@
 import * as Knex from "knex";
 
-exports.seed = async function (knex: Knex): Promise<any> {
+exports.seed = async (knex: Knex): Promise<any> => {
     // Deletes ALL existing entries
     return knex("tokens").del()
         .then(() => {
