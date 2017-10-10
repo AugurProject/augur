@@ -132,7 +132,7 @@ export default class MarketPortfolioCard extends React.Component {
                 ['Realized P/L', 'realizedNet.formatted'],
                 ['Unrealized P/L', 'unrealizedNet.formatted'],
                 ['Total P/L', 'totalNet.formatted'],
-                ['Action', 'closeButton']
+                ['Action', 'dialogButton']
               ]}
               mobileTitles={[
                 'Outcome',
@@ -148,11 +148,12 @@ export default class MarketPortfolioCard extends React.Component {
                 (myPositionOutcomes || []).map(outcome => ({
                   ...outcome,
                   ...outcome.position,
-                  closeButton: (<button
-                    onClick={outcome.position.closePosition}
-                  >
-                    Close
-                  </button>)
+                  dialogButton: {
+                    label: 'Close',
+                    dialogText: `Close position by selling ${outcome.position.qtyShares.formatted}
+                                 shares of ${outcome.name} at ${outcome.position.purchasePrice.formatted} ETH?`,
+                    confirm: outcome.position.closePosition
+                  }
                 }))
               }
             />
