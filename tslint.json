@@ -96,6 +96,7 @@
     "ordered-imports": [false],
     "no-shadowed-variable": false,
     "object-literal-sort-keys": false,
-    "array-type": [true, "generic"]
+    "array-type": [true, "generic"],
+    "prefer-method-signature": true
   }
 }

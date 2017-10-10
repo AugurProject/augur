@@ -7,7 +7,7 @@ import { logProcessors } from "./log-processors";
 
 export function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, toBlock: number, callback: ErrorCallback): void {
   console.log("Getting Augur logs from block " + fromBlock + " to block " + toBlock);
-  augur.events.getAllAugurLogs({ fromBlock, toBlock }, (err: string|object, allAugurLogs?: AugurLogs) => {
+  augur.events.getAllAugurLogs({ fromBlock, toBlock }, (err?: string|object|null, allAugurLogs?: AugurLogs) => {
     if (err) return callback(err instanceof Error ? err : new Error(JSON.stringify(err)));
     eachSeries(Object.keys(allAugurLogs!), (contractName: string, nextContractName: ErrorCallback) => (
       eachSeries(Object.keys(allAugurLogs![contractName]!), (eventName: string, nextEventName: ErrorCallback) => (

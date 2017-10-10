@@ -13,7 +13,7 @@ export function syncAugurNodeWithBlockchain(db: Knex,  augur: Augur, ethereumNod
     console.log("Waiting for first block...");
     startAugurListeners(db, augur, (blockNumber: string) => {
       db.raw(`SELECT highest_block_number FROM blockchain_sync_history ORDER BY highest_block_number DESC LIMIT 1`)
-        .asCallback( (err: Error|null, rows?: Array<HighestBlockNumberRow>) => {
+        .asCallback( (err: Error|null, rows?: Array<HighestBlockNumberRow>): void => {
           if (err) return callback(err);
           const row: HighestBlockNumberRow = rows![0];
           const fromBlock: number = (!row || !row.highest_block_number) ? uploadBlockNumbers[augur.rpc.getNetworkID()] : row.highest_block_number + 1;

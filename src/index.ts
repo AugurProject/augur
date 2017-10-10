@@ -31,8 +31,8 @@ const augur: Augur = new Augur();
 
 augur.rpc.setDebugOptions({ broadcast: false });
 
-checkAugurDbSetup(db, (err?: Error|null)  => {
-  syncAugurNodeWithBlockchain(db, augur, ethereumNodeEndpoints, uploadBlockNumbers, (err?: Error|null) => {
+checkAugurDbSetup(db, (err?: Error|null): void => {
+  syncAugurNodeWithBlockchain(db, augur, ethereumNodeEndpoints, uploadBlockNumbers, (err?: Error|null): void => {
     if (err) return console.error("syncAugurNodeWithBlockchain:", err);
     console.log("Sync with blockchain complete, starting websocket server...");
     runWebsocketServer(db, websocketPort);
