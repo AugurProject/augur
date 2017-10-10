@@ -1,10 +1,10 @@
 import BigNumber from "bignumber.js";
 
 interface Precision {
-  decimals: number,
-  limit: string,
-  zero: string,
-  multiple: string
+  decimals: number;
+  limit: string;
+  zero: string;
+  multiple: string;
 }
 
 const ten: BigNumber = new BigNumber(10, 10);

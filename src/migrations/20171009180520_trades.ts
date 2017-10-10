@@ -1,6 +1,6 @@
 import * as Knex from "knex";
 
-exports.up = async function (knex: Knex): Promise<any> {
+exports.up = async (knex: Knex): Promise<any> => {
   return knex.schema.dropTableIfExists("trades").then(() => {
     return knex.schema.raw(`CREATE TABLE trades (
       order_id varchar(66) NOT NULL,
@@ -16,11 +16,10 @@ exports.up = async function (knex: Knex): Promise<any> {
       num_filler_tokens integer NOT NULL CONSTRAINT nonnegative_num_filler_tokens CHECK (num_filler_tokens >= 0),
       settlement_fees integer NOT NULL CONSTRAINT nonnegative_settlement_fees CHECK (settlement_fees >= 0),
       trade_group_id integer
-    )`)
+    )`);
   });
-    
 };
 
-exports.down = async function (knex: Knex): Promise<any> {
-  return knex.schema.dropTableIfExists("trades"); 
+exports.down = async (knex: Knex): Promise<any> => {
+  return knex.schema.dropTableIfExists("trades");
 };

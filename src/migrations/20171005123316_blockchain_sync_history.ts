@@ -1,6 +1,6 @@
 import * as Knex from "knex";
 
-exports.up = async function (knex: Knex): Promise<any> {
+exports.up = async (knex: Knex): Promise<any> => {
   return knex.schema.dropTableIfExists("blockchain_sync_history").then(() => {
     return knex.schema.raw(`CREATE TABLE blockchain_sync_history (
       id integer PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -10,6 +10,6 @@ exports.up = async function (knex: Knex): Promise<any> {
   });
 };
 
-exports.down = async function (knex: Knex): Promise<any> {
+exports.down = async (knex: Knex): Promise<any> => {
   return knex.schema.dropTableIfExists("blockchain_sync_history");
 };

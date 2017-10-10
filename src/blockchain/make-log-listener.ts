@@ -7,10 +7,10 @@ export function makeLogListener(db: Knex, contractName: string, eventName: strin
   return (log: FormattedLog) => {
     console.log(contractName, eventName, log);
     db.transaction((trx) => {
-      logProcessors[contractName][eventName](db, trx, log, (err?: Error|null):void => {
-        if(err) {
+      logProcessors[contractName][eventName](db, trx, log, (err?: Error|null): void => {
+        if (err) {
           trx.rollback();
-        } else { 
+        } else {
           trx.commit();
         }
       });

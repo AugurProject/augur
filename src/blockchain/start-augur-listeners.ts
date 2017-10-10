@@ -7,7 +7,7 @@ import { onNewBlock } from "./on-new-block";
 import { logError } from "../utils/log-error";
 
 export function startAugurListeners(db: Knex, augur: Augur, callback: (blockNumber: string) => void): void {
-  var seenFirstBlock:boolean = false;
+  let seenFirstBlock: boolean = false;
   augur.events.startListeners({
     Augur: {
       MarketCreated: makeLogListener(db, "Augur", "MarketCreated"),
@@ -29,10 +29,10 @@ export function startAugurListeners(db: Knex, augur: Augur, callback: (blockNumb
       Approval: makeLogListener(db, "LegacyRepContract", "Approval")
     }
   }, (blockNumber: string): void => {
-    if(!seenFirstBlock) {
+    if (!seenFirstBlock) {
       callback(blockNumber);
       seenFirstBlock = true;
     }
-    onNewBlock(db, augur, blockNumber)
+    onNewBlock(db, augur, blockNumber);
   }, () => {});
 }

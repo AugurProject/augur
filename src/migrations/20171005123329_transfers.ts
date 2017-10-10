@@ -1,6 +1,6 @@
 import * as Knex from "knex";
 
-exports.up = async function (knex: Knex): Promise<any> {
+exports.up = async (knex: Knex): Promise<any> => {
   return knex.schema.dropTableIfExists("transfers").then(() => {
     return knex.schema.raw(`CREATE TABLE transfers (
       transaction_hash varchar(66) NOT NULL,
@@ -15,6 +15,6 @@ exports.up = async function (knex: Knex): Promise<any> {
   });
 };
 
-exports.down = async function (knex: Knex): Promise<any> {
+exports.down = async (knex: Knex): Promise<any> => {
   return knex.schema.dropTableIfExists("transfers");
 };
