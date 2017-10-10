@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 import Promise = require("bluebird");
 
-exports.seed = function (knex: Knex): Promise<any> {
+exports.seed = (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
   return knex("trades").del().then(() => {
     // Inserts seed entries
