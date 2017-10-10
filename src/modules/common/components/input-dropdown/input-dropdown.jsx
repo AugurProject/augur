@@ -59,7 +59,10 @@ class InputDropdown extends Component {
     const p = this.props
 
     return (
-      <div className={Styles.InputDropdown} ref={(InputDropdown) => { this.refInputDropdown = InputDropdown }}>
+      <div 
+        ref={(InputDropdown) => { this.refInputDropdown = InputDropdown }}
+        className={Styles.InputDropdown}
+      >
         <button
           className={classNames(Styles.InputDropdown__label, { [`${Styles.selected}`]: s.selected })}
           onClick={this.toggleList}
