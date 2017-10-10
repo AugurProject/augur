@@ -10,6 +10,7 @@ import { ErrorCallback } from "./types";
 // tslint:disable-next-line:no-var-requires
 const { augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers, websocketPort } = require("../config");
 
+<<<<<<< HEAD
 let db: Knex;
 if (process.env.DATABASE) {
   db = Knex({
@@ -17,13 +18,26 @@ if (process.env.DATABASE) {
     connection: process.env.DATABASE
   });
 } else {
+=======
+var db: Knex;
+if (process.env["DATABASE"] == null) {
+>>>>>>> master
   sqlite3.verbose();
   db = Knex({
     client: "sqlite3",
     connection: {
       filename: augurDbPath
     },
+<<<<<<< HEAD
     acquireConnectionTimeout: 5 * 60 * 1000
+=======
+    acquireConnectionTimeout: 5*60*1000
+  });
+} else {
+  db = Knex({
+    client: "pg",
+    connection: process.env["DATABASE"]
+>>>>>>> master
   });
 }
 

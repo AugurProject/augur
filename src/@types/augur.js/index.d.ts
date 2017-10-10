@@ -83,7 +83,7 @@ declare module "augur.js" {
 
   interface FormattedEventLog {
     address: Address;
-    blockNumber: Int256;
+    blockNumber: number;
     transactionIndex: Int256;
     transactionHash: Bytes32;
     blockHash: Bytes32;

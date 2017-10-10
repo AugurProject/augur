@@ -49,7 +49,8 @@ describe("server/getters/get-market-info", () => {
         shortDescription: "This is a categorical test market created by b0b.",
         longDescription: null,
         designatedReporter: "0x0000000000000000000000000000000000000b0b",
-        resolutionSource: "http://www.trusted-third-party.com"
+        resolutionSource: "http://www.trusted-third-party.com",
+        numTicks: 24
       });
     }
   });
