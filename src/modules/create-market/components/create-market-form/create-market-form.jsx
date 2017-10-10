@@ -66,7 +66,6 @@ export default class CreateMarketForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(this.props.newMarket.hour, nextProps.newMarket.hour)
     if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) {
       this.props.updateNewMarket({ isValid: this.isValid(nextProps.newMarket.currentStep) })
     }
