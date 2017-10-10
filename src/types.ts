@@ -152,3 +152,14 @@ export interface OrdersRow {
   worse_order_id: Bytes32|null,
   trade_group_id: Bytes32|null
 }
+
+export interface TradesRow {
+  order_type: string;
+  market_id: Address;
+  outcome: number;
+  creator: Address;
+  filler: Address;
+  price: string|number;
+  shares: string|number;
+  trade_group_id: Bytes32|null;
+}
