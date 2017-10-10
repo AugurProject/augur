@@ -27,8 +27,8 @@ describe("trading/trade-until-amount-is-zero", function () {
       _direction: 1,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
-      _fxpAmount: "10",
-      _fxpPrice: "0.5",
+      _amount: "10",
+      _price: "0.5",
       _tradeGroupID: "0x1",
       doNotCreateOrders: false,
       onSent: function (res) {
@@ -77,8 +77,8 @@ describe("trading/trade-until-amount-is-zero", function () {
       _direction: 1,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
-      _fxpAmount: "10",
-      _fxpPrice: "0.5",
+      _amount: "10",
+      _price: "0.5",
       _tradeGroupID: "0x1",
       doNotCreateOrders: false,
       onSent: function (res) {
@@ -110,13 +110,13 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 1);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
-              assert.oneOf(p._fxpAmount, ["0x8ac7230489e80000", "0x29a2241af62c0000"]);
-              assert.strictEqual(p._fxpPrice, "0x6f05b59d3b20000");
+              assert.oneOf(p._amount, ["0x8ac7230489e80000", "0x29a2241af62c0000"]);
+              assert.strictEqual(p._price, "0x6f05b59d3b20000");
               assert.strictEqual(p._tradeGroupID, "0x1");
               assert.isFunction(p.onSent);
               assert.isFunction(p.onSuccess);
               assert.isFunction(p.onFailed);
-              if (p._fxpAmount === "0x8ac7230489e80000") {
+              if (p._amount === "0x8ac7230489e80000") {
                 p.onSent({ hash: "TRANSACTION_HASH_1" });
                 p.onSuccess({ hash: "TRANSACTION_HASH_1" });
               } else {
@@ -136,8 +136,8 @@ describe("trading/trade-until-amount-is-zero", function () {
       _direction: 2,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
-      _fxpAmount: "10",
-      _fxpPrice: "0.5",
+      _amount: "10",
+      _price: "0.5",
       _tradeGroupID: "0x1",
       doNotCreateOrders: false,
       onSent: function (res) {
@@ -165,8 +165,8 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 2);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
-              assert.strictEqual(p._fxpAmount, "0x8ac7230489e80000");
-              assert.strictEqual(p._fxpPrice, "0x6f05b59d3b20000");
+              assert.strictEqual(p._amount, "0x8ac7230489e80000");
+              assert.strictEqual(p._price, "0x6f05b59d3b20000");
               assert.strictEqual(p._tradeGroupID, "0x1");
               assert.isFunction(p.onSent);
               assert.isFunction(p.onSuccess);
@@ -186,8 +186,8 @@ describe("trading/trade-until-amount-is-zero", function () {
       _direction: 2,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
-      _fxpAmount: "10",
-      _fxpPrice: "0.5",
+      _amount: "10",
+      _price: "0.5",
       _tradeGroupID: "0x1",
       doNotCreateOrders: true,
       onSent: function (res) {
@@ -212,8 +212,8 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 2);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, "2");
-              assert.strictEqual(p._fxpAmount, "0x8ac7230489e80000");
-              assert.strictEqual(p._fxpPrice, "0x6f05b59d3b20000");
+              assert.strictEqual(p._amount, "0x8ac7230489e80000");
+              assert.strictEqual(p._price, "0x6f05b59d3b20000");
               assert.strictEqual(p._tradeGroupID, "0x1");
               assert.isFunction(p.onSent);
               assert.isFunction(p.onSuccess);
