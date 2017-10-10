@@ -87,7 +87,8 @@ describe('modules/create-market/actions/submit-new-market', () => {
         _minDisplayPrice: '0',
         _numOutcomes: 2,
         _topic: 'test topic',
-        settlementFee: '0.02'
+        settlementFee: '0.02',
+        _numTicks: 2
       };
 
       assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`);
@@ -156,7 +157,8 @@ describe('modules/create-market/actions/submit-new-market', () => {
         _minDisplayPrice: '0',
         _numOutcomes: 2,
         _topic: 'test topic',
-        settlementFee: '0.02'
+        settlementFee: '0.02',
+        _numTicks: 2
       };
 
       assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`);
@@ -188,6 +190,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         topic: 'test topic',
         keywords: [],
         type: SCALAR,
+        _numTicks: 2,
         scalarSmallNum: '-10', // String for the test case, normally a BigNumber
         scalarBigNum: '10' // String for the test case, normally a BigNumber
       }
@@ -227,7 +230,8 @@ describe('modules/create-market/actions/submit-new-market', () => {
         _minDisplayPrice: '-10',
         _numOutcomes: 2,
         _topic: 'test topic',
-        settlementFee: '0.02'
+        settlementFee: '0.02',
+        _numTicks: 2
       };
 
       assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`);
