@@ -42,43 +42,43 @@ export default class CreateMarketPreview extends Component {
     newMarket: PropTypes.object.isRequired,
   }
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      expirationDate: '' // this.getExpirationDate(props)
-    }
-
-    this.getExpirationDate = this.getExpirationDate.bind(this)
-  }
-
-  componentWillReceiveProps(nextProps) {
-    //console.log(this.props.newMarket.hour, nextProps.newMarket.hour)
-    // if (this.props.newMarket.endDate !== nextProps.newMarket.endDate ||
-    //     this.props.newMarket.hour !== nextProps.newMarket.hour ||
-    //     this.props.newMarket.minute !== nextProps.newMarket.minute ||
-    //     this.props.newMarket.meridiem !== nextProps.newMarket.meridiem) {
-    //   this.setState({ expirationDate: this.getExpirationDate(nextProps) })
-    // }
-  }
-
-  getExpirationDate(p) {
-    console.log('expiration date was called')
-
+  static getExpirationDate(p) {
     if (!Object.keys(p.newMarket.endDate).length) {
       return '-'
     }
 
     const endDate = moment(p.newMarket.endDate.timestamp)
     endDate.set({
-      'hour': p.newMarket.hour,
-      'minute': p.newMarket.minute,
-      'meridiem': p.newMarket.meridiem,
+      hour: p.newMarket.hour,
+      minute: p.newMarket.minute,
     })
 
-    console.log(endDate.format('MMM D, YYYY h:mm a'))
+    if (p.newMarket.meridiem === 'AM' && endDate.hours() > 12) {
+      endDate.hours(endDate.hours() - 12)
+    } else if (p.newMarket.meridiem === 'PM' && endDate.hours() <= 12) {
+      endDate.hours(endDate.hours() + 12)
+    }
 
     return endDate.format('MMM D, YYYY h:mm a')
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      expirationDate: CreateMarketPreview.getExpirationDate(props)
+    }
+
+    CreateMarketPreview.getExpirationDate = CreateMarketPreview.getExpirationDate.bind(this)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.newMarket.endDate !== nextProps.newMarket.endDate ||
+        this.props.newMarket.hour !== nextProps.newMarket.hour ||
+        this.props.newMarket.minute !== nextProps.newMarket.minute ||
+        this.props.newMarket.meridiem !== nextProps.newMarket.meridiem) {
+      this.setState({ expirationDate: CreateMarketPreview.getExpirationDate(nextProps) })
+    }
   }
 
   render() {

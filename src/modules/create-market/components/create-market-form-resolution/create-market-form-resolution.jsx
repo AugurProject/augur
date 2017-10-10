@@ -54,7 +54,7 @@ export default class CreateMarketResolution extends Component {
 
   validateExpiryType(value) {
     const p = this.props
-    const updatedMarket = p.newMarket
+    const updatedMarket = { ...p.newMarket }
     const currentStep = p.newMarket.currentStep
 
     if (value === EXPIRY_SOURCE_SPECIFIC) {
@@ -70,12 +70,12 @@ export default class CreateMarketResolution extends Component {
     updatedMarket.expirySourceType = value
     updatedMarket.isValid = p.isValid(p.newMarket.currentStep)
 
-    p.updateNewMarket({ newMarket: updatedMarket })
+    p.updateNewMarket(updatedMarket)
   }
 
   validateNumber(fieldName, value, min, max) {
     const p = this.props
-    const updatedMarket = p.newMarket
+    const updatedMarket = { ...p.newMarket }
     const currentStep = p.newMarket.currentStep
 
     switch (true) {
@@ -93,7 +93,7 @@ export default class CreateMarketResolution extends Component {
     updatedMarket[fieldName] = value
     updatedMarket.isValid = p.isValid(currentStep)
 
-    p.updateNewMarket({ newMarket: updatedMarket })
+    p.updateNewMarket(updatedMarket)
   }
 
   render() {

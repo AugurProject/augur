@@ -86,7 +86,7 @@ export default class CreateMarketForm extends Component {
     const p = this.props
     const currentStep = p.newMarket.currentStep
 
-    const updatedMarket = p.newMarket
+    const updatedMarket = { ...p.newMarket }
 
     switch (true) {
       case typeof value === 'string' && !value.length:
