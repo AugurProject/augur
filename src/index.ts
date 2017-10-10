@@ -10,10 +10,10 @@ import { ErrorCallback } from "./types";
 const { augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers, websocketPort } = require("../config");
 
 var db: Knex;
-if(process.env['DATABASE'] == null) {
+if(process.env["DATABASE"] == null) {
   sqlite3.verbose();
   db = Knex({
-    client: 'sqlite3',
+    client: "sqlite3",
     connection: {
       filename: augurDbPath
     },
@@ -21,8 +21,8 @@ if(process.env['DATABASE'] == null) {
   });
 } else {
   db = Knex({
-    client: 'pg',
-    connection: process.env['DATABASE']
+    client: "pg",
+    connection: process.env["DATABASE"]
   });
 }
 

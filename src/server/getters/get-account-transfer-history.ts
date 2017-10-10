@@ -2,23 +2,23 @@ import * as Knex from "knex";
 import { Address, Bytes32 } from "../../types";
 
 interface TransferRow {
-  transaction_hash: Bytes32,
-  log_index: number,
-  sender: Address,
-  recipient: Address,
-  token: Address,
-  value: number,
-  block_number: number
+  transaction_hash: Bytes32;
+  log_index: number;
+  sender: Address;
+  recipient: Address;
+  token: Address;
+  value: number;
+  block_number: number;
 }
 
 interface TransferLog {
-  transactionHash: Bytes32,
-  logIndex: number,
-  sender: Address,
-  recipient: Address,
-  token: Address,
-  value: number,
-  blockNumber: number
+  transactionHash: Bytes32;
+  logIndex: number;
+  sender: Address;
+  recipient: Address;
+  token: Address;
+  value: number;
+  blockNumber: number;
 }
 
 type TransferHistory = TransferLog[];
