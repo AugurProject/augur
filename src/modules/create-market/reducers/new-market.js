@@ -32,7 +32,7 @@ const DEFAULT_STATE = {
       meridiem: false,
     }
   ],
-  currentStep: 2,
+  currentStep: 0,
   type: '',
   outcomes: Array(8).fill(''),
   scalarSmallNum: '',
