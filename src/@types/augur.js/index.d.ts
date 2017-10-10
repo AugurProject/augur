@@ -34,8 +34,8 @@ declare module "augur.js" {
   interface FunctionAbi {
     constant: boolean;
     name: string;
-    inputs: string[];
-    signature: string[];
+    inputs: Array<string>;
+    signature: Array<string>;
     returns?: string;
   }
 
@@ -55,7 +55,7 @@ declare module "augur.js" {
     [contractName: string]: {
       [eventName: string]: {
         contract?: string;
-        inputs: EventAbiInput[]
+        inputs: Array<EventAbiInput>
       }
     };
   }
@@ -110,7 +110,7 @@ declare module "augur.js" {
     getCurrentBlock: () => any; // TODO define block type
     getGasPrice: () => number;
     getNetworkID: () => string;
-    getLogs: (filter: any, callback: (logs: EventLog[]) => void) => string[]|null; // TODO define log filter type
+    getLogs: (filter: any, callback: (logs: Array<EventLog>) => void) => Array<string>|null; // TODO define log filter type
     getTransactionReceipt: (transactionHash: Bytes32, callback?: (transactionReceipt: any) => void) => any; // TODO define transaction receipt type
     isUnlocked: (account: Address, callback?: (isUnlocked: boolean) => void) => boolean|void;
     sendEther: (to: Address, value: string|number, from: Address, onSent: (result: any) => void, onSuccess: (result: any) => void, onFailed: (err: any) => void) => any;
