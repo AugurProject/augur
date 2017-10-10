@@ -7,6 +7,7 @@ import classNames from 'classnames'
 import CreateMarketDefine from 'modules/create-market/components/create-market-form-define/create-market-form-define'
 import CreateMarketOutcome from 'modules/create-market/components/create-market-form-outcome/create-market-form-outcome'
 import CreateMarketResolution from 'modules/create-market/components/create-market-form-resolution/create-market-form-resolution'
+import CreateMarketLiquidity from 'modules/create-market/components/create-market-form-liquidity/create-market-form-liquidity'
 // import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description/create-market-form-description'
 // import CreateMarketFormOutcomes from 'modules/create-market/components/create-market-form-outcomes'
 // import CreateMarketFormExpirySource from 'modules/create-market/components/create-market-form-expiry-source'
@@ -62,6 +63,7 @@ export default class CreateMarketForm extends Component {
     this.prevPage = this.prevPage.bind(this)
     this.nextPage = this.nextPage.bind(this)
     this.validateField = this.validateField.bind(this)
+    this.validateNumber = this.validateNumber.bind(this)
     this.isValid = this.isValid.bind(this)
   }
 
@@ -96,6 +98,36 @@ export default class CreateMarketForm extends Component {
         break
       default:
         updatedMarket.validations[currentStep][fieldName] = true
+    }
+
+    updatedMarket[fieldName] = value
+    updatedMarket.isValid = this.isValid(currentStep)
+
+    p.updateNewMarket(updatedMarket)
+  }
+
+  validateNumber(fieldName, rawValue, humanName, min, max, decimals = 0) {
+    const p = this.props
+    const updatedMarket = { ...p.newMarket }
+    const currentStep = p.newMarket.currentStep
+
+    let value = rawValue
+
+    if (value !== '') {
+      value = parseFloat(value)
+      value = parseFloat(value.toFixed(decimals))
+    }
+
+    switch (true) {
+      case value === '':
+        updatedMarket.validations[currentStep][fieldName] = `The ${humanName} field is required.`
+        break
+      case (value > max || value < min):
+        updatedMarket.validations[currentStep][fieldName] = `Please enter a ${humanName} between ${min} and ${max}.`
+        break
+      default:
+        updatedMarket.validations[currentStep][fieldName] = true
+        break
     }
 
     updatedMarket[fieldName] = value
@@ -140,8 +172,16 @@ export default class CreateMarketForm extends Component {
                 newMarket={p.newMarket}
                 updateNewMarket={p.updateNewMarket}
                 validateField={this.validateField}
+                validateNumber={this.validateNumber}
                 isValid={this.isValid}
                 isMobileSmall={p.isMobileSmall}
+              />
+            }
+            { p.newMarket.currentStep === 3 &&
+              <CreateMarketLiquidity
+                newMarket={p.newMarket}
+                updateNewMarket={p.updateNewMarket}
+                validateNumber={this.validateNumber}
               />
             }
           </div>

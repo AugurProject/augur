@@ -30,9 +30,12 @@ const DEFAULT_STATE = {
       hour: false,
       minute: false,
       meridiem: false,
-    }
+    },
+    {
+      settlementFee: false,
+    },
   ],
-  currentStep: 0,
+  currentStep: 3,
   type: '',
   outcomes: Array(8).fill(''),
   scalarSmallNum: '',
@@ -48,6 +51,7 @@ const DEFAULT_STATE = {
   category: '',
   tag1: '',
   tag2: '',
+  settlementFee: '',
   takerFee: TAKER_FEE_DEFAULT,
   makerFee: MAKER_FEE_DEFAULT,
   orderBook: {}, // for submit orders

@@ -35,6 +35,7 @@ export default class CreateMarketResolution extends Component {
     newMarket: PropTypes.object.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
     validateField: PropTypes.func.isRequired,
+    validateNumber: PropTypes.func.isRequired,
     isValid: PropTypes.func.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
   }
@@ -49,7 +50,6 @@ export default class CreateMarketResolution extends Component {
     }
 
     this.validateExpiryType = this.validateExpiryType.bind(this)
-    this.validateNumber = this.validateNumber.bind(this)
   }
 
   validateExpiryType(value) {
@@ -69,29 +69,6 @@ export default class CreateMarketResolution extends Component {
     updatedMarket.validations[p.newMarket.currentStep].expirySourceType = true
     updatedMarket.expirySourceType = value
     updatedMarket.isValid = p.isValid(p.newMarket.currentStep)
-
-    p.updateNewMarket(updatedMarket)
-  }
-
-  validateNumber(fieldName, value, min, max) {
-    const p = this.props
-    const updatedMarket = { ...p.newMarket }
-    const currentStep = p.newMarket.currentStep
-
-    switch (true) {
-      case value === '':
-        updatedMarket.validations[currentStep][fieldName] = `The ${fieldName} field is required.`
-        break
-      case (value > max || value < min):
-        updatedMarket.validations[currentStep][fieldName] = `Please enter a ${fieldName} between ${min} and ${max}.`
-        break
-      default:
-        updatedMarket.validations[currentStep][fieldName] = true
-        break
-    }
-
-    updatedMarket[fieldName] = value
-    updatedMarket.isValid = p.isValid(currentStep)
 
     p.updateNewMarket(updatedMarket)
   }
@@ -161,7 +138,7 @@ export default class CreateMarketResolution extends Component {
               step="1"
               value={p.newMarket.hour}
               placeholder="Hour"
-              onChange={e => this.validateNumber('hour', e.target.value, 1, 12)}
+              onChange={e => p.validateNumber('hour', e.target.value, 'hour', 1, 12, 0)}
             />
             <input
               type="number"
@@ -170,7 +147,7 @@ export default class CreateMarketResolution extends Component {
               step="1"
               value={p.newMarket.minute}
               placeholder="Minute"
-              onChange={e => this.validateNumber('minute', e.target.value, 0, 59)}
+              onChange={e => p.validateNumber('minute', e.target.value, 'minute', 0, 59, 0)}
             />
             <InputDropdown
               label="AM/PM"

@@ -128,7 +128,7 @@ export default class CreateMarketPreview extends Component {
               </li>
               <li>
                 <span>Fee</span>
-                <span>0.0%</span>
+                <span>{ p.newMarket.settlementFee ? p.newMarket.settlementFee : '0.0'}%</span>
               </li>
               <li>
                 <span>Expires</span>

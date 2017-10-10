@@ -59,7 +59,7 @@ class InputDropdown extends Component {
     const p = this.props
 
     return (
-      <div 
+      <div
         ref={(InputDropdown) => { this.refInputDropdown = InputDropdown }}
         className={Styles.InputDropdown}
       >
