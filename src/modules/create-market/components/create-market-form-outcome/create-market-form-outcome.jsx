@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import BigNumber from 'bignumber.js'
-import { abi } from 'services/augurjs'
+import speedomatic from 'speedomatic';
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import { CATEGORICAL_OUTCOMES_MIN_NUM, CATEGORICAL_OUTCOMES_MAX_NUM, CATEGORICAL_OUTCOME_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints'
@@ -36,8 +36,8 @@ export default class CreateMarketOutcome extends Component {
       marketType: false,
       outcomeFieldCount: CreateMarketOutcome.calculateOutcomeFieldCount(this.props),
       showAddOutcome: CreateMarketOutcome.calculateOutcomeFieldCount(this.props) < 8,
-      scalarMin: abi.unfix(abi.constants.SERPINT_MIN).round(18, BigNumber.ROUND_DOWN),
-      scalarMax: abi.unfix(abi.constants.SERPINT_MAX).round(18, BigNumber.ROUND_DOWN),
+      scalarMin: speedomatic.unfix(speedomatic.constants.SERPINT_MIN).round(18, BigNumber.ROUND_DOWN),
+      scalarMax: speedomatic.unfix(speedomatic.constants.SERPINT_MAX).round(18, BigNumber.ROUND_DOWN),
     }
 
     this.handleAddOutcomeClick = this.handleAddOutcomeClick.bind(this)
