@@ -16,16 +16,13 @@ const DEFAULT_STATE = {
   holdForUserAction: false,
   validations: [
     {
-      description: true,
-      category: true,
-      tag1: true,
-      tag2: true,
+      description: false,
+      category: false,
+      tag1: false,
+      tag2: false,
     },
     {
-      type: true,
-      scalarSmallNum: true,
-      scalarBigNum: true,
-      outcomes: true,
+      type: false,
     },
     {
       expirySourceType: false,
@@ -35,7 +32,7 @@ const DEFAULT_STATE = {
       meridiem: false,
     }
   ],
-  currentStep: 0,
+  currentStep: 2,
   type: '',
   outcomes: Array(8).fill(''),
   scalarSmallNum: '',
