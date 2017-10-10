@@ -1,0 +1,576 @@
+const mockOutcome = {
+    "id": "2",
+    "lastPrice": {
+        "denomination": " ETH Tokens",
+        "formatted": "0.9000",
+        "formattedValue": 0.9,
+        "full": "0.9000 ETH Tokens",
+        "minimized": "0.9",
+        "rounded": "0.9000",
+        "roundedValue": 0.9,
+        "value": 0.9
+    },
+    "lastPricePercent": {
+        "denomination": "%",
+        "formatted": "90.0",
+        "formattedValue": 90,
+        "full": "90.0%",
+        "minimized": "90",
+        "rounded": "90",
+        "roundedValue": 90,
+        "value": 90
+    },
+    "marketID": "0x2e39988afea6db37017710cee3ad01f731935a6af963aafc84326beb787176ad",
+    "name": "Conor McGregor",
+    "orderBook": {
+        "asks": [],
+        "bids": []
+    },
+    "orderBookSeries": {
+        "asks": [],
+        "bids": []
+    },
+    "outstandingShares": "1128.4",
+    "position": {
+        "isClosable": true,
+        "numPositions": {
+            "denomination": "Positions",
+            "formatted": "1",
+            "formattedValue": 1,
+            "full": "1Positions",
+            "minimized": "1",
+            "rounded": "1",
+            "roundedValue": 1,
+            "value": 1
+        },
+        "purchasePrice": {
+            "denomination": " ETH Tokens",
+            "formatted": "0.9000",
+            "formattedValue": 0.9,
+            "full": "0.9000 ETH Tokens",
+            "minimized": "0.9",
+            "rounded": "0.9000",
+            "roundedValue": 0.9,
+            "value": 0.9
+        },
+        "qtyShares": {
+            "denomination": " shares",
+            "formatted": "0.1",
+            "formattedValue": 0.1,
+            "full": "0.1 shares",
+            "minimized": "0.1",
+            "rounded": "0.10",
+            "roundedValue": 0.1,
+            "value": 0.1
+        },
+        "realizedNet": {
+            "denomination": " ETH Tokens",
+            "formatted": "0",
+            "formattedValue": 0,
+            "full": "0 ETH Tokens",
+            "minimized": "0",
+            "rounded": "0.0000",
+            "roundedValue": 0,
+            "value": 0
+        },
+        "totalNet": {
+            "denomination": " ETH Tokens",
+            "formatted": "0",
+            "formattedValue": 0,
+            "full": "0 ETH Tokens",
+            "minimized": "0",
+            "rounded": "0.0000",
+            "roundedValue": 0,
+            "value": 0
+        },
+        "unrealizedNet": {
+            "denomination": " ETH Tokens",
+            "formatted": "0",
+            "formattedValue": 0,
+            "full": "0 ETH Tokens",
+            "minimized": "0",
+            "rounded": "0.0000",
+            "roundedValue": 0,
+            "value": 0
+        }
+    },
+    "price": "0.9",
+    "sharesPurchased": "0",
+    "topAsk": null,
+    "topBid": null,
+    "trade": {
+        "gasFeesRealEth": {
+            "denomination": "",
+            "formatted": "",
+            "formattedValue": 0,
+            "full": "",
+            "minimized": "",
+            "rounded": "",
+            "roundedValue": 0,
+            "value": 0
+        },
+        "limitPrice": null,
+        "maxNumShares": {
+            "denomination": " shares",
+            "formatted": "0",
+            "formattedValue": 0,
+            "full": "0 shares",
+            "minimized": "0",
+            "rounded": "0.00",
+            "roundedValue": 0,
+            "value": 0
+        },
+        "numShares": null,
+        "potentialEthLoss": null,
+        "potentialEthProfit": null,
+        "potentialLossPercent": null,
+        "potentialProfitPercent": null,
+        "side": "buy",
+        "totalCost": {
+            "denomination": " ETH Tokens",
+            "formatted": "0",
+            "formattedValue": 0,
+            "full": "0 ETH Tokens",
+            "minimized": "0",
+            "rounded": "0.0000",
+            "roundedValue": 0,
+            "value": 0
+        },
+        "totalFee": {
+            "denomination": "",
+            "formatted": "",
+            "formattedValue": 0,
+            "full": "",
+            "minimized": "",
+            "rounded": "",
+            "roundedValue": 0,
+            "value": 0
+        },
+        "tradeSummary": {
+            "totalGas": {
+                "denomination": " ETH",
+                "formatted": "0",
+                "formattedValue": 0,
+                "full": "0 ETH",
+                "minimized": "0",
+                "rounded": "0.0000",
+                "roundedValue": 0,
+                "value": 0
+            },
+            "tradeOrders": []
+        },
+        "tradeTypeOptions": [
+            {
+                "label": "buy",
+                "value": "buy"
+            },
+            {
+                "label": "sell",
+                "value": "sell"
+            }
+        ]
+    },
+    "userOpenOrders": []
+}
+
+const mockMarket = {
+    "author": "0x165ba8a35c265c4280041c57a3b043cf6ec58208",
+    "branchID": "0xf69b5",
+    "consensus": null,
+    "creationBlock": 92715,
+    "creationFee": "9",
+    "creationTime": {
+        "formatted": "Aug 23, 2017 10:31 PM",
+        "formattedLocal": "Aug 23, 2017 3:31 PM (UTC -7)",
+        "full": "Wed, 23 Aug 2017 22:31:41 GMT",
+        "timestamp": 1503527501000,
+        "value": "2017-08-23T22:31:41.000Z"
+    },
+    "cumulativeScale": "1",
+    "description": "Who will win the Floyd Mayweather Jr. vs. Conor McGregor fight on Saturday August 26, 2017?",
+    "endDate": {
+        "formatted": "Aug 26, 2017 7:00 AM",
+        "formattedLocal": "Aug 26, 2017 12:00 AM (UTC -7)",
+        "full": "Sat, 26 Aug 2017 07:00:00 GMT",
+        "timestamp": 1503730800000,
+        "value": "2017-08-26T07:00:00.000Z"
+    },
+    "endDateLabel": "ends",
+    "eventBond": "4.5",
+    "eventID": "0x82eb1811b1f9d8e6c246398e237c473898cdecb5532653afa5e6c2d2ec47ee59",
+    "formattedDescription": "who_will_win_the_floyd_mayweather_jr_vs_conor_mcgregor_fight_on_saturday_august_26_2017",
+    "id": "0x2e39988afea6db37017710cee3ad01f731935a6af963aafc84326beb787176ad",
+    "isBinary": true,
+    "isCategorical": false,
+    "isFavorite": false,
+    "isLoadedMarketInfo": true,
+    "isLoading": false,
+    "isMarketLoading": false,
+    "isMissedReport": false,
+    "isOpen": true,
+    "isPendingReport": false,
+    "isReportSubmitted": false,
+    "isReportTabVisible": false,
+    "isReported": false,
+    "isRequiredToReportByAccount": false,
+    "isScalar": false,
+    "isSnitchTabVisible": false,
+    "makerFee": "0.01",
+    "makerFeePercent": {
+        "denomination": "%",
+        "formatted": "1.0",
+        "formattedValue": 1,
+        "full": "1.0%",
+        "minimized": "1",
+        "rounded": "1",
+        "roundedValue": 1,
+        "value": 1
+    },
+    "maxValue": "2",
+    "minValue": "1",
+    "myPositionOutcomes": [
+        {
+            "id": "2",
+            "lastPrice": {
+                "denomination": " ETH Tokens",
+                "formatted": "0.9000",
+                "formattedValue": 0.9,
+                "full": "0.9000 ETH Tokens",
+                "minimized": "0.9",
+                "rounded": "0.9000",
+                "roundedValue": 0.9,
+                "value": 0.9
+            },
+            "lastPricePercent": {
+                "denomination": "%",
+                "formatted": "90.0",
+                "formattedValue": 90,
+                "full": "90.0%",
+                "minimized": "90",
+                "rounded": "90",
+                "roundedValue": 90,
+                "value": 90
+            },
+            "marketID": "0x2e39988afea6db37017710cee3ad01f731935a6af963aafc84326beb787176ad",
+            "name": "Conor McGregor",
+            "orderBook": {
+                "asks": [],
+                "bids": []
+            },
+            "orderBookSeries": {
+                "asks": [],
+                "bids": []
+            },
+            "outstandingShares": "1128.4",
+            "position": {
+                "isClosable": true,
+                "numPositions": {
+                    "denomination": "Positions",
+                    "formatted": "1",
+                    "formattedValue": 1,
+                    "full": "1Positions",
+                    "minimized": "1",
+                    "rounded": "1",
+                    "roundedValue": 1,
+                    "value": 1
+                },
+                "purchasePrice": {
+                    "denomination": " ETH Tokens",
+                    "formatted": "0.9000",
+                    "formattedValue": 0.9,
+                    "full": "0.9000 ETH Tokens",
+                    "minimized": "0.9",
+                    "rounded": "0.9000",
+                    "roundedValue": 0.9,
+                    "value": 0.9
+                },
+                "qtyShares": {
+                    "denomination": " shares",
+                    "formatted": "0.1",
+                    "formattedValue": 0.1,
+                    "full": "0.1 shares",
+                    "minimized": "0.1",
+                    "rounded": "0.10",
+                    "roundedValue": 0.1,
+                    "value": 0.1
+                },
+                "realizedNet": {
+                    "denomination": " ETH Tokens",
+                    "formatted": "0",
+                    "formattedValue": 0,
+                    "full": "0 ETH Tokens",
+                    "minimized": "0",
+                    "rounded": "0.0000",
+                    "roundedValue": 0,
+                    "value": 0
+                },
+                "totalNet": {
+                    "denomination": " ETH Tokens",
+                    "formatted": "0",
+                    "formattedValue": 0,
+                    "full": "0 ETH Tokens",
+                    "minimized": "0",
+                    "rounded": "0.0000",
+                    "roundedValue": 0,
+                    "value": 0
+                },
+                "unrealizedNet": {
+                    "denomination": " ETH Tokens",
+                    "formatted": "0",
+                    "formattedValue": 0,
+                    "full": "0 ETH Tokens",
+                    "minimized": "0",
+                    "rounded": "0.0000",
+                    "roundedValue": 0,
+                    "value": 0
+                }
+            },
+            "price": "0.9",
+            "sharesPurchased": "0",
+            "topAsk": null,
+            "topBid": null,
+            "trade": {
+                "gasFeesRealEth": {
+                    "denomination": "",
+                    "formatted": "",
+                    "formattedValue": 0,
+                    "full": "",
+                    "minimized": "",
+                    "rounded": "",
+                    "roundedValue": 0,
+                    "value": 0
+                },
+                "limitPrice": null,
+                "maxNumShares": {
+                    "denomination": " shares",
+                    "formatted": "0",
+                    "formattedValue": 0,
+                    "full": "0 shares",
+                    "minimized": "0",
+                    "rounded": "0.00",
+                    "roundedValue": 0,
+                    "value": 0
+                },
+                "numShares": null,
+                "potentialEthLoss": null,
+                "potentialEthProfit": null,
+                "potentialLossPercent": null,
+                "potentialProfitPercent": null,
+                "side": "buy",
+                "totalCost": {
+                    "denomination": " ETH Tokens",
+                    "formatted": "0",
+                    "formattedValue": 0,
+                    "full": "0 ETH Tokens",
+                    "minimized": "0",
+                    "rounded": "0.0000",
+                    "roundedValue": 0,
+                    "value": 0
+                },
+                "totalFee": {
+                    "denomination": "",
+                    "formatted": "",
+                    "formattedValue": 0,
+                    "full": "",
+                    "minimized": "",
+                    "rounded": "",
+                    "roundedValue": 0,
+                    "value": 0
+                },
+                "tradeSummary": {
+                    "totalGas": {
+                        "denomination": " ETH",
+                        "formatted": "0",
+                        "formattedValue": 0,
+                        "full": "0 ETH",
+                        "minimized": "0",
+                        "rounded": "0.0000",
+                        "roundedValue": 0,
+                        "value": 0
+                    },
+                    "tradeOrders": []
+                },
+                "tradeTypeOptions": [
+                    {
+                        "label": "buy",
+                        "value": "buy"
+                    },
+                    {
+                        "label": "sell",
+                        "value": "sell"
+                    }
+                ]
+            },
+            "userOpenOrders": []
+        }
+    ],
+    "myPositionsSummary": {
+        "numPositions": {
+            "denomination": "Positions",
+            "formatted": "1",
+            "formattedValue": 1,
+            "full": "1Positions",
+            "minimized": "1",
+            "rounded": "1",
+            "roundedValue": 1,
+            "value": 1
+        },
+        "purchasePrice": {
+            "denomination": " ETH Tokens",
+            "formatted": "0",
+            "formattedValue": 0,
+            "full": "0 ETH Tokens",
+            "minimized": "0",
+            "rounded": "0.0000",
+            "roundedValue": 0,
+            "value": 0
+        },
+        "qtyShares": {
+            "denomination": " shares",
+            "formatted": "0.1",
+            "formattedValue": 0.1,
+            "full": "0.1 shares",
+            "minimized": "0.1",
+            "rounded": "0.10",
+            "roundedValue": 0.1,
+            "value": 0.1
+        },
+        "realizedNet": {
+            "denomination": " ETH Tokens",
+            "formatted": "0",
+            "formattedValue": 0,
+            "full": "0 ETH Tokens",
+            "minimized": "0",
+            "rounded": "0.0000",
+            "roundedValue": 0,
+            "value": 0
+        },
+        "totalNet": {
+            "denomination": " ETH Tokens",
+            "formatted": "0",
+            "formattedValue": 0,
+            "full": "0 ETH Tokens",
+            "minimized": "0",
+            "rounded": "0.0000",
+            "roundedValue": 0,
+            "value": 0
+        },
+        "unrealizedNet": {
+            "denomination": " ETH Tokens",
+            "formatted": "0",
+            "formattedValue": 0,
+            "full": "0 ETH Tokens",
+            "minimized": "0",
+            "rounded": "0.0000",
+            "roundedValue": 0,
+            "value": 0
+        }
+    },
+    "network": "9000",
+    "numOutcomes": 2,
+    "outstandingShares": {
+        "denomination": "",
+        "formatted": "2,257",
+        "formattedValue": 2257,
+        "full": "2,257",
+        "minimized": "2,257",
+        "rounded": "2,257",
+        "roundedValue": 2257,
+        "value": 2256.8
+    },
+    "priceTimeSeries": [
+        {
+            "data": [],
+            "id": "1",
+            "name": "Floyd Mayweather Jr."
+        },
+        {
+            "data": [],
+            "id": "2",
+            "name": "Conor McGregor"
+        }
+    ],
+    "report": {},
+    "reportableOutcomes": [
+        {
+            "id": "1",
+            "name": "No"
+        },
+        {
+            "id": "2",
+            "name": "Yes"
+        },
+        {
+            "id": "1.5",
+            "name": "Indeterminate"
+        }
+    ],
+    "tags": [
+        "Sports",
+        "Boxing"
+    ],
+    "takerFee": "0.02",
+    "takerFeePercent": {
+        "denomination": "%",
+        "formatted": "2.0",
+        "formattedValue": 2,
+        "full": "2.0%",
+        "minimized": "2",
+        "rounded": "2",
+        "roundedValue": 2,
+        "value": 2
+    },
+    "topic": "Sports",
+    "tradeSummary": {
+        "hasUserEnoughFunds": false,
+        "totalGas": {
+            "denomination": " ETH",
+            "formatted": "0",
+            "formattedValue": 0,
+            "full": "0 ETH",
+            "minimized": "0",
+            "rounded": "0.0000",
+            "roundedValue": 0,
+            "value": 0
+        },
+        "tradeOrders": []
+    },
+    "tradingFee": "0.02",
+    "tradingPeriod": 8702,
+    "type": "binary",
+    "userOpenOrdersSummary": {
+        "openOrdersCount": {
+            "denomination": "",
+            "formatted": "-",
+            "formattedValue": 0,
+            "full": "-",
+            "minimized": "-",
+            "rounded": "-",
+            "roundedValue": 0,
+            "value": 0
+        }
+    },
+    "volume": {
+        "denomination": " shares",
+        "formatted": "4,507.7",
+        "formattedValue": 4507.7,
+        "full": "4,507.7 shares",
+        "minimized": "4,507.7",
+        "rounded": "4,507.70",
+        "roundedValue": 4507.7,
+        "value": 4507.7
+    }
+}
+
+const marketWithOutcomeNum = (num) => {
+  const newOutcomes = Array(num).fill(mockOutcome).map((outcome, idx) => ({ ...outcome, id: idx }))
+  const thing = {
+    ...mockMarket,
+    outcomes: newOutcomes,
+    myPositionOutcomes: newOutcomes
+  } 
+
+  return thing
+}
+
+export {mockOutcome, mockMarket, marketWithOutcomeNum}

@@ -27,7 +27,7 @@ export default class MarketPortfolioCard extends React.Component {
     this.state = {
       tableOpen: {
         myPositions: true,
-        openPositions: false
+        openOrders: false
       }
     }
   }
@@ -164,23 +164,23 @@ export default class MarketPortfolioCard extends React.Component {
             </h1>
             <button
               className={Styles.MarketCard__tabletoggle}
-              onClick={() => this.toggleTable('openPositions')}
+              onClick={() => this.toggleTable('openOrders')}
             >
-              <CaretDropdown flipped={this.state.tableOpen.openPositions} />
+              <CaretDropdown flipped={this.state.tableOpen.openOrders} />
             </button>
           </div>
-          {this.state.tableOpen.openPositions &&
+          {this.state.tableOpen.openOrders &&
             <MarketTable
               hideTitles
               titleKeyPairs={[
-                ['Outcome', 'name.formatted'],
-                ['Quantity', 'qtyShares.formatted'],
-                ['Avg Price', 'purchasePrice.formatted'],
+                ['Outcome', 'name'],
+                ['Quantity', 'unmatchedShares.formatted'],
+                ['Avg Price', 'avgPrice.formatted'],
                 ['Last Price', null],
                 ['Realized P/L', null],
                 ['Unrealized P/L', null],
                 ['Total P/L', null],
-                ['Action', 'actionComponent.formatted']
+                ['Action', 'dialogButton']
               ]}
               mobileTitles={[
                 'Outcome',
@@ -192,7 +192,21 @@ export default class MarketPortfolioCard extends React.Component {
                 'Total P/L',
                 'Action'
               ]}
-              data={[]}
+              data={
+                market.outcomes.reduce((accumulator, outcome) => {
+                  if (!accumulator) accumulator = []
+                  outcome.userOpenOrders.forEach(order => accumulator.push({
+                    ...order,
+                    name: outcome.name,
+                    dialogButton: {
+                      label: 'Close',
+                      dialogText: `Cancel order of ${order.unmatchedShares.formatted}
+                                   shares of ${outcome.name} at ${order.purchasePrice.formatted} ETH?`,
+                      confirm: outcome.position.closePosition
+                    }
+                  }))
+                })
+              }
             />
           }
         </section>
