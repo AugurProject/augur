@@ -9,11 +9,11 @@
   "rules": {
     "indent": [
       "error",
-      2,
-      {
+      2, {
         "SwitchCase": 1
       }
     ],
+    "max-line-length": [false],
     "linebreak-style": [
       "error",
       "unix"
@@ -58,6 +58,7 @@
       2,
       "never"
     ],
+    "trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
     "comma-style": [
       2,
       "last"
@@ -90,6 +91,7 @@
     "radix": 2,
     "comma-spacing": [2, {
       "after": true
-    }]
+    }],
+    "interface-name": [true, "never-prefix"]
   }
 }
