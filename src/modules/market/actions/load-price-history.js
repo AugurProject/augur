@@ -5,10 +5,9 @@ import logError from 'utils/log-error';
 export const loadPriceHistory = (options, callback = logError) => (dispatch, getState) => {
   const { loginAccount } = getState();
   if (!loginAccount.address) return callback(null);
-  const query = { marketID: options.market };
-  augur.markets.getMarketPriceHistory(query, (err, priceHistory) => {
+  augur.markets.getMarketPriceHistory({ ...options, marketID: options.market }, (err, priceHistory) => {
     if (err) return callback(err);
-    if (priceHistory == null) return callback(`no price history data received`);
+    if (priceHistory == null) return callback(null);
     dispatch(updateMarketPriceHistory(options.market, priceHistory));
     callback(null, priceHistory);
   });

@@ -8,13 +8,12 @@ const loadTopics = (callback = logError) => (dispatch, getState) => {
   if (!branch.id) return callback(null);
   augur.markets.getTopics({ universe: branch.id }, (err, topics) => {
     if (err) return callback(err);
-    if (topics == null) {
-      callback(`no topics data received`);
-    } else if (isObject(topics) && Object.keys(topics).length) {
+    if (topics == null) return callback(null);
+    if (isObject(topics) && Object.keys(topics).length) {
       dispatch(clearTopics());
       dispatch(updateTopics(topics));
-      callback(null, topics);
     }
+    callback(null, topics);
   });
 };
 

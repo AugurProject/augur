@@ -35,15 +35,8 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
     stub: {
       augurjs: {
         augur: {
-          api: {
-            Orders: {
-              getBestOrderId: () => assert.fail()
-            }
-          },
           trading: {
-            orderBook: {
-              getOrderBookChunked: () => assert.fail()
-            }
+            getOpenOrders: () => assert.fail()
           }
         }
       },
@@ -69,15 +62,8 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
     stub: {
       augurjs: {
         augur: {
-          api: {
-            Orders: {
-              getBestOrderId: () => assert.fail()
-            }
-          },
           trading: {
-            orderBook: {
-              getOrderBookChunked: () => assert.fail()
-            }
+            getOpenOrders: () => assert.fail()
           }
         }
       },
@@ -103,15 +89,8 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
     stub: {
       augurjs: {
         augur: {
-          api: {
-            Orders: {
-              getBestOrderId: () => assert.fail()
-            }
-          },
           trading: {
-            orderBook: {
-              getOrderBookChunked: () => assert.fail()
-            }
+            getOpenOrders: () => assert.fail()
           }
         }
       },
@@ -137,15 +116,8 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
     stub: {
       augurjs: {
         augur: {
-          api: {
-            Orders: {
-              getBestOrderId: () => assert.fail()
-            }
-          },
           trading: {
-            orderBook: {
-              getOrderBookChunked: () => assert.fail()
-            }
+            getOpenOrders: () => assert.fail()
           }
         }
       },
@@ -155,129 +127,6 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
     },
     assertions: (err, actions) => {
       assert.strictEqual(err, 'market MARKET_0 data not found');
-      assert.deepEqual(actions, []);
-    }
-  });
-  test({
-    description: 'short-circuit if market minPrice not found',
-    params: {
-      marketID: 'MARKET_0',
-      outcome: 3,
-      orderTypeLabel: 'sell'
-    },
-    mock: {
-      state: {
-        marketsData: {
-          MARKET_0: { minPrice: undefined, maxPrice: '1' }
-        }
-      }
-    },
-    stub: {
-      augurjs: {
-        augur: {
-          api: {
-            Orders: {
-              getBestOrderId: () => assert.fail()
-            }
-          },
-          trading: {
-            orderBook: {
-              getOrderBookChunked: () => assert.fail()
-            }
-          }
-        }
-      },
-      insertOrderBookChunkToOrderBook: {
-        default: () => () => assert.fail()
-      }
-    },
-    assertions: (err, actions) => {
-      assert.strictEqual(err, 'minPrice and maxPrice not found for market MARKET_0: undefined 1');
-      assert.deepEqual(actions, []);
-    }
-  });
-  test({
-    description: 'short-circuit if market maxPrice not found',
-    params: {
-      marketID: 'MARKET_0',
-      outcome: 3,
-      orderTypeLabel: 'sell'
-    },
-    mock: {
-      state: {
-        marketsData: {
-          MARKET_0: { minPrice: '0', maxPrice: null }
-        }
-      }
-    },
-    stub: {
-      augurjs: {
-        augur: {
-          api: {
-            Orders: {
-              getBestOrderId: () => assert.fail()
-            }
-          },
-          trading: {
-            orderBook: {
-              getOrderBookChunked: () => assert.fail()
-            }
-          }
-        }
-      },
-      insertOrderBookChunkToOrderBook: {
-        default: () => () => assert.fail()
-      }
-    },
-    assertions: (err, actions) => {
-      assert.strictEqual(err, 'minPrice and maxPrice not found for market MARKET_0: 0 null');
-      assert.deepEqual(actions, []);
-    }
-  });
-  test({
-    description: 'best order ID not found',
-    params: {
-      marketID: 'MARKET_0',
-      outcome: 3,
-      orderTypeLabel: 'sell'
-    },
-    mock: {
-      state: { marketsData }
-    },
-    stub: {
-      augurjs: {
-        augur: {
-          api: {
-            Orders: {
-              getBestOrderId: (p, callback) => {
-                assert.deepEqual(p, {
-                  _orderType: 1,
-                  _market: 'MARKET_0',
-                  _outcome: 3
-                });
-                callback(null, '0x0');
-              }
-            }
-          },
-          trading: {
-            orderBook: {
-              getOrderBookChunked: () => assert.fail()
-            }
-          }
-        }
-      },
-      insertOrderBookChunkToOrderBook: {
-        default: (marketID, outcome, orderTypeLabel, orderBookChunk) => dispatch => dispatch({
-          type: 'INSERT_ORDER_BOOK_CHUNK_TO_ORDER_BOOK',
-          marketID,
-          outcome,
-          orderTypeLabel,
-          orderBookChunk
-        })
-      }
-    },
-    assertions: (err, actions) => {
-      assert.strictEqual(err, 'best order ID not found for market MARKET_0: "0x0"');
       assert.deepEqual(actions, []);
     }
   });
@@ -294,33 +143,9 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
     stub: {
       augurjs: {
         augur: {
-          api: {
-            Orders: {
-              getBestOrderId: (p, callback) => {
-                assert.deepEqual(p, {
-                  _orderType: 1,
-                  _market: 'MARKET_0',
-                  _outcome: 3
-                });
-                callback(null, '999999999999999');
-              }
-            }
-          },
           trading: {
-            orderBook: {
-              getOrderBookChunked: (p, onChunkReceived, onComplete) => {
-                assert.deepEqual(p, {
-                  _orderType: 1,
-                  _market: 'MARKET_0',
-                  _outcome: 3,
-                  _startingOrderId: '999999999999999',
-                  _numOrdersToLoad: null,
-                  minPrice: '0',
-                  maxPrice: '1'
-                });
-                onChunkReceived({});
-                onComplete(null, {});
-              }
+            getOpenOrders: (p, callback) => {
+              callback(null, {});
             }
           }
         }
@@ -365,33 +190,9 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
     stub: {
       augurjs: {
         augur: {
-          api: {
-            Orders: {
-              getBestOrderId: (p, callback) => {
-                assert.deepEqual(p, {
-                  _orderType: 1,
-                  _market: 'MARKET_0',
-                  _outcome: 3
-                });
-                callback(null, '0x1');
-              }
-            }
-          },
           trading: {
-            orderBook: {
-              getOrderBookChunked: (p, onChunkReceived, onComplete) => {
-                assert.deepEqual(p, {
-                  _orderType: 1,
-                  _market: 'MARKET_0',
-                  _outcome: 3,
-                  _startingOrderId: '0x1',
-                  _numOrdersToLoad: null,
-                  minPrice: '0',
-                  maxPrice: '1'
-                });
-                onChunkReceived({ '0x1': order1, '0x2': order2 });
-                onComplete(null, { '0x1': order1, '0x2': order2 });
-              }
+            getOpenOrders: (p, callback) => {
+              callback(null, { '0x1': order1, '0x2': order2 });
             }
           }
         }
