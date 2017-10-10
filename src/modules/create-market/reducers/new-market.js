@@ -24,6 +24,13 @@ const DEFAULT_STATE = {
     {
       type: false,
     },
+    {
+      expirySourceType: false,
+      endDate: false,
+      hour: false,
+      minute: false,
+      meridiem: false,
+    }
   ],
   currentStep: 0,
   type: '',
@@ -34,6 +41,9 @@ const DEFAULT_STATE = {
   expirySourceType: '',
   expirySource: '',
   endDate: {},
+  hour: '',
+  minute: '',
+  meridiem: '',
   detailsText: '',
   category: '',
   tag1: '',

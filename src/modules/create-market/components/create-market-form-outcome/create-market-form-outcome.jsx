@@ -63,8 +63,8 @@ export default class CreateMarketOutcome extends Component {
 
   validateType(value) {
     const p = this.props
-    const updatedMarket = p.newMarket
-    const validations = p.newMarket.validations[p.newMarket.currentStep]
+    const updatedMarket = { ...p.newMarket }
+    const validations = updatedMarket.validations[p.newMarket.currentStep]
 
     const updatedValidations = Object.keys(validations).reduce((p, key) => (validations[key] === true ? { ...p, [key]: true } : p), {})
 
@@ -86,16 +86,16 @@ export default class CreateMarketOutcome extends Component {
     updatedMarket.type = value
     updatedMarket.isValid = p.isValid(p.newMarket.currentStep)
 
-    p.updateNewMarket({ newMarket: updatedMarket })
+    p.updateNewMarket(updatedMarket)
   }
 
   validateScalarNum(value, type) {
     const p = this.props
     const currentStep = p.newMarket.currentStep
 
-    const updatedMarket = p.newMarket
-    let scalarSmallNum = type === 'small' ? value : p.newMarket.scalarSmallNum
-    let scalarBigNum = type === 'big' ? value : p.newMarket.scalarBigNum
+    const updatedMarket = { ...p.newMarket }
+    let scalarSmallNum = type === 'small' ? value : updatedMarket.scalarSmallNum
+    let scalarBigNum = type === 'big' ? value : updatedMarket.scalarBigNum
 
     if (!(scalarSmallNum instanceof BigNumber) && scalarSmallNum !== '') {
       scalarSmallNum = new BigNumber(scalarSmallNum)
@@ -156,7 +156,7 @@ export default class CreateMarketOutcome extends Component {
     const p = this.props
     const currentStep = p.newMarket.currentStep
 
-    const updatedMarket = p.newMarket
+    const updatedMarket = { ...p.newMarket }
     const outcomes = updatedMarket.outcomes
     outcomes[index] = value
     const cleanedOutcomes = outcomes.filter(outcome => outcome !== '')
@@ -191,22 +191,22 @@ export default class CreateMarketOutcome extends Component {
           <label>
             <span>Market Type</span>
           </label>
-          <ul className={Styles.CreateMarketOutcome__type}>
+          <ul className={StylesForm['CreateMarketForm__radio-buttons']}>
             <li>
               <button
-                className={classNames({ [`${Styles.active}`]: p.newMarket.type === BINARY })}
+                className={classNames({ [`${StylesForm.active}`]: p.newMarket.type === BINARY })}
                 onClick={(e) => { this.setState({ marketType: BINARY }); this.validateType(BINARY) }}
               >Yes/No</button>
             </li>
             <li>
               <button
-                className={classNames({ [`${Styles.active}`]: p.newMarket.type === CATEGORICAL })}
+                className={classNames({ [`${StylesForm.active}`]: p.newMarket.type === CATEGORICAL })}
                 onClick={(e) => { this.setState({ marketType: CATEGORICAL }); this.validateType(CATEGORICAL) }}
               >Multiple Choice</button>
             </li>
             <li>
               <button
-                className={classNames({ [`${Styles.active}`]: p.newMarket.type === SCALAR })}
+                className={classNames({ [`${StylesForm.active}`]: p.newMarket.type === SCALAR })}
                 onClick={(e) => { this.setState({ marketType: SCALAR }); this.validateType(SCALAR) }}
               >Numerical Range</button>
             </li>

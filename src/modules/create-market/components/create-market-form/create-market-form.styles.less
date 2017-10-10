@@ -107,9 +107,84 @@
   }
 }
 
+.CreateMarketForm__radio-buttons {
+  display: flex;
+
+  > li {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+
+    &:not(:first-child) {
+      margin-left: 4.75rem;
+    }
+
+    > button {
+      color: @color-white;
+      cursor: pointer;
+      display: block;
+      font-size: 1.125rem;
+      line-height: 1.125rem;
+      min-height: 1.7rem;
+      padding-left: 2.5rem;
+      position: relative;
+      text-align: left;
+
+      &::before {
+        border: 1px solid @color-lightgray;
+        border-radius: 100%;
+        content: "";
+        height: 1.5rem;
+        left: 0;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        width: 1.5rem;
+      }
+
+      &::after {
+        background-color: @color-lightgray;
+        border-radius: 100%;
+        content: "";
+        display: none;
+        height: 0.875rem;
+        left: 0.37rem;
+        margin: auto;
+        position: absolute;
+        top: 0.37rem;
+        width: 0.875rem;
+      }
+
+      &.active::after {
+        display: block;
+      }
+    }
+  }
+}
+
+.CreateMarketForm__radio-buttons--per-line {
+  &:extend(.CreateMarketForm__radio-buttons all);
+
+  display: block;
+
+  > li:not(:first-child) {
+    margin-left: 0;
+    margin-top: 1rem;
+  }
+}
+
 @media @breakpoint-mobile {
   .CreateMarketForm__fields > li textarea {
     height: 5.1rem;
+  }
+
+  .CreateMarketForm__radio-buttons {
+    display: block;
+
+    > li:not(:first-child) {
+      margin-left: 0;
+      margin-top: 1rem;
+    }
   }
 }
 

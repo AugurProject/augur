@@ -31,6 +31,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
       const expected = {
         isValid: false,
         holdForUserAction: false,
+        hour: '',
         currentStep: 0,
         type: '',
         scalarSmallNum: '',
@@ -46,6 +47,8 @@ describe('modules/create-market/reducers/new-market.js', () => {
         outcomes: Array(8).fill(''),
         takerFee: TAKER_FEE_DEFAULT,
         makerFee: MAKER_FEE_DEFAULT,
+        meridiem: '',
+        minute: '',
         orderBook: {},
         orderBookSorted: {},
         orderBookSeries: {},
@@ -61,6 +64,13 @@ describe('modules/create-market/reducers/new-market.js', () => {
           },
           {
             type: false,
+          },
+          {
+            expirySourceType: false,
+            endDate: false,
+            hour: false,
+            minute: false,
+            meridiem: false,
           },
         ],
         creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.'
@@ -380,6 +390,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
       const expected = {
         isValid: false,
         holdForUserAction: false,
+        hour: '',
         currentStep: 0,
         type: '',
         scalarSmallNum: '',
@@ -395,6 +406,8 @@ describe('modules/create-market/reducers/new-market.js', () => {
         outcomes: Array(8).fill(''),
         takerFee: TAKER_FEE_DEFAULT,
         makerFee: MAKER_FEE_DEFAULT,
+        meridiem: '',
+        minute: '',
         orderBook: {},
         orderBookSorted: {},
         orderBookSeries: {},
@@ -410,6 +423,13 @@ describe('modules/create-market/reducers/new-market.js', () => {
           },
           {
             type: false,
+          },
+          {
+            expirySourceType: false,
+            endDate: false,
+            hour: false,
+            minute: false,
+            meridiem: false,
           },
         ],
         creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.'

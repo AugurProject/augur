@@ -6,6 +6,7 @@ import classNames from 'classnames'
 
 import CreateMarketDefine from 'modules/create-market/components/create-market-form-define/create-market-form-define'
 import CreateMarketOutcome from 'modules/create-market/components/create-market-form-outcome/create-market-form-outcome'
+import CreateMarketResolution from 'modules/create-market/components/create-market-form-resolution/create-market-form-resolution'
 // import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description/create-market-form-description'
 // import CreateMarketFormOutcomes from 'modules/create-market/components/create-market-form-outcomes'
 // import CreateMarketFormExpirySource from 'modules/create-market/components/create-market-form-expiry-source'
@@ -84,10 +85,10 @@ export default class CreateMarketForm extends Component {
     const p = this.props
     const currentStep = p.newMarket.currentStep
 
-    const updatedMarket = p.newMarket
+    const updatedMarket = { ...p.newMarket }
 
     switch (true) {
-      case !value.length:
+      case typeof value === 'string' && !value.length:
         updatedMarket.validations[currentStep][fieldName] = 'This field is required.'
         break
       case maxLength && value.length > maxLength:
@@ -127,6 +128,15 @@ export default class CreateMarketForm extends Component {
             }
             { p.newMarket.currentStep === 1 &&
               <CreateMarketOutcome
+                newMarket={p.newMarket}
+                updateNewMarket={p.updateNewMarket}
+                validateField={this.validateField}
+                isValid={this.isValid}
+                isMobileSmall={p.isMobileSmall}
+              />
+            }
+            { p.newMarket.currentStep === 2 &&
+              <CreateMarketResolution
                 newMarket={p.newMarket}
                 updateNewMarket={p.updateNewMarket}
                 validateField={this.validateField}
