@@ -21,7 +21,7 @@ interface TransferLog {
   blockNumber: number;
 }
 
-type TransferHistory = TransferLog[];
+type TransferHistory = Array<TransferLog>;
 
 export function getAccountTransferHistory(db: Knex, account: Address, token: Address|null, callback: (err?: Error|null, result?: TransferHistory) => void): void {
   let query: Knex.Raw;

@@ -14,7 +14,7 @@ export type Int256 = string;
 
 export interface Log {
   address: Address;
-  topics: Int256[];
+  topics: Array<Int256>;
   data: AbiEncodedData;
   blockNumber: Int256;
   transactionIndex: Int256;
@@ -33,7 +33,7 @@ export interface FormattedLog {
 
 export interface AugurLogs {
   [contractName: string]: {
-    [eventName: string]: FormattedLog[];
+    [eventName: string]: Array<FormattedLog>;
   };
 }
 

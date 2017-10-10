@@ -6,7 +6,7 @@ interface TopicsRow {
   popularity: number;
 }
 
-type TopicsInfo = TopicsRow[];
+type TopicsInfo = Array<TopicsRow>;
 
 export function getTopics(db: Knex, universe: Address, callback: (err?: Error|null, result?: TopicsInfo) => void): void {
   db.raw(`SELECT topic, popularity FROM topics WHERE universe = ? ORDER BY popularity DESC`, [universe]).asCallback((err?: Error|null, topicsInfo?: TopicsInfo): void => {

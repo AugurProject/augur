@@ -35,7 +35,7 @@ export function getOpenOrders(db: Knex, marketID: Address|null, outcome: number|
     order_type: orderType,
     order_creator: creator
   }, _.isNull);
-  db("orders").where(queryData).asCallback((err?: Error|null, ordersRows?: OrdersRow[]): void => {
+  db("orders").where(queryData).asCallback((err?: Error|null, ordersRows?: Array<OrdersRow>): void => {
     if (err) return callback(err);
     if (!ordersRows || !ordersRows.length) return callback(null);
     const orders: Orders = {};
