@@ -14,6 +14,7 @@ var encodeTag = require("../format/tag/encode-tag");
  * @param {string} p._denominationToken Ethereum address of the token used as this market's currency.
  * @param {string} p._automatedReporterAddress Ethereum address of this market's automated reporter.
  * @param {string} p._topic The topic (category) to which this market belongs, as a UTF8 string.
+ * @param {number=} p._numTicks The number of ticks for this market (default: p._numOutcomes).
  * @param {Object=} p._extraInfo Extra info which will be converted to JSON and logged to the chain in the CreateMarket event.
  * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
  * @param {function} p.onSent Called if/when the transaction is broadcast to the network.
@@ -25,6 +26,7 @@ function createCategoricalMarket(p) {
     if (err) return p.onFailed(err);
     api().MarketCreation.createCategoricalMarket(assign({}, p, {
       tx: { value: marketCreationCost },
+      _numTicks: p._numTicks || p._numOutcomes,
       _topic: encodeTag(p._topic),
       _extraInfo: p._extraInfo ? JSON.stringify(p._extraInfo) : ""
     }));
