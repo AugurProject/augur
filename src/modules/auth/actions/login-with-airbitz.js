@@ -2,7 +2,7 @@ import secureRandom from 'secure-random'
 import { augur } from 'services/augurjs'
 import { AIRBITZ_WALLET_TYPE } from 'modules/auth/constants/auth-types'
 import { loadAccountData } from 'modules/auth/actions/load-account-data'
-import { updateIsLoggedIn } from 'modules/auth/actions/update-is-logged-in'
+import { updateIsLogged } from 'modules/auth/actions/update-is-logged'
 
 import makePath from 'modules/routes/helpers/make-path'
 

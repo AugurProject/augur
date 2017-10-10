@@ -1,13 +1,13 @@
 import { augur } from 'services/augurjs'
 import { base58Decode } from 'utils/base-58'
 import { loadAccountData } from 'modules/auth/actions/load-account-data'
-import { updateIsLoggedIn } from 'modules/auth/actions/update-is-logged-in'
+import { updateIsLogged } from 'modules/auth/actions/update-is-logged'
 import logError from 'utils/log-error'
 
 export const register = (password, callback = logError) => dispatch => (
   augur.accounts.register({ password }, (err, account) => {
     if (err) return callback(err)
-    dispatch(updateIsLoggedIn(true))
+    dispatch(updateIsLogged(true))
     callback(null, account)
   })
 )
