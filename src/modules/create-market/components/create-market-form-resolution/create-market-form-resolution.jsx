@@ -12,6 +12,8 @@ import { SingleDatePicker } from 'react-dates'
 import { formatDate } from 'utils/format-date'
 import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints'
 
+import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'
+
 import Styles from 'modules/create-market/components/create-market-form-resolution/create-market-form-resolution.styles'
 import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'
 
@@ -34,6 +36,7 @@ export default class CreateMarketResolution extends Component {
     updateNewMarket: PropTypes.func.isRequired,
     validateField: PropTypes.func.isRequired,
     isValid: PropTypes.func.isRequired,
+    isMobileSmall: PropTypes.bool.isRequired,
   }
 
   constructor(props) {
@@ -46,24 +49,49 @@ export default class CreateMarketResolution extends Component {
     }
 
     this.validateExpiryType = this.validateExpiryType.bind(this)
+    this.validateNumber = this.validateNumber.bind(this)
   }
 
   validateExpiryType(value) {
     const p = this.props
     const updatedMarket = p.newMarket
-    const validations = p.newMarket.validations[p.newMarket.currentStep]
-
-    const updatedValidations = Object.keys(validations).reduce((p, key) => (validations[key] === true ? { ...p, [key]: true } : p), {})
+    const currentStep = p.newMarket.currentStep
 
     if (value === EXPIRY_SOURCE_SPECIFIC) {
-      updatedValidations.expirySource = updatedValidations.expirySource ? updatedValidations.expirySource : false
+      updatedMarket.validations[currentStep].expirySource =
+        updatedMarket.validations[currentStep].expirySource
+          ? updatedMarket.validations[currentStep].expirySource
+          : false
+    } else {
+      delete updatedMarket.validations[currentStep].expirySource
     }
 
-    updatedValidations.expirySourceType = true
-
-    updatedMarket.validations[p.newMarket.currentStep] = updatedValidations
+    updatedMarket.validations[p.newMarket.currentStep].expirySourceType = true
     updatedMarket.expirySourceType = value
     updatedMarket.isValid = p.isValid(p.newMarket.currentStep)
+
+    p.updateNewMarket({ newMarket: updatedMarket })
+  }
+
+  validateNumber(fieldName, value, min, max) {
+    const p = this.props
+    const updatedMarket = p.newMarket
+    const currentStep = p.newMarket.currentStep
+
+    switch (true) {
+      case value === '':
+        updatedMarket.validations[currentStep][fieldName] = `The ${fieldName} field is required.`
+        break
+      case (value > max || value < min):
+        updatedMarket.validations[currentStep][fieldName] = `Please enter a ${fieldName} between ${min} and ${max}.`
+        break
+      default:
+        updatedMarket.validations[currentStep][fieldName] = true
+        break
+    }
+
+    updatedMarket[fieldName] = value
+    updatedMarket.isValid = p.isValid(currentStep)
 
     p.updateNewMarket({ newMarket: updatedMarket })
   }
@@ -106,7 +134,7 @@ export default class CreateMarketResolution extends Component {
           </label>
           <SingleDatePicker
             date={this.state.date}
-            onDateChange={(date) => { this.setState({ date }); p.updateNewMarket({ endDate: formatDate(date.toDate()) }) }}
+            onDateChange={(date) => { this.setState({ date }); p.validateField('endDate', formatDate(date.toDate())) }}
             focused={this.state.focused}
             onFocusChange={({ focused }) => this.setState({ focused })}
             displayFormat="MMM D, YYYY"
@@ -114,6 +142,44 @@ export default class CreateMarketResolution extends Component {
             navPrev={<ChevronLeft />}
             navNext={<ChevronRight />}
           />
+        </li>
+        <li>
+          <label htmlFor="cm__input--date">
+            <span>Expiration Time</span>
+            { p.newMarket.validations[p.newMarket.currentStep].hour.length &&
+              <span className={StylesForm.CreateMarketForm__error}>{ p.newMarket.validations[p.newMarket.currentStep].hour }</span>
+            }
+            { p.newMarket.validations[p.newMarket.currentStep].minute.length &&
+              <span className={StylesForm.CreateMarketForm__error}>{ p.newMarket.validations[p.newMarket.currentStep].minute }</span>
+            }
+          </label>
+          <div className={Styles.CreateMarketResolution__time}>
+            <input
+              type="number"
+              min="1"
+              max="12"
+              step="1"
+              value={p.newMarket.hour}
+              placeholder="Hour"
+              onChange={e => this.validateNumber('hour', e.target.value, 1, 12)}
+            />
+            <input
+              type="number"
+              min="0"
+              max="59"
+              step="1"
+              value={p.newMarket.minute}
+              placeholder="Minute"
+              onChange={e => this.validateNumber('minute', e.target.value, 0, 59)}
+            />
+            <InputDropdown
+              label="AM/PM"
+              default={p.newMarket.meridiem || ''}
+              options={['AM', 'PM']}
+              onChange={value => p.validateField('meridiem', value)}
+              isMobileSmall={this.props.isMobileSmall}
+            />
+          </div>
         </li>
       </ul>
     )

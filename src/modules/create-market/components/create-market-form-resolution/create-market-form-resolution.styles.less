@@ -1,6 +1,8 @@
 @import '~assets/styles/shared.less';
 
 .CreateMarketResolution__expiry-source-specific {
+  min-height: 3.25rem;
+
   > button {
     align-self: flex-start;
   }
@@ -11,11 +13,23 @@
   }
 }
 
+.CreateMarketResolution__time {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  max-width: 28rem;
+
+  > * {
+    width: 31%;
+  }
+}
+
 .CreateMarketResolution__datepicker {
   :global {
     .SingleDatePicker_1 {
       display: block;
       max-width: 19.875rem;
+      z-index: 2;
     }
 
     .DateInput__openDown_3::before,
@@ -54,7 +68,11 @@
 
     .DateInput_displayText.DateInput_displayText_1 {
       background: none;
-      color: inherit;
+      color: @color-lightgray;
+
+      &.DateInput_displayText__hasInput {
+        color: inherit;
+      }
     }
 
     .CalendarMonth_1,

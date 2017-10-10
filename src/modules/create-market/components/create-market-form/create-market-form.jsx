@@ -88,7 +88,7 @@ export default class CreateMarketForm extends Component {
     const updatedMarket = p.newMarket
 
     switch (true) {
-      case !value.length:
+      case typeof value === 'string' && !value.length:
         updatedMarket.validations[currentStep][fieldName] = 'This field is required.'
         break
       case maxLength && value.length > maxLength:
@@ -141,6 +141,7 @@ export default class CreateMarketForm extends Component {
                 updateNewMarket={p.updateNewMarket}
                 validateField={this.validateField}
                 isValid={this.isValid}
+                isMobileSmall={p.isMobileSmall}
               />
             }
           </div>
