@@ -36,23 +36,31 @@ describe("server/getters/get-open-orders", () => {
             buy: {
               "0x1000000000000000000000000000000000000000000000000000000000000000": {
                 shareToken: "0x1000000000000000000000000000000000000000",
-                orderCreator: "0x0000000000000000000000000000000000000b0b",
+                owner: "0x0000000000000000000000000000000000000b0b",
                 creationTime: 1506473500,
                 creationBlockNumber: 1400001,
-                price: 700000000000000000,
-                amount: 1000000000000000000,
-                tokensEscrowed: 700000000000000000,
-                sharesEscrowed: 0
+                price: 0.7,
+                amount: 1,
+                fullPrecisionPrice: 0.7,
+                fullPrecisionAmount: 1,
+                tokensEscrowed: 0.7,
+                sharesEscrowed: 0,
+                betterOrderId: null,
+                worseOrderId: null
               },
               "0x2000000000000000000000000000000000000000000000000000000000000000": {
                 shareToken: "0x1000000000000000000000000000000000000000",
-                orderCreator: "0x000000000000000000000000000000000000d00d",
+                owner: "0x000000000000000000000000000000000000d00d",
                 creationTime: 1506473515,
                 creationBlockNumber: 1400002,
-                price: 600000000000000000,
-                amount: 2000000000000000000,
-                tokensEscrowed: 1200000000000000000,
-                sharesEscrowed: 0
+                price: 0.6,
+                amount: 2,
+                fullPrecisionPrice: 0.600001,
+                fullPrecisionAmount: 2,
+                tokensEscrowed: 1.200002,
+                sharesEscrowed: 0,
+                betterOrderId: null,
+                worseOrderId: null
               }
             }
           },
@@ -60,13 +68,17 @@ describe("server/getters/get-open-orders", () => {
             buy: {
               "0x3000000000000000000000000000000000000000000000000000000000000000": {
                 shareToken: "0x2000000000000000000000000000000000000000",
-                orderCreator: "0x000000000000000000000000000000000000d00d",
+                owner: "0x000000000000000000000000000000000000d00d",
                 creationTime: 1506473515,
                 creationBlockNumber: 1400002,
-                price: 600000000000000000,
-                amount: 2000000000000000000,
-                tokensEscrowed: 1200000000000000000,
-                sharesEscrowed: 0
+                price: 0.6,
+                amount: 2,
+                fullPrecisionPrice: 0.6,
+                fullPrecisionAmount: 2.0000001,
+                tokensEscrowed: 1.20000006,
+                sharesEscrowed: 0,
+                betterOrderId: null,
+                worseOrderId: null
               }
             }
           }
@@ -90,13 +102,17 @@ describe("server/getters/get-open-orders", () => {
             sell: {
               "0x4000000000000000000000000000000000000000000000000000000000000000": {
                 shareToken: "0x2000000000000000000000000000000000000000",
-                orderCreator: "0x000000000000000000000000000000000000d00d",
+                owner: "0x000000000000000000000000000000000000d00d",
                 creationTime: 1506473515,
                 creationBlockNumber: 1400002,
-                price: 600000000000000000,
-                amount: 2000000000000000000,
-                tokensEscrowed: 1200000000000000000,
-                sharesEscrowed: 0
+                price: 0.6,
+                amount: 2,
+                fullPrecisionPrice: 0.6,
+                fullPrecisionAmount: 2,
+                tokensEscrowed: 1.2,
+                sharesEscrowed: 0,
+                betterOrderId: null,
+                worseOrderId: null
               }
             }
           }
@@ -120,13 +136,17 @@ describe("server/getters/get-open-orders", () => {
             buy: {
               "0x1000000000000000000000000000000000000000000000000000000000000000": {
                 shareToken: "0x1000000000000000000000000000000000000000",
-                orderCreator: "0x0000000000000000000000000000000000000b0b",
+                owner: "0x0000000000000000000000000000000000000b0b",
                 creationTime: 1506473500,
                 creationBlockNumber: 1400001,
-                price: 700000000000000000,
-                amount: 1000000000000000000,
-                tokensEscrowed: 700000000000000000,
-                sharesEscrowed: 0
+                price: 0.7,
+                amount: 1,
+                fullPrecisionPrice: 0.7,
+                fullPrecisionAmount: 1,
+                tokensEscrowed: 0.7,
+                sharesEscrowed: 0,
+                betterOrderId: null,
+                worseOrderId: null
               }
             }
           }

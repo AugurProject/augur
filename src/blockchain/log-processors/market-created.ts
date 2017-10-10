@@ -21,7 +21,8 @@ export function processMarketCreatedLog(db: Knex, trx: Knex.Transaction, log: Fo
     end_time:                log.endTime,
     short_description:       log.shortDescription,
     designated_reporter:     log.designatedReporter,
-    resolution_source:       log.resolutionSource
+    resolution_source:       log.resolutionSource,
+    num_ticks:               log.numTicks
   };
   db.transacting(trx).insert(dataToInsert).into("markets").asCallback((err?: Error|null): void => {
       if (err) return callback(err);

@@ -24,7 +24,7 @@ export interface Log {
 
 export interface FormattedLog {
   address: Address,
-  blockNumber: Int256,
+  blockNumber: number,
   transactionIndex: Int256,
   transactionHash: Bytes32,
   blockHash: Bytes32,
@@ -101,7 +101,8 @@ export interface MarketsRow {
   short_description: string,
   long_description: string|null,
   designated_reporter: Address,
-  resolution_source: string|null
+  resolution_source: string|null,
+  num_ticks: number
 }
 
 export interface MarketInfo {
@@ -128,5 +129,26 @@ export interface MarketInfo {
   shortDescription: string,
   longDescription: string|null,
   designatedReporter: Address,
-  resolutionSource: string|null
+  resolutionSource: string|null,
+  numTicks: number
+}
+
+export interface OrdersRow {
+  order_id: Bytes32,
+  market_id: Address,
+  outcome: number,
+  share_token: Address,
+  order_type: string,
+  order_creator: Address,
+  creation_time: number,
+  creation_block_number: number,
+  price: number|string,
+  amount: number|string,
+  full_precision_price: number|string,
+  full_precision_amount: number|string,
+  tokens_escrowed: number|string,
+  shares_escrowed: number|string,
+  better_order_id: Bytes32|null,
+  worse_order_id: Bytes32|null,
+  trade_group_id: Bytes32|null
 }

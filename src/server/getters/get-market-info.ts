@@ -1,10 +1,8 @@
 import * as Knex from "knex";
 import { Address, MarketsRow, MarketInfo } from "../../types";
 
-
 export function getMarketInfo(db: Knex, marketID: string, callback: (err?: Error|null, result?: MarketInfo) => void): void {
-  db.raw("select * from markets where market_id = ? LIMIT 1", [marketID])
-  .asCallback((err?: Error|null, rows?: MarketsRow[]) => {
+  db.raw("select * from markets where market_id = ? LIMIT 1", [marketID]).asCallback((err?: Error|null, rows?: MarketsRow[]) => {
     if (err) return callback(err);
     if (!rows || rows.length == 0) return callback(null);
 
@@ -34,7 +32,8 @@ export function getMarketInfo(db: Knex, marketID: string, callback: (err?: Error
       shortDescription: row.short_description,
       longDescription: row.long_description,
       designatedReporter: row.designated_reporter,
-      resolutionSource: row.resolution_source
+      resolutionSource: row.resolution_source,
+      numTicks: row.num_ticks
     };
     callback(null, marketInfo);
   });

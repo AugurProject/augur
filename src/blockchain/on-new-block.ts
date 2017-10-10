@@ -13,7 +13,7 @@ export function onNewBlock(db: Knex, augur: Augur, blockNumber: string) {
         .then(trx.commit)
         .catch(trx.rollback);
     })
-    .then(() => logError())
+    .then(logError)
     .catch(logError);
   });
 }

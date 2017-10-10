@@ -35,7 +35,8 @@ export function getMarketsInfo(db: Knex, universe: Address, callback: (err?: Err
         shortDescription: row.short_description,
         longDescription: row.long_description,
         designatedReporter: row.designated_reporter,
-        resolutionSource: row.resolution_source
+        resolutionSource: row.resolution_source,
+        numTicks: row.num_ticks
       };
       return p;
     }, marketsInfo));
