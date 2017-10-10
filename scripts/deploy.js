@@ -1,15 +1,19 @@
+// TODO -- exit deploy if actual errors occur -- right now getting false positives from git
+
 const path = require('path');
 const { eachOfSeries } = require('../node_modules/async');
 const { spawn } = require('child_process');
 
-const USER = 'ua';
+const USER = process.env.DU;
 const DEVELOPMENT_SERVERS = [
-  '173.230.146.39', // IPFS Node 1
-  '45.33.54.37', // IPFS Node 2
-  '23.239.21.136' // IPFS Node 3
+  process.env.IPFS1,
+  process.env.IPFS2,
+  process.env.IPFS3
 ];
+const DEVELOPMENT_LOAD_BALANCER = process.env.DLB1;
 
 const PRODUCTION_SERVERS = []; // TODO
+const PRODUCTION_LOAD_BALANCER = ''; // TODO
 
 const FLAGS = process.argv.filter(arg => arg.indexOf('--') !== -1);
 
@@ -31,9 +35,13 @@ if (isProduction) {
   eachOfSeries(
     DEVELOPMENT_SERVERS,
     (item, key, callback) => deployBuild(item, callback),
-    e => e == null ?
-      console.log('Succesfully deployed to all servers.') :
-      console.log('Failed to deployed to all servers, code: ', e));
+    e => {
+      if (e != null) return console.log('Failed to deployed to all servers, code: ', e);
+
+      console.log('Succesfully deployed to all servers.');
+      purgeLoadBalancerCache(DEVELOPMENT_LOAD_BALANCER);
+    }
+  );
 }
 
 function deployBuild(server, callback) {
@@ -58,7 +66,10 @@ function deployBuild(server, callback) {
       "echo '-- PUBLISHING BUILD --';",
       "/home/"+USER+"/bin/ipfs name publish --key=augur-dev $NEW_BUILD_HASH;",
       "echo '-- UPDATE HASH FOR IPFS REPUBLISH CRON JOB --';",
-      "echo $NEW_BUILD_HASH > ~/ipfs-deploy/NEW_BUILD_HASH;"
+      "echo $NEW_BUILD_HASH > ~/ipfs-deploy/NEW_BUILD_HASH;",
+      "echo '-- PURGING NGINX CACHE --';",
+      "cd /etc/nginx && sudo rm -rf ./cache/* && sudo mkdir ./cache/temp && sudo chown www-data ./cache/temp;",
+      "sudo service nginx restart;"
     ]
   )
 
@@ -72,6 +83,29 @@ function deployBuild(server, callback) {
     } else {
       console.log(`App failed to deploy to ${server} -- code: ${code}`);
       callback(code);
+    }
+  });
+}
+
+function purgeLoadBalancerCache(server) {
+  const purge = spawn('ssh',
+    [
+      `${USER}@${server}`,
+      "echo '-- LOGGED IN --';",
+      "echo '-- PURGING LOAD BALANCER NGINX CACHE --';",
+      "cd /etc/nginx && sudo rm -rf ./cache/* && sudo mkdir ./cache/temp && sudo chown www-data ./cache/temp;",
+      "sudo service nginx restart;"
+    ]
+  )
+
+  purge.stdout.on('data', data => console.log(`${data}`));
+  purge.stderr.on('data', data => console.log(`ERR -- ${data}`));
+
+  purge.on('close', (code) => {
+    if (code === 0) {
+      console.log(`Load Balancer Cache Purged Successfully For: ${server}.`);
+    } else {
+      console.log(`Load Balancer Failed to Purge Cache For: ${server} -- code: ${code}`);
     }
   });
 }
