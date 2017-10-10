@@ -11,6 +11,7 @@
   },
   "scripts": {
     "test": "mocha test",
+    "lint": "tslint src",
     "build": "tsc",
     "migrate": "node node_modules/knex/bin/cli.js migrate:latest --env build",
     "seed": "node node_modules/knex/bin/cli.js seed:run --env build",
@@ -48,6 +49,8 @@
     "mocha": "3.2.0",
     "mocha-lcov-reporter": "0.0.2",
     "proxyquire": "1.7.11",
+    "tslint": "^5.7.0",
+    "tslint-eslint-rules": "^4.1.1",
     "typescript": "2.5.2"
   }
 }
