@@ -4,16 +4,15 @@ const path = require('path');
 const { eachOfSeries } = require('../node_modules/async');
 const { spawn } = require('child_process');
 
-const USER = process.env.DU;
-const DEVELOPMENT_SERVERS = [
-  process.env.IPFS1,
-  process.env.IPFS2,
-  process.env.IPFS3
-];
-const DEVELOPMENT_LOAD_BALANCER = process.env.DLB1;
+// DEV SERVERS
+const DEV_USER = process.env.DEV_USER;
+const DEV_SERVERS = process.env.DEV_IPFS_NODES.split(' ');
+const DEV_LOAD_BALANCER = process.env.DEV_LOAD_BALANCER;
 
-const PRODUCTION_SERVERS = []; // TODO
-const PRODUCTION_LOAD_BALANCER = ''; // TODO
+// TODO PRODUCTION SERVERS
+const PRODUCTION_USER = null;
+const PRODUCTION_SERVERS = null;
+const PRODUCTION_LOAD_BALANCER = null;
 
 const FLAGS = process.argv.filter(arg => arg.indexOf('--') !== -1);
 
@@ -24,33 +23,40 @@ if (isProduction) {
 
   eachOfSeries(
     PRODUCTION_SERVERS,
-    (item, key, callback) => deployBuild(item, callback),
-    e => e == null ?
-      console.log('Succesfully deployed to all servers.') :
-      console.log('Failed to deployed to all servers, code: ', e)
+    (item, key, callback) => deployBuild(item, PRODUCTION_USER, callback),
+    e => {
+      if (e != null) return console.log('Failed to deployed to all servers, code: ', e);
+
+      console.log('Succesfully deployed to all servers.');
+      purgeLoadBalancerCache(PRODUCTION_LOAD_BALANCER, PRODUCTION_USER);
+    }
   );
 } else {
   console.log('== DEPLOYING TO -- DEVELOPMENT SERVERS ==');
 
   eachOfSeries(
-    DEVELOPMENT_SERVERS,
-    (item, key, callback) => deployBuild(item, callback),
+    DEV_SERVERS,
+    (item, key, callback) => deployBuild(item, DEV_USER, callback),
     e => {
       if (e != null) return console.log('Failed to deployed to all servers, code: ', e);
 
       console.log('Succesfully deployed to all servers.');
-      purgeLoadBalancerCache(DEVELOPMENT_LOAD_BALANCER);
+      purgeLoadBalancerCache(DEV_LOAD_BALANCER, DEV_USER);
     }
   );
 }
 
-function deployBuild(server, callback) {
+function deployBuild(server, user, callback) {
   console.log('Deploying to: ', server);
 
   const deploy = spawn('ssh',
     [
-      `${USER}@${server}`,
+      `${user}@${server}`,
       "echo '-- LOGGED IN --';",
+      "echo '-- BLOCKING INBOUND TRAFFIC --';",
+      "sudo ufw deny 80 && sudo ufw status;",
+      "echo '-- RESTARTING IPFS NODE --';",
+      "systemctl --user restart ipfs;",
       "echo '-- CHANGING DIRECTORY TO `ipfs-deploy` --';",
       "cd ~/ipfs-deploy;",
       "echo '-- REMOVING OLD BUILD --';",
@@ -62,14 +68,16 @@ function deployBuild(server, callback) {
       "echo '-- CHECKING OUT CORRECT BRANCH --';",
       "git checkout v3;",
       "echo '-- ADDING BUILD TO IPFS --';",
-      "export NEW_BUILD_HASH=$(/home/"+USER+"/bin/ipfs add -r build/ | tail -n 1 | awk '{print $2}');",
+      "export NEW_BUILD_HASH=$(/home/"+user+"/bin/ipfs add -r build/ | tail -n 1 | awk '{print $2}');",
       "echo '-- PUBLISHING BUILD --';",
-      "/home/"+USER+"/bin/ipfs name publish --key=augur-dev $NEW_BUILD_HASH;",
+      "/home/"+user+"/bin/ipfs name publish --key=augur-dev $NEW_BUILD_HASH;",
       "echo '-- UPDATE HASH FOR IPFS REPUBLISH CRON JOB --';",
       "echo $NEW_BUILD_HASH > ~/ipfs-deploy/NEW_BUILD_HASH;",
       "echo '-- PURGING NGINX CACHE --';",
       "cd /etc/nginx && sudo rm -rf ./cache/* && sudo mkdir ./cache/temp && sudo chown www-data ./cache/temp;",
-      "sudo service nginx restart;"
+      "sudo service nginx restart;",
+      "echo '-- ENABLING INBOUND TRAFFIC --';",
+      "sudo ufw allow 80 && sudo ufw status;"
     ]
   )
 
@@ -87,10 +95,10 @@ function deployBuild(server, callback) {
   });
 }
 
-function purgeLoadBalancerCache(server) {
+function purgeLoadBalancerCache(server, user) {
   const purge = spawn('ssh',
     [
-      `${USER}@${server}`,
+      `${user}@${server}`,
       "echo '-- LOGGED IN --';",
       "echo '-- PURGING LOAD BALANCER NGINX CACHE --';",
       "cd /etc/nginx && sudo rm -rf ./cache/* && sudo mkdir ./cache/temp && sudo chown www-data ./cache/temp;",
