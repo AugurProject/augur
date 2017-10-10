@@ -1450,7 +1450,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.4.2";
+  this.version = "4.4.3";
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
@@ -6809,16 +6809,12 @@ module.exports=[{
   "anonymous": false,
   "inputs": [{
     "indexed": true,
-    "name": "market",
+    "name": "shareToken",
     "type": "address"
   }, {
     "indexed": true,
     "name": "sender",
     "type": "address"
-  }, {
-    "indexed": false,
-    "name": "outcome",
-    "type": "uint8"
   }, {
     "indexed": false,
     "name": "orderId",
@@ -6951,7 +6947,7 @@ module.exports=[{
 module.exports=[{
   "constant": false,
   "type": "function",
-  "name": "allowance(address,address)",
+  "name": "allowance",
   "outputs": [{
     "type": "uint256",
     "name": "out"
@@ -6966,7 +6962,7 @@ module.exports=[{
 }, {
   "constant": false,
   "type": "function",
-  "name": "approve(address,uint256)",
+  "name": "approve",
   "outputs": [{
     "type": "uint256",
     "name": "out"
@@ -6981,7 +6977,7 @@ module.exports=[{
 }, {
   "constant": false,
   "type": "function",
-  "name": "balanceOf(address)",
+  "name": "balanceOf",
   "outputs": [{
     "type": "uint256",
     "name": "out"
@@ -7002,7 +6998,7 @@ module.exports=[{
 }, {
   "constant": false,
   "type": "function",
-  "name": "getRidOfDustForLaunch()",
+  "name": "getRidOfDustForLaunch",
   "outputs": [{
     "type": "int256",
     "name": "out"
@@ -7020,7 +7016,7 @@ module.exports=[{
 }, {
   "constant": false,
   "type": "function",
-  "name": "name()",
+  "name": "name",
   "outputs": [{
     "type": "uint256",
     "name": "out"
@@ -7029,7 +7025,7 @@ module.exports=[{
 }, {
   "constant": false,
   "type": "function",
-  "name": "setSaleDistribution(address[],uint256[])",
+  "name": "setSaleDistribution",
   "outputs": [{
     "type": "uint256",
     "name": "out"
@@ -7044,7 +7040,7 @@ module.exports=[{
 }, {
   "constant": false,
   "type": "function",
-  "name": "symbol()",
+  "name": "symbol",
   "outputs": [{
     "type": "uint256",
     "name": "out"
@@ -7053,7 +7049,7 @@ module.exports=[{
 }, {
   "constant": false,
   "type": "function",
-  "name": "totalSupply()",
+  "name": "totalSupply",
   "outputs": [{
     "type": "uint256",
     "name": "out"
@@ -7062,7 +7058,7 @@ module.exports=[{
 }, {
   "constant": false,
   "type": "function",
-  "name": "transfer(address,uint256)",
+  "name": "transfer",
   "outputs": [{
     "type": "uint256",
     "name": "out"
@@ -7077,7 +7073,7 @@ module.exports=[{
 }, {
   "constant": false,
   "type": "function",
-  "name": "transferFrom(address,address,uint256)",
+  "name": "transferFrom",
   "outputs": [{
     "type": "uint256",
     "name": "out"
@@ -7107,7 +7103,7 @@ module.exports=[{
     "name": "fxpValue"
   }],
   "type": "event",
-  "name": "Approval(address,address,uint256)"
+  "name": "Approval"
 }, {
   "inputs": [{
     "indexed": true,
@@ -7123,7 +7119,7 @@ module.exports=[{
     "name": "value"
   }],
   "type": "event",
-  "name": "Transfer(address,address,uint256)"
+  "name": "Transfer"
 }]
 },{}],139:[function(require,module,exports){
 module.exports=[{
