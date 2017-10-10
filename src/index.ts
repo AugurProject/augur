@@ -7,22 +7,23 @@ import { syncAugurNodeWithBlockchain } from "./blockchain/sync-augur-node-with-b
 import { runWebsocketServer } from "./server/run-websocket-server";
 import { ErrorCallback } from "./types";
 
+// tslint:disable-next-line:no-var-requires
 const { augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers, websocketPort } = require("../config");
 
-var db: Knex;
-if(process.env["DATABASE"] == null) {
+let db: Knex;
+if (process.env.DATABASE) {
+  db = Knex({
+    client: "pg",
+    connection: process.env.DATABASE
+  });
+} else {
   sqlite3.verbose();
   db = Knex({
     client: "sqlite3",
     connection: {
       filename: augurDbPath
     },
-    acquireConnectionTimeout: 5*60*1000
-  });
-} else {
-  db = Knex({
-    client: "pg",
-    connection: process.env["DATABASE"]
+    acquireConnectionTimeout: 5 * 60 * 1000
   });
 }
 
@@ -30,7 +31,7 @@ const augur: Augur = new Augur();
 
 augur.rpc.setDebugOptions({ broadcast: false });
 
-checkAugurDbSetup(db, ErrorCallback  => {
+checkAugurDbSetup(db, (err?: Error|null)  => {
   syncAugurNodeWithBlockchain(db, augur, ethereumNodeEndpoints, uploadBlockNumbers, (err?: Error|null) => {
     if (err) return console.error("syncAugurNodeWithBlockchain:", err);
     console.log("Sync with blockchain complete, starting websocket server...");

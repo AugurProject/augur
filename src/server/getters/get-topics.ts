@@ -2,8 +2,8 @@ import * as Knex from "knex";
 import { Address } from "../../types";
 
 interface TopicsRow {
-  topic: string,
-  popularity: number
+  topic: string;
+  popularity: number;
 }
 
 type TopicsInfo = TopicsRow[];

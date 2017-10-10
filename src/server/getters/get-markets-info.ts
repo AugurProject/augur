@@ -2,7 +2,7 @@ import * as Knex from "knex";
 import { Address, MarketsRow, MarketInfo } from "../../types";
 
 interface MarketsInfo {
-  [marketID: string]: MarketInfo
+  [marketID: string]: MarketInfo;
 }
 
 export function getMarketsInfo(db: Knex, universe: Address, callback: (err?: Error|null, result?: MarketsInfo) => void): void {
@@ -11,7 +11,7 @@ export function getMarketsInfo(db: Knex, universe: Address, callback: (err?: Err
     if (!rows || !rows.length) return callback(null);
     const marketsInfo: MarketsInfo = {};
     callback(null, rows.reduce((p: MarketsInfo, row: MarketsRow): MarketsInfo => {
-      p[row.market_id] = <MarketInfo>{
+      p[row.market_id] = {
         marketID: row.market_id,
         universe: row.universe,
         marketType: row.market_type,
@@ -36,7 +36,7 @@ export function getMarketsInfo(db: Knex, universe: Address, callback: (err?: Err
         longDescription: row.long_description,
         designatedReporter: row.designated_reporter,
         resolutionSource: row.resolution_source
-      };
+      } as MarketInfo;
       return p;
     }, marketsInfo));
   });

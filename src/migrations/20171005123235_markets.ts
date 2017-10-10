@@ -27,11 +27,8 @@ exports.up = async (knex: Knex): Promise<any> => {
               long_description text,
               designated_reporter varchar(66) NOT NULL,
               resolution_source text
-            )`)
+            )`);
   });
-    
 };
 
-exports.down = async (knex: Knex): Promise<any> => {
-   return knex.schema.dropTableIfExists("markets"); 
-};
+exports.down = async (knex: Knex): Promise<any> => knex.schema.dropTableIfExists("markets");

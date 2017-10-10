@@ -92,6 +92,9 @@
     "comma-spacing": [2, {
       "after": true
     }],
-    "interface-name": [true, "never-prefix"]
+    "interface-name": [true, "never-prefix"],
+    "ordered-imports": [false],
+    "no-shadowed-variable": false,
+    "object-literal-sort-keys": false
   }
 }

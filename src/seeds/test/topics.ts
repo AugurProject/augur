@@ -1,5 +1,4 @@
 import * as Knex from "knex";
-//import Promise = require("bluebird");
 
 exports.seed = async (knex: Knex): Promise<any> => {
     // Deletes ALL existing entries
