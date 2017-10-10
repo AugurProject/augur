@@ -1,11 +1,11 @@
 import * as Knex from "knex";
 
-exports.seed = async function (knex: Knex): Promise<any> {
-    // Deletes ALL existing entries
-    return knex("transfers").del()
-        .then(() => {
-          // Inserts seed entries
-          return knex.raw(`INSERT INTO transfers
+exports.seed = async (knex: Knex): Promise<any> => {
+  // Deletes ALL existing entries
+  return knex("transfers").del()
+    .then(() => {
+      // Inserts seed entries
+      return knex.raw(`INSERT INTO transfers
             (transaction_hash, log_index, sender, recipient, token, value, block_number)
             VALUES (
               '0x00000000000000000000000000000000000000000000000000000000deadbeef',
@@ -32,5 +32,5 @@ exports.seed = async function (knex: Knex): Promise<any> {
               47,
               1400001
             )`);
-        });
+    });
 };

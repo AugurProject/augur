@@ -10,9 +10,9 @@ export function runWebsocketServer(db: Knex, port: number): void {
   websocketServer.on("connection", (websocket: WebSocket) => {
     websocket.on("message", (data: WebSocket.Data) => {
       try {
-        const message = JSON.parse(<string>data);
+        const message = JSON.parse(data as string);
         if (isJsonRpcRequest(message)) {
-          dispatchJsonRpcRequest(db, <JsonRpcRequest>message, (err?: Error|null, result?: any) => {
+          dispatchJsonRpcRequest(db, message as JsonRpcRequest, (err?: Error|null, result?: any) => {
             if (err) return console.error("dispatch error:", err);
             websocket.send(makeJsonRpcResponse(message.id, result || null));
           });

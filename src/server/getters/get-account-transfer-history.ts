@@ -2,34 +2,33 @@ import * as Knex from "knex";
 import { Address, Bytes32 } from "../../types";
 
 interface TransferRow {
-  transaction_hash: Bytes32,
-  log_index: number,
-  sender: Address,
-  recipient: Address,
-  token: Address,
-  value: number,
-  block_number: number
+  transaction_hash: Bytes32;
+  log_index: number;
+  sender: Address;
+  recipient: Address;
+  token: Address;
+  value: number;
+  block_number: number;
 }
 
 interface TransferLog {
-  transactionHash: Bytes32,
-  logIndex: number,
-  sender: Address,
-  recipient: Address,
-  token: Address,
-  value: number,
-  blockNumber: number
+  transactionHash: Bytes32;
+  logIndex: number;
+  sender: Address;
+  recipient: Address;
+  token: Address;
+  value: number;
+  blockNumber: number;
 }
 
-type TransferHistory = TransferLog[];
+type TransferHistory = Array<TransferLog>;
 
 export function getAccountTransferHistory(db: Knex, account: Address, token: Address|null, callback: (err?: Error|null, result?: TransferHistory) => void): void {
   let query: Knex.Raw;
-  
-  if(token === null) { 
-    query = db.raw("select * from transfers where sender = ? OR recipient = ?", [account, account]);
+  if (token === null) {
+    query = db.raw("SELECT * FROM transfers WHERE sender = ? OR recipient = ?", [account, account]);
   } else {
-    query = db.raw("select * from transfers where (sender = ? OR recipient = ?) AND token = ?", [account, account, token]);
+    query = db.raw("SELECT * FROM transfers WHERE (sender = ? OR recipient = ?) AND token = ?", [account, account, token]);
   }
 
   query.map((transferRow: TransferRow): TransferLog => ({

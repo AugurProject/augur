@@ -1,6 +1,6 @@
 import * as Knex from "knex";
 
-exports.up = async function (knex: Knex): Promise<any> {
+exports.up = async (knex: Knex): Promise<any> => {
   return knex.schema.dropTableIfExists("markets").then(() => {
     return knex.schema.raw(`CREATE TABLE markets (
 			market_id varchar(66) PRIMARY KEY NOT NULL,
@@ -28,10 +28,10 @@ exports.up = async function (knex: Knex): Promise<any> {
       designated_reporter varchar(66) NOT NULL,
       resolution_source text,
       num_ticks integer NOT NULL
-    )`)
+    )`);
   });
 };
 
-exports.down = async function (knex: Knex): Promise<any> {
-  return knex.schema.dropTableIfExists("markets"); 
+exports.down = async (knex: Knex): Promise<any> => {
+  return knex.schema.dropTableIfExists("markets");
 };

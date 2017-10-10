@@ -3,39 +3,39 @@ import * as Knex from "knex";
 import { Address, Bytes32, OrdersRow } from "../../types";
 
 interface Order {
-  shareToken: Address,
-  owner: Address,
-  creationTime: number,
-  creationBlockNumber: number,
-  price: number|string,
-  amount: number|string,
-  fullPrecisionPrice: number|string,
-  fullPrecisionAmount: number|string,
-  tokensEscrowed: number|string,
-  sharesEscrowed: number|string,
-  betterOrderId: Bytes32|null,
-  worseOrderId: Bytes32|null
+  shareToken: Address;
+  owner: Address;
+  creationTime: number;
+  creationBlockNumber: number;
+  price: number|string;
+  amount: number|string;
+  fullPrecisionPrice: number|string;
+  fullPrecisionAmount: number|string;
+  tokensEscrowed: number|string;
+  sharesEscrowed: number|string;
+  betterOrderId: Bytes32|null;
+  worseOrderId: Bytes32|null;
 }
 
 interface Orders {
   [marketID: string]: {
     [outcome: number]: {
       [orderType: string]: {
-        [orderId: string]: Order
-      }
-    }
-  }
+        [orderId: string]: Order;
+      };
+    };
+  };
 }
 
 // market, outcome, creator, orderType, limit, sort
 export function getOpenOrders(db: Knex, marketID: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, callback: (err?: Error|null, result?: any) => void): void {
   const queryData: {} = _.omitBy({
     market_id: marketID,
-    outcome: outcome,
+    outcome,
     order_type: orderType,
     order_creator: creator
   }, _.isNull);
-  db("orders").where(queryData).asCallback((err?: Error|null, ordersRows?: OrdersRow[]): void => {
+  db("orders").where(queryData).asCallback((err?: Error|null, ordersRows?: Array<OrdersRow>): void => {
     if (err) return callback(err);
     if (!ordersRows || !ordersRows.length) return callback(null);
     const orders: Orders = {};
