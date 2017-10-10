@@ -11,7 +11,7 @@
   },
   "scripts": {
     "test": "mocha test",
-    "lint": "tslint src",
+    "lint": "tslint -c tslint.json src/**/*.ts",
     "build": "tsc",
     "migrate": "node node_modules/knex/bin/cli.js migrate:latest --env build",
     "seed": "node node_modules/knex/bin/cli.js seed:run --env build",
