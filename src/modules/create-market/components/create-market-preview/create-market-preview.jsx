@@ -53,9 +53,9 @@ export default class CreateMarketPreview extends Component {
       minute: p.newMarket.minute,
     })
 
-    if (p.newMarket.meridiem === 'AM' && endDate.hours() > 12) {
+    if (p.newMarket.meridiem === 'AM' && endDate.hours() >= 12) {
       endDate.hours(endDate.hours() - 12)
-    } else if (p.newMarket.meridiem === 'PM' && endDate.hours() <= 12) {
+    } else if (p.newMarket.meridiem === 'PM' && endDate.hours() < 12) {
       endDate.hours(endDate.hours() + 12)
     }
 
