@@ -110,6 +110,7 @@ export default class CreateMarketResolution extends Component {
             <span>Expiration Date</span>
           </label>
           <SingleDatePicker
+            id="cm__input--date"
             date={this.state.date}
             onDateChange={(date) => { this.setState({ date }); p.validateField('endDate', formatDate(date.toDate())) }}
             focused={this.state.focused}
@@ -121,7 +122,7 @@ export default class CreateMarketResolution extends Component {
           />
         </li>
         <li>
-          <label htmlFor="cm__input--date">
+          <label htmlFor="cm__input--time">
             <span>Expiration Time</span>
             { p.newMarket.validations[p.newMarket.currentStep].hour.length &&
               <span className={StylesForm.CreateMarketForm__error}>{ p.newMarket.validations[p.newMarket.currentStep].hour }</span>
@@ -132,6 +133,7 @@ export default class CreateMarketResolution extends Component {
           </label>
           <div className={Styles.CreateMarketResolution__time}>
             <input
+              id="cm__input--time"
               type="number"
               min="1"
               max="12"

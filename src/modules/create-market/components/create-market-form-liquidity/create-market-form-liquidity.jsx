@@ -1,4 +1,4 @@
-/* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance as order remains the same
+/* eslint jsx-a11y/label-has-for: 0 */
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
@@ -18,6 +18,7 @@ export default class CreateMarketLiquidity extends Component {
     super(props)
 
     this.state = {
+      orderEstimate: '15.366 ETH',
     }
   }
 
@@ -41,6 +42,52 @@ export default class CreateMarketLiquidity extends Component {
             placeholder="0%"
             onChange={e => p.validateNumber('settlementFee', e.target.value, 'settlement fee', 0, 100, 1)}
           />
+        </li>
+        <li>
+          <label>
+            <span>Add Order for Initial Liquidity</span>
+          </label>
+          <p>Recommended for adding liquidity to market.</p>
+        </li>
+        <li className={Styles.CreateMarketLiquidity__order}>
+          <div className={Styles['CreateMarketLiquidity__order-form']}>
+            <ul className={Styles['CreateMarketLiquidity__order-form-header']}>
+              <li className={Styles.active}>Buy</li>
+              <li>Sell</li>
+            </ul>
+            <ul className={Styles['CreateMarketLiquidity__order-form-body']}>
+              <li>
+                <label>Order Type</label>
+                <div className={Styles['CreateMarketLiquidity__order-type']}>
+                  <span>Market</span>
+                  <span className={Styles.active}>Limit</span>
+                </div>
+              </li>
+              <li>
+                <label htmlFor="cm__input--quantity">Quantity</label>
+                <input
+                  id="cm__input--quantity"
+                  type="number"
+                  placeholder="0.0000 Shares"
+                />
+              </li>
+              <li>
+                <label htmlFor="cm__input--limit-price">Limit Price</label>
+                <input
+                  id="cm__input--limit-price"
+                  type="number"
+                  placeholder="0.0000 ETH"
+                />
+              </li>
+              <li>
+                <label>Est. Cost</label>
+                <div className={Styles['CreateMarketLiquidity__order-est']}>{ s.orderEstimate }</div>
+              </li>
+            </ul>
+          </div>
+          <div className={Styles['CreateMarketLiquidity__order-graph']}>
+            <p>Order graph</p>
+          </div>
         </li>
       </ul>
     )

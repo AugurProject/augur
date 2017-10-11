@@ -88,7 +88,7 @@ export default class CreateMarketDefine extends Component {
           />
         </li>
         <li className={StylesForm['field--50']}>
-          <label htmlFor="cm__suggested-categories">
+          <label>
             <span>Suggested Categories</span>
           </label>
           <ul className={Styles['CreateMarketDefine__suggested-categories']}>
