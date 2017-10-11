@@ -7,12 +7,12 @@ const setupTestDb = require("../../test.database");
 const { getMarketsInfo } = require("../../../build/server/getters/get-markets-info");
 
 
-describe("server/getters/get-markets-info", (): void => {
-  const test = (t): void => {
-    it(t.description, (done): void => {
-      setupTestDb((err, db): void => {
+describe("server/getters/get-markets-info", () => {
+  const test = (t) => {
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getMarketsInfo(db, t.params.universe, t.params.marketIDs, (err, marketsInfo): void => {
+        getMarketsInfo(db, t.params.universe, t.params.marketIDs, (err, marketsInfo) => {
           t.assertions(err, marketsInfo);
           done();
         });
@@ -25,7 +25,7 @@ describe("server/getters/get-markets-info", (): void => {
       universe: "0x000000000000000000000000000000000000000b",
       marketIDs: null
     },
-    assertions: (err, marketsInfo): void => {
+    assertions: (err, marketsInfo) => {
       assert.isNull(err);
       assert.deepEqual(marketsInfo, {
         "0x0000000000000000000000000000000000000001": {
@@ -178,7 +178,7 @@ describe("server/getters/get-markets-info", (): void => {
         "0x0000000000000000000000000000000000000002"
       ]
     },
-    assertions: (err, marketsInfo): void => {
+    assertions: (err, marketsInfo) => {
       assert.isNull(err);
       assert.deepEqual(marketsInfo, {
         "0x0000000000000000000000000000000000000001": {
@@ -290,7 +290,7 @@ describe("server/getters/get-markets-info", (): void => {
       universe: "0x1010101010101010101010101010101010101010",
       marketIDs: undefined
     },
-    assertions: (err, marketsInfo): void => {
+    assertions: (err, marketsInfo) => {
       assert.isNull(err);
       assert.isUndefined(marketsInfo);
     }

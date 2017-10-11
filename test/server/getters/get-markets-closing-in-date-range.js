@@ -8,12 +8,12 @@ const { getMarketsClosingInDateRange } = require("../../../build/server/getters/
 
 const augurDbPath = join(__dirname, "augur.db");
 
-describe("server/getters/get-markets-closing-in-date-range", (): void => {
-  const test = (t): void => {
-    it(t.description, (done): void => {
-      setupTestDb((err, db): void => {
+describe("server/getters/get-markets-closing-in-date-range", () => {
+  const test = (t) => {
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getMarketsClosingInDateRange(db, t.params.earliestClosingTime, t.params.latestClosingTime, t.params.universe, t.params.limit, (err, marketsClosingInDateRange): void => {
+        getMarketsClosingInDateRange(db, t.params.earliestClosingTime, t.params.latestClosingTime, t.params.universe, t.params.limit, (err, marketsClosingInDateRange) => {
           t.assertions(err, marketsClosingInDateRange);
           done();
         });
@@ -28,7 +28,7 @@ describe("server/getters/get-markets-closing-in-date-range", (): void => {
       universe: "0x000000000000000000000000000000000000000b",
       limit: 10
     },
-    assertions: (err, marketsClosingInDateRange): void => {
+    assertions: (err, marketsClosingInDateRange) => {
       assert.isNull(err);
       assert.deepEqual(marketsClosingInDateRange, [
         "0x0000000000000000000000000000000000000001"
@@ -43,7 +43,7 @@ describe("server/getters/get-markets-closing-in-date-range", (): void => {
       universe: "0x000000000000000000000000000000000000000b",
       limit: 3
     },
-    assertions: (err, marketsClosingInDateRange): void => {
+    assertions: (err, marketsClosingInDateRange) => {
       assert.isNull(err);
       assert.deepEqual(marketsClosingInDateRange, [
         "0x0000000000000000000000000000000000000003",
@@ -60,7 +60,7 @@ describe("server/getters/get-markets-closing-in-date-range", (): void => {
       universe: "0x000000000000000000000000000000000000000b",
       limit: 2
     },
-    assertions: (err, marketsClosingInDateRange): void => {
+    assertions: (err, marketsClosingInDateRange) => {
       assert.isNull(err);
       assert.deepEqual(marketsClosingInDateRange, [
         "0x0000000000000000000000000000000000000003",
@@ -76,7 +76,7 @@ describe("server/getters/get-markets-closing-in-date-range", (): void => {
       universe: "0x000000000000000000000000000000000000000b",
       limit: 10
     },
-    assertions: (err, marketsClosingInDateRange): void => {
+    assertions: (err, marketsClosingInDateRange) => {
       assert.isNull(err);
       assert.isUndefined(marketsClosingInDateRange);
     }

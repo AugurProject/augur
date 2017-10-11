@@ -8,12 +8,12 @@ const { getMarketsCreatedByUser } = require("../../../build/server/getters/get-m
 
 const augurDbPath = join(__dirname, "augur.db");
 
-describe("server/getters/get-markets-created-by-user", (): void => {
-  const test = (t): void => {
-    it(t.description, (done): void => {
-      setupTestDb((err, db): void => {
+describe("server/getters/get-markets-created-by-user", () => {
+  const test = (t) => {
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getMarketsCreatedByUser(db, t.params.creator, (err, marketsCreatedByUser): void => {
+        getMarketsCreatedByUser(db, t.params.creator, (err, marketsCreatedByUser) => {
           t.assertions(err, marketsCreatedByUser);
           done();
         });
@@ -25,7 +25,7 @@ describe("server/getters/get-markets-created-by-user", (): void => {
     params: {
       creator: "0x0000000000000000000000000000000000000b0b"
     },
-    assertions: (err, marketsCreatedByUser): void => {
+    assertions: (err, marketsCreatedByUser) => {
       assert.isNull(err);
       assert.deepEqual(marketsCreatedByUser, [
         "0x0000000000000000000000000000000000000001",
@@ -38,7 +38,7 @@ describe("server/getters/get-markets-created-by-user", (): void => {
     params: {
       creator: "0x000000000000000000000000000000000000d00d"
     },
-    assertions: (err, marketsCreatedByUser): void => {
+    assertions: (err, marketsCreatedByUser) => {
       assert.isNull(err);
       assert.deepEqual(marketsCreatedByUser, [
         "0x0000000000000000000000000000000000000003"
@@ -50,7 +50,7 @@ describe("server/getters/get-markets-created-by-user", (): void => {
     params: {
       creator: "0x0000000000000000000000000000000000000bbb"
     },
-    assertions: (err, marketsCreatedByUser): void => {
+    assertions: (err, marketsCreatedByUser) => {
       assert.isNull(err);
       assert.isUndefined(marketsCreatedByUser);
     }

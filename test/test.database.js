@@ -7,8 +7,8 @@ const { checkAugurDbSetup } = require("../build/setup/check-augur-db-setup");
 
 module.exports = function(callback) {
   const db = Knex(environments.test);
-  db.migrate.latest().then((): void => {
-    db.seed.run().then((): void => {
+  db.migrate.latest().then(() => {
+    db.seed.run().then(() => {
       checkAugurDbSetup(db, function(err) {
         callback(err, db);
       });

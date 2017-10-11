@@ -8,12 +8,12 @@ const { getOpenOrders } = require("../../../build/server/getters/get-open-orders
 
 const augurDbPath = join(__dirname, "augur.db");
 
-describe("server/getters/get-open-orders", (): void => {
-  const test = (t): void => {
-    it(t.description, (done): void => {
-      setupTestDb((err, db): void => {
+describe("server/getters/get-open-orders", () => {
+  const test = (t) => {
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getOpenOrders(db, t.params.marketID, t.params.outcome, t.params.orderType, t.params.creator, (err, openOrders): void => {
+        getOpenOrders(db, t.params.marketID, t.params.outcome, t.params.orderType, t.params.creator, (err, openOrders) => {
           t.assertions(err, openOrders);
           done();
         });
@@ -28,7 +28,7 @@ describe("server/getters/get-open-orders", (): void => {
       orderType: "buy",
       creator: null
     },
-    assertions: (err, openOrders): void => {
+    assertions: (err, openOrders) => {
       assert.isNull(err);
       assert.deepEqual(openOrders, {
         "0x0000000000000000000000000000000000000001": {
@@ -94,7 +94,7 @@ describe("server/getters/get-open-orders", (): void => {
       orderType: "sell",
       creator: null
     },
-    assertions: (err, openOrders): void => {
+    assertions: (err, openOrders) => {
       assert.isNull(err);
       assert.deepEqual(openOrders, {
         "0x0000000000000000000000000000000000000001": {
@@ -128,7 +128,7 @@ describe("server/getters/get-open-orders", (): void => {
       orderType: null,
       creator: "0x0000000000000000000000000000000000000b0b"
     },
-    assertions: (err, openOrders): void => {
+    assertions: (err, openOrders) => {
       assert.isNull(err);
       assert.deepEqual(openOrders, {
         "0x0000000000000000000000000000000000000001": {
@@ -162,7 +162,7 @@ describe("server/getters/get-open-orders", (): void => {
       orderType: null,
       creator: null
     },
-    assertions: (err, openOrders): void => {
+    assertions: (err, openOrders) => {
       assert.isNull(err);
       assert.isUndefined(openOrders);
     }

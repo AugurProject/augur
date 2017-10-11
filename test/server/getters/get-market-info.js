@@ -6,12 +6,12 @@ const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { getMarketInfo } = require("../../../build/server/getters/get-market-info");
 
-describe("server/getters/get-market-info", (): void => {
-  const test = (t): void => {
-    it(t.description, (done): void => {
-      setupTestDb((err, db): void => {
+describe("server/getters/get-market-info", () => {
+  const test = (t) => {
+    it(t.description, (done) => {
+      setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getMarketInfo(db, t.params.marketID, (err, marketInfo): void => {
+        getMarketInfo(db, t.params.marketID, (err, marketInfo) => {
           t.assertions(err, marketInfo);
           done();
         });
@@ -23,7 +23,7 @@ describe("server/getters/get-market-info", (): void => {
     params: {
       marketID: "0x0000000000000000000000000000000000000001"
     },
-    assertions: (err, marketInfo): void => {
+    assertions: (err, marketInfo) => {
       assert.isNull(err);
       assert.deepEqual(marketInfo, {
         id: "0x0000000000000000000000000000000000000001",
@@ -94,7 +94,7 @@ describe("server/getters/get-market-info", (): void => {
     params: {
       marketID: "0x1010101010101010101010101010101010101010"
     },
-    assertions: (err, marketInfo): void => {
+    assertions: (err, marketInfo) => {
       assert.isNull(err);
       assert.isUndefined(marketInfo);
     }
