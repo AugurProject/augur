@@ -8,16 +8,16 @@ export const loadReports = (options, callback = logError) => (dispatch, getState
   if (!loginAccount.address) return callback(null)
   if (!loginAccount.rep || loginAccount.rep === '0') return callback(null)
   if (!branch.id) return callback(null)
-  const query = { ...options, branch: branch.id, reporter: loginAccount.address }
-  augur.reporting.getReportingHistory(query, (err, reports) => {
+  augur.reporting.getReportingHistory({ ...options, branch: branch.id, reporter: loginAccount.address }, (err, reportingHistory) => {
     if (err) return callback(err)
-    if (reports == null) {
+    if (reportingHistory == null) {
       dispatch(updateHasLoadedReports(false))
-      return callback(`no reports data received`)
+      return callback(null)
     }
     dispatch(clearReports())
-    dispatch(updateReports(reports))
+    // TODO verify that reportingHistory is the correct shape for updateReports
+    dispatch(updateReports(reportingHistory))
     dispatch(updateHasLoadedReports(true))
-    callback(null, reports)
+    callback(null, reportingHistory)
   })
 }

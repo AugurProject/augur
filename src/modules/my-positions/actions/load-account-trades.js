@@ -7,11 +7,14 @@ export function loadAccountTrades(options, callback = logError) {
   return (dispatch, getState) => {
     const { branch, loginAccount } = getState()
     if (!loginAccount.address || !options) return callback(null)
-    if (!options.market) dispatch(clearAccountTrades())
-    const query = { ...options, account: loginAccount.address, universe: branch.id }
-    augur.trading.getUserTradingHistory(query, (err, tradeHistory) => {
+    const marketID = options.market
+    if (!marketID) dispatch(clearAccountTrades())
+    augur.trading.getUserTradingHistory({ ...options, account: loginAccount.address, universe: branch.id, marketID }, (err, userTradingHistory) => {
       if (err) return callback(err)
-      dispatch(updateAccountTradesData(tradeHistory, options.market))
+      if (userTradingHistory != null) {
+        // TODO verify that userTradingHistory is the correct shape for updateAccountTradesData
+        dispatch(updateAccountTradesData(userTradingHistory, options.market))
+      }
       callback(null)
     })
   }

@@ -64,24 +64,28 @@ describe('modules/create-market/actions/submit-new-market', () => {
 
       const expected = {
         _signer: 'this is a private key',
-        branch: '1010101',
-        description: 'test description~|>one|two',
-        expDate: 1234567890,
-        resolution: '',
-        takerFee: 0.02,
-        makerFee: 0.01,
-        extraInfo: '',
-        tags: [
-          'testing',
-          'tag1',
-          'tag2'
-        ],
-        minValue: 1,
-        maxValue: 2,
-        numOutcomes: 2
-      }
+        _branch: '1010101',
+        _endTime: 1234567890,
+        _denominationToken: 'domnination',
+        _extraInfo: {
+          description: 'test description',
+          longDescription: '',
+          outcomeNames: [
+            'one',
+            'two'
+          ],
+          resolution: '',
+          tags: []
+        },
+        _maxDisplayPrice: '1',
+        _minDisplayPrice: '0',
+        _numOutcomes: 2,
+        _topic: 'test topic',
+        settlementFee: '0.02',
+        _numTicks: 2
+      };
 
-      assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`)
+      assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`);
     }
   })
 
@@ -128,24 +132,24 @@ describe('modules/create-market/actions/submit-new-market', () => {
 
       const expected = {
         _signer: 'this is a private key',
-        branch: '1010101',
-        description: 'test description',
-        expDate: 1234567890,
-        resolution: '',
-        takerFee: 0.02,
-        makerFee: 0.01,
-        extraInfo: '',
-        tags: [
-          'cat',
-          'tageroony1',
-          'tageroony2'
-        ],
-        minValue: 1,
-        maxValue: 2,
-        numOutcomes: 2
-      }
+        _branch: '1010101',
+        _endTime: 1234567890,
+        _denominationToken: 'domnination',
+        _extraInfo: {
+          description: 'test description',
+          longDescription: '',
+          resolution: '',
+          tags: []
+        },
+        _maxDisplayPrice: '1',
+        _minDisplayPrice: '0',
+        _numOutcomes: 2,
+        _topic: 'test topic',
+        settlementFee: '0.02',
+        _numTicks: 2
+      };
 
-      assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`)
+      assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`);
     }
   })
 
@@ -169,6 +173,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         tag1: 'tag1',
         tag2: 'tag2',
         type: SCALAR,
+        _numTicks: 2,
         scalarSmallNum: '-10', // String for the test case, normally a BigNumber
         scalarBigNum: '10' // String for the test case, normally a BigNumber
       }
@@ -194,24 +199,24 @@ describe('modules/create-market/actions/submit-new-market', () => {
 
       const expected = {
         _signer: 'this is a private key',
-        branch: '1010101',
-        description: 'test description',
-        expDate: 1234567890,
-        resolution: '',
-        takerFee: 0.02,
-        makerFee: 0.01,
-        extraInfo: '',
-        tags: [
-          'cat',
-          'tag1',
-          'tag2'
-        ],
-        minValue: '-10',
-        maxValue: '10',
-        numOutcomes: 2
-      }
+        _branch: '1010101',
+        _endTime: 1234567890,
+        _denominationToken: 'domnination',
+        _extraInfo: {
+          description: 'test description',
+          longDescription: '',
+          resolution: '',
+          tags: []
+        },
+        _maxDisplayPrice: '10',
+        _minDisplayPrice: '-10',
+        _numOutcomes: 2,
+        _topic: 'test topic',
+        settlementFee: '0.02',
+        _numTicks: 2
+      };
 
-      assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`)
+      assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`);
     }
   })
 

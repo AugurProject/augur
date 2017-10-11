@@ -38,6 +38,7 @@ export function submitNewMarket(newMarket, history) {
         formattedNewMarket._minDisplayPrice = '0'
         formattedNewMarket._maxDisplayPrice = '1'
         formattedNewMarket._numOutcomes = newMarket.outcomes.length
+        formattedNewMarket._numTicks = newMarket.outcomes.length
         formattedNewMarket._extraInfo.outcomeNames = newMarket.outcomes
         createMarket = augur.createMarket.createCategoricalMarket
         break
@@ -45,6 +46,7 @@ export function submitNewMarket(newMarket, history) {
         formattedNewMarket._minDisplayPrice = newMarket.scalarSmallNum.toString()
         formattedNewMarket._maxDisplayPrice = newMarket.scalarBigNum.toString()
         formattedNewMarket._numOutcomes = 2
+        formattedNewMarket._numTicks = 2 // TODO make this a user-specifiable value, can be any multiple of 2
         createMarket = augur.createMarket.createScalarMarket
         break
       case BINARY:
@@ -52,6 +54,7 @@ export function submitNewMarket(newMarket, history) {
         formattedNewMarket._minDisplayPrice = '0'
         formattedNewMarket._maxDisplayPrice = '1'
         formattedNewMarket._numOutcomes = 2
+        formattedNewMarket._numTicks = 2
         createMarket = augur.createMarket.createCategoricalMarket
     }
 
