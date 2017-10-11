@@ -211,3 +211,33 @@ export interface TradesRow {
   shares: string|number;
   trade_group_id: Bytes32|null;
 }
+
+export interface JoinedReportsMarketsRow {
+  market_id: Address;
+  universe: Address;
+  reporting_window: Address;
+  reporting_token: Address;
+  market_type: string;
+  amount_staked: string|number;
+  payout0: string|number|null;
+  payout1: string|number|null;
+  payout2: string|number|null;
+  payout3: string|number|null;
+  payout4: string|number|null;
+  payout5: string|number|null;
+  payout6: string|number|null;
+  payout7: string|number|null;
+  is_invalid: number;
+}
+
+export interface UIReport {
+  marketID: Address;
+  reportingWindow: Address;
+  payoutNumerators: Array<string|number|null>;
+  amountStaked: string|number;
+  reportingToken: Address;
+  isCategorical: boolean;
+  isScalar: boolean;
+  isIndeterminate: boolean;
+  isSubmitted: boolean;
+}

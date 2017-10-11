@@ -9,12 +9,12 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
     if (!blocksRow) return callback(new Error("block timestamp not found"));
     const marketPayload: {} = { tx: { to: log.address } };
     parallel({
-      numberOfOutcomes: (next: AsyncCallback) => augur.api.market.getNumberOfOutcomes(marketPayload, next),
-      reportingWindow: (next: AsyncCallback) => augur.api.market.getReportingWindow(marketPayload, next),
-      endTime: (next: AsyncCallback) => augur.api.market.getEndTime(marketPayload, next),
-      designatedReporter: (next: AsyncCallback) => augur.api.market.getDesignatedReporter(marketPayload, next),
-      designatedReportStake: (next: AsyncCallback) => augur.api.market.getDesignatedReportStake(marketPayload, next),
-      numTicks: (next: AsyncCallback) => augur.api.market.getNumTicks(marketPayload, next)
+      numberOfOutcomes: (next: AsyncCallback) => augur.api.Market.getNumberOfOutcomes(marketPayload, next),
+      reportingWindow: (next: AsyncCallback) => augur.api.Market.getReportingWindow(marketPayload, next),
+      endTime: (next: AsyncCallback) => augur.api.Market.getEndTime(marketPayload, next),
+      designatedReporter: (next: AsyncCallback) => augur.api.Market.getDesignatedReporter(marketPayload, next),
+      designatedReportStake: (next: AsyncCallback) => augur.api.Market.getDesignatedReportStake(marketPayload, next),
+      numTicks: (next: AsyncCallback) => augur.api.Market.getNumTicks(marketPayload, next)
     }, (err?: any, onContractData?: any): void => {
       if (err) return callback(err);
       const extraInfo: MarketCreatedLogExtraInfo = log.extraInfo;
