@@ -1,4 +1,4 @@
-@import '~assets/styles/shared.less';
+@import (reference) '~assets/styles/shared';
 
 .CreateMarketPreview {
   background-color: @color-white;
@@ -68,6 +68,10 @@
   }
 }
 
+.CreateMarketPreview__outcome {
+  min-height: 2.75rem;
+}
+
 .CreateMarketPreview__tags {
   display: flex;
   margin-bottom: 1.625rem;
@@ -88,13 +92,9 @@
       display: inline;
       text-transform: uppercase;
 
-      &:not(:empty)::after {
+      &:not(:first-child):not(:nth-child(2)):not(:empty)::before {
         content: "/";
         margin: 0 4px;
-      }
-
-      &:last-child::after {
-        display: none;
       }
 
       &:first-child {
@@ -102,7 +102,9 @@
         margin-right: 1rem;
 
         &::after {
+          content: "/";
           display: inline-block;
+          margin: 0 4px;
         }
       }
     }

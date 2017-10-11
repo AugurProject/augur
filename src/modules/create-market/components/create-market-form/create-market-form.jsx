@@ -5,6 +5,8 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import CreateMarketDefine from 'modules/create-market/components/create-market-form-define/create-market-form-define'
+import CreateMarketOutcome from 'modules/create-market/components/create-market-form-outcome/create-market-form-outcome'
+import CreateMarketResolution from 'modules/create-market/components/create-market-form-resolution/create-market-form-resolution'
 // import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description/create-market-form-description'
 // import CreateMarketFormOutcomes from 'modules/create-market/components/create-market-form-outcomes'
 // import CreateMarketFormExpirySource from 'modules/create-market/components/create-market-form-expiry-source'
@@ -46,41 +48,66 @@ export default class CreateMarketForm extends Component {
   static propTypes = {
     newMarket: PropTypes.object.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
-    categories: PropTypes.array.isRequired
+    categories: PropTypes.array.isRequired,
+    isMobileSmall: PropTypes.bool.isRequired,
   }
 
   constructor(props) {
     super(props)
 
-    // this.state = {
-    //   lastStep: props.newMarket.currentStep,
-    //   currentStep: props.newMarket.currentStep
-    // }
-
     this.state = {
-      currentPage: 0,
-      totalPages: 5,
+      pages: ['Define', 'Outcome', 'Resolution', 'Liquidity', 'Review'],
     }
 
-    this.updatePage = this.updatePage.bind(this)
+    this.prevPage = this.prevPage.bind(this)
+    this.nextPage = this.nextPage.bind(this)
+    this.validateField = this.validateField.bind(this)
+    this.isValid = this.isValid.bind(this)
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) {
-  //     this.setState({
-  //       lastStep: this.props.newMarket.currentStep,
-  //       currentStep: nextProps.newMarket.currentStep
-  //     }, () => {
-  //       this.updateFormHeight()
-  //     })
-  //   }
-  // }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) {
+      this.props.updateNewMarket({ isValid: this.isValid(nextProps.newMarket.currentStep) })
+    }
+  }
 
-  updatePage(direction) {
-    let currentPage = direction === 'next' ? this.state.currentPage + 1 : this.state.currentPage - 1
-    currentPage = currentPage < 0 ? 0 : currentPage
-    currentPage = currentPage > this.state.totalPages ? this.state.totalPages : currentPage
-    this.setState({ currentPage })
+  prevPage() {
+    const newStep = this.props.newMarket.currentStep <= 0 ? 0 : this.props.newMarket.currentStep - 1
+    this.props.updateNewMarket({ currentStep: newStep })
+  }
+
+  nextPage() {
+    const newStep = this.props.newMarket.currentStep >= (this.state.pages.length - 1) ? this.state.pages.length - 1 : this.props.newMarket.currentStep + 1
+    this.props.updateNewMarket({ currentStep: newStep })
+  }
+
+  validateField(fieldName, value, maxLength) {
+    const p = this.props
+    const currentStep = p.newMarket.currentStep
+
+    const updatedMarket = { ...p.newMarket }
+
+    switch (true) {
+      case typeof value === 'string' && !value.length:
+        updatedMarket.validations[currentStep][fieldName] = 'This field is required.'
+        break
+      case maxLength && value.length > maxLength:
+        updatedMarket.validations[currentStep][fieldName] = `Maximum length is ${maxLength}.`
+        break
+      default:
+        updatedMarket.validations[currentStep][fieldName] = true
+    }
+
+    updatedMarket[fieldName] = value
+    updatedMarket.isValid = this.isValid(currentStep)
+
+    p.updateNewMarket(updatedMarket)
+  }
+
+  isValid(currentStep) {
+    const validations = this.props.newMarket.validations[currentStep]
+    const validationsArray = Object.keys(validations)
+    return validationsArray.every(key => validations[key] === true)
   }
 
   render() {
@@ -89,13 +116,50 @@ export default class CreateMarketForm extends Component {
 
     return (
       <article className={Styles.CreateMarketForm}>
-        <div className={classNames(Styles.CreateMarketForm__page, { [`${Styles['show-page']}`]: s.currentPage === 0 })}>
-          <CreateMarketDefine
-            newMarket={p.newMarket}
-            updateNewMarket={p.updateNewMarket}
-            categories={p.categories}
-            updatePage={this.updatePage}
-          />
+        <div className={Styles['CreateMarketForm__form-outer-wrapper']}>
+          <div className={Styles['CreateMarketForm__form-inner-wrapper']}>
+            { p.newMarket.currentStep === 0 &&
+              <CreateMarketDefine
+                newMarket={p.newMarket}
+                updateNewMarket={p.updateNewMarket}
+                validateField={this.validateField}
+                categories={p.categories}
+              />
+            }
+            { p.newMarket.currentStep === 1 &&
+              <CreateMarketOutcome
+                newMarket={p.newMarket}
+                updateNewMarket={p.updateNewMarket}
+                validateField={this.validateField}
+                isValid={this.isValid}
+                isMobileSmall={p.isMobileSmall}
+              />
+            }
+            { p.newMarket.currentStep === 2 &&
+              <CreateMarketResolution
+                newMarket={p.newMarket}
+                updateNewMarket={p.updateNewMarket}
+                validateField={this.validateField}
+                isValid={this.isValid}
+                isMobileSmall={p.isMobileSmall}
+              />
+            }
+          </div>
+          <div className={Styles['CreateMarketForm__button-outer-wrapper']}>
+            <div className={Styles['CreateMarketForm__button-inner-wrapper']}>
+              <div className={Styles.CreateMarketForm__navigation}>
+                <button
+                  className={classNames(Styles.CreateMarketForm__prev, { [`${Styles['hide-button']}`]: p.newMarket.currentStep === 0 })}
+                  onClick={this.prevPage}
+                >Previous: {s.pages[p.newMarket.currentStep - 1]}</button>
+                <button
+                  className={classNames(Styles.CreateMarketForm__next, { [`${Styles['hide-button']}`]: p.newMarket.currentStep === s.pages.length - 1 })}
+                  disabled={!p.newMarket.isValid}
+                  onClick={p.newMarket.isValid && this.nextPage}
+                >Next: {s.pages[p.newMarket.currentStep + 1]}</button>
+              </div>
+            </div>
+          </div>
         </div>
         {/* <CreateMarketFormDescription
           className={classNames({

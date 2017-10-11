@@ -4,6 +4,7 @@ import branch from 'modules/branch/reducers/branch'
 import connection from 'modules/app/reducers/connection'
 
 import isMobile from 'modules/app/reducers/is-mobile'
+import isMobileSmall from 'modules/app/reducers/is-mobile-small'
 import headerHeight from 'modules/app/reducers/header-height'
 import footerHeight from 'modules/app/reducers/footer-height'
 
@@ -67,6 +68,7 @@ export function createReducer() {
     connection,
 
     isMobile,
+    isMobileSmall,
     headerHeight,
     footerHeight,
 

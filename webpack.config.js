@@ -132,7 +132,7 @@ let config = {
       },
       // TODO -- move these to production debug config prior to release
       {
-        from: path.resolve(PATHS.APP, 'loaderio-19ff0e903f99bf12abe6b8dce1bd7382.txt'),
+        from: path.resolve(PATHS.APP, 'loaderio-e6f0536ecc4759035b4106efb3b1f225.txt'),
         to: PATHS.BUILD
       }
     ]),
@@ -189,6 +189,13 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
             'postcss-loader',
             'less-loader'
           ]
+        },
+        {
+          test: /\.css/,
+          use: [
+            'style-loader',
+            'postcss-loader',
+          ]
         }
       ]
     },
@@ -220,6 +227,13 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
             'postcss-loader',
             'less-loader'
           ]
+        },
+        {
+          test: /\.css/,
+          use: [
+            'style-loader',
+            'postcss-loader',
+          ]
         }
       ]
     },
@@ -248,6 +262,13 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
             ],
             fallback: 'style-loader'
           }),
+        },
+        {
+          test: /\.css/,
+          use: [
+            'style-loader',
+            'postcss-loader',
+          ]
         }
       ]
     },

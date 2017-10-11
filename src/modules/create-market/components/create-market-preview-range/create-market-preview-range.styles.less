@@ -1,0 +1,43 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketPreviewRange {
+  padding-bottom: 1.7rem;
+  position: relative;
+}
+
+.MarketPreviewRange__max,
+.MarketPreviewRange__min {
+  &:extend(.caps--medium);
+
+  color: @color-lightgray;
+  left: 0;
+  padding-top: 1px;
+  position: absolute;
+}
+
+.MarketPreviewRange__max {
+  left: auto;
+  right: 0;
+}
+
+.MarketPreviewRange__range {
+  border-bottom: 1px solid @color-purple;
+  padding-top: 0.875rem;
+  position: relative;
+
+  &::before,
+  &::after {
+    background-color: @color-purple;
+    bottom: 0;
+    content: "";
+    height: 0.5rem;
+    left: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  &::after {
+    left: auto;
+    right: 0;
+  }
+}

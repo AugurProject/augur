@@ -1,111 +1,25 @@
-@import '~assets/styles/shared.less';
+@import (reference) '~assets/styles/shared';
 
-.CreateMarketDefine__button-outer-wrapper,
-.CreateMarketDefine__form-outer-wrapper {
-  max-width: 81.25rem;
-}
-
-.CreateMarketDefine__button-inner-wrapper,
-.CreateMarketDefine__form-inner-wrapper {
-  margin: auto;
-  max-width: 62.75rem;
-  padding: 0 2rem;
-}
-
-.CreateMarketDefine__error {
-  background-color: @color-purple;
-  border-radius: 3px;
-  color: @color-white;
-  font-size: 0.625rem;
-  line-height: 0.625rem;
-  padding: 0.2rem 0.5rem;
-  text-transform: none;
-  white-space: nowrap;
-}
-
-.CreateMarketDefine__error--tag2 {
-  left: 52%;
-  line-height: 0.8rem;
-  position: absolute;
-  top: -3px;
-}
-
-.CreateMarketDefine__form {
-  min-height: 24.75rem;
-  padding: 3.75rem 0 0;
-}
-
-.CreateMarketDefine__fields {
+.CreateMarketDefine__tags {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
 
-  > li {
-    margin-bottom: 3.7rem;
-    position: relative;
+  > label {
     width: 100%;
-
-    &.field--50 {
-      width: 48%;
-    }
-
-    &.CreateMarketDefine__tags {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-
-      > label {
-        width: 100%;
-      }
-
-      > input {
-        width: 48%;
-      }
-    }
-
-    > label {
-      &:extend(.caps--small);
-
-      color: @color-white;
-      display: inline-block;
-      margin-bottom: 0.625rem;
-      position: relative;
-
-      > span:first-child {
-        margin-right: 0.5rem;
-      }
-    }
-
-    > input {
-      background-color: @color-lightergray;
-      color: @color-darkpurple;
-      display: block;
-      font-size: 1.125rem;
-      line-height: 1.125rem;
-      padding: 1rem 1rem 0.875rem;
-      width: 100%;
-
-      &::placeholder {
-        color: @color-lightgray;
-      }
-    }
   }
-}
 
-.CreateMarketDefine__navigation {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.CreateMarketDefine__next {
-  &:extend(.button--white all);
+  > input {
+    width: 48%;
+  }
 }
 
 .CreateMarketDefine__suggested-categories {
   color: @color-white;
   font-size: 1.125rem;
   font-weight: 500;
-  margin-top: 1.5rem;
+  position: absolute;
+  top: 2.5rem;
 
   > li {
     display: inline-block;
@@ -118,37 +32,16 @@
 }
 
 @media @breakpoint-mobile-medium {
-  .CreateMarketDefine__button-inner-wrapper,
-  .CreateMarketDefine__form-inner-wrapper {
-    padding-left: 1rem;
-    padding-right: 1rem;
+  .CreateMarketDefine__suggested-categories {
+    min-height: 1.375rem;
+    position: static;
   }
 
-  .CreateMarketDefine__button-inner-wrapper {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .CreateMarketDefine__error--tag2 {
-    left: 2.3125rem;
-  }
-
-  .CreateMarketDefine__fields > li {
-    &.field--50 {
-      width: 100%;
-    }
-
-    &.CreateMarketDefine__tags > input {
-      width: 100%;
-
-      &:not(:last-child) {
-        margin-bottom: 0.75rem;
-      }
-    }
-  }
-
-  .CreateMarketDefine__next {
-    border-radius: 0;
+  .CreateMarketDefine__tags > input {
     width: 100%;
+
+    &:not(:last-child) {
+      margin-bottom: 0.75rem;
+    }
   }
 }

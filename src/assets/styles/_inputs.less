@@ -2,6 +2,7 @@ label {
   &:extend(.caps--small);
 
   color: @color-text-light;
+  cursor: pointer;
   display: block;
   margin-bottom: 0.625rem;
 }
@@ -10,13 +11,14 @@ label {
   color: @color-text-dark;
 }
 
-input {
+input,
+textarea {
   .border(true, @border-all, transparent, @border-width-2);
 
   background-color: @color-input-background;
   color: @color-text-dark;
   display: block;
-  padding: 1rem 1rem 0.875rem;
+  padding: 0.75rem 1rem;
   width: 100%;
 
   &:focus {
