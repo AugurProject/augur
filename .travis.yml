@@ -11,5 +11,6 @@ before_script:
   - npm run build
 
 script:
+  - npm run lint
   - npm test
   - istanbul cover -x "**/seeds/**" -x "**/migrations/**" --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
