@@ -12,7 +12,7 @@ describe("server/getters/get-markets-info", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getMarketsInfo(db, t.params.universe, (err, marketsInfo) => {
+        getMarketsInfo(db, t.params.universe, t.params.marketIDs, (err, marketsInfo) => {
           t.assertions(err, marketsInfo);
           done();
         });
@@ -22,99 +22,273 @@ describe("server/getters/get-markets-info", () => {
   test({
     description: "get markets in universe b",
     params: {
-      universe: "0x000000000000000000000000000000000000000b"
+      universe: "0x000000000000000000000000000000000000000b",
+      marketIDs: null
     },
     assertions: (err, marketsInfo) => {
       assert.isNull(err);
       assert.deepEqual(marketsInfo, {
         "0x0000000000000000000000000000000000000001": {
-          marketID: "0x0000000000000000000000000000000000000001",
-          universe: "0x000000000000000000000000000000000000000b",
-          marketType: "categorical",
+          id: "0x0000000000000000000000000000000000000001",
+          branchID: "0x000000000000000000000000000000000000000b",
+          type: "categorical",
           numOutcomes: 8,
           minPrice: 0,
-          maxPrice: 1000000000000000000,
-          marketCreator: "0x0000000000000000000000000000000000000b0b",
+          maxPrice: 1,
+          cumulativeScale: "1",
+          author: "0x0000000000000000000000000000000000000b0b",
           creationTime: 1506473474,
-          creationBlockNumber: 1400000,
-          creationFee: 1000000000000000000,
-          marketCreatorFeeRate: 1,
+          creationBlock: 1400000,
+          creationFee: 10,
+          marketCreatorFeeRate: 0.01,
           marketCreatorFeesCollected: 0,
           topic: "test topic",
-          tag1: "test tag 1",
-          tag2: "test tag 2",
+          tags: ["test tag 1", "test tag 2"],
           volume: 0,
-          sharesOutstanding: 0,
+          outstandingShares: 0,
           reportingWindow: "0x1000000000000000000000000000000000000000",
-          endTime: 1506573470,
+          endDate: 1506573470,
           finalizationTime: null,
-          shortDescription: "This is a categorical test market created by b0b.",
-          longDescription: null,
+          description: "This is a categorical test market created by b0b.",
+          extraInfo: null,
           designatedReporter: "0x0000000000000000000000000000000000000b0b",
+          designatedReportStake: 10,
           resolutionSource: "http://www.trusted-third-party.com",
-          numTicks: 24
+          numTicks: 24,
+          consensus: null,
+          outcomes: [{
+            id: 0,
+            outstandingShares: 100,
+            price: 0.125
+          }, {
+            id: 1,
+            outstandingShares: 100,
+            price: 0.125,
+          }, {
+            id: 2,
+            outstandingShares: 100,
+            price: 0.125
+          }, {
+            id: 3,
+            outstandingShares: 100,
+            price: 0.125
+          }, {
+            id: 4,
+            outstandingShares: 100,
+            price: 0.125
+          }, {
+            id: 5,
+            outstandingShares: 100,
+            price: 0.125
+          }, {
+            id: 6,
+            outstandingShares: 100,
+            price: 0.125
+          }, {
+            id: 7,
+            outstandingShares: 100,
+            price: 0.125
+          }]
         },
         "0x0000000000000000000000000000000000000002": {
-          marketID: "0x0000000000000000000000000000000000000002",
-          universe: "0x000000000000000000000000000000000000000b",
-          marketType: "binary",
+          id: "0x0000000000000000000000000000000000000002",
+          branchID: "0x000000000000000000000000000000000000000b",
+          type: "binary",
           numOutcomes: 2,
           minPrice: 0,
-          maxPrice: 1000000000000000000,
-          marketCreator: "0x0000000000000000000000000000000000000b0b",
+          maxPrice: 1,
+          cumulativeScale: "1",
+          author: "0x0000000000000000000000000000000000000b0b",
           creationTime: 1506480000,
-          creationBlockNumber: 1400100,
-          creationFee: 1000000000000000000,
-          marketCreatorFeeRate: 1,
+          creationBlock: 1400100,
+          creationFee: 10,
+          marketCreatorFeeRate: 0.01,
           marketCreatorFeesCollected: 0,
           topic: "test topic",
-          tag1: "test tag 1",
-          tag2: "test tag 2",
+          tags: ["test tag 1", "test tag 2"],
           volume: 0,
-          sharesOutstanding: 0,
+          outstandingShares: 0,
           reportingWindow: "0x1000000000000000000000000000000000000000",
-          endTime: 1506573480,
+          endDate: 1506573480,
           finalizationTime: null,
-          shortDescription: "This is a binary test market created by b0b.",
-          longDescription: null,
+          description: "This is a binary test market created by b0b.",
+          extraInfo: null,
           designatedReporter: "0x0000000000000000000000000000000000000b0b",
+          designatedReportStake: 10,
           resolutionSource: "http://www.trusted-third-party.com",
-          numTicks: 2
+          numTicks: 2,
+          consensus: null,
+          outcomes: [{
+            id: 0,
+            outstandingShares: 1000,
+            price: 0.5
+          }, {
+            id: 1,
+            outstandingShares: 1000,
+            price: 0.5
+          }]
         },
         "0x0000000000000000000000000000000000000003": {
-          marketID: "0x0000000000000000000000000000000000000003",
-          universe: "0x000000000000000000000000000000000000000b",
-          marketType: "binary",
+          id: "0x0000000000000000000000000000000000000003",
+          branchID: "0x000000000000000000000000000000000000000b",
+          type: "binary",
           numOutcomes: 2,
           minPrice: 0,
-          maxPrice: 1000000000000000000,
-          marketCreator: "0x000000000000000000000000000000000000d00d",
+          maxPrice: 1,
+          cumulativeScale: "1",
+          author: "0x000000000000000000000000000000000000d00d",
           creationTime: 1506480015,
-          creationBlockNumber: 1400101,
-          creationFee: 1000000000000000000,
-          marketCreatorFeeRate: 1,
+          creationBlock: 1400101,
+          creationFee: 10,
+          marketCreatorFeeRate: 0.01,
           marketCreatorFeesCollected: 0,
           topic: "test topic",
-          tag1: "test tag 1",
-          tag2: "test tag 2",
+          tags: ["test tag 1", "test tag 2"],
           volume: 0,
-          sharesOutstanding: 0,
+          outstandingShares: 0,
           reportingWindow: "0x1000000000000000000000000000000000000000",
-          endTime: 1506573500,
+          endDate: 1506573500,
           finalizationTime: null,
-          shortDescription: "This is another binary test market created by d00d.",
-          longDescription: null,
+          description: "This is another binary test market created by d00d.",
+          extraInfo: null,
           designatedReporter: "0x000000000000000000000000000000000000d00d",
+          designatedReportStake: 10,
           resolutionSource: "http://www.ttp-inc.com/0000000000000000000000000000000000000003",
-          numTicks: 16
+          numTicks: 16,
+          consensus: null,
+          outcomes: [{
+            id: 0,
+            outstandingShares: 10,
+            price: 0.5
+          }, {
+            id: 1,
+            outstandingShares: 10,
+            price: 0.5
+          }]
         }
       });
     }
   });
   test({
-    description: "nonexistent universe",
+    description: "get markets by specifying market IDs",
     params: {
-      universe: "0x1010101010101010101010101010101010101010"
+      universe: null,
+      marketIDs: [
+        "0x0000000000000000000000000000000000000001",
+        "0x0000000000000000000000000000000000000002"
+      ]
+    },
+    assertions: (err, marketsInfo) => {
+      assert.isNull(err);
+      assert.deepEqual(marketsInfo, {
+        "0x0000000000000000000000000000000000000001": {
+          id: "0x0000000000000000000000000000000000000001",
+          branchID: "0x000000000000000000000000000000000000000b",
+          type: "categorical",
+          numOutcomes: 8,
+          minPrice: 0,
+          maxPrice: 1,
+          cumulativeScale: "1",
+          author: "0x0000000000000000000000000000000000000b0b",
+          creationTime: 1506473474,
+          creationBlock: 1400000,
+          creationFee: 10,
+          marketCreatorFeeRate: 0.01,
+          marketCreatorFeesCollected: 0,
+          topic: "test topic",
+          tags: ["test tag 1", "test tag 2"],
+          volume: 0,
+          outstandingShares: 0,
+          reportingWindow: "0x1000000000000000000000000000000000000000",
+          endDate: 1506573470,
+          finalizationTime: null,
+          description: "This is a categorical test market created by b0b.",
+          extraInfo: null,
+          designatedReporter: "0x0000000000000000000000000000000000000b0b",
+          designatedReportStake: 10,
+          resolutionSource: "http://www.trusted-third-party.com",
+          numTicks: 24,
+          consensus: null,
+          outcomes: [{
+            id: 0,
+            outstandingShares: 100,
+            price: 0.125
+          }, {
+            id: 1,
+            outstandingShares: 100,
+            price: 0.125,
+          }, {
+            id: 2,
+            outstandingShares: 100,
+            price: 0.125
+          }, {
+            id: 3,
+            outstandingShares: 100,
+            price: 0.125
+          }, {
+            id: 4,
+            outstandingShares: 100,
+            price: 0.125
+          }, {
+            id: 5,
+            outstandingShares: 100,
+            price: 0.125
+          }, {
+            id: 6,
+            outstandingShares: 100,
+            price: 0.125
+          }, {
+            id: 7,
+            outstandingShares: 100,
+            price: 0.125
+          }]
+        },
+        "0x0000000000000000000000000000000000000002": {
+          id: "0x0000000000000000000000000000000000000002",
+          branchID: "0x000000000000000000000000000000000000000b",
+          type: "binary",
+          numOutcomes: 2,
+          minPrice: 0,
+          maxPrice: 1,
+          cumulativeScale: "1",
+          author: "0x0000000000000000000000000000000000000b0b",
+          creationTime: 1506480000,
+          creationBlock: 1400100,
+          creationFee: 10,
+          marketCreatorFeeRate: 0.01,
+          marketCreatorFeesCollected: 0,
+          topic: "test topic",
+          tags: ["test tag 1", "test tag 2"],
+          volume: 0,
+          outstandingShares: 0,
+          reportingWindow: "0x1000000000000000000000000000000000000000",
+          endDate: 1506573480,
+          finalizationTime: null,
+          description: "This is a binary test market created by b0b.",
+          extraInfo: null,
+          designatedReporter: "0x0000000000000000000000000000000000000b0b",
+          designatedReportStake: 10,
+          resolutionSource: "http://www.trusted-third-party.com",
+          numTicks: 2,
+          consensus: null,
+          outcomes: [{
+            id: 0,
+            outstandingShares: 1000,
+            price: 0.5
+          }, {
+            id: 1,
+            outstandingShares: 1000,
+            price: 0.5
+          }]
+        }
+      });
+    }
+  });
+  test({
+    description: "nonexistent universe, no market IDs",
+    params: {
+      universe: "0x1010101010101010101010101010101010101010",
+      marketIDs: undefined
     },
     assertions: (err, marketsInfo) => {
       assert.isNull(err);

@@ -19,7 +19,7 @@ declare module "augur.js" {
     [paramName: string]: any;
   }
 
-  type ApiCallback = (err?: string|object, result?: any) => void;
+  type ApiCallback = (err?: Error|string|object|null, result?: any) => void;
 
   type ApiFunction = (p: ApiParams, callback?: ApiCallback) => any;
 

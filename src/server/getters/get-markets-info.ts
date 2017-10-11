@@ -1,44 +1,42 @@
+import { each } from "async";
+import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { Address, MarketsRow, MarketInfo } from "../../types";
+import { Address, MarketsRow, OutcomesRow, UIMarketInfo, UIOutcomeInfo, ErrorCallback } from "../../types";
+import { reshapeOutcomesRowToUIOutcomeInfo, reshapeMarketsRowToUIMarketInfo } from "./get-market-info";
 
-interface MarketsInfo {
-  [marketID: string]: MarketInfo;
+interface UIMarketsInfo {
+  [marketID: string]: UIMarketInfo;
 }
 
-export function getMarketsInfo(db: Knex, universe: Address, callback: (err?: Error|null, result?: MarketsInfo) => void): void {
-  db.raw(`SELECT * FROM markets WHERE universe = ?`, [universe]).asCallback((err?: Error|null, rows?: Array<MarketsRow>): void => {
+export function getMarketsInfo(db: Knex, universe: Address|null|undefined, marketIDs: Array<Address>|null|undefined, callback: (err?: Error|null, result?: UIMarketsInfo) => void): void {
+  let query: string = "SELECT * FROM markets WHERE";
+  let queryParams: Array<Address|Array<Address>>;
+  if (universe == null && marketIDs == null) {
+    return callback(new Error("must include universe or marketIDs parameters"));
+  } else if (universe != null && marketIDs != null) {
+    query = `${query} universe = ? AND market_id IN (??)`;
+    queryParams = [universe!, marketIDs!];
+  } else if (universe != null) {
+    query = `${query} universe = ?`;
+    queryParams = [universe!];
+  } else {
+    query = `${query} market_id IN (??)`;
+    queryParams = [marketIDs!];
+  }
+  db.raw(query, queryParams).asCallback((err?: Error|null, marketsRows?: Array<MarketsRow>): void => {
     if (err) return callback(err);
-    if (!rows || !rows.length) return callback(null);
-    const marketsInfo: MarketsInfo = {};
-    callback(null, rows.reduce((p: MarketsInfo, row: MarketsRow): MarketsInfo => {
-      p[row.market_id] = {
-        marketID: row.market_id,
-        universe: row.universe,
-        marketType: row.market_type,
-        numOutcomes: row.num_outcomes,
-        minPrice: row.min_price,
-        maxPrice: row.max_price,
-        marketCreator: row.market_creator,
-        creationTime: row.creation_time,
-        creationBlockNumber: row.creation_block_number,
-        creationFee: row.creation_fee,
-        marketCreatorFeeRate: row.market_creator_fee_rate,
-        marketCreatorFeesCollected: row.market_creator_fees_collected,
-        topic: row.topic,
-        tag1: row.tag1,
-        tag2: row.tag2,
-        volume: row.volume,
-        sharesOutstanding: row.shares_outstanding,
-        reportingWindow: row.reporting_window,
-        endTime: row.end_time,
-        finalizationTime: row.finalization_time,
-        shortDescription: row.short_description,
-        longDescription: row.long_description,
-        designatedReporter: row.designated_reporter,
-        resolutionSource: row.resolution_source,
-        numTicks: row.num_ticks
-      } as MarketInfo;
-      return p;
-    }, marketsInfo));
+    if (!marketsRows || !marketsRows.length) return callback(null);
+    const marketsInfo: UIMarketsInfo = {};
+    each(marketsRows, (marketsRow: MarketsRow, nextMarketsRow: ErrorCallback): void => {
+      db.raw("SELECT * FROM outcomes WHERE market_id = ?", [marketsRow.market_id]).asCallback((err?: Error|null, outcomesRows?: Array<OutcomesRow>): void => {
+        if (err) return nextMarketsRow(err);
+        const outcomesInfo: Array<UIOutcomeInfo> = outcomesRows!.map((outcomesRow: OutcomesRow): UIOutcomeInfo => reshapeOutcomesRowToUIOutcomeInfo(outcomesRow));
+        marketsInfo[marketsRow.market_id] = reshapeMarketsRowToUIMarketInfo(marketsRow, outcomesInfo) as UIMarketInfo;
+        nextMarketsRow();
+      });
+    }, (err?: Error|null) => {
+      if (err) return callback(err);
+      callback(null, marketsInfo);
+    });
   });
 }

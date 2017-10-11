@@ -18,16 +18,19 @@ exports.up = async (knex: Knex): Promise<any> => {
       topic varchar(255) NOT NULL,
       tag1 varchar(255),
       tag2 varchar(255),
-      volume numeric DEFAULT 0 CONSTRAINT nonnegative_volume CHECK (volume >= 0),
-      shares_outstanding numeric DEFAULT 0 CONSTRAINT nonnegative_shares_outstanding CHECK (shares_outstanding >= 0),
+      volume numeric NOT NULL CONSTRAINT nonnegative_volume CHECK (volume >= 0),
+      shares_outstanding numeric NOT NULL CONSTRAINT nonnegative_shares_outstanding CHECK (shares_outstanding >= 0),
       reporting_window varchar(66),
       end_time integer NOT NULL CONSTRAINT positive_end_time CHECK (end_time > 0),
       finalization_time integer,
       short_description varchar(1000) NOT NULL,
       long_description text,
       designated_reporter varchar(66) NOT NULL,
+      designated_report_stake numeric,
       resolution_source text,
-      num_ticks integer NOT NULL
+      num_ticks integer NOT NULL,
+      consensus_outcome integer,
+      is_invalid boolean
     )`);
   });
 };

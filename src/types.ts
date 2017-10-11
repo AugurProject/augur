@@ -1,3 +1,4 @@
+import Augur = require("augur.js");
 import * as Knex from "knex";
 
 export interface EthereumNodeEndpoints {
@@ -31,6 +32,27 @@ export interface FormattedLog {
   [inputName: string]: any;
 }
 
+export interface MarketCreatedLogExtraInfo {
+  minPrice: string;
+  maxPrice: string;
+  topic: string;
+  tag1?: string|null;
+  tag2?: string|null;
+  shortDescription: string;
+  longDescription?: string|null;
+  resolutionSource?: string|null;
+  marketType?: string;
+}
+
+export interface MarketCreatedOnContractInfo {
+  marketCreatorFeeRate: string;
+  reportingWindow: Address;
+  endTime: string;
+  designatedReporter: Address;
+  designatedReportStake: string;
+  numTicks: string;
+}
+
 export interface AugurLogs {
   [contractName: string]: {
     [eventName: string]: Array<FormattedLog>;
@@ -39,7 +61,9 @@ export interface AugurLogs {
 
 export type ErrorCallback = (err?: Error|null) => void;
 
-export type LogProcessor = (db: Knex, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback) => void;
+export type AsyncCallback = (err?: Error|null, result?: any) => void;
+
+export type LogProcessor = (db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback) => void;
 
 export interface JsonRpcRequest {
   id: string|number|null;
@@ -82,55 +106,79 @@ export interface MarketsRow {
   universe: Address;
   market_type: string;
   num_outcomes: number;
-  min_price: number;
-  max_price: number;
+  min_price: string|number;
+  max_price: string|number;
   market_creator: Address;
   creation_time: number;
   creation_block_number: number;
-  creation_fee: number;
-  market_creator_fee_rate: number;
-  market_creator_fees_collected: number|null;
+  creation_fee: string|number;
+  market_creator_fee_rate: string|number;
+  market_creator_fees_collected: string|number|null;
   topic: string;
   tag1: string|null;
   tag2: string|null;
-  volume: number;
-  shares_outstanding: number;
+  volume: string|number;
+  shares_outstanding: string|number;
   reporting_window: Address;
   end_time: number;
   finalization_time: number|null;
   short_description: string;
   long_description: string|null;
   designated_reporter: Address;
+  designated_report_stake: string|number;
   resolution_source: string|null;
   num_ticks: number;
+  consensus_outcome: number|null;
+  is_invalid: boolean|null;
 }
 
-export interface MarketInfo {
-  marketID: Address;
-  universe: Address;
-  marketType: string;
+export interface OutcomesRow {
+  market_id: Address;
+  outcome: number;
+  price: string|number;
+  shares_outstanding: string|number;
+}
+
+export interface UIConsensusInfo {
+  outcomeID: number;
+  isIndeterminate: boolean;
+}
+
+export interface UIOutcomeInfo {
+  id: number;
+  outstandingShares: string|number;
+  price: string|number|null;
+}
+
+export interface UIMarketInfo {
+  id: Address;
+  branchID: Address;
+  type: string;
   numOutcomes: number;
-  minPrice: number;
-  maxPrice: number;
-  marketCreator: Address;
+  minPrice: string|number;
+  maxPrice: string|number;
+  cumulativeScale: string|number;
+  author: Address;
   creationTime: number;
-  creationBlockNumber: number;
-  creationFee: number;
-  marketCreatorFeeRate: number;
-  marketCreatorFeesCollected: number|null;
+  creationBlock: number;
+  creationFee: string|number;
+  marketCreatorFeeRate: string|number;
+  marketCreatorFeesCollected: string|number|null;
   topic: string;
-  tag1: string|null;
-  tag2: string|null;
-  volume: number;
-  sharesOutstanding: number;
+  tags: Array<string|null>;
+  volume: string|number;
+  outstandingShares: string|number;
   reportingWindow: Address;
-  endTime: number;
+  endDate: number;
   finalizationTime: number|null;
-  shortDescription: string;
-  longDescription: string|null;
+  description: string;
+  extraInfo: string|null;
   designatedReporter: Address;
+  designatedReportStake: string|number;
   resolutionSource: string|null;
   numTicks: number;
+  consensus: UIConsensusInfo|null;
+  outcomes: Array<UIOutcomeInfo>;
 }
 
 export interface OrdersRow {

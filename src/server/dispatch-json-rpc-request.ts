@@ -61,7 +61,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callba
     case "getDetailedMarketInfo":
       return getDetailedMarketInfo(db, request.params.marketID, callback);
     case "getMarketsInfo":
-      return getMarketsInfo(db, request.params.universe, callback);
+      return getMarketsInfo(db, request.params.universe, request.params.marketIDs, callback);
     case "getOpenOrders":
       return getOpenOrders(db, request.params.marketID, request.params.outcome, request.params.orderType, request.params.creator, callback);
     default:

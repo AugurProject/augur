@@ -10,23 +10,22 @@ export function startAugurListeners(db: Knex, augur: Augur, callback: (blockNumb
   let seenFirstBlock: boolean = false;
   augur.events.startListeners({
     Augur: {
-      MarketCreated: makeLogListener(db, "Augur", "MarketCreated"),
-      TokensTransferred: makeLogListener(db, "Augur", "TokensTransferred"),
-      OrderCanceled: makeLogListener(db, "Augur", "OrderCanceled"),
-      OrderCreated: makeLogListener(db, "Augur", "OrderCreated"),
-      OrderFilled: makeLogListener(db, "Augur", "OrderFilled"),
-      ProceedsClaimed: makeLogListener(db, "Augur", "ProceedsClaimed"),
-      ReporterRegistered: makeLogListener(db, "Augur", "ReporterRegistered"),
-      DesignatedReportSubmitted: makeLogListener(db, "Augur", "DesignatedReportSubmitted"),
-      ReportSubmitted: makeLogListener(db, "Augur", "ReportSubmitted"),
-      WinningTokensRedeemed: makeLogListener(db, "Augur", "WinningTokensRedeemed"),
-      ReportsDisputed: makeLogListener(db, "Augur", "ReportsDisputed"),
-      MarketFinalized: makeLogListener(db, "Augur", "MarketFinalized"),
-      UniverseForked: makeLogListener(db, "Augur", "UniverseForked")
+      MarketCreated: makeLogListener(db, augur, "Augur", "MarketCreated"),
+      TokensTransferred: makeLogListener(db, augur, "Augur", "TokensTransferred"),
+      OrderCanceled: makeLogListener(db, augur, "Augur", "OrderCanceled"),
+      OrderCreated: makeLogListener(db, augur, "Augur", "OrderCreated"),
+      OrderFilled: makeLogListener(db, augur, "Augur", "OrderFilled"),
+      ProceedsClaimed: makeLogListener(db, augur, "Augur", "ProceedsClaimed"),
+      DesignatedReportSubmitted: makeLogListener(db, augur, "Augur", "DesignatedReportSubmitted"),
+      ReportSubmitted: makeLogListener(db, augur, "Augur", "ReportSubmitted"),
+      WinningTokensRedeemed: makeLogListener(db, augur, "Augur", "WinningTokensRedeemed"),
+      ReportsDisputed: makeLogListener(db, augur, "Augur", "ReportsDisputed"),
+      MarketFinalized: makeLogListener(db, augur, "Augur", "MarketFinalized"),
+      UniverseForked: makeLogListener(db, augur, "Augur", "UniverseForked")
     },
     LegacyRepContract: {
-      Transfer: makeLogListener(db, "LegacyRepContract", "Transfer"),
-      Approval: makeLogListener(db, "LegacyRepContract", "Approval")
+      Transfer: makeLogListener(db, augur, "LegacyRepContract", "Transfer"),
+      Approval: makeLogListener(db, augur, "LegacyRepContract", "Approval")
     }
   }, (blockNumber: string): void => {
     if (!seenFirstBlock) {

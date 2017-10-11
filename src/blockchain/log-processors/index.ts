@@ -5,7 +5,6 @@ import { processOrderCanceledLog } from "./order-canceled";
 import { processOrderCreatedLog } from "./order-created";
 import { processOrderFilledLog } from "./order-filled";
 import { processProceedsClaimedLog } from "./proceeds-claimed";
-import { processReporterRegisteredLog } from "./reporter-registered";
 import { processDesignatedReportSubmittedLog } from "./designated-report-submitted";
 import { processReportSubmittedLog } from "./report-submitted";
 import { processWinningTokensRedeemedLog } from "./winning-tokens-redeemed";
@@ -23,7 +22,6 @@ export const logProcessors: {[contractName: string]: {[eventName: string]: LogPr
     OrderCreated: processOrderCreatedLog,
     OrderFilled: processOrderFilledLog,
     ProceedsClaimed: processProceedsClaimedLog,
-    ReporterRegistered: processReporterRegisteredLog,
     DesignatedReportSubmitted: processDesignatedReportSubmittedLog,
     ReportSubmitted: processReportSubmittedLog,
     WinningTokensRedeemed: processWinningTokensRedeemedLog,

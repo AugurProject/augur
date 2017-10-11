@@ -26,31 +26,66 @@ describe("server/getters/get-market-info", () => {
     assertions: (err, marketInfo) => {
       assert.isNull(err);
       assert.deepEqual(marketInfo, {
-        marketID: "0x0000000000000000000000000000000000000001",
-        universe: "0x000000000000000000000000000000000000000b",
-        marketType: "categorical",
+        id: "0x0000000000000000000000000000000000000001",
+        branchID: "0x000000000000000000000000000000000000000b",
+        type: "categorical",
         numOutcomes: 8,
         minPrice: 0,
-        maxPrice: 1000000000000000000,
-        marketCreator: "0x0000000000000000000000000000000000000b0b",
+        maxPrice: 1,
+        cumulativeScale: "1",
+        author: "0x0000000000000000000000000000000000000b0b",
         creationTime: 1506473474,
-        creationBlockNumber: 1400000,
-        creationFee: 1000000000000000000,
-        marketCreatorFeeRate: 1,
+        creationBlock: 1400000,
+        creationFee: 10,
+        marketCreatorFeeRate: 0.01,
         marketCreatorFeesCollected: 0,
         topic: "test topic",
-        tag1: "test tag 1",
-        tag2: "test tag 2",
+        tags: ["test tag 1", "test tag 2"],
         volume: 0,
-        sharesOutstanding: 0,
+        outstandingShares: 0,
         reportingWindow: "0x1000000000000000000000000000000000000000",
-        endTime: 1506573470,
+        endDate: 1506573470,
         finalizationTime: null,
-        shortDescription: "This is a categorical test market created by b0b.",
-        longDescription: null,
+        description: "This is a categorical test market created by b0b.",
+        extraInfo: null,
         designatedReporter: "0x0000000000000000000000000000000000000b0b",
+        designatedReportStake: 10,
         resolutionSource: "http://www.trusted-third-party.com",
-        numTicks: 24
+        numTicks: 24,
+        consensus: null,
+        outcomes: [{
+          id: 0,
+          outstandingShares: 100,
+          price: 0.125
+        }, {
+          id: 1,
+          outstandingShares: 100,
+          price: 0.125
+        }, {
+          id: 2,
+          outstandingShares: 100,
+          price: 0.125
+        }, {
+          id: 3,
+          outstandingShares: 100,
+          price: 0.125
+        }, {
+          id: 4,
+          outstandingShares: 100,
+          price: 0.125
+        }, {
+          id: 5,
+          outstandingShares: 100,
+          price: 0.125
+        }, {
+          id: 6,
+          outstandingShares: 100,
+          price: 0.125
+        }, {
+          id: 7,
+          outstandingShares: 100,
+          price: 0.125
+        }]
       });
     }
   });

@@ -1,3 +1,4 @@
+import Augur = require("augur.js");
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import { FormattedLog, OrdersRow, ErrorCallback } from "../../types";
@@ -5,7 +6,7 @@ import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-d
 import { denormalizePrice } from "../../utils/denormalize-price";
 import { formatOrderAmount, formatOrderPrice } from "../../utils/format-order";
 
-export function processOrderCreatedLog(db: Knex, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
   trx.raw("SELECT block_timestamp FROM blocks WHERE block_number = ?", [log.blockNumber]).asCallback((err?: Error|null, blocksRow?: {block_timestamp: number}): void => {
     if (err) return callback(err);
     if (!blocksRow) return callback(new Error("block timestamp not found"));
