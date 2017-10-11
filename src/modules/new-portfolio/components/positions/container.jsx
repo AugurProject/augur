@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 import memoize from 'memoizee'
 
 import Positions from 'modules/new-portfolio/components/positions/positions'
@@ -12,15 +11,12 @@ import getOrderCancellation from 'modules/bids-asks/selectors/order-cancellation
 import { loadAccountHistory } from 'modules/auth/actions/load-account-history'
 import { triggerTransactionsExport } from 'modules/transactions/actions/trigger-transactions-export'
 
-import { marketWithOutcomeNum } from 'utils/mock-data'
-
 const mapStateToProps = (state) => {
   const positions = getLoginAccountPositions()
   const openOrders = getOpenOrders()
 
   return {
-    //markets: getPositionsMarkets(positions, openOrders),
-    markets: Array(3).fill(marketWithOutcomeNum(4)).map((market, idx) => ({...market, id: idx})),
+    markets: getPositionsMarkets(positions, openOrders),
     isTradeCommitLocked: state.tradeCommitLock.isLocked,
     closePositionStatus: getClosePositionStatus(),
     scalarShareDenomination: getScalarShareDenomination(),

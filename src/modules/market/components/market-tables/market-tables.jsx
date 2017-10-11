@@ -66,10 +66,12 @@ export default class MarketTable extends Component {
                             {buttonData.dialogText}
                           </div>
                           <div className={Styles.MarketTable__rowDialogButtons}>
-                            <button onClick={() => {
-                              if (buttonData.confirm) buttonData.confirm()
-                              this.setState({ [rowDialogKey]: false })
-                            }}>
+                            <button
+                              onClick={() => {
+                                if (buttonData.confirm) buttonData.confirm()
+                                this.setState({ [rowDialogKey]: false })
+                              }}
+                            >
                               Yes
                             </button>
                             <button onClick={() => this.setState({ [rowDialogKey]: false })}>

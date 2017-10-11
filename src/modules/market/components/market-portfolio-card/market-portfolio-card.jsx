@@ -5,7 +5,6 @@ import PropTypes from 'prop-types'
 import getValue from 'utils/get-value'
 
 import MarketStatusIcon from 'modules/market/components/common/market-status-icon/market-status-icon'
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 import MarketTable from 'modules/market/components/market-tables/market-tables'
 import CaretDropdown from 'modules/common/components/caret-dropdown/caret-dropdown'
 
@@ -193,9 +192,10 @@ export default class MarketPortfolioCard extends React.Component {
                 'Action'
               ]}
               data={
-                market.outcomes.reduce((accumulator, outcome) => {
-                  if (!accumulator) accumulator = []
-                  outcome.userOpenOrders.forEach(order => accumulator.push({
+                this.props.market.outcomes.reduce((accumulator, outcome) => {
+                  const tempAccumulator = accumulator || []
+
+                  outcome.userOpenOrders.forEach(order => tempAccumulator.push({
                     ...order,
                     name: outcome.name,
                     dialogButton: {
@@ -205,6 +205,8 @@ export default class MarketPortfolioCard extends React.Component {
                       confirm: outcome.position.closePosition
                     }
                   }))
+
+                  return tempAccumulator
                 })
               }
             />
