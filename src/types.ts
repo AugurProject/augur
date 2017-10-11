@@ -139,6 +139,11 @@ export interface OutcomesRow {
   shares_outstanding: string|number;
 }
 
+export interface BlocksRow {
+  block_number: number;
+  block_timestamp: number;
+}
+
 export interface UIConsensusInfo {
   outcomeID: number;
   isIndeterminate: boolean;
