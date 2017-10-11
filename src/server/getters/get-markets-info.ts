@@ -34,7 +34,7 @@ export function getMarketsInfo(db: Knex, universe: Address|null|undefined, marke
         marketsInfo[marketsRow.market_id] = reshapeMarketsRowToUIMarketInfo(marketsRow, outcomesInfo) as UIMarketInfo;
         nextMarketsRow();
       });
-    }, (err?: Error|null) => {
+    }, (err?: Error|null): void => {
       if (err) return callback(err);
       callback(null, marketsInfo);
     });

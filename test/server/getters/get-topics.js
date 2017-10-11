@@ -6,12 +6,12 @@ const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { getTopics } = require("../../../build/server/getters/get-topics");
 
-describe("server/getters/get-topics", () => {
-  const test = (t) => {
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
+describe("server/getters/get-topics", (): void => {
+  const test = (t): void => {
+    it(t.description, (done): void => {
+      setupTestDb((err, db): void => {
         if (err) assert.fail(err);
-        getTopics(db, t.params.universe, (err, topicsInfo) => {
+        getTopics(db, t.params.universe, (err, topicsInfo): void => {
           t.assertions(err, topicsInfo);
           done();
         });
@@ -23,7 +23,7 @@ describe("server/getters/get-topics", () => {
     params: {
       universe: "0x000000000000000000000000000000000000000b"
     },
-    assertions: (err, topicsInfo) => {
+    assertions: (err, topicsInfo): void => {
       assert.isNull(err);
       assert.deepEqual(topicsInfo, [
         { topic: "finance", popularity: 12345 },
@@ -39,7 +39,7 @@ describe("server/getters/get-topics", () => {
     params: {
       universe: "0x1010101010101010101010101010101010101010"
     },
-    assertions: (err, topicsInfo) => {
+    assertions: (err, topicsInfo): void => {
       assert.isNull(err);
       assert.isUndefined(topicsInfo);
     }

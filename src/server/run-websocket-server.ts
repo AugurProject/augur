@@ -7,12 +7,12 @@ import { makeJsonRpcResponse } from "./make-json-rpc-response";
 
 export function runWebsocketServer(db: Knex, port: number): void {
   const websocketServer: WebSocket.Server = new WebSocket.Server({ port });
-  websocketServer.on("connection", (websocket: WebSocket) => {
-    websocket.on("message", (data: WebSocket.Data) => {
+  websocketServer.on("connection", (websocket: WebSocket): void => {
+    websocket.on("message", (data: WebSocket.Data): void => {
       try {
         const message = JSON.parse(data as string);
         if (isJsonRpcRequest(message)) {
-          dispatchJsonRpcRequest(db, message as JsonRpcRequest, (err?: Error|null, result?: any) => {
+          dispatchJsonRpcRequest(db, message as JsonRpcRequest, (err?: Error|null, result?: any): void => {
             if (err) return console.error("dispatch error:", err);
             websocket.send(makeJsonRpcResponse(message.id, result || null));
           });
@@ -24,7 +24,7 @@ export function runWebsocketServer(db: Knex, port: number): void {
        }
     });
   });
-  websocketServer.on("error", (err: Error) => {
+  websocketServer.on("error", (err: Error): void => {
     console.log("websocket error:", err);
     // TODO reconnect
   });

@@ -3,7 +3,7 @@ import * as Knex from "knex";
 exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
   return knex("transfers").del()
-    .then(() => {
+    .then((): PromiseLike<any> => {
       // Inserts seed entries
       return knex.raw(`INSERT INTO transfers
             (transaction_hash, log_index, sender, recipient, token, value, block_number)

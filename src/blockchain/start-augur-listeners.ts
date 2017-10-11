@@ -33,5 +33,5 @@ export function startAugurListeners(db: Knex, augur: Augur, callback: (blockNumb
       seenFirstBlock = true;
     }
     onNewBlock(db, augur, blockNumber);
-  }, () => {});
+  }, (): void => {});
 }

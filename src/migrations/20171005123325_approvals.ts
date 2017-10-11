@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 
 exports.up = async (knex: Knex): Promise<any> => {
-  return knex.schema.dropTableIfExists("approvals").then(() => {
+  return knex.schema.dropTableIfExists("approvals").then((): PromiseLike<any> => {
     return knex.schema.raw(`CREATE TABLE approvals (
       transaction_hash varchar(66) NOT NULL,
       log_index integer NOT NULL CONSTRAINT nonnegative_log_index CHECK (log_index >= 0),
