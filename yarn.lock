@@ -375,16 +375,16 @@ augur-contracts@3.2.3:
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-3.2.3.tgz#f2e6331f7a9abf1561f00554c3661baefcf32d81"
 
-augur.js@4.4.7:
-  version "4.4.7"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.4.7.tgz#331ab838db5250a547c84f6479a86c16c4236084"
+augur.js@4.4.8:
+  version "4.4.8"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.4.8.tgz#5cb3ff6b0e0eb8fc39a69a002a8f14ea8bdf2ce3"
   dependencies:
     async "1.5.2"
     augur-contracts "3.2.3"
     bignumber.js "2.3.0"
     clone "1.0.2"
-    ethereumjs-connect "4.3.9"
-    ethrpc "4.4.2"
+    ethereumjs-connect "4.3.10"
+    ethrpc "4.4.3"
     immutable-delete "1.0.1"
     keccak "1.2.0"
     keythereum "1.0.2"
@@ -3098,21 +3098,21 @@ ethereumjs-abi@0.6.4:
     bn.js "^4.10.0"
     ethereumjs-util "^4.3.0"
 
-ethereumjs-blockstream@2.0.6:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/ethereumjs-blockstream/-/ethereumjs-blockstream-2.0.6.tgz#12c37ad5ac138d1d0abd60e7f4fa4344739f7e8b"
+ethereumjs-blockstream@2.0.7:
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/ethereumjs-blockstream/-/ethereumjs-blockstream-2.0.7.tgz#8e791d18d517f13e0ba928892dda545dc930936b"
   dependencies:
     immutable "3.8.1"
     source-map-support "0.4.14"
     uuid "3.0.1"
 
-ethereumjs-connect@4.3.9:
-  version "4.3.9"
-  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.3.9.tgz#851f133b4d3595b1d220f7ba314830e0b22045b7"
+ethereumjs-connect@4.3.10:
+  version "4.3.10"
+  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.3.10.tgz#eb26d567642472375b1cf1fb09363ca4c2dc062c"
   dependencies:
     async "1.5.2"
     clone "1.0.2"
-    ethrpc "4.4.2"
+    ethrpc "4.4.3"
 
 ethereumjs-tx@1.3.1:
   version "1.3.1"
@@ -3151,15 +3151,15 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@4.4.2:
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.4.2.tgz#4f46354c7d9f8f1dbb1c4efae312ec3e82936d0c"
+ethrpc@4.4.3:
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.4.3.tgz#7abbdde8ad92bf4ee6d1287a5f5678da4e3d30c1"
   dependencies:
     async "1.5.2"
     bignumber.js "2.3.0"
     browser-request "0.3.3"
     clone "1.0.2"
-    ethereumjs-blockstream "2.0.6"
+    ethereumjs-blockstream "2.0.7"
     ethereumjs-tx "1.3.1"
     immutable-delete "1.0.1"
     keccak "1.2.0"
