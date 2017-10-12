@@ -33,7 +33,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callba
     case "getMarketsCreatedByUser":
       return getMarketsCreatedByUser(db, request.params.creator, callback);
     case "getReportingHistory":
-      return getReportingHistory(db, request.params.account, request.params.marketID, request.params.universe, request.params.reportingWindow, callback);
+      return getReportingHistory(db, request.params.reporter, request.params.marketID, request.params.universe, request.params.reportingWindow, callback);
     case "getMarketsAwaitingDesignatedReporting":
       return getMarketsAwaitingDesignatedReporting(db, request.params.designatedReporter, callback);
     case "getMarketsAwaitingLimitedReporting":
