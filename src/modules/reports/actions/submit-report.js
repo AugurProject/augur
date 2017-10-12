@@ -1,5 +1,5 @@
 import { augur } from 'services/augurjs'
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import { updateReport } from 'modules/reports/actions/update-reports'
 import { nextReportPage } from 'modules/reports/actions/next-report-page'
 import noop from 'utils/noop'
