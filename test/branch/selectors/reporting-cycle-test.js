@@ -1,18 +1,18 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
 
 describe(`modules/branch/selectors/reporting-cycle.js`, () => {
-  proxyquire.noPreserveCache();
+  proxyquire.noPreserveCache()
   const test = t => it(t.description, () => {
     const AugurJS = {
       augur: t.stub.augur
-    };
+    }
     const selector = proxyquire('../../../src/modules/branch/selectors/reporting-cycle.js', {
       '../../../services/augurjs': AugurJS
-    });
-    t.assertions(selector.selectReportingCycle(t.state));
-  });
+    })
+    t.assertions(selector.selectReportingCycle(t.state))
+  })
 
   test({
     description: 'Reporting cycle is 51% complete',
@@ -35,9 +35,9 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
       assert.deepEqual(reportingCycle, {
         currentReportingPeriodPercentComplete: 51,
         reportingCycleTimeRemaining: 'in a minute'
-      });
+      })
     }
-  });
+  })
 
   test({
     description: 'Reporting cycle is 0% complete',
@@ -60,9 +60,9 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
       assert.deepEqual(reportingCycle, {
         currentReportingPeriodPercentComplete: 0,
         reportingCycleTimeRemaining: 'in a month'
-      });
+      })
     }
-  });
+  })
 
   test({
     description: 'Reporting cycle is 100% complete',
@@ -85,8 +85,8 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
       assert.deepEqual(reportingCycle, {
         currentReportingPeriodPercentComplete: 100,
         reportingCycleTimeRemaining: 'a few seconds ago'
-      });
+      })
     }
-  });
+  })
 
-});
+})

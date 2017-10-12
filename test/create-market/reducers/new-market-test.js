@@ -12,8 +12,6 @@ import {
   CLEAR_NEW_MARKET
 } from 'modules/create-market/actions/update-new-market'
 
-import { TAKER_FEE_DEFAULT, MAKER_FEE_DEFAULT } from 'modules/create-market/constants/new-market-constraints'
-
 import BigNumber from 'bignumber.js'
 
 describe('modules/create-market/reducers/new-market.js', () => {

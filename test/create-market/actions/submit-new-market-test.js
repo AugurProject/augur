@@ -1,21 +1,21 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import BigNumber from 'bignumber.js';
-import sinon from 'sinon';
-import thunk from 'redux-thunk';
-import configureMockStore from 'redux-mock-store';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import BigNumber from 'bignumber.js'
+import sinon from 'sinon'
+import thunk from 'redux-thunk'
+import configureMockStore from 'redux-mock-store'
 
-import { BUY, SELL } from 'modules/transactions/constants/types';
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import { BUY, SELL } from 'modules/transactions/constants/types'
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 describe('modules/create-market/actions/submit-new-market', () => {
-  const mockStore = configureMockStore([thunk]);
+  const mockStore = configureMockStore([thunk])
   // proxyquire.noPreserveCache().noCallThru();
 
   const test = t => it(t.description, () => {
-    const store = mockStore(t.state || {});
-    t.assertions(store);
-  });
+    const store = mockStore(t.state || {})
+    t.assertions(store)
+  })
 
   test({
     description: `should submit well formed 'formattedNewMarket' object to 'createCategoricalMarket' for categorical market`,
@@ -49,23 +49,23 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }
     },
     assertions: (store) => {
-      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
+      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market')
 
       const mockAugur = {
         createMarket: { createCategoricalMarket: () => { } }
-      };
-      let formattedNewMarket = null;
+      }
+      let formattedNewMarket = null
       sinon.stub(mockAugur.createMarket, 'createCategoricalMarket', (createMarketObject) => {
-        delete createMarketObject.onSent;
-        delete createMarketObject.onSuccess;
-        delete createMarketObject.onFailed;
+        delete createMarketObject.onSent
+        delete createMarketObject.onSuccess
+        delete createMarketObject.onFailed
 
-        formattedNewMarket = createMarketObject;
-      });
+        formattedNewMarket = createMarketObject
+      })
 
-      __RewireAPI__.__Rewire__('augur', mockAugur);
+      __RewireAPI__.__Rewire__('augur', mockAugur)
 
-      store.dispatch(submitNewMarket(store.getState().newMarket));
+      store.dispatch(submitNewMarket(store.getState().newMarket))
 
       const expected = {
         _automatedReporterAddress: '0x1233',
@@ -89,11 +89,11 @@ describe('modules/create-market/actions/submit-new-market', () => {
         _topic: 'test topic',
         settlementFee: '0.02',
         _numTicks: 2
-      };
+      }
 
-      assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`);
+      assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`)
     }
-  });
+  })
 
   test({
     description: `should submit well formed 'formattedNewMarket' object to 'createSingleEventMarket' for binary market`,
@@ -123,23 +123,23 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }
     },
     assertions: (store) => {
-      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
+      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market')
 
       const mockAugur = {
         createMarket: { createCategoricalMarket: () => { } }
-      };
-      let formattedNewMarket = null;
+      }
+      let formattedNewMarket = null
       sinon.stub(mockAugur.createMarket, 'createCategoricalMarket', (createMarketObject) => {
-        delete createMarketObject.onSent;
-        delete createMarketObject.onSuccess;
-        delete createMarketObject.onFailed;
+        delete createMarketObject.onSent
+        delete createMarketObject.onSuccess
+        delete createMarketObject.onFailed
 
-        formattedNewMarket = createMarketObject;
-      });
+        formattedNewMarket = createMarketObject
+      })
 
-      __RewireAPI__.__Rewire__('augur', mockAugur);
+      __RewireAPI__.__Rewire__('augur', mockAugur)
 
-      store.dispatch(submitNewMarket(store.getState().newMarket));
+      store.dispatch(submitNewMarket(store.getState().newMarket))
 
       const expected = {
         _automatedReporterAddress: '0x1233',
@@ -159,11 +159,11 @@ describe('modules/create-market/actions/submit-new-market', () => {
         _topic: 'test topic',
         settlementFee: '0.02',
         _numTicks: 2
-      };
+      }
 
-      assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`);
+      assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`)
     }
-  });
+  })
 
   test({
     description: `should submit well formed 'formattedNewMarket' object to 'createSingleEventMarket' for scalar market`,
@@ -196,23 +196,23 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }
     },
     assertions: (store) => {
-      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
+      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market')
 
       const mockAugur = {
         createMarket: { createScalarMarket: () => { } }
-      };
-      let formattedNewMarket = null;
+      }
+      let formattedNewMarket = null
       sinon.stub(mockAugur.createMarket, 'createScalarMarket', (createMarketObject) => {
-        delete createMarketObject.onSent;
-        delete createMarketObject.onSuccess;
-        delete createMarketObject.onFailed;
+        delete createMarketObject.onSent
+        delete createMarketObject.onSuccess
+        delete createMarketObject.onFailed
 
-        formattedNewMarket = createMarketObject;
-      });
+        formattedNewMarket = createMarketObject
+      })
 
-      __RewireAPI__.__Rewire__('augur', mockAugur);
+      __RewireAPI__.__Rewire__('augur', mockAugur)
 
-      store.dispatch(submitNewMarket(store.getState().newMarket));
+      store.dispatch(submitNewMarket(store.getState().newMarket))
 
       const expected = {
         _automatedReporterAddress: '0x1233',
@@ -232,11 +232,11 @@ describe('modules/create-market/actions/submit-new-market', () => {
         _topic: 'test topic',
         settlementFee: '0.02',
         _numTicks: 2
-      };
+      }
 
-      assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`);
+      assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`)
     }
-  });
+  })
 
   test({
     description: `should dispatch the expected action and call the expected function from the 'onSent' callback`,
@@ -266,40 +266,40 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }
     },
     assertions: (store) => {
-      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
+      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market')
 
-      const push = sinon.stub();
+      const push = sinon.stub()
       const history = {
         push
-      };
+      }
       __RewireAPI__.__Rewire__('clearNewMarket', () => ({
         type: 'createNewMarket'
-      }));
+      }))
 
       const mockAugur = {
         createMarket: {
           createCategoricalMarket: (createCategoricalMarket) => {
-            createCategoricalMarket.onSent();
+            createCategoricalMarket.onSent()
           }
         }
-      };
-      __RewireAPI__.__Rewire__('augur', mockAugur);
+      }
+      __RewireAPI__.__Rewire__('augur', mockAugur)
 
-      store.dispatch(submitNewMarket(store.getState().newMarket, history));
+      store.dispatch(submitNewMarket(store.getState().newMarket, history))
 
-      assert.isTrue(push.calledOnce, `didn't push a new path to history`);
+      assert.isTrue(push.calledOnce, `didn't push a new path to history`)
 
-      const actual = store.getActions();
+      const actual = store.getActions()
 
       const expected = [
         {
           type: 'createNewMarket'
         }
-      ];
+      ]
 
-      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
     }
-  });
+  })
 
   test({
     description: `should dispatch the expected actions from the 'onFailed' callback`,
@@ -329,34 +329,34 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }
     },
     assertions: (store) => {
-      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
+      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market')
 
       __RewireAPI__.__Rewire__('invalidateMarketCreation', () => ({
         type: 'invalidateMarketCreation'
-      }));
+      }))
 
       const mockAugur = {
         createMarket: {
           createCategoricalMarket: (createCategoricalMarket) => {
-            createCategoricalMarket.onFailed({ message: null });
+            createCategoricalMarket.onFailed({ message: null })
           }
         }
-      };
-      __RewireAPI__.__Rewire__('augur', mockAugur);
+      }
+      __RewireAPI__.__Rewire__('augur', mockAugur)
 
-      store.dispatch(submitNewMarket(store.getState().newMarket));
+      store.dispatch(submitNewMarket(store.getState().newMarket))
 
-      const actual = store.getActions();
+      const actual = store.getActions()
 
       const expected = [
         {
           type: 'invalidateMarketCreation'
         }
-      ];
+      ]
 
-      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
     }
-  });
+  })
 
   test({
     description: `should dispatch the expected actions from the 'onSuccess' callback when an orderbook IS NOT present`,
@@ -387,28 +387,28 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }
     },
     assertions: (store) => {
-      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
+      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market')
 
       const mockAugur = {
         createMarket: {
           createCategoricalMarket: (createCategoricalMarket) => {
             createCategoricalMarket.onSuccess({
               callReturn: '0x11111111'
-            });
+            })
           }
         }
-      };
-      __RewireAPI__.__Rewire__('augur', mockAugur);
+      }
+      __RewireAPI__.__Rewire__('augur', mockAugur)
 
-      store.dispatch(submitNewMarket(store.getState().newMarket));
+      store.dispatch(submitNewMarket(store.getState().newMarket))
 
-      const actual = store.getActions();
+      const actual = store.getActions()
 
-      const expected = [];
+      const expected = []
 
-      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
     }
-  });
+  })
 
   test({
     description: `should dispatch the expected actions from the 'onSuccess' callback when an orderbook IS present`,
@@ -508,38 +508,38 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }
     },
     assertions: (store) => {
-      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
+      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market')
 
       // const mockUpdateTradesInProgress = sinon.stub().yields({});
       __RewireAPI__.__Rewire__('updateTradesInProgress', (callReturn, outcomeID, type, quantity, price, nogo, cb) => {
-        cb({});
+        cb({})
         return {
           type: 'updateTradesInProgress',
           outcomeID
-        };
-      });
+        }
+      })
 
       // const mockPlaceTrade = sinon.stub().yields();
       __RewireAPI__.__Rewire__('placeTrade', (callReturn, outcomeID, tradeToExecute, nogo, cb) => {
-        cb();
+        cb()
         return {
           type: 'placeTrade',
           outcomeID
-        };
-      });
+        }
+      })
 
       const mockAugur = {
         createMarket: {
           createCategoricalMarket: (createCategoricalMarket) => {
-            createCategoricalMarket.onSuccess({});
+            createCategoricalMarket.onSuccess({})
           }
         }
-      };
-      __RewireAPI__.__Rewire__('augur', mockAugur);
+      }
+      __RewireAPI__.__Rewire__('augur', mockAugur)
 
-      store.dispatch(submitNewMarket(store.getState().newMarket));
+      store.dispatch(submitNewMarket(store.getState().newMarket))
 
-      const actual = store.getActions();
+      const actual = store.getActions()
 
       const expected = [
         {
@@ -638,11 +638,11 @@ describe('modules/create-market/actions/submit-new-market', () => {
           outcomeID: 1,
           type: 'updateTradesInProgress'
         }
-      ];
+      ]
 
-      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
     }
-  });
+  })
 
   test({
     description: `should dispatch the expected actions from the 'onFailed' callback`,
@@ -672,32 +672,32 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }
     },
     assertions: (store) => {
-      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
+      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market')
 
       __RewireAPI__.__Rewire__('invalidateMarketCreation', () => ({
         type: 'invalidateMarketCreation'
-      }));
+      }))
 
       const mockAugur = {
         createMarket: {
           createCategoricalMarket: (createCategoricalMarket) => {
-            createCategoricalMarket.onFailed({ message: null });
+            createCategoricalMarket.onFailed({ message: null })
           }
         }
-      };
-      __RewireAPI__.__Rewire__('augur', mockAugur);
+      }
+      __RewireAPI__.__Rewire__('augur', mockAugur)
 
-      store.dispatch(submitNewMarket(store.getState().newMarket));
+      store.dispatch(submitNewMarket(store.getState().newMarket))
 
-      const actual = store.getActions();
+      const actual = store.getActions()
 
       const expected = [
         {
           type: 'invalidateMarketCreation'
         }
-      ];
+      ]
 
-      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
     }
-  });
-});
+  })
+})

@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
 
 describe('<whatever>', () => {
   // TODO: need to add test after fee calcuation logic has been updated
@@ -27,15 +27,15 @@ describe('<whatever>', () => {
   */
   const test = (t) => {
     it(t.description, (done) => {
-      t.assertions(null);
-      done();
-    });
-  };
+      t.assertions(null)
+      done()
+    })
+  }
 
   test({
     description: '<todo test>',
     assertions: (result) => {
-      assert.deepEqual(true, true, 'need better test');
+      assert.deepEqual(true, true, 'need better test')
     }
-  });
-});
+  })
+})
