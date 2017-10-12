@@ -147,6 +147,29 @@ li.CreateMarketLiquidity__order-add {
   max-width: 21rem;
 }
 
+@media @breakpoint-mobile {
+  .CreateMarketLiquidity__order {
+    display: block;
+
+    > div:first-child,
+    > div:last-child {
+      width: 100%;
+    }
+
+    > div:first-child {
+      margin-bottom: 3.75rem;
+    }
+  }
+
+  .CreateMarketLiquidity__radio-buttons {
+    display: flex;
+
+    > li:not(:first-child) {
+      margin-top: 0;
+    }
+  }
+}
+
 @media @breakpoint-mobile-medium {
   .CreateMarketLiquidity__settlement > input {
     max-width: none;

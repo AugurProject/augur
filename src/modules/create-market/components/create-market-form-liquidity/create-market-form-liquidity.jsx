@@ -69,7 +69,7 @@ export default class CreateMarketLiquidity extends Component {
               </li>
               <li>
                 <label>Outcome</label>
-                <ul className={classNames(Styles['CreateMarketLiquidity__radio-buttons'] , StylesForm['CreateMarketForm__radio-buttons'])}>
+                <ul className={classNames(Styles['CreateMarketLiquidity__radio-buttons'], StylesForm['CreateMarketForm__radio-buttons'])}>
                   <li>
                     <button
                       className={classNames({ [`${StylesForm.active}`]: true })}
