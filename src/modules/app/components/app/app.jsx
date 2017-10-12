@@ -12,6 +12,7 @@ import _ from 'lodash'
 import TopBar from 'modules/app/components/top-bar/top-bar'
 import MarketsInnerNav from 'modules/app/components/inner-nav/markets-inner-nav'
 import PortfolioInnerNav from 'modules/app/components/inner-nav/portfolio-inner-nav'
+import AccountInnerNav from 'modules/app/components/inner-nav/account-inner-nav'
 import SideNav from 'modules/app/components/side-nav/side-nav'
 import Origami from 'modules/app/components/origami-svg/origami-svg'
 import Logo from 'modules/app/components/logo/logo'
@@ -31,7 +32,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 
 import getValue from 'utils/get-value'
 
-import { MARKETS, ACCOUNT, MY_MARKETS, MY_POSITIONS, WATCHLIST, CREATE_MARKET, CATEGORIES } from 'modules/routes/constants/views'
+import { MARKETS, ACCOUNT, ACCOUNT_DEPOSIT, MY_MARKETS, MY_POSITIONS, WATCHLIST, CREATE_MARKET, CATEGORIES } from 'modules/routes/constants/views'
 import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
@@ -50,7 +51,8 @@ const navTypes = {
   [MARKETS]: MarketsInnerNav,
   [MY_MARKETS]: PortfolioInnerNav,
   [MY_POSITIONS]: PortfolioInnerNav,
-  [WATCHLIST]: PortfolioInnerNav
+  [WATCHLIST]: PortfolioInnerNav,
+  [ACCOUNT]: AccountInnerNav
 }
 
 // TODO -- this component needs to be broken up and also restructured
@@ -90,7 +92,7 @@ export default class AppView extends Component {
         title: 'Account',
         iconName: 'nav-account-icon',
         icon: NavAccountIcon,
-        route: ACCOUNT
+        route: makePath([ACCOUNT, ACCOUNT_DEPOSIT])
       },
       {
         title: 'Create',
@@ -189,6 +191,7 @@ export default class AppView extends Component {
         case MY_MARKETS:
         case MY_POSITIONS:
         case WATCHLIST:
+        case ACCOUNT:
           openNewMenu()
           break
         default:

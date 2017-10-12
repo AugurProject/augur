@@ -373,3 +373,17 @@ export const Export = (
     </g>
   </svg>
 )
+
+export const Withdraw = (
+  <svg width="26px" height="26px" viewBox="0 0 26 26">
+    <g id="Account" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
+        <g id="Account_1" transform="translate(-575.000000, -448.000000)" stroke="#372E4B">
+            <g id="Icon/Deposit" transform="translate(574.000000, 447.000000)">
+                <path d="M14.1394167,1.74976667 L14.0519167,21.4687667" id="Stroke-1"></path>
+                <polyline id="Stroke-3" points="9.21071667 16.8168 13.9998833 21.6059667 18.78905 16.8168"></polyline>
+                <polyline id="Stroke-4" points="7.58321667 11.7399333 1.74988333 11.7399333 1.74988333 25.7399333 26.2498833 25.7399333 26.2498833 11.7399333 20.41655 11.7399333"></polyline>
+            </g>
+        </g>
+    </g>
+  </svg>
+)
