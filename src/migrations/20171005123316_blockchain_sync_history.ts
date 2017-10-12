@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 
 exports.up = async (knex: Knex): Promise<any> => {
-  return knex.schema.dropTableIfExists("blockchain_sync_history").then(() => {
+  return knex.schema.dropTableIfExists("blockchain_sync_history").then(async (): Promise<any> => {
     return knex.schema.createTable("blockchain_sync_history", (table): void => {
       table.increments("id").primary().notNullable();
       table.integer("highest_block_number").notNullable();
