@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 
 exports.up = async (knex: Knex): Promise<any> => {
-  return knex.schema.dropTableIfExists("balances").then(() => {
+  return knex.schema.dropTableIfExists("balances").then((): PromiseLike<any> => {
     return knex.schema.raw(`CREATE TABLE balances (
       owner varchar(66) NOT NULL,
       token varchar(66) NOT NULL,

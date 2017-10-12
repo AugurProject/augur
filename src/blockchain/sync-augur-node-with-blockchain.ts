@@ -9,9 +9,9 @@ interface HighestBlockNumberRow {
 }
 
 export function syncAugurNodeWithBlockchain(db: Knex,  augur: Augur, ethereumNodeEndpoints: EthereumNodeEndpoints, uploadBlockNumbers: UploadBlockNumbers, callback: ErrorCallback): void {
-  augur.connect({ ethereumNode: ethereumNodeEndpoints }, () => {
+  augur.connect({ ethereumNode: ethereumNodeEndpoints }, (): void => {
     console.log("Waiting for first block...");
-    startAugurListeners(db, augur, (blockNumber: string) => {
+    startAugurListeners(db, augur, (blockNumber: string): void => {
       db.raw(`SELECT highest_block_number FROM blockchain_sync_history ORDER BY highest_block_number DESC LIMIT 1`)
         .asCallback( (err: Error|null, rows?: Array<HighestBlockNumberRow>): void => {
           if (err) return callback(err);
@@ -19,7 +19,7 @@ export function syncAugurNodeWithBlockchain(db: Knex,  augur: Augur, ethereumNod
           const fromBlock: number = (!row || !row.highest_block_number) ? uploadBlockNumbers[augur.rpc.getNetworkID()] : row.highest_block_number + 1;
           const highestBlockNumber: number = parseInt(blockNumber, 16);
           if (fromBlock >= highestBlockNumber) return callback(null); // augur-node is already up-to-date
-          downloadAugurLogs(db, augur, fromBlock, highestBlockNumber, (err?: Error|null) => {
+          downloadAugurLogs(db, augur, fromBlock, highestBlockNumber, (err?: Error|null): void => {
             if (err) return callback(err);
             db.insert({highest_block_number: highestBlockNumber}).into("blockchain_sync_history").asCallback(callback);
           });

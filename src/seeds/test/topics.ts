@@ -3,7 +3,7 @@ import * as Knex from "knex";
 exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
   return knex("topics").del()
-    .then(() => {
+    .then((): PromiseLike<any> => {
       // Inserts seed entries
       return knex.raw(`INSERT INTO topics
             (topic, popularity, universe)

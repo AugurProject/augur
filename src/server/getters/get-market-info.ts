@@ -52,7 +52,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRow, outcomesInfo: A
 }
 
 export function getMarketInfo(db: Knex, marketID: string, callback: (err?: Error|null, result?: UIMarketInfo) => void): void {
-  db.raw("SELECT * FROM markets WHERE market_id = ? LIMIT 1", [marketID]).asCallback((err?: Error|null, rows?: Array<MarketsRow>) => {
+  db.raw("SELECT * FROM markets WHERE market_id = ? LIMIT 1", [marketID]).asCallback((err?: Error|null, rows?: Array<MarketsRow>): void => {
     if (err) return callback(err);
     if (!rows || rows.length === 0) return callback(null);
     const marketsRow: MarketsRow = rows[0];
