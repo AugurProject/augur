@@ -1,158 +1,92 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
-import proxyquire from 'proxyquire'
-import BigNumber from 'bignumber.js'
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
+import proxyquire from 'proxyquire';
 
 describe(`modules/branch/selectors/reporting-cycle.js`, () => {
-  proxyquire.noPreserveCache()
+  proxyquire.noPreserveCache();
   const test = t => it(t.description, () => {
     const AugurJS = {
-      augur: t.stub.augur,
-      abi: { bignum: n => new BigNumber(n, 10) }
-    }
+      augur: t.stub.augur
+    };
     const selector = proxyquire('../../../src/modules/branch/selectors/reporting-cycle.js', {
       '../../../services/augurjs': AugurJS
-    })
-    t.assertions(selector.selectReportingCycle(t.state))
-  })
+    });
+    t.assertions(selector.selectReportingCycle(t.state));
+  });
+
   test({
-    description: 'Reporting cycle is in commit phase (0%)',
+    description: 'Reporting cycle is 51% complete',
     state: {
       blockchain: {
         currentBlockTimestamp: 123456789
       },
       branch: {
-        periodLength: 100
+        reportingPeriodDurationInSeconds: 100
       }
     },
     stub: {
       augur: {
         reporting: {
-          getCurrentPeriod: (periodLength, timestamp) => 42,
-          getCurrentPeriodProgress: (periodLength, timestamp) => 0
+          getCurrentPeriodProgress: (reportingPeriodDurationInSeconds, timestamp) => 51
         }
       }
     },
     assertions: (reportingCycle) => {
       assert.deepEqual(reportingCycle, {
-        currentPeriod: 42,
-        currentPeriodProgress: 0,
-        isReportRevealPhase: false,
-        phaseLabel: 'Commit',
-        phaseTimeRemaining: 'in a minute'
-      })
+        currentReportingPeriodPercentComplete: 51,
+        reportingCycleTimeRemaining: 'in a minute'
+      });
     }
-  })
+  });
+
   test({
-    description: 'Reporting cycle is in commit phase (10%)',
+    description: 'Reporting cycle is 0% complete',
     state: {
       blockchain: {
         currentBlockTimestamp: 123456789
       },
       branch: {
-        periodLength: 100
+        reportingPeriodDurationInSeconds: 2678400
       }
     },
     stub: {
       augur: {
         reporting: {
-          getCurrentPeriod: (periodLength, timestamp) => 42,
-          getCurrentPeriodProgress: (periodLength, timestamp) => 10
+          getCurrentPeriodProgress: (reportingPeriodDurationInSeconds, timestamp) => 0
         }
       }
     },
     assertions: (reportingCycle) => {
       assert.deepEqual(reportingCycle, {
-        currentPeriod: 42,
-        currentPeriodProgress: 10,
-        isReportRevealPhase: false,
-        phaseLabel: 'Commit',
-        phaseTimeRemaining: 'in a few seconds'
-      })
+        currentReportingPeriodPercentComplete: 0,
+        reportingCycleTimeRemaining: 'in a month'
+      });
     }
-  })
+  });
+
   test({
-    description: 'Reporting cycle is in commit phase (50%)',
+    description: 'Reporting cycle is 100% complete',
     state: {
       blockchain: {
         currentBlockTimestamp: 123456789
       },
       branch: {
-        periodLength: 100
+        reportingPeriodDurationInSeconds: 2678400
       }
     },
     stub: {
       augur: {
         reporting: {
-          getCurrentPeriod: (periodLength, timestamp) => 42,
-          getCurrentPeriodProgress: (periodLength, timestamp) => 10
+          getCurrentPeriodProgress: (reportingPeriodDurationInSeconds, timestamp) => 100
         }
       }
     },
     assertions: (reportingCycle) => {
       assert.deepEqual(reportingCycle, {
-        currentPeriod: 42,
-        currentPeriodProgress: 10,
-        isReportRevealPhase: false,
-        phaseLabel: 'Commit',
-        phaseTimeRemaining: 'in a few seconds'
-      })
+        currentReportingPeriodPercentComplete: 100,
+        reportingCycleTimeRemaining: 'a few seconds ago'
+      });
     }
-  })
-  test({
-    description: 'Reporting cycle is in reveal phase (51%)',
-    state: {
-      blockchain: {
-        currentBlockTimestamp: 123456789
-      },
-      branch: {
-        periodLength: 100
-      }
-    },
-    stub: {
-      augur: {
-        reporting: {
-          getCurrentPeriod: (periodLength, timestamp) => 42,
-          getCurrentPeriodProgress: (periodLength, timestamp) => 51
-        }
-      }
-    },
-    assertions: (reportingCycle) => {
-      assert.deepEqual(reportingCycle, {
-        currentPeriod: 42,
-        currentPeriodProgress: 51,
-        isReportRevealPhase: true,
-        phaseLabel: 'Reveal',
-        phaseTimeRemaining: 'in a minute'
-      })
-    }
-  })
-  test({
-    description: 'Reporting cycle is in reveal phase (99%)',
-    state: {
-      blockchain: {
-        currentBlockTimestamp: 123456789
-      },
-      branch: {
-        periodLength: 100
-      }
-    },
-    stub: {
-      augur: {
-        reporting: {
-          getCurrentPeriod: (periodLength, timestamp) => 42,
-          getCurrentPeriodProgress: (periodLength, timestamp) => 99
-        }
-      }
-    },
-    assertions: (reportingCycle) => {
-      assert.deepEqual(reportingCycle, {
-        currentPeriod: 42,
-        currentPeriodProgress: 99,
-        isReportRevealPhase: true,
-        phaseLabel: 'Reveal',
-        phaseTimeRemaining: 'in a few seconds'
-      })
-    }
-  })
-})
+  });
+
+});

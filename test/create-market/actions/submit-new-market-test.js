@@ -1,41 +1,46 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
-import BigNumber from 'bignumber.js'
-import sinon from 'sinon'
-import thunk from 'redux-thunk'
-import configureMockStore from 'redux-mock-store'
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
+import BigNumber from 'bignumber.js';
+import sinon from 'sinon';
+import thunk from 'redux-thunk';
+import configureMockStore from 'redux-mock-store';
 
-import { BID, ASK } from 'modules/transactions/constants/types'
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { BUY, SELL } from 'modules/transactions/constants/types';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 
 describe('modules/create-market/actions/submit-new-market', () => {
-  const mockStore = configureMockStore([thunk])
+  const mockStore = configureMockStore([thunk]);
   // proxyquire.noPreserveCache().noCallThru();
 
   const test = t => it(t.description, () => {
-    const store = mockStore(t.state || {})
-    t.assertions(store)
-  })
+    const store = mockStore(t.state || {});
+    t.assertions(store);
+  });
 
   test({
-    description: `should submit well formed 'formattedNewMarket' object to 'createSingleEventMarket' for categorical market`,
+    description: `should submit well formed 'formattedNewMarket' object to 'createCategoricalMarket' for categorical market`,
     state: {
       branch: {
         id: '1010101'
       },
-      loginAccount: { privateKey: 'this is a private key' },
+      contractAddresses: {
+        Cash: 'domnination'
+      },
+      loginAccount: {
+        privateKey: 'this is a private key',
+        address: '0x1233'
+      },
       newMarket: {
         description: 'test description',
         endDate: {
           timestamp: 1234567890000
         },
         expirySource: '',
-        takerFee: 2,
+        settlementFee: 2,
         makerFee: 1,
         detailsText: '',
-        category: 'testing',
-        tag1: 'tag1',
-        tag2: 'tag2',
+        topic: 'test topic',
+        keywords: [],
         type: CATEGORICAL,
         outcomes: [
           'one',
@@ -44,25 +49,26 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }
     },
     assertions: (store) => {
-      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market')
+      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
 
       const mockAugur = {
-        create: { createSingleEventMarket: () => {} }
-      }
-      let formattedNewMarket = null
-      sinon.stub(mockAugur.create, 'createSingleEventMarket', (createMarketObject) => {
-        delete createMarketObject.onSent
-        delete createMarketObject.onSuccess
-        delete createMarketObject.onFailed
+        createMarket: { createCategoricalMarket: () => { } }
+      };
+      let formattedNewMarket = null;
+      sinon.stub(mockAugur.createMarket, 'createCategoricalMarket', (createMarketObject) => {
+        delete createMarketObject.onSent;
+        delete createMarketObject.onSuccess;
+        delete createMarketObject.onFailed;
 
-        formattedNewMarket = createMarketObject
-      })
+        formattedNewMarket = createMarketObject;
+      });
 
-      __RewireAPI__.__Rewire__('augur', mockAugur)
+      __RewireAPI__.__Rewire__('augur', mockAugur);
 
-      store.dispatch(submitNewMarket(store.getState().newMarket))
+      store.dispatch(submitNewMarket(store.getState().newMarket));
 
       const expected = {
+        _automatedReporterAddress: '0x1233',
         _signer: 'this is a private key',
         _branch: '1010101',
         _endTime: 1234567890,
@@ -83,11 +89,11 @@ describe('modules/create-market/actions/submit-new-market', () => {
         _topic: 'test topic',
         settlementFee: '0.02',
         _numTicks: 2
-      }
+      };
 
-      assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`)
+      assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`);
     }
-  })
+  });
 
   test({
     description: `should submit well formed 'formattedNewMarket' object to 'createSingleEventMarket' for binary market`,
@@ -95,42 +101,48 @@ describe('modules/create-market/actions/submit-new-market', () => {
       branch: {
         id: '1010101'
       },
-      loginAccount: { privateKey: 'this is a private key' },
+      contractAddresses: {
+        Cash: 'domnination'
+      },
+      loginAccount: {
+        privateKey: 'this is a private key',
+        address: '0x1233'
+      },
       newMarket: {
         description: 'test description',
         endDate: {
           timestamp: 1234567890000
         },
         expirySource: '',
-        takerFee: 2,
+        settlementFee: 2,
         makerFee: 1,
         detailsText: '',
-        category: 'cat',
-        tag1: 'tageroony1',
-        tag2: 'tageroony2',
+        topic: 'test topic',
+        keywords: [],
         type: BINARY
       }
     },
     assertions: (store) => {
-      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market')
+      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
 
       const mockAugur = {
-        create: { createSingleEventMarket: () => {} }
-      }
-      let formattedNewMarket = null
-      sinon.stub(mockAugur.create, 'createSingleEventMarket', (createMarketObject) => {
-        delete createMarketObject.onSent
-        delete createMarketObject.onSuccess
-        delete createMarketObject.onFailed
+        createMarket: { createCategoricalMarket: () => { } }
+      };
+      let formattedNewMarket = null;
+      sinon.stub(mockAugur.createMarket, 'createCategoricalMarket', (createMarketObject) => {
+        delete createMarketObject.onSent;
+        delete createMarketObject.onSuccess;
+        delete createMarketObject.onFailed;
 
-        formattedNewMarket = createMarketObject
-      })
+        formattedNewMarket = createMarketObject;
+      });
 
-      __RewireAPI__.__Rewire__('augur', mockAugur)
+      __RewireAPI__.__Rewire__('augur', mockAugur);
 
-      store.dispatch(submitNewMarket(store.getState().newMarket))
+      store.dispatch(submitNewMarket(store.getState().newMarket));
 
       const expected = {
+        _automatedReporterAddress: '0x1233',
         _signer: 'this is a private key',
         _branch: '1010101',
         _endTime: 1234567890,
@@ -147,11 +159,11 @@ describe('modules/create-market/actions/submit-new-market', () => {
         _topic: 'test topic',
         settlementFee: '0.02',
         _numTicks: 2
-      }
+      };
 
-      assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`)
+      assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`);
     }
-  })
+  });
 
   test({
     description: `should submit well formed 'formattedNewMarket' object to 'createSingleEventMarket' for scalar market`,
@@ -159,19 +171,24 @@ describe('modules/create-market/actions/submit-new-market', () => {
       branch: {
         id: '1010101'
       },
-      loginAccount: { privateKey: 'this is a private key' },
+      contractAddresses: {
+        Cash: 'domnination'
+      },
+      loginAccount: {
+        privateKey: 'this is a private key',
+        address: '0x1233'
+      },
       newMarket: {
         description: 'test description',
         endDate: {
           timestamp: 1234567890000
         },
         expirySource: '',
-        takerFee: 2,
+        settlementFee: 2,
         makerFee: 1,
         detailsText: '',
-        category: 'cat',
-        tag1: 'tag1',
-        tag2: 'tag2',
+        topic: 'test topic',
+        keywords: [],
         type: SCALAR,
         _numTicks: 2,
         scalarSmallNum: '-10', // String for the test case, normally a BigNumber
@@ -179,25 +196,26 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }
     },
     assertions: (store) => {
-      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market')
+      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
 
       const mockAugur = {
-        create: { createSingleEventMarket: () => {} }
-      }
-      let formattedNewMarket = null
-      sinon.stub(mockAugur.create, 'createSingleEventMarket', (createMarketObject) => {
-        delete createMarketObject.onSent
-        delete createMarketObject.onSuccess
-        delete createMarketObject.onFailed
+        createMarket: { createScalarMarket: () => { } }
+      };
+      let formattedNewMarket = null;
+      sinon.stub(mockAugur.createMarket, 'createScalarMarket', (createMarketObject) => {
+        delete createMarketObject.onSent;
+        delete createMarketObject.onSuccess;
+        delete createMarketObject.onFailed;
 
-        formattedNewMarket = createMarketObject
-      })
+        formattedNewMarket = createMarketObject;
+      });
 
-      __RewireAPI__.__Rewire__('augur', mockAugur)
+      __RewireAPI__.__Rewire__('augur', mockAugur);
 
-      store.dispatch(submitNewMarket(store.getState().newMarket))
+      store.dispatch(submitNewMarket(store.getState().newMarket));
 
       const expected = {
+        _automatedReporterAddress: '0x1233',
         _signer: 'this is a private key',
         _branch: '1010101',
         _endTime: 1234567890,
@@ -214,11 +232,11 @@ describe('modules/create-market/actions/submit-new-market', () => {
         _topic: 'test topic',
         settlementFee: '0.02',
         _numTicks: 2
-      }
+      };
 
-      assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`)
+      assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`);
     }
-  })
+  });
 
   test({
     description: `should dispatch the expected action and call the expected function from the 'onSent' callback`,
@@ -226,14 +244,20 @@ describe('modules/create-market/actions/submit-new-market', () => {
       branch: {
         id: '1010101'
       },
-      loginAccount: { privateKey: 'this is a private key' },
+      contractAddresses: {
+        Cash: 'domnination'
+      },
+      loginAccount: {
+        privateKey: 'this is a private key',
+        address: '0x1233'
+      },
       newMarket: {
         description: 'test description',
         endDate: {
           timestamp: 1234567890000
         },
         expirySource: '',
-        takerFee: 2,
+        settlementFee: 2,
         makerFee: 1,
         detailsText: '',
         topic: 'test topic',
@@ -242,40 +266,40 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }
     },
     assertions: (store) => {
-      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market')
+      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
 
-      const push = sinon.stub()
+      const push = sinon.stub();
       const history = {
         push
-      }
+      };
       __RewireAPI__.__Rewire__('clearNewMarket', () => ({
         type: 'createNewMarket'
-      }))
+      }));
 
       const mockAugur = {
-        create: {
-          createSingleEventMarket: (createSingleEventMarket) => {
-            createSingleEventMarket.onSent()
+        createMarket: {
+          createCategoricalMarket: (createCategoricalMarket) => {
+            createCategoricalMarket.onSent();
           }
         }
-      }
-      __RewireAPI__.__Rewire__('augur', mockAugur)
+      };
+      __RewireAPI__.__Rewire__('augur', mockAugur);
 
-      store.dispatch(submitNewMarket(store.getState().newMarket, history))
+      store.dispatch(submitNewMarket(store.getState().newMarket, history));
 
-      assert.isTrue(push.calledOnce, `didn't push a new path to history`)
+      assert.isTrue(push.calledOnce, `didn't push a new path to history`);
 
-      const actual = store.getActions()
+      const actual = store.getActions();
 
       const expected = [
         {
           type: 'createNewMarket'
         }
-      ]
+      ];
 
-      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
+      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
     }
-  })
+  });
 
   test({
     description: `should dispatch the expected actions from the 'onFailed' callback`,
@@ -283,14 +307,20 @@ describe('modules/create-market/actions/submit-new-market', () => {
       branch: {
         id: '1010101'
       },
-      loginAccount: { privateKey: 'this is a private key' },
+      contractAddresses: {
+        Cash: 'domnination'
+      },
+      loginAccount: {
+        privateKey: 'this is a private key',
+        address: '0x1233'
+      },
       newMarket: {
         description: 'test description',
         endDate: {
           timestamp: 1234567890000
         },
         expirySource: '',
-        takerFee: 2,
+        settlementFee: 2,
         makerFee: 1,
         detailsText: '',
         topic: 'test topic',
@@ -299,34 +329,34 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }
     },
     assertions: (store) => {
-      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market')
+      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
 
       __RewireAPI__.__Rewire__('invalidateMarketCreation', () => ({
         type: 'invalidateMarketCreation'
-      }))
+      }));
 
       const mockAugur = {
-        create: {
-          createSingleEventMarket: (createSingleEventMarket) => {
-            createSingleEventMarket.onFailed({ message: null })
+        createMarket: {
+          createCategoricalMarket: (createCategoricalMarket) => {
+            createCategoricalMarket.onFailed({ message: null });
           }
         }
-      }
-      __RewireAPI__.__Rewire__('augur', mockAugur)
+      };
+      __RewireAPI__.__Rewire__('augur', mockAugur);
 
-      store.dispatch(submitNewMarket(store.getState().newMarket))
+      store.dispatch(submitNewMarket(store.getState().newMarket));
 
-      const actual = store.getActions()
+      const actual = store.getActions();
 
       const expected = [
         {
           type: 'invalidateMarketCreation'
         }
-      ]
+      ];
 
-      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
+      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
     }
-  })
+  });
 
   test({
     description: `should dispatch the expected actions from the 'onSuccess' callback when an orderbook IS NOT present`,
@@ -334,14 +364,20 @@ describe('modules/create-market/actions/submit-new-market', () => {
       branch: {
         id: '1010101'
       },
-      loginAccount: { privateKey: 'this is a private key' },
+      contractAddresses: {
+        Cash: 'domnination'
+      },
+      loginAccount: {
+        privateKey: 'this is a private key',
+        address: '0x1233'
+      },
       newMarket: {
         description: 'test description',
         endDate: {
           timestamp: 1234567890000
         },
         expirySource: '',
-        takerFee: 2,
+        settlementFee: 2,
         makerFee: 1,
         detailsText: '',
         topic: 'test topic',
@@ -351,26 +387,28 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }
     },
     assertions: (store) => {
-      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market')
+      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
 
       const mockAugur = {
-        create: {
-          createSingleEventMarket: (createSingleEventMarket) => {
-            createSingleEventMarket.onSuccess()
+        createMarket: {
+          createCategoricalMarket: (createCategoricalMarket) => {
+            createCategoricalMarket.onSuccess({
+              callReturn: '0x11111111'
+            });
           }
         }
-      }
-      __RewireAPI__.__Rewire__('augur', mockAugur)
+      };
+      __RewireAPI__.__Rewire__('augur', mockAugur);
 
-      store.dispatch(submitNewMarket(store.getState().newMarket))
+      store.dispatch(submitNewMarket(store.getState().newMarket));
 
-      const actual = store.getActions()
+      const actual = store.getActions();
 
-      const expected = []
+      const expected = [];
 
-      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
+      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
     }
-  })
+  });
 
   test({
     description: `should dispatch the expected actions from the 'onSuccess' callback when an orderbook IS present`,
@@ -378,14 +416,20 @@ describe('modules/create-market/actions/submit-new-market', () => {
       branch: {
         id: '1010101'
       },
-      loginAccount: { privateKey: 'this is a private key' },
+      contractAddresses: {
+        Cash: 'domnination'
+      },
+      loginAccount: {
+        privateKey: 'this is a private key',
+        address: '0x1233'
+      },
       newMarket: {
         description: 'test description',
         endDate: {
           timestamp: 1234567890000
         },
         expirySource: '',
-        takerFee: 2,
+        settlementFee: 2,
         makerFee: 1,
         detailsText: '',
         topic: 'test topic',
@@ -398,64 +442,64 @@ describe('modules/create-market/actions/submit-new-market', () => {
         orderBook: {
           one: [
             {
-              type: BID,
+              type: BUY,
               price: new BigNumber('0.1'),
               quantity: new BigNumber('1')
             },
             {
-              type: ASK,
+              type: SELL,
               price: new BigNumber('0.6'),
               quantity: new BigNumber('1')
             },
             {
-              type: BID,
+              type: BUY,
               price: new BigNumber('0.2'),
               quantity: new BigNumber('1')
             },
             {
-              type: ASK,
+              type: SELL,
               price: new BigNumber('0.7'),
               quantity: new BigNumber('1')
             },
             {
-              type: BID,
+              type: BUY,
               price: new BigNumber('0.3'),
               quantity: new BigNumber('1')
             },
             {
-              type: ASK,
+              type: SELL,
               price: new BigNumber('0.8'),
               quantity: new BigNumber('1')
             }
           ],
           two: [
             {
-              type: BID,
+              type: BUY,
               price: new BigNumber('0.1'),
               quantity: new BigNumber('1')
             },
             {
-              type: ASK,
+              type: SELL,
               price: new BigNumber('0.6'),
               quantity: new BigNumber('1')
             },
             {
-              type: BID,
+              type: BUY,
               price: new BigNumber('0.2'),
               quantity: new BigNumber('1')
             },
             {
-              type: ASK,
+              type: SELL,
               price: new BigNumber('0.7'),
               quantity: new BigNumber('1')
             },
             {
-              type: BID,
+              type: BUY,
               price: new BigNumber('0.3'),
               quantity: new BigNumber('1')
             },
             {
-              type: ASK,
+              type: SELL,
               price: new BigNumber('0.8'),
               quantity: new BigNumber('1')
             }
@@ -464,38 +508,38 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }
     },
     assertions: (store) => {
-      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market')
+      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
 
       // const mockUpdateTradesInProgress = sinon.stub().yields({});
       __RewireAPI__.__Rewire__('updateTradesInProgress', (callReturn, outcomeID, type, quantity, price, nogo, cb) => {
-        cb({})
+        cb({});
         return {
           type: 'updateTradesInProgress',
           outcomeID
-        }
-      })
+        };
+      });
 
       // const mockPlaceTrade = sinon.stub().yields();
       __RewireAPI__.__Rewire__('placeTrade', (callReturn, outcomeID, tradeToExecute, nogo, cb) => {
-        cb()
+        cb();
         return {
           type: 'placeTrade',
           outcomeID
-        }
-      })
+        };
+      });
 
       const mockAugur = {
-        create: {
-          createSingleEventMarket: (createSingleEventMarket) => {
-            createSingleEventMarket.onSuccess({})
+        createMarket: {
+          createCategoricalMarket: (createCategoricalMarket) => {
+            createCategoricalMarket.onSuccess({});
           }
         }
-      }
-      __RewireAPI__.__Rewire__('augur', mockAugur)
+      };
+      __RewireAPI__.__Rewire__('augur', mockAugur);
 
-      store.dispatch(submitNewMarket(store.getState().newMarket))
+      store.dispatch(submitNewMarket(store.getState().newMarket));
 
-      const actual = store.getActions()
+      const actual = store.getActions();
 
       const expected = [
         {
@@ -594,11 +638,11 @@ describe('modules/create-market/actions/submit-new-market', () => {
           outcomeID: 1,
           type: 'updateTradesInProgress'
         }
-      ]
+      ];
 
-      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
+      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
     }
-  })
+  });
 
   test({
     description: `should dispatch the expected actions from the 'onFailed' callback`,
@@ -606,14 +650,20 @@ describe('modules/create-market/actions/submit-new-market', () => {
       branch: {
         id: '1010101'
       },
-      loginAccount: { privateKey: 'this is a private key' },
+      contractAddresses: {
+        Cash: 'domnination'
+      },
+      loginAccount: {
+        privateKey: 'this is a private key',
+        address: '0x1233'
+      },
       newMarket: {
         description: 'test description',
         endDate: {
           timestamp: 1234567890000
         },
         expirySource: '',
-        takerFee: 2,
+        settlementFee: 2,
         makerFee: 1,
         detailsText: '',
         topic: 'test topic',
@@ -622,32 +672,32 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }
     },
     assertions: (store) => {
-      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market')
+      const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
 
       __RewireAPI__.__Rewire__('invalidateMarketCreation', () => ({
         type: 'invalidateMarketCreation'
-      }))
+      }));
 
       const mockAugur = {
-        create: {
-          createSingleEventMarket: (createSingleEventMarket) => {
-            createSingleEventMarket.onFailed({ message: null })
+        createMarket: {
+          createCategoricalMarket: (createCategoricalMarket) => {
+            createCategoricalMarket.onFailed({ message: null });
           }
         }
-      }
-      __RewireAPI__.__Rewire__('augur', mockAugur)
+      };
+      __RewireAPI__.__Rewire__('augur', mockAugur);
 
-      store.dispatch(submitNewMarket(store.getState().newMarket))
+      store.dispatch(submitNewMarket(store.getState().newMarket));
 
-      const actual = store.getActions()
+      const actual = store.getActions();
 
       const expected = [
         {
           type: 'invalidateMarketCreation'
         }
-      ]
+      ];
 
-      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
+      assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
     }
-  })
-})
+  });
+});
