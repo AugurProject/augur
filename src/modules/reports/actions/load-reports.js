@@ -8,14 +8,17 @@ export const loadReports = (options, callback = logError) => (dispatch, getState
   if (!loginAccount.address) return callback(null)
   if (!loginAccount.rep || loginAccount.rep === '0') return callback(null)
   if (!branch.id) return callback(null)
-  augur.reporting.getReportingHistory({ ...options, branch: branch.id, reporter: loginAccount.address }, (err, reportingHistory) => {
+  augur.reporting.getReportingHistory({ ...options, universe: branch.id, reporter: loginAccount.address }, (err, reportingHistory) => {
+    // returned shape: { branchID: { marketID: [{ marketID, reportingWindow, payoutNumerators, isCategorical, isScalar, isIndeterminate, isSubmitted }] } }
+    // NB: can report more than once on a market, so returns an ARRAY of reports per branch per market, instead of just one
     if (err) return callback(err)
     if (reportingHistory == null) {
       dispatch(updateHasLoadedReports(false))
       return callback(null)
     }
     dispatch(clearReports())
-    // TODO verify that reportingHistory is the correct shape for updateReports
+    // TODO create function to convert between reportedOutcomeID and payoutNumerators (or just have the UI use payoutNumerators directly)
+    // TODO convert reportingWindow field to period field (or have the UI use .reportingWindow)
     dispatch(updateReports(reportingHistory))
     dispatch(updateHasLoadedReports(true))
     callback(null, reportingHistory)
