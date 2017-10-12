@@ -11,7 +11,7 @@ export function onNewBlock(db: Knex, augur: Augur, blockNumberString: string) {
     console.log("new block:", blockNumber, blockTimestamp);
     db.transaction((trx) => {
       let query: Knex.Raw|null = null;
-      switch(db.client.config.client) {
+      switch (db.client.config.client) {
         case "pg":
           query = trx.raw(`INSERT INTO blocks (block_number, block_timestamp) VALUES(?,?) ON CONFLICT ON CONSTRAINT blocks_pkey DO UPDATE SET block_timestamp = ?`, [blockNumber, blockTimestamp, blockTimestamp]);
           break;
@@ -20,7 +20,7 @@ export function onNewBlock(db: Knex, augur: Augur, blockNumberString: string) {
           break;
       }
 
-      if(query === null) return logError(new Error("Using unsupported DBMS"));
+      if (query === null) return logError(new Error("Using unsupported DBMS"));
 
       query.asCallback((err: Error | null, result?: any): void => {
         if (err) {
