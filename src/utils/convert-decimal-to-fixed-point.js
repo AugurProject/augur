@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from 'bignumber.js'
 
 /**
  * @param {string|number} decimalValue
@@ -6,5 +6,5 @@ import BigNumber from 'bignumber.js';
  * @return {string}
  */
 export default function (decimalValue, conversionFactor) {
-  return new BigNumber(decimalValue, 10).times(new BigNumber(conversionFactor, 10)).toFixed();
+  return new BigNumber(decimalValue, 10).times(new BigNumber(conversionFactor, 10)).toFixed()
 }
