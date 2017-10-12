@@ -1,7 +1,7 @@
 {
   "gethHttpURL": "https://eth9000.augur.net",
   "gethWebsocketsURL": "wss://ws9000.augur.net",
-  "augurNodeUrl": "http://127.0.0.1:9001",
+  "augurNodeUrl": "ws://127.0.0.1:9001",
   "networkID": 9000,
   "hostedNodeFallback": false,
   "autoLogin": false,
