@@ -182,6 +182,7 @@ export default class CreateMarketForm extends Component {
                 newMarket={p.newMarket}
                 updateNewMarket={p.updateNewMarket}
                 validateNumber={this.validateNumber}
+                isMobileSmall={p.isMobileSmall}
               />
             }
           </div>

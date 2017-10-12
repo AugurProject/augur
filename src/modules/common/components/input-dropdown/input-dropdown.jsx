@@ -61,7 +61,7 @@ class InputDropdown extends Component {
     return (
       <div
         ref={(InputDropdown) => { this.refInputDropdown = InputDropdown }}
-        className={Styles.InputDropdown}
+        className={classNames(Styles.InputDropdown, (p.className || ''))}
       >
         <button
           className={classNames(Styles.InputDropdown__label, { [`${Styles.selected}`]: s.selected })}
@@ -106,6 +106,7 @@ InputDropdown.propTypes = {
   options: PropTypes.array.isRequired,
   isMobileSmall: PropTypes.bool.isRequired,
   label: PropTypes.string,
+  className: PropTypes.string,
 }
 
 export default InputDropdown

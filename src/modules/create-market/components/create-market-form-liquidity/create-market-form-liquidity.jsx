@@ -2,6 +2,9 @@
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
+
+import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'
 
 import Styles from 'modules/create-market/components/create-market-form-liquidity/create-market-form-liquidity.styles'
 import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'
@@ -12,6 +15,7 @@ export default class CreateMarketLiquidity extends Component {
     newMarket: PropTypes.object.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
     validateNumber: PropTypes.func.isRequired,
+    isMobileSmall: PropTypes.bool.isRequired,
   }
 
   constructor(props) {
@@ -64,6 +68,39 @@ export default class CreateMarketLiquidity extends Component {
                 </div>
               </li>
               <li>
+                <label>Outcome</label>
+                <ul className={classNames(Styles['CreateMarketLiquidity__radio-buttons'] , StylesForm['CreateMarketForm__radio-buttons'])}>
+                  <li>
+                    <button
+                      className={classNames({ [`${StylesForm.active}`]: true })}
+                    >Yes</button>
+                  </li>
+                  <li>
+                    <button
+                      className={classNames({ [`${StylesForm.active}`]: false })}
+                    >No</button>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <label>Outcome</label>
+                <InputDropdown
+                  className={Styles['CreateMarketLiquidity__outcomes-categorical']}
+                  label="Choose an Outcome"
+                  default={''}
+                  options={['Outcome 1', 'Outcome 2']}
+                  isMobileSmall={this.props.isMobileSmall}
+                />
+              </li>
+              <li>
+                <label htmlFor="cm__input--outcome">Outcome</label>
+                <input
+                  id="cm__input--outcome"
+                  type="number"
+                  placeholder="0.00"
+                />
+              </li>
+              <li>
                 <label htmlFor="cm__input--quantity">Quantity</label>
                 <input
                   id="cm__input--quantity"
@@ -82,6 +119,9 @@ export default class CreateMarketLiquidity extends Component {
               <li>
                 <label>Est. Cost</label>
                 <div className={Styles['CreateMarketLiquidity__order-est']}>{ s.orderEstimate }</div>
+              </li>
+              <li className={Styles['CreateMarketLiquidity__order-add']}>
+                <button>Add Order</button>
               </li>
             </ul>
           </div>

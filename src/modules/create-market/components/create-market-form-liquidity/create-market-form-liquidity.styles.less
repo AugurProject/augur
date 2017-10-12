@@ -41,7 +41,8 @@
     }
 
     > div,
-    > input {
+    > input,
+    > ul {
       width: 70%;
     }
 
@@ -50,6 +51,19 @@
       border-width: 1px;
     }
   }
+}
+
+li.CreateMarketLiquidity__order-add {
+  justify-content: flex-end;
+
+  > button {
+    &:extend(.button);
+    &:extend(.button--purple);
+  }
+}
+
+.CreateMarketLiquidity__outcomes-categorical {
+  background-color: @color-input-background;
 }
 
 .CreateMarketLiquidity__order-est {
@@ -107,6 +121,24 @@
     &.active {
       border-bottom-color: @color-darkpurple;
       color: @color-darkpurple;
+    }
+  }
+}
+
+.CreateMarketLiquidity__radio-buttons > li {
+  &:not(:first-child) {
+    margin-left: 2rem;
+  }
+
+  > button {
+    color: @color-darkpurple;
+
+    &::before {
+      border-color: @color-darkpurple;
+    }
+
+    &::after {
+      background-color: @color-darkpurple;
     }
   }
 }
