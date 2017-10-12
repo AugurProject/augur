@@ -70,7 +70,7 @@ export const Market = asyncComponent({
 
 export const Portfolio = asyncComponent({
   moduleName: 'Portfolio',
-  loader: () => import(/* webpackChunkName: 'portfolio' */ 'modules/portfolio/containers/portfolio')
+  loader: () => import(/* webpackChunkName: 'portfolio' */ 'modules/new-portfolio/container')
     .then(module => module.default)
 })
 

@@ -13,6 +13,7 @@
   font-size: 1.125rem;
   font-weight: 400;
   line-height: 3.5rem;
+  position: relative;
 
   > * {
     border-bottom: 1px solid @color-lightergray;
@@ -31,6 +32,31 @@
 
   > :last-child {
     padding-right: 4.1875rem;
+  }
+}
+
+.MarketTable__rowDialog {
+  background: @color-purple;
+  bottom: 0;
+  color: @color-white;
+  display: flex;
+  font-size: 1.125rem;
+  justify-content: space-between;
+  left: 0;
+  line-height: 3.5rem;
+  padding: 0 4.1875rem 0 1rem;
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  > *:last-child {
+    width: 18%;
+
+    > * {
+      text-align: right;
+      text-transform: uppercase;
+      width: 50%;
+    }
   }
 }
 
@@ -65,6 +91,10 @@
     > :last-child {
       padding-right: 1rem;
     }
+  }
+
+  .MarketTable__rowDialog {
+    padding-right: 1rem;
   }
 
   .MarketTable__title--mobilehide {
