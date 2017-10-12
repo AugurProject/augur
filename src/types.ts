@@ -98,54 +98,54 @@ export interface GetAccountTransferHistoryRequest {
 }
 
 export interface MarketsContractAddressRow {
-  market_id: string;
+  marketId: string;
 }
 
 export interface MarketsRow {
-  market_id: Address;
+  marketId: Address;
   universe: Address;
-  market_type: string;
-  num_outcomes: number;
-  min_price: string|number;
-  max_price: string|number;
-  market_creator: Address;
-  creation_time: number;
-  creation_block_number: number;
-  creation_fee: string|number;
-  market_creator_fee_rate: string|number;
-  market_creator_fees_collected: string|number|null;
-  category: string;
+  marketType: string;
+  numOutcomes: number;
+  minPrice: string|number;
+  maxPrice: string|number;
+  marketCreator: Address;
+  creationTime: number;
+  creationBlockNumber: number;
+  creationFee: string|number;
+  marketCreatorFeeRate: string|number;
+  marketCreatorFeesCollected: string|number|null;
+  topic: string;
   tag1: string|null;
   tag2: string|null;
   volume: string|number;
-  shares_outstanding: string|number;
-  reporting_window: Address;
-  end_time: number;
-  finalization_time: number|null;
-  short_description: string;
-  long_description: string|null;
-  designated_reporter: Address;
-  designated_report_stake: string|number;
-  resolution_source: string|null;
-  num_ticks: number;
-  consensus_outcome: number|null;
-  is_invalid: boolean|null;
+  sharesOutstanding: string|number;
+  reportingWindow: Address;
+  endTime: number;
+  finalizationTime: number|null;
+  shortDescription: string;
+  longDescription: string|null;
+  designatedReporter: Address;
+  designatedReportStake: string|number;
+  resolutionSource: string|null;
+  numTicks: number;
+  consensusOutcome: number|null;
+  isInvalid: boolean|null;
 }
 
 export interface OutcomesRow {
-  market_id: Address;
+  marketId: Address;
   outcome: number;
   price: string|number;
-  shares_outstanding: string|number;
+  sharesOutstanding: string|number;
 }
 
 export interface BlocksRow {
-  block_number: number;
-  block_timestamp: number;
+  blockNumber: number;
+  blockTimestamp: number;
 }
 
 export interface UIConsensusInfo {
-  outcomeID: number;
+  outcomeId: number;
   isIndeterminate: boolean;
 }
 
@@ -157,7 +157,7 @@ export interface UIOutcomeInfo {
 
 export interface UIMarketInfo {
   id: Address;
-  branchID: Address;
+  branchId: Address;
   type: string;
   numOutcomes: number;
   minPrice: string|number;
@@ -187,43 +187,43 @@ export interface UIMarketInfo {
 }
 
 export interface OrdersRow {
-  order_id: Bytes32;
-  market_id: Address;
+  orderId: Bytes32;
+  marketId: Address;
   outcome: number;
-  share_token: Address;
-  order_type: string;
-  order_creator: Address;
-  creation_time: number;
-  creation_block_number: number;
+  shareToken: Address;
+  orderType: string;
+  orderCreator: Address;
+  creationTime: number;
+  creationBlockNumber: number;
   price: number|string;
   amount: number|string;
-  full_precision_price: number|string;
-  full_precision_amount: number|string;
-  tokens_escrowed: number|string;
-  shares_escrowed: number|string;
-  better_order_id: Bytes32|null;
-  worse_order_id: Bytes32|null;
-  trade_group_id: Bytes32|null;
+  fullPrecisionPrice: number|string;
+  fullPrecisionAmount: number|string;
+  tokensEscrowed: number|string;
+  sharesEscrowed: number|string;
+  betterOrderId: Bytes32|null;
+  worseOrderId: Bytes32|null;
+  tradeGroupId: Bytes32|null;
 }
 
 export interface TradesRow {
-  order_type: string;
-  market_id: Address;
+  orderType: string;
+  marketId: Address;
   outcome: number;
   creator: Address;
   filler: Address;
   price: string|number;
   shares: string|number;
-  trade_group_id: Bytes32|null;
+  tradeGroupId: Bytes32|null;
 }
 
 export interface JoinedReportsMarketsRow {
-  market_id: Address;
+  marketId: Address;
   universe: Address;
-  reporting_window: Address;
-  reporting_token: Address;
-  market_type: string;
-  amount_staked: string|number;
+  reportingWindow: Address;
+  reportingToken: Address;
+  marketType: string;
+  amountStaked: string|number;
   payout0: string|number|null;
   payout1: string|number|null;
   payout2: string|number|null;
@@ -232,11 +232,11 @@ export interface JoinedReportsMarketsRow {
   payout5: string|number|null;
   payout6: string|number|null;
   payout7: string|number|null;
-  is_invalid: number;
+  isInvalid: number;
 }
 
 export interface UIReport {
-  marketID: Address;
+  marketId: Address;
   reportingWindow: Address;
   payoutNumerators: Array<string|number|null>;
   amountStaked: string|number;
