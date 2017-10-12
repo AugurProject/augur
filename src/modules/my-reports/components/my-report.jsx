@@ -95,7 +95,7 @@ MyReport.propTypes = {
   period: PropTypes.number,
   isSubmitted: PropTypes.bool,
   isReportEqual: PropTypes.bool,
-  branch: PropTypes.object.isRequired,
+  universe: PropTypes.object.isRequired,
   endDate: PropTypes.object.isRequired
 }
 

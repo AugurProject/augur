@@ -32,7 +32,7 @@ describe('modules/auth/actions/update-assets.js', () => {
     description: `should dispatch 'updateLoginAccount' if a user is unlogged`,
     state: {
       loginAccount: {},
-      branch: { id: 'blah' }
+      universe: { id: 'blah' }
     },
     assertions: (store, done) => {
       store.dispatch(updateAssets())
@@ -56,8 +56,8 @@ describe('modules/auth/actions/update-assets.js', () => {
             loginAccount: {
               address: '0xtest'
             },
-            branch: {
-              id: '0xbranch'
+            universe: {
+              id: '0xuniverse'
             },
             address: '0xtest'
           },
@@ -91,7 +91,7 @@ describe('modules/auth/actions/update-assets.js', () => {
                     callback(ERR, '10000')
                   }
                 },
-                Branch: {
+                Universe: {
                   getReputationToken: (value, callback) => {
                     callback(ERR, '10000')
                   }
@@ -119,7 +119,7 @@ describe('modules/auth/actions/update-assets.js', () => {
           description: `should dispatch 'updateLoginAccount' if value is not present`,
           state: {
             loginAccount: {},
-            branch: {
+            universe: {
               id: 'myId'
             }
           },
@@ -142,7 +142,7 @@ describe('modules/auth/actions/update-assets.js', () => {
             loginAccount: {
               [`${asset}`]: '11'
             },
-            branch: {
+            universe: {
               id: 'myId'
             }
           },
@@ -168,8 +168,8 @@ describe('modules/auth/actions/update-assets.js', () => {
               eth: '10',
               rep: '10'
             },
-            branch: {
-              id: '0xbranch'
+            universe: {
+              id: '0xuniverse'
             }
           },
           assertions: (store, done) => {
@@ -196,7 +196,7 @@ describe('modules/auth/actions/update-assets.js', () => {
                     callback(null, testValue.ethTokens)
                   }
                 },
-                Branch: {
+                Universe: {
                   getReputationToken: (value, callback) => {
                     callback(null, '0xtestx0')
                   }

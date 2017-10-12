@@ -6,11 +6,11 @@ import { updateMarketsWithAccountReportData } from 'modules/my-reports/actions/u
 import logError from 'utils/log-error'
 
 export const loadMarketsToReportOn = (options, callback = logError) => (dispatch, getState) => {
-  const { branch, loginAccount } = getState()
+  const { universe, loginAccount } = getState()
   if (!loginAccount.address) return callback(null)
   if (!loginAccount.rep || loginAccount.rep === '0') return callback(null)
-  if (!branch.id) return callback(null)
-  const query = { ...options, universe: branch.id, reporter: loginAccount.address }
+  if (!universe.id) return callback(null)
+  const query = { ...options, universe: universe.id, reporter: loginAccount.address }
   parallel({
     designatedReporting: next => augur.markets.getMarketsAwaitingDesignatedReporting(query, next),
     limitedReporting: next => augur.markets.getMarketsAwaitingLimitedReporting(query, next),

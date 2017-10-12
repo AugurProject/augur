@@ -33,10 +33,10 @@ describe('init-augur', () => {
   //   UPDATE_CONTRACT_ADDRESSES: { type: 'UPDATE_CONTRACT_ADDRESSES' },
   //   UPDATE_FUNCTIONS_API: { type: 'UPDATE_FUNCTIONS_API' },
   //   UPDATE_EVENTS_API: { type: 'UPDATE_EVENTS_API' },
-  //   LOAD_BRANCH: { type: 'LOAD_BRANCH' }
+  //   LOAD_UNIVERSE: { type: 'LOAD_UNIVERSE' }
   // };
 
-  // const mockLoadBranch = sinon.stub().returns(ACTIONS.LOAD_BRANCH);
+  // const mockLoadUniverse = sinon.stub().returns(ACTIONS.LOAD_UNIVERSE);
   // const mockSetLoginAccount = sinon.stub().returns(ACTIONS.SET_LOGIN_ACCOUNT);
   // const mockRegisterTransactionRelay = sinon.stub().returns(ACTIONS.REGISTER_TRANSACTION_RELAY);
   // const mockUpdateEnv = sinon.stub().returns(ACTIONS.UPDATE_ENV);
@@ -45,7 +45,7 @@ describe('init-augur', () => {
   // const mockUpdateContractAddresses = sinon.stub().returns(ACTIONS.UPDATE_CONTRACT_ADDRESSES);
   // const mockUpdateFunctionsAPI = sinon.stub().returns(ACTIONS.UPDATE_FUNCTIONS_API);
   // const mockUpdateEventsAPI = sinon.stub().returns(ACTIONS.UPDATE_EVENTS_API);
-  // const mockBranchId = sinon.stub().returns('blah');
+  // const mockUniverseId = sinon.stub().returns('blah');
 
   // ReWireModule.__Rewire__('updateEnv', mockUpdateEnv);
   // ReWireModule.__Rewire__('updateConnectionStatus', mockUpdateConnectionStatus);
@@ -55,8 +55,8 @@ describe('init-augur', () => {
   // ReWireModule.__Rewire__('updateAugurNodeConnectionStatus', mockUpdateAugurNodeConnectionStatus);
   // ReWireModule.__Rewire__('registerTransactionRelay', mockRegisterTransactionRelay);
   // ReWireModule.__Rewire__('setLoginAccount', mockSetLoginAccount);
-  // ReWireModule.__Rewire__('loadBranch', mockLoadBranch);
-  // ReWireModule.__Rewire__('BRANCH_ID', mockBranchId);
+  // ReWireModule.__Rewire__('loadUniverse', mockLoadUniverse);
+  // ReWireModule.__Rewire__('UNIVERSE_ID', mockUniverseId);
 
 
   // beforeEach(() => {
@@ -73,7 +73,7 @@ describe('init-augur', () => {
   // afterEach(() => {
   //   global.XMLHttpRequest.restore();
   //   store.clearActions();
-  //   ReWireModule.__ResetDependency__('augur', 'setLoginAccount', 'registerTransactionRelay', 'loadBranch', 'updateEnv', 'updateConnectionStatus', 'updateAugurNodeConnectionStatus', 'updateContractAddresses', 'updateFunctionsAPI', 'updateEventsAPI', 'BRANCH_ID');
+  //   ReWireModule.__ResetDependency__('augur', 'setLoginAccount', 'registerTransactionRelay', 'loadUniverse', 'updateEnv', 'updateConnectionStatus', 'updateAugurNodeConnectionStatus', 'updateContractAddresses', 'updateFunctionsAPI', 'updateEventsAPI', 'UNIVERSE_ID');
   //   mockUpdateEnv.reset();
   //   mockUpdateConnectionStatus.reset();
   //   mockUpdateContractAddresses.reset();
@@ -82,7 +82,7 @@ describe('init-augur', () => {
   //   mockUpdateAugurNodeConnectionStatus.reset();
   //   mockRegisterTransactionRelay.reset();
   //   mockSetLoginAccount.reset();
-  //   mockLoadBranch.reset();
+  //   mockLoadUniverse.reset();
   // });
 
   // const test = (t) => {
@@ -110,7 +110,7 @@ describe('init-augur', () => {
   //     global.requests[0].respond(200, { contentType: 'text/json' }, `{ "reportingTest": false, "augurNodeUrl":"blah.com", "autoLogin":true }`);
   //   },
   //   assertions: (err, store) => {
-  //     const out = [ACTIONS.UPDATE_ENV, ACTIONS.UPDATE_CONNECTION_STATUS, ACTIONS.UPDATE_CONTRACT_ADDRESSES, ACTIONS.UPDATE_FUNCTIONS_API, ACTIONS.UPDATE_EVENTS_API, ACTIONS.UPDATE_AUGUR_NODE_CONN_STATUS, ACTIONS.REGISTER_TRANSACTION_RELAY, ACTIONS.SET_LOGIN_ACCOUNT, ACTIONS.LOAD_BRANCH];
+  //     const out = [ACTIONS.UPDATE_ENV, ACTIONS.UPDATE_CONNECTION_STATUS, ACTIONS.UPDATE_CONTRACT_ADDRESSES, ACTIONS.UPDATE_FUNCTIONS_API, ACTIONS.UPDATE_EVENTS_API, ACTIONS.UPDATE_AUGUR_NODE_CONN_STATUS, ACTIONS.REGISTER_TRANSACTION_RELAY, ACTIONS.SET_LOGIN_ACCOUNT, ACTIONS.LOAD_UNIVERSE];
   //     assert.deepEqual(err, undefined, 'no error is suppose to be');
   //     assert(mockUpdateEnv.calledOnce, `Didn't call updateEnv once as expected`);
   //     assert(mockUpdateConnectionStatus.calledOnce, `Didn't call updateConnectionStatus exactly once as expected`);
@@ -120,7 +120,7 @@ describe('init-augur', () => {
   //     assert(mockUpdateAugurNodeConnectionStatus.calledOnce, `Didn't call updateAugurNodeConnectionStatus exactly once as expected`);
   //     assert(mockRegisterTransactionRelay.calledOnce, `Didn't call registerTransactionRelay exactly once as expected`);
   //     assert(mockSetLoginAccount.calledOnce, `Didn't call setLoginAccount exactly once as expected`);
-  //     assert(mockLoadBranch.calledOnce, `Didn't call loadBranch exactly once as expected`);
+  //     assert(mockLoadUniverse.calledOnce, `Didn't call loadUniverse exactly once as expected`);
   //     assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct action objects`);
   //   }
   // });
@@ -133,7 +133,7 @@ describe('init-augur', () => {
   //     global.requests[0].respond(200, { contentType: 'text/json' }, `{ "reportingTest": false, "autoLogin":true }`);
   //   },
   //   assertions: (err, store) => {
-  //     const out = [ACTIONS.UPDATE_ENV, ACTIONS.UPDATE_CONNECTION_STATUS, ACTIONS.UPDATE_CONTRACT_ADDRESSES, ACTIONS.UPDATE_FUNCTIONS_API, ACTIONS.UPDATE_EVENTS_API, ACTIONS.REGISTER_TRANSACTION_RELAY, ACTIONS.SET_LOGIN_ACCOUNT, ACTIONS.LOAD_BRANCH];
+  //     const out = [ACTIONS.UPDATE_ENV, ACTIONS.UPDATE_CONNECTION_STATUS, ACTIONS.UPDATE_CONTRACT_ADDRESSES, ACTIONS.UPDATE_FUNCTIONS_API, ACTIONS.UPDATE_EVENTS_API, ACTIONS.REGISTER_TRANSACTION_RELAY, ACTIONS.SET_LOGIN_ACCOUNT, ACTIONS.LOAD_UNIVERSE];
   //     assert.deepEqual(err, undefined, 'no error is suppose to be');
   //     assert(mockUpdateEnv.calledOnce, `Didn't call updateEnv once as expected`);
   //     assert(mockUpdateConnectionStatus.calledOnce, `Didn't call updateConnectionStatus exactly once as expected`);
@@ -142,7 +142,7 @@ describe('init-augur', () => {
   //     assert(mockUpdateEventsAPI.calledOnce, `Didn't call updateEventsAPI exactly once as expected`);
   //     assert(mockRegisterTransactionRelay.calledOnce, `Didn't call registerTransactionRelay exactly once as expected`);
   //     assert(mockSetLoginAccount.calledOnce, `Didn't call setLoginAccount exactly once as expected`);
-  //     assert(mockLoadBranch.calledOnce, `Didn't call loadBranch exactly once as expected`);
+  //     assert(mockLoadUniverse.calledOnce, `Didn't call loadUniverse exactly once as expected`);
   //     assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct action objects`);
   //   }
   // });
@@ -165,7 +165,7 @@ describe('init-augur', () => {
   //     assert(mockUpdateEventsAPI.notCalled, `Did call updateEventsAPI not expected`);
   //     assert(mockRegisterTransactionRelay.notCalled, `Did call registerTransactionRelay not expected`);
   //     assert(mockSetLoginAccount.notCalled, `Did call setLoginAccount not expected`);
-  //     assert(mockLoadBranch.notCalled, `Did call loadBranch not expected`);
+  //     assert(mockLoadUniverse.notCalled, `Did call loadUniverse not expected`);
   //     assert.deepEqual(store.getActions(), out, `one dispatch action object fired`);
   //   }
   // });
@@ -186,7 +186,7 @@ describe('init-augur', () => {
   //     assert(mockUpdateEventsAPI.notCalled, `Did call updateEventsAPI not expected`);
   //     assert(mockRegisterTransactionRelay.notCalled, `Did call registerTransactionRelay not expected`);
   //     assert(mockSetLoginAccount.notCalled, `Did call setLoginAccount not expected`);
-  //     assert(mockLoadBranch.notCalled, `Did call loadBranch not expected`);
+  //     assert(mockLoadUniverse.notCalled, `Did call loadUniverse not expected`);
   //     assert.deepEqual(store.getActions(), out, `one dispatch action object fired`);
   //   }
   // });

@@ -20,7 +20,7 @@ import getValue from 'utils/get-value'
 
 const mapStateToProps = state => ({
   isConnected: state.connection.isConnected,
-  branch: state.branch,
+  universe: state.universe,
   isLogged: !!getValue(state, 'loginAccount.address'),
   market: selectSelectedMarket(state),
   orderCancellation: getOrderCancellation(),

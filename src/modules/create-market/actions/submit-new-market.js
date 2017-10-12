@@ -13,11 +13,11 @@ import { TRANSACTIONS } from 'modules/routes/constants/views'
 
 export function submitNewMarket(newMarket, history) {
   return (dispatch, getState) => {
-    const { branch, loginAccount, contractAddresses } = getState()
+    const { universe, loginAccount, contractAddresses } = getState()
 
     // General Properties
     const formattedNewMarket = {
-      _branch: branch.id,
+      _universe: universe.id,
       _endTime: parseInt(newMarket.endDate.timestamp / 1000, 10),
       settlementFee: (newMarket.settlementFee / 100).toString(),
       _denominationToken: contractAddresses.Cash,

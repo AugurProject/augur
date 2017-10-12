@@ -20,7 +20,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
   test({
     description: `should submit well formed 'formattedNewMarket' object to 'createCategoricalMarket' for categorical market`,
     state: {
-      branch: {
+      universe: {
         id: '1010101'
       },
       contractAddresses: {
@@ -70,7 +70,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       const expected = {
         _automatedReporterAddress: '0x1233',
         _signer: 'this is a private key',
-        _branch: '1010101',
+        _universe: '1010101',
         _endTime: 1234567890,
         _denominationToken: 'domnination',
         _extraInfo: {
@@ -98,7 +98,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
   test({
     description: `should submit well formed 'formattedNewMarket' object to 'createSingleEventMarket' for binary market`,
     state: {
-      branch: {
+      universe: {
         id: '1010101'
       },
       contractAddresses: {
@@ -144,7 +144,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       const expected = {
         _automatedReporterAddress: '0x1233',
         _signer: 'this is a private key',
-        _branch: '1010101',
+        _universe: '1010101',
         _endTime: 1234567890,
         _denominationToken: 'domnination',
         _extraInfo: {
@@ -168,7 +168,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
   test({
     description: `should submit well formed 'formattedNewMarket' object to 'createSingleEventMarket' for scalar market`,
     state: {
-      branch: {
+      universe: {
         id: '1010101'
       },
       contractAddresses: {
@@ -217,7 +217,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       const expected = {
         _automatedReporterAddress: '0x1233',
         _signer: 'this is a private key',
-        _branch: '1010101',
+        _universe: '1010101',
         _endTime: 1234567890,
         _denominationToken: 'domnination',
         _extraInfo: {
@@ -241,7 +241,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
   test({
     description: `should dispatch the expected action and call the expected function from the 'onSent' callback`,
     state: {
-      branch: {
+      universe: {
         id: '1010101'
       },
       contractAddresses: {
@@ -304,7 +304,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
   test({
     description: `should dispatch the expected actions from the 'onFailed' callback`,
     state: {
-      branch: {
+      universe: {
         id: '1010101'
       },
       contractAddresses: {
@@ -361,7 +361,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
   test({
     description: `should dispatch the expected actions from the 'onSuccess' callback when an orderbook IS NOT present`,
     state: {
-      branch: {
+      universe: {
         id: '1010101'
       },
       contractAddresses: {
@@ -413,7 +413,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
   test({
     description: `should dispatch the expected actions from the 'onSuccess' callback when an orderbook IS present`,
     state: {
-      branch: {
+      universe: {
         id: '1010101'
       },
       contractAddresses: {
@@ -647,7 +647,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
   test({
     description: `should dispatch the expected actions from the 'onFailed' callback`,
     state: {
-      branch: {
+      universe: {
         id: '1010101'
       },
       contractAddresses: {

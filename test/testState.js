@@ -25,9 +25,9 @@ const testState = {
     currentBlockTimestamp: 1461774253,
     currentBlockNumber: 833339
   },
-  branch: {
+  universe: {
     id: '0xf69b5',
-    description: 'root branch',
+    description: 'root universe',
     reportingPeriodDurationInSeconds: 4000,
     currentReportingWindowAddress: 19,
     currentReportingPeriodPercentComplete: 52

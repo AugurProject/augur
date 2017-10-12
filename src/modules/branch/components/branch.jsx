@@ -5,8 +5,8 @@ import { Line } from 'rc-progress'
 
 import Bullet from 'modules/common/components/bullet'
 
-const Branch = p => (
-  <article className="branch-info">
+const Universe = p => (
+  <article className="universe-info">
     <Line
       percent={p.currentReportingPeriodPercentComplete}
       strokeWidth="1"
@@ -17,27 +17,27 @@ const Branch = p => (
     </span>
     <span
       data-tip
-      data-for="branch-id-tooltip"
+      data-for="universe-id-tooltip"
       data-event="click focus"
-      className="branch-description pointer"
+      className="universe-description pointer"
     >
       {p.description} <Bullet /> {p.reportingPeriodDurationInSeconds / 3600} hours per period
     </span>
     <ReactTooltip
-      id="branch-id-tooltip"
+      id="universe-id-tooltip"
       type="light"
       effect="float"
       place="top"
       globalEventOff="click"
     >
       <span className="tooltip-text">
-        Branch ID: {p.id}
+        Universe ID: {p.id}
       </span>
     </ReactTooltip>
   </article>
 )
 
-Branch.propTypes = {
+Universe.propTypes = {
   className: PropTypes.string,
   description: PropTypes.string,
   id: PropTypes.string,
@@ -46,4 +46,4 @@ Branch.propTypes = {
   currentReportingPeriodPercentComplete: PropTypes.number
 }
 
-export default Branch
+export default Universe

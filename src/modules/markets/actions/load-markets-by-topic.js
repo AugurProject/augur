@@ -3,9 +3,9 @@ import { updateHasLoadedTopic } from 'modules/topics/actions/update-has-loaded-t
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 
 export const loadMarketsByTopic = topic => (dispatch, getState) => {
-  const { branch } = getState()
+  const { universe } = getState()
   dispatch(updateHasLoadedTopic({ [topic]: true }))
-  augur.topics.findMarketsWithTopic({ topic, branchID: branch.id }, (err, marketIDs) => {
+  augur.topics.findMarketsWithTopic({ topic, universeID: universe.id }, (err, marketIDs) => {
     if (err) {
       console.error('ERROR findMarketsWithTopic()', err)
       dispatch(updateHasLoadedTopic({ [topic]: false }))

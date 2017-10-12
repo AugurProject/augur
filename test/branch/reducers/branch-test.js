@@ -1,20 +1,20 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
 import testState from 'test/testState'
-import { UPDATE_BRANCH } from 'modules/branch/actions/update-branch'
-import reducer from 'modules/branch/reducers/branch'
+import { UPDATE_UNIVERSE } from 'modules/universe/actions/update-universe'
+import reducer from 'modules/universe/reducers/universe'
 
-describe(`modules/branch/reducers/branch.js`, () => {
+describe(`modules/universe/reducers/universe.js`, () => {
   const thisTestState = Object.assign({}, testState)
-  it(`should update the branch object in state`, () => {
+  it(`should update the universe object in state`, () => {
     const action = {
-      type: UPDATE_BRANCH,
-      branch: {
+      type: UPDATE_UNIVERSE,
+      universe: {
         description: 'testing!',
         reportingPeriodDurationInSeconds: '12345'
       }
     }
-    const expectedOutput = Object.assign({}, thisTestState.branch, action.branch)
-    assert.deepEqual(reducer(thisTestState.branch, action), expectedOutput, `Didn't update the branch object correctly`)
+    const expectedOutput = Object.assign({}, thisTestState.universe, action.universe)
+    assert.deepEqual(reducer(thisTestState.universe, action), expectedOutput, `Didn't update the universe object correctly`)
   })
 })

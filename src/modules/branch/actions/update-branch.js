@@ -1,3 +1,3 @@
-export const UPDATE_BRANCH = 'UPDATE_BRANCH'
+export const UPDATE_UNIVERSE = 'UPDATE_UNIVERSE'
 
-export const updateBranch = branch => ({ type: UPDATE_BRANCH, branch })
+export const updateUniverse = universe => ({ type: UPDATE_UNIVERSE, universe })

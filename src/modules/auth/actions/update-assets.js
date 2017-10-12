@@ -1,14 +1,14 @@
 import speedomatic from 'speedomatic'
 import { augur } from 'services/augurjs'
-import { BRANCH_ID } from 'modules/app/constants/network'
+import { UNIVERSE_ID } from 'modules/app/constants/network'
 import { updateLoginAccount } from 'modules/auth/actions/update-login-account'
 import { allAssetsLoaded } from 'modules/auth/selectors/balances'
 import logError from 'utils/log-error'
 
 export function updateAssets(callback = logError) {
   return (dispatch, getState) => {
-    const { loginAccount, branch } = getState()
-    const branchID = branch.id || BRANCH_ID
+    const { loginAccount, universe } = getState()
+    const universeID = universe.id || UNIVERSE_ID
     const balances = { eth: undefined, ethTokens: undefined, rep: undefined }
     if (!loginAccount.address) return dispatch(updateLoginAccount(balances))
     augur.api.Cash.balanceOf({ _owner: loginAccount.address }, (err, attoEthTokensBalance) => {
@@ -20,7 +20,7 @@ export function updateAssets(callback = logError) {
       }
       if (allAssetsLoaded(balances)) callback(null, balances)
     })
-    augur.api.Branch.getReputationToken({ tx: { to: branchID } }, (err, reputationTokenAddress) => {
+    augur.api.Universe.getReputationToken({ tx: { to: universeID } }, (err, reputationTokenAddress) => {
       if (err) return callback(err)
       augur.api.ReputationToken.balanceOf({
         tx: { to: reputationTokenAddress },

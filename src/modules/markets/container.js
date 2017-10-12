@@ -19,8 +19,8 @@ const mapStateToProps = state => ({
   isLogged: state.isLoggedIn,
   loginAccount: state.loginAccount,
   markets: getAllMarkets(),
-  branch: state.branch,
-  canLoadMarkets: !!getValue(state, 'branch.id'),
+  universe: state.universe,
+  canLoadMarkets: !!getValue(state, 'universe.id'),
   scalarShareDenomination: getScalarShareDenomination(),
   hasLoadedMarkets: state.hasLoadedMarkets,
   hasLoadedTopic: state.hasLoadedTopic

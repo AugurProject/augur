@@ -5,8 +5,8 @@ import isObject from 'utils/is-object'
 import logError from 'utils/log-error'
 
 const loadMarkets = (callback = logError) => (dispatch, getState) => {
-  const { branch } = getState()
-  augur.markets.getMarketsInfo({ universe: branch.id }, (err, marketsData) => {
+  const { universe } = getState()
+  augur.markets.getMarketsInfo({ universe: universe.id }, (err, marketsData) => {
     if (err) return callback(err)
     if (marketsData == null || !isObject(marketsData)) {
       dispatch(updateHasLoadedMarkets(false))

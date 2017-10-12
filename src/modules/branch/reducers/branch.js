@@ -1,14 +1,14 @@
-import { UPDATE_BRANCH } from 'modules/branch/actions/update-branch'
+import { UPDATE_UNIVERSE } from 'modules/universe/actions/update-universe'
 
-export default function (branch = {}, action) {
+export default function (universe = {}, action) {
   switch (action.type) {
-    case UPDATE_BRANCH:
+    case UPDATE_UNIVERSE:
       return {
-        ...branch,
-        ...action.branch
+        ...universe,
+        ...action.universe
       }
 
     default:
-      return branch
+      return universe
   }
 }

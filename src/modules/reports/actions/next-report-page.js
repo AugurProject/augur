@@ -8,11 +8,11 @@ import { MARKET_DESCRIPTION_PARAM_NAME, MARKET_ID_PARAM_NAME } from 'modules/rou
 
 export function nextReportPage(history) {
   return (dispatch, getState) => {
-    const { branch, reports } = getState()
-    const branchReports = reports[branch.id]
-    if (!branchReports) return history.push(makePath(MARKETS))
-    const nextPendingReportMarket = selectMarket(Reflect.ownKeys(branchReports).find(
-      marketID => !branchReports[marketID].isSubmitted
+    const { universe, reports } = getState()
+    const universeReports = reports[universe.id]
+    if (!universeReports) return history.push(makePath(MARKETS))
+    const nextPendingReportMarket = selectMarket(Reflect.ownKeys(universeReports).find(
+      marketID => !universeReports[marketID].isSubmitted
     ))
     if (!nextPendingReportMarket || !nextPendingReportMarket.id) return history.push(makePath(MARKETS))
 

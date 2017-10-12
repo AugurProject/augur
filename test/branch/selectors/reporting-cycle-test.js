@@ -2,13 +2,13 @@ import { describe, it } from 'mocha'
 import { assert } from 'chai'
 import proxyquire from 'proxyquire'
 
-describe(`modules/branch/selectors/reporting-cycle.js`, () => {
+describe(`modules/universe/selectors/reporting-cycle.js`, () => {
   proxyquire.noPreserveCache()
   const test = t => it(t.description, () => {
     const AugurJS = {
       augur: t.stub.augur
     }
-    const selector = proxyquire('../../../src/modules/branch/selectors/reporting-cycle.js', {
+    const selector = proxyquire('../../../src/modules/universe/selectors/reporting-cycle.js', {
       '../../../services/augurjs': AugurJS
     })
     t.assertions(selector.selectReportingCycle(t.state))
@@ -20,7 +20,7 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
       blockchain: {
         currentBlockTimestamp: 123456789
       },
-      branch: {
+      universe: {
         reportingPeriodDurationInSeconds: 100
       }
     },
@@ -45,7 +45,7 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
       blockchain: {
         currentBlockTimestamp: 123456789
       },
-      branch: {
+      universe: {
         reportingPeriodDurationInSeconds: 2678400
       }
     },
@@ -70,7 +70,7 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
       blockchain: {
         currentBlockTimestamp: 123456789
       },
-      branch: {
+      universe: {
         reportingPeriodDurationInSeconds: 2678400
       }
     },

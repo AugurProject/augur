@@ -9,7 +9,7 @@ import { ETH, REP } from 'modules/account/constants/asset-types'
 
 export function transferFunds(amount, currency, toAddress) {
   return (dispatch, getState) => {
-    const { branch, loginAccount } = getState()
+    const { universe, loginAccount } = getState()
     const fromAddress = loginAccount.address
     const to = speedomatic.formatEthereumAddress(toAddress)
     const onSent = r => console.log('transfer', currency, 'sent:', r)
@@ -54,7 +54,7 @@ export function transferFunds(amount, currency, toAddress) {
       case REP:
         return augur.assets.sendReputation({
           _signer: loginAccount.privateKey,
-          branchID: branch.id,
+          universeID: universe.id,
           reputationToSend: amount,
           _to: to,
           onSent,

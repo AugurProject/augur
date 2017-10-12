@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { createSelector } from 'reselect'
 import moment from 'moment'
 import store from 'src/store'
-import { selectBlockchainCurrentBlockTimestamp, selectBranchReportingPeriodDurationInSeconds } from 'src/select-state'
+import { selectBlockchainCurrentBlockTimestamp, selectUniverseReportingPeriodDurationInSeconds } from 'src/select-state'
 import { augur } from 'services/augurjs'
 import { ONE } from 'modules/trade/constants/numbers'
 
@@ -11,7 +11,7 @@ export default function () {
 }
 
 export const selectReportingCycle = createSelector(
-  selectBranchReportingPeriodDurationInSeconds,
+  selectUniverseReportingPeriodDurationInSeconds,
   selectBlockchainCurrentBlockTimestamp,
   (reportingPeriodDurationInSeconds, timestamp) => {
     const currentReportingPeriodPercentComplete = augur.reporting.getCurrentPeriodProgress(reportingPeriodDurationInSeconds, timestamp)

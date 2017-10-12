@@ -7,11 +7,11 @@ import reducer from 'modules/reports/reducers/reports'
 describe(`modules/reports/reducers/reports.js`, () => {
   let action
   let test
-  const testStateReports = Object.assign({}, testState.reports[testState.branch.id])
+  const testStateReports = Object.assign({}, testState.reports[testState.universe.id])
   const state = Object.assign({}, testState)
 
   afterEach(() => {
-    testState.reports[testState.branch.id] = Object.assign({}, testStateReports)
+    testState.reports[testState.universe.id] = Object.assign({}, testStateReports)
   })
 
   describe(`UPDATE_REPORTS`, () => {
@@ -19,7 +19,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
       action = {
         type: UPDATE_REPORTS,
         reports: {
-          [testState.branch.id]: {
+          [testState.universe.id]: {
             test: {
               marketID: 'test',
               example: 'example',
@@ -36,7 +36,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         }
       }
       const out = {
-        [testState.branch.id]: {
+        [testState.universe.id]: {
           test: {
             marketID: 'test',
             example: 'example',
@@ -65,14 +65,14 @@ describe(`modules/reports/reducers/reports.js`, () => {
   describe('UPDATE_REPORT', () => {
     const test = t => it(t.description, () => t.assertions(reducer(t.state.reports, {
       type: 'UPDATE_REPORT',
-      branchID: t.params.branchID,
+      universeID: t.params.universeID,
       marketID: t.params.marketID,
       report: t.params.report
     })))
     test({
       description: 'no report data',
       params: {
-        branchID: '0xb1',
+        universeID: '0xb1',
         marketID: '0xe3',
         report: {}
       },
@@ -111,7 +111,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
     test({
       description: 'insert new report',
       params: {
-        branchID: '0xb1',
+        universeID: '0xb1',
         marketID: '0xe3',
         report: {
           period: 7
@@ -153,7 +153,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
     test({
       description: 'update existing report',
       params: {
-        branchID: '0xb1',
+        universeID: '0xb1',
         marketID: '0xe2',
         report: {
           period: 8,
@@ -191,9 +191,9 @@ describe(`modules/reports/reducers/reports.js`, () => {
       }
     })
     test({
-      description: 'insert first report on branch',
+      description: 'insert first report on universe',
       params: {
-        branchID: '0xb1',
+        universeID: '0xb1',
         marketID: '0xe1',
         report: {
           period: 7
@@ -218,13 +218,13 @@ describe(`modules/reports/reducers/reports.js`, () => {
   describe('CLEAR_OLD_REPORTS', () => {
     const test = t => it(t.description, () => t.assertions(reducer(t.state.reports, {
       type: 'CLEAR_OLD_REPORTS',
-      branchID: t.state.branch.id,
-      currentReportingWindowAddress: t.state.branch.currentReportingWindowAddress
+      universeID: t.state.universe.id,
+      currentReportingWindowAddress: t.state.universe.currentReportingWindowAddress
     })))
     test({
       description: 'one old and one current report',
       state: {
-        branch: {
+        universe: {
           id: '0xb1',
           currentReportingWindowAddress: 7
         },
@@ -267,7 +267,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
     test({
       description: 'one old and one current report, both uncommitted',
       state: {
-        branch: {
+        universe: {
           id: '0xb1',
           currentReportingWindowAddress: 7
         },
@@ -310,7 +310,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
     test({
       description: 'one old and one current report, old report committed',
       state: {
-        branch: {
+        universe: {
           id: '0xb1',
           currentReportingWindowAddress: 7
         },
@@ -353,7 +353,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
     test({
       description: 'one old and one current report, old report committed and revealed',
       state: {
-        branch: {
+        universe: {
           id: '0xb1',
           currentReportingWindowAddress: 7
         },
@@ -396,7 +396,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
     test({
       description: 'two old reports',
       state: {
-        branch: {
+        universe: {
           id: '0xb1',
           currentReportingWindowAddress: 7
         },
@@ -430,7 +430,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
     test({
       description: 'two current reports',
       state: {
-        branch: {
+        universe: {
           id: '0xb1',
           currentReportingWindowAddress: 7
         },
@@ -481,7 +481,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
     test({
       description: 'two current reports and two old reports',
       state: {
-        branch: {
+        universe: {
           id: '0xb1',
           currentReportingWindowAddress: 7
         },
@@ -546,9 +546,9 @@ describe(`modules/reports/reducers/reports.js`, () => {
       }
     })
     test({
-      description: 'two current reports and two old reports on branch 1, one current report and three old reports on branch 2',
+      description: 'two current reports and two old reports on universe 1, one current report and three old reports on universe 2',
       state: {
-        branch: {
+        universe: {
           id: '0xb1',
           currentReportingWindowAddress: 7
         },
@@ -688,7 +688,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
         type: CLEAR_REPORTS
       }
       const fakeState = {
-        [testState.branch.id]: {
+        [testState.universe.id]: {
           test: {
             marketID: 'test',
             example: 'example',

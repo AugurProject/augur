@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
 import Transactions from 'modules/transactions/components/transactions'
-import Branch from 'modules/branch/components/branch'
+import Universe from 'modules/universe/components/universe'
 import Paginator from 'modules/common/components/paginator/paginator'
 import Spinner from 'modules/common/components/spinner'
 import TransactionsLoadingActions from 'modules/transactions/components/transactions-loading-actions'
@@ -20,7 +20,7 @@ export default class TransactionsView extends Component {
     triggerTransactionsExport: PropTypes.func.isRequired,
     hasAllTransactionsLoaded: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
-    branch: PropTypes.object,
+    universe: PropTypes.object,
     loginAccount: PropTypes.object,
     currentBlockNumber: PropTypes.number
   };
@@ -92,7 +92,7 @@ export default class TransactionsView extends Component {
     const s = this.state
 
     const hasRep = !!getValue(p, 'loginAccount.rep.value')
-    const hasBranch = !!getValue(p, 'branch.id')
+    const hasUniverse = !!getValue(p, 'universe.id')
     const transactionsLength = p.transactions.length
 
     return (
@@ -101,8 +101,8 @@ export default class TransactionsView extends Component {
           <title>Transactions</title>
         </Helmet>
 
-        {hasRep && hasBranch &&
-          <Branch {...p.branch} />
+        {hasRep && hasUniverse &&
+          <Universe {...p.universe} />
         }
 
         <div className="view-header">

@@ -5,11 +5,11 @@ import logError from 'utils/log-error'
 
 export function loadAccountTrades(options, callback = logError) {
   return (dispatch, getState) => {
-    const { branch, loginAccount } = getState()
+    const { universe, loginAccount } = getState()
     if (!loginAccount.address || !options) return callback(null)
     const marketID = options.market
     if (!marketID) dispatch(clearAccountTrades())
-    augur.trading.getUserTradingHistory({ ...options, account: loginAccount.address, universe: branch.id, marketID }, (err, userTradingHistory) => {
+    augur.trading.getUserTradingHistory({ ...options, account: loginAccount.address, universe: universe.id, marketID }, (err, userTradingHistory) => {
       if (err) return callback(err)
       if (userTradingHistory != null) {
         // TODO verify that userTradingHistory is the correct shape for updateAccountTradesData

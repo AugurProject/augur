@@ -67,7 +67,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
         loginAccount: {
           address: '0xUSERID'
         },
-        branch: {
+        universe: {
           id: '0x12345'
         },
         env: {

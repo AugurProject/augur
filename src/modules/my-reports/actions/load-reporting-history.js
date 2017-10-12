@@ -6,11 +6,11 @@ import logError from 'utils/log-error'
 
 export function loadReportingHistory(options, callback = logError) {
   return (dispatch, getState) => {
-    const { branch, loginAccount } = getState()
+    const { universe, loginAccount } = getState()
     const filter = {
       ...options,
       sender: loginAccount.address,
-      branch: branch.id
+      universe: universe.id
     }
     async.eachLimit([
       SUBMIT_REPORT // TODO insert other reporting events here

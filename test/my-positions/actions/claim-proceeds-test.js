@@ -47,7 +47,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
   test({
     description: 'no positions',
     state: {
-      branch: {
+      universe: {
         id: '0xb1',
         currentReportingWindowAddress: 7
       },
@@ -67,7 +67,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
   test({
     description: '1 position in closed market',
     state: {
-      branch: {
+      universe: {
         id: '0xb1',
         currentReportingWindowAddress: 7
       },
@@ -105,7 +105,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
   test({
     description: '1 position in open market',
     state: {
-      branch: {
+      universe: {
         id: '0xb1',
         currentReportingWindowAddress: 7
       },
@@ -131,7 +131,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
   test({
     description: '1 position in open market, 1 position in closed market',
     state: {
-      branch: {
+      universe: {
         id: '0xb1',
         currentReportingWindowAddress: 7
       },
@@ -174,7 +174,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
   test({
     description: '1 position in open market, 2 positions in closed markets',
     state: {
-      branch: {
+      universe: {
         id: '0xb1',
         currentReportingWindowAddress: 7
       },
@@ -229,7 +229,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
   test({
     description: '2 position in open markets, 1 position in closed market',
     state: {
-      branch: {
+      universe: {
         id: '0xb1',
         currentReportingWindowAddress: 7
       },

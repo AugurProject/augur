@@ -4,13 +4,13 @@ import { clearReports, updateReports } from 'modules/reports/actions/update-repo
 import logError from 'utils/log-error'
 
 export const loadReports = (options, callback = logError) => (dispatch, getState) => {
-  const { branch, loginAccount } = getState()
+  const { universe, loginAccount } = getState()
   if (!loginAccount.address) return callback(null)
   if (!loginAccount.rep || loginAccount.rep === '0') return callback(null)
-  if (!branch.id) return callback(null)
-  augur.reporting.getReportingHistory({ ...options, universe: branch.id, reporter: loginAccount.address }, (err, reportingHistory) => {
-    // returned shape: { branchID: { marketID: [{ marketID, reportingWindow, payoutNumerators, isCategorical, isScalar, isIndeterminate, isSubmitted }] } }
-    // NB: can report more than once on a market, so returns an ARRAY of reports per branch per market, instead of just one
+  if (!universe.id) return callback(null)
+  augur.reporting.getReportingHistory({ ...options, universe: universe.id, reporter: loginAccount.address }, (err, reportingHistory) => {
+    // returned shape: { universeID: { marketID: [{ marketID, reportingWindow, payoutNumerators, isCategorical, isScalar, isIndeterminate, isSubmitted }] } }
+    // NB: can report more than once on a market, so returns an ARRAY of reports per universe per market, instead of just one
     if (err) return callback(err)
     if (reportingHistory == null) {
       dispatch(updateHasLoadedReports(false))

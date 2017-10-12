@@ -26,7 +26,7 @@ import { formatShares, formatEtherTokens, formatPercent, formatNumber } from 'ut
 import { formatDate } from 'utils/format-date'
 import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open'
 
-import { BRANCH_ID } from 'modules/app/constants/network'
+import { UNIVERSE_ID } from 'modules/app/constants/network'
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from 'modules/markets/constants/market-outcomes'
 
@@ -60,7 +60,7 @@ export default function () {
 export const selectSelectedMarket = state => selectMarket(state.selectedMarketID)
 
 export const selectMarket = (marketID) => {
-  const { marketsData, marketLoading, favorites, reports, outcomesData, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState()
+  const { marketsData, marketLoading, favorites, reports, outcomesData, accountTrades, tradesInProgress, priceHistory, orderBooks, universe, orderCancellation, smallestPositions, loginAccount } = store.getState()
   const accountPositions = selectAccountPositions()
 
   if (!marketID || !marketsData || !marketsData[marketID]) {
@@ -80,7 +80,7 @@ export const selectMarket = (marketID) => {
     !!favorites[marketID],
     outcomesData[marketID],
 
-    selectMarketReport(marketID, reports[branch.id || BRANCH_ID]),
+    selectMarketReport(marketID, reports[universe.id || UNIVERSE_ID]),
     (accountPositions || {})[marketID],
     (accountTrades || {})[marketID],
     tradesInProgress[marketID],
@@ -90,7 +90,7 @@ export const selectMarket = (marketID) => {
     endDate.getMonth(),
     endDate.getDate(),
 
-    branch && branch.currentReportingWindowAddress,
+    universe && universe.currentReportingWindowAddress,
 
     orderBooks[marketID],
     orderCancellation,
@@ -305,13 +305,13 @@ export function assembleMarket(
   return assembledMarketsCache[marketID].apply(this, arguments) // eslint-disable-line prefer-rest-params
 }
 
-export const selectMarketReport = (marketID, branchReports) => {
-  if (marketID && branchReports) {
-    const branchReportsMarketIDs = Object.keys(branchReports)
-    const numBranchReports = branchReportsMarketIDs.length
-    for (let i = 0; i < numBranchReports; ++i) {
-      if (branchReports[branchReportsMarketIDs[i]].marketID === marketID) {
-        return branchReports[branchReportsMarketIDs[i]]
+export const selectMarketReport = (marketID, universeReports) => {
+  if (marketID && universeReports) {
+    const universeReportsMarketIDs = Object.keys(universeReports)
+    const numUniverseReports = universeReportsMarketIDs.length
+    for (let i = 0; i < numUniverseReports; ++i) {
+      if (universeReports[universeReportsMarketIDs[i]].marketID === marketID) {
+        return universeReports[universeReportsMarketIDs[i]]
       }
     }
   }

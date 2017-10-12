@@ -4,9 +4,9 @@ import isObject from 'utils/is-object'
 import logError from 'utils/log-error'
 
 const loadTopics = (callback = logError) => (dispatch, getState) => {
-  const { branch } = getState()
-  if (!branch.id) return callback(null)
-  augur.markets.getTopics({ universe: branch.id }, (err, topics) => {
+  const { universe } = getState()
+  if (!universe.id) return callback(null)
+  augur.markets.getTopics({ universe: universe.id }, (err, topics) => {
     if (err) return callback(err)
     if (topics == null) return callback(null)
     if (isObject(topics) && Object.keys(topics).length) {

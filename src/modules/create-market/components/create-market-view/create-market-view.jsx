@@ -66,7 +66,7 @@ export default class CreateMarketView extends Component {
             categories={p.categories}
             isMobileSmall={p.isMobileSmall}
 
-            branch={p.branch}
+            universe={p.universe}
             availableEth={p.availableEth}
             addOrderToNewMarket={p.addOrderToNewMarket}
             removeOrderFromNewMarket={p.removeOrderFromNewMarket}

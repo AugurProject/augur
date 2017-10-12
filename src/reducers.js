@@ -1,6 +1,6 @@
 import env from 'modules/app/reducers/env'
 import blockchain from 'modules/app/reducers/blockchain'
-import branch from 'modules/branch/reducers/branch'
+import universe from 'modules/universe/reducers/universe'
 import connection from 'modules/app/reducers/connection'
 
 import isMobile from 'modules/app/reducers/is-mobile'
@@ -55,7 +55,7 @@ export function createReducer() {
   return {
     env,
     blockchain,
-    branch,
+    universe,
     connection,
 
     isMobile,

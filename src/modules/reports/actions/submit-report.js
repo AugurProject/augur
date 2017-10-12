@@ -6,23 +6,23 @@ import noop from 'utils/noop'
 import logError from 'utils/log-error'
 
 export const submitReport = (market, reportedOutcomeID, amountToStake, isIndeterminate, history, callback = logError) => (dispatch, getState) => {
-  const { branch, loginAccount } = getState()
+  const { universe, loginAccount } = getState()
   if (!loginAccount.address || !market || !reportedOutcomeID || !amountToStake) {
     return console.error('submitReport failed:', loginAccount.address, market, reportedOutcomeID, amountToStake)
   }
-  const branchID = branch.id
-  console.log(`submit report ${reportedOutcomeID} on market ${market.id} period ${branch.currentReportingWindowAddress}...`)
+  const universeID = universe.id
+  console.log(`submit report ${reportedOutcomeID} on market ${market.id} period ${universe.currentReportingWindowAddress}...`)
   const payoutNumerators = reportedOutcomeID // TODO convert reported outcome ID to payout numerators or just pass in payoutNumerators
   const report = {
     marketID: market.id,
-    period: branch.currentReportingWindowAddress, // TODO replace .period with .reportingWindow
+    period: universe.currentReportingWindowAddress, // TODO replace .period with .reportingWindow
     reportedOutcomeID,
     isCategorical: market.type === CATEGORICAL,
     isScalar: market.type === SCALAR,
     isIndeterminate,
     isSubmitted: false
   }
-  dispatch(updateReport(branchID, market.id, { ...report }))
+  dispatch(updateReport(universeID, market.id, { ...report }))
   augur.reporting.submitReport({
     _signer: getState().loginAccount.privateKey,
     market: market.id,
@@ -31,12 +31,12 @@ export const submitReport = (market, reportedOutcomeID, amountToStake, isIndeter
     onSent: noop,
     onSuccess: () => {
       const { reports } = getState()
-      dispatch(updateReport(branchID, market.id, { ...(reports[branchID] || {})[market.id], isSubmitted: true }))
+      dispatch(updateReport(universeID, market.id, { ...(reports[universeID] || {})[market.id], isSubmitted: true }))
       callback(null)
     },
     onFailed: (err) => {
       const { reports } = getState()
-      dispatch(updateReport(branchID, market.id, { ...(reports[branchID] || {})[market.id], isSubmitted: false }))
+      dispatch(updateReport(universeID, market.id, { ...(reports[universeID] || {})[market.id], isSubmitted: false }))
       callback(err)
     }
   })

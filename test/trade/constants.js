@@ -14,7 +14,7 @@ export const tradeTestState = {
   marketsData: {
     testBinaryMarketID: {
       author: 'testAuthor1',
-      branchID: '0x010101',
+      universeID: '0x010101',
       creationFee: '22.5',
       creationTime: 1475951522,
       cumulativeScale: '1',
@@ -37,7 +37,7 @@ export const tradeTestState = {
     },
     testCategoricalMarketID: {
       author: 'testAuthor2',
-      branchID: '0x010101',
+      universeID: '0x010101',
       creationFee: '12.857142857142857142',
       creationTime: 1476694751,
       cumulativeScale: '1',
@@ -62,7 +62,7 @@ export const tradeTestState = {
     },
     testScalarMarketID: {
       author: 'testAuthor3',
-      branchID: '0x010101',
+      universeID: '0x010101',
       creationFee: '9',
       creationTime: 1476486515,
       cumulativeScale: '130',

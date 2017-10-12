@@ -1,11 +1,11 @@
 import * as AugurJS from 'services/augurjs'
-import { BRANCH_ID } from 'modules/app/constants/network'
+import { UNIVERSE_ID } from 'modules/app/constants/network'
 import { updateEnv } from 'modules/app/actions/update-env'
 import { updateConnectionStatus, updateAugurNodeConnectionStatus } from 'modules/app/actions/update-connection'
 import { updateContractAddresses } from 'modules/contracts/actions/update-contract-addresses'
 import { updateFunctionsAPI, updateEventsAPI } from 'modules/contracts/actions/update-contract-api'
 import { setLoginAccount } from 'modules/auth/actions/set-login-account'
-import { loadBranch } from 'modules/app/actions/load-branch'
+import { loadUniverse } from 'modules/app/actions/load-universe'
 import { registerTransactionRelay } from 'modules/transactions/actions/register-transaction-relay'
 import logError from 'utils/log-error'
 
@@ -29,7 +29,7 @@ export function initAugur(callback = logError) {
             if (env.augurNodeUrl) dispatch(updateAugurNodeConnectionStatus(true))
             dispatch(registerTransactionRelay())
             dispatch(setLoginAccount(env.autoLogin, ethereumNodeConnectionInfo.coinbase))
-            dispatch(loadBranch(env.branchID || BRANCH_ID))
+            dispatch(loadUniverse(env.universeID || UNIVERSE_ID))
             callback()
           })
         } else {

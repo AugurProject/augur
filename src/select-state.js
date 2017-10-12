@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 
 export const selectEnvState = state => state.env
 export const selectBlockchainState = state => state.blockchain
-export const selectBranchState = state => state.branch
+export const selectUniverseState = state => state.universe
 export const selectConnectionState = state => state.connection
 export const selectUrlState = state => state.url
 export const selectAuthState = state => state.auth
@@ -43,14 +43,14 @@ export const selectBlockchainCurrentBlockTimestamp = createSelector(
   blockchain => blockchain.currentBlockTimestamp
 )
 
-export const selectBranchReportingPeriodDurationInSeconds = createSelector(
-  selectBranchState,
-  branch => branch.reportingPeriodDurationInSeconds
+export const selectUniverseReportingPeriodDurationInSeconds = createSelector(
+  selectUniverseState,
+  universe => universe.reportingPeriodDurationInSeconds
 )
 
-export const selectBranchReportPeriod = createSelector(
-  selectBranchState,
-  branch => branch.currentReportingWindowAddress
+export const selectUniverseReportPeriod = createSelector(
+  selectUniverseState,
+  universe => universe.currentReportingWindowAddress
 )
 
 export const selectLoginAccountAddress = createSelector(
