@@ -12,10 +12,10 @@ export const submitReport = (market, reportedOutcomeID, amountToStake, isIndeter
   }
   const branchID = branch.id
   console.log(`submit report ${reportedOutcomeID} on market ${market.id} period ${branch.currentReportingWindowAddress}...`)
-  const payoutNumerators = reportedOutcomeID // TODO convert reported outcome ID to payout numerators
+  const payoutNumerators = reportedOutcomeID // TODO convert reported outcome ID to payout numerators or just pass in payoutNumerators
   const report = {
     marketID: market.id,
-    period: branch.currentReportingWindowAddress,
+    period: branch.currentReportingWindowAddress, // TODO replace .period with .reportingWindow
     reportedOutcomeID,
     isCategorical: market.type === CATEGORICAL,
     isScalar: market.type === SCALAR,
