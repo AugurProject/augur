@@ -52,16 +52,20 @@ function connect(connectOptions, callback) {
   }
   async.parallel({
     augurNode: function (next) {
+      console.log("connecting to augur-node...", connectOptions);
       if (!connectOptions.augurNode) return next(null);
       connectToAugurNode(connectOptions.augurNode, function (err) {
         if (err) return next(err);
+        console.log("connected to augur");
         next(null, connectOptions.augurNode);
       });
     },
     ethereumNode: function (next) {
+      console.log("connecting to ethereum-node...", connectOptions);
       if (!connectOptions.ethereumNode) return next(null);
       ethereumConnector.connect(ethereumNodeConnectOptions, function (err, ethereumConnectionInfo) {
         if (err) return next(err);
+        console.log("connected to ethereum");
         ethereumConnectionInfo.contracts = ethereumConnectionInfo.contracts || contracts.addresses[DEFAULT_NETWORK_ID];
         self.api = api.generateContractApi(ethereumConnectionInfo.abi.functions);
         self.rpc = rpcInterface.createRpcInterface(ethereumConnectionInfo.rpc);

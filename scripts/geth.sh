@@ -44,4 +44,4 @@ fi
 ln -s "$HOME/.ethereum-${network}" $symlink
 
 # geth $optargs --shh --ws --wsapi "eth,net,web3,admin,personal,miner,txpool,shh" --wsport 8546 --wsorigins "*" --cache 2048 --networkid $network --rpc --rpcapi "eth,net,web3,admin,personal,miner,txpool,shh" --rpccorsdomain "*" --maxpeers $maxpeers --etherbase $address --unlock $address --password $passfile console
-geth --fast $optargs --cache 2048 --networkid $network --wsorigins "*" --ws --wsapi "eth,net,web3" --wsport 8546 --rpc --rpcapi "eth,net,web3" --maxpeers $maxpeers --etherbase $address console
+geth --fast $optargs --cache 2048 --networkid $network --wsorigins "*" --ws --wsapi "eth,net,web3" --wsport 8546 --rpc --rpcapi "eth,net,web3" --rpccorsdomain "*" --maxpeers $maxpeers --etherbase $address console

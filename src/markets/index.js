@@ -10,7 +10,8 @@ module.exports = {
   getMarketsAwaitingAllReporting: require("./get-markets-awaiting-all-reporting"),
   getMarketsAwaitingDesignatedReporting: require("./get-markets-awaiting-designated-reporting"),
   getMarketsAwaitingLimitedReporting: require("./get-markets-awaiting-limited-reporting"),
+  getMarketsInCategory: require("./get-markets-in-category"),
   getMarketsClosingInDateRange: require("./get-markets-closing-in-date-range"),
   getMarketsCreatedByUser: require("./get-markets-created-by-user"),
-  getTopics: require("./get-topics")
+  getCategories: require("./get-categories")
 };
