@@ -1,6 +1,7 @@
 import Augur = require("augur.js");
 import * as Knex from "knex";
 import * as sqlite3 from "sqlite3";
+import * as _ from "lodash";
 import { EthereumNodeEndpoints, FormattedLog } from "./types";
 import { checkAugurDbSetup } from "./setup/check-augur-db-setup";
 import { syncAugurNodeWithBlockchain } from "./blockchain/sync-augur-node-with-blockchain";
@@ -26,6 +27,12 @@ if (process.env.DATABASE) {
     acquireConnectionTimeout: 5 * 60 * 1000
   });
 }
+
+let configuredEndpoints:any  = _.omitBy(_.merge(ethereumNodeEndpoints, {
+  http: process.env.ENDPOINT_HTTP,
+  ws: process.env.ENDPOINT_WS
+}), _.isNull);
+
 
 const augur: Augur = new Augur();
 
