@@ -21,7 +21,7 @@
     "seed": "node node_modules/knex/bin/cli.js seed:run --env build",
     "migrate:make": "node node_modules/knex/bin/cli.js migrate:make -x ts $1",
     "coverage": "istanbul cover --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test",
-    "postdeploy": "npm build && npm migrate && npm seed"
+    "postdeploy": "npm run build && npm run migrate --env build_postgres"
   },
   "repository": {
     "type": "git",
