@@ -360,13 +360,6 @@ export default class CreateMarketLiquidity extends Component {
               </li>
             </ul>
             <ul className={Styles['CreateMarketLiquidity__order-form-body']}>
-              <li>
-                <label>Order Type</label>
-                <div className={Styles['CreateMarketLiquidity__order-type']}>
-                  <span>Market</span>
-                  <span className={Styles.active}>Limit</span>
-                </div>
-              </li>
               { p.newMarket.type === BINARY &&
                 <li>
                   <label>Outcome</label>
@@ -405,7 +398,7 @@ export default class CreateMarketLiquidity extends Component {
                   className={classNames({ [`${StylesForm.error}`]: s.errors.quantity.length })}
                   id="cm__input--quantity"
                   type="number"
-                  step={Math.pow(10, -PRECISION)}
+                  step={10**-PRECISION}
                   placeholder="0.0000 Shares"
                   value={s.orderQuantity instanceof BigNumber ? s.orderQuantity.toNumber() : s.orderQuantity}
                   onChange={e => this.validateForm(e.target.value, undefined)}
@@ -417,7 +410,7 @@ export default class CreateMarketLiquidity extends Component {
                   className={classNames({ [`${StylesForm.error}`]: s.errors.price.length })}
                   id="cm__input--limit-price"
                   type="number"
-                  step={Math.pow(10, -PRECISION)}
+                  step={10**-PRECISION}
                   placeholder="0.0000 ETH"
                   value={s.orderPrice instanceof BigNumber ? s.orderPrice.toNumber() : s.orderPrice}
                   onChange={e => this.validateForm(undefined, e.target.value)}
