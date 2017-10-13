@@ -6,8 +6,8 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.increments("id").primary().notNullable();
       table.integer("highestBlockNumber").notNullable();
       table.timestamp("syncTime").defaultTo(knex.fn.now()).notNullable();
-    }).then( (): void => {
-      knex.schema.raw(`ALTER TABLE blockchain_sync_history ADD CONSTAINT nonnegativeHighestBlockNumber CHECK (highestBlockNumber >= 0)`);
+    }).then( async (): Promise<any> => {
+      return knex.schema.raw(`ALTER TABLE blockchain_sync_history ADD CONSTRAINT nonnegativeHighestBlockNumber CHECK ("highestBlockNumber" >= 0)`);
     });
   });
 };
