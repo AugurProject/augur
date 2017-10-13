@@ -45,8 +45,6 @@
     "sqlite3": "3.1.8",
     "typescript": "2.5.2",
     "ws": "3.2.0"
-  },
-  "devDependencies": {
     "@types/async": "2.0.43",
     "@types/bignumber.js": "4.0.3",
     "@types/node": "8.0.31",
