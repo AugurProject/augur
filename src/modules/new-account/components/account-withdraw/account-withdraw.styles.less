@@ -1,0 +1,83 @@
+@import (reference) '~assets/styles/shared';
+
+.AccountWithdraw {
+  background: white;
+  padding: 5.625rem 0 0 4.375rem;
+  width: 100%;
+}
+
+.AccountWithdraw__heading {
+  width: 100%;
+  margin-bottom: 40px;
+
+  h1 {
+    color: @color-darkpurple;
+    font-size: 1.875rem;
+    font-weight: 500;
+    letter-spacing: 0.14rem;
+    margin-right: 1rem;
+    text-transform: uppercase;
+  }
+  
+  > * {
+    display: inline-block;
+  }
+}
+
+.AccountWithdraw__main {
+  display: flex;
+  width: 100%;
+}
+
+.AccountWithdraw__description {
+  border-right: 1px solid @color-lightergray;
+  flex: 0 0 26.25rem;
+  
+  p {
+    font-size: 1.125rem;
+    margin: 0 0 1.5rem;
+  }
+
+  a {
+    color: @color-purple;
+    font-size: 1.125rem;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+}
+
+@media @breakpoint-mobile {
+  .AccountWithdraw {
+    padding: 3.125rem 0 0;
+  }
+
+  .AccountWithdraw__heading {
+    font-size: 1.5rem;
+    letter-spacing: 0.11rem;
+    margin-bottom: 0.5rem;
+    padding: 0 1rem;
+
+    h1 {
+      margin-right: 0.5rem;
+    }
+  }
+
+  .AccountWithdraw__main {
+    display: block;
+  }
+
+  .AccountWithdraw__description {
+    border: none;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+
+    p {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    a {
+      font-size: 1.125rem;
+    }
+  }
+}

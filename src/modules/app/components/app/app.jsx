@@ -32,7 +32,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 
 import getValue from 'utils/get-value'
 
-import { MARKETS, ACCOUNT, ACCOUNT_DEPOSIT, MY_MARKETS, MY_POSITIONS, WATCHLIST, CREATE_MARKET, CATEGORIES } from 'modules/routes/constants/views'
+import { MARKETS, ACCOUNT, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT, MY_MARKETS, MY_POSITIONS, WATCHLIST, CREATE_MARKET, CATEGORIES } from 'modules/routes/constants/views'
 import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
@@ -52,7 +52,9 @@ const navTypes = {
   [MY_MARKETS]: PortfolioInnerNav,
   [MY_POSITIONS]: PortfolioInnerNav,
   [WATCHLIST]: PortfolioInnerNav,
-  [ACCOUNT]: AccountInnerNav
+  [ACCOUNT_DEPOSIT]: AccountInnerNav,
+  [ACCOUNT_WITHDRAW]: AccountInnerNav,
+  [ACCOUNT_EXPORT]: AccountInnerNav
 }
 
 // TODO -- this component needs to be broken up and also restructured
@@ -92,7 +94,7 @@ export default class AppView extends Component {
         title: 'Account',
         iconName: 'nav-account-icon',
         icon: NavAccountIcon,
-        route: makePath([ACCOUNT, ACCOUNT_DEPOSIT])
+        route: ACCOUNT_DEPOSIT
       },
       {
         title: 'Create',
@@ -191,7 +193,9 @@ export default class AppView extends Component {
         case MY_MARKETS:
         case MY_POSITIONS:
         case WATCHLIST:
-        case ACCOUNT:
+        case ACCOUNT_DEPOSIT:
+        case ACCOUNT_WITHDRAW:
+        case ACCOUNT_EXPORT:
           openNewMenu()
           break
         default:
