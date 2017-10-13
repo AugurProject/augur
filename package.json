@@ -16,7 +16,7 @@
     "start": "node build",
     "test": "mocha test",
     "lint": "tslint -c tslint.json -p .",
-    "build": "tsc",
+    "build": "node_modules/typescript/bin/tsc",
     "migrate": "node node_modules/knex/bin/cli.js migrate:latest --env build",
     "seed": "node node_modules/knex/bin/cli.js seed:run --env build",
     "migrate:make": "node node_modules/knex/bin/cli.js migrate:make -x ts $1",
