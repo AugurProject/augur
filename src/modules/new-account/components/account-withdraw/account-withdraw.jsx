@@ -13,7 +13,7 @@ export default class AccountWithdraw extends Component {
   }
 
   componentDidMount() {
-    const clipboard = new Clipboard('#copy_address') 
+    const clipboard = new Clipboard('#copy_address') // eslint-disable-line
   }
 
   render() {

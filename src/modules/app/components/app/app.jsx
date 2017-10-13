@@ -32,7 +32,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 
 import getValue from 'utils/get-value'
 
-import { MARKETS, ACCOUNT, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT, MY_MARKETS, MY_POSITIONS, WATCHLIST, CREATE_MARKET, CATEGORIES } from 'modules/routes/constants/views'
+import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT, MY_MARKETS, MY_POSITIONS, WATCHLIST, CREATE_MARKET, CATEGORIES } from 'modules/routes/constants/views'
 import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
