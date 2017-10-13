@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import BigNumber from 'bignumber.js'
-import { augur, rpc, constants } from 'services/augurjs'
+// import { augur, rpc, constants } from 'services/augurjs'
 
 import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'
 
@@ -44,7 +44,7 @@ export default class CreateMarketLiquidity extends Component {
       orderEstimate: '',
       minPrice: new BigNumber(0),
       maxPrice: new BigNumber(1),
-      selectedOutcome: '',
+      selectedOutcome: this.props.newMarket.type === SCALAR ? 0 : '',
       selectedNav: BID,
     }
 
@@ -78,7 +78,7 @@ export default class CreateMarketLiquidity extends Component {
     }
 
     if (this.state.orderQuantity !== nextState.orderQuantity || this.state.orderPrice !== nextState.orderPrice) {
-      let orderEstimate = '';
+      let orderEstimate = ''
       if (nextState.orderQuantity instanceof BigNumber && nextState.orderPrice instanceof BigNumber) {
         orderEstimate = `${nextState.orderQuantity.times(nextState.orderPrice).toNumber()} ETH`
       }
@@ -224,13 +224,13 @@ export default class CreateMarketLiquidity extends Component {
   }
 
   updateInitialLiquidityCosts(order, shouldReduce) {
-    const gasPrice = rpc.gasPrice || constants.DEFAULT_GASPRICE
+    // const gasPrice = rpc.gasPrice || constants.DEFAULT_GASPRICE
     // const makerFee = this.props.makerFee instanceof BigNumber ? this.props.makerFee : new BigNumber(this.props.makerFee)
 
     let initialLiquidityEth
     let initialLiquidityGas
     let initialLiquidityFees
-    let action
+    // let action
 
     // if (order.type === BID) {
     //   action = augur.trading.simulation.getBidAction(order.quantity, order.price, makerFee, gasPrice)
@@ -306,7 +306,7 @@ export default class CreateMarketLiquidity extends Component {
       }
     }
 
-    if ((this.props.newMarket.type !== SCALAR && this.state.selectedOutcome === '') || orderQuantity === '' || orderPrice === '' || errors.quantity.length || errors.price.length) {
+    if (this.state.selectedOutcome === '' || orderQuantity === '' || orderPrice === '' || errors.quantity.length || errors.price.length) {
       isOrderValid = false
     } else {
       isOrderValid = true
@@ -352,11 +352,11 @@ export default class CreateMarketLiquidity extends Component {
         <li className={Styles.CreateMarketLiquidity__order}>
           <div className={Styles['CreateMarketLiquidity__order-form']}>
             <ul className={Styles['CreateMarketLiquidity__order-form-header']}>
-              <li className={classNames({ [`${Styles.active}`] : s.selectedNav === BID })}>
-                <button onClick={() => this.setState({ 'selectedNav' : BID })}>Buy</button>
+              <li className={classNames({ [`${Styles.active}`]: s.selectedNav === BID })}>
+                <button onClick={() => this.setState({ selectedNav: BID })}>Buy</button>
               </li>
-              <li className={classNames({ [`${Styles.active}`] : s.selectedNav === ASK })}>
-                <button onClick={() => this.setState({ 'selectedNav' : ASK })}>Sell</button>
+              <li className={classNames({ [`${Styles.active}`]: s.selectedNav === ASK })}>
+                <button onClick={() => this.setState({ selectedNav: ASK })}>Sell</button>
               </li>
             </ul>
             <ul className={Styles['CreateMarketLiquidity__order-form-body']}>
@@ -374,13 +374,13 @@ export default class CreateMarketLiquidity extends Component {
                     <li>
                       <button
                         className={classNames({ [`${StylesForm.active}`]: s.selectedOutcome === 'Yes' })}
-                        onClick={() => this.setState({ selectedOutcome : 'Yes' }) }
+                        onClick={() => this.setState({ selectedOutcome: 'Yes' })}
                       >Yes</button>
                     </li>
                     <li>
                       <button
                         className={classNames({ [`${StylesForm.active}`]: s.selectedOutcome === 'No' })}
-                        onClick={() => this.setState({ selectedOutcome : 'No' }) }
+                        onClick={() => this.setState({ selectedOutcome: 'No' })}
                       >No</button>
                     </li>
                   </ul>
@@ -394,7 +394,7 @@ export default class CreateMarketLiquidity extends Component {
                     label="Choose an Outcome"
                     default={''}
                     options={p.newMarket.outcomes.filter(outcome => outcome !== '')}
-                    onChange={value => this.setState({ selectedOutcome : value }) }
+                    onChange={value => this.setState({ selectedOutcome: value })}
                     isMobileSmall={this.props.isMobileSmall}
                   />
                 </li>
@@ -402,7 +402,7 @@ export default class CreateMarketLiquidity extends Component {
               <li>
                 <label htmlFor="cm__input--quantity">Quantity</label>
                 <input
-                  className={classNames({ [`${StylesForm.error}`] : s.errors.quantity.length })}
+                  className={classNames({ [`${StylesForm.error}`]: s.errors.quantity.length })}
                   id="cm__input--quantity"
                   type="number"
                   placeholder="0.0000 Shares"
@@ -413,7 +413,7 @@ export default class CreateMarketLiquidity extends Component {
               <li>
                 <label htmlFor="cm__input--limit-price">Limit Price</label>
                 <input
-                  className={classNames({ [`${StylesForm.error}`] : s.errors.price.length })}
+                  className={classNames({ [`${StylesForm.error}`]: s.errors.price.length })}
                   id="cm__input--limit-price"
                   type="number"
                   placeholder="0.0000 ETH"

@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-// import BigNumber from 'bignumber.js'
+import BigNumber from 'bignumber.js'
 // import Highcharts from 'highcharts'
 // import classNames from 'classnames'
 
@@ -62,14 +62,29 @@ export default class CreateMarketPreview extends Component {
     return endDate.format('MMM D, YYYY h:mm a')
   }
 
+  static calculateShares(orderBook) {
+    let totalShares = new BigNumber(0)
+    if (Object.keys(orderBook).length) {
+      Object.keys(orderBook).forEach((option) => {
+        orderBook[option].forEach((order) => {
+          totalShares = totalShares.plus(order.quantity)
+        })
+      })
+      return `${totalShares} Shares`
+    }
+    return '- Shares'
+  }
+
   constructor(props) {
     super(props)
 
     this.state = {
-      expirationDate: CreateMarketPreview.getExpirationDate(props)
+      expirationDate: CreateMarketPreview.getExpirationDate(props),
+      shares: CreateMarketPreview.calculateShares(this.props.newMarket.orderBook),
     }
 
     CreateMarketPreview.getExpirationDate = CreateMarketPreview.getExpirationDate.bind(this)
+    CreateMarketPreview.calculateShares = CreateMarketPreview.calculateShares.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -78,6 +93,9 @@ export default class CreateMarketPreview extends Component {
         this.props.newMarket.minute !== nextProps.newMarket.minute ||
         this.props.newMarket.meridiem !== nextProps.newMarket.meridiem) {
       this.setState({ expirationDate: CreateMarketPreview.getExpirationDate(nextProps) })
+    }
+    if (this.props.newMarket.orderBook !== nextProps.newMarket.orderBook) {
+      this.setState({ shares: CreateMarketPreview.calculateShares(nextProps.newMarket.orderBook) })
     }
   }
 
@@ -124,7 +142,7 @@ export default class CreateMarketPreview extends Component {
             <ul className={Styles.CreateMarketPreview__meta}>
               <li>
                 <span>Volume</span>
-                <span>- Shares</span>
+                <span>{ s.shares }</span>
               </li>
               <li>
                 <span>Fee</span>
