@@ -50,6 +50,8 @@ export default class CreateMarketForm extends Component {
     newMarket: PropTypes.object.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
     categories: PropTypes.array.isRequired,
+    addOrderToNewMarket: PropTypes.func.isRequired,
+    availableEth: PropTypes.string.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
   }
 
@@ -182,6 +184,9 @@ export default class CreateMarketForm extends Component {
                 newMarket={p.newMarket}
                 updateNewMarket={p.updateNewMarket}
                 validateNumber={this.validateNumber}
+                addOrderToNewMarket={p.addOrderToNewMarket}
+                removeOrderFromNewMarket={p.removeOrderFromNewMarket}
+                availableEth={p.availableEth}
                 isMobileSmall={p.isMobileSmall}
               />
             }
@@ -202,102 +207,7 @@ export default class CreateMarketForm extends Component {
             </div>
           </div>
         </div>
-        {/* <CreateMarketFormDescription
-          className={classNames({
-            'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
-            'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION)
-          })}
-          currentStep={p.newMarket.currentStep}
-          description={p.newMarket.description}
-          updateValidity={this.updateValidity}
-          updateNewMarket={p.updateNewMarket}
-        />
-        <CreateMarketFormType
-          className={classNames({
-            'can-hide': s.currentStep >= newMarketCreationOrder.indexOf(NEW_MARKET_TYPE) + 1,
-            display: s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_TYPE) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_TYPE),
-            hide: s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_TYPE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_TYPE),
-          })}
-          type={p.newMarket.type}
-          addValidationToNewMarket={p.addValidationToNewMarket}
-          removeValidationFromNewMarket={p.removeValidationFromNewMarket}
-          updateNewMarket={p.updateNewMarket}
-        />
-        <CreateMarketFormOutcomes
-          className={classNames({
-            'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES),
-            'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES)
-          })}
-          type={p.newMarket.type}
-          outcomes={p.newMarket.outcomes}
-          scalarSmallNum={p.newMarket.scalarSmallNum}
-          scalarBigNum={p.newMarket.scalarBigNum}
-          currentStep={p.newMarket.currentStep}
-          updateValidity={this.updateValidity}
-          updateNewMarket={p.updateNewMarket}
-        />
-        <CreateMarketFormExpirySource
-          className={classNames({
-            'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE),
-            'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE)
-          })}
-          currentStep={p.newMarket.currentStep}
-          expirySourceType={p.newMarket.expirySourceType}
-          expirySource={p.newMarket.expirySource}
-          updateValidity={this.updateValidity}
-          updateNewMarket={p.updateNewMarket}
-        />
-        {
-          s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) &&
-            <CreateMarketFormEndDate
-              className={classNames({
-                'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE),
-                'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE)
-              })}
-              currentStep={p.newMarket.currentStep}
-              isValid={p.newMarket.isValid}
-              endDate={p.newMarket.endDate}
-              updateFormHeight={this.updateFormHeight}
-              updateValidity={this.updateValidity}
-              updateNewMarket={p.updateNewMarket}
-            />
-        }
-        <CreateMarketFormDetails
-          className={classNames({
-            'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS),
-            'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS)
-          })}
-          isValid={p.newMarket.isValid}
-          currentStep={p.newMarket.currentStep}
-          detailsText={p.newMarket.detailsText}
-          validations={p.newMarket.validations}
-          updateValidity={this.updateValidity}
-          updateNewMarket={p.updateNewMarket}
-        />
-        <CreateMarketFormTopic
-          className={classNames({
-            'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC),
-            'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC)
-          })}
-          topic={p.newMarket.topic}
-          keywords={p.newMarket.keywords}
-          currentStep={p.newMarket.currentStep}
-          updateValidity={this.updateValidity}
-          updateNewMarket={p.updateNewMarket}
-        />
-        <CreateMarketFormKeywords
-          className={classNames({
-            'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS),
-            'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS)
-          })}
-          isValid={p.newMarket.isValid}
-          currentStep={p.newMarket.currentStep}
-          keywords={p.newMarket.keywords}
-          topic={p.newMarket.topic}
-          validations={p.newMarket.validations}
-          updateValidity={this.updateValidity}
-          updateNewMarket={p.updateNewMarket}
-        />
+        {/*
         <CreateMarketFormFees
           className={classNames({
             'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES),

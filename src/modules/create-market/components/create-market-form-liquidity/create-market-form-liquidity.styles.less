@@ -58,7 +58,7 @@ li.CreateMarketLiquidity__order-add {
 
   > button {
     &:extend(.button);
-    &:extend(.button--purple);
+    &:extend(.button--purple all);
   }
 }
 
@@ -70,6 +70,7 @@ li.CreateMarketLiquidity__order-add {
   color: @color-text-dark;
   font-size: 1.125rem;
   line-height: 1.5rem;
+  min-height: 3rem;
   padding: 0.75rem 1rem;
   text-align: left;
 }
@@ -108,19 +109,23 @@ li.CreateMarketLiquidity__order-add {
   padding: 0.625rem 1.875rem 0;
 
   > li {
-    &:extend(.caps);
-    &:extend(.caps--large);
-
     border-bottom: 3px solid transparent;
     color: @color-lightgray;
-    font-weight: 700;
-    padding: 1.25rem 0;
     text-align: center;
     width: 50%;
 
     &.active {
       border-bottom-color: @color-darkpurple;
       color: @color-darkpurple;
+    }
+
+    > button {
+      &:extend(.caps);
+      &:extend(.caps--large);
+
+      font-weight: 700;
+      padding: 1.25rem 0;
+      width: 100%;
     }
   }
 }

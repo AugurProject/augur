@@ -64,6 +64,11 @@
     p {
       color: @color-lightgray;
       margin: 0;
+
+      &.error {
+        color: @color-red;
+        font-size: 0.875rem;
+      }
     }
 
     input[type="text"],
@@ -72,6 +77,10 @@
       background-color: @color-lightergray;
       font-size: 1.125rem;
       line-height: 1.5rem;
+
+      &.error {
+        border-color: @color-red;
+      }
 
       &::placeholder {
         color: @color-lightgray;
