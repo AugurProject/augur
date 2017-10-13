@@ -1,6 +1,5 @@
 "use strict";
 
-const unlink = require("fs").unlink;
 const join = require("path").join;
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
@@ -12,7 +11,7 @@ describe("server/getters/get-open-orders", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        if (err) assert.fail(err);
+        assert.isNull(err);
         getOpenOrders(db, t.params.marketID, t.params.outcome, t.params.orderType, t.params.creator, (err, openOrders) => {
           t.assertions(err, openOrders);
           done();

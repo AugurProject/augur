@@ -2,8 +2,8 @@ import * as Knex from "knex";
 
 exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
-  return knex("reports").del().then(() => {
-    return knex.raw(`INSERT INTO reports
+  return knex("reports").del().then((): void => {
+    knex.raw(`INSERT INTO reports
       (reporter, market_id, reporting_token, amount_staked, payout1, payout2, is_invalid)
       VALUES (
         '0x0000000000000000000000000000000000000021',
