@@ -39,7 +39,7 @@ describe("server/getters/get-market-info", () => {
         creationFee: 10,
         marketCreatorFeeRate: 0.01,
         marketCreatorFeesCollected: 0,
-        topic: "test topic",
+        category: "test category",
         tags: ["test tag 1", "test tag 2"],
         volume: 0,
         outstandingShares: 0,

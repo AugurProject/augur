@@ -12,8 +12,8 @@ describe("server/getters/get-markets-in-category", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getMarketsInCategory(db, t.params.category, t.params.sortBy, t.params.limit, (err, marketsCreatedByUser) => {
-          t.assertions(err, marketsCreatedByUser);
+        getMarketsInCategory(db, t.params.category, t.params.sortBy, t.params.limit, (err, marketsInCategory) => {
+          t.assertions(err, marketsInCategory);
           done();
         });
       });
@@ -22,14 +22,39 @@ describe("server/getters/get-markets-in-category", () => {
   test({
     description: "category with markets in it",
     params: {
-      category: "test topic"
+      category: "test category"
     },
-    assertions: (err, marketsCreatedByUser) => {
+    assertions: (err, marketsInCategory) => {
       assert.isNull(err);
-      assert.deepEqual(marketsCreatedByUser, [
+      assert.deepEqual(marketsInCategory, [
+        "0x0000000000000000000000000000000000000001",
+        "0x0000000000000000000000000000000000000002",
+        "0x0000000000000000000000000000000000000003"
+      ]);
+    }
+  });
+  test({
+    description: "category with markets in it, limit 2",
+    params: {
+      category: "test category",
+      limit: 2
+    },
+    assertions: (err, marketsInCategory) => {
+      assert.isNull(err);
+      assert.deepEqual(marketsInCategory, [
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000000000000000000002"
       ]);
+    }
+  });
+  test({
+    description: "empty category",
+    params: {
+      category: "empty category"
+    },
+    assertions: (err, marketsInCategory) => {
+      assert.isNull(err);
+      assert.isUndefined(marketsInCategory);
     }
   });
 });

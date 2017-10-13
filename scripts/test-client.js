@@ -47,7 +47,7 @@ var request = {
 // var request = {
 //   id: 5,
 //   jsonrpc: "2.0",
-//   method: "getTopics",
+//   method: "getCategories",
 //   params: {
 //     universe: "0x000000000000000000000000000000000000000b"
 //   }

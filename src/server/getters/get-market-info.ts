@@ -32,7 +32,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRow, outcomesInfo: A
     creationFee: row.creation_fee,
     marketCreatorFeeRate: row.market_creator_fee_rate,
     marketCreatorFeesCollected: row.market_creator_fees_collected,
-    topic: row.topic,
+    category: row.category,
     tags: [row.tag1, row.tag2],
     volume: row.volume,
     outstandingShares: row.shares_outstanding,

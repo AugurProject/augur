@@ -15,7 +15,7 @@ export type Int256 = string;
 
 export interface Log {
   address: Address;
-  topics: Array<Int256>;
+  categories: Array<Int256>;
   data: AbiEncodedData;
   blockNumber: Int256;
   transactionIndex: Int256;
@@ -35,7 +35,7 @@ export interface FormattedLog {
 export interface MarketCreatedLogExtraInfo {
   minPrice: string;
   maxPrice: string;
-  topic: string;
+  category: string;
   tag1?: string|null;
   tag2?: string|null;
   shortDescription: string;
@@ -114,7 +114,7 @@ export interface MarketsRow {
   creation_fee: string|number;
   market_creator_fee_rate: string|number;
   market_creator_fees_collected: string|number|null;
-  topic: string;
+  category: string;
   tag1: string|null;
   tag2: string|null;
   volume: string|number;
@@ -169,7 +169,7 @@ export interface UIMarketInfo {
   creationFee: string|number;
   marketCreatorFeeRate: string|number;
   marketCreatorFeesCollected: string|number|null;
-  topic: string;
+  category: string;
   tags: Array<string|null>;
   volume: string|number;
   outstandingShares: string|number;

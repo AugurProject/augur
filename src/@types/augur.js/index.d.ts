@@ -73,7 +73,7 @@ declare module "augur.js" {
 
   interface EventLog {
     address: Address;
-    topics: Int256[];
+    categories: Int256[];
     data: AbiEncodedData;
     blockNumber: Int256;
     transactionIndex: Int256;

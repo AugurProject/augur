@@ -2,7 +2,7 @@ import * as Knex from "knex";
 import { JsonRpcRequest } from "../types";
 import { getMarketInfo } from "./getters/get-market-info";
 import { getAccountTransferHistory } from "./getters/get-account-transfer-history";
-import { getTopics } from "./getters/get-topics";
+import { getCategories } from "./getters/get-categories";
 import { getMarketsInCategory } from "./getters/get-markets-in-category";
 import { getMarketsCreatedByUser } from "./getters/get-markets-created-by-user";
 import { getReportingHistory } from "./getters/get-reporting-history";
@@ -29,8 +29,8 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callba
       return getMarketInfo(db, request.params.marketID, callback);
     case "getAccountTransferHistory":
       return getAccountTransferHistory(db, request.params.account, request.params.token, callback);
-    case "getTopics":
-      return getTopics(db, request.params.universe, callback);
+    case "getCategories":
+      return getCategories(db, request.params.universe, callback);
     case "getMarketsInCategory":
       return getMarketsInCategory(db, request.params.category, request.params.sortBy, request.params.limit, callback);
     case "getMarketsCreatedByUser":
