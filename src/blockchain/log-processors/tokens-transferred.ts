@@ -4,13 +4,13 @@ import { FormattedLog, ErrorCallback } from "../../types";
 
 export function processTokensTransferredLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
   const dataToInsert: {}  = {
-    transaction_hash: log.transactionHash,
-    log_index: log.logIndex,
+    transactionHash: log.transactionHash,
+    logIndex: log.logIndex,
     sender: log.from,
     recipient: log.to,
     token: log.token,
     value: log.value,
-    block_number: log.blockNumber
+    blockNumber: log.blockNumber
   };
 
   db.transacting(trx).insert(dataToInsert).into("transfers").asCallback(callback);

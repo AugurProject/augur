@@ -12,16 +12,16 @@ interface UIReports {
 export function getReportingHistory(db: Knex, reporter: Address, marketID: Address|null|undefined, universe: Address|null|undefined, reportingWindow: Address|null|undefined, callback: (err?: Error|null, result?: any) => void): void {
   // { universe: { marketID: { marketID, reportingWindow, payoutNumerators, isCategorical, isScalar, isIndeterminate } } }
   const queryData: any = { reporter };
-  if (marketID != null) queryData["reports.market_id"] = marketID;
+  if (marketID != null) queryData["reports.marketID"] = marketID;
   if (universe != null) queryData.universe = universe;
-  if (reportingWindow != null) queryData.reporting_window = reportingWindow;
+  if (reportingWindow != null) queryData.reportingWindow = reportingWindow;
   const rowsToSelect: Array<string> = [
-    "reports.market_id",
+    "reports.marketID",
     "markets.universe",
-    "markets.reporting_window",
-    "reports.reporting_token",
-    "reports.amount_staked",
-    "reports.is_invalid",
+    "markets.reportingWindow",
+    "reports.reportingToken",
+    "reports.amountStaked",
+    "reports.isInvalid",
     "reports.payout0",
     "reports.payout1",
     "reports.payout2",
@@ -31,26 +31,26 @@ export function getReportingHistory(db: Knex, reporter: Address, marketID: Addre
     "reports.payout6",
     "reports.payout7"
   ];
-  db.select(rowsToSelect).from("reports").join("markets", "markets.market_id", "reports.market_id").where(queryData).orderBy("report_id").asCallback((err?: Error|null, joinedReportsMarketsRows?: Array<JoinedReportsMarketsRow>): void => {
+  db.select(rowsToSelect).from("reports").join("markets", "markets.marketID", "reports.marketID").where(queryData).orderBy("reportID").asCallback((err?: Error|null, joinedReportsMarketsRows?: Array<JoinedReportsMarketsRow>): void => {
     if (err) return callback(err);
     if (!joinedReportsMarketsRows || !joinedReportsMarketsRows.length) return callback(null);
     const reports: UIReports = {};
     joinedReportsMarketsRows.forEach((row: JoinedReportsMarketsRow): void => {
       if (!reports[row.universe]) reports[row.universe] = {};
-      if (!reports[row.universe][row.market_id]) reports[row.universe][row.market_id] = [];
+      if (!reports[row.universe][row.marketID]) reports[row.universe][row.marketID] = [];
       const payoutNumerators: Array<string|number|null> = [row.payout0, row.payout1, row.payout2, row.payout3, row.payout4, row.payout5, row.payout6, row.payout7].filter((payout: string|number|null): boolean => payout != null);
       const report: UIReport = {
-        marketID: row.market_id,
-        reportingWindow: row.reporting_window,
+        marketID: row.marketID,
+        reportingWindow: row.reportingWindow,
         payoutNumerators,
-        amountStaked: row.amount_staked,
-        reportingToken: row.reporting_token,
-        isCategorical: row.market_type === "categorical",
-        isScalar: row.market_type === "scalar",
-        isIndeterminate: Boolean(row.is_invalid),
+        amountStaked: row.amountStaked,
+        reportingToken: row.reportingToken,
+        isCategorical: row.marketType === "categorical",
+        isScalar: row.marketType === "scalar",
+        isIndeterminate: Boolean(row.isInvalid),
         isSubmitted: true
       };
-      reports[row.universe][row.market_id].push(report);
+      reports[row.universe][row.marketID].push(report);
     });
     callback(null, reports);
   });

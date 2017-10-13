@@ -3,23 +3,23 @@ import * as Knex from "knex";
 exports.up = async (knex: Knex): Promise<any> => {
   return knex.schema.dropTableIfExists("orders").then((): PromiseLike<any> => {
     return knex.schema.raw(`CREATE TABLE orders (
-      order_id varchar(66) PRIMARY KEY NOT NULL,
-      market_id varchar(66) NOT NULL,
-      outcome integer NOT NULL CONSTRAINT nonnegative_outcome CHECK (outcome >= 0),
-      share_token varchar(66) NOT NULL,
-      order_type varchar(4) NOT NULL CONSTRAINT enum_order_types CHECK (order_type = 'buy' OR order_type = 'sell'),
-      order_creator varchar(66) NOT NULL,
-      creation_time integer NOT NULL CONSTRAINT positive_order_creation_time CHECK (creation_time > 0),
-      creation_block_number integer NOT NULL CONSTRAINT positive_order_creation_block_number CHECK (creation_block_number > 0),
-      full_precision_price numeric NOT NULL,
-      full_precision_amount numeric NOT NULL,
+      orderID varchar(66) PRIMARY KEY NOT NULL,
+      marketID varchar(66) NOT NULL,
+      outcome integer NOT NULL CONSTRAINT nonnegativeOutcome CHECK (outcome >= 0),
+      shareToken varchar(66) NOT NULL,
+      orderType varchar(4) NOT NULL CONSTRAINT enumOrderTypes CHECK (orderType = 'buy' OR orderType = 'sell'),
+      orderCreator varchar(66) NOT NULL,
+      creationTime integer NOT NULL CONSTRAINT positiveOrderCreationTime CHECK (creationTime > 0),
+      creationBlockNumber integer NOT NULL CONSTRAINT positiveOrderCreationBlockNumber CHECK (creationBlockNumber > 0),
+      fullPrecisionPrice numeric NOT NULL,
+      fullPrecisionAmount numeric NOT NULL,
       price numeric NOT NULL,
-      amount numeric NOT NULL CONSTRAINT nonnegative_amount CHECK (amount >= 0),
-      tokens_escrowed numeric NOT NULL CONSTRAINT nonnegative_tokens_escrowed CHECK (tokens_escrowed >= 0),
-      shares_escrowed numeric NOT NULL CONSTRAINT nonnegative_shares_escrowed CHECK (shares_escrowed >= 0),
-      better_order_id varchar(66),
-      worse_order_id varchar(66),
-      trade_group_id varchar(66)
+      amount numeric NOT NULL CONSTRAINT nonnegativeAmount CHECK (amount >= 0),
+      tokensEscrowed numeric NOT NULL CONSTRAINT nonnegativeTokensEscrowed CHECK (tokensEscrowed >= 0),
+      sharesEscrowed numeric NOT NULL CONSTRAINT nonnegativeSharesEscrowed CHECK (sharesEscrowed >= 0),
+      betterOrderID varchar(66),
+      worseOrderID varchar(66),
+      tradeGroupID varchar(66)
     )`);
   });
 };

@@ -13,15 +13,15 @@ interface Order {
   fullPrecisionAmount: number|string;
   tokensEscrowed: number|string;
   sharesEscrowed: number|string;
-  betterOrderId: Bytes32|null;
-  worseOrderId: Bytes32|null;
+  betterOrderID: Bytes32|null;
+  worseOrderID: Bytes32|null;
 }
 
 interface Orders {
   [marketID: string]: {
     [outcome: number]: {
       [orderType: string]: {
-        [orderId: string]: Order;
+        [orderID: string]: Order;
       };
     };
   };
@@ -30,32 +30,32 @@ interface Orders {
 // market, outcome, creator, orderType, limit, sort
 export function getOpenOrders(db: Knex, marketID: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, callback: (err?: Error|null, result?: any) => void): void {
   const queryData: {} = _.omitBy({
-    market_id: marketID,
+    marketID: marketID,
     outcome,
-    order_type: orderType,
-    order_creator: creator
+    orderType,
+    orderCreator: creator
   }, _.isNull);
   db("orders").where(queryData).asCallback((err?: Error|null, ordersRows?: Array<OrdersRow>): void => {
     if (err) return callback(err);
     if (!ordersRows || !ordersRows.length) return callback(null);
     const orders: Orders = {};
     ordersRows.forEach((row: OrdersRow): void => {
-      if (!orders[row.market_id]) orders[row.market_id] = {};
-      if (!orders[row.market_id][row.outcome]) orders[row.market_id][row.outcome] = {};
-      if (!orders[row.market_id][row.outcome][row.order_type]) orders[row.market_id][row.outcome][row.order_type] = {};
-      orders[row.market_id][row.outcome][row.order_type][row.order_id] = {
-        shareToken: row.share_token,
-        owner: row.order_creator,
-        creationTime: row.creation_time,
-        creationBlockNumber: row.creation_block_number,
+      if (!orders[row.marketID]) orders[row.marketID] = {};
+      if (!orders[row.marketID][row.outcome]) orders[row.marketID][row.outcome] = {};
+      if (!orders[row.marketID][row.outcome][row.orderType]) orders[row.marketID][row.outcome][row.orderType] = {};
+      orders[row.marketID][row.outcome][row.orderType][row.orderID] = {
+        shareToken: row.shareToken,
+        owner: row.orderCreator,
+        creationTime: row.creationTime,
+        creationBlockNumber: row.creationBlockNumber,
         price: row.price,
         amount: row.amount,
-        fullPrecisionPrice: row.full_precision_price,
-        fullPrecisionAmount: row.full_precision_amount,
-        tokensEscrowed: row.tokens_escrowed,
-        sharesEscrowed: row.shares_escrowed,
-        betterOrderId: row.better_order_id,
-        worseOrderId: row.worse_order_id
+        fullPrecisionPrice: row.fullPrecisionPrice,
+        fullPrecisionAmount: row.fullPrecisionAmount,
+        tokensEscrowed: row.tokensEscrowed,
+        sharesEscrowed: row.sharesEscrowed,
+        betterOrderID: row.betterOrderID,
+        worseOrderID: row.worseOrderID
       };
     });
     callback(null, orders);

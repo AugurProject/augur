@@ -14,13 +14,13 @@ export function getMarketsInfo(db: Knex, universe: Address|null|undefined, marke
   if (universe == null && marketIDs == null) {
     return callback(new Error("must include universe or marketIDs parameters"));
   } else if (universe != null && marketIDs != null) {
-    query = `${query} universe = ? AND market_id IN (??)`;
+    query = `${query} universe = ? AND marketID IN (??)`;
     queryParams = [universe!, marketIDs!];
   } else if (universe != null) {
     query = `${query} universe = ?`;
     queryParams = [universe!];
   } else {
-    query = `${query} market_id IN (??)`;
+    query = `${query} marketID IN (??)`;
     queryParams = [marketIDs!];
   }
   db.raw(query, queryParams).asCallback((err?: Error|null, marketsRows?: Array<MarketsRow>): void => {
@@ -28,10 +28,10 @@ export function getMarketsInfo(db: Knex, universe: Address|null|undefined, marke
     if (!marketsRows || !marketsRows.length) return callback(null);
     const marketsInfo: UIMarketsInfo = {};
     each(marketsRows, (marketsRow: MarketsRow, nextMarketsRow: ErrorCallback): void => {
-      db.raw("SELECT * FROM outcomes WHERE market_id = ?", [marketsRow.market_id]).asCallback((err?: Error|null, outcomesRows?: Array<OutcomesRow>): void => {
+      db.raw("SELECT * FROM outcomes WHERE marketID = ?", [marketsRow.marketID]).asCallback((err?: Error|null, outcomesRows?: Array<OutcomesRow>): void => {
         if (err) return nextMarketsRow(err);
         const outcomesInfo: Array<UIOutcomeInfo> = outcomesRows!.map((outcomesRow: OutcomesRow): UIOutcomeInfo => reshapeOutcomesRowToUIOutcomeInfo(outcomesRow));
-        marketsInfo[marketsRow.market_id] = reshapeMarketsRowToUIMarketInfo(marketsRow, outcomesInfo) as UIMarketInfo;
+        marketsInfo[marketsRow.marketID] = reshapeMarketsRowToUIMarketInfo(marketsRow, outcomesInfo) as UIMarketInfo;
         nextMarketsRow();
       });
     }, (err?: Error|null): void => {

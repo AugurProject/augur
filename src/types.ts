@@ -5,7 +5,7 @@ export interface EthereumNodeEndpoints {
   [protocol: string]: string;
 }
 export interface UploadBlockNumbers {
-  [networkId: string]: number;
+  [networkID: string]: number;
 }
 
 export type AbiEncodedData = string;
@@ -98,11 +98,11 @@ export interface GetAccountTransferHistoryRequest {
 }
 
 export interface MarketsContractAddressRow {
-  marketId: string;
+  marketID: string;
 }
 
 export interface MarketsRow {
-  marketId: Address;
+  marketID: Address;
   universe: Address;
   marketType: string;
   numOutcomes: number;
@@ -114,7 +114,7 @@ export interface MarketsRow {
   creationFee: string|number;
   marketCreatorFeeRate: string|number;
   marketCreatorFeesCollected: string|number|null;
-  topic: string;
+  category: string;
   tag1: string|null;
   tag2: string|null;
   volume: string|number;
@@ -133,7 +133,7 @@ export interface MarketsRow {
 }
 
 export interface OutcomesRow {
-  marketId: Address;
+  marketID: Address;
   outcome: number;
   price: string|number;
   sharesOutstanding: string|number;
@@ -145,7 +145,7 @@ export interface BlocksRow {
 }
 
 export interface UIConsensusInfo {
-  outcomeId: number;
+  outcomeID: number;
   isIndeterminate: boolean;
 }
 
@@ -157,7 +157,7 @@ export interface UIOutcomeInfo {
 
 export interface UIMarketInfo {
   id: Address;
-  branchId: Address;
+  branchID: Address;
   type: string;
   numOutcomes: number;
   minPrice: string|number;
@@ -187,8 +187,8 @@ export interface UIMarketInfo {
 }
 
 export interface OrdersRow {
-  orderId: Bytes32;
-  marketId: Address;
+  orderID: Bytes32;
+  marketID: Address;
   outcome: number;
   shareToken: Address;
   orderType: string;
@@ -201,24 +201,24 @@ export interface OrdersRow {
   fullPrecisionAmount: number|string;
   tokensEscrowed: number|string;
   sharesEscrowed: number|string;
-  betterOrderId: Bytes32|null;
-  worseOrderId: Bytes32|null;
-  tradeGroupId: Bytes32|null;
+  betterOrderID: Bytes32|null;
+  worseOrderID: Bytes32|null;
+  tradeGroupID: Bytes32|null;
 }
 
 export interface TradesRow {
   orderType: string;
-  marketId: Address;
+  marketID: Address;
   outcome: number;
   creator: Address;
   filler: Address;
   price: string|number;
   shares: string|number;
-  tradeGroupId: Bytes32|null;
+  tradeGroupID: Bytes32|null;
 }
 
 export interface JoinedReportsMarketsRow {
-  marketId: Address;
+  marketID: Address;
   universe: Address;
   reportingWindow: Address;
   reportingToken: Address;
@@ -236,7 +236,7 @@ export interface JoinedReportsMarketsRow {
 }
 
 export interface UIReport {
-  marketId: Address;
+  marketID: Address;
   reportingWindow: Address;
   payoutNumerators: Array<string|number|null>;
   amountStaked: string|number;
