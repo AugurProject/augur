@@ -2,7 +2,7 @@
 
 .AccountWithdraw {
   background: white;
-  padding: 5.625rem 0 0 4.375rem;
+  padding: 5.625rem 0 3rem 4.375rem;
   width: 100%;
 }
 
@@ -31,7 +31,8 @@
 
 .AccountWithdraw__description {
   border-right: 1px solid @color-lightergray;
-  flex: 0 0 26.25rem;
+  flex: 0 0 auto;
+  width: 26.25rem;
   
   p {
     font-size: 1.125rem;
@@ -44,6 +45,44 @@
     font-weight: 500;
     text-transform: uppercase;
   }
+}
+
+.AccountWithdraw__qrZone {
+  border-right: 1px solid @color-lightergray;
+  display: flex;
+  justify-content: center;
+}
+
+.AccountWithdraw__qrZone,
+.AccountWithdraw__address {
+  flex: 1 1 auto;
+}
+
+.AccountWithdraw__address {
+  margin-left: 2.56rem;
+
+  > * {
+    display: inline-block;
+  }
+}
+
+.AccountWithdraw__copyButtonElement {
+  text-align: left;
+}
+
+.AccountWithdraw__addressLabel {
+  color: @color-lightgray;
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  width: 100%;
+}
+
+.AccountWithdraw__addressString {
+  font-size: 0.75rem;
+  margin-right: 0.5rem;
+  vertical-align: text-top;
 }
 
 @media @breakpoint-mobile {
@@ -79,5 +118,19 @@
     a {
       font-size: 1.125rem;
     }
+  }
+
+  .AccountWithdraw__qrZone {
+    border: none;
+    margin-bottom: 2rem;
+  }
+
+  .AccountWithdraw__address {
+    margin: 0;
+    padding: 0 1rem;
+  }
+
+  .AccountWithdraw__addressString {
+    font-size: 1rem;
   }
 }
