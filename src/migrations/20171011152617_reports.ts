@@ -18,7 +18,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       isInvalid integer
     )`).then( (): void => {
       knex.schema.table("reports", (table: Knex.AlterTableBuilder): void => {
-        table.increments('reportID').primary().notNullable();
+        table.increments("reportID").primary().notNullable();
       });
     });
   });
