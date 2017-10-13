@@ -12,8 +12,6 @@ import {
   CLEAR_NEW_MARKET
 } from 'modules/create-market/actions/update-new-market'
 
-import { TAKER_FEE_DEFAULT, MAKER_FEE_DEFAULT } from 'modules/create-market/constants/new-market-constraints'
-
 import BigNumber from 'bignumber.js'
 
 describe('modules/create-market/reducers/new-market.js', () => {
@@ -31,7 +29,6 @@ describe('modules/create-market/reducers/new-market.js', () => {
       const expected = {
         isValid: false,
         holdForUserAction: false,
-        hour: '',
         currentStep: 0,
         type: '',
         scalarSmallNum: '',
@@ -42,14 +39,10 @@ describe('modules/create-market/reducers/new-market.js', () => {
         expirySource: '',
         endDate: {},
         detailsText: '',
-        category: '',
-        tag1: '',
-        tag2: '',
+        topic: '',
+        keywords: [],
         outcomes: Array(8).fill(''),
-        takerFee: TAKER_FEE_DEFAULT,
-        makerFee: MAKER_FEE_DEFAULT,
-        meridiem: '',
-        minute: '',
+        settlementFee: 2,
         orderBook: {},
         orderBookSorted: {},
         orderBookSeries: {},
@@ -394,7 +387,6 @@ describe('modules/create-market/reducers/new-market.js', () => {
       const expected = {
         isValid: false,
         holdForUserAction: false,
-        hour: '',
         currentStep: 0,
         type: '',
         scalarSmallNum: '',
@@ -405,14 +397,10 @@ describe('modules/create-market/reducers/new-market.js', () => {
         expirySource: '',
         endDate: {},
         detailsText: '',
-        category: '',
-        tag1: '',
-        tag2: '',
         outcomes: Array(8).fill(''),
-        takerFee: TAKER_FEE_DEFAULT,
-        makerFee: MAKER_FEE_DEFAULT,
-        meridiem: '',
-        minute: '',
+        keywords: [],
+        settlementFee: 2,
+        topic: '',
         orderBook: {},
         orderBookSorted: {},
         orderBookSeries: {},

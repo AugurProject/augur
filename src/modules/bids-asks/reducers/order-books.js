@@ -1,36 +1,65 @@
-import { UPDATE_MARKET_ORDER_BOOK, REPLACE_MARKET_ORDER_BOOK, CLEAR_MARKET_ORDER_BOOK } from 'modules/bids-asks/actions/update-market-order-book'
+import { UPDATE_ORDER_BOOK, REPLACE_ORDER_BOOK, CLEAR_ORDER_BOOK } from 'modules/bids-asks/actions/update-order-book'
 
 /**
  * @param {Object} orderBooks
  * @param {Object} action
- * @return {{}} key: marketID, value: {buy: {}, sell: {}}
  */
 export default function (orderBooks = {}, action) {
   switch (action.type) {
-    case UPDATE_MARKET_ORDER_BOOK: {
-      const orderBook = orderBooks[action.marketID] || {}
+    case UPDATE_ORDER_BOOK: {
+      const marketID = action.marketID
+      const outcome = action.outcome
+      const orderTypeLabel = action.orderTypeLabel
+      const marketOrderBook = orderBooks[marketID] || {}
+      const outcomeOrderBook = marketOrderBook[outcome] || {}
       return {
         ...orderBooks,
-        [action.marketID]: {
-          buy: (orderBook.buy)
-            ? { ...orderBook.buy, ...action.marketOrderBook.buy }
-            : action.marketOrderBook.buy,
-          sell: (orderBook.sell)
-            ? { ...orderBook.sell, ...action.marketOrderBook.sell }
-            : action.marketOrderBook.sell
+        [marketID]: {
+          ...marketOrderBook,
+          [outcome]: {
+            ...outcomeOrderBook,
+            [orderTypeLabel]: {
+              ...(outcomeOrderBook[orderTypeLabel] || {}),
+              ...action.orderBook
+            }
+          }
         }
       }
     }
-    case REPLACE_MARKET_ORDER_BOOK:
+    case REPLACE_ORDER_BOOK: {
+      const marketID = action.marketID
+      const outcome = action.outcome
+      const orderTypeLabel = action.orderTypeLabel
+      const marketOrderBook = orderBooks[marketID] || {}
+      const outcomeOrderBook = marketOrderBook[outcome] || {}
       return {
         ...orderBooks,
-        [action.marketID]: action.marketOrderBook
+        [marketID]: {
+          ...marketOrderBook,
+          [outcome]: {
+            ...outcomeOrderBook,
+            [orderTypeLabel]: action.orderBook
+          }
+        }
       }
-    case CLEAR_MARKET_ORDER_BOOK:
+    }
+    case CLEAR_ORDER_BOOK: {
+      const marketID = action.marketID
+      const outcome = action.outcome
+      const orderTypeLabel = action.orderTypeLabel
+      const marketOrderBook = orderBooks[marketID] || {}
+      const outcomeOrderBook = marketOrderBook[outcome] || {}
       return {
         ...orderBooks,
-        [action.marketID]: { buy: {}, sell: {} }
+        [marketID]: {
+          ...marketOrderBook,
+          [outcome]: {
+            ...outcomeOrderBook,
+            [orderTypeLabel]: {}
+          }
+        }
       }
+    }
     default:
       return orderBooks
   }

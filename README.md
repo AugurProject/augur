@@ -29,8 +29,7 @@ cd augur
 
 ### NPM
 ```
-npm install
-npm run link
+npm i
 npm run build
 ```
 
@@ -52,11 +51,13 @@ Simply copy these files to your web server of choice.
 
 ### NPM
 ```
+npm i
 npm run dev
 ```
 
 ### [Yarn](https://yarnpkg.com/)
 ```
+yarn
 yarn dev
 ```
 

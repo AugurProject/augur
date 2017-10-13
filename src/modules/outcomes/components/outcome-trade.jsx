@@ -8,7 +8,7 @@ import OutcomeTradeAction from 'modules/outcomes/components/outcome-trade-action
 import ComponentNav from 'modules/common/components/component-nav'
 
 import { SHARE, MICRO_SHARE, MILLI_SHARE } from 'modules/market/constants/share-denominations'
-import { BUY } from 'modules/outcomes/constants/trade-types'
+import { BUY } from 'modules/transactions/constants/types'
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
 import { SCALAR } from 'modules/markets/constants/market-types'
 
@@ -218,14 +218,7 @@ export default class OutcomeTrade extends Component {
             hasFunds={hasFunds}
             selectedID={selectedID}
             submitTrade={p.submitTrade}
-            disabled={p.isTradeCommitLocked}
           />
-        }
-        {tradeOrder && s.isSharesValueValid && s.isLimitPriceValueValid && p.isTradeCommitLocked &&
-          <div className="trade-in-progress-notice">
-            <span>Trade Currently In-Progress</span>
-            <span>You may trade once your previous trade has completed</span>
-          </div>
         }
       </article>
     )

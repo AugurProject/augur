@@ -190,12 +190,10 @@ describe('modules/account/selectors/core-stats', () => {
         CoreStatsRewireAPI.__Rewire__('selectOutcomeLastPrice', () => '0.2')
         CoreStatsRewireAPI.__Rewire__('augur', {
           trading: {
-            positions: {
-              calculateProfitLoss: () => ({
-                realized: '-1',
-                unrealized: '2'
-              })
-            }
+            calculateProfitLoss: () => ({
+              realized: '-1',
+              unrealized: '2'
+            })
           }
         })
 

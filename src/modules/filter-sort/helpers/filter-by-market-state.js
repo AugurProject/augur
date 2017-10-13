@@ -11,7 +11,7 @@ export default function (selectedMarketState, currentReportingPeriod, items) {
         if (isMarketDataOpen(market)) return [...p, i]
         break
       case STATES.MARKET_REPORTING:
-        if (market.tradingPeriod === currentReportingPeriod) return [...p, i]
+        if (market.reportingWindow === currentReportingPeriod) return [...p, i]
         break
       case STATES.MARKET_CLOSED:
         if (!isMarketDataOpen(market)) return [...p, i]

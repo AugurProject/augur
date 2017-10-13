@@ -8,7 +8,7 @@ const TransactionsLoadingActions = p => (
     {!p.transactionsLoading && !p.hasAllTransactionsLoaded &&
       <div className="transactions-load-buttons">
         <button
-          className={classNames('unstyled', { disabled: !p.registerBlockNumber })}
+          className={classNames('unstyled', { disabled: true })}
           onClick={() => {
             if (!p.transactionsLoading) p.loadMoreTransactions()
           }}
@@ -16,7 +16,7 @@ const TransactionsLoadingActions = p => (
           <span>Load More</span>
         </button>
         <button
-          className={classNames('unstyled', { disabled: !p.registerBlockNumber })}
+          className={classNames('unstyled', { disabled: true })}
           onClick={() => {
             if (!p.transactionsLoading) p.loadAllTransactions()
           }}
@@ -24,7 +24,7 @@ const TransactionsLoadingActions = p => (
           <span>Load All</span>
         </button>
         <button
-          className={classNames('unstyled', { disabled: !p.registerBlockNumber }, { hidden: !p.allowExport })}
+          className={classNames('unstyled', { disabled: true }, { hidden: !p.allowExport })}
           onClick={() => {
             if (!p.transactionsLoading) {
               p.triggerTransactionsExport()
@@ -66,7 +66,6 @@ TransactionsLoadingActions.propTypes = {
   triggerTransactionsExport: PropTypes.func.isRequired,
   transactionsLoading: PropTypes.bool,
   hasAllTransactionsLoaded: PropTypes.bool,
-  registerBlockNumber: PropTypes.number,
   allowExport: PropTypes.bool,
 }
 

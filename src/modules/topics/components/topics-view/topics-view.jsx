@@ -25,7 +25,7 @@ export default class TopicsView extends Component {
     history: PropTypes.object.isRequired,
     isLogged: PropTypes.bool.isRequired,
     topics: PropTypes.array,
-    branch: PropTypes.object,
+    universe: PropTypes.object,
     loginAccount: PropTypes.object
   }
 

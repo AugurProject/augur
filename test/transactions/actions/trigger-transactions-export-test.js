@@ -27,12 +27,10 @@ describe(`modules/transactions/actions/trigger-transactions-export.js`, () => {
     })
   }
   test({
-    description: 'should trigger a download if transactionsOldestLoadedBlock is defined and equal to loginAccount.registerBlockNumber, and transactionsLoading is false',
+    description: 'should trigger a download if transactionsLoading is false',
     state: {
       transactions: [{ id: 1, text: 'a transaction' }, { id: 2, text: 'another transaction' }],
-      transactionsLoading: false,
-      transactionsOldestLoadedBlock: 100,
-      loginAccount: { registerBlockNumber: 100 },
+      transactionsLoading: false
     },
     transactionsSelector: {
       selectTransactions: state => state.transactions
@@ -64,81 +62,11 @@ describe(`modules/transactions/actions/trigger-transactions-export.js`, () => {
     }
   })
   test({
-    description: 'should dispatch a loadAccountHistory action if transactionsOldestLoadedBlock is not defined but transactionsLoading is false',
-    state: {
-      transactions: [{ id: 1, text: 'a transaction' }, { id: 2, text: 'another transaction' }],
-      transactionsLoading: false,
-      transactionsOldestLoadedBlock: undefined,
-      loginAccount: { registerBlockNumber: 100 },
-    },
-    transactionsSelector: {
-      selectTransactions: state => state.transactions
-    },
-    loadAccountHistory: {
-      loadAccountHistory: (loadAll, cb) => {
-        assert.isTrue(loadAll, 'loadAll passed to loadAccountHistory should be true')
-        assert.isFunction(cb, 'cb passed to loadAccountHistory should be a function')
-        return { type: 'LOAD_ACCOUNT_HISTORY', loadAll }
-      }
-    },
-    expectedOutput: [{ type: 'LOAD_ACCOUNT_HISTORY', loadAll: true }],
-    assertions: (storeActions, expected) => {
-      assert.deepEqual(storeActions, expected, 'Did not produce the expected actions')
-    }
-  })
-  test({
-    description: 'should dispatch a loadAccountHistory action if loginAccount.registerBlockNumber is not defined but transactionsLoading is false',
-    state: {
-      transactions: [{ id: 1, text: 'a transaction' }, { id: 2, text: 'another transaction' }],
-      transactionsLoading: false,
-      transactionsOldestLoadedBlock: 200,
-      loginAccount: { registerBlockNumber: undefined },
-    },
-    transactionsSelector: {
-      selectTransactions: state => state.transactions
-    },
-    loadAccountHistory: {
-      loadAccountHistory: (loadAll, cb) => {
-        assert.isTrue(loadAll, 'loadAll passed to loadAccountHistory should be true')
-        assert.isFunction(cb, 'cb passed to loadAccountHistory should be a function')
-        return { type: 'LOAD_ACCOUNT_HISTORY', loadAll }
-      }
-    },
-    expectedOutput: [{ type: 'LOAD_ACCOUNT_HISTORY', loadAll: true }],
-    assertions: (storeActions, expected) => {
-      assert.deepEqual(storeActions, expected, 'Did not produce the expected actions')
-    }
-  })
-  test({
-    description: 'should dispatch a loadAccountHistory action if transactionsOldestLoadedBlock does not equal loginAccount.registerBlockNumber but transactionsLoading is false',
-    state: {
-      transactions: [{ id: 1, text: 'a transaction' }, { id: 2, text: 'another transaction' }],
-      transactionsLoading: false,
-      transactionsOldestLoadedBlock: 150,
-      loginAccount: { registerBlockNumber: 100 },
-    },
-    transactionsSelector: {
-      selectTransactions: state => state.transactions
-    },
-    loadAccountHistory: {
-      loadAccountHistory: (loadAll, cb) => {
-        assert.isTrue(loadAll, 'loadAll passed to loadAccountHistory should be true')
-        assert.isFunction(cb, 'cb passed to loadAccountHistory should be a function')
-        return { type: 'LOAD_ACCOUNT_HISTORY', loadAll }
-      }
-    },
-    expectedOutput: [{ type: 'LOAD_ACCOUNT_HISTORY', loadAll: true }],
-    assertions: (storeActions, expected) => {
-      assert.deepEqual(storeActions, expected, 'Did not produce the expected actions')
-    }
-  })
-  test({
     description: 'should dispatch a loadAccountHistory action if transactionsLoading is true',
     state: {
       transactions: [{ id: 1, text: 'a transaction' }, { id: 2, text: 'another transaction' }],
       transactionsLoading: true,
-      transactionsOldestLoadedBlock: 150,
-      loginAccount: { registerBlockNumber: 100 },
+      transactionsOldestLoadedBlock: 150
     },
     transactionsSelector: {
       selectTransactions: state => state.transactions

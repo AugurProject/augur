@@ -11,38 +11,15 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
   const test = (t) => {
     it(t.description, () => {
       const store = mockStore(t.state)
-      const AugurJS = {
-        augur: {
-          getRegisterBlockNumber: () => {},
-          Register: {
-            register: () => {}
-          }
-        }
-      }
-      const FundNewAccount = { fundNewAccount: () => {} }
       const LoadAccountDataFromLocalStorage = {}
-      const LoadRegisterBlockNumber = {}
       const UpdateAssets = { updateAssets: () => {} }
       const UpdateLoginAccount = { updateLoginAccount: () => {} }
       const action = proxyquire('../../../src/modules/auth/actions/load-account-data.js', {
-        '../../../services/augurjs': AugurJS,
-        './fund-new-account': FundNewAccount,
         './load-account-data-from-local-storage': LoadAccountDataFromLocalStorage,
-        './load-register-block-number': LoadRegisterBlockNumber,
         './update-assets': UpdateAssets,
         './update-login-account': UpdateLoginAccount
       })
-
-      sinon.stub(AugurJS.augur.Register, 'register', params => params.onSuccess({ callReturn: '1' }))
-      sinon.stub(AugurJS.augur, 'getRegisterBlockNumber', (address, callback) => {
-        if (!callback) return t.blockchain.registerBlockNumber
-        callback(null, t.blockchain.registerBlockNumber)
-      })
-      sinon.stub(FundNewAccount, 'fundNewAccount', () => (dispatch, getState) => {
-        dispatch({ type: 'FUND_NEW_ACCOUNT' })
-      })
       LoadAccountDataFromLocalStorage.loadAccountDataFromLocalStorage = sinon.stub().returns({ type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE' })
-      LoadRegisterBlockNumber.loadRegisterBlockNumber = sinon.stub().returns({ type: 'LOAD_REGISTER_BLOCK_NUMBER' })
       sinon.stub(UpdateAssets, 'updateAssets', callback => (dispatch) => {
         dispatch({ type: 'UPDATE_ASSETS' })
         if (callback) callback(null, t.blockchain.balances)
@@ -97,8 +74,6 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         data: { address: '0xb0b' }
       }, {
         type: 'UPDATE_ASSETS'
-      }, {
-        type: 'LOAD_REGISTER_BLOCK_NUMBER'
       }])
     }
   })
@@ -120,8 +95,6 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         data: { address: '0xb0b' }
       }, {
         type: 'UPDATE_ASSETS'
-      }, {
-        type: 'FUND_NEW_ACCOUNT'
       }])
     }
   })
@@ -143,8 +116,6 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         data: { address: '0xb0b' }
       }, {
         type: 'UPDATE_ASSETS'
-      }, {
-        type: 'FUND_NEW_ACCOUNT'
       }])
     }
   })
@@ -176,8 +147,6 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         }
       }, {
         type: 'UPDATE_ASSETS'
-      }, {
-        type: 'LOAD_REGISTER_BLOCK_NUMBER'
       }])
     }
   })
@@ -203,8 +172,6 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         }
       }, {
         type: 'UPDATE_ASSETS'
-      }, {
-        type: 'LOAD_REGISTER_BLOCK_NUMBER'
       }])
     }
   })

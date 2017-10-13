@@ -17,7 +17,7 @@ export default options => (
       this.loadAsyncComponent(options.loader, options.props)
     }
 
-    loadAsyncComponent(loader, props) {
+    loadAsyncComponent(loader) {
       loader()
         .then((Component) => {
           this.setState({ Component })

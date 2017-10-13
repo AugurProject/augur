@@ -18,7 +18,7 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
         status: 'sent',
         data: {
           events: [
-            'log_add_tx',
+            'CreateOrder',
             'sentCash'
           ],
           gas: 725202,
@@ -31,7 +31,7 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
             'tradeGroupID'
           ],
           label: 'Bid',
-          method: 'buy',
+          name: 'buy',
           mutable: true,
           send: true,
           signature: [
@@ -79,7 +79,7 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
         status: 'success',
         data: {
           events: [
-            'log_add_tx',
+            'CreateOrder',
             'sentCash'
           ],
           gas: 725202,
@@ -92,7 +92,7 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
             'tradeGroupID'
           ],
           label: 'Bid',
-          method: 'buy',
+          name: 'buy',
           mutable: true,
           send: true,
           signature: [

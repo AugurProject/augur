@@ -3,9 +3,9 @@ import { clearReports } from 'modules/reports/actions/update-reports'
 import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades'
 import { loadBidsAsksHistory } from 'modules/bids-asks/actions/load-bids-asks-history'
 import { loadCreateMarketHistory } from 'modules/create-market/actions/load-create-market-history'
-import { loadFundingHistory, loadTransferHistory } from 'modules/account/actions/load-funding-history'
+import { loadFundingHistory } from 'modules/account/actions/load-funding-history'
 import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-history'
-import { syncBranch } from 'modules/branch/actions/sync-branch'
+import syncUniverse from 'modules/universe/actions/sync-universe'
 import { updateTransactionsOldestLoadedBlock } from 'modules/transactions/actions/update-transactions-oldest-loaded-block'
 import { updateTransactionsLoading } from 'modules/transactions/actions/update-transactions-loading'
 
@@ -17,12 +17,12 @@ export const loadAccountHistory = (loadAllHistory, triggerTransactionsExport) =>
   const blockChunkSize = 5760 // ~1 Day based on 15 second blocks
   const transactionSoftLimit = 40 // Used if blockChunkSize does not load # of transactions up to the soft limit (approximately two UI pages of transactions)
 
-  const registerBlock = loginAccount.registerBlockNumber
+  const registerBlock = loginAccount.registerBlockNumber // FIXME
   const oldestLoadedBlock = transactionsOldestLoadedBlock || blockchain.currentBlockNumber
 
   if (!transactionsOldestLoadedBlock) { // Denotes nothing has loaded yet
     dispatch(clearReports())
-    dispatch(syncBranch())
+    dispatch(syncUniverse())
   }
 
   if (registerBlock && oldestLoadedBlock && oldestLoadedBlock !== registerBlock) {
@@ -97,10 +97,6 @@ function loadTransactions(dispatch, getState, options, constraints, cb) {
       next(null)
     })),
     next => dispatch(loadFundingHistory(options, (err) => {
-      if (err) next(err)
-      next(null)
-    })),
-    next => dispatch(loadTransferHistory(options, (err) => {
       if (err) next(err)
       next(null)
     })),

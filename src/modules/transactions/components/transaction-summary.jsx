@@ -4,9 +4,8 @@ import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 import ValueTimestamp from 'modules/common/components/value-timestamp'
-import ReportEthics from 'modules/my-reports/components/report-ethics'
 
-import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_REPORT, REVEAL_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from 'modules/transactions/constants/types'
+import { CREATE_MARKET, BUY, SELL, BID, ASK, MATCH_BID, MATCH_ASK, SUBMIT_REPORT, CANCEL_ORDER, SELL_COMPLETE_SETS } from 'modules/transactions/constants/types'
 import { FUND_ACCOUNT } from 'modules/auth/constants/auth-types'
 import { SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types'
 
@@ -55,8 +54,6 @@ const TransactionSummaryContent = p => (
 function transactionAction(transaction) {
   const action = () => {
     switch (transaction.type) {
-      case FUND_ACCOUNT:
-        return 'Fund Account '
       case BUY:
         return 'Buy '
       case BID:
@@ -65,10 +62,6 @@ function transactionAction(transaction) {
         return 'Sell '
       case ASK:
         return 'Ask '
-      case SHORT_SELL:
-        return 'Short Sell '
-      case SHORT_ASK:
-        return 'Short Ask '
       case MATCH_BID:
         return 'Bid Filled '
       case MATCH_ASK:
@@ -79,11 +72,8 @@ function transactionAction(transaction) {
         return `Redeem ${transaction.numShares.formatted} Complete Sets `
       case CREATE_MARKET:
         return 'Create Market '
-      case GENERATE_ORDER_BOOK:
-        return 'Generate Order Book '
-      case COMMIT_REPORT:
-      case REVEAL_REPORT:
-        return transaction.type === COMMIT_REPORT ? 'Commit Report ' : 'Reveal Report '
+      case SUBMIT_REPORT:
+        return 'Submit Report '
       default:
         return transaction.type
     }
@@ -98,8 +88,6 @@ function transactionActionDetails(transaction) {
     case BID:
     case SELL:
     case ASK:
-    case SHORT_SELL:
-    case SHORT_ASK:
     case MATCH_BID:
     case MATCH_ASK: {
       return (
@@ -129,8 +117,7 @@ function transactionActionDetails(transaction) {
         </div>
       )
     }
-    case COMMIT_REPORT:
-    case REVEAL_REPORT: {
+    case SUBMIT_REPORT: {
       const type = getValue(transaction, 'data.market.type')
       const outcomeName = getValue(transaction, 'data.outcome.name')
       const reportedOutcome = (transaction.data.isScalar || type === SCALAR) ?
@@ -141,9 +128,6 @@ function transactionActionDetails(transaction) {
         <div className="transaction-trade-action-report-details">
           {!!reportedOutcome &&
             <span className="transaction-reported-outcome">{reportedOutcome}</span>
-          }
-          {!!transaction.data.isUnethical &&
-            <ReportEthics isUnethical={transaction.data.isUnethical} />
           }
         </div>
       )
