@@ -3,11 +3,15 @@
 [![Build Status](https://travis-ci.org/AugurProject/augur-node.svg)](https://travis-ci.org/AugurProject/augur-node)
 [![Coverage Status](https://coveralls.io/repos/AugurProject/augur-node/badge.svg?branch=master&service=github)](https://coveralls.io/github/AugurProject/augur-node?branch=master)
 [![npm version](https://badge.fury.io/js/augur-node.svg)](http://badge.fury.io/js/augur-node)
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=http://github.com/AugurProject/augur-node/tree/feature/3862_heroku&env[ENDPOINT_HTTP]="PUT YOUR ENDPOINT IN YOUR ENV")
 
 Augur Node is designed to be a standalone application, including a local
 database setup that supports sqlite as well as postgresql. We use knex to
 manage the local migrations and schema changes.
+
+## Deployment
+If you just wanna get up an running quickly there is a one-click heroku deployment option.
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=http://github.com/AugurProject/augur-node/tree/feature/3862_heroku&env[ENDPOINT_HTTP]=PUT_YOUR_ENDPOINT_IN_YOUR_CONFIG)
 
 ## Building
 This project uses typescript and can be safely built via: `npm run build` or directly with `tsc`
