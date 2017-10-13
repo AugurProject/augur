@@ -5,6 +5,9 @@
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
   "main": "build/index.js",
+  "engines": {
+    "node": "~8"
+  },
   "directories": {
     "src": "src",
     "test": "test"
