@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 
 import calcProfits from 'modules/trade/helpers/calc-order-profit-loss-percents'
 
-import { BUY, SELL } from 'modules/trade/constants/types'
+import { BUY, SELL } from 'modules/transactions/constants/types'
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 
 describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {

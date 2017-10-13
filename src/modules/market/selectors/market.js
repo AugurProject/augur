@@ -20,19 +20,18 @@ That way the market only gets re-assembled when that specific favorite changes.
 This is true for all selectors, but especially important for this one.
 */
 
+import BigNumber from 'bignumber.js'
 import memoize from 'memoizee'
 import { formatShares, formatEtherTokens, formatPercent, formatNumber } from 'utils/format-number'
 import { formatDate } from 'utils/format-date'
 import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open'
 
-import { BRANCH_ID } from 'modules/app/constants/network'
+import { UNIVERSE_ID } from 'modules/app/constants/network'
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from 'modules/markets/constants/market-outcomes'
-import { abi } from 'services/augurjs'
 
 import { placeTrade } from 'modules/trade/actions/place-trade'
-import { commitReport } from 'modules/reports/actions/commit-report'
-import { slashRep } from 'modules/reports/actions/slash-rep'
+import { submitReport } from 'modules/reports/actions/submit-report'
 
 import store from 'src/store'
 
@@ -61,7 +60,7 @@ export default function () {
 export const selectSelectedMarket = state => selectMarket(state.selectedMarketID)
 
 export const selectMarket = (marketID) => {
-  const { marketsData, marketLoading, favorites, reports, outcomesData, netEffectiveTrades, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState()
+  const { marketsData, marketLoading, favorites, reports, outcomesData, accountTrades, tradesInProgress, priceHistory, orderBooks, universe, orderCancellation, smallestPositions, loginAccount } = store.getState()
   const accountPositions = selectAccountPositions()
 
   if (!marketID || !marketsData || !marketsData[marketID]) {
@@ -81,9 +80,8 @@ export const selectMarket = (marketID) => {
     !!favorites[marketID],
     outcomesData[marketID],
 
-    selectMarketReport(marketID, reports[branch.id || BRANCH_ID]),
+    selectMarketReport(marketID, reports[universe.id || UNIVERSE_ID]),
     (accountPositions || {})[marketID],
-    (netEffectiveTrades || {})[marketID],
     (accountTrades || {})[marketID],
     tradesInProgress[marketID],
 
@@ -92,8 +90,7 @@ export const selectMarket = (marketID) => {
     endDate.getMonth(),
     endDate.getDate(),
 
-    branch && branch.isReportRevealPhase,
-    branch && branch.reportPeriod,
+    universe && universe.currentReportingWindowAddress,
 
     orderBooks[marketID],
     orderCancellation,
@@ -115,14 +112,12 @@ export function assembleMarket(
     marketOutcomesData,
     marketReport,
     marketAccountPositions,
-    marketNetEffectiveTrades,
     marketAccountTrades,
     marketTradeInProgress,
     endDateYear,
     endDateMonth,
     endDateDay,
-    isReportRevealPhase,
-    reportPeriod,
+    currentReportingWindowAddress,
     orderBooks,
     orderCancellation,
     smallestPosition,
@@ -141,21 +136,17 @@ export function assembleMarket(
       marketOutcomesData,
       marketReport,
       marketAccountPositions,
-      marketNetEffectiveTrades,
       marketAccountTrades,
       marketTradeInProgress,
       endDateYear,
       endDateMonth,
       endDateDay,
-      isReportRevealPhase,
-      reportPeriod,
+      currentReportingWindowAddress,
       orderBooks,
       orderCancellation,
       smallestPosition,
       loginAccount,
-      dispatch) => { // console.log('>>assembleMarket<<');
-
-      // console.log('### Assemble Market ### -- ', marketID);
+      dispatch) => {
 
       const market = {
         ...marketData,
@@ -196,23 +187,19 @@ export function assembleMarket(
       // market.isExpired = isExpired;
       market.isFavorite = isFavorite
 
-      market.takerFeePercent = formatPercent(marketData.takerFee * 100, { positiveSign: false })
-      market.makerFeePercent = formatPercent(marketData.makerFee * 100, { positiveSign: false })
+      market.settlementFeePercent = formatPercent(marketData.settlementFee * 100, { positiveSign: false })
       market.volume = formatShares(marketData.volume, { positiveSign: false })
 
-      market.isRequiredToReportByAccount = !!marketReport // was the user chosen to report on this market
-      market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportHash && !isReportRevealPhase // account is required to report on this unreported market during reporting phase
-      market.isReportSubmitted = market.isRequiredToReportByAccount && !!marketReport.reportHash // the user submitted a report that is not yet confirmed (reportHash === true)
-      market.isReported = market.isReportSubmitted && !!marketReport.reportHash.length // the user fully reported on this market (reportHash === [string])
-      market.isMissedReport = market.isRequiredToReportByAccount && !market.isReported && !market.isReportSubmitted && isReportRevealPhase // the user submitted a report that is not yet confirmed
-      market.isReportTabVisible = market.isRequiredToReportByAccount && !isReportRevealPhase
-      market.isSnitchTabVisible = market.tradingPeriod === reportPeriod
+      market.isRequiredToReportByAccount = !!marketReport
+      market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportedOutcomeID // account is required to report on this market
+      market.isReported = market.isRequiredToReportByAccount && !!marketReport.reportedOutcomeID // the user has reported on this market
+      market.isReportTabVisible = market.isRequiredToReportByAccount
 
-      market.onSubmitPlaceTrade = outcomeID => dispatch(placeTrade(marketID, outcomeID, marketTradeInProgress))
+      market.onSubmitPlaceTrade = outcomeID => dispatch(placeTrade(marketID, outcomeID, marketTradeInProgress[outcomeID]))
 
       market.report = {
         ...marketReport,
-        onSubmitReport: (reportedOutcomeID, isUnethical, isIndeterminate, history) => dispatch(commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate, history))
+        onSubmitReport: (reportedOutcomeID, amountToStake, isIndeterminate, history) => dispatch(submitReport(market, reportedOutcomeID, amountToStake, isIndeterminate, history))
       }
 
       market.outcomes = []
@@ -241,7 +228,7 @@ export function assembleMarket(
               zeroStyled: true
             })
           } else {
-            const midPoint = (abi.bignum(market.minValue).plus(abi.bignum(market.maxValue))).dividedBy(2)
+            const midPoint = (new BigNumber(market.minPrice, 10).plus(new BigNumber(market.maxPrice, 10))).dividedBy(2)
             outcome.lastPricePercent = formatNumber(midPoint, {
               decimals: 2,
               decimalsRounded: 1,
@@ -281,7 +268,6 @@ export function assembleMarket(
       market.reportableOutcomes = selectReportableOutcomes(market.type, market.outcomes)
       const indeterminateOutcomeID = market.type === BINARY ? BINARY_INDETERMINATE_OUTCOME_ID : CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID
       market.reportableOutcomes.push({ id: indeterminateOutcomeID, name: INDETERMINATE_OUTCOME_NAME })
-      market.onSubmitSlashRep = (salt, report, address, isIndeterminate, isUnethical) => dispatch(slashRep(market, salt, report, address, isIndeterminate, isUnethical))
 
       market.userOpenOrdersSummary = selectUserOpenOrdersSummary(market.outcomes)
 
@@ -306,7 +292,7 @@ export function assembleMarket(
           if (marketOutcome) market.consensus.outcomeName = marketOutcome.name
         }
         if (market.consensus.proportionCorrect) {
-          market.consensus.percentCorrect = formatPercent(abi.bignum(market.consensus.proportionCorrect).times(100))
+          market.consensus.percentCorrect = formatPercent(new BigNumber(market.consensus.proportionCorrect, 10).times(100))
         }
       } else {
         market.consensus = null
@@ -319,13 +305,13 @@ export function assembleMarket(
   return assembledMarketsCache[marketID].apply(this, arguments) // eslint-disable-line prefer-rest-params
 }
 
-export const selectMarketReport = (marketID, branchReports) => {
-  if (marketID && branchReports) {
-    const branchReportsEventIDs = Object.keys(branchReports)
-    const numBranchReports = branchReportsEventIDs.length
-    for (let i = 0; i < numBranchReports; ++i) {
-      if (branchReports[branchReportsEventIDs[i]].marketID === marketID) {
-        return branchReports[branchReportsEventIDs[i]]
+export const selectMarketReport = (marketID, universeReports) => {
+  if (marketID && universeReports) {
+    const universeReportsMarketIDs = Object.keys(universeReports)
+    const numUniverseReports = universeReportsMarketIDs.length
+    for (let i = 0; i < numUniverseReports; ++i) {
+      if (universeReports[universeReportsMarketIDs[i]].marketID === marketID) {
+        return universeReports[universeReportsMarketIDs[i]]
       }
     }
   }
@@ -333,14 +319,6 @@ export const selectMarketReport = (marketID, branchReports) => {
 
 export const selectScalarMinimum = (market) => {
   const scalarMinimum = {}
-  if (market && market.type === SCALAR) scalarMinimum.minValue = market.minValue
+  if (market && market.type === SCALAR) scalarMinimum.minPrice = market.minPrice
   return scalarMinimum
 }
-
-export const selectMarketIDFromEventID = (eventID) => {
-  const marketIDs = store.getState().eventMarketsMap[eventID]
-  if (marketIDs && marketIDs.length) return marketIDs[0]
-  return null
-}
-
-export const selectMarketFromEventID = eventID => selectMarket(selectMarketIDFromEventID(eventID))

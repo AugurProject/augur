@@ -9,7 +9,7 @@ import NullStateMessage from 'modules/common/components/null-state-message'
 import parseMarketTitle from 'modules/market/helpers/parse-market-title'
 import parseQuery from 'modules/routes/helpers/parse-query'
 import getValue from 'utils/get-value'
-import { abi } from 'services/augurjs'
+import speedomatic from 'speedomatic'
 
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names'
 
@@ -34,12 +34,12 @@ export default class MarketView extends Component {
   }
 
   componentWillMount() {
-    const marketId = abi.format_int256(parseQuery(this.props.location.search)[MARKET_ID_PARAM_NAME])
+    const marketId = speedomatic.formatInt256(parseQuery(this.props.location.search)[MARKET_ID_PARAM_NAME])
 
     this.props.updateSelectedMarketID(marketId)
     this.setState({ marketId })
 
-    if (this.props.isConnected && getValue(this.props, 'branch.id') && marketId) this.props.loadFullMarket(marketId)
+    if (this.props.isConnected && getValue(this.props, 'universe.id') && marketId) this.props.loadFullMarket(marketId)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -51,11 +51,11 @@ export default class MarketView extends Component {
     if (
       (
         this.props.isConnected !== nextProps.isConnected ||
-        getValue(this.props, 'branch.id') !== getValue(nextProps, 'branch.id') ||
+        getValue(this.props, 'universe.id') !== getValue(nextProps, 'universe.id') ||
         this.state.marketId !== nextState.marketId
       ) &&
       nextProps.isConnected &&
-      getValue(nextProps, 'branch.id') !== null &&
+      getValue(nextProps, 'universe.id') !== null &&
       nextState.marketId !== null
     ) {
       this.props.loadFullMarket(nextState.marketId)

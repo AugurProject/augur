@@ -4,8 +4,7 @@ import BigNumber from 'bignumber.js'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
 import mocks from 'test/mockStore'
-import { CANCEL_ORDER } from 'modules/transactions/constants/types'
-import { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types'
+import { CANCEL_ORDER, BID, ASK } from 'modules/transactions/constants/types'
 
 describe('modules/bids-asks/actions/cancel-order.js', () => {
   proxyquire.noPreserveCache().noCallThru()

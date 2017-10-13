@@ -8,7 +8,7 @@ import store from 'src/store'
 
 {
   blockchain: {},
-  branch: {},
+  universe: {},
   auth: { selectedAuthType: 'register', err: null },
   loginAccount: {},
   activePage: 'topics',
@@ -38,9 +38,9 @@ describe(`store.js`, () => {
     assert.isObject(state.blockchain, 'blockchain is not an object')
     assert.deepEqual(state.blockchain, {}, 'blockchain is not an empty object')
 
-    assert.isOk(state.branch, 'branch is not defined')
-    assert.isObject(state.branch, 'branch is not an object')
-    assert.deepEqual(state.branch, {}, 'branch is not an empty object')
+    assert.isOk(state.universe, 'universe is not defined')
+    assert.isObject(state.universe, 'universe is not an object')
+    assert.deepEqual(state.universe, {}, 'universe is not an empty object')
 
     assert.isOk(state.loginAccount, 'loginAccount is not defined')
     assert.isObject(state.loginAccount, 'loginAccount is not an object')

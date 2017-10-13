@@ -1,6 +1,6 @@
 import env from 'modules/app/reducers/env'
 import blockchain from 'modules/app/reducers/blockchain'
-import branch from 'modules/branch/reducers/branch'
+import universe from 'modules/universe/reducers/universe'
 import connection from 'modules/app/reducers/connection'
 
 import isMobile from 'modules/app/reducers/is-mobile'
@@ -9,7 +9,7 @@ import headerHeight from 'modules/app/reducers/header-height'
 import footerHeight from 'modules/app/reducers/footer-height'
 
 import loginAccount from 'modules/auth/reducers/login-account'
-import isLogged from 'modules/auth/reducers/is-logged'
+import isLoggedIn from 'modules/auth/reducers/is-logged-in'
 import accountName from 'modules/account/reducers/account-name'
 
 import newMarket from 'modules/create-market/reducers/new-market'
@@ -18,20 +18,18 @@ import marketsData from 'modules/markets/reducers/markets-data'
 import marketLoading from 'modules/market/reducers/market-loading'
 import hasLoadedMarkets from 'modules/markets/reducers/has-loaded-markets'
 import outcomesData from 'modules/markets/reducers/outcomes-data'
-import eventMarketsMap from 'modules/markets/reducers/event-markets-map'
 import favorites from 'modules/markets/reducers/favorites'
 import marketsFilteredSorted from 'modules/markets/reducers/markets-filtered-sorted'
 
 import reports from 'modules/reports/reducers/reports'
-import eventsWithAccountReport from 'modules/my-reports/reducers/events-with-account-report'
+import hasLoadedReports from 'modules/reports/reducers/has-loaded-reports'
+import marketsWithAccountReport from 'modules/my-reports/reducers/markets-with-account-report'
 
 import orderBooks from 'modules/bids-asks/reducers/order-books'
+import isFirstOrderBookChunkLoaded from 'modules/bids-asks/reducers/is-first-order-book-chunk-loaded'
 import orderCancellation from 'modules/bids-asks/reducers/order-cancellation'
-import marketTrades from 'modules/portfolio/reducers/market-trades'
 import accountTrades from 'modules/my-positions/reducers/account-trades'
 import accountPositions from 'modules/my-positions/reducers/account-positions'
-import completeSetsBought from 'modules/my-positions/reducers/complete-sets-bought'
-import netEffectiveTrades from 'modules/my-positions/reducers/net-effective-trades'
 import transactionsData from 'modules/transactions/reducers/transactions-data'
 import transactionsOldestLoadedBlock from 'modules/transactions/reducers/transactions-oldest-loaded-block'
 import transactionsLoading from 'modules/transactions/reducers/transactions-loading'
@@ -43,15 +41,8 @@ import hasLoadedTopic from 'modules/topics/reducers/has-loaded-topic'
 
 import selectedMarketID from 'modules/market/reducers/selected-market-id'
 import tradesInProgress from 'modules/trade/reducers/trades-in-progress'
-import tradeCommitLock from 'modules/trade/reducers/trade-commit-lock'
-import reportCommitLock from 'modules/reports/reducers/report-commit-lock'
-import tradeCommitment from 'modules/trade/reducers/trade-commitment'
-import sellCompleteSetsLock from 'modules/my-positions/reducers/sell-complete-sets-lock'
-import smallestPositions from 'modules/my-positions/reducers/smallest-positions'
 // import createMarketInProgress from 'modules/create-market/reducers/create-market-in-progress';
 import priceHistory from 'modules/markets/reducers/price-history'
-
-import chatMessages from 'modules/chat/reducers/chat-messages'
 
 import marketCreatorFees from 'modules/my-markets/reducers/market-creator-fees'
 
@@ -64,7 +55,7 @@ export function createReducer() {
   return {
     env,
     blockchain,
-    branch,
+    universe,
     connection,
 
     isMobile,
@@ -73,7 +64,7 @@ export function createReducer() {
     footerHeight,
 
     loginAccount,
-    isLogged,
+    isLoggedIn,
     accountName,
 
     newMarket,
@@ -82,12 +73,12 @@ export function createReducer() {
     marketLoading,
     hasLoadedMarkets,
     outcomesData,
-    eventMarketsMap,
     favorites,
     marketsFilteredSorted,
 
     reports,
-    eventsWithAccountReport,
+    hasLoadedReports,
+    marketsWithAccountReport,
 
     selectedMarketID,
     topics,
@@ -95,26 +86,17 @@ export function createReducer() {
     priceHistory,
 
     tradesInProgress,
-    tradeCommitLock,
-    reportCommitLock,
-    tradeCommitment,
-    sellCompleteSetsLock,
-    smallestPositions,
 
     orderBooks,
+    isFirstOrderBookChunkLoaded,
     orderCancellation,
-    marketTrades,
     accountTrades,
     accountPositions,
-    completeSetsBought,
-    netEffectiveTrades,
     transactionsData,
     transactionsOldestLoadedBlock,
     transactionsLoading,
     scalarMarketsShareDenomination,
     closePositionTradeGroups,
-
-    chatMessages,
 
     marketCreatorFees,
 

@@ -15,7 +15,7 @@ import CreateMarketView from 'modules/create-market/components/create-market-vie
 import getValue from 'utils/get-value'
 
 const mapStateToProps = state => ({
-  branch: state.branch,
+  universe: state.universe,
   availableEth: getValue(state, 'loginAccount.ethTokens'),
   newMarket: state.newMarket,
   footerHeight: state.footerHeight,

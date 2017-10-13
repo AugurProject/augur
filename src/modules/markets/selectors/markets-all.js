@@ -6,10 +6,9 @@ import {
   selectFavoritesState,
   selectReportsState,
   selectOutcomesDataState,
-  selectNetEffectiveTradesState,
   selectAccountTradesState,
   selectTradesInProgressState,
-  selectBranchState,
+  selectUniverseState,
   selectPriceHistoryState,
   selectOrderBooksState,
   selectOrderCancellationState,
@@ -32,16 +31,15 @@ export const selectMarkets = createSelector(
   selectReportsState,
   selectOutcomesDataState,
   selectAccountPositions,
-  selectNetEffectiveTradesState,
   selectAccountTradesState,
   selectTradesInProgressState,
-  selectBranchState,
+  selectUniverseState,
   selectPriceHistoryState,
   selectOrderBooksState,
   selectOrderCancellationState,
   selectSmallestPositionsState,
   selectLoginAccountState,
-  (marketsData, marketLoading, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount) => {
+  (marketsData, marketLoading, favorites, reports, outcomesData, accountPositions, accountTrades, tradesInProgress, universe, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount) => {
     if (!marketsData) return []
     return Object.keys(marketsData).map((marketID) => {
       if (!marketID || !marketsData[marketID]) return {}
@@ -58,9 +56,8 @@ export const selectMarkets = createSelector(
         !!favorites[marketID],
         outcomesData[marketID],
 
-        selectMarketReport(marketID, reports[marketsData[marketID].branchID]),
+        selectMarketReport(marketID, reports[marketsData[marketID].universeID]),
         (accountPositions || {})[marketID],
-        (netEffectiveTrades || {})[marketID],
         (accountTrades || {})[marketID],
         tradesInProgress[marketID],
 
@@ -68,8 +65,7 @@ export const selectMarkets = createSelector(
         endDate.getFullYear(),
         endDate.getMonth(),
         endDate.getDate(),
-        branch && branch.isReportRevealPhase,
-        branch && branch.reportPeriod,
+        universe && universe.currentReportingWindowAddress,
         orderBooks[marketID],
         orderCancellation,
         (smallestPositions || {})[marketID],

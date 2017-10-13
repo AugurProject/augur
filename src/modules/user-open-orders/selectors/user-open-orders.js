@@ -1,12 +1,12 @@
 import memoize from 'memoizee'
 import BigNumber from 'bignumber.js'
-import { abi } from 'services/augurjs'
+import speedomatic from 'speedomatic'
 
 import store from 'src/store'
 
 import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user'
 
-import { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types'
+import { BUY, SELL } from 'modules/transactions/constants/types'
 import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status'
 
 import { formatNone, formatEtherTokens, formatShares } from 'utils/format-number'
@@ -40,9 +40,9 @@ const selectUserOpenOrders = memoize((outcomeID, loginAccount, marketOrderBook, 
     return []
   }
 
-  const userBids = marketOrderBook.buy == null ? [] : getUserOpenOrders(marketOrderBook.buy, BID, outcomeID, loginAccount.address, orderCancellation)
+  const userBids = marketOrderBook.buy == null ? [] : getUserOpenOrders(marketOrderBook.buy, BUY, outcomeID, loginAccount.address, orderCancellation)
 
-  const userAsks = marketOrderBook.sell == null ? [] : getUserOpenOrders(marketOrderBook.sell, ASK, outcomeID, loginAccount.address, orderCancellation)
+  const userAsks = marketOrderBook.sell == null ? [] : getUserOpenOrders(marketOrderBook.sell, SELL, outcomeID, loginAccount.address, orderCancellation)
 
   return userAsks.concat(userBids)
 }, { max: 10 })
@@ -66,7 +66,7 @@ function getUserOpenOrders(orders, orderType, outcomeID, userID, orderCancellati
     .map(order => (
       {
         id: order.id,
-        marketID: abi.format_int256(order.market),
+        marketID: speedomatic.formatInt256(order.market),
         type: orderType,
         originalShares: formatNone(),
         avgPrice: formatEtherTokens(order.price),

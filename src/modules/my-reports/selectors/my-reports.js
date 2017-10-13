@@ -1,42 +1,36 @@
+import BigNumber from 'bignumber.js'
 import { formatEtherTokens, formatPercent, formatRep } from 'utils/format-number'
 import { formatDate } from 'utils/format-date'
-import { abi } from 'services/augurjs'
 import { TWO } from 'modules/trade/constants/numbers'
 import store from 'src/store'
 
 export default function () {
-  const { eventsWithAccountReport, marketsData } = store.getState()
+  const { marketsWithAccountReport, marketsData } = store.getState()
 
-  if (!eventsWithAccountReport) {
+  if (!marketsWithAccountReport) {
     return []
   }
 
-  const reports = Object.keys(eventsWithAccountReport)
-    .filter(eventID => !!eventsWithAccountReport[eventID].marketID)
-    .map((eventID) => {
-      const expirationDate = eventsWithAccountReport[eventID].expirationDate || null
-      const isFinal = eventsWithAccountReport[eventID].isFinal || null
-      const marketID = eventsWithAccountReport[eventID].marketID || null
-      const description = eventsWithAccountReport[eventID].description || null
-      const formattedDescription = eventsWithAccountReport[eventID].formattedDescription || null
-      const outcome = eventsWithAccountReport[eventID].marketOutcome || null
-      const outcomePercentage = (eventsWithAccountReport[eventID].proportionCorrect && formatPercent(abi.bignum(eventsWithAccountReport[eventID].proportionCorrect).times(100))) || null
-      const reported = eventsWithAccountReport[eventID].accountReport || null
+  const reports = Object.keys(marketsWithAccountReport)
+    .map((marketID) => {
+      const expirationDate = marketsWithAccountReport[marketID].expirationDate || null
+      const isFinal = marketsWithAccountReport[marketID].isFinal || null
+      const description = marketsWithAccountReport[marketID].description || null
+      const formattedDescription = marketsWithAccountReport[marketID].formattedDescription || null
+      const outcome = marketsWithAccountReport[marketID].marketOutcome || null
+      const outcomePercentage = (marketsWithAccountReport[marketID].proportionCorrect && formatPercent(new BigNumber(marketsWithAccountReport[marketID].proportionCorrect, 10).times(100))) || null
+      const reported = marketsWithAccountReport[marketID].accountReport || null
       const isReportEqual = (outcome != null && reported != null && outcome === reported) || null // Can be done here
-      const feesEarned = calculateFeesEarned(eventsWithAccountReport[eventID])
-      const repEarned = (eventsWithAccountReport[eventID].repEarned && formatRep(eventsWithAccountReport[eventID].repEarned)) || null
+      const feesEarned = calculateFeesEarned(marketsWithAccountReport[marketID])
+      const repEarned = (marketsWithAccountReport[marketID].repEarned && formatRep(marketsWithAccountReport[marketID].repEarned)) || null
       const endDate = (expirationDate && formatDate(expirationDate)) || null
-      const isChallenged = eventsWithAccountReport[eventID].isChallenged || null
+      const isChallenged = marketsWithAccountReport[marketID].isChallenged || null
       const isChallengeable = isFinal != null && isChallenged != null && !isFinal && !isChallenged
-      const period = eventsWithAccountReport[eventID].period || null
-      const reportHash = eventsWithAccountReport[eventID].reportHash || null
-      const isCommitted = eventsWithAccountReport[eventID].isCommitted
-      const isRevealed = eventsWithAccountReport[eventID].isRevealed
-      const isUnethical = eventsWithAccountReport[eventID].isUnethical
+      const period = marketsWithAccountReport[marketID].period || null
+      const isSubmitted = marketsWithAccountReport[marketID].isSubmitted
 
       return {
         ...marketsData[marketID] || {}, // TODO -- clean up this object
-        eventID,
         marketID,
         description,
         formattedDescription,
@@ -50,10 +44,7 @@ export default function () {
         isChallenged,
         isChallengeable,
         period,
-        reportHash,
-        isCommitted,
-        isRevealed,
-        isUnethical
+        isSubmitted
       }
     })
     .sort((a, b) => {
@@ -66,12 +57,12 @@ export default function () {
   return reports
 }
 
-export const calculateFeesEarned = (event) => {
-  if (!event.marketFees || !event.repBalance || !event.eventWeight) return null
+export const calculateFeesEarned = (market) => {
+  if (!market.marketFees || !market.repBalance || !market.marketWeight) return null
   return formatEtherTokens(
-    abi.bignum(event.marketFees)
-      .times(abi.bignum(event.repBalance))
+    new BigNumber(market.marketFees, 10)
+      .times(new BigNumber(market.repBalance, 10))
       .dividedBy(TWO)
-      .dividedBy(abi.bignum(event.eventWeight))
+      .dividedBy(new BigNumber(market.marketWeight, 10))
   )
 }

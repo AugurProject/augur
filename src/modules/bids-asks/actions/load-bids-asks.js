@@ -1,29 +1,23 @@
-import { augur } from 'services/augurjs'
-import { SCALAR } from 'modules/markets/constants/market-types'
-import { clearMarketOrderBook, updateMarketOrderBook } from 'modules/bids-asks/actions/update-market-order-book'
+import async from 'async'
+import loadOneOutcomeBidsAsks from 'modules/bids-asks/actions/load-one-outcome-bids-asks'
 import logError from 'utils/log-error'
 
-export const loadBidsAsks = (marketID, callback = logError) => (dispatch, getState) => {
-  const market = getState().marketsData[marketID]
-  const scalarMinMax = {}
-  if (market.type === SCALAR) {
-    scalarMinMax.minValue = market.minValue
-    scalarMinMax.maxValue = market.maxValue
+const loadBidsAsks = (marketID, callback = logError) => (dispatch, getState) => {
+  const { marketsData } = getState()
+  if (marketID == null) {
+    return callback(`must specify market ID: ${marketID}`)
   }
-  let firstChunkLoaded
-  augur.trading.orderBook.getOrderBookChunked({
-    marketID,
-    offset: 0,
-    numTradesToLoad: null,
-    scalarMinMax,
-    totalTrades: null
-  }, (orderBookChunk) => {
-    console.log('order book chunk:', marketID, orderBookChunk)
-    if (!firstChunkLoaded) {
-      firstChunkLoaded = true
-      console.log('first chunk, clearing order book...')
-      dispatch(clearMarketOrderBook(marketID))
-    }
-    dispatch(updateMarketOrderBook(marketID, orderBookChunk))
+  const market = marketsData[marketID]
+  if (!market) {
+    return callback(`market ${marketID} data not found`)
+  }
+  if (market.numOutcomes == null) {
+    return callback(`market ${marketID} numOutcomes not found`)
+  }
+  const outcomes = Array.from(new Array(market.numOutcomes), (_, i) => i + 1)
+  async.eachSeries(outcomes, (outcome, nextOutcome) => {
+    dispatch(loadOneOutcomeBidsAsks(marketID, outcome, nextOutcome))
   }, callback)
 }
+
+export default loadBidsAsks

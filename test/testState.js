@@ -4,7 +4,7 @@ import env from 'src/env'
 
 import { formatNumber, formatShares } from 'utils/format-number'
 import { formatDate } from 'utils/format-date'
-import { BUY } from 'modules/trade/constants/types'
+import { BUY } from 'modules/transactions/constants/types'
 
 const testState = {
   marketLoading: [],
@@ -25,17 +25,12 @@ const testState = {
     currentBlockTimestamp: 1461774253,
     currentBlockNumber: 833339
   },
-  branch: {
+  universe: {
     id: '0xf69b5',
-    description: 'root branch',
-    periodLength: 4000,
-    currentPeriod: 20,
-    isReportRevealPhase: true,
-    reportPeriod: 19,
-    currentPeriodProgress: 52,
-    baseReporters: 6,
-    numEventsCreatedInPast24Hours: 4,
-    numEventsInReportPeriod: 3
+    description: 'root universe',
+    reportingPeriodDurationInSeconds: 4000,
+    currentReportingWindowAddress: 19,
+    currentReportingPeriodPercentComplete: 52
   },
   connection: {
     isConnected: true
@@ -58,6 +53,7 @@ const testState = {
     prettyAddress: '0xte...t123',
     linkText: 'testTesterson',
     prettyLoginID: 'test...reID',
+    ethTokens: 0,
     ether: 0,
     realEther: 0,
     rep: 0
@@ -66,15 +62,13 @@ const testState = {
   marketsData: {
     testMarketID: {
       author: '0x0000000000000000000000000000000000000001',
-      eventID: 'testEventID',
       name: 'testMarket',
       description: 'some test description',
       endDate: 123,
       type: 'scalar',
-      minValue: 1,
-      maxValue: 2,
-      makerFee: 0.02,
-      takerFee: 0.05,
+      minPrice: 1,
+      maxPrice: 2,
+      settlementFee: 0.05,
       volume: 500,
       tags: ['tag1', 'tag2', 'tag3'],
       resolution: 'http://lmgtfy.com',
@@ -85,15 +79,13 @@ const testState = {
     },
     testMarketID2: {
       author: '0x0000000000000000000000000000000000000001',
-      eventID: 'testEventID2',
       name: 'testMarket2',
       description: 'some test description',
       endDate: 123,
       type: 'binary',
-      minValue: 1,
-      maxValue: 2,
-      makerFee: 0.02,
-      takerFee: 0.05,
+      minPrice: 1,
+      maxPrice: 2,
+      settlementFee: 0.05,
       volume: 500,
       tags: ['tag1', 'tag2', 'tag3'],
       resolution: 'http://lmgtfy.com',
@@ -106,68 +98,74 @@ const testState = {
   },
   orderBooks: {
     testMarketID: {
-      buy: {
-        '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3': {
-          amount: '10',
-          block: 1234,
-          id: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
-          market: 'testMarketID',
-          outcome: '2',
-          owner: '0x7c0d52faab596c08f423e3478aebc6205f3f5d8c',
-          price: '0.42',
-          type: 'buy'
-        },
-        buyOrder2ID: {
-          amount: '10',
-          block: 1234,
-          id: 'buyOrder2ID',
-          market: 'testMarketID',
-          outcome: '2',
-          owner: '0x0000000000000000000000000000000000000001',
-          price: '0.42',
-          type: 'buy'
-        },
-        buyOrder3ID: {
-          amount: '10',
-          block: 1234,
-          id: 'buyOrder3ID',
-          market: 'testMarketID',
-          outcome: '1',
-          owner: '0x0000000000000000000000000000000000000001',
-          price: '0.42',
-          type: 'buy'
-        },
-        buyOrder4ID: {
-          amount: '10',
-          block: 1234,
-          id: 'buyOrder4ID',
-          market: 'testMarketID',
-          outcome: '1',
-          owner: '0x0000000000000000000000000000000000000001',
-          price: '0.44',
-          type: 'buy'
+      2: {
+        buy: {
+          '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3': {
+            amount: '10',
+            block: 1234,
+            id: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
+            market: 'testMarketID',
+            outcome: '2',
+            owner: '0x7c0d52faab596c08f423e3478aebc6205f3f5d8c',
+            price: '0.42',
+            type: 'buy'
+          },
+          buyOrder2ID: {
+            amount: '10',
+            block: 1234,
+            id: 'buyOrder2ID',
+            market: 'testMarketID',
+            outcome: '2',
+            owner: '0x0000000000000000000000000000000000000001',
+            price: '0.42',
+            type: 'buy'
+          }
         }
       },
-      sell: {
-        '0x8ef100c8aad3c4f7b65a055643d54db7b9a506a542b1270047a314da931e37fb': {
-          amount: '20',
-          block: 1235,
-          id: '0x8ef100c8aad3c4f7b65a055643d54db7b9a506a542b1270047a314da931e37fb',
-          market: 'testMarketID',
-          outcome: '1',
-          owner: '0x457435fbcd49475847f64898f933ffefc33388fc',
-          price: '0.58',
-          type: 'sell'
+      1: {
+        buy: {
+          buyOrder3ID: {
+            amount: '10',
+            block: 1234,
+            id: 'buyOrder3ID',
+            market: 'testMarketID',
+            outcome: '1',
+            owner: '0x0000000000000000000000000000000000000001',
+            price: '0.42',
+            type: 'buy'
+          },
+          buyOrder4ID: {
+            amount: '10',
+            block: 1234,
+            id: 'buyOrder4ID',
+            market: 'testMarketID',
+            outcome: '1',
+            owner: '0x0000000000000000000000000000000000000001',
+            price: '0.44',
+            type: 'buy'
+          }
         },
-        sellOrder2ID: {
-          amount: '20',
-          block: 1235,
-          id: 'sellOrder2ID',
-          market: 'testMarketID',
-          outcome: '1',
-          owner: '0x457435fbcd49475847f64898f933ffefc33388fc',
-          price: '0.59',
-          type: 'sell'
+        sell: {
+          '0x8ef100c8aad3c4f7b65a055643d54db7b9a506a542b1270047a314da931e37fb': {
+            amount: '20',
+            block: 1235,
+            id: '0x8ef100c8aad3c4f7b65a055643d54db7b9a506a542b1270047a314da931e37fb',
+            market: 'testMarketID',
+            outcome: '1',
+            owner: '0x457435fbcd49475847f64898f933ffefc33388fc',
+            price: '0.58',
+            type: 'sell'
+          },
+          sellOrder2ID: {
+            amount: '20',
+            block: 1235,
+            id: 'sellOrder2ID',
+            market: 'testMarketID',
+            outcome: '1',
+            owner: '0x457435fbcd49475847f64898f933ffefc33388fc',
+            price: '0.59',
+            type: 'sell'
+          }
         }
       }
     }
@@ -232,12 +230,11 @@ const testState = {
   },
   reports: {
     '0xf69b5': {
-      testEventID: {
-        eventID: 'testEventID',
+      testMarketID: {
+        marketID: 'testMarketID',
         isScalar: false,
         isIndeterminate: false,
-        isUnethical: false,
-        isRevealed: false
+        isSubmitted: false
       }
     }
   },
@@ -265,8 +262,6 @@ const testState = {
       side: BUY
     }
   },
-  tradeCommitLock: {},
-  reportCommitLock: {},
   transactionsData: {
     testtransaction12345: {
       id: 'testtransaction12345',
@@ -278,36 +273,6 @@ const testState = {
   },
   marketCreatorFees: {
     '0xMARKET1': 21
-  },
-  marketTrades: {
-    '0xMARKET1': {
-      0: [
-        { test: 'test' },
-        { test: 'test' },
-        { test: 'test' },
-        { test: 'test' }
-      ],
-      1: [
-        { test: 'test' },
-        { test: 'test' },
-        { test: 'test' },
-        { test: 'test' }
-      ]
-    },
-    '0xMARKET2': {
-      0: [
-        { test: 'test' },
-        { test: 'test' },
-        { test: 'test' },
-        { test: 'test' }
-      ],
-      1: [
-        { test: 'test' },
-        { test: 'test' },
-        { test: 'test' },
-        { test: 'test' }
-      ]
-    },
   },
   allMarkets: [
     {

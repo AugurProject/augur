@@ -2,10 +2,9 @@ import { loadAccountHistory } from 'modules/auth/actions/load-account-history'
 import { selectTransactions } from 'modules/transactions/selectors/transactions'
 
 export const triggerTransactionsExport = () => (dispatch, getState) => {
-  const { transactionsLoading, transactionsOldestLoadedBlock, loginAccount } = getState()
-  const loadedAllTransactions = transactionsOldestLoadedBlock === loginAccount.registerBlockNumber
+  const { transactionsLoading } = getState()
 
-  if (!transactionsLoading && loadedAllTransactions) {
+  if (!transactionsLoading) {
     // trigger download
     const transactions = selectTransactions(getState())
     const transactionsDataString = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(transactions))

@@ -8,15 +8,14 @@ import NullStateMessage from 'modules/common/components/null-state-message'
 import getValue from 'utils/get-value'
 import setShareDenomination from 'utils/set-share-denomination'
 
-import { BUY, SELL } from 'modules/outcomes/constants/trade-types'
-import { BID, ASK } from 'modules/transactions/constants/types'
+import { BUY, SELL } from 'modules/transactions/constants/types'
 import { PRICE, SHARE } from 'modules/order-book/constants/order-book-value-types'
 
 const OrderBookRowSide = (p) => {
   const orders = getValue(p, 'orders')
   const nullMessage = 'No Orders'
-  const side = p.type || ASK
-  const shouldHighlight = (side === BID && p.selectedTradeSide[p.id] === SELL) || (side !== BID && p.selectedTradeSide[p.id] === BUY) || (side !== BID && p.selectedTradeSide[p.id] == null)
+  const side = p.type || SELL
+  const shouldHighlight = (side === BUY && p.selectedTradeSide[p.id] === SELL) || (side !== BUY && p.selectedTradeSide[p.id] === BUY) || (side !== BUY && p.selectedTradeSide[p.id] == null)
 
   return (
     <article className={`order-book-row-side ${shouldHighlight ? 'order-book-row-side-trading' : ''}`}>
@@ -26,7 +25,7 @@ const OrderBookRowSide = (p) => {
           {(p.orders || []).map((order, i) => {
             const shares = setShareDenomination(getValue(order, 'shares.formatted'), p.selectedShareDenomination)
             const price = getValue(order, 'price.formatted')
-            const type = p.type || ASK
+            const type = p.type || SELL
 
             return (
               <div
@@ -40,18 +39,18 @@ const OrderBookRowSide = (p) => {
                 <button
                   className="unstyled"
                   onClick={() => {
-                    p.updateTradeFromSelectedOrder(p.id, i, side, side === BID ? SHARE : PRICE)
+                    p.updateTradeFromSelectedOrder(p.id, i, side, side === BUY ? SHARE : PRICE)
                   }}
                 >
-                  <ValueDenomination formatted={side === BID ? shares : price} />
+                  <ValueDenomination formatted={side === BUY ? shares : price} />
                 </button>
                 <button
                   className="unstyled"
                   onClick={() => {
-                    p.updateTradeFromSelectedOrder(p.id, i, side, side === BID ? PRICE : SHARE)
+                    p.updateTradeFromSelectedOrder(p.id, i, side, side === BUY ? PRICE : SHARE)
                   }}
                 >
-                  <ValueDenomination formatted={side === BID ? price : shares} />
+                  <ValueDenomination formatted={side === BUY ? price : shares} />
                 </button>
                 {order.isOfCurrentUser &&
                 <ReactTooltip

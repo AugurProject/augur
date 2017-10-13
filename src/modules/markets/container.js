@@ -9,26 +9,26 @@ import { updateMarketsFilteredSorted, clearMarketsFilteredSorted } from 'modules
 
 import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 
-import { loadMarkets } from 'modules/markets/actions/load-markets'
+import loadMarkets from 'modules/markets/actions/load-markets'
 import { loadMarketsByTopic } from 'modules/markets/actions/load-markets-by-topic'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 
 import getValue from 'utils/get-value'
 
 const mapStateToProps = state => ({
-  isLogged: state.isLogged,
+  isLogged: state.isLoggedIn,
   loginAccount: state.loginAccount,
   markets: getAllMarkets(),
-  branch: state.branch,
-  canLoadMarkets: !!getValue(state, 'branch.id'),
+  universe: state.universe,
+  canLoadMarkets: !!getValue(state, 'universe.id'),
   scalarShareDenomination: getScalarShareDenomination(),
   hasLoadedMarkets: state.hasLoadedMarkets,
   hasLoadedTopic: state.hasLoadedTopic
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadMarkets: branchID => dispatch(loadMarkets(branchID)),
-  loadMarketsByTopic: (topic, branchID) => dispatch(loadMarketsByTopic(topic, branchID)),
+  loadMarkets: () => dispatch(loadMarkets()),
+  loadMarketsByTopic: topic => dispatch(loadMarketsByTopic(topic)),
   updateMarketsFilteredSorted: filteredMarkets => dispatch(updateMarketsFilteredSorted(filteredMarkets)),
   clearMarketsFilteredSorted: () => dispatch(clearMarketsFilteredSorted()),
   toggleFavorite: marketID => dispatch(toggleFavorite(marketID)),
@@ -36,15 +36,14 @@ const mapDispatchToProps = dispatch => ({
 })
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { branch } = stateProps
   const { loadMarkets, loadMarketsByTopic } = dispatchProps
 
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    loadMarkets: () => loadMarkets(branch.id),
-    loadMarketsByTopic: topic => loadMarketsByTopic(topic, branch.id)
+    loadMarkets: () => loadMarkets(),
+    loadMarketsByTopic: topic => loadMarketsByTopic(topic)
   }
 }
 

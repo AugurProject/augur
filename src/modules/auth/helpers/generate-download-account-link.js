@@ -1,9 +1,9 @@
 import keythereum from 'keythereum'
-import { augur } from 'services/augurjs'
+import speedomatic from 'speedomatic'
 
 export default function (address, keystore, privateKey) {
   return {
-    accountPrivateKey: augur.abi.bytes_to_hex(privateKey || ''),
+    accountPrivateKey: speedomatic.byteArrayToHexString(privateKey || ''),
     downloadAccountDataString: `data:,${encodeURIComponent(JSON.stringify(keystore))}`,
     downloadAccountFileName: keythereum.generateKeystoreFilename(address)
   }

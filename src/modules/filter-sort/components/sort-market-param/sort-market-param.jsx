@@ -44,12 +44,8 @@ export default class SortMarketParam extends Component {
         value: PARAMS.MARKET_END_DATE
       },
       {
-        label: 'Taker Fee',
-        value: PARAMS.MARKET_TAKER_FEE
-      },
-      {
-        label: 'Maker Fee',
-        value: PARAMS.MARKET_MAKER_FEE
+        label: 'Settlement Fee',
+        value: 'settlementFeePercent'
       }
     ]
 

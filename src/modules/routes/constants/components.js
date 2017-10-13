@@ -70,12 +70,18 @@ export const Market = asyncComponent({
 
 export const Portfolio = asyncComponent({
   moduleName: 'Portfolio',
-  loader: () => import(/* webpackChunkName: 'portfolio' */ 'modules/new-portfolio/container')
+  loader: () => import(/* webpackChunkName: 'portfolio' */ 'modules/portfolio/containers/portfolio')
     .then(module => module.default)
 })
 
 export const CreateMarket = asyncComponent({
   moduleName: 'CreateMarket',
   loader: () => import(/* webpackChunkName: 'create-market' */ 'modules/create-market/container')
+    .then(module => module.default)
+})
+
+export const StyleSandbox = asyncComponent({
+  moduleName: 'StyleSandbox',
+  loader: () => import(/* webpackChunkName: 'style-sandbox' */ 'modules/style-sandbox/components/style-sandbox/style-sandbox')
     .then(module => module.default)
 })

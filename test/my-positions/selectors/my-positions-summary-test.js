@@ -116,13 +116,11 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
         const mockAugur = {
           augur: {
             trading: {
-              positions: {
-                calculateProfitLoss: sinon.stub().returns({
-                  realized: 10,
-                  unrealized: -1,
-                  meanOpenPrice: 0.2
-                })
-              }
+              calculateProfitLoss: sinon.stub().returns({
+                realized: 10,
+                unrealized: -1,
+                meanOpenPrice: 0.2
+              })
             }
           }
         }
@@ -172,13 +170,11 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
         const mockAugur = {
           augur: {
             trading: {
-              positions: {
-                calculateProfitLoss: sinon.stub().returns({
-                  realized: 10,
-                  unrealized: -1,
-                  meanOpenPrice: 0.2
-                })
-              }
+              calculateProfitLoss: sinon.stub().returns({
+                realized: 10,
+                unrealized: -1,
+                meanOpenPrice: 0.2
+              })
             }
           }
         }

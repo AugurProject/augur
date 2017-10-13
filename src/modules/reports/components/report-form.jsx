@@ -10,12 +10,12 @@ export default class ReportForm extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     type: PropTypes.string,
-    minValue: PropTypes.string,
-    maxValue: PropTypes.string,
+    minPrice: PropTypes.string,
+    maxPrice: PropTypes.string,
     // reportableOutcomes: React.PropTypes.array,
     reportedOutcomeID: PropTypes.any,
+    amountToStake: PropTypes.any,
     isIndeterminate: PropTypes.bool,
-    isUnethical: PropTypes.bool,
     isReported: PropTypes.bool,
     onClickSubmit: PropTypes.func
   };
@@ -24,11 +24,11 @@ export default class ReportForm extends Component {
     super(props)
     this.state = {
       type: props.type,
-      minValue: props.minValue,
-      maxValue: props.maxValue,
+      minPrice: props.minPrice,
+      maxPrice: props.maxPrice,
       reportedOutcomeID: props.reportedOutcomeID,
+      amountToStake: props.amountToStake,
       isIndeterminate: props.isIndeterminate,
-      isUnethical: props.isUnethical,
       isReported: props.isReported
     }
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -44,8 +44,9 @@ export default class ReportForm extends Component {
   handleOutcomeChange = e => this.setState({ reportedOutcomeID: e.target.value });
 
   handleSubmit() {
-    this.props.onClickSubmit(this.state.reportedOutcomeID, this.state.isUnethical, this.state.isIndeterminate, this.props.history)
-    this.setState({ reportedOutcomeID: '', isIndeterminate: undefined, isUnethical: undefined, isReported: false })
+    // TODO add amount to stake to form
+    this.props.onClickSubmit(this.state.reportedOutcomeID, this.state.amountToStake, this.state.isIndeterminate, this.props.history)
+    this.setState({ reportedOutcomeID: '', isIndeterminate: undefined, isReported: false })
   }
 
   render() {
@@ -58,7 +59,7 @@ export default class ReportForm extends Component {
         <div className="outcome-options">
           <h4>{!s.isReported ? 'Report the outcome' : 'Outcome Reported'}</h4>
           {p.type === SCALAR &&
-            <span>Enter the outcome of this event, if it was at least {p.minValue} and at most {p.maxValue}.  If the outcome was above {p.maxValue}, you should report the outcome as {p.maxValue}; if the outcome was below {p.minValue}, you should report the outcome as {p.minValue}.</span>
+            <span>Enter the outcome of this event, if it was at least {p.minPrice} and at most {p.maxPrice}.  If the outcome was above {p.maxPrice}, you should report the outcome as {p.maxPrice}; if the outcome was below {p.minPrice}, you should report the outcome as {p.minPrice}.</span>
           }
           <OutcomeOptions
             type={p.type}
@@ -83,20 +84,6 @@ export default class ReportForm extends Component {
               isIndeterminate: !s.isIndeterminate,
               reportedOutcomeID: indeterminateValue
             }))) || undefined}
-          />
-        </div>
-
-        <div className="unethical">
-          <h4>Is this question unethical?</h4>
-          <span className="unethical-message">
-            The consensus answer to this question will be over-ridden if the question is reported as unethical by 60% (or more) of those reporting this market.
-          </span>
-
-          <Checkbox
-            className={classNames('unethical-checkbox', { disabled: s.isReported })}
-            text="Yes, this question is unethical"
-            isChecked={!!s.isUnethical}
-            onClick={(!s.isReported && (() => this.setState({ isUnethical: !s.isUnethical }))) || undefined}
           />
         </div>
 

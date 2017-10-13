@@ -1,16 +1,20 @@
 import { augur } from 'services/augurjs'
 import { clearTopics, updateTopics } from 'modules/topics/actions/update-topics'
+import isObject from 'utils/is-object'
 import logError from 'utils/log-error'
 
-export const loadTopics = (branchID, callback = logError) => (dispatch) => {
-  let firstChunkLoaded
-  augur.topics.getTopicsInfoChunked(branchID, 0, null, null, (topicsInfoChunk) => {
-    console.log('topics info chunk:', topicsInfoChunk)
-    if (!firstChunkLoaded) {
-      firstChunkLoaded = true
-      console.log('first chunk, clearing topics...')
+const loadTopics = (callback = logError) => (dispatch, getState) => {
+  const { universe } = getState()
+  if (!universe.id) return callback(null)
+  augur.markets.getTopics({ universe: universe.id }, (err, topics) => {
+    if (err) return callback(err)
+    if (topics == null) return callback(null)
+    if (isObject(topics) && Object.keys(topics).length) {
       dispatch(clearTopics())
+      dispatch(updateTopics(topics))
     }
-    dispatch(updateTopics(topicsInfoChunk))
-  }, callback)
+    callback(null, topics)
+  })
 }
+
+export default loadTopics

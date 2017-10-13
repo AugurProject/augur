@@ -18,13 +18,11 @@ const mapStateToProps = (state) => {
 
   return {
     markets: getPositionsMarkets(positions, openOrders),
-    isTradeCommitLocked: state.tradeCommitLock.isLocked,
     closePositionStatus: getClosePositionStatus(),
     scalarShareDenomination: getScalarShareDenomination(),
     orderCancellation: getOrderCancellation(),
     transactionsLoading: state.transactionsLoading,
-    hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber,
-    registerBlockNumber: state.loginAccount.registerBlockNumber
+    hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber // FIXME
   }
 }
 

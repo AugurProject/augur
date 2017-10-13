@@ -20,9 +20,8 @@ export default class MyReports extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    branch: PropTypes.object.isRequired,
+    universe: PropTypes.object.isRequired,
     reports: PropTypes.array.isRequired,
-    registerBlockNumber: PropTypes.number,
   }
 
   constructor(props) {
@@ -57,7 +56,6 @@ export default class MyReports extends Component {
               transactionsLoading={p.transactionsLoading}
               hasAllTransactionsLoaded={p.hasAllTransactionsLoaded}
               triggerTransactionsExport={p.triggerTransactionsExport}
-              registerBlockNumber={p.registerBlockNumber}
             />
           </div>
         </div>
@@ -100,7 +98,7 @@ export default class MyReports extends Component {
                 </div>
                 <MyReport
                   {...p.reports[marketIndex]}
-                  branch={p.branch}
+                  universe={p.universe}
                 />
               </div>
             ))}

@@ -8,7 +8,6 @@ import sinon from 'sinon'
 import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_NO_ORDERS, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_SUCCESS } from 'modules/market/constants/close-dialog-status'
 import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses'
 import { CLEAR_CLOSE_POSITION_OUTCOME } from 'modules/my-positions/actions/clear-close-position-outcome'
-import { UPDATE_TRADE_COMMIT_LOCK } from 'modules/trade/actions/update-trade-commitment'
 
 describe('modules/my-positions/selectors/close-position-status', function () { // eslint-disable-line func-names, prefer-arrow-callback
   proxyquire.noPreserveCache().noCallThru()
@@ -119,17 +118,11 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
 
       const actual = store.getActions()
 
-      expected = [
-        {
-          type: UPDATE_TRADE_COMMIT_LOCK,
-          isLocked: false
-        },
-        {
-          type: CLEAR_CLOSE_POSITION_OUTCOME,
-          marketID: '0xMarketID1',
-          outcomeID: '0'
-        }
-      ]
+      expected = [{
+        type: CLEAR_CLOSE_POSITION_OUTCOME,
+        marketID: '0xMarketID1',
+        outcomeID: '0'
+      }]
 
       assert.deepEqual(actual, expected, `Didn't return the expected actions`)
     }
@@ -170,17 +163,11 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
 
       const actual = store.getActions()
 
-      expected = [
-        {
-          type: UPDATE_TRADE_COMMIT_LOCK,
-          isLocked: false
-        },
-        {
-          type: CLEAR_CLOSE_POSITION_OUTCOME,
-          marketID: '0xMarketID1',
-          outcomeID: '0'
-        }
-      ]
+      expected = [{
+        type: CLEAR_CLOSE_POSITION_OUTCOME,
+        marketID: '0xMarketID1',
+        outcomeID: '0'
+      }]
 
       assert.deepEqual(actual, expected, `Didn't return the expected actions`)
     }
@@ -221,17 +208,11 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
 
       const actual = store.getActions()
 
-      expected = [
-        {
-          type: UPDATE_TRADE_COMMIT_LOCK,
-          isLocked: false
-        },
-        {
-          type: CLEAR_CLOSE_POSITION_OUTCOME,
-          marketID: '0xMarketID1',
-          outcomeID: '0'
-        }
-      ]
+      expected = [{
+        type: CLEAR_CLOSE_POSITION_OUTCOME,
+        marketID: '0xMarketID1',
+        outcomeID: '0'
+      }]
 
       assert.deepEqual(actual, expected, `Didn't return the expected actions`)
     }
@@ -304,17 +285,11 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
 
       const actual = store.getActions()
 
-      expected = [
-        {
-          type: UPDATE_TRADE_COMMIT_LOCK,
-          isLocked: false
-        },
-        {
-          type: CLEAR_CLOSE_POSITION_OUTCOME,
-          marketID: '0xMarketID1',
-          outcomeID: '0'
-        }
-      ]
+      expected = [{
+        type: CLEAR_CLOSE_POSITION_OUTCOME,
+        marketID: '0xMarketID1',
+        outcomeID: '0'
+      }]
 
       assert.deepEqual(actual, expected, `Didn't return the expected actions`)
     }
@@ -347,17 +322,11 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
 
       const actual = store.getActions()
 
-      expected = [
-        {
-          type: UPDATE_TRADE_COMMIT_LOCK,
-          isLocked: false
-        },
-        {
-          type: CLEAR_CLOSE_POSITION_OUTCOME,
-          marketID: '0xMarketID1',
-          outcomeID: '0'
-        }
-      ]
+      expected = [{
+        type: CLEAR_CLOSE_POSITION_OUTCOME,
+        marketID: '0xMarketID1',
+        outcomeID: '0'
+      }]
 
       assert.deepEqual(actual, expected, `Didn't return the expected actions`)
     }

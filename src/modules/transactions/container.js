@@ -8,12 +8,12 @@ import { loadAccountHistory } from 'modules/auth/actions/load-account-history'
 import { triggerTransactionsExport } from 'modules/transactions/actions/trigger-transactions-export'
 
 const mapStateToProps = state => ({
-  branch: state.branch,
+  universe: state.universe,
   currentBlockNumber: state.blockchain.currentBlockNumber,
   loginAccount: selectLoginAccount(state),
   transactions: selectTransactions(state),
   transactionsLoading: state.transactionsLoading,
-  hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber,
+  hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber, // FIXME
   isMobile: state.isMobile
 })
 

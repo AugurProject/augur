@@ -20,16 +20,16 @@ describe(`modules/reports/actions/clear-old-reports.js`, () => {
   test({
     description: 'should clear old reports',
     state: {
-      branch: {
+      universe: {
         id: '0xb1',
-        reportPeriod: 7
+        currentReportingWindowAddress: 7
       }
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'CLEAR_OLD_REPORTS',
-        branchID: '0xb1',
-        reportPeriod: 7
+        universeID: '0xb1',
+        currentReportingWindowAddress: 7
       }])
     }
   })

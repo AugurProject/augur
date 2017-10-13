@@ -8,8 +8,7 @@ import OutcomeTrade from 'modules/outcomes/components/outcome-trade'
 
 import { SHARE, MILLI_SHARE, MICRO_SHARE } from 'modules/market/constants/share-denominations'
 import { PRICE } from 'modules/order-book/constants/order-book-value-types'
-import { BUY, SELL } from 'modules/outcomes/constants/trade-types'
-import { BID } from 'modules/transactions/constants/types'
+import { BUY, SELL } from 'modules/transactions/constants/types'
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
 import { SCALAR } from 'modules/markets/constants/market-types'
 
@@ -74,11 +73,11 @@ export default class MarketActive extends Component {
 
     if (outcomes) {
       const outcome = outcomes.find(outcome => outcome.id === outcomeID)
-      const orderBookSide = getValue(outcome, `orderBook.${side === BID ? BIDS : ASKS}`)
+      const orderBookSide = getValue(outcome, `orderBook.${side === BUY ? BIDS : ASKS}`)
       const order = (orderBookSide && orderBookSide[orderIndex]) || null
       const price = getValue(order, 'price.value') || ''
       const trade = outcome.trade
-      const tradeSide = side === BID ? SELL : BUY
+      const tradeSide = side === BUY ? SELL : BUY
 
       if (orderValueType === PRICE) {
         trade.updateTradeOrder(0, null, tradeSide) // Clear Shares
@@ -104,11 +103,11 @@ export default class MarketActive extends Component {
     const shareDenomination = getValue(this.props, `scalarShareDenomination.markets.${marketID}`)
 
     if (!shareDenomination) {
-      const maxValue = getValue(this.props, 'market.maxValue')
+      const maxPrice = getValue(this.props, 'market.maxPrice')
 
-      if (maxValue >= 10000000) {
+      if (maxPrice >= 10000000) {
         this.props.scalarShareDenomination.updateSelectedShareDenomination(marketID, MICRO_SHARE)
-      } else if (maxValue >= 10000) {
+      } else if (maxPrice >= 10000) {
         this.props.scalarShareDenomination.updateSelectedShareDenomination(marketID, MILLI_SHARE)
       } else {
         this.props.scalarShareDenomination.updateSelectedShareDenomination(marketID, SHARE)
@@ -124,8 +123,8 @@ export default class MarketActive extends Component {
     const tradeSummary = getValue(p, 'market.tradeSummary')
     const submitTrade = getValue(p, 'market.onSubmitPlaceTrade')
     const marketType = getValue(p, 'market.type')
-    const minValue = getValue(p, 'market.minValue')
-    const maxValue = getValue(p, 'market.maxValue')
+    const minPrice = getValue(p, 'market.minPrice')
+    const maxPrice = getValue(p, 'market.maxPrice')
 
     const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${marketID}`)
     const shareDenominations = getValue(p, 'scalarShareDenomination.denominations')
@@ -149,8 +148,8 @@ export default class MarketActive extends Component {
             updateSelectedTradeSide={this.updateSelectedTradeSide}
             updateTradeFromSelectedOrder={this.updateTradeFromSelectedOrder}
             outcomeTradeNavItems={p.outcomeTradeNavItems}
-            minLimitPrice={minValue}
-            maxLimitPrice={maxValue}
+            minLimitPrice={minPrice}
+            maxLimitPrice={maxPrice}
           />
           <OrderBook
             marketType={marketType}
@@ -177,9 +176,8 @@ export default class MarketActive extends Component {
               selectedShareDenomination={selectedShareDenomination}
               updateSelectedTradeSide={this.updateSelectedTradeSide}
               outcomeTradeNavItems={p.outcomeTradeNavItems}
-              minLimitPrice={minValue}
-              maxLimitPrice={maxValue}
-              isTradeCommitLocked={p.isTradeCommitLocked}
+              minLimitPrice={minPrice}
+              maxLimitPrice={maxPrice}
             />
           </div>
         }
