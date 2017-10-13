@@ -1,9 +1,9 @@
+import BigNumber from 'bignumber.js'
 import { createSelector } from 'reselect'
 import memoize from 'memoizee'
 import store from 'src/store'
-import { selectLoginAccountAddress, selectMarketTradesState, selectPriceHistoryState, selectMarketCreatorFeesState } from 'src/select-state'
+import { selectLoginAccountAddress, selectPriceHistoryState, selectMarketCreatorFeesState } from 'src/select-state'
 import selectAllMarkets from 'modules/markets/selectors/markets-all'
-import { abi } from 'services/augurjs'
 import { ZERO } from 'modules/trade/constants/numbers'
 import { formatNumber, formatEtherTokens } from 'utils/format-number'
 
@@ -22,15 +22,14 @@ export const selectAuthorOwnedMarkets = createSelector(
 
 export const selectLoginAccountMarkets = createSelector(
   selectAuthorOwnedMarkets,
-  selectMarketTradesState,
   selectPriceHistoryState,
   selectMarketCreatorFeesState,
-  (authorOwnedMarkets, marketTrades, priceHistory, marketCreatorFees) => {
+  (authorOwnedMarkets, priceHistory, marketCreatorFees) => {
     if (!authorOwnedMarkets) return []
     const markets = []
     authorOwnedMarkets.forEach((market) => {
       const fees = formatEtherTokens(marketCreatorFees[market.id] || 0)
-      const numberOfTrades = formatNumber(selectNumberOfTrades(marketTrades[market.id]))
+      const numberOfTrades = formatNumber(selectNumberOfTrades(priceHistory[market.id]))
       const averageTradeSize = formatNumber(selectAverageTradeSize(priceHistory[market.id]))
       const openVolume = formatNumber(selectOpenVolume(market))
       markets.push({
@@ -59,7 +58,7 @@ export const selectOpenVolume = (market) => {
   market.outcomes.forEach((outcome) => {
     Object.keys(outcome.orderBook).forEach((orderType) => {
       outcome.orderBook[orderType].forEach((type) => {
-        openVolume = openVolume.plus(abi.bignum(type.shares.value))
+        openVolume = openVolume.plus(new BigNumber(type.shares.value, 10))
       })
     })
   })
@@ -74,7 +73,7 @@ export const selectAverageTradeSize = memoize((marketPriceHistory) => {
   }
   const priceHistoryTotals = Object.keys(marketPriceHistory).reduce((historyTotals, currentOutcome) => {
     const outcomeTotals = marketPriceHistory[currentOutcome].reduce((outcomeTotals, trade) => ({
-      shares: abi.bignum(outcomeTotals.shares).plus(abi.bignum(trade.amount)),
+      shares: new BigNumber(outcomeTotals.shares, 10).plus(new BigNumber(trade.amount, 10)),
       trades: outcomeTotals.trades + 1
     }), initialState)
     return {
@@ -82,5 +81,5 @@ export const selectAverageTradeSize = memoize((marketPriceHistory) => {
       trades: historyTotals.trades + outcomeTotals.trades
     }
   }, initialState)
-  return priceHistoryTotals.shares.dividedBy(abi.bignum(priceHistoryTotals.trades))
+  return priceHistoryTotals.shares.dividedBy(new BigNumber(priceHistoryTotals.trades, 10))
 }, { max: 1 })

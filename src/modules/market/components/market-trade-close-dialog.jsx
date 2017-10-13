@@ -39,8 +39,7 @@ export default class MarketTradeCloseDialog extends Component {
     closePosition,
     status,
     orderType,
-    cancelOrder,
-    isTradeCommitLocked
+    cancelOrder
   ) {
     // Position -- No Available Actions
     if (closeType === POSITION && !status && (!parseFloat(quantityOfShares, 10) || !isClosable)) {
@@ -91,9 +90,7 @@ export default class MarketTradeCloseDialog extends Component {
           <button
             className="unstyled close-order-button"
             onClick={() => {
-              if (!isTradeCommitLocked) {
-                this.setState({ isConfirming: true })
-              }
+              this.setState({ isConfirming: true })
             }}
           >
             <span>∅</span>
@@ -113,7 +110,7 @@ export default class MarketTradeCloseDialog extends Component {
         className={
           classNames(
             'close-dialog', {
-              'action-disabled': p.isTradeCommitLocked && p.closeType === POSITION,
+              'action-disabled': p.closeType === POSITION,
               'action-running': p.status === CLOSE_DIALOG_CLOSING,
               'action-failed': p.status === CLOSE_DIALOG_NO_ORDERS ||
                 p.status === CLOSE_DIALOG_FAILED ||
@@ -134,8 +131,7 @@ export default class MarketTradeCloseDialog extends Component {
             p.closePosition,
             p.status,
             p.orderType,
-            p.cancelOrder,
-            p.isTradeCommitLocked
+            p.cancelOrder
           )
         }
       </article>

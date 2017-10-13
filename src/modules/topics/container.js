@@ -8,7 +8,7 @@ import { selectTopics } from 'modules/topics/selectors/topics'
 import getValue from 'utils/get-value'
 
 const mapStateToProps = state => ({
-  branch: state.branch,
+  universe: state.universe,
   topics: selectTopics(state),
   loginAccount: selectLoginAccount(state),
   isLogged: !!getValue(state, 'loginAccount.address')

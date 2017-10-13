@@ -16,7 +16,6 @@ import getValue from 'utils/get-value'
 export default class MyPositionsMarket extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
-    isTradeCommitLocked: PropTypes.bool,
     closePositionStatus: PropTypes.object.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired,
     orderCancellation: PropTypes.object.isRequired,
@@ -95,7 +94,6 @@ export default class MyPositionsMarket extends Component {
                     key={`${p.market.id}-${outcome.id}`}
                     type={p.market.type}
                     closePositionStatus={p.closePositionStatus}
-                    isTradeCommitLocked={p.isTradeCommitLocked}
                     scalarShareDenomination={p.scalarShareDenomination}
                   />
                 )}

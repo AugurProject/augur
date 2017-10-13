@@ -2,7 +2,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import MarketView from 'modules/market/components/market-view'
 
-import { selectTradeCommitLockIsLocked } from 'src/select-state'
 import { selectSelectedMarket } from 'modules/market/selectors/market'
 import { selectMarketsTotals } from 'modules/markets/selectors/markets-totals'
 import { selectClosePositionStatus } from 'modules/my-positions/selectors/close-position-status'
@@ -21,12 +20,11 @@ import getValue from 'utils/get-value'
 
 const mapStateToProps = state => ({
   isConnected: state.connection.isConnected,
-  branch: state.branch,
+  universe: state.universe,
   isLogged: !!getValue(state, 'loginAccount.address'),
   market: selectSelectedMarket(state),
   orderCancellation: getOrderCancellation(),
   numPendingReports: selectMarketsTotals(state).numPendingReports,
-  isTradeCommitLocked: selectTradeCommitLockIsLocked(state),
   scalarShareDenomination: getScalarShareDenomination(),
   closePositionStatus: selectClosePositionStatus(state),
   marketDataNavItems: MARKET_DATA_NAV_ITEMS,

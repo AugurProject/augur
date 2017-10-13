@@ -1,4 +1,5 @@
-import { abi, augur } from 'services/augurjs'
+import speedomatic from 'speedomatic'
+import { augur } from 'services/augurjs'
 import { updateAssets } from 'modules/auth/actions/update-assets'
 import { addNotification } from 'modules/notifications/actions/update-notifications'
 
@@ -8,9 +9,9 @@ import { ETH, REP } from 'modules/account/constants/asset-types'
 
 export function transferFunds(amount, currency, toAddress) {
   return (dispatch, getState) => {
-    const { branch, loginAccount } = getState()
+    const { universe, loginAccount } = getState()
     const fromAddress = loginAccount.address
-    const to = abi.format_address(toAddress)
+    const to = speedomatic.formatEthereumAddress(toAddress)
     const onSent = r => console.log('transfer', currency, 'sent:', r)
     const onSuccess = (r) => {
       dispatch(updateAssets())
@@ -20,9 +21,9 @@ export function transferFunds(amount, currency, toAddress) {
     switch (currency) {
       case ETH:
         return augur.assets.sendEther({
-          signer: loginAccount.privateKey,
+          _signer: loginAccount.privateKey,
           to,
-          value: amount,
+          etherToSend: amount,
           from: fromAddress,
           onSent: (tx) => {
             dispatch(addNotification({
@@ -53,9 +54,9 @@ export function transferFunds(amount, currency, toAddress) {
       case REP:
         return augur.assets.sendReputation({
           _signer: loginAccount.privateKey,
-          branch: branch.id,
-          recver: to,
-          value: amount,
+          universeID: universe.id,
+          reputationToSend: amount,
+          _to: to,
           onSent,
           onSuccess,
           onFailed

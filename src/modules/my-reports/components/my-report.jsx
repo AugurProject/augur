@@ -4,7 +4,6 @@ import ReactTooltip from 'react-tooltip'
 
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 import ValueDate from 'modules/common/components/value-date'
-import ReportEthics from 'modules/my-reports/components/report-ethics'
 
 const MyReport = p => (
   <article
@@ -28,20 +27,12 @@ const MyReport = p => (
       <div className="portfolio-pair">
         <span className="report-main-group-title">reported: </span>
         <span className="report-main-group-title-outcome">
-          {!!p.isCommitted && !p.isRevealed &&
-            <span
-              className="report-committed"
-              data-tip="You have successfully committed to this report. Remember to login to reveal the report!"
-            >
-              {p.reported || <span>&mdash;</span>}
-            </span>
-          }
-          {!!p.isRevealed &&
+          {!!p.isSubmitted &&
             <span className="report-revealed">
               {p.reported || <span>&mdash;</span>}
             </span>
           }
-          {!p.isRevealed && !p.isCommitted &&
+          {!p.isSubmitted &&
             <span>{p.reported || <span>&mdash;</span>}</span>
           }
           {!!p.outcome && p.isReportEqual &&
@@ -56,16 +47,13 @@ const MyReport = p => (
               data-tip="Your report does not match the consensus outcome"
             />
           }
-          <ReportEthics isUnethical={p.isUnethical} />
         </span>
       </div>
       <div className="portfolio-pair">
         <span className="report-main-group-title">cycle: </span>
         <span className="report-main-group-title-outcome">
           {p.period ?
-            <span
-              data-tip={`${p.branch.currentPeriod - p.period} reporting cycles ago`}
-            >
+            <span>
               {p.period}
             </span> :
             <span>&mdash;</span>
@@ -105,11 +93,9 @@ MyReport.propTypes = {
   reported: PropTypes.string,
   repEarned: PropTypes.object,
   period: PropTypes.number,
-  isCommitted: PropTypes.bool,
-  isRevealed: PropTypes.bool,
+  isSubmitted: PropTypes.bool,
   isReportEqual: PropTypes.bool,
-  isUnethical: PropTypes.bool,
-  branch: PropTypes.object.isRequired,
+  universe: PropTypes.object.isRequired,
   endDate: PropTypes.object.isRequired
 }
 

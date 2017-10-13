@@ -18,12 +18,9 @@ export const EXPIRY_SOURCE_SPECIFIC = 'EXPIRY_SOURCE_SPECIFIC'
 export const INITIAL_LIQUIDITY_DEFAULT = 500
 export const INITIAL_LIQUIDITY_MIN = 250
 
-export const TAKER_FEE_DEFAULT = 2
-export const TAKER_FEE_MIN = 1
-export const TAKER_FEE_MAX = 12.5
-
-export const MAKER_FEE_DEFAULT = 1
-export const MAKER_FEE_MIN = 0
+export const SETTLEMENT_FEE_DEFAULT = 2
+export const SETTLEMENT_FEE_MIN = 1
+export const SETTLEMENT_FEE_MAX = 12.5
 
 // Advanced Market Creation Defaults
 export const STARTING_QUANTITY_DEFAULT = 100

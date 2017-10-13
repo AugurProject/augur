@@ -34,7 +34,6 @@ const MarketPositions = (p) => {
                 outcome={outcome}
                 selectedShareDenomination={p.selectedShareDenomination}
                 closePositionStatus={p.closePositionStatus}
-                isTradeCommitLocked={p.isTradeCommitLocked}
               />
             )}
           </div>

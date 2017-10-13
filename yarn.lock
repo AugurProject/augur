@@ -2,25 +2,9 @@
 # yarn lockfile v1
 
 
-"@types/node@*":
-  version "8.0.24"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.0.24.tgz#06c580084d9add1fb40c1510ef0b448961246fb1"
-
 "@types/node@^6.0.46":
   version "6.0.89"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.89.tgz#154be0e6a823760cd6083aa8c48f952e2e63e0b0"
-
-"@types/source-map-support@0.2.28":
-  version "0.2.28"
-  resolved "https://registry.yarnpkg.com/@types/source-map-support/-/source-map-support-0.2.28.tgz#ce6497dfa9c9fbd21a753955b4a51d8993d759dd"
-  dependencies:
-    "@types/node" "*"
-
-"@types/uuid@2.0.29":
-  version "2.0.29"
-  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-2.0.29.tgz#939a198ab73567f811ab84f670d2be9c25addd41"
-  dependencies:
-    "@types/node" "*"
 
 JSONStream@^0.8.4:
   version "0.8.4"
@@ -228,7 +212,7 @@ ansi-regex@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-3.0.0.tgz#ed0317c322064f79466c02966bddb605ab37d998"
 
-ansi-styles@^2.1.0, ansi-styles@^2.2.1:
+ansi-styles@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-2.2.1.tgz#b432dd3358b634cf75e1e4664368240533c1ddbe"
 
@@ -246,8 +230,8 @@ anymatch@^1.3.0:
     normalize-path "^2.0.0"
 
 aphrodite@^1.2.1:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/aphrodite/-/aphrodite-1.2.4.tgz#5dc1622aa6f1b02c775e1f1ed850df08839e203c"
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/aphrodite/-/aphrodite-1.2.5.tgz#8358c36c80bb03aee9b97165aaa70186225b4983"
   dependencies:
     asap "^2.0.3"
     inline-style-prefixer "^3.0.1"
@@ -443,41 +427,28 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
-augur-abi@1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/augur-abi/-/augur-abi-1.2.1.tgz#f099dc136a61cff196540cb830dc5128b8228493"
-  dependencies:
-    bignumber.js "2.3.0"
-    ethereumjs-abi "0.6.2"
-    js-sha3 "0.3.1"
+augur-contracts@3.2.3:
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-3.2.3.tgz#f2e6331f7a9abf1561f00554c3661baefcf32d81"
 
-augur-contracts@2.11.4:
-  version "2.11.4"
-  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-2.11.4.tgz#0209c298480aa1a0b0974fb301491a6d2563dc71"
-  dependencies:
-    clone "1.0.2"
-
-augur.js@4.0.6:
-  version "4.0.6"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.0.6.tgz#2362b8a2aae17f0cc711a306ac4c0797b3f8e5b5"
+augur.js@4.4.8:
+  version "4.4.8"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.4.8.tgz#5cb3ff6b0e0eb8fc39a69a002a8f14ea8bdf2ce3"
   dependencies:
     async "1.5.2"
-    augur-abi "1.2.1"
-    augur-contracts "2.11.4"
+    augur-contracts "3.2.3"
     bignumber.js "2.3.0"
-    browser-request "0.3.3"
-    chalk "1.1.1"
     clone "1.0.2"
-    ethereumjs-connect "4.1.2"
-    ethrpc "4.1.2"
+    ethereumjs-connect "4.3.10"
+    ethrpc "4.4.3"
     immutable-delete "1.0.1"
-    keythereum "0.5.1"
+    keccak "1.2.0"
+    keythereum "1.0.2"
     lodash.assign "4.2.0"
-    request "2.74.0"
+    lodash.isequal "4.5.0"
+    speedomatic "2.0.3"
     uuid "3.0.0"
     uuid-parse "1.0.0"
-  optionalDependencies:
-    madlibs "0.0.0"
 
 autoprefixer@7.1.1:
   version "7.1.1"
@@ -1344,12 +1315,6 @@ bl@~1.0.0:
   dependencies:
     readable-stream "~2.0.5"
 
-bl@~1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/bl/-/bl-1.1.2.tgz#fdca871a99713aa00d19e3bbba41c44787a65398"
-  dependencies:
-    readable-stream "~2.0.5"
-
 blob@0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/blob/-/blob-0.0.4.tgz#bcf13052ca54463f30f9fc7e95b9a47630a94921"
@@ -1737,16 +1702,6 @@ chai@4.0.2:
 chain-function@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/chain-function/-/chain-function-1.0.0.tgz#0d4ab37e7e18ead0bdc47b920764118ce58733dc"
-
-chalk@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/chalk/-/chalk-1.1.1.tgz#509afb67066e7499f7eb3535c77445772ae2d019"
-  dependencies:
-    ansi-styles "^2.1.0"
-    escape-string-regexp "^1.0.2"
-    has-ansi "^2.0.0"
-    strip-ansi "^3.0.0"
-    supports-color "^2.0.0"
 
 chalk@1.1.3, chalk@^1.0.0, chalk@^1.1.1, chalk@^1.1.3:
   version "1.1.3"
@@ -3277,30 +3232,28 @@ ethereum-common@^0.0.18:
   version "0.0.18"
   resolved "https://registry.yarnpkg.com/ethereum-common/-/ethereum-common-0.0.18.tgz#2fdc3576f232903358976eb39da783213ff9523f"
 
-ethereumjs-abi@0.6.2:
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/ethereumjs-abi/-/ethereumjs-abi-0.6.2.tgz#9ffa54403d9255540c6cc9a8ff7d32705c1f3373"
+ethereumjs-abi@0.6.4:
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/ethereumjs-abi/-/ethereumjs-abi-0.6.4.tgz#9ba1bb056492d00c27279f6eccd4d58275912c1a"
   dependencies:
     bn.js "^4.10.0"
     ethereumjs-util "^4.3.0"
 
-ethereumjs-blockstream@2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/ethereumjs-blockstream/-/ethereumjs-blockstream-2.0.4.tgz#63a36470d75e8d38b05a505ecd68782b529c8f42"
+ethereumjs-blockstream@2.0.7:
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/ethereumjs-blockstream/-/ethereumjs-blockstream-2.0.7.tgz#8e791d18d517f13e0ba928892dda545dc930936b"
   dependencies:
-    "@types/source-map-support" "0.2.28"
-    "@types/uuid" "2.0.29"
     immutable "3.8.1"
     source-map-support "0.4.14"
     uuid "3.0.1"
 
-ethereumjs-connect@4.1.2:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.1.2.tgz#39bde9de8790609130e5bcdedfc7643b7a31bb88"
+ethereumjs-connect@4.3.10:
+  version "4.3.10"
+  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.3.10.tgz#eb26d567642472375b1cf1fb09363ca4c2dc062c"
   dependencies:
     async "1.5.2"
     clone "1.0.2"
-    ethrpc "4.1.2"
+    ethrpc "4.4.3"
 
 ethereumjs-tx@1.3.1:
   version "1.3.1"
@@ -3339,16 +3292,15 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@4.1.2:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.1.2.tgz#49a956c384d8866bd1af722f99a3173c19df25b6"
+ethrpc@4.4.3:
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.4.3.tgz#7abbdde8ad92bf4ee6d1287a5f5678da4e3d30c1"
   dependencies:
     async "1.5.2"
-    augur-abi "1.2.1"
     bignumber.js "2.3.0"
     browser-request "0.3.3"
     clone "1.0.2"
-    ethereumjs-blockstream "2.0.4"
+    ethereumjs-blockstream "2.0.7"
     ethereumjs-tx "1.3.1"
     immutable-delete "1.0.1"
     keccak "1.2.0"
@@ -3359,8 +3311,9 @@ ethrpc@4.1.2:
     oboe "2.1.3"
     redux "3.6.0"
     redux-thunk-subscribe "1.0.3"
+    speedomatic "2.0.3"
     sync-request "2.0.1"
-    uuid "^3.0.1"
+    uuid "3.0.1"
   optionalDependencies:
     request "2.67.0"
     websocket "1.0.23"
@@ -3705,7 +3658,7 @@ form-data@1.0.0-rc4:
     combined-stream "^1.0.5"
     mime-types "^2.1.10"
 
-form-data@~1.0.0-rc3, form-data@~1.0.0-rc4:
+form-data@~1.0.0-rc3:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/form-data/-/form-data-1.0.1.tgz#ae315db9a4907fa065502304a66d7733475ee37c"
   dependencies:
@@ -4874,7 +4827,7 @@ js-base64@^2.1.9:
   version "2.1.9"
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.1.9.tgz#f0e80ae039a4bd654b5f281fc93f04a914a7fcce"
 
-js-sha3@0.3.1, js-sha3@^0.3.1:
+js-sha3@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.3.1.tgz#86122802142f0828502a0d1dee1d95e253bb0243"
 
@@ -5056,18 +5009,9 @@ keycode@^2.1.0:
   version "2.1.9"
   resolved "https://registry.yarnpkg.com/keycode/-/keycode-2.1.9.tgz#964a23c54e4889405b4861a5c9f0480d45141dfa"
 
-keythereum@0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/keythereum/-/keythereum-0.5.1.tgz#2d6a186a1cad5886ec6ba9378a214f651509f191"
-  dependencies:
-    keccak "1.2.0"
-    secp256k1 "3.2.5"
-    sjcl "1.0.6"
-    uuid "3.0.0"
-
-keythereum@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/keythereum/-/keythereum-1.0.0.tgz#4ebe7f59b4b5e600349ca8db45a308abd7f7115a"
+keythereum@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/keythereum/-/keythereum-1.0.2.tgz#612ba41cde254b17dd7737e75237ae6ee5162992"
   dependencies:
     keccak "1.2.0"
     secp256k1 "3.2.5"
@@ -5333,6 +5277,10 @@ lodash.isarray@^3.0.0:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/lodash.isarray/-/lodash.isarray-3.0.4.tgz#79e4eb88c36a8122af86f844aa9bcd851b5fbb55"
 
+lodash.isequal@4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
+
 lodash.keys@^3.0.0:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/lodash.keys/-/lodash.keys-3.1.2.tgz#4dbc0472b156be50a0b286855d1bd0b0c656098a"
@@ -5435,12 +5383,6 @@ lru-queue@0.1:
 macaddress@^0.2.8:
   version "0.2.8"
   resolved "https://registry.yarnpkg.com/macaddress/-/macaddress-0.2.8.tgz#5904dc537c39ec6dbefeae902327135fa8511f12"
-
-madlibs@0.0.0:
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/madlibs/-/madlibs-0.0.0.tgz#b7319edaece9e8ad0bae798551066aea2efbe812"
-  dependencies:
-    underscore "~1.4.4"
 
 make-dir@^1.0.0:
   version "1.0.0"
@@ -5688,8 +5630,8 @@ moment@2.18.1:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.18.1.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
 
 moment@>=1.6.0:
-  version "2.19.0"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.0.tgz#44f675ef6b944942762581b1c179fb679e599d67"
+  version "2.19.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.1.tgz#56da1a2d1cbf01d38b7e1afc31c10bcfa1929167"
 
 moment@~2.14.1:
   version "2.14.1"
@@ -5944,8 +5886,8 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
 
 nwmatcher@^1.4.1:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/nwmatcher/-/nwmatcher-1.4.2.tgz#c5e545ab40d22a56b0326531c4beaed7a888b3ea"
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/nwmatcher/-/nwmatcher-1.4.3.tgz#64348e3b3d80f035b40ac11563d278f8b72db89c"
 
 nyc@11.0.2:
   version "11.0.2"
@@ -7113,10 +7055,6 @@ qs@~5.2.0:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/qs/-/qs-5.2.1.tgz#801fee030e0b9450d6385adc48a4cc55b44aedfc"
 
-qs@~6.2.0:
-  version "6.2.3"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.2.3.tgz#1cfcb25c10a9b2b483053ff39f5dfc9233908cfe"
-
 qs@~6.3.0:
   version "6.3.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.3.2.tgz#e75bd5f6e268122a2a0e0bda630b2550c166502c"
@@ -7365,14 +7303,6 @@ react-router-dom@4.1.1:
   dependencies:
     history "^4.5.1"
     loose-envify "^1.3.1"
-    prop-types "^15.5.4"
-    react-router "^4.1.1"
-
-react-router-redux@next:
-  version "5.0.0-alpha.6"
-  resolved "https://registry.yarnpkg.com/react-router-redux/-/react-router-redux-5.0.0-alpha.6.tgz#7418663c2ecd3c51be856fcf28f3d1deecc1a576"
-  dependencies:
-    history "^4.5.1"
     prop-types "^15.5.4"
     react-router "^4.1.1"
 
@@ -7828,32 +7758,6 @@ request@2.67.0:
     qs "~5.2.0"
     stringstream "~0.0.4"
     tough-cookie "~2.2.0"
-    tunnel-agent "~0.4.1"
-
-request@2.74.0:
-  version "2.74.0"
-  resolved "https://registry.yarnpkg.com/request/-/request-2.74.0.tgz#7693ca768bbb0ea5c8ce08c084a45efa05b892ab"
-  dependencies:
-    aws-sign2 "~0.6.0"
-    aws4 "^1.2.1"
-    bl "~1.1.2"
-    caseless "~0.11.0"
-    combined-stream "~1.0.5"
-    extend "~3.0.0"
-    forever-agent "~0.6.1"
-    form-data "~1.0.0-rc4"
-    har-validator "~2.0.6"
-    hawk "~3.1.3"
-    http-signature "~1.1.0"
-    is-typedarray "~1.0.0"
-    isstream "~0.1.2"
-    json-stringify-safe "~5.0.1"
-    mime-types "~2.1.7"
-    node-uuid "~1.4.7"
-    oauth-sign "~0.8.1"
-    qs "~6.2.0"
-    stringstream "~0.0.4"
-    tough-cookie "~2.3.0"
     tunnel-agent "~0.4.1"
 
 request@2.79.0:
@@ -8377,6 +8281,13 @@ spdx-license-ids@^1.0.2:
 specificity@^0.3.0:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/specificity/-/specificity-0.3.1.tgz#f1b068424ce317ae07478d95de3c21cf85e8d567"
+
+speedomatic@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/speedomatic/-/speedomatic-2.0.3.tgz#018690b23634853712df93fdd08da7e666c4dc71"
+  dependencies:
+    bignumber.js "2.3.0"
+    ethereumjs-abi "0.6.4"
 
 split2@^0.2.1:
   version "0.2.1"
@@ -9108,10 +9019,6 @@ unc-path-regex@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/unc-path-regex/-/unc-path-regex-0.1.2.tgz#e73dd3d7b0d7c5ed86fbac6b0ae7d8c6a69d50fa"
 
-underscore@~1.4.4:
-  version "1.4.4"
-  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.4.4.tgz#61a6a32010622afa07963bf325203cf12239d604"
-
 uniq@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/uniq/-/uniq-1.0.1.tgz#b31c5ae8254844a3a8281541ce2b04b865a734ff"
@@ -9189,7 +9096,7 @@ uuid@3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.1.tgz#6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1"
 
-uuid@^3.0.0, uuid@^3.0.1, uuid@^3.1.0:
+uuid@^3.0.0, uuid@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.1.0.tgz#3dd3d3e790abc24d7b0d3a034ffababe28ebbc04"
 

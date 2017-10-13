@@ -46,7 +46,6 @@ const MarketPositionsRow = (p) => {
         closePosition={closePosition}
         isClosable={isClosable}
         status={status}
-        isTradeCommitLocked={p.isTradeCommitLocked}
       />
     </article>
   )

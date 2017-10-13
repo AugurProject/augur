@@ -10,13 +10,13 @@ describe('modules/auth/helpers/generate-download-account-link.js', () => {
   test({
     description: `should return the expected values + call the expected methods`,
     assertions: () => {
-      const abi = {
-        bytes_to_hex: () => {}
+      const Speedomatic = {
+        byteArrayToHexString: () => {}
       }
-      sinon.stub(abi, 'bytes_to_hex', privateKey => privateKey)
+      sinon.stub(Speedomatic, 'byteArrayToHexString', privateKey => privateKey)
+      linkRewireAPI.__Rewire__('speedomatic', Speedomatic)
 
       const augur = {
-        abi,
         accounts: {
           account: {
             privateKey: '123privatekey'
@@ -40,7 +40,7 @@ describe('modules/auth/helpers/generate-download-account-link.js', () => {
       }
 
       assert.deepEqual(actual, expected, `didn't return the expected object`)
-      assert(abi.bytes_to_hex.calledOnce, `didn't call 'augur.abi.bytes_to_hex' once as exptected`)
+      assert(Speedomatic.byteArrayToHexString.calledOnce, `didn't call 'speedomatic.byteArrayToHexString' once as exptected`)
       assert(keythereum.generateKeystoreFilename.calledOnce, `didn't call 'keythereum.generateKeystoreFilename' once as expected`)
     }
   })

@@ -54,7 +54,6 @@ export default class MyMarkets extends Component {
               transactionsLoading={p.transactionsLoading}
               hasAllTransactionsLoaded={p.hasAllTransactionsLoaded}
               triggerTransactionsExport={p.triggerTransactionsExport}
-              registerBlockNumber={p.registerBlockNumber}
             />
           </div>
         </div>

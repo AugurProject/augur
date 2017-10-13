@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { augur, abi, rpc, constants } from 'services/augurjs'
+import { augur } from 'services/augurjs'
 import BigNumber from 'bignumber.js'
 
 import { formatEtherEstimate, formatEtherTokensEstimate } from 'utils/format-number'
@@ -14,16 +14,13 @@ export default class CreateMarketReview extends Component {
   static propTypes = {
     isValid: PropTypes.bool.isRequired,
     creationError: PropTypes.string.isRequired,
-    branch: PropTypes.object.isRequired,
+    universe: PropTypes.object.isRequired,
+    endDate: PropTypes.object.isRequired,
     currentStep: PropTypes.number.isRequired,
     initialLiquidityEth: PropTypes.instanceOf(BigNumber).isRequired,
     initialLiquidityGas: PropTypes.instanceOf(BigNumber).isRequired,
     initialLiquidityFees: PropTypes.instanceOf(BigNumber).isRequired,
-    takerFee: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ]).isRequired,
-    makerFee: PropTypes.oneOfType([
+    settlementFee: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
     ]).isRequired,
@@ -34,7 +31,6 @@ export default class CreateMarketReview extends Component {
 
     this.state = {
       creationFee: null,
-      marketEventBond: null,
       gasCost: null,
       initialLiquidity: {
         gas: null,
@@ -63,21 +59,17 @@ export default class CreateMarketReview extends Component {
   }
 
   calculateMarketCreationCosts() {
-    const gasPrice = rpc.gasPrice || constants.DEFAULT_GASPRICE
-
-    // TODO augur.api.functions -> getState().functionsAPI
-    const gasCost = formatEtherEstimate(augur.trading.simulation.getTxGasEth({ ...augur.api.CreateMarket.createMarket }, gasPrice))
-    const creationFee = formatEtherEstimate(abi.unfix(augur.create.calculateRequiredMarketValue(gasPrice)))
-
-    // Event Bond
-    const tradingFee = augur.trading.fees.calculateTradingFees(this.props.makerFee, this.props.takerFee).tradingFee
-    const validityBond = augur.create.calculateValidityBond(tradingFee, this.props.branch.periodLength, this.props.branch.baseReporters, this.props.branch.numEventsCreatedInPast24Hours, this.props.branch.numEventsInReportPeriod)
-    const eventBond = formatEtherEstimate(validityBond)
-
-    this.setState({
-      gasCost,
-      creationFee,
-      eventBond
+    const self = this
+    augur.createMarket.getMarketCreationCostBreakdown({
+      universeID: this.props.universe.id,
+      _endTime: this.props.endDate.timestamp / 1000
+    }, (err, marketCreationCostBreakdown) => {
+      if (err) return console.error(err)
+      self.setState({
+        gasCost: formatEtherEstimate(0), // FIXME real gas cost lookup
+        creationFee: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
+        validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond)
+      })
     })
   }
 
@@ -86,7 +78,7 @@ export default class CreateMarketReview extends Component {
     const s = this.state
 
     const creationFee = getValue(s, 'creationFee.formatted')
-    const eventBond = getValue(s, 'eventBond.formatted')
+    const validityBond = getValue(s, 'validityBond.formatted')
     const gasCost = getValue(s, 'gasCost.formatted')
     const liquidityEth = getValue(s, 'formattedInitialLiquidityEth.formatted')
     const liquidityGas = getValue(s, 'formattedInitialLiquidityGas.formatted')
@@ -118,8 +110,8 @@ export default class CreateMarketReview extends Component {
                     Bond (refundable):
                   </span>
                   <span>
-                    {eventBond}
-                    <span className="cost-denomination">{eventBond && 'ETH Tokens'}</span>
+                    {validityBond}
+                    <span className="cost-denomination">{validityBond && 'ETH'}</span>
                   </span>
                 </li>
                 <li>

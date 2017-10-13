@@ -1,7 +1,7 @@
 // Taken directly from geth's source: https://github.com/ethereum/go-ethereum/blob/aa9fff3e68b1def0a9a22009c233150bf9ba481f/jsre/ethereum_js.go#L2288
 // Modified for linting + import only
 
-import { abi } from 'services/augurjs'
+import { augur } from 'services/augurjs'
 
 /**
  * Checks if the given string is an address
@@ -32,7 +32,7 @@ export default function isAddress(address) {
 function isChecksumAddress(address) {
   // Check each case
   const formattedAddress = address.replace('0x', '')
-  const addressHash = abi.sha3(formattedAddress.toLowerCase())
+  const addressHash = augur.rpc.sha3(formattedAddress.toLowerCase(), 'hex')
   for (let i = 0; i < 40; i++) {
     // the nth letter should be uppercase if the nth digit of casemap is 1
     if ((parseInt(addressHash[i], 16) > 7 && formattedAddress[i].toUpperCase() !== formattedAddress[i]) || (parseInt(addressHash[i], 16) <= 7 && formattedAddress[i].toLowerCase() !== formattedAddress[i])) {

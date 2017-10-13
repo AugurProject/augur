@@ -72,8 +72,8 @@ describe('modules/auth/actions/transfer-funds.js', () => {
       loginAccount: {
         address: '0xtest'
       },
-      branch: {
-        id: '0xbranch'
+      universe: {
+        id: '0xuniverse'
       }
     },
     assertions: (done, store) => {
@@ -136,8 +136,8 @@ describe('modules/auth/actions/transfer-funds.js', () => {
       loginAccount: {
         address: '0xtest'
       },
-      branch: {
-        id: '0xbranch'
+      universe: {
+        id: '0xuniverse'
       }
     },
     assertions: (done, store) => {

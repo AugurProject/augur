@@ -200,6 +200,7 @@ export default class AppView extends Component {
           openNewMenu()
           break
         default:
+          this.setState({ currentInnerNavType: newType })
           if (callback) callback()
       }
     })
@@ -234,8 +235,9 @@ export default class AppView extends Component {
       })
     }
 
-    const closingAlreadyClosed = !nowOpen && (this.state[menuKey].scalar === 0)
-    if (closingAlreadyClosed) {
+    const alreadyDone = ((!nowOpen && (this.state[menuKey].scalar === 0)) ||
+                          (nowOpen && (this.state[menuKey].scalar === 1)))
+    if (alreadyDone) {
       cb()
     } else {
       const baseMenuState = { open: nowOpen }

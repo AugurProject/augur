@@ -40,3 +40,6 @@ export const ACCOUNT_DEPOSIT = 'deposit-funds'
 export const ACCOUNT_TRANSFER = 'transfer-funds'
 export const ACCOUNT_WITHDRAW = 'withdraw-funds'
 export const ACCOUNT_EXPORT = 'export-account'
+
+// Dev only
+export const STYLE_SANDBOX = 'style-sandbox'

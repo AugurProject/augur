@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
-import { abi } from 'services/augurjs'
+import speedomatic from 'speedomatic'
 
 import Input from 'modules/common/components/input/input'
 import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications'
@@ -32,8 +32,8 @@ export default class CreateMarketFormOutcomesScalar extends Component {
         small: [],
         big: []
       },
-      scalarMin: abi.unfix(abi.constants.SERPINT_MIN).round(18, BigNumber.ROUND_DOWN),
-      scalarMax: abi.unfix(abi.constants.SERPINT_MAX).round(18, BigNumber.ROUND_DOWN),
+      scalarMin: speedomatic.unfix(speedomatic.constants.SERPINT_MIN).round(18, BigNumber.ROUND_DOWN),
+      scalarMax: speedomatic.unfix(speedomatic.constants.SERPINT_MAX).round(18, BigNumber.ROUND_DOWN),
       scalarSmallNum: '',
       scalarBigNum: ''
     }
@@ -126,7 +126,7 @@ export default class CreateMarketFormOutcomesScalar extends Component {
         <div className="create-market-form-part-input">
           <aside>
             <h3>Minimum Value</h3>
-            <span>What is the <strong>minimum</strong> value possible for this event.</span>
+            <span>What is the <strong>minimum</strong> value possible for this market.</span>
           </aside>
           <div className="vertical-form-divider" />
           <form
@@ -152,7 +152,7 @@ export default class CreateMarketFormOutcomesScalar extends Component {
         <div className="create-market-form-part-input">
           <aside>
             <h3>Maximum Value</h3>
-            <span>What is the <strong>maximum</strong> value possible for this event.</span>
+            <span>What is the <strong>maximum</strong> value possible for this market.</span>
           </aside>
           <div className="vertical-form-divider" />
           <form onSubmit={e => e.preventDefault()} >

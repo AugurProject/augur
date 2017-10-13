@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 import OutcomeTrade from 'modules/outcomes/components/outcome-trade'
 
-import { BID, ASK } from 'modules/transactions/constants/types'
+import { BUY, SELL } from 'modules/transactions/constants/types'
 import { PRICE, SHARE } from 'modules/order-book/constants/order-book-value-types'
 import { SCALAR } from 'modules/markets/constants/market-types'
 
@@ -40,7 +40,7 @@ const Outcome = (p) => {
         <button
           className="unstyled"
           onClick={() => {
-            p.updateTradeFromSelectedOrder(p.outcome.id, 0, BID, SHARE)
+            p.updateTradeFromSelectedOrder(p.outcome.id, 0, BUY, SHARE)
           }}
         >
           <ValueDenomination formatted={topBidShares} />
@@ -48,7 +48,7 @@ const Outcome = (p) => {
         <button
           className="unstyled"
           onClick={() => {
-            p.updateTradeFromSelectedOrder(p.outcome.id, 0, BID, PRICE)
+            p.updateTradeFromSelectedOrder(p.outcome.id, 0, BUY, PRICE)
           }}
         >
           <ValueDenomination className="emphasized" formatted={topBidPrice} />
@@ -56,7 +56,7 @@ const Outcome = (p) => {
         <button
           className="unstyled"
           onClick={() => {
-            p.updateTradeFromSelectedOrder(p.outcome.id, 0, ASK, PRICE)
+            p.updateTradeFromSelectedOrder(p.outcome.id, 0, SELL, PRICE)
           }}
         >
           <ValueDenomination className="emphasized" formatted={topAskPrice} />
@@ -64,7 +64,7 @@ const Outcome = (p) => {
         <button
           className="unstyled"
           onClick={() => {
-            p.updateTradeFromSelectedOrder(p.outcome.id, 0, ASK, SHARE)
+            p.updateTradeFromSelectedOrder(p.outcome.id, 0, SELL, SHARE)
           }}
         >
           <ValueDenomination formatted={topAskShares} />
@@ -86,7 +86,7 @@ const Outcome = (p) => {
           <button
             className="unstyled"
             onClick={() => {
-              p.updateTradeFromSelectedOrder(p.outcome.id, 0, BID, SHARE)
+              p.updateTradeFromSelectedOrder(p.outcome.id, 0, BUY, SHARE)
             }}
           >
             <span className="outcome-best-container">
@@ -99,7 +99,7 @@ const Outcome = (p) => {
           <button
             className="unstyled"
             onClick={() => {
-              p.updateTradeFromSelectedOrder(p.outcome.id, 0, ASK, SHARE)
+              p.updateTradeFromSelectedOrder(p.outcome.id, 0, SELL, SHARE)
             }}
           >
             <span className="outcome-best-container">
@@ -120,7 +120,6 @@ const Outcome = (p) => {
         outcomeTradeNavItems={p.outcomeTradeNavItems}
         minLimitPrice={p.minLimitPrice}
         maxLimitPrice={p.maxLimitPrice}
-        isTradeCommitLocked={p.isTradeCommitLocked}
       />
     </article>
   )

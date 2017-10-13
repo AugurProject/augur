@@ -1,7 +1,8 @@
+import BigNumber from 'bignumber.js'
 import { createSelector } from 'reselect'
 import store from 'src/store'
 import { selectAccountTradesState, selectBlockchainState, selectOutcomesDataState } from 'src/select-state'
-import { augur, abi } from 'services/augurjs'
+import { augur } from 'services/augurjs'
 import { dateToBlock } from 'utils/date-to-block-to-date'
 import { formatEtherTokens } from 'utils/format-number'
 import { ZERO } from 'modules/trade/constants/numbers'
@@ -35,8 +36,8 @@ export const createPeriodPLSelector = period => createSelector(
       const accumulatedPL = Object.keys(accountTrades[marketID]).reduce((p, outcomeID) => { // Iterate over outcomes
         const periodTrades = accountTrades[marketID][outcomeID].filter(trade => trade.blockNumber > periodBlock) // Filter out trades older than 30 days
         const lastPrice = selectOutcomeLastPrice(outcomesData[marketID], outcomeID)
-        const { realized, unrealized } = augur.trading.positions.calculateProfitLoss(periodTrades, lastPrice)
-        return p.plus(abi.bignum(realized).plus(abi.bignum(unrealized)))
+        const { realized, unrealized } = augur.trading.calculateProfitLoss({ trades: periodTrades, lastPrice })
+        return p.plus(new BigNumber(realized, 10).plus(new BigNumber(unrealized, 10)))
       }, ZERO)
 
       return p.plus(accumulatedPL)

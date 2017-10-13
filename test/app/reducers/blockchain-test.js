@@ -13,8 +13,6 @@ describe(`modules/app/reducers/blockchain.js`, () => {
     const action = {
       type: UPDATE_BLOCKCHAIN,
       data: {
-        currentPeriod: 21,
-        reportPeriod: 20,
         currentBlockNumber: 833340
       }
     }

@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet'
 
 import MarketsHeader from 'modules/markets/components/markets-header/markets-header'
 import MarketsList from 'modules/markets/components/markets-list'
-import Branch from 'modules/branch/components/branch'
+import Universe from 'modules/universe/components/universe'
 
 import getValue from 'utils/get-value'
 import parseQuery from 'modules/routes/helpers/parse-query'
@@ -37,7 +37,7 @@ export default class MarketsView extends Component {
     // pagination: PropTypes.object,
     // keywords: PropTypes.string,
     // onChangeKeywords: PropTypes.func,
-    // branch: PropTypes.object,
+    // universe: PropTypes.object,
     // scalarShareDenomination: PropTypes.object,
     // location: PropTypes.object.isRequired,
   }
@@ -46,7 +46,7 @@ export default class MarketsView extends Component {
     super(props)
 
     this.state = {
-      shouldDisplayBranchInfo: !!(getValue(props, 'loginAccount.rep.value') && getValue(props, 'branch.id')),
+      shouldDisplayUniverseInfo: !!(getValue(props, 'loginAccount.rep.value') && getValue(props, 'universe.id')),
       filteredMarkets: []
     }
   }
@@ -81,10 +81,10 @@ export default class MarketsView extends Component {
 
     if (
       getValue(this.props, 'loginAccount.rep.value') !== getValue(nextProps, 'loginAccount.rep.value') ||
-      getValue(this.props, 'branch.id') !== getValue(nextProps, 'branch.id')
+      getValue(this.props, 'universe.id') !== getValue(nextProps, 'universe.id')
     ) {
       this.setState({
-        canDisplayBranchInfo: !!(getValue(nextProps, 'loginAccount.rep.value') && getValue(nextProps, 'branch.id'))
+        canDisplayUniverseInfo: !!(getValue(nextProps, 'loginAccount.rep.value') && getValue(nextProps, 'universe.id'))
       })
     }
   }
@@ -121,8 +121,8 @@ export default class MarketsView extends Component {
         <Helmet>
           <title>Markets</title>
         </Helmet>
-        {this.state.shouldDisplayBranchInfo &&
-          <Branch {...p.branch} />
+        {this.state.shouldDisplayUniverseInfo &&
+          <Universe {...p.universe} />
         }
         <MarketsHeader
           isLogged={p.isLogged}
