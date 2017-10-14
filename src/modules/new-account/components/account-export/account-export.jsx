@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import QRCode from 'qrcode.react'
-import Clipboard from 'clipboard'
 
 import { Export as ExportIcon } from 'modules/common/components/icons/icons'
 
@@ -41,7 +40,7 @@ export default class AccountExport extends Component {
                 Reveal QR
               </span>
             }
-            <div
+            <button
               className={classNames(
                 Styles.AccountExport__qrBlur,
                 { [Styles['AccountExport__qrBlur-blurred']]: this.state.blurred }
@@ -52,7 +51,7 @@ export default class AccountExport extends Component {
                 value={p.privateKey}
                 size={124}
               />
-            </div>
+            </button>
           </div>
           <div className={Styles.AccountExport__keystore}>
             <a

@@ -125,21 +125,22 @@ export default class AccountWithdraw extends Component {
             <p>
               Withdraw Ethereum or Reputation from another account into your Trading Account connected with Augur.
             </p>
-            <a href="#">Use Shapeshift</a>
+            <a href="https://shapeshift.io/">Use Shapeshift</a>
           </div>
           <div className={Styles.AccountWithdraw__form}>
             <div className={Styles.AccountWithdraw__formTopRow}>
               <div className={Styles.AccountWithdraw__inputContain}>
-                <label>Select Currency</label>
+                <label htmlFor="currency">Select Currency</label>
                 <InputDropdown
+                  name="currency"
                   className={Styles.AccountWithdraw__dropdown}
                   label="Select Currency"
-                  options={["ETH", "REP"]}
+                  options={['ETH', 'REP']}
                   default="ETH"
                   type="text"
-                  onChange={type => {
-                    const selectedAsset = (type === "ETH") ? ETH : REP
-                    const upperBound = (type === "ETH") ? p.eth.value : p.rep.value
+                  onChange={(type) => {
+                    const selectedAsset = (type === 'ETH') ? ETH : REP
+                    const upperBound = (type === 'ETH') ? p.eth.value : p.rep.value
                     this.setState({
                       selectedAsset,
                       upperBound
@@ -148,8 +149,9 @@ export default class AccountWithdraw extends Component {
                 />
               </div>
               <div className={Styles.AccountWithdraw__inputContain}>
-                <label>Quantity</label>
+                <label htmlFor="quantity">Quantity</label>
                 <Input
+                  name="quantity"
                   label="Quantity"
                   type="number"
                   isIncrementable
@@ -164,8 +166,9 @@ export default class AccountWithdraw extends Component {
             </div>
             <div className={Styles.AccountWithdraw__formBottomRow}>
               <div className={Styles.AccountWithdraw__inputContain}>
-                <label>Recipient Account Address</label>
+                <label htmlFor="address">Recipient Account Address</label>
                 <Input
+                  name="address"
                   label="Recipient Account Address"
                   type="text"
                   value={s.address}
