@@ -26,8 +26,8 @@ export default class AccountWithdraw extends Component {
 
     this.DEFAULT_STATE = {
       animationSpeed: 0,
-      upperBound: null,
-      selectedAsset: null,
+      upperBound: props.eth.value,
+      selectedAsset: ETH,
       amount: '',
       address: '',
       isValid: null,
@@ -40,6 +40,7 @@ export default class AccountWithdraw extends Component {
     this.validateAmount = this.validateAmount.bind(this)
     this.validateAddress = this.validateAddress.bind(this)
     this.validateForm = this.validateForm.bind(this)
+    this.submitForm = this.submitForm.bind(this)
   }
 
   validateAmount(amount) {
@@ -50,6 +51,9 @@ export default class AccountWithdraw extends Component {
         amount: sanitizedAmount,
         isAmountValid: false
       })
+
+      this.validateForm(false, this.state.isAddressValid)
+
       return
     }
 
@@ -57,6 +61,8 @@ export default class AccountWithdraw extends Component {
       amount: sanitizedAmount,
       isAmountValid: true
     })
+
+    this.validateForm(true, this.state.isAddressValid)
   }
 
   validateAddress(address) {
@@ -67,6 +73,9 @@ export default class AccountWithdraw extends Component {
         address: sanitizedAddress,
         isAddressValid: false
       })
+
+      this.validateForm(this.state.isAmountValid, false)
+
       return
     }
 
@@ -74,6 +83,8 @@ export default class AccountWithdraw extends Component {
       address: sanitizedAddress,
       isAddressValid: true
     })
+
+    this.validateForm(this.state.isAmountValid, true)
   }
 
   validateForm(isAmountValid, isAddressValid) {
@@ -90,6 +101,7 @@ export default class AccountWithdraw extends Component {
 
   submitForm() {
     const s = this.state
+    const p = this.props
 
     if (s.isValid) {
       const stringedAmount = s.amount instanceof BigNumber ? s.amount.toString() : s.amount
@@ -162,7 +174,11 @@ export default class AccountWithdraw extends Component {
                 />
               </div>
             </div>
-            <button className={Styles.AccountWithdraw__submitButton}>
+            <button
+              className={Styles.AccountWithdraw__submitButton}
+              disabled={!s.isValid}
+              onClick={this.submitForm}
+            >
               Withdraw
             </button>
           </div>

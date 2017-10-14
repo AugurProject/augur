@@ -1,0 +1,155 @@
+@import (reference) '~assets/styles/shared';
+
+.AccountExport {
+  background: white;
+  padding: 5.625rem 0 3rem 4.375rem;
+  width: 100%;
+}
+
+.AccountExport__heading {
+  margin-bottom: 40px;
+  width: 100%;
+
+  h1 {
+    color: @color-darkpurple;
+    font-size: 1.875rem;
+    font-weight: 500;
+    letter-spacing: 0.14rem;
+    margin-right: 1rem;
+    text-transform: uppercase;
+  }
+
+  > * {
+    display: inline-block;
+  }
+}
+
+.AccountExport__main {
+  display: flex;
+  width: 100%;
+}
+
+.AccountExport__description {
+  border-right: 1px solid @color-lightergray;
+  flex: 0 0 auto;
+  width: 26.25rem;
+
+  p {
+    font-size: 1.125rem;
+    margin: 0 0 1.5rem;
+  }
+
+  a {
+    color: @color-purple;
+    font-size: 1.125rem;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+}
+
+.AccountExport__qrZone {
+  border-right: 1px solid @color-lightergray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.AccountExport__qrBlur-blurred {
+  cursor: pointer;
+  filter: blur(0.5rem);
+  opacity: 0.5;
+}
+
+.AccountExport__blurText {
+  color: @color-purple;
+  font-size: 1.125rem;
+  position: absolute;
+  text-transform: uppercase;
+  z-index: @mask-above;
+}
+
+.AccountExport__qrZone,
+.AccountExport__keystore {
+  flex: 1 1 auto;
+}
+
+.AccountExport__keystore {
+  margin-left: 2.56rem;
+  text-align: center;
+
+  > * {
+    display: inline-block;
+  }
+}
+
+.AccountExport__keystoreButton {
+  background: @color-purple;
+  border-radius: 0.1875rem;
+  color: @color-white;
+  font-size: 1.125rem;
+  font-weight: 500;
+  height: 2.625rem;
+  line-height: 2.625rem;
+  padding: 0 2rem;
+  text-transform: uppercase;
+
+  &:hover {
+    background: @color-lightpurple;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.5;
+
+    &:hover {
+      background: @color-purple;
+      cursor: default;
+    }
+  }
+}
+
+@media @breakpoint-mobile {
+  .AccountExport {
+    padding: 3.125rem 0 0;
+  }
+
+  .AccountExport__heading {
+    font-size: 1.5rem;
+    letter-spacing: 0.11rem;
+    margin-bottom: 0.5rem;
+    padding: 0 1rem;
+
+    h1 {
+      margin-right: 0.5rem;
+    }
+  }
+
+  .AccountExport__main {
+    display: block;
+  }
+
+  .AccountExport__description {
+    border: none;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+    width: auto;
+
+    p {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    a {
+      font-size: 1.125rem;
+    }
+  }
+
+  .AccountExport__qrZone {
+    border: none;
+    margin-bottom: 2rem;
+  }
+
+  .AccountExport__keystore {
+    margin-left: 0;
+  }
+}
