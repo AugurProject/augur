@@ -2,13 +2,13 @@
 
 .AccountWithdraw {
   background: white;
-  padding: 5.625rem 0 3rem 4.375rem;
+  padding: 5.625rem 0 0 4.375rem;
   width: 100%;
 }
 
 .AccountWithdraw__heading {
-  margin-bottom: 40px;
   width: 100%;
+  margin-bottom: 40px;
 
   h1 {
     color: @color-darkpurple;
@@ -18,7 +18,7 @@
     margin-right: 1rem;
     text-transform: uppercase;
   }
-
+  
   > * {
     display: inline-block;
   }
@@ -31,9 +31,8 @@
 
 .AccountWithdraw__description {
   border-right: 1px solid @color-lightergray;
-  flex: 0 0 auto;
-  width: 26.25rem;
-
+  flex: 0 26.25rem;
+  
   p {
     font-size: 1.125rem;
     margin: 0 0 1.5rem;
@@ -47,42 +46,44 @@
   }
 }
 
-.AccountWithdraw__qrZone {
-  border-right: 1px solid @color-lightergray;
+.AccountWithdraw__form {
+  flex: 1;
+  margin-left: 3.75rem;
+  max-width: 36rem;
+}
+
+.AccountWithdraw__formTopRow {
   display: flex;
-  justify-content: center;
-}
-
-.AccountWithdraw__qrZone,
-.AccountWithdraw__address {
-  flex: 1 1 auto;
-}
-
-.AccountWithdraw__address {
-  margin-left: 2.56rem;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
 
   > * {
-    display: inline-block;
+    width: 40%;
   }
 }
 
-.AccountWithdraw__copyButtonElement {
-  text-align: left;
+.AccountWithdraw__formBottomRow {
+  margin-bottom: 1.5rem;
 }
 
-.AccountWithdraw__addressLabel {
-  color: @color-lightgray;
-  display: block;
-  font-size: 1rem;
-  margin-bottom: 0.75rem;
+.AccountWithdraw__inputContain {
+  label {
+    color: @color-darkpurple;
+    font-weight: 500;
+  }
+}
+
+.AccountWithdraw__submitButton {
+  background: @color-purple;
+  border-radius: 0.1875rem;
+  color: @color-white;
+  float: right;
+  font-size: 1.125rem;
+  font-weight: 500;
+  height: 2.625rem;
+  line-height: 2.625rem;
+  padding: 0 2rem;
   text-transform: uppercase;
-  width: 100%;
-}
-
-.AccountWithdraw__addressString {
-  font-size: 0.75rem;
-  margin-right: 0.5rem;
-  vertical-align: text-top;
 }
 
 @media @breakpoint-mobile {
@@ -120,17 +121,34 @@
     }
   }
 
-  .AccountWithdraw__qrZone {
-    border: none;
-    margin-bottom: 2rem;
+  .AccountWithdraw__form {
+    margin: 0;
+    max-width: auto;
   }
 
-  .AccountWithdraw__address {
+  .AccountWithdraw__formTopRow {
+    display: block;
+
+    > * {
+      width: auto;
+    }
+  }
+
+  .AccountWithdraw__formTopRow,
+  .AccountWithdraw__formBottomRow {
     margin: 0;
+  }
+
+  .AccountWithdraw__inputContain {
+    width: 100%;
+    margin-bottom: 1.5rem;
     padding: 0 1rem;
   }
 
-  .AccountWithdraw__addressString {
-    font-size: 1rem;
+  .AccountWithdraw__submitButton {
+    border-radius: 0;
+    float: none;
+    margin-top: 2.25rem;
+    width: 100%;
   }
 }
