@@ -13,7 +13,7 @@
     "test": "test"
   },
   "scripts": {
-    "start": "node build",
+    "start": "node ./build",
     "test": "mocha test",
     "lint": "tslint -c tslint.json -p .",
     "build": "node_modules/typescript/bin/tsc",
