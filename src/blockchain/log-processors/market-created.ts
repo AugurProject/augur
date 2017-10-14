@@ -45,7 +45,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
       };
       db.transacting(trx).insert(dataToInsert).into("markets").asCallback((err?: Error|null): void => {
         if (err) return callback(err);
-        trx.raw(`SELECT "popularity" FROM categories WHERE "category" = ?`, [log.topic]).asCallback((err?: Error|null, row?: {popularity: number}): void => {
+        trx.raw(`SELECT "popularity" FROM categories WHERE "category" = ?`, [log.category]).asCallback((err?: Error|null, row?: {popularity: number}): void => {
           if (err) return callback(err);
           if (row) return callback(null);
           db.transacting(trx).insert({category: log.category, universe: log.address}).into("categories").asCallback(callback);
