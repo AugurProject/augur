@@ -18,11 +18,12 @@
     "lint": "tslint -c tslint.json -p .",
     "build": "node_modules/typescript/bin/tsc",
     "migrate": "node node_modules/knex/bin/cli.js migrate:latest --env build",
+    "migrate_pg": "node node_modules/knex/bin/cli.js migrate:latest --env build_postgres",
     "seed": "node node_modules/knex/bin/cli.js seed:run --env build",
     "migrate:make": "node node_modules/knex/bin/cli.js migrate:make -x ts $1",
     "coverage": "istanbul cover --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test",
     "postinstall": "npm run build",
-    "postdeploy": "npm run migrate --env build_postgres"
+    "postdeploy": "npm run migrate_pg"
   },
   "repository": {
     "type": "git",

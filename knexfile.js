@@ -27,7 +27,7 @@ module.exports = {
   },
   build_postgres: {
     client: 'postgresql',
-    connection: "postgresql://postgres:augur1@localhost:5432/augurnode",
+    connection: process.env.DATABASE_URL,
     seeds: {
       directory: './build/seeds/test'
     },
