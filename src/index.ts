@@ -12,10 +12,10 @@ import { ErrorCallback } from "./types";
 const { augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers, websocketPort } = require("../config");
 
 let db: Knex;
-if (process.env.DATABASE) {
+if (process.env.DATABASE_URL) {
   db = Knex({
     client: "pg",
-    connection: process.env.DATABASE
+    connection: process.env.DATABASE_URL
   });
 } else {
   sqlite3.verbose();
