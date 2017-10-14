@@ -12,7 +12,7 @@ describe("server/getters/get-markets-in-category", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getMarketsInCategory(db, t.params.category, t.params.sortBy, t.params.limit, (err, marketsInCategory) => {
+        getMarketsInCategory(db, t.params.category, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsInCategory) => {
           t.assertions(err, marketsInCategory);
           done();
         });

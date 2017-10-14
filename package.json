@@ -30,7 +30,7 @@
     "@types/knex": "0.0.61",
     "@types/lodash": "4.14.77",
     "async": "1.5.2",
-    "augur.js": "4.4.9",
+    "augur.js": "4.4.10",
     "bignumber.js": "4.1.0",
     "knex": "0.13.0",
     "lodash.isnull": "3.0.0",

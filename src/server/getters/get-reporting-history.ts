@@ -15,7 +15,7 @@ export function getReportingHistory(db: Knex, reporter: Address, marketID: Addre
   if (marketID != null) queryData["reports.market_id"] = marketID;
   if (universe != null) queryData.universe = universe;
   if (reportingWindow != null) queryData.reporting_window = reportingWindow;
-  const rowsToSelect: Array<string> = [
+  const columnsToSelect: Array<string> = [
     "reports.market_id",
     "markets.universe",
     "markets.reporting_window",
@@ -31,7 +31,7 @@ export function getReportingHistory(db: Knex, reporter: Address, marketID: Addre
     "reports.payout6",
     "reports.payout7"
   ];
-  db.select(rowsToSelect).from("reports").join("markets", "markets.market_id", "reports.market_id").where(queryData).orderBy("report_id").asCallback((err?: Error|null, joinedReportsMarketsRows?: Array<JoinedReportsMarketsRow>): void => {
+  db.select(columnsToSelect).from("reports").join("markets", "markets.market_id", "reports.market_id").where(queryData).orderBy("report_id").asCallback((err?: Error|null, joinedReportsMarketsRows?: Array<JoinedReportsMarketsRow>): void => {
     if (err) return callback(err);
     if (!joinedReportsMarketsRows || !joinedReportsMarketsRows.length) return callback(null);
     const reports: UIReports = {};
