@@ -37,9 +37,13 @@ describe('modules/create-market/reducers/new-market.js', () => {
         expirySourceType: '',
         expirySource: '',
         endDate: {},
+        hour: '',
+        minute: '',
+        meridiem: '',
         detailsText: '',
-        topic: '',
-        keywords: [],
+        category: '',
+        tag1: '',
+        tag2: '',
         outcomes: Array(8).fill(''),
         settlementFee: 2,
         orderBook: {},
@@ -58,6 +62,13 @@ describe('modules/create-market/reducers/new-market.js', () => {
           {
             type: false,
           },
+          {
+            expirySourceType: false,
+            endDate: false,
+            hour: false,
+            minute: false,
+            meridiem: false,
+          }
         ],
         creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.'
       }
@@ -384,11 +395,15 @@ describe('modules/create-market/reducers/new-market.js', () => {
         expirySourceType: '',
         expirySource: '',
         endDate: {},
+        hour: '',
+        minute: '',
+        meridiem: '',
         detailsText: '',
         outcomes: Array(8).fill(''),
-        keywords: [],
+        category: '',
+        tag1: '',
+        tag2: '',
         settlementFee: 2,
-        topic: '',
         orderBook: {},
         orderBookSorted: {},
         orderBookSeries: {},
@@ -405,6 +420,13 @@ describe('modules/create-market/reducers/new-market.js', () => {
           {
             type: false,
           },
+          {
+            expirySourceType: false,
+            endDate: false,
+            hour: false,
+            minute: false,
+            meridiem: false,
+          }
         ],
         creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.'
       }
