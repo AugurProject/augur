@@ -206,6 +206,20 @@ export interface OrdersRow {
   tradeGroupID: Bytes32|null;
 }
 
+export interface UITrade {
+  type: string;
+  price: string;
+  shares: string;
+  maker: boolean;
+}
+
+export interface TradingHistoryTradesRow {
+  order_type: string;
+  price: string;
+  shares: string;
+  creator: Address;
+}
+
 export interface TradesRow {
   orderType: string;
   marketID: Address;
