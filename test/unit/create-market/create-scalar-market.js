@@ -31,7 +31,7 @@ describe("create-market/create-scalar-market", function () {
     description: "create a scalar market",
     params: {
       _signer: Buffer.from("PRIVATE_KEY", "utf8"),
-      _branch: "BRANCH_ADDRESS",
+      _universe: "UNIVERSE_ADDRESS",
       _endTime: 2345678901,
       _feePerEthInWei: "4321",
       _denominationToken: "TOKEN_ADDRESS",
@@ -53,7 +53,7 @@ describe("create-market/create-scalar-market", function () {
     stub: {
       getMarketCreationCost: function (p, callback) {
         assert.deepEqual(p, {
-          branchID: "BRANCH_ADDRESS",
+          universeID: "UNIVERSE_ADDRESS",
           _endTime: 2345678901
         });
         callback(null, "MARKET_CREATION_COST");
@@ -63,7 +63,7 @@ describe("create-market/create-scalar-market", function () {
           MarketCreation: {
             createScalarMarket: function (p) {
               assert.deepEqual(p.tx, { value: "MARKET_CREATION_COST" });
-              assert.strictEqual(p._branch, "BRANCH_ADDRESS");
+              assert.strictEqual(p._universe, "UNIVERSE_ADDRESS");
               assert.strictEqual(p._endTime, 2345678901);
               assert.strictEqual(p._feePerEthInWei, "4321");
               assert.strictEqual(p._denominationToken, "TOKEN_ADDRESS");

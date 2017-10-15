@@ -31,25 +31,25 @@ describe("reporting/migrate-losing-tokens", function () {
     description: "migrate losing tokens",
     params: {
       _signer: Buffer.from("PRIVATE_KEY", "utf8"),
-      branchID: "BRANCH_CONTRACT_ADDRESS",
+      universeID: "UNIVERSE_CONTRACT_ADDRESS",
       market: "MARKET_CONTRACT_ADDRESS"
     },
     mock: {
       api: function () {
         return {
-          Branch: {
+          Universe: {
             getPreviousReportingWindow: function (payload, callback) {
-              assert.deepEqual(payload, { tx: { to: "BRANCH_CONTRACT_ADDRESS" } });
+              assert.deepEqual(payload, { tx: { to: "UNIVERSE_CONTRACT_ADDRESS" } });
               callback(null, "PREVIOUS_REPORTING_WINDOW_CONTRACT_ADDRESS");
             },
             getReputationToken: function (payload, callback) {
-              assert.deepEqual(payload, { tx: { to: "BRANCH_CONTRACT_ADDRESS" } });
+              assert.deepEqual(payload, { tx: { to: "UNIVERSE_CONTRACT_ADDRESS" } });
               callback(null, "REPUTATION_TOKEN_CONTRACT_ADDRESS");
             }
           },
-          ReportingToken: {
+          StakeToken: {
             migrateLosingTokens: function (payload) {
-              assert.strictEqual(payload.tx.to, "REPORTING_TOKEN_CONTRACT_ADDRESS");
+              assert.strictEqual(payload.tx.to, "STAKE_TOKEN_CONTRACT_ADDRESS");
               assert.strictEqual(payload._signer.toString("utf8"), "PRIVATE_KEY");
               assert.isFunction(payload.onSent);
               assert.isFunction(payload.onSuccess);
@@ -79,7 +79,7 @@ describe("reporting/migrate-losing-tokens", function () {
             address: "REPUTATION_TOKEN_CONTRACT_ADDRESS"
           }
         });
-        callback(null, [{ to: "REPORTING_TOKEN_CONTRACT_ADDRESS" }]);
+        callback(null, [{ to: "STAKE_TOKEN_CONTRACT_ADDRESS" }]);
       }
     },
     assertions: function (output) {

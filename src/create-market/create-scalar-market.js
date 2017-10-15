@@ -8,7 +8,7 @@ var encodeTag = require("../format/tag/encode-tag");
 
 /**
  * @param {Object} p Parameters object.
- * @param {string} p._branch Branch on which to create this market.
+ * @param {string} p._universe Universe on which to create this market.
  * @param {number} p._endTime Market expiration timestamp, in seconds.
  * @param {string} p._feePerEthInWei Fee that goes to the market creator, as a hexadecimal string.
  * @param {string} p._denominationToken Ethereum address of the token used as this market's currency.
@@ -24,7 +24,7 @@ var encodeTag = require("../format/tag/encode-tag");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function createScalarMarket(p) {
-  getMarketCreationCost({ branchID: p._branch, _endTime: p._endTime }, function (err, marketCreationCost) {
+  getMarketCreationCost({ universeID: p._universe, _endTime: p._endTime }, function (err, marketCreationCost) {
     if (err) return p.onFailed(err);
     api().MarketCreation.createScalarMarket(assign({}, p, {
       tx: { value: marketCreationCost },

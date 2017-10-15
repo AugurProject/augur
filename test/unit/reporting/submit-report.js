@@ -32,30 +32,30 @@ describe("reporting/submit-report", function () {
       api: function () {
         return {
           Market: {
-            getReportingToken: function (payload, callback) {
+            getStakeToken: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
                 _payoutNumerators: [0, 1]
               });
-              callback(null, "REPORTING_TOKEN_CONTRACT_ADDRESS");
+              callback(null, "STAKE_TOKEN_CONTRACT_ADDRESS");
             }
           },
-          ReportingToken: {
+          StakeToken: {
             buy: function (payload) {
               assert.strictEqual(payload._signer.toString("utf8"), "PRIVATE_KEY");
-              assert.deepEqual(payload.tx, { to: "REPORTING_TOKEN_CONTRACT_ADDRESS" });
+              assert.deepEqual(payload.tx, { to: "STAKE_TOKEN_CONTRACT_ADDRESS" });
               assert.strictEqual(payload._amountToStake, "0x56bc75e2d63100000");
               assert.isFunction(payload.onSent);
               assert.isFunction(payload.onSuccess);
               assert.isFunction(payload.onFailed);
-              payload.onSuccess({ callReturn: "REPORTING_TOKEN_BUY" });
+              payload.onSuccess({ callReturn: "STAKE_TOKEN_BUY" });
             }
           }
         };
       }
     },
     assertions: function (output) {
-      assert.deepEqual(output, { callReturn: "REPORTING_TOKEN_BUY" });
+      assert.deepEqual(output, { callReturn: "STAKE_TOKEN_BUY" });
     }
   });
 });

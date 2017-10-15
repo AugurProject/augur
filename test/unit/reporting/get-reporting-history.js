@@ -35,7 +35,7 @@ describe("logs/get-reporting-history", function () {
   //               reporter: "REPORTER_ADDRESS",
   //               market: "MARKET_ADDRESS",
   //               amountStaked: "10",
-  //               reportingToken: "REPORTING_TOKEN_ADDRESS",
+  //               stakeToken: "STAKE_TOKEN_ADDRESS",
   //               payoutNumerators: ["0", "1", "0", "0"]
   //             }]
   //           });
@@ -57,7 +57,7 @@ describe("logs/get-reporting-history", function () {
   //     api: function () {
   //       return {
   //         Market: {
-  //           getFinalWinningReportingToken: function (p, callback) {
+  //           getFinalWinningStakeToken: function (p, callback) {
   //             assert.deepEqual(p, { tx: { to: "MARKET_ADDRESS" } });
   //             callback(null, "0x2a");
   //           },
@@ -66,7 +66,7 @@ describe("logs/get-reporting-history", function () {
   //             callback(null, "0x499602d2");
   //           }
   //         },
-  //         ReportingToken: {
+  //         StakeToken: {
   //           getPayoutNumerators: function (p, callback) {
   //             callback(null, ["0x0", "0x1", "0x0", "0x0"]);
   //           }
@@ -81,11 +81,11 @@ describe("logs/get-reporting-history", function () {
   //         reporter: "REPORTER_ADDRESS",
   //         market: "MARKET_ADDRESS",
   //         amountStaked: "10",
-  //         reportingToken: "REPORTING_TOKEN_ADDRESS",
+  //         stakeToken: "STAKE_TOKEN_ADDRESS",
   //         payoutNumerators: ["0", "1", "0", "0"],
   //         winningPayoutNumerators: ["0", "1", "0", "0"],
   //         isReportCorrect: true,
-  //         finalWinningReportingToken: "0x2a",
+  //         finalWinningStakeToken: "0x2a",
   //         finalizationTime: 1234567890,
   //         amountRedeemed: "10",
   //         reportingFeesReceived: "7"

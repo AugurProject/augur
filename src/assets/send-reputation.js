@@ -6,7 +6,7 @@ var api = require("../api");
 
 /**
  * @param {Object} p Parameters object.
- * @param {string} p.branchID The branch of Reputation to use.
+ * @param {string} p.universeID The universe of Reputation to use.
  * @param {string} p.reputationToSend Amount of Reputation to send, as a base-10 string.
  * @param {string} p._to Ethereum address of the recipient, as a hexadecimal string.
  * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
@@ -15,7 +15,7 @@ var api = require("../api");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function sendReputation(p) {
-  api().Branch.getReputationToken({ tx: { to: p.branchID } }, function (err, reputationTokenAddress) {
+  api().Universe.getReputationToken({ tx: { to: p.universeID } }, function (err, reputationTokenAddress) {
     if (err) return p.onFailed(err);
     api().ReputationToken.transfer(assign({}, p, {
       tx: { to: reputationTokenAddress },

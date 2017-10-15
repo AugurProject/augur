@@ -7,7 +7,7 @@ var encodeTag = require("../format/tag/encode-tag");
 
 /**
  * @param {Object} p Parameters object.
- * @param {string} p._branch Branch on which to create this market.
+ * @param {string} p._universe Universe on which to create this market.
  * @param {number} p._endTime Market expiration timestamp, in seconds.
  * @param {number} p._numOutcomes Number of outcomes this market has, as an integer on [2, 8].
  * @param {string} p._feePerEthInWei Fee that goes to the market creator, as a hexadecimal string.
@@ -22,7 +22,7 @@ var encodeTag = require("../format/tag/encode-tag");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function createCategoricalMarket(p) {
-  getMarketCreationCost({ branchID: p._branch, _endTime: p._endTime }, function (err, marketCreationCost) {
+  getMarketCreationCost({ universeID: p._universe, _endTime: p._endTime }, function (err, marketCreationCost) {
     if (err) return p.onFailed(err);
     api().MarketCreation.createCategoricalMarket(assign({}, p, {
       tx: { value: marketCreationCost },

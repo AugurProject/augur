@@ -467,7 +467,7 @@ var api = require("../api");
 
 /**
  * @param {Object} p Parameters object.
- * @param {string} p.branchID The branch of Reputation to use.
+ * @param {string} p.universeID The universe of Reputation to use.
  * @param {string} p.reputationToSend Amount of Reputation to send, as a base-10 string.
  * @param {string} p._to Ethereum address of the recipient, as a hexadecimal string.
  * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
@@ -476,7 +476,7 @@ var api = require("../api");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function sendReputation(p) {
-  api().Branch.getReputationToken({ tx: { to: p.branchID } }, function (err, reputationTokenAddress) {
+  api().Universe.getReputationToken({ tx: { to: p.universeID } }, function (err, reputationTokenAddress) {
     if (err) return p.onFailed(err);
     api().ReputationToken.transfer(assign({}, p, {
       tx: { to: reputationTokenAddress },
@@ -783,7 +783,7 @@ var encodeTag = require("../format/tag/encode-tag");
 
 /**
  * @param {Object} p Parameters object.
- * @param {string} p._branch Branch on which to create this market.
+ * @param {string} p._universe Universe on which to create this market.
  * @param {number} p._endTime Market expiration timestamp, in seconds.
  * @param {number} p._numOutcomes Number of outcomes this market has, as an integer on [2, 8].
  * @param {string} p._feePerEthInWei Fee that goes to the market creator, as a hexadecimal string.
@@ -798,7 +798,7 @@ var encodeTag = require("../format/tag/encode-tag");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function createCategoricalMarket(p) {
-  getMarketCreationCost({ branchID: p._branch, _endTime: p._endTime }, function (err, marketCreationCost) {
+  getMarketCreationCost({ universeID: p._universe, _endTime: p._endTime }, function (err, marketCreationCost) {
     if (err) return p.onFailed(err);
     api().MarketCreation.createCategoricalMarket(assign({}, p, {
       tx: { value: marketCreationCost },
@@ -821,7 +821,7 @@ var encodeTag = require("../format/tag/encode-tag");
 
 /**
  * @param {Object} p Parameters object.
- * @param {string} p._branch Branch on which to create this market.
+ * @param {string} p._universe Universe on which to create this market.
  * @param {number} p._endTime Market expiration timestamp, in seconds.
  * @param {string} p._feePerEthInWei Fee that goes to the market creator, as a hexadecimal string.
  * @param {string} p._denominationToken Ethereum address of the token used as this market's currency.
@@ -837,7 +837,7 @@ var encodeTag = require("../format/tag/encode-tag");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function createScalarMarket(p) {
-  getMarketCreationCost({ branchID: p._branch, _endTime: p._endTime }, function (err, marketCreationCost) {
+  getMarketCreationCost({ universeID: p._universe, _endTime: p._endTime }, function (err, marketCreationCost) {
     if (err) return p.onFailed(err);
     api().MarketCreation.createScalarMarket(assign({}, p, {
       tx: { value: marketCreationCost },
@@ -866,14 +866,14 @@ var api = require("../api");
 
 /**
  * @param {Object} p Parameters object.
- * @param {string} p.branchID Branch on which to create this market.
+ * @param {string} p.universeID Universe on which to create this market.
  * @param {number} p._endTime Market expiration timestamp, in seconds.
  * @param {function} callback Called when all market creation costs have been looked up.
  * @return {MarketCreationCosts} Cost breakdown for creating a new market.
  */
 function getMarketCreationCostBreakdown(p, callback) {
-  api().Branch.getReportingWindowByTimestamp({
-    tx: { to: p.branchID },
+  api().Universe.getReportingWindowByTimestamp({
+    tx: { to: p.universeID },
     _timestamp: p._endTime
   }, function (err, reportingWindowAddress) {
     if (err) return callback(err);
@@ -906,14 +906,14 @@ var api = require("../api");
 
 /**
  * @param {Object} p Parameters object.
- * @param {string} p.branchID Branch on which to create this market.
+ * @param {string} p.universeID Universe on which to create this market.
  * @param {number} p._endTime Market expiration timestamp, in seconds.
  * @param {function} callback Called after the market creation cost has been looked up.
  * @return {string} Total cost of creating a new market (= validity bond + target reporter gas costs), as a base-10 string.
  */
 function getMarketCreationCost(p, callback) {
-  api().Branch.getReportingWindowByTimestamp({
-    tx: { to: p.branchID },
+  api().Universe.getReportingWindowByTimestamp({
+    tx: { to: p.universeID },
     _timestamp: p._endTime
   }, function (err, reportingWindowAddress) {
     if (err) return callback(err);
@@ -1458,7 +1458,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.4.10";
+  this.version = "4.4.11";
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
@@ -1719,11 +1719,11 @@ module.exports = finalizeMarket;
 
 var augurNode = require("../augur-node");
 
-function getAllReportingTokens(p, callback) {
-  augurNode.submitRequest("getAllReportingTokens", p, callback);
+function getAllStakeTokens(p, callback) {
+  augurNode.submitRequest("getAllStakeTokens", p, callback);
 }
 
-module.exports = getAllReportingTokens;
+module.exports = getAllStakeTokens;
 },{"../augur-node":19}],66:[function(require,module,exports){
 "use strict";
 
@@ -1742,7 +1742,7 @@ var augurNode = require("../augur-node");
  * @param {Object} p Parameters object.
  * @param {string=} p.reporter Look up reports submitted by this Ethereum address.
  * @param {string=} p.market Look up reports submitted on this market.
- * @param {string=} p.branch Look up reports submitted on markets within this branch.
+ * @param {string=} p.universe Look up reports submitted on markets within this universe.
  * @param {function} callback Called when reporting history has been received and parsed.
  * @return {Object} Reporting history, keyed by market ID.
  */
@@ -1776,38 +1776,38 @@ module.exports = getReportingWindowsWithUnclaimedFees;
 
 var augurNode = require("../augur-node");
 
-function getUnclaimedReportingTokens(p, callback) {
-  augurNode.submitRequest("getUnclaimedReportingTokens", p, callback);
+function getUnclaimedStakeTokens(p, callback) {
+  augurNode.submitRequest("getUnclaimedStakeTokens", p, callback);
 }
 
-module.exports = getUnclaimedReportingTokens;
+module.exports = getUnclaimedStakeTokens;
 },{"../augur-node":19}],71:[function(require,module,exports){
 "use strict";
 
 var augurNode = require("../augur-node");
 
-function getUnfinalizedReportingTokens(p, callback) {
-  augurNode.submitRequest("getUnfinalizedReportingTokens", p, callback);
+function getUnfinalizedStakeTokens(p, callback) {
+  augurNode.submitRequest("getUnfinalizedStakeTokens", p, callback);
 }
 
-module.exports = getUnfinalizedReportingTokens;
+module.exports = getUnfinalizedStakeTokens;
 },{"../augur-node":19}],72:[function(require,module,exports){
 "use strict";
 
 module.exports = {
   getReportingHistory: require("./get-reporting-history"),
-  getAllReportingTokens: require("./get-all-reporting-tokens"),
+  getAllStakeTokens: require("./get-all-stake-tokens"),
   getReportingSummary: require("./get-reporting-summary"),
   getReportingWindowsWithUnclaimedFees: require("./get-reporting-windows-with-unclaimed-fees"),
-  getUnclaimedReportingTokens: require("./get-unclaimed-reporting-tokens"),
-  getUnfinalizedReportingTokens: require("./get-unfinalized-reporting-tokens"),
+  getUnclaimedStakeTokens: require("./get-unclaimed-stake-tokens"),
+  getUnfinalizedStakeTokens: require("./get-unfinalized-stake-tokens"),
   getCurrentPeriodProgress: require("./get-current-period-progress"),
   submitReport: require("./submit-report"),
   finalizeMarket: require("./finalize-market"),
   migrateLosingTokens: require("./migrate-losing-tokens"),
   redeem: require("./redeem")
 };
-},{"./finalize-market":64,"./get-all-reporting-tokens":65,"./get-current-period-progress":66,"./get-reporting-history":67,"./get-reporting-summary":68,"./get-reporting-windows-with-unclaimed-fees":69,"./get-unclaimed-reporting-tokens":70,"./get-unfinalized-reporting-tokens":71,"./migrate-losing-tokens":73,"./redeem":74,"./submit-report":75}],73:[function(require,module,exports){
+},{"./finalize-market":64,"./get-all-stake-tokens":65,"./get-current-period-progress":66,"./get-reporting-history":67,"./get-reporting-summary":68,"./get-reporting-windows-with-unclaimed-fees":69,"./get-unclaimed-stake-tokens":70,"./get-unfinalized-stake-tokens":71,"./migrate-losing-tokens":73,"./redeem":74,"./submit-report":75}],73:[function(require,module,exports){
 "use strict";
 
 var async = require("async");
@@ -1816,7 +1816,7 @@ var getLogs = require("../events/get-logs");
 
 /**
  * @param {Object} p Parameters object.
- * @param {string} p.branchID Branch on which to register to report.
+ * @param {string} p.universeID Universe on which to register to report.
  * @param {string} p.market Address of the market to redeem Reporting tokens from, as a hex string.
  * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
  * @param {function} p.onSent Called if/when the transaction is broadcast to the network.
@@ -1824,16 +1824,16 @@ var getLogs = require("../events/get-logs");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function migrateLosingTokens(p) {
-  var branchPayload = { tx: { to: p.branchID } };
+  var universePayload = { tx: { to: p.universeID } };
   async.parallel({
     reputationToken: function reputationToken(next) {
-      api().Branch.getReputationToken(branchPayload, function (err, reputationTokenAddress) {
+      api().Universe.getReputationToken(universePayload, function (err, reputationTokenAddress) {
         if (err) return next(err);
         next(null, reputationTokenAddress);
       });
     },
     previousReportingWindow: function previousReportingWindow(next) {
-      api().Branch.getPreviousReportingWindow(branchPayload, function (err, previousReportingWindowAddress) {
+      api().Universe.getPreviousReportingWindow(universePayload, function (err, previousReportingWindowAddress) {
         if (err) return next(err);
         next(null, previousReportingWindowAddress);
       });
@@ -1868,10 +1868,10 @@ function migrateLosingTokens(p) {
         if (err) return p.onFailed(err);
         if (!Array.isArray(transferLogs) || !transferLogs.length) return p.onSuccess(null);
         transferLogs.forEach(function (transferLog) {
-          var reportingTokenAddress = transferLog.to;
-          api().ReportingToken.migrateLosingTokens({
+          var stakeTokenAddress = transferLog.to;
+          api().StakeToken.migrateLosingTokens({
             _signer: p._signer,
-            tx: { to: reportingTokenAddress },
+            tx: { to: stakeTokenAddress },
             onSent: p.onSent,
             onSuccess: p.onSuccess,
             onFailed: p.onFailed
@@ -1902,40 +1902,40 @@ var noop = require("../utils/noop");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function redeem(p) {
-  api().Market.getReportingToken({
+  api().Market.getStakeToken({
     tx: { to: p.market },
     _payoutNumerators: p._payoutNumerators
-  }, function (err, reportingTokenContractAddress) {
+  }, function (err, stakeTokenContractAddress) {
     if (err) return p.onFailed(err);
-    api().ReportingToken.balanceOf({
-      tx: { to: reportingTokenContractAddress },
+    api().StakeToken.balanceOf({
+      tx: { to: stakeTokenContractAddress },
       address: p._reporter
-    }, function (err, reportingTokenBalance) {
+    }, function (err, stakeTokenBalance) {
       if (err) return p.onFailed(err);
-      if (new BigNumber(reportingTokenBalance, 16).lt(constants.DUST_THRESHOLD)) {
+      if (new BigNumber(stakeTokenBalance, 16).lt(constants.DUST_THRESHOLD)) {
         // TODO calculate DUST_THRESHOLD
         return p.onFailed("Gas cost to redeem reporting tokens is greater than the value of the tokens");
       }
 
       // On any token contract that is no longer attached to a market (happens when some other market in your reporting
-      // window forks, causing your market to move branches).  Note: disavowed can be redeemed any time (regardless of
+      // window forks, causing your market to move universees).  Note: disavowed can be redeemed any time (regardless of
       // reporting window, market finalization, etc.)
-      api().Market.isContainerForReportingToken({
+      api().Market.isContainerForStakeToken({
         tx: { to: p.market },
-        reportingToken: reportingTokenContractAddress
-      }, function (err, isContainerForReportingToken) {
+        stakeToken: stakeTokenContractAddress
+      }, function (err, isContainerForStakeToken) {
         if (err) return p.onFailed(err);
         var redeemPayload = {
           _signer: p._signer,
-          tx: { to: reportingTokenContractAddress },
+          tx: { to: stakeTokenContractAddress },
           _reporter: p._reporter,
           onSent: p.onSent,
           onSuccess: p.onSuccess,
           onFailed: p.onFailed
         };
-        if (!parseInt(isContainerForReportingToken, 16)) {
+        if (!parseInt(isContainerForStakeToken, 16)) {
           // if disavowed
-          api().ReportingToken.redeemDisavowedTokens(redeemPayload);
+          api().StakeToken.redeemDisavowedTokens(redeemPayload);
         } else {
           finalizeMarket({
             _signer: p.signer,
@@ -1943,24 +1943,24 @@ function redeem(p) {
             onSent: noop,
             onSuccess: function onSuccess(isFinalized) {
               if (isFinalized === false) return p.onFailed("Market not yet finalized");
-              api().ReportingToken.getBranch({ tx: { to: reportingTokenContractAddress } }, function (err, branchContractAddress) {
+              api().StakeToken.getUniverse({ tx: { to: stakeTokenContractAddress } }, function (err, universeContractAddress) {
                 if (err) return p.onFailed(err);
 
                 // On any token contract attached to a market that ended in a fork.
                 // (Note: forked and winning both require the market to be finalized.)
-                api().Branch.getForkingMarket({ tx: { to: branchContractAddress } }, function (err, forkingMarket) {
+                api().Universe.getForkingMarket({ tx: { to: universeContractAddress } }, function (err, forkingMarket) {
                   if (err) return p.onFailed(err);
                   if (forkingMarket === p.market) {
-                    api().ReportingToken.redeemForkedTokens(redeemPayload);
+                    api().StakeToken.redeemForkedTokens(redeemPayload);
                   } else {
 
                     // Redeem winning reporting tokens.
-                    api().Market.getFinalWinningReportingToken({ tx: { to: p.market } }, function (err, finalWinningReportingToken) {
+                    api().Market.getFinalWinningStakeToken({ tx: { to: p.market } }, function (err, finalWinningStakeToken) {
                       if (err) return p.onFailed(err);
-                      if (finalWinningReportingToken !== reportingTokenContractAddress) {
+                      if (finalWinningStakeToken !== stakeTokenContractAddress) {
                         return p.onFailed("No winning tokens to redeem");
                       }
-                      api().ReportingToken.redeemWinningTokens(redeemPayload);
+                      api().StakeToken.redeemWinningTokens(redeemPayload);
                     });
                   }
                 });
@@ -1992,14 +1992,14 @@ var api = require("../api");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function submitReport(p) {
-  api().Market.getReportingToken({
+  api().Market.getStakeToken({
     tx: { to: p.market },
     _payoutNumerators: p._payoutNumerators
-  }, function (err, reportingTokenAddress) {
+  }, function (err, stakeTokenAddress) {
     if (err) return p.onFailed(err);
-    api().ReportingToken.buy({
+    api().StakeToken.buy({
       _signer: p._signer,
-      tx: { to: reportingTokenAddress },
+      tx: { to: stakeTokenAddress },
       _amountToStake: speedomatic.fix(p._amountToStake, "hex"),
       onSent: p.onSent,
       onSuccess: p.onSuccess,

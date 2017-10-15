@@ -14,14 +14,14 @@ var api = require("../api");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function submitReport(p) {
-  api().Market.getReportingToken({
+  api().Market.getStakeToken({
     tx: { to: p.market },
     _payoutNumerators: p._payoutNumerators
-  }, function (err, reportingTokenAddress) {
+  }, function (err, stakeTokenAddress) {
     if (err) return p.onFailed(err);
-    api().ReportingToken.buy({
+    api().StakeToken.buy({
       _signer: p._signer,
-      tx: { to: reportingTokenAddress },
+      tx: { to: stakeTokenAddress },
       _amountToStake: speedomatic.fix(p._amountToStake, "hex"),
       onSent: p.onSent,
       onSuccess: p.onSuccess,

@@ -12,14 +12,14 @@ var api = require("../api");
 
 /**
  * @param {Object} p Parameters object.
- * @param {string} p.branchID Branch on which to create this market.
+ * @param {string} p.universeID Universe on which to create this market.
  * @param {number} p._endTime Market expiration timestamp, in seconds.
  * @param {function} callback Called when all market creation costs have been looked up.
  * @return {MarketCreationCosts} Cost breakdown for creating a new market.
  */
 function getMarketCreationCostBreakdown(p, callback) {
-  api().Branch.getReportingWindowByTimestamp({
-    tx: { to: p.branchID },
+  api().Universe.getReportingWindowByTimestamp({
+    tx: { to: p.universeID },
     _timestamp: p._endTime
   }, function (err, reportingWindowAddress) {
     if (err) return callback(err);

@@ -2,11 +2,11 @@
 
 module.exports = {
   getReportingHistory: require("./get-reporting-history"),
-  getAllReportingTokens: require("./get-all-reporting-tokens"),
+  getAllStakeTokens: require("./get-all-stake-tokens"),
   getReportingSummary: require("./get-reporting-summary"),
   getReportingWindowsWithUnclaimedFees: require("./get-reporting-windows-with-unclaimed-fees"),
-  getUnclaimedReportingTokens: require("./get-unclaimed-reporting-tokens"),
-  getUnfinalizedReportingTokens: require("./get-unfinalized-reporting-tokens"),
+  getUnclaimedStakeTokens: require("./get-unclaimed-stake-tokens"),
+  getUnfinalizedStakeTokens: require("./get-unfinalized-stake-tokens"),
   getCurrentPeriodProgress: require("./get-current-period-progress"),
   submitReport: require("./submit-report"),
   finalizeMarket: require("./finalize-market"),

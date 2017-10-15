@@ -20,16 +20,16 @@ describe("create-market/get-market-creation-cost-breakdown", function () {
   test({
     description: "market creation cost breakdown",
     params: {
-      branchID: "BRANCH_ADDRESS",
+      universeID: "UNIVERSE_ADDRESS",
       _endTime: 1234567890
     },
     stub: {
       api: function () {
         return {
-          Branch: {
+          Universe: {
             getReportingWindowByTimestamp: function (p, callback) {
               assert.deepEqual(p, {
-                tx: { to: "BRANCH_ADDRESS" },
+                tx: { to: "UNIVERSE_ADDRESS" },
                 _timestamp: 1234567890
               });
               callback(null, "REPORTING_WINDOW_ADDRESS");

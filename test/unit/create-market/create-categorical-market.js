@@ -32,7 +32,7 @@ describe("create-market/create-categorical-market", function () {
     description: "create a categorical market",
     params: {
       _signer: Buffer.from("PRIVATE_KEY", "utf8"),
-      _branch: "BRANCH_ADDRESS",
+      _universe: "UNIVERSE_ADDRESS",
       _endTime: 2345678901,
       _numOutcomes: 3,
       _feePerEthInWei: "4321",
@@ -53,7 +53,7 @@ describe("create-market/create-categorical-market", function () {
     stub: {
       getMarketCreationCost: function (p, callback) {
         assert.deepEqual(p, {
-          branchID: "BRANCH_ADDRESS",
+          universeID: "UNIVERSE_ADDRESS",
           _endTime: 2345678901
         });
         callback(null, "MARKET_CREATION_COST");
@@ -63,7 +63,7 @@ describe("create-market/create-categorical-market", function () {
           MarketCreation: {
             createCategoricalMarket: function (p) {
               assert.deepEqual(p.tx, { value: "MARKET_CREATION_COST" });
-              assert.strictEqual(p._branch, "BRANCH_ADDRESS");
+              assert.strictEqual(p._universe, "UNIVERSE_ADDRESS");
               assert.strictEqual(p._endTime, 2345678901);
               assert.strictEqual(p._numOutcomes, 3);
               assert.strictEqual(p._feePerEthInWei, "4321");
