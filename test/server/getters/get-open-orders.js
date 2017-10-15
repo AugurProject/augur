@@ -44,8 +44,8 @@ describe("server/getters/get-open-orders", () => {
                 fullPrecisionAmount: 1,
                 tokensEscrowed: 0.7,
                 sharesEscrowed: 0,
-                betterOrderId: null,
-                worseOrderId: null
+                betterOrderID: null,
+                worseOrderID: null
               },
               "0x2000000000000000000000000000000000000000000000000000000000000000": {
                 shareToken: "0x1000000000000000000000000000000000000000",
@@ -58,8 +58,8 @@ describe("server/getters/get-open-orders", () => {
                 fullPrecisionAmount: 2,
                 tokensEscrowed: 1.200002,
                 sharesEscrowed: 0,
-                betterOrderId: null,
-                worseOrderId: null
+                betterOrderID: null,
+                worseOrderID: null
               }
             }
           },
@@ -76,8 +76,8 @@ describe("server/getters/get-open-orders", () => {
                 fullPrecisionAmount: 2.0000001,
                 tokensEscrowed: 1.20000006,
                 sharesEscrowed: 0,
-                betterOrderId: null,
-                worseOrderId: null
+                betterOrderID: null,
+                worseOrderID: null
               }
             }
           }
@@ -110,8 +110,8 @@ describe("server/getters/get-open-orders", () => {
                 fullPrecisionAmount: 2,
                 tokensEscrowed: 1.2,
                 sharesEscrowed: 0,
-                betterOrderId: null,
-                worseOrderId: null
+                betterOrderID: null,
+                worseOrderID: null
               }
             }
           }
@@ -144,8 +144,8 @@ describe("server/getters/get-open-orders", () => {
                 fullPrecisionAmount: 1,
                 tokensEscrowed: 0.7,
                 sharesEscrowed: 0,
-                betterOrderId: null,
-                worseOrderId: null
+                betterOrderID: null,
+                worseOrderID: null
               }
             }
           }

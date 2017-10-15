@@ -6,7 +6,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
     .then((): PromiseLike<any> => {
       // Inserts seed entries
       return knex.raw(`INSERT INTO transfers
-            (transaction_hash, log_index, sender, recipient, token, value, block_number)
+            (transactionHash, logIndex, sender, recipient, token, value, blockNumber)
             VALUES (
               '0x00000000000000000000000000000000000000000000000000000000deadbeef',
               0,

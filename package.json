@@ -5,18 +5,25 @@
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
   "main": "build/index.js",
+  "engines": {
+    "node": "~8"
+  },
   "directories": {
     "src": "src",
     "test": "test"
   },
   "scripts": {
+    "start": "node ./build",
     "test": "mocha test",
     "lint": "tslint -c tslint.json -p .",
-    "build": "tsc",
+    "build": "node_modules/typescript/bin/tsc",
     "migrate": "node node_modules/knex/bin/cli.js migrate:latest --env build",
+    "migrate_pg": "node node_modules/knex/bin/cli.js migrate:latest --env build_postgres",
     "seed": "node node_modules/knex/bin/cli.js seed:run --env build",
     "migrate:make": "node node_modules/knex/bin/cli.js migrate:make -x ts $1",
-    "coverage": "istanbul cover --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test"
+    "coverage": "istanbul cover --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test",
+    "postinstall": "npm run build",
+    "postdeploy": "npm run migrate_pg"
   },
   "repository": {
     "type": "git",
@@ -34,12 +41,12 @@
     "bignumber.js": "4.1.0",
     "knex": "0.13.0",
     "lodash.isnull": "3.0.0",
+    "lodash.merge": "^4.6.0",
     "lodash.omit": "4.5.0",
     "pg": "7.3.0",
     "sqlite3": "3.1.8",
-    "ws": "3.2.0"
-  },
-  "devDependencies": {
+    "typescript": "2.5.2",
+    "ws": "3.2.0",
     "@types/async": "2.0.43",
     "@types/bignumber.js": "4.0.3",
     "@types/node": "8.0.31",
@@ -53,7 +60,6 @@
     "mocha-lcov-reporter": "0.0.2",
     "proxyquire": "1.7.11",
     "tslint": "5.7.0",
-    "tslint-eslint-rules": "4.1.1",
-    "typescript": "2.5.2"
+    "tslint-eslint-rules": "4.1.1"
   }
 }

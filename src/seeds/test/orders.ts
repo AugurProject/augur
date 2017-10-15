@@ -5,7 +5,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
   return knex("orders").del().then((): PromiseLike<any> => {
     // Inserts seed entries
     return knex.raw(`INSERT INTO orders
-      (order_id, market_id, outcome, share_token, order_type, order_creator, creation_time, creation_block_number, price, amount, full_precision_price, full_precision_amount, tokens_escrowed, shares_escrowed, better_order_id, worse_order_id)
+      (orderID, marketID, outcome, shareToken, orderType, orderCreator, creationTime, creationBlockNumber, price, amount, fullPrecisionPrice, fullPrecisionAmount, tokensEscrowed, sharesEscrowed, betterOrderID, worseOrderID)
       VALUES (
         '0x1000000000000000000000000000000000000000000000000000000000000000',
         '0x0000000000000000000000000000000000000001',

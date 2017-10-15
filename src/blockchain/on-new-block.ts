@@ -13,10 +13,10 @@ export function onNewBlock(db: Knex, augur: Augur, blockNumberString: string) {
       let query: Knex.Raw|null = null;
       switch (db.client.config.client) {
         case "pg":
-          query = trx.raw(`INSERT INTO blocks (block_number, block_timestamp) VALUES(?,?) ON CONFLICT ON CONSTRAINT blocks_pkey DO UPDATE SET block_timestamp = ?`, [blockNumber, blockTimestamp, blockTimestamp]);
+          query = trx.raw(`INSERT INTO blocks (blockNumber, blockTimestamp) VALUES(?,?) ON CONFLICT ON CONSTRAINT blocks_pkey DO UPDATE SET blockTimestamp = ?`, [blockNumber, blockTimestamp, blockTimestamp]);
           break;
         case "sqlite3":
-          query = trx.raw(`INSERT OR REPLACE INTO blocks (block_number, block_timestamp) VALUES(?,?)`, [blockNumber, blockTimestamp]);
+          query = trx.raw(`INSERT OR REPLACE INTO blocks (blockNumber, blockTimestamp) VALUES(?,?)`, [blockNumber, blockTimestamp]);
           break;
       }
 

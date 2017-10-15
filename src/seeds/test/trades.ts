@@ -6,22 +6,22 @@ exports.seed = (knex: Knex): Promise<any> => {
   return knex("trades").del().then((): void => {
     // Inserts seed entries
     knex.batchInsert("trades", [{
-      order_id: "0x1100000000000000000000000000000000000000000000000000000000000000",
-      market_id: "0x0000000000000000000000000000000000000001",
+      orderID: "0x1100000000000000000000000000000000000000000000000000000000000000",
+      marketID: "0x0000000000000000000000000000000000000001",
       outcome: 0,
-      share_token: "0x1000000000000000000000000000000000000000",
-      order_type: "sell",
+      shareToken: "0x1000000000000000000000000000000000000000",
+      orderType: "sell",
       creator: "0x0000000000000000000000000000000000000b0b",
       filler: "0x000000000000000000000000000000000000d00d",
-      trade_time: 1506474500,
-      trade_block_number: 1400051,
-      num_creator_tokens: "0",
-      num_creator_shares: "0.2",
-      num_filler_tokens: "1.1",
-      num_filler_shares: "0",
+      tradeTime: 1506474500,
+      tradeBlockNumber: 1400051,
+      numCreatorTokens: "0",
+      numCreatorShares: "0.2",
+      numFillerTokens: "1.1",
+      numFillerShares: "0",
       price: "5.5",
       shares: "1.1",
-      settlement_fees: "0"
+      settlementFees: "0"
     }], 1000);
   });
 };

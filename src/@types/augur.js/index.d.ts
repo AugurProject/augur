@@ -66,7 +66,7 @@ declare module "augur.js" {
   }
 
   interface ContractNameToAddressMap {
-    [networkId: string]: {
+    [networkID: string]: {
       [contractName: string]: Address
     };
   }

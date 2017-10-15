@@ -6,7 +6,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
     .then((): PromiseLike<any> => {
       // Inserts seed entries
       return knex.raw(`INSERT INTO tokens
-            (contract_address, symbol, market, outcome)
+            (contractAddress, symbol, market, outcome)
             VALUES
             ('ETH', 'ETH', NULL, NULL),
             ('0x7a305d9b681fb164dc5ad628b5992177dc66aec8', 'REP', NULL, NULL),

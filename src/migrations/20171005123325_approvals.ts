@@ -3,14 +3,14 @@ import * as Knex from "knex";
 exports.up = async (knex: Knex): Promise<any> => {
   return knex.schema.dropTableIfExists("approvals").then((): PromiseLike<any> => {
     return knex.schema.raw(`CREATE TABLE approvals (
-      transaction_hash varchar(66) NOT NULL,
-      log_index integer NOT NULL CONSTRAINT nonnegative_log_index CHECK (log_index >= 0),
+      transactionHash varchar(66) NOT NULL,
+      logIndex integer NOT NULL CONSTRAINT nonnegativeLogIndex CHECK (logIndex >= 0),
       owner varchar(66) NOT NULL,
       spender varchar(66) NOT NULL,
       token varchar(66) NOT NULL,
-      value numeric NOT NULL CONSTRAINT positive_value CHECK (value > 0),
-      block_number integer NOT NULL CONSTRAINT positive_block_number CHECK (block_number > 0),
-      UNIQUE(transaction_hash, log_index)
+      value numeric NOT NULL CONSTRAINT positiveValue CHECK (value > 0),
+      blockNumber integer NOT NULL CONSTRAINT positiveBlockNumber CHECK (blockNumber > 0),
+      UNIQUE(transactionHash, logIndex)
     )`);
   });
 };
