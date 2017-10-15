@@ -5,7 +5,7 @@ import * as _ from "lodash";
 import { EthereumNodeEndpoints, FormattedLog } from "./types";
 import { checkAugurDbSetup } from "./setup/check-augur-db-setup";
 import { syncAugurNodeWithBlockchain } from "./blockchain/sync-augur-node-with-blockchain";
-import { runHttpServer, runWebsocketServer } from "./server/run-websocket-server";
+import { runWebsocketServer } from "./server/run-websocket-server";
 import { ErrorCallback } from "./types";
 
 // tslint:disable-next-line:no-var-requires
@@ -28,24 +28,19 @@ if (process.env.DATABASE_URL) {
   });
 }
 
-let configuredEndpoints:any  = _.omitBy(_.merge(ethereumNodeEndpoints, {
+const configuredEndpoints: any = _.omitBy(_.merge(ethereumNodeEndpoints, {
   http: process.env.ENDPOINT_HTTP,
   ws: process.env.ENDPOINT_WS
 }), _.isNull);
-
 
 const augur: Augur = new Augur();
 
 augur.rpc.setDebugOptions({ broadcast: false });
 
 checkAugurDbSetup(db, (err?: Error|null): void => {
-  runHttpServer(process.env.PORT || websocketPort, (err?: Error | null): void => {
-    console.log("HTTP Server Started");
-
-    syncAugurNodeWithBlockchain(db, augur, ethereumNodeEndpoints, uploadBlockNumbers, (err?: Error|null): void => {
-      if (err) return console.error("syncAugurNodeWithBlockchain:", err);
-      console.log("Sync with blockchain complete, starting websocket server...");
-      runWebsocketServer(db);
-    });
+  syncAugurNodeWithBlockchain(db, augur, ethereumNodeEndpoints, uploadBlockNumbers, (err?: Error|null): void => {
+    if (err) return console.error("syncAugurNodeWithBlockchain:", err);
+    console.log("Sync with blockchain complete, starting websocket server...");
+    runWebsocketServer(db, websocketPort);
   });
 });

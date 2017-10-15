@@ -30,7 +30,7 @@ interface Orders {
 // market, outcome, creator, orderType, limit, sort
 export function getOpenOrders(db: Knex, marketID: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, callback: (err?: Error|null, result?: any) => void): void {
   const queryData: {} = _.omitBy({
-    marketID: marketID,
+    marketID,
     outcome,
     orderType,
     orderCreator: creator
