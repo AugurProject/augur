@@ -348,7 +348,7 @@ export const CheckboxOn = (
 )
 
 export const Export = (
-  <svg id="953e0014-1cef-4429-aafa-e42c291ab42f" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21.56">
+  <svg id="953e0014-1cef-4429-aafa-e42c291ab42f" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21.56" width="22" height="21.56">
     <defs>
       <style>
         {`
@@ -368,6 +368,51 @@ export const Export = (
           <path id="1bdd6f72-b4f9-413d-ac0e-f8501b5edd93" data-name="Stroke-1" className="2275d31d-f7ee-42a6-8027-90262a5b4750" d="M12.12,19.52,12,2.62" transform="translate(-1 -2)" />
           <polyline id="16a19ee2-560a-4a11-903f-2c575013af1c" data-name="Stroke-3" className="2275d31d-f7ee-42a6-8027-90262a5b4750" points="6.89 4.61 11 0.5 15.11 4.61" />
           <polyline id="55f5846e-8998-413d-b85b-e148ec0042c5" data-name="Stroke-5" className="2275d31d-f7ee-42a6-8027-90262a5b4750" points="5.5 9.06 0.5 9.06 0.5 21.06 21.5 21.06 21.5 9.06 16.5 9.06" />
+        </g>
+      </g>
+    </g>
+  </svg>
+)
+
+export const Deposit = (
+  <svg width="26px" height="26px" viewBox="0 0 26 26">
+    <g id="Account" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
+      <g id="Account_1" transform="translate(-575.000000, -448.000000)" stroke="#372E4B">
+        <g id="Icon/Deposit" transform="translate(574.000000, 447.000000)">
+          <path d="M14.1394167,1.74976667 L14.0519167,21.4687667" id="Stroke-1" />
+          <polyline id="Stroke-3" points="9.21071667 16.8168 13.9998833 21.6059667 18.78905 16.8168" />
+          <polyline id="Stroke-4" points="7.58321667 11.7399333 1.74988333 11.7399333 1.74988333 25.7399333 26.2498833 25.7399333 26.2498833 11.7399333 20.41655 11.7399333" />
+        </g>
+      </g>
+    </g>
+  </svg>
+)
+
+export const Withdraw = (
+  <svg width="26px" height="20px" viewBox="0 0 26 20">
+    <g id="Account" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
+      <g id="Account_2" transform="translate(-615.000000, -452.000000)" stroke="#372E4B">
+        <g id="Icon/Withdraw" transform="translate(614.000000, 448.000000)">
+          <g id="Page-1" transform="translate(1.000000, 4.000000)">
+            <polyline id="Stroke-1" points="0.52 6.5 25.48 6.5 16.12 0.5" />
+            <polyline id="Stroke-3" points="25.48 13.25 0.52 13.25 9.88 19.25" />
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+)
+
+export const Copy = (
+  <svg width="19px" height="24px" viewBox="0 0 19 24">
+    <g id="Account" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinejoin="round">
+      <g id="Account_2" transform="translate(-1291.000000, -549.000000)" stroke="#372E4B">
+        <g id="Icon/Copy" transform="translate(1288.000000, 549.000000)">
+          <g id="Page-1" transform="translate(3.428571, 0.857143)">
+            <polygon id="Stroke-1" points="17.1428571 22.2857143 2.70676692 22.2857143 2.70676692 1.9378882 13.3064662 1.9378882 17.1428571 5.42221118" />
+            <polyline id="Stroke-3" points="13.0827068 2.42236025 13.0827068 5.32919255 16.6917293 5.32919255" />
+            <polygon id="Stroke-5" points="2.70676692 1.9378882 12.6505263 1.9378882 11.0508271 0.48447205 0.45112782 0.48447205 0.45112782 20.8322981 2.70676692 20.8322981" />
+          </g>
         </g>
       </g>
     </g>
