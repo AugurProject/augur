@@ -4,8 +4,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import BigNumber from 'bignumber.js'
-// import Highcharts from 'highcharts'
-// import classNames from 'classnames'
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
@@ -13,26 +11,6 @@ import { CreateMarketEdit } from 'modules/common/components/icons/icons'
 
 import CreateMarketPreviewRange from 'modules/create-market/components/create-market-preview-range/create-market-preview-range'
 import CreateMarketPreviewCategorical from 'modules/create-market/components/create-market-preview-categorical/create-market-preview-categorical'
-
-// import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints'
-// import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
-// import {
-//   NEW_MARKET_DESCRIPTION,
-//   NEW_MARKET_OUTCOMES,
-//   NEW_MARKET_EXPIRY_SOURCE,
-//   NEW_MARKET_END_DATE,
-//   NEW_MARKET_DETAILS,
-//   NEW_MARKET_TOPIC,
-//   NEW_MARKET_KEYWORDS,
-//   NEW_MARKET_FEES,
-//   NEW_MARKET_ORDER_BOOK,
-//   NEW_MARKET_REVIEW
-// } from 'modules/create-market/constants/new-market-creation-steps'
-// import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
-// import { BID, ASK } from 'modules/transactions/constants/types'
-
-// import getValue from 'utils/get-value'
-// import debounce from 'utils/debounce'
 
 import Styles from 'modules/create-market/components/create-market-preview/create-market-preview.styles'
 
