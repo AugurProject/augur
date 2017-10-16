@@ -263,7 +263,7 @@ export default class CreateMarketForm extends Component {
             'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES)
           })}
           currentStep={p.newMarket.currentStep}
-          takerFee={p.newMarket.takerFee}
+          settlementFee={p.newMarket.settlementFee}
           makerFee={p.newMarket.makerFee}
           updateValidity={this.updateValidity}
           updateNewMarket={p.updateNewMarket}
@@ -299,9 +299,10 @@ export default class CreateMarketForm extends Component {
           })}
           isValid={p.newMarket.isValid}
           creationError={p.newMarket.creationError}
-          branch={p.branch}
+          endDate={p.newMarket.endDate}
+          universe={p.universe}
           currentStep={p.newMarket.currentStep}
-          takerFee={p.newMarket.takerFee}
+          settlementFee={p.newMarket.settlementFee}
           makerFee={p.newMarket.makerFee}
           initialLiquidityEth={p.newMarket.initialLiquidityEth}
           initialLiquidityGas={p.newMarket.initialLiquidityGas}

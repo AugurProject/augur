@@ -13,14 +13,14 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
       const store = mockStore(t.state)
       const CancelOrder = { cancelOrder: () => {} }
       const openOrders = t.openOrders
-      const action = proxyquire('../../../src/modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.js', {
+      const cancelOpenOrdersInClosedMarkets = proxyquire('../../../src/modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.js', {
         '../../bids-asks/actions/cancel-order': CancelOrder,
         '../selectors/open-orders': openOrders
+      }).default
+      sinon.stub(CancelOrder, 'cancelOrder', (orderID, marketID, outcome, type) => (dispatch, getState) => {
+        dispatch({ type: 'CANCEL_ORDER', params: { orderID, marketID, outcome, type } })
       })
-      sinon.stub(CancelOrder, 'cancelOrder', (orderID, marketID, type) => (dispatch, getState) => {
-        dispatch({ type: 'CANCEL_ORDER', params: { orderID, marketID, type } })
-      })
-      store.dispatch(action.cancelOpenOrdersInClosedMarkets())
+      store.dispatch(cancelOpenOrdersInClosedMarkets())
       t.assertions(store.getActions())
       store.clearActions()
     })
@@ -68,6 +68,7 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
         params: {
           orderID: '0xd1',
           marketID: '0xa1',
+          outcome: '0xc1',
           type: 'buy'
         }
       }])
@@ -95,6 +96,7 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
         params: {
           orderID: '0xd1',
           marketID: '0xa1',
+          outcome: '0xc1',
           type: 'buy'
         }
       }, {
@@ -102,6 +104,7 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
         params: {
           orderID: '0xd2',
           marketID: '0xa1',
+          outcome: '0xc1',
           type: 'sell'
         }
       }])
@@ -142,6 +145,7 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
         params: {
           orderID: '0xd1',
           marketID: '0xa1',
+          outcome: '0xc1',
           type: 'buy'
         }
       }, {
@@ -149,6 +153,7 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
         params: {
           orderID: '0xd2',
           marketID: '0xa1',
+          outcome: '0xc1',
           type: 'sell'
         }
       }, {
@@ -156,6 +161,7 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
         params: {
           orderID: '0xd3',
           marketID: '0xa2',
+          outcome: '0xc1',
           type: 'buy'
         }
       }, {
@@ -163,6 +169,7 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
         params: {
           orderID: '0xd4',
           marketID: '0xa2',
+          outcome: '0xc1',
           type: 'buy'
         }
       }])
@@ -203,6 +210,7 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
         params: {
           orderID: '0xd1',
           marketID: '0xa1',
+          outcome: '0xc1',
           type: 'buy'
         }
       }, {
@@ -210,6 +218,7 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
         params: {
           orderID: '0xd2',
           marketID: '0xa1',
+          outcome: '0xc1',
           type: 'sell'
         }
       }])

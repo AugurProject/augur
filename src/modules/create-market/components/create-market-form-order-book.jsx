@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import BigNumber from 'bignumber.js'
 import Highcharts from 'highcharts'
 import noData from 'highcharts/modules/no-data-to-display'
-import { augur, rpc, constants } from 'services/augurjs'
+// import { augur, constants } from 'services/augurjs';
 
 import ComponentNav from 'modules/common/components/component-nav'
 import Input from 'modules/common/components/input/input'
@@ -14,7 +14,7 @@ import CreateMarketFormInputNotifications from 'modules/create-market/components
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
 import { NEW_MARKET_ORDER_BOOK } from 'modules/create-market/constants/new-market-creation-steps'
-import { BID, ASK } from 'modules/transactions/constants/types'
+import { BUY, SELL } from 'modules/transactions/constants/types'
 import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 import getValue from 'utils/get-value'
@@ -37,10 +37,6 @@ export default class CreateMarketFormOrderBook extends Component {
       PropTypes.string,
       PropTypes.instanceOf(BigNumber)
     ]).isRequired,
-    makerFee: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ]).isRequired,
     initialLiquidityEth: PropTypes.instanceOf(BigNumber).isRequired,
     initialLiquidityGas: PropTypes.instanceOf(BigNumber).isRequired,
     initialLiquidityFees: PropTypes.instanceOf(BigNumber).isRequired,
@@ -59,10 +55,10 @@ export default class CreateMarketFormOrderBook extends Component {
     super(props)
 
     this.navItems = {
-      [BID]: {
+      [BUY]: {
         label: 'Bid'
       },
-      [ASK]: {
+      [SELL]: {
         label: 'Ask'
       }
     }
@@ -181,8 +177,8 @@ export default class CreateMarketFormOrderBook extends Component {
 
   updateChart() {
     if (this.orderBookChart) {
-      const bidSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${BID}`) || []
-      const askSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${ASK}`) || []
+      const bidSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${BUY}`) || []
+      const askSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${SELL}`) || []
       let width
 
       if (window.getComputedStyle(this.orderBookChart).getPropertyValue('--adjust-width').indexOf('true') !== -1) {
@@ -209,7 +205,7 @@ export default class CreateMarketFormOrderBook extends Component {
   }
 
   updatePriceBounds(type, selectedOutcome, selectedSide, orderBook, scalarSmallNum, scalarBigNum) {
-    const oppositeSide = selectedSide === BID ? ASK : BID
+    const oppositeSide = selectedSide === BUY ? SELL : BUY
     const ZERO = new BigNumber(0)
     const ONE = new BigNumber(1)
     const precision = new BigNumber(10**-8)
@@ -218,7 +214,7 @@ export default class CreateMarketFormOrderBook extends Component {
 
     if (selectedOutcome != null) {
       if (type === SCALAR) {
-        if (selectedSide === BID) {
+        if (selectedSide === BUY) {
           // Minimum Price
           minPrice = scalarSmallNum
 
@@ -239,7 +235,7 @@ export default class CreateMarketFormOrderBook extends Component {
           // Maximum Price
           maxPrice = scalarBigNum
         }
-      } else if (selectedSide === BID) {
+      } else if (selectedSide === BUY) {
         // Minimum Price
         minPrice = ZERO
 
@@ -311,8 +307,8 @@ export default class CreateMarketFormOrderBook extends Component {
 
       // Sort Order By Price
       Object.keys(p[outcome]).forEach((type) => {
-        if (type === BID) p[outcome][type] = p[outcome][type].sort((a, b) => b.price - a.price)
-        if (type === ASK) p[outcome][type] = p[outcome][type].sort((a, b) => a.price - b.price)
+        if (type === BUY) p[outcome][type] = p[outcome][type].sort((a, b) => b.price - a.price)
+        if (type === SELL) p[outcome][type] = p[outcome][type].sort((a, b) => a.price - b.price)
       })
 
       return p
@@ -352,18 +348,16 @@ export default class CreateMarketFormOrderBook extends Component {
   }
 
   updateInitialLiquidityCosts(order, shouldReduce) {
-    const gasPrice = rpc.gasPrice || constants.DEFAULT_GASPRICE
-    const makerFee = this.props.makerFee instanceof BigNumber ? this.props.makerFee : new BigNumber(this.props.makerFee)
-
     let initialLiquidityEth
     let initialLiquidityGas
     let initialLiquidityFees
     let action
 
-    if (order.type === BID) {
-      action = augur.trading.simulation.getBidAction(order.quantity, order.price, makerFee, gasPrice)
+    // TODO replace getBidAction/getShortAskAction w/ new simulation
+    if (order.type === BUY) {
+      // action = augur.trading.simulation.getBidAction(order.quantity, order.price, makerFee, gasPrice);
     } else {
-      action = augur.trading.simulation.getShortAskAction(order.quantity, order.price, makerFee, gasPrice)
+      // action = augur.trading.simulation.getShortAskAction(order.quantity, order.price, makerFee, gasPrice);
     }
 
     if (shouldReduce) {
@@ -410,22 +404,22 @@ export default class CreateMarketFormOrderBook extends Component {
     } else if (orderQuantity !== '' && orderQuantity.lessThanOrEqualTo(new BigNumber(0))) {
       errors.quantity.push('Quantity must be positive')
     } else if (orderPrice !== '') {
-      const bids = getValue(this.props.orderBookSorted[this.state.selectedOutcome], `${BID}`)
-      const asks = getValue(this.props.orderBookSorted[this.state.selectedOutcome], `${ASK}`)
+      const bids = getValue(this.props.orderBookSorted[this.state.selectedOutcome], `${BUY}`)
+      const asks = getValue(this.props.orderBookSorted[this.state.selectedOutcome], `${SELL}`)
 
       if (this.props.type !== SCALAR) {
-        if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThanOrEqualTo(asks[0].price)) {
+        if (this.state.selectedNav === BUY && asks && asks.length && orderPrice.greaterThanOrEqualTo(asks[0].price)) {
           errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`)
-        } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lessThanOrEqualTo(bids[0].price)) {
+        } else if (this.state.selectedNav === SELL && bids && bids.length && orderPrice.lessThanOrEqualTo(bids[0].price)) {
           errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`)
         } else if (orderPrice.greaterThan(this.state.maxPrice)) {
           errors.price.push('Price cannot exceed 1')
         } else if (orderPrice.lessThan(this.state.minPrice)) {
           errors.price.push('Price cannot be below 0')
         }
-      } else if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThanOrEqualTo(asks[0].price)) {
+      } else if (this.state.selectedNav === BUY && asks && asks.length && orderPrice.greaterThanOrEqualTo(asks[0].price)) {
         errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`)
-      } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lessThanOrEqualTo(bids[0].price)) {
+      } else if (this.state.selectedNav === SELL && bids && bids.length && orderPrice.lessThanOrEqualTo(bids[0].price)) {
         errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`)
       } else if (orderPrice.greaterThan(this.state.maxPrice)) {
         errors.price.push(`Price cannot exceed ${this.state.maxPrice.toNumber()}`)
@@ -454,8 +448,8 @@ export default class CreateMarketFormOrderBook extends Component {
 
     const errors = Array.from(new Set([...s.errors.quantity, ...s.errors.price]))
 
-    const bids = getValue(p.orderBookSorted[s.selectedOutcome], `${BID}`)
-    const asks = getValue(p.orderBookSorted[s.selectedOutcome], `${ASK}`)
+    const bids = getValue(p.orderBookSorted[s.selectedOutcome], `${BUY}`)
+    const asks = getValue(p.orderBookSorted[s.selectedOutcome], `${SELL}`)
 
     return (
       <article
@@ -606,7 +600,7 @@ export default class CreateMarketFormOrderBook extends Component {
                             </button>
                             <button
                               className="unstyled remove-order"
-                              onClick={() => this.handleRemoveOrder(BID, bid, i)}
+                              onClick={() => this.handleRemoveOrder(BUY, bid, i)}
                             >
                               <i className="fa fa-trash" />
                             </button>
@@ -640,7 +634,7 @@ export default class CreateMarketFormOrderBook extends Component {
                             </button>
                             <button
                               className="unstyled remove-order"
-                              onClick={() => this.handleRemoveOrder(ASK, ask, i)}
+                              onClick={() => this.handleRemoveOrder(SELL, ask, i)}
                             >
                               <i className="fa fa-trash" />
                             </button>

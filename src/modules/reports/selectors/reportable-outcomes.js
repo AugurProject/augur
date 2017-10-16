@@ -19,9 +19,9 @@ export const selectReportableOutcomes = (type, outcomes) => {
   }
 }
 
-export function selectOutcomeName(outcomeID, eventType, marketOutcomesData = {}) {
+export function selectOutcomeName(outcomeID, marketType, marketOutcomesData = {}) {
   let outcomeName
-  if (eventType === BINARY) {
+  if (marketType === BINARY) {
     if (outcomeID === '1') {
       outcomeName = BINARY_NO_OUTCOME_NAME
     } else if (outcomeID === '2') {
@@ -31,7 +31,7 @@ export function selectOutcomeName(outcomeID, eventType, marketOutcomesData = {})
     }
   } else if (outcomeID === CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID) {
     outcomeName = INDETERMINATE_OUTCOME_NAME
-  } else if (eventType === SCALAR) {
+  } else if (marketType === SCALAR) {
     outcomeName = outcomeID
   } else {
     outcomeName = marketOutcomesData[outcomeID] ? marketOutcomesData[outcomeID].name : outcomeID
@@ -39,8 +39,8 @@ export function selectOutcomeName(outcomeID, eventType, marketOutcomesData = {})
   return outcomeName
 }
 
-export function formatReportedOutcome(rawReportedOutcome, minValue, maxValue, eventType, marketOutcomesData = {}) {
-  const report = augur.reporting.format.unfixReport(rawReportedOutcome, minValue, maxValue, eventType)
-  const outcomeName = report.isIndeterminate ? INDETERMINATE_OUTCOME_NAME : selectOutcomeName(report.report, eventType, marketOutcomesData || {})
+export function formatReportedOutcome(rawReportedOutcome, minPrice, maxPrice, marketType, marketOutcomesData = {}) {
+  const report = augur.reporting.format.unfixReport(rawReportedOutcome, minPrice, maxPrice, marketType)
+  const outcomeName = report.isIndeterminate ? INDETERMINATE_OUTCOME_NAME : selectOutcomeName(report.report, marketType, marketOutcomesData || {})
   return outcomeName
 }

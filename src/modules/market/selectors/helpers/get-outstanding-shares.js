@@ -1,4 +1,4 @@
-import { abi } from 'services/augurjs'
+import BigNumber from 'bignumber.js'
 import { ZERO } from 'modules/trade/constants/numbers'
 
 /**
@@ -9,6 +9,6 @@ import { ZERO } from 'modules/trade/constants/numbers'
 export default function (marketOutcomesData) {
   return Object.keys(marketOutcomesData)
     .map(outcomeId => marketOutcomesData[outcomeId])
-    .reduce((outstandingShares, outcome) => outstandingShares.plus(abi.bignum(outcome.outstandingShares)), ZERO)
+    .reduce((outstandingShares, outcome) => outstandingShares.plus(new BigNumber(outcome.outstandingShares, 10)), ZERO)
     .toNumber()
 }

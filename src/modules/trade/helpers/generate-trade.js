@@ -1,10 +1,9 @@
+import BigNumber from 'bignumber.js'
 import memoize from 'memoizee'
 import { formatPercent, formatEtherTokens, formatShares, formatEther } from 'utils/format-number'
 import calcOrderProfitLossPercents from 'modules/trade/helpers/calc-order-profit-loss-percents'
-import { augur, abi } from 'services/augurjs'
+import { augur } from 'services/augurjs'
 import { calculateMaxPossibleShares } from 'modules/market/selectors/helpers/calculate-max-possible-shares'
-import { BUY, SELL } from 'modules/trade/constants/types'
-import { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types'
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
 import { ZERO } from 'modules/trade/constants/numbers'
 import * as TRANSACTIONS_TYPES from 'modules/transactions/constants/types'
@@ -22,21 +21,21 @@ import store from 'src/store'
 export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, orderBooks) => {
   const { loginAccount } = store.getState()
 
-  const side = (outcomeTradeInProgress && outcomeTradeInProgress.side) || BUY
+  const side = (outcomeTradeInProgress && outcomeTradeInProgress.side) || TRANSACTIONS_TYPES.BUY
   const numShares = (outcomeTradeInProgress && outcomeTradeInProgress.numShares) || null
   const limitPrice = (outcomeTradeInProgress && outcomeTradeInProgress.limitPrice) || null
   const totalFee = (outcomeTradeInProgress && outcomeTradeInProgress.totalFee) || 0
   const gasFeesRealEth = (outcomeTradeInProgress && outcomeTradeInProgress.gasFeesRealEth) || 0
   const totalCost = (outcomeTradeInProgress && outcomeTradeInProgress.totalCost) || 0
   const marketType = (market && market.type) || null
-  const minValue = (market && market.minValue) || null
-  const maxValue = (market && market.maxValue) || null
-  const preOrderProfitLoss = calcOrderProfitLossPercents(numShares, limitPrice, side, minValue, maxValue, marketType)
+  const minPrice = (market && market.minPrice) || null
+  const maxPrice = (market && market.maxPrice) || null
+  const preOrderProfitLoss = calcOrderProfitLossPercents(numShares, limitPrice, side, minPrice, maxPrice, marketType)
 
   let maxNumShares
   if (limitPrice != null) {
-    const orders = augur.trading.simulation.filterByPriceAndOutcomeAndUserSortByPrice(
-      orderBooks[side === BUY ? ASK : BID],
+    const orders = augur.trading.filterByPriceAndOutcomeAndUserSortByPrice(
+      orderBooks[side === TRANSACTIONS_TYPES.BUY ? TRANSACTIONS_TYPES.SELL : TRANSACTIONS_TYPES.BUY],
       side,
       limitPrice,
       outcome.id,
@@ -46,10 +45,10 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, o
       loginAccount,
       orders,
       market.makerFee,
-      market.takerFee,
+      market.settlementFee,
       market.cumulativeScale,
       outcomeTradeInProgress,
-      market.type === 'scalar' ? market.minValue : null)
+      market.type === 'scalar' ? market.minPrice : null)
     )
   } else {
     maxNumShares = formatShares(0)
@@ -71,20 +70,20 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, o
     totalCost: formatEtherTokens(totalCost, { blankZero: false }),
 
     tradeTypeOptions: [
-      { label: BUY, value: BUY },
-      { label: SELL, value: SELL }
+      { label: TRANSACTIONS_TYPES.BUY, value: TRANSACTIONS_TYPES.BUY },
+      { label: TRANSACTIONS_TYPES.SELL, value: TRANSACTIONS_TYPES.SELL }
     ],
 
     tradeSummary: generateTradeSummary(generateTradeOrders(market, outcome, outcomeTradeInProgress)),
     updateTradeOrder: (shares, limitPrice, side) => store.dispatch(updateTradesInProgress(market.id, outcome.id, side, shares, limitPrice)),
-    totalSharesUpToOrder: (orderIndex, side) => totalSharesUpToOrder(market.id, outcome.id, side, orderIndex, orderBooks)
+    totalSharesUpToOrder: (orderIndex, side) => totalSharesUpToOrder(outcome.id, side, orderIndex, orderBooks)
   }
 }, { max: 5 })
 
-const totalSharesUpToOrder = memoize((marketID, outcomeID, side, orderIndex, orderBooks) => {
+const totalSharesUpToOrder = memoize((outcomeID, side, orderIndex, orderBooks) => {
   const { orderCancellation } = store.getState()
 
-  const sideOrders = selectAggregateOrderBook(outcomeID, orderBooks, orderCancellation)[side === TRANSACTIONS_TYPES.BID ? BIDS : ASKS]
+  const sideOrders = selectAggregateOrderBook(outcomeID, orderBooks, orderCancellation)[side === TRANSACTIONS_TYPES.BUY ? BIDS : ASKS]
 
   return sideOrders.filter((order, i) => i <= orderIndex).reduce((p, order) => p + order.shares.value, 0)
 }, { max: 5 })
@@ -97,7 +96,7 @@ export const generateTradeSummary = memoize((tradeOrders) => {
 
       // total gas
       if (tradeOrder.data && tradeOrder.data.gasFees && tradeOrder.data.gasFees.value) {
-        p.totalGas = p.totalGas.plus(abi.bignum(tradeOrder.data.gasFees.value))
+        p.totalGas = p.totalGas.plus(new BigNumber(tradeOrder.data.gasFees.value, 10))
       }
 
       // trade order
@@ -124,11 +123,9 @@ export const generateTradeOrders = memoize((market, outcome, outcomeTradeInProgr
   const outcomeName = outcome.name
   const description = market.description
   return tradeActions.map((tradeAction) => {
-    const numShares = abi.bignum(tradeAction.shares)
-    const costEth = abi.bignum(tradeAction.costEth).abs()
-    const avgPrice = tradeAction.action === 'SHORT_SELL' ?
-      costEth.minus(numShares).dividedBy(numShares) :
-      abi.bignum(costEth).dividedBy(abi.bignum(numShares))
+    const numShares = new BigNumber(tradeAction.shares, 10)
+    const costEth = new BigNumber(tradeAction.costEth, 10).abs()
+    const avgPrice = new BigNumber(costEth, 10).dividedBy(new BigNumber(numShares, 10))
     const noFeePrice = market.type === 'scalar' ? outcomeTradeInProgress.limitPrice : tradeAction.noFeePrice
     return {
       type: TRANSACTIONS_TYPES[tradeAction.action],

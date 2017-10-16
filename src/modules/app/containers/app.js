@@ -11,7 +11,6 @@ import portfolio from 'modules/portfolio/selectors/portfolio'
 import { updateIsMobile, updateIsMobileSmall } from 'modules/app/actions/update-is-mobile'
 import { updateHeaderHeight } from 'modules/app/actions/update-header-height'
 import { updateFooterHeight } from 'modules/app/actions/update-footer-height'
-import getChatMessages from 'modules/chat/selectors/chat-messages'
 import getAllMarkets from 'modules/markets/selectors/markets-all'
 
 import getValue from 'utils/get-value'
@@ -28,7 +27,6 @@ const mapStateToProps = state => ({
   isMobileSmall: state.isMobileSmall,
   headerHeight: state.headerHeight,
   footerHeight: state.footerHeight,
-  chat: getChatMessages(),
   markets: getAllMarkets(),
   marketsFilteredSorted: state.marketsFilteredSorted,
   categories: selectTopics(state),

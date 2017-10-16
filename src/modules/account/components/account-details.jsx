@@ -123,7 +123,7 @@ export default class AccountDetails extends Component {
           className="unstyled link"
           onClick={p.signOut}
         >
-          Sign Out
+          Log Out
         </button>
       </article>
     )

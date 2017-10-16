@@ -3,7 +3,7 @@
   * @param {string} searchString - The raw query param string
   * @returns {object}
 */
-export default function parseSearch(searchString) {
+export default function parseQuery(searchString) {
   let pairSplit
   return (searchString || '').replace(/^\?/, '').split('&').reduce((p, pair) => {
     pairSplit = pair.split('=')

@@ -3,18 +3,19 @@ import BigNumber from 'bignumber.js'
 import { assert } from 'chai'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
+import { SCALAR } from '../../../src/modules/markets/constants/market-types'
 
 describe(`modules/my-positions/selectors/winning-positions.js`, () => {
   proxyquire.noPreserveCache().noCallThru()
   const test = (t) => {
     it(t.description, () => {
-      const AugurJS = { abi: { bignum: () => {} } }
+      const Speedomatic = { bignum: () => {} }
       const SelectLoginAccountPositions = () => t.selectors.loginAccountPositions
       const selector = proxyquire('../../../src/modules/my-positions/selectors/winning-positions.js', {
-        '../../../services/augurjs': AugurJS,
+        speedomatic: Speedomatic,
         './login-account-positions': SelectLoginAccountPositions
       })
-      sinon.stub(AugurJS.abi, 'bignum', n => new BigNumber(n, 10))
+      sinon.stub(Speedomatic, 'bignum', n => new BigNumber(n, 10))
       t.assertions(selector.selectClosedMarketsWithWinningShares(t.state))
     })
   }
@@ -51,8 +52,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           consensus: {
             outcomeID: '2',
-            isIndeterminate: false,
-            isUnethical: false
+            isIndeterminate: false
           }
         }]
       }
@@ -87,8 +87,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           consensus: {
             outcomeID: '2',
-            isIndeterminate: true,
-            isUnethical: false
+            isIndeterminate: true
           }
         }]
       }
@@ -121,10 +120,10 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           id: '0xa1',
           isOpen: false,
           description: 'test market 1',
+          type: SCALAR,
           consensus: {
             outcomeID: '0.5',
-            isIndeterminate: false,
-            isUnethical: true
+            isIndeterminate: false
           }
         }]
       }
@@ -159,8 +158,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           consensus: {
             outcomeID: '0.5',
-            isIndeterminate: true,
-            isUnethical: true
+            isIndeterminate: true
           }
         }]
       }
@@ -196,8 +194,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           consensus: {
             outcomeID: '1.23456',
-            isIndeterminate: false,
-            isUnethical: false
+            isIndeterminate: false
           }
         }]
       }
@@ -233,8 +230,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           consensus: {
             outcomeID: '1.23456',
-            isIndeterminate: true,
-            isUnethical: false
+            isIndeterminate: true
           }
         }]
       }
@@ -270,8 +266,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           consensus: {
             outcomeID: '1.23456',
-            isIndeterminate: false,
-            isUnethical: true
+            isIndeterminate: false
           }
         }]
       }
@@ -330,8 +325,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 2',
           consensus: {
             outcomeID: '2',
-            isIndeterminate: false,
-            isUnethical: false
+            isIndeterminate: false
           }
         }]
       }
@@ -377,8 +371,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 2',
           consensus: {
             outcomeID: '2',
-            isIndeterminate: false,
-            isUnethical: false
+            isIndeterminate: false
           }
         }, {
           id: '0xa3',
@@ -386,8 +379,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 3',
           consensus: {
             outcomeID: '2',
-            isIndeterminate: false,
-            isUnethical: false
+            isIndeterminate: false
           }
         }]
       }
@@ -441,8 +433,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 3',
           consensus: {
             outcomeID: '2',
-            isIndeterminate: false,
-            isUnethical: false
+            isIndeterminate: false
           }
         }]
       }

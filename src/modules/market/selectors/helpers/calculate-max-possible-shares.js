@@ -1,7 +1,8 @@
 import memoize from 'memoizee'
 import BigNumber from 'bignumber.js'
-import { ZERO } from 'modules/trade/constants/numbers'
-import { augur, abi, constants } from 'services/augurjs'
+import { ZERO, TEN_TO_THE_EIGHTEENTH_POWER } from 'modules/trade/constants/numbers'
+import { augur } from 'services/augurjs'
+import speedomatic from 'speedomatic'
 
 /**
  * Orders should be sorted from best to worst (usually by price)
@@ -9,11 +10,11 @@ import { augur, abi, constants } from 'services/augurjs'
  * @param loginAccount {Object}
  * @param orders {Array}
  * @param makerFee {String}
- * @param takerFee {String}
+ * @param settlementFee {String}
  * @param range {String}
  * @param outcomeTradeInProgress {Object} used to bust memoizerific cache
  */
-export const calculateMaxPossibleShares = memoize((loginAccount, orders, makerFee, takerFee, range, outcomeTradeInProgress, scalarMinValue) => {
+export const calculateMaxPossibleShares = memoize((loginAccount, orders, makerFee, settlementFee, range, outcomeTradeInProgress, scalarMinValue) => {
   if (loginAccount.address == null) {
     return null
   }
@@ -22,7 +23,7 @@ export const calculateMaxPossibleShares = memoize((loginAccount, orders, makerFe
     return '0'
   }
   const ordersLength = orders.length
-  const { tradingFee, makerProportionOfFee } = augur.trading.fees.calculateFxpTradingFees(new BigNumber(makerFee, 10), new BigNumber(takerFee, 10))
+  const { tradingFee, makerProportionOfFee } = augur.trading.fees.calculateFxpTradingFees(new BigNumber(makerFee, 10), new BigNumber(settlementFee, 10))
   let runningCost = ZERO
   let updatedRunningCost
   let maxPossibleShares = ZERO
@@ -50,21 +51,21 @@ export const calculateMaxPossibleShares = memoize((loginAccount, orders, makerFe
       maxPossibleShares = maxPossibleShares.plus(orderAmount)
       runningCost = updatedRunningCost
     } else {
-      const remainingEther = abi.fix(userEther.minus(runningCost))
+      const remainingEther = speedomatic.fix(userEther.minus(runningCost))
       let remainingShares
-      const feePerShare = abi.fix(orderCost.fee.abs())
-        .dividedBy(abi.fix(orderAmount))
-        .times(constants.ONE)
+      const feePerShare = speedomatic.fix(orderCost.fee.abs())
+        .dividedBy(speedomatic.fix(orderAmount))
+        .times(TEN_TO_THE_EIGHTEENTH_POWER)
         .floor()
       if (order.type === 'buy') {
-        remainingShares = abi.unfix(
+        remainingShares = speedomatic.unfix(
           remainingEther.dividedBy(feePerShare)
-            .times(constants.ONE)
+            .times(TEN_TO_THE_EIGHTEENTH_POWER)
             .floor())
       } else {
-        remainingShares = abi.unfix(
-          remainingEther.dividedBy(feePerShare.plus(abi.fix(fullPrecisionPrice)))
-            .times(constants.ONE)
+        remainingShares = speedomatic.unfix(
+          remainingEther.dividedBy(feePerShare.plus(speedomatic.fix(fullPrecisionPrice)))
+            .times(TEN_TO_THE_EIGHTEENTH_POWER)
             .floor())
       }
       maxPossibleShares = maxPossibleShares.plus(remainingShares)

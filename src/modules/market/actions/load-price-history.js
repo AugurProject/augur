@@ -1,17 +1,14 @@
 import { augur } from 'services/augurjs'
 import { updateMarketPriceHistory } from 'modules/market/actions/update-market-price-history'
-import { updateMarketTradesData } from 'modules/portfolio/actions/update-market-trades-data'
+import logError from 'utils/log-error'
 
-export const loadPriceHistory = (marketID, callback) => (dispatch, getState) => (
-  augur.logs.getMarketPriceHistory({
-    market: marketID,
-    filter: { fromBlock: getState().marketsData[marketID].creationBlock }
-  }, (err, priceHistory) => {
-    if (callback) callback()
-    if (err) return console.error('loadPriceHistory', err)
-
-    // TODO check if these data stores are redundant (remove one of them if so)
-    dispatch(updateMarketTradesData({ [marketID]: priceHistory }))
-    dispatch(updateMarketPriceHistory(marketID, priceHistory))
+export const loadPriceHistory = (options, callback = logError) => (dispatch, getState) => {
+  const { loginAccount } = getState()
+  if (!loginAccount.address) return callback(null)
+  augur.markets.getMarketPriceHistory({ ...options, marketID: options.market }, (err, priceHistory) => {
+    if (err) return callback(err)
+    if (priceHistory == null) return callback(null)
+    dispatch(updateMarketPriceHistory(options.market, priceHistory))
+    callback(null, priceHistory)
   })
-)
+}
