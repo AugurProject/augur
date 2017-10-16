@@ -13,8 +13,6 @@ import { updateHeaderHeight } from 'modules/app/actions/update-header-height'
 import { updateFooterHeight } from 'modules/app/actions/update-footer-height'
 import getAllMarkets from 'modules/markets/selectors/markets-all'
 
-import getValue from 'utils/get-value'
-
 const mapStateToProps = state => ({
   url: state.url,
   loginAccount: state.loginAccount,
@@ -22,7 +20,7 @@ const mapStateToProps = state => ({
   portfolio: portfolio(),
   notifications: selectNotificationsAndSeenCount(state),
   coreStats: selectCoreStats(state),
-  isLogged: !!getValue(state, 'loginAccount.address'),
+  isLogged: state.isLogged,
   isMobile: state.isMobile,
   isMobileSmall: state.isMobileSmall,
   headerHeight: state.headerHeight,
