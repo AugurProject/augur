@@ -367,13 +367,8 @@ export default class CreateMarketPreview extends Component {
               </li>
             </ul>
           </div>
-        </div> */}
-  </article>
-  // }
-)
-
-CreateMarketPreview.propTypes = {
-  newMarket: PropTypes.object.isRequired,
+        </div>
+      </article>
+    )
+  }
 }
-
-export default CreateMarketPreview
