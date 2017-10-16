@@ -1,5 +1,6 @@
 import { augur } from 'services/augurjs'
 import { loadAccountData } from 'modules/auth/actions/load-account-data'
+import { updateIsLogged } from 'modules/auth/actions/update-is-logged'
 
 // Use unlocked local address (if actually unlocked)
 export const useUnlockedAccount = unlockedAddress => (dispatch) => {
@@ -10,6 +11,7 @@ export const useUnlockedAccount = unlockedAddress => (dispatch) => {
     }
     augur.accounts.logout() // clear the client-side account
     console.log('using unlocked account:', unlockedAddress)
+    dispatch(updateIsLogged(true))
     dispatch(loadAccountData({ address: unlockedAddress, isUnlocked: true }, true))
   })
 }
