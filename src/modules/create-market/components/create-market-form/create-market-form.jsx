@@ -8,39 +8,7 @@ import CreateMarketDefine from 'modules/create-market/components/create-market-f
 import CreateMarketOutcome from 'modules/create-market/components/create-market-form-outcome/create-market-form-outcome'
 import CreateMarketResolution from 'modules/create-market/components/create-market-form-resolution/create-market-form-resolution'
 import CreateMarketLiquidity from 'modules/create-market/components/create-market-form-liquidity/create-market-form-liquidity'
-// import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description/create-market-form-description'
-// import CreateMarketFormOutcomes from 'modules/create-market/components/create-market-form-outcomes'
-// import CreateMarketFormExpirySource from 'modules/create-market/components/create-market-form-expiry-source'
-// import CreateMarketFormEndDate from 'modules/create-market/components/create-market-form-end-date'
-// import CreateMarketFormDetails from 'modules/create-market/components/create-market-form-details'
-// import CreateMarketFormTopic from 'modules/create-market/components/create-market-form-topic'
-// import CreateMarketFormKeywords from 'modules/create-market/components/create-market-form-keywords'
-// import CreateMarketFormFees from 'modules/create-market/components/create-market-form-fees'
-// import CreateMarketFormOrderBook from 'modules/create-market/components/create-market-form-order-book'
-// import CreateMarketReview from 'modules/create-market/components/create-market-review'
-
-// import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications'
-
-// import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
-// import { NEW_MARKET_DESCRIPTION } from 'modules/create-market/constants/new-market-creation-steps'
-// import { DESCRIPTION_MAX_LENGTH, TAGS_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints'
-
-// import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
-// import {
-//   NEW_MARKET_TYPE,
-//   NEW_MARKET_DESCRIPTION,
-//   NEW_MARKET_OUTCOMES,
-//   NEW_MARKET_EXPIRY_SOURCE,
-//   NEW_MARKET_END_DATE,
-//   NEW_MARKET_DETAILS,
-//   NEW_MARKET_TOPIC,
-//   NEW_MARKET_KEYWORDS,
-//   NEW_MARKET_FEES,
-//   NEW_MARKET_ORDER_BOOK,
-//   NEW_MARKET_REVIEW
-// } from 'modules/create-market/constants/new-market-creation-steps'
-
-// import debounce from 'utils/debounce'
+import CreateMarketReview from 'modules/create-market/components/create-market-form-review/create-market-form-review'
 
 import Styles from 'modules/create-market/components/create-market-form/create-market-form.styles'
 
@@ -70,7 +38,7 @@ export default class CreateMarketForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) {
+    if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep && nextProps.newMarket.currentStep !== 4) {
       this.props.updateNewMarket({ isValid: this.isValid(nextProps.newMarket.currentStep) })
     }
   }
@@ -190,6 +158,11 @@ export default class CreateMarketForm extends Component {
                 isMobileSmall={p.isMobileSmall}
               />
             }
+            { p.newMarket.currentStep === 4 &&
+              <CreateMarketReview
+                newMarket={p.newMarket}
+              />
+            }
           </div>
           <div className={Styles['CreateMarketForm__button-outer-wrapper']}>
             <div className={Styles['CreateMarketForm__button-inner-wrapper']}>
@@ -198,11 +171,18 @@ export default class CreateMarketForm extends Component {
                   className={classNames(Styles.CreateMarketForm__prev, { [`${Styles['hide-button']}`]: p.newMarket.currentStep === 0 })}
                   onClick={this.prevPage}
                 >Previous: {s.pages[p.newMarket.currentStep - 1]}</button>
-                <button
-                  className={classNames(Styles.CreateMarketForm__next, { [`${Styles['hide-button']}`]: p.newMarket.currentStep === s.pages.length - 1 })}
-                  disabled={!p.newMarket.isValid}
-                  onClick={p.newMarket.isValid && this.nextPage}
-                >Next: {s.pages[p.newMarket.currentStep + 1]}</button>
+                { p.newMarket.currentStep < 4 &&
+                  <button
+                    className={classNames(Styles.CreateMarketForm__next, { [`${Styles['hide-button']}`]: p.newMarket.currentStep === s.pages.length - 1 })}
+                    disabled={!p.newMarket.isValid}
+                    onClick={p.newMarket.isValid && this.nextPage}
+                  >Next: {s.pages[p.newMarket.currentStep + 1]}</button>
+                }
+                { p.newMarket.currentStep === 4 &&
+                  <button
+                    className={Styles.CreateMarketForm__submit}
+                  >Submit</button>
+                }
               </div>
             </div>
           </div>
