@@ -11,5 +11,7 @@ interface Trade {
 }
 
 export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
-
+  console.log("TODO: OrderFilled");
+  console.log(log);
+  callback(null);
 }
