@@ -7,7 +7,7 @@ export function getMarketsClosingInDateRange(db: Knex, earliestClosingTime: numb
 
   let query: Knex.QueryBuilder = db
     .select("marketID").from("markets")
-    .whereRaw("endTime >= ? and endTime <= ? and universe = ?", [earliestClosingTime, latestClosingTime, universe])
+    .whereRaw(`"endTime" >= ? AND "endTime" <= ? AND universe = ?`, [earliestClosingTime, latestClosingTime, universe])
     .orderBy("endTime", "desc");
 
   if (limit) query = query.limit(limit);
