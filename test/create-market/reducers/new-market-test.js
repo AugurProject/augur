@@ -68,7 +68,10 @@ describe('modules/create-market/reducers/new-market.js', () => {
             hour: false,
             minute: false,
             meridiem: false,
-          }
+          },
+          {
+            settlementFee: false,
+          },
         ],
         creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.'
       }
@@ -426,7 +429,10 @@ describe('modules/create-market/reducers/new-market.js', () => {
             hour: false,
             minute: false,
             meridiem: false,
-          }
+          },
+          {
+            settlementFee: false,
+          },
         ],
         creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.'
       }

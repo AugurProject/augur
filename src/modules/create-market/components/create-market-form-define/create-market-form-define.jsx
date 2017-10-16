@@ -1,4 +1,5 @@
-/* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance as order remains the same
+/* eslint jsx-a11y/label-has-for: 0 */
+/* eslint react/no-array-index-key: 0 */
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
@@ -88,7 +89,7 @@ export default class CreateMarketDefine extends Component {
           />
         </li>
         <li className={StylesForm['field--50']}>
-          <label htmlFor="cm__suggested-categories">
+          <label>
             <span>Suggested Categories</span>
           </label>
           <ul className={Styles['CreateMarketDefine__suggested-categories']}>

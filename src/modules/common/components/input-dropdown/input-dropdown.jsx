@@ -106,6 +106,7 @@ InputDropdown.propTypes = {
   options: PropTypes.array.isRequired,
   isMobileSmall: PropTypes.bool.isRequired,
   label: PropTypes.string,
+  className: PropTypes.string,
 }
 
 export default InputDropdown

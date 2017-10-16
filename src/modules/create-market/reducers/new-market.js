@@ -30,7 +30,10 @@ const DEFAULT_STATE = {
       hour: false,
       minute: false,
       meridiem: false,
-    }
+    },
+    {
+      settlementFee: false,
+    },
   ],
   currentStep: 0,
   type: '',
