@@ -21,6 +21,8 @@ export default class CreateMarketForm extends Component {
     addOrderToNewMarket: PropTypes.func.isRequired,
     availableEth: PropTypes.string.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
+    submitNewMarket: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
   }
 
   constructor(props) {
@@ -181,6 +183,7 @@ export default class CreateMarketForm extends Component {
                 { p.newMarket.currentStep === 4 &&
                   <button
                     className={Styles.CreateMarketForm__submit}
+                    onClick={e => p.submitNewMarket(p.newMarket, p.history)}
                   >Submit</button>
                 }
               </div>

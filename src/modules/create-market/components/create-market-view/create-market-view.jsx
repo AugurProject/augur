@@ -48,23 +48,18 @@ export default class CreateMarketView extends Component {
           <title>Create Market</title>
         </Helmet>
         <div>
-          {/* <CreateMarketMainTitle
-            type={p.newMarket.type}
-            validations={p.newMarket.validations}
-            currentStep={p.newMarket.currentStep}
-            updateNewMarket={p.updateNewMarket}
-            clearNewMarket={p.clearNewMarket}
-          /> */}
           <CreateMarketPreview
             newMarket={p.newMarket}
 
             updateNewMarket={p.updateNewMarket}
           />
           <CreateMarketForm
-            updateNewMarket={p.updateNewMarket}
             newMarket={p.newMarket}
+            updateNewMarket={p.updateNewMarket}
             categories={p.categories}
             isMobileSmall={p.isMobileSmall}
+            submitNewMarket={p.submitNewMarket}
+            history={p.history}
 
             universe={p.universe}
             availableEth={p.availableEth}
@@ -74,20 +69,6 @@ export default class CreateMarketView extends Component {
             addValidationToNewMarket={p.addValidationToNewMarket}
             removeValidationFromNewMarket={p.removeValidationFromNewMarket}
           />
-          {/* <CreateMarketFormButtons
-            footerHeight={p.footerHeight}
-            currentStep={p.newMarket.currentStep}
-            type={p.newMarket.type}
-            isValid={p.newMarket.isValid}
-            holdForUserAction={p.newMarket.holdForUserAction}
-            validations={p.newMarket.validations}
-            newMarket={p.newMarket}
-            updateNewMarket={p.updateNewMarket}
-            submitNewMarket={p.submitNewMarket}
-            history={p.history}
-            updateButtonHeight={buttonHeight => this.setState({ buttonHeight })}
-            updateValidations={this.updateValidations}
-          /> */}
         </div>
       </section>
     )

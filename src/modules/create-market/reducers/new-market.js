@@ -32,10 +32,10 @@ const DEFAULT_STATE = {
       meridiem: false,
     },
     {
-      settlementFee: false,
+      settlementFee: true,
     },
   ],
-  currentStep: 4,
+  currentStep: 0,
   type: '',
   outcomes: Array(8).fill(''),
   scalarSmallNum: '',
