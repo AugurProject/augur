@@ -16,7 +16,7 @@ import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import getValue from 'utils/get-value'
 
 const mapStateToProps = state => ({
-  isLogged: state.isLoggedIn,
+  isLogged: state.isLogged,
   loginAccount: state.loginAccount,
   markets: getAllMarkets(),
   universe: state.universe,

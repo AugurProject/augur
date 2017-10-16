@@ -348,7 +348,7 @@ export const CheckboxOn = (
 )
 
 export const Export = (
-  <svg id="953e0014-1cef-4429-aafa-e42c291ab42f" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21.56">
+  <svg id="953e0014-1cef-4429-aafa-e42c291ab42f" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21.56" width="22" height="21.56">
     <defs>
       <style>
         {`

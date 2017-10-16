@@ -1,12 +1,12 @@
 @import (reference) '~assets/styles/shared';
 
-.AccountWithdraw {
+.AccountExport {
   background: white;
   padding: 5.625rem 0 3rem 4.375rem;
   width: 100%;
 }
 
-.AccountWithdraw__heading {
+.AccountExport__heading {
   margin-bottom: 40px;
   width: 100%;
 
@@ -24,14 +24,15 @@
   }
 }
 
-.AccountWithdraw__main {
+.AccountExport__main {
   display: flex;
   width: 100%;
 }
 
-.AccountWithdraw__description {
+.AccountExport__description {
   border-right: 1px solid @color-lightergray;
-  flex: 0 26.25rem;
+  flex: 0 0 auto;
+  width: 26.25rem;
 
   p {
     font-size: 1.125rem;
@@ -46,38 +47,45 @@
   }
 }
 
-.AccountWithdraw__form {
-  flex: 1;
-  margin-left: 3.75rem;
-  max-width: 36rem;
+.AccountExport__qrZone {
+  align-items: center;
+  border-right: 1px solid @color-lightergray;
+  display: flex;
+  justify-content: center;
 }
 
-.AccountWithdraw__formTopRow {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1.5rem;
+.AccountExport__qrBlur-blurred {
+  cursor: pointer;
+  filter: blur(0.5rem);
+  opacity: 0.5;
+}
+
+.AccountExport__blurText {
+  color: @color-purple;
+  font-size: 1.125rem;
+  position: absolute;
+  text-transform: uppercase;
+  z-index: @mask-above;
+}
+
+.AccountExport__qrZone,
+.AccountExport__keystore {
+  flex: 1 1 auto;
+}
+
+.AccountExport__keystore {
+  margin-left: 2.56rem;
+  text-align: center;
 
   > * {
-    width: 40%;
+    display: inline-block;
   }
 }
 
-.AccountWithdraw__formBottomRow {
-  margin-bottom: 1.5rem;
-}
-
-.AccountWithdraw__inputContain {
-  label {
-    color: @color-darkpurple;
-    font-weight: 500;
-  }
-}
-
-.AccountWithdraw__submitButton {
+.AccountExport__keystoreButton {
   background: @color-purple;
   border-radius: 0.1875rem;
   color: @color-white;
-  float: right;
   font-size: 1.125rem;
   font-weight: 500;
   height: 2.625rem;
@@ -101,11 +109,11 @@
 }
 
 @media @breakpoint-mobile {
-  .AccountWithdraw {
+  .AccountExport {
     padding: 3.125rem 0 0;
   }
 
-  .AccountWithdraw__heading {
+  .AccountExport__heading {
     font-size: 1.5rem;
     letter-spacing: 0.11rem;
     margin-bottom: 0.5rem;
@@ -116,14 +124,15 @@
     }
   }
 
-  .AccountWithdraw__main {
+  .AccountExport__main {
     display: block;
   }
 
-  .AccountWithdraw__description {
+  .AccountExport__description {
     border: none;
     margin-bottom: 2rem;
     padding: 0 1rem;
+    width: auto;
 
     p {
       font-size: 1rem;
@@ -135,34 +144,12 @@
     }
   }
 
-  .AccountWithdraw__form {
-    margin: 0;
-    max-width: auto;
+  .AccountExport__qrZone {
+    border: none;
+    margin-bottom: 2rem;
   }
 
-  .AccountWithdraw__formTopRow {
-    display: block;
-
-    > * {
-      width: auto;
-    }
-  }
-
-  .AccountWithdraw__formTopRow,
-  .AccountWithdraw__formBottomRow {
-    margin: 0;
-  }
-
-  .AccountWithdraw__inputContain {
-    margin-bottom: 1.5rem;
-    padding: 0 1rem;
-    width: 100%;
-  }
-
-  .AccountWithdraw__submitButton {
-    border-radius: 0;
-    float: none;
-    margin-top: 2.25rem;
-    width: 100%;
+  .AccountExport__keystore {
+    margin-left: 0;
   }
 }

@@ -92,9 +92,7 @@ export default class KeystoreCreate extends Component {
       nextState.assertedCompetence
     ) {
       nextProps.login(JSON.parse(nextState.keystore), nextState.password, (err) => {
-        if (err === null) {
-          nextProps.history.push(makePath(MARKETS))
-        }
+        if (err === null) nextProps.history.push(makePath(MARKETS))
       })
     }
   }

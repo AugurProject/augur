@@ -61,7 +61,7 @@ class InputDropdown extends Component {
     return (
       <div
         ref={(InputDropdown) => { this.refInputDropdown = InputDropdown }}
-        className={Styles.InputDropdown}
+        className={classNames(Styles.InputDropdown, (p.className || ''))}
       >
         <button
           className={classNames(Styles.InputDropdown__label, { [`${Styles.selected}`]: s.selected })}
