@@ -52,7 +52,7 @@ export const Create = asyncComponent({
 
 export const Account = asyncComponent({
   moduleName: 'Account',
-  loader: () => import(/* webpackChunkName: 'account' */ 'modules/account/container')
+  loader: () => import(/* webpackChunkName: 'account' */ 'modules/new-account/container')
     .then(module => module.default)
 })
 
