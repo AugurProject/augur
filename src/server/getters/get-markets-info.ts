@@ -4,7 +4,7 @@ import * as Knex from "knex";
 import { Address, MarketsRow, OutcomesRow, UIMarketInfo, UIOutcomeInfo, ErrorCallback } from "../../types";
 import { reshapeOutcomesRowToUIOutcomeInfo, reshapeMarketsRowToUIMarketInfo } from "./get-market-info";
 
-interface UIMarketsInfo {
+export interface UIMarketsInfo {
   [marketID: string]: UIMarketInfo;
 }
 
