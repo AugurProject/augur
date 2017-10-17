@@ -5,14 +5,10 @@ import configureMockStore from 'redux-mock-store'
 
 import {
   invalidateMarketCreation,
-  addValidationToNewMarket,
-  removeValidationFromNewMarket,
   addOrderToNewMarket,
   removeOrderFromNewMarket,
   updateNewMarket,
   clearNewMarket,
-  ADD_VALIDATION_TO_NEW_MARKET,
-  REMOVE_VALIDATION_FROM_NEW_MARKET,
   ADD_ORDER_TO_NEW_MARKET,
   REMOVE_ORDER_FROM_NEW_MARKET,
   UPDATE_NEW_MARKET,
@@ -41,10 +37,6 @@ describe('modules/create-market/actions/update-new-market.js', () => {
 
       const expectedActions = [
         {
-          type: REMOVE_VALIDATION_FROM_NEW_MARKET,
-          data: NEW_MARKET_REVIEW
-        },
-        {
           type: UPDATE_NEW_MARKET,
           data: {
             isValid: false
@@ -53,38 +45,6 @@ describe('modules/create-market/actions/update-new-market.js', () => {
       ]
 
       assert.deepEqual(actions, expectedActions, `Didn't dispatch the expected actions`)
-    }
-  })
-
-  test({
-    description: `should return the expected object for 'addValidationToNewMarket'`,
-    assertions: () => {
-      const action = addValidationToNewMarket({ test: 'test' })
-
-      const expected = {
-        type: ADD_VALIDATION_TO_NEW_MARKET,
-        data: {
-          test: 'test'
-        }
-      }
-
-      assert.deepEqual(action, expected, `Didn't return the expected object`)
-    }
-  })
-
-  test({
-    description: `should return the expected object for 'removeValidationToNewMarket'`,
-    assertions: () => {
-      const action = removeValidationFromNewMarket({ test: 'test' })
-
-      const expected = {
-        type: REMOVE_VALIDATION_FROM_NEW_MARKET,
-        data: {
-          test: 'test'
-        }
-      }
-
-      assert.deepEqual(action, expected, `Didn't return the expected object`)
     }
   })
 
