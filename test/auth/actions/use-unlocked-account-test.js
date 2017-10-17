@@ -66,13 +66,21 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       isUnlocked: true
     },
     assertions: (actions) => {
-      assert.deepEqual(actions, [{
-        type: 'LOAD_FULL_ACCOUNT_DATA',
-        account: {
-          address: '0xb0b',
-          isUnlocked: true
+      assert.deepEqual(actions, [
+        {
+          type: 'UPDATE_IS_LOGGED',
+          data: {
+            isLogged: true
+          }
+        },
+        {
+          type: 'LOAD_FULL_ACCOUNT_DATA',
+          account: {
+            address: '0xb0b',
+            isUnlocked: true
+          }
         }
-      }])
+      ])
     }
   })
   test({
