@@ -14,7 +14,7 @@ const claimProceeds = (callback = logError) => (dispatch, getState) => {
   if (winningPositions.length) {
     console.log('finalized markets with winning shares:', winningPositions)
     augur.trading.claimMarketsProceeds({
-      _signer: loginAccount.privateKey,
+      meta: loginAccount.meta,
       markets: winningPositions.map(winningPosition => winningPosition.id),
       onSent: noop,
       onSuccess: (claimedMarkets) => {

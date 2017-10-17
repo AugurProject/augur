@@ -60,7 +60,7 @@ export function submitNewMarket(newMarket, history) {
 
     createMarket({
       ...formattedNewMarket,
-      _signer: loginAccount.privateKey,
+      meta: loginAccount.meta,
       onSent: (res) => {
         history.push(makePath(TRANSACTIONS))
         dispatch(clearNewMarket())

@@ -8,7 +8,7 @@ export function fundNewAccount(callback = LogError) {
     const { loginAccount } = getState()
     if (augur.rpc.getNetworkID() !== '1') {
       augur.api.LegacyRepContract.faucet({
-        _signer: loginAccount.privateKey,
+        meta: loginAccount.meta,
         onSent: noop,
         onSuccess: (res) => {
           console.log('LegacyRepContract.faucet', res)

@@ -14,7 +14,7 @@ export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotCreateOrde
   }
   const normalizedDecimalPrice = augur.trading.normalizePrice({ minPrice: market.minPrice, maxPrice: market.maxPrice, displayPrice: tradeInProgress.limitPrice })
   dispatch(augur.trading.tradeUntilAmountIsZero({
-    _signer: loginAccount.privateKey,
+    meta: loginAccount.meta,
     _direction: tradeInProgress.side === BUY ? 0 : 1,
     _market: marketID,
     _outcome: parseInt(outcomeID, 10),

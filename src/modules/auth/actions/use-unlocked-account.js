@@ -2,6 +2,8 @@ import { augur } from 'services/augurjs'
 import { loadAccountData } from 'modules/auth/actions/load-account-data'
 import { updateIsLogged } from 'modules/auth/actions/update-is-logged'
 
+import { constants as ETHRPC_CONSTANTS } from 'ethrpc'
+
 // Use unlocked local address (if actually unlocked)
 export const useUnlockedAccount = unlockedAddress => (dispatch) => {
   if (!unlockedAddress) return console.error('no account address')
@@ -12,6 +14,13 @@ export const useUnlockedAccount = unlockedAddress => (dispatch) => {
     augur.accounts.logout() // clear the client-side account
     console.log('using unlocked account:', unlockedAddress)
     dispatch(updateIsLogged(true))
-    dispatch(loadAccountData({ address: unlockedAddress, isUnlocked: true }, true))
+    dispatch(loadAccountData({
+      meta: {
+        signer: null,
+        accountType: ETHRPC_CONSTANTS.ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE
+      },
+      address: unlockedAddress,
+      isUnlocked: true
+    }, true))
   })
 }

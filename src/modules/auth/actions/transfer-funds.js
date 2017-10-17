@@ -21,7 +21,7 @@ export function transferFunds(amount, currency, toAddress) {
     switch (currency) {
       case ETH:
         return augur.assets.sendEther({
-          _signer: loginAccount.privateKey,
+          meta: loginAccount.meta,
           to,
           etherToSend: amount,
           from: fromAddress,
@@ -53,7 +53,7 @@ export function transferFunds(amount, currency, toAddress) {
         })
       case REP:
         return augur.assets.sendReputation({
-          _signer: loginAccount.privateKey,
+          meta: loginAccount.meta,
           universeID: universe.id,
           reputationToSend: amount,
           _to: to,

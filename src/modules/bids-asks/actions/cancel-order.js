@@ -17,7 +17,7 @@ export const cancelOrder = (orderID, marketID, outcome, orderTypeLabel, callback
     if (outcome != null) {
       dispatch(updateOrderStatus(orderID, CLOSE_DIALOG_CLOSING, marketID, outcome, orderTypeLabel))
       augur.trading.cancel({
-        _signer: loginAccount.privateKey,
+        meta: loginAccount.meta,
         _market: marketID,
         _orderId: orderID,
         _outcome: outcome,

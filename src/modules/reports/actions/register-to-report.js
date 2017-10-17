@@ -8,7 +8,7 @@ export const registerToReport = (callback = logError) => (dispatch, getState) =>
   const { universe, loginAccount } = getState()
   augur.reporting.registerToReport({
     universeID: universe.id,
-    _signer: loginAccount.privateKey,
+    meta: loginAccount.meta,
     onSent: noop,
     onSuccess: (r) => {
       dispatch({ type: REGISTER_TO_REPORT, reportingWindow: universe.nextReportingWindowAddress })

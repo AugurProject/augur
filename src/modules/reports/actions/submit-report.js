@@ -24,7 +24,7 @@ export const submitReport = (market, reportedOutcomeID, amountToStake, isIndeter
   }
   dispatch(updateReport(universeID, market.id, { ...report }))
   augur.reporting.submitReport({
-    _signer: getState().loginAccount.privateKey,
+    meta: getState().loginAccount.meta,
     market: market.id,
     _payoutNumerators: payoutNumerators,
     _amountToStake: amountToStake,
