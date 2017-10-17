@@ -1,3 +1,5 @@
+// TODO -- this component needs to be broken up
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
@@ -7,7 +9,7 @@ import shouldComponentUpdatePure from 'utils/should-component-update-pure'
 import debounce from 'utils/debounce'
 
 import { tween } from 'shifty'
-import _ from 'lodash'
+import { isEqual } from 'lodash'
 
 import TopBar from 'modules/app/components/top-bar/top-bar'
 import MarketsInnerNav from 'modules/app/components/inner-nav/markets-inner-nav'
@@ -16,6 +18,7 @@ import AccountInnerNav from 'modules/app/components/inner-nav/account-inner-nav'
 import SideNav from 'modules/app/components/side-nav/side-nav'
 import Origami from 'modules/app/components/origami-svg/origami-svg'
 import Logo from 'modules/app/components/logo/logo'
+import Routes from 'modules/routes/components/routes/routes'
 
 import MobileNavHamburgerIcon from 'modules/common/components/mobile-nav-hamburger-icon'
 import MobileNavCloseIcon from 'modules/common/components/mobile-nav-close-icon'
@@ -56,8 +59,6 @@ const navTypes = {
   [ACCOUNT_WITHDRAW]: AccountInnerNav,
   [ACCOUNT_EXPORT]: AccountInnerNav
 }
-
-// TODO -- this component needs to be broken up and also restructured
 
 export default class AppView extends Component {
   static propTypes = {
@@ -144,7 +145,7 @@ export default class AppView extends Component {
       })
     }
 
-    if (!_.isEqual(this.props.location, nextProps.location)) {
+    if (!isEqual(this.props.location, nextProps.location)) {
       const lastBasePath = parsePath(this.props.location.pathname)[0]
       const nextBasePath = parsePath(nextProps.location.pathname)[0]
 
@@ -379,7 +380,7 @@ export default class AppView extends Component {
               className={Styles.Main__content}
               style={{ marginLeft: keywordsMargin }}
             >
-              {p.children}
+              <Routes />
             </section>
           </section>
         </section>

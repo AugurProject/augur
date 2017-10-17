@@ -2,12 +2,11 @@ import React from 'react'
 import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
+import { HashRouter } from 'react-router-dom'
 
 import { initAugur } from 'modules/app/actions/init-augur'
 
-import { HashRouter } from 'react-router-dom'
-
-import Routes from 'modules/routes/components/routes/routes'
+import App from 'modules/app/containers/app'
 
 import store from 'src/store'
 
@@ -24,6 +23,7 @@ if (process.env.NODE_ENV === 'development') {
   console.log(`
   *******************************************
           DEVELOPMENT MODE (v3)
+    window.app        -- root app element
     window.state      -- raw state data
     window.selectors  -- processed state data
     window.augur      -- augur.js API methods
@@ -36,12 +36,12 @@ if (process.env.NODE_ENV === 'development') {
 
 store.dispatch(initAugur())
 
-function render() {
+function render(Root) {
   ReactDOM.render(
     <Provider store={store}>
       <AppContainer>
         <HashRouter>
-          <Routes />
+          <Root />
         </HashRouter>
       </AppContainer>
     </Provider>,
@@ -49,7 +49,7 @@ function render() {
   )
 }
 
-handleRender()
+handleRender(App)
 
 if (module.hot) {
   module.hot.accept(
@@ -64,15 +64,15 @@ if (module.hot) {
 }
 
 function handleRender() {
-  const App = require('modules/app/containers/app').default
+  const UpdatedRoot = require('modules/app/containers/app').default
 
   // NOTE --  These are attached for convenience when built for development or debug
   if (process.env.NODE_ENV === 'development') {
     const selectors = require('src/selectors-raw')
 
-    window.App = App
+    window.app = UpdatedRoot
     window.selectors = selectors
   }
 
-  render()
+  render(UpdatedRoot)
 }
