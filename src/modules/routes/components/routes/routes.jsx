@@ -26,6 +26,7 @@ const Routes = p => (
     <AuthenticatedRoute path={makePath(VIEWS.ACCOUNT_EXPORT)} component={COMPONENTS.Account} />
     <AuthenticatedRoute path={makePath(VIEWS.TRANSACTIONS)} component={COMPONENTS.Transactions} />
     <AuthenticatedRoute path={makePath(VIEWS.CREATE_MARKET)} component={COMPONENTS.CreateMarket} />
+    <AuthenticatedRoute path={makePath(VIEWS.REPORTING)} component={COMPONENTS.Reporting} />
     <Redirect to={makePath(VIEWS.CATEGORIES)} />
   </Switch>
 )

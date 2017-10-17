@@ -13,6 +13,7 @@ export const AUTHENTICATION = 'authentication'
 export const CONNECT = 'connect'
 export const CREATE = 'create'
 export const CATEGORIES = 'categories'
+export const REPORTING = 'reporting'
 
 export const DEFAULT_VIEW = CATEGORIES
 
