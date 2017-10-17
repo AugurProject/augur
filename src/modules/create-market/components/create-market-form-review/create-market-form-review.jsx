@@ -72,15 +72,19 @@ export default class CreateMarketReview extends Component {
               <h3 className={Styles.CreateMarketReview__subheading}>Market Creation</h3>
               <ul className={Styles.CreateMarketReview__list}>
                 <li>
-                  <span>Creation Fee</span>
+                  <span>Validity Bond</span>
                   <span>0.0340 ETH</span>
                 </li>
                 <li>
-                  <span>Bond</span>
+                  <span>Reporter Fee</span>
+                  <span>0.0340 REP</span>
+                </li>
+                <li>
+                  <span>Create Market Gas</span>
                   <span>0.0340 ETH</span>
                 </li>
                 <li>
-                  <span>Gas Fee</span>
+                  <span>Reporter Gas</span>
                   <span>0.0340 ETH</span>
                 </li>
               </ul>
