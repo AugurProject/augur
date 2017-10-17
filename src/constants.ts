@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 
-interface Precision {
+export interface Precision {
   decimals: number;
   limit: string;
   zero: string;

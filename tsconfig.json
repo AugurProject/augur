@@ -4,6 +4,8 @@
     "target": "es6",
     "sourceMap": true,
     "watch": false,
+    "declaration": true,
+    "declarationDir": "definitions",
     "strictNullChecks": true,
     "alwaysStrict": true,
     "noImplicitAny": true,
