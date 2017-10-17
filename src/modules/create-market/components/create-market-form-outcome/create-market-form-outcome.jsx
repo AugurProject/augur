@@ -36,10 +36,8 @@ export default class CreateMarketOutcome extends Component {
       marketType: false,
       outcomeFieldCount: CreateMarketOutcome.calculateOutcomeFieldCount(this.props),
       showAddOutcome: CreateMarketOutcome.calculateOutcomeFieldCount(this.props) < 8,
-      scalarMin: new BigNumber(0),
-      scalarMax: new BigNumber(100),
-      // scalarMin: speedomatic.unfix(speedomatic.constants.SERPINT_MIN).round(18, BigNumber.ROUND_DOWN),
-      // scalarMax: speedomatic.unfix(speedomatic.constants.SERPINT_MAX).round(18, BigNumber.ROUND_DOWN),
+      scalarMin: speedomatic.unfix(speedomatic.constants.SERPINT_MIN).round(18, BigNumber.ROUND_DOWN),
+      scalarMax: speedomatic.unfix(speedomatic.constants.SERPINT_MAX).round(18, BigNumber.ROUND_DOWN),
     }
 
     this.handleAddOutcomeClick = this.handleAddOutcomeClick.bind(this)

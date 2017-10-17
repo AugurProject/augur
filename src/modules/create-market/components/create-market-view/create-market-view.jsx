@@ -14,6 +14,7 @@ export default class CreateMarketView extends Component {
     addValidationToNewMarket: PropTypes.func.isRequired,
     removeValidationFromNewMarket: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
+    universe: PropTypes.object.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
   }
 
@@ -39,6 +40,7 @@ export default class CreateMarketView extends Component {
             submitNewMarket={p.submitNewMarket}
             isMobileSmall={p.isMobileSmall}
             history={p.history}
+            universe={p.universe}
           />
         </div>
       </section>
