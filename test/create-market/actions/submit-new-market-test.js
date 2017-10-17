@@ -27,7 +27,9 @@ describe('modules/create-market/actions/submit-new-market', () => {
         Cash: 'domnination'
       },
       loginAccount: {
-        privateKey: 'this is a private key',
+        meta: {
+          test: 'object'
+        },
         address: '0x1233'
       },
       newMarket: {
@@ -68,8 +70,10 @@ describe('modules/create-market/actions/submit-new-market', () => {
       store.dispatch(submitNewMarket(store.getState().newMarket))
 
       const expected = {
+        meta: {
+          test: 'object'
+        },
         _automatedReporterAddress: '0x1233',
-        _signer: 'this is a private key',
         _universe: '1010101',
         _endTime: 1234567890,
         _denominationToken: 'domnination',
@@ -105,7 +109,9 @@ describe('modules/create-market/actions/submit-new-market', () => {
         Cash: 'domnination'
       },
       loginAccount: {
-        privateKey: 'this is a private key',
+        meta: {
+          test: 'object'
+        },
         address: '0x1233'
       },
       newMarket: {
@@ -143,7 +149,9 @@ describe('modules/create-market/actions/submit-new-market', () => {
 
       const expected = {
         _automatedReporterAddress: '0x1233',
-        _signer: 'this is a private key',
+        meta: {
+          test: 'object'
+        },
         _universe: '1010101',
         _endTime: 1234567890,
         _denominationToken: 'domnination',
@@ -175,7 +183,9 @@ describe('modules/create-market/actions/submit-new-market', () => {
         Cash: 'domnination'
       },
       loginAccount: {
-        privateKey: 'this is a private key',
+        meta: {
+          test: 'object'
+        },
         address: '0x1233'
       },
       newMarket: {
@@ -215,8 +225,10 @@ describe('modules/create-market/actions/submit-new-market', () => {
       store.dispatch(submitNewMarket(store.getState().newMarket))
 
       const expected = {
+        meta: {
+          test: 'object'
+        },
         _automatedReporterAddress: '0x1233',
-        _signer: 'this is a private key',
         _universe: '1010101',
         _endTime: 1234567890,
         _denominationToken: 'domnination',
@@ -248,7 +260,9 @@ describe('modules/create-market/actions/submit-new-market', () => {
         Cash: 'domnination'
       },
       loginAccount: {
-        privateKey: 'this is a private key',
+        meta: {
+          test: 'object'
+        },
         address: '0x1233'
       },
       newMarket: {
@@ -311,7 +325,9 @@ describe('modules/create-market/actions/submit-new-market', () => {
         Cash: 'domnination'
       },
       loginAccount: {
-        privateKey: 'this is a private key',
+        meta: {
+          test: 'object'
+        },
         address: '0x1233'
       },
       newMarket: {
@@ -368,7 +384,9 @@ describe('modules/create-market/actions/submit-new-market', () => {
         Cash: 'domnination'
       },
       loginAccount: {
-        privateKey: 'this is a private key',
+        meta: {
+          test: 'object'
+        },
         address: '0x1233'
       },
       newMarket: {
@@ -420,7 +438,9 @@ describe('modules/create-market/actions/submit-new-market', () => {
         Cash: 'domnination'
       },
       loginAccount: {
-        privateKey: 'this is a private key',
+        meta: {
+          test: 'object'
+        },
         address: '0x1233'
       },
       newMarket: {
@@ -654,7 +674,9 @@ describe('modules/create-market/actions/submit-new-market', () => {
         Cash: 'domnination'
       },
       loginAccount: {
-        privateKey: 'this is a private key',
+        meta: {
+          test: 'object'
+        },
         address: '0x1233'
       },
       newMarket: {
