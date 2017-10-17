@@ -11,7 +11,6 @@ export default class CreateMarketView extends Component {
   static propTypes = {
     newMarket: PropTypes.object.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
-    addValidationToNewMarket: PropTypes.func.isRequired,
     removeValidationFromNewMarket: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     universe: PropTypes.object.isRequired,
