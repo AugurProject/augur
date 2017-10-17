@@ -5,6 +5,10 @@
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
   "main": "build/index.js",
+  "typings": "definitions/index",
+  "typescript": {
+    "definition": "definitions/index"
+  },
   "engines": {
     "node": "~8"
   },
