@@ -24,7 +24,8 @@ if (process.env.DATABASE_URL) {
     connection: {
       filename: augurDbPath
     },
-    acquireConnectionTimeout: 5 * 60 * 1000
+    acquireConnectionTimeout: 5 * 60 * 1000,
+    useNullAsDefault: true
   });
 }
 
