@@ -23,6 +23,7 @@ export default class CreateMarketForm extends Component {
     isMobileSmall: PropTypes.bool.isRequired,
     submitNewMarket: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
+    universe: PropTypes.object.isRequired,
   }
 
   constructor(props) {
@@ -163,6 +164,7 @@ export default class CreateMarketForm extends Component {
             { p.newMarket.currentStep === 4 &&
               <CreateMarketReview
                 newMarket={p.newMarket}
+                universe={p.universe}
               />
             }
           </div>
