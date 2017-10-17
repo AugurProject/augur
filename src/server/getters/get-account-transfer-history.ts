@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 import { Address, Bytes32 } from "../../types";
 
-export interface TransferRow {
+interface TransferRow {
   transactionHash: Bytes32;
   logIndex: number;
   sender: Address;
