@@ -25,11 +25,15 @@ describe(`modules/auth/actions/update-login-account.js`, () => {
     description: 'should fire a UPDATE_LOGIN_ACCOUNT action type with data',
     state: {},
     method: 'updateLoginAccount',
-    param: { address: '0xb0b' },
+    param: { keystore: { address: '0xb0b' } },
     assertions: (actions) => {
       const output = [{
         type: 'UPDATE_LOGIN_ACCOUNT',
-        data: { address: '0xb0b' }
+        data: {
+          keystore: {
+            address: '0xb0b'
+          }
+        }
       }, {
         type: 'UPDATE_FROM_ADDRESS',
         address: '0xb0b'
