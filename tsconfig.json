@@ -5,6 +5,7 @@
     "sourceMap": true,
     "watch": false,
     "declaration": true,
+    "declarationDir": "build/declarations",
     "strictNullChecks": true,
     "alwaysStrict": true,
     "noImplicitAny": true,
