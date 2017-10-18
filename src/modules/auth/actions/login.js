@@ -8,14 +8,14 @@ import getValue from 'utils/get-value'
 
 export const login = (keystore, password, callback = logError) => (dispatch, getState) => {
   augur.accounts.login({ keystore, password }, (err, account) => {
-    console.log('account -- ', err, account)
-
+    const address = getValue(account, 'keystore.address')
     if (err) return callback(err)
-    if (!getValue(account, 'keystore.address')) return callback(null, account)
+    if (!address) return callback(null, account)
 
     dispatch(updateIsLogged(true))
     dispatch(loadAccountData({
       ...account,
+      address,
       meta: {
         signer: account.privateKey,
         accountType: ETHRPC_CONSTANTS.ACCOUNT_TYPES.PRIVATE_KEY
