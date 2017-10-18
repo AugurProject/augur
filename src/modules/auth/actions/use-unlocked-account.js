@@ -19,7 +19,9 @@ export const useUnlockedAccount = unlockedAddress => (dispatch) => {
         signer: null,
         accountType: ETHRPC_CONSTANTS.ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE
       },
-      address: unlockedAddress,
+      keystore: {
+        address: unlockedAddress
+      },
       isUnlocked: true
     }, true))
   })
