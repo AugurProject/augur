@@ -1,1 +1,39 @@
 @import (reference) '~assets/styles/shared';
+
+.ReportingHeader {
+  color: @color-white;
+  padding: 6rem 2rem 2rem;
+}
+
+.ReportingHeader__endDate {
+  &:extend(.caps);
+  &:extend(.caps--small);
+
+  font-weight: 500;
+}
+
+.ReportingHeader__header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.ReportingHeader__heading {
+  &:extend(.h1--heavy);
+
+  margin-bottom: 0;
+}
+
+.ReportingHeader__stake {
+  &:extend(.caps);
+  &:extend(.caps--extra-small);
+
+  font-weight: 700;
+}
+
+@media @breakpoint-mobile-medium {
+  .ReportingHeader {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
