@@ -1,4 +1,5 @@
 // TODO -- this component needs to be broken up
+//         all logic related to sidebar(s) need to be housed w/in a separate component
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
@@ -122,7 +123,6 @@ export default class AppView extends Component {
 
   componentWillMount() {
     const currentPath = parsePath(this.props.location.pathname)[0]
-    // TODO: centralize path parsing (including "previous" path + query) in redux
     this.setState({ currentBasePath: currentPath })
 
     this.changeMenu(currentPath)
@@ -152,7 +152,6 @@ export default class AppView extends Component {
       const selectedCategory = parseQuery(nextProps.location.search)[TOPIC_PARAM_NAME]
 
       if (lastBasePath !== nextBasePath) {
-        // TODO: centralize path parsing (including "previous" path + query) in redux
         this.setState({ currentBasePath: nextBasePath })
         this.changeMenu(nextBasePath)
       }

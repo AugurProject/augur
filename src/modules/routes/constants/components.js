@@ -14,6 +14,12 @@ export const Markets = asyncComponent({
     .then(module => module.default)
 })
 
+export const Account = asyncComponent({
+  moduleName: 'Account',
+  loader: () => import(/* webpackChunkName: 'account' */ 'modules/account/components/account-view/account-view')
+    .then(module => module.default)
+})
+
 export const Auth = asyncComponent({
   moduleName: 'Auth',
   loader: () => import(/* webpackChunkName: 'auth' */ 'modules/auth/components/auth/auth')
@@ -50,12 +56,6 @@ export const Create = asyncComponent({
     .then(module => module.default)
 })
 
-export const Account = asyncComponent({
-  moduleName: 'Account',
-  loader: () => import(/* webpackChunkName: 'account' */ 'modules/new-account/container')
-    .then(module => module.default)
-})
-
 export const Transactions = asyncComponent({
   moduleName: 'Transactions',
   loader: () => import(/* webpackChunkName: 'transactions' */ 'modules/transactions/container')
@@ -70,7 +70,7 @@ export const Market = asyncComponent({
 
 export const Portfolio = asyncComponent({
   moduleName: 'Portfolio',
-  loader: () => import(/* webpackChunkName: 'portfolio' */ 'modules/portfolio/containers/portfolio')
+  loader: () => import(/* webpackChunkName: 'portfolio' */ 'modules/portfolio/components/portfolio-view/portfolio-view')
     .then(module => module.default)
 })
 
