@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 
-import AccountWithdraw from 'modules/new-account/components/account-withdraw/account-withdraw'
+import AccountWithdraw from 'modules/account/components/account-withdraw/account-withdraw'
 
 import { transferFunds } from 'modules/auth/actions/transfer-funds'
 import { selectLoginAccount } from 'modules/auth/selectors/login-account'

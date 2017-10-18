@@ -5,7 +5,7 @@ import QRCode from 'qrcode.react'
 
 import { Export as ExportIcon } from 'modules/common/components/icons/icons'
 
-import Styles from 'modules/new-account/components/account-export/account-export.styles'
+import Styles from 'modules/account/components/account-export/account-export.styles'
 
 export default class AccountExport extends Component {
   static propTypes = {

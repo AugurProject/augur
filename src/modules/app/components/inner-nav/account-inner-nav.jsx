@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 
 import BaseInnerNav from 'modules/app/components/inner-nav/base-inner-nav'
+
 import { ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT } from 'modules/routes/constants/views'
 
 export default class AccountInnerNav extends BaseInnerNav {

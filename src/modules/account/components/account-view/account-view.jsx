@@ -8,16 +8,16 @@ import AccountExport from 'modules/account/containers/account-export'
 
 import makePath from 'modules/routes/helpers/make-path'
 
-import { ACCOUNT, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT } from 'modules/routes/constants/views'
+import { ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT } from 'modules/routes/constants/views'
 
 import Styles from 'modules/account/components/account-view/account-view.styles'
 
 const AccountView = p => (
   <section className={Styles.AccountView}>
     <AccountHeader />
-    <Route path={makePath([ACCOUNT, ACCOUNT_DEPOSIT])} component={AccountDeposit} />
-    <Route path={makePath([ACCOUNT, ACCOUNT_WITHDRAW])} component={AccountWithdraw} />
-    <Route path={makePath([ACCOUNT, ACCOUNT_EXPORT])} component={AccountExport} />
+    <Route path={makePath(ACCOUNT_DEPOSIT)} component={AccountDeposit} />
+    <Route path={makePath(ACCOUNT_WITHDRAW)} component={AccountWithdraw} />
+    <Route path={makePath(ACCOUNT_EXPORT)} component={AccountExport} />
   </section>
 )
 
