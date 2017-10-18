@@ -13,14 +13,18 @@ export default class ReportingView extends Component {
     super(props)
 
     this.state = {
+      daysLeft: 9,
+      endDate: 'November 20, 2017',
       totalStake: 1,
-      endDate: 'November 20, 2017'
     }
   }
 
   render() {
-    const p = this.props
     const s = this.state
+
+    const currentPeriodStyle = {
+      width: `${((27 - s.daysLeft) / 27) * 100}%`
+    }
 
     return (
       <section>
@@ -35,6 +39,20 @@ export default class ReportingView extends Component {
             </div>
             <div>
               <span className={Styles.ReportingHeader__stake}>Total Stake: { s.totalStake } REP</span>
+            </div>
+          </div>
+          <div className={Styles['ReportingHeader__graph-wrapper']}>
+            <div className={Styles.ReportingHeader__graph}>
+              <div className={Styles['ReportingHeader__graph-current']}>
+                <div style={currentPeriodStyle}>
+                  <span>{ s.daysLeft } days left</span>
+                </div>
+              </div>
+              <div className={Styles['ReportingHeader__graph-dispute']} />
+            </div>
+            <div className={Styles.ReportingHeader__labels}>
+              <span>Current Cycle</span>
+              <span>Dispute</span>
             </div>
           </div>
         </article>
