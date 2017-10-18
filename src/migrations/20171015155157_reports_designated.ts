@@ -1,22 +1,15 @@
 import * as Knex from "knex";
 
 exports.up = async (knex: Knex): Promise<any> => {
-  return knex.schema.dropTableIfExists("reports_designated").then( (): void => {
-    knex.schema.raw(`CREATE TABLE reports_designated (
-      "marketID" varchar(66) NOT NULL,
-      payout0 numeric,
-      payout1 numeric,
-      payout2 numeric,
-      payout3 numeric,
-      payout4 numeric,
-      payout5 numeric,
-      payout6 numeric,
-      payout7 numeric,
-      "isInvalid" integer
-    )`).then( (): void => {
-      knex.schema.table("reports_designated", (table: Knex.AlterTableBuilder): void => {
-        table.increments("reportDesignatedID").primary().notNullable();
-      });
+  return knex.schema.dropTableIfExists("reports_designated").then( (): PromiseLike<any> => {
+    return  knex.schema.createTable("reports_designated", (table: Knex.CreateTableBuilder) => {
+      table.increments("reportDesignatedID");
+      table.string("marketID", 66).notNullable();
+      // TODO: discuss correct datatype
+      for (let i: number = 0; i <= 14; i++ ) {
+        table.integer("payout" + i).nullable();
+      }
+      table.integer("isInvalid");
     });
   });
 };
