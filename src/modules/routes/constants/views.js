@@ -13,6 +13,7 @@ export const AUTHENTICATION = 'authentication'
 export const CONNECT = 'connect'
 export const CREATE = 'create'
 export const CATEGORIES = 'categories'
+export const REPORTING = 'reporting'
 
 export const DEFAULT_VIEW = CATEGORIES
 
@@ -40,6 +41,9 @@ export const ACCOUNT_DEPOSIT = 'deposit-funds'
 export const ACCOUNT_TRANSFER = 'transfer-funds'
 export const ACCOUNT_WITHDRAW = 'withdraw-funds'
 export const ACCOUNT_EXPORT = 'export-account'
+
+// Reporting
+export const REPORTING_CLOSED = 'closed'
 
 // Dev only
 export const STYLE_SANDBOX = 'style-sandbox'

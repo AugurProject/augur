@@ -80,6 +80,12 @@ export const CreateMarket = asyncComponent({
     .then(module => module.default)
 })
 
+export const Reporting = asyncComponent({
+  moduleName: 'Reporting',
+  loader: () => import(/* webpackChunkName: 'reporting' */ 'modules/reporting/containers/reporting')
+    .then(module => module.default)
+})
+
 export const StyleSandbox = asyncComponent({
   moduleName: 'StyleSandbox',
   loader: () => import(/* webpackChunkName: 'style-sandbox' */ 'modules/style-sandbox/components/style-sandbox/style-sandbox')
