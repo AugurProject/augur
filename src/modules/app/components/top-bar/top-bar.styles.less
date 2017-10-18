@@ -20,7 +20,8 @@
   letter-spacing: 0.05em;
   line-height: 2.6rem;
   text-align: center;
-  width: 6.8rem;
+  // width: 6.8rem;
+  width: 2.8rem;
 }
 
 .TopBar__notifications-visible {
@@ -30,17 +31,8 @@
   letter-spacing: 0.05em;
   line-height: 2.6rem;
   text-align: center;
-  width: 6.8rem;
-}
-
-.TopBar__notifications-bell {
-  &:extend(.fa);
-  &:extend(.fa-bell);
-}
-
-.TopBar__notifications-bell-o {
-  &:extend(.fa);
-  &:extend(.fa-bell-o);
+  // width: 6.8rem;
+  width: 2.8rem;
 }
 
 .TopBar__stat_label {
@@ -72,5 +64,38 @@
     line-height: 1.5rem;
     margin-right: 0.625rem;
     text-transform: uppercase;
+  }
+}
+
+.unseen-count {
+  border: 1px solid @color-text-dark;
+  border-radius: 50%;
+  bottom: 1em;
+  display: block;
+  font-size: @font-size-extra-small;
+  padding: 0.25em 0.5em;
+  position: relative;
+  right: 0.5em;
+
+  &.unseen-count-enter {
+    transform: scale(0);
+
+    &.unseen-count-enter-active {
+      transform: scale(1);
+      transition-duration: @animation-speed-fast;
+      transition-property: transform;
+      transition-timing-function: @animation-default-type;
+    }
+  }
+
+  &.unseen-count-leave {
+    transform: scale(1);
+
+    &.unseen-count-leave-active {
+      transform: scale(0);
+      transition-duration: @animation-speed-fast;
+      transition-property: transform;
+      transition-timing-function: @animation-default-type;
+    }
   }
 }

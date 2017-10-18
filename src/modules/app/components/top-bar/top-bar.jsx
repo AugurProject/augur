@@ -35,6 +35,7 @@ class TopBar extends Component {
     console.log(p);
     const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10)
     const unseenCount = getValue(p, 'notifications.unseenCount')
+    // const unseenCount = 1
     // {s.isNotificationsVisible ?
     //   <i className={Styles['TopBar__notifications-bell']} /> :
     //   <i className={Styles['TopBar__notifications-bell-o']} />
@@ -63,8 +64,11 @@ class TopBar extends Component {
                 }}
               >
                 {s.isNotificationsVisible ?
-                  'visible' :
-                  'invisible'
+                  <i className="fa fa-bell" /> :
+                  <i className="fa fa-bell-o" />
+                }
+                {!!unseenCount &&
+                  <span className={Styles['unseen-count']}>{unseenCount}</span>
                 }
               </button>
                 {p.isLogged && s.isNotificationsVisible &&
