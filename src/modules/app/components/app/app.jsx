@@ -369,6 +369,7 @@ export default class AppView extends Component {
                 markets={p.markets}
                 marketsFilteredSorted={p.marketsFilteredSorted}
                 openSubMenu={() => this.setState({ mobileMenuState: mobileMenuStates.SUBMENU_OPEN })}
+                privateKey={p.loginAccount.privateKey}
                 location={p.location}
                 history={p.history}
               />
