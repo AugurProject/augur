@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import memoize from 'memoizee'
 
-import Positions from 'modules/new-portfolio/components/positions/positions'
+import Positions from 'modules/portfolio/components/positions/positions'
 
 import getLoginAccountPositions from 'modules/my-positions/selectors/login-account-positions'
 import getOpenOrders from 'modules/user-open-orders/selectors/open-orders'
