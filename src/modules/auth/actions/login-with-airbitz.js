@@ -11,16 +11,9 @@ import { DEFAULT_VIEW } from 'modules/routes/constants/views'
 
 export const loginWithAirbitzEthereumWallet = (airbitzAccount, ethereumWallet, history) => (dispatch) => {
   const privateKey = ethereumWallet.keys.ethereumKey
-
-  console.log('airbitzAccount -- ', airbitzAccount, ethereumWallet, privateKey)
-
   const account = augur.accounts.loginWithMasterKey({ privateKey })
 
-  console.log('account -- ', account)
-
-  if (!account || !account.address || account.error) {
-    return console.error(account)
-  }
+  if (!account.address) return console.error(account)
 
   dispatch(updateIsLogged(true))
   dispatch(loadAccountData({
