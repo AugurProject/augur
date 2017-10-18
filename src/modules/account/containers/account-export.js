@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 
-import AccountExport from 'modules/new-account/components/account-export/account-export'
+import AccountExport from 'modules/account/components/account-export/account-export'
 
 import { selectLoginAccount } from 'modules/auth/selectors/login-account'
 

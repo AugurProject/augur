@@ -1,10 +1,10 @@
 import React from 'react'
-import { Route, withRouter } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 
-import MyPositions from 'modules/new-portfolio/components/positions/container'
-import MyMarkets from 'modules/new-portfolio/components/markets/container'
-import Watchlist from 'modules/new-portfolio/components/watchlist/container'
-import Transactions from 'modules/new-portfolio/components/transactions/container'
+import MyPositions from 'modules/portfolio/components/positions/positions'
+import MyMarkets from 'modules/portfolio/components/markets/markets'
+import Watchlist from 'modules/portfolio/components/watchlist/watchlist'
+import Transactions from 'modules/portfolio/components/transactions/transactions'
 
 import makePath from 'modules/routes/helpers/make-path'
 
@@ -19,4 +19,4 @@ const PortfolioView = p => (
   </section>
 )
 
-export default withRouter(PortfolioView)
+export default PortfolioView

@@ -5,7 +5,7 @@ import Clipboard from 'clipboard'
 
 import { Deposit as DepositIcon, Copy as CopyIcon } from 'modules/common/components/icons/icons'
 
-import Styles from 'modules/new-account/components/account-deposit/account-deposit.styles'
+import Styles from 'modules/account/components/account-deposit/account-deposit.styles'
 
 export default class AccountDeposit extends Component {
   static propTypes = {
