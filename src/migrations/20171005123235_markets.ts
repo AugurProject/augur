@@ -23,6 +23,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       "reportingWindow" varchar(66),
       "endTime" integer NOT NULL CONSTRAINT "positiveEndTime" CHECK ("endTime" > 0),
       "finalizationTime" integer,
+      "marketStateID" integer,
       "shortDescription" varchar(1000) NOT NULL,
       "longDescription" text,
       "designatedReporter" varchar(66) NOT NULL,
