@@ -14,13 +14,43 @@
   width: 6.8rem;
 }
 
-.TopBar__stat-label {
+.TopBar__notifications {
+  display: inline-block;
+  float: right;
+  letter-spacing: 0.05em;
+  line-height: 2.6rem;
+  text-align: center;
+  width: 6.8rem;
+}
+
+.TopBar__notifications-visible {
+  background: @color-lighter-purple;
+  display: inline-block;
+  float: right;
+  letter-spacing: 0.05em;
+  line-height: 2.6rem;
+  text-align: center;
+  width: 6.8rem;
+}
+
+.TopBar__notifications-bell {
+  &:extend(.fa);
+  &:extend(.fa-bell);
+}
+
+.TopBar__notifications-bell-o {
+  &:extend(.fa);
+  &:extend(.fa-bell-o);
+}
+
+.TopBar__stat_label {
   color: rgba(255, 255, 255, 0.25);
   margin-right: 0.62rem;
 }
 
 .TopBar__stat-value {
   color: @color-white;
+  padding-left: 0.5em;
 }
 
 .TopBar__logo-text {

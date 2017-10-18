@@ -8,6 +8,8 @@ import Notification from 'modules/notifications/components/notification'
 import getValue from 'utils/get-value'
 import debounce from 'utils/debounce'
 
+import Styles from 'modules/notifications/components/notifications-view.styles'
+
 export default class NotificationsView extends Component {
   static propTypes = {
     notifications: PropTypes.object.isRequired,
@@ -54,12 +56,12 @@ export default class NotificationsView extends Component {
   render() {
     const p = this.props
     const s = this.state
-
+    console.log('notification view render', p, s);
     const notifications = getValue(p, 'notifications.notifications')
     const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-normal'), 10)
 
     return (
-      <section id="notifications_view">
+      <section id="notifications_view" className={Styles.NotificationsView}>
         <div className="notifications-header">
           <h3>Notifications</h3>
           {!!notifications && !!notifications.length &&

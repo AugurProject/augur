@@ -352,6 +352,7 @@ export default class AppView extends Component {
               isMobile={p.isMobile}
               isLogged={p.isLogged}
               stats={p.coreStats}
+              notifications={p.notifications}
             />
           </section>
           <section
