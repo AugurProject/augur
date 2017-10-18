@@ -140,14 +140,14 @@ export default class TopicsView extends Component {
             </h2>
             <div className={Styles.TopicsHeading__separator} />
           </div>
-          {(p.topics && p.topics.length && s.boundedLength) &&
+          {!!(p.topics && p.topics.length && s.boundedLength) &&
             <TopicList
               topics={p.topics}
               lowerBound={s.lowerBound}
               boundedLength={s.boundedLength}
             />
           }
-          {(p.topics && p.topics.length) &&
+          {!!(p.topics && p.topics.length) &&
             <Paginator
               itemsLength={p.topics.length}
               itemsPerPage={s.itemsPerPage}

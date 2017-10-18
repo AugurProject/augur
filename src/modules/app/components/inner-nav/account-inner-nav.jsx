@@ -1,7 +1,14 @@
+import PropTypes from 'prop-types'
+
 import BaseInnerNav from 'modules/app/components/inner-nav/base-inner-nav'
 import { ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT } from 'modules/routes/constants/views'
 
 export default class AccountInnerNav extends BaseInnerNav {
+  static propTypes = {
+    ...BaseInnerNav.propTypes,
+    privateKey: PropTypes.string.isRequired
+  }
+
   getMainMenuData() {
     return [
       {
@@ -22,7 +29,7 @@ export default class AccountInnerNav extends BaseInnerNav {
       },
       {
         label: 'Export',
-        visible: true,
+        visible: (this.props.privateKey && this.props.privateKey !== ''),
         isSelected: (this.props.currentBasePath === ACCOUNT_EXPORT),
         link: {
           pathname: ACCOUNT_EXPORT
