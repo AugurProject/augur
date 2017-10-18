@@ -15,12 +15,10 @@ export const useUnlockedAccount = unlockedAddress => (dispatch) => {
     console.log('using unlocked account:', unlockedAddress)
     dispatch(updateIsLogged(true))
     dispatch(loadAccountData({
+      address: unlockedAddress,
       meta: {
         signer: null,
         accountType: ETHRPC_CONSTANTS.ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE
-      },
-      keystore: {
-        address: unlockedAddress
       },
       isUnlocked: true
     }, true))

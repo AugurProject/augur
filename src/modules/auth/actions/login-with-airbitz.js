@@ -10,24 +10,23 @@ import makePath from 'modules/routes/helpers/make-path'
 import { DEFAULT_VIEW } from 'modules/routes/constants/views'
 
 export const loginWithAirbitzEthereumWallet = (airbitzAccount, ethereumWallet, history) => (dispatch) => {
-  const masterPrivateKey = ethereumWallet.keys.ethereumKey
+  const privateKey = ethereumWallet.keys.ethereumKey
+  const account = augur.accounts.loginWithMasterKey({ privateKey })
 
-  augur.accounts.loginWithMasterKey(masterPrivateKey, (account) => {
-    if (!account || !account.address || account.error) {
-      return console.error(account)
-    }
-    dispatch(updateIsLogged(true))
-    dispatch(loadAccountData({
-      ...account,
-      meta: {
-        signer: masterPrivateKey,
-        accountType: ETHRPC_CONSTANTS.ACCOUNT_TYPES.PRIVATE_KEY
-      },
-      name: airbitzAccount.username,
-      airbitzAccount
-    }, true))
-    history.push(makePath(DEFAULT_VIEW))
-  })
+  if (!account.address) return console.error(account)
+
+  dispatch(updateIsLogged(true))
+  dispatch(loadAccountData({
+    ...account,
+    meta: {
+      signer: privateKey,
+      accountType: ETHRPC_CONSTANTS.ACCOUNT_TYPES.PRIVATE_KEY
+    },
+    name: airbitzAccount.username,
+    airbitzAccount
+  }, true))
+
+  history.push(makePath(DEFAULT_VIEW))
 }
 
 // Create an ethereum wallet if one doesn't exist

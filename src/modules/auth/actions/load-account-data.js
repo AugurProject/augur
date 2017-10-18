@@ -4,9 +4,9 @@ import { updateLoginAccount } from 'modules/auth/actions/update-login-account'
 import getValue from 'utils/get-value'
 
 export const loadAccountData = account => (dispatch, getState) => {
-  const address = getValue(account, 'keystore.address')
+  const address = getValue(account, 'address')
   if (!address) return console.error('account address required')
-  dispatch(loadAccountDataFromLocalStorage(address))
+  dispatch(loadAccountDataFromLocalStorage(account.address))
   dispatch(updateLoginAccount(account))
   dispatch(updateAssets())
 }
