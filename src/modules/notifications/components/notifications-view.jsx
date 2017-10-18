@@ -56,7 +56,7 @@ export default class NotificationsView extends Component {
   render() {
     const p = this.props
     const s = this.state
-    console.log('notification view render', p, s);
+    console.log('notification view render', p, s)
     const notifications = getValue(p, 'notifications.notifications')
     const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-normal'), 10)
 

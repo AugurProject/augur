@@ -2,7 +2,7 @@
 // comment lifted from old core-stats.js
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
+// import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
 
 import getValue from 'utils/get-value'
 
@@ -32,15 +32,15 @@ class TopBar extends Component {
   render() {
     const p = this.props
     const s = this.state
-    console.log(p);
-    const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10)
+    console.log(p)
+    // const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10)
     const unseenCount = getValue(p, 'notifications.unseenCount')
     // const unseenCount = 1
     // {s.isNotificationsVisible ?
     //   <i className={Styles['TopBar__notifications-bell']} /> :
     //   <i className={Styles['TopBar__notifications-bell-o']} />
     // }
-    return(
+    return (
       <header className={Styles.TopBar}>
         {p.isLogged &&
           <section>
@@ -56,7 +56,7 @@ class TopBar extends Component {
                 {p.stats[0].totalRep.value.formatted}
               </span>
             </span>
-            <div className={s.isNotificationsVisible ? Styles['TopBar__notifications-visible'] : Styles['TopBar__notifications']}>
+            <div className={s.isNotificationsVisible ? Styles['TopBar__notifications-visible'] : Styles.TopBar__notifications}>
               <button
                 onClick={(e) => {
                   e.stopPropagation()
@@ -71,11 +71,11 @@ class TopBar extends Component {
                   <span className={Styles['unseen-count']}>{unseenCount}</span>
                 }
               </button>
-                {p.isLogged && s.isNotificationsVisible &&
-                  <NotificationsContainer
-                    toggleNotifications={() => this.toggleNotifications()}
-                  />
-                }
+              {p.isLogged && s.isNotificationsVisible &&
+                <NotificationsContainer
+                  toggleNotifications={() => this.toggleNotifications()}
+                />
+              }
             </div>
           </section>
         }
