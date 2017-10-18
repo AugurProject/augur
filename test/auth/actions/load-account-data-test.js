@@ -60,9 +60,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     description: 'account address',
     params: {
       account: {
-        keystore: {
-          address: '0xb0b'
-        }
+        address: '0xb0b'
       }
     },
     blockchain: {
@@ -74,9 +72,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       }, {
         type: 'UPDATE_LOGIN_ACCOUNT',
         data: {
-          keystore: {
-            address: '0xb0b'
-          }
+          address: '0xb0b'
         }
       }, {
         type: 'UPDATE_ASSETS'
@@ -87,9 +83,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     description: 'account address, all 0 balances',
     params: {
       account: {
-        keystore: {
-          address: '0xb0b'
-        }
+        address: '0xb0b'
       }
     },
     blockchain: {
@@ -101,9 +95,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       }, {
         type: 'UPDATE_LOGIN_ACCOUNT',
         data: {
-          keystore: {
-            address: '0xb0b'
-          }
+          address: '0xb0b'
         }
       }, {
         type: 'UPDATE_ASSETS'
@@ -114,9 +106,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     description: 'account address, single 0 balance',
     params: {
       account: {
-        keystore: {
-          address: '0xb0b'
-        }
+        address: '0xb0b'
       }
     },
     blockchain: {
@@ -128,9 +118,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       }, {
         type: 'UPDATE_LOGIN_ACCOUNT',
         data: {
-          keystore: {
-            address: '0xb0b'
-          }
+          address: '0xb0b'
         }
       }, {
         type: 'UPDATE_ASSETS'
@@ -141,10 +129,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     description: 'account with address, loginID, name, isUnlocked, airbitzAccount',
     params: {
       account: {
-        keystore: {
-          address: '0xb0b',
-        },
-        loginID: 'loginID',
+        address: '0xb0b',
         name: 'jack',
         isUnlocked: true,
         airbitzAccount: { username: 'jack' }
@@ -159,10 +144,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       }, {
         type: 'UPDATE_LOGIN_ACCOUNT',
         data: {
-          keystore: {
-            address: '0xb0b',
-          },
-          loginID: 'loginID',
+          address: '0xb0b',
           name: 'jack',
           isUnlocked: true,
           airbitzAccount: { username: 'jack' }
@@ -176,10 +158,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     description: 'account with address and loginID',
     params: {
       account: {
-        keystore: {
-          address: '0xb0b',
-        },
-        loginID: 'loginID'
+        address: '0xb0b'
       }
     },
     blockchain: {
@@ -191,10 +170,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       }, {
         type: 'UPDATE_LOGIN_ACCOUNT',
         data: {
-          keystore: {
-            address: '0xb0b',
-          },
-          loginID: 'loginID'
+          address: '0xb0b'
         }
       }, {
         type: 'UPDATE_ASSETS'
