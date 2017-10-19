@@ -86,6 +86,12 @@ export const Reporting = asyncComponent({
     .then(module => module.default)
 })
 
+export const ReportingClosed = asyncComponent({
+  moduleName: 'ReportingClosed',
+  loader: () => import(/* webpackChunkName: 'reporting' */ 'modules/reporting/containers/closed')
+    .then(module => module.default)
+})
+
 export const StyleSandbox = asyncComponent({
   moduleName: 'StyleSandbox',
   loader: () => import(/* webpackChunkName: 'style-sandbox' */ 'modules/style-sandbox/components/style-sandbox/style-sandbox')
