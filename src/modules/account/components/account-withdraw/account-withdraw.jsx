@@ -11,7 +11,7 @@ import { ETH, REP } from 'modules/account/constants/asset-types'
 
 import isAddress from 'modules/auth/helpers/is-address'
 
-import Styles from 'modules/new-account/components/account-withdraw/account-withdraw.styles'
+import Styles from 'modules/account/components/account-withdraw/account-withdraw.styles'
 
 export default class AccountWithdraw extends Component {
   static propTypes = {

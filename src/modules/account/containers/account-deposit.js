@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 
-import AccountDeposit from 'modules/new-account/components/account-deposit/account-deposit'
+import AccountDeposit from 'modules/account/components/account-deposit/account-deposit'
 
 const mapStateToProps = state => ({
   address: state.loginAccount.address
