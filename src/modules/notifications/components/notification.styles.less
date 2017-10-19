@@ -1,0 +1,58 @@
+@import (reference) '~assets/styles/shared';
+
+.Notification {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.Notification-unseen {
+  display: flex;
+  flex-direction: column;
+}
+
+.Notification__link {
+  display: flex;
+  flex-direction: column;
+}
+
+.Notification__title {
+  font-size: @font-size-small;
+  text-transform: uppercase;
+  line-height: 1em;
+}
+
+.Notification__title-unseen {
+  font-size: @font-size-small;
+  text-transform: uppercase;
+  line-height: 1em;
+  margin-left: 1rem;
+}
+
+.Notification__title-unseen:before {
+  content: " ";
+  border: solid transparent;
+  border-radius: 50%;
+  height: 0;
+	width: 0;
+  position: absolute;
+	pointer-events: none;
+	border-color: @color-lightpurple;
+  border-width: 0.3rem;
+  right: 94%;
+}
+
+.Notification__description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 2rem;
+}
+
+.Notification__time {
+  font-size: @font-size-extra-small;
+  line-height: 1rem;
+}

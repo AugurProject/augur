@@ -56,26 +56,13 @@ export default class NotificationsView extends Component {
   render() {
     const p = this.props
     const s = this.state
-    console.log('notification view render', p, s)
+
     const notifications = getValue(p, 'notifications.notifications')
+
     const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-normal'), 10)
 
     return (
       <section id="notifications_view" className={Styles.NotificationsView}>
-        <div className="notifications-header">
-          <h3>Notifications</h3>
-          {!!notifications && !!notifications.length &&
-            <button
-              className="unstyled notifications-button-clear"
-              onClick={(e) => {
-                e.stopPropagation()
-                p.clearNotifications()
-              }}
-            >
-              clear all
-            </button>
-          }
-        </div>
         {notifications && notifications.length ?
           <div
             ref={(notifications) => {
@@ -111,3 +98,17 @@ export default class NotificationsView extends Component {
     )
   }
 }
+// <div className="notifications-header">
+//   <h3>Notifications</h3>
+//   {!!notifications && !!notifications.length &&
+//     <button
+//       className="unstyled notifications-button-clear"
+//       onClick={(e) => {
+//         e.stopPropagation()
+//         p.clearNotifications()
+//       }}
+//     >
+//       clear all
+//     </button>
+//   }
+// </div>

@@ -2,8 +2,11 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
+import moment from 'moment'
 
 import debounce from 'utils/debounce'
+
+import Styles from 'modules/notifications/components/notification.styles'
 
 export default class Notification extends Component {
   static propTypes = {
@@ -82,7 +85,7 @@ export default class Notification extends Component {
       }
     }
   }
-
+// className={classNames(Styles.Notification, { "Styles['Notification-unseen']": !p.seen })}
   render() {
     const p = this.props
 
@@ -91,29 +94,37 @@ export default class Notification extends Component {
         ref={(notification) => {
           this.notification = notification
         }}
-        className={classNames('notification', { 'notification-unseen': !p.seen })}
+        className={Styles.Notification}
       >
         <Link
-          className={classNames('unstyled notification-details', { navigational: !!p.linkPath })}
+          className={Styles.Notification__link}
           to={p.linkPath}
           onClick={(e) => {
             e.stopPropagation()
             if (p.linkPath && p.onClick) p.toggleNotifications()
           }}
         >
-          <span className="notification-title">{p.title}</span>
-          <span className="notification-description">{p.description}</span>
+          <span className={!p.seen ? Styles['Notification__title-unseen'] : Styles.Notification__title}>{p.title}</span>
+          <span className={Styles.Notification__description}>{p.description}</span>
+          <span className={Styles.Notification__time}>{moment(p.timestamp, "YYYYMMDD").fromNow()}</span>
         </Link>
-        <button
-          className="unstyled notification-remove"
-          onClick={(e) => {
-            e.stopPropagation()
-            p.removeNotification(p.notificationIndex)
-          }}
-        >
-          <i className="fa fa-close" />
-        </button>
       </article>
     )
   }
 }
+
+// {!p.testSeen && <span className={Styles.Notification__dot}> </span>}
+
+// <span className={Styles.Notification__description}>{p.description}</span>
+
+// className={classNames('unstyled notification-details', { navigational: !!p.linkPath })}
+
+// <button
+//   className="unstyled notification-remove"
+//   onClick={(e) => {
+//     e.stopPropagation()
+//     p.removeNotification(p.notificationIndex)
+//   }}
+// >
+//   <i className="fa fa-close" />
+// </button>

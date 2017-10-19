@@ -15,19 +15,11 @@
 }
 
 .TopBar__notifications {
+  color: @color-white;
   display: inline-block;
   float: right;
-  letter-spacing: 0.05em;
-  line-height: 2.6rem;
-  text-align: center;
-  // width: 6.8rem;
-  width: 2.8rem;
-}
-
-.TopBar__notifications-visible {
-  background: @color-lighter-purple;
-  display: inline-block;
-  float: right;
+  // font-size: @font-size-large;
+  font-size: @font-size-rather-large;
   letter-spacing: 0.05em;
   line-height: 2.6rem;
   text-align: center;
@@ -49,6 +41,10 @@
   display: none;
 }
 
+.TopBar__notification-icon {
+  font-size: @font-size-rather-large;
+}
+
 @media @breakpoint-mobile {
   .TopBar {
     padding: 0;
@@ -68,14 +64,19 @@
 }
 
 .unseen-count {
-  border: 1px solid @color-text-dark;
+  background: @color-white;
+  // border: 1px solid @color-white;
   border-radius: 50%;
-  bottom: 1em;
+  bottom: 1.5rem;
+  color: @color-text-dark;
   display: block;
   font-size: @font-size-extra-small;
-  padding: 0.25em 0.5em;
+  line-height: 1rem;
+  // padding: 0.25em 0.5em;
   position: relative;
-  right: 0.5em;
+  right: 0.5rem;
+  width: 75%;
+  height: 75%;
 
   &.unseen-count-enter {
     transform: scale(0);
