@@ -1,4 +1,5 @@
 import React from 'react'
+import { Switch } from 'react-router-dom'
 
 import AuthenticatedRoute from 'modules/routes/components/authenticated-route/authenticated-route'
 
@@ -11,8 +12,10 @@ import { REPORTING_OPEN, REPORTING_CLOSED } from 'modules/routes/constants/views
 
 const ReportingView = p => (
   <section>
-    <AuthenticatedRoute path={makePath(REPORTING_OPEN)} exact component={ReportingOpen} />
-    <AuthenticatedRoute path={makePath(REPORTING_CLOSED)} exact component={ReportingClosed} />
+    <Switch>
+      <AuthenticatedRoute path={makePath(REPORTING_OPEN)} component={ReportingOpen} />
+      <AuthenticatedRoute path={makePath(REPORTING_CLOSED)} component={ReportingClosed} />
+    </Switch>
   </section>
 )
 
