@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import ReportingView from 'modules/reporting/components/reporting-view/reporting-view'
+import ReportingOpen from 'modules/reporting/components/reporting-open/reporting-open'
 
 // import getAllMarkets from 'modules/markets/selectors/markets-all'
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
@@ -25,7 +25,7 @@ const mapDispatchToProps = dispatch => ({
   toggleFavorite: marketID => dispatch(toggleFavorite(marketID)),
 })
 
-const Reporting = withRouter(connect(mapStateToProps, mapDispatchToProps)(ReportingView))
+const Reporting = withRouter(connect(mapStateToProps, mapDispatchToProps)(ReportingOpen))
 
 export default Reporting
 

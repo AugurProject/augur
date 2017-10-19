@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 
 import Styles from 'modules/reporting/components/reporting-header/reporting-header.styles'
 
 export default class ReportingHeader extends Component {
-  // static propTypes = {
-  // }
+  static propTypes = {
+    heading: PropTypes.string.isRequired,
+    showReportingEndDate: PropTypes.bool.isRequired,
+  }
 
   constructor(props) {
     super(props)
@@ -19,6 +21,7 @@ export default class ReportingHeader extends Component {
 
   render() {
     const s = this.state
+    const p = this.props
 
     const currentPeriodStyle = {
       width: `${((27 - s.daysLeft) / 27) * 100}%`
@@ -28,8 +31,10 @@ export default class ReportingHeader extends Component {
       <article className={Styles.ReportingHeader}>
         <div className={Styles.ReportingHeader__header}>
           <div>
-            <h1 className={Styles.ReportingHeader__heading}>Reporting</h1>
-            <span className={Styles.ReportingHeader__endDate}>Reporting cycle ends { s.endDate }</span>
+            <h1 className={Styles.ReportingHeader__heading}>{p.heading}</h1>
+            { p.showReportingEndDate &&
+              <span className={Styles.ReportingHeader__endDate}>Reporting cycle ends { s.endDate }</span>
+            }
           </div>
           <div>
             <span className={Styles.ReportingHeader__stake}>Total Stake: { s.totalStake } REP</span>
