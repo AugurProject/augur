@@ -28,8 +28,9 @@ export function onNewBlock(db: Knex, augur: Augur, blockNumberString: string) {
           logError(err);
         } else {
           trx.commit();
+          logError(null);
         }
-      }).asCallback(logError);
+      });
     });
   });
 }
