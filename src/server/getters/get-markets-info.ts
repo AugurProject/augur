@@ -5,22 +5,19 @@ import { Address, MarketsRow, OutcomesRow, UIMarketInfo, UIMarketsInfo, UIOutcom
 import { reshapeOutcomesRowToUIOutcomeInfo, reshapeMarketsRowToUIMarketInfo } from "./get-market-info";
 
 export function getMarketsInfo(db: Knex, universe: Address|null|undefined, marketIDs: Array<Address>|null|undefined, callback: (err?: Error|null, result?: UIMarketsInfo) => void): void {
-  let query: string = "SELECT * FROM markets WHERE";
-  let queryParams: Array<Address|Array<Address>>;
+  let marketsQuery: Knex.QueryBuilder = db.select().from("markets").orderBy("creationTime");
+
   if (universe == null && marketIDs == null) {
     return callback(new Error("must include universe or marketIDs parameters"));
-  } else if (universe != null && marketIDs != null) {
-    query = `${query} universe = ? AND "marketID" IN (??)`;
-    queryParams = [universe!, marketIDs!];
-  } else if (universe != null) {
-    query = `${query} universe = ?`;
-    queryParams = [universe!];
-  } else {
-    query = `${query} "marketID" IN (??)`;
-    queryParams = [marketIDs!];
   }
-  query = `${query} ORDER BY "creationTime" ASC`;
-  db.raw(query, queryParams).asCallback((err?: Error|null, marketsRows?: Array<MarketsRow>): void => {
+  if (universe != null) {
+    marketsQuery = marketsQuery.where( {universe } );
+  }
+  if (marketIDs != null) {
+    marketsQuery = marketsQuery.whereIn( "marketID", marketIDs );
+  }
+
+  marketsQuery.asCallback((err?: Error|null, marketsRows?: Array<MarketsRow>): void => {
     if (err) return callback(err);
     if (!marketsRows || !marketsRows.length) return callback(null);
     const marketsInfo: UIMarketsInfo = [];
