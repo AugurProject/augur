@@ -27,8 +27,8 @@ describe("server/getters/get-markets-info", () => {
     },
     assertions: (err, marketsInfo) => {
       assert.isNull(err);
-      assert.deepEqual(marketsInfo, {
-        "0x0000000000000000000000000000000000000001": {
+      assert.deepEqual(marketsInfo, [
+        {
           id: "0x0000000000000000000000000000000000000001",
           branchID: "0x000000000000000000000000000000000000000b",
           type: "categorical",
@@ -90,7 +90,7 @@ describe("server/getters/get-markets-info", () => {
             price: 0.125
           }]
         },
-        "0x0000000000000000000000000000000000000002": {
+        {
           id: "0x0000000000000000000000000000000000000002",
           branchID: "0x000000000000000000000000000000000000000b",
           type: "binary",
@@ -128,7 +128,7 @@ describe("server/getters/get-markets-info", () => {
             price: 0.5
           }]
         },
-        "0x0000000000000000000000000000000000000003": {
+        {
           id: "0x0000000000000000000000000000000000000003",
           branchID: "0x000000000000000000000000000000000000000b",
           type: "binary",
@@ -165,8 +165,8 @@ describe("server/getters/get-markets-info", () => {
             outstandingShares: 10,
             price: 0.5
           }]
-        }
-      });
+        }]
+      );
     }
   });
   test({
@@ -180,8 +180,8 @@ describe("server/getters/get-markets-info", () => {
     },
     assertions: (err, marketsInfo) => {
       assert.isNull(err);
-      assert.deepEqual(marketsInfo, {
-        "0x0000000000000000000000000000000000000001": {
+      assert.deepEqual(marketsInfo, [
+        {
           id: "0x0000000000000000000000000000000000000001",
           branchID: "0x000000000000000000000000000000000000000b",
           type: "categorical",
@@ -243,7 +243,7 @@ describe("server/getters/get-markets-info", () => {
             price: 0.125
           }]
         },
-        "0x0000000000000000000000000000000000000002": {
+        {
           id: "0x0000000000000000000000000000000000000002",
           branchID: "0x000000000000000000000000000000000000000b",
           type: "binary",
@@ -280,8 +280,8 @@ describe("server/getters/get-markets-info", () => {
             outstandingShares: 1000,
             price: 0.5
           }]
-        }
-      });
+        }]
+      );
     }
   });
   test({
