@@ -66,7 +66,6 @@ export default class MarketHeader extends Component {
           </button>
           <CSSTransition
             in={s.detailsExpanded}
-            timeout={s.animationSpeed}
             classNames="market-details"
           >
             <div className={Styles.MarketHeader__details}>

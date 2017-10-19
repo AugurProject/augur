@@ -86,5 +86,22 @@
 .MarketHeader__details {
   background-color: @color-darkgray;
   font-size: @font-size-extra-small;
-  padding: 1em;
+  height: 0;
+  overflow: auto;
+  transition: height @animation-speed-normal @animation-default-type;
+
+  &:global {
+    &.market-details-enter {
+      height: 200px;
+    }
+
+    &.market-details-exit {
+      height: 0;
+    }
+  }
+
+  span {
+    display: inline-block;
+    padding: 1em;
+  }
 }
