@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import classNames from 'classnames'
+// import classNames from 'classnames'
 import moment from 'moment'
 
 import debounce from 'utils/debounce'
@@ -106,7 +106,7 @@ export default class Notification extends Component {
         >
           <span className={!p.seen ? Styles['Notification__title-unseen'] : Styles.Notification__title}>{p.title}</span>
           <span className={Styles.Notification__description}>{p.description}</span>
-          <span className={Styles.Notification__time}>{moment(p.timestamp, "YYYYMMDD").fromNow()}</span>
+          <span className={Styles.Notification__time}>{moment(p.timestamp, 'YYYYMMDD').fromNow()}</span>
         </Link>
       </article>
     )

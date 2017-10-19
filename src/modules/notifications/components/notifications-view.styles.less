@@ -2,75 +2,75 @@
 
 .NotificationsView {
   background: @color-lightergray;
+  box-shadow: 0.1rem 0.2rem 0.5rem @color-almostblack;
   color: @color-text-dark;
   display: block;
   padding: 0.25em;
   position: absolute;
+  right: 0.25rem;
   text-align: left;
   top: 3rem;
-  right: .25rem;
   width: 20em;
   z-index: 1000;
-  box-shadow: 0.1rem 0.2rem 0.5rem @color-almostblack;
 }
 
-.NotificationsView:after {
-	bottom: 100%;
-	// left: 96.5%;
+.NotificationsView::after {
+  // left: 96.5%;
+  border: solid transparent;
+  border-color: @color-transparent @color-transparent @color-lightergray @color-transparent;
+  border-width: 10px;
+  bottom: 100%;
+  content: " ";
+  height: 0;
+  margin-left: -10px;
+  pointer-events: none;
+  position: absolute;
   right: 0.5rem;
-	border: solid transparent;
-	content: " ";
-	height: 0;
-	width: 0;
-	position: absolute;
-	pointer-events: none;
-	border-color: @color-transparent;
-  border-bottom-color: @color-lightergray;
-	border-width: 10px;
-	margin-left: -10px;
+  width: 0;
 }
 
 .Notification__close {
-  display: none;
   cursor: pointer;
+  display: none;
+  width: 2rem;
 }
 
 @media @breakpoint-mobile {
   .NotificationsView {
+    // top: 2rem;
     background: @color-lightergray;
+    bottom: 0;
+    box-shadow: 0.1rem 0.2rem 0.5rem @color-almostblack;
     color: @color-text-dark;
     display: block;
+    left: 0;
     padding: 0.25em;
     position: absolute;
-    text-align: left;
-    // top: 2rem;
-    top: 0;
-    bottom: 0;
-    left: 0;
     right: 0;
+    text-align: left;
+    top: 0;
     width: 100%;
     z-index: 1000;
-    box-shadow: 0.1rem 0.2rem 0.5rem @color-almostblack;
   }
 
-  .NotificationsView:after {
-    bottom: 0;
-    right: 0;
+  .NotificationsView::after {
+    // border-color: @color-transparent;
+    // border-width: 10px;
+    // border: solid transparent;
+    // bottom: 100%;
+    // content: " ";
+    // height: 0;
+    // margin-left: -10px;
+    // pointer-events: none;
+    // position: absolute;
+    // width: 0;
+    // border-bottom-color: @color-lightergray;
+    // right: 0.5rem;
     border: none;
+    bottom: 0;
     content: "";
     display: none;
-  	// bottom: 100%;
-    // right: 0.5rem;
-  	// border: solid transparent;
-  	// content: " ";
-  	// height: 0;
-  	// width: 0;
-  	// position: absolute;
-  	// pointer-events: none;
-  	// border-color: @color-transparent;
-    // border-bottom-color: @color-lightergray;
-  	// border-width: 10px;
-  	// margin-left: -10px;
+    right: 0;
   }
 
   .Notification__close {

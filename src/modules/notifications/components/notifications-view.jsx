@@ -7,7 +7,7 @@ import Notification from 'modules/notifications/components/notification'
 
 import getValue from 'utils/get-value'
 import debounce from 'utils/debounce'
-import { Close_Black } from 'modules/common/components/icons/icons'
+import { CloseBlack } from 'modules/common/components/icons/icons'
 
 import Styles from 'modules/notifications/components/notifications-view.styles'
 
@@ -64,10 +64,15 @@ export default class NotificationsView extends Component {
 
     return (
       <section id="notifications_view" className={Styles.NotificationsView}>
-        <a className={Styles.Notification__close} onClick={(e) => {
-          e.stopPropagation();
-          p.toggleNotifications();
-        }}>{Close_Black}</a>
+        <button
+          className={Styles.Notification__close}
+          onClick={(e) => {
+            e.stopPropagation()
+            p.toggleNotifications()
+          }}
+        >
+          {CloseBlack}
+        </button>
         {notifications && notifications.length ?
           <div
             ref={(notifications) => {

@@ -3,8 +3,8 @@
 .Notification {
   display: flex;
   flex-direction: column;
-  padding: 0.5em;
   overflow: hidden;
+  padding: 0.5em;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -21,35 +21,35 @@
 
 .Notification__title {
   font-size: @font-size-small;
-  text-transform: uppercase;
   line-height: 1em;
+  text-transform: uppercase;
 }
 
 .Notification__title-unseen {
   font-size: @font-size-small;
-  text-transform: uppercase;
   line-height: 1em;
   margin-left: 1rem;
+  text-transform: uppercase;
 }
 
-.Notification__title-unseen:before {
-  content: " ";
+.Notification__title-unseen::before {
   border: solid transparent;
+  border-color: @color-lightpurple;
   border-radius: 50%;
-  height: 0;
-	width: 0;
-  position: absolute;
-	pointer-events: none;
-	border-color: @color-lightpurple;
   border-width: 0.3rem;
+  content: " ";
+  height: 0;
+  pointer-events: none;
+  position: absolute;
   right: 94%;
+  width: 0;
 }
 
 .Notification__description {
+  line-height: 2rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  line-height: 2rem;
 }
 
 .Notification__time {

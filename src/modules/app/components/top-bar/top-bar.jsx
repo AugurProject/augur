@@ -66,8 +66,8 @@ class TopBar extends Component {
                 }}
               >
                 {s.isNotificationsVisible ?
-                  <i className={classNames(  Styles['TopBar__notification-icon'], "fa fa-bell")} /> :
-                  <i className={classNames( Styles['TopBar__notification-icon'], "fa fa-bell-o")} />
+                  <i className={classNames(Styles['TopBar__notification-icon'], 'fa fa-bell')} /> :
+                  <i className={classNames(Styles['TopBar__notification-icon'], 'fa fa-bell-o')} />
                 }
                 <CSSTransitionGroup
                   transitionName="unseen-count"
