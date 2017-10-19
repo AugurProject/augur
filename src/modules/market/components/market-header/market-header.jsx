@@ -7,7 +7,8 @@ export default class MarketHeader extends Component {
   static propTypes = {
     description: PropTypes.string.isRequired,
     details: PropTypes.string.isRequired,
-    coreProperties: PropTypes.object.isRequired
+    coreProperties: PropTypes.object.isRequired,
+    selectedOutcome: PropTypes.any // FIXME -- There is a PR to handle null values, but until then..
   }
 
   constructor(props) {
@@ -19,16 +20,16 @@ export default class MarketHeader extends Component {
   }
 
   render() {
-
-    console.log('props -- ', this.props)
-
     const s = this.state
     const p = this.props
 
     return (
       <section>
         <div>
-          <span>{ChevronLeft} back to list</span>
+          {p.selectedOutcome === null ?
+            <span>{ChevronLeft} back to list</span> :
+            <span>{ChevronLeft} view all outcomes</span>
+          }
         </div>
         <div>
           <span>{p.description}</span>

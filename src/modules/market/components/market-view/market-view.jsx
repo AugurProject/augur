@@ -1,14 +1,32 @@
-import React from 'react'
+import React, { Component } from 'react'
 
 import MarketHeader from 'modules/market/containers/market-header'
 
-const MarketView = p => (
-  <section>
-    <MarketHeader />
-  </section>
-)
+export default class MarketView extends Component {
+  static propTypes = {
 
-export default MarketView
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      selectedOutcome: null
+    }
+  }
+
+  render() {
+    const s = this.state
+
+    return (
+      <section>
+        <MarketHeader
+          selectedOutcome={s.selectedOutcome}
+        />
+      </section>
+    )
+  }
+}
 
 // OLD
 // import React, { Component } from 'react'
