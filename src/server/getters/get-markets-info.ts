@@ -1,10 +1,8 @@
 import { each } from "async";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { Address, MarketsRow, OutcomesRow, UIMarketInfo, UIOutcomeInfo, ErrorCallback } from "../../types";
+import { Address, MarketsRow, OutcomesRow, UIMarketInfo, UIMarketsInfo, UIOutcomeInfo, ErrorCallback } from "../../types";
 import { reshapeOutcomesRowToUIOutcomeInfo, reshapeMarketsRowToUIMarketInfo } from "./get-market-info";
-
-type UIMarketsInfo = Array<UIMarketInfo>;
 
 export function getMarketsInfo(db: Knex, universe: Address|null|undefined, marketIDs: Array<Address>|null|undefined, callback: (err?: Error|null, result?: UIMarketsInfo) => void): void {
   let query: string = "SELECT * FROM markets WHERE";
