@@ -1,4 +1,39 @@
+@import (reference) '~assets/styles/shared';
+
 .MarketHeader {
   display: flex;
   flex: 1;
+  flex-direction: column;
+  margin-top: 2rem;
+}
+
+.MarketHeader__nav {
+  color: @color-lightgray;
+  margin: 0 0 1rem;
+}
+
+.MarketHeader__back-button {
+  .caps--small();
+
+  display: flex;
+
+  svg {
+    height: 1em;
+    margin-right: 0.2em;
+
+    polyline {
+      stroke: @color-lightgray;
+    }
+  }
+}
+
+.MarketHeader__main-values {
+  display: flex;
+  flex: 1;
+}
+
+.MarketHeader__description {
+  &:extend(.caps--extra-large);
+
+  color: @color-white;
 }

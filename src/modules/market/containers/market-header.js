@@ -28,6 +28,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   }
 
   return {
+    ...ownProps,
     description: market.description,
     details: market.extraInfo,
     coreProperties: {

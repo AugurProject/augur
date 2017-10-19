@@ -2,11 +2,9 @@ import React, { Component } from 'react'
 
 import MarketHeader from 'modules/market/containers/market-header'
 
+import Styles from 'modules/market/components/market-view/market-view.styles'
+
 export default class MarketView extends Component {
-  static propTypes = {
-
-  }
-
   constructor(props) {
     super(props)
 
@@ -20,9 +18,11 @@ export default class MarketView extends Component {
 
     return (
       <section>
-        <MarketHeader
-          selectedOutcome={s.selectedOutcome}
-        />
+        <div className={Styles.Market__upper}>
+          <MarketHeader
+            selectedOutcome={s.selectedOutcome}
+          />
+        </div>
       </section>
     )
   }

@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 
 import { ChevronLeft, ChevronDown, ChevronUp } from 'modules/common/components/icons/icons'
 
+import Styles from 'modules/market/components/market-header/market-header.styles'
+
 export default class MarketHeader extends Component {
   static propTypes = {
     description: PropTypes.string.isRequired,
@@ -24,23 +26,31 @@ export default class MarketHeader extends Component {
     const p = this.props
 
     return (
-      <section>
-        <div>
+      <section className={Styles.MarketHeader}>
+        <div className={Styles[`MarketHeader__nav`]}>
           {p.selectedOutcome === null ?
-            <span>{ChevronLeft} back to list</span> :
-            <span>{ChevronLeft} view all outcomes</span>
+            <button className={Styles[`MarketHeader__back-button`]}>
+              {ChevronLeft}<span> back to list</span>
+            </button> :
+            <button className={Styles[`MarketHeader__back-button`]}>
+              {ChevronLeft}<span> view all outcomes</span>
+            </button>
           }
         </div>
-        <div>
-          <span>{p.description}</span>
-          {!!p.coreProperties &&
-            Object.keys(p.coreProperties).map(property => (
-              <div>
-                <span>{property}</span>
-                <span>{p.coreProperties[property]}</span>
-              </div>
-            ))
-          }
+        <div className={Styles[`MarketHeader__main-values`]}>
+          <span className={Styles[`MarketHeader__description`]}>
+            {p.description}
+          </span>
+          <div>
+            {!!p.coreProperties &&
+              Object.keys(p.coreProperties).map(property => (
+                <div key={property}>
+                  <span>{property}</span>
+                  <span>{p.coreProperties[property]}</span>
+                </div>
+              ))
+            }
+          </div>
         </div>
         <div>
           <button>additional details {s.detailsExpanded ? ChevronUp : ChevronDown}</button>

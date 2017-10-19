@@ -426,7 +426,7 @@ export const Copy = (
 )
 
 export const ChevronLeft = (
-  <svg width="16px" height="16px" viewBox="0 0 16 16">
+  <svg viewBox="0 0 16 16">
     <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
       <g id="Icon/chevron-left" stroke="#231A3A">
         <polyline id="Stroke-3" transform="translate(11.156854, 7.863961) rotate(-135.000000) translate(-11.156854, -7.863961) " points="6.65685425 3.36396103 15.6568542 3.36396103 15.6568542 12.363961" />
@@ -436,7 +436,7 @@ export const ChevronLeft = (
 )
 
 export const ChevronDown = (
-  <svg width="16px" height="16px" viewBox="0 0 16 16">
+  <svg viewBox="0 0 16 16">
     <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
       <g id="Icon/Dropdown-Down" stroke="#A7A2B2">
         <polyline id="Stroke-3" transform="translate(8.156854, 6.156854) rotate(-225.000000) translate(-8.156854, -6.156854) " points="3.65685425 1.65685425 12.6568542 1.65685425 12.6568542 10.6568542" />
@@ -446,7 +446,7 @@ export const ChevronDown = (
 )
 
 export const ChevronUp = (
-  <svg width="16px" height="16px" viewBox="0 0 16 16">
+  <svg viewBox="0 0 16 16">
     <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
       <g id="Icon/Dropdown" stroke="#A7A2B2">
         <polyline id="Stroke-3" transform="translate(8.156854, 11.156854) scale(1, -1) rotate(-225.000000) translate(-8.156854, -11.156854) " points="3.65685425 6.65685425 12.6568542 6.65685425 12.6568542 15.6568542" />
