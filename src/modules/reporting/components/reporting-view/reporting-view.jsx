@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet'
 import ReportingHeader from 'modules/reporting/components/reporting-header/reporting-header'
 import MarketsList from 'modules/markets/components/markets-list'
 
-// import Styles from 'modules/reporting/components/reporting-view/reporting-view.styles'
+import Styles from 'modules/reporting/components/reporting-view/reporting-view.styles'
 
 export default class ReportingView extends Component {
   static propTypes = {
@@ -22,7 +22,8 @@ export default class ReportingView extends Component {
     super(props)
 
     this.state = {
-      filteredMarkets: [0, 1],
+      filteredMarketsReporting: [0, 1],
+      filteredMarketsDispute: [0, 1],
     }
   }
 
@@ -36,10 +37,26 @@ export default class ReportingView extends Component {
           <title>Reporting</title>
         </Helmet>
         <ReportingHeader />
+        { s.filteredMarketsDispute.length &&
+          <h2 className={Styles.ReportingView__heading}>In Dispute</h2>
+        }
+        { s.filteredMarketsDispute.length &&
+          <MarketsList
+            isLogged={p.isLogged}
+            markets={p.markets}
+            filteredMarkets={s.filteredMarketsDispute}
+            location={p.location}
+            history={p.history}
+            scalarShareDenomination={p.scalarShareDenomination}
+            toggleFavorite={p.toggleFavorite}
+            loadMarketsInfo={p.loadMarketsInfo}
+          />
+        }
+        <h2 className={Styles.ReportingView__heading}>In Reporting</h2>
         <MarketsList
           isLogged={p.isLogged}
           markets={p.markets}
-          filteredMarkets={s.filteredMarkets}
+          filteredMarkets={s.filteredMarketsReporting}
           location={p.location}
           history={p.history}
           scalarShareDenomination={p.scalarShareDenomination}

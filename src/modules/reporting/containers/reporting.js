@@ -13,7 +13,7 @@ import getValue from 'utils/get-value'
 
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
-  markets: marketsInReporting, // getAllMarkets(),
+  markets, // getAllMarkets(),
   universe: state.universe,
   scalarShareDenomination: getScalarShareDenomination(),
   canLoadMarkets: !!getValue(state, 'universe.id'),
@@ -30,7 +30,7 @@ const Reporting = withRouter(connect(mapStateToProps, mapDispatchToProps)(Report
 export default Reporting
 
 
-const marketsInReporting = [
+const markets = [
   {
     id: '0xcd7b177af7a12ec3be1c7f992ec7d608959630f2113227a2cdd9db562bd01eb4',
     branchID: '0xf69b5',
