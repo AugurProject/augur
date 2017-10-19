@@ -4,9 +4,7 @@ import * as Knex from "knex";
 import { Address, MarketsRow, OutcomesRow, UIMarketInfo, UIOutcomeInfo, ErrorCallback } from "../../types";
 import { reshapeOutcomesRowToUIOutcomeInfo, reshapeMarketsRowToUIMarketInfo } from "./get-market-info";
 
-export interface UIMarketsInfo {
-  [marketID: string]: UIMarketInfo;
-}
+type UIMarketsInfo = Array<UIMarketInfo>;
 
 export function getMarketsInfo(db: Knex, universe: Address|null|undefined, marketIDs: Array<Address>|null|undefined, callback: (err?: Error|null, result?: UIMarketsInfo) => void): void {
   let query: string = "SELECT * FROM markets WHERE";
@@ -23,15 +21,16 @@ export function getMarketsInfo(db: Knex, universe: Address|null|undefined, marke
     query = `${query} "marketID" IN (??)`;
     queryParams = [marketIDs!];
   }
+  query = `${query} ORDER BY "creationTime" ASC`;
   db.raw(query, queryParams).asCallback((err?: Error|null, marketsRows?: Array<MarketsRow>): void => {
     if (err) return callback(err);
     if (!marketsRows || !marketsRows.length) return callback(null);
-    const marketsInfo: UIMarketsInfo = {};
+    const marketsInfo: UIMarketsInfo = [];
     each(marketsRows, (marketsRow: MarketsRow, nextMarketsRow: ErrorCallback): void => {
       db.raw(`SELECT * FROM outcomes WHERE "marketID" = ?`, [marketsRow.marketID]).asCallback((err?: Error|null, outcomesRows?: Array<OutcomesRow>): void => {
         if (err) return nextMarketsRow(err);
         const outcomesInfo: Array<UIOutcomeInfo> = outcomesRows!.map((outcomesRow: OutcomesRow): UIOutcomeInfo => reshapeOutcomesRowToUIOutcomeInfo(outcomesRow));
-        marketsInfo[marketsRow.marketID] = reshapeMarketsRowToUIMarketInfo(marketsRow, outcomesInfo) as UIMarketInfo;
+        marketsInfo.push(reshapeMarketsRowToUIMarketInfo(marketsRow, outcomesInfo) as UIMarketInfo);
         nextMarketsRow();
       });
     }, (err?: Error|null): void => {
