@@ -8,6 +8,7 @@ import Styles from 'modules/market/components/market-header/market-header.styles
 
 export default class MarketHeader extends Component {
   static propTypes = {
+    history: PropTypes.object.isRequired,
     description: PropTypes.string.isRequired,
     details: PropTypes.string.isRequired,
     coreProperties: PropTypes.object.isRequired,
@@ -18,7 +19,7 @@ export default class MarketHeader extends Component {
     super(props)
 
     this.state = {
-      animationSpeed: parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10),
+      animationSpeed: parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-normal'), 10),
       detailsExpanded: false
     }
   }
@@ -31,7 +32,10 @@ export default class MarketHeader extends Component {
       <section className={Styles.MarketHeader}>
         <div className={Styles.MarketHeader__nav}>
           {p.selectedOutcome === null ?
-            <button className={Styles[`MarketHeader__back-button`]}>
+            <button
+              className={Styles[`MarketHeader__back-button`]}
+              onClick={() => history.goBack()}
+            >
               {ChevronLeft}<span> back to list</span>
             </button> :
             <button className={Styles[`MarketHeader__back-button`]}>
@@ -66,6 +70,9 @@ export default class MarketHeader extends Component {
           </button>
           <CSSTransition
             in={s.detailsExpanded}
+            addEndListener={node => (
+              node.addEventListener(null) // NOTE -- intentional to persist classes
+            )}
             classNames="market-details"
           >
             <div className={Styles.MarketHeader__details}>

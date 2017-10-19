@@ -71,7 +71,7 @@
   .caps--small();
 
   align-self: flex-start;
-  margin: 0.5em 0 0.1em 1em;
+  padding: 0.5em 0 0.1em 1em;
 
   svg {
     height: 1em;
@@ -91,6 +91,10 @@
   transition: height @animation-speed-normal @animation-default-type;
 
   &:global {
+    &.market-details-appear {
+      height: 0;
+    }
+
     &.market-details-enter {
       height: 200px;
     }
