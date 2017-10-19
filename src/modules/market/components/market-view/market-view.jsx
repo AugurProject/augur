@@ -1,7 +1,11 @@
 import React from 'react'
 
+import MarketHeader from 'modules/market/containers/market-header'
+
 const MarketView = p => (
-  <span>MARKET</span>
+  <section>
+    <MarketHeader />
+  </section>
 )
 
 export default MarketView

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 
 import { MarketStatusOpen, MarketStatusReported, MarketStatusClosed } from 'modules/common/components/icons/icons'
 
-import Styles from 'modules/market/components/common/market-status-icon/market-status-icon.styles'
+import Styles from 'modules/market/components/market-status-icon/market-status-icon.styles'
 
 const MarketStatusIcon = (p) => {
   let marketStatusIcon
