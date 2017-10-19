@@ -2,6 +2,7 @@
 @import (reference) '~modules/market/components/market-view/market-view.styles';
 
 .MarketHeader {
+  color: @color-lightgray;
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -9,7 +10,6 @@
 }
 
 .MarketHeader__nav {
-  color: @color-lightgray;
   margin: 0 0 1rem;
 }
 
@@ -50,4 +50,14 @@
 .MarketHeader__property {
   display: flex;
   flex-direction: column;
+
+  span:first-of-type {
+    .caps--small();
+
+    margin-bottom: 0.5em;
+  }
+
+  span:last-of-type {
+    color: @color-white;
+  }
 }
