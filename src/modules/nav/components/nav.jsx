@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link, NavLink } from 'react-router-dom'
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
+import { TransitionGroup } from 'react-transition-group'
 
 import AugurLogoIcon from 'modules/common/components/augur-logo-icon/augur-logo-icon'
 import SideBarFilterIcon from 'modules/common/components/side-bar-filter-icon'
@@ -184,7 +184,7 @@ export default class Nav extends Component {
                 <i className="fa fa-bell" /> :
                 <i className="fa fa-bell-o" />
               }
-              <CSSTransitionGroup
+              <TransitionGroup
                 transitionName="unseen-count"
                 transitionEnterTimeout={animationSpeed}
                 transitionLeaveTimeout={animationSpeed}
@@ -192,9 +192,9 @@ export default class Nav extends Component {
                 {!!unseenCount &&
                   <span className="unseen-count">{unseenCount}</span>
                 }
-              </CSSTransitionGroup>
+              </TransitionGroup>
             </button>
-            <CSSTransitionGroup
+            <TransitionGroup
               id="transition_notifications_view"
               transitionName="notifications"
               transitionEnterTimeout={animationSpeed}
@@ -208,7 +208,7 @@ export default class Nav extends Component {
                   toggleNotifications={() => this.toggleNotifications()}
                 />
               }
-            </CSSTransitionGroup>
+            </TransitionGroup>
           </div>
         }
       </nav>
