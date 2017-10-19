@@ -30,6 +30,12 @@ export const IconSearch = (
   </svg>
 )
 
+export const NavReportingIcon = () => (
+  <svg viewBox="0 0 23 15" xmlns="http://www.w3.org/2000/svg">
+    <g id="Symbols" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round"><g id="Navigation/Section/Left-Nav" stroke="#FFF"><g id="Icon/Reporting"><path id="Page-1" d="M0 8.124l8.63 6.306L22 0" /></g></g></g>
+  </svg>
+)
+
 export const Ledger = (
   <svg id="851e3d33-36d6-418a-b807-c2fa479dc650" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25">
     <defs>

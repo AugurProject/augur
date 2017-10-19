@@ -1,0 +1,104 @@
+@import (reference) '~assets/styles/shared';
+
+.ReportingHeader {
+  color: @color-white;
+  padding: 6rem 2rem 2rem;
+}
+
+.ReportingHeader__endDate {
+  &:extend(.caps);
+  &:extend(.caps--small);
+
+  font-weight: 500;
+}
+
+.ReportingHeader__graph {
+  background-color: @color-darkgray;
+  border-radius: 3px;
+  display: flex;
+  height: 1.5rem;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.ReportingHeader__graph-current {
+  width: 78%;
+
+  > div {
+    background-image: linear-gradient(-270deg, rgba(216, 216, 216, 0) 6%, rgba(238, 238, 238, 0.5) 95%);
+    border-right: 2px solid @color-white;
+    height: 100%;
+    position: relative;
+
+    > span {
+      font-size: 0.625rem;
+      left: 100%;
+      line-height: 0.625rem;
+      margin-left: 0.5rem;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      white-space: nowrap;
+    }
+  }
+}
+
+.ReportingHeader__graph-dispute {
+  background-color: @color-gray;
+  width: 22%;
+}
+
+.ReportingHeader__graph-wrapper {
+  margin-top: 1rem;
+}
+
+.ReportingHeader__header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.ReportingHeader__heading {
+  &:extend(.h1--heavy);
+
+  margin-bottom: 0;
+}
+
+.ReportingHeader__labels {
+  &:extend(.caps);
+  &:extend(.caps--extra-small);
+
+  display: flex;
+  font-weight: 700;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  text-align: left;
+
+  > span:last-child {
+    width: 22%;
+  }
+}
+
+.ReportingHeader__stake {
+  &:extend(.caps);
+  &:extend(.caps--extra-small);
+
+  font-weight: 700;
+}
+
+@media @breakpoint-mobile-medium {
+  .ReportingHeader {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media @breakpoint-mobile-small {
+  .ReportingHeader__header {
+    display: block;
+  }
+
+  .ReportingHeader__stake {
+    font-weight: 500;
+  }
+}

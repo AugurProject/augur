@@ -1,4 +1,5 @@
 // TODO -- this component needs to be broken up
+//         all logic related to sidebar(s) need to be housed w/in a separate component
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
@@ -15,6 +16,7 @@ import TopBar from 'modules/app/components/top-bar/top-bar'
 import MarketsInnerNav from 'modules/app/components/inner-nav/markets-inner-nav'
 import PortfolioInnerNav from 'modules/app/components/inner-nav/portfolio-inner-nav'
 import AccountInnerNav from 'modules/app/components/inner-nav/account-inner-nav'
+import ReportingInnerNav from 'modules/app/components/inner-nav/reporting-inner-nav'
 import SideNav from 'modules/app/components/side-nav/side-nav'
 import Origami from 'modules/app/components/origami-svg/origami-svg'
 import Logo from 'modules/app/components/logo/logo'
@@ -28,6 +30,7 @@ import NavAccountIcon from 'modules/common/components/nav-account-icon'
 import NavCreateIcon from 'modules/common/components/nav-create-icon'
 import NavMarketsIcon from 'modules/common/components/nav-markets-icon'
 import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon'
+import { NavReportingIcon } from 'modules/common/components/icons/icons'
 
 import parsePath from 'modules/routes/helpers/parse-path'
 import makePath from 'modules/routes/helpers/make-path'
@@ -35,7 +38,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 
 import getValue from 'utils/get-value'
 
-import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT, MY_MARKETS, MY_POSITIONS, WATCHLIST, CREATE_MARKET, CATEGORIES } from 'modules/routes/constants/views'
+import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT, MY_MARKETS, MY_POSITIONS, WATCHLIST, CREATE_MARKET, CATEGORIES, REPORTING, REPORTING_CLOSED } from 'modules/routes/constants/views'
 import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
@@ -57,7 +60,9 @@ const navTypes = {
   [WATCHLIST]: PortfolioInnerNav,
   [ACCOUNT_DEPOSIT]: AccountInnerNav,
   [ACCOUNT_WITHDRAW]: AccountInnerNav,
-  [ACCOUNT_EXPORT]: AccountInnerNav
+  [ACCOUNT_EXPORT]: AccountInnerNav,
+  [REPORTING]: ReportingInnerNav,
+  [REPORTING_CLOSED]: ReportingInnerNav,
 }
 
 export default class AppView extends Component {
@@ -92,13 +97,6 @@ export default class AppView extends Component {
         route: MARKETS
       },
       {
-        title: 'Account',
-        iconName: 'nav-account-icon',
-        icon: NavAccountIcon,
-        mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
-        route: ACCOUNT_DEPOSIT
-      },
-      {
         title: 'Create',
         iconName: 'nav-create-icon',
         icon: NavCreateIcon,
@@ -111,6 +109,20 @@ export default class AppView extends Component {
         icon: NavPortfolioIcon,
         route: MY_POSITIONS,
         requireLogin: true
+      },
+      {
+        title: 'Reporting',
+        iconName: 'nav-reporting-icon',
+        icon: NavReportingIcon,
+        route: REPORTING,
+        requireLogin: true
+      },
+      {
+        title: 'Account',
+        iconName: 'nav-account-icon',
+        icon: NavAccountIcon,
+        mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
+        route: ACCOUNT_DEPOSIT
       }
     ]
 
@@ -122,7 +134,6 @@ export default class AppView extends Component {
 
   componentWillMount() {
     const currentPath = parsePath(this.props.location.pathname)[0]
-    // TODO: centralize path parsing (including "previous" path + query) in redux
     this.setState({ currentBasePath: currentPath })
 
     this.changeMenu(currentPath)
@@ -152,7 +163,6 @@ export default class AppView extends Component {
       const selectedCategory = parseQuery(nextProps.location.search)[TOPIC_PARAM_NAME]
 
       if (lastBasePath !== nextBasePath) {
-        // TODO: centralize path parsing (including "previous" path + query) in redux
         this.setState({ currentBasePath: nextBasePath })
         this.changeMenu(nextBasePath)
       }
@@ -204,6 +214,8 @@ export default class AppView extends Component {
         case ACCOUNT_DEPOSIT:
         case ACCOUNT_WITHDRAW:
         case ACCOUNT_EXPORT:
+        case REPORTING:
+        case REPORTING_CLOSED:
           openNewMenu()
           break
         default:
