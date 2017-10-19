@@ -3,7 +3,7 @@ import * as Knex from "knex";
 exports.up = async (knex: Knex): Promise<any> => {
   return knex.schema.dropTableIfExists("markets").then((): PromiseLike<any> => {
     return knex.schema.raw(`CREATE TABLE markets (
-			"marketID" varchar(66) PRIMARY KEY NOT NULL,
+      "marketID" varchar(66) PRIMARY KEY NOT NULL,
       universe varchar(66) NOT NULL,
       "marketType" varchar(11) NOT NULL CONSTRAINT "enumMarketTypes" CHECK ("marketType" = 'binary' OR "marketType" = 'categorical' OR "marketType" = 'scalar'),
       "numOutcomes" integer NOT NULL CONSTRAINT "positiveNumOutcomes" CHECK ("numOutcomes" > 0),
@@ -23,6 +23,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       "reportingWindow" varchar(66),
       "endTime" integer NOT NULL CONSTRAINT "positiveEndTime" CHECK ("endTime" > 0),
       "finalizationTime" integer,
+      "marketStateID" integer,
       "shortDescription" varchar(1000) NOT NULL,
       "longDescription" text,
       "designatedReporter" varchar(66) NOT NULL,
