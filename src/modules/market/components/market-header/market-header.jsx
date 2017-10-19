@@ -27,7 +27,7 @@ export default class MarketHeader extends Component {
 
     return (
       <section className={Styles.MarketHeader}>
-        <div className={Styles[`MarketHeader__nav`]}>
+        <div className={Styles.MarketHeader__nav}>
           {p.selectedOutcome === null ?
             <button className={Styles[`MarketHeader__back-button`]}>
               {ChevronLeft}<span> back to list</span>
@@ -38,13 +38,16 @@ export default class MarketHeader extends Component {
           }
         </div>
         <div className={Styles[`MarketHeader__main-values`]}>
-          <span className={Styles[`MarketHeader__description`]}>
+          <span className={Styles.MarketHeader__description}>
             {p.description}
           </span>
-          <div>
+          <div className={Styles.MarketHeader__properties}>
             {!!p.coreProperties &&
               Object.keys(p.coreProperties).map(property => (
-                <div key={property}>
+                <div
+                  key={property}
+                  className={Styles.MarketHeader__property}
+                >
                   <span>{property}</span>
                   <span>{p.coreProperties[property]}</span>
                 </div>
