@@ -61,7 +61,7 @@
     "react-redux": "5.0.5",
     "react-router-dom": "4.1.1",
     "react-tooltip": "3.3.0",
-    "react-transition-group": "1.2.0",
+    "react-transition-group": "2.2.1",
     "redux": "3.7.0",
     "redux-thunk": "2.2.0",
     "redux-undo": "0.6.1",

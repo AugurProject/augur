@@ -61,3 +61,30 @@
     color: @color-white;
   }
 }
+
+.MarketHeader__details-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.MarketHeader__details-button {
+  .caps--small();
+
+  align-self: flex-start;
+  margin: 0.5em 0 0.1em 1em;
+
+  svg {
+    height: 1em;
+    margin-left: 0.2em;
+
+    polyline {
+      stroke: @color-lightgray;
+    }
+  }
+}
+
+.MarketHeader__details {
+  background-color: @color-darkgray;
+  font-size: @font-size-extra-small;
+  padding: 1em;
+}

@@ -1,6 +1,6 @@
 import React from 'react'
 import classNames from 'classnames'
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
+import { TransitionGroup } from 'react-transition-group'
 
 import Transaction from 'modules/transactions/components/transaction'
 
@@ -13,7 +13,7 @@ const TransactionGroup = (p) => {
         <span className="transaction-action">{p.message}</span>
         <span className="transaction-group-summary-description">{p.description}</span>
       </div>
-      <CSSTransitionGroup
+      <TransitionGroup
         transitionName="transaction"
         transitionEnterTimeout={animationInSpeed}
         transitionLeave={false}
@@ -26,7 +26,7 @@ const TransactionGroup = (p) => {
             {...transaction}
           />
         ))}
-      </CSSTransitionGroup>
+      </TransitionGroup>
     </article>
   )
 }

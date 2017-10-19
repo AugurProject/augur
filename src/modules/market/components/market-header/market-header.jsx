@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { CSSTransition } from 'react-transition-group'
 
 import { ChevronLeft, ChevronDown, ChevronUp } from 'modules/common/components/icons/icons'
 
@@ -17,6 +18,7 @@ export default class MarketHeader extends Component {
     super(props)
 
     this.state = {
+      animationSpeed: parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10),
       detailsExpanded: false
     }
   }
@@ -55,8 +57,22 @@ export default class MarketHeader extends Component {
             }
           </div>
         </div>
-        <div>
-          <button>additional details {s.detailsExpanded ? ChevronUp : ChevronDown}</button>
+        <div className={Styles[`MarketHeader__details-wrapper`]}>
+          <button
+            className={Styles[`MarketHeader__details-button`]}
+            onClick={() => this.setState({ detailsExpanded: !s.detailsExpanded })}
+          >
+            additional details {s.detailsExpanded ? ChevronUp : ChevronDown}
+          </button>
+          <CSSTransition
+            in={s.detailsExpanded}
+            timeout={s.animationSpeed}
+            classNames="market-details"
+          >
+            <div className={Styles.MarketHeader__details}>
+              <span>{p.details}</span>
+            </div>
+          </CSSTransition>
         </div>
       </section>
     )
