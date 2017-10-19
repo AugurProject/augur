@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet'
 import ReportingHeader from 'modules/reporting/components/reporting-header/reporting-header'
 import MarketsList from 'modules/markets/components/markets-list'
 
-export default class ReportingView extends Component {
+export default class ReportingClosed extends Component {
   static propTypes = {
     markets: PropTypes.array.isRequired,
     history: PropTypes.object.isRequired,

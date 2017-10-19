@@ -82,13 +82,7 @@ export const CreateMarket = asyncComponent({
 
 export const Reporting = asyncComponent({
   moduleName: 'Reporting',
-  loader: () => import(/* webpackChunkName: 'reporting' */ 'modules/reporting/containers/reporting')
-    .then(module => module.default)
-})
-
-export const ReportingClosed = asyncComponent({
-  moduleName: 'ReportingClosed',
-  loader: () => import(/* webpackChunkName: 'reporting' */ 'modules/reporting/containers/closed')
+  loader: () => import(/* webpackChunkName: 'reporting' */ 'modules/reporting/components/reporting-view/reporting-view')
     .then(module => module.default)
 })
 

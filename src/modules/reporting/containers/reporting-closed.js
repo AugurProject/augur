@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import ClosedView from 'modules/reporting/components/closed-view/closed-view'
+import ReportingClosed from 'modules/reporting/components/reporting-closed/reporting-closed'
 
 // import getAllMarkets from 'modules/markets/selectors/markets-all'
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
@@ -25,7 +25,7 @@ const mapDispatchToProps = dispatch => ({
   toggleFavorite: marketID => dispatch(toggleFavorite(marketID)),
 })
 
-const Closed = withRouter(connect(mapStateToProps, mapDispatchToProps)(ClosedView))
+const Closed = withRouter(connect(mapStateToProps, mapDispatchToProps)(ReportingClosed))
 
 export default Closed
 

@@ -43,6 +43,7 @@ export const ACCOUNT_WITHDRAW = 'withdraw-funds'
 export const ACCOUNT_EXPORT = 'export-account'
 
 // Reporting
+export const REPORTING_OPEN = 'reporting-open'
 export const REPORTING_CLOSED = 'reporting-closed'
 
 // Dev only

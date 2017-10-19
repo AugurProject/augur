@@ -38,7 +38,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 
 import getValue from 'utils/get-value'
 
-import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT, MY_MARKETS, MY_POSITIONS, WATCHLIST, CREATE_MARKET, CATEGORIES, REPORTING, REPORTING_CLOSED } from 'modules/routes/constants/views'
+import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT, MY_MARKETS, MY_POSITIONS, WATCHLIST, CREATE_MARKET, CATEGORIES, REPORTING_OPEN, REPORTING_CLOSED } from 'modules/routes/constants/views'
 import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
@@ -61,7 +61,7 @@ const navTypes = {
   [ACCOUNT_DEPOSIT]: AccountInnerNav,
   [ACCOUNT_WITHDRAW]: AccountInnerNav,
   [ACCOUNT_EXPORT]: AccountInnerNav,
-  [REPORTING]: ReportingInnerNav,
+  [REPORTING_OPEN]: ReportingInnerNav,
   [REPORTING_CLOSED]: ReportingInnerNav,
 }
 
@@ -114,7 +114,7 @@ export default class AppView extends Component {
         title: 'Reporting',
         iconName: 'nav-reporting-icon',
         icon: NavReportingIcon,
-        route: REPORTING,
+        route: REPORTING_OPEN,
         requireLogin: true
       },
       {
