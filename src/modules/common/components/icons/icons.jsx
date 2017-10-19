@@ -424,3 +424,31 @@ export const Copy = (
     </g>
   </svg>
 )
+
+export const Close = (
+  <svg width="24px" height="24px" viewBox="0 0 24 24">
+      <title>Icon/Close</title>
+      <desc>Created with Sketch.</desc>
+      <defs></defs>
+      <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round">
+          <g id="Icon/Close" stroke="#F6F6F8">
+              <path d="M2.25937312,2.25937312 L21.7139306,21.7139306" id="Line"></path>
+              <path d="M21.8116947,2.3571372 L2.3571372,21.8116947 L21.8116947,2.3571372 Z" id="Line" strokeLinejoin="round"></path>
+          </g>
+      </g>
+  </svg>
+)
+
+export const Close_Black = (
+  <svg width="24px" height="24px" viewBox="0 0 24 24">
+      <title>Icon/Close</title>
+      <desc>Created with Sketch.</desc>
+      <defs></defs>
+      <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round">
+          <g id="Icon/Close" stroke="#000000">
+              <path d="M2.25937312,2.25937312 L21.7139306,21.7139306" id="Line"></path>
+              <path d="M21.8116947,2.3571372 L2.3571372,21.8116947 L21.8116947,2.3571372 Z" id="Line" strokeLinejoin="round"></path>
+          </g>
+      </g>
+  </svg>
+)

@@ -59,6 +59,7 @@ class TopBar extends Component {
             </span>
             <div className={Styles.TopBar__notifications}>
               <button
+                className={Styles['TopBar__notification-icon']}
                 onClick={(e) => {
                   e.stopPropagation()
                   this.toggleNotifications()

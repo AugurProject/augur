@@ -1,24 +1,23 @@
 @import (reference) '~assets/styles/shared';
 
 .NotificationsView {
-  // background: @color-lightgray;
   background: @color-lightergray;
   color: @color-text-dark;
   display: block;
   padding: 0.25em;
   position: absolute;
-  // position: relative;
-  // right: 710%;
   text-align: left;
   top: 3rem;
   right: .25rem;
   width: 20em;
   z-index: 1000;
+  box-shadow: 0.1rem 0.2rem 0.5rem @color-almostblack;
 }
 
 .NotificationsView:after {
 	bottom: 100%;
-	left: 96.5%;
+	// left: 96.5%;
+  right: 0.5rem;
 	border: solid transparent;
 	content: " ";
 	height: 0;
@@ -26,8 +25,55 @@
 	position: absolute;
 	pointer-events: none;
 	border-color: @color-transparent;
-	// border-bottom-color: @color-lightgray;
   border-bottom-color: @color-lightergray;
 	border-width: 10px;
 	margin-left: -10px;
+}
+
+.Notification__close {
+  display: none;
+  cursor: pointer;
+}
+
+@media @breakpoint-mobile {
+  .NotificationsView {
+    background: @color-lightergray;
+    color: @color-text-dark;
+    display: block;
+    padding: 0.25em;
+    position: absolute;
+    text-align: left;
+    // top: 2rem;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0.1rem 0.2rem 0.5rem @color-almostblack;
+  }
+
+  .NotificationsView:after {
+    bottom: 0;
+    right: 0;
+    border: none;
+    content: "";
+    display: none;
+  	// bottom: 100%;
+    // right: 0.5rem;
+  	// border: solid transparent;
+  	// content: " ";
+  	// height: 0;
+  	// width: 0;
+  	// position: absolute;
+  	// pointer-events: none;
+  	// border-color: @color-transparent;
+    // border-bottom-color: @color-lightergray;
+  	// border-width: 10px;
+  	// margin-left: -10px;
+  }
+
+  .Notification__close {
+    display: block;
+  }
 }
