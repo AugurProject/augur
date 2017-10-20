@@ -1,5 +1,5 @@
 import BaseInnerNav from 'modules/app/components/inner-nav/base-inner-nav'
-import { REPORTING, REPORTING_CLOSED } from 'modules/routes/constants/views'
+import { REPORTING_OPEN, REPORTING_CLOSED } from 'modules/routes/constants/views'
 
 export default class ReportingInnerNav extends BaseInnerNav {
   getMainMenuData() {
@@ -7,9 +7,9 @@ export default class ReportingInnerNav extends BaseInnerNav {
       {
         label: 'Reporting',
         visible: true,
-        isSelected: (this.props.currentBasePath === REPORTING),
+        isSelected: (this.props.currentBasePath === REPORTING_OPEN),
         link: {
-          pathname: REPORTING
+          pathname: REPORTING_OPEN
         }
       },
       {

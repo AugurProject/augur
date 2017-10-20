@@ -1,52 +1,22 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { Helmet } from 'react-helmet'
+import React from 'react'
+import { Switch } from 'react-router-dom'
 
-import ReportingHeader from 'modules/reporting/components/reporting-header/reporting-header'
-import MarketsList from 'modules/markets/components/markets-list'
+import AuthenticatedRoute from 'modules/routes/components/authenticated-route/authenticated-route'
 
-// import Styles from 'modules/reporting/components/reporting-view/reporting-view.styles'
+import ReportingOpen from 'modules/reporting/containers/reporting-open'
+import ReportingClosed from 'modules/reporting/containers/reporting-closed'
 
-export default class ReportingView extends Component {
-  static propTypes = {
-    markets: PropTypes.array.isRequired,
-    history: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
-    scalarShareDenomination: PropTypes.object.isRequired,
-    toggleFavorite: PropTypes.func.isRequired,
-    loadMarketsInfo: PropTypes.func.isRequired,
-    isLogged: PropTypes.bool.isRequired,
-  }
+import makePath from 'modules/routes/helpers/make-path'
 
-  constructor(props) {
-    super(props)
+import { REPORTING_OPEN, REPORTING_CLOSED } from 'modules/routes/constants/views'
 
-    this.state = {
-      filteredMarkets: [0, 1],
-    }
-  }
+const ReportingView = p => (
+  <section>
+    <Switch>
+      <AuthenticatedRoute path={makePath(REPORTING_OPEN)} component={ReportingOpen} />
+      <AuthenticatedRoute path={makePath(REPORTING_CLOSED)} component={ReportingClosed} />
+    </Switch>
+  </section>
+)
 
-  render() {
-    const s = this.state
-    const p = this.props
-
-    return (
-      <section>
-        <Helmet>
-          <title>Reporting</title>
-        </Helmet>
-        <ReportingHeader />
-        <MarketsList
-          isLogged={p.isLogged}
-          markets={p.markets}
-          filteredMarkets={s.filteredMarkets}
-          location={p.location}
-          history={p.history}
-          scalarShareDenomination={p.scalarShareDenomination}
-          toggleFavorite={p.toggleFavorite}
-          loadMarketsInfo={p.loadMarketsInfo}
-        />
-      </section>
-    )
-  }
-}
+export default ReportingView

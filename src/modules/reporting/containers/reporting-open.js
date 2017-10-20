@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import ReportingView from 'modules/reporting/components/reporting-view/reporting-view'
+import ReportingOpen from 'modules/reporting/components/reporting-open/reporting-open'
 
 // import getAllMarkets from 'modules/markets/selectors/markets-all'
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
@@ -13,7 +13,7 @@ import getValue from 'utils/get-value'
 
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
-  markets: marketsInReporting, // getAllMarkets(),
+  markets, // getAllMarkets(),
   universe: state.universe,
   scalarShareDenomination: getScalarShareDenomination(),
   canLoadMarkets: !!getValue(state, 'universe.id'),
@@ -25,12 +25,12 @@ const mapDispatchToProps = dispatch => ({
   toggleFavorite: marketID => dispatch(toggleFavorite(marketID)),
 })
 
-const Reporting = withRouter(connect(mapStateToProps, mapDispatchToProps)(ReportingView))
+const Reporting = withRouter(connect(mapStateToProps, mapDispatchToProps)(ReportingOpen))
 
 export default Reporting
 
 
-const marketsInReporting = [
+const markets = [
   {
     id: '0xcd7b177af7a12ec3be1c7f992ec7d608959630f2113227a2cdd9db562bd01eb4',
     branchID: '0xf69b5',

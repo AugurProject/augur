@@ -1,5 +1,7 @@
 import React from 'react'
-import { Route } from 'react-router-dom'
+import { Switch } from 'react-router-dom'
+
+import AuthenticatedRoute from 'modules/routes/components/authenticated-route/authenticated-route'
 
 import AccountHeader from 'modules/account/containers/account-header'
 import AccountDeposit from 'modules/account/containers/account-deposit'
@@ -15,9 +17,11 @@ import Styles from 'modules/account/components/account-view/account-view.styles'
 const AccountView = p => (
   <section className={Styles.AccountView}>
     <AccountHeader />
-    <Route path={makePath(ACCOUNT_DEPOSIT)} component={AccountDeposit} />
-    <Route path={makePath(ACCOUNT_WITHDRAW)} component={AccountWithdraw} />
-    <Route path={makePath(ACCOUNT_EXPORT)} component={AccountExport} />
+    <Switch>
+      <AuthenticatedRoute path={makePath(ACCOUNT_DEPOSIT)} component={AccountDeposit} />
+      <AuthenticatedRoute path={makePath(ACCOUNT_WITHDRAW)} component={AccountWithdraw} />
+      <AuthenticatedRoute path={makePath(ACCOUNT_EXPORT)} component={AccountExport} />
+    </Switch>
   </section>
 )
 
