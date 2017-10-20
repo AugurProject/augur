@@ -5,8 +5,7 @@ import { reshapeMarketsRowToUIMarketInfo } from "./get-market-info";
 
 // Look up all markets that are currently awaiting designated (automated) reporting.
 // Should accept a designatedReporterAddress parameter that filters by designated reporter address.
-export function getMarketsAwaitingDesignatedReporting(db: Knex, designatedReporter: Address, callback: (err?: Error|null, result?: any) => void): void {
-    const marketsInfo: UIMarketsInfo = [];
+export function getMarketsAwaitingDesignatedReporting(db: Knex, designatedReporter: Address|null, callback: (err?: Error|null, result?: any) => void): void {
     let queryData: {} = {};
     if ( designatedReporter != null ) {
         queryData = { designatedReporter };
@@ -15,9 +14,10 @@ export function getMarketsAwaitingDesignatedReporting(db: Knex, designatedReport
     db.select().from("markets").where(queryData).whereNull("marketStateID").asCallback((err?: Error|null, marketsRows?: Array<MarketsRow>): void => {
         if (err) return callback(err);
         if (!marketsRows || !marketsRows.length) return callback(null);
-        each(marketsRows, (marketsRow: MarketsRow, nextMarketsRow: ErrorCallback): void => {
+        const marketsInfo: UIMarketsInfo = [];
+        marketsRows.map((marketsRow: MarketsRow): void => {
             if (err) return callback(err);
-            marketsInfo.push(reshapeMarketsRowToUIMarketInfo(marketsRow, []) as UIMarketInfo);
+            marketsInfo.push(reshapeMarketsRowToUIMarketInfo(marketsRow, []));
         });
         callback(null, marketsInfo);
     });
