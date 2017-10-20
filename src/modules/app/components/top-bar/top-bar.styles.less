@@ -18,13 +18,16 @@
   color: @color-white;
   display: inline-block;
   float: right;
-  // font-size: @font-size-large;
   font-size: @font-size-rather-large;
   letter-spacing: 0.05em;
   line-height: 2.6rem;
   text-align: center;
-  // width: 6.8rem;
-  width: 2.8rem;
+  width: 3rem;
+}
+
+.TopBar__notification-icon {
+  vertical-align: middle;
+  width: @font-size-rather-large;
 }
 
 .TopBar__stat_label {
@@ -39,10 +42,6 @@
 
 .TopBar__logo-text {
   display: none;
-}
-
-.TopBar__notification-bell {
-  font-size: @font-size-rather-large;
 }
 
 @media @breakpoint-mobile {
@@ -62,61 +61,7 @@
     text-transform: uppercase;
   }
 
-  // .TopBar__notifications {
-  //   display: none;
-  // }
-
   .TopBar__notification-icon {
     display: none;
-  }
-  // .TopBar__notifications {
-  //   color: @color-white;
-  //   display: inline-block;
-  //   float: right;
-  //   // font-size: @font-size-large;
-  //   font-size: @font-size-normal;
-  //   letter-spacing: 0.05em;
-  //   line-height: 1.6rem;
-  //   text-align: center;
-  //   // width: 6.8rem;
-  //   width: 2.8rem;
-  // }
-}
-
-.unseen-count {
-  // border: 1px solid @color-white;
-  // padding: 0.25em 0.5em;
-  background: @color-white;
-  border-radius: 50%;
-  bottom: 1.5rem;
-  color: @color-text-dark;
-  display: block;
-  font-size: @font-size-extra-small;
-  height: 75%;
-  line-height: 1rem;
-  position: relative;
-  right: 0.5rem;
-  width: 75%;
-
-  &.unseen-count-enter {
-    transform: scale(0);
-
-    &.unseen-count-enter-active {
-      transform: scale(1);
-      transition-duration: @animation-speed-fast;
-      transition-property: transform;
-      transition-timing-function: @animation-default-type;
-    }
-  }
-
-  &.unseen-count-leave {
-    transform: scale(1);
-
-    &.unseen-count-leave-active {
-      transform: scale(0);
-      transition-duration: @animation-speed-fast;
-      transition-property: transform;
-      transition-timing-function: @animation-default-type;
-    }
   }
 }

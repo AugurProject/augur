@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 
 import debounce from 'utils/debounce'
-
+import { AlertCircle } from 'modules/common/components/icons/icons'
 import Styles from 'modules/notifications/components/notification.styles'
 
 export default class Notification extends Component {
@@ -85,7 +85,7 @@ export default class Notification extends Component {
       }
     }
   }
-// className={classNames(Styles.Notification, { "Styles['Notification-unseen']": !p.seen })}
+
   render() {
     const p = this.props
 
@@ -104,7 +104,8 @@ export default class Notification extends Component {
             if (p.linkPath && p.onClick) p.toggleNotifications()
           }}
         >
-          <span className={!p.seen ? Styles['Notification__title-unseen'] : Styles.Notification__title}>{p.title}</span>
+          {AlertCircle(!p.seen ? Styles.Notification__dot : Styles['Notification__dot-seen'], '#553580')}
+          <span className={Styles.Notification__title}>{p.title}</span>
           <span className={Styles.Notification__description}>{p.description}</span>
           <span className={Styles.Notification__time}>{moment(p.timestamp, 'YYYYMMDD').fromNow()}</span>
         </Link>
@@ -112,19 +113,3 @@ export default class Notification extends Component {
     )
   }
 }
-
-// {!p.testSeen && <span className={Styles.Notification__dot}> </span>}
-
-// <span className={Styles.Notification__description}>{p.description}</span>
-
-// className={classNames('unstyled notification-details', { navigational: !!p.linkPath })}
-
-// <button
-//   className="unstyled notification-remove"
-//   onClick={(e) => {
-//     e.stopPropagation()
-//     p.removeNotification(p.notificationIndex)
-//   }}
-// >
-//   <i className="fa fa-close" />
-// </button>

@@ -15,7 +15,6 @@
 }
 
 .NotificationsView::after {
-  // left: 96.5%;
   border: solid transparent;
   border-color: @color-transparent @color-transparent @color-lightergray @color-transparent;
   border-width: 10px;
@@ -32,7 +31,7 @@
 .Notification__close {
   cursor: pointer;
   display: none;
-  width: 2rem;
+  width: @font-size-rather-large;
 }
 
 @media @breakpoint-mobile {
@@ -54,18 +53,6 @@
   }
 
   .NotificationsView::after {
-    // border-color: @color-transparent;
-    // border-width: 10px;
-    // border: solid transparent;
-    // bottom: 100%;
-    // content: " ";
-    // height: 0;
-    // margin-left: -10px;
-    // pointer-events: none;
-    // position: absolute;
-    // width: 0;
-    // border-bottom-color: @color-lightergray;
-    // right: 0.5rem;
     border: none;
     bottom: 0;
     content: "";

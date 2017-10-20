@@ -9,43 +9,36 @@
   white-space: nowrap;
 }
 
-.Notification-unseen {
-  display: flex;
-  flex-direction: column;
-}
-
 .Notification__link {
   display: flex;
-  flex-direction: column;
+  flex-flow: row wrap;
 }
 
 .Notification__title {
+  flex: 1;
   font-size: @font-size-small;
   line-height: 1em;
   text-transform: uppercase;
+  transition: flex 1000ms ease-in;
 }
 
-.Notification__title-unseen {
-  font-size: @font-size-small;
-  line-height: 1em;
-  margin-left: 1rem;
-  text-transform: uppercase;
+.Notification__dot {
+  flex: 0 1rem;
+  height: 1rem;
+  transition: flex 500ms ease-out;
+  width: 1rem;
 }
 
-.Notification__title-unseen::before {
-  border: solid transparent;
-  border-color: @color-lightpurple;
-  border-radius: 50%;
-  border-width: 0.3rem;
-  content: " ";
-  height: 0;
-  pointer-events: none;
-  position: absolute;
-  right: 94%;
-  width: 0;
+.Notification__dot-seen {
+  flex: 0;
+  height: 1rem;
+  transition: flex 500ms ease-out;
+  width: 1rem;
 }
 
 .Notification__description {
+  flex: 1 0 100%;
+  font-size: @font-size-rather-large;
   line-height: 2rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -53,6 +46,18 @@
 }
 
 .Notification__time {
+  flex: 1 0 100%;
   font-size: @font-size-extra-small;
   line-height: 1rem;
+}
+
+@media @breakpoint-mobile {
+  .Notification__description {
+    flex: 1 0 100%;
+    font-size: @font-size-large;
+    line-height: 1.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }

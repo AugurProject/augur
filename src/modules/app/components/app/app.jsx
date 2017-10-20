@@ -30,7 +30,7 @@ import NavAccountIcon from 'modules/common/components/nav-account-icon'
 import NavCreateIcon from 'modules/common/components/nav-create-icon'
 import NavMarketsIcon from 'modules/common/components/nav-markets-icon'
 import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon'
-import { NavReportingIcon } from 'modules/common/components/icons/icons'
+import { AlertCircle, NavReportingIcon } from 'modules/common/components/icons/icons'
 
 import parsePath from 'modules/routes/helpers/parse-path'
 import makePath from 'modules/routes/helpers/make-path'
@@ -86,7 +86,8 @@ export default class AppView extends Component {
       subMenu: { scalar: 0, open: false, currentTween: null },
       mobileMenuState: mobileMenuStates.CLOSED,
       currentBasePath: null,
-      currentInnerNavType: null
+      currentInnerNavType: null,
+      isNotificationsVisible: false
     }
 
     this.sideNavMenuData = [
@@ -130,6 +131,7 @@ export default class AppView extends Component {
 
     this.handleWindowResize = debounce(this.handleWindowResize.bind(this))
     this.checkIsMobile = this.checkIsMobile.bind(this)
+    this.toggleNotifications = this.toggleNotifications.bind(this)
   }
 
   componentWillMount() {
@@ -239,6 +241,10 @@ export default class AppView extends Component {
     this.props.updateIsMobileSmall(isMobileSmall)
   }
 
+  toggleNotifications() {
+    this.setState({ isNotificationsVisible: !this.state.isNotificationsVisible })
+  }
+
   toggleMenuTween(menuKey, forceOpen, cb) {
     if (getValue(this.state[menuKey], 'currentTween.stop')) this.state[menuKey].currentTween.stop()
 
@@ -290,7 +296,7 @@ export default class AppView extends Component {
     }
   }
 
-  renderMobileMenuButton() {
+  renderMobileMenuButton(unseenCount) {
     const menuState = this.state.mobileMenuState
 
     let icon = null
@@ -304,6 +310,9 @@ export default class AppView extends Component {
         onClick={() => this.mobileMenuButtonClick()}
       >
         {icon}
+        {menuState === mobileMenuStates.CLOSED && !!unseenCount &&
+          AlertCircle(Styles['SideBar__mobile-bars-unseen'])
+        }
       </button>
     )
   }
@@ -313,6 +322,7 @@ export default class AppView extends Component {
     const s = this.state
 
     const { mainMenu, subMenu } = this.state
+    const unseenCount = getValue(p, 'notifications.unseenCount')
 
     const InnerNav = this.state.currentInnerNavType
     let innerNavMenuMobileClick
@@ -348,7 +358,7 @@ export default class AppView extends Component {
           <Link to={makePath(CATEGORIES)}>
             <Logo />
           </Link>
-          {this.renderMobileMenuButton()}
+          {this.renderMobileMenuButton(unseenCount)}
           <SideNav
             defaultMobileClick={() => this.setState({ mobileMenuState: mobileMenuStates.CLOSED })}
             isMobile={p.isMobile}
@@ -356,6 +366,8 @@ export default class AppView extends Component {
             mobileShow={s.mobileMenuState === mobileMenuStates.SIDEBAR_OPEN}
             menuScalar={subMenu.scalar}
             menuData={this.sideNavMenuData}
+            unseenCount={unseenCount}
+            toggleNotifications={this.toggleNotifications}
           />
         </section>
         <section className={Styles.Main}>
@@ -364,6 +376,9 @@ export default class AppView extends Component {
               isMobile={p.isMobile}
               isLogged={p.isLogged}
               stats={p.coreStats}
+              unseenCount={unseenCount}
+              isNotificationsVisible={s.isNotificationsVisible}
+              toggleNotifications={this.toggleNotifications}
               notifications={p.notifications}
             />
           </section>
