@@ -23,7 +23,7 @@ export interface TransferLog {
 
 export type TransferHistory = Array<TransferLog>;
 
-export function getAccountTransferHistory(db: Knex, account: Address, token: Address|null, callback: (err?: Error|null, result?: TransferHistory) => void): void {
+export function getAccountTransferHistory(db: Knex, account: Address, token: Address|null, callback: (err: Error|null, result?: TransferHistory) => void): void {
   let query: Knex.Raw;
   if (token === null) {
     query = db.raw("SELECT * FROM transfers WHERE sender = ? OR recipient = ?", [account, account]);
