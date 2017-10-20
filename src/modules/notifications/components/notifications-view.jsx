@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { TransitionGroup } from 'react-transition-group'
 
 import NullStateMessage from 'modules/common/components/null-state-message'
 import Notification from 'modules/notifications/components/notification'
@@ -60,8 +59,6 @@ export default class NotificationsView extends Component {
 
     const notifications = getValue(p, 'notifications.notifications')
 
-    const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-normal'), 10)
-
     return (
       <section id="notifications_view" className={Styles.NotificationsView}>
         <button
@@ -78,29 +75,20 @@ export default class NotificationsView extends Component {
             ref={(notifications) => {
               this.notifications = notifications
             }}
-            className="notifications"
+            className={Styles.NotificationsView__box}
           >
-            <TransitionGroup
-              component="div"
-              transitionName="notification"
-              transitionAppear
-              transitionAppearTimeout={animationSpeed}
-              transitionEnterTimeout={animationSpeed}
-              transitionLeaveTimeout={animationSpeed}
-            >
-              {notifications.map((notification, i) => (
-                <Notification
-                  key={`${notification.id}-${notification.title}`}
-                  removeNotification={() => p.removeNotification(i)}
-                  toggleNotifications={p.toggleNotifications}
-                  updateNotification={p.updateNotification}
-                  notificationsBounds={s.notificationsBounds}
-                  checkSeen={s.checkSeen}
-                  updateNotificationsBoundingBox={this.updateNotificationsBoundingBox}
-                  {...notification}
-                />
-              ))}
-            </TransitionGroup>
+            {notifications.map((notification, i) => (
+              <Notification
+                key={`${notification.id}-${notification.title}`}
+                removeNotification={() => p.removeNotification(i)}
+                toggleNotifications={p.toggleNotifications}
+                updateNotification={p.updateNotification}
+                notificationsBounds={s.notificationsBounds}
+                checkSeen={s.checkSeen}
+                updateNotificationsBoundingBox={this.updateNotificationsBoundingBox}
+                {...notification}
+              />
+            ))}
           </div> :
           <NullStateMessage message="No Notifications" />
         }
@@ -108,17 +96,3 @@ export default class NotificationsView extends Component {
     )
   }
 }
-// <div className="notifications-header">
-//   <h3>Notifications</h3>
-//   {!!notifications && !!notifications.length &&
-//     <button
-//       className="unstyled notifications-button-clear"
-//       onClick={(e) => {
-//         e.stopPropagation()
-//         p.clearNotifications()
-//       }}
-//     >
-//       clear all
-//     </button>
-//   }
-// </div>
