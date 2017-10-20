@@ -213,13 +213,25 @@ export interface UITrade {
   price: string;
   shares: string;
   maker: boolean;
+  settlementFees: string;
+  marketID: Address;
+  outcome: number;
+  shareToken: Address;
+  timestamp: number;
+  tradeGroupID: Bytes32|null;
 }
 
 export interface TradingHistoryTradesRow {
-  order_type: string;
+  orderType: string;
   price: string;
   shares: string;
   creator: Address;
+  settlementFees: string;
+  marketID: Address;
+  outcome: number;
+  shareToken: Address;
+  tradeTime: number;
+  tradeGroupID: Bytes32|null;
 }
 
 export interface TradesRow {
