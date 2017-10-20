@@ -245,6 +245,15 @@ export interface TradesRow {
   tradeGroupID: Bytes32|null;
 }
 
+export interface TimestampedPrice {
+  price: string|number;
+  timestamp: number;
+}
+
+export interface MarketPriceHistory {
+  [outcome: number]: Array<TimestampedPrice>;
+}
+
 export interface JoinedReportsMarketsRow {
   marketID: Address;
   universe: Address;

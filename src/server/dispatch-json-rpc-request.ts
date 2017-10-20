@@ -12,6 +12,7 @@ import { getMarketsAwaitingAllReporting } from "./getters/get-markets-awaiting-a
 import { getDisputableMarkets } from "./getters/get-disputable-markets";
 import { getReportingSummary } from "./getters/get-reporting-summary";
 import { getUserTradingHistory } from "./getters/get-user-trading-history";
+import { getMarketPriceHistory } from "./getters/get-market-price-history";
 import { getUserTradingPositions } from "./getters/get-user-trading-positions";
 import { getReportingWindowsWithUnclaimedFees } from "./getters/get-reporting-windows-with-unclaimed-fees";
 import { getUnclaimedReportingTokens } from "./getters/get-unclaimed-reporting-tokens";
@@ -49,6 +50,8 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callba
       return getReportingSummary(db, request.params.reportingWindow, callback);
     case "getUserTradingHistory":
       return getUserTradingHistory(db, request.params.account, request.params.marketID, request.params.outcome, request.params.orderType, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
+    case "getMarketPriceHistory":
+      return getMarketPriceHistory(db, request.params.marketID, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getUserTradingPositions":
       return getUserTradingPositions(db, request.params.account, request.params.marketID, request.params.outcome, callback);
     case "getReportingWindowsWithUnclaimedFees":
