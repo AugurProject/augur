@@ -71,7 +71,7 @@ export default class MarketHeader extends Component {
           <CSSTransition
             in={s.detailsExpanded}
             addEndListener={node => (
-              node.addEventListener(null) // NOTE -- intentional to persist classes
+              node.addEventListener(null, null) // NOTE -- intentional to persist classes
             )}
             classNames="market-details"
           >
