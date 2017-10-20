@@ -16,7 +16,31 @@
     }
 
     .highcharts-axis-labels {
+      .caps--extra-small();
+
       fill: @color-lightgray;
+    }
+
+    .highcharts-xaxis {
+      height: 2px;
+
+      .highcharts-tick {
+        stroke: @color-darkgray;
+        stroke-width: 1px;
+      }
+    }
+
+    .highcharts-yaxis {
+      .highcharts-tick {
+        stroke: @color-darkgray;
+      }
+    }
+
+    .highcharts-crosshair-thin {
+      stroke: @color-lightgray;
+      stroke-dasharray: 3;
+      stroke-dashoffset: 3;
+      stroke-width: 1px;
     }
 
     .highcharts-yaxis-grid .highcharts-grid-line {

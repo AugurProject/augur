@@ -20,7 +20,8 @@ export default class MarketOutcomesGraph extends Component {
     super(props)
 
     this.state = {
-
+      hoveredOutcome: null,
+      hoveredPrice: null
     }
 
     this.updateGraph = this.updateGraph.bind(this)
@@ -51,19 +52,39 @@ export default class MarketOutcomesGraph extends Component {
         type: 'datetime',
         title: {
           text: null
-        }
+        },
+        tickLength: 7,
+        crosshair: true
       },
       yAxis: {
         title: {
           text: null
-        }
+        },
+        tickLength: 60,
+        tickWidth: 1,
+        ceiling: 1,
+        crosshair: true
       },
       legend: {
         enabled: false
       },
       tooltip: {
-        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} ETH</b><br/>',
-        valueDecimals: 2
+        enabled: false
+      },
+      plotOptions: {
+        series: {
+          point: {
+            events: {
+              mouseOver: event => this.setState({
+                hoveredOutcome: {
+                  name: this.props.priceTimeSeries[event.target.series.index].name,
+                  price: event.target.y
+                }
+              }),
+              mouseOut: event => this.setState({ hoveredOutcome: null })
+            }
+          }
+        }
       },
       credits: {
         enabled: false
@@ -100,11 +121,28 @@ export default class MarketOutcomesGraph extends Component {
   }
 
   render() {
+    const s = this.state
+
     return (
       <div>
         <h3>price (eth) of each outcome</h3>
         <div>
-          <span>select an outcome to begin placing an order</span>
+          <span>
+            {s.hoveredOutcome === null ?
+              'select an outcome to begin placing an order' :
+              <span>
+                <span>
+                  {s.hoveredOutcome.name}
+                </span>
+                <span>
+                  last: {s.hoveredOutcome.price} eth
+                </span>
+                <span>
+                  click to view more information about this outcome
+                </span>
+              </span>
+            }
+          </span>
           <span>Filter (TODO)</span>
         </div>
         <div
