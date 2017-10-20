@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 
-import MarketStatusIcon from 'modules/market/components/common/market-status-icon/market-status-icon'
+import MarketStatusIcon from 'modules/market/components/market-status-icon/market-status-icon'
 import MarketTable from 'modules/market/components/market-tables/market-tables'
 import CaretDropdown from 'modules/common/components/caret-dropdown/caret-dropdown'
 

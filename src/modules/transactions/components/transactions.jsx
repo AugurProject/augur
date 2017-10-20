@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
+import { TransitionGroup } from 'react-transition-group'
 import Transaction from 'modules/transactions/components/transaction'
 import TransactionGroup from 'modules/transactions/components/transaction-group'
 import NullStateMessage from 'modules/common/components/null-state-message'
@@ -11,7 +11,7 @@ const Transactions = (p) => {
   return (
     <article className="transactions">
       {p.boundedLength && p.transactions.length ?
-        <CSSTransitionGroup
+        <TransitionGroup
           transitionName="transaction"
           transitionEnter={!p.pageChanged}
           transitionEnterTimeout={animationSpeed}
@@ -34,7 +34,7 @@ const Transactions = (p) => {
                 />
             )
           })}
-        </CSSTransitionGroup> :
+        </TransitionGroup> :
         <NullStateMessage
           message="No Transaction Data"
         />
