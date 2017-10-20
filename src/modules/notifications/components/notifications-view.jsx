@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
+import { TransitionGroup } from 'react-transition-group'
 
 import NullStateMessage from 'modules/common/components/null-state-message'
 import Notification from 'modules/notifications/components/notification'
@@ -80,7 +80,7 @@ export default class NotificationsView extends Component {
             }}
             className="notifications"
           >
-            <CSSTransitionGroup
+            <TransitionGroup
               component="div"
               transitionName="notification"
               transitionAppear
@@ -100,7 +100,7 @@ export default class NotificationsView extends Component {
                   {...notification}
                 />
               ))}
-            </CSSTransitionGroup>
+            </TransitionGroup>
           </div> :
           <NullStateMessage message="No Notifications" />
         }

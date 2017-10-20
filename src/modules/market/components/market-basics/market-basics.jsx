@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import MarketOutcomesBinaryScalar from 'modules/market/components/market-outcomes-binary-scalar/market-outcomes-binary-scalar'
 import MarketOutcomesCategorical from 'modules/market/components/market-outcomes-categorical/market-outcomes-categorical'
 import MarketLink from 'modules/market/components/market-link/market-link'
-import MarketStatusIcon from 'modules/market/components/common/market-status-icon/market-status-icon'
+import MarketStatusIcon from 'modules/market/components/market-status-icon/market-status-icon'
 
 import toggleTag from 'modules/routes/helpers/toggle-tag'
 

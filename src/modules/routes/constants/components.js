@@ -64,7 +64,7 @@ export const Transactions = asyncComponent({
 
 export const Market = asyncComponent({
   moduleName: 'Market',
-  loader: () => import(/* webpackChunkName: 'market' */ 'modules/market/container')
+  loader: () => import(/* webpackChunkName: 'market' */ 'modules/market/components/market-view/market-view')
     .then(module => module.default)
 })
 
