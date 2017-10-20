@@ -12,7 +12,7 @@ export default class MarketHeader extends Component {
     description: PropTypes.string.isRequired,
     details: PropTypes.string.isRequired,
     coreProperties: PropTypes.object.isRequired,
-    selectedOutcome: PropTypes.any // FIXME -- There is a PR to handle null values, but until then..
+    selectedOutcome: PropTypes.any // NOTE -- There is a PR to handle null values, but until then..
   }
 
   constructor(props) {

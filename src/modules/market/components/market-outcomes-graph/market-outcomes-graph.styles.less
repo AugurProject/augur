@@ -1,0 +1,64 @@
+@import (reference) "~assets/styles/shared";
+
+// body {
+//   --chart-font-family: 'DINPro';
+//   --chart-background-color: @color-transparent;
+//   --chart-label-color: @color-lightgray;
+//   --chart-axis-color: @color-darkgray;
+// }
+
+.MarketOutcomesGraph__graph {
+  :global {
+    .highcharts-background,
+    .highcharts-plot-background,
+    .highcharts-plot-border {
+      fill: @color-transparent;
+    }
+
+    .highcharts-axis-labels {
+      fill: @color-lightgray;
+    }
+
+    .highcharts-yaxis-grid .highcharts-grid-line {
+      stroke: @color-darkgray;
+    }
+
+    .highcharts-series {
+      * {
+        fill: none;
+      }
+
+      &.highcharts-series-1 {
+        stroke: @color-outcome-one;
+      }
+
+      &.highcharts-series-2 {
+        stroke: @color-outcome-two;
+      }
+
+      &.highcharts-series-3 {
+        stroke: @color-outcome-three;
+      }
+
+      &.highcharts-series-4 {
+        stroke: @color-outcome-four;
+      }
+
+      &.highcharts-series-5 {
+        stroke: @color-outcome-five;
+      }
+
+      &.highcharts-series-6 {
+        stroke: @color-outcome-six;
+      }
+
+      &.highcharts-series-7 {
+        stroke: @color-outcome-seven;
+      }
+
+      &.highcharts-series-8 {
+        stroke: @color-outcome-eight;
+      }
+    }
+  }
+}
