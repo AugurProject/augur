@@ -3,23 +3,21 @@ import { EventEmitter } from "events";
 import { augurEmitter } from "../events";
 import { ErrorCallback } from "../types";
 
-export class SubscriptionError extends Error {};
-
 export class Subscriptions extends EventEmitter {
-  subscribe(eventName: string, params: any, publish: (data: {}) => void): string {
-    switch(eventName) {
+  public subscribe(eventName: string, params: any, publish: (data: {}) => void): string {
+    switch (eventName) {
       case "MarketCreated":
         return this.subscribeToEvent(eventName, params, publish);
       default:
-        throw new SubscriptionError(`Event ${eventName} not available for subscription`);
+        throw new Error(`Event ${eventName} not available for subscription`);
     }
   }
 
-  unsubscribe(subscription: string): void  {
+  public unsubscribe(subscription: string): void  {
     this.emit(`unsubscribe:${subscription}`);
   }
 
-  removeAllListeners(eventName?: string | symbol | undefined): this {
+  public removeAllListeners(eventName?: string | symbol | undefined): this {
     this.emit("removeAllListeners");
     return super.removeAllListeners(eventName);
   }
@@ -27,7 +25,7 @@ export class Subscriptions extends EventEmitter {
   private subscribeToEvent(eventName: string, params: any, publish: (data: {}) => void): string {
     const subscription: string = uuidv4();
 
-    let handler = (data: {}): void => {
+    const handler = (data: {}): void => {
       this.emit(eventName, data);
     };
 

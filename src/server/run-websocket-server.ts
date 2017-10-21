@@ -1,11 +1,11 @@
 import * as WebSocket from "ws";
 import * as Knex from "knex";
 import { EventEmitter } from "events";
-import { JsonRpcRequest, JsonRpcSubscribeRequest } from "../types";
+import { JsonRpcRequest } from "../types";
 import { isJsonRpcRequest } from "./is-json-rpc-request";
 import { dispatchJsonRpcRequest } from "./dispatch-json-rpc-request";
 import { makeJsonRpcResponse } from "./make-json-rpc-response";
-import { Subscriptions, SubscriptionError } from "./subscriptions";
+import { Subscriptions } from "./subscriptions";
 
 export function runWebsocketServer(db: Knex, port: number): void {
   console.log("Starting websocket server on port", port);
@@ -26,12 +26,9 @@ export function runWebsocketServer(db: Knex, port: number): void {
               websocket.send(makeJsonRpcResponse(message.id, { subscription, result: data}));
             });
             websocket.send(makeJsonRpcResponse(message.id, { subscription }));
-          } catch(exc) {
-            if(exc instanceof SubscriptionError) {
-              console.error("suscription error", exc, data);
-              websocket.send(makeJsonRpcResponse(message.id, false));
-            } else
-              throw exc;
+          } catch (exc) {
+            console.error("suscription error", exc, data);
+            websocket.send(makeJsonRpcResponse(message.id, false));
           }
         } else if (message.method === "unsubscribe") {
           const subscription: string = message.params.shift();
