@@ -40,6 +40,7 @@
   "dependencies": {
     "@types/knex": "0.0.61",
     "@types/lodash": "4.14.77",
+    "@types/uuid": "^3.4.3",
     "async": "1.5.2",
     "augur.js": "4.5.4",
     "bignumber.js": "4.1.0",
@@ -50,6 +51,7 @@
     "pg": "7.3.0",
     "postinstall-build": "5.0.1",
     "sqlite3": "3.1.8",
+    "uuid": "^3.1.0",
     "ws": "3.2.0"
   },
   "devDependencies": {
@@ -64,10 +66,10 @@
     "istanbul": "0.4.1",
     "mocha": "3.2.0",
     "mocha-lcov-reporter": "0.0.2",
-    "typescript": "2.5.2",
+    "proxyquire": "1.7.11",
     "tslint": "5.7.0",
     "tslint-eslint-rules": "4.1.1",
-    "proxyquire": "1.7.11"
+    "typescript": "2.5.2"
   },
   "buildDependencies": [
     "typescript",
