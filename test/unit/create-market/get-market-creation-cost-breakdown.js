@@ -20,7 +20,7 @@ describe("create-market/get-market-creation-cost-breakdown", function () {
   test({
     description: "market creation cost breakdown",
     params: {
-      universeID: "UNIVERSE_ADDRESS",
+      universe: "UNIVERSE_ADDRESS",
       _endTime: 1234567890
     },
     stub: {

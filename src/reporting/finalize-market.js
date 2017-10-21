@@ -1,5 +1,7 @@
 "use strict";
 
+var assign = require("lodash.assign");
+var immutableDelete = require("immutable-delete");
 var api = require("../api");
 
 /**
@@ -11,19 +13,14 @@ var api = require("../api");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function finalizeMarket(p) {
-  api().Market.isFinalized({ tx: { to: p.market } }, function (err, isFinalized) {
+  var marketPayload = { tx: { to: p.market } };
+  api().Market.isFinalized(marketPayload, function (err, isFinalized) {
     if (err) return p.onFailed(err);
     if (parseInt(isFinalized, 16) === 1) return p.onSuccess(true);
-    api().Market.tryFinalize({ tx: { to: p.market, send: false } }, function (err, readyToFinalize) {
+    api().Market.tryFinalize(assign({}, marketPayload, { tx: assign({}, marketPayload.tx, { send: false }) }), function (err, readyToFinalize) {
       if (err) return p.onFailed(err);
       if (parseInt(readyToFinalize, 16) !== 1) return p.onSuccess(false);
-      api().Market.tryFinalize({
-        _signer: p._signer,
-        tx: { to: p.market },
-        onSent: p.onSent,
-        onSuccess: p.onSuccess,
-        onFailed: p.onFailed
-      });
+      api().Market.tryFinalize(assign({}, immutableDelete(p, "market"), marketPayload));
     });
   });
 }

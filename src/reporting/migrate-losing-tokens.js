@@ -1,12 +1,14 @@
 "use strict";
 
+var assign = require("lodash.assign");
 var async = require("async");
+var immutableDelete = require("immutable-delete");
 var api = require("../api");
 var getLogs = require("../events/get-logs");
 
 /**
  * @param {Object} p Parameters object.
- * @param {string} p.universeID Universe on which to register to report.
+ * @param {string} p.universe Universe on which to register to report.
  * @param {string} p.market Address of the market to redeem Reporting tokens from, as a hex string.
  * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
  * @param {function} p.onSent Called if/when the transaction is broadcast to the network.
@@ -14,7 +16,7 @@ var getLogs = require("../events/get-logs");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function migrateLosingTokens(p) {
-  var universePayload = { tx: { to: p.universeID } };
+  var universePayload = { tx: { to: p.universe } };
   async.parallel({
     reputationToken: function (next) {
       api().Universe.getReputationToken(universePayload, function (err, reputationTokenAddress) {
@@ -59,13 +61,9 @@ function migrateLosingTokens(p) {
         if (!Array.isArray(transferLogs) || !transferLogs.length) return p.onSuccess(null);
         transferLogs.forEach(function (transferLog) {
           var stakeTokenAddress = transferLog.to;
-          api().StakeToken.migrateLosingTokens({
-            _signer: p._signer,
-            tx: { to: stakeTokenAddress },
-            onSent: p.onSent,
-            onSuccess: p.onSuccess,
-            onFailed: p.onFailed
-          });
+          api().StakeToken.migrateLosingTokens(assign({}, immutableDelete(p, ["universe", "market"]), {
+            tx: { to: stakeTokenAddress }
+          }));
         });
       });
     });

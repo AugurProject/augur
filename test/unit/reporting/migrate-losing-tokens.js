@@ -30,8 +30,8 @@ describe("reporting/migrate-losing-tokens", function () {
   test({
     description: "migrate losing tokens",
     params: {
-      _signer: Buffer.from("PRIVATE_KEY", "utf8"),
-      universeID: "UNIVERSE_CONTRACT_ADDRESS",
+      meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
+      universe: "UNIVERSE_CONTRACT_ADDRESS",
       market: "MARKET_CONTRACT_ADDRESS"
     },
     mock: {
@@ -50,7 +50,7 @@ describe("reporting/migrate-losing-tokens", function () {
           StakeToken: {
             migrateLosingTokens: function (payload) {
               assert.strictEqual(payload.tx.to, "STAKE_TOKEN_CONTRACT_ADDRESS");
-              assert.strictEqual(payload._signer.toString("utf8"), "PRIVATE_KEY");
+              assert.strictEqual(payload.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.isFunction(payload.onSent);
               assert.isFunction(payload.onSuccess);
               assert.isFunction(payload.onFailed);

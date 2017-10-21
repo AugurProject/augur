@@ -23,7 +23,7 @@ describe("reporting/submit-report", function () {
   test({
     description: "submit report [0, 1]",
     params: {
-      _signer: Buffer.from("PRIVATE_KEY", "utf8"),
+      meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       market: "MARKET_CONTRACT_ADDRESS",
       _payoutNumerators: [0, 1],
       _amountToStake: 100
@@ -42,7 +42,7 @@ describe("reporting/submit-report", function () {
           },
           StakeToken: {
             buy: function (payload) {
-              assert.strictEqual(payload._signer.toString("utf8"), "PRIVATE_KEY");
+              assert.strictEqual(payload.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.deepEqual(payload.tx, { to: "STAKE_TOKEN_CONTRACT_ADDRESS" });
               assert.strictEqual(payload._amountToStake, "0x56bc75e2d63100000");
               assert.isFunction(payload.onSent);

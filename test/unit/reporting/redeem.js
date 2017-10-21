@@ -24,8 +24,8 @@ describe("reporting/redeem", function () {
   test({
     description: "redeem winning reporting token",
     params: {
-      _signer: Buffer.from("PRIVATE_KEY", "utf8"),
-      market: "MARKET_CONTRACT_ADDRESS",
+      meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
+      _market: "MARKET_CONTRACT_ADDRESS",
       _payoutNumerators: [0, 1],
       _reporter: "REPORTER_ADDRESS"
     },
@@ -49,7 +49,7 @@ describe("reporting/redeem", function () {
             isContainerForStakeToken: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
-                stakeToken: "STAKE_TOKEN_CONTRACT_ADDRESS"
+                _stakeToken: "STAKE_TOKEN_CONTRACT_ADDRESS"
               });
               callback(null, "0x1");
             },
@@ -77,7 +77,7 @@ describe("reporting/redeem", function () {
               assert.fail();
             },
             redeemWinningTokens: function (payload) {
-              assert.strictEqual(payload._signer.toString("utf8"), "PRIVATE_KEY");
+              assert.strictEqual(payload.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.deepEqual(payload.tx, { to: "STAKE_TOKEN_CONTRACT_ADDRESS" });
               assert.strictEqual(payload._reporter, "REPORTER_ADDRESS");
               assert.isFunction(payload.onSent);
@@ -99,8 +99,8 @@ describe("reporting/redeem", function () {
   test({
     description: "redeem reporting token for forked market",
     params: {
-      _signer: Buffer.from("PRIVATE_KEY", "utf8"),
-      market: "MARKET_CONTRACT_ADDRESS",
+      meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
+      _market: "MARKET_CONTRACT_ADDRESS",
       _payoutNumerators: [0, 1],
       _reporter: "REPORTER_ADDRESS"
     },
@@ -124,7 +124,7 @@ describe("reporting/redeem", function () {
             isContainerForStakeToken: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
-                stakeToken: "STAKE_TOKEN_CONTRACT_ADDRESS"
+                _stakeToken: "STAKE_TOKEN_CONTRACT_ADDRESS"
               });
               callback(null, "0x1");
             },
@@ -148,7 +148,7 @@ describe("reporting/redeem", function () {
               assert.fail();
             },
             redeemForkedTokens: function (payload) {
-              assert.strictEqual(payload._signer.toString("utf8"), "PRIVATE_KEY");
+              assert.strictEqual(payload.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.deepEqual(payload.tx, { to: "STAKE_TOKEN_CONTRACT_ADDRESS" });
               assert.strictEqual(payload._reporter, "REPORTER_ADDRESS");
               assert.isFunction(payload.onSent);
@@ -173,8 +173,8 @@ describe("reporting/redeem", function () {
   test({
     description: "redeem reporting token for disavowed market",
     params: {
-      _signer: Buffer.from("PRIVATE_KEY", "utf8"),
-      market: "MARKET_CONTRACT_ADDRESS",
+      meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
+      _market: "MARKET_CONTRACT_ADDRESS",
       _payoutNumerators: [0, 1],
       _reporter: "REPORTER_ADDRESS"
     },
@@ -197,7 +197,7 @@ describe("reporting/redeem", function () {
             isContainerForStakeToken: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
-                stakeToken: "STAKE_TOKEN_CONTRACT_ADDRESS"
+                _stakeToken: "STAKE_TOKEN_CONTRACT_ADDRESS"
               });
               callback(null, "0x0");
             },
@@ -217,7 +217,7 @@ describe("reporting/redeem", function () {
               assert.fail();
             },
             redeemDisavowedTokens: function (payload) {
-              assert.strictEqual(payload._signer.toString("utf8"), "PRIVATE_KEY");
+              assert.strictEqual(payload.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.deepEqual(payload.tx, { to: "STAKE_TOKEN_CONTRACT_ADDRESS" });
               assert.strictEqual(payload._reporter, "REPORTER_ADDRESS");
               assert.isFunction(payload.onSent);

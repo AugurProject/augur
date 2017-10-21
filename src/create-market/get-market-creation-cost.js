@@ -5,14 +5,14 @@ var api = require("../api");
 
 /**
  * @param {Object} p Parameters object.
- * @param {string} p.universeID Universe on which to create this market.
+ * @param {string} p.universe Universe on which to create this market.
  * @param {number} p._endTime Market expiration timestamp, in seconds.
  * @param {function} callback Called after the market creation cost has been looked up.
  * @return {string} Total cost of creating a new market (= validity bond + target reporter gas costs), as a base-10 string.
  */
 function getMarketCreationCost(p, callback) {
   api().Universe.getReportingWindowByTimestamp({
-    tx: { to: p.universeID },
+    tx: { to: p.universe },
     _timestamp: p._endTime
   }, function (err, reportingWindowAddress) {
     if (err) return callback(err);

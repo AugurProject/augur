@@ -23,7 +23,7 @@ describe("reporting/finalize-market", function () {
   test({
     description: "market already finalized",
     params: {
-      _signer: Buffer.from("PRIVATE_KEY", "utf8"),
+      meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       market: "MARKET_CONTRACT_ADDRESS"
     },
     mock: {
@@ -48,7 +48,7 @@ describe("reporting/finalize-market", function () {
   test({
     description: "market is not ready to finalize",
     params: {
-      _signer: Buffer.from("PRIVATE_KEY", "utf8"),
+      meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       market: "MARKET_CONTRACT_ADDRESS"
     },
     mock: {
@@ -74,7 +74,7 @@ describe("reporting/finalize-market", function () {
   test({
     description: "finalize market",
     params: {
-      _signer: Buffer.from("PRIVATE_KEY", "utf8"),
+      meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       market: "MARKET_CONTRACT_ADDRESS"
     },
     mock: {
@@ -88,7 +88,7 @@ describe("reporting/finalize-market", function () {
             tryFinalize: function (payload, callback) {
               assert.strictEqual(payload.tx.to, "MARKET_CONTRACT_ADDRESS");
               if (payload.tx.send === false) return callback(null, "0x1");
-              assert.strictEqual(payload._signer.toString("utf8"), "PRIVATE_KEY");
+              assert.strictEqual(payload.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.isFunction(payload.onSent);
               assert.isFunction(payload.onSuccess);
               assert.isFunction(payload.onFailed);

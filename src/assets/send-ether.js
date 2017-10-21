@@ -19,7 +19,7 @@ function sendEther(p) {
     value: speedomatic.fix(p.etherToSend, "hex"),
     returns: "null",
     gas: "0xcf08"
-  }, p._signer, p.onSent, p.onSuccess, p.onFailed);
+  }, p.meta.signer, p.meta.accountType, p.onSent, p.onSuccess, p.onFailed);
 }
 
 module.exports = sendEther;

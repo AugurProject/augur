@@ -23,7 +23,7 @@ describe("trading/trade-until-amount-is-zero", function () {
   test({
     description: "buy 10 outcome 2 @ 0.5",
     params: {
-      _signer: Buffer.from("PRIVATE_KEY", "utf8"),
+      meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       _direction: 1,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
@@ -52,7 +52,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.fail();
             },
             publicTrade: function (p) {
-              assert.strictEqual(p._signer.toString("utf8"), "PRIVATE_KEY");
+              assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p.direction, 1);
               assert.strictEqual(p.market, "MARKET_ADDRESS");
               assert.strictEqual(p.outcome, 2);
@@ -73,7 +73,7 @@ describe("trading/trade-until-amount-is-zero", function () {
   test({
     description: "buy 10 outcome 2 @ 0.5 (3 remaining)",
     params: {
-      _signer: Buffer.from("PRIVATE_KEY", "utf8"),
+      meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       _direction: 1,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
@@ -106,7 +106,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.fail();
             },
             publicTrade: function (p) {
-              assert.strictEqual(p._signer.toString("utf8"), "PRIVATE_KEY");
+              assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p._direction, 1);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
@@ -132,7 +132,7 @@ describe("trading/trade-until-amount-is-zero", function () {
   test({
     description: "sell 10 outcome 2 @ 0.5",
     params: {
-      _signer: Buffer.from("PRIVATE_KEY", "utf8"),
+      meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       _direction: 2,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
@@ -161,7 +161,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.fail();
             },
             publicTrade: function (p) {
-              assert.strictEqual(p._signer.toString("utf8"), "PRIVATE_KEY");
+              assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p._direction, 2);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
@@ -182,7 +182,7 @@ describe("trading/trade-until-amount-is-zero", function () {
   test({
     description: "close position (take-only) 10 outcome 2 @ 0.5",
     params: {
-      _signer: Buffer.from("PRIVATE_KEY", "utf8"),
+      meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       _direction: 2,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
@@ -208,7 +208,7 @@ describe("trading/trade-until-amount-is-zero", function () {
         return {
           Trade: {
             publicTakeBestOrder: function (p) {
-              assert.strictEqual(p._signer.toString("utf8"), "PRIVATE_KEY");
+              assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p._direction, 2);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, "2");
