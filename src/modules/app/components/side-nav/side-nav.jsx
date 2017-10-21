@@ -107,8 +107,7 @@ export default class SideNav extends Component {
             <li
               key="notifications"
             >
-              <a
-                href=""
+              <button
                 onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
@@ -117,7 +116,7 @@ export default class SideNav extends Component {
               >
                 {Notifications(unseenCount)}
                 <span className="item-title">Notifications</span>
-              </a>
+              </button>
             </li>
           }
         </ul>
