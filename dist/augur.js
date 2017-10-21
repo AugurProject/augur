@@ -1516,7 +1516,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.5.1";
+  this.version = "4.5.2";
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
@@ -1536,10 +1536,11 @@ function Augur() {
   this.reporting = require("./reporting");
   this.rpc = require("./rpc-interface");
   this.trading = require("./trading");
+  this.augurNode = require("./augur-node");
 }
 
 module.exports = Augur;
-},{"./accounts":3,"./api":11,"./assets":14,"./connect":22,"./constants":23,"./contracts":25,"./create-market":32,"./events":38,"./markets":65,"./reporting":74,"./rpc-interface":78,"./trading":86,"bignumber.js":169,"keythereum":419}],52:[function(require,module,exports){
+},{"./accounts":3,"./api":11,"./assets":14,"./augur-node":19,"./connect":22,"./constants":23,"./contracts":25,"./create-market":32,"./events":38,"./markets":65,"./reporting":74,"./rpc-interface":78,"./trading":86,"bignumber.js":169,"keythereum":419}],52:[function(require,module,exports){
 "use strict";
 
 var augurNode = require("../augur-node");
