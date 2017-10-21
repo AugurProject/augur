@@ -43,8 +43,9 @@ export default class MarketOutcomesGraph extends Component {
       },
       chart: {
         height: 300, // mirror this height in css container height declaration,
-        spacingLeft: 0,
-        spacingRight: 0
+        spacingTop: 1,
+        spacingRight: 0,
+        spacingLeft: 0
       },
       lang: {
         noData: 'No price history'

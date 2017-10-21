@@ -19,6 +19,10 @@
 
   color: @color-lightgray;
   flex: 1;
+
+  * {
+    margin-right: 1em;
+  }
 }
 
 .MarketOutcomesGraph__name {
@@ -66,6 +70,10 @@
     .highcharts-series {
       * {
         fill: none;
+      }
+
+      &.highcharts-series-hover {
+        stroke-width: 3px;
       }
 
       &.highcharts-series-1 {
