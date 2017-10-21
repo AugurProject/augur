@@ -7,8 +7,8 @@ export interface Precision {
   multiple: string;
 }
 
-const ten: BigNumber = new BigNumber(10, 10);
-const decimals: BigNumber = new BigNumber(4, 10);
+const ten = new BigNumber(10, 10);
+const decimals = new BigNumber(4, 10);
 const multiple: BigNumber = ten.toPower(decimals.toNumber());
 
 export const PRECISION: Precision = {
@@ -18,4 +18,6 @@ export const PRECISION: Precision = {
   multiple: multiple.toFixed()
 };
 
-export const MINIMUM_TRADE_SIZE: string = "0.01";
+export const MINIMUM_TRADE_SIZE = "0.01";
+
+export const WEI_PER_ETHER: string = new BigNumber(10, 10).toPower(18).toFixed();
