@@ -32,6 +32,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   min-height: 28.75rem;
+  padding: 0 2rem;
 
   > li {
     margin-bottom: 3.7rem;
@@ -92,6 +93,7 @@
 .Form__navigation {
   display: flex;
   justify-content: space-between;
+  padding: 0 2rem;
 }
 
 .Form__next,
@@ -197,6 +199,20 @@
 }
 
 @media @breakpoint-mobile-medium {
+  .Form {
+    padding-bottom: 0;
+  }
+
+  .Form__fields {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .Form__navigation {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
   .Form__next,
   .Form__prev {
     border-radius: 0;

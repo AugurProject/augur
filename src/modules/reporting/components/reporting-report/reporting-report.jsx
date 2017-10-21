@@ -7,8 +7,9 @@ import MarketPreview from 'modules/market/components/market-preview/market-previ
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
-import Styles from 'modules/reporting/components/reporting-report/reporting-report.styles'
 import FormStyles from 'modules/common/less/form'
+import ConfirmStyles from 'modules/common/less/confirm-table'
+import Styles from 'modules/reporting/components/reporting-report/reporting-report.styles'
 
 export default class ReportingReport extends Component {
 
@@ -21,9 +22,10 @@ export default class ReportingReport extends Component {
 
     this.state = {
       currentStep: 0,
-      isFormValid: false,
+      isFormValid: true,
       isMarketValid: null,
       selectedOutcome: null,
+      stake: null,
     }
 
     this.prevPage = this.prevPage.bind(this)
@@ -142,6 +144,8 @@ export default class ReportingReport extends Component {
                     min={p.market.minValue}
                     max={p.market.maxValue}
                     placeholder="0"
+                    value={s.selectedOutcome}
+                    onChange={(e) => { this.setState({ selectedOutcome: e.target.value }) }}
                   />
                 </li>
               }
@@ -154,12 +158,42 @@ export default class ReportingReport extends Component {
                   type="number"
                   min="0"
                   placeholder="0.0000 REP"
+                  value={s.stake}
+                  onChange={(e) => { this.setState({ stake: e.target.value }) }}
                 />
               </li>
             </ul>
           }
           { s.currentStep === 1 &&
-            <span>Hello this is page 2</span>
+            <article className={FormStyles.Form__fields}>
+              <div className={ConfirmStyles.Confirm}>
+                <h2 className={ConfirmStyles.Confirm__heading}>Confirm Report</h2>
+                <div className={ConfirmStyles.Confirm__wrapper}>
+                  <div className={ConfirmStyles.Confirm__creation}>
+                    <ul className={ConfirmStyles.Confirm__list}>
+                      <li>
+                        <span>Market</span>
+                        <span>{ s.isMarketValid ? 'Valid' : 'Invalid' }</span>
+                      </li>
+                      { s.isMarketValid &&
+                        <li>
+                          <span>Outcome</span>
+                          <span>{ s.selectedOutcome }</span>
+                        </li>
+                      }
+                      <li>
+                        <span>Stake</span>
+                        <span>{ s.stake } REP</span>
+                      </li>
+                      <li>
+                        <span>Gas</span>
+                        <span>0.0023 ETH (2.8%)</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </article>
           }
           <div className={FormStyles.Form__navigation}>
             <button
@@ -171,6 +205,9 @@ export default class ReportingReport extends Component {
               disabled={!s.isFormValid}
               onClick={s.isFormValid && this.nextPage}
             >Report</button>
+            { s.currentStep === 1 &&
+              <button className={FormStyles.Form__submit}>Submit</button>
+            }
           </div>
         </article>
       </section>
