@@ -28,14 +28,14 @@ interface Orders {
 }
 
 // market, outcome, creator, orderType, limit, sort
-export function getOpenOrders(db: Knex, marketID: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, callback: (err?: Error|null, result?: any) => void): void {
+export function getOpenOrders(db: Knex, marketID: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, callback: (err: Error|null, result?: any) => void): void {
   const queryData: {} = _.omitBy({
     marketID,
     outcome,
     orderType,
     orderCreator: creator
   }, _.isNull);
-  db("orders").where(queryData).asCallback((err?: Error|null, ordersRows?: Array<OrdersRow>): void => {
+  db("orders").where(queryData).asCallback((err: Error|null, ordersRows?: Array<OrdersRow>): void => {
     if (err) return callback(err);
     if (!ordersRows || !ordersRows.length) return callback(null);
     const orders: Orders = {};
