@@ -2,8 +2,18 @@ import { parallel } from "async";
 import Augur = require("augur.js");
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { FormattedLog, MarketCreatedLogExtraInfo, MarketCreatedOnContractInfo, ErrorCallback, AsyncCallback } from "../../types";
+import { Address, Int256, FormattedLog, MarketCreatedLogExtraInfo, MarketCreatedOnContractInfo, ErrorCallback, AsyncCallback } from "../../types";
 import { convertDivisorToRate } from "../../utils/convert-divisor-to-rate";
+
+interface MarketCreatedOnContractData {
+  numberOfOutcomes: Int256;
+  reportingWindow: Address;
+  endTime: Int256;
+  designatedReporter: Address;
+  designatedReportStake: Int256;
+  numTicks: Int256;
+  marketCreatorSettlementFeeDivisor: Int256;
+}
 
 export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
   trx.raw(`SELECT "blockTimestamp" FROM blocks WHERE "blockNumber" = ?`, [log.blockNumber]).asCallback((err?: Error|null, blocksRow?: {blockTimestamp: number}): void => {
@@ -17,7 +27,8 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
       designatedReporter: (next: AsyncCallback): void => augur.api.Market.getDesignatedReporter(marketPayload, next),
       designatedReportStake: (next: AsyncCallback): void => augur.api.Market.getDesignatedReportStake(marketPayload, next),
       numTicks: (next: AsyncCallback): void => augur.api.Market.getNumTicks(marketPayload, next),
-      universe: (next: AsyncCallback): void => augur.api.Market.getUniverse(marketPayload, next)
+      universe: (next: AsyncCallback): void => augur.api.Market.getUniverse(marketPayload, next),
+      marketCreatorSettlementFeeDivisor: (next: AsyncCallback): void => augur.api.Market.getMarketCreatorSettlementFeeDivisor(marketPayload, next)
     }, (err?: any, onContractData?: any): void => {
       if (err) return callback(err);
       const universePayload: {} = { tx: { to: onContractData.universe } };
@@ -41,12 +52,12 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
           resolutionSource:           extraInfo!.resolutionSource,
           universe:                   onContractData!.universe,
           numOutcomes:                parseInt(onContractData!.numberOfOutcomes!, 16),
-          marketCreatorFeeRate:       onContractData!.marketCreatorFeeRate,
           reportingWindow:            onContractData!.reportingWindow,
           endTime:                    parseInt(onContractData!.endTime!, 16),
           designatedReporter:         onContractData!.designatedReporter,
           designatedReportStake:      onContractData!.designatedReportStake,
           numTicks:                   parseInt(onContractData!.numTicks!, 16),
+          marketCreatorFeeRate:       convertDivisorToRate(onContractData!.marketCreatorSettlementFeeDivisor!, 16),
           reportingFeeRate:           convertDivisorToRate(reportingFeeDivisor!, 16)
         };
         db.transacting(trx).insert(dataToInsert).into("markets").asCallback((err?: Error|null): void => {
