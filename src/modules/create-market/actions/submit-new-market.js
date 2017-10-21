@@ -1,3 +1,4 @@
+import speedomatic from 'speedomatic'
 import { eachOfSeries, eachLimit } from 'async'
 import { augur, constants } from 'services/augurjs'
 
@@ -17,16 +18,17 @@ export function submitNewMarket(newMarket, history) {
 
     // General Properties
     const formattedNewMarket = {
-      _universe: universe.id,
+      universe: universe.id,
       _endTime: parseInt(newMarket.endDate.timestamp / 1000, 10),
-      settlementFee: (newMarket.settlementFee / 100).toString(),
+      _feePerEthInWei: speedomatic.fix(newMarket.settlementFee / 100, 'hex'),
       _denominationToken: contractAddresses.Cash,
-      _automatedReporterAddress: loginAccount.address, // FIXME prompt user for actual automated reporter address
+      _designatedReporterAddress: loginAccount.address, // FIXME prompt user for actual automated reporter address
       _topic: newMarket.topic,
       _extraInfo: {
-        description: newMarket.description,
+        marketType: newMarket.type,
+        shortDescription: newMarket.description,
         longDescription: newMarket.detailsText,
-        resolution: newMarket.expirySource,
+        resolutionSource: newMarket.expirySource,
         tags: (newMarket.keywords || [])
       }
     }
@@ -35,27 +37,18 @@ export function submitNewMarket(newMarket, history) {
     let createMarket
     switch (newMarket.type) {
       case CATEGORICAL:
-        formattedNewMarket._minDisplayPrice = '0'
-        formattedNewMarket._maxDisplayPrice = '1'
         formattedNewMarket._numOutcomes = newMarket.outcomes.length
-        formattedNewMarket._numTicks = newMarket.outcomes.length
         formattedNewMarket._extraInfo.outcomeNames = newMarket.outcomes
         createMarket = augur.createMarket.createCategoricalMarket
         break
       case SCALAR:
         formattedNewMarket._minDisplayPrice = newMarket.scalarSmallNum.toString()
         formattedNewMarket._maxDisplayPrice = newMarket.scalarBigNum.toString()
-        formattedNewMarket._numOutcomes = 2
-        formattedNewMarket._numTicks = 2 // TODO make this a user-specifiable value, can be any multiple of 2
         createMarket = augur.createMarket.createScalarMarket
         break
       case BINARY:
       default:
-        formattedNewMarket._minDisplayPrice = '0'
-        formattedNewMarket._maxDisplayPrice = '1'
-        formattedNewMarket._numOutcomes = 2
-        formattedNewMarket._numTicks = 2
-        createMarket = augur.createMarket.createCategoricalMarket
+        createMarket = augur.createMarket.createBinaryMarket
     }
 
     createMarket({
@@ -70,7 +63,7 @@ export function submitNewMarket(newMarket, history) {
         if (Object.keys(newMarket.orderBook).length) {
           eachOfSeries(Object.keys(newMarket.orderBook), (outcome, index, seriesCB) => {
             eachLimit(newMarket.orderBook[outcome], constants.PARALLEL_LIMIT, (order, orderCB) => {
-              const outcomeID = newMarket.type === CATEGORICAL ? index + 1 : 2 // NOTE -- Both Scalar + Binary only trade against one outcome, that of outcomeID 2
+              const outcomeID = newMarket.type === CATEGORICAL ? index : 1 // NOTE -- Both Scalar + Binary only trade against one outcome, that of outcomeID 1
 
               dispatch(updateTradesInProgress(marketID, outcomeID, order.type === BUY ? BUY : SELL, order.quantity, order.price, null, (tradingActions) => {
                 const tradeToExecute = {
@@ -96,7 +89,7 @@ export function submitNewMarket(newMarket, history) {
         }
       },
       onFailed: (err) => {
-        console.error('ERROR createSingleEventMarket failed:', err)
+        console.error('ERROR create market failed:', err)
 
         dispatch(invalidateMarketCreation(err.message))
       }
