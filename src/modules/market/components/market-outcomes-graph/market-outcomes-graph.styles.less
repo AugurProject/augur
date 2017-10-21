@@ -1,11 +1,33 @@
 @import (reference) "~assets/styles/shared";
 
-// body {
-//   --chart-font-family: 'DINPro';
-//   --chart-background-color: @color-transparent;
-//   --chart-label-color: @color-lightgray;
-//   --chart-axis-color: @color-darkgray;
-// }
+.MarketOutcomesGraph {
+  h3 {
+    .caps--medium();
+
+    color: @color-white;
+    padding: 1em 0;
+  }
+}
+
+.MarketOutcomesGraph__graph-header {
+  display: flex;
+  width: 100%;
+}
+
+.MarketOutcomesGraph__details {
+  .caps--small();
+
+  color: @color-lightgray;
+  flex: 1;
+}
+
+.MarketOutcomesGraph__name {
+  color: @color-white;
+}
+
+.MarketOutcomesGraph__filter {
+  align-self: flex-end;
+}
 
 .MarketOutcomesGraph__graph {
   :global {
@@ -13,12 +35,6 @@
     .highcharts-plot-background,
     .highcharts-plot-border {
       fill: @color-transparent;
-    }
-
-    .highcharts-axis-labels {
-      .caps--extra-small();
-
-      fill: @color-lightgray;
     }
 
     .highcharts-xaxis {
@@ -84,5 +100,11 @@
         stroke: @color-outcome-eight;
       }
     }
+  }
+
+  :global(.highcharts-axis-labels) { // NOTE -- had to break this one off since we're using a mixin
+    .caps--small();
+
+    fill: @color-lightgray;
   }
 }

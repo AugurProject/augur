@@ -42,7 +42,9 @@ export default class MarketOutcomesGraph extends Component {
         text: null
       },
       chart: {
-        height: 300 // mirror this height in css container height declaration
+        height: 300, // mirror this height in css container height declaration,
+        spacingLeft: 0,
+        spacingRight: 0
       },
       lang: {
         noData: 'No price history'
@@ -60,10 +62,17 @@ export default class MarketOutcomesGraph extends Component {
         title: {
           text: null
         },
-        tickLength: 60,
+        tickLength: 15,
         tickWidth: 1,
         ceiling: 1,
-        crosshair: true
+        crosshair: true,
+        labels: {
+          align: 'left',
+          y: 15,
+          formatter: function () { // eslint-disable-line func-names, object-shorthand
+            return this.isFirst ? '' : this.value
+          }
+        }
       },
       legend: {
         enabled: false
@@ -124,26 +133,28 @@ export default class MarketOutcomesGraph extends Component {
     const s = this.state
 
     return (
-      <div>
+      <div className={Styles.MarketOutcomesGraph}>
         <h3>price (eth) of each outcome</h3>
-        <div>
-          <span>
+        <div className={Styles[`MarketOutcomesGraph__graph-header`]}>
+          <span className={Styles.MarketOutcomesGraph__details}>
             {s.hoveredOutcome === null ?
               'select an outcome to begin placing an order' :
               <span>
-                <span>
+                <span className={Styles.MarketOutcomesGraph__name}>
                   {s.hoveredOutcome.name}
                 </span>
-                <span>
-                  last: {s.hoveredOutcome.price} eth
+                <span className={Styles.MarketOutcomesGraph__price}>
+                  last: {s.hoveredOutcome.price.toFixed(4)} eth
                 </span>
-                <span>
+                <span className={Styles.MarketOutcomesGraph__instruction}>
                   click to view more information about this outcome
                 </span>
               </span>
             }
           </span>
-          <span>Filter (TODO)</span>
+          <div>
+            <span >Filter (TODO)</span>
+          </div>
         </div>
         <div
           id="market_outcomes_graph"
