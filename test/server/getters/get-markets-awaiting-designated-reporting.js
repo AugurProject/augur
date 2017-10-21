@@ -37,7 +37,7 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
       assert.deepEqual(marketsInfo, [
         {
           "author": "0x0000000000000000000000000000000000000b0b",
-          "branchID": "0x000000000000000000000000000000000000000b",
+          "universe": "0x000000000000000000000000000000000000000b",
           "category": "test category",
           "consensus": null,
           "creationBlock": 1400000,
@@ -70,7 +70,7 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
         },
         {
           "author": "0x0000000000000000000000000000000000000b0b",
-          "branchID": "0x000000000000000000000000000000000000000b",
+          "universe": "0x000000000000000000000000000000000000000b",
           "category": "test category",
           "consensus": null,
           "creationBlock": 1400100,
@@ -103,7 +103,7 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
         },
         {
           "author": "0x000000000000000000000000000000000000d00d",
-          "branchID": "0x000000000000000000000000000000000000000b",
+          "universe": "0x000000000000000000000000000000000000000b",
           "category": "test category",
           "consensus": null,
           "creationBlock": 1400101,
@@ -147,7 +147,7 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
       assert.deepEqual(marketsInfo, [
         {
           "author": "0x000000000000000000000000000000000000d00d",
-          "branchID": "0x000000000000000000000000000000000000000b",
+          "universe": "0x000000000000000000000000000000000000000b",
           "category": "test category",
           "consensus": null,
           "creationBlock": 1400101,

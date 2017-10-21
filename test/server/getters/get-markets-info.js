@@ -30,7 +30,7 @@ describe("server/getters/get-markets-info", () => {
       assert.deepEqual(marketsInfo, [
         {
           id: "0x0000000000000000000000000000000000000001",
-          branchID: "0x000000000000000000000000000000000000000b",
+          universe: "0x000000000000000000000000000000000000000b",
           type: "categorical",
           numOutcomes: 8,
           minPrice: 0,
@@ -92,7 +92,7 @@ describe("server/getters/get-markets-info", () => {
         },
         {
           id: "0x0000000000000000000000000000000000000002",
-          branchID: "0x000000000000000000000000000000000000000b",
+          universe: "0x000000000000000000000000000000000000000b",
           type: "binary",
           numOutcomes: 2,
           minPrice: 0,
@@ -130,7 +130,7 @@ describe("server/getters/get-markets-info", () => {
         },
         {
           id: "0x0000000000000000000000000000000000000003",
-          branchID: "0x000000000000000000000000000000000000000b",
+          universe: "0x000000000000000000000000000000000000000b",
           type: "binary",
           numOutcomes: 2,
           minPrice: 0,
@@ -183,7 +183,7 @@ describe("server/getters/get-markets-info", () => {
       assert.deepEqual(marketsInfo, [
         {
           id: "0x0000000000000000000000000000000000000001",
-          branchID: "0x000000000000000000000000000000000000000b",
+          universe: "0x000000000000000000000000000000000000000b",
           type: "categorical",
           numOutcomes: 8,
           minPrice: 0,
@@ -245,7 +245,7 @@ describe("server/getters/get-markets-info", () => {
         },
         {
           id: "0x0000000000000000000000000000000000000002",
-          branchID: "0x000000000000000000000000000000000000000b",
+          universe: "0x000000000000000000000000000000000000000b",
           type: "binary",
           numOutcomes: 2,
           minPrice: 0,

@@ -157,7 +157,7 @@ export interface UIOutcomeInfo {
 
 export interface UIMarketInfo {
   id: Address;
-  branchID: Address;
+  universe: Address;
   type: string;
   numOutcomes: number;
   minPrice: string|number;

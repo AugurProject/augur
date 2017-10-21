@@ -20,7 +20,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRow, outcomesInfo: A
   }
   const marketInfo: UIMarketInfo = {
     id: row.marketID,
-    branchID: row.universe,
+    universe: row.universe,
     type: row.marketType,
     numOutcomes: row.numOutcomes,
     minPrice: row.minPrice,
