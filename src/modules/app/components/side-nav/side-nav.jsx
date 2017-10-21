@@ -5,6 +5,8 @@ import PropTypes from 'prop-types'
 
 import makePath from 'modules/routes/helpers/make-path'
 
+import { Notifications } from 'modules/common/components/icons/icons'
+
 import Styles from 'modules/app/components/side-nav/side-nav.styles'
 
 export default class SideNav extends Component {
@@ -13,7 +15,9 @@ export default class SideNav extends Component {
     isMobile: PropTypes.bool.isRequired,
     isLogged: PropTypes.bool,
     menuData: PropTypes.array.isRequired,
-    mobileShow: PropTypes.bool.isRequired
+    mobileShow: PropTypes.bool.isRequired,
+    toggleNotifications: PropTypes.func.isRequired,
+    unseenCount: PropTypes.number.isRequired
   };
 
   constructor() {
@@ -62,6 +66,8 @@ export default class SideNav extends Component {
   render() {
     const mobile = this.props.isMobile
     const logged = this.props.isLogged
+    const toggleNotifications = this.props.toggleNotifications
+    const unseenCount = this.props.unseenCount
 
     const accessFilteredMenu = this.props.menuData.filter(item => !(item.requireLogin && !logged))
 
@@ -92,11 +98,27 @@ export default class SideNav extends Component {
                   onClick={linkClickHandler}
                 >
                   <Icon />
-                  <span className="item-title">{item.title}</span>
+                  <span className={Styles['item-title']}>{item.title}</span>
                 </Link>
               </li>
             )
           })}
+          {logged && mobile &&
+            <li
+              key="notifications"
+            >
+              <button
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  toggleNotifications()
+                }}
+              >
+                {Notifications(unseenCount)}
+                <span className="item-title">Notifications</span>
+              </button>
+            </li>
+          }
         </ul>
       </aside>
     )

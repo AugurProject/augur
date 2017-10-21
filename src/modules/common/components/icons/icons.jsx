@@ -425,21 +425,67 @@ export const Copy = (
   </svg>
 )
 
-export const ChevronLeft = (
-  <svg viewBox="0 0 16 16">
-    <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
-      <g id="Icon/chevron-left" stroke="#231A3A">
-        <polyline id="Stroke-3" transform="translate(11.156854, 7.863961) rotate(-135.000000) translate(-11.156854, -7.863961) " points="6.65685425 3.36396103 15.6568542 3.36396103 15.6568542 12.363961" />
+export const Close = (
+  <svg viewBox="0 0 24 24">
+    <title>Icon/Close</title>
+    <desc>Created with Sketch.</desc>
+    <defs />
+    <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round">
+      <g id="Icon/Close" stroke="#F6F6F8">
+        <path d="M2.25937312,2.25937312 L21.7139306,21.7139306" id="Line" />
+        <path d="M21.8116947,2.3571372 L2.3571372,21.8116947 L21.8116947,2.3571372 Z" id="Line" strokeLinejoin="round" />
       </g>
     </g>
   </svg>
 )
 
-export const ChevronDown = (
-  <svg viewBox="0 0 16 16">
-    <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
-      <g id="Icon/Dropdown-Down" stroke="#A7A2B2">
-        <polyline id="Stroke-3" transform="translate(8.156854, 6.156854) rotate(-225.000000) translate(-8.156854, -6.156854) " points="3.65685425 1.65685425 12.6568542 1.65685425 12.6568542 10.6568542" />
+export const CloseBlack = (
+  <svg viewBox="0 0 24 24">
+    <title>Icon/Close</title>
+    <desc>Created with Sketch.</desc>
+    <defs />
+    <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round">
+      <g id="Icon/Close" stroke="#000000">
+        <path d="M2.25937312,2.25937312 L21.7139306,21.7139306" id="Line" />
+        <path d="M21.8116947,2.3571372 L2.3571372,21.8116947 L21.8116947,2.3571372 Z" id="Line" strokeLinejoin="round" />
+      </g>
+    </g>
+  </svg>
+)
+
+export const Notifications = unseenCount => (
+  <svg viewBox="0 0 24 24">
+    <title>Icon/Notification</title>
+    <desc>Created with Sketch.</desc>
+    <defs />
+    <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g id="Icon/Notification">
+        <g id="Page-1" transform="translate(4.000000, 1.000000)" stroke="#FFFFFF" strokeWidth="0.894">
+          <path d="M7.9209,2.5717 L7.9209,1.9467 C7.9209,1.1217 8.5959,0.4467 9.4209,0.4467 C10.2459,0.4467 10.9209,1.1217 10.9209,1.9467 L10.9209,2.5467" id="Stroke-1" />
+          <path d="M11.4209,19.4472 C11.4209,20.5512 10.5249,21.4472 9.4209,21.4472 C8.3169,21.4472 7.4209,20.5512 7.4209,19.4472" id="Stroke-3" />
+          <path d="M18.3389,17.4491 C16.5789,14.4471 15.2629,11.4471 15.4209,8.4471 C15.5789,5.4471 12.7349,2.4471 9.4209,2.4471 C6.1069,2.4471 3.2469,5.1381 3.4209,8.4471 C3.5789,11.4471 2.5789,14.4471 0.5789,17.4471 C-1.4211,20.4471 20.0989,20.4501 18.3389,17.4491 Z" id="Stroke-5" />
+        </g>
+        {!!unseenCount &&
+        <g id="Group-14" transform="translate(1.000000, 2.000000)">
+          <ellipse id="Oval" fill="#FFFFFF" cx="6.4591451" cy="7.00261291" rx="6.4591451" ry="6.43043779" />
+          <text id="1" fontFamily="DINPro-Bold, DINPro" fontSize="8" fontWeight="bold" fill="#341D53">
+            <tspan x="4.01902362" y="10.0428031">{unseenCount}</tspan>
+          </text>
+        </g>
+        }
+      </g>
+    </g>
+  </svg>
+)
+
+export const AlertCircle = (Styling, fill = '#FFFFFF') => (
+  <svg viewBox="0 0 24 24" className={Styling}>
+    <title>Icon/AlertCircle</title>
+    <desc>Created with Sketch.</desc>
+    <defs />
+    <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g id="Group-14" transform="translate(1.000000, 2.000000)">
+        <ellipse id="Oval" fill={fill} cx="6.4591451" cy="7.00261291" rx="6.4591451" ry="6.43043779" />
       </g>
     </g>
   </svg>
@@ -450,6 +496,25 @@ export const ChevronUp = (
     <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
       <g id="Icon/Dropdown" stroke="#A7A2B2">
         <polyline id="Stroke-3" transform="translate(8.156854, 11.156854) scale(1, -1) rotate(-225.000000) translate(-8.156854, -11.156854) " points="3.65685425 6.65685425 12.6568542 6.65685425 12.6568542 15.6568542" />
+      </g>
+    </g>
+  </svg>
+)
+
+export const ChevronLeft = (
+  <svg viewBox="0 0 16 16">
+    <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
+      <g id="Icon/chevron-left" stroke="#231A3A">
+        <polyline id="Stroke-3" transform="translate(11.156854, 7.863961) rotate(-135.000000) translate(-11.156854, -7.863961) " points="6.65685425 3.36396103 15.6568542 3.36396103 15.6568542 12.363961" />
+      </g>
+    </g>
+  </svg>
+)
+export const ChevronDown = (
+  <svg viewBox="0 0 16 16">
+    <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
+      <g id="Icon/Dropdown-Down" stroke="#A7A2B2">
+        <polyline id="Stroke-3" transform="translate(8.156854, 6.156854) rotate(-225.000000) translate(-8.156854, -6.156854) " points="3.65685425 1.65685425 12.6568542 1.65685425 12.6568542 10.6568542" />
       </g>
     </g>
   </svg>
