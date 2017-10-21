@@ -62,6 +62,7 @@ const MarketProperties = (p) => {
           className={Styles.MarketProperties__trade}
           id={p.id}
           formattedDescription={p.formattedDescription}
+          linkType={buttonText}
         >
           { buttonText }
         </MarketLink>
