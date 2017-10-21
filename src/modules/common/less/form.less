@@ -97,7 +97,8 @@
 }
 
 .Form__next,
-.Form__prev {
+.Form__prev,
+.Form__submit {
   &:extend(.button--white all);
 
   &.hide-button {
@@ -214,7 +215,8 @@
   }
 
   .Form__next,
-  .Form__prev {
+  .Form__prev,
+  .Form__submit {
     border-radius: 0;
     white-space: nowrap;
     width: 50%;
@@ -224,7 +226,8 @@
     }
   }
 
-  .Form__next {
+  .Form__next,
+  .Form__submit {
     background-color: @color-purple;
     color: @color-white;
   }
@@ -258,11 +261,13 @@
   }
 
   .Form__next,
-  .Form__prev {
+  .Form__prev,
+  .Form__submit {
     width: 100%;
   }
 
-  .Form__next {
+  .Form__next,
+  .Form__submit {
     order: 1;
   }
 

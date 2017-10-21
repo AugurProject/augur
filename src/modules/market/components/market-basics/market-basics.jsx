@@ -18,7 +18,7 @@ import Styles from 'modules/market/components/market-basics/market-basics.styles
 
 const MarketBasics = p => (
   <article>
-    <div className={classNames(CommonStyles.MarketCommon__topcontent, {[`${CommonStyles['single-card']}`] : p.style === 'single-card'} )}>
+    <div className={classNames(CommonStyles.MarketCommon__topcontent, { [`${CommonStyles['single-card']}`]: p.cardStyle === 'single-card' })}>
       <div className={CommonStyles.MarketCommon__header}>
         <ul className={Styles.MarketBasics__tags}>
           {p.tags.length > 1 &&

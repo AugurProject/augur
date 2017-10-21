@@ -1,3 +1,5 @@
+/* eslint jsx-a11y/label-has-for: 0 */
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
@@ -56,7 +58,7 @@ export default class ReportingReport extends Component {
           isLogged={p.isLogged}
           location={p.location}
           history={p.history}
-          style="single-card"
+          cardStyle="single-card"
         />
         <article className={FormStyles.Form}>
           { s.currentStep === 0 &&
@@ -73,7 +75,7 @@ export default class ReportingReport extends Component {
                 <label>
                   <span>Resolution Source</span>
                 </label>
-                <p>Outcome will be detailed on a public website: <a href="http://www.example.com" target="_blank">http://www.example.com</a></p>
+                <p>Outcome will be detailed on a public website: <a href="http://www.example.com" target="_blank" rel="noopener noreferrer">http://www.example.com</a></p>
               </li>
               <li>
                 <label>

@@ -9,9 +9,9 @@ import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-preview/market-preview.styles'
 
 const MarketPreview = p => (
-  <article className={classNames(CommonStyles.MarketCommon__container, {[`${CommonStyles['single-card']}`] : p.style === 'single-card'} )}>
+  <article className={classNames(CommonStyles.MarketCommon__container, { [`${CommonStyles['single-card']}`]: p.cardStyle === 'single-card' })}>
     <MarketBasics {...p} />
-    <div className={classNames(Styles.MarketPreview__footer, {[`${Styles['single-card']}`] : p.style === 'single-card'} )}>
+    <div className={classNames(Styles.MarketPreview__footer, { [`${Styles['single-card']}`]: p.cardStyle === 'single-card' })}>
       <MarketProperties {...p} />
     </div>
   </article>
@@ -31,7 +31,7 @@ MarketPreview.propTypes = {
   volume: PropTypes.object,
   tags: PropTypes.array,
   onClickToggleFavorite: PropTypes.func,
-  style: PropTypes.string,
+  cardStyle: PropTypes.string,
 }
 
 export default MarketPreview

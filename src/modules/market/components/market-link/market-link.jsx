@@ -8,7 +8,7 @@ import makeQuery from 'modules/routes/helpers/make-query'
 import { MARKET, REPORTING_REPORT } from 'modules/routes/constants/views'
 import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/routes/constants/param-names'
 
-const MarketLink = p => {
+const MarketLink = (p) => {
 
   // TODO: This code currently only provides for links/buttons to the Market page and the Reporting form page.
   // When the button code is refactored to account for all possible market states, this will need to be
