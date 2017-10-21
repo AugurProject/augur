@@ -6,6 +6,7 @@ import { dispatchJsonRpcRequest } from "./dispatch-json-rpc-request";
 import { makeJsonRpcResponse } from "./make-json-rpc-response";
 
 export function runWebsocketServer(db: Knex, port: number): void {
+  console.log("Starting websocket server on port", port);
   const websocketServer: WebSocket.Server = new WebSocket.Server({ port });
   websocketServer.on("connection", (websocket: WebSocket): void => {
     websocket.on("message", (data: WebSocket.Data): void => {
