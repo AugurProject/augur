@@ -9,7 +9,7 @@ var api = require("../api");
  * @param {string} p.universeID The universe of Reputation to use.
  * @param {string} p.reputationToSend Amount of Reputation to send, as a base-10 string.
  * @param {string} p._to Ethereum address of the recipient, as a hexadecimal string.
- * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
+ * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
  * @param {function} p.onSent Called if/when the transaction is broadcast to the network.
  * @param {function} p.onSuccess Called if/when the transaction is sealed and confirmed.
  * @param {function} p.onFailed Called if/when the transaction fails.

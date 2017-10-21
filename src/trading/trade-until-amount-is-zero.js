@@ -17,7 +17,7 @@ var constants = require("../constants");
  * @param {string} p._price Normalized limit price for this trade, as a base-10 string.
  * @param {string=} p._tradeGroupID ID logged with each trade transaction (can be used to group trades client-side), as a hex string.
  * @param {boolean=} p.doNotCreateOrders If set to true, this trade will only take existing orders off the book, not create new ones (default: false).
- * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
+ * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
  * @param {function} p.onSent Called when the first trading transaction is broadcast to the network.
  * @param {function} p.onSuccess Called when the full trade completes successfully.
  * @param {function} p.onFailed Called if any part of the trade fails.

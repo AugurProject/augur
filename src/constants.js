@@ -20,6 +20,8 @@ module.exports = {
   DEFAULT_NETWORK_ID: "3",
   DEFAULT_GASPRICE: 20000000000,
 
+  DEFAULT_NUM_TICKS: 10752, // close to 10^4 and evenly divisible by 2-8
+
   GETTER_CHUNK_SIZE: 100,
   BLOCKS_PER_CHUNK: 100,
 

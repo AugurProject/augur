@@ -10,7 +10,7 @@ var noop = require("../utils/noop");
  * @param {Object} p Parameters object.
  * @param {string} p.market Address of the market to redeem Reporting tokens from, as a hex string.
  * @param {string[]} p._payoutNumerators Relative payout amounts to traders holding shares of each outcome, as an array of base-10 strings.
- * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
+ * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
  * @param {function} p.onSent Called if/when the transaction is broadcast to the network.
  * @param {function} p.onSuccess Called if/when the transaction is sealed and confirmed.
  * @param {function} p.onFailed Called if/when the transaction fails.

@@ -8,7 +8,7 @@ var api = require("../api");
 /**
  * @param {Object} p Parameters object.
  * @param {string} p.markets Array of market addresses for which to claim proceeds.
- * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
+ * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
  * @param {function} p.onSent Called if/when each transaction is broadcast to the network.
  * @param {function} p.onSuccess Called if/when all transactions are sealed and confirmed.
  * @param {function} p.onFailed Called if/when any of the transactions fail.

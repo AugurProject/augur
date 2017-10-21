@@ -5,9 +5,9 @@
 var assert = require("chai").assert;
 var proxyquire = require("proxyquire").noPreserveCache();
 
-describe("create-market/create-scalar-market", function () {
+describe("create-market/create-binary-market", function () {
   var extraInfo = {
-    marketType: "scalar",
+    marketType: "binary",
     shortDescription: "Will this market be the One Market?",
     longDescription: "One Market to rule them all, One Market to bind them, One Market to bring them all, and in the darkness bind them.",
     tags: ["Ancient evil", "Large flaming eyes"],
@@ -15,12 +15,12 @@ describe("create-market/create-scalar-market", function () {
   };
   var test = function (t) {
     it(t.description, function (done) {
-      var createScalarMarket = proxyquire("../../../src/create-market/create-scalar-market", {
+      var createBinaryMarket = proxyquire("../../../src/create-market/create-binary-market", {
         "./create-new-market": proxyquire("../../../src/create-market/create-new-market", {
           "../api": t.stub.api
         })
       });
-      createScalarMarket(Object.assign({}, t.params, {
+      createBinaryMarket(Object.assign({}, t.params, {
         onSuccess: function (res) {
           t.params.onSuccess(res);
           done();
@@ -29,7 +29,7 @@ describe("create-market/create-scalar-market", function () {
     });
   };
   test({
-    description: "create a scalar market",
+    description: "create a binary market",
     params: {
       meta: {
         signer: Buffer.from("PRIVATE_KEY", "utf8"),
@@ -37,8 +37,6 @@ describe("create-market/create-scalar-market", function () {
       },
       universe: "UNIVERSE_ADDRESS",
       _endTime: 2345678901,
-      _minDisplayPrice: "-2",
-      _maxDisplayPrice: "15.6",
       _feePerEthInWei: "4321",
       _denominationToken: "TOKEN_ADDRESS",
       _designatedReporterAddress: "DESIGNATED_REPORTER_ADDRESS",
@@ -71,8 +69,8 @@ describe("create-market/create-scalar-market", function () {
               assert.strictEqual(p._feePerEthInWei, "4321");
               assert.strictEqual(p._denominationToken, "TOKEN_ADDRESS");
               assert.strictEqual(p._designatedReporterAddress, "DESIGNATED_REPORTER_ADDRESS");
-              assert.strictEqual(p._minDisplayPrice, "-0x5400");
-              assert.strictEqual(p._maxDisplayPrice, "0x28f33");
+              assert.strictEqual(p._minDisplayPrice, "0x0");
+              assert.strictEqual(p._maxDisplayPrice, "0x2a00");
               assert.strictEqual(p._topic, "0x544f504943000000000000000000000000000000000000000000000000000000");
               assert.strictEqual(p._extraInfo, JSON.stringify(extraInfo));
               assert.strictEqual(p._numTicks, 10752);
