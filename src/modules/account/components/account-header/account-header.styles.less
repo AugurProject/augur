@@ -1,3 +1,32 @@
+@import (reference) '~assets/styles/shared';
+
 .AccountHeader {
   width: 100%;
+  padding: 5.625rem 0 3rem 4.375rem;
+  color: white;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.AccountHeader__Currency {
+  font-size: @font-size-rather-large;
+  flex: 0 0 auto;
+  width: 26.25rem;
+  // border: 1px solid white;
+  text-align: center;
+  display: inline-flex;
+  flex-flow: row nowrap;
+  align-items: end;
+  // position: relative;
+  margin-right: auto;
+}
+
+.AccountHeader__Currency-value {
+  // flex: 1 1 100%;
+}
+
+.AccountHeader__Currency-label {
+  font-size: @font-size-rather-large;
+  text-transform: uppercase;
+  // flex: 0 0 5%;
 }
