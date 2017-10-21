@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-// import Highcharts from 'highcharts'
-// import noData from 'highcharts/modules/no-data-to-display'
+import Highcharts from 'highcharts'
+import noData from 'highcharts/modules/no-data-to-display'
 
 import Styles from 'modules/account/components/account-header/account-header.styles'
 
@@ -12,14 +12,46 @@ class AccountHeader extends Component {
     super(props)
   }
 
-  // componentDidMount() {
-  //   noData(Highcharts)
-  //
-  //   Highcharts.setOptions({
-  //     lang: {
-  //       thousandsSep: ','
-  //     }
-  //   })
+  componentDidMount() {
+    noData(Highcharts)
+
+    Highcharts.setOptions({
+      lang: {
+        noData: 'No price history',
+        thousandsSep: ','
+      }
+    })
+
+    this.xPLChart = new Highcharts.Chart('xpl_chart', {
+      title: {
+        text: null
+      },
+      xAxis: {
+        type: 'datetime',
+        title: {
+          text: 'Time'
+        }
+      },
+      yAxis: {
+        title: {
+          text: 'ETH'
+        }
+      },
+      credits: {
+        enabled: false
+      }
+    });
+    const randomData = () => [...new Array(30)].map(() => [(new Date()).getTime() - (Math.random() * ((1000000000000 - 0) + 0)), (Math.random() * 1)]).sort((a, b) => a[0] - b[0])
+
+    this.xPLChart.addSeries({
+      type: 'line',
+      name: 'X Day P/L 1.00000000',
+      data: randomData()
+    }, false)
+    this.xPLChart.redraw()
+    this.thirtyDayPLChart = new Highcharts.Chart('30pl_chart', {})
+    this.oneDayPLChart = new Highcharts.Chart('1pl_chart', {})
+  }
 
   calcFontSize(value) {
     // the container is 26.25rem, or 420 px, 16 px is the base, the 3 character
@@ -52,12 +84,30 @@ class AccountHeader extends Component {
           <span className={Styles['AccountHeader__Currency-value']} style={{fontSize: ethSize}}>{ethValue}</ span>
           <span className={Styles['AccountHeader__Currency-label']}>{p.stats[0].totalRealEth.label}</ span>
         </ div>
+        {repValue !== '0' &&
+          <div
+            title={p.stats[0].totalRep.title} className={Styles.AccountHeader__Currency}
+          >
+            <span className={Styles['AccountHeader__Currency-value']} style={{fontSize: repSize}}>{repValue}</ span>
+            <span className={Styles['AccountHeader__Currency-label']}>{p.stats[0].totalRep.label}</ span>
+          </div>
+        }
         <div
-          title={p.stats[0].totalRep.title} className={Styles.AccountHeader__Currency}
-        >
-          <span className={Styles['AccountHeader__Currency-value']} style={{fontSize: repSize}}>{repValue}</ span>
-          <span className={Styles['AccountHeader__Currency-label']}>{p.stats[0].totalRep.label}</ span>
-        </div>
+          className={Styles.AccountHeader__Chart}
+          id="xpl_chart"
+        />
+        {repValue == '0' &&
+          <div
+            className={Styles.AccountHeader__Chart}
+            id="30pl_chart"
+          />
+        }
+        {repValue == '0' &&
+          <div
+            className={Styles.AccountHeader__Chart}
+            id="1pl_chart"
+          />
+        }
       </div>
     )
   }
