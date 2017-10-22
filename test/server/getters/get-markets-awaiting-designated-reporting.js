@@ -6,7 +6,6 @@ const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { getMarketsAwaitingDesignatedReporting } = require("../../../build/server/getters/get-markets-awaiting-designated-reporting");
 
-
 describe("server/getters/get-markets-awaiting-designated-reporting", () => {
   const test = (t) => {
     it(t.description, (done) => {
@@ -51,6 +50,7 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
           "extraInfo": null,
           "finalizationTime": null,
           "id": "0x0000000000000000000000000000000000000001",
+          reportingFeeRate: 0.02,
           "marketCreatorFeeRate": 0.01,
           "marketCreatorFeesCollected": 0,
           "maxPrice": 1,
@@ -84,6 +84,7 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
           "extraInfo": null,
           "finalizationTime": null,
           "id": "0x0000000000000000000000000000000000000002",
+          reportingFeeRate: 0.02,
           "marketCreatorFeeRate": 0.01,
           "marketCreatorFeesCollected": 0,
           "maxPrice": 1,
@@ -117,6 +118,7 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
           "extraInfo": null,
           "finalizationTime": null,
           "id": "0x0000000000000000000000000000000000000003",
+          reportingFeeRate: 0.02,
           "marketCreatorFeeRate": 0.01,
           "marketCreatorFeesCollected": 0,
           "maxPrice": 1,
@@ -161,6 +163,7 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
           "extraInfo": null,
           "finalizationTime": null,
           "id": "0x0000000000000000000000000000000000000003",
+          reportingFeeRate: 0.02,
           "marketCreatorFeeRate": 0.01,
           "marketCreatorFeesCollected": 0,
           "maxPrice": 1,

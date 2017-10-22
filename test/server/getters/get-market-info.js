@@ -37,6 +37,7 @@ describe("server/getters/get-market-info", () => {
         creationTime: 1506473474,
         creationBlock: 1400000,
         creationFee: 10,
+        reportingFeeRate: 0.02,
         marketCreatorFeeRate: 0.01,
         marketCreatorFeesCollected: 0,
         category: "test category",

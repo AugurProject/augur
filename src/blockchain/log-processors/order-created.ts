@@ -8,6 +8,7 @@ import { formatOrderAmount, formatOrderPrice } from "../../utils/format-order";
 import { WEI_PER_ETHER } from "../../constants";
 
 export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+  // TODO check for race condition: make sure block timestamp is written BEFORE log processor is triggered
   trx.select("blockTimestamp").from("blocks").where({ blockNumber: log.blockNumber }).asCallback((err?: Error|null, blocksRow?: {blockTimestamp: number}): void => {
     if (err) return callback(err);
     if (!blocksRow) return callback(new Error("block timestamp not found"));

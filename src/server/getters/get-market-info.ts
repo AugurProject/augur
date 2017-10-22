@@ -30,6 +30,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRow, outcomesInfo: A
     creationTime: row.creationTime,
     creationBlock: row.creationBlockNumber,
     creationFee: row.creationFee,
+    reportingFeeRate: row.reportingFeeRate,
     marketCreatorFeeRate: row.marketCreatorFeeRate,
     marketCreatorFeesCollected: row.marketCreatorFeesCollected,
     category: row.category,
