@@ -30,6 +30,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRow, outcomesInfo: A
     creationTime: row.creationTime,
     creationBlock: row.creationBlockNumber,
     creationFee: row.creationFee,
+    reportingFeeRate: row.reportingFeeRate,
     marketCreatorFeeRate: row.marketCreatorFeeRate,
     marketCreatorFeesCollected: row.marketCreatorFeesCollected,
     category: row.category,
@@ -52,11 +53,11 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRow, outcomesInfo: A
 }
 
 export function getMarketInfo(db: Knex, marketID: string, callback: (err: Error|null, result?: UIMarketInfo) => void): void {
-  db.raw(`SELECT * FROM markets WHERE "marketID" = ? LIMIT 1`, [marketID]).asCallback((err: Error|null, rows?: Array<MarketsRow>): void => {
+  db.select().from("markets").where({ marketID }).limit(1).asCallback((err: Error|null, rows?: Array<MarketsRow>): void => {
     if (err) return callback(err);
     if (!rows || rows.length === 0) return callback(null);
     const marketsRow: MarketsRow = rows[0];
-    db.raw(`SELECT * FROM outcomes WHERE "marketID" = ?`, [marketID]).asCallback((err: Error|null, outcomesRows?: Array<OutcomesRow>): void => {
+    db.select().from("outcomes").where({ marketID }).asCallback((err: Error|null, outcomesRows?: Array<OutcomesRow>): void => {
       if (err) return callback(err);
       const outcomesInfo: Array<UIOutcomeInfo> = outcomesRows!.map((outcomesRow: OutcomesRow): UIOutcomeInfo => reshapeOutcomesRowToUIOutcomeInfo(outcomesRow));
       callback(null, reshapeMarketsRowToUIMarketInfo(marketsRow, outcomesInfo));

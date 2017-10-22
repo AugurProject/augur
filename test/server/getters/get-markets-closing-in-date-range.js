@@ -6,8 +6,6 @@ const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { getMarketsClosingInDateRange } = require("../../../build/server/getters/get-markets-closing-in-date-range");
 
-const augurDbPath = join(__dirname, "augur.db");
-
 describe("server/getters/get-markets-closing-in-date-range", () => {
   const test = (t) => {
     it(t.description, (done) => {

@@ -5,8 +5,6 @@ const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { getOpenOrders } = require("../../../build/server/getters/get-open-orders");
 
-const augurDbPath = join(__dirname, "augur.db");
-
 describe("server/getters/get-open-orders", () => {
   const test = (t) => {
     it(t.description, (done) => {

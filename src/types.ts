@@ -112,6 +112,7 @@ export interface MarketsRow {
   creationTime: number;
   creationBlockNumber: number;
   creationFee: string|number;
+  reportingFeeRate: string|number;
   marketCreatorFeeRate: string|number;
   marketCreatorFeesCollected: string|number|null;
   category: string;
@@ -167,6 +168,7 @@ export interface UIMarketInfo {
   creationTime: number;
   creationBlock: number;
   creationFee: string|number;
+  reportingFeeRate: string|number;
   marketCreatorFeeRate: string|number;
   marketCreatorFeesCollected: string|number|null;
   category: string;

@@ -5,8 +5,6 @@ const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { getMarketsInCategory } = require("../../../build/server/getters/get-markets-in-category");
 
-const augurDbPath = join(__dirname, "augur.db");
-
 describe("server/getters/get-markets-in-category", () => {
   const test = (t) => {
     it(t.description, (done) => {
