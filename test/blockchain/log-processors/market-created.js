@@ -26,7 +26,7 @@ describe("blockchain/log-processors/market-created", () => {
     });
   };
   test({
-    description: "happy path",
+    description: "process market created log",
     params: {
       log: {
         blockNumber: 7,

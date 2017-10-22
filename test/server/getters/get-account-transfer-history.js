@@ -10,7 +10,7 @@ describe("server/getters/get-account-transfer-history", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getAccountTransferHistory(db, t.params.account, t.params.token, (err, accountTransferHistory) => {
+        getAccountTransferHistory(db, t.params.account, t.params.token, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, accountTransferHistory) => {
           t.assertions(err, accountTransferHistory);
           done();
         });
@@ -21,7 +21,8 @@ describe("server/getters/get-account-transfer-history", () => {
     description: "get account transfer history for all tokens",
     params: {
       account: "0x0000000000000000000000000000000000000b0b",
-      token: null
+      token: null,
+      isSortDescending: false
     },
     assertions: (err, accountTransferHistory) => {
       assert.isNull(err);
@@ -56,7 +57,8 @@ describe("server/getters/get-account-transfer-history", () => {
     description: "get account transfer history for REP tokens only",
     params: {
       account: "0x0000000000000000000000000000000000000b0b",
-      token: "0x7a305d9b681fb164dc5ad628b5992177dc66aec8"
+      token: "0x7a305d9b681fb164dc5ad628b5992177dc66aec8",
+      isSortDescending: false
     },
     assertions: (err, accountTransferHistory) => {
       assert.isNull(err);

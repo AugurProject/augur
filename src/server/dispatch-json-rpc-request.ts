@@ -19,7 +19,6 @@ import { getUnclaimedReportingTokens } from "./getters/get-unclaimed-reporting-t
 import { getUnfinalizedReportingTokens } from "./getters/get-unfinalized-reporting-tokens";
 import { getAllReportingTokens } from "./getters/get-all-reporting-tokens";
 import { getMarketsClosingInDateRange } from "./getters/get-markets-closing-in-date-range";
-import { getDetailedMarketInfo } from "./getters/get-detailed-market-info";
 import { getMarketsInfo } from "./getters/get-markets-info";
 import { getOpenOrders } from "./getters/get-open-orders";
 
@@ -29,25 +28,25 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callba
     case "getMarketInfo":
       return getMarketInfo(db, request.params.marketID, callback);
     case "getAccountTransferHistory":
-      return getAccountTransferHistory(db, request.params.account, request.params.token, callback);
+      return getAccountTransferHistory(db, request.params.account, request.params.token, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getCategories":
-      return getCategories(db, request.params.universe, callback);
+      return getCategories(db, request.params.universe, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsInCategory":
       return getMarketsInCategory(db, request.params.category, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsCreatedByUser":
-      return getMarketsCreatedByUser(db, request.params.creator, callback);
+      return getMarketsCreatedByUser(db, request.params.creator, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getReportingHistory":
-      return getReportingHistory(db, request.params.reporter, request.params.marketID, request.params.universe, request.params.reportingWindow, callback);
+      return getReportingHistory(db, request.params.reporter, request.params.marketID, request.params.universe, request.params.reportingWindow, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsAwaitingDesignatedReporting":
-      return getMarketsAwaitingDesignatedReporting(db, request.params.designatedReporter, callback);
+      return getMarketsAwaitingDesignatedReporting(db, request.params.designatedReporter, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsAwaitingLimitedReporting":
-      return getMarketsAwaitingLimitedReporting(db, request.params.reportingWindow, callback);
+      return getMarketsAwaitingLimitedReporting(db, request.params.reportingWindow, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsAwaitingAllReporting":
-      return getMarketsAwaitingAllReporting(db, request.params.reportingWindow, callback);
+      return getMarketsAwaitingAllReporting(db, request.params.reportingWindow, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getDisputableMarkets":
-      return getDisputableMarkets(db, request.params.reportingWindow, callback);
+      return getDisputableMarkets(db, request.params.reportingWindow, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getReportingSummary":
-      return getReportingSummary(db, request.params.reportingWindow, callback);
+      return getReportingSummary(db, request.params.reportingWindow, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getUserTradingHistory":
       return getUserTradingHistory(db, request.params.account, request.params.marketID, request.params.outcome, request.params.orderType, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketPriceHistory":
@@ -63,13 +62,11 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callba
     case "getAllReportingTokens":
       return getAllReportingTokens(db, request.params.account, request.params.dateRange, callback); // TODO change dateRange to separate earliestTime and latestTime params?
     case "getMarketsClosingInDateRange":
-      return getMarketsClosingInDateRange(db, request.params.earliestClosingTime, request.params.latestClosingTime, request.params.universe, request.params.limit, callback);
-    case "getDetailedMarketInfo":
-      return getDetailedMarketInfo(db, request.params.marketID, callback);
+      return getMarketsClosingInDateRange(db, request.params.earliestClosingTime, request.params.latestClosingTime, request.params.universe, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsInfo":
-      return getMarketsInfo(db, request.params.universe, request.params.marketIDs, callback);
+      return getMarketsInfo(db, request.params.universe, request.params.marketIDs, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getOpenOrders":
-      return getOpenOrders(db, request.params.marketID, request.params.outcome, request.params.orderType, request.params.creator, callback);
+      return getOpenOrders(db, request.params.marketID, request.params.outcome, request.params.orderType, request.params.creator, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     default:
       callback(new Error("unknown json rpc method"));
   }

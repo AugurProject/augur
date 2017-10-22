@@ -11,7 +11,7 @@ describe("server/getters/get-categories", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getCategories(db, t.params.universe, (err, categoriesInfo) => {
+        getCategories(db, t.params.universe, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, categoriesInfo) => {
           t.assertions(err, categoriesInfo);
           done();
         });
@@ -21,7 +21,9 @@ describe("server/getters/get-categories", () => {
   test({
     description: "get categories in universe b sorted by popularity",
     params: {
-      universe: "0x000000000000000000000000000000000000000b"
+      universe: "0x000000000000000000000000000000000000000b",
+      sortBy: "popularity",
+      isSortDescending: true
     },
     assertions: (err, categoriesInfo) => {
       assert.isNull(err);

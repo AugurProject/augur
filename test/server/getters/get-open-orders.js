@@ -10,7 +10,7 @@ describe("server/getters/get-open-orders", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getOpenOrders(db, t.params.marketID, t.params.outcome, t.params.orderType, t.params.creator, (err, openOrders) => {
+        getOpenOrders(db, t.params.marketID, t.params.outcome, t.params.orderType, t.params.creator, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, openOrders) => {
           t.assertions(err, openOrders);
           done();
         });

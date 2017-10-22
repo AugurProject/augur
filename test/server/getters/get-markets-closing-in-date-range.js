@@ -11,7 +11,7 @@ describe("server/getters/get-markets-closing-in-date-range", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getMarketsClosingInDateRange(db, t.params.earliestClosingTime, t.params.latestClosingTime, t.params.universe, t.params.limit, (err, marketsClosingInDateRange) => {
+        getMarketsClosingInDateRange(db, t.params.earliestClosingTime, t.params.latestClosingTime, t.params.universe, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsClosingInDateRange) => {
           t.assertions(err, marketsClosingInDateRange);
           done();
         });

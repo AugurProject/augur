@@ -10,7 +10,7 @@ describe("server/getters/get-markets-created-by-user", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getMarketsCreatedByUser(db, t.params.creator, (err, marketsCreatedByUser) => {
+        getMarketsCreatedByUser(db, t.params.creator, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsCreatedByUser) => {
           t.assertions(err, marketsCreatedByUser);
           done();
         });

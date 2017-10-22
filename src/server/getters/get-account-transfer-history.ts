@@ -1,7 +1,8 @@
 import * as Knex from "knex";
 import { Address, Bytes32 } from "../../types";
+import { sortDirection } from "../../utils/sort-direction";
 
-interface TransferRow {
+export interface TransferRow {
   transactionHash: Bytes32;
   logIndex: number;
   sender: Address;
@@ -11,33 +12,11 @@ interface TransferRow {
   blockNumber: number;
 }
 
-export interface TransferLog {
-  transactionHash: Bytes32;
-  logIndex: number;
-  sender: Address;
-  recipient: Address;
-  token: Address;
-  value: number;
-  blockNumber: number;
-}
-
-export type TransferHistory = Array<TransferLog>;
-
-export function getAccountTransferHistory(db: Knex, account: Address, token: Address|null, callback: (err: Error|null, result?: TransferHistory) => void): void {
-  let query: Knex.Raw;
-  if (token === null) {
-    query = db.raw("SELECT * FROM transfers WHERE sender = ? OR recipient = ?", [account, account]);
-  } else {
-    query = db.raw("SELECT * FROM transfers WHERE (sender = ? OR recipient = ?) AND token = ?", [account, account, token]);
-  }
-
-  query.map((transferRow: TransferRow): TransferLog => ({
-    transactionHash: transferRow.transactionHash,
-    logIndex: transferRow.logIndex,
-    sender: transferRow.sender,
-    recipient: transferRow.recipient,
-    token: transferRow.token,
-    value: transferRow.value,
-    blockNumber: transferRow.blockNumber,
-  })).asCallback(callback);
+export function getAccountTransferHistory(db: Knex, account: Address, token: Address|null|undefined, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, transferHistory?: Array<TransferRow>) => void): void {
+  let query = db("transfers").where((db: Knex): Knex.QueryBuilder => db.where("sender", account).orWhere("recipient", account));
+  if (token != null) query = query.andWhere({ token });
+  query = query.orderBy(sortBy || "blockNumber", sortDirection(isSortDescending, "desc"));
+  if (limit != null) query = query.limit(limit);
+  if (offset != null) query = query.offset(offset);
+  query.asCallback(callback);
 }

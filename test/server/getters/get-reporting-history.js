@@ -10,7 +10,7 @@ describe("server/getters/get-reporting-history", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getReportingHistory(db, t.params.reporter, t.params.marketID, t.params.universe, t.params.reportingWindow, (err, reportingHistory) => {
+        getReportingHistory(db, t.params.reporter, t.params.marketID, t.params.universe, t.params.reportingWindow, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, reportingHistory) => {
           t.assertions(err, reportingHistory);
           done();
         });

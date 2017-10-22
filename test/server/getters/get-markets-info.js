@@ -12,7 +12,7 @@ describe("server/getters/get-markets-info", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getMarketsInfo(db, t.params.universe, t.params.marketIDs, (err, marketsInfo) => {
+        getMarketsInfo(db, t.params.universe, t.params.marketIDs, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsInfo) => {
           t.assertions(err, marketsInfo);
           done();
         });
