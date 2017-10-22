@@ -21,7 +21,7 @@ export default class MarketOutcomesGraph extends Component {
 
     this.state = {
       hoveredOutcome: null,
-      hoveredPrice: null
+      selectedOutcome: null // NOTE -- Just a placeholder until outcomes are implemented
     }
 
     this.updateGraph = this.updateGraph.bind(this)
@@ -105,7 +105,8 @@ export default class MarketOutcomesGraph extends Component {
                   price: event.target.y
                 }
               }),
-              mouseOut: event => this.setState({ hoveredOutcome: null })
+              mouseOut: event => this.setState({ hoveredOutcome: null }),
+              click: event => this.props.updateSelectedOutcome(event.point.colorIndex)
             }
           }
         }
@@ -145,36 +146,41 @@ export default class MarketOutcomesGraph extends Component {
   }
 
   render() {
+    const p = this.props
     const s = this.state
 
     return (
       <div className={Styles.MarketOutcomesGraph}>
-        <h3>price (eth) of each outcome</h3>
-        <div className={Styles[`MarketOutcomesGraph__graph-header`]}>
-          <span className={Styles.MarketOutcomesGraph__details}>
-            {s.hoveredOutcome === null ?
-              'select an outcome to begin placing an order' :
-              <span>
-                <span className={Styles.MarketOutcomesGraph__name}>
-                  {s.hoveredOutcome.name}
-                </span>
-                <span className={Styles.MarketOutcomesGraph__price}>
-                  last: {s.hoveredOutcome.price.toFixed(4)} eth
-                </span>
-                <span className={Styles.MarketOutcomesGraph__instruction}>
-                  click to view more information about this outcome
-                </span>
-              </span>
-            }
-          </span>
+        {p.selectedOutcome === null &&
           <div>
-            <span >Filter (TODO)</span>
+            <h3>price (eth) of each outcome</h3>
+            <div className={Styles[`MarketOutcomesGraph__graph-header`]}>
+              <span className={Styles.MarketOutcomesGraph__details}>
+                {s.hoveredOutcome === null ?
+                  'select an outcome to begin placing an order' :
+                  <span>
+                    <span className={Styles.MarketOutcomesGraph__name}>
+                      {s.hoveredOutcome.name}
+                    </span>
+                    <span className={Styles.MarketOutcomesGraph__price}>
+                      last: {s.hoveredOutcome.price.toFixed(4)} eth
+                    </span>
+                    <span className={Styles.MarketOutcomesGraph__instruction}>
+                      click to view more information about this outcome
+                    </span>
+                  </span>
+                }
+              </span>
+              <div>
+                <span >Filter (TODO)</span>
+              </div>
+            </div>
+            <div
+              id="market_outcomes_graph"
+              className={Styles.MarketOutcomesGraph__graph}
+            />
           </div>
-        </div>
-        <div
-          id="market_outcomes_graph"
-          className={Styles.MarketOutcomesGraph__graph}
-        />
+        }
       </div>
     )
   }
