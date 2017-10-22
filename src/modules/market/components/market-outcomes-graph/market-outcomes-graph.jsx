@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Highstock from 'highstock-release/js/highstock'
-import noData from 'highstock-release/modules/no-data-to-display'
+import Highstock from 'highcharts/js/highstock'
+import noData from 'highcharts/modules/no-data-to-display'
 import { isEqual } from 'lodash'
 // import { ChevronDown, ChevronUp } from 'modules/common/components/icons/icons'
 
@@ -42,7 +42,7 @@ export default class MarketOutcomesGraph extends Component {
         text: null
       },
       chart: {
-        height: 300, // mirror this height in css container height declaration,
+        height: 300,
         spacingTop: 1,
         spacingRight: 0,
         spacingLeft: 0
@@ -151,36 +151,32 @@ export default class MarketOutcomesGraph extends Component {
 
     return (
       <div className={Styles.MarketOutcomesGraph}>
-        {p.selectedOutcome === null &&
-          <div>
-            <h3>price (eth) of each outcome</h3>
-            <div className={Styles[`MarketOutcomesGraph__graph-header`]}>
-              <span className={Styles.MarketOutcomesGraph__details}>
-                {s.hoveredOutcome === null ?
-                  'select an outcome to begin placing an order' :
-                  <span>
-                    <span className={Styles.MarketOutcomesGraph__name}>
-                      {s.hoveredOutcome.name}
-                    </span>
-                    <span className={Styles.MarketOutcomesGraph__price}>
-                      last: {s.hoveredOutcome.price.toFixed(4)} eth
-                    </span>
-                    <span className={Styles.MarketOutcomesGraph__instruction}>
-                      click to view more information about this outcome
-                    </span>
-                  </span>
-                }
+        <h3>price (eth) of each outcome</h3>
+        <div className={Styles[`MarketOutcomesGraph__graph-header`]}>
+          <span className={Styles.MarketOutcomesGraph__details}>
+            {s.hoveredOutcome === null ?
+              'select an outcome to begin placing an order' :
+              <span>
+                <span className={Styles.MarketOutcomesGraph__name}>
+                  {s.hoveredOutcome.name}
+                </span>
+                <span className={Styles.MarketOutcomesGraph__price}>
+                  last: {s.hoveredOutcome.price.toFixed(4)} eth
+                </span>
+                <span className={Styles.MarketOutcomesGraph__instruction}>
+                  click to view more information about this outcome
+                </span>
               </span>
-              <div>
-                <span >Filter (TODO)</span>
-              </div>
-            </div>
-            <div
-              id="market_outcomes_graph"
-              className={Styles.MarketOutcomesGraph__graph}
-            />
+            }
+          </span>
+          <div>
+            <span >Filter (TODO)</span>
           </div>
-        }
+        </div>
+        <div
+          id="market_outcomes_graph"
+          className={Styles.MarketOutcomesGraph__graph}
+        />
       </div>
     )
   }

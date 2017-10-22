@@ -5,6 +5,8 @@ import MarketOutcomeCandlestick from 'modules/market/containers/market-outcome-c
 import MarketOutcomeDepth from 'modules/market/containers/market-outcome-depth'
 import MarketOutcomeOrderBook from 'modules/market/containers/market-outcome-order-book'
 
+import Styles from 'modules/market/components/market-outcome-graphs/market-outcome-graphs.styles'
+
 export default class MarketOutcomeGraphs extends Component {
   static propTypes = {
     selectedOutcome: PropTypes.any
@@ -22,7 +24,8 @@ export default class MarketOutcomeGraphs extends Component {
     const p = this.props
 
     return (
-      <section>
+      <section className={Styles.MarketOutcomeGraphs}>
+        <span className={Styles.MarketOutcomeGraphs__center} />
         <MarketOutcomeCandlestick
           selectedOutcome={p.selectedOutcome}
         />

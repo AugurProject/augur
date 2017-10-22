@@ -29,6 +29,7 @@ export default class MarketView extends Component {
         <div className={Styles.Market__upper}>
           <MarketHeader
             selectedOutcome={s.selectedOutcome}
+            updateSelectedOutcome={this.updateSelectedOutcome}
           />
           {s.selectedOutcome === null &&
             <MarketOutcomesGraph

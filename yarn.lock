@@ -4129,10 +4129,6 @@ highcharts@6.0.2:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-6.0.2.tgz#e3c4c998a21ce6bfa79458fa2c87d967e9234abe"
 
-highstock-release@6.0.2:
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/highstock-release/-/highstock-release-6.0.2.tgz#a87013e22397d1a02540c75eb4797843565cb639"
-
 history@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/history/-/history-2.1.2.tgz#4aa2de897a0e4867e4539843be6ecdb2986bfdec"

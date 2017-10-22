@@ -16,7 +16,7 @@ export default class MarketOutcomeDepth extends Component {
 
   render() {
     return (
-      <span>Faaaak order book</span>
+      <span>Faaaak depth</span>
     )
   }
 }
