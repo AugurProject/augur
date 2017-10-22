@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Highcharts from 'highcharts/js/highcharts'
-import noData from 'highcharts/modules/no-data-to-display'
+import Highstock from 'highstock-release/js/highstock'
+import noData from 'highstock-release/modules/no-data-to-display'
 import { isEqual } from 'lodash'
 import { ChevronDown, ChevronUp } from 'modules/common/components/icons/icons'
 
@@ -29,15 +29,15 @@ export default class MarketOutcomesGraph extends Component {
   }
 
   componentDidMount() {
-    noData(Highcharts)
+    noData(Highstock)
 
-    Highcharts.setOptions({
+    Highstock.setOptions({
       lang: {
         thousandsSep: ','
       }
     })
 
-    this.marketOutcomesGraph = new Highcharts.Chart('market_outcomes_graph', {
+    this.marketOutcomesGraph = new Highstock.Chart('market_outcomes_graph', {
       title: {
         text: null
       },
@@ -57,19 +57,33 @@ export default class MarketOutcomesGraph extends Component {
           text: null
         },
         tickLength: 7,
-        crosshair: true
+        crosshair: {
+          snap: false,
+          label: {
+            enabled: true,
+            shape: 'square'
+          }
+        }
       },
       yAxis: {
         title: {
           text: null
         },
-        tickLength: 15,
-        tickWidth: 1,
+        tickLength: 0,
+        tickWidth: 0,
         ceiling: 1,
-        crosshair: true,
+        crosshair: {
+          snap: false,
+          label: {
+            enabled: true,
+            format: '{value:.2f}',
+            shape: 'square'
+          }
+        },
         labels: {
           align: 'left',
           y: 15,
+          x: 0,
           formatter: function () { // eslint-disable-line func-names, object-shorthand
             return this.isFirst ? '' : this.value
           }

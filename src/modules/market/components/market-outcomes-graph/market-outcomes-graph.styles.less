@@ -34,6 +34,8 @@
 }
 
 .MarketOutcomesGraph__graph {
+  cursor: cell;
+
   :global {
     .highcharts-background,
     .highcharts-plot-background,
@@ -106,6 +108,25 @@
 
       &.highcharts-series-8 {
         stroke: @color-outcome-eight;
+      }
+    }
+
+    .highcharts-halo {
+      fill: @color-transparent;
+      stroke: @color-transparent;
+    }
+
+    .highcharts-crosshair-label {
+      fill: @color-white;
+
+      text {
+        fill: @color-text-dark;
+      }
+    }
+
+    .highcharts-yaxis-labels {
+      .highcharts-crosshair-label text {
+        padding-top: 20px;
       }
     }
   }
