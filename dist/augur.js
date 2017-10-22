@@ -1516,7 +1516,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.5.3";
+  this.version = "4.5.4";
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
@@ -1540,6 +1540,8 @@ function Augur() {
 }
 
 module.exports = Augur;
+module.exports.Augur = Augur;
+module.exports.default = Augur;
 },{"./accounts":3,"./api":11,"./assets":14,"./augur-node":19,"./connect":22,"./constants":23,"./contracts":25,"./create-market":32,"./events":38,"./markets":65,"./reporting":74,"./rpc-interface":78,"./trading":86,"bignumber.js":169,"keythereum":420}],52:[function(require,module,exports){
 "use strict";
 
