@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Highstock from 'highstock-release/js/highstock'
 import noData from 'highstock-release/modules/no-data-to-display'
 import { isEqual } from 'lodash'
-import { ChevronDown, ChevronUp } from 'modules/common/components/icons/icons'
+// import { ChevronDown, ChevronUp } from 'modules/common/components/icons/icons'
 
 import debounce from 'utils/debounce'
 
