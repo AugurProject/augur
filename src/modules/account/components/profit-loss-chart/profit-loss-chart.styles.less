@@ -1,0 +1,24 @@
+@import (reference) '~assets/styles/shared';
+
+.ProfitLossChart__Title {
+  text-align: center;
+  width: 100%;
+}
+
+@media @breakpoint-mobile {
+  .ProfitLossChart {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+
+    > div {
+      flex: 1 0 auto;
+    }
+  }
+
+  .ProfitLossChart__Title {
+    text-align: center;
+    width: 100%;
+  }
+}

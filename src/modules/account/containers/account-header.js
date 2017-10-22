@@ -10,7 +10,8 @@ const mapStateToProps = state => {
   const coreStats = selectCoreStats(state)
 
   return {
-    stats: coreStats
+    stats: coreStats,
+    isMobile: state.isMobile,
   }
 }
 
