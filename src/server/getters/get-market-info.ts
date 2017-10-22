@@ -6,7 +6,7 @@ export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow): UIO
   const outcomeInfo: UIOutcomeInfo = {
     id: outcomesRow.outcome,
     outstandingShares: outcomesRow.sharesOutstanding,
-    price: outcomesRow.price
+    price: outcomesRow.price,
   };
   return outcomeInfo;
 }
@@ -47,7 +47,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRow, outcomesInfo: A
     resolutionSource: row.resolutionSource,
     numTicks: row.numTicks,
     consensus,
-    outcomes: outcomesInfo
+    outcomes: outcomesInfo,
   };
   return marketInfo;
 }

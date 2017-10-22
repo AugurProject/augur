@@ -21,12 +21,12 @@ export function startAugurListeners(db: Knex, augur: Augur, callback: (blockNumb
       WinningTokensRedeemed: makeLogListener(db, augur, "Augur", "WinningTokensRedeemed"),
       ReportsDisputed: makeLogListener(db, augur, "Augur", "ReportsDisputed"),
       MarketFinalized: makeLogListener(db, augur, "Augur", "MarketFinalized"),
-      UniverseForked: makeLogListener(db, augur, "Augur", "UniverseForked")
+      UniverseForked: makeLogListener(db, augur, "Augur", "UniverseForked"),
     },
     LegacyRepContract: {
       Transfer: makeLogListener(db, augur, "LegacyRepContract", "Transfer"),
-      Approval: makeLogListener(db, augur, "LegacyRepContract", "Approval")
-    }
+      Approval: makeLogListener(db, augur, "LegacyRepContract", "Approval"),
+    },
   }, (blockNumber: string): void => {
     if (!seenFirstBlock) {
       callback(blockNumber);

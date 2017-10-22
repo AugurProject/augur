@@ -10,7 +10,7 @@ export function processApprovalLog(db: Knex, augur: Augur, trx: Knex.Transaction
     spender:          log.spender,
     token:            log.address,
     value:            log.value,
-    blockNumber:     log.blockNumber
+    blockNumber:     log.blockNumber,
   };
 
   db.transacting(trx).insert(dataToInsert).into("approvals").asCallback(callback);

@@ -38,6 +38,6 @@ export function getAccountTransferHistory(db: Knex, account: Address, token: Add
     recipient: transferRow.recipient,
     token: transferRow.token,
     value: transferRow.value,
-    blockNumber: transferRow.blockNumber
+    blockNumber: transferRow.blockNumber,
   })).asCallback(callback);
 }

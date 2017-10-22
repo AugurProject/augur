@@ -27,10 +27,10 @@ export const logProcessors: {[contractName: string]: {[eventName: string]: LogPr
     WinningTokensRedeemed: processWinningTokensRedeemedLog,
     ReportsDisputed: processReportsDisputedLog,
     MarketFinalized: processMarketFinalizedLog,
-    UniverseForked: processUniverseForkedLog
+    UniverseForked: processUniverseForkedLog,
   },
   LegacyRepContract: {
     Transfer: processTransferLog,
-    Approval: processApprovalLog
-  }
+    Approval: processApprovalLog,
+  },
 };

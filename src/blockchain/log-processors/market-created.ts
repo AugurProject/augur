@@ -19,7 +19,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
       designatedReportStake: (next: AsyncCallback): void => augur.api.Market.getDesignatedReportStake(marketPayload, next),
       numTicks: (next: AsyncCallback): void => augur.api.Market.getNumTicks(marketPayload, next),
       universe: (next: AsyncCallback): void => augur.api.Market.getUniverse(marketPayload, next),
-      marketCreatorSettlementFeeDivisor: (next: AsyncCallback): void => augur.api.Market.getMarketCreatorSettlementFeeDivisor(marketPayload, next)
+      marketCreatorSettlementFeeDivisor: (next: AsyncCallback): void => augur.api.Market.getMarketCreatorSettlementFeeDivisor(marketPayload, next),
     }, (err?: any, onContractData?: any): void => {
       if (err) return callback(err);
       const universePayload: {} = { tx: { to: onContractData.universe } };
@@ -51,7 +51,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
           reportingFeeRate:           convertDivisorToRate(reportingFeeDivisor!, 16),
           marketCreatorFeesCollected: "0",
           volume:                     "0",
-          sharesOutstanding:          "0"
+          sharesOutstanding:          "0",
         };
         db.transacting(trx).insert(dataToInsert).into("markets").asCallback((err?: Error|null): void => {
           if (err) return callback(err);

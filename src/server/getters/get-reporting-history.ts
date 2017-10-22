@@ -4,7 +4,7 @@ import { Address, JoinedReportsMarketsRow, UIReport } from "../../types";
 
 interface UIReports {
   [universe: string]: {
-    [marketID: string]: Array<UIReport>
+    [marketID: string]: Array<UIReport>,
   };
 }
 
@@ -29,7 +29,7 @@ export function getReportingHistory(db: Knex, reporter: Address, marketID: Addre
     "reports.payout4",
     "reports.payout5",
     "reports.payout6",
-    "reports.payout7"
+    "reports.payout7",
   ];
   db.select(columnsToSelect).from("reports").join("markets", "markets.marketID", "reports.marketID").where(queryData).orderBy("reportID").asCallback((err: Error|null, joinedReportsMarketsRows?: Array<JoinedReportsMarketsRow>): void => {
     if (err) return callback(err);
@@ -48,7 +48,7 @@ export function getReportingHistory(db: Knex, reporter: Address, marketID: Addre
         isCategorical: row.marketType === "categorical",
         isScalar: row.marketType === "scalar",
         isIndeterminate: Boolean(row.isInvalid),
-        isSubmitted: true
+        isSubmitted: true,
       };
       reports[row.universe][row.marketID].push(report);
     });

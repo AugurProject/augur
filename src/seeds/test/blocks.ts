@@ -7,10 +7,10 @@ exports.seed = (knex: Knex): Promise<any> => {
     // Inserts seed entries
     knex.batchInsert("blocks", [{
       blockNumber: 7,
-      blockTimestamp: 10000000
+      blockTimestamp: 10000000,
     }, {
       blockNumber: 8,
-      blockTimestamp: 10000015
+      blockTimestamp: 10000015,
     }], 1000);
   });
 };

@@ -15,7 +15,7 @@ export const PRECISION: Precision = {
   decimals: decimals.toNumber(),
   limit: ten.dividedBy(multiple).toFixed(),
   zero: new BigNumber(1, 10).dividedBy(multiple).toFixed(),
-  multiple: multiple.toFixed()
+  multiple: multiple.toFixed(),
 };
 
 export const MINIMUM_TRADE_SIZE = "0.01";

@@ -58,7 +58,12 @@
       2,
       "never"
     ],
-    "trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
+    "trailing-comma": [
+      true, {
+        "multiline": "always",
+        "singleline": "never"
+      }
+    ],
     "comma-style": [
       2,
       "last"

@@ -33,7 +33,7 @@ export function getOpenOrders(db: Knex, marketID: Address|null, outcome: number|
     marketID,
     outcome,
     orderType,
-    orderCreator: creator
+    orderCreator: creator,
   }, _.isNull);
   db("orders").where(queryData).asCallback((err: Error|null, ordersRows?: Array<OrdersRow>): void => {
     if (err) return callback(err);
@@ -55,7 +55,7 @@ export function getOpenOrders(db: Knex, marketID: Address|null, outcome: number|
         tokensEscrowed: row.tokensEscrowed,
         sharesEscrowed: row.sharesEscrowed,
         betterOrderID: row.betterOrderID,
-        worseOrderID: row.worseOrderID
+        worseOrderID: row.worseOrderID,
       };
     });
     callback(null, orders);

@@ -14,7 +14,7 @@ export function processDesignatedReportSubmittedLog(db: Knex, augur: Augur, trx:
         marketID: log.market,
         phase: 0,
         isDisputed: false,
-        blockNumber: log.blockNumber
+        blockNumber: log.blockNumber,
     };
 
     db.transacting(trx).insert(marketStateDataToInsert).returning("marketStateID").into("market_state").asCallback((err: Error|null, marketStateID?: Array<number>): void => {
@@ -24,7 +24,7 @@ export function processDesignatedReportSubmittedLog(db: Knex, augur: Augur, trx:
         db("markets").transacting(trx).update({ marketStateID: newMarketStateID }).where("marketID", log.market).asCallback((err: Error|null): void => {
             if (err) return callback(err);
             const dataToInsert: { [index: string]: string|number } = {
-                marketID: log.market
+                marketID: log.market,
             };
             log.payoutNumerators.forEach((value: number, i: number): void => {
                 dataToInsert["payout" + i] = value;

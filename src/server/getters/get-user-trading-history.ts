@@ -25,7 +25,7 @@ export function getUserTradingHistory(db: Knex, account: Address, marketID: Addr
       outcome: trade.outcome,
       shareToken: trade.shareToken,
       timestamp: trade.tradeTime,
-      tradeGroupID: trade.tradeGroupID
+      tradeGroupID: trade.tradeGroupID,
     })));
   });
 }

@@ -23,7 +23,7 @@ export function getMarketPriceHistory(db: Knex, marketID: Address|null|undefined
       if (!marketPriceHistory[trade.outcome]) marketPriceHistory[trade.outcome] = [];
       marketPriceHistory[trade.outcome].push({
         price: trade.price,
-        timestamp: trade.tradeTime
+        timestamp: trade.tradeTime,
       });
     });
     callback(null, marketPriceHistory);

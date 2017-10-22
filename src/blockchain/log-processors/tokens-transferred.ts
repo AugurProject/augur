@@ -10,7 +10,7 @@ export function processTokensTransferredLog(db: Knex, augur: Augur, trx: Knex.Tr
     recipient: log.to,
     token: log.token,
     value: log.value,
-    blockNumber: log.blockNumber
+    blockNumber: log.blockNumber,
   };
 
   db.transacting(trx).insert(dataToInsert).into("transfers").asCallback(callback);

@@ -37,7 +37,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
           sharesEscrowed: convertFixedPointToDecimal(log.sharesEscrowed, marketsRow.numTicks),
           betterOrderID: log.betterOrderID,
           worseOrderID: log.worseOrderID,
-          tradeGroupID: log.tradeGroupID
+          tradeGroupID: log.tradeGroupID,
         };
         db.transacting(trx).insert(dataToInsert).into("orders").asCallback(callback);
       });

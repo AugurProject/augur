@@ -15,23 +15,23 @@ let db: Knex;
 if (process.env.DATABASE_URL) {
   db = Knex({
     client: "pg",
-    connection: process.env.DATABASE_URL
+    connection: process.env.DATABASE_URL,
   });
 } else {
   sqlite3.verbose();
   db = Knex({
     client: "sqlite3",
     connection: {
-      filename: augurDbPath
+      filename: augurDbPath,
     },
     acquireConnectionTimeout: 5 * 60 * 1000,
-    useNullAsDefault: true
+    useNullAsDefault: true,
   });
 }
 
 const configuredEndpoints: any = _.omitBy(_.merge(ethereumNodeEndpoints, {
   http: process.env.ENDPOINT_HTTP,
-  ws: process.env.ENDPOINT_WS
+  ws: process.env.ENDPOINT_WS,
 }), _.isNull);
 
 runWebsocketServer(db, websocketPort);
