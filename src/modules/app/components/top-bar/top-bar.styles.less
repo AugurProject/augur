@@ -14,13 +14,30 @@
   width: 6.8rem;
 }
 
-.TopBar__stat-label {
+.TopBar__notifications {
+  color: @color-white;
+  display: inline-block;
+  float: right;
+  font-size: @font-size-rather-large;
+  letter-spacing: 0.05em;
+  line-height: 2.6rem;
+  text-align: center;
+  width: 3rem;
+}
+
+.TopBar__notification-icon {
+  vertical-align: middle;
+  width: @font-size-rather-large;
+}
+
+.TopBar__stat_label {
   color: rgba(255, 255, 255, 0.25);
   margin-right: 0.62rem;
 }
 
 .TopBar__stat-value {
   color: @color-white;
+  padding-left: 0.5em;
 }
 
 .TopBar__logo-text {
@@ -42,5 +59,9 @@
     line-height: 1.5rem;
     margin-right: 0.625rem;
     text-transform: uppercase;
+  }
+
+  .TopBar__notification-icon {
+    display: none;
   }
 }

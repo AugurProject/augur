@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 import MarketHeader from 'modules/market/containers/market-header'
+import MarketOutcomesGraph from 'modules/market/containers/market-outcomes-graph'
 
 import Styles from 'modules/market/components/market-view/market-view.styles'
 
@@ -11,6 +12,12 @@ export default class MarketView extends Component {
     this.state = {
       selectedOutcome: null
     }
+
+    this.updateSelectedOutcome = this.updateSelectedOutcome.bind(this)
+  }
+
+  updateSelectedOutcome(selectedOutcome) {
+    this.setState({ selectedOutcome })
   }
 
   render() {
@@ -21,6 +28,10 @@ export default class MarketView extends Component {
         <div className={Styles.Market__upper}>
           <MarketHeader
             selectedOutcome={s.selectedOutcome}
+          />
+          <MarketOutcomesGraph
+            selectedOutcome={s.selectedOutcome}
+            updateSelectedOutcome={this.updateSelectedOutcome}
           />
         </div>
       </section>

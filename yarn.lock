@@ -431,9 +431,9 @@ augur-contracts@3.2.3:
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-3.2.3.tgz#f2e6331f7a9abf1561f00554c3661baefcf32d81"
 
-augur.js@4.4.11:
-  version "4.4.11"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.4.11.tgz#c827bf4ad90d59a9ce9ad355b3deed1b7a24cc54"
+augur.js@4.5.1:
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.5.1.tgz#cf5f933f27269a275ba60baf22c9b3d493e91878"
   dependencies:
     async "1.5.2"
     augur-contracts "3.2.3"
@@ -4081,13 +4081,13 @@ hide-powered-by@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/hide-powered-by/-/hide-powered-by-1.0.0.tgz#4a85ad65881f62857fc70af7174a1184dccce32b"
 
-highcharts@5.0.12:
-  version "5.0.12"
-  resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-5.0.12.tgz#f73b970fe5c7f04100220b64aa7bd7fb019d11e2"
+highcharts@6.0.2:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-6.0.2.tgz#e3c4c998a21ce6bfa79458fa2c87d967e9234abe"
 
-highcharts@^5.0.0:
-  version "5.0.14"
-  resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-5.0.14.tgz#0ef14cca9f1345408568b533dae1478950d96810"
+highstock-release@6.0.2:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/highstock-release/-/highstock-release-6.0.2.tgz#a87013e22397d1a02540c75eb4797843565cb639"
 
 history@4.6.3, history@^4.5.1, history@^4.6.0:
   version "4.6.3"
@@ -7215,12 +7215,6 @@ react-helmet@5.1.3:
     object-assign "^4.1.1"
     prop-types "^15.5.4"
     react-side-effect "^1.1.0"
-
-react-highcharts@12.0.0:
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/react-highcharts/-/react-highcharts-12.0.0.tgz#a7c8b5f5b56b37afe8e7fe02ec8bee72e376158a"
-  dependencies:
-    highcharts "^5.0.0"
 
 react-hot-loader@3.0.0-beta.7:
   version "3.0.0-beta.7"

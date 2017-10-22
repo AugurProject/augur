@@ -10,7 +10,6 @@ import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-ty
 
 describe('modules/create-market/actions/submit-new-market', () => {
   const mockStore = configureMockStore([thunk])
-  // proxyquire.noPreserveCache().noCallThru();
 
   const test = t => it(t.description, () => {
     const store = mockStore(t.state || {})
@@ -73,26 +72,24 @@ describe('modules/create-market/actions/submit-new-market', () => {
         meta: {
           test: 'object'
         },
-        _automatedReporterAddress: '0x1233',
-        _universe: '1010101',
+        _designatedReporterAddress: '0x1233',
+        universe: '1010101',
         _endTime: 1234567890,
         _denominationToken: 'domnination',
         _extraInfo: {
-          description: 'test description',
+          marketType: 'categorical',
+          shortDescription: 'test description',
           longDescription: '',
           outcomeNames: [
             'one',
             'two'
           ],
-          resolution: '',
+          resolutionSource: '',
           tags: []
         },
-        _maxDisplayPrice: '1',
-        _minDisplayPrice: '0',
         _numOutcomes: 2,
         _topic: 'test topic',
-        settlementFee: '0.02',
-        _numTicks: 2
+        _feePerEthInWei: '0x470de4df820000',
       }
 
       assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`)
@@ -100,7 +97,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
   })
 
   test({
-    description: `should submit well formed 'formattedNewMarket' object to 'createSingleEventMarket' for binary market`,
+    description: `should submit well formed 'formattedNewMarket' object to 'createBinaryMarket' for binary market`,
     state: {
       universe: {
         id: '1010101'
@@ -132,10 +129,10 @@ describe('modules/create-market/actions/submit-new-market', () => {
       const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market')
 
       const mockAugur = {
-        createMarket: { createCategoricalMarket: () => { } }
+        createMarket: { createBinaryMarket: () => { } }
       }
       let formattedNewMarket = null
-      sinon.stub(mockAugur.createMarket, 'createCategoricalMarket', (createMarketObject) => {
+      sinon.stub(mockAugur.createMarket, 'createBinaryMarket', (createMarketObject) => {
         delete createMarketObject.onSent
         delete createMarketObject.onSuccess
         delete createMarketObject.onFailed
@@ -148,25 +145,22 @@ describe('modules/create-market/actions/submit-new-market', () => {
       store.dispatch(submitNewMarket(store.getState().newMarket))
 
       const expected = {
-        _automatedReporterAddress: '0x1233',
+        _designatedReporterAddress: '0x1233',
         meta: {
           test: 'object'
         },
-        _universe: '1010101',
+        universe: '1010101',
         _endTime: 1234567890,
         _denominationToken: 'domnination',
         _extraInfo: {
-          description: 'test description',
+          marketType: 'binary',
+          shortDescription: 'test description',
           longDescription: '',
-          resolution: '',
+          resolutionSource: '',
           tags: []
         },
-        _maxDisplayPrice: '1',
-        _minDisplayPrice: '0',
-        _numOutcomes: 2,
         _topic: 'test topic',
-        settlementFee: '0.02',
-        _numTicks: 2
+        _feePerEthInWei: '0x470de4df820000'
       }
 
       assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`)
@@ -174,7 +168,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
   })
 
   test({
-    description: `should submit well formed 'formattedNewMarket' object to 'createSingleEventMarket' for scalar market`,
+    description: `should submit well formed 'formattedNewMarket' object to 'createScalarMarket' for scalar market`,
     state: {
       universe: {
         id: '1010101'
@@ -200,7 +194,6 @@ describe('modules/create-market/actions/submit-new-market', () => {
         topic: 'test topic',
         keywords: [],
         type: SCALAR,
-        _numTicks: 2,
         scalarSmallNum: '-10', // String for the test case, normally a BigNumber
         scalarBigNum: '10' // String for the test case, normally a BigNumber
       }
@@ -228,22 +221,21 @@ describe('modules/create-market/actions/submit-new-market', () => {
         meta: {
           test: 'object'
         },
-        _automatedReporterAddress: '0x1233',
-        _universe: '1010101',
+        _designatedReporterAddress: '0x1233',
+        universe: '1010101',
         _endTime: 1234567890,
         _denominationToken: 'domnination',
         _extraInfo: {
-          description: 'test description',
+          marketType: 'scalar',
+          shortDescription: 'test description',
           longDescription: '',
-          resolution: '',
+          resolutionSource: '',
           tags: []
         },
         _maxDisplayPrice: '10',
         _minDisplayPrice: '-10',
-        _numOutcomes: 2,
         _topic: 'test topic',
-        settlementFee: '0.02',
-        _numTicks: 2
+        _feePerEthInWei: '0x470de4df820000'
       }
 
       assert.deepEqual(formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`)
@@ -292,8 +284,8 @@ describe('modules/create-market/actions/submit-new-market', () => {
 
       const mockAugur = {
         createMarket: {
-          createCategoricalMarket: (createCategoricalMarket) => {
-            createCategoricalMarket.onSent()
+          createBinaryMarket: (createBinaryMarket) => {
+            createBinaryMarket.onSent()
           }
         }
       }
@@ -353,8 +345,8 @@ describe('modules/create-market/actions/submit-new-market', () => {
 
       const mockAugur = {
         createMarket: {
-          createCategoricalMarket: (createCategoricalMarket) => {
-            createCategoricalMarket.onFailed({ message: null })
+          createBinaryMarket: (createBinaryMarket) => {
+            createBinaryMarket.onFailed({ message: null })
           }
         }
       }
@@ -409,8 +401,8 @@ describe('modules/create-market/actions/submit-new-market', () => {
 
       const mockAugur = {
         createMarket: {
-          createCategoricalMarket: (createCategoricalMarket) => {
-            createCategoricalMarket.onSuccess({
+          createBinaryMarket: (createBinaryMarket) => {
+            createBinaryMarket.onSuccess({
               callReturn: '0x11111111'
             })
           }
@@ -563,54 +555,6 @@ describe('modules/create-market/actions/submit-new-market', () => {
 
       const expected = [
         {
-          outcomeID: 2,
-          type: 'placeTrade'
-        },
-        {
-          outcomeID: 2,
-          type: 'updateTradesInProgress'
-        },
-        {
-          outcomeID: 2,
-          type: 'placeTrade'
-        },
-        {
-          outcomeID: 2,
-          type: 'updateTradesInProgress'
-        },
-        {
-          outcomeID: 2,
-          type: 'placeTrade'
-        },
-        {
-          outcomeID: 2,
-          type: 'updateTradesInProgress'
-        },
-        {
-          outcomeID: 2,
-          type: 'placeTrade'
-        },
-        {
-          outcomeID: 2,
-          type: 'updateTradesInProgress'
-        },
-        {
-          outcomeID: 2,
-          type: 'placeTrade'
-        },
-        {
-          outcomeID: 2,
-          type: 'updateTradesInProgress'
-        },
-        {
-          outcomeID: 2,
-          type: 'placeTrade'
-        },
-        {
-          outcomeID: 2,
-          type: 'updateTradesInProgress'
-        },
-        {
           outcomeID: 1,
           type: 'placeTrade'
         },
@@ -656,6 +600,54 @@ describe('modules/create-market/actions/submit-new-market', () => {
         },
         {
           outcomeID: 1,
+          type: 'updateTradesInProgress'
+        },
+        {
+          outcomeID: 0,
+          type: 'placeTrade'
+        },
+        {
+          outcomeID: 0,
+          type: 'updateTradesInProgress'
+        },
+        {
+          outcomeID: 0,
+          type: 'placeTrade'
+        },
+        {
+          outcomeID: 0,
+          type: 'updateTradesInProgress'
+        },
+        {
+          outcomeID: 0,
+          type: 'placeTrade'
+        },
+        {
+          outcomeID: 0,
+          type: 'updateTradesInProgress'
+        },
+        {
+          outcomeID: 0,
+          type: 'placeTrade'
+        },
+        {
+          outcomeID: 0,
+          type: 'updateTradesInProgress'
+        },
+        {
+          outcomeID: 0,
+          type: 'placeTrade'
+        },
+        {
+          outcomeID: 0,
+          type: 'updateTradesInProgress'
+        },
+        {
+          outcomeID: 0,
+          type: 'placeTrade'
+        },
+        {
+          outcomeID: 0,
           type: 'updateTradesInProgress'
         }
       ]
@@ -702,8 +694,8 @@ describe('modules/create-market/actions/submit-new-market', () => {
 
       const mockAugur = {
         createMarket: {
-          createCategoricalMarket: (createCategoricalMarket) => {
-            createCategoricalMarket.onFailed({ message: null })
+          createBinaryMarket: (createBinaryMarket) => {
+            createBinaryMarket.onFailed({ message: null })
           }
         }
       }

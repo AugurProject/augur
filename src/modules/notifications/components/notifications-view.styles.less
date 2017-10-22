@@ -1,0 +1,79 @@
+@import (reference) '~assets/styles/shared';
+
+.NotificationsView {
+  background: @color-lightergray;
+  box-shadow: 0.1rem 0.2rem 0.5rem @color-almostblack;
+  color: @color-text-dark;
+  display: block;
+  height: 30.25rem;
+  max-height: 80%;
+  padding: 0.25em;
+  position: absolute;
+  right: 0.25rem;
+  text-align: left;
+  top: 3rem;
+  width: 20em;
+  z-index: 1000;
+}
+
+.NotificationsView::after {
+  border: solid transparent;
+  border-color: @color-transparent @color-transparent @color-lightergray @color-transparent;
+  border-width: 10px;
+  bottom: 100%;
+  content: " ";
+  height: 0;
+  margin-left: -10px;
+  pointer-events: none;
+  position: absolute;
+  right: 0.5rem;
+  width: 0;
+}
+
+.NotificationsView__box {
+  max-height: 95%;
+  overflow-y: auto;
+}
+
+.Notification__close {
+  cursor: pointer;
+  display: none;
+  width: @font-size-rather-large;
+}
+
+@media @breakpoint-mobile {
+  .NotificationsView {
+    background: @color-lightergray;
+    bottom: 0;
+    box-shadow: 0.1rem 0.2rem 0.5rem @color-almostblack;
+    color: @color-text-dark;
+    display: block;
+    height: 100%;
+    left: 0;
+    max-height: 100%;
+    padding: 0.25em;
+    position: absolute;
+    right: 0;
+    text-align: left;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+
+  .NotificationsView::after {
+    border: none;
+    bottom: 0;
+    content: "";
+    display: none;
+    right: 0;
+  }
+
+  .NotificationsView__box {
+    max-height: 85%;
+    overflow-y: auto;
+  }
+
+  .Notification__close {
+    display: block;
+  }
+}

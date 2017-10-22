@@ -9,12 +9,12 @@ import MarketHeader from 'modules/market/components/market-header/market-header'
 
 import getValue from 'utils/get-value'
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
+const mergeProps = (sP, dP, oP) => {
   // const queryParams = parseQuery(ownProps.location.search)
   // const market = selectMarket(queryParams.id) // NOTE -- commented out for mocking sake
   const market = { // NOTE -- mocked until we have market getters wired up
     id: '0',
-    description: 'This is just a test market yo',
+    description: 'This is just a test market',
     extraInfo: 'This is the extra info for the market',
     volume: {
       formatted: '84k shares'
@@ -28,7 +28,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   }
 
   return {
-    ...ownProps,
+    ...oP,
     description: market.description,
     details: market.extraInfo,
     coreProperties: {
