@@ -2,78 +2,76 @@ import * as Knex from "knex";
 
 exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
-  return knex("orders").del().then((): PromiseLike<any> => {
+  return knex("orders").del().then((): void => {
     // Inserts seed entries
-    return knex.raw(`INSERT INTO orders
-      (orderID, marketID, outcome, shareToken, orderType, orderCreator, creationTime, creationBlockNumber, price, amount, fullPrecisionPrice, fullPrecisionAmount, tokensEscrowed, sharesEscrowed, betterOrderID, worseOrderID)
-      VALUES (
-        '0x1000000000000000000000000000000000000000000000000000000000000000',
-        '0x0000000000000000000000000000000000000001',
-        0,
-        '0x1000000000000000000000000000000000000000',
-        'buy',
-        '0x0000000000000000000000000000000000000b0b',
-        1506473500,
-        1400001,
-        0.7,
-        1,
-        0.7,
-        1,
-        0.7,
-        0,
-        NULL,
-        NULL
-      ), (
-        '0x2000000000000000000000000000000000000000000000000000000000000000',
-        '0x0000000000000000000000000000000000000001',
-        0,
-        '0x1000000000000000000000000000000000000000',
-        'buy',
-        '0x000000000000000000000000000000000000d00d',
-        1506473515,
-        1400002,
-        0.6,
-        2,
-        0.600001,
-        2,
-        1.200002,
-        0,
-        NULL,
-        NULL
-      ), (
-        '0x3000000000000000000000000000000000000000000000000000000000000000',
-        '0x0000000000000000000000000000000000000001',
-        1,
-        '0x2000000000000000000000000000000000000000',
-        'buy',
-        '0x000000000000000000000000000000000000d00d',
-        1506473515,
-        1400002,
-        0.6,
-        2,
-        0.6,
-        2.0000001,
-        1.20000006,
-        0,
-        NULL,
-        NULL
-      ), (
-        '0x4000000000000000000000000000000000000000000000000000000000000000',
-        '0x0000000000000000000000000000000000000001',
-        1,
-        '0x2000000000000000000000000000000000000000',
-        'sell',
-        '0x000000000000000000000000000000000000d00d',
-        1506473515,
-        1400002,
-        0.6,
-        2,
-        0.6,
-        2,
-        1.2,
-        0,
-        NULL,
-        NULL
-      )`);
+    knex.batchInsert("orders", [{
+      orderID: "0x1000000000000000000000000000000000000000000000000000000000000000",
+      marketID: "0x0000000000000000000000000000000000000001",
+      outcome: 0,
+      shareToken: "0x1000000000000000000000000000000000000000",
+      orderType: "buy",
+      orderCreator: "0x0000000000000000000000000000000000000b0b",
+      creationTime: 1506473500,
+      creationBlockNumber: 1400001,
+      price: 0.7,
+      amount: 1,
+      fullPrecisionPrice: 0.7,
+      fullPrecisionAmount: 1,
+      tokensEscrowed: 0.7,
+      sharesEscrowed: 0,
+      betterOrderID: null,
+      worseOrderID: null
+    }, {
+      orderID: "0x2000000000000000000000000000000000000000000000000000000000000000",
+      marketID: "0x0000000000000000000000000000000000000001",
+      outcome: 0,
+      shareToken: "0x1000000000000000000000000000000000000000",
+      orderType: "buy",
+      orderCreator: "0x000000000000000000000000000000000000d00d",
+      creationTime: 1506473515,
+      creationBlockNumber: 1400002,
+      price: 0.6,
+      amount: 2,
+      fullPrecisionPrice: 0.600001,
+      fullPrecisionAmount: 2,
+      tokensEscrowed: 1.200002,
+      sharesEscrowed: 0,
+      betterOrderID: null,
+      worseOrderID: null
+    }, {
+      orderID: "0x3000000000000000000000000000000000000000000000000000000000000000",
+      marketID: "0x0000000000000000000000000000000000000001",
+      outcome: 1,
+      shareToken: "0x2000000000000000000000000000000000000000",
+      orderType: "buy",
+      orderCreator: "0x000000000000000000000000000000000000d00d",
+      creationTime: 1506473515,
+      creationBlockNumber: 1400002,
+      price: 0.6,
+      amount: 2,
+      fullPrecisionPrice: 0.6,
+      fullPrecisionAmount: 2.0000001,
+      tokensEscrowed: 1.20000006,
+      sharesEscrowed: 0,
+      betterOrderID: null,
+      worseOrderID: null
+    }, {
+      orderID: "0x4000000000000000000000000000000000000000000000000000000000000000",
+      marketID: "0x0000000000000000000000000000000000000001",
+      outcome: 1,
+      shareToken: "0x2000000000000000000000000000000000000000",
+      orderType: "sell",
+      orderCreator: "0x000000000000000000000000000000000000d00d",
+      creationTime: 1506473515,
+      creationBlockNumber: 1400002,
+      price: 0.6,
+      amount: 2,
+      fullPrecisionPrice: 0.6,
+      fullPrecisionAmount: 2,
+      tokensEscrowed: 1.2,
+      sharesEscrowed: 0,
+      betterOrderID: null,
+      worseOrderID: null
+    }], 1000);
   });
 };
