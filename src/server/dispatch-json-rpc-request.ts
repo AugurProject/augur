@@ -53,7 +53,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callba
     case "getMarketPriceHistory":
       return getMarketPriceHistory(db, request.params.marketID, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getUserTradingPositions":
-      return getUserTradingPositions(db, request.params.account, request.params.marketID, request.params.outcome, callback);
+      return getUserTradingPositions(db, request.params.account, request.params.marketID, request.params.outcome, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getReportingWindowsWithUnclaimedFees":
       return getReportingWindowsWithUnclaimedFees(db, request.params.account, callback);
     case "getUnclaimedReportingTokens":

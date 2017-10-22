@@ -1,4 +1,4 @@
-import Augur = require("augur.js");
+import Augur from "augur.js";
 import * as Knex from "knex";
 import { logError } from "../utils/log-error";
 import { BlocksRow } from "../types";

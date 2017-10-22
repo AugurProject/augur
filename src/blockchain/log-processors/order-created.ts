@@ -1,4 +1,4 @@
-import Augur = require("augur.js");
+import Augur from "augur.js";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import { FormattedLog, OrdersRow, ErrorCallback } from "../../types";

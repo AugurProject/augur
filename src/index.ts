@@ -1,4 +1,4 @@
-import Augur = require("augur.js");
+import Augur from "augur.js";
 import * as Knex from "knex";
 import * as sqlite3 from "sqlite3";
 import * as _ from "lodash";

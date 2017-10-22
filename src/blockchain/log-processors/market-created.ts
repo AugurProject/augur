@@ -1,5 +1,5 @@
 import { parallel } from "async";
-import Augur = require("augur.js");
+import Augur from "augur.js";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import { Address, Int256, FormattedLog, MarketCreatedLogExtraInfo, MarketCreatedOnContractInfo, ErrorCallback, AsyncCallback } from "../../types";
