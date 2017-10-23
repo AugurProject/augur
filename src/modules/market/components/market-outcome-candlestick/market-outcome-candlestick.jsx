@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Highstock from 'highcharts/highstock'
+import Highchart from 'highcharts/highstock'
 import noData from 'highcharts/modules/no-data-to-display'
 import { isEqual } from 'lodash'
 // import { ChevronDown, ChevronUp } from 'modules/common/components/icons/icons'
@@ -19,83 +19,64 @@ export default class MarketOutcomeCandlestick extends Component {
   constructor(props) {
     super(props)
 
-    console.log('outcomeSeries -- ', props.outcomeCandlestick)
-
-    this.state = {
-      selectedOutcome: null // NOTE -- Just a placeholder until outcomes are implemented
-    }
-
     this.updateGraph = this.updateGraph.bind(this)
     this.debouncedUpdateGraph = debounce(this.updateGraph.bind(this))
   }
 
   componentDidMount() {
-    noData(Highstock)
+    noData(Highchart)
 
-    Highstock.setOptions({
+    Highchart.setOptions({
       lang: {
         thousandsSep: ','
       }
     })
 
-    const randomCandlestickData = () => [...new Array(30)].map((value, index) => ([
-      index,
-      (Math.random() * 1),
-      (Math.random() * 1),
-      (Math.random() * 1),
-      (Math.random() * 1)
-    ]))
-
-    const randomVolume = () => [...new Array(30)].map((value, index) => ([
-      (Math.random() * ((1000 - 10) + 10))
-    ]))
-
-
-    this.outcomeCandlestick = Highstock.stockChart('market_outcome_candlestick', {
+    this.outcomeCandlestick = Highchart.stockChart('market_outcome_candlestick', {
       rangeSelector: {
-          selected: 1
+        selected: 1
       },
 
       title: {
-          text: 'AAPL Historical'
+        text: 'AAPL Historical'
       },
 
       yAxis: [{
-          labels: {
-              align: 'right',
-              x: -3
-          },
-          title: {
-              text: 'OHLC'
-          },
-          lineWidth: 2,
-          resize: {
-              enabled: true
-          }
+        labels: {
+          align: 'right',
+          x: -3
+        },
+        title: {
+          text: 'OHLC'
+        },
+        lineWidth: 2,
+        resize: {
+          enabled: true
+        }
       }, {
-          labels: {
-              align: 'right',
-              x: -3
-          },
-          title: {
-              text: 'Volume'
-          },
-          top: '65%',
-          height: '35%',
-          offset: 0,
-          lineWidth: 2
+        labels: {
+          align: 'right',
+          x: -3
+        },
+        title: {
+          text: 'Volume'
+        },
+        top: '65%',
+        height: '35%',
+        offset: 0,
+        lineWidth: 2
       }],
 
       tooltip: {
-          split: true
+        split: true
       },
       series: [{
-          type: 'candlestick',
-          name: 'AAPL'
+        type: 'candlestick',
+        name: 'AAPL'
       }, {
-          type: 'column',
-          name: 'Volume',
-          yAxis: 1
+        type: 'column',
+        name: 'Volume',
+        yAxis: 1
       }]
     })
 
