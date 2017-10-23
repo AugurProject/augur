@@ -23,7 +23,7 @@ export class Subscriptions extends EventEmitter {
     this.emit(`unsubscribe:${subscription}`);
   }
 
-  public removeAllListeners(eventName?: string | symbol ): this {
+  public removeAllListeners(eventName?: string | symbol): this {
     this.emit("removeAllListeners");
     return eventName ? super.removeAllListeners(eventName) : super.removeAllListeners();
   }
@@ -31,11 +31,12 @@ export class Subscriptions extends EventEmitter {
   private subscribeToEvent(eventName: string, params: any, publish: (data: {}) => void): string {
     const subscription: string = uuidv4();
 
-    const handler = (data: {}): void => { this.emit(eventName, data) };
-    this.parentEmitter.on(eventName, handler)
+    const handler = (data: {}): void => {
+      this.emit(eventName, data);
+    };
+    this.parentEmitter.on(eventName, handler);
 
-    this
-      .on(eventName, publish)
+    this.on(eventName, publish)
       .once(`unsubscribe:${subscription}`, (): void => {
         this.removeListener(eventName, publish);
         this.parentEmitter.removeListener(eventName, handler);
