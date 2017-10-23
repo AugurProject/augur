@@ -7,7 +7,7 @@ const mergeProps = (sP, dP, oP) => {
   // const market = selectMarket(queryParams.id) // NOTE -- commented out for mocking sake
   // const outcome = market.outcomes[selectedOutcome] // NOTE -- this will pull off the respective outcome
 
-  const randomData = () => [...new Array(30)].map((value, index) => ([
+  const randomCandlestickData = () => [...new Array(30)].map((value, index) => ([
     index,
     (Math.random() * 1),
     (Math.random() * 1),
@@ -15,10 +15,15 @@ const mergeProps = (sP, dP, oP) => {
     (Math.random() * 1)
   ]))
 
+  const randomVolume = () => [...new Array(30)].map((value, index) => ([
+    (Math.random() * ((1000 - 10) + 10))
+  ]))
+
   // [period start, open, high, low, close]
   return {
     ...oP,
-    outcomeCandlestick: randomData()
+    outcomeCandlestick: randomCandlestickData(),
+    outcomeVolume: randomVolume()
   }
 }
 

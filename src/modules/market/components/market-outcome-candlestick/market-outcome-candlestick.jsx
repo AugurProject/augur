@@ -12,6 +12,7 @@ import Styles from 'modules/market/components/market-outcome-candlestick/market-
 export default class MarketOutcomeCandlestick extends Component {
   static propTypes = {
     outcomeCandlestick: PropTypes.array.isRequired,
+    outcomeVolume: PropTypes.array.isRequired,
     selectedOutcome: PropTypes.any // NOTE -- There is a PR to handle null values, but until then..
   }
 
@@ -37,10 +38,65 @@ export default class MarketOutcomeCandlestick extends Component {
       }
     })
 
+    const randomCandlestickData = () => [...new Array(30)].map((value, index) => ([
+      index,
+      (Math.random() * 1),
+      (Math.random() * 1),
+      (Math.random() * 1),
+      (Math.random() * 1)
+    ]))
+
+    const randomVolume = () => [...new Array(30)].map((value, index) => ([
+      (Math.random() * ((1000 - 10) + 10))
+    ]))
+
+
     this.outcomeCandlestick = Highstock.stockChart('market_outcome_candlestick', {
       rangeSelector: {
-        selected: 1
-      }
+          selected: 1
+      },
+
+      title: {
+          text: 'AAPL Historical'
+      },
+
+      yAxis: [{
+          labels: {
+              align: 'right',
+              x: -3
+          },
+          title: {
+              text: 'OHLC'
+          },
+          lineWidth: 2,
+          resize: {
+              enabled: true
+          }
+      }, {
+          labels: {
+              align: 'right',
+              x: -3
+          },
+          title: {
+              text: 'Volume'
+          },
+          top: '65%',
+          height: '35%',
+          offset: 0,
+          lineWidth: 2
+      }],
+
+      tooltip: {
+          split: true
+      },
+      series: [{
+          type: 'candlestick',
+          name: 'AAPL'
+      }, {
+          type: 'column',
+          name: 'Volume',
+          yAxis: 1
+      }]
     })
 
     window.addEventListener('resize', this.debouncedUpdateGraph)
@@ -58,18 +114,10 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   updateGraph() {
-    if (this.outcomeCandlestick.series[0] == null) {
-      this.outcomeCandlestick.addSeries({
-        type: 'candlestick',
-        data: this.props.outcomeCandlestick
-      }, false)
-    } else {
-      this.outcomeCandlestick.series[0].setData(this.props.outcomeCandlestick, false)
-    }
+    this.outcomeCandlestick.series[0].setData(this.props.outcomeCandlestick, false)
+    this.outcomeCandlestick.series[1].setData(this.props.outcomeVolume, false)
 
     this.outcomeCandlestick.redraw()
-
-    console.log('updateGraph -- ', this.props.outcomeCandlestick)
   }
 
   render() {
