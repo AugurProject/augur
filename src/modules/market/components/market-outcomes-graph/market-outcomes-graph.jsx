@@ -126,6 +126,7 @@ export default class MarketOutcomesGraph extends Component {
   }
 
   componentWillUnmount() {
+    this.marketOutcomesGraph.destroy()
     window.removeEventListener('resize', this.debouncedUpdateGraph)
   }
 
