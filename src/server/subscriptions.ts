@@ -34,7 +34,7 @@ export class Subscriptions extends EventEmitter {
     this.on(eventName, publish);
 
     // Unsubscribe from one subscription
-    this.once(`unsubscribe:${publish}`, (): void => {
+    this.once(`unsubscribe:${subscription}`, (): void => {
       this.removeListener(eventName, publish);
       augurEmitter.removeListener(eventName, handler);
     });
