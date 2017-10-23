@@ -31,26 +31,16 @@ export default class ProfitLossChart extends Component {
         thousandsSep: ','
       }
     })
-    const isMobile = this.props.isMobile
     // const containerId = 'profit-loss-chart-container' + this.props.id
     const chartId = 'profit-loss-chart' + this.props.id
-
-    const height = isMobile ? (9 / (16 * 100)) + '%' : 170
-    let width = 368
-    if (isMobile) {
-      width = window.visualViewport.width <= 420 ? 368 : window.visualViewport.width
-    }
 
     this.profitLossChart = new Highcharts.Chart(chartId, {
       title: {
         text: null
       },
       chart: {
-        height: isMobile ? null : height,
-        width: isMobile ? null : width,
-        backgroundColor: '#1e1a31',
-        spacingLeft: isMobile ? 0 : 10,
-        spacingRight: isMobile ? 0 : 10,
+        height: 100,
+        backgroundColor: '#1e1a31'
       },
       lang: {
         noData: 'No price history'
@@ -120,18 +110,6 @@ export default class ProfitLossChart extends Component {
         this.profitLossChart.series[i].setData(series.data, false)
       }
     })
-    let height = this.props.isMobile ? (9 / (16 * 100)) + '%' : 170
-    let width = 368
-
-    if (this.props.isMobile) {
-      console.log('resize in mobile', window.visualViewport.width)
-      width = window.visualViewport.width <= 420 ? 368 : window.visualViewport.width
-      // width = 100 + '%'
-      height = 10 + '%'
-    }
-    console.log('resize, PL:', width, height)
-    this.profitLossChart.options.chart.height = height
-    this.profitLossChart.options.chart.width = width
     this.profitLossChart.redraw()
   }
 

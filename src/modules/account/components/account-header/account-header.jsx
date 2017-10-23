@@ -93,7 +93,8 @@ class AccountHeader extends Component {
       >
         <div
           ref="ethCurrencyContainer"
-          title={p.stats[0].totalRealEth.title} className={Styles.AccountHeader__Currency}
+          title={p.stats[0].totalRealEth.title}
+          className={Styles.AccountHeader__Currency}
         >
           <span
             ref="ethCurrencyValue"
@@ -127,41 +128,43 @@ class AccountHeader extends Component {
             </span>
           </div>
         }
-        <div className={Styles.AccountHeader__Chart}>
-          <ProfitLossChart
-            series={totalPLSeries}
-            label={p.stats[1].totalPL.label}
-            title="X Day P/L"
-            id="-xDay"
-            totalValue={totalPLValue}
-            isMobile={p.isMobile}
-          />
+        <div className={Styles.AccountHeader__Charts}>
+          <div className={Styles.AccountHeader__Chart}>
+            <ProfitLossChart
+              series={totalPLSeries}
+              label={p.stats[1].totalPL.label}
+              title="X Day P/L"
+              id="-xDay"
+              totalValue={totalPLValue}
+              isMobile={p.isMobile}
+            />
+          </div>
+          {repValue === '0' && !p.isMobile &&
+            <div className={Styles.AccountHeader__Chart}>
+              <ProfitLossChart
+                series={totalPLMonthSeries}
+                label={p.stats[1].totalPLMonth.label}
+                title="30 Day P/L"
+                id="-30Day"
+                totalValue={totalPLMonthValue}
+                isMobile={p.isMobile}
+              />
+            </div>
+          }
+          {repValue === '0' && !p.isMobile &&
+            <div className={Styles.AccountHeader__Chart}>
+              <ProfitLossChart
+                className={Styles.AccountHeader__Chart}
+                series={totalPLDaySeries}
+                label={p.stats[1].totalPLDay.label}
+                title="1 Day P/L"
+                id="-1Day"
+                totalValue={totalPLDayValue}
+                isMobile={p.isMobile}
+              />
+            </div>
+          }
         </div>
-        {repValue === '0' && !p.isMobile &&
-          <div className={Styles.AccountHeader__Chart}>
-            <ProfitLossChart
-              series={totalPLMonthSeries}
-              label={p.stats[1].totalPLMonth.label}
-              title="30 Day P/L"
-              id="-30Day"
-              totalValue={totalPLMonthValue}
-              isMobile={p.isMobile}
-            />
-          </div>
-        }
-        {repValue === '0' && !p.isMobile &&
-          <div className={Styles.AccountHeader__Chart}>
-            <ProfitLossChart
-              className={Styles.AccountHeader__Chart}
-              series={totalPLDaySeries}
-              label={p.stats[1].totalPLDay.label}
-              title="1 Day P/L"
-              id="-1Day"
-              totalValue={totalPLDayValue}
-              isMobile={p.isMobile}
-            />
-          </div>
-        }
       </div>
     )
   }
