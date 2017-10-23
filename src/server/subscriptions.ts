@@ -13,7 +13,7 @@ export class Subscriptions extends EventEmitter {
     }
   }
 
-  public unsubscribe(subscription: string): void  {
+  public unsubscribe(subscription: string): void {
     this.emit(`unsubscribe:${subscription}`);
   }
 
