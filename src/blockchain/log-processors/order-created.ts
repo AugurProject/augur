@@ -1,40 +1,57 @@
 import Augur from "augur.js";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { FormattedLog, OrdersRow, ErrorCallback } from "../../types";
+import { Address, FormattedLog, OrdersRow, ErrorCallback } from "../../types";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
 import { denormalizePrice } from "../../utils/denormalize-price";
 import { formatOrderAmount, formatOrderPrice } from "../../utils/format-order";
 import { WEI_PER_ETHER } from "../../constants";
 
+interface BlocksRow {
+  blockTimestamp: number;
+}
+
+interface TokensRow {
+  marketID: Address;
+  outcome: number;
+}
+
+interface MarketsRow {
+  minPrice: string|number;
+  maxPrice: string|number;
+  numTicks: string|number;
+}
+
 export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
-  // TODO check for race condition: make sure block timestamp is written BEFORE log processor is triggered
-  trx.select("blockTimestamp").from("blocks").where({ blockNumber: log.blockNumber }).asCallback((err?: Error|null, blocksRow?: {blockTimestamp: number}): void => {
+  trx.select("blockTimestamp").from("blocks").where({ blockNumber: log.blockNumber }).asCallback((err: Error|null, blocksRows?: Array<BlocksRow>): void => {
     if (err) return callback(err);
-    if (!blocksRow) return callback(new Error("block timestamp not found"));
-    trx.select(["marketID", "outcome"]).from("tokens").where({ contractAddress: log.shareToken }).asCallback((err?: Error|null, tokensRow?: {marketID: string, outcome: number}): void => {
+    if (!blocksRows || !blocksRows.length) return callback(new Error("block timestamp not found"));
+    const timestamp = blocksRows![0]!.blockTimestamp;
+    trx.select(["marketID", "outcome"]).from("tokens").where({ contractAddress: log.shareToken }).asCallback((err: Error|null, tokensRows?: Array<TokensRow>): void => {
       if (err) return callback(err);
-      if (!tokensRow) return callback(new Error("market and outcome not found"));
-      trx.select(["minPrice", "maxPrice", "numTicks"]).from("markets").where({ marketID: tokensRow.marketID }).asCallback((err?: Error|null, marketsRow?: {minPrice: number, maxPrice: number, numTicks: number}): void => {
+      if (!tokensRows || !tokensRows.length) return callback(new Error("market and outcome not found"));
+      const { marketID, outcome } = tokensRows[0];
+      trx.select(["minPrice", "maxPrice", "numTicks"]).from("markets").where({ marketID }).asCallback((err: Error|null, marketsRows?: Array<MarketsRow>): void => {
         if (err) return callback(err);
-        if (!marketsRow) return callback(new Error("market min price, max price, and/or num ticks not found"));
-        const fullPrecisionPrice: string = denormalizePrice(marketsRow.minPrice, marketsRow.maxPrice, convertFixedPointToDecimal(log.price, marketsRow.numTicks));
-        const fullPrecisionAmount: string = convertFixedPointToDecimal(log.amount, marketsRow.numTicks);
+        if (!marketsRows || !marketsRows.length) return callback(new Error("market min price, max price, and/or num ticks not found"));
+        const { minPrice, maxPrice, numTicks } = marketsRows[0];
+        const fullPrecisionPrice = denormalizePrice(minPrice, maxPrice, convertFixedPointToDecimal(log.price, numTicks));
+        const fullPrecisionAmount = convertFixedPointToDecimal(log.amount, numTicks);
         const dataToInsert: OrdersRow = {
           orderID: log.orderID,
-          marketID: tokensRow.marketID,
-          outcome: tokensRow.outcome,
+          marketID,
+          outcome,
           shareToken: log.shareToken,
           orderType: log.orderType,
           orderCreator: log.creator,
-          creationTime: blocksRow.blockTimestamp,
+          creationTime: timestamp,
           creationBlockNumber: log.blockNumber,
-          price: formatOrderPrice(log.orderType, marketsRow.minPrice, marketsRow.maxPrice, fullPrecisionPrice),
-          amount: formatOrderAmount(marketsRow.minPrice, marketsRow.maxPrice, fullPrecisionAmount),
+          price: formatOrderPrice(log.orderType, minPrice, maxPrice, fullPrecisionPrice),
+          amount: formatOrderAmount(minPrice, maxPrice, fullPrecisionAmount),
           fullPrecisionPrice,
           fullPrecisionAmount,
           tokensEscrowed: convertFixedPointToDecimal(log.tokensEscrowed, WEI_PER_ETHER),
-          sharesEscrowed: convertFixedPointToDecimal(log.sharesEscrowed, marketsRow.numTicks),
+          sharesEscrowed: convertFixedPointToDecimal(log.sharesEscrowed, numTicks),
           betterOrderID: log.betterOrderID,
           worseOrderID: log.worseOrderID,
           tradeGroupID: log.tradeGroupID,

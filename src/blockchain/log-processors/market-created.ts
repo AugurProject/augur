@@ -10,6 +10,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
   trx.select("blockTimestamp").from("blocks").where({ blockNumber: log.blockNumber }).asCallback((err?: Error|null, blocksRows?: Array<{blockTimestamp: number}>): void => {
     if (err) return callback(err);
     if (!blocksRows || !blocksRows.length) return callback(new Error("block timestamp not found"));
+    const timestamp = blocksRows![0]!.blockTimestamp;
     const marketPayload: {} = { tx: { to: log.market } };
     parallel({
       numberOfOutcomes: (next: AsyncCallback): void => augur.api.Market.getNumberOfOutcomes(marketPayload, next),
@@ -20,6 +21,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
       numTicks: (next: AsyncCallback): void => augur.api.Market.getNumTicks(marketPayload, next),
       universe: (next: AsyncCallback): void => augur.api.Market.getUniverse(marketPayload, next),
       marketCreatorSettlementFeeDivisor: (next: AsyncCallback): void => augur.api.Market.getMarketCreatorSettlementFeeDivisor(marketPayload, next),
+      // TODO get shareToken addresses
     }, (err?: any, onContractData?: any): void => {
       if (err) return callback(err);
       const universePayload: {} = { tx: { to: onContractData.universe } };
@@ -30,10 +32,10 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
           marketCreator:              log.marketCreator,
           creationBlockNumber:        log.blockNumber,
           creationFee:                log.marketCreationFee,
-          creationTime:               blocksRows![0]!.blockTimestamp,
+          creationTime:               timestamp,
           marketType:                 extraInfo!.marketType,
-          minPrice:                   extraInfo!.minPrice,
-          maxPrice:                   extraInfo!.maxPrice,
+          minPrice:                   new BigNumber(extraInfo!.minPrice, 10).toFixed(),
+          maxPrice:                   new BigNumber(extraInfo!.maxPrice, 10).toFixed(),
           category:                   extraInfo!.category,
           tag1:                       extraInfo!.tag1,
           tag2:                       extraInfo!.tag2,
@@ -45,7 +47,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
           reportingWindow:            onContractData!.reportingWindow,
           endTime:                    parseInt(onContractData!.endTime!, 16),
           designatedReporter:         onContractData!.designatedReporter,
-          designatedReportStake:      onContractData!.designatedReportStake,
+          designatedReportStake:      new BigNumber(onContractData!.designatedReportStake, 16).toFixed(),
           numTicks:                   parseInt(onContractData!.numTicks!, 16),
           marketCreatorFeeRate:       convertDivisorToRate(onContractData!.marketCreatorSettlementFeeDivisor!, 16),
           reportingFeeRate:           convertDivisorToRate(reportingFeeDivisor!, 16),
@@ -53,9 +55,10 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
           volume:                     "0",
           sharesOutstanding:          "0",
         };
-        db.transacting(trx).insert(dataToInsert).into("markets").asCallback((err?: Error|null): void => {
+        db.transacting(trx).insert(dataToInsert).into("markets").asCallback((err: Error|null): void => {
           if (err) return callback(err);
-          trx.select("popularity").from("categories").where({ category: extraInfo!.category }).asCallback((err?: Error|null, categoriesRows?: Array<{popularity: number}>): void => {
+          // TODO insert into outcomes and tokens tables also
+          trx.select("popularity").from("categories").where({ category: extraInfo!.category }).asCallback((err: Error|null, categoriesRows?: Array<{popularity: number}>): void => {
             if (err) return callback(err);
             if (categoriesRows && categoriesRows.length) return callback(null);
             db.transacting(trx).insert({ category: extraInfo!.category, universe: onContractData!.universe }).into("categories").asCallback(callback);
