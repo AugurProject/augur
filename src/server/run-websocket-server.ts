@@ -5,7 +5,7 @@ import { JsonRpcRequest } from "../types";
 import { isJsonRpcRequest } from "./is-json-rpc-request";
 import { dispatchJsonRpcRequest } from "./dispatch-json-rpc-request";
 import { makeJsonRpcResponse } from "./make-json-rpc-response";
-import { makeJsonRpcError, JsonRpcErrorCode, } from "./make-json-rpc-error";
+import { makeJsonRpcError, JsonRpcErrorCode } from "./make-json-rpc-error";
 import { Subscriptions } from "./subscriptions";
 
 export function runWebsocketServer(db: Knex, port: number): void {
@@ -19,7 +19,7 @@ export function runWebsocketServer(db: Knex, port: number): void {
       try {
         message = JSON.parse(data as string);
         if (!isJsonRpcRequest(message)) return console.error("bad json rpc message received:", message);
-      } catch(exc) {
+      } catch (exc) {
         return websocket.send(makeJsonRpcError("-1", JsonRpcErrorCode.ParseError, "Bad JSON RPC Message Received", {originalText: data as string}));
       }
 
