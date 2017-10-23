@@ -54,7 +54,7 @@ export function transferFunds(amount, currency, toAddress) {
       case REP:
         return augur.assets.sendReputation({
           meta: loginAccount.meta,
-          universeID: universe.id,
+          universe: universe.id,
           reputationToSend: amount,
           _to: to,
           onSent,

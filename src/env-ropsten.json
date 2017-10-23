@@ -5,7 +5,7 @@
   "networkID": 3,
   "hostedNodeFallback": true,
   "autoLogin": false,
-  "universeID": null,
+  "universe": null,
   "debug": {
     "connect": true,
     "broadcast": false
