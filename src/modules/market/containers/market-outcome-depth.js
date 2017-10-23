@@ -7,7 +7,9 @@ const mergeProps = (sP, dP, oP) => {
   // const market = selectMarket(queryParams.id) // NOTE -- commented out for mocking sake
   // const outcome = market.outcomes[selectedOutcome] // NOTE -- this will pull off the respective outcome
 
-  return {}
+  return {
+    ...oP
+  }
 }
 
 export default connect(null, null, mergeProps)(MarketOutcomeDepth)

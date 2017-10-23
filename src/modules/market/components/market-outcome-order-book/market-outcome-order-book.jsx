@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+import Styles from 'modules/market/components/market-outcome-order-book/market-outcome-order-book.styles'
+
 export default class MarketOutcomeOrderbook extends Component {
   static propTypes = {
-    fak: PropTypes.any
+    selectedOutcome: PropTypes.any
   }
 
   constructor(props) {
@@ -16,7 +18,9 @@ export default class MarketOutcomeOrderbook extends Component {
 
   render() {
     return (
-      <span>Faaaak order book</span>
+      <section className={Styles.MarketOutcomeOrderBook}>
+        <span>order book</span>
+      </section>
     )
   }
 }

@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+import Styles from 'modules/market/components/market-outcome-depth/market-outcome-depth.styles'
+
 export default class MarketOutcomeDepth extends Component {
   static propTypes = {
-    fak: PropTypes.any
+    selectedOutcome: PropTypes.any
   }
 
   constructor(props) {
@@ -16,7 +18,9 @@ export default class MarketOutcomeDepth extends Component {
 
   render() {
     return (
-      <span>Faaaak depth</span>
+      <section className={Styles.MarketOutcomeDepth}>
+        <span>depth</span>
+      </section>
     )
   }
 }

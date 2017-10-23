@@ -1,148 +1,75 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Highstock from 'highcharts/js/highstock'
+import Highstock from 'highcharts/highstock'
 import noData from 'highcharts/modules/no-data-to-display'
 import { isEqual } from 'lodash'
 // import { ChevronDown, ChevronUp } from 'modules/common/components/icons/icons'
 
 import debounce from 'utils/debounce'
 
-import Styles from 'modules/market/components/market-outcome-candlestick/market-outcome-candlestick'
+import Styles from 'modules/market/components/market-outcome-candlestick/market-outcome-candlestick.styles'
 
 export default class MarketOutcomeCandlestick extends Component {
   static propTypes = {
-    priceTimeSeries: PropTypes.array.isRequired,
-    selectedOutcome: PropTypes.any, // NOTE -- There is a PR to handle null values, but until then..
-    updateSelectedOutcome: PropTypes.func.isRequired
+    outcomeCandlestick: PropTypes.array.isRequired,
+    selectedOutcome: PropTypes.any // NOTE -- There is a PR to handle null values, but until then..
   }
 
   constructor(props) {
     super(props)
 
+    console.log('outcomeSeries -- ', props.outcomeCandlestick)
+
     this.state = {
-      hoveredOutcome: null,
       selectedOutcome: null // NOTE -- Just a placeholder until outcomes are implemented
     }
 
-    // this.updateGraph = this.updateGraph.bind(this)
-    // this.debouncedUpdateGraph = debounce(this.updateGraph.bind(this))
+    this.updateGraph = this.updateGraph.bind(this)
+    this.debouncedUpdateGraph = debounce(this.updateGraph.bind(this))
   }
 
   componentDidMount() {
-    // noData(Highstock)
-    //
-    // Highstock.setOptions({
-    //   lang: {
-    //     thousandsSep: ','
-    //   }
-    // })
+    noData(Highstock)
 
-    // this.marketOutcomesGraph = new Highstock.Chart('market_outcome_candlestick', {
-    //   title: {
-    //     text: null
-    //   },
-    //   chart: {
-    //     height: 300,
-    //     spacingTop: 1,
-    //     spacingRight: 0,
-    //     spacingLeft: 0
-    //   },
-    //   lang: {
-    //     noData: 'No price history'
-    //   },
-    //   rangeSelector: { selected: 1 },
-    //   xAxis: {
-    //     type: 'datetime',
-    //     title: {
-    //       text: null
-    //     },
-    //     tickLength: 7,
-    //     crosshair: {
-    //       snap: false,
-    //       label: {
-    //         enabled: true,
-    //         shape: 'square'
-    //       }
-    //     }
-    //   },
-    //   yAxis: {
-    //     title: {
-    //       text: null
-    //     },
-    //     tickLength: 0,
-    //     tickWidth: 0,
-    //     ceiling: 1,
-    //     crosshair: {
-    //       snap: false,
-    //       label: {
-    //         enabled: true,
-    //         format: '{value:.2f}',
-    //         shape: 'square'
-    //       }
-    //     },
-    //     labels: {
-    //       align: 'left',
-    //       y: 15,
-    //       x: 0,
-    //       formatter: function () { // eslint-disable-line func-names, object-shorthand
-    //         return this.isFirst ? '' : this.value
-    //       }
-    //     }
-    //   },
-    //   legend: {
-    //     enabled: false
-    //   },
-    //   tooltip: {
-    //     enabled: false
-    //   },
-    //   plotOptions: {
-    //     series: {
-    //       point: {
-    //         events: {
-    //           mouseOver: event => this.setState({
-    //             hoveredOutcome: {
-    //               name: this.props.priceTimeSeries[event.target.series.index].name,
-    //               price: event.target.y
-    //             }
-    //           }),
-    //           mouseOut: event => this.setState({ hoveredOutcome: null }),
-    //           click: event => this.props.updateSelectedOutcome(event.point.colorIndex)
-    //         }
-    //       }
-    //     }
-    //   },
-    //   credits: {
-    //     enabled: false
-    //   }
-    // })
+    Highstock.setOptions({
+      lang: {
+        thousandsSep: ','
+      }
+    })
 
-    // window.addEventListener('resize', this.debouncedUpdateGraph)
-    //
-    // this.updateGraph()
+    this.outcomeCandlestick = Highstock.stockChart('market_outcome_candlestick', {
+      rangeSelector: {
+        selected: 1
+      }
+    })
+
+    window.addEventListener('resize', this.debouncedUpdateGraph)
+
+    this.updateGraph()
   }
 
   componentDidUpdate(prevProps) {
-    if (!isEqual(prevProps.priceTimeSeries, this.props.priceTimeSeries)) this.updateGraph()
+    if (!isEqual(prevProps.outcomeCandlestick, this.props.outcomeCandlestick)) this.updateGraph()
   }
 
   componentWillUnmount() {
+    this.outcomeCandlestick.destroy()
     window.removeEventListener('resize', this.debouncedUpdateGraph)
   }
 
   updateGraph() {
-    (this.props.priceTimeSeries || []).forEach((series, i) => {
-      if (this.marketOutcomesGraph.series[i] == null) {
-        this.marketOutcomesGraph.addSeries({
-          type: 'line',
-          name: series.name,
-          data: series.data
-        }, false)
-      } else {
-        this.marketOutcomesGraph.series[i].setData(series.data, false)
-      }
-    })
+    if (this.outcomeCandlestick.series[0] == null) {
+      this.outcomeCandlestick.addSeries({
+        type: 'candlestick',
+        data: this.props.outcomeCandlestick
+      }, false)
+    } else {
+      this.outcomeCandlestick.series[0].setData(this.props.outcomeCandlestick, false)
+    }
 
-    this.marketOutcomesGraph.redraw()
+    this.outcomeCandlestick.redraw()
+
+    console.log('updateGraph -- ', this.props.outcomeCandlestick)
   }
 
   render() {
@@ -150,7 +77,12 @@ export default class MarketOutcomeCandlestick extends Component {
     // const s = this.state
 
     return (
-      <span>Candlestick</span>
+      <section className={Styles.MarketOutcomeCandlestick}>
+        <div
+          id="market_outcome_candlestick"
+          className={Styles.MarketOutcomeCandlestick__graph}
+        />
+      </section>
     )
   }
 }
