@@ -75,6 +75,7 @@ export function calculateProfitLossInOutcome(augur: Augur, trx: Knex.Transaction
     if (err) return callback(err);
     trx.select("price").from("outcomes").where({ marketID, outcome }).asCallback((err: Error|null, outcomesRows?: Array<OutcomesRow>): void => {
       if (err) return callback(err);
+      if (!outcomesRows || !outcomesRows.length) return callback(null);
       const { price } = outcomesRows![0];
       callback(null, augur.trading.calculateProfitLoss({ trades: userTradingHistory, lastPrice: price }));
     });
