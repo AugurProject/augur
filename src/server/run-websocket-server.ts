@@ -1,6 +1,7 @@
 import * as WebSocket from "ws";
 import * as Knex from "knex";
 import { EventEmitter } from "events";
+import { augurEmitter } from '../events';
 import { JsonRpcRequest } from "../types";
 import { isJsonRpcRequest } from "./is-json-rpc-request";
 import { dispatchJsonRpcRequest } from "./dispatch-json-rpc-request";
@@ -12,7 +13,7 @@ export function runWebsocketServer(db: Knex, port: number): void {
   console.log("Starting websocket server on port", port);
   const websocketServer: WebSocket.Server = new WebSocket.Server({ port });
   websocketServer.on("connection", (websocket: WebSocket): void => {
-    const subscriptions = new Subscriptions();
+    const subscriptions = new Subscriptions(augurEmitter);
 
     websocket.on("message", (data: WebSocket.Data): void => {
       let message: any;

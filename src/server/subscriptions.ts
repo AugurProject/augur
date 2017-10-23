@@ -1,9 +1,15 @@
 import * as uuidv4 from "uuid/v4";
 import { EventEmitter } from "events";
-import { augurEmitter } from "../events";
 import { ErrorCallback } from "../types";
 
 export class Subscriptions extends EventEmitter {
+  private parentEmitter: EventEmitter;
+
+  constructor(parentEmitter: EventEmitter) {
+    super();
+    this.parentEmitter = parentEmitter;
+  }
+
   public subscribe(eventName: string, params: any, publish: (data: {}) => void): string {
     switch (eventName) {
       case "MarketCreated":
@@ -26,19 +32,19 @@ export class Subscriptions extends EventEmitter {
     const subscription: string = uuidv4();
 
     const handler = (data: {}): void => { this.emit(eventName, data) };
-    augurEmitter.on(eventName, handler);
+    this.parentEmitter.on(eventName, handler);
 
     this.on(eventName, publish);
 
     // Unsubscribe from one subscription
     this.once(`unsubscribe:${subscription}`, (): void => {
       this.removeListener(eventName, publish);
-      augurEmitter.removeListener(eventName, handler);
+      this.parentEmitter.removeListener(eventName, handler);
     });
 
-    // Cleanup augurEmitter when we're clearing this one
+    // Cleanup this.parentEmitter when we're clearing this one
     this.once("removeAllListeners", (): void => {
-      augurEmitter.removeListener(eventName, handler);
+      this.parentEmitter.removeListener(eventName, handler);
     });
 
     return subscription;
