@@ -25,10 +25,7 @@ export class Subscriptions extends EventEmitter {
   private subscribeToEvent(eventName: string, params: any, publish: (data: {}) => void): string {
     const subscription: string = uuidv4();
 
-    const handler = (data: {}): void => {
-      this.emit(eventName, data);
-    };
-
+    const handler = (data: {}): void => { this.emit(eventName, data) };
     augurEmitter.on(eventName, handler);
 
     this.on(eventName, publish);
