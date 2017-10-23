@@ -119,7 +119,7 @@ describe("blockchain/log-processors/market-created", () => {
           shortDescription: "this is a test market",
           longDescription: "this is the long description of a test market",
           designatedReporter: "0x000000000000000000000000000000000000b0b2",
-          designatedReportStake: "0x1000000",
+          designatedReportStake: 16777216,
           resolutionSource: "https://www.trusted-third-party-co.com",
           numTicks: 10752,
           consensusOutcome: null,

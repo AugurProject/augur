@@ -8,6 +8,9 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.string("marketID", 66).notNullable();
       table.integer("outcome").notNullable();
       table.specificType("numShares", "NUMERIC").defaultTo(0).nullable();
+      table.specificType("numSharesAdjustedForUserIntention", "NUMERIC").defaultTo(0).nullable();
+      table.specificType("realizedProfitLoss", "NUMERIC").defaultTo(0).nullable();
+      table.specificType("unrealizedProfitLoss", "NUMERIC").defaultTo(0).nullable();
       table.timestamp("lastUpdated").defaultTo(knex.fn.now()).notNullable();
     });
   });
