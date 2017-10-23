@@ -20,7 +20,7 @@ export function runWebsocketServer(db: Knex, port: number): void {
         message = JSON.parse(data as string);
         if (!isJsonRpcRequest(message)) return console.error("bad json rpc message received:", message);
       } catch (exc) {
-        return websocket.send(makeJsonRpcError("-1", JsonRpcErrorCode.ParseError, "Bad JSON RPC Message Received", {originalText: data as string}));
+        return websocket.send(makeJsonRpcError("-1", JsonRpcErrorCode.ParseError, "Bad JSON RPC Message Received", { originalText: data as string }));
       }
 
       try {
@@ -29,7 +29,7 @@ export function runWebsocketServer(db: Knex, port: number): void {
 
           try {
             const subscription: string = subscriptions.subscribe(eventName, message.params, (data: {}): void => {
-              websocket.send(makeJsonRpcResponse(message.id, { subscription, result: data}));
+              websocket.send(makeJsonRpcResponse(message.id, { subscription, result: data }));
             });
             websocket.send(makeJsonRpcResponse(message.id, { subscription }));
           } catch (exc) {
@@ -40,7 +40,7 @@ export function runWebsocketServer(db: Knex, port: number): void {
           subscriptions.unsubscribe(subscription);
           websocket.send(makeJsonRpcResponse(message.id, true));
         } else {
-          dispatchJsonRpcRequest(db, message as JsonRpcRequest, (err?: Error|null, result?: any): void => {
+          dispatchJsonRpcRequest(db, message as JsonRpcRequest, (err?: Error | null, result?: any): void => {
             if (err) return console.error("dispatch error: ", err);
             websocket.send(makeJsonRpcResponse(message.id, result || null));
           });
