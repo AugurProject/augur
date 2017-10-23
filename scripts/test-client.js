@@ -23,17 +23,17 @@ var WebSocket = require("ws");
 //   }
 // };
 
-var request = {
-  id: 3,
-  jsonrpc: "2.0",
-  method: "getOpenOrders",
-  params: {
-    marketID: "0x0000000000000000000000000000000000000001",
-    outcome: null,
-    orderType: "buy",
-    creator: null
-  }
-};
+// var request = {
+//   id: 3,
+//   jsonrpc: "2.0",
+//   method: "getOpenOrders",
+//   params: {
+//     marketID: "0x0000000000000000000000000000000000000001",
+//     outcome: null,
+//     orderType: "buy",
+//     creator: null
+//   }
+// };
 
 // var request = {
 //   id: 4,
@@ -50,6 +50,15 @@ var request = {
 //   method: "getCategories",
 //   params: {
 //     universe: "0x000000000000000000000000000000000000000b"
+//   }
+// };
+
+// var request = {
+//   id: 6,
+//   jsonrpc: "2.0",
+//   method: "getUserTradingPositions",
+//   params: {
+//     account: "0x0000000000000000000000000000000000000b0b",
 //   }
 // };
 
