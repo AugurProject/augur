@@ -4,6 +4,7 @@ module.exports = {
   getOrderBook: require("./get-open-orders"),
   getUserTradingHistory: require("./get-user-trading-history"),
   getUserTradingPositions: require("./get-user-trading-positions"),
+  getPositionInMarket: require("./get-position-in-market"),
   filterByPriceAndOutcomeAndUserSortByPrice: require("./filter-by-price-and-outcome-and-user-sort-by-price"),
   claimMarketsProceeds: require("./claim-markets-proceeds"),
   simulateTrade: require("./simulation"),
