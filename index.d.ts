@@ -94,6 +94,23 @@ interface EventSubscriptionCallbacks {
   };
 }
 
+export interface CalculatedProfitLoss {
+  realized: string;
+  unrealized: string;
+  position: string;
+  meanOpenPrice: string;
+  queued: string;
+}
+
+export interface SimulatedTrade {
+  settlementFees: string;
+  gasFees: string;
+  sharesDepleted: string;
+  otherSharesDepleted: string;
+  tokensDepleted: string;
+  shareBalances: Array<string>;
+}
+
 export interface RpcInterface {
   errors: any; // TODO define RPC errors object
   eth: {
@@ -129,7 +146,7 @@ export class Augur {
     loginWithMasterKey(p: ApiParams): {
       address: Address;
       privateKey: Buffer;
-      derivedKey: Buffer
+      derivedKey: Buffer;
     };
     logout(): void;
   };
@@ -176,8 +193,8 @@ export class Augur {
       getOrderBook: ApiFunction;
       filterByPriceAndOutcomeAndUserSortByPrice(orderBook: any, orderType: number, price: any, userAddress: Address): any // TODO define order book type, import BigNumber type for price
     }
-    simulateTrade(p: ApiParams): any; // TODO define trade simulation type
-    calculateProfitLoss(p: ApiParams): any; // TODO define profit-and-loss type
+    simulateTrade(p: ApiParams): SimulatedTrade;
+    calculateProfitLoss(p: ApiParams): CalculatedProfitLoss;
     normalizePrice(p: ApiParams): string;
     denormalizePrice(p: ApiParams): string;
   };
