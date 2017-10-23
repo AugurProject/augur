@@ -23,29 +23,26 @@ export class Subscriptions extends EventEmitter {
     this.emit(`unsubscribe:${subscription}`);
   }
 
-  public removeAllListeners(eventName?: string | symbol | undefined): this {
+  public removeAllListeners(eventName?: string | symbol ): this {
     this.emit("removeAllListeners");
-    return super.removeAllListeners(eventName);
+    return eventName ? super.removeAllListeners(eventName) : super.removeAllListeners();
   }
 
   private subscribeToEvent(eventName: string, params: any, publish: (data: {}) => void): string {
     const subscription: string = uuidv4();
 
     const handler = (data: {}): void => { this.emit(eventName, data) };
-    this.parentEmitter.on(eventName, handler);
+    this.parentEmitter.on(eventName, handler)
 
-    this.on(eventName, publish);
-
-    // Unsubscribe from one subscription
-    this.once(`unsubscribe:${subscription}`, (): void => {
-      this.removeListener(eventName, publish);
-      this.parentEmitter.removeListener(eventName, handler);
-    });
-
-    // Cleanup this.parentEmitter when we're clearing this one
-    this.once("removeAllListeners", (): void => {
-      this.parentEmitter.removeListener(eventName, handler);
-    });
+    this
+      .on(eventName, publish)
+      .once(`unsubscribe:${subscription}`, (): void => {
+        this.removeListener(eventName, publish);
+        this.parentEmitter.removeListener(eventName, handler);
+      })
+      .once("removeAllListeners", (): void => {
+        this.parentEmitter.removeListener(eventName, handler);
+      });
 
     return subscription;
   }
