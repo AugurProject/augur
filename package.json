@@ -40,7 +40,7 @@
   "dependencies": {
     "@types/knex": "0.0.61",
     "@types/lodash": "4.14.77",
-    "@types/uuid": "^3.4.3",
+    "@types/uuid": "3.4.3",
     "async": "1.5.2",
     "augur.js": "4.5.4",
     "bignumber.js": "4.1.0",
@@ -51,7 +51,7 @@
     "pg": "7.3.0",
     "postinstall-build": "5.0.1",
     "sqlite3": "3.1.8",
-    "uuid": "^3.1.0",
+    "uuid": "3.1.0",
     "ws": "3.2.0"
   },
   "devDependencies": {
