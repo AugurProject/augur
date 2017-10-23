@@ -30,7 +30,7 @@ export function runWebsocketServer(db: Knex, port: number): void {
 
           try {
             const subscription: string = subscriptions.subscribe(eventName, message.params, (data: {}): void => {
-              websocket.send(makeJsonRpcResponse(message.id, { subscription, result: data }));
+              websocket.send(makeJsonRpcResponse(null, { subscription, result: data }));
             });
             websocket.send(makeJsonRpcResponse(message.id, { subscription }));
           } catch (exc) {
