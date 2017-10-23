@@ -1,4 +1,4 @@
-import Augur from "augur.js";
+import { Augur, CalculatedProfitLoss } from "augur.js";
 import BigNumber from "bignumber.js";
 import { forEachOf, parallel } from "async";
 import * as Knex from "knex";
@@ -37,6 +37,12 @@ interface OutcomesRow {
   price: string|number;
 }
 
+interface OrderFilledOnContractData {
+  amount: string;
+  creatorPositionInMarket: Array<string>;
+  fillerPositionInMarket: Array<string>;
+}
+
 export function calculateNumberOfSharesTraded(numShares: string, numTokens: string, price: string): string {
   return new BigNumber(numShares, 10).plus(new BigNumber(numTokens, 10).dividedBy(new BigNumber(price, 10))).toFixed();
 }
@@ -64,7 +70,7 @@ export function updatePositionInMarket(db: Knex, trx: Knex.Transaction, account:
   }, callback);
 }
 
-export function calculateProfitLossInOutcome(augur: Augur, trx: Knex.Transaction, account: Address, marketID: Address, outcome: number, callback: (err: Error|null, profitLossInOutcome?: any) => void): void {
+export function calculateProfitLossInOutcome(augur: Augur, trx: Knex.Transaction, account: Address, marketID: Address, outcome: number, callback: (err: Error|null, profitLossInOutcome?: CalculatedProfitLoss) => void): void {
   getUserTradingHistory(trx, account, marketID, outcome, null, null, null, null, null, (err: Error|null, userTradingHistory?: Array<UITrade>): void => {
     if (err) return callback(err);
     trx.select("price").from("outcomes").where({ marketID, outcome }).asCallback((err: Error|null, outcomesRows?: Array<OutcomesRow>): void => {
@@ -83,7 +89,7 @@ export function upsertPositionInMarket(db: Knex, augur: Augur, trx: Knex.Transac
     const unrealizedProfitLoss = new Array(numOutcomes);
     const positionInMarketAdjustedForUserIntention = new Array(numOutcomes);
     forEachOf(positionInMarket, (numShares: string, outcome: number, nextOutcome: AsyncCallback): void => {
-      calculateProfitLossInOutcome(augur, trx, account, marketID, outcome, (err: Error|null, profitLossInOutcome?: any): void => {
+      calculateProfitLossInOutcome(augur, trx, account, marketID, outcome, (err: Error|null, profitLossInOutcome?: CalculatedProfitLoss): void => {
         if (err) return nextOutcome(err);
         const { realized, unrealized, position } = profitLossInOutcome!;
         realizedProfitLoss[outcome] = realized;
@@ -91,7 +97,7 @@ export function upsertPositionInMarket(db: Knex, augur: Augur, trx: Knex.Transac
         positionInMarketAdjustedForUserIntention[outcome] = position;
         nextOutcome();
       });
-    }, (err?: any): void => {
+    }, (err: Error|null): void => {
       if (err) return callback(err);
       (!positionsRows!.length ? insertPositionInMarket : updatePositionInMarket)(db, trx, account, marketID, positionInMarket, realizedProfitLoss, unrealizedProfitLoss, positionInMarketAdjustedForUserIntention, callback);
     });
@@ -142,7 +148,7 @@ export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transact
             amount: (next: AsyncCallback): void => augur.api.Orders.getAmount(orderID, next),
             creatorPositionInMarket: (next: AsyncCallback): void => augur.trading.getPositionInMarket({ market: marketID, address: log.creator }, next),
             fillerPositionInMarket: (next: AsyncCallback): void => augur.trading.getPositionInMarket({ market: marketID, address: log.filler }, next),
-          }, (err, onContractData): void => {
+          }, (err: Error|null, onContractData: OrderFilledOnContractData): void => {
             if (err) return callback(err);
             const { amount, creatorPositionInMarket, fillerPositionInMarket } = onContractData!;
             const amountRemainingInOrder = new BigNumber(amount!, 16).toFixed();
