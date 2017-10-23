@@ -31,15 +31,20 @@ export default class ProfitLossChart extends Component {
         thousandsSep: ','
       }
     })
-    // const containerId = 'profit-loss-chart-container' + this.props.id
+    // const isMobile = this.props.isMobile
+    const containerId = 'profit-loss-chart-container' + this.props.id
     const chartId = 'profit-loss-chart' + this.props.id
+    console.log(this.refs[containerId].clientWidth)
+    // const height = isMobile ? '45%' : '56.25%'
+    // const width = isMobile ? null : 378
 
     this.profitLossChart = new Highcharts.Chart(chartId, {
       title: {
         text: null
       },
       chart: {
-        height: 100,
+        height: 260,
+        // width: null,
         backgroundColor: '#1e1a31'
       },
       lang: {
@@ -60,7 +65,6 @@ export default class ProfitLossChart extends Component {
             stops: [
               [0, Highcharts.Color('#dbdae1').setOpacity(0.5).get('rgba')],
               [0.8, Highcharts.Color('#dbdae1').setOpacity(0.25).get('rgba')],
-              // [0.4, Highcharts.Color('#1e1a31').setOpacity(0.1).get('rgba')],
               [1, Highcharts.Color('#dbdae1').setOpacity(0).get('rgba')]
             ]
           }
@@ -93,7 +97,6 @@ export default class ProfitLossChart extends Component {
 
   updateChart() {
     (this.props.series || []).forEach((series, i) => {
-      console.log(series)
       if (this.profitLossChart.series[i] == null) {
         this.profitLossChart.addSeries({
           type: 'area',
@@ -110,6 +113,13 @@ export default class ProfitLossChart extends Component {
         this.profitLossChart.series[i].setData(series.data, false)
       }
     })
+    console.log('resize!')
+    // const height = this.props.isMobile ? '45%' : '56.25%'
+    // const width = this.props.isMobile ? null : 378
+
+    // this.profitLossChart.options.chart.height = height
+    // this.profitLossChart.options.chart.width = null
+
     this.profitLossChart.redraw()
   }
 

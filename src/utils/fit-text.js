@@ -14,7 +14,7 @@ export default function fitText(container, target, shouldScaleUp) {
     if (shouldScaleUp || targetWidth > containerWidth) {
       const newWidth = (containerWidth * targetWidth) / targetWidth
       const newScale = newWidth / targetWidth
-      console.log('fitText: cw, tw, nw, ns', containerWidth, targetWidth, newWidth, newScale)
+
       target.style.transform = `scale(${newScale}, ${newScale})`
     }
   }
