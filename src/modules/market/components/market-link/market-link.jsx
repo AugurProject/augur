@@ -5,18 +5,22 @@ import { Link } from 'react-router-dom'
 import makePath from 'modules/routes/helpers/make-path'
 import makeQuery from 'modules/routes/helpers/make-query'
 
+import { TYPE_MARKET, TYPE_REPORT, TYPE_DISPUTE } from 'modules/market/constants/link-types'
 import { MARKET, REPORTING_REPORT } from 'modules/routes/constants/views'
 import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/routes/constants/param-names'
 
 const MarketLink = (p) => {
+  let path
 
-  // TODO: This code currently only provides for links/buttons to the Market page and the Reporting form page.
-  // When the button code is refactored to account for all possible market states, this will need to be
-  // refactored as well.
-  let path = makePath(MARKET)
-
-  if (p.linkType && p.linkType === 'Report') {
-    path = makePath(REPORTING_REPORT)
+  switch (p.linkType) {
+    case TYPE_REPORT:
+      path = makePath(REPORTING_REPORT)
+      break
+    case TYPE_DISPUTE:
+      path = makePath(MARKET)
+      break
+    default:
+      path = makePath(MARKET)
   }
 
   return (
@@ -45,8 +49,8 @@ const MarketLink = (p) => {
 MarketLink.propTypes = {
   id: PropTypes.string.isRequired,
   formattedDescription: PropTypes.string.isRequired,
-  className: PropTypes.string,
   linkType: PropTypes.string,
+  className: PropTypes.string,
 }
 
 export default MarketLink

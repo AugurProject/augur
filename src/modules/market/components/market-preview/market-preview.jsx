@@ -32,6 +32,7 @@ MarketPreview.propTypes = {
   tags: PropTypes.array,
   onClickToggleFavorite: PropTypes.func,
   cardStyle: PropTypes.string,
+  linkType: PropTypes.string,
 }
 
 export default MarketPreview

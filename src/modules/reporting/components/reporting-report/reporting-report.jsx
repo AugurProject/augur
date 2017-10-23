@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet'
 
 import MarketPreview from 'modules/market/components/market-preview/market-preview'
 
+import { TYPE_MARKET, TYPE_REPORT, TYPE_DISPUTE } from 'modules/market/constants/link-types'
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 import FormStyles from 'modules/common/less/form'
@@ -59,6 +60,7 @@ export default class ReportingReport extends Component {
           location={p.location}
           history={p.history}
           cardStyle="single-card"
+          buttonText="View"
         />
         <article className={FormStyles.Form}>
           { s.currentStep === 0 &&
