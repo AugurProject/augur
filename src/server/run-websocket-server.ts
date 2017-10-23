@@ -1,7 +1,7 @@
 import * as WebSocket from "ws";
 import * as Knex from "knex";
 import { EventEmitter } from "events";
-import { augurEmitter } from '../events';
+import { augurEmitter } from "../events";
 import { JsonRpcRequest } from "../types";
 import { isJsonRpcRequest } from "./is-json-rpc-request";
 import { dispatchJsonRpcRequest } from "./dispatch-json-rpc-request";
