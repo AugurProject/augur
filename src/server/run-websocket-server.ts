@@ -5,6 +5,7 @@ import { JsonRpcRequest } from "../types";
 import { isJsonRpcRequest } from "./is-json-rpc-request";
 import { dispatchJsonRpcRequest } from "./dispatch-json-rpc-request";
 import { makeJsonRpcResponse } from "./make-json-rpc-response";
+import { makeJsonRpcError, JsonRpcErrorCode, } from "./make-json-rpc-error";
 import { Subscriptions } from "./subscriptions";
 
 export function runWebsocketServer(db: Knex, port: number): void {
@@ -14,10 +15,15 @@ export function runWebsocketServer(db: Knex, port: number): void {
     const subscriptions = new Subscriptions();
 
     websocket.on("message", (data: WebSocket.Data): void => {
+      let message: any;
       try {
-        const message = JSON.parse(data as string);
+        message = JSON.parse(data as string);
         if (!isJsonRpcRequest(message)) return console.error("bad json rpc message received:", message);
+      } catch(exc) {
+        return websocket.send(makeJsonRpcError("-1", JsonRpcErrorCode.ParseError, "Bad JSON RPC Message Received", {originalText: data as string}));
+      }
 
+      try {
         if (message.method === "subscribe") {
           const eventName: string = message.params.shift();
 
@@ -27,8 +33,7 @@ export function runWebsocketServer(db: Knex, port: number): void {
             });
             websocket.send(makeJsonRpcResponse(message.id, { subscription }));
           } catch (exc) {
-            console.error("suscription error", exc, data);
-            websocket.send(makeJsonRpcResponse(message.id, false));
+            websocket.send(makeJsonRpcError(message.id, JsonRpcErrorCode.MethodNotFound, exc.toString(), false));
           }
         } else if (message.method === "unsubscribe") {
           const subscription: string = message.params.shift();
@@ -40,9 +45,9 @@ export function runWebsocketServer(db: Knex, port: number): void {
             websocket.send(makeJsonRpcResponse(message.id, result || null));
           });
         }
-       } catch (exc) {
-         console.error("bad json rpc message received:", exc, data);
-       }
+      } catch (exc) {
+        websocket.send(makeJsonRpcError(message.id, JsonRpcErrorCode.ServerError, exc.toString(), exc));
+      }
     });
 
     websocket.on("close", () => {
