@@ -1,78 +1,90 @@
 @import (reference) '~assets/styles/shared';
 
 .AccountHeader {
-  width: 100%;
-  padding: 5.625rem 0 3rem 4.375rem;
+  align-content: flex-start;
+  align-items: normal;
   color: white;
   display: inline-flex;
   flex-flow: row nowrap;
-  align-items: flex-end;
-  align-content: flex-start;
+  padding: 5.625rem 0 3rem 4.375rem;
+  width: 100%;
 }
 
 .AccountHeader__Currency {
-  font-size: @font-size-rather-large;
-  flex: 0 0 auto;
-  width: 26.25rem;
-  text-align: center;
-  display: inline-flex;
-  flex-flow: row nowrap;
+  // margin: 0 auto;
   align-items: flex-end;
+  display: flex;
+  flex: 0 0 auto;
+  flex-flow: row nowrap;
+  font-size: @font-size-rather-large;
+  text-align: center;
+  width: 26.25rem;
 }
 
 .AccountHeader__Currency-value {
-  flex: 1 0 auto;
+  align-self: center;
+  flex: 0 0 auto;
+  margin: 0 auto;
 }
 
 .AccountHeader__Currency-label {
+  align-self: flex-end;
+  flex: 0 0 auto;
   font-size: @font-size-rather-large;
   text-transform: uppercase;
-  flex: 0 0 auto;
 }
 
 .AccountHeader__Chart {
-  flex: 0 0 auto;
   display: flex;
+  flex: 0 0 auto;
+  margin: 0 auto;
   width: 26.25rem;
-  // margin: 0 auto;
 }
 
 @media @breakpoint-mobile {
   .AccountHeader {
-    width: 100%;
-    color: white;
     // padding: 5.625rem 0 3rem 4.375rem;
-    padding: 0;
-    display: flex;
-    align-items: flex-end;
+    // width: 100%;
     align-content: flex-start;
+    align-items: normal;
+    color: white;
+    display: flex;
+    padding: 0;
+    width: 100vw;
   }
 
   .AccountHeader__Currency {
-    position: absolute;
-    padding-bottom: 5rem;
-    z-index: 1000;
+    // align-self: center;
+    // padding-bottom: 5rem;
+    // text-align: center;
+    align-items: flex-end;
     align-self: center;
-    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    position: absolute;
+    width: 100vw;
+    z-index: 1000;
   }
 
   .AccountHeader__Currency-value {
+    // margin-left: auto;
+    // white-space: nowrap;
     flex: 0 0 auto;
-    margin-left: auto;
+    margin: 0 auto;
   }
 
   .AccountHeader__Currency-label {
-    font-size: @font-size-rather-large;
-    text-transform: uppercase;
     flex: 0 0 auto;
-    margin-right: auto;
+    font-size: @font-size-normal;
+    margin: 0;
+    text-transform: uppercase;
   }
 
   .AccountHeader__Chart {
-    flex: 0 0 auto;
+    // padding-top: 10%;
     display: flex;
+    flex: 0 0 auto;
+    margin: 0;
     width: 100%;
-    // margin: 0 auto;
   }
-
 }

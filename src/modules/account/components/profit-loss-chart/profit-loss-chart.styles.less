@@ -1,5 +1,9 @@
 @import (reference) '~assets/styles/shared';
 
+.ProfitLossChart {
+  text-align: center;
+}
+
 .ProfitLossChart__Title {
   text-align: center;
   width: 100%;
@@ -7,10 +11,10 @@
 
 @media @breakpoint-mobile {
   .ProfitLossChart {
-    height: 100%;
-    width: 100%;
     display: flex;
     flex-flow: column nowrap;
+    height: 100%;
+    width: 100%;
 
     > div {
       flex: 1 0 auto;
@@ -18,7 +22,9 @@
   }
 
   .ProfitLossChart__Title {
+    position: fixed;
     text-align: center;
+    top: 18rem;
     width: 100%;
   }
 }

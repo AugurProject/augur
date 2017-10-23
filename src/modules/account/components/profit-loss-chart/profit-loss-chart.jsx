@@ -13,7 +13,8 @@ export default class ProfitLossChart extends Component {
     label: PropTypes.string,
     title: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
-    totalValue: PropTypes.string.isRequired
+    totalValue: PropTypes.string.isRequired,
+    isMobile: PropTypes.bool.isRequired
   };
 
   constructor(props) {
@@ -31,10 +32,10 @@ export default class ProfitLossChart extends Component {
       }
     })
     const isMobile = this.props.isMobile
-    const containerId = 'profit-loss-chart-container' + this.props.id
+    // const containerId = 'profit-loss-chart-container' + this.props.id
     const chartId = 'profit-loss-chart' + this.props.id
 
-    const height = isMobile ? (9 / 16 * 100) + '%' : 170
+    const height = isMobile ? (9 / (16 * 100)) + '%' : 170
     let width = 368
     if (isMobile) {
       width = window.visualViewport.width <= 420 ? 368 : window.visualViewport.width
@@ -45,9 +46,11 @@ export default class ProfitLossChart extends Component {
         text: null
       },
       chart: {
-        height: height,
-        width: width,
+        height: isMobile ? null : height,
+        width: isMobile ? null : width,
         backgroundColor: '#1e1a31',
+        spacingLeft: isMobile ? 0 : 10,
+        spacingRight: isMobile ? 0 : 10,
       },
       lang: {
         noData: 'No price history'
@@ -63,10 +66,12 @@ export default class ProfitLossChart extends Component {
         series: {
           color: 'white',
           fillColor: {
-            linearGradient: [0, 0, 0, 200],
+            linearGradient: [0, 0, 0, '100%'],
             stops: [
               [0, Highcharts.Color('#dbdae1').setOpacity(0.5).get('rgba')],
-              [1, Highcharts.Color('#1e1a31').setOpacity(0).get('rgba')]
+              [0.8, Highcharts.Color('#dbdae1').setOpacity(0.25).get('rgba')],
+              // [0.4, Highcharts.Color('#1e1a31').setOpacity(0.1).get('rgba')],
+              [1, Highcharts.Color('#dbdae1').setOpacity(0).get('rgba')]
             ]
           }
         }
@@ -115,16 +120,16 @@ export default class ProfitLossChart extends Component {
         this.profitLossChart.series[i].setData(series.data, false)
       }
     })
-    let height = this.props.isMobile ? (9 / 16 * 100) + '%' : 170
+    let height = this.props.isMobile ? (9 / (16 * 100)) + '%' : 170
     let width = 368
 
     if (this.props.isMobile) {
-      console.log('resize in mobile', window.visualViewport.width);
+      console.log('resize in mobile', window.visualViewport.width)
       width = window.visualViewport.width <= 420 ? 368 : window.visualViewport.width
       // width = 100 + '%'
       height = 10 + '%'
     }
-    console.log('resize, setting w/h', width, height);
+    console.log('resize, PL:', width, height)
     this.profitLossChart.options.chart.height = height
     this.profitLossChart.options.chart.width = width
     this.profitLossChart.redraw()
@@ -142,7 +147,11 @@ export default class ProfitLossChart extends Component {
         <div
           id={chartId}
         />
-        <div className={Styles.ProfitLossChart__Title}>{this.props.title} {this.props.totalValue}</div>
+        <span
+          className={Styles.ProfitLossChart__Title}
+        >
+          {this.props.title} {this.props.totalValue}
+        </span>
       </article>
     )
   }

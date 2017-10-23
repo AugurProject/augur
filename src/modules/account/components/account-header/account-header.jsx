@@ -1,43 +1,68 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import debounce from 'utils/debounce'
+import fitText from 'utils/fit-text'
 
 import ProfitLossChart from 'modules/account/components/profit-loss-chart/profit-loss-chart'
 
 import Styles from 'modules/account/components/account-header/account-header.styles'
 
 class AccountHeader extends Component {
+  static propTypes = {
+    isMobile: PropTypes.bool.isRequired,
+    series: PropTypes.Object,
+    stats: PropTypes.Object,
+  }
+
   constructor(props) {
     super(props)
+
+    this.updateText = debounce(this.updateText.bind(this))
   }
 
-  calcFontSize(value) {
-    // Desktop:
-    // the container is 26.25rem, or 420 px, 16 px is the base, the 3 character
-    // label for the currency is roughly 44 px + another 8px for a space = 52px.
-    // 420 - 52 = 368, 368 / 16 = 23. so 23rem is our space to fill with text.
-    console.log('windowWidth:', window.visualViewport.width);
+  componentDidMount() {
+    window.addEventListener('resize', this.updateText)
 
-    let CurrencyWidth = 23;
-    if (this.props.isMobile) {
-      CurrencyWidth = window.visualViewport.width - 52 / 16;
-    }
-    let size = (CurrencyWidth / value.length * 2)
-    console.log('size',  size)
-    if (this.props.isMobile) {
-      size = size / (16 / 5 * 10)
-    } else {
-      size = size > 10 ? 10 : size
-    }
-    size = size + 'rem'
-    return size;
+    this.updateText()
   }
 
-  render () {
+  componentDidUpdate(prevProps) {
+    if (prevProps.series !== this.props.series) this.updateText()
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateText)
+  }
+
+  updateText() {
+    const ethContainer = this.refs.ethCurrencyContainer
+    const ethTarget = this.refs.ethCurrencyValue
+    const ethTargetLabel = this.refs.ethCurrencyLabel
+    const repValue = this.props.stats[0].totalRep.value
+    // const repValue = 100.23
+    console.log('going into ETH fit:', ethContainer.clientWidth - ethTargetLabel.clientWidth, 'actCW', ethContainer.clientWidth, ethTargetLabel.clientWidth, 'targetWidth:', ethTarget.clientWidth)
+
+    let containerWidth = ethContainer.clientWidth - ethTargetLabel.clientWidth
+
+    containerWidth = this.props.isMobile ? containerWidth - (containerWidth * 0.2) : containerWidth
+
+    fitText({ clientWidth: containerWidth }, ethTarget, true)
+
+    if (repValue > 0) {
+      const repContainer = this.refs.repCurrencyContainer
+      const repTarget = this.refs.repCurrencyValue
+      const repTargetLabel = this.refs.repCurrencyLabel
+
+      fitText({ clientWidth: repContainer.clientWidth - repTargetLabel.clientWidth }, repTarget, true)
+    }
+  }
+
+  render() {
     const p = this.props
-    console.log(p)
+    console.log('accountHeaderProps:', p)
     // NOTE: dummy data for now for easier testing/styling
     const ethValue = '9,000'
-    // const repValue = '47.932'
+    // const repValue = '100.23'
     const repValue = p.stats[0].totalRep.value.formatted
 
     const totalPLValue = '10.000000000'
@@ -62,9 +87,6 @@ class AccountHeader extends Component {
       color: '#553580'
     }]
 
-    const ethSize = this.calcFontSize(ethValue);
-    const repSize = this.calcFontSize(repValue);
-
     return (
       <div
         className={Styles.AccountHeader}
@@ -73,15 +95,36 @@ class AccountHeader extends Component {
           ref="ethCurrencyContainer"
           title={p.stats[0].totalRealEth.title} className={Styles.AccountHeader__Currency}
         >
-          <span className={Styles['AccountHeader__Currency-value']} style={{fontSize: ethSize}}>{ethValue}</ span>
-          <span className={Styles['AccountHeader__Currency-label']}>{p.stats[0].totalRealEth.label}</ span>
-        </ div>
+          <span
+            ref="ethCurrencyValue"
+            className={Styles['AccountHeader__Currency-value']}
+          >
+            {ethValue}
+          </span>
+          <span
+            ref="ethCurrencyLabel"
+            className={Styles['AccountHeader__Currency-label']}
+          >
+            {p.stats[0].totalRealEth.label}
+          </span>
+        </div>
         {repValue !== '0' && !p.isMobile &&
           <div
             title={p.stats[0].totalRep.title} className={Styles.AccountHeader__Currency}
+            ref="repCurrencyContainer"
           >
-            <span className={Styles['AccountHeader__Currency-value']} style={{fontSize: repSize}}>{repValue}</ span>
-            <span className={Styles['AccountHeader__Currency-label']}>{p.stats[0].totalRep.label}</ span>
+            <span
+              className={Styles['AccountHeader__Currency-value']}
+              ref="repCurrencyValue"
+            >
+              {repValue}
+            </span>
+            <span
+              className={Styles['AccountHeader__Currency-label']}
+              ref="repCurrencyLabel"
+            >
+              {p.stats[0].totalRep.label}
+            </span>
           </div>
         }
         <div className={Styles.AccountHeader__Chart}>
@@ -94,7 +137,7 @@ class AccountHeader extends Component {
             isMobile={p.isMobile}
           />
         </div>
-        {repValue == '0' && !p.isMobile &&
+        {repValue === '0' && !p.isMobile &&
           <div className={Styles.AccountHeader__Chart}>
             <ProfitLossChart
               series={totalPLMonthSeries}
@@ -106,7 +149,7 @@ class AccountHeader extends Component {
             />
           </div>
         }
-        {repValue == '0' && !p.isMobile &&
+        {repValue === '0' && !p.isMobile &&
           <div className={Styles.AccountHeader__Chart}>
             <ProfitLossChart
               className={Styles.AccountHeader__Chart}
