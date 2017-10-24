@@ -29,3 +29,7 @@ module.exports.getCallback = function (id) {
 module.exports.getTransport = function () {
   return state.transport;
 };
+
+module.exports.removeCallback = function (id) {
+ delete state.jsonRpcCallbacks[id];
+}
