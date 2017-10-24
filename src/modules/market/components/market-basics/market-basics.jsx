@@ -2,6 +2,7 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
 import MarketOutcomesBinaryScalar from 'modules/market/components/market-outcomes-binary-scalar/market-outcomes-binary-scalar'
 import MarketOutcomesCategorical from 'modules/market/components/market-outcomes-categorical/market-outcomes-categorical'
@@ -17,7 +18,7 @@ import Styles from 'modules/market/components/market-basics/market-basics.styles
 
 const MarketBasics = p => (
   <article>
-    <div className={CommonStyles.MarketCommon__topcontent}>
+    <div className={classNames(CommonStyles.MarketCommon__topcontent, { [`${CommonStyles['single-card']}`]: p.cardStyle === 'single-card' })}>
       <div className={CommonStyles.MarketCommon__header}>
         <ul className={Styles.MarketBasics__tags}>
           {p.tags.length > 1 &&
