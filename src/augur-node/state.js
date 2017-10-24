@@ -31,5 +31,5 @@ module.exports.getTransport = function () {
 };
 
 module.exports.removeCallback = function (id) {
- delete state.jsonRpcCallbacks[id];
-}
+  delete state.jsonRpcCallbacks[id];
+};
