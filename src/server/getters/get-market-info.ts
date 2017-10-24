@@ -53,9 +53,9 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
   return marketInfo;
 }
 
-export function getMarketsWithPhase(db: Knex, _columns?: string[]): Knex.QueryBuilder {
+export function getMarketsWithPhase(db: Knex, selectColumns?: Array<string>): Knex.QueryBuilder {
   // TODO: turn leftJoin() into join() once we take care of market_state on market creation
-  let columns = _columns? _columns.slice() : ["markets.*"];
+  const columns = selectColumns ? selectColumns.slice() : ["markets.*"];
   return db.select(columns.concat("market_state.phase"))
     .from("markets")
     .leftJoin("market_state", "markets.marketStateID", "market_state.marketStateID");
