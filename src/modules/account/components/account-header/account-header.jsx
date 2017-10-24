@@ -37,38 +37,30 @@ class AccountHeader extends Component {
   updateText() {
     const ethContainer = this.refs.ethCurrencyContainer
     const ethTarget = this.refs.ethCurrencyValue
-    // const ethTargetLabel = this.refs.ethCurrencyLabel
-    // const repValue = this.props.stats[0].totalRep.value
-    const repValue = 100.23
-    // console.log('going into ETH fit:', ethContainer.clientWidth - ethTargetLabel.clientWidth, 'actCW', ethContainer.clientWidth, ethTargetLabel.clientWidth, 'targetWidth:', ethTarget.clientWidth)
-
-    // let containerWidth = ethContainer.clientWidth - ethTargetLabel.clientWidth
+    const repValue = this.props.stats[0].totalRep.value
 
     let containerWidth = ethContainer.clientWidth
-
+    // on mobile we want to reduce scaling by roughly 30%, otherwise fitText default
     containerWidth = this.props.isMobile ? containerWidth - (containerWidth * 0.3) : containerWidth
-
-    fitText({ clientWidth: containerWidth }, ethTarget, true)
+    // @params: container, target, scaleUp, maxScale
+    fitText({ clientWidth: containerWidth }, ethTarget, true, 10)
 
     if (repValue > 0) {
       const repContainer = this.refs.repCurrencyContainer
       const repTarget = this.refs.repCurrencyValue
-      // const repTargetLabel = this.refs.repCurrencyLabel
-      // - repTargetLabel.clientWidth
-      fitText({ clientWidth: repContainer.clientWidth }, repTarget, true)
+      // @params: container, target, scaleUp, maxScale
+      fitText({ clientWidth: repContainer.clientWidth }, repTarget, true, 10)
     }
   }
 
   render() {
     const p = this.props
-    // NOTE: dummy data for now for easier testing/styling
-    const ethValue = '10,000.0'
-    const repValue = '100.23'
-    // const repValue = p.stats[0].totalRep.value.formatted
-
-    const totalPLValue = '10.000000000'
-    const totalPLMonthValue = p.stats[1].totalPLMonth.value.rounded
-    const totalPLDayValue = p.stats[1].totalPLDay.value.rounded
+    // assign defaults incase we have nulls for value
+    const ethValue = p.stats[0].totalRealEth.value.formatted
+    const repValue = p.stats[0].totalRep.value.formatted
+    const totalPLValue = p.stats[1].totalPL.value === null ? '0.0000' : p.stats[1].totalPL.value.rounded
+    const totalPLMonthValue = p.stats[1].totalPLMonth.value === null ? '0' : p.stats[1].totalPLMonth.value.rounded
+    const totalPLDayValue = p.stats[1].totalPLDay.value === null ? '0' : p.stats[1].totalPLDay.value.rounded
 
     return (
       <div

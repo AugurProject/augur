@@ -31,21 +31,28 @@ export default class ProfitLossChart extends Component {
         thousandsSep: ','
       }
     })
-    // const isMobile = this.props.isMobile
+
     const containerId = 'profit-loss-chart-container' + this.props.id
     const chartId = 'profit-loss-chart' + this.props.id
-    console.log(this.refs[containerId].clientWidth)
-    // const height = isMobile ? '45%' : '56.25%'
-    // const width = isMobile ? null : 378
+    // calculate horizontal margins, if mobile 0, else default
+    const horizontalMargins = this.props.isMobile ? 0 : null
+    // determine height based on mobile or not
+    let height = this.props.isMobile ? 260 : 170
+    // if the width of container is going to be <= height use 9/16 aspect ratio
+    if (this.refs[containerId].clientWidth <= height) {
+      height = ((9 / 16) * 100) + '%'
+    }
 
     this.profitLossChart = new Highcharts.Chart(chartId, {
       title: {
         text: null
       },
       chart: {
-        height: 260,
-        // width: null,
-        backgroundColor: '#1e1a31'
+        backgroundColor: '#1e1a31',
+        height,
+        marginBottom: 1,
+        marginLeft: horizontalMargins,
+        marginRight: horizontalMargins,
       },
       lang: {
         noData: 'No price history'
@@ -113,13 +120,20 @@ export default class ProfitLossChart extends Component {
         this.profitLossChart.series[i].setData(series.data, false)
       }
     })
-    console.log('resize!')
-    // const height = this.props.isMobile ? '45%' : '56.25%'
-    // const width = this.props.isMobile ? null : 378
-
-    // this.profitLossChart.options.chart.height = height
-    // this.profitLossChart.options.chart.width = null
-
+    const containerId = 'profit-loss-chart-container' + this.props.id
+    const horizontalMargins = this.props.isMobile ? 0 : null
+    // determine height based on mobile
+    const height = this.props.isMobile ? 260 : 170
+    // set height
+    this.profitLossChart.options.chart.height = height
+    // check if width is less than height, default to a 9/16 aspect ratio
+    if (this.refs[containerId].clientWidth <= height) {
+      this.profitLossChart.options.chart.height = ((9 / 16) * 100) + '%'
+    }
+    // adjust margins
+    this.profitLossChart.options.chart.marginLeft = horizontalMargins
+    this.profitLossChart.options.chart.marginRight = horizontalMargins
+    // redraw
     this.profitLossChart.redraw()
   }
 
@@ -135,11 +149,20 @@ export default class ProfitLossChart extends Component {
         <div
           id={chartId}
         />
-        <span
+        <div
           className={Styles.ProfitLossChart__Title}
         >
-          {this.props.title} {this.props.totalValue}
-        </span>
+          <span
+            className={Styles['ProfitLossChart__Title-label']}
+          >
+            {this.props.title + ' '}
+          </span>
+          <span
+            className={Styles['ProfitLossChart__Title-value']}
+          >
+            {this.props.totalValue}
+          </span>
+        </div>
       </article>
     )
   }

@@ -1,14 +1,21 @@
 @import (reference) '~assets/styles/shared';
 
 .ProfitLossChart {
-  height: 260px;
+  height: 170px;
   text-align: center;
-  // width: 100%;
 }
 
 .ProfitLossChart__Title {
   text-align: center;
   width: 100%;
+}
+
+.ProfitLossChart__Title-label {
+  color: @color-lightergray;
+}
+
+.ProfitLossChart__Title-value {
+  color: @color-white;
 }
 
 @media @breakpoint-mobile {
@@ -24,9 +31,18 @@
   }
 
   .ProfitLossChart__Title {
+    font-size: @font-size-rather-large;
     position: fixed;
     text-align: center;
-    top: 18rem;
+    top: 17rem;
     width: 100%;
+  }
+
+  .ProfitLossChart__Title-label {
+    color: @color-lightergray;
+  }
+
+  .ProfitLossChart__Title-value {
+    color: @color-white;
   }
 }
