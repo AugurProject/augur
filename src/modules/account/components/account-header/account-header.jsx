@@ -70,7 +70,7 @@ class AccountHeader extends Component {
           ref="ethCurrencyContainer"
           title={p.stats[0].totalRealEth.title}
           className={Styles.AccountHeader__Currency}
-          style={{backgroundColor: 'purple'}}
+          style={{ backgroundColor: 'purple' }}
         >
           <span
             ref="ethCurrencyValue"
@@ -104,8 +104,8 @@ class AccountHeader extends Component {
             </span>
           </div>
         }
-        <div className={Styles.AccountHeader__Charts} style={{backgroundColor: 'blue'}}>
-          <div className={Styles.AccountHeader__Chart} style={{backgroundColor: 'green'}}>
+        <div className={Styles.AccountHeader__Charts} style={{ backgroundColor: 'blue' }}>
+          <div className={Styles.AccountHeader__Chart} style={{ backgroundColor: 'green' }}>
             <ProfitLossChart
               series={p.series.totalPLSeries}
               label={p.stats[1].totalPL.label}
@@ -116,7 +116,7 @@ class AccountHeader extends Component {
             />
           </div>
           {repValue === '0' && !p.isMobile &&
-            <div className={Styles.AccountHeader__Chart} style={{backgroundColor: 'lightgreen'}}>
+            <div className={Styles.AccountHeader__Chart} style={{ backgroundColor: 'lightgreen' }}>
               <ProfitLossChart
                 series={p.series.totalPLMonthSeries}
                 label={p.stats[1].totalPLMonth.label}
@@ -128,7 +128,7 @@ class AccountHeader extends Component {
             </div>
           }
           {repValue === '0' && !p.isMobile &&
-            <div className={Styles.AccountHeader__Chart} style={{backgroundColor: 'lightblue'}}>
+            <div className={Styles.AccountHeader__Chart} style={{ backgroundColor: 'lightblue' }}>
               <ProfitLossChart
                 className={Styles.AccountHeader__Chart}
                 series={p.series.totalPLDaySeries}
