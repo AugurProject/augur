@@ -14,7 +14,7 @@ export function getCategories(db: Knex, universe: Address, sortBy: string|null|u
   if (offset != null) query = query.offset(offset);
   query.asCallback((err: Error|null, categoriesInfo?: Array<CategoriesRow>): void => {
     if (err) return callback(err);
-    if (!categoriesInfo || !categoriesInfo.length) return callback(null);
+    if (!categoriesInfo) return callback(null);
     callback(null, categoriesInfo);
   });
 }

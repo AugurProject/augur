@@ -49,7 +49,7 @@ describe("server/getters/get-markets-created-by-user", () => {
     },
     assertions: (err, marketsCreatedByUser) => {
       assert.isNull(err);
-      assert.isUndefined(marketsCreatedByUser);
+      assert.deepEqual(marketsCreatedByUser, []);
     }
   });
 });

@@ -43,7 +43,7 @@ describe("server/getters/get-categories", () => {
     },
     assertions: (err, categoriesInfo) => {
       assert.isNull(err);
-      assert.isUndefined(categoriesInfo);
+      assert.deepEqual(categoriesInfo, []);
     }
   });
 });

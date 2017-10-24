@@ -76,7 +76,7 @@ describe("server/getters/get-markets-closing-in-date-range", () => {
     },
     assertions: (err, marketsClosingInDateRange) => {
       assert.isNull(err);
-      assert.isUndefined(marketsClosingInDateRange);
+      assert.deepEqual(marketsClosingInDateRange, []);
     }
   });
 });

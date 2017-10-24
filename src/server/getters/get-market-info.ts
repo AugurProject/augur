@@ -55,7 +55,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRow, outcomesInfo: A
 export function getMarketInfo(db: Knex, marketID: string, callback: (err: Error|null, result?: UIMarketInfo) => void): void {
   db.select().from("markets").where({ marketID }).limit(1).asCallback((err: Error|null, rows?: Array<MarketsRow>): void => {
     if (err) return callback(err);
-    if (!rows || rows.length === 0) return callback(null);
+    if (!rows || !rows.length) return callback(null);
     const marketsRow: MarketsRow = rows[0];
     db.select().from("outcomes").where({ marketID }).asCallback((err: Error|null, outcomesRows?: Array<OutcomesRow>): void => {
       if (err) return callback(err);
