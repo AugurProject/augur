@@ -9,7 +9,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       marketStateID: 1,
       phase: 1,
       isDisputed: false,
-      blockNumber: 50
+      blockNumber: 50,
     }], 1000);
   });
 };
