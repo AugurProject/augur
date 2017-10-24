@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { CSSTransitionGroup } from 'react-transition-group'
+import { TransitionGroup } from 'react-transition-group' // TODO -- fix up the transitions in this component
 
 import Styles from 'modules/auth/components/help/help.styles'
 
@@ -49,16 +49,7 @@ export default class Help extends Component {
         >
           Confused? Get Help Here.
         </button>
-        <CSSTransitionGroup
-          transitionName={{
-            enter: Styles.Help__ItemEnter,
-            enterActive: Styles.Help__ItemEnterActive,
-            leave: Styles.Help__ItemLeave,
-            leaveActive: Styles.Help__ItemLeaveActive
-          }}
-          transitionEnterTimeout={300}
-          transitionLeaveTimeout={300}
-        >
+        <TransitionGroup>
           {s.areQuestionsVisible &&
             helps.map((help, i) => (
               <div
@@ -70,26 +61,17 @@ export default class Help extends Component {
                 >
                   {help.title} +
                 </button>
-                <CSSTransitionGroup
-                  transitionName={{
-                    enter: Styles.Help__DefinitionEnter,
-                    enterActive: Styles.Help__DefinitionEnterActive,
-                    leave: Styles.Help__DefinitionLeave,
-                    leaveActive: Styles.Help__DefinitionLeaveActive
-                  }}
-                  transitionEnterTimeout={300}
-                  transitionLeaveTimeout={300}
-                >
+                <TransitionGroup>
                   {s.visibleDefinitions.indexOf(i) !== -1 &&
                     <p>
                       {help.def}
                     </p>
                   }
-                </CSSTransitionGroup>
+                </TransitionGroup>
               </div>
             ))
           }
-        </CSSTransitionGroup>
+        </TransitionGroup>
       </div>
     )
   }
