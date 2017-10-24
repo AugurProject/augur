@@ -17,6 +17,7 @@ export default Reporting
 
 // Binary Example
 // const market = {
+//   isStakeRequired: false,
 //   id: '0xcd7b177af7a12ec3be1c7f992ec7d608959630f2113227a2cdd9db562bd01eb4',
 //   branchID: '0xf69b5',
 //   tradingPeriod: 8947,
@@ -281,6 +282,7 @@ export default Reporting
 
 // Scalar Example
 // const market = {
+//   isStakeRequired: false,
 //   id: '0x12b6b957ee773b598f58969cacfd463a8bac84f464e698fd266d50f5957badd0',
 //   branchID: '0xf69b5',
 //   tradingPeriod: 8766,
@@ -407,6 +409,7 @@ export default Reporting
 
 // Categorical Example
 const market = {
+  isStakeRequired: false,
   id: '0x284dc8742e7441375adad1e545b685ded6ff3a361a4659c1be11fca2055de6e9',
   branchID: '0xf69b5',
   tradingPeriod: 8720,

@@ -100,6 +100,18 @@ const ReportingDisputeForm = p => (
     </li>
     <li>
       <label>
+        <span>Dispute Bond</span>
+      </label>
+      <p className={FormStyles['text--field-style']}>{ p.disputeBond }</p>
+    </li>
+    <li>
+      <label>
+        <span>Current Outcome</span>
+      </label>
+      <p className={FormStyles['text--field-style']}>{ p.currentOutcome }</p>
+    </li>
+    <li>
+      <label>
         <span>Is Market Valid?</span>
       </label>
       <ul className={FormStyles['Form__radio-buttons--per-line']}>
@@ -120,7 +132,7 @@ const ReportingDisputeForm = p => (
     { p.isMarketValid && p.market.type === BINARY &&
       <li>
         <label>
-          <span>Outcome</span>
+          <span>Proposed Outcome</span>
         </label>
         <ul className={FormStyles['Form__radio-buttons--per-line']}>
           <li>
@@ -141,7 +153,7 @@ const ReportingDisputeForm = p => (
     { p.isMarketValid && p.market.type === CATEGORICAL &&
       <li>
         <label>
-          <span>Outcome</span>
+          <span>Proposed Outcome</span>
         </label>
         <ul className={FormStyles['Form__radio-buttons--per-line']}>
           { p.market.outcomes && p.market.outcomes.map(outcome => (
@@ -159,7 +171,7 @@ const ReportingDisputeForm = p => (
     { p.isMarketValid && p.market.type === SCALAR &&
       <li className={FormStyles['field--short']}>
         <label>
-          <span htmlFor="sr__input--outcome-scalar">Outcome</span>
+          <span htmlFor="sr__input--outcome-scalar">Proposed Outcome</span>
           { p.validations.hasOwnProperty('selectedOutcome') && p.validations.selectedOutcome.length &&
             <span className={FormStyles.Form__error}>
               { p.validations.selectedOutcome }
@@ -204,6 +216,8 @@ ReportingDisputeForm.propTypes = {
   validations: PropTypes.object.isRequired,
   selectedOutcome: PropTypes.string.isRequired,
   stake: PropTypes.string.isRequired,
+  disputeBond: PropTypes.string.isRequired,
+  currentOutcome: PropTypes.string.isRequired,
   isMarketValid: PropTypes.bool,
 }
 

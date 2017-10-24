@@ -19,14 +19,16 @@ export default class ReportingDispute extends Component {
     super(props)
 
     this.state = {
+      disputeBond: '10000 REP',
       currentStep: 0,
       isFormValid: true,
       isMarketValid: null,
+      currentOutcome: 'Hong Kong',
       selectedOutcome: '',
       stake: '',
       validations: {
         isMarketValid: false,
-        stake: false,
+        stake: !this.props.market.isStakeRequired,
       }
     }
 
@@ -69,7 +71,9 @@ export default class ReportingDispute extends Component {
             <ReportingDisputeForm
               market={p.market}
               updateState={this.updateState}
+              disputeBond={s.disputeBond}
               isMarketValid={s.isMarketValid}
+              currentOutcome={s.currentOutcome}
               selectedOutcome={s.selectedOutcome}
               stake={s.stake}
               validations={s.validations}
@@ -92,7 +96,7 @@ export default class ReportingDispute extends Component {
               className={classNames(FormStyles.Form__next, { [`${FormStyles['hide-button']}`]: s.currentStep === 1 })}
               disabled={!Object.keys(s.validations).every(key => s.validations[key] === true)}
               onClick={Object.keys(s.validations).every(key => s.validations[key] === true) && this.nextPage}
-            >Report</button>
+            >Dispute</button>
             { s.currentStep === 1 &&
               <button className={FormStyles.Form__submit}>Submit</button>
             }
