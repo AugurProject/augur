@@ -24,7 +24,7 @@ export default class MarketOutcomeDepth extends Component {
   componentDidMount() {
     noData(Highchart)
 
-    this.outcomeDepth = Highchart.stockChart('market_outcome_depth', {
+    this.outcomeDepth = Highchart.chart('market_outcome_depth', {
       chart: {
         backgroundColor: '#2d2846',
         height: 400
@@ -40,7 +40,6 @@ export default class MarketOutcomeDepth extends Component {
         title: {
           text: ''
         },
-        max: 1,
         tickWidth: 0,
         lineWidth: 0,
         minorGridLineWidth: 0,
@@ -60,6 +59,7 @@ export default class MarketOutcomeDepth extends Component {
           text: ''
         },
         min: 0, // can't do anything with less than 0 shares
+        max: 1,
         showLastLabel: true,
         gridLineWidth: 0,
         minorGridLineWidth: 0,
@@ -79,58 +79,17 @@ export default class MarketOutcomeDepth extends Component {
         {
           showInLegend: false,
           name: '',
-          type: 'area',
-          color: '#7257a3',
-          lineWidth: 3,
+          lineWidth: 1,
           threshold: null,
-          fillColor: {
-            linearGradient: {
-              x1: 0,
-              y1: 1,
-              x2: 0,
-              y2: 0
-            },
-            stops: [
-              [0, '#2d2846'],
-              [1, '#3c2d63']
-            ]
-          },
+          step: true
         },
         {
           showInLegend: false,
-          name: '', // TODO correct thing to display?  Needs to be same as series[0]
-          type: 'area',
-          color: '#7257a3',
-          lineWidth: 3,
-          threshold: null,
-          fillColor: {
-            linearGradient: {
-              x1: 0,
-              y1: 1,
-              x2: 0,
-              y2: 0
-            },
-            stops: [
-              [0, '#2d2846'],
-              [1, '#3c2d63']
-            ]
-          },
+          name: '',
+          lineWidth: 1,
+          step: true
         }
       ],
-      tooltip: {
-//          pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} Shares Available <br />@ {point.x} ETH</b><br/>',
-        valueSuffix: '',
-        formatter: function () {
-          return this.point.y + " Shares Available @" + this.point.x + "ETH";
-        },
-        valueDecimals: 2,
-        positioner: function () {
-          return { x: 180, y: 130 };
-        },
-        shadow: false,
-        borderWidth: 0,
-        backgroundColor: 'rgba(255,255,255,0.4)'
-      },
       credits: {
         enabled: false
       }
