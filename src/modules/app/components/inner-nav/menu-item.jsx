@@ -10,7 +10,6 @@ const MenuItem = p => (
       [Styles['InnerNav__menu-item']]: true,
       [Styles['InnerNav__menu-item--selected']]: p.isSelected,
       [Styles['InnerNav__menu-item--visible']]: p.visible })}
-    key={p.key}
   >
     {p.children}
   </li>
@@ -18,7 +17,8 @@ const MenuItem = p => (
 
 MenuItem.propTypes = {
   isSelected: PropTypes.bool,
-  key: PropTypes.string
+  // key: PropTypes.string
 }
+// key={p.key}
 
 export default MenuItem

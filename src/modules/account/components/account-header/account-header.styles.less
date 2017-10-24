@@ -6,24 +6,18 @@
   color: white;
   display: flex;
   flex-flow: row nowrap;
-  padding: 5.625rem 0 3rem 4.375rem;
-  width: 100%;
+  .view();
 }
 
 .AccountHeader__Currency {
-  align-items: flex-end;
   display: flex;
-  flex: 1 auto;
-  flex-flow: row nowrap;
+  flex: 0 1 22rem;
+  flex-flow: column-reverse nowrap;
   font-size: @font-size-rather-large;
-  text-align: center;
-  width: 22rem;
 }
 
 .AccountHeader__Currency-value {
-  align-self: center;
-  flex: 0 0 auto;
-  margin: 0 auto;
+  margin: auto;
 }
 
 .AccountHeader__Currency-label {
@@ -38,8 +32,8 @@
 }
 
 .AccountHeader__Chart {
-  flex: 0 1 auto;
-  flex-basis: 23rem;
+  flex: 1 1 auto;
+  // flex-basis: 23rem;
   margin: 0 auto;
 }
 

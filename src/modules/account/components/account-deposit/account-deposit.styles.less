@@ -26,6 +26,7 @@
 
 .AccountDeposit__main {
   display: flex;
+  flex-flow: row wrap;
   width: 100%;
 }
 
@@ -50,15 +51,11 @@
 .AccountDeposit__qrZone {
   border-right: 1px solid @color-lightergray;
   display: flex;
+  flex: 1 auto;
   justify-content: center;
 }
-
-.AccountDeposit__qrZone,
 .AccountDeposit__address {
-  flex: 1 1 auto;
-}
-
-.AccountDeposit__address {
+  flex: 1 0 26.25rem;
   margin-left: 2.56rem;
 
   > * {

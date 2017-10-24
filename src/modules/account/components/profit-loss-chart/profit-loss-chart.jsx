@@ -120,6 +120,7 @@ export default class ProfitLossChart extends Component {
         this.profitLossChart.series[i].setData(series.data, false)
       }
     })
+    // console.log(this.profitLossChart.options.chart.width)
     const containerId = 'profit-loss-chart-container' + this.props.id
     const horizontalMargins = this.props.isMobile ? 0 : null
     // determine height based on mobile
