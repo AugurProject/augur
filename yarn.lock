@@ -431,9 +431,9 @@ augur-contracts@3.2.3:
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-3.2.3.tgz#f2e6331f7a9abf1561f00554c3661baefcf32d81"
 
-augur.js@4.5.1:
-  version "4.5.1"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.5.1.tgz#cf5f933f27269a275ba60baf22c9b3d493e91878"
+augur.js@4.5.6:
+  version "4.5.6"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.5.6.tgz#168e2c884cab57981e96ee1343c0d0ca2b332184"
   dependencies:
     async "1.5.2"
     augur-contracts "3.2.3"
@@ -441,7 +441,7 @@ augur.js@4.5.1:
     clone "1.0.2"
     ethereumjs-connect "4.4.0"
     ethrpc "4.4.3"
-    immutable-delete "1.0.1"
+    immutable-delete "1.1.0"
     keccak "1.2.0"
     keythereum "1.0.2"
     lodash.assign "4.2.0"
@@ -4331,6 +4331,10 @@ image-size@~0.5.0:
 immutable-delete@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/immutable-delete/-/immutable-delete-1.0.1.tgz#c8956079343b787435d9b5a08d50f654da002c9f"
+
+immutable-delete@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/immutable-delete/-/immutable-delete-1.1.0.tgz#e4a7e6e8cd05efee1d082652ae6196da6b3572fb"
 
 immutable@3.8.1, immutable@^3.7.4:
   version "3.8.1"
