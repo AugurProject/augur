@@ -10,8 +10,8 @@
   background-color: @color-purple;
   border-radius: 3px;
   color: @color-white;
-  font-size: 0.625rem;
-  line-height: 0.625rem;
+  font-size: @font-size-extra-small;
+  line-height: @font-size-extra-small;
   padding: 0.2rem 0.5rem;
   text-transform: none;
   white-space: nowrap;
@@ -62,7 +62,7 @@
 
       &.error {
         color: @color-red;
-        font-size: 0.875rem;
+        font-size: @font-size-medium;
       }
     }
 
@@ -70,8 +70,8 @@
     input[type="number"],
     textarea {
       background-color: @color-lightergray;
-      font-size: 1.125rem;
-      line-height: 1.5rem;
+      font-size: @font-size-large;
+      line-height: @font-size-rather-large;
 
       &.error {
         border-color: @color-red;
@@ -79,7 +79,7 @@
 
       &::placeholder {
         color: @color-lightgray;
-        line-height: 1.5rem;
+        line-height: @font-size-rather-large;
       }
     }
 
@@ -134,8 +134,8 @@
       color: @color-white;
       cursor: pointer;
       display: block;
-      font-size: 1.125rem;
-      line-height: 1.125rem;
+      font-size: @font-size-large;
+      line-height: @font-size-large;
       min-height: 1.7rem;
       padding-left: 2.5rem;
       position: relative;

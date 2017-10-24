@@ -6,7 +6,6 @@
 }
 
 .Confirm__heading {
-  &:extend(.caps);
   &:extend(.caps--large);
 
   border-bottom: 1px solid @color-input-background;
@@ -26,7 +25,6 @@
     }
 
     > span:first-child {
-      &:extend(.caps);
       &:extend(.caps--small);
 
       color: @color-lightergray;
@@ -34,7 +32,7 @@
     }
 
     > span:last-child {
-      font-size: 1.125rem;
+      font-size: @font-size-large;
     }
   }
 }
@@ -42,7 +40,7 @@
 .Confirm__subheading {
   &:extend(.caps);
 
-  font-size: 1rem;
+  font-size: @font-size-normal;
   margin-bottom: 1.875rem;
 }
 
