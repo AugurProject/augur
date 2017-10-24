@@ -6,14 +6,9 @@ export function processDesignatedReportSubmittedLog(db: Knex, augur: Augur, trx:
     // @achapman: "The designated reporter purchases Stake Tokens in order to do the Designated Report"
     // TODO: Should designatedReportSubmitted include StakedToken address?
 
-    //  phase:null = no report submitted
-    //  phase:0 = designated report submitted
-    //  phase:1 = round1
-    //  phase:2 = round2
     const marketStateDataToInsert: { [index: string]: string|number|boolean } = {
         marketID: log.market,
-        phase: 0,
-        isDisputed: false,
+        reportingState: 0,
         blockNumber: log.blockNumber,
     };
 

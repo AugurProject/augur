@@ -5,8 +5,7 @@ exports.up = async (knex: Knex): Promise<any> => {
     return  knex.schema.createTable("market_state", (table: Knex.CreateTableBuilder) => {
       table.increments("marketStateID");
       table.string("marketID", 66).notNullable();
-      table.integer("phase").nullable();
-      table.boolean("isDisputed");
+      table.integer("reportingState").nullable();
       table.integer("blockNumber").notNullable();
     });
   });

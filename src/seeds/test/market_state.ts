@@ -7,8 +7,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
     knex.batchInsert("market_state", [{
       marketID: "0x0000000000000000000000000000000000000001",
       marketStateID: 1,
-      phase: 1,
-      isDisputed: false,
+      reportingState: 1,
       blockNumber: 50,
     }], 1000);
   });

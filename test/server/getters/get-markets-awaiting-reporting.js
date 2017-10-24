@@ -11,7 +11,7 @@ describe("server/getters/get-markets-awaiting-reporting", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getMarketsAwaitingReporting(db, t.params.reportingWindow, t.params.reportingPhase, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsAwaitingReporting) => {
+        getMarketsAwaitingReporting(db, t.params.reportingWindow, t.params.reportingState, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsAwaitingReporting) => {
           t.assertions(err, marketsAwaitingReporting);
           done();
         });

@@ -62,7 +62,7 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
           "numTicks": 10752,
           "outcomes": [],
           "outstandingShares": 0,
-          "phase": null,
+          "reportingState": null,
           "reportingWindow": "0x1000000000000000000000000000000000000000",
           "resolutionSource": "http://www.trusted-third-party.com",
           "tags": [
@@ -97,7 +97,7 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
           "numTicks": 10752,
           "outcomes": [],
           "outstandingShares": 0,
-          "phase": null,
+          "reportingState": null,
           "reportingWindow": "0x1000000000000000000000000000000000000000",
           "resolutionSource": "http://www.trusted-third-party.com",
           "tags": [
@@ -132,7 +132,7 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
           "numTicks": 10752,
           "outcomes": [],
           "outstandingShares": 0,
-          "phase": null,
+          "reportingState": null,
           "reportingWindow": "0x1000000000000000000000000000000000000000",
           "resolutionSource": "http://www.ttp-inc.com/0000000000000000000000000000000000000003",
           "tags": [
@@ -178,7 +178,7 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
           "numTicks": 10752,
           "outcomes": [],
           "outstandingShares": 0,
-          "phase": null,
+          "reportingState": null,
           "reportingWindow": "0x1000000000000000000000000000000000000000",
           "resolutionSource": "http://www.ttp-inc.com/0000000000000000000000000000000000000003",
           "tags": [
