@@ -18,7 +18,7 @@ describe("server/getters/get-markets-created-by-user", () => {
     });
   };
   test({
-    description: "user has created 2 markets",
+    description: "user has created 3 markets",
     params: {
       creator: "0x0000000000000000000000000000000000000b0b"
     },
@@ -26,7 +26,8 @@ describe("server/getters/get-markets-created-by-user", () => {
       assert.isNull(err);
       assert.deepEqual(marketsCreatedByUser, [
         "0x0000000000000000000000000000000000000001",
-        "0x0000000000000000000000000000000000000002"
+        "0x0000000000000000000000000000000000000002",
+        "0x0000000000000000000000000000000000000011"
       ]);
     }
   });

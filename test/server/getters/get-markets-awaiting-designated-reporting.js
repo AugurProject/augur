@@ -62,6 +62,7 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
           "numTicks": 10752,
           "outcomes": [],
           "outstandingShares": 0,
+          "phase": null,
           "reportingWindow": "0x1000000000000000000000000000000000000000",
           "resolutionSource": "http://www.trusted-third-party.com",
           "tags": [
@@ -96,6 +97,7 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
           "numTicks": 10752,
           "outcomes": [],
           "outstandingShares": 0,
+          "phase": null,
           "reportingWindow": "0x1000000000000000000000000000000000000000",
           "resolutionSource": "http://www.trusted-third-party.com",
           "tags": [
@@ -130,6 +132,7 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
           "numTicks": 10752,
           "outcomes": [],
           "outstandingShares": 0,
+          "phase": null,
           "reportingWindow": "0x1000000000000000000000000000000000000000",
           "resolutionSource": "http://www.ttp-inc.com/0000000000000000000000000000000000000003",
           "tags": [
@@ -138,14 +141,14 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
           ],
           "type": "binary",
           "volume": 0,
-        }      
+        }
       ]);
     }
   });
   test({
     description: "get all markets awaiting designated reporting by d00d",
     params: {
-      designatedReporter: "0x000000000000000000000000000000000000d00d"      
+      designatedReporter: "0x000000000000000000000000000000000000d00d"
     },
     assertions: (err, marketsInfo) => {
       assert.isNull(err);
@@ -175,6 +178,7 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
           "numTicks": 10752,
           "outcomes": [],
           "outstandingShares": 0,
+          "phase": null,
           "reportingWindow": "0x1000000000000000000000000000000000000000",
           "resolutionSource": "http://www.ttp-inc.com/0000000000000000000000000000000000000003",
           "tags": [
@@ -183,7 +187,7 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
           ],
           "type": "binary",
           "volume": 0,
-        }      
+        }
       ]);
     }
   });
