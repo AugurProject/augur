@@ -1,10 +1,5 @@
-/* eslint jsx-a11y/label-has-for: 0 */
-
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
-
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 import FormStyles from 'modules/common/less/form'
 import ConfirmStyles from 'modules/common/less/confirm-table'

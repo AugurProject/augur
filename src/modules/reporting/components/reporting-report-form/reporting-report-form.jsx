@@ -1,6 +1,6 @@
 /* eslint jsx-a11y/label-has-for: 0 */
 
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 

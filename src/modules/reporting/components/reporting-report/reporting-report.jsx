@@ -1,5 +1,3 @@
-/* eslint jsx-a11y/label-has-for: 0 */
-
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
@@ -8,8 +6,6 @@ import { Helmet } from 'react-helmet'
 import MarketPreview from 'modules/market/components/market-preview/market-preview'
 import ReportingReportForm from 'modules/reporting/components/reporting-report-form/reporting-report-form'
 import ReportingReportConfirm from 'modules/reporting/components/reporting-report-confirm/reporting-report-confirm'
-
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 import FormStyles from 'modules/common/less/form'
 
