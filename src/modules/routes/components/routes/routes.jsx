@@ -29,6 +29,7 @@ const Routes = p => (
     <AuthenticatedRoute path={makePath(VIEWS.REPORTING)} component={COMPONENTS.Reporting} />
     <AuthenticatedRoute path={makePath(VIEWS.REPORTING_OPEN)} component={COMPONENTS.Reporting} />
     <AuthenticatedRoute path={makePath(VIEWS.REPORTING_CLOSED)} component={COMPONENTS.Reporting} />
+    <AuthenticatedRoute path={makePath(VIEWS.REPORTING_REPORT)} component={COMPONENTS.Reporting} />
     <Redirect to={makePath(VIEWS.CATEGORIES)} />
   </Switch>
 )

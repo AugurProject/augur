@@ -1,0 +1,68 @@
+@import (reference) '~assets/styles/shared';
+
+.Confirm {
+  color: @color-white;
+  width: 36rem;
+}
+
+.Confirm__heading {
+  &:extend(.caps--large);
+
+  border-bottom: 1px solid @color-input-background;
+  font-weight: 700;
+  margin-bottom: 1.375rem;
+  padding-bottom: 0.5rem;
+}
+
+.Confirm__list {
+  > li {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+
+    > span:first-child {
+      &:extend(.caps--small);
+
+      color: @color-lightergray;
+      font-weight: 500;
+    }
+
+    > span:last-child {
+      font-size: @font-size-large;
+    }
+  }
+}
+
+.Confirm__subheading {
+  &:extend(.caps);
+
+  font-size: @font-size-normal;
+  margin-bottom: 1.875rem;
+}
+
+.Confirm__wrapper {
+  display: flex;
+  justify-content: space-between;
+
+  > div {
+    width: 14.375rem;
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .Confirm__wrapper {
+    flex-wrap: wrap;
+
+    > div {
+      width: 100%;
+
+      &:first-child {
+        margin-bottom: 2rem;
+      }
+    }
+  }
+}

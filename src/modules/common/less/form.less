@@ -1,0 +1,277 @@
+@import (reference) '~assets/styles/shared';
+
+.Form {
+  margin: auto;
+  max-width: 62.75rem;
+  padding: 3.75rem 0 9.125rem;
+}
+
+.Form__error {
+  background-color: @color-purple;
+  border-radius: 3px;
+  color: @color-white;
+  font-size: @font-size-extra-small;
+  line-height: @font-size-extra-small;
+  padding: 0.2rem 0.5rem;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.Form__error--field-50 {
+  &:extend(.Form__error);
+
+  left: 52%;
+  line-height: 0.8rem;
+  position: absolute;
+  top: -3px;
+}
+
+.Form__fields {
+  align-content: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  min-height: 28.75rem;
+  padding: 0 2rem;
+
+  > li {
+    margin-bottom: 3.7rem;
+    position: relative;
+    width: 100%;
+
+    &.field--short {
+      max-width: 21rem;
+    }
+
+    &.field--50 {
+      width: 48%;
+    }
+
+    > label {
+      display: inline-block;
+      position: relative;
+
+      > span:first-child {
+        margin-right: 0.5rem;
+      }
+    }
+
+    p {
+      color: @color-lightgray;
+      margin: 0;
+
+      &.error {
+        color: @color-red;
+        font-size: @font-size-medium;
+      }
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      background-color: @color-lightergray;
+      font-size: @font-size-large;
+      line-height: @font-size-rather-large;
+
+      &.error {
+        border-color: @color-red;
+      }
+
+      &::placeholder {
+        color: @color-lightgray;
+        line-height: @font-size-rather-large;
+      }
+    }
+
+    textarea {
+      height: 3.5rem;
+      padding-top: 1rem;
+    }
+  }
+}
+
+.Form__navigation {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2rem;
+}
+
+.Form__next,
+.Form__prev,
+.Form__submit {
+  &:extend(.button--white all);
+
+  &.hide-button {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.Form__page {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+
+  &.show-page {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.Form__radio-buttons {
+  display: flex;
+
+  > li {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+
+    &:not(:first-child) {
+      margin-left: 4.75rem;
+    }
+
+    > button {
+      color: @color-white;
+      cursor: pointer;
+      display: block;
+      font-size: @font-size-large;
+      line-height: @font-size-large;
+      min-height: 1.7rem;
+      padding-left: 2.5rem;
+      position: relative;
+      text-align: left;
+
+      &::before {
+        border: 1px solid @color-lightgray;
+        border-radius: 100%;
+        content: "";
+        height: 1.5rem;
+        left: 0;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        width: 1.5rem;
+      }
+
+      &::after {
+        background-color: @color-lightgray;
+        border-radius: 100%;
+        content: "";
+        display: none;
+        height: 0.875rem;
+        left: 0.38rem;
+        margin: auto;
+        position: absolute;
+        top: 0.38rem;
+        width: 0.875rem;
+      }
+
+      &.active::after {
+        display: block;
+      }
+    }
+  }
+}
+
+.Form__radio-buttons--per-line {
+  &:extend(.Form__radio-buttons all);
+
+  display: block;
+
+  > li:not(:first-child) {
+    margin-left: 0;
+    margin-top: 1rem;
+  }
+}
+
+@media @breakpoint-mobile {
+  .Form__fields > li textarea {
+    height: 5.1rem;
+  }
+
+  .Form__radio-buttons {
+    display: block;
+
+    > li:not(:first-child) {
+      margin-left: 0;
+      margin-top: 1rem;
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .Form {
+    padding-bottom: 0;
+  }
+
+  .Form__fields {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .Form__navigation {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .Form__next,
+  .Form__prev,
+  .Form__submit {
+    border-radius: 0;
+    white-space: nowrap;
+    width: 50%;
+
+    &.hide-button {
+      display: none;
+    }
+  }
+
+  .Form__next,
+  .Form__submit {
+    background-color: @color-purple;
+    color: @color-white;
+  }
+
+  .Form__prev.hide-button + .Form__next {
+    width: 100%;
+  }
+
+  .Form__error--field-50 {
+    left: 0;
+    position: relative;
+    top: auto;
+  }
+
+  .Form__error + .Form__error--field-50 {
+    left: 0.5rem;
+  }
+
+  .Form__fields > li.field--50 {
+    width: 100%;
+  }
+}
+
+@media @breakpoint-mobile-small {
+  .Form__fields > li textarea {
+    height: 6.5rem;
+  }
+
+  .Form__navigation {
+    flex-wrap: wrap;
+  }
+
+  .Form__next,
+  .Form__prev,
+  .Form__submit {
+    width: 100%;
+  }
+
+  .Form__next,
+  .Form__submit {
+    order: 1;
+  }
+
+  .Form__prev {
+    order: 2;
+  }
+}
