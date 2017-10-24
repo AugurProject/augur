@@ -1,7 +1,8 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
 
-import MyPositions from 'modules/portfolio/components/positions/positions'
+import PortfolioHeader from 'modules/portfolio/containers/portfolio-header'
+import MyPositions from 'modules/portfolio/containers/positions'
 import MyMarkets from 'modules/portfolio/components/markets/markets'
 import Watchlist from 'modules/portfolio/components/watchlist/watchlist'
 import Transactions from 'modules/portfolio/components/transactions/transactions'
@@ -12,6 +13,7 @@ import { MY_POSITIONS, MY_MARKETS, WATCHLIST, TRANSACTIONS } from 'modules/route
 
 const PortfolioView = p => (
   <section>
+    <PortfolioHeader />
     <Route path={makePath(MY_POSITIONS)} component={MyPositions} />
     <Route path={makePath(MY_MARKETS)} component={MyMarkets} />
     <Route path={makePath(WATCHLIST)} component={Watchlist} />

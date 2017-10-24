@@ -15,19 +15,21 @@ const Positions = p => (
         orderCancellation={p.orderCancellation}
         location={p.location}
         history={p.history}
+        orderData={{}}
+        positionData={{}}
       />
     ))}
   </article>
 )
 
 Positions.propTypes = {
-  location: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
-  markets: PropTypes.array.isRequired,
+  location: PropTypes.object, // .isRequired
+  history: PropTypes.object, // .isRequired
+  markets: PropTypes.array, // .isRequired
   isTradeCommitLocked: PropTypes.bool,
-  closePositionStatus: PropTypes.object.isRequired,
-  scalarShareDenomination: PropTypes.object.isRequired,
-  orderCancellation: PropTypes.object.isRequired,
+  closePositionStatus: PropTypes.object, // .isRequired
+  scalarShareDenomination: PropTypes.object, // .isRequired
+  orderCancellation: PropTypes.object, // .isRequired
   registerBlockNumber: PropTypes.number
 }
 
