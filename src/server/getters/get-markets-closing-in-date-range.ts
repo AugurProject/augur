@@ -11,7 +11,7 @@ export function getMarketsClosingInDateRange(db: Knex, earliestClosingTime: numb
   if (offset != null) query = query.offset(offset);
   query.asCallback((err: Error|null, rows?: Array<MarketsContractAddressRow>): void => {
     if (err) return callback(err);
-    if (!rows || !rows.length) return callback(null);
+    if (!rows) return callback(null);
     callback(null, rows.map((row: MarketsContractAddressRow): Address => row.marketID));
   });
 }

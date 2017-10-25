@@ -33,10 +33,10 @@ exports.seed = (knex: Knex): Promise<any> => {
       account: "0x0000000000000000000000000000000000000b0b",
       marketID: "0x0000000000000000000000000000000000000001",
       outcome: 3,
-      numShares: "0.3",
+      numShares: "0",
       numSharesAdjustedForUserIntention: "0",
       realizedProfitLoss: "0",
-      unrealizedProfitLoss: "0.03",
+      unrealizedProfitLoss: "0",
     }, {
       account: "0x0000000000000000000000000000000000000b0b",
       marketID: "0x0000000000000000000000000000000000000001",
