@@ -1,4 +1,4 @@
-import { LogProcessor } from "../../types";
+import { LogProcessors } from "../../types";
 import { processMarketCreatedLog, processMarketCreatedLogRemoval } from "./market-created";
 import { processTokensTransferredLog, processTokensTransferredLogRemoval } from "./tokens-transferred";
 import { processOrderCanceledLog, processOrderCanceledLogRemoval } from "./order-canceled";
@@ -14,44 +14,65 @@ import { processUniverseForkedLog, processUniverseForkedLogRemoval } from "./uni
 import { processTransferLog, processTransferLogRemoval } from "./legacy-rep-contract/transfer";
 import { processApprovalLog, processApprovalLogRemoval } from "./legacy-rep-contract/approval";
 
-export const logProcessors: {[contractName: string]: {[eventName: string]: LogProcessor}} = {
+export const logProcessors: LogProcessors = {
   Augur: {
-    MarketCreated: processMarketCreatedLog,
-    TokensTransferred: processTokensTransferredLog,
-    OrderCanceled: processOrderCanceledLog,
-    OrderCreated: processOrderCreatedLog,
-    OrderFilled: processOrderFilledLog,
-    ProceedsClaimed: processProceedsClaimedLog,
-    DesignatedReportSubmitted: processDesignatedReportSubmittedLog,
-    ReportSubmitted: processReportSubmittedLog,
-    WinningTokensRedeemed: processWinningTokensRedeemedLog,
-    ReportsDisputed: processReportsDisputedLog,
-    MarketFinalized: processMarketFinalizedLog,
-    UniverseForked: processUniverseForkedLog,
+    MarketCreated: {
+      add: processMarketCreatedLog,
+      remove: processMarketCreatedLogRemoval,
+    },
+    TokensTransferred: {
+      add: processTokensTransferredLog,
+      remove: processTokensTransferredLogRemoval,
+    },
+    OrderCanceled: {
+      add: processOrderCanceledLog,
+      remove: processOrderCanceledLogRemoval,
+    },
+    OrderCreated: {
+      add: processOrderCreatedLog,
+      remove: processOrderCreatedLogRemoval,
+    },
+    OrderFilled: {
+      add: processOrderFilledLog,
+      remove: processOrderFilledLogRemoval,
+    },
+    ProceedsClaimed: {
+      add: processProceedsClaimedLog,
+      remove: processProceedsClaimedLogRemoval,
+    },
+    DesignatedReportSubmitted: {
+      add: processDesignatedReportSubmittedLog,
+      remove: processDesignatedReportSubmittedLogRemoval,
+    },
+    ReportSubmitted: {
+      add: processReportSubmittedLog,
+      remove: processReportSubmittedLogRemoval,
+    },
+    WinningTokensRedeemed: {
+      add: processWinningTokensRedeemedLog,
+      remove: processWinningTokensRedeemedLogRemoval,
+    },
+    ReportsDisputed: {
+      add: processReportsDisputedLog,
+      remove: processReportsDisputedLogRemoval,
+    },
+    MarketFinalized: {
+      add: processMarketFinalizedLog,
+      remove: processMarketFinalizedLogRemoval,
+    },
+    UniverseForked: {
+      add: processUniverseForkedLog,
+      remove: processUniverseForkedLogRemoval,
+    },
   },
   LegacyRepContract: {
-    Transfer: processTransferLog,
-    Approval: processApprovalLog,
-  },
-};
-
-export const logRemovalProcessors: {[contractName: string]: {[eventName: string]: LogProcessor}} = {
-  Augur: {
-    MarketCreated: processMarketCreatedLogRemoval,
-    TokensTransferred: processTokensTransferredLogRemoval,
-    OrderCanceled: processOrderCanceledLogRemoval,
-    OrderCreated: processOrderCreatedLogRemoval,
-    OrderFilled: processOrderFilledLogRemoval,
-    ProceedsClaimed: processProceedsClaimedLogRemoval,
-    DesignatedReportSubmitted: processDesignatedReportSubmittedLogRemoval,
-    ReportSubmitted: processReportSubmittedLogRemoval,
-    WinningTokensRedeemed: processWinningTokensRedeemedLogRemoval,
-    ReportsDisputed: processReportsDisputedLogRemoval,
-    MarketFinalized: processMarketFinalizedLogRemoval,
-    UniverseForked: processUniverseForkedLogRemoval,
-  },
-  LegacyRepContract: {
-    Transfer: processTransferLogRemoval,
-    Approval: processApprovalLogRemoval,
+    Transfer: {
+      add: processTransferLog,
+      remove: processTransferLogRemoval,
+    },
+    Approval: {
+      add: processApprovalLog,
+      remove: processApprovalLogRemoval,
+    },
   },
 };

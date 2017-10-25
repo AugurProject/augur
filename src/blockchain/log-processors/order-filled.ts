@@ -60,7 +60,7 @@ export function insertPositionInMarket(db: Knex, trx: Knex.Transaction, account:
 }
 
 export function updatePositionInMarket(db: Knex, trx: Knex.Transaction, account: Address, marketID: Address, positionInMarket: Array<string>, realizedProfitLoss: Array<string>, unrealizedProfitLoss: Array<string>, positionInMarketAdjustedForUserIntention: Array<string>, callback: ErrorCallback): void {
-  forEachOf(positionInMarket, (numShares: string, outcome: number, nextOutcome: AsyncCallback): void => {
+  forEachOf(positionInMarket, (numShares: string, outcome: number, nextOutcome: ErrorCallback): void => {
     db("positions").transacting(trx).where({ account, marketID, outcome }).update({
       numShares,
       realizedProfitLoss: realizedProfitLoss[outcome],

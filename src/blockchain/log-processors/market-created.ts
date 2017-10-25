@@ -83,7 +83,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
           symbol: "shares",
         };
         const shareTokens = new Array(numOutcomes);
-        forEachOf(shareTokens, (_: null, outcome: number, nextOutcome: AsyncCallback): void => {
+        forEachOf(shareTokens, (_: null, outcome: number, nextOutcome: ErrorCallback): void => {
           augur.api.Market.getShareToken(Object.assign({ _outcome: outcome }, marketPayload), (err: Error|null, shareToken?: Address): void => {
             if (err) return nextOutcome(err);
             shareTokens[outcome] = shareToken;

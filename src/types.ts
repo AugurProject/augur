@@ -65,6 +65,17 @@ export type AsyncCallback = (err?: Error|null, result?: any) => void;
 
 export type LogProcessor = (db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback) => void;
 
+export interface EventLogProcessor {
+  add: LogProcessor;
+  remove: LogProcessor;
+}
+
+export interface LogProcessors {
+  [contractName: string]: {
+    [eventName: string]: EventLogProcessor;
+  };
+}
+
 export interface JsonRpcRequest {
   id: string|number|null;
   jsonrpc: string;
