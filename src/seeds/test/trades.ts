@@ -20,7 +20,7 @@ exports.seed = (knex: Knex): Promise<any> => {
       numFillerTokens: "1.1",
       numFillerShares: "0",
       price: "5.5",
-      shares: "1.1",
+      shares: "0.2",
       settlementFees: "0",
     }], 1000);
   });

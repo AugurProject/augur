@@ -34,7 +34,7 @@ describe("server/getters/get-user-trading-history", () => {
       assert.deepEqual(userTradingHistory, [{
         type: "sell",
         price: 5.5,
-        shares: 1.1,
+        shares: 0.2,
         maker: false,
         settlementFees: 0,
         marketID: "0x0000000000000000000000000000000000000001",
@@ -62,7 +62,7 @@ describe("server/getters/get-user-trading-history", () => {
       assert.deepEqual(userTradingHistory, [{
         type: "sell",
         price: 5.5,
-        shares: 1.1,
+        shares: 0.2,
         maker: true,
         settlementFees: 0,
         marketID: "0x0000000000000000000000000000000000000001",
