@@ -1,6 +1,5 @@
 "use strict";
 
-const join = require("path").join;
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { getUserTradingPositions } = require("../../../build/server/getters/get-user-trading-positions");

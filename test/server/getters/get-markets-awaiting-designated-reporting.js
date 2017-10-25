@@ -24,7 +24,7 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
     assertions: (err, marketsAwaitingDesignatedReporting) => {
       assert.isNull(err);
       assert.isUndefined(marketsAwaitingDesignatedReporting);
-    }
+    },
   });
   test({
     description: "get all markets awaiting designated reporting, sorted ascending by volume",
@@ -139,14 +139,14 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
           ],
           "type": "binary",
           "volume": 0,
-        }
+        },
       ]);
-    }
+    },
   });
   test({
     description: "get all markets awaiting designated reporting by d00d",
     params: {
-      designatedReporter: "0x000000000000000000000000000000000000d00d"
+      designatedReporter: "0x000000000000000000000000000000000000d00d",
     },
     assertions: (err, marketsInfo) => {
       assert.isNull(err);
@@ -185,8 +185,8 @@ describe("server/getters/get-markets-awaiting-designated-reporting", () => {
           ],
           "type": "binary",
           "volume": 0,
-        }
+        },
       ]);
-    }
+    },
   });
 });
