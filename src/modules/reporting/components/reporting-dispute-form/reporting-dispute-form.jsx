@@ -61,19 +61,21 @@ const validateNumber = (validations, updateState, fieldName, value, humanName, m
   })
 }
 
-const validateStake = (validations, updateState, stake) => {
+const validateStake = (validations, updateState, isStakeRequired, stake) => {
   const updatedValidations = { ...validations }
 
-  switch (true) {
-    case stake === '':
-      updatedValidations.stake = `The stake field is required.`
-      break
-    case stake <= 0:
-      updatedValidations.stake = `Please enter a stake greater than 0.`
-      break
-    default:
-      updatedValidations.stake = true
-      break
+  if (isStakeRequired) {
+    switch (true) {
+      case stake === '':
+        updatedValidations.stake = `The stake field is required.`
+        break
+      case stake <= 0:
+        updatedValidations.stake = `Please enter a stake greater than 0.`
+        break
+      default:
+        updatedValidations.stake = true
+        break
+    }
   }
 
   updateState({
@@ -137,14 +139,14 @@ const ReportingDisputeForm = p => (
         <ul className={FormStyles['Form__radio-buttons--per-line']}>
           <li>
             <button
-              className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === 'yes' })}
-              onClick={(e) => { validateOutcome(p.validations, p.updateState, 'yes') }}
+              className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === 'Yes' })}
+              onClick={(e) => { validateOutcome(p.validations, p.updateState, 'Yes') }}
             >Yes</button>
           </li>
           <li>
             <button
-              className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === 'no' })}
-              onClick={(e) => { validateOutcome(p.validations, p.updateState, 'no') }}
+              className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === 'No' })}
+              onClick={(e) => { validateOutcome(p.validations, p.updateState, 'No') }}
             >No</button>
           </li>
         </ul>
@@ -185,7 +187,7 @@ const ReportingDisputeForm = p => (
           max={p.market.maxValue}
           placeholder="0"
           value={p.selectedOutcome}
-          onChange={(e) => { validateNumber(p.validations, p.updateState, 'selectedOutcome', e.target.value, 'outcome', p.market.minValue, p.market.maxValue) }}
+          onChange={(e) => { validateNumber(p.validations, p.updateState, 'selectedOutcome', e.target.value, 'proposed outcome', p.market.minValue, p.market.maxValue) }}
         />
       </li>
     }
@@ -204,7 +206,7 @@ const ReportingDisputeForm = p => (
         min="0"
         placeholder="0.0000 REP"
         value={p.stake}
-        onChange={(e) => { validateStake(p.validations, p.updateState, e.target.value) }}
+        onChange={(e) => { validateStake(p.validations, p.updateState, p.isStakeRequired, e.target.value) }}
       />
     </li>
   </ul>

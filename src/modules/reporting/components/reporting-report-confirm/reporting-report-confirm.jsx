@@ -8,7 +8,7 @@ const ReportingReportConfirm = p => (
   <article className={FormStyles.Form__fields}>
     <div className={ConfirmStyles.Confirm}>
       <h2 className={ConfirmStyles.Confirm__heading}>Confirm Report</h2>
-      <div className={ConfirmStyles.Confirm__wrapper}>
+      <div className={ConfirmStyles['Confirm__wrapper--wide']}>
         <div className={ConfirmStyles.Confirm__creation}>
           <ul className={ConfirmStyles.Confirm__list}>
             <li>

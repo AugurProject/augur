@@ -28,8 +28,11 @@ export default class ReportingDispute extends Component {
       stake: '',
       validations: {
         isMarketValid: false,
-        stake: !this.props.market.isStakeRequired,
       }
+    }
+
+    if (this.props.market.isStakeRequired) {
+      this.state.validations.stake = false
     }
 
     this.prevPage = this.prevPage.bind(this)
@@ -83,8 +86,10 @@ export default class ReportingDispute extends Component {
             <ReportingDisputeConfirm
               market={p.market}
               isMarketValid={s.isMarketValid}
+              currentOutcome={s.currentOutcome}
               selectedOutcome={s.selectedOutcome}
               stake={s.stake}
+              disputeBond={s.disputeBond}
             />
           }
           <div className={FormStyles.Form__navigation}>
