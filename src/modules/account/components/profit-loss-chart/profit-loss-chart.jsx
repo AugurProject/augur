@@ -32,8 +32,8 @@ export default class ProfitLossChart extends Component {
       }
     })
 
-    const containerId = 'profit-loss-chart-container' + this.props.id
-    const chartId = 'profit-loss-chart' + this.props.id
+    const containerId = 'profit_loss_chart_container' + this.props.id
+    const chartId = 'profit_loss_chart' + this.props.id
     // calculate horizontal margins, if mobile 0, else default
     const horizontalMargins = this.props.isMobile ? 0 : null
     // determine height based on mobile or not
@@ -120,7 +120,7 @@ export default class ProfitLossChart extends Component {
         this.profitLossChart.series[i].setData(series.data, false)
       }
     })
-    const containerId = 'profit-loss-chart-container' + this.props.id
+    const containerId = 'profit_loss_chart_container' + this.props.id
     const horizontalMargins = this.props.isMobile ? 0 : null
     // determine height based on mobile
     const height = this.props.isMobile ? 260 : 170
@@ -138,8 +138,8 @@ export default class ProfitLossChart extends Component {
   }
 
   render() {
-    const containerId = 'profit-loss-chart-container' + this.props.id
-    const chartId = 'profit-loss-chart' + this.props.id
+    const containerId = 'profit_loss_chart_container' + this.props.id
+    const chartId = 'profit_loss_chart' + this.props.id
 
     return (
       <article
