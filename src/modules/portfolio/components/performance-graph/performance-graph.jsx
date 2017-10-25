@@ -47,41 +47,51 @@ class PerformanceGraph extends Component {
         text: null
       },
       chart: {
-       backgroundColor: '#1e1a31',
-     },
-     lang: {
-       noData: 'No performance history.'
-     },
-     rangeSelector: { selected: 1 },
-     xAxis: {
-       visible: true
-     },
-     yAxis: {
-       visible: false
-     },
-     plotOptions: {
-       series: {
-         color: 'white',
-         fillColor: {
-           linearGradient: [0, 0, 0, '100%'],
-           stops: [
-             [0, Highcharts.Color('#dbdae1').setOpacity(0.5).get('rgba')],
-             [0.8, Highcharts.Color('#dbdae1').setOpacity(0.25).get('rgba')],
-             [1, Highcharts.Color('#dbdae1').setOpacity(0).get('rgba')]
-           ]
-         }
-       }
-     },
-     legend: {
-       enabled: false
-     },
-     tooltip: {
-       pointFormat: '<span style="color: #372e4b;">{series.name}</span>: <b>{point.y} ETH Tokens</b><br/>',
-       valueDecimals: 2
-     },
-     credits: {
-       enabled: false
-     }
+        backgroundColor: '#1e1a31',
+      },
+      lang: {
+        noData: 'No performance history.'
+      },
+      rangeSelector: { selected: 1 },
+      xAxis: {
+        visible: true,
+        type: 'datetime',
+        crosshair: true,
+        tickPositioner: function () {
+          // TODO: this is going to need more work than this placeholder function
+          const positions = [0, this.dataMin, this.dataMax]
+          console.log(this.dataMin)
+          console.log(this.dataMax)
+          return positions
+        }
+      },
+      yAxis: {
+        visible: false,
+        crosshair: true,
+      },
+      plotOptions: {
+        series: {
+          color: 'white',
+          fillColor: {
+            linearGradient: [0, 0, 0, '100%'],
+            stops: [
+              [0, Highcharts.Color('#dbdae1').setOpacity(0.25).get('rgba')],
+              [0.5, Highcharts.Color('#dbdae1').setOpacity(0.15).get('rgba')],
+              [1, Highcharts.Color('#dbdae1').setOpacity(0).get('rgba')]
+            ]
+          }
+        }
+      },
+      legend: {
+        enabled: false
+      },
+      tooltip: {
+        pointFormat: '<span style="color: #372e4b;">{series.name}</span>: <b>{point.y} ETH Tokens</b><br/>',
+        valueDecimals: 2
+      },
+      credits: {
+        enabled: false
+      }
     });
 
     window.addEventListener('resize', this.updateChartDebounced)
@@ -119,15 +129,7 @@ class PerformanceGraph extends Component {
         this.performanceGraph.series[i].setData(series.data, false)
       }
     })
-
-    // if (this.performanceGraph.chartWidth > this.refs.performance_graph_container.clientWidth) {
-    //   this.performanceGraph.options.chart.width = this.refs.performance_graph_container.clientWidth
-    // } else {
-    //   this.performanceGraph.options.chart.width = null
-    // }
-
     this.performanceGraph.redraw()
-    this.performanceGraph.reflow()
   }
 
   render() {
