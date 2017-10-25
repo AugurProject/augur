@@ -1,8 +1,7 @@
 "use strict";
 
-const unlink = require("fs").unlink;
 const environments = require("../knexfile.js");
-const Knex  = require("knex")
+const Knex  = require("knex");
 const { checkAugurDbSetup } = require("../build/setup/check-augur-db-setup");
 
 module.exports = (callback) => {
@@ -14,4 +13,4 @@ module.exports = (callback) => {
       });
     });
   });
-}
+};
