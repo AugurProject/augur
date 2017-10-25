@@ -7,7 +7,7 @@ import { ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT } from 'modules/route
 export default class AccountInnerNav extends BaseInnerNav {
   static propTypes = {
     ...BaseInnerNav.propTypes,
-    privateKey: PropTypes.string // .isRequired
+    privateKey: PropTypes.string.isRequired
   }
 
   getMainMenuData() {

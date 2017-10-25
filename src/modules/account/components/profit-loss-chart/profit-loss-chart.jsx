@@ -120,7 +120,6 @@ export default class ProfitLossChart extends Component {
         this.profitLossChart.series[i].setData(series.data, false)
       }
     })
-    // console.log(this.profitLossChart.options.chart.width)
     const containerId = 'profit-loss-chart-container' + this.props.id
     const horizontalMargins = this.props.isMobile ? 0 : null
     // determine height based on mobile
@@ -128,7 +127,7 @@ export default class ProfitLossChart extends Component {
     // set height
     this.profitLossChart.options.chart.height = height
     // check if width is less than height, default to a 9/16 aspect ratio
-    if (this.refs[containerId].clientWidth <= height) {
+    if (this.refs[containerId] && this.refs[containerId].clientWidth <= height) {
       this.profitLossChart.options.chart.height = ((9 / 16) * 100) + '%'
     }
     // adjust margins

@@ -28,13 +28,14 @@
 .AccountHeader__Charts {
   display: flex;
   flex: 2 1 auto;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
+  width: calc(100% - 22rem);
 }
 
 .AccountHeader__Chart {
   flex: 1 1 auto;
-  // flex-basis: 23rem;
   margin: 0 auto;
+  width: 33%;
 }
 
 @media @breakpoint-mobile {
@@ -69,12 +70,13 @@
 
   .AccountHeader__Charts {
     align-items: flex-end;
+    width: 100vw;
   }
 
   .AccountHeader__Chart {
     display: flex;
     flex: 0 0 auto;
     margin: 0;
-    width: 100%;
+    width: 100vw;
   }
 }
