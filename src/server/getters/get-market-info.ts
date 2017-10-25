@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { Address, MarketsRow, OutcomesRow, UIMarketInfo, UIConsensusInfo, UIOutcomeInfo } from "../../types";
+import { Address, MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIConsensusInfo, UIOutcomeInfo } from "../../types";
 
 export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow): UIOutcomeInfo {
   const outcomeInfo: UIOutcomeInfo = {
@@ -11,7 +11,7 @@ export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow): UIO
   return outcomeInfo;
 }
 
-export function reshapeMarketsRowToUIMarketInfo(row: MarketsRow, outcomesInfo: Array<UIOutcomeInfo>): UIMarketInfo {
+export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime, outcomesInfo: Array<UIOutcomeInfo>): UIMarketInfo {
   let consensus: UIConsensusInfo|null;
   if (row.consensusOutcome === null) {
     consensus = null;
@@ -53,11 +53,11 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRow, outcomesInfo: A
 }
 
 export function getMarketInfo(db: Knex, marketID: string, callback: (err: Error|null, result?: UIMarketInfo) => void): void {
-  db.select().from("markets").where({ marketID }).limit(1).asCallback((err: Error|null, rows?: Array<MarketsRow>): void => {
+  db.select(["markets.*", "blocks.timestamp as creationTime"]).from("markets").leftJoin("blocks", "markets.creationBlockNumber", "blocks.blockNumber").where("markets.marketID", marketID).limit(1).asCallback((err: Error|null, rows?: Array<MarketsRowWithCreationTime>): void => {
     if (err) return callback(err);
     if (!rows || !rows.length) return callback(null);
-    const marketsRow: MarketsRow = rows[0];
-    db.select().from("outcomes").where({ marketID }).asCallback((err: Error|null, outcomesRows?: Array<OutcomesRow>): void => {
+    const marketsRow: MarketsRowWithCreationTime = rows[0];
+    db("outcomes").where({ marketID }).asCallback((err: Error|null, outcomesRows?: Array<OutcomesRow>): void => {
       if (err) return callback(err);
       const outcomesInfo: Array<UIOutcomeInfo> = outcomesRows!.map((outcomesRow: OutcomesRow): UIOutcomeInfo => reshapeOutcomesRowToUIOutcomeInfo(outcomesRow));
       callback(null, reshapeMarketsRowToUIMarketInfo(marketsRow, outcomesInfo));

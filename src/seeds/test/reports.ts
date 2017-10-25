@@ -4,7 +4,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
   return knex("reports").del().then((): void => {
     // Inserts seed entries
-    knex.batchInsert("reports", [{
+    const seedData = [{
       reporter: "0x0000000000000000000000000000000000000021",
       marketID: "0x0000000000000000000000000000000000000002",
       reportingToken: "0x0000000000000000001000000000000000000001",
@@ -28,6 +28,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       payout1: 1,
       payout2: 1,
       isInvalid: 1,
-    }], 1000);
+    }];
+    knex.batchInsert("reports", seedData, seedData.length);
   });
 };

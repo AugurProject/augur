@@ -5,12 +5,31 @@ exports.seed = (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
   return knex("blocks").del().then((): void => {
     // Inserts seed entries
-    knex.batchInsert("blocks", [{
+    const seedData = [{
       blockNumber: 7,
-      blockTimestamp: 10000000,
+      timestamp: 10000000,
     }, {
       blockNumber: 8,
-      blockTimestamp: 10000015,
-    }], 1000);
+      timestamp: 10000015,
+    }, {
+      blockNumber: 1400000,
+      timestamp: 1506473474,
+    }, {
+      blockNumber: 1400001,
+      timestamp: 1506473500,
+    }, {
+      blockNumber: 1400002,
+      timestamp: 1506473515,
+    }, {
+      blockNumber: 1400051,
+      timestamp: 1506474500,
+    }, {
+      blockNumber: 1400100,
+      timestamp: 1506480000,
+    }, {
+      blockNumber: 1400101,
+      timestamp: 1506480015,
+    }];
+    knex.batchInsert("blocks", seedData, seedData.length);
   });
 };

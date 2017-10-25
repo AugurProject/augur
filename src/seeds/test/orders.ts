@@ -4,14 +4,13 @@ exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
   return knex("orders").del().then((): void => {
     // Inserts seed entries
-    knex.batchInsert("orders", [{
+    const seedData = [{
       orderID: "0x1000000000000000000000000000000000000000000000000000000000000000",
       marketID: "0x0000000000000000000000000000000000000001",
       outcome: 0,
       shareToken: "0x1000000000000000000000000000000000000000",
       orderType: "buy",
       orderCreator: "0x0000000000000000000000000000000000000b0b",
-      creationTime: 1506473500,
       creationBlockNumber: 1400001,
       price: 0.7,
       amount: 1,
@@ -28,7 +27,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       shareToken: "0x1000000000000000000000000000000000000000",
       orderType: "buy",
       orderCreator: "0x000000000000000000000000000000000000d00d",
-      creationTime: 1506473515,
       creationBlockNumber: 1400002,
       price: 0.6,
       amount: 2,
@@ -45,7 +43,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       shareToken: "0x2000000000000000000000000000000000000000",
       orderType: "buy",
       orderCreator: "0x000000000000000000000000000000000000d00d",
-      creationTime: 1506473515,
       creationBlockNumber: 1400002,
       price: 0.6,
       amount: 2,
@@ -62,7 +59,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       shareToken: "0x2000000000000000000000000000000000000000",
       orderType: "sell",
       orderCreator: "0x000000000000000000000000000000000000d00d",
-      creationTime: 1506473515,
       creationBlockNumber: 1400002,
       price: 0.6,
       amount: 2,
@@ -72,6 +68,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       sharesEscrowed: 0,
       betterOrderID: null,
       worseOrderID: null,
-    }], 1000);
+    }];
+    knex.batchInsert("orders", seedData, seedData.length);
   });
 };

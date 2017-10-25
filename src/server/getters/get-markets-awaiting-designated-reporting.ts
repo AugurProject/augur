@@ -13,10 +13,10 @@ export function getMarketsAwaitingDesignatedReporting(db: Knex, designatedReport
   if (limit != null) query = query.limit(limit);
   if (offset != null) query = query.offset(offset);
   // TODO: should we also consider a market_state's phase IS NULL?
-  query.asCallback((err?: Error|null, marketsRows?: Array<MarketsRow>): void => {
+  query.asCallback((err?: Error|null, marketsRows?: Array<any>): void => {
     if (err) return callback(err);
     if (!marketsRows || !marketsRows.length) return callback(null);
-    const marketsInfo: UIMarketsInfo = marketsRows.map((marketsRow: MarketsRow): UIMarketInfo => reshapeMarketsRowToUIMarketInfo(marketsRow, []));
+    const marketsInfo: UIMarketsInfo = marketsRows.map((marketsRow: any): UIMarketInfo => reshapeMarketsRowToUIMarketInfo(marketsRow, []));
     callback(null, marketsInfo);
   });
 }
