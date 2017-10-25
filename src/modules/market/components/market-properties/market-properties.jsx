@@ -1,8 +1,11 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import MarketLink from 'modules/market/components/market-link/market-link'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
+
+import { TYPE_REPORT, TYPE_DISPUTE } from 'modules/market/constants/link-types'
 
 import getValue from 'utils/get-value'
 import setShareDenomination from 'utils/set-share-denomination'
@@ -16,21 +19,15 @@ const MarketProperties = (p) => {
 
   let buttonText
 
-  switch (true) {
-    case p.isReported:
-      buttonText = 'Reported'
-      break
-    case p.isMissedReport:
-      buttonText = 'Missed Report'
-      break
-    case p.isPendingReport:
+  switch (p.linkType) {
+    case TYPE_REPORT:
       buttonText = 'Report'
       break
-    case !p.isOpen:
-      buttonText = 'View'
+    case TYPE_DISPUTE:
+      buttonText = 'Dispute'
       break
     default:
-      buttonText = 'Trade'
+      buttonText = 'View'
   }
 
   return (
@@ -62,12 +59,18 @@ const MarketProperties = (p) => {
           className={Styles.MarketProperties__trade}
           id={p.id}
           formattedDescription={p.formattedDescription}
+          linkType={p.linkType}
         >
-          { buttonText }
+          { p.buttonText || buttonText }
         </MarketLink>
       </div>
     </article>
   )
+}
+
+MarketProperties.propTypes = {
+  linkType: PropTypes.string,
+  buttonText: PropTypes.string,
 }
 
 export default MarketProperties

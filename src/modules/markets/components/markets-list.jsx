@@ -19,7 +19,8 @@ export default class MarketsList extends Component {
     location: PropTypes.object.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
-    loadMarketsInfo: PropTypes.func.isRequired
+    loadMarketsInfo: PropTypes.func.isRequired,
+    linkType: PropTypes.string,
   }
 
   constructor(props) {
@@ -96,6 +97,7 @@ export default class MarketsList extends Component {
                   selectedShareDenomination={selectedShareDenomination}
                   shareDenominations={shareDenominations}
                   toggleFavorite={p.toggleFavorite}
+                  linkType={p.linkType}
                   location={p.location}
                   history={p.history}
                 />
