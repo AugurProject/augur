@@ -1,9 +1,8 @@
-"use strinct";
+"use strict";
 
 const EventEmitter = require("events").EventEmitter;
 const assert = require("chai").assert;
 const { Subscriptions } = require("../../build/server/subscriptions");
-
 
 describe("server/subscriptions", () => {
   let emitter;
@@ -14,10 +13,10 @@ describe("server/subscriptions", () => {
     subscriptions = new Subscriptions(emitter);
   });
   
-  it('subscribes to an event', (done) => {
+  it("subscribes to an event", (done) => {
   
     let params = [];
-    let subscription = subscriptions.subscribe('MarketCreated', null, (data) => {
+    let subscription = subscriptions.subscribe("MarketCreated", null, (data) => {
       params.push(data);
     });
 
@@ -29,24 +28,24 @@ describe("server/subscriptions", () => {
     done();
   });
 
-  it('subscribes to an event and gets outputs', (done) => {
+  it("subscribes to an event and gets outputs", (done) => {
   
     let params = [];
-    let subscription = subscriptions.subscribe('MarketCreated', null, (data) => {
+    let subscription = subscriptions.subscribe("MarketCreated", null, (data) => {
       params.push(data);
     });
 
-    emitter.emit('MarketCreated', 1);
-    emitter.emit('MarketCreated', "string");
-    emitter.emit('MarketCreated', {s: "string again", n: 123});
+    emitter.emit("MarketCreated", 1);
+    emitter.emit("MarketCreated", "string");
+    emitter.emit("MarketCreated", {s: "string again", n: 123});
 
     assert.deepEqual(params, [ 1, "string", { s: "string again", n: 123 } ]);
     done();
   });
 
-  it('unsubscribes from a single event', (done) => {
-    let subscription1 = subscriptions.subscribe('MarketCreated', null, (data) => {});
-    let subscription2 = subscriptions.subscribe('MarketCreated', null, (data) => {});
+  it("unsubscribes from a single event", (done) => {
+    let subscription1 = subscriptions.subscribe("MarketCreated", null, (data) => {});
+    let subscription2 = subscriptions.subscribe("MarketCreated", null, (data) => {});
 
     assert.notEqual(subscription1, subscription2);
 
@@ -63,9 +62,9 @@ describe("server/subscriptions", () => {
     done();
   });
 
-  it('unsubscribes from all events', (done) => {
-    let subscription1 = subscriptions.subscribe('MarketCreated', null, (data) => {});
-    let subscription2 = subscriptions.subscribe('MarketCreated', null, (data) => {});
+  it("unsubscribes from all events", (done) => {
+    let subscription1 = subscriptions.subscribe("MarketCreated", null, (data) => {});
+    let subscription2 = subscriptions.subscribe("MarketCreated", null, (data) => {});
 
     assert.notEqual(subscription1, subscription2);
 

@@ -41,7 +41,7 @@ export function runWebsocketServer(db: Knex, port: number): void {
           subscriptions.unsubscribe(subscription);
           websocket.send(makeJsonRpcResponse(message.id, true));
         } else {
-          dispatchJsonRpcRequest(db, message as JsonRpcRequest, (err?: Error | null, result?: any): void => {
+          dispatchJsonRpcRequest(db, message as JsonRpcRequest, (err: Error|null, result?: any): void => {
             if (err) return console.error("dispatch error: ", err);
             websocket.send(makeJsonRpcResponse(message.id, result || null));
           });
