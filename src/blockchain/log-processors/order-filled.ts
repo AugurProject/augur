@@ -105,6 +105,27 @@ export function upsertPositionInMarket(db: Knex, augur: Augur, trx: Knex.Transac
   });
 }
 
+export function updateOrdersAndPositions(db: Knex, augur: Augur, trx: Knex.Transaction, marketID: Address, shareToken: Address, orderID: Bytes32, creator: Address, filler: Address, callback: ErrorCallback): void {
+  const shareTokenPayload: {} = { tx: { to: shareToken } };
+  parallel({
+    amount: (next: AsyncCallback): void => augur.api.Orders.getAmount({ id: orderID }, next),
+    creatorPositionInMarket: (next: AsyncCallback): void => augur.trading.getPositionInMarket({ market: marketID, address: creator }, next),
+    fillerPositionInMarket: (next: AsyncCallback): void => augur.trading.getPositionInMarket({ market: marketID, address: filler }, next),
+  }, (err: Error|null, onContractData: OrderFilledOnContractData): void => {
+    if (err) return callback(err);
+    const { amount, creatorPositionInMarket, fillerPositionInMarket } = onContractData!;
+    const amountRemainingInOrder = new BigNumber(amount!, 16).toFixed();
+    const updateParams = amountRemainingInOrder === "0" ? { amount: amountRemainingInOrder, isRemoved: 1 } : { amount: amountRemainingInOrder };
+    db("orders").transacting(trx).where({ orderID }).update(updateParams).asCallback((err: Error|null): void => {
+      if (err) return callback(err);
+      parallel([
+        (next: AsyncCallback): void => upsertPositionInMarket(db, augur, trx, creator, marketID, creatorPositionInMarket, next),
+        (next: AsyncCallback): void => upsertPositionInMarket(db, augur, trx, filler, marketID, fillerPositionInMarket, next),
+      ], callback);
+    });
+  });
+}
+
 export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
   trx.select("blockTimestamp").from("blocks").where({ blockNumber: log.blockNumber }).asCallback((err: Error|null, blocksRows?: Array<BlocksRow>): void => {
     if (err) return callback(err);
@@ -144,31 +165,21 @@ export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transact
         };
         db.transacting(trx).insert(dataToInsert).into("trades").asCallback((err: Error|null): void => {
           if (err) return callback(err);
-          const shareTokenPayload: {} = { tx: { to: log.shareToken } };
-          parallel({
-            amount: (next: AsyncCallback): void => augur.api.Orders.getAmount(orderID, next),
-            creatorPositionInMarket: (next: AsyncCallback): void => augur.trading.getPositionInMarket({ market: marketID, address: log.creator }, next),
-            fillerPositionInMarket: (next: AsyncCallback): void => augur.trading.getPositionInMarket({ market: marketID, address: log.filler }, next),
-          }, (err: Error|null, onContractData: OrderFilledOnContractData): void => {
-            if (err) return callback(err);
-            const { amount, creatorPositionInMarket, fillerPositionInMarket } = onContractData!;
-            const amountRemainingInOrder = new BigNumber(amount!, 16).toFixed();
-            let updateOrdersQuery = db("orders").transacting(trx).where({ orderID });
-            if (amountRemainingInOrder === "0") {
-              updateOrdersQuery = updateOrdersQuery.del();
-            } else {
-              updateOrdersQuery = updateOrdersQuery.update({ amount });
-            }
-            updateOrdersQuery.asCallback((err: Error|null): void => {
-              if (err) return callback(err);
-              parallel([
-                (next: AsyncCallback): void => upsertPositionInMarket(db, augur, trx, log.creator, marketID, creatorPositionInMarket, next),
-                (next: AsyncCallback): void => upsertPositionInMarket(db, augur, trx, log.filler, marketID, fillerPositionInMarket, next),
-              ], callback);
-            });
-          });
+          updateOrdersAndPositions(db, augur, trx, marketID, log.shareToken, orderID, log.creator, log.filler, callback);
         });
       });
+    });
+  });
+}
+
+export function processOrderFilledLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+  trx.select(["marketID", "outcome"]).from("tokens").where({ contractAddress: log.shareToken }).asCallback((err: Error|null, tokensRows?: Array<TokensRow>): void => {
+    if (err) return callback(err);
+    if (!tokensRows || !tokensRows.length) return callback(new Error("market and outcome not found"));
+    const { marketID, outcome } = tokensRows[0];
+    db.transacting(trx).from("trades").where({ marketID, outcome, orderID: log.orderId, tradeBlockNumber: log.blockNumber }).del().asCallback((err?: Error|null): void => {
+      if (err) return callback(err);
+      updateOrdersAndPositions(db, augur, trx, marketID, log.shareToken, log.orderId, log.creator, log.filler, callback);
     });
   });
 }

@@ -2,6 +2,7 @@ import Augur from "augur.js";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import { Address, FormattedLog, OrdersRow, ErrorCallback } from "../../types";
+import { processOrderCanceledLog } from "./order-canceled";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
 import { denormalizePrice } from "../../utils/denormalize-price";
 import { formatOrderAmount, formatOrderPrice } from "../../utils/format-order";
@@ -37,8 +38,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
         const { minPrice, maxPrice, numTicks } = marketsRows[0];
         const fullPrecisionPrice = denormalizePrice(minPrice, maxPrice, convertFixedPointToDecimal(log.price, numTicks));
         const fullPrecisionAmount = convertFixedPointToDecimal(log.amount, numTicks);
-        const dataToInsert: OrdersRow = {
-          orderID: log.orderID,
+        const orderData: OrdersRow = {
           marketID,
           outcome,
           shareToken: log.shareToken,
@@ -56,8 +56,20 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
           worseOrderID: log.worseOrderID,
           tradeGroupID: log.tradeGroupID,
         };
-        db.transacting(trx).insert(dataToInsert).into("orders").asCallback(callback);
+        const orderID = { orderID: log.orderId };
+        trx.select(["marketID"]).from("orders").where(orderID).asCallback((err: Error|null, ordersRows?: any): void => {
+          if (err) return callback(err);
+          if (!ordersRows || !ordersRows.length) {
+            db.transacting(trx).insert(Object.assign(orderData, orderID)).into("orders").asCallback(callback);
+          } else {
+            db.transacting(trx).from("orders").where(orderID).update(orderData).asCallback(callback);
+          }
+        });
       });
     });
   });
+}
+
+export function processOrderCreatedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+  processOrderCanceledLog(db, augur, trx, log, callback);
 }
