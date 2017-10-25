@@ -4,6 +4,7 @@ import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import { Address, Int256, FormattedLog, MarketCreatedLogExtraInfo, MarketCreatedOnContractInfo, ErrorCallback, AsyncCallback } from "../../types";
 import { convertDivisorToRate } from "../../utils/convert-divisor-to-rate";
+import { augurEmitter } from "../../events";
 
 export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
   // TODO check for race condition: make sure block timestamp is written BEFORE log processor is triggered
@@ -55,7 +56,9 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
           volume:                     "0",
           sharesOutstanding:          "0",
         };
+
         db.transacting(trx).insert(dataToInsert).into("markets").asCallback((err: Error|null): void => {
+          augurEmitter.emit("MarketCreated", dataToInsert);
           if (err) return callback(err);
           // TODO insert into outcomes and tokens tables also
           trx.select("popularity").from("categories").where({ category: extraInfo!.category }).asCallback((err: Error|null, categoriesRows?: Array<{popularity: number}>): void => {

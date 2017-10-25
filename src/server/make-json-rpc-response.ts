@@ -1,3 +1,3 @@
-export function makeJsonRpcResponse(id: string, result: object): string {
+export function makeJsonRpcResponse(id: string | null, result: object | boolean): string {
   return JSON.stringify({ id, result, jsonrpc: "2.0" });
 }
