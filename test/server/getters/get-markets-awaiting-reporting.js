@@ -25,7 +25,7 @@ describe("server/getters/get-markets-awaiting-reporting", () => {
     },
     assertions: (err, marketsAwaitingReporting) => {
       assert.isNull(err);
-      assert.deepEqual(marketsAwaitingReporting, [])
+      assert.deepEqual(marketsAwaitingReporting, []);
     }
   });
 });
