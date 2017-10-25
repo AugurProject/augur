@@ -1,7 +1,5 @@
 "use strict";
 
-const unlink = require("fs").unlink;
-const join = require("path").join;
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { getMarketsAwaitingReporting } = require("../../../build/server/getters/get-markets-awaiting-reporting");
