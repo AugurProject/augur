@@ -2,4 +2,14 @@
 
 .PerformanceGraph {
   // flex: 1 auto;
+
+  :global {
+    .highcharts-container {
+      width: 100% !important;
+
+      > svg {
+        width: 100%;
+      }
+    }
+  }
 }
