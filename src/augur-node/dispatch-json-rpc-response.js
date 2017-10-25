@@ -6,7 +6,7 @@ var isObject = require("../utils/is-object");
 
 function dispatchJsonRpcResponse(err, jsonRpcResponse) {
   if (err) throw err;
-  if (!jsonRpcResponse || !isObject(jsonRpcResponse) || jsonRpcResponse.id === undefined ) {
+  if (!jsonRpcResponse || !isObject(jsonRpcResponse) || jsonRpcResponse.id === undefined) {
     throw new Error("Bad JSON RPC response received:" + JSON.stringify(jsonRpcResponse));
   }
 
@@ -16,7 +16,7 @@ function dispatchJsonRpcResponse(err, jsonRpcResponse) {
     augurNodeState.removeCallback(jsonRpcResponse.id);
     result = jsonRpcResponse.result;
   } else if (jsonRpcResponse.result.subscription) {
-    callback = augurNodeState.getCallback("event:" + jsonRpcResponse.result.subscription);
+    callback = augurNodeState.getEventCallback(jsonRpcResponse.result.subscription);
     result = jsonRpcResponse.result.result;
   } else {
     throw new Error("Bad JSON RPC response received:" + JSON.stringify(jsonRpcResponse));

@@ -9,7 +9,7 @@ function subscribeToEvent(eventName, params, callback) {
 
   submitJsonRpcRequest("subscribe", params, function (err, response) {
     if (err) throw new Error("Error subscribing to event: " + err);
-    augurNodeState.setCallback("event:" + response.subscription, callback);
+    augurNodeState.setEventCallback(response.subscription, callback);
     console.log("Subscribed to " + eventName + " with response ", response);
   });
 
