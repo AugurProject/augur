@@ -27,7 +27,8 @@ class PerformanceGraph extends Component {
       graphPeriod: 'day'
     }
 
-    this.updateChart = debounce(this.updateChart.bind(this))
+    this.updateChart = this.updateChart.bind(this)
+    this.updateChartDebounced = debounce(this.updateChart.bind(this))
   }
 
   componentDidMount() {
@@ -39,7 +40,7 @@ class PerformanceGraph extends Component {
       }
     })
 
-    const id = 'performance-graph-container'
+    const id = 'performance_graph_chart'
 
     this.performanceGraph = new Highcharts.Chart(id, {
       title: {
@@ -83,24 +84,25 @@ class PerformanceGraph extends Component {
      }
     });
 
-    window.addEventListener('resize', this.updateChart)
+    window.addEventListener('resize', this.updateChartDebounced)
 
     this.updateChart()
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.performanceData !== this.props.performanceData) this.updateChart()
+    if (prevProps.performanceData !== this.props.performanceData) this.updateChartDebounced()
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.updateChart)
+    window.removeEventListener('resize', this.updateChartDebounced)
   }
 
   updateChart() {
-    // TODO: s = state, 'All' = s.graphType, 'day' = s.graphPeriod
-    const data = getValue(this.props.performanceData, 'All.day')
+    console.log(this.performanceGraph);
+    console.log(this.performanceGraph.getChartSize());
+    console.log(this.performanceGraph.chartWidth, this.refs.performance_graph_container.clientWidth, (this.performanceGraph.chartWidth > this.refs.performance_graph_container.clientWidth));
 
-    (data || []).forEach((series, i) => {
+    (getValue(this.props.performanceData, `${this.state.graphType}.${this.state.graphPeriod}`) || []).forEach((series, i) => {
       if (this.performanceGraph.series[i] == null) {
         this.performanceGraph.addSeries({
           type: 'area',
@@ -117,7 +119,15 @@ class PerformanceGraph extends Component {
         this.performanceGraph.series[i].setData(series.data, false)
       }
     })
+
+    // if (this.performanceGraph.chartWidth > this.refs.performance_graph_container.clientWidth) {
+    //   this.performanceGraph.options.chart.width = this.refs.performance_graph_container.clientWidth
+    // } else {
+    //   this.performanceGraph.options.chart.width = null
+    // }
+
     this.performanceGraph.redraw()
+    this.performanceGraph.reflow()
   }
 
   render() {
@@ -126,8 +136,9 @@ class PerformanceGraph extends Component {
     return(
       <section
         className={Styles.PerformanceGraph}
+        ref="performance_graph_container"
       >
-        <div id="performance-graph-container" />
+        <div id="performance_graph_chart" />
       </section>
     )
   }
