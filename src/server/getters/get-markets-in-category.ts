@@ -13,7 +13,7 @@ export function getMarketsInCategory(db: Knex, category: Address, sortBy: string
   if (offset != null) query = query.offset(offset);
   query.asCallback((err: Error|null, marketsInCategory?: Array<MarketIDMarketsRow>): void => {
     if (err) return callback(err);
-    if (!marketsInCategory || !marketsInCategory.length) return callback(null);
+    if (!marketsInCategory) return callback(null);
     callback(null, marketsInCategory.map((marketInCategory: MarketIDMarketsRow): Address => marketInCategory.marketID));
   });
 }

@@ -52,7 +52,7 @@ describe("server/getters/get-markets-in-category", () => {
     },
     assertions: (err, marketsInCategory) => {
       assert.isNull(err);
-      assert.isUndefined(marketsInCategory);
+      assert.deepEqual(marketsInCategory, []);
     }
   });
 });
