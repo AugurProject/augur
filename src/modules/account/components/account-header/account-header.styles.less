@@ -1,3 +1,82 @@
+@import (reference) '~assets/styles/shared';
+
 .AccountHeader {
-  width: 100%;
+  align-content: flex-start;
+  align-items: normal;
+  color: white;
+  display: flex;
+  flex-flow: row nowrap;
+  .view();
+}
+
+.AccountHeader__Currency {
+  display: flex;
+  flex: 0 1 22rem;
+  flex-flow: column-reverse nowrap;
+  font-size: @font-size-rather-large;
+}
+
+.AccountHeader__Currency-value {
+  margin: auto;
+}
+
+.AccountHeader__Currency-label {
+  font-size: @font-size-small;
+  text-transform: uppercase;
+}
+
+.AccountHeader__Charts {
+  display: flex;
+  flex: 2 1 auto;
+  flex-wrap: wrap;
+  width: calc(100% - 22rem);
+}
+
+.AccountHeader__Chart {
+  flex: 1 1 auto;
+  margin: 0 auto;
+  width: 33%;
+}
+
+@media @breakpoint-mobile {
+  .AccountHeader {
+    align-content: flex-start;
+    align-items: normal;
+    color: white;
+    display: flex;
+    padding: 0;
+  }
+
+  .AccountHeader__Currency {
+    align-items: flex-end;
+    align-self: center;
+    display: flex;
+    flex-flow: row nowrap;
+    padding-bottom: 5rem;
+    position: absolute;
+    width: 100vw;
+    z-index: 1000;
+  }
+
+  .AccountHeader__Currency-value {
+    flex: 0 0 auto;
+    margin: 0 auto;
+  }
+
+  .AccountHeader__Currency-label {
+    font-size: @font-size-small;
+    text-transform: uppercase;
+  }
+
+  .AccountHeader__Charts {
+    align-items: flex-end;
+    width: 100vw;
+  }
+
+  .AccountHeader__Chart {
+    display: flex;
+    flex: 0 0 auto;
+    margin: 0;
+    width: 100vw;
+  }
 }
