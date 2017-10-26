@@ -11,9 +11,7 @@ import Styles from 'modules/market/components/market-outcome-candlestick/market-
 
 export default class MarketOutcomeCandlestick extends Component {
   static propTypes = {
-    outcomeCandlestick: PropTypes.array.isRequired,
-    outcomeVolume: PropTypes.array.isRequired,
-    selectedOutcome: PropTypes.any // NOTE -- There is a PR to handle null values, but until then..
+    marketPriceHistory: PropTypes.array.isRequired
   }
 
   constructor(props) {
@@ -33,44 +31,70 @@ export default class MarketOutcomeCandlestick extends Component {
     })
 
     this.outcomeCandlestick = Highchart.stockChart('market_outcome_candlestick', {
-      rangeSelector: {
-        selected: 1
+      chart: {
+        animation: false,
+        panning: false,
+        marginLeft: 20,
       },
+      rangeSelector: {
+        enabled: false
+      },
+      legend: {
+        enabled: false
+      },
+      tooltip: {
+        enabled: false
+      },
+      navigator: {
+        enabled: false
+      },
+      credits: {
+        enabled: false
+      },
+      scrollbar: {
+        enabled: false
+      },
+      panning: false,
+      zoom: false,
       yAxis: [{
+        opposite: false,
         labels: {
-          align: 'right',
-          x: -3
+          align: 'left',
+          y: 15,
+          x: -20,
+          formatter: function () { // eslint-disable-line func-names, object-shorthand
+            return this.isFirst ? '' : this.value
+          }
         },
-        title: {
-          text: 'OHLC'
+        tickPositioner: function () {
+          console.log('this -- ', this)
+            // var positions = [],
+            //     tick = Math.floor(this.dataMin),
+            //     increment = Math.ceil((this.dataMax - this.dataMin) / 6);
+            //
+            // if (this.dataMax !== null && this.dataMin !== null) {
+            //     for (tick; tick - increment <= this.dataMax; tick += increment) {
+            //         positions.push(tick);
+            //     }
+            // }
+            // return positions;
         },
-        lineWidth: 2,
-        resize: {
-          enabled: true
-        }
+        lineWidth: 1,
+        tickAmount: 5,
+        yAxis: 0
       }, {
         labels: {
-          align: 'right',
-          x: -3
-        },
-        title: {
-          text: 'Volume'
+          enabled: false,
         },
         top: '65%',
         height: '35%',
         offset: 0,
         lineWidth: 2
       }],
-
-      tooltip: {
-        split: true
-      },
       series: [{
-        type: 'candlestick',
-        name: 'AAPL'
+        type: 'candlestick'
       }, {
         type: 'column',
-        name: 'Volume',
         yAxis: 1
       }]
     })
@@ -81,7 +105,7 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (!isEqual(prevProps.outcomeCandlestick, this.props.outcomeCandlestick)) this.updateGraph()
+    if (!isEqual(prevProps.marketPriceHistory, this.props.marketPriceHistory)) this.updateGraph()
   }
 
   componentWillUnmount() {
@@ -90,8 +114,8 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   updateGraph() {
-    this.outcomeCandlestick.series[0].setData(this.props.outcomeCandlestick, false)
-    this.outcomeCandlestick.series[1].setData(this.props.outcomeVolume, false)
+    this.outcomeCandlestick.series[0].setData(this.props.marketPriceHistory, false)
+    this.outcomeCandlestick.series[1].setData(this.props.marketPriceHistory, false)
 
     this.outcomeCandlestick.redraw()
   }

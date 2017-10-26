@@ -7,6 +7,12 @@
 .MarketOutcomeCandlestick__graph {
   cursor: cell;
 
+  :global(.highcharts-axis-labels) { // NOTE -- had to break this one off since we're using a mixin
+    .caps--small();
+
+    fill: @color-lightgray;
+  }
+
   :global {
     .highcharts-background,
     .highcharts-plot-background,
@@ -32,6 +38,13 @@
         stroke: @color-darkgray;
         stroke-width: 1px;
       }
+    }
+
+    .highcharts-series {
+      &.highcharts-series-1 {
+        fill: fadeout(@color-white, 75%);
+      }
+
     }
   }
 }
