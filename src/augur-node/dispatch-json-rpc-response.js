@@ -9,14 +9,27 @@ function dispatchJsonRpcResponse(err, jsonRpcResponse) {
   if (!jsonRpcResponse || !isObject(jsonRpcResponse) || jsonRpcResponse.id === undefined) {
     throw new Error("Bad JSON RPC response received:" + JSON.stringify(jsonRpcResponse));
   }
-  var callback = augurNodeState.getCallback(jsonRpcResponse.id);
+
+  var callback, result;
+  if (jsonRpcResponse.id !== null) {
+    callback = augurNodeState.getCallback(jsonRpcResponse.id);
+    augurNodeState.removeCallback(jsonRpcResponse.id);
+    result = jsonRpcResponse.result;
+  } else if (jsonRpcResponse.result.subscription) {
+    callback = augurNodeState.getEventCallback(jsonRpcResponse.result.subscription);
+    result = jsonRpcResponse.result.result;
+  } else {
+    throw new Error("Bad JSON RPC response received:" + JSON.stringify(jsonRpcResponse));
+  }
+
   if (!isFunction(callback)) {
     throw new Error("Callback not found for JSON RPC response:" + JSON.stringify(jsonRpcResponse));
   }
+
   if (jsonRpcResponse.error) {
     callback(jsonRpcResponse.error);
-  } else if (jsonRpcResponse.result) {
-    callback(null, jsonRpcResponse.result);
+  } else if (result) {
+    callback(null, result);
   } else {
     callback("Bad JSON RPC response received:" + JSON.stringify(jsonRpcResponse));
   }
