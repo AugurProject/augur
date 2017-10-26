@@ -5,9 +5,9 @@ exports.up = async (knex: Knex): Promise<any> => {
     return knex.schema.raw(`CREATE TABLE tokens (
       "contractAddress" varchar(66) PRIMARY KEY NOT NULL,
       "symbol" varchar(255) NOT NULL,
-      "market" varchar(66),
+      "marketID" varchar(66),
       "outcome" integer,
-      UNIQUE(symbol, market, outcome)
+      UNIQUE(symbol, marketID, outcome)
     )`);
   });
 };

@@ -36,7 +36,7 @@ export function getOpenOrders(db: Knex, marketID: Address|null, outcome: number|
     orderType,
     orderCreator: creator,
   }, _.isNull);
-  db("orders").where(queryData).asCallback((err: Error|null, ordersRows?: Array<OrdersRow>): void => {
+  db("orders").where(queryData).whereNull("isRemoved").asCallback((err: Error|null, ordersRows?: Array<OrdersRow>): void => {
     if (err) return callback(err);
     if (!ordersRows || !ordersRows.length) return callback(null);
     const orders: Orders = {};
@@ -44,7 +44,7 @@ export function getOpenOrders(db: Knex, marketID: Address|null, outcome: number|
       if (!orders[row.marketID]) orders[row.marketID] = {};
       if (!orders[row.marketID][row.outcome]) orders[row.marketID][row.outcome] = {};
       if (!orders[row.marketID][row.outcome][row.orderType]) orders[row.marketID][row.outcome][row.orderType] = {};
-      orders[row.marketID][row.outcome][row.orderType][row.orderID] = {
+      orders[row.marketID][row.outcome][row.orderType][row.orderID!] = {
         shareToken: row.shareToken,
         owner: row.orderCreator,
         creationTime: row.creationTime,

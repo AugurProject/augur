@@ -33,3 +33,9 @@ export function processDesignatedReportSubmittedLog(db: Knex, augur: Augur, trx:
         });
     });
 }
+
+export function processDesignatedReportSubmittedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+  console.log("TODO: DesignatedReportSubmitted removal");
+  console.log(log);
+  callback(null);
+}

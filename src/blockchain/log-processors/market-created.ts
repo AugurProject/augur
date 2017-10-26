@@ -1,13 +1,30 @@
-import { parallel } from "async";
+import { forEachOf, parallel } from "async";
 import Augur from "augur.js";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { Address, Int256, FormattedLog, MarketCreatedLogExtraInfo, MarketCreatedOnContractInfo, ErrorCallback, AsyncCallback } from "../../types";
+import { Address, Int256, FormattedLog, MarketCreatedLogExtraInfo, MarketCreatedOnContractInfo, MarketsRow, ErrorCallback, AsyncCallback } from "../../types";
 import { convertDivisorToRate } from "../../utils/convert-divisor-to-rate";
 import { augurEmitter } from "../../events";
 
+interface OutcomesRow {
+  marketID: Address;
+  outcome?: number;
+  price: string|number;
+  sharesOutstanding: string|number;
+}
+
+interface TokensRow {
+  contractAddress?: Address;
+  symbol: string;
+  marketID: Address;
+  outcome?: number;
+}
+
+interface CategoriesRow {
+  popularity: string|number;
+}
+
 export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
-  // TODO check for race condition: make sure block timestamp is written BEFORE log processor is triggered
   trx.select("blockTimestamp").from("blocks").where({ blockNumber: log.blockNumber }).asCallback((err?: Error|null, blocksRows?: Array<{blockTimestamp: number}>): void => {
     if (err) return callback(err);
     if (!blocksRows || !blocksRows.length) return callback(new Error("block timestamp not found"));
@@ -22,13 +39,13 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
       numTicks: (next: AsyncCallback): void => augur.api.Market.getNumTicks(marketPayload, next),
       universe: (next: AsyncCallback): void => augur.api.Market.getUniverse(marketPayload, next),
       marketCreatorSettlementFeeDivisor: (next: AsyncCallback): void => augur.api.Market.getMarketCreatorSettlementFeeDivisor(marketPayload, next),
-      // TODO get shareToken addresses
     }, (err?: any, onContractData?: any): void => {
       if (err) return callback(err);
       const universePayload: {} = { tx: { to: onContractData.universe } };
       augur.api.Universe.getReportingFeeDivisor(universePayload, (err: Error|null, reportingFeeDivisor?: string): void => {
         const extraInfo: MarketCreatedLogExtraInfo = log.extraInfo;
-        const dataToInsert: {} = {
+        const numOutcomes = parseInt(onContractData!.numberOfOutcomes!, 16);
+        const marketsDataToInsert: MarketsRow = {
           marketID:                   log.market,
           marketCreator:              log.marketCreator,
           creationBlockNumber:        log.blockNumber,
@@ -38,13 +55,13 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
           minPrice:                   extraInfo!.minPrice,
           maxPrice:                   extraInfo!.maxPrice,
           category:                   extraInfo!.category,
-          tag1:                       extraInfo!.tag1,
-          tag2:                       extraInfo!.tag2,
+          tag1:                       extraInfo!.tag1 || null,
+          tag2:                       extraInfo!.tag2 || null,
           shortDescription:           extraInfo!.shortDescription,
-          longDescription:            extraInfo!.longDescription,
-          resolutionSource:           extraInfo!.resolutionSource,
+          longDescription:            extraInfo!.longDescription || null,
+          resolutionSource:           extraInfo!.resolutionSource || null,
           universe:                   onContractData!.universe,
-          numOutcomes:                parseInt(onContractData!.numberOfOutcomes!, 16),
+          numOutcomes,
           reportingWindow:            onContractData!.reportingWindow,
           endTime:                    parseInt(onContractData!.endTime!, 16),
           designatedReporter:         onContractData!.designatedReporter,
@@ -56,18 +73,58 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
           volume:                     "0",
           sharesOutstanding:          "0",
         };
-
-        db.transacting(trx).insert(dataToInsert).into("markets").asCallback((err: Error|null): void => {
-          augurEmitter.emit("MarketCreated", dataToInsert);
+        const outcomesDataToInsert: OutcomesRow = {
+          marketID: log.market,
+          price: new BigNumber(1, 10).dividedBy(new BigNumber(numOutcomes, 10)).toFixed(),
+          sharesOutstanding: "0",
+        };
+        const tokensDataToInsert: TokensRow = {
+          marketID: log.market,
+          symbol: "shares",
+        };
+        const shareTokens = new Array(numOutcomes);
+        forEachOf(shareTokens, (_: null, outcome: number, nextOutcome: ErrorCallback): void => {
+          augur.api.Market.getShareToken(Object.assign({ _outcome: outcome }, marketPayload), (err: Error|null, shareToken?: Address): void => {
+            if (err) return nextOutcome(err);
+            shareTokens[outcome] = shareToken;
+            nextOutcome();
+          });
+        }, (err: Error|null): void => {
           if (err) return callback(err);
-          // TODO insert into outcomes and tokens tables also
-          trx.select("popularity").from("categories").where({ category: extraInfo!.category }).asCallback((err: Error|null, categoriesRows?: Array<{popularity: number}>): void => {
-            if (err) return callback(err);
-            if (categoriesRows && categoriesRows.length) return callback(null);
-            db.transacting(trx).insert({ category: extraInfo!.category, universe: onContractData!.universe }).into("categories").asCallback(callback);
+          parallel([
+            (next: AsyncCallback): void => {
+              db.transacting(trx).insert(marketsDataToInsert).into("markets").asCallback(next);
+            },
+            (next: AsyncCallback): void => {
+              db.batchInsert("outcomes", shareTokens.map((_: Address, outcome: number): OutcomesRow => Object.assign({ outcome }, outcomesDataToInsert)), numOutcomes).transacting(trx).asCallback(next);
+            },
+            (next: AsyncCallback): void => {
+              db.batchInsert("tokens", shareTokens.map((contractAddress: Address, outcome: number): TokensRow => Object.assign({ contractAddress, outcome }, tokensDataToInsert)), numOutcomes).transacting(trx).asCallback(next);
+            },
+          ], (err: Error|null): void => {
+            augurEmitter.emit("MarketCreated", marketsDataToInsert);
+            trx.select("popularity").from("categories").where({ category: extraInfo!.category }).asCallback((err: Error|null, categoriesRows?: Array<CategoriesRow>): void => {
+              if (err) return callback(err);
+              if (categoriesRows && categoriesRows.length) return callback(null);
+              db.transacting(trx).insert({ category: extraInfo!.category, universe: onContractData!.universe }).into("categories").asCallback(callback);
+            });
           });
         });
       });
     });
   });
+}
+
+export function processMarketCreatedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+  parallel([
+    (next: AsyncCallback): void => {
+      db.transacting(trx).from("markets").where({ marketID: log.market }).del().asCallback(next);
+    },
+    (next: AsyncCallback): void => {
+      db.transacting(trx).from("outcomes").where({ marketID: log.market }).del().asCallback(next);
+    },
+    (next: AsyncCallback): void => {
+      db.transacting(trx).from("tokens").where({ marketID: log.market }).del().asCallback(next);
+    },
+  ], callback);
 }

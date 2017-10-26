@@ -53,14 +53,14 @@ var WebSocket = require("ws");
 //   }
 // };
 
-// var request = {
-//   id: 6,
-//   jsonrpc: "2.0",
-//   method: "getUserTradingPositions",
-//   params: {
-//     account: "0x0000000000000000000000000000000000000b0b",
-//   }
-// };
+var request = {
+  id: 6,
+  jsonrpc: "2.0",
+  method: "getUserTradingPositions",
+  params: {
+    account: "0x0000000000000000000000000000000000000b0b",
+  }
+};
 
 var ws = new WebSocket("ws://127.0.0.1:9001");
 

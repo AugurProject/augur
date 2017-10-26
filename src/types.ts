@@ -41,7 +41,7 @@ export interface MarketCreatedLogExtraInfo {
   shortDescription: string;
   longDescription?: string|null;
   resolutionSource?: string|null;
-  marketType?: string;
+  marketType: string;
 }
 
 export interface MarketCreatedOnContractInfo {
@@ -64,6 +64,17 @@ export type ErrorCallback = (err?: Error|null) => void;
 export type AsyncCallback = (err?: Error|null, result?: any) => void;
 
 export type LogProcessor = (db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback) => void;
+
+export interface EventLogProcessor {
+  add: LogProcessor;
+  remove: LogProcessor;
+}
+
+export interface LogProcessors {
+  [contractName: string]: {
+    [eventName: string]: EventLogProcessor;
+  };
+}
 
 export interface JsonRpcRequest {
   id: string|number|null;
@@ -122,15 +133,15 @@ export interface MarketsRow {
   sharesOutstanding: string|number;
   reportingWindow: Address;
   endTime: number;
-  finalizationTime: number|null;
+  finalizationTime?: number|null;
   shortDescription: string;
-  longDescription: string|null;
+  longDescription?: string|null;
   designatedReporter: Address;
   designatedReportStake: string|number;
-  resolutionSource: string|null;
+  resolutionSource?: string|null;
   numTicks: number;
-  consensusOutcome: number|null;
-  isInvalid: boolean|null;
+  consensusOutcome?: number|null;
+  isInvalid?: boolean|null;
 }
 
 export interface OutcomesRow {
@@ -177,12 +188,12 @@ export interface UIMarketInfo {
   outstandingShares: string|number;
   reportingWindow: Address;
   endDate: number;
-  finalizationTime: number|null;
+  finalizationTime?: number|null;
   description: string;
-  extraInfo: string|null;
+  extraInfo?: string|null;
   designatedReporter: Address;
   designatedReportStake: string|number;
-  resolutionSource: string|null;
+  resolutionSource?: string|null;
   numTicks: number;
   consensus: UIConsensusInfo|null;
   outcomes: Array<UIOutcomeInfo>;
@@ -191,7 +202,7 @@ export interface UIMarketInfo {
 export type UIMarketsInfo = Array<UIMarketInfo>;
 
 export interface OrdersRow {
-  orderID: Bytes32;
+  orderID?: Bytes32;
   marketID: Address;
   outcome: number;
   shareToken: Address;
