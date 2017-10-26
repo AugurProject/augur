@@ -1,82 +1,105 @@
-pragma solidity ^0.4.13;
+pragma solidity ^0.4.17;
 
-// This simple contract converts function calls to events to allow
-// basic integration testing of Augur-node functionality
+contract IMarket {
+    enum ReportingState {
+        PRE_REPORTING,
+        DESIGNATED_REPORTING,
+        AWAITING_FORK_MIGRATION,
+        DESIGNATED_DISPUTE,
+        FIRST_REPORTING,
+        FIRST_DISPUTE,
+        AWAITING_NO_REPORT_MIGRATION,
+        LAST_REPORTING,
+        LAST_DISPUTE,
+        FORKING,
+        AWAITING_FINALIZATION,
+        FINALIZED
+    }
+}
 
-contract AugurEventEmitter {
+library Order {
+    enum TradeTypes {
+        Bid, Ask
+    }
+}
 
-    enum ReportingPhase {
-        DesignatedReporter, LimitedReporters, AllReporters
+contract Augur {
+    event MarketCreated(address indexed universe, address indexed market, address indexed marketCreator, uint256 marketCreationFee, string extraInfo);
+    function marketCreated(address universe, address market, address marketCreator, uint256 marketCreationFee, string extraInfo) public {
+        MarketCreated(universe, market, marketCreator, marketCreationFee, extraInfo);
     }
 
-    // misc events
-    event TokensTransferred(address indexed token, address indexed from, address indexed to, uint256 value);
-    // reporting events
-    event MarketCreated(address indexed market, address indexed marketCreator, uint256 marketCreationFee, string extraInfo);
-    event ReporterRegistered(address indexed reporter, address indexed reportingWindow);
-    event DesignatedReportSubmitted(address indexed designatedReporter, address indexed market, uint256[] payoutNumerators);
-    event ReportSubmitted(address indexed reporter, address indexed market, address reportingToken, uint256 amountStaked, uint256[] payoutNumerators);
-    event WinningTokensRedeemed(address indexed reporter, address indexed market, address reportingToken, uint256 amountRedeemed, address reportingFeesReceived, uint256[] payoutNumerators);
-    event ReportsDisputed(address indexed disputer, address indexed market, ReportingPhase reportingPhase, uint256 disputeBondAmount);
-    event MarketFinalized(address indexed market);
+
+    event DesignatedReportSubmitted(address indexed universe, address indexed reporter, address indexed market, address stakeToken, uint256 amountStaked, uint256[] payoutNumerators);
+    function designatedReportSubmitted(address universe, address reporter, address market, address stakeToken, uint256 amountStaked, uint256[] payoutNumerators) public {
+        DesignatedReportSubmitted(universe, reporter, market, stakeToken, amountStaked, payoutNumerators);
+    }
+
+
+    event ReportSubmitted(address indexed universe, address indexed reporter, address indexed market, address stakeToken, uint256 amountStaked, uint256[] payoutNumerators);
+    function reportSubmitted(address universe, address reporter, address market, address stakeToken, uint256 amountStaked, uint256[] payoutNumerators) public {
+        ReportSubmitted(universe, reporter, market, stakeToken, amountStaked, payoutNumerators);
+    }
+
+
+    event WinningTokensRedeemed(address indexed universe, address indexed reporter, address indexed market, address stakeToken, uint256 amountRedeemed, uint256 reportingFeesReceived, uint256[] payoutNumerators);
+    function winningTokensRedeemed(address universe, address reporter, address market, address stakeToken, uint256 amountRedeemed, uint256 reportingFeesReceived, uint256[] payoutNumerators) public {
+        WinningTokensRedeemed(universe, reporter, market, stakeToken, amountRedeemed, reportingFeesReceived, payoutNumerators);
+    }
+
+
+    event ReportsDisputed(address indexed universe, address indexed disputer, address indexed market, IMarket.ReportingState reportingPhase, uint256 disputeBondAmount);
+    function reportsDisputed(address universe, address disputer, address market, IMarket.ReportingState reportingPhase, uint256 disputeBondAmount) public {
+        ReportsDisputed(universe, disputer, market, reportingPhase, disputeBondAmount);
+    }
+
+
+    event MarketFinalized(address indexed universe, address indexed market);
+    function marketFinalized(address universe, address market) public {
+        MarketFinalized(universe, market);
+    }
+
+
     event UniverseForked(address indexed universe);
-    // trading events
-    event OrderCanceled(address indexed shareToken, address indexed sender, bytes32 orderId, uint8 orderType, uint256 tokenRefund, uint256 sharesRefund);
-    event OrderCreated(address indexed shareToken, address indexed creator, bytes32 indexed orderId, int256 price, uint256 amount, uint256 numTokensEscrowed, uint256 numSharesEscrowed, bytes32 tradeGroupId);
-    event OrderFilled(address indexed shareToken, address indexed creator, address indexed filler, int256 price, uint256 numCreatorShares, uint256 numCreatorTokens, uint256 numFillerShares, uint256 numFillerTokens, uint256 settlementFees, bytes32 tradeGroupId);
-    event ProceedsClaimed(address indexed sender, address indexed market, uint256 numShares, uint256 numPayoutTokens, uint256 finalTokenBalance);
-
-
-    function tokensTransferred(address token, address from, address to, uint256 value) {
-         TokensTransferred(token, from, to, value);
-    }
-
-    function marketCreated(address market, address marketCreator, uint256 marketCreationFee, string extraInfo) {
-        MarketCreated(market, marketCreator, marketCreationFee, extraInfo);
-    }
-
-    function reporterRegistered(address reporter, address reportingWindow) {
-        ReporterRegistered(reporter, reportingWindow);
-    }
-
-    function designatedReportSubmitted(address designatedReporter, address market, uint256[] payoutNumerators) {
-        DesignatedReportSubmitted(designatedReporter, market, payoutNumerators);
-    }
-
-    function reportSubmitted(address reporter, address market, address reportingToken, uint256 amountStaked, uint256[] payoutNumerators) {
-        ReportSubmitted(reporter, market, reportingToken, amountStaked, payoutNumerators);
-    }
-
-    function winningTokensRedeemed(address reporter, address market, address reportingToken, uint256 amountRedeemed, address reportingFeesReceived, uint256[] payoutNumerators) {
-        WinningTokensRedeemed(reporter, market, reportingToken, amountRedeemed, reportingFeesReceived, payoutNumerators);
-    }
-
-    function reportsDisputed(address disputer, address market, ReportingPhase reportingPhase, uint256 disputeBondAmount) {
-        ReportsDisputed(disputer, market, reportingPhase, disputeBondAmount);
-    }
-
-    function marketFinalized(address market) {
-        MarketFinalized(market);
-    }
-
-    function universeForked(address universe) {
+    function universeForked(address universe) public {
         UniverseForked(universe);
     }
 
-    // trading events
-    function orderCanceled(address shareToken, address sender, bytes32 orderId, uint8 orderType, uint256 tokenRefund, uint256 sharesRefund) {
-        OrderCanceled(shareToken, sender, orderId, orderType, tokenRefund, sharesRefund);
+
+    event OrderCanceled(address indexed universe, address indexed shareToken, address indexed sender, bytes32 orderId, Order.TradeTypes orderType, uint256 tokenRefund, uint256 sharesRefund);
+    function orderCanceled(address universe, address shareToken, address sender, bytes32 orderId, Order.TradeTypes orderType, uint256 tokenRefund, uint256 sharesRefund) public {
+        OrderCanceled(universe, shareToken, sender, orderId, orderType, tokenRefund, sharesRefund);
     }
 
-    function orderCreated(address shareToken, address creator, bytes32 orderId, int256 price, uint256 amount, uint256 numTokensEscrowed, uint256 numSharesEscrowed, bytes32 tradeGroupId) {
-        OrderCreated(shareToken, creator, orderId, price, amount, numTokensEscrowed, numSharesEscrowed, tradeGroupId);
+
+    event OrderCreated(address indexed universe, address indexed shareToken, address indexed creator, bytes32 orderId, uint256 tradeGroupId);
+    function orderCreated(address universe, address shareToken, address creator, bytes32 orderId, uint256 tradeGroupId) public {
+        OrderCreated(universe, shareToken, creator, orderId, tradeGroupId);
     }
 
-    function orderFilled(address shareToken, address creator, address filler, int256 price, uint256 numCreatorShares, uint256 numCreatorTokens, uint256 numFillerShares, uint256 numFillerTokens, uint256 settlementFees, bytes32 tradeGroupId) {
-        OrderFilled(shareToken, creator, filler, price, numCreatorShares, numCreatorTokens, numFillerShares, numFillerTokens, settlementFees, tradeGroupId);
+
+    event OrderFilled(address indexed universe, address indexed shareToken, address filler, bytes32 orderId, uint256 numCreatorShares, uint256 numCreatorTokens, uint256 numFillerShares, uint256 numFillerTokens, uint256 settlementFees, uint256 tradeGroupId);
+    function orderFilled(address universe, address shareToken, address filler, bytes32 orderId, uint256 numCreatorShares, uint256 numCreatorTokens, uint256 numFillerShares, uint256 numFillerTokens, uint256 settlementFees, uint256 tradeGroupId) public {
+        OrderFilled(universe, shareToken, filler, orderId, numCreatorShares, numCreatorTokens, numFillerShares, numFillerTokens, settlementFees, tradeGroupId);
     }
 
-    function proceedsClaimed(address sender, address market, uint256 numShares, uint256 numPayoutTokens, uint256 finalTokenBalance) {
-        ProceedsClaimed(sender, market, numShares, numPayoutTokens, finalTokenBalance);
+
+    event ProceedsClaimed(address indexed universe, address indexed shareToken, address indexed sender, address market, uint256 numShares, uint256 numPayoutTokens, uint256 finalTokenBalance);
+    function proceedsClaimed(address universe, address shareToken, address sender, address market, uint256 numShares, uint256 numPayoutTokens, uint256 finalTokenBalance) public {
+        ProceedsClaimed(universe, shareToken, sender, market, numShares, numPayoutTokens, finalTokenBalance);
     }
+
+
+    event UniverseCreated(address indexed parentUniverse, address indexed childUniverse);
+    function universeCreated(address parentUniverse, address childUniverse) public {
+        UniverseCreated(parentUniverse, childUniverse);
+    }
+
+
+    event TokensTransferred(address indexed universe, address indexed token, address indexed from, address to, uint256 value);
+    function tokensTransferred(address universe, address token, address from, address to, uint256 value) public {
+        TokensTransferred(universe, token, from, to, value);
+    }
+
+
 }
