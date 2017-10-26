@@ -3,7 +3,8 @@
 var assign = require("lodash.assign");
 var async = require("async");
 var immutableDelete = require("immutable-delete");
-var api = require("../api");
+var claimTradingProceeds = require("./claim-trading-proceeds");
+var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
 
 /**
  * @param {Object} p Parameters object.
@@ -13,26 +14,22 @@ var api = require("../api");
  * @param {function} p.onSuccess Called if/when all transactions are sealed and confirmed.
  * @param {function} p.onFailed Called if/when any of the transactions fail.
  */
-function claimMarketsProceeds(p) {
-  var claimProceedsPayload = immutableDelete(p, "markets");
+function claimMarketsTradingProceeds(p) {
+  var claimTradingProceedsPayload = immutableDelete(p, "markets");
   var claimedMarkets = [];
-  async.eachSeries(p.markets, function (market, nextMarket) {
-    api().Markets.getFinalizationTime({ tx: { to: market } }, function (err, finalizationTime) {
-      if (err) return nextMarket(err);
-      if (parseInt(finalizationTime, 16) === 0) return nextMarket(); // market not yet finalized
-      api().ClaimProceeds.claimProceeds(assign({}, claimProceedsPayload, {
-        _market: market,
-        onSuccess: function () {
-          claimedMarkets.push(market);
-          nextMarket();
-        },
-        onFailed: nextMarket
-      }));
-    });
+  async.eachLimit(p.markets, PARALLEL_LIMIT, function (market, nextMarket) {
+    claimTradingProceeds(assign({}, claimTradingProceedsPayload, {
+      _market: market,
+      onSuccess: function () {
+        claimedMarkets.push(market);
+        nextMarket();
+      },
+      onFailed: nextMarket
+    }));
   }, function (err) {
     if (err) return p.onFailed(err);
     p.onSuccess(claimedMarkets);
   });
 }
 
-module.exports = claimMarketsProceeds;
+module.exports = claimMarketsTradingProceeds;
