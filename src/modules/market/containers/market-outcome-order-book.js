@@ -37,7 +37,7 @@ const mergeProps = (sP, dP, oP) => {
           }
         ]
       }, [])
-      .sort((a, b) => a.price - b.price)
+      .sort((a, b) => b.price - a.price)
   )
 
   const orderBook = {

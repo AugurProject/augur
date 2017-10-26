@@ -6,13 +6,15 @@ import Styles from 'modules/market/components/market-outcome-order-book/market-o
 export default class MarketOutcomeOrderbook extends Component {
   static propTypes = {
     selectedOutcome: PropTypes.any,
-    orderBook: PropTypes.array.isRequired
+    orderBook: PropTypes.object.isRequired
   }
 
   constructor(props) {
     super(props)
+  }
 
-    console.log('props -- ', this.props.orderBook)
+  componentDidMount() {
+    this.asks.scrollTo(0, (this.asks.scrollHeight || 0))
   }
 
   render() {
@@ -20,7 +22,10 @@ export default class MarketOutcomeOrderbook extends Component {
 
     return (
       <section className={Styles.MarketOutcomeOrderBook}>
-        <div className={Styles.MarketOutcomeOrderBook__side} >
+        <div
+          ref={(asks) => { this.asks = asks }}
+          className={Styles.MarketOutcomeOrderBook__side}
+        >
           {(p.orderBook.asks || []).map(order => (
             <div
               key={order.cumulativeShares}
