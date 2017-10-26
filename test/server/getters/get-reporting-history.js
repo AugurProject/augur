@@ -34,20 +34,20 @@ describe("server/getters/get-reporting-history", () => {
             isCategorical: false,
             isScalar: false,
             isIndeterminate: false,
-            isSubmitted: true
+            isSubmitted: true,
           }]
-        }
+        },
       });
-    }
+    },
   });
   test({
     description: "reporter has not submitted any reports",
     params: {
-      reporter: "0x2100000000000000000000000000000000000021"
+      reporter: "0x2100000000000000000000000000000000000021",
     },
     assertions: (err, reportingHistory) => {
       assert.isNull(err);
       assert.isUndefined(reportingHistory);
-    }
+    },
   });
 });
