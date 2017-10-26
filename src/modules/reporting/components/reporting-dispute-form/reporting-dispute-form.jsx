@@ -104,13 +104,13 @@ const ReportingDisputeForm = p => (
       <label>
         <span>Dispute Bond</span>
       </label>
-      <p className={FormStyles['text--field-style']}>{ p.disputeBond }</p>
+      <p className={FormStyles['text--field-style']}>{ p.disputeBond } REP</p>
     </li>
     <li>
       <label>
         <span>Current Outcome</span>
       </label>
-      <p className={FormStyles['text--field-style']}>{ p.currentOutcome }</p>
+      <p className={FormStyles['text--field-style']}>{ p.market.currentOutcome.name } &nbsp;|&nbsp; { p.market.currentOutcome.stake - p.disputeBond } REP</p>
     </li>
     <li>
       <label>
@@ -131,39 +131,18 @@ const ReportingDisputeForm = p => (
         </li>
       </ul>
     </li>
-    { p.isMarketValid && p.market.type === BINARY &&
+    { p.isMarketValid && (p.market.type === BINARY || p.market.type === CATEGORICAL) &&
       <li>
         <label>
           <span>Proposed Outcome</span>
         </label>
         <ul className={FormStyles['Form__radio-buttons--per-line']}>
-          <li>
-            <button
-              className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === 'Yes' })}
-              onClick={(e) => { validateOutcome(p.validations, p.updateState, 'Yes') }}
-            >Yes</button>
-          </li>
-          <li>
-            <button
-              className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === 'No' })}
-              onClick={(e) => { validateOutcome(p.validations, p.updateState, 'No') }}
-            >No</button>
-          </li>
-        </ul>
-      </li>
-    }
-    { p.isMarketValid && p.market.type === CATEGORICAL &&
-      <li>
-        <label>
-          <span>Proposed Outcome</span>
-        </label>
-        <ul className={FormStyles['Form__radio-buttons--per-line']}>
-          { p.market.outcomes && p.market.outcomes.map(outcome => (
+          { p.market.otherOutcomes && p.market.otherOutcomes.map(outcome => (
             <li key={outcome.id}>
               <button
                 className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.name })}
                 onClick={(e) => { validateOutcome(p.validations, p.updateState, outcome.name) }}
-              >{outcome.name}</button>
+              >{outcome.name} &nbsp;|&nbsp; {outcome.stake} REP</button>
             </li>
             ))
           }
@@ -219,7 +198,6 @@ ReportingDisputeForm.propTypes = {
   selectedOutcome: PropTypes.string.isRequired,
   stake: PropTypes.string.isRequired,
   disputeBond: PropTypes.string.isRequired,
-  currentOutcome: PropTypes.string.isRequired,
   isMarketValid: PropTypes.bool,
 }
 

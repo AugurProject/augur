@@ -16,400 +16,458 @@ const Reporting = withRouter(connect(mapStateToProps)(ReportingDispute))
 export default Reporting
 
 // Binary Example
-const market = {
-  isStakeRequired: false,
-  id: '0xcd7b177af7a12ec3be1c7f992ec7d608959630f2113227a2cdd9db562bd01eb4',
-  branchID: '0xf69b5',
-  tradingPeriod: 8947,
-  tradingFee: '0.025',
-  makerFee: '0.0125',
-  takerFee: '0.025',
-  creationTime: {
-    value: '2017-10-16T14:36:38.000Z',
-    formatted: 'Oct 16, 2017 2:36 PM',
-    formattedLocal: 'Oct 16, 2017 7:36 AM (UTC -7)',
-    full: 'Mon, 16 Oct 2017 14:36:38 GMT',
-    timestamp: 1508164598000
-  },
-  volume: {
-    value: 3000,
-    formattedValue: 3000,
-    formatted: '3,000',
-    roundedValue: 3000,
-    rounded: '3,000.00',
-    minimized: '3,000',
-    denomination: ' shares',
-    full: '3,000 shares'
-  },
-  topic: 'Cryptocurrency',
-  tags: [
-    'Cryptocurrency',
-    'Bitcoin',
-    'Ethereum'
-  ],
-  endDate: {
-    value: '2018-12-30T08:00:00.000Z',
-    formatted: 'Dec 30, 2018 8:00 AM',
-    formattedLocal: 'Dec 30, 2018 12:00 AM (UTC -8)',
-    full: 'Sun, 30 Dec 2018 08:00:00 GMT',
-    timestamp: 1546156800000
-  },
-  eventID: '0xee03ff4923cb4fc8f2f2370e0f1d5cffd321342d304e221e566623616f676ba4',
-  minValue: '1',
-  maxValue: '2',
-  numOutcomes: 2,
-  type: 'binary',
-  consensus: null,
-  description: 'Will Bitcoin be surpassed by Ethereum by the end of 2018?',
-  isLoadedMarketInfo: true,
-  isLoading: false,
-  network: '9000',
-  cumulativeScale: '1',
-  creationBlock: 422516,
-  creationFee: '7.2',
-  author: '0xa5f5cecbb1e1a1e784a975b4d019f50e06a95091',
-  eventBond: '3.6',
-  outcomes: [
-    {
-      id: '2',
-      outstandingShares: '1000',
-      price: '0',
-      sharesPurchased: '0',
-      name: 'Yes',
-      marketID: '0xcd7b177af7a12ec3be1c7f992ec7d608959630f2113227a2cdd9db562bd01eb4',
-      lastPrice: {
-        value: 0,
-        formattedValue: 0,
-        formatted: '0',
-        roundedValue: 0,
-        rounded: '0.0000',
-        minimized: '0',
-        denomination: ' ETH Tokens',
-        full: '0 ETH Tokens'
-      },
-      lastPricePercent: {
-        value: 50,
-        formattedValue: 50,
-        formatted: '50.0',
-        roundedValue: 50,
-        rounded: '50',
-        minimized: '50',
-        denomination: '%',
-        full: '50.0%'
-      },
-      trade: {
-        side: 'buy',
-        numShares: null,
-        limitPrice: null,
-        maxNumShares: {
-          value: 0,
-          formattedValue: 0,
-          formatted: '0',
-          roundedValue: 0,
-          rounded: '0.00',
-          minimized: '0',
-          denomination: ' shares',
-          full: '0 shares'
-        },
-        potentialEthProfit: null,
-        potentialEthLoss: null,
-        potentialLossPercent: null,
-        potentialProfitPercent: null,
-        totalFee: {
-          value: 0,
-          formattedValue: 0,
-          formatted: '',
-          roundedValue: 0,
-          rounded: '',
-          minimized: '',
-          denomination: '',
-          full: ''
-        },
-        gasFeesRealEth: {
-          value: 0,
-          formattedValue: 0,
-          formatted: '',
-          roundedValue: 0,
-          rounded: '',
-          minimized: '',
-          denomination: '',
-          full: ''
-        },
-        totalCost: {
-          value: 0,
-          formattedValue: 0,
-          formatted: '0',
-          roundedValue: 0,
-          rounded: '0.0000',
-          minimized: '0',
-          denomination: ' ETH Tokens',
-          full: '0 ETH Tokens'
-        },
-        tradeTypeOptions: [
-          {
-            label: 'buy',
-            value: 'buy'
-          },
-          {
-            label: 'sell',
-            value: 'sell'
-          }
-        ],
-        tradeSummary: {
-          totalGas: {
-            value: 0,
-            formattedValue: 0,
-            formatted: '0',
-            roundedValue: 0,
-            rounded: '0.0000',
-            minimized: '0',
-            denomination: ' ETH',
-            full: '0 ETH'
-          },
-          tradeOrders: [
-
-          ]
-        }
-      },
-      orderBook: {
-        bids: [
-
-        ],
-        asks: [
-
-        ]
-      },
-      orderBookSeries: {
-        bids: [
-
-        ],
-        asks: [
-
-        ]
-      },
-      topBid: null,
-      topAsk: null,
-      position: null,
-      userOpenOrders: [
-
-      ]
-    }
-  ],
-  extraInfo: 'Will Ethereum value overpass Bitcoin by the end of 2018?',
-  formattedDescription: 'will_bitcoin_be_surpassed_by_ethereum_by_the_end_of_2018',
-  isBinary: true,
-  isCategorical: false,
-  isScalar: false,
-  isMarketLoading: false,
-  endDateLabel: 'ends',
-  isOpen: true,
-  isFavorite: false,
-  takerFeePercent: {
-    value: 2.5,
-    formattedValue: 2.5,
-    formatted: '2.5',
-    roundedValue: 2,
-    rounded: '2',
-    minimized: '2.5',
-    denomination: '%',
-    full: '2.5%'
-  },
-  makerFeePercent: {
-    value: 1.25,
-    formattedValue: 1.2,
-    formatted: '1.2',
-    roundedValue: 1,
-    rounded: '1',
-    minimized: '1.2',
-    denomination: '%',
-    full: '1.2%'
-  },
-  isRequiredToReportByAccount: false,
-  isPendingReport: true,
-  isReportSubmitted: false,
-  isReported: false,
-  isMissedReport: false,
-  isReportTabVisible: false,
-  isSnitchTabVisible: false,
-  report: {
-
-  },
-  outstandingShares: {
-    value: 1000,
-    formattedValue: 1000,
-    formatted: '1,000',
-    roundedValue: 1000,
-    rounded: '1,000',
-    minimized: '1,000',
-    denomination: '',
-    full: '1,000'
-  },
-  priceTimeSeries: [
-
-  ],
-  reportableOutcomes: [
-    {
-      id: '1',
-      name: 'No'
-    },
-    {
-      id: '2',
-      name: 'Yes'
-    },
-    {
-      id: '1.5',
-      name: 'Indeterminate'
-    }
-  ],
-  userOpenOrdersSummary: null,
-  tradeSummary: {
-    totalGas: {
-      value: 0,
-      formattedValue: 0,
-      formatted: '0',
-      roundedValue: 0,
-      rounded: '0.0000',
-      minimized: '0',
-      denomination: ' ETH',
-      full: '0 ETH'
-    },
-    tradeOrders: [
-
-    ],
-    hasUserEnoughFunds: false
-  }
-}
-
-// Scalar Example
 // const market = {
 //   isStakeRequired: false,
-//   id: '0x12b6b957ee773b598f58969cacfd463a8bac84f464e698fd266d50f5957badd0',
+//   currentOutcome: {
+//     id: '0',
+//     name: 'Yes',
+//     stake: '1.2',
+//   },
+//   otherOutcomes: [
+//     {
+//       id: '1',
+//       name: 'No',
+//       stake: '0.8',
+//     }
+//   ],
+//   id: '0xcd7b177af7a12ec3be1c7f992ec7d608959630f2113227a2cdd9db562bd01eb4',
 //   branchID: '0xf69b5',
-//   tradingPeriod: 8766,
-//   tradingFee: '0.02',
-//   makerFee: '0.01',
-//   takerFee: '0.02',
+//   tradingPeriod: 8947,
+//   tradingFee: '0.025',
+//   makerFee: '0.0125',
+//   takerFee: '0.025',
 //   creationTime: {
-//     value: {},
-//     formatted: 'Aug 9, 2017 3:18 AM',
-//     formattedLocal: 'Aug 8, 2017 8:18 PM (UTC -7)',
-//     full: 'Wed, 09 Aug 2017 03:18:53 GMT',
-//     timestamp: 1502248733000
+//     value: '2017-10-16T14:36:38.000Z',
+//     formatted: 'Oct 16, 2017 2:36 PM',
+//     formattedLocal: 'Oct 16, 2017 7:36 AM (UTC -7)',
+//     full: 'Mon, 16 Oct 2017 14:36:38 GMT',
+//     timestamp: 1508164598000
 //   },
 //   volume: {
-//     value: 380,
-//     formattedValue: 380,
-//     formatted: '380',
-//     roundedValue: 380,
-//     rounded: '380.00',
-//     minimized: '380',
+//     value: 3000,
+//     formattedValue: 3000,
+//     formatted: '3,000',
+//     roundedValue: 3000,
+//     rounded: '3,000.00',
+//     minimized: '3,000',
 //     denomination: ' shares',
-//     full: '380 shares'
+//     full: '3,000 shares'
 //   },
-//   topic: 'science',
+//   topic: 'Cryptocurrency',
 //   tags: [
-//     'science',
-//     'extinction',
-//     'marine biology'
+//     'Cryptocurrency',
+//     'Bitcoin',
+//     'Ethereum'
 //   ],
 //   endDate: {
-//     value: {},
-//     formatted: 'Jan 2, 2018 8:00 AM',
-//     formattedLocal: 'Jan 2, 2018 12:00 AM (UTC -8)',
-//     full: 'Tue, 02 Jan 2018 08:00:00 GMT',
-//     timestamp: 1514880000000
+//     value: '2018-12-30T08:00:00.000Z',
+//     formatted: 'Dec 30, 2018 8:00 AM',
+//     formattedLocal: 'Dec 30, 2018 12:00 AM (UTC -8)',
+//     full: 'Sun, 30 Dec 2018 08:00:00 GMT',
+//     timestamp: 1546156800000
 //   },
-//   eventID: '0x3e45db076c93a3726c5d96ec7d31a29bed0b4016946236b4363807d646a4e6c3',
-//   minValue: '0',
-//   maxValue: '10000',
+//   eventID: '0xee03ff4923cb4fc8f2f2370e0f1d5cffd321342d304e221e566623616f676ba4',
+//   minValue: '1',
+//   maxValue: '2',
 //   numOutcomes: 2,
-//   type: 'scalar',
+//   type: 'binary',
 //   consensus: null,
-//   description: 'How many marine species will go extinct between January 1, 2016 and January 1, 2018?',
+//   description: 'Will Bitcoin be surpassed by Ethereum by the end of 2018?',
 //   isLoadedMarketInfo: true,
 //   isLoading: false,
 //   network: '9000',
-//   cumulativeScale: '10000',
-//   creationBlock: 363,
-//   creationFee: '9',
-//   author: '0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b',
-//   eventBond: '4.5',
+//   cumulativeScale: '1',
+//   creationBlock: 422516,
+//   creationFee: '7.2',
+//   author: '0xa5f5cecbb1e1a1e784a975b4d019f50e06a95091',
+//   eventBond: '3.6',
 //   outcomes: [
-//     {}
+//     {
+//       id: '2',
+//       outstandingShares: '1000',
+//       price: '0',
+//       sharesPurchased: '0',
+//       name: 'Yes',
+//       marketID: '0xcd7b177af7a12ec3be1c7f992ec7d608959630f2113227a2cdd9db562bd01eb4',
+//       lastPrice: {
+//         value: 0,
+//         formattedValue: 0,
+//         formatted: '0',
+//         roundedValue: 0,
+//         rounded: '0.0000',
+//         minimized: '0',
+//         denomination: ' ETH Tokens',
+//         full: '0 ETH Tokens'
+//       },
+//       lastPricePercent: {
+//         value: 50,
+//         formattedValue: 50,
+//         formatted: '50.0',
+//         roundedValue: 50,
+//         rounded: '50',
+//         minimized: '50',
+//         denomination: '%',
+//         full: '50.0%'
+//       },
+//       trade: {
+//         side: 'buy',
+//         numShares: null,
+//         limitPrice: null,
+//         maxNumShares: {
+//           value: 0,
+//           formattedValue: 0,
+//           formatted: '0',
+//           roundedValue: 0,
+//           rounded: '0.00',
+//           minimized: '0',
+//           denomination: ' shares',
+//           full: '0 shares'
+//         },
+//         potentialEthProfit: null,
+//         potentialEthLoss: null,
+//         potentialLossPercent: null,
+//         potentialProfitPercent: null,
+//         totalFee: {
+//           value: 0,
+//           formattedValue: 0,
+//           formatted: '',
+//           roundedValue: 0,
+//           rounded: '',
+//           minimized: '',
+//           denomination: '',
+//           full: ''
+//         },
+//         gasFeesRealEth: {
+//           value: 0,
+//           formattedValue: 0,
+//           formatted: '',
+//           roundedValue: 0,
+//           rounded: '',
+//           minimized: '',
+//           denomination: '',
+//           full: ''
+//         },
+//         totalCost: {
+//           value: 0,
+//           formattedValue: 0,
+//           formatted: '0',
+//           roundedValue: 0,
+//           rounded: '0.0000',
+//           minimized: '0',
+//           denomination: ' ETH Tokens',
+//           full: '0 ETH Tokens'
+//         },
+//         tradeTypeOptions: [
+//           {
+//             label: 'buy',
+//             value: 'buy'
+//           },
+//           {
+//             label: 'sell',
+//             value: 'sell'
+//           }
+//         ],
+//         tradeSummary: {
+//           totalGas: {
+//             value: 0,
+//             formattedValue: 0,
+//             formatted: '0',
+//             roundedValue: 0,
+//             rounded: '0.0000',
+//             minimized: '0',
+//             denomination: ' ETH',
+//             full: '0 ETH'
+//           },
+//           tradeOrders: [
+
+//           ]
+//         }
+//       },
+//       orderBook: {
+//         bids: [
+
+//         ],
+//         asks: [
+
+//         ]
+//       },
+//       orderBookSeries: {
+//         bids: [
+
+//         ],
+//         asks: [
+
+//         ]
+//       },
+//       topBid: null,
+//       topAsk: null,
+//       position: null,
+//       userOpenOrders: [
+
+//       ]
+//     }
 //   ],
-//   resolutionSource: 'science!',
-//   formattedDescription: 'how_many_marine_species_will_go_extinct_between_january_1_2016_and_january_1_2018',
-//   isBinary: false,
+//   extraInfo: 'Will Ethereum value overpass Bitcoin by the end of 2018?',
+//   formattedDescription: 'will_bitcoin_be_surpassed_by_ethereum_by_the_end_of_2018',
+//   isBinary: true,
 //   isCategorical: false,
-//   isScalar: true,
+//   isScalar: false,
 //   isMarketLoading: false,
 //   endDateLabel: 'ends',
 //   isOpen: true,
 //   isFavorite: false,
 //   takerFeePercent: {
-//     value: 2,
-//     formattedValue: 2,
-//     formatted: '2.0',
+//     value: 2.5,
+//     formattedValue: 2.5,
+//     formatted: '2.5',
 //     roundedValue: 2,
 //     rounded: '2',
-//     minimized: '2',
+//     minimized: '2.5',
 //     denomination: '%',
-//     full: '2.0%'
+//     full: '2.5%'
 //   },
 //   makerFeePercent: {
-//     value: 1,
-//     formattedValue: 1,
-//     formatted: '1.0',
+//     value: 1.25,
+//     formattedValue: 1.2,
+//     formatted: '1.2',
 //     roundedValue: 1,
 //     rounded: '1',
-//     minimized: '1',
+//     minimized: '1.2',
 //     denomination: '%',
-//     full: '1.0%'
+//     full: '1.2%'
 //   },
 //   isRequiredToReportByAccount: false,
-//   isPendingReport: false,
+//   isPendingReport: true,
 //   isReportSubmitted: false,
 //   isReported: false,
 //   isMissedReport: false,
 //   isReportTabVisible: false,
 //   isSnitchTabVisible: false,
-//   onSubmitPlaceTrade: '[function ]',
 //   report: {
-//     onSubmitReport: {}
+
 //   },
 //   outstandingShares: {
-//     value: 100,
-//     formattedValue: 100,
-//     formatted: '100',
-//     roundedValue: 100,
-//     rounded: '100',
-//     minimized: '100',
+//     value: 1000,
+//     formattedValue: 1000,
+//     formatted: '1,000',
+//     roundedValue: 1000,
+//     rounded: '1,000',
+//     minimized: '1,000',
 //     denomination: '',
-//     full: '100'
+//     full: '1,000'
 //   },
-//   priceTimeSeries: [],
-//   reportableOutcomes: [
-//     {}
+//   priceTimeSeries: [
+
 //   ],
-//   onSubmitSlashRep: '[function ]',
+//   reportableOutcomes: [
+//     {
+//       id: '1',
+//       name: 'No'
+//     },
+//     {
+//       id: '2',
+//       name: 'Yes'
+//     },
+//     {
+//       id: '1.5',
+//       name: 'Indeterminate'
+//     }
+//   ],
 //   userOpenOrdersSummary: null,
 //   tradeSummary: {
-//     totalGas: {},
-//     tradeOrders: {},
+//     totalGas: {
+//       value: 0,
+//       formattedValue: 0,
+//       formatted: '0',
+//       roundedValue: 0,
+//       rounded: '0.0000',
+//       minimized: '0',
+//       denomination: ' ETH',
+//       full: '0 ETH'
+//     },
+//     tradeOrders: [
+
+//     ],
 //     hasUserEnoughFunds: false
-//   },
-//   isLogged: false,
-//   shareDenominations: [
-//     {},
-//     {},
-//     {}
-//   ],
-//   toggleFavorite: '[function toggleFavorite]'
+//   }
 // }
+
+// Scalar Example
+const market = {
+  isStakeRequired: false,
+  currentOutcome: {
+    name: '105',
+    stake: '1104',
+  },
+  id: '0x12b6b957ee773b598f58969cacfd463a8bac84f464e698fd266d50f5957badd0',
+  branchID: '0xf69b5',
+  tradingPeriod: 8766,
+  tradingFee: '0.02',
+  makerFee: '0.01',
+  takerFee: '0.02',
+  creationTime: {
+    value: {},
+    formatted: 'Aug 9, 2017 3:18 AM',
+    formattedLocal: 'Aug 8, 2017 8:18 PM (UTC -7)',
+    full: 'Wed, 09 Aug 2017 03:18:53 GMT',
+    timestamp: 1502248733000
+  },
+  volume: {
+    value: 380,
+    formattedValue: 380,
+    formatted: '380',
+    roundedValue: 380,
+    rounded: '380.00',
+    minimized: '380',
+    denomination: ' shares',
+    full: '380 shares'
+  },
+  topic: 'science',
+  tags: [
+    'science',
+    'extinction',
+    'marine biology'
+  ],
+  endDate: {
+    value: {},
+    formatted: 'Jan 2, 2018 8:00 AM',
+    formattedLocal: 'Jan 2, 2018 12:00 AM (UTC -8)',
+    full: 'Tue, 02 Jan 2018 08:00:00 GMT',
+    timestamp: 1514880000000
+  },
+  eventID: '0x3e45db076c93a3726c5d96ec7d31a29bed0b4016946236b4363807d646a4e6c3',
+  minValue: '0',
+  maxValue: '10000',
+  numOutcomes: 2,
+  type: 'scalar',
+  consensus: null,
+  description: 'How many marine species will go extinct between January 1, 2016 and January 1, 2018?',
+  isLoadedMarketInfo: true,
+  isLoading: false,
+  network: '9000',
+  cumulativeScale: '10000',
+  creationBlock: 363,
+  creationFee: '9',
+  author: '0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b',
+  eventBond: '4.5',
+  outcomes: [
+    {}
+  ],
+  resolutionSource: 'science!',
+  formattedDescription: 'how_many_marine_species_will_go_extinct_between_january_1_2016_and_january_1_2018',
+  isBinary: false,
+  isCategorical: false,
+  isScalar: true,
+  isMarketLoading: false,
+  endDateLabel: 'ends',
+  isOpen: true,
+  isFavorite: false,
+  takerFeePercent: {
+    value: 2,
+    formattedValue: 2,
+    formatted: '2.0',
+    roundedValue: 2,
+    rounded: '2',
+    minimized: '2',
+    denomination: '%',
+    full: '2.0%'
+  },
+  makerFeePercent: {
+    value: 1,
+    formattedValue: 1,
+    formatted: '1.0',
+    roundedValue: 1,
+    rounded: '1',
+    minimized: '1',
+    denomination: '%',
+    full: '1.0%'
+  },
+  isRequiredToReportByAccount: false,
+  isPendingReport: false,
+  isReportSubmitted: false,
+  isReported: false,
+  isMissedReport: false,
+  isReportTabVisible: false,
+  isSnitchTabVisible: false,
+  onSubmitPlaceTrade: '[function ]',
+  report: {
+    onSubmitReport: {}
+  },
+  outstandingShares: {
+    value: 100,
+    formattedValue: 100,
+    formatted: '100',
+    roundedValue: 100,
+    rounded: '100',
+    minimized: '100',
+    denomination: '',
+    full: '100'
+  },
+  priceTimeSeries: [],
+  reportableOutcomes: [
+    {}
+  ],
+  onSubmitSlashRep: '[function ]',
+  userOpenOrdersSummary: null,
+  tradeSummary: {
+    totalGas: {},
+    tradeOrders: {},
+    hasUserEnoughFunds: false
+  },
+  isLogged: false,
+  shareDenominations: [
+    {},
+    {},
+    {}
+  ],
+  toggleFavorite: '[function toggleFavorite]'
+}
 
 // Categorical Example
 // const market = {
 //   isStakeRequired: false,
+//   currentOutcome: {
+//     id: '7',
+//     name: 'Hong Kong',
+//     stake: '21.2',
+//   },
+//   otherOutcomes: [
+//     {
+//       id: '5',
+//       name: 'Tokyo',
+//       stake: '0.8',
+//     },
+//     {
+//       id: '4',
+//       name: 'San Francisco',
+//       stake: '10.5',
+//     },
+//     {
+//       id: '8',
+//       name: 'other',
+//       stake: '13.7',
+//     },
+//     {
+//       id: '1',
+//       name: 'London',
+//       stake: '5',
+//     },
+//     {
+//       id: '3',
+//       name: 'Los Angeles',
+//       stake: '4.2',
+//     },
+//     {
+//       id: '2',
+//       name: 'New York',
+//       stake: '3',
+//     },
+//     {
+//       id: '6',
+//       name: 'Palo Alto',
+//       stake: '11',
+//     },
+//   ],
 //   id: '0x284dc8742e7441375adad1e545b685ded6ff3a361a4659c1be11fca2055de6e9',
 //   branchID: '0xf69b5',
 //   tradingPeriod: 8720,

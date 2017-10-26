@@ -13,7 +13,7 @@ const ReportingDisputeConfirm = p => (
           <ul className={ConfirmStyles.Confirm__list}>
             <li>
               <span>Disputed Outcome</span>
-              <span>{ p.currentOutcome }</span>
+              <span>{ p.market.currentOutcome }</span>
             </li>
             <li>
               <span>Proposed Outcome</span>
@@ -21,7 +21,7 @@ const ReportingDisputeConfirm = p => (
             </li>
             <li>
               <span>Dispute Bond</span>
-              <span>{ p.disputeBond }</span>
+              <span>{ p.disputeBond } REP</span>
             </li>
             { p.stake &&
               <li>

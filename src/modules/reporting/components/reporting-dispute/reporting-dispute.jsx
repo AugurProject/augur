@@ -19,11 +19,10 @@ export default class ReportingDispute extends Component {
     super(props)
 
     this.state = {
-      disputeBond: '10000 REP',
+      disputeBond: '10000',
       currentStep: 0,
       isFormValid: true,
       isMarketValid: null,
-      currentOutcome: 'Hong Kong',
       selectedOutcome: '',
       stake: '',
       validations: {
@@ -76,7 +75,6 @@ export default class ReportingDispute extends Component {
               updateState={this.updateState}
               disputeBond={s.disputeBond}
               isMarketValid={s.isMarketValid}
-              currentOutcome={s.currentOutcome}
               selectedOutcome={s.selectedOutcome}
               stake={s.stake}
               validations={s.validations}
@@ -86,7 +84,6 @@ export default class ReportingDispute extends Component {
             <ReportingDisputeConfirm
               market={p.market}
               isMarketValid={s.isMarketValid}
-              currentOutcome={s.currentOutcome}
               selectedOutcome={s.selectedOutcome}
               stake={s.stake}
               disputeBond={s.disputeBond}
