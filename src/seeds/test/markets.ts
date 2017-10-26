@@ -4,7 +4,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
   return knex("markets").del().then((): void => {
     // Inserts seed entries
-    knex.batchInsert("markets", [{
+    const seedData = [{
       marketID: "0x0000000000000000000000000000000000000001",
       universe: "0x000000000000000000000000000000000000000b",
       marketType: "categorical",
@@ -12,7 +12,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       minPrice: "0",
       maxPrice: "1",
       marketCreator: "0x0000000000000000000000000000000000000b0b",
-      creationTime: 1506473474,
       creationBlockNumber: 1400000,
       creationFee: "10",
       reportingFeeRate: "0.02",
@@ -37,7 +36,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       minPrice: "0",
       maxPrice: "1",
       marketCreator: "0x0000000000000000000000000000000000000b0b",
-      creationTime: 1506480000,
       creationBlockNumber: 1400100,
       creationFee: "10",
       reportingFeeRate: "0.02",
@@ -62,7 +60,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       minPrice: "0",
       maxPrice: "1",
       marketCreator: "0x000000000000000000000000000000000000d00d",
-      creationTime: 1506480015,
       creationBlockNumber: 1400101,
       creationFee: "10",
       reportingFeeRate: "0.02",
@@ -79,6 +76,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       designatedReportStake: "10",
       resolutionSource: "http://www.ttp-inc.com/0000000000000000000000000000000000000003",
       numTicks: 16,
-    }], 1000);
+    }];
+    knex.batchInsert("markets", seedData, seedData.length);
   });
 };

@@ -28,6 +28,10 @@ interface Orders {
   };
 }
 
+interface OrdersRowWithCreationTime extends OrdersRow {
+  creationTime: number;
+}
+
 // market, outcome, creator, orderType, limit, sort
 export function getOpenOrders(db: Knex, marketID: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: any) => void): void {
   const queryData: {} = _.omitBy({
@@ -36,11 +40,11 @@ export function getOpenOrders(db: Knex, marketID: Address|null, outcome: number|
     orderType,
     orderCreator: creator,
   }, _.isNull);
-  db("orders").where(queryData).whereNull("isRemoved").asCallback((err: Error|null, ordersRows?: Array<OrdersRow>): void => {
+  db.select(["orders.*", `blocks.timestamp as creationTime`]).from("orders").leftJoin("blocks", "orders.creationBlockNumber", "blocks.blockNumber").where(queryData).whereNull("isRemoved").asCallback((err: Error|null, ordersRows?: Array<OrdersRowWithCreationTime>): void => {
     if (err) return callback(err);
     if (!ordersRows || !ordersRows.length) return callback(null);
     const orders: Orders = {};
-    ordersRows.forEach((row: OrdersRow): void => {
+    ordersRows.forEach((row: OrdersRowWithCreationTime): void => {
       if (!orders[row.marketID]) orders[row.marketID] = {};
       if (!orders[row.marketID][row.outcome]) orders[row.marketID][row.outcome] = {};
       if (!orders[row.marketID][row.outcome][row.orderType]) orders[row.marketID][row.outcome][row.orderType] = {};

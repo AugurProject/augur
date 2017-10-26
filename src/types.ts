@@ -120,7 +120,6 @@ export interface MarketsRow {
   minPrice: string|number;
   maxPrice: string|number;
   marketCreator: Address;
-  creationTime: number;
   creationBlockNumber: number;
   creationFee: string|number;
   reportingFeeRate: string|number;
@@ -153,7 +152,7 @@ export interface OutcomesRow {
 
 export interface BlocksRow {
   blockNumber: number;
-  blockTimestamp: number;
+  timestamp: number;
 }
 
 export interface UIConsensusInfo {
@@ -208,7 +207,6 @@ export interface OrdersRow {
   shareToken: Address;
   orderType: string;
   orderCreator: Address;
-  creationTime: number;
   creationBlockNumber: number;
   price: number|string;
   amount: number|string;
@@ -234,27 +232,22 @@ export interface UITrade {
   tradeGroupID: Bytes32|null;
 }
 
-export interface TradingHistoryTradesRow {
-  orderType: string;
-  price: string;
-  shares: string;
-  creator: Address;
-  settlementFees: string;
+export interface TradesRow {
+  orderID: Bytes32;
   marketID: Address;
   outcome: number;
   shareToken: Address;
-  tradeTime: number;
-  tradeGroupID: Bytes32|null;
-}
-
-export interface TradesRow {
   orderType: string;
-  marketID: Address;
-  outcome: number;
   creator: Address;
   filler: Address;
-  price: string|number;
-  shares: string|number;
+  blockNumber: number;
+  numCreatorTokens: string;
+  numCreatorShares: string;
+  numFillerTokens: string;
+  numFillerShares: string;
+  price: string;
+  shares: string;
+  settlementFees: string;
   tradeGroupID: Bytes32|null;
 }
 
@@ -265,6 +258,10 @@ export interface TimestampedPrice {
 
 export interface MarketPriceHistory {
   [outcome: number]: Array<TimestampedPrice>;
+}
+
+export interface MarketsRowWithCreationTime extends MarketsRow {
+  creationTime: number;
 }
 
 export interface JoinedReportsMarketsRow {

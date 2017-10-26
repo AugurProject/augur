@@ -5,7 +5,7 @@ exports.seed = (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
   return knex("outcomes").del().then((): void => {
     // Inserts seed entries
-    knex.batchInsert("outcomes", [{
+    const seedData = [{
       marketID: "0x0000000000000000000000000000000000000001",
       outcome: 0,
       price: "0.125",
@@ -65,6 +65,7 @@ exports.seed = (knex: Knex): Promise<any> => {
       outcome: 1,
       price: "0.5",
       sharesOutstanding: "10",
-    }], 1000);
+    }];
+    knex.batchInsert("outcomes", seedData, seedData.length);
   });
 };

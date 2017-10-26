@@ -4,7 +4,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
   return knex("categories").del().then((): void => {
     // Inserts seed entries
-    knex.batchInsert("categories", [{
+    const seedData = [{
       category: "test category",
       popularity: 0,
       universe: "0x000000000000000000000000000000000000000b",
@@ -24,6 +24,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       category: "finance",
       popularity: 12345,
       universe: "0x000000000000000000000000000000000000000b",
-    }], 1000);
+    }];
+    knex.batchInsert("categories", seedData, seedData.length);
   });
 };

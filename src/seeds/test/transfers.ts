@@ -4,7 +4,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
     return knex("transfers").del().then((): void => {
     // Inserts seed entries
-    knex.batchInsert("transfers", [{
+    const seedData = [{
       transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
       logIndex: 0,
       sender: "0x0000000000000000000000000000000000000b0b",
@@ -28,6 +28,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       token: "0x7a305d9b681fb164dc5ad628b5992177dc66aec8",
       value: 47,
       blockNumber: 1400001,
-    }], 1000);
+    }];
+    knex.batchInsert("transfers", seedData, seedData.length);
   });
 };

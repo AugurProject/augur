@@ -115,7 +115,6 @@ describe("blockchain/log-processors/market-created", () => {
             minPrice: 0,
             maxPrice: 1,
             marketCreator: "0x0000000000000000000000000000000000000b0b",
-            creationTime: 10000000,
             creationBlockNumber: 7,
             creationFee: 0.1,
             reportingFeeRate: 0.001,

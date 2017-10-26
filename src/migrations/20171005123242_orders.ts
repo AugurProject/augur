@@ -9,7 +9,6 @@ exports.up = async (knex: Knex): Promise<any> => {
       "shareToken" varchar(66) NOT NULL,
       "orderType" varchar(4) NOT NULL CONSTRAINT enumOrderTypes CHECK ("orderType" = 'buy' OR "orderType" = 'sell'),
       "orderCreator" varchar(66) NOT NULL,
-      "creationTime" integer NOT NULL CONSTRAINT positiveOrderCreationTime CHECK ("creationTime" > 0),
       "creationBlockNumber" integer NOT NULL CONSTRAINT positiveOrderCreationBlockNumber CHECK ("creationBlockNumber" > 0),
       "fullPrecisionPrice" numeric NOT NULL,
       "fullPrecisionAmount" numeric NOT NULL,

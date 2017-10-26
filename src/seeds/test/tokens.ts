@@ -4,7 +4,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
   return knex("tokens").del().then((): void => {
     // Inserts seed entries
-    knex.batchInsert("tokens", [{
+    const seedData = [{
       contractAddress: "ETH",
       symbol: "ETH",
       marketID: null,
@@ -24,6 +24,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       symbol: "shares",
       marketID: "0x0000000000000000000000000000000000000001",
       outcome: 0,
-    }], 1000);
+    }];
+    knex.batchInsert("tokens", seedData, seedData.length);
   });
 };

@@ -10,7 +10,6 @@ exports.up = async (knex: Knex): Promise<any> => {
       "minPrice" numeric NOT NULL,
       "maxPrice" numeric NOT NULL CONSTRAINT "maxPriceGtMinPrice" CHECK ("maxPrice" > "minPrice"),
       "marketCreator" varchar(66) NOT NULL,
-      "creationTime" integer NOT NULL CONSTRAINT "positiveMarketCreationTime" CHECK ("creationTime" > 0),
       "creationBlockNumber" integer NOT NULL CONSTRAINT "positiveMarketCreationBlockNumber" CHECK ("creationBlockNumber" > 0),
       "creationFee" numeric NOT NULL CONSTRAINT "nonnegativeCreationFee" CHECK ("creationFee" >= 0),
       "reportingFeeRate" numeric NOT NULL CONSTRAINT "nonnegativeReportingFeeRate" CHECK ("reportingFeeRate" >= 0),
