@@ -15,5 +15,5 @@ export function processTokensTransferredLog(db: Knex, augur: Augur, trx: Knex.Tr
 }
 
 export function processTokensTransferredLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
-  db.transacting(trx).from("transfers").where({ transactionHash: log.transactionHash, logIndex: log.logIndex, blockNumber: log.blockNumber, token: log.token }).del().asCallback(callback);
+  db.transacting(trx).from("transfers").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del().asCallback(callback);
 }
