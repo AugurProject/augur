@@ -19,11 +19,11 @@ describe("server/getters/get-markets-awaiting-reporting", () => {
   test({
     description: "get markets awaiting unknown reportingWindow",
     params: {
-      reportingWindow: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0"
+      reportingWindow: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
     },
     assertions: (err, marketsAwaitingReporting) => {
       assert.isNull(err);
       assert.deepEqual(marketsAwaitingReporting, []);
-    }
+    },
   });
 });

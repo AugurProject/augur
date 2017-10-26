@@ -1,5 +1,5 @@
 import * as Knex from "knex";
-import { Address, MarketsRow, UIMarketInfo, UIMarketsInfo, ErrorCallback } from "../../types";
+import { Address, MarketsRowWithCreationTime, UIMarketInfo, UIMarketsInfo, ErrorCallback } from "../../types";
 import { reshapeMarketsRowToUIMarketInfo, getMarketsWithReportingState } from "./get-market-info";
 import { sortDirection } from "../../utils/sort-direction";
 
@@ -15,7 +15,7 @@ export function getMarketsAwaitingReporting(db: Knex, reportingWindow: Address|n
   if (offset != null) query = query.offset(offset);
 
   // TODO: should we also consider a market_state's reportingState IS NULL?
-  query.asCallback((err?: Error|null, marketsRows?: Array<MarketsRow>): void => {
+  query.asCallback((err?: Error|null, marketsRows?: Array<MarketsRowWithCreationTime>): void => {
     if (err) return callback(err);
     if (!marketsRows) return callback(null);
     const marketsInfo: UIMarketsInfo = marketsRows.map((marketsRow) => reshapeMarketsRowToUIMarketInfo(marketsRow, []));
