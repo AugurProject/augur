@@ -1,6 +1,5 @@
 "use strict";
 
-const join = require("path").join;
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { getReportingHistory } = require("../../../build/server/getters/get-reporting-history");
@@ -35,20 +34,20 @@ describe("server/getters/get-reporting-history", () => {
             isCategorical: false,
             isScalar: false,
             isIndeterminate: false,
-            isSubmitted: true
+            isSubmitted: true,
           }]
-        }
+        },
       });
-    }
+    },
   });
   test({
     description: "reporter has not submitted any reports",
     params: {
-      reporter: "0x2100000000000000000000000000000000000021"
+      reporter: "0x2100000000000000000000000000000000000021",
     },
     assertions: (err, reportingHistory) => {
       assert.isNull(err);
       assert.isUndefined(reportingHistory);
-    }
+    },
   });
 });

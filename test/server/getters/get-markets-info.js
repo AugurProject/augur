@@ -1,7 +1,5 @@
 "use strict";
 
-const unlink = require("fs").unlink;
-const join = require("path").join;
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { getMarketsInfo } = require("../../../build/server/getters/get-markets-info");
@@ -47,6 +45,7 @@ describe("server/getters/get-markets-info", () => {
           tags: ["test tag 1", "test tag 2"],
           volume: 0,
           outstandingShares: 0,
+          reportingState: null,
           reportingWindow: "0x1000000000000000000000000000000000000000",
           endDate: 1506573470,
           finalizationTime: null,
@@ -92,6 +91,38 @@ describe("server/getters/get-markets-info", () => {
           }]
         },
         {
+          id: "0x0000000000000000000000000000000000000011",
+          universe: "0x000000000000000000000000000000000000000b",
+          type: "categorical",
+          numOutcomes: 8,
+          minPrice: 0,
+          maxPrice: 1,
+          cumulativeScale: "1",
+          author: "0x0000000000000000000000000000000000000b0b",
+          creationTime: 1506473500,
+          creationBlock: 1400001,
+          creationFee: 10,
+          reportingFeeRate: 0.02,
+          marketCreatorFeeRate: 0.01,
+          marketCreatorFeesCollected: 0,
+          category: "test category",
+          tags: ["test tag 1", "test tag 2"],
+          volume: 0,
+          outstandingShares: 0,
+          reportingState: 1,
+          reportingWindow: "0x1000000000000000000000000000000000000000",
+          endDate: 1507573470,
+          finalizationTime: null,
+          description: "This is a categorical test market created by b0b awaiting round 1 reporting.",
+          extraInfo: null,
+          designatedReporter: "0x0000000000000000000000000000000000000b0b",
+          designatedReportStake: 10,
+          resolutionSource: "http://www.trusted-third-party.com",
+          numTicks: 24,
+          consensus: null,
+          outcomes: []
+        },
+        {
           id: "0x0000000000000000000000000000000000000002",
           universe: "0x000000000000000000000000000000000000000b",
           type: "binary",
@@ -110,6 +141,7 @@ describe("server/getters/get-markets-info", () => {
           tags: ["test tag 1", "test tag 2"],
           volume: 0,
           outstandingShares: 0,
+          reportingState: null,
           reportingWindow: "0x1000000000000000000000000000000000000000",
           endDate: 1506573480,
           finalizationTime: null,
@@ -149,6 +181,7 @@ describe("server/getters/get-markets-info", () => {
           tags: ["test tag 1", "test tag 2"],
           volume: 0,
           outstandingShares: 0,
+          reportingState: null,
           reportingWindow: "0x1000000000000000000000000000000000000000",
           endDate: 1506573500,
           finalizationTime: null,
@@ -170,7 +203,7 @@ describe("server/getters/get-markets-info", () => {
           }]
         }]
       );
-    }
+    },
   });
   test({
     description: "get markets by specifying market IDs",
@@ -203,6 +236,7 @@ describe("server/getters/get-markets-info", () => {
           tags: ["test tag 1", "test tag 2"],
           volume: 0,
           outstandingShares: 0,
+          reportingState: null,
           reportingWindow: "0x1000000000000000000000000000000000000000",
           endDate: 1506573470,
           finalizationTime: null,
@@ -266,6 +300,7 @@ describe("server/getters/get-markets-info", () => {
           tags: ["test tag 1", "test tag 2"],
           volume: 0,
           outstandingShares: 0,
+          reportingState: null,
           reportingWindow: "0x1000000000000000000000000000000000000000",
           endDate: 1506573480,
           finalizationTime: null,

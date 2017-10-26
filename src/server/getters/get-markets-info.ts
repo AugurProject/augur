@@ -2,11 +2,11 @@ import { each } from "async";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import { Address, MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIMarketsInfo, UIOutcomeInfo, ErrorCallback } from "../../types";
-import { reshapeOutcomesRowToUIOutcomeInfo, reshapeMarketsRowToUIMarketInfo } from "./get-market-info";
+import { reshapeOutcomesRowToUIOutcomeInfo, reshapeMarketsRowToUIMarketInfo, getMarketsWithReportingState } from "./get-market-info";
 import { sortDirection } from "../../utils/sort-direction";
 
 export function getMarketsInfo(db: Knex, universe: Address|null|undefined, marketIDs: Array<Address>|null|undefined, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: UIMarketsInfo) => void): void {
-  let marketsQuery: Knex.QueryBuilder = db.select(["markets.*", "blocks.timestamp as creationTime"]).from("markets").leftJoin("blocks", "markets.creationBlockNumber", "blocks.blockNumber").orderBy("creationTime");
+  let marketsQuery: Knex.QueryBuilder = getMarketsWithReportingState(db).select("blocks.timestamp as creationTime").leftJoin("blocks", "markets.creationBlockNumber", "blocks.blockNumber").orderBy("creationTime");
   if (universe == null && marketIDs == null) {
     return callback(new Error("must include universe or marketIDs parameters"));
   }

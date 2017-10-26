@@ -7,8 +7,7 @@ import { getMarketsInCategory } from "./getters/get-markets-in-category";
 import { getMarketsCreatedByUser } from "./getters/get-markets-created-by-user";
 import { getReportingHistory } from "./getters/get-reporting-history";
 import { getMarketsAwaitingDesignatedReporting } from "./getters/get-markets-awaiting-designated-reporting";
-import { getMarketsAwaitingLimitedReporting } from "./getters/get-markets-awaiting-limited-reporting";
-import { getMarketsAwaitingAllReporting } from "./getters/get-markets-awaiting-all-reporting";
+import { getMarketsAwaitingReporting } from "./getters/get-markets-awaiting-reporting";
 import { getDisputableMarkets } from "./getters/get-disputable-markets";
 import { getReportingSummary } from "./getters/get-reporting-summary";
 import { getUserTradingHistory } from "./getters/get-user-trading-history";
@@ -39,10 +38,8 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callba
       return getReportingHistory(db, request.params.reporter, request.params.marketID, request.params.universe, request.params.reportingWindow, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsAwaitingDesignatedReporting":
       return getMarketsAwaitingDesignatedReporting(db, request.params.designatedReporter, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
-    case "getMarketsAwaitingLimitedReporting":
-      return getMarketsAwaitingLimitedReporting(db, request.params.reportingWindow, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
-    case "getMarketsAwaitingAllReporting":
-      return getMarketsAwaitingAllReporting(db, request.params.reportingWindow, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
+    case "getMarketsAwaitingReporting":
+      return getMarketsAwaitingReporting(db, request.params.reportingWindow, request.params.reportingRound, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getDisputableMarkets":
       return getDisputableMarkets(db, request.params.reportingWindow, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getReportingSummary":

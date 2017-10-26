@@ -1,7 +1,5 @@
 "use strict";
 
-const unlink = require("fs").unlink;
-const join = require("path").join;
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { getMarketInfo } = require("../../../build/server/getters/get-market-info");
@@ -44,6 +42,7 @@ describe("server/getters/get-market-info", () => {
         tags: ["test tag 1", "test tag 2"],
         volume: 0,
         outstandingShares: 0,
+        reportingState: null,
         reportingWindow: "0x1000000000000000000000000000000000000000",
         endDate: 1506573470,
         finalizationTime: null,

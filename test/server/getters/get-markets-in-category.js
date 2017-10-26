@@ -1,6 +1,5 @@
 "use strict";
 
-const join = require("path").join;
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { getMarketsInCategory } = require("../../../build/server/getters/get-markets-in-category");
@@ -27,7 +26,8 @@ describe("server/getters/get-markets-in-category", () => {
       assert.deepEqual(marketsInCategory, [
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000000000000000000002",
-        "0x0000000000000000000000000000000000000003"
+        "0x0000000000000000000000000000000000000003",
+        "0x0000000000000000000000000000000000000011"
       ]);
     }
   });

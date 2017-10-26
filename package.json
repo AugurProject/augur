@@ -19,7 +19,7 @@
   "scripts": {
     "start": "node ./build",
     "test": "mocha test",
-    "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
+    "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts && eslint test",
     "build": "tsc",
     "migrate": "node ./node_modules/knex/bin/cli.js migrate:latest --env build",
     "migrate_pg": "node ./node_modules/knex/bin/cli.js migrate:latest --env build_postgres",
