@@ -46,7 +46,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
       const { minPrice, maxPrice, numTicks } = marketsRows[0];
       const ordersPayload = { _orderId: log.orderId };
       parallel({
-        orderType: (next: AsyncCallback): void => augur.api.Orders.getTradeType(ordersPayload, next),
+        orderType: (next: AsyncCallback): void => augur.api.Orders.getOrderType(ordersPayload, next),
         price: (next: AsyncCallback): void => augur.api.Orders.getPrice(ordersPayload, next),
         amount: (next: AsyncCallback): void => augur.api.Orders.getAmount(ordersPayload, next),
         sharesEscrowed: (next: AsyncCallback): void => augur.api.Orders.getOrderSharesEscrowed(ordersPayload, next),

@@ -40,7 +40,7 @@ describe("blockchain/log-processors/order-created", () => {
       augur: {
         api: {
           Orders: {
-            getTradeType: (p, callback) => {
+            getOrderType: (p, callback) => {
               assert.deepEqual(p, { _orderId: "ORDER_ID" });
               callback(null, "0x0");
             },

@@ -4,7 +4,7 @@ import { processTokensTransferredLog, processTokensTransferredLogRemoval } from 
 import { processOrderCanceledLog, processOrderCanceledLogRemoval } from "./order-canceled";
 import { processOrderCreatedLog, processOrderCreatedLogRemoval } from "./order-created";
 import { processOrderFilledLog, processOrderFilledLogRemoval } from "./order-filled";
-import { processProceedsClaimedLog, processProceedsClaimedLogRemoval } from "./proceeds-claimed";
+import { processTradingProceedsClaimedLog, processTradingProceedsClaimedLogRemoval } from "./trading-proceeds-claimed";
 import { processDesignatedReportSubmittedLog, processDesignatedReportSubmittedLogRemoval } from "./designated-report-submitted";
 import { processReportSubmittedLog, processReportSubmittedLogRemoval } from "./report-submitted";
 import { processWinningTokensRedeemedLog, processWinningTokensRedeemedLogRemoval } from "./winning-tokens-redeemed";
@@ -36,9 +36,9 @@ export const logProcessors: LogProcessors = {
       add: processOrderFilledLog,
       remove: processOrderFilledLogRemoval,
     },
-    ProceedsClaimed: {
-      add: processProceedsClaimedLog,
-      remove: processProceedsClaimedLogRemoval,
+    TradingProceedsClaimed: {
+      add: processTradingProceedsClaimedLog,
+      remove: processTradingProceedsClaimedLogRemoval,
     },
     DesignatedReportSubmitted: {
       add: processDesignatedReportSubmittedLog,
