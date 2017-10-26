@@ -42,7 +42,6 @@ export default class MarketOutcomesGraph extends Component {
         text: null
       },
       chart: {
-        height: 300,
         spacingTop: 1,
         spacingRight: 0,
         spacingLeft: 0

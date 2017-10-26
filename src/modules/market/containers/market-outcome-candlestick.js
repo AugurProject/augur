@@ -9,10 +9,10 @@ const mergeProps = (sP, dP, oP) => {
 
   const randomCandlestickData = () => [...new Array(30)].map((value, index) => ([
     index,
-    (Math.random() * 1),
-    (Math.random() * 1),
-    (Math.random() * 1),
-    (Math.random() * 1)
+    (Math.random()),
+    (Math.random()),
+    (Math.random()),
+    (Math.random())
   ]))
 
   const randomVolume = () => [...new Array(30)].map((value, index) => ([
