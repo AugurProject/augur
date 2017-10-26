@@ -15,7 +15,7 @@ export function startAugurListeners(db: Knex, augur: Augur, callback: (blockNumb
       OrderCanceled: makeLogListener(db, augur, "Augur", "OrderCanceled"),
       OrderCreated: makeLogListener(db, augur, "Augur", "OrderCreated"),
       OrderFilled: makeLogListener(db, augur, "Augur", "OrderFilled"),
-      ProceedsClaimed: makeLogListener(db, augur, "Augur", "ProceedsClaimed"),
+      TradingProceedsClaimed: makeLogListener(db, augur, "Augur", "TradingProceedsClaimed"),
       DesignatedReportSubmitted: makeLogListener(db, augur, "Augur", "DesignatedReportSubmitted"),
       ReportSubmitted: makeLogListener(db, augur, "Augur", "ReportSubmitted"),
       WinningTokensRedeemed: makeLogListener(db, augur, "Augur", "WinningTokensRedeemed"),
