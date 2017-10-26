@@ -52,7 +52,7 @@ describe("server/getters/get-market-info", () => {
         designatedReporter: "0x0000000000000000000000000000000000000b0b",
         designatedReportStake: 10,
         resolutionSource: "http://www.trusted-third-party.com",
-        numTicks: 24,
+        numTicks: 10752,
         consensus: null,
         outcomes: [{
           id: 0,

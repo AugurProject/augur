@@ -36,7 +36,7 @@ describe("blockchain/log-processors/market-created", () => {
     });
   };
   test({
-    description: "process market created log",
+    description: "market created log and removal",
     params: {
       log: {
         blockNumber: 7,

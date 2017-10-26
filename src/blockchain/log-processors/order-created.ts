@@ -1,7 +1,8 @@
 import Augur from "augur.js";
+import { parallel } from "async";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { Address, FormattedLog, OrdersRow, ErrorCallback } from "../../types";
+import { Address, Bytes32, FormattedLog, OrdersRow, ErrorCallback, AsyncCallback } from "../../types";
 import { processOrderCanceledLog } from "./order-canceled";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
 import { denormalizePrice } from "../../utils/denormalize-price";
@@ -23,6 +24,17 @@ interface MarketsRow {
   numTicks: string|number;
 }
 
+interface OrderCreatedOnContractData {
+  orderType: string;
+  price: string;
+  amount: string;
+  sharesEscrowed: string;
+  moneyEscrowed: string;
+  creator: Address;
+  betterOrderID: Bytes32;
+  worseOrderID: Bytes32;
+}
+
 export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
   trx.select(["marketID", "outcome"]).from("tokens").where({ contractAddress: log.shareToken }).asCallback((err: Error|null, tokensRows?: Array<TokensRow>): void => {
     if (err) return callback(err);
@@ -32,33 +44,46 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
       if (err) return callback(err);
       if (!marketsRows || !marketsRows.length) return callback(new Error("market min price, max price, and/or num ticks not found"));
       const { minPrice, maxPrice, numTicks } = marketsRows[0];
-      const fullPrecisionPrice = denormalizePrice(minPrice, maxPrice, convertFixedPointToDecimal(log.price, numTicks));
-      const fullPrecisionAmount = convertFixedPointToDecimal(log.amount, numTicks);
-      const orderData: OrdersRow = {
-        marketID,
-        outcome,
-        shareToken: log.shareToken,
-        orderType: log.orderType,
-        orderCreator: log.creator,
-        creationBlockNumber: log.blockNumber,
-        price: formatOrderPrice(log.orderType, minPrice, maxPrice, fullPrecisionPrice),
-        amount: formatOrderAmount(minPrice, maxPrice, fullPrecisionAmount),
-        fullPrecisionPrice,
-        fullPrecisionAmount,
-        tokensEscrowed: convertFixedPointToDecimal(log.tokensEscrowed, WEI_PER_ETHER),
-        sharesEscrowed: convertFixedPointToDecimal(log.sharesEscrowed, numTicks),
-        betterOrderID: log.betterOrderID,
-        worseOrderID: log.worseOrderID,
-        tradeGroupID: log.tradeGroupID,
-      };
-      const orderID = { orderID: log.orderId };
-      trx.select(["marketID"]).from("orders").where(orderID).asCallback((err: Error|null, ordersRows?: any): void => {
+      const orderID = { orderId: log.orderId };
+      parallel({
+        orderType: (next: AsyncCallback): void => augur.api.Orders.getTradeType(orderID, next),
+        price: (next: AsyncCallback): void => augur.api.Orders.getPrice(orderID, next),
+        amount: (next: AsyncCallback): void => augur.api.Orders.getAmount(orderID, next),
+        sharesEscrowed: (next: AsyncCallback): void => augur.api.Orders.getOrderSharesEscrowed(orderID, next),
+        moneyEscrowed: (next: AsyncCallback): void => augur.api.Orders.getOrderMoneyEscrowed(orderID, next),
+        betterOrderID: (next: AsyncCallback): void => augur.api.Orders.getBetterOrderId(orderID, next),
+        worseOrderID: (next: AsyncCallback): void => augur.api.Orders.getWorseOrderId(orderID, next),
+      }, (err: Error|null, onContractData: OrderCreatedOnContractData): void => {
         if (err) return callback(err);
-        if (!ordersRows || !ordersRows.length) {
-          db.transacting(trx).insert(Object.assign(orderData, orderID)).into("orders").asCallback(callback);
-        } else {
-          db.transacting(trx).from("orders").where(orderID).update(orderData).asCallback(callback);
-        }
+        const { price, amount, orderType, moneyEscrowed, sharesEscrowed, betterOrderID, worseOrderID } = onContractData;
+        const fullPrecisionPrice = denormalizePrice(minPrice, maxPrice, convertFixedPointToDecimal(new BigNumber(price, 16).toFixed(), numTicks));
+        const fullPrecisionAmount = convertFixedPointToDecimal(new BigNumber(amount, 16).toFixed(), numTicks);
+        const orderTypeLabel = parseInt(orderType, 16) === 0 ? "buy" : "sell";
+        const orderData: OrdersRow = {
+          marketID,
+          outcome,
+          shareToken: log.shareToken,
+          orderCreator: log.creator,
+          creationBlockNumber: log.blockNumber,
+          tradeGroupID: log.tradeGroupId,
+          orderType: orderTypeLabel,
+          price: formatOrderPrice(orderTypeLabel, minPrice, maxPrice, fullPrecisionPrice),
+          amount: formatOrderAmount(minPrice, maxPrice, fullPrecisionAmount),
+          fullPrecisionPrice,
+          fullPrecisionAmount,
+          tokensEscrowed: convertFixedPointToDecimal(new BigNumber(moneyEscrowed, 16).toFixed(), WEI_PER_ETHER),
+          sharesEscrowed: convertFixedPointToDecimal(new BigNumber(sharesEscrowed, 16).toFixed(), numTicks),
+          betterOrderID,
+          worseOrderID,
+        };
+        trx.select(["marketID"]).from("orders").where(orderID).asCallback((err: Error|null, ordersRows?: any): void => {
+          if (err) return callback(err);
+          if (!ordersRows || !ordersRows.length) {
+            db.transacting(trx).insert(Object.assign(orderData, orderID)).into("orders").asCallback(callback);
+          } else {
+            db.transacting(trx).from("orders").where(orderID).update(orderData).asCallback(callback);
+          }
+        });
       });
     });
   });

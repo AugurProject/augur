@@ -138,6 +138,7 @@ export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transact
       const numFillerShares = convertFixedPointToDecimal(log.numFillerShares, numTicks);
       const settlementFees = convertFixedPointToDecimal(log.settlementFees, WEI_PER_ETHER);
       const orderID = log.orderId;
+      // TODO lookup creator and price from orders table
       const dataToInsert: {} = {
         marketID,
         outcome,
@@ -145,7 +146,7 @@ export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transact
         creator: log.creator,
         filler: log.filler,
         blockNumber: log.blockNumber,
-        tradeGroupID: log.tradeGroupID,
+        tradeGroupID: log.tradeGroupId,
         numCreatorTokens,
         numCreatorShares,
         numFillerTokens,
