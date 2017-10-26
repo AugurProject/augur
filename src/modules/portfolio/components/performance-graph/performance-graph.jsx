@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import Highcharts from 'highcharts'
 import noData from 'highcharts/modules/no-data-to-display'
 
+import Dropdown from 'modules/common/components/dropdown/dropdown'
+
 import debounce from 'utils/debounce'
 import getValue from 'utils/get-value'
 
@@ -23,10 +25,24 @@ class PerformanceGraph extends Component {
     super(props)
 
     this.state = {
-      graphType: 'All',
-      graphPeriod: 'day'
+    	graphType: 'Total',
+    	graphTypeOptions: [
+        { label: 'Total', value: 'Total' },
+        { label: 'Total Realized', value: 'Realized' },
+        { label: 'Total Unrealized', value: 'Unrealized' }
+      ],
+      graphTypeDefault: 'Total',
+    	graphPeriod: 'day',
+    	graphPeriodOptions: [
+        { label: 'Past 24hrs', value: 'day' },
+        { label: 'Past Week', value: 'week' },
+        { label: 'Past Month', value: 'month' },
+        { label: 'All', value: 'all' }
+      ],
+      graphPeriodDeafault: 'day'
     }
 
+    this.changeDropdown = this.changeDropdown.bind(this)
     this.updateChart = this.updateChart.bind(this)
     this.updateChartDebounced = debounce(this.updateChart.bind(this))
   }
@@ -56,18 +72,57 @@ class PerformanceGraph extends Component {
       xAxis: {
         visible: true,
         type: 'datetime',
-        crosshair: true,
+        crosshair: {
+          width: 4,
+        },
+        labels: {
+          // align: '',
+          style: {
+            color: '#a7a2b2',
+            fontSize: '1rem'
+          }
+        },
         tickPositioner: function () {
           // TODO: this is going to need more work than this placeholder function
-          const positions = [0, this.dataMin, this.dataMax]
-          console.log(this.dataMin)
-          console.log(this.dataMax)
+          const positions = [this.dataMin, this.dataMax]
+          // console.log(this.dataMin)
+          // console.log(this.dataMax)
           return positions
         }
       },
       yAxis: {
-        visible: false,
-        crosshair: true,
+        visible: true,
+        // crosshair: {
+        //   width: 1,
+        // },
+        showFirstLabel: false,
+        showLastLabel: false,
+        title: {
+          text: null,
+        },
+        opposite: false,
+        labels: {
+          align: 'left',
+          y: 15,
+          x: 5,
+          format: '{value} ETH',
+          // x: -20,
+          style: {
+            // @color-lightgray: #a7a2b2;
+            // @color-lightergray: #dbdae1;
+            // @color-lightest-gray: #dfdfdf;
+            // @color-offwhite: #f0eff6;
+            color: '#a7a2b2',
+            fontSize: '1rem'
+          }
+        },
+        tickPositioner: function () {
+          // TODO: this is going to need more work than this placeholder function
+          const positions = [this.dataMin, (this.dataMax / 2), this.dataMax]
+          // console.log(this.dataMin)
+          // console.log(this.dataMax)
+          return positions
+        }
       },
       plotOptions: {
         series: {
@@ -99,19 +154,34 @@ class PerformanceGraph extends Component {
     this.updateChart()
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.performanceData !== this.props.performanceData) this.updateChartDebounced()
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.performanceData !== this.props.performanceData || prevState.graphType !== this.state.graphType || prevState.graphPeriod !== this.state.graphPeriod) this.updateChartDebounced()
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateChartDebounced)
   }
 
-  updateChart() {
-    console.log(this.performanceGraph);
-    console.log(this.performanceGraph.getChartSize());
-    console.log(this.performanceGraph.chartWidth, this.refs.performance_graph_container.clientWidth, (this.performanceGraph.chartWidth > this.refs.performance_graph_container.clientWidth));
+  changeDropdown(value) {
+    let newType = this.state.graphType
+    let newPeriod = this.state.graphPeriod
 
+    this.state.graphTypeOptions.forEach((type, ind) => {
+      if (type.value === value) {
+        newType = value
+      }
+    })
+
+    this.state.graphPeriodOptions.forEach((period, ind) => {
+      if (period.value === value) {
+        newPeriod = value
+      }
+    })
+
+    this.setState({ graphType: newType, graphPeriod: newPeriod })
+  }
+
+  updateChart() {
     (getValue(this.props.performanceData, `${this.state.graphType}.${this.state.graphPeriod}`) || []).forEach((series, i) => {
       if (this.performanceGraph.series[i] == null) {
         this.performanceGraph.addSeries({
@@ -134,12 +204,27 @@ class PerformanceGraph extends Component {
 
   render() {
     const p = this.props
+    const s = this.state
 
     return(
       <section
         className={Styles.PerformanceGraph}
-        ref="performance_graph_container"
       >
+        <div
+          className={Styles.PerformanceGraph__SortBar}
+        >
+          <div
+            className={Styles['PerformanceGraph__SortBar-title']}
+          >
+            Profits/losses
+          </div>
+          <div
+            className={Styles['PerformanceGraph__SortBar-dropdowns']}
+          >
+            <Dropdown default={s.graphTypeDefault} options={s.graphTypeOptions} onChange={this.changeDropdown} />
+            <Dropdown default={s.graphPeriodDefault} options={s.graphPeriodOptions} onChange={this.changeDropdown} />
+          </div>
+        </div>
         <div id="performance_graph_chart" />
       </section>
     )

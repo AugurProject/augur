@@ -1,8 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .PerformanceGraph {
-  border-top: 1px solid @color-white;
-  border-bottom: 1px solid @color-white;
+
   :global {
     .highcharts-container {
       width: 100% !important;
@@ -12,4 +11,19 @@
       }
     }
   }
+}
+
+.PerformanceGraph__SortBar {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+}
+
+.PerformanceGraph__SortBar-title {
+  flex: 1;
+}
+
+.PerformanceGraph__SortBar-dropdowns {
+  display: flex;
 }
