@@ -6,7 +6,7 @@ import Styles from 'modules/market/components/market-outcome-order-book/market-o
 export default class MarketOutcomeOrderbook extends Component {
   static propTypes = {
     selectedOutcome: PropTypes.any,
-    orderBook: PropTypes.object.isRequired
+    orderBook: PropTypes.array.isRequired
   }
 
   constructor(props) {
@@ -20,9 +20,12 @@ export default class MarketOutcomeOrderbook extends Component {
 
     return (
       <section className={Styles.MarketOutcomeOrderBook}>
-        <div>
+        <div className={Styles.MarketOutcomeOrderBook__side} >
           {(p.orderBook.asks || []).map(order => (
-            <div>
+            <div
+              key={order.cumulativeShares}
+              className={Styles.MarketOutcomeOrderBook__side}
+            >
               <span>{order.price}</span>
               <span>{order.shares}</span>
               <span>{order.cumulativeShares}</span>
@@ -30,9 +33,9 @@ export default class MarketOutcomeOrderbook extends Component {
           ))}
         </div>
         <span>Price</span>
-        <div>
+        <div className={Styles.MarketOutcomeOrderBook__side} >
           {(p.orderBook.bids || []).map(order => (
-            <div>
+            <div key={order.cumulativeShares} >
               <span>{order.price}</span>
               <span>{order.shares}</span>
               <span>{order.cumulativeShares}</span>
