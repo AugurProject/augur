@@ -21,7 +21,7 @@ describe("server/getters/get-account-transfer-history", () => {
     params: {
       account: "0x0000000000000000000000000000000000000b0b",
       token: null,
-      isSortDescending: false
+      isSortDescending: false,
     },
     assertions: (err, accountTransferHistory) => {
       assert.isNull(err);
@@ -32,7 +32,7 @@ describe("server/getters/get-account-transfer-history", () => {
         recipient: "0x000000000000000000000000000000000000d00d",
         token: "0x1000000000000000000000000000000000000000",
         value: 10,
-        blockNumber: 1400000
+        blockNumber: 1400000,
       }, {
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000d3adb33f",
         logIndex: 0,
@@ -40,7 +40,7 @@ describe("server/getters/get-account-transfer-history", () => {
         recipient: "0x0000000000000000000000000000000000000b0b",
         token: "0x1000000000000000000000000000000000000000",
         value: 2,
-        blockNumber: 1400001
+        blockNumber: 1400001,
       }, {
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadb33f",
         logIndex: 1,
@@ -48,16 +48,16 @@ describe("server/getters/get-account-transfer-history", () => {
         recipient: "0x000000000000000000000000000000000000d00d",
         token: "0x7a305d9b681fb164dc5ad628b5992177dc66aec8",
         value: 47,
-        blockNumber: 1400001
+        blockNumber: 1400001,
       }]);
-    }
+    },
   });
   test({
     description: "get account transfer history for REP tokens only",
     params: {
       account: "0x0000000000000000000000000000000000000b0b",
       token: "0x7a305d9b681fb164dc5ad628b5992177dc66aec8",
-      isSortDescending: false
+      isSortDescending: false,
     },
     assertions: (err, accountTransferHistory) => {
       assert.isNull(err);
@@ -68,30 +68,30 @@ describe("server/getters/get-account-transfer-history", () => {
         recipient: "0x000000000000000000000000000000000000d00d",
         token: "0x7a305d9b681fb164dc5ad628b5992177dc66aec8",
         value: 47,
-        blockNumber: 1400001
+        blockNumber: 1400001,
       }]);
-    }
+    },
   });
   test({
     description: "get account transfer history for nonexistent token",
     params: {
       account: "0x0000000000000000000000000000000000000b0b",
-      token: "0x000000000000000000000000000000000000000e"
+      token: "0x000000000000000000000000000000000000000e",
     },
     assertions: (err, accountTransferHistory) => {
       assert.isNull(err);
       assert.deepEqual(accountTransferHistory, []);
-    }
+    },
   });
   test({
     description: "get account transfer history for nonexistent account",
     params: {
       account: "0x0000000000000000000000000000000000000bbb",
-      token: null
+      token: null,
     },
     assertions: (err, accountTransferHistory) => {
       assert.isNull(err);
       assert.deepEqual(accountTransferHistory, []);
-    }
+    },
   });
 });

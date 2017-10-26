@@ -22,7 +22,7 @@ describe("server/getters/get-open-orders", () => {
       marketID: "0x0000000000000000000000000000000000000001",
       outcome: null,
       orderType: "buy",
-      creator: null
+      creator: null,
     },
     assertions: (err, openOrders) => {
       assert.isNull(err);
@@ -42,7 +42,7 @@ describe("server/getters/get-open-orders", () => {
                 tokensEscrowed: 0.7,
                 sharesEscrowed: 0,
                 betterOrderID: null,
-                worseOrderID: null
+                worseOrderID: null,
               },
               "0x2000000000000000000000000000000000000000000000000000000000000000": {
                 shareToken: "0x1000000000000000000000000000000000000000",
@@ -56,9 +56,9 @@ describe("server/getters/get-open-orders", () => {
                 tokensEscrowed: 1.200002,
                 sharesEscrowed: 0,
                 betterOrderID: null,
-                worseOrderID: null
-              }
-            }
+                worseOrderID: null,
+              },
+            },
           },
           1: {
             buy: {
@@ -74,13 +74,13 @@ describe("server/getters/get-open-orders", () => {
                 tokensEscrowed: 1.20000006,
                 sharesEscrowed: 0,
                 betterOrderID: null,
-                worseOrderID: null
-              }
-            }
-          }
-        }
+                worseOrderID: null,
+              },
+            },
+          },
+        },
       });
-    }
+    },
   });
   test({
     description: "get open sell orders for market 1",
@@ -88,7 +88,7 @@ describe("server/getters/get-open-orders", () => {
       marketID: "0x0000000000000000000000000000000000000001",
       outcome: null,
       orderType: "sell",
-      creator: null
+      creator: null,
     },
     assertions: (err, openOrders) => {
       assert.isNull(err);
@@ -108,13 +108,13 @@ describe("server/getters/get-open-orders", () => {
                 tokensEscrowed: 1.2,
                 sharesEscrowed: 0,
                 betterOrderID: null,
-                worseOrderID: null
-              }
-            }
-          }
-        }
+                worseOrderID: null,
+              },
+            },
+          },
+        },
       });
-    }
+    },
   });
   test({
     description: "get orders created by user b0b",
@@ -122,7 +122,7 @@ describe("server/getters/get-open-orders", () => {
       marketID: null,
       outcome: null,
       orderType: null,
-      creator: "0x0000000000000000000000000000000000000b0b"
+      creator: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, openOrders) => {
       assert.isNull(err);
@@ -142,13 +142,13 @@ describe("server/getters/get-open-orders", () => {
                 tokensEscrowed: 0.7,
                 sharesEscrowed: 0,
                 betterOrderID: null,
-                worseOrderID: null
-              }
-            }
-          }
-        }
+                worseOrderID: null,
+              },
+            },
+          },
+        },
       });
-    }
+    },
   });
   test({
     description: "get open orders for nonexistent market",
@@ -156,11 +156,11 @@ describe("server/getters/get-open-orders", () => {
       marketID: "0x1010101010101010101010101010101010101010",
       outcome: null,
       orderType: null,
-      creator: null
+      creator: null,
     },
     assertions: (err, openOrders) => {
       assert.isNull(err);
       assert.isUndefined(openOrders);
-    }
+    },
   });
 });

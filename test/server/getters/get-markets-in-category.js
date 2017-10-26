@@ -19,7 +19,7 @@ describe("server/getters/get-markets-in-category", () => {
   test({
     description: "category with markets in it",
     params: {
-      category: "test category"
+      category: "test category",
     },
     assertions: (err, marketsInCategory) => {
       assert.isNull(err);
@@ -27,32 +27,32 @@ describe("server/getters/get-markets-in-category", () => {
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000003",
-        "0x0000000000000000000000000000000000000011"
+        "0x0000000000000000000000000000000000000011",
       ]);
-    }
+    },
   });
   test({
     description: "category with markets in it, limit 2",
     params: {
       category: "test category",
-      limit: 2
+      limit: 2,
     },
     assertions: (err, marketsInCategory) => {
       assert.isNull(err);
       assert.deepEqual(marketsInCategory, [
         "0x0000000000000000000000000000000000000001",
-        "0x0000000000000000000000000000000000000002"
+        "0x0000000000000000000000000000000000000002",
       ]);
-    }
+    },
   });
   test({
     description: "empty category",
     params: {
-      category: "empty category"
+      category: "empty category",
     },
     assertions: (err, marketsInCategory) => {
       assert.isNull(err);
       assert.deepEqual(marketsInCategory, []);
-    }
+    },
   });
 });

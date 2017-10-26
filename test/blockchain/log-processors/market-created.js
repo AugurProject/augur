@@ -51,7 +51,7 @@ describe("blockchain/log-processors/market-created", () => {
           shortDescription: "this is a test market",
           longDescription: "this is the long description of a test market",
           resolutionSource: "https://www.trusted-third-party-co.com",
-        }
+        },
       },
       augur: {
         api: {
@@ -96,10 +96,10 @@ describe("blockchain/log-processors/market-created", () => {
             getReportingFeeDivisor: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
               callback(null, "0x3e8");
-            }
-          }
-        }
-      }
+            },
+          },
+        },
+      },
     },
     assertions: {
       onAdded: (err, records) => {
@@ -178,6 +178,6 @@ describe("blockchain/log-processors/market-created", () => {
           tokens: [],
         });
       },
-    }
+    },
   });
 });

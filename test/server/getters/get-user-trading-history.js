@@ -26,7 +26,7 @@ describe("server/getters/get-user-trading-history", () => {
       sortBy: null,
       isSortDescending: null,
       limit: null,
-      offset: null
+      offset: null,
     },
     assertions: (err, userTradingHistory) => {
       assert.isNull(err);
@@ -40,9 +40,9 @@ describe("server/getters/get-user-trading-history", () => {
         outcome: 0,
         shareToken: "0x1000000000000000000000000000000000000000",
         timestamp: 1506474500,
-        tradeGroupID: null
+        tradeGroupID: null,
       }]);
-    }
+    },
   });
   test({
     description: "user was creator in 1 trade in market and outcome",
@@ -54,7 +54,7 @@ describe("server/getters/get-user-trading-history", () => {
       sortBy: null,
       isSortDescending: null,
       limit: null,
-      offset: null
+      offset: null,
     },
     assertions: (err, userTradingHistory) => {
       assert.isNull(err);
@@ -68,9 +68,9 @@ describe("server/getters/get-user-trading-history", () => {
         outcome: 0,
         shareToken: "0x1000000000000000000000000000000000000000",
         timestamp: 1506474500,
-        tradeGroupID: null
+        tradeGroupID: null,
       }]);
-    }
+    },
   });
   test({
     description: "user has not performed any trades",
@@ -82,11 +82,11 @@ describe("server/getters/get-user-trading-history", () => {
       sortBy: null,
       isSortDescending: null,
       limit: null,
-      offset: null
+      offset: null,
     },
     assertions: (err, userTradingHistory) => {
       assert.isNull(err);
       assert.isUndefined(userTradingHistory);
-    }
+    },
   });
 });

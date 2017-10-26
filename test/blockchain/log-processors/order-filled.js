@@ -44,7 +44,7 @@ describe("blockchain/log-processors/order-filled", () => {
         numFillerTokens: "0",
         settlementFees: "0",
         tradeGroupId: "TRADE_GROUP_ID",
-        blockNumber: 1400101
+        blockNumber: 1400101,
       },
       augur: {
         api: {
@@ -91,7 +91,7 @@ describe("blockchain/log-processors/order-filled", () => {
             betterOrderID: null,
             worseOrderID: null,
             tradeGroupID: null,
-            isRemoved: null
+            isRemoved: null,
           }],
           trades: [{
             orderID: "0x1000000000000000000000000000000000000000000000000000000000000000",
@@ -109,8 +109,8 @@ describe("blockchain/log-processors/order-filled", () => {
             settlementFees: 0,
             price: 0.7,
             amount: 1.6071428571428572,
-            tradeGroupID: "TRADE_GROUP_ID"
-          }]
+            tradeGroupID: "TRADE_GROUP_ID",
+          }],
         });
       },
       onRemoved: (err, records) => {
@@ -138,6 +138,6 @@ describe("blockchain/log-processors/order-filled", () => {
           trades: [],
         });
       },
-    }
+    },
   });
 });

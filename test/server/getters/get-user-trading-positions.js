@@ -25,7 +25,7 @@ describe("server/getters/get-user-trading-positions", () => {
       sortBy: null,
       isSortDescending: null,
       limit: null,
-      offset: null
+      offset: null,
     },
     assertions: (err, userTradingPositions) => {
       assert.isNull(err);
@@ -35,58 +35,58 @@ describe("server/getters/get-user-trading-positions", () => {
         "numShares": 0.2,
         "numSharesAdjustedForUserIntention": 0.2,
         "realizedProfitLoss": 0,
-        "unrealizedProfitLoss": 11
+        "unrealizedProfitLoss": 11,
       }, {
         "marketID": "0x0000000000000000000000000000000000000001",
         "outcome": 1,
         "numShares": 0,
         "numSharesAdjustedForUserIntention": 0,
         "realizedProfitLoss": 0,
-        "unrealizedProfitLoss": 0
+        "unrealizedProfitLoss": 0,
       }, {
         "marketID": "0x0000000000000000000000000000000000000001",
         "outcome": 2,
         "numShares": 0,
         "numSharesAdjustedForUserIntention": 0,
         "realizedProfitLoss": 0,
-        "unrealizedProfitLoss": 0
+        "unrealizedProfitLoss": 0,
       }, {
         "marketID": "0x0000000000000000000000000000000000000001",
         "outcome": 3,
         "numShares": 0,
         "numSharesAdjustedForUserIntention": 0,
         "realizedProfitLoss": 0,
-        "unrealizedProfitLoss": 0
+        "unrealizedProfitLoss": 0,
       }, {
         "marketID": "0x0000000000000000000000000000000000000001",
         "outcome": 4,
         "numShares": 0,
         "numSharesAdjustedForUserIntention": 0,
         "realizedProfitLoss": 0,
-        "unrealizedProfitLoss": 0
+        "unrealizedProfitLoss": 0,
       }, {
         "marketID": "0x0000000000000000000000000000000000000001",
         "outcome": 5,
         "numShares": 0,
         "numSharesAdjustedForUserIntention": 0,
         "realizedProfitLoss": 0,
-        "unrealizedProfitLoss": 0
+        "unrealizedProfitLoss": 0,
       }, {
         "marketID": "0x0000000000000000000000000000000000000001",
         "outcome": 6,
         "numShares": 0,
         "numSharesAdjustedForUserIntention": 0,
         "realizedProfitLoss": 0,
-        "unrealizedProfitLoss": 0
+        "unrealizedProfitLoss": 0,
       }, {
         "marketID": "0x0000000000000000000000000000000000000001",
         "outcome": 7,
         "numShares": 0,
         "numSharesAdjustedForUserIntention": 0,
         "realizedProfitLoss": 0,
-        "unrealizedProfitLoss": 0
+        "unrealizedProfitLoss": 0,
       }]);
-    }
+    },
   });
   test({
     description: "get a user's position in one outcome of one market",
@@ -97,7 +97,7 @@ describe("server/getters/get-user-trading-positions", () => {
       sortBy: null,
       isSortDescending: null,
       limit: null,
-      offset: null
+      offset: null,
     },
     assertions: (err, userTradingPositions) => {
       assert.isNull(err);
@@ -107,8 +107,8 @@ describe("server/getters/get-user-trading-positions", () => {
         "numShares": 0,
         "numSharesAdjustedForUserIntention": 0,
         "realizedProfitLoss": 0,
-        "unrealizedProfitLoss": 0
+        "unrealizedProfitLoss": 0,
       }]);
-    }
+    },
   });
 });

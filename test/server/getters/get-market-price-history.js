@@ -23,17 +23,17 @@ describe("server/getters/get-market-price-history", () => {
       sortBy: null,
       isSortDescending: null,
       limit: null,
-      offset: null
+      offset: null,
     },
     assertions: (err, marketPriceHistory) => {
       assert.isNull(err);
       assert.deepEqual(marketPriceHistory, {
         0: [{
           price: 5.5,
-          timestamp: 1506474500
-        }]
+          timestamp: 1506474500,
+        }],
       });
-    }
+    },
   });
   test({
     description: "market has no price history",
@@ -42,11 +42,11 @@ describe("server/getters/get-market-price-history", () => {
       sortBy: null,
       isSortDescending: null,
       limit: null,
-      offset: null
+      offset: null,
     },
     assertions: (err, marketPriceHistory) => {
       assert.isNull(err);
       assert.isUndefined(marketPriceHistory);
-    }
+    },
   });
 });

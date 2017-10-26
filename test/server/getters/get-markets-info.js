@@ -21,7 +21,7 @@ describe("server/getters/get-markets-info", () => {
     description: "get markets in universe b",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
-      marketIDs: null
+      marketIDs: null,
     },
     assertions: (err, marketsInfo) => {
       assert.isNull(err);
@@ -59,7 +59,7 @@ describe("server/getters/get-markets-info", () => {
           outcomes: [{
             id: 0,
             outstandingShares: 100,
-            price: 0.125
+            price: 0.125,
           }, {
             id: 1,
             outstandingShares: 100,
@@ -67,28 +67,28 @@ describe("server/getters/get-markets-info", () => {
           }, {
             id: 2,
             outstandingShares: 100,
-            price: 0.125
+            price: 0.125,
           }, {
             id: 3,
             outstandingShares: 100,
-            price: 0.125
+            price: 0.125,
           }, {
             id: 4,
             outstandingShares: 100,
-            price: 0.125
+            price: 0.125,
           }, {
             id: 5,
             outstandingShares: 100,
-            price: 0.125
+            price: 0.125,
           }, {
             id: 6,
             outstandingShares: 100,
-            price: 0.125
+            price: 0.125,
           }, {
             id: 7,
             outstandingShares: 100,
-            price: 0.125
-          }]
+            price: 0.125,
+          }],
         },
         {
           id: "0x0000000000000000000000000000000000000011",
@@ -120,7 +120,7 @@ describe("server/getters/get-markets-info", () => {
           resolutionSource: "http://www.trusted-third-party.com",
           numTicks: 24,
           consensus: null,
-          outcomes: []
+          outcomes: [],
         },
         {
           id: "0x0000000000000000000000000000000000000002",
@@ -155,12 +155,12 @@ describe("server/getters/get-markets-info", () => {
           outcomes: [{
             id: 0,
             outstandingShares: 1000,
-            price: 0.5
+            price: 0.5,
           }, {
             id: 1,
             outstandingShares: 1000,
-            price: 0.5
-          }]
+            price: 0.5,
+          }],
         },
         {
           id: "0x0000000000000000000000000000000000000003",
@@ -195,12 +195,12 @@ describe("server/getters/get-markets-info", () => {
           outcomes: [{
             id: 0,
             outstandingShares: 10,
-            price: 0.5
+            price: 0.5,
           }, {
             id: 1,
             outstandingShares: 10,
-            price: 0.5
-          }]
+            price: 0.5,
+          }],
         }]
       );
     },
@@ -211,8 +211,8 @@ describe("server/getters/get-markets-info", () => {
       universe: null,
       marketIDs: [
         "0x0000000000000000000000000000000000000001",
-        "0x0000000000000000000000000000000000000002"
-      ]
+        "0x0000000000000000000000000000000000000002",
+      ],
     },
     assertions: (err, marketsInfo) => {
       assert.isNull(err);
@@ -250,7 +250,7 @@ describe("server/getters/get-markets-info", () => {
           outcomes: [{
             id: 0,
             outstandingShares: 100,
-            price: 0.125
+            price: 0.125,
           }, {
             id: 1,
             outstandingShares: 100,
@@ -258,28 +258,28 @@ describe("server/getters/get-markets-info", () => {
           }, {
             id: 2,
             outstandingShares: 100,
-            price: 0.125
+            price: 0.125,
           }, {
             id: 3,
             outstandingShares: 100,
-            price: 0.125
+            price: 0.125,
           }, {
             id: 4,
             outstandingShares: 100,
-            price: 0.125
+            price: 0.125,
           }, {
             id: 5,
             outstandingShares: 100,
-            price: 0.125
+            price: 0.125,
           }, {
             id: 6,
             outstandingShares: 100,
-            price: 0.125
+            price: 0.125,
           }, {
             id: 7,
             outstandingShares: 100,
-            price: 0.125
-          }]
+            price: 0.125,
+          }],
         },
         {
           id: "0x0000000000000000000000000000000000000002",
@@ -314,25 +314,25 @@ describe("server/getters/get-markets-info", () => {
           outcomes: [{
             id: 0,
             outstandingShares: 1000,
-            price: 0.5
+            price: 0.5,
           }, {
             id: 1,
             outstandingShares: 1000,
-            price: 0.5
-          }]
+            price: 0.5,
+          }],
         }]
       );
-    }
+    },
   });
   test({
     description: "nonexistent universe, no market IDs",
     params: {
       universe: "0x1010101010101010101010101010101010101010",
-      marketIDs: undefined
+      marketIDs: undefined,
     },
     assertions: (err, marketsInfo) => {
       assert.isNull(err);
       assert.isUndefined(marketsInfo);
-    }
+    },
   });
 });

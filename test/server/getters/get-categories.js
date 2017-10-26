@@ -21,7 +21,7 @@ describe("server/getters/get-categories", () => {
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       sortBy: "popularity",
-      isSortDescending: true
+      isSortDescending: true,
     },
     assertions: (err, categoriesInfo) => {
       assert.isNull(err);
@@ -30,18 +30,18 @@ describe("server/getters/get-categories", () => {
         { category: "politics", popularity: 5000 },
         { category: "ethereum", popularity: 1000 },
         { category: "augur", popularity: 500 },
-        { category: "test category", popularity: 0 }
+        { category: "test category", popularity: 0 },
       ]);
-    }
+    },
   });
   test({
     description: "nonexistent universe",
     params: {
-      universe: "0x1010101010101010101010101010101010101010"
+      universe: "0x1010101010101010101010101010101010101010",
     },
     assertions: (err, categoriesInfo) => {
       assert.isNull(err);
       assert.deepEqual(categoriesInfo, []);
-    }
+    },
   });
 });

@@ -19,7 +19,7 @@ describe("server/getters/get-market-info", () => {
   test({
     description: "get market info if market exists",
     params: {
-      marketID: "0x0000000000000000000000000000000000000001"
+      marketID: "0x0000000000000000000000000000000000000001",
     },
     assertions: (err, marketInfo) => {
       assert.isNull(err);
@@ -56,47 +56,47 @@ describe("server/getters/get-market-info", () => {
         outcomes: [{
           id: 0,
           outstandingShares: 100,
-          price: 0.125
+          price: 0.125,
         }, {
           id: 1,
           outstandingShares: 100,
-          price: 0.125
+          price: 0.125,
         }, {
           id: 2,
           outstandingShares: 100,
-          price: 0.125
+          price: 0.125,
         }, {
           id: 3,
           outstandingShares: 100,
-          price: 0.125
+          price: 0.125,
         }, {
           id: 4,
           outstandingShares: 100,
-          price: 0.125
+          price: 0.125,
         }, {
           id: 5,
           outstandingShares: 100,
-          price: 0.125
+          price: 0.125,
         }, {
           id: 6,
           outstandingShares: 100,
-          price: 0.125
+          price: 0.125,
         }, {
           id: 7,
           outstandingShares: 100,
-          price: 0.125
-        }]
+          price: 0.125,
+        }],
       });
-    }
+    },
   });
   test({
     description: "market does not exist",
     params: {
-      marketID: "0x1010101010101010101010101010101010101010"
+      marketID: "0x1010101010101010101010101010101010101010",
     },
     assertions: (err, marketInfo) => {
       assert.isNull(err);
       assert.isUndefined(marketInfo);
-    }
+    },
   });
 });

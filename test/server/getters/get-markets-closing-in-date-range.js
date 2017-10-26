@@ -22,14 +22,14 @@ describe("server/getters/get-markets-closing-in-date-range", () => {
       earliestClosingTime: 1506573450,
       latestClosingTime: 1506573470,
       universe: "0x000000000000000000000000000000000000000b",
-      limit: 10
+      limit: 10,
     },
     assertions: (err, marketsClosingInDateRange) => {
       assert.isNull(err);
       assert.deepEqual(marketsClosingInDateRange, [
-        "0x0000000000000000000000000000000000000001"
+        "0x0000000000000000000000000000000000000001",
       ]);
-    }
+    },
   });
   test({
     description: "date range with 3 markets closing",
@@ -37,16 +37,16 @@ describe("server/getters/get-markets-closing-in-date-range", () => {
       earliestClosingTime: 1506573450,
       latestClosingTime: 1506573510,
       universe: "0x000000000000000000000000000000000000000b",
-      limit: 3
+      limit: 3,
     },
     assertions: (err, marketsClosingInDateRange) => {
       assert.isNull(err);
       assert.deepEqual(marketsClosingInDateRange, [
         "0x0000000000000000000000000000000000000003",
         "0x0000000000000000000000000000000000000002",
-        "0x0000000000000000000000000000000000000001"
+        "0x0000000000000000000000000000000000000001",
       ]);
-    }
+    },
   });
   test({
     description: "date range with 3 markets closing (limit 2)",
@@ -54,15 +54,15 @@ describe("server/getters/get-markets-closing-in-date-range", () => {
       earliestClosingTime: 1506573450,
       latestClosingTime: 1506573510,
       universe: "0x000000000000000000000000000000000000000b",
-      limit: 2
+      limit: 2,
     },
     assertions: (err, marketsClosingInDateRange) => {
       assert.isNull(err);
       assert.deepEqual(marketsClosingInDateRange, [
         "0x0000000000000000000000000000000000000003",
-        "0x0000000000000000000000000000000000000002"
+        "0x0000000000000000000000000000000000000002",
       ]);
-    }
+    },
   });
   test({
     description: "date range with no market closings",
@@ -70,11 +70,11 @@ describe("server/getters/get-markets-closing-in-date-range", () => {
       earliestClosingTime: 1506573450,
       latestClosingTime: 1506573469,
       universe: "0x000000000000000000000000000000000000000b",
-      limit: 10
+      limit: 10,
     },
     assertions: (err, marketsClosingInDateRange) => {
       assert.isNull(err);
       assert.deepEqual(marketsClosingInDateRange, []);
-    }
+    },
   });
 });

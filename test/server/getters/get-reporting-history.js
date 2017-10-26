@@ -19,7 +19,7 @@ describe("server/getters/get-reporting-history", () => {
   test({
     description: "get reporter history that actually exists",
     params: {
-      reporter: "0x0000000000000000000000000000000000000021"
+      reporter: "0x0000000000000000000000000000000000000021",
     },
     assertions: (err, reportingHistory) => {
       assert.isNull(err);
@@ -35,7 +35,7 @@ describe("server/getters/get-reporting-history", () => {
             isScalar: false,
             isIndeterminate: false,
             isSubmitted: true,
-          }]
+          }],
         },
       });
     },

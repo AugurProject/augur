@@ -1,7 +1,6 @@
 "use strict";
 
 const assert = require("chai").assert;
-const { parallel } = require("async");
 const setupTestDb = require("../../test.database");
 const { processOrderCreatedLog, processOrderCreatedLogRemoval } = require("../../../build/blockchain/log-processors/order-created");
 
@@ -36,7 +35,7 @@ describe("blockchain/log-processors/order-created", () => {
         creator: "CREATOR_ADDRESS",
         orderId: "ORDER_ID",
         tradeGroupId: "TRADE_GROUP_ID",
-        blockNumber: 1400100
+        blockNumber: 1400100,
       },
       augur: {
         api: {
@@ -93,7 +92,7 @@ describe("blockchain/log-processors/order-created", () => {
           betterOrderID: "BETTER_ORDER_ID",
           worseOrderID: "WORSE_ORDER_ID",
           tradeGroupID: "TRADE_GROUP_ID",
-          isRemoved: null
+          isRemoved: null,
         }]);
       },
       onRemoved: (err, records) => {
@@ -115,9 +114,9 @@ describe("blockchain/log-processors/order-created", () => {
           betterOrderID: "BETTER_ORDER_ID",
           worseOrderID: "WORSE_ORDER_ID",
           tradeGroupID: "TRADE_GROUP_ID",
-          isRemoved: 1
+          isRemoved: 1,
         }]);
       },
-    }
+    },
   });
 });
