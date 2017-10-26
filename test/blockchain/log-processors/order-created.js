@@ -29,7 +29,7 @@ describe("blockchain/log-processors/order-created", () => {
     });
   };
   test({
-    description: "order created log and removal",
+    description: "OrderCreated log and removal",
     params: {
       log: {
         shareToken: "0x1000000000000000000000000000000000000000",
@@ -42,24 +42,31 @@ describe("blockchain/log-processors/order-created", () => {
         api: {
           Orders: {
             getTradeType: (p, callback) => {
+              assert.deepEqual(p, { _orderId: "ORDER_ID" });
               callback(null, "0x0");
             },
             getPrice: (p, callback) => {
+              assert.deepEqual(p, { _orderId: "ORDER_ID" });
               callback(null, "0x1f80"); // = 0.75 * 10752
             },
             getAmount: (p, callback) => {
+              assert.deepEqual(p, { _orderId: "ORDER_ID" });
               callback(null, "0x7e00"); // = 3 * 10752
             },
             getOrderSharesEscrowed: (p, callback) => {
+              assert.deepEqual(p, { _orderId: "ORDER_ID" });
               callback(null, "0x0");
             },
             getOrderMoneyEscrowed: (p, callback) => {
+              assert.deepEqual(p, { _orderId: "ORDER_ID" });
               callback(null, "0x1f399b1438a10000"); // = 0.75 * 3 * 10^18
             },
             getBetterOrderId: (p, callback) => {
+              assert.deepEqual(p, { _orderId: "ORDER_ID" });
               callback(null, "BETTER_ORDER_ID");
             },
             getWorseOrderId: (p, callback) => {
+              assert.deepEqual(p, { _orderId: "ORDER_ID" });
               callback(null, "WORSE_ORDER_ID");
             },
           },

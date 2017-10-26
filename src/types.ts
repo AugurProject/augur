@@ -208,12 +208,12 @@ export interface OrdersRow {
   orderType: string;
   orderCreator: Address;
   creationBlockNumber: number;
-  price: number|string;
-  amount: number|string;
-  fullPrecisionPrice: number|string;
-  fullPrecisionAmount: number|string;
-  tokensEscrowed: number|string;
-  sharesEscrowed: number|string;
+  price: string;
+  amount: string;
+  fullPrecisionPrice: string;
+  fullPrecisionAmount: string;
+  tokensEscrowed: string;
+  sharesEscrowed: string;
   betterOrderID: Bytes32|null;
   worseOrderID: Bytes32|null;
   tradeGroupID: Bytes32|null;
@@ -222,7 +222,7 @@ export interface OrdersRow {
 export interface UITrade {
   type: string;
   price: string;
-  shares: string;
+  amount: string;
   maker: boolean;
   settlementFees: string;
   marketID: Address;
@@ -246,7 +246,7 @@ export interface TradesRow {
   numFillerTokens: string;
   numFillerShares: string;
   price: string;
-  shares: string;
+  amount: string;
   settlementFees: string;
   tradeGroupID: Bytes32|null;
 }

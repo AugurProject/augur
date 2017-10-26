@@ -13,7 +13,7 @@ export function getUserTradingHistory(db: Knex|Knex.Transaction, account: Addres
     "trades.outcome",
     "trades.orderType",
     "trades.price",
-    "trades.shares",
+    "trades.amount",
     "trades.creator",
     "trades.shareToken",
     "trades.blockNumber",
@@ -33,7 +33,7 @@ export function getUserTradingHistory(db: Knex|Knex.Transaction, account: Addres
     callback(null, userTradingHistory.map((trade: TradingHistoryRow): UITrade => ({
       type: trade.orderType!,
       price: trade.price!,
-      shares: trade.shares!,
+      amount: trade.amount!,
       maker: account === trade.creator!,
       settlementFees: trade.settlementFees!,
       marketID: trade.marketID!,

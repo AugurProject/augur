@@ -19,7 +19,7 @@ exports.seed = (knex: Knex): Promise<any> => {
       numFillerTokens: "1.1",
       numFillerShares: "0",
       price: "5.5",
-      shares: "0.2",
+      amount: "0.2",
       settlementFees: "0",
     }];
     knex.batchInsert("trades", seedData, seedData.length);

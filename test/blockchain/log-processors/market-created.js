@@ -7,14 +7,12 @@ const { processMarketCreatedLog, processMarketCreatedLogRemoval } = require("../
 
 describe("blockchain/log-processors/market-created", () => {
   const test = (t) => {
-    const getState = (db, params, callback) => {
-      parallel({
-        markets: next => db("markets").where({ marketID: params.log.market }).asCallback(next),
-        categories: next => db("categories").where({ category: params.log.extraInfo.category }).asCallback(next),
-        outcomes: next => db("outcomes").where({ marketID: params.log.market }).asCallback(next),
-        tokens: next => db("tokens").where({ marketID: params.log.market }).asCallback(next),
-      }, callback);
-    };
+    const getState = (db, params, callback) => parallel({
+      markets: next => db("markets").where({ marketID: params.log.market }).asCallback(next),
+      categories: next => db("categories").where({ category: params.log.extraInfo.category }).asCallback(next),
+      outcomes: next => db("outcomes").where({ marketID: params.log.market }).asCallback(next),
+      tokens: next => db("tokens").where({ marketID: params.log.market }).asCallback(next),
+    }, callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
@@ -36,7 +34,7 @@ describe("blockchain/log-processors/market-created", () => {
     });
   };
   test({
-    description: "market created log and removal",
+    description: "MarketCreated log and removal",
     params: {
       log: {
         blockNumber: 7,

@@ -17,7 +17,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       "numFillerShares" numeric NOT NULL CONSTRAINT "nonnegativeNumFillerShares" CHECK ("numFillerShares" >= 0),
       "settlementFees" numeric NOT NULL CONSTRAINT "nonnegativeSettlementFees" CHECK ("settlementFees" >= 0),
       price numeric NOT NULL,
-      shares numeric NOT NULL,
+      amount numeric NOT NULL,
       "tradeGroupID" integer
     )`);
   });

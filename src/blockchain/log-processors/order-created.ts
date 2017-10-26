@@ -44,15 +44,15 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
       if (err) return callback(err);
       if (!marketsRows || !marketsRows.length) return callback(new Error("market min price, max price, and/or num ticks not found"));
       const { minPrice, maxPrice, numTicks } = marketsRows[0];
-      const orderID = { orderId: log.orderId };
+      const ordersPayload = { _orderId: log.orderId };
       parallel({
-        orderType: (next: AsyncCallback): void => augur.api.Orders.getTradeType(orderID, next),
-        price: (next: AsyncCallback): void => augur.api.Orders.getPrice(orderID, next),
-        amount: (next: AsyncCallback): void => augur.api.Orders.getAmount(orderID, next),
-        sharesEscrowed: (next: AsyncCallback): void => augur.api.Orders.getOrderSharesEscrowed(orderID, next),
-        moneyEscrowed: (next: AsyncCallback): void => augur.api.Orders.getOrderMoneyEscrowed(orderID, next),
-        betterOrderID: (next: AsyncCallback): void => augur.api.Orders.getBetterOrderId(orderID, next),
-        worseOrderID: (next: AsyncCallback): void => augur.api.Orders.getWorseOrderId(orderID, next),
+        orderType: (next: AsyncCallback): void => augur.api.Orders.getTradeType(ordersPayload, next),
+        price: (next: AsyncCallback): void => augur.api.Orders.getPrice(ordersPayload, next),
+        amount: (next: AsyncCallback): void => augur.api.Orders.getAmount(ordersPayload, next),
+        sharesEscrowed: (next: AsyncCallback): void => augur.api.Orders.getOrderSharesEscrowed(ordersPayload, next),
+        moneyEscrowed: (next: AsyncCallback): void => augur.api.Orders.getOrderMoneyEscrowed(ordersPayload, next),
+        betterOrderID: (next: AsyncCallback): void => augur.api.Orders.getBetterOrderId(ordersPayload, next),
+        worseOrderID: (next: AsyncCallback): void => augur.api.Orders.getWorseOrderId(ordersPayload, next),
       }, (err: Error|null, onContractData: OrderCreatedOnContractData): void => {
         if (err) return callback(err);
         const { price, amount, orderType, moneyEscrowed, sharesEscrowed, betterOrderID, worseOrderID } = onContractData;
@@ -76,6 +76,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
           betterOrderID,
           worseOrderID,
         };
+        const orderID = { orderID: log.orderId };
         trx.select(["marketID"]).from("orders").where(orderID).asCallback((err: Error|null, ordersRows?: any): void => {
           if (err) return callback(err);
           if (!ordersRows || !ordersRows.length) {
