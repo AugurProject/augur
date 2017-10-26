@@ -9,9 +9,10 @@ import Styles from 'modules/market/components/market-outcome-graphs/market-outco
 
 export default class MarketOutcomeGraphs extends Component {
   static propTypes = {
-    selectedOutcome: PropTypes.any.isRequired,
     marketPriceHistory: PropTypes.array.isRequired,
-    orderBook: PropTypes.object.isRequired
+    orderBook: PropTypes.object.isRequired,
+    marketDepth: PropTypes.object.isRequired,
+    marketMidpoint: PropTypes.number.isRequired
   }
 
   constructor(props) {
@@ -29,26 +30,29 @@ export default class MarketOutcomeGraphs extends Component {
   }
 
   render() {
+    const s = this.state
     const p = this.props
 
     return (
       <section className={Styles.MarketOutcomeGraphs}>
         <span className={Styles.MarketOutcomeGraphs__center} />
+        <MarketOutcomeCandlestick
+          marketPriceHistory={p.marketPriceHistory}
+          marketMidpoint={p.marketMidpoint}
+          hoverPrice={s.hoverPrice}
+          updateHoverPrice={this.updateHoverPrice}
+        />
+        <MarketOutcomeDepth
+          marketDepth={p.marketDepth}
+          hoverPrice={s.hoverPrice}
+          updateHoverPrice={this.updateHoverPrice}
+        />
+        <MarketOutcomeOrderBook
+          orderBook={p.orderBook}
+          hoverPrice={s.hoverPrice}
+          updateHoverPrice={this.updateHoverPrice}
+        />
       </section>
     )
   }
 }
-
-// <MarketOutcomeCandlestick
-//   marketPriceHistory={p.marketPriceHistory}
-//   updateHoverPrice={this.updateHoverPrice}
-// />
-
-// <MarketOutcomeDepth
-//   orderBook={p.orderBook}
-//   updateHoverPrice={this.updateHoverPrice}
-// />
-// <MarketOutcomeOrderBook
-//   orderBook={p.orderBook}
-//   updateHoverPrice={this.updateHoverPrice}
-// />

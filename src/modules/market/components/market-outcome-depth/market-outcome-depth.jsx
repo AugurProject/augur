@@ -10,12 +10,14 @@ import Styles from 'modules/market/components/market-outcome-depth/market-outcom
 
 export default class MarketOutcomeDepth extends Component {
   static propTypes = {
-    outcomeDepth: PropTypes.object.isRequired,
+    marketDepth: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.any,
   }
 
   constructor(props) {
     super(props)
+
+    console.log('this.parops -- ', props)
 
     this.updateGraph = this.updateGraph.bind(this)
     this.debouncedUpdateGraph = debounce(this.updateGraph.bind(this))
@@ -47,7 +49,6 @@ export default class MarketOutcomeDepth extends Component {
         minorTickLength: 0,
         tickLength: 0,
         crosshair: {
-//          width: 3,
           dashStyle: 'dash',
           width: 1,
           color: 'white',
@@ -68,7 +69,6 @@ export default class MarketOutcomeDepth extends Component {
           verticalAlign: 'bottom'
         },
         crosshair: {
-//          width: 3,
           dashStyle: 'dash',
           width: 1,
           color: 'white',
@@ -80,7 +80,6 @@ export default class MarketOutcomeDepth extends Component {
           showInLegend: false,
           name: '',
           lineWidth: 1,
-          threshold: null,
           step: true
         },
         {
@@ -101,7 +100,7 @@ export default class MarketOutcomeDepth extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (!isEqual(prevProps.outcomeDepth, this.props.outcomeDepth)) this.updateGraph()
+    if (!isEqual(prevProps.marketDepth, this.props.marketDepth)) this.updateGraph()
   }
 
   componentWillUnmount() {
@@ -110,8 +109,8 @@ export default class MarketOutcomeDepth extends Component {
   }
 
   updateGraph() {
-    this.outcomeDepth.series[0].setData(this.props.outcomeDepth.asks, false)
-    this.outcomeDepth.series[1].setData(this.props.outcomeDepth.bids, false)
+    this.outcomeDepth.series[0].setData(this.props.marketDepth.asks, false)
+    this.outcomeDepth.series[1].setData(this.props.marketDepth.bids, false)
 
     this.outcomeDepth.redraw()
   }
