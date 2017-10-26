@@ -1,7 +1,37 @@
+@import (reference) "~assets/styles/shared";
+
 .MarketOutcomeCandlestick {
   flex: 3;
 }
 
 .MarketOutcomeCandlestick__graph {
+  cursor: cell;
 
+  :global {
+    .highcharts-background,
+    .highcharts-plot-background,
+    .highcharts-plot-border {
+      fill: @color-transparent;
+    }
+
+    .highcharts-point-up {
+      fill: @color-positive;
+      stroke: @color-positive;
+    }
+
+    .highcharts-point-down {
+      fill: @color-negative;
+      stroke: @color-negative;
+    }
+
+    .highcharts-xaxis {
+      height: 1px;
+      stroke: @color-darkgray;
+
+      .highcharts-tick {
+        stroke: @color-darkgray;
+        stroke-width: 1px;
+      }
+    }
+  }
 }

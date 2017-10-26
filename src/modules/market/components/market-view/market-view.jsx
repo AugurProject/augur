@@ -32,23 +32,27 @@ export default class MarketView extends Component {
             updateSelectedOutcome={this.updateSelectedOutcome}
           />
           <div className={Styles.Market__graphs} >
-            {s.selectedOutcome === null &&
-              <MarketOutcomesGraph
-                selectedOutcome={s.selectedOutcome}
-                updateSelectedOutcome={this.updateSelectedOutcome}
-              />
-            }
-            {s.selectedOutcome !== null &&
-              <MarketOutcomeGraphs
-                selectedOutcome={s.selectedOutcome}
-              />
-            }
+            <MarketOutcomeGraphs
+              selectedOutcome={s.selectedOutcome}
+            />
           </div>
         </div>
       </section>
     )
   }
 }
+
+// {s.selectedOutcome === null &&
+//   <MarketOutcomesGraph
+//     selectedOutcome={s.selectedOutcome}
+//     updateSelectedOutcome={this.updateSelectedOutcome}
+//   />
+// }
+// {s.selectedOutcome !== null &&
+//   <MarketOutcomeGraphs
+//     selectedOutcome={s.selectedOutcome}
+//   />
+// }
 
 // OLD
 // import React, { Component } from 'react'

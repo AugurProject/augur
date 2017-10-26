@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Highchart from 'highcharts/highstock'
+import Highchart from 'highcharts/js/highstock'
 import noData from 'highcharts/modules/no-data-to-display'
 import { isEqual } from 'lodash'
 // import { ChevronDown, ChevronUp } from 'modules/common/components/icons/icons'
@@ -36,11 +36,6 @@ export default class MarketOutcomeCandlestick extends Component {
       rangeSelector: {
         selected: 1
       },
-
-      title: {
-        text: 'AAPL Historical'
-      },
-
       yAxis: [{
         labels: {
           align: 'right',
