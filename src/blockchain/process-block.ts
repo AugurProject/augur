@@ -1,9 +1,9 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { logError } from "../utils/log-error";
-import { BlocksRow } from "../types";
+import { Int256, BlocksRow } from "../types";
 
-export function processBlock(db: Knex, augur: Augur, blockNumberString: string): void {
+export function processBlock(db: Knex, augur: Augur, blockNumberString: Int256): void {
   augur.rpc.eth.getBlockByNumber([blockNumberString, false], (block: any): void => {
     if (!block || block.error || !block.timestamp) return logError(new Error(JSON.stringify(block)));
     const blockNumber = parseInt(blockNumberString, 16);
@@ -31,7 +31,7 @@ export function processBlock(db: Knex, augur: Augur, blockNumberString: string):
   });
 }
 
-export function processBlockRemoval(db: Knex, blockNumberString: string): void {
+export function processBlockRemoval(db: Knex, blockNumberString: Int256): void {
   const blockNumber = parseInt(blockNumberString, 16);
   console.log("block removed:", blockNumber);
   db.transaction((trx: Knex.Transaction): void => {
