@@ -97,12 +97,56 @@ export default class ReportingDisputeForm extends Component {
     isMarketValid: PropTypes.bool,
   }
 
+  static calcIsStakeRequired(p) {
+    const currentOutcome = { ...p.market.currentOutcome }
+    currentOutcome.stake = p.market.currentOutcome.stake - p.disputeBond
+    return [...p.market.otherOutcomes, currentOutcome].every(outcome => outcome.stake <= 0)
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.calcMinimumStakeRequired = this.calcMinimumStakeRequired.bind(this)
+  }
+
+  componentDidMount() {
+    if (ReportingDisputeForm.calcIsStakeRequired(this.props)) {
+      this.props.updateState({
+        stakeIsRequired: true,
+        validations: { ...this.props.validations, stake: false }
+      })
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.market.otherOutcomes !== nextProps.market.otherOutcomes) {
+      this.props.updateState({ stakeIsRequired: ReportingDisputeForm.calcIsStakeRequired(nextProps) })
+    }
+    if (this.props.selectedOutcome !== nextProps.selectedOutcome || this.props.isMarketValid !== nextProps.isMarketValid) {
+      this.props.updateState({ minimumStakeRequired: this.calcMinimumStakeRequired(nextProps) })
+    }
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.minimumStakeRequired !== false && prevProps.stake !== '' && (
           prevProps.minimumStakeRequired !== this.props.minimumStakeRequired || prevProps.isMarketValid !== this.props.isMarketValid
         )) {
       validateStake(this.props, this.props.stake)
     }
+  }
+
+  calcMinimumStakeRequired(p) {
+    let minimumStake = false
+
+    if (ReportingDisputeForm.calcIsStakeRequired(p) && p.selectedOutcome) {
+      minimumStake = '0'
+      const outcomeObject = p.market.otherOutcomes.filter(outcome => outcome.name === p.selectedOutcome)
+      if (p.isMarketValid && outcomeObject.length) {
+        minimumStake = `${Math.abs(outcomeObject[0].stake)}`
+      }
+    }
+
+    return minimumStake
   }
 
   render() {

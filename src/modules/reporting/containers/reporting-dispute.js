@@ -6,7 +6,6 @@ import ReportingDispute from 'modules/reporting/components/reporting-dispute/rep
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
   market,
-  disputeBond: '10000',
 })
 
 // const mapDispatchToProps = dispatch => ({
