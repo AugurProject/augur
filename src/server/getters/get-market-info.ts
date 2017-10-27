@@ -55,14 +55,15 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
 
 export function getMarketsWithReportingState(db: Knex, selectColumns?: Array<string>): Knex.QueryBuilder {
   // TODO: turn leftJoin() into join() once we take care of market_state on market creation
-  const columns = selectColumns ? selectColumns.slice() : ["markets.*"];
+  const columns = selectColumns ? selectColumns.slice() : ["markets.*", "blocks.timestamp as creationTime"];
   return db.select(columns.concat("market_state.reportingState"))
     .from("markets")
-    .leftJoin("market_state", "markets.marketStateID", "market_state.marketStateID");
+    .leftJoin("market_state", "markets.marketStateID", "market_state.marketStateID")
+    .leftJoin("blocks", "markets.creationBlockNumber", "blocks.blockNumber");
 }
 
 export function getMarketInfo(db: Knex, marketID: string, callback: (err: Error|null, result?: UIMarketInfo) => void): void {
-  getMarketsWithReportingState(db).from("markets").select("blocks.timestamp as creationTime").leftJoin("blocks", "markets.creationBlockNumber", "blocks.blockNumber").where({ "markets.marketID": marketID }).limit(1).asCallback((err: Error | null, rows?: Array<MarketsRowWithCreationTime>): void => {
+  getMarketsWithReportingState(db).from("markets").where({ "markets.marketID": marketID }).limit(1).asCallback((err: Error | null, rows?: Array<MarketsRowWithCreationTime>): void => {
     if (err) return callback(err);
     if (!rows || !rows.length) return callback(null);
     const marketsRow: MarketsRowWithCreationTime = rows[0];

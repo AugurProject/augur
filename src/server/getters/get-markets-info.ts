@@ -6,7 +6,7 @@ import { reshapeOutcomesRowToUIOutcomeInfo, reshapeMarketsRowToUIMarketInfo, get
 import { sortDirection } from "../../utils/sort-direction";
 
 export function getMarketsInfo(db: Knex, universe: Address|null|undefined, marketIDs: Array<Address>|null|undefined, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: UIMarketsInfo) => void): void {
-  let marketsQuery: Knex.QueryBuilder = getMarketsWithReportingState(db).select("blocks.timestamp as creationTime").leftJoin("blocks", "markets.creationBlockNumber", "blocks.blockNumber").orderBy("creationTime");
+  let marketsQuery: Knex.QueryBuilder = getMarketsWithReportingState(db).orderBy("creationTime");
   if (universe == null && marketIDs == null) {
     return callback(new Error("must include universe or marketIDs parameters"));
   }
