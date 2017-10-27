@@ -789,7 +789,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
     })
   })
 
-  describe('constructProceedsClaimedTransaction', () => {
+  describe('constructTradingProceedsClaimedTransaction', () => {
     const action = require('../../../src/modules/transactions/actions/construct-transaction')
 
     const test = t => it(t.description, () => t.assertions())
@@ -805,7 +805,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           description: 'test description'
         }
 
-        const actual = action.constructProceedsClaimedTransaction(log, market)
+        const actual = action.constructTradingProceedsClaimedTransaction(log, market)
 
         const expected = {
           data: {
@@ -833,7 +833,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           description: 'test description'
         }
 
-        const actual = action.constructProceedsClaimedTransaction(log, market)
+        const actual = action.constructTradingProceedsClaimedTransaction(log, market)
 
         const expected = {
           data: {
@@ -863,7 +863,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           description: 'test description'
         }
 
-        const actual = action.constructProceedsClaimedTransaction(log, market)
+        const actual = action.constructTradingProceedsClaimedTransaction(log, market)
 
         const expected = {
           data: {

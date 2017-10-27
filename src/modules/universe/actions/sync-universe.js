@@ -3,7 +3,7 @@ import { augur } from 'services/augurjs'
 import getReportingCycle from 'modules/universe/selectors/reporting-cycle'
 import { updateUniverse } from 'modules/universe/actions/update-universe'
 import { updateAssets } from 'modules/auth/actions/update-assets'
-import claimProceeds from 'modules/my-positions/actions/claim-proceeds'
+import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
 import logError from 'utils/log-error'
 
 // Synchronize front-end universe state with blockchain universe state.
@@ -37,7 +37,7 @@ const syncUniverse = (callback = logError) => (dispatch, getState) => {
     if (!loginAccount.address) return callback(null)
     dispatch(updateAssets((err, balances) => {
       if (err) return callback(err)
-      dispatch(claimProceeds())
+      dispatch(claimTradingProceeds())
       callback(null)
     }))
   })
