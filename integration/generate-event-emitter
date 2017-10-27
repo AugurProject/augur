@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # This script takes an argument, of the original (real) Augur.sol, extracts the
 # events from it, and creates an emitter for those events
@@ -15,6 +15,7 @@ if [ ! -f "$ORIGINAL_AUGUR_SOL" ]; then
 fi
 
 (
+
 
 cat <<EOF
 pragma solidity ^0.4.17;
@@ -46,10 +47,14 @@ EOF
 
 echo 'contract Augur {'
 
+# Stupid mac sed
+SED=sed
+command -v gsed >/dev/null 2>&1 && SED=gsed
+
 grep -w event $ORIGINAL_AUGUR_SOL | while read line; do
 	echo '    '$line
-	echo '    '$line | gsed -e 's/event/function/' -e 's/function ./\L&/' -e 's/indexed //g' -e 's/;/ public {/'
-	echo '        '$line | gsed -E -e 's/event //' -e 's/\b(address|uint256|indexed|string|bytes32|Order.TradeTypes|IMarket.ReportingState)\b(\[\])? ?//g'
+	echo '    '$line | $SED -e 's/event/function/' -e 's/function ./\L&/' -e 's/indexed //g' -e 's/;/ public {/'
+	echo '        '$line | $SED -E -e 's/event //' -e 's/\b(address|uint256|indexed|string|bytes32|Order.TradeTypes|IMarket.ReportingState)\b(\[\])? ?//g'
 	echo '    '}
 	echo
 	echo
@@ -66,5 +71,5 @@ if command -v solc >/dev/null 2>&1 &&
 	solc $EVENT_EMITTER_SOL --combined-json abi | jq '.contracts["AugurEventEmitter.sol:Augur"].abi' -r | jq . > $EVENT_EMITTER_ABI
 	echo "ABI Created: $EVENT_EMITTER_ABI"
 else
-	echo "If you had both solc and jq, i would have created the abi for you"
+	echo "If you had both solc and jq, I would have created the abi for you"
 fi
