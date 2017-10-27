@@ -17,8 +17,6 @@ export default class MarketOutcomeDepth extends Component {
   constructor(props) {
     super(props)
 
-    console.log('this.parops -- ', props)
-
     this.updateGraph = this.updateGraph.bind(this)
     this.debouncedUpdateGraph = debounce(this.updateGraph.bind(this))
   }

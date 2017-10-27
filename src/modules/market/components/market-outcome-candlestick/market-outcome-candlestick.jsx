@@ -11,11 +11,16 @@ import Styles from 'modules/market/components/market-outcome-candlestick/market-
 
 export default class MarketOutcomeCandlestick extends Component {
   static propTypes = {
-    marketPriceHistory: PropTypes.array.isRequired
+    marketPriceHistory: PropTypes.array.isRequired,
+    marketMin: PropTypes.number.isRequired,
+    marketMid: PropTypes.number.isRequired,
+    marketMax: PropTypes.number.isRequired
   }
 
   constructor(props) {
     super(props)
+
+    console.log('props -- ', props)
 
     this.updateGraph = this.updateGraph.bind(this)
     this.debouncedUpdateGraph = debounce(this.updateGraph.bind(this))
@@ -66,18 +71,27 @@ export default class MarketOutcomeCandlestick extends Component {
             return this.isFirst ? '' : this.value
           }
         },
-        tickPositioner: function () {
-          console.log('this -- ', this)
-            // var positions = [],
-            //     tick = Math.floor(this.dataMin),
-            //     increment = Math.ceil((this.dataMax - this.dataMin) / 6);
-            //
-            // if (this.dataMax !== null && this.dataMin !== null) {
-            //     for (tick; tick - increment <= this.dataMax; tick += increment) {
-            //         positions.push(tick);
-            //     }
-            // }
-            // return positions;
+        tickPositioner: () => {
+          // Can only use odd numbered intervals so midpoint is always centered
+          const intervals = 5
+          const allowedFloat = 2
+          const padding = 0.2 // percentage padding
+
+          // Determine bounding diff
+          const maxDiff = Math.abs(this.props.marketMid - this.props.marketMax)
+          const minDiff = Math.abs(this.props.marketMid - this.props.marketMin)
+          const boundDiff = (maxDiff > minDiff ? maxDiff : minDiff) * (1 + padding)
+
+          // Set interval step
+          const step = boundDiff / ((intervals - 1) / 2)
+
+          const res = new Array(intervals).fill(null).reduce((p, _unused, i) => {
+            if (i === 0) return [Number((this.props.marketMid - boundDiff).toFixed(allowedFloat))]
+            if (i + 1 === Math.round(intervals / 2)) return [...p, this.props.marketMid]
+            return [...p, Number((p[i - 1] + step).toFixed(allowedFloat))]
+          }, [])
+
+          return res
         },
         lineWidth: 1,
         tickAmount: 5,

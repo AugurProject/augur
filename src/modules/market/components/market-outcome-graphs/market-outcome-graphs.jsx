@@ -10,9 +10,11 @@ import Styles from 'modules/market/components/market-outcome-graphs/market-outco
 export default class MarketOutcomeGraphs extends Component {
   static propTypes = {
     marketPriceHistory: PropTypes.array.isRequired,
+    marketMin: PropTypes.number.isRequired,
+    marketMid: PropTypes.number.isRequired,
+    marketMax: PropTypes.number.isRequired,
     orderBook: PropTypes.object.isRequired,
-    marketDepth: PropTypes.object.isRequired,
-    marketMidpoint: PropTypes.number.isRequired
+    marketDepth: PropTypes.object.isRequired
   }
 
   constructor(props) {
@@ -38,7 +40,9 @@ export default class MarketOutcomeGraphs extends Component {
         <span className={Styles.MarketOutcomeGraphs__center} />
         <MarketOutcomeCandlestick
           marketPriceHistory={p.marketPriceHistory}
-          marketMidpoint={p.marketMidpoint}
+          marketMin={p.marketMin}
+          marketMid={p.marketMid}
+          marketMax={p.marketMax}
           hoverPrice={s.hoverPrice}
           updateHoverPrice={this.updateHoverPrice}
         />
