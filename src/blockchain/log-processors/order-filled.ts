@@ -4,6 +4,7 @@ import { forEachOf, parallel } from "async";
 import * as Knex from "knex";
 import { Address, Bytes32, Int256, FormattedLog, OrdersRow, UITrade, AsyncCallback, ErrorCallback } from "../../types";
 import { getUserTradingHistory } from "../../server/getters/get-user-trading-history";
+import { augurEmitter } from "../../events";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
 import { denormalizePrice } from "../../utils/denormalize-price";
 import { WEI_PER_ETHER } from "../../constants";
@@ -146,7 +147,7 @@ export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transact
         const numFillerTokens = convertFixedPointToDecimal(log.numFillerTokens, WEI_PER_ETHER);
         const numFillerShares = convertFixedPointToDecimal(log.numFillerShares, numTicks);
         const settlementFees = convertFixedPointToDecimal(log.settlementFees, WEI_PER_ETHER);
-        db.transacting(trx).insert({
+        const tradeData = {
           marketID,
           outcome,
           orderID,
@@ -163,7 +164,9 @@ export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transact
           price: price!,
           amount: calculateNumberOfSharesTraded(numCreatorShares, numCreatorTokens, price!),
           settlementFees,
-        }).into("trades").asCallback((err: Error|null): void => {
+        };
+        augurEmitter.emit("OrderFilled", tradeData);
+        db.transacting(trx).insert(tradeData).into("trades").asCallback((err: Error|null): void => {
           if (err) return callback(err);
           updateOrdersAndPositions(db, augur, trx, marketID, log.shareToken, orderID, orderCreator!, log.filler, numTicks, callback);
         });
@@ -173,6 +176,7 @@ export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transact
 }
 
 export function processOrderFilledLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+  augurEmitter.emit("OrderFilled", log);
   trx.select(["tokens.marketID", "tokens.outcome", "markets.numTicks"]).from("tokens").join("markets", "tokens.marketID", "markets.marketID").where("tokens.contractAddress", log.shareToken).asCallback((err: Error|null, tokensRows?: Array<TokensRowWithNumTicks>): void => {
     if (err) return callback(err);
     if (!tokensRows || !tokensRows.length) return callback(new Error("market and outcome not found"));

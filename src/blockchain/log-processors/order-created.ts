@@ -4,6 +4,7 @@ import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import { Address, Bytes32, FormattedLog, OrdersRow, ErrorCallback, AsyncCallback } from "../../types";
 import { processOrderCanceledLog } from "./order-canceled";
+import { augurEmitter } from "../../events";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
 import { denormalizePrice } from "../../utils/denormalize-price";
 import { formatOrderAmount, formatOrderPrice } from "../../utils/format-order";
@@ -77,6 +78,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
           worseOrderID,
         };
         const orderID = { orderID: log.orderId };
+        augurEmitter.emit("OrderCreated", Object.assign(orderData, orderID));
         trx.select(["marketID"]).from("orders").where(orderID).asCallback((err: Error|null, ordersRows?: any): void => {
           if (err) return callback(err);
           if (!ordersRows || !ordersRows.length) {
@@ -91,5 +93,6 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
 }
 
 export function processOrderCreatedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+  augurEmitter.emit("OrderCreated", log);
   processOrderCanceledLog(db, augur, trx, log, callback);
 }

@@ -97,7 +97,6 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
             db.batchInsert("tokens", shareTokens.map((contractAddress: Address, outcome: number): TokensRow => Object.assign({ contractAddress, outcome }, tokensDataToInsert)), numOutcomes).transacting(trx).asCallback(next);
           },
         ], (err: Error|null): void => {
-          augurEmitter.emit("MarketCreated", marketsDataToInsert);
           trx.select("popularity").from("categories").where({ category: extraInfo!.category }).asCallback((err: Error|null, categoriesRows?: Array<CategoriesRow>): void => {
             if (err) return callback(err);
             if (categoriesRows && categoriesRows.length) return callback(null);
