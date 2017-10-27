@@ -23,7 +23,7 @@ library Order {
     }
 }
 
-contract Augur {
+contract AugurEventEmitter {
     event MarketCreated(address indexed universe, address indexed market, address indexed marketCreator, uint256 marketCreationFee, string extraInfo);
     function marketCreated(address universe, address market, address marketCreator, uint256 marketCreationFee, string extraInfo) public {
         MarketCreated(universe, market, marketCreator, marketCreationFee, extraInfo);
