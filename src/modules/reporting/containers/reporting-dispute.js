@@ -5,7 +5,8 @@ import ReportingDispute from 'modules/reporting/components/reporting-dispute/rep
 
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
-  market
+  market,
+  disputeBond: '10000',
 })
 
 // const mapDispatchToProps = dispatch => ({
@@ -17,17 +18,16 @@ export default Reporting
 
 // Binary Example
 // const market = {
-//   isStakeRequired: false,
 //   currentOutcome: {
 //     id: '0',
 //     name: 'Yes',
-//     stake: '1.2',
+//     stake: '-1.2',
 //   },
 //   otherOutcomes: [
 //     {
 //       id: '1',
 //       name: 'No',
-//       stake: '0.8',
+//       stake: '-0.8',
 //     }
 //   ],
 //   id: '0xcd7b177af7a12ec3be1c7f992ec7d608959630f2113227a2cdd9db562bd01eb4',
@@ -294,11 +294,32 @@ export default Reporting
 
 // Scalar Example
 const market = {
-  isStakeRequired: false,
   currentOutcome: {
-    name: '105',
+    name: '1005',
     stake: '1104',
   },
+  otherOutcomes: [
+    {
+      name: '110',
+      stake: '0',
+    },
+    {
+      name: '510',
+      stake: '0',
+    },
+    {
+      name: '9000',
+      stake: '-100',
+    },
+    {
+      name: '670',
+      stake: '0',
+    },
+    {
+      name: '430',
+      stake: '0',
+    },
+  ],
   id: '0x12b6b957ee773b598f58969cacfd463a8bac84f464e698fd266d50f5957badd0',
   branchID: '0xf69b5',
   tradingPeriod: 8766,
@@ -425,7 +446,6 @@ const market = {
 
 // Categorical Example
 // const market = {
-//   isStakeRequired: false,
 //   currentOutcome: {
 //     id: '7',
 //     name: 'Hong Kong',
@@ -435,7 +455,7 @@ const market = {
 //     {
 //       id: '5',
 //       name: 'Tokyo',
-//       stake: '0.8',
+//       stake: '-0.8',
 //     },
 //     {
 //       id: '4',

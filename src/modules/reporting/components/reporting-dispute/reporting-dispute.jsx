@@ -19,7 +19,8 @@ export default class ReportingDispute extends Component {
     super(props)
 
     this.state = {
-      disputeBond: '10000',
+      stakeIsRequired: this.calcIsStakeRequired(),
+      minimumStakeRequired: false,
       currentStep: 0,
       isFormValid: true,
       isMarketValid: null,
@@ -30,13 +31,21 @@ export default class ReportingDispute extends Component {
       }
     }
 
-    if (this.props.market.isStakeRequired) {
+    if (this.calcIsStakeRequired()) {
       this.state.validations.stake = false
     }
 
     this.prevPage = this.prevPage.bind(this)
     this.nextPage = this.nextPage.bind(this)
     this.updateState = this.updateState.bind(this)
+    this.calcIsStakeRequired = this.calcIsStakeRequired.bind(this)
+    this.calcMinimumStakeRequired = this.calcMinimumStakeRequired.bind(this)
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.market.otherOutcomes !== this.props.market.otherOutcomes) {
+      this.setStake({ stakeIsRequired: this.calcIsStakeRequired() })
+    }
   }
 
   prevPage() {
@@ -48,7 +57,33 @@ export default class ReportingDispute extends Component {
   }
 
   updateState(newState) {
+    if ((newState.hasOwnProperty('selectedOutcome') && newState.selectedOutcome !== this.state.selectedOutcome)
+      || (newState.hasOwnProperty('isMarketValid') && newState.isMarketValid !== this.state.isMarketValid)) {
+      newState.minimumStakeRequired = this.calcMinimumStakeRequired()
+    }
+    console.log(newState)
     this.setState(newState)
+  }
+
+  calcIsStakeRequired() {
+    const currentOutcome = { ...this.props.market.currentOutcome }
+    currentOutcome.stake = this.props.market.currentOutcome.stake - this.props.disputeBond
+    return [...this.props.market.otherOutcomes, currentOutcome].every(outcome => outcome.stake <= 0)
+  }
+
+  calcMinimumStakeRequired() {
+    let minimumStake = false
+    // this.state.selectedOutcome is lagging one step behind now that this function is being called before
+    // the selectedOutcome state is updated, rather than after
+    if (this.calcIsStakeRequired() && this.state.selectedOutcome) {
+      minimumStake = '0'
+      const outcomeObject = this.props.market.otherOutcomes.filter(outcome => outcome.name === this.state.selectedOutcome)
+      if (this.state.isMarketValid && outcomeObject.length) {
+        minimumStake = `${Math.abs(outcomeObject[0].stake)}`
+      }
+    }
+
+    return minimumStake
   }
 
   render() {
@@ -73,11 +108,13 @@ export default class ReportingDispute extends Component {
             <ReportingDisputeForm
               market={p.market}
               updateState={this.updateState}
-              disputeBond={s.disputeBond}
+              disputeBond={p.disputeBond}
               isMarketValid={s.isMarketValid}
               selectedOutcome={s.selectedOutcome}
               stake={s.stake}
               validations={s.validations}
+              stakeIsRequired={s.stakeIsRequired}
+              minimumStakeRequired={s.minimumStakeRequired}
             />
           }
           { s.currentStep === 1 &&
@@ -86,7 +123,7 @@ export default class ReportingDispute extends Component {
               isMarketValid={s.isMarketValid}
               selectedOutcome={s.selectedOutcome}
               stake={s.stake}
-              disputeBond={s.disputeBond}
+              disputeBond={p.disputeBond}
             />
           }
           <div className={FormStyles.Form__navigation}>

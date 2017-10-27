@@ -12,8 +12,8 @@ const ReportingDisputeConfirm = p => (
         <div className={ConfirmStyles.Confirm__creation}>
           <ul className={ConfirmStyles.Confirm__list}>
             <li>
-              <span>Disputed Outcome</span>
-              <span>{ p.market.currentOutcome }</span>
+              <span>Current Outcome</span>
+              <span>{ p.market.currentOutcome.name }</span>
             </li>
             <li>
               <span>Proposed Outcome</span>
