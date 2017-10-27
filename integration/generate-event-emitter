@@ -45,7 +45,7 @@ library Order {
 
 EOF
 
-echo 'contract Augur {'
+echo 'contract AugurEventEmitter {'
 
 # Stupid mac sed
 SED=sed
@@ -68,7 +68,7 @@ echo "Contract Created: $EVENT_EMITTER_SOL"
 
 if command -v solc >/dev/null 2>&1 &&
    command -v jq   >/dev/null 2>&1; then
-	solc $EVENT_EMITTER_SOL --combined-json abi | jq '.contracts["AugurEventEmitter.sol:Augur"].abi' -r | jq . > $EVENT_EMITTER_ABI
+	solc $EVENT_EMITTER_SOL --combined-json abi | jq '.contracts["AugurEventEmitter.sol:AugurEventEmitter"].abi' -r | jq . > $EVENT_EMITTER_ABI
 	echo "ABI Created: $EVENT_EMITTER_ABI"
 else
 	echo "If you had both solc and jq, I would have created the abi for you"
