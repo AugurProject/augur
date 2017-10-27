@@ -63,7 +63,7 @@ export function getMarketsWithReportingState(db: Knex, selectColumns?: Array<str
 }
 
 export function getMarketInfo(db: Knex, marketID: string, callback: (err: Error|null, result?: UIMarketInfo) => void): void {
-  getMarketsWithReportingState(db).from("markets").where({ "markets.marketID": marketID }).limit(1).asCallback((err: Error | null, rows?: Array<MarketsRowWithCreationTime>): void => {
+  getMarketsWithReportingState(db).where({ "markets.marketID": marketID }).limit(1).asCallback((err: Error | null, rows?: Array<MarketsRowWithCreationTime>): void => {
     if (err) return callback(err);
     if (!rows || !rows.length) return callback(null);
     const marketsRow: MarketsRowWithCreationTime = rows[0];
