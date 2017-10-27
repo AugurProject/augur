@@ -1,10 +1,9 @@
 "use strict";
 
-var parseBlockMessage = function (message, onMessage) {
-  var i, len;
+function parseBlockMessage(message, onMessage) {
   if (message) {
-    if (message.length && message.constructor === Array) {
-      for (i = 0, len = message.length; i < len; ++i) {
+    if (message.length && Array.isArray(message)) {
+      for (var i = 0, len = message.length; i < len; ++i) {
         if (message[i] && message[i].number) {
           onMessage(message[i].number);
         } else {
@@ -15,6 +14,6 @@ var parseBlockMessage = function (message, onMessage) {
       onMessage(message.number);
     }
   }
-};
+}
 
 module.exports = parseBlockMessage;

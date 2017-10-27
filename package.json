@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "4.5.10",
+  "version": "4.5.11",
   "description": "Augur JavaScript API",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "async": "1.5.2",
-    "augur-contracts": "3.2.4",
+    "augur-contracts": "3.2.5",
     "bignumber.js": "2.3.0",
     "clone": "1.0.2",
     "ethereumjs-connect": "4.4.0",

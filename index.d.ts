@@ -166,7 +166,7 @@ export class Augur {
   };
   public events: {
     getAllAugurLogs: ApiFunction;
-    startListeners(onLogAddedCallbacks?: EventSubscriptionCallbacks, onNewBlock?: (blockNumber: string) => void, onSetupComplete?: () => void): void;
+    startListeners(onEventCallbacks?: EventSubscriptionCallbacks, onBlockAdded?: (blockNumber: Int256) => void, onBlockRemoved?: (blockNumber: Int256) => void, onSetupComplete?: () => void): void;
     stopListeners(): boolean
   };
   public markets: {

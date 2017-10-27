@@ -1254,11 +1254,10 @@ module.exports = parametrizeFilter;
 },{"../constants":25,"../contracts":27,"../rpc-interface":80,"./build-topics-list":36}],43:[function(require,module,exports){
 "use strict";
 
-var parseBlockMessage = function parseBlockMessage(message, onMessage) {
-  var i, len;
+function parseBlockMessage(message, onMessage) {
   if (message) {
-    if (message.length && message.constructor === Array) {
-      for (i = 0, len = message.length; i < len; ++i) {
+    if (message.length && Array.isArray(message)) {
+      for (var i = 0, len = message.length; i < len; ++i) {
         if (message[i] && message[i].number) {
           onMessage(message[i].number);
         } else {
@@ -1269,7 +1268,7 @@ var parseBlockMessage = function parseBlockMessage(message, onMessage) {
       onMessage(message.number);
     }
   }
-};
+}
 
 module.exports = parseBlockMessage;
 },{}],44:[function(require,module,exports){
@@ -1344,25 +1343,31 @@ var isFunction = require("../utils/is-function");
 
 /**
  * Start listening for events emitted by the Ethereum blockchain.
- * @param {Object.<function>=} onLogAddedCallbacks Callbacks to fire when events are received, keyed by contract name and event name.
- * @param {function=} onNewBlock Callback to fire when new blocks are received.
+ * @param {Object.<function>=} onEventCallbacks Callbacks to fire when events are received, keyed by contract name and event name.
+ * @param {function=} onBlockAdded Callback to fire when new blocks are received.
+ * @param {function=} onBlockRemoved Callback to fire when blocks are removed.
  * @param {function=} onSetupComplete Called when all listeners are successfully set up.
  */
-function startListeners(onLogAddedCallbacks, onNewBlock, onSetupComplete) {
+function startListeners(onEventCallbacks, onBlockAdded, onBlockRemoved, onSetupComplete) {
   var blockStream = ethrpc.getBlockStream();
   if (!blockStream) return console.error("Not connected");
-  if (isFunction(onNewBlock)) {
+  if (isFunction(onBlockAdded)) {
     blockStream.subscribeToOnBlockAdded(function (newBlock) {
-      parseBlockMessage(newBlock, onNewBlock);
+      parseBlockMessage(newBlock, onBlockAdded);
     });
   }
-  if (onLogAddedCallbacks != null) {
+  if (isFunction(onBlockRemoved)) {
+    blockStream.subscribeToOnBlockRemoved(function (removedBlock) {
+      parseBlockMessage(removedBlock, onBlockRemoved);
+    });
+  }
+  if (onEventCallbacks != null) {
     var eventsAbi = contracts.abi.events;
     var activeContracts = contracts.addresses[ethrpc.getNetworkID()];
-    Object.keys(onLogAddedCallbacks).forEach(function (contractName) {
-      Object.keys(onLogAddedCallbacks[contractName]).forEach(function (eventName) {
-        if (isFunction(onLogAddedCallbacks[contractName][eventName]) && eventsAbi[contractName] && eventsAbi[contractName][eventName]) {
-          addFilter(blockStream, contractName, eventName, eventsAbi[contractName][eventName], activeContracts, subscriptions.addSubscription, onLogAddedCallbacks[contractName][eventName]);
+    Object.keys(onEventCallbacks).forEach(function (contractName) {
+      Object.keys(onEventCallbacks[contractName]).forEach(function (eventName) {
+        if (isFunction(onEventCallbacks[contractName][eventName]) && eventsAbi[contractName] && eventsAbi[contractName][eventName]) {
+          addFilter(blockStream, contractName, eventName, eventsAbi[contractName][eventName], activeContracts, subscriptions.addSubscription, onEventCallbacks[contractName][eventName]);
         }
       });
     });
@@ -1408,6 +1413,7 @@ module.exports = stopListeners;
 var subscriptions = {};
 
 module.exports.onLogAdded = function (log) {
+  console.log("event log added:", log);
   if (subscriptions[log.address] && subscriptions[log.address][log.topics[0]]) {
     subscriptions[log.address][log.topics[0]].callback(log);
   }
@@ -1415,7 +1421,10 @@ module.exports.onLogAdded = function (log) {
 
 module.exports.onLogRemoved = function (log) {
   console.log("event log removed:", log);
-  if (subscriptions[log.address][log.topics[0]]) subscriptions[log.address][log.topics[0]].callback(log);
+  if (subscriptions[log.address] && subscriptions[log.address][log.topics[0]]) {
+    log.removed = true;
+    subscriptions[log.address][log.topics[0]].callback(log);
+  }
 };
 
 module.exports.getSubscriptions = function () {
@@ -1582,7 +1591,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.5.10";
+  this.version = "4.5.11";
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
@@ -6808,39 +6817,11 @@ module.exports=[
     "constant": false,
     "inputs": [
       {
-        "name": "market",
-        "type": "address"
-      }
-    ],
-    "name": "marketFinalized",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "reporter",
+        "name": "universe",
         "type": "address"
       },
       {
-        "name": "reportingWindow",
-        "type": "address"
-      }
-    ],
-    "name": "reporterRegistered",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "sender",
+        "name": "disputer",
         "type": "address"
       },
       {
@@ -6848,19 +6829,15 @@ module.exports=[
         "type": "address"
       },
       {
-        "name": "numShares",
-        "type": "uint256"
+        "name": "reportingPhase",
+        "type": "uint8"
       },
       {
-        "name": "numPayoutTokens",
-        "type": "uint256"
-      },
-      {
-        "name": "finalTokenBalance",
+        "name": "disputeBondAmount",
         "type": "uint256"
       }
     ],
-    "name": "proceedsClaimed",
+    "name": "reportsDisputed",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -6869,6 +6846,10 @@ module.exports=[
   {
     "constant": false,
     "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
       {
         "name": "reporter",
         "type": "address"
@@ -6878,7 +6859,7 @@ module.exports=[
         "type": "address"
       },
       {
-        "name": "reportingToken",
+        "name": "stakeToken",
         "type": "address"
       },
       {
@@ -6887,7 +6868,7 @@ module.exports=[
       },
       {
         "name": "reportingFeesReceived",
-        "type": "address"
+        "type": "uint256"
       },
       {
         "name": "payoutNumerators",
@@ -6903,6 +6884,62 @@ module.exports=[
   {
     "constant": false,
     "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "name": "reporter",
+        "type": "address"
+      },
+      {
+        "name": "market",
+        "type": "address"
+      },
+      {
+        "name": "stakeToken",
+        "type": "address"
+      },
+      {
+        "name": "amountStaked",
+        "type": "uint256"
+      },
+      {
+        "name": "payoutNumerators",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "designatedReportSubmitted",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "name": "market",
+        "type": "address"
+      }
+    ],
+    "name": "marketFinalized",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
       {
         "name": "market",
         "type": "address"
@@ -6930,19 +6967,15 @@ module.exports=[
     "constant": false,
     "inputs": [
       {
-        "name": "designatedReporter",
+        "name": "parentUniverse",
         "type": "address"
       },
       {
-        "name": "market",
+        "name": "childUniverse",
         "type": "address"
-      },
-      {
-        "name": "payoutNumerators",
-        "type": "uint256[]"
       }
     ],
-    "name": "designatedReportSubmitted",
+    "name": "universeCreated",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -6965,6 +6998,120 @@ module.exports=[
   {
     "constant": false,
     "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "name": "shareToken",
+        "type": "address"
+      },
+      {
+        "name": "filler",
+        "type": "address"
+      },
+      {
+        "name": "orderId",
+        "type": "bytes32"
+      },
+      {
+        "name": "numCreatorShares",
+        "type": "uint256"
+      },
+      {
+        "name": "numCreatorTokens",
+        "type": "uint256"
+      },
+      {
+        "name": "numFillerShares",
+        "type": "uint256"
+      },
+      {
+        "name": "numFillerTokens",
+        "type": "uint256"
+      },
+      {
+        "name": "settlementFees",
+        "type": "uint256"
+      },
+      {
+        "name": "tradeGroupId",
+        "type": "uint256"
+      }
+    ],
+    "name": "orderFilled",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "name": "shareToken",
+        "type": "address"
+      },
+      {
+        "name": "creator",
+        "type": "address"
+      },
+      {
+        "name": "orderId",
+        "type": "bytes32"
+      },
+      {
+        "name": "tradeGroupId",
+        "type": "uint256"
+      }
+    ],
+    "name": "orderCreated",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "tokensTransferred",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
       {
         "name": "shareToken",
         "type": "address"
@@ -7000,6 +7147,48 @@ module.exports=[
     "constant": false,
     "inputs": [
       {
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "name": "shareToken",
+        "type": "address"
+      },
+      {
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "name": "market",
+        "type": "address"
+      },
+      {
+        "name": "numShares",
+        "type": "uint256"
+      },
+      {
+        "name": "numPayoutTokens",
+        "type": "uint256"
+      },
+      {
+        "name": "finalTokenBalance",
+        "type": "uint256"
+      }
+    ],
+    "name": "proceedsClaimed",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
+      {
         "name": "reporter",
         "type": "address"
       },
@@ -7008,7 +7197,7 @@ module.exports=[
         "type": "address"
       },
       {
-        "name": "reportingToken",
+        "name": "stakeToken",
         "type": "address"
       },
       {
@@ -7027,179 +7216,13 @@ module.exports=[
     "type": "function"
   },
   {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "shareToken",
-        "type": "address"
-      },
-      {
-        "name": "filler",
-        "type": "address"
-      },
-      {
-        "name": "orderId",
-        "type": "bytes32"
-      },
-      {
-        "name": "numCreatorShares",
-        "type": "uint256"
-      },
-      {
-        "name": "numCreatorTokens",
-        "type": "uint256"
-      },
-      {
-        "name": "numFillerShares",
-        "type": "uint256"
-      },
-      {
-        "name": "numFillerTokens",
-        "type": "uint256"
-      },
-      {
-        "name": "settlementFees",
-        "type": "uint256"
-      },
-      {
-        "name": "tradeGroupId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "orderCreated",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "name": "value",
-        "type": "uint256"
-      }
-    ],
-    "name": "tokensTransferred",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "shareToken",
-        "type": "address"
-      },
-      {
-        "name": "filler",
-        "type": "address"
-      },
-      {
-        "name": "orderId",
-        "type": "bytes32"
-      },
-      {
-        "name": "numCreatorShares",
-        "type": "uint256"
-      },
-      {
-        "name": "numCreatorTokens",
-        "type": "uint256"
-      },
-      {
-        "name": "numFillerShares",
-        "type": "uint256"
-      },
-      {
-        "name": "numFillerTokens",
-        "type": "uint256"
-      },
-      {
-        "name": "settlementFees",
-        "type": "uint256"
-      },
-      {
-        "name": "tradeGroupId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "orderFilled",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "disputer",
-        "type": "address"
-      },
-      {
-        "name": "market",
-        "type": "address"
-      },
-      {
-        "name": "reportingPhase",
-        "type": "uint8"
-      },
-      {
-        "name": "disputeBondAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "reportsDisputed",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "anonymous": false,
     "inputs": [
       {
         "indexed": true,
-        "name": "token",
+        "name": "universe",
         "type": "address"
       },
-      {
-        "indexed": true,
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "name": "value",
-        "type": "uint256"
-      }
-    ],
-    "name": "TokensTransferred",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
       {
         "indexed": true,
         "name": "market",
@@ -7229,30 +7252,28 @@ module.exports=[
     "inputs": [
       {
         "indexed": true,
-        "name": "reporter",
+        "name": "universe",
         "type": "address"
       },
       {
         "indexed": true,
-        "name": "reportingWindow",
-        "type": "address"
-      }
-    ],
-    "name": "ReporterRegistered",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "designatedReporter",
+        "name": "reporter",
         "type": "address"
       },
       {
         "indexed": true,
         "name": "market",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "stakeToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "amountStaked",
+        "type": "uint256"
       },
       {
         "indexed": false,
@@ -7268,6 +7289,11 @@ module.exports=[
     "inputs": [
       {
         "indexed": true,
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "indexed": true,
         "name": "reporter",
         "type": "address"
       },
@@ -7278,7 +7304,7 @@ module.exports=[
       },
       {
         "indexed": false,
-        "name": "reportingToken",
+        "name": "stakeToken",
         "type": "address"
       },
       {
@@ -7300,6 +7326,11 @@ module.exports=[
     "inputs": [
       {
         "indexed": true,
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "indexed": true,
         "name": "reporter",
         "type": "address"
       },
@@ -7310,7 +7341,7 @@ module.exports=[
       },
       {
         "indexed": false,
-        "name": "reportingToken",
+        "name": "stakeToken",
         "type": "address"
       },
       {
@@ -7321,7 +7352,7 @@ module.exports=[
       {
         "indexed": false,
         "name": "reportingFeesReceived",
-        "type": "address"
+        "type": "uint256"
       },
       {
         "indexed": false,
@@ -7335,6 +7366,11 @@ module.exports=[
   {
     "anonymous": false,
     "inputs": [
+      {
+        "indexed": true,
+        "name": "universe",
+        "type": "address"
+      },
       {
         "indexed": true,
         "name": "disputer",
@@ -7364,6 +7400,11 @@ module.exports=[
     "inputs": [
       {
         "indexed": true,
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "indexed": true,
         "name": "market",
         "type": "address"
       }
@@ -7386,6 +7427,11 @@ module.exports=[
   {
     "anonymous": false,
     "inputs": [
+      {
+        "indexed": true,
+        "name": "universe",
+        "type": "address"
+      },
       {
         "indexed": true,
         "name": "shareToken",
@@ -7425,12 +7471,17 @@ module.exports=[
     "inputs": [
       {
         "indexed": true,
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "indexed": true,
         "name": "shareToken",
         "type": "address"
       },
       {
         "indexed": true,
-        "name": "filler",
+        "name": "creator",
         "type": "address"
       },
       {
@@ -7440,33 +7491,8 @@ module.exports=[
       },
       {
         "indexed": false,
-        "name": "numCreatorShares",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "name": "numCreatorTokens",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "name": "numFillerShares",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "name": "numFillerTokens",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "name": "settlementFees",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
         "name": "tradeGroupId",
-        "type": "bytes32"
+        "type": "uint256"
       }
     ],
     "name": "OrderCreated",
@@ -7477,11 +7503,16 @@ module.exports=[
     "inputs": [
       {
         "indexed": true,
-        "name": "shareToken",
+        "name": "universe",
         "type": "address"
       },
       {
         "indexed": true,
+        "name": "shareToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
         "name": "filler",
         "type": "address"
       },
@@ -7518,7 +7549,7 @@ module.exports=[
       {
         "indexed": false,
         "name": "tradeGroupId",
-        "type": "bytes32"
+        "type": "uint256"
       }
     ],
     "name": "OrderFilled",
@@ -7529,11 +7560,21 @@ module.exports=[
     "inputs": [
       {
         "indexed": true,
-        "name": "sender",
+        "name": "universe",
         "type": "address"
       },
       {
         "indexed": true,
+        "name": "shareToken",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
         "name": "market",
         "type": "address"
       },
@@ -7554,6 +7595,55 @@ module.exports=[
       }
     ],
     "name": "ProceedsClaimed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "parentUniverse",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "childUniverse",
+        "type": "address"
+      }
+    ],
+    "name": "UniverseCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "TokensTransferred",
     "type": "event"
   }
 ]
