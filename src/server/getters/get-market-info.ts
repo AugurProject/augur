@@ -55,8 +55,8 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
 
 export function getMarketsWithReportingState(db: Knex, selectColumns?: Array<string>): Knex.QueryBuilder {
   // TODO: turn leftJoin() into join() once we take care of market_state on market creation
-  const columns = selectColumns ? selectColumns.slice() : ["markets.*", "blocks.timestamp as creationTime"];
-  return db.select(columns.concat("market_state.reportingState"))
+  const columns = selectColumns ? selectColumns.slice() : ["markets.*"];
+  return db.select(columns.concat("market_state.reportingState", "blocks.timestamp as creationTime"))
     .from("markets")
     .leftJoin("market_state", "markets.marketStateID", "market_state.marketStateID")
     .leftJoin("blocks", "markets.creationBlockNumber", "blocks.blockNumber");
