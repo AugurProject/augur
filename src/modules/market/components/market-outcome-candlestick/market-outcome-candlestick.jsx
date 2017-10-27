@@ -12,18 +12,24 @@ import Styles from 'modules/market/components/market-outcome-candlestick/market-
 export default class MarketOutcomeCandlestick extends Component {
   static propTypes = {
     marketPriceHistory: PropTypes.array.isRequired,
+    outcomeMin: PropTypes.number.isRequired,
+    outcomeMax: PropTypes.number.isRequired,
+    orderBookMid: PropTypes.number.isRequired,
     marketMin: PropTypes.number.isRequired,
-    marketMid: PropTypes.number.isRequired,
-    marketMax: PropTypes.number.isRequired
+    marketMax: PropTypes.number.isRequired,
+    hoveredPrice: PropTypes.any,
+    updateHoveredPrice: PropTypes.func.isRequired,
   }
 
   constructor(props) {
     super(props)
 
-    console.log('props -- ', props)
+    this.PLOT_BACKGROUND = 'PLOT_BACKGROUND'
+    this.SERIES = 'SERIES'
 
     this.updateGraph = this.updateGraph.bind(this)
     this.debouncedUpdateGraph = debounce(this.updateGraph.bind(this))
+    this.determineHoveredPrice = this.determineHoveredPrice.bind(this)
   }
 
   componentDidMount() {
@@ -78,16 +84,16 @@ export default class MarketOutcomeCandlestick extends Component {
           const padding = 0.2 // percentage padding
 
           // Determine bounding diff
-          const maxDiff = Math.abs(this.props.marketMid - this.props.marketMax)
-          const minDiff = Math.abs(this.props.marketMid - this.props.marketMin)
+          const maxDiff = Math.abs(this.props.orderBookMid - this.props.outcomeMax)
+          const minDiff = Math.abs(this.props.orderBookMid - this.props.outcomeMin)
           const boundDiff = (maxDiff > minDiff ? maxDiff : minDiff) * (1 + padding)
 
           // Set interval step
           const step = boundDiff / ((intervals - 1) / 2)
 
           const res = new Array(intervals).fill(null).reduce((p, _unused, i) => {
-            if (i === 0) return [Number((this.props.marketMid - boundDiff).toFixed(allowedFloat))]
-            if (i + 1 === Math.round(intervals / 2)) return [...p, this.props.marketMid]
+            if (i === 0) return [Number((this.props.orderBookMid - boundDiff).toFixed(allowedFloat))]
+            if (i + 1 === Math.round(intervals / 2)) return [...p, this.props.orderBookMid]
             return [...p, Number((p[i - 1] + step).toFixed(allowedFloat))]
           }, [])
 
@@ -115,6 +121,8 @@ export default class MarketOutcomeCandlestick extends Component {
 
     window.addEventListener('resize', this.debouncedUpdateGraph)
 
+    this.candlestickGraph.addEventListener('mousemove', this.determineHoveredPrice)
+
     this.updateGraph()
   }
 
@@ -125,6 +133,7 @@ export default class MarketOutcomeCandlestick extends Component {
   componentWillUnmount() {
     this.outcomeCandlestick.destroy()
     window.removeEventListener('resize', this.debouncedUpdateGraph)
+    this.candlestickGraph.removeEventListener('mousemove', e => console.log('moved -- ', e.target))
   }
 
   updateGraph() {
@@ -134,13 +143,19 @@ export default class MarketOutcomeCandlestick extends Component {
     this.outcomeCandlestick.redraw()
   }
 
-  render() {
-    // const p = this.props
-    // const s = this.state
+  determineHoveredPrice(event) {
+    const yValue = this.outcomeCandlestick.yAxis[0].toValue(event.chartY)
 
+    if (yValue > this.props.marketMax || yValue < this.props.marketMin) return this.props.updateHoveredPrice(null)
+
+    this.props.updateHoveredPrice(yValue)
+  }
+
+  render() {
     return (
       <section className={Styles.MarketOutcomeCandlestick}>
         <div
+          ref={(candlestickGraph) => { this.candlestickGraph = candlestickGraph }}
           id="market_outcome_candlestick"
           className={Styles.MarketOutcomeCandlestick__graph}
         />

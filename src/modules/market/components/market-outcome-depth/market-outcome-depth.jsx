@@ -11,7 +11,7 @@ import Styles from 'modules/market/components/market-outcome-depth/market-outcom
 export default class MarketOutcomeDepth extends Component {
   static propTypes = {
     marketDepth: PropTypes.object.isRequired,
-    selectedOutcome: PropTypes.any,
+    hoveredPrice: PropTypes.any
   }
 
   constructor(props) {
@@ -99,6 +99,8 @@ export default class MarketOutcomeDepth extends Component {
 
   componentDidUpdate(prevProps) {
     if (!isEqual(prevProps.marketDepth, this.props.marketDepth)) this.updateGraph()
+
+    console.log('hoveredPrice -- ', this.props.hoveredPrice)
   }
 
   componentWillUnmount() {

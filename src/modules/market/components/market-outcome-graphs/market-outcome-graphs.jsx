@@ -21,39 +21,43 @@ export default class MarketOutcomeGraphs extends Component {
     super(props)
 
     this.state = {
-      hoverPrice: null
+      hoveredPrice: null
     }
 
-    this.updateHoverPrice = this.updateHoverPrice.bind(this)
+    this.updateHoveredPrice = this.updateHoveredPrice.bind(this)
   }
 
-  updateHoverPrice(hoverPrice) {
-    this.setState({ hoverPrice })
+  updateHoveredPrice(hoveredPrice) {
+    this.setState({ hoveredPrice })
   }
 
   render() {
     const s = this.state
     const p = this.props
 
+    // NOTE -- wire up marketMin + marketMax
+
     return (
       <section className={Styles.MarketOutcomeGraphs}>
         <span className={Styles.MarketOutcomeGraphs__center} />
         <MarketOutcomeCandlestick
           marketPriceHistory={p.marketPriceHistory}
-          marketMin={p.marketMin}
-          marketMid={p.marketMid}
-          marketMax={p.marketMax}
-          hoverPrice={s.hoverPrice}
-          updateHoverPrice={this.updateHoverPrice}
+          outcomeMin={p.marketMin}
+          orderBookMid={p.marketMid}
+          outcomeMax={p.marketMax}
+          marketMax={1}
+          marketMin={0}
+          hoveredPrice={s.hoveredPrice}
+          updateHoveredPrice={this.updateHoveredPrice}
         />
         <MarketOutcomeDepth
           marketDepth={p.marketDepth}
-          hoverPrice={s.hoverPrice}
+          hoveredPrice={s.hoveredPrice}
           updateHoverPrice={this.updateHoverPrice}
         />
         <MarketOutcomeOrderBook
           orderBook={p.orderBook}
-          hoverPrice={s.hoverPrice}
+          hoveredPrice={s.hoveredPrice}
           updateHoverPrice={this.updateHoverPrice}
         />
       </section>
