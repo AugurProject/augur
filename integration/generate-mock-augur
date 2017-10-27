@@ -5,14 +5,16 @@
 # the enum's are not dynamically included, so might need to be refreshed
 # or new ones might need to be added
 
-MOCK_AUGUR_SOL=MockAugur.sol
-MOCK_AUGUR_ABI=abi/MockAugur.abi.json
-
 ORIGINAL_AUGUR_SOL=$1
 if [ ! -f "$ORIGINAL_AUGUR_SOL" ]; then
 	echo "Usage: $0 <original_augur.sol>"
 	exit 1
 fi
+
+BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+MOCK_AUGUR_SOL=$BASE_DIR/MockAugur.sol
+MOCK_AUGUR_ABI=$BASE_DIR/abi/MockAugur.abi.json
 
 (
 
