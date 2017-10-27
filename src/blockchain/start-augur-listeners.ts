@@ -1,13 +1,13 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { FormattedLog } from "../types";
+import { Int256, FormattedLog } from "../types";
 import { logProcessors } from "./log-processors";
 import { makeLogListener } from "./make-log-listener";
-import { onNewBlock } from "./on-new-block";
+import { processBlock, processBlockRemoval } from "./process-block";
 import { logError } from "../utils/log-error";
 
-export function startAugurListeners(db: Knex, augur: Augur, callback: (blockNumber: string) => void): void {
-  let seenFirstBlock: boolean = false;
+export function startAugurListeners(db: Knex, augur: Augur, callback: (blockNumber: Int256) => void): void {
+  let seenFirstBlock = false;
   augur.events.startListeners({
     Augur: {
       MarketCreated: makeLogListener(db, augur, "Augur", "MarketCreated"),
@@ -27,11 +27,11 @@ export function startAugurListeners(db: Knex, augur: Augur, callback: (blockNumb
       Transfer: makeLogListener(db, augur, "LegacyRepContract", "Transfer"),
       Approval: makeLogListener(db, augur, "LegacyRepContract", "Approval"),
     },
-  }, (blockNumber: string): void => {
+  }, (blockNumber: Int256): void => {
     if (!seenFirstBlock) {
       callback(blockNumber);
       seenFirstBlock = true;
     }
-    onNewBlock(db, augur, blockNumber);
-  }, (): void => {});
+    processBlock(db, augur, blockNumber);
+  }, (blockNumber: Int256): void => processBlockRemoval(db, blockNumber), (): void => {});
 }
