@@ -68,6 +68,7 @@ export type LogProcessor = (db: Knex, augur: Augur, trx: Knex.Transaction, log: 
 export interface EventLogProcessor {
   add: LogProcessor;
   remove: LogProcessor;
+  noAutoEmit?: boolean;
 }
 
 export interface LogProcessors {

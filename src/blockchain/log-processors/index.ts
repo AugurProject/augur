@@ -29,10 +29,12 @@ export const logProcessors: LogProcessors = {
       remove: processOrderCanceledLogRemoval,
     },
     OrderCreated: {
+      noAutoEmit: true,
       add: processOrderCreatedLog,
       remove: processOrderCreatedLogRemoval,
     },
     OrderFilled: {
+      noAutoEmit: true,
       add: processOrderFilledLog,
       remove: processOrderFilledLogRemoval,
     },
