@@ -1,0 +1,129 @@
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+
+import TransactionsList from 'modules/portfolio/components/transactions/transactions'
+
+const mapStateToProps = state => ({
+  transactions: dummyTransactions
+})
+
+const Transactions = withRouter(connect(mapStateToProps)(TransactionsList))
+
+export default Transactions
+
+const dummyTransactions = [
+  {
+    hash: '0x5fac9266041e13f4d70574e75ceef6ff05a4e67dc4819dec52c988a93aa478f8',
+    status: 'pending order',
+    description: 'BTC will hit the 5000$ mark by 01-01-2018',
+    message: 'Buy 80 shares @ 0.5000 ETH',
+    timestamp: {
+      value: '2017-10-27T22:49:26.000Z',
+      formatted: 'Oct 27, 2017 10:49 PM',
+      formattedLocal: 'Oct 27, 2017 3:49 PM (UTC -7)',
+      full: 'Fri, 27 Oct 2017 22:49:26 GMT',
+      timestamp: 1509144566000
+    },
+    transactions: [
+      {
+        message: 'Buy 5 shares @ 0.4000 ETH',
+        meta: {
+          'froze funds': '12.0000 ETH +0.0600 ETH Tokens in potential trading fees',
+          'gas cost': '0.3940 ETH',
+          status: 'Success',
+          confirmations: '245,991',
+        },
+      },
+    ],
+  },
+  {
+    hash: '0x5fac9266041e13f4d70574e75ceef6ff05a4e67dc4819dec52c988a93aa478f8',
+    status: 'submitted order',
+    description: 'How many marine species will go extinct between January 1, 2016 and January 1, 2018?',
+    message: 'Buy 10 shares @ 0.2000 ETH',
+    timestamp: {
+      value: '2017-10-27T22:49:26.000Z',
+      formatted: 'Oct 27, 2017 10:49 PM',
+      formattedLocal: 'Oct 27, 2017 3:49 PM (UTC -7)',
+      full: 'Fri, 27 Oct 2017 22:49:26 GMT',
+      timestamp: 1509144566000
+    },
+    transactions: [
+      {
+        message: 'Buy 5 shares @ 0.4000 ETH',
+        meta: {
+          'froze funds': '12.0000 ETH +0.0600 ETH Tokens in potential trading fees',
+          'gas cost': '0.3940 ETH',
+          status: 'Success',
+          confirmations: '245,991',
+        },
+      },
+      {
+        message: 'Buy 5 shares @ 0.4000 ETH',
+        meta: {
+          'froze funds': '12.0000 ETH +0.0600 ETH Tokens in potential trading fees',
+          'gas cost': '0.3940 ETH',
+          status: 'Success',
+          confirmations: '245,991',
+        },
+      },
+      {
+        message: 'Buy 5 shares @ 0.4000 ETH',
+        meta: {
+          'froze funds': '12.0000 ETH +0.0600 ETH Tokens in potential trading fees',
+          'gas cost': '0.3940 ETH',
+          status: 'Success',
+          confirmations: '245,991',
+        },
+      },
+    ],
+  },
+  {
+    hash: '0x5fac9266041e13f4d70574e75ceef6ff05a4e67dc4819dec52c988a93aa478f8',
+    status: 'submitted order',
+    description: 'How many new antibiotics will be approved by the FDA between March 1, 2016 and the end of 2020?',
+    message: 'Buy 50 shares @ 0.7000 ETH',
+    timestamp: {
+      value: '2017-10-27T22:49:26.000Z',
+      formatted: 'Oct 27, 2017 10:49 PM',
+      formattedLocal: 'Oct 27, 2017 3:49 PM (UTC -7)',
+      full: 'Fri, 27 Oct 2017 22:49:26 GMT',
+      timestamp: 1509144566000
+    },
+    transactions: [
+      {
+        message: 'Buy 5 shares @ 0.4000 ETH',
+        meta: {
+          'froze funds': '12.0000 ETH +0.0600 ETH Tokens in potential trading fees',
+          'gas cost': '0.3940 ETH',
+          status: 'Success',
+          confirmations: '245,991',
+        },
+      },
+    ],
+  },
+  {
+    hash: '0x5fac9266041e13f4d70574e75ceef6ff05a4e67dc4819dec52c988a93aa478f8',
+    status: 'pending order',
+    description: 'What will the average tropospheric methane concentration (in parts-per-billion) be between January 1, 2017 and January 1, 2018?',
+    message: 'Buy 5 shares @ 0.4000 ETH',
+    timestamp: {
+      value: '2017-10-27T22:49:26.000Z',
+      formatted: 'Oct 27, 2017 10:49 PM',
+      formattedLocal: 'Oct 27, 2017 3:49 PM (UTC -7)',
+      full: 'Fri, 27 Oct 2017 22:49:26 GMT',
+      timestamp: 1509144566000
+    },
+    transactions: [
+      {
+        message: 'Buy 5 shares @ 0.4000 ETH',
+        meta: {
+          'froze funds': '12.0000 ETH +0.0600 ETH Tokens in potential trading fees',
+          'gas cost': '0.3940 ETH',
+          status: 'Success',
+          confirmations: '245,991',
+        },
+      },
+    ],
+  },
+]

@@ -5,7 +5,7 @@ import PortfolioHeader from 'modules/portfolio/containers/portfolio-header'
 import MyPositions from 'modules/portfolio/containers/positions'
 import MyMarkets from 'modules/portfolio/components/markets/markets'
 import Watchlist from 'modules/portfolio/components/watchlist/watchlist'
-import Transactions from 'modules/portfolio/components/transactions/transactions'
+import Transactions from 'modules/portfolio/containers/transactions'
 
 import makePath from 'modules/routes/helpers/make-path'
 

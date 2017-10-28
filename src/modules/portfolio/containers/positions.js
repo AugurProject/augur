@@ -20,12 +20,12 @@ const mapStateToProps = (state) => {
   // console.log('scalarShareDenomination', getScalarShareDenomination())
   // console.log('orderCancellation:', getOrderCancellation())
   // console.log('state:', state)
-  const date = new Date
+  const date = new Date()
   const dummyMarketData = [{
     id: '1',
     description: 'my test market',
     endDateLabel: 'endDateLabel',
-    endDate: { date, formatted: date.toString()},
+    endDate: { date, formatted: date.toString() },
     outcomes: [
       {
         name: 'outcome1',
@@ -45,25 +45,25 @@ const mapStateToProps = (state) => {
       }
     ],
     myPositionsSummary: {
-      realizedNet: {formatted: '1.0'},
-      unrealizedNet: {formatted: '2.0'},
-      totalNet: {formatted: '3.0'}
+      realizedNet: { formatted: '1.0' },
+      unrealizedNet: { formatted: '2.0' },
+      totalNet: { formatted: '3.0' }
     },
     myPositionOutcomes: [
       {
         name: 'outcome1',
         position: {
-          qtyShares: {formatted: '10'},
-          purchasePrice: {formatted: '0.5'},
-          closePosition: {closePosition: () => console.log('closeposition3')}
+          qtyShares: { formatted: '10' },
+          purchasePrice: { formatted: '0.5' },
+          closePosition: { closePosition: () => console.log('closeposition3') }
         }
       },
       {
         name: 'outcome2',
         position: {
-          qtyShares: {formatted: '5'},
-          purchasePrice: {formatted: '0.75'},
-          closePosition: {closePosition: () => console.log('closeposition4')}
+          qtyShares: { formatted: '5' },
+          purchasePrice: { formatted: '0.75' },
+          closePosition: { closePosition: () => console.log('closeposition4') }
         }
       }
     ]

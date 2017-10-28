@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 // TODO: maybe change this to container and get performance graph data through a container
 import PerformanceGraph from 'modules/portfolio/containers/performance-graph'
@@ -26,18 +26,18 @@ class PortfolioHeader extends Component {
     const view = parsePath(path)[0]
 
     switch (view) {
-    case MY_MARKETS:
-      return 'my markets'
-      break
-    case WATCHLIST:
-      return 'watching'
-      break
-    case TRANSACTIONS:
-      return 'transactions'
-      break
-    default:
-      return 'positions'
-      break
+      case MY_MARKETS:
+        return 'my markets'
+        break
+      case WATCHLIST:
+        return 'watching'
+        break
+      case TRANSACTIONS:
+        return 'transactions'
+        break
+      default:
+        return 'positions'
+        break
     }
   }
 

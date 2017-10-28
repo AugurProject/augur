@@ -47,42 +47,42 @@ class PerformanceGraph extends Component {
         text: null
       },
       chart: {
-       backgroundColor: '#1e1a31',
-     },
-     lang: {
-       noData: 'No performance history.'
-     },
-     rangeSelector: { selected: 1 },
-     xAxis: {
-       visible: true
-     },
-     yAxis: {
-       visible: false
-     },
-     plotOptions: {
-       series: {
-         color: 'white',
-         fillColor: {
-           linearGradient: [0, 0, 0, '100%'],
-           stops: [
+        backgroundColor: '#1e1a31',
+      },
+      lang: {
+        noData: 'No performance history.'
+      },
+      rangeSelector: { selected: 1 },
+      xAxis: {
+        visible: true
+      },
+      yAxis: {
+        visible: false
+      },
+      plotOptions: {
+        series: {
+          color: 'white',
+          fillColor: {
+            linearGradient: [0, 0, 0, '100%'],
+            stops: [
              [0, Highcharts.Color('#dbdae1').setOpacity(0.5).get('rgba')],
              [0.8, Highcharts.Color('#dbdae1').setOpacity(0.25).get('rgba')],
              [1, Highcharts.Color('#dbdae1').setOpacity(0).get('rgba')]
-           ]
-         }
-       }
-     },
-     legend: {
-       enabled: false
-     },
-     tooltip: {
-       pointFormat: '<span style="color: #372e4b;">{series.name}</span>: <b>{point.y} ETH Tokens</b><br/>',
-       valueDecimals: 2
-     },
-     credits: {
-       enabled: false
-     }
-    });
+            ]
+          }
+        }
+      },
+      legend: {
+        enabled: false
+      },
+      tooltip: {
+        pointFormat: '<span style="color: #372e4b;">{series.name}</span>: <b>{point.y} ETH Tokens</b><br/>',
+        valueDecimals: 2
+      },
+      credits: {
+        enabled: false
+      }
+    })
 
     window.addEventListener('resize', this.updateChartDebounced)
 
@@ -98,8 +98,8 @@ class PerformanceGraph extends Component {
   }
 
   updateChart() {
-    console.log(this.performanceGraph);
-    console.log(this.performanceGraph.getChartSize());
+    console.log(this.performanceGraph)
+    console.log(this.performanceGraph.getChartSize())
     console.log(this.performanceGraph.chartWidth, this.refs.performance_graph_container.clientWidth, (this.performanceGraph.chartWidth > this.refs.performance_graph_container.clientWidth));
 
     (getValue(this.props.performanceData, `${this.state.graphType}.${this.state.graphPeriod}`) || []).forEach((series, i) => {
@@ -133,7 +133,7 @@ class PerformanceGraph extends Component {
   render() {
     const p = this.props
 
-    return(
+    return (
       <section
         className={Styles.PerformanceGraph}
         ref="performance_graph_container"
@@ -144,4 +144,4 @@ class PerformanceGraph extends Component {
   }
 }
 
-export default PerformanceGraph;
+export default PerformanceGraph

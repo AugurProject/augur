@@ -1,0 +1,122 @@
+@import (reference) '~assets/styles/shared';
+
+.Transactions__body {
+  align-items: center;
+  background-color: @color-white;
+  display: flex;
+  justify-content: space-between;
+  padding: 2rem;
+  text-align: left;
+  width: 100%;
+
+  > svg {
+    width: 1.5rem;
+  }
+}
+
+.Transactions__date {
+  color: @color-gray;
+  font-size: @font-size-extra-small;
+  line-height: @font-size-extra-small;
+}
+
+.Transactions__description {
+  font-size: @font-size-large;
+  line-height: @font-size-rather-large;
+  margin-bottom: 0.6rem;
+}
+
+.Transactions__header {
+  color: @color-white;
+  padding: 0 2rem 1rem;
+}
+
+.Transactions__heading {
+  &:extend(.caps--large);
+}
+
+.Transactions__item {
+  margin-bottom: 1rem;
+}
+
+.Transactions__linked-meta {
+  background-color: @color-lightergray;
+  border-top: 1px solid @color-lightergray-2;
+  display: table;
+  padding: 1rem 2rem 1.2rem;
+  width: 100%;
+
+  > li {
+    display: table-row;
+
+    &:not(:last-child) > span {
+      padding-bottom: 0.5rem;
+    }
+
+    > span {
+      display: table-cell;
+
+      &:first-child {
+        &:extend(.caps--small);
+      }
+
+      &:last-child {
+        padding-left: 2.5rem;
+        width: 100%;
+      }
+    }
+  }
+}
+
+.Transactions__linked-message {
+  align-items: center;
+  background-color: @color-input-background;
+  border-top: 1px solid @color-lightergray;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  text-align: left;
+  width: 100%;
+
+  > span {
+    &:extend(.caps--large);
+
+    font-weight: 700;
+  }
+
+  > svg {
+    width: 1.5rem;
+  }
+}
+
+.Transactions__linked-more {
+  align-items: center;
+  background-color: @color-white;
+  border-top: 1px solid @color-lightest-gray;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  text-align: left;
+  width: 100%;
+
+  > span {
+    &:extend(.caps--large);
+  }
+
+  > svg {
+    width: 1.5rem;
+  }
+}
+
+.Transactions__message {
+  &:extend(.caps--large);
+
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.Transactions__status {
+  &:extend(.caps--extra-small);
+
+  margin-bottom: 0.625rem;
+}
