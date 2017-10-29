@@ -2,7 +2,7 @@ import { each } from "async";
 import * as Knex from "knex";
 import { Address, MarketsContractAddressRow, UIMarketInfo, UIMarketsInfo, ErrorCallback } from "../../types";
 import { reshapeMarketsRowToUIMarketInfo, getMarketsWithReportingState } from "./get-market-info";
-import { sortDirection } from "../../utils/sort-direction";
+import { queryModifier } from "./database";
 
 // Look up all markets that are currently awaiting designated (automated) reporting.
 // Should accept a designatedReporterAddress parameter that filters by designated reporter address.
@@ -12,9 +12,7 @@ export function getMarketsAwaitingDesignatedReporting(db: Knex, designatedReport
   let query = getMarketsWithReportingState(db, ["markets.marketID"]).whereNull("markets.marketStateID");
   if (designatedReporter != null) query = query.where({ designatedReporter });
 
-  query = query.orderBy(sortBy || "endTime", sortDirection(isSortDescending, "desc"));
-  if (limit != null) query = query.limit(limit);
-  if (offset != null) query = query.offset(offset);
+  query = queryModifier(query, "endTime", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err?: Error|null, marketsRows?: Array<MarketsContractAddressRow>): void => {
     if (err) return callback(err);
     if (!marketsRows) return callback(null);

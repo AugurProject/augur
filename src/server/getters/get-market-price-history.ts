@@ -1,6 +1,6 @@
 import * as Knex from "knex";
 import { Address, TimestampedPrice, MarketPriceHistory } from "../../types";
-import { sortDirection } from "../../utils/sort-direction";
+import { queryModifier } from "./database";
 
 interface MarketPriceHistoryRow {
   outcome: number;
@@ -15,9 +15,8 @@ export function getMarketPriceHistory(db: Knex, marketID: Address|null|undefined
     "trades.outcome",
     "trades.price",
     "blocks.timestamp",
-  ]).from("trades").leftJoin("blocks", "trades.blockNumber", "blocks.blockNumber").where({ marketID }).orderBy(sortBy || "blocks.timestamp", sortDirection(isSortDescending, "desc"));
-  if (limit != null) query = query.limit(limit);
-  if (offset != null) query = query.offset(offset);
+  ]).from("trades").leftJoin("blocks", "trades.blockNumber", "blocks.blockNumber").where({ marketID });
+  query = queryModifier(query, "blocks.timestamp", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, tradesRows?: Array<MarketPriceHistoryRow>): void => {
     if (err) return callback(err);
     if (!tradesRows || !tradesRows.length) return callback(null);

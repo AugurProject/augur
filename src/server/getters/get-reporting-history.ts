@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as Knex from "knex";
 import { Address, JoinedReportsMarketsRow, UIReport } from "../../types";
-import { sortDirection } from "../../utils/sort-direction";
+import { queryModifier } from "./database";
 
 interface UIReports {
   [universe: string]: {
@@ -32,9 +32,7 @@ export function getReportingHistory(db: Knex, reporter: Address, marketID: Addre
     "reports.payout6",
     "reports.payout7",
   ]).from("reports").join("markets", "markets.marketID", "reports.marketID").where(queryData);
-  query = query.orderBy(sortBy || "reportID", sortDirection(isSortDescending, "asc"));
-  if (limit != null) query = query.limit(limit);
-  if (offset != null) query = query.offset(offset);
+  query = queryModifier(query, "reportID", "asc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, joinedReportsMarketsRows?: Array<JoinedReportsMarketsRow>): void => {
     if (err) return callback(err);
     if (!joinedReportsMarketsRows || !joinedReportsMarketsRows.length) return callback(null);

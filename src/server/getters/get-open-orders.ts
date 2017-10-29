@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as Knex from "knex";
 import { Address, Bytes32, OrdersRow } from "../../types";
-import { sortDirection } from "../../utils/sort-direction";
+import { queryModifier } from "./database";
 
 interface Order {
   shareToken: Address;
@@ -40,7 +40,9 @@ export function getOpenOrders(db: Knex, marketID: Address|null, outcome: number|
     orderType,
     orderCreator: creator,
   }, _.isNull);
-  db.select(["orders.*", `blocks.timestamp as creationTime`]).from("orders").leftJoin("blocks", "orders.creationBlockNumber", "blocks.blockNumber").where(queryData).whereNull("isRemoved").asCallback((err: Error|null, ordersRows?: Array<OrdersRowWithCreationTime>): void => {
+  let query: Knex.QueryBuilder = db.select(["orders.*", `blocks.timestamp as creationTime`]).from("orders").leftJoin("blocks", "orders.creationBlockNumber", "blocks.blockNumber").where(queryData).whereNull("isRemoved");
+  query = queryModifier(query, "volume", "desc", sortBy, isSortDescending, limit, offset);
+  query.asCallback((err: Error|null, ordersRows?: Array<OrdersRowWithCreationTime>): void => {
     if (err) return callback(err);
     if (!ordersRows || !ordersRows.length) return callback(null);
     const orders: Orders = {};
