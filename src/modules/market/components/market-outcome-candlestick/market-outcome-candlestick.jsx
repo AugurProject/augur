@@ -29,6 +29,7 @@ export default class MarketOutcomeCandlestick extends Component {
 
     this.updateGraph = this.updateGraph.bind(this)
     this.debouncedUpdateGraph = debounce(this.updateGraph.bind(this))
+    this.updateCrosshair = this.updateCrosshair.bind(this)
     this.determineHoveredPrice = this.determineHoveredPrice.bind(this)
   }
 
@@ -126,8 +127,10 @@ export default class MarketOutcomeCandlestick extends Component {
     this.updateGraph()
   }
 
-  componentDidUpdate(prevProps) {
-    if (!isEqual(prevProps.marketPriceHistory, this.props.marketPriceHistory)) this.updateGraph()
+  componentWillReceiveProps(nextProps) {
+    if (!isEqual(this.props.marketPriceHistory, nextProps.marketPriceHistory)) this.updateGraph()
+
+    if (!isEqual(this.props.hoveredPrice, nextProps.hoveredPrice)) this.updateCrosshair(nextProps.hoveredPrice)
   }
 
   componentWillUnmount() {
@@ -136,19 +139,36 @@ export default class MarketOutcomeCandlestick extends Component {
     this.candlestickGraph.removeEventListener('mousemove', e => console.log('moved -- ', e.target))
   }
 
-  updateGraph() {
-    this.outcomeCandlestick.series[0].setData(this.props.marketPriceHistory, false)
-    this.outcomeCandlestick.series[1].setData(this.props.marketPriceHistory, false)
-
-    this.outcomeCandlestick.redraw()
-  }
-
   determineHoveredPrice(event) {
     const yValue = this.outcomeCandlestick.yAxis[0].toValue(event.chartY)
 
     if (yValue > this.props.marketMax || yValue < this.props.marketMin) return this.props.updateHoveredPrice(null)
 
     this.props.updateHoveredPrice(yValue)
+  }
+
+  updateGraph() {
+    this.outcomeCandlestick.series[0].setData(this.props.marketPriceHistory, false)
+    this.outcomeCandlestick.series[1].setData(this.props.marketPriceHistory, false)
+
+    this.outcomeCandlestick.yAxis[0].drawCrosshair({ chartY: 100 })
+
+    this.outcomeCandlestick.redraw()
+  }
+
+  updateCrosshair(hoveredPrice) {
+    // clear the old crosshair
+    this.outcomeCandlestick.yAxis[0].removePlotLine('candlestick_price_crosshair')
+
+    // conditionally render to crosshair
+    if (hoveredPrice !== null) {
+      this.outcomeCandlestick.yAxis[0].addPlotLine({
+        value: hoveredPrice,
+        color: 'red',
+        width: 1,
+        id: 'candlestick_price_crosshair'
+      })
+    }
   }
 
   render() {
@@ -163,6 +183,8 @@ export default class MarketOutcomeCandlestick extends Component {
     )
   }
 }
+
+
 //
 // <div className={Styles.MarketOutcomesGraph}>
 //     <h3>price (eth) of each outcome</h3>

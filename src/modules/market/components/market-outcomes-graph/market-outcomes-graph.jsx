@@ -146,7 +146,7 @@ export default class MarketOutcomesGraph extends Component {
   }
 
   render() {
-    const p = this.props
+    // const p = this.props
     const s = this.state
 
     return (

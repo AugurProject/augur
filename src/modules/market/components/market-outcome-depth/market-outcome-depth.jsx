@@ -11,7 +11,10 @@ import Styles from 'modules/market/components/market-outcome-depth/market-outcom
 export default class MarketOutcomeDepth extends Component {
   static propTypes = {
     marketDepth: PropTypes.object.isRequired,
-    hoveredPrice: PropTypes.any
+    marketMin: PropTypes.number.isRequired,
+    marketMax: PropTypes.number.isRequired,
+    hoveredPrice: PropTypes.any,
+    updateHoveredPrice: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -29,8 +32,8 @@ export default class MarketOutcomeDepth extends Component {
         backgroundColor: '#2d2846',
         height: 400
       },
-      title: {
-//          TODO title; probably as mid point
+      credits: {
+        enabled: false
       },
       lang: {
         thousandsSep: ',',
@@ -57,8 +60,6 @@ export default class MarketOutcomeDepth extends Component {
         title: {
           text: ''
         },
-        min: 0, // can't do anything with less than 0 shares
-        max: 1,
         showLastLabel: true,
         gridLineWidth: 0,
         minorGridLineWidth: 0,
@@ -87,8 +88,17 @@ export default class MarketOutcomeDepth extends Component {
           step: true
         }
       ],
-      credits: {
-        enabled: false
+      plotOptions: {
+        series: {
+          point: {
+            events: {
+              mouseOver: (event) => {
+                this.props.updateHoveredPrice(event.target.y)
+              },
+              mouseOut: event => this.props.updateHoveredPrice(null)
+            }
+          }
+        }
       }
     })
 

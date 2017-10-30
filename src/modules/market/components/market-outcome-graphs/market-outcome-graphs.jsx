@@ -53,12 +53,12 @@ export default class MarketOutcomeGraphs extends Component {
         <MarketOutcomeDepth
           marketDepth={p.marketDepth}
           hoveredPrice={s.hoveredPrice}
-          updateHoverPrice={this.updateHoverPrice}
+          updateHoveredPrice={this.updateHoveredPrice}
         />
         <MarketOutcomeOrderBook
           orderBook={p.orderBook}
           hoveredPrice={s.hoveredPrice}
-          updateHoverPrice={this.updateHoverPrice}
+          updateHoveredPrice={this.updateHoveredPrice}
         />
       </section>
     )
