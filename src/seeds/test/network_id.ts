@@ -6,8 +6,8 @@ exports.seed = async (knex: Knex): Promise<any> => {
     // Inserts seed entries
     const seedData = [{
       networkID: 3,
-      firstLaunched: '2017-10-30 23:16:03',
-      lastLaunched: '2017-10-30 23:20:53',
+      firstLaunched: "2017-10-30 23:16:03",
+      lastLaunched: "2017-10-30 23:20:53",
     }];
     knex.batchInsert("network_id", seedData, seedData.length);
   });
