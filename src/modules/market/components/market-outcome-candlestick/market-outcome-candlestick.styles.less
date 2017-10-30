@@ -44,11 +44,14 @@
       &.highcharts-series-1 {
         fill: fadeout(@color-white, 75%);
       }
-
     }
 
-    .highcharts-plot-lines-0 .highcharts-plot-line { // Manually rendered crosshair
-      stroke: red;
+    // manually rendered crosshair
+    .highcharts-plot-lines-0 .highcharts-plot-line {
+      stroke: @color-lightgray;
+      stroke-dasharray: 3;
+      stroke-dashoffset: 3;
+      stroke-width: 1px;
     }
   }
 }

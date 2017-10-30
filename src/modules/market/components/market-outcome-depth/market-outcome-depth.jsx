@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Highchart from 'highcharts/highstock'
+import Highchart from 'highcharts/js/highstock'
 import noData from 'highcharts/modules/no-data-to-display'
 import { isEqual } from 'lodash'
 
@@ -22,6 +22,8 @@ export default class MarketOutcomeDepth extends Component {
 
     this.updateGraph = this.updateGraph.bind(this)
     this.debouncedUpdateGraph = debounce(this.updateGraph.bind(this))
+    this.determineHoveredPrice = this.determineHoveredPrice.bind(this)
+    this.updateCrosshair = this.updateCrosshair.bind(this)
   }
 
   componentDidMount() {
@@ -29,10 +31,12 @@ export default class MarketOutcomeDepth extends Component {
 
     this.outcomeDepth = Highchart.chart('market_outcome_depth', {
       chart: {
-        backgroundColor: '#2d2846',
-        height: 400
+        backgroundColor: '#2d2846'
       },
       credits: {
+        enabled: false
+      },
+      tooltip: {
         enabled: false
       },
       lang: {
@@ -48,13 +52,7 @@ export default class MarketOutcomeDepth extends Component {
         minorGridLineWidth: 0,
         lineColor: 'transparent',
         minorTickLength: 0,
-        tickLength: 0,
-        crosshair: {
-          dashStyle: 'dash',
-          width: 1,
-          color: 'white',
-          zIndex: 22
-        }
+        tickLength: 0
       },
       yAxis: {
         title: {
@@ -66,26 +64,18 @@ export default class MarketOutcomeDepth extends Component {
         labels: {
           align: 'bottom',
           verticalAlign: 'bottom'
-        },
-        crosshair: {
-          dashStyle: 'dash',
-          width: 1,
-          color: 'white',
-          zIndex: 22
         }
       },
       series: [
         {
           showInLegend: false,
           name: '',
-          lineWidth: 1,
-          step: true
+          lineWidth: 1
         },
         {
           showInLegend: false,
           name: '',
-          lineWidth: 1,
-          step: true
+          lineWidth: 1
         }
       ],
       plotOptions: {
@@ -103,19 +93,29 @@ export default class MarketOutcomeDepth extends Component {
     })
 
     window.addEventListener('resize', this.debouncedUpdateGraph)
+    this.depthGraph.addEventListener('mousemove', this.determineHoveredPrice)
 
     this.updateGraph()
   }
 
-  componentDidUpdate(prevProps) {
-    if (!isEqual(prevProps.marketDepth, this.props.marketDepth)) this.updateGraph()
+  componentWillReceiveProps(nextProps) {
+    if (!isEqual(this.props.marketDepth, nextProps.marketDepth)) this.updateGraph()
 
-    console.log('hoveredPrice -- ', this.props.hoveredPrice)
+    if (!isEqual(this.props.hoveredPrice, nextProps.hoveredPrice)) this.updateCrosshair(nextProps.hoveredPrice)
   }
 
   componentWillUnmount() {
     this.outcomeDepth.destroy()
     window.removeEventListener('resize', this.debouncedUpdateGraph)
+    this.depthGraph.removeEventListener('mousemove', this.determineHoveredPrice)
+  }
+
+  determineHoveredPrice(event) {
+    const yValue = this.outcomeDepth.yAxis[0].toValue(event.chartY)
+
+    if (yValue > this.props.marketMax || yValue < this.props.marketMin) return this.props.updateHoveredPrice(null)
+
+    this.props.updateHoveredPrice(yValue)
   }
 
   updateGraph() {
@@ -125,10 +125,27 @@ export default class MarketOutcomeDepth extends Component {
     this.outcomeDepth.redraw()
   }
 
+  updateCrosshair(hoveredPrice) {
+    console.log('updateCrosshair w/in depth -- ', hoveredPrice)
+
+    // clear the old crosshair
+    this.outcomeDepth.yAxis[0].removePlotLine('depth_price_crosshair')
+
+    // conditionally render to crosshair
+    if (hoveredPrice !== null) {
+      this.outcomeDepth.yAxis[0].addPlotLine({
+        value: hoveredPrice,
+        width: 1,
+        id: 'depth_price_crosshair'
+      })
+    }
+  }
+
   render() {
     return (
       <section className={Styles.MarketOutcomeDepth}>
         <div
+          ref={(depthGraph) => { this.depthGraph = depthGraph }}
           id="market_outcome_depth"
           className={Styles.MarketOutcomeDepth__graph}
         />

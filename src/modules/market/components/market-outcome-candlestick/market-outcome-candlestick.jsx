@@ -136,7 +136,7 @@ export default class MarketOutcomeCandlestick extends Component {
   componentWillUnmount() {
     this.outcomeCandlestick.destroy()
     window.removeEventListener('resize', this.debouncedUpdateGraph)
-    this.candlestickGraph.removeEventListener('mousemove', e => console.log('moved -- ', e.target))
+    this.candlestickGraph.removeEventListener('mousemove', this.determineHoveredPrice)
   }
 
   determineHoveredPrice(event) {
