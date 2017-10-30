@@ -1,6 +1,6 @@
 import * as Knex from "knex";
 import { Address, Bytes32, TradesRow, UITrade } from "../../types";
-import { sortDirection } from "../../utils/sort-direction";
+import { queryModifier } from "./database";
 
 interface TradingHistoryRow extends Partial<TradesRow> {
   timestamp: number;
@@ -24,9 +24,7 @@ export function getUserTradingHistory(db: Knex|Knex.Transaction, account: Addres
   if (marketID != null) query = query.andWhere("trades.marketID", marketID);
   if (outcome != null) query = query.andWhere("trades.outcome", outcome);
   if (orderType != null) query = query.andWhere("trades.orderType", orderType);
-  query = query.orderBy(sortBy || "trades.blockNumber", sortDirection(isSortDescending, "desc"));
-  if (limit != null) query = query.limit(limit);
-  if (offset != null) query = query.offset(offset);
+  query = queryModifier(query,  "trades.blockNumber", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, userTradingHistory?: Array<TradingHistoryRow>): void => {
     if (err) return callback(err);
     if (!userTradingHistory || !userTradingHistory.length) return callback(null);
