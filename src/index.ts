@@ -35,7 +35,7 @@ const configuredEndpoints: any = _.omitBy(_.merge(ethereumNodeEndpoints, {
   ws: process.env.ENDPOINT_WS,
 }), _.isNull);
 
-const websocketServer: WebSocket.Server  = runWebsocketServer(db, websocketPort);
+const websocketServer: WebSocket.Server = runWebsocketServer(db, websocketPort);
 
 const augur: Augur = new Augur();
 
