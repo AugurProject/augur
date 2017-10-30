@@ -13,7 +13,7 @@ export default Transactions
 
 const dummyTransactions = [
   {
-    hash: '0x5fac9266041e13f4d70574e75ceef6ff05a4e67dc4819dec52c988a93aa478f8',
+    hash: '0x5fac9266041e13f4d70574e75ceef6ff05a4e67dc4819dec524988a93aa478f8',
     status: 'pending order',
     description: 'BTC will hit the 5000$ mark by 01-01-2018',
     message: 'Buy 80 shares @ 0.5000 ETH',
@@ -37,7 +37,7 @@ const dummyTransactions = [
     ],
   },
   {
-    hash: '0x5fac9266041e13f4d70574e75ceef6ff05a4e67dc4819dec52c988a93aa478f8',
+    hash: '0x5fac9266041e13f4d70574e75ceef6ff05d4e67dc4819dec52c988a93aa478f8',
     status: 'submitted order',
     description: 'How many marine species will go extinct between January 1, 2016 and January 1, 2018?',
     message: 'Buy 10 shares @ 0.2000 ETH',
@@ -79,7 +79,7 @@ const dummyTransactions = [
     ],
   },
   {
-    hash: '0x5fac9266041e13f4d70574e75ceef6ff05a4e67dc4819dec52c988a93aa478f8',
+    hash: '0x5fac9266041e13f4d70574e75ceef6ff05a4e67dc4819dec52c981a93aa478f8',
     status: 'submitted order',
     description: 'How many new antibiotics will be approved by the FDA between March 1, 2016 and the end of 2020?',
     message: 'Buy 50 shares @ 0.7000 ETH',
@@ -103,7 +103,7 @@ const dummyTransactions = [
     ],
   },
   {
-    hash: '0x5fac9266041e13f4d70574e75ceef6ff05a4e67dc4819dec52c988a93aa478f8',
+    hash: '0x5fac9266041e13f4d70574e75ceef6ff05a4e67dc4819def52c988a93aa478f8',
     status: 'pending order',
     description: 'What will the average tropospheric methane concentration (in parts-per-billion) be between January 1, 2017 and January 1, 2018?',
     message: 'Buy 5 shares @ 0.4000 ETH',

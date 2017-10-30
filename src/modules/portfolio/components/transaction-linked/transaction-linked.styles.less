@@ -1,0 +1,22 @@
+@import (reference) '~assets/styles/shared';
+
+.Transaction__linked-message {
+  align-items: center;
+  background-color: @color-input-background;
+  border-top: 1px solid @color-lightergray;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  text-align: left;
+  width: 100%;
+
+  > span {
+    &:extend(.caps--large);
+
+    font-weight: 700;
+  }
+
+  > svg {
+    width: 1.5rem;
+  }
+}

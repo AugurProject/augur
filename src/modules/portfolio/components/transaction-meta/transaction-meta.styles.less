@@ -1,0 +1,30 @@
+@import (reference) '~assets/styles/shared';
+
+.TransactionMeta {
+  background-color: @color-lightergray;
+  border-top: 1px solid @color-lightergray-2;
+  display: table;
+  padding: 1rem 2rem 1.2rem;
+  width: 100%;
+
+  > li {
+    display: table-row;
+
+    &:not(:last-child) > span {
+      padding-bottom: 0.5rem;
+    }
+
+    > span {
+      display: table-cell;
+
+      &:first-child {
+        &:extend(.caps--small);
+      }
+
+      &:last-child {
+        padding-left: 2.5rem;
+        width: 100%;
+      }
+    }
+  }
+}

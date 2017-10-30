@@ -1,0 +1,69 @@
+@import (reference) '~assets/styles/shared';
+
+.toggle-height-target {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.3s ease;
+}
+
+.Transaction__body {
+  align-items: center;
+  background-color: @color-white;
+  display: flex;
+  justify-content: space-between;
+  padding: 2rem;
+  text-align: left;
+  width: 100%;
+
+  > svg {
+    width: 1.5rem;
+  }
+}
+
+.Transaction__date {
+  color: @color-gray;
+  font-size: @font-size-extra-small;
+  line-height: @font-size-extra-small;
+}
+
+.Transaction__description {
+  font-size: @font-size-large;
+  line-height: @font-size-rather-large;
+  margin-bottom: 0.6rem;
+}
+
+.Transaction__item {
+  margin-bottom: 1rem;
+}
+
+.Transaction__linked-more {
+  align-items: center;
+  background-color: @color-white;
+  border-top: 1px solid @color-lightest-gray;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  text-align: left;
+  width: 100%;
+
+  > span {
+    &:extend(.caps--large);
+  }
+
+  > svg {
+    width: 1.5rem;
+  }
+}
+
+.Transaction__message {
+  &:extend(.caps--large);
+
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.Transaction__status {
+  &:extend(.caps--extra-small);
+
+  margin-bottom: 0.625rem;
+}
