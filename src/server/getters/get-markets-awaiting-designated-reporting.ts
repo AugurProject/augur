@@ -1,8 +1,7 @@
 import { each } from "async";
 import * as Knex from "knex";
 import { Address, MarketsContractAddressRow, UIMarketInfo, UIMarketsInfo, ErrorCallback } from "../../types";
-import { reshapeMarketsRowToUIMarketInfo, getMarketsWithReportingState } from "./get-market-info";
-import { queryModifier } from "./database";
+import { queryModifier, reshapeMarketsRowToUIMarketInfo, getMarketsWithReportingState } from "./database";
 
 // Look up all markets that are currently awaiting designated (automated) reporting.
 // Should accept a designatedReporterAddress parameter that filters by designated reporter address.
