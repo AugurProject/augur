@@ -117,28 +117,7 @@ const ReportingReportForm = p => (
         </li>
       </ul>
     </li>
-    { p.isMarketValid && p.market.type === BINARY &&
-      <li>
-        <label>
-          <span>Outcome</span>
-        </label>
-        <ul className={FormStyles['Form__radio-buttons--per-line']}>
-          <li>
-            <button
-              className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === 'yes' })}
-              onClick={(e) => { validateOutcome(p.validations, p.updateState, 'yes') }}
-            >Yes</button>
-          </li>
-          <li>
-            <button
-              className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === 'no' })}
-              onClick={(e) => { validateOutcome(p.validations, p.updateState, 'no') }}
-            >No</button>
-          </li>
-        </ul>
-      </li>
-    }
-    { p.isMarketValid && p.market.type === CATEGORICAL &&
+    { p.isMarketValid && (p.market.type === BINARY || p.market.type === CATEGORICAL) &&
       <li>
         <label>
           <span>Outcome</span>
@@ -149,7 +128,7 @@ const ReportingReportForm = p => (
               <button
                 className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.name })}
                 onClick={(e) => { validateOutcome(p.validations, p.updateState, outcome.name) }}
-              >{outcome.name}</button>
+              >{outcome.name} &nbsp;|&nbsp; {outcome.stake} REP</button>
             </li>
             ))
           }
