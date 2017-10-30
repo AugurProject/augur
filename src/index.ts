@@ -1,4 +1,5 @@
 import Augur from "augur.js";
+import * as WebSocket from "ws";
 import * as Knex from "knex";
 import * as sqlite3 from "sqlite3";
 import * as _ from "lodash";
@@ -34,7 +35,7 @@ const configuredEndpoints: any = _.omitBy(_.merge(ethereumNodeEndpoints, {
   ws: process.env.ENDPOINT_WS,
 }), _.isNull);
 
-runWebsocketServer(db, websocketPort);
+const websocketServer: WebSocket.Server  = runWebsocketServer(db, websocketPort);
 
 const augur: Augur = new Augur();
 
@@ -42,7 +43,11 @@ augur.rpc.setDebugOptions({ broadcast: false });
 
 checkAugurDbSetup(db, (err?: Error|null): void => {
   syncAugurNodeWithBlockchain(db, augur, ethereumNodeEndpoints, uploadBlockNumbers, (err?: Error|null): void => {
-    if (err) return console.error("syncAugurNodeWithBlockchain:", err);
+    if (err) {
+      websocketServer.close();
+      console.error("syncAugurNodeWithBlockchain:", err);
+      process.exit(1);
+    }
     console.log("Sync with blockchain complete.");
   });
 });
