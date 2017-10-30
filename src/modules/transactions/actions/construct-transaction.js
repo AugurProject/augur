@@ -101,7 +101,7 @@ export function constructCreateMarketTransaction(log, description, dispatch) {
   return transaction
 }
 
-export function constructProceedsClaimedTransaction(log, market, dispatch) {
+export function constructTradingProceedsClaimedTransaction(log, market, dispatch) {
   const transaction = { data: {} }
   transaction.type = 'Claim Trading Payout'
   transaction.description = market.description
@@ -350,7 +350,7 @@ export const constructTransaction = (label, log, isRetry, callback) => (dispatch
     case TYPES.PAYOUT: {
       const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback))
       if (!market || !market.description) break
-      return constructProceedsClaimedTransaction(log, market, dispatch)
+      return constructTradingProceedsClaimedTransaction(log, market, dispatch)
     }
     case TYPES.SUBMIT_REPORT: {
       const aux = dispatch(loadDataForReportingTransaction(label, log, isRetry, callback))
