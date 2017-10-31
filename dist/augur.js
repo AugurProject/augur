@@ -295,7 +295,7 @@ function bindContractFunction(functionAbi) {
     if (payload.constant || params[0] && params[0].tx && params[0].tx.send === false) {
       var callback;
       if (params && isObject(params[0])) {
-        payload.params = encodeTransactionInputs(params, payload.inputs, payload.signature, payload.fixed);
+        payload.params = encodeTransactionInputs(params[0], payload.inputs, payload.signature);
         if (isObject(params[0].tx)) assign(payload, params[0].tx);
       }
       if (isFunction(params[params.length - 1])) callback = params.pop();
@@ -308,14 +308,16 @@ function bindContractFunction(functionAbi) {
     }
     var onSent, onSuccess, onFailed, signer, accountType;
     if (params && isObject(params[0])) {
+      console.log("params:", params);
       onSent = params[0].onSent;
       onSuccess = params[0].onSuccess;
       onFailed = params[0].onFailed;
-      payload.params = encodeTransactionInputs(params[0], payload.inputs, payload.signature, payload.fixed);
+      payload.params = encodeTransactionInputs(params[0], payload.inputs, payload.signature);
       if (isObject(params[0].tx)) assign(payload, params[0].tx);
       signer = (params[0].meta || {}).signer;
       accountType = (params[0].meta || {}).accountType;
     }
+    console.log("payload:", payload);
     ethrpc.transact(payload, signer, accountType, onSent, onSuccess, onFailed);
   };
 }
@@ -324,27 +326,20 @@ module.exports = bindContractFunction;
 },{"../rpc-interface":80,"../utils/is-function":120,"../utils/is-object":121,"./encode-transaction-inputs":9,"lodash.assign":432}],9:[function(require,module,exports){
 "use strict";
 
-var speedomatic = require("speedomatic");
 var transactionInputEncoders = require("./transaction-input-encoders");
 
-function encodeTransactionInputs(p, inputs, signature, fixedPointIndex) {
+function encodeTransactionInputs(p, inputs, signature) {
   var numInputs = Array.isArray(inputs) && inputs.length ? inputs.length : 0;
   if (!numInputs) return [];
   var encodedTransactionInputs = new Array(numInputs);
   for (var i = 0; i < numInputs; ++i) {
     encodedTransactionInputs[i] = transactionInputEncoders[signature[i]] ? transactionInputEncoders[signature[i]](p[inputs[i]]) : p[inputs[i]];
   }
-  if (Array.isArray(fixedPointIndex) && fixedPointIndex.length) {
-    var numFixed = fixedPointIndex.length;
-    for (i = 0; i < numFixed; ++i) {
-      encodedTransactionInputs[fixedPointIndex[i]] = speedomatic.formatInt256(speedomatic.fix(encodedTransactionInputs[fixedPointIndex[i]], "hex"));
-    }
-  }
   return encodedTransactionInputs;
 }
 
 module.exports = encodeTransactionInputs;
-},{"./transaction-input-encoders":12,"speedomatic":532}],10:[function(require,module,exports){
+},{"./transaction-input-encoders":12}],10:[function(require,module,exports){
 "use strict";
 
 var bindContractFunction = require("./bind-contract-function");
@@ -1139,8 +1134,13 @@ function getAllAugurLogs(p, callback) {
           var eventName = eventSignatureToNameMap[contractName][log.topics[0]];
           if (!allAugurLogs[contractName]) allAugurLogs[contractName] = {};
           if (!allAugurLogs[contractName][eventName]) allAugurLogs[contractName][eventName] = [];
-          var parsedLog = parseLogMessage(contractName, eventName, log, eventsAbi[contractName][eventName].inputs);
-          allAugurLogs[contractName][eventName].push(parsedLog);
+          try {
+            var parsedLog = parseLogMessage(contractName, eventName, log, eventsAbi[contractName][eventName].inputs);
+            allAugurLogs[contractName][eventName].push(parsedLog);
+          } catch (exc) {
+            console.error("parseLogMessage error", exc);
+            console.log(contractName, eventName, log, eventsAbi[contractName], chunkOfBlocks);
+          }
         }
       });
       nextChunkOfBlocks(null);
@@ -1591,7 +1591,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.5.11";
+  this.version = "4.5.12";
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc

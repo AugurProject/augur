@@ -38,8 +38,13 @@ function getAllAugurLogs(p, callback) {
           var eventName = eventSignatureToNameMap[contractName][log.topics[0]];
           if (!allAugurLogs[contractName]) allAugurLogs[contractName] = {};
           if (!allAugurLogs[contractName][eventName]) allAugurLogs[contractName][eventName] = [];
-          var parsedLog = parseLogMessage(contractName, eventName, log, eventsAbi[contractName][eventName].inputs);
-          allAugurLogs[contractName][eventName].push(parsedLog);
+          try {
+            var parsedLog = parseLogMessage(contractName, eventName, log, eventsAbi[contractName][eventName].inputs);
+            allAugurLogs[contractName][eventName].push(parsedLog);
+          } catch (exc) {
+            console.error("parseLogMessage error", exc);
+            console.log(contractName, eventName, log, eventsAbi[contractName], chunkOfBlocks);
+          }
         }
       });
       nextChunkOfBlocks(null);

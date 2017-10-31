@@ -17,7 +17,7 @@ function bindContractFunction(functionAbi) {
     if (payload.constant || (params[0] && params[0].tx && params[0].tx.send === false)) {
       var callback;
       if (params && isObject(params[0])) {
-        payload.params = encodeTransactionInputs(params, payload.inputs, payload.signature, payload.fixed);
+        payload.params = encodeTransactionInputs(params[0], payload.inputs, payload.signature);
         if (isObject(params[0].tx)) assign(payload, params[0].tx);
       }
       if (isFunction(params[params.length - 1])) callback = params.pop();
@@ -30,14 +30,16 @@ function bindContractFunction(functionAbi) {
     }
     var onSent, onSuccess, onFailed, signer, accountType;
     if (params && isObject(params[0])) {
+      console.log("params:", params);
       onSent = params[0].onSent;
       onSuccess = params[0].onSuccess;
       onFailed = params[0].onFailed;
-      payload.params = encodeTransactionInputs(params[0], payload.inputs, payload.signature, payload.fixed);
+      payload.params = encodeTransactionInputs(params[0], payload.inputs, payload.signature);
       if (isObject(params[0].tx)) assign(payload, params[0].tx);
       signer = (params[0].meta || {}).signer;
       accountType = (params[0].meta || {}).accountType;
     }
+    console.log("payload:", payload);
     ethrpc.transact(payload, signer, accountType, onSent, onSuccess, onFailed);
   };
 }

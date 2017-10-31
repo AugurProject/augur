@@ -81,28 +81,4 @@ describe("api/encode-transaction-inputs", function () {
       ]);
     }
   });
-  test({
-    description: "encode transaction inputs including fixed-point conversions",
-    params: {
-      p: {
-        input1: 10,
-        input2: 100,
-        input3: 1000,
-        input4: 10000
-      },
-      inputs: ["input1", "input2", "input3", "input4"],
-      signature: ["int256", "int256", "int256", "int256"],
-      fixedPointIndex: [1, 2]
-    },
-    assertions: function (encodedTransactionInputs) {
-      assert.isArray(encodedTransactionInputs);
-      assert.strictEqual(encodedTransactionInputs.length, 4);
-      assert.deepEqual(encodedTransactionInputs, [
-        "0x000000000000000000000000000000000000000000000000000000000000000a",
-        "0x0000000000000000000000000000000000000000000000056bc75e2d63100000",
-        "0x00000000000000000000000000000000000000000000003635c9adc5dea00000",
-        "0x0000000000000000000000000000000000000000000000000000000000002710"
-      ]);
-    }
-  });
 });
