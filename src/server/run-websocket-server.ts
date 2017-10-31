@@ -9,7 +9,7 @@ import { makeJsonRpcResponse } from "./make-json-rpc-response";
 import { makeJsonRpcError, JsonRpcErrorCode } from "./make-json-rpc-error";
 import { Subscriptions } from "./subscriptions";
 
-export function runWebsocketServer(db: Knex, port: number): void {
+export function runWebsocketServer(db: Knex, port: number): WebSocket.Server {
   console.log("Starting websocket server on port", port);
   const websocketServer: WebSocket.Server = new WebSocket.Server({ port });
   websocketServer.on("connection", (websocket: WebSocket): void => {
@@ -60,4 +60,6 @@ export function runWebsocketServer(db: Knex, port: number): void {
     console.log("websocket error:", err);
     // TODO reconnect
   });
+
+  return websocketServer;
 }
