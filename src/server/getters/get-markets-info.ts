@@ -17,7 +17,6 @@ export function getMarketsInfo(db: Knex, universe: Address|null|undefined, marke
     query = query.whereIn("markets.marketID", marketIDs);
   }
   query = queryModifier(query, "volume", "desc", sortBy, isSortDescending, limit, offset);
-  console.log(query.toSQL());
   query.asCallback((err: Error|null, marketsRows?: Array<MarketsRowWithCreationTime>): void => {
     if (err) return callback(err);
     if (!marketsRows || !marketsRows.length) return callback(null);
