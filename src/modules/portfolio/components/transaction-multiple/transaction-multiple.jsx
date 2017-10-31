@@ -38,8 +38,8 @@ export default class TransactionMultiple extends Component {
           className={CommonStyles['Transaction__linked-more']}
           onClick={() => { toggleHeight(this.multipleTransactions, s.isOpen, () => { this.setState({ 'isOpen': !s.isOpen }) }) }}
         >
-          <span>+ {transaction.transactions.length} Linked Transactions</span>
-          <span className={classNames({ [`${CommonStyles['is-open']}`] : s.isOpen })}>{ ChevronDown }</span>
+          <span className={classNames( CommonStyles['Transaction__linked-more-text'], { [`${CommonStyles['is-open']}`] : s.isOpen })}>{ s.isOpen ? 'Hide' : '+' } {transaction.transactions.length} Linked Transactions</span>
+          <span className={classNames( CommonStyles['Transaction__linked-more-chevron'], { [`${CommonStyles['is-open']}`] : s.isOpen })}>{ ChevronDown }</span>
         </button>
         <div className={ToggleHeightStyles['toggle-height-target']} ref={ multipleTransactions => this.multipleTransactions = multipleTransactions }>
           { transaction.transactions.map((linked_transaction, i) => (
