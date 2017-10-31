@@ -1,5 +1,58 @@
 @import (reference) '~assets/styles/shared';
 
+.Transaction__body {
+  align-items: center;
+  background-color: @color-white;
+  display: flex;
+  justify-content: space-between;
+  padding: 2rem;
+  text-align: left;
+  width: 100%;
+
+  > span {
+    transition: transform .3s ease;
+
+    &.is-open {
+      transform: rotate(-180deg);
+    }
+
+    > svg {
+      width: 1.5rem;
+    }
+  }
+}
+
+.Transaction__item {
+  margin-bottom: 1rem;
+}
+
+.Transaction__linked-more {
+  align-items: center;
+  background-color: @color-white;
+  border-top: 1px solid @color-lightest-gray;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  text-align: left;
+  width: 100%;
+
+  > span:first-child {
+    &:extend(.caps--large);
+  }
+
+  > span:last-child {
+    transition: transform .3s ease;
+
+    &.is-open {
+      transform: rotate(-180deg);
+    }
+
+    > svg {
+      width: 1.5rem;
+    }
+  }
+}
+
 .Transactions__body {
   align-items: center;
   background-color: @color-white;

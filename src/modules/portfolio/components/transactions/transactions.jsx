@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Helmet } from 'react-helmet'
 
-import Transaction from 'modules/portfolio/components/transaction/transaction'
+import TransactionSingle from 'modules/portfolio/components/transaction-single/transaction-single'
+import TransactionMultiple from 'modules/portfolio/components/transaction-multiple/transaction-multiple'
 import { ChevronDown } from 'modules/common/components/icons/icons'
 
 import Styles from 'modules/portfolio/components/transactions/transactions.styles'
@@ -17,9 +18,13 @@ const Transactions = p => (
       <h2 className={Styles.Transactions__heading}>Transactions</h2>
     </div>
     <div className={Styles.Transactions__list}>
-      { p.transactions.map(transaction => (
-        <Transaction key={transaction.hash} transaction={transaction} />
-      )) }
+      { p.transactions.map(transaction => {
+        if (transaction.transactions.length <= 1) {
+          return <TransactionSingle key={transaction.hash} transaction={transaction} />
+        } else {
+          return <TransactionMultiple key={transaction.hash} transaction={transaction} />
+        }
+      }) }
     </div>
   </section>
 )

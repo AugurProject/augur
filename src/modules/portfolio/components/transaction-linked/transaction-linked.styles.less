@@ -1,6 +1,6 @@
 @import (reference) '~assets/styles/shared';
 
-.Transaction__linked-message {
+.LinkedTransaction__message {
   align-items: center;
   background-color: @color-input-background;
   border-top: 1px solid @color-lightergray;
@@ -10,13 +10,21 @@
   text-align: left;
   width: 100%;
 
-  > span {
+  > span:first-child {
     &:extend(.caps--large);
 
     font-weight: 700;
   }
 
-  > svg {
-    width: 1.5rem;
+  > span:last-child {
+    transition: transform .3s ease;
+
+    &.is-open {
+      transform: rotate(-180deg);
+    }
+
+    > svg {
+      width: 1.5rem;
+    }
   }
 }
