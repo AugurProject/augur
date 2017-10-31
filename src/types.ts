@@ -201,7 +201,7 @@ export interface UIMarketInfo {
   outcomes: Array<UIOutcomeInfo>;
 }
 
-export type UIMarketsInfo = Array<UIMarketInfo>;
+export type UIMarketsInfo = Array<UIMarketInfo|null>;
 
 export interface OrdersRow {
   orderID?: Bytes32;
