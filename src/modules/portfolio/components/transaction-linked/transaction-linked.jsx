@@ -25,11 +25,16 @@ export default class LinkedTransaction extends Component {
     return (
       <div>
         <button
-          className={Styles['LinkedTransaction__message']}
+          className={Styles.LinkedTransaction__message}
           onClick={() => { toggleHeight(this.metaWrapper, s.isOpen, () => { this.setState({ 'isOpen' : !s.isOpen }) }) }}
         >
-          <span>{ p.transaction.message }</span>
-          <span className={classNames({ [`${Styles['is-open']}`] : s.isOpen })}>{ ChevronDown }</span>
+          <div>
+            { p.transaction.open &&
+              <h5 className={Styles.LinkedTransaction__status}>Open Order</h5>
+            }
+            <span className={Styles['LinkedTransaction__message-text']}>{ p.transaction.message }</span>
+          </div>
+          <span className={classNames(Styles['LinkedTransaction__message-chevron'], { [`${Styles['is-open']}`] : s.isOpen })}>{ ChevronDown }</span>
         </button>
         <div className={ToggleHeightStyles['toggle-height-target']} ref={metaWrapper => this.metaWrapper = metaWrapper}>
           <TransactionMeta meta={p.transaction.meta} />

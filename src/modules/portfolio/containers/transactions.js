@@ -27,6 +27,7 @@ const dummyTransactions = [
     transactions: [
       {
         message: 'Buy 5 shares @ 0.4000 ETH',
+        open: false,
         meta: {
           'froze funds': '12.0000 ETH +0.0600 ETH Tokens in potential trading fees',
           'gas cost': '0.3940 ETH',
@@ -38,7 +39,7 @@ const dummyTransactions = [
   },
   {
     hash: '0x5fac9266041e13f4d70574e75ceef6ff05d4e67dc4819dec52c988a93aa478f8',
-    status: 'submitted order',
+    status: 'pending order',
     description: 'How many marine species will go extinct between January 1, 2016 and January 1, 2018?',
     message: 'Buy 10 shares @ 0.2000 ETH',
     timestamp: {
@@ -51,6 +52,7 @@ const dummyTransactions = [
     transactions: [
       {
         message: 'Buy 5 shares @ 0.4000 ETH',
+        open: false,
         meta: {
           'froze funds': '12.0000 ETH +0.0600 ETH Tokens in potential trading fees',
           'gas cost': '0.3940 ETH',
@@ -60,6 +62,7 @@ const dummyTransactions = [
       },
       {
         message: 'Buy 5 shares @ 0.4000 ETH',
+        open: false,
         meta: {
           'froze funds': '12.0000 ETH +0.0600 ETH Tokens in potential trading fees',
           'gas cost': '0.3940 ETH',
@@ -69,6 +72,17 @@ const dummyTransactions = [
       },
       {
         message: 'Buy 5 shares @ 0.4000 ETH',
+        open: false,
+        meta: {
+          'froze funds': '12.0000 ETH +0.0600 ETH Tokens in potential trading fees',
+          'gas cost': '0.3940 ETH',
+          status: 'Success',
+          confirmations: '245,991',
+        },
+      },
+      {
+        message: 'Buy 5 shares @ 0.1000 ETH',
+        open: true,
         meta: {
           'froze funds': '12.0000 ETH +0.0600 ETH Tokens in potential trading fees',
           'gas cost': '0.3940 ETH',
@@ -93,6 +107,7 @@ const dummyTransactions = [
     transactions: [
       {
         message: 'Buy 5 shares @ 0.4000 ETH',
+        open: false,
         meta: {
           'froze funds': '12.0000 ETH +0.0600 ETH Tokens in potential trading fees',
           'gas cost': '0.3940 ETH',
@@ -117,6 +132,7 @@ const dummyTransactions = [
     transactions: [
       {
         message: 'Buy 5 shares @ 0.4000 ETH',
+        open: false,
         meta: {
           'froze funds': '12.0000 ETH +0.0600 ETH Tokens in potential trading fees',
           'gas cost': '0.3940 ETH',

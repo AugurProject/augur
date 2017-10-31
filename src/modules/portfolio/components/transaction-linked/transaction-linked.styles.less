@@ -9,22 +9,29 @@
   padding: 1rem 2rem;
   text-align: left;
   width: 100%;
+}
 
-  > span:first-child {
-    &:extend(.caps--large);
+.LinkedTransaction__message-chevron {
+  transition: transform .3s ease;
 
-    font-weight: 700;
+  &.is-open {
+    transform: rotate(-180deg);
   }
 
-  > span:last-child {
-    transition: transform .3s ease;
-
-    &.is-open {
-      transform: rotate(-180deg);
-    }
-
-    > svg {
-      width: 1.5rem;
-    }
+  > svg {
+    width: 1.5rem;
   }
+}
+
+.LinkedTransaction__message-text {
+  &:extend(.caps--large);
+
+  font-weight: 700;
+}
+
+.LinkedTransaction__status {
+  &:extend(.caps--extra-small);
+
+  font-weight: 500;
+  margin-bottom: 0.625rem;
 }
