@@ -7,7 +7,7 @@ import { formatEtherEstimate, formatEtherTokensEstimate } from 'utils/format-num
 import getValue from 'utils/get-value'
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
-import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications'
+// import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications'
 import { NEW_MARKET_REVIEW } from 'modules/create-market/constants/new-market-creation-steps'
 
 export default class CreateMarketReview extends Component {
@@ -160,13 +160,15 @@ export default class CreateMarketReview extends Component {
               }
             </form>
           </div>
-          { !p.isValid &&
-            <CreateMarketFormInputNotifications
-              errors={[p.creationError]}
-            />
-          }
+
         </div>
       </article>
     )
   }
 }
+
+// { !p.isValid &&
+//   <CreateMarketFormInputNotifications
+//     errors={[p.creationError]}
+//   />
+// }

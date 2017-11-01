@@ -3,8 +3,6 @@ import { withRouter } from 'react-router-dom'
 import { selectTopics } from 'modules/topics/selectors/topics'
 import { submitNewMarket } from 'modules/create-market/actions/submit-new-market'
 import {
-  addValidationToNewMarket,
-  removeValidationFromNewMarket,
   addOrderToNewMarket,
   removeOrderFromNewMarket,
   updateNewMarket,
@@ -24,8 +22,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  addValidationToNewMarket: data => dispatch(addValidationToNewMarket(data)),
-  removeValidationFromNewMarket: data => dispatch(removeValidationFromNewMarket(data)),
   addOrderToNewMarket: data => dispatch(addOrderToNewMarket(data)),
   removeOrderFromNewMarket: data => dispatch(removeOrderFromNewMarket(data)),
   updateNewMarket: data => dispatch(updateNewMarket(data)),
