@@ -12,8 +12,8 @@ import store from 'src/store'
 
 import { augur } from 'services/augurjs'
 
-require('core-js/fn/array/find')
-require('core-js/fn/string/starts-with')
+// require('core-js/fn/array/find')
+// require('core-js/fn/string/starts-with')
 
 // NOTE --  These are attached for convenience when built for development or debug
 if (process.env.NODE_ENV === 'development') {

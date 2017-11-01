@@ -34,11 +34,14 @@ export default class MarketHeader extends Component {
           {p.selectedOutcome === null ?
             <button
               className={Styles[`MarketHeader__back-button`]}
-              onClick={() => history.goBack()}
+              onClick={() => p.history.goBack()}
             >
-              {ChevronLeft}<span> back to list</span>
+              {ChevronLeft}<span> back</span>
             </button> :
-            <button className={Styles[`MarketHeader__back-button`]}>
+            <button
+              className={Styles[`MarketHeader__back-button`]}
+              onClick={() => p.updateSelectedOutcome(null)}
+            >
               {ChevronLeft}<span> view all outcomes</span>
             </button>
           }
