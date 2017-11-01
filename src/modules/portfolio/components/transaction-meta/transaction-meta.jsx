@@ -5,7 +5,7 @@ import Styles from 'modules/portfolio/components/transaction-meta/transaction-me
 const TransactionMeta = ({ meta }) => (
   <ul className={Styles['TransactionMeta']}>
     { Object.keys(meta).map(meta_title => (
-      <li><span>{ meta_title }</span><span>{ meta[meta_title] }</span></li>
+      <li key={meta_title}><span>{ meta_title }</span><span>{ meta[meta_title] }</span></li>
     )) }
   </ul>
 )

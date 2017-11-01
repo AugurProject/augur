@@ -43,7 +43,7 @@ export default class TransactionMultiple extends Component {
         </button>
         <div className={ToggleHeightStyles['toggle-height-target']} ref={ multipleTransactions => this.multipleTransactions = multipleTransactions }>
           { transaction.transactions.map((linked_transaction, i) => (
-            <LinkedTransaction transaction={linked_transaction} />
+            <LinkedTransaction key={i} transaction={linked_transaction} />
           ))}
         </div>
       </div>
