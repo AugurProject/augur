@@ -1,13 +1,18 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import Styles from 'modules/portfolio/components/transaction-meta/transaction-meta.styles'
 
 const TransactionMeta = ({ meta }) => (
   <ul className={Styles.TransactionMeta}>
-    { Object.keys(meta).map(meta_title => (
-      <li key={meta_title}><span>{ meta_title }</span><span>{ meta[meta_title] }</span></li>
+    { Object.keys(meta).map(metaTitle => (
+      <li key={metaTitle}><span>{ metaTitle }</span><span>{ meta[metaTitle] }</span></li>
     )) }
   </ul>
 )
+
+TransactionMeta.propTypes = {
+  meta: PropTypes.object.isRequired,
+}
 
 export default TransactionMeta

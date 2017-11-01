@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
 import { Helmet } from 'react-helmet'
 
 import TransactionSingle from 'modules/portfolio/components/transaction-single/transaction-single'
 import TransactionMultiple from 'modules/portfolio/components/transaction-multiple/transaction-multiple'
 import Paginator from 'modules/common/components/paginator/paginator'
-import { ChevronDown } from 'modules/common/components/icons/icons'
 
 import Styles from 'modules/portfolio/components/transactions/transactions.styles'
 

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import Styles from 'modules/portfolio/components/transaction-header/transaction-header.styles'
 
@@ -10,5 +11,9 @@ const TransactionHeader = ({ transaction }) => (
     <h4 className={Styles.TransactionHeader__date}>{ transaction.timestamp.full }</h4>
   </div>
 )
+
+TransactionHeader.propTypes = {
+  transaction: PropTypes.object.isRequired,
+}
 
 export default TransactionHeader

@@ -1,3 +1,5 @@
+/* eslint react/no-array-index-key: 0 */
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
@@ -41,9 +43,9 @@ export default class TransactionMultiple extends Component {
           <span className={classNames(CommonStyles['Transaction__linked-more-text'], { [`${CommonStyles['is-open']}`]: s.isOpen })}>{ s.isOpen ? 'Hide' : '+' } {transaction.transactions.length} Linked Transactions</span>
           <span className={classNames(CommonStyles['Transaction__linked-more-chevron'], { [`${CommonStyles['is-open']}`]: s.isOpen })}>{ ChevronDown }</span>
         </button>
-        <div className={ToggleHeightStyles['toggle-height-target']} ref={multipleTransactions => this.multipleTransactions = multipleTransactions}>
-          { transaction.transactions.map((linked_transaction, i) => (
-            <LinkedTransaction key={i} transaction={linked_transaction} />
+        <div className={ToggleHeightStyles['toggle-height-target']} ref={(multipleTransactions) => { this.multipleTransactions = multipleTransactions }}>
+          { transaction.transactions.map((linkedTransaction, i) => (
+            <LinkedTransaction key={i} transaction={linkedTransaction} />
           ))}
         </div>
       </div>

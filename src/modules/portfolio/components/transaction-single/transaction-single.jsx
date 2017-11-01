@@ -4,7 +4,6 @@ import classNames from 'classnames'
 
 import TransactionHeader from 'modules/portfolio/components/transaction-header/transaction-header'
 import TransactionMeta from 'modules/portfolio/components/transaction-meta/transaction-meta'
-import LinkedTransaction from 'modules/portfolio/components/transaction-linked/transaction-linked'
 import { ChevronDown } from 'modules/common/components/icons/icons'
 
 import toggleHeight from 'utils/toggle-height/toggle-height'
@@ -39,7 +38,7 @@ export default class TransactionSingle extends Component {
           <TransactionHeader transaction={transaction} />
           <span className={classNames({ [`${CommonStyles['is-open']}`]: s.isOpen })}>{ ChevronDown }</span>
         </button>
-        <div className={ToggleHeightStyles['toggle-height-target']} ref={singleTransactionMeta => this.singleTransactionMeta = singleTransactionMeta}>
+        <div className={ToggleHeightStyles['toggle-height-target']} ref={(singleTransactionMeta) => { this.singleTransactionMeta = singleTransactionMeta }}>
           <TransactionMeta meta={transaction.transactions[0].meta} />
         </div>
       </div>
