@@ -25,7 +25,7 @@ const mapStateToProps = (state) => {
       month: newSeries(),
       all: newSeries()
     },
-    All: {
+    Total: {
       day: newSeries(),
       week: newSeries(),
       month: newSeries(),

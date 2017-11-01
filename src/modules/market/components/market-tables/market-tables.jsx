@@ -31,7 +31,6 @@ export default class MarketTable extends Component {
               const mobileHide = mobileTitle === null
               return (
                 <th
-                  key={'th_'+title}
                   className={classNames(
                     Styles.MarketTable__title,
                     { [Styles['MarketTable__title--mobilehide']]: mobileHide }
@@ -47,7 +46,6 @@ export default class MarketTable extends Component {
         <tbody>
           {p.data.map(dataRow => (
             <tr
-              key={'tr_'+dataRow.name}
               className={Styles.MarketTable__row}
             >
               {p.titleKeyPairs.map((titlePair, ind) => {
@@ -87,12 +85,11 @@ export default class MarketTable extends Component {
                     </div>
                   )
                 } else {
-                  data = getValue(dataRow, dataKey)
+                  data = dataKey ? getValue(dataRow, dataKey) : null
                 }
 
                 return (
                   <td
-                    key={'td_'+titlePair[0]}
                     className={classNames(
                       Styles.MarketTable__value,
                       { [Styles['MarketTable__value--mobilehide']]: mobileHide }

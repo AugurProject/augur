@@ -47,6 +47,7 @@ export const ACCOUNT_EXPORT = 'export-account'
 export const REPORTING_OPEN = 'reporting-open'
 export const REPORTING_CLOSED = 'reporting-closed'
 export const REPORTING_REPORT = 'reporting-report'
+export const REPORTING_DISPUTE = 'reporting-dispute'
 
 // Dev only
 export const STYLE_SANDBOX = 'style-sandbox'
