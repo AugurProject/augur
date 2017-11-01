@@ -27,15 +27,15 @@ class PerformanceGraph extends Component {
     super(props)
 
     this.state = {
-    	graphType: 'Total',
-    	graphTypeOptions: [
+      graphType: 'Total',
+      graphTypeOptions: [
         { label: 'Total', value: 'Total' },
         { label: 'Total Realized', value: 'Realized' },
         { label: 'Total Unrealized', value: 'Unrealized' }
       ],
       graphTypeDefault: 'Total',
-    	graphPeriod: 'day',
-    	graphPeriodOptions: [
+      graphPeriod: 'day',
+      graphPeriodOptions: [
         { label: 'Past 24hrs', value: 'day' },
         { label: 'Past Week', value: 'week' },
         { label: 'Past Month', value: 'month' },
@@ -57,8 +57,24 @@ class PerformanceGraph extends Component {
         thousandsSep: ','
       }
     })
-
+    // console.log('componentDidMount')
+    // console.log(this.props)
+    // console.log(this.state)
     const id = 'performance_graph_chart'
+    const series = getValue(this.props.performanceData, `${this.state.graphType}.${this.state.graphPeriod}`)[0]
+    const defaultSeriesData = {
+      type: 'area',
+      color: '#ffffff',
+      className: Styles.PerformanceGraph__Series,
+      marker: {
+        fillColor: 'white',
+        lineColor: 'white',
+      },
+      name: series.name,
+      data: series.data
+    }
+
+    // console.log(defaultSeriesData)
 
     this.performanceGraph = new Highcharts.Chart(id, {
       title: {
@@ -67,7 +83,7 @@ class PerformanceGraph extends Component {
       chart: {
         backgroundColor: '#1e1a31',
         spacingLeft: 0,
-        spacingRight: 0
+        spacingRight: 0,
       },
       lang: {
         noData: 'No performance history.'
@@ -80,7 +96,7 @@ class PerformanceGraph extends Component {
           width: 4,
         },
         labels: {
-          formatter: function () {
+          formatter() {
             return formatDate(new Date(this.value)).simpleDate
           },
           style: {
@@ -89,25 +105,32 @@ class PerformanceGraph extends Component {
           }
         },
         tickLength: 6,
-        tickPositioner: function () {
-          const positions = [this.dataMin, this.dataMax]
+        // showFirstLabel: false,
+        // showLastLabel: false,
+        // minPadding: .05,
+        // maxPadding: .025,
+        // floor: 0,
+        tickPositioner() {
+          const positions = [this.dataMin - (this.dataMin * 0.1), this.dataMin, this.dataMax, this.dataMax + (this.dataMax * 0.1)]
           return positions
         }
       },
       yAxis: {
         visible: true,
         showFirstLabel: false,
-        showLastLabel: false,
+        showLastLabel: true,
         title: {
           text: null,
         },
+        // endOnTick: true,
+        // max: Math.ceil(this.dataMax),
         opposite: false,
         labels: {
           align: 'left',
           y: 15,
           x: 5,
           format: '{value} ETH',
-          formatter: function () {
+          formatter() {
             return formatEther(this.value).full
           },
           style: {
@@ -115,19 +138,17 @@ class PerformanceGraph extends Component {
             fontSize: '1rem'
           }
         },
-        ceiling: this.dataMax + (this.dataMax * .05),
-        floor: this.dataMin - (this.dataMin * .05),
-        tickPositioner: function (...a) {
+        tickPositioner(...a) {
           // default
-          let positions = [this.dataMin, (this.dataMax / 2), this.dataMax]
+          let positions = [this.dataMin, (this.dataMax / 2), Math.ceil(this.dataMax) + (this.dataMax * 0.05)]
 
           if (this.series[0] && this.series[0].length > 0) {
             const data = this.series[0].data
             const i = data.length / 2
-            const median = i % 1 == 0 ? (data[i - 1] + data[i]) / 2 : data[Math.floor(i)]
-            positions = [this.dataMin, median, this.dataMax]
+            const median = i % 1 === 0 ? (data[i - 1] + data[i]) / 2 : data[Math.floor(i)]
+            positions = [this.dataMin, median, Math.ceil(this.dataMax) + (this.dataMax * 0.1)]
           }
-          console.log(positions)
+          // console.log(positions)
           return positions
         }
       },
@@ -148,9 +169,9 @@ class PerformanceGraph extends Component {
         enabled: false
       },
       tooltip: {
-        positioner: function(labelWidth, labelHeight, point) {
-          console.log(labelWidth, labelHeight, point)
-          return { x: point.plotX - labelWidth, y: point.plotY - labelHeight}
+        positioner(labelWidth, labelHeight, point) {
+          // console.log(labelWidth, labelHeight, point)
+          return { x: point.plotX - labelWidth, y: point.plotY - (labelHeight * 0.9) }
         },
         backgroundColor: 'rgba(255,255,255,0)',
         borderWidth: 0,
@@ -165,8 +186,9 @@ class PerformanceGraph extends Component {
       },
       credits: {
         enabled: false
-      }
-    });
+      },
+      series: [defaultSeriesData]
+    })
 
     window.addEventListener('resize', this.updateChartDebounced)
 
@@ -200,11 +222,6 @@ class PerformanceGraph extends Component {
     this.setState({ graphType: newType, graphPeriod: newPeriod })
   }
 
-  getSelectedMedian() {
-    const i = getValue(this.props.performanceData, `${this.state.graphType}.${this.state.graphPeriod}`) || [].length / 2;
-    return i % 1 == 0 ? (arr[i - 1] + arr[i]) / 2 : arr[Math.floor(i)];
-  }
-
   updateChart() {
     (getValue(this.props.performanceData, `${this.state.graphType}.${this.state.graphPeriod}`) || []).forEach((series, i) => {
       if (this.performanceGraph.series[i] == null) {
@@ -229,10 +246,10 @@ class PerformanceGraph extends Component {
   }
 
   render() {
-    const p = this.props
+    // const p = this.props
     const s = this.state
 
-    return(
+    return (
       <section
         className={Styles.PerformanceGraph}
       >
@@ -257,4 +274,4 @@ class PerformanceGraph extends Component {
   }
 }
 
-export default PerformanceGraph;
+export default PerformanceGraph

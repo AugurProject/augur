@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
 // TODO: maybe change this to container and get performance graph data through a container
 import PerformanceGraph from 'modules/portfolio/containers/performance-graph'
@@ -9,50 +9,34 @@ import { MY_POSITIONS, MY_MARKETS, WATCHLIST, TRANSACTIONS } from 'modules/route
 
 import Styles from 'modules/portfolio/components/portfolio-header/portfolio-header.styles'
 
-// const PortfolioHeader = p => ()
+const PortfolioHeader = p => (
+  <section
+    className={Styles.PortfolioHeader}
+  >
+    <h1 className={Styles.PortfolioHeader__title}>portfolio: {getTitle(p.location.pathname)}</h1>
+    <PerformanceGraph />
+  </section>
+)
 
-class PortfolioHeader extends Component {
-  static propTypes = {
-    location: PropTypes.object,
-    match: PropTypes.object
-  }
+function getTitle(path) {
+  const view = parsePath(path)[0]
 
-  constructor(props) {
-    super(props)
-  }
-
-  getTitle(path) {
-    const view = parsePath(path)[0]
-
-    switch (view) {
+  switch (view) {
     case MY_MARKETS:
       return 'my markets'
-      break
     case WATCHLIST:
       return 'watching'
-      break
     case TRANSACTIONS:
       return 'transactions'
-      break
+    case MY_POSITIONS:
     default:
       return 'positions'
-      break
-    }
   }
+}
 
-  render() {
-    const p = this.props
-    const subTitle = this.getTitle(p.location.pathname)
-
-    return (
-      <section
-        className={Styles.PortfolioHeader}
-      >
-        <h1 className={Styles.PortfolioHeader__title}>portfolio: {subTitle}</h1>
-        <PerformanceGraph />
-      </section>
-    )
-  }
+PortfolioHeader.PropTypes = {
+  location: PropTypes.object,
+  match: PropTypes.object
 }
 
 export default PortfolioHeader
