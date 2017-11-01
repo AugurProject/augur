@@ -61,7 +61,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callba
     case "getMarketsClosingInDateRange":
       return getMarketsClosingInDateRange(db, request.params.earliestClosingTime, request.params.latestClosingTime, request.params.universe, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsInfo":
-      return getMarketsInfo(db, request.params.universe, request.params.marketIDs, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
+      return getMarketsInfo(db, request.params.marketIDs, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getOpenOrders":
       return getOpenOrders(db, request.params.marketID, request.params.outcome, request.params.orderType, request.params.creator, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     default:

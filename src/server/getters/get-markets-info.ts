@@ -1,36 +1,38 @@
-import { each } from "async";
-import BigNumber from "bignumber.js";
+import { parallel } from "async";
 import * as Knex from "knex";
-import { Address, MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIMarketsInfo, UIOutcomeInfo, ErrorCallback } from "../../types";
+import * as _ from "lodash";
+import { Address, MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIMarketsInfo, UIOutcomeInfo, ErrorCallback, AsyncCallback} from "../../types";
 import { reshapeOutcomesRowToUIOutcomeInfo, reshapeMarketsRowToUIMarketInfo, getMarketsWithReportingState } from "./database";
-import { queryModifier } from "./database";
 
-export function getMarketsInfo(db: Knex, universe: Address|null|undefined, marketIDs: Array<Address>|null|undefined, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: UIMarketsInfo) => void): void {
-  let query: Knex.QueryBuilder = getMarketsWithReportingState(db).orderBy("creationTime");
-  if (universe == null && marketIDs == null) {
-    return callback(new Error("must include universe or marketIDs parameters"));
-  }
-  if (universe != null) {
-    query = query.where({ universe });
-  }
-  if (marketIDs != null) {
-    query = query.whereIn("markets.marketID", marketIDs);
-  }
-  query = queryModifier(query, "volume", "desc", sortBy, isSortDescending, limit, offset);
-  query.asCallback((err: Error|null, marketsRows?: Array<MarketsRowWithCreationTime>): void => {
+interface MarketOutcomeResult {
+  marketsRows: Array<MarketsRowWithCreationTime>;
+  outcomesRows: Array<OutcomesRow>;
+}
+
+export function getMarketsInfo(db: Knex, marketIDs: Array<Address>|null|undefined, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: UIMarketsInfo) => void): void {
+  let marketsQuery: Knex.QueryBuilder = getMarketsWithReportingState(db);
+  if (marketIDs == null || !marketIDs.length) return callback(new Error("must include marketIDs parameter"));
+  marketsQuery = marketsQuery.whereIn("markets.marketID", marketIDs);
+
+  parallel({
+    marketsRows: (next: AsyncCallback) => marketsQuery.asCallback(next),
+    outcomesRows: (next: AsyncCallback) => db("outcomes").whereIn("marketID", marketIDs).asCallback(next),
+  }, (err: Error|null, marketOutcomeResult: MarketOutcomeResult ): void => {
+    const { marketsRows, outcomesRows } = marketOutcomeResult;
     if (err) return callback(err);
     if (!marketsRows || !marketsRows.length) return callback(null);
-    const marketsInfo: UIMarketsInfo = [];
-    each(marketsRows, (marketsRow: MarketsRowWithCreationTime, nextMarketsRow: ErrorCallback): void => {
-      db("outcomes").where("marketID", marketsRow.marketID).asCallback((err: Error|null, outcomesRows?: Array<OutcomesRow>): void => {
-        if (err) return nextMarketsRow(err);
-        const outcomesInfo: Array<UIOutcomeInfo> = outcomesRows!.map((outcomesRow: OutcomesRow): UIOutcomeInfo => reshapeOutcomesRowToUIOutcomeInfo(outcomesRow));
-        marketsInfo.push(reshapeMarketsRowToUIMarketInfo(marketsRow, outcomesInfo));
-        nextMarketsRow();
-      });
-    }, (err: Error|null): void => {
-      if (err) return callback(err);
-      callback(null, marketsInfo);
+    const marketsRowsByMarket = _.keyBy(marketsRows, (r: MarketsRowWithCreationTime): string => r.marketID);
+    const outcomesRowsByMarket = _.groupBy(outcomesRows, (r: OutcomesRow): string => r.marketID);
+
+    const marketsInfo: UIMarketsInfo = _.map(marketIDs, (marketID: string): UIMarketInfo|null => {
+      const market = marketsRowsByMarket[marketID];
+      if ( !market ) {
+        return null;
+      }
+      const outcomes = _.map(outcomesRowsByMarket[marketID], (outcomesRow: OutcomesRow): UIOutcomeInfo => reshapeOutcomesRowToUIOutcomeInfo(outcomesRow));
+      return reshapeMarketsRowToUIMarketInfo(market, outcomes);
     });
+
+    callback(null, marketsInfo);
   });
 }
