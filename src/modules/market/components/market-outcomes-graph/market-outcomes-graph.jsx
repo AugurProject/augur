@@ -173,12 +173,13 @@ export default class MarketOutcomesGraph extends Component {
             <span >Filter (TODO)</span>
           </div>
         </div>
-        <div
+        <button
           id="market_outcomes_graph"
           className={Styles.MarketOutcomesGraph__graph}
+          onClick={() => this.props.updateSelectedOutcome(0)}
         >
-          <span>Graphs Placeholder</span>
-        </div>
+          <span>Graphs Placeholder (clicking selects outcome 0)</span>
+        </button>
       </div>
     )
   }

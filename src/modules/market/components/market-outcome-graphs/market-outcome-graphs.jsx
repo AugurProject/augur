@@ -32,14 +32,17 @@ export default class MarketOutcomeGraphs extends Component {
   }
 
   render() {
-    const s = this.state
-    const p = this.props
+    // const s = this.state
+    // const p = this.props
 
     // NOTE -- wire up marketMin + marketMax
 
     return (
       <section className={Styles.MarketOutcomeGraphs}>
         <span className={Styles.MarketOutcomeGraphs__center} />
+        <div className={Styles.MarketOutcomeGraphs__placeholder}>
+          <span>Placeholder For Graphs</span>
+        </div>
       </section>
     )
   }
