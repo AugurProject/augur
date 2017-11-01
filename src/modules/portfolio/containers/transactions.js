@@ -322,7 +322,7 @@ const dummyTransactions = [
       },
     ],
   },
-{
+  {
     hash: '0x5fac9266041e13f4d70574e75ceef6ff05d4e67dc4819dec52c988a935a478f8',
     status: 'pending order',
     description: 'How many marine species will go extinct between January 1, 2016 and January 1, 2018?',

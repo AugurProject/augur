@@ -45,15 +45,15 @@ export default class Transactions extends Component {
           <h2 className={Styles.Transactions__heading}>Transactions</h2>
         </div>
         <div className={Styles.Transactions__list}>
-        {p.transactions.length && s.boundedLength &&
+          {p.transactions.length && s.boundedLength &&
           [...Array(s.boundedLength)].map((unused, i) => {
             const transaction = p.transactions[(s.lowerBound - 1) + i]
 
             if (transaction.transactions.length <= 1) {
               return <TransactionSingle key={transaction.hash} transaction={transaction} />
-            } else {
-              return <TransactionMultiple key={transaction.hash} transaction={transaction} />
             }
+            return <TransactionMultiple key={transaction.hash} transaction={transaction} />
+
           })
         }
         </div>

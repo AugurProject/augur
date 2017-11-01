@@ -34,12 +34,12 @@ export default class TransactionSingle extends Component {
       <div className={CommonStyles.Transaction__item}>
         <button
           className={CommonStyles.Transaction__body}
-          onClick={() => { toggleHeight(this.singleTransactionMeta, s.isOpen, () => { this.setState({ 'isOpen': !s.isOpen }) }) }}
+          onClick={() => { toggleHeight(this.singleTransactionMeta, s.isOpen, () => { this.setState({ isOpen: !s.isOpen }) }) }}
         >
           <TransactionHeader transaction={transaction} />
-          <span className={classNames({ [`${CommonStyles['is-open']}`] : s.isOpen })}>{ ChevronDown }</span>
+          <span className={classNames({ [`${CommonStyles['is-open']}`]: s.isOpen })}>{ ChevronDown }</span>
         </button>
-        <div className={ToggleHeightStyles['toggle-height-target']} ref={ singleTransactionMeta => this.singleTransactionMeta = singleTransactionMeta }>
+        <div className={ToggleHeightStyles['toggle-height-target']} ref={singleTransactionMeta => this.singleTransactionMeta = singleTransactionMeta}>
           <TransactionMeta meta={transaction.transactions[0].meta} />
         </div>
       </div>

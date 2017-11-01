@@ -10,7 +10,7 @@
   width: 100%;
 
   > span {
-    transition: transform .3s ease;
+    transition: transform 0.3s ease;
 
     &.is-open {
       transform: rotate(-180deg);
@@ -40,7 +40,7 @@
 .Transaction__linked-more-text {
   &:extend(.caps--large);
 
-  transition: color .15s ease;
+  transition: color 0.15s ease;
 
   &.is-open {
     color: @color-lightgray;
@@ -48,7 +48,7 @@
 }
 
 .Transaction__linked-more-chevron {
-  transition: transform .3s ease;
+  transition: transform 0.3s ease;
 
   &.is-open {
     transform: rotate(-180deg);
@@ -96,10 +96,6 @@
 
 .Transactions__item {
   margin-bottom: 1rem;
-}
-
-.Transactions__linked-meta-wrapper {
-
 }
 
 .Transactions__linked-meta {

@@ -11,7 +11,7 @@ import ToggleHeightStyles from 'utils/toggle-height/toggle-height.styles'
 
 export default class LinkedTransaction extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       isOpen: false,
@@ -26,7 +26,7 @@ export default class LinkedTransaction extends Component {
       <div>
         <button
           className={Styles.LinkedTransaction__message}
-          onClick={() => { toggleHeight(this.metaWrapper, s.isOpen, () => { this.setState({ 'isOpen' : !s.isOpen }) }) }}
+          onClick={() => { toggleHeight(this.metaWrapper, s.isOpen, () => { this.setState({ isOpen: !s.isOpen }) }) }}
         >
           <div>
             { p.transaction.open &&
@@ -34,7 +34,7 @@ export default class LinkedTransaction extends Component {
             }
             <span className={Styles['LinkedTransaction__message-text']}>{ p.transaction.message }</span>
           </div>
-          <span className={classNames(Styles['LinkedTransaction__message-chevron'], { [`${Styles['is-open']}`] : s.isOpen })}>{ ChevronDown }</span>
+          <span className={classNames(Styles['LinkedTransaction__message-chevron'], { [`${Styles['is-open']}`]: s.isOpen })}>{ ChevronDown }</span>
         </button>
         <div className={ToggleHeightStyles['toggle-height-target']} ref={metaWrapper => this.metaWrapper = metaWrapper}>
           <TransactionMeta meta={p.transaction.meta} />
