@@ -15,7 +15,7 @@ import {
   CLEAR_NEW_MARKET
 } from 'modules/create-market/actions/update-new-market'
 
-import { NEW_MARKET_REVIEW } from 'modules/create-market/constants/new-market-creation-steps'
+// import { NEW_MARKET_REVIEW } from 'modules/create-market/constants/new-market-creation-steps'
 
 describe('modules/create-market/actions/update-new-market.js', () => {
   const test = (t) => {

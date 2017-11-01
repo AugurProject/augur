@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
@@ -7,41 +7,37 @@ import CreateMarketForm from 'modules/create-market/components/create-market-for
 
 import Styles from 'modules/create-market/components/create-market-view/create-market-view.styles'
 
-export default class CreateMarketView extends Component {
-  static propTypes = {
-    newMarket: PropTypes.object.isRequired,
-    updateNewMarket: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    universe: PropTypes.object.isRequired,
-    isMobileSmall: PropTypes.bool.isRequired,
-  }
+const CreateMarketView = p => (
+  <section className={Styles.CreateMarketView}>
+    <Helmet>
+      <title>Create Market</title>
+    </Helmet>
+    <div>
+      <CreateMarketPreview
+        newMarket={p.newMarket}
+      />
+      <CreateMarketForm
+        newMarket={p.newMarket}
+        updateNewMarket={p.updateNewMarket}
+        categories={p.categories}
+        availableEth={p.availableEth}
+        addOrderToNewMarket={p.addOrderToNewMarket}
+        removeOrderFromNewMarket={p.removeOrderFromNewMarket}
+        submitNewMarket={p.submitNewMarket}
+        isMobileSmall={p.isMobileSmall}
+        history={p.history}
+        universe={p.universe}
+      />
+    </div>
+  </section>
+)
 
-  render() {
-    const p = this.props
-
-    return (
-      <section className={Styles.CreateMarketView}>
-        <Helmet>
-          <title>Create Market</title>
-        </Helmet>
-        <div>
-          <CreateMarketPreview
-            newMarket={p.newMarket}
-          />
-          <CreateMarketForm
-            newMarket={p.newMarket}
-            updateNewMarket={p.updateNewMarket}
-            categories={p.categories}
-            availableEth={p.availableEth}
-            addOrderToNewMarket={p.addOrderToNewMarket}
-            removeOrderFromNewMarket={p.removeOrderFromNewMarket}
-            submitNewMarket={p.submitNewMarket}
-            isMobileSmall={p.isMobileSmall}
-            history={p.history}
-            universe={p.universe}
-          />
-        </div>
-      </section>
-    )
-  }
+CreateMarketView.propTypes = {
+  newMarket: PropTypes.object.isRequired,
+  updateNewMarket: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
+  universe: PropTypes.object.isRequired,
+  isMobileSmall: PropTypes.bool.isRequired,
 }
+
+export default CreateMarketView

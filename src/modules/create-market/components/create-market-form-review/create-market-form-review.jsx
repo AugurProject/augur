@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
+// import classNames from 'classnames'
 import { augur } from 'services/augurjs'
-import BigNumber from 'bignumber.js'
+// import BigNumber from 'bignumber.js'
 
 import { formatEtherEstimate, formatEtherTokensEstimate } from 'utils/format-number'
 
@@ -60,8 +60,8 @@ export default class CreateMarketReview extends Component {
   }
 
   render() {
-    const p = this.props
-    const s = this.state
+    // const p = this.props
+    // const s = this.state
 
     return (
       <article className={StylesForm.CreateMarketForm__fields}>

@@ -89,8 +89,8 @@ describe('modules/create-market/actions/submit-new-market', () => {
         },
 
         _numTicks: 2,
-        _maxDisplayPrice: "1",
-        _minDisplayPrice: "0",
+        _maxDisplayPrice: '1',
+        _minDisplayPrice: '0',
         _numOutcomes: 2,
         _topic: 'test topic',
         _feePerEthInWei: '0x470de4df820000',
