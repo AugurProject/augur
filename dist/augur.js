@@ -734,6 +734,22 @@ var decimals = new BigNumber(4, 10);
 var multiple = ten.toPower(decimals);
 
 module.exports = {
+
+  REPORTING_STATE: {
+    PRE_REPORTING: "PRE_REPORTING",
+    DESIGNATED_REPORTING: "DESIGNATED_REPORTING",
+    AWAITING_FORK_MIGRATION: "AWAITING_FORK_MIGRATION",
+    DESIGNATED_DISPUTE: "DESIGNATED_DISPUTE",
+    FIRST_REPORTING: "FIRST_REPORTING",
+    FIRST_DISPUTE: "FIRST_DISPUTE",
+    AWAITING_NO_REPORT_MIGRATION: "AWAITING_NO_REPORT_MIGRATION",
+    LAST_REPORTING: "LAST_REPORTING",
+    LAST_DISPUTE: "LAST_DISPUTE",
+    FORKING: "FORKING",
+    AWAITING_FINALIZATION: "AWAITING_FINALIZATION",
+    FINALIZED: "FINALIZED"
+  },
+
   ZERO: new BigNumber(0),
 
   PRECISION: {
@@ -28597,7 +28613,7 @@ module.exports={
   "_args": [
     [
       "elliptic@6.4.0",
-      "/home/jack/src/augur.js"
+      "/Users/epheph/tmp/augur.js"
     ]
   ],
   "_from": "elliptic@6.4.0",
@@ -28624,7 +28640,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
   "_spec": "6.4.0",
-  "_where": "/home/jack/src/augur.js",
+  "_where": "/Users/epheph/tmp/augur.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
