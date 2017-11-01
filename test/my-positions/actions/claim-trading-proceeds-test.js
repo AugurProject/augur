@@ -6,7 +6,7 @@ import sinon from 'sinon'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 
-describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
+describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
   proxyquire.noPreserveCache().noCallThru()
   const middlewares = [thunk]
   const mockStore = configureMockStore(middlewares)
@@ -16,21 +16,21 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
       const Speedomatic = { bignum: () => {} }
       const AugurJS = {
         augur: {
-          trading: { claimMarketsProceeds: () => {} }
+          trading: { claimMarketsTradingProceeds: () => {} }
         }
       }
       const LoadMarketsInfo = { loadMarketsInfo: () => {} }
       const UpdateAssets = {}
       const WinningPositions = sinon.stub().returns(t.selectors.winningPositions)
-      const claimProceeds = proxyquire('../../../src/modules/my-positions/actions/claim-proceeds.js', {
+      const claimTradingProceeds = proxyquire('../../../src/modules/my-positions/actions/claim-trading-proceeds.js', {
         '../../../services/augurjs': AugurJS,
         '../../markets/actions/load-markets-info': LoadMarketsInfo,
         '../../auth/actions/update-assets': UpdateAssets,
         '../selectors/winning-positions': WinningPositions
       }).default
       sinon.stub(Speedomatic, 'bignum', n => new BigNumber(n, 10))
-      sinon.stub(AugurJS.augur.trading, 'claimMarketsProceeds', (p) => {
-        store.dispatch({ type: 'CLAIM_MARKETS_PROCEEDS', markets: p.markets })
+      sinon.stub(AugurJS.augur.trading, 'claimMarketsTradingProceeds', (p) => {
+        store.dispatch({ type: 'CLAIM_MARKETS_TRADING_PROCEEDS', markets: p.markets })
         p.onSuccess(p.markets)
       })
       sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', (marketIDs, callback) => (dispatch, getState) => {
@@ -38,7 +38,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
         callback(null)
       })
       UpdateAssets.updateAssets = sinon.stub().returns({ type: 'UPDATE_ASSETS' })
-      store.dispatch(claimProceeds())
+      store.dispatch(claimTradingProceeds())
       t.assertions(store.getActions())
       store.clearActions()
     })
@@ -91,7 +91,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
-        type: 'CLAIM_MARKETS_PROCEEDS',
+        type: 'CLAIM_MARKETS_TRADING_PROCEEDS',
         markets: ['0xa1']
       }, {
         type: 'UPDATE_ASSETS'
@@ -160,7 +160,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
-        type: 'CLAIM_MARKETS_PROCEEDS',
+        type: 'CLAIM_MARKETS_TRADING_PROCEEDS',
         markets: ['0xa2']
       }, {
         type: 'UPDATE_ASSETS'
@@ -212,7 +212,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
-        type: 'CLAIM_MARKETS_PROCEEDS',
+        type: 'CLAIM_MARKETS_TRADING_PROCEEDS',
         markets: ['0xa2', '0xa3']
       }, {
         type: 'UPDATE_ASSETS'
@@ -263,7 +263,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
-        type: 'CLAIM_MARKETS_PROCEEDS',
+        type: 'CLAIM_MARKETS_TRADING_PROCEEDS',
         markets: ['0xa3']
       }, {
         type: 'UPDATE_ASSETS'

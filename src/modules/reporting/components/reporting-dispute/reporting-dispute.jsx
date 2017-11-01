@@ -19,20 +19,17 @@ export default class ReportingDispute extends Component {
     super(props)
 
     this.state = {
-      disputeBond: '10000 REP',
+      stakeIsRequired: false,
+      minimumStakeRequired: false,
       currentStep: 0,
       isFormValid: true,
       isMarketValid: null,
-      currentOutcome: 'Hong Kong',
+      disputeBond: '10000',
       selectedOutcome: '',
       stake: '',
       validations: {
         isMarketValid: false,
       }
-    }
-
-    if (this.props.market.isStakeRequired) {
-      this.state.validations.stake = false
     }
 
     this.prevPage = this.prevPage.bind(this)
@@ -76,17 +73,17 @@ export default class ReportingDispute extends Component {
               updateState={this.updateState}
               disputeBond={s.disputeBond}
               isMarketValid={s.isMarketValid}
-              currentOutcome={s.currentOutcome}
               selectedOutcome={s.selectedOutcome}
               stake={s.stake}
               validations={s.validations}
+              stakeIsRequired={s.stakeIsRequired}
+              minimumStakeRequired={s.minimumStakeRequired}
             />
           }
           { s.currentStep === 1 &&
             <ReportingDisputeConfirm
               market={p.market}
               isMarketValid={s.isMarketValid}
-              currentOutcome={s.currentOutcome}
               selectedOutcome={s.selectedOutcome}
               stake={s.stake}
               disputeBond={s.disputeBond}

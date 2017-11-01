@@ -70,11 +70,137 @@ export default Reporting
 //   eventBond: '3.6',
 //   outcomes: [
 //     {
+//       stake: '40.2',
 //       id: '2',
 //       outstandingShares: '1000',
 //       price: '0',
 //       sharesPurchased: '0',
 //       name: 'Yes',
+//       marketID: '0xcd7b177af7a12ec3be1c7f992ec7d608959630f2113227a2cdd9db562bd01eb4',
+//       lastPrice: {
+//         value: 0,
+//         formattedValue: 0,
+//         formatted: '0',
+//         roundedValue: 0,
+//         rounded: '0.0000',
+//         minimized: '0',
+//         denomination: ' ETH Tokens',
+//         full: '0 ETH Tokens'
+//       },
+//       lastPricePercent: {
+//         value: 50,
+//         formattedValue: 50,
+//         formatted: '50.0',
+//         roundedValue: 50,
+//         rounded: '50',
+//         minimized: '50',
+//         denomination: '%',
+//         full: '50.0%'
+//       },
+//       trade: {
+//         side: 'buy',
+//         numShares: null,
+//         limitPrice: null,
+//         maxNumShares: {
+//           value: 0,
+//           formattedValue: 0,
+//           formatted: '0',
+//           roundedValue: 0,
+//           rounded: '0.00',
+//           minimized: '0',
+//           denomination: ' shares',
+//           full: '0 shares'
+//         },
+//         potentialEthProfit: null,
+//         potentialEthLoss: null,
+//         potentialLossPercent: null,
+//         potentialProfitPercent: null,
+//         totalFee: {
+//           value: 0,
+//           formattedValue: 0,
+//           formatted: '',
+//           roundedValue: 0,
+//           rounded: '',
+//           minimized: '',
+//           denomination: '',
+//           full: ''
+//         },
+//         gasFeesRealEth: {
+//           value: 0,
+//           formattedValue: 0,
+//           formatted: '',
+//           roundedValue: 0,
+//           rounded: '',
+//           minimized: '',
+//           denomination: '',
+//           full: ''
+//         },
+//         totalCost: {
+//           value: 0,
+//           formattedValue: 0,
+//           formatted: '0',
+//           roundedValue: 0,
+//           rounded: '0.0000',
+//           minimized: '0',
+//           denomination: ' ETH Tokens',
+//           full: '0 ETH Tokens'
+//         },
+//         tradeTypeOptions: [
+//           {
+//             label: 'buy',
+//             value: 'buy'
+//           },
+//           {
+//             label: 'sell',
+//             value: 'sell'
+//           }
+//         ],
+//         tradeSummary: {
+//           totalGas: {
+//             value: 0,
+//             formattedValue: 0,
+//             formatted: '0',
+//             roundedValue: 0,
+//             rounded: '0.0000',
+//             minimized: '0',
+//             denomination: ' ETH',
+//             full: '0 ETH'
+//           },
+//           tradeOrders: [
+
+//           ]
+//         }
+//       },
+//       orderBook: {
+//         bids: [
+
+//         ],
+//         asks: [
+
+//         ]
+//       },
+//       orderBookSeries: {
+//         bids: [
+
+//         ],
+//         asks: [
+
+//         ]
+//       },
+//       topBid: null,
+//       topAsk: null,
+//       position: null,
+//       userOpenOrders: [
+
+//       ]
+//     },
+//     {
+//       stake: '20.8',
+//       id: '1',
+//       outstandingShares: '1000',
+//       price: '0',
+//       sharesPurchased: '0',
+//       name: 'No',
 //       marketID: '0xcd7b177af7a12ec3be1c7f992ec7d608959630f2113227a2cdd9db562bd01eb4',
 //       lastPrice: {
 //         value: 0,
@@ -460,6 +586,7 @@ const market = {
   eventBond: '3.857142857142857197',
   outcomes: [
     {
+      stake: '0.8',
       outstandingShares: '166',
       price: '0.5625',
       sharesPurchased: '0',
@@ -584,6 +711,7 @@ const market = {
       ]
     },
     {
+      stake: '1.2',
       outstandingShares: '166',
       price: '0.225',
       sharesPurchased: '0',
@@ -708,6 +836,7 @@ const market = {
       ]
     },
     {
+      stake: '10.8',
       outstandingShares: '166',
       price: '0.225',
       sharesPurchased: '0',
@@ -832,6 +961,7 @@ const market = {
       ]
     },
     {
+      stake: '9.7',
       outstandingShares: '166',
       price: '0.025',
       sharesPurchased: '0',
@@ -956,6 +1086,7 @@ const market = {
       ]
     },
     {
+      stake: '0',
       outstandingShares: '166',
       price: '0',
       sharesPurchased: '0',
@@ -1080,6 +1211,7 @@ const market = {
       ]
     },
     {
+      stake: '3.4',
       outstandingShares: '166',
       price: '0',
       sharesPurchased: '0',
@@ -1204,6 +1336,7 @@ const market = {
       ]
     },
     {
+      stake: '2',
       outstandingShares: '166',
       price: '0',
       sharesPurchased: '0',
@@ -1328,6 +1461,7 @@ const market = {
       ]
     },
     {
+      stake: '0.1',
       outstandingShares: '166',
       price: '0',
       sharesPurchased: '0',
