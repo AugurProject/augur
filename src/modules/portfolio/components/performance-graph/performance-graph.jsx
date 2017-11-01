@@ -7,6 +7,8 @@ import Dropdown from 'modules/common/components/dropdown/dropdown'
 
 import debounce from 'utils/debounce'
 import getValue from 'utils/get-value'
+import { formatEther } from 'utils/format-number'
+import { formatDate } from 'utils/format-date'
 
 import Styles from 'modules/portfolio/components/performance-graph/performance-graph.styles'
 
@@ -64,6 +66,8 @@ class PerformanceGraph extends Component {
       },
       chart: {
         backgroundColor: '#1e1a31',
+        spacingLeft: 0,
+        spacingRight: 0
       },
       lang: {
         noData: 'No performance history.'
@@ -76,25 +80,22 @@ class PerformanceGraph extends Component {
           width: 4,
         },
         labels: {
-          // align: '',
+          formatter: function () {
+            return formatDate(new Date(this.value)).simpleDate
+          },
           style: {
             color: '#a7a2b2',
-            fontSize: '1rem'
+            fontSize: '1rem',
           }
         },
+        tickLength: 6,
         tickPositioner: function () {
-          // TODO: this is going to need more work than this placeholder function
           const positions = [this.dataMin, this.dataMax]
-          // console.log(this.dataMin)
-          // console.log(this.dataMax)
           return positions
         }
       },
       yAxis: {
         visible: true,
-        // crosshair: {
-        //   width: 1,
-        // },
         showFirstLabel: false,
         showLastLabel: false,
         title: {
@@ -106,21 +107,27 @@ class PerformanceGraph extends Component {
           y: 15,
           x: 5,
           format: '{value} ETH',
-          // x: -20,
+          formatter: function () {
+            return formatEther(this.value).full
+          },
           style: {
-            // @color-lightgray: #a7a2b2;
-            // @color-lightergray: #dbdae1;
-            // @color-lightest-gray: #dfdfdf;
-            // @color-offwhite: #f0eff6;
             color: '#a7a2b2',
             fontSize: '1rem'
           }
         },
-        tickPositioner: function () {
-          // TODO: this is going to need more work than this placeholder function
-          const positions = [this.dataMin, (this.dataMax / 2), this.dataMax]
-          // console.log(this.dataMin)
-          // console.log(this.dataMax)
+        ceiling: this.dataMax + (this.dataMax * .05),
+        floor: this.dataMin - (this.dataMin * .05),
+        tickPositioner: function (...a) {
+          // default
+          let positions = [this.dataMin, (this.dataMax / 2), this.dataMax]
+
+          if (this.series[0] && this.series[0].length > 0) {
+            const data = this.series[0].data
+            const i = data.length / 2
+            const median = i % 1 == 0 ? (data[i - 1] + data[i]) / 2 : data[Math.floor(i)]
+            positions = [this.dataMin, median, this.dataMax]
+          }
+          console.log(positions)
           return positions
         }
       },
@@ -141,7 +148,19 @@ class PerformanceGraph extends Component {
         enabled: false
       },
       tooltip: {
-        pointFormat: '<span style="color: #372e4b;">{series.name}</span>: <b>{point.y} ETH Tokens</b><br/>',
+        positioner: function(labelWidth, labelHeight, point) {
+          console.log(labelWidth, labelHeight, point)
+          return { x: point.plotX - labelWidth, y: point.plotY - labelHeight}
+        },
+        backgroundColor: 'rgba(255,255,255,0)',
+        borderWidth: 0,
+        headerFormat: '',
+        style: {
+          fontSize: '1rem'
+        },
+        shadow: false,
+        shape: 'none',
+        pointFormat: '<b style="color:{point.color}">{point.y} ETH</b>',
         valueDecimals: 2
       },
       credits: {
@@ -181,12 +200,17 @@ class PerformanceGraph extends Component {
     this.setState({ graphType: newType, graphPeriod: newPeriod })
   }
 
+  getSelectedMedian() {
+    const i = getValue(this.props.performanceData, `${this.state.graphType}.${this.state.graphPeriod}`) || [].length / 2;
+    return i % 1 == 0 ? (arr[i - 1] + arr[i]) / 2 : arr[Math.floor(i)];
+  }
+
   updateChart() {
     (getValue(this.props.performanceData, `${this.state.graphType}.${this.state.graphPeriod}`) || []).forEach((series, i) => {
       if (this.performanceGraph.series[i] == null) {
         this.performanceGraph.addSeries({
           type: 'area',
-          color: 'white',
+          color: '#ffffff',
           className: Styles.PerformanceGraph__Series,
           marker: {
             fillColor: 'white',
@@ -199,6 +223,8 @@ class PerformanceGraph extends Component {
         this.performanceGraph.series[i].setData(series.data, false)
       }
     })
+
+    // console.log(this.performanceGraph)
     this.performanceGraph.redraw()
   }
 

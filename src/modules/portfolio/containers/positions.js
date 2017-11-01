@@ -27,20 +27,24 @@ const mapStateToProps = (state) => {
     endDateLabel: 'endDateLabel',
     endDate: { date, formatted: date.toString()},
     outcomes: [
+      [],
       {
         name: 'outcome1',
-        userOpenOrders: {
+        userOpenOrders: [{
+          qtyShares: {formatted: '10'},
           unmatchedShares: { formatted: '10' },
-          purchasePrice: { formatted: '0.5' }
-        },
+          purchasePrice: { formatted: '0.5' },
+          avgPrice: { formatted: '0.5'}
+        }],
         position: { closePosition: () => console.log('closeposition1') }
       },
       {
         name: 'outcome2',
-        userOpenOrders: {
+        userOpenOrders: [{
           unmatchedShares: { formatted: '5' },
-          purchasePrice: { formatted: '0.75' }
-        },
+          purchasePrice: { formatted: '0.75' },
+          avgPrice: { formatted: '0.7'}
+        }],
         position: { closePosition: () => console.log('closeposition2') }
       }
     ],
@@ -55,6 +59,10 @@ const mapStateToProps = (state) => {
         position: {
           qtyShares: {formatted: '10'},
           purchasePrice: {formatted: '0.5'},
+          lastPrice: {formatted: '0.45'},
+          realizedNet: {formatted: '0'},
+          unrealizedNet: {formatted: '1'},
+          totalNet: {formatted: '1'},
           closePosition: {closePosition: () => console.log('closeposition3')}
         }
       },
@@ -63,6 +71,10 @@ const mapStateToProps = (state) => {
         position: {
           qtyShares: {formatted: '5'},
           purchasePrice: {formatted: '0.75'},
+          lastPrice: {formatted: '0.8'},
+          realizedNet: {formatted: '0'},
+          unrealizedNet: {formatted: '0.05'},
+          totalNet: {formatted: '.05'},
           closePosition: {closePosition: () => console.log('closeposition4')}
         }
       }

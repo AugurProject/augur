@@ -13,7 +13,6 @@ import Styles from 'modules/portfolio/components/portfolio-header/portfolio-head
 
 class PortfolioHeader extends Component {
   static propTypes = {
-    isMobile: PropTypes.bool,
     location: PropTypes.object,
     match: PropTypes.object
   }
