@@ -29,104 +29,104 @@ export default class MarketOutcomesGraph extends Component {
   }
 
   componentDidMount() {
-    noData(Highstock)
-
-    Highstock.setOptions({
-      lang: {
-        thousandsSep: ','
-      }
-    })
-
-    this.marketOutcomesGraph = new Highstock.Chart('market_outcomes_graph', {
-      title: {
-        text: null
-      },
-      chart: {
-        spacingTop: 1,
-        spacingRight: 0,
-        spacingLeft: 0
-      },
-      lang: {
-        noData: 'No price history'
-      },
-      rangeSelector: { selected: 1 },
-      xAxis: {
-        type: 'datetime',
-        title: {
-          text: null
-        },
-        tickLength: 7,
-        crosshair: {
-          snap: false,
-          label: {
-            enabled: true,
-            shape: 'square'
-          }
-        }
-      },
-      yAxis: {
-        title: {
-          text: null
-        },
-        tickLength: 0,
-        tickWidth: 0,
-        ceiling: 1,
-        crosshair: {
-          snap: false,
-          label: {
-            enabled: true,
-            format: '{value:.2f}',
-            shape: 'square'
-          }
-        },
-        labels: {
-          align: 'left',
-          y: 15,
-          x: 0,
-          formatter: function () { // eslint-disable-line func-names, object-shorthand
-            return this.isFirst ? '' : this.value
-          }
-        }
-      },
-      legend: {
-        enabled: false
-      },
-      tooltip: {
-        enabled: false
-      },
-      plotOptions: {
-        series: {
-          point: {
-            events: {
-              mouseOver: event => this.setState({
-                hoveredOutcome: {
-                  name: this.props.priceTimeSeries[event.target.series.index].name,
-                  price: event.target.y
-                }
-              }),
-              mouseOut: event => this.setState({ hoveredOutcome: null }),
-              click: event => this.props.updateSelectedOutcome(event.point.colorIndex)
-            }
-          }
-        }
-      },
-      credits: {
-        enabled: false
-      }
-    })
-
-    window.addEventListener('resize', this.debouncedUpdateGraph)
-
-    this.updateGraph()
+    // noData(Highstock)
+    //
+    // Highstock.setOptions({
+    //   lang: {
+    //     thousandsSep: ','
+    //   }
+    // })
+    //
+    // this.marketOutcomesGraph = new Highstock.Chart('market_outcomes_graph', {
+    //   title: {
+    //     text: null
+    //   },
+    //   chart: {
+    //     spacingTop: 1,
+    //     spacingRight: 0,
+    //     spacingLeft: 0
+    //   },
+    //   lang: {
+    //     noData: 'No price history'
+    //   },
+    //   rangeSelector: { selected: 1 },
+    //   xAxis: {
+    //     type: 'datetime',
+    //     title: {
+    //       text: null
+    //     },
+    //     tickLength: 7,
+    //     crosshair: {
+    //       snap: false,
+    //       label: {
+    //         enabled: true,
+    //         shape: 'square'
+    //       }
+    //     }
+    //   },
+    //   yAxis: {
+    //     title: {
+    //       text: null
+    //     },
+    //     tickLength: 0,
+    //     tickWidth: 0,
+    //     ceiling: 1,
+    //     crosshair: {
+    //       snap: false,
+    //       label: {
+    //         enabled: true,
+    //         format: '{value:.2f}',
+    //         shape: 'square'
+    //       }
+    //     },
+    //     labels: {
+    //       align: 'left',
+    //       y: 15,
+    //       x: 0,
+    //       formatter: function () { // eslint-disable-line func-names, object-shorthand
+    //         return this.isFirst ? '' : this.value
+    //       }
+    //     }
+    //   },
+    //   legend: {
+    //     enabled: false
+    //   },
+    //   tooltip: {
+    //     enabled: false
+    //   },
+    //   plotOptions: {
+    //     series: {
+    //       point: {
+    //         events: {
+    //           mouseOver: event => this.setState({
+    //             hoveredOutcome: {
+    //               name: this.props.priceTimeSeries[event.target.series.index].name,
+    //               price: event.target.y
+    //             }
+    //           }),
+    //           mouseOut: event => this.setState({ hoveredOutcome: null }),
+    //           click: event => this.props.updateSelectedOutcome(event.point.colorIndex)
+    //         }
+    //       }
+    //     }
+    //   },
+    //   credits: {
+    //     enabled: false
+    //   }
+    // })
+    //
+    // window.addEventListener('resize', this.debouncedUpdateGraph)
+    //
+    // this.updateGraph()
   }
 
   componentDidUpdate(prevProps) {
-    if (!isEqual(prevProps.priceTimeSeries, this.props.priceTimeSeries)) this.updateGraph()
+    // if (!isEqual(prevProps.priceTimeSeries, this.props.priceTimeSeries)) this.updateGraph()
   }
 
   componentWillUnmount() {
-    this.marketOutcomesGraph.destroy()
-    window.removeEventListener('resize', this.debouncedUpdateGraph)
+    // this.marketOutcomesGraph.destroy()
+    // window.removeEventListener('resize', this.debouncedUpdateGraph)
   }
 
   updateGraph() {
@@ -176,7 +176,9 @@ export default class MarketOutcomesGraph extends Component {
         <div
           id="market_outcomes_graph"
           className={Styles.MarketOutcomesGraph__graph}
-        />
+        >
+          <span>Graphs Placeholder</span>
+        </div>
       </div>
     )
   }

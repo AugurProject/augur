@@ -40,27 +40,28 @@ export default class MarketOutcomeGraphs extends Component {
     return (
       <section className={Styles.MarketOutcomeGraphs}>
         <span className={Styles.MarketOutcomeGraphs__center} />
-        <MarketOutcomeCandlestick
-          marketPriceHistory={p.marketPriceHistory}
-          outcomeMin={p.marketMin}
-          orderBookMid={p.marketMid}
-          outcomeMax={p.marketMax}
-          marketMax={1}
-          marketMin={0}
-          hoveredPrice={s.hoveredPrice}
-          updateHoveredPrice={this.updateHoveredPrice}
-        />
-        <MarketOutcomeDepth
-          marketDepth={p.marketDepth}
-          hoveredPrice={s.hoveredPrice}
-          updateHoveredPrice={this.updateHoveredPrice}
-        />
-        <MarketOutcomeOrderBook
-          orderBook={p.orderBook}
-          hoveredPrice={s.hoveredPrice}
-          updateHoveredPrice={this.updateHoveredPrice}
-        />
       </section>
     )
   }
 }
+
+// <MarketOutcomeCandlestick
+//   marketPriceHistory={p.marketPriceHistory}
+//   outcomeMin={p.marketMin}
+//   orderBookMid={p.marketMid}
+//   outcomeMax={p.marketMax}
+//   marketMax={1}
+//   marketMin={0}
+//   hoveredPrice={s.hoveredPrice}
+//   updateHoveredPrice={this.updateHoveredPrice}
+// />
+// <MarketOutcomeDepth
+//   marketDepth={p.marketDepth}
+//   hoveredPrice={s.hoveredPrice}
+//   updateHoveredPrice={this.updateHoveredPrice}
+// />
+// <MarketOutcomeOrderBook
+//   orderBook={p.orderBook}
+//   hoveredPrice={s.hoveredPrice}
+//   updateHoveredPrice={this.updateHoveredPrice}
+// />
