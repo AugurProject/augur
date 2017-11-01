@@ -131,10 +131,11 @@ export interface MarketsRow {
   tag2: string|null;
   volume: string|number;
   sharesOutstanding: string|number;
+  marketStateID: number;
   reportingWindow: Address;
   endTime: number;
   finalizationTime?: number|null;
-  reportingState?: number|null;
+  reportingState?: string|null;
   shortDescription: string;
   longDescription?: string|null;
   designatedReporter: Address;
@@ -190,7 +191,7 @@ export interface UIMarketInfo {
   reportingWindow: Address;
   endDate: number;
   finalizationTime?: number|null;
-  reportingState?: number|null;
+  reportingState?: string|null;
   description: string;
   extraInfo?: string|null;
   designatedReporter: Address;

@@ -8,7 +8,7 @@ export function processDesignatedReportSubmittedLog(db: Knex, augur: Augur, trx:
 
   const marketStateDataToInsert: { [index: string]: string|number|boolean } = {
     marketID: log.market,
-    reportingState: 0,
+    reportingState: augur.constants.REPORTING_STATE.DESIGNATED_DISPUTE,
     blockNumber: log.blockNumber,
   };
 

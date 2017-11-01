@@ -1,14 +1,16 @@
 "use strict";
 
+const Augur = require("augur.js");
 const assert = require("chai").assert;
 const { parallel } = require("async");
 const setupTestDb = require("../../test.database");
 const { processMarketCreatedLog, processMarketCreatedLogRemoval } = require("../../../build/blockchain/log-processors/market-created");
+const { getMarketsWithReportingState } = require("../../../build/server/getters/database");
 
 describe("blockchain/log-processors/market-created", () => {
   const test = (t) => {
     const getState = (db, params, callback) => parallel({
-      markets: next => db("markets").where({ marketID: params.log.market }).asCallback(next),
+      markets: next => getMarketsWithReportingState(db).where({"markets.marketID": params.log.market }).asCallback(next),
       categories: next => db("categories").where({ category: params.log.extraInfo.category }).asCallback(next),
       outcomes: next => db("outcomes").where({ marketID: params.log.market }).asCallback(next),
       tokens: next => db("tokens").where({ marketID: params.log.market }).asCallback(next),
@@ -33,6 +35,7 @@ describe("blockchain/log-processors/market-created", () => {
       });
     });
   };
+  const constants = new Augur().constants;
   test({
     description: "MarketCreated log and removal",
     params: {
@@ -99,6 +102,7 @@ describe("blockchain/log-processors/market-created", () => {
             },
           },
         },
+        constants,
       },
     },
     assertions: {
@@ -115,6 +119,7 @@ describe("blockchain/log-processors/market-created", () => {
             marketCreator: "0x0000000000000000000000000000000000000b0b",
             creationBlockNumber: 7,
             creationFee: 0.1,
+            creationTime: 10000000,
             reportingFeeRate: 0.001,
             marketCreatorFeeRate: 0.01,
             marketCreatorFeesCollected: 0,
@@ -123,10 +128,11 @@ describe("blockchain/log-processors/market-created", () => {
             tag2: "TEST_TAG_2",
             volume: 0,
             sharesOutstanding: 0,
+            reportingState: "PRE_REPORTING",
             reportingWindow: "0x1000000000000000000000000000000000000001",
             endTime: 4886718345,
             finalizationTime: null,
-            marketStateID: null,
+            marketStateID: 2,
             shortDescription: "this is a test market",
             longDescription: "this is the long description of a test market",
             designatedReporter: "0x000000000000000000000000000000000000b0b2",
