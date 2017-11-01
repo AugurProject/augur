@@ -24,7 +24,23 @@
       &:last-child {
         padding-left: 2.5rem;
         width: 100%;
+
+        /* width: 0; and min-width: 100%; are a nasty fix to get text-overflow: ellipsis; to work in a table layout. */
+        > span {
+          display: block;
+          min-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          width: 0;
+          white-space: nowrap;
+        }
       }
     }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .TransactionMeta {
+    padding: 1rem 1rem 1.2rem;
   }
 }

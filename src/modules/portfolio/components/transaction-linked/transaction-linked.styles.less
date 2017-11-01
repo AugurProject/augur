@@ -9,6 +9,13 @@
   padding: 1rem 2rem;
   text-align: left;
   width: 100%;
+
+  > div {
+    overflow: hidden;
+    padding-right: 1rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
 .LinkedTransaction__message-chevron {
@@ -34,4 +41,10 @@
 
   font-weight: 500;
   margin-bottom: 0.625rem;
+}
+
+@media @breakpoint-mobile-medium {
+  .LinkedTransaction__message {
+    padding: 1rem;
+  }
 }

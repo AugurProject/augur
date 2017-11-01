@@ -9,6 +9,10 @@
   text-align: left;
   width: 100%;
 
+  > div {
+    padding-right: 1rem;
+  }
+
   > span {
     transition: transform 0.3s ease;
 
@@ -40,6 +44,8 @@
 .Transaction__linked-more-text {
   &:extend(.caps--large);
 
+  line-height: 1.5rem;
+  padding-right: 1rem;
   transition: color 0.15s ease;
 
   &.is-open {
@@ -178,4 +184,18 @@
   &:extend(.caps--extra-small);
 
   margin-bottom: 0.625rem;
+}
+
+@media @breakpoint-mobile-medium {
+  .Transaction__body {
+    padding: 1.5rem 1rem;
+  }
+
+  .Transaction__linked-more {
+    padding: 1rem;
+  }
+
+  .Transactions__header {
+    padding: 0 1rem 1rem;
+  }
 }
