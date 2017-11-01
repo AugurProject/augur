@@ -7,6 +7,22 @@ var decimals = new BigNumber(4, 10);
 var multiple = ten.toPower(decimals);
 
 module.exports = {
+
+  REPORTING_STATE: [
+    "PRE_REPORTING",
+    "DESIGNATED_REPORTING",
+    "AWAITING_FORK_MIGRATION",
+    "DESIGNATED_DISPUTE",
+    "FIRST_REPORTING",
+    "FIRST_DISPUTE",
+    "AWAITING_NO_REPORT_MIGRATION",
+    "LAST_REPORTING",
+    "LAST_DISPUTE",
+    "FORKING",
+    "AWAITING_FINALIZATION",
+    "FINALIZED"
+  ],
+
   ZERO: new BigNumber(0),
 
   PRECISION: {
