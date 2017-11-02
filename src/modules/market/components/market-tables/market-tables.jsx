@@ -10,7 +10,8 @@ export default class MarketTable extends Component {
   static propTypes = {
     data: PropTypes.array.isRequired,
     isMobile: PropTypes.bool,
-    titleKeyPairs: PropTypes.array.isRequired
+    titleKeyPairs: PropTypes.array.isRequired,
+    hideTitles: PropTypes.bool
   }
 
   constructor() {
@@ -33,7 +34,7 @@ export default class MarketTable extends Component {
                 <th
                   className={classNames(
                     Styles.MarketTable__title,
-                    { [Styles['MarketTable__title--mobilehide']]: mobileHide }
+                    { [Styles['MarketTable__title--mobilehide']]: mobileHide },
                   )}
                 >
                   <span className={Styles['MarketTable__titlestring--desktop']}>{title}</span>

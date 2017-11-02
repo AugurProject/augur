@@ -207,7 +207,7 @@ export default class MarketPortfolioCard extends React.Component {
                   }))
 
                   return tempAccumulator
-                })
+                }, [])
               }
             />
           }

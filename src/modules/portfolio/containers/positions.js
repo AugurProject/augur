@@ -1,34 +1,29 @@
 import { connect } from 'react-redux'
-// import memoize from 'memoizee'
+import memoize from 'memoizee'
 
 import Positions from 'modules/portfolio/components/positions/positions'
 
-// import getLoginAccountPositions from 'modules/my-positions/selectors/login-account-positions'
-// import getOpenOrders from 'modules/user-open-orders/selectors/open-orders'
-// import getClosePositionStatus from 'modules/my-positions/selectors/close-position-status'
+import getLoginAccountPositions from 'modules/my-positions/selectors/login-account-positions'
+import getOpenOrders from 'modules/user-open-orders/selectors/open-orders'
+import getClosePositionStatus from 'modules/my-positions/selectors/close-position-status'
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
 import getOrderCancellation from 'modules/bids-asks/selectors/order-cancellation'
 import { loadAccountHistory } from 'modules/auth/actions/load-account-history'
 import { triggerTransactionsExport } from 'modules/transactions/actions/trigger-transactions-export'
 
 const mapStateToProps = (state) => {
-  // const positions = getLoginAccountPositions()
-  // const openOrders = getOpenOrders()
+  const positions = getLoginAccountPositions()
+  const openOrders = getOpenOrders()
   // console.log('pos, oord:', positions, openOrders)
-  // console.log('posMarkets', getPositionsMarkets(positions, openOrders))
   // console.log('closPosStat', getClosePositionStatus())
-  // console.log('scalarShareDenomination', getScalarShareDenomination())
-  // console.log('orderCancellation:', getOrderCancellation())
   // console.log('state:', state)
   const date = new Date()
-  console.log(state)
   const dummyMarketData = [{
     id: '1',
     description: 'my test market',
     endDateLabel: 'endDateLabel',
     endDate: { date, formatted: date.toString() },
     outcomes: [
-      [],
       {
         name: 'outcome1',
         userOpenOrders: [{
@@ -80,10 +75,11 @@ const mapStateToProps = (state) => {
       }
     ]
   }]
+  positions.markets = dummyMarketData
 
   return {
-    markets: dummyMarketData, // getPositionsMarkets(positions, openOrders)
-    closePositionStatus: {}, // getClosePositionStatus()
+    markets: getPositionsMarkets(positions, openOrders),
+    closePositionStatus: getClosePositionStatus(),
     scalarShareDenomination: getScalarShareDenomination(),
     orderCancellation: getOrderCancellation(),
     transactionsLoading: state.transactionsLoading,
@@ -98,7 +94,7 @@ const mapDispatchToProps = dispatch => ({
   triggerTransactionsExport: () => dispatch(triggerTransactionsExport()),
 })
 
-// const getPositionsMarkets = memoize((positions, openOrders) => Array.from(new Set([...positions.markets, ...openOrders])), { max: 1 })
+const getPositionsMarkets = memoize((positions, openOrders) => Array.from(new Set([...positions.markets, ...openOrders])), { max: 1 })
 
 const PositionsContainer = connect(mapStateToProps, mapDispatchToProps)(Positions)
 
