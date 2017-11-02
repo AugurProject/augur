@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import MarketOutcomeCandlestick from 'modules/market/components/market-outcome-candlestick/market-outcome-candlestick'
-import MarketOutcomeDepth from 'modules/market/components/market-outcome-depth/market-outcome-depth'
-import MarketOutcomeOrderBook from 'modules/market/components/market-outcome-order-book/market-outcome-order-book'
+// import MarketOutcomeCandlestick from 'modules/market/components/market-outcome-candlestick/market-outcome-candlestick'
+// import MarketOutcomeDepth from 'modules/market/components/market-outcome-depth/market-outcome-depth'
+// import MarketOutcomeOrderBook from 'modules/market/components/market-outcome-order-book/market-outcome-order-book'
 
 import Styles from 'modules/market/components/market-outcome-graphs/market-outcome-graphs.styles'
 

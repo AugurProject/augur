@@ -10,7 +10,6 @@ const Positions = p => (
         key={market.id}
         market={market}
         closePositionStatus={p.closePositionStatus}
-        isTradeCommitLocked={p.isTradeCommitLocked}
         scalarShareDenomination={p.scalarShareDenomination}
         orderCancellation={p.orderCancellation}
         location={p.location}
@@ -23,13 +22,12 @@ const Positions = p => (
 )
 
 Positions.propTypes = {
-  location: PropTypes.object, // .isRequired
-  history: PropTypes.object, // .isRequired
-  markets: PropTypes.array, // .isRequired
-  isTradeCommitLocked: PropTypes.bool,
-  closePositionStatus: PropTypes.object, // .isRequired
-  scalarShareDenomination: PropTypes.object, // .isRequired
-  orderCancellation: PropTypes.object, // .isRequired
+  location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
+  markets: PropTypes.array.isRequired,
+  closePositionStatus: PropTypes.object.isRequired,
+  scalarShareDenomination: PropTypes.object.isRequired,
+  orderCancellation: PropTypes.object.isRequired,
   registerBlockNumber: PropTypes.number
 }
 

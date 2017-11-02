@@ -14,7 +14,6 @@ import Styles from 'modules/market/components/market-portfolio-card/market-portf
 export default class MarketPortfolioCard extends React.Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
-    isTradeCommitLocked: PropTypes.bool,
     closePositionStatus: PropTypes.object.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired,
     orderCancellation: PropTypes.object.isRequired,

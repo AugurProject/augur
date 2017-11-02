@@ -9,9 +9,9 @@ export default class MarketOutcomeOrderbook extends Component {
     orderBook: PropTypes.object.isRequired
   }
 
-  constructor(props) {
-    super(props)
-  }
+  // constructor(props) {
+  //   super(props)
+  // }
 
   componentDidMount() {
     this.asks.scrollTo(0, (this.asks.scrollHeight || 0))
