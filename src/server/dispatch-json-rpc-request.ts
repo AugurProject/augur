@@ -43,7 +43,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callba
     case "getDisputableMarkets":
       return getDisputableMarkets(db, request.params.reportingWindow, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getReportingSummary":
-      return getReportingSummary(db, request.params.reportingWindow, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
+      return getReportingSummary(db, request.params.reportingWindow, callback);
     case "getUserTradingHistory":
       return getUserTradingHistory(db, request.params.account, request.params.marketID, request.params.outcome, request.params.orderType, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketPriceHistory":
