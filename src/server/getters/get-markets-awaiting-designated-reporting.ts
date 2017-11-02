@@ -1,14 +1,14 @@
 import { each } from "async";
 import * as Knex from "knex";
-import { Address, MarketsContractAddressRow, UIMarketInfo, UIMarketsInfo, ErrorCallback } from "../../types";
-import { queryModifier, reshapeMarketsRowToUIMarketInfo, getMarketsWithReportingState } from "./database";
+import { Address, MarketsContractAddressRow } from "../../types";
+import { queryModifier, getMarketsWithReportingState } from "./database";
 
 // Look up all markets that are currently awaiting designated (automated) reporting.
 // Should accept a designatedReporterAddress parameter that filters by designated reporter address.
 export function getMarketsAwaitingDesignatedReporting(db: Knex, designatedReporter: Address|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err?: Error|null, result?: any) => void): void {
 
-  // TODO: NULL isn't right here, we're going to an enumerated list to match the contracts
-  let query = getMarketsWithReportingState(db, ["markets.marketID"]).whereNull("markets.marketStateID");
+  // TODO: I don't have a reference to Augur object here or in calling function, figure out if we're ok with not using constant value or resolve
+  let query = getMarketsWithReportingState(db, ["markets.marketID"]).where("reportingState", "DESIGNATED_REPORTING");
   if (designatedReporter != null) query = query.where({ designatedReporter });
 
   query = queryModifier(query, "endTime", "desc", sortBy, isSortDescending, limit, offset);

@@ -42,7 +42,7 @@ describe("server/getters/get-market-info", () => {
         tags: ["test tag 1", "test tag 2"],
         volume: 0,
         outstandingShares: 0,
-        reportingState: null,
+        reportingState: "DESIGNATED_REPORTING",
         reportingWindow: "0x1000000000000000000000000000000000000000",
         endDate: 1506573470,
         finalizationTime: null,

@@ -30,7 +30,7 @@ describe("server/getters/get-reporting-history", () => {
             reportingWindow: "0x1000000000000000000000000000000000000000",
             payoutNumerators: [0, 2],
             amountStaked: 17,
-            reportingToken: "0x0000000000000000001000000000000000000001",
+            stakedToken: "0x0000000000000000001000000000000000000001",
             isCategorical: false,
             isScalar: false,
             isIndeterminate: false,

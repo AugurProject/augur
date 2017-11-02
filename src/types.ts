@@ -272,7 +272,7 @@ export interface JoinedReportsMarketsRow {
   marketID: Address;
   universe: Address;
   reportingWindow: Address;
-  reportingToken: Address;
+  stakedToken: Address;
   marketType: string;
   amountStaked: string|number;
   payout0: string|number|null;
@@ -291,7 +291,7 @@ export interface UIReport {
   reportingWindow: Address;
   payoutNumerators: Array<string|number|null>;
   amountStaked: string|number;
-  reportingToken: Address;
+  stakedToken: Address;
   isCategorical: boolean;
   isScalar: boolean;
   isIndeterminate: boolean;
