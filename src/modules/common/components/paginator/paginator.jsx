@@ -211,7 +211,6 @@ class Paginator extends Component {
                   search: s.backQuery
                 }}
               >
-                {/* TODO: icofont with the new LESS structure -- coming in Serena's feature universe */}
                 <i className="fa fa-angle-left" />
               </Link>
             }
@@ -232,7 +231,6 @@ class Paginator extends Component {
                   search: s.forwardQuery
                 }}
               >
-                {/* TODO: icofont with the new LESS structure -- coming in Serena's feature universe */}
                 <i className="fa fa-angle-right" />
               </Link>
             }
