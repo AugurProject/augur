@@ -31,18 +31,17 @@ const mapStateToProps = (state) => {
       {
         name: 'outcome1',
         userOpenOrders: [{
-          qtyShares: { formatted: '10' },
-          unmatchedShares: { formatted: '10' },
-          purchasePrice: { formatted: '0.5' },
-          avgPrice: { formatted: '0.5' }
+          unmatchedShares: { formatted: '110' },
+          purchasePrice: { formatted: '0.55' },
+          avgPrice: { formatted: '0.35' }
         }],
         position: { closePosition: () => console.log('closeposition1') }
       },
       {
         name: 'outcome2',
         userOpenOrders: [{
-          unmatchedShares: { formatted: '5' },
-          purchasePrice: { formatted: '0.75' },
+          unmatchedShares: { formatted: '7' },
+          purchasePrice: { formatted: '0.25' },
           avgPrice: { formatted: '0.7' }
         }],
         position: { closePosition: () => console.log('closeposition2') }
@@ -83,7 +82,6 @@ const mapStateToProps = (state) => {
 
   return {
     markets: dummyMarketData, // getPositionsMarkets(positions, openOrders)
-    isTradeCommitLocked: false, // state.tradeCommitLock.isLocked
     closePositionStatus: {}, // getClosePositionStatus()
     scalarShareDenomination: getScalarShareDenomination(),
     orderCancellation: getOrderCancellation(),
