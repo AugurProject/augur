@@ -20,19 +20,19 @@ export function getReportingHistory(db: Knex, reporter: Address, marketID: Addre
     "reports.marketID",
     "markets.universe",
     "markets.reportingWindow",
-    "reports.reportingToken",
+    "reports.stakedToken",
     "reports.amountStaked",
-    "reports.isInvalid",
-    "reports.payout0",
-    "reports.payout1",
-    "reports.payout2",
-    "reports.payout3",
-    "reports.payout4",
-    "reports.payout5",
-    "reports.payout6",
-    "reports.payout7",
+    "staked_tokens.isInvalid",
+    "staked_tokens.payout0",
+    "staked_tokens.payout1",
+    "staked_tokens.payout2",
+    "staked_tokens.payout3",
+    "staked_tokens.payout4",
+    "staked_tokens.payout5",
+    "staked_tokens.payout6",
+    "staked_tokens.payout7",
   ]).from("reports").join("markets", "markets.marketID", "reports.marketID").where(queryData);
-  query = query.join("staked_tokens", "reports.stakedToken", "staked_tokens.stakedTokens");
+  query = query.join("staked_tokens", "reports.stakedToken", "staked_tokens.stakedToken");
   query = queryModifier(query, "reportID", "asc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, joinedReportsMarketsRows?: Array<JoinedReportsMarketsRow>): void => {
     if (err) return callback(err);
