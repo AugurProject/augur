@@ -87,7 +87,7 @@ class Dropdown extends Component {
             </option>
           ))}
         </select>
-        <i className={classNames(Styles['Dropdown__angle-down'], Styles.fa, Styles['fa-angle-down'])} />
+        <i className={classNames(Styles['Dropdown__angle-down'], 'fa', 'fa-angle-down')} />
       </div>
     )
   }
