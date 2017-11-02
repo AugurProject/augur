@@ -85,6 +85,7 @@ export default class MarketTable extends Component {
                     </div>
                   )
                 } else {
+                  // TODO -- clean this up
                   data = dataKey ? getValue(dataRow, dataKey) : null
                 }
 
