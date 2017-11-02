@@ -36,7 +36,7 @@ export default class LinkedTransaction extends Component {
           </div>
           <span className={classNames(Styles['LinkedTransaction__message-chevron'], { [`${Styles['is-open']}`]: s.isOpen })}>{ ChevronDown }</span>
         </button>
-        <div 
+        <div
           ref={(metaWrapper) => { this.metaWrapper = metaWrapper }}
           className={ToggleHeightStyles['toggle-height-target']}
         >
