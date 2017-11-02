@@ -14,6 +14,7 @@ export default class AccountExport extends Component {
 
   constructor() {
     super()
+
     this.state = {
       blurred: true
     }

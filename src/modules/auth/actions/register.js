@@ -7,7 +7,7 @@ import logError from 'utils/log-error'
 export const register = (password, callback = logError) => dispatch => (
   augur.accounts.register({ password }, (err, account) => {
     if (err) return callback(err)
-    dispatch(updateIsLogged(true))
+    // dispatch(updateIsLogged(true))
     callback(null, account)
   })
 )
