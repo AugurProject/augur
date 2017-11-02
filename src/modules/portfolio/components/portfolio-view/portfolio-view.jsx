@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
 
-import MyPositions from 'modules/portfolio/components/positions/positions'
+import MyPositions from 'modules/portfolio/containers/positions'
 import MyMarkets from 'modules/portfolio/components/markets/markets'
 import Watchlist from 'modules/portfolio/components/watchlist/watchlist'
 import Transactions from 'modules/portfolio/components/transactions/transactions'
