@@ -45,7 +45,9 @@ export default class MarketTable extends Component {
         </thead>
         <tbody>
           {p.data.map(dataRow => (
-            <tr className={Styles.MarketTable__row}>
+            <tr
+              className={Styles.MarketTable__row}
+            >
               {p.titleKeyPairs.map((titlePair, ind) => {
                 const dataKey = titlePair[1]
                 const mobileTitle = p.mobileTitles[ind]
@@ -83,7 +85,8 @@ export default class MarketTable extends Component {
                     </div>
                   )
                 } else {
-                  data = getValue(dataRow, dataKey)
+                  // TODO -- clean this up
+                  data = dataKey ? getValue(dataRow, dataKey) : null
                 }
 
                 return (

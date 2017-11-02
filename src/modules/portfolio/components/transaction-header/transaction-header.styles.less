@@ -1,0 +1,33 @@
+@import (reference) '~assets/styles/shared';
+
+.TransactionHeader__date {
+  color: @color-gray;
+  font-size: @font-size-extra-small;
+  line-height: @font-size-extra-small;
+}
+
+.TransactionHeader__description {
+  font-size: @font-size-large;
+  line-height: @font-size-rather-large;
+  margin-bottom: 0.6rem;
+}
+
+.TransactionHeader__message {
+  &:extend(.caps--large);
+
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.TransactionHeader__status {
+  &:extend(.caps--extra-small);
+
+  font-weight: 500;
+  margin-bottom: 0.625rem;
+}
+
+@media @breakpoint-mobile-medium {
+  .TransactionHeader__message {
+    line-height: 1.5rem;
+  }
+}
