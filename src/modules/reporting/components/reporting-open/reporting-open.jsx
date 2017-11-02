@@ -56,6 +56,7 @@ export default class ReportingOpen extends Component {
             toggleFavorite={p.toggleFavorite}
             loadMarketsInfo={p.loadMarketsInfo}
             linkType={TYPE_DISPUTE}
+            showPagination={false}
           />
         }
         <h2 className={Styles.ReportingOpen__heading}>In Reporting</h2>
