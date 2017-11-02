@@ -1,0 +1,28 @@
+@import (reference) '~assets/styles/shared';
+
+.PerformanceGraph {
+  :global {
+    .highcharts-container {
+      width: 100% !important;
+
+      > svg {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.PerformanceGraph__SortBar {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+}
+
+.PerformanceGraph__SortBar-title {
+  flex: 1;
+}
+
+.PerformanceGraph__SortBar-dropdowns {
+  display: flex;
+}

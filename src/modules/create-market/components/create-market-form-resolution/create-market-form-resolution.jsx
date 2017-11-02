@@ -149,6 +149,7 @@ export default class CreateMarketResolution extends Component {
               step="1"
               value={p.newMarket.minute}
               placeholder="Minute"
+              onBlur={e => this.props.validateNumber('minute', e.target.value, 'minute', 0, 59, 0, true)}
               onChange={e => p.validateNumber('minute', e.target.value, 'minute', 0, 59, 0)}
             />
             <InputDropdown

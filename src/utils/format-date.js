@@ -21,6 +21,7 @@ export function formatDate(d) {
 
   return {
     value: date,
+    simpleDate: `${d.getUTCDate()} ${months[d.getUTCMonth()]}`,
     formatted: `${months[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()} ${utcTimeTwelve.join(':')} ${utcAMPM}`, // UTC time
     formattedLocal: `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()} ${localTimeTwelve.join(':')} ${localAMPM} (UTC ${localOffset})`, // local time
     full: d.toUTCString(),
