@@ -4,8 +4,6 @@ import { assert } from 'chai'
 import newMarket from 'modules/create-market/reducers/new-market'
 
 import {
-  ADD_VALIDATION_TO_NEW_MARKET,
-  REMOVE_VALIDATION_FROM_NEW_MARKET,
   ADD_ORDER_TO_NEW_MARKET,
   REMOVE_ORDER_FROM_NEW_MARKET,
   UPDATE_NEW_MARKET,
@@ -28,7 +26,6 @@ describe('modules/create-market/reducers/new-market.js', () => {
 
       const expected = {
         isValid: false,
-        holdForUserAction: false,
         currentStep: 0,
         type: '',
         scalarSmallNum: '',
@@ -70,7 +67,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
             meridiem: false,
           },
           {
-            settlementFee: false,
+            settlementFee: true,
           },
         ],
         creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.'
@@ -88,118 +85,6 @@ describe('modules/create-market/reducers/new-market.js', () => {
       const expected = 'testing'
 
       assert.equal(actual, expected, `Didn't return the expected existing value`)
-    }
-  })
-
-  test({
-    describe: 'should add validation',
-    assertions: () => {
-      const newMarketState = {
-        test: 'test',
-        validations: [
-          'valid1',
-          'valid2'
-        ]
-      }
-
-      const actual = newMarket(newMarketState, {
-        type: ADD_VALIDATION_TO_NEW_MARKET,
-        data: 'valid3'
-      })
-
-      const expected = {
-        test: 'test',
-        validations: [
-          'valid1',
-          'valid2',
-          'valid3'
-        ]
-      }
-
-      assert.deepEqual(actual, expected, `Didn't return the expected updated validations`)
-    }
-  })
-
-  test({
-    describe: 'should not add validation if already exists',
-    assertions: () => {
-      const newMarketState = {
-        test: 'test',
-        validations: [
-          'valid1',
-          'valid2'
-        ]
-      }
-
-      const actual = newMarket(newMarketState, {
-        type: ADD_VALIDATION_TO_NEW_MARKET,
-        data: 'valid1'
-      })
-
-      const expected = {
-        test: 'test',
-        validations: [
-          'valid1',
-          'valid2'
-        ]
-      }
-
-      assert.deepEqual(actual, expected, `Didn't return the expected validations array`)
-    }
-  })
-
-  test({
-    describe: 'should remove validation',
-    assertions: () => {
-      const newMarketState = {
-        test: 'test',
-        validations: [
-          'valid1',
-          'valid2'
-        ]
-      }
-
-      const actual = newMarket(newMarketState, {
-        type: REMOVE_VALIDATION_FROM_NEW_MARKET,
-        data: 'valid1'
-      })
-
-      const expected = {
-        test: 'test',
-        validations: [
-          'valid2'
-        ]
-      }
-
-      assert.deepEqual(actual, expected, `Didn't return the expected validations array`)
-    }
-  })
-
-  test({
-    describe: 'should not modify validations if value is not present',
-    assertions: () => {
-      const newMarketState = {
-        test: 'test',
-        validations: [
-          'valid1',
-          'valid2'
-        ]
-      }
-
-      const actual = newMarket(newMarketState, {
-        type: REMOVE_VALIDATION_FROM_NEW_MARKET,
-        data: 'valid3'
-      })
-
-      const expected = {
-        test: 'test',
-        validations: [
-          'valid1',
-          'valid2'
-        ]
-      }
-
-      assert.deepEqual(actual, expected, `Didn't return the expected validations array`)
     }
   })
 
@@ -389,7 +274,6 @@ describe('modules/create-market/reducers/new-market.js', () => {
 
       const expected = {
         isValid: false,
-        holdForUserAction: false,
         currentStep: 0,
         type: '',
         scalarSmallNum: '',
@@ -431,7 +315,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
             meridiem: false,
           },
           {
-            settlementFee: false,
+            settlementFee: true,
           },
         ],
         creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.'

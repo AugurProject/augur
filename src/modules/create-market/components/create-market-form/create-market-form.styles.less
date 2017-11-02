@@ -101,7 +101,8 @@
 }
 
 .CreateMarketForm__next,
-.CreateMarketForm__prev {
+.CreateMarketForm__prev,
+.CreateMarketForm__submit {
   &:extend(.button--white all);
 
   &.hide-button {
@@ -215,7 +216,8 @@
   }
 
   .CreateMarketForm__next,
-  .CreateMarketForm__prev {
+  .CreateMarketForm__prev,
+  .CreateMarketForm__submit {
     border-radius: 0;
     white-space: nowrap;
     width: 50%;
@@ -225,7 +227,8 @@
     }
   }
 
-  .CreateMarketForm__next {
+  .CreateMarketForm__next,
+  .CreateMarketForm__submit {
     background-color: @color-purple;
     color: @color-white;
   }
@@ -259,11 +262,13 @@
   }
 
   .CreateMarketForm__next,
-  .CreateMarketForm__prev {
+  .CreateMarketForm__prev,
+  .CreateMarketForm__submit {
     width: 100%;
   }
 
-  .CreateMarketForm__next {
+  .CreateMarketForm__next,
+  .CreateMarketForm__submit {
     order: 1;
   }
 

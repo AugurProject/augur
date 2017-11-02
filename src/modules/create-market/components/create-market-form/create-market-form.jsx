@@ -8,39 +8,7 @@ import CreateMarketDefine from 'modules/create-market/components/create-market-f
 import CreateMarketOutcome from 'modules/create-market/components/create-market-form-outcome/create-market-form-outcome'
 import CreateMarketResolution from 'modules/create-market/components/create-market-form-resolution/create-market-form-resolution'
 import CreateMarketLiquidity from 'modules/create-market/components/create-market-form-liquidity/create-market-form-liquidity'
-// import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description/create-market-form-description'
-// import CreateMarketFormOutcomes from 'modules/create-market/components/create-market-form-outcomes'
-// import CreateMarketFormExpirySource from 'modules/create-market/components/create-market-form-expiry-source'
-// import CreateMarketFormEndDate from 'modules/create-market/components/create-market-form-end-date'
-// import CreateMarketFormDetails from 'modules/create-market/components/create-market-form-details'
-// import CreateMarketFormTopic from 'modules/create-market/components/create-market-form-topic'
-// import CreateMarketFormKeywords from 'modules/create-market/components/create-market-form-keywords'
-// import CreateMarketFormFees from 'modules/create-market/components/create-market-form-fees'
-// import CreateMarketFormOrderBook from 'modules/create-market/components/create-market-form-order-book'
-// import CreateMarketReview from 'modules/create-market/components/create-market-review'
-
-// import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications'
-
-// import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
-// import { NEW_MARKET_DESCRIPTION } from 'modules/create-market/constants/new-market-creation-steps'
-// import { DESCRIPTION_MAX_LENGTH, TAGS_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints'
-
-// import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
-// import {
-//   NEW_MARKET_TYPE,
-//   NEW_MARKET_DESCRIPTION,
-//   NEW_MARKET_OUTCOMES,
-//   NEW_MARKET_EXPIRY_SOURCE,
-//   NEW_MARKET_END_DATE,
-//   NEW_MARKET_DETAILS,
-//   NEW_MARKET_TOPIC,
-//   NEW_MARKET_KEYWORDS,
-//   NEW_MARKET_FEES,
-//   NEW_MARKET_ORDER_BOOK,
-//   NEW_MARKET_REVIEW
-// } from 'modules/create-market/constants/new-market-creation-steps'
-
-// import debounce from 'utils/debounce'
+import CreateMarketReview from 'modules/create-market/components/create-market-form-review/create-market-form-review'
 
 import Styles from 'modules/create-market/components/create-market-form/create-market-form.styles'
 
@@ -53,6 +21,9 @@ export default class CreateMarketForm extends Component {
     addOrderToNewMarket: PropTypes.func.isRequired,
     availableEth: PropTypes.string.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
+    submitNewMarket: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
+    universe: PropTypes.object.isRequired,
   }
 
   constructor(props) {
@@ -70,7 +41,7 @@ export default class CreateMarketForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) {
+    if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep && nextProps.newMarket.currentStep !== 4) {
       this.props.updateNewMarket({ isValid: this.isValid(nextProps.newMarket.currentStep) })
     }
   }
@@ -190,6 +161,12 @@ export default class CreateMarketForm extends Component {
                 isMobileSmall={p.isMobileSmall}
               />
             }
+            { p.newMarket.currentStep === 4 &&
+              <CreateMarketReview
+                newMarket={p.newMarket}
+                universe={p.universe}
+              />
+            }
           </div>
           <div className={Styles['CreateMarketForm__button-outer-wrapper']}>
             <div className={Styles['CreateMarketForm__button-inner-wrapper']}>
@@ -198,67 +175,23 @@ export default class CreateMarketForm extends Component {
                   className={classNames(Styles.CreateMarketForm__prev, { [`${Styles['hide-button']}`]: p.newMarket.currentStep === 0 })}
                   onClick={this.prevPage}
                 >Previous: {s.pages[p.newMarket.currentStep - 1]}</button>
-                <button
-                  className={classNames(Styles.CreateMarketForm__next, { [`${Styles['hide-button']}`]: p.newMarket.currentStep === s.pages.length - 1 })}
-                  disabled={!p.newMarket.isValid}
-                  onClick={p.newMarket.isValid && this.nextPage}
-                >Next: {s.pages[p.newMarket.currentStep + 1]}</button>
+                { p.newMarket.currentStep < 4 &&
+                  <button
+                    className={classNames(Styles.CreateMarketForm__next, { [`${Styles['hide-button']}`]: p.newMarket.currentStep === s.pages.length - 1 })}
+                    disabled={!p.newMarket.isValid}
+                    onClick={p.newMarket.isValid && this.nextPage}
+                  >Next: {s.pages[p.newMarket.currentStep + 1]}</button>
+                }
+                { p.newMarket.currentStep === 4 &&
+                  <button
+                    className={Styles.CreateMarketForm__submit}
+                    onClick={e => p.submitNewMarket(p.newMarket, p.history)}
+                  >Submit</button>
+                }
               </div>
             </div>
           </div>
         </div>
-        {/*
-        <CreateMarketFormFees
-          className={classNames({
-            'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES),
-            'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES)
-          })}
-          currentStep={p.newMarket.currentStep}
-          settlementFee={p.newMarket.settlementFee}
-          makerFee={p.newMarket.makerFee}
-          updateValidity={this.updateValidity}
-          updateNewMarket={p.updateNewMarket}
-        />
-        <CreateMarketFormOrderBook
-          className={classNames({
-            'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK),
-            'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK)
-          })}
-          isValid={p.newMarket.isValid}
-          availableEth={p.availableEth}
-          type={p.newMarket.type}
-          currentStep={p.newMarket.currentStep}
-          outcomes={p.newMarket.outcomes}
-          orderBook={p.newMarket.orderBook}
-          orderBookSorted={p.newMarket.orderBookSorted}
-          orderBookSeries={p.newMarket.orderBookSeries}
-          scalarBigNum={p.newMarket.scalarBigNum}
-          scalarSmallNum={p.newMarket.scalarSmallNum}
-          makerFee={p.newMarket.makerFee}
-          initialLiquidityEth={p.newMarket.initialLiquidityEth}
-          initialLiquidityGas={p.newMarket.initialLiquidityGas}
-          initialLiquidityFees={p.newMarket.initialLiquidityFees}
-          addOrderToNewMarket={p.addOrderToNewMarket}
-          removeOrderFromNewMarket={p.removeOrderFromNewMarket}
-          updateValidity={this.updateValidity}
-          updateNewMarket={p.updateNewMarket}
-        />
-        <CreateMarketReview
-          className={classNames({
-            'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_REVIEW),
-            'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_REVIEW) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK)
-          })}
-          isValid={p.newMarket.isValid}
-          creationError={p.newMarket.creationError}
-          endDate={p.newMarket.endDate}
-          universe={p.universe}
-          currentStep={p.newMarket.currentStep}
-          settlementFee={p.newMarket.settlementFee}
-          makerFee={p.newMarket.makerFee}
-          initialLiquidityEth={p.newMarket.initialLiquidityEth}
-          initialLiquidityGas={p.newMarket.initialLiquidityGas}
-          initialLiquidityFees={p.newMarket.initialLiquidityFees}
-        /> */}
       </article>
     )
   }

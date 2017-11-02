@@ -190,7 +190,7 @@ class PerformanceGraph extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.performanceData !== this.props.performanceData || prevState.graphType !== this.state.graphType || prevState.graphPeriod !== this.state.graphPeriod) this.updateChartDebounced()
+    if (prevProps.performanceData !== this.props.performanceData || prevState.graphType !== this.state.graphType || prevState.graphPeriod !== this.state.graphPeriod) this.updateChart()
   }
 
   componentWillUnmount() {

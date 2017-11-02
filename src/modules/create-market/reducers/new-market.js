@@ -1,6 +1,4 @@
 import {
-  ADD_VALIDATION_TO_NEW_MARKET,
-  REMOVE_VALIDATION_FROM_NEW_MARKET,
   ADD_ORDER_TO_NEW_MARKET,
   REMOVE_ORDER_FROM_NEW_MARKET,
   UPDATE_NEW_MARKET,
@@ -13,7 +11,6 @@ import BigNumber from 'bignumber.js'
 
 const DEFAULT_STATE = {
   isValid: false,
-  holdForUserAction: false,
   validations: [
     {
       description: false,
@@ -32,7 +29,7 @@ const DEFAULT_STATE = {
       meridiem: false,
     },
     {
-      settlementFee: false,
+      settlementFee: true,
     },
   ],
   currentStep: 0,
@@ -63,30 +60,6 @@ const DEFAULT_STATE = {
 
 export default function (newMarket = DEFAULT_STATE, action) {
   switch (action.type) {
-    case ADD_VALIDATION_TO_NEW_MARKET: {
-      if (newMarket.validations.indexOf(action.data) === -1) {
-        return {
-          ...newMarket,
-          validations: [
-            ...newMarket.validations,
-            action.data
-          ]
-        }
-      }
-      return newMarket
-    }
-    case REMOVE_VALIDATION_FROM_NEW_MARKET: {
-      if (newMarket.validations.indexOf(action.data) !== -1) {
-        return {
-          ...newMarket,
-          validations: [
-            ...newMarket.validations.slice(0, newMarket.validations.indexOf(action.data)),
-            ...newMarket.validations.slice(newMarket.validations.indexOf(action.data) + 1)
-          ]
-        }
-      }
-      return newMarket
-    }
     case ADD_ORDER_TO_NEW_MARKET: {
       const existingOrders = newMarket.orderBook[action.data.outcome] || []
 

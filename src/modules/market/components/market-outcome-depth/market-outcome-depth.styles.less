@@ -1,0 +1,43 @@
+@import (reference) "~assets/styles/shared";
+
+.MarketOutcomeDepth {
+  flex: 1;
+
+  :global(.highcharts-axis-labels) { // NOTE -- had to break this one off since we're using a mixin
+    .caps--small();
+
+    fill: @color-lightgray;
+  }
+
+  :global {
+    .highcharts-background,
+    .highcharts-plot-background,
+    .highcharts-plot-border {
+      fill: @color-transparent;
+    }
+
+    .highcharts-xaxis {
+      height: 1px;
+      stroke: @color-darkgray;
+
+      .highcharts-tick {
+        stroke: @color-darkgray;
+        stroke-width: 1px;
+      }
+    }
+
+    .highcharts-series {
+      &.highcharts-series-1 {
+        fill: fadeout(@color-white, 75%);
+      }
+    }
+
+    // manually rendered crosshair
+    .highcharts-plot-lines-0 .highcharts-plot-line {
+      stroke: @color-lightgray;
+      stroke-dasharray: 3;
+      stroke-dashoffset: 3;
+      stroke-width: 1px;
+    }
+  }
+}
