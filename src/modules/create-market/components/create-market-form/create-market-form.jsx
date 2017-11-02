@@ -79,7 +79,7 @@ export default class CreateMarketForm extends Component {
     p.updateNewMarket(updatedMarket)
   }
 
-  validateNumber(fieldName, rawValue, humanName, min, max, decimals = 0) {
+  validateNumber(fieldName, rawValue, humanName, min, max, decimals = 0, leadingZero = false) {
     const p = this.props
     const updatedMarket = { ...p.newMarket }
     const currentStep = p.newMarket.currentStep
@@ -103,7 +103,11 @@ export default class CreateMarketForm extends Component {
         break
     }
 
-    updatedMarket[fieldName] = value
+    if (leadingZero && value < 10) {
+      value = `0${value}`
+    }
+
+    updatedMarket[fieldName] = typeof value === 'number' ? value.toString() : value
     updatedMarket.isValid = this.isValid(currentStep)
 
     p.updateNewMarket(updatedMarket)
