@@ -36,6 +36,12 @@ export const NavReportingIcon = () => (
   </svg>
 )
 
+export const ExportIcon = (
+  <svg viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+    <g id="Symbols" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round"><g id="Portfolio/Head" stroke="#A7A2B2"><g id="Export"><g id="Icon/Export-Gray"><g id="Page-1"><path d="M8.08 11.347L8.03.08" id="Stroke-1" /><path id="Stroke-3" d="M5.263 2.737L8 0l2.737 2.737" /><path id="Stroke-5" d="M4.333 5.71H1v8h14v-8h-3.333" /></g></g></g></g></g>
+  </svg>
+)
+
 export const Ledger = (
   <svg id="851e3d33-36d6-418a-b807-c2fa479dc650" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25">
     <defs>
