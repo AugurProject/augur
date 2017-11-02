@@ -32,6 +32,7 @@ export function getReportingHistory(db: Knex, reporter: Address, marketID: Addre
     "reports.payout6",
     "reports.payout7",
   ]).from("reports").join("markets", "markets.marketID", "reports.marketID").where(queryData);
+  query = query.join("staked_tokens", "reports.stakedToken", "staked_tokens.stakedTokens");
   query = queryModifier(query, "reportID", "asc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, joinedReportsMarketsRows?: Array<JoinedReportsMarketsRow>): void => {
     if (err) return callback(err);
