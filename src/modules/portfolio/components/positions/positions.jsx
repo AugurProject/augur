@@ -1,10 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
 
 import MarketPortfolioCard from 'modules/market/components/market-portfolio-card/market-portfolio-card'
 
 const Positions = p => (
-  <article className="my-positions">
+  <section className="my-positions">
+    <Helmet>
+      <title>Positions</title>
+    </Helmet>
     {p.markets.map(market => (
       <MarketPortfolioCard
         key={market.id}
@@ -18,7 +22,7 @@ const Positions = p => (
         positionData={{}}
       />
     ))}
-  </article>
+  </section>
 )
 
 Positions.propTypes = {
