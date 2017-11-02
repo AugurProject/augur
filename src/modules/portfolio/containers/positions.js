@@ -21,7 +21,6 @@ const mapStateToProps = (state) => {
   // console.log('orderCancellation:', getOrderCancellation())
   // console.log('state:', state)
   const date = new Date()
-  console.log(state)
   const dummyMarketData = [{
     id: '1',
     description: 'my test market',
