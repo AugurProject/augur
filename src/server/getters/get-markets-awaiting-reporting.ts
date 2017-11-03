@@ -2,10 +2,11 @@ import * as Knex from "knex";
 import { Address, MarketsContractAddressRow, UIMarketInfo, UIMarketsInfo, ErrorCallback } from "../../types";
 import { queryModifier, reshapeMarketsRowToUIMarketInfo, getMarketsWithReportingState } from "./database";
 
-// Look up all markets that are currently available for limited reporting.
+// Look up all markets that are currently available for reporting.
 // Must be able to sort by number of reports submitted for each market so far, and the response should include the number of reports already submitted -- as well as the payoutNumerator values of each of the reports + the amount staked on each -- as part of the response.
-export function getMarketsAwaitingReporting(db: Knex, reportingWindow: Address|null, reportingState: string|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: any) => void): void {
+export function getMarketsAwaitingReporting(db: Knex, universe: Address|null, reportingWindow: Address|null, reportingState: string|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: any) => void): void {
   let query = getMarketsWithReportingState(db, ["markets.marketID"]);
+  if (universe == null && reportingWindow == null) return callback(new Error("Must provide reference to universe, specify universe or reportingWindow"));
   if (reportingWindow != null) query = query.where({ reportingWindow });
   if (reportingState != null) query = query.where({ reportingState });
 

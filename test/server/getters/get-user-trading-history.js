@@ -9,7 +9,7 @@ describe("server/getters/get-user-trading-history", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getUserTradingHistory(db, t.params.account, t.params.marketID, t.params.outcome, t.params.orderType, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, userTradingHistory) => {
+        getUserTradingHistory(db, t.params.universe, t.params.account, t.params.marketID, t.params.outcome, t.params.orderType, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, userTradingHistory) => {
           t.assertions(err, userTradingHistory);
           done();
         });
@@ -19,6 +19,7 @@ describe("server/getters/get-user-trading-history", () => {
   test({
     description: "user was filler in 1 trade in market and outcome",
     params: {
+      universe: null,
       account: "0x000000000000000000000000000000000000d00d",
       marketID: "0x0000000000000000000000000000000000000001",
       outcome: 0,
@@ -47,6 +48,7 @@ describe("server/getters/get-user-trading-history", () => {
   test({
     description: "user was creator in 1 trade in market and outcome",
     params: {
+      universe: null,
       account: "0x0000000000000000000000000000000000000b0b",
       marketID: "0x0000000000000000000000000000000000000001",
       outcome: 0,
@@ -75,6 +77,7 @@ describe("server/getters/get-user-trading-history", () => {
   test({
     description: "user has not performed any trades",
     params: {
+      universe: "0x000000000000000000000000000000000000000b",
       account: "0x0000000000000000000000000000000000000bbb",
       marketID: null,
       outcome: null,

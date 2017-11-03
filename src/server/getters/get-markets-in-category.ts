@@ -2,7 +2,7 @@ import * as Knex from "knex";
 import { Address, MarketsContractAddressRow } from "../../types";
 import { queryModifier } from "./database";
 
-export function getMarketsInCategory(db: Knex, category: Address, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: Array<Address>) => void): void {
+export function getMarketsInCategory(db: Knex, universe: Address, category: Address, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: Array<Address>) => void): void {
   let query: Knex.QueryBuilder = db.select("marketID").from("markets").where({ category });
   query = queryModifier(query, "volume", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, marketsInCategory?: Array<MarketsContractAddressRow>): void => {

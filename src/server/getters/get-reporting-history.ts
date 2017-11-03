@@ -10,12 +10,9 @@ interface UIReports {
 }
 
 // Look up a user's reporting history (i.e., all reports submitted by a given reporter); should take reporter (address) as a required parameter and take market, universe, and reportingWindow all as optional parameters. For reporting windows that are complete, should also include the consensus outcome, whether the user's report matched the consensus, how much REP the user gained or lost from redistribution, and how much the user earned in reporting fees.
-export function getReportingHistory(db: Knex, reporter: Address, marketID: Address|null|undefined, universe: Address|null|undefined, reportingWindow: Address|null|undefined, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: any) => void): void {
+export function getReportingHistory(db: Knex, universe: Address|null, reporter: Address, marketID: Address|null, reportingWindow: Address|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: any) => void): void {
   // { universe: { marketID: { marketID, reportingWindow, payoutNumerators, isCategorical, isScalar, isIndeterminate } } }
-  const queryData: any = { reporter };
-  if (marketID != null) queryData["reports.marketID"] = marketID;
-  if (universe != null) queryData.universe = universe;
-  if (reportingWindow != null) queryData.reportingWindow = reportingWindow;
+  if (universe == null && marketID == null && reportingWindow == null) return callback(new Error("Must provide reference to universe, specify universe, marketID, reportingWindow"));
   let query = db.select([
     "reports.marketID",
     "markets.universe",
@@ -32,7 +29,10 @@ export function getReportingHistory(db: Knex, reporter: Address, marketID: Addre
     "staked_tokens.payout5",
     "staked_tokens.payout6",
     "staked_tokens.payout7",
-  ]).from("reports").join("markets", "markets.marketID", "reports.marketID").where(queryData);
+  ]).from("reports").join("markets", "markets.marketID", "reports.marketID").where({reporter});
+  if (marketID != null) query.where("reports.marketID", marketID);
+  if (universe != null) query.where("universe", universe);
+  if (reportingWindow != null) query.where("reportingWindow", reportingWindow);
   query = query.join("staked_tokens", "reports.stakedToken", "staked_tokens.stakedToken");
   query = queryModifier(query, "reportID", "asc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, joinedReportsMarketsRows?: Array<JoinedReportsMarketsRow>): void => {

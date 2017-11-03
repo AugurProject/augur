@@ -72,7 +72,7 @@ export function updatePositionInMarket(db: Knex, trx: Knex.Transaction, account:
 }
 
 export function calculateProfitLossInOutcome(augur: Augur, trx: Knex.Transaction, account: Address, marketID: Address, outcome: number, callback: (err: Error|null, profitLossInOutcome?: CalculatedProfitLoss) => void): void {
-  getUserTradingHistory(trx, account, marketID, outcome, null, null, null, null, null, (err: Error|null, userTradingHistory?: Array<UITrade>): void => {
+  getUserTradingHistory(trx, null, account, marketID, outcome, null, null, null, null, null, (err: Error|null, userTradingHistory?: Array<UITrade>): void => {
     if (err) return callback(err);
     if (!userTradingHistory || !userTradingHistory.length) return callback(null, { realized: "0", unrealized: "0", position: "0", meanOpenPrice: "0", queued: "0" });
     trx.select("price").from("outcomes").where({ marketID, outcome }).asCallback((err: Error|null, outcomesRows?: Array<OutcomesRow>): void => {

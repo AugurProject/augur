@@ -9,8 +9,8 @@ describe("server/getters/get-markets-info", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        if (err) assert.fail(err);
-        getMarketsInfo(db, t.params.marketIDs, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsInfo) => {
+        if (err) assert.fail(err);          
+        getMarketsInfo(db, t.params.marketIDs, (err, marketsInfo) => {
           t.assertions(err, marketsInfo);
           done();
         });
