@@ -14,7 +14,7 @@ export enum REPORTING_STATE {
   FORKING = "FORKING",
   AWAITING_FINALIZATION = "AWAITING_FINALIZATION",
   FINALIZED = "FINALIZED",
-};
+}
 
 export interface EthereumNodeEndpoints {
   [protocol: string]: string;
