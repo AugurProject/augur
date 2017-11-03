@@ -56,13 +56,13 @@ export default class CreateMarketDefine extends Component {
 
     const updatedMarket = { ...p.newMarket }
 
-    let compareFields = ['tag1', 'tag2', 'category']
-    let compareValues = []
+    const compareFields = ['tag1', 'tag2', 'category']
+    const compareValues = []
 
     compareFields.indexOf(fieldName) !== -1 && compareFields.splice(compareFields.indexOf(fieldName), 1)
 
-    compareFields.forEach(value => {
-      if (p.newMarket[value] !== "") compareValues.push(p.newMarket[value])
+    compareFields.forEach((value) => {
+      if (p.newMarket[value] !== '') compareValues.push(p.newMarket[value])
     })
 
     switch (true) {
