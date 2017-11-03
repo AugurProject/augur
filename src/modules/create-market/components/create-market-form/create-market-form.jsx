@@ -133,6 +133,7 @@ export default class CreateMarketForm extends Component {
                 updateNewMarket={p.updateNewMarket}
                 validateField={this.validateField}
                 categories={p.categories}
+                isValid={this.isValid}
               />
             }
             { p.newMarket.currentStep === 1 &&

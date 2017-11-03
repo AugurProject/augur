@@ -8,7 +8,7 @@ const mapStateToProps = (state) => {
   const loginAccount = selectLoginAccount(state)
 
   return {
-    privateKey: state.loginAccount.accountPrivateKey,
+    privateKey: loginAccount.accountPrivateKey,
     downloadAccountDataString: loginAccount.downloadAccountDataString,
     downloadAccountFileName: loginAccount.downloadAccountFileName
   }

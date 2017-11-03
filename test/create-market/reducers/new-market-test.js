@@ -53,8 +53,8 @@ describe('modules/create-market/reducers/new-market.js', () => {
           {
             description: false,
             category: false,
-            tag1: false,
-            tag2: false,
+            tag1: true,
+            tag2: true,
           },
           {
             type: false,
@@ -301,8 +301,8 @@ describe('modules/create-market/reducers/new-market.js', () => {
           {
             description: false,
             category: false,
-            tag1: false,
-            tag2: false,
+            tag1: true,
+            tag2: true,
           },
           {
             type: false,

@@ -29,6 +29,7 @@ export default class CreateMarketDefine extends Component {
 
     this.filterCategories = this.filterCategories.bind(this)
     this.updateFilteredCategories = this.updateFilteredCategories.bind(this)
+    this.validateTag = this.validateTag.bind(this)
   }
 
   filterCategories(category) {
@@ -47,6 +48,41 @@ export default class CreateMarketDefine extends Component {
       suggestedCategories: filteredCategories,
       shownSuggestions: 2,
     })
+  }
+
+  validateTag(fieldName, value, maxLength, isRequired = true) {
+    const p = this.props
+    const currentStep = p.newMarket.currentStep
+
+    const updatedMarket = { ...p.newMarket }
+
+    const compareFields = ['tag1', 'tag2', 'category']
+    const compareValues = []
+
+    compareFields.indexOf(fieldName) !== -1 && compareFields.splice(compareFields.indexOf(fieldName), 1)
+
+    compareFields.forEach((value) => {
+      if (p.newMarket[value] !== '') compareValues.push(p.newMarket[value])
+    })
+
+    switch (true) {
+      case typeof value === 'string' && !value.length && isRequired:
+        updatedMarket.validations[currentStep][fieldName] = 'This field is required.'
+        break
+      case maxLength && value.length > maxLength:
+        updatedMarket.validations[currentStep][fieldName] = `Maximum length is ${maxLength}.`
+        break
+      case compareValues.indexOf(value) !== -1:
+        updatedMarket.validations[currentStep][fieldName] = 'Tag and category names must be unique.'
+        break
+      default:
+        updatedMarket.validations[currentStep][fieldName] = true
+    }
+
+    updatedMarket[fieldName] = value
+    updatedMarket.isValid = p.isValid(currentStep)
+
+    p.updateNewMarket(updatedMarket)
   }
 
   render() {
@@ -85,7 +121,7 @@ export default class CreateMarketDefine extends Component {
             value={p.newMarket.category}
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Help users find your market by defining its category"
-            onChange={(e) => { this.updateFilteredCategories(e.target.value); p.validateField('category', e.target.value, TAGS_MAX_LENGTH) }}
+            onChange={(e) => { this.updateFilteredCategories(e.target.value); this.validateTag('category', e.target.value, TAGS_MAX_LENGTH) }}
           />
         </li>
         <li className={StylesForm['field--50']}>
@@ -99,7 +135,7 @@ export default class CreateMarketDefine extends Component {
                   onClick={() => {
                     this.updateFilteredCategories(cat.topic, true)
                     this.catInput.value = cat.topic
-                    p.validateField('category', cat.topic, TAGS_MAX_LENGTH)
+                    this.validateTag('category', cat.topic, TAGS_MAX_LENGTH)
                   }}
                 >{cat.topic}</button>
               </li>
@@ -130,7 +166,7 @@ export default class CreateMarketDefine extends Component {
             value={p.newMarket.tag1}
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Tag 1"
-            onChange={e => p.validateField('tag1', e.target.value, TAGS_MAX_LENGTH)}
+            onChange={e => this.validateTag('tag1', e.target.value, TAGS_MAX_LENGTH, false)}
           />
           <input
             id="cm__input--tag2"
@@ -138,7 +174,7 @@ export default class CreateMarketDefine extends Component {
             value={p.newMarket.tag2}
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Tag 2"
-            onChange={e => p.validateField('tag2', e.target.value, TAGS_MAX_LENGTH)}
+            onChange={e => this.validateTag('tag2', e.target.value, TAGS_MAX_LENGTH, false)}
           />
         </li>
       </ul>

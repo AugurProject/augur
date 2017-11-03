@@ -1,5 +1,5 @@
 .button {
-  .border();
+  .border;
 
   align-items: center;
   border-radius: 3px;
@@ -19,7 +19,8 @@
     background-color 0.15s ease,
     color 0.15s ease;
 
-  &:disabled {
+  &:disabled,
+  &.button--disabled {
     background-color: @color-disabled;
     color: @color-text-disabled;
     cursor: default;

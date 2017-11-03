@@ -5,20 +5,20 @@ import { Route, Redirect } from 'react-router-dom'
 
 import makePath from 'modules/routes/helpers/make-path'
 
-import { AUTHENTICATION } from 'modules/routes/constants/views'
+import { CATEGORIES } from 'modules/routes/constants/views'
 
-const AuthenticatedRoute = ({ component: Component, isLogged, ...rest }) => (
+const UnauthenticatedRoute = ({ component: Component, isLogged, ...rest }) => (
   <Route
     {...rest}
     render={props => (
-      isLogged ?
+      !isLogged ?
         <Component {...props} /> :
-        <Redirect push to={makePath(AUTHENTICATION)} />
+        <Redirect push to={makePath(CATEGORIES)} />
     )}
   />
 )
 
-AuthenticatedRoute.propTypes = {
+UnauthenticatedRoute.propTypes = {
   component: PropTypes.any, // TODO
   isLogged: PropTypes.bool.isRequired
 }
@@ -27,4 +27,4 @@ const mapStateToProps = state => ({
   isLogged: state.isLogged
 })
 
-export default connect(mapStateToProps)(AuthenticatedRoute)
+export default connect(mapStateToProps)(UnauthenticatedRoute)

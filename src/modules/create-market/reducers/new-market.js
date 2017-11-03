@@ -15,8 +15,8 @@ const DEFAULT_STATE = {
     {
       description: false,
       category: false,
-      tag1: false,
-      tag2: false,
+      tag1: true,
+      tag2: true,
     },
     {
       type: false,

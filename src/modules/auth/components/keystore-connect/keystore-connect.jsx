@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
-import classNames from 'classnames'
 
 import { Export } from 'modules/common/components/icons/icons'
 
@@ -148,14 +147,6 @@ export default class KeystoreConnect extends Component {
             </div>
             <div className={Styles.Keystore__actions}>
               <button
-                className={
-                  classNames(
-                    Styles[`button--purple`],
-                    {
-                      [Styles[`button--disabled`]]: s.password === '' || s.keystore === null
-                    }
-                  )
-                }
                 disabled={s.password === '' || s.keystore === null}
               >
                 connect
