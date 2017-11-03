@@ -56,8 +56,9 @@ export default class KeystoreCreate extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     if (
-      this.state.passwordsMatch !== nextState.passwordsMatch &&
-      nextState.passwordsMatch
+      nextState.isStrongPass &&
+      nextState.passwordsMatch &&
+      this.state.passwordsMatch !== nextState.passwordsMatch
     ) {
       nextProps.register(nextState.password, (err, account) => {
         this.setState({
@@ -181,7 +182,6 @@ export default class KeystoreCreate extends Component {
                 id="keyword_create_passphrase_confirm"
                 type="password"
                 value={s.passwordConfirm}
-                disabled={!s.isStrongPass}
                 onChange={(e) => {
                   const passwordConfirm = e.target.value
                   this.setState({
