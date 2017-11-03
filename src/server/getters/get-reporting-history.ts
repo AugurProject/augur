@@ -20,7 +20,7 @@ export function getReportingHistory(db: Knex, reporter: Address, marketID: Addre
     "reports.marketID",
     "markets.universe",
     "markets.reportingWindow",
-    "reports.stakedToken",
+    "reports.stakeToken",
     "reports.amountStaked",
     "reportingState",
     "staked_tokens.isInvalid",
@@ -33,7 +33,7 @@ export function getReportingHistory(db: Knex, reporter: Address, marketID: Addre
     "staked_tokens.payout6",
     "staked_tokens.payout7",
   ]).from("reports").join("markets", "markets.marketID", "reports.marketID").where(queryData);
-  query = query.join("staked_tokens", "reports.stakedToken", "staked_tokens.stakedToken");
+  query = query.join("staked_tokens", "reports.stakeToken", "staked_tokens.stakeToken");
   query = queryModifier(query, "reportID", "asc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, joinedReportsMarketsRows?: Array<JoinedReportsMarketsRow>): void => {
     if (err) return callback(err);
@@ -48,7 +48,7 @@ export function getReportingHistory(db: Knex, reporter: Address, marketID: Addre
         reportingWindow: row.reportingWindow,
         payoutNumerators,
         amountStaked: row.amountStaked,
-        stakedToken: row.stakedToken,
+        stakeToken: row.stakeToken,
         isCategorical: row.marketType === "categorical",
         isScalar: row.marketType === "scalar",
         isIndeterminate: Boolean(row.isInvalid),
