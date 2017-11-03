@@ -8,7 +8,7 @@ interface TradingHistoryRow extends Partial<TradesRow> {
 
 // Look up a user's trading history. Should take market, outcome, and orderType as optional parameters.
 export function getUserTradingHistory(db: Knex|Knex.Transaction, universe: Address|null, account: Address, marketID: Address|null|undefined, outcome: number|null|undefined, orderType: string|null|undefined, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: Array<UITrade>) => void): void {
-  if (universe == null && marketID == null ) return callback(new Error("Must provide reference to universe, specify universe or marketID"));  
+  if (universe == null && marketID == null ) return callback(new Error("Must provide reference to universe, specify universe or marketID"));
   let query = db.select([
     "trades.marketID",
     "trades.outcome",
