@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
-import { TransitionGroup } from 'react-transition-group' // TODO -- fix up the transitions in this component
+import classNames from 'classnames'
+
+import toggleHeight from 'utils/toggle-height/toggle-height'
 
 import Styles from 'modules/auth/components/help/help.styles'
+import ToggleHeightStyles from 'utils/toggle-height/toggle-height.styles'
 
 const helps = [
   {
@@ -21,6 +24,8 @@ const helps = [
 export default class Help extends Component {
   constructor() {
     super()
+
+    this.helpItem = []
 
     this.state = {
       areQuestionsVisible: false,
@@ -45,33 +50,35 @@ export default class Help extends Component {
       <div className={Styles.Help} >
         <button
           className={Styles.Help__Header}
-          onClick={() => this.setState({ areQuestionsVisible: !s.areQuestionsVisible })}
+          onClick={() => toggleHeight(this.helpItems, s.areQuestionsVisible, () => this.setState({ areQuestionsVisible: !s.areQuestionsVisible }))}
         >
           Confused? Get Help Here.
         </button>
-        <TransitionGroup>
-          {s.areQuestionsVisible &&
-            helps.map((help, i) => (
-              <div
-                key={help.title}
-                className={Styles.Help__Item}
+        <div
+          ref={(helpItems) => { this.helpItems = helpItems }}
+          className={classNames(Styles.Help__Items, ToggleHeightStyles['toggle-height-target'])}
+        >
+          {helps.map((help, i) => (
+            <div
+              key={help.title}
+              className={Styles.Help__Item}
+            >
+              <button
+                onClick={() => toggleHeight(this.helpItem[i], this.state.visibleDefinitions.indexOf(i) !== -1, () => this.toggleDefinition(i))}
               >
-                <button
-                  onClick={() => this.toggleDefinition(i)}
-                >
-                  {help.title} +
-                </button>
-                <TransitionGroup>
-                  {s.visibleDefinitions.indexOf(i) !== -1 &&
-                    <p>
-                      {help.def}
-                    </p>
-                  }
-                </TransitionGroup>
+                {help.title} +
+              </button>
+              <div
+                ref={(helpItem) => { this.helpItem[i] = helpItem }}
+                className={classNames(Styles.Help__Item, ToggleHeightStyles['toggle-height-target'])}
+              >
+                <p>
+                  {help.def}
+                </p>
               </div>
-            ))
-          }
-        </TransitionGroup>
+            </div>
+          ))}
+        </div>
       </div>
     )
   }

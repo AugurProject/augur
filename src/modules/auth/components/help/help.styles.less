@@ -30,26 +30,23 @@
   }
 }
 
-.Help__ItemEnter,
-.Help__DefinitionEnter {
-  transform: scaleY(0);
-}
+.Help__items {
+  height: 0;
+  margin: @font-size-medium;
+  overflow: auto;
+  transition: height @animation-speed-normal @animation-default-type;
 
-.Help__ItemEnterActive,
-.Help__DefinitionEnterActive {
-  transform: scaleY(1);
-  transform-origin: top;
-  transition: transform 300ms ease-in-out;
-}
+  &:global {
+    &.help-items-appear {
+      height: 0;
+    }
 
-.Help__ItemLeave,
-.Help__DefinitionLeave {
-  transform: scaleY(1);
-}
+    &.help-items-enter {
+      height: auto;
+    }
 
-.Help__ItemLeaveActive,
-.Help__DefinitionLeaveActive {
-  transform: scaleY(0);
-  transform-origin: top;
-  transition: transform 300ms ease-in-out;
+    &.help-items-exti {
+      height: 0;
+    }
+  }
 }
