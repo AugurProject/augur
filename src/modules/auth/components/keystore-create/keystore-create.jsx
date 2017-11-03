@@ -195,14 +195,7 @@ export default class KeystoreCreate extends Component {
               { document.queryCommandSupported('copy') &&
                 <button
                   id="copy_keystore"
-                  className={
-                    classNames(
-                      Styles[`button--purple`],
-                      {
-                        [Styles[`button--disabled`]]: s.keystore === null
-                      }
-                    )
-                  }
+                  className={Styles.Keystore__button}
                   disabled={s.keystore === null}
                   data-clipboard-text={s.keystore}
                 >
@@ -211,7 +204,7 @@ export default class KeystoreCreate extends Component {
               }
               <a
                 className={
-                  classNames(Styles[`button--purple`],
+                  classNames(Styles.Keystore__button,
                     {
                       [Styles[`button--disabled`]]: s.keystore === null
                     }

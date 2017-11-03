@@ -148,14 +148,6 @@ export default class KeystoreConnect extends Component {
             </div>
             <div className={Styles.Keystore__actions}>
               <button
-                className={
-                  classNames(
-                    Styles[`button--purple`],
-                    {
-                      [Styles[`button--disabled`]]: s.password === '' || s.keystore === null
-                    }
-                  )
-                }
                 disabled={s.password === '' || s.keystore === null}
               >
                 connect
