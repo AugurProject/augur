@@ -21,14 +21,19 @@ export default class MarketsList extends Component {
     toggleFavorite: PropTypes.func.isRequired,
     loadMarketsInfo: PropTypes.func.isRequired,
     linkType: PropTypes.string,
+    showPagination: PropTypes.bool,
+  }
+
+  static defaultProps = {
+    showPagination: true,
   }
 
   constructor(props) {
     super(props)
 
     this.state = {
-      lowerBound: null,
-      boundedLength: null,
+      lowerBound: this.props.showPagination ? null : 1,
+      boundedLength: this.props.showPagination ? null : this.props.filteredMarkets.length,
       marketIDsMissingInfo: [] // This is ONLY the currently displayed markets that are missing info
     }
 
@@ -107,7 +112,7 @@ export default class MarketsList extends Component {
             return null
           }) :
           <NullStateMessage message={'No Markets Available'} /> }
-        {!!marketsLength &&
+        {!!marketsLength && p.showPagination &&
           <Paginator
             itemsLength={marketsLength}
             itemsPerPage={10}
