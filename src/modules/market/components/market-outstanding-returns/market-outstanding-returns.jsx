@@ -1,15 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
 
-import Styles from 'modules/market/components/market-outstanding-returns/market-outstanding-returns.styles'
-
-const OutstandingReturns = (p) => {
-  return (
-    <div>
+const OutstandingReturns = p => (
+  <div>
       Outstanding Returns {p.outstandingReturns.formatted}
-    </div>
+  </div>
   )
+
+OutstandingReturns.propTypes = {
+  outstandingReturns: PropTypes.object.isRequired
 }
 
 export default OutstandingReturns

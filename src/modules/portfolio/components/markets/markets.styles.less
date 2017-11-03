@@ -10,13 +10,13 @@
   align-items: baseline;
   display: flex;
   flex-flow: row nowrap;
-  width: 100%;
   padding: 0 2rem;
+  width: 100%;
 }
 
 .Markets__SortBar-title {
-  font-size: @font-size-extra-large;
   color: @color-white;
+  font-size: @font-size-extra-large;
 }
 
 .Markets__SortBar-sort {
@@ -27,4 +27,14 @@
 
 .Markets__SortBar-filter {
   display: flex;
+}
+
+@media @breakpoint-mobile {
+  .Markets__SortBar {
+    padding: 0;
+  }
+
+  .Markets__SortBar-title {
+    font-size: @font-size-large;
+  }
 }
