@@ -14,9 +14,7 @@ import { triggerTransactionsExport } from 'modules/transactions/actions/trigger-
 const mapStateToProps = (state) => {
   const positions = getLoginAccountPositions()
   const openOrders = getOpenOrders()
-  // console.log('pos, oord:', positions, openOrders)
-  // console.log('closPosStat', getClosePositionStatus())
-  // console.log('state:', state)
+
   const date = new Date()
   const dummyMarketData = [{
     id: '1',
