@@ -1,6 +1,5 @@
 import * as Knex from "knex";
 import { JsonRpcRequest } from "../types";
-import { getMarketInfo } from "./getters/get-market-info";
 import { getAccountTransferHistory } from "./getters/get-account-transfer-history";
 import { getCategories } from "./getters/get-categories";
 import { getMarketsInCategory } from "./getters/get-markets-in-category";
@@ -24,8 +23,6 @@ import { getOpenOrders } from "./getters/get-open-orders";
 export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callback: (err?: Error|null, result?: any) => void): void {
   console.log(request);
   switch (request.method) {
-    case "getMarketInfo":
-      return getMarketInfo(db, request.params.marketID, callback);
     case "getAccountTransferHistory":
       return getAccountTransferHistory(db, request.params.account, request.params.token, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getCategories":

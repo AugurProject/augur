@@ -20,7 +20,7 @@ export function getMarketsInfo(db: Knex, marketIDs: Array<Address>|null|undefine
   }, (err: Error|null, marketOutcomeResult: MarketOutcomeResult ): void => {
     const { marketsRows, outcomesRows } = marketOutcomeResult;
     if (err) return callback(err);
-    if (!marketsRows || !marketsRows.length) return callback(null);
+    if (!marketsRows) return callback(null);
     const marketsRowsByMarket = _.keyBy(marketsRows, (r: MarketsRowWithCreationTime): string => r.marketID);
     const outcomesRowsByMarket = _.groupBy(outcomesRows, (r: OutcomesRow): string => r.marketID);
 

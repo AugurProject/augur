@@ -20,7 +20,6 @@ describe("server/getters/get-markets-info", () => {
   test({
     description: "get markets by specifying market IDs",
     params: {
-      universe: null,
       marketIDs: [
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000000000000000000002",
@@ -139,7 +138,6 @@ describe("server/getters/get-markets-info", () => {
   test({
     description: "get markets by specifying market IDs, with missing market",
     params: {
-      universe: null,
       marketIDs: [
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000077777777777777777",
@@ -260,7 +258,6 @@ describe("server/getters/get-markets-info", () => {
   test({
     description: "get markets by specifying market IDs, reversed",
     params: {
-      universe: null,
       marketIDs: [
         "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000001",
@@ -374,6 +371,16 @@ describe("server/getters/get-markets-info", () => {
           }],
         }]
       );
+    },
+  });
+  test({
+    description: "market does not exist",
+    params: {
+      marketIDs: ["0x1010101010101010101010101010101010101010"],
+    },
+    assertions: (err, marketInfo) => {
+      assert.isNull(err);
+      assert.deepEqual(marketInfo, [null]);
     },
   });
 });
