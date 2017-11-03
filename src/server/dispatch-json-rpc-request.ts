@@ -13,9 +13,9 @@ import { getUserTradingHistory } from "./getters/get-user-trading-history";
 import { getMarketPriceHistory } from "./getters/get-market-price-history";
 import { getUserTradingPositions } from "./getters/get-user-trading-positions";
 import { getReportingWindowsWithUnclaimedFees } from "./getters/get-reporting-windows-with-unclaimed-fees";
-import { getUnclaimedReportingTokens } from "./getters/get-unclaimed-reporting-tokens";
-import { getUnfinalizedReportingTokens } from "./getters/get-unfinalized-reporting-tokens";
-import { getAllReportingTokens } from "./getters/get-all-reporting-tokens";
+import { getUnclaimedStakeTokens } from "./getters/get-unclaimed-stake-tokens";
+import { getUnfinalizedStakeTokens } from "./getters/get-unfinalized-stake-tokens";
+import { getAllStakeTokens } from "./getters/get-all-stake-tokens";
 import { getMarketsClosingInDateRange } from "./getters/get-markets-closing-in-date-range";
 import { getMarketsInfo } from "./getters/get-markets-info";
 import { getOpenOrders } from "./getters/get-open-orders";
@@ -48,13 +48,13 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callba
     case "getUserTradingPositions":
       return getUserTradingPositions(db, request.params.account, request.params.marketID, request.params.outcome, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getReportingWindowsWithUnclaimedFees":
-      return getReportingWindowsWithUnclaimedFees(db, request.params.account, callback);
-    case "getUnclaimedReportingTokens":
-      return getUnclaimedReportingTokens(db, request.params.account, callback);
-    case "getUnfinalizedReportingTokens":
-      return getUnfinalizedReportingTokens(db, request.params.account, callback);
-    case "getAllReportingTokens":
-      return getAllReportingTokens(db, request.params.account, request.params.dateRange, callback); // TODO change dateRange to separate earliestTime and latestTime params?
+      return getReportingWindowsWithUnclaimedFees(db, request.params.universe, request.params.account, callback);
+    case "getUnclaimedStakeTokens":
+      return getUnclaimedStakeTokens(db, request.params.universe, request.params.account, callback);
+    case "getUnfinalizedStakeTokens":
+      return getUnfinalizedStakeTokens(db, request.params.universe, request.params.account, callback);
+    case "getAllStakeTokens":
+      return getAllStakeTokens(db, request.params.universe, request.params.account, request.params.dateRange, callback); // TODO change dateRange to separate earliestTime and latestTime params?
     case "getMarketsClosingInDateRange":
       return getMarketsClosingInDateRange(db, request.params.earliestClosingTime, request.params.latestClosingTime, request.params.universe, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsInfo":
