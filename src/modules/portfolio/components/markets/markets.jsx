@@ -7,7 +7,6 @@ import Dropdown from 'modules/common/components/dropdown/dropdown'
 import MarketsList from 'modules/markets/components/markets-list'
 import Styles from 'modules/portfolio/components/markets/markets.styles'
 import { TYPE_REPORT } from 'modules/market/constants/link-types'
-// export default () => (
 
 class MyMarkets extends Component {
   static PropTypes = {
@@ -19,35 +18,48 @@ class MyMarkets extends Component {
 
     this.state = {
       sortOptions: [
-        { label: 'Volumne', value: 'volumne' },
+        { label: 'Volume', value: 'volume' },
         { label: 'Newest', value: 'newest' },
         { label: 'Fees', value: 'fees' },
         { label: 'Expiring Soon', value: 'expiring' }
       ],
-      sortDefault: 'volumne',
-      sortType: 'volume'
+      sortDefault: 'volume',
+      sortType: 'volume',
+      filterOptions: [
+        { label: 'Reporting', value: 'reporting' },
+        { label: 'Designated Reporting', value: 'designatedReporting' },
+      ],
+      filterDefault: 'reporting',
+      filterType: 'reporting'
     }
-
+    // filter stuff:
+    // Status / Category
+    // Open   / Sports
+    // In Reporting / Environment
+    // Closed / Animals
+    // --     / Politics
+    // --     / Finance
+    // --     / Racing
     this.changeDropdown = this.changeDropdown.bind(this)
   }
 
   changeDropdown(value) {
-    let newType = this.state.sortType
-    // let newPeriod = this.state.graphPeriod
+    let sortType = this.state.sortType
+    let filterType = this.state.filterType
 
     this.state.sortOptions.forEach((type, ind) => {
       if (type.value === value) {
-        newType = value
+        sortType = value
       }
     })
 
-    // this.state.graphPeriodOptions.forEach((period, ind) => {
-    //   if (period.value === value) {
-    //     newPeriod = value
-    //   }
-    // })
+    this.state.filterOptions.forEach((type, ind) => {
+      if (type.value === value) {
+        filterType = value
+      }
+    })
 
-    this.setState({ sortType: newType })
+    this.setState({ sortType, filterType })
   }
 
   render() {
@@ -66,12 +78,17 @@ class MyMarkets extends Component {
           <div
             className={Styles['Markets__SortBar-title']}
           >
-            Manual Reporting
+            Reporting
           </div>
           <div
-            className={Styles['Markets__SortBar-dropdowns']}
+            className={Styles['Markets__SortBar-sort']}
           >
-             <Dropdown default={s.sortDefault} options={s.sortOptions} onChange={this.changeDropdown} />
+            <Dropdown default={s.sortDefault} options={s.sortOptions} onChange={this.changeDropdown} />
+          </div>
+          <div
+            className={Styles['Markets__SortBar-filter']}
+          >
+             <Dropdown default={s.filterDefault} options={s.filterOptions} onChange={this.changeDropdown} />
           </div>
         </div>
         <MarketsList
@@ -84,6 +101,7 @@ class MyMarkets extends Component {
           toggleFavorite={p.toggleFavorite}
           loadMarketsInfo={p.loadMarketsInfo}
           linkType={TYPE_REPORT}
+          outstandingReturns
         />
       </section>
     )

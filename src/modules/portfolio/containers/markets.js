@@ -10,8 +10,7 @@ import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
 
 const mapStateToProps = state => {
-  // console.log(state)
-
+  // getMyMarkets or it's equivalent will need a way of calculating the outstanding returns for a market and attaching it to each market object. Currently I've just added a key/value pair to the market objects im using below.
   return {
     isLogged: state.isLogged,
     myMarkets: markets,  // getMyMarkets(),

@@ -21,6 +21,7 @@ export default class MarketsList extends Component {
     toggleFavorite: PropTypes.func.isRequired,
     loadMarketsInfo: PropTypes.func.isRequired,
     linkType: PropTypes.string,
+    outstandingReturns: PropTypes.bool
   }
 
   constructor(props) {
@@ -100,6 +101,7 @@ export default class MarketsList extends Component {
                   linkType={p.linkType}
                   location={p.location}
                   history={p.history}
+                  outstandingReturns={p.outstandingReturns}
                 />
               )
             }

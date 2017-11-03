@@ -2,25 +2,29 @@
 
 .Markets {
   align-items: center;
-  // background: @color-white;
-  // display: flex;
-  // justify-content: space-between;
-  // padding: 2rem;
   text-align: left;
   width: 100%;
 }
 
 .Markets__SortBar {
-  align-items: center;
+  align-items: baseline;
   display: flex;
   flex-flow: row nowrap;
   width: 100%;
+  padding: 0 2rem;
 }
 
 .Markets__SortBar-title {
-  flex: 1;
+  font-size: @font-size-extra-large;
+  color: @color-white;
 }
 
-.Markets__SortBar-dropdowns {
+.Markets__SortBar-sort {
+  display: flex;
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.Markets__SortBar-filter {
   display: flex;
 }
