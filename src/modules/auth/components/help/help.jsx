@@ -66,7 +66,7 @@ export default class Help extends Component {
               <button
                 onClick={() => toggleHeight(this.helpItem[i], this.state.visibleDefinitions.indexOf(i) !== -1, () => this.toggleDefinition(i))}
               >
-                {help.title} +
+                {help.title} {this.state.visibleDefinitions.indexOf(i) !== -1 ? '-' : '+'}
               </button>
               <div
                 ref={(helpItem) => { this.helpItem[i] = helpItem }}
