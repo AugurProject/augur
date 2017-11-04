@@ -17,23 +17,23 @@ export function getReportingHistory(db: Knex, universe: Address|null, reporter: 
     "reports.marketID",
     "markets.universe",
     "markets.reportingWindow",
-    "reports.stakedToken",
+    "reports.stakeToken",
     "reports.amountStaked",
     "reportingState",
-    "staked_tokens.isInvalid",
-    "staked_tokens.payout0",
-    "staked_tokens.payout1",
-    "staked_tokens.payout2",
-    "staked_tokens.payout3",
-    "staked_tokens.payout4",
-    "staked_tokens.payout5",
-    "staked_tokens.payout6",
-    "staked_tokens.payout7",
+    "stake_tokens.isInvalid",
+    "stake_tokens.payout0",
+    "stake_tokens.payout1",
+    "stake_tokens.payout2",
+    "stake_tokens.payout3",
+    "stake_tokens.payout4",
+    "stake_tokens.payout5",
+    "stake_tokens.payout6",
+    "stake_tokens.payout7",
   ]).from("reports").join("markets", "markets.marketID", "reports.marketID").where({reporter});
   if (marketID != null) query.where("reports.marketID", marketID);
   if (universe != null) query.where("universe", universe);
   if (reportingWindow != null) query.where("reportingWindow", reportingWindow);
-  query = query.join("staked_tokens", "reports.stakedToken", "staked_tokens.stakedToken");
+  query = query.join("stake_tokens", "reports.stakeToken", "stake_tokens.stakeToken");
   query = queryModifier(query, "reportID", "asc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, joinedReportsMarketsRows?: Array<JoinedReportsMarketsRow>): void => {
     if (err) return callback(err);
@@ -48,7 +48,7 @@ export function getReportingHistory(db: Knex, universe: Address|null, reporter: 
         reportingWindow: row.reportingWindow,
         payoutNumerators,
         amountStaked: row.amountStaked,
-        stakedToken: row.stakedToken,
+        stakeToken: row.stakeToken,
         isCategorical: row.marketType === "categorical",
         isScalar: row.marketType === "scalar",
         isIndeterminate: Boolean(row.isInvalid),
