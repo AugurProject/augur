@@ -7,6 +7,7 @@ import { queryModifier, reshapeMarketsRowToUIMarketInfo, getMarketsWithReporting
 export function getMarketsAwaitingReporting(db: Knex, universe: Address|null, reportingWindow: Address|null, reportingState: string|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: any) => void): void {
   let query = getMarketsWithReportingState(db, ["markets.marketID"]);
   if (universe == null && reportingWindow == null) return callback(new Error("Must provide reference to universe, specify universe or reportingWindow"));
+  if (universe != null) query = query.where({ universe });
   if (reportingWindow != null) query = query.where({ reportingWindow });
   if (reportingState != null) query = query.where({ reportingState });
 
