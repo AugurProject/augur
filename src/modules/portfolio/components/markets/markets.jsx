@@ -66,6 +66,7 @@ class MyMarkets extends Component {
     this.changeDropdown = this.changeDropdown.bind(this)
   }
 
+  // TODO -- clean up this method
   changeDropdown(value) {
     let sortTypeReporting = this.state.sortTypeReporting
     let filterTypeReporting = this.state.filterTypeReporting
