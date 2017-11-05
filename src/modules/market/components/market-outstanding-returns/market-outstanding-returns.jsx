@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 const OutstandingReturns = p => (
   <div>
-      Outstanding Returns {p.outstandingReturns.formatted}
+      Outstanding Returns {p.outstandingReturns.full}
   </div>
   )
 
