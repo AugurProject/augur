@@ -89,10 +89,14 @@
 
 .MarketCard__headingcontainer {
   clear: both;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
 }
 
 .MarketCard__tableheading {
   color: @color-darkpurple;
+  flex: 1;
   float: left;
   font-size: 1.125rem;
   font-weight: 500;
@@ -104,6 +108,12 @@
 
 .MarketCard__tabletoggle {
   float: right;
+}
+
+.MarketCard__action {
+  margin-right: 2rem;
+
+  &:extend(.button--purple all);
 }
 
 @media @breakpoint-mobile {

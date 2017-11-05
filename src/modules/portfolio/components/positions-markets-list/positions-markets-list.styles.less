@@ -1,0 +1,40 @@
+@import (reference) '~assets/styles/shared';
+
+.PositionsMarketsList {
+  align-items: center;
+  text-align: left;
+  width: 100%;
+}
+
+.PositionsMarketsList__SortBar {
+  align-items: baseline;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 0 2rem;
+  width: 100%;
+}
+
+.PositionsMarketsList__SortBar-title {
+  color: @color-white;
+  font-size: @font-size-extra-large;
+}
+
+.PositionsMarketsList__SortBar-sort {
+  display: flex;
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.PositionsMarketsList__SortBar-filter {
+  display: flex;
+}
+
+@media @breakpoint-mobile {
+  .PositionsMarketsList__SortBar {
+    padding: 0;
+  }
+
+  .PositionsMarketsList__SortBar-title {
+    font-size: @font-size-large;
+  }
+}

@@ -1,25 +1,61 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
 
-import MarketPortfolioCard from 'modules/market/components/market-portfolio-card/market-portfolio-card'
+// import MarketPortfolioCard from 'modules/market/components/market-portfolio-card/market-portfolio-card'
+import PositionsMarketsList from 'modules/portfolio/components/positions-markets-list/positions-markets-list'
+import { TYPE_REPORT, TYPE_DISPUTE } from 'modules/market/constants/link-types'
 
 const Positions = p => (
-  <article className="my-positions">
-    {p.markets.map(market => (
-      <MarketPortfolioCard
-        key={market.id}
-        market={market}
-        closePositionStatus={p.closePositionStatus}
-        scalarShareDenomination={p.scalarShareDenomination}
-        orderCancellation={p.orderCancellation}
-        location={p.location}
-        history={p.history}
-        orderData={{}}
-        positionData={{}}
-      />
-    ))}
-  </article>
+  <section className="my-positions">
+    <Helmet>
+      <title>Positions</title>
+    </Helmet>
+    <PositionsMarketsList
+      title="Open Positions"
+      markets={p.markets}
+      closePositionStatus={p.closePositionStatus}
+      scalarShareDenomination={p.scalarShareDenomination}
+      orderCancellation={p.orderCancellation}
+      location={p.location}
+      history={p.history}
+    />
+    <PositionsMarketsList
+      title="Reporting"
+      markets={p.markets}
+      closePositionStatus={p.closePositionStatus}
+      scalarShareDenomination={p.scalarShareDenomination}
+      orderCancellation={p.orderCancellation}
+      location={p.location}
+      history={p.history}
+      linkType={TYPE_DISPUTE}
+    />
+    <PositionsMarketsList
+      title="Closed"
+      markets={p.markets}
+      closePositionStatus={p.closePositionStatus}
+      scalarShareDenomination={p.scalarShareDenomination}
+      orderCancellation={p.orderCancellation}
+      location={p.location}
+      history={p.history}
+    />
+  </section>
 )
+// linkType={TYPE_DISPUTE}
+
+// {p.markets.map(market => (
+//   <MarketPortfolioCard
+//     key={market.id}
+//     market={market}
+//     closePositionStatus={p.closePositionStatus}
+//     scalarShareDenomination={p.scalarShareDenomination}
+//     orderCancellation={p.orderCancellation}
+//     location={p.location}
+//     history={p.history}
+//     orderData={{}}
+//     positionData={{}}
+//   />
+// ))}
 
 Positions.propTypes = {
   location: PropTypes.object.isRequired,

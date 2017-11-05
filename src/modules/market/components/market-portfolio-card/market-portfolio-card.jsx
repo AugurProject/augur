@@ -7,6 +7,8 @@ import getValue from 'utils/get-value'
 import MarketStatusIcon from 'modules/market/components/market-status-icon/market-status-icon'
 import MarketTable from 'modules/market/components/market-tables/market-tables'
 import CaretDropdown from 'modules/common/components/caret-dropdown/caret-dropdown'
+import MarketLink from 'modules/market/components/market-link/market-link'
+import { TYPE_REPORT, TYPE_DISPUTE } from 'modules/market/constants/link-types'
 
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
@@ -17,8 +19,7 @@ export default class MarketPortfolioCard extends React.Component {
     closePositionStatus: PropTypes.object.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired,
     orderCancellation: PropTypes.object.isRequired,
-    orderData: PropTypes.object.isRequired,
-    positionData: PropTypes.object.isRequired
+    linkType: PropTypes.string
   };
   constructor() {
     super()
@@ -35,8 +36,22 @@ export default class MarketPortfolioCard extends React.Component {
   }
 
   render() {
+    const p = this.props
     const myPositionsSummary = getValue(this.props, 'market.myPositionsSummary')
     const myPositionOutcomes = getValue(this.props, 'market.myPositionOutcomes')
+    console.log(p)
+    let buttonText
+
+    switch (p.linkType) {
+      case TYPE_REPORT:
+        buttonText = 'Report'
+        break
+      case TYPE_DISPUTE:
+        buttonText = 'Dispute'
+        break
+      default:
+        buttonText = 'View'
+    }
 
     return (
       <article className={CommonStyles.MarketCommon__container}>
@@ -113,6 +128,16 @@ export default class MarketPortfolioCard extends React.Component {
             <h1 className={Styles.MarketCard__tableheading}>
               My Positions
             </h1>
+            {p.linkType &&
+              <MarketLink
+                className={Styles.MarketCard__action}
+                id={p.market.id}
+                formattedDescription={p.market.description}
+                linkType={p.linkType}
+              >
+                { p.buttonText || buttonText }
+              </MarketLink>
+            }
             <button
               className={Styles.MarketCard__tabletoggle}
               onClick={() => this.toggleTable('myPositions')}
@@ -206,7 +231,7 @@ export default class MarketPortfolioCard extends React.Component {
                   }))
 
                   return tempAccumulator
-                })
+                }, [])
               }
             />
           }
