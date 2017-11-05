@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
 
-import { TYPE_DISPUTE } from 'modules/market/constants/link-types'
 import Dropdown from 'modules/common/components/dropdown/dropdown'
 import MarketPortfolioCard from 'modules/market/components/market-portfolio-card/market-portfolio-card'
 
@@ -18,11 +16,12 @@ class PositionsMarketsList extends Component {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     linkType: PropTypes.string,
+    positionsDefault: PropTypes.bool,
   }
 
   constructor(props) {
     super(props)
-    // TODO: the filter will most likely need to be props because it's going to change based on the market's tags.
+    // TODO: the filter will most likely need to be props because it's going to change based on the market's tags. Sorting on the other hand is standardized it appears, which means it can be hardcoded into state.
 
     this.state = {
       sortType: 'volume',
@@ -69,9 +68,8 @@ class PositionsMarketsList extends Component {
   render() {
     const p = this.props
     const s = this.state
-    console.log(p, s, p.title)
 
-    return(
+    return (
       <div className={Styles.PositionsMarketsList}>
         <div className={Styles.PositionsMarketsList__SortBar}>
           <div className={Styles['PositionsMarketsList__SortBar-title']}>
@@ -94,6 +92,7 @@ class PositionsMarketsList extends Component {
             location={p.location}
             history={p.history}
             linkType={p.linkType}
+            positionsDefault={p.positionsDefault}
           />
         ))}
       </div>

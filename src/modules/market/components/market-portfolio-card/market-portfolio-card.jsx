@@ -19,13 +19,19 @@ export default class MarketPortfolioCard extends React.Component {
     closePositionStatus: PropTypes.object.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired,
     orderCancellation: PropTypes.object.isRequired,
-    linkType: PropTypes.string
-  };
-  constructor() {
-    super()
+    linkType: PropTypes.string,
+    positionsDefault: PropTypes.bool
+  }
+
+  static defaultProps = {
+    positionsDefault: true,
+  }
+
+  constructor(props) {
+    super(props)
     this.state = {
       tableOpen: {
-        myPositions: true,
+        myPositions: this.props.positionsDefault,
         openOrders: false
       }
     }
@@ -39,7 +45,7 @@ export default class MarketPortfolioCard extends React.Component {
     const p = this.props
     const myPositionsSummary = getValue(this.props, 'market.myPositionsSummary')
     const myPositionOutcomes = getValue(this.props, 'market.myPositionOutcomes')
-    console.log(p)
+
     let buttonText
 
     switch (p.linkType) {
@@ -181,17 +187,19 @@ export default class MarketPortfolioCard extends React.Component {
               }
             />
           }
-          <div className={Styles.MarketCard__headingcontainer}>
-            <h1 className={Styles.MarketCard__tableheading}>
-              Open Orders
-            </h1>
-            <button
-              className={Styles.MarketCard__tabletoggle}
-              onClick={() => this.toggleTable('openOrders')}
-            >
-              <CaretDropdown flipped={this.state.tableOpen.openOrders} />
-            </button>
-          </div>
+          {this.props.market.outcomes[0].userOpenOrders.length !== 0 &&
+            <div className={Styles.MarketCard__headingcontainer}>
+              <h1 className={Styles.MarketCard__tableheading}>
+                Open Orders
+              </h1>
+              <button
+                className={Styles.MarketCard__tabletoggle}
+                onClick={() => this.toggleTable('openOrders')}
+              >
+                <CaretDropdown flipped={this.state.tableOpen.openOrders} />
+              </button>
+            </div>
+          }
           {this.state.tableOpen.openOrders &&
             <MarketTable
               hideTitles

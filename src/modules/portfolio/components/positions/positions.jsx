@@ -2,9 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
-// import MarketPortfolioCard from 'modules/market/components/market-portfolio-card/market-portfolio-card'
 import PositionsMarketsList from 'modules/portfolio/components/positions-markets-list/positions-markets-list'
-import { TYPE_REPORT, TYPE_DISPUTE } from 'modules/market/constants/link-types'
+import { TYPE_DISPUTE } from 'modules/market/constants/link-types'
 
 const Positions = p => (
   <section className="my-positions">
@@ -13,7 +12,7 @@ const Positions = p => (
     </Helmet>
     <PositionsMarketsList
       title="Open Positions"
-      markets={p.markets}
+      markets={p.openPositionMarkets}
       closePositionStatus={p.closePositionStatus}
       scalarShareDenomination={p.scalarShareDenomination}
       orderCancellation={p.orderCancellation}
@@ -22,45 +21,34 @@ const Positions = p => (
     />
     <PositionsMarketsList
       title="Reporting"
-      markets={p.markets}
+      markets={p.reportingMarkets}
       closePositionStatus={p.closePositionStatus}
       scalarShareDenomination={p.scalarShareDenomination}
       orderCancellation={p.orderCancellation}
       location={p.location}
       history={p.history}
       linkType={TYPE_DISPUTE}
+      positionsDefault={false}
     />
     <PositionsMarketsList
       title="Closed"
-      markets={p.markets}
+      markets={p.closedMarkets}
       closePositionStatus={p.closePositionStatus}
       scalarShareDenomination={p.scalarShareDenomination}
       orderCancellation={p.orderCancellation}
       location={p.location}
       history={p.history}
+      positionsDefault={false}
     />
   </section>
 )
-// linkType={TYPE_DISPUTE}
-
-// {p.markets.map(market => (
-//   <MarketPortfolioCard
-//     key={market.id}
-//     market={market}
-//     closePositionStatus={p.closePositionStatus}
-//     scalarShareDenomination={p.scalarShareDenomination}
-//     orderCancellation={p.orderCancellation}
-//     location={p.location}
-//     history={p.history}
-//     orderData={{}}
-//     positionData={{}}
-//   />
-// ))}
 
 Positions.propTypes = {
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
-  markets: PropTypes.array.isRequired,
+  openPositionMarkets: PropTypes.array.isRequired,
+  reportingMarkets: PropTypes.array.isRequired,
+  closedMarkets: PropTypes.array.isRequired,
   closePositionStatus: PropTypes.object.isRequired,
   scalarShareDenomination: PropTypes.object.isRequired,
   orderCancellation: PropTypes.object.isRequired,
