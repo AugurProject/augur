@@ -6,7 +6,7 @@ import NavPanel from 'modules/common/components/nav-panel/nav-panel'
 import Help from 'modules/auth/components/help/help'
 import Airbitz from 'modules/auth/containers/airbitz-connect'
 import Ledger from 'modules/auth/containers/ledger'
-import Uport from 'modules/auth/containers/uport'
+import UportConnect from 'modules/auth/containers/uport-connect'
 import KeystoreConnect from 'modules/auth/containers/keystore-connect'
 import Trezor from 'modules/auth/containers/trezor'
 import Metamask from 'modules/auth/components/metamask/metamask'
@@ -50,7 +50,7 @@ export default function AuthConnect(p) {
               <Ledger />
             }
             {selectedNav === PARAMS.UPORT &&
-              <Uport />
+              <UportConnect />
             }
             {selectedNav === PARAMS.KEYSTORE &&
               <KeystoreConnect />
