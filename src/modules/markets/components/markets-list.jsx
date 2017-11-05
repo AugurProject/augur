@@ -22,10 +22,12 @@ export default class MarketsList extends Component {
     loadMarketsInfo: PropTypes.func.isRequired,
     linkType: PropTypes.string,
     showPagination: PropTypes.bool,
+    outstandingReturns: PropTypes.bool,
   }
 
   static defaultProps = {
     showPagination: true,
+    outstandingReturns: false,
   }
 
   constructor(props) {
@@ -105,6 +107,7 @@ export default class MarketsList extends Component {
                   linkType={p.linkType}
                   location={p.location}
                   history={p.history}
+                  outstandingReturns={p.outstandingReturns}
                 />
               )
             }

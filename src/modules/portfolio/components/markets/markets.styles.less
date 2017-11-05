@@ -1,0 +1,40 @@
+@import (reference) '~assets/styles/shared';
+
+.Markets {
+  align-items: center;
+  text-align: left;
+  width: 100%;
+}
+
+.Markets__SortBar {
+  align-items: baseline;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 0 2rem;
+  width: 100%;
+}
+
+.Markets__SortBar-title {
+  color: @color-white;
+  font-size: @font-size-extra-large;
+}
+
+.Markets__SortBar-sort {
+  display: flex;
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.Markets__SortBar-filter {
+  display: flex;
+}
+
+@media @breakpoint-mobile {
+  .Markets__SortBar {
+    padding: 0;
+  }
+
+  .Markets__SortBar-title {
+    font-size: @font-size-large;
+  }
+}

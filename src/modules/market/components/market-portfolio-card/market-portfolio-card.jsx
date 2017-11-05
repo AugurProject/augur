@@ -17,8 +17,6 @@ export default class MarketPortfolioCard extends React.Component {
     closePositionStatus: PropTypes.object.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired,
     orderCancellation: PropTypes.object.isRequired,
-    orderData: PropTypes.object.isRequired,
-    positionData: PropTypes.object.isRequired
   };
   constructor() {
     super()
@@ -206,7 +204,7 @@ export default class MarketPortfolioCard extends React.Component {
                   }))
 
                   return tempAccumulator
-                })
+                }, [])
               }
             />
           }
