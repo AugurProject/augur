@@ -6,6 +6,37 @@ import MarketPortfolioCard from 'modules/market/components/market-portfolio-card
 
 import Styles from 'modules/portfolio/components/positions-markets-list/positions-markets-list.styles'
 
+function createFilterObject(markets) {
+  // Used to generating the filter based on the markets passed tags. will only add each tag one time.
+  let filterType = 'none'
+  let defaultFilterType = 'none'
+  const filterOptions = []
+
+  markets.forEach((market) => {
+    market.tags.forEach((tag) => {
+      let taken = false
+      filterOptions.forEach((filter) => {
+        if (filter.value === tag) taken = true
+      })
+      // push a new tag/filter option to the filters Options
+      if (!taken) {
+        filterOptions.push({ label: tag, value: tag })
+      }
+      // as soon as we have a tag, replace none
+      if (defaultFilterType === 'none' && filterOptions.length > 0) {
+        defaultFilterType = tag
+        filterType = tag
+      }
+    })
+  })
+
+  return {
+    filterType,
+    defaultFilterType,
+    filterOptions
+  }
+}
+
 class PositionsMarketsList extends Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
@@ -21,7 +52,10 @@ class PositionsMarketsList extends Component {
 
   constructor(props) {
     super(props)
-    // TODO: the filter will most likely need to be props because it's going to change based on the market's tags. Sorting on the other hand is standardized it appears, which means it can be hardcoded into state.
+    // NOTE: didn't make this a container because it is reused in 3 different ways, seemed easier to seperate markets in positions and pass market arrays and filter categories
+
+    // use the function above this class to calculate the filters for this group of markets
+    const filter = createFilterObject(this.props.markets)
 
     this.state = {
       sortType: 'volume',
@@ -32,15 +66,9 @@ class PositionsMarketsList extends Component {
         { label: 'Expiring Soon', value: 'expiring' },
         { label: 'Fees', value: 'fees' }
       ],
-      filterType: 'finance',
-      defaultFilterType: 'finance',
-      filterOptions: [
-        { label: 'Finance', value: 'finance' },
-        { label: 'Sports', value: 'sports' },
-        { label: 'Politics', value: 'politics' },
-        { label: 'Animals', value: 'animals' },
-        { label: 'Environment', value: 'environment' },
-      ]
+      filterType: filter.filterType,
+      defaultFilterType: filter.defaultFilterType,
+      filterOptions: filter.filterOptions
     }
 
     this.changeDropdown = this.changeDropdown.bind(this)
@@ -76,10 +104,10 @@ class PositionsMarketsList extends Component {
             {p.title}
           </div>
           <div className={Styles['PositionsMarketsList__SortBar-sort']}>
-            <Dropdown default={s.sortDefault} options={s.sortOptions} onChange={this.changeDropdown} />
+            <Dropdown default={s.defaultSortType} options={s.sortOptions} onChange={this.changeDropdown} />
           </div>
           <div className={Styles['PositionsMarketsList__SortBar-filter']}>
-            <Dropdown default={s.filterDefault} options={s.filterOptions} onChange={this.changeDropdown} />
+            <Dropdown default={s.defaultFilterType} options={s.filterOptions} onChange={this.changeDropdown} />
           </div>
         </div>
         {p.markets.map(market => (

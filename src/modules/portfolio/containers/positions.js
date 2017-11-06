@@ -45,12 +45,18 @@ const date = new Date()
 
 const dummyMarketData = [{
   id: '1',
-  description: 'my test market',
+  description: 'Is Bitcoin more valuable than Ethereum on Nov 25th 2018?',
   endDateLabel: 'endDateLabel',
   endDate: { date, formatted: date.toString() },
+  topic: 'Cryptocurrency',
+  tags: [
+    'Cryptocurrency',
+    'Bitcoin',
+    'Ethereum'
+  ],
   outcomes: [
     {
-      name: 'outcome1',
+      name: 'Yes',
       userOpenOrders: [{
         unmatchedShares: { formatted: '110' },
         purchasePrice: { formatted: '0.55' },
@@ -59,7 +65,7 @@ const dummyMarketData = [{
       position: { closePosition: () => console.log('closeposition1') }
     },
     {
-      name: 'outcome2',
+      name: 'No',
       userOpenOrders: [{
         unmatchedShares: { formatted: '7' },
         purchasePrice: { formatted: '0.25' },
@@ -75,7 +81,7 @@ const dummyMarketData = [{
   },
   myPositionOutcomes: [
     {
-      name: 'outcome1',
+      name: 'Yes',
       position: {
         qtyShares: { formatted: '10' },
         purchasePrice: { formatted: '0.5' },
@@ -87,7 +93,7 @@ const dummyMarketData = [{
       }
     },
     {
-      name: 'outcome2',
+      name: 'No',
       position: {
         qtyShares: { formatted: '5' },
         purchasePrice: { formatted: '0.75' },
@@ -419,7 +425,8 @@ const dummyMarketData = [{
   topic: 'MLB Baseball',
   tags: [
     'MLB Baseball',
-    'Baseball'
+    'Baseball',
+    'Sports'
   ],
   endDate: {
     value: '2017-11-05T07:00:00.000Z',

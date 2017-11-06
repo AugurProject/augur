@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
 import PositionsMarketsList from 'modules/portfolio/components/positions-markets-list/positions-markets-list'
-import { TYPE_DISPUTE } from 'modules/market/constants/link-types'
+import { TYPE_CHALLENGE } from 'modules/market/constants/link-types'
 
 const Positions = p => (
   <section className="my-positions">
@@ -27,7 +27,7 @@ const Positions = p => (
       orderCancellation={p.orderCancellation}
       location={p.location}
       history={p.history}
-      linkType={TYPE_DISPUTE}
+      linkType={TYPE_CHALLENGE}
       positionsDefault={false}
     />
     <PositionsMarketsList
