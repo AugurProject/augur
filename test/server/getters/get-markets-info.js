@@ -10,7 +10,7 @@ describe("server/getters/get-markets-info", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getMarketsInfo(db, t.params.marketIDs, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsInfo) => {
+        getMarketsInfo(db, t.params.marketIDs, (err, marketsInfo) => {
           t.assertions(err, marketsInfo);
           done();
         });
@@ -20,7 +20,6 @@ describe("server/getters/get-markets-info", () => {
   test({
     description: "get markets by specifying market IDs",
     params: {
-      universe: null,
       marketIDs: [
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000000000000000000002",
@@ -48,7 +47,7 @@ describe("server/getters/get-markets-info", () => {
           tags: ["test tag 1", "test tag 2"],
           volume: 0,
           outstandingShares: 0,
-          reportingState: null,
+          reportingState: "DESIGNATED_REPORTING",
           reportingWindow: "0x1000000000000000000000000000000000000000",
           endDate: 1506573470,
           finalizationTime: null,
@@ -112,7 +111,7 @@ describe("server/getters/get-markets-info", () => {
           tags: ["test tag 1", "test tag 2"],
           volume: 0,
           outstandingShares: 0,
-          reportingState: null,
+          reportingState: "DESIGNATED_REPORTING",
           reportingWindow: "0x1000000000000000000000000000000000000000",
           endDate: 1506573480,
           finalizationTime: null,
@@ -139,7 +138,6 @@ describe("server/getters/get-markets-info", () => {
   test({
     description: "get markets by specifying market IDs, with missing market",
     params: {
-      universe: null,
       marketIDs: [
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000077777777777777777",
@@ -168,7 +166,7 @@ describe("server/getters/get-markets-info", () => {
           tags: ["test tag 1", "test tag 2"],
           volume: 0,
           outstandingShares: 0,
-          reportingState: null,
+          reportingState: "DESIGNATED_REPORTING",
           reportingWindow: "0x1000000000000000000000000000000000000000",
           endDate: 1506573470,
           finalizationTime: null,
@@ -233,7 +231,7 @@ describe("server/getters/get-markets-info", () => {
           tags: ["test tag 1", "test tag 2"],
           volume: 0,
           outstandingShares: 0,
-          reportingState: null,
+          reportingState: "DESIGNATED_REPORTING",
           reportingWindow: "0x1000000000000000000000000000000000000000",
           endDate: 1506573480,
           finalizationTime: null,
@@ -260,7 +258,6 @@ describe("server/getters/get-markets-info", () => {
   test({
     description: "get markets by specifying market IDs, reversed",
     params: {
-      universe: null,
       marketIDs: [
         "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000001",
@@ -288,7 +285,7 @@ describe("server/getters/get-markets-info", () => {
           tags: ["test tag 1", "test tag 2"],
           volume: 0,
           outstandingShares: 0,
-          reportingState: null,
+          reportingState: "DESIGNATED_REPORTING",
           reportingWindow: "0x1000000000000000000000000000000000000000",
           endDate: 1506573480,
           finalizationTime: null,
@@ -328,7 +325,7 @@ describe("server/getters/get-markets-info", () => {
           tags: ["test tag 1", "test tag 2"],
           volume: 0,
           outstandingShares: 0,
-          reportingState: null,
+          reportingState: "DESIGNATED_REPORTING",
           reportingWindow: "0x1000000000000000000000000000000000000000",
           endDate: 1506573470,
           finalizationTime: null,
@@ -374,6 +371,16 @@ describe("server/getters/get-markets-info", () => {
           }],
         }]
       );
+    },
+  });
+  test({
+    description: "market does not exist",
+    params: {
+      marketIDs: ["0x1010101010101010101010101010101010101010"],
+    },
+    assertions: (err, marketInfo) => {
+      assert.isNull(err);
+      assert.deepEqual(marketInfo, [null]);
     },
   });
 });

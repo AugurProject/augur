@@ -53,12 +53,21 @@ var WebSocket = require("ws");
 //   }
 // };
 
+// var request = {
+//  id: 6,
+//  jsonrpc: "2.0",
+//  method: "getUserTradingPositions",
+//  params: {
+//    account: "0x0000000000000000000000000000000000000b0b",
+//  }
+// };
+
 var request = {
-  id: 6,
+  id: 7,
   jsonrpc: "2.0",
-  method: "getUserTradingPositions",
+  method: "getReportingHistory",
   params: {
-    account: "0x0000000000000000000000000000000000000b0b",
+    reporter: "0x0000000000000000000000000000000000000021",
   }
 };
 

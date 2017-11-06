@@ -9,7 +9,7 @@ describe("server/getters/get-open-orders", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getOpenOrders(db, t.params.marketID, t.params.outcome, t.params.orderType, t.params.creator, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, openOrders) => {
+        getOpenOrders(db, t.params.universe, t.params.marketID, t.params.outcome, t.params.orderType, t.params.creator, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, openOrders) => {
           t.assertions(err, openOrders);
           done();
         });
@@ -19,6 +19,7 @@ describe("server/getters/get-open-orders", () => {
   test({
     description: "get open buy orders for market 1",
     params: {
+      universe: "0x000000000000000000000000000000000000000b",
       marketID: "0x0000000000000000000000000000000000000001",
       outcome: null,
       orderType: "buy",
@@ -85,6 +86,7 @@ describe("server/getters/get-open-orders", () => {
   test({
     description: "get open sell orders for market 1",
     params: {
+      universe: "0x000000000000000000000000000000000000000b",
       marketID: "0x0000000000000000000000000000000000000001",
       outcome: null,
       orderType: "sell",
@@ -119,6 +121,7 @@ describe("server/getters/get-open-orders", () => {
   test({
     description: "get orders created by user b0b",
     params: {
+      universe: "0x000000000000000000000000000000000000000b",
       marketID: null,
       outcome: null,
       orderType: null,
@@ -153,6 +156,7 @@ describe("server/getters/get-open-orders", () => {
   test({
     description: "get open orders for nonexistent market",
     params: {
+      universe: "0x000000000000000000000000000000000000000b",
       marketID: "0x1010101010101010101010101010101010101010",
       outcome: null,
       orderType: null,

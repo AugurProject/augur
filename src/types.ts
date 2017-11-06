@@ -1,6 +1,21 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 
+export enum ReportingState {
+  PRE_REPORTING = "PRE_REPORTING",
+  DESIGNATED_REPORTING = "DESIGNATED_REPORTING",
+  AWAITING_FORK_MIGRATION = "AWAITING_FORK_MIGRATION",
+  DESIGNATED_DISPUTE = "DESIGNATED_DISPUTE",
+  FIRST_REPORTING = "FIRST_REPORTING",
+  FIRST_DISPUTE = "FIRST_DISPUTE",
+  AWAITING_NO_REPORT_MIGRATION = "AWAITING_NO_REPORT_MIGRATION",
+  LAST_REPORTING = "LAST_REPORTING",
+  LAST_DISPUTE = "LAST_DISPUTE",
+  FORKING = "FORKING",
+  AWAITING_FINALIZATION = "AWAITING_FINALIZATION",
+  FINALIZED = "FINALIZED",
+}
+
 export interface EthereumNodeEndpoints {
   [protocol: string]: string;
 }
@@ -131,10 +146,11 @@ export interface MarketsRow {
   tag2: string|null;
   volume: string|number;
   sharesOutstanding: string|number;
+  marketStateID: number;
   reportingWindow: Address;
   endTime: number;
   finalizationTime?: number|null;
-  reportingState?: number|null;
+  reportingState?: ReportingState|null;
   shortDescription: string;
   longDescription?: string|null;
   designatedReporter: Address;
@@ -190,7 +206,7 @@ export interface UIMarketInfo {
   reportingWindow: Address;
   endDate: number;
   finalizationTime?: number|null;
-  reportingState?: number|null;
+  reportingState?: ReportingState|null;
   description: string;
   extraInfo?: string|null;
   designatedReporter: Address;
@@ -271,7 +287,7 @@ export interface JoinedReportsMarketsRow {
   marketID: Address;
   universe: Address;
   reportingWindow: Address;
-  reportingToken: Address;
+  stakeToken: Address;
   marketType: string;
   amountStaked: string|number;
   payout0: string|number|null;
@@ -290,7 +306,7 @@ export interface UIReport {
   reportingWindow: Address;
   payoutNumerators: Array<string|number|null>;
   amountStaked: string|number;
-  reportingToken: Address;
+  stakeToken: Address;
   isCategorical: boolean;
   isScalar: boolean;
   isIndeterminate: boolean;

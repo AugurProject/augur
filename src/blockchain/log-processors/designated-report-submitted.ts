@@ -4,11 +4,11 @@ import { FormattedLog, ErrorCallback } from "../../types";
 
 export function processDesignatedReportSubmittedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
   // @achapman: "The designated reporter purchases Stake Tokens in order to do the Designated Report"
-  // TODO: Should designatedReportSubmitted include StakedToken address?
+  // TODO: Should designatedReportSubmitted include stakeToken address?
 
   const marketStateDataToInsert: { [index: string]: string|number|boolean } = {
     marketID: log.market,
-    reportingState: 0,
+    reportingState: augur.constants.REPORTING_STATE.DESIGNATED_DISPUTE,
     blockNumber: log.blockNumber,
   };
 

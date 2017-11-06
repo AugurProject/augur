@@ -42,7 +42,7 @@
     "@types/lodash": "4.14.77",
     "@types/uuid": "3.4.3",
     "async": "1.5.2",
-    "augur.js": "4.5.12",
+    "augur.js": "4.5.13",
     "bignumber.js": "4.1.0",
     "knex": "0.13.0",
     "lodash.isnull": "3.0.0",
