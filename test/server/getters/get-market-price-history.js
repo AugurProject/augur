@@ -9,7 +9,7 @@ describe("server/getters/get-market-price-history", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getMarketPriceHistory(db, t.params.marketID, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketPriceHistory) => {
+        getMarketPriceHistory(db, t.params.marketID, (err, marketPriceHistory) => {
           t.assertions(err, marketPriceHistory);
           done();
         });
