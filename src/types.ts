@@ -1,7 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 
-export enum REPORTING_STATE {
+export enum ReportingState {
   PRE_REPORTING = "PRE_REPORTING",
   DESIGNATED_REPORTING = "DESIGNATED_REPORTING",
   AWAITING_FORK_MIGRATION = "AWAITING_FORK_MIGRATION",
@@ -150,7 +150,7 @@ export interface MarketsRow {
   reportingWindow: Address;
   endTime: number;
   finalizationTime?: number|null;
-  reportingState?: string|null;
+  reportingState?: ReportingState|null;
   shortDescription: string;
   longDescription?: string|null;
   designatedReporter: Address;
@@ -206,7 +206,7 @@ export interface UIMarketInfo {
   reportingWindow: Address;
   endDate: number;
   finalizationTime?: number|null;
-  reportingState?: string|null;
+  reportingState?: ReportingState|null;
   description: string;
   extraInfo?: string|null;
   designatedReporter: Address;
