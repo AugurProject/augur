@@ -10,7 +10,7 @@ export default function loginWithUport(account, signer) {
       meta: {
         signer,
         accountType: ETHRPC_CONSTANTS.ACCOUNT_TYPES.U_PORT
-      },
+      }
     }))
   }
 }
