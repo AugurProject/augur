@@ -27,7 +27,7 @@
   "dependencies": {
     "airbitz-core-js-ui": "0.1.7",
     "async": "2.4.1",
-    "augur.js": "4.5.12",
+    "augur.js": "4.5.13",
     "bignumber.js": "4.0.2",
     "bs58": "4.0.1",
     "classnames": "2.2.5",
@@ -36,16 +36,16 @@
     "ethrpc": "4.4.3",
     "express": "4.15.3",
     "hammerjs": "2.0.8",
-    "helmet": "3.6.1",
+    "helmet": "3.9.0",
     "highcharts": "6.0.2",
     "keythereum": "1.0.2",
     "lodash": "4.17.4",
-    "memoizee": "0.4.5",
+    "memoizee": "0.4.11",
     "moment": "2.18.1",
     "p5": "0.5.11",
     "prerender-node": "2.7.1",
     "prop-types": "15.5.10",
-    "qrcode.react": "0.7.1",
+    "qrcode.react": "0.7.2",
     "rc-progress": "2.1.2",
     "react": "16.0.0",
     "react-addons-shallow-compare": "15.6.2",
@@ -72,7 +72,7 @@
     "zxcvbn": "4.4.2"
   },
   "devDependencies": {
-    "autoprefixer": "7.1.1",
+    "autoprefixer": "7.1.6",
     "babel-core": "6.26.0",
     "babel-eslint": "8.0.1",
     "babel-loader": "7.1.2",
@@ -87,7 +87,7 @@
     "chai-subset": "1.5.0",
     "chalk": "1.1.3",
     "clean-css": "4.1.4",
-    "copy-webpack-plugin": "4.0.1",
+    "copy-webpack-plugin": "4.2.0",
     "coveralls": "2.13.1",
     "css-loader": "0.28.7",
     "cssnano": "4.0.0-rc.2",
@@ -129,9 +129,9 @@
     "stylelint-no-browser-hacks": "1.0.2",
     "stylelint-order": "0.4.3",
     "watchify": "3.9.0",
-    "webpack": "3.6.0",
+    "webpack": "3.8.1",
     "webpack-dev-middleware": "1.12.0",
-    "webpack-hot-middleware": "2.19.1",
-    "webpack-merge": "4.1.0"
+    "webpack-hot-middleware": "2.20.0",
+    "webpack-merge": "4.1.1"
   }
 }
