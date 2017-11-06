@@ -5,7 +5,6 @@
 export const MARKET = 'market'
 export const MARKETS = 'markets'
 export const FAVORITES = 'favorites'
-export const WATCHLIST = 'watch-list'
 export const CREATE_MARKET = 'create-market'
 export const TRANSACTIONS = 'transactions'
 export const ACCOUNT = 'account'
@@ -24,7 +23,7 @@ export const DEFAULT_VIEW = CATEGORIES
 //  Portfolio
 export const MY_POSITIONS = 'my-positions'
 export const MY_MARKETS = 'my-markets'
-export const MY_REPORTS = 'my-reports'
+export const WATCHLIST = 'watch-list'
 export const PORTFOLIO_TRANSACTIONS = 'transactions'
 
 //  Market (TODO -- These should be params, not routes)

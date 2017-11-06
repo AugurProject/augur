@@ -9247,7 +9247,7 @@ unzip-response@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/unzip-response/-/unzip-response-1.0.2.tgz#b984f0877fc0a89c2c773cc1ef7b5b232b5b06fe"
 
-uport-connect@^0.7.0:
+uport-connect@0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/uport-connect/-/uport-connect-0.7.0.tgz#58e5ea2a4dc78ad8ddbfae1f6b5c4756c3b5621c"
   dependencies:
