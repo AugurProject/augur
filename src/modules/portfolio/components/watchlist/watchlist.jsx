@@ -7,38 +7,6 @@ import MarketsList from 'modules/markets/components/markets-list'
 import Styles from 'modules/portfolio/components/watchlist/watchlist.styles'
 import { TYPE_TRADE } from 'modules/market/constants/link-types'
 
-function createFilterObject(markets) {
-  // NOTE: This should probably be a Util instead if we end up using it more often.
-  // Used to generating the filter based on the markets passed tags. will only add each tag one time.
-  let filterType = 'none'
-  let defaultFilterType = 'none'
-  let filterOptions = []
-
-  markets.forEach((market) => {
-    market.tags.forEach((tag) => {
-      let taken = false
-      filterOptions.forEach((filter) => {
-        if (filter.value === tag) taken = true
-      })
-      // push a new tag/filter option to the filters Options
-      if (!taken) {
-        filterOptions.push({ label: tag, value: tag })
-      }
-      // as soon as we have a tag, replace none
-      if (defaultFilterType === 'none' && filterOptions.length > 0) {
-        defaultFilterType = tag
-        filterType = tag
-      }
-    })
-  })
-
-  return {
-    filterType,
-    defaultFilterType,
-    filterOptions
-  }
-}
-
 class WatchList extends Component {
   static propTypes = {
     markets: PropTypes.array.isRequired,
@@ -55,8 +23,6 @@ class WatchList extends Component {
   constructor(props) {
     super(props)
 
-    const filter = createFilterObject(this.props.markets)
-
     this.state = {
       sortOptions: [
         { label: 'Volume', value: 'volume' },
@@ -66,9 +32,14 @@ class WatchList extends Component {
       ],
       sortDefault: 'volume',
       sortType: 'volume',
-      filterOptions: filter.filterOptions,
-      filterDefault: filter.filterDefault,
-      filterType: filter.filterType,
+      filterOptions: [
+        { label: 'Cryptocurrency', value: 'cryptocurrency' },
+        { label: 'Blockchain', value: 'blockchain' },
+        { label: 'Bitcoin', value: 'bitcoin' },
+        { label: 'Ethereum', value: 'ethereum' }
+      ],
+      filterDefault: 'Cryptocurrency',
+      filterType: 'Cryptocurrency',
     }
 
     this.changeDropdown = this.changeDropdown.bind(this)
