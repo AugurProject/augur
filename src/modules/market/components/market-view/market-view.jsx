@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import MarketHeader from 'modules/market/containers/market-header'
 import MarketOutcomesGraph from 'modules/market/containers/market-outcomes-graph'
 import MarketOutcomeGraphs from 'modules/market/containers/market-outcome-graphs'
+import MarketData from 'modules/market/containers/market-data'
 
 import Styles from 'modules/market/components/market-view/market-view.styles'
 
@@ -43,6 +44,10 @@ export default class MarketView extends Component {
             />
           }
         </div>
+        <MarketData
+          selectedOutcome={s.selectedOutcome}
+          updateSelectedOutcome={this.updateSelectedOutcome}
+        />
       </section>
     )
   }
