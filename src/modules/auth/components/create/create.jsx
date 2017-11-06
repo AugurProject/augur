@@ -5,7 +5,7 @@ import Helmet from 'react-helmet'
 import NavPanel from 'modules/common/components/nav-panel/nav-panel'
 import Help from 'modules/auth/components/help/help'
 import Airbitz from 'modules/auth/containers/airbitz-create'
-import Uport from 'modules/auth/containers/uport'
+import UportCreate from 'modules/auth/containers/uport-create'
 import KeystoreCreate from 'modules/auth/containers/keystore-create'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
@@ -41,7 +41,7 @@ export default function AuthCreate(p) {
               <Airbitz />
             }
             {selectedNav === PARAMS.UPORT &&
-              <Uport />
+              <UportCreate />
             }
             {selectedNav === PARAMS.KEYSTORE &&
               <KeystoreCreate />

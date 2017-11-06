@@ -5,10 +5,6 @@ import { loadAccountData } from 'modules/auth/actions/load-account-data'
 import { updateIsLogged } from 'modules/auth/actions/update-is-logged'
 import { constants as ETHRPC_CONSTANTS } from 'ethrpc'
 
-import makePath from 'modules/routes/helpers/make-path'
-
-import { DEFAULT_VIEW } from 'modules/routes/constants/views'
-
 export const loginWithAirbitzEthereumWallet = (airbitzAccount, ethereumWallet, history) => (dispatch) => {
   const privateKey = ethereumWallet.keys.ethereumKey
   const account = augur.accounts.loginWithMasterKey({ privateKey })
@@ -25,8 +21,6 @@ export const loginWithAirbitzEthereumWallet = (airbitzAccount, ethereumWallet, h
     name: airbitzAccount.username,
     airbitzAccount
   }, true))
-
-  history.push(makePath(DEFAULT_VIEW))
 }
 
 // Create an ethereum wallet if one doesn't exist
