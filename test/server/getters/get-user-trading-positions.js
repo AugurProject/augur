@@ -9,7 +9,7 @@ describe("server/getters/get-user-trading-positions", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getUserTradingPositions(db, t.params.account, t.params.marketID, t.params.outcome, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, userTradingPositions) => {
+        getUserTradingPositions(db, t.params.universe, t.params.account, t.params.marketID, t.params.outcome, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, userTradingPositions) => {
           t.assertions(err, userTradingPositions);
           done();
         });
@@ -19,6 +19,7 @@ describe("server/getters/get-user-trading-positions", () => {
   test({
     description: "get user's full position",
     params: {
+      universe: "0x000000000000000000000000000000000000000b",
       account: "0x000000000000000000000000000000000000d00d",
       marketID: null,
       outcome: null,

@@ -9,7 +9,7 @@ interface MarketOutcomeResult {
   outcomesRows: Array<OutcomesRow>;
 }
 
-export function getMarketsInfo(db: Knex, marketIDs: Array<Address>|null|undefined, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: UIMarketsInfo) => void): void {
+export function getMarketsInfo(db: Knex, marketIDs: Array<Address>|null|undefined, callback: (err: Error|null, result?: UIMarketsInfo) => void): void {
   let marketsQuery: Knex.QueryBuilder = getMarketsWithReportingState(db);
   if (marketIDs == null || !marketIDs.length) return callback(new Error("must include marketIDs parameter"));
   marketsQuery = marketsQuery.whereIn("markets.marketID", marketIDs);
@@ -20,7 +20,7 @@ export function getMarketsInfo(db: Knex, marketIDs: Array<Address>|null|undefine
   }, (err: Error|null, marketOutcomeResult: MarketOutcomeResult ): void => {
     const { marketsRows, outcomesRows } = marketOutcomeResult;
     if (err) return callback(err);
-    if (!marketsRows || !marketsRows.length) return callback(null);
+    if (!marketsRows) return callback(null);
     const marketsRowsByMarket = _.keyBy(marketsRows, (r: MarketsRowWithCreationTime): string => r.marketID);
     const outcomesRowsByMarket = _.groupBy(outcomesRows, (r: OutcomesRow): string => r.marketID);
 

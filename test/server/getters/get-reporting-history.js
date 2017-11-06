@@ -9,7 +9,7 @@ describe("server/getters/get-reporting-history", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getReportingHistory(db, t.params.reporter, t.params.marketID, t.params.universe, t.params.reportingWindow, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, reportingHistory) => {
+        getReportingHistory(db, t.params.universe, t.params.reporter, t.params.marketID, t.params.reportingWindow, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, reportingHistory) => {
           t.assertions(err, reportingHistory);
           done();
         });
@@ -19,6 +19,7 @@ describe("server/getters/get-reporting-history", () => {
   test({
     description: "get reporter history that actually exists",
     params: {
+      universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x0000000000000000000000000000000000000021",
     },
     assertions: (err, reportingHistory) => {
@@ -43,6 +44,7 @@ describe("server/getters/get-reporting-history", () => {
   test({
     description: "reporter has not submitted any reports",
     params: {
+      universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x2100000000000000000000000000000000000021",
     },
     assertions: (err, reportingHistory) => {
