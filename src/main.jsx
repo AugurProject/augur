@@ -7,6 +7,7 @@ import { HashRouter } from 'react-router-dom'
 import { initAugur } from 'modules/app/actions/init-augur'
 
 import App from 'modules/app/containers/app'
+import MainErrorBoundary from 'modules/common/components/main-error-boundary'
 
 import store from 'src/store'
 
@@ -41,7 +42,9 @@ function render(Root) {
     <Provider store={store}>
       <AppContainer>
         <HashRouter>
-          <Root />
+          <MainErrorBoundary>
+            <Root />
+          </MainErrorBoundary>
         </HashRouter>
       </AppContainer>
     </Provider>,
