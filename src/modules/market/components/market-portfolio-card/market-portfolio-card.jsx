@@ -8,7 +8,7 @@ import MarketStatusIcon from 'modules/market/components/market-status-icon/marke
 import MarketTable from 'modules/market/components/market-tables/market-tables'
 import CaretDropdown from 'modules/common/components/caret-dropdown/caret-dropdown'
 import MarketLink from 'modules/market/components/market-link/market-link'
-import { TYPE_REPORT, TYPE_DISPUTE, TYPE_CHALLENGE } from 'modules/market/constants/link-types'
+import { TYPE_REPORT, TYPE_CHALLENGE } from 'modules/market/constants/link-types'
 
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
@@ -51,9 +51,6 @@ export default class MarketPortfolioCard extends React.Component {
     switch (p.linkType) {
       case TYPE_REPORT:
         buttonText = 'Report'
-        break
-      case TYPE_DISPUTE:
-        buttonText = 'Dispute'
         break
       case TYPE_CHALLENGE:
         buttonText = 'Challenge'
