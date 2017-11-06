@@ -98,7 +98,6 @@ export default class KeystoreConnect extends Component {
                         const keystore = JSON.parse(e.target.result)
                         this.setState({
                           error: null,
-                          password: '',
                           keystore,
                         })
                       } catch (err) {
@@ -141,7 +140,6 @@ export default class KeystoreConnect extends Component {
                 type="password"
                 value={s.password}
                 placeholder="Passphrase"
-                disabled={s.keystore === null}
                 onChange={e => this.setState({ password: e.target.value })}
               />
             </div>
