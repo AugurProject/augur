@@ -64,6 +64,10 @@ export default class Ledger extends Component {
     )
 
     console.log('ledgerEthereum -- ', ledgerEthereum)
+
+    // const address = ledgerEthereum.getAddressByBip44Index(0).then(res => console.log('address -- ', res))
+
+    // console.log('address -- ', address)
   }
 
   render() {

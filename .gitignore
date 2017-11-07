@@ -47,3 +47,7 @@ stats.json
 
 # New Relic
 src/newrelic.js
+
+# ssl certs
+augur-dev.key
+augur-dev.crt
