@@ -6,18 +6,21 @@
   color: white;
   display: flex;
   flex-flow: row nowrap;
+  margin: 3rem 4rem;
+
+  @media @breakpoint-mobile {
+    margin: 0;
+  }
 }
 
 .AccountHeader__Currency {
+  align-items: center;
   display: flex;
-  flex: 0 1 22rem;
+  flex: 1 1 22rem;
   flex-flow: column-reverse nowrap;
   font-size: @font-size-rather-large;
+  justify-content: center;
   overflow-y: hidden;
-}
-
-.AccountHeader__Currency-value {
-  margin: auto;
 }
 
 .AccountHeader__Currency-label {
