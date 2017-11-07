@@ -12,7 +12,7 @@ export default class Ledger extends Component {
       ENABLE_CONTRACT_SUPPORT: 'ENABLE_CONTRACT_SUPPORT'
     }
 
-    this.LedgerEthereum = null;
+    this.LedgerEthereum = null
 
     this.state = {
       ledgerState: null
@@ -62,48 +62,51 @@ export default class Ledger extends Component {
   }
 
   async onConnectLedgerRequest() {
+    console.log('connect ledger')
     await new Promise(resolve => this.setState(
       {
         ledgerState: this.LEDGER_STATES.CONNECT_LEDGER
       },
       () => {
-        console.log('connect ledger')
         resolve()
       }
     ))
   }
 
   async onOpenEthereumAppRequest() {
+    console.log('open app')
+
     await new Promise(resolve => this.setState(
       {
         ledgerState: this.LEDGER_STATES.OPEN_APP
       },
       () => {
-        console.log('open app')
         resolve()
       }
     ))
   }
 
   async onSwitchLedgerModeRequest() {
+    console.log('switch mode')
+
     await new Promise(resolve => this.setState(
       {
         ledgerState: this.LEDGER_STATES.SWITCH_MODE
       },
       () => {
-        console.log('switch mode')
         resolve()
       }
     ))
   }
 
   async onEnableContractSupportRequest() {
+    console.log('enable contract support')
+
     await new Promise(resolve => this.setState(
       {
         ledgerState: this.LEDGER_STATES.ENABLE_CONTRACT_SUPPORT
       },
       () => {
-        console.log('enable contract support')
         resolve()
       }
     ))
