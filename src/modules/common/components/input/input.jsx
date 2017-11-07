@@ -152,7 +152,7 @@ export default class Input extends Component {
         }
 
         {isIncrementable &&
-          <div className={Styles['value__incrementers']}>
+          <div className={Styles.value__incrementers}>
             <button
               type="button"
               tabIndex="-1"
