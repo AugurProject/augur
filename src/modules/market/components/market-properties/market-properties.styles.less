@@ -19,15 +19,10 @@
   position: relative;
   transition: color 0.15s ease;
 
-  > i {
-    &:extend(.fa all);
-    &:extend(.fa-star-o all);
-  }
-
-  &.favorite > i {
-    &:extend(.fa-star all);
-
-    color: @color-lighter-purple;
+  :global {
+    .fa-star {
+      color: @color-lighter-purple;
+    }
   }
 }
 
