@@ -18,11 +18,13 @@ import Styles from 'modules/account/components/account-view/account-view.styles'
 const AccountView = p => (
   <section className={Styles.AccountView}>
     <AccountHeader />
-    <Switch>
-      <AuthenticatedRoute path={makePath(ACCOUNT_DEPOSIT)} component={AccountDeposit} />
-      <AuthenticatedRoute path={makePath(ACCOUNT_WITHDRAW)} component={AccountWithdraw} />
-      <AuthenticatedRoute path={makePath(ACCOUNT_EXPORT)} component={AccountExport} />
-    </Switch>
+    <div className={Styles.AccountView__content} >
+      <Switch>
+        <AuthenticatedRoute path={makePath(ACCOUNT_DEPOSIT)} component={AccountDeposit} />
+        <AuthenticatedRoute path={makePath(ACCOUNT_WITHDRAW)} component={AccountWithdraw} />
+        <AuthenticatedRoute path={makePath(ACCOUNT_EXPORT)} component={AccountExport} />
+      </Switch>
+    </div>
     <TermsAndConditions />
   </section>
 )
