@@ -1,5 +1,61 @@
 @import (reference) '~assets/styles/shared';
 
+.Outcome {
+  transition: background-color .15s ease;
+
+  &:hover {
+    background-color: @color-lightergray;
+  }
+
+  > li:first-child {
+    position: relative;
+
+    &:before {
+      border-radius: 100%;
+      content: "";
+      display: block;
+      height: 6px;
+      left: 1rem;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 6px;
+    }
+  }
+
+  &:nth-child(1) > li:first-child:before {
+    background-color: @color-outcome-one;
+  }
+
+  &:nth-child(2) > li:first-child:before {
+    background-color: @color-outcome-two;
+  }
+
+  &:nth-child(3) > li:first-child:before {
+    background-color: @color-outcome-three;
+  }
+
+  &:nth-child(4) > li:first-child:before {
+    background-color: @color-outcome-four;
+  }
+
+  &:nth-child(5) > li:first-child:before {
+    background-color: @color-outcome-five;
+  }
+
+  &:nth-child(6) > li:first-child:before {
+    background-color: @color-outcome-six;
+  }
+
+  &:nth-child(7) > li:first-child:before {
+    background-color: @color-outcome-seven;
+  }
+
+  &:nth-child(8) > li:first-child:before {
+    background-color: @color-outcome-eight;
+  }
+}
+
 .Outcome__percent {
   color: @color-lightgray;
   margin-left: 0.25rem;

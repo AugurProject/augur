@@ -20,7 +20,7 @@ const Outcome = p => {
   const lastPricePercent = getValue(p, 'outcome.lastPricePercent.rounded')
 
   return (
-    <ul>
+    <ul className={Styles.Outcome}>
       <li>{outcomeName} <span className={Styles.Outcome__percent}>{ getValue(p, 'outcome.lastPricePercent.full') }</span></li>
       <li><ValueDenomination formatted={topBidShares} /></li>
       <li><ValueDenomination formatted={topBidPrice} /></li>
