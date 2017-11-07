@@ -1,17 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import ReactTooltip from 'react-tooltip'
-import { Line } from 'rc-progress'
+// import { Line } from 'rc-progress'
 
 import Bullet from 'modules/common/components/bullet'
 
 const Universe = p => (
   <article className="universe-info">
-    <Line
-      percent={p.currentReportingPeriodPercentComplete}
-      strokeWidth="1"
-      strokeColor="#5c2634"
-    />
     <span className="reporting-cycle-info">
       Reporting Period {p.currentReportingWindowAddress} <Bullet /> {Math.round(p.currentReportingPeriodPercentComplete)}% complete <Bullet /> period ends {p.reportingCycleTimeRemaining}
     </span>
@@ -47,3 +42,10 @@ Universe.propTypes = {
 }
 
 export default Universe
+
+// NOTE -- was directly after parent opening tag
+// <Line
+//   percent={p.currentReportingPeriodPercentComplete}
+//   strokeWidth="1"
+//   strokeColor="#5c2634"
+// />
