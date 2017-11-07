@@ -1,6 +1,3 @@
-// NOTE --  if a view is only accessible when logged in, be sure to add it
-//          to the `authenticated-views` array under app/constants
-
 // MAIN VIEWS
 export const MARKET = 'market'
 export const MARKETS = 'markets'
