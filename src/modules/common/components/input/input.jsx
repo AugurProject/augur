@@ -94,7 +94,7 @@ export default class Input extends Component {
     const s = this.state
 
     return (
-      <div className={classNames('input', p.className, { 'is-incrementable': isIncrementable, 'can-toggle-visibility': canToggleVisibility })} >
+      <div className={classNames(isIncrementable ? Styles.Input__Incremental : Styles.Input, p.className, { 'can-toggle-visibility': canToggleVisibility })} >
         {isSearch && IconSearch}
         {!p.isMultiline &&
           <input
@@ -152,11 +152,11 @@ export default class Input extends Component {
         }
 
         {isIncrementable &&
-          <div className="value-incrementers">
+          <div className={Styles['value__incrementers']}>
             <button
               type="button"
               tabIndex="-1"
-              className="increment-value unstyled"
+              className={classNames(Styles['increment-value'], 'unstyled')}
               onClick={(e) => {
                 e.currentTarget.blur()
 
@@ -181,7 +181,7 @@ export default class Input extends Component {
                 }
               }}
             >
-              <i className={classNames(Styles.fa, Styles['fa-angle-up'])} />
+              <i className="fa fa-angle-up" />
             </button>
             <button
               type="button"
