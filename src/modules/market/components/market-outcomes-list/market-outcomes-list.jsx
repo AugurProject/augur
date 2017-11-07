@@ -38,25 +38,54 @@ export default class MarketOutcomesList extends Component {
           ref={(outcomeList) => { this.outcomeList = outcomeList }}
           className={classNames(ToggleHeightStyles['toggle-height-target'], ToggleHeightStyles['start-open'])}
         >
-          <div className={Styles['MarketOutcomesList__table-wrapper']}>
-            <div className={Styles['MarketOutcomesList__table']}>
-              <ul className={Styles['MarketOutcomesList__table-header']}>
-                <li>Outcome</li>
-                <li>Bid Qty</li>
-                <li>Best Bid</li>
-                <li>Best Ask</li>
-                <li>Ask Qty</li>
-                <li>Last</li>
-              </ul>
-              <div className={Styles['MarketOutcomesList__table-body']}>
-                { p.outcomes && p.outcomes.map(outcome => (
-                  <MarketOutcomesListOutcome key={outcome.id} outcome={outcome} />
-                ))}
-              </div>
-            </div>
-          </div>
+          <OutcomesTable className={Styles['MarketOutcomesList__outcomes-header']} outcomes={p.outcomes} />
+          <OutcomesTable className={Styles['MarketOutcomesList__outcomes-body']} outcomes={p.outcomes} />
         </div>
       </section>
     )
   }
 }
+
+const OutcomesTable = ({ className, outcomes, selectedShareDenomination }) => (
+  <div className={classNames(className, Styles['MarketOutcomesList__outcomes'])}>
+    <ul className={Styles['MarketOutcomesList__outcomes-column']}>
+      <li className={Styles['MarketOutcomesList__outcomes-heading']}>Outcome</li>
+      { outcomes && outcomes.map(outcome => (
+        <li>
+          { getValue(outcome, 'name') }
+          <span className={Styles['MarketOutcomesList__outcomes-percent']}>{ getValue(outcome, 'lastPricePercent.full') }</span>
+        </li>
+      ))}
+    </ul>
+    <ul className={Styles['MarketOutcomesList__outcomes-column']}>
+      <li className={Styles['MarketOutcomesList__outcomes-heading']}>Bid Qty</li>
+      { outcomes && outcomes.map(outcome => (
+        <li><ValueDenomination formatted={setShareDenomination(getValue(outcome, 'topBid.shares.formatted'), selectedShareDenomination)} /></li>
+      ))}
+    </ul>
+    <ul className={Styles['MarketOutcomesList__outcomes-column']}>
+      <li className={Styles['MarketOutcomesList__outcomes-heading']}>Best Bid</li>
+      { outcomes && outcomes.map(outcome => (
+        <li><ValueDenomination formatted={getValue(outcome, 'topBid.price.formatted')} /></li>
+      ))}
+    </ul>
+    <ul className={Styles['MarketOutcomesList__outcomes-column']}>
+      <li className={Styles['MarketOutcomesList__outcomes-heading']}>Best Ask</li>
+      { outcomes && outcomes.map(outcome => (
+        <li><ValueDenomination formatted={getValue(outcome, 'topAsk.price.formatted')} /></li>
+      ))}
+    </ul>
+    <ul className={Styles['MarketOutcomesList__outcomes-column']}>
+      <li className={Styles['MarketOutcomesList__outcomes-heading']}>Ask Qty</li>
+      { outcomes && outcomes.map(outcome => (
+        <li><ValueDenomination formatted={setShareDenomination(getValue(outcome, 'topAsk.shares.formatted'), selectedShareDenomination)} /></li>
+      ))}
+    </ul>
+    <ul className={Styles['MarketOutcomesList__outcomes-column']}>
+      <li className={Styles['MarketOutcomesList__outcomes-heading']}>Last</li>
+      { outcomes && outcomes.map(outcome => (
+        <li><ValueDenomination formatted={getValue(outcome, 'lastPrice.formatted')} /></li>
+      ))}
+    </ul>
+  </div>
+)
