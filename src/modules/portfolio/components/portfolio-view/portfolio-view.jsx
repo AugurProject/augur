@@ -4,7 +4,7 @@ import { Route } from 'react-router-dom'
 import PortfolioHeader from 'modules/portfolio/containers/portfolio-header'
 import MyPositions from 'modules/portfolio/containers/positions'
 import MyMarkets from 'modules/portfolio/containers/markets'
-import Watchlist from 'modules/portfolio/components/watchlist/watchlist'
+import Watchlist from 'modules/portfolio/containers/watchlist'
 import Transactions from 'modules/portfolio/containers/transactions'
 
 import makePath from 'modules/routes/helpers/make-path'
