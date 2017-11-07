@@ -6,7 +6,7 @@ import PositionsMarketsList from 'modules/portfolio/components/positions-markets
 import { TYPE_CHALLENGE } from 'modules/market/constants/link-types'
 
 const Positions = p => (
-  <section className="my-positions">
+  <section>
     <Helmet>
       <title>Positions</title>
     </Helmet>
