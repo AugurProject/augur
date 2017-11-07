@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet'
 import ReportingHeader from 'modules/reporting/components/reporting-header/reporting-header'
 import MarketsList from 'modules/markets/components/markets-list'
 
-import { TYPE_REPORT, TYPE_DISPUTE } from 'modules/market/constants/link-types'
+import { TYPE_REPORT, TYPE_CHALLENGE } from 'modules/market/constants/link-types'
 
 import Styles from 'modules/reporting/components/reporting-open/reporting-open.styles'
 
@@ -55,7 +55,7 @@ export default class ReportingOpen extends Component {
             scalarShareDenomination={p.scalarShareDenomination}
             toggleFavorite={p.toggleFavorite}
             loadMarketsInfo={p.loadMarketsInfo}
-            linkType={TYPE_DISPUTE}
+            linkType={TYPE_CHALLENGE}
             showPagination={false}
           />
         }

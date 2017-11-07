@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import makePath from 'modules/routes/helpers/make-path'
 import makeQuery from 'modules/routes/helpers/make-query'
 
-import { TYPE_REPORT, TYPE_DISPUTE } from 'modules/market/constants/link-types'
+import { TYPE_REPORT, TYPE_CHALLENGE } from 'modules/market/constants/link-types'
 import { MARKET, REPORTING_REPORT, REPORTING_DISPUTE } from 'modules/routes/constants/views'
 import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/routes/constants/param-names'
 
@@ -16,7 +16,7 @@ const MarketLink = (p) => {
     case TYPE_REPORT:
       path = makePath(REPORTING_REPORT)
       break
-    case TYPE_DISPUTE:
+    case TYPE_CHALLENGE:
       path = makePath(REPORTING_DISPUTE)
       break
     default:
