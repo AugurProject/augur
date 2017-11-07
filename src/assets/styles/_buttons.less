@@ -39,12 +39,6 @@
   }
 }
 
-// .button--disabled {
-//   background-color: @color-disabled;
-//   color: @color-text-disabled;
-//   cursor: default;
-// }
-
 .button--text-only {
   .button;
 
@@ -61,13 +55,14 @@
   &:hover {
     background-color: @color-lightpurple;
   }
+}
 
-  &:disabled,
-  &:disabled:hover {
-    background-color: @color-lightgray;
-    color: @color-lightergray;
-    cursor: auto;
-  }
+.button--purple--disabled,
+.button--purple:disabled,
+.button--purple:disabled:hover {
+  background-color: @color-lightgray;
+  color: @color-lightergray;
+  cursor: default;
 }
 
 .button--disabled {

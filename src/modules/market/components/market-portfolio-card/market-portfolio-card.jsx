@@ -7,6 +7,8 @@ import getValue from 'utils/get-value'
 import MarketStatusIcon from 'modules/market/components/market-status-icon/market-status-icon'
 import MarketTable from 'modules/market/components/market-tables/market-tables'
 import CaretDropdown from 'modules/common/components/caret-dropdown/caret-dropdown'
+import MarketLink from 'modules/market/components/market-link/market-link'
+import { TYPE_REPORT, TYPE_CHALLENGE } from 'modules/market/constants/link-types'
 
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
@@ -17,12 +19,19 @@ export default class MarketPortfolioCard extends React.Component {
     closePositionStatus: PropTypes.object.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired,
     orderCancellation: PropTypes.object.isRequired,
-  };
-  constructor() {
-    super()
+    linkType: PropTypes.string,
+    positionsDefault: PropTypes.bool
+  }
+
+  static defaultProps = {
+    positionsDefault: true,
+  }
+
+  constructor(props) {
+    super(props)
     this.state = {
       tableOpen: {
-        myPositions: true,
+        myPositions: this.props.positionsDefault,
         openOrders: false
       }
     }
@@ -33,8 +42,22 @@ export default class MarketPortfolioCard extends React.Component {
   }
 
   render() {
+    const p = this.props
     const myPositionsSummary = getValue(this.props, 'market.myPositionsSummary')
     const myPositionOutcomes = getValue(this.props, 'market.myPositionOutcomes')
+
+    let buttonText
+
+    switch (p.linkType) {
+      case TYPE_REPORT:
+        buttonText = 'Report'
+        break
+      case TYPE_CHALLENGE:
+        buttonText = 'Challenge'
+        break
+      default:
+        buttonText = 'View'
+    }
 
     return (
       <article className={CommonStyles.MarketCommon__container}>
@@ -111,6 +134,16 @@ export default class MarketPortfolioCard extends React.Component {
             <h1 className={Styles.MarketCard__tableheading}>
               My Positions
             </h1>
+            {p.linkType &&
+              <MarketLink
+                className={Styles.MarketCard__action}
+                id={p.market.id}
+                formattedDescription={p.market.description}
+                linkType={p.linkType}
+              >
+                { p.buttonText || buttonText }
+              </MarketLink>
+            }
             <button
               className={Styles.MarketCard__tabletoggle}
               onClick={() => this.toggleTable('myPositions')}
@@ -154,17 +187,19 @@ export default class MarketPortfolioCard extends React.Component {
               }
             />
           }
-          <div className={Styles.MarketCard__headingcontainer}>
-            <h1 className={Styles.MarketCard__tableheading}>
-              Open Orders
-            </h1>
-            <button
-              className={Styles.MarketCard__tabletoggle}
-              onClick={() => this.toggleTable('openOrders')}
-            >
-              <CaretDropdown flipped={this.state.tableOpen.openOrders} />
-            </button>
-          </div>
+          {this.props.market.outcomes[0].userOpenOrders.length !== 0 &&
+            <div className={Styles.MarketCard__headingcontainer}>
+              <h1 className={Styles.MarketCard__tableheading}>
+                Open Orders
+              </h1>
+              <button
+                className={Styles.MarketCard__tabletoggle}
+                onClick={() => this.toggleTable('openOrders')}
+              >
+                <CaretDropdown flipped={this.state.tableOpen.openOrders} />
+              </button>
+            </div>
+          }
           {this.state.tableOpen.openOrders &&
             <MarketTable
               hideTitles
@@ -209,6 +244,20 @@ export default class MarketPortfolioCard extends React.Component {
             />
           }
         </section>
+        {p.linkType &&
+          <section className={Styles['MarketCard__tablesection-mobile']}>
+            <div className={Styles['MarketCard__headingcontainer-mobile']}>
+              <MarketLink
+                className={Styles['MarketCard__action-mobile']}
+                id={p.market.id}
+                formattedDescription={p.market.description}
+                linkType={p.linkType}
+              >
+                { p.buttonText || buttonText }
+              </MarketLink>
+            </div>
+          </section>
+        }
       </article>
     )
   }
