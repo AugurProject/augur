@@ -106,11 +106,11 @@ describe('modules/app/constants/views', () => {
   })
 
   test({
-    description: `should return the expected value 'MY_REPORTS'`,
+    description: `should return the expected value 'REPORTING'`,
     assertions: () => {
-      const expected = 'my-reports'
+      const expected = 'reporting'
 
-      assert.strictEqual(views.MY_REPORTS, expected, `didn't return the expected string`)
+      assert.strictEqual(views.REPORTING, expected, `didn't return the expected string`)
     }
   })
 
