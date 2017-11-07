@@ -34,7 +34,9 @@ export default class ReportingClosed extends Component {
         <Helmet>
           <title>Reporting: Closed</title>
         </Helmet>
-        <h1 className={Styles.ReportingClosed__heading}>Reporting: Closed</h1>
+        <h1 className={Styles.ReportingClosed__heading}>
+          Reporting: Closed
+        </h1>
         <MarketsList
           isLogged={p.isLogged}
           markets={p.markets}
