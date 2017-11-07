@@ -25,7 +25,31 @@ export default class MainErrorBoundary extends Component {
   }
 
   render() {
-    if (this.state.hasError) return <h1>ಠ_ಠ -- check the console</h1>
+    if (this.state.hasError) {
+      return (
+        <section
+          style={{
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            justifyContent: 'center',
+            width: '100%'
+          }}
+        >
+          <h1
+            style={{
+              fontSize: '10rem',
+              lineHeight: '10rem',
+              marginBottom: '2rem'
+            }}
+          >
+            ಠ_ಠ
+          </h1>
+          <span>please reference the console</span>
+        </section>
+      )
+    }
 
     return this.props.children
   }
