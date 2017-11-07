@@ -38,8 +38,8 @@ class WatchList extends Component {
         { label: 'Bitcoin', value: 'bitcoin' },
         { label: 'Ethereum', value: 'ethereum' }
       ],
-      filterDefault: 'Cryptocurrency',
-      filterType: 'Cryptocurrency',
+      filterDefault: 'cryptocurrency',
+      filterType: 'cryptocurrency',
     }
 
     this.changeDropdown = this.changeDropdown.bind(this)
@@ -67,7 +67,6 @@ class WatchList extends Component {
   render() {
     const p = this.props
     const s = this.state
-
     // create filtered Markets list, in this case all markets passed
     const filteredMarkets = []
     p.markets.forEach((market, ind) => {

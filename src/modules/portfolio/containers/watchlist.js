@@ -6,15 +6,13 @@ import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
 
-const mapStateToProps = state => {
-  return {
-    isLogged: state.isLogged,
-    markets,
-    transactionsLoading: state.transactionsLoading,
-    scalarShareDenomination: getScalarShareDenomination(),
-    hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber // FIXME
-  }
-}
+const mapStateToProps = state => ({
+  isLogged: state.isLogged,
+  markets,
+  transactionsLoading: state.transactionsLoading,
+  scalarShareDenomination: getScalarShareDenomination(),
+  hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber // FIXME
+})
 
 const mapDispatchToProps = dispatch => ({
   loadMarketsInfo: marketIDs => dispatch(loadMarketsInfo(marketIDs)),
