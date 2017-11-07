@@ -35,8 +35,8 @@ class AccountHeader extends Component {
   }
 
   updateText() {
-    const ethContainer = this.refs.ethCurrencyContainer
-    const ethTarget = this.refs.ethCurrencyValue
+    const ethContainer = this.ethCurrencyContainer
+    const ethTarget = this.ethCurrencyValue
     const repValue = this.props.stats[0].totalRep.value
 
     let containerWidth = ethContainer.clientWidth
@@ -46,8 +46,8 @@ class AccountHeader extends Component {
     fitText({ clientWidth: containerWidth }, ethTarget, true, 10)
 
     if (repValue > 0) {
-      const repContainer = this.refs.repCurrencyContainer
-      const repTarget = this.refs.repCurrencyValue
+      const repContainer = this.repCurrencyContainer
+      const repTarget = this.repCurrencyValue
       // @params: container, target, scaleUp, maxScale
       fitText({ clientWidth: repContainer.clientWidth }, repTarget, true, 10)
     }
@@ -67,17 +67,17 @@ class AccountHeader extends Component {
         className={Styles.AccountHeader}
       >
         <div
-          ref="ethCurrencyContainer"
+          ref={(ethCurrencyContainer) => { this.ethCurrencyContainer = ethCurrencyContainer }}
           title={p.stats[0].totalRealEth.title}
           className={Styles.AccountHeader__Currency}
         >
           <span
-            ref="ethCurrencyValue"
+            ref={(ethCurrencyValue) => { this.ethCurrencyValue = ethCurrencyValue }}
             className={Styles['AccountHeader__Currency-value']}
           >
             {ethValue}
             <span
-              ref="ethCurrencyLabel"
+              ref={(ethCurrencyLabel) => { this.ethCurrencyLabel = ethCurrencyLabel }}
               className={Styles['AccountHeader__Currency-label']}
             >
               {p.stats[0].totalRealEth.label}
@@ -86,17 +86,17 @@ class AccountHeader extends Component {
         </div>
         {repValue !== '0' && !p.isMobile &&
           <div
+            ref={(repCurrencyContainer) => { this.repCurrencyContainer = repCurrencyContainer }}
             title={p.stats[0].totalRep.title} className={Styles.AccountHeader__Currency}
-            ref="repCurrencyContainer"
           >
             <span
+              ref={(repCurrencyValue) => { this.repCurrencyValue = repCurrencyValue }}
               className={Styles['AccountHeader__Currency-value']}
-              ref="repCurrencyValue"
             >
               {repValue}
               <span
+                ref={(repCurrencyLabel) => { this.repCurrencyLabel = repCurrencyLabel }}
                 className={Styles['AccountHeader__Currency-label']}
-                ref="repCurrencyLabel"
               >
                 {p.stats[0].totalRep.label}
               </span>
