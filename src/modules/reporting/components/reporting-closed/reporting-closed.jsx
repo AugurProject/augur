@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
-import ReportingHeader from 'modules/reporting/components/reporting-header/reporting-header'
 import MarketsList from 'modules/markets/components/markets-list'
+
+import Styles from 'modules/reporting/components/reporting-closed/reporting-closed.styles'
 
 export default class ReportingClosed extends Component {
   static propTypes = {
@@ -33,10 +34,9 @@ export default class ReportingClosed extends Component {
         <Helmet>
           <title>Reporting: Closed</title>
         </Helmet>
-        <ReportingHeader
-          heading="Reporting: Closed"
-          showReportingEndDate={false}
-        />
+        <h1 className={Styles.ReportingClosed__heading}>
+          Reporting: Closed
+        </h1>
         <MarketsList
           isLogged={p.isLogged}
           markets={p.markets}
