@@ -7,6 +7,7 @@ import AccountHeader from 'modules/account/containers/account-header'
 import AccountDeposit from 'modules/account/containers/account-deposit'
 import AccountWithdraw from 'modules/account/containers/account-withdraw'
 import AccountExport from 'modules/account/containers/account-export'
+import TermsAndConditions from 'modules/app/components/terms-and-conditions/terms-and-conditions'
 
 import makePath from 'modules/routes/helpers/make-path'
 
@@ -22,6 +23,7 @@ const AccountView = p => (
       <AuthenticatedRoute path={makePath(ACCOUNT_WITHDRAW)} component={AccountWithdraw} />
       <AuthenticatedRoute path={makePath(ACCOUNT_EXPORT)} component={AccountExport} />
     </Switch>
+    <TermsAndConditions />
   </section>
 )
 
