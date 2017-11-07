@@ -52,8 +52,10 @@ const MarketProperties = (p) => {
             className={classNames(Styles.MarketProperties__favorite, { [Styles.favorite]: p.isFavorite })}
             onClick={() => p.toggleFavorite(p.id)}
           >
-            <i className="fa fa-star-o" />
-            <i className="fa fa-star" />
+            {p.isFavorite ?
+              <i className="fa fa-star" /> :
+              <i className="fa fa-star-o" />
+            }
           </button>
         }
         <MarketLink
