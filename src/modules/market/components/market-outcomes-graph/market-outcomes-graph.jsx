@@ -12,8 +12,8 @@ import Styles from 'modules/market/components/market-outcomes-graph/market-outco
 export default class MarketOutcomesGraph extends Component {
   static propTypes = {
     priceTimeSeries: PropTypes.array.isRequired,
-    selectedOutcome: PropTypes.any, // NOTE -- There is a PR to handle null values, but until then..
-    updateSelectedOutcome: PropTypes.func.isRequired
+    selectedOutcomes: PropTypes.any, // NOTE -- There is a PR to handle null values, but until then..
+    updateSelectedOutcomes: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -176,7 +176,7 @@ export default class MarketOutcomesGraph extends Component {
         <button
           id="market_outcomes_graph"
           className={Styles.MarketOutcomesGraph__graph}
-          onClick={() => this.props.updateSelectedOutcome(0)}
+          onClick={() => this.props.updateSelectedOutcomes(0)}
         >
           <span>Graphs Placeholder (clicking selects outcome 0)</span>
         </button>

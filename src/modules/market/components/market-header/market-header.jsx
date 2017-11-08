@@ -12,7 +12,7 @@ export default class MarketHeader extends Component {
     description: PropTypes.string.isRequired,
     details: PropTypes.string.isRequired,
     coreProperties: PropTypes.object.isRequired,
-    selectedOutcome: PropTypes.any // NOTE -- There is a PR to handle null values, but until then..
+    selectedOutcomes: PropTypes.any // NOTE -- There is a PR to handle null values, but until then..
   }
 
   constructor(props) {
@@ -31,7 +31,7 @@ export default class MarketHeader extends Component {
     return (
       <section className={Styles.MarketHeader}>
         <div className={Styles.MarketHeader__nav}>
-          {p.selectedOutcome === null ?
+          {p.selectedOutcomes.length === 0 ?
             <button
               className={Styles[`MarketHeader__back-button`]}
               onClick={() => p.history.goBack()}
@@ -40,7 +40,7 @@ export default class MarketHeader extends Component {
             </button> :
             <button
               className={Styles[`MarketHeader__back-button`]}
-              onClick={() => p.updateSelectedOutcome(null)}
+              onClick={() => p.clearSelectedOutcomes()}
             >
               {ChevronLeft}<span> view all outcomes</span>
             </button>

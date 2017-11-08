@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import MarketHeader from 'modules/market/containers/market-header'
 import MarketOutcomesGraph from 'modules/market/containers/market-outcomes-graph'
 import MarketOutcomeGraphs from 'modules/market/containers/market-outcome-graphs'
+import MarketData from 'modules/market/containers/market-data'
 
 import Styles from 'modules/market/components/market-view/market-view.styles'
 
@@ -11,14 +12,28 @@ export default class MarketView extends Component {
     super(props)
 
     this.state = {
-      selectedOutcome: null
+      selectedOutcomes: [],
     }
 
-    this.updateSelectedOutcome = this.updateSelectedOutcome.bind(this)
+    this.updateSelectedOutcomes = this.updateSelectedOutcomes.bind(this)
+    this.clearSelectedOutcomes = this.clearSelectedOutcomes.bind(this)
   }
 
-  updateSelectedOutcome(selectedOutcome) {
-    this.setState({ selectedOutcome })
+  updateSelectedOutcomes(selectedOutcome) {
+    const newSelectedOutcomes = [...this.state.selectedOutcomes]
+    const selectedOutcomeIndex = newSelectedOutcomes.indexOf(selectedOutcome)
+
+    if (selectedOutcomeIndex !== -1) {
+      newSelectedOutcomes.splice(selectedOutcomeIndex, 1)
+    } else {
+      newSelectedOutcomes.push(selectedOutcome)
+    }
+
+    this.setState({ selectedOutcomes: newSelectedOutcomes })
+  }
+
+  clearSelectedOutcomes() {
+    this.setState({ selectedOutcomes: [] })
   }
 
   render() {
@@ -28,21 +43,26 @@ export default class MarketView extends Component {
       <section>
         <div className={Styles.Market__upper}>
           <MarketHeader
-            selectedOutcome={s.selectedOutcome}
-            updateSelectedOutcome={this.updateSelectedOutcome}
+            selectedOutcomes={s.selectedOutcomes}
+            updateSelectedOutcomes={this.updateSelectedOutcomes}
+            clearSelectedOutcomes={this.clearSelectedOutcomes}
           />
-          {s.selectedOutcome === null &&
+          {s.selectedOutcomes.length === 0 &&
             <MarketOutcomesGraph
-              selectedOutcome={s.selectedOutcome}
-              updateSelectedOutcome={this.updateSelectedOutcome}
+              selectedOutcomes={s.selectedOutcomes}
+              updateSelectedOutcomes={this.updateSelectedOutcomes}
             />
           }
-          {s.selectedOutcome !== null &&
+          {s.selectedOutcomes.length > 0 &&
             <MarketOutcomeGraphs
-              selectedOutcome={s.selectedOutcome}
+              selectedOutcomes={s.selectedOutcomes}
             />
           }
         </div>
+        <MarketData
+          selectedOutcomes={s.selectedOutcomes}
+          updateSelectedOutcomes={this.updateSelectedOutcomes}
+        />
       </section>
     )
   }
