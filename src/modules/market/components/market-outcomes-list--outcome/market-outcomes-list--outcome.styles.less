@@ -1,8 +1,10 @@
 @import (reference) '~assets/styles/shared';
 
 .Outcome {
+  cursor: pointer;;
   transition: background-color .15s ease;
 
+  &.active,
   &:hover {
     background-color: @color-lightergray;
   }

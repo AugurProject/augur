@@ -49,7 +49,14 @@ export default class MarketOutcomesList extends Component {
             </ul>
             <div className={Styles['MarketOutcomesList__table-body']}>
               { p.outcomes && p.outcomes.map(outcome => (
-                <MarketOutcomesListOutcome key={outcome.id} outcome={outcome} />
+                <MarketOutcomesListOutcome
+                  key={outcome.id}
+                  outcome={outcome}
+                  marketID={p.marketID}
+                  scalarShareDenomination={p.scalarShareDenomination}
+                  selectedOutcomes={p.selectedOutcomes}
+                  updateSelectedOutcomes={p.updateSelectedOutcomes}
+                />
               ))}
             </div>
           </div>

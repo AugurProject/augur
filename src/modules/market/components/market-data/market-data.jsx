@@ -16,7 +16,13 @@ export default class MarketData extends Component {
     return (
       <section className={Styles.MarketData}>
         <div className={Styles.MarketData__details}>
-          <MarketOutcomesList outcomes={p.outcomes} />
+          <MarketOutcomesList
+            marketID={p.marketID}
+            outcomes={p.outcomes}
+            scalarShareDenomination={p.scalarShareDenomination}
+            selectedOutcomes={p.selectedOutcomes}
+            updateSelectedOutcomes={p.updateSelectedOutcomes}
+          />
         </div>
         <div className={Styles.MarketData__trading}>
           trading

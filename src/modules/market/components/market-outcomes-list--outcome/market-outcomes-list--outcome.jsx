@@ -1,4 +1,5 @@
 import React from 'react'
+import classNames from 'classnames'
 
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
@@ -10,6 +11,8 @@ import Styles from 'modules/market/components/market-outcomes-list--outcome/mark
 const Outcome = p => {
   const outcomeName = getValue(p, 'outcome.name')
 
+  const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${p.marketID}`)
+
   const topBidShares = setShareDenomination(getValue(p, 'outcome.topBid.shares.formatted'), p.selectedShareDenomination)
   const topAskShares = setShareDenomination(getValue(p, 'outcome.topAsk.shares.formatted'), p.selectedShareDenomination)
 
@@ -20,7 +23,7 @@ const Outcome = p => {
   const lastPricePercent = getValue(p, 'outcome.lastPricePercent.rounded')
 
   return (
-    <ul className={Styles.Outcome}>
+    <ul className={classNames(Styles.Outcome, { [`${Styles.active}`] : p.selectedOutcomes.indexOf(p.outcome.id) > -1 })} onClick={e => p.updateSelectedOutcomes(p.outcome.id)}>
       <li>{outcomeName} <span className={Styles.Outcome__percent}>{ getValue(p, 'outcome.lastPricePercent.full') }</span></li>
       <li><ValueDenomination formatted={topBidShares} /></li>
       <li><ValueDenomination formatted={topBidPrice} /></li>

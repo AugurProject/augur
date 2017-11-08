@@ -12,8 +12,8 @@ import Styles from 'modules/market/components/market-outcomes-graph/market-outco
 export default class MarketOutcomesGraph extends Component {
   static propTypes = {
     priceTimeSeries: PropTypes.array.isRequired,
-    selectedOutcome: PropTypes.any, // NOTE -- There is a PR to handle null values, but until then..
-    updateSelectedOutcome: PropTypes.func.isRequired
+    selectedOutcomes: PropTypes.any, // NOTE -- There is a PR to handle null values, but until then..
+    updateSelectedOutcomes: PropTypes.func.isRequired
   }
 
   constructor(props) {
