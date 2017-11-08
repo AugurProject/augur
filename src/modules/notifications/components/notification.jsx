@@ -4,13 +4,14 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 
 import debounce from 'utils/debounce'
-import { AlertCircle } from 'modules/common/components/icons/icons'
+import { AlertCircle, CloseBlack } from 'modules/common/components/icons/icons'
 import Styles from 'modules/notifications/components/notification.styles'
 
 export default class Notification extends Component {
   static propTypes = {
     index: PropTypes.number.isRequired,
     seen: PropTypes.bool.isRequired,
+    id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     removeNotification: PropTypes.func.isRequired,
@@ -79,7 +80,7 @@ export default class Notification extends Component {
         notificationMidpoint <= bottomBound
       ) {
         setTimeout(() => {
-          this.props.updateNotification(this.props.index, { seen: true })
+          this.props.updateNotification(this.props.id, { seen: true })
         }, 1000)
       }
     }
@@ -87,7 +88,7 @@ export default class Notification extends Component {
 
   render() {
     const p = this.props
-
+    console.log(p)
     return (
       <article
         ref={(notification) => {
@@ -103,8 +104,17 @@ export default class Notification extends Component {
             if (p.linkPath && p.onClick) p.toggleNotifications()
           }}
         >
-          {AlertCircle(!p.seen ? Styles.Notification__dot : Styles['Notification__dot-seen'], '#553580')}
           <span className={Styles.Notification__title}>{p.title}</span>
+          {AlertCircle(!p.seen ? Styles.Notification__dot : Styles['Notification__dot-seen'], '#553580')}
+          <button
+            className={Styles.Notification__close}
+            onClick={(e) => {
+              e.stopPropagation()
+              p.removeNotification()
+            }}
+          >
+            {CloseBlack}
+          </button>
           <span className={Styles.Notification__description}>{p.description}</span>
           <span className={Styles.Notification__time}>{moment(p.timestamp, 'YYYYMMDD').fromNow()}</span>
         </Link>

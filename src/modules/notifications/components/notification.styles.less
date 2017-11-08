@@ -15,8 +15,9 @@
 }
 
 .Notification__title {
-  flex: 1;
+  flex: 0 1 auto;
   font-size: @font-size-small;
+  height: 1rem;
   line-height: 1em;
   text-transform: uppercase;
   transition: flex 1000ms ease-in;
@@ -25,15 +26,24 @@
 .Notification__dot {
   flex: 0 1rem;
   height: 1rem;
+  margin-left: 0.5rem;
   transition: flex 500ms ease-out;
   width: 1rem;
 }
 
 .Notification__dot-seen {
-  flex: 0;
-  height: 1rem;
+  flex: 0 0 0;
+  height: 0;
+  margin: 0;
   transition: flex 500ms ease-out;
-  width: 1rem;
+  width: 0;
+}
+
+.Notification__close {
+  align-self: baseline;
+  flex: 0 0 @font-size-small;
+  font-size: @font-size-small;
+  margin-left: auto;
 }
 
 .Notification__description {
