@@ -1,0 +1,30 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketData {
+  background-color: @color-white;
+  display: flex;
+  justify-content: space-between;
+}
+
+.MarketData__details {
+  width: calc(100% - 25rem);
+}
+
+.MarketData__trading {
+  width: 25rem;
+}
+
+@media @breakpoint-mobile {
+  .MarketData {
+    background-color: transparent;
+    display: block;
+  }
+
+  .MarketData__details {
+    width: 100%;
+  }
+
+  .MarketData__trading {
+    display: none;
+  }
+}
