@@ -88,7 +88,7 @@ export default class Notification extends Component {
 
   render() {
     const p = this.props
-    console.log(p)
+
     return (
       <article
         ref={(notification) => {
