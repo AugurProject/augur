@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-// import MarketOutcomeCandlestick from 'modules/market/components/market-outcome-candlestick/market-outcome-candlestick'
+import MarketOutcomeCandlestick from 'modules/market/components/market-outcome-candlestick/market-outcome-candlestick'
 // import MarketOutcomeDepth from 'modules/market/components/market-outcome-depth/market-outcome-depth'
 // import MarketOutcomeOrderBook from 'modules/market/components/market-outcome-order-book/market-outcome-order-book'
 
-import Styles from 'modules/market/components/market-outcome-graphs/market-outcome-graphs.styles'
+import Styles from 'modules/market/components/market-outcome-charts/market-outcome-charts.styles'
 
 export default class MarketOutcomeGraphs extends Component {
   static propTypes = {
@@ -32,17 +32,24 @@ export default class MarketOutcomeGraphs extends Component {
   }
 
   render() {
-    // const s = this.state
-    // const p = this.props
+    const s = this.state
+    const p = this.props
 
     // NOTE -- wire up marketMin + marketMax
 
     return (
       <section className={Styles.MarketOutcomeGraphs}>
         <span className={Styles.MarketOutcomeGraphs__center} />
-        <div className={Styles.MarketOutcomeGraphs__placeholder}>
-          <span>Placeholder For Graphs</span>
-        </div>
+        <MarketOutcomeCandlestick
+          marketPriceHistory={p.marketPriceHistory}
+          outcomeMin={p.marketMin}
+          orderBookMid={p.marketMid}
+          outcomeMax={p.marketMax}
+          marketMax={1}
+          marketMin={0}
+          hoveredPrice={s.hoveredPrice}
+          updateHoveredPrice={this.updateHoveredPrice}
+        />
       </section>
     )
   }

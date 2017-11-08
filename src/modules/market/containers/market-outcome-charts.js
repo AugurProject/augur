@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 
-import MarketOutcomeGraphs from 'modules/market/components/market-outcome-graphs/market-outcome-graphs'
+import MarketOutcomeCharts from 'modules/market/components/market-outcome-charts/market-outcome-charts'
 
 const bids = [...new Array(30)]
     .map((value, index) => ([Math.random() * 0.5, Math.random() * 100]))
@@ -71,4 +71,4 @@ const mapStateToProps = state => ({
   marketDepth
 })
 
-export default connect(mapStateToProps)(MarketOutcomeGraphs)
+export default connect(mapStateToProps)(MarketOutcomeCharts)

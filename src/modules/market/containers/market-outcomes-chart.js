@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 
-import MarketOutcomesGraph from 'modules/market/components/market-outcomes-graph/market-outcomes-graph'
+import MarketOutcomesChart from 'modules/market/components/market-outcomes-chart/market-outcomes-chart'
 
 const mergeProps = (sP, dP, oP) => {
   // const queryParams = parseQuery(ownProps.location.search)
@@ -59,4 +59,4 @@ const mergeProps = (sP, dP, oP) => {
   }
 }
 
-export default connect(null, null, mergeProps)(MarketOutcomesGraph)
+export default connect(null, null, mergeProps)(MarketOutcomesChart)
