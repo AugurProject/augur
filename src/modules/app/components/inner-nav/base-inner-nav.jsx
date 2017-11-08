@@ -37,8 +37,8 @@ export default class BaseInnerNav extends Component {
 
     const dataToItem = item => (
       <MenuItem
-        isSelected={item.isSelected}
         key={item.label}
+        isSelected={item.isSelected}
         visible={item.visible}
       >
         {item.link &&
