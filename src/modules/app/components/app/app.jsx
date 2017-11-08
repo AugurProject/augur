@@ -109,6 +109,7 @@ export default class AppView extends Component {
         title: 'Portfolio',
         iconName: 'nav-portfolio-icon',
         icon: NavPortfolioIcon,
+        mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
         route: MY_POSITIONS,
         requireLogin: true
       },
