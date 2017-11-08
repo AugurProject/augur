@@ -2,6 +2,7 @@
 
 .Outcome {
   cursor: pointer;
+  display: table-row;
   transition: background-color 0.15s ease;
 
   &.active,
@@ -9,19 +10,40 @@
     background-color: @color-lightergray;
   }
 
-  > li:first-child {
-    position: relative;
+  &:first-child > li {
+    border-top-width: 0;
+  }
 
-    &::before {
-      border-radius: 100%;
-      content: "";
-      display: block;
-      height: 6px;
-      left: 1rem;
-      position: absolute;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      width: 6px;
+  > li {
+    border-top: 1px solid @color-lightest-gray;
+    display: table-cell;
+    max-width: 19vw;
+    overflow: hidden;
+    padding: 1.125rem 0;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:first-child {
+      padding-left: 2rem;
+      position: relative;
+      text-align: left;
+
+      &::before {
+        border-radius: 100%;
+        content: "";
+        display: block;
+        height: 6px;
+        left: 1rem;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 6px;
+      }
+    }
+
+    &:last-child {
+      padding-right: 4.5rem;
     }
   }
 
@@ -58,3 +80,49 @@
   }
 }
 
+@media @breakpoint-mobile {
+  .Outcome {
+    &.active,
+    &:hover {
+      background-color: @color-darkpurple;
+    }
+
+    > li {
+      border-top-color: @color-darkpurple;
+      color: inherit;
+
+      &:first-child {
+        padding-left: 1rem;
+
+        &::before {
+          border-radius: 0;
+          height: 100%;
+          left: 0;
+          width: 3px;
+        }
+      }
+
+      &:last-child {
+        padding-right: 1rem;
+      }
+
+      &:not(:first-child) {
+        color: @color-white;
+      }
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .Outcome {
+    &:first-child > li {
+      border-top-width: 1px;
+    }
+
+    > li {
+      font-size: @font-size-medium;
+      line-height: @font-size-medium;
+      max-width: 25vw;
+    }
+  }
+}

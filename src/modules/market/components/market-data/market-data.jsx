@@ -13,6 +13,7 @@ const MarketData = p => (
         scalarShareDenomination={p.scalarShareDenomination}
         selectedOutcomes={p.selectedOutcomes}
         updateSelectedOutcomes={p.updateSelectedOutcomes}
+        isMobile={p.isMobile}
       />
     </div>
     <div className={Styles.MarketData__trading}>

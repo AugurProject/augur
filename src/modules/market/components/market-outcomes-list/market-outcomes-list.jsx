@@ -16,6 +16,7 @@ export default class MarketOutcomesList extends Component {
     scalarShareDenomination: PropTypes.object.isRequired,
     selectedOutcomes: PropTypes.array.isRequired,
     updateSelectedOutcomes: PropTypes.func.isRequired,
+    isMobile: PropTypes.bool.isRequired,
   }
 
   constructor(props) {
@@ -34,10 +35,12 @@ export default class MarketOutcomesList extends Component {
       <section className={Styles.MarketOutcomesList}>
         <button
           className={Styles.MarketOutcomesList__heading}
-          onClick={() => { toggleHeight(this.outcomeList, s.isOpen, () => { this.setState({ isOpen: !s.isOpen }) }) }}
+          onClick={() => { !p.isMobile && toggleHeight(this.outcomeList, s.isOpen, () => { this.setState({ isOpen: !s.isOpen }) }) }}
         >
           <h2>Outcomes</h2>
-          <span className={classNames({ [`${Styles['is-open']}`]: s.isOpen })}>{ ChevronDown }</span>
+          { !p.isMobile &&
+            <span className={classNames({ [`${Styles['is-open']}`]: s.isOpen })}>{ ChevronDown }</span>
+          }
         </button>
         <div
           ref={(outcomeList) => { this.outcomeList = outcomeList }}
@@ -46,11 +49,11 @@ export default class MarketOutcomesList extends Component {
           <div className={Styles.MarketOutcomesList__table}>
             <ul className={Styles['MarketOutcomesList__table-header']}>
               <li>Outcome</li>
-              <li>Bid Qty</li>
-              <li>Best Bid</li>
-              <li>Best Ask</li>
-              <li>Ask Qty</li>
-              <li>Last</li>
+              <li><span>Bid <span />Qty</span></li>
+              <li><span>Best <span />Bid</span></li>
+              <li><span>Best <span />Ask</span></li>
+              <li><span>Ask <span />Qty</span></li>
+              <li><span>Last</span></li>
             </ul>
             <div className={Styles['MarketOutcomesList__table-body']}>
               { p.outcomes && p.outcomes.map(outcome => (
