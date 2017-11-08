@@ -12,6 +12,7 @@ const mapStateToProps = state => ({
   marketID: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
   scalarShareDenomination: getScalarShareDenomination(),
   outcomes,
+  positions,
   isMobile: state.isMobile,
 })
 
@@ -19,6 +20,32 @@ const MarketTradingContainer = withRouter(connect(mapStateToProps)(MarketData))
 
 export default MarketTradingContainer
 
+const positions = [
+  {
+    name: 'Yes',
+    position: {
+      qtyShares: { formatted: '10' },
+      purchasePrice: { formatted: '0.5' },
+      lastPrice: { formatted: '0.45' },
+      realizedNet: { formatted: '0' },
+      unrealizedNet: { formatted: '1' },
+      totalNet: { formatted: '1' },
+      closePosition: { closePosition: () => console.log('closeposition3') }
+    }
+  },
+  {
+    name: 'No',
+    position: {
+      qtyShares: { formatted: '5' },
+      purchasePrice: { formatted: '0.75' },
+      lastPrice: { formatted: '0.8' },
+      realizedNet: { formatted: '0' },
+      unrealizedNet: { formatted: '0.05' },
+      totalNet: { formatted: '.05' },
+      closePosition: { closePosition: () => console.log('closeposition4') }
+    }
+  },
+]
 
 const outcomes = [
   {

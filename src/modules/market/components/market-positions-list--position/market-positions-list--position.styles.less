@@ -1,0 +1,114 @@
+@import (reference) '~assets/styles/shared';
+
+.Position {
+  display: table-row;
+  transition: background-color 0.15s ease;
+
+  &:first-child > li {
+    border-top-width: 0;
+  }
+
+  > li {
+    border-top: 1px solid @color-lightest-gray;
+    display: table-cell;
+    max-width: 19vw;
+    overflow: hidden;
+    padding: 1.125rem 0;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:first-child {
+      padding-left: 2rem;
+      position: relative;
+      text-align: left;
+    }
+
+    &:last-of-type {
+      padding-right: 4.5rem;
+
+      > button {
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.Position__confirm {
+  background-color: @color-purple;
+  color: @color-white;
+  left: 0;
+  opacity: 0;
+  padding: 1.19rem 4.5rem 1.19rem 1rem;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity .15s ease;
+  width: 100%;
+
+  &.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.Position__confirm-details {
+  display: flex;
+  justify-content: space-between;
+
+  > p {
+    margin: 0;
+  }
+}
+
+.Position__confirm-options {
+  color: @color-white;
+  display: flex;
+
+  > button {
+    &:extend(.caps--medium);
+
+    &:not(:first-child) {
+      margin-left: 2rem;
+    }
+  }
+}
+
+@media @breakpoint-mobile {
+  .Position {
+    &.active,
+    &:hover {
+      background-color: @color-darkpurple;
+    }
+
+    > li {
+      border-top-color: @color-darkpurple;
+      color: inherit;
+
+      &:first-child {
+        padding-left: 1rem;
+      }
+
+      &:last-of-type {
+        padding-right: 1rem;
+      }
+
+      &:not(:first-child) {
+        color: @color-white;
+      }
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .Position {
+    &:first-child > li {
+      border-top-width: 1px;
+    }
+
+    > li {
+      font-size: @font-size-medium;
+      line-height: @font-size-medium;
+      max-width: 25vw;
+    }
+  }
+}

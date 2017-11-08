@@ -23,7 +23,7 @@ export default class MarketOutcomesList extends Component {
     super(props)
 
     this.state = {
-      isOpen: true,
+      isOpen: false,
     }
   }
 
@@ -44,8 +44,13 @@ export default class MarketOutcomesList extends Component {
         </button>
         <div
           ref={(outcomeList) => { this.outcomeList = outcomeList }}
-          className={classNames(ToggleHeightStyles['toggle-height-target'], ToggleHeightStyles['start-open'])}
+          className={classNames(ToggleHeightStyles['toggle-height-target'])}
         >
+        {/*
+        <div
+          ref={(outcomeList) => { this.outcomeList = outcomeList }}
+          className={classNames(ToggleHeightStyles['toggle-height-target'], ToggleHeightStyles['start-open'])}
+        >*/}
           <div className={Styles.MarketOutcomesList__table}>
             <ul className={Styles['MarketOutcomesList__table-header']}>
               <li>Outcome</li>

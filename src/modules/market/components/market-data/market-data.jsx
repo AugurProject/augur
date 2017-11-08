@@ -1,6 +1,7 @@
 import React from 'react'
 
 import MarketOutcomesList from 'modules/market/components/market-outcomes-list/market-outcomes-list'
+import MarketPositionsList from 'modules/market/components/market-positions-list/market-positions-list'
 
 import Styles from 'modules/market/components/market-data/market-data.styles'
 
@@ -13,6 +14,10 @@ const MarketData = p => (
         scalarShareDenomination={p.scalarShareDenomination}
         selectedOutcomes={p.selectedOutcomes}
         updateSelectedOutcomes={p.updateSelectedOutcomes}
+        isMobile={p.isMobile}
+      />
+      <MarketPositionsList
+        positions={p.positions}
         isMobile={p.isMobile}
       />
     </div>
