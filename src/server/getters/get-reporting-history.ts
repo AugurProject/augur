@@ -10,7 +10,7 @@ interface UIReports {
 }
 
 // Look up a user's reporting history (i.e., all reports submitted by a given reporter); should take reporter (address) as a required parameter and take market, universe, and reportingWindow all as optional parameters. For reporting windows that are complete, should also include the consensus outcome, whether the user's report matched the consensus, how much REP the user gained or lost from redistribution, and how much the user earned in reporting fees.
-export function getReportingHistory(db: Knex, universe: Address|null, reporter: Address, marketID: Address|null, reportingWindow: Address|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: any) => void): void {
+export function getReportingHistory(db: Knex, reporter: Address, universe: Address|null, marketID: Address|null, reportingWindow: Address|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: any) => void): void {
   // { universe: { marketID: { marketID, reportingWindow, payoutNumerators, isCategorical, isScalar, isIndeterminate } } }
   if (universe == null && marketID == null && reportingWindow == null) return callback(new Error("Must provide reference to universe, specify universe, marketID, reportingWindow"));
   let query = db.select([

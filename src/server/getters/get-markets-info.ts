@@ -9,7 +9,7 @@ interface MarketOutcomeResult {
   outcomesRows: Array<OutcomesRow>;
 }
 
-export function getMarketsInfo(db: Knex, marketIDs: Array<Address>|null|undefined, callback: (err: Error|null, result?: UIMarketsInfo) => void): void {
+export function getMarketsInfo(db: Knex, marketIDs: Array<Address>, callback: (err: Error|null, result?: UIMarketsInfo) => void): void {
   let marketsQuery: Knex.QueryBuilder = getMarketsWithReportingState(db);
   if (marketIDs == null || !marketIDs.length) return callback(new Error("must include marketIDs parameter"));
   marketsQuery = marketsQuery.whereIn("markets.marketID", marketIDs);

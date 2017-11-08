@@ -19,6 +19,7 @@ describe("server/getters/get-markets-created-by-user", () => {
   test({
     description: "user has created 3 markets",
     params: {
+      universe: "0x000000000000000000000000000000000000000b",
       creator: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, marketsCreatedByUser) => {
@@ -33,6 +34,7 @@ describe("server/getters/get-markets-created-by-user", () => {
   test({
     description: "user has created 1 market",
     params: {
+      universe: "0x000000000000000000000000000000000000000b",
       creator: "0x000000000000000000000000000000000000d00d",
     },
     assertions: (err, marketsCreatedByUser) => {
@@ -45,6 +47,7 @@ describe("server/getters/get-markets-created-by-user", () => {
   test({
     description: "user has not created any markets",
     params: {
+      universe: "0x000000000000000000000000000000000000000b",
       creator: "0x0000000000000000000000000000000000000bbb",
     },
     assertions: (err, marketsCreatedByUser) => {
