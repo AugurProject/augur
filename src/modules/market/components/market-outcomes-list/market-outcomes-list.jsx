@@ -1,18 +1,23 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import MarketOutcomesListOutcome from 'modules/market/components/market-outcomes-list--outcome/market-outcomes-list--outcome'
 import { ChevronDown } from 'modules/common/components/icons/icons'
 import toggleHeight from 'utils/toggle-height/toggle-height'
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
-
-import getValue from 'utils/get-value'
-import setShareDenomination from 'utils/set-share-denomination'
 
 import Styles from 'modules/market/components/market-outcomes-list/market-outcomes-list.styles'
 import ToggleHeightStyles from 'utils/toggle-height/toggle-height.styles'
 
 export default class MarketOutcomesList extends Component {
+  static propTypes = {
+    marketID: PropTypes.string.isRequired,
+    outcomes: PropTypes.array.isRequired,
+    scalarShareDenomination: PropTypes.object.isRequired,
+    selectedOutcomes: PropTypes.array.isRequired,
+    updateSelectedOutcomes: PropTypes.func.isRequired,
+  }
+
   constructor(props) {
     super(props)
 
@@ -38,7 +43,7 @@ export default class MarketOutcomesList extends Component {
           ref={(outcomeList) => { this.outcomeList = outcomeList }}
           className={classNames(ToggleHeightStyles['toggle-height-target'], ToggleHeightStyles['start-open'])}
         >
-          <div className={Styles['MarketOutcomesList__table']}>
+          <div className={Styles.MarketOutcomesList__table}>
             <ul className={Styles['MarketOutcomesList__table-header']}>
               <li>Outcome</li>
               <li>Bid Qty</li>

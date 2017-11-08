@@ -1,8 +1,8 @@
 @import (reference) '~assets/styles/shared';
 
 .Outcome {
-  cursor: pointer;;
-  transition: background-color .15s ease;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
 
   &.active,
   &:hover {
@@ -12,7 +12,7 @@
   > li:first-child {
     position: relative;
 
-    &:before {
+    &::before {
       border-radius: 100%;
       content: "";
       display: block;
@@ -25,35 +25,35 @@
     }
   }
 
-  &:nth-child(1) > li:first-child:before {
+  &:nth-child(1) > li:first-child::before {
     background-color: @color-outcome-one;
   }
 
-  &:nth-child(2) > li:first-child:before {
+  &:nth-child(2) > li:first-child::before {
     background-color: @color-outcome-two;
   }
 
-  &:nth-child(3) > li:first-child:before {
+  &:nth-child(3) > li:first-child::before {
     background-color: @color-outcome-three;
   }
 
-  &:nth-child(4) > li:first-child:before {
+  &:nth-child(4) > li:first-child::before {
     background-color: @color-outcome-four;
   }
 
-  &:nth-child(5) > li:first-child:before {
+  &:nth-child(5) > li:first-child::before {
     background-color: @color-outcome-five;
   }
 
-  &:nth-child(6) > li:first-child:before {
+  &:nth-child(6) > li:first-child::before {
     background-color: @color-outcome-six;
   }
 
-  &:nth-child(7) > li:first-child:before {
+  &:nth-child(7) > li:first-child::before {
     background-color: @color-outcome-seven;
   }
 
-  &:nth-child(8) > li:first-child:before {
+  &:nth-child(8) > li:first-child::before {
     background-color: @color-outcome-eight;
   }
 }

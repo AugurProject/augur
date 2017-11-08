@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */ // needed because <button> cannot take the place <ul> in the table structure
+
 import React from 'react'
 import classNames from 'classnames'
 
@@ -8,13 +10,13 @@ import setShareDenomination from 'utils/set-share-denomination'
 
 import Styles from 'modules/market/components/market-outcomes-list--outcome/market-outcomes-list--outcome.styles'
 
-const Outcome = p => {
+const Outcome = (p) => {
   const outcomeName = getValue(p, 'outcome.name')
 
   const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${p.marketID}`)
 
-  const topBidShares = setShareDenomination(getValue(p, 'outcome.topBid.shares.formatted'), p.selectedShareDenomination)
-  const topAskShares = setShareDenomination(getValue(p, 'outcome.topAsk.shares.formatted'), p.selectedShareDenomination)
+  const topBidShares = setShareDenomination(getValue(p, 'outcome.topBid.shares.formatted'), selectedShareDenomination)
+  const topAskShares = setShareDenomination(getValue(p, 'outcome.topAsk.shares.formatted'), selectedShareDenomination)
 
   const topBidPrice = getValue(p, 'outcome.topBid.price.formatted')
   const topAskPrice = getValue(p, 'outcome.topAsk.price.formatted')
@@ -23,8 +25,8 @@ const Outcome = p => {
   const lastPricePercent = getValue(p, 'outcome.lastPricePercent.rounded')
 
   return (
-    <ul className={classNames(Styles.Outcome, { [`${Styles.active}`] : p.selectedOutcomes.indexOf(p.outcome.id) > -1 })} onClick={e => p.updateSelectedOutcomes(p.outcome.id)}>
-      <li>{outcomeName} <span className={Styles.Outcome__percent}>{ getValue(p, 'outcome.lastPricePercent.full') }</span></li>
+    <ul className={classNames(Styles.Outcome, { [`${Styles.active}`]: p.selectedOutcomes.indexOf(p.outcome.id) > -1 })} onClick={e => p.updateSelectedOutcomes(p.outcome.id)}>
+      <li>{outcomeName} <span className={Styles.Outcome__percent}>{lastPricePercent}</span></li>
       <li><ValueDenomination formatted={topBidShares} /></li>
       <li><ValueDenomination formatted={topBidPrice} /></li>
       <li><ValueDenomination formatted={topAskPrice} /></li>

@@ -176,7 +176,7 @@ export default class MarketOutcomesGraph extends Component {
         <button
           id="market_outcomes_graph"
           className={Styles.MarketOutcomesGraph__graph}
-          onClick={() => this.props.updateSelectedOutcome(0)}
+          onClick={() => this.props.updateSelectedOutcomes(0)}
         >
           <span>Graphs Placeholder (clicking selects outcome 0)</span>
         </button>
