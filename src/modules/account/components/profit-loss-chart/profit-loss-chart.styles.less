@@ -2,7 +2,6 @@
 
 .ProfitLossChart {
   flex: 1;
-  height: 170px;
   max-width: 23rem;
   text-align: center;
 }
@@ -10,6 +9,7 @@
 .ProfitLossChart__Title {
   text-align: center;
   width: 100%;
+  margin-top: 1.25rem;
 }
 
 .ProfitLossChart__Title-label {
@@ -23,8 +23,7 @@
 @media @breakpoint-mobile {
   .ProfitLossChart {
     display: flex;
-    flex-flow: column nowrap;
-    height: 100%;
+    flex-flow: column-reverse nowrap;
     max-width: 100%;
     width: 100%;
 
@@ -37,7 +36,7 @@
     font-size: @font-size-rather-large;
     position: fixed;
     text-align: center;
-    top: 17rem;
+    margin: 0;
     width: 100%;
   }
 
