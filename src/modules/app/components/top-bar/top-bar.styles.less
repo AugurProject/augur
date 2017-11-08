@@ -4,10 +4,23 @@
   background: @color-gray;
   height: 100%;
   padding-left: 18.4rem;
+
+  section {
+    display: flex;
+  }
+}
+
+.TopBar__stats {
+  display: flex;
+}
+
+.TopBar__performance {
+  flex: 1;
+  justify-content: flex-end;
 }
 
 .TopBar__stat {
-  display: inline-block;
+  display: flex;
   letter-spacing: 0.05em;
   line-height: 2.6rem;
   margin-right: 2.5rem;
@@ -32,6 +45,7 @@
 
 .TopBar__stat-label {
   color: rgba(255, 255, 255, 0.25);
+  display: inline;
   margin-right: 0.62rem;
 }
 

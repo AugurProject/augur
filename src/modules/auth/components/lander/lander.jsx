@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import GraphBG from 'modules/common/components/graph-background/graph-background'
+import TermsAndConditions from 'modules/app/components/terms-and-conditions/terms-and-conditions'
 
 import makePath from 'modules/routes/helpers/make-path'
 
@@ -33,26 +34,7 @@ export default function Lander(p) {
           </Link>
         </div>
         <div className={Styles.Lander__spacer} />
-        <div className={Styles.Lander__footer}>
-          <a
-            href="https://augur.net/terms.txt"
-            target="blank"
-          >
-            Terms & Conditions
-          </a>
-          <a
-            href="http://terms.augur.net/"
-            target="blank"
-          >
-            Privacy Policy
-          </a>
-          <a
-            href="https://augur.net/license.txt"
-            target="blank"
-          >
-            Licensing Agreement
-          </a>
-        </div>
+        <TermsAndConditions />
       </div>
     </div>
   )

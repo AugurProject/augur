@@ -1,0 +1,41 @@
+@import (reference) '~assets/styles/shared';
+
+.TermsAndConditions {
+  color: @color-text-light;
+  font-size: @font-size-large;
+  margin: 1em 0;
+  text-align: center;
+  white-space: nowrap;
+
+  a {
+    flex: none;
+  }
+
+  a::after {
+    content: "|";
+    padding: 0 0.5em;
+
+    @media @breakpoint-mobile-medium {
+      content: "";
+      padding: none;
+    }
+  }
+
+  a:last-child::after {
+    content: "";
+  }
+
+  @media @breakpoint-mobile-medium {
+    & {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 0;
+      flex-wrap: wrap;
+    }
+
+    a {
+      flex-basis: 100%;
+      padding: 0.5em 0;
+    }
+  }
+}
