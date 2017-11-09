@@ -56,7 +56,7 @@ describe('modules/notifications/reducers/notifications', () => {
           }
         ], {
           type: REMOVE_NOTIFICATION,
-          data: 0
+          data: '0xTEST'
         })
 
       const expected = []
@@ -80,7 +80,7 @@ describe('modules/notifications/reducers/notifications', () => {
         ], {
           type: UPDATE_NOTIFICATION,
           data: {
-            index: 1,
+            id: '0xTest1',
             notification: {
               testing: 'new object'
             }
