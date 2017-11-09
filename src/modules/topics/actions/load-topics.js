@@ -1,6 +1,5 @@
 import { augur } from 'services/augurjs'
 import { clearTopics, updateTopics } from 'modules/topics/actions/update-topics'
-import isObject from 'utils/is-object'
 import logError from 'utils/log-error'
 
 const loadTopics = (callback = logError) => (dispatch, getState) => {
