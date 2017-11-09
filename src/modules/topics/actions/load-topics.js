@@ -1,15 +1,14 @@
 import { augur } from 'services/augurjs'
 import { clearTopics, updateTopics } from 'modules/topics/actions/update-topics'
-import isObject from 'utils/is-object'
 import logError from 'utils/log-error'
 
 const loadTopics = (callback = logError) => (dispatch, getState) => {
   const { universe } = getState()
   if (!universe.id) return callback(null)
-  augur.markets.getTopics({ universe: universe.id }, (err, topics) => {
+  augur.markets.getCategories({ universe: universe.id }, (err, topics) => {
     if (err) return callback(err)
     if (topics == null) return callback(null)
-    if (isObject(topics) && Object.keys(topics).length) {
+    if (Object.keys(topics).length) {
       dispatch(clearTopics())
       dispatch(updateTopics(topics))
     }
