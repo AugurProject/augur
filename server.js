@@ -30,7 +30,7 @@ if (process.env.NODE_ENV === 'development') {
 app.listen = function () {
   let server = null;
 
-  if (process.env.USE_SSL) {
+  if (process.env.USE_SSL === 'true') {
     const key = fs.readFileSync('augur-dev.key');
     const cert = fs.readFileSync('augur-dev.crt');
 
@@ -42,7 +42,7 @@ app.listen = function () {
       this
     )
   } else {
-    http.createServer(this)
+    server = http.createServer(this)
   }
 
   return server.listen.apply(server, arguments);
