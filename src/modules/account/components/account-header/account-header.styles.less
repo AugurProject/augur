@@ -6,26 +6,33 @@
   color: white;
   display: flex;
   flex-flow: row nowrap;
-  margin: 3rem 4rem;
+  padding: 3rem 4rem 0;
 
   @media @breakpoint-mobile {
     flex: 1 0 auto;
     margin: 0;
+    padding: 0;
   }
 }
 
 .AccountHeader__Currency {
-  align-items: center;
+  align-items: flex-end;
   display: flex;
   flex: 1 1 22rem;
-  flex-flow: column-reverse nowrap;
+  flex-flow: row nowrap;
   font-size: @font-size-rather-large;
   justify-content: center;
-  overflow-y: hidden;
+  margin: 0 0 1.5rem;
+  overflow: hidden;
+}
+
+.AccountHeader__Currency-value {
+  transform-origin: bottom;
 }
 
 .AccountHeader__Currency-label {
-  font-size: @font-size-small;
+  // font-size: @font-size-extra-small;
+  font-size: 0.5rem;
   text-transform: uppercase;
 }
 
@@ -33,12 +40,14 @@
   display: flex;
   flex: 2 1 auto;
   flex-wrap: wrap;
-  width: calc(100% - 22rem);
+  margin: 0 0 3rem 1rem;
+  // width: calc(100% - 22rem);
 }
 
 .AccountHeader__Chart {
   flex: 1 1 auto;
   margin: 0 auto;
+  max-width: 20rem;
   width: 33%;
 }
 
@@ -53,10 +62,11 @@
 
   .AccountHeader__Currency {
     align-items: flex-end;
-    align-self: center;
+    align-self: flex-end;
     display: flex;
     flex-flow: row nowrap;
-    overflow-y: visible;
+    margin: 0;
+    overflow: visible;
     padding-bottom: 5rem;
     position: absolute;
     width: 100vw;
@@ -75,13 +85,14 @@
 
   .AccountHeader__Charts {
     align-items: flex-end;
+    margin: 0;
     width: 100vw;
   }
 
   .AccountHeader__Chart {
     display: flex;
     flex: 0 0 auto;
-    margin: 0;
+    max-width: 100%;
     width: 100vw;
   }
 }
