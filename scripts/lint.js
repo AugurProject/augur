@@ -9,7 +9,9 @@ const testPath = path.resolve(__dirname, '../test');
 
 process.env.FORCE_COLOR = true;
 
-const shouldFix = process.argv[2] === 'fix';
+const FLAGS = process.argv.filter(arg => arg.indexOf('--') !== -1);
+
+const shouldFix = FLAGS.indexOf('--fix') !== -1 ? true : false;
 
 shell.echo(colors.title(`
 == Running Augur Linting${process.argv[2] === 'fix' ? ' -- Fix Enabled' : '' } ==
