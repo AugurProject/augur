@@ -40,9 +40,13 @@
   color: @color-lightgray;
   display: table-header-group;
 
+  &:first-child > li {
+    padding-top: 0;
+  }
+
   > li {
     display: table-cell;
-    padding: 0 0 0.625rem;
+    padding: 2rem 0 0.625rem;
     text-align: right;
 
     &:first-child {

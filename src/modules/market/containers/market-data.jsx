@@ -13,6 +13,7 @@ const mapStateToProps = state => ({
   scalarShareDenomination: getScalarShareDenomination(),
   outcomes,
   positions,
+  orders,
   isMobile: state.isMobile,
 })
 
@@ -26,10 +27,8 @@ const positions = [
     position: {
       qtyShares: { formatted: '10' },
       purchasePrice: { formatted: '0.5' },
-      lastPrice: { formatted: '0.45' },
       realizedNet: { formatted: '0' },
       unrealizedNet: { formatted: '1' },
-      totalNet: { formatted: '1' },
       closePosition: () => console.log('close position'),
     },
     pending: [
@@ -50,11 +49,30 @@ const positions = [
     position: {
       qtyShares: { formatted: '5' },
       purchasePrice: { formatted: '0.75' },
-      lastPrice: { formatted: '0.8' },
       realizedNet: { formatted: '0' },
       unrealizedNet: { formatted: '0.05' },
-      totalNet: { formatted: '.05' },
       closePosition: () => console.log('close position'),
+    }
+  },
+]
+
+const orders = [
+  {
+    name: 'Yes',
+    pending: true,
+    order: {
+      qtyShares: { formatted: '10.942' },
+      purchasePrice: { formatted: '0.3938' },
+      cancelOrder: () => console.log('cancel order'),
+    },
+  },
+  {
+    name: 'No',
+    pending: false,
+    order: {
+      qtyShares: { formatted: '5' },
+      purchasePrice: { formatted: '0.75' },
+      cancelOrder: () => console.log('cancel order'),
     }
   },
 ]
@@ -238,7 +256,7 @@ const outcomes = [
       }
     },
     position: null,
-    userOpenOrders: []
+    userorders: []
   },
   {
     outstandingShares: '800',
@@ -418,7 +436,7 @@ const outcomes = [
       }
     },
     position: null,
-    userOpenOrders: []
+    userorders: []
   },
   {
     outstandingShares: '800',
@@ -598,7 +616,7 @@ const outcomes = [
       }
     },
     position: null,
-    userOpenOrders: []
+    userorders: []
   },
   {
     outstandingShares: '800',
@@ -778,7 +796,7 @@ const outcomes = [
       }
     },
     position: null,
-    userOpenOrders: []
+    userorders: []
   },
   {
     outstandingShares: '800',
@@ -958,7 +976,7 @@ const outcomes = [
       }
     },
     position: null,
-    userOpenOrders: []
+    userorders: []
   },
   {
     outstandingShares: '800',
@@ -1138,7 +1156,7 @@ const outcomes = [
       }
     },
     position: null,
-    userOpenOrders: []
+    userorders: []
   },
   {
     outstandingShares: '800',
@@ -1318,7 +1336,7 @@ const outcomes = [
       }
     },
     position: null,
-    userOpenOrders: []
+    userorders: []
   },
   {
     outstandingShares: '800',
@@ -1498,7 +1516,7 @@ const outcomes = [
       }
     },
     position: null,
-    userOpenOrders: []
+    userorders: []
   }
 ]
 
@@ -1807,6 +1825,6 @@ const outcomes = [
 //       }
 //     },
 //     "position": null,
-//     "userOpenOrders": []
+//     "userorders": []
 //   }
 // ]

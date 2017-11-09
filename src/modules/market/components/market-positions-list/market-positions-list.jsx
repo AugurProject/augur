@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import MarketPositionsListPosition from 'modules/market/components/market-positions-list--position/market-positions-list--position'
+import MarketPositionsListOrder from 'modules/market/components/market-positions-list--order/market-positions-list--order'
 import { ChevronDown } from 'modules/common/components/icons/icons'
 import toggleHeight from 'utils/toggle-height/toggle-height'
 
@@ -58,6 +59,24 @@ export default class MarketPositionsList extends Component {
                   name={position.name}
                   position={position.position}
                   pending={position.pending}
+                />
+              ))}
+            </div>
+            <ul className={Styles['MarketPositionsList__table-header']}>
+              <li>Open Orders</li>
+              <li><span>Quantity</span></li>
+              <li><span>Average <span />Price</span></li>
+              <li></li>
+              <li></li>
+              <li><span>Action</span></li>
+            </ul>
+            <div className={Styles['MarketPositionsList__table-body']}>
+              { p.orders && p.orders.map((order, i) => (
+                <MarketPositionsListOrder
+                  key={i}
+                  name={order.name}
+                  order={order.order}
+                  pending={order.pending}
                 />
               ))}
             </div>
