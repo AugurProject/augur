@@ -33,6 +33,7 @@
 .NotificationsView__box {
   max-height: 95%;
   overflow-y: auto;
+  width: 100%;
 }
 
 .Notification__close {
@@ -47,7 +48,8 @@
     bottom: 0;
     box-shadow: 0.1rem 0.2rem 0.5rem @color-almostblack;
     color: @color-text-dark;
-    display: block;
+    display: flex;
+    flex-flow: column nowrap;
     height: 100%;
     left: 0;
     max-height: 100%;

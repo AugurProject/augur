@@ -33,10 +33,10 @@ export default function (notifications = DEFAULT_STATE, action) {
       ]
     }
     case REMOVE_NOTIFICATION:
-      return notifications.filter((notification, i) => i !== action.data)
+      return notifications.filter((notification, i) => notification.id !== action.data)
     case UPDATE_NOTIFICATION:
       return notifications.map((notification, i) => {
-        if (i !== action.data.index) {
+        if (notification.id !== action.data.id) {
           return notification
         }
 

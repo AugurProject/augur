@@ -9,8 +9,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateNotification: (index, notification) => dispatch(updateNotification(index, notification)),
-  removeNotification: index => dispatch(removeNotification(index)),
+  updateNotification: (id, notification) => dispatch(updateNotification(id, notification)),
+  removeNotification: id => dispatch(removeNotification(id)),
   clearNotifications: () => dispatch(clearNotifications())
 })
 
