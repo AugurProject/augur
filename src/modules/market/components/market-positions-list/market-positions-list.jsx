@@ -1,3 +1,5 @@
+/* eslint-disable react/no-array-index-key */
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
@@ -66,8 +68,8 @@ export default class MarketPositionsList extends Component {
               <li>Open Orders</li>
               <li><span>Quantity</span></li>
               <li><span>Average <span />Price</span></li>
-              <li></li>
-              <li></li>
+              <li />
+              <li />
               <li><span>Action</span></li>
             </ul>
             <div className={Styles['MarketPositionsList__table-body']}>

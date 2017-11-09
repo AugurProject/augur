@@ -3,16 +3,13 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
 
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
-
 import getValue from 'utils/get-value'
-import setShareDenomination from 'utils/set-share-denomination'
 
 import Styles from 'modules/market/components/market-positions-list--order/market-positions-list--order.styles'
 
 export default class Order extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       showConfirm: false,
@@ -45,7 +42,7 @@ export default class Order extends Component {
 
     return (
       <ul
-        ref={order => { this.order = order }}
+        ref={(order) => { this.order = order }}
         className={Styles.Order}
       >
         <li>
@@ -60,19 +57,19 @@ export default class Order extends Component {
         <li>
           { getValue(p, 'order.purchasePrice.formatted') }
         </li>
-        <li></li>
-        <li></li>
+        <li />
+        <li />
         <li>
           <button onClick={this.toggleConfirm}>Cancel</button>
         </li>
         <div
-          className={classNames(Styles['Order__confirm'], { [`${Styles['is-open']}`] : s.showConfirm })}
+          className={classNames(Styles.Order__confirm, { [`${Styles['is-open']}`]: s.showConfirm })}
           style={confirmStyle}
         >
           <div className={Styles['Order__confirm-details']}>
             <p>Cancel order for { getValue(p, 'order.qtyShares.formatted') } shares of &ldquo;{ getValue(p, 'name') }&rdquo; at { getValue(p, 'order.purchasePrice.formatted') } ETH?</p>
             <div className={Styles['Order__confirm-options']}>
-              <button onClick={e => { p.order.cancelOrder(); this.toggleConfirm(); }}>Yes</button>
+              <button onClick={(e) => { p.order.cancelOrder(); this.toggleConfirm() }}>Yes</button>
               <button onClick={this.toggleConfirm}>No</button>
             </div>
           </div>

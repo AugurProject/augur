@@ -3,16 +3,13 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
 
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
-
 import getValue from 'utils/get-value'
-import setShareDenomination from 'utils/set-share-denomination'
 
 import Styles from 'modules/market/components/market-positions-list--position/market-positions-list--position.styles'
 
 export default class Position extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       showConfirm: false,
@@ -45,7 +42,7 @@ export default class Position extends Component {
 
     return (
       <ul
-        ref={position => { this.position = position }}
+        ref={(position) => { this.position = position }}
         className={Styles.Position}
       >
         <li>
@@ -79,13 +76,13 @@ export default class Position extends Component {
           <button onClick={this.toggleConfirm}>Close</button>
         </li>
         <div
-          className={classNames(Styles['Position__confirm'], { [`${Styles['is-open']}`] : s.showConfirm })}
+          className={classNames(Styles.Position__confirm, { [`${Styles['is-open']}`]: s.showConfirm })}
           style={confirmStyle}
         >
           <div className={Styles['Position__confirm-details']}>
             <p>Close position by selling { getValue(p, 'position.qtyShares.formatted') } shares of “{ getValue(p, 'name') }” at { getValue(p, 'position.purchasePrice.formatted') } ETH?</p>
             <div className={Styles['Position__confirm-options']}>
-              <button onClick={e => { p.position.closePosition(); this.toggleConfirm(); }}>Yes</button>
+              <button onClick={(e) => { p.position.closePosition(); this.toggleConfirm() }}>Yes</button>
               <button onClick={this.toggleConfirm}>No</button>
             </div>
           </div>
