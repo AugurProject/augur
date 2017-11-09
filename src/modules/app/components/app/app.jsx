@@ -38,7 +38,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 
 import getValue from 'utils/get-value'
 
-import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT, MY_MARKETS, MY_POSITIONS, WATCHLIST, PORTFOLIO_TRANSACTIONS, CREATE_MARKET, CATEGORIES, REPORTING_OPEN, REPORTING_CLOSED } from 'modules/routes/constants/views'
+import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT, MY_MARKETS, MY_POSITIONS, WATCHLIST, PORTFOLIO_TRANSACTIONS, CREATE_MARKET, CATEGORIES, REPORTING_OPEN, REPORTING_CLOSED, AUTHENTICATION } from 'modules/routes/constants/views'
 import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
@@ -177,24 +177,21 @@ export default class AppView extends Component {
     }
   }
 
-  changeMenu(nextBasePath, callback) {
+  changeMenu(nextBasePath) {
     const p = this.props
     const oldType = this.state.currentInnerNavType
     const newType = navTypes[nextBasePath]
 
-    if (newType === AccountInnerNav && !p.isLogged) {
-      if (callback) callback()
-      return
-    }
-
-    if (oldType === newType) {
-      if (callback) callback()
+    if (
+      (newType === AccountInnerNav && !p.isLogged) ||
+      oldType === newType
+    ) {
       return
     }
 
     const openNewMenu = () => {
       this.setState({ currentInnerNavType: newType })
-      if (newType) this.toggleMenuTween(MAIN_MENU, true, callback)
+      if (newType) this.toggleMenuTween(MAIN_MENU, true)
     }
 
     if (!oldType) {
@@ -224,7 +221,7 @@ export default class AppView extends Component {
           break
         default:
           this.setState({ currentInnerNavType: newType })
-          if (callback) callback()
+          openNewMenu()
       }
     })
   }
@@ -265,7 +262,7 @@ export default class AppView extends Component {
     const alreadyDone = ((!nowOpen && (this.state[menuKey].scalar === 0)) ||
                           (nowOpen && (this.state[menuKey].scalar === 1)))
     if (alreadyDone) {
-      cb()
+      if (cb && (typeof cb) === 'function') cb()
     } else {
       const baseMenuState = { open: nowOpen }
       const currentTween = tween({
@@ -339,7 +336,12 @@ export default class AppView extends Component {
     let origamiScalar = 0
 
     if (!p.isMobile) {
-      categoriesMargin = -110 + (110 * mainMenu.scalar)
+      if (parsePath(p.location.pathname)[0] === AUTHENTICATION) { // NOTE -- quick patch ahead of larger refactor
+        categoriesMargin = -110
+      } else {
+        categoriesMargin = -110 + (110 * mainMenu.scalar)
+      }
+
       keywordsMargin = 110 * subMenu.scalar
 
       // ensure origami fold-out moves perfectly with submenu

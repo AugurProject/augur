@@ -5,7 +5,7 @@ import Helmet from 'react-helmet'
 import NavPanel from 'modules/common/components/nav-panel/nav-panel'
 import Help from 'modules/auth/components/help/help'
 import Airbitz from 'modules/auth/containers/airbitz-connect'
-import Ledger from 'modules/auth/containers/ledger'
+import LedgerConnect from 'modules/auth/containers/ledger-connect'
 import UportConnect from 'modules/auth/containers/uport-connect'
 import KeystoreConnect from 'modules/auth/containers/keystore-connect'
 import Trezor from 'modules/auth/containers/trezor'
@@ -47,7 +47,7 @@ export default function AuthConnect(p) {
               <Metamask />
             }
             {selectedNav === PARAMS.LEDGER &&
-              <Ledger />
+              <LedgerConnect />
             }
             {selectedNav === PARAMS.UPORT &&
               <UportConnect />

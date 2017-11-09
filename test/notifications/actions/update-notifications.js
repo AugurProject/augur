@@ -67,7 +67,7 @@ describe('modules/notifications/actions/update-notifications', () => {
         const expected = {
           type: updateNotifications.UPDATE_NOTIFICATION,
           data: {
-            index: 1,
+            id: 1,
             notification: {
               testing: 'test'
             }
