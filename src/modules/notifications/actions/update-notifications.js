@@ -17,18 +17,18 @@ export function addNotification(notification) {
   }
 }
 
-export function removeNotification(index) {
+export function removeNotification(id) {
   return {
     type: REMOVE_NOTIFICATION,
-    data: index
+    data: id
   }
 }
 
-export function updateNotification(index, notification) {
+export function updateNotification(id, notification) {
   return {
     type: UPDATE_NOTIFICATION,
     data: {
-      index,
+      id,
       notification
     }
   }
