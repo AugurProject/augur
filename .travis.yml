@@ -5,6 +5,7 @@ language: node_js
 branches:
   only:
     - master
+    - v3
 
 env:
   - CXX=g++-4.8
