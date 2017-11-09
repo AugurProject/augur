@@ -42,8 +42,12 @@ export function runWebsocketServer(db: Knex, port: number): WebSocket.Server {
           websocket.send(makeJsonRpcResponse(message.id, true));
         } else {
           dispatchJsonRpcRequest(db, message as JsonRpcRequest, (err: Error|null, result?: any): void => {
-            if (err) return console.error("dispatch error: ", err);
-            websocket.send(makeJsonRpcResponse(message.id, result || null));
+            if (err) {
+              console.error("getter error: ", err);
+              websocket.send(makeJsonRpcError(message.id, JsonRpcErrorCode.InvalidParams, err.message, false));
+            } else {
+              websocket.send(makeJsonRpcResponse(message.id, result || null));
+            }
           });
         }
       } catch (exc) {
