@@ -25,10 +25,6 @@ export default class Ledger extends Component {
     this.onEnableContractSupportRequest = this.onEnableContractSupportRequest.bind(this)
   }
 
-  componentWillMount() {
-    // this.setupLedger()
-  }
-
   async onConnectLedgerRequest() {
     console.log('connect ledger')
     await new Promise(resolve => this.setState(
