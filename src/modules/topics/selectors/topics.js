@@ -9,7 +9,7 @@ export default function () {
 export const selectTopics = createSelector(
   selectTopicsState,
   topics => Object.keys(topics || {})
-    .map(topic => ({ topic, popularity: topics[topic] }))
+    .map(topic => ({ topic, popularity: topics[topic].popularity, topic: topics[topic].category }))
     .sort(popularityDifference)
 )
 
