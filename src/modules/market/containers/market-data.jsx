@@ -31,7 +31,19 @@ const positions = [
       unrealizedNet: { formatted: '1' },
       totalNet: { formatted: '1' },
       closePosition: { closePosition: () => console.log('closeposition3') }
-    }
+    },
+    pending: [
+      {
+        message: 'Bought 38 shares at 0.3961 ETH.',
+        quantity: '+38.00',
+        averagePrice: '+0.049',
+      },
+      {
+        message: 'Bought 5 shares at 0.41 ETH.',
+        quantity: '+5.00',
+        averagePrice: '+0.082',
+      },
+    ],
   },
   {
     name: 'No',

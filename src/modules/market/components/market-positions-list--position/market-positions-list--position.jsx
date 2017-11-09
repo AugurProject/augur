@@ -25,9 +25,31 @@ export default class Position extends Component {
 
     return (
       <ul className={Styles.Position}>
-        <li>{ getValue(p, 'name') }</li>
-        <li>{ getValue(p, 'position.qtyShares.formatted') }</li>
-        <li>{ getValue(p, 'position.purchasePrice.formatted') }</li>
+        <li>
+          { getValue(p, 'name') }
+          { p.pending && p.pending.length > 0 && p.pending.map(pending => (
+            <div className={Styles.Position__pending}>
+              <span className={Styles['Position__pending-title']}>Pending</span>
+              <span className={Styles['Position__pending-message']}>{ pending.message }</span>
+            </div>
+          ))}
+        </li>
+        <li>
+          { getValue(p, 'position.qtyShares.formatted') }
+          { p.pending && p.pending.length > 0 && p.pending.map(pending => (
+            <div className={Styles.Position__pending}>
+              <span>{ pending.quantity }</span>
+            </div>
+          ))}
+        </li>
+        <li>
+          { getValue(p, 'position.purchasePrice.formatted') }
+          { p.pending && p.pending.length > 0 && p.pending.map(pending => (
+            <div className={Styles.Position__pending}>
+              <span>{ pending.averagePrice }</span>
+            </div>
+          ))}
+        </li>
         <li>{ getValue(p, 'position.unrealizedNet.formatted') }</li>
         <li>{ getValue(p, 'position.realizedNet.formatted') }</li>
         <li>

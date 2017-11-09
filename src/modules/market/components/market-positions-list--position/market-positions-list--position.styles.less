@@ -22,6 +22,10 @@
       padding-left: 2rem;
       position: relative;
       text-align: left;
+
+      > .Position__pending {
+        justify-content: flex-start;
+      }
     }
 
     &:last-of-type {
@@ -71,6 +75,32 @@
       margin-left: 2rem;
     }
   }
+}
+
+.Position__pending {
+  display: flex;
+  font-size: @font-size-small;
+  justify-content: flex-end;
+  line-height: @font-size-medium;
+  margin-top: 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:first-of-type {
+    margin-top: 0.75rem;
+  }
+}
+
+.Position__pending-message {
+  color: @color-gray;
+}
+
+.Position__pending-title {
+  &:extend(.caps--small);
+
+  line-height: @font-size-medium;
+  margin-right: 1.2rem;
 }
 
 @media @breakpoint-mobile {

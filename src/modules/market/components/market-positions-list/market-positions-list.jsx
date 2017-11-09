@@ -46,9 +46,9 @@ export default class MarketPositionsList extends Component {
             <ul className={Styles['MarketPositionsList__table-header']}>
               <li>Position</li>
               <li><span>Quantity</span></li>
-              <li><span>Average Price</span></li>
-              <li><span>Unrealized P/L</span></li>
-              <li><span>Realized P/L</span></li>
+              <li><span>Average <span />Price</span></li>
+              <li><span>Unrealized <span />P/L</span></li>
+              <li><span>Realized <span />P/L</span></li>
               <li><span>Action</span></li>
             </ul>
             <div className={Styles['MarketPositionsList__table-body']}>
@@ -57,6 +57,7 @@ export default class MarketPositionsList extends Component {
                   key={i}
                   name={position.name}
                   position={position.position}
+                  pending={position.pending}
                 />
               ))}
             </div>
