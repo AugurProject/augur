@@ -16,15 +16,38 @@ export default class Position extends Component {
 
     this.state = {
       showConfirm: false,
+      confirmHeight: 'auto',
     }
+
+    this.toggleConfirm = this.toggleConfirm.bind(this)
+  }
+
+  toggleConfirm() {
+    let confirmHeight = this.state.confirmHeight
+
+    if (!this.state.showConfirm) {
+      confirmHeight = `${this.position.clientHeight}px`
+    }
+
+    this.setState({
+      confirmHeight,
+      showConfirm: !this.state.showConfirm,
+    })
   }
 
   render() {
     const s = this.state
     const p = this.props
 
+    const confirmStyle = {
+      height: s.confirmHeight,
+    }
+
     return (
-      <ul className={Styles.Position}>
+      <ul
+        ref={position => { this.position = position }}
+        className={Styles.Position}
+      >
         <li>
           { getValue(p, 'name') }
           { p.pending && p.pending.length > 0 && p.pending.map(pending => (
@@ -53,14 +76,17 @@ export default class Position extends Component {
         <li>{ getValue(p, 'position.unrealizedNet.formatted') }</li>
         <li>{ getValue(p, 'position.realizedNet.formatted') }</li>
         <li>
-          <button onClick={e => this.setState({ showConfirm: true })}>Close</button>
+          <button onClick={this.toggleConfirm}>Close</button>
         </li>
-        <div className={classNames(Styles['Position__confirm'], { [`${Styles['is-open']}`] : s.showConfirm })}>
+        <div
+          className={classNames(Styles['Position__confirm'], { [`${Styles['is-open']}`] : s.showConfirm })}
+          style={confirmStyle}
+        >
           <div className={Styles['Position__confirm-details']}>
             <p>Close position by selling { getValue(p, 'position.qtyShares.formatted') } shares of “{ getValue(p, 'name') }” at { getValue(p, 'position.purchasePrice.formatted') } ETH?</p>
             <div className={Styles['Position__confirm-options']}>
-              <button onClick={e => { p.position.closePosition; this.setState({ showConfirm: false }); }}>Yes</button>
-              <button onClick={e => this.setState({ showConfirm: false })}>No</button>
+              <button onClick={e => { p.position.closePosition(); this.toggleConfirm(); }}>Yes</button>
+              <button onClick={this.toggleConfirm}>No</button>
             </div>
           </div>
         </div>

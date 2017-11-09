@@ -30,7 +30,7 @@ const positions = [
       realizedNet: { formatted: '0' },
       unrealizedNet: { formatted: '1' },
       totalNet: { formatted: '1' },
-      closePosition: { closePosition: () => console.log('closeposition3') }
+      closePosition: () => console.log('close position'),
     },
     pending: [
       {
@@ -54,7 +54,7 @@ const positions = [
       realizedNet: { formatted: '0' },
       unrealizedNet: { formatted: '0.05' },
       totalNet: { formatted: '.05' },
-      closePosition: { closePosition: () => console.log('closeposition4') }
+      closePosition: () => console.log('close position'),
     }
   },
 ]
