@@ -43,13 +43,14 @@ class AccountHeader extends Component {
     // on mobile we want to reduce scaling by roughly 30%, otherwise fitText default
     containerWidth = this.props.isMobile ? containerWidth - (containerWidth * 0.3) : containerWidth
     // @params: container, target, scaleUp, maxScale
-    fitText({ clientWidth: containerWidth }, ethTarget, true, 10)
+    fitText({ clientWidth: containerWidth }, ethTarget, true, 5.5)
 
     if (repValue > 0) {
       const repContainer = this.repCurrencyContainer
       const repTarget = this.repCurrencyValue
+
       // @params: container, target, scaleUp, maxScale
-      fitText({ clientWidth: repContainer.clientWidth }, repTarget, true, 10)
+      fitText({ clientWidth: repContainer.clientWidth }, repTarget, true, 5.5)
     }
   }
 

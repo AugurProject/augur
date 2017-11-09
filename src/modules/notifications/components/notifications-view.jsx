@@ -80,7 +80,7 @@ export default class NotificationsView extends Component {
             {notifications.map((notification, i) => (
               <Notification
                 key={`${notification.id}-${notification.title}`}
-                removeNotification={() => p.removeNotification(i)}
+                removeNotification={() => p.removeNotification(notification.id)}
                 toggleNotifications={p.toggleNotifications}
                 updateNotification={p.updateNotification}
                 notificationsBounds={s.notificationsBounds}
