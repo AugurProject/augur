@@ -1,6 +1,6 @@
 # Augur | Front-End
 [![Build Status](https://travis-ci.org/AugurProject/augur.svg?branch=master)](https://travis-ci.org/AugurProject/augur)
-[![Coverage Status](https://coveralls.io/repos/github/AugurProject/augur/badge.svg?branch=master)](https://coveralls.io/github/AugurProject/augur?branch=v3)
+[![Coverage Status](https://coveralls.io/repos/github/AugurProject/augur/badge.svg?branch=v3)](https://coveralls.io/github/AugurProject/augur?branch=v3)
 
 Augur is a decentralized prediction market platform built on Ethereum.  
 It runs locally in your browser and communicates directly with the ethereum network, without going through intermediate servers.
