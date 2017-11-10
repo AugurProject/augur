@@ -2,7 +2,7 @@ import * as Knex from "knex";
 
 exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
-  return knex("markets").del().then((): void => {
+  return knex("markets").del().then(async (): Promise<any> => {
     // Inserts seed entries
     const seedData = [{
       marketID: "0x0000000000000000000000000000000000000001",
@@ -305,6 +305,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 949,
     }];
-    knex.batchInsert("markets", seedData, seedData.length);
+    return knex.batchInsert("markets", seedData, seedData.length);
   });
 };

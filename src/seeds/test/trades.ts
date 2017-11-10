@@ -1,9 +1,8 @@
 import * as Knex from "knex";
-import Promise = require("bluebird");
 
-exports.seed = (knex: Knex): Promise<any> => {
+exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
-  return knex("trades").del().then((): void => {
+  return knex("trades").del().then(async (): Promise<any> => {
     // Inserts seed entries
     const seedData = [{
       orderID: "0x1100000000000000000000000000000000000000000000000000000000000000",
@@ -22,6 +21,7 @@ exports.seed = (knex: Knex): Promise<any> => {
       amount: "0.2",
       settlementFees: "0",
     }];
-    knex.batchInsert("trades", seedData, seedData.length);
+
+    return knex.batchInsert("trades", seedData, seedData.length);
   });
 };
