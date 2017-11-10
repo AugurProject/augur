@@ -8,8 +8,8 @@ describe("server/getters/get-unfinalized-stake-tokens", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);          
-          getUnfinalizedStakeTokens(db, t.params.universe, t.params.account, (err, unfinalizedStakeTokens) => {
+        assert.isNull(err);
+        getUnfinalizedStakeTokens(db, t.params.universe, t.params.account, (err, unfinalizedStakeTokens) => {
           t.assertions(err, unfinalizedStakeTokens);
           done();
         });
@@ -39,7 +39,7 @@ describe("server/getters/get-unfinalized-stake-tokens", () => {
           isInvalid: 0,
           amountStaked: 17,
           reportingState: "FIRST_REPORTING",
-        }
+        },
       });
     },
   });
