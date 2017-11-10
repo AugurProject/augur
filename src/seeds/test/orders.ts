@@ -2,7 +2,7 @@ import * as Knex from "knex";
 
 exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
-  return knex("orders").del().then((): void => {
+  return knex("orders").del().then(async (): Promise<any> => {
     // Inserts seed entries
     const seedData = [{
       orderID: "0x1000000000000000000000000000000000000000000000000000000000000000",
@@ -69,6 +69,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       betterOrderID: null,
       worseOrderID: null,
     }];
-    knex.batchInsert("orders", seedData, seedData.length);
+    return knex.batchInsert("orders", seedData, seedData.length);
   });
 };

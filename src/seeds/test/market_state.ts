@@ -2,9 +2,9 @@ import * as Knex from "knex";
 
 exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
-  return knex("market_state").del().then((): void => {
+  return knex("market_state").del().then(async (): Promise<any> => {
     // Inserts seed entries
-    knex.batchInsert("market_state", [{
+    return knex.batchInsert("market_state", [{
       marketStateID: 1,
       marketID: "0x0000000000000000000000000000000000000001",
       reportingState: "DESIGNATED_REPORTING",
