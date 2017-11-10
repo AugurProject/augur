@@ -26,8 +26,8 @@ describe("server/getters/get-reporting-history", () => {
       assert.isNull(err);
       assert.deepEqual(reportingHistory, {
         "0x000000000000000000000000000000000000000b": {
-          "0x0000000000000000000000000000000000000002": [{
-            marketID: "0x0000000000000000000000000000000000000002",
+          "0x0000000000000000000000000000000000000011": [{
+            marketID: "0x0000000000000000000000000000000000000011",
             reportingWindow: "0x1000000000000000000000000000000000000000",
             payoutNumerators: [0, 2],
             amountStaked: 17,

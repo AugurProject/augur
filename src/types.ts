@@ -173,6 +173,29 @@ export interface BlocksRow {
   timestamp: number;
 }
 
+export interface StakeTokensRow {
+  stakeToken: string;
+  marketID: string;
+  payout0: number|null;
+  payout1: number|null;
+  payout2: number|null;
+  payout3: number|null;
+  payout4: number|null;
+  payout5: number|null;
+  payout6: number|null;
+  payout7: number|null;
+  isInvalid: number;
+  amountStaked: number;
+}
+
+export interface StakeTokensRowWithReportingState extends StakeTokensRow {
+  ReportingState: ReportingState;
+}
+
+export interface UIStakeTokenInfo extends StakeTokensRow {
+  ReportingState: ReportingState;
+}
+
 export interface UIConsensusInfo {
   outcomeID: number;
   isIndeterminate: boolean;
