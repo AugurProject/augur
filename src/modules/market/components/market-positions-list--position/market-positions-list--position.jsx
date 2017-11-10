@@ -47,26 +47,26 @@ export default class Position extends Component {
       >
         <li>
           { getValue(p, 'name') }
-          { p.pending && p.pending.length > 0 && p.pending.map(pending => (
-            <div className={Styles.Position__pending}>
+          { p.openOrders && p.openOrders.length > 0 && p.openOrders.map((order, i) => (
+            <div key={i} className={Styles.Position__pending}>
               <span className={Styles['Position__pending-title']}>Pending</span>
-              <span className={Styles['Position__pending-message']}>{ pending.message }</span>
+              <span className={Styles['Position__pending-message']}>Bought { getValue(order, 'qtyShares.formatted') } at { getValue(order, 'purchasePrice.formatted') } ETH</span>
             </div>
           ))}
         </li>
         <li>
           { getValue(p, 'position.qtyShares.formatted') }
-          { p.pending && p.pending.length > 0 && p.pending.map(pending => (
-            <div className={Styles.Position__pending}>
-              <span>{ pending.quantity }</span>
+          { p.openOrders && p.openOrders.length > 0 && p.openOrders.map((order, i) => (
+            <div key={i} className={Styles.Position__pending}>
+              <span>+{ getValue(order, 'qtyShares.formatted') }</span>
             </div>
           ))}
         </li>
         <li>
           { getValue(p, 'position.purchasePrice.formatted') }
-          { p.pending && p.pending.length > 0 && p.pending.map(pending => (
-            <div className={Styles.Position__pending}>
-              <span>{ pending.averagePrice }</span>
+          { p.openOrders && p.openOrders.length > 0 && p.openOrders.map((order, i) => (
+            <div key={i} className={Styles.Position__pending}>
+              <span>+{ getValue(order, 'purchasePrice.formatted') }</span>
             </div>
           ))}
         </li>

@@ -36,7 +36,7 @@ export default class MarketPositionsList extends Component {
           className={Styles.MarketPositionsList__heading}
           onClick={() => { !p.isMobile && toggleHeight(this.outcomeList, s.isOpen, () => { this.setState({ isOpen: !s.isOpen }) }) }}
         >
-          <h2>Positions</h2>
+          <h2>My Positions</h2>
           { !p.isMobile &&
             <span className={classNames({ [`${Styles['is-open']}`]: s.isOpen })}>{ ChevronDown }</span>
           }
@@ -60,7 +60,7 @@ export default class MarketPositionsList extends Component {
                   key={i}
                   name={position.name}
                   position={position.position}
-                  pending={position.pending}
+                  openOrders={position.openOrders}
                 />
               ))}
             </div>
@@ -73,14 +73,16 @@ export default class MarketPositionsList extends Component {
               <li><span>Action</span></li>
             </ul>
             <div className={Styles['MarketPositionsList__table-body']}>
-              { p.orders && p.orders.map((order, i) => (
-                <MarketPositionsListOrder
-                  key={i}
-                  name={order.name}
-                  order={order.order}
-                  pending={order.pending}
-                />
-              ))}
+              { p.positions && p.positions.forEach((position, i) => {
+                  position.openOrders.map((order, j) => (
+                    <MarketPositionsListOrder
+                      key={`${i}${j}`}
+                      name={position.name}
+                      order={order}
+                      pending={true}
+                    />
+                  ))
+              })}
             </div>
           </div>
         </div>

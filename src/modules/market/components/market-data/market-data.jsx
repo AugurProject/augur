@@ -18,7 +18,6 @@ const MarketData = p => (
       />
       <MarketPositionsList
         positions={p.positions}
-        orders={p.orders}
         isMobile={p.isMobile}
       />
     </div>
