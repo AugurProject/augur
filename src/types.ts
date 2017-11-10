@@ -174,16 +174,16 @@ export interface BlocksRow {
 }
 
 export interface StakeTokensRow {
-  stakeToken: string;
-  marketID: string;
-  payout0: number|null;
-  payout1: number|null;
-  payout2: number|null;
-  payout3: number|null;
-  payout4: number|null;
-  payout5: number|null;
-  payout6: number|null;
-  payout7: number|null;
+  stakeToken: Address;
+  marketID: Address;
+  payout0: string|number|null;
+  payout1: string|number|null;
+  payout2: string|number|null;
+  payout3: string|number|null;
+  payout4: string|number|null;
+  payout5: string|number|null;
+  payout6: string|number|null;
+  payout7: string|number|null;
   isInvalid: number;
   amountStaked: number;
 }
