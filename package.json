@@ -50,7 +50,6 @@
     "lodash.omit": "4.5.0",
     "pg": "7.3.0",
     "postinstall-build": "5.0.1",
-    "replace-in-file": "^3.0.0",
     "sqlite3": "3.1.8",
     "uuid": "3.1.0",
     "ws": "3.2.0"
@@ -67,6 +66,7 @@
     "istanbul": "0.4.1",
     "mocha": "3.2.0",
     "mocha-lcov-reporter": "0.0.2",
+    "replace-in-file": "^3.0.0",
     "proxyquire": "1.7.11",
     "tslint": "5.7.0",
     "tslint-eslint-rules": "4.1.1",
