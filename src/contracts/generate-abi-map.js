@@ -6,8 +6,7 @@ function generateAbiMap(abi) {
   var functions = {};
   var events = {};
   Object.keys(abi).forEach(function (contractName) {
-    var functionsAndEventsArray = abi[contractName].abi;
-    console.log(contractName, abi);
+    var functionsAndEventsArray = abi[contractName];
     functionsAndEventsArray.forEach(function (functionOrEvent) {
       var name = functionOrEvent.name;
       if (functionOrEvent.type === "function") {
