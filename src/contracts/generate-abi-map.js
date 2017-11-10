@@ -6,9 +6,10 @@ function generateAbiMap(abi) {
   var functions = {};
   var events = {};
   Object.keys(abi).forEach(function (contractName) {
-    var functionsAndEventsArray = abi[contractName];
+    var functionsAndEventsArray = abi[contractName].abi;
+    console.log(contractName, abi);
     functionsAndEventsArray.forEach(function (functionOrEvent) {
-      var shortName = functionOrEvent.name.split("(")[0];
+      var name = functionOrEvent.name;
       if (functionOrEvent.type === "function") {
         var functionAbiMap = {
           constant: functionOrEvent.constant,
@@ -31,12 +32,12 @@ function generateAbiMap(abi) {
           functionAbiMap.returns = "null";
         }
         if (!functions[contractName]) functions[contractName] = {};
-        functions[contractName][shortName] = functionAbiMap;
+        functions[contractName][name] = functionAbiMap;
       } else if (functionOrEvent.type === "event") {
         if (!events[contractName]) events[contractName] = {};
         var methodSignature = functionOrEvent.name +
           "(" + functionOrEvent.inputs.map(function (input) { return input.type; }).join(",") + ")";
-        events[contractName][shortName] = {
+        events[contractName][name] = {
           contract: contractName,
           inputs: functionOrEvent.inputs,
           signature: convertEventNameToSignature(methodSignature)
