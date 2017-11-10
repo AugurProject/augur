@@ -4,6 +4,8 @@ import { Helmet } from 'react-helmet'
 
 import MarketsList from 'modules/markets/components/markets-list'
 
+import { TYPE_CLOSED } from 'modules/market/constants/link-types'
+
 import Styles from 'modules/reporting/components/reporting-closed/reporting-closed.styles'
 
 export default class ReportingClosed extends Component {
@@ -46,6 +48,7 @@ export default class ReportingClosed extends Component {
           scalarShareDenomination={p.scalarShareDenomination}
           toggleFavorite={p.toggleFavorite}
           loadMarketsInfo={p.loadMarketsInfo}
+          linkType={TYPE_CLOSED}
         />
       </section>
     )
