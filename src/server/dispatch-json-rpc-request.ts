@@ -16,6 +16,7 @@ import { getReportingWindowsWithUnclaimedFees } from "./getters/get-reporting-wi
 import { getUnclaimedStakeTokens } from "./getters/get-unclaimed-stake-tokens";
 import { getUnfinalizedStakeTokens } from "./getters/get-unfinalized-stake-tokens";
 import { getAllStakeTokens } from "./getters/get-all-stake-tokens";
+import { getMarkets } from "./getters/get-markets";
 import { getMarketsClosingInDateRange } from "./getters/get-markets-closing-in-date-range";
 import { getMarketsInfo } from "./getters/get-markets-info";
 import { getOpenOrders } from "./getters/get-open-orders";
@@ -57,6 +58,8 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callba
       return getAllStakeTokens(db, request.params.universe, request.params.account, request.params.dateRange, callback); // TODO change dateRange to separate earliestTime and latestTime params?
     case "getMarketsClosingInDateRange":
       return getMarketsClosingInDateRange(db, request.params.earliestClosingTime, request.params.latestClosingTime, request.params.universe, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
+    case "getMarkets":
+      return getMarkets(db, request.params.universe, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsInfo":
       return getMarketsInfo(db, request.params.marketIDs, callback);
     case "getOpenOrders":
