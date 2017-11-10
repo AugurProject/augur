@@ -24,16 +24,31 @@
       margin-bottom: 1rem;
     }
 
-    > span:first-child {
-      &:extend(.caps--small);
+    > span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
 
-      color: @color-lightergray;
-      font-weight: 500;
-    }
+      &:first-child {
+        &:extend(.caps--small);
 
-    > span:last-child {
-      font-size: @font-size-large;
+        color: @color-lightergray;
+        font-weight: 500;
+      }
+
+      &:last-child {
+        font-size: @font-size-large;
+        line-height: @font-size-rather-large;
+      }
     }
+  }
+}
+
+.Confirm__list--left-align {
+  &:extend(.Confirm__list all);
+
+  > li > span {
+    width: 50%;
   }
 }
 
@@ -57,11 +72,15 @@
   &:extend(.Confirm__wrapper all);
 
   > div {
-    width: 19.375rem;
+    width: 30rem;
   }
 }
 
 @media @breakpoint-mobile-medium {
+  .Confirm {
+    width: 100%;
+  }
+
   .Confirm__wrapper {
     flex-wrap: wrap;
 
