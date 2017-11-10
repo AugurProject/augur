@@ -1,0 +1,9 @@
+{
+  "id": 6,
+  "jsonrpc": "2.0",
+  "method": "getUserTradingPositions",
+  "params": {
+    "universe": "0x000000000000000000000000000000000000000b",
+    "account": "0x0000000000000000000000000000000000000b0b"
+  }
+}

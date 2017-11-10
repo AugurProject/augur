@@ -1,83 +1,23 @@
 #!/usr/bin/env node
-
 "use strict";
 
+const fs = require("fs");
 var WebSocket = require("ws");
 
-// var request = {
-//   id: 1,
-//   jsonrpc: "2.0",
-//   method: "getMarketInfo",
-//   params: {
-//     marketID: "0x0000000000000000000000000000000000000001"
-//   }
-// };
+if ( process.argv.length < 3 ) throw new Error('Pass in json file(s) as arguments');
 
-// var request = {
-//   id: 2,
-//   jsonrpc: "2.0",
-//   method: "getAccountTransferHistory",
-//   params: {
-//     account: "0x0000000000000000000000000000000000000b0b",
-//     token: null
-//   }
-// };
+process.argv.slice(2).map(function(json_file) {
+  const payload = fs.readFileSync(json_file,'utf8');
 
-// var request = {
-//   id: 3,
-//   jsonrpc: "2.0",
-//   method: "getOpenOrders",
-//   params: {
-//     marketID: "0x0000000000000000000000000000000000000001",
-//     outcome: null,
-//     orderType: "buy",
-//     creator: null
-//   }
-// };
+  var ws = new WebSocket("ws://127.0.0.1:9001");
+  ws.on("open", function () {
+    ws.send(JSON.stringify(JSON.parse(payload)));
+  });
 
-// var request = {
-//   id: 4,
-//   jsonrpc: "2.0",
-//   method: "getMarketsInfo",
-//   params: {
-//     universe: "0x000000000000000000000000000000000000000b"
-//   }
-// };
-
-// var request = {
-//   id: 5,
-//   jsonrpc: "2.0",
-//   method: "getCategories",
-//   params: {
-//     universe: "0x000000000000000000000000000000000000000b"
-//   }
-// };
-
-// var request = {
-//  id: 6,
-//  jsonrpc: "2.0",
-//  method: "getUserTradingPositions",
-//  params: {
-//    account: "0x0000000000000000000000000000000000000b0b",
-//  }
-// };
-
-var request = {
-  id: 7,
-  jsonrpc: "2.0",
-  method: "getReportingHistory",
-  params: {
-    reporter: "0x0000000000000000000000000000000000000021",
-  }
-};
-
-var ws = new WebSocket("ws://127.0.0.1:9001");
-
-ws.on("open", function () {
-  ws.send(JSON.stringify(request));
-});
-
-ws.on("message", function (response) {
-  console.log(JSON.stringify(JSON.parse(response), null, 2));
-  ws.close();
+  ws.on("message", function (response) {
+    console.log("\n" + json_file);
+    console.log(payload);
+    console.log(JSON.stringify(JSON.parse(response), null, 2));
+    ws.close();
+  });
 });

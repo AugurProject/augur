@@ -1,0 +1,8 @@
+{
+  "id": 4,
+  "jsonrpc": "2.0",
+  "method": "getMarketsInfo",
+  "params": {
+    "marketIDs": ["0x0000000000000000000000000000000000000001"]
+  }
+}
