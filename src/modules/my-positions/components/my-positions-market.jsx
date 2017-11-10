@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import ComponentNav from 'modules/common/components/component-nav'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
-import NullStateMessage from 'modules/common/components/null-state-message'
+import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 
 import MyPosition from 'modules/my-positions/components/my-position'
 import MyPositionOverview from 'modules/my-positions/components/my-position-overview'
