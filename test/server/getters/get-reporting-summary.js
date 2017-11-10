@@ -36,7 +36,7 @@ describe("server/getters/get-reporting-summary", () => {
     },
     assertions: (err, reportingSummary) => {
       assert.isNull(err);
-      assert.isDeepEqual(reportingSummary, {});
+      assert.deepEqual(reportingSummary, {});
     },
   });
 });
