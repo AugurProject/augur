@@ -192,10 +192,6 @@ export interface StakeTokensRowWithReportingState extends StakeTokensRow {
   ReportingState: ReportingState;
 }
 
-export interface UIStakeTokenInfo extends StakeTokensRow {
-  ReportingState: ReportingState;
-}
-
 export interface UIConsensusInfo {
   outcomeID: number;
   isIndeterminate: boolean;
