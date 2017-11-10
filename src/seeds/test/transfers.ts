@@ -2,7 +2,7 @@ import * as Knex from "knex";
 
 exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
-    return knex("transfers").del().then((): void => {
+    return knex("transfers").del().then(async (): Promise<any> => {
     // Inserts seed entries
     const seedData = [{
       transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
@@ -29,6 +29,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       value: 47,
       blockNumber: 1400001,
     }];
-    knex.batchInsert("transfers", seedData, seedData.length);
+    return knex.batchInsert("transfers", seedData, seedData.length);
   });
 };
