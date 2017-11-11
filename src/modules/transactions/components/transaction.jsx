@@ -4,7 +4,7 @@ import { Transition } from 'react-transition-group'
 import classNames from 'classnames'
 import TransactionDetails from 'modules/transactions/components/transaction-details'
 import TransactionSummary from 'modules/transactions/components/transaction-summary'
-import Spinner from 'modules/common/components/spinner'
+import Spinner from 'modules/common/components/spinner/spinner'
 
 import { SUBMITTED, PENDING, COMMITTING } from 'modules/transactions/constants/statuses'
 
