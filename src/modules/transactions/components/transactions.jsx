@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { TransitionGroup } from 'react-transition-group'
 import Transaction from 'modules/transactions/components/transaction'
 import TransactionGroup from 'modules/transactions/components/transaction-group'
-import NullStateMessage from 'modules/common/components/null-state-message'
+import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 
 const Transactions = (p) => {
   const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-slow'), 10)
