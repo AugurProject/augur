@@ -6,6 +6,7 @@ import classNames from 'classnames'
 
 import MarketPositionsListPosition from 'modules/market/components/market-positions-list--position/market-positions-list--position'
 import MarketPositionsListOrder from 'modules/market/components/market-positions-list--order/market-positions-list--order'
+import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 import { ChevronDown } from 'modules/common/components/icons/icons'
 import toggleHeight from 'utils/toggle-height/toggle-height'
 
@@ -46,6 +47,7 @@ export default class MarketPositionsList extends Component {
           className={classNames(ToggleHeightStyles['toggle-height-target'], ToggleHeightStyles['start-open'])}
         >
           <div className={Styles.MarketPositionsList__table}>
+          { p.positions.length > 0 &&
             <ul className={Styles['MarketPositionsList__table-header']}>
               <li>Position</li>
               <li><span>Quantity</span></li>
@@ -54,6 +56,8 @@ export default class MarketPositionsList extends Component {
               <li><span>Realized <span />P/L</span></li>
               <li><span>Action</span></li>
             </ul>
+          }
+          { p.positions.length > 0 &&
             <div className={Styles['MarketPositionsList__table-body']}>
               { p.positions && p.positions.map((position, i) => (
                 <MarketPositionsListPosition
@@ -64,6 +68,8 @@ export default class MarketPositionsList extends Component {
                 />
               ))}
             </div>
+          }
+          { p.openOrders.length > 0 &&
             <ul className={Styles['MarketPositionsList__table-header']}>
               <li>Open Orders</li>
               <li><span>Quantity</span></li>
@@ -72,8 +78,10 @@ export default class MarketPositionsList extends Component {
               <li />
               <li><span>Action</span></li>
             </ul>
+          }
+          { p.openOrders.length > 0 &&
             <div className={Styles['MarketPositionsList__table-body']}>
-              { p.openOrders && p.openOrders.map((order, i) => (
+              { p.openOrders.map((order, i) => (
                   <MarketPositionsListOrder
                     key={i}
                     name={order.name}
@@ -82,7 +90,11 @@ export default class MarketPositionsList extends Component {
                   />
               ))}
             </div>
+          }
           </div>
+          { p.positions.length === 0 && p.openOrders.length === 0 &&
+            <NullStateMessage className={Styles['MarketPositionsList__null-state']} message="No positions or open orders" />
+          }
         </div>
       </section>
     )
