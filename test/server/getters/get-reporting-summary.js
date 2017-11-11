@@ -24,8 +24,10 @@ describe("server/getters/get-reporting-summary", () => {
     assertions: (err, reportingSummary) => {
       assert.isNull(err);
       assert.deepEqual(reportingSummary, {
-        "DESIGNATED_REPORTING": 3,
-        "FIRST_REPORTING": 1,
+        "AWAITING_FINALIZATION": 1,
+        "DESIGNATED_REPORTING": 8,
+        "FIRST_REPORTING": 2,
+        "FINALIZED": 1,
       });
     },
   });
