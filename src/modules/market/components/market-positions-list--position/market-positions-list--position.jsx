@@ -79,13 +79,22 @@ export default class Position extends Component {
           className={classNames(Styles.Position__confirm, { [`${Styles['is-open']}`]: s.showConfirm })}
           style={confirmStyle}
         >
-          <div className={Styles['Position__confirm-details']}>
-            <p>Close position by selling { getValue(p, 'position.qtyShares.formatted') } shares of “{ getValue(p, 'name') }” at { getValue(p, 'position.purchasePrice.formatted') } ETH?</p>
-            <div className={Styles['Position__confirm-options']}>
-              <button onClick={(e) => { p.position.closePosition(); this.toggleConfirm() }}>Yes</button>
-              <button onClick={this.toggleConfirm}>No</button>
+          { p.openOrders.length > 0 ?
+            <div className={Styles['Position__confirm-details']}>
+              <p>Positions cannot be closed while orders are pending.</p>
+              <div className={Styles['Position__confirm-options']}>
+                <button onClick={this.toggleConfirm}>Ok</button>
+              </div>
             </div>
-          </div>
+          :
+            <div className={Styles['Position__confirm-details']}>
+              <p>Close position by selling { getValue(p, 'position.qtyShares.formatted') } shares of “{ getValue(p, 'name') }” at { getValue(p, 'position.purchasePrice.formatted') } ETH?</p>
+              <div className={Styles['Position__confirm-options']}>
+                <button onClick={(e) => { p.position.closePosition(); this.toggleConfirm() }}>Yes</button>
+                <button onClick={this.toggleConfirm}>No</button>
+              </div>
+            </div>
+          }
         </div>
       </ul>
     )

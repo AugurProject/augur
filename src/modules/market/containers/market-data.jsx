@@ -45,7 +45,7 @@ const openOrders = [
   {
     name: '2. ALMANDIN (14)',
     id: '2',
-    pending: true,
+    pending: false,
     order: {
       qtyShares: { formatted: '5' },
       purchasePrice: { formatted: '0.75' },

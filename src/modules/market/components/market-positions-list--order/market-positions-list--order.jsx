@@ -66,13 +66,22 @@ export default class Order extends Component {
           className={classNames(Styles.Order__confirm, { [`${Styles['is-open']}`]: s.showConfirm })}
           style={confirmStyle}
         >
-          <div className={Styles['Order__confirm-details']}>
-            <p>Cancel order for { getValue(p, 'order.qtyShares.formatted') } shares of &ldquo;{ getValue(p, 'name') }&rdquo; at { getValue(p, 'order.purchasePrice.formatted') } ETH?</p>
-            <div className={Styles['Order__confirm-options']}>
-              <button onClick={(e) => { p.order.cancelOrder(); this.toggleConfirm() }}>Yes</button>
-              <button onClick={this.toggleConfirm}>No</button>
+          { p.pending ?
+            <div className={Styles['Order__confirm-details']}>
+              <p>Orders cannot be closed while they are pending.</p>
+              <div className={Styles['Order__confirm-options']}>
+                <button onClick={this.toggleConfirm}>Ok</button>
+              </div>
             </div>
-          </div>
+          :
+            <div className={Styles['Order__confirm-details']}>
+              <p>Cancel order for { getValue(p, 'order.qtyShares.formatted') } shares of &ldquo;{ getValue(p, 'name') }&rdquo; at { getValue(p, 'order.purchasePrice.formatted') } ETH?</p>
+              <div className={Styles['Order__confirm-options']}>
+                <button onClick={(e) => { p.order.cancelOrder(); this.toggleConfirm() }}>Yes</button>
+                <button onClick={this.toggleConfirm}>No</button>
+              </div>
+            </div>
+          }
         </div>
       </ul>
     )
