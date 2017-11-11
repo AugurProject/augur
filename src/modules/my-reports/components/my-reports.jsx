@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import ReactTooltip from 'react-tooltip'
 import { Helmet } from 'react-helmet'
 
-import NullStateMessage from 'modules/common/components/null-state-message'
+import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 import MyReport from 'modules/my-reports/components/my-report'
 import TransactionsLoadingActions from 'modules/transactions/components/transactions-loading-actions'
 // import FilterSort from 'modules/filter-sort/container'

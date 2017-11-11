@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import MarketOpenOrdersGroup from 'modules/market/components/market-open-orders-group'
-import NullStateMessage from 'modules/common/components/null-state-message'
+import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 
 import { SCALAR } from 'modules/markets/constants/market-types'
 
