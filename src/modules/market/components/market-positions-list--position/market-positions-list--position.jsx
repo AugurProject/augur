@@ -50,7 +50,7 @@ export default class Position extends Component {
           { p.openOrders && p.openOrders.length > 0 && p.openOrders.map((order, i) => (
             <div key={i} className={Styles.Position__pending}>
               <span className={Styles['Position__pending-title']}>Pending</span>
-              <span className={Styles['Position__pending-message']}>Bought { getValue(order, 'qtyShares.formatted') } at { getValue(order, 'purchasePrice.formatted') } ETH</span>
+              <span className={Styles['Position__pending-message']}>Bought { getValue(order, 'order.qtyShares.formatted') } at { getValue(order, 'order.purchasePrice.formatted') } ETH</span>
             </div>
           ))}
         </li>
@@ -58,7 +58,7 @@ export default class Position extends Component {
           { getValue(p, 'position.qtyShares.formatted') }
           { p.openOrders && p.openOrders.length > 0 && p.openOrders.map((order, i) => (
             <div key={i} className={Styles.Position__pending}>
-              <span>+{ getValue(order, 'qtyShares.formatted') }</span>
+              <span>+{ getValue(order, 'order.qtyShares.formatted') }</span>
             </div>
           ))}
         </li>
@@ -66,7 +66,7 @@ export default class Position extends Component {
           { getValue(p, 'position.purchasePrice.formatted') }
           { p.openOrders && p.openOrders.length > 0 && p.openOrders.map((order, i) => (
             <div key={i} className={Styles.Position__pending}>
-              <span>+{ getValue(order, 'purchasePrice.formatted') }</span>
+              <span>+{ getValue(order, 'order.purchasePrice.formatted') }</span>
             </div>
           ))}
         </li>

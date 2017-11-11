@@ -60,7 +60,7 @@ export default class MarketPositionsList extends Component {
                   key={i}
                   name={position.name}
                   position={position.position}
-                  openOrders={position.openOrders}
+                  openOrders={p.openOrders.filter(order => order.id === position.id && order.pending === true)}
                 />
               ))}
             </div>
@@ -73,16 +73,14 @@ export default class MarketPositionsList extends Component {
               <li><span>Action</span></li>
             </ul>
             <div className={Styles['MarketPositionsList__table-body']}>
-              { p.positions && p.positions.forEach((position, i) => {
-                  position.openOrders.map((order, j) => (
-                    <MarketPositionsListOrder
-                      key={`${i}${j}`}
-                      name={position.name}
-                      order={order}
-                      pending={true}
-                    />
-                  ))
-              })}
+              { p.openOrders && p.openOrders.map((order, i) => (
+                  <MarketPositionsListOrder
+                    key={i}
+                    name={order.name}
+                    order={order.order}
+                    pending={order.pending}
+                  />
+              ))}
             </div>
           </div>
         </div>

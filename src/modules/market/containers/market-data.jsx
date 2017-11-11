@@ -13,12 +13,46 @@ const mapStateToProps = state => ({
   scalarShareDenomination: getScalarShareDenomination(),
   outcomes,
   positions,
+  openOrders,
   isMobile: state.isMobile,
 })
 
 const MarketTradingContainer = withRouter(connect(mapStateToProps)(MarketData))
 
 export default MarketTradingContainer
+
+const openOrders = [
+  {
+    name: '1. HARTNELL (12)',
+    id: '1',
+    pending: false,
+    order: {
+      qtyShares: { formatted: '10.942' },
+      purchasePrice: { formatted: '0.3938' },
+      cancelOrder: () => console.log('cancel order'),
+    },
+  },
+  {
+    name: '1. HARTNELL (12)',
+    id: '1',
+    pending: true,
+    order: {
+      qtyShares: { formatted: '4.942' },
+      purchasePrice: { formatted: '0.35' },
+      cancelOrder: () => console.log('cancel order'),
+    },
+  },
+  {
+    name: '2. ALMANDIN (14)',
+    id: '2',
+    pending: true,
+    order: {
+      qtyShares: { formatted: '5' },
+      purchasePrice: { formatted: '0.75' },
+      cancelOrder: () => console.log('cancel order'),
+    },
+  },
+]
 
 const positions = [
   {
@@ -31,21 +65,9 @@ const positions = [
       unrealizedNet: { formatted: '1' },
       closePosition: () => console.log('close position'),
     },
-    openOrders: [
-      {
-        qtyShares: { formatted: '10.942' },
-        purchasePrice: { formatted: '0.3938' },
-        cancelOrder: () => console.log('cancel order'),
-      },
-      {
-        qtyShares: { formatted: '4.942' },
-        purchasePrice: { formatted: '0.35' },
-        cancelOrder: () => console.log('cancel order'),
-      },
-    ]
   },
   {
-    outcomeID: '2',
+    id: '2',
     name: '2. ALMANDIN (14)',
     position: {
       qtyShares: { formatted: '5' },
@@ -54,13 +76,6 @@ const positions = [
       unrealizedNet: { formatted: '0.05' },
       closePosition: () => console.log('close position'),
     },
-    openOrders: [
-      {
-        qtyShares: { formatted: '5' },
-        purchasePrice: { formatted: '0.75' },
-        cancelOrder: () => console.log('cancel order'),
-      },
-    ]
   },
 ]
 
