@@ -104,7 +104,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       designatedReportStake: "10",
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 24,
-    },{
+    }, {
       marketID: "0x0000000000000000000000000000000000000012",
       universe: "0x000000000000000000000000000000000000000b",
       marketType: "binary",
@@ -129,7 +129,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       designatedReportStake: "10",
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 24,
-    },{
+    }, {
       marketID: "0x0000000000000000000000000000000000000013",
       universe: "0x000000000000000000000000000000000000000b",
       marketType: "binary",
@@ -154,7 +154,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       designatedReportStake: "10",
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 94,
-    },{
+    }, {
       marketID: "0x0000000000000000000000000000000000000014",
       universe: "0x000000000000000000000000000000000000000b",
       marketType: "categorical",
@@ -179,7 +179,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       designatedReportStake: "10",
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 94,
-    },{
+    }, {
       marketID: "0x0000000000000000000000000000000000000015",
       universe: "0x000000000000000000000000000000000000000b",
       marketType: "categorical",
@@ -204,7 +204,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       designatedReportStake: "10",
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 94,
-    },{
+    }, {
       marketID: "0x0000000000000000000000000000000000000016",
       universe: "0x000000000000000000000000000000000000000b",
       marketType: "categorical",
@@ -229,7 +229,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       designatedReportStake: "10",
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 949,
-    },{
+    }, {
       marketID: "0x0000000000000000000000000000000000000017",
       universe: "0x000000000000000000000000000000000000000b",
       marketType: "categorical",
@@ -254,7 +254,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       designatedReportStake: "10",
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 949,
-    },{
+    }, {
       marketID: "0x0000000000000000000000000000000000000018",
       universe: "0x000000000000000000000000000000000000000b",
       marketType: "categorical",
@@ -279,7 +279,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       designatedReportStake: "10",
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 949,
-    },{
+    }, {
       marketID: "0x0000000000000000000000000000000000000019",
       universe: "0x000000000000000000000000000000000000000b",
       marketType: "categorical",
