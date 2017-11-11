@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import classNames from 'classnames';
+import classNames from 'classnames'
 import { LedgerEthereum, BrowserLedgerConnectionFactory, Network } from 'ethereumjs-ledger'
 
 import Spinner from 'modules/common/components/spinner/spinner'

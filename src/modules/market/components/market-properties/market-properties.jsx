@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
-import { TYPE_REPORT, TYPE_CHALLENGE, TYPE_TRADE } from 'modules/market/constants/link-types'
+import { TYPE_REPORT, TYPE_CHALLENGE, TYPE_TRADE, TYPE_CLOSED } from 'modules/market/constants/link-types'
 
 import getValue from 'utils/get-value'
 import setShareDenomination from 'utils/set-share-denomination'
@@ -61,14 +61,24 @@ const MarketProperties = (p) => {
             }
           </button>
         }
-        <MarketLink
-          className={Styles.MarketProperties__trade}
-          id={p.id}
-          formattedDescription={p.formattedDescription}
-          linkType={p.linkType}
-        >
-          { p.buttonText || buttonText }
-        </MarketLink>
+        { (p.linkType === undefined || (p.linkType && p.linkType !== TYPE_CLOSED)) &&
+          <MarketLink
+            className={Styles.MarketProperties__trade}
+            id={p.id}
+            formattedDescription={p.formattedDescription}
+            linkType={p.linkType}
+          >
+            { p.buttonText || buttonText }
+          </MarketLink>
+        }
+        { p.linkType && p.linkType === TYPE_CLOSED &&
+          <button
+            className={Styles.MarketProperties__trade}
+            onClick={e => console.log('call to finalize market')}
+          >
+            Finalize
+          </button>
+        }
       </div>
     </article>
   )

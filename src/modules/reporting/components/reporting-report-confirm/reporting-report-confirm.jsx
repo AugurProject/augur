@@ -10,7 +10,7 @@ const ReportingReportConfirm = p => (
       <h2 className={ConfirmStyles.Confirm__heading}>Confirm Report</h2>
       <div className={ConfirmStyles['Confirm__wrapper--wide']}>
         <div className={ConfirmStyles.Confirm__creation}>
-          <ul className={ConfirmStyles.Confirm__list}>
+          <ul className={ConfirmStyles['Confirm__list--left-align']}>
             <li>
               <span>Market</span>
               <span>{ p.isMarketValid ? 'Valid' : 'Invalid' }</span>
