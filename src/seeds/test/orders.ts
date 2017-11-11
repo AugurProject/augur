@@ -68,7 +68,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       sharesEscrowed: 0,
       betterOrderID: null,
       worseOrderID: null,
-    },{
+    }, {
       orderID: "0x5000000000000000000000000000000000000000000000000000000000000000",
       marketID: "0x0000000000000000000000000000000000000001",
       outcome: 0,
