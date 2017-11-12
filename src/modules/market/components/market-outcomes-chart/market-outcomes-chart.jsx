@@ -44,7 +44,7 @@ class MarketOutcomesChart extends Component {
 
     const margin = {
       top: 20,
-      right: 20,
+      right: 0,
       bottom: 30,
       left: 50
     }
@@ -73,10 +73,22 @@ class MarketOutcomesChart extends Component {
       .x(d => xScale(d[0]))
       .y(d => yScale(d[1]))
 
-    chart.append('path')
-      .data([priceHistory[0].data])
-      .attr('class', 'outcome-line')
-      .attr('d', outcomeLine)
+    priceHistory.forEach((outcome, i) => {
+      chart.append('path')
+        .data([priceHistory[i].data])
+        .attr('class', 'outcome-line')
+        .attr('d', outcomeLine)
+    })
+
+    chart.append('g')
+      .attr('class', 'outcomes-axis')
+      .attr('transform', `translate(0, ${height - margin.bottom})`)
+      .call(d3.axisBottom(xScale))
+
+    chart.append('g')
+      .attr('class', 'outcomes-axis')
+      .attr('transform', `translate(${margin.left}, 0)`)
+      .call(d3.axisLeft(yScale))
   }
 
   render() {
