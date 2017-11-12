@@ -7,9 +7,9 @@ import PropTypes from 'prop-types'
 
 import debounce from 'utils/debounce'
 
-import Styles from 'modules/market/components/market-outcomes-graph/market-outcomes-graph.styles'
+import Styles from 'modules/market/components/market-outcomes-chart/market-outcomes-chart.styles'
 
-export default class MarketOutcomesGraph extends Component {
+export default class MarketOutcomesChart extends Component {
   static propTypes = {
     priceTimeSeries: PropTypes.array.isRequired,
     selectedOutcomes: PropTypes.any, // NOTE -- There is a PR to handle null values, but until then..
@@ -24,8 +24,8 @@ export default class MarketOutcomesGraph extends Component {
       selectedOutcome: null // NOTE -- Just a placeholder until outcomes are implemented
     }
 
-    this.updateGraph = this.updateGraph.bind(this)
-    this.debouncedUpdateGraph = debounce(this.updateGraph.bind(this))
+    this.updateChart = this.updateChart.bind(this)
+    this.debouncedUpdateChart = debounce(this.updateChart.bind(this))
   }
 
   componentDidMount() {
@@ -37,7 +37,7 @@ export default class MarketOutcomesGraph extends Component {
     //   }
     // })
     //
-    // this.marketOutcomesGraph = new Highstock.Chart('market_outcomes_graph', {
+    // this.marketOutcomesChart = new Highstock.Chart('market_outcomes_chart', {
     //   title: {
     //     text: null
     //   },
@@ -115,34 +115,34 @@ export default class MarketOutcomesGraph extends Component {
     //   }
     // })
     //
-    // window.addEventListener('resize', this.debouncedUpdateGraph)
+    // window.addEventListener('resize', this.debouncedUpdateChart)
     //
-    // this.updateGraph()
+    // this.updateChart()
   }
 
   componentDidUpdate(prevProps) {
-    // if (!isEqual(prevProps.priceTimeSeries, this.props.priceTimeSeries)) this.updateGraph()
+    // if (!isEqual(prevProps.priceTimeSeries, this.props.priceTimeSeries)) this.updateChart()
   }
 
   componentWillUnmount() {
-    // this.marketOutcomesGraph.destroy()
-    // window.removeEventListener('resize', this.debouncedUpdateGraph)
+    // this.marketOutcomesChart.destroy()
+    // window.removeEventListener('resize', this.debouncedUpdateChart)
   }
 
-  updateGraph() {
+  updateChart() {
     (this.props.priceTimeSeries || []).forEach((series, i) => {
-      if (this.marketOutcomesGraph.series[i] == null) {
-        this.marketOutcomesGraph.addSeries({
+      if (this.marketOutcomesChart.series[i] == null) {
+        this.marketOutcomesChart.addSeries({
           type: 'line',
           name: series.name,
           data: series.data
         }, false)
       } else {
-        this.marketOutcomesGraph.series[i].setData(series.data, false)
+        this.marketOutcomesChart.series[i].setData(series.data, false)
       }
     })
 
-    this.marketOutcomesGraph.redraw()
+    this.marketOutcomesChart.redraw()
   }
 
   render() {
@@ -150,20 +150,20 @@ export default class MarketOutcomesGraph extends Component {
     const s = this.state
 
     return (
-      <div className={Styles.MarketOutcomesGraph}>
+      <div className={Styles.MarketOutcomesChart}>
         <h3>price (eth) of each outcome</h3>
-        <div className={Styles[`MarketOutcomesGraph__graph-header`]}>
-          <span className={Styles.MarketOutcomesGraph__details}>
+        <div className={Styles[`MarketOutcomesChart__chart-header`]}>
+          <span className={Styles.MarketOutcomesChart__details}>
             {s.hoveredOutcome === null ?
               'select an outcome to begin placing an order' :
               <span>
-                <span className={Styles.MarketOutcomesGraph__name}>
+                <span className={Styles.MarketOutcomesChart__name}>
                   {s.hoveredOutcome.name}
                 </span>
-                <span className={Styles.MarketOutcomesGraph__price}>
+                <span className={Styles.MarketOutcomesChart__price}>
                   last: {s.hoveredOutcome.price.toFixed(4)} eth
                 </span>
-                <span className={Styles.MarketOutcomesGraph__instruction}>
+                <span className={Styles.MarketOutcomesChart__instruction}>
                   click to view more information about this outcome
                 </span>
               </span>
@@ -174,11 +174,11 @@ export default class MarketOutcomesGraph extends Component {
           </div>
         </div>
         <button
-          id="market_outcomes_graph"
-          className={Styles.MarketOutcomesGraph__graph}
+          id="market_outcomes_chart"
+          className={Styles.MarketOutcomesChart__chart}
           onClick={() => this.props.updateSelectedOutcomes(0)}
         >
-          <span>Graphs Placeholder (clicking selects outcome 0)</span>
+          <span>Charts Placeholder (clicking selects outcome 0)</span>
         </button>
       </div>
     )
