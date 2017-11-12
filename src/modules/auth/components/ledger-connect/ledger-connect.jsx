@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { LedgerEthereum, BrowserLedgerConnectionFactory, Network } from 'ethereumjs-ledger'
 
@@ -7,8 +8,13 @@ import Spinner from 'modules/common/components/spinner/spinner'
 import Styles from 'modules/auth/components/ledger-connect/ledger-connect.styles'
 
 export default class Ledger extends Component {
-  constructor() {
-    super()
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    loginWithLedger: PropTypes.func.isRequired
+  }
+
+  constructor(props) {
+    super(props)
 
     this.LEDGER_STATES = {
       ATTEMPTING_CONNECTION: 'ATTEMPTING_CONNECTION',
@@ -48,7 +54,6 @@ export default class Ledger extends Component {
   // NOTE --  basically the only state that gets called is 'connect' until success,
   //          but potentially the other will at a later point
   async onConnectLedgerRequest() {
-    console.log('connect ledger')
     this.setState(
       {
         ledgerState: this.LEDGER_STATES.CONNECT_LEDGER
@@ -57,7 +62,6 @@ export default class Ledger extends Component {
   }
 
   async onOpenEthereumAppRequest() {
-    console.log('open app')
     this.setState(
       {
         ledgerState: this.LEDGER_STATES.OPEN_APP
@@ -66,8 +70,6 @@ export default class Ledger extends Component {
   }
 
   async onSwitchLedgerModeRequest() {
-    console.log('switch mode')
-
     this.setState(
       {
         ledgerState: this.LEDGER_STATES.SWITCH_MODE
@@ -76,7 +78,6 @@ export default class Ledger extends Component {
   }
 
   async onEnableContractSupportRequest() {
-    console.log('enable contract support')
     this.setState(
       {
         ledgerState: this.LEDGER_STATES.ENABLE_CONTRACT_SUPPORT
@@ -97,15 +98,12 @@ export default class Ledger extends Component {
     )
 
     const address = await ledgerEthereum.getAddressByBip44Index(0)
-    console.log(address)
 
+    if (address) {
+      return this.props.loginWithLedger(address, ledgerEthereum)
+    }
 
-    // const firstSignedMessagePromise = ledgerEthereum.signTransactionByBip44Index('e8018504e3b292008252089428ee52a8f3d6e5d15f8b131996950d7f296c7952872bd72a2487400080', 7)
-    // const secondSignedMessagePromise = ledgerEthereum.signTransactionByBip32Path('e8018504e3b292008252089428ee52a8f3d6e5d15f8b131996950d7f296c7952872bd72a2487400080', "m/44'/60'/0'/0/7")
-    // const firstSignedMessage = await firstSignedMessagePromise
-    // const secondSignedMessage = await secondSignedMessagePromise
-    // console.log(firstSignedMessage)
-    // console.log(secondSignedMessage)
+    this.setState({ ledgerStatus: this.LEDGER_STATES.OTHER_ISSUE })
   }
 
   render() {
@@ -121,7 +119,7 @@ export default class Ledger extends Component {
             onClick={() => {
               this.connectLedger()
                 .then(() => this.setState({ ledgerState: null }))
-                // .catch(() => this.setState({ ledgerState: this.LEDGER_STATES.OTHER_ISSUE }))
+                .catch(() => this.setState({ ledgerState: this.LEDGER_STATES.OTHER_ISSUE }))
             }}
           >
             {s.ledgerState !== this.ATTEMPTING_CONNECTION ?
@@ -154,20 +152,3 @@ export default class Ledger extends Component {
     )
   }
 }
-
-// async function doStuff() {
-//   const onConnectLedgerRequest = async () => { console.log('onConnectLedgerRequest') }
-//   const onOpenEthereumAppRequest = async () => { console.log('onOpenEthereumAppRequest') }
-//   const onSwitchLedgerModeRequest = async () => { console.log('onSwitchLedgerModeRequest') }
-//   const onEnableContractSupportRequest = async () => { console.log('onEnableContractSupportRequest') }
-//
-//   const ledgerEthereum = new LedgerEthereum(Network.Main, BrowserLedgerConnectionFactory, onConnectLedgerRequest, onOpenEthereumAppRequest, onSwitchLedgerModeRequest, onEnableContractSupportRequest)
-//   const address = await ledgerEthereum.getAddressByBip44Index(0)
-//   console.log(address)
-//   const firstSignedMessagePromise = ledgerEthereum.signTransactionByBip44Index('e8018504e3b292008252089428ee52a8f3d6e5d15f8b131996950d7f296c7952872bd72a2487400080', 7)
-//   const secondSignedMessagePromise = ledgerEthereum.signTransactionByBip32Path('e8018504e3b292008252089428ee52a8f3d6e5d15f8b131996950d7f296c7952872bd72a2487400080', "m/44'/60'/0'/0/7")
-//   const firstSignedMessage = await firstSignedMessagePromise
-//   const secondSignedMessage = await secondSignedMessagePromise
-//   console.log(firstSignedMessage)
-//   console.log(secondSignedMessage)
-// }
