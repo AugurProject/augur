@@ -10,7 +10,7 @@ const ReportingDisputeConfirm = p => (
       <h2 className={ConfirmStyles.Confirm__heading}>Confirm Dispute</h2>
       <div className={ConfirmStyles['Confirm__wrapper--wide']}>
         <div className={ConfirmStyles.Confirm__creation}>
-          <ul className={ConfirmStyles.Confirm__list}>
+          <ul className={ConfirmStyles['Confirm__list--left-align']}>
             <li>
               <span>Current Outcome</span>
               <span>{ p.market.currentOutcome.name }</span>

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-import Spinner from 'modules/common/components/spinner'
+import Spinner from 'modules/common/components/spinner/spinner'
 
 import { POSITION, ORDER } from 'modules/market/constants/trade-close-type'
 import {

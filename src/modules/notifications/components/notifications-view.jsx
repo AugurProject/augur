@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import NullStateMessage from 'modules/common/components/null-state-message'
+import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 import Notification from 'modules/notifications/components/notification'
 
 import getValue from 'utils/get-value'

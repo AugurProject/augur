@@ -7,9 +7,10 @@ import Dropdown from 'modules/common/components/dropdown/dropdown'
 import MarketsList from 'modules/markets/components/markets-list'
 import Styles from 'modules/portfolio/components/markets/markets.styles'
 import { TYPE_REPORT } from 'modules/market/constants/link-types'
+import { constants } from 'services/augurjs'
 
 class MyMarkets extends Component {
-  static PropTypes = {
+  static propTypes = {
     isLogged: PropTypes.bool.isRequired,
     hasAllTransactionsLoaded: PropTypes.bool.isRequired,
     history: PropTypes.object.isRequired,
@@ -18,11 +19,24 @@ class MyMarkets extends Component {
     myMarkets: PropTypes.array.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
+    loadMarkets: PropTypes.func.isRequired,
     loadMarketsInfo: PropTypes.func.isRequired,
   }
 
   constructor(props) {
     super(props)
+    // NOTE: from here to this.state was added to sort markets, this might need to be more robust in the future.
+    const reportingMarkets = []
+    const designatedReportingMarkets = []
+    this.reportingStates = constants.REPORTING_STATE
+
+    this.props.myMarkets.forEach((market, index) => {
+      if (market.reportingState === this.reportingStates.DESIGNATED_REPORTING) {
+        designatedReportingMarkets.push(index)
+      } else if (market.reportingState === this.reportingStates.FIRST_REPORTING || market.reportingState === this.reportingStates.LAST_REPORTING) {
+        reportingMarkets.push(index)
+      }
+    })
 
     this.state = {
       sortOptionsReporting: [
@@ -59,11 +73,35 @@ class MyMarkets extends Component {
       ],
       filterDefaultDesignatedReporting: 'sports',
       filterTypeDesignatedReporting: 'sports',
-      filteredMarketsReporting: [0, 1],
-      filteredMarketsDesignatedReporting: [2]
+      filteredMarketsReporting: reportingMarkets,
+      filteredMarketsDesignatedReporting: designatedReportingMarkets
     }
 
     this.changeDropdown = this.changeDropdown.bind(this)
+  }
+
+  componentWillMount() {
+    // Load all markets incase they haven't been loaded already
+    // Eventually replace this with a 1 to 1 call to augurnode for example what we need.
+    this.props.loadMarkets()
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // update the filtered markets if the myMarkets prop changes
+    if (this.props.myMarkets !== nextProps.myMarkets) {
+      const reportingMarkets = []
+      const designatedReportingMarkets = []
+
+      nextProps.myMarkets.forEach((market, index) => {
+        if (market.reportingState === this.reportingStates.DESIGNATED_REPORTING) {
+          designatedReportingMarkets.push(index)
+        } else if (market.reportingState === this.reportingStates.FIRST_REPORTING || market.reportingState === this.reportingStates.LAST_REPORTING) {
+          reportingMarkets.push(index)
+        }
+      })
+
+      this.setState({ filteredMarketsReporting: reportingMarkets, filteredMarketsDesignatedReporting: designatedReportingMarkets })
+    }
   }
 
   // TODO -- clean up this method

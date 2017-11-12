@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet'
 import Transactions from 'modules/transactions/components/transactions'
 import Universe from 'modules/universe/components/universe'
 import Paginator from 'modules/common/components/paginator/paginator'
-import Spinner from 'modules/common/components/spinner'
+import Spinner from 'modules/common/components/spinner/spinner'
 import TransactionsLoadingActions from 'modules/transactions/components/transactions-loading-actions'
 
 import getValue from 'utils/get-value'

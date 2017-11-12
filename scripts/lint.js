@@ -14,7 +14,7 @@ const FLAGS = process.argv.filter(arg => arg.indexOf('--') !== -1);
 const shouldFix = FLAGS.indexOf('--fix') !== -1 ? true : false;
 
 shell.echo(colors.title(`
-== Running Augur Linting${process.argv[2] === 'fix' ? ' -- Fix Enabled' : '' } ==
+== Running Augur Linting${shouldFix ? ' -- Fix Enabled' : '' } ==
 ${shouldFix ? `
 ${colors.notice('NOTE')}	${colors.dim(`| "With great power comes great responsibility" - Uncle Ben.
 	| Since you've enabled auto-fix, please review all automatic changes before commiting.`)}` : ''}

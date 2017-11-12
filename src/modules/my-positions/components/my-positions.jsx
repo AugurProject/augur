@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
-import NullStateMessage from 'modules/common/components/null-state-message'
+import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 import MyPositionsMarket from 'modules/my-positions/components/my-positions-market'
 import TransactionsLoadingActions from 'modules/transactions/components/transactions-loading-actions'
 // import FilterSort from 'modules/filter-sort/container'

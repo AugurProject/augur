@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import Spinner from 'modules/common/components/spinner'
+import Spinner from 'modules/common/components/spinner/spinner'
 
 const TransactionsLoadingActions = p => (
   <article className="transactions-loading-actions">

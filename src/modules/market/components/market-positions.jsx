@@ -1,7 +1,7 @@
 import React from 'react'
 
 import MarketPositionsRow from 'modules/market/components/market-positions-row'
-import NullStateMessage from 'modules/common/components/null-state-message'
+import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 
 import { SCALAR } from 'modules/markets/constants/market-types'
 

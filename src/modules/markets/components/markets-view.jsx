@@ -15,6 +15,7 @@ import makePath from 'modules/routes/helpers/make-path'
 
 import { FAVORITES, MARKETS } from 'modules/routes/constants/views'
 import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
+import { TYPE_TRADE } from 'modules/market/constants/link-types'
 
 export default class MarketsView extends Component {
   static propTypes = {
@@ -139,6 +140,7 @@ export default class MarketsView extends Component {
           scalarShareDenomination={p.scalarShareDenomination}
           toggleFavorite={p.toggleFavorite}
           loadMarketsInfo={p.loadMarketsInfo}
+          linkType={TYPE_TRADE}
         />
       </section>
     )
