@@ -16,7 +16,6 @@ import ToggleHeightStyles from 'utils/toggle-height/toggle-height.styles'
 export default class MarketPositionsList extends Component {
   static propTypes = {
     positions: PropTypes.array.isRequired,
-    isMobile: PropTypes.bool.isRequired,
   }
 
   constructor(props) {
@@ -35,16 +34,14 @@ export default class MarketPositionsList extends Component {
       <section className={Styles.MarketPositionsList}>
         <button
           className={Styles.MarketPositionsList__heading}
-          onClick={() => { !p.isMobile && toggleHeight(this.outcomeList, s.isOpen, () => { this.setState({ isOpen: !s.isOpen }) }) }}
+          onClick={() => { toggleHeight(this.outcomeList, s.isOpen, () => { this.setState({ isOpen: !s.isOpen }) }) }}
         >
           <h2>My Positions</h2>
-          { !p.isMobile &&
-            <span className={classNames({ [`${Styles['is-open']}`]: s.isOpen })}>{ ChevronDown }</span>
-          }
+          <span className={classNames({ [`${Styles['is-open']}`]: s.isOpen })}>{ ChevronDown }</span>
         </button>
         <div
           ref={(outcomeList) => { this.outcomeList = outcomeList }}
-          className={classNames(ToggleHeightStyles['toggle-height-target'], ToggleHeightStyles['start-open'])}
+          className={classNames(ToggleHeightStyles['open-on-mobile'], ToggleHeightStyles['toggle-height-target'], ToggleHeightStyles['start-open'])}
         >
           <div className={Styles.MarketPositionsList__table}>
           { p.positions.length > 0 &&
