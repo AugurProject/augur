@@ -36,15 +36,14 @@ export function updateAssets(callback = logError) {
         if (allAssetsLoaded(balances)) callback(null, balances)
       })
     })
-    // FIXME -- same reason as above
-    // augur.rpc.getBalance(loginAccount.address, (attoEthBalance) => {
-    //   if (!attoEthBalance || attoEthBalance.error) return callback(attoEthBalance)
-    //   const ethBalance = speedomatic.unfix(attoEthBalance, 'string')
-    //   balances.eth = ethBalance
-    //   if (!loginAccount.eth || loginAccount.eth !== ethBalance) {
-    //     dispatch(updateLoginAccount({ eth: ethBalance }))
-    //   }
-    //   if (allAssetsLoaded(balances)) callback(null, balances)
-    // })
+    augur.rpc.eth.getBalance([loginAccount.address, 'latest'], (attoEthBalance) => {
+      if (!attoEthBalance || attoEthBalance.error) return callback(attoEthBalance)
+      const ethBalance = speedomatic.unfix(attoEthBalance, 'string')
+      balances.eth = ethBalance
+      if (!loginAccount.eth || loginAccount.eth !== ethBalance) {
+        dispatch(updateLoginAccount({ eth: ethBalance }))
+      }
+      if (allAssetsLoaded(balances)) callback(null, balances)
+    })
   }
 }

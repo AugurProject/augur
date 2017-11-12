@@ -7,7 +7,7 @@ export function loadFundingHistory(options, callback = logError) {
   return (dispatch, getState) => {
     const { loginAccount } = getState()
     if (!loginAccount.address) return callback(null)
-    augur.account.getAccountTransferHistory({ ...options, account: loginAccount.address }, (err, transferHistory) => {
+    augur.accounts.getAccountTransferHistory({ ...options, account: loginAccount.address }, (err, transferHistory) => {
       if (err) return callback(err)
       if (transferHistory == null) return callback(null)
       if (Array.isArray(transferHistory) && transferHistory.length) {

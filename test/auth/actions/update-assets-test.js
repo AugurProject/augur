@@ -6,7 +6,6 @@ import configureMockStore from 'redux-mock-store'
 
 import { updateAssets, __RewireAPI__ as updateAssetsRewireAPI } from 'modules/auth/actions/update-assets'
 
-const ETH_TOKENS = 'ethTokens'
 const ETH = 'eth'
 const REP = 'rep'
 
@@ -62,35 +61,17 @@ describe('modules/auth/actions/update-assets.js', () => {
             address: '0xtest'
           },
           assertions: (store, done) => {
-            const ERR = `${asset}-failure`
+            const ERR = { error: `${asset}-failure` }
 
-            const loadAssets = (options, ethTokensCB, repCB, ethCB) => {
-              switch (asset) {
-                case ETH_TOKENS:
-                  return ethTokensCB(ERR)
-                case ETH:
-                  return ethCB(ERR)
-                case REP:
-                  return repCB(ERR)
-                default:
-                  return assert(false, `malformed callback test`)
-              }
-            }
             updateAssetsRewireAPI.__Rewire__('augur', {
-              assets: {
-                loadAssets
-              },
               rpc: {
-                getBalance: (value, callback) => {
-                  callback('1000')
+                eth: {
+                  getBalance: (value, callback) => {
+                    callback(ERR, '1000')
+                  }
                 }
               },
               api: {
-                Cash: {
-                  balanceOf: (value, callback) => {
-                    callback(ERR, '10000')
-                  }
-                },
                 Universe: {
                   getReputationToken: (value, callback) => {
                     callback(ERR, '10000')
@@ -107,10 +88,12 @@ describe('modules/auth/actions/update-assets.js', () => {
             const callbackStub = {
               callback: () => { }
             }
-            sinon.stub(callbackStub, 'callback', err => assert(err, ERR, `didn't call the callback with the expected error`))
+
+            sinon.stub(callbackStub, 'callback', err => assert.deepEqual(err, ERR, `didn't call the callback with the expected error`)
+            )
 
             store.dispatch(updateAssets(callbackStub.callback))
-
+            console.log('about to call done')
             done()
           }
         })
@@ -191,11 +174,6 @@ describe('modules/auth/actions/update-assets.js', () => {
             }
             updateAssetsRewireAPI.__Rewire__('augur', {
               api: {
-                Cash: {
-                  balanceOf: (value, callback) => {
-                    callback(null, testValue.ethTokens)
-                  }
-                },
                 Universe: {
                   getReputationToken: (value, callback) => {
                     callback(null, '0xtestx0')
@@ -208,8 +186,10 @@ describe('modules/auth/actions/update-assets.js', () => {
                 }
               },
               rpc: {
-                getBalance: (value, callback) => {
-                  callback(testValue.eth)
+                eth: {
+                  getBalance: (value, callback) => {
+                    callback(testValue.eth)
+                  }
                 }
               }
             })
@@ -230,7 +210,6 @@ describe('modules/auth/actions/update-assets.js', () => {
       })
     }
 
-    callbackTests(ETH_TOKENS)
     callbackTests(ETH)
     callbackTests(REP)
   })
