@@ -40,7 +40,7 @@ export function getOpenOrders(db: Knex, universe: Address|null, marketID: Addres
     outcome,
     orderType,
     orderCreator: creator,
-  }, _.isNull);
+  }, _.isNil);
   let query: Knex.QueryBuilder = db.select(["orders.*", `blocks.timestamp as creationTime`]).from("orders").leftJoin("blocks", "orders.creationBlockNumber", "blocks.blockNumber").where(queryData).whereNull("isRemoved");
   query = queryModifier(query, "volume", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, ordersRows?: Array<OrdersRowWithCreationTime>): void => {
