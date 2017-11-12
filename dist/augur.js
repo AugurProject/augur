@@ -2450,7 +2450,8 @@ module.exports = {
   calculateProfitLoss: require("./profit-loss"),
   normalizePrice: require("./normalize-price"),
   denormalizePrice: require("./denormalize-price"),
-  tradeUntilAmountIsZero: require("./trade-until-amount-is-zero")
+  tradeUntilAmountIsZero: require("./trade-until-amount-is-zero"),
+  getOpenOrders: require("./get-open-orders")
 };
 },{"./claim-markets-trading-proceeds":81,"./claim-trading-proceeds":82,"./denormalize-price":83,"./filter-by-price-and-outcome-and-user-sort-by-price":84,"./get-open-orders":85,"./get-position-in-market":86,"./get-user-trading-history":88,"./get-user-trading-positions":89,"./normalize-price":91,"./profit-loss":98,"./simulation":107,"./trade-until-amount-is-zero":116}],91:[function(require,module,exports){
 "use strict";
