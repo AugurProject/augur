@@ -63,7 +63,7 @@ export default class Position extends Component {
           ))}
         </li>
         <li>
-          { getValue(p, 'position.purchasePrice.formatted') }
+          { getValue(p, 'position.avgPrice.formatted') }
           { p.openOrders && p.openOrders.length > 0 && p.openOrders.map((order, i) => (
             <div key={i} className={Styles.Position__pending}>
               <span>+{ getValue(order, 'order.purchasePrice.formatted') }</span>

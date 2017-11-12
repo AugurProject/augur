@@ -28,7 +28,7 @@ const MarketData = p => (
       { p.isMobile && p.selectedOutcomes.length > 0 &&
         <MarketPositionsListMobile
           positions={p.positions.filter(position => position.id === p.selectedOutcomes[0])}
-          openOrders={p.openOrders.filter(order => order.id === p.selectedOutcomes[0])}
+          openOrders={p.openOrders.filter(order => order.id === p.selectedOutcomes[0] && order.pending === true)}
         />
       }
     </div>
