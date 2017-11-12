@@ -22,7 +22,8 @@ export default class Ledger extends Component {
     this.LedgerEthereum = null
 
     this.state = {
-      ledgerState: null
+      ledgerState: null,
+      displayInstructions: false
     }
 
     this.connectLedger = this.connectLedger.bind(this)
@@ -30,6 +31,17 @@ export default class Ledger extends Component {
     this.onOpenEthereumAppRequest = this.onOpenEthereumAppRequest.bind(this)
     this.onSwitchLedgerModeRequest = this.onSwitchLedgerModeRequest.bind(this)
     this.onEnableContractSupportRequest = this.onEnableContractSupportRequest.bind(this)
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (
+      nextState.ledgerState !== this.LEDGER_STATES.ATTEMPTING_CONNECTION &&
+      this.state.ledgerState !== nextState.ledgerState
+    ) {
+      this.setState({
+        displayInstructions: true
+      })
+    }
   }
 
 
@@ -73,6 +85,8 @@ export default class Ledger extends Component {
   }
 
   async connectLedger() {
+    this.setState({ ledgerState: this.LEDGER_STATES.ATTEMPTING_CONNECTION })
+
     const ledgerEthereum = new LedgerEthereum(
       Network.Main,
       BrowserLedgerConnectionFactory,
@@ -97,23 +111,31 @@ export default class Ledger extends Component {
   render() {
     const s = this.state
 
-    console.log('state -- ', s)
-
     return (
       <section className={Styles.LedgerConnect}>
-        <button
-          onClick={() => {
-            this.connectLedger().then().catch(() => this.setState({ ledgerState: this.LEDGER_STATES.OTHER_ISSUE }))
-          }}
+        <div
+          className={Styles.LedgerConnect__action}
         >
-          {s.ledgerState === null ?
-            'Connect Ledger' :
-            <Spinner />
-          }
-        </button>
+          <button
+            className={Styles.LedgerConnect__button}
+            onClick={() => {
+              this.connectLedger()
+                .then(() => this.setState({ ledgerState: null }))
+                // .catch(() => this.setState({ ledgerState: this.LEDGER_STATES.OTHER_ISSUE }))
+            }}
+          >
+            {s.ledgerState !== this.ATTEMPTING_CONNECTION ?
+              'Connect Ledger' :
+              <Spinner />
+            }
+          </button>
+        </div>
         <div className={classNames(Styles.LedgerConnect__messages, { [Styles[`LedgerConnect__messages--visible`]]: s.ledgerState })}>
-          <span>Make sure you have: </span>
+          <h3>Make sure you have: </h3>
           <ul>
+            <li>
+              Accessed Augur via HTTPS
+            </li>
             <li>
               Connected your Ledger
             </li>
