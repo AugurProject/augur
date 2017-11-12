@@ -22,20 +22,20 @@ var DEFAULT_NUM_TICKS = require("../constants").DEFAULT_NUM_TICKS;
  * @param {string=} p._numTicks The number of ticks for this market (default: DEFAULT_NUM_TICKS).
  * @param {Object=} p._extraInfo Extra info which will be converted to JSON and logged to the chain in the CreateMarket event.
  * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
- * @param {function} p.onSent Called if/when the createNewMarket transaction is broadcast to the network.
- * @param {function} p.onSuccess Called if/when the createNewMarket transaction is sealed and confirmed.
- * @param {function} p.onFailed Called if/when the createNewMarket transaction fails.
+ * @param {function} p.onSent Called if/when the createMarket transaction is broadcast to the network.
+ * @param {function} p.onSuccess Called if/when the createMarket transaction is sealed and confirmed.
+ * @param {function} p.onFailed Called if/when the createMarket transaction fails.
  */
-function createNewMarket(p) {
+function createMarket(p) {
   api().Universe.getReportingWindowByTimestamp({
-    tx: { to: p.universe },
-    _timestamp: p._endTime
+    tx: { to: p.universe, send: false },
+    _timestamp: p._endTime,
   }, function (err, reportingWindowAddress) {
     if (err) return p.onFailed(err);
-    api().MarketFeeCalculator.getMarketCreationCost({ _reportingWindow: reportingWindowAddress }, function (err, marketCreationCost) {
+    api().Universe.getMarketCreationCost({ tx: { to: p.universe, send: false }, _reportingWindow: reportingWindowAddress }, function (err, marketCreationCost) {
       if (err) return p.onFailed(err);
       var numTicks = p._numTicks || DEFAULT_NUM_TICKS;
-      api().ReportingWindow.createNewMarket(assign({}, immutableDelete(p, "universe"), {
+      api().ReportingWindow.createMarket(assign({}, immutableDelete(p, "universe"), {
         tx: {
           to: reportingWindowAddress,
           value: marketCreationCost
@@ -51,4 +51,4 @@ function createNewMarket(p) {
   });
 }
 
-module.exports = createNewMarket;
+module.exports = createMarket;

@@ -20,7 +20,8 @@ var createRpcInterface = function (ethrpc) {
     excludeFromTransactionRelay: ethrpc.excludeFromTransactionRelay,
     registerTransactionRelay: ethrpc.registerTransactionRelay,
     setDebugOptions: ethrpc.setDebugOptions,
-    WsTransport: ethrpc.WsTransport
+    WsTransport: ethrpc.WsTransport,
+    publish: ethrpc.publish
   };
 };
 

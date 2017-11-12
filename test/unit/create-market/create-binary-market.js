@@ -16,7 +16,7 @@ describe("create-market/create-binary-market", function () {
   var test = function (t) {
     it(t.description, function (done) {
       var createBinaryMarket = proxyquire("../../../src/create-market/create-binary-market", {
-        "./create-new-market": proxyquire("../../../src/create-market/create-new-market", {
+        "./create-market": proxyquire("../../../src/create-market/create-market", {
           "../api": t.stub.api
         })
       });
@@ -62,7 +62,7 @@ describe("create-market/create-binary-market", function () {
             }
           },
           ReportingWindow: {
-            createNewMarket: function (p) {
+            createMarket: function (p) {
               assert.deepEqual(p.tx, { to: "REPORTING_WINDOW_ADDRESS", value: "MARKET_CREATION_COST" });
               assert.strictEqual(p._endTime, 2345678901);
               assert.strictEqual(p._numOutcomes, 2);
@@ -86,7 +86,7 @@ describe("create-market/create-binary-market", function () {
           Universe: {
             getReportingWindowByTimestamp: function (p, callback) {
               assert.deepEqual(p, {
-                tx: { to: "UNIVERSE_ADDRESS" },
+                tx: { to: "UNIVERSE_ADDRESS", send: false },
                 _timestamp: 2345678901
               });
               callback(null, "REPORTING_WINDOW_ADDRESS");

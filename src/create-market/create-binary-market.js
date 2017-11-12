@@ -1,7 +1,7 @@
 "use strict";
 
 var assign = require("lodash.assign");
-var createNewMarket = require("./create-new-market");
+var createMarket = require("./create-market");
 
 /**
  * @param {Object} p Parameters object.
@@ -18,7 +18,7 @@ var createNewMarket = require("./create-new-market");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function createBinaryMarket(p) {
-  createNewMarket(assign({}, p, { _minDisplayPrice: "0", _maxDisplayPrice: "1", _numOutcomes: 2 }));
+  createMarket(assign({}, p, { _minDisplayPrice: "0", _maxDisplayPrice: "1", _numOutcomes: 2 }));
 }
 
 module.exports = createBinaryMarket;
