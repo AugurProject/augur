@@ -35,7 +35,6 @@
 
 .MarketOutcomesChart__chart {
   align-items: center;
-  background-color: @color-gray-light;
   cursor: cell;
   display: flex;
   height: 400px;
@@ -43,103 +42,9 @@
   width: 100%;
 
   :global {
-    .highcharts-background,
-    .highcharts-plot-background,
-    .highcharts-plot-border {
-      fill: @color-transparent;
+    .outcome-line {
+      fill: none;
+      stroke: red;
     }
-
-    .highcharts-xaxis {
-      height: 2px;
-
-      .highcharts-tick {
-        stroke: @color-darkgray;
-        stroke-width: 1px;
-      }
-    }
-
-    .highcharts-yaxis {
-      .highcharts-tick {
-        stroke: @color-darkgray;
-      }
-    }
-
-    .highcharts-crosshair-thin {
-      stroke: @color-lightgray;
-      stroke-dasharray: 3;
-      stroke-dashoffset: 3;
-      stroke-width: 1px;
-    }
-
-    .highcharts-yaxis-grid .highcharts-grid-line {
-      stroke: @color-darkgray;
-    }
-
-    .highcharts-series {
-      * {
-        fill: none;
-      }
-
-      &.highcharts-series-hover {
-        stroke-width: 3px;
-      }
-
-      &.highcharts-series-1 {
-        stroke: @color-outcome-one;
-      }
-
-      &.highcharts-series-2 {
-        stroke: @color-outcome-two;
-      }
-
-      &.highcharts-series-3 {
-        stroke: @color-outcome-three;
-      }
-
-      &.highcharts-series-4 {
-        stroke: @color-outcome-four;
-      }
-
-      &.highcharts-series-5 {
-        stroke: @color-outcome-five;
-      }
-
-      &.highcharts-series-6 {
-        stroke: @color-outcome-six;
-      }
-
-      &.highcharts-series-7 {
-        stroke: @color-outcome-seven;
-      }
-
-      &.highcharts-series-8 {
-        stroke: @color-outcome-eight;
-      }
-    }
-
-    .highcharts-halo {
-      fill: @color-transparent;
-      stroke: @color-transparent;
-    }
-
-    .highcharts-crosshair-label {
-      fill: @color-white;
-
-      text {
-        fill: @color-text-dark;
-      }
-    }
-
-    .highcharts-yaxis-labels {
-      .highcharts-crosshair-label text {
-        padding-top: 20px;
-      }
-    }
-  }
-
-  :global(.highcharts-axis-labels) { // NOTE -- had to break this one off since we're using a mixin
-    .caps--small();
-
-    fill: @color-lightgray;
   }
 }

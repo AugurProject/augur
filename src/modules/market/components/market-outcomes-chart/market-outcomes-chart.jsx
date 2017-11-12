@@ -48,8 +48,8 @@ class MarketOutcomesChart extends Component {
       bottom: 30,
       left: 50
     }
-    const width = this.outcomesChart.clientWidth - margin.right - margin.left
-    const height = this.outcomesChart.clientHeight - margin.top - margin.bottom
+    const width = this.outcomesChart.clientWidth
+    const height = this.outcomesChart.clientHeight
 
     chart.attr('width', width)
     chart.attr('height', height)
@@ -63,11 +63,11 @@ class MarketOutcomesChart extends Component {
 
     const xScale = d3.scaleTime()
       .domain(d3.extent(xDomain))
-      .range([0, width])
+      .range([margin.left, width - margin.right])
 
     const yScale = d3.scaleLinear()
       .domain(d3.extent(yDomain))
-      .range([height, 0])
+      .range([height - margin.bottom, margin.top])
 
     const outcomeLine = d3.line()
       .x(d => xScale(d[0]))
@@ -75,6 +75,7 @@ class MarketOutcomesChart extends Component {
 
     chart.append('path')
       .data([priceHistory[0].data])
+      .attr('class', 'outcome-line')
       .attr('d', outcomeLine)
   }
 
