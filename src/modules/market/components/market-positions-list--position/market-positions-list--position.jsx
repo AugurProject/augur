@@ -17,6 +17,7 @@ export default class Position extends Component {
     }
 
     this.toggleConfirm = this.toggleConfirm.bind(this)
+    this.calcAvgDiff = this.calcAvgDiff.bind(this)
   }
 
   toggleConfirm() {
@@ -30,6 +31,22 @@ export default class Position extends Component {
       confirmHeight,
       showConfirm: !this.state.showConfirm,
     })
+  }
+
+  calcAvgDiff(position, order) {
+    const p = this.props
+
+    const positionAvg = +getValue(position, 'avgPrice.formatted') || 0
+    const positionShares = +getValue(position, 'qtyShares.formatted') || 0
+
+    const orderPrice = +(getValue(order, 'order.purchasePrice.formatted') || 0)
+    const orderShares = +(getValue(order, 'order.qtyShares.formatted') || 0)
+
+    const newAvg = ((positionAvg * positionShares) + (orderPrice * orderShares)) / (positionShares + orderShares)
+
+    console.log(positionAvg, positionShares, orderPrice, orderShares)
+
+    return (newAvg - positionAvg).toFixed(4)
   }
 
   render() {
@@ -66,7 +83,7 @@ export default class Position extends Component {
           { getValue(p, 'position.avgPrice.formatted') }
           { p.openOrders && p.openOrders.length > 0 && p.openOrders.map((order, i) => (
             <div key={i} className={Styles.Position__pending}>
-              <span>+{ getValue(order, 'order.purchasePrice.formatted') }</span>
+              <span>{ this.calcAvgDiff(p.position, order) }</span>
             </div>
           ))}
         </li>

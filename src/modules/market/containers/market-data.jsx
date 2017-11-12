@@ -25,7 +25,7 @@ const openOrders = [
   {
     name: '1. HARTNELL (12)',
     id: '1',
-    pending: false,
+    pending: true,
     order: {
       qtyShares: { formatted: '10.942' },
       purchasePrice: { formatted: '0.3938' },
