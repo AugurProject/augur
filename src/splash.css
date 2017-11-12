@@ -3,8 +3,8 @@ body,
 #app,
 #splash {
   height: 100%;
-  width: 100%;
   margin: 0;
+  width: 100%;
 }
 
 #splash {
@@ -49,10 +49,10 @@ body,
 
 @keyframes splash-anim {
   0% {
-    transform: scale(1) rotate(0deg);
+    transform: scale(1);
   }
 
   100% {
-    transform: scale(4) rotate(3deg);
+    transform: scale(4);
   }
 }
