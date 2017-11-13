@@ -43,6 +43,36 @@ const openOrders = [
     },
   },
   {
+    name: '1. HARTNELL (12)',
+    id: '1',
+    pending: false,
+    order: {
+      qtyShares: { formatted: '7' },
+      purchasePrice: { formatted: '0.38' },
+      cancelOrder: () => console.log('cancel order'),
+    },
+  },
+  {
+    name: '1. HARTNELL (12)',
+    id: '1',
+    pending: false,
+    order: {
+      qtyShares: { formatted: '15.203' },
+      purchasePrice: { formatted: '0.3507' },
+      cancelOrder: () => console.log('cancel order'),
+    },
+  },
+  {
+    name: '1. HARTNELL (12)',
+    id: '1',
+    pending: false,
+    order: {
+      qtyShares: { formatted: '2.942' },
+      purchasePrice: { formatted: '0.35' },
+      cancelOrder: () => console.log('cancel order'),
+    },
+  },
+  {
     name: '2. ALMANDIN (14)',
     id: '2',
     pending: false,
