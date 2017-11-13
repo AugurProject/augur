@@ -6,23 +6,22 @@ import { isEqual } from 'lodash'
 // import { ChevronDown, ChevronUp } from 'modules/common/components/icons/icons'
 
 import * as d3 from 'd3'
-import { withFauxDOM } from 'react-faux-dom'
+import ReactFauxDOM from 'react-faux-dom'
 
 import Styles from 'modules/market/components/market-outcomes-chart/market-outcomes-chart.styles'
 
-class MarketOutcomesChart extends Component {
+export default class MarketOutcomesChart extends Component {
   static propTypes = {
     priceHistory: PropTypes.array.isRequired,
     selectedOutcomes: PropTypes.any, // NOTE -- There is a PR to handle null values, but until then..
-    updateSelectedOutcomes: PropTypes.func.isRequired,
-    connectFauxDOM: PropTypes.func.isRequired,
-    chart: PropTypes.object
+    updateSelectedOutcomes: PropTypes.func.isRequired
   }
 
   constructor(props) {
     super(props)
 
     this.state = {
+      chart: null,
       hoveredOutcome: null,
       selectedOutcome: null // NOTE -- Just a placeholder until outcomes are implemented
     }
@@ -31,68 +30,77 @@ class MarketOutcomesChart extends Component {
   }
 
   componentDidMount() {
-    this.drawChart(this.props.priceHistory)
+    this.drawChart()
+
+    window.addEventListener('resize', this.drawChart)
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!isEqual(this.props.priceHistory, nextProps.priceHistory)) this.drawChart(nextProps.priceHistory)
+  componentDidUpdate(prevProps) {
+    if (!isEqual(prevProps.priceHistory, this.props.priceHistory)) this.drawChart()
   }
 
-  drawChart(priceHistory) {
-    console.log('called -- ', priceHistory)
-    const chart = d3.select(this.props.connectFauxDOM('svg', 'chart'))
+  drawChart() {
+    if (this.outcomesChart) {
+      const fauxDiv = new ReactFauxDOM.Element('div')
+      const chart = d3.select(fauxDiv)
+        .append('svg')
 
-    const margin = {
-      top: 20,
-      right: 0,
-      bottom: 30,
-      left: 50
+      const priceHistory = this.props.priceHistory
+
+      const margin = {
+        top: 20,
+        right: 0,
+        bottom: 30,
+        left: 50
+      }
+
+      const width = this.outcomesChart.clientWidth
+      const height = this.outcomesChart.clientHeight
+
+      chart.attr('id', 'outcomes_chart')
+
+      // this.chart.attr('viewBox', `0 0 ${width} ${height}`)
+
+      chart.attr('width', width)
+      chart.attr('height', height)
+
+      const xDomain = priceHistory.reduce((p, outcome) => [...p, ...outcome.data.map(dataPoint => dataPoint[0])], [])
+      const yDomain = priceHistory.reduce((p, outcome) => [...p, ...outcome.data.map(dataPoint => dataPoint[1])], [])
+
+      const xScale = d3.scaleTime()
+        .domain(d3.extent(xDomain))
+        .range([margin.left, width - margin.right])
+
+      const yScale = d3.scaleLinear()
+        .domain(d3.extent(yDomain))
+        .range([height - margin.bottom, margin.top])
+
+      const outcomeLine = d3.line()
+        .x(d => xScale(d[0]))
+        .y(d => yScale(d[1]))
+
+      priceHistory.forEach((outcome, i) => {
+        chart.append('path')
+          .data([priceHistory[i].data])
+          .attr('class', 'outcome-line')
+          .attr('d', outcomeLine)
+      })
+
+      chart.append('g')
+        .attr('class', 'outcomes-axis')
+        .attr('transform', `translate(0, ${height - margin.bottom})`)
+        .call(d3.axisBottom(xScale))
+
+      chart.append('g')
+        .attr('class', 'outcomes-axis')
+        .attr('transform', `translate(${margin.left}, 0)`)
+        .call(d3.axisLeft(yScale))
+
+      this.setState({ chart: fauxDiv.toReact() })
     }
-    const width = this.outcomesChart.clientWidth
-    const height = this.outcomesChart.clientHeight
-
-    chart.attr('width', width)
-    chart.attr('height', height)
-
-    console.log('dim -- ', width, height)
-
-    const xDomain = priceHistory.reduce((p, outcome) => [...p, ...outcome.data.map(dataPoint => dataPoint[0])], [])
-    const yDomain = priceHistory.reduce((p, outcome) => [...p, ...outcome.data.map(dataPoint => dataPoint[1])], [])
-
-    console.log(d3.extent(xDomain), d3.extent(yDomain))
-
-    const xScale = d3.scaleTime()
-      .domain(d3.extent(xDomain))
-      .range([margin.left, width - margin.right])
-
-    const yScale = d3.scaleLinear()
-      .domain(d3.extent(yDomain))
-      .range([height - margin.bottom, margin.top])
-
-    const outcomeLine = d3.line()
-      .x(d => xScale(d[0]))
-      .y(d => yScale(d[1]))
-
-    priceHistory.forEach((outcome, i) => {
-      chart.append('path')
-        .data([priceHistory[i].data])
-        .attr('class', 'outcome-line')
-        .attr('d', outcomeLine)
-    })
-
-    chart.append('g')
-      .attr('class', 'outcomes-axis')
-      .attr('transform', `translate(0, ${height - margin.bottom})`)
-      .call(d3.axisBottom(xScale))
-
-    chart.append('g')
-      .attr('class', 'outcomes-axis')
-      .attr('transform', `translate(${margin.left}, 0)`)
-      .call(d3.axisLeft(yScale))
   }
 
   render() {
-    // const p = this.props
     const s = this.state
 
     return (
@@ -123,14 +131,12 @@ class MarketOutcomesChart extends Component {
           ref={(outcomesChart) => { this.outcomesChart = outcomesChart }}
           className={Styles.MarketOutcomesChart__chart}
         >
-          {this.props.chart}
+          {s.chart}
         </div>
       </div>
     )
   }
 }
-
-export default withFauxDOM(MarketOutcomesChart)
 
 // import React, { Component } from 'react'
 // import PropTypes from 'prop-types'
