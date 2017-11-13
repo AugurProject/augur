@@ -11,6 +11,10 @@ import getValue from 'utils/get-value'
 import Styles from 'modules/market/components/market-positions-list--mobile-order/market-positions-list--mobile-order.styles'
 
 export default class MobileOrders extends Component {
+  static propTypes = {
+    order: PropTypes.object.isRequired,
+  }
+
   constructor(props) {
     super(props)
 
@@ -46,7 +50,7 @@ export default class MobileOrders extends Component {
     return (
       <ul
         ref={(order) => { this.order = order }}
-        className={classNames(Styles.MobileOrder, { [`${Styles.pending}`] : p.order.pending })}
+        className={classNames(Styles.MobileOrder, { [`${Styles.pending}`]: p.order.pending })}
       >
         <li>QTY</li>
         <li>{ getValue(p, 'order.order.qtyShares.formatted') }</li>

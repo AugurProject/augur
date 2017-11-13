@@ -44,50 +44,50 @@ export default class MarketPositionsList extends Component {
           className={classNames(ToggleHeightStyles['open-on-mobile'], ToggleHeightStyles['toggle-height-target'], ToggleHeightStyles['start-open'])}
         >
           <div className={Styles.MarketPositionsList__table}>
-          { p.positions.length > 0 &&
-            <ul className={Styles['MarketPositionsList__table-header']}>
-              <li>Position</li>
-              <li><span>Quantity</span></li>
-              <li><span>Average <span />Price</span></li>
-              <li><span>Unrealized <span />P/L</span></li>
-              <li><span>Realized <span />P/L</span></li>
-              <li><span>Action</span></li>
-            </ul>
-          }
-          { p.positions.length > 0 &&
-            <div className={Styles['MarketPositionsList__table-body']}>
-              { p.positions && p.positions.map((position, i) => (
-                <MarketPositionsListPosition
-                  key={i}
-                  name={position.name}
-                  position={position.position}
-                  openOrders={p.openOrders.filter(order => order.id === position.id && order.pending === true)}
-                />
-              ))}
-            </div>
-          }
-          { p.openOrders.length > 0 &&
-            <ul className={Styles['MarketPositionsList__table-header']}>
-              <li>Open Orders</li>
-              <li><span>Quantity</span></li>
-              <li><span>Average <span />Price</span></li>
-              <li />
-              <li />
-              <li><span>Action</span></li>
-            </ul>
-          }
-          { p.openOrders.length > 0 &&
-            <div className={Styles['MarketPositionsList__table-body']}>
-              { p.openOrders.map((order, i) => (
+            { p.positions.length > 0 &&
+              <ul className={Styles['MarketPositionsList__table-header']}>
+                <li>Position</li>
+                <li><span>Quantity</span></li>
+                <li><span>Average <span />Price</span></li>
+                <li><span>Unrealized <span />P/L</span></li>
+                <li><span>Realized <span />P/L</span></li>
+                <li><span>Action</span></li>
+              </ul>
+            }
+            { p.positions.length > 0 &&
+              <div className={Styles['MarketPositionsList__table-body']}>
+                { p.positions && p.positions.map((position, i) => (
+                  <MarketPositionsListPosition
+                    key={i}
+                    name={position.name}
+                    position={position.position}
+                    openOrders={p.openOrders.filter(order => order.id === position.id && order.pending === true)}
+                  />
+                ))}
+              </div>
+            }
+            { p.openOrders.length > 0 &&
+              <ul className={Styles['MarketPositionsList__table-header']}>
+                <li>Open Orders</li>
+                <li><span>Quantity</span></li>
+                <li><span>Average <span />Price</span></li>
+                <li />
+                <li />
+                <li><span>Action</span></li>
+              </ul>
+            }
+            { p.openOrders.length > 0 &&
+              <div className={Styles['MarketPositionsList__table-body']}>
+                { p.openOrders.map((order, i) => (
                   <MarketPositionsListOrder
                     key={i}
                     name={order.name}
                     order={order.order}
                     pending={order.pending}
                   />
-              ))}
-            </div>
-          }
+                ))}
+              </div>
+            }
           </div>
           { p.positions.length === 0 && p.openOrders.length === 0 &&
             <NullStateMessage className={Styles['MarketPositionsList__null-state']} message="No positions or open orders" />

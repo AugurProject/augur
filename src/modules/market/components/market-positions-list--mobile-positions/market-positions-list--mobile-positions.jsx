@@ -8,22 +8,19 @@ import Styles from 'modules/market/components/market-positions-list--mobile-posi
 import CommonStyles from 'modules/market/components/market-positions-list--mobile/market-positions-list--mobile.styles'
 
 export default class MobilePositions extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      showConfirm: false,
-    }
+  static propTypes = {
+    position: PropTypes.object.isRequired,
+    pendingOrders: PropTypes.array.isRequired,
   }
 
-  calcAvgDiff(position, orders) {
+  static calcAvgDiff(position, orders) {
     const currentAvg = +getValue(position, 'position.avgPrice.formatted') || 0
     const currentShares = +getValue(position, 'position.qtyShares.formatted') || 0
 
     let newAvg = currentAvg * currentShares
     let totalShares = currentShares
 
-    orders.forEach(order => {
+    orders.forEach((order) => {
       const thisPrice = +(getValue(order, 'order.purchasePrice.formatted') || 0)
       const thisShares = +(getValue(order, 'order.qtyShares.formatted') || 0)
 
@@ -31,9 +28,17 @@ export default class MobilePositions extends Component {
       totalShares += thisShares
     })
 
-    newAvg = newAvg / totalShares
+    newAvg /= totalShares
 
     return (newAvg - currentAvg).toFixed(4)
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      showConfirm: false,
+    }
   }
 
   render() {
@@ -76,7 +81,7 @@ export default class MobilePositions extends Component {
                 AVG Price
                 { p.pendingOrders.length > 0 &&
                   <span className={Styles.MobilePositions__pending}>
-                    { this.calcAvgDiff(p.position, p.pendingOrders) }
+                    { MobilePositions.calcAvgDiff(p.position, p.pendingOrders) }
                   </span>
                 }
               </span>

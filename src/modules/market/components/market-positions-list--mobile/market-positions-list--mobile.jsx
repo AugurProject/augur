@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import classNames from 'classnames'
+/* eslint-disable react/no-array-index-key */
+
+import React from 'react'
 
 import MobilePositions from 'modules/market/components/market-positions-list--mobile-positions/market-positions-list--mobile-positions'
 import MobileOrder from 'modules/market/components/market-positions-list--mobile-order/market-positions-list--mobile-order'

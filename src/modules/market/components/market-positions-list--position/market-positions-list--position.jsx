@@ -1,6 +1,8 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */ // needed because <button> cannot take the place <ul> in the table structure
+/* eslint-disable react/no-array-index-key */
 
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import getValue from 'utils/get-value'
@@ -8,6 +10,26 @@ import getValue from 'utils/get-value'
 import Styles from 'modules/market/components/market-positions-list--position/market-positions-list--position.styles'
 
 export default class Position extends Component {
+  static propTypes = {
+    name: PropTypes.string.isRequired,
+    position: PropTypes.object.isRequired,
+    openOrders: PropTypes.array.isRequired,
+  }
+
+  static calcAvgDiff(position, order) {
+    const positionAvg = +getValue(position, 'avgPrice.formatted') || 0
+    const positionShares = +getValue(position, 'qtyShares.formatted') || 0
+
+    const orderPrice = +(getValue(order, 'order.purchasePrice.formatted') || 0)
+    const orderShares = +(getValue(order, 'order.qtyShares.formatted') || 0)
+
+    const newAvg = ((positionAvg * positionShares) + (orderPrice * orderShares)) / (positionShares + orderShares)
+
+    console.log(positionAvg, positionShares, orderPrice, orderShares)
+
+    return (newAvg - positionAvg).toFixed(4)
+  }
+
   constructor(props) {
     super(props)
 
@@ -17,7 +39,6 @@ export default class Position extends Component {
     }
 
     this.toggleConfirm = this.toggleConfirm.bind(this)
-    this.calcAvgDiff = this.calcAvgDiff.bind(this)
   }
 
   toggleConfirm() {
@@ -31,22 +52,6 @@ export default class Position extends Component {
       confirmHeight,
       showConfirm: !this.state.showConfirm,
     })
-  }
-
-  calcAvgDiff(position, order) {
-    const p = this.props
-
-    const positionAvg = +getValue(position, 'avgPrice.formatted') || 0
-    const positionShares = +getValue(position, 'qtyShares.formatted') || 0
-
-    const orderPrice = +(getValue(order, 'order.purchasePrice.formatted') || 0)
-    const orderShares = +(getValue(order, 'order.qtyShares.formatted') || 0)
-
-    const newAvg = ((positionAvg * positionShares) + (orderPrice * orderShares)) / (positionShares + orderShares)
-
-    console.log(positionAvg, positionShares, orderPrice, orderShares)
-
-    return (newAvg - positionAvg).toFixed(4)
   }
 
   render() {
@@ -83,7 +88,7 @@ export default class Position extends Component {
           { getValue(p, 'position.avgPrice.formatted') }
           { p.openOrders && p.openOrders.length > 0 && p.openOrders.map((order, i) => (
             <div key={i} className={Styles.Position__pending}>
-              <span>{ this.calcAvgDiff(p.position, order) }</span>
+              <span>{ Position.calcAvgDiff(p.position, order) }</span>
             </div>
           ))}
         </li>
