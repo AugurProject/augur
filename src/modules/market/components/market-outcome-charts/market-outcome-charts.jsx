@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import MarketOutcomeCandlestick from 'modules/market/components/market-outcome-candlestick/market-outcome-candlestick'
-// import MarketOutcomeDepth from 'modules/market/components/market-outcome-depth/market-outcome-depth'
-// import MarketOutcomeOrderBook from 'modules/market/components/market-outcome-order-book/market-outcome-order-book'
+import MarketOutcomeDepth from 'modules/market/components/market-outcome-depth/market-outcome-depth'
+import MarketOutcomeOrderBook from 'modules/market/components/market-outcome-order-book/market-outcome-order-book'
 
 import Styles from 'modules/market/components/market-outcome-charts/market-outcome-charts.styles'
 
@@ -49,29 +49,17 @@ export default class MarketOutcomeCharts extends Component {
           hoveredPrice={s.hoveredPrice}
           updateHoveredPrice={this.updateHoveredPrice}
         />
+        <MarketOutcomeDepth
+          marketDepth={p.marketDepth}
+          hoveredPrice={s.hoveredPrice}
+          updateHoveredPrice={this.updateHoveredPrice}
+        />
+        <MarketOutcomeOrderBook
+          orderBook={p.orderBook}
+          hoveredPrice={s.hoveredPrice}
+          updateHoveredPrice={this.updateHoveredPrice}
+        />
       </section>
     )
   }
 }
-
-
-// <MarketOutcomeCandlestick
-//   marketPriceHistory={p.marketPriceHistory}
-//   outcomeMin={p.marketMin}
-//   orderBookMid={p.marketMid}
-//   outcomeMax={p.marketMax}
-//   marketMax={1}
-//   marketMin={0}
-//   hoveredPrice={s.hoveredPrice}
-//   updateHoveredPrice={this.updateHoveredPrice}
-// />
-// <MarketOutcomeDepth
-//   marketDepth={p.marketDepth}
-//   hoveredPrice={s.hoveredPrice}
-//   updateHoveredPrice={this.updateHoveredPrice}
-// />
-// <MarketOutcomeOrderBook
-//   orderBook={p.orderBook}
-//   hoveredPrice={s.hoveredPrice}
-//   updateHoveredPrice={this.updateHoveredPrice}
-// />

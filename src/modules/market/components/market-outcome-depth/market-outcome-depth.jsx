@@ -1,18 +1,16 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Highchart from 'highcharts/js/highstock'
-import noData from 'highcharts/modules/no-data-to-display'
-import { isEqual } from 'lodash'
 
-import debounce from 'utils/debounce'
+import * as d3 from 'd3'
+import ReactFauxDOM from 'react-faux-dom'
+
+import { isEqual } from 'lodash'
 
 import Styles from 'modules/market/components/market-outcome-depth/market-outcome-depth.styles'
 
 export default class MarketOutcomeDepth extends Component {
   static propTypes = {
     marketDepth: PropTypes.object.isRequired,
-    marketMin: PropTypes.number.isRequired,
-    marketMax: PropTypes.number.isRequired,
     hoveredPrice: PropTypes.any,
     updateHoveredPrice: PropTypes.func.isRequired
   }
@@ -20,124 +18,117 @@ export default class MarketOutcomeDepth extends Component {
   constructor(props) {
     super(props)
 
-    this.updateGraph = this.updateGraph.bind(this)
-    this.debouncedUpdateGraph = debounce(this.updateGraph.bind(this))
-    this.determineHoveredPrice = this.determineHoveredPrice.bind(this)
-    this.updateCrosshair = this.updateCrosshair.bind(this)
+    this.state = {
+      chart: null
+    }
+
+    this.drawChart = this.drawChart.bind(this)
   }
 
   componentDidMount() {
-    noData(Highchart)
+    this.drawChart()
 
-    this.outcomeDepth = Highchart.chart('market_outcome_depth', {
-      chart: {
-        backgroundColor: '#2d2846'
-      },
-      credits: {
-        enabled: false
-      },
-      tooltip: {
-        enabled: false
-      },
-      lang: {
-        thousandsSep: ',',
-        noData: 'No orders to display'
-      },
-      xAxis: {
-        title: {
-          text: ''
-        },
-        tickWidth: 0,
-        lineWidth: 0,
-        minorGridLineWidth: 0,
-        lineColor: 'transparent',
-        minorTickLength: 0,
-        tickLength: 0
-      },
-      yAxis: {
-        title: {
-          text: ''
-        },
-        showLastLabel: true,
-        gridLineWidth: 0,
-        minorGridLineWidth: 0,
-        labels: {
-          align: 'bottom',
-          verticalAlign: 'bottom'
-        }
-      },
-      series: [
-        {
-          showInLegend: false,
-          name: '',
-          lineWidth: 1
-        },
-        {
-          showInLegend: false,
-          name: '',
-          lineWidth: 1
-        }
-      ],
-      plotOptions: {
-        series: {
-          point: {
-            events: {
-              mouseOver: (event) => {
-                this.props.updateHoveredPrice(event.target.y)
-              },
-              mouseOut: event => this.props.updateHoveredPrice(null)
-            }
-          }
-        }
-      }
-    })
-
-    window.addEventListener('resize', this.debouncedUpdateGraph)
-    this.depthGraph.addEventListener('mousemove', this.determineHoveredPrice)
-
-    this.updateGraph()
+    window.addEventListener('resize', this.drawChart)
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!isEqual(this.props.marketDepth, nextProps.marketDepth)) this.updateGraph()
-
-    if (!isEqual(this.props.hoveredPrice, nextProps.hoveredPrice)) this.updateCrosshair(nextProps.hoveredPrice)
+  componentDidUpdate(prevProps) {
+    if (!isEqual(prevProps.marketDepth, this.props.marketDepth)) this.updateGraph()
   }
 
   componentWillUnmount() {
-    this.outcomeDepth.destroy()
-    window.removeEventListener('resize', this.debouncedUpdateGraph)
-    this.depthGraph.removeEventListener('mousemove', this.determineHoveredPrice)
+    window.removeEventListener('resize', this.drawChart)
   }
 
-  determineHoveredPrice(event) {
-    const yValue = this.outcomeDepth.yAxis[0].toValue(event.chartY)
+  drawChart() {
+    if (this.depthChart) {
+      const fauxDiv = new ReactFauxDOM.Element('div')
+      const chart = d3.select(fauxDiv).append('svg')
 
-    if (yValue > this.props.marketMax || yValue < this.props.marketMin) return this.props.updateHoveredPrice(null)
+      const marketDepth = this.props.marketDepth
 
-    this.props.updateHoveredPrice(yValue)
-  }
+      const margin = {
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        stick: 5,
+        tickOffset: 10
+      }
 
-  updateGraph() {
-    this.outcomeDepth.series[0].setData(this.props.marketDepth.asks, false)
-    this.outcomeDepth.series[1].setData(this.props.marketDepth.bids, false)
+      const width = this.depthChart.clientWidth
+      const height = this.depthChart.clientHeight
 
-    this.outcomeDepth.redraw()
-  }
+      chart.attr('id', 'outcome_depth')
 
-  updateCrosshair(hoveredPrice) {
-    console.log('updateCrosshair w/in depth -- ', hoveredPrice)
+      chart.attr('width', width)
+      chart.attr('height', height)
 
-    // clear the old crosshair
-    this.outcomeDepth.yAxis[0].removePlotLine('depth_price_crosshair')
+      // const xDomain = priceHistory.reduce((p, dataPoint) => [...p, dataPoint.x], [])
+      // const yDomain = priceHistory.reduce((p, dataPoint) => [...p, dataPoint.high, dataPoint.low], [])
+      //
+      // const xScale = d3.scaleTime()
+      //   .domain(d3.extent(xDomain))
+      //   .range([margin.left, width - margin.right - 1])
+      //
+      // const yScale = d3.scaleLinear()
+      //   .domain(d3.extent(yDomain))
+      //   .range([height - margin.bottom, margin.top])
+      //
+      // chart.selectAll('line')
+      //   .data(new Array(4))
+      //   .enter()
+      //   .append('line')
+      //   .attr('class', 'tick-line')
+      //   .attr('x1', 0)
+      //   .attr('x2', width)
+      //   .attr('y1', (d, i) => ((height - margin.bottom) / 4) * i)
+      //   .attr('y2', (d, i) => ((height - margin.bottom) / 4) * i)
+      //
+      // chart.selectAll('text')
+      //   .data(new Array(4))
+      //   .enter()
+      //   .append('text')
+      //   .attr('class', 'tick-value')
+      //   .attr('x', 0)
+      //   .attr('y', (d, i) => ((height - margin.bottom) / 4) * i)
+      //   .attr('dy', margin.tickOffset)
+      //   .attr('dx', 0)
+      //   .text((d, i) => {
+      //     if (i) {
+      //       return parseFloat(yScale.invert(((height - margin.bottom) / 4) * i)).toFixed(2)
+      //     }
+      //   })
+      //
+      // chart.append('g')
+      //   .attr('class', 'outcomes-axis')
+      //   .attr('transform', `translate(0, ${height - margin.bottom})`)
+      //   .call(d3.axisBottom(xScale))
+      //
+      // // chart.append('g')
+      // //   .attr('class', 'outcomes-axis')
+      // //   .attr('transform', `translate(${margin.left}, 0)`)
+      // //   .call(d3.axisLeft(yScale))
+      //
+      // chart.selectAll('rect')
+      //   .data(priceHistory)
+      //   .enter().append('svg:rect')
+      //   .attr('x', d => xScale(d.x))
+      //   .attr('y', d => yScale(d3.max([d.open, d.close])))
+      //   .attr('height', d => yScale(d3.min([d.open, d.close])) - yScale(d3.max([d.open, d.close])))
+      //   .attr('width', d => (0.5 * (width - (2 * margin.stick))) / priceHistory.length)
+      //   .attr('class', d => d.close > d.open ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow
+      //
+      // chart.selectAll('line.stem')
+      //   .data(priceHistory)
+      //   .enter().append('svg:line')
+      //   .attr('class', 'stem')
+      //   .attr('x1', d => xScale(d.x) + (0.25 * ((width - (2 * margin.stick)) / priceHistory.length)))
+      //   .attr('x2', d => xScale(d.x) + (0.25 * ((width - (2 * margin.stick)) / priceHistory.length)))
+      //   .attr('y1', d => yScale(d.high))
+      //   .attr('y2', d => yScale(d.low))
+      //   .attr('class', d => d.close > d.open ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow
 
-    // conditionally render to crosshair
-    if (hoveredPrice !== null) {
-      this.outcomeDepth.yAxis[0].addPlotLine({
-        value: hoveredPrice,
-        width: 1,
-        id: 'depth_price_crosshair'
-      })
+      this.setState({ chart: fauxDiv.toReact() })
     }
   }
 
@@ -145,10 +136,11 @@ export default class MarketOutcomeDepth extends Component {
     return (
       <section className={Styles.MarketOutcomeDepth}>
         <div
-          ref={(depthGraph) => { this.depthGraph = depthGraph }}
-          id="market_outcome_depth"
-          className={Styles.MarketOutcomeDepth__graph}
-        />
+          ref={(depthChart) => { this.depthChart = depthChart }}
+          className={Styles.MarketOutcomeDepth__chart}
+        >
+          {this.state.chart}
+        </div>
       </section>
     )
   }

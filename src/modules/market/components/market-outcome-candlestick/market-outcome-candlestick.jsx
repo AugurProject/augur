@@ -44,8 +44,6 @@ export default class MarketOutcomeCandlestick extends Component {
 
   drawChart() {
     if (this.candlestickChart) {
-      console.log('marketPriceHistory -- ', this.props.marketPriceHistory)
-
       const fauxDiv = new ReactFauxDOM.Element('div')
       const chart = d3.select(fauxDiv).append('svg')
 
