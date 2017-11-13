@@ -10,6 +10,13 @@
   }
 }
 
+.MarketPositionsListMobile__wrapper--orders {
+  &:extend(.MarketPositionsListMobile__wrapper all);
+
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .MarketPositionsListMobile__heading {
   color: @color-white;
   font-size: @font-size-rather-large;
@@ -21,10 +28,15 @@
   &:extend(.MarketPositionsListMobile__heading all);
 
   margin-bottom: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .MarketPositionsListMobile__orders {
   display: table;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  position: relative;
   width: 100%;
 }
 
@@ -33,7 +45,7 @@
 
   color: @color-white;
   font-weight: 500;
-  margin-top: 1rem;
+  margin: 1rem 1rem 0 1rem;
 }
 
 @media @breakpoint-mobile-medium {

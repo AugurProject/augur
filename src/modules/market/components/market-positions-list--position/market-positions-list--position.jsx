@@ -25,8 +25,6 @@ export default class Position extends Component {
 
     const newAvg = ((positionAvg * positionShares) + (orderPrice * orderShares)) / (positionShares + orderShares)
 
-    console.log(positionAvg, positionShares, orderPrice, orderShares)
-
     return (newAvg - positionAvg).toFixed(4)
   }
 
@@ -36,6 +34,7 @@ export default class Position extends Component {
     this.state = {
       showConfirm: false,
       confirmHeight: 'auto',
+      confirmMargin: '0px',
     }
 
     this.toggleConfirm = this.toggleConfirm.bind(this)
@@ -43,13 +42,19 @@ export default class Position extends Component {
 
   toggleConfirm() {
     let confirmHeight = this.state.confirmHeight
+    let confirmMargin = this.state.confirmMargin
 
     if (!this.state.showConfirm) {
       confirmHeight = `${this.position.clientHeight}px`
     }
 
+    if (this.position.offsetTop !== this.confirmMessage.offsetTop) {
+      confirmMargin = `${this.position.offsetTop - this.confirmMessage.offsetTop}px`
+    }
+
     this.setState({
       confirmHeight,
+      confirmMargin,
       showConfirm: !this.state.showConfirm,
     })
   }
@@ -60,6 +65,7 @@ export default class Position extends Component {
 
     const confirmStyle = {
       height: s.confirmHeight,
+      marginTop: s.confirmMargin,
     }
 
     return (
@@ -98,6 +104,7 @@ export default class Position extends Component {
           <button onClick={this.toggleConfirm}>Close</button>
         </li>
         <div
+          ref={(confirmMessage) => { this.confirmMessage = confirmMessage }}
           className={classNames(Styles.Position__confirm, { [`${Styles['is-open']}`]: s.showConfirm })}
           style={confirmStyle}
         >

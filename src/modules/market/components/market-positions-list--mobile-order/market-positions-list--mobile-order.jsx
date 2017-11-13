@@ -21,6 +21,7 @@ export default class MobileOrders extends Component {
     this.state = {
       showConfirm: false,
       confirmHeight: 'auto',
+      confirmMargin: '0px',
     }
 
     this.toggleConfirm = this.toggleConfirm.bind(this)
@@ -28,13 +29,19 @@ export default class MobileOrders extends Component {
 
   toggleConfirm() {
     let confirmHeight = this.state.confirmHeight
+    let confirmMargin = this.state.confirmMargin
 
     if (!this.state.showConfirm) {
       confirmHeight = `${this.order.clientHeight}px`
     }
 
+    if (this.order.offsetTop !== this.confirmMessage.offsetTop) {
+      confirmMargin = `${this.order.offsetTop - this.confirmMessage.offsetTop}px`
+    }
+
     this.setState({
       confirmHeight,
+      confirmMargin,
       showConfirm: !this.state.showConfirm,
     })
   }
@@ -45,6 +52,7 @@ export default class MobileOrders extends Component {
 
     const confirmStyle = {
       height: s.confirmHeight,
+      marginTop: s.confirmMargin,
     }
 
     return (
@@ -65,6 +73,7 @@ export default class MobileOrders extends Component {
           }
         </li>
         <div
+          ref={(confirmMessage) => { this.confirmMessage = confirmMessage }}
           className={classNames(Styles.MobileOrder__confirm, { [`${Styles['is-open']}`]: s.showConfirm })}
           style={confirmStyle}
         >

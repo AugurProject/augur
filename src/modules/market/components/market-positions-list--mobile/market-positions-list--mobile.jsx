@@ -39,7 +39,7 @@ export default class MarketPositionsListMobile extends Component {
           />
         }
         { p.openOrders.length > 0 &&
-          <div className={Styles.MarketPositionsListMobile__wrapper}>
+          <div className={Styles['MarketPositionsListMobile__wrapper--orders']}>
             <h2 className={Styles['MarketPositionsListMobile__heading--orders']}>Open Orders</h2>
             <div className={Styles.MarketPositionsListMobile__orders}>
               { [...Array(s.visibleOrders)].map((unused, i) => (
