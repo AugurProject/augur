@@ -40,13 +40,14 @@ const marketDepth = {
 
 const marketPriceHistory = [...new Array(30)]
   .map((value, index) => ({
-    x: index,
+    x: (new Date()).getTime() - (Math.random() * ((1000000000000 - 0) + 0)),
     open: (Math.random()),
     high: (Math.random()),
     low: (Math.random()),
     close: (Math.random()),
     y: (Math.random() * (1000 - 10)) + 10
   }))
+  .sort((a, b) => a.x - b.x)
 
 const marketMax = marketPriceHistory.reduce((p, item, i) => {
   if (i === 0) return item.high

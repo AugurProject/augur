@@ -46,8 +46,7 @@ export default class MarketOutcomesChart extends Component {
   drawChart() {
     if (this.outcomesChart) {
       const fauxDiv = new ReactFauxDOM.Element('div')
-      const chart = d3.select(fauxDiv)
-        .append('svg')
+      const chart = d3.select(fauxDiv).append('svg')
 
       const priceHistory = this.props.priceHistory
 

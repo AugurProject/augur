@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 // import { ChevronDown, ChevronUp } from 'modules/common/components/icons/icons'
 
 import * as d3 from 'd3'
-import fc from 'd3fc'
 import ReactFauxDOM from 'react-faux-dom'
 
 import debounce from 'utils/debounce'
@@ -26,6 +25,10 @@ export default class MarketOutcomeCandlestick extends Component {
   constructor(props) {
     super(props)
 
+    this.state = {
+      chart: null
+    }
+
     this.drawChart = this.drawChart.bind(this)
   }
 
@@ -40,17 +43,82 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   drawChart() {
+    if (this.candlestickChart) {
+      console.log('marketPriceHistory -- ', this.props.marketPriceHistory)
 
+      const fauxDiv = new ReactFauxDOM.Element('div')
+      const chart = d3.select(fauxDiv).append('svg')
+
+      const priceHistory = this.props.marketPriceHistory
+
+      const margin = {
+        top: 20,
+        right: 0,
+        bottom: 30,
+        left: 50
+      }
+
+      const width = this.candlestickChart.clientWidth
+      const height = this.candlestickChart.clientHeight
+
+      chart.attr('id', 'outcome_candlestick')
+
+      chart.attr('width', width)
+      chart.attr('height', height)
+
+      const xDomain = priceHistory.reduce((p, dataPoint) => [...p, dataPoint.x], [])
+      const yDomain = priceHistory.reduce((p, dataPoint) => [...p, dataPoint.high, dataPoint.low], [])
+
+      const xScale = d3.scaleTime()
+        .domain(d3.extent(xDomain))
+        .range([margin.left, width - margin.right - 1])
+
+      const yScale = d3.scaleLinear()
+        .domain(d3.extent(yDomain))
+        .range([height - margin.bottom, margin.top])
+
+      chart.selectAll('line.x')
+        .data(xScale.ticks(10))
+        .enter().append('svg:line')
+        .attr('class', 'x')
+        .attr('x1', xScale)
+        .attr('x2', xScale)
+        .attr('y1', margin)
+        .attr('y2', height - margin)
+        .attr('stroke', '#ccc')
+
+      chart.selectAll('line.y')
+        .data(yScale.ticks(10))
+        .enter().append('svg:line')
+        .attr('class', 'y')
+        .attr('x1', 20)
+        .attr('x2', width - 20)
+        .attr('y1', yScale)
+        .attr('y2', yScale)
+        .attr('stroke', '#ccc')
+
+      chart.selectAll('rect')
+        .data(priceHistory)
+        .enter().append('svg:rect')
+        .attr('x', d => xScale(d.x))
+        .attr('y', d => yScale(d3.max([d.open, d.close])))
+        .attr('height', d => yScale(d3.min([d.open, d.close])) - yScale(d3.max([d.open, d.close])))
+        .attr('width', d => (0.5 * (width - (2 * 20))) / priceHistory.length)
+        .attr('fill', (d) => { return d.open > d.close ? 'red' : 'green' })
+
+      this.setState({ chart: fauxDiv.toReact() })
+    }
   }
 
   render() {
     return (
       <section className={Styles.MarketOutcomeCandlestick}>
         <div
-          ref={(candlestickGraph) => { this.candlestickGraph = candlestickGraph }}
-          id="market_outcome_candlestick"
-          className={Styles.MarketOutcomeCandlestick__graph}
-        />
+          ref={(candlestickChart) => { this.candlestickChart = candlestickChart }}
+          className={Styles.MarketOutcomeCandlestick__chart}
+        >
+          {this.state.chart}
+        </div>
       </section>
     )
   }
@@ -234,7 +302,7 @@ export default class MarketOutcomeCandlestick extends Component {
 //       <section className={Styles.MarketOutcomeCandlestick}>
 //         <div
 //           ref={(candlestickGraph) => { this.candlestickGraph = candlestickGraph }}
-//           id="market_outcome_candlestick"
+//           id='market_outcome_candlestick'
 //           className={Styles.MarketOutcomeCandlestick__graph}
 //         />
 //       </section>
@@ -268,7 +336,7 @@ export default class MarketOutcomeCandlestick extends Component {
 //       </div>
 //     </div>
 //     <div
-//       id="market_outcome_candlestick"
+//       id='market_outcome_candlestick'
 //       className={Styles.MarketOutcomesGraph__graph}
 //     />
 // </div>
