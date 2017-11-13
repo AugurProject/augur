@@ -59,8 +59,6 @@ export default class MarketOutcomesChart extends Component {
 
       chart.attr('id', 'outcomes_chart')
 
-      // this.chart.attr('viewBox', `0 0 ${width} ${height}`)
-
       chart.attr('width', width)
       chart.attr('height', height)
 
@@ -69,7 +67,7 @@ export default class MarketOutcomesChart extends Component {
 
       const xScale = d3.scaleTime()
         .domain(d3.extent(xDomain))
-        .range([margin.left, width - margin.right])
+        .range([margin.left, width - margin.right - 1])
 
       const yScale = d3.scaleLinear()
         .domain(d3.extent(yDomain))
@@ -82,7 +80,7 @@ export default class MarketOutcomesChart extends Component {
       priceHistory.forEach((outcome, i) => {
         chart.append('path')
           .data([priceHistory[i].data])
-          .attr('class', 'outcome-line')
+          .attr('class', `outcome-line outcome-line-${i}`)
           .attr('d', outcomeLine)
       })
 
