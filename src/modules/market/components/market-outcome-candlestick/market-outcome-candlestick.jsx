@@ -56,7 +56,8 @@ export default class MarketOutcomeCandlestick extends Component {
         right: 0,
         bottom: 30,
         left: 50,
-        stick: 5
+        stick: 5,
+        tickOffset: 10
       }
 
       const width = this.candlestickChart.clientWidth
@@ -78,25 +79,40 @@ export default class MarketOutcomeCandlestick extends Component {
         .domain(d3.extent(yDomain))
         .range([height - margin.bottom, margin.top])
 
-      // chart.selectAll('line.x')
-      //   .data(xScale.ticks(10))
-      //   .enter().append('svg:line')
-      //   .attr('class', 'x')
-      //   .attr('x1', xScale)
-      //   .attr('x2', xScale)
-      //   .attr('y1', margin.stick)
-      //   .attr('y2', height - margin.stick)
-      //   .attr('stroke', '#ccc')
+      chart.selectAll('line')
+        .data(new Array(4))
+        .enter()
+        .append('line')
+        .attr('class', 'tick-line')
+        .attr('x1', 0)
+        .attr('x2', width)
+        .attr('y1', (d, i) => ((height - margin.bottom) / 4) * i)
+        .attr('y2', (d, i) => ((height - margin.bottom) / 4) * i)
 
-      // chart.selectAll('line.y')
-      //   .data(yScale.ticks(10))
-      //   .enter().append('svg:line')
-      //   .attr('class', 'y')
-      //   .attr('x1', margin.stick)
-      //   .attr('x2', width - margin.stick)
-      //   .attr('y1', yScale)
-      //   .attr('y2', yScale)
-      //   .attr('stroke', '#ccc')
+      chart.selectAll('text')
+        .data(new Array(4))
+        .enter()
+        .append('text')
+        .attr('class', 'tick-value')
+        .attr('x', 0)
+        .attr('y', (d, i) => ((height - margin.bottom) / 4) * i)
+        .attr('dy', margin.tickOffset)
+        .attr('dx', 0)
+        .text((d, i) => {
+          if (i) {
+            return parseFloat(yScale.invert(((height - margin.bottom) / 4) * i)).toFixed(2)
+          }
+        })
+
+      chart.append('g')
+        .attr('class', 'outcomes-axis')
+        .attr('transform', `translate(0, ${height - margin.bottom})`)
+        .call(d3.axisBottom(xScale))
+
+      // chart.append('g')
+      //   .attr('class', 'outcomes-axis')
+      //   .attr('transform', `translate(${margin.left}, 0)`)
+      //   .call(d3.axisLeft(yScale))
 
       chart.selectAll('rect')
         .data(priceHistory)
@@ -105,7 +121,7 @@ export default class MarketOutcomeCandlestick extends Component {
         .attr('y', d => yScale(d3.max([d.open, d.close])))
         .attr('height', d => yScale(d3.min([d.open, d.close])) - yScale(d3.max([d.open, d.close])))
         .attr('width', d => (0.5 * (width - (2 * margin.stick))) / priceHistory.length)
-        .attr('fill', d => d.open > d.close ? 'red' : 'green') // eslint-disable-line no-confusing-arrow
+        .attr('class', d => d.close > d.open ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow
 
       chart.selectAll('line.stem')
         .data(priceHistory)
@@ -115,7 +131,7 @@ export default class MarketOutcomeCandlestick extends Component {
         .attr('x2', d => xScale(d.x) + (0.25 * ((width - (2 * margin.stick)) / priceHistory.length)))
         .attr('y1', d => yScale(d.high))
         .attr('y2', d => yScale(d.low))
-        .attr('stroke', d => d.open > d.close ? 'red' : 'green') // eslint-disable-line no-confusing-arrow
+        .attr('class', d => d.close > d.open ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow
 
       this.setState({ chart: fauxDiv.toReact() })
     }

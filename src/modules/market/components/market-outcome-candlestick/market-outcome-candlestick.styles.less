@@ -15,47 +15,34 @@
   }
 
   :global {
+    .tick-line {
+      stroke: @color-gray;
+    }
 
+    .tick-value {
+      &:extend(.caps--extra-small all);
+
+      stroke: @color-lightgray;
+    }
+
+    rect {
+      &.up-period {
+        fill: @color-positive;
+      }
+
+      &.down-period {
+        fill: @color-negative;
+      }
+    }
+
+    line {
+      &.up-period {
+        stroke: @color-positive;
+      }
+
+      &.down-period {
+        stroke: @color-negative;
+      }
+    }
   }
 }
-
-
-// .highcharts-background,
-// .highcharts-plot-background,
-// .highcharts-plot-border {
-//   fill: @color-transparent;
-// }
-//
-// .highcharts-point-up {
-//   fill: @color-positive;
-//   stroke: @color-positive;
-// }
-//
-// .highcharts-point-down {
-//   fill: @color-negative;
-//   stroke: @color-negative;
-// }
-//
-// .highcharts-xaxis {
-//   height: 1px;
-//   stroke: @color-darkgray;
-//
-//   .highcharts-tick {
-//     stroke: @color-darkgray;
-//     stroke-width: 1px;
-//   }
-// }
-//
-// .highcharts-series {
-//   &.highcharts-series-1 {
-//     fill: fadeout(@color-white, 75%);
-//   }
-// }
-//
-// // manually rendered crosshair
-// .highcharts-plot-lines-0 .highcharts-plot-line {
-//   stroke: @color-lightgray;
-//   stroke-dasharray: 3;
-//   stroke-dashoffset: 3;
-//   stroke-width: 1px;
-// }

@@ -80,6 +80,7 @@ export default class MarketOutcomesChart extends Component {
         .x(d => xScale(d[0]))
         .y(d => yScale(d[1]))
 
+      // TODO -- refactor this to be more correct in d3 conventions, i.e. -- chart.select....
       priceHistory.forEach((outcome, i) => {
         chart.append('path')
           .data([priceHistory[i].data])
