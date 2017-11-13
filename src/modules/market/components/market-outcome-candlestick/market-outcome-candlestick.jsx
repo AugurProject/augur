@@ -88,12 +88,6 @@ export default class MarketOutcomeCandlestick extends Component {
         return [...p, Number((p[i - 1] + step).toFixed(allowedFloat))]
       }, [])
 
-      console.log('yDomain -- ', yDomain)
-
-      // const yDomain = priceHistory.reduce((p, dataPoint) => [...p, dataPoint.high, dataPoint.low], [])
-
-      console.log('marketMid -- ', this.props.orderBookMid)
-
       const xScale = d3.scaleTime()
         .domain(d3.extent(xDomain))
         .range([margin.left, width - margin.right - 1])
@@ -129,11 +123,6 @@ export default class MarketOutcomeCandlestick extends Component {
         .attr('class', 'outcomes-axis')
         .attr('transform', `translate(0, ${height - margin.bottom})`)
         .call(d3.axisBottom(xScale))
-
-      // chart.append('g')
-      //   .attr('class', 'outcomes-axis')
-      //   .attr('transform', `translate(${margin.left}, 0)`)
-      //   .call(d3.axisLeft(yScale))
 
       chart.selectAll('rect')
         .data(priceHistory)

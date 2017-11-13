@@ -11,6 +11,9 @@ import Styles from 'modules/market/components/market-outcome-depth/market-outcom
 export default class MarketOutcomeDepth extends Component {
   static propTypes = {
     marketDepth: PropTypes.object.isRequired,
+    orderBookMin: PropTypes.number.isRequired,
+    orderBookMid: PropTypes.number.isRequired,
+    orderBookMax: PropTypes.number.isRequired,
     hoveredPrice: PropTypes.any,
     updateHoveredPrice: PropTypes.func.isRequired
   }
@@ -79,7 +82,28 @@ export default class MarketOutcomeDepth extends Component {
       chart.attr('height', height)
 
       const xDomain = Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[0]], [])], [])
-      const yDomain = Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[1]], [])], [])
+
+      // Ensure yDomain always has midmarket price at the center
+      // TODO -- can probably clean this up...is a copy/paste from an older implementation
+      // Can only use odd numbered intervals so midpoint is always centered
+      const intervals = 5
+      const allowedFloat = 2 // TODO -- set this to the precision
+
+      // Determine bounding diff
+      const maxDiff = Math.abs(this.props.orderBookMid - this.props.orderBookMax)
+      const minDiff = Math.abs(this.props.orderBookMid - this.props.orderBookMin)
+      const boundDiff = (maxDiff > minDiff ? maxDiff : minDiff)
+
+      // Set interval step
+      const step = boundDiff / ((intervals - 1) / 2)
+
+      const yDomain = new Array(intervals).fill(null).reduce((p, _unused, i) => {
+        if (i === 0) return [Number((this.props.orderBookMid - boundDiff).toFixed(allowedFloat))]
+        if (i + 1 === Math.round(intervals / 2)) return [...p, this.props.orderBookMid]
+        return [...p, Number((p[i - 1] + step).toFixed(allowedFloat))]
+      }, [])
+
+      // const yDomain = Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[1]], [])], [])
 
       const xScale = d3.scaleTime()
         .domain(d3.extent(xDomain))

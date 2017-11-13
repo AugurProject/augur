@@ -11,8 +11,10 @@ export default class MarketOutcomeCharts extends Component {
   static propTypes = {
     marketPriceHistory: PropTypes.array.isRequired,
     marketMin: PropTypes.number.isRequired,
-    marketMid: PropTypes.number.isRequired,
     marketMax: PropTypes.number.isRequired,
+    orderBookMin: PropTypes.number.isRequired,
+    orderBookMid: PropTypes.number.isRequired,
+    orderBookMax: PropTypes.number.isRequired,
     orderBook: PropTypes.object.isRequired,
     marketDepth: PropTypes.object.isRequired
   }
@@ -35,14 +37,14 @@ export default class MarketOutcomeCharts extends Component {
     const s = this.state
     const p = this.props
 
-    // NOTE -- wire up marketMin + marketMax
+    // TODO -- wire up marketMin + marketMax
 
     return (
       <section className={Styles.MarketOutcomeCharts}>
         <MarketOutcomeCandlestick
           marketPriceHistory={p.marketPriceHistory}
           outcomeMin={p.marketMin}
-          orderBookMid={p.marketMid}
+          orderBookMid={p.orderBookMid}
           outcomeMax={p.marketMax}
           marketMax={1}
           marketMin={0}
@@ -50,6 +52,9 @@ export default class MarketOutcomeCharts extends Component {
           updateHoveredPrice={this.updateHoveredPrice}
         />
         <MarketOutcomeDepth
+          orderBookMin={p.orderBookMin}
+          orderBookMid={p.orderBookMid}
+          orderBookMax={p.orderBookMax}
           marketDepth={p.marketDepth}
           hoveredPrice={s.hoveredPrice}
           updateHoveredPrice={this.updateHoveredPrice}
