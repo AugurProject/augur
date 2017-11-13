@@ -16,6 +16,19 @@
   }
 }
 
+.MarketPositionsListMobile__wrapper--orders {
+  &:extend(.MarketPositionsListMobile__wrapper all);
+
+  > h2 {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.MarketPositionsListMobile__orders {
+  display: table;
+  width: 100%;
+}
+
 @media @breakpoint-mobile-medium {
   .MarketPositionsListMobile__wrapper > h2 {
     font-size: @font-size-normal;
