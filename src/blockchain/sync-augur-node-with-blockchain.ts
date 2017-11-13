@@ -15,18 +15,18 @@ interface NetworkIDRow {
 function getNetworkID(db: Knex, augur: Augur, callback: (err: Error|null, networkID: string|null) => void) {
   const networkID: string = augur.rpc.getNetworkID();
   db.select("networkID").from("network_id").limit(1).asCallback( (err: Error|null, rows: Array<NetworkIDRow>): void => {
-      if (rows.length === 0) {
-        db.insert({networkID}).into("network_id").asCallback( (err: Error|null): void => {
-          callback(err, networkID);
-        });
+    if (rows.length === 0) {
+      db.insert({networkID}).into("network_id").asCallback( (err: Error|null): void => {
+        callback(err, networkID);
+      });
+    } else {
+      const lastNetworkID: string = rows[0].networkID;
+      if (networkID === lastNetworkID) {
+        db("network_id").update({lastLaunched: db.fn.now()}).asCallback( (err: Error|null): void => callback(err, networkID) );
       } else {
-        const lastNetworkID: string = rows[0].networkID;
-        if (networkID === lastNetworkID) {
-          db("network_id").update({lastLaunched: db.fn.now()}).asCallback( (err: Error|null): void => callback(err, networkID) );
-        } else {
-          callback(new Error(`NetworkID mismatch: current: ${networkID}, expected ${lastNetworkID}`), networkID);
-        }
+        callback(new Error(`NetworkID mismatch: current: ${networkID}, expected ${lastNetworkID}`), networkID);
       }
+    }
   });
 }
 

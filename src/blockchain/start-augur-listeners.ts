@@ -23,9 +23,9 @@ export function startAugurListeners(db: Knex, augur: Augur, callback: (blockNumb
       MarketFinalized: makeLogListener(db, augur, "Augur", "MarketFinalized"),
       UniverseForked: makeLogListener(db, augur, "Augur", "UniverseForked"),
     },
-    LegacyRepContract: {
-      Transfer: makeLogListener(db, augur, "LegacyRepContract", "Transfer"),
-      Approval: makeLogListener(db, augur, "LegacyRepContract", "Approval"),
+    LegacyReputationToken: {
+      Transfer: makeLogListener(db, augur, "LegacyReputationToken", "Transfer"),
+      Approval: makeLogListener(db, augur, "LegacyReputationToken", "Approval"),
     },
   }, (blockNumber: Int256): void => {
     if (!seenFirstBlock) {

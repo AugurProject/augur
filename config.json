@@ -1,8 +1,8 @@
 {
   "augurDbPath": "./augur.db",
   "ethereumNodeEndpoints": {
-    "http": "http://ropsten.augur.net:8545",
-    "ws": "ws://ropsten.augur.net:8546"
+    "http": "http://rinkeby.augur.net:8545",
+    "ws": "ws://rinkeby.augur.net:8546"
   },
   "uploadBlockNumbers": {
     "1": 4086425,

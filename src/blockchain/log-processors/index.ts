@@ -67,7 +67,7 @@ export const logProcessors: LogProcessors = {
       remove: processUniverseForkedLogRemoval,
     },
   },
-  LegacyRepContract: {
+  LegacyReputationToken: {
     Transfer: {
       add: processTransferLog,
       remove: processTransferLogRemoval,

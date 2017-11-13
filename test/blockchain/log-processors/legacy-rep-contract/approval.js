@@ -28,7 +28,7 @@ describe("blockchain/log-processors/legacy-rep-contract/approval", () => {
     });
   };
   test({
-    description: "LegacyRepContract Approval log and removal",
+    description: "LegacyReputationToken Approval log and removal",
     params: {
       log: {
         transactionHash: "TRANSACTION_HASH",

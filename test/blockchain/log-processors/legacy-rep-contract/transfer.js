@@ -28,7 +28,7 @@ describe("blockchain/log-processors/legacy-rep-contract/transfer", () => {
     });
   };
   test({
-    description: "LegacyRepContract Transfer log and removal",
+    description: "LegacyReputationToken Transfer log and removal",
     params: {
       log: {
         transactionHash: "TRANSACTION_HASH",
