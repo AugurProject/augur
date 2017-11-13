@@ -66,8 +66,33 @@ export default class MarketOutcomeCandlestick extends Component {
       chart.attr('width', width)
       chart.attr('height', height)
 
-      const xDomain = priceHistory.reduce((p, dataPoint) => [...p, dataPoint.x], [])
-      const yDomain = priceHistory.reduce((p, dataPoint) => [...p, dataPoint.high, dataPoint.low], [])
+      const xDomain = priceHistory.reduce((p, dataPoint) => [...p, dataPoint.period], [])
+
+      // Ensure yDomain always has midmarket price at the center
+      // TODO -- can probably clean this up...is a copy/paste from an older implementation
+      // Can only use odd numbered intervals so midpoint is always centered
+      const intervals = 5
+      const allowedFloat = 2 // TODO -- set this to the precision
+
+      // Determine bounding diff
+      const maxDiff = Math.abs(this.props.orderBookMid - this.props.outcomeMax)
+      const minDiff = Math.abs(this.props.orderBookMid - this.props.outcomeMin)
+      const boundDiff = (maxDiff > minDiff ? maxDiff : minDiff)
+
+      // Set interval step
+      const step = boundDiff / ((intervals - 1) / 2)
+
+      const yDomain = new Array(intervals).fill(null).reduce((p, _unused, i) => {
+        if (i === 0) return [Number((this.props.orderBookMid - boundDiff).toFixed(allowedFloat))]
+        if (i + 1 === Math.round(intervals / 2)) return [...p, this.props.orderBookMid]
+        return [...p, Number((p[i - 1] + step).toFixed(allowedFloat))]
+      }, [])
+
+      console.log('yDomain -- ', yDomain)
+
+      // const yDomain = priceHistory.reduce((p, dataPoint) => [...p, dataPoint.high, dataPoint.low], [])
+
+      console.log('marketMid -- ', this.props.orderBookMid)
 
       const xScale = d3.scaleTime()
         .domain(d3.extent(xDomain))
@@ -78,7 +103,7 @@ export default class MarketOutcomeCandlestick extends Component {
         .range([height - margin.bottom, margin.top])
 
       chart.selectAll('line')
-        .data(new Array(4))
+        .data(yDomain)
         .enter()
         .append('line')
         .attr('class', 'tick-line')
@@ -88,7 +113,7 @@ export default class MarketOutcomeCandlestick extends Component {
         .attr('y2', (d, i) => ((height - margin.bottom) / 4) * i)
 
       chart.selectAll('text')
-        .data(new Array(4))
+        .data(yDomain.sort((a, b) => (b - a)))
         .enter()
         .append('text')
         .attr('class', 'tick-value')
@@ -97,9 +122,7 @@ export default class MarketOutcomeCandlestick extends Component {
         .attr('dy', margin.tickOffset)
         .attr('dx', 0)
         .text((d, i) => {
-          if (i) {
-            return parseFloat(yScale.invert(((height - margin.bottom) / 4) * i)).toFixed(2)
-          }
+          if (i && i !== yDomain.length - 1) return d.toFixed(allowedFloat)
         })
 
       chart.append('g')
@@ -115,7 +138,7 @@ export default class MarketOutcomeCandlestick extends Component {
       chart.selectAll('rect')
         .data(priceHistory)
         .enter().append('svg:rect')
-        .attr('x', d => xScale(d.x))
+        .attr('x', d => xScale(d.period))
         .attr('y', d => yScale(d3.max([d.open, d.close])))
         .attr('height', d => yScale(d3.min([d.open, d.close])) - yScale(d3.max([d.open, d.close])))
         .attr('width', d => (0.5 * (width - (2 * margin.stick))) / priceHistory.length)
@@ -125,8 +148,8 @@ export default class MarketOutcomeCandlestick extends Component {
         .data(priceHistory)
         .enter().append('svg:line')
         .attr('class', 'stem')
-        .attr('x1', d => xScale(d.x) + (0.25 * ((width - (2 * margin.stick)) / priceHistory.length)))
-        .attr('x2', d => xScale(d.x) + (0.25 * ((width - (2 * margin.stick)) / priceHistory.length)))
+        .attr('x1', d => xScale(d.period) + (0.25 * ((width - (2 * margin.stick)) / priceHistory.length)))
+        .attr('x2', d => xScale(d.period) + (0.25 * ((width - (2 * margin.stick)) / priceHistory.length)))
         .attr('y1', d => yScale(d.high))
         .attr('y2', d => yScale(d.low))
         .attr('class', d => d.close > d.open ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow

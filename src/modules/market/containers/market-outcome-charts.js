@@ -42,12 +42,12 @@ const startTime = new Date().getTime()
 
 const marketPriceHistory = [...new Array(30)]
   .map((value, index) => ({
-    x: startTime + (index * ((1000000000000 - 0) + 0)),
+    period: startTime + (index * ((1000000000000 - 0) + 0)),
     high: (Math.random()),
     low: (Math.random()),
     open: (Math.random()),
     close: (Math.random()),
-    y: (Math.random() * (1000 - 10)) + 10
+    volume: (Math.random() * (1000 - 10)) + 10
   }))
   .sort((a, b) => a.x - b.x)
 
