@@ -55,7 +55,8 @@ export default class MarketOutcomeCandlestick extends Component {
         top: 20,
         right: 0,
         bottom: 30,
-        left: 50
+        left: 50,
+        stick: 5
       }
 
       const width = this.candlestickChart.clientWidth
@@ -83,16 +84,16 @@ export default class MarketOutcomeCandlestick extends Component {
         .attr('class', 'x')
         .attr('x1', xScale)
         .attr('x2', xScale)
-        .attr('y1', margin)
-        .attr('y2', height - margin)
+        .attr('y1', margin.stick)
+        .attr('y2', height - margin.stick)
         .attr('stroke', '#ccc')
 
       chart.selectAll('line.y')
         .data(yScale.ticks(10))
         .enter().append('svg:line')
         .attr('class', 'y')
-        .attr('x1', 20)
-        .attr('x2', width - 20)
+        .attr('x1', margin.stick)
+        .attr('x2', width - margin.stick)
         .attr('y1', yScale)
         .attr('y2', yScale)
         .attr('stroke', '#ccc')
@@ -103,8 +104,18 @@ export default class MarketOutcomeCandlestick extends Component {
         .attr('x', d => xScale(d.x))
         .attr('y', d => yScale(d3.max([d.open, d.close])))
         .attr('height', d => yScale(d3.min([d.open, d.close])) - yScale(d3.max([d.open, d.close])))
-        .attr('width', d => (0.5 * (width - (2 * 20))) / priceHistory.length)
-        .attr('fill', (d) => { return d.open > d.close ? 'red' : 'green' })
+        .attr('width', d => (0.5 * (width - (2 * margin.stick))) / priceHistory.length)
+        .attr('fill', d => d.open > d.close ? 'red' : 'green') // eslint-disable-line no-confusing-arrow
+
+      chart.selectAll('line.stem')
+        .data(priceHistory)
+        .enter().append('svg:line')
+        .attr('class', 'stem')
+        .attr('x1', d => xScale(d.x) + (0.25 * ((width - (2 * margin.stick)) / priceHistory.length)))
+        .attr('x2', d => xScale(d.x) + (0.25 * ((width - (2 * margin.stick)) / priceHistory.length)))
+        .attr('y1', d => yScale(d.high))
+        .attr('y2', d => yScale(d.low))
+        .attr('stroke', d => d.open > d.close ? 'red' : 'green') // eslint-disable-line no-confusing-arrow
 
       this.setState({ chart: fauxDiv.toReact() })
     }
