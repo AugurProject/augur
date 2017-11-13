@@ -89,7 +89,17 @@ export default class MarketOutcomeDepth extends Component {
           .attr('d', depthLine)
       })
 
+      const area = d3.area()
+        .x0(0)
+        .x1(d => xScale(d[0]))
+        .y(d => yScale(d[1]))
 
+      Object.keys(marketDepth).forEach((side) => {
+        chart.append('path')
+          .data([marketDepth[side]])
+          .attr('class', `depth-fill`)
+          .attr('d', area)
+      })
 
       this.setState({ chart: fauxDiv.toReact() })
     }
