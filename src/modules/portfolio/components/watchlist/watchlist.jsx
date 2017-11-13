@@ -10,6 +10,7 @@ import { TYPE_TRADE } from 'modules/market/constants/link-types'
 class WatchList extends Component {
   static propTypes = {
     markets: PropTypes.array.isRequired,
+    filteredMarkets: PropTypes.array.isRequired,
     isLogged: PropTypes.bool.isRequired,
     hasAllTransactionsLoaded: PropTypes.bool.isRequired,
     history: PropTypes.object.isRequired,
@@ -67,11 +68,6 @@ class WatchList extends Component {
   render() {
     const p = this.props
     const s = this.state
-    // create filtered Markets list, in this case all markets passed
-    const filteredMarkets = []
-    p.markets.forEach((market, ind) => {
-      filteredMarkets.push(ind)
-    })
 
     return (
       <section className={Styles.WatchList}>
@@ -100,7 +96,7 @@ class WatchList extends Component {
         <MarketsList
           isLogged={p.isLogged}
           markets={p.markets}
-          filteredMarkets={filteredMarkets}
+          filteredMarkets={p.filteredMarkets}
           location={p.location}
           history={p.history}
           scalarShareDenomination={p.scalarShareDenomination}

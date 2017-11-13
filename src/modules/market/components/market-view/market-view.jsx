@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import MarketHeader from 'modules/market/containers/market-header'
-import MarketOutcomesGraph from 'modules/market/containers/market-outcomes-graph'
+import MarketOutcomesChart from 'modules/market/containers/market-outcomes-chart'
 import MarketOutcomeGraphs from 'modules/market/containers/market-outcome-graphs'
 import MarketData from 'modules/market/containers/market-data'
 
@@ -48,7 +48,7 @@ export default class MarketView extends Component {
             clearSelectedOutcomes={this.clearSelectedOutcomes}
           />
           {s.selectedOutcomes.length === 0 &&
-            <MarketOutcomesGraph
+            <MarketOutcomesChart
               selectedOutcomes={s.selectedOutcomes}
               updateSelectedOutcomes={this.updateSelectedOutcomes}
             />

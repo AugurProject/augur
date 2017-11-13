@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 
-import MarketOutcomesGraph from 'modules/market/components/market-outcomes-graph/market-outcomes-graph'
+import MarketOutcomesChart from 'modules/market/components/market-outcomes-chart/market-outcomes-chart'
 
 const mergeProps = (sP, dP, oP) => {
   // const queryParams = parseQuery(ownProps.location.search)
@@ -9,7 +9,7 @@ const mergeProps = (sP, dP, oP) => {
   const randomData = () => [...new Array(30)].map(() => [(new Date()).getTime() - (Math.random() * ((1000000000000 - 0) + 0)), (Math.random() * 1)]).sort((a, b) => a[0] - b[0])
 
   const market = {
-    priceTimeSeries: [
+    priceHistory: [
       {
         id: '1',
         name: 'outcome 1',
@@ -55,8 +55,8 @@ const mergeProps = (sP, dP, oP) => {
 
   return {
     ...oP,
-    priceTimeSeries: market.priceTimeSeries
+    priceHistory: market.priceHistory
   }
 }
 
-export default connect(null, null, mergeProps)(MarketOutcomesGraph)
+export default connect(null, null, mergeProps)(MarketOutcomesChart)
