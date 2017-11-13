@@ -5,6 +5,7 @@ var immutableDelete = require("immutable-delete");
 var api = require("../api");
 var encodeTag = require("../format/tag/encode-tag");
 var convertDecimalToFixedPoint = require("../utils/convert-decimal-to-fixed-point");
+var noop = require("../utils/noop");
 var DEFAULT_NUM_TICKS = require("../constants").DEFAULT_NUM_TICKS;
 
 /**
@@ -27,27 +28,27 @@ var DEFAULT_NUM_TICKS = require("../constants").DEFAULT_NUM_TICKS;
  * @param {function} p.onFailed Called if/when the createMarket transaction fails.
  */
 function createMarket(p) {
-  api().Universe.getReportingWindowByTimestamp({
-    tx: { to: p.universe, send: false },
-    _timestamp: p._endTime,
-  }, function (err, reportingWindowAddress) {
-    if (err) return p.onFailed(err);
-    api().Universe.getMarketCreationCost({ tx: { to: p.universe, send: false }, _reportingWindow: reportingWindowAddress }, function (err, marketCreationCost) {
-      if (err) return p.onFailed(err);
-      var numTicks = p._numTicks || DEFAULT_NUM_TICKS;
-      api().ReportingWindow.createMarket(assign({}, immutableDelete(p, "universe"), {
-        tx: {
-          to: reportingWindowAddress,
-          value: marketCreationCost
-        },
-        _feePerEthInWei: p._feePerEthInWei,
-        _numTicks: numTicks,
-        _minDisplayPrice: convertDecimalToFixedPoint(p._minDisplayPrice, numTicks),
-        _maxDisplayPrice: convertDecimalToFixedPoint(p._maxDisplayPrice, numTicks),
-        _topic: encodeTag(p._topic),
-        _extraInfo: p._extraInfo ? JSON.stringify(p._extraInfo) : ""
-      }));
-    });
+  api().Universe.getReportingWindowByMarketEndTime({
+    tx: { to: p.universe },
+    _endTime: p._endTime,
+    onSent: noop,
+    onSuccess: function (res) {
+      var reportingWindowAddress = res.callReturn;
+      api().Universe.getMarketCreationCost({ tx: { to: p.universe, send: false, returns: "bytes32" }, _reportingWindow: reportingWindowAddress }, function (err, marketCreationCost) {
+        if (err) return p.onFailed(err);
+        var numTicks = p._numTicks || DEFAULT_NUM_TICKS;
+        api().ReportingWindow.createMarket(assign({}, immutableDelete(p, "universe"), {
+          tx: { to: reportingWindowAddress, value: marketCreationCost },
+          _feePerEthInWei: p._feePerEthInWei,
+          _numTicks: numTicks,
+          _minDisplayPrice: convertDecimalToFixedPoint(p._minDisplayPrice, numTicks),
+          _maxDisplayPrice: convertDecimalToFixedPoint(p._maxDisplayPrice, numTicks),
+          _topic: encodeTag(p._topic),
+          _extraInfo: p._extraInfo ? JSON.stringify(p._extraInfo) : ""
+        }));
+      });
+    },
+    onFailed: p.onFailed,
   });
 }
 

@@ -15,66 +15,62 @@ describe("contracts/generate-abi-map", function () {
     description: "convert standard JSON ABI to custom map",
     params: {
       abi: {
-        Contract1: {
-          abi: [{
-            "constant": false,
-            "type": "function",
-            "name": "allowance",
-            "inputs": [{
-              "type": "address",
-              "name": "owner"
-            }, {
-              "type": "address",
-              "name": "spender"
-            }]
+        Contract1: [{
+          "constant": false,
+          "type": "function",
+          "name": "allowance",
+          "inputs": [{
+            "type": "address",
+            "name": "owner"
           }, {
-            "constant": false,
-            "type": "function",
-            "name": "approve",
-            "outputs": [{
-              "type": "uint256",
-              "name": "out"
-            }],
-            "inputs": [{
-              "type": "address",
-              "name": "spender"
-            }, {
-              "type": "uint256",
-              "name": "fxpAmount"
-            }]
+            "type": "address",
+            "name": "spender"
           }]
-        },
-        Contract2: {
-          abi: [{
-            "constant": false,
-            "type": "function",
-            "name": "balanceOf",
-            "outputs": [{
-              "type": "uint256",
-              "name": "fxp"
-            }],
-            "inputs": [{
-              "type": "address",
-              "name": "address"
-            }]
+        }, {
+          "constant": false,
+          "type": "function",
+          "name": "approve",
+          "outputs": [{
+            "type": "uint256",
+            "name": "out"
+          }],
+          "inputs": [{
+            "type": "address",
+            "name": "spender"
           }, {
-            "inputs": [{
-              "indexed": true,
-              "type": "address",
-              "name": "from"
-            }, {
-              "indexed": true,
-              "type": "address",
-              "name": "to"
-            }, {
-              "indexed": false,
-              "type": "uint256",
-              "name": "value"
-            }],
-            "type": "event",
-            "name": "Transfer"
+            "type": "uint256",
+            "name": "fxpAmount"
           }]
-        }
+        }],
+        Contract2: [{
+          "constant": false,
+          "type": "function",
+          "name": "balanceOf",
+          "outputs": [{
+            "type": "uint256",
+            "name": "fxp"
+          }],
+          "inputs": [{
+            "type": "address",
+            "name": "address"
+          }]
+        }, {
+          "inputs": [{
+            "indexed": true,
+            "type": "address",
+            "name": "from"
+          }, {
+            "indexed": true,
+            "type": "address",
+            "name": "to"
+          }, {
+            "indexed": false,
+            "type": "uint256",
+            "name": "value"
+          }],
+          "type": "event",
+          "name": "Transfer"
+        }]
       }
     },
     assertions: function (output) {

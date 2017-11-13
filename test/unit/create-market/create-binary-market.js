@@ -8,7 +8,7 @@ var proxyquire = require("proxyquire").noPreserveCache();
 describe("create-market/create-binary-market", function () {
   var extraInfo = {
     marketType: "binary",
-    shortDescription: "Will this market be the One Market?",
+    description: "Will this market be the One Market?",
     longDescription: "One Market to rule them all, One Market to bind them, One Market to bring them all, and in the darkness bind them.",
     tags: ["Ancient evil", "Large flaming eyes"],
     creationTimestamp: 1234567890
@@ -55,12 +55,6 @@ describe("create-market/create-binary-market", function () {
     stub: {
       api: function () {
         return {
-          MarketFeeCalculator: {
-            getMarketCreationCost: function (p, callback) {
-              assert.deepEqual(p, { _reportingWindow: "REPORTING_WINDOW_ADDRESS" });
-              callback(null, "MARKET_CREATION_COST");
-            }
-          },
           ReportingWindow: {
             createMarket: function (p) {
               assert.deepEqual(p.tx, { to: "REPORTING_WINDOW_ADDRESS", value: "MARKET_CREATION_COST" });
@@ -84,13 +78,25 @@ describe("create-market/create-binary-market", function () {
             }
           },
           Universe: {
-            getReportingWindowByTimestamp: function (p, callback) {
+            getMarketCreationCost: function (p, callback) {
               assert.deepEqual(p, {
-                tx: { to: "UNIVERSE_ADDRESS", send: false },
-                _timestamp: 2345678901
+                tx: {
+                  send: false,
+                  to: "UNIVERSE_ADDRESS",
+                  returns: "bytes32"
+                },
+                _reportingWindow: "REPORTING_WINDOW_ADDRESS"
               });
-              callback(null, "REPORTING_WINDOW_ADDRESS");
-            }
+              callback(null, "MARKET_CREATION_COST");
+            },
+            getReportingWindowByMarketEndTime: function (p) {
+              assert.deepEqual(p.tx, { to: "UNIVERSE_ADDRESS" });
+              assert.strictEqual(p._endTime, 2345678901);
+              assert.isFunction(p.onSent);
+              assert.isFunction(p.onSuccess);
+              assert.isFunction(p.onFailed);
+              p.onSuccess({ callReturn: "REPORTING_WINDOW_ADDRESS" });
+            },
           }
         };
       }

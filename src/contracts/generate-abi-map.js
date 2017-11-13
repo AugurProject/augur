@@ -6,13 +6,12 @@ function generateAbiMap(abi) {
   var functions = {};
   var events = {};
   Object.keys(abi).forEach(function (contractName) {
-    var functionsAndEventsArray = abi[contractName].abi;
-    if (!abi[contractName].abi) return;
+    var functionsAndEventsArray = abi[contractName];
     functionsAndEventsArray.forEach(function (functionOrEvent) {
       var name = functionOrEvent.name;
       if (functionOrEvent.type === "function") {
         var functionAbiMap = {
-          constant: functionOrEvent.constant || functionOrEvent.view || functionOrEvent.pure || false,
+          constant: functionOrEvent.constant,
           name: functionOrEvent.name,
         };
         var inputs = [];
