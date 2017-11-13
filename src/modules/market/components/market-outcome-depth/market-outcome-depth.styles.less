@@ -16,11 +16,20 @@
 
     .depth-line {
       fill: none;
-      stroke: @color-grayish-purple;
+      stroke: @color-lighter-purple;
     }
 
-    .depth-fill {
-      fill: red;
+    .stop-left {
+      stop-color: transparent;
+    }
+
+    .stop-right {
+      stop-color: @color-lighter-purple;
+    }
+
+    .filled-subtle {
+      fill: url(#subtleGradient);
+      opacity: 0.15;
     }
   }
 }

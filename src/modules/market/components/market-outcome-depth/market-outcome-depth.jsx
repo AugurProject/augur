@@ -44,14 +44,27 @@ export default class MarketOutcomeDepth extends Component {
       const fauxDiv = new ReactFauxDOM.Element('div')
       const chart = d3.select(fauxDiv).append('svg')
 
-      const marketDepth = this.props.marketDepth
+      // Defs
+      const chartDefs = chart.append('defs')
 
-      console.log('marketDepth -- ', marketDepth)
+      //  Fills
+      const subtleGradient = chartDefs.append('linearGradient')
+        .attr('id', 'subtleGradient')
+
+      subtleGradient.append('stop')
+        .attr('class', 'stop-left')
+        .attr('offset', '0')
+
+      subtleGradient.append('stop')
+        .attr('class', 'stop-right')
+        .attr('offset', '1')
+
+      const marketDepth = this.props.marketDepth
 
       const margin = {
         top: 0,
         right: 0,
-        bottom: 0,
+        bottom: 30,
         left: 0,
         stick: 5,
         tickOffset: 10
@@ -68,8 +81,6 @@ export default class MarketOutcomeDepth extends Component {
       const xDomain = Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[0]], [])], [])
       const yDomain = Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[1]], [])], [])
 
-      console.log('xDomain -- ', xDomain)
-
       const xScale = d3.scaleTime()
         .domain(d3.extent(xDomain))
         .range([margin.left, width - margin.right - 1])
@@ -79,6 +90,7 @@ export default class MarketOutcomeDepth extends Component {
         .range([height - margin.bottom, margin.top])
 
       const depthLine = d3.line()
+        .curve(d3.curveStepAfter)
         .x(d => xScale(d[0]))
         .y(d => yScale(d[1]))
 
@@ -90,6 +102,7 @@ export default class MarketOutcomeDepth extends Component {
       })
 
       const area = d3.area()
+        .curve(d3.curveStepAfter)
         .x0(0)
         .x1(d => xScale(d[0]))
         .y(d => yScale(d[1]))
@@ -97,7 +110,7 @@ export default class MarketOutcomeDepth extends Component {
       Object.keys(marketDepth).forEach((side) => {
         chart.append('path')
           .data([marketDepth[side]])
-          .attr('class', `depth-fill`)
+          .classed('filled-subtle', true)
           .attr('d', area)
       })
 
