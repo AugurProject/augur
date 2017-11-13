@@ -7,7 +7,7 @@ import MarketOutcomeCandlestick from 'modules/market/components/market-outcome-c
 
 import Styles from 'modules/market/components/market-outcome-charts/market-outcome-charts.styles'
 
-export default class MarketOutcomeGraphs extends Component {
+export default class MarketOutcomeCharts extends Component {
   static propTypes = {
     marketPriceHistory: PropTypes.array.isRequired,
     marketMin: PropTypes.number.isRequired,
@@ -38,8 +38,7 @@ export default class MarketOutcomeGraphs extends Component {
     // NOTE -- wire up marketMin + marketMax
 
     return (
-      <section className={Styles.MarketOutcomeGraphs}>
-        <span className={Styles.MarketOutcomeGraphs__center} />
+      <section className={Styles.MarketOutcomeCharts}>
         <MarketOutcomeCandlestick
           marketPriceHistory={p.marketPriceHistory}
           outcomeMin={p.marketMin}
@@ -54,6 +53,7 @@ export default class MarketOutcomeGraphs extends Component {
     )
   }
 }
+
 
 // <MarketOutcomeCandlestick
 //   marketPriceHistory={p.marketPriceHistory}
