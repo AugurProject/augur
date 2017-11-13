@@ -39,6 +39,10 @@ export default class MarketOutcomesChart extends Component {
     if (!isEqual(prevProps.priceHistory, this.props.priceHistory)) this.drawChart()
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.drawChart)
+  }
+
   drawChart() {
     if (this.outcomesChart) {
       const fauxDiv = new ReactFauxDOM.Element('div')

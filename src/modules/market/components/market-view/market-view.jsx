@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 import MarketHeader from 'modules/market/containers/market-header'
 import MarketOutcomesChart from 'modules/market/containers/market-outcomes-chart'
-import MarketOutcomeGraphs from 'modules/market/containers/market-outcome-graphs'
+import MarketOutcomeCharts from 'modules/market/containers/market-outcome-charts'
 import MarketData from 'modules/market/containers/market-data'
 
 import Styles from 'modules/market/components/market-view/market-view.styles'
@@ -47,17 +47,9 @@ export default class MarketView extends Component {
             updateSelectedOutcomes={this.updateSelectedOutcomes}
             clearSelectedOutcomes={this.clearSelectedOutcomes}
           />
-          {s.selectedOutcomes.length === 0 &&
-            <MarketOutcomesChart
-              selectedOutcomes={s.selectedOutcomes}
-              updateSelectedOutcomes={this.updateSelectedOutcomes}
-            />
-          }
-          {s.selectedOutcomes.length > 0 &&
-            <MarketOutcomeGraphs
-              selectedOutcomes={s.selectedOutcomes}
-            />
-          }
+          <MarketOutcomeCharts
+            selectedOutcomes={s.selectedOutcomes}
+          />
         </div>
         <MarketData
           selectedOutcomes={s.selectedOutcomes}
@@ -67,6 +59,18 @@ export default class MarketView extends Component {
     )
   }
 }
+//
+// {s.selectedOutcomes.length === 0 &&
+//   <MarketOutcomesChart
+//     selectedOutcomes={s.selectedOutcomes}
+//     updateSelectedOutcomes={this.updateSelectedOutcomes}
+//   />
+// }
+// {s.selectedOutcomes.length > 0 &&
+//   <MarketOutcomeCharts
+//     selectedOutcomes={s.selectedOutcomes}
+//   />
+// }
 
 // OLD
 // import React, { Component } from 'react'
