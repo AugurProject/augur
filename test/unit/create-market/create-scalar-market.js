@@ -8,7 +8,7 @@ var proxyquire = require("proxyquire").noPreserveCache();
 describe("create-market/create-scalar-market", function () {
   var extraInfo = {
     marketType: "scalar",
-    shortDescription: "Will this market be the One Market?",
+    description: "Will this market be the One Market?",
     longDescription: "One Market to rule them all, One Market to bind them, One Market to bring them all, and in the darkness bind them.",
     tags: ["Ancient evil", "Large flaming eyes"],
     creationTimestamp: 1234567890
@@ -16,7 +16,7 @@ describe("create-market/create-scalar-market", function () {
   var test = function (t) {
     it(t.description, function (done) {
       var createScalarMarket = proxyquire("../../../src/create-market/create-scalar-market", {
-        "./create-new-market": proxyquire("../../../src/create-market/create-new-market", {
+        "./create-market": proxyquire("../../../src/create-market/create-market", {
           "../api": t.stub.api
         })
       });
@@ -57,14 +57,8 @@ describe("create-market/create-scalar-market", function () {
     stub: {
       api: function () {
         return {
-          MarketFeeCalculator: {
-            getMarketCreationCost: function (p, callback) {
-              assert.deepEqual(p, { _reportingWindow: "REPORTING_WINDOW_ADDRESS" });
-              callback(null, "MARKET_CREATION_COST");
-            }
-          },
           ReportingWindow: {
-            createNewMarket: function (p) {
+            createMarket: function (p) {
               assert.deepEqual(p.tx, { to: "REPORTING_WINDOW_ADDRESS", value: "MARKET_CREATION_COST" });
               assert.strictEqual(p._endTime, 2345678901);
               assert.strictEqual(p._numOutcomes, 2);
@@ -86,13 +80,25 @@ describe("create-market/create-scalar-market", function () {
             }
           },
           Universe: {
-            getReportingWindowByTimestamp: function (p, callback) {
+            getMarketCreationCost: function (p, callback) {
               assert.deepEqual(p, {
-                tx: { to: "UNIVERSE_ADDRESS" },
-                _timestamp: 2345678901
+                tx: {
+                  send: false,
+                  to: "UNIVERSE_ADDRESS",
+                  returns: "bytes32"
+                },
+                _reportingWindow: "REPORTING_WINDOW_ADDRESS"
               });
-              callback(null, "REPORTING_WINDOW_ADDRESS");
-            }
+              callback(null, "MARKET_CREATION_COST");
+            },
+            getReportingWindowByMarketEndTime: function (p) {
+              assert.deepEqual(p.tx, { to: "UNIVERSE_ADDRESS" });
+              assert.strictEqual(p._endTime, 2345678901);
+              assert.isFunction(p.onSent);
+              assert.isFunction(p.onSuccess);
+              assert.isFunction(p.onFailed);
+              p.onSuccess({ callReturn: "REPORTING_WINDOW_ADDRESS" });
+            },
           }
         };
       }

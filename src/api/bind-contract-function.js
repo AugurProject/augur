@@ -30,7 +30,6 @@ function bindContractFunction(functionAbi) {
     }
     var onSent, onSuccess, onFailed, signer, accountType;
     if (params && isObject(params[0])) {
-      console.log("params:", params);
       onSent = params[0].onSent;
       onSuccess = params[0].onSuccess;
       onFailed = params[0].onFailed;
@@ -39,7 +38,6 @@ function bindContractFunction(functionAbi) {
       signer = (params[0].meta || {}).signer;
       accountType = (params[0].meta || {}).accountType;
     }
-    console.log("payload:", payload);
     ethrpc.transact(payload, signer, accountType, onSent, onSuccess, onFailed);
   };
 }
