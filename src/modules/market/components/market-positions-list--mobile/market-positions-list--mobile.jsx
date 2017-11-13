@@ -9,6 +9,9 @@ import MarketPositionsListOrder from 'modules/market/components/market-positions
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 import { Close } from 'modules/common/components/icons/icons'
 
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
+import setShareDenomination from 'utils/set-share-denomination'
+
 import getValue from 'utils/get-value'
 
 import Styles from 'modules/market/components/market-positions-list--mobile/market-positions-list--mobile.styles'
@@ -53,8 +56,17 @@ export default class MarketPositionsListMobile extends Component {
   render() {
     const s = this.state
     const p = this.props
+
     const pendingOrders = p.openOrders.filter(order => order.pending === true)
     const orderText = pendingOrders.length > 1 ? 'Orders' : 'Order'
+
+    const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${p.marketID}`)
+
+    const topBidShares = setShareDenomination(getValue(p, 'outcome.topBid.shares.formatted'), selectedShareDenomination)
+    const topAskShares = setShareDenomination(getValue(p, 'outcome.topAsk.shares.formatted'), selectedShareDenomination)
+
+    const topBidPrice = getValue(p, 'outcome.topBid.price.formatted')
+    const topAskPrice = getValue(p, 'outcome.topAsk.price.formatted')
 
     return (
       <section className={Styles.MarketPositionsListMobile}>
@@ -124,6 +136,15 @@ export default class MarketPositionsListMobile extends Component {
             </div>
           </div>
         }
+        <div className={Styles.MarketPositionsListMobile__wrapper}>
+          <h2>Stats</h2>
+          <ul className={Styles.MarketPositionsListMobile__stats}>
+            <li><span>Best Bid</span> <ValueDenomination formatted={topBidPrice} /></li>
+            <li><span>Bid QTY</span> <ValueDenomination formatted={topBidShares} /></li>
+            <li><span>Best Ask</span> <ValueDenomination formatted={topAskPrice} /></li>
+            <li><span>Ask QTY</span> <ValueDenomination formatted={topAskShares} /></li>
+          </ul>
+        </div>
       </section>
     )
   }
