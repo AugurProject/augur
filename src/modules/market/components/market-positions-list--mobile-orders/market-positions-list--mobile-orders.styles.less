@@ -1,0 +1,55 @@
+@import (reference) '~assets/styles/shared';
+
+.MobileOrders__orders {
+  display: table;
+  width: 100%;
+}
+
+.MobileOrders__order {
+  display: table-row;
+
+  > li {
+    border-bottom: 1px solid @color-darkpurple-2;
+    color: @color-white;
+    display: table-cell;
+    padding: 1rem 0;
+
+    &:nth-child(1),
+    &:nth-child(3) {
+      &:extend(.caps--small);
+
+      color: @color-lightgray;
+    }
+
+    &:nth-child(1) {
+      width: 3.25rem;
+    }
+
+    &:nth-child(3) {
+      width: 4.5rem;
+    }
+
+    &:last-child {
+      text-align: right;
+    }
+  }
+
+  &:first-child > li {
+    padding-top: 0;
+  }
+
+  &:last-child > li {
+    border-bottom-width: 0;
+  }
+
+  &.pending > li {
+    &:nth-child(2),
+    &:nth-child(4) {
+      color: @color-lighter-purple;
+    }
+  }
+}
+
+.MobileOrders__close-order > svg {
+  width: 0.8rem;
+}

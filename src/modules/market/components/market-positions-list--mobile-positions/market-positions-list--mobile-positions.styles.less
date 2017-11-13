@@ -1,0 +1,45 @@
+@import (reference) '~assets/styles/shared';
+
+.MobilePositions__position {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  > li {
+    color: @color-white;
+
+    > span {
+      &:extend(.caps--small);
+
+      color: @color-lightgray;
+      display: block;
+      margin-bottom: 0.5rem;
+      white-space: nowrap;
+    }
+  }
+}
+
+.MobilePositions__pending {
+  color: @color-lighter-purple;
+  font-size: @font-size-small;
+  font-weight: 500;
+  line-height: @font-size-small;
+  margin-left: 0.5rem;
+}
+
+@media @breakpoint-mobile-medium {
+  .MobilePositions__position > li {
+    width: 50%;
+
+    &:nth-child(1),
+    &:nth-child(2) {
+      margin-bottom: 2rem;
+    }
+  }
+}
+
+@media @breakpoint-mobile-small {
+  .MobilePositions__position {
+    justify-content: space-between;
+  }
+}
