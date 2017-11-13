@@ -38,12 +38,14 @@ const marketDepth = {
   asks: asks.reduce((p, item) => [...p, [item.cumulativeShares, item.price]], []).sort((a, b) => a[0] - b[0]),
 }
 
+const startTime = new Date().getTime()
+
 const marketPriceHistory = [...new Array(30)]
   .map((value, index) => ({
-    x: (new Date()).getTime() - (Math.random() * ((1000000000000 - 0) + 0)),
-    open: (Math.random()),
+    x: startTime + (index * ((1000000000000 - 0) + 0)),
     high: (Math.random()),
     low: (Math.random()),
+    open: (Math.random()),
     close: (Math.random()),
     y: (Math.random() * (1000 - 10)) + 10
   }))
