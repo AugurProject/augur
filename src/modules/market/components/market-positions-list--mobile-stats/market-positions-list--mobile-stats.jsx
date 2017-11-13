@@ -22,7 +22,7 @@ const MobileStats = p => {
 
   return (
     <div className={CommonStyles.MarketPositionsListMobile__wrapper}>
-      <h2>Stats</h2>
+      <h2 className={CommonStyles.MarketPositionsListMobile__heading}>Stats</h2>
       <ul className={Styles.MobileStats}>
         <li><span>Best Bid</span> <ValueDenomination formatted={topBidPrice} /></li>
         <li><span>Bid QTY</span> <ValueDenomination formatted={topBidShares} /></li>

@@ -17,8 +17,8 @@ const MarketPositionsListMobile = p => (
       />
     }
     { p.openOrders.length > 0 &&
-      <div className={Styles['MarketPositionsListMobile__wrapper--orders']}>
-        <h2>Open Orders</h2>
+      <div className={Styles.MarketPositionsListMobile__wrapper}>
+        <h2 className={Styles['MarketPositionsListMobile__heading--orders']}>Open Orders</h2>
         <div className={Styles.MarketPositionsListMobile__orders}>
           { p.openOrders.map((order, i) => (
             <MobileOrder key={i} order={order} />
