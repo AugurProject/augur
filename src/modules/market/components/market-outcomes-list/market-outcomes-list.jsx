@@ -44,15 +44,15 @@ export default class MarketOutcomesList extends Component {
         </button>
         <div
           ref={(outcomeList) => { this.outcomeList = outcomeList }}
-          className={classNames(ToggleHeightStyles['toggle-height-target'], ToggleHeightStyles['start-open'])}
+          className={classNames(ToggleHeightStyles['open-on-mobile'], ToggleHeightStyles['toggle-height-target'], ToggleHeightStyles['start-open'])}
         >
           <div className={Styles.MarketOutcomesList__table}>
             <ul className={Styles['MarketOutcomesList__table-header']}>
               <li>Outcome</li>
-              <li><span>Bid Qty</span></li>
-              <li><span>Best Bid</span></li>
-              <li><span>Best Ask</span></li>
-              <li><span>Ask Qty</span></li>
+              <li><span>Bid <span />Qty</span></li>
+              <li><span>Best <span />Bid</span></li>
+              <li><span>Best <span />Ask</span></li>
+              <li><span>Ask <span />Qty</span></li>
               <li><span>Last</span></li>
             </ul>
             <div className={Styles['MarketOutcomesList__table-body']}>
