@@ -5,7 +5,8 @@ import PropTypes from 'prop-types'
 import * as d3 from 'd3'
 import ReactFauxDOM from 'react-faux-dom'
 
-import debounce from 'utils/debounce'
+import MarketOutcomeCandlestickHeader from 'modules/market/components/market-outcome-candlestick/market-outcome-candlestick-header'
+
 import { isEqual } from 'lodash'
 
 import Styles from 'modules/market/components/market-outcome-candlestick/market-outcome-candlestick.styles'
@@ -26,7 +27,8 @@ export default class MarketOutcomeCandlestick extends Component {
     super(props)
 
     this.state = {
-      chart: null
+      chart: null,
+      hoveredPeriod: {}
     }
 
     this.drawChart = this.drawChart.bind(this)
@@ -88,6 +90,7 @@ export default class MarketOutcomeCandlestick extends Component {
         return [...p, Number((p[i - 1] + step).toFixed(allowedFloat))]
       }, [])
 
+      // Candlesticks
       const xScale = d3.scaleTime()
         .domain(d3.extent(xDomain))
         .range([margin.left, width - margin.right - 1])
@@ -118,11 +121,6 @@ export default class MarketOutcomeCandlestick extends Component {
         .text((d, i) => {
           if (i && i !== yDomain.length - 1) return d.toFixed(allowedFloat)
         })
-
-      // chart.append('g')
-      //   .attr('class', 'outcomes-axis')
-      //   .attr('transform', `translate(0, ${height - margin.bottom})`)
-      //   .call(d3.axisBottom(xScale))
 
       chart.selectAll('rect.candle')
         .data(priceHistory)
@@ -159,13 +157,33 @@ export default class MarketOutcomeCandlestick extends Component {
         .attr('width', d => (0.40 * (width - (2 * margin.stick))) / priceHistory.length)
         .attr('class', 'period-volume') // eslint-disable-line no-confusing-arrow
 
+      chart.selectAll('rect.hover')
+        .data(priceHistory)
+        .enter().append('rect')
+        .attr('x', d => xScale(d.period))
+        .attr('y', 0)
+        .attr('height', height - margin.bottom)
+        .attr('width', d => (0.5 * (width - (2 * margin.stick))) / priceHistory.length)
+        .attr('class', 'period-hover')
+        .on('mouseover', d => this.setState({ hoveredPeriod: d }))
+        .on('mouseout', () => this.setState({ hoveredPeriod: {} }))
+
       this.setState({ chart: fauxDiv.toReact() })
     }
   }
 
   render() {
+    const s = this.state
+
     return (
       <section className={Styles.MarketOutcomeCandlestick}>
+        <MarketOutcomeCandlestickHeader
+          volume={s.hoveredPeriod.volume}
+          open={s.hoveredPeriod.open}
+          high={s.hoveredPeriod.high}
+          low={s.hoveredPeriod.low}
+          close={s.hoveredPeriod.close}
+        />
         <div
           ref={(candlestickChart) => { this.candlestickChart = candlestickChart }}
           className={Styles.MarketOutcomeCandlestick__chart}
