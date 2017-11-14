@@ -27,8 +27,8 @@ export function updateAccountCancelsData(data, marketID) {
 
 export function updateAccountTradesData(data, callback = logError) {
   return (dispatch) => {
+    dispatch(addTransactions(data))
     data.forEach((trade) => {
-      dispatch(addTransactions(data))
       eachSeries(data, (market, nextMarket) => {
         dispatch({ type: UPDATE_ACCOUNT_TRADES_DATA, market, data: data[market] })
         parallel([
