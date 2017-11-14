@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "async": "1.5.2",
-    "augur-contracts": "3.3.2",
+    "augur-contracts": "3.3.3",
     "bignumber.js": "2.3.0",
     "clone": "1.0.2",
     "ethereumjs-connect": "4.4.1",
