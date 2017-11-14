@@ -119,10 +119,10 @@ export default class MarketOutcomeCandlestick extends Component {
           if (i && i !== yDomain.length - 1) return d.toFixed(allowedFloat)
         })
 
-      chart.append('g')
-        .attr('class', 'outcomes-axis')
-        .attr('transform', `translate(0, ${height - margin.bottom})`)
-        .call(d3.axisBottom(xScale))
+      // chart.append('g')
+      //   .attr('class', 'outcomes-axis')
+      //   .attr('transform', `translate(0, ${height - margin.bottom})`)
+      //   .call(d3.axisBottom(xScale))
 
       chart.selectAll('rect')
         .data(priceHistory)
