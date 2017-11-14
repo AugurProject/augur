@@ -11,7 +11,9 @@ const loadOneOutcomeBidsOrAsks = (marketID, outcome, orderTypeLabel, callback = 
   const market = marketsData[marketID]
   if (!market) return callback(`market ${marketID} data not found`)
   dispatch(updateIsFirstOrderBookChunkLoaded(marketID, outcome, orderTypeLabel, false))
+  console.log('in loadOneOutcomeBidsOrAsks', marketID, outcome, orderTypeLabel)
   augur.trading.getOpenOrders({ marketID, outcome, orderType: orderTypeLabel }, (err, openOrders) => {
+    console.log('returnValues fom getOpenOrders', err, openOrders)
     if (err) return callback(err)
     if (openOrders != null) {
       // TODO verify that openOrders is the correct shape for insertion

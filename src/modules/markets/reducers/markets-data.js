@@ -7,7 +7,6 @@ export default function (marketsData = {}, action) {
   switch (action.type) {
     case UPDATE_MARKETS_DATA:
       return {
-        ...marketsData,
         ...processMarketsData(action.marketsData, marketsData)
       }
     case UPDATE_MARKETS_LOADING_STATUS:

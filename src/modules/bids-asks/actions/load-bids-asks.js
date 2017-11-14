@@ -4,6 +4,7 @@ import logError from 'utils/log-error'
 
 const loadBidsAsks = (marketID, callback = logError) => (dispatch, getState) => {
   const { marketsData } = getState()
+  console.log('marketsData in loadBidsAsks', marketsData, marketID)
   if (marketID == null) {
     return callback(`must specify market ID: ${marketID}`)
   }
