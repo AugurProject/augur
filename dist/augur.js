@@ -1607,7 +1607,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.6.0";
+  this.version = "4.6.2";
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
@@ -34586,7 +34586,7 @@ module.exports={
   "_args": [
     [
       "elliptic@6.4.0",
-      "/home/jack/src/augur.js"
+      "/storage/home/pg/Development/augur/augur.js"
     ]
   ],
   "_from": "elliptic@6.4.0",
@@ -34613,7 +34613,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
   "_spec": "6.4.0",
-  "_where": "/home/jack/src/augur.js",
+  "_where": "/storage/home/pg/Development/augur/augur.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
