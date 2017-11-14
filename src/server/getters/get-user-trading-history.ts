@@ -29,7 +29,7 @@ export function getUserTradingHistory(db: Knex|Knex.Transaction, universe: Addre
   query = queryModifier(query,  "trades.blockNumber", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, userTradingHistory?: Array<TradingHistoryRow>): void => {
     if (err) return callback(err);
-    if (!userTradingHistory || !userTradingHistory.length) return callback(null);
+    if (!userTradingHistory) return callback(new Error("Internal error retrieving trade history"));
     callback(null, userTradingHistory.map((trade: TradingHistoryRow): UITrade => ({
       type: trade.orderType!,
       price: trade.price!,

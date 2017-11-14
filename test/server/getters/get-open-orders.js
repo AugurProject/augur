@@ -252,7 +252,7 @@ describe("server/getters/get-open-orders", () => {
     },
     assertions: (err, openOrders) => {
       assert.isNull(err);
-      assert.isUndefined(openOrders);
+      assert.deepEqual(openOrders, {});
     },
   });
 });

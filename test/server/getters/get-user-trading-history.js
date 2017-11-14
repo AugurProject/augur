@@ -175,7 +175,7 @@ describe("server/getters/get-user-trading-history", () => {
     },
     assertions: (err, userTradingHistory) => {
       assert.isNull(err);
-      assert.isUndefined(userTradingHistory);
+      assert.deepEqual(userTradingHistory, []);
     },
   });
 });

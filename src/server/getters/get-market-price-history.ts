@@ -18,7 +18,7 @@ export function getMarketPriceHistory(db: Knex, marketID: Address, callback: (er
   ]).from("trades").leftJoin("blocks", "trades.blockNumber", "blocks.blockNumber").where({ marketID })
   .asCallback((err: Error|null, tradesRows?: Array<MarketPriceHistoryRow>): void => {
     if (err) return callback(err);
-    if (!tradesRows || !tradesRows.length) return callback(null);
+    if (!tradesRows) return callback(new Error("Internal error retrieving market price history"));
     const marketPriceHistory: MarketPriceHistory = {};
     tradesRows.forEach((trade: MarketPriceHistoryRow): void => {
       if (!marketPriceHistory[trade.outcome]) marketPriceHistory[trade.outcome] = [];
