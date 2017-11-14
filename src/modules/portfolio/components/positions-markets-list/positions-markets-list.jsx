@@ -81,24 +81,29 @@ class PositionsMarketsList extends Component {
             <Dropdown default={s.defaultFilterType} options={s.filterOptions} onChange={this.changeDropdown} />
           </div>
         </div>
-        {p.markets.length ? p.markets.map((market) => {
-          // TODO: REMOVE and simply return the MarketPortfolioCard.
-          // This is temporary so the page doesn't error out due to bad data during the wiring up of v3
-          if (market.outcomes.length === 0) return (<NullStateMessage message={'Market Data Malformed'} />)
-          return (
-            <MarketPortfolioCard
-              key={market.id}
-              market={market}
-              closePositionStatus={p.closePositionStatus}
-              scalarShareDenomination={p.scalarShareDenomination}
-              orderCancellation={p.orderCancellation}
-              location={p.location}
-              history={p.history}
-              linkType={p.linkType}
-              positionsDefault={p.positionsDefault}
-            />
-          )
-        }): <NullStateMessage message={'No Markets Available'} />}
+        {p.markets.length ? 
+          p.markets.map((market) => {
+            // TODO: REMOVE and simply return the MarketPortfolioCard.
+            // This is temporary so the page doesn't error out due to bad data during the wiring up of v3
+            if (market.outcomes.length === 0) {
+              return (<NullStateMessage message={'Market Data Malformed'} />)
+            }
+          
+            return (
+              <MarketPortfolioCard
+                key={market.id}
+                market={market}
+                closePositionStatus={p.closePositionStatus}
+                scalarShareDenomination={p.scalarShareDenomination}
+                orderCancellation={p.orderCancellation}
+                location={p.location}
+                history={p.history}
+                linkType={p.linkType}
+                positionsDefault={p.positionsDefault}
+              />
+            )
+          }): 
+          <NullStateMessage message={'No Markets Available'} />}
       </div>
     )
   }
