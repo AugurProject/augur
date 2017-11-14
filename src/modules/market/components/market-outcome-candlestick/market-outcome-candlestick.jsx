@@ -124,9 +124,9 @@ export default class MarketOutcomeCandlestick extends Component {
       //   .attr('transform', `translate(0, ${height - margin.bottom})`)
       //   .call(d3.axisBottom(xScale))
 
-      chart.selectAll('rect')
+      chart.selectAll('rect.candle')
         .data(priceHistory)
-        .enter().append('svg:rect')
+        .enter().append('rect')
         .attr('x', d => xScale(d.period))
         .attr('y', d => yScale(d3.max([d.open, d.close])))
         .attr('height', d => yScale(d3.min([d.open, d.close])) - yScale(d3.max([d.open, d.close])))
@@ -135,13 +135,29 @@ export default class MarketOutcomeCandlestick extends Component {
 
       chart.selectAll('line.stem')
         .data(priceHistory)
-        .enter().append('svg:line')
+        .enter().append('line')
         .attr('class', 'stem')
         .attr('x1', d => xScale(d.period) + (0.25 * ((width - (2 * margin.stick)) / priceHistory.length)))
         .attr('x2', d => xScale(d.period) + (0.25 * ((width - (2 * margin.stick)) / priceHistory.length)))
         .attr('y1', d => yScale(d.high))
         .attr('y2', d => yScale(d.low))
         .attr('class', d => d.close > d.open ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow
+
+      // Volume
+      const yVolumeDomain = priceHistory.reduce((p, dataPoint) => [...p, dataPoint.volume], [])
+
+      const yVolumeScale = d3.scaleLinear()
+        .domain(d3.extent(yVolumeDomain))
+        .range([height - margin.bottom, margin.top + ((height - margin.bottom) * 0.66)])
+
+      chart.selectAll('rect.volume')
+        .data(priceHistory)
+        .enter().append('rect')
+        .attr('x', d => ((0.05 * (width - (2 * margin.stick))) / priceHistory.length) + xScale(d.period))
+        .attr('y', d => yVolumeScale(d.volume))
+        .attr('height', d => height - margin.bottom - yVolumeScale(d.volume))
+        .attr('width', d => (0.40 * (width - (2 * margin.stick))) / priceHistory.length)
+        .attr('class', 'period-volume') // eslint-disable-line no-confusing-arrow
 
       this.setState({ chart: fauxDiv.toReact() })
     }
