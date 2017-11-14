@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import MarketHeader from 'modules/market/containers/market-header'
 import MarketOutcomesChart from 'modules/market/containers/market-outcomes-chart'
 import MarketOutcomeGraphs from 'modules/market/containers/market-outcome-graphs'
-import MarketData from 'modules/market/containers/market-data'
+import MarketOutcomesAndPositions from 'modules/market/containers/market-outcomes-and-positions'
 
 import Styles from 'modules/market/components/market-view/market-view.styles'
 
@@ -59,10 +59,17 @@ export default class MarketView extends Component {
             />
           }
         </div>
-        <MarketData
-          selectedOutcomes={s.selectedOutcomes}
-          updateSelectedOutcomes={this.updateSelectedOutcomes}
-        />
+        <section className={Styles.Market__details}>
+          <div className={Styles['Market__details-outcomes']}>
+            <MarketOutcomesAndPositions
+              selectedOutcomes={s.selectedOutcomes}
+              updateSelectedOutcomes={this.updateSelectedOutcomes}
+            />
+          </div>
+          <div className={Styles['Market__details-trading']}>
+            trading
+          </div>
+        </section>
       </section>
     )
   }
