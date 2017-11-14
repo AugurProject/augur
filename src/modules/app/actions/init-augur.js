@@ -29,7 +29,7 @@ export function initAugur(callback = logError) {
             if (env.augurNodeUrl) dispatch(updateAugurNodeConnectionStatus(true))
             dispatch(registerTransactionRelay())
             dispatch(setLoginAccount(env.autoLogin, ethereumNodeConnectionInfo.coinbase))
-            dispatch(loadUniverse(env.universe || UNIVERSE_ID))
+            dispatch(loadUniverse(env.universe))
             callback()
           })
         } else {

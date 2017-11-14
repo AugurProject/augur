@@ -3,7 +3,8 @@ import { loadAccountPositions } from 'modules/my-positions/actions/load-account-
 import { convertTradeLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions'
 import { updateOrders } from 'modules/my-orders/actions/update-orders'
 import { loadBidsAsksHistory } from 'modules/bids-asks/actions/load-bids-asks-history'
-import { CREATE_ORDER, CANCEL_ORDER, FILL_ORDER } from 'modules/transactions/constants/types'
+import { addTransactions } from 'modules/transactions/actions/add-transactions'
+import { CREATE_ORDER, CANCEL_ORDER } from 'modules/transactions/constants/types'
 import logError from 'utils/log-error'
 
 export const UPDATE_ACCOUNT_TRADES_DATA = 'UPDATE_ACCOUNT_TRADES_DATA'
@@ -24,16 +25,18 @@ export function updateAccountCancelsData(data, marketID) {
   }
 }
 
-export function updateAccountTradesData(data, marketID, callback = logError) {
+export function updateAccountTradesData(data, callback = logError) {
   return (dispatch) => {
-    dispatch(convertTradeLogsToTransactions(FILL_ORDER, data, marketID))
-    eachSeries(data, (market, nextMarket) => {
-      dispatch({ type: UPDATE_ACCOUNT_TRADES_DATA, market, data: data[market] })
-      parallel([
-        next => dispatch(loadAccountPositions({ market }, next)),
-        next => dispatch(loadBidsAsksHistory({ market }, next))
-      ], nextMarket)
-    }, callback)
+    data.forEach((trade) => {
+      dispatch(addTransactions(data))
+      eachSeries(data, (market, nextMarket) => {
+        dispatch({ type: UPDATE_ACCOUNT_TRADES_DATA, market, data: data[market] })
+        parallel([
+          next => dispatch(loadAccountPositions({ market }, next)),
+          next => dispatch(loadBidsAsksHistory({ market }, next))
+        ], nextMarket)
+      }, callback)
+    })
   }
 }
 

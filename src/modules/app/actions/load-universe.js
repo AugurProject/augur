@@ -16,16 +16,18 @@ export const loadUniverse = (universeID, callback = logError) => (dispatch, getS
   dispatch(updateUniverse({ id: universeID }))
   async.parallel({
     reputationTokenAddress: (next) => {
-      augur.api.Universe.getReputationToken(universePayload, (err, reputationTokenAddress) => {
-        if (err) return next(err)
-        next(null, reputationTokenAddress)
-      })
+      next(null, { constant: false, name: 'getReputationToken()', returns: 'int256', from: '0x56ddb80fe4e5aa05182d794526ab1eff78c90688', to: '0x000000000000000000000000000000000000000b', constant: false, from: '0x56ddb80fe4e5aa05182d794526ab1eff78c90688', name: 'getReputationToken()', params: [], returns: 'int256', to: '0x000000000000000000000000000000000000000b' })
+      // augur.api.Universe.getReputationToken(universePayload, (err, reputationTokenAddress) => {
+      //  if (err) return next(err)
+      //  next(null, reputationTokenAddress)
+      // })
     },
     reportingPeriodDurationInSeconds: (next) => {
-      augur.api.Universe.getReportingPeriodDurationInSeconds(universePayload, (err, reportingPeriodDurationInSeconds) => {
-        if (err) return next(err)
-        next(null, new BigNumber(reportingPeriodDurationInSeconds, 16).toFixed())
-      })
+      next(null, { constant: false, name: 'getReportingPeriodDurationInSeconds()', returns: 'int256', from: '0x56ddb80fe4e5aa05182d794526ab1eff78c90688', to: '0x000000000000000000000000000000000000000b', constant: false, from: '0x56ddb80fe4e5aa05182d794526ab1eff78c90688', name: 'getReportingPeriodDurationInSeconds()', params: [], returns: 'int256', to: '0x000000000000000000000000000000000000000b' })
+      // augur.api.Universe.getReportingPeriodDurationInSeconds(universePayload, (err, reportingPeriodDurationInSeconds) => {
+      //  if (err) return next(err)
+      //  next(null, new BigNumber(reportingPeriodDurationInSeconds, 16).toFixed())
+      // })
     }
   }, (err, staticUniverseData) => {
     if (err) return callback(err)

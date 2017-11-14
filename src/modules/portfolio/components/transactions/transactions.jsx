@@ -9,10 +9,15 @@ import Paginator from 'modules/common/components/paginator/paginator'
 import Styles from 'modules/portfolio/components/transactions/transactions.styles'
 
 export default class Transactions extends Component {
+  static defaultProps = {
+    transactions: []
+  }
+
   static propTypes = {
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
     transactions: PropTypes.array.isRequired,
+    loadAccountHistoryTransactions: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -24,6 +29,11 @@ export default class Transactions extends Component {
     }
 
     this.setSegment = this.setSegment.bind(this)
+
+  }
+
+  componentWillMount() {
+    this.props.loadAccountHistoryTransactions()
   }
 
   setSegment(lowerBound, upperBound, boundedLength) {

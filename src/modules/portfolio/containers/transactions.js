@@ -1,16 +1,23 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-
+import { loadAccountHistory } from 'modules/auth/actions/load-account-history'
 import TransactionsList from 'modules/portfolio/components/transactions/transactions'
 
 const mapStateToProps = state => ({
-  transactions: dummyTransactions
+  transactions: state.transactions,
+  transactionsLoading: state.transactionsLoading,
 })
 
-const Transactions = withRouter(connect(mapStateToProps)(TransactionsList))
+const mapDispatchToProps = dispatch => ({
+  // TODO: need to get parameters from configuation?
+  loadAccountHistoryTransactions: () => dispatch(loadAccountHistory(true, false))
+})
+
+const Transactions = withRouter(connect(mapStateToProps, mapDispatchToProps)(TransactionsList))
 
 export default Transactions
 
+/*
 const dummyTransactions = [
   {
     hash: '0x5fac9266041e13f4d70574e75ceef6ffe5a4e67dc4819dec524988a93aa478f8',
@@ -378,3 +385,4 @@ const dummyTransactions = [
     ],
   },
 ]
+*/
