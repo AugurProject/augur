@@ -7,6 +7,7 @@ import makePath from 'modules/routes/helpers/make-path'
 
 import getValue from 'utils/get-value'
 
+import { BID, ASK } from 'modules/transactions/constants/types'
 import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views'
 
 import Styles from 'modules/market/components/market-trading/market-trading.styles'
@@ -16,10 +17,15 @@ class MarketTrading extends Component {
     super(props)
 
     this.state = {
+      orderPrice: '',
+      orderQuantity: '',
+      orderEstimate: '',
+      selectedNav: BID,
     }
   }
 
   render() {
+    const s = this.state
     const p = this.props
 
     const hasFunds = getValue(p, 'market.tradeSummary.hasUserEnoughFunds')
@@ -43,6 +49,14 @@ class MarketTrading extends Component {
 
     return (
       <section className={Styles.Trading}>
+        <ul className={Styles['Trading__header']}>
+          <li className={classNames({ [`${Styles.active}`]: s.selectedNav === BID })}>
+            <button onClick={() => this.setState({ selectedNav: BID })}>Buy</button>
+          </li>
+          <li className={classNames({ [`${Styles.active}`]: s.selectedNav === ASK })}>
+            <button onClick={() => this.setState({ selectedNav: ASK })}>Sell</button>
+          </li>
+        </ul>
         { initialMessage &&
           <p className={Styles['Trading__initial-message']}>{ initialMessage }</p>
         }
