@@ -17,15 +17,16 @@ export default class Position extends Component {
   }
 
   static calcAvgDiff(position, order) {
-    const positionAvg = +getValue(position, 'avgPrice.formatted') || 0
-    const positionShares = +getValue(position, 'qtyShares.formatted') || 0
+    const positionAvg = getValue(position, 'avgPrice.formattedValue') || 0
+    const positionShares = getValue(position, 'qtyShares.formattedValue') || 0
 
-    const orderPrice = +(getValue(order, 'order.purchasePrice.formatted') || 0)
-    const orderShares = +(getValue(order, 'order.qtyShares.formatted') || 0)
+    const orderPrice = (getValue(order, 'order.purchasePrice.formattedValue') || 0)
+    const orderShares = (getValue(order, 'order.qtyShares.formattedValue') || 0)
 
     const newAvg = ((positionAvg * positionShares) + (orderPrice * orderShares)) / (positionShares + orderShares)
+    const avgDiff = (newAvg - positionAvg).toFixed(4)
 
-    return (newAvg - positionAvg).toFixed(4)
+    return avgDiff < 0 ? avgDiff : `+${avgDiff}`
   }
 
   constructor(props) {

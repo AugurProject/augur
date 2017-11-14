@@ -27,8 +27,14 @@ const openOrders = [
     id: '1',
     pending: false,
     order: {
-      qtyShares: { formatted: '10.942' },
-      purchasePrice: { formatted: '0.3938' },
+      qtyShares: {
+        formatted: '10.942',
+        formattedValue: 10.942,
+      },
+      purchasePrice: {
+        formatted: '0.3938',
+        formattedValue: 0.3938,
+      },
       cancelOrder: () => console.log('cancel order'),
     },
   },
@@ -37,8 +43,14 @@ const openOrders = [
     id: '1',
     pending: true,
     order: {
-      qtyShares: { formatted: '4.942' },
-      purchasePrice: { formatted: '0.35' },
+      qtyShares: {
+        formatted: '4.942',
+        formattedValue: 4.942,
+      },
+      purchasePrice: {
+        formatted: '0.6',
+        formattedValue: 0.6,
+      },
       cancelOrder: () => console.log('cancel order'),
     },
   },
@@ -47,8 +59,14 @@ const openOrders = [
     id: '1',
     pending: false,
     order: {
-      qtyShares: { formatted: '7' },
-      purchasePrice: { formatted: '0.38' },
+      qtyShares: {
+        formatted: '7',
+        formattedValue: 7,
+      },
+      purchasePrice: {
+        formatted: '0.38',
+        formattedValue: 0.38,
+      },
       cancelOrder: () => console.log('cancel order'),
     },
   },
@@ -57,8 +75,14 @@ const openOrders = [
     id: '1',
     pending: false,
     order: {
-      qtyShares: { formatted: '15.203' },
-      purchasePrice: { formatted: '0.3507' },
+      qtyShares: {
+        formatted: '15.203',
+        formattedValue: 15.203,
+      },
+      purchasePrice: {
+        formatted: '0.3507',
+        formattedValue: 0.3507,
+      },
       cancelOrder: () => console.log('cancel order'),
     },
   },
@@ -67,8 +91,14 @@ const openOrders = [
     id: '1',
     pending: false,
     order: {
-      qtyShares: { formatted: '2.942' },
-      purchasePrice: { formatted: '0.35' },
+      qtyShares: {
+        formatted: '2.942',
+        formattedValue: 2.942,
+      },
+      purchasePrice: {
+        formatted: '0.35',
+        formattedValue: 0.35,
+      },
       cancelOrder: () => console.log('cancel order'),
     },
   },
@@ -77,8 +107,14 @@ const openOrders = [
     id: '2',
     pending: false,
     order: {
-      qtyShares: { formatted: '9.5' },
-      purchasePrice: { formatted: '0.8' },
+      qtyShares: {
+        formatted: '9.5',
+        formattedValue: 9.5,
+      },
+      purchasePrice: {
+        formatted: '0.8',
+        formattedValue: 0.8,
+      },
       cancelOrder: () => console.log('cancel order'),
     },
   },
@@ -89,8 +125,14 @@ const positions = [
     name: '1. HARTNELL (12)',
     id: '1',
     position: {
-      qtyShares: { formatted: '10' },
-      avgPrice: { formatted: '0.5' },
+      qtyShares: {
+        formatted: '10',
+        formattedValue: 10,
+      },
+      avgPrice: {
+        formatted: '0.5',
+        formattedValue: 0.5,
+      },
       realizedNet: { formatted: '+0' },
       unrealizedNet: { formatted: '-1.2' },
       closePosition: () => console.log('close position'),
@@ -100,8 +142,14 @@ const positions = [
     id: '2',
     name: '2. ALMANDIN (14)',
     position: {
-      qtyShares: { formatted: '5' },
-      avgPrice: { formatted: '0.75' },
+      qtyShares: {
+        formatted: '5',
+        formattedValue: 5,
+      },
+      avgPrice: {
+        formatted: '0.75',
+        formattedValue: 0.75,
+      },
       realizedNet: { formatted: '+0' },
       unrealizedNet: { formatted: '+0.05' },
       closePosition: () => console.log('close position'),

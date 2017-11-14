@@ -14,23 +14,24 @@ export default class MobilePositions extends Component {
   }
 
   static calcAvgDiff(position, orders) {
-    const currentAvg = +getValue(position, 'position.avgPrice.formatted') || 0
-    const currentShares = +getValue(position, 'position.qtyShares.formatted') || 0
+    const currentAvg = getValue(position, 'position.avgPrice.formattedValue') || 0
+    const currentShares = getValue(position, 'position.qtyShares.formattedValue') || 0
 
     let newAvg = currentAvg * currentShares
     let totalShares = currentShares
 
     orders.forEach((order) => {
-      const thisPrice = +(getValue(order, 'order.purchasePrice.formatted') || 0)
-      const thisShares = +(getValue(order, 'order.qtyShares.formatted') || 0)
+      const thisPrice = (getValue(order, 'order.purchasePrice.formattedValue') || 0)
+      const thisShares = (getValue(order, 'order.qtyShares.formattedValue') || 0)
 
       newAvg += thisPrice * thisShares
       totalShares += thisShares
     })
 
     newAvg /= totalShares
+    const avgDiff = (newAvg - currentAvg).toFixed(4)
 
-    return (newAvg - currentAvg).toFixed(4)
+    return avgDiff < 0 ? avgDiff : `+${avgDiff}`
   }
 
   constructor(props) {
