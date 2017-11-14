@@ -383,4 +383,14 @@ describe("server/getters/get-markets-info", () => {
       assert.deepEqual(marketInfo, [null]);
     },
   });
+  test({
+    description: "Empty marketIDs array",
+    params: {
+      marketIDs: [],
+    },
+    assertions: (err, marketInfo) => {
+      assert.isNull(err);
+      assert.deepEqual(marketInfo, []);
+    },
+  });
 });
