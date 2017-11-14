@@ -45,7 +45,7 @@ export function getOpenOrders(db: Knex, universe: Address|null, marketID: Addres
   query = queryModifier(query, "volume", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, ordersRows?: Array<OrdersRowWithCreationTime>): void => {
     if (err) return callback(err);
-    if (!ordersRows || !ordersRows.length) return callback(null);
+    if (!ordersRows) return callback(new Error("Unexpected error fetching order rows"));
     const orders: Orders = {};
     ordersRows.forEach((row: OrdersRowWithCreationTime): void => {
       if (!orders[row.marketID]) orders[row.marketID] = {};
