@@ -36,7 +36,7 @@ export default class CreateMarketReview extends Component {
   }
 
   componentWillMount() {
-    // this.calculateMarketCreationCosts()
+    this.calculateMarketCreationCosts()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -46,8 +46,12 @@ export default class CreateMarketReview extends Component {
   }
 
   calculateMarketCreationCosts() {
+    console.log('calcMarketCreationCosts', {
+      universe: this.props.universe.id,
+      _endTime: this.props.newMarket.endDate.timestamp / 1000
+    })
     augur.createMarket.getMarketCreationCostBreakdown({
-      universeID: this.props.universe.id,
+      universe: this.props.universe.id,
       _endTime: this.props.newMarket.endDate.timestamp / 1000
     }, (err, marketCreationCostBreakdown) => {
       if (err) return console.error(err)
@@ -60,9 +64,9 @@ export default class CreateMarketReview extends Component {
   }
 
   render() {
-    // const p = this.props
-    // const s = this.state
-
+    const p = this.props
+    const s = this.state
+    console.log(p, s)
     return (
       <article className={StylesForm.CreateMarketForm__fields}>
         <div className={Styles.CreateMarketReview}>
