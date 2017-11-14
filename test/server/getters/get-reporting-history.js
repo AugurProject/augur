@@ -49,7 +49,7 @@ describe("server/getters/get-reporting-history", () => {
     },
     assertions: (err, reportingHistory) => {
       assert.isNull(err);
-      assert.isUndefined(reportingHistory);
+      assert.deepEqual(reportingHistory, {});
     },
   });
 });

@@ -46,7 +46,7 @@ describe("server/getters/get-market-price-history", () => {
     },
     assertions: (err, marketPriceHistory) => {
       assert.isNull(err);
-      assert.isUndefined(marketPriceHistory);
+      assert.deepEqual(marketPriceHistory, {});
     },
   });
 });

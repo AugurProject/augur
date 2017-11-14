@@ -37,7 +37,7 @@ export function getReportingHistory(db: Knex, reporter: Address, universe: Addre
   query = queryModifier(query, "reportID", "asc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, joinedReportsMarketsRows?: Array<JoinedReportsMarketsRow>): void => {
     if (err) return callback(err);
-    if (!joinedReportsMarketsRows || !joinedReportsMarketsRows.length) return callback(null);
+    if (!joinedReportsMarketsRows) return callback(new Error("Internal error retrieving reporting history"));
     const reports: UIReports = {};
     joinedReportsMarketsRows.forEach((row: JoinedReportsMarketsRow): void => {
       if (!reports[row.universe]) reports[row.universe] = {};
