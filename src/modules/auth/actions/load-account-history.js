@@ -1,12 +1,12 @@
 import async from 'async'
 import { clearReports } from 'modules/reports/actions/update-reports'
 import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades'
-import { loadBidsAsksHistory } from 'modules/bids-asks/actions/load-bids-asks-history'
-import { loadCreateMarketHistory } from 'modules/create-market/actions/load-create-market-history'
-import { loadFundingHistory } from 'modules/account/actions/load-funding-history'
-import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-history'
+/* import { loadBidsAsksHistory } from 'modules/bids-asks/actions/load-bids-asks-history' */
+/* import { loadCreateMarketHistory } from 'modules/create-market/actions/load-create-market-history' */
+/* import { loadFundingHistory } from 'modules/account/actions/load-funding-history' */
+/* import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-history' */
 import syncUniverse from 'modules/universe/actions/sync-universe'
-import { updateTransactionsOldestLoadedBlock } from 'modules/transactions/actions/update-transactions-oldest-loaded-block'
+/* import { updateTransactionsOldestLoadedBlock } from 'modules/transactions/actions/update-transactions-oldest-loaded-block' */
 import { updateTransactionsLoading } from 'modules/transactions/actions/update-transactions-loading'
 import { addTransactions } from 'modules/transactions/actions/add-transactions'
 import { updateTransactionData } from 'modules/transactions/actions/update-transactions-data'
