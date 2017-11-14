@@ -1,6 +1,6 @@
 import async from 'async'
-import BigNumber from 'bignumber.js'
-import { augur } from 'services/augurjs'
+/* import BigNumber from 'bignumber.js' */
+/* import { augur } from 'services/augurjs' */
 import { updateUniverse } from 'modules/universe/actions/update-universe'
 import syncUniverse from 'modules/universe/actions/sync-universe'
 import getReportingCycle from 'modules/universe/selectors/reporting-cycle'
@@ -11,7 +11,7 @@ import { loadMarketsToReportOn } from 'modules/reports/actions/load-markets-to-r
 import logError from 'utils/log-error'
 
 export const loadUniverse = (universeID, callback = logError) => (dispatch, getState) => {
-  const universePayload = { tx: { to: universeID } }
+/*  const universePayload = { tx: { to: universeID } } */
   // NOTE: Temporarily added below dispatch so we atleast get universe ID set because the async calls below are going to fail without contracts...
   dispatch(updateUniverse({ id: universeID }))
   async.parallel({

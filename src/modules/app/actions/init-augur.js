@@ -1,5 +1,5 @@
 import * as AugurJS from 'services/augurjs'
-import { UNIVERSE_ID } from 'modules/app/constants/network'
+/* import { UNIVERSE_ID } from 'modules/app/constants/network' */
 import { updateEnv } from 'modules/app/actions/update-env'
 import { updateConnectionStatus, updateAugurNodeConnectionStatus } from 'modules/app/actions/update-connection'
 import { updateContractAddresses } from 'modules/contracts/actions/update-contract-addresses'
