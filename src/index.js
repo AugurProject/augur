@@ -8,6 +8,7 @@
 var BigNumber = require("bignumber.js");
 var keythereum = require("keythereum");
 var ROUNDS = require("./constants").ROUNDS;
+var version = require("./version");
 
 BigNumber.config({
   MODULO_MODE: BigNumber.EUCLID,
@@ -18,7 +19,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.6.3";
+  this.version = version;
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
@@ -42,5 +43,6 @@ function Augur() {
 }
 
 module.exports = Augur;
+module.exports.version = version;
 module.exports.Augur = Augur;
 module.exports.default = Augur;
