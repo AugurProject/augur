@@ -4,6 +4,7 @@ import MarketHeader from 'modules/market/containers/market-header'
 import MarketOutcomesChart from 'modules/market/containers/market-outcomes-chart'
 import MarketOutcomeGraphs from 'modules/market/containers/market-outcome-graphs'
 import MarketOutcomesAndPositions from 'modules/market/containers/market-outcomes-and-positions'
+import MarketTrading from 'modules/market/containers/market-trading'
 
 import Styles from 'modules/market/components/market-view/market-view.styles'
 
@@ -67,7 +68,9 @@ export default class MarketView extends Component {
             />
           </div>
           <div className={Styles['Market__details-trading']}>
-            trading
+            <MarketTrading
+              selectedOutcomes={s.selectedOutcomes}
+            />
           </div>
         </section>
       </section>
