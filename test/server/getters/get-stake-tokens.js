@@ -77,6 +77,36 @@ describe("server/getters/get-stake-tokens", () => {
     },
   });
   test({
+    description: "get unclaimed tokens for user reported twice on same token",
+    params: {
+      universe: "0x000000000000000000000000000000000000000b",
+      account: "0x0000000000000000000000000000000000000024",
+      stakeTokenState: "UNCLAIMED",
+    },
+    assertions: (err, stakeTokens) => {
+      assert.isNull(err);
+      assert.deepEqual(stakeTokens, {
+        "0x0000000000000000001000000000000000000003": {
+          stakeToken: "0x0000000000000000001000000000000000000003",
+          marketID: "0x0000000000000000000000000000000000000019",
+          payout0: 1,
+          payout1: 1,
+          payout2: null,
+          payout3: null,
+          payout4: null,
+          payout5: null,
+          payout6: null,
+          payout7: null,
+          isInvalid: false,
+          amountStaked: 450 + 300,
+          winningToken: true,
+          claimed: false,
+          reportingState: "FINALIZED",
+        },
+      });
+    },
+  });
+  test({
     description: "unknown stakeTokenState",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
