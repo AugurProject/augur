@@ -52,11 +52,9 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
         amount: (next: AsyncCallback): void => augur.api.Orders.getAmount(ordersPayload, next),
         sharesEscrowed: (next: AsyncCallback): void => augur.api.Orders.getOrderSharesEscrowed(ordersPayload, next),
         moneyEscrowed: (next: AsyncCallback): void => augur.api.Orders.getOrderMoneyEscrowed(ordersPayload, next),
-        betterOrderID: (next: AsyncCallback): void => augur.api.Orders.getBetterOrderId(ordersPayload, next),
-        worseOrderID: (next: AsyncCallback): void => augur.api.Orders.getWorseOrderId(ordersPayload, next),
       }, (err: Error|null, onContractData: OrderCreatedOnContractData): void => {
         if (err) return callback(err);
-        const { price, amount, orderType, moneyEscrowed, sharesEscrowed, betterOrderID, worseOrderID } = onContractData;
+        const { price, amount, orderType, moneyEscrowed, sharesEscrowed} = onContractData;
         const fullPrecisionPrice = denormalizePrice(minPrice, maxPrice, convertFixedPointToDecimal(new BigNumber(price, 16).toFixed(), numTicks));
         const fullPrecisionAmount = convertFixedPointToDecimal(new BigNumber(amount, 16).toFixed(), numTicks);
         const orderTypeLabel = parseInt(orderType, 16) === 0 ? "buy" : "sell";
@@ -74,8 +72,6 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
           fullPrecisionAmount,
           tokensEscrowed: convertFixedPointToDecimal(new BigNumber(moneyEscrowed, 16).toFixed(), WEI_PER_ETHER),
           sharesEscrowed: convertFixedPointToDecimal(new BigNumber(sharesEscrowed, 16).toFixed(), numTicks),
-          betterOrderID,
-          worseOrderID,
         };
         const orderID = { orderID: log.orderId };
         augurEmitter.emit("OrderCreated", Object.assign(orderData, orderID));

@@ -42,8 +42,6 @@ describe("server/getters/get-open-orders", () => {
                 fullPrecisionAmount: 1,
                 tokensEscrowed: 0.7,
                 sharesEscrowed: 0,
-                betterOrderID: null,
-                worseOrderID: null,
               },
               "0x2000000000000000000000000000000000000000000000000000000000000000": {
                 shareToken: "0x1000000000000000000000000000000000000000",
@@ -56,12 +54,9 @@ describe("server/getters/get-open-orders", () => {
                 fullPrecisionAmount: 2,
                 tokensEscrowed: 1.200002,
                 sharesEscrowed: 0,
-                betterOrderID: null,
-                worseOrderID: null,
               },
               "0x5000000000000000000000000000000000000000000000000000000000000000": {
                 amount: 1,
-                betterOrderID: null,
                 creationBlockNumber: 1400001,
                 creationTime: 1506473500,
                 fullPrecisionAmount: 1,
@@ -71,7 +66,6 @@ describe("server/getters/get-open-orders", () => {
                 shareToken: "0x1000000000000000000000000000000000000000",
                 sharesEscrowed: 0,
                 tokensEscrowed: 0.7,
-                worseOrderID: null,
               },
             },
           },
@@ -88,8 +82,6 @@ describe("server/getters/get-open-orders", () => {
                 fullPrecisionAmount: 2.0000001,
                 tokensEscrowed: 1.20000006,
                 sharesEscrowed: 0,
-                betterOrderID: null,
-                worseOrderID: null,
               },
             },
           },
@@ -123,8 +115,6 @@ describe("server/getters/get-open-orders", () => {
                 fullPrecisionAmount: 2,
                 tokensEscrowed: 1.2,
                 sharesEscrowed: 0,
-                betterOrderID: null,
-                worseOrderID: null,
               },
             },
           },
@@ -149,7 +139,6 @@ describe("server/getters/get-open-orders", () => {
             buy: {
               "0x1000000000000000000000000000000000000000000000000000000000000000": {
                 amount: 1,
-                betterOrderID: null,
                 creationBlockNumber: 1400001,
                 creationTime: 1506473500,
                 fullPrecisionAmount: 1,
@@ -159,11 +148,9 @@ describe("server/getters/get-open-orders", () => {
                 shareToken: "0x1000000000000000000000000000000000000000",
                 sharesEscrowed: 0,
                 tokensEscrowed: 0.7,
-                worseOrderID: null,
               },
               "0x5000000000000000000000000000000000000000000000000000000000000000": {
                 amount: 1,
-                betterOrderID: null,
                 creationBlockNumber: 1400001,
                 creationTime: 1506473500,
                 fullPrecisionAmount: 1,
@@ -173,7 +160,6 @@ describe("server/getters/get-open-orders", () => {
                 shareToken: "0x1000000000000000000000000000000000000000",
                 sharesEscrowed: 0,
                 tokensEscrowed: 0.7,
-                worseOrderID: null,
               },
             },
           },
@@ -183,7 +169,6 @@ describe("server/getters/get-open-orders", () => {
             sell: {
               "0x8000000000000000000000000000000000000000000000000000000000000000": {
                 amount: 2,
-                betterOrderID: null,
                 creationBlockNumber: 1400002,
                 creationTime: 1506473515,
                 fullPrecisionAmount: 2,
@@ -193,7 +178,6 @@ describe("server/getters/get-open-orders", () => {
                 shareToken: "0x2000000000000000000000000000000000000000",
                 sharesEscrowed: 0,
                 tokensEscrowed: 1.2,
-                worseOrderID: null,
               },
             },
           },
@@ -203,7 +187,6 @@ describe("server/getters/get-open-orders", () => {
             buy: {
               "0x7000000000000000000000000000000000000000000000000000000000000000": {
                 amount: 2,
-                betterOrderID: null,
                 creationBlockNumber: 1400002,
                 creationTime: 1506473515,
                 fullPrecisionAmount: 2.0000001,
@@ -213,7 +196,6 @@ describe("server/getters/get-open-orders", () => {
                 shareToken: "0x2000000000000000000000000000000000000000",
                 sharesEscrowed: 0,
                 tokensEscrowed: 1.20000006,
-                worseOrderID: null,
               },
             },
           },
@@ -223,7 +205,6 @@ describe("server/getters/get-open-orders", () => {
             buy: {
               "0x6000000000000000000000000000000000000000000000000000000000000000": {
                 amount: 2,
-                betterOrderID: null,
                 creationBlockNumber: 1400002,
                 creationTime: 1506473515,
                 fullPrecisionAmount: 2,
@@ -233,7 +214,6 @@ describe("server/getters/get-open-orders", () => {
                 shareToken: "0x1000000000000000000000000000000000000000",
                 sharesEscrowed: 0,
                 tokensEscrowed: 1.200002,
-                worseOrderID: null,
               },
             },
           },

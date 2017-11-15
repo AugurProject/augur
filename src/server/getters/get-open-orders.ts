@@ -14,8 +14,6 @@ interface Order {
   fullPrecisionAmount: number|string;
   tokensEscrowed: number|string;
   sharesEscrowed: number|string;
-  betterOrderID: Bytes32|null;
-  worseOrderID: Bytes32|null;
 }
 
 interface Orders {
@@ -41,8 +39,8 @@ export function getOpenOrders(db: Knex, universe: Address|null, marketID: Addres
     orderType,
     orderCreator: creator,
   }, _.isNil);
-  let query: Knex.QueryBuilder = db.select(["orders.*", `blocks.timestamp as creationTime`]).from("orders").leftJoin("blocks", "orders.creationBlockNumber", "blocks.blockNumber").where(queryData).whereNull("isRemoved");
-  query = queryModifier(query, "volume", "desc", sortBy, isSortDescending, limit, offset);
+  const query: Knex.QueryBuilder = db.select(["orders.*", `blocks.timestamp as creationTime`]).from("orders").leftJoin("blocks", "orders.creationBlockNumber", "blocks.blockNumber").where(queryData).whereNull("isRemoved");
+  queryModifier(query, "volume", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, ordersRows?: Array<OrdersRowWithCreationTime>): void => {
     if (err) return callback(err);
     if (!ordersRows) return callback(new Error("Unexpected error fetching order rows"));
@@ -62,8 +60,6 @@ export function getOpenOrders(db: Knex, universe: Address|null, marketID: Addres
         fullPrecisionAmount: row.fullPrecisionAmount,
         tokensEscrowed: row.tokensEscrowed,
         sharesEscrowed: row.sharesEscrowed,
-        betterOrderID: row.betterOrderID,
-        worseOrderID: row.worseOrderID,
       };
     });
     callback(null, orders);

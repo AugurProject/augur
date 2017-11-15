@@ -60,14 +60,6 @@ describe("blockchain/log-processors/order-created", () => {
               assert.deepEqual(p, { _orderId: "ORDER_ID" });
               callback(null, "0x1f399b1438a10000"); // = 0.75 * 3 * 10^18
             },
-            getBetterOrderId: (p, callback) => {
-              assert.deepEqual(p, { _orderId: "ORDER_ID" });
-              callback(null, "BETTER_ORDER_ID");
-            },
-            getWorseOrderId: (p, callback) => {
-              assert.deepEqual(p, { _orderId: "ORDER_ID" });
-              callback(null, "WORSE_ORDER_ID");
-            },
           },
         },
       },
@@ -89,8 +81,6 @@ describe("blockchain/log-processors/order-created", () => {
           amount: 3,
           tokensEscrowed: 2.25,
           sharesEscrowed: 0,
-          betterOrderID: "BETTER_ORDER_ID",
-          worseOrderID: "WORSE_ORDER_ID",
           tradeGroupID: "TRADE_GROUP_ID",
           isRemoved: null,
         }]);
@@ -111,8 +101,6 @@ describe("blockchain/log-processors/order-created", () => {
           amount: 3,
           tokensEscrowed: 2.25,
           sharesEscrowed: 0,
-          betterOrderID: "BETTER_ORDER_ID",
-          worseOrderID: "WORSE_ORDER_ID",
           tradeGroupID: "TRADE_GROUP_ID",
           isRemoved: 1,
         }]);

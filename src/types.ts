@@ -282,8 +282,6 @@ export interface OrdersRow {
   fullPrecisionAmount: string;
   tokensEscrowed: string;
   sharesEscrowed: string;
-  betterOrderID: Bytes32|null;
-  worseOrderID: Bytes32|null;
   tradeGroupID: Bytes32|null;
 }
 
