@@ -23,11 +23,11 @@ export function updateAssets(callback = logError) {
     // })
     augur.api.Universe.getReputationToken({ tx: { to: universeID } }, (err, reputationTokenAddress) => {
       if (err) return callback(err)
-      augur.api.ReputationToken.balanceOf({
+      augur.api.ReputationToken.getBalance({
         tx: { to: reputationTokenAddress },
-        _owner: loginAccount.address
-      }, (attoRepBalance) => {
-        if (!attoRepBalance || attoRepBalance.error) return callback(attoRepBalance)
+        _address: loginAccount.address
+      }, (err, attoRepBalance) => {
+        if (err) return callback(err)
         const repBalance = speedomatic.unfix(attoRepBalance, 'string')
         balances.rep = repBalance
         if (!loginAccount.rep || loginAccount.rep !== repBalance) {
