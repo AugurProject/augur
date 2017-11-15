@@ -27,6 +27,7 @@ class MarketTrading extends Component {
       orderQuantity: '',
       orderEstimate: '',
       selectedNav: BID,
+      isOrderValide: false,
     }
   }
 
@@ -129,6 +130,12 @@ class MarketTrading extends Component {
             <li>
               <label>Est. Cost</label>
               <div className={Styles['Trading__static-field']}>{ s.orderEstimate }</div>
+            </li>
+            <li className={Styles['Trading__button--review']}>
+              <button
+                disabled={!s.isOrderValid}
+                onClick={s.isOrderValid && this.handleAddOrder}
+              >Review</button>
             </li>
           </ul>
         }
