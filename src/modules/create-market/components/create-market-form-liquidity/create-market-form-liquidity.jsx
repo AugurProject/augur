@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import BigNumber from 'bignumber.js'
-// import { augur, rpc, constants } from 'services/augurjs'
+import { constants } from 'services/augurjs'
 
 import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'
 
@@ -87,23 +87,25 @@ export default class CreateMarketLiquidity extends Component {
   }
 
   handleAddOrder() {
-    this.props.addOrderToNewMarket({
-      outcome: this.state.selectedOutcome,
-      type: this.state.selectedNav,
-      price: this.state.orderPrice,
-      quantity: this.state.orderQuantity
-    })
+    if (this.state.isOrderValid) {
+      this.props.addOrderToNewMarket({
+        outcome: this.state.selectedOutcome,
+        type: this.state.selectedNav,
+        price: this.state.orderPrice,
+        quantity: this.state.orderQuantity
+      })
 
-    this.updateInitialLiquidityCosts({
-      type: this.state.selectedNav,
-      price: this.state.orderPrice,
-      quantity: this.state.orderQuantity
-    })
+      this.updateInitialLiquidityCosts({
+        type: this.state.selectedNav,
+        price: this.state.orderPrice,
+        quantity: this.state.orderQuantity
+      })
 
-    this.setState({
-      orderPrice: '',
-      orderQuantity: ''
-    }, this.validateForm)
+      this.setState({
+        orderPrice: '',
+        orderQuantity: ''
+      }, this.validateForm)
+    }
   }
 
   // handleRemoveOrder(type, orderToRemove, i) {
@@ -224,13 +226,14 @@ export default class CreateMarketLiquidity extends Component {
   }
 
   updateInitialLiquidityCosts(order, shouldReduce) {
-    // const gasPrice = rpc.gasPrice || constants.DEFAULT_GASPRICE
-    // const makerFee = this.props.makerFee instanceof BigNumber ? this.props.makerFee : new BigNumber(this.props.makerFee)
+    const gasPrice = augur.rpc.getGasPrice() || constants.DEFAULT_GASPRICE
+    const makerFee = this.props.makerFee instanceof BigNumber ? this.props.makerFee : new BigNumber(this.props.makerFee)
 
     let initialLiquidityEth
     let initialLiquidityGas
     let initialLiquidityFees
     // let action
+
 
     // if (order.type === BID) {
     //   action = augur.trading.simulation.getBidAction(order.quantity, order.price, makerFee, gasPrice)
@@ -325,7 +328,7 @@ export default class CreateMarketLiquidity extends Component {
     const s = this.state
 
     const errors = Array.from(new Set([...s.errors.quantity, ...s.errors.price]))
-
+    console.log('rendering liquidityform:', p, s, errors)
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
         <li className={Styles.CreateMarketLiquidity__settlement}>
@@ -426,7 +429,7 @@ export default class CreateMarketLiquidity extends Component {
               <li className={Styles['CreateMarketLiquidity__order-add']}>
                 <button
                   disabled={!s.isOrderValid}
-                  onClick={s.isOrderValid && this.handleAddOrder}
+                  onClick={this.handleAddOrder}
                 >Add Order</button>
               </li>
             </ul>

@@ -15,7 +15,9 @@ import { TRANSACTIONS } from 'modules/routes/constants/views'
 export function submitNewMarket(newMarket, history) {
   return (dispatch, getState) => {
     const { universe, loginAccount, contractAddresses } = getState()
-
+    const tags = []
+    if (newMarket.tag1) tags.push(newMarket.tag1)
+    if (newMarket.tag2) tags.push(newMarket.tag2)
     // General Properties
     const formattedNewMarket = {
       universe: universe.id,
@@ -23,13 +25,13 @@ export function submitNewMarket(newMarket, history) {
       _feePerEthInWei: speedomatic.fix(newMarket.settlementFee / 100, 'hex'),
       _denominationToken: contractAddresses.Cash,
       _designatedReporterAddress: loginAccount.address, // FIXME prompt user for actual automated reporter address
-      _topic: newMarket.topic,
+      _topic: newMarket.category,
       _extraInfo: {
         marketType: newMarket.type,
         shortDescription: newMarket.description,
         longDescription: newMarket.detailsText,
         resolutionSource: newMarket.expirySource,
-        tags: (newMarket.keywords || [])
+        tags
       }
     }
 
@@ -53,7 +55,10 @@ export function submitNewMarket(newMarket, history) {
       default:
         createMarket = augur.createMarket.createBinaryMarket
     }
-
+    console.log('creating market with this meta data:')
+    console.log({
+      ...formattedNewMarket,
+      meta: loginAccount.meta})
     createMarket({
       ...formattedNewMarket,
       meta: loginAccount.meta,
