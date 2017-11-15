@@ -8,6 +8,7 @@ import makePath from 'modules/routes/helpers/make-path'
 import getValue from 'utils/get-value'
 
 import { BID, ASK, MARKET, LIMIT } from 'modules/transactions/constants/types'
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views'
 
 import FormStyles from 'modules/common/less/form'
@@ -32,10 +33,14 @@ class MarketTrading extends Component {
 
     const hasFunds = getValue(p, 'market.tradeSummary.hasUserEnoughFunds')
     const hasSelectedOutcome = p.selectedOutcomes.length > 0
+    const selectedOutcome = p.outcomes.filter(outcome => outcome.id === p.selectedOutcomes[0])[0]
 
     let initialMessage = ''
 
     switch(true) {
+      case p.market.marketType === SCALAR:
+        initialMessage = false
+        break
       case !p.isLogged:
         initialMessage = 'Log in to trade.'
         break
@@ -80,6 +85,12 @@ class MarketTrading extends Component {
                   >Limit</button>
               </div>
             </li>
+            { p.market.marketType !== SCALAR &&
+              <li>
+                <label>Outcome</label>
+                <div className={Styles['Trading__static-field']}>{ selectedOutcome.name }</div>
+              </li>
+            }
           </ul>
         }
       </section>
