@@ -9,17 +9,6 @@ export default function (marketsData = {}, action) {
       return {
         ...processMarketsData(action.marketsData, marketsData)
       }
-    case UPDATE_MARKETS_LOADING_STATUS:
-      return {
-        ...marketsData,
-        ...action.marketIDs.reduce((p, marketID) => {
-          p[marketID] = {
-            ...marketsData[marketID],
-            isLoading: action.isLoading
-          }
-          return p
-        }, {})
-      }
     case UPDATE_MARKET_TOPIC:
       if (!action.marketID) return marketsData
       return {
@@ -40,10 +29,11 @@ function processMarketsData(newMarketsData, existingMarketsData) {
 
   // it's important to loop through the original marketIDs so that unloaded markets can still be marked as isLoadedMarketInfo and avoid infinite recursion later on
   return Object.keys(newMarketsData).reduce((p, marketID) => {
-    const normalizedMarketID = speedomatic.formatInt256(marketID)
+    // const normalizedMarketID = speedomatic.formatInt256(marketID)
 
     const marketData = {
-      ...existingMarketsData[normalizedMarketID],
+      // ...existingMarketsData[normalizedMarketID],
+      ...existingMarketsData[marketID],
       ...newMarketsData[marketID]
     }
 
@@ -62,7 +52,8 @@ function processMarketsData(newMarketsData, existingMarketsData) {
     marketData.isLoadedMarketInfo = !!marketData.cumulativeScale
 
     // save market (without outcomes)
-    p[normalizedMarketID] = marketData
+    // p[normalizedMarketID] = marketData
+    p[marketID] = marketData
 
     return p
   }, {})
