@@ -28,7 +28,7 @@ function simulateCreateAskOrder(numShares, price, minPrice, maxPrice, marketCrea
     worstCaseFees: worstCaseFees,
     sharesDepleted: sharesEscrowed,
     tokensDepleted: tokensEscrowed,
-    shareBalances: shareBalances
+    shareBalances: shareBalances,
   };
 }
 

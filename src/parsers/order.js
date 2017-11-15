@@ -44,6 +44,6 @@ module.exports = function (orderType, minPrice, maxPrice, order) {
     sharesEscrowed: speedomatic.unfix(order[4], "string"),
     betterOrderId: speedomatic.formatInt256(order[5]),
     worseOrderId: speedomatic.formatInt256(order[6]),
-    gasPrice: speedomatic.encodeNumberAsBase10String(order[7])
+    gasPrice: speedomatic.encodeNumberAsBase10String(order[7]),
   };
 };

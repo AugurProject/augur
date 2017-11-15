@@ -31,7 +31,7 @@ describe("trading/simulation/simulate-create-bid-order", function () {
       shouldCollectReportingFees: true,
       reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 1,
-      shareBalances: [ZERO, ZERO]
+      shareBalances: [ZERO, ZERO],
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -39,9 +39,9 @@ describe("trading/simulation/simulate-create-bid-order", function () {
         worstCaseFees: ZERO,
         otherSharesDepleted: ZERO,
         tokensDepleted: new BigNumber("1.2", 10),
-        shareBalances: [ZERO, ZERO]
+        shareBalances: [ZERO, ZERO],
       });
-    }
+    },
   });
   test({
     description: "[0, 0] shares held, 7 minimum price, bid 2 shares of outcome 1 @ 7.6",
@@ -54,7 +54,7 @@ describe("trading/simulation/simulate-create-bid-order", function () {
       shouldCollectReportingFees: true,
       reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 1,
-      shareBalances: [ZERO, ZERO]
+      shareBalances: [ZERO, ZERO],
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -62,9 +62,9 @@ describe("trading/simulation/simulate-create-bid-order", function () {
         worstCaseFees: ZERO,
         otherSharesDepleted: ZERO,
         tokensDepleted: new BigNumber("1.2", 10),
-        shareBalances: [ZERO, ZERO]
+        shareBalances: [ZERO, ZERO],
       });
-    }
+    },
   });
   test({
     description: "[3, 0] shares held, 7 minimum price, bid 2 shares of outcome 0 @ 7.6",
@@ -77,7 +77,7 @@ describe("trading/simulation/simulate-create-bid-order", function () {
       shouldCollectReportingFees: true,
       reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
-      shareBalances: [new BigNumber("3", 10), ZERO]
+      shareBalances: [new BigNumber("3", 10), ZERO],
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -85,9 +85,9 @@ describe("trading/simulation/simulate-create-bid-order", function () {
         worstCaseFees: ZERO,
         otherSharesDepleted: ZERO,
         tokensDepleted: new BigNumber("1.2", 10),
-        shareBalances: [new BigNumber("3", 10), ZERO]
+        shareBalances: [new BigNumber("3", 10), ZERO],
       });
-    }
+    },
   });
   test({
     description: "[3, 4] shares held, 7 minimum price, bid 2 shares of outcome 0 @ 7.6",
@@ -100,7 +100,7 @@ describe("trading/simulation/simulate-create-bid-order", function () {
       shouldCollectReportingFees: true,
       reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
-      shareBalances: [new BigNumber("3", 10), new BigNumber("4", 10)]
+      shareBalances: [new BigNumber("3", 10), new BigNumber("4", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -108,9 +108,9 @@ describe("trading/simulation/simulate-create-bid-order", function () {
         worstCaseFees: new BigNumber("0.312", 10),
         otherSharesDepleted: new BigNumber("2", 10),
         tokensDepleted: ZERO,
-        shareBalances: [new BigNumber("3", 10), new BigNumber("2", 10)]
+        shareBalances: [new BigNumber("3", 10), new BigNumber("2", 10)],
       });
-    }
+    },
   });
   test({
     description: "[3, 1] shares held, 7 minimum price, bid 2 shares of outcome 1 @ 7.6",
@@ -123,7 +123,7 @@ describe("trading/simulation/simulate-create-bid-order", function () {
       shouldCollectReportingFees: true,
       reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 1,
-      shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
+      shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -131,9 +131,9 @@ describe("trading/simulation/simulate-create-bid-order", function () {
         worstCaseFees: new BigNumber("0.312", 10),
         otherSharesDepleted: new BigNumber("2", 10),
         tokensDepleted: ZERO,
-        shareBalances: [new BigNumber("1", 10), new BigNumber("1", 10)]
+        shareBalances: [new BigNumber("1", 10), new BigNumber("1", 10)],
       });
-    }
+    },
   });
   test({
     description: "[3, 1, 4, 1.2] shares held, 7 minimum price, bid 2 shares of outcome 1 @ 7.6",
@@ -146,7 +146,7 @@ describe("trading/simulation/simulate-create-bid-order", function () {
       shouldCollectReportingFees: true,
       reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 1,
-      shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10), new BigNumber("4", 10), new BigNumber("1.2", 10)]
+      shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10), new BigNumber("4", 10), new BigNumber("1.2", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -154,9 +154,9 @@ describe("trading/simulation/simulate-create-bid-order", function () {
         worstCaseFees: new BigNumber("0.1872", 10),
         otherSharesDepleted: new BigNumber("1.2", 10),
         tokensDepleted: new BigNumber("0.48", 10),
-        shareBalances: [new BigNumber("1.8", 10), new BigNumber("1", 10), new BigNumber("2.8", 10), ZERO]
+        shareBalances: [new BigNumber("1.8", 10), new BigNumber("1", 10), new BigNumber("2.8", 10), ZERO],
       });
-    }
+    },
   });
   test({
     description: "[3.1, 1.2] shares held, 6.9 minimum price, bid 2.4 shares of outcome 0 @ 7.6",
@@ -169,7 +169,7 @@ describe("trading/simulation/simulate-create-bid-order", function () {
       shouldCollectReportingFees: true,
       reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
-      shareBalances: [new BigNumber("3.1", 10), new BigNumber("1.2", 10)]
+      shareBalances: [new BigNumber("3.1", 10), new BigNumber("1.2", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -177,9 +177,9 @@ describe("trading/simulation/simulate-create-bid-order", function () {
         worstCaseFees: new BigNumber("0.1872", 10),
         otherSharesDepleted: new BigNumber("1.2", 10),
         tokensDepleted: new BigNumber("0.84", 10),
-        shareBalances: [new BigNumber("3.1", 10), ZERO]
+        shareBalances: [new BigNumber("3.1", 10), ZERO],
       });
-    }
+    },
   });
   test({
     description: "[3, 1] shares held, 7 minimum price, bid 0 shares of outcome 0 @ 7.6",
@@ -192,11 +192,11 @@ describe("trading/simulation/simulate-create-bid-order", function () {
       shouldCollectReportingFees: true,
       reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
-      shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
+      shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, new Error("Number of shares is too small"));
-    }
+    },
   });
   test({
     description: "[3, 1] shares held, 7 minimum price, bid 2 shares of outcome 0 @ 6",
@@ -209,11 +209,11 @@ describe("trading/simulation/simulate-create-bid-order", function () {
       shouldCollectReportingFees: true,
       reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
-      shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
+      shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, new Error("Price is below the minimum price"));
-    }
+    },
   });
   test({
     description: "[3, 1] shares held, 7 minimum price, bid 2 shares of outcome -1 @ 6",
@@ -226,11 +226,11 @@ describe("trading/simulation/simulate-create-bid-order", function () {
       shouldCollectReportingFees: true,
       reportingFeeRate: new BigNumber("0.05", 10),
       outcome: -1,
-      shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
+      shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, new Error("Invalid outcome ID"));
-    }
+    },
   });
   test({
     description: "[3, 1] shares held, 7 minimum price, bid 2 shares of outcome 2 @ 6",
@@ -243,10 +243,10 @@ describe("trading/simulation/simulate-create-bid-order", function () {
       shouldCollectReportingFees: true,
       reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 2,
-      shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
+      shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, new Error("Invalid outcome ID"));
-    }
+    },
   });
 });

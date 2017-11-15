@@ -34,10 +34,10 @@ function tradeUntilAmountIsZero(p) {
         if (err) return p.onFailed(err);
         tradeUntilAmountIsZero(assign({}, p, {
           _amount: speedomatic.unfix(fxpTradeAmountRemaining, "string"),
-          onSent: noop // so that p.onSent only fires when the first transaction is sent
+          onSent: noop, // so that p.onSent only fires when the first transaction is sent
         }));
       });
-    }
+    },
   });
   if (p.doNotCreateOrders) {
     api().Trade.publicTakeBestOrder(tradePayload);

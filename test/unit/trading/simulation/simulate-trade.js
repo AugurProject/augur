@@ -36,18 +36,18 @@ describe("trading/simulation/simulate-trade", function () {
             amount: "2",
             fullPrecisionPrice: "0.7",
             sharesEscrowed: "2",
-            owner: "OWNER_ADDRESS"
-          }
+            owner: "OWNER_ADDRESS",
+          },
         },
         sell: {
           ASK_0: {
             amount: "2",
             fullPrecisionPrice: "0.7",
             sharesEscrowed: "2",
-            owner: "OWNER_ADDRESS"
-          }
-        }
-      }
+            owner: "OWNER_ADDRESS",
+          },
+        },
+      },
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -56,9 +56,9 @@ describe("trading/simulation/simulate-trade", function () {
         otherSharesDepleted: "3",
         sharesDepleted: "0",
         tokensDepleted: "0",
-        shareBalances: ["0", "4"]
+        shareBalances: ["0", "4"],
       });
-    }
+    },
   });
   test({
     description: "simulate trade (sell)",
@@ -81,18 +81,18 @@ describe("trading/simulation/simulate-trade", function () {
             amount: "2",
             fullPrecisionPrice: "0.7",
             sharesEscrowed: "2",
-            owner: "OWNER_ADDRESS"
-          }
+            owner: "OWNER_ADDRESS",
+          },
         },
         sell: {
           ASK_0: {
             amount: "2",
             fullPrecisionPrice: "0.7",
             sharesEscrowed: "2",
-            owner: "OWNER_ADDRESS"
-          }
-        }
-      }
+            owner: "OWNER_ADDRESS",
+          },
+        },
+      },
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -101,9 +101,9 @@ describe("trading/simulation/simulate-trade", function () {
         otherSharesDepleted: "0",
         sharesDepleted: "0",
         tokensDepleted: "0.9",
-        shareBalances: ["0", "5"]
+        shareBalances: ["0", "5"],
       });
-    }
+    },
   });
   test({
     description: "throw if order type is not defined",
@@ -126,22 +126,22 @@ describe("trading/simulation/simulate-trade", function () {
             amount: "2",
             fullPrecisionPrice: "0.7",
             sharesEscrowed: "2",
-            owner: "OWNER_ADDRESS"
-          }
+            owner: "OWNER_ADDRESS",
+          },
         },
         sell: {
           ASK_0: {
             amount: "2",
             fullPrecisionPrice: "0.7",
             sharesEscrowed: "2",
-            owner: "OWNER_ADDRESS"
-          }
-        }
-      }
+            owner: "OWNER_ADDRESS",
+          },
+        },
+      },
     },
     assertions: function (err) {
       assert.strictEqual(err.message, "Order type must be 1 (buy) or 2 (sell)");
-    }
+    },
   });
   test({
     description: "throw if order type is not 1 or 2",
@@ -164,21 +164,21 @@ describe("trading/simulation/simulate-trade", function () {
             amount: "2",
             fullPrecisionPrice: "0.7",
             sharesEscrowed: "2",
-            owner: "OWNER_ADDRESS"
-          }
+            owner: "OWNER_ADDRESS",
+          },
         },
         sell: {
           ASK_0: {
             amount: "2",
             fullPrecisionPrice: "0.7",
             sharesEscrowed: "2",
-            owner: "OWNER_ADDRESS"
-          }
-        }
-      }
+            owner: "OWNER_ADDRESS",
+          },
+        },
+      },
     },
     assertions: function (err) {
       assert.strictEqual(err.message, "Order type must be 1 (buy) or 2 (sell)");
-    }
+    },
   });
 });

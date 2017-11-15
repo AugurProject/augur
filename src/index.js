@@ -11,7 +11,7 @@ var ROUNDS = require("./constants").ROUNDS;
 
 BigNumber.config({
   MODULO_MODE: BigNumber.EUCLID,
-  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN,
 });
 
 keythereum.constants.pbkdf2.c = ROUNDS;
@@ -22,8 +22,8 @@ function Augur() {
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
-      connect: false    // connection debug logging in ethrpc and ethereumjs-connect
-    }
+      connect: false,    // connection debug logging in ethrpc and ethereumjs-connect
+    },
   };
   this.accounts = require("./accounts");
   this.api = require("./api")();

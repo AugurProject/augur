@@ -54,7 +54,7 @@ function createMarket(p) {
         _minDisplayPrice: convertDecimalToFixedPoint(p._minDisplayPrice, numTicks),
         _maxDisplayPrice: convertDecimalToFixedPoint(p._maxDisplayPrice, numTicks),
         _topic: encodeTag(p._topic),
-        _extraInfo: p._extraInfo ? JSON.stringify(p._extraInfo) : ""
+        _extraInfo: p._extraInfo ? JSON.stringify(p._extraInfo) : "",
       }));
     });
   });

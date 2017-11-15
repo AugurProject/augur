@@ -17,6 +17,6 @@ describe("trading/profit-loss/calculate-unrealized-pl", function () {
     lastTradePrice: ZERO,
     assertions: function (out) {
       assert.deepEqual(out, ZERO);
-    }
+    },
   });
 });

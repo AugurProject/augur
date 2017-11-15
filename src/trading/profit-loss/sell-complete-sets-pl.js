@@ -10,7 +10,7 @@ function sellCompleteSetsPL(PL, shares, price) {
     realized: PL.realized,
     completeSetsBought: PL.completeSetsBought,
     queued: PL.queued,
-    tradeQueue: PL.tradeQueue
+    tradeQueue: PL.tradeQueue,
   };
 
   // If position <= 0, user is closing out a short position:

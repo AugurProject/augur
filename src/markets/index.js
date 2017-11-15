@@ -13,5 +13,5 @@ module.exports = {
   getMarketsInCategory: require("./get-markets-in-category"),
   getMarketsClosingInDateRange: require("./get-markets-closing-in-date-range"),
   getMarketsCreatedByUser: require("./get-markets-created-by-user"),
-  getCategories: require("./get-categories")
+  getCategories: require("./get-categories"),
 };

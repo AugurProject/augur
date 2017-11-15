@@ -24,6 +24,10 @@
       "error",
       "always"
     ],
+    "comma-dangle": [
+      2,
+      "always-multiline"
+    ],
     "curly": [
       2,
       "multi-line"

@@ -13,5 +13,5 @@ module.exports = {
   normalizePrice: require("./normalize-price"),
   denormalizePrice: require("./denormalize-price"),
   tradeUntilAmountIsZero: require("./trade-until-amount-is-zero"),
-  getOpenOrders: require("./get-open-orders")
+  getOpenOrders: require("./get-open-orders"),
 };

@@ -33,73 +33,73 @@ describe("accounts/register", function () {
   test({
     description: "should return an error if the password is < 6 characters long",
     params: {
-      password: "pass"
+      password: "pass",
     },
     assertions: function (result) {
       assert.deepEqual(result, errors.PASSWORD_TOO_SHORT);
-    }
+    },
   });
   test({
     description: "should return an error if the password is undefined",
     params: {
-      password: undefined
+      password: undefined,
     },
     assertions: function (result) {
       assert.deepEqual(result, errors.PASSWORD_TOO_SHORT);
-    }
+    },
   });
   test({
     description: "should return an error if there is an issue creating the private key",
     params: {
-      password: "somevalidpassword"
+      password: "somevalidpassword",
     },
     create: function (params, cb) {
       cb({error: 999, message: "Uh-Oh!"});
     },
     assertions: function (result) {
       assert.deepEqual(result, {error: 999, message: "Uh-Oh!"});
-    }
+    },
   });
   test({
     description: "should return an error if there is an issue deriving the secret key",
     params: {
-      password: "somevalidpassword"
+      password: "somevalidpassword",
     },
     deriveKey: function (password, salt, options, cb) {
       cb({ error: 999, message: "Uh-Oh!" });
     },
     assertions: function (result) {
       assert.deepEqual(result, {error: 999, message: "Uh-Oh!"});
-    }
+    },
   });
   test({
     description: "should register an account given a valid password - account 1",
     params: {
-      password: "testpassword1"
+      password: "testpassword1",
     },
     assertions: function (result) {
       assert.isString(result.address);
       assert.isObject(result.keystore);
       assert.isTrue(Buffer.isBuffer(result.privateKey));
       assert.isTrue(Buffer.isBuffer(result.derivedKey));
-    }
+    },
   });
   test({
     description: "should register an account given a valid password - account 2",
     params: {
-      password: "testpassword2"
+      password: "testpassword2",
     },
     assertions: function (result) {
       assert.isString(result.address);
       assert.isObject(result.keystore);
       assert.isTrue(Buffer.isBuffer(result.privateKey));
       assert.isTrue(Buffer.isBuffer(result.derivedKey));
-    }
+    },
   });
   test({
     description: "should register an account given a valid password, should handle pbkdf2 KDF",
     params: {
-      password: "thisisavalidpassword"
+      password: "thisisavalidpassword",
     },
     KDF: "pbkdf2",
     assertions: function (result) {
@@ -107,12 +107,12 @@ describe("accounts/register", function () {
       assert.isObject(result.keystore);
       assert.isTrue(Buffer.isBuffer(result.privateKey));
       assert.isTrue(Buffer.isBuffer(result.derivedKey));
-    }
+    },
   });
   test({
     description: "should register an account given a valid password, should handle scrypt KDF",
     params: {
-      password: "thisisavalidpassword"
+      password: "thisisavalidpassword",
     },
     KDF: "scrypt",
     assertions: function (result) {
@@ -120,6 +120,6 @@ describe("accounts/register", function () {
       assert.isObject(result.keystore);
       assert.isTrue(Buffer.isBuffer(result.privateKey));
       assert.isTrue(Buffer.isBuffer(result.derivedKey));
-    }
+    },
   });
 });

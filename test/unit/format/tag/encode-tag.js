@@ -15,24 +15,24 @@ describe("format/tag/encode-tag", function () {
     tag: undefined,
     assertions: function (tag) {
       assert.deepEqual(tag, "0x0");
-    }
+    },
   });
   test({
     tag: null,
     assertions: function (tag) {
       assert.deepEqual(tag, "0x0");
-    }
+    },
   });
   test({
     tag: "",
     assertions: function (tag) {
       assert.deepEqual(tag, "0x0");
-    }
+    },
   });
   test({
     tag: "Hello World",
     assertions: function (tag) {
       assert.deepEqual(tag, "0x48656c6c6f20576f726c64000000000000000000000000000000000000000000");
-    }
+    },
   });
 });

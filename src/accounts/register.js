@@ -38,7 +38,7 @@ function register(p, callback) {
       var address = speedomatic.formatEthereumAddress(keythereum.privateKeyToAddress(plain.privateKey));
       var kdfparams = {
         dklen: keythereum.constants[KDF].dklen,
-        salt: plain.salt.toString("hex")
+        salt: plain.salt.toString("hex"),
       };
       if (KDF === "scrypt") {
         kdfparams.n = keythereum.constants.scrypt.n;
@@ -56,10 +56,10 @@ function register(p, callback) {
           cipherparams: { iv: plain.iv.toString("hex") },
           kdf: KDF,
           kdfparams: kdfparams,
-          mac: keythereum.getMAC(derivedKey, encryptedPrivateKey)
+          mac: keythereum.getMAC(derivedKey, encryptedPrivateKey),
         },
         version: 3,
-        id: uuid.v4()
+        id: uuid.v4(),
       };
 
       // while logged in, account object is set
@@ -67,7 +67,7 @@ function register(p, callback) {
         privateKey: plain.privateKey,
         address: address,
         keystore: keystore,
-        derivedKey: derivedKey
+        derivedKey: derivedKey,
       });
     }); // deriveKey
   }); // create

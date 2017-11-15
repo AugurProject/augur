@@ -16,5 +16,5 @@ module.exports = {
   login: require("./login"),
   loginWithMasterKey: require("./login-with-master-key"),
   logout: require("./logout"),
-  register: require("./register")
+  register: require("./register"),
 };

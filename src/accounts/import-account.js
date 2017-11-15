@@ -20,7 +20,7 @@ function importAccount(p, callback) {
     keythereum.deriveKey(p.password, keystoreCrypto.kdfparams.salt, {
       kdf: keystoreCrypto.kdf,
       kdfparams: keystoreCrypto.kdfparams,
-      cipher: keystoreCrypto.cipher
+      cipher: keystoreCrypto.cipher,
     }, function (derivedKey) {
       if (!derivedKey || derivedKey.error) return callback(errors.BAD_CREDENTIALS);
       // verify that message authentication codes match
@@ -32,7 +32,7 @@ function importAccount(p, callback) {
         privateKey: privateKey,
         address: speedomatic.formatEthereumAddress(p.address),
         keystore: p.keystore,
-        derivedKey: derivedKey
+        derivedKey: derivedKey,
       });
     });
   });

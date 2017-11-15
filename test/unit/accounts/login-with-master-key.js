@@ -19,27 +19,27 @@ describe("accounts/login-with-master-key", function () {
   test({
     description: "Should handle logging into an account using a privateKey buffer",
     params: {
-      privateKey: Buffer.from(privateKey, "hex")
+      privateKey: Buffer.from(privateKey, "hex"),
     },
     assertions: function (account) {
       assert.deepEqual(account, {
         address: speedomatic.formatEthereumAddress(keys.privateKeyToAddress(privateKey)),
         privateKey: Buffer.from(privateKey, "hex"),
-        derivedKey: Buffer.from(speedomatic.unfork(sha256(Buffer.from(privateKey, "hex"))), "hex")
+        derivedKey: Buffer.from(speedomatic.unfork(sha256(Buffer.from(privateKey, "hex"))), "hex"),
       });
-    }
+    },
   });
   test({
     description: "Should handle logging into an account using a privateKey hex string",
     params: {
-      privateKey: privateKey
+      privateKey: privateKey,
     },
     assertions: function (account) {
       assert.deepEqual(account, {
         address: speedomatic.formatEthereumAddress(keys.privateKeyToAddress(privateKey)),
         privateKey: Buffer.from(privateKey, "hex"),
-        derivedKey: Buffer.from(speedomatic.unfork(sha256(Buffer.from(privateKey, "hex"))), "hex")
+        derivedKey: Buffer.from(speedomatic.unfork(sha256(Buffer.from(privateKey, "hex"))), "hex"),
       });
-    }
+    },
   });
 });

@@ -14,7 +14,7 @@ var api = require("../api");
  */
 function depositEther(p) {
   return api().Cash.depositEther(assign({}, p, {
-    tx: { value: speedomatic.fix(p.etherToDeposit, "hex") }
+    tx: { value: speedomatic.fix(p.etherToDeposit, "hex") },
   }));
 }
 

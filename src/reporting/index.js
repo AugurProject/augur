@@ -11,5 +11,5 @@ module.exports = {
   submitReport: require("./submit-report"),
   finalizeMarket: require("./finalize-market"),
   migrateLosingTokens: require("./migrate-losing-tokens"),
-  redeem: require("./redeem")
+  redeem: require("./redeem"),
 };

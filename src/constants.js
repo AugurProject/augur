@@ -20,7 +20,7 @@ module.exports = {
     LAST_DISPUTE: "LAST_DISPUTE",
     FORKING: "FORKING",
     AWAITING_FINALIZATION: "AWAITING_FINALIZATION",
-    FINALIZED: "FINALIZED"
+    FINALIZED: "FINALIZED",
   },
 
   ZERO: new BigNumber(0),
@@ -29,7 +29,7 @@ module.exports = {
     decimals: decimals.toNumber(),
     limit: ten.dividedBy(multiple),
     zero: new BigNumber(1, 10).dividedBy(multiple),
-    multiple: multiple
+    multiple: multiple,
   },
   MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
 
@@ -62,6 +62,6 @@ module.exports = {
   // KDF: "scrypt",
   // ROUNDS: 4096,
   KEYSIZE: 32,
-  IVSIZE: 16
+  IVSIZE: 16,
 
 };

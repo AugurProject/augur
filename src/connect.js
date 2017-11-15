@@ -28,7 +28,7 @@ function connect(connectOptions, callback) {
     abi: contracts.abi,
     httpAddresses: [],
     wsAddresses: [],
-    ipcAddresses: []
+    ipcAddresses: [],
   };
   if (isObject(connectOptions.ethereumNode)) {
     if (connectOptions.ethereumNode.http) {
@@ -71,7 +71,7 @@ function connect(connectOptions, callback) {
         self.rpc = rpcInterface.createRpcInterface(ethereumConnectionInfo.rpc);
         next(null, ethereumConnectionInfo);
       });
-    }
+    },
   }, function (err, connectionInfo) {
     if (err) return callback(err);
     callback(null, connectionInfo);

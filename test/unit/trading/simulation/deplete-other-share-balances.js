@@ -17,11 +17,11 @@ describe("trading/simulation/deplete-other-share-balances", function () {
     params: {
       outcome: 1,
       sharesDepleted: new BigNumber("1", 10),
-      shareBalances: [new BigNumber("3", 10), new BigNumber("3", 10)]
+      shareBalances: [new BigNumber("3", 10), new BigNumber("3", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, [new BigNumber("2", 10), new BigNumber("3", 10)]);
-    }
+    },
   });
   test({
     description: "Five outcomes, deplete all but outcome 0",
@@ -33,8 +33,8 @@ describe("trading/simulation/deplete-other-share-balances", function () {
         new BigNumber("3.1", 10),
         new BigNumber("2", 10),
         new BigNumber("2", 10),
-        new BigNumber("13.37", 10)
-      ]
+        new BigNumber("13.37", 10),
+      ],
     },
     assertions: function (output) {
       assert.deepEqual(output, [
@@ -42,8 +42,8 @@ describe("trading/simulation/deplete-other-share-balances", function () {
         new BigNumber("1.1", 10),
         new BigNumber("0", 10),
         new BigNumber("0", 10),
-        new BigNumber("11.37", 10)
+        new BigNumber("11.37", 10),
       ]);
-    }
+    },
   });
 });

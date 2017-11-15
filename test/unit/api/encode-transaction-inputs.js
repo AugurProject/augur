@@ -23,7 +23,7 @@ describe("api/encode-transaction-inputs", function () {
         int256ArrayInput: ["10", 10, "0xa"],
         uint256ArrayInput: ["10", 10, "0xa"],
         bytes32ArrayInput: ["0xdeadbeef", "10", 10],
-        bytesInput: "hello world"
+        bytesInput: "hello world",
       },
       inputs: [
         "addressInput",
@@ -34,7 +34,7 @@ describe("api/encode-transaction-inputs", function () {
         "int256ArrayInput",
         "uint256ArrayInput",
         "bytes32ArrayInput",
-        "bytesInput"
+        "bytesInput",
       ],
       signature: [
         "address",
@@ -45,9 +45,9 @@ describe("api/encode-transaction-inputs", function () {
         "int256[]",
         "uint256[]",
         "bytes32[]",
-        "bytes"
+        "bytes",
       ],
-      fixedPointIndex: undefined
+      fixedPointIndex: undefined,
     },
     assertions: function (encodedTransactionInputs) {
       assert.isArray(encodedTransactionInputs);
@@ -60,25 +60,25 @@ describe("api/encode-transaction-inputs", function () {
         [
           "0x000000000000000000000000000000000000d00d",
           "0x0000000000000000000000000000000000000b0b",
-          "0x000000000000000000000000000000000000beef"
+          "0x000000000000000000000000000000000000beef",
         ],
         [
           "0x0000000000000000000000000000000000000000000000000000000000000010",
           "0x000000000000000000000000000000000000000000000000000000000000000a",
-          "0x000000000000000000000000000000000000000000000000000000000000000a"
+          "0x000000000000000000000000000000000000000000000000000000000000000a",
         ],
         [
           "0x0000000000000000000000000000000000000000000000000000000000000010",
           "0x000000000000000000000000000000000000000000000000000000000000000a",
-          "0x000000000000000000000000000000000000000000000000000000000000000a"
+          "0x000000000000000000000000000000000000000000000000000000000000000a",
         ],
         [
           "0x00000000000000000000000000000000000000000000000000000000deadbeef",
           "0x0000000000000000000000000000000000000000000000000000000000000010",
-          "0x000000000000000000000000000000000000000000000000000000000000000a"
+          "0x000000000000000000000000000000000000000000000000000000000000000a",
         ],
-        "hello world"
+        "hello world",
       ]);
-    }
+    },
   });
 });

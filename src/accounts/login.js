@@ -59,7 +59,7 @@ function login(p, callback) {
   keythereum.deriveKey(password, keystoreCrypto.kdfparams.salt, {
     kdf: keystoreCrypto.kdf,
     kdfparams: keystoreCrypto.kdfparams,
-    cipher: keystoreCrypto.cipher
+    cipher: keystoreCrypto.cipher,
   }, function (derivedKey) {
     if (!derivedKey || derivedKey.error) return callback(errors.BAD_CREDENTIALS);
 
@@ -75,7 +75,7 @@ function login(p, callback) {
         privateKey: keythereum.decrypt(storedKey, derivedKey.slice(0, 16), keystoreCrypto.cipherparams.iv),
         address: speedomatic.formatEthereumAddress(address),
         keystore: keystore,
-        derivedKey: derivedKey
+        derivedKey: derivedKey,
       });
 
     // decryption failure: bad password

@@ -17,20 +17,20 @@ function formatLogMessage(contractName, eventName, message) {
           }
           return assign({}, message, {
             extraInfo: extraInfo,
-            marketCreationFee: unfix(message.marketCreationFee, "string")
+            marketCreationFee: unfix(message.marketCreationFee, "string"),
           });
         case "WinningTokensRedeemed":
           return assign({}, message, {
             amountRedeemed: unfix(message.amountRedeemed, "string"),
-            reportingFeesReceived: unfix(message.reportingFeesReceived, "string")
+            reportingFeesReceived: unfix(message.reportingFeesReceived, "string"),
           });
         case "ReportSubmitted":
           return assign({}, message, {
-            amountStaked: unfix(message.amountStaked, "string")
+            amountStaked: unfix(message.amountStaked, "string"),
           });
         case "TokensTransferred":
           return assign({}, message, {
-            value: unfix(message.value, "string")
+            value: unfix(message.value, "string"),
           });
         default:
           return message;
@@ -39,11 +39,11 @@ function formatLogMessage(contractName, eventName, message) {
       switch (eventName) {
         case "Approval":
           return assign({}, message, {
-            fxpValue: unfix(message.fxpValue, "string")
+            fxpValue: unfix(message.fxpValue, "string"),
           });
         case "Transfer":
           return assign({}, message, {
-            value: unfix(message.value, "string")
+            value: unfix(message.value, "string"),
           });
         default:
           return message;

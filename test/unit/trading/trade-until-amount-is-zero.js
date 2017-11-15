@@ -10,13 +10,13 @@ describe("trading/trade-until-amount-is-zero", function () {
     it(t.description, function (done) {
       var tradeUntilAmountIsZero = proxyquire("../../../src/trading/trade-until-amount-is-zero", {
         "./get-trade-amount-remaining": t.mock.getTradeAmountRemaining,
-        "../api": t.mock.api
+        "../api": t.mock.api,
       });
       tradeUntilAmountIsZero(Object.assign({}, t.params, {
         onSuccess: function (res) {
           t.params.onSuccess(res);
           done();
-        }
+        },
       }));
     });
   };
@@ -39,7 +39,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       },
       onFailed: function (err) {
         throw new Error(err);
-      }
+      },
     },
     mock: {
       getTradeAmountRemaining: function (transactionHash, callback) {
@@ -64,11 +64,11 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.isFunction(p.onFailed);
               p.onSent({ hash: "TRANSACTION_HASH" });
               p.onSuccess({ hash: "TRANSACTION_HASH" });
-            }
-          }
+            },
+          },
         };
-      }
-    }
+      },
+    },
   });
   test({
     description: "buy 10 outcome 2 @ 0.5 (3 remaining)",
@@ -89,7 +89,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       },
       onFailed: function (err) {
         throw new Error(err);
-      }
+      },
     },
     mock: {
       getTradeAmountRemaining: function (transactionHash, callback) {
@@ -123,11 +123,11 @@ describe("trading/trade-until-amount-is-zero", function () {
                 p.onSent({ hash: "TRANSACTION_HASH_2" });
                 p.onSuccess({ hash: "TRANSACTION_HASH_2" });
               }
-            }
-          }
+            },
+          },
         };
-      }
-    }
+      },
+    },
   });
   test({
     description: "sell 10 outcome 2 @ 0.5",
@@ -148,7 +148,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       },
       onFailed: function (err) {
         throw new Error(err);
-      }
+      },
     },
     mock: {
       getTradeAmountRemaining: function (transactionHash, callback) {
@@ -173,11 +173,11 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.isFunction(p.onFailed);
               p.onSent({ hash: "TRANSACTION_HASH" });
               p.onSuccess({ hash: "TRANSACTION_HASH" });
-            }
-          }
+            },
+          },
         };
-      }
-    }
+      },
+    },
   });
   test({
     description: "close position (take-only) 10 outcome 2 @ 0.5",
@@ -198,7 +198,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       },
       onFailed: function (err) {
         throw new Error(err);
-      }
+      },
     },
     mock: {
       getTradeAmountRemaining: function (transactionHash, callback) {
@@ -223,10 +223,10 @@ describe("trading/trade-until-amount-is-zero", function () {
             },
             publicTrade: function () {
               assert.fail();
-            }
-          }
+            },
+          },
         };
-      }
-    }
+      },
+    },
   });
 });

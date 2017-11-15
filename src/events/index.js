@@ -3,5 +3,5 @@
 module.exports = {
   getAllAugurLogs: require("./get-all-augur-logs"),
   startListeners: require("./start-listeners"),
-  stopListeners: require("./stop-listeners")
+  stopListeners: require("./stop-listeners"),
 };

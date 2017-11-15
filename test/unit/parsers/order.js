@@ -18,11 +18,11 @@ describe("parsers/order", function () {
       type: 1,
       minPrice: "0",
       maxPrice: "1",
-      order: null
+      order: null,
     },
     assertions: function (output) {
       assert.isNull(output);
-    }
+    },
   });
   test({
     description: "empty order",
@@ -30,11 +30,11 @@ describe("parsers/order", function () {
       type: 1,
       minPrice: "0",
       maxPrice: "1",
-      order: []
+      order: [],
     },
     assertions: function (output) {
       assert.isNull(output);
-    }
+    },
   });
   test({
     description: "zero order array",
@@ -42,11 +42,11 @@ describe("parsers/order", function () {
       type: 1,
       minPrice: "0",
       maxPrice: "1",
-      order: ["0x0", "0x0", "0x0", "0x0", "0x0", "0x0", "0x0", "0x0"]
+      order: ["0x0", "0x0", "0x0", "0x0", "0x0", "0x0", "0x0", "0x0"],
     },
     assertions: function (output) {
       assert.isNull(output);
-    }
+    },
   });
   test({
     description: "buy order",
@@ -62,8 +62,8 @@ describe("parsers/order", function () {
         speedomatic.fix("0", "hex"),         // sharesEscrowed
         "0xa",                       // betterOrderId
         "0xb",                       // worseOrderId
-        "0x4a817c800"                // gasPrice
-      ]
+        "0x4a817c800",                // gasPrice
+      ],
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -76,9 +76,9 @@ describe("parsers/order", function () {
         sharesEscrowed: "0",
         betterOrderId: "0x000000000000000000000000000000000000000000000000000000000000000a",
         worseOrderId: "0x000000000000000000000000000000000000000000000000000000000000000b",
-        gasPrice: "20000000000"
+        gasPrice: "20000000000",
       });
-    }
+    },
   });
   test({
     description: "sell order",
@@ -94,8 +94,8 @@ describe("parsers/order", function () {
         speedomatic.fix("0", "hex"),         // sharesEscrowed
         "0xa",                       // betterOrderId
         "0xb",                       // worseOrderId
-        "0x4a817c800"                // gasPrice
-      ]
+        "0x4a817c800",                // gasPrice
+      ],
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -108,8 +108,8 @@ describe("parsers/order", function () {
         sharesEscrowed: "0",
         betterOrderId: "0x000000000000000000000000000000000000000000000000000000000000000a",
         worseOrderId: "0x000000000000000000000000000000000000000000000000000000000000000b",
-        gasPrice: "20000000000"
+        gasPrice: "20000000000",
       });
-    }
+    },
   });
 });

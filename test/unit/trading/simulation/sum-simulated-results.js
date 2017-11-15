@@ -24,7 +24,7 @@ describe("trading/simulation/sum-simulated-results", function () {
         sharesDepleted: ZERO,
         otherSharesDepleted: ZERO,
         tokensDepleted: ZERO,
-        shareBalances: [ZERO, ZERO]
+        shareBalances: [ZERO, ZERO],
       },
       simulatedResults: {
         settlementFees: ZERO,
@@ -32,8 +32,8 @@ describe("trading/simulation/sum-simulated-results", function () {
         sharesDepleted: ZERO,
         otherSharesDepleted: ZERO,
         tokensDepleted: ZERO,
-        shareBalances: [ZERO, ZERO]
-      }
+        shareBalances: [ZERO, ZERO],
+      },
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -43,9 +43,9 @@ describe("trading/simulation/sum-simulated-results", function () {
         sharesDepleted: ZERO,
         otherSharesDepleted: ZERO,
         tokensDepleted: ZERO,
-        shareBalances: [ZERO, ZERO]
+        shareBalances: [ZERO, ZERO],
       });
-    }
+    },
   });
   test({
     description: "not all zeros",
@@ -57,7 +57,7 @@ describe("trading/simulation/sum-simulated-results", function () {
         sharesDepleted: new BigNumber("1", 10),
         otherSharesDepleted: new BigNumber("1", 10),
         tokensDepleted: new BigNumber("1", 10),
-        shareBalances: [new BigNumber("10", 10), new BigNumber("9", 10)]
+        shareBalances: [new BigNumber("10", 10), new BigNumber("9", 10)],
       },
       simulatedResults: {
         settlementFees: new BigNumber("2", 10),
@@ -65,8 +65,8 @@ describe("trading/simulation/sum-simulated-results", function () {
         sharesDepleted: new BigNumber("4", 10),
         otherSharesDepleted: new BigNumber("5", 10),
         tokensDepleted: new BigNumber("6", 10),
-        shareBalances: [new BigNumber("8", 10), new BigNumber("7", 10)]
-      }
+        shareBalances: [new BigNumber("8", 10), new BigNumber("7", 10)],
+      },
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -76,8 +76,8 @@ describe("trading/simulation/sum-simulated-results", function () {
         sharesDepleted: new BigNumber("5", 10),
         otherSharesDepleted: new BigNumber("6", 10),
         tokensDepleted: new BigNumber("7", 10),
-        shareBalances: [new BigNumber("8", 10), new BigNumber("7", 10)]
+        shareBalances: [new BigNumber("8", 10), new BigNumber("7", 10)],
       });
-    }
+    },
   });
 });

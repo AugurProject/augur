@@ -44,7 +44,7 @@ describe("events/parse-message/parse-block-message", function () {
     timestamp: "0x576469fe",
     totalDifficulty: "0xf109f9a4e6f3",
     transactionsRoot: "0x4f90d1155e24c3e52f0c44c6e1b5eafa4395e196339749d0453600017627df4e",
-    uncles: []
+    uncles: [],
   });
   test({
     difficulty: "0x45c62a5a",
@@ -64,7 +64,7 @@ describe("events/parse-message/parse-block-message", function () {
     timestamp: "0x57648769",
     totalDifficulty: "0xf196b3653c38",
     transactionsRoot: "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
-    uncles: []
+    uncles: [],
   });
   test({
     difficulty: "0x456f3e0b",
@@ -84,7 +84,7 @@ describe("events/parse-message/parse-block-message", function () {
     timestamp: "0x57648910",
     totalDifficulty: "0xf19cf28ef992",
     transactionsRoot: "0x7c416eb59638d9a58ec5f526dd1b4326f37e50fa3968700e28d5f65f704e85fc",
-    uncles: []
+    uncles: [],
   });
   test([{
     difficulty: "0x456f3e0b",
@@ -104,7 +104,7 @@ describe("events/parse-message/parse-block-message", function () {
     timestamp: "0x57648910",
     totalDifficulty: "0xf19cf28ef992",
     transactionsRoot: "0x7c416eb59638d9a58ec5f526dd1b4326f37e50fa3968700e28d5f65f704e85fc",
-    uncles: []
+    uncles: [],
   }]);
   test([{
     difficulty: "0x456f3e0b",
@@ -124,6 +124,6 @@ describe("events/parse-message/parse-block-message", function () {
     timestamp: "0x57648910",
     totalDifficulty: "0xf19cf28ef992",
     transactionsRoot: "0x7c416eb59638d9a58ec5f526dd1b4326f37e50fa3968700e28d5f65f704e85fc",
-    uncles: []
+    uncles: [],
   }]);
 });

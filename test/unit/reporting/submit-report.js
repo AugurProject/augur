@@ -11,12 +11,12 @@ describe("reporting/submit-report", function () {
   var test = function (t) {
     it(t.description, function () {
       var submitReport = proxyquire("../../../src/reporting/submit-report", {
-        "../api": t.mock.api
+        "../api": t.mock.api,
       });
       submitReport(assign(t.params, {
         onSent: noop,
         onSuccess: t.assertions,
-        onFailed: t.assertions
+        onFailed: t.assertions,
       }));
     });
   };
@@ -26,7 +26,7 @@ describe("reporting/submit-report", function () {
       meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       market: "MARKET_CONTRACT_ADDRESS",
       _payoutNumerators: [0, 1],
-      _amountToStake: 100
+      _amountToStake: 100,
     },
     mock: {
       api: function () {
@@ -35,10 +35,10 @@ describe("reporting/submit-report", function () {
             getStakeToken: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
-                _payoutNumerators: [0, 1]
+                _payoutNumerators: [0, 1],
               });
               callback(null, "STAKE_TOKEN_CONTRACT_ADDRESS");
-            }
+            },
           },
           StakeToken: {
             buy: function (payload) {
@@ -49,13 +49,13 @@ describe("reporting/submit-report", function () {
               assert.isFunction(payload.onSuccess);
               assert.isFunction(payload.onFailed);
               payload.onSuccess({ callReturn: "STAKE_TOKEN_BUY" });
-            }
-          }
+            },
+          },
         };
-      }
+      },
     },
     assertions: function (output) {
       assert.deepEqual(output, { callReturn: "STAKE_TOKEN_BUY" });
-    }
+    },
   });
 });

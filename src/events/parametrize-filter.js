@@ -10,7 +10,7 @@ function parametrizeFilter(eventAPI, params) {
     fromBlock: params.fromBlock || constants.GET_LOGS_DEFAULT_FROM_BLOCK,
     toBlock: params.toBlock || constants.GET_LOGS_DEFAULT_TO_BLOCK,
     address: augurContracts[ethrpc.getNetworkID()][eventAPI.contract],
-    topics: buildTopicsList(eventAPI.signature, eventAPI.inputs, params)
+    topics: buildTopicsList(eventAPI.signature, eventAPI.inputs, params),
   };
 }
 

@@ -4,7 +4,7 @@ var state = {
   numRequests: 0,
   jsonRpcCallbacks: {},
   jsonRpcEventCallbacks: {},
-  transport: null
+  transport: null,
 };
 
 module.exports.incrementNumRequests = function () {

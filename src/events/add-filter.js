@@ -9,7 +9,7 @@ function addFilter(blockStream, contractName, eventName, eventAbi, contracts, ad
   var contractAddress = contracts[eventAbi.contract];
   addSubscription(contractAddress, eventAbi.signature, blockStream.addLogFilter({
     address: contractAddress,
-    topics: [eventAbi.signature]
+    topics: [eventAbi.signature],
   }), function (message) {
     parseLogMessage(contractName, eventName, message, eventAbi.inputs, onMessage);
   });

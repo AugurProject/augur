@@ -29,7 +29,7 @@ function migrateLosingTokens(p) {
         if (err) return next(err);
         next(null, previousReportingWindowAddress);
       });
-    }
+    },
   }, function (err, contractAddresses) {
     if (err) return p.onFailed(err);
     var previousReportingWindowPayload = { tx: { to: contractAddresses.previousReportingWindow } };
@@ -45,7 +45,7 @@ function migrateLosingTokens(p) {
           if (err) return next(err);
           next(null, previousReportingWindowEndBlock);
         });
-      }
+      },
     }, function (err, bounds) {
       if (err) return p.onFailed(err);
       getLogs({
@@ -54,15 +54,15 @@ function migrateLosingTokens(p) {
           fromBlock: bounds.previousReportingWindowStartBlock,
           toBlock: bounds.previousReportingWindowEndBlock,
           market: p.market,
-          address: contractAddresses.reputationToken
-        }
+          address: contractAddresses.reputationToken,
+        },
       }, function (err, transferLogs) {
         if (err) return p.onFailed(err);
         if (!Array.isArray(transferLogs) || !transferLogs.length) return p.onSuccess(null);
         transferLogs.forEach(function (transferLog) {
           var stakeTokenAddress = transferLog.to;
           api().StakeToken.migrateLosingTokens(assign({}, immutableDelete(p, ["universe", "market"]), {
-            tx: { to: stakeTokenAddress }
+            tx: { to: stakeTokenAddress },
           }));
         });
       });

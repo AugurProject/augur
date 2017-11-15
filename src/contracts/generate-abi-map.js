@@ -39,7 +39,7 @@ function generateAbiMap(abi) {
         events[contractName][name] = {
           contract: contractName,
           inputs: functionOrEvent.inputs,
-          signature: convertEventNameToSignature(methodSignature)
+          signature: convertEventNameToSignature(methodSignature),
         };
       }
     });

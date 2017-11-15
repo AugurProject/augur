@@ -10,7 +10,7 @@ describe("events/get-all-augur-logs", function () {
     it(t.description, function (done) {
       var getAllAugurLogs = proxyquire("../../../src/events/get-all-augur-logs", {
         "../contracts": t.mock.contracts,
-        "../rpc-interface": t.stub.rpcInterface
+        "../rpc-interface": t.stub.rpcInterface,
       });
       getAllAugurLogs(t.params, function (err, allAugurLogs) {
         t.assertions(err, allAugurLogs);
@@ -22,14 +22,14 @@ describe("events/get-all-augur-logs", function () {
     description: "from block 10 to block 200, 2 chunks, 3 event logs",
     params: {
       fromBlock: 10,
-      toBlock: 200
+      toBlock: 200,
     },
     mock: {
       contracts: {
         addresses: {
           4: {
-            TestContractName: "0x000000000000000000000000000000000000000c"
-          }
+            TestContractName: "0x000000000000000000000000000000000000000c",
+          },
         },
         abi: {
           events: {
@@ -38,20 +38,20 @@ describe("events/get-all-augur-logs", function () {
                 inputs: [{
                   indexed: true,
                   type: "bytes32",
-                  name: "testEventInputIndexed"
+                  name: "testEventInputIndexed",
                 }, {
                   indexed: false,
                   type: "address",
-                  name: "testEventInputData"
+                  name: "testEventInputData",
                 }],
                 type: "event",
                 name: "TestEventName(int256,address)",
-                signature: "0x1000000000000000000000000000000000000000000000000000000000000000"
-              }
-            }
-          }
-        }
-      }
+                signature: "0x1000000000000000000000000000000000000000000000000000000000000000",
+              },
+            },
+          },
+        },
+      },
     },
     stub: {
       rpcInterface: {
@@ -62,7 +62,7 @@ describe("events/get-all-augur-logs", function () {
               address: "0x000000000000000000000000000000000000000c",
               topics: [
                 "0x1000000000000000000000000000000000000000000000000000000000000000",
-                "0x2000000000000000000000000000000000000000000000000000000000000000"
+                "0x2000000000000000000000000000000000000000000000000000000000000000",
               ],
               data: "0x0000000000000000000000000000000000000000000000000000000000000001",
               blockNumber: "0xe",
@@ -70,14 +70,14 @@ describe("events/get-all-augur-logs", function () {
               transactionHash: "0x000000000000000000000000000000000000000000000000000000000000000a",
               blockHash: "0x000000000000000000000000000000000000000000000000000000000000000b",
               logIndex: "0x0",
-              removed: false
+              removed: false,
             }]);
           } else {
             callback([{
               address: "0x000000000000000000000000000000000000000c",
               topics: [
                 "0x1000000000000000000000000000000000000000000000000000000000000000",
-                "0x3000000000000000000000000000000000000000000000000000000000000000"
+                "0x3000000000000000000000000000000000000000000000000000000000000000",
               ],
               data: "0x0000000000000000000000000000000000000000000000000000000000000002",
               blockNumber: "0x96",
@@ -85,12 +85,12 @@ describe("events/get-all-augur-logs", function () {
               transactionHash: "0x00000000000000000000000000000000000000000000000000000000000000aa",
               blockHash: "0x00000000000000000000000000000000000000000000000000000000000000bb",
               logIndex: "0x0",
-              removed: false
+              removed: false,
             }, {
               address: "0x000000000000000000000000000000000000000c",
               topics: [
                 "0x1000000000000000000000000000000000000000000000000000000000000000",
-                "0x3000000000000000000000000000000000000000000000000000000000000000"
+                "0x3000000000000000000000000000000000000000000000000000000000000000",
               ],
               data: "0x0000000000000000000000000000000000000000000000000000000000000003",
               blockNumber: "0x97",
@@ -98,19 +98,19 @@ describe("events/get-all-augur-logs", function () {
               transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000aaa",
               blockHash: "0x0000000000000000000000000000000000000000000000000000000000000bbb",
               logIndex: "0x0",
-              removed: false
+              removed: false,
             }]);
           }
         },
         getCurrentBlock: function () {
           return {
-            number: "0x3e9"
+            number: "0x3e9",
           };
         },
         getNetworkID: function () {
           return "4";
-        }
-      }
+        },
+      },
     },
     assertions: function (err, allAugurLogs) {
       assert.isNull(err);
@@ -123,7 +123,7 @@ describe("events/get-all-augur-logs", function () {
             blockNumber: 14,
             transactionHash: "0x000000000000000000000000000000000000000000000000000000000000000a",
             logIndex: 0,
-            removed: false
+            removed: false,
           }, {
             address: "0x000000000000000000000000000000000000000c",
             testEventInputIndexed: "0x3000000000000000000000000000000000000000000000000000000000000000",
@@ -131,7 +131,7 @@ describe("events/get-all-augur-logs", function () {
             blockNumber: 150,
             transactionHash: "0x00000000000000000000000000000000000000000000000000000000000000aa",
             logIndex: 0,
-            removed: false
+            removed: false,
           }, {
             address: "0x000000000000000000000000000000000000000c",
             testEventInputIndexed: "0x3000000000000000000000000000000000000000000000000000000000000000",
@@ -139,10 +139,10 @@ describe("events/get-all-augur-logs", function () {
             blockNumber: 151,
             transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000aaa",
             logIndex: 0,
-            removed: false
-          }]
-        }
+            removed: false,
+          }],
+        },
       });
-    }
+    },
   });
 });

@@ -8,7 +8,7 @@ var compareOrdersByPrice = {
   },
   2: function (order1, order2) {
     return order2.fullPrecisionPrice - order1.fullPrecisionPrice;
-  }
+  },
 };
 
 /**

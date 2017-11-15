@@ -15,12 +15,12 @@ describe("format/log/format-trade-type", function () {
     orderType: "0x0",
     assertions: function (type) {
       assert.deepEqual(type, "buy");
-    }
+    },
   });
   test({
     orderType: "0x1",
     assertions: function (type) {
       assert.deepEqual(type, "sell");
-    }
+    },
   });
 });

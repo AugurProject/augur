@@ -16,7 +16,7 @@ function simulateSell(outcome, sharesToCover, shareBalances, tokenBalance, userA
     sharesDepleted: ZERO,
     otherSharesDepleted: ZERO,
     tokensDepleted: ZERO,
-    shareBalances: shareBalances
+    shareBalances: shareBalances,
   };
   var matchingSortedBids = filterByPriceAndOutcomeAndUserSortByPrice(buyOrderBook, 1, price, userAddress);
 

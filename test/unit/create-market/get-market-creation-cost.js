@@ -45,7 +45,7 @@ describe("create-market/get-market-creation-cost", function () {
             },
           },
         };
-      }
+      },
     },
     assertions: function (err, marketCreationCost) {
       assert.isNull(err);
@@ -53,7 +53,7 @@ describe("create-market/get-market-creation-cost", function () {
         designatedReportNoShowReputationBond: "1",
         etherRequiredToCreateMarket: "4.2",
       });
-    }
+    },
   });
   test({
     description: "current reporting window does not exist",
@@ -89,7 +89,7 @@ describe("create-market/get-market-creation-cost", function () {
             },
           },
         };
-      }
+      },
     },
     assertions: function (err, marketCreationCost) {
       assert.isNull(err);
@@ -98,6 +98,6 @@ describe("create-market/get-market-creation-cost", function () {
         designatedReportNoShowReputationBond: "1",
         etherRequiredToCreateMarket: "4.2",
       });
-    }
+    },
   });
 });

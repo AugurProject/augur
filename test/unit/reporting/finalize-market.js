@@ -11,12 +11,12 @@ describe("reporting/finalize-market", function () {
   var test = function (t) {
     it(t.description, function () {
       var finalizeMarket = proxyquire("../../../src/reporting/finalize-market", {
-        "../api": t.mock.api
+        "../api": t.mock.api,
       });
       finalizeMarket(assign(t.params, {
         onSent: noop,
         onSuccess: t.assertions,
-        onFailed: t.assertions
+        onFailed: t.assertions,
       }));
     });
   };
@@ -24,7 +24,7 @@ describe("reporting/finalize-market", function () {
     description: "market already finalized",
     params: {
       meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
-      market: "MARKET_CONTRACT_ADDRESS"
+      market: "MARKET_CONTRACT_ADDRESS",
     },
     mock: {
       api: function () {
@@ -36,20 +36,20 @@ describe("reporting/finalize-market", function () {
             },
             tryFinalize: function () {
               assert.fail();
-            }
-          }
+            },
+          },
         };
-      }
+      },
     },
     assertions: function (output) {
       assert.isTrue(output);
-    }
+    },
   });
   test({
     description: "market is not ready to finalize",
     params: {
       meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
-      market: "MARKET_CONTRACT_ADDRESS"
+      market: "MARKET_CONTRACT_ADDRESS",
     },
     mock: {
       api: function () {
@@ -62,20 +62,20 @@ describe("reporting/finalize-market", function () {
             tryFinalize: function (payload, callback) {
               assert.deepEqual(payload.tx, { to: "MARKET_CONTRACT_ADDRESS", send: false });
               callback(null, "0x0");
-            }
-          }
+            },
+          },
         };
-      }
+      },
     },
     assertions: function (output) {
       assert.isFalse(output);
-    }
+    },
   });
   test({
     description: "finalize market",
     params: {
       meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
-      market: "MARKET_CONTRACT_ADDRESS"
+      market: "MARKET_CONTRACT_ADDRESS",
     },
     mock: {
       api: function () {
@@ -93,13 +93,13 @@ describe("reporting/finalize-market", function () {
               assert.isFunction(payload.onSuccess);
               assert.isFunction(payload.onFailed);
               payload.onSuccess({ callReturn: "TRY_FINALIZE" });
-            }
-          }
+            },
+          },
         };
-      }
+      },
     },
     assertions: function (output) {
       assert.deepEqual(output, { callReturn: "TRY_FINALIZE" });
-    }
+    },
   });
 });

@@ -21,12 +21,12 @@ var noop = require("../utils/noop");
 function redeem(p) {
   api().Market.getStakeToken({
     tx: { to: p._market },
-    _payoutNumerators: p._payoutNumerators
+    _payoutNumerators: p._payoutNumerators,
   }, function (err, stakeTokenContractAddress) {
     if (err) return p.onFailed(err);
     api().StakeToken.balanceOf({
       tx: { to: stakeTokenContractAddress },
-      address: p._reporter
+      address: p._reporter,
     }, function (err, stakeTokenBalance) {
       if (err) return p.onFailed(err);
       if (new BigNumber(stakeTokenBalance, 16).lt(DUST_THRESHOLD)) { // TODO calculate DUST_THRESHOLD
@@ -38,11 +38,11 @@ function redeem(p) {
       // reporting window, market finalization, etc.)
       api().Market.isContainerForStakeToken({
         tx: { to: p._market },
-        _stakeToken: stakeTokenContractAddress
+        _stakeToken: stakeTokenContractAddress,
       }, function (err, isContainerForStakeToken) {
         if (err) return p.onFailed(err);
         var redeemPayload = assign({}, immutableDelete(p, ["market", "_payoutNumerators"]), {
-          tx: { to: stakeTokenContractAddress }
+          tx: { to: stakeTokenContractAddress },
         });
         if (!parseInt(isContainerForStakeToken, 16)) { // if disavowed
           api().StakeToken.redeemDisavowedTokens(redeemPayload);
@@ -73,7 +73,7 @@ function redeem(p) {
                   }
                 });
               });
-            }
+            },
           }));
         }
       });

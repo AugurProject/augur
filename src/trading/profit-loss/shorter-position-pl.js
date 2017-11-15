@@ -13,7 +13,7 @@ function shorterPositionPL(PL, shares, price) {
     realized: PL.realized,
     completeSetsBought: PL.completeSetsBought,
     queued: PL.queued,
-    tradeQueue: PL.tradeQueue
+    tradeQueue: PL.tradeQueue,
   };
 
   // If position < 0, user is increasing a short position:

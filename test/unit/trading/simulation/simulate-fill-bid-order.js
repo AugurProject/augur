@@ -30,10 +30,10 @@ describe("trading/simulation/simulate-fill-bid-order", function () {
       matchingSortedBids: [{
         amount: "2",
         fullPrecisionPrice: "0.7",
-        sharesEscrowed: "2"
+        sharesEscrowed: "2",
       }],
       outcome: 0,
-      shareBalances: [new BigNumber("5", 10), new BigNumber("0", 10)]
+      shareBalances: [new BigNumber("5", 10), new BigNumber("0", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -43,9 +43,9 @@ describe("trading/simulation/simulate-fill-bid-order", function () {
         gasFees: new BigNumber("0", 10),
         sharesDepleted: new BigNumber("2", 10),
         tokensDepleted: new BigNumber("0", 10),
-        shareBalances: [new BigNumber("3", 10), new BigNumber("0", 10)]
+        shareBalances: [new BigNumber("3", 10), new BigNumber("0", 10)],
       });
-    }
+    },
   });
   test({
     description: "maker closing short, taker opening short",
@@ -59,10 +59,10 @@ describe("trading/simulation/simulate-fill-bid-order", function () {
       matchingSortedBids: [{
         amount: "2",
         fullPrecisionPrice: "0.7",
-        sharesEscrowed: "2"
+        sharesEscrowed: "2",
       }],
       outcome: 0,
-      shareBalances: [new BigNumber("0", 10), new BigNumber("0", 10)]
+      shareBalances: [new BigNumber("0", 10), new BigNumber("0", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -72,9 +72,9 @@ describe("trading/simulation/simulate-fill-bid-order", function () {
         gasFees: new BigNumber("0", 10),
         sharesDepleted: new BigNumber("0", 10),
         tokensDepleted: new BigNumber("0.6", 10),
-        shareBalances: [new BigNumber("0", 10), new BigNumber("0", 10)]
+        shareBalances: [new BigNumber("0", 10), new BigNumber("0", 10)],
       });
-    }
+    },
   });
   test({
     description: "maker opening long, taker closing long",
@@ -88,10 +88,10 @@ describe("trading/simulation/simulate-fill-bid-order", function () {
       matchingSortedBids: [{
         amount: "2",
         fullPrecisionPrice: "0.7",
-        sharesEscrowed: "0"
+        sharesEscrowed: "0",
       }],
       outcome: 0,
-      shareBalances: [new BigNumber("5", 10), new BigNumber("2", 10)]
+      shareBalances: [new BigNumber("5", 10), new BigNumber("2", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -101,9 +101,9 @@ describe("trading/simulation/simulate-fill-bid-order", function () {
         gasFees: new BigNumber("0", 10),
         sharesDepleted: new BigNumber("1.5", 10),
         tokensDepleted: new BigNumber("0", 10),
-        shareBalances: [new BigNumber("3.5", 10), new BigNumber("2", 10)]
+        shareBalances: [new BigNumber("3.5", 10), new BigNumber("2", 10)],
       });
-    }
+    },
   });
   test({
     description: "maker opening long, taker opening short",
@@ -117,10 +117,10 @@ describe("trading/simulation/simulate-fill-bid-order", function () {
       matchingSortedBids: [{
         amount: "2",
         fullPrecisionPrice: "0.7",
-        sharesEscrowed: "0"
+        sharesEscrowed: "0",
       }],
       outcome: 0,
-      shareBalances: [new BigNumber("0", 10), new BigNumber("0", 10)]
+      shareBalances: [new BigNumber("0", 10), new BigNumber("0", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -130,8 +130,8 @@ describe("trading/simulation/simulate-fill-bid-order", function () {
         gasFees: new BigNumber("0", 10),
         sharesDepleted: new BigNumber("0", 10),
         tokensDepleted: new BigNumber("0.6", 10),
-        shareBalances: [new BigNumber("0", 10), new BigNumber("0", 10)]
+        shareBalances: [new BigNumber("0", 10), new BigNumber("0", 10)],
       });
-    }
+    },
   });
 });

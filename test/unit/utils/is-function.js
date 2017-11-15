@@ -17,71 +17,71 @@ describe("utils/is-function", function () {
   test({
     label: "declared function",
     input: myFunction,
-    expected: true
+    expected: true,
   });
   test({
     label: "function literal",
     input: test,
-    expected: true
+    expected: true,
   });
   test({
     label: "anonymous function",
     input: function () { console.log("hello world!"); },
-    expected: true
+    expected: true,
   });
   test({
     label: "Function",
     input: Function,
-    expected: true
+    expected: true,
   });
   test({
     label: "Object",
     input: Object,
-    expected: true
+    expected: true,
   });
   test({
     label: "5",
     input: 5,
-    expected: false
+    expected: false,
   });
   test({
     label: "'5'",
     input: "5",
-    expected: false
+    expected: false,
   });
   test({
     label: "'[object Function]'",
     input: "[object Function]",
-    expected: false
+    expected: false,
   });
   test({
     label: "{}",
     input: {},
-    expected: false
+    expected: false,
   });
   test({
     label: "{ hello: 'world' }",
     input: { hello: "world" },
-    expected: false
+    expected: false,
   });
   test({
     label: "{ f: Function }",
     input: { f: Function },
-    expected: false
+    expected: false,
   });
   test({
     label: "[]",
     input: [],
-    expected: false
+    expected: false,
   });
   test({
     label: "[1, 2, 3]",
     input: [1, 2, 3],
-    expected: false
+    expected: false,
   });
   test({
     label: "[Function]",
     input: [Function],
-    expected: false
+    expected: false,
   });
 });

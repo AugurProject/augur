@@ -13,7 +13,7 @@ describe("create-market/create-scalar-market", function () {
     description: "Will this market be the One Market?",
     longDescription: "One Market to rule them all, One Market to bind them, One Market to bring them all, and in the darkness bind them.",
     tags: ["Ancient evil", "Large flaming eyes"],
-    creationTimestamp: 1234567890
+    creationTimestamp: 1234567890,
   };
   var test = function (t) {
     it(t.description, function (done) {
@@ -21,13 +21,13 @@ describe("create-market/create-scalar-market", function () {
         "./create-market": proxyquire("../../../src/create-market/create-market", {
           "./get-market-creation-cost": t.stub.getMarketCreationCost,
           "../api": t.stub.api,
-        })
+        }),
       });
       createScalarMarket(Object.assign({}, t.params, {
         onSuccess: function (res) {
           t.params.onSuccess(res);
           done();
-        }
+        },
       }));
     });
   };
@@ -36,7 +36,7 @@ describe("create-market/create-scalar-market", function () {
     params: {
       meta: {
         signer: Buffer.from("PRIVATE_KEY", "utf8"),
-        accountType: "privateKey"
+        accountType: "privateKey",
       },
       universe: "UNIVERSE_ADDRESS",
       _endTime: 2345678901,
@@ -93,9 +93,9 @@ describe("create-market/create-scalar-market", function () {
               assert.deepEqual(p, { tx: { to: "UNIVERSE_ADDRESS" }, _endTime: 2345678901 });
               callback(null, REPORTING_WINDOW_ADDRESS);
             },
-          }
+          },
         };
-      }
-    }
+      },
+    },
   });
 });

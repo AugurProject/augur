@@ -24,7 +24,7 @@ function claimMarketsTradingProceeds(p) {
         claimedMarkets.push(market);
         nextMarket();
       },
-      onFailed: nextMarket
+      onFailed: nextMarket,
     }));
   }, function (err) {
     if (err) return p.onFailed(err);

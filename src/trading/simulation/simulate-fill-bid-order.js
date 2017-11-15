@@ -71,7 +71,7 @@ function simulateFillBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
     gasFees: gasFees,
     sharesDepleted: takerSharesDepleted,
     tokensDepleted: takerTokensDepleted,
-    shareBalances: shareBalances
+    shareBalances: shareBalances,
   };
 }
 

@@ -20,7 +20,7 @@ function sendReputation(p) {
     api().ReputationToken.transfer(assign({}, p, {
       tx: { to: reputationTokenAddress },
       _to: p._to,
-      _value: speedomatic.fix(p.reputationToSend, "hex")
+      _value: speedomatic.fix(p.reputationToSend, "hex"),
     }));
   });
 }

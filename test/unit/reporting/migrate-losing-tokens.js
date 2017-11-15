@@ -12,7 +12,7 @@ describe("reporting/migrate-losing-tokens", function () {
     it(t.description, function (done) {
       var migrateLosingTokens = proxyquire("../../../src/reporting/migrate-losing-tokens", {
         "../api": t.mock.api,
-        "../events/get-logs": t.mock.getLogs
+        "../events/get-logs": t.mock.getLogs,
       });
       migrateLosingTokens(assign(t.params, {
         onSent: noop,
@@ -23,7 +23,7 @@ describe("reporting/migrate-losing-tokens", function () {
         onFailed: function (err) {
           t.assertions(err);
           done();
-        }
+        },
       }));
     });
   };
@@ -32,7 +32,7 @@ describe("reporting/migrate-losing-tokens", function () {
     params: {
       meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       universe: "UNIVERSE_CONTRACT_ADDRESS",
-      market: "MARKET_CONTRACT_ADDRESS"
+      market: "MARKET_CONTRACT_ADDRESS",
     },
     mock: {
       api: function () {
@@ -45,7 +45,7 @@ describe("reporting/migrate-losing-tokens", function () {
             getReputationToken: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "UNIVERSE_CONTRACT_ADDRESS" } });
               callback(null, "REPUTATION_TOKEN_CONTRACT_ADDRESS");
-            }
+            },
           },
           StakeToken: {
             migrateLosingTokens: function (payload) {
@@ -55,7 +55,7 @@ describe("reporting/migrate-losing-tokens", function () {
               assert.isFunction(payload.onSuccess);
               assert.isFunction(payload.onFailed);
               payload.onSuccess({ callReturn: "MIGRATE_LOSING_TOKENS_CALLRETURN" });
-            }
+            },
           },
           ReportingWindow: {
             getStartBlock: function (payload, callback) {
@@ -65,8 +65,8 @@ describe("reporting/migrate-losing-tokens", function () {
             getEndBlock: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "PREVIOUS_REPORTING_WINDOW_CONTRACT_ADDRESS" } });
               callback(null, "PREVIOUS_REPORTING_WINDOW_END_BLOCK");
-            }
-          }
+            },
+          },
         };
       },
       getLogs: function (p, callback) {
@@ -76,14 +76,14 @@ describe("reporting/migrate-losing-tokens", function () {
             fromBlock: "PREVIOUS_REPORTING_WINDOW_START_BLOCK",
             toBlock: "PREVIOUS_REPORTING_WINDOW_END_BLOCK",
             market: "MARKET_CONTRACT_ADDRESS",
-            address: "REPUTATION_TOKEN_CONTRACT_ADDRESS"
-          }
+            address: "REPUTATION_TOKEN_CONTRACT_ADDRESS",
+          },
         });
         callback(null, [{ to: "STAKE_TOKEN_CONTRACT_ADDRESS" }]);
-      }
+      },
     },
     assertions: function (output) {
       assert.deepEqual(output, { callReturn: "MIGRATE_LOSING_TOKENS_CALLRETURN" });
-    }
+    },
   });
 });

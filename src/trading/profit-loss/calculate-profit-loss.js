@@ -26,7 +26,7 @@ function calculateProfitLoss(p) {
     unrealized: ZERO,
     queued: ZERO,
     completeSetsBought: ZERO,
-    tradeQueue: []
+    tradeQueue: [],
   };
   var lastPrice = p.lastPrice == null ? ZERO : new BigNumber(p.lastPrice, 10);
   if (p.trades) {

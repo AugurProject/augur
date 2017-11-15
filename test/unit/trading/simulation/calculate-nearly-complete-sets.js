@@ -17,22 +17,22 @@ describe("trading/simulation/calculate-nearly-complete-sets", function () {
     params: {
       outcome: 1,
       desiredShares: new BigNumber("1", 10),
-      shareBalances: [new BigNumber("3", 10), new BigNumber("3", 10)]
+      shareBalances: [new BigNumber("3", 10), new BigNumber("3", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, new BigNumber("1", 10));
-    }
+    },
   });
   test({
     description: "Two outcomes, 10 desired shares, exclude outcome 1",
     params: {
       outcome: 1,
       desiredShares: new BigNumber("10", 10),
-      shareBalances: [new BigNumber("4", 10), new BigNumber("3", 10)]
+      shareBalances: [new BigNumber("4", 10), new BigNumber("3", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, new BigNumber("4", 10));
-    }
+    },
   });
   test({
     description: "Five outcomes, 10 desired shares, exclude outcome 0",
@@ -44,11 +44,11 @@ describe("trading/simulation/calculate-nearly-complete-sets", function () {
         new BigNumber("3.1", 10),
         new BigNumber("2", 10),
         new BigNumber("2", 10),
-        new BigNumber("13.37", 10)
-      ]
+        new BigNumber("13.37", 10),
+      ],
     },
     assertions: function (output) {
       assert.deepEqual(output, new BigNumber("2", 10));
-    }
+    },
   });
 });

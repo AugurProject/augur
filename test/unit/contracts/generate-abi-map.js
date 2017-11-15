@@ -21,26 +21,26 @@ describe("contracts/generate-abi-map", function () {
           "name": "allowance",
           "inputs": [{
             "type": "address",
-            "name": "owner"
+            "name": "owner",
           }, {
             "type": "address",
-            "name": "spender"
-          }]
+            "name": "spender",
+          }],
         }, {
           "constant": false,
           "type": "function",
           "name": "approve",
           "outputs": [{
             "type": "uint256",
-            "name": "out"
+            "name": "out",
           }],
           "inputs": [{
             "type": "address",
-            "name": "spender"
+            "name": "spender",
           }, {
             "type": "uint256",
-            "name": "fxpAmount"
-          }]
+            "name": "fxpAmount",
+          }],
         }],
         Contract2: [{
           "constant": false,
@@ -48,30 +48,30 @@ describe("contracts/generate-abi-map", function () {
           "name": "balanceOf",
           "outputs": [{
             "type": "uint256",
-            "name": "fxp"
+            "name": "fxp",
           }],
           "inputs": [{
             "type": "address",
-            "name": "address"
-          }]
+            "name": "address",
+          }],
         }, {
           "inputs": [{
             "indexed": true,
             "type": "address",
-            "name": "from"
+            "name": "from",
           }, {
             "indexed": true,
             "type": "address",
-            "name": "to"
+            "name": "to",
           }, {
             "indexed": false,
             "type": "uint256",
-            "name": "value"
+            "name": "value",
           }],
           "type": "event",
-          "name": "Transfer"
-        }]
-      }
+          "name": "Transfer",
+        }],
+      },
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -82,19 +82,19 @@ describe("contracts/generate-abi-map", function () {
               inputs: [{
                 indexed: true,
                 type: "address",
-                name: "from"
+                name: "from",
               }, {
                 indexed: true,
                 type: "address",
-                name: "to"
+                name: "to",
               }, {
                 indexed: false,
                 type: "uint256",
-                name: "value"
+                name: "value",
               }],
-              signature: "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
-            }
-          }
+              signature: "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+            },
+          },
         },
         functions: {
           Contract1: {
@@ -103,15 +103,15 @@ describe("contracts/generate-abi-map", function () {
               name: "allowance",
               returns: "null",
               inputs: ["owner", "spender"],
-              signature: ["address", "address"]
+              signature: ["address", "address"],
             },
             approve: {
               constant: false,
               name: "approve",
               returns: "uint256",
               inputs: ["spender", "fxpAmount"],
-              signature: ["address", "uint256"]
-            }
+              signature: ["address", "uint256"],
+            },
           },
           Contract2: {
             balanceOf: {
@@ -119,11 +119,11 @@ describe("contracts/generate-abi-map", function () {
               name: "balanceOf",
               returns: "uint256",
               inputs: ["address"],
-              signature: ["address"]
-            }
-          }
-        }
+              signature: ["address"],
+            },
+          },
+        },
       });
-    }
+    },
   });
 });

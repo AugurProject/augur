@@ -49,7 +49,7 @@ describe("create-market/get-market-creation-cost-breakdown", function () {
             },
           },
         };
-      }
+      },
     },
     assertions: function (err, marketCreationCostBreakdown) {
       assert.isNull(err);
@@ -58,7 +58,7 @@ describe("create-market/get-market-creation-cost-breakdown", function () {
         targetReporterGasCosts: "1.2",
         validityBond: "3",
       });
-    }
+    },
   });
   test({
     description: "current reporting window does not exist",
@@ -98,7 +98,7 @@ describe("create-market/get-market-creation-cost-breakdown", function () {
             },
           },
         };
-      }
+      },
     },
     assertions: function (err, marketCreationCostBreakdown) {
       assert.isNull(err);
@@ -108,6 +108,6 @@ describe("create-market/get-market-creation-cost-breakdown", function () {
         targetReporterGasCosts: "1.2",
         validityBond: "3",
       });
-    }
+    },
   });
 });

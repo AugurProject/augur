@@ -12,12 +12,12 @@ describe("reporting/redeem", function () {
     it(t.description, function () {
       var redeem = proxyquire("../../../src/reporting/redeem", {
         "./finalize-market": t.mock.finalizeMarket,
-        "../api": t.mock.api
+        "../api": t.mock.api,
       });
       redeem(assign(t.params, {
         onSent: noop,
         onSuccess: t.assertions,
-        onFailed: t.assertions
+        onFailed: t.assertions,
       }));
     });
   };
@@ -27,7 +27,7 @@ describe("reporting/redeem", function () {
       meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       _market: "MARKET_CONTRACT_ADDRESS",
       _payoutNumerators: [0, 1],
-      _reporter: "REPORTER_ADDRESS"
+      _reporter: "REPORTER_ADDRESS",
     },
     mock: {
       api: function () {
@@ -36,33 +36,33 @@ describe("reporting/redeem", function () {
             getForkingMarket: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "UNIVERSE_CONTRACT_ADDRESS" } });
               callback(null, "FORKING_MARKET_CONTRACT_ADDRESS");
-            }
+            },
           },
           Market: {
             getStakeToken: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
-                _payoutNumerators: [0, 1]
+                _payoutNumerators: [0, 1],
               });
               callback(null, "STAKE_TOKEN_CONTRACT_ADDRESS");
             },
             isContainerForStakeToken: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
-                _stakeToken: "STAKE_TOKEN_CONTRACT_ADDRESS"
+                _stakeToken: "STAKE_TOKEN_CONTRACT_ADDRESS",
               });
               callback(null, "0x1");
             },
             getFinalWinningStakeToken: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "MARKET_CONTRACT_ADDRESS" } });
               callback(null, "STAKE_TOKEN_CONTRACT_ADDRESS");
-            }
+            },
           },
           StakeToken: {
             balanceOf: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "STAKE_TOKEN_CONTRACT_ADDRESS" },
-                address: "REPORTER_ADDRESS"
+                address: "REPORTER_ADDRESS",
               });
               callback(null, "0x10");
             },
@@ -84,17 +84,17 @@ describe("reporting/redeem", function () {
               assert.isFunction(payload.onSuccess);
               assert.isFunction(payload.onFailed);
               payload.onSuccess({ callReturn: "REDEEM_WINNING_TOKENS" });
-            }
-          }
+            },
+          },
         };
       },
       finalizeMarket: function (p) {
         p.onSuccess(true);
-      }
+      },
     },
     assertions: function (output) {
       assert.deepEqual(output, { callReturn: "REDEEM_WINNING_TOKENS" });
-    }
+    },
   });
   test({
     description: "redeem reporting token for forked market",
@@ -102,7 +102,7 @@ describe("reporting/redeem", function () {
       meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       _market: "MARKET_CONTRACT_ADDRESS",
       _payoutNumerators: [0, 1],
-      _reporter: "REPORTER_ADDRESS"
+      _reporter: "REPORTER_ADDRESS",
     },
     mock: {
       api: function () {
@@ -111,32 +111,32 @@ describe("reporting/redeem", function () {
             getForkingMarket: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "UNIVERSE_CONTRACT_ADDRESS" } });
               callback(null, "MARKET_CONTRACT_ADDRESS");
-            }
+            },
           },
           Market: {
             getStakeToken: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
-                _payoutNumerators: [0, 1]
+                _payoutNumerators: [0, 1],
               });
               callback(null, "STAKE_TOKEN_CONTRACT_ADDRESS");
             },
             isContainerForStakeToken: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
-                _stakeToken: "STAKE_TOKEN_CONTRACT_ADDRESS"
+                _stakeToken: "STAKE_TOKEN_CONTRACT_ADDRESS",
               });
               callback(null, "0x1");
             },
             getFinalWinningStakeToken: function () {
               assert.fail();
-            }
+            },
           },
           StakeToken: {
             balanceOf: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "STAKE_TOKEN_CONTRACT_ADDRESS" },
-                address: "REPORTER_ADDRESS"
+                address: "REPORTER_ADDRESS",
               });
               callback(null, "0x10");
             },
@@ -158,17 +158,17 @@ describe("reporting/redeem", function () {
             },
             redeemWinningTokens: function () {
               assert.fail();
-            }
-          }
+            },
+          },
         };
       },
       finalizeMarket: function (p) {
         p.onSuccess(true);
-      }
+      },
     },
     assertions: function (output) {
       assert.deepEqual(output, { callReturn: "REDEEM_FORKED_TOKENS" });
-    }
+    },
   });
   test({
     description: "redeem reporting token for disavowed market",
@@ -176,7 +176,7 @@ describe("reporting/redeem", function () {
       meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       _market: "MARKET_CONTRACT_ADDRESS",
       _payoutNumerators: [0, 1],
-      _reporter: "REPORTER_ADDRESS"
+      _reporter: "REPORTER_ADDRESS",
     },
     mock: {
       api: function () {
@@ -184,32 +184,32 @@ describe("reporting/redeem", function () {
           Universe: {
             getForkingMarket: function () {
               assert.fail();
-            }
+            },
           },
           Market: {
             getStakeToken: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
-                _payoutNumerators: [0, 1]
+                _payoutNumerators: [0, 1],
               });
               callback(null, "STAKE_TOKEN_CONTRACT_ADDRESS");
             },
             isContainerForStakeToken: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
-                _stakeToken: "STAKE_TOKEN_CONTRACT_ADDRESS"
+                _stakeToken: "STAKE_TOKEN_CONTRACT_ADDRESS",
               });
               callback(null, "0x0");
             },
             getFinalWinningStakeToken: function () {
               assert.fail();
-            }
+            },
           },
           StakeToken: {
             balanceOf: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "STAKE_TOKEN_CONTRACT_ADDRESS" },
-                address: "REPORTER_ADDRESS"
+                address: "REPORTER_ADDRESS",
               });
               callback(null, "0x10");
             },
@@ -230,16 +230,16 @@ describe("reporting/redeem", function () {
             },
             redeemWinningTokens: function () {
               assert.fail();
-            }
-          }
+            },
+          },
         };
       },
       finalizeMarket: function () {
         assert.fail();
-      }
+      },
     },
     assertions: function (output) {
       assert.deepEqual(output, { callReturn: "REDEEM_DISAVOWED_TOKENS" });
-    }
+    },
   });
 });

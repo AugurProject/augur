@@ -14,7 +14,7 @@ function longerPositionPL(PL, shares, price) {
     realized: PL.realized,
     completeSetsBought: PL.completeSetsBought,
     queued: PL.queued,
-    tradeQueue: PL.tradeQueue
+    tradeQueue: PL.tradeQueue,
   };
 
   // If position >= 0, user is increasing a long position:
@@ -35,7 +35,7 @@ function longerPositionPL(PL, shares, price) {
         meanOpenPrice: PL.meanOpenPrice,
         realized: PL.realized,
         shares: shares,
-        price: price
+        price: price,
       });
 
     // If |position| < shares, user is buying back short then going long:
@@ -46,7 +46,7 @@ function longerPositionPL(PL, shares, price) {
         meanOpenPrice: PL.meanOpenPrice,
         realized: PL.realized,
         shares: PL.position.abs(),
-        price: price
+        price: price,
       });
       updatedPL.meanOpenPrice = updateMeanOpenPrice(ZERO, PL.meanOpenPrice, PL.position.plus(shares), price);
     }

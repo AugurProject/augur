@@ -18,12 +18,12 @@ var api = require("../api");
 function submitReport(p) {
   api().Market.getStakeToken({
     tx: { to: p.market },
-    _payoutNumerators: p._payoutNumerators
+    _payoutNumerators: p._payoutNumerators,
   }, function (err, stakeTokenAddress) {
     if (err) return p.onFailed(err);
     api().StakeToken.buy(assign({}, immutableDelete(p, "market"), {
       tx: { to: stakeTokenAddress },
-      _amountToStake: speedomatic.fix(p._amountToStake, "hex")
+      _amountToStake: speedomatic.fix(p._amountToStake, "hex"),
     }));
   });
 }

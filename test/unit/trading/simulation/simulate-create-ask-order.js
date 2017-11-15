@@ -31,7 +31,7 @@ describe("trading/simulation/simulate-create-ask-order", function () {
       shouldCollectReportingFees: true,
       reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
-      shareBalances: [ZERO, ZERO]
+      shareBalances: [ZERO, ZERO],
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -39,9 +39,9 @@ describe("trading/simulation/simulate-create-ask-order", function () {
         worstCaseFees: ZERO,
         sharesDepleted: ZERO,
         tokensDepleted: new BigNumber("0.8", 10),
-        shareBalances: [ZERO, ZERO]
+        shareBalances: [ZERO, ZERO],
       });
-    }
+    },
   });
   test({
     description: "[0, 4] shares held, 5 maximum price, ask 2 shares of outcome 0 @ 0.6",
@@ -54,7 +54,7 @@ describe("trading/simulation/simulate-create-ask-order", function () {
       shouldCollectReportingFees: true,
       reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
-      shareBalances: [ZERO, new BigNumber("4", 10)]
+      shareBalances: [ZERO, new BigNumber("4", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -62,9 +62,9 @@ describe("trading/simulation/simulate-create-ask-order", function () {
         worstCaseFees: ZERO,
         sharesDepleted: ZERO,
         tokensDepleted: new BigNumber("8.8", 10),
-        shareBalances: [ZERO, new BigNumber("4", 10)]
+        shareBalances: [ZERO, new BigNumber("4", 10)],
       });
-    }
+    },
   });
   test({
     description: "[3, 0] shares held, 5 maximum price, ask 2 shares of outcome 0 @ 0.6",
@@ -77,7 +77,7 @@ describe("trading/simulation/simulate-create-ask-order", function () {
       shouldCollectReportingFees: true,
       reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
-      shareBalances: [new BigNumber("3", 10), ZERO]
+      shareBalances: [new BigNumber("3", 10), ZERO],
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -85,9 +85,9 @@ describe("trading/simulation/simulate-create-ask-order", function () {
         worstCaseFees: new BigNumber("0.078", 10),
         sharesDepleted: new BigNumber("2", 10),
         tokensDepleted: ZERO,
-        shareBalances: [new BigNumber("1", 10), ZERO]
+        shareBalances: [new BigNumber("1", 10), ZERO],
       });
-    }
+    },
   });
   test({
     description: "[1, 0] shares held, 5 maximum price, ask 2 shares of outcome 0 @ 0.6",
@@ -100,7 +100,7 @@ describe("trading/simulation/simulate-create-ask-order", function () {
       shouldCollectReportingFees: true,
       reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
-      shareBalances: [new BigNumber("1", 10), ZERO]
+      shareBalances: [new BigNumber("1", 10), ZERO],
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -108,9 +108,9 @@ describe("trading/simulation/simulate-create-ask-order", function () {
         worstCaseFees: new BigNumber("0.039", 10),
         sharesDepleted: new BigNumber("1", 10),
         tokensDepleted: new BigNumber("4.4", 10),
-        shareBalances: [ZERO, ZERO]
+        shareBalances: [ZERO, ZERO],
       });
-    }
+    },
   });
   //NB - PG: Negative values? What is this testing
   test({
@@ -124,7 +124,7 @@ describe("trading/simulation/simulate-create-ask-order", function () {
       shouldCollectReportingFees: true,
       reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
-      shareBalances: [new BigNumber("1.2", 10), new BigNumber("3.3", 10)]
+      shareBalances: [new BigNumber("1.2", 10), new BigNumber("3.3", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -132,9 +132,9 @@ describe("trading/simulation/simulate-create-ask-order", function () {
         worstCaseFees: new BigNumber("0.039", 10),
         sharesDepleted: new BigNumber("1.2", 10),
         tokensDepleted: new BigNumber("0.35", 10),
-        shareBalances: [ZERO, new BigNumber("3.3", 10)]
+        shareBalances: [ZERO, new BigNumber("3.3", 10)],
       });
-    }
+    },
   });
   test({
     description: "[1, 0] shares held, 5 maximum price, ask 0 shares of outcome 0 @ 0.6",
@@ -147,11 +147,11 @@ describe("trading/simulation/simulate-create-ask-order", function () {
       shouldCollectReportingFees: true,
       reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
-      shareBalances: [new BigNumber("1", 10), ZERO]
+      shareBalances: [new BigNumber("1", 10), ZERO],
     },
     assertions: function (output) {
       assert.deepEqual(output, new Error("Number of shares is too small"));
-    }
+    },
   });
   test({
     description: "[1, 0] shares held, 5 maximum price, ask 2 shares of outcome 0 @ 5.1",
@@ -164,11 +164,11 @@ describe("trading/simulation/simulate-create-ask-order", function () {
       shouldCollectReportingFees: true,
       reportingFeeRate: new BigNumber("0.05", 10),
       outcome: 0,
-      shareBalances: [new BigNumber("1", 10), ZERO]
+      shareBalances: [new BigNumber("1", 10), ZERO],
     },
     assertions: function (output) {
       assert.deepEqual(output, new Error("Price is above the maximum price"));
-    }
+    },
   });
   test({
     description: "[3, 1] shares held, 7 minimum price, ask 2 shares of outcome 0 @ 6",
@@ -177,11 +177,11 @@ describe("trading/simulation/simulate-create-ask-order", function () {
       price: new BigNumber("6", 10),
       minPrice: new BigNumber("7", 10),
       outcome: -1,
-      shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
+      shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, new Error("Invalid outcome ID"));
-    }
+    },
   });
   test({
     description: "[3, 1] shares held, 7 minimum price, ask 2 shares of outcome 3 @ 6",
@@ -190,10 +190,10 @@ describe("trading/simulation/simulate-create-ask-order", function () {
       price: new BigNumber("6", 10),
       minPrice: new BigNumber("7", 10),
       outcome: 2,
-      shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
+      shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)],
     },
     assertions: function (output) {
       assert.deepEqual(output, new Error("Invalid outcome ID"));
-    }
+    },
   });
 });

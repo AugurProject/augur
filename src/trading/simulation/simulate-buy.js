@@ -16,7 +16,7 @@ function simulateBuy(outcome, sharesToCover, shareBalances, tokenBalance, userAd
     sharesDepleted: ZERO,
     otherSharesDepleted: ZERO,
     tokensDepleted: ZERO,
-    shareBalances: shareBalances
+    shareBalances: shareBalances,
   };
   var matchingSortedAsks = filterByPriceAndOutcomeAndUserSortByPrice(sellOrderBook, 0, price, userAddress);
 

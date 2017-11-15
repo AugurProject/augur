@@ -72,7 +72,7 @@ function simulateTrade(p) {
     sharesDepleted: simulatedTrade.sharesDepleted.toFixed(),
     otherSharesDepleted: simulatedTrade.otherSharesDepleted.toFixed(),
     tokensDepleted: simulatedTrade.tokensDepleted.toFixed(),
-    shareBalances: simulatedTrade.shareBalances.map(function (shareBalance) { return shareBalance.toFixed(); })
+    shareBalances: simulatedTrade.shareBalances.map(function (shareBalance) { return shareBalance.toFixed(); }),
   };
 }
 

@@ -34,9 +34,9 @@ describe("trading/simulation/simulate-sell", function () {
           fullPrecisionPrice: "0.7",
           sharesEscrowed: "2",
           outcome: 0,
-          owner: "OWNER_ADDRESS"
-        }
-      }
+          owner: "OWNER_ADDRESS",
+        },
+      },
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -46,9 +46,9 @@ describe("trading/simulation/simulate-sell", function () {
         otherSharesDepleted: ZERO,
         sharesDepleted: ZERO,
         tokensDepleted: new BigNumber("0.9", 10),
-        shareBalances: [ZERO, new BigNumber("5", 10)]
+        shareBalances: [ZERO, new BigNumber("5", 10)],
       });
-    }
+    },
   });
   test({
     description: "no matching bids",
@@ -70,9 +70,9 @@ describe("trading/simulation/simulate-sell", function () {
           fullPrecisionPrice: "0.6",
           sharesEscrowed: "2",
           outcome: 0,
-          owner: "OWNER_ADDRESS"
-        }
-      }
+          owner: "OWNER_ADDRESS",
+        },
+      },
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -82,9 +82,9 @@ describe("trading/simulation/simulate-sell", function () {
         otherSharesDepleted: ZERO,
         sharesDepleted: ZERO,
         tokensDepleted: new BigNumber("0.9", 10),
-        shareBalances: [ZERO, new BigNumber("5", 10)]
+        shareBalances: [ZERO, new BigNumber("5", 10)],
       });
-    }
+    },
   });
   test({
     description: "two matching bids, complete fill",
@@ -106,16 +106,16 @@ describe("trading/simulation/simulate-sell", function () {
           fullPrecisionPrice: "0.8",
           sharesEscrowed: "2",
           outcome: 0,
-          owner: "OWNER_ADDRESS"
+          owner: "OWNER_ADDRESS",
         },
         ORDER_1: {
           amount: "1",
           fullPrecisionPrice: "0.7",
           sharesEscrowed: "1",
           outcome: 0,
-          owner: "OWNER_ADDRESS"
-        }
-      }
+          owner: "OWNER_ADDRESS",
+        },
+      },
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -125,8 +125,8 @@ describe("trading/simulation/simulate-sell", function () {
         otherSharesDepleted: ZERO,
         sharesDepleted: ZERO,
         tokensDepleted: new BigNumber("0.7", 10),
-        shareBalances: [ZERO, new BigNumber("5", 10)]
+        shareBalances: [ZERO, new BigNumber("5", 10)],
       });
-    }
+    },
   });
 });

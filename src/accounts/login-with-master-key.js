@@ -23,7 +23,7 @@ function loginWithMasterKey(p) {
   return {
     address: speedomatic.formatEthereumAddress(keythereum.privateKeyToAddress(privateKeyBuf)),
     privateKey: privateKeyBuf,
-    derivedKey: Buffer.from(speedomatic.unfork(sha256(privateKeyBuf)), "hex")
+    derivedKey: Buffer.from(speedomatic.unfork(sha256(privateKeyBuf)), "hex"),
   };
 }
 

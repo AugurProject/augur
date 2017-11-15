@@ -19,15 +19,15 @@ describe("format/log/format-log-message", function () {
       message: {
         owner: "0x1",
         spender: "0x2",
-        fxpValue: speedomatic.fix("10", "hex")
-      }
+        fxpValue: speedomatic.fix("10", "hex"),
+      },
     },
     assertions: function (message) {
       assert.deepEqual(message, {
         owner: "0x1",
         spender: "0x2",
-        fxpValue: "10"
+        fxpValue: "10",
       });
-    }
+    },
   });
 });

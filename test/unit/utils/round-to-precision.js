@@ -19,7 +19,7 @@ describe("utils/round-to-precision", function () {
     roundingMode: "1",
     assertions: function (roundedValue) {
       assert.isNull(roundedValue);
-    }
+    },
   });
   test({
     value: new BigNumber("0.00058472239302029387432"),
@@ -28,7 +28,7 @@ describe("utils/round-to-precision", function () {
     roundingMode: BigNumber.ROUND_UP,
     assertions: function (roundedValue) {
       assert.deepEqual(roundedValue, "0.0005847");
-    }
+    },
   });
   test({
     value: new BigNumber("0.0007889577234892349872349823403"),
@@ -37,7 +37,7 @@ describe("utils/round-to-precision", function () {
     roundingMode: BigNumber.ROUND_DOWN,
     assertions: function (roundedValue) {
       assert.deepEqual(roundedValue, "0.0007889");
-    }
+    },
   });
   test({
     value: new BigNumber("932.9238374636282823839223"),
@@ -46,7 +46,7 @@ describe("utils/round-to-precision", function () {
     roundingMode: BigNumber.ROUND_UP,
     assertions: function (roundedValue) {
       assert.deepEqual(roundedValue, "932.9239");
-    }
+    },
   });
   test({
     value: new BigNumber("42.119238375652328232332124568"),
@@ -55,6 +55,6 @@ describe("utils/round-to-precision", function () {
     roundingMode: BigNumber.ROUND_DOWN,
     assertions: function (roundedValue) {
       assert.deepEqual(roundedValue, "42.1192");
-    }
+    },
   });
 });
