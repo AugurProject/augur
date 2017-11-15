@@ -30,6 +30,16 @@ class MarketTrading extends Component {
     }
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.orderQuantity !== nextState.orderQuantity || this.state.orderPrice !== nextState.orderPrice) {
+      let orderEstimate = ''
+      if (nextState.orderQuantity instanceof BigNumber && nextState.orderPrice instanceof BigNumber) {
+        orderEstimate = `${nextState.orderQuantity.times(nextState.orderPrice).toNumber()} ETH`
+      }
+      this.setState({ orderEstimate })
+    }
+  }
+
   render() {
     const s = this.state
     const p = this.props
@@ -115,6 +125,10 @@ class MarketTrading extends Component {
                 value={s.orderPrice instanceof BigNumber ? s.orderPrice.toNumber() : s.orderPrice}
                 onChange={e => this.setState({ orderPrice: e.target.value })}
               />
+            </li>
+            <li>
+              <label>Est. Cost</label>
+              <div className={Styles['Trading__static-field']}>{ s.orderEstimate }</div>
             </li>
           </ul>
         }
