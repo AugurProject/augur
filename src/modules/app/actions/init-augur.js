@@ -1,5 +1,4 @@
 import * as AugurJS from 'services/augurjs'
-import { UNIVERSE_ID } from 'modules/app/constants/network'
 import { updateEnv } from 'modules/app/actions/update-env'
 import { updateConnectionStatus, updateAugurNodeConnectionStatus } from 'modules/app/actions/update-connection'
 import { updateContractAddresses } from 'modules/contracts/actions/update-contract-addresses'
@@ -29,7 +28,7 @@ export function initAugur(callback = logError) {
             if (env.augurNodeUrl) dispatch(updateAugurNodeConnectionStatus(true))
             dispatch(registerTransactionRelay())
             dispatch(setLoginAccount(env.autoLogin, ethereumNodeConnectionInfo.coinbase))
-            dispatch(loadUniverse(env.universe || UNIVERSE_ID))
+            dispatch(loadUniverse(env.universe || AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()].Universe))
             callback()
           })
         } else {
