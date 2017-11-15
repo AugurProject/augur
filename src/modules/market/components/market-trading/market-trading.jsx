@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Link } from 'react-router-dom'
+import BigNumber from 'bignumber.js'
 
 import makePath from 'modules/routes/helpers/make-path'
 
@@ -13,6 +14,8 @@ import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views'
 
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/market/components/market-trading/market-trading.styles'
+
+const PRECISION = 4
 
 class MarketTrading extends Component {
   constructor(props) {
@@ -91,6 +94,17 @@ class MarketTrading extends Component {
                 <div className={Styles['Trading__static-field']}>{ selectedOutcome.name }</div>
               </li>
             }
+            <li>
+              <label htmlFor="tr__input--quantity">Quantity</label>
+              <input
+                id="tr__input--quantity"
+                type="number"
+                step={10**-PRECISION}
+                placeholder="0.0000 Shares"
+                value={s.orderQuantity instanceof BigNumber ? s.orderQuantity.toNumber() : s.orderQuantity}
+                onChange={e => this.setState({ orderQuantity: e.target.value })}
+              />
+            </li>
           </ul>
         }
       </section>

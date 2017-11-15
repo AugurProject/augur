@@ -68,6 +68,11 @@
     > input[type="number"] {
       background-color: @color-input-background;
       border-width: 1px;
+
+      &::placeholder {
+        color: @color-lightgray;
+        line-height: @font-size-rather-large;
+      }
     }
   }
 }
