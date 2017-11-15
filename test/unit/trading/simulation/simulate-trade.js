@@ -52,6 +52,7 @@ describe("trading/simulation/simulate-trade", function () {
     assertions: function (output) {
       assert.deepEqual(output, {
         settlementFees: "0.006",
+        worstCaseFees: "0.009",
         gasFees: "0",
         otherSharesDepleted: "3",
         sharesDepleted: "0",
@@ -97,6 +98,7 @@ describe("trading/simulation/simulate-trade", function () {
     assertions: function (output) {
       assert.deepEqual(output, {
         settlementFees: "0",
+        worstCaseFees: "0",
         gasFees: "0",
         otherSharesDepleted: "0",
         sharesDepleted: "0",

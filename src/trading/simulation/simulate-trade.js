@@ -68,6 +68,7 @@ function simulateTrade(p) {
     simulateSell(p.outcome, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.marketOrderBook.buy);
   return {
     settlementFees: simulatedTrade.settlementFees.toFixed(),
+    worstCaseFees: simulatedTrade.worstCaseFees.toFixed(),
     gasFees: simulatedTrade.gasFees.toFixed(),
     sharesDepleted: simulatedTrade.sharesDepleted.toFixed(),
     otherSharesDepleted: simulatedTrade.otherSharesDepleted.toFixed(),
