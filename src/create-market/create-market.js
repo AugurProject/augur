@@ -1,11 +1,15 @@
 "use strict";
 
 var assign = require("lodash.assign");
+var BigNumber = require("bignumber.js");
 var immutableDelete = require("immutable-delete");
+var speedomatic = require("speedomatic");
+var getMarketCreationCost = require("./get-market-creation-cost");
 var api = require("../api");
 var encodeTag = require("../format/tag/encode-tag");
 var convertDecimalToFixedPoint = require("../utils/convert-decimal-to-fixed-point");
 var noop = require("../utils/noop");
+var ZERO = require("../constants").ZERO;
 var DEFAULT_NUM_TICKS = require("../constants").DEFAULT_NUM_TICKS;
 
 /**
@@ -28,27 +32,31 @@ var DEFAULT_NUM_TICKS = require("../constants").DEFAULT_NUM_TICKS;
  * @param {function} p.onFailed Called if/when the createMarket transaction fails.
  */
 function createMarket(p) {
-  api().Universe.getReportingWindowByMarketEndTime({
-    tx: { to: p.universe },
-    _endTime: p._endTime,
-    onSent: noop,
-    onSuccess: function (res) {
-      var reportingWindowAddress = res.callReturn;
-      api().Universe.getMarketCreationCost({ tx: { to: p.universe, send: false, returns: "bytes32" }, _reportingWindow: reportingWindowAddress }, function (err, marketCreationCost) {
-        if (err) return p.onFailed(err);
-        var numTicks = p._numTicks || DEFAULT_NUM_TICKS;
-        api().ReportingWindow.createMarket(assign({}, immutableDelete(p, "universe"), {
-          tx: { to: reportingWindowAddress, value: marketCreationCost },
-          _feePerEthInWei: p._feePerEthInWei,
-          _numTicks: numTicks,
-          _minDisplayPrice: convertDecimalToFixedPoint(p._minDisplayPrice, numTicks),
-          _maxDisplayPrice: convertDecimalToFixedPoint(p._maxDisplayPrice, numTicks),
-          _topic: encodeTag(p._topic),
-          _extraInfo: p._extraInfo ? JSON.stringify(p._extraInfo) : ""
-        }));
+  api().Universe.getReportingWindowByMarketEndTime({ tx: { to: p.universe }, _endTime: p._endTime }, function (err, reportingWindow) {
+    if (err) return p.onFailed(err);
+    if (new BigNumber(reportingWindow, 16).eq(ZERO)) {
+      return api().Universe.getOrCreateReportingWindowByMarketEndTime({
+        tx: { to: p.universe },
+        _endTime: p._endTime,
+        meta: p.meta,
+        onSent: noop,
+        onSuccess: function () { createMarket(p); },
+        onFailed: p.onFailed,
       });
-    },
-    onFailed: p.onFailed,
+    }
+    getMarketCreationCost({ universe: p.universe, meta: p.meta }, function (err, marketCreationCost) {
+      if (err) return p.onFailed(err);
+      var numTicks = p._numTicks || DEFAULT_NUM_TICKS;
+      api().ReportingWindow.createMarket(assign({}, immutableDelete(p, "universe"), {
+        tx: { to: reportingWindow, value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex") },
+        _feePerEthInWei: p._feePerEthInWei,
+        _numTicks: numTicks,
+        _minDisplayPrice: convertDecimalToFixedPoint(p._minDisplayPrice, numTicks),
+        _maxDisplayPrice: convertDecimalToFixedPoint(p._maxDisplayPrice, numTicks),
+        _topic: encodeTag(p._topic),
+        _extraInfo: p._extraInfo ? JSON.stringify(p._extraInfo) : ""
+      }));
+    });
   });
 }
 
