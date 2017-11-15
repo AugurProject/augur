@@ -105,6 +105,17 @@ class MarketTrading extends Component {
                 onChange={e => this.setState({ orderQuantity: e.target.value })}
               />
             </li>
+            <li>
+              <label htmlFor="tr__input--limit-price">Limit Price</label>
+              <input
+                id="tr__input--limit-price"
+                type="number"
+                step={10**-PRECISION}
+                placeholder="0.0000 ETH"
+                value={s.orderPrice instanceof BigNumber ? s.orderPrice.toNumber() : s.orderPrice}
+                onChange={e => this.setState({ orderPrice: e.target.value })}
+              />
+            </li>
           </ul>
         }
       </section>
