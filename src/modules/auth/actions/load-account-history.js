@@ -1,29 +1,41 @@
 import async from 'async'
 import { clearReports } from 'modules/reports/actions/update-reports'
 import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades'
-/* import { loadBidsAsksHistory } from 'modules/bids-asks/actions/load-bids-asks-history' */
-/* import { loadCreateMarketHistory } from 'modules/create-market/actions/load-create-market-history' */
-/* import { loadFundingHistory } from 'modules/account/actions/load-funding-history' */
-/* import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-history' */
+import { loadOpenOrders } from 'modules/bids-asks/actions/load-open-orders'
+import { loadCreateMarketHistory } from 'modules/create-market/actions/load-create-market-history'
+import { loadFundingHistory } from 'modules/account/actions/load-funding-history'
+import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-history'
 import syncUniverse from 'modules/universe/actions/sync-universe'
 /* import { updateTransactionsOldestLoadedBlock } from 'modules/transactions/actions/update-transactions-oldest-loaded-block' */
 import { updateTransactionsLoading } from 'modules/transactions/actions/update-transactions-loading'
-import { addTransactions } from 'modules/transactions/actions/add-transactions'
-import { updateTransactionData } from 'modules/transactions/actions/update-transactions-data'
 
 export const loadAccountHistory = (loadAllHistory, triggerTransactionsExport) => (dispatch, getState) => {
-  const { transactionsOldestLoadedBlock, loginAccount, transactionsData } = getState()
+  const { transactionsOldestLoadedBlock, blockchain, loginAccount, transactionsData } = getState()
   const initialTransactionCount = Object.keys(transactionsData || {}).length
-  const options = {}
+
   // Adjust these to constrain the loading boundaries
   const blockChunkSize = 5760 // ~1 Day based on 15 second blocks
   const transactionSoftLimit = 40 // Used if blockChunkSize does not load # of transactions up to the soft limit (approximately two UI pages of transactions)
 
   const registerBlock = loginAccount.registerBlockNumber // FIXME
+  const oldestLoadedBlock = transactionsOldestLoadedBlock || blockchain.currentBlockNumber
 
   if (!transactionsOldestLoadedBlock) { // Denotes nothing has loaded yet
     dispatch(clearReports())
     dispatch(syncUniverse())
+  }
+
+  // TODO: figure out where this data comes from and if it is needed
+  /* if (registerBlock && oldestLoadedBlock && oldestLoadedBlock !== registerBlock) { } */
+
+  const options = {}
+  if (!loadAllHistory) {
+    options.toBlock = oldestLoadedBlock === blockchain.currentBlockNumber ? oldestLoadedBlock : oldestLoadedBlock - 1
+
+    const prospectiveFromBlock = options.toBlock - blockChunkSize
+    options.fromBlock = prospectiveFromBlock < registerBlock ?
+      registerBlock :
+      prospectiveFromBlock
   }
 
   const constraints = {
@@ -35,19 +47,22 @@ export const loadAccountHistory = (loadAllHistory, triggerTransactionsExport) =>
     triggerTransactionsExport
   }
 
-  loadTransactions(dispatch, getState, options, constraints, loadMoreTransactions)
+  loadTransactions(dispatch, getState, options, constraints, () => {
+    dispatch(updateTransactionsLoading(false))
+  })
 
 }
 
 export function loadMoreTransactions(dispatch, getState, options, constraints) {
-  if (constraints.loadAllHistory) {
-    dispatch(addTransactions(constraints.registerBlock))
-  } else {
-    dispatch(updateTransactionData(constraints.registerBlock))
-  }
-  dispatch(updateTransactionsLoading(false))
+  // TODO: need to pass in options for getting data TBD
+  loadTransactions(dispatch, getState, options, constraints, () => {
+    // transactions have stop loading
+    dispatch(updateTransactionsLoading(false))
+  })
+
 }
 
+// transactionsData is constructed from these methods
 function loadTransactions(dispatch, getState, options, constraints, cb) {
   dispatch(updateTransactionsLoading(true))
 
@@ -56,8 +71,7 @@ function loadTransactions(dispatch, getState, options, constraints, cb) {
       if (err) next(err)
       next(null)
     })),
-    /*
-    next => dispatch(loadBidsAsksHistory(options, (err) => {
+    next => dispatch(loadOpenOrders(options, (err) => {
       if (err) next(err)
       next(null)
     })),
@@ -72,8 +86,7 @@ function loadTransactions(dispatch, getState, options, constraints, cb) {
     next => dispatch(loadReportingHistory(options, (err) => {
       if (err) next(err)
       next(null)
-    })),
-    */
+    }))
   ], (err) => {
     if (err) return console.error('ERROR loadTransactions: ', err)
     cb(dispatch, getState, options, constraints)

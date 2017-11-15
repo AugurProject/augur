@@ -1,5 +1,6 @@
 import { augur } from 'services/augurjs'
 import logError from 'utils/log-error'
+import { addTransferTransactions } from 'modules/transactions/actions/add-transactions'
 
 export function loadFundingHistory(options, callback = logError) {
   return (dispatch, getState) => {
@@ -8,6 +9,7 @@ export function loadFundingHistory(options, callback = logError) {
     augur.accounts.getAccountTransferHistory({ ...options, account: loginAccount.address }, (err, transferHistory) => {
       if (err) return callback(err)
       if (transferHistory == null) return callback(null)
+      dispatch(addTransferTransactions(transferHistory))
       callback(null, transferHistory)
     })
   }
