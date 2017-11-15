@@ -23,6 +23,7 @@ export default class CreateMarketReview extends Component {
       creationFee: null,
       gasCost: null,
       validityBond: null,
+      designatedReportNoShowReputationBond: null,
       initialLiquidity: {
         gas: null,
         fees: null
@@ -46,10 +47,6 @@ export default class CreateMarketReview extends Component {
   }
 
   calculateMarketCreationCosts() {
-    console.log('calcMarketCreationCosts', {
-      universe: this.props.universe.id,
-      _endTime: this.props.newMarket.endDate.timestamp / 1000
-    })
     augur.createMarket.getMarketCreationCostBreakdown({
       universe: this.props.universe.id,
       _endTime: this.props.newMarket.endDate.timestamp / 1000
@@ -57,6 +54,7 @@ export default class CreateMarketReview extends Component {
       if (err) return console.error(err)
       this.setState({
         gasCost: formatEtherEstimate(0), // FIXME real gas cost lookup
+        designatedReportNoShowReputationBond: formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond),
         creationFee: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
         validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond)
       })
@@ -66,7 +64,7 @@ export default class CreateMarketReview extends Component {
   render() {
     const p = this.props
     const s = this.state
-    console.log(p, s)
+
     return (
       <article className={StylesForm.CreateMarketForm__fields}>
         <div className={Styles.CreateMarketReview}>
@@ -77,19 +75,19 @@ export default class CreateMarketReview extends Component {
               <ul className={Styles.CreateMarketReview__list}>
                 <li>
                   <span>Validity Bond</span>
-                  <span>0.0340 ETH</span>
+                  <span>{s.validityBond && s.validityBond.rounded} ETH</span>
                 </li>
                 <li>
                   <span>Reporter Fee</span>
-                  <span>0.0340 REP</span>
+                  <span>{s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.rounded} REP</span>
                 </li>
                 <li>
                   <span>Create Market Gas</span>
-                  <span>0.0340 ETH</span>
+                  <span>{s.gasCost && s.gasCost.rounded} ETH</span>
                 </li>
                 <li>
                   <span>Reporter Gas</span>
-                  <span>0.0340 ETH</span>
+                  <span>{s.creationFee && s.creationFee.rounded} ETH</span>
                 </li>
               </ul>
             </div>
@@ -98,15 +96,15 @@ export default class CreateMarketReview extends Component {
               <ul className={Styles.CreateMarketReview__list}>
                 <li>
                   <span>Ether</span>
-                  <span>0.0340 ETH</span>
+                  <span>{s.formattedInitialLiquidityEth.rounded} ETH</span>
                 </li>
                 <li>
                   <span>Gas</span>
-                  <span>0.0340 ETH</span>
+                  <span>{s.formattedInitialLiquidityGas.rounded} ETH</span>
                 </li>
                 <li>
                   <span>Fees</span>
-                  <span>0.0340 ETH</span>
+                  <span>{s.formattedInitialLiquidityFees.rounded} ETH</span>
                 </li>
               </ul>
             </div>
