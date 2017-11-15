@@ -7,9 +7,10 @@ import makePath from 'modules/routes/helpers/make-path'
 
 import getValue from 'utils/get-value'
 
-import { BID, ASK } from 'modules/transactions/constants/types'
+import { BID, ASK, MARKET, LIMIT } from 'modules/transactions/constants/types'
 import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views'
 
+import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/market/components/market-trading/market-trading.styles'
 
 class MarketTrading extends Component {
@@ -17,6 +18,7 @@ class MarketTrading extends Component {
     super(props)
 
     this.state = {
+      orderType: LIMIT,
       orderPrice: '',
       orderQuantity: '',
       orderEstimate: '',
@@ -60,8 +62,25 @@ class MarketTrading extends Component {
         { initialMessage &&
           <p className={Styles['Trading__initial-message']}>{ initialMessage }</p>
         }
-        { p.isLogged && !hasFunds &&
+        { initialMessage && p.isLogged && !hasFunds &&
           <Link className={Styles['Trading__button--add-funds']} to={makePath(ACCOUNT_DEPOSIT)}>Add Funds</Link>
+        }
+        { !initialMessage &&
+          <ul className={Styles['Trading__form-body']}>
+            <li>
+              <label>Order Type</label>
+              <div className={Styles.Trading__type}>
+                  <button
+                    className={classNames({ [`${Styles.active}`]: s.orderType === MARKET })}
+                    onClick={() => this.setState({ orderType: MARKET })}
+                  >Market</button>
+                  <button
+                    className={classNames({ [`${Styles.active}`]: s.orderType === LIMIT })}
+                    onClick={() => this.setState({ orderType: LIMIT })}
+                  >Limit</button>
+              </div>
+            </li>
+          </ul>
         }
       </section>
     )
