@@ -32,6 +32,20 @@ exports.seed = async (knex: Knex): Promise<any> => {
       amountStaked: 229,
       winningToken: 1,
       claimed: 0,
+    }, {
+      reporter: "0x0000000000000000000000000000000000000024",
+      marketID: "0x0000000000000000000000000000000000000019",
+      stakeToken: "0x0000000000000000001000000000000000000003",
+      amountStaked: 300,
+      winningToken: 1,
+      claimed: 0,
+    }, {
+      reporter: "0x0000000000000000000000000000000000000024",
+      marketID: "0x0000000000000000000000000000000000000019",
+      stakeToken: "0x0000000000000000001000000000000000000003",
+      amountStaked: 450,
+      winningToken: 1,
+      claimed: 0,
     }];
     return knex.batchInsert("reports", seedData, seedData.length);
   });

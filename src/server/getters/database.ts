@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 import BigNumber from "bignumber.js";
 import { sortDirection } from "../../utils/sort-direction";
-import { MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIConsensusInfo, UIOutcomeInfo } from "../../types";
+import { MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIConsensusInfo, UIOutcomeInfo, StakeTokensRowWithReportingState, UIStakeTokenInfo } from "../../types";
 
 export function queryModifier(query: Knex.QueryBuilder, defaultSortBy: string, defaultSortOrder: string, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined): Knex.QueryBuilder {
   query = query.orderBy(sortBy || defaultSortBy, sortDirection(isSortDescending, defaultSortOrder));
@@ -59,6 +59,15 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
     outcomes: outcomesInfo,
   };
   return marketInfo;
+}
+
+export function reshapeStakeTokensRowToUIStakeTokenInfo(stakeTokenRow: StakeTokensRowWithReportingState): UIStakeTokenInfo {
+  const stakeTokenInfo: UIStakeTokenInfo = Object.assign(stakeTokenRow, {
+      isInvalid: !!stakeTokenRow.isInvalid,
+      claimed: !!stakeTokenRow.claimed,
+      winningToken: (stakeTokenRow.winningToken == null) ? null : !!stakeTokenRow.winningToken,
+  });
+  return stakeTokenInfo;
 }
 
 export function getMarketsWithReportingState(db: Knex, selectColumns?: Array<string>): Knex.QueryBuilder {
