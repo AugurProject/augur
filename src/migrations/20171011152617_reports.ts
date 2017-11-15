@@ -8,6 +8,8 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.string("marketID", 66).notNullable();
       table.string("stakeToken", 42).notNullable();
       table.specificType("amountStaked", "NUMERIC");
+      table.integer("winningToken").nullable();
+      table.integer("claimed").notNullable();
     });
   });
 };

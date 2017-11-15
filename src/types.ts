@@ -16,6 +16,12 @@ export enum ReportingState {
   FINALIZED = "FINALIZED",
 }
 
+export enum StakeTokenState {
+  ALL = "ALL",
+  UNCLAIMED = "UNCLAIMED",
+  UNFINALIZED = "UNFINALIZED",
+}
+
 export interface EthereumNodeEndpoints {
   [protocol: string]: string;
 }

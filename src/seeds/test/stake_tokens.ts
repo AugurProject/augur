@@ -16,6 +16,12 @@ exports.seed = async (knex: Knex): Promise<any> => {
       payout0: 1,
       payout1: 1,
       isInvalid: 1,
+    }, {
+      stakeToken: "0x0000000000000000001000000000000000000003",
+      marketID: "0x0000000000000000000000000000000000000019",
+      payout0: 1,
+      payout1: 1,
+      isInvalid: 0,
     }];
     return knex.batchInsert("stake_tokens", seedData, seedData.length);
   });

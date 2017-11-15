@@ -37,6 +37,17 @@ describe("server/getters/get-reporting-history", () => {
             isIndeterminate: false,
             isSubmitted: true,
           }],
+          "0x0000000000000000000000000000000000000019": [{
+            marketID: "0x0000000000000000000000000000000000000019",
+            reportingWindow: "0x1000000000000000000000000000000000000000",
+            payoutNumerators: [1, 1],
+            amountStaked: 229,
+            stakeToken: "0x0000000000000000001000000000000000000003",
+            isCategorical: false,
+            isScalar: false,
+            isIndeterminate: false,
+            isSubmitted: true,
+          }],
         },
       });
     },

@@ -9,7 +9,6 @@ exports.up = async (knex: Knex): Promise<any> => {
         table.specificType(`payout${i}`, "NUMERIC").nullable();
       }
       table.integer("isInvalid");
-
       table.index(["marketID"]);
     });
   });
