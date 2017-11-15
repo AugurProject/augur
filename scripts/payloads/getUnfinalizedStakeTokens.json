@@ -1,9 +1,0 @@
-{
-  "id": 13,
-  "jsonrpc": "2.0",
-  "method": "getUnfinalizedStakeTokens",
-  "params": {
-    "universe": "0x000000000000000000000000000000000000000b",
-    "account": "0x0000000000000000000000000000000000000021"
-  }
-}

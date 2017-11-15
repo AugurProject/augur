@@ -16,6 +16,12 @@ export enum ReportingState {
   FINALIZED = "FINALIZED",
 }
 
+export enum StakeTokenState {
+  ALL = "ALL",
+  UNCLAIMED = "UNCLAIMED",
+  UNFINALIZED = "UNFINALIZED",
+}
+
 export interface EthereumNodeEndpoints {
   [protocol: string]: string;
 }
@@ -186,10 +192,34 @@ export interface StakeTokensRow {
   payout7: string|number|null;
   isInvalid: number;
   amountStaked: number;
+  claimed: number;
+  winningToken: number|null;
 }
 
 export interface StakeTokensRowWithReportingState extends StakeTokensRow {
   ReportingState: ReportingState;
+}
+
+export interface UIStakeTokenInfo {
+  stakeToken: Address;
+  marketID: Address;
+  payout0: string|number|null;
+  payout1: string|number|null;
+  payout2: string|number|null;
+  payout3: string|number|null;
+  payout4: string|number|null;
+  payout5: string|number|null;
+  payout6: string|number|null;
+  payout7: string|number|null;
+  isInvalid: boolean;
+  amountStaked: number;
+  claimed: boolean;
+  winningToken: boolean|null;
+  ReportingState: ReportingState;
+}
+
+export interface UIStakeTokens {
+  [stakeToken: string]: UIStakeTokenInfo;
 }
 
 export interface UIConsensusInfo {
