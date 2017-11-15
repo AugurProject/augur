@@ -22,7 +22,7 @@ const Outcome = (p) => {
   const topAskPrice = getValue(p, 'outcome.topAsk.price.formatted')
 
   const lastPrice = getValue(p, 'outcome.lastPrice.formatted')
-  const lastPricePercent = getValue(p, 'outcome.lastPricePercent.rounded')
+  const lastPricePercent = getValue(p, 'outcome.lastPricePercent.full')
 
   return (
     <ul className={classNames(Styles.Outcome, { [`${Styles.active}`]: p.selectedOutcomes.indexOf(p.outcome.id) > -1 })} onClick={e => p.updateSelectedOutcomes(p.outcome.id)}>

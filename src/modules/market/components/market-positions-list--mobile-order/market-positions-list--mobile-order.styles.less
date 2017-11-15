@@ -1,0 +1,87 @@
+@import (reference) '~assets/styles/shared';
+
+.MobileOrder {
+  display: table-row;
+
+  > li {
+    border-bottom: 1px solid @color-darkpurple-2;
+    color: @color-white;
+    display: table-cell;
+    padding: 1rem 0;
+
+    &:nth-child(1),
+    &:nth-child(3) {
+      &:extend(.caps--small);
+
+      color: @color-lightgray;
+    }
+
+    &:nth-child(1) {
+      width: 3.25rem;
+    }
+
+    &:nth-child(3) {
+      width: 4.5rem;
+    }
+
+    &:last-of-type {
+      text-align: right;
+    }
+  }
+
+  &:last-child > li {
+    border-bottom-width: 0;
+  }
+
+  &.pending > li {
+    &:nth-child(2),
+    &:nth-child(4) {
+      color: @color-lighter-purple;
+    }
+  }
+}
+
+.MobileOrder__close-order > svg {
+  width: 0.8rem;
+}
+
+.MobileOrder__confirm {
+  background-color: @color-gray2;
+  color: @color-white;
+  left: 0;
+  opacity: 0;
+  padding: 1.19rem 1rem;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity 0.15s ease;
+  width: 100%;
+
+  &.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.MobileOrder__confirm-details {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: space-between;
+
+  > p {
+    margin: 0;
+  }
+}
+
+.MobileOrder__confirm-options {
+  color: @color-white;
+  display: flex;
+
+  > button {
+    &:extend(.caps--medium);
+
+    &:not(:first-child) {
+      margin-left: 2rem;
+    }
+  }
+}
