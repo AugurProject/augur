@@ -1,6 +1,5 @@
 import { augur } from 'services/augurjs'
 import logError from 'utils/log-error'
-/* import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress' */
 import { addOpenOrderTransactions } from 'modules/transactions/actions/add-transactions'
 
 export const loadOpenOrders = (options, callback = logError) => (dispatch, getState) => {
