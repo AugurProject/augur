@@ -48,6 +48,8 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callba
       return getUserTradingPositions(db, request.params.universe, request.params.account, request.params.marketID, request.params.outcome, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getReportingWindowsWithUnclaimedFees":
       return getReportingWindowsWithUnclaimedFees(db, request.params.universe, request.params.account, callback);
+    case "getStakeTokens":
+      return getStakeTokens(db, request.params.universe, request.params.account, request.params.stakeTokenState, callback);
     case "getMarketsClosingInDateRange":
       return getMarketsClosingInDateRange(db, request.params.earliestClosingTime, request.params.latestClosingTime, request.params.universe, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarkets":
