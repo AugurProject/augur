@@ -1,10 +1,11 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { loadAccountHistory } from 'modules/auth/actions/load-account-history'
+import { selectTransactions } from 'modules/transactions/selectors/transactions'
 import TransactionsList from 'modules/portfolio/components/transactions/transactions'
 
 const mapStateToProps = state => ({
-  transactions: state.transactions,
+  transactions: selectTransactions(state),
   transactionsLoading: state.transactionsLoading,
 })
 
