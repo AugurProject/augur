@@ -45,7 +45,9 @@ export default class MarketOutcomeDepth extends Component {
   drawChart() {
     if (this.depthChart) {
       const fauxDiv = new ReactFauxDOM.Element('div')
-      const chart = d3.select(fauxDiv).append('svg')
+      const chart = d3.select(fauxDiv)
+        .append('svg')
+        .attr('id', 'outcome_depth')
 
       // Defs
       const chartDefs = chart.append('defs')
@@ -105,7 +107,7 @@ export default class MarketOutcomeDepth extends Component {
 
       // const yDomain = Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[1]], [])], [])
 
-      const xScale = d3.scaleTime()
+      const xScale = d3.scaleLinear()
         .domain(d3.extent(xDomain))
         .range([margin.left, width - margin.right - 1])
 
@@ -137,6 +139,75 @@ export default class MarketOutcomeDepth extends Component {
           .classed('filled-subtle', true)
           .attr('d', area)
       })
+
+      // Mouse Events
+      // chart.on('mousemove', () => {
+      //   const pos = d3.mouse(d3.select('#outcome_depth').node())
+      //   const xValue = xScale.invert(pos[0])
+      //   const yValue = yScale.invert(pos[1])
+      //
+      //   console.log(xValue, yValue)
+      // })
+
+      const label = chart.append('text')
+        .attr('x', width - 5)
+        .attr('y', height - 5)
+        .style('text-anchor', 'end')
+
+      // create crosshairs
+      const crosshair = chart.append('g')
+        .attr('id', 'crosshairs')
+        .attr('class', 'line')
+        .attr('style', { display: 'none' })
+
+    // create horizontal line
+      crosshair.append('line')
+        .attr('id', 'crosshairX')
+        .attr('class', 'crosshair')
+
+      // create vertical line
+      crosshair.append('line')
+        .attr('id', 'crosshairY')
+        .attr('class', 'crosshair')
+
+      chart.append('rect')
+        .attr('class', 'overlay')
+        .attr('width', width)
+        .attr('height', height)
+        .on('mouseover', () => {
+          console.log('over')
+          d3.select('#crosshairs').style('display', null)
+        })
+        .on('mouseout', () => {
+          d3.select('#crosshairs').style('display', 'none')
+          label.text('')
+        })
+        .on('mousemove', function() {
+          console.log('hovering...')
+
+          const mouse = d3.mouse(d3.select('#outcome_depth').node())
+
+          const xValue = xScale.invert(mouse[0])
+          const yValue = yScale.invert(mouse[1])
+
+          const x = mouse[0]
+          const y = mouse[1]
+
+          d3.select('#crosshairX')
+            .attr('x1', x)
+            .attr('y1', 0)
+            .attr('x2', x)
+            .attr('y2', height)
+
+          d3.select('#crosshairY')
+            .attr('x1', 0)
+            .attr('y1', y)
+            .attr('x2', width)
+            .attr('y2', y)
+        })
+        .on('click', () => {
+          console.log('TODO -- fill order form')
+        })
 
       this.setState({ chart: fauxDiv.toReact() })
     }
