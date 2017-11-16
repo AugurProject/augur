@@ -95,6 +95,7 @@ class InputDropdown extends Component {
             </option>
           ))}
         </select>
+        <i className={classNames(Styles.InputDropdown__icon, 'fa', { 'fa-angle-down': !this.state.showList, 'fa-angle-up': this.state.showList })} />
       </div>
     )
   }

@@ -78,7 +78,7 @@ describe('modules/auth/actions/update-assets.js', () => {
                   }
                 },
                 ReputationToken: {
-                  balanceOf: (value, callback) => {
+                  getBalance: (value, callback) => {
                     callback(ERR, '10000')
                   }
                 }
@@ -93,7 +93,7 @@ describe('modules/auth/actions/update-assets.js', () => {
             )
 
             store.dispatch(updateAssets(callbackStub.callback))
-            console.log('about to call done')
+
             done()
           }
         })
@@ -156,21 +156,15 @@ describe('modules/auth/actions/update-assets.js', () => {
             }
           },
           assertions: (store, done) => {
-            const allAssetsLoaded = sinon.stub()
-            allAssetsLoaded.onFirstCall().returns(false)
-              .onSecondCall().returns(false)
-              .onThirdCall().returns(true)
             const speedomatic =
               {
                 unfix: (value, str) => { }
               }
             sinon.stub(speedomatic, 'unfix').returnsArg(0)
-            updateAssetsRewireAPI.__Rewire__('allAssetsLoaded', allAssetsLoaded)
             updateAssetsRewireAPI.__Rewire__('speedomatic', speedomatic)
             const testValue = {
               eth: 10,
-              rep: 20,
-              ethTokens: 30
+              rep: 20
             }
             updateAssetsRewireAPI.__Rewire__('augur', {
               api: {
@@ -180,8 +174,8 @@ describe('modules/auth/actions/update-assets.js', () => {
                   }
                 },
                 ReputationToken: {
-                  balanceOf: (value, callback) => {
-                    callback(testValue.rep)
+                  getBalance: (value, callback) => {
+                    callback(null, testValue.rep)
                   }
                 }
               },
