@@ -21,12 +21,9 @@ augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
   const networkID = augur.rpc.getNetworkID();
   console.log(chalk.cyan("Network"), chalk.green(networkID));
   const account = augur.rpc.getCoinbase();
-  augur.api.Universe.getReputationToken({ tx: { to: augur.contracts.addresses[networkID].Universe } }, (err, reputationToken) => {
+  augur.api.Universe.getReputationToken({ tx: { to: augur.contracts.addresses[networkID].Universe } }, (err, reputationTokenAddress) => {
     if (err) return console.error("getReputationToken failed:", err);
-    augur.api.ReputationToken.balanceOf({
-      tx: { to: reputationToken },
-      _owner: account,
-    }, (err, reputationBalance) => {
+    augur.api.ReputationToken.balanceOf({ tx: { to: reputationTokenAddress }, _owner: account }, (err, reputationBalance) => {
       if (err) return console.error("ReputationToken.balanceOf failed:", err);
       augur.rpc.eth.getBalance([account, "latest"], (etherBalance) => {
         if (!etherBalance || etherBalance.error) return console.error("rpc.eth.getBalance failed:", etherBalance);
