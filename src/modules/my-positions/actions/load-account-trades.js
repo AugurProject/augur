@@ -1,9 +1,24 @@
+import { parallel } from 'async'
 import { augur } from 'services/augurjs'
-import { updateAccountTradesData } from 'modules/my-positions/actions/update-account-trades-data'
 import { clearAccountTrades } from 'modules/my-positions/actions/clear-account-trades'
+import { addTradeTransactions } from 'modules/transactions/actions/add-transactions'
+import { loadAccountPositions } from 'modules/my-positions/actions/load-account-positions'
+import { loadOpenOrders } from 'modules/bids-asks/actions/load-open-orders'
 import logError from 'utils/log-error'
 
 export function loadAccountTrades(options, callback = logError) {
+  return (dispatch, getState) => {
+    parallel([
+      next => dispatch(loadUserTradingHistory(options, next)),
+      next => dispatch(loadAccountPositions(options, next)),
+      next => dispatch(loadOpenOrders(options, next))
+    ], () => {
+      callback(null)
+    })
+  }
+}
+
+export function loadUserTradingHistory(options, callback = logError) {
   return (dispatch, getState) => {
     const { universe, loginAccount } = getState()
     if (!loginAccount.address || !options) return callback(null)
@@ -12,8 +27,9 @@ export function loadAccountTrades(options, callback = logError) {
     augur.trading.getUserTradingHistory({ ...options, account: loginAccount.address, universe: universe.id, marketID }, (err, userTradingHistory) => {
       if (err) return callback(err)
       if (userTradingHistory != null) {
-        // TODO verify that userTradingHistory is the correct shape for updateAccountTradesData
-        dispatch(updateAccountTradesData(userTradingHistory, options.market))
+        dispatch(addTradeTransactions(userTradingHistory))
+        // TODO: update account trades, not sure why market is needed here
+        /* dispatch({ type: UPDATE_ACCOUNT_TRADES_DATA, market, data: data[market] }) */
       }
       callback(null)
     })

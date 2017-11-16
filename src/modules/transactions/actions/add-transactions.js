@@ -24,7 +24,6 @@ export function addTradeTransactions(transactionsArray) {
 
 export function addOpenOrderTransactions(openOrders) {
   return (dispatch, getState) => {
-    // flatten open orders
     const transactions = {}
     eachOf(openOrders, (value, marketID) => {
       eachOf(value, (value2, index) => {
@@ -44,7 +43,6 @@ export function addOpenOrderTransactions(openOrders) {
 }
 
 export function addPositionTransactions(positions) {
-  // flatten positions
   return (dispatch, getState) => {
     dispatch(updateTransactionsData(positions.reduce((p, position) => {
       position.status = PENDING
@@ -86,7 +84,6 @@ export function addMarketCreationTransactions(marketsCreated) {
 export function addReportingTransactions(reports) {
   return (dispatch, getState) => {
     const transactions = {}
-    // flatten structure
     eachOf(reports, (value, universe) => {
       eachOf(value, (value1, marketID) => {
         eachOf(value1, (report, index) => {

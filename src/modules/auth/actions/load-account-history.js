@@ -1,7 +1,6 @@
 import async from 'async'
 import { clearReports } from 'modules/reports/actions/update-reports'
 import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades'
-import { loadOpenOrders } from 'modules/bids-asks/actions/load-open-orders'
 import { loadCreateMarketHistory } from 'modules/create-market/actions/load-create-market-history'
 import { loadFundingHistory } from 'modules/account/actions/load-funding-history'
 import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-history'
@@ -46,7 +45,6 @@ export const loadAccountHistory = (loadAllHistory, triggerTransactionsExport) =>
     blockChunkSize,
     triggerTransactionsExport
   }
-
   loadTransactions(dispatch, getState, options, constraints, () => {
     dispatch(updateTransactionsLoading(false))
   })
@@ -65,13 +63,8 @@ export function loadMoreTransactions(dispatch, getState, options, constraints) {
 // transactionsData is constructed from these methods
 function loadTransactions(dispatch, getState, options, constraints, cb) {
   dispatch(updateTransactionsLoading(true))
-
   async.parallel([
     next => dispatch(loadAccountTrades(options, (err) => {
-      if (err) next(err)
-      next(null)
-    })),
-    next => dispatch(loadOpenOrders(options, (err) => {
       if (err) next(err)
       next(null)
     })),
