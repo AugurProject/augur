@@ -53,7 +53,7 @@ var simulateSell = require("./simulate-sell");
  * @return {SimulatedTrade} Projected fees paid, shares and tokens spent, and final balances after the trade is complete.
  */
 function simulateTrade(p) {
-  if (p.orderType !== 0 && p.orderType !== 1) throw new Error("Order type must be 1 (buy) or 2 (sell)");
+  if (p.orderType !== 0 && p.orderType !== 1) throw new Error("Order type must be 0 (buy) or 1 (sell)");
   var sharesToCover = new BigNumber(p.shares, 10);
   var price = new BigNumber(p.price, 10);
   var tokenBalance = new BigNumber(p.tokenBalance, 10);
