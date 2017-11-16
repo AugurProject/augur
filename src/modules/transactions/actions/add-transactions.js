@@ -1,4 +1,4 @@
-import { OPEN_ORDER, MARKET_CREATION, TRANSFER, REPORTING } from 'modules/transactions/constants/types'
+import { OPEN_ORDER, MARKET_CREATION, TRANSFER, REPORTING, TRADE } from 'modules/transactions/constants/types'
 import { SUCCESS } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { eachOf, each } from 'async'
@@ -67,10 +67,7 @@ export function addMarketCreationTransactions(marketsCreated) {
     const marketCreationData = {}
     const { loginAccount, marketsData } = getState()
     each(marketsCreated, (marketID) => {
-      const thisMarketDataID = Object.keys(marketsData).find((myMarketID) => {
-        const market = marketsData[myMarketID]
-        return market.id === marketID
-      })
+      const thisMarketDataID = getMarketById(marketsData, marketID)
       // should be rare case that market info not found
       // need to display something even though can't find market data
       if (thisMarketDataID) {
@@ -90,15 +87,19 @@ export function addMarketCreationTransactions(marketsCreated) {
 
 export function addReportingTransactions(reports) {
   return (dispatch, getState) => {
+    const { marketsData } = getState()
     const transactions = {}
     eachOf(reports, (value, universe) => {
       eachOf(value, (value1, marketID) => {
         eachOf(value1, (report, index) => {
-          const transaction = { universe, marketID, ...report }
-          transaction.type = REPORTING
-          // create unique id
+          const market = getMarketById(marketsData, marketID)
+          const transaction = { universe, marketID, ...report, market }
           transaction.id = simplHashCode(transaction.marketID + transaction.amountStaked)
-          transactions[transaction.id] = transaction
+          transaction.meta = buildMeta(transaction, REPORTING, SUCCESS)
+          const header = buildHeader(transaction, REPORTING, SUCCESS)
+          header.transactions = [transaction]
+          // create unique id
+          transactions[transaction.id] = header
         })
       })
     })
@@ -121,18 +122,29 @@ function simplHashCode(str) {
 
 function buildHeader(item, type, status) {
   const header = {}
+  header.message = type
   if (type === TRANSFER) {
     header.hash = item.transactionHash
     header.status = status
     header.description = item.value + ' transfered from ' + item.sender + ' to ' + item.recipient
-    header.message = item.value + ' ETH transfered from ' + item.sender + ' to ' + item.recipient
     header.timestamp = buildTimeInfo(item, type)
   }
   if (type === MARKET_CREATION) {
     header.hash = item.id
     header.status = status
     header.description = item.shortDescription
-    header.message = 'Market ' + item.categroy + ' created by ' + item.author
+    header.timestamp = buildTimeInfo(item, type)
+  }
+  if (type === TRADE) {
+    header.hash = item.id
+    header.status = status
+    header.description = 'trade description'
+    header.timestamp = buildTimeInfo(item, type)
+  }
+  if (type === REPORTING) {
+    header.hash = item.id
+    header.status = status
+    header.description = 'Staked ' + item.amountStaked + ' on market ' + item.market.shortDescription == null ? item.marketID : item.market.shortDescription
     header.timestamp = buildTimeInfo(item, type)
   }
   return header
@@ -151,7 +163,15 @@ function buildMeta(item, type, status) {
   if (type === MARKET_CREATION) {
     meta.status = status
     meta.type = item.type
+    meta.market = item.marketID
     meta.creationFee = item.creationFee
+  }
+  if (type === REPORTING) {
+    meta.status = status
+    meta.staked = item.amountStaked
+    meta.market = item.marketID
+    meta.creationFee = item.creationFee
+    meta.payout = item.payoutNumerators
   }
   return meta
 }
@@ -166,4 +186,12 @@ function buildTimeInfo(item, type) {
   timestamp.timestamp = 1509144566000
 
   return timestamp
+}
+
+function getMarketById(marketsData, marketID) {
+  const id = Object.keys(marketsData).find((myMarketID) => {
+    const market = marketsData[myMarketID]
+    return market.id === marketID
+  })
+  return marketsData[id]
 }
