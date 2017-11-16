@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
 import Dropdown from 'modules/common/components/dropdown/dropdown'
-// import MarketCard from 'modules/market/components/market-card/market-card'
 import MarketsList from 'modules/markets/components/markets-list'
 import Styles from 'modules/portfolio/components/markets/markets.styles'
 import { TYPE_REPORT } from 'modules/market/constants/link-types'
