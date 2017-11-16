@@ -25,7 +25,6 @@ export const loadReportingWindowBounds = () => (dispatch, getState) => {
         stakeTokenState: 'UNCLAIMED'
       }, (err, tokens) => {
         if (err) return
-        console.log(err, tokens)
 
         const stake = Object.keys(tokens).reduce((p, tokenID) => p + tokens.tokenID.amountStaked, 0)
 

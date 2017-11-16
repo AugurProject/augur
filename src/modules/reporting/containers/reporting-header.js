@@ -5,7 +5,7 @@ import ReportingHeader from 'modules/reporting/components/reporting-header/repor
 import { loadReportingWindowBounds } from 'modules/reporting/actions/load-reporting-window-bounds'
 
 const mapStateToProps = state => ({
-  reportingWindow: state.reportingWindow
+  reportingWindowStats: state.reportingWindowStats
 })
 
 const mapDispatchToProps = dispatch => ({
