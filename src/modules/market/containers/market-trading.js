@@ -9,6 +9,7 @@ const mapStateToProps = state => ({
   outcomes,
   selectedOutcome,
   isLogged: state.isLogged,
+  isMobile: state.isMobile,
 })
 
 const MarketTradingContainer = withRouter(connect(mapStateToProps)(MarketTrading))

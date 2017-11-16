@@ -1,0 +1,45 @@
+@import (reference) "~assets/styles/shared";
+
+.TradingWrapper {
+  min-height: 28.25rem;
+}
+
+.TradingWrapper__header {
+  border-bottom: 1px solid @color-lightgray;
+  display: flex;
+  padding: 1.3rem 1.875rem 0;
+
+  > li {
+    border-bottom: 3px solid transparent;
+    color: @color-lightgray;
+    text-align: center;
+    width: 50%;
+
+    &.active {
+      border-bottom-color: @color-darkpurple;
+      color: @color-darkpurple;
+    }
+
+    > button {
+      &:extend(.caps--large);
+
+      font-weight: 700;
+      padding: 1.25rem 0;
+      width: 100%;
+    }
+  }
+}
+
+.TradingWrapper__button--add-funds {
+  &:extend(.button--purple all);
+
+  margin: 2rem auto 0;
+  max-width: 9.5rem;
+}
+
+.TradingWrapper__initial-message {
+  font-size: @font-size-large;
+  line-height: @font-size-rather-large;
+  margin: 7.75rem auto 0;
+  max-width: 14rem;
+}
