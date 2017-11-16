@@ -111,7 +111,7 @@ export default class TopicsView extends Component {
   render() {
     const p = this.props
     const s = this.state
-
+    // console.log('render', p, s)
     const heroTopic = p.topics[s.heroTopicIndex]
 
     return (
@@ -122,7 +122,7 @@ export default class TopicsView extends Component {
         <GraphBG />
         <div className={Styles.Topics__container}>
           <div className={Styles.TopicsHeading}>
-            <h3>Bet on...</h3>
+            <h3>Bet on</h3>
             <h2 style={{ opacity: s.heroTopicOpacity }}>
               {heroTopic &&
                 <Link
