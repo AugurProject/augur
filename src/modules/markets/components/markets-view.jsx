@@ -54,7 +54,7 @@ export default class MarketsView extends Component {
 
   componentWillMount() {
     this.loadMarkets({
-      canLoadMarkets: this.props.canLoadMarkets,
+      canLoadMarkets: this.props.canLoadMarkets, // TODO -- change to just `isConnected`, which is clearer as to whether it can be called or not
       location: this.props.location,
       hasLoadedTopic: this.props.hasLoadedTopic,
       hasLoadedMarkets: this.props.hasLoadedMarkets,

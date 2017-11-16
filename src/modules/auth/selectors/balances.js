@@ -13,6 +13,3 @@ export const allAccountBalancesZero = balances => (
 export const allAssetsLoaded = assets => (
     assets.eth !== undefined && assets.rep !== undefined
 )
-// assets.ethTokens !== undefined &&
-// (balances.ethTokens !== undefined && isZero(balances.ethTokens)) &&
-// (balances.ethTokens !== undefined && isZero(balances.ethTokens)) ||
