@@ -2,7 +2,7 @@ import Augur from "augur.js";
 import { parallel } from "async";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { Address, Bytes32, FormattedLog, OrdersRow, ErrorCallback, AsyncCallback } from "../../types";
+import { Address, Bytes32, FormattedLog, OrdersRow, OrderState, ErrorCallback, AsyncCallback } from "../../types";
 import { processOrderCanceledLog } from "./order-canceled";
 import { augurEmitter } from "../../events";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
@@ -63,6 +63,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
           outcome,
           shareToken: log.shareToken,
           orderCreator: log.creator,
+          orderState: OrderState.OPEN,
           creationBlockNumber: log.blockNumber,
           tradeGroupID: log.tradeGroupId,
           orderType: orderTypeLabel,
@@ -90,5 +91,5 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
 
 export function processOrderCreatedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
   augurEmitter.emit("OrderCreated", log);
-  processOrderCanceledLog(db, augur, trx, log, callback);
+  db.transacting(trx).from("orders").where("orderID", log.orderId).update({ isRemoved: 1 }).asCallback(callback);
 }

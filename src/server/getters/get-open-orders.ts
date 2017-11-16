@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import * as Knex from "knex";
-import { Address, Bytes32, OrdersRow } from "../../types";
+import { Address, Bytes32, OrdersRow, OrderState } from "../../types";
 import { queryModifier } from "./database";
 
 interface Order {

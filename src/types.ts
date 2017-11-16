@@ -22,6 +22,13 @@ export enum StakeTokenState {
   UNFINALIZED = "UNFINALIZED",
 }
 
+export enum OrderState {
+  ALL = "ALL",
+  OPEN = "OPEN",
+  CLOSED = "CLOSED",
+  CANCELLED = "CANCELLED",
+}
+
 export interface EthereumNodeEndpoints {
   [protocol: string]: string;
 }
@@ -275,6 +282,7 @@ export interface OrdersRow {
   shareToken: Address;
   orderType: string;
   orderCreator: Address;
+  orderState: OrderState;
   creationBlockNumber: number;
   price: string;
   amount: string;
