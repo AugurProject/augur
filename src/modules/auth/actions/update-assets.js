@@ -9,18 +9,9 @@ export function updateAssets(callback = logError) {
   return (dispatch, getState) => {
     const { loginAccount, universe } = getState()
     const universeID = universe.id || UNIVERSE_ID
-    const balances = { eth: undefined, ethTokens: undefined, rep: undefined }
+    const balances = { eth: undefined, rep: undefined }
+
     if (!loginAccount.address) return dispatch(updateLoginAccount(balances))
-    // FIXME -- 'balanceOf' is undefined...not sure where it moved to
-    // augur.api.Cash.balanceOf({ _owner: loginAccount.address }, (err, attoEthTokensBalance) => {
-    //   if (err) return callback(err)
-    //   const ethTokensBalance = speedomatic.unfix(attoEthTokensBalance, 'string')
-    //   balances.ethTokens = ethTokensBalance
-    //   if (!loginAccount.ethTokens || loginAccount.ethTokens !== ethTokensBalance) {
-    //     dispatch(updateLoginAccount({ ethTokens: ethTokensBalance }))
-    //   }
-    //   if (allAssetsLoaded(balances)) callback(null, balances)
-    // })
     augur.api.Universe.getReputationToken({ tx: { to: universeID } }, (err, reputationTokenAddress) => {
       if (err) return callback(err)
       augur.api.ReputationToken.getBalance({

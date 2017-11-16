@@ -81,7 +81,7 @@ export default class MarketPortfolioCard extends React.Component {
                 {this.props.market.description}
               </h1>
             </div>
-            <MarketStatusIcon className={Styles.MarketCard__statusicon} isOpen isReported />
+            <MarketStatusIcon className={Styles.MarketCard__statusicon} isOpen={p.market.isOpen} isReported={p.market.isReported} />
           </div>
           <div className={Styles.MarketCard__topstats}>
             <div className={Styles.MarketCard__leftstats}>
@@ -187,7 +187,7 @@ export default class MarketPortfolioCard extends React.Component {
               }
             />
           }
-          {this.props.market.outcomes[0].userOpenOrders.length !== 0 &&
+          {this.props.market.outcomes[0] && this.props.market.outcomes[0].userOpenOrders && this.props.market.outcomes[0].userOpenOrders.length !== 0 &&
             <div className={Styles.MarketCard__headingcontainer}>
               <h1 className={Styles.MarketCard__tableheading}>
                 Open Orders

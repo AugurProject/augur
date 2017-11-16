@@ -47,11 +47,17 @@ export default class CreateMarketReview extends Component {
   }
 
   calculateMarketCreationCosts() {
+<<<<<<< HEAD
     augur.createMarket.getMarketCreationCostBreakdown({
       universe: this.props.universe.id,
       _endTime: this.props.newMarket.endDate.timestamp / 1000
     }, (err, marketCreationCostBreakdown) => {
+=======
+    // TODO pass loginAccount.meta info to getMarketCreationCostBreakdown as 'meta' field
+    augur.createMarket.getMarketCreationCostBreakdown({ universe: this.props.universe.id, meta: undefined }, (err, marketCreationCostBreakdown) => {
+>>>>>>> v3
       if (err) return console.error(err)
+      // TODO add designatedReportNoShowReputationBond to state / display
       this.setState({
         gasCost: formatEtherEstimate(0), // FIXME real gas cost lookup
         designatedReportNoShowReputationBond: formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond),
