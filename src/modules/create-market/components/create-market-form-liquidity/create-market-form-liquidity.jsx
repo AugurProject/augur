@@ -227,27 +227,50 @@ export default class CreateMarketLiquidity extends Component {
 
   updateInitialLiquidityCosts(order, shouldReduce) {
     const gasPrice = augur.rpc.getGasPrice() || constants.DEFAULT_GASPRICE
-    const makerFee = this.props.makerFee instanceof BigNumber ? this.props.makerFee : new BigNumber(this.props.makerFee)
-
+    const minPrice = this.props.newMarket.type === SCALAR ? this.props.newMarket.scalarSmallNum : 0
+    const maxPrice = this.props.newMarket.type === SCALAR ? this.props.newMarket.scalarBigNum : 1
+    const shareBalances = this.props.newMarket.outcomes.map(outcome => 0)
+    let outcome
     let initialLiquidityEth
     let initialLiquidityGas
     let initialLiquidityFees
-    // let action
 
+    switch(this.props.newMarket.type) {
+    case BINARY:
+      outcome = this.state.selectedOutcome === 'Yes' ? 1 : 0
+      break;
+    case SCALAR:
+      outcome = this.state.selectedOutcome
+      break;
+    default:
+      // categorical
+      this.props.newMarket.outcomes.forEach((outcomeName, index) => {
+        if (this.state.selectedOutcome === outcomeName) outcome = index
+      })
+    }
 
-    // if (order.type === BID) {
-    //   action = augur.trading.simulation.getBidAction(order.quantity, order.price, makerFee, gasPrice)
-    // } else {
-    //   action = augur.trading.simulation.getShortAskAction(order.quantity, order.price, makerFee, gasPrice)
-    // }
-
+    const orderInfo = {
+      orderType: order.type === BID ? 0 : 1,
+      outcome,
+      shares: order.quantity,
+      price: order.price,
+      tokenBalance: this.props.availableEth,
+      minPrice,
+      maxPrice,
+      marketCreatorFeeRate: this.props.newMarket.settlementFee,
+      reportingFeeRate: 0,
+      shareBalances,
+      marketOrderBook: this.props.newMarket.orderBook
+    }
+    const action = augur.trading.simulateTrade(orderInfo)
+    // NOTE: Fees are going to always be 0 because we are only opening orders, and there is no costs associated with opening orders other than the escrowed ETH and the gas to put the order up.
     if (shouldReduce) {
       initialLiquidityEth = this.props.newMarket.initialLiquidityEth.minus(order.price.times(order.quantity))
-      // initialLiquidityGas = this.props.newMarket.initialLiquidityGas.minus(new BigNumber(action.gasEth))
+      initialLiquidityGas = this.props.newMarket.initialLiquidityGas.minus(new BigNumber(action.gasFees))
       // initialLiquidityFees = this.props.newMarket.initialLiquidityFees.minus(new BigNumber(action.feeEth))
     } else {
       initialLiquidityEth = this.props.newMarket.initialLiquidityEth.plus(order.quantity.times(order.price))
-      // initialLiquidityGas = this.props.newMarket.initialLiquidityGas.plus(new BigNumber(action.gasEth))
+      initialLiquidityGas = this.props.newMarket.initialLiquidityGas.plus(new BigNumber(action.gasFees))
       // initialLiquidityFees = this.props.newMarket.initialLiquidityFees.plus(new BigNumber(action.feeEth))
     }
 
@@ -328,7 +351,7 @@ export default class CreateMarketLiquidity extends Component {
     const s = this.state
 
     const errors = Array.from(new Set([...s.errors.quantity, ...s.errors.price]))
-    console.log('rendering liquidityform:', p, s, errors)
+
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
         <li className={Styles.CreateMarketLiquidity__settlement}>
