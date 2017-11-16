@@ -45,7 +45,7 @@ class AccountHeader extends Component {
     // @params: container, target, scaleUp, maxScale
     fitText({ clientWidth: containerWidth }, ethTarget, true, 5.5)
 
-    if (repValue > 0) {
+    if (repValue.value > 0) {
       const repContainer = this.repCurrencyContainer
       const repTarget = this.repCurrencyValue
 

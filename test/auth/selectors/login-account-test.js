@@ -4,7 +4,7 @@ import sinon from 'sinon'
 
 import loginAccount, { selectLoginAccount, __RewireAPI__ as loginAccountRewireAPI } from 'modules/auth/selectors/login-account'
 
-import { formatRep, formatEther, formatEtherTokens } from 'utils/format-number'
+import { formatRep, formatEther } from 'utils/format-number'
 
 describe(`modules/auth/selectors/login-account.js`, () => {
   const test = t => it(t.description, done => t.assertions(done))
@@ -67,8 +67,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
         const expected = {
           accountName: null,
           rep: formatRep(undefined),
-          eth: formatEther(undefined),
-          ethTokens: formatEtherTokens(undefined)
+          eth: formatEther(undefined)
         }
 
         assert.deepEqual(actual, expected, `didn't return the expected object`)
@@ -85,7 +84,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           address: '0xAccountAddress',
           loginID: '123ThisIsALoginID',
           eth: '10',
-          ethTokens: '11',
           rep: '12'
         }
         const accountName = 'testing'
@@ -98,7 +96,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           accountName: 'testing',
           rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
           eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
-          ethTokens: formatEtherTokens(11, { zeroStyled: false, decimalsRounded: 2 })
         }
 
         assert.deepEqual(actual, expected, `didn't return the expected object`)
@@ -115,7 +112,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           address: '0xAccountAddress',
           loginID: '123ThisIsALoginID',
           eth: '10',
-          ethTokens: '11',
           rep: '12',
         }
         const accountName = 'testing'
@@ -128,7 +124,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           accountName: 'testing',
           rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
           eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
-          ethTokens: formatEtherTokens(11, { zeroStyled: false, decimalsRounded: 2 })
         }
 
         assert.deepEqual(actual, expected, `didn't return the expected object`)
@@ -145,7 +140,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           address: '0xAccountAddress',
           loginID: '123ThisIsALoginID',
           eth: '10',
-          ethTokens: '11',
           rep: '12',
           isUnlocked: true
         }
@@ -160,7 +154,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           isUnlocked: true,
           rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
           eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
-          ethTokens: formatEtherTokens(11, { zeroStyled: false, decimalsRounded: 2 })
         }
 
         assert.deepEqual(actual, expected, `didn't return the expected object`)
@@ -178,7 +171,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           address: '0xAccountAddress',
           loginID: '123ThisIsALoginID',
           eth: '10',
-          ethTokens: '11',
           rep: '12',
           isUnlocked: true
         }
@@ -194,7 +186,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           isUnlocked: true,
           rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
           eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
-          ethTokens: formatEtherTokens(11, { zeroStyled: false, decimalsRounded: 2 })
         }
 
         assert.deepEqual(actual, expected, `didn't return the expected object`)

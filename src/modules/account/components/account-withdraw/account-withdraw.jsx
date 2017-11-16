@@ -15,7 +15,7 @@ import Styles from 'modules/account/components/account-withdraw/account-withdraw
 
 export default class AccountWithdraw extends Component {
   static propTypes = {
-    ethTokens: PropTypes.object.isRequired,
+    isMobileSmall: PropTypes.bool.isRequired,
     eth: PropTypes.object.isRequired,
     rep: PropTypes.object.isRequired,
     transferFunds: PropTypes.func.isRequired
@@ -138,6 +138,7 @@ export default class AccountWithdraw extends Component {
                   options={['ETH', 'REP']}
                   default="ETH"
                   type="text"
+                  isMobileSmall={p.isMobileSmall}
                   onChange={(type) => {
                     const selectedAsset = (type === 'ETH') ? ETH : REP
                     const upperBound = (type === 'ETH') ? p.eth.value : p.rep.value

@@ -449,16 +449,16 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
-augur-contracts@3.3.1:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-3.3.1.tgz#8ea19c2b404240f616aa9a2f93b3891f39d533eb"
+augur-contracts@3.3.4:
+  version "3.3.4"
+  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-3.3.4.tgz#0a6643f6f39cfd9b688b4daf757dd45f26f613e3"
 
-augur.js@4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.6.0.tgz#4174deffb1cb6a6c23de16ea18f3509442aa1a23"
+augur.js@4.6.5:
+  version "4.6.5"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.6.5.tgz#398c2b792d9735152eae4ca514722efcf8eb3a44"
   dependencies:
     async "1.5.2"
-    augur-contracts "3.3.1"
+    augur-contracts "3.3.4"
     bignumber.js "2.3.0"
     clone "1.0.2"
     ethereumjs-connect "4.4.1"
@@ -2550,7 +2550,7 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
-d3-array@1, d3-array@1.2.1, d3-array@^1.0.0, d3-array@^1.2.0:
+d3-array@1, d3-array@1.2.1, d3-array@^1.2.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/d3-array/-/d3-array-1.2.1.tgz#d1ca33de2f6ac31efadb8e050a021d7e2396d5dc"
 
@@ -2558,7 +2558,7 @@ d3-axis@1.0.8:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/d3-axis/-/d3-axis-1.0.8.tgz#31a705a0b535e65759de14173a31933137f18efa"
 
-d3-brush@1.0.4, d3-brush@^1.0.3:
+d3-brush@1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/d3-brush/-/d3-brush-1.0.4.tgz#00c2f238019f24f6c0a194a26d41a1530ffe7bc4"
   dependencies:
@@ -2583,7 +2583,7 @@ d3-color@1, d3-color@1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/d3-color/-/d3-color-1.0.3.tgz#bc7643fca8e53a8347e2fbdaffa236796b58509b"
 
-d3-dispatch@1, d3-dispatch@1.0.3, d3-dispatch@^1.0.1, d3-dispatch@^1.0.2:
+d3-dispatch@1, d3-dispatch@1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/d3-dispatch/-/d3-dispatch-1.0.3.tgz#46e1491eaa9b58c358fce5be4e8bed626e7871f8"
 
@@ -2635,7 +2635,7 @@ d3-interpolate@1, d3-interpolate@1.1.5:
   dependencies:
     d3-color "1"
 
-d3-path@1, d3-path@1.0.5, d3-path@^1.0.0:
+d3-path@1, d3-path@1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/d3-path/-/d3-path-1.0.5.tgz#241eb1849bd9e9e8021c0d0a799f8a0e8e441764"
 
@@ -2651,11 +2651,11 @@ d3-queue@3.0.7:
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/d3-queue/-/d3-queue-3.0.7.tgz#c93a2e54b417c0959129d7d73f6cf7d4292e7618"
 
-d3-random@1.1.0, d3-random@^1.0.0:
+d3-random@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/d3-random/-/d3-random-1.1.0.tgz#6642e506c6fa3a648595d2b2469788a8d12529d3"
 
-d3-request@1.0.6, d3-request@^1.0.1:
+d3-request@1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/d3-request/-/d3-request-1.0.6.tgz#a1044a9ef4ec28c824171c9379fae6d79474b19f"
   dependencies:
@@ -2664,7 +2664,7 @@ d3-request@1.0.6, d3-request@^1.0.1:
     d3-dsv "1"
     xmlhttprequest "1"
 
-d3-scale@1.0.6, d3-scale@^1.0.0, d3-scale@^1.0.1, d3-scale@^1.0.3, d3-scale@^1.0.6:
+d3-scale@1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/d3-scale/-/d3-scale-1.0.6.tgz#bce19da80d3a0cf422c9543ae3322086220b34ed"
   dependencies:
@@ -2676,11 +2676,11 @@ d3-scale@1.0.6, d3-scale@^1.0.0, d3-scale@^1.0.1, d3-scale@^1.0.3, d3-scale@^1.0
     d3-time "1"
     d3-time-format "2"
 
-d3-selection@1, d3-selection@1.1.0, d3-selection@^1.0.0, d3-selection@^1.0.2, d3-selection@^1.1.0:
+d3-selection@1, d3-selection@1.1.0, d3-selection@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/d3-selection/-/d3-selection-1.1.0.tgz#1998684896488f839ca0372123da34f1d318809c"
 
-d3-shape@1.2.0, d3-shape@^1.0.0, d3-shape@^1.0.3:
+d3-shape@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/d3-shape/-/d3-shape-1.2.0.tgz#45d01538f064bafd05ea3d6d2cb748fd8c41f777"
   dependencies:
@@ -2698,7 +2698,7 @@ d3-time-format@2.0.5:
   dependencies:
     d3-time "1"
 
-d3-time@1, d3-time@1.0.7, d3-time@^1.0.0:
+d3-time@1, d3-time@1.0.7:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/d3-time/-/d3-time-1.0.7.tgz#94caf6edbb7879bb809d0d1f7572bc48482f7270"
 
@@ -2706,7 +2706,7 @@ d3-timer@1, d3-timer@1.0.7:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/d3-timer/-/d3-timer-1.0.7.tgz#df9650ca587f6c96607ff4e60cc38229e8dd8531"
 
-d3-transition@1, d3-transition@1.1.0, d3-transition@^1.0.0:
+d3-transition@1, d3-transition@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/d3-transition/-/d3-transition-1.1.0.tgz#cfc85c74e5239324290546623572990560c3966f"
   dependencies:
@@ -2765,203 +2765,6 @@ d3@4.11.0:
     d3-transition "1.1.0"
     d3-voronoi "1.1.2"
     d3-zoom "1.6.0"
-
-d3fc-annotation@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/d3fc-annotation/-/d3fc-annotation-1.1.0.tgz#546e8ccb7cb77575b440d84f7731388dc1b0aee0"
-  dependencies:
-    d3-scale "^1.0.1"
-    d3-selection "^1.0.2"
-    d3fc-data-join "^4.1.0"
-    d3fc-rebind "^4.0.1"
-    d3fc-series "^1.2.1"
-    d3fc-shape "^4.0.0"
-
-d3fc-axis@1.0.3, d3fc-axis@^1.0.2:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/d3fc-axis/-/d3fc-axis-1.0.3.tgz#1978c23d8223297bbae0667e81cfda5d3732598e"
-  dependencies:
-    d3-scale "^1.0.3"
-    d3-selection "^1.0.2"
-    d3-shape "^1.0.3"
-    d3fc-data-join "^4.1.0"
-    d3fc-rebind "^4.1.0"
-
-d3fc-brush@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/d3fc-brush/-/d3fc-brush-1.0.1.tgz#ea646d9b698d3196ce4e0b45a082e3c6faeb26ce"
-  dependencies:
-    d3-brush "^1.0.3"
-    d3-dispatch "^1.0.2"
-    d3-scale "^1.0.3"
-    d3-selection "^1.0.2"
-    d3fc-data-join "^4.1.1"
-    d3fc-rebind "^4.1.0"
-
-d3fc-chart@1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/d3fc-chart/-/d3fc-chart-1.4.1.tgz#baf4e880ce3ac2e2f01a91e8aea804b089eb6087"
-  dependencies:
-    d3-scale "^1.0.3"
-    d3-selection "^1.0.2"
-    d3fc-axis "^1.0.2"
-    d3fc-data-join "^4.1.1"
-    d3fc-element "^3.0.1"
-    d3fc-rebind "^4.1.0"
-    d3fc-series "^2.0.1"
-
-d3fc-data-join@4.1.1, d3fc-data-join@^4.1.0, d3fc-data-join@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/d3fc-data-join/-/d3fc-data-join-4.1.1.tgz#dbf340d9fffca4b1713aeb51e4d7df98c45b2ad9"
-  dependencies:
-    d3-selection "^1.0.0"
-
-d3fc-data-join@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/d3fc-data-join/-/d3fc-data-join-2.0.0.tgz#9cb79fbc35bbf0c5fee1f2d932efec2df54fccf1"
-  dependencies:
-    d3-selection "^1.0.0"
-    d3-transition "^1.0.0"
-
-d3fc-discontinuous-scale@2.0.5:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/d3fc-discontinuous-scale/-/d3fc-discontinuous-scale-2.0.5.tgz#2f191beb02d7f90399d76ded6f3e4b97a08db535"
-  dependencies:
-    d3-scale "^1.0.0"
-    d3-time "^1.0.0"
-    d3fc-rebind "^4.1.1"
-
-d3fc-element@3.0.1, d3fc-element@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/d3fc-element/-/d3fc-element-3.0.1.tgz#d5049af395f24381dcc0a6175664aaa231aebaf2"
-  dependencies:
-    d3-selection "^1.0.2"
-    document-register-element "^1.0.10"
-
-d3fc-extent@2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/d3fc-extent/-/d3fc-extent-2.2.1.tgz#ee995e31393b364257adb5de9f63e8a1b0f76413"
-  dependencies:
-    d3-array "^1.0.0"
-
-d3fc-financial-feed@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/d3fc-financial-feed/-/d3fc-financial-feed-3.0.0.tgz#cbfa91b5cdae1ee24fa079f48bdb5f73743d3f41"
-  dependencies:
-    d3-request "^1.0.1"
-
-d3fc-group@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/d3fc-group/-/d3fc-group-1.0.0.tgz#eefef22e4b1b80724c93020134fb34e04ce80b62"
-
-d3fc-label-layout@5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/d3fc-label-layout/-/d3fc-label-layout-5.1.0.tgz#93a673079c4504670881f11ae34b832099486165"
-  dependencies:
-    d3-array "^1.0.0"
-    d3-scale "^1.0.6"
-    d3-selection "^1.0.0"
-    d3fc-data-join "^2.0.0"
-    d3fc-rebind "^4.0.0"
-
-d3fc-pointer@1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/d3fc-pointer/-/d3fc-pointer-1.0.3.tgz#223e631a602f3e34862fa7605f9d4b6027fa6827"
-  dependencies:
-    d3-dispatch "^1.0.1"
-    d3-selection "^1.0.2"
-    d3fc-rebind "^4.1.1"
-
-d3fc-random-data@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/d3fc-random-data/-/d3fc-random-data-1.1.0.tgz#68ca0aff3362ad5a2895bc7fab25d95f0cbf157f"
-  dependencies:
-    d3-random "^1.0.0"
-    d3-time "^1.0.0"
-    d3fc-rebind "^4.0.1"
-
-d3fc-rebind@4.1.1, d3fc-rebind@^4.0.0, d3fc-rebind@^4.0.1, d3fc-rebind@^4.1.0, d3fc-rebind@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/d3fc-rebind/-/d3fc-rebind-4.1.1.tgz#70c8d6b63fee63dbb3cb577c68732ded535f9b32"
-
-d3fc-sample@3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/d3fc-sample/-/d3fc-sample-3.0.4.tgz#3b5674cd6036ba5ecba444282869acac482e8c26"
-  dependencies:
-    d3-array "^1.0.0"
-    d3fc-rebind "^4.0.1"
-
-d3fc-series@3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/d3fc-series/-/d3fc-series-3.1.1.tgz#507f495f922223ac8c25ab1d994e38603d98d56f"
-  dependencies:
-    d3-array "^1.0.0"
-    d3-scale "^1.0.1"
-    d3-selection "^1.0.0"
-    d3-shape "^1.0.0"
-    d3fc-data-join "^4.1.0"
-    d3fc-rebind "^4.0.1"
-    d3fc-shape "^4.0.0"
-
-d3fc-series@^1.2.1:
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/d3fc-series/-/d3fc-series-1.2.3.tgz#bb10fe2c1c1ec52ee38e2a91b6d114526eafe537"
-  dependencies:
-    d3-array "^1.0.0"
-    d3-scale "^1.0.1"
-    d3-selection "^1.0.0"
-    d3-shape "^1.0.0"
-    d3fc-data-join "^4.1.0"
-    d3fc-rebind "^4.0.1"
-    d3fc-shape "^4.0.0"
-
-d3fc-series@^2.0.1:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/d3fc-series/-/d3fc-series-2.1.0.tgz#7104eed8149a0b24a1fc161b0feedbff85cb2b2f"
-  dependencies:
-    d3-array "^1.0.0"
-    d3-scale "^1.0.1"
-    d3-selection "^1.0.0"
-    d3-shape "^1.0.0"
-    d3fc-data-join "^4.1.0"
-    d3fc-rebind "^4.0.1"
-    d3fc-shape "^4.0.0"
-
-d3fc-shape@4.0.1, d3fc-shape@^4.0.0:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/d3fc-shape/-/d3fc-shape-4.0.1.tgz#9e64a28e4101f911a8a853d4f81ec975edce82ec"
-  dependencies:
-    d3-path "^1.0.0"
-
-d3fc-technical-indicator@6.1.1:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/d3fc-technical-indicator/-/d3fc-technical-indicator-6.1.1.tgz#3a15e9e259ec17d33ed18235fa919ce39771bf04"
-  dependencies:
-    d3-array "^1.0.0"
-    d3fc-rebind "^4.0.1"
-
-d3fc@^13.1.1:
-  version "13.1.1"
-  resolved "https://registry.yarnpkg.com/d3fc/-/d3fc-13.1.1.tgz#e891dd0c4e0dbde6a7af002d98876fdda0b2414e"
-  dependencies:
-    d3fc-annotation "1.1.0"
-    d3fc-axis "1.0.3"
-    d3fc-brush "1.0.1"
-    d3fc-chart "1.4.1"
-    d3fc-data-join "4.1.1"
-    d3fc-discontinuous-scale "2.0.5"
-    d3fc-element "3.0.1"
-    d3fc-extent "2.2.1"
-    d3fc-financial-feed "3.0.0"
-    d3fc-group "1.0.0"
-    d3fc-label-layout "5.1.0"
-    d3fc-pointer "1.0.3"
-    d3fc-random-data "1.1.0"
-    d3fc-rebind "4.1.1"
-    d3fc-sample "3.0.4"
-    d3fc-series "3.1.1"
-    d3fc-shape "4.0.1"
-    d3fc-technical-indicator "6.1.1"
 
 d@1:
   version "1.0.0"
@@ -3188,10 +2991,6 @@ doctrine@^2.0.0:
   dependencies:
     esutils "^2.0.2"
     isarray "^1.0.0"
-
-document-register-element@^1.0.10:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/document-register-element/-/document-register-element-1.7.0.tgz#d971b62755294b94fcd658b1d8533b0366c852e9"
 
 doiuse@^2.4.1:
   version "2.6.0"
