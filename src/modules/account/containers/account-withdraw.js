@@ -8,9 +8,9 @@ import { selectLoginAccount } from 'modules/auth/selectors/login-account'
 const mapStateToProps = (state) => {
   const loginAccount = selectLoginAccount(state)
   return {
-    ethTokens: loginAccount.ethTokens,
     eth: loginAccount.eth,
-    rep: loginAccount.rep
+    rep: loginAccount.rep,
+    isMobileSmall: state.isMobileSmall
   }
 }
 
