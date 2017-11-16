@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
-import ReportingHeader from 'modules/reporting/components/reporting-header/reporting-header'
+import ReportingHeader from 'modules/reporting/containers/reporting-header'
 import MarketsList from 'modules/markets/components/markets-list'
 
 import { TYPE_REPORT } from 'modules/market/constants/link-types'
