@@ -34,12 +34,16 @@ interface OrdersRowWithCreationTime extends OrdersRow {
 export function getOpenOrders(db: Knex, universe: Address|null, marketID: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: any) => void): void {
   if (universe == null && marketID == null) return callback(new Error("Must provide universe, either via universe or marketID"));
   const queryData: {} = _.omitBy({
-    marketID,
+    universe,
     outcome,
     orderType,
-    orderCreator: creator,
+    "orderCreator": creator,
+    "orders.marketID": marketID,
   }, _.isNil);
-  const query: Knex.QueryBuilder = db.select(["orders.*", `blocks.timestamp as creationTime`]).from("orders").leftJoin("blocks", "orders.creationBlockNumber", "blocks.blockNumber").where(queryData).whereNull("isRemoved");
+  const query: Knex.QueryBuilder = db.select(["orders.*", `blocks.timestamp as creationTime`]).from("orders");
+  query.leftJoin("blocks", "orders.creationBlockNumber", "blocks.blockNumber");
+  query.leftJoin("markets", "orders.marketID", "markets.marketID");
+  query.where(queryData).whereNull("isRemoved");
   queryModifier(query, "volume", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, ordersRows?: Array<OrdersRowWithCreationTime>): void => {
     if (err) return callback(err);
