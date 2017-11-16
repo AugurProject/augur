@@ -7,6 +7,7 @@ const mapStateToProps = state => ({
   marketID: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
   market,
   outcomes,
+  selectedOutcome,
   isLogged: state.isLogged,
 })
 
@@ -20,6 +21,28 @@ const market = {
     hasUserEnoughFunds: true,
   },
   submitTrade: () => console.log('submit trade'),
+}
+
+const selectedOutcome = {
+  id: '1',
+  name: 'Example Name',
+  trade: {
+    potentialEthProfit: {
+      formatted: "+7.2477",
+    },
+    potentialEthLoss: {
+      formatted: "-5.0458",
+    },
+    potentialLossPercent: {
+      formatted: "+150",
+    },
+    potentialProfitPercent: {
+      formatted: "-150",
+    },
+    totalCost: {
+      formatted: "4.574",
+    },
+  }
 }
 
 const outcomes = [

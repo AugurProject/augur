@@ -1,0 +1,93 @@
+@import (reference) "~assets/styles/shared";
+
+.TradingConfirmation__actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 2rem;
+}
+
+.TradingConfirmation__button--back {
+  &:extend(.caps--large);
+
+  font-weight: 500;
+}
+
+.TradingConfirmation__button--submit {
+  &:extend(.button--purple);
+
+  margin-left: 2.75rem;
+}
+
+.TradingConfirm__details {
+  border-bottom: 1px solid @color-lightgray;
+  padding: 1.5rem 2rem;
+
+  > li {
+    align-items: center;
+    display: flex;
+
+    &:not(:first-child) {
+      margin-top: 1rem;
+    }
+
+    > span {
+      font-size: @font-size-large;
+      line-height: @font-size-large;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &:first-child {
+        &:extend(.caps--small);
+
+        color: @color-darkpurple;
+        font-weight: 500;
+        margin: 0 1.5rem 0 0;
+        width: 7rem;
+      }
+    }
+  }
+}
+
+.TradingConfirm__header {
+  align-items: center;
+  border-bottom: 1px solid @color-lightgray;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+
+  > h2 {
+    &:extend(.caps--large);
+
+    font-weight: 700;
+  }
+
+  > button > svg {
+    height: 1.5rem;
+    width: 1.5rem;
+  }
+}
+
+.TradingConfirm__potential {
+  &:extend(.TradingConfirm__details all);
+
+  border-bottom-width: 0;
+
+  > li > span:first-child,
+  > li > span:last-child {
+    font-size: @font-size-small;
+    font-weight: 400;
+    line-height: @font-size-small;
+  }
+}
+
+.TradingConfirm__total {
+  &:extend(.TradingConfirm__details all);
+
+  > li > span:first-child,
+  > li > span:last-child {
+    font-size: @font-size-large;
+    font-weight: 700;
+    line-height: @font-size-large;
+  }
+}
