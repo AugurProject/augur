@@ -18,8 +18,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       fullPrecisionAmount: 1,
       tokensEscrowed: 0.7,
       sharesEscrowed: 0,
-      betterOrderID: null,
-      worseOrderID: null,
     }, {
       orderID: "0x2000000000000000000000000000000000000000000000000000000000000000",
       marketID: "0x0000000000000000000000000000000000000001",
@@ -34,8 +32,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       fullPrecisionAmount: 2,
       tokensEscrowed: 1.200002,
       sharesEscrowed: 0,
-      betterOrderID: null,
-      worseOrderID: null,
     }, {
       orderID: "0x3000000000000000000000000000000000000000000000000000000000000000",
       marketID: "0x0000000000000000000000000000000000000001",
@@ -50,8 +46,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       fullPrecisionAmount: 2.0000001,
       tokensEscrowed: 1.20000006,
       sharesEscrowed: 0,
-      betterOrderID: null,
-      worseOrderID: null,
     }, {
       orderID: "0x4000000000000000000000000000000000000000000000000000000000000000",
       marketID: "0x0000000000000000000000000000000000000001",
@@ -66,8 +60,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       fullPrecisionAmount: 2,
       tokensEscrowed: 1.2,
       sharesEscrowed: 0,
-      betterOrderID: null,
-      worseOrderID: null,
     }, {
       orderID: "0x5000000000000000000000000000000000000000000000000000000000000000",
       marketID: "0x0000000000000000000000000000000000000001",
@@ -82,8 +74,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       fullPrecisionAmount: 1,
       tokensEscrowed: 0.7,
       sharesEscrowed: 0,
-      betterOrderID: null,
-      worseOrderID: null,
     }, {
       orderID: "0x6000000000000000000000000000000000000000000000000000000000000000",
       marketID: "0x0000000000000000000000000000000000000018",
@@ -98,8 +88,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       fullPrecisionAmount: 2,
       tokensEscrowed: 1.200002,
       sharesEscrowed: 0,
-      betterOrderID: null,
-      worseOrderID: null,
     }, {
       orderID: "0x7000000000000000000000000000000000000000000000000000000000000000",
       marketID: "0x0000000000000000000000000000000000000011",
@@ -114,8 +102,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       fullPrecisionAmount: 2.0000001,
       tokensEscrowed: 1.20000006,
       sharesEscrowed: 0,
-      betterOrderID: null,
-      worseOrderID: null,
     }, {
       orderID: "0x8000000000000000000000000000000000000000000000000000000000000000",
       marketID: "0x0000000000000000000000000000000000000003",
@@ -130,8 +116,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       fullPrecisionAmount: 2,
       tokensEscrowed: 1.2,
       sharesEscrowed: 0,
-      betterOrderID: null,
-      worseOrderID: null,
     }];
     return knex.batchInsert("orders", seedData, seedData.length);
   });

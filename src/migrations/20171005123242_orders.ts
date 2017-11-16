@@ -16,8 +16,6 @@ exports.up = async (knex: Knex): Promise<any> => {
       "amount" numeric NOT NULL CONSTRAINT nonnegativeAmount CHECK ("amount" >= 0),
       "tokensEscrowed" numeric NOT NULL CONSTRAINT nonnegativeTokensEscrowed CHECK ("tokensEscrowed" >= 0),
       "sharesEscrowed" numeric NOT NULL CONSTRAINT nonnegativeSharesEscrowed CHECK ("sharesEscrowed" >= 0),
-      "betterOrderID" varchar(66),
-      "worseOrderID" varchar(66),
       "tradeGroupID" varchar(66),
       "isRemoved" integer
     )`);

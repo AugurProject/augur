@@ -58,8 +58,6 @@ describe("blockchain/log-processors/order-canceled", () => {
           amount: 1,
           tokensEscrowed: 0.7,
           sharesEscrowed: 0,
-          betterOrderID: null,
-          worseOrderID: null,
           tradeGroupID: null,
           isRemoved: 1,
         }]);
@@ -80,8 +78,6 @@ describe("blockchain/log-processors/order-canceled", () => {
           amount: 1,
           tokensEscrowed: 0.7,
           sharesEscrowed: 0,
-          betterOrderID: null,
-          worseOrderID: null,
           tradeGroupID: null,
           isRemoved: null,
         }]);
