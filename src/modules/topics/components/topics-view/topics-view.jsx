@@ -111,7 +111,6 @@ export default class TopicsView extends Component {
   render() {
     const p = this.props
     const s = this.state
-    // console.log('render', p, s)
     const heroTopic = p.topics[s.heroTopicIndex]
 
     return (
