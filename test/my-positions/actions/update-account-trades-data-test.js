@@ -215,7 +215,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
       }
     })
   })
-  
+
   describe('updateAccountPositionsData', () => {
     test({
       description: `should return the expected action`,
