@@ -1,5 +1,4 @@
-import speedomatic from 'speedomatic'
-import { OPEN_ORDER, MARKET_CREATION, TRANSFER, REPORTING, TRADE, CREATE_MARKET } from 'modules/transactions/constants/types'
+import { OPEN_ORDER, MARKET_CREATION, TRANSFER, REPORTING } from 'modules/transactions/constants/types'
 import { SUCCESS } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { eachOf, each } from 'async'
