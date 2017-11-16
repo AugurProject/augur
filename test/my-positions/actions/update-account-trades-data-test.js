@@ -6,7 +6,6 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 
 import {
-  UPDATE_ACCOUNT_TRADES_DATA,
   UPDATE_ACCOUNT_POSITIONS_DATA,
   updateAccountPositionsData
 } from 'modules/my-positions/actions/update-account-trades-data'
