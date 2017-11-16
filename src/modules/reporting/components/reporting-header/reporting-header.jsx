@@ -7,6 +7,7 @@ export default class ReportingHeader extends Component {
   static propTypes = {
     heading: PropTypes.string.isRequired,
     showReportingEndDate: PropTypes.bool.isRequired,
+    loadReportingWindowBounds: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -17,6 +18,10 @@ export default class ReportingHeader extends Component {
       endDate: 'November 20, 2017',
       totalStake: 1,
     }
+  }
+
+  componentWillMount() {
+    this.props.loadReportingWindowBounds()
   }
 
   render() {
