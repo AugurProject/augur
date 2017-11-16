@@ -17,7 +17,7 @@ import { getStakeTokens } from "./getters/get-stake-tokens";
 import { getMarkets } from "./getters/get-markets";
 import { getMarketsClosingInDateRange } from "./getters/get-markets-closing-in-date-range";
 import { getMarketsInfo } from "./getters/get-markets-info";
-import { getOpenOrders } from "./getters/get-open-orders";
+import { getOrders } from "./getters/get-orders";
 
 export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callback: (err?: Error|null, result?: any) => void): void {
   console.log(request);
@@ -57,7 +57,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callba
     case "getMarketsInfo":
       return getMarketsInfo(db, request.params.marketIDs, callback);
     case "getOpenOrders":
-      return getOpenOrders(db, request.params.universe, request.params.marketID, request.params.outcome, request.params.orderType, request.params.creator, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
+      return getOrders(db, request.params.universe, request.params.marketID, request.params.outcome, request.params.orderType, request.params.creator, request.params.orderState, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     default:
       callback(new Error("unknown json rpc method"));
   }

@@ -2,14 +2,14 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getOpenOrders } = require("../../../build/server/getters/get-open-orders");
+const { getOrders } = require("../../../build/server/getters/get-orders");
 
-describe("server/getters/get-open-orders", () => {
+describe("server/getters/get-orders", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getOpenOrders(db, t.params.universe, t.params.marketID, t.params.outcome, t.params.orderType, t.params.creator, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, openOrders) => {
+        getOrders(db, t.params.universe, t.params.marketID, t.params.outcome, t.params.orderType, t.params.creator, t.params.orderState, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, openOrders) => {
           t.assertions(err, openOrders);
           done();
         });
