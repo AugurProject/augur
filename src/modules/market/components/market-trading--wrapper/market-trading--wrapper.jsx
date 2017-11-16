@@ -66,26 +66,6 @@ class MarketTradingWrapper extends Component {
     const p = this.props
 
     const hasFunds = getValue(p, 'market.tradeSummary.hasUserEnoughFunds')
-    const hasSelectedOutcome = p.selectedOutcomes.length > 0
-
-    let initialMessage = ''
-
-    switch(true) {
-      case p.market.marketType === SCALAR:
-        initialMessage = false
-        break
-      case !p.isLogged:
-        initialMessage = 'Log in to trade.'
-        break
-      case p.isLogged && !hasFunds:
-        initialMessage = 'Add funds to begin trading.'
-        break
-      case p.isLogged && hasFunds && !hasSelectedOutcome:
-        initialMessage = 'Select an outcome to begin placing an order.'
-        break
-      default:
-        initialMessage = false
-    }
 
     return (
       <section className={Styles.TradingWrapper}>
@@ -99,13 +79,13 @@ class MarketTradingWrapper extends Component {
                 <button onClick={() => this.setState({ selectedNav: SELL })}>Sell</button>
               </li>
             </ul>
-            { initialMessage &&
-              <p className={Styles['TradingWrapper__initial-message']}>{ initialMessage }</p>
+            { p.initialMessage &&
+              <p className={Styles['TradingWrapper__initial-message']}>{ p.initialMessage }</p>
             }
-            { initialMessage && p.isLogged && !hasFunds &&
+            { p.initialMessage && p.isLogged && !hasFunds &&
               <Link className={Styles['TradingWrapper__button--add-funds']} to={makePath(ACCOUNT_DEPOSIT)}>Add Funds</Link>
             }
-            { !initialMessage &&
+            { !p.initialMessage &&
               <MarketTradingForm
                 market={p.market}
                 selectedNav={s.selectedNav}

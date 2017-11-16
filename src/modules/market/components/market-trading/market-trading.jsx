@@ -30,6 +30,28 @@ class MarketTrading extends Component {
     const s = this.state
     const p = this.props
 
+    const hasFunds = getValue(p, 'market.tradeSummary.hasUserEnoughFunds')
+    const hasSelectedOutcome = p.selectedOutcomes.length > 0
+
+    let initialMessage = ''
+
+    switch(true) {
+      case p.market.marketType === SCALAR:
+        initialMessage = false
+        break
+      case !p.isLogged:
+        initialMessage = 'Log in to trade.'
+        break
+      case p.isLogged && !hasFunds:
+        initialMessage = 'Add funds to begin trading.'
+        break
+      case p.isLogged && hasFunds && !hasSelectedOutcome:
+        initialMessage = 'Select an outcome to begin placing an order.'
+        break
+      default:
+        initialMessage = false
+    }
+
     return (
       <section className={Styles.Trading}>
         { (!p.isMobile || (p.isMobile && s.showForm)) &&
@@ -38,9 +60,15 @@ class MarketTrading extends Component {
             isLogged={p.isLogged}
             selectedOutcomes={p.selectedOutcomes}
             selectedOutcome={p.selectedOutcome}
+            initialMessage={initialMessage}
           />
         }
-        { p.isMobile && p.selectedOutcomes.length > 0 && // this needs to be changed to use p.selectedOutcome (should only show on mobile when an outcome has been selected)
+        { p.isMobile && p.selectedOutcomes.length > 0 && initialMessage &&
+          <div className={Styles['Trading__initial-message']}>
+            <p>{ initialMessage }</p>
+          </div>
+        }
+        { p.isMobile && p.selectedOutcomes.length > 0 && !initialMessage &&  // this needs to be changed to use p.selectedOutcome (should only show on mobile when an outcome has been selected)
           <button
             className={Styles['Trading__button--trade']}
             onClick={e => this.setState({ showForm: true })}
