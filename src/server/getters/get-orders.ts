@@ -18,7 +18,7 @@ interface OrdersRowWithCreationTime extends OrdersRow {
 }
 
 // market, outcome, creator, orderType, limit, sort
-export function getOrders(db: Knex, universe: Address|null, marketID: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, orderState: OrderState|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: any) => void): void {
+export function getOrders(db: Knex, universe: Address|null, marketID: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, orderState: OrderState|null, earliestCreationTime: number|null, latestCreationTime: number|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: any) => void): void {
   if (universe == null && marketID == null) return callback(new Error("Must provide universe, either via universe or marketID"));
   const queryData: {} = _.omitBy({
     universe,
@@ -31,6 +31,8 @@ export function getOrders(db: Knex, universe: Address|null, marketID: Address|nu
   query.leftJoin("blocks", "orders.blockNumber", "blocks.blockNumber");
   query.leftJoin("markets", "orders.marketID", "markets.marketID");
   query.where(queryData);
+  if (earliestCreationTime != null) query.where("creationTime", ">", earliestCreationTime);
+  if (latestCreationTime != null) query.where("creationTime", "<", latestCreationTime);
   if ( orderState != null && orderState !== OrderState.ALL) query.where("orderState", orderState);
   queryModifier(query, "volume", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, ordersRows?: Array<OrdersRowWithCreationTime>): void => {
