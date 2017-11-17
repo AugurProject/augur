@@ -19,13 +19,20 @@
 var augurNode = require("../augur-node");
 
 /**
+ * @typedef {String} OrderState
+ * @value 'OPEN' Limit to orders available to be filled
+ * @value 'CLOSED' Limit to orders that have been filled
+ * @value 'CANCELED' Limit to orders that have been canceled (although they might have been partially filled)
+ */
+
+/**
  * Looks up the order book for a specified market/outcome/type/account.
  * @param {Object} p Parameters object.
  * @param {number} p.type Order type (0 for "buy", 1 for "sell").
  * @param {string} p.market Ethereum address of this market's contract instance, as a hexadecimal string.
  * @param {number} p.outcome Outcome ID to look up the order book for, must be an integer value on [0, 7].
  * @param {number=} p.limit Number of orders to load, as a whole number (default: 0 / load all orders).
- * @param {string=} p.orderState Filter to orders of a specific state (OPEN|CLOSED|CANCELED). Available via ORDER_STATE enum
+ * @param {OrderState=} p.orderState Filter to orders of a specific state. See: ORDER_STATE enum
  * @param {function} callback Called when the requested order book for this market/outcome/type has been received and parsed.
  * @return {SingleOutcomeOrderBookSide} One side of the order book (buy or sell) for this market and outcome.
  */

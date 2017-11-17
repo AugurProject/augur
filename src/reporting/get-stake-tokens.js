@@ -9,12 +9,11 @@ var augurNode = require("../augur-node");
  * @value 'UNCLAIMED' This token is a part of a finalized market, was staked on the correct outcome, and has not been claimed yet.
  */
 
-
 /**
  * @param {Object} p Parameters object.
  * @param {string} p.universe Look up stake tokens within this universe.
  * @param {string} p.account Look up stake tokens owned by this account
- * @param {StakeTokenState=} p.stakeTokenState Only return stake tokens in this state
+ * @param {StakeTokenState=} p.stakeTokenState Only return stake tokens in this state. See: STAKE_TOKEN_STATE enum
  * @param {function} callback Called when reporting history has been received and parsed.
  * @return {Object} Stake token details, keyed by stakeTokenID.
  */
