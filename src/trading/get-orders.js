@@ -36,4 +36,4 @@ function getOrders(p, callback) {
   });
 }
 
-module.exports = getOpenOrders;
+module.exports = getOrders;
