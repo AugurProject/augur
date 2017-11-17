@@ -13,14 +13,22 @@ import ValueDenomination from 'modules/common/components/value-denomination/valu
 
 import getValue from 'utils/get-value'
 
-import { BUY, SELL, MARKET, LIMIT } from 'modules/transactions/constants/types'
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { BUY, SELL, LIMIT } from 'modules/transactions/constants/types'
 import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views'
 
-import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/market/components/market-trading--wrapper/market-trading--wrapper.styles'
 
 class MarketTradingWrapper extends Component {
+  static propTypes = {
+    market: PropTypes.object.isRequired,
+    isLogged: PropTypes.bool.isRequired,
+    selectedOutcomes: PropTypes.array.isRequired,
+    selectedOutcome: PropTypes.object.isRequired,
+    initialMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
+    isMobile: PropTypes.bool.isRequired,
+    toggleForm: PropTypes.func.isRequired,
+  }
+
   constructor(props) {
     super(props)
 
@@ -60,7 +68,7 @@ class MarketTradingWrapper extends Component {
   }
 
   updateState(property, value) {
-    this.setState({ [property] : value })
+    this.setState({ [property]: value })
   }
 
   render() {
@@ -84,7 +92,7 @@ class MarketTradingWrapper extends Component {
         }
         { s.currentPage === 0 &&
           <div>
-            <ul className={Styles['TradingWrapper__header']}>
+            <ul className={Styles.TradingWrapper__header}>
               <li className={classNames({ [`${Styles.active}`]: s.selectedNav === BUY })}>
                 <button onClick={() => this.setState({ selectedNav: BUY })}>Buy</button>
               </li>

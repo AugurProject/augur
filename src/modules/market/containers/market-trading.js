@@ -17,7 +17,7 @@ const MarketTradingContainer = withRouter(connect(mapStateToProps)(MarketTrading
 export default MarketTradingContainer
 
 const market = {
-  marketType: "categorical",
+  marketType: 'categorical',
   tradeSummary: {
     hasUserEnoughFunds: true,
   },
@@ -32,19 +32,19 @@ const selectedOutcome = {
   },
   trade: {
     potentialEthProfit: {
-      formatted: "+7.2477",
+      formatted: '+7.2477',
     },
     potentialEthLoss: {
-      formatted: "-5.0458",
+      formatted: '-5.0458',
     },
     potentialLossPercent: {
-      formatted: "+150",
+      formatted: '+150',
     },
     potentialProfitPercent: {
-      formatted: "-150",
+      formatted: '-150',
     },
     totalCost: {
-      formatted: "4.574",
+      formatted: '4.574',
     },
   }
 }

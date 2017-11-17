@@ -1,38 +1,40 @@
+/* eslint jsx-a11y/label-has-for: 0 */
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { Link } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
 
-import makePath from 'modules/routes/helpers/make-path'
+import { MARKET, LIMIT } from 'modules/transactions/constants/types'
+import { SCALAR } from 'modules/markets/constants/market-types'
 
-import getValue from 'utils/get-value'
-
-import { BID, ASK, MARKET, LIMIT } from 'modules/transactions/constants/types'
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
-import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views'
-
-import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/market/components/market-trading--form/market-trading--form.styles'
 
 const PRECISION = 4
 
 class MarketTradingForm extends Component {
+  static propTypes = {
+    market: PropTypes.object.isRequired,
+    selectedNav: PropTypes.string.isRequired,
+    orderType: PropTypes.string.isRequired,
+    orderPrice: PropTypes.string.isRequired,
+    orderQuantity: PropTypes.string.isRequired,
+    orderEstimate: PropTypes.string.isRequired,
+    isOrderValid: PropTypes.bool.isRequired,
+    selectedOutcome: PropTypes.object.isRequired,
+    nextPage: PropTypes.func.isRequired,
+    updateState: PropTypes.func.isRequired,
+    isMobile: PropTypes.bool.isRequired,
+  }
+
   constructor(props) {
     super(props)
 
     this.state = {
-      orderType: LIMIT,
-      orderPrice: '',
-      orderQuantity: '',
-      orderEstimate: '',
-      selectedNav: BID,
-      isOrderValide: false,
     }
   }
 
   render() {
-    const s = this.state
     const p = this.props
 
     return (
@@ -40,14 +42,14 @@ class MarketTradingForm extends Component {
         <li>
           <label>Order Type</label>
           <div className={Styles.TradingForm__type}>
-              <button
-                className={classNames({ [`${Styles.active}`]: p.orderType === MARKET })}
-                onClick={() => p.updateState('orderType', MARKET)}
-              >Market</button>
-              <button
-                className={classNames({ [`${Styles.active}`]: p.orderType === LIMIT })}
-                onClick={() => p.updateState('orderType', LIMIT)}
-              >Limit</button>
+            <button
+              className={classNames({ [`${Styles.active}`]: p.orderType === MARKET })}
+              onClick={() => p.updateState('orderType', MARKET)}
+            >Market</button>
+            <button
+              className={classNames({ [`${Styles.active}`]: p.orderType === LIMIT })}
+              onClick={() => p.updateState('orderType', LIMIT)}
+            >Limit</button>
           </div>
         </li>
         { !p.isMobile && p.market.marketType !== SCALAR &&

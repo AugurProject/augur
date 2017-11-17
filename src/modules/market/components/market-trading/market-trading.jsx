@@ -1,23 +1,23 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
-import { Link } from 'react-router-dom'
-import BigNumber from 'bignumber.js'
 
 import MarketTradingWrapper from 'modules/market/components/market-trading--wrapper/market-trading--wrapper'
 
-import makePath from 'modules/routes/helpers/make-path'
-
 import getValue from 'utils/get-value'
 
-import { BUY, SELL, MARKET, LIMIT } from 'modules/transactions/constants/types'
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
-import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views'
+import { SCALAR } from 'modules/markets/constants/market-types'
 
-import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/market/components/market-trading/market-trading.styles'
 
 class MarketTrading extends Component {
+  static propTypes = {
+    market: PropTypes.object.isRequired,
+    isLogged: PropTypes.bool.isRequired,
+    selectedOutcomes: PropTypes.array.isRequired,
+    selectedOutcome: PropTypes.object.isRequired,
+    isMobile: PropTypes.bool.isRequired,
+  }
+
   constructor(props) {
     super(props)
 
@@ -41,7 +41,7 @@ class MarketTrading extends Component {
 
     let initialMessage = ''
 
-    switch(true) {
+    switch (true) {
       case p.market.marketType === SCALAR:
         initialMessage = false
         break
