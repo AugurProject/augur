@@ -8,7 +8,6 @@ It runs locally in your browser and communicates directly with the ethereum netw
 There are several ways to run it:
 
 * Easiest: **visit [app.augur.net](http://app.augur.net)**  
-* Balanced: **one-click azure install (coming soon)**
 * Best: [run ethereum locally](#eth_local)
 
 ## Requirements

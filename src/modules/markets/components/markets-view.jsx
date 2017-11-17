@@ -4,16 +4,15 @@ import { Helmet } from 'react-helmet'
 
 import MarketsHeader from 'modules/markets/components/markets-header/markets-header'
 import MarketsList from 'modules/markets/components/markets-list'
-import Universe from 'modules/universe/components/universe'
 
-import getValue from 'utils/get-value'
+// import getValue from 'utils/get-value'
 import parseQuery from 'modules/routes/helpers/parse-query'
-import isEqual from 'lodash/isEqual'
+// import isEqual from 'lodash/isEqual'
 
-import parsePath from 'modules/routes/helpers/parse-path'
-import makePath from 'modules/routes/helpers/make-path'
+// import parsePath from 'modules/routes/helpers/parse-path'
+// import makePath from 'modules/routes/helpers/make-path'
 
-import { FAVORITES, MARKETS } from 'modules/routes/constants/views'
+// import { FAVORITES, MARKETS } from 'modules/routes/constants/views'
 import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 import { TYPE_TRADE } from 'modules/market/constants/link-types'
 
@@ -22,6 +21,7 @@ export default class MarketsView extends Component {
     isLogged: PropTypes.bool.isRequired,
     loginAccount: PropTypes.object.isRequired,
     markets: PropTypes.array.isRequired,
+    filteredMarkets: PropTypes.array.isRequired,
     canLoadMarkets: PropTypes.bool.isRequired,
     hasLoadedMarkets: PropTypes.bool.isRequired,
     hasLoadedTopic: PropTypes.object.isRequired,
@@ -33,33 +33,16 @@ export default class MarketsView extends Component {
     clearMarketsFilteredSorted: PropTypes.func.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
     loadMarketsInfo: PropTypes.func.isRequired
-    // filterSort: PropTypes.object,
-    // marketsHeader: PropTypes.object,
-    // pagination: PropTypes.object,
-    // keywords: PropTypes.string,
-    // onChangeKeywords: PropTypes.func,
-    // universe: PropTypes.object,
-    // scalarShareDenomination: PropTypes.object,
-    // location: PropTypes.object.isRequired,
-  }
-
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      shouldDisplayUniverseInfo: !!(getValue(props, 'loginAccount.rep.value') && getValue(props, 'universe.id')),
-      filteredMarkets: []
-    }
   }
 
   componentWillMount() {
-    this.loadMarkets({
-      canLoadMarkets: this.props.canLoadMarkets, // TODO -- change to just `isConnected`, which is clearer as to whether it can be called or not
+    loadMarkets({
+      canLoadMarkets: this.props.canLoadMarkets,
       location: this.props.location,
-      hasLoadedTopic: this.props.hasLoadedTopic,
-      hasLoadedMarkets: this.props.hasLoadedMarkets,
       loadMarkets: this.props.loadMarkets,
-      loadMarketsByTopic: this.props.loadMarketsByTopic
+      loadMarketsByTopic: this.props.loadMarketsByTopic,
+      hasLoadedMarkets: this.props.hasLoadedMarkets,
+      hasLoadedTopic: this.props.hasLoadedTopic
     })
   }
 
@@ -70,71 +53,45 @@ export default class MarketsView extends Component {
       this.props.hasLoadedTopic !== nextProps.hasLoadedTopic ||
       (this.props.hasLoadedMarkets !== nextProps.hasLoadedMarkets && !nextProps.hasLoadedMarkets)
     ) {
-      this.loadMarkets({
+      loadMarkets({
         canLoadMarkets: nextProps.canLoadMarkets,
         location: nextProps.location,
-        hasLoadedTopic: nextProps.hasLoadedTopic,
-        hasLoadedMarkets: nextProps.hasLoadedMarkets,
         loadMarkets: nextProps.loadMarkets,
-        loadMarketsByTopic: nextProps.loadMarketsByTopic
-      })
-    }
-
-    if (
-      getValue(this.props, 'loginAccount.rep.value') !== getValue(nextProps, 'loginAccount.rep.value') ||
-      getValue(this.props, 'universe.id') !== getValue(nextProps, 'universe.id')
-    ) {
-      this.setState({
-        canDisplayUniverseInfo: !!(getValue(nextProps, 'loginAccount.rep.value') && getValue(nextProps, 'universe.id'))
+        loadMarketsByTopic: nextProps.loadMarketsByTopic,
+        hasLoadedMarkets: this.props.hasLoadedMarkets,
+        hasLoadedTopic: this.props.hasLoadedTopic
       })
     }
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (!isEqual(this.state.filteredMarkets, nextState.filteredMarkets)) {
-      this.props.updateMarketsFilteredSorted(nextState.filteredMarkets)
-      checkFavoriteMarketsCount(nextState.filteredMarkets, nextProps.location, nextProps.history)
-    }
+    // if (!isEqual(this.state.markets, nextState.markets)) {
+    //   this.props.updateMarketsFilteredSorted(nextState.markets)
+    //   checkFavoriteMarketsCount(nextState.markets, nextProps.location, nextProps.history)
+    // }
   }
 
   componentWillUnmount() {
     this.props.clearMarketsFilteredSorted()
   }
 
-  loadMarkets(options) {
-    if (options.canLoadMarkets) {
-      const topic = parseQuery(options.location.search)[TOPIC_PARAM_NAME]
-
-      if (topic && !this.props.hasLoadedTopic[topic]) {
-        options.loadMarketsByTopic(topic)
-      } else if (!topic && !this.props.hasLoadedMarkets) {
-        options.loadMarkets()
-      }
-    }
-  }
-
   render() {
     const p = this.props
-    const s = this.state
 
     return (
       <section id="markets_view">
         <Helmet>
           <title>Markets</title>
         </Helmet>
-        {this.state.shouldDisplayUniverseInfo &&
-          <Universe {...p.universe} />
-        }
         <MarketsHeader
           isLogged={p.isLogged}
           location={p.location}
           markets={p.markets}
-          updateFilteredItems={filteredMarkets => this.setState({ filteredMarkets })}
         />
         <MarketsList
           isLogged={p.isLogged}
           markets={p.markets}
-          filteredMarkets={s.filteredMarkets}
+          filteredMarkets={p.filteredMarkets}
           location={p.location}
           history={p.history}
           scalarShareDenomination={p.scalarShareDenomination}
@@ -147,10 +104,22 @@ export default class MarketsView extends Component {
   }
 }
 
-function checkFavoriteMarketsCount(filteredMarkets, location, history) {
-  const path = parsePath(location.pathname)[0]
+function loadMarkets(options) {
+  if (options.canLoadMarkets) {
+    const topic = parseQuery(options.location.search)[TOPIC_PARAM_NAME]
 
-  if (path === FAVORITES && !filteredMarkets.length) {
-    history.push(makePath(MARKETS))
+    if (topic) {
+      options.loadMarketsByTopic(topic)
+    } else if (!topic && !options.hasLoadedMarkets) {
+      options.loadMarkets()
+    }
   }
 }
+
+// function checkFavoriteMarketsCount(filteredMarkets, location, history) {
+//   const path = parsePath(location.pathname)[0]
+//
+//   if (path === FAVORITES && !filteredMarkets.length) {
+//     history.push(makePath(MARKETS))
+//   }
+// }

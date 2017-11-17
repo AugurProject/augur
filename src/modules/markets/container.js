@@ -19,6 +19,7 @@ const mapStateToProps = state => ({
   isLogged: state.isLogged,
   loginAccount: state.loginAccount,
   markets: getAllMarkets(),
+  filteredMarkets: state.marketsFilteredSorted,
   universe: state.universe,
   canLoadMarkets: !!getValue(state, 'universe.id'),
   scalarShareDenomination: getScalarShareDenomination(),
@@ -35,18 +36,10 @@ const mapDispatchToProps = dispatch => ({
   loadMarketsInfo: marketIDs => dispatch(loadMarketsInfo(marketIDs))
 })
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { loadMarkets, loadMarketsByTopic } = dispatchProps
-
-  return {
-    ...stateProps,
-    ...dispatchProps,
-    ...ownProps,
-    loadMarkets: () => loadMarkets(),
-    loadMarketsByTopic: topic => loadMarketsByTopic(topic)
-  }
-}
-
-const Markets = withRouter(connect(mapStateToProps, mapDispatchToProps, mergeProps)(MarketsView))
+const Markets = withRouter(connect(mapStateToProps, mapDispatchToProps)(MarketsView))
 
 export default Markets
+
+// TODO --
+// conditionally load the markets missing info
+// Populate the categories list
