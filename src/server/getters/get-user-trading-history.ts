@@ -27,11 +27,11 @@ export function getUserTradingHistory(db: Knex|Knex.Transaction, universe: Addre
   query.where((builder) => {
     builder.where("trades.creator", account).orWhere("trades.filler", account);
   });
-  if (universe != null) query = query.where("universe", universe);
-  if (marketID != null) query = query.where("trades.marketID", marketID);
-  if (outcome != null) query = query.where("trades.outcome", outcome);
-  if (orderType != null) query = query.where("trades.orderType", orderType);
-  query = queryModifier(query,  "trades.blockNumber", "desc", sortBy, isSortDescending, limit, offset);
+  if (universe != null) query.where("universe", universe);
+  if (marketID != null) query.where("trades.marketID", marketID);
+  if (outcome != null) query.where("trades.outcome", outcome);
+  if (orderType != null) query.where("trades.orderType", orderType);
+  queryModifier(query,  "trades.blockNumber", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, userTradingHistory?: Array<TradingHistoryRow>): void => {
     if (err) return callback(err);
     if (!userTradingHistory) return callback(new Error("Internal error retrieving trade history"));
