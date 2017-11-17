@@ -1,4 +1,5 @@
 /* eslint jsx-a11y/label-has-for: 0 */
+/* eslint react/no-array-index-key: 0 */
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'

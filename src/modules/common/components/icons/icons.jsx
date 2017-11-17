@@ -26,7 +26,7 @@ export const CreateMarketEdit = (
 
 export const Check = (
   <svg viewBox="0 0 21 14" xmlns="http://www.w3.org/2000/svg">
-    <g id="Trading" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round"><g id="Trading_Limit-Order_Confirmed_5" stroke="#F6F6F8"><g id="Order-Placed-View"><g id="Icon/Check"><path id="Page-1" d="M0 7.385l7.846 5.733L20 0"/></g></g></g></g>
+    <g id="Trading" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round"><g id="Trading_Limit-Order_Confirmed_5" stroke="#F6F6F8"><g id="Order-Placed-View"><g id="Icon/Check"><path id="Page-1" d="M0 7.385l7.846 5.733L20 0" /></g></g></g></g>
   </svg>
 )
 

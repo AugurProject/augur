@@ -80,7 +80,7 @@ class MarketTradingWrapper extends Component {
     let value = rawValue
 
     if (!(value instanceof BigNumber) && value !== '') {
-        value = new BigNumber(value)
+      value = new BigNumber(value)
     }
 
     this.setState({ [property]: value })
