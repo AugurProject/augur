@@ -17,8 +17,8 @@ class MarketTradingForm extends Component {
     market: PropTypes.object.isRequired,
     selectedNav: PropTypes.string.isRequired,
     orderType: PropTypes.string.isRequired,
-    orderPrice: PropTypes.string.isRequired,
-    orderQuantity: PropTypes.string.isRequired,
+    orderPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+    orderQuantity: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     orderEstimate: PropTypes.string.isRequired,
     isOrderValid: PropTypes.bool.isRequired,
     selectedOutcome: PropTypes.object.isRequired,
@@ -36,6 +36,8 @@ class MarketTradingForm extends Component {
 
   render() {
     const p = this.props
+
+    const errors = Array.from(new Set([...p.errors.quantity, ...p.errors.price]))
 
     return (
       <ul className={Styles['TradingForm__form-body']}>
@@ -61,29 +63,36 @@ class MarketTradingForm extends Component {
         <li>
           <label htmlFor="tr__input--quantity">Quantity</label>
           <input
+            className={classNames({ [`${Styles.error}`]: p.errors.quantity.length })}
             id="tr__input--quantity"
             type="number"
             step={10**-PRECISION}
             placeholder="0.0000 Shares"
             value={p.orderQuantity instanceof BigNumber ? p.orderQuantity.toNumber() : p.orderQuantity}
-            onChange={e => p.updateState('orderQuantity', e.target.value)}
+            onChange={e => p.validateForm('orderQuantity', e.target.value)}
           />
         </li>
         <li>
           <label htmlFor="tr__input--limit-price">Limit Price</label>
           <input
+            className={classNames({ [`${Styles.error}`]: p.errors.price.length })}
             id="tr__input--limit-price"
             type="number"
             step={10**-PRECISION}
             placeholder="0.0000 ETH"
             value={p.orderPrice instanceof BigNumber ? p.orderPrice.toNumber() : p.orderPrice}
-            onChange={e => p.updateState('orderPrice', e.target.value)}
+            onChange={e => p.validateForm('orderPrice', e.target.value)}
           />
         </li>
         <li>
           <label>Est. Cost</label>
           <div className={Styles['TradingForm__static-field']}>{ p.orderEstimate }</div>
         </li>
+        { true &&
+          <li className={Styles['TradingForm__error-message']}>
+            { errors.map((error, i) => <p key={i}>{error}</p>) }
+          </li>
+        }
         <li className={Styles['TradingForm__button--review']}>
           <button
             disabled={!p.isOrderValid}

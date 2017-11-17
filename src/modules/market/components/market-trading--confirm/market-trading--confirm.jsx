@@ -1,4 +1,5 @@
 import React from 'react'
+import BigNumber from 'bignumber.js'
 
 import { CreateMarketEdit } from 'modules/common/components/icons/icons'
 
@@ -25,8 +26,8 @@ const MarketTradingConfirm = (p) => {
       </div>
       <ul className={Styles.TradingConfirm__details}>
         <li><span>Outcome</span><span>{ p.selectedOutcome.name }</span></li>
-        <li><span>Quantity</span><span>{ p.orderQuantity } Shares</span></li>
-        <li><span>Limit Price</span><span>{ p.orderPrice } ETH</span></li>
+        <li><span>Quantity</span><span>{ p.orderQuantity instanceof BigNumber ? p.orderQuantity.toNumber() : p.orderQuantity } Shares</span></li>
+        <li><span>Limit Price</span><span>{ p.orderPrice instanceof BigNumber ? p.orderPrice.toNumber() : p.orderPrice } ETH</span></li>
         <li>
           <span>Fee</span>
           <span>{tradingFees} <span>ETH ({feePercent}%)</span></span>

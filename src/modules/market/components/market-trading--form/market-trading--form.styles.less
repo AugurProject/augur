@@ -13,6 +13,22 @@
       margin-bottom: 1rem;
     }
 
+    &.TradingForm__error-message {
+      color: @color-red;
+      display: block;
+      font-size: @font-size-medium;
+      line-height: @font-size-medium;
+      margin-bottom: 2rem;
+
+      > p {
+        margin: 0;
+
+        &:not(:first-child) {
+          margin-top: 0.5rem;
+        }
+      }
+    }
+
     > label {
       &:extend(.caps--small);
 
@@ -35,6 +51,10 @@
       &::placeholder {
         color: @color-lightgray;
         line-height: @font-size-rather-large;
+      }
+
+      &.error {
+        border-color: @color-red;
       }
     }
   }

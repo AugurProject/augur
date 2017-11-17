@@ -33,18 +33,23 @@ class MarketTradingWrapper extends Component {
     super(props)
 
     this.state = {
+      errors: {
+        quantity: [],
+        price: []
+      },
+      isOrderValid: true,
       orderType: LIMIT,
       orderPrice: '',
       orderQuantity: '',
       orderEstimate: '',
       selectedNav: BUY,
-      isOrderValid: true,
       currentPage: 0,
     }
 
     this.prevPage = this.prevPage.bind(this)
     this.nextPage = this.nextPage.bind(this)
     this.updateState = this.updateState.bind(this)
+    this.validateForm = this.validateForm.bind(this)
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -68,6 +73,16 @@ class MarketTradingWrapper extends Component {
   }
 
   updateState(property, value) {
+    this.setState({ [property]: value })
+  }
+
+  validateForm(property, rawValue) { // needs actual validation
+    let value = rawValue
+
+    if (!(value instanceof BigNumber) && value !== '') {
+        value = new BigNumber(value)
+    }
+
     this.setState({ [property]: value })
   }
 
@@ -118,7 +133,9 @@ class MarketTradingWrapper extends Component {
                 selectedOutcome={p.selectedOutcome}
                 nextPage={this.nextPage}
                 updateState={this.updateState}
+                validateForm={this.validateForm}
                 isMobile={p.isMobile}
+                errors={s.errors}
               />
             }
           </div>
