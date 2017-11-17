@@ -34,6 +34,8 @@ describe("server/getters/get-orders", () => {
             buy: {
               "0x1000000000000000000000000000000000000000000000000000000000000000": {
                 shareToken: "0x1000000000000000000000000000000000000000",
+                transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
+                transactionIndex: 0,
                 owner: "0x0000000000000000000000000000000000000b0b",
                 creationTime: 1506473500,
                 creationBlockNumber: 1400001,
@@ -47,6 +49,8 @@ describe("server/getters/get-orders", () => {
               },
               "0x2000000000000000000000000000000000000000000000000000000000000000": {
                 shareToken: "0x1000000000000000000000000000000000000000",
+                transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A01",
+                transactionIndex: 0,
                 owner: "0x000000000000000000000000000000000000d00d",
                 creationTime: 1506473515,
                 creationBlockNumber: 1400002,
@@ -62,6 +66,8 @@ describe("server/getters/get-orders", () => {
                 amount: 1,
                 creationBlockNumber: 1400001,
                 creationTime: 1506473500,
+                transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A06",
+                transactionIndex: 0,
                 fullPrecisionAmount: 1,
                 fullPrecisionPrice: 0.7,
                 orderState: "OPEN",
@@ -77,6 +83,8 @@ describe("server/getters/get-orders", () => {
             buy: {
               "0x3000000000000000000000000000000000000000000000000000000000000000": {
                 shareToken: "0x2000000000000000000000000000000000000000",
+                transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A02",
+                transactionIndex: 0,
                 owner: "0x000000000000000000000000000000000000d00d",
                 creationTime: 1506473515,
                 creationBlockNumber: 1400002,
@@ -112,6 +120,8 @@ describe("server/getters/get-orders", () => {
             sell: {
               "0x4000000000000000000000000000000000000000000000000000000000000000": {
                 shareToken: "0x2000000000000000000000000000000000000000",
+                transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A03",
+                transactionIndex: 0,
                 owner: "0x000000000000000000000000000000000000d00d",
                 creationTime: 1506473515,
                 creationBlockNumber: 1400002,
@@ -147,6 +157,8 @@ describe("server/getters/get-orders", () => {
             sell: {
               "0x4100000000000000000000000000000000000000000000000000000000000000": {
                 shareToken: "0x2000000000000000000000000000000000000000",
+                transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A04",
+                transactionIndex: 0,
                 owner: "0x000000000000000000000000000000000000d00d",
                 creationTime: 1506473515,
                 creationBlockNumber: 1400002,
@@ -172,7 +184,7 @@ describe("server/getters/get-orders", () => {
       outcome: null,
       orderType: "sell",
       creator: null,
-      orderState: "CANCELLED",
+      orderState: "CANCELED",
     },
     assertions: (err, openOrders) => {
       assert.isNull(err);
@@ -182,10 +194,12 @@ describe("server/getters/get-orders", () => {
             sell: {
               "0x4200000000000000000000000000000000000000000000000000000000000000": {
                 shareToken: "0x2000000000000000000000000000000000000000",
+                transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A05",
+                transactionIndex: 0,
                 owner: "0x000000000000000000000000000000000000d00d",
                 creationTime: 1506473515,
                 creationBlockNumber: 1400002,
-                orderState: "CANCELLED",
+                orderState: "CANCELED",
                 price: 0.8,
                 amount: 2,
                 fullPrecisionPrice: 0.8,
@@ -218,6 +232,8 @@ describe("server/getters/get-orders", () => {
                 amount: 1,
                 creationBlockNumber: 1400001,
                 creationTime: 1506473500,
+                transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
+                transactionIndex: 0,
                 fullPrecisionAmount: 1,
                 fullPrecisionPrice: 0.7,
                 orderState: "OPEN",
@@ -231,6 +247,8 @@ describe("server/getters/get-orders", () => {
                 amount: 1,
                 creationBlockNumber: 1400001,
                 creationTime: 1506473500,
+                transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A06",
+                transactionIndex: 0,
                 fullPrecisionAmount: 1,
                 fullPrecisionPrice: 0.7,
                 orderState: "OPEN",
@@ -250,6 +268,8 @@ describe("server/getters/get-orders", () => {
                 amount: 2,
                 creationBlockNumber: 1400002,
                 creationTime: 1506473515,
+                transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A09",
+                transactionIndex: 0,
                 fullPrecisionAmount: 2,
                 fullPrecisionPrice: 0.6,
                 orderState: "OPEN",
@@ -269,6 +289,8 @@ describe("server/getters/get-orders", () => {
                 amount: 2,
                 creationBlockNumber: 1400002,
                 creationTime: 1506473515,
+                transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A08",
+                transactionIndex: 0,
                 fullPrecisionAmount: 2.0000001,
                 fullPrecisionPrice: 0.6,
                 orderState: "OPEN",
@@ -288,6 +310,8 @@ describe("server/getters/get-orders", () => {
                 amount: 2,
                 creationBlockNumber: 1400002,
                 creationTime: 1506473515,
+                transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A07",
+                transactionIndex: 0,
                 fullPrecisionAmount: 2,
                 fullPrecisionPrice: 0.600001,
                 orderState: "OPEN",
