@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import * as Knex from "knex";
-import { Address, Bytes32, OrdersRow } from "../../types";
+import { Address, Bytes32, OrdersRow, OrderState } from "../../types";
 import { queryModifier } from "./database";
 
 interface Order {
@@ -8,6 +8,7 @@ interface Order {
   owner: Address;
   creationTime: number;
   creationBlockNumber: number;
+  orderState: OrderState;
   price: number|string;
   amount: number|string;
   fullPrecisionPrice: number|string;
@@ -31,7 +32,7 @@ interface OrdersRowWithCreationTime extends OrdersRow {
 }
 
 // market, outcome, creator, orderType, limit, sort
-export function getOpenOrders(db: Knex, universe: Address|null, marketID: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: any) => void): void {
+export function getOrders(db: Knex, universe: Address|null, marketID: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, orderState: OrderState|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: any) => void): void {
   if (universe == null && marketID == null) return callback(new Error("Must provide universe, either via universe or marketID"));
   const queryData: {} = _.omitBy({
     universe,
@@ -43,7 +44,8 @@ export function getOpenOrders(db: Knex, universe: Address|null, marketID: Addres
   const query: Knex.QueryBuilder = db.select(["orders.*", `blocks.timestamp as creationTime`]).from("orders");
   query.leftJoin("blocks", "orders.creationBlockNumber", "blocks.blockNumber");
   query.leftJoin("markets", "orders.marketID", "markets.marketID");
-  query.where(queryData).whereNull("isRemoved");
+  query.where(queryData);
+  if ( orderState != null && orderState !== OrderState.ALL) query.where("orderState", orderState);
   queryModifier(query, "volume", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, ordersRows?: Array<OrdersRowWithCreationTime>): void => {
     if (err) return callback(err);
@@ -58,6 +60,7 @@ export function getOpenOrders(db: Knex, universe: Address|null, marketID: Addres
         owner: row.orderCreator,
         creationTime: row.creationTime,
         creationBlockNumber: row.creationBlockNumber,
+        orderState: row.orderState,
         price: row.price,
         amount: row.amount,
         fullPrecisionPrice: row.fullPrecisionPrice,

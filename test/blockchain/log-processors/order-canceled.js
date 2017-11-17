@@ -51,6 +51,7 @@ describe("blockchain/log-processors/order-canceled", () => {
           shareToken: "0x1000000000000000000000000000000000000000",
           orderType: "buy",
           orderCreator: "0x0000000000000000000000000000000000000b0b",
+          orderState: "CANCELLED",
           creationBlockNumber: 1400001,
           fullPrecisionPrice: 0.7,
           fullPrecisionAmount: 1,
@@ -59,7 +60,7 @@ describe("blockchain/log-processors/order-canceled", () => {
           tokensEscrowed: 0.7,
           sharesEscrowed: 0,
           tradeGroupID: null,
-          isRemoved: 1,
+          isRemoved: null,
         }]);
       },
       onRemoved: (err, records) => {
@@ -71,6 +72,7 @@ describe("blockchain/log-processors/order-canceled", () => {
           shareToken: "0x1000000000000000000000000000000000000000",
           orderType: "buy",
           orderCreator: "0x0000000000000000000000000000000000000b0b",
+          orderState: "OPEN",
           creationBlockNumber: 1400001,
           fullPrecisionPrice: 0.7,
           fullPrecisionAmount: 1,

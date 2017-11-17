@@ -2,14 +2,14 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getOpenOrders } = require("../../../build/server/getters/get-open-orders");
+const { getOrders } = require("../../../build/server/getters/get-orders");
 
-describe("server/getters/get-open-orders", () => {
+describe("server/getters/get-orders", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getOpenOrders(db, t.params.universe, t.params.marketID, t.params.outcome, t.params.orderType, t.params.creator, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, openOrders) => {
+        getOrders(db, t.params.universe, t.params.marketID, t.params.outcome, t.params.orderType, t.params.creator, t.params.orderState, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, openOrders) => {
           t.assertions(err, openOrders);
           done();
         });
@@ -24,6 +24,7 @@ describe("server/getters/get-open-orders", () => {
       outcome: null,
       orderType: "buy",
       creator: null,
+      orderState: "OPEN",
     },
     assertions: (err, openOrders) => {
       assert.isNull(err);
@@ -36,6 +37,7 @@ describe("server/getters/get-open-orders", () => {
                 owner: "0x0000000000000000000000000000000000000b0b",
                 creationTime: 1506473500,
                 creationBlockNumber: 1400001,
+                orderState: "OPEN",
                 price: 0.7,
                 amount: 1,
                 fullPrecisionPrice: 0.7,
@@ -48,6 +50,7 @@ describe("server/getters/get-open-orders", () => {
                 owner: "0x000000000000000000000000000000000000d00d",
                 creationTime: 1506473515,
                 creationBlockNumber: 1400002,
+                orderState: "OPEN",
                 price: 0.6,
                 amount: 2,
                 fullPrecisionPrice: 0.600001,
@@ -61,6 +64,7 @@ describe("server/getters/get-open-orders", () => {
                 creationTime: 1506473500,
                 fullPrecisionAmount: 1,
                 fullPrecisionPrice: 0.7,
+                orderState: "OPEN",
                 owner: "0x0000000000000000000000000000000000000b0b",
                 price: 0.7,
                 shareToken: "0x1000000000000000000000000000000000000000",
@@ -76,6 +80,7 @@ describe("server/getters/get-open-orders", () => {
                 owner: "0x000000000000000000000000000000000000d00d",
                 creationTime: 1506473515,
                 creationBlockNumber: 1400002,
+                orderState: "OPEN",
                 price: 0.6,
                 amount: 2,
                 fullPrecisionPrice: 0.6,
@@ -97,6 +102,7 @@ describe("server/getters/get-open-orders", () => {
       outcome: null,
       orderType: "sell",
       creator: null,
+      orderState: "OPEN",
     },
     assertions: (err, openOrders) => {
       assert.isNull(err);
@@ -109,9 +115,80 @@ describe("server/getters/get-open-orders", () => {
                 owner: "0x000000000000000000000000000000000000d00d",
                 creationTime: 1506473515,
                 creationBlockNumber: 1400002,
+                orderState: "OPEN",
                 price: 0.6,
                 amount: 2,
                 fullPrecisionPrice: 0.6,
+                fullPrecisionAmount: 2,
+                tokensEscrowed: 1.2,
+                sharesEscrowed: 0,
+              },
+            },
+          },
+        },
+      });
+    },
+  });
+  test({
+    description: "get closed sell orders for market 1",
+    params: {
+      universe: "0x000000000000000000000000000000000000000b",
+      marketID: "0x0000000000000000000000000000000000000001",
+      outcome: null,
+      orderType: "sell",
+      creator: null,
+      orderState: "CLOSED",
+    },
+    assertions: (err, openOrders) => {
+      assert.isNull(err);
+      assert.deepEqual(openOrders, {
+        "0x0000000000000000000000000000000000000001": {
+          1: {
+            sell: {
+              "0x4100000000000000000000000000000000000000000000000000000000000000": {
+                shareToken: "0x2000000000000000000000000000000000000000",
+                owner: "0x000000000000000000000000000000000000d00d",
+                creationTime: 1506473515,
+                creationBlockNumber: 1400002,
+                orderState: "CLOSED",
+                price: 0.7,
+                amount: 2,
+                fullPrecisionPrice: 0.7,
+                fullPrecisionAmount: 2,
+                tokensEscrowed: 1.2,
+                sharesEscrowed: 0,
+              },
+            },
+          },
+        },
+      });
+    },
+  });
+  test({
+    description: "get cancelled sell orders for market 1",
+    params: {
+      universe: "0x000000000000000000000000000000000000000b",
+      marketID: "0x0000000000000000000000000000000000000001",
+      outcome: null,
+      orderType: "sell",
+      creator: null,
+      orderState: "CANCELLED",
+    },
+    assertions: (err, openOrders) => {
+      assert.isNull(err);
+      assert.deepEqual(openOrders, {
+        "0x0000000000000000000000000000000000000001": {
+          1: {
+            sell: {
+              "0x4200000000000000000000000000000000000000000000000000000000000000": {
+                shareToken: "0x2000000000000000000000000000000000000000",
+                owner: "0x000000000000000000000000000000000000d00d",
+                creationTime: 1506473515,
+                creationBlockNumber: 1400002,
+                orderState: "CANCELLED",
+                price: 0.8,
+                amount: 2,
+                fullPrecisionPrice: 0.8,
                 fullPrecisionAmount: 2,
                 tokensEscrowed: 1.2,
                 sharesEscrowed: 0,
@@ -143,6 +220,7 @@ describe("server/getters/get-open-orders", () => {
                 creationTime: 1506473500,
                 fullPrecisionAmount: 1,
                 fullPrecisionPrice: 0.7,
+                orderState: "OPEN",
                 owner: "0x0000000000000000000000000000000000000b0b",
                 price: 0.7,
                 shareToken: "0x1000000000000000000000000000000000000000",
@@ -155,6 +233,7 @@ describe("server/getters/get-open-orders", () => {
                 creationTime: 1506473500,
                 fullPrecisionAmount: 1,
                 fullPrecisionPrice: 0.7,
+                orderState: "OPEN",
                 owner: "0x0000000000000000000000000000000000000b0b",
                 price: 0.7,
                 shareToken: "0x1000000000000000000000000000000000000000",
@@ -173,6 +252,7 @@ describe("server/getters/get-open-orders", () => {
                 creationTime: 1506473515,
                 fullPrecisionAmount: 2,
                 fullPrecisionPrice: 0.6,
+                orderState: "OPEN",
                 owner: "0x0000000000000000000000000000000000000b0b",
                 price: 0.6,
                 shareToken: "0x2000000000000000000000000000000000000000",
@@ -191,6 +271,7 @@ describe("server/getters/get-open-orders", () => {
                 creationTime: 1506473515,
                 fullPrecisionAmount: 2.0000001,
                 fullPrecisionPrice: 0.6,
+                orderState: "OPEN",
                 owner: "0x0000000000000000000000000000000000000b0b",
                 price: 0.6,
                 shareToken: "0x2000000000000000000000000000000000000000",
@@ -209,6 +290,7 @@ describe("server/getters/get-open-orders", () => {
                 creationTime: 1506473515,
                 fullPrecisionAmount: 2,
                 fullPrecisionPrice: 0.600001,
+                orderState: "OPEN",
                 owner: "0x0000000000000000000000000000000000000b0b",
                 price: 0.6,
                 shareToken: "0x1000000000000000000000000000000000000000",
