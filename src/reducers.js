@@ -50,6 +50,7 @@ import contractAddresses from 'modules/contracts/reducers/contract-addresses'
 import functionsAPI from 'modules/contracts/reducers/functions-api'
 import eventsAPI from 'modules/contracts/reducers/events-api'
 import notifications from 'modules/notifications/reducers/notifications'
+import reportingWindowStats from 'modules/reporting/reducers/reporting-window-stats'
 
 export function createReducer() {
   return {
@@ -103,6 +104,7 @@ export function createReducer() {
     contractAddresses,
     functionsAPI,
     eventsAPI,
-    notifications
+    notifications,
+    reportingWindowStats
   }
 }

@@ -33,7 +33,7 @@ MarketPreview.propTypes = {
   isFavorite: PropTypes.bool,
   isPendingReport: PropTypes.bool,
   endDate: PropTypes.object,
-  tradingFeePercent: PropTypes.object,
+  settlementFeePercent: PropTypes.object,
   volume: PropTypes.object,
   tags: PropTypes.array,
   onClickToggleFavorite: PropTypes.func,

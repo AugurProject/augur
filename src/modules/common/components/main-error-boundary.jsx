@@ -39,12 +39,12 @@ export default class MainErrorBoundary extends Component {
         >
           <h1
             style={{
-              fontSize: '10rem',
-              lineHeight: '10rem',
+              fontSize: '5rem',
+              lineHeight: '5rem',
               marginBottom: '2rem'
             }}
           >
-            ಠ_ಠ
+            (ノಠ益ಠ)ノ彡┻━┻
           </h1>
           <span>please reference the console</span>
         </section>
