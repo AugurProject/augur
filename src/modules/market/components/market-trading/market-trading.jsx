@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import MarketTradingWrapper from 'modules/market/components/market-trading--wrapper/market-trading--wrapper'
+import { Check, Close } from 'modules/common/components/icons/icons'
 
 import getValue from 'utils/get-value'
 
@@ -23,6 +24,7 @@ class MarketTrading extends Component {
 
     this.state = {
       showForm: false,
+      showOrderPlaced: false,
     }
 
     this.toggleForm = this.toggleForm.bind(this)
@@ -79,6 +81,12 @@ class MarketTrading extends Component {
         { p.isMobile && p.selectedOutcomes.length > 0 && !initialMessage && !s.showForm && // this needs to be changed to use p.selectedOutcome (should only show on mobile when an outcome has been selected)
           <div className={Styles['Trading__button--trade']}>
             <button onClick={this.toggleForm}>Trade</button>
+          </div>
+        }
+        { s.showOrderPlaced &&
+          <div className={Styles['Trading__button--order-placed']}>
+            <span>{ Check } Order placed!</span>
+            <button onClick={e => this.setState({ showOrderPlaced: false })}>{ Close }</button>
           </div>
         }
       </section>
