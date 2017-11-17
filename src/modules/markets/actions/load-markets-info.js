@@ -1,18 +1,23 @@
 import { augur } from 'services/augurjs'
 import { updateMarketsData, updateMarketsLoadingStatus } from 'modules/markets/actions/update-markets-data'
-import { loadMarketDetails } from 'modules/market/actions/load-full-market'
+import isObject from 'utils/is-object'
 import logError from 'utils/log-error'
 
 export const loadMarketsInfo = (marketIDs, callback = logError) => (dispatch, getState) => {
-  const { loginAccount } = getState()
   dispatch(updateMarketsLoadingStatus(marketIDs, true))
-  augur.markets.getMarketsInfo({ marketIDs }, (err, marketsData) => {
+
+  augur.markets.getMarketsInfo({ marketIDs }, (err, marketsDataArray) => {
     if (err) return callback(err)
-    const marketInfoIDs = Object.keys(marketsData)
-    if (!marketInfoIDs.length) return callback(null)
+
+    const marketsData = marketsDataArray.reduce((p, marketData) => ({
+      ...p,
+      [marketData.id]: marketData
+    }), {})
+    if (marketsData == null || !isObject(marketsData)) {
+      return callback(`no markets data received`)
+    }
+    if (!Object.keys(marketsData).length) return callback(null)
     dispatch(updateMarketsData(marketsData))
-    marketInfoIDs.filter(marketID => marketsData[marketID].author === loginAccount.address).forEach(marketID => dispatch(loadMarketDetails(marketID)))
-    dispatch(updateMarketsLoadingStatus(marketIDs, false))
-    callback(null)
+    callback(null, marketsData)
   })
 }
