@@ -307,6 +307,8 @@ export interface OrdersRow extends BaseTransaction {
 }
 
 export interface UITrade {
+  transactionHash: string;
+  transactionIndex: Int256;
   type: string;
   price: string;
   amount: string;
@@ -319,7 +321,7 @@ export interface UITrade {
   tradeGroupID: Bytes32|null;
 }
 
-export interface TradesRow {
+export interface TradesRow extends BaseTransaction {
   orderID: Bytes32;
   marketID: Address;
   outcome: number;
@@ -327,7 +329,6 @@ export interface TradesRow {
   orderType: string;
   creator: Address;
   filler: Address;
-  blockNumber: number;
   numCreatorTokens: string;
   numCreatorShares: string;
   numFillerTokens: string;
