@@ -7,6 +7,7 @@ import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-
 import syncUniverse from 'modules/universe/actions/sync-universe'
 /* import { updateTransactionsOldestLoadedBlock } from 'modules/transactions/actions/update-transactions-oldest-loaded-block' */
 import { updateTransactionsLoading } from 'modules/transactions/actions/update-transactions-loading'
+import { loadOpenOrders } from '../../bids-asks/actions/load-open-orders'
 
 export const loadAccountHistory = (loadAllHistory, triggerTransactionsExport) => (dispatch, getState) => {
   const { transactionsOldestLoadedBlock, blockchain, loginAccount, transactionsData } = getState()
@@ -69,6 +70,10 @@ function loadTransactions(dispatch, getState, options, constraints, cb) {
       next(null)
     })),
     next => dispatch(loadFundingHistory(options, (err) => {
+      if (err) next(err)
+      next(null)
+    })),
+    next => dispatch(loadOpenOrders(options, (err) => {
       if (err) next(err)
       next(null)
     })),

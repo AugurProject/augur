@@ -1,8 +1,8 @@
-import { MARKET_CREATION, TRANSFER, REPORTING, TRADE } from 'modules/transactions/constants/types'
+import { MARKET_CREATION, TRANSFER, REPORTING, TRADE, OPEN_ORDER } from 'modules/transactions/constants/types'
 import { SUCCESS } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
-import { eachOf, each } from 'async'
-import moment from 'moment'
+import { eachOf, each, groupBy } from 'async'
+import { formatDate } from 'src/utils/format-date'
 
 export function addTransactions(transactionsArray) {
   return (dispatch, getState) => {
@@ -15,19 +15,64 @@ export function addTransactions(transactionsArray) {
 
 export function addTradeTransactions(trades) {
   return (dispatch, getState) => {
+    const { marketsData } = getState()
     const transactions = {}
-    each(trades, (trade) => {
-      const transaction = { ...trade }
-      transaction.status = SUCCESS
-      // todo: should have a unique id for each trade
-      transaction.id = simplHashCode(transaction.marketID)
-      const header = buildHeader(transaction, TRADE)
-      transaction.meta = buildMeta(transaction, TRADE, SUCCESS)
-      header.transactions = [transaction]
-      transactions[transaction.id] = header
+    let sorted = trades
+    groupBy(trades, function (t, cb) {
+      return cb(null, t.tradeGroupID)
+    }, (err, result) => {
+      if (!err && result) {
+        sorted = result
+      }
     })
-    dispatch(updateTransactionsData(transactions))
+    // todo: need fallback if groupBy fails and groups aren't created
+    each(sorted, (group) => {
+      if (group[0].tradeGroupID === undefined) {
+        each(group, (trade) => {
+          const header = buildTradeTransaction(trade, marketsData)
+          transactions[header.hash] = header
+        })
+      } else {
+        const header = buildTradeTransactionGroup(group, marketsData)
+        transactions[header.hash] = header
+      }
+    })
+//    dispatch(updateTransactionsData(transactions))
   }
+}
+
+function buildTradeTransactionGroup(group, marketsData) {
+  let header = {}
+  each(group, (trade) => {
+    const localHeader = buildTradeTransaction(trade, marketsData)
+    if (Object.keys(header).length === 0) {
+      header = localHeader
+    } else {
+      header.transactions.push(localHeader.transactions[0])
+    }
+  })
+  return header
+}
+
+function addMarketInfoIfExists(rawTransaction, marketsData) {
+  if (rawTransaction.hasOwnProperty('marketID')) {
+    rawTransaction.market = getMarketById(marketsData, rawTransaction.marketID)
+  }
+}
+
+function buildTradeTransaction(trade, marketsData) {
+  addMarketInfoIfExists(trade, marketsData)
+  const transaction = { ...trade }
+  transaction.status = SUCCESS
+  // todo: should have a unique id for each trade
+  transaction.id = simplHashCode(transaction.marketID + transaction.timestamp)
+  const header = buildHeader(transaction, TRADE)
+  transaction.meta = buildMeta(transaction, TRADE, SUCCESS)
+  header.message = 'Trade'
+  header.description = 'trade description'
+  transaction.message = 'more specific message about transaction'
+  header.transactions = [transaction]
+  return header
 }
 
 export function addTransferTransactions(transfers) {
@@ -39,6 +84,8 @@ export function addTransferTransactions(transfers) {
       const header = buildHeader(transaction, TRANSFER, SUCCESS)
       header.transactions = [transaction]
       transaction.meta = buildMeta(transaction, TRANSFER, SUCCESS)
+      header.message = 'Transfer'
+      header.description = transaction.value + ' transfered from ' + transaction.sender + ' to ' + transaction.recipient
       transactions[transaction.id] = header
     })
     dispatch(updateTransactionsData(transactions))
@@ -49,22 +96,52 @@ export function addMarketCreationTransactions(marketsCreated) {
   return (dispatch, getState) => {
     const marketCreationData = {}
     const { loginAccount, marketsData } = getState()
+    // placeholder until get unique ID
+    let index = 0
     each(marketsCreated, (marketID) => {
       const thisMarketDataID = getMarketById(marketsData, marketID)
-      // should be rare case that market info not found
-      // need to display something even though can't find market data
-      if (thisMarketDataID) {
-        const transaction = { marketID, ...thisMarketDataID }
-        transaction.timestamp = transaction.creationTime
-        transaction.createdBy = loginAccount.address
-        transaction.id = marketID
-        const header = buildHeader(transaction, MARKET_CREATION, SUCCESS)
-        transaction.meta = buildMeta(transaction, MARKET_CREATION, SUCCESS)
-        header.transactions = [transaction]
-        marketCreationData[transaction.id] = header
-      }
+      const transaction = { marketID, ...thisMarketDataID }
+      transaction.timestamp = transaction.creationTime
+      transaction.createdBy = loginAccount.address
+      index += 1000
+      transaction.id = marketID + index
+      const header = buildHeader(transaction, MARKET_CREATION, SUCCESS)
+      transaction.meta = buildMeta(transaction, MARKET_CREATION, SUCCESS)
+      header.message = 'Market Creation'
+      header.description = transaction.shortDescription
+      header.transactions = [transaction]
+      marketCreationData[transaction.id] = header
     })
     dispatch(updateTransactionsData(marketCreationData))
+  }
+}
+
+export function addOpenOrderTransactions(openOrders) {
+  return (dispatch, getState) => {
+    const { marketsData } = getState()
+    // flatten open orders
+    const transactions = {}
+    eachOf(openOrders, (value, marketID) => {
+      eachOf(value, (value2, index) => {
+        eachOf(value2, (value3, type) => {
+          eachOf(value3, (value4, outcomeID) => {
+            const market = getMarketById(marketsData, marketID)
+            const transaction = { marketID, type, outcomeID, ...value4, market }
+            // create unique id
+            transaction.id = simplHashCode(transaction.marketID + transaction.outcomeID)
+            const header = buildHeader(transaction, OPEN_ORDER, SUCCESS)
+            transaction.meta = buildMeta(transaction, OPEN_ORDER, SUCCESS)
+            header.message = 'Order'
+            header.status = 'status'
+            header.desciption = 'description'
+            header.timestamp = formatDate(transaction.creationTime)
+            header.transactions = [transaction]
+            transactions[transaction.id] = header
+          })
+        })
+      })
+    })
+    dispatch(updateTransactionsData(transactions))
   }
 }
 
@@ -81,6 +158,8 @@ export function addReportingTransactions(reports) {
           transaction.meta = buildMeta(transaction, REPORTING, SUCCESS)
           const header = buildHeader(transaction, REPORTING, SUCCESS)
           header.transactions = [transaction]
+          header.message = 'Market Reporting'
+          header.description = 'Staked ' + transaction.amountStaked + ' on market ' + transaction.market.shortDescription == null ? transaction.marketID : transaction.market.shortDescription
           // create unique id
           transactions[transaction.id] = header
         })
@@ -107,24 +186,9 @@ function buildHeader(item, type, status) {
   const header = {}
   header.status = status
   header.hash = item.id
-  header.timestamp = buildTimeInfo(item.timestamp)
+  // TODO: need to sort by datetime in render
+  header.timestamp = formatDate(item.timestamp)
   header.sortOrder = getSortOrder(type)
-  if (type === TRANSFER) {
-    header.message = 'Transfer'
-    header.description = item.value + ' transfered from ' + item.sender + ' to ' + item.recipient
-  }
-  if (type === MARKET_CREATION) {
-    header.message = 'Market Creation'
-    header.description = item.shortDescription
-  }
-  if (type === TRADE) {
-    header.message = 'Trade'
-    header.description = 'trade description'
-  }
-  if (type === REPORTING) {
-    header.message = 'Market Reporting'
-    header.description = 'Staked ' + item.amountStaked + ' on market ' + item.market.shortDescription == null ? item.marketID : item.market.shortDescription
-  }
   return header
 }
 
@@ -159,33 +223,6 @@ function buildMeta(item, type, status) {
   return meta
 }
 
-function buildTimeInfo(timestampValue, type) {
-  // todo: fill in actual time info
-  const timestamp = {}
-  if (timestampValue === undefined) {
-    timestamp.timestamp = timestampValue
-    timestamp.value = 'date time is unknown'
-    timestamp.formatted = 'date time is unknown'
-    timestamp.formattedLocal = 'date time is unknown'
-    timestamp.full = 'date time is unknown'
-  } else {
-    // TODO: figure out how to get local timezone, currently guessing
-    // const timezone = ''
-    // const offset = moment().tz(timezone).format('z')
-    timestamp.timestamp = timestampValue
-    // '2017-10-27T22:49:26.000Z'
-    timestamp.value = moment().format()
-    // 'Oct 27, 2017 10:49 PM'
-    timestamp.formatted = moment().format('MMM D, YY H:m A')
-    // 'Oct 27, 2017 3:49 PM (UTC -7)' // need to get time zone diff
-    timestamp.formattedLocal = moment().format('MMM D, YY H:m A')
-    // 'Fri, 27 Oct 2017 22:49:26 GMT'
-    timestamp.full = moment().format('ddd, D MMM YY HH:mm:ss GMT')
-  }
-
-  return timestamp
-}
-
 function getMarketById(marketsData, marketID) {
   const id = Object.keys(marketsData).find((myMarketID) => {
     const market = marketsData[myMarketID]
@@ -196,8 +233,11 @@ function getMarketById(marketsData, marketID) {
 
 // TODO: this should be dynamic by user control
 function getSortOrder(type) {
-  if (type === TRADE) {
+  if (type === OPEN_ORDER) {
     return 10
+  }
+  if (type === TRADE) {
+    return 20
   }
   if (type === TRANSFER) {
     return 50

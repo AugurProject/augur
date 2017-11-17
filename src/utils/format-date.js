@@ -9,24 +9,24 @@ export function formatDate(d) {
   const date = (d instanceof Date) ? d : new Date(0)
 
   // UTC Time Formatting
-  const utcTime = [d.getUTCHours(), d.getUTCMinutes()]
+  const utcTime = [date.getUTCHours(), date.getUTCMinutes()]
   const utcAMPM = ampm(utcTime[0])
   const utcTimeTwelve = getTwelveHour(utcTime)
 
   // Locat Time Formatting
-  const localTime = [d.getHours(), d.getMinutes()]
+  const localTime = [date.getHours(), date.getMinutes()]
   const localAMPM = ampm(localTime[0])
   const localTimeTwelve = getTwelveHour(localTime)
   const localOffset = (date.getTimezoneOffset() / 60) * -1
 
   return {
     value: date,
-    simpleDate: `${d.getUTCDate()} ${months[d.getUTCMonth()]}`,
-    formatted: `${months[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()} ${utcTimeTwelve.join(':')} ${utcAMPM}`, // UTC time
-    formattedLocal: `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()} ${localTimeTwelve.join(':')} ${localAMPM} (UTC ${localOffset})`, // local time
-    formattedLocalShort: `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()} (UTC ${localOffset})`, // local time
-    full: d.toUTCString(),
-    timestamp: d.getTime()
+    simpleDate: `${date.getUTCDate()} ${months[date.getUTCMonth()]}`,
+    formatted: `${months[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()} ${utcTimeTwelve.join(':')} ${utcAMPM}`, // UTC time
+    formattedLocal: `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(':')} ${localAMPM} (UTC ${localOffset})`, // local time
+    formattedLocalShort: `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} (UTC ${localOffset})`, // local time
+    full: date.toUTCString(),
+    timestamp: date.getTime()
   }
 }
 

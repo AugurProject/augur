@@ -55,7 +55,8 @@ export default class Transactions extends Component {
         <div className={Styles.Transactions__list}>
           {p.transactions.length && s.boundedLength &&
           [...Array(s.boundedLength)].map((unused, i) => {
-            p.transactions.sort((a, b) => a.sortOrder - b.sortOrder)
+            p.transactions.sort((a, b) => a.timestamp - b.timestamp)
+            .sort((a, b) => a.sortOrder - b.sortOrder)
             const transaction = p.transactions[(s.lowerBound - 1) + i]
 
             if (transaction.transactions.length <= 1) {
