@@ -31,14 +31,17 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
     reportingWindow: (next: AsyncCallback): void => augur.api.Market.getReportingWindow(marketPayload, next),
     endTime: (next: AsyncCallback): void => augur.api.Market.getEndTime(marketPayload, next),
     designatedReporter: (next: AsyncCallback): void => augur.api.Market.getDesignatedReporter(marketPayload, next),
-    designatedReportStake: (next: AsyncCallback): void => augur.api.Market.getDesignatedReportStake(marketPayload, next),
     numTicks: (next: AsyncCallback): void => augur.api.Market.getNumTicks(marketPayload, next),
     universe: (next: AsyncCallback): void => augur.api.Market.getUniverse(marketPayload, next),
     marketCreatorSettlementFeeDivisor: (next: AsyncCallback): void => augur.api.Market.getMarketCreatorSettlementFeeDivisor(marketPayload, next),
-  }, (err?: any, onContractData?: any): void => {
+  }, (err?: any, onMarketContractData?: any): void => {
     if (err) return callback(err);
-    const universePayload: {} = { tx: { to: onContractData.universe } };
-    augur.api.Universe.getReportingFeeDivisor(universePayload, (err: Error|null, reportingFeeDivisor?: string): void => {
+    const universePayload: {} = { tx: { to: onMarketContractData.universe } };
+    parallel({
+      reportingFeeDivisor: (next: AsyncCallback): void => augur.api.Universe.getReportingFeeDivisor(universePayload, next),
+      designatedReportStake: (next: AsyncCallback): void => augur.api.Universe.getDesignatedReportStake(universePayload, next),
+    }, (err?: any, onUniverseContractData?: any): void => {
+      if (err) return callback(err);
       const marketStateDataToInsert: { [index: string]: string|number|boolean } = {
         marketID: log.market,
         reportingState: augur.constants.REPORTING_STATE.PRE_REPORTING,
@@ -49,31 +52,31 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
         if (!marketStateRow || !marketStateRow.length) return callback(new Error("No market state ID"));
         const marketStateID = marketStateRow[0];
         const extraInfo: MarketCreatedLogExtraInfo = log.extraInfo;
-        const numOutcomes = parseInt(onContractData!.numberOfOutcomes!, 16);
+        const numOutcomes = parseInt(onMarketContractData!.numberOfOutcomes!, 16);
         const marketsDataToInsert: MarketsRow = {
           marketID:                   log.market,
           marketCreator:              log.marketCreator,
           creationBlockNumber:        log.blockNumber,
           creationFee:                log.marketCreationFee,
+          category:                   log.topic,
           marketType:                 extraInfo!.marketType,
           minPrice:                   extraInfo!.minPrice,
           maxPrice:                   extraInfo!.maxPrice,
-          category:                   extraInfo!.category,
-          tag1:                       extraInfo!.tag1 || null,
-          tag2:                       extraInfo!.tag2 || null,
-          shortDescription:           extraInfo!.shortDescription,
+          tag1:                       (extraInfo!.tags && extraInfo!.tags!.length) ? extraInfo!.tags![0] : null,
+          tag2:                       (extraInfo!.tags && extraInfo!.tags!.length > 1) ? extraInfo!.tags![1] : null,
+          shortDescription:           extraInfo!.description,
           longDescription:            extraInfo!.longDescription || null,
           resolutionSource:           extraInfo!.resolutionSource || null,
-          universe:                   onContractData!.universe,
+          universe:                   onMarketContractData!.universe,
           numOutcomes,
           marketStateID,
-          reportingWindow:            onContractData!.reportingWindow,
-          endTime:                    parseInt(onContractData!.endTime!, 16),
-          designatedReporter:         onContractData!.designatedReporter,
-          designatedReportStake:      new BigNumber(onContractData!.designatedReportStake, 16).toFixed(),
-          numTicks:                   parseInt(onContractData!.numTicks!, 16),
-          marketCreatorFeeRate:       convertDivisorToRate(onContractData!.marketCreatorSettlementFeeDivisor!, 16),
-          reportingFeeRate:           convertDivisorToRate(reportingFeeDivisor!, 16),
+          reportingWindow:            onMarketContractData!.reportingWindow,
+          endTime:                    parseInt(onMarketContractData!.endTime!, 16),
+          designatedReporter:         onMarketContractData!.designatedReporter,
+          designatedReportStake:      new BigNumber(onUniverseContractData!.designatedReportStake, 16).toFixed(),
+          numTicks:                   parseInt(onMarketContractData!.numTicks!, 16),
+          marketCreatorFeeRate:       convertDivisorToRate(onMarketContractData!.marketCreatorSettlementFeeDivisor!, 16),
+          reportingFeeRate:           convertDivisorToRate(onUniverseContractData!.reportingFeeDivisor!, 16),
           marketCreatorFeesCollected: "0",
           volume:                     "0",
           sharesOutstanding:          "0",
@@ -107,10 +110,11 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
               db.batchInsert("tokens", shareTokens.map((contractAddress: Address, outcome: number): TokensRow => Object.assign({ contractAddress, outcome }, tokensDataToInsert)), numOutcomes).transacting(trx).asCallback(next);
             },
           ], (err: Error|null): void => {
-            trx.select("popularity").from("categories").where({ category: extraInfo!.category }).asCallback((err: Error|null, categoriesRows?: Array<CategoriesRow>): void => {
+            if (err) return callback(err);
+            trx.select("popularity").from("categories").where({ category: log.topic }).asCallback((err: Error|null, categoriesRows?: Array<CategoriesRow>): void => {
               if (err) return callback(err);
               if (categoriesRows && categoriesRows.length) return callback(null);
-              db.transacting(trx).insert({ category: extraInfo!.category, universe: onContractData!.universe }).into("categories").asCallback(callback);
+              db.transacting(trx).insert({ category: log.topic, universe: onMarketContractData!.universe }).into("categories").asCallback(callback);
             });
           });
         });
