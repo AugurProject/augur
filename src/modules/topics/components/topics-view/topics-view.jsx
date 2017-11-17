@@ -146,7 +146,9 @@ export default class TopicsView extends Component {
               boundedLength={s.boundedLength}
             />
           }
-          {!!(p.topics && p.topics.length) &&
+        </div>
+        {!!(p.topics && p.topics.length) &&
+          <div className={Styles.Topics__paginator}>
             <Paginator
               itemsLength={p.topics.length}
               itemsPerPage={s.itemsPerPage}
@@ -154,8 +156,8 @@ export default class TopicsView extends Component {
               history={p.history}
               setSegment={this.setSegment}
             />
-          }
-        </div>
+          </div>
+        }
       </section>
     )
   }
