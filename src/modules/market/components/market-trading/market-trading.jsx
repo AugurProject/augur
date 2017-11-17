@@ -69,10 +69,9 @@ class MarketTrading extends Component {
           </div>
         }
         { p.isMobile && p.selectedOutcomes.length > 0 && !initialMessage &&  // this needs to be changed to use p.selectedOutcome (should only show on mobile when an outcome has been selected)
-          <button
-            className={Styles['Trading__button--trade']}
-            onClick={e => this.setState({ showForm: true })}
-          >Trade</button>
+          <div className={Styles['Trading__button--trade']}>
+            <button onClick={e => this.setState({ showForm: true })}>Trade</button>
+          </div>
         }
       </section>
     )

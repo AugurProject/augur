@@ -1,12 +1,18 @@
 @import (reference) "~assets/styles/shared";
 
 .Trading__button--trade {
-  &:extend(.button--purple all);
+  min-height: 3.125rem;
 
-  border-radius: 0;
-  padding-bottom: 1rem;
-  padding-top: 1rem;
-  width: 100%;
+  > button {
+    &:extend(.button--purple all);
+
+    bottom: 0;
+    border-radius: 0;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+    position: fixed;
+    width: 100%;
+  }
 }
 
 .Trading__initial-message {
