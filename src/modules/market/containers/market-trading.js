@@ -27,6 +27,9 @@ const market = {
 const selectedOutcome = {
   id: '1',
   name: 'Example Name',
+  lastPrice: {
+    formatted: '0.3872',
+  },
   trade: {
     potentialEthProfit: {
       formatted: "+7.2477",

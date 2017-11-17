@@ -47,12 +47,13 @@
     &:extend(.button--purple all);
   }
 }
+
 .TradingForm__static-field {
   color: @color-text-dark;
   font-size: 1.125rem;
   line-height: 1.5rem;
   min-height: 3rem;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 1rem 0.75rem 0;
   text-align: left;
 }
 
@@ -80,5 +81,35 @@
     &:last-child {
       border-radius: 0 3px 3px 0;
     }
+  }
+}
+
+@media @breakpoint-mobile {
+  .TradingForm__form-body > li {
+    > label {
+      color: @color-white;
+    }
+
+    > input[type="number"] {
+      background-color: @color-lightergray;
+    }
+  }
+
+  .TradingForm__form-body > li.TradingForm__button--review {
+    justify-content: flex-end;
+
+    > button {
+      border-radius: 0;
+      bottom: 0;
+      left: 0;
+      padding-bottom: 1rem;
+      padding-top: 1rem;
+      position: fixed;
+      width: 100%;
+    }
+  }
+
+  .TradingForm__static-field {
+    color: @color-white;
   }
 }

@@ -50,7 +50,7 @@ class MarketTradingForm extends Component {
               >Limit</button>
           </div>
         </li>
-        { p.market.marketType !== SCALAR &&
+        { !p.isMobile && p.market.marketType !== SCALAR &&
           <li>
             <label>Outcome</label>
             <div className={Styles['TradingForm__static-field']}>{ p.selectedOutcome.name }</div>

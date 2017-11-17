@@ -8,6 +8,7 @@ import MarketTradingForm from 'modules/market/components/market-trading--form/ma
 import MarketTradingConfirm from 'modules/market/components/market-trading--confirm/market-trading--confirm'
 
 import makePath from 'modules/routes/helpers/make-path'
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
 import getValue from 'utils/get-value'
 
@@ -66,11 +67,18 @@ class MarketTradingWrapper extends Component {
     const p = this.props
 
     const hasFunds = getValue(p, 'market.tradeSummary.hasUserEnoughFunds')
+    const lastPrice = getValue(p, 'selectedOutcome.lastPrice.formatted')
 
     return (
       <section className={Styles.TradingWrapper}>
         { s.currentPage === 0 &&
           <div>
+            { p.isMobile &&
+              <div className={Styles['TradingWrapper__mobile-header']}>
+                <span className={Styles['TradingWrapper__mobile-header-outcome']}>{ p.selectedOutcome.name }</span>
+                <span className={Styles['TradingWrapper__mobile-header-last']}><ValueDenomination formatted={lastPrice} /></span>
+              </div>
+            }
             <ul className={Styles['TradingWrapper__header']}>
               <li className={classNames({ [`${Styles.active}`]: s.selectedNav === BUY })}>
                 <button onClick={() => this.setState({ selectedNav: BUY })}>Buy</button>
@@ -97,6 +105,7 @@ class MarketTradingWrapper extends Component {
                 selectedOutcome={p.selectedOutcome}
                 nextPage={this.nextPage}
                 updateState={this.updateState}
+                isMobile={p.isMobile}
               />
             }
           </div>
