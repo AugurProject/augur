@@ -1,21 +1,7 @@
 import * as _ from "lodash";
 import * as Knex from "knex";
-import { Address, Bytes32, OrdersRow, OrderState } from "../../types";
+import { Address, Bytes32, Order, OrdersRow, OrderState } from "../../types";
 import { queryModifier } from "./database";
-
-interface Order {
-  shareToken: Address;
-  owner: Address;
-  creationTime: number;
-  creationBlockNumber: number;
-  orderState: OrderState;
-  price: number|string;
-  amount: number|string;
-  fullPrecisionPrice: number|string;
-  fullPrecisionAmount: number|string;
-  tokensEscrowed: number|string;
-  sharesEscrowed: number|string;
-}
 
 interface Orders {
   [marketID: string]: {
@@ -42,7 +28,7 @@ export function getOrders(db: Knex, universe: Address|null, marketID: Address|nu
     "orders.marketID": marketID,
   }, _.isNil);
   const query: Knex.QueryBuilder = db.select(["orders.*", `blocks.timestamp as creationTime`]).from("orders");
-  query.leftJoin("blocks", "orders.creationBlockNumber", "blocks.blockNumber");
+  query.leftJoin("blocks", "orders.blockNumber", "blocks.blockNumber");
   query.leftJoin("markets", "orders.marketID", "markets.marketID");
   query.where(queryData);
   if ( orderState != null && orderState !== OrderState.ALL) query.where("orderState", orderState);
@@ -56,10 +42,12 @@ export function getOrders(db: Knex, universe: Address|null, marketID: Address|nu
       if (!orders[row.marketID][row.outcome]) orders[row.marketID][row.outcome] = {};
       if (!orders[row.marketID][row.outcome][row.orderType]) orders[row.marketID][row.outcome][row.orderType] = {};
       orders[row.marketID][row.outcome][row.orderType][row.orderID!] = {
+        creationBlockNumber: row.blockNumber,
+        transactionHash: row.transactionHash,
+        transactionIndex: row.transactionIndex,
         shareToken: row.shareToken,
         owner: row.orderCreator,
         creationTime: row.creationTime,
-        creationBlockNumber: row.creationBlockNumber,
         orderState: row.orderState,
         price: row.price,
         amount: row.amount,

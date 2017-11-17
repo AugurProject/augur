@@ -26,7 +26,14 @@ export enum OrderState {
   ALL = "ALL",
   OPEN = "OPEN",
   CLOSED = "CLOSED",
-  CANCELLED = "CANCELLED",
+  CANCELED = "CANCELED",
+}
+
+export interface BaseTransaction {
+  blockNumber: number;
+  blockHash: Bytes32;
+  transactionIndex: Int256;
+  transactionHash: Bytes32;
 }
 
 export interface EthereumNodeEndpoints {
@@ -41,22 +48,14 @@ export type Address = string;
 export type Bytes32 = string;
 export type Int256 = string;
 
-export interface Log {
+export interface Log extends BaseTransaction {
   address: Address;
   categories: Array<Int256>;
   data: AbiEncodedData;
-  blockNumber: Int256;
-  transactionIndex: Int256;
-  transactionHash: Bytes32;
-  blockHash: Bytes32;
 }
 
-export interface FormattedLog {
+export interface FormattedLog extends BaseTransaction {
   address: Address;
-  blockNumber: number;
-  transactionIndex: Int256;
-  transactionHash: Bytes32;
-  blockHash: Bytes32;
   [inputName: string]: any;
 }
 
@@ -275,7 +274,24 @@ export interface UIMarketInfo {
 
 export type UIMarketsInfo = Array<UIMarketInfo|null>;
 
-export interface OrdersRow {
+// Does not extend BaseTransaction since UI is expecting "creationBlockNumber"
+export interface Order {
+  transactionHash: Bytes32;
+  transactionIndex: Int256;
+  shareToken: Address;
+  owner: Address;
+  creationTime: number;
+  creationBlockNumber: number;
+  orderState: OrderState;
+  price: number|string;
+  amount: number|string;
+  fullPrecisionPrice: number|string;
+  fullPrecisionAmount: number|string;
+  tokensEscrowed: number|string;
+  sharesEscrowed: number|string;
+}
+
+export interface OrdersRow extends BaseTransaction {
   orderID?: Bytes32;
   marketID: Address;
   outcome: number;
@@ -283,7 +299,6 @@ export interface OrdersRow {
   orderType: string;
   orderCreator: Address;
   orderState: OrderState;
-  creationBlockNumber: number;
   price: string;
   amount: string;
   fullPrecisionPrice: string;

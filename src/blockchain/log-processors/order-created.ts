@@ -60,11 +60,14 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
         const orderTypeLabel = parseInt(orderType, 16) === 0 ? "buy" : "sell";
         const orderData: OrdersRow = {
           marketID,
+          blockNumber: log.blockNumber,
+          blockHash: log.blockHash,
+          transactionHash: log.transactionHash,
+          transactionIndex: log.transactionIndex,
           outcome,
           shareToken: log.shareToken,
           orderCreator: log.creator,
           orderState: OrderState.OPEN,
-          creationBlockNumber: log.blockNumber,
           tradeGroupID: log.tradeGroupId,
           orderType: orderTypeLabel,
           price: formatOrderPrice(orderTypeLabel, minPrice, maxPrice, fullPrecisionPrice),

@@ -5,7 +5,7 @@
   "params": {
     "marketID": "0x0000000000000000000000000000000000000001",
     "outcome": null,
-    "orderType": "buy",
+    "orderType": "sell",
     "creator": null
   }
 }

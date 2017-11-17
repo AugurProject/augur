@@ -36,6 +36,9 @@ describe("blockchain/log-processors/order-created", () => {
         orderId: "ORDER_ID",
         tradeGroupId: "TRADE_GROUP_ID",
         blockNumber: 1400100,
+        blockHash: "0x1400101",
+        transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
+        transactionIndex: 0,
       },
       augur: {
         api: {
@@ -69,13 +72,16 @@ describe("blockchain/log-processors/order-created", () => {
         assert.isNull(err);
         assert.deepEqual(records, [{
           orderID: "ORDER_ID",
+          blockNumber: 1400100,
+          blockHash: "0x1400101",
+          transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
+          transactionIndex: 0,
           marketID: "0x0000000000000000000000000000000000000001",
           outcome: 0,
           shareToken: "0x1000000000000000000000000000000000000000",
           orderType: "buy",
           orderCreator: "CREATOR_ADDRESS",
           orderState: "OPEN",
-          creationBlockNumber: 1400100,
           fullPrecisionPrice: 0.75,
           fullPrecisionAmount: 3,
           price: 0.75,
@@ -90,13 +96,16 @@ describe("blockchain/log-processors/order-created", () => {
         assert.isNull(err);
         assert.deepEqual(records, [{
           orderID: "ORDER_ID",
+          blockHash: "0x1400101",
+          transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
+          transactionIndex: 0,
           marketID: "0x0000000000000000000000000000000000000001",
           outcome: 0,
           shareToken: "0x1000000000000000000000000000000000000000",
           orderType: "buy",
           orderCreator: "CREATOR_ADDRESS",
           orderState: "OPEN",
-          creationBlockNumber: 1400100,
+          blockNumber: 1400100,
           fullPrecisionPrice: 0.75,
           fullPrecisionAmount: 3,
           price: 0.75,
