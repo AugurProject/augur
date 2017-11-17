@@ -79,14 +79,10 @@ export default class MarketsHeader extends Component {
 
     return (
       <article className={Styles.MarketsHeader}>
-        <div className={Styles.MarketsHeader__search}>
-
-        </div>
+        <div className={Styles.MarketsHeader__search} />
         <div className={Styles.MarketsHeader__wrapper}>
           <h1 className={Styles.MarketsHeader__heading}>{s.headerTitle}</h1>
-          <div className={Styles.MarketsHeader__filters}>
-
-          </div>
+          <div className={Styles.MarketsHeader__filters} />
         </div>
       </article>
     )
