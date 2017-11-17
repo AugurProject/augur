@@ -8,6 +8,7 @@ interface Order {
   owner: Address;
   creationTime: number;
   creationBlockNumber: number;
+  orderState: OrderState;
   price: number|string;
   amount: number|string;
   fullPrecisionPrice: number|string;
@@ -43,6 +44,7 @@ export function getOrders(db: Knex, universe: Address|null, marketID: Address|nu
   const query: Knex.QueryBuilder = db.select(["orders.*", `blocks.timestamp as creationTime`]).from("orders");
   query.leftJoin("blocks", "orders.creationBlockNumber", "blocks.blockNumber");
   query.leftJoin("markets", "orders.marketID", "markets.marketID");
+  query.where(queryData);
   if ( orderState != null && orderState !== OrderState.ALL) query.where("orderState", orderState);
   queryModifier(query, "volume", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, ordersRows?: Array<OrdersRowWithCreationTime>): void => {
@@ -58,6 +60,7 @@ export function getOrders(db: Knex, universe: Address|null, marketID: Address|nu
         owner: row.orderCreator,
         creationTime: row.creationTime,
         creationBlockNumber: row.creationBlockNumber,
+        orderState: row.orderState,
         price: row.price,
         amount: row.amount,
         fullPrecisionPrice: row.fullPrecisionPrice,
