@@ -3,6 +3,7 @@
 "use strict";
 
 var assert = require("chai").assert;
+var immutableDelete = require("immutable-delete");
 var proxyquire = require("proxyquire").noPreserveCache();
 
 var REPORTING_WINDOW_ADDRESS = "0xeeeeeeeeeeeeeeeee";
@@ -36,17 +37,14 @@ describe("create-market/create-binary-market", function () {
   test({
     description: "create a binary market",
     params: {
-      meta: {
-        signer: Buffer.from("PRIVATE_KEY", "utf8"),
-        accountType: "privateKey",
-      },
+      meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       universe: "UNIVERSE_ADDRESS",
       _endTime: 2345678901,
-      _feePerEthInWei: "4321",
+      _feePerEthInWei: "0x4321",
       _denominationToken: "TOKEN_ADDRESS",
       _designatedReporterAddress: "DESIGNATED_REPORTER_ADDRESS",
       _topic: "TOPIC",
-      _extraInfo: extraInfo,
+      _extraInfo: immutableDelete(extraInfo, "minPrice", "maxPrice"),
       onSent: function (res) {
         assert.deepEqual(res, { callReturn: "1" });
       },
@@ -71,13 +69,11 @@ describe("create-market/create-binary-market", function () {
               assert.deepEqual(p.tx, { to: REPORTING_WINDOW_ADDRESS, value: "0xf43fc2c04ee0000" });
               assert.strictEqual(p._endTime, 2345678901);
               assert.strictEqual(p._numOutcomes, 2);
-              assert.strictEqual(p._feePerEthInWei, "4321");
+              assert.strictEqual(p._feePerEthInWei, "0x4321");
               assert.strictEqual(p._denominationToken, "TOKEN_ADDRESS");
               assert.strictEqual(p._designatedReporterAddress, "DESIGNATED_REPORTER_ADDRESS");
-              assert.strictEqual(p._minDisplayPrice, "0");
-              assert.strictEqual(p._maxDisplayPrice, "1");
               assert.strictEqual(p._topic, "0x544f504943000000000000000000000000000000000000000000000000000000");
-              assert.strictEqual(p._extraInfo, JSON.stringify(extraInfo));
+              assert.deepEqual(JSON.parse(p._extraInfo), extraInfo);
               assert.strictEqual(p._numTicks, 10752);
               assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p.meta.accountType, "privateKey");

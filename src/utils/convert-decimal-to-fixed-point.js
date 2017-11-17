@@ -5,7 +5,7 @@ var prefixHex = require("speedomatic").prefixHex;
 
 /**
  * @param {string|number} decimalValue
- * @param {number} conversionFactor
+ * @param {string|number} conversionFactor
  * @return {string}
  */
 function convertDecimalToFixedPoint(decimalValue, conversionFactor) {
