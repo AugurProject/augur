@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import FilterSort from 'modules/filter-sort/containers/filter-sort-controller'
-import FilterSearch from 'modules/filter-sort/containers/filter-search'
-import FilterMarketState from 'modules/filter-sort/containers/filter-market-state'
-import SortMarketParam from 'modules/filter-sort/containers/sort-market-param'
+// import FilterSort from 'modules/filter-sort/containers/filter-sort-controller'
+// import FilterSearch from 'modules/filter-sort/containers/filter-search'
+// import FilterMarketState from 'modules/filter-sort/containers/filter-market-state'
+// import SortMarketParam from 'modules/filter-sort/containers/sort-market-param'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 import parsePath from 'modules/routes/helpers/parse-path'
@@ -18,7 +18,7 @@ export default class MarketsHeader extends Component {
   static propTypes = {
     isLogged: PropTypes.bool.isRequired,
     location: PropTypes.object.isRequired,
-    updateFilteredItems: PropTypes.func.isRequired
+    // updateFilteredItems: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -74,44 +74,33 @@ export default class MarketsHeader extends Component {
   }
 
   render() {
-    const p = this.props
+    // const p = this.props
     const s = this.state
 
     return (
       <article className={Styles.MarketsHeader}>
-        <FilterSort
-          items={p.markets}
-          updateFilteredItems={p.updateFilteredItems}
-        >
-          <div className={Styles.MarketsHeader__search}>
-            <FilterSearch
-              searchPlaceholder="Search"
-              searchKeys={[
-                'description',
-                ['outcomes', 'name'],
-                ['tags', 'name']
-              ]}
-            />
+        <div className={Styles.MarketsHeader__search}>
+
+        </div>
+        <div className={Styles.MarketsHeader__wrapper}>
+          <h1 className={Styles.MarketsHeader__heading}>{s.headerTitle}</h1>
+          <div className={Styles.MarketsHeader__filters}>
+
           </div>
-          <div className={Styles.MarketsHeader__wrapper}>
-            <h1 className={Styles.MarketsHeader__heading}>{s.headerTitle}</h1>
-            <div className={Styles.MarketsHeader__filters}>
-              <SortMarketParam />
-              <FilterMarketState />
-            </div>
-          </div>
-        </FilterSort>
+        </div>
       </article>
     )
   }
 }
 
-// <FilterSort
-//   items={p.markets}
-//   updateFilteredItems={p.updateFilteredItems}
-//   filterByMarketFavorites={s.filterByMarketFavorites}
+// <FilterSearch
 //   searchPlaceholder="Search"
-//   searchKeys={this.searchKeys}
-//   filterBySearch
-//   filterByTags
+//   searchKeys={[
+//     'description',
+//     ['outcomes', 'name'],
+//     ['tags', 'name']
+//   ]}
 // />
+
+// <SortMarketParam />
+// <FilterMarketState />

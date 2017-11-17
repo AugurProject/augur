@@ -15,7 +15,7 @@ export default class MarketsList extends Component {
     history: PropTypes.object.isRequired,
     isLogged: PropTypes.bool.isRequired,
     markets: PropTypes.array.isRequired,
-    filteredMarkets: PropTypes.array.isRequired,
+    // filteredMarkets: PropTypes.array.isRequired,
     location: PropTypes.object.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
@@ -35,7 +35,7 @@ export default class MarketsList extends Component {
 
     this.state = {
       lowerBound: this.props.showPagination ? null : 1,
-      boundedLength: this.props.showPagination ? null : this.props.filteredMarkets.length,
+      boundedLength: this.props.showPagination ? null : this.props.markets.length,
       marketIDsMissingInfo: [] // This is ONLY the currently displayed markets that are missing info
     }
 
@@ -48,7 +48,7 @@ export default class MarketsList extends Component {
     if (
       this.state.lowerBound !== nextState.lowerBound ||
       this.state.boundedLength !== nextState.boundedLength ||
-      !isEqual(this.props.filteredMarkets, nextProps.filteredMarkets)
+      !isEqual(this.props.markets, nextProps.markets)
     ) {
       this.setMarketIDsMissingInfo(nextProps.markets, nextProps.filteredMarkets, nextState.lowerBound, nextState.boundedLength)
     }
@@ -60,12 +60,11 @@ export default class MarketsList extends Component {
     this.setState({ lowerBound, boundedLength })
   }
 
-  setMarketIDsMissingInfo(markets, filteredMarkets, lowerBound, boundedLength) {
+  setMarketIDsMissingInfo(markets, lowerBound, boundedLength) {
     const marketIDsMissingInfo = []
-    if (filteredMarkets.length && boundedLength) {
+    if (markets.length && boundedLength) {
       [...Array(boundedLength)].forEach((unused, i) => {
-        const item = filteredMarkets[(lowerBound - 1) + i]
-        const market = markets[item]
+        const market = markets[(lowerBound - 1) + i]
         if (market && !market.isLoadedMarketInfo && !market.isMarketLoading) marketIDsMissingInfo.push(market.id)
       })
     }
@@ -82,7 +81,7 @@ export default class MarketsList extends Component {
     const p = this.props
     const s = this.state
 
-    const marketsLength = p.filteredMarkets.length
+    const marketsLength = p.markets.length
     const shareDenominations = getValue(p, 'scalarShareDenomination.denominations')
 
     // console.log('filteredMarkets -- ', p.filteredMarkets)
@@ -91,8 +90,7 @@ export default class MarketsList extends Component {
       <article className="markets-list">
         {marketsLength && s.boundedLength ?
           [...Array(s.boundedLength)].map((unused, i) => {
-            const item = p.filteredMarkets[(s.lowerBound - 1) + i]
-            const market = p.markets[item]
+            const market = p.markets[(s.lowerBound - 1) + i]
             const selectedShareDenomination = market ? getValue(p, `scalarShareDenomination.markets.${market.id}`) : null
 
             if (market && market.id) {

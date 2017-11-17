@@ -4,7 +4,6 @@ import { Helmet } from 'react-helmet'
 
 import MarketsHeader from 'modules/markets/components/markets-header/markets-header'
 import MarketsList from 'modules/markets/components/markets-list'
-import Universe from 'modules/universe/components/universe'
 
 import getValue from 'utils/get-value'
 import parseQuery from 'modules/routes/helpers/parse-query'
@@ -33,21 +32,14 @@ export default class MarketsView extends Component {
     clearMarketsFilteredSorted: PropTypes.func.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
     loadMarketsInfo: PropTypes.func.isRequired
-    // filterSort: PropTypes.object,
-    // marketsHeader: PropTypes.object,
-    // pagination: PropTypes.object,
-    // keywords: PropTypes.string,
-    // onChangeKeywords: PropTypes.func,
-    // universe: PropTypes.object,
-    // scalarShareDenomination: PropTypes.object,
-    // location: PropTypes.object.isRequired,
   }
 
   constructor(props) {
     super(props)
 
+    console.log('allMarkets -- ', props.markets)
+
     this.state = {
-      shouldDisplayUniverseInfo: !!(getValue(props, 'loginAccount.rep.value') && getValue(props, 'universe.id')),
       filteredMarkets: []
     }
   }
@@ -91,9 +83,9 @@ export default class MarketsView extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (!isEqual(this.state.filteredMarkets, nextState.filteredMarkets)) {
-      this.props.updateMarketsFilteredSorted(nextState.filteredMarkets)
-      checkFavoriteMarketsCount(nextState.filteredMarkets, nextProps.location, nextProps.history)
+    if (!isEqual(this.state.markets, nextState.markets)) {
+      this.props.updateMarketsFilteredSorted(nextState.markets)
+      checkFavoriteMarketsCount(nextState.markets, nextProps.location, nextProps.history)
     }
   }
 
@@ -122,19 +114,14 @@ export default class MarketsView extends Component {
         <Helmet>
           <title>Markets</title>
         </Helmet>
-        {this.state.shouldDisplayUniverseInfo &&
-          <Universe {...p.universe} />
-        }
         <MarketsHeader
           isLogged={p.isLogged}
           location={p.location}
           markets={p.markets}
-          updateFilteredItems={filteredMarkets => this.setState({ filteredMarkets })}
         />
         <MarketsList
           isLogged={p.isLogged}
           markets={p.markets}
-          filteredMarkets={s.filteredMarkets}
           location={p.location}
           history={p.history}
           scalarShareDenomination={p.scalarShareDenomination}
