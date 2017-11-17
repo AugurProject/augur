@@ -31,8 +31,8 @@ export function getOrders(db: Knex, universe: Address|null, marketID: Address|nu
   query.leftJoin("blocks", "orders.blockNumber", "blocks.blockNumber");
   query.leftJoin("markets", "orders.marketID", "markets.marketID");
   query.where(queryData);
-  if (earliestCreationTime != null) query.where("creationTime", ">", earliestCreationTime);
-  if (latestCreationTime != null) query.where("creationTime", "<", latestCreationTime);
+  if (earliestCreationTime != null) query.where("creationTime", ">=", earliestCreationTime);
+  if (latestCreationTime != null) query.where("creationTime", "<=", latestCreationTime);
   if ( orderState != null && orderState !== OrderState.ALL) query.where("orderState", orderState);
   queryModifier(query, "volume", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, ordersRows?: Array<OrdersRowWithCreationTime>): void => {

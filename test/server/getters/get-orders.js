@@ -328,7 +328,7 @@ describe("server/getters/get-orders", () => {
     },
   });
   test({
-    description: "get orders created by user b0b DATE",
+    description: "get orders created by user b0b filtered by date",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       marketID: null,
@@ -336,6 +336,7 @@ describe("server/getters/get-orders", () => {
       orderType: null,
       creator: "0x0000000000000000000000000000000000000b0b",
       earliestCreationTime: 1506473501,
+      latestCreationTime: 1506473515,
     },
     assertions: (err, openOrders) => {
       assert.isNull(err);
