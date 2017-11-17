@@ -16,7 +16,7 @@ const augurNode = "ws://127.0.0.1:9001";
 
 function faucetInAndMigrate(universe, callback) {
   augur.api.LegacyReputationToken.faucet({
-    _amount: speedomatic.fix(47, "hex"),
+    _amount: speedomatic.fix(100000, "hex"),
     onSent: res => console.log("faucet sent:", res.hash),
     onSuccess: (res) => {
       console.log("faucet success:", res.callReturn);

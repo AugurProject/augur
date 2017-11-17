@@ -7,7 +7,10 @@
 
 var async = require("async");
 var chalk = require("chalk");
+var speedomatic = require("speedomatic");
 var Augur = require("../src");
+var convertDecimalToFixedPoint = require("../src/utils/convert-decimal-to-fixed-point");
+var constants = require("../src/constants");
 
 var augur = new Augur();
 
@@ -115,6 +118,22 @@ var cannedMarkets = [{
     tags: ["weather", "SFO"],
     description: "What will the maximum temperature be (in degrees Fahrenheit) on " + today.toLocaleDateString() + " at the San Francisco International Airport, as reported by Weather Underground?",
     longDescription: "https://www.penny-arcade.com/comic/2001/12/12",
+  },
+  orderBook: {
+    buy: {
+      "0": [
+        { shares: "100", price: "20" },
+        { shares: "200", price: "0" },
+        { shares: "300", price: "-5" },
+      ],
+    },
+    sell: {
+      "0": [
+        { shares: "150", price: "25" },
+        { shares: "100", price: "50" },
+        { shares: "300", price: "100" },
+      ],
+    },
   },
 }, {
   _endTime: parseInt(closingBell.getTime() / 1000, 10),
@@ -721,9 +740,9 @@ augur.connect({ ethereumNode: ethereumNode, augurNode: augurNode }, function (er
       if (DEBUG) console.log("createMarket sent:", r);
     };
     market.onSuccess = function (r) {
-      if (DEBUG) console.log("createMarket success:", r.callReturn);
-      console.log(chalk.green(r.callReturn), chalk.cyan.dim(market.description));
       var marketID = r.callReturn;
+      if (DEBUG) console.log("createMarket success:", marketID);
+      console.log(chalk.green(marketID), chalk.cyan.dim(market._extraInfo.description));
       var largestOutcomeShares = 0;
       for (var outcomeID in market.orderBook.sell) {
         if (market.orderBook.sell.hasOwnProperty(outcomeID)) {
@@ -739,82 +758,84 @@ augur.connect({ ethereumNode: ethereumNode, augurNode: augurNode }, function (er
           }
         }
       }
-      // Order.Types _type, uint256 _attoshares, uint256 _displayPrice, IMarket _market, uint8 _outcome, bytes32 _betterOrderId, bytes32 _worseOrderId, uint256 _tradeGroupId
-      // function publicBuy(IMarket _market, uint8 _outcome, uint256 _fxpAmount, uint256 _price, uint256 _tradeGroupId) external payable
-      // function publicSell(IMarket _market, uint8 _outcome, uint256 _fxpAmount, uint256 _price, uint256 _tradeGroupId) external payable
-      // augur.api.CompleteSets.buyCompleteSets({
-      //   market: marketID,
-      //   amount: "0x" + largestOutcomeShares.toString(16),
-      //   onSent: function (res) {
-      //     // console.log("buyCompleteSets sent:", res.txHash);
-      //   },
-      //   onSuccess: function (res) {
-      //     // console.log("buyCompleteSets success:", res.callReturn);
-      //     async.forEachOfSeries(market.orderBook, function (orders, orderType, nextOrderType) {
-      //       async.forEachOfSeries(orders, function (outcomeOrders, outcome, nextOutcome) {
-      //         async.each(outcomeOrders, function (order, nextOrder) {
-      //           if (orderType === "buy") {
-      //             augur.trading.makeOrder.buy({
-      //               amount: order.shares,
-      //               price: order.price,
-      //               market: marketID,
-      //               outcome: outcome,
-      //               onSent: function (res) {
-      //                 // console.log("buy sent:", orderType, outcome, order, res.callReturn, res.txHash);
-      //               },
-      //               onSuccess: function (res) {
-      //                 // console.log("buy success:", orderType, outcome, order, res.callReturn, res.hash);
-      //                 nextOrder();
-      //               },
-      //               onFailed: function (err) {
-      //                 console.error("buy failed:", orderType, outcome, order);
-      //                 nextOrder(err);
-      //               },
-      //             });
-      //           } else {
-      //             augur.trading.makeOrder.sell({
-      //               amount: order.shares,
-      //               price: order.price,
-      //               market: marketID,
-      //               outcome: outcome,
-      //               onSent: function (res) {
-      //                 // console.log("sell sent:", orderType, outcome, order, res.callReturn, res.txHash);
-      //               },
-      //               onSuccess: function (res) {
-      //                 // console.log("sell success:", orderType, outcome, order, res.callReturn, res.hash);
-      //                 nextOrder();
-      //               },
-      //               onFailed: function (err) {
-      //                 console.error("sell failed:", orderType, outcome, order);
-      //                 nextOrder(err);
-      //               },
-      //             });
-      //           }
-      //         }, function (err) {
-      //           if (err) console.error("each order:", err);
-      //           nextOutcome();
-      //         });
-      //       }, function (err) {
-      //         if (err) console.error("each outcome:", err);
-      //         nextOrderType();
-      //       });
-      //     }, function (err) {
-      //       if (err) console.error("each order type:", err);
-      //       nextMarket();
-      //     });
-      //   },
-      //   onFailed: function (err) {
-      //     console.error("buyCompleteSets failed:", err);
-      //     nextMarket();
-      //   },
-      // });
+      console.log("buying complete sets:", {
+        _market: marketID,
+        _amount: "0x" + largestOutcomeShares.toString(16),
+      });
+      augur.api.CompleteSets.publicBuyCompleteSets({
+        _market: marketID,
+        _amount: "0x" + largestOutcomeShares.toString(16),
+        onSent: function (res) {
+          console.log("buyCompleteSets sent:", res.txHash);
+        },
+        onSuccess: function (res) {
+          console.log("buyCompleteSets success:", res.callReturn);
+          async.forEachOfSeries(market.orderBook, function (orders, orderType, nextOrderType) {
+            async.forEachOfSeries(orders, function (outcomeOrders, outcome, nextOutcome) {
+              async.each(outcomeOrders, function (order, nextOrder) {
+                if (orderType === "buy") {
+                  augur.api.Trade.publicBuy({
+                    _fxpAmount: speedomatic.fix(order.shares, "hex"),
+                    _price: convertDecimalToFixedPoint(order.price, constants.NUM_TICKS),
+                    _market: marketID,
+                    _outcome: outcome,
+                    _tradeGroupId: 0,
+                    onSent: function (res) {
+                      console.log("buy sent:", orderType, outcome, order, res.callReturn, res.txHash);
+                    },
+                    onSuccess: function (res) {
+                      console.log("buy success:", orderType, outcome, order, res.callReturn, res.hash);
+                      nextOrder();
+                    },
+                    onFailed: function (err) {
+                      console.error("buy failed:", orderType, outcome, order);
+                      nextOrder(err);
+                    },
+                  });
+                } else {
+                  augur.api.Trade.publicSell({
+                    _fxpAmount: speedomatic.fix(order.shares, "hex"),
+                    _price: convertDecimalToFixedPoint(order.price, constants.NUM_TICKS),
+                    _market: marketID,
+                    _outcome: outcome,
+                    _tradeGroupId: 0,
+                    onSent: function (res) {
+                      console.log("sell sent:", orderType, outcome, order, res.callReturn, res.txHash);
+                    },
+                    onSuccess: function (res) {
+                      console.log("sell success:", orderType, outcome, order, res.callReturn, res.hash);
+                      nextOrder();
+                    },
+                    onFailed: function (err) {
+                      console.error("sell failed:", orderType, outcome, order);
+                      nextOrder(err);
+                    },
+                  });
+                }
+              }, function (err) {
+                if (err) console.error("each order:", err);
+                nextOutcome();
+              });
+            }, function (err) {
+              if (err) console.error("each outcome:", err);
+              nextOrderType();
+            });
+          }, function (err) {
+            if (err) console.error("each order type:", err);
+            nextMarket();
+          });
+        },
+        onFailed: function (err) {
+          console.error("buyCompleteSets failed:", err);
+          nextMarket();
+        },
+      });
     };
     market.onFailed = function (e) {
       console.error(chalk.red.bold("createMarket failed:"), e);
       nextMarket();
     };
-    console.log("market:", market);
-    console.log("createMarket:", createMarket.toString());
+    console.log("creating new market:", market);
     createMarket(market);
   }, process.exit);
 });
