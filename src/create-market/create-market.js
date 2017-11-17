@@ -19,8 +19,8 @@ var DEFAULT_NUM_TICKS = require("../constants").DEFAULT_NUM_TICKS;
  * @param {string=} p._feePerEthInWei Amount of wei per ether settled that goes to the market creator, as a base-10 string.
  * @param {string} p._denominationToken Ethereum address of the token used as this market's currency.
  * @param {string} p._creator Ethereum address of the account that is creating this market.
- * @param {string} p._minPrice Minimum display (non-normalized) price for this market, as a base-10 string.
- * @param {string} p._maxPrice Maximum display (non-normalized) price for this market, as a base-10 string.
+ * @param {string} p.minPrice Minimum display (non-normalized) price for this market, as a base-10 string.
+ * @param {string} p.maxPrice Maximum display (non-normalized) price for this market, as a base-10 string.
  * @param {string} p._designatedReporterAddress Ethereum address of this market's designated reporter.
  * @param {string} p._topic The topic (category) to which this market belongs, as a UTF8 string.
  * @param {string=} p._numTicks The number of ticks for this market (default: DEFAULT_NUM_TICKS).
@@ -46,8 +46,8 @@ function createMarket(p) {
     getMarketCreationCost({ universe: p.universe, meta: p.meta }, function (err, marketCreationCost) {
       if (err) return p.onFailed(err);
       var numTicks = p._numTicks || DEFAULT_NUM_TICKS;
-      var extraInfo = assign({}, p._extraInfo || {}, { minPrice: p._minDisplayPrice, maxPrice: p._maxDisplayPrice });
-      api().ReportingWindow.createMarket(assign({}, immutableDelete(p, "universe"), {
+      var extraInfo = assign({}, p._extraInfo || {}, { minPrice: p.minPrice, maxPrice: p.maxPrice });
+      api().ReportingWindow.createMarket(assign({}, immutableDelete(p, ["universe", "minPrice", "maxPrice"]), {
         tx: { to: reportingWindow, value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex") },
         _feePerEthInWei: p._feePerEthInWei,
         _numTicks: numTicks,

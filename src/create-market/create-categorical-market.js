@@ -19,7 +19,7 @@ var createMarket = require("./create-market");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function createCategoricalMarket(p) {
-  createMarket(assign({}, p, { _minDisplayPrice: "0", _maxDisplayPrice: "1" }));
+  createMarket(assign({}, p, { minPrice: "0", maxPrice: "1" }));
 }
 
 module.exports = createCategoricalMarket;

@@ -3,14 +3,12 @@
 var subscriptions = {};
 
 module.exports.onLogAdded = function (log) {
-  console.log("event log added:", log);
   if (subscriptions[log.address] && subscriptions[log.address][log.topics[0]]) {
     subscriptions[log.address][log.topics[0]].callback(log);
   }
 };
 
 module.exports.onLogRemoved = function (log) {
-  console.log("event log removed:", log);
   if (subscriptions[log.address] && subscriptions[log.address][log.topics[0]]) {
     log.removed = true;
     subscriptions[log.address][log.topics[0]].callback(log);
