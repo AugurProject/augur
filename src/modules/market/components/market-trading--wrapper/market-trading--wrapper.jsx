@@ -35,13 +35,16 @@ class MarketTradingWrapper extends Component {
     this.state = {
       errors: {
         quantity: [],
-        price: []
+        price: [],
+        limitOrderTotal: [],
       },
       isOrderValid: true,
       orderType: LIMIT,
       orderPrice: '',
       orderQuantity: '',
       orderEstimate: '',
+      limitOrderTotal: '',
+      limitQuantity: '8.0219',
       selectedNav: BUY,
       currentPage: 0,
     }
@@ -129,6 +132,8 @@ class MarketTradingWrapper extends Component {
                 orderPrice={s.orderPrice}
                 orderQuantity={s.orderQuantity}
                 orderEstimate={s.orderEstimate}
+                limitOrderTotal={s.limitOrderTotal}
+                limitQuantity={s.limitQuantity}
                 isOrderValid={s.isOrderValid}
                 selectedOutcome={p.selectedOutcome}
                 nextPage={this.nextPage}
@@ -148,9 +153,12 @@ class MarketTradingWrapper extends Component {
             orderPrice={s.orderPrice}
             orderQuantity={s.orderQuantity}
             orderEstimate={s.orderEstimate}
+            limitOrderTotal={s.limitOrderTotal}
+            limitQuantity={s.limitQuantity}
             selectedOutcome={p.selectedOutcome}
             prevPage={this.prevPage}
             trade={p.selectedOutcome.trade}
+            isMobile={p.isMobile}
           />
         }
       </section>
