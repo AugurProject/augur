@@ -14,6 +14,8 @@ describe("create-market/create-scalar-market", function () {
     longDescription: "One Market to rule them all, One Market to bind them, One Market to bring them all, and in the darkness bind them.",
     tags: ["Ancient evil", "Large flaming eyes"],
     creationTimestamp: 1234567890,
+    minPrice: "-2",
+    maxPrice: "15.6",
   };
   var test = function (t) {
     it(t.description, function (done) {
@@ -74,8 +76,8 @@ describe("create-market/create-scalar-market", function () {
               assert.strictEqual(p._feePerEthInWei, "4321");
               assert.strictEqual(p._denominationToken, "TOKEN_ADDRESS");
               assert.strictEqual(p._designatedReporterAddress, "DESIGNATED_REPORTER_ADDRESS");
-              assert.strictEqual(p._minDisplayPrice, "-0x5400");
-              assert.strictEqual(p._maxDisplayPrice, "0x28f33");
+              assert.strictEqual(p._minDisplayPrice, "-2");
+              assert.strictEqual(p._maxDisplayPrice, "15.6");
               assert.strictEqual(p._topic, "0x544f504943000000000000000000000000000000000000000000000000000000");
               assert.strictEqual(p._extraInfo, JSON.stringify(extraInfo));
               assert.strictEqual(p._numTicks, 10752);
