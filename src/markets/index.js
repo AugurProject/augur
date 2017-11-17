@@ -7,6 +7,7 @@ module.exports = {
   getDetailedMarketInfo: require("./get-detailed-market-info"),
   getDisputableMarkets: require("./get-disputable-markets"),
   getMarketPriceHistory: require("./get-market-price-history"),
+  getMarkets: require("./get-markets"),
   getMarketsAwaitingAllReporting: require("./get-markets-awaiting-all-reporting"),
   getMarketsAwaitingDesignatedReporting: require("./get-markets-awaiting-designated-reporting"),
   getMarketsAwaitingLimitedReporting: require("./get-markets-awaiting-limited-reporting"),
