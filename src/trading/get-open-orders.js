@@ -25,7 +25,7 @@ var augurNode = require("../augur-node");
  * @param {Object} p Parameters object.
  * @param {number} p.type Order type (0 for "buy", 1 for "sell").
  * @param {string} p.market Ethereum address of this market's contract instance, as a hexadecimal string.
- * @param {number} p.outcome Outcome ID to look up the order book for, must be an integer value on [1, 8].
+ * @param {number} p.outcome Outcome ID to look up the order book for, must be an integer value on [0, 7].
  * @param {number=} p.limit Number of orders to load, as a whole number (default: 0 / load all orders).
  * @param {function} callback Called when the requested order book for this market/outcome/type has been received and parsed.
  * @return {SingleOutcomeOrderBookSide} One side of the order book (buy or sell) for this market and outcome.

@@ -1,6 +1,7 @@
 "use strict";
 
 module.exports = {
+  getBetterWorseOrders: require("./get-better-worse-orders"),
   getOrderBook: require("./get-open-orders"),
   getUserTradingHistory: require("./get-user-trading-history"),
   getUserTradingPositions: require("./get-user-trading-positions"),

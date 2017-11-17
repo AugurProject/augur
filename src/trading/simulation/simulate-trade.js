@@ -39,7 +39,7 @@ var simulateSell = require("./simulate-sell");
  * for minPrice, maxPrice, and price.
  * @param {Object} p Trade simulation parameters.
  * @param {number} p.orderType Order type (0 for "buy", 1 for "sell").
- * @param {number} p.outcome Outcome ID to trade, must be an integer value on [1, 8].
+ * @param {number} p.outcome Outcome ID to trade, must be an integer value on [0, 7].
  * @param {string[]} p.shareBalances Number of shares the user owns of each outcome in ascending order, as an array of base-10 strings.
  * @param {string} p.tokenBalance Number of tokens (e.g., wrapped ether) the user owns, as a base-10 string.
  * @param {string} p.userAddress The user's Ethereum address, as a hexadecimal string.
