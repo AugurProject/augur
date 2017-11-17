@@ -24,6 +24,12 @@ class MarketTrading extends Component {
     this.state = {
       showForm: false,
     }
+
+    this.toggleForm = this.toggleForm.bind(this)
+  }
+
+  toggleForm() {
+    this.setState({ showForm: !this.state.showForm })
   }
 
   render() {
@@ -62,6 +68,7 @@ class MarketTrading extends Component {
             selectedOutcome={p.selectedOutcome}
             initialMessage={initialMessage}
             isMobile={p.isMobile}
+            toggleForm={this.toggleForm}
           />
         }
         { p.isMobile && p.selectedOutcomes.length > 0 && initialMessage &&
@@ -71,7 +78,7 @@ class MarketTrading extends Component {
         }
         { p.isMobile && p.selectedOutcomes.length > 0 && !initialMessage && !s.showForm && // this needs to be changed to use p.selectedOutcome (should only show on mobile when an outcome has been selected)
           <div className={Styles['Trading__button--trade']}>
-            <button onClick={e => this.setState({ showForm: true })}>Trade</button>
+            <button onClick={this.toggleForm}>Trade</button>
           </div>
         }
       </section>

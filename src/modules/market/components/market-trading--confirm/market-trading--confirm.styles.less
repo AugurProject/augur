@@ -91,3 +91,47 @@
     line-height: @font-size-large;
   }
 }
+
+@media @breakpoint-mobile {
+  .TradingConfirmation__actions {
+    min-height: 6.25rem;
+    padding: 0;
+  }
+
+  .TradingConfirmation__button--back,
+  .TradingConfirmation__button--submit {
+    border-radius: 0;
+    bottom: 0;
+    margin: 0;
+    padding: 1rem;
+    position: fixed;
+    width: 100%;
+  }
+
+  .TradingConfirmation__button--back {
+    background-color: @color-white;
+  }
+
+  .TradingConfirmation__button--submit {
+    bottom: 3.125rem;
+  }
+
+  .TradingConfirm__details > li > span,
+  .TradingConfirm__details > li > span:first-child {
+    color: @color-lightgray;
+  }
+
+  .TradingConfirm__header {
+    padding-top: 1.5rem;
+    padding-bottom: 1.1rem;
+
+    > h2 {
+      color: @color-white;
+    }
+  }
+
+  .TradingConfirm__total > li > span,
+  .TradingConfirm__total > li > span:first-child {
+    color: @color-white;
+  }
+}
