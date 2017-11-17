@@ -22,5 +22,4 @@ export function getStakeTokens(db: Knex, universe: Address, account: Address, st
       if (err) return callback(err);
       callback(null, stakeTokens.reduce((acc: UIStakeTokens, cur) => {acc[cur.stakeToken] = reshapeStakeTokensRowToUIStakeTokenInfo(cur); return acc; }, {}));
     });
-
 }

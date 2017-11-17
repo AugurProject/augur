@@ -9,7 +9,7 @@ describe("server/getters/get-orders", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getOrders(db, t.params.universe, t.params.marketID, t.params.outcome, t.params.orderType, t.params.creator, t.params.orderState, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, openOrders) => {
+        getOrders(db, t.params.universe, t.params.marketID, t.params.outcome, t.params.orderType, t.params.creator, t.params.orderState, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, openOrders) => {
           t.assertions(err, openOrders);
           done();
         });
@@ -261,6 +261,86 @@ describe("server/getters/get-orders", () => {
             },
           },
         },
+        "0x0000000000000000000000000000000000000003": {
+          1: {
+            sell: {
+              "0x8000000000000000000000000000000000000000000000000000000000000000": {
+                amount: 2,
+                creationBlockNumber: 1400002,
+                creationTime: 1506473515,
+                transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A09",
+                transactionIndex: 0,
+                fullPrecisionAmount: 2,
+                fullPrecisionPrice: 0.6,
+                orderState: "OPEN",
+                owner: "0x0000000000000000000000000000000000000b0b",
+                price: 0.6,
+                shareToken: "0x2000000000000000000000000000000000000000",
+                sharesEscrowed: 0,
+                tokensEscrowed: 1.2,
+              },
+            },
+          },
+        },
+        "0x0000000000000000000000000000000000000011": {
+          1: {
+            buy: {
+              "0x7000000000000000000000000000000000000000000000000000000000000000": {
+                amount: 2,
+                creationBlockNumber: 1400002,
+                creationTime: 1506473515,
+                transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A08",
+                transactionIndex: 0,
+                fullPrecisionAmount: 2.0000001,
+                fullPrecisionPrice: 0.6,
+                orderState: "OPEN",
+                owner: "0x0000000000000000000000000000000000000b0b",
+                price: 0.6,
+                shareToken: "0x2000000000000000000000000000000000000000",
+                sharesEscrowed: 0,
+                tokensEscrowed: 1.20000006,
+              },
+            },
+          },
+        },
+        "0x0000000000000000000000000000000000000018": {
+          0: {
+            buy: {
+              "0x6000000000000000000000000000000000000000000000000000000000000000": {
+                amount: 2,
+                creationBlockNumber: 1400002,
+                creationTime: 1506473515,
+                transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A07",
+                transactionIndex: 0,
+                fullPrecisionAmount: 2,
+                fullPrecisionPrice: 0.600001,
+                orderState: "OPEN",
+                owner: "0x0000000000000000000000000000000000000b0b",
+                price: 0.6,
+                shareToken: "0x1000000000000000000000000000000000000000",
+                sharesEscrowed: 0,
+                tokensEscrowed: 1.200002,
+              },
+            },
+          },
+        },
+      });
+    },
+  });
+  test({
+    description: "get orders created by user b0b filtered by date",
+    params: {
+      universe: "0x000000000000000000000000000000000000000b",
+      marketID: null,
+      outcome: null,
+      orderType: null,
+      creator: "0x0000000000000000000000000000000000000b0b",
+      earliestCreationTime: 1506473501,
+      latestCreationTime: 1506473515,
+    },
+    assertions: (err, openOrders) => {
+      assert.isNull(err);
+      assert.deepEqual(openOrders, {
         "0x0000000000000000000000000000000000000003": {
           1: {
             sell: {
