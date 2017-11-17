@@ -42,7 +42,7 @@ const MarketProperties = (p) => {
         </li>
         <li>
           <span>Fee</span>
-          <ValueDenomination {...p.takerFeePercent} />
+          <ValueDenomination {...p.settlementFeePercent} />
         </li>
         <li>
           <span>Expires</span>
