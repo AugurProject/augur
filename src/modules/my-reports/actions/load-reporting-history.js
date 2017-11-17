@@ -10,7 +10,7 @@ export function loadReportingHistory(options, callback = logError) {
     augur.reporting.getReportingHistory({ ...options, reporter: loginAccount.address, universe: universe.id }, (err, reportingHistory) => {
       if (err) return callback(err)
       if (err) return callback(err)
-      if (reportingHistory == null) return callback(null)
+      if (reportingHistory == null || Object.keys(reportingHistory).length === 0) return callback(null)
       const marketIDs = Object.keys(reportingHistory[universe.id])
       // TODO: not sure we want to start cascading calls, need discussion
       augur.markets.getMarketsInfo({ marketIDs }, (err, marketsData) => {
