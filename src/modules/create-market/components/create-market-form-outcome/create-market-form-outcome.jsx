@@ -9,6 +9,7 @@ import speedomatic from 'speedomatic'
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import { CATEGORICAL_OUTCOMES_MIN_NUM, CATEGORICAL_OUTCOMES_MAX_NUM, CATEGORICAL_OUTCOME_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints'
+import {constants} from 'services/augurjs'
 
 import Styles from 'modules/create-market/components/create-market-form-outcome/create-market-form-outcome.styles'
 import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'
@@ -282,6 +283,14 @@ export default class CreateMarketOutcome extends Component {
                 value={p.newMarket.scalarBigNum instanceof BigNumber ? p.newMarket.scalarBigNum.toNumber() : p.newMarket.scalarBigNum}
                 placeholder="Max Value"
                 onChange={(e) => { this.validateScalarNum(e.target.value, 'big') }}
+              />
+              <input
+                id="cm__input--denomination"
+                type="text"
+                value={p.newMarket.scalarDenomination}
+                maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
+                placeholder="Range Denomination"
+                onChange={e => p.validateField('scalarDenomination', e.target.value, CATEGORICAL_OUTCOME_MAX_LENGTH)}
               />
             </div>
           </li>

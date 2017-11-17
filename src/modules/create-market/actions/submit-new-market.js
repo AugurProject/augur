@@ -49,6 +49,7 @@ export function submitNewMarket(newMarket, history) {
       case SCALAR:
         formattedNewMarket._minDisplayPrice = newMarket.scalarSmallNum.toString()
         formattedNewMarket._maxDisplayPrice = newMarket.scalarBigNum.toString()
+        formattedNewMarket._extraInfo._scalarDenomination = newMarket.scalarDenomination
         createMarket = augur.createMarket.createScalarMarket
         break
       case BINARY:
