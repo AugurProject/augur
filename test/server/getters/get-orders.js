@@ -130,6 +130,41 @@ describe("server/getters/get-orders", () => {
     },
   });
   test({
+    description: "get closed sell orders for market 1",
+    params: {
+      universe: "0x000000000000000000000000000000000000000b",
+      marketID: "0x0000000000000000000000000000000000000001",
+      outcome: null,
+      orderType: "sell",
+      creator: null,
+      orderState: "CLOSED",
+    },
+    assertions: (err, openOrders) => {
+      assert.isNull(err);
+      assert.deepEqual(openOrders, {
+        "0x0000000000000000000000000000000000000001": {
+          1: {
+            sell: {
+              "0x4100000000000000000000000000000000000000000000000000000000000000": {
+                shareToken: "0x2000000000000000000000000000000000000000",
+                owner: "0x000000000000000000000000000000000000d00d",
+                creationTime: 1506473515,
+                creationBlockNumber: 1400002,
+                orderState: "CLOSED",
+                price: 0.7,
+                amount: 2,
+                fullPrecisionPrice: 0.7,
+                fullPrecisionAmount: 2,
+                tokensEscrowed: 1.2,
+                sharesEscrowed: 0,
+              },
+            },
+          },
+        },
+      });
+    },
+  });
+  test({
     description: "get orders created by user b0b",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
