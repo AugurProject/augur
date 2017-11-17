@@ -46,11 +46,11 @@ describe("server/getters/get-user-trading-history", () => {
     },
   });
   test({
-    description: "user was creator in 1 trade in market and outcome",
+    description: "user was creator in many markets and outcomes",
     params: {
-      universe: null,
+      universe: "0x000000000000000000000000000000000000000b",
       account: "0x0000000000000000000000000000000000000b0b",
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketID: null,
       outcome: 0,
       orderType: null,
       sortBy: null,
@@ -156,6 +156,37 @@ describe("server/getters/get-user-trading-history", () => {
           timestamp: 1506474500,
           tradeGroupID: null,
           type: "buy",
+        },
+      ]);
+    },
+  });
+  test({
+    description: "user was creator in many markets and outcomes, filter to one market",
+    params: {
+      universe: null,
+      account: "0x0000000000000000000000000000000000000b0b",
+      marketID: "0x0000000000000000000000000000000000000001",
+      outcome: 0,
+      orderType: null,
+      sortBy: null,
+      isSortDescending: null,
+      limit: null,
+      offset: null,
+    },
+    assertions: (err, userTradingHistory) => {
+      assert.isNull(err);
+      assert.deepEqual(userTradingHistory, [
+        {
+          amount: 0.2,
+          maker: true,
+          marketID: "0x0000000000000000000000000000000000000001",
+          outcome: 0,
+          price: 5.5,
+          settlementFees: 0,
+          shareToken: "0x1000000000000000000000000000000000000000",
+          timestamp: 1506474500,
+          tradeGroupID: null,
+          type: "sell",
         },
       ]);
     },

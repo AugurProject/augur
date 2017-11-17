@@ -62,10 +62,8 @@ export interface FormattedLog extends BaseTransaction {
 export interface MarketCreatedLogExtraInfo {
   minPrice: string;
   maxPrice: string;
-  category: string;
-  tag1?: string|null;
-  tag2?: string|null;
-  shortDescription: string;
+  tags?: Array<string|null>;
+  description: string;
   longDescription?: string|null;
   resolutionSource?: string|null;
   marketType: string;

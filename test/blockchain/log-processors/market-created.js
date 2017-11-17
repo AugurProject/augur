@@ -11,7 +11,7 @@ describe("blockchain/log-processors/market-created", () => {
   const test = (t) => {
     const getState = (db, params, callback) => parallel({
       markets: next => getMarketsWithReportingState(db).where({"markets.marketID": params.log.market }).asCallback(next),
-      categories: next => db("categories").where({ category: params.log.extraInfo.category }).asCallback(next),
+      categories: next => db("categories").where({ category: params.log.topic }).asCallback(next),
       outcomes: next => db("outcomes").where({ marketID: params.log.market }).asCallback(next),
       tokens: next => db("tokens").where({ marketID: params.log.market }).asCallback(next),
     }, callback);
@@ -44,14 +44,13 @@ describe("blockchain/log-processors/market-created", () => {
         market: "0x1111111111111111111111111111111111111111",
         marketCreator: "0x0000000000000000000000000000000000000b0b",
         marketCreationFee: "0.1",
+        topic: "TEST_CATEGORY",
         extraInfo: {
           marketType: "binary",
           minPrice: "0",
           maxPrice: "1",
-          category: "TEST_CATEGORY",
-          tag1: "TEST_TAG_1",
-          tag2: "TEST_TAG_2",
-          shortDescription: "this is a test market",
+          tags: ["TEST_TAG_1", "TEST_TAG_2"],
+          description: "this is a test market",
           longDescription: "this is the long description of a test market",
           resolutionSource: "https://www.trusted-third-party-co.com",
         },
@@ -75,10 +74,6 @@ describe("blockchain/log-processors/market-created", () => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
               callback(null, "0x000000000000000000000000000000000000b0b2");
             },
-            getDesignatedReportStake: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "0x1000000");
-            },
             getNumTicks: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
               callback(null, "0x2a00");
@@ -99,6 +94,10 @@ describe("blockchain/log-processors/market-created", () => {
             getReportingFeeDivisor: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
               callback(null, "0x3e8");
+            },
+            getDesignatedReportStake: (p, callback) => {
+              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
+              callback(null, "0x1000000");
             },
           },
         },
