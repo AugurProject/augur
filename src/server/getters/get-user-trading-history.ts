@@ -2,7 +2,7 @@ import * as Knex from "knex";
 import { Address, Bytes32, TradesRow, UITrade } from "../../types";
 import { queryModifier } from "./database";
 
-interface TradingHistoryRow extends Partial<TradesRow> {
+interface TradingHistoryRow extends TradesRow {
   timestamp: number;
 }
 
@@ -10,6 +10,8 @@ interface TradingHistoryRow extends Partial<TradesRow> {
 export function getUserTradingHistory(db: Knex|Knex.Transaction, universe: Address|null, account: Address, marketID: Address|null|undefined, outcome: number|null|undefined, orderType: string|null|undefined, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: Array<UITrade>) => void): void {
   if (universe == null && marketID == null ) return callback(new Error("Must provide reference to universe, specify universe or marketID"));
   const query = db.select([
+    "trades.transactionHash",
+    "trades.transactionIndex",
     "trades.marketID",
     "trades.outcome",
     "trades.orderType",
@@ -36,6 +38,8 @@ export function getUserTradingHistory(db: Knex|Knex.Transaction, universe: Addre
     if (err) return callback(err);
     if (!userTradingHistory) return callback(new Error("Internal error retrieving trade history"));
     callback(null, userTradingHistory.map((trade: TradingHistoryRow): UITrade => ({
+      transactionHash: trade.transactionHash,
+      transactionIndex: trade.transactionIndex,
       type: trade.orderType!,
       price: trade.price!,
       amount: trade.amount!,
