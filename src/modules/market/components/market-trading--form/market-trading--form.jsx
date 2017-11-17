@@ -65,13 +65,13 @@ class MarketTradingForm extends Component {
           <li>
             <label htmlFor="tr__input--total-cost">Total Cost</label>
             <input
-              className={classNames({ [`${Styles.error}`]: p.errors.limitOrderTotal.length })}
+              className={classNames({ [`${Styles.error}`]: p.errors.marketOrderTotal.length })}
               id="tr__input--total-cost"
               type="number"
               step={10**-PRECISION}
               placeholder="0.0000 ETH"
-              value={p.limitOrderTotal instanceof BigNumber ? p.limitOrderTotal.toNumber() : p.limitOrderTotal}
-              onChange={e => p.validateForm('limitOrderTotal', e.target.value)}
+              value={p.marketOrderTotal instanceof BigNumber ? p.marketOrderTotal.toNumber() : p.marketOrderTotal}
+              onChange={e => p.validateForm('marketOrderTotal', e.target.value)}
             />
           </li>
         }
@@ -112,7 +112,7 @@ class MarketTradingForm extends Component {
         { p.orderType === MARKET &&
           <li>
             <label>Quantity</label>
-            <div className={Styles['TradingForm__static-field']}>{ p.limitQuantity }</div>
+            <div className={Styles['TradingForm__static-field']}>{ p.marketQuantity }</div>
           </li>
         }
         { errors.length > 0 &&

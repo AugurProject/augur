@@ -36,7 +36,7 @@ const MarketTradingConfirm = (p) => {
         { p.orderType === MARKET &&
           <li>
             <span>Total Cost</span>
-            <span>{ p.limitOrderTotal instanceof BigNumber ? p.limitOrderTotal.toNumber() : p.limitOrderTotal } ETH</span>
+            <span>{ p.marketOrderTotal instanceof BigNumber ? p.marketOrderTotal.toNumber() : p.marketOrderTotal } ETH</span>
           </li>
         }
         { p.orderType === LIMIT &&
@@ -69,7 +69,7 @@ const MarketTradingConfirm = (p) => {
         <ul className={Styles.TradingConfirm__total}>
           <li>
             <span>Quantity</span>
-            <span>{ p.limitQuantity }</span>
+            <span>{ p.marketQuantity }</span>
           </li>
         </ul>
       }
