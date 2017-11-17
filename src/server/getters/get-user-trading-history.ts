@@ -21,7 +21,12 @@ export function getUserTradingHistory(db: Knex|Knex.Transaction, universe: Addre
     "trades.settlementFees",
     "trades.tradeGroupID",
     "blocks.timestamp",
-  ]).from("trades").leftJoin("blocks", "trades.blockNumber", "blocks.blockNumber").where("trades.creator", account).orWhere("trades.filler", account);
+  ]).from("trades");
+  query.leftJoin("blocks", "trades.blockNumber", "blocks.blockNumber");
+  query.leftJoin("markets", "trades.marketID", "markets.marketID");
+  query.where((builder) => {
+    builder.where("trades.creator", account).orWhere("trades.filler", account);
+  });
   if (universe != null) query = query.where("universe", universe);
   if (marketID != null) query = query.where("trades.marketID", marketID);
   if (outcome != null) query = query.where("trades.outcome", outcome);
