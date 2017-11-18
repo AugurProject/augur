@@ -4,6 +4,7 @@ import { clearAccountTrades } from 'modules/my-positions/actions/clear-account-t
 import { addTradeTransactions } from 'modules/transactions/actions/add-transactions'
 import { loadAccountPositions } from 'modules/my-positions/actions/load-account-positions'
 import { loadOpenOrders } from 'modules/bids-asks/actions/load-open-orders'
+import { loadMarketsInfoOnly } from 'modules/markets/actions/load-markets-info'
 import logError from 'utils/log-error'
 
 export function loadAccountTrades(options, callback = logError) {
@@ -11,7 +12,7 @@ export function loadAccountTrades(options, callback = logError) {
     parallel([
       next => dispatch(loadUserTradingHistory(options, next)),
       next => dispatch(loadAccountPositions(options, next)),
-      next => dispatch(loadOpenOrders(options, next))
+      next => dispatch(loadOpenOrders(options, next)),
     ], () => {
       callback(null)
     })
@@ -26,12 +27,18 @@ export function loadUserTradingHistory(options, callback = logError) {
     if (!marketID) dispatch(clearAccountTrades())
     augur.trading.getUserTradingHistory({ ...options, account: loginAccount.address, universe: universe.id, marketID }, (err, userTradingHistory) => {
       if (err) return callback(err)
-      if (userTradingHistory != null) {
+      if (userTradingHistory == null || Object.keys(userTradingHistory).length === 0) return callback(null)
+      const marketIDs = Object.keys(userTradingHistory).reduce(function (p, index, i) {
+        p[userTradingHistory[index].marketID] = {}
+        return p
+      }, [])
+      // TODO: update account trades, not sure why market is needed here
+      /* dispatch({ type: UPDATE_ACCOUNT_TRADES_DATA, market, data: data[market] }) */
+      dispatch(loadMarketsInfoOnly(marketIDs.slice(), () => {
         dispatch(addTradeTransactions(userTradingHistory))
-        // TODO: update account trades, not sure why market is needed here
-        /* dispatch({ type: UPDATE_ACCOUNT_TRADES_DATA, market, data: data[market] }) */
-      }
-      callback(null)
+        callback(null, userTradingHistory)
+      }))
     })
   }
 }
+

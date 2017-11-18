@@ -1,4 +1,4 @@
-import { MARKET_CREATION, TRANSFER, REPORTING, TRADE, OPEN_ORDER } from 'modules/transactions/constants/types'
+import { MARKET_CREATION, TRANSFER, REPORTING, TRADE, OPEN_ORDER, BUY, SELL } from 'modules/transactions/constants/types'
 import { SUCCESS } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { eachOf, each, groupBy } from 'async'
@@ -43,7 +43,15 @@ export function addTradeTransactions(trades) {
 
 function buildTradeTransactionGroup(group, marketsData) {
   let header = {}
+  let sumBuy = 0
+  let sumSell = 0
   each(group, (trade) => {
+    if (trade.type === BUY) {
+      sumBuy += 1
+    }
+    if (trade.type === SELL) {
+      sumSell += 1
+    }
     const localHeader = buildTradeTransaction(trade, marketsData)
     if (Object.keys(header).length === 0) {
       header = localHeader
@@ -51,26 +59,29 @@ function buildTradeTransactionGroup(group, marketsData) {
       header.transactions.push(localHeader.transactions[0])
     }
   })
+  header.message = `${sumBuy} ${BUY} & ${sumSell} ${SELL} Trades`
   return header
 }
 
-function addMarketInfoIfExists(rawTransaction, marketsData) {
-  if (rawTransaction.hasOwnProperty('marketID')) {
-    rawTransaction.market = getMarketById(marketsData, rawTransaction.marketID)
-  }
-}
-
 function buildTradeTransaction(trade, marketsData) {
-  addMarketInfoIfExists(trade, marketsData)
-  const transaction = { ...trade }
+  const thisMarketDataID = getMarketById(marketsData, trade.marketID)
+  const transaction = { ...trade, market: thisMarketDataID }
   transaction.status = SUCCESS
   // todo: should have a unique id for each trade
-  transaction.id = simplHashCode(transaction.marketID + transaction.timestamp)
+  transaction.id = transaction.marketID + transaction.timestamp
   const header = buildHeader(transaction, TRADE)
-  transaction.meta = buildMeta(transaction, TRADE, SUCCESS)
-  header.message = 'Trade'
-  header.description = 'trade description'
-  transaction.message = 'more specific message about transaction'
+  const meta = {}
+  meta.type = TRADE
+  meta.outcome = transaction.outcome
+  meta.price = transaction.price
+  meta.fee = transaction.settlementFees
+  meta.gasCost = 'GET REAL GAS COSTS'
+  transaction.meta = meta
+  header.status = SUCCESS
+  if (transaction.market) {
+    header.description = transaction.market.description
+  }
+  transaction.message = `${transaction.type} ${transaction.amount} Shares @ ${transaction.price} ETH`
   header.transactions = [transaction]
   return header
 }
@@ -83,7 +94,13 @@ export function addTransferTransactions(transfers) {
       transaction.id = transaction.transactionHash
       const header = buildHeader(transaction, TRANSFER, SUCCESS)
       header.transactions = [transaction]
-      transaction.meta = buildMeta(transaction, TRANSFER, SUCCESS)
+      const meta = {}
+      meta.hash = transaction.id
+      meta.recipient = transaction.recipient
+      meta.sender = transaction.sender
+      meta.gasCost = 'GET REAL GAS COSTS'
+      meta.confirmations = transaction.blockNumber
+      transaction.meta = meta
       header.message = 'Transfer'
       header.description = transaction.value + ' transfered from ' + transaction.sender + ' to ' + transaction.recipient
       transactions[transaction.id] = header
@@ -97,18 +114,22 @@ export function addMarketCreationTransactions(marketsCreated) {
     const marketCreationData = {}
     const { loginAccount, marketsData } = getState()
     // placeholder until get unique ID
-    let index = 0
     each(marketsCreated, (marketID) => {
-      const thisMarketDataID = getMarketById(marketsData, marketID)
-      const transaction = { marketID, ...thisMarketDataID }
+      const market = getMarketById(marketsData, marketID)
+      const transaction = { marketID, market }
       transaction.timestamp = transaction.creationTime
       transaction.createdBy = loginAccount.address
-      index += 1000
-      transaction.id = marketID + index
+      transaction.id = marketID + transaction.createdBy
       const header = buildHeader(transaction, MARKET_CREATION, SUCCESS)
-      transaction.meta = buildMeta(transaction, MARKET_CREATION, SUCCESS)
+      const meta = {}
+      meta.market = transaction.marketID
+      meta.creationFee = transaction.creationFee
+      meta.gasCost = 'GET REAL GAS COSTS'
+      transaction.meta = meta
       header.message = 'Market Creation'
-      header.description = transaction.shortDescription
+      if (transaction.market !== undefined) {
+        header.description = transaction.description
+      }
       header.transactions = [transaction]
       marketCreationData[transaction.id] = header
     })
@@ -121,25 +142,52 @@ export function addOpenOrderTransactions(openOrders) {
     const { marketsData } = getState()
     // flatten open orders
     const transactions = {}
+    let index = 100
     eachOf(openOrders, (value, marketID) => {
+      const market = getMarketById(marketsData, marketID)
+      // TODO: remove index when I figure a comprehensive uique id strategy
+      index += 1
+      let sumBuy = 0
+      let sumSell = 0
+      const marketHeader = {}
+      marketHeader.status = 'Market Outcome Trade'
+      marketHeader.hash = marketID + index
+      if (market !== undefined) {
+        marketHeader.timestamp = formatDate(market.creationTime)
+        marketHeader.description = market.description
+      }
+      marketHeader.sortOrder = getSortOrder(OPEN_ORDER)
+      marketHeader.id = marketHeader.hash
+      const marketTradeTransactions = []
       eachOf(value, (value2, index) => {
         eachOf(value2, (value3, type) => {
           eachOf(value3, (value4, outcomeID) => {
-            const market = getMarketById(marketsData, marketID)
-            const transaction = { marketID, type, outcomeID, ...value4, market }
-            // create unique id
-            transaction.id = simplHashCode(transaction.marketID + transaction.outcomeID)
-            const header = buildHeader(transaction, OPEN_ORDER, SUCCESS)
-            transaction.meta = buildMeta(transaction, OPEN_ORDER, SUCCESS)
-            header.message = 'Order'
-            header.status = 'status'
-            header.desciption = 'description'
-            header.timestamp = formatDate(transaction.creationTime)
-            header.transactions = [transaction]
-            transactions[transaction.id] = header
+            const transaction = { marketID, type, outcomeID, ...value4 }
+            transaction.id = transaction.transactionHash + transaction.transactionIndex
+            transaction.message = `${transaction.orderState} - ${type} ${transaction.amount} Shares @ ${transaction.price} ETH`
+            const meta = {}
+            // need better way of setting parameter name
+            const creationTime = formatDate(transaction.creationTime)
+            meta.timestamp = creationTime.full
+            meta.outcome = outcomeID // need to get payNumerators
+            meta.status = transaction.orderState
+            meta.precisionAmount = transaction.fullPrecisionAmount
+            meta.precisionPrice = transaction.fullPrecisionPrice
+            meta.gasCost = 'NEED TO GET GAS COST'
+            transaction.meta = meta
+            marketTradeTransactions.push(transaction)
+            if (type === BUY) {
+              sumBuy += 1
+            }
+            if (type === SELL) {
+              sumSell += 1
+            }
           })
         })
       })
+      marketHeader.message = `${sumBuy} ${BUY} & ${sumSell} ${SELL} Orders`
+      marketHeader.transactions = marketTradeTransactions
+      transactions[marketHeader.id] = marketHeader
     })
     dispatch(updateTransactionsData(transactions))
   }
@@ -154,8 +202,14 @@ export function addReportingTransactions(reports) {
         eachOf(value1, (report, index) => {
           const market = getMarketById(marketsData, marketID)
           const transaction = { universe, marketID, ...report, market }
-          transaction.id = simplHashCode(transaction.marketID + transaction.amountStaked)
-          transaction.meta = buildMeta(transaction, REPORTING, SUCCESS)
+          transaction.id = transaction.marketID + transaction.amountStaked
+          const meta = {}
+          meta.staked = transaction.amountStaked
+          meta.market = transaction.marketID
+          meta.creationFee = transaction.creationFee
+          meta.payout = transaction.payoutNumerators
+          meta.gasCost = 'GET REAL GAS COSTS'
+          transaction.meta = meta
           const header = buildHeader(transaction, REPORTING, SUCCESS)
           header.transactions = [transaction]
           header.message = 'Market Reporting'
@@ -169,19 +223,6 @@ export function addReportingTransactions(reports) {
   }
 }
 
-export function addTransaction(transaction) {
-  return addTransactions([transaction])
-}
-
-export function makeTransactionID(currentBlock) {
-  return `${currentBlock}-${Date.now()}`
-}
-
-function simplHashCode(str) {
-  // TOOD: add hashing function to reduce string to simple unique identifier
-  return str
-}
-
 function buildHeader(item, type, status) {
   const header = {}
   header.status = status
@@ -190,37 +231,6 @@ function buildHeader(item, type, status) {
   header.timestamp = formatDate(item.timestamp)
   header.sortOrder = getSortOrder(type)
   return header
-}
-
-function buildMeta(item, type, status) {
-  const meta = {}
-  meta.status = status
-  meta.type = item.type
-  if (type === TRANSFER) {
-    meta.hash = item.id
-    meta.confirmations = item.blockNumber
-    meta.gasCost = 'GET REAL GAS COSTS'
-  }
-  if (type === TRADE) {
-    meta.type = item.type
-    meta.outcome = item.outcome
-    meta.price = item.price
-    meta.fee = item.settlementFees
-    meta.gasCost = 'GET REAL GAS COSTS'
-  }
-  if (type === MARKET_CREATION) {
-    meta.market = item.marketID
-    meta.creationFee = item.creationFee
-    meta.gasCost = 'GET REAL GAS COSTS'
-  }
-  if (type === REPORTING) {
-    meta.staked = item.amountStaked
-    meta.market = item.marketID
-    meta.creationFee = item.creationFee
-    meta.payout = item.payoutNumerators
-    meta.gasCost = 'GET REAL GAS COSTS'
-  }
-  return meta
 }
 
 function getMarketById(marketsData, marketID) {

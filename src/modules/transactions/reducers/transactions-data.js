@@ -1,5 +1,5 @@
 import { UPDATE_TRANSACTIONS_DATA } from 'modules/transactions/actions/update-transactions-data'
-import { DELETE_TRANSACTION } from 'modules/transactions/actions/delete-transaction'
+import { DELETE_TRANSACTION, CLEAR_TRANSACTION_DATA } from 'modules/transactions/actions/delete-transaction'
 import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account'
 
 export default function (transactionsData = {}, action) {
@@ -22,6 +22,9 @@ export default function (transactionsData = {}, action) {
         return p
       }, {})
 
+    case CLEAR_TRANSACTION_DATA:
+      return {}
+
     case CLEAR_LOGIN_ACCOUNT:
       return {}
 
@@ -29,3 +32,4 @@ export default function (transactionsData = {}, action) {
       return transactionsData
   }
 }
+

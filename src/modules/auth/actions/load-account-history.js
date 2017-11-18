@@ -1,12 +1,13 @@
-import async from 'async'
+import { parallel } from 'async'
 import { clearReports } from 'modules/reports/actions/update-reports'
-import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades'
+import { loadUserTradingHistory } from 'modules/my-positions/actions/load-account-trades'
 import { loadCreateMarketHistory } from 'modules/create-market/actions/load-create-market-history'
 import { loadFundingHistory } from 'modules/account/actions/load-funding-history'
 import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-history'
 import syncUniverse from 'modules/universe/actions/sync-universe'
 /* import { updateTransactionsOldestLoadedBlock } from 'modules/transactions/actions/update-transactions-oldest-loaded-block' */
 import { updateTransactionsLoading } from 'modules/transactions/actions/update-transactions-loading'
+import { clearTransactions } from 'modules/transactions/actions/delete-transaction'
 import { loadOpenOrders } from '../../bids-asks/actions/load-open-orders'
 
 export const loadAccountHistory = (loadAllHistory, triggerTransactionsExport) => (dispatch, getState) => {
@@ -64,8 +65,9 @@ export function loadMoreTransactions(dispatch, getState, options, constraints) {
 // transactionsData is constructed from these methods
 function loadTransactions(dispatch, getState, options, constraints, cb) {
   dispatch(updateTransactionsLoading(true))
-  async.parallel([
-    next => dispatch(loadAccountTrades(options, (err) => {
+//  dispatch(clearTransactions())
+  parallel([
+    next => dispatch(loadUserTradingHistory(options, (err, values) => {
       if (err) next(err)
       next(null)
     })),
