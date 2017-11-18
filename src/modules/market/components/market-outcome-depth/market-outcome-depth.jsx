@@ -190,12 +190,6 @@ export default class MarketOutcomeDepth extends Component {
           const x = mouse[0]
           const y = mouse[1]
 
-          d3.select('#crosshairX')
-            .attr('x1', x)
-            .attr('y1', 0)
-            .attr('x2', x)
-            .attr('y2', height)
-
           d3.select('#crosshairY')
             .attr('x1', 0)
             .attr('y1', y)
@@ -221,6 +215,12 @@ export default class MarketOutcomeDepth extends Component {
             if (p === null) return fillingSideOrder
             return Math.abs(yValue - p[1]) < Math.abs(yValue - fillingSideOrder[1]) ? p : fillingSideOrder
           }, null)
+
+          d3.select('#crosshairX')
+            .attr('x1', xScale(nearestCompletelyFillingOrder[0]))
+            .attr('y1', 0)
+            .attr('x2', xScale(nearestCompletelyFillingOrder[0]))
+            .attr('y2', height)
 
           this.setState({ hoveredDepth: nearestCompletelyFillingOrder })
         })
