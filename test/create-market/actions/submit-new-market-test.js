@@ -78,7 +78,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         _denominationToken: 'domnination',
         _extraInfo: {
           marketType: 'categorical',
-          shortDescription: 'test description',
+          description: 'test description',
           longDescription: '',
           outcomeNames: [
             'one',
@@ -87,10 +87,6 @@ describe('modules/create-market/actions/submit-new-market', () => {
           resolutionSource: '',
           tags: []
         },
-
-        _numTicks: 2,
-        _maxDisplayPrice: '1',
-        _minDisplayPrice: '0',
         _numOutcomes: 2,
         _topic: 'test topic',
         _feePerEthInWei: '0x470de4df820000',
@@ -158,7 +154,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         _denominationToken: 'domnination',
         _extraInfo: {
           marketType: 'binary',
-          shortDescription: 'test description',
+          description: 'test description',
           longDescription: '',
           resolutionSource: '',
           tags: []
@@ -231,13 +227,13 @@ describe('modules/create-market/actions/submit-new-market', () => {
         _denominationToken: 'domnination',
         _extraInfo: {
           marketType: 'scalar',
-          shortDescription: 'test description',
+          description: 'test description',
           longDescription: '',
           resolutionSource: '',
           tags: []
         },
-        _maxDisplayPrice: '10',
-        _minDisplayPrice: '-10',
+        maxPrice: '10',
+        minPrice: '-10',
         _topic: 'test topic',
         _feePerEthInWei: '0x470de4df820000'
       }

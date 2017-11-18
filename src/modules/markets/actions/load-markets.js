@@ -1,6 +1,6 @@
 import { augur } from 'services/augurjs'
 import logError from 'utils/log-error'
-import { clearMarketsData, updateMarketsData } from 'modules/markets/actions/update-markets-data'
+import { updateMarketsData } from 'modules/markets/actions/update-markets-data'
 import { updateMarketsFilteredSorted, clearMarketsFilteredSorted } from 'modules/markets/actions/update-markets-filtered-sorted'
 import { updateHasLoadedMarkets } from 'modules/markets/actions/update-has-loaded-markets'
 
@@ -17,7 +17,7 @@ const loadMarkets = (callback = logError) => (dispatch, getState) => {
       ...p,
       [id]: { id }
     }), {})
-    dispatch(clearMarketsData())
+    // dispatch(clearMarketsData())
     dispatch(updateHasLoadedMarkets(true))
     dispatch(updateMarketsData(marketsData))
 

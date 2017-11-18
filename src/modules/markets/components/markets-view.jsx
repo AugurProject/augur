@@ -110,7 +110,7 @@ function loadMarkets(options) {
 
     if (topic) {
       options.loadMarketsByTopic(topic)
-    } else if (!topic && !options.hasLoadedMarkets) {
+    } else if (!topic) {
       options.loadMarkets()
     }
   }

@@ -1,0 +1,100 @@
+@import (reference) "~assets/styles/shared";
+
+.TradingWrapper__header {
+  border-bottom: 1px solid @color-lightgray;
+  display: flex;
+  padding: 1.3rem 1.875rem 0;
+
+  > li {
+    border-bottom: 3px solid transparent;
+    color: @color-lightgray;
+    text-align: center;
+    width: 50%;
+
+    &.active {
+      border-bottom-color: @color-darkpurple;
+      color: @color-darkpurple;
+    }
+
+    > button {
+      &:extend(.caps--large);
+
+      font-weight: 700;
+      padding: 1.25rem 0;
+      width: 100%;
+    }
+  }
+}
+
+.TradingWrapper__button--add-funds {
+  &:extend(.button--purple all);
+
+  margin: 2rem auto 0;
+  max-width: 9.5rem;
+}
+
+.TradingWrapper__initial-message {
+  font-size: @font-size-large;
+  line-height: @font-size-rather-large;
+  margin: 7.75rem auto 0;
+  max-width: 14rem;
+}
+
+.TradingWrapper__mobile-header {
+  color: @color-white;
+  padding: 1.5rem 1rem 0;
+  position: relative;
+  text-align: center;
+
+  > span {
+    display: block;
+  }
+}
+
+.TradingWrapper__mobile-header-close {
+  left: 1rem;
+  position: absolute;
+  top: 1rem;
+
+  > svg {
+    height: 1rem;
+    width: 1rem;
+  }
+}
+
+.TradingWrapper__mobile-header-outcome {
+  &:extend(.caps--small);
+
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.TradingWrapper__mobile-header-last {
+  color: @color-lightgray;
+}
+
+@media @breakpoint-mobile {
+  .TradingWrapper {
+    background-color: @color-almostblack;
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 30;
+  }
+
+  .TradingWrapper__header {
+    border-bottom-color: @color-lightgray;
+    padding: 0.5rem 0 0;
+
+    > li {
+      color: @color-lightgray;
+
+      &.active {
+        border-bottom-color: @color-white;
+        color: @color-white;
+      }
+    }
+  }
+}

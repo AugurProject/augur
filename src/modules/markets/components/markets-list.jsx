@@ -79,7 +79,6 @@ export default class MarketsList extends Component {
 
   // debounced call
   loadMarketsInfo() {
-    console.log('loadMarketsInfo -- ', this.state.marketIDsMissingInfo)
     this.props.loadMarketsInfo(this.state.marketIDsMissingInfo)
   }
 

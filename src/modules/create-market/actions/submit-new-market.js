@@ -28,7 +28,7 @@ export function submitNewMarket(newMarket, history) {
       _topic: newMarket.category,
       _extraInfo: {
         marketType: newMarket.type,
-        shortDescription: newMarket.description,
+        description: newMarket.description,
         longDescription: newMarket.detailsText,
         resolutionSource: newMarket.expirySource,
         tags
@@ -39,16 +39,13 @@ export function submitNewMarket(newMarket, history) {
     let createMarket
     switch (newMarket.type) {
       case CATEGORICAL:
-        formattedNewMarket._minDisplayPrice = '0'
-        formattedNewMarket._maxDisplayPrice = '1'
         formattedNewMarket._numOutcomes = newMarket.outcomes.filter(outcome => outcome !== '').length
-        formattedNewMarket._numTicks = newMarket.outcomes.filter(outcome => outcome !== '').length
         formattedNewMarket._extraInfo.outcomeNames = newMarket.outcomes.filter(outcome => outcome !== '')
         createMarket = augur.createMarket.createCategoricalMarket
         break
       case SCALAR:
-        formattedNewMarket._minDisplayPrice = newMarket.scalarSmallNum.toString()
-        formattedNewMarket._maxDisplayPrice = newMarket.scalarBigNum.toString()
+        formattedNewMarket.minPrice = newMarket.scalarSmallNum.toString()
+        formattedNewMarket.maxPrice = newMarket.scalarBigNum.toString()
         formattedNewMarket._extraInfo._scalarDenomination = newMarket.scalarDenomination
         createMarket = augur.createMarket.createScalarMarket
         break
