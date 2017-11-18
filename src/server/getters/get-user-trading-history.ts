@@ -33,8 +33,8 @@ export function getUserTradingHistory(db: Knex|Knex.Transaction, universe: Addre
   if (marketID != null) query.where("trades.marketID", marketID);
   if (outcome != null) query.where("trades.outcome", outcome);
   if (orderType != null) query.where("trades.orderType", orderType);
-  if (earliestCreationTime != null) query.where("creationTime", ">=", earliestCreationTime);
-  if (latestCreationTime != null) query.where("creationTime", "<=", latestCreationTime);
+  if (earliestCreationTime != null) query.where("timestamp", ">=", earliestCreationTime);
+  if (latestCreationTime != null) query.where("timestamp", "<=", latestCreationTime);
   queryModifier(query,  "trades.blockNumber", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, userTradingHistory?: Array<TradingHistoryRow>): void => {
     if (err) return callback(err);
