@@ -4,6 +4,26 @@
   flex: 1;
 }
 
+.MarketOutcomeDepth__depth-hover-values {
+  &:extend(.caps--small all);
+
+  display: flex;
+}
+
+.MarketOutcomeDepth__hover-depth {
+  display: flex;
+}
+
+.MarketOutcomeDepth__depth-hover-title {
+  color: @color-white;
+  margin-right: 0.3em;
+}
+
+.MarketOutcomeDepth__depth-hover-value {
+  color: @color-lightgray;
+  width: 5em;
+}
+
 .MarketOutcomeDepth__chart {
   cursor: cell;
   height: 100%;
@@ -12,6 +32,12 @@
     #outcome_depth {
       height: 100%;
       width: 100%;
+    }
+
+    #hovered_price_label {
+      .caps--small();
+
+      stroke: @color-white;
     }
 
     .depth-line {

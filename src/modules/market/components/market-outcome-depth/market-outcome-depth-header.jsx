@@ -1,32 +1,34 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import Styles from 'modules/market/components/market-outcome-depth/market-outcome-depth-header'
+import { ASKS } from 'modules/order-book/constants/order-book-order-types'
+
+import Styles from 'modules/market/components/market-outcome-depth/market-outcome-depth.styles'
 
 const MarketOutcomeDepthHeader = p => (
   <section className={Styles[`MarketOutcomeDepth__depth-hover-values`]}>
-    <span className={Styles[`MarketOutcomeCandlestick__depth-hover-value`]}>
-      <span className={Styles[`MarketOutcomeCandlestick__depth-hover-title`]}>
-        {p.side} price
+    <span className={Styles[`MarketOutcomeDepth__hover-depth`]}>
+      <span className={Styles[`MarketOutcomeDepth__depth-hover-title`]}>
+        {p.side === ASKS ? 'ask' : 'bid'} price
       </span>
-      <span className={Styles[`MarketOutcomeCandlestick__depth-hover-value`]}>
-        {p.price}
+      <span className={Styles[`MarketOutcomeDepth__depth-hover-value`]}>
+        {p.price || '-'}
       </span>
     </span>
-    <span className={Styles[`MarketOutcomeCandlestick__depth-hover-value`]}>
-      <span className={Styles[`MarketOutcomeCandlestick__depth-hover-title`]}>
+    <span className={Styles[`MarketOutcomeDepth__hover-depth`]}>
+      <span className={Styles[`MarketOutcomeDepth__depth-hover-title`]}>
         qty
       </span>
-      <span className={Styles[`MarketOutcomeCandlestick__depth-hover-value`]}>
-        {p.quantity}
+      <span className={Styles[`MarketOutcomeDepth__depth-hover-value`]}>
+        {p.quantity || '-'}
       </span>
     </span>
-    <span className={Styles[`MarketOutcomeCandlestick__depth-hover-value`]}>
-      <span className={Styles[`MarketOutcomeCandlestick__depth-hover-title`]}>
+    <span className={Styles[`MarketOutcomeDepth__hover-depth`]}>
+      <span className={Styles[`MarketOutcomeDepth__depth-hover-title`]}>
         depth
       </span>
-      <span className={Styles[`MarketOutcomeCandlestick__depth-hover-value`]}>
-        {p.depth}
+      <span className={Styles[`MarketOutcomeDepth__depth-hover-value`]}>
+        {p.depth || '-'}
       </span>
     </span>
   </section>

@@ -153,10 +153,8 @@ export default class MarketOutcomeDepth extends Component {
       //   console.log(xValue, yValue)
       // })
 
-      const label = chart.append('text')
-        .attr('x', width - 5)
-        .attr('y', height - 5)
-        .style('text-anchor', 'end')
+      chart.append('text')
+        .attr('id', 'hovered_price_label')
 
       // create crosshairs
       const crosshair = chart.append('g')
@@ -182,6 +180,7 @@ export default class MarketOutcomeDepth extends Component {
         .on('mouseout', () => {
           this.setState({ hoveredDepth: [] })
           d3.select('#crosshairs').style('display', 'none')
+          d3.select('#hovered_price_label').text('')
         })
         .on('mousemove', () => {
           const mouse = d3.mouse(d3.select('#outcome_depth').node())
@@ -220,6 +219,11 @@ export default class MarketOutcomeDepth extends Component {
             .attr('y1', 0)
             .attr('x2', xScale(nearestCompletelyFillingOrder[0]))
             .attr('y2', height)
+
+          d3.select('#hovered_price_label')
+          .attr('x', 0)
+          .attr('y', y + 12)
+          .text(yValue)
 
           this.setState({ hoveredDepth: nearestCompletelyFillingOrder })
         })
