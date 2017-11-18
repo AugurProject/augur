@@ -156,7 +156,6 @@ export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transact
           filler: log.filler,
           shareToken: log.shareToken,
           blockNumber: log.blockNumber,
-          blockHash: log.blockHash,
           transactionHash: log.transactionHash,
           transactionIndex: log.transactionIndex,
           tradeGroupID: log.tradeGroupId,

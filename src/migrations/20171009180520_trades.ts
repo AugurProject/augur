@@ -6,7 +6,6 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.string("transactionHash", 66).notNullable(),
       table.specificType("transactionIndex", "integer NOT NULL CONSTRAINT \"nonnegativeTransactionIndex\" CHECK (\"transactionIndex\" >= 0)"),
       table.specificType("blockNumber", "integer NOT NULL CONSTRAINT positiveOrderBlockNumber CHECK (\"blockNumber\" > 0)");
-      table.string("blockHash", 66).notNullable(),
       table.string("orderID", 42).notNullable();
       table.string("marketID", 42).notNullable();
       table.specificType("outcome", "integer NOT NULL CONSTRAINT \"nonnegativeTradeOutcome\" CHECK (outcome >= 0)");

@@ -101,7 +101,6 @@ describe("blockchain/log-processors/order-filled", () => {
           trades: [{
             orderID: "0x1000000000000000000000000000000000000000000000000000000000000000",
             blockNumber: 1400101,
-            blockHash: "0x1400101",
             transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000F00",
             transactionIndex: 0,
             marketID: "0x0000000000000000000000000000000000000001",
