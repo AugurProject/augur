@@ -187,7 +187,6 @@ export default class MarketOutcomeDepth extends Component {
           const mouse = d3.mouse(d3.select('#outcome_depth').node())
 
           // Draw crosshairs
-          const x = mouse[0]
           const y = mouse[1]
 
           d3.select('#crosshairY')
