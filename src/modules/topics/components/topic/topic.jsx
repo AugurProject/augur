@@ -37,6 +37,7 @@ export default class Topic extends Component {
     const p = this.props
     const s = this.state
 
+    const isNullTopic = p.topic === 'null-topic' && p.popularity === 0
     const flooredPop = Math.floor(p.popularity)
     let popString = ' SHARES'
     if (flooredPop > 1000) {
@@ -55,7 +56,7 @@ export default class Topic extends Component {
             [TOPIC_PARAM_NAME]: p.topic
           })
         }}
-        className={Styles.Topic__link}
+        className={isNullTopic ? Styles['Topic__link-hidden'] : Styles.Topic__link}
       >
         <div
           ref={(topicNameContainer) => { this.topicNameContainer = topicNameContainer }}
