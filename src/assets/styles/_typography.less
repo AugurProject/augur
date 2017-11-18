@@ -34,6 +34,7 @@ h1 {
 @font-size-rather-large: 1.5rem; // 24px
 @font-size-extra-large: 1.875rem; // 30px
 @font-size-massive: 2.43rem; // 39px
+@font-size-super-massive: 4rem; // 64px
 
 //  MIXINS
 .align-to-icon {
@@ -94,6 +95,13 @@ h1 {
 
   font-size: @font-size-massive;
   line-height: @font-size-massive;
+}
+
+.caps--super-massive {
+  .caps;
+
+  font-size: @font-size-super-massive;
+  line-height: @font-size-super-massive;
 }
 
 .number--large {

@@ -24,6 +24,7 @@ export default class TopicsView extends Component {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     isLogged: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool.isRequired,
     topics: PropTypes.array,
     universe: PropTypes.object,
     loginAccount: PropTypes.object
@@ -111,7 +112,6 @@ export default class TopicsView extends Component {
   render() {
     const p = this.props
     const s = this.state
-
     const heroTopic = p.topics[s.heroTopicIndex]
 
     return (
@@ -122,7 +122,7 @@ export default class TopicsView extends Component {
         <GraphBG />
         <div className={Styles.Topics__container}>
           <div className={Styles.TopicsHeading}>
-            <h3>Bet on...</h3>
+            <h3>Bet on</h3>
             <h2 style={{ opacity: s.heroTopicOpacity }}>
               {heroTopic &&
                 <Link
@@ -144,10 +144,12 @@ export default class TopicsView extends Component {
             <TopicList
               topics={p.topics}
               lowerBound={s.lowerBound}
-              boundedLength={s.boundedLength}
+              boundedLength={p.isMobile ? s.boundedLength : s.itemsPerPage}
             />
           }
-          {!!(p.topics && p.topics.length) &&
+        </div>
+        {!!(p.topics && p.topics.length) &&
+          <div className={Styles.Topics__paginator}>
             <Paginator
               itemsLength={p.topics.length}
               itemsPerPage={s.itemsPerPage}
@@ -155,8 +157,8 @@ export default class TopicsView extends Component {
               history={p.history}
               setSegment={this.setSegment}
             />
-          }
-        </div>
+          </div>
+        }
       </section>
     )
   }
