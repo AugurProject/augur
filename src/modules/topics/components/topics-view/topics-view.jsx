@@ -143,7 +143,7 @@ export default class TopicsView extends Component {
             <TopicList
               topics={p.topics}
               lowerBound={s.lowerBound}
-              boundedLength={s.boundedLength}
+              boundedLength={s.itemsPerPage}
             />
           }
         </div>
