@@ -9,7 +9,7 @@ const TopicList = p => (
   <div>
     {[...Array(p.boundedLength)].map((_, i) => {
       const topicIndex = (p.lowerBound - 1) + i
-      const topic = p.topics ? p.topics[topicIndex] : null
+      const topic = (p.topics && p.topics[topicIndex]) ? p.topics[topicIndex] : null
 
       return (
         <div
@@ -17,7 +17,7 @@ const TopicList = p => (
           key={topic !== null ? JSON.stringify(topic) : `${JSON.stringify(topic)}${topicIndex}`}
         >
           <Topic
-            topic={topic !== null ? topic.topic : ''}
+            topic={topic !== null ? topic.topic : 'null-topic'}
             popularity={topic !== null ? topic.popularity : 0}
           />
         </div>

@@ -44,6 +44,10 @@ export default class MarketsList extends Component {
     this.loadMarketsInfo = debounce(this.loadMarketsInfo.bind(this))
   }
 
+  componentWillMount() {
+    this.loadMarketsInfo(this.props.filteredMarkets)
+  }
+
   componentWillUpdate(nextProps, nextState) {
     if (
       this.state.lowerBound !== nextState.lowerBound ||
@@ -65,16 +69,17 @@ export default class MarketsList extends Component {
     if (filteredMarkets.length && boundedLength) {
       [...Array(boundedLength)].forEach((unused, i) => {
         const item = filteredMarkets[(lowerBound - 1) + i]
-        const market = markets[item]
-        if (market && !market.isLoadedMarketInfo && !market.isMarketLoading) marketIDsMissingInfo.push(market.id)
+        const market = markets.find(market => market.id === item)
+        if (market && !market.hasLoadedMarketInfo) marketIDsMissingInfo.push(market.id)
       })
     }
 
     this.setState({ marketIDsMissingInfo })
   }
 
-  loadMarketsInfo(marketIDs) {
-    this.props.loadMarketsInfo(marketIDs)
+  // debounced call
+  loadMarketsInfo() {
+    this.props.loadMarketsInfo(this.state.marketIDsMissingInfo)
   }
 
   // NOTE -- You'll notice the odd method used for rendering the previews, this is done for optimization reasons
@@ -82,17 +87,15 @@ export default class MarketsList extends Component {
     const p = this.props
     const s = this.state
 
-    const marketsLength = p.filteredMarkets.length
+    const marketsLength = p.markets.length
     const shareDenominations = getValue(p, 'scalarShareDenomination.denominations')
-
-    // console.log('filteredMarkets -- ', p.filteredMarkets)
 
     return (
       <article className="markets-list">
         {marketsLength && s.boundedLength ?
           [...Array(s.boundedLength)].map((unused, i) => {
-            const item = p.filteredMarkets[(s.lowerBound - 1) + i]
-            const market = p.markets[item]
+            const id = p.filteredMarkets[(s.lowerBound - 1) + i]
+            const market = p.markets.find(market => market.id === id)
             const selectedShareDenomination = market ? getValue(p, `scalarShareDenomination.markets.${market.id}`) : null
 
             if (market && market.id) {

@@ -17,6 +17,7 @@
     "start": "node server.js",
     "__": "",
     "lint": "node scripts/lint.js",
+    "lit": "echo 'so lit'",
     "test": "node scripts/test.js",
     "___": "",
     "link": "npm link augur.js && npm link keythereum",
@@ -27,7 +28,7 @@
   "dependencies": {
     "airbitz-core-js-ui": "0.1.7",
     "async": "2.4.1",
-    "augur.js": "4.6.7",
+    "augur.js": "4.6.11",
     "bignumber.js": "4.0.2",
     "bs58": "4.0.1",
     "classnames": "2.2.5",

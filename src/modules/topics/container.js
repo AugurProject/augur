@@ -7,6 +7,7 @@ import { selectTopics } from 'modules/topics/selectors/topics'
 
 const mapStateToProps = state => ({
   universe: state.universe,
+  isMobile: state.isMobile,
   topics: selectTopics(state),
   loginAccount: selectLoginAccount(state),
   isLogged: state.isLogged
