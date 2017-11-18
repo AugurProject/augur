@@ -7,7 +7,7 @@ import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-
 import syncUniverse from 'modules/universe/actions/sync-universe'
 /* import { updateTransactionsOldestLoadedBlock } from 'modules/transactions/actions/update-transactions-oldest-loaded-block' */
 import { updateTransactionsLoading } from 'modules/transactions/actions/update-transactions-loading'
-import { clearTransactions } from 'modules/transactions/actions/delete-transaction'
+/* import { clearTransactions } from 'modules/transactions/actions/delete-transaction' */
 import { loadOpenOrders } from '../../bids-asks/actions/load-open-orders'
 
 export const loadAccountHistory = (loadAllHistory, triggerTransactionsExport) => (dispatch, getState) => {

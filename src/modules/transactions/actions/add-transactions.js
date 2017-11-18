@@ -13,18 +13,23 @@ export function addTransactions(transactionsArray) {
   }
 }
 
+function groupByMethod(values, prop) {
+  let grouped = {}
+  groupBy(values, (t, cb) => {
+    cb(null, t[prop])
+  }, (err, result) => {
+    if (!err && result) {
+      grouped = result
+    }
+  })
+  return grouped
+}
+
 export function addTradeTransactions(trades) {
   return (dispatch, getState) => {
     const { marketsData } = getState()
     const transactions = {}
-    let sorted = trades
-    groupBy(trades, (t, cb) => {
-      return cb(null, t.tradeGroupID)
-    }, (err, result) => {
-      if (!err && result) {
-        sorted = result
-      }
-    })
+    const sorted = groupByMethod(trades, 'tradeGroupID')
     // todo: need fallback if groupBy fails and groups aren't created
     each(sorted, (group) => {
       if (group[0].tradeGroupID === undefined) {
@@ -37,7 +42,7 @@ export function addTradeTransactions(trades) {
         transactions[header.hash] = header
       }
     })
-//    dispatch(updateTransactionsData(transactions))
+    dispatch(updateTransactionsData(transactions))
   }
 }
 
