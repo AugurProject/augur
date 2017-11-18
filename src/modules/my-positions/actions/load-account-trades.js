@@ -28,7 +28,7 @@ export function loadUserTradingHistory(options, callback = logError) {
     augur.trading.getUserTradingHistory({ ...options, account: loginAccount.address, universe: universe.id, marketID }, (err, userTradingHistory) => {
       if (err) return callback(err)
       if (userTradingHistory == null || Object.keys(userTradingHistory).length === 0) return callback(null)
-      const marketIDs = Object.keys(userTradingHistory).reduce(function (p, index, i) {
+      const marketIDs = Object.keys(userTradingHistory).reduce((p, index, i) => {
         p[userTradingHistory[index].marketID] = {}
         return p
       }, [])

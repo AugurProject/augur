@@ -18,7 +18,7 @@ export function addTradeTransactions(trades) {
     const { marketsData } = getState()
     const transactions = {}
     let sorted = trades
-    groupBy(trades, function (t, cb) {
+    groupBy(trades, (t, cb) => {
       return cb(null, t.tradeGroupID)
     }, (err, result) => {
       if (!err && result) {
