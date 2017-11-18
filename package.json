@@ -17,6 +17,7 @@
     "start": "node server.js",
     "__": "",
     "lint": "node scripts/lint.js",
+    "lit": "echo 'so lit'",
     "test": "node scripts/test.js",
     "___": "",
     "link": "npm link augur.js && npm link keythereum",
