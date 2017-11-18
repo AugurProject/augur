@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import MarketData from 'modules/market/components/market-data/market-data'
+import MarketOutcomesAndPositions from 'modules/market/components/market-outcomes-and-positions/market-outcomes-and-positions'
 
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
 // import { selectMarket } from 'modules/market/selectors/market'
@@ -17,9 +17,9 @@ const mapStateToProps = state => ({
   isMobile: state.isMobile,
 })
 
-const MarketTradingContainer = withRouter(connect(mapStateToProps)(MarketData))
+const MarketOutcomesAndPositionsContainer = withRouter(connect(mapStateToProps)(MarketOutcomesAndPositions))
 
-export default MarketTradingContainer
+export default MarketOutcomesAndPositionsContainer
 
 const openOrders = [
   {
