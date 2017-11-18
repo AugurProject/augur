@@ -55,41 +55,67 @@ class MarketTradingForm extends Component {
             >Limit</button>
           </div>
         </li>
-        { !p.isMobile && p.market.marketType !== SCALAR &&
+        { p.orderType === LIMIT && !p.isMobile && p.market.marketType !== SCALAR &&
           <li>
             <label>Outcome</label>
             <div className={Styles['TradingForm__static-field']}>{ p.selectedOutcome.name }</div>
           </li>
         }
-        <li>
-          <label htmlFor="tr__input--quantity">Quantity</label>
-          <input
-            className={classNames({ [`${Styles.error}`]: p.errors.quantity.length })}
-            id="tr__input--quantity"
-            type="number"
-            step={10**-PRECISION}
-            placeholder="0.0000 Shares"
-            value={p.orderQuantity instanceof BigNumber ? p.orderQuantity.toNumber() : p.orderQuantity}
-            onChange={e => p.validateForm('orderQuantity', e.target.value)}
-          />
-        </li>
-        <li>
-          <label htmlFor="tr__input--limit-price">Limit Price</label>
-          <input
-            className={classNames({ [`${Styles.error}`]: p.errors.price.length })}
-            id="tr__input--limit-price"
-            type="number"
-            step={10**-PRECISION}
-            placeholder="0.0000 ETH"
-            value={p.orderPrice instanceof BigNumber ? p.orderPrice.toNumber() : p.orderPrice}
-            onChange={e => p.validateForm('orderPrice', e.target.value)}
-          />
-        </li>
-        <li>
-          <label>Est. Cost</label>
-          <div className={Styles['TradingForm__static-field']}>{ p.orderEstimate }</div>
-        </li>
-        { true &&
+        { p.orderType === MARKET &&
+          <li>
+            <label htmlFor="tr__input--total-cost">Total Cost</label>
+            <input
+              className={classNames({ [`${Styles.error}`]: p.errors.marketOrderTotal.length })}
+              id="tr__input--total-cost"
+              type="number"
+              step={10**-PRECISION}
+              placeholder="0.0000 ETH"
+              value={p.marketOrderTotal instanceof BigNumber ? p.marketOrderTotal.toNumber() : p.marketOrderTotal}
+              onChange={e => p.validateForm('marketOrderTotal', e.target.value)}
+            />
+          </li>
+        }
+        { p.orderType === LIMIT &&
+          <li>
+            <label htmlFor="tr__input--quantity">Quantity</label>
+            <input
+              className={classNames({ [`${Styles.error}`]: p.errors.quantity.length })}
+              id="tr__input--quantity"
+              type="number"
+              step={10**-PRECISION}
+              placeholder="0.0000 Shares"
+              value={p.orderQuantity instanceof BigNumber ? p.orderQuantity.toNumber() : p.orderQuantity}
+              onChange={e => p.validateForm('orderQuantity', e.target.value)}
+            />
+          </li>
+        }
+        { p.orderType === LIMIT &&
+          <li>
+            <label htmlFor="tr__input--limit-price">Limit Price</label>
+            <input
+              className={classNames({ [`${Styles.error}`]: p.errors.price.length })}
+              id="tr__input--limit-price"
+              type="number"
+              step={10**-PRECISION}
+              placeholder="0.0000 ETH"
+              value={p.orderPrice instanceof BigNumber ? p.orderPrice.toNumber() : p.orderPrice}
+              onChange={e => p.validateForm('orderPrice', e.target.value)}
+            />
+          </li>
+        }
+        { p.orderType === LIMIT &&
+          <li>
+            <label>Est. Cost</label>
+            <div className={Styles['TradingForm__static-field']}>{ p.orderEstimate }</div>
+          </li>
+        }
+        { p.orderType === MARKET &&
+          <li>
+            <label>Quantity</label>
+            <div className={Styles['TradingForm__static-field']}>{ p.marketQuantity }</div>
+          </li>
+        }
+        { errors.length > 0 &&
           <li className={Styles['TradingForm__error-message']}>
             { errors.map((error, i) => <p key={i}>{error}</p>) }
           </li>
