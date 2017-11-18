@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import Styles from 'modules/market/components/market-outcome-depth/market-outcome-depth-header'
 
@@ -30,3 +31,11 @@ const MarketOutcomeDepthHeader = p => (
     </span>
   </section>
 )
+
+export default MarketOutcomeDepthHeader
+
+MarketOutcomeDepthHeader.propTypes = {
+  side: PropTypes.string,
+  quantity: PropTypes.number,
+  depth: PropTypes.number
+}

@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-
 import * as d3 from 'd3'
 import ReactFauxDOM from 'react-faux-dom'
 
+import MarketOutcomeDepthHeader from 'modules/market/components/market-outcome-depth/market-outcome-depth-header'
+
 import { isEqual } from 'lodash'
 
-import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
+import { ASKS } from 'modules/order-book/constants/order-book-order-types'
 
 import Styles from 'modules/market/components/market-outcome-depth/market-outcome-depth.styles'
 
@@ -24,7 +25,8 @@ export default class MarketOutcomeDepth extends Component {
     super(props)
 
     this.state = {
-      chart: null
+      chart: null,
+      hoveredDepth: []
     }
 
     this.drawChart = this.drawChart.bind(this)
@@ -177,8 +179,11 @@ export default class MarketOutcomeDepth extends Component {
         .attr('width', width)
         .attr('height', height)
         .on('mouseover', () => d3.select('#crosshairs').style('display', null))
-        .on('mouseout', () => d3.select('#crosshairs').style('display', 'none'))
-        .on('mousemove', function() {
+        .on('mouseout', () => {
+          this.setState({ hoveredDepth: [] })
+          d3.select('#crosshairs').style('display', 'none')
+        })
+        .on('mousemove', () => {
           const mouse = d3.mouse(d3.select('#outcome_depth').node())
 
           // Draw crosshairs
@@ -210,10 +215,14 @@ export default class MarketOutcomeDepth extends Component {
               return (yValue < p[1] && yValue > order[1]) ? order : p
             }, null)
 
+            fillingSideOrder.push(side)
+
             // We actually infer the side based on proximity
             if (p === null) return fillingSideOrder
             return Math.abs(yValue - p[1]) < Math.abs(yValue - fillingSideOrder[1]) ? p : fillingSideOrder
           }, null)
+
+          this.setState({ hoveredDepth: nearestCompletelyFillingOrder })
         })
         .on('click', () => {
           console.log('TODO -- fill order form')
@@ -224,8 +233,15 @@ export default class MarketOutcomeDepth extends Component {
   }
 
   render() {
+    const s = this.state
+
     return (
       <section className={Styles.MarketOutcomeDepth}>
+        <MarketOutcomeDepthHeader
+          side={s.hoveredDepth[3]}
+          price={s.hoveredDepth[1]}
+          quantity={s.hoveredDepth[2]}
+        />
         <div
           ref={(depthChart) => { this.depthChart = depthChart }}
           className={Styles.MarketOutcomeDepth__chart}
