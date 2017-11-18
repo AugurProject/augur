@@ -240,6 +240,7 @@ export default class MarketOutcomeDepth extends Component {
 
     return (
       <section className={Styles.MarketOutcomeDepth}>
+        <h3>Market Depth</h3>
         <MarketOutcomeDepthHeader
           side={s.hoveredDepth[3]}
           price={s.hoveredDepth[1]}

@@ -177,6 +177,7 @@ export default class MarketOutcomeCandlestick extends Component {
 
     return (
       <section className={Styles.MarketOutcomeCandlestick}>
+        <h3><span>OUTCOME TODO</span> price(eth)</h3>
         <MarketOutcomeCandlestickHeader
           volume={s.hoveredPeriod.volume}
           open={s.hoveredPeriod.open}

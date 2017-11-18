@@ -22,6 +22,7 @@ export default class MarketOutcomeOrderbook extends Component {
 
     return (
       <section className={Styles.MarketOutcomeOrderBook}>
+        <h3>Order Book</h3>
         <div
           ref={(asks) => { this.asks = asks }}
           className={Styles.MarketOutcomeOrderBook__side}

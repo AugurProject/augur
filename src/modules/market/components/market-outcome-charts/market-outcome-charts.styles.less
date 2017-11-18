@@ -8,4 +8,16 @@
   & > *:not(:last-of-type) {
     margin-right: 1rem;
   }
+
+  h3 {
+    &:extend(.caps--large all);
+
+    color: @color-gray;
+    margin-bottom: 1.2rem;
+
+    span {
+      color: @color-white;
+      margin-right: 1rem;
+    }
+  }
 }
