@@ -53,21 +53,16 @@ export function submitNewMarket(newMarket, history) {
       default:
         createMarket = augur.createMarket.createBinaryMarket
     }
-    console.log('creating market with this data:')
-    console.log({
-      ...formattedNewMarket,
-      meta: loginAccount.meta})
     createMarket({
       ...formattedNewMarket,
       meta: loginAccount.meta,
       onSent: (res) => {
-        console.log('onSent from submitMarket', res)
         history.push(makePath(TRANSACTIONS))
         dispatch(clearNewMarket())
       },
       onSuccess: (res) => {
         const marketID = res.callReturn
-        console.log('onSuccess from submitMarket', res)
+
         if (Object.keys(newMarket.orderBook).length) {
           eachOfSeries(Object.keys(newMarket.orderBook), (outcome, index, seriesCB) => {
             eachLimit(newMarket.orderBook[outcome], constants.PARALLEL_LIMIT, (order, orderCB) => {
