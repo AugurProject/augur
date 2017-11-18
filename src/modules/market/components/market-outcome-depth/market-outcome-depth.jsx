@@ -6,6 +6,8 @@ import ReactFauxDOM from 'react-faux-dom'
 
 import { isEqual } from 'lodash'
 
+import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
+
 import Styles from 'modules/market/components/market-outcome-depth/market-outcome-depth.styles'
 
 export default class MarketOutcomeDepth extends Component {
@@ -174,22 +176,12 @@ export default class MarketOutcomeDepth extends Component {
         .attr('class', 'overlay')
         .attr('width', width)
         .attr('height', height)
-        .on('mouseover', () => {
-          console.log('over')
-          d3.select('#crosshairs').style('display', null)
-        })
-        .on('mouseout', () => {
-          d3.select('#crosshairs').style('display', 'none')
-          label.text('')
-        })
+        .on('mouseover', () => d3.select('#crosshairs').style('display', null))
+        .on('mouseout', () => d3.select('#crosshairs').style('display', 'none'))
         .on('mousemove', function() {
-          console.log('hovering...')
-
           const mouse = d3.mouse(d3.select('#outcome_depth').node())
 
-          const xValue = xScale.invert(mouse[0])
-          const yValue = yScale.invert(mouse[1])
-
+          // Draw crosshairs
           const x = mouse[0]
           const y = mouse[1]
 
@@ -204,6 +196,24 @@ export default class MarketOutcomeDepth extends Component {
             .attr('y1', y)
             .attr('x2', width)
             .attr('y2', y)
+
+          // Determine closest order
+          const yValue = yScale.invert(mouse[1])
+
+          const nearestCompletelyFillingOrder = Object.keys(marketDepth).reduce((p, side) => {
+            const fillingSideOrder = marketDepth[side].reduce((p, order) => {
+              if (p === null) return order
+              if (side === ASKS) {
+                return (yValue > p[1] && yValue < order[1]) ? order : p
+              }
+
+              return (yValue < p[1] && yValue > order[1]) ? order : p
+            }, null)
+
+            // We actually infer the side based on proximity
+            if (p === null) return fillingSideOrder
+            return Math.abs(yValue - p[1]) < Math.abs(yValue - fillingSideOrder[1]) ? p : fillingSideOrder
+          }, null)
         })
         .on('click', () => {
           console.log('TODO -- fill order form')

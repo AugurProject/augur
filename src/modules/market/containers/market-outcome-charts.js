@@ -34,8 +34,8 @@ const asks = [...new Array(30)]
     .sort((a, b) => b.price - a.price)
 
 const marketDepth = {
-  bids: bids.reduce((p, item) => [...p, [item.cumulativeShares, item.price]], []),
-  asks: asks.reduce((p, item) => [...p, [item.cumulativeShares, item.price]], []).sort((a, b) => a[0] - b[0]),
+  bids: bids.reduce((p, item) => [...p, [item.cumulativeShares, item.price, item.shares]], []),
+  asks: asks.reduce((p, item) => [...p, [item.cumulativeShares, item.price, item.shares]], []).sort((a, b) => a[0] - b[0]),
 }
 
 const startTime = new Date().getTime()
