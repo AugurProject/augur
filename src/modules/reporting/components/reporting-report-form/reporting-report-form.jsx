@@ -123,7 +123,7 @@ const ReportingReportForm = p => (
           <span>Outcome</span>
         </label>
         <ul className={FormStyles['Form__radio-buttons--per-line']}>
-          { p.market.outcomes && p.market.outcomes.map(outcome => (
+          { p.market.outcomes && p.market.outcomes.sort((a, b) => b.stake - a.stake).map(outcome => (
             <li key={outcome.id}>
               <button
                 className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.name })}
