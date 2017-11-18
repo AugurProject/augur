@@ -24,6 +24,7 @@ export default class TopicsView extends Component {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     isLogged: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool.isRequired,
     topics: PropTypes.array,
     universe: PropTypes.object,
     loginAccount: PropTypes.object
@@ -143,7 +144,7 @@ export default class TopicsView extends Component {
             <TopicList
               topics={p.topics}
               lowerBound={s.lowerBound}
-              boundedLength={s.itemsPerPage}
+              boundedLength={p.isMobile ? s.boundedLength : s.itemsPerPage}
             />
           }
         </div>
