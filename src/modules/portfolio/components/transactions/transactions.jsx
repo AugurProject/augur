@@ -62,6 +62,7 @@ export default class Transactions extends Component {
               }
               return <TransactionMultiple key={transaction.hash} transaction={transaction} />
             }
+            return null
           })
         }
         </div>

@@ -23,7 +23,7 @@ export default function (transactionsData = {}, action) {
       }, {})
 
     case CLEAR_TRANSACTION_DATA:
-      return []
+      return {}
 
     case CLEAR_LOGIN_ACCOUNT:
       return {}
