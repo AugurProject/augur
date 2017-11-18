@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import BigNumber from 'bignumber.js'
-import { constants } from 'services/augurjs'
+import { augur } from 'services/augurjs'
 
 import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'
 
@@ -226,7 +226,6 @@ export default class CreateMarketLiquidity extends Component {
   }
 
   updateInitialLiquidityCosts(order, shouldReduce) {
-    const gasPrice = augur.rpc.getGasPrice() || constants.DEFAULT_GASPRICE
     const minPrice = this.props.newMarket.type === SCALAR ? this.props.newMarket.scalarSmallNum : 0
     const maxPrice = this.props.newMarket.type === SCALAR ? this.props.newMarket.scalarBigNum : 1
     const shareBalances = this.props.newMarket.outcomes.map(outcome => 0)
@@ -235,18 +234,18 @@ export default class CreateMarketLiquidity extends Component {
     let initialLiquidityGas
     let initialLiquidityFees
 
-    switch(this.props.newMarket.type) {
-    case BINARY:
-      outcome = this.state.selectedOutcome === 'Yes' ? 1 : 0
-      break;
-    case SCALAR:
-      outcome = this.state.selectedOutcome
-      break;
-    default:
-      // categorical
-      this.props.newMarket.outcomes.forEach((outcomeName, index) => {
-        if (this.state.selectedOutcome === outcomeName) outcome = index
-      })
+    switch (this.props.newMarket.type) {
+      case BINARY:
+        outcome = this.state.selectedOutcome === 'Yes' ? 1 : 0
+        break
+      case SCALAR:
+        outcome = this.state.selectedOutcome
+        break
+      default:
+        // categorical
+        this.props.newMarket.outcomes.forEach((outcomeName, index) => {
+          if (this.state.selectedOutcome === outcomeName) outcome = index
+        })
     }
 
     const orderInfo = {

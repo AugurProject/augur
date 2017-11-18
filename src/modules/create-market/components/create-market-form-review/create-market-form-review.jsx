@@ -61,7 +61,6 @@ export default class CreateMarketReview extends Component {
   }
 
   render() {
-    const p = this.props
     const s = this.state
 
     return (
