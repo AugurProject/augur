@@ -33,6 +33,8 @@ module.exports = {
   },
   MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
 
+  ETERNAL_APPROVAL_VALUE: "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", // 2^255 - 1
+
   DEFAULT_NETWORK_ID: "3",
   DEFAULT_GASPRICE: 20000000000,
 

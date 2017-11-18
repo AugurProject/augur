@@ -26,7 +26,7 @@ var constants = require("../constants");
  * @param {function} p.onFailed Called if any part of the trade fails.
  */
 function tradeUntilAmountIsZero(p) {
-  if (new BigNumber(p._fxpAmount, 10).lte(constants.PRECISION.zero)) {
+  if (new BigNumber(p._fxpAmount, 10).lte(constants.MINIMUM_TRADE_SIZE)) {
     return p.onSuccess(null);
   }
   var numTicks = p.numTicks || constants.DEFAULT_NUM_TICKS;

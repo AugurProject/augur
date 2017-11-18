@@ -6,6 +6,7 @@
 "use strict";
 
 var async = require("async");
+var BigNumber = require("bignumber.js");
 var chalk = require("chalk");
 var speedomatic = require("speedomatic");
 var Augur = require("../src");
@@ -45,16 +46,16 @@ var cannedMarkets = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
+        { shares: "10", price: "0.2" },
+        { shares: "20", price: "0.18" },
+        { shares: "30", price: "0.15" },
       ],
     },
     sell: {
       "0": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
+        { shares: "15", price: "0.23" },
+        { shares: "10", price: "0.26" },
+        { shares: "30", price: "0.29" },
       ],
     },
   },
@@ -73,36 +74,36 @@ var cannedMarkets = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
+        { shares: "10", price: "0.2" },
+        { shares: "20", price: "0.18" },
+        { shares: "30", price: "0.15" },
       ],
       "1": [
-        { shares: "300", price: "0.48" },
-        { shares: "150", price: "0.45" },
-        { shares: "200", price: "0.41" },
+        { shares: "30", price: "0.48" },
+        { shares: "15", price: "0.45" },
+        { shares: "20", price: "0.41" },
       ],
       "2": [
-        { shares: "150", price: "0.18" },
-        { shares: "250", price: "0.15" },
-        { shares: "200", price: "0.12" },
+        { shares: "15", price: "0.18" },
+        { shares: "25", price: "0.15" },
+        { shares: "20", price: "0.12" },
       ],
     },
     sell: {
       "0": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
+        { shares: "15", price: "0.23" },
+        { shares: "10", price: "0.26" },
+        { shares: "30", price: "0.29" },
       ],
       "1": [
-        { shares: "150", price: "0.53" },
-        { shares: "200", price: "0.57" },
-        { shares: "250", price: "0.61" },
+        { shares: "15", price: "0.53" },
+        { shares: "20", price: "0.57" },
+        { shares: "25", price: "0.61" },
       ],
       "2": [
-        { shares: "100", price: "0.21" },
-        { shares: "100", price: "0.24" },
-        { shares: "200", price: "0.27" },
+        { shares: "10", price: "0.21" },
+        { shares: "10", price: "0.24" },
+        { shares: "20", price: "0.27" },
       ],
     },
   },
@@ -714,24 +715,41 @@ var cannedMarkets = [{
   },
 }];
 
-function buyCompleteSets(marketID, amount, callback) {
-  console.log("buying complete sets:", {
-    tx: { value: convertDecimalToFixedPoint(amount.toString(), constants.DEFAULT_NUM_TICKS) },
-    _market: marketID,
-    _amount: speedomatic.prefixHex(amount.toString(16)),
-  });
-  augur.api.CompleteSets.publicBuyCompleteSets({
-    tx: { value: convertDecimalToFixedPoint(amount.toString(), constants.DEFAULT_NUM_TICKS) },
-    _market: marketID,
-    _amount: speedomatic.prefixHex(amount.toString(16)),
+function approveAugurEternalApprovalValue(callback) {
+  augur.api.Cash.approve({
+    _spender: augur.contracts.addresses[augur.rpc.getNetworkID()].Augur,
+    _value: constants.ETERNAL_APPROVAL_VALUE,
     onSent: function (res) {
-      if (DEBUG) console.log("buyCompleteSets sent:", res.txHash);
+      console.log("approve sent:", res.hash);
+    },
+    onSuccess: function (res) {
+      console.log("approve success:", res.callReturn);
+      callback(null);
+    },
+    onFailed: function (err) {
+      console.error("approve failed:", err);
+      callback(err);
+    }
+  });
+}
+
+function buyCompleteSets(marketID, amount, callback) {
+  var cost = convertDecimalToFixedPoint(amount, constants.DEFAULT_NUM_TICKS);
+  // augur.rpc.setDebugOptions({ broadcast: true, tx: true });
+  augur.api.CompleteSets.publicBuyCompleteSets({
+    tx: { value: cost },
+    _market: marketID,
+    _amount: amount,
+    onSent: function (res) {
+      // augur.rpc.setDebugOptions({ broadcast: false, tx: false });
+      if (DEBUG) console.log("buyCompleteSets sent:", res.hash);
     },
     onSuccess: function (res) {
       if (DEBUG) console.log("buyCompleteSets success:", res.callReturn);
       callback(null);
     },
     onFailed: function (err) {
+      // augur.rpc.setDebugOptions({ broadcast: false, tx: false });
       console.error("buyCompleteSets failed:", err);
       callback(err);
     },
@@ -739,11 +757,16 @@ function buyCompleteSets(marketID, amount, callback) {
 }
 
 function createBidOrder(marketID, outcome, order, callback) {
-  augur.api.Trade.publicBuy({
-    _fxpAmount: speedomatic.fix(order.shares, "hex"),
-    _price: convertDecimalToFixedPoint(order.price, constants.DEFAULT_NUM_TICKS),
+  var cost = new BigNumber(order.shares, 10).times(new BigNumber(order.price, 10)).toFixed();
+  augur.api.CreateOrder.publicCreateOrder({
+    tx: { value: convertDecimalToFixedPoint(cost, constants.DEFAULT_NUM_TICKS) },
+    _type: 0,
+    _attoshares: convertDecimalToFixedPoint(order.shares, constants.DEFAULT_NUM_TICKS),
+    _displayPrice: convertDecimalToFixedPoint(order.price, constants.DEFAULT_NUM_TICKS),
     _market: marketID,
     _outcome: outcome,
+    _betterOrderId: 0,
+    _worseOrderId: 0,
     _tradeGroupId: 0,
     onSent: function (res) {
       if (DEBUG) console.log("buy sent:", order, res.callReturn, res.hash);
@@ -760,11 +783,16 @@ function createBidOrder(marketID, outcome, order, callback) {
 }
 
 function createAskOrder(marketID, outcome, order, callback) {
-  augur.api.Trade.publicSell({
-    _fxpAmount: speedomatic.fix(order.shares, "hex"),
-    _price: convertDecimalToFixedPoint(order.price, constants.DEFAULT_NUM_TICKS),
+  var cost = new BigNumber(order.shares, 10).times(new BigNumber(order.price, 10)).toFixed();
+  augur.api.CreateOrder.publicCreateOrder({
+    tx: { value: convertDecimalToFixedPoint(cost, constants.DEFAULT_NUM_TICKS) },
+    _type: 0,
+    _attoshares: convertDecimalToFixedPoint(order.shares, constants.DEFAULT_NUM_TICKS),
+    _displayPrice: convertDecimalToFixedPoint(order.price, constants.DEFAULT_NUM_TICKS),
     _market: marketID,
     _outcome: outcome,
+    _betterOrderId: 0,
+    _worseOrderId: 0,
     _tradeGroupId: 0,
     onSent: function (res) {
       if (DEBUG) console.log("sell sent:", order, res.callReturn, res.hash);
@@ -785,11 +813,11 @@ function createOrderBook(marketID, orderBook, callback) {
     console.log("orderType:", orderType);
     async.forEachOfSeries(orders, function (outcomeOrders, outcome, nextOutcome) {
       console.log("outcome:", outcome);
-      async.each(outcomeOrders, function (order, nextOrder) {
+      async.eachSeries(outcomeOrders, function (order, nextOrder) {
         if (orderType === "buy") {
-          createBidOrder(marketID, outcome, order, nextOrder);
+          createBidOrder(marketID, parseInt(outcome, 10), order, nextOrder);
         } else {
-          createAskOrder(marketID, outcome, order, nextOrder);
+          createAskOrder(marketID, parseInt(outcome, 10), order, nextOrder);
         }
       }, nextOutcome);
     }, nextOrderType);
@@ -828,23 +856,6 @@ function createNewMarket(market, callback) {
     default:
       createMarket = augur.createMarket.createBinaryMarket;
   }
-  console.log("creating new market:", Object.assign({}, market, {
-    universe: augur.contracts.addresses[augur.rpc.getNetworkID()].Universe,
-    _feePerEthInWei: "0x123456",
-    _denominationToken: augur.contracts.addresses[augur.rpc.getNetworkID()].Cash,
-    _designatedReporterAddress: augur.rpc.getCoinbase(),
-    onSent: function (res) {
-      if (DEBUG) console.log("createMarket sent:", res.hash);
-    },
-    onSuccess: function (res) {
-      if (DEBUG) console.log("createMarket success:", res.callReturn);
-      callback(null, res.callReturn);
-    },
-    onFailed: function (err) {
-      console.error(chalk.red.bold("createMarket failed:"), err);
-      callback(err);
-    },
-  }));
   createMarket(Object.assign({}, market, {
     universe: augur.contracts.addresses[augur.rpc.getNetworkID()].Universe,
     _feePerEthInWei: "0x123456",
@@ -866,20 +877,24 @@ function createNewMarket(market, callback) {
 
 augur.connect({ ethereumNode: ethereumNode, augurNode: augurNode }, function (err, connectionInfo) {
   if (err) return console.error(err);
-  async.eachSeries(cannedMarkets, function (market, nextMarket) {
-    createNewMarket(market, function (err, marketID) {
-      if (err) return nextMarket(err);
-      console.log(chalk.green(marketID), chalk.cyan.dim(market._extraInfo.description));
-      buyCompleteSets(marketID, calculateNumCompleteSetsNeeded(market.orderBook), function (err) {
-        if (err) return nextMarket(err);
-        createOrderBook(marketID, market.orderBook, function (err) {
-          if (err) return nextMarket(err);
-          nextMarket();
-        });
-      });
+  // approveAugurEternalApprovalValue(function (err) {
+  //   if (err) return console.error(err);
+    async.eachSeries(cannedMarkets, function (market, nextMarket) {
+      // createNewMarket(market, function (err, marketID) {
+      //   if (err) return nextMarket(err);
+      //   console.log(chalk.green(marketID), chalk.cyan.dim(market._extraInfo.description));
+        var marketID = "0x300fe2ee662d0b245d9038c88e99677f1d712e1b";
+        // buyCompleteSets(marketID, calculateNumCompleteSetsNeeded(market.orderBook), function (err) {
+        //   if (err) return nextMarket(err);
+          createOrderBook(marketID, market.orderBook, function (err) {
+            if (err) return nextMarket(err);
+            nextMarket();
+          });
+        // });
+      // });
+    }, function (err) {
+      if (err) console.error("canned market creation failed:", err);
+      process.exit();
     });
-  }, function (err) {
-    if (err) console.error("canned market creation failed:", err);
-    process.exit();
-  });
+  // });
 });

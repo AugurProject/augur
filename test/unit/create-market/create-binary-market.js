@@ -44,7 +44,7 @@ describe("create-market/create-binary-market", function () {
       _denominationToken: "TOKEN_ADDRESS",
       _designatedReporterAddress: "DESIGNATED_REPORTER_ADDRESS",
       _topic: "TOPIC",
-      _extraInfo: immutableDelete(extraInfo, "minPrice", "maxPrice"),
+      _extraInfo: immutableDelete(extraInfo, ["minPrice", "maxPrice"]),
       onSent: function (res) {
         assert.deepEqual(res, { callReturn: "1" });
       },
