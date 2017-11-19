@@ -8,6 +8,8 @@ import MarketTrading from 'modules/market/containers/market-trading'
 
 import Styles from 'modules/market/components/market-view/market-view.styles'
 
+console.log('marketOutcome -- ', MarketOutcomeCharts)
+
 export default class MarketView extends Component {
   constructor(props) {
     super(props)
