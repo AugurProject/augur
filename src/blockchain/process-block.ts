@@ -7,7 +7,7 @@ export function processBlock(db: Knex, augur: Augur, blockNumberString: Int256):
   augur.rpc.eth.getBlockByNumber([blockNumberString, false], (block: any): void => {
     if (!block || block.error || !block.timestamp) return logError(new Error(JSON.stringify(block)));
     const blockNumber = parseInt(blockNumberString, 16);
-    const blockHash = block.blockHash;
+    const blockHash = block.hash;
     const timestamp = parseInt(block.timestamp, 16);
     console.log("new block:", blockNumber, timestamp);
     db.transaction((trx: Knex.Transaction): void => {
