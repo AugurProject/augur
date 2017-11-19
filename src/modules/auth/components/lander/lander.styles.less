@@ -3,6 +3,13 @@
 .Lander {
   display: flex;
   min-height: 100%;
+  padding-left: 2rem;
+  padding-right: 2rem;
+
+  @media @breakpoint-mobile-small {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 
 .Lander__content {
@@ -28,11 +35,14 @@
   color: @color-white;
   display: flex;
   letter-spacing: 0.075em;
-  line-height: calc(@font-size-normal ~"*" 2.5);
+  line-height: @font-size-massive;
   text-align: center;
 
-  @media @breakpoint-mobile {
-    .caps--extra-large();
+  @media @breakpoint-mobile-small {
+    font-size: @font-size-somewhat-large;
+    line-height: @font-size-extra-large;
+    max-width: 20.5rem;
+    padding-top: 10vh;
   }
 }
 
@@ -56,5 +66,11 @@
     margin: @font-size-extra-large calc(@font-size-extra-large ~"*" 1.5);
     padding: 0.75em 1em;
     width: 100%;
+  }
+
+  @media @breakpoint-mobile-small {
+    &:first-child {
+      margin-bottom: 0;
+    }
   }
 }
