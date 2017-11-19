@@ -93,6 +93,7 @@ function buildTradeTransaction(trade, marketsData) {
 
 export function addTransferTransactions(transfers) {
   return (dispatch, getState) => {
+    const { blockchain } = getState()
     const transactions = {}
     each(transfers, (transfer) => {
       const transaction = { ...transfer }
@@ -104,7 +105,7 @@ export function addTransferTransactions(transfers) {
       meta.recipient = transaction.recipient
       meta.sender = transaction.sender
       meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
-      meta.confirmations = transaction.blockNumber
+      meta.confirmations = blockchain.currentBlockNumber - transaction.blockNumber
       transaction.meta = meta
       header.message = 'Transfer'
       header.description = transaction.value + ' transfered from ' + transaction.sender + ' to ' + transaction.recipient
