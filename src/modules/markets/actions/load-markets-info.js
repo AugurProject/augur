@@ -17,6 +17,7 @@ export const loadMarketsInfo = (marketIDs, callback = logError) => (dispatch, ge
       return callback(`no markets data received`)
     }
     if (!Object.keys(marketsData).length) return callback(null)
+    dispatch(updateMarketsLoadingStatus(marketIDs, false))
     dispatch(updateMarketsData(marketsData))
     callback(null, marketsData)
   })
