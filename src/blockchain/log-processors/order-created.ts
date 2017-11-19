@@ -61,7 +61,6 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
         const orderData: OrdersRow = {
           marketID,
           blockNumber: log.blockNumber,
-          blockHash: log.blockHash,
           transactionHash: log.transactionHash,
           transactionIndex: log.transactionIndex,
           outcome,

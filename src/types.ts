@@ -29,11 +29,14 @@ export enum OrderState {
   CANCELED = "CANCELED",
 }
 
-export interface BaseTransaction {
+export interface BaseTransactionRow {
   blockNumber: number;
-  blockHash: Bytes32;
   transactionIndex: Int256;
   transactionHash: Bytes32;
+}
+
+export interface BaseTransaction extends BaseTransactionRow {
+  blockHash: Bytes32;
 }
 
 export interface EthereumNodeEndpoints {
@@ -48,13 +51,13 @@ export type Address = string;
 export type Bytes32 = string;
 export type Int256 = string;
 
-export interface Log extends BaseTransaction {
+export interface Log extends BaseTransactionRow {
   address: Address;
   categories: Array<Int256>;
   data: AbiEncodedData;
 }
 
-export interface FormattedLog extends BaseTransaction {
+export interface FormattedLog extends BaseTransactionRow {
   address: Address;
   [inputName: string]: any;
 }
@@ -289,7 +292,7 @@ export interface Order {
   sharesEscrowed: number|string;
 }
 
-export interface OrdersRow extends BaseTransaction {
+export interface OrdersRow extends BaseTransactionRow {
   orderID?: Bytes32;
   marketID: Address;
   outcome: number;
@@ -321,7 +324,7 @@ export interface UITrade {
   tradeGroupID: Bytes32|null;
 }
 
-export interface TradesRow extends BaseTransaction {
+export interface TradesRow extends BaseTransactionRow {
   orderID: Bytes32;
   marketID: Address;
   outcome: number;

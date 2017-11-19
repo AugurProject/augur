@@ -9,7 +9,7 @@ describe("server/getters/get-user-trading-history", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getUserTradingHistory(db, t.params.universe, t.params.account, t.params.marketID, t.params.outcome, t.params.orderType, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, userTradingHistory) => {
+        getUserTradingHistory(db, t.params.universe, t.params.account, t.params.marketID, t.params.outcome, t.params.orderType, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, userTradingHistory) => {
           t.assertions(err, userTradingHistory);
           done();
         });
@@ -55,14 +55,28 @@ describe("server/getters/get-user-trading-history", () => {
       marketID: null,
       outcome: 0,
       orderType: null,
-      sortBy: null,
-      isSortDescending: null,
+      sortBy: "timestamp",
+      isSortDescending: true,
       limit: null,
       offset: null,
     },
     assertions: (err, userTradingHistory) => {
       assert.isNull(err);
       assert.deepEqual(userTradingHistory, [
+        {
+          transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
+          transactionIndex: 0,
+          amount: 0.2,
+          maker: true,
+          marketID: "0x0000000000000000000000000000000000000012",
+          outcome: 0,
+          price: 5.5,
+          settlementFees: 0,
+          shareToken: "0x1000000000000000000000000000000000000000",
+          timestamp: 1506474515,
+          tradeGroupID: null,
+          type: "sell",
+        },
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
           transactionIndex: 0,
@@ -111,20 +125,6 @@ describe("server/getters/get-user-trading-history", () => {
           amount: 0.2,
           maker: true,
           marketID: "0x0000000000000000000000000000000000000011",
-          outcome: 0,
-          price: 5.5,
-          settlementFees: 0,
-          shareToken: "0x1000000000000000000000000000000000000000",
-          timestamp: 1506474500,
-          tradeGroupID: null,
-          type: "sell",
-        },
-        {
-          transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
-          transactionIndex: 0,
-          amount: 0.2,
-          maker: true,
-          marketID: "0x0000000000000000000000000000000000000012",
           outcome: 0,
           price: 5.5,
           settlementFees: 0,
@@ -205,6 +205,41 @@ describe("server/getters/get-user-trading-history", () => {
           settlementFees: 0,
           shareToken: "0x1000000000000000000000000000000000000000",
           timestamp: 1506474500,
+          tradeGroupID: null,
+          type: "sell",
+        },
+      ]);
+    },
+  });
+  test({
+    description: "user was creator in many markets and outcomes, filter to one market by timestamp",
+    params: {
+      universe: "0x000000000000000000000000000000000000000b",
+      account: "0x0000000000000000000000000000000000000b0b",
+      marketID: null,
+      outcome: 0,
+      orderType: null,
+      sortBy: null,
+      isSortDescending: null,
+      limit: null,
+      offset: null,
+      earliestCreationTime: 1506474514,
+      latestCreationTime: 1506474516,
+    },
+    assertions: (err, userTradingHistory) => {
+      assert.isNull(err);
+      assert.deepEqual(userTradingHistory, [
+        {
+          transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
+          transactionIndex: 0,
+          amount: 0.2,
+          maker: true,
+          marketID: "0x0000000000000000000000000000000000000012",
+          outcome: 0,
+          price: 5.5,
+          settlementFees: 0,
+          shareToken: "0x1000000000000000000000000000000000000000",
+          timestamp: 1506474515,
           tradeGroupID: null,
           type: "sell",
         },

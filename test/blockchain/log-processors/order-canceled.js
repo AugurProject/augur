@@ -38,7 +38,6 @@ describe("blockchain/log-processors/order-canceled", () => {
         sharesRefund: "0",
         tokensRefund: "1125000000000000000",
         blockNumber: 1400101,
-        blockHash: "0x1400101",
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
         transactionIndex: 0,
       },
@@ -50,7 +49,6 @@ describe("blockchain/log-processors/order-canceled", () => {
         assert.deepEqual(records, [{
           orderID: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400001,
-          blockHash: "0x1400001",
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
           transactionIndex: 0,
           marketID: "0x0000000000000000000000000000000000000001",
@@ -74,7 +72,6 @@ describe("blockchain/log-processors/order-canceled", () => {
         assert.deepEqual(records, [{
           orderID: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400001,
-          blockHash: "0x1400001",
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
           transactionIndex: 0,
           marketID: "0x0000000000000000000000000000000000000001",
