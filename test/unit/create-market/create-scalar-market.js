@@ -5,6 +5,7 @@
 var assert = require("chai").assert;
 var immutableDelete = require("immutable-delete");
 var proxyquire = require("proxyquire").noPreserveCache();
+var DEFAULT_NUM_TICKS = require("../../../src/constants").DEFAULT_NUM_TICKS;
 
 var REPORTING_WINDOW_ADDRESS = "0xeeeeeeeeeeeeeeeee";
 
@@ -76,7 +77,7 @@ describe("create-market/create-scalar-market", function () {
               assert.strictEqual(p._designatedReporterAddress, "DESIGNATED_REPORTER_ADDRESS");
               assert.strictEqual(p._topic, "0x544f504943000000000000000000000000000000000000000000000000000000");
               assert.deepEqual(JSON.parse(p._extraInfo), extraInfo);
-              assert.strictEqual(p._numTicks, 10752);
+              assert.strictEqual(p._numTicks, DEFAULT_NUM_TICKS[p._numOutcomes]);
               assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p.meta.accountType, "privateKey");
               assert.isFunction(p.onSent);

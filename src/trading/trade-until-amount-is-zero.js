@@ -8,7 +8,7 @@ var convertDecimalToFixedPoint = require("../utils/convert-decimal-to-fixed-poin
 var convertFixedPointToDecimal = require("../utils/convert-fixed-point-to-decimal");
 var api = require("../api");
 var noop = require("../utils/noop");
-var constants = require("../constants");
+var MINIMUM_TRADE_SIZE = require("../constants").MINIMUM_TRADE_SIZE;
 
 /**
  * @param {Object} p Parameters object.
@@ -26,18 +26,17 @@ var constants = require("../constants");
  * @param {function} p.onFailed Called if any part of the trade fails.
  */
 function tradeUntilAmountIsZero(p) {
-  if (new BigNumber(p._fxpAmount, 10).lte(constants.MINIMUM_TRADE_SIZE)) {
+  if (new BigNumber(p._fxpAmount, 10).lte(MINIMUM_TRADE_SIZE)) {
     return p.onSuccess(null);
   }
-  var numTicks = p.numTicks || constants.DEFAULT_NUM_TICKS;
   var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks"]), {
-    _fxpAmount: convertDecimalToFixedPoint(p._fxpAmount, numTicks),
-    _price: convertDecimalToFixedPoint(p._price, numTicks),
+    _fxpAmount: convertDecimalToFixedPoint(p._fxpAmount, p.numTicks),
+    _price: convertDecimalToFixedPoint(p._price, p.numTicks),
     onSuccess: function (res) {
       getTradeAmountRemaining({ transactionHash: res.hash }, function (err, fxpTradeAmountRemaining) {
         if (err) return p.onFailed(err);
         tradeUntilAmountIsZero(assign({}, p, {
-          _fxpAmount: convertFixedPointToDecimal(fxpTradeAmountRemaining, numTicks),
+          _fxpAmount: convertFixedPointToDecimal(fxpTradeAmountRemaining, p.numTicks),
           onSent: noop, // so that p.onSent only fires when the first transaction is sent
         }));
       });

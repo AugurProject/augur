@@ -4,7 +4,6 @@
 
 var assert = require("chai").assert;
 var proxyquire = require("proxyquire").noPreserveCache();
-var DEFAULT_NUM_TICKS = require("../../../src/constants").DEFAULT_NUM_TICKS;
 
 describe("trading/place-trade", function () {
   var test = function (t) {
@@ -30,7 +29,7 @@ describe("trading/place-trade", function () {
       limitPrice: "2",
       minPrice: "1",
       maxPrice: "3",
-      numTicks: DEFAULT_NUM_TICKS,
+      numTicks: 10752,
       _direction: 0,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
@@ -90,7 +89,7 @@ describe("trading/place-trade", function () {
       limitPrice: "2",
       minPrice: "1",
       maxPrice: "3",
-      numTicks: DEFAULT_NUM_TICKS,
+      numTicks: 10752,
       _direction: 0,
       _market: "MARKET_ADDRESS",
       _outcome: 2,

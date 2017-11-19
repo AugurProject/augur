@@ -4,7 +4,6 @@
 
 var assert = require("chai").assert;
 var proxyquire = require("proxyquire").noPreserveCache();
-var DEFAULT_NUM_TICKS = require("../../../src/constants").DEFAULT_NUM_TICKS;
 
 describe("trading/trade-until-amount-is-zero", function () {
   var test = function (t) {
@@ -30,7 +29,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _outcome: 2,
       _fxpAmount: "10",
       _price: "0.5",
-      numTicks: DEFAULT_NUM_TICKS,
+      numTicks: 10752,
       _tradeGroupId: "0x1",
       doNotCreateOrders: false,
       onSent: function (res) {
@@ -82,7 +81,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _outcome: 2,
       _fxpAmount: "10",
       _price: "0.5",
-      numTicks: DEFAULT_NUM_TICKS,
+      numTicks: 10752,
       _tradeGroupId: "0x1",
       doNotCreateOrders: false,
       onSent: function (res) {
@@ -143,7 +142,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _outcome: 2,
       _fxpAmount: "10",
       _price: "0.5",
-      numTicks: DEFAULT_NUM_TICKS,
+      numTicks: 10752,
       _tradeGroupId: "0x1",
       doNotCreateOrders: false,
       onSent: function (res) {
@@ -195,7 +194,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _outcome: 2,
       _fxpAmount: "10",
       _price: "0.5",
-      numTicks: DEFAULT_NUM_TICKS,
+      numTicks: 10752,
       _tradeGroupId: "0x1",
       doNotCreateOrders: true,
       onSent: function (res) {

@@ -724,6 +724,36 @@ function approveAugurEternalApprovalValue(callback) {
     },
     onSuccess: function (res) {
       console.log("approve success:", res.callReturn);
+      // augur.api.Cash.approve({
+      //   _spender: augur.contracts.addresses[augur.rpc.getNetworkID()].Order,
+      //   _value: constants.ETERNAL_APPROVAL_VALUE,
+      //   onSent: function (res) {
+      //     console.log("approve sent:", res.hash);
+      //   },
+      //   onSuccess: function (res) {
+      //     console.log("approve success:", res.callReturn);
+      //     augur.api.Cash.approve({
+      //       _spender: augur.contracts.addresses[augur.rpc.getNetworkID()].CreateOrder,
+      //       _value: constants.ETERNAL_APPROVAL_VALUE,
+      //       onSent: function (res) {
+      //         console.log("approve sent:", res.hash);
+      //       },
+      //       onSuccess: function (res) {
+      //         console.log("approve success:", res.callReturn);
+      //         callback(null);
+      //       },
+      //       onFailed: function (err) {
+      //         console.error("approve failed:", err);
+      //         callback(err);
+      //       }
+      //     });
+      //     // callback(null);
+      //   },
+      //   onFailed: function (err) {
+      //     console.error("approve failed:", err);
+      //     callback(err);
+      //   }
+      // });
       callback(null);
     },
     onFailed: function (err) {
@@ -735,13 +765,11 @@ function approveAugurEternalApprovalValue(callback) {
 
 function buyCompleteSets(marketID, amount, callback) {
   var cost = convertDecimalToFixedPoint(amount, constants.DEFAULT_NUM_TICKS);
-  // augur.rpc.setDebugOptions({ broadcast: true, tx: true });
   augur.api.CompleteSets.publicBuyCompleteSets({
     tx: { value: cost },
     _market: marketID,
     _amount: amount,
     onSent: function (res) {
-      // augur.rpc.setDebugOptions({ broadcast: false, tx: false });
       if (DEBUG) console.log("buyCompleteSets sent:", res.hash);
     },
     onSuccess: function (res) {
@@ -749,7 +777,6 @@ function buyCompleteSets(marketID, amount, callback) {
       callback(null);
     },
     onFailed: function (err) {
-      // augur.rpc.setDebugOptions({ broadcast: false, tx: false });
       console.error("buyCompleteSets failed:", err);
       callback(err);
     },
@@ -758,11 +785,32 @@ function buyCompleteSets(marketID, amount, callback) {
 
 function createBidOrder(marketID, outcome, order, callback) {
   var cost = new BigNumber(order.shares, 10).times(new BigNumber(order.price, 10)).toFixed();
-  augur.api.CreateOrder.publicCreateOrder({
-    tx: { value: convertDecimalToFixedPoint(cost, constants.DEFAULT_NUM_TICKS) },
+  console.log({
+    // tx: { value: convertDecimalToFixedPoint(cost, constants.DEFAULT_NUM_TICKS) },
+    // tx: { value: "0x53fc" },
+    tx: { value: "0x470de4df820000" },
     _type: 0,
-    _attoshares: convertDecimalToFixedPoint(order.shares, constants.DEFAULT_NUM_TICKS),
-    _displayPrice: convertDecimalToFixedPoint(order.price, constants.DEFAULT_NUM_TICKS),
+    _attoshares: "0x9184e72a000", // 10
+    _displayPrice: "0x7d0", // 50
+    // _attoshares: "0x" + new BigNumber(order.shares, 10).toString(16),
+    // _attoshares: convertDecimalToFixedPoint(order.shares, constants.DEFAULT_NUM_TICKS),
+    // _displayPrice: convertDecimalToFixedPoint(order.price, constants.DEFAULT_NUM_TICKS),
+    _market: marketID,
+    _outcome: outcome,
+    _betterOrderId: 0,
+    _worseOrderId: 0,
+    _tradeGroupId: 0,
+  });
+  augur.api.CreateOrder.publicCreateOrder({
+    // tx: { value: convertDecimalToFixedPoint(cost, constants.DEFAULT_NUM_TICKS) },
+    // tx: { value: "0x53fc" },
+    tx: { value: "0x470de4df820000" },
+    _type: 0,
+    _attoshares: "0x9184e72a000", // 10
+    _displayPrice: "0x7d0", // 50
+    // _attoshares: "0x" + new BigNumber(order.shares, 10).toString(16),
+    // _attoshares: convertDecimalToFixedPoint(order.shares, constants.DEFAULT_NUM_TICKS),
+    // _displayPrice: convertDecimalToFixedPoint(order.price, constants.DEFAULT_NUM_TICKS),
     _market: marketID,
     _outcome: outcome,
     _betterOrderId: 0,
@@ -880,18 +928,18 @@ augur.connect({ ethereumNode: ethereumNode, augurNode: augurNode }, function (er
   // approveAugurEternalApprovalValue(function (err) {
   //   if (err) return console.error(err);
     async.eachSeries(cannedMarkets, function (market, nextMarket) {
-      // createNewMarket(market, function (err, marketID) {
-      //   if (err) return nextMarket(err);
-      //   console.log(chalk.green(marketID), chalk.cyan.dim(market._extraInfo.description));
-        var marketID = "0x300fe2ee662d0b245d9038c88e99677f1d712e1b";
+  //     createNewMarket(market, function (err, marketID) {
+  //       if (err) return nextMarket(err);
+  //       console.log(chalk.green(marketID), chalk.cyan.dim(market._extraInfo.description));
+        var marketID = "0x59852c4e4f7d3031e0c8f31e79016cd3c08ce4c5";
         // buyCompleteSets(marketID, calculateNumCompleteSetsNeeded(market.orderBook), function (err) {
-        //   if (err) return nextMarket(err);
+          // if (err) return nextMarket(err);
           createOrderBook(marketID, market.orderBook, function (err) {
             if (err) return nextMarket(err);
             nextMarket();
           });
         // });
-      // });
+  //     });
     }, function (err) {
       if (err) console.error("canned market creation failed:", err);
       process.exit();

@@ -757,15 +757,22 @@ module.exports = {
     multiple: multiple
   },
   MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
+  DUST_THRESHOLD: new BigNumber(1, 10), // placeholder value
 
-  ETERNAL_APPROVAL_VALUE: "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", // 2^255 - 1
+  ETERNAL_APPROVAL_VALUE: "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", // 2^256 - 1
 
   DEFAULT_NETWORK_ID: "3",
   DEFAULT_GASPRICE: 20000000000,
+  DEFAULT_NUM_TICKS: {
+    2: 10000,
+    3: 10002,
+    4: 10000,
+    5: 10000,
+    6: 10002,
+    7: 10003,
+    8: 10000
+  },
 
-  DEFAULT_NUM_TICKS: 10752, // close to 10^4 and evenly divisible by 2-8
-
-  GETTER_CHUNK_SIZE: 100,
   BLOCKS_PER_CHUNK: 100,
 
   AUGUR_UPLOAD_BLOCK_NUMBER: "0x1",
@@ -775,13 +782,6 @@ module.exports = {
 
   // maximum number of transactions to auto-submit in parallel
   PARALLEL_LIMIT: 5,
-
-  // fixed-point indeterminate: 1.5 * 10^18
-  BINARY_INDETERMINATE: new BigNumber("0x14d1120d7b160000", 16),
-  CATEGORICAL_SCALAR_INDETERMINATE: new BigNumber("0x6f05b59d3b20000", 16),
-  INDETERMINATE_PLUS_ONE: new BigNumber("0x6f05b59d3b20001", 16),
-
-  DUST_THRESHOLD: new BigNumber(1, 10), // placeholder value
 
   // keythereum crypto parameters
   KDF: "pbkdf2",
@@ -944,8 +944,7 @@ var getMarketCreationCost = require("./get-market-creation-cost");
 var api = require("../api");
 var encodeTag = require("../format/tag/encode-tag");
 var noop = require("../utils/noop");
-var ZERO = require("../constants").ZERO;
-var DEFAULT_NUM_TICKS = require("../constants").DEFAULT_NUM_TICKS;
+var constants = require("../constants");
 
 /**
  * @param {Object} p Parameters object.
@@ -959,7 +958,7 @@ var DEFAULT_NUM_TICKS = require("../constants").DEFAULT_NUM_TICKS;
  * @param {string} p.maxPrice Maximum display (non-normalized) price for this market, as a base-10 string.
  * @param {string} p._designatedReporterAddress Ethereum address of this market's designated reporter.
  * @param {string} p._topic The topic (category) to which this market belongs, as a UTF8 string.
- * @param {string=} p._numTicks The number of ticks for this market (default: DEFAULT_NUM_TICKS).
+ * @param {string=} p._numTicks The number of ticks for this market (default: constants.DEFAULT_NUM_TICKS[p._numOutcomes]).
  * @param {Object=} p._extraInfo Extra info which will be converted to JSON and logged to the chain in the CreateMarket event.
  * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
  * @param {function} p.onSent Called if/when the createMarket transaction is broadcast to the network.
@@ -969,7 +968,7 @@ var DEFAULT_NUM_TICKS = require("../constants").DEFAULT_NUM_TICKS;
 function createMarket(p) {
   api().Universe.getReportingWindowByMarketEndTime({ tx: { to: p.universe }, _endTime: p._endTime }, function (err, reportingWindow) {
     if (err) return p.onFailed(err);
-    if (new BigNumber(reportingWindow, 16).eq(ZERO)) {
+    if (new BigNumber(reportingWindow, 16).eq(constants.ZERO)) {
       return api().Universe.getOrCreateReportingWindowByMarketEndTime({
         tx: { to: p.universe },
         _endTime: p._endTime,
@@ -983,7 +982,7 @@ function createMarket(p) {
     }
     getMarketCreationCost({ universe: p.universe, meta: p.meta }, function (err, marketCreationCost) {
       if (err) return p.onFailed(err);
-      var numTicks = p._numTicks || DEFAULT_NUM_TICKS;
+      var numTicks = p._numTicks || constants.DEFAULT_NUM_TICKS[p._numOutcomes];
       var extraInfo = assign({}, p._extraInfo || {}, { minPrice: p.minPrice, maxPrice: p.maxPrice });
       api().ReportingWindow.createMarket(assign({}, immutableDelete(p, ["universe", "minPrice", "maxPrice"]), {
         tx: { to: reportingWindow, value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex") },
@@ -3410,7 +3409,7 @@ var convertDecimalToFixedPoint = require("../utils/convert-decimal-to-fixed-poin
 var convertFixedPointToDecimal = require("../utils/convert-fixed-point-to-decimal");
 var api = require("../api");
 var noop = require("../utils/noop");
-var constants = require("../constants");
+var MINIMUM_TRADE_SIZE = require("../constants").MINIMUM_TRADE_SIZE;
 
 /**
  * @param {Object} p Parameters object.
@@ -3428,18 +3427,17 @@ var constants = require("../constants");
  * @param {function} p.onFailed Called if any part of the trade fails.
  */
 function tradeUntilAmountIsZero(p) {
-  if (new BigNumber(p._fxpAmount, 10).lte(constants.MINIMUM_TRADE_SIZE)) {
+  if (new BigNumber(p._fxpAmount, 10).lte(MINIMUM_TRADE_SIZE)) {
     return p.onSuccess(null);
   }
-  var numTicks = p.numTicks || constants.DEFAULT_NUM_TICKS;
   var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks"]), {
-    _fxpAmount: convertDecimalToFixedPoint(p._fxpAmount, numTicks),
-    _price: convertDecimalToFixedPoint(p._price, numTicks),
+    _fxpAmount: convertDecimalToFixedPoint(p._fxpAmount, p.numTicks),
+    _price: convertDecimalToFixedPoint(p._price, p.numTicks),
     onSuccess: function onSuccess(res) {
       getTradeAmountRemaining({ transactionHash: res.hash }, function (err, fxpTradeAmountRemaining) {
         if (err) return p.onFailed(err);
         tradeUntilAmountIsZero(assign({}, p, {
-          _fxpAmount: convertFixedPointToDecimal(fxpTradeAmountRemaining, numTicks),
+          _fxpAmount: convertFixedPointToDecimal(fxpTradeAmountRemaining, p.numTicks),
           onSent: noop // so that p.onSent only fires when the first transaction is sent
         }));
       });
@@ -3601,7 +3599,7 @@ module.exports = sha256;
 'use strict';
 
 // generated by genversion
-module.exports = '4.6.11';
+module.exports = '4.6.12';
 },{}],134:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
