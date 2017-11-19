@@ -36,7 +36,6 @@ describe("blockchain/log-processors/order-created", () => {
         orderId: "ORDER_ID",
         tradeGroupId: "TRADE_GROUP_ID",
         blockNumber: 1400100,
-        blockHash: "0x1400101",
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
         transactionIndex: 0,
       },
@@ -73,7 +72,6 @@ describe("blockchain/log-processors/order-created", () => {
         assert.deepEqual(records, [{
           orderID: "ORDER_ID",
           blockNumber: 1400100,
-          blockHash: "0x1400101",
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
           transactionIndex: 0,
           marketID: "0x0000000000000000000000000000000000000001",
@@ -96,7 +94,6 @@ describe("blockchain/log-processors/order-created", () => {
         assert.isNull(err);
         assert.deepEqual(records, [{
           orderID: "ORDER_ID",
-          blockHash: "0x1400101",
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
           transactionIndex: 0,
           marketID: "0x0000000000000000000000000000000000000001",
