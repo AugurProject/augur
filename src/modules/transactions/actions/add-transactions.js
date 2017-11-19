@@ -128,7 +128,7 @@ export function addMarketCreationTransactions(marketsCreated) {
       const header = buildHeader(transaction, MARKET_CREATION, SUCCESS)
       const meta = {}
       meta.market = transaction.marketID
-      meta['creation fee'] = transaction.creationFee
+      meta['creation fee'] = transaction.hasOwnProperty('creationFee') && transaction.creationFee !== undefined ? transaction.creationFee : 0
       meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
       transaction.meta = meta
       header.message = 'Market Creation'
@@ -209,16 +209,15 @@ export function addReportingTransactions(reports) {
           const transaction = { universe, marketID, ...report, market }
           transaction.id = transaction.marketID + transaction.amountStaked
           const meta = {}
-          meta.staked = transaction.amountStaked
-          meta.market = transaction.marketID
-          meta['creation fee'] = transaction.creationFee
-          meta.payout = transaction.payoutNumerators
+          meta.marketID = transaction.marketID
+          meta.staked = `${transaction.amountStaked} REP`
+          meta.numerators = JSON.stringify(transaction.payoutNumerators)
           meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
           transaction.meta = meta
           const header = buildHeader(transaction, REPORTING, SUCCESS)
           header.transactions = [transaction]
           header.message = 'Market Reporting'
-          header.description = 'Staked ' + transaction.amountStaked + ' on market ' + transaction.market.shortDescription == null ? transaction.marketID : transaction.market.shortDescription
+          header.description = `Staked  ${transaction.amountStaked} REP on market ${market.description}`
           // create unique id
           transactions[transaction.id] = header
         })
