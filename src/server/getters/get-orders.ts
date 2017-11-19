@@ -27,7 +27,7 @@ export function getOrders(db: Knex, universe: Address|null, marketID: Address|nu
     "orderCreator": creator,
     "orders.marketID": marketID,
   }, _.isNil);
-  const query: Knex.QueryBuilder = db.select(["orders.*", `blocks.timestamp as creationTime`]).from("orders");
+  const query: Knex.QueryBuilder = db.select(["orders.*", "blocks.blockHash", `blocks.timestamp as creationTime`]).from("orders");
   query.leftJoin("blocks", "orders.blockNumber", "blocks.blockNumber");
   query.leftJoin("markets", "orders.marketID", "markets.marketID");
   query.where(queryData);

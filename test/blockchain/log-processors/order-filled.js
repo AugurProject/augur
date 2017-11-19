@@ -45,7 +45,6 @@ describe("blockchain/log-processors/order-filled", () => {
         settlementFees: "0",
         tradeGroupId: "TRADE_GROUP_ID",
         blockNumber: 1400101,
-        blockHash: "0x1400101",
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000F00",
         transactionIndex: 0,
       },
@@ -80,7 +79,6 @@ describe("blockchain/log-processors/order-filled", () => {
           orders: [{
             orderID: "0x1000000000000000000000000000000000000000000000000000000000000000",
             blockNumber: 1400001,
-            blockHash: "0x1400001",
             transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
             transactionIndex: 0,
             marketID: "0x0000000000000000000000000000000000000001",
@@ -126,7 +124,6 @@ describe("blockchain/log-processors/order-filled", () => {
           orders: [{
             orderID: "0x1000000000000000000000000000000000000000000000000000000000000000",
             blockNumber: 1400001,
-            blockHash: "0x1400001",
             transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
             transactionIndex: 0,
             marketID: "0x0000000000000000000000000000000000000001",

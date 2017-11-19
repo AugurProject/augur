@@ -84,7 +84,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       orderType: "sell",
       creator: "0x0000000000000000000000000000000000000b0b",
       filler: "0x000000000000000000000000000000000000d00d",
-      blockNumber: 1400051,
+      blockNumber: 1400052,
       transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
       transactionIndex: 0,
       numCreatorTokens: "0",
