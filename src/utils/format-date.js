@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 const months = [
   'January', 'February', 'March',
   'April', 'May', 'June',
@@ -40,4 +42,16 @@ function getTwelveHour(time) {
   if (time[1] < 10) time[1] = '0' + time[1]
 
   return time
+}
+
+export function getBeginDate(periodString) {
+  const date = moment()
+  let beginDate = date.subtract(1, 'day')
+  if (periodString === 'week') {
+    beginDate = date.subtract(7, 'day')
+  }
+  if (periodString === 'month') {
+    beginDate = date.subtract(1, 'month')
+  }
+  return beginDate.unix()
 }

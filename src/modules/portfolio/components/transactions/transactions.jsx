@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet'
 import TransactionSingle from 'modules/portfolio/components/transaction-single/transaction-single'
 import TransactionMultiple from 'modules/portfolio/components/transaction-multiple/transaction-multiple'
 import Paginator from 'modules/common/components/paginator/paginator'
-
+import { getBeginDate } from 'src/utils/format-date'
 import Styles from 'modules/portfolio/components/transactions/transactions.styles'
 
 export default class Transactions extends Component {
@@ -18,7 +18,7 @@ export default class Transactions extends Component {
     location: PropTypes.object.isRequired,
     transactions: PropTypes.array.isRequired,
     loadAccountHistoryTransactions: PropTypes.func.isRequired,
-    loadFilteredTransactions: PropTypes.func.isRequired,
+    graphPeriod: PropTypes.string,
   }
 
   constructor(props) {
@@ -34,7 +34,8 @@ export default class Transactions extends Component {
   }
 
   componentWillMount() {
-    this.props.loadAccountHistoryTransactions()
+    const beginDate = getBeginDate(this.props.graphPeriod)
+    this.props.loadAccountHistoryTransactions(beginDate, null)
   }
 
   setSegment(lowerBound, upperBound, boundedLength) {
