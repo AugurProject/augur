@@ -80,7 +80,7 @@ function buildTradeTransaction(trade, marketsData) {
   meta.outcome = transaction.outcome
   meta.price = transaction.price
   meta.fee = transaction.settlementFees
-  meta['gas cost'] = 'GET REAL GAS COSTS'
+  meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
   transaction.meta = meta
   header.status = SUCCESS
   if (transaction.market) {
@@ -103,7 +103,7 @@ export function addTransferTransactions(transfers) {
       meta.hash = transaction.id
       meta.recipient = transaction.recipient
       meta.sender = transaction.sender
-      meta['gas cost'] = 'GET REAL GAS COSTS'
+      meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
       meta.confirmations = transaction.blockNumber
       transaction.meta = meta
       header.message = 'Transfer'
@@ -129,7 +129,7 @@ export function addMarketCreationTransactions(marketsCreated) {
       const meta = {}
       meta.market = transaction.marketID
       meta['creation fee'] = transaction.creationFee
-      meta['gas cost'] = 'GET REAL GAS COSTS'
+      meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
       transaction.meta = meta
       header.message = 'Market Creation'
       if (transaction.market !== undefined) {
@@ -178,7 +178,7 @@ export function addOpenOrderTransactions(openOrders) {
             meta.status = transaction.orderState
             meta.amount = transaction.fullPrecisionAmount
             meta.price = transaction.fullPrecisionPrice
-            meta['gas Cost'] = 'NEED TO GET GAS COST'
+            meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
             transaction.meta = meta
             marketTradeTransactions.push(transaction)
             if (type === BUY) {
@@ -213,7 +213,7 @@ export function addReportingTransactions(reports) {
           meta.market = transaction.marketID
           meta['creation fee'] = transaction.creationFee
           meta.payout = transaction.payoutNumerators
-          meta['gas cost'] = 'GET REAL GAS COSTS'
+          meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
           transaction.meta = meta
           const header = buildHeader(transaction, REPORTING, SUCCESS)
           header.transactions = [transaction]
