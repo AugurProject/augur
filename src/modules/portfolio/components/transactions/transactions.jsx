@@ -9,10 +9,15 @@ import Paginator from 'modules/common/components/paginator/paginator'
 import Styles from 'modules/portfolio/components/transactions/transactions.styles'
 
 export default class Transactions extends Component {
+  static defaultProps = {
+    transactions: []
+  }
+
   static propTypes = {
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
     transactions: PropTypes.array.isRequired,
+    loadAccountHistoryTransactions: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -24,6 +29,11 @@ export default class Transactions extends Component {
     }
 
     this.setSegment = this.setSegment.bind(this)
+
+  }
+
+  componentWillMount() {
+    this.props.loadAccountHistoryTransactions()
   }
 
   setSegment(lowerBound, upperBound, boundedLength) {
@@ -43,15 +53,16 @@ export default class Transactions extends Component {
           <h2 className={Styles.Transactions__heading}>Transactions</h2>
         </div>
         <div className={Styles.Transactions__list}>
-          {p.transactions.length && s.boundedLength &&
+          {p.transactions.length > 0 && s.boundedLength &&
           [...Array(s.boundedLength)].map((unused, i) => {
             const transaction = p.transactions[(s.lowerBound - 1) + i]
-
-            if (transaction.transactions.length <= 1) {
-              return <TransactionSingle key={transaction.hash} transaction={transaction} />
+            if (transaction) {
+              if (transaction.transactions.length <= 1) {
+                return <TransactionSingle key={transaction.hash} transaction={transaction} />
+              }
+              return <TransactionMultiple key={transaction.hash} transaction={transaction} />
             }
-            return <TransactionMultiple key={transaction.hash} transaction={transaction} />
-
+            return null
           })
         }
         </div>

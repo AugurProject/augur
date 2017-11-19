@@ -1,13 +1,14 @@
-import async from 'async'
+import { parallel } from 'async'
 import { clearReports } from 'modules/reports/actions/update-reports'
-import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades'
-import { loadBidsAsksHistory } from 'modules/bids-asks/actions/load-bids-asks-history'
+import { loadUserTradingHistory } from 'modules/my-positions/actions/load-account-trades'
 import { loadCreateMarketHistory } from 'modules/create-market/actions/load-create-market-history'
 import { loadFundingHistory } from 'modules/account/actions/load-funding-history'
 import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-history'
 import syncUniverse from 'modules/universe/actions/sync-universe'
-import { updateTransactionsOldestLoadedBlock } from 'modules/transactions/actions/update-transactions-oldest-loaded-block'
+/* import { updateTransactionsOldestLoadedBlock } from 'modules/transactions/actions/update-transactions-oldest-loaded-block' */
 import { updateTransactionsLoading } from 'modules/transactions/actions/update-transactions-loading'
+import { clearTransactions } from 'modules/transactions/actions/delete-transaction'
+import { loadOpenOrders } from '../../bids-asks/actions/load-open-orders'
 
 export const loadAccountHistory = (loadAllHistory, triggerTransactionsExport) => (dispatch, getState) => {
   const { transactionsOldestLoadedBlock, blockchain, loginAccount, transactionsData } = getState()
@@ -25,78 +26,56 @@ export const loadAccountHistory = (loadAllHistory, triggerTransactionsExport) =>
     dispatch(syncUniverse())
   }
 
-  if (registerBlock && oldestLoadedBlock && oldestLoadedBlock !== registerBlock) {
-    const options = {}
-    if (!loadAllHistory) {
-      options.toBlock = oldestLoadedBlock === blockchain.currentBlockNumber ? oldestLoadedBlock : oldestLoadedBlock - 1
+  // TODO: figure out where this data comes from and if it is needed
+  /* if (registerBlock && oldestLoadedBlock && oldestLoadedBlock !== registerBlock) { } */
 
-      const prospectiveFromBlock = options.toBlock - blockChunkSize
-      options.fromBlock = prospectiveFromBlock < registerBlock ?
-        registerBlock :
-        prospectiveFromBlock
-    }
+  const options = {}
+  if (!loadAllHistory) {
+    options.toBlock = oldestLoadedBlock === blockchain.currentBlockNumber ? oldestLoadedBlock : oldestLoadedBlock - 1
 
-    const constraints = {
-      loadAllHistory,
-      initialTransactionCount,
-      transactionSoftLimit,
-      registerBlock,
-      blockChunkSize,
-      triggerTransactionsExport
-    }
-
-    loadTransactions(dispatch, getState, options, constraints, loadMoreTransactions)
+    const prospectiveFromBlock = options.toBlock - blockChunkSize
+    options.fromBlock = prospectiveFromBlock < registerBlock ?
+      registerBlock :
+      prospectiveFromBlock
   }
+
+  const constraints = {
+    loadAllHistory,
+    initialTransactionCount,
+    transactionSoftLimit,
+    registerBlock,
+    blockChunkSize,
+    triggerTransactionsExport
+  }
+  loadTransactions(dispatch, getState, options, constraints, () => {
+    dispatch(updateTransactionsLoading(false))
+  })
+
 }
 
 export function loadMoreTransactions(dispatch, getState, options, constraints) {
-  if (!constraints.loadAllHistory) {
-    const { transactionsData } = getState()
+  // TODO: need to pass in options for getting data TBD
+  loadTransactions(dispatch, getState, options, constraints, () => {
+    // transactions have stop loading
+    dispatch(updateTransactionsLoading(false))
+  })
 
-    const updatedTransactionsCount = Object.keys(transactionsData || {}).length
-    const updatedOptions = {
-      ...options
-    }
-
-    dispatch(updateTransactionsOldestLoadedBlock(options.fromBlock))
-
-    if (!(updatedTransactionsCount - constraints.initialTransactionCount >= constraints.transactionSoftLimit) && options.fromBlock !== constraints.registerBlock) {
-      updatedOptions.toBlock = updatedOptions.fromBlock - 1
-
-      const prospectiveFromBlock = updatedOptions.toBlock - constraints.blockChunkSize
-      updatedOptions.fromBlock = prospectiveFromBlock < constraints.registerBlock ?
-        constraints.registerBlock :
-        prospectiveFromBlock
-
-      loadTransactions(dispatch, getState, updatedOptions, constraints, loadMoreTransactions)
-    } else {
-      dispatch(updateTransactionsLoading(false))
-      if (constraints.triggerTransactionsExport) {
-        dispatch(constraints.triggerTransactionsExport())
-      }
-    }
-
-    return
-  }
-
-  dispatch(updateTransactionsOldestLoadedBlock(constraints.registerBlock))
-  dispatch(updateTransactionsLoading(false))
-  constraints.triggerTransactionsExport && dispatch(constraints.triggerTransactionsExport())
 }
 
+// transactionsData is constructed from these methods
 function loadTransactions(dispatch, getState, options, constraints, cb) {
   dispatch(updateTransactionsLoading(true))
-
-  async.parallel([
-    next => dispatch(loadAccountTrades(options, (err) => {
-      if (err) next(err)
-      next(null)
-    })),
-    next => dispatch(loadBidsAsksHistory(options, (err) => {
+  dispatch(clearTransactions())
+  parallel([
+    next => dispatch(loadUserTradingHistory(options, (err, values) => {
       if (err) next(err)
       next(null)
     })),
     next => dispatch(loadFundingHistory(options, (err) => {
+      if (err) next(err)
+      next(null)
+    })),
+    next => dispatch(loadOpenOrders(options, (err) => {
       if (err) next(err)
       next(null)
     })),

@@ -17,7 +17,18 @@ export const loadMarketsInfo = (marketIDs, callback = logError) => (dispatch, ge
       return callback(`no markets data received`)
     }
     if (!Object.keys(marketsData).length) return callback(null)
+    dispatch(updateMarketsLoadingStatus(marketIDs, false))
     dispatch(updateMarketsData(marketsData))
     callback(null, marketsData)
+  })
+}
+
+export const loadMarketsInfoOnly = (marketIDs, callback = logError) => (dispatch, getState) => {
+  augur.markets.getMarketsInfo({ marketIDs }, (err, marketsData) => {
+    if (err) return callback(err)
+    const marketInfoIDs = Object.keys(marketsData)
+    if (!marketInfoIDs.length) return callback(null)
+    dispatch(updateMarketsData(marketsData))
+    callback(null)
   })
 }

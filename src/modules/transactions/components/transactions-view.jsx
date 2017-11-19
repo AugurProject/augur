@@ -22,7 +22,8 @@ export default class TransactionsView extends Component {
     isMobile: PropTypes.bool.isRequired,
     universe: PropTypes.object,
     loginAccount: PropTypes.object,
-    currentBlockNumber: PropTypes.number
+    currentBlockNumber: PropTypes.number,
+    loadAccountHistoryTransactions: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -37,6 +38,12 @@ export default class TransactionsView extends Component {
 
     this.handleScroll = debounce(this.handleScroll.bind(this), 100)
     this.setSegment = this.setSegment.bind(this)
+  }
+
+  componentWillMount() {
+    console.log('***********  transaction view ************')
+    // fire off async call
+    this.props.loadAccountHistoryTransactions()
   }
 
   componentDidMount() {

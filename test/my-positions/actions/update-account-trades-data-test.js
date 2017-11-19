@@ -6,7 +6,6 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 
 import {
-  UPDATE_ACCOUNT_TRADES_DATA,
   UPDATE_ACCOUNT_POSITIONS_DATA,
   updateAccountPositionsData
 } from 'modules/my-positions/actions/update-account-trades-data'
@@ -18,10 +17,14 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
   const mockStore = configureMockStore(middlewares)
 
   const MOCK_ACTION_TYPES = {
-    CONVERT_TRADE_LOGS_TO_TRANSACTIONS: 'CONVERT_TRADE_LOGS_TO_TRANSACTIONS',
+    UPDATE_TRANSACTIONS_DATA: 'UPDATE_TRANSACTIONS_DATA',
     UPDATE_ORDERS: 'UPDATE_ORDERS',
     LOAD_BIDS_ASKS_HISTORY: 'LOAD_BIDS_ASKS_HISTORY'
   }
+  const mockAddTradeTransactions = {
+    addTradeTransactions: (data) => { }
+  }
+  mockAddTradeTransactions.addTradeTransactions = sinon.stub().returns({ type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_DATA })
   const mockloadAccountPositions = {
     loadAccountPositions: () => { }
   }
@@ -30,7 +33,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
     convertTradeLogsToTransactions: () => { }
   }
   sinon.stub(mockConvertTradeLogsToTransactions, 'convertTradeLogsToTransactions', (logType, data, marketID) => ({
-    type: MOCK_ACTION_TYPES.CONVERT_TRADE_LOGS_TO_TRANSACTIONS,
+    type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_DATA,
     logType,
     data,
     marketID
@@ -45,9 +48,9 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
   }))
 
   const mockLoadBidsAsksHistory = {
-    loadBidsAsksHistory: () => { }
+    loadOpenOrders: () => { }
   }
-  sinon.stub(mockLoadBidsAsksHistory, 'loadBidsAsksHistory', market => ({
+  sinon.stub(mockLoadBidsAsksHistory, 'loadOpenOrders', market => ({
     type: MOCK_ACTION_TYPES.LOAD_BIDS_ASKS_HISTORY,
     data: { ...market }
   }))
@@ -79,7 +82,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
         const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
           '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
           '../../my-orders/actions/update-orders': mockUpdateOrders,
-          '../../bids-asks/actions/load-bids-asks-history': mockLoadBidsAsksHistory,
+          '../../bids-asks/actions/load-open-orders': mockLoadBidsAsksHistory,
           './load-account-positions': mockloadAccountPositions
         })
 
@@ -89,7 +92,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
 
         const expected = [
           {
-            type: MOCK_ACTION_TYPES.CONVERT_TRADE_LOGS_TO_TRANSACTIONS,
+            type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_DATA,
             logType: 'CreateOrder',
             data: {
               market: [
@@ -152,7 +155,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
 
         const expected = [
           {
-            type: MOCK_ACTION_TYPES.CONVERT_TRADE_LOGS_TO_TRANSACTIONS,
+            type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_DATA,
             logType: 'CreateOrder',
             data: {
               '0xMARKETID': {}
@@ -192,7 +195,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
 
         const expected = [
           {
-            type: MOCK_ACTION_TYPES.CONVERT_TRADE_LOGS_TO_TRANSACTIONS,
+            type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_DATA,
             logType: 'CancelOrder',
             data: {
               '0xMARKETID': {}
@@ -205,110 +208,6 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
               '0xMARKETID': {}
             },
             isAddition: false
-          }
-        ]
-
-        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`)
-      }
-    })
-  })
-
-  describe('updateAccountTradesData', () => {
-    test({
-      description: `should return the expected actions WITH updateAccountTradesData returning an error`,
-      state: {
-        loginAccount: {
-          address: '0xUSERID'
-        }
-      },
-      assertions: (store) => {
-
-        const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
-          '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
-          '../../bids-asks/actions/load-bids-asks-history': mockLoadBidsAsksHistory,
-          './load-account-positions': mockloadAccountPositions
-        })
-
-        store.dispatch(action.updateAccountTradesData({ '0xMARKETID': {} }, '0xMARKETID'))
-
-        const actual = store.getActions()
-
-        const expected = [
-          {
-            type: MOCK_ACTION_TYPES.CONVERT_TRADE_LOGS_TO_TRANSACTIONS,
-            logType: 'FillOrder',
-            data: {
-              '0xMARKETID': {}
-            },
-            marketID: '0xMARKETID'
-          },
-          {
-            data: undefined,
-            market: {},
-            type: UPDATE_ACCOUNT_TRADES_DATA
-          },
-          {
-            type: 'LOAD_ACCOUNT_POSITIONS'
-          },
-          {
-            type: MOCK_ACTION_TYPES.LOAD_BIDS_ASKS_HISTORY,
-            data: {
-              market: {}
-            }
-          }
-        ]
-
-        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`)
-      }
-    })
-
-    test({
-      description: `should return the expected actions WITH getPositionInMarket returning NO error`,
-      state: {
-        loginAccount: {
-          address: '0xUSERID'
-        }
-      },
-      assertions: (store) => {
-
-        const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
-          '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
-          '../../bids-asks/actions/load-bids-asks-history': mockLoadBidsAsksHistory,
-          './load-account-positions': mockloadAccountPositions
-        })
-
-        store.dispatch(action.updateAccountTradesData({ '0xMARKETID': { type: 'something' } }, '0xMARKETID'))
-
-        const actual = store.getActions()
-
-        const expected = [
-          {
-            type: MOCK_ACTION_TYPES.CONVERT_TRADE_LOGS_TO_TRANSACTIONS,
-            logType: 'FillOrder',
-            data: {
-              '0xMARKETID': {
-                type: 'something'
-              }
-            },
-            marketID: '0xMARKETID'
-          },
-          {
-            data: undefined,
-            type: UPDATE_ACCOUNT_TRADES_DATA,
-            market: {
-              type: 'something'
-            }
-          },
-          {
-            type: 'LOAD_ACCOUNT_POSITIONS'
-          },
-          {
-            type: MOCK_ACTION_TYPES.LOAD_BIDS_ASKS_HISTORY,
-            data: {
-              market: {
-                type: 'something'
-              }
-            }
           }
         ]
 

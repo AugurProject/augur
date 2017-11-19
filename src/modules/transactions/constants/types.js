@@ -12,6 +12,11 @@ export const SUBMIT_REPORT = 'SubmitReport'
 export const FILL_ORDER = 'FillOrder'
 export const TRANSFER = 'Transfer'
 export const WITHDRAW_ETHER = 'WithdrawEther'
+export const OPEN_ORDER = 'OpenOrder'
+export const MARKET_CREATION = 'MarketCreation'
+export const TRADE = 'Trade'
+export const POSITION = 'Position'
+export const REPORTING = 'Reporting'
 
 // Other
 export const TRANSFER_FUNDS = 'transfer_funds'

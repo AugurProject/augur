@@ -8,7 +8,7 @@ export const loadAccountPositions = (options, callback = logError) => (dispatch,
   augur.trading.getUserTradingPositions({ ...options, account: loginAccount.address, universe: universe.id }, (err, shareBalances) => {
     if (err) return callback(err)
     if (shareBalances == null) return callback(null)
-    dispatch(updateAccountPositionsData(shareBalances, options.market))
+    dispatch(updateAccountPositionsData(shareBalances, options.marketID))
     callback(null, shareBalances)
   })
 }
