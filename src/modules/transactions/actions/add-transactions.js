@@ -80,7 +80,7 @@ function buildTradeTransaction(trade, marketsData) {
   meta.outcome = transaction.outcome
   meta.price = transaction.price
   meta.fee = transaction.settlementFees
-  meta.gasCost = 'GET REAL GAS COSTS'
+  meta['gas cost'] = 'GET REAL GAS COSTS'
   transaction.meta = meta
   header.status = SUCCESS
   if (transaction.market) {
@@ -103,7 +103,7 @@ export function addTransferTransactions(transfers) {
       meta.hash = transaction.id
       meta.recipient = transaction.recipient
       meta.sender = transaction.sender
-      meta.gasCost = 'GET REAL GAS COSTS'
+      meta['gas cost'] = 'GET REAL GAS COSTS'
       meta.confirmations = transaction.blockNumber
       transaction.meta = meta
       header.message = 'Transfer'
@@ -128,8 +128,8 @@ export function addMarketCreationTransactions(marketsCreated) {
       const header = buildHeader(transaction, MARKET_CREATION, SUCCESS)
       const meta = {}
       meta.market = transaction.marketID
-      meta.creationFee = transaction.creationFee
-      meta.gasCost = 'GET REAL GAS COSTS'
+      meta['creation fee'] = transaction.creationFee
+      meta['gas cost'] = 'GET REAL GAS COSTS'
       transaction.meta = meta
       header.message = 'Market Creation'
       if (transaction.market !== undefined) {
@@ -176,9 +176,9 @@ export function addOpenOrderTransactions(openOrders) {
             meta.timestamp = creationTime.full
             meta.outcome = outcomeID // need to get payNumerators
             meta.status = transaction.orderState
-            meta.precisionAmount = transaction.fullPrecisionAmount
-            meta.precisionPrice = transaction.fullPrecisionPrice
-            meta.gasCost = 'NEED TO GET GAS COST'
+            meta.amount = transaction.fullPrecisionAmount
+            meta.price = transaction.fullPrecisionPrice
+            meta['gas Cost'] = 'NEED TO GET GAS COST'
             transaction.meta = meta
             marketTradeTransactions.push(transaction)
             if (type === BUY) {
@@ -211,9 +211,9 @@ export function addReportingTransactions(reports) {
           const meta = {}
           meta.staked = transaction.amountStaked
           meta.market = transaction.marketID
-          meta.creationFee = transaction.creationFee
+          meta['creation fee'] = transaction.creationFee
           meta.payout = transaction.payoutNumerators
-          meta.gasCost = 'GET REAL GAS COSTS'
+          meta['gas cost'] = 'GET REAL GAS COSTS'
           transaction.meta = meta
           const header = buildHeader(transaction, REPORTING, SUCCESS)
           header.transactions = [transaction]
