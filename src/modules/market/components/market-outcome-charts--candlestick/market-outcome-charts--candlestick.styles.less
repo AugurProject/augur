@@ -1,0 +1,73 @@
+@import (reference) "~assets/styles/shared";
+
+.MarketOutcomeCandlestick {
+  flex: 3;
+  height: 100%;
+}
+
+.MarketOutcomeCandlestick__period-stats {
+  &:extend(.caps--small all);
+
+  display: flex;
+}
+
+.MarketOutcomeCandlestick__period-stat {
+  display: flex;
+}
+
+.MarketOutcomeCandlestick__period-stat-title {
+  color: @color-white;
+  margin-right: 0.3em;
+}
+
+.MarketOutcomeCandlestick__period-stat-value {
+  color: @color-lightgray;
+  width: 5em;
+}
+
+.MarketOutcomeCandlestick__chart {
+  cursor: cell;
+  height: 100%;
+
+  :global {
+    .tick-line {
+      stroke: @color-gray;
+    }
+
+    .tick-value {
+      &:extend(.caps--extra-small all);
+
+      stroke: @color-lightgray;
+    }
+
+    rect {
+      &.up-period {
+        fill: @color-positive;
+      }
+
+      &.down-period {
+        fill: @color-negative;
+      }
+    }
+
+    line {
+      &.up-period {
+        stroke: @color-positive;
+      }
+
+      &.down-period {
+        stroke: @color-negative;
+      }
+    }
+
+    .period-volume {
+      fill: @color-white;
+      opacity: 0.2;
+    }
+
+    .period-hover {
+      fill: none;
+      pointer-events: visible;
+    }
+  }
+}
