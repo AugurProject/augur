@@ -18,6 +18,7 @@ export default class Transactions extends Component {
     location: PropTypes.object.isRequired,
     transactions: PropTypes.array.isRequired,
     loadAccountHistoryTransactions: PropTypes.func.isRequired,
+    loadFilteredTransactions: PropTypes.func.isRequired,
   }
 
   constructor(props) {
