@@ -2,7 +2,6 @@
 
 module.exports = {
   getBetterWorseOrders: require("./get-better-worse-orders"),
-  getOrderBook: require("./get-open-orders"),
   getUserTradingHistory: require("./get-user-trading-history"),
   getUserTradingPositions: require("./get-user-trading-positions"),
   getPositionInMarket: require("./get-position-in-market"),
@@ -14,5 +13,5 @@ module.exports = {
   normalizePrice: require("./normalize-price"),
   denormalizePrice: require("./denormalize-price"),
   tradeUntilAmountIsZero: require("./trade-until-amount-is-zero"),
-  getOpenOrders: require("./get-open-orders"),
+  getOrders: require("./get-orders"),
 };
