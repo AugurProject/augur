@@ -11,7 +11,7 @@ export function getUserTradingHistory(db: Knex|Knex.Transaction, universe: Addre
   if (universe == null && marketID == null ) return callback(new Error("Must provide reference to universe, specify universe or marketID"));
   const query = db.select([
     "trades.transactionHash",
-    "trades.transactionIndex",
+    "trades.logIndex",
     "trades.marketID",
     "trades.outcome",
     "trades.orderType",
@@ -41,7 +41,7 @@ export function getUserTradingHistory(db: Knex|Knex.Transaction, universe: Addre
     if (!userTradingHistory) return callback(new Error("Internal error retrieving trade history"));
     callback(null, userTradingHistory.map((trade: TradingHistoryRow): UITrade => ({
       transactionHash: trade.transactionHash,
-      transactionIndex: trade.transactionIndex,
+      logIndex: trade.logIndex,
       type: trade.orderType!,
       price: trade.price!,
       amount: trade.amount!,
