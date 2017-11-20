@@ -879,7 +879,7 @@ augur.connect({ ethereumNode: ethereumNode, augurNode: augurNode }, function (er
   if (err) return console.error(err);
   approveAugurEternalApprovalValue(function (err) {
     if (err) return console.error(err);
-    async.eachLimit(cannedMarkets, 2, function (market, nextMarket) {
+    async.eachSeries(cannedMarkets, function (market, nextMarket) {
       createNewMarket(market, function (err, marketID) {
         if (err) return nextMarket(err);
         console.log(chalk.green(marketID), chalk.cyan.dim(market._extraInfo.description));
