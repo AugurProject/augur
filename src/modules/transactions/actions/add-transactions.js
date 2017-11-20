@@ -125,15 +125,16 @@ export function addMarketCreationTransactions(marketsCreated) {
       transaction.timestamp = transaction.creationTime
       transaction.createdBy = loginAccount.address
       transaction.id = marketID
-      const header = buildHeader(transaction, MARKET_CREATION, SUCCESS)
+      transaction.timestamp = market.creationTime
       const meta = {}
       meta.market = transaction.marketID
       meta['creation fee'] = transaction.hasOwnProperty('creationFee') && transaction.creationFee !== undefined ? transaction.creationFee : 0
       meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
       transaction.meta = meta
+      const header = buildHeader(transaction, MARKET_CREATION, SUCCESS)
       header.message = 'Market Creation'
       if (transaction.market !== undefined) {
-        header.description = transaction.description
+        header.description = market.description
       }
       header.transactions = [transaction]
       marketCreationData[transaction.id] = header
