@@ -34,7 +34,10 @@ export default class Transactions extends Component {
   }
 
   componentWillMount() {
-    const beginDate = getBeginDate(this.props.graphPeriod)
+    let beginDate = null
+    if (this.props.graphPeriod) {
+      beginDate = getBeginDate(this.props.graphPeriod)
+    }
     this.props.loadAccountHistoryTransactions(beginDate, null)
   }
 

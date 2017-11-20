@@ -2,7 +2,7 @@ import { MARKET_CREATION, TRANSFER, REPORTING, TRADE, OPEN_ORDER, BUY, SELL } fr
 import { SUCCESS } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { eachOf, each, groupBy } from 'async'
-import { formatDate } from 'src/utils/format-date'
+import { convertUnix } from 'src/utils/format-date'
 
 export function addTransactions(transactionsArray) {
   return (dispatch, getState) => {
@@ -119,13 +119,12 @@ export function addMarketCreationTransactions(marketsCreated) {
   return (dispatch, getState) => {
     const marketCreationData = {}
     const { loginAccount, marketsData } = getState()
-    // placeholder until get unique ID
     each(marketsCreated, (marketID) => {
       const market = getMarketById(marketsData, marketID)
       const transaction = { marketID, market }
       transaction.timestamp = transaction.creationTime
       transaction.createdBy = loginAccount.address
-      transaction.id = marketID + transaction.createdBy
+      transaction.id = marketID
       const header = buildHeader(transaction, MARKET_CREATION, SUCCESS)
       const meta = {}
       meta.market = transaction.marketID
@@ -159,23 +158,22 @@ export function addOpenOrderTransactions(openOrders) {
       marketHeader.status = 'Market Outcome Trade'
       marketHeader.hash = marketID + index
       if (market !== undefined) {
-        marketHeader.timestamp = formatDate(market.creationTime)
         marketHeader.description = market.description
       }
       marketHeader.sortOrder = getSortOrder(OPEN_ORDER)
       marketHeader.id = marketHeader.hash
+      let creationTime = null
       const marketTradeTransactions = []
       eachOf(value, (value2, index) => {
         eachOf(value2, (value3, type) => {
           eachOf(value3, (value4, outcomeID) => {
             const transaction = { marketID, type, outcomeID, ...value4 }
-            transaction.id = transaction.transactionHash + transaction.transactionIndex
+            transaction.id = transaction.transactionHash + transaction.logIndex
             transaction.message = `${transaction.orderState} - ${type} ${transaction.amount} Shares @ ${transaction.price} ETH`
             const meta = {}
-            // need better way of setting parameter name
-            const creationTime = formatDate(transaction.creationTime)
+            creationTime = convertUnix(transaction.creationTime)
             meta.timestamp = creationTime.full
-            meta.outcome = outcomeID // need to get payNumerators
+            meta.outcome = outcomeID // need to get payNumerators ?
             meta.status = transaction.orderState
             meta.amount = transaction.fullPrecisionAmount
             meta.price = transaction.fullPrecisionPrice
@@ -191,6 +189,8 @@ export function addOpenOrderTransactions(openOrders) {
           })
         })
       })
+      // TODO: last order creation time will be in header, eariest activite
+      marketHeader.timestamp = creationTime
       marketHeader.message = `${sumBuy} ${BUY} & ${sumSell} ${SELL} Orders`
       marketHeader.transactions = marketTradeTransactions
       transactions[marketHeader.id] = marketHeader
@@ -233,7 +233,7 @@ function buildHeader(item, type, status) {
   header.status = status
   header.hash = item.id
   // TODO: need to sort by datetime in render
-  header.timestamp = formatDate(item.timestamp)
+  header.timestamp = convertUnix(item.timestamp)
   header.sortOrder = getSortOrder(type)
   return header
 }

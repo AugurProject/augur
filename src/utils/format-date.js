@@ -44,6 +44,10 @@ function getTwelveHour(time) {
   return time
 }
 
+export function convertUnix(integer) {
+  return formatDate(moment.unix(integer).toDate())
+}
+
 export function getBeginDate(periodString) {
   const date = moment()
   let beginDate = date.subtract(1, 'day')
