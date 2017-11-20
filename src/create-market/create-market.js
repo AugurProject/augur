@@ -44,7 +44,7 @@ function createMarket(p) {
     }
     getMarketCreationCost({ universe: p.universe, meta: p.meta }, function (err, marketCreationCost) {
       if (err) return p.onFailed(err);
-      var numTicks = p._numTicks || constants.DEFAULT_NUM_TICKS[p._numOutcomes];
+      var numTicks = p._numTicks || speedomatic.prefixHex(new BigNumber(p.maxPrice, 10).minus(new BigNumber(p.minPrice, 10)).times(constants.DEFAULT_NUM_TICKS[p._numOutcomes]).toString(16));
       var extraInfo = assign({}, p._extraInfo || {}, { minPrice: p.minPrice, maxPrice: p.maxPrice });
       api().ReportingWindow.createMarket(assign({}, immutableDelete(p, ["universe", "minPrice", "maxPrice"]), {
         tx: { to: reportingWindow, value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex") },
