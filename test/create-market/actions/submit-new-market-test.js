@@ -40,7 +40,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         settlementFee: 2,
         makerFee: 1,
         detailsText: '',
-        topic: 'test topic',
+        category: 'test topic',
         keywords: [],
         type: CATEGORICAL,
         outcomes: [
@@ -120,7 +120,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         settlementFee: 2,
         makerFee: 1,
         detailsText: '',
-        topic: 'test topic',
+        category: 'test topic',
         keywords: [],
         type: BINARY
       }
@@ -191,11 +191,12 @@ describe('modules/create-market/actions/submit-new-market', () => {
         settlementFee: 2,
         makerFee: 1,
         detailsText: '',
-        topic: 'test topic',
+        category: 'test topic',
         keywords: [],
         type: SCALAR,
         scalarSmallNum: '-10', // String for the test case, normally a BigNumber
-        scalarBigNum: '10' // String for the test case, normally a BigNumber
+        scalarBigNum: '10', // String for the test case, normally a BigNumber
+        scalarDenomination: '%'
       }
     },
     assertions: (store) => {
@@ -226,6 +227,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         _endTime: 1234567890,
         _denominationToken: 'domnination',
         _extraInfo: {
+          _scalarDenomination: '%',
           marketType: 'scalar',
           description: 'test description',
           longDescription: '',
