@@ -10,8 +10,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  // TODO: need to get parameters from configuation?
-  loadAccountHistoryTransactions: () => dispatch(loadAccountHistory(true, false))
+  loadAccountHistoryTransactions: (beginDate, endDate) => dispatch(loadAccountHistory(beginDate, endDate))
 })
 
 const Transactions = withRouter(connect(mapStateToProps, mapDispatchToProps)(TransactionsList))
