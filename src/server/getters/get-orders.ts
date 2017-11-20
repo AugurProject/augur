@@ -46,7 +46,7 @@ export function getOrders(db: Knex, universe: Address|null, marketID: Address|nu
       orders[row.marketID][row.outcome][row.orderType][row.orderID!] = {
         creationBlockNumber: row.blockNumber,
         transactionHash: row.transactionHash,
-        transactionIndex: row.transactionIndex,
+        logIndex: row.logIndex,
         shareToken: row.shareToken,
         owner: row.orderCreator,
         creationTime: row.creationTime,

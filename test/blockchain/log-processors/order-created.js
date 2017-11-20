@@ -37,7 +37,7 @@ describe("blockchain/log-processors/order-created", () => {
         tradeGroupId: "TRADE_GROUP_ID",
         blockNumber: 1400100,
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
-        transactionIndex: 0,
+        logIndex: 0,
       },
       augur: {
         api: {
@@ -73,7 +73,7 @@ describe("blockchain/log-processors/order-created", () => {
           orderID: "ORDER_ID",
           blockNumber: 1400100,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
-          transactionIndex: 0,
+          logIndex: 0,
           marketID: "0x0000000000000000000000000000000000000001",
           outcome: 0,
           shareToken: "0x1000000000000000000000000000000000000000",
@@ -95,7 +95,7 @@ describe("blockchain/log-processors/order-created", () => {
         assert.deepEqual(records, [{
           orderID: "ORDER_ID",
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
-          transactionIndex: 0,
+          logIndex: 0,
           marketID: "0x0000000000000000000000000000000000000001",
           outcome: 0,
           shareToken: "0x1000000000000000000000000000000000000000",

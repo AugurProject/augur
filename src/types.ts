@@ -31,7 +31,7 @@ export enum OrderState {
 
 export interface BaseTransactionRow {
   blockNumber: number;
-  transactionIndex: Int256;
+  logIndex: Int256;
   transactionHash: Bytes32;
 }
 
@@ -51,13 +51,19 @@ export type Address = string;
 export type Bytes32 = string;
 export type Int256 = string;
 
-export interface Log extends BaseTransactionRow {
+export interface Log {
+  blockNumber: number;
+  transactionIndex: Int256;
+  transactionHash: Bytes32;
   address: Address;
   categories: Array<Int256>;
   data: AbiEncodedData;
 }
 
-export interface FormattedLog extends BaseTransactionRow {
+export interface FormattedLog {
+  blockNumber: number;
+  transactionIndex: Int256;
+  transactionHash: Bytes32;
   address: Address;
   [inputName: string]: any;
 }
@@ -278,7 +284,7 @@ export type UIMarketsInfo = Array<UIMarketInfo|null>;
 // Does not extend BaseTransaction since UI is expecting "creationBlockNumber"
 export interface Order {
   transactionHash: Bytes32;
-  transactionIndex: Int256;
+  logIndex: Int256;
   shareToken: Address;
   owner: Address;
   creationTime: number;
@@ -311,7 +317,7 @@ export interface OrdersRow extends BaseTransactionRow {
 
 export interface UITrade {
   transactionHash: string;
-  transactionIndex: Int256;
+  logIndex: Int256;
   type: string;
   price: string;
   amount: string;

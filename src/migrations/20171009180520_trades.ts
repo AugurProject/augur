@@ -4,7 +4,7 @@ exports.up = async (knex: Knex): Promise<any> => {
   return knex.schema.dropTableIfExists("trades").then(async (): Promise<any> => {
     return knex.schema.createTable("trades", (table: Knex.CreateTableBuilder): void => {
       table.string("transactionHash", 66).notNullable(),
-      table.specificType("transactionIndex", "integer NOT NULL CONSTRAINT \"nonnegativeTransactionIndex\" CHECK (\"transactionIndex\" >= 0)"),
+      table.specificType("logIndex", "integer NOT NULL CONSTRAINT \"nonnegativelogIndex\" CHECK (\"logIndex\" >= 0)"),
       table.specificType("blockNumber", "integer NOT NULL CONSTRAINT positiveOrderBlockNumber CHECK (\"blockNumber\" > 0)");
       table.string("orderID", 42).notNullable();
       table.string("marketID", 42).notNullable();
@@ -22,7 +22,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.specificType("amount", "NUMERIC").notNullable();
       table.integer("tradeGroupID");
 
-      table.unique(["transactionHash", "transactionIndex"]);
+      table.unique(["transactionHash", "logIndex"]);
     });
   });
 };

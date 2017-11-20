@@ -33,7 +33,7 @@ describe("server/getters/get-user-trading-history", () => {
       assert.isNull(err);
       assert.deepEqual(userTradingHistory, [{
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
-        transactionIndex: 0,
+        logIndex: 0,
         type: "sell",
         price: 5.5,
         amount: 0.2,
@@ -65,7 +65,7 @@ describe("server/getters/get-user-trading-history", () => {
       assert.deepEqual(userTradingHistory, [
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
-          transactionIndex: 0,
+          logIndex: 0,
           amount: 0.2,
           maker: true,
           marketID: "0x0000000000000000000000000000000000000012",
@@ -79,7 +79,7 @@ describe("server/getters/get-user-trading-history", () => {
         },
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
-          transactionIndex: 0,
+          logIndex: 0,
           amount: 0.2,
           maker: true,
           marketID: "0x0000000000000000000000000000000000000001",
@@ -93,7 +93,7 @@ describe("server/getters/get-user-trading-history", () => {
         },
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C01",
-          transactionIndex: 0,
+          logIndex: 0,
           amount: 0.2,
           maker: true,
           marketID: "0x0000000000000000000000000000000000000002",
@@ -107,7 +107,7 @@ describe("server/getters/get-user-trading-history", () => {
         },
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C02",
-          transactionIndex: 0,
+          logIndex: 0,
           amount: 0.2,
           maker: true,
           marketID: "0x0000000000000000000000000000000000000003",
@@ -121,7 +121,7 @@ describe("server/getters/get-user-trading-history", () => {
         },
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C03",
-          transactionIndex: 0,
+          logIndex: 0,
           amount: 0.2,
           maker: true,
           marketID: "0x0000000000000000000000000000000000000011",
@@ -135,7 +135,7 @@ describe("server/getters/get-user-trading-history", () => {
         },
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C05",
-          transactionIndex: 0,
+          logIndex: 0,
           amount: 0.2,
           maker: true,
           marketID: "0x0000000000000000000000000000000000000013",
@@ -149,7 +149,7 @@ describe("server/getters/get-user-trading-history", () => {
         },
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C06",
-          transactionIndex: 0,
+          logIndex: 0,
           amount: 0.2,
           maker: true,
           marketID: "0x0000000000000000000000000000000000000014",
@@ -163,7 +163,7 @@ describe("server/getters/get-user-trading-history", () => {
         },
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C07",
-          transactionIndex: 0,
+          logIndex: 0,
           amount : 0.2,
           maker: true,
           marketID: "0x0000000000000000000000000000000000000015",
@@ -196,7 +196,7 @@ describe("server/getters/get-user-trading-history", () => {
       assert.deepEqual(userTradingHistory, [
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
-          transactionIndex: 0,
+          logIndex: 0,
           amount: 0.2,
           maker: true,
           marketID: "0x0000000000000000000000000000000000000001",
@@ -231,7 +231,7 @@ describe("server/getters/get-user-trading-history", () => {
       assert.deepEqual(userTradingHistory, [
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
-          transactionIndex: 0,
+          logIndex: 0,
           amount: 0.2,
           maker: true,
           marketID: "0x0000000000000000000000000000000000000012",
