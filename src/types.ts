@@ -62,8 +62,8 @@ export interface Log {
 
 export interface FormattedLog {
   blockNumber: number;
-  transactionIndex: Int256;
   transactionHash: Bytes32;
+  transactionIndex: Int256;  
   address: Address;
   [inputName: string]: any;
 }
