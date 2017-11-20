@@ -23,6 +23,19 @@ module.exports = {
     FINALIZED: "FINALIZED",
   },
 
+  ORDER_STATE: {
+    ALL: "ALL",
+    OPEN: "OPEN",
+    CLOSED: "CLOSED",
+    CANCELED: "CANCELED",
+  },
+
+  STAKE_TOKEN_STATE: {
+    ALL: "ALL",
+    UNCLAIMED: "UNCLAIMED",
+    UNFINALIZED: "UNFINALIZED",
+  },
+
   ZERO: new BigNumber(0),
 
   PRECISION: {
