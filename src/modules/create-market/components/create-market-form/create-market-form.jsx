@@ -24,6 +24,7 @@ export default class CreateMarketForm extends Component {
     submitNewMarket: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     universe: PropTypes.object.isRequired,
+    meta: PropTypes.object,
   }
 
   constructor(props) {
@@ -168,6 +169,7 @@ export default class CreateMarketForm extends Component {
             }
             { p.newMarket.currentStep === 4 &&
               <CreateMarketReview
+                meta={p.meta}
                 newMarket={p.newMarket}
                 universe={p.universe}
               />

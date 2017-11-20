@@ -7,13 +7,13 @@ import { constructRelayTransaction } from 'modules/transactions/actions/construc
 
 export const handleRelayTransaction = tx => (dispatch, getState) => {
   if (tx && tx.response && tx.data) {
-    console.log('txRelay:', tx)
     const hash = tx.hash
     if (!hash) return console.error('uncaught relayed transaction', tx)
     const { loginAccount, transactionsData } = getState()
     if (tx.data.from === loginAccount.address) {
-      const gasPrice = augur.rpc.gasPrice || augur.constants.DEFAULT_GASPRICE
-      const gasFees = tx.response.gasFees || augur.trading.simulation.getTxGasEth({ ...tx.data }, gasPrice).toFixed()
+      // const gasPrice = augur.rpc.gasPrice || augur.constants.DEFAULT_GASPRICE
+      // const gasFees = tx.response.gasFees || augur.trading.simulation.getTxGasEth({ ...tx.data }, gasPrice).toFixed()
+      const gasFees = tx.response.gasFees || 0
       if (hash) {
         if (transactionsData[hash]) {
           dispatch(constructRelayTransaction(tx))

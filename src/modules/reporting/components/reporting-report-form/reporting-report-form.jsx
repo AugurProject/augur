@@ -3,6 +3,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import BigNumber from 'bignumber.js'
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
@@ -61,14 +62,22 @@ const validateNumber = (validations, updateState, fieldName, value, humanName, m
   })
 }
 
-const validateStake = (validations, updateState, stake) => {
+const validateStake = (validations, updateState, rawStake) => {
   const updatedValidations = { ...validations }
+  const minStake = new BigNumber(0)
+
+  let stake = rawStake
+
+  if (stake !== '' && !(stake instanceof BigNumber)) {
+    stake = new BigNumber(rawStake)
+    stake = stake.round(4)
+  }
 
   switch (true) {
     case stake === '':
       updatedValidations.stake = `The stake field is required.`
       break
-    case stake <= 0:
+    case stake <= minStake:
       updatedValidations.stake = `Please enter a stake greater than 0.`
       break
     default:
@@ -170,7 +179,7 @@ const ReportingReportForm = p => (
         type="number"
         min="0"
         placeholder="0.0000 REP"
-        value={p.stake}
+        value={p.stake instanceof BigNumber ? p.stake.toNumber() : p.stake}
         onChange={(e) => { validateStake(p.validations, p.updateState, e.target.value) }}
       />
     </li>
@@ -182,7 +191,7 @@ ReportingReportForm.propTypes = {
   updateState: PropTypes.func.isRequired,
   validations: PropTypes.object.isRequired,
   selectedOutcome: PropTypes.string.isRequired,
-  stake: PropTypes.string.isRequired,
+  stake: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   isMarketValid: PropTypes.bool,
 }
 

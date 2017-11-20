@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import BigNumber from 'bignumber.js'
 
 import FormStyles from 'modules/common/less/form'
 import ConfirmStyles from 'modules/common/less/confirm-table'
@@ -26,7 +27,7 @@ const ReportingDisputeConfirm = p => (
             { p.stake &&
               <li>
                 <span>Stake</span>
-                <span>{ p.stake } REP</span>
+                <span>{ p.stake instanceof BigNumber ? p.stake.toNumber() : p.stake } REP</span>
               </li>
             }
             <li>

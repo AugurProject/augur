@@ -15,7 +15,9 @@ import { TRANSACTIONS } from 'modules/routes/constants/views'
 export function submitNewMarket(newMarket, history) {
   return (dispatch, getState) => {
     const { universe, loginAccount, contractAddresses } = getState()
-
+    const tags = []
+    if (newMarket.tag1) tags.push(newMarket.tag1)
+    if (newMarket.tag2) tags.push(newMarket.tag2)
     // General Properties
     const formattedNewMarket = {
       universe: universe.id,
@@ -23,13 +25,13 @@ export function submitNewMarket(newMarket, history) {
       _feePerEthInWei: speedomatic.fix(newMarket.settlementFee / 100, 'hex'),
       _denominationToken: contractAddresses.Cash,
       _designatedReporterAddress: loginAccount.address, // FIXME prompt user for actual automated reporter address
-      _topic: newMarket.topic,
+      _topic: newMarket.category,
       _extraInfo: {
         marketType: newMarket.type,
         description: newMarket.description,
         longDescription: newMarket.detailsText,
         resolutionSource: newMarket.expirySource,
-        tags: (newMarket.keywords || [])
+        tags
       }
     }
 
@@ -44,13 +46,13 @@ export function submitNewMarket(newMarket, history) {
       case SCALAR:
         formattedNewMarket.minPrice = newMarket.scalarSmallNum.toString()
         formattedNewMarket.maxPrice = newMarket.scalarBigNum.toString()
+        formattedNewMarket._extraInfo._scalarDenomination = newMarket.scalarDenomination
         createMarket = augur.createMarket.createScalarMarket
         break
       case BINARY:
       default:
         createMarket = augur.createMarket.createBinaryMarket
     }
-
     createMarket({
       ...formattedNewMarket,
       meta: loginAccount.meta,
@@ -60,6 +62,7 @@ export function submitNewMarket(newMarket, history) {
       },
       onSuccess: (res) => {
         const marketID = res.callReturn
+
         if (Object.keys(newMarket.orderBook).length) {
           eachOfSeries(Object.keys(newMarket.orderBook), (outcome, index, seriesCB) => {
             eachLimit(newMarket.orderBook[outcome], constants.PARALLEL_LIMIT, (order, orderCB) => {

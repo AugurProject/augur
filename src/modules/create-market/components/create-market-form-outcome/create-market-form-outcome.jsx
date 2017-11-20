@@ -283,6 +283,14 @@ export default class CreateMarketOutcome extends Component {
                 placeholder="Max Value"
                 onChange={(e) => { this.validateScalarNum(e.target.value, 'big') }}
               />
+              <input
+                id="cm__input--denomination"
+                type="text"
+                value={p.newMarket.scalarDenomination}
+                maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
+                placeholder="Range Denomination"
+                onChange={e => p.validateField('scalarDenomination', e.target.value, CATEGORICAL_OUTCOME_MAX_LENGTH)}
+              />
             </div>
           </li>
         }
