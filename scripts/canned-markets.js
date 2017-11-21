@@ -8,6 +8,7 @@
 var async = require("async");
 var BigNumber = require("bignumber.js");
 var chalk = require("chalk");
+var immutableDelete = require("immutable-delete");
 var speedomatic = require("speedomatic");
 var Augur = require("../src");
 var convertDecimalToFixedPoint = require("../src/utils/convert-decimal-to-fixed-point");
@@ -17,7 +18,7 @@ var augur = new Augur();
 
 var DEBUG = true;
 
-augur.rpc.setDebugOptions({ connect: true, broadcast: false });
+augur.rpc.setDebugOptions({ connect: true, broadcast: true, tx: false });
 
 var ethereumNode = {
   http: "http://127.0.0.1:8545",
@@ -510,228 +511,228 @@ var cannedMarkets = [{
       ],
     },
   },
-// }, {
-//   _endTime: parseInt(new Date("1/2/2020").getTime() / 1000, 10),
-//   _numOutcomes: 3,
-//   _topic: "politics",
-//   _extraInfo: {
-//     marketType: "categorical",
-//     resolutionSource: "",
-//     tags: ["elections", "US politics"],
-//     description: "What will be the status of the U.S. electoral college on January 1, 2020?",
-//     outcomeNames: ["Unchanged from 2016", "Undermined but still in existence (e.g., National Popular Vote bill)", "Formally abolished"],
-//     longDescription: "The National Popular Vote bill would guarantee the Presidency to the candidate who receives the most popular votes nationwide (i.e., all 50 states and the District of Columbia).  It has been enacted into law in 11 states with 165 electoral votes, and will take effect when enacted by states with 105 more electoral votes. The bill has passed one chamber in 12 additional states with 96 electoral votes.   Most recently, the bill was passed by a bipartisan 40–16 vote in the Republican-controlled Arizona House, 28–18 in Republican-controlled Oklahoma Senate, 57–4 in Republican-controlled New York Senate, and 37–21 in Democratic-controlled Oregon House. http://www.nationalpopularvote.com",
-//   },
-//   orderBook: {
-//     buy: {
-//       "0": [
-//         { shares: "100", price: "0.2" },
-//         { shares: "200", price: "0.18" },
-//         { shares: "300", price: "0.15" },
-//       ],
-//       "1": [
-//         { shares: "300", price: "0.48" },
-//         { shares: "150", price: "0.45" },
-//         { shares: "200", price: "0.41" },
-//       ],
-//       "2": [
-//         { shares: "150", price: "0.18" },
-//         { shares: "250", price: "0.15" },
-//         { shares: "200", price: "0.12" },
-//       ],
-//     },
-//     sell: {
-//       "0": [
-//         { shares: "150", price: "0.23" },
-//         { shares: "100", price: "0.26" },
-//         { shares: "300", price: "0.29" },
-//       ],
-//       "1": [
-//         { shares: "150", price: "0.53" },
-//         { shares: "200", price: "0.57" },
-//         { shares: "250", price: "0.61" },
-//       ],
-//       "2": [
-//         { shares: "100", price: "0.21" },
-//         { shares: "100", price: "0.24" },
-//         { shares: "200", price: "0.27" },
-//       ],
-//     },
-//   },
-// }, {
-//   _endTime: parseInt(new Date("10-2-2018").getTime() / 1000, 10),
-//   _numOutcomes: 8,
-//   _topic: "housing",
-//   _extraInfo: {
-//     marketType: "categorical",
-//     tags: ["economy", "bubble"],
-//     outcomeNames: ["London", "New York", "Los Angeles", "San Francisco", "Tokyo", "Palo Alto", "Hong Kong", "other"],
-//     description: "Which city will have the highest median single-family home price for September 2018?",
-//   },
-//   orderBook: {
-//     buy: {
-//       "0": [
-//         { shares: "100", price: "0.2" },
-//         { shares: "200", price: "0.18" },
-//         { shares: "300", price: "0.15" },
-//       ],
-//       "1": [
-//         { shares: "300", price: "0.48" },
-//         { shares: "150", price: "0.45" },
-//         { shares: "200", price: "0.41" },
-//       ],
-//       "2": [
-//         { shares: "150", price: "0.18" },
-//         { shares: "250", price: "0.15" },
-//         { shares: "200", price: "0.12" },
-//       ],
-//       "3": [
-//         { shares: "100", price: "0.13" },
-//         { shares: "150", price: "0.1" },
-//         { shares: "200", price: "0.08" },
-//       ],
-//       "4": [
-//         { shares: "100", price: "0.2" },
-//         { shares: "200", price: "0.18" },
-//         { shares: "300", price: "0.15" },
-//       ],
-//       "5": [
-//         { shares: "100", price: "0.2" },
-//         { shares: "200", price: "0.18" },
-//         { shares: "300", price: "0.15" },
-//       ],
-//       "6": [
-//         { shares: "100", price: "0.13" },
-//         { shares: "150", price: "0.1" },
-//         { shares: "200", price: "0.08" },
-//       ],
-//       "7": [
-//         { shares: "100", price: "0.13" },
-//         { shares: "150", price: "0.1" },
-//         { shares: "200", price: "0.08" },
-//       ],
-//     },
-//     sell: {
-//       "0": [
-//         { shares: "150", price: "0.23" },
-//         { shares: "100", price: "0.26" },
-//         { shares: "300", price: "0.29" },
-//       ],
-//       "1": [
-//         { shares: "150", price: "0.53" },
-//         { shares: "200", price: "0.57" },
-//         { shares: "250", price: "0.61" },
-//       ],
-//       "2": [
-//         { shares: "100", price: "0.21" },
-//         { shares: "100", price: "0.24" },
-//         { shares: "200", price: "0.27" },
-//       ],
-//       "3": [
-//         { shares: "150", price: "0.17" },
-//         { shares: "250", price: "0.2" },
-//         { shares: "150", price: "0.23" },
-//       ],
-//       "4": [
-//         { shares: "150", price: "0.23" },
-//         { shares: "100", price: "0.26" },
-//         { shares: "300", price: "0.29" },
-//       ],
-//       "5": [
-//         { shares: "150", price: "0.23" },
-//         { shares: "100", price: "0.26" },
-//         { shares: "300", price: "0.29" },
-//       ],
-//       "6": [
-//         { shares: "150", price: "0.17" },
-//         { shares: "250", price: "0.2" },
-//         { shares: "150", price: "0.23" },
-//       ],
-//       "7": [
-//         { shares: "150", price: "0.17" },
-//         { shares: "250", price: "0.2" },
-//         { shares: "150", price: "0.23" },
-//       ],
-//     },
-//   },
-// }, {
-//   _endTime: parseInt(new Date("1-2-2025").getTime() / 1000, 10),
-//   _numOutcomes: 6,
-//   _topic: "science",
-//   _extraInfo: {
-//     marketType: "categorical",
-//     resolutionSource: "CDC",
-//     tags: ["mortality", "United States"],
-//     outcomeNames: ["cancer", "heart attacks", "infectious diseases", "starvation", "lava", "other"],
-//     description: "What will be the number one killer in the United States by January 1, 2025?",
-//     longDescription: "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?",
-//   },
-//   orderBook: {
-//     buy: {
-//       "0": [
-//         { shares: "100", price: "0.2" },
-//         { shares: "200", price: "0.18" },
-//         { shares: "300", price: "0.15" },
-//       ],
-//       "1": [
-//         { shares: "300", price: "0.48" },
-//         { shares: "150", price: "0.45" },
-//         { shares: "200", price: "0.41" },
-//       ],
-//       "2": [
-//         { shares: "150", price: "0.18" },
-//         { shares: "250", price: "0.15" },
-//         { shares: "200", price: "0.12" },
-//       ],
-//       "3": [
-//         { shares: "100", price: "0.13" },
-//         { shares: "150", price: "0.1" },
-//         { shares: "200", price: "0.08" },
-//       ],
-//       "4": [
-//         { shares: "100", price: "0.2" },
-//         { shares: "200", price: "0.18" },
-//         { shares: "300", price: "0.15" },
-//       ],
-//       "5": [
-//         { shares: "100", price: "0.2" },
-//         { shares: "200", price: "0.18" },
-//         { shares: "300", price: "0.15" },
-//       ],
-//     },
-//     sell: {
-//       "0": [
-//         { shares: "150", price: "0.23" },
-//         { shares: "100", price: "0.26" },
-//         { shares: "300", price: "0.29" },
-//       ],
-//       "1": [
-//         { shares: "150", price: "0.53" },
-//         { shares: "200", price: "0.57" },
-//         { shares: "250", price: "0.61" },
-//       ],
-//       "2": [
-//         { shares: "100", price: "0.21" },
-//         { shares: "100", price: "0.24" },
-//         { shares: "200", price: "0.27" },
-//       ],
-//       "3": [
-//         { shares: "150", price: "0.17" },
-//         { shares: "250", price: "0.2" },
-//         { shares: "150", price: "0.23" },
-//       ],
-//       "4": [
-//         { shares: "150", price: "0.23" },
-//         { shares: "100", price: "0.26" },
-//         { shares: "300", price: "0.29" },
-//       ],
-//       "5": [
-//         { shares: "150", price: "0.23" },
-//         { shares: "100", price: "0.26" },
-//         { shares: "300", price: "0.29" },
-//       ],
-//     },
-//   },
+}, {
+  _endTime: parseInt(new Date("1/2/2020").getTime() / 1000, 10),
+  _numOutcomes: 3,
+  _topic: "politics",
+  _extraInfo: {
+    marketType: "categorical",
+    resolutionSource: "",
+    tags: ["elections", "US politics"],
+    description: "What will be the status of the U.S. electoral college on January 1, 2020?",
+    outcomeNames: ["Unchanged from 2016", "Undermined but still in existence (e.g., National Popular Vote bill)", "Formally abolished"],
+    longDescription: "The National Popular Vote bill would guarantee the Presidency to the candidate who receives the most popular votes nationwide (i.e., all 50 states and the District of Columbia).  It has been enacted into law in 11 states with 165 electoral votes, and will take effect when enacted by states with 105 more electoral votes. The bill has passed one chamber in 12 additional states with 96 electoral votes.   Most recently, the bill was passed by a bipartisan 40–16 vote in the Republican-controlled Arizona House, 28–18 in Republican-controlled Oklahoma Senate, 57–4 in Republican-controlled New York Senate, and 37–21 in Democratic-controlled Oregon House. http://www.nationalpopularvote.com",
+  },
+  orderBook: {
+    buy: {
+      "0": [
+        { shares: "100", price: "0.2" },
+        { shares: "200", price: "0.18" },
+        { shares: "300", price: "0.15" },
+      ],
+      "1": [
+        { shares: "300", price: "0.48" },
+        { shares: "150", price: "0.45" },
+        { shares: "200", price: "0.41" },
+      ],
+      "2": [
+        { shares: "150", price: "0.18" },
+        { shares: "250", price: "0.15" },
+        { shares: "200", price: "0.12" },
+      ],
+    },
+    sell: {
+      "0": [
+        { shares: "150", price: "0.23" },
+        { shares: "100", price: "0.26" },
+        { shares: "300", price: "0.29" },
+      ],
+      "1": [
+        { shares: "150", price: "0.53" },
+        { shares: "200", price: "0.57" },
+        { shares: "250", price: "0.61" },
+      ],
+      "2": [
+        { shares: "100", price: "0.21" },
+        { shares: "100", price: "0.24" },
+        { shares: "200", price: "0.27" },
+      ],
+    },
+  },
+}, {
+  _endTime: parseInt(new Date("10-2-2018").getTime() / 1000, 10),
+  _numOutcomes: 8,
+  _topic: "housing",
+  _extraInfo: {
+    marketType: "categorical",
+    tags: ["economy", "bubble"],
+    outcomeNames: ["London", "New York", "Los Angeles", "San Francisco", "Tokyo", "Palo Alto", "Hong Kong", "other"],
+    description: "Which city will have the highest median single-family home price for September 2018?",
+  },
+  orderBook: {
+    buy: {
+      "0": [
+        { shares: "100", price: "0.2" },
+        { shares: "200", price: "0.18" },
+        { shares: "300", price: "0.15" },
+      ],
+      "1": [
+        { shares: "300", price: "0.48" },
+        { shares: "150", price: "0.45" },
+        { shares: "200", price: "0.41" },
+      ],
+      "2": [
+        { shares: "150", price: "0.18" },
+        { shares: "250", price: "0.15" },
+        { shares: "200", price: "0.12" },
+      ],
+      "3": [
+        { shares: "100", price: "0.13" },
+        { shares: "150", price: "0.1" },
+        { shares: "200", price: "0.08" },
+      ],
+      "4": [
+        { shares: "100", price: "0.2" },
+        { shares: "200", price: "0.18" },
+        { shares: "300", price: "0.15" },
+      ],
+      "5": [
+        { shares: "100", price: "0.2" },
+        { shares: "200", price: "0.18" },
+        { shares: "300", price: "0.15" },
+      ],
+      "6": [
+        { shares: "100", price: "0.13" },
+        { shares: "150", price: "0.1" },
+        { shares: "200", price: "0.08" },
+      ],
+      "7": [
+        { shares: "100", price: "0.13" },
+        { shares: "150", price: "0.1" },
+        { shares: "200", price: "0.08" },
+      ],
+    },
+    sell: {
+      "0": [
+        { shares: "150", price: "0.23" },
+        { shares: "100", price: "0.26" },
+        { shares: "300", price: "0.29" },
+      ],
+      "1": [
+        { shares: "150", price: "0.53" },
+        { shares: "200", price: "0.57" },
+        { shares: "250", price: "0.61" },
+      ],
+      "2": [
+        { shares: "100", price: "0.21" },
+        { shares: "100", price: "0.24" },
+        { shares: "200", price: "0.27" },
+      ],
+      "3": [
+        { shares: "150", price: "0.17" },
+        { shares: "250", price: "0.2" },
+        { shares: "150", price: "0.23" },
+      ],
+      "4": [
+        { shares: "150", price: "0.23" },
+        { shares: "100", price: "0.26" },
+        { shares: "300", price: "0.29" },
+      ],
+      "5": [
+        { shares: "150", price: "0.23" },
+        { shares: "100", price: "0.26" },
+        { shares: "300", price: "0.29" },
+      ],
+      "6": [
+        { shares: "150", price: "0.17" },
+        { shares: "250", price: "0.2" },
+        { shares: "150", price: "0.23" },
+      ],
+      "7": [
+        { shares: "150", price: "0.17" },
+        { shares: "250", price: "0.2" },
+        { shares: "150", price: "0.23" },
+      ],
+    },
+  },
+}, {
+  _endTime: parseInt(new Date("1-2-2025").getTime() / 1000, 10),
+  _numOutcomes: 6,
+  _topic: "science",
+  _extraInfo: {
+    marketType: "categorical",
+    resolutionSource: "CDC",
+    tags: ["mortality", "United States"],
+    outcomeNames: ["cancer", "heart attacks", "infectious diseases", "starvation", "lava", "other"],
+    description: "What will be the number one killer in the United States by January 1, 2025?",
+    longDescription: "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?",
+  },
+  orderBook: {
+    buy: {
+      "0": [
+        { shares: "100", price: "0.2" },
+        { shares: "200", price: "0.18" },
+        { shares: "300", price: "0.15" },
+      ],
+      "1": [
+        { shares: "300", price: "0.48" },
+        { shares: "150", price: "0.45" },
+        { shares: "200", price: "0.41" },
+      ],
+      "2": [
+        { shares: "150", price: "0.18" },
+        { shares: "250", price: "0.15" },
+        { shares: "200", price: "0.12" },
+      ],
+      "3": [
+        { shares: "100", price: "0.13" },
+        { shares: "150", price: "0.1" },
+        { shares: "200", price: "0.08" },
+      ],
+      "4": [
+        { shares: "100", price: "0.2" },
+        { shares: "200", price: "0.18" },
+        { shares: "300", price: "0.15" },
+      ],
+      "5": [
+        { shares: "100", price: "0.2" },
+        { shares: "200", price: "0.18" },
+        { shares: "300", price: "0.15" },
+      ],
+    },
+    sell: {
+      "0": [
+        { shares: "150", price: "0.23" },
+        { shares: "100", price: "0.26" },
+        { shares: "300", price: "0.29" },
+      ],
+      "1": [
+        { shares: "150", price: "0.53" },
+        { shares: "200", price: "0.57" },
+        { shares: "250", price: "0.61" },
+      ],
+      "2": [
+        { shares: "100", price: "0.21" },
+        { shares: "100", price: "0.24" },
+        { shares: "200", price: "0.27" },
+      ],
+      "3": [
+        { shares: "150", price: "0.17" },
+        { shares: "250", price: "0.2" },
+        { shares: "150", price: "0.23" },
+      ],
+      "4": [
+        { shares: "150", price: "0.23" },
+        { shares: "100", price: "0.26" },
+        { shares: "300", price: "0.29" },
+      ],
+      "5": [
+        { shares: "150", price: "0.23" },
+        { shares: "100", price: "0.26" },
+        { shares: "300", price: "0.29" },
+      ],
+    },
+  },
 }];
 
 function approveAugurEternalApprovalValue(callback) {
@@ -846,6 +847,7 @@ function createNewMarket(market, callback) {
   switch (market._extraInfo.marketType) {
     case "categorical":
       createMarket = augur.createMarket.createCategoricalMarket;
+      market.tx = { gas: "0x5b8d80" };
       break;
     case "scalar":
       createMarket = augur.createMarket.createScalarMarket;
@@ -856,7 +858,7 @@ function createNewMarket(market, callback) {
     default:
       createMarket = augur.createMarket.createBinaryMarket;
   }
-  createMarket(Object.assign({}, market, {
+  var createMarketParams = Object.assign({}, immutableDelete(market, "orderBook"), {
     universe: augur.contracts.addresses[augur.rpc.getNetworkID()].Universe,
     _feePerEthInWei: "0x123456",
     _denominationToken: augur.contracts.addresses[augur.rpc.getNetworkID()].Cash,
@@ -872,7 +874,9 @@ function createNewMarket(market, callback) {
       if (DEBUG) console.error(chalk.red.bold("createMarket failed:"), err);
       callback(err);
     },
-  }));
+  });
+  if (DEBUG) console.log("createMarket params:", createMarketParams);
+  createMarket(createMarketParams);
 }
 
 augur.connect({ ethereumNode: ethereumNode, augurNode: augurNode }, function (err) {
