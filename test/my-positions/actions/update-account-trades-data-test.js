@@ -48,9 +48,9 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
   }))
 
   const mockLoadBidsAsksHistory = {
-    loadOpenOrders: () => { }
+    loadAccountOrders: () => { }
   }
-  sinon.stub(mockLoadBidsAsksHistory, 'loadOpenOrders', market => ({
+  sinon.stub(mockLoadBidsAsksHistory, 'loadAccountOrders', market => ({
     type: MOCK_ACTION_TYPES.LOAD_BIDS_ASKS_HISTORY,
     data: { ...market }
   }))

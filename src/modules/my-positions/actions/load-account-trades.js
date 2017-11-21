@@ -3,7 +3,7 @@ import { augur } from 'services/augurjs'
 import { clearAccountTrades } from 'modules/my-positions/actions/clear-account-trades'
 import { addTradeTransactions } from 'modules/transactions/actions/add-transactions'
 import { loadAccountPositions } from 'modules/my-positions/actions/load-account-positions'
-import { loadOpenOrders } from 'modules/bids-asks/actions/load-open-orders'
+import { loadAccountOrders } from 'modules/bids-asks/actions/load-account-orders'
 import { loadMarketsInfoOnly } from 'modules/markets/actions/load-markets-info'
 import logError from 'utils/log-error'
 
@@ -12,7 +12,7 @@ export function loadAccountTrades(options, callback = logError) {
     parallel([
       next => dispatch(loadUserTradingHistory(options, next)),
       next => dispatch(loadAccountPositions(options, next)),
-      next => dispatch(loadOpenOrders(options, next)),
+      next => dispatch(loadAccountOrders(options, next)),
     ], () => {
       callback(null)
     })
