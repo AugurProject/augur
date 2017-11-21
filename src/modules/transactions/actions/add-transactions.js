@@ -97,7 +97,7 @@ export function addTransferTransactions(transfers) {
     const transactions = {}
     each(transfers, (transfer) => {
       const transaction = { ...transfer }
-      transaction.id = transaction.transactionHash
+      transaction.id = transaction.transactionHash + transaction.logIndex
       const header = buildHeader(transaction, TRANSFER, SUCCESS)
       header.transactions = [transaction]
       const meta = {}
@@ -209,13 +209,14 @@ export function addReportingTransactions(reports) {
         eachOf(value1, (report, index) => {
           const market = getMarketById(marketsData, marketID)
           const transaction = { universe, marketID, ...report, market }
-          transaction.id = transaction.marketID + transaction.amountStaked
+          transaction.id = transaction.transactionHash + transaction.logIndex
           const meta = {}
           meta.marketID = transaction.marketID
           meta.staked = `${transaction.amountStaked} REP`
           meta.numerators = JSON.stringify(transaction.payoutNumerators)
           meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
           transaction.meta = meta
+          transaction.timestamp = transaction.creationTime
           const header = buildHeader(transaction, REPORTING, SUCCESS)
           header.transactions = [transaction]
           header.message = 'Market Reporting'

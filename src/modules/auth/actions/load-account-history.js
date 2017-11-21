@@ -5,7 +5,7 @@ import { loadFundingHistory } from 'modules/account/actions/load-funding-history
 import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-history'
 import { updateTransactionsLoading } from 'modules/transactions/actions/update-transactions-loading'
 import { clearTransactions } from 'modules/transactions/actions/delete-transaction'
-import { loadOpenOrders } from '../../bids-asks/actions/load-open-orders'
+import { loadAccountOrders } from '../../bids-asks/actions/load-account-orders'
 
 export const loadAccountHistory = (beginDate, endDate) => (dispatch, getState) => {
   const options = {
@@ -30,7 +30,7 @@ function loadTransactions(dispatch, getState, options, cb) {
       if (err) next(err)
       next(null)
     })),
-    next => dispatch(loadOpenOrders(options, (err) => {
+    next => dispatch(loadAccountOrders(options, (err) => {
       if (err) next(err)
       next(null)
     })),
