@@ -2,8 +2,8 @@
 
 var augurNode = require("../augur-node");
 
-function getMarketClosingInDateRange(p, callback) {
-  augurNode.submitRequest("getMarketClosingInDateRange", p, callback);
+function getMarketsClosingInDateRange(p, callback) {
+  augurNode.submitRequest("getMarketsClosingInDateRange", p, callback);
 }
 
-module.exports = getMarketClosingInDateRange;
+module.exports = getMarketsClosingInDateRange;

@@ -9,8 +9,8 @@ var createMarket = require("./create-market");
  * @param {number} p._endTime Market expiration timestamp, in seconds.
  * @param {string=} p._feePerEthInWei Amount of wei per ether settled that goes to the market creator, as a base-10 string.
  * @param {string} p._denominationToken Ethereum address of the token used as this market's currency.
- * @param {string} p._minDisplayPrice Minimum display (non-normalized) price for this market, as a base-10 string.
- * @param {string} p._maxDisplayPrice Maximum display (non-normalized) price for this market, as a base-10 string.
+ * @param {string} p.minPrice Minimum display (non-normalized) price for this market, as a base-10 string.
+ * @param {string} p.maxPrice Maximum display (non-normalized) price for this market, as a base-10 string.
  * @param {string} p._designatedReporterAddress Ethereum address of this market's designated reporter.
  * @param {string} p._topic The topic (category) to which this market belongs, as a UTF8 string.
  * @param {Object=} p._extraInfo Extra info which will be converted to JSON and logged to the chain in the CreateMarket event.

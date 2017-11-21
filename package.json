@@ -1,13 +1,13 @@
 {
   "name": "augur.js",
-  "version": "4.6.6",
+  "version": "4.6.15",
   "description": "Augur JavaScript API",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
   "main": "src/index.js",
   "scripts": {
     "test": "mocha test/unit",
-    "lint": "eslint src test/unit",
+    "lint": "eslint src test/unit scripts/canned-markets.js",
     "coverage-save": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit/",
     "coverage": "istanbul cover --include-all-sources --root ./src ./node_modules/mocha/bin/_mocha test/unit",
     "link": "npm link ethrpc && npm link ethereumjs-connect && npm link keythereum && npm link speedomatic && npm link augur-contracts",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "async": "1.5.2",
-    "augur-contracts": "3.3.5",
+    "augur-contracts": "3.3.8",
     "bignumber.js": "2.3.0",
     "clone": "1.0.2",
     "ethereumjs-connect": "4.4.1",

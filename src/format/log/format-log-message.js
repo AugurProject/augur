@@ -2,6 +2,7 @@
 
 var assign = require("lodash.assign");
 var unfix = require("speedomatic").unfix;
+var decodeTag = require("../tag/decode-tag");
 
 function formatLogMessage(contractName, eventName, message) {
   switch (contractName) {
@@ -18,6 +19,7 @@ function formatLogMessage(contractName, eventName, message) {
           return assign({}, message, {
             extraInfo: extraInfo,
             marketCreationFee: unfix(message.marketCreationFee, "string"),
+            topic: decodeTag(message.topic),
           });
         case "WinningTokensRedeemed":
           return assign({}, message, {
