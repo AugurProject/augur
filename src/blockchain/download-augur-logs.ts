@@ -24,7 +24,7 @@ export function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, toB
                 nextEventName();
               }
             });
-          })
+          });
         }
       }, nextContractName)
     ), callback);
