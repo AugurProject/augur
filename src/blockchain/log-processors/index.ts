@@ -15,7 +15,6 @@ import { processTransferLog, processTransferLogRemoval } from "./legacy-rep-cont
 import { processApprovalLog, processApprovalLogRemoval } from "./legacy-rep-contract/approval";
 import { processMintLog } from "./legacy-rep-contract/mint";
 
-
 export const logProcessors: LogProcessors = {
   Augur: {
     MarketCreated: {
@@ -81,6 +80,6 @@ export const logProcessors: LogProcessors = {
     Mint: {
       add: processMintLog,
       remove: processTransferLogRemoval,
-    }
+    },
   },
 };
