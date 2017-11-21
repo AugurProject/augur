@@ -7,6 +7,7 @@ import TransactionMultiple from 'modules/portfolio/components/transaction-multip
 import Paginator from 'modules/common/components/paginator/paginator'
 import { getBeginDate } from 'src/utils/format-date'
 import Styles from 'modules/portfolio/components/transactions/transactions.styles'
+import Dropdown from 'modules/common/components/dropdown/dropdown'
 
 export default class Transactions extends Component {
   static defaultProps = {
@@ -18,7 +19,7 @@ export default class Transactions extends Component {
     location: PropTypes.object.isRequired,
     transactions: PropTypes.array.isRequired,
     loadAccountHistoryTransactions: PropTypes.func.isRequired,
-    graphPeriod: PropTypes.string,
+    transactionPeriod: PropTypes.string,
   }
 
   constructor(props) {
@@ -27,22 +28,48 @@ export default class Transactions extends Component {
     this.state = {
       lowerBound: null,
       boundedLength: null,
+      transactionPeriodOptions: [
+        { label: 'Past 24hrs', value: 'day' },
+        { label: 'Past Week', value: 'week' },
+        { label: 'Past Month', value: 'month' },
+        { label: 'All', value: 'all' }
+      ],
+      transactionPeriodDefault: 'day'
     }
 
     this.setSegment = this.setSegment.bind(this)
-
+    this.changeTransactionDropdown = this.changeTransactionDropdown.bind(this)
   }
 
   componentWillMount() {
-    let beginDate = null
-    if (this.props.graphPeriod) {
-      beginDate = getBeginDate(this.props.graphPeriod)
+    this.loadTransactions(this.state.transactionPeriodDefault)
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.transactionPeriod !== this.state.transactionPeriod) {
+      this.loadTransactions(this.state.transactionPeriod)
     }
-    this.props.loadAccountHistoryTransactions(beginDate, null)
   }
 
   setSegment(lowerBound, upperBound, boundedLength) {
     this.setState({ lowerBound, boundedLength })
+  }
+
+  loadTransactions(value) {
+    const beginDate = getBeginDate(value)
+    this.props.loadAccountHistoryTransactions(beginDate, null)
+  }
+
+  changeTransactionDropdown(value) {
+    let newPeriod = this.state.transactionPeriod
+
+    this.state.transactionPeriodOptions.forEach((period, ind) => {
+      if (period.value === value) {
+        newPeriod = value
+      }
+    })
+
+    this.setState({ transactionPeriod: newPeriod })
   }
 
   render() {
@@ -54,8 +81,17 @@ export default class Transactions extends Component {
         <Helmet>
           <title>Transactions</title>
         </Helmet>
-        <div className={Styles.Transactions__header}>
-          <h2 className={Styles.Transactions__heading}>Transactions</h2>
+        <div
+          className={Styles.Transaction__data}
+        >
+          <div className={Styles['Transaction__data-title']}>
+            <h2 className={Styles.Transactions__heading}>Transactions</h2>
+          </div>
+          <div
+            className={Styles['Transaction__data-filter']}
+          >
+            <Dropdown default={s.transactionPeriodDefault} options={s.transactionPeriodOptions} onChange={this.changeTransactionDropdown} />
+          </div>
         </div>
         <div className={Styles.Transactions__list}>
           {p.transactions.length > 0 && s.boundedLength &&

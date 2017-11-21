@@ -94,10 +94,29 @@
 .Transactions__header {
   color: @color-white;
   padding: 0 2rem 1rem;
+  text-align: left
+}
+
+.Transaction__data-filter {
+  display: flex;
+}
+
+.Transaction__data {
+  align-items: baseline;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 0 2rem;
+  width: 100%;
+}
+
+.Transaction__data-title {
+  padding: 0 1rem 1rem;
+  flex: 1;
 }
 
 .Transactions__heading {
-  &:extend(.caps--large);
+  color: @color-white;
+  font-size: @font-size-extra-large;
 }
 
 .Transactions__item {
