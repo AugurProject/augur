@@ -57,5 +57,8 @@ export function getBeginDate(periodString) {
   if (periodString === 'month') {
     beginDate = date.subtract(1, 'month')
   }
+  if (periodString === 'all') {
+    return null
+  }
   return beginDate.unix()
 }
