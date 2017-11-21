@@ -77,16 +77,16 @@ var cannedMarkets = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "1", price: "20" },
-        { shares: "2", price: "0" },
-        { shares: "3", price: "-5" },
+        { shares: "0.1", price: "20" },
+        { shares: "0.1", price: "0" },
+        { shares: "0.2", price: "-5" },
       ],
     },
     sell: {
       "0": [
-        { shares: "1", price: "25" },
-        { shares: "1", price: "50" },
-        { shares: "3", price: "100" },
+        { shares: "0.2", price: "25" },
+        { shares: "0.1", price: "50" },
+        { shares: "0.1", price: "51" },
       ],
     },
   },
@@ -332,16 +332,16 @@ var cannedMarkets = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "10", price: "20" },
-        { shares: "20", price: "0" },
-        { shares: "30", price: "-5" },
+        { shares: "1", price: "20" },
+        { shares: "2", price: "0" },
+        { shares: "3", price: "-5" },
       ],
     },
     sell: {
       "0": [
-        { shares: "15", price: "25" },
-        { shares: "10", price: "50" },
-        { shares: "30", price: "100" },
+        { shares: "1", price: "25" },
+        { shares: "1", price: "50" },
+        { shares: "1", price: "100" },
       ],
     },
   },
@@ -386,16 +386,16 @@ var cannedMarkets = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "1", price: "1000" },
-        { shares: "20", price: "500" },
-        { shares: "300", price: "10" },
+        { shares: "0.01", price: "200" },
+        { shares: "0.02", price: "100" },
+        { shares: "0.05", price: "10" },
       ],
     },
     sell: {
       "0": [
-        { shares: "1", price: "1050" },
-        { shares: "1", price: "2500" },
-        { shares: "3", price: "4000" },
+        { shares: "0.02", price: "250" },
+        { shares: "0.01", price: "350" },
+        { shares: "0.01", price: "450" },
       ],
     },
   },
@@ -415,16 +415,16 @@ var cannedMarkets = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "100", price: "1000" },
-        { shares: "200", price: "900" },
-        { shares: "300", price: "775" },
+        { shares: "0.01", price: "1000" },
+        { shares: "0.02", price: "900" },
+        { shares: "0.03", price: "775" },
       ],
     },
     sell: {
       "0": [
-        { shares: "150", price: "1050" },
-        { shares: "100", price: "2500" },
-        { shares: "300", price: "4000" },
+        { shares: "0.03", price: "1050" },
+        { shares: "0.01", price: "1250" },
+        { shares: "0.01", price: "1500" },
       ],
     },
   },
@@ -471,16 +471,16 @@ var cannedMarkets = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "100", price: "2" },
-        { shares: "200", price: "18" },
-        { shares: "300", price: "15" },
+        { shares: "1", price: "2" },
+        { shares: "0.2", price: "18" },
+        { shares: "0.3", price: "15" },
       ],
     },
     sell: {
       "0": [
-        { shares: "150", price: "23" },
-        { shares: "100", price: "26" },
-        { shares: "300", price: "29" },
+        { shares: "0.5", price: "23" },
+        { shares: "0.1", price: "26" },
+        { shares: "0.2", price: "29" },
       ],
     },
   },
