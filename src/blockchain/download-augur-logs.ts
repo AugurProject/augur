@@ -10,19 +10,23 @@ export function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, toB
   augur.events.getAllAugurLogs({ fromBlock, toBlock }, (err?: string|object|null, allAugurLogs?: AugurLogs): void => {
     if (err) return callback(err instanceof Error ? err : new Error(JSON.stringify(err)));
     eachSeries(Object.keys(allAugurLogs!), (contractName: string, nextContractName: ErrorCallback) => (
-      eachSeries(Object.keys(allAugurLogs![contractName]!), (eventName: string, nextEventName: ErrorCallback) => (
-        db.transaction((trx: Knex.Transaction): void => {
-          processLogs(db, augur, trx, allAugurLogs![contractName]![eventName]!, logProcessors[contractName][eventName], (err?: Error|null): void => {
-            if (err) {
-              trx.rollback();
-              nextEventName(err);
-            } else {
-              trx.commit();
-              nextEventName();
-            }
+      eachSeries(Object.keys(allAugurLogs![contractName]!), (eventName: string, nextEventName: ErrorCallback) => {
+        if (logProcessors[contractName][eventName] == null) {
+          console.log("Log processor does not exist:", contractName, eventName);
+        } else {
+          db.transaction((trx: Knex.Transaction): void => {
+            processLogs(db, augur, trx, allAugurLogs![contractName]![eventName]!, logProcessors[contractName][eventName], (err?: Error|null): void => {
+              if (err) {
+                trx.rollback();
+                nextEventName(err);
+              } else {
+                trx.commit();
+                nextEventName();
+              }
+            });
           });
-        })
-      ), nextContractName)
+        }
+      }, nextContractName)
     ), callback);
   });
 }
