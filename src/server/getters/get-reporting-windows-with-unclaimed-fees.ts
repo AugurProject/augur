@@ -4,5 +4,5 @@ import { Address } from "../../types";
 // Input: User Address
 // Output: Reporting Windows With Unclaimed Fees
 export function getReportingWindowsWithUnclaimedFees(db: Knex, universe: Address, account: Address, callback: (err: Error|null, result?: any) => void): void {
-
+    return callback(new Error("getReportingWindowsWithUnclaimedFees not yet implemented"));
 }
