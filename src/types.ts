@@ -362,6 +362,11 @@ export interface MarketsRowWithCreationTime extends MarketsRow {
 }
 
 export interface JoinedReportsMarketsRow {
+  creationBlockNumber: number;
+  creationTime: number;
+  logIndex: Int256;
+  transactionHash: Bytes32;
+  blockHash: Bytes32;
   marketID: Address;
   universe: Address;
   reportingWindow: Address;
@@ -380,6 +385,11 @@ export interface JoinedReportsMarketsRow {
 }
 
 export interface UIReport {
+  creationBlockNumber: number;
+  creationTime: number;
+  logIndex: Int256;
+  transactionHash: Bytes32;
+  blockHash: Bytes32;
   marketID: Address;
   reportingWindow: Address;
   payoutNumerators: Array<string|number|null>;
