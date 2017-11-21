@@ -142,7 +142,7 @@ describe("trading/simulation/simulate-trade", function () {
       },
     },
     assertions: function (err) {
-      assert.strictEqual(err.message, "Order type must be 1 (buy) or 2 (sell)");
+      assert.strictEqual(err.message, "Order type must be 0 (buy) or 1 (sell)");
     },
   });
   test({
@@ -180,7 +180,7 @@ describe("trading/simulation/simulate-trade", function () {
       },
     },
     assertions: function (err) {
-      assert.strictEqual(err.message, "Order type must be 1 (buy) or 2 (sell)");
+      assert.strictEqual(err.message, "Order type must be 0 (buy) or 1 (sell)");
     },
   });
 });
