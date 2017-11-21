@@ -13,6 +13,8 @@ import { processMarketFinalizedLog, processMarketFinalizedLogRemoval } from "./m
 import { processUniverseForkedLog, processUniverseForkedLogRemoval } from "./universe-forked";
 import { processTransferLog, processTransferLogRemoval } from "./legacy-rep-contract/transfer";
 import { processApprovalLog, processApprovalLogRemoval } from "./legacy-rep-contract/approval";
+import { processMintLog } from "./legacy-rep-contract/mint";
+
 
 export const logProcessors: LogProcessors = {
   Augur: {
@@ -76,5 +78,9 @@ export const logProcessors: LogProcessors = {
       add: processApprovalLog,
       remove: processApprovalLogRemoval,
     },
+    Mint: {
+      add: processMintLog,
+      remove: processTransferLogRemoval,
+    }
   },
 };
