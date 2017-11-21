@@ -5,6 +5,9 @@ exports.seed = async (knex: Knex): Promise<any> => {
   return knex("reports").del().then(async (): Promise<any> => {
     // Inserts seed entries
     const seedData = [{
+      transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000D00",
+      logIndex: 0,
+      blockNumber: 1400051,
       reporter: "0x0000000000000000000000000000000000000021",
       marketID: "0x0000000000000000000000000000000000000011",
       stakeToken: "0x0000000000000000001000000000000000000001",
@@ -12,6 +15,9 @@ exports.seed = async (knex: Knex): Promise<any> => {
       winningToken: null,
       claimed: 0,
     }, {
+      transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000D01",
+      logIndex: 0,
+      blockNumber: 1400051,
       reporter: "0x0000000000000000000000000000000000000022",
       marketID: "0x0000000000000000000000000000000000000011",
       stakeToken: "0x0000000000000000001000000000000000000002",
@@ -19,6 +25,9 @@ exports.seed = async (knex: Knex): Promise<any> => {
       winningToken: null,
       claimed: 0,
     }, {
+      transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000D02",
+      logIndex: 0,
+      blockNumber: 1400051,
       reporter: "0x0000000000000000000000000000000000000023",
       marketID: "0x0000000000000000000000000000000000000011",
       stakeToken: "0x0000000000000000001000000000000000000002",
@@ -26,6 +35,9 @@ exports.seed = async (knex: Knex): Promise<any> => {
       winningToken: null,
       claimed: 0,
     }, {
+      transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000D03",
+      logIndex: 0,
+      blockNumber: 1400052,
       reporter: "0x0000000000000000000000000000000000000021",
       marketID: "0x0000000000000000000000000000000000000019",
       stakeToken: "0x0000000000000000001000000000000000000003",
@@ -33,6 +45,9 @@ exports.seed = async (knex: Knex): Promise<any> => {
       winningToken: 1,
       claimed: 0,
     }, {
+      transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000D04",
+      logIndex: 0,
+      blockNumber: 1400051,
       reporter: "0x0000000000000000000000000000000000000024",
       marketID: "0x0000000000000000000000000000000000000019",
       stakeToken: "0x0000000000000000001000000000000000000003",
@@ -40,6 +55,9 @@ exports.seed = async (knex: Knex): Promise<any> => {
       winningToken: 1,
       claimed: 0,
     }, {
+      transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000D05",
+      logIndex: 0,
+      blockNumber: 1400052,
       reporter: "0x0000000000000000000000000000000000000024",
       marketID: "0x0000000000000000000000000000000000000019",
       stakeToken: "0x0000000000000000001000000000000000000003",
