@@ -131,7 +131,7 @@ describe("blockchain/log-processors/market-created", () => {
             reportingWindow: "0x1000000000000000000000000000000000000001",
             endTime: 4886718345,
             finalizationTime: null,
-            marketStateID: 13,
+            marketStateID: 15,
             shortDescription: "this is a test market",
             longDescription: "this is the long description of a test market",
             designatedReporter: "0x000000000000000000000000000000000000b0b2",

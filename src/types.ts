@@ -370,6 +370,7 @@ export interface JoinedReportsMarketsRow {
   transactionHash: Bytes32;
   blockHash: Bytes32;
   marketID: Address;
+  marketReportingState: string;
   universe: Address;
   reportingWindow: Address;
   stakeToken: Address;
@@ -393,6 +394,7 @@ export interface UIReport {
   transactionHash: Bytes32;
   blockHash: Bytes32;
   marketID: Address;
+  marketReportingState: string;
   reportingWindow: Address;
   payoutNumerators: Array<string|number|null>;
   amountStaked: string|number;
