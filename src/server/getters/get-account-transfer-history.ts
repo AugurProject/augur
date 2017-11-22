@@ -6,8 +6,8 @@ export interface TransferRow {
   transactionHash: Bytes32;
   logIndex: number;
   blockNumber: number;
-  blockHash: string,
-  timestamp: number,
+  blockHash: string;
+  timestamp: number;
   sender: Address;
   recipient: Address;
   token: Address;
@@ -24,12 +24,12 @@ export function getAccountTransferHistory(db: Knex, account: Address, token: Add
     "transfers.token",
     "transfers.value",
     "blocks.timestamp as creationTime",
-    "blocks.blockHash"
+    "blocks.blockHash",
   ]).where((db: Knex): Knex.QueryBuilder => db.where("sender", account).orWhere("recipient", account));
   query.join("blocks", "blocks.blockNumber", "transfers.blockNumber" );
   if (token != null) query.andWhere({ token });
   if (earliestCreationTime != null) query.where("creationTime", ">=", earliestCreationTime);
   if (latestCreationTime != null) query.where("creationTime", "<=", latestCreationTime);
-  queryModifier(query, "transfers.blockNumber", "desc", sortBy, isSortDescending, limit, offset);
+  queryModifier(query, "creationBlockNumber", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback(callback);
 }

@@ -9,7 +9,7 @@ describe("server/getters/get-account-transfer-history", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getAccountTransferHistory(db, t.params.account, t.params.token, t.params.sortBy, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.isSortDescending, t.params.limit, t.params.offset, (err, accountTransferHistory) => {
+        getAccountTransferHistory(db, t.params.account, t.params.token, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, accountTransferHistory) => {
           t.assertions(err, accountTransferHistory);
           done();
         });
@@ -55,6 +55,30 @@ describe("server/getters/get-account-transfer-history", () => {
         recipient: "0x000000000000000000000000000000000000d00d",
         token: "0x7a305d9b681fb164dc5ad628b5992177dc66aec8",
         value: 47,
+      }]);
+    },
+  });
+  test({
+    description: "get account transfer history for all tokens, filtered to date",
+    params: {
+      account: "0x0000000000000000000000000000000000000b0b",
+      token: null,
+      isSortDescending: false,
+      earliestCreationTime: 1506473473,
+      latestCreationTime: 1506473474,
+    },
+    assertions: (err, accountTransferHistory) => {
+      assert.isNull(err);
+      assert.deepEqual(accountTransferHistory, [{
+        transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
+        logIndex: 0,
+        creationBlockNumber: 1400000,
+        blockHash: "0x1400000",
+        creationTime: 1506473474,
+        sender: "0x0000000000000000000000000000000000000b0b",
+        recipient: "0x000000000000000000000000000000000000d00d",
+        token: "0x1000000000000000000000000000000000000000",
+        value: 10,
       }]);
     },
   });
