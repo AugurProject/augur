@@ -18,7 +18,7 @@ var augur = new Augur();
 
 var DEBUG = true;
 
-augur.rpc.setDebugOptions({ connect: true, broadcast: true, tx: false });
+augur.rpc.setDebugOptions({ connect: true, broadcast: false, tx: false });
 
 var ethereumNode = {
   http: "http://127.0.0.1:8545",
@@ -333,16 +333,16 @@ var cannedMarkets = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "1", price: "20" },
-        { shares: "2", price: "0" },
-        { shares: "3", price: "-5" },
+        { shares: "0.1", price: "20" },
+        { shares: "0.2", price: "0" },
+        { shares: "0.3", price: "-5" },
       ],
     },
     sell: {
       "0": [
-        { shares: "1", price: "25" },
-        { shares: "1", price: "50" },
-        { shares: "1", price: "100" },
+        { shares: "0.1", price: "25" },
+        { shares: "0.01", price: "50" },
+        { shares: "0.01", price: "100" },
       ],
     },
   },
@@ -472,14 +472,14 @@ var cannedMarkets = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "1", price: "2" },
+        { shares: "0.5", price: "2" },
         { shares: "0.2", price: "18" },
         { shares: "0.3", price: "15" },
       ],
     },
     sell: {
       "0": [
-        { shares: "0.5", price: "23" },
+        { shares: "0.2", price: "23" },
         { shares: "0.1", price: "26" },
         { shares: "0.2", price: "29" },
       ],
