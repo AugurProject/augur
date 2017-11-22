@@ -1,5 +1,8 @@
-import { Augur, Block } from "augur.js";
+import { Augur } from "augur.js";
 import * as Knex from "knex";
+
+export { Block } from "augur.js";
+
 
 export enum ReportingState {
   PRE_REPORTING = "PRE_REPORTING",
