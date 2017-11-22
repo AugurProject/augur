@@ -9,6 +9,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.specificType("blockNumber", "integer NOT NULL CONSTRAINT positiveOrderBlockNumber CHECK (\"blockNumber\" > 0)");
       table.string("reporter", 66).notNullable();
       table.string("marketID", 66).notNullable();
+      table.string("marketReportingState", 30).notNullable();
       table.string("stakeToken", 42).notNullable();
       table.specificType("amountStaked", "NUMERIC");
       table.integer("winningToken").nullable();
