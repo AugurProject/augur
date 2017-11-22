@@ -9,7 +9,7 @@ describe("server/getters/get-account-transfer-history", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getAccountTransferHistory(db, t.params.account, t.params.token, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, accountTransferHistory) => {
+        getAccountTransferHistory(db, t.params.account, t.params.token, t.params.sortBy, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.isSortDescending, t.params.limit, t.params.offset, (err, accountTransferHistory) => {
           t.assertions(err, accountTransferHistory);
           done();
         });
@@ -28,9 +28,9 @@ describe("server/getters/get-account-transfer-history", () => {
       assert.deepEqual(accountTransferHistory, [{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
         logIndex: 0,
-        blockNumber: 1400000,
+        creationBlockNumber: 1400000,
         blockHash: "0x1400000",
-        timestamp: 1506473474,
+        creationTime: 1506473474,
         sender: "0x0000000000000000000000000000000000000b0b",
         recipient: "0x000000000000000000000000000000000000d00d",
         token: "0x1000000000000000000000000000000000000000",
@@ -38,9 +38,9 @@ describe("server/getters/get-account-transfer-history", () => {
       }, {
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000d3adb33f",
         logIndex: 0,
-        blockNumber: 1400001,
+        creationBlockNumber: 1400001,
         blockHash: "0x1400001",
-        timestamp: 1506473500,
+        creationTime: 1506473500,
         sender: "0x000000000000000000000000000000000000d00d",
         recipient: "0x0000000000000000000000000000000000000b0b",
         token: "0x1000000000000000000000000000000000000000",
@@ -48,9 +48,9 @@ describe("server/getters/get-account-transfer-history", () => {
       }, {
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadb33f",
         logIndex: 1,
-        blockNumber: 1400001,
+        creationBlockNumber: 1400001,
         blockHash: "0x1400001",
-        timestamp: 1506473500,
+        creationTime: 1506473500,
         sender: "0x0000000000000000000000000000000000000b0b",
         recipient: "0x000000000000000000000000000000000000d00d",
         token: "0x7a305d9b681fb164dc5ad628b5992177dc66aec8",
@@ -69,9 +69,9 @@ describe("server/getters/get-account-transfer-history", () => {
       assert.isNull(err);
       assert.deepEqual(accountTransferHistory, [{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadb33f",
-        blockNumber: 1400001,
+        creationBlockNumber: 1400001,
         blockHash: "0x1400001",
-        timestamp: 1506473500,
+        creationTime: 1506473500,
         logIndex: 1,
         sender: "0x0000000000000000000000000000000000000b0b",
         recipient: "0x000000000000000000000000000000000000d00d",
