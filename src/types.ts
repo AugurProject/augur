@@ -1,4 +1,4 @@
-import Augur from "augur.js";
+import { Augur, Block } from "augur.js";
 import * as Knex from "knex";
 
 export enum ReportingState {
