@@ -3,7 +3,6 @@ import * as Knex from "knex";
 
 export { Block } from "augur.js";
 
-
 export enum ReportingState {
   PRE_REPORTING = "PRE_REPORTING",
   DESIGNATED_REPORTING = "DESIGNATED_REPORTING",
@@ -189,6 +188,12 @@ export interface OutcomesRow {
   price: string|number;
   sharesOutstanding: string|number;
 }
+
+// export interface Block {
+//   hash: string;
+//   number: Int256;
+//   timestamp: Int256;
+// }
 
 export interface BlocksRow {
   blockNumber: number;
