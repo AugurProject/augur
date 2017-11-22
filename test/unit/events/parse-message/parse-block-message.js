@@ -11,16 +11,10 @@ describe("events/parse-message/parse-block-message", function () {
       parseBlockMessage(msg, function (parsed) {
         if (msg.constructor === Array) {
           if (msg[0].number) {
-            assert.deepEqual(parsed, msg[0].number);
-          } else {
             assert.deepEqual(parsed, msg[0]);
           }
         } else {
-          if (msg.number) {
-            assert.deepEqual(parsed, msg.number);
-          } else {
-            assert.deepEqual(parsed, msg);
-          }
+          assert.deepEqual(parsed, msg);
         }
         done();
       });
