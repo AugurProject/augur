@@ -23,7 +23,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callba
   console.log(request);
   switch (request.method) {
     case "getAccountTransferHistory":
-      return getAccountTransferHistory(db, request.params.account, request.params.token, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
+      return getAccountTransferHistory(db, request.params.account, request.params.token, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getCategories":
       return getCategories(db, request.params.universe, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsInCategory":
