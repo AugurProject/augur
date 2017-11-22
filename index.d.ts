@@ -1,5 +1,8 @@
 /// <reference types="node" />
 
+import { Block } from 'ethereumjs-blockstream'
+export { Block }
+
 type AbiEncodedData = string;
 type Address = string;
 type Bytes32 = string;
@@ -166,7 +169,7 @@ export class Augur {
   };
   public events: {
     getAllAugurLogs: ApiFunction;
-    startListeners(onEventCallbacks?: EventSubscriptionCallbacks, onBlockAdded?: (blockNumber: Int256) => void, onBlockRemoved?: (blockNumber: Int256) => void, onSetupComplete?: () => void): void;
+    startListeners(onEventCallbacks?: EventSubscriptionCallbacks, onBlockAdded?: (block: Block) => void, onBlockRemoved?: (block: Block) => void, onSetupComplete?: () => void): void;
     stopListeners(): boolean
   };
   public markets: {
