@@ -189,12 +189,6 @@ export interface OutcomesRow {
   sharesOutstanding: string|number;
 }
 
-// export interface Block {
-//   hash: string;
-//   number: Int256;
-//   timestamp: Int256;
-// }
-
 export interface BlocksRow {
   blockNumber: number;
   timestamp: number;
