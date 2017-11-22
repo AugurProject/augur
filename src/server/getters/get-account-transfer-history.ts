@@ -5,11 +5,13 @@ import { queryModifier } from "./database";
 export interface TransferRow {
   transactionHash: Bytes32;
   logIndex: number;
+  blockNumber: number;
+  blockHash: string,
+  timestamp: number,
   sender: Address;
   recipient: Address;
   token: Address;
   value: number;
-  blockNumber: number;
 }
 
 export function getAccountTransferHistory(db: Knex, account: Address, token: Address|null|undefined, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, transferHistory?: Array<TransferRow>) => void): void {
