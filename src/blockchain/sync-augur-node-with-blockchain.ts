@@ -1,6 +1,6 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { EthereumNodeEndpoints, UploadBlockNumbers, FormattedLog, ErrorCallback } from "../types";
+import { EthereumNodeEndpoints, UploadBlockNumbers, FormattedLog, ErrorCallback, Block } from "../types";
 import { startAugurListeners } from "./start-augur-listeners";
 import { downloadAugurLogs } from "./download-augur-logs";
 
@@ -33,7 +33,7 @@ function getNetworkID(db: Knex, augur: Augur, callback: (err: Error|null, networ
 export function syncAugurNodeWithBlockchain(db: Knex,  augur: Augur, ethereumNodeEndpoints: EthereumNodeEndpoints, uploadBlockNumbers: UploadBlockNumbers, callback: ErrorCallback): void {
   augur.connect({ ethereumNode: ethereumNodeEndpoints }, (): void => {
     console.log("Waiting for first block...");
-    startAugurListeners(db, augur, (blockNumber: string): void => {
+    startAugurListeners(db, augur, (block: Block): void => {
       getNetworkID(db, augur, (err: Error|null, networkID: string|null) => {
         if (err) {
           augur.events.stopListeners();
@@ -48,7 +48,7 @@ export function syncAugurNodeWithBlockchain(db: Knex,  augur: Augur, ethereumNod
             if (err) return callback(err);
             const row: HighestBlockNumberRow = rows![0];
             const fromBlock: number = (!row || !row.highestBlockNumber) ? uploadBlockNumbers[networkID!] : row.highestBlockNumber + 1;
-            const highestBlockNumber: number = parseInt(blockNumber, 16) - 1;
+            const highestBlockNumber: number = parseInt(block.number, 16) - 1;
             if (fromBlock >= highestBlockNumber) return callback(null); // augur-node is already up-to-date
             downloadAugurLogs(db, augur, fromBlock, highestBlockNumber, (err?: Error|null): void => {
               if (err) return callback(err);
