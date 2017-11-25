@@ -10,6 +10,7 @@ var BigNumber = require("bignumber.js");
 var chalk = require("chalk");
 var immutableDelete = require("immutable-delete");
 var speedomatic = require("speedomatic");
+var approveAugurEternalApprovalValue = require("./approve-augur-eternal-approval-value");
 var Augur = require("../src");
 var convertDecimalToFixedPoint = require("../src/utils/convert-decimal-to-fixed-point");
 var constants = require("../src/constants");
@@ -352,6 +353,7 @@ var cannedMarkets = [{
   _numOutcomes: 2,
   _topic: "climate",
   _extraInfo: {
+    marketType: "binary",
     resolutionSource: "",
     tags: ["Antartica", "warming"],
     description: "Will the Larsen B ice shelf collapse by November 1, 2018?",
@@ -735,29 +737,6 @@ var cannedMarkets = [{
   },
 }];
 
-function approveAugurEternalApprovalValue(callback) {
-  var augurContract = augur.contracts.addresses[augur.rpc.getNetworkID()].Augur;
-  augur.api.Cash.allowance({ _owner: augur.rpc.getCoinbase(), _spender: augurContract }, function (err, allowance) {
-    if (err) return callback(err);
-    if (new BigNumber(allowance, 10).eq(new BigNumber(constants.ETERNAL_APPROVAL_VALUE, 16))) return callback(null);
-    augur.api.Cash.approve({
-      _spender: augurContract,
-      _value: constants.ETERNAL_APPROVAL_VALUE,
-      onSent: function (res) {
-        if (DEBUG) console.log("Augur.approve sent:", res.hash);
-      },
-      onSuccess: function (res) {
-        if (DEBUG) console.log("Augur.approve success:", res.callReturn);
-        callback(null);
-      },
-      onFailed: function (err) {
-        if (DEBUG) console.error("Augur.approve failed:", err);
-        callback(err);
-      },
-    });
-  });
-}
-
 function createOrder(marketID, outcome, numOutcomes, maxPrice, minPrice, orderType, order, callback) {
   var normalizedPrice = augur.trading.normalizePrice({ price: order.price, maxPrice: maxPrice, minPrice: minPrice });
   var bnNumTicks = new BigNumber(maxPrice, 10).minus(new BigNumber(minPrice, 10)).times(constants.DEFAULT_NUM_TICKS[numOutcomes]);
@@ -820,7 +799,7 @@ function createOrderBook(marketID, numOutcomes, maxPrice, minPrice, orderBook, c
             augur.api.ShareToken.approve({
               tx: { to: shareToken },
               _spender: augur.contracts.addresses[augur.rpc.getNetworkID()].Order,
-              _value: augur.constants.ETERNAL_APPROVAL_VALUE,
+              _value: constants.ETERNAL_APPROVAL_VALUE,
               onSent: function (res) {
                 if (DEBUG) console.log("ShareToken.approve sent:", res.hash);
               },
@@ -881,7 +860,7 @@ function createNewMarket(market, callback) {
 
 augur.connect({ ethereumNode: ethereumNode, augurNode: augurNode }, function (err) {
   if (err) return console.error(err);
-  approveAugurEternalApprovalValue(function (err) {
+  approveAugurEternalApprovalValue(augur, augur.rpc.getCoinbase(), function (err) {
     if (err) return console.error(err);
     async.eachSeries(cannedMarkets, function (market, nextMarket) {
       createNewMarket(market, function (err, marketID) {

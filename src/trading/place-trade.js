@@ -1,14 +1,13 @@
 "use strict";
 
 var assign = require("lodash.assign");
-var BigNumber = require("bignumber.js");
+var speedomatic = require("speedomatic");
 var immutableDelete = require("immutable-delete");
 var getBetterWorseOrders = require("./get-better-worse-orders");
 var tradeUntilAmountIsZero = require("./trade-until-amount-is-zero");
 var normalizePrice = require("./normalize-price");
 var convertDecimalToFixedPoint = require("../utils/convert-decimal-to-fixed-point");
 var api = require("../api");
-var MINIMUM_TRADE_SIZE = require("../constants").MINIMUM_TRADE_SIZE;
 
 /**
  * @param {Object} p Parameters object.
@@ -28,9 +27,6 @@ var MINIMUM_TRADE_SIZE = require("../constants").MINIMUM_TRADE_SIZE;
  * @param {function} p.onFailed Called if any part of the trade fails.
  */
 function placeTrade(p) {
-  if (new BigNumber(p.amount, 10).lte(MINIMUM_TRADE_SIZE)) {
-    return p.onSuccess(null);
-  }
   var normalizedPrice = normalizePrice({ minPrice: p.minPrice, maxPrice: p.maxPrice, price: p.limitPrice });
   getBetterWorseOrders({
     marketID: p._market,
@@ -47,7 +43,7 @@ function placeTrade(p) {
     } else {
       api().CreateOrder.publicCreateOrder(assign({}, immutableDelete(p, ["doNotCreateOrders", "minPrice", "maxPrice", "numTicks", "amount", "limitPrice", "_direction"]), {
         _type: p._direction,
-        _attoshares: convertDecimalToFixedPoint(p.amount, p.numTicks),
+        _attoshares: speedomatic.fix(p.amount, "hex"),
         _displayPrice: convertDecimalToFixedPoint(normalizedPrice, p.numTicks),
         _betterOrderId: betterWorseOrders.betterOrderID,
         _worseOrderId: betterWorseOrders.worseOrderID,

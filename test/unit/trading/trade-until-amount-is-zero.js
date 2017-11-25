@@ -5,6 +5,8 @@
 var assert = require("chai").assert;
 var proxyquire = require("proxyquire").noPreserveCache();
 
+var counter = 0;
+
 describe("trading/trade-until-amount-is-zero", function () {
   var test = function (t) {
     it(t.description, function (done) {
@@ -43,7 +45,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       },
     },
     mock: {
-      getTradeAmountRemaining: function (transactionHash, callback) {
+      getTradeAmountRemaining: function (p, callback) {
         callback(null, "0x0");
       },
       api: function () {
@@ -58,7 +60,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 0);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
-              assert.strictEqual(p._fxpAmount, "0x1a400");
+              assert.strictEqual(p._fxpAmount, "0x8ac7230489e80000");
               assert.strictEqual(p._price, "0x1500");
               assert.strictEqual(p._tradeGroupId, "0x1");
               assert.isFunction(p.onSent);
@@ -89,14 +91,15 @@ describe("trading/trade-until-amount-is-zero", function () {
       },
       onSuccess: function (res) {
         assert.isNull(res);
+        assert.strictEqual(counter, 2);
       },
       onFailed: function (err) {
         throw new Error(err);
       },
     },
     mock: {
-      getTradeAmountRemaining: function (transactionHash, callback) {
-        if (transactionHash === "TRANSACTION_HASH_1") {
+      getTradeAmountRemaining: function (p, callback) {
+        if (p.transactionHash === "TRANSACTION_HASH_1") {
           callback(null, "0x29a2241af62c0000"); // 3*10^18
         } else {
           callback(null, "0x0");
@@ -114,16 +117,20 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 0);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
-              assert.oneOf(p._fxpAmount, ["0x1a400", "0x7e00"]);
+              assert.oneOf(p._fxpAmount, ["0x8ac7230489e80000", "0x29a2241af62c0000"]);
               assert.strictEqual(p._price, "0x1500");
               assert.strictEqual(p._tradeGroupId, "0x1");
               assert.isFunction(p.onSent);
               assert.isFunction(p.onSuccess);
               assert.isFunction(p.onFailed);
-              if (p._fxpAmount === "0x1a400") {
+              if (p._fxpAmount === "0x8ac7230489e80000") {
+                assert.strictEqual(counter, 0);
+                counter++;
                 p.onSent({ hash: "TRANSACTION_HASH_1" });
                 p.onSuccess({ hash: "TRANSACTION_HASH_1" });
               } else {
+                assert.strictEqual(counter, 1);
+                counter++;
                 p.onSent({ hash: "TRANSACTION_HASH_2" });
                 p.onSuccess({ hash: "TRANSACTION_HASH_2" });
               }
@@ -156,7 +163,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       },
     },
     mock: {
-      getTradeAmountRemaining: function (transactionHash, callback) {
+      getTradeAmountRemaining: function (p, callback) {
         callback(null, "0x0");
       },
       api: function () {
@@ -171,7 +178,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 1);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
-              assert.strictEqual(p._fxpAmount, "0x1a400");
+              assert.strictEqual(p._fxpAmount, "0x8ac7230489e80000");
               assert.strictEqual(p._price, "0x1500");
               assert.strictEqual(p._tradeGroupId, "0x1");
               assert.isFunction(p.onSent);
@@ -208,7 +215,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       },
     },
     mock: {
-      getTradeAmountRemaining: function (transactionHash, callback) {
+      getTradeAmountRemaining: function (p, callback) {
         callback(null, "0x0");
       },
       api: function () {
@@ -220,7 +227,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 1);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
-              assert.strictEqual(p._fxpAmount, "0x1a400");
+              assert.strictEqual(p._fxpAmount, "0x8ac7230489e80000");
               assert.strictEqual(p._price, "0x1500");
               assert.strictEqual(p._tradeGroupId, "0x1");
               assert.isFunction(p.onSent);

@@ -7,7 +7,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "mocha test/unit",
-    "lint": "eslint src test/unit scripts/canned-markets.js",
+    "lint": "eslint src test/unit scripts/canned-markets.js scripts/fill-order.js scripts/approve-augur-eternal-approval-value.js",
     "coverage-save": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit/",
     "coverage": "istanbul cover --include-all-sources --root ./src ./node_modules/mocha/bin/_mocha test/unit",
     "link": "npm link ethrpc && npm link ethereumjs-connect && npm link keythereum && npm link speedomatic && npm link augur-contracts",

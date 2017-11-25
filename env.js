@@ -18,10 +18,11 @@ const augurNode = "ws://127.0.0.1:9001";
 
 augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
   if (err) return console.error(err);
-  const networkID = augur.rpc.getNetworkID();
+  global.networkID = augur.rpc.getNetworkID();
+  global.universe = augur.contracts.addresses[networkID].Universe;
   console.log(chalk.cyan("Network"), chalk.green(networkID));
   const account = augur.rpc.getCoinbase();
-  augur.api.Universe.getReputationToken({ tx: { to: augur.contracts.addresses[networkID].Universe } }, (err, reputationTokenAddress) => {
+  augur.api.Universe.getReputationToken({ tx: { to: universe } }, (err, reputationTokenAddress) => {
     if (err) return console.error("getReputationToken failed:", err);
     augur.api.ReputationToken.balanceOf({ tx: { to: reputationTokenAddress }, _owner: account }, (err, reputationBalance) => {
       if (err) return console.error("ReputationToken.balanceOf failed:", err);

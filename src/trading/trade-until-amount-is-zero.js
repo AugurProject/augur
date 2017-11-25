@@ -1,14 +1,13 @@
 "use strict";
 
 var assign = require("lodash.assign");
-var BigNumber = require("bignumber.js");
+var speedomatic = require("speedomatic");
 var immutableDelete = require("immutable-delete");
 var getTradeAmountRemaining = require("./get-trade-amount-remaining");
 var convertDecimalToFixedPoint = require("../utils/convert-decimal-to-fixed-point");
-var convertFixedPointToDecimal = require("../utils/convert-fixed-point-to-decimal");
 var api = require("../api");
 var noop = require("../utils/noop");
-var MINIMUM_TRADE_SIZE = require("../constants").MINIMUM_TRADE_SIZE;
+var PRECISION = require("../constants").PRECISION;
 
 /**
  * @param {Object} p Parameters object.
@@ -26,17 +25,17 @@ var MINIMUM_TRADE_SIZE = require("../constants").MINIMUM_TRADE_SIZE;
  * @param {function} p.onFailed Called if any part of the trade fails.
  */
 function tradeUntilAmountIsZero(p) {
-  if (new BigNumber(p._fxpAmount, 10).lte(MINIMUM_TRADE_SIZE)) {
-    return p.onSuccess(null);
-  }
+  var tradeValue = speedomatic.fix(p._fxpAmount).times(p._price);
+  if (tradeValue.lt(PRECISION.zero)) return p.onSuccess(null);
   var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks"]), {
-    _fxpAmount: convertDecimalToFixedPoint(p._fxpAmount, p.numTicks),
+    tx: { value: speedomatic.hex(tradeValue), gas: "0x5b8d80" },
+    _fxpAmount: speedomatic.fix(p._fxpAmount, "hex"),
     _price: convertDecimalToFixedPoint(p._price, p.numTicks),
     onSuccess: function (res) {
       getTradeAmountRemaining({ transactionHash: res.hash }, function (err, fxpTradeAmountRemaining) {
         if (err) return p.onFailed(err);
         tradeUntilAmountIsZero(assign({}, p, {
-          _fxpAmount: convertFixedPointToDecimal(fxpTradeAmountRemaining, p.numTicks),
+          _fxpAmount: speedomatic.unfix(fxpTradeAmountRemaining, "string"),
           onSent: noop, // so that p.onSent only fires when the first transaction is sent
         }));
       });

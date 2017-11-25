@@ -1,9 +1,7 @@
 "use strict";
 
 module.exports = {
-  batchGetMarketInfo: require("./batch-get-market-info"),
   getMarketsInfo: require("./get-markets-info"),
-  getDetailedMarketInfo: require("./get-detailed-market-info"),
   getDisputableMarkets: require("./get-disputable-markets"),
   getMarketPriceHistory: require("./get-market-price-history"),
   getMarkets: require("./get-markets"),
