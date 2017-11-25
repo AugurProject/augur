@@ -1,12 +1,14 @@
 import * as Knex from "knex";
 
 exports.up = async (knex: Knex): Promise<any> => {
-  return knex.schema.dropTableIfExists("categories").then((): PromiseLike<any> => {
-    return knex.schema.raw(`CREATE TABLE categories (
-      category varchar(255) PRIMARY KEY NOT NULL,
-      popularity integer DEFAULT 0,
-      universe varchar(66) NOT NULL
-    )`);
+  return knex.schema.dropTableIfExists("categories").then(async (): Promise<any> => {
+    return knex.schema.createTable("categories", (table: Knex.CreateTableBuilder): void => {
+    table.string("category", 255).notNullable();
+    table.integer("popularity");
+    table.string("universe", 66).notNullable();
+
+    table.unique(["universe", "category"]);
+    });
   });
 };
 
