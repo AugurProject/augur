@@ -7,7 +7,7 @@ exports.up = async (knex: Knex): Promise<any> => {
     table.integer("popularity");
     table.string("universe", 66).notNullable();
 
-    table.unique(["universe", "category"]);
+    table.primary(["universe", "category"]);
     });
   });
 };
