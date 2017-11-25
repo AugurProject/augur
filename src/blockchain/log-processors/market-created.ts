@@ -52,16 +52,16 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
         if (!marketStateRow || !marketStateRow.length) return callback(new Error("No market state ID"));
         const marketStateID = marketStateRow[0];
         const extraInfo: MarketCreatedLogExtraInfo = log.extraInfo;
-        const numOutcomes = parseInt(onMarketContractData!.numberOfOutcomes!, 16);
+        const numOutcomes = parseInt(onMarketContractData!.numberOfOutcomes!, 10);
         const marketsDataToInsert: MarketsRow = {
           marketID:                   log.market,
           marketCreator:              log.marketCreator,
           creationBlockNumber:        log.blockNumber,
           creationFee:                log.marketCreationFee,
           category:                   log.topic,
-          marketType:                 extraInfo!.marketType,
-          minPrice:                   extraInfo!.minPrice,
-          maxPrice:                   extraInfo!.maxPrice,
+          marketType:                 extraInfo!.marketType || "binary",
+          minPrice:                   extraInfo!.minPrice || "0",
+          maxPrice:                   extraInfo!.maxPrice || "1",
           tag1:                       (extraInfo!.tags && extraInfo!.tags!.length) ? extraInfo!.tags![0] : null,
           tag2:                       (extraInfo!.tags && extraInfo!.tags!.length > 1) ? extraInfo!.tags![1] : null,
           shortDescription:           extraInfo!.description,
@@ -71,12 +71,12 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
           numOutcomes,
           marketStateID,
           reportingWindow:            onMarketContractData!.reportingWindow,
-          endTime:                    parseInt(onMarketContractData!.endTime!, 16),
+          endTime:                    parseInt(onMarketContractData!.endTime!, 10),
           designatedReporter:         onMarketContractData!.designatedReporter,
-          designatedReportStake:      new BigNumber(onUniverseContractData!.designatedReportStake, 16).toFixed(),
-          numTicks:                   parseInt(onMarketContractData!.numTicks!, 16),
-          marketCreatorFeeRate:       convertDivisorToRate(onMarketContractData!.marketCreatorSettlementFeeDivisor!, 16),
-          reportingFeeRate:           convertDivisorToRate(onUniverseContractData!.reportingFeeDivisor!, 16),
+          designatedReportStake:      onUniverseContractData!.designatedReportStake,
+          numTicks:                   onMarketContractData!.numTicks,
+          marketCreatorFeeRate:       convertDivisorToRate(onMarketContractData!.marketCreatorSettlementFeeDivisor!, 10),
+          reportingFeeRate:           convertDivisorToRate(onUniverseContractData!.reportingFeeDivisor!, 10),
           marketCreatorFeesCollected: "0",
           volume:                     "0",
           sharesOutstanding:          "0",
