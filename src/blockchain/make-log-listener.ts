@@ -13,7 +13,7 @@ export function makeLogListener(db: Knex, augur: Augur, contractName: string, ev
     if (!logProcessor.noAutoEmit) augurEmitter.emit(eventName, log);
     db.transaction((trx: Knex.Transaction): void => processLog(db, augur, trx, log, logProcessors[contractName][eventName], (err: Error|null): void => {
       if (err) {
-        trx.rollback();
+        trx.rollback(err);
       } else {
         trx.commit();
       }

@@ -20,7 +20,7 @@ export function processBlock(db: Knex, augur: Augur, block: Block): void {
       }
       query.asCallback((err: Error|null): void => {
         if (err) {
-          trx.rollback();
+          trx.rollback(err);
           logError(err);
         } else {
           trx.commit();
@@ -36,7 +36,7 @@ export function processBlockRemoval(db: Knex, block: Block): void {
   db.transaction((trx: Knex.Transaction): void => {
     db("blocks").transacting(trx).where({ blockNumber }).del().asCallback((err: Error|null): void => {
       if (err) {
-        trx.rollback();
+        trx.rollback(err);
         logError(err);
       } else {
         trx.commit();

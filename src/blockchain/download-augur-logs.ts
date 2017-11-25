@@ -18,7 +18,7 @@ export function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, toB
           db.transaction((trx: Knex.Transaction): void => {
             processLogs(db, augur, trx, allAugurLogs![contractName]![eventName]!, logProcessors[contractName][eventName], (err?: Error|null): void => {
               if (err) {
-                trx.rollback();
+                trx.rollback(err);
                 nextEventName(err);
               } else {
                 trx.commit();

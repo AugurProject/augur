@@ -62,7 +62,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
           marketID,
           blockNumber: log.blockNumber,
           transactionHash: log.transactionHash,
-          logIndex: log.transactionIndex,
+          logIndex: log.logIndex,
           outcome,
           shareToken: log.shareToken,
           orderCreator: log.creator,
