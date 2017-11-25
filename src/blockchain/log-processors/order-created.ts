@@ -54,10 +54,10 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
         moneyEscrowed: (next: AsyncCallback): void => augur.api.Orders.getOrderMoneyEscrowed(ordersPayload, next),
       }, (err: Error|null, onContractData: OrderCreatedOnContractData): void => {
         if (err) return callback(err);
-        const { price, amount, orderType, moneyEscrowed, sharesEscrowed} = onContractData;
-        const fullPrecisionPrice = denormalizePrice(minPrice, maxPrice, convertFixedPointToDecimal(new BigNumber(price, 16).toFixed(), numTicks));
-        const fullPrecisionAmount = convertFixedPointToDecimal(new BigNumber(amount, 16).toFixed(), numTicks);
-        const orderTypeLabel = parseInt(orderType, 16) === 0 ? "buy" : "sell";
+        const { price, amount, orderType, moneyEscrowed, sharesEscrowed } = onContractData;
+        const fullPrecisionAmount = convertFixedPointToDecimal(amount, WEI_PER_ETHER);
+        const fullPrecisionPrice = denormalizePrice(minPrice, maxPrice, convertFixedPointToDecimal(price, numTicks));
+        const orderTypeLabel = orderType === "0" ? "buy" : "sell";
         const orderData: OrdersRow = {
           marketID,
           blockNumber: log.blockNumber,
@@ -73,9 +73,10 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
           amount: formatOrderAmount(minPrice, maxPrice, fullPrecisionAmount),
           fullPrecisionPrice,
           fullPrecisionAmount,
-          tokensEscrowed: convertFixedPointToDecimal(new BigNumber(moneyEscrowed, 16).toFixed(), WEI_PER_ETHER),
-          sharesEscrowed: convertFixedPointToDecimal(new BigNumber(sharesEscrowed, 16).toFixed(), numTicks),
+          tokensEscrowed: convertFixedPointToDecimal(moneyEscrowed, WEI_PER_ETHER),
+          sharesEscrowed: convertFixedPointToDecimal(sharesEscrowed, WEI_PER_ETHER),
         };
+        console.log("orderData:", orderData);
         const orderID = { orderID: log.orderId };
         augurEmitter.emit("OrderCreated", Object.assign(orderData, orderID));
         trx.select(["marketID"]).from("orders").where(orderID).asCallback((err: Error|null, ordersRows?: any): void => {

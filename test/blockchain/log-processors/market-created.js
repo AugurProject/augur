@@ -60,7 +60,7 @@ describe("blockchain/log-processors/market-created", () => {
           Market: {
             getNumberOfOutcomes: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "0x2");
+              callback(null, "2");
             },
             getReportingWindow: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
@@ -68,7 +68,7 @@ describe("blockchain/log-processors/market-created", () => {
             },
             getEndTime: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "0x123456789");
+              callback(null, "4886718345");
             },
             getDesignatedReporter: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
@@ -76,7 +76,7 @@ describe("blockchain/log-processors/market-created", () => {
             },
             getNumTicks: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "0x2a00");
+              callback(null, "10752");
             },
             getUniverse: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
@@ -84,7 +84,7 @@ describe("blockchain/log-processors/market-created", () => {
             },
             getMarketCreatorSettlementFeeDivisor: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "0x64");
+              callback(null, "100");
             },
             getShareToken: (p, callback) => {
               callback(null, `SHARE_TOKEN_${p._outcome}`);
@@ -93,11 +93,11 @@ describe("blockchain/log-processors/market-created", () => {
           Universe: {
             getReportingFeeDivisor: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "0x3e8");
+              callback(null, "1000");
             },
             getDesignatedReportStake: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "0x1000000");
+              callback(null, "16777216");
             },
           },
         },

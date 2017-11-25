@@ -44,23 +44,23 @@ describe("blockchain/log-processors/order-created", () => {
           Orders: {
             getOrderType: (p, callback) => {
               assert.deepEqual(p, { _orderId: "ORDER_ID" });
-              callback(null, "0x0");
+              callback(null, "0");
             },
             getPrice: (p, callback) => {
               assert.deepEqual(p, { _orderId: "ORDER_ID" });
-              callback(null, "0x1f80"); // = 0.75 * 10752
+              callback(null, "8064"); // = 0.75 * 10752
             },
             getAmount: (p, callback) => {
               assert.deepEqual(p, { _orderId: "ORDER_ID" });
-              callback(null, "0x7e00"); // = 3 * 10752
+              callback(null, "3000000000000000000");
             },
             getOrderSharesEscrowed: (p, callback) => {
               assert.deepEqual(p, { _orderId: "ORDER_ID" });
-              callback(null, "0x0");
+              callback(null, "0");
             },
             getOrderMoneyEscrowed: (p, callback) => {
               assert.deepEqual(p, { _orderId: "ORDER_ID" });
-              callback(null, "0x1f399b1438a10000"); // = 0.75 * 3 * 10^18
+              callback(null, "2250000000000000000"); // = 0.75 * 3000000000000000000
             },
           },
         },

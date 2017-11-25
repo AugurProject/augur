@@ -53,7 +53,7 @@ describe("blockchain/log-processors/order-filled", () => {
           Orders: {
             getAmount: (p, callback) => {
               assert.deepEqual(p, { _orderId: "0x1000000000000000000000000000000000000000000000000000000000000000" });
-              callback(null, "0x3a80");
+              callback(null, "14976");
             },
           },
         },

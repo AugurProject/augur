@@ -116,7 +116,7 @@ export function updateOrdersAndPositions(db: Knex, augur: Augur, trx: Knex.Trans
   }, (err: Error|null, onContractData: OrderFilledOnContractData): void => {
     if (err) return callback(err);
     const { amount, creatorPositionInMarket, fillerPositionInMarket } = onContractData!;
-    const amountRemainingInOrder = convertFixedPointToDecimal(new BigNumber(amount!, 16).toFixed(), numTicks);
+    const amountRemainingInOrder = convertFixedPointToDecimal(new BigNumber(amount!, 10).toFixed(), numTicks);
     const updateParams = amountRemainingInOrder === "0" ? { amount: amountRemainingInOrder, isRemoved: 1 } : { amount: amountRemainingInOrder };
     db("orders").transacting(trx).where({ orderID }).update(updateParams).asCallback((err: Error|null): void => {
       if (err) return callback(err);
