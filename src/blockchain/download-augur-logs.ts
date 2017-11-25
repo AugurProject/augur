@@ -11,7 +11,7 @@ export function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, toB
     if (err) return callback(err instanceof Error ? err : new Error(JSON.stringify(err)));
     eachSeries(Object.keys(allAugurLogs!), (contractName: string, nextContractName: ErrorCallback) => (
       eachSeries(Object.keys(allAugurLogs![contractName]!), (eventName: string, nextEventName: ErrorCallback) => {
-        if (logProcessors[contractName][eventName] == null) {
+        if (logProcessors[contractName] == null || logProcessors[contractName][eventName] == null) {
           console.log("Log processor does not exist:", contractName, eventName);
           nextEventName();
         } else {
