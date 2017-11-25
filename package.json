@@ -27,7 +27,8 @@
     "migrate:make": "node ./node_modules/knex/bin/cli.js migrate:make -x ts $1",
     "coverage": "istanbul cover --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test",
     "postinstall": "postinstall-build build",
-    "postdeploy": "npm run migrate_pg"
+    "postdeploy": "npm run migrate_pg",
+    "link": "npm link augur.js"
   },
   "repository": {
     "type": "git",
@@ -42,7 +43,7 @@
     "@types/lodash": "4.14.77",
     "@types/uuid": "3.4.3",
     "async": "1.5.2",
-    "augur.js": "4.6.17",
+    "augur.js": "4.6.18",
     "bignumber.js": "4.1.0",
     "knex": "0.13.0",
     "lodash.isnull": "3.0.0",
