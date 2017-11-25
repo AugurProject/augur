@@ -46,7 +46,7 @@ describe("blockchain/log-processors/order-filled", () => {
         tradeGroupId: "TRADE_GROUP_ID",
         blockNumber: 1400101,
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000F00",
-        transactionIndex: 0,
+        logIndex: 0,
       },
       augur: {
         api: {

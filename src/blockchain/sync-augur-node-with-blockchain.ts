@@ -44,18 +44,18 @@ export function syncAugurNodeWithBlockchain(db: Knex,  augur: Augur, ethereumNod
           this.max("highestBlockNumber as block").from("blockchain_sync_history").unionAll(function(this: Knex.QueryBuilder): void {
             this.max("blockNumber as block").from("blocks");
           }).as("maxBlocks");
-        }).asCallback( (err: Error|null, rows?: Array<HighestBlockNumberRow>): void => {
+        }).asCallback((err: Error|null, rows?: Array<HighestBlockNumberRow>): void => {
+          if (err) return callback(err);
+          const row: HighestBlockNumberRow = rows![0];
+          const fromBlock: number = (!row || !row.highestBlockNumber) ? uploadBlockNumbers[networkID!] : row.highestBlockNumber + 1;
+          const highestBlockNumber: number = parseInt(block.number, 16) - 1;
+          if (fromBlock >= highestBlockNumber) return callback(null); // augur-node is already up-to-date
+          downloadAugurLogs(db, augur, fromBlock, highestBlockNumber, (err?: Error|null): void => {
             if (err) return callback(err);
-            const row: HighestBlockNumberRow = rows![0];
-            const fromBlock: number = (!row || !row.highestBlockNumber) ? uploadBlockNumbers[networkID!] : row.highestBlockNumber + 1;
-            const highestBlockNumber: number = parseInt(block.number, 16) - 1;
-            if (fromBlock >= highestBlockNumber) return callback(null); // augur-node is already up-to-date
-            downloadAugurLogs(db, augur, fromBlock, highestBlockNumber, (err?: Error|null): void => {
-              if (err) return callback(err);
-              db.insert({highestBlockNumber}).into("blockchain_sync_history").asCallback(callback);
-            });
+            db.insert({highestBlockNumber}).into("blockchain_sync_history").asCallback(callback);
           });
         });
+      });
     });
   });
 }
