@@ -72,20 +72,23 @@ export interface ContractNameToAddressMap {
 
 export interface EventLog {
   address: Address;
-  categories: Array<Int256>;
+  topics: Array<Int256>;
   data: AbiEncodedData;
   blockNumber: Int256;
+  logIndex: Int256;
   transactionIndex: Int256;
   transactionHash: Bytes32;
   blockHash: Bytes32;
+  removed: boolean;
 }
 
 export interface FormattedEventLog {
   address: Address;
   blockNumber: number;
-  transactionIndex: Int256;
+  logIndex: number;
   transactionHash: Bytes32;
   blockHash: Bytes32;
+  removed: boolean;
   [inputName: string]: any;
 }
 
