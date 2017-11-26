@@ -46,7 +46,7 @@ describe("trading/trade-until-amount-is-zero", function () {
     },
     mock: {
       getTradeAmountRemaining: function (p, callback) {
-        callback(null, "0x0");
+        callback(null, "0");
       },
       api: function () {
         return {
@@ -100,9 +100,9 @@ describe("trading/trade-until-amount-is-zero", function () {
     mock: {
       getTradeAmountRemaining: function (p, callback) {
         if (p.transactionHash === "TRANSACTION_HASH_1") {
-          callback(null, "0x29a2241af62c0000"); // 3*10^18
+          callback(null, "3");
         } else {
-          callback(null, "0x0");
+          callback(null, "0");
         }
       },
       api: function () {
@@ -164,7 +164,7 @@ describe("trading/trade-until-amount-is-zero", function () {
     },
     mock: {
       getTradeAmountRemaining: function (p, callback) {
-        callback(null, "0x0");
+        callback(null, "0");
       },
       api: function () {
         return {
@@ -216,7 +216,7 @@ describe("trading/trade-until-amount-is-zero", function () {
     },
     mock: {
       getTradeAmountRemaining: function (p, callback) {
-        callback(null, "0x0");
+        callback(null, "0");
       },
       api: function () {
         return {

@@ -1,6 +1,7 @@
 "use strict";
 
 var assign = require("lodash.assign");
+var BigNumber = require("bignumber.js");
 var speedomatic = require("speedomatic");
 var immutableDelete = require("immutable-delete");
 var getTradeAmountRemaining = require("./get-trade-amount-remaining");
@@ -25,17 +26,23 @@ var PRECISION = require("../constants").PRECISION;
  * @param {function} p.onFailed Called if any part of the trade fails.
  */
 function tradeUntilAmountIsZero(p) {
-  var tradeValue = speedomatic.fix(p._fxpAmount).times(p._price);
-  if (tradeValue.lt(PRECISION.zero)) return p.onSuccess(null);
+  var priceNumTicksRepresentation = convertDecimalToFixedPoint(p._price, p.numTicks);
+  var adjustedPrice = p._direction === 0 ? new BigNumber(priceNumTicksRepresentation, 16) : new BigNumber(p.numTicks, 10).minus(new BigNumber(priceNumTicksRepresentation, 16));
+  var cost = speedomatic.fix(p._fxpAmount).times(adjustedPrice);
+  if (cost.lt(PRECISION.zero)) return p.onSuccess(null);
   var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks"]), {
-    tx: { value: speedomatic.hex(tradeValue), gas: "0x5b8d80" },
+    tx: { value: speedomatic.hex(cost), gas: "0x5b8d80" },
     _fxpAmount: speedomatic.fix(p._fxpAmount, "hex"),
-    _price: convertDecimalToFixedPoint(p._price, p.numTicks),
+    _price: priceNumTicksRepresentation,
     onSuccess: function (res) {
-      getTradeAmountRemaining({ transactionHash: res.hash }, function (err, fxpTradeAmountRemaining) {
+      getTradeAmountRemaining({ transactionHash: res.hash, startingAmount: p._fxpAmount, priceNumTicksRepresentation: priceNumTicksRepresentation }, function (err, tradeAmountRemaining) {
         if (err) return p.onFailed(err);
+        if (new BigNumber(tradeAmountRemaining, 10).eq(new BigNumber(p._fxpAmount, 10))) {
+          if (p.doNotCreateOrders) return p.onSuccess(tradeAmountRemaining);
+          return p.onFailed("Trade completed but amount of trade unchanged");
+        }
         tradeUntilAmountIsZero(assign({}, p, {
-          _fxpAmount: speedomatic.unfix(fxpTradeAmountRemaining, "string"),
+          _fxpAmount: tradeAmountRemaining,
           onSent: noop, // so that p.onSent only fires when the first transaction is sent
         }));
       });

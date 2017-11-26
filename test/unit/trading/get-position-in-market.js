@@ -63,7 +63,7 @@ describe("trading/get-position-in-market", function () {
           },
           ShareToken: {
             balanceOf: function (p, callback) {
-              assert.strictEqual(p.address, "USER_ADDRESS");
+              assert.strictEqual(p._owner, "USER_ADDRESS");
               assert.oneOf(p.tx.to, shareTokenAddresses);
               callback(null, shareTokenBalances[p.tx.to]);
             },
