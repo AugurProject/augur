@@ -98,7 +98,6 @@ export function upsertPositionInMarket(db: Knex, augur: Augur, trx: Knex.Transac
         volume: (next: AsyncCallback): void => augur.api.Orders.getVolume({ _market: marketID }, next),
         sharesOutstanding: (next: AsyncCallback): void => augur.api.ShareToken.totalSupply(shareTokenPayload, next),
       }, (err: Error|null, onContractMarketData: any): void => {
-        console.log("market data:", err, onContractMarketData);
         if (err) return callback(err);
         const { volume, sharesOutstanding } = onContractMarketData;
         db("markets").transacting(trx).where({ marketID }).update({ volume, sharesOutstanding }).asCallback((err: Error|null): void => {

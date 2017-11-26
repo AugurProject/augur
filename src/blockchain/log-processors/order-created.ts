@@ -76,7 +76,6 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
           tokensEscrowed: convertFixedPointToDecimal(moneyEscrowed, WEI_PER_ETHER),
           sharesEscrowed: convertFixedPointToDecimal(sharesEscrowed, WEI_PER_ETHER),
         };
-        console.log("orderData:", orderData);
         const orderID = { orderID: log.orderId };
         augurEmitter.emit("OrderCreated", Object.assign(orderData, orderID));
         trx.select(["marketID"]).from("orders").where(orderID).asCallback((err: Error|null, ordersRows?: any): void => {

@@ -21,7 +21,8 @@ exports.seed = async (knex: Knex): Promise<any> => {
       numFillerShares: "0",
       price: "5.5",
       amount: "0.2",
-      settlementFees: "0",
+      marketCreatorFees: "0",
+      reporterFees: "0",
     }, {
       orderID: "0x1200000000000000000000000000000000000000000000000000000000000000",
       marketID: "0x0000000000000000000000000000000000000002",
@@ -39,7 +40,8 @@ exports.seed = async (knex: Knex): Promise<any> => {
       numFillerShares: "0",
       price: "5.5",
       amount: "0.2",
-      settlementFees: "0",
+      marketCreatorFees: "0",
+      reporterFees: "0",
     }, {
       orderID: "0x1300000000000000000000000000000000000000000000000000000000000000",
       marketID: "0x0000000000000000000000000000000000000003",
@@ -57,7 +59,8 @@ exports.seed = async (knex: Knex): Promise<any> => {
       numFillerShares: "0",
       price: "5.5",
       amount: "0.2",
-      settlementFees: "0",
+      marketCreatorFees: "0",
+      reporterFees: "0",
     }, {
       orderID: "0x1400000000000000000000000000000000000000000000000000000000000000",
       marketID: "0x0000000000000000000000000000000000000011",
@@ -75,7 +78,8 @@ exports.seed = async (knex: Knex): Promise<any> => {
       numFillerShares: "0",
       price: "5.5",
       amount: "0.2",
-      settlementFees: "0",
+      marketCreatorFees: "0",
+      reporterFees: "0",
     }, {
       orderID: "0x1500000000000000000000000000000000000000000000000000000000000000",
       marketID: "0x0000000000000000000000000000000000000012",
@@ -93,7 +97,8 @@ exports.seed = async (knex: Knex): Promise<any> => {
       numFillerShares: "0",
       price: "5.5",
       amount: "0.2",
-      settlementFees: "0",
+      marketCreatorFees: "0",
+      reporterFees: "0",
     }, {
       orderID: "0x1600000000000000000000000000000000000000000000000000000000000000",
       marketID: "0x0000000000000000000000000000000000000013",
@@ -111,7 +116,8 @@ exports.seed = async (knex: Knex): Promise<any> => {
       numFillerShares: "0",
       price: "5.5",
       amount: "0.2",
-      settlementFees: "0",
+      marketCreatorFees: "0",
+      reporterFees: "0",
     }, {
       orderID: "0x1700000000000000000000000000000000000000000000000000000000000000",
       marketID: "0x0000000000000000000000000000000000000014",
@@ -129,7 +135,8 @@ exports.seed = async (knex: Knex): Promise<any> => {
       numFillerShares: "0",
       price: "5.5",
       amount: "0.2",
-      settlementFees: "0",
+      marketCreatorFees: "0",
+      reporterFees: "0",
     }, {
       orderID: "0x1800000000000000000000000000000000000000000000000000000000000000",
       marketID: "0x0000000000000000000000000000000000000015",
@@ -147,7 +154,8 @@ exports.seed = async (knex: Knex): Promise<any> => {
       numFillerShares: "0",
       price: "5.5",
       amount: "0.2",
-      settlementFees: "0",
+      marketCreatorFees: "0",
+      reporterFees: "0",
     }];
     return knex.batchInsert("trades", seedData, seedData.length);
   });

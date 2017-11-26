@@ -325,6 +325,8 @@ export interface UITrade {
   price: string;
   amount: string;
   maker: boolean;
+  marketCreatorFees: string;
+  reporterFees: string;
   settlementFees: string;
   marketID: Address;
   outcome: number;
@@ -347,7 +349,8 @@ export interface TradesRow extends BaseTransactionRow {
   numFillerShares: string;
   price: string;
   amount: string;
-  settlementFees: string;
+  marketCreatorFees: string;
+  reporterFees: string;
   tradeGroupID: Bytes32|null;
 }
 
