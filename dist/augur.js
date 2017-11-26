@@ -13670,7 +13670,7 @@ function getPositionInMarket(p, callback) {
       async.forEachOf(positionInMarket, function (_, outcome, nextOutcome) {
         api().Market.getShareToken(assign({ _outcome: outcome }, marketPayload), function (err, shareToken) {
           if (err) return nextOutcome(err);
-          api().ShareToken.balanceOf({ address: p.address, tx: { to: shareToken } }, function (err, shareTokenBalance) {
+          api().ShareToken.balanceOf({ _owner: p.address, tx: { to: shareToken } }, function (err, shareTokenBalance) {
             if (err) return nextOutcome(err);
             positionInMarket[outcome] = new BigNumber(shareTokenBalance, 16).dividedBy(bnNumTicks).toFixed();
             nextOutcome();
@@ -13688,28 +13688,43 @@ module.exports = getPositionInMarket;
 },{"../api":15,"async":148,"bignumber.js":150,"lodash.assign":247}],89:[function(require,module,exports){
 "use strict";
 
+var BigNumber = require("bignumber.js");
+var speedomatic = require("speedomatic");
 var eventsAbi = require("../contracts").abi.events;
 var ethrpc = require("../rpc-interface");
+var parseLogMessage = require("../events/parse-message/parse-log-message");
 
-function getTradeAmountRemaining(transactionHash, callback) {
-  ethrpc.getTransactionReceipt(transactionHash, function (transactionReceipt) {
-    var hasTradeAmountRemainingLog = false;
+function calculateTotalFill(numShares, numTokens, priceNumTicksRepresentation) {
+  return speedomatic.unfix(new BigNumber(numShares, 10).plus(new BigNumber(numTokens, 10).dividedBy(new BigNumber(priceNumTicksRepresentation, 16))));
+}
+
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p.transactionHash Transaction hash to look up a receipt for.
+ * @param {string} p.startingAmount Amount remaining in the trade prior to this transaction (base-10).
+ * @param {string} p.priceNumTicksRepresentation Price in its numTicks representation (base-16).
+ */
+function getTradeAmountRemaining(p, callback) {
+  var tradeAmountRemaining = new BigNumber(p.startingAmount, 10);
+  ethrpc.getTransactionReceipt(p.transactionHash, function (transactionReceipt) {
     if (!transactionReceipt || transactionReceipt.error || !Array.isArray(transactionReceipt.logs) || !transactionReceipt.logs.length) {
       return callback("logs not found");
     }
-    var tradeAmountRemainingSignature = eventsAbi.Trade.TradeAmountRemaining.signature;
-    for (var i = 0, numLogs = transactionReceipt.logs.length; i < numLogs; ++i) {
-      if (transactionReceipt.logs[i].topics[0] === tradeAmountRemainingSignature) {
-        hasTradeAmountRemainingLog = true;
-        return callback(null, transactionReceipt.logs[i].data);
+    var orderFilledEventSignature = eventsAbi.Augur.OrderFilled.signature;
+    var logs = transactionReceipt.logs;
+    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+      if (logs[i].topics[0] === orderFilledEventSignature) {
+        var orderFilledLog = parseLogMessage("Augur", "OrderFilled", logs[i], eventsAbi.Augur.OrderFilled.inputs);
+        var totalFill = calculateTotalFill(orderFilledLog.numFillerShares, orderFilledLog.numFillerTokens, p.priceNumTicksRepresentation);
+        tradeAmountRemaining = tradeAmountRemaining.minus(totalFill);
       }
     }
-    if (!hasTradeAmountRemainingLog) callback("trade amount remaining log not found");
+    callback(null, tradeAmountRemaining.toFixed());
   });
 }
 
 module.exports = getTradeAmountRemaining;
-},{"../contracts":31,"../rpc-interface":81}],90:[function(require,module,exports){
+},{"../contracts":31,"../events/parse-message/parse-log-message":49,"../rpc-interface":81,"bignumber.js":150,"speedomatic":705}],90:[function(require,module,exports){
 "use strict";
 
 var augurNode = require("../augur-node");
@@ -14639,6 +14654,7 @@ module.exports = sumSimulatedResults;
 "use strict";
 
 var assign = require("lodash.assign");
+var BigNumber = require("bignumber.js");
 var speedomatic = require("speedomatic");
 var immutableDelete = require("immutable-delete");
 var getTradeAmountRemaining = require("./get-trade-amount-remaining");
@@ -14663,17 +14679,23 @@ var PRECISION = require("../constants").PRECISION;
  * @param {function} p.onFailed Called if any part of the trade fails.
  */
 function tradeUntilAmountIsZero(p) {
-  var tradeValue = speedomatic.fix(p._fxpAmount).times(p._price);
-  if (tradeValue.lt(PRECISION.zero)) return p.onSuccess(null);
+  var priceNumTicksRepresentation = convertDecimalToFixedPoint(p._price, p.numTicks);
+  var adjustedPrice = p._direction === 0 ? new BigNumber(priceNumTicksRepresentation, 16) : new BigNumber(p.numTicks, 10).minus(new BigNumber(priceNumTicksRepresentation, 16));
+  var cost = speedomatic.fix(p._fxpAmount).times(adjustedPrice);
+  if (cost.lt(PRECISION.zero)) return p.onSuccess(null);
   var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks"]), {
-    tx: { value: speedomatic.hex(tradeValue), gas: "0x5b8d80" },
+    tx: { value: speedomatic.hex(cost), gas: "0x5b8d80" },
     _fxpAmount: speedomatic.fix(p._fxpAmount, "hex"),
-    _price: convertDecimalToFixedPoint(p._price, p.numTicks),
+    _price: priceNumTicksRepresentation,
     onSuccess: function onSuccess(res) {
-      getTradeAmountRemaining({ transactionHash: res.hash }, function (err, fxpTradeAmountRemaining) {
+      getTradeAmountRemaining({ transactionHash: res.hash, startingAmount: p._fxpAmount, priceNumTicksRepresentation: priceNumTicksRepresentation }, function (err, tradeAmountRemaining) {
         if (err) return p.onFailed(err);
+        if (new BigNumber(tradeAmountRemaining, 10).eq(new BigNumber(p._fxpAmount, 10))) {
+          if (p.doNotCreateOrders) return p.onSuccess(tradeAmountRemaining);
+          return p.onFailed("Trade completed but amount of trade unchanged");
+        }
         tradeUntilAmountIsZero(assign({}, p, {
-          _fxpAmount: speedomatic.unfix(fxpTradeAmountRemaining, "string"),
+          _fxpAmount: tradeAmountRemaining,
           onSent: noop // so that p.onSent only fires when the first transaction is sent
         }));
       });
@@ -14687,7 +14709,7 @@ function tradeUntilAmountIsZero(p) {
 }
 
 module.exports = tradeUntilAmountIsZero;
-},{"../api":15,"../constants":29,"../utils/convert-decimal-to-fixed-point":121,"../utils/noop":129,"./get-trade-amount-remaining":89,"immutable-delete":236,"lodash.assign":247,"speedomatic":705}],120:[function(require,module,exports){
+},{"../api":15,"../constants":29,"../utils/convert-decimal-to-fixed-point":121,"../utils/noop":129,"./get-trade-amount-remaining":89,"bignumber.js":150,"immutable-delete":236,"lodash.assign":247,"speedomatic":705}],120:[function(require,module,exports){
 "use strict";
 
 var BLOCKS_PER_CHUNK = require("../constants").BLOCKS_PER_CHUNK;
@@ -14820,7 +14842,7 @@ module.exports = sha256;
 'use strict';
 
 // generated by genversion
-module.exports = '4.6.19';
+module.exports = '4.6.20';
 },{}],132:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
