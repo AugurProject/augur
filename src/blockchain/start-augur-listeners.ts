@@ -6,8 +6,7 @@ import { makeLogListener } from "./make-log-listener";
 import { processBlock, processBlockRemoval } from "./process-block";
 import { logError } from "../utils/log-error";
 
-export function startAugurListeners(db: Knex, augur: Augur, callback: (block: Block) => void): void {
-  let seenFirstBlock = false;
+export function startAugurListeners(db: Knex, augur: Augur): void {
   augur.events.startListeners({
     Augur: {
       MarketCreated: makeLogListener(db, augur, "Augur", "MarketCreated"),
@@ -27,11 +26,7 @@ export function startAugurListeners(db: Knex, augur: Augur, callback: (block: Bl
       Transfer: makeLogListener(db, augur, "LegacyReputationToken", "Transfer"),
       Approval: makeLogListener(db, augur, "LegacyReputationToken", "Approval"),
     },
-  }, (block: Block): void => {
-    if (!seenFirstBlock) {
-      callback(block);
-      seenFirstBlock = true;
-    }
-    processBlock(db, augur, block);
-  }, (block: Block): void => processBlockRemoval(db, block), (): void => {});
+  }, (block: Block): void => processBlock(db, augur, block),
+    (block: Block): void => processBlockRemoval(db, block),
+    (): void => {});
 }
