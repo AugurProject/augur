@@ -22,7 +22,7 @@ function getPositionInMarket(p, callback) {
       async.forEachOf(positionInMarket, function (_, outcome, nextOutcome) {
         api().Market.getShareToken(assign({ _outcome: outcome }, marketPayload), function (err, shareToken) {
           if (err) return nextOutcome(err);
-          api().ShareToken.balanceOf({ address: p.address, tx: { to: shareToken } }, function (err, shareTokenBalance) {
+          api().ShareToken.balanceOf({ _owner: p.address, tx: { to: shareToken } }, function (err, shareTokenBalance) {
             if (err) return nextOutcome(err);
             positionInMarket[outcome] = new BigNumber(shareTokenBalance, 16).dividedBy(bnNumTicks).toFixed();
             nextOutcome();
