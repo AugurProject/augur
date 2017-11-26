@@ -80,6 +80,7 @@ function buildTradeTransaction(trade, marketsData) {
   meta.outcome = transaction.outcome
   meta.price = transaction.price
   meta.fee = transaction.settlementFees
+  // TODO include .reportingFees and .marketCreatorFees separately?
   meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
   transaction.meta = meta
   header.status = SUCCESS
