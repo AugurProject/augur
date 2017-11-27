@@ -66,6 +66,9 @@ export interface Log {
 export interface FormattedLog {
   blockNumber: number;
   transactionHash: Bytes32;
+  transactionIndex: number;
+  contractName: string;
+  eventName: string;
   logIndex: number;
   address: Address;
   [inputName: string]: any;
@@ -88,12 +91,6 @@ export interface MarketCreatedOnContractInfo {
   designatedReporter: Address;
   designatedReportStake: string;
   numTicks: string;
-}
-
-export interface AugurLogs {
-  [contractName: string]: {
-    [eventName: string]: Array<FormattedLog>;
-  };
 }
 
 export type ErrorCallback = (err?: Error|null) => void;
