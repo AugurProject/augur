@@ -6,6 +6,7 @@ branches:
   only:
     - master
     - v3
+    - seadragon
 
 env:
   - CXX=g++-4.8

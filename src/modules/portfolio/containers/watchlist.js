@@ -12,12 +12,10 @@ const mapStateToProps = (state) => {
   const markets = []
   const filteredMarkets = []
   const allMarkets = selectAllMarkets()
-  let index = 0
   // TODO: potentially move this into it's own function
   allMarkets.forEach((market) => {
     if (state.favorites[market.id]) {
-      filteredMarkets.push(index)
-      index += 1
+      filteredMarkets.push(market.id)
       markets.push(market)
     }
   })

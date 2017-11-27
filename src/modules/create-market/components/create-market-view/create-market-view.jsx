@@ -20,6 +20,7 @@ const CreateMarketView = p => (
         newMarket={p.newMarket}
         updateNewMarket={p.updateNewMarket}
         categories={p.categories}
+        meta={p.meta}
         availableEth={p.availableEth}
         addOrderToNewMarket={p.addOrderToNewMarket}
         removeOrderFromNewMarket={p.removeOrderFromNewMarket}
@@ -35,6 +36,7 @@ const CreateMarketView = p => (
 CreateMarketView.propTypes = {
   newMarket: PropTypes.object.isRequired,
   updateNewMarket: PropTypes.func.isRequired,
+  meta: PropTypes.object,
   history: PropTypes.object.isRequired,
   universe: PropTypes.object.isRequired,
   isMobileSmall: PropTypes.bool.isRequired,

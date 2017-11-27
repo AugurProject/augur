@@ -1,23 +1,23 @@
-import async from 'async'
-import { augur, constants } from 'services/augurjs'
-import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions'
-import { SUBMIT_REPORT } from 'modules/transactions/constants/types'
+import { augur } from 'services/augurjs'
 import logError from 'utils/log-error'
+import { addReportingTransactions } from 'modules/transactions/actions/add-transactions'
+import { loadMarketsInfoOnly } from 'modules/markets/actions/load-markets-info'
 
 export function loadReportingHistory(options, callback = logError) {
   return (dispatch, getState) => {
     const { universe, loginAccount } = getState()
-    const filter = {
-      ...options,
-      sender: loginAccount.address,
-      universe: universe.id
-    }
-    async.eachLimit([
-      SUBMIT_REPORT // TODO insert other reporting events here
-    ], constants.PARALLEL_LIMIT, (label, nextLabel) => {
-      augur.logs.getLogsChunked({ label, filter, aux: null }, (logs) => {
-        if (Array.isArray(logs) && logs.length) dispatch(convertLogsToTransactions(label, logs))
-      }, nextLabel)
-    }, callback)
+    if (!loginAccount.address) return callback(null)
+    augur.reporting.getReportingHistory({ ...options, reporter: loginAccount.address, universe: universe.id }, (err, reportingHistory) => {
+      if (err) return callback(err)
+      if (err) return callback(err)
+      if (reportingHistory == null || Object.keys(reportingHistory).length === 0) return callback(null)
+      const marketIDs = Object.keys(reportingHistory[universe.id])
+      // TODO: not sure we want to start cascading calls, need discussion
+      dispatch(loadMarketsInfoOnly(marketIDs.slice(), () => {
+        dispatch(addReportingTransactions(reportingHistory))
+        // TODO update user's reporting history
+        callback(null, reportingHistory)
+      }))
+    })
   }
 }

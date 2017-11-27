@@ -39,6 +39,7 @@ export const selectTransactions = createSelector(
         return p
       }, [])
       .sort((a, b) => getValue(b, 'timestamp.timestamp') - getValue(a, 'timestamp.timestamp'))
+      .sort((a, b) => a.sortOrder - b.sortOrder)
 
     return formattedTransactions
   }
