@@ -1,6 +1,6 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { Int256, FormattedLog, Block } from "../types";
+import { Int256, FormattedEventLog, Block } from "../types";
 import { logProcessors } from "./log-processors";
 import { makeLogListener } from "./make-log-listener";
 import { processBlock, processBlockRemoval } from "./process-block";

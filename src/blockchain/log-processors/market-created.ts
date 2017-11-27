@@ -2,7 +2,7 @@ import { forEachOf, parallel } from "async";
 import Augur from "augur.js";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { Address, Int256, FormattedLog, MarketCreatedLogExtraInfo, MarketCreatedOnContractInfo, MarketsRow, ErrorCallback, AsyncCallback } from "../../types";
+import { Address, Int256, FormattedEventLog, MarketCreatedLogExtraInfo, MarketCreatedOnContractInfo, MarketsRow, ErrorCallback, AsyncCallback } from "../../types";
 import { convertDivisorToRate } from "../../utils/convert-divisor-to-rate";
 import { augurEmitter } from "../../events";
 
@@ -24,7 +24,7 @@ interface CategoriesRow {
   popularity: string|number;
 }
 
-export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   const marketPayload: {} = { tx: { to: log.market } };
   parallel({
     numberOfOutcomes: (next: AsyncCallback): void => augur.api.Market.getNumberOfOutcomes(marketPayload, next),
@@ -124,7 +124,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
   });
 }
 
-export function processMarketCreatedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+export function processMarketCreatedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   parallel([
     (next: AsyncCallback): void => {
       db.transacting(trx).from("markets").where({ marketID: log.market }).del().asCallback(next);

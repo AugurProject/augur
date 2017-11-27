@@ -3,7 +3,7 @@ import * as WebSocket from "ws";
 import * as Knex from "knex";
 import * as sqlite3 from "sqlite3";
 import * as _ from "lodash";
-import { EthereumNodeEndpoints, FormattedLog } from "./types";
+import { EthereumNodeEndpoints, FormattedEventLog } from "./types";
 import { checkAugurDbSetup } from "./setup/check-augur-db-setup";
 import { syncAugurNodeWithBlockchain } from "./blockchain/sync-augur-node-with-blockchain";
 import { runWebsocketServer } from "./server/run-websocket-server";
