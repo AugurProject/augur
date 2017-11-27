@@ -111,6 +111,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
             },
           ], (err: Error|null): void => {
             if (err) return callback(err);
+            augurEmitter.emit("MarketCreated", marketsDataToInsert);
             trx.select("popularity").from("categories").where({ category: log.topic }).asCallback((err: Error|null, categoriesRows?: Array<CategoriesRow>): void => {
               if (err) return callback(err);
               if (categoriesRows && categoriesRows.length) return callback(null);
