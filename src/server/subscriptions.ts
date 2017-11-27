@@ -11,12 +11,7 @@ export class Subscriptions extends EventEmitter {
   }
 
   public subscribe(eventName: string, params: any, publish: (data: {}) => void): string {
-    switch (eventName) {
-      case "MarketCreated":
-        return this.subscribeToEvent(eventName, params, publish);
-      default:
-        throw new Error(`Event ${eventName} not available for subscription`);
-    }
+    return this.subscribeToEvent(eventName, params, publish);
   }
 
   public unsubscribe(subscription: string): void {
