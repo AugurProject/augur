@@ -42,7 +42,8 @@ describe("blockchain/log-processors/order-filled", () => {
         numCreatorTokens: "1125000000000000000",
         numFillerShares: "17280",
         numFillerTokens: "0",
-        settlementFees: "0",
+        marketCreatorFees: "0",
+        reporterFees: "0",
         tradeGroupId: "TRADE_GROUP_ID",
         blockNumber: 1400101,
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000F00",
@@ -50,10 +51,30 @@ describe("blockchain/log-processors/order-filled", () => {
       },
       augur: {
         api: {
+          Market: {
+            getShareToken: (p, callback) => {
+              assert.deepEqual(p, { _outcome: 0, tx: { to: "0x0000000000000000000000000000000000000001" } });
+              callback(null, "0x1000000000000000000000000000000000000000");
+            },
+          },
           Orders: {
             getAmount: (p, callback) => {
               assert.deepEqual(p, { _orderId: "0x1000000000000000000000000000000000000000000000000000000000000000" });
               callback(null, "14976");
+            },
+            getLastOutcomePrice: (p, callback) => {
+              assert.strictEqual(p._market, "0x0000000000000000000000000000000000000001");
+              callback(null, "2300");
+            },
+            getVolume: (p, callback) => {
+              assert.deepEqual(p, { _market: "0x0000000000000000000000000000000000000001" });
+              callback(null, "17280");
+            },
+          },
+          ShareToken: {
+            totalSupply: (p, callback) => {
+              assert.deepEqual(p, { tx: { to: "0x1000000000000000000000000000000000000000" } });
+              callback(null, "17280");
             },
           },
         },
@@ -111,7 +132,8 @@ describe("blockchain/log-processors/order-filled", () => {
             numCreatorShares: 0,
             numFillerTokens: 0,
             numFillerShares: 1.6071428571428572,
-            settlementFees: 0,
+            marketCreatorFees: 0,
+            reporterFees: 0,
             price: 0.7,
             amount: 1.6071428571428572,
             tradeGroupID: "TRADE_GROUP_ID",

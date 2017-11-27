@@ -217,7 +217,11 @@
         "type": "uint256"
       },
       {
-        "name": "settlementFees",
+        "name": "marketCreatorFees",
+        "type": "uint256"
+      },
+      {
+        "name": "reporterFees",
         "type": "uint256"
       },
       {
@@ -729,7 +733,7 @@
       },
       {
         "indexed": false,
-        "name": "settlementFees",
+        "name": "reporterFees",
         "type": "uint256"
       },
       {

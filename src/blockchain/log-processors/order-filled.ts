@@ -84,25 +84,46 @@ export function calculateProfitLossInOutcome(augur: Augur, trx: Knex.Transaction
   });
 }
 
-export function upsertPositionInMarket(db: Knex, augur: Augur, trx: Knex.Transaction, account: Address, marketID: Address, positionInMarket: Array<string>, callback: ErrorCallback): void {
+export function upsertPositionInMarket(db: Knex, augur: Augur, trx: Knex.Transaction, account: Address, marketID: Address, numTicks: string|number, positionInMarket: Array<string>, callback: ErrorCallback): void {
   trx.select("outcome").from("positions").where({ account, marketID }).asCallback((err: Error|null, positionsRows?: Array<PositionsRow>): void => {
     if (err) return callback(err);
     const numOutcomes = positionInMarket.length;
     const realizedProfitLoss = new Array(numOutcomes);
     const unrealizedProfitLoss = new Array(numOutcomes);
     const positionInMarketAdjustedForUserIntention = new Array(numOutcomes);
-    forEachOf(positionInMarket, (numShares: string, outcome: number, nextOutcome: AsyncCallback): void => {
-      calculateProfitLossInOutcome(augur, trx, account, marketID, outcome, (err: Error|null, profitLossInOutcome?: CalculatedProfitLoss): void => {
-        if (err) return nextOutcome(err);
-        const { realized, unrealized, position } = profitLossInOutcome!;
-        realizedProfitLoss[outcome] = realized;
-        unrealizedProfitLoss[outcome] = unrealized;
-        positionInMarketAdjustedForUserIntention[outcome] = position;
-        nextOutcome();
-      });
-    }, (err: Error|null): void => {
+    augur.api.Market.getShareToken({ _outcome: 0, tx: { to: marketID } }, (err: Error|null, shareToken: Address): void => {
       if (err) return callback(err);
-      (!positionsRows!.length ? insertPositionInMarket : updatePositionInMarket)(db, trx, account, marketID, positionInMarket, realizedProfitLoss, unrealizedProfitLoss, positionInMarketAdjustedForUserIntention, callback);
+      const shareTokenPayload = { tx: { to: shareToken } };
+      parallel({
+        volume: (next: AsyncCallback): void => augur.api.Orders.getVolume({ _market: marketID }, next),
+        sharesOutstanding: (next: AsyncCallback): void => augur.api.ShareToken.totalSupply(shareTokenPayload, next),
+      }, (err: Error|null, onContractMarketData: any): void => {
+        if (err) return callback(err);
+        const { volume, sharesOutstanding } = onContractMarketData;
+        db("markets").transacting(trx).where({ marketID }).update({ volume, sharesOutstanding }).asCallback((err: Error|null): void => {
+          if (err) return callback(err);
+          forEachOf(positionInMarket, (numShares: string, outcome: number, nextOutcome: AsyncCallback): void => {
+            augur.api.Orders.getLastOutcomePrice({ _market: marketID, _outcome: outcome }, (err: Error|null, lastOutcomePrice: Int256): void => {
+              if (err) return callback(err);
+              const price = convertFixedPointToDecimal(lastOutcomePrice, numTicks);
+              db("outcomes").transacting(trx).where({ marketID, outcome }).update({ price, sharesOutstanding }).asCallback((err: Error|null): void => {
+                if (err) return callback(err);
+                calculateProfitLossInOutcome(augur, trx, account, marketID, outcome, (err: Error|null, profitLossInOutcome?: CalculatedProfitLoss): void => {
+                  if (err) return nextOutcome(err);
+                  const { realized, unrealized, position } = profitLossInOutcome!;
+                  realizedProfitLoss[outcome] = realized;
+                  unrealizedProfitLoss[outcome] = unrealized;
+                  positionInMarketAdjustedForUserIntention[outcome] = position;
+                  nextOutcome();
+                });
+              });
+            });
+          }, (err: Error|null): void => {
+            if (err) return callback(err);
+            (!positionsRows!.length ? insertPositionInMarket : updatePositionInMarket)(db, trx, account, marketID, positionInMarket, realizedProfitLoss, unrealizedProfitLoss, positionInMarketAdjustedForUserIntention, callback);
+          });
+        });
+      });
     });
   });
 }
@@ -116,13 +137,13 @@ export function updateOrdersAndPositions(db: Knex, augur: Augur, trx: Knex.Trans
   }, (err: Error|null, onContractData: OrderFilledOnContractData): void => {
     if (err) return callback(err);
     const { amount, creatorPositionInMarket, fillerPositionInMarket } = onContractData!;
-    const amountRemainingInOrder = convertFixedPointToDecimal(new BigNumber(amount!, 10).toFixed(), numTicks);
+    const amountRemainingInOrder = convertFixedPointToDecimal(amount, numTicks);
     const updateParams = amountRemainingInOrder === "0" ? { amount: amountRemainingInOrder, isRemoved: 1 } : { amount: amountRemainingInOrder };
     db("orders").transacting(trx).where({ orderID }).update(updateParams).asCallback((err: Error|null): void => {
       if (err) return callback(err);
       parallel([
-        (next: AsyncCallback): void => upsertPositionInMarket(db, augur, trx, creator, marketID, creatorPositionInMarket, next),
-        (next: AsyncCallback): void => upsertPositionInMarket(db, augur, trx, filler, marketID, fillerPositionInMarket, next),
+        (next: AsyncCallback): void => upsertPositionInMarket(db, augur, trx, creator, marketID, numTicks, creatorPositionInMarket, next),
+        (next: AsyncCallback): void => upsertPositionInMarket(db, augur, trx, filler, marketID, numTicks, fillerPositionInMarket, next),
       ], callback);
     });
   });
@@ -146,7 +167,8 @@ export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transact
         const numCreatorShares = convertFixedPointToDecimal(log.numCreatorShares, numTicks);
         const numFillerTokens = convertFixedPointToDecimal(log.numFillerTokens, WEI_PER_ETHER);
         const numFillerShares = convertFixedPointToDecimal(log.numFillerShares, numTicks);
-        const settlementFees = convertFixedPointToDecimal(log.settlementFees, WEI_PER_ETHER);
+        const marketCreatorFees = convertFixedPointToDecimal(log.marketCreatorFees, WEI_PER_ETHER);
+        const reporterFees = convertFixedPointToDecimal(log.reporterFees, WEI_PER_ETHER);
         const tradeData = {
           marketID,
           outcome,
@@ -165,7 +187,8 @@ export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transact
           numFillerShares,
           price: price!,
           amount: calculateNumberOfSharesTraded(numCreatorShares, numCreatorTokens, price!),
-          settlementFees,
+          marketCreatorFees,
+          reporterFees,
         };
         augurEmitter.emit("OrderFilled", tradeData);
         db.transacting(trx).insert(tradeData).into("trades").asCallback((err: Error|null): void => {
