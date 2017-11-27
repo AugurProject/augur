@@ -114,35 +114,42 @@ describe("events/get-all-augur-logs", function () {
     },
     assertions: function (err, allAugurLogs) {
       assert.isNull(err);
-      assert.deepEqual(allAugurLogs, {
-        TestContractName: {
-          TestEventName: [{
-            address: "0x000000000000000000000000000000000000000c",
-            testEventInputIndexed: "0x2000000000000000000000000000000000000000000000000000000000000000",
-            testEventInputData: "0x0000000000000000000000000000000000000001",
-            blockNumber: 14,
-            transactionHash: "0x000000000000000000000000000000000000000000000000000000000000000a",
-            logIndex: 0,
-            removed: false,
-          }, {
-            address: "0x000000000000000000000000000000000000000c",
-            testEventInputIndexed: "0x3000000000000000000000000000000000000000000000000000000000000000",
-            testEventInputData: "0x0000000000000000000000000000000000000002",
-            blockNumber: 150,
-            transactionHash: "0x00000000000000000000000000000000000000000000000000000000000000aa",
-            logIndex: 0,
-            removed: false,
-          }, {
-            address: "0x000000000000000000000000000000000000000c",
-            testEventInputIndexed: "0x3000000000000000000000000000000000000000000000000000000000000000",
-            testEventInputData: "0x0000000000000000000000000000000000000003",
-            blockNumber: 151,
-            transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000aaa",
-            logIndex: 0,
-            removed: false,
-          }],
+      assert.deepEqual(allAugurLogs, [
+        {
+          address: "0x000000000000000000000000000000000000000c",
+          testEventInputIndexed: "0x2000000000000000000000000000000000000000000000000000000000000000",
+          testEventInputData: "0x0000000000000000000000000000000000000001",
+          blockNumber: 14,
+          transactionHash: "0x000000000000000000000000000000000000000000000000000000000000000a",
+          transactionIndex: 0,
+          logIndex: 0,
+          removed: false,
+          contractName: "TestContractName",
+          eventName: "TestEventName",
+        }, {
+          address: "0x000000000000000000000000000000000000000c",
+          testEventInputIndexed: "0x3000000000000000000000000000000000000000000000000000000000000000",
+          testEventInputData: "0x0000000000000000000000000000000000000002",
+          blockNumber: 150,
+          transactionHash: "0x00000000000000000000000000000000000000000000000000000000000000aa",
+          transactionIndex: 0,
+          logIndex: 0,
+          removed: false,
+          contractName: "TestContractName",
+          eventName: "TestEventName",
+        }, {
+          address: "0x000000000000000000000000000000000000000c",
+          testEventInputIndexed: "0x3000000000000000000000000000000000000000000000000000000000000000",
+          testEventInputData: "0x0000000000000000000000000000000000000003",
+          blockNumber: 151,
+          transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000aaa",
+          transactionIndex: 0,
+          logIndex: 0,
+          removed: false,
+          contractName: "TestContractName",
+          eventName: "TestEventName",
         },
-      });
+      ]);
     },
   });
 });
