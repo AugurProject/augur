@@ -87,6 +87,9 @@ export interface FormattedEventLog {
   blockNumber: number;
   logIndex: number;
   transactionHash: Bytes32;
+  transactionIndex: number;
+  contractName: string;
+  eventName: string;
   blockHash: Bytes32;
   removed: boolean;
   [inputName: string]: any;
