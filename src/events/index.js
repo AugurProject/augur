@@ -2,6 +2,10 @@
 
 module.exports = {
   getAllAugurLogs: require("./get-all-augur-logs"),
-  startListeners: require("./start-listeners"),
-  stopListeners: require("./stop-listeners"),
+  startAugurNodeEventListeners: require("./start-augur-node-event-listeners"),
+  stopAugurNodeEventListeners: require("./stop-augur-node-event-listeners"),
+  startBlockchainEventListeners: require("./start-blockchain-event-listeners"),
+  stopBlockchainEventListeners: require("./stop-blockchain-event-listeners"),
+  startBlockListeners: require("./start-block-listeners"),
+  stopBlockListeners: require("./stop-block-listeners"),
 };

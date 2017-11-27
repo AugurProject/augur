@@ -31,6 +31,10 @@ module.exports.getEventCallback = function (id) {
   return state.jsonRpcEventCallbacks[id];
 };
 
+module.exports.getSubscribedEventNames = function () {
+  return Object.keys(state.jsonRpcEventCallbacks);
+};
+
 module.exports.removeEventCallback = function (id) {
   delete state.jsonRpcEventCallbacks[id];
 };
@@ -46,4 +50,3 @@ module.exports.getNumRequests = function () {
 module.exports.getTransport = function () {
   return state.transport;
 };
-

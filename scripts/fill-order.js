@@ -21,10 +21,10 @@ var outcomeToTrade = 0;
 var sharesToTrade = "0.000012";
 
 function fillAskOrder(universe, fillerAddress, outcomeToTrade, sharesToTrade, callback) {
-  augur.markets.getMarkets({ universe: universe, limit: 10 }, function (err, marketIDs) {
+  augur.markets.getMarkets({ universe: universe, limit: 1 }, function (err, marketIDs) {
     if (err) return callback(err);
     if (!marketIDs || !Array.isArray(marketIDs) || !marketIDs.length) return callback(marketIDs);
-    var marketID = marketIDs[8];
+    var marketID = marketIDs[0];
     augur.markets.getMarketsInfo({ marketIDs: [marketID] }, function (err, marketsInfo) {
       if (err) return callback(err);
       if (!marketsInfo || !Array.isArray(marketsInfo) || !marketsInfo.length) return callback(marketsInfo);

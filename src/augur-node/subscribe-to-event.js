@@ -3,16 +3,14 @@
 var augurNodeState = require("./state");
 var submitJsonRpcRequest = require("./submit-json-rpc-request");
 
-function subscribeToEvent(eventName, params, callback) {
+function subscribeToEvent(eventName, params, subscriptionCallback, onComplete) {
   params = Array.isArray(params) ? params : [];
   params.unshift(eventName);
-
   submitJsonRpcRequest("subscribe", params, function (err, response) {
-    if (err) throw new Error("Error subscribing to event: " + err);
-    augurNodeState.setEventCallback(response.subscription, callback);
-    console.log("Subscribed to " + eventName + " with response ", response);
+    if (err) return onComplete(err);
+    augurNodeState.setEventCallback(response.subscription, subscriptionCallback);
+    onComplete(null);
   });
-
 }
 
 module.exports = subscribeToEvent;

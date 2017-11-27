@@ -1,6 +1,10 @@
 "use strict";
 
-var subscriptions = {};
+var assign = require("lodash.assign");
+
+var initialState = { block: {} };
+
+var subscriptions = assign({}, initialState);
 
 module.exports.onLogAdded = function (log) {
   if (subscriptions[log.address] && subscriptions[log.address][log.topics[0]]) {
@@ -35,6 +39,22 @@ module.exports.removeSubscription = function (token) {
   }, {});
 };
 
+module.exports.addOnBlockAddedSubscription = function (token) {
+  subscriptions.block.added = token;
+};
+
+module.exports.addOnBlockRemovedSubscription = function (token) {
+  subscriptions.block.removed = token;
+};
+
+module.exports.removeOnBlockAddedSubscription = function () {
+  delete subscriptions.block.added;
+};
+
+module.exports.removeOnBlockRemovedSubscription = function () {
+  delete subscriptions.block.removed;
+};
+
 module.exports.resetState = function () {
-  subscriptions = {};
+  subscriptions = assign({}, initialState);
 };

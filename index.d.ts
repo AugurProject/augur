@@ -95,9 +95,16 @@ export interface FormattedEventLog {
 type EventSubscriptionCallback = (eventLog: FormattedEventLog) => void;
 
 interface EventSubscriptionCallbacks {
-  [contractName: string]: {
-    [eventName: string]: EventSubscriptionCallback,
-  };
+  [eventName: string]: EventSubscriptionCallback;
+}
+
+interface EventSubscriptionCallbacksKeyedByContract {
+  [contractName: string]: EventSubscriptionCallbacks;
+}
+
+interface BlockSubscriptionCallbacks {
+  onAdded?: (block: Block) => void;
+  onRemoved?: (block: Block) => void;
 }
 
 export interface CalculatedProfitLoss {
@@ -172,8 +179,12 @@ export class Augur {
   };
   public events: {
     getAllAugurLogs: ApiFunction;
-    startListeners(onEventCallbacks?: EventSubscriptionCallbacks, onBlockAdded?: (block: Block) => void, onBlockRemoved?: (block: Block) => void, onSetupComplete?: () => void): void;
-    stopListeners(): boolean
+    startBlockListeners(blockCallbacks: BlockSubscriptionCallbacks): boolean;
+    stopBlockListeners(): boolean;
+    startBlockchainEventListeners(eventCallbacks: EventSubscriptionCallbacksKeyedByContract, onSetupComplete?: (err: Error|null) => void): void;
+    stopBlockchainEventListeners(): boolean;
+    startAugurNodeEventListeners(eventCallbacks: EventSubscriptionCallbacks, onSetupComplete?: (err: Error|null) => void): void;
+    stopAugurNodeEventListeners(callback?: (err: Error|null) => void): void;
   };
   public markets: {
     getMarketInfo: ApiFunction;

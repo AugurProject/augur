@@ -3,12 +3,13 @@
 var augurNodeState = require("./state");
 var submitJsonRpcRequest = require("./submit-json-rpc-request");
 
-function unsubscribeFromEvent(subscription) {
+function unsubscribeFromEvent(subscription, callback) {
   var params = [subscription];
   submitJsonRpcRequest("unsubscribe", params, function (err) {
-    if (err) throw new Error("Error unsubscribing with subscription: " + subscription);
+    if (err) return callback(err);
     augurNodeState.removeEventCallback(subscription);
     console.log("Unsubscribed from " + subscription);
+    callback(null);
   });
 }
 

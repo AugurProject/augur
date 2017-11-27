@@ -37,6 +37,33 @@ var today = new Date();
 var arbitrarySharesMultiplierThatExistsSolelyToAvoidAddingLotsOfZerosToAllTheSharesValues = new BigNumber(10, 10).toPower(11);
 
 var cannedMarkets = [{
+  _endTime: parseInt(new Date("1/1/2019").getTime() / 1000, 10),
+  _numOutcomes: 2,
+  _topic: "space",
+  _extraInfo: {
+    marketType: "binary",
+    resolutionSource: "http://www.spacex.com",
+    tags: ["SpaceX", "spaceflight"],
+    description: "Will SpaceX successfully complete a manned flight to the International Space Station by the end of 2018?",
+    longDescription: "SpaceX hit a big milestone on Friday with NASA confirming on Friday that the Elon Musk-led space cargo business will launch astronauts to the International Space Station by 2017.\n\nLast year, the space agency tentatively awarded a $2.6 billion contract to SpaceX to carry crew to space. NASA’s announcement on Friday formalizes the deal, which involves SpaceX loading its Crew Dragon spacecraft with astronauts and sending them beyond the stratosphere.",
+  },
+  orderBook: {
+    buy: {
+      "0": [
+        { shares: "100", price: "0.2" },
+        { shares: "200", price: "0.18" },
+        { shares: "300", price: "0.15" },
+      ],
+    },
+    sell: {
+      "0": [
+        { shares: "150", price: "0.23" },
+        { shares: "100", price: "0.26" },
+        { shares: "300", price: "0.29" },
+      ],
+    },
+  },
+}, {
   _endTime: parseInt(new Date("1/1/2020").getTime() / 1000, 10),
   _numOutcomes: 2,
   _topic: "politics",
@@ -275,33 +302,6 @@ var cannedMarkets = [{
     tags: ["trading", "Ethereum", "currencies"],
     description: "Will Ethereum trade at $400 or higher by midnight EST on November 30, 2018?",
     longDescription: "http://coinmarketcap.com/currencies/ethereum",
-  },
-  orderBook: {
-    buy: {
-      "0": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
-      ],
-    },
-    sell: {
-      "0": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
-      ],
-    },
-  },
-}, {
-  _endTime: parseInt(new Date("1/1/2019").getTime() / 1000, 10),
-  _numOutcomes: 2,
-  _topic: "space",
-  _extraInfo: {
-    marketType: "binary",
-    resolutionSource: "http://www.spacex.com",
-    tags: ["SpaceX", "spaceflight"],
-    description: "Will SpaceX successfully complete a manned flight to the International Space Station by the end of 2018?",
-    longDescription: "SpaceX hit a big milestone on Friday with NASA confirming on Friday that the Elon Musk-led space cargo business will launch astronauts to the International Space Station by 2017.\n\nLast year, the space agency tentatively awarded a $2.6 billion contract to SpaceX to carry crew to space. NASA’s announcement on Friday formalizes the deal, which involves SpaceX loading its Crew Dragon spacecraft with astronauts and sending them beyond the stratosphere.",
   },
   orderBook: {
     buy: {

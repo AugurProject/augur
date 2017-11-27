@@ -5,4 +5,5 @@ module.exports = {
   submitRequest: require("./submit-json-rpc-request"),
   subscribeToEvent: require("./subscribe-to-event"),
   unsubcribeFromEvent: require("./unsubscribe-from-event"),
+  unsubscribeFromAllEvents: require("./unsubscribe-from-all-events"),
 };
