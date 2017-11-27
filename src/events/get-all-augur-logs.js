@@ -20,7 +20,7 @@ var constants = require("../constants");
  * @return { contractName => { eventName => [parsed event logs] } }
  */
 function getAllAugurLogs(p, callback) {
-  var allAugurLogs = {};
+  var allAugurLogs = [];
   var contractNameToAddressMap = contracts.addresses[ethrpc.getNetworkID()];
   var eventsAbi = contracts.abi.events;
   var contractAddressToNameMap = mapContractAddressesToNames(contractNameToAddressMap);
@@ -36,11 +36,9 @@ function getAllAugurLogs(p, callback) {
         if (log && Array.isArray(log.topics) && log.topics.length) {
           var contractName = contractAddressToNameMap[log.address];
           var eventName = eventSignatureToNameMap[contractName][log.topics[0]];
-          if (!allAugurLogs[contractName]) allAugurLogs[contractName] = {};
-          if (!allAugurLogs[contractName][eventName]) allAugurLogs[contractName][eventName] = [];
           try {
             var parsedLog = parseLogMessage(contractName, eventName, log, eventsAbi[contractName][eventName].inputs);
-            allAugurLogs[contractName][eventName].push(parsedLog);
+            allAugurLogs.push(parsedLog);
           } catch (exc) {
             console.error("parseLogMessage error", exc);
             console.log(contractName, eventName, log, eventsAbi[contractName], chunkOfBlocks);

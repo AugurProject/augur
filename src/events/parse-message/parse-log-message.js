@@ -17,8 +17,11 @@ function parseLogMessage(contractName, eventName, message, abiEventInputs, onMes
         address: message.address,
         removed: message.removed,
         transactionHash: message.transactionHash,
+        transactionIndex: parseInt(message.transactionIndex, 16),
         logIndex: parseInt(message.logIndex, 16),
         blockNumber: parseInt(message.blockNumber, 16),
+        contractName: contractName,
+        eventName: eventName,
       });
       if (!isFunction(onMessage)) return formatLogMessage(contractName, eventName, parsedMessage);
       onMessage(formatLogMessage(contractName, eventName, parsedMessage));
