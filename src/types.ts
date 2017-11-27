@@ -53,7 +53,6 @@ export type Address = string;
 export type Bytes32 = string;
 export type Int256 = string;
 
-
 export interface MarketCreatedLogExtraInfo {
   minPrice: string;
   maxPrice: string;
