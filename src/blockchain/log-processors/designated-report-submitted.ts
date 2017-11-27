@@ -1,8 +1,8 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { FormattedLog, ErrorCallback } from "../../types";
+import { FormattedEventLog, ErrorCallback } from "../../types";
 
-export function processDesignatedReportSubmittedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+export function processDesignatedReportSubmittedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   // @achapman: "The designated reporter purchases Stake Tokens in order to do the Designated Report"
   // TODO: Should designatedReportSubmitted include stakeToken address?
 
@@ -29,7 +29,7 @@ export function processDesignatedReportSubmittedLog(db: Knex, augur: Augur, trx:
   });
 }
 
-export function processDesignatedReportSubmittedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+export function processDesignatedReportSubmittedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   console.log("TODO: DesignatedReportSubmitted removal");
   console.log(log);
   callback(null);

@@ -1,7 +1,7 @@
-import { Augur } from "augur.js";
-import * as Knex from "knex";
+import { Augur, FormattedEventLog } from "augur.js";
+export { Block, FormattedEventLog } from "augur.js";
 
-export { Block } from "augur.js";
+import * as Knex from "knex";
 
 export enum ReportingState {
   PRE_REPORTING = "PRE_REPORTING",
@@ -53,26 +53,6 @@ export type Address = string;
 export type Bytes32 = string;
 export type Int256 = string;
 
-export interface Log {
-  blockNumber: number;
-  logIndex: number;
-  transactionIndex: Int256;
-  transactionHash: Bytes32;
-  address: Address;
-  categories: Array<Int256>;
-  data: AbiEncodedData;
-}
-
-export interface FormattedLog {
-  blockNumber: number;
-  transactionHash: Bytes32;
-  transactionIndex: number;
-  contractName: string;
-  eventName: string;
-  logIndex: number;
-  address: Address;
-  [inputName: string]: any;
-}
 
 export interface MarketCreatedLogExtraInfo {
   minPrice: string;
@@ -97,7 +77,7 @@ export type ErrorCallback = (err?: Error|null) => void;
 
 export type AsyncCallback = (err?: Error|null, result?: any) => void;
 
-export type LogProcessor = (db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback) => void;
+export type LogProcessor = (db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback) => void;
 
 export interface EventLogProcessor {
   add: LogProcessor;

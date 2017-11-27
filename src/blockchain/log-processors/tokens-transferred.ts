@@ -1,8 +1,8 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { FormattedLog, ErrorCallback } from "../../types";
+import { FormattedEventLog, ErrorCallback } from "../../types";
 
-export function processTokensTransferredLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+export function processTokensTransferredLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   db.transacting(trx).insert({
     transactionHash: log.transactionHash,
     logIndex: log.logIndex,
@@ -14,6 +14,6 @@ export function processTokensTransferredLog(db: Knex, augur: Augur, trx: Knex.Tr
   }).into("transfers").asCallback(callback);
 }
 
-export function processTokensTransferredLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+export function processTokensTransferredLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   db.transacting(trx).from("transfers").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del().asCallback(callback);
 }
