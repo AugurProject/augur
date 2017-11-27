@@ -93,9 +93,9 @@ class MyMarkets extends Component {
 
       nextProps.myMarkets.forEach((market, index) => {
         if (market.reportingState === this.reportingStates.DESIGNATED_REPORTING) {
-          designatedReportingMarkets.push(index)
+          designatedReportingMarkets.push(market.id)
         } else if (market.reportingState === this.reportingStates.FIRST_REPORTING || market.reportingState === this.reportingStates.LAST_REPORTING) {
-          reportingMarkets.push(index)
+          reportingMarkets.push(market.id)
         }
       })
 
