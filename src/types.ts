@@ -75,6 +75,7 @@ export interface MarketCreatedLogExtraInfo {
   minPrice: string;
   maxPrice: string;
   tags?: Array<string|null>;
+  outcomeNames?: Array<string|number|null>;
   description: string;
   longDescription?: string|null;
   resolutionSource?: string|null;
@@ -187,7 +188,19 @@ export interface OutcomesRow {
   marketID: Address;
   outcome: number;
   price: string|number;
-  sharesOutstanding: string|number;
+  volume: string|number;
+  description: string|null;
+}
+
+export interface TokensRow {
+  contractAddress?: Address;
+  symbol: string;
+  marketID: Address;
+  outcome?: number;
+}
+
+export interface CategoriesRow {
+  popularity: string|number;
 }
 
 export interface BlocksRow {
@@ -245,8 +258,9 @@ export interface UIConsensusInfo {
 
 export interface UIOutcomeInfo {
   id: number;
-  outstandingShares: string|number;
-  price: string|number|null;
+  volume: string|number;
+  price: string|number;
+  description: string|null;
 }
 
 export interface UIMarketInfo {

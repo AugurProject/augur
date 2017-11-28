@@ -2,27 +2,9 @@ import { forEachOf, parallel } from "async";
 import Augur from "augur.js";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { Address, Int256, FormattedLog, MarketCreatedLogExtraInfo, MarketCreatedOnContractInfo, MarketsRow, ErrorCallback, AsyncCallback } from "../../types";
+import { Address, Int256, FormattedLog, MarketCreatedLogExtraInfo, MarketCreatedOnContractInfo, CategoriesRow, MarketsRow, OutcomesRow, TokensRow, ErrorCallback, AsyncCallback } from "../../types";
 import { convertDivisorToRate } from "../../utils/convert-divisor-to-rate";
 import { augurEmitter } from "../../events";
-
-interface OutcomesRow {
-  marketID: Address;
-  outcome?: number;
-  price: string|number;
-  sharesOutstanding: string|number;
-}
-
-interface TokensRow {
-  contractAddress?: Address;
-  symbol: string;
-  marketID: Address;
-  outcome?: number;
-}
-
-interface CategoriesRow {
-  popularity: string|number;
-}
 
 export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
   const marketPayload: {} = { tx: { to: log.market } };
@@ -53,6 +35,8 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
         const marketStateID = marketStateRow[0];
         const extraInfo: MarketCreatedLogExtraInfo = log.extraInfo;
         const numOutcomes = parseInt(onMarketContractData!.numberOfOutcomes!, 10);
+        const minPrice = extraInfo!.minPrice || "0";
+        const maxPrice = extraInfo!.maxPrice || "1";
         const marketsDataToInsert: MarketsRow = {
           marketID:                   log.market,
           marketCreator:              log.marketCreator,
@@ -60,8 +44,8 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
           creationFee:                log.marketCreationFee,
           category:                   log.topic,
           marketType:                 extraInfo!.marketType || "binary",
-          minPrice:                   extraInfo!.minPrice || "0",
-          maxPrice:                   extraInfo!.maxPrice || "1",
+          minPrice,
+          maxPrice,
           tag1:                       (extraInfo!.tags && extraInfo!.tags!.length) ? extraInfo!.tags![0] : null,
           tag2:                       (extraInfo!.tags && extraInfo!.tags!.length > 1) ? extraInfo!.tags![1] : null,
           shortDescription:           extraInfo!.description,
@@ -81,10 +65,10 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
           volume:                     "0",
           sharesOutstanding:          "0",
         };
-        const outcomesDataToInsert: OutcomesRow = {
+        const outcomesDataToInsert: Partial<OutcomesRow> = {
           marketID: log.market,
-          price: new BigNumber(1, 10).dividedBy(new BigNumber(numOutcomes, 10)).toFixed(),
-          sharesOutstanding: "0",
+          price: new BigNumber(minPrice, 10).plus(new BigNumber(maxPrice, 10)).dividedBy(new BigNumber(numOutcomes, 10)).toFixed(),
+          volume: "0",
         };
         const tokensDataToInsert: TokensRow = {
           marketID: log.market,
@@ -99,12 +83,13 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
           });
         }, (err: Error|null): void => {
           if (err) return callback(err);
+          const outcomeNames: Array<string|number|null> = (extraInfo!.marketType === "categorical" && extraInfo!.outcomeNames) ? extraInfo!.outcomeNames! : new Array(numOutcomes).fill(null);
           parallel([
             (next: AsyncCallback): void => {
               db.transacting(trx).insert(marketsDataToInsert).into("markets").asCallback(next);
             },
             (next: AsyncCallback): void => {
-              db.batchInsert("outcomes", shareTokens.map((_: Address, outcome: number): OutcomesRow => Object.assign({ outcome }, outcomesDataToInsert)), numOutcomes).transacting(trx).asCallback(next);
+              db.batchInsert("outcomes", shareTokens.map((_: Address, outcome: number): Partial<OutcomesRow> => Object.assign({ outcome, description: outcomeNames[outcome] }, outcomesDataToInsert)), numOutcomes).transacting(trx).asCallback(next);
             },
             (next: AsyncCallback): void => {
               db.batchInsert("tokens", shareTokens.map((contractAddress: Address, outcome: number): TokensRow => Object.assign({ contractAddress, outcome }, tokensDataToInsert)), numOutcomes).transacting(trx).asCallback(next);
