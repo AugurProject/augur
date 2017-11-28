@@ -2,7 +2,7 @@ import Augur from "augur.js";
 import { parallel } from "async";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { Address, Bytes32, FormattedLog, OrdersRow, OrderState, ErrorCallback, AsyncCallback } from "../../types";
+import { Address, Bytes32, FormattedEventLog, OrdersRow, OrderState, ErrorCallback, AsyncCallback } from "../../types";
 import { processOrderCanceledLog } from "./order-canceled";
 import { augurEmitter } from "../../events";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
@@ -36,7 +36,7 @@ interface OrderCreatedOnContractData {
   worseOrderID: Bytes32;
 }
 
-export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   trx.select(["marketID", "outcome"]).from("tokens").where({ contractAddress: log.shareToken }).asCallback((err: Error|null, tokensRows?: Array<TokensRow>): void => {
     if (err) return callback(err);
     if (!tokensRows || !tokensRows.length) return callback(new Error("market and outcome not found"));
@@ -91,7 +91,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
   });
 }
 
-export function processOrderCreatedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+export function processOrderCreatedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   augurEmitter.emit("OrderCreated", log);
   db.transacting(trx).from("orders").where("orderID", log.orderId).update({ isRemoved: 1 }).asCallback(callback);
 }

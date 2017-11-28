@@ -2,7 +2,7 @@ import { Augur, CalculatedProfitLoss } from "augur.js";
 import BigNumber from "bignumber.js";
 import { forEachOf, parallel } from "async";
 import * as Knex from "knex";
-import { Address, Bytes32, Int256, FormattedLog, OrdersRow, UITrade, AsyncCallback, ErrorCallback } from "../../types";
+import { Address, Bytes32, Int256, FormattedEventLog, OrdersRow, UITrade, AsyncCallback, ErrorCallback } from "../../types";
 import { getUserTradingHistory } from "../../server/getters/get-user-trading-history";
 import { augurEmitter } from "../../events";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
@@ -149,7 +149,7 @@ export function updateOrdersAndPositions(db: Knex, augur: Augur, trx: Knex.Trans
   });
 }
 
-export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   trx.select(["marketID", "outcome"]).from("tokens").where({ contractAddress: log.shareToken }).asCallback((err: Error|null, tokensRows?: Array<TokensRow>): void => {
     if (err) return callback(err);
     if (!tokensRows || !tokensRows.length) return callback(new Error("market and outcome not found"));
@@ -200,7 +200,7 @@ export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transact
   });
 }
 
-export function processOrderFilledLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+export function processOrderFilledLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   augurEmitter.emit("OrderFilled", log);
   trx.select(["tokens.marketID", "tokens.outcome", "markets.numTicks"]).from("tokens").join("markets", "tokens.marketID", "markets.marketID").where("tokens.contractAddress", log.shareToken).asCallback((err: Error|null, tokensRows?: Array<TokensRowWithNumTicks>): void => {
     if (err) return callback(err);
