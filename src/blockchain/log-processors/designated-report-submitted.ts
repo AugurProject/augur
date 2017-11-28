@@ -35,19 +35,18 @@ export function processDesignatedReportSubmittedLog(db: Knex, augur: Augur, trx:
     const newMarketStateID = marketStateID[0];
     db("markets").transacting(trx).update({ marketStateID: newMarketStateID }).where("marketID", log.market).asCallback((err: Error|null): void => {
       if (err) return callback(err);
-      insertStakeToken(db, trx, log.stakeToken, log.market, log.payoutNumerators, (err: Error|null) {
+      insertStakeToken(db, trx, log.stakeToken, log.market, log.payoutNumerators, (err: Error|null) => {
         if (err) return callback(err);
-        db.transacting(trx).insert({marketID: log.marketID, stakeToken: log.stakeToken}).into("reports_designated").asCallback(callback);
+        db.transacting(trx).insert({marketID: log.market, stakeToken: log.stakeToken}).into("reports_designated").asCallback(callback);
       });
     });
   });
 }
 
 export function processDesignatedReportSubmittedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  console.log(log);
   db("market_state").transacting(trx).delete().where({marketID: log.market, reportingState: augur.constants.REPORTING_STATE.DESIGNATED_DISPUTE}).asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    db("market_state").transacting(trx).max("marketStateID").asCallback((err: Error|null, previousMarketStateID: number): void => {
+    db("market_state").transacting(trx).max("marketStateID as previousMarketStateID").first().where({marketID: log.market}).asCallback((err: Error|null, {previousMarketStateID }: {previousMarketStateID: number}): void => {
       if (err) return callback(err);
       db("markets").transacting(trx).update({marketStateID: previousMarketStateID}).where({marketID: log.market }).asCallback(callback);
     });
