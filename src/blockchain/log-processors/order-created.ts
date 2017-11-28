@@ -41,7 +41,6 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
       const ordersPayload = { _orderId: log.orderId };
       const fullPrecisionAmount = convertFixedPointToDecimal(amount, WEI_PER_ETHER);
       const fullPrecisionPrice = denormalizePrice(minPrice, maxPrice, convertFixedPointToDecimal(price, numTicks));
-      if (new BigNumber(fullPrecisionPrice, 10).eq(new BigNumber(-10, 10))) process.exit();
       const orderTypeLabel = orderType === "0" ? "buy" : "sell";
       const orderData: OrdersRow = {
         marketID,

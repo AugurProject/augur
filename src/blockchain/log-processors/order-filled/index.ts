@@ -1,6 +1,6 @@
 import { Augur } from "augur.js";
 import * as Knex from "knex";
-import { Address, FormattedLog, TokensRow, MarketsRow, OrdersRow, AsyncCallback, ErrorCallback } from "../../../types";
+import { Address, FormattedEventLog, TokensRow, MarketsRow, OrdersRow, AsyncCallback, ErrorCallback } from "../../../types";
 import { calculateNumberOfSharesTraded } from "./calculate-number-of-shares-traded";
 import { updateOrdersAndPositions } from "./update-orders-and-positions";
 import { updateVolumetrics } from "./update-volumetrics";
@@ -13,7 +13,7 @@ interface TokensRowWithNumTicksAndCategory extends TokensRow {
   category: string;
 }
 
-export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   const shareToken: Address = log.shareToken;
   const blockNumber: number = log.blockNumber;
   const filler: Address = log.filler;
@@ -69,7 +69,7 @@ export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transact
           if (err) return callback(err);
           updateVolumetrics(db, augur, trx, category, marketID, outcome, blockNumber, orderID, orderCreator, true, (err: Error|null): void => {
             if (err) return callback(err);
-            updateOrdersAndPositions(db, augur, trx, marketID, shareToken, orderID, orderCreator, filler, numTicks, callback);
+            updateOrdersAndPositions(db, augur, trx, marketID, orderID, orderCreator, filler, numTicks, callback);
           });
         });
       });
@@ -77,7 +77,7 @@ export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transact
   });
 }
 
-export function processOrderFilledLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+export function processOrderFilledLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   augurEmitter.emit("OrderFilled", log);
   const shareToken: Address = log.shareToken;
   const blockNumber: number = log.blockNumber;
@@ -97,7 +97,7 @@ export function processOrderFilledLogRemoval(db: Knex, augur: Augur, trx: Knex.T
         if (err) return callback(err);
         db.transacting(trx).from("trades").where({ marketID, outcome, orderID, blockNumber }).del().asCallback((err?: Error|null): void => {
           if (err) return callback(err);
-          updateOrdersAndPositions(db, augur, trx, marketID, shareToken, orderID, orderCreator, log.filler, numTicks, callback);
+          updateOrdersAndPositions(db, augur, trx, marketID, orderID, orderCreator, log.filler, numTicks, callback);
         });
       });
     });

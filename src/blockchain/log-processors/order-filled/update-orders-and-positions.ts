@@ -11,8 +11,7 @@ interface OrderFilledOnContractData {
   fillerPositionInMarket: Array<string>;
 }
 
-export function updateOrdersAndPositions(db: Knex, augur: Augur, trx: Knex.Transaction, marketID: Address, shareToken: Address, orderID: Bytes32, creator: Address, filler: Address, numTicks: string|number, callback: ErrorCallback): void {
-  const shareTokenPayload = { tx: { to: shareToken } };
+export function updateOrdersAndPositions(db: Knex, augur: Augur, trx: Knex.Transaction, marketID: Address, orderID: Bytes32, creator: Address, filler: Address, numTicks: string|number, callback: ErrorCallback): void {
   parallel({
     amount: (next: AsyncCallback): void => augur.api.Orders.getAmount({ _orderId: orderID }, next),
     creatorPositionInMarket: (next: AsyncCallback): void => augur.trading.getPositionInMarket({ market: marketID, address: creator }, next),
