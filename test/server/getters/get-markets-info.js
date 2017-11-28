@@ -134,12 +134,12 @@ describe("server/getters/get-markets-info", () => {
             id: 0,
             volume: 1000,
             price: 0.5,
-            description: null,
+            description: "outcome 0",
           }, {
             id: 1,
             volume: 1000,
             price: 0.5,
-            description: null,
+            description: "outcome 1",
           }],
         }]
       );
@@ -264,12 +264,12 @@ describe("server/getters/get-markets-info", () => {
             id: 0,
             volume: 1000,
             price: 0.5,
-            description: null,
+            description: "outcome 0",
           }, {
             id: 1,
             volume: 1000,
             price: 0.5,
-            description: null,
+            description: "outcome 1",
           }],
         }]
       );
@@ -320,12 +320,12 @@ describe("server/getters/get-markets-info", () => {
             id: 0,
             volume: 1000,
             price: 0.5,
-            description: null,
+            description: "outcome 0",
           }, {
             id: 1,
             volume: 1000,
             price: 0.5,
-            description: null,
+            description: "outcome 1",
           }],
         },
         {
