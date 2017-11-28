@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ReactTooltip from 'react-tooltip'
+// import ReactTooltip from 'react-tooltip'
 
 import Styles from 'modules/common/components/value-denomination/value-denomination.styles'
 
@@ -31,7 +31,6 @@ const ValueDenomination = p => (
     {!p.value && p.value !== 0 && !p.formatted && p.formatted !== '0' && // null/undefined state handler
       <span>&mdash;</span>
     }
-    <ReactTooltip type="light" effect="solid" place="top" />
   </span>
 )
 
@@ -50,3 +49,5 @@ ValueDenomination.propTypes = {
 }
 
 export default ValueDenomination
+
+// <ReactTooltip type="light" effect="solid" place="top" />

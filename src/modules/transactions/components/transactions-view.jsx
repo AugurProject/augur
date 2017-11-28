@@ -73,9 +73,9 @@ export default class TransactionsView extends Component {
   handleScroll() {
     const D = document
     const documentHeight = Math.max(
-        D.body.scrollHeight, D.documentElement.scrollHeight,
-        D.body.offsetHeight, D.documentElement.offsetHeight,
-        D.body.clientHeight, D.documentElement.clientHeight
+      D.body.scrollHeight, D.documentElement.scrollHeight,
+      D.body.offsetHeight, D.documentElement.offsetHeight,
+      D.body.clientHeight, D.documentElement.clientHeight
     ) // Cross Browser Compatibility
     const currentScrollPosition = (document.documentElement.scrollTop || document.body.scrollTop) + window.innerHeight
 

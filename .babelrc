@@ -9,10 +9,10 @@
           "alias": {
             "src": "./src",
             "test": "./test",
-            "assets": "assets",
-            "modules": "modules",
-            "utils": "utils",
-            "services": "services"
+            "assets": "./src/assets",
+            "modules": "./src/modules",
+            "utils": "./src/utils",
+            "services": "./src/services"
           },
           "extensions": [".js", ".jsx"]
         }]

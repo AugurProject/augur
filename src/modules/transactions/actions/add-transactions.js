@@ -109,7 +109,7 @@ export function addTransferTransactions(transfers) {
       meta.confirmations = blockchain.currentBlockNumber - transaction.blockNumber
       transaction.meta = meta
       header.message = 'Transfer'
-      header.description = transaction.value + ' transfered from ' + transaction.sender + ' to ' + transaction.recipient
+      header.description = `${transaction.value} ${transaction.symbol} transferred from ${transaction.sender} to ${transaction.recipient}`
       transactions[transaction.id] = header
     })
     dispatch(updateTransactionsData(transactions))

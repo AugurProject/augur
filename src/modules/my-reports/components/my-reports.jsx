@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import ReactTooltip from 'react-tooltip'
+// import ReactTooltip from 'react-tooltip'
 import { Helmet } from 'react-helmet'
 
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
@@ -105,7 +105,6 @@ export default class MyReports extends Component {
           </div> :
           <NullStateMessage message="No Reports Made" />
         }
-        <ReactTooltip type="light" effect="solid" place="top" />
       </article>
     )
   }
@@ -122,3 +121,5 @@ export default class MyReports extends Component {
 //   filterByMarketState
 //   sortByMarketParam
 // />
+
+// <ReactTooltip type="light" effect="solid" place="top" />

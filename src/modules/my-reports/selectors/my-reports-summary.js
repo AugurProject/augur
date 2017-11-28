@@ -7,10 +7,10 @@ export default function () {
 
   const numReports = reports.length
   const netRep = reports.reduce((prevNet, report) => (
-      report.repEarned && report.repEarned.value ?
-        prevNet.plus(new BigNumber(report.repEarned.value, 10)) :
-        prevNet
-    ), ZERO).toNumber()
+    report.repEarned && report.repEarned.value ?
+      prevNet.plus(new BigNumber(report.repEarned.value, 10)) :
+      prevNet
+  ), ZERO).toNumber()
 
   return {
     numReports,

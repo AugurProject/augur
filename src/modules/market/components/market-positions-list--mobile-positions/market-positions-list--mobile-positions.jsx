@@ -53,11 +53,11 @@ export default class MobilePositions extends Component {
         <div className={Styles.MobilePositions__header}>
           <h2 className={CommonStyles.MarketPositionsListMobile__heading}>
               My Position
-              { p.pendingOrders.length > 0 &&
-                <span className={Styles.MobilePositions__pending}>
-                  { p.pendingOrders.length } Pending { orderText }
-                </span>
-              }
+            { p.pendingOrders.length > 0 &&
+            <span className={Styles.MobilePositions__pending}>
+              { p.pendingOrders.length } Pending { orderText }
+            </span>
+            }
           </h2>
           <button
             className={Styles.MobilePositions__close}
@@ -106,7 +106,7 @@ export default class MobilePositions extends Component {
                 <button onClick={e => this.setState({ showConfirm: !s.showConfirm })}>Ok</button>
               </div>
             </div>
-          :
+            :
             <div className={Styles['MobilePositions__confirm-details']}>
               <h3>Close Position?</h3>
               <p>This will sell your { getValue(p, 'position.position.qtyShares.formatted') } shares of &ldquo;{ getValue(p, 'position.name') }&rdquo; at market rate.</p>

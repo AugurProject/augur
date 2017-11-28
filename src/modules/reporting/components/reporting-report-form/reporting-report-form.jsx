@@ -139,7 +139,7 @@ const ReportingReportForm = p => (
                 onClick={(e) => { validateOutcome(p.validations, p.updateState, outcome.name) }}
               >{outcome.name} &nbsp;|&nbsp; {outcome.stake} REP</button>
             </li>
-            ))
+          ))
           }
         </ul>
       </li>

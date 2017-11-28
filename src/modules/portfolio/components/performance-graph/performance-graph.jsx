@@ -71,10 +71,10 @@ class PerformanceGraph extends Component {
             this.xAxis[0].toPixels(20),
             this.yAxis[0].toPixels(60)
           )
-          .css({
-            fontSize: '10px'
-          })
-          .add()
+            .css({
+              fontSize: '10px'
+            })
+            .add()
 
           this.customTexts.push(text)
         },

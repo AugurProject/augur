@@ -56,7 +56,7 @@
 
   &.notification-enter,
   &.notification-appear {
-    max-height: 0px; /* stylelint-disable-line length-zero-no-unit */
+    max-height: 0; /* stylelint-disable-line length-zero-no-unit */
     opacity: 0;
 
     &.notification-enter-active,
@@ -74,7 +74,7 @@
     opacity: 1;
 
     &.notification-leave-active {
-      max-height: 0px; /* stylelint-disable-line length-zero-no-unit */
+      max-height: 0; /* stylelint-disable-line length-zero-no-unit */
       opacity: 0;
       transition-duration: @animation-speed-very-fast;
       transition-property: max-height, opacity;

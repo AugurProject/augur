@@ -1,4 +1,4 @@
-/* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance as order remains the same
+/* eslint react/no-array-index-key: 0 */ // It's OK in this specific instance as order remains the same
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'

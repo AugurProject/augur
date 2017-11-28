@@ -36,7 +36,7 @@
   }
 
   &.transaction-details-enter {
-    max-height: 0px; /* stylelint-disable-line length-zero-no-unit */
+    max-height: 0; /* stylelint-disable-line length-zero-no-unit */
 
     &.transaction-details-enter-active {
       max-height: 1000px;
@@ -50,7 +50,7 @@
     max-height: 1000px;
 
     &.transaction-details-leave-active {
-      max-height: 0px; /* stylelint-disable-line length-zero-no-unit */
+      max-height: 0; /* stylelint-disable-line length-zero-no-unit */
       transition-duration: @animation-speed-normal;
       transition-property: max-height;
       transition-timing-function: @animation-default-type;
