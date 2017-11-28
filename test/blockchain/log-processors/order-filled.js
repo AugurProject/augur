@@ -97,6 +97,7 @@ describe("blockchain/log-processors/order-filled", () => {
             assert.oneOf(p.address, ["0x0000000000000000000000000000000000000b0b", "FILLER_ADDRESS"]);
             callback(null, ["2", "0", "0", "0", "0", "0", "0", "0"]);
           },
+          normalizePrice: p => p.price,
         },
       },
     },
