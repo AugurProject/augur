@@ -22,7 +22,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
     const seedData: any = [];
     Object.keys(marketOutcomeCounts).forEach((marketID) => {
       const { numOutcomes, price, volume } = marketOutcomeCounts[marketID];
-      return Array(numOutcomes).fill(0).forEach((_, i) => {
+      Array(numOutcomes).fill(0).forEach((_, i) => {
         seedData.push({
           marketID,
           volume,
