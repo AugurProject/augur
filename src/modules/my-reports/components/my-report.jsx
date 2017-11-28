@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ReactTooltip from 'react-tooltip'
+// import ReactTooltip from 'react-tooltip'
 
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 import ValueDate from 'modules/common/components/value-date'
@@ -83,7 +83,6 @@ const MyReport = p => (
         <ValueDate {...p.endDate} />
       </div>
     </div>
-    <ReactTooltip type="light" effect="solid" place="top" />
   </article>
 )
 
@@ -98,5 +97,7 @@ MyReport.propTypes = {
   universe: PropTypes.object.isRequired,
   endDate: PropTypes.object.isRequired
 }
+
+// <ReactTooltip type="light" effect="solid" place="top" />
 
 export default MyReport

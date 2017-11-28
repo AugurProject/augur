@@ -46,14 +46,14 @@ export default class MarketsInnerNav extends BaseInnerNav {
     const selectedKeywords = parseStringToArray(decodeURIComponent(parseQuery(location.search)[TAGS_PARAM_NAME] || ''), QUERY_VALUE_DELIMITER)
 
     let filteredKeywords = flatMap(marketsFilteredSorted, index => (markets[index] ? [markets[index].tags[1] || '', markets[index].tags[2] || ''] : null))
-    .filter(keyword => !!keyword)
+      .filter(keyword => !!keyword)
 
     filteredKeywords = concat(filteredKeywords, selectedKeywords)
     // TODO: discuss uppercase/lowercase variant keywords and how they function differently
     // lowercasing all keywords will make some function improperly re: markets view expects
     // correct "original" capitalization
     filteredKeywords = uniq(filteredKeywords)
-    .slice(0, 50)
+      .slice(0, 50)
 
     const newKeywords = difference(filteredKeywords, this.state.actualCurrentKeywords)
     const oldKeywords = difference(this.state.actualCurrentKeywords, filteredKeywords)

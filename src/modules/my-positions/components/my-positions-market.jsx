@@ -87,7 +87,7 @@ export default class MyPositionsMarket extends Component {
                   </div>
                   <div className="close-trades" />
                 </div>
-                {(myPositionOutcomes || []).map(outcome =>
+                {(myPositionOutcomes || []).map(outcome => (
                   <MyPosition
                     {...outcome}
                     {...outcome.position}
@@ -96,7 +96,7 @@ export default class MyPositionsMarket extends Component {
                     closePositionStatus={p.closePositionStatus}
                     scalarShareDenomination={p.scalarShareDenomination}
                   />
-                )}
+                ))}
               </div> :
               <NullStateMessage message="No Positions Held" />
             }

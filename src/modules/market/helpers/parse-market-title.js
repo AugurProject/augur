@@ -7,7 +7,7 @@ export default function parseMarketTitle(description) {
     prev.length < 40 && i + 1 < words.length ?
       `${prev} ${word}` :
       prev),
-    '')
+  '')
 
   return title.length > 40 ?
     `${title.substring(0, 40).trim()}...` :

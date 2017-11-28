@@ -27,7 +27,7 @@ const MarketPositions = (p) => {
             <span>Action</span>
           </div>
           <div className="market-content-scrollable" >
-            {(outcomePositions || []).map(outcome =>
+            {(outcomePositions || []).map(outcome => (
               <MarketPositionsRow
                 key={outcome.id}
                 marketType={p.marketType}
@@ -35,7 +35,7 @@ const MarketPositions = (p) => {
                 selectedShareDenomination={p.selectedShareDenomination}
                 closePositionStatus={p.closePositionStatus}
               />
-            )}
+            ))}
           </div>
         </div>
       }

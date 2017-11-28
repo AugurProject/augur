@@ -105,7 +105,7 @@ export default class Transactions extends Component {
             }
             return null
           })
-        }
+          }
         </div>
         { p.transactions.length &&
           <Paginator

@@ -31,7 +31,7 @@ export default function (search, keys, items) {
 
         return checkArrayMatch(item, key, search)
       }
-    ))
+      ))
 
     if (matchedSearch) {
       return [...p, i]

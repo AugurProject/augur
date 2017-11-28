@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ReactTooltip from 'react-tooltip'
+// import ReactTooltip from 'react-tooltip'
 // import { Line } from 'rc-progress'
 
 import Bullet from 'modules/common/components/bullet'
@@ -18,17 +18,6 @@ const Universe = p => (
     >
       {p.description} <Bullet /> {p.reportingPeriodDurationInSeconds / 3600} hours per period
     </span>
-    <ReactTooltip
-      id="universe-id-tooltip"
-      type="light"
-      effect="float"
-      place="top"
-      globalEventOff="click"
-    >
-      <span className="tooltip-text">
-        Universe ID: {p.id}
-      </span>
-    </ReactTooltip>
   </article>
 )
 
@@ -49,3 +38,15 @@ export default Universe
 //   strokeWidth="1"
 //   strokeColor="#5c2634"
 // />
+
+// <ReactTooltip
+//   id="universe-id-tooltip"
+//   type="light"
+//   effect="float"
+//   place="top"
+//   globalEventOff="click"
+// >
+//   <span className="tooltip-text">
+//     Universe ID: {p.id}
+//   </span>
+// </ReactTooltip>

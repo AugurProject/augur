@@ -88,7 +88,7 @@ function handlePostfixedUnit(valueArray, zeroPadAmount) {
       return newValueArray
     }
 
-  // Handle values that become greater than 10000
+    // Handle values that become greater than 10000
     default: {
       // Append 0's
       for (let i = 0; i < zeroPadAmount; i++) {

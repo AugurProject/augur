@@ -51,9 +51,9 @@ export default class GraphBG extends Component {
       p.perspective() // forces P5 to acknowledge next ortho() call
       const pixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1
       p.ortho(-width / pixelRatio,
-              width / pixelRatio,
-              height / pixelRatio,
-              -height / pixelRatio, -1, 10000)
+        width / pixelRatio,
+        height / pixelRatio,
+        -height / pixelRatio, -1, 10000)
     }
   }
 
@@ -91,11 +91,11 @@ export default class GraphBG extends Component {
         const maxCenterDist = 0.35
         const angleRange = 15
         const tierLink = withinRange(centerDist,
-                                     minCenterDist,
-                                     maxCenterDist)
+          minCenterDist,
+          maxCenterDist)
         const angLink = withinRange(circleA.angle,
-                                    (circleB.angle - angleRange) % 360,
-                                    (circleB.angle + angleRange) % 360)
+          (circleB.angle - angleRange) % 360,
+          (circleB.angle + angleRange) % 360)
 
         if (localLink || (tierLink && angLink)) {
           const linekey = [ai, bi].sort().join('_')
@@ -158,8 +158,8 @@ export default class GraphBG extends Component {
         p.translate(circleA.x, circleA.y, 0)
         p.vertex(0, 0, 0)
         p.vertex((circleB.x - circleA.x),
-                 (circleB.y - circleA.y),
-                 0)
+          (circleB.y - circleA.y),
+          0)
         p.fill(83, 76, 101) // prevent P5 spamming shader uniform warnings
         p.stroke(83, 76, 101)
         p.endShape()

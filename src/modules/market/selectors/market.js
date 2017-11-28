@@ -102,27 +102,27 @@ export const selectMarket = (marketID) => {
 const assembledMarketsCache = {}
 
 export function assembleMarket(
-    marketID,
-    marketData,
-    isMarketLoading,
-    marketPriceHistory,
-    isOpen,
-    isExpired,
-    isFavorite,
-    marketOutcomesData,
-    marketReport,
-    marketAccountPositions,
-    marketAccountTrades,
-    marketTradeInProgress,
-    endDateYear,
-    endDateMonth,
-    endDateDay,
-    currentReportingWindowAddress,
-    orderBooks,
-    orderCancellation,
-    smallestPosition,
-    loginAccount,
-    dispatch) {
+  marketID,
+  marketData,
+  isMarketLoading,
+  marketPriceHistory,
+  isOpen,
+  isExpired,
+  isFavorite,
+  marketOutcomesData,
+  marketReport,
+  marketAccountPositions,
+  marketAccountTrades,
+  marketTradeInProgress,
+  endDateYear,
+  endDateMonth,
+  endDateDay,
+  currentReportingWindowAddress,
+  orderBooks,
+  orderCancellation,
+  smallestPosition,
+  loginAccount,
+  dispatch) {
 
   if (!assembledMarketsCache[marketID]) {
     assembledMarketsCache[marketID] = memoize((

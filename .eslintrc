@@ -49,7 +49,7 @@
     "no-useless-rename": 2,
     "prefer-arrow-callback": 2,
     "eqeqeq": [2, "allow-null"],
-    "indent": [2, 2, { "SwitchCase": 1 }],
+    "indent": [2, 2, { "SwitchCase": 1, "MemberExpression": 1, "ObjectExpression": 1 }],
     "no-unused-expressions": [2, { "allowShortCircuit": true }],
     "no-unused-vars": [2, { "vars": "all", "args": "none" }],
     "no-param-reassign": [2, { "props": false }],

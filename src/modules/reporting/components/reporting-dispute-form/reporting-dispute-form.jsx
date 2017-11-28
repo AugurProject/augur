@@ -145,8 +145,8 @@ export default class ReportingDisputeForm extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.minimumStakeRequired !== false && prevProps.stake !== '' && (
-          prevProps.minimumStakeRequired !== this.props.minimumStakeRequired || prevProps.isMarketValid !== this.props.isMarketValid
-        )) {
+      prevProps.minimumStakeRequired !== this.props.minimumStakeRequired || prevProps.isMarketValid !== this.props.isMarketValid
+    )) {
       validateStake(this.props, this.props.stake)
     }
   }
@@ -214,7 +214,7 @@ export default class ReportingDisputeForm extends Component {
                     onClick={(e) => { validateOutcome(p.validations, p.updateState, outcome.name) }}
                   >{outcome.name} &nbsp;|&nbsp; {outcome.stake} REP</button>
                 </li>
-                ))
+              ))
               }
             </ul>
           </li>

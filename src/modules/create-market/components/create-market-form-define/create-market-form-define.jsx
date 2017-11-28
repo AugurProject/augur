@@ -139,7 +139,7 @@ export default class CreateMarketDefine extends Component {
                   }}
                 >{cat.topic}</button>
               </li>
-              )
+            )
             )}
             {p.newMarket.category && s.suggestedCategories.length > s.shownSuggestions &&
               <li>

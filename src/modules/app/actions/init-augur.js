@@ -9,6 +9,7 @@ import { registerTransactionRelay } from 'modules/transactions/actions/register-
 import logError from 'utils/log-error'
 
 // fixes Reflect not being recognized in test or node 4.2
+// TODO -- determine if we do still need this
 require('core-js/es6/reflect')
 
 export function initAugur(callback = logError) {
