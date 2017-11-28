@@ -19,8 +19,8 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.specificType("numFillerShares", "numeric NOT NULL CONSTRAINT \"nonnegativeNumFillerShares\" CHECK (\"numFillerShares\" >= 0)");
       table.specificType("reporterFees", "numeric NOT NULL CONSTRAINT \"nonnegativeReporterFees\" CHECK (\"reporterFees\" >= 0)");
       table.specificType("marketCreatorFees", "numeric NOT NULL CONSTRAINT \"nonnegativeMarketCreatorFees\" CHECK (\"marketCreatorFees\" >= 0)");
-      table.specificType("price", "NUMERIC").notNullable();
-      table.specificType("amount", "NUMERIC").notNullable();
+      table.specificType("price", "numeric").notNullable();
+      table.specificType("amount", "numeric").notNullable();
       table.integer("tradeGroupID");
 
       table.unique(["transactionHash", "logIndex"]);

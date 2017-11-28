@@ -13,8 +13,9 @@ export function queryModifier(query: Knex.QueryBuilder, defaultSortBy: string, d
 export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow): UIOutcomeInfo {
   const outcomeInfo: UIOutcomeInfo = {
     id: outcomesRow.outcome,
-    outstandingShares: outcomesRow.sharesOutstanding,
+    volume: outcomesRow.volume,
     price: outcomesRow.price,
+    description: outcomesRow.description,
   };
   return outcomeInfo;
 }
