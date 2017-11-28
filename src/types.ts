@@ -160,6 +160,16 @@ export interface MarketsRow {
   isInvalid?: boolean|null;
 }
 
+export interface PositionsRow {
+  outcome: number;
+  marketID?: Address;
+  numShares?: string|number;
+  account?: Address;
+  realizedProfitLoss?: string|number;
+  unrealizedProfitLoss?: string|number;
+  numSharesAdjustedForUserIntention?: string|number;
+}
+
 export interface OutcomesRow {
   marketID: Address;
   outcome: number;

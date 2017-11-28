@@ -4,7 +4,7 @@ exports.up = async (knex: Knex): Promise<any> => {
   return knex.schema.dropTableIfExists("categories").then(async (): Promise<any> => {
     return knex.schema.createTable("categories", (table: Knex.CreateTableBuilder): void => {
     table.string("category", 255).notNullable();
-    table.integer("popularity").defaultTo(0);
+    table.specificType("popularity", "numeric").defaultTo(0);
     table.string("universe", 66).notNullable();
 
     table.primary(["universe", "category"]);
