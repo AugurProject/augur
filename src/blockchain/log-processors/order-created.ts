@@ -1,7 +1,7 @@
 import Augur from "augur.js";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { Address, Bytes32, FormattedLog, MarketsRow, OrdersRow, TokensRow, OrderState, ErrorCallback, AsyncCallback } from "../../types";
+import { Address, Bytes32, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, OrderState, ErrorCallback, AsyncCallback } from "../../types";
 import { processOrderCanceledLog } from "./order-canceled";
 import { augurEmitter } from "../../events";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
@@ -20,7 +20,7 @@ interface OrderCreatedOnContractData {
   worseOrderID: Bytes32;
 }
 
-export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   const amount: string = log.amount;
   const price: string = log.price;
   const orderType: string = log.orderType;
@@ -75,7 +75,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
   });
 }
 
-export function processOrderCreatedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback): void {
+export function processOrderCreatedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   augurEmitter.emit("OrderCreated", log);
   db.transacting(trx).from("orders").where("orderID", log.orderId).update({ isRemoved: 1 }).asCallback(callback);
 }
