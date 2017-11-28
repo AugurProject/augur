@@ -4,7 +4,7 @@ import { FormattedEventLog, ErrorCallback, Address } from "../../types";
 
 // Ensures stakeToken entry exists in the database. May not need to be inserted, there's no upsert required
 export function insertStakeToken(db: Knex, trx: Knex.Transaction, stakeToken: Address, marketID: Address, payoutNumerators: Array<string|number|null>, callback: ErrorCallback): void {
-  db.transacting(trx).select("marketID").from("stake_tokens").where({ stakeToken }).first().asCallback( (err: Error|null, rowMarketID?: string|null|undefined): void => {
+  db.transacting(trx).first("marketID").from("stake_tokens").where({ stakeToken }).asCallback( (err: Error|null, rowMarketID?: string|null|undefined): void => {
     if (err) return callback(err);
     if (rowMarketID != null) {
       return callback((rowMarketID === marketID) ? null : new Error(`StakeToken ${stakeToken} exists, but marketID ${marketID} does not match`));
