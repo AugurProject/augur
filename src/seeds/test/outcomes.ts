@@ -19,18 +19,19 @@ exports.seed = async (knex: Knex): Promise<any> => {
       "0x0000000000000000000000000000000000000019": {numOutcomes: 5, price: "0.125", volume: "100"},
     };
 
-    const seedData = [].concat.apply([], Object.keys(marketOutcomeCounts).map((marketID) => {
+    const seedData: any = [];
+    Object.keys(marketOutcomeCounts).forEach((marketID) => {
       const { numOutcomes, price, volume } = marketOutcomeCounts[marketID];
-      return Array(numOutcomes).fill(0).map((_, i) => {
-        return {
+      return Array(numOutcomes).fill(0).forEach((_, i) => {
+        seedData.push({
           marketID,
           volume,
           price,
           outcome: i,
           description: "outcome " + i,
-        };
+        });
       });
-    }));
+    });
 
     return knex.batchInsert("outcomes", seedData, seedData.length);
   });
