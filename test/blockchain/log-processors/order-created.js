@@ -31,7 +31,12 @@ describe("blockchain/log-processors/order-created", () => {
     description: "OrderCreated log and removal",
     params: {
       log: {
+        orderType: "0",
         shareToken: "0x1000000000000000000000000000000000000000",
+        price: "7500",
+        amount: "3000000000000000000",
+        sharesEscrowed: "0",
+        moneyEscrowed: "2250000000000000000",
         creator: "CREATOR_ADDRESS",
         orderId: "ORDER_ID",
         tradeGroupId: "TRADE_GROUP_ID",
@@ -48,7 +53,7 @@ describe("blockchain/log-processors/order-created", () => {
             },
             getPrice: (p, callback) => {
               assert.deepEqual(p, { _orderId: "ORDER_ID" });
-              callback(null, "8064"); // = 0.75 * 10752
+              callback(null, "7500"); // = 0.75 * 10752
             },
             getAmount: (p, callback) => {
               assert.deepEqual(p, { _orderId: "ORDER_ID" });
@@ -80,9 +85,9 @@ describe("blockchain/log-processors/order-created", () => {
           orderType: "buy",
           orderCreator: "CREATOR_ADDRESS",
           orderState: "OPEN",
-          fullPrecisionPrice: 0.8064,
+          fullPrecisionPrice: 0.75,
           fullPrecisionAmount: 3,
-          price: 0.8064,
+          price: 0.75,
           amount: 3,
           tokensEscrowed: 2.25,
           sharesEscrowed: 0,
@@ -103,9 +108,9 @@ describe("blockchain/log-processors/order-created", () => {
           orderCreator: "CREATOR_ADDRESS",
           orderState: "OPEN",
           blockNumber: 1400100,
-          fullPrecisionPrice: 0.8064,
+          fullPrecisionPrice: 0.75,
           fullPrecisionAmount: 3,
-          price: 0.8064,
+          price: 0.75,
           amount: 3,
           tokensEscrowed: 2.25,
           sharesEscrowed: 0,
