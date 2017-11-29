@@ -778,9 +778,9 @@ function createOrder(marketID, outcome, numOutcomes, maxPrice, minPrice, orderTy
 }
 
 function createOrderBook(marketID, numOutcomes, maxPrice, minPrice, orderBook, callback) {
-  async.forEachOf(orderBook, function (orders, orderType, nextOrderType) {
+  async.forEachOfSeries(orderBook, function (orders, orderType, nextOrderType) {
     if (DEBUG) console.log("orderType:", orderType);
-    async.forEachOf(orders, function (outcomeOrders, outcome, nextOutcome) {
+    async.forEachOfSeries(orders, function (outcomeOrders, outcome, nextOutcome) {
       if (DEBUG) console.log("outcome:", outcome);
       async.each(outcomeOrders, function (order, nextOrder) {
         createOrder(marketID, parseInt(outcome, 10), numOutcomes, maxPrice, minPrice, orderType, order, nextOrder);

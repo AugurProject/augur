@@ -6,7 +6,6 @@
  * @property {string} etherRequiredToCreateMarket Sum of the Ether required to pay for Reporters' gas costs and the validity bond, as a base-10 string.
  */
 
-var assign = require("lodash.assign");
 var speedomatic = require("speedomatic");
 var api = require("../api");
 

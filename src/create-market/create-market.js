@@ -7,7 +7,6 @@ var speedomatic = require("speedomatic");
 var getMarketCreationCost = require("./get-market-creation-cost");
 var api = require("../api");
 var encodeTag = require("../format/tag/encode-tag");
-var noop = require("../utils/noop");
 var constants = require("../constants");
 
 /**

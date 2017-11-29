@@ -38,7 +38,9 @@ function getMarketCreationCostBreakdown(p, callback) {
       },
     }, function (err, marketCreationCostBreakdown) {
       if (err) return callback(err);
-      callback(null, assign(marketCreationCostBreakdown, { designatedReportNoShowReputationBond: speedomatic.unfix(designatedReportNoShowBond, "string") }));
+      callback(null, assign(marketCreationCostBreakdown, {
+        designatedReportNoShowReputationBond: speedomatic.unfix(designatedReportNoShowBond, "string"),
+      }));
     });
   });
 }
