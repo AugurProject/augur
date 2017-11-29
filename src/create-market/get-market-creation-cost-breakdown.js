@@ -10,48 +10,35 @@
 var async = require("async");
 var assign = require("lodash.assign");
 var speedomatic = require("speedomatic");
-var createCurrentReportingWindow = require("./create-current-reporting-window");
 var api = require("../api");
-var noop = require("../utils/noop");
-var ZERO = require("../constants").ZERO;
 
 /**
  * Note: this function will send a transaction if needed to create the current reporting window.
  * @param {Object} p Parameters object.
  * @param {string} p.universe Universe on which to create this market.
- * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
  * @param {function} callback Called when all market creation costs have been looked up.
  * @return {MarketCreationCostBreakdown} Cost breakdown for creating a new market.
  */
 function getMarketCreationCostBreakdown(p, callback) {
-  var universePayload = { tx: { to: p.universe } };
-  api().Universe.getDesignatedReportNoShowBond(universePayload, function (err, designatedReportNoShowBond) {
+  var universePayload = { tx: { to: p.universe, send: false } };
+  api().Universe.getOrCacheDesignatedReportNoShowBond(universePayload, function (err, designatedReportNoShowBond) {
     if (err) return callback(err);
-    var createCurrentReportingWindowParams = assign({}, p, {
-      onSent: noop,
-      onSuccess: function () { getMarketCreationCostBreakdown(p, callback); },
-      onFailed: callback,
-    });
-    var designatedReportNoShowReputationBond = speedomatic.unfix(designatedReportNoShowBond);
-    if (designatedReportNoShowReputationBond.eq(ZERO)) return createCurrentReportingWindow(createCurrentReportingWindowParams);
     async.parallel({
       targetReporterGasCosts: function (next) {
-        api().Universe.getTargetReporterGasCosts(universePayload, function (err, targetReporterGasCosts) {
+        api().Universe.getOrCacheTargetReporterGasCosts(universePayload, function (err, targetReporterGasCosts) {
           if (err) return next(err);
-          if (speedomatic.unfix(targetReporterGasCosts).eq(ZERO)) return createCurrentReportingWindow(createCurrentReportingWindowParams);
           next(null, speedomatic.unfix(targetReporterGasCosts, "string"));
         });
       },
       validityBond: function (next) {
-        api().Universe.getValidityBond(universePayload, function (err, validityBond) {
+        api().Universe.getOrCacheValidityBond(universePayload, function (err, validityBond) {
           if (err) return next(err);
-          if (speedomatic.unfix(validityBond).eq(ZERO)) return createCurrentReportingWindow(createCurrentReportingWindowParams);
           next(null, speedomatic.unfix(validityBond, "string"));
         });
       },
     }, function (err, marketCreationCostBreakdown) {
       if (err) return callback(err);
-      callback(null, assign(marketCreationCostBreakdown, { designatedReportNoShowReputationBond: designatedReportNoShowReputationBond.toFixed() }));
+      callback(null, assign(marketCreationCostBreakdown, { designatedReportNoShowReputationBond: speedomatic.unfix(designatedReportNoShowBond, "string") }));
     });
   });
 }

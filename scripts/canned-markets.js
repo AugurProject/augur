@@ -782,41 +782,9 @@ function createOrderBook(marketID, numOutcomes, maxPrice, minPrice, orderBook, c
     if (DEBUG) console.log("orderType:", orderType);
     async.forEachOf(orders, function (outcomeOrders, outcome, nextOutcome) {
       if (DEBUG) console.log("outcome:", outcome);
-      // TODO remove shareToken approvals after contracts upgraded
-      augur.api.Market.getShareToken({ tx: { to: marketID }, _outcome: outcome }, function (err, shareToken) {
-        if (err) return nextOutcome(err);
-        augur.api.ShareToken.allowance({
-          tx: { to: shareToken },
-          _owner: augur.rpc.getCoinbase(),
-          _spender: augur.contracts.addresses[augur.rpc.getNetworkID()].Order,
-        }, function (err, allowance) {
-          if (err) return callback(err);
-          if (new BigNumber(allowance, 10).eq(new BigNumber(constants.ETERNAL_APPROVAL_VALUE, 16))) {
-            async.each(outcomeOrders, function (order, nextOrder) {
-              createOrder(marketID, parseInt(outcome, 10), numOutcomes, maxPrice, minPrice, orderType, order, nextOrder);
-            }, nextOutcome);
-          } else {
-            augur.api.ShareToken.approve({
-              tx: { to: shareToken },
-              _spender: augur.contracts.addresses[augur.rpc.getNetworkID()].Order,
-              _value: constants.ETERNAL_APPROVAL_VALUE,
-              onSent: function (res) {
-                if (DEBUG) console.log("ShareToken.approve sent:", res.hash);
-              },
-              onSuccess: function (res) {
-                if (DEBUG) console.log("ShareToken.approve success:", res.callReturn);
-                async.each(outcomeOrders, function (order, nextOrder) {
-                  createOrder(marketID, parseInt(outcome, 10), numOutcomes, maxPrice, minPrice, orderType, order, nextOrder);
-                }, nextOutcome);
-              },
-              onFailed: function (err) {
-                if (DEBUG) console.error("ShareToken.approve failed:", err);
-                nextOutcome(err);
-              },
-            });
-          }
-        });
-      });
+      async.each(outcomeOrders, function (order, nextOrder) {
+        createOrder(marketID, parseInt(outcome, 10), numOutcomes, maxPrice, minPrice, orderType, order, nextOrder);
+      }, nextOutcome);
     }, nextOrderType);
   }, callback);
 }

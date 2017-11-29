@@ -30,32 +30,19 @@ var constants = require("../constants");
  * @param {function} p.onFailed Called if/when the createMarket transaction fails.
  */
 function createMarket(p) {
-  api().Universe.getReportingWindowByMarketEndTime({ tx: { to: p.universe }, _endTime: p._endTime }, function (err, reportingWindow) {
+  getMarketCreationCost({ universe: p.universe }, function (err, marketCreationCost) {
     if (err) return p.onFailed(err);
-    if (new BigNumber(reportingWindow, 16).eq(constants.ZERO)) {
-      return api().Universe.getOrCreateReportingWindowByMarketEndTime({
-        tx: { to: p.universe },
-        _endTime: p._endTime,
-        meta: p.meta,
-        onSent: noop,
-        onSuccess: function () { createMarket(p); },
-        onFailed: p.onFailed,
-      });
-    }
-    getMarketCreationCost({ universe: p.universe, meta: p.meta }, function (err, marketCreationCost) {
-      if (err) return p.onFailed(err);
-      var numTicks = p._numTicks || speedomatic.prefixHex(new BigNumber(p.maxPrice, 10).minus(new BigNumber(p.minPrice, 10)).times(constants.DEFAULT_NUM_TICKS[p._numOutcomes]).toString(16));
-      var extraInfo = assign({}, p._extraInfo || {}, { minPrice: p.minPrice, maxPrice: p.maxPrice });
-      var tx = { to: reportingWindow, value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex") };
-      if (p._numOutcomes > 2) tx.gas = "0x5b8d80";
-      api().ReportingWindow.createMarket(assign({}, immutableDelete(p, ["universe", "minPrice", "maxPrice"]), {
-        tx: tx,
-        _feePerEthInWei: p._feePerEthInWei,
-        _numTicks: numTicks,
-        _topic: encodeTag(p._topic),
-        _extraInfo: extraInfo ? JSON.stringify(extraInfo) : "",
-      }));
-    });
+    var numTicks = p._numTicks || speedomatic.prefixHex(new BigNumber(p.maxPrice, 10).minus(new BigNumber(p.minPrice, 10)).times(constants.DEFAULT_NUM_TICKS[p._numOutcomes]).toString(16));
+    var extraInfo = assign({}, p._extraInfo || {}, { minPrice: p.minPrice, maxPrice: p.maxPrice });
+    var tx = { to: p.universe, value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex") };
+    if (p._numOutcomes > 2) tx.gas = "0x5b8d80";
+    api().Universe.createMarket(assign({}, immutableDelete(p, ["universe", "minPrice", "maxPrice"]), {
+      tx: tx,
+      _feePerEthInWei: p._feePerEthInWei,
+      _numTicks: numTicks,
+      _topic: encodeTag(p._topic),
+      _extraInfo: extraInfo ? JSON.stringify(extraInfo) : "",
+    }));
   });
 }
 
