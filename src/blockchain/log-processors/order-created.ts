@@ -21,11 +21,11 @@ interface OrderCreatedOnContractData {
 }
 
 export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  const amount: string = log.amount || "1";
-  const price: string = log.price || "2";
-  const orderType: string = log.orderType || "0";
-  const moneyEscrowed: string = log.moneyEscrowed || "3";
-  const sharesEscrowed: string = log.sharesEscrowed || "4";
+  const amount: string = log.amount;
+  const price: string = log.price;
+  const orderType: string = log.orderType;
+  const moneyEscrowed: string = log.moneyEscrowed;
+  const sharesEscrowed: string = log.sharesEscrowed;
   const shareToken: Address = log.shareToken;
   trx.first("marketID", "outcome").from("tokens").where({ contractAddress: shareToken }).asCallback((err: Error|null, tokensRow?: TokensRow): void => {
     if (err) return callback(err);
