@@ -49,6 +49,7 @@ export default class ReportingClosed extends Component {
           toggleFavorite={p.toggleFavorite}
           loadMarketsInfo={p.loadMarketsInfo}
           linkType={TYPE_CLOSED}
+          paginationPageParam="reporting-closed-page"
         />
       </section>
     )
