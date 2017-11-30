@@ -29,7 +29,7 @@ export const logProcessors: LogProcessors = {
     },
     TokensMinted: {
       add: processMintLog,
-      remove: processTokensTransferredLogRemoval,
+      remove: processMintLogRemoval,
     },
     OrderCanceled: {
       add: processOrderCanceledLog,
@@ -103,7 +103,7 @@ export const logProcessors: LogProcessors = {
     },
     Mint: {
       add: processMintLog,
-      remove: processTransferLogRemoval,
+      remove: processMintLogRemoval,
     },
     Burn: {
       add: processBurnLog,
