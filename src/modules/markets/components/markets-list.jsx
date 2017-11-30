@@ -20,6 +20,7 @@ export default class MarketsList extends Component {
     scalarShareDenomination: PropTypes.object.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
     loadMarketsInfo: PropTypes.func.isRequired,
+    paginationPageParam: PropTypes.string,
     linkType: PropTypes.string,
     showPagination: PropTypes.bool,
     outstandingReturns: PropTypes.bool,
@@ -125,6 +126,7 @@ export default class MarketsList extends Component {
             location={p.location}
             history={p.history}
             setSegment={this.setSegment}
+            pageParam={p.paginationPageParam || null}
           />
         }
       </article>

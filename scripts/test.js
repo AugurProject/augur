@@ -3,7 +3,7 @@ const Listr = require('listr');
 
 const colors = require('./common/colors');
 
-process.env.NODE_ENV = 'test';
+process.env.NODE_ENV = process.env.BABEL_ENV = 'test';
 process.env.FORCE_COLOR = true;
 
 shell.echo(`
