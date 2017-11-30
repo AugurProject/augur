@@ -9,7 +9,7 @@ export function processApprovalLog(db: Knex, augur: Augur, trx: Knex.Transaction
     owner:           log.owner,
     spender:         log.spender,
     token:           log.address,
-    value:           log.value,
+    value:           log.value || log.amount,
     blockNumber:     log.blockNumber,
   }).into("approvals").asCallback(callback);
 }
