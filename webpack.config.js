@@ -183,7 +183,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
               loader: 'css-loader',
               options: {
                 modules: true,
-                localIdentName: '[name]_[local]_[hash:base64:3]',
+                localIdentName: '[name]_[local]',
               }
             },
             'postcss-loader',
@@ -221,7 +221,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
               loader: 'css-loader',
               options: {
                 modules: true,
-                localIdentName: '[name]_[local]_[hash:base64:3]',
+                localIdentName: '[name]_[local]',
               }
             },
             'postcss-loader',
@@ -249,19 +249,18 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
       rules: [
         {
           test: /\.less/,
-          use: ExtractTextPlugin.extract({
-            use: [
-              {
-                loader: 'css-loader',
-                options: {
-                  modules: true
-                }
-              },
-              'postcss-loader',
-              'less-loader'
-            ],
-            fallback: 'style-loader'
-          }),
+          use: [
+            'style-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                modules: true,
+                localIdentName: '[name]_[local]',
+              }
+            },
+            'postcss-loader',
+            'less-loader'
+          ]
         },
         {
           test: /\.css/,
