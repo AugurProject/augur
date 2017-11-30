@@ -2,10 +2,8 @@
 
 "use strict";
 
-var BigNumber = require("bignumber.js");
 var approveAugurEternalApprovalValue = require("./approve-augur-eternal-approval-value");
 var Augur = require("../src");
-var constants = require("../src/constants");
 
 var augur = new Augur();
 
