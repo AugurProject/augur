@@ -18,10 +18,10 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
     marketCreatorSettlementFeeDivisor: (next: AsyncCallback): void => augur.api.Market.getMarketCreatorSettlementFeeDivisor(marketPayload, next),
   }, (err?: any, onMarketContractData?: any): void => {
     if (err) return callback(err);
-    const universePayload: {} = { tx: { to: onMarketContractData.universe } };
+    const universePayload: {} = { tx: { to: onMarketContractData.universe, send: false } };
     parallel({
-      reportingFeeDivisor: (next: AsyncCallback): void => augur.api.Universe.getReportingFeeDivisor(universePayload, next),
-      designatedReportStake: (next: AsyncCallback): void => augur.api.Universe.getDesignatedReportStake(universePayload, next),
+      reportingFeeDivisor: (next: AsyncCallback): void => augur.api.Universe.getOrCacheReportingFeeDivisor(universePayload, next),
+      designatedReportStake: (next: AsyncCallback): void => augur.api.Universe.getOrCacheDesignatedReportStake(universePayload, next),
     }, (err?: any, onUniverseContractData?: any): void => {
       if (err) return callback(err);
       const marketStateDataToInsert: { [index: string]: string|number|boolean } = {

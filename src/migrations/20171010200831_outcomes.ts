@@ -6,7 +6,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       "marketID" varchar(42) NOT NULL,
       outcome integer NOT NULL CONSTRAINT "nonnegativeOutcomeOutcome" CHECK (outcome >= 0),
       price numeric NOT NULL,
-      volume numeric NOT NULL CONSTRAINT "nonnegativeOutcomeVolume" CHECK (volume >= 0),
+      volume numeric NOT NULL NOT NULL CONSTRAINT "nonnegativeOutcomeVolume" CHECK ("nonnegativeOutcomeVolume" >= 0),
       description text,
       UNIQUE("marketID", outcome)
     )`);
