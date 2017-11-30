@@ -2,9 +2,9 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../../test.database");
-const { processApprovalLog, processApprovalLogRemoval } = require("../../../../build/blockchain/log-processors/legacy-rep-contract/approval");
+const { processApprovalLog, processApprovalLogRemoval } = require("../../../../build/blockchain/log-processors/token/approval");
 
-describe("blockchain/log-processors/legacy-rep-contract/approval", () => {
+describe("blockchain/log-processors/token/approval", () => {
   const test = (t) => {
     const getState = (db, params, callback) => db("approvals").where({ transactionHash: params.log.transactionHash, logIndex: params.log.logIndex }).asCallback(callback);
     it(t.description, (done) => {
