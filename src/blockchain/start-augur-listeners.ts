@@ -30,5 +30,5 @@ export function startAugurListeners(db: Knex, augur: Augur): void {
       Transfer: makeLogListener(db, augur, "LegacyReputationToken", "Transfer"),
       Approval: makeLogListener(db, augur, "LegacyReputationToken", "Approval"),
     },
-  }, callback);
+  });
 }
