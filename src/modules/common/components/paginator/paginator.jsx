@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
-import Styles from 'modules/common/components/paginator/paginator.styles'
+import { PAGINATION_PARAM_NAME } from 'modules/routes/constants/param-names'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 import makeQuery from 'modules/routes/helpers/make-query'
 
-import { PAGINATION_PARAM_NAME } from 'modules/routes/constants/param-names'
+import Styles from 'modules/common/components/paginator/paginator.styles'
 
 class Paginator extends Component {
   static propTypes = {
@@ -15,7 +15,12 @@ class Paginator extends Component {
     itemsPerPage: PropTypes.number.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    setSegment: PropTypes.func.isRequired
+    setSegment: PropTypes.func.isRequired,
+    pageParam: PropTypes.string
+  }
+
+  static defaultProps = {
+    pageParam: PAGINATION_PARAM_NAME
   }
 
   constructor(props) {
@@ -43,7 +48,8 @@ class Paginator extends Component {
       itemsPerPage: this.props.itemsPerPage,
       location: this.props.location,
       history: this.props.history,
-      setSegment: this.props.setSegment
+      setSegment: this.props.setSegment,
+      pageParam: this.props.pageParam
     })
   }
 
@@ -61,7 +67,8 @@ class Paginator extends Component {
         itemsPerPage: nextProps.itemsPerPage,
         location: nextProps.location,
         history: nextProps.history,
-        setSegment: nextProps.setSegment
+        setSegment: nextProps.setSegment,
+        pageParam: this.props.pageParam
       })
     }
   }
@@ -69,7 +76,7 @@ class Paginator extends Component {
   setCurrentSegment(options) {
     if (!options.itemsLength) return options.setSegment([])
 
-    const currentPage = parseInt(parseQuery(options.location.search)[PAGINATION_PARAM_NAME] || 1, 10)
+    const currentPage = parseInt(parseQuery(options.location.search)[options.pageParam] || 1, 10)
     const lastPage = Math.ceil(options.itemsLength / options.itemsPerPage)
 
     // Pagination Direction
@@ -114,7 +121,7 @@ class Paginator extends Component {
     // In case page is out of bounds, redirect
     if (currentPage !== 1 && lowerBound > options.itemsLength) {
       let updatedSearch = parseQuery(options.location.search)
-      delete updatedSearch[PAGINATION_PARAM_NAME]
+      delete updatedSearch[options.pageParam]
       updatedSearch = makeQuery(updatedSearch)
 
       options.history.replace({
@@ -160,22 +167,22 @@ class Paginator extends Component {
     let backQuery
     if (currentPage === 1 || currentPage - 1 === 1) {
       const queryParams = parseQuery(options.location.search)
-      delete queryParams[PAGINATION_PARAM_NAME]
+      delete queryParams[options.pageParam]
       backQuery = makeQuery(queryParams)
     } else {
       const queryParams = parseQuery(options.location.search)
-      queryParams[PAGINATION_PARAM_NAME] = currentPage - 1
+      queryParams[options.pageParam] = currentPage - 1
       backQuery = makeQuery(queryParams)
     }
     //    Forward
     let forwardQuery
     if (currentPage * options.itemsPerPage >= totalItems) {
       const queryParams = parseQuery(options.location.search)
-      queryParams[PAGINATION_PARAM_NAME] = currentPage
+      queryParams[options.pageParam] = currentPage
       forwardQuery = makeQuery(queryParams)
     } else {
       const queryParams = parseQuery(options.location.search)
-      queryParams[PAGINATION_PARAM_NAME] = currentPage + 1
+      queryParams[options.pageParam] = currentPage + 1
       forwardQuery = makeQuery(queryParams)
     }
 
