@@ -62,7 +62,7 @@ describe("create-market/create-binary-market", function () {
         return {
           Universe: {
             createMarket: function (p) {
-              assert.deepEqual(p.tx, { to: "UNIVERSE_ADDRESS", value: "0xf43fc2c04ee0000", gas: "0x5b8d80" });
+              assert.deepEqual(p.tx, { to: "UNIVERSE_ADDRESS", value: "0xf43fc2c04ee0000", gas: "0x632ea0" });
               assert.strictEqual(p._endTime, 2345678901);
               assert.strictEqual(p._numOutcomes, 2);
               assert.strictEqual(p._feePerEthInWei, "0x4321");
