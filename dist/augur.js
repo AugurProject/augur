@@ -12268,8 +12268,7 @@ function createMarket(p) {
     if (err) return p.onFailed(err);
     var numTicks = p._numTicks || speedomatic.prefixHex(new BigNumber(p.maxPrice, 10).minus(new BigNumber(p.minPrice, 10)).times(constants.DEFAULT_NUM_TICKS[p._numOutcomes]).toString(16));
     var extraInfo = assign({}, p._extraInfo || {}, { minPrice: p.minPrice, maxPrice: p.maxPrice });
-    var tx = { to: p.universe, value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex") };
-    if (p._numOutcomes > 2) tx.gas = "0x5b8d80";
+    var tx = { to: p.universe, value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"), gas: "0x5b8d80" };
     api().Universe.createMarket(assign({}, immutableDelete(p, ["universe", "minPrice", "maxPrice"]), {
       tx: tx,
       _feePerEthInWei: p._feePerEthInWei,
@@ -12319,7 +12318,6 @@ module.exports = createScalarMarket;
  */
 
 var async = require("async");
-var assign = require("lodash.assign");
 var speedomatic = require("speedomatic");
 var api = require("../api");
 
@@ -12332,32 +12330,30 @@ var api = require("../api");
  */
 function getMarketCreationCostBreakdown(p, callback) {
   var universePayload = { tx: { to: p.universe, send: false } };
-  api().Universe.getOrCacheDesignatedReportNoShowBond(universePayload, function (err, designatedReportNoShowBond) {
-    if (err) return callback(err);
-    async.parallel({
-      targetReporterGasCosts: function targetReporterGasCosts(next) {
-        api().Universe.getOrCacheTargetReporterGasCosts(universePayload, function (err, targetReporterGasCosts) {
-          if (err) return next(err);
-          next(null, speedomatic.unfix(targetReporterGasCosts, "string"));
-        });
-      },
-      validityBond: function validityBond(next) {
-        api().Universe.getOrCacheValidityBond(universePayload, function (err, validityBond) {
-          if (err) return next(err);
-          next(null, speedomatic.unfix(validityBond, "string"));
-        });
-      }
-    }, function (err, marketCreationCostBreakdown) {
-      if (err) return callback(err);
-      callback(null, assign(marketCreationCostBreakdown, {
-        designatedReportNoShowReputationBond: speedomatic.unfix(designatedReportNoShowBond, "string")
-      }));
-    });
-  });
+  async.parallel({
+    designatedReportNoShowReputationBond: function designatedReportNoShowReputationBond(next) {
+      api().Universe.getOrCacheDesignatedReportNoShowBond(universePayload, function (err, designatedReportNoShowBond) {
+        if (err) return next(err);
+        next(null, speedomatic.unfix(designatedReportNoShowBond, "string"));
+      });
+    },
+    targetReporterGasCosts: function targetReporterGasCosts(next) {
+      api().Universe.getOrCacheTargetReporterGasCosts(universePayload, function (err, targetReporterGasCosts) {
+        if (err) return next(err);
+        next(null, speedomatic.unfix(targetReporterGasCosts, "string"));
+      });
+    },
+    validityBond: function validityBond(next) {
+      api().Universe.getOrCacheValidityBond(universePayload, function (err, validityBond) {
+        if (err) return next(err);
+        next(null, speedomatic.unfix(validityBond, "string"));
+      });
+    }
+  }, callback);
 }
 
 module.exports = getMarketCreationCostBreakdown;
-},{"../api":15,"async":152,"lodash.assign":251,"speedomatic":1020}],38:[function(require,module,exports){
+},{"../api":15,"async":152,"speedomatic":1020}],38:[function(require,module,exports){
 "use strict";
 
 /** Type definition for MarketCreationCost.
@@ -12366,6 +12362,7 @@ module.exports = getMarketCreationCostBreakdown;
  * @property {string} etherRequiredToCreateMarket Sum of the Ether required to pay for Reporters' gas costs and the validity bond, as a base-10 string.
  */
 
+var async = require("async");
 var speedomatic = require("speedomatic");
 var api = require("../api");
 
@@ -12378,20 +12375,24 @@ var api = require("../api");
  */
 function getMarketCreationCost(p, callback) {
   var universePayload = { tx: { to: p.universe, send: false } };
-  api().Universe.getOrCacheDesignatedReportNoShowBond(universePayload, function (err, designatedReportNoShowBond) {
-    if (err) return callback(err);
-    api().Universe.getOrCacheMarketCreationCost(universePayload, function (err, marketCreationCost) {
-      if (err) return callback(err);
-      callback(null, {
-        designatedReportNoShowReputationBond: speedomatic.unfix(designatedReportNoShowBond, "string"),
-        etherRequiredToCreateMarket: speedomatic.unfix(marketCreationCost, "string")
+  async.parallel({
+    designatedReportNoShowReputationBond: function designatedReportNoShowReputationBond(next) {
+      api().Universe.getOrCacheDesignatedReportNoShowBond(universePayload, function (err, designatedReportNoShowBond) {
+        if (err) return next(err);
+        next(null, speedomatic.unfix(designatedReportNoShowBond, "string"));
       });
-    });
-  });
+    },
+    etherRequiredToCreateMarket: function etherRequiredToCreateMarket(next) {
+      api().Universe.getOrCacheMarketCreationCost(universePayload, function (err, marketCreationCost) {
+        if (err) return next(err);
+        next(null, speedomatic.unfix(marketCreationCost, "string"));
+      });
+    }
+  }, callback);
 }
 
 module.exports = getMarketCreationCost;
-},{"../api":15,"speedomatic":1020}],39:[function(require,module,exports){
+},{"../api":15,"async":152,"speedomatic":1020}],39:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -14994,7 +14995,7 @@ module.exports = sha256;
 'use strict';
 
 // generated by genversion
-module.exports = '4.7.0-4';
+module.exports = '4.7.0-5';
 },{}],136:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
