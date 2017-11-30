@@ -36,7 +36,7 @@ function fillAskOrder(universe, fillerAddress, outcomeToTrade, sharesToTrade, ca
         var orderIDToFill = Object.keys(orders[marketID][outcomeToTrade].sell)[0];
         var orderToFill = orders[marketID][outcomeToTrade].sell[orderIDToFill];
         console.log("filling order:", orderIDToFill, orderToFill);
-        var tradePayload = {
+        augur.trading.tradeUntilAmountIsZero({
           _fxpAmount: sharesToTrade,
           _price: augur.trading.normalizePrice({ minPrice: marketInfo.minPrice, maxPrice: marketInfo.maxPrice, price: orderToFill.fullPrecisionPrice.toString() }),
           numTicks: marketInfo.numTicks,
@@ -48,37 +48,6 @@ function fillAskOrder(universe, fillerAddress, outcomeToTrade, sharesToTrade, ca
           onSent: function () {},
           onSuccess: function (tradeAmountRemaining) { callback(null, tradeAmountRemaining); },
           onFailed: callback,
-        };
-        // TODO remove shareToken approvals after contracts upgraded
-        augur.api.Market.getShareToken({ tx: { to: marketID }, _outcome: outcomeToTrade }, function (err, shareToken) {
-          if (err) return callback(err);
-          augur.api.ShareToken.allowance({
-            tx: { to: shareToken },
-            _owner: fillerAddress,
-            _spender: augur.contracts.addresses[augur.rpc.getNetworkID()].Order,
-          }, function (err, allowance) {
-            if (err) return callback(err);
-            if (new BigNumber(allowance, 10).eq(new BigNumber(constants.ETERNAL_APPROVAL_VALUE, 16))) {
-              augur.trading.tradeUntilAmountIsZero(tradePayload);
-            } else {
-              augur.api.ShareToken.approve({
-                tx: { to: shareToken },
-                _spender: augur.contracts.addresses[augur.rpc.getNetworkID()].Order,
-                _value: constants.ETERNAL_APPROVAL_VALUE,
-                onSent: function (res) {
-                  console.log("ShareToken.approve sent:", res.hash);
-                },
-                onSuccess: function (res) {
-                  console.log("ShareToken.approve success:", res.callReturn);
-                  augur.trading.tradeUntilAmountIsZero(tradePayload);
-                },
-                onFailed: function (err) {
-                  console.error("ShareToken.approve failed:", err);
-                  callback(err);
-                },
-              });
-            }
-          });
         });
       });
     });
