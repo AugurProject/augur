@@ -8,7 +8,6 @@
  */
 
 var async = require("async");
-var assign = require("lodash.assign");
 var speedomatic = require("speedomatic");
 var api = require("../api");
 
@@ -21,28 +20,26 @@ var api = require("../api");
  */
 function getMarketCreationCostBreakdown(p, callback) {
   var universePayload = { tx: { to: p.universe, send: false } };
-  api().Universe.getOrCacheDesignatedReportNoShowBond(universePayload, function (err, designatedReportNoShowBond) {
-    if (err) return callback(err);
-    async.parallel({
-      targetReporterGasCosts: function (next) {
-        api().Universe.getOrCacheTargetReporterGasCosts(universePayload, function (err, targetReporterGasCosts) {
-          if (err) return next(err);
-          next(null, speedomatic.unfix(targetReporterGasCosts, "string"));
-        });
-      },
-      validityBond: function (next) {
-        api().Universe.getOrCacheValidityBond(universePayload, function (err, validityBond) {
-          if (err) return next(err);
-          next(null, speedomatic.unfix(validityBond, "string"));
-        });
-      },
-    }, function (err, marketCreationCostBreakdown) {
-      if (err) return callback(err);
-      callback(null, assign(marketCreationCostBreakdown, {
-        designatedReportNoShowReputationBond: speedomatic.unfix(designatedReportNoShowBond, "string"),
-      }));
-    });
-  });
+  async.parallel({
+    designatedReportNoShowReputationBond: function (next) {
+      api().Universe.getOrCacheDesignatedReportNoShowBond(universePayload, function (err, designatedReportNoShowBond) {
+        if (err) return next(err);
+        next(null, speedomatic.unfix(designatedReportNoShowBond, "string"));
+      });
+    },
+    targetReporterGasCosts: function (next) {
+      api().Universe.getOrCacheTargetReporterGasCosts(universePayload, function (err, targetReporterGasCosts) {
+        if (err) return next(err);
+        next(null, speedomatic.unfix(targetReporterGasCosts, "string"));
+      });
+    },
+    validityBond: function (next) {
+      api().Universe.getOrCacheValidityBond(universePayload, function (err, validityBond) {
+        if (err) return next(err);
+        next(null, speedomatic.unfix(validityBond, "string"));
+      });
+    },
+  }, callback);
 }
 
 module.exports = getMarketCreationCostBreakdown;

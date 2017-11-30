@@ -752,7 +752,7 @@ function createOrder(marketID, outcome, numOutcomes, maxPrice, minPrice, orderTy
   }
   if (DEBUG) console.log("cost:", speedomatic.unfix(bnCost, "string"));
   var params = {
-    tx: { value: "0x" + bnCost.toString(16) },
+    tx: { value: "0x" + bnCost.toString(16), gas: "0x5b8d80" },
     _type: orderTypeCode,
     _attoshares: "0x" + bnShares.toString(16),
     _displayPrice: "0x" + bnPrice.toString(16),
@@ -778,9 +778,9 @@ function createOrder(marketID, outcome, numOutcomes, maxPrice, minPrice, orderTy
 }
 
 function createOrderBook(marketID, numOutcomes, maxPrice, minPrice, orderBook, callback) {
-  async.forEachOfSeries(orderBook, function (orders, orderType, nextOrderType) {
+  async.forEachOf(orderBook, function (orders, orderType, nextOrderType) {
     if (DEBUG) console.log("orderType:", orderType);
-    async.forEachOfSeries(orders, function (outcomeOrders, outcome, nextOutcome) {
+    async.forEachOf(orders, function (outcomeOrders, outcome, nextOutcome) {
       if (DEBUG) console.log("outcome:", outcome);
       async.each(outcomeOrders, function (order, nextOrder) {
         createOrder(marketID, parseInt(outcome, 10), numOutcomes, maxPrice, minPrice, orderType, order, nextOrder);
@@ -794,7 +794,6 @@ function createNewMarket(market, callback) {
   switch (market._extraInfo.marketType) {
     case "categorical":
       createMarket = augur.createMarket.createCategoricalMarket;
-      market.tx = { gas: "0x5b8d80" };
       break;
     case "scalar":
       createMarket = augur.createMarket.createScalarMarket;

@@ -16,7 +16,7 @@ augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
     if (err) return console.error(err);
     console.log("approve ok");
     var txObj = {
-      tx: { value: "0x470de4df820000" },
+      tx: { value: "0x470de4df820000", gas: "0x5b8d80" },
       _type: 0,
       _attoshares: "0x9184e72a000",
       _displayPrice: "0x7d0",

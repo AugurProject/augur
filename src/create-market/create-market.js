@@ -33,8 +33,7 @@ function createMarket(p) {
     if (err) return p.onFailed(err);
     var numTicks = p._numTicks || speedomatic.prefixHex(new BigNumber(p.maxPrice, 10).minus(new BigNumber(p.minPrice, 10)).times(constants.DEFAULT_NUM_TICKS[p._numOutcomes]).toString(16));
     var extraInfo = assign({}, p._extraInfo || {}, { minPrice: p.minPrice, maxPrice: p.maxPrice });
-    var tx = { to: p.universe, value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex") };
-    if (p._numOutcomes > 2) tx.gas = "0x5b8d80";
+    var tx = { to: p.universe, value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"), gas: "0x5b8d80" };
     api().Universe.createMarket(assign({}, immutableDelete(p, ["universe", "minPrice", "maxPrice"]), {
       tx: tx,
       _feePerEthInWei: p._feePerEthInWei,

@@ -6,6 +6,7 @@
  * @property {string} etherRequiredToCreateMarket Sum of the Ether required to pay for Reporters' gas costs and the validity bond, as a base-10 string.
  */
 
+var async = require("async");
 var speedomatic = require("speedomatic");
 var api = require("../api");
 
@@ -18,16 +19,20 @@ var api = require("../api");
  */
 function getMarketCreationCost(p, callback) {
   var universePayload = { tx: { to: p.universe, send: false } };
-  api().Universe.getOrCacheDesignatedReportNoShowBond(universePayload, function (err, designatedReportNoShowBond) {
-    if (err) return callback(err);
-    api().Universe.getOrCacheMarketCreationCost(universePayload, function (err, marketCreationCost) {
-      if (err) return callback(err);
-      callback(null, {
-        designatedReportNoShowReputationBond: speedomatic.unfix(designatedReportNoShowBond, "string"),
-        etherRequiredToCreateMarket: speedomatic.unfix(marketCreationCost, "string"),
+  async.parallel({
+    designatedReportNoShowReputationBond: function (next) {
+      api().Universe.getOrCacheDesignatedReportNoShowBond(universePayload, function (err, designatedReportNoShowBond) {
+        if (err) return next(err);
+        next(null, speedomatic.unfix(designatedReportNoShowBond, "string"));
       });
-    });
-  });
+    },
+    etherRequiredToCreateMarket: function (next) {
+      api().Universe.getOrCacheMarketCreationCost(universePayload, function (err, marketCreationCost) {
+        if (err) return next(err);
+        next(null, speedomatic.unfix(marketCreationCost, "string"));
+      });
+    },
+  }, callback);
 }
 
 module.exports = getMarketCreationCost;
