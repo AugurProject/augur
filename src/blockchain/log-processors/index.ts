@@ -11,9 +11,11 @@ import { processWinningTokensRedeemedLog, processWinningTokensRedeemedLogRemoval
 import { processReportsDisputedLog, processReportsDisputedLogRemoval } from "./reports-disputed";
 import { processMarketFinalizedLog, processMarketFinalizedLogRemoval } from "./market-finalized";
 import { processUniverseForkedLog, processUniverseForkedLogRemoval } from "./universe-forked";
-import { processTransferLog, processTransferLogRemoval } from "./legacy-rep-contract/transfer";
-import { processApprovalLog, processApprovalLogRemoval } from "./legacy-rep-contract/approval";
-import { processMintLog } from "./legacy-rep-contract/mint";
+import { processTransferLog, processTransferLogRemoval } from "./token/transfer";
+import { processApprovalLog, processApprovalLogRemoval } from "./token/approval";
+import { processMintLog, processMintLogRemoval } from "./token/mint";
+import { processBurnLog, processBurnLogRemoval } from "./token/burn";
+import { processFundedAccountLog } from "./token/funded-account";
 
 export const logProcessors: LogProcessors = {
   Augur: {
@@ -24,6 +26,10 @@ export const logProcessors: LogProcessors = {
     TokensTransferred: {
       add: processTokensTransferredLog,
       remove: processTokensTransferredLogRemoval,
+    },
+    TokensMinted: {
+      add: processMintLog,
+      remove: processMintLogRemoval,
     },
     OrderCanceled: {
       add: processOrderCanceledLog,
@@ -79,7 +85,29 @@ export const logProcessors: LogProcessors = {
     },
     Mint: {
       add: processMintLog,
+      remove: processMintLogRemoval,
+    },
+    FundedAccount: {
+      add: processFundedAccountLog,
+      remove: processFundedAccountLog,
+    },
+  },
+  Cash: {
+    Transfer: {
+      add: processTransferLog,
       remove: processTransferLogRemoval,
+    },
+    Approval: {
+      add: processApprovalLog,
+      remove: processApprovalLogRemoval,
+    },
+    Mint: {
+      add: processMintLog,
+      remove: processMintLogRemoval,
+    },
+    Burn: {
+      add: processBurnLog,
+      remove: processBurnLogRemoval,
     },
   },
 };

@@ -1,13 +1,17 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { Int256, FormattedLog, Block } from "../types";
+import { Int256, FormattedEventLog, Block } from "../types";
 import { logProcessors } from "./log-processors";
 import { makeLogListener } from "./make-log-listener";
 import { processBlock, processBlockRemoval } from "./process-block";
 import { logError } from "../utils/log-error";
 
 export function startAugurListeners(db: Knex, augur: Augur): void {
-  augur.events.startListeners({
+  augur.events.startBlockListeners({
+    onAdded: (block: Block): void => processBlock(db, augur, block),
+    onRemoved: (block: Block): void => processBlockRemoval(db, block),
+  });
+  augur.events.startBlockchainEventListeners({
     Augur: {
       MarketCreated: makeLogListener(db, augur, "Augur", "MarketCreated"),
       TokensTransferred: makeLogListener(db, augur, "Augur", "TokensTransferred"),
@@ -26,7 +30,5 @@ export function startAugurListeners(db: Knex, augur: Augur): void {
       Transfer: makeLogListener(db, augur, "LegacyReputationToken", "Transfer"),
       Approval: makeLogListener(db, augur, "LegacyReputationToken", "Approval"),
     },
-  }, (block: Block): void => processBlock(db, augur, block),
-    (block: Block): void => processBlockRemoval(db, block),
-    (): void => {});
+  }, callback);
 }

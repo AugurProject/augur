@@ -30,6 +30,12 @@ export function processBlock(db: Knex, augur: Augur, block: Block): void {
   });
 }
 
+export function processBlockByNumber(db: Knex, augur: Augur, blockNumber: number): void {
+  augur.rpc.eth.getBlockByNumber([blockNumber, false], (block: Block): void => {
+    processBlock(db, augur, block);
+  });
+}
+
 export function processBlockRemoval(db: Knex, block: Block): void {
   const blockNumber = parseInt(block.number, 16);
   console.log("block removed:", blockNumber);

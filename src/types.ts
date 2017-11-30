@@ -1,7 +1,7 @@
-import { Augur } from "augur.js";
-import * as Knex from "knex";
+import { Augur, FormattedEventLog } from "augur.js";
+export { Block, FormattedEventLog } from "augur.js";
 
-export { Block } from "augur.js";
+import * as Knex from "knex";
 
 export enum ReportingState {
   PRE_REPORTING = "PRE_REPORTING",
@@ -53,28 +53,11 @@ export type Address = string;
 export type Bytes32 = string;
 export type Int256 = string;
 
-export interface Log {
-  blockNumber: number;
-  logIndex: number;
-  transactionIndex: Int256;
-  transactionHash: Bytes32;
-  address: Address;
-  categories: Array<Int256>;
-  data: AbiEncodedData;
-}
-
-export interface FormattedLog {
-  blockNumber: number;
-  transactionHash: Bytes32;
-  logIndex: number;
-  address: Address;
-  [inputName: string]: any;
-}
-
 export interface MarketCreatedLogExtraInfo {
   minPrice: string;
   maxPrice: string;
   tags?: Array<string|null>;
+  outcomeNames?: Array<string|number|null>;
   description: string;
   longDescription?: string|null;
   resolutionSource?: string|null;
@@ -90,17 +73,11 @@ export interface MarketCreatedOnContractInfo {
   numTicks: string;
 }
 
-export interface AugurLogs {
-  [contractName: string]: {
-    [eventName: string]: Array<FormattedLog>;
-  };
-}
-
 export type ErrorCallback = (err?: Error|null) => void;
 
 export type AsyncCallback = (err?: Error|null, result?: any) => void;
 
-export type LogProcessor = (db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedLog, callback: ErrorCallback) => void;
+export type LogProcessor = (db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback) => void;
 
 export interface EventLogProcessor {
   add: LogProcessor;
@@ -183,11 +160,33 @@ export interface MarketsRow {
   isInvalid?: boolean|null;
 }
 
+export interface PositionsRow {
+  outcome: number;
+  marketID?: Address;
+  numShares?: string|number;
+  account?: Address;
+  realizedProfitLoss?: string|number;
+  unrealizedProfitLoss?: string|number;
+  numSharesAdjustedForUserIntention?: string|number;
+}
+
 export interface OutcomesRow {
   marketID: Address;
   outcome: number;
   price: string|number;
-  sharesOutstanding: string|number;
+  volume: string|number;
+  description: string|null;
+}
+
+export interface TokensRow {
+  contractAddress?: Address;
+  symbol: string;
+  marketID: Address;
+  outcome?: number;
+}
+
+export interface CategoriesRow {
+  popularity: string|number;
 }
 
 export interface BlocksRow {
@@ -245,8 +244,9 @@ export interface UIConsensusInfo {
 
 export interface UIOutcomeInfo {
   id: number;
-  outstandingShares: string|number;
-  price: string|number|null;
+  volume: string|number;
+  price: string|number;
+  description: string|null;
 }
 
 export interface UIMarketInfo {
@@ -325,6 +325,8 @@ export interface UITrade {
   price: string;
   amount: string;
   maker: boolean;
+  marketCreatorFees: string;
+  reporterFees: string;
   settlementFees: string;
   marketID: Address;
   outcome: number;
@@ -347,7 +349,8 @@ export interface TradesRow extends BaseTransactionRow {
   numFillerShares: string;
   price: string;
   amount: string;
-  settlementFees: string;
+  marketCreatorFees: string;
+  reporterFees: string;
   tradeGroupID: Bytes32|null;
 }
 

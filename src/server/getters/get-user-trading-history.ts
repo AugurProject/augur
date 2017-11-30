@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import { Address, Bytes32, TradesRow, UITrade } from "../../types";
 import { queryModifier } from "./database";
@@ -20,7 +21,8 @@ export function getUserTradingHistory(db: Knex|Knex.Transaction, universe: Addre
     "trades.creator",
     "trades.shareToken",
     "trades.blockNumber",
-    "trades.settlementFees",
+    "trades.marketCreatorFees",
+    "trades.reporterFees",
     "trades.tradeGroupID",
     "blocks.timestamp",
   ]).from("trades");
@@ -46,7 +48,9 @@ export function getUserTradingHistory(db: Knex|Knex.Transaction, universe: Addre
       price: trade.price!,
       amount: trade.amount!,
       maker: account === trade.creator!,
-      settlementFees: trade.settlementFees!,
+      marketCreatorFees: trade.marketCreatorFees!,
+      reporterFees: trade.reporterFees!,
+      settlementFees: new BigNumber(trade.reporterFees!, 10).plus(new BigNumber(trade.marketCreatorFees!, 10)).toFixed(),
       marketID: trade.marketID!,
       outcome: trade.outcome!,
       shareToken: trade.shareToken!,
