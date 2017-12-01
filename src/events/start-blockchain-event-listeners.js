@@ -14,8 +14,12 @@ var noop = require("../utils/noop");
  * @param {Object.<function>=} eventCallbacks Callbacks to fire when events are received, keyed by contract name and event name.
  * @param {function=} onSetupComplete Called when all listeners are successfully set up.
  */
-function startBlockchainEventListeners(eventCallbacks, onSetupComplete) {
+function startBlockchainEventListeners(eventCallbacks, startingBlockNumber, onSetupComplete) {
   if (!isFunction(onSetupComplete)) onSetupComplete = noop;
+  if (typeof startingBlockNumber !== "undefined") {
+    console.log("starting blockstream at ", startingBlockNumber);
+    ethrpc.startBlockStream(startingBlockNumber);
+  }
   var blockStream = ethrpc.getBlockStream();
   if (!blockStream) return onSetupComplete(new Error("Not connected to Ethereum"));
   if (!isObject(eventCallbacks)) return onSetupComplete(new Error("No event callbacks found"));

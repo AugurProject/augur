@@ -184,7 +184,7 @@ export class Augur {
     getAllAugurLogs: ApiFunction;
     startBlockListeners(blockCallbacks: BlockSubscriptionCallbacks): boolean;
     stopBlockListeners(): boolean;
-    startBlockchainEventListeners(eventCallbacks: EventSubscriptionCallbacksKeyedByContract, onSetupComplete?: (err: Error|null) => void): void;
+    startBlockchainEventListeners(eventCallbacks: EventSubscriptionCallbacksKeyedByContract, startingBlockNumber: number, onSetupComplete?: (err: Error|null) => void): void;
     stopBlockchainEventListeners(): boolean;
     startAugurNodeEventListeners(eventCallbacks: EventSubscriptionCallbacks, onSetupComplete?: (err: Error|null) => void): void;
     stopAugurNodeEventListeners(callback?: (err: Error|null) => void): void;

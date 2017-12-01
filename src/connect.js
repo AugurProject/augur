@@ -25,6 +25,7 @@ function connect(connectOptions, callback) {
   var ethereumNodeConnectOptions = {
     rpc: ethrpc,
     contracts: contracts.addresses,
+    startBlockStreamOnConnect: connectOptions.startBlockStreamOnConnect,
     abi: contracts.abi,
     httpAddresses: [],
     wsAddresses: [],
