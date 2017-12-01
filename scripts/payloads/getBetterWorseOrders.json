@@ -1,0 +1,10 @@
+{
+  "id": 22,
+  "jsonrpc": "2.0",
+  "method": "getBetterWorseOrders",
+  "params": {
+    "marketID": "0x0000000000000000000000000000000000000001",
+    "outcome": 1,
+    "normalizedPrice": "1.29282"
+  }
+}
