@@ -1,27 +1,27 @@
 import BigNumber from 'bignumber.js'
 import { augur } from 'services/augurjs'
-import updateAssets from 'modules/auth/actions/update-assets'
+import { updateAssets } from 'modules/auth/actions/update-assets'
 import { syncBlockchain } from 'modules/app/actions/sync-blockchain'
 import syncUniverse from 'modules/universe/actions/sync-universe'
-import convertLogsToTransactions from 'modules/transactions/actions/convert-logs-to-transactions'
+import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import { updateOutcomePrice } from 'modules/markets/actions/update-outcome-price'
 // import { fillOrder } from 'modules/bids-asks/actions/update-market-order-book'
 import { updateMarketTopicPopularity } from 'modules/topics/actions/update-topics'
-import { updateAccountBidsAsksData, updateAccountCancelsData, updateAccountTradesData } from 'modules/my-positions/actions/update-account-trades-data'
-import { claimTradingProceeds } from 'modules/my-positions/actions/claim-trading-proceeds'
+import { updateAccountBidsAsksData, updateAccountCancelsData, updateAccountPositionsData } from 'modules/my-positions/actions/update-account-trades-data'
+import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
 import * as TYPES from 'modules/transactions/constants/types'
 
 export function listenToUpdates() {
   return (dispatch, getState) => {
     augur.events.startBlockListeners({
       onAdded: (block) => {
-        // console.log('block added:', block)
+        console.log('block added:', block)
         dispatch(syncBlockchain())
         dispatch(syncUniverse())
       },
       onRemoved: (block) => {
-        // console.log('block removed:', block)
+        console.log('block removed:', block)
         dispatch(syncBlockchain())
         dispatch(syncUniverse())
       }
@@ -30,7 +30,7 @@ export function listenToUpdates() {
       MarketCreated: (err, log) => {
         if (err) return console.error('MarketCreated:', err)
         if (log) {
-          // console.log('MarketCreated:', log)
+          console.log('MarketCreated:', log)
           dispatch(loadMarketsInfo([log.marketID]))
           if (log.sender === getState().loginAccount.address) {
             dispatch(updateAssets())
@@ -41,7 +41,7 @@ export function listenToUpdates() {
       TokensTransferred: (err, log) => {
         if (err) return console.error('TokensTransferred:', err)
         if (log) {
-          // console.log('TokensTransferred:', log)
+          console.log('TokensTransferred:', log)
           const { address } = getState().loginAccount
           if (log._from === address || log._to === address) {
             dispatch(updateAssets())
@@ -66,7 +66,7 @@ export function listenToUpdates() {
         if (err) return console.error('OrderCreated:', err)
         if (log) {
           console.log('OrderCreated:', log)
-          // // if this is the user's order, then add it to the transaction display
+          // if this is the user's order, then add it to the transaction display
           if (log.sender === getState().loginAccount.address) {
             dispatch(updateAccountBidsAsksData({
               [log.marketID]: {
@@ -87,7 +87,7 @@ export function listenToUpdates() {
           // TODO: need to figure out what's going to happen here instead.
           // if (log.sender !== address) dispatch(fillOrder(log))
           if (log.sender === address || log.owner === address) {
-            dispatch(updateAccountTradesData({
+            dispatch(updateAccountPositionsData({
               [log.marketID]: { [log.outcome]: [{
                 ...log,
                 maker: log.creator === address
