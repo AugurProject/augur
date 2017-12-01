@@ -5,6 +5,7 @@ var createRpcInterface = function (ethrpc) {
     errors: ethrpc.errors,
     eth: ethrpc.eth,
     clear: ethrpc.clear,
+    startBlockStream: ethrpc.startBlockStream,
     getBlockStream: ethrpc.getBlockStream,
     getCoinbase: ethrpc.getCoinbase,
     getCurrentBlock: ethrpc.getCurrentBlock,
