@@ -6,11 +6,7 @@ import { makeLogListener } from "./make-log-listener";
 import { processBlock, processBlockRemoval } from "./process-block";
 import { logError } from "../utils/log-error";
 
-export function startAugurListeners(db: Knex, augur: Augur, callback: (err: Error|null) => void): void {
-  augur.events.startBlockListeners({
-    onAdded: (block: Block): void => processBlock(db, augur, block),
-    onRemoved: (block: Block): void => processBlockRemoval(db, block),
-  });
+export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: number): void {
   augur.events.startBlockchainEventListeners({
     Augur: {
       MarketCreated: makeLogListener(db, augur, "Augur", "MarketCreated"),
@@ -30,5 +26,10 @@ export function startAugurListeners(db: Knex, augur: Augur, callback: (err: Erro
       Transfer: makeLogListener(db, augur, "LegacyReputationToken", "Transfer"),
       Approval: makeLogListener(db, augur, "LegacyReputationToken", "Approval"),
     },
-  }, callback);
+  }, highestBlockNumber, (err: Error) => {
+    augur.events.startBlockListeners({
+      onAdded: (block: Block): void => processBlock(db, augur, block),
+      onRemoved: (block: Block): void => processBlockRemoval(db, block),
+    });
+  });
 }
