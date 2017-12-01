@@ -27,13 +27,17 @@ class MyMarkets extends Component {
     // NOTE: from here to this.state was added to sort markets, this might need to be more robust in the future.
     const reportingMarkets = []
     const designatedReportingMarkets = []
+    const filteredMarketsReporting = []
+    const filteredMarketsDesignatedReporting = []
     this.reportingStates = constants.REPORTING_STATE
 
     this.props.myMarkets.forEach((market, index) => {
       if (market.reportingState === this.reportingStates.DESIGNATED_REPORTING) {
-        designatedReportingMarkets.push(index)
+        designatedReportingMarkets.push(market)
+        filteredMarketsDesignatedReporting.push(market.id)
       } else if (market.reportingState === this.reportingStates.FIRST_REPORTING || market.reportingState === this.reportingStates.LAST_REPORTING) {
-        reportingMarkets.push(index)
+        reportingMarkets.push(market)
+        filteredMarketsReporting.push(market.id)
       }
     })
 
@@ -72,8 +76,10 @@ class MyMarkets extends Component {
       ],
       filterDefaultDesignatedReporting: 'sports',
       filterTypeDesignatedReporting: 'sports',
-      filteredMarketsReporting: reportingMarkets,
-      filteredMarketsDesignatedReporting: designatedReportingMarkets
+      reportingMarkets,
+      designatedReportingMarkets,
+      filteredMarketsReporting,
+      filteredMarketsDesignatedReporting
     }
 
     this.changeDropdown = this.changeDropdown.bind(this)
@@ -90,16 +96,20 @@ class MyMarkets extends Component {
     if (this.props.myMarkets !== nextProps.myMarkets) {
       const reportingMarkets = []
       const designatedReportingMarkets = []
+      const filteredMarketsReporting = []
+      const filteredMarketsDesignatedReporting = []
 
       nextProps.myMarkets.forEach((market, index) => {
         if (market.reportingState === this.reportingStates.DESIGNATED_REPORTING) {
-          designatedReportingMarkets.push(market.id)
+          designatedReportingMarkets.push(market)
+          filteredMarketsDesignatedReporting.push(market.id)
         } else if (market.reportingState === this.reportingStates.FIRST_REPORTING || market.reportingState === this.reportingStates.LAST_REPORTING) {
-          reportingMarkets.push(market.id)
+          reportingMarkets.push(market)
+          filteredMarketsReporting.push(market.id)
         }
       })
 
-      this.setState({ filteredMarketsReporting: reportingMarkets, filteredMarketsDesignatedReporting: designatedReportingMarkets })
+      this.setState({ filteredMarketsReporting, reportingMarkets, filteredMarketsDesignatedReporting, designatedReportingMarkets })
     }
   }
 
@@ -173,7 +183,7 @@ class MyMarkets extends Component {
         </div>
         <MarketsList
           isLogged={p.isLogged}
-          markets={p.myMarkets}
+          markets={s.reportingMarkets}
           filteredMarkets={s.filteredMarketsReporting}
           location={p.location}
           history={p.history}
@@ -204,7 +214,7 @@ class MyMarkets extends Component {
         </div>
         <MarketsList
           isLogged={p.isLogged}
-          markets={p.myMarkets}
+          markets={s.designatedReportingMarkets}
           filteredMarkets={s.filteredMarketsDesignatedReporting}
           location={p.location}
           history={p.history}
