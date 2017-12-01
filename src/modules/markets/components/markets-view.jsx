@@ -108,7 +108,7 @@ function loadMarkets(options) {
   if (options.canLoadMarkets) {
     const topic = parseQuery(options.location.search)[TOPIC_PARAM_NAME]
 
-    if (topic) {
+    if (topic && !options.hasLoadedTopic[topic]) {
       options.loadMarketsByTopic(topic)
     } else if (!topic) {
       options.loadMarkets()
