@@ -31,7 +31,7 @@ function getNetworkID(db: Knex, augur: Augur, callback: (err: Error|null, networ
 }
 
 export function syncAugurNodeWithBlockchain(db: Knex,  augur: Augur, ethereumNodeEndpoints: EthereumNodeEndpoints, uploadBlockNumbers: UploadBlockNumbers, callback: ErrorCallback): void {
-  augur.connect({ ethereumNode: ethereumNodeEndpoints }, (): void => {
+  augur.connect({ ethereumNode: ethereumNodeEndpoints, startBlockStreamOnConnect: false }, (): void => {
     console.log("Started blockchain event listeners", augur.rpc.getCurrentBlock());
     getNetworkID(db, augur, (err: Error|null, networkID: string|null) => {
       if (err) return callback(err);
@@ -47,7 +47,8 @@ export function syncAugurNodeWithBlockchain(db: Knex,  augur: Augur, ethereumNod
             downloadAugurLogs(db, augur, fromBlock, highestBlockNumber, (err?: Error|null): void => {
               if (err) return callback(err);
               db.insert({ highestBlockNumber }).into("blockchain_sync_history").asCallback(callback);
-              startAugurListeners(db, augur);
+              console.log(`Finished batch load from ${fromBlock} to ${highestBlockNumber}`);
+              startAugurListeners(db, augur, highestBlockNumber);
             });
           } else {
             callback(new Error("Please clear your augur.db and start over (must sync from scratch until issue #4386 is resolved)"));
