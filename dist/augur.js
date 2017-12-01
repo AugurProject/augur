@@ -34819,7 +34819,7 @@ module.exports={
   "_args": [
     [
       "elliptic@6.4.0",
-      "/Users/epheph/augur/augur.js"
+      "/storage/home/pg/Development/augur/augur.js"
     ]
   ],
   "_from": "elliptic@6.4.0",
@@ -34846,7 +34846,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
   "_spec": "6.4.0",
-  "_where": "/Users/epheph/augur/augur.js",
+  "_where": "/storage/home/pg/Development/augur/augur.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
