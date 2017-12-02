@@ -192,6 +192,7 @@ class MyMarkets extends Component {
           loadMarketsInfo={p.loadMarketsInfo}
           linkType={TYPE_REPORT}
           outstandingReturns
+          pageParam="reporting"
         />
         <div
           className={Styles.Markets__SortBar}
@@ -223,6 +224,7 @@ class MyMarkets extends Component {
           loadMarketsInfo={p.loadMarketsInfo}
           linkType={TYPE_REPORT}
           outstandingReturns
+          pageParam="designated"
         />
       </section>
     )
