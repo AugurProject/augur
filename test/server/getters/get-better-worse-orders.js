@@ -9,7 +9,7 @@ describe("server/getters/get-better-worse-orders", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getBetterWorseOrders(db, t.params.marketID, t.params.outcome, t.params.amount, t.params.normalizedPrice, (err, betterWorseOrders) => {
+        getBetterWorseOrders(db, t.params.marketID, t.params.outcome, t.params.amount, t.params.price, (err, betterWorseOrders) => {
           t.assertions(err, betterWorseOrders);
           done();
         });
@@ -22,7 +22,7 @@ describe("server/getters/get-better-worse-orders", () => {
       marketID: "0x0000000000000000000000000000000000000011",
       outcome: 1,
       amount: 1,
-      normalizedPrice: 2,
+      price: 2,
     },
     assertions: (err, betterWorseOrders) => {
       assert.isNull(err);
