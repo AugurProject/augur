@@ -3,8 +3,8 @@
 "use strict";
 
 var assert = require("chai").assert;
-var immutableDelete = require("immutable-delete");
 var proxyquire = require("proxyquire").noPreserveCache();
+var constants = require("../../../src/constants");
 
 describe("create-market/create-binary-market", function () {
   var extraInfo = {
@@ -36,7 +36,7 @@ describe("create-market/create-binary-market", function () {
       _denominationToken: "TOKEN_ADDRESS",
       _designatedReporterAddress: "DESIGNATED_REPORTER_ADDRESS",
       _topic: "TOPIC",
-      _extraInfo: immutableDelete(extraInfo, ["minPrice", "maxPrice"]),
+      _extraInfo: extraInfo,
       onSent: function (res) {
         assert.deepEqual(res, { callReturn: "1" });
       },
@@ -55,16 +55,15 @@ describe("create-market/create-binary-market", function () {
       api: function () {
         return {
           Universe: {
-            createMarket: function (p) {
-              assert.deepEqual(p.tx, { to: "UNIVERSE_ADDRESS", value: "0xf43fc2c04ee0000", gas: "0x632ea0" });
+            createBinaryMarket: function (p) {
+              assert.deepEqual(p.tx, { to: "UNIVERSE_ADDRESS", value: "0xf43fc2c04ee0000", gas: constants.CREATE_BINARY_MARKET_GAS });
               assert.strictEqual(p._endTime, 2345678901);
-              assert.strictEqual(p._numOutcomes, 2);
               assert.strictEqual(p._feePerEthInWei, "0x4321");
               assert.strictEqual(p._denominationToken, "TOKEN_ADDRESS");
               assert.strictEqual(p._designatedReporterAddress, "DESIGNATED_REPORTER_ADDRESS");
               assert.strictEqual(p._topic, "0x544f504943000000000000000000000000000000000000000000000000000000");
               assert.deepEqual(JSON.parse(p._extraInfo), extraInfo);
-              assert.strictEqual(p._numTicks, "0x2710");
+              assert.strictEqual(p._description, "Will this market be the One Market?");
               assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p.meta.accountType, "privateKey");
               assert.isFunction(p.onSent);

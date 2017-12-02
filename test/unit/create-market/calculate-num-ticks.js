@@ -3,7 +3,6 @@
 "use strict";
 
 var assert = require("chai").assert;
-var BigNumber = require("bignumber.js");
 var calculateNumTicks = require("../../../src/create-market/calculate-num-ticks");
 
 describe("create-market/calculate-num-ticks", function () {

@@ -3,6 +3,7 @@
 var assign = require("lodash.assign");
 var immutableDelete = require("immutable-delete");
 var speedomatic = require("speedomatic");
+var calculateNumTicks = require("./calculate-num-ticks");
 var getMarketCreationCost = require("./get-market-creation-cost");
 var api = require("../api");
 var encodeTag = require("../format/tag/encode-tag");
@@ -27,7 +28,6 @@ var constants = require("../constants");
  * @param {function} p.onFailed Called if/when the createScalarMarket transaction fails.
  */
 function createScalarMarket(p) {
-  // createScalarMarket(uint256 _endTime, uint256 _feePerEthInWei, ICash _denominationToken, address _designatedReporterAddress, int256 _minPrice, int256 _maxPrice, uint256 _numTicks, bytes32 _topic, string _description, string _extraInfo)
   getMarketCreationCost({ universe: p.universe }, function (err, marketCreationCost) {
     if (err) return p.onFailed(err);
     var numTicks = calculateNumTicks(p.tickSize || constants.DEFAULT_SCALAR_TICK_SIZE, p._minPrice, p._maxPrice);
@@ -36,14 +36,14 @@ function createScalarMarket(p) {
       tx: {
         to: p.universe,
         value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
-        gas: "0x632ea0",
+        gas: constants.CREATE_SCALAR_MARKET_GAS,
       },
-      _numTicks: speedomatic.fix(numTicks, "hex"),
+      _numTicks: speedomatic.hex(numTicks),
       _minPrice: speedomatic.fix(p._minPrice, "hex"),
       _maxPrice: speedomatic.fix(p._maxPrice, "hex"),
       _topic: encodeTag(p._topic),
       _extraInfo: JSON.stringify(p._extraInfo || {}),
-    }));
+    });
     console.log("createScalarMarketParams:", createScalarMarketParams);
     api().Universe.createScalarMarket(createScalarMarketParams);
   });

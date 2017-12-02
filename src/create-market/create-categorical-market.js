@@ -6,6 +6,7 @@ var speedomatic = require("speedomatic");
 var getMarketCreationCost = require("./get-market-creation-cost");
 var api = require("../api");
 var encodeTag = require("../format/tag/encode-tag");
+var constants = require("../constants");
 
 /**
  * @param {Object} p Parameters object.
@@ -24,17 +25,14 @@ var encodeTag = require("../format/tag/encode-tag");
  * @param {function} p.onFailed Called if/when the createCategoricalMarket transaction fails.
  */
 function createCategoricalMarket(p) {
-  // createCategoricalMarket(uint256 _endTime, uint256 _feePerEthInWei, ICash _denominationToken, address _designatedReporterAddress, uint8 _numOutcomes, bytes32 _topic, string _description, string _extraInfo)
   getMarketCreationCost({ universe: p.universe }, function (err, marketCreationCost) {
     if (err) return p.onFailed(err);
     var createCategoricalMarketParams = assign({}, immutableDelete(p, ["universe"]), {
       tx: {
         to: p.universe,
         value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
-        gas: "0x632ea0",
+        gas: constants.CREATE_CATEGORICAL_MARKET_GAS,
       },
-      _minPrice: speedomatic.fix(p._minPrice, "hex"),
-      _maxPrice: speedomatic.fix(p._maxPrice, "hex"),
       _topic: encodeTag(p._topic),
       _extraInfo: JSON.stringify(p._extraInfo || {}),
     });
