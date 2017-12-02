@@ -8,22 +8,15 @@ var proxyquire = require("proxyquire").noPreserveCache();
 
 describe("create-market/create-categorical-market", function () {
   var extraInfo = {
-    marketType: "categorical",
-    description: "Will this market be the One Market?",
     longDescription: "One Market to rule them all, One Market to bind them, One Market to bring them all, and in the darkness bind them.",
     outcomeNames: ["Yes", "Strong Yes", "Emphatic Yes"],
     tags: ["Ancient evil", "Large flaming eyes"],
-    creationTimestamp: 1234567890,
-    minPrice: "0",
-    maxPrice: "1",
   };
   var test = function (t) {
     it(t.description, function (done) {
       var createCategoricalMarket = proxyquire("../../../src/create-market/create-categorical-market", {
-        "./create-market": proxyquire("../../../src/create-market/create-market", {
-          "./get-market-creation-cost": t.stub.getMarketCreationCost,
-          "../api": t.stub.api,
-        }),
+        "./get-market-creation-cost": t.stub.getMarketCreationCost,
+        "../api": t.stub.api,
       });
       createCategoricalMarket(Object.assign({}, t.params, {
         onSuccess: function (res) {
@@ -39,6 +32,7 @@ describe("create-market/create-categorical-market", function () {
       meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       universe: "UNIVERSE_ADDRESS",
       _endTime: 2345678901,
+      _description: "Will this market be the One Market?",
       _numOutcomes: 3,
       _feePerEthInWei: "0x4321",
       _denominationToken: "TOKEN_ADDRESS",

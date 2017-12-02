@@ -51,15 +51,7 @@ module.exports = {
 
   DEFAULT_NETWORK_ID: "3",
   DEFAULT_GASPRICE: 20000000000,
-  DEFAULT_NUM_TICKS: {
-    2: 10000,
-    3: 10002,
-    4: 10000,
-    5: 10000,
-    6: 10002,
-    7: 10003,
-    8: 10000,
-  },
+  DEFAULT_SCALAR_TICK_SIZE: "0.0001",
 
   BLOCKS_PER_CHUNK: 100,
 
