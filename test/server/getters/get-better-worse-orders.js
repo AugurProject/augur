@@ -33,4 +33,21 @@ describe("server/getters/get-better-worse-orders", () => {
       });
     },
   });
+  test({
+    description: "get better worse with orders",
+    params: {
+      marketID: "0x6b112463b19eb428333f17f7635f5d97ee599880",
+      outcome: 1,
+      amount: 1,
+      normalizedPrice: 2,
+    },
+    assertions: (err, betterWorseOrders) => {
+      assert.isNull(err);
+      assert.deepEqual(betterWorseOrders, {
+        immediateFill: true,
+        betterOrderID: 0,
+        worseOrderID: 0,
+      });
+    },
+  });
 });
