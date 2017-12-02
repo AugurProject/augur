@@ -6,8 +6,7 @@
 shopt -s extglob
 
 npm install
-npm install augur-contracts@dev || exit 0
-npm upgrade augur-contracts
+npm install --save-exact augur-contracts@dev || exit 0
 
 
 if [[ "$AUTOCOMMIT" == "true" ]]; then
