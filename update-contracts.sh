@@ -1,6 +1,6 @@
 #!/bin/bash
 
-exit 0 #Skip
+#exit 0 #Skip
 
 # extended pattern matching
 shopt -s extglob
