@@ -742,7 +742,7 @@ function createOrder(marketID, outcome, numOutcomes, maxPrice, minPrice, numTick
   }
   if (DEBUG) console.log("cost:", speedomatic.unfix(bnCost, "string"));
   var params = {
-    tx: { value: "0x" + bnCost.toString(16), gas: "0x5b8d80" },
+    tx: { value: "0x" + bnCost.toString(16), gas: "0x5b8d80", returns: "null" },
     _type: orderTypeCode,
     _attoshares: "0x" + bnShares.toString(16),
     _displayPrice: "0x" + bnPrice.toString(16),

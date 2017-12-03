@@ -1,6 +1,7 @@
 "use strict";
 
 var assign = require("lodash.assign");
+var BigNumber = require("bignumber.js");
 var speedomatic = require("speedomatic");
 var immutableDelete = require("immutable-delete");
 var getBetterWorseOrders = require("./get-better-worse-orders");
@@ -8,6 +9,7 @@ var tradeUntilAmountIsZero = require("./trade-until-amount-is-zero");
 var normalizePrice = require("./normalize-price");
 var convertDecimalToFixedPoint = require("../utils/convert-decimal-to-fixed-point");
 var api = require("../api");
+var constants = require("../constants");
 
 /**
  * @param {Object} p Parameters object.
@@ -41,10 +43,14 @@ function placeTrade(p) {
         _fxpAmount: p.amount,
       }));
     } else {
+      var displayPrice = convertDecimalToFixedPoint(normalizedPrice, p.numTicks);
+      var attoshares = speedomatic.fix(p.amount);
+      var cost = p._direction === 0 ? attoshares.times(new BigNumber(displayPrice, 16)) : attoshares.times(new BigNumber(p.numTicks, 10).minus(new BigNumber(displayPrice, 16)));
       api().CreateOrder.publicCreateOrder(assign({}, immutableDelete(p, ["doNotCreateOrders", "minPrice", "maxPrice", "numTicks", "amount", "limitPrice", "_direction"]), {
+        tx: { value: "0x" + cost.toString(16), gas: constants.CREATE_ORDER_GAS, returns: "null" },
         _type: p._direction,
-        _attoshares: speedomatic.fix(p.amount, "hex"),
-        _displayPrice: convertDecimalToFixedPoint(normalizedPrice, p.numTicks),
+        _attoshares: "0x" + attoshares.toString(16),
+        _displayPrice: displayPrice,
         _betterOrderId: betterWorseOrders.betterOrderID,
         _worseOrderId: betterWorseOrders.worseOrderID,
       }));

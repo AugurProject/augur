@@ -8,7 +8,7 @@ var getTradeAmountRemaining = require("./get-trade-amount-remaining");
 var convertDecimalToFixedPoint = require("../utils/convert-decimal-to-fixed-point");
 var api = require("../api");
 var noop = require("../utils/noop");
-var PRECISION = require("../constants").PRECISION;
+var constants = require("../constants");
 
 /**
  * @param {Object} p Parameters object.
@@ -29,9 +29,9 @@ function tradeUntilAmountIsZero(p) {
   var priceNumTicksRepresentation = convertDecimalToFixedPoint(p._price, p.numTicks);
   var adjustedPrice = p._direction === 0 ? new BigNumber(priceNumTicksRepresentation, 16) : new BigNumber(p.numTicks, 10).minus(new BigNumber(priceNumTicksRepresentation, 16));
   var cost = speedomatic.fix(p._fxpAmount).times(adjustedPrice);
-  if (cost.lt(PRECISION.zero)) return p.onSuccess(null);
+  if (cost.lt(constants.PRECISION.zero)) return p.onSuccess(null);
   var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks"]), {
-    tx: { value: speedomatic.hex(cost), gas: "0x5b8d80" },
+    tx: { value: speedomatic.hex(cost), gas: constants.TRADE_GAS, returns: "null" },
     _fxpAmount: speedomatic.fix(p._fxpAmount, "hex"),
     _price: priceNumTicksRepresentation,
     onSuccess: function (res) {
