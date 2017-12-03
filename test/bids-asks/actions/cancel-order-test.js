@@ -1,6 +1,5 @@
 import { describe, it, afterEach } from 'mocha'
 import { assert } from 'chai'
-import BigNumber from 'bignumber.js'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
 import mocks from 'test/mockStore'
@@ -11,16 +10,16 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 
   const { mockStore, actionCreator, state } = mocks
   const augur = {
-    cancel: sinon.stub(),
-    rpc: { gasPrice: 1 },
-    tx: { BuyAndSellShares: { cancel: {} } },
-    getTxGasEth: sinon.stub()
+    api: {
+      CancelOrder: {
+        cancelOrder: sinon.stub()
+      }
+    }
   }
   const updateOrderStatus = actionCreator()
   const cancelOrderModule = proxyquire('../../../src/modules/bids-asks/actions/cancel-order', {
     '../../../services/augurjs': {
       augur,
-      abi: { bignum: sinon.stub().returns(new BigNumber('1', 10)) },
     },
     '../../bids-asks/actions/update-order-status': { updateOrderStatus }
   })
@@ -43,7 +42,7 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
   })
 
   afterEach(() => {
-    augur.cancel.reset()
+    augur.api.CancelOrder.cancelOrder.reset()
     updateOrderStatus.reset()
     store.clearActions()
   })
