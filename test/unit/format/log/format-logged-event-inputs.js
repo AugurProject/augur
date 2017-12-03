@@ -3,7 +3,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var convertEventNameToSignature = require("../../../../src/utils/convert-event-name-to-signature");
+var hashEventSignature = require("../../../../src/events/hash-event-signature");
 var formatLoggedEventInputs = require("../../../../src/format/log/format-logged-event-inputs");
 
 describe("format/log/format-logged-event-inputs", function () {
@@ -16,7 +16,7 @@ describe("format/log/format-logged-event-inputs", function () {
     description: "Approval(address,address,uint256)",
     params: {
       loggedTopics: [
-        convertEventNameToSignature("Approval(address,address,uint256)"),
+        hashEventSignature("Approval(address,address,uint256)"),
         "0x0000000000000000000000000000000000000000000000000000000000000001", // owner
         "0x0000000000000000000000000000000000000000000000000000000000000002",  // spender
       ],
@@ -47,7 +47,7 @@ describe("format/log/format-logged-event-inputs", function () {
     description: "MarketCreated(address,address,address,uint256,string)",
     params: {
       loggedTopics: [
-        convertEventNameToSignature("MarketCreated(address,address,address,uint256,string)"),
+        hashEventSignature("MarketCreated(address,address,address,uint256,string)"),
         "0x000000000000000000000000000000000000000000000000000000000000000b", // universe
         "0x000000000000000000000000000000000000000000000000000000000000000a", // market
         "0x0000000000000000000000000000000000000000000000000000000000000b0b",  // marketCreator

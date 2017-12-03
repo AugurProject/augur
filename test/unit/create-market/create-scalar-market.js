@@ -15,6 +15,7 @@ describe("create-market/create-scalar-market", function () {
     it(t.description, function (done) {
       var createScalarMarket = proxyquire("../../../src/create-market/create-scalar-market", {
         "./get-market-creation-cost": t.stub.getMarketCreationCost,
+        "./get-market-from-create-market-receipt": t.stub.getMarketFromCreateMarketReceipt,
         "../api": t.stub.api,
       });
       createScalarMarket(Object.assign({}, t.params, {
@@ -40,10 +41,10 @@ describe("create-market/create-scalar-market", function () {
       _topic: "TOPIC",
       _extraInfo: extraInfo,
       onSent: function (res) {
-        assert.deepEqual(res, { callReturn: "1" });
+        assert.deepEqual(res, { hash: "TRANSACTION_HASH", callReturn: null });
       },
       onSuccess: function (res) {
-        assert.deepEqual(res, { callReturn: "1" });
+        assert.deepEqual(res, { hash: "TRANSACTION_HASH", callReturn: "MARKET_ADDRESS" });
       },
       onFailed: function (err) {
         throw new Error(err);
@@ -54,11 +55,20 @@ describe("create-market/create-scalar-market", function () {
         assert.strictEqual(p.universe, "UNIVERSE_ADDRESS");
         callback(null, { etherRequiredToCreateMarket: "1.1" });
       },
+      getMarketFromCreateMarketReceipt: function (transactionHash, callback) {
+        assert.strictEqual(transactionHash, "TRANSACTION_HASH");
+        callback(null, "MARKET_ADDRESS");
+      },
       api: function () {
         return {
           Universe: {
             createScalarMarket: function (p) {
-              assert.deepEqual(p.tx, { to: "UNIVERSE_ADDRESS", value: "0xf43fc2c04ee0000", gas: constants.CREATE_SCALAR_MARKET_GAS });
+              assert.deepEqual(p.tx, {
+                to: "UNIVERSE_ADDRESS",
+                value: "0xf43fc2c04ee0000",
+                gas: constants.CREATE_SCALAR_MARKET_GAS,
+                returns: "null",
+              });
               assert.strictEqual(p._endTime, 2345678901);
               assert.strictEqual(p._feePerEthInWei, "0x4321");
               assert.strictEqual(p._denominationToken, "TOKEN_ADDRESS");
@@ -72,8 +82,8 @@ describe("create-market/create-scalar-market", function () {
               assert.isFunction(p.onSent);
               assert.isFunction(p.onSuccess);
               assert.isFunction(p.onFailed);
-              p.onSent({ callReturn: "1" });
-              p.onSuccess({ callReturn: "1" });
+              p.onSent({ hash: "TRANSACTION_HASH", callReturn: null });
+              p.onSuccess({ hash: "TRANSACTION_HASH", callReturn: null });
             },
           },
         };
