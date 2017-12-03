@@ -32,7 +32,6 @@ function createBinaryMarket(p) {
         to: p.universe,
         value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
         gas: constants.CREATE_BINARY_MARKET_GAS,
-        returns: "null", // workaround for unsolved no-response-to-initial-eth_call issue
       },
       _topic: encodeTag(p._topic),
       _extraInfo: JSON.stringify(p._extraInfo || {}),

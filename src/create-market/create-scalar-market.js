@@ -32,13 +32,11 @@ function createScalarMarket(p) {
   getMarketCreationCost({ universe: p.universe }, function (err, marketCreationCost) {
     if (err) return p.onFailed(err);
     var numTicks = calculateNumTicks(p.tickSize || constants.DEFAULT_SCALAR_TICK_SIZE, p._minPrice, p._maxPrice);
-    console.log("numTicks:", numTicks);
     var createScalarMarketParams = assign({}, immutableDelete(p, ["universe", "tickSize"]), {
       tx: {
         to: p.universe,
         value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
         gas: constants.CREATE_SCALAR_MARKET_GAS,
-        returns: "null", // workaround for unsolved no-response-to-initial-eth_call issue
       },
       _numTicks: speedomatic.hex(numTicks),
       _minPrice: speedomatic.fix(p._minPrice, "hex"),

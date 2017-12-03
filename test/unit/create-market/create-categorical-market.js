@@ -67,7 +67,6 @@ describe("create-market/create-categorical-market", function () {
                 to: "UNIVERSE_ADDRESS",
                 value: "0xf43fc2c04ee0000",
                 gas: constants.CREATE_CATEGORICAL_MARKET_GAS,
-                returns: "null",
               });
               assert.strictEqual(p._endTime, 2345678901);
               assert.strictEqual(p._numOutcomes, 3);

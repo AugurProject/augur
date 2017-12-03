@@ -7,6 +7,7 @@ var chalk = require("chalk");
 var approveAugurEternalApprovalValue = require("./approve-augur-eternal-approval-value");
 var Augur = require("../src");
 var noop = require("../src/utils/noop");
+var constants = require("../src/constants");
 
 var augur = new Augur();
 
@@ -20,17 +21,17 @@ var augurNode = "ws://127.0.0.1:9001";
 
 function cancelOrder(orderID, orderType, marketID, outcome, callback) {
   augur.api.CancelOrder.cancelOrder({
-    tx: { gas: "0x5b8d80" },
+    tx: { gas: constants.CANCEL_ORDER_GAS },
     _orderId: orderID,
     _type: orderType === "buy" ? 0 : 1,
     _market: marketID,
     _outcome: outcome,
     onSent: noop,
-    onSuccess: function (res) {
+    onSuccess: function () {
       console.log(chalk.green(marketID + " " + outcome + " " + orderType + " " + orderID));
       callback(null);
     },
-    onFailed: function (err) {
+    onFailed: function () {
       // note: continue canceling orders and just log the failure to the console...
       console.error(chalk.red(marketID + " " + outcome + " " + orderType + " " + orderID));
       callback(null);

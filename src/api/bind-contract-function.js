@@ -34,7 +34,8 @@ function bindContractFunction(functionAbi) {
       onSuccess = params[0].onSuccess;
       onFailed = params[0].onFailed;
       payload.params = encodeTransactionInputs(params[0], payload.inputs, payload.signature);
-      if (isObject(params[0].tx)) assign(payload, params[0].tx);
+      // returns: "null" is a workaround for unsolved no-response-to-initial-eth_call issue
+      if (isObject(params[0].tx)) assign(payload, { returns: "null" }, params[0].tx);
       signer = (params[0].meta || {}).signer;
       accountType = (params[0].meta || {}).accountType;
     }

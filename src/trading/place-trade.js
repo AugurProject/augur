@@ -47,7 +47,7 @@ function placeTrade(p) {
       var attoshares = speedomatic.fix(p.amount);
       var cost = p._direction === 0 ? attoshares.times(new BigNumber(displayPrice, 16)) : attoshares.times(new BigNumber(p.numTicks, 10).minus(new BigNumber(displayPrice, 16)));
       api().CreateOrder.publicCreateOrder(assign({}, immutableDelete(p, ["doNotCreateOrders", "minPrice", "maxPrice", "numTicks", "amount", "limitPrice", "_direction"]), {
-        tx: { value: "0x" + cost.toString(16), gas: constants.CREATE_ORDER_GAS, returns: "null" },
+        tx: { value: "0x" + cost.toString(16), gas: constants.CREATE_ORDER_GAS },
         _type: p._direction,
         _attoshares: "0x" + attoshares.toString(16),
         _displayPrice: displayPrice,

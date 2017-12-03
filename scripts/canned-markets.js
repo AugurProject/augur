@@ -742,7 +742,7 @@ function createOrder(marketID, outcome, numOutcomes, maxPrice, minPrice, numTick
   }
   if (DEBUG) console.log("cost:", speedomatic.unfix(bnCost, "string"));
   var params = {
-    tx: { value: "0x" + bnCost.toString(16), gas: "0x5b8d80", returns: "null" },
+    tx: { value: "0x" + bnCost.toString(16), gas: constants.CREATE_ORDER_GAS },
     _type: orderTypeCode,
     _attoshares: "0x" + bnShares.toString(16),
     _displayPrice: "0x" + bnPrice.toString(16),
@@ -831,7 +831,6 @@ augur.connect({ ethereumNode: ethereumNode, augurNode: augurNode }, function (er
           maxPrice = "1";
           numTicks = constants.DEFAULT_NUM_TICKS[market._numOutcomes || 2];
         }
-        console.log("numTicks:", numTicks);
         createOrderBook(marketID, market._numOutcomes, maxPrice, minPrice, numTicks, market.orderBook, function (err) {
           if (err) return nextMarket(err);
           nextMarket();
