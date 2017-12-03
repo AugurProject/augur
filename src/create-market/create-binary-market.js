@@ -4,6 +4,7 @@ var assign = require("lodash.assign");
 var immutableDelete = require("immutable-delete");
 var speedomatic = require("speedomatic");
 var getMarketCreationCost = require("./get-market-creation-cost");
+var getMarketFromCreateMarketReceipt = require("./get-market-from-create-market-receipt");
 var api = require("../api");
 var encodeTag = require("../format/tag/encode-tag");
 var constants = require("../constants");
@@ -31,11 +32,17 @@ function createBinaryMarket(p) {
         to: p.universe,
         value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
         gas: constants.CREATE_BINARY_MARKET_GAS,
+        returns: "null", // workaround for unsolved no-response-to-initial-eth_call issue
       },
       _topic: encodeTag(p._topic),
       _extraInfo: JSON.stringify(p._extraInfo || {}),
+      onSuccess: function (res) {
+        getMarketFromCreateMarketReceipt(res.hash, function (err, marketID) {
+          if (err) return p.onFailed(err);
+          p.onSuccess(assign({}, res, { callReturn: marketID }));
+        });
+      },
     });
-    console.log("createBinaryMarketParams:", createBinaryMarketParams);
     api().Universe.createBinaryMarket(createBinaryMarketParams);
   });
 }

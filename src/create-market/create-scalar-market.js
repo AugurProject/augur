@@ -5,6 +5,7 @@ var immutableDelete = require("immutable-delete");
 var speedomatic = require("speedomatic");
 var calculateNumTicks = require("./calculate-num-ticks");
 var getMarketCreationCost = require("./get-market-creation-cost");
+var getMarketFromCreateMarketReceipt = require("./get-market-from-create-market-receipt");
 var api = require("../api");
 var encodeTag = require("../format/tag/encode-tag");
 var constants = require("../constants");
@@ -37,14 +38,20 @@ function createScalarMarket(p) {
         to: p.universe,
         value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
         gas: constants.CREATE_SCALAR_MARKET_GAS,
+        returns: "null", // workaround for unsolved no-response-to-initial-eth_call issue
       },
       _numTicks: speedomatic.hex(numTicks),
       _minPrice: speedomatic.fix(p._minPrice, "hex"),
       _maxPrice: speedomatic.fix(p._maxPrice, "hex"),
       _topic: encodeTag(p._topic),
       _extraInfo: JSON.stringify(p._extraInfo || {}),
+      onSuccess: function (res) {
+        getMarketFromCreateMarketReceipt(res.hash, function (err, marketID) {
+          if (err) return p.onFailed(err);
+          p.onSuccess(assign({}, res, { callReturn: marketID }));
+        });
+      },
     });
-    console.log("createScalarMarketParams:", createScalarMarketParams);
     api().Universe.createScalarMarket(createScalarMarketParams);
   });
 }
