@@ -35,20 +35,19 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
         const marketStateID = marketStateRow[0];
         const extraInfo: MarketCreatedLogExtraInfo = log.extraInfo;
         const numOutcomes = parseInt(onMarketContractData!.numberOfOutcomes!, 10);
-        const minPrice = extraInfo!.minPrice || "0";
-        const maxPrice = extraInfo!.maxPrice || "1";
+        const marketType: string = ["binary", "categorical", "scalar"][log.marketType];
         const marketsDataToInsert: MarketsRow = {
+          marketType,
           marketID:                   log.market,
           marketCreator:              log.marketCreator,
           creationBlockNumber:        log.blockNumber,
           creationFee:                log.marketCreationFee,
           category:                   log.topic,
-          marketType:                 extraInfo!.marketType || "binary",
-          minPrice,
-          maxPrice,
+          shortDescription:           log.description,
+          minPrice:                   log.minPrice,
+          maxPrice:                   log.maxPrice,
           tag1:                       (extraInfo!.tags && extraInfo!.tags!.length) ? extraInfo!.tags![0] : null,
           tag2:                       (extraInfo!.tags && extraInfo!.tags!.length > 1) ? extraInfo!.tags![1] : null,
-          shortDescription:           extraInfo!.description,
           longDescription:            extraInfo!.longDescription || null,
           resolutionSource:           extraInfo!.resolutionSource || null,
           universe:                   onMarketContractData!.universe,
@@ -67,7 +66,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
         };
         const outcomesDataToInsert: Partial<OutcomesRow> = {
           marketID: log.market,
-          price: new BigNumber(minPrice, 10).plus(new BigNumber(maxPrice, 10)).dividedBy(new BigNumber(numOutcomes, 10)).toFixed(),
+          price: new BigNumber(log.minPrice, 10).plus(new BigNumber(log.maxPrice, 10)).dividedBy(new BigNumber(numOutcomes, 10)).toFixed(),
           volume: "0",
         };
         const tokensDataToInsert: Partial<TokensRow> = {
@@ -83,7 +82,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
           });
         }, (err: Error|null): void => {
           if (err) return callback(err);
-          const outcomeNames: Array<string|number|null> = (extraInfo!.marketType === "categorical" && extraInfo!.outcomeNames) ? extraInfo!.outcomeNames! : new Array(numOutcomes).fill(null);
+          const outcomeNames: Array<string|number|null> = (log.marketType === "1" && extraInfo!.outcomeNames) ? extraInfo!.outcomeNames! : new Array(numOutcomes).fill(null);
           parallel([
             (next: AsyncCallback): void => {
               db.transacting(trx).insert(marketsDataToInsert).into("markets").asCallback(next);
