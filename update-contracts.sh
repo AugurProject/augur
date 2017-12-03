@@ -1,12 +1,12 @@
 #!/bin/bash
 
-exit 0 #Skip
+#exit 0 #Skip
 
 # extended pattern matching
 shopt -s extglob
 
-npm install augur-contracts@dev || exit 0
-npm upgrade augur-contracts
+npm install
+npm install --save-exact augur-contracts@dev || exit 0
 
 
 if [[ "$AUTOCOMMIT" == "true" ]]; then
@@ -19,7 +19,6 @@ if [[ "$AUTOCOMMIT" == "true" ]]; then
         # Commit on a tag, this will do all the work of commiting and pushing
         # a new release
         echo "Update master of augur-contracts, and publishing new NPM version"
-        npm install
         npm version prerelease
         git tag augur-core/$TAG # create a tag to match the augur-core tag
         git push && git push --tags && npm publish --tag dev
