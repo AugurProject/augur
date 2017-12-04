@@ -511,20 +511,20 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
-augur-contracts@3.3.10:
-  version "3.3.10"
-  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-3.3.10.tgz#a798e90bcc4ec7a7123b31e54285d563b374c1b1"
+augur-contracts@3.4.0-8:
+  version "3.4.0-8"
+  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-3.4.0-8.tgz#9b53618c83ab7bd4070b43e057284bffd4472be8"
 
-augur.js@4.6.22:
-  version "4.6.22"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.6.22.tgz#f019641246bb59a992c8428e066720b1507f556c"
+augur.js@4.7.0-16:
+  version "4.7.0-16"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.7.0-16.tgz#ae61f4db81da9468d29f976f630ffaff7a056a69"
   dependencies:
     async "1.5.2"
-    augur-contracts "3.3.10"
+    augur-contracts "3.4.0-8"
     bignumber.js "2.3.0"
     clone "1.0.2"
-    ethereumjs-connect "4.4.1"
-    ethrpc "4.4.4"
+    ethereumjs-connect "4.4.3"
+    ethrpc "4.4.6"
     immutable-delete "1.1.0"
     keccak "1.2.0"
     keythereum "1.0.2"
@@ -3697,13 +3697,13 @@ ethereumjs-blockstream@2.0.7:
     source-map-support "0.4.14"
     uuid "3.0.1"
 
-ethereumjs-connect@4.4.1:
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.4.1.tgz#4ce51e47c47aa0c43baa56e1850329a767db142e"
+ethereumjs-connect@4.4.3:
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.4.3.tgz#185978ba4bced91d9d21207deec18526ed65daf9"
   dependencies:
     async "1.5.2"
     clone "1.0.2"
-    ethrpc "4.4.4"
+    ethrpc "4.4.6"
 
 ethereumjs-ledger@2.1.4:
   version "2.1.4"
@@ -3760,6 +3760,32 @@ ethjs-util@^0.1.3:
 ethrpc@4.4.4:
   version "4.4.4"
   resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.4.4.tgz#d05b3dbb47198d68c4f4bd1165ff7539e34c6e76"
+  dependencies:
+    async "1.5.2"
+    bignumber.js "2.3.0"
+    browser-request "0.3.3"
+    clone "1.0.2"
+    ethereumjs-blockstream "2.0.7"
+    ethereumjs-tx "1.3.1"
+    immutable-delete "1.0.1"
+    keccak "1.2.0"
+    lodash.assign "4.2.0"
+    lodash.get "4.4.2"
+    lodash.set "4.3.2"
+    lodash.unset "4.5.2"
+    oboe "2.1.3"
+    redux "3.6.0"
+    redux-thunk-subscribe "1.0.3"
+    speedomatic "2.0.4"
+    sync-request "2.0.1"
+    uuid "3.0.1"
+  optionalDependencies:
+    request "2.67.0"
+    websocket "1.0.23"
+
+ethrpc@4.4.6:
+  version "4.4.6"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.4.6.tgz#66562a7b56e96c1f3adc931f4b2b93b00356c49b"
   dependencies:
     async "1.5.2"
     bignumber.js "2.3.0"

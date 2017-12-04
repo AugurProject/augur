@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
+import BigNumber from 'bignumber.js'
 
 import Styles from 'modules/topics/components/topic/topic.styles'
 
@@ -38,14 +39,16 @@ export default class Topic extends Component {
     const s = this.state
 
     const isNullTopic = p.topic === 'null-topic' && p.popularity === 0
-    const flooredPop = Math.floor(p.popularity)
-    let popString = ' SHARES'
-    if (flooredPop > 1000) {
-      const thousands = flooredPop / 1000
+    const roundedPop = BigNumber(p.popularity).round()
+    console.log(roundedPop)
+
+    let popString = roundedPop.toNumber() === 1 ? ' SHARE' : ' SHARES'
+    if (roundedPop > 1000) {
+      const thousands = roundedPop / 1000
       const truncatedThousands = thousands.toString().split('').slice(0, 3).join('')
       popString = truncatedThousands + 'K ' + popString
     } else {
-      popString = flooredPop + popString
+      popString = roundedPop + popString
     }
 
     return (
