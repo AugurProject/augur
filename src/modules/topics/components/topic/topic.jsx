@@ -40,8 +40,6 @@ export default class Topic extends Component {
 
     const isNullTopic = p.topic === 'null-topic' && p.popularity === 0
     const roundedPop = BigNumber(p.popularity).round()
-    console.log(roundedPop)
-
     let popString = roundedPop.toNumber() === 1 ? ' SHARE' : ' SHARES'
     if (roundedPop > 1000) {
       const thousands = roundedPop / 1000

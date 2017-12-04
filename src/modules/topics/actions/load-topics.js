@@ -8,7 +8,7 @@ const loadTopics = (callback = logError) => (dispatch, getState) => {
   augur.markets.getCategories({ universe: universe.id }, (err, topics) => {
     if (err) return callback(err)
     if (topics == null) return callback(null)
-    if (Object.keys(topics).length) {      
+    if (Object.keys(topics).length) {
       dispatch(clearTopics())
       dispatch(updateTopics(topics))
     }
