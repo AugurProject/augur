@@ -1,6 +1,4 @@
 import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKET_TOPIC, UPDATE_MARKETS_LOADING_STATUS } from 'modules/markets/actions/update-markets-data'
-import { CATEGORICAL, BINARY } from 'modules/markets/constants/market-types'
-import { CATEGORICAL_OUTCOMES_SEPARATOR } from 'modules/markets/constants/market-outcomes'
 
 export default function (marketsData = {}, action) {
   switch (action.type) {

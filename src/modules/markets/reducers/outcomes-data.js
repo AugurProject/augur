@@ -2,7 +2,7 @@ import { UPDATE_MARKETS_DATA } from 'modules/markets/actions/update-markets-data
 import { UPDATE_OUTCOME_PRICE } from 'modules/markets/actions/update-outcome-price'
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
-import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR, BINARY_YES_ID, SCALAR_UP_ID } from 'modules/markets/constants/market-outcomes'
+import { BINARY_YES_ID, SCALAR_UP_ID } from 'modules/markets/constants/market-outcomes'
 
 export default function (outcomesData = {}, action) {
   switch (action.type) {
