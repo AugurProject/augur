@@ -37,13 +37,13 @@ export default class MarketsHeader extends Component {
 
   componentWillMount() {
     this.setHeaderTitle(this.props.location)
-    this.setPathDependentFilters(this.props.location)
+    // this.setPathDependentFilters(this.props.location)
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.location !== nextProps.location) {
       this.setHeaderTitle(nextProps.location)
-      this.setPathDependentFilters(nextProps.location)
+      // this.setPathDependentFilters(nextProps.location)
     }
   }
 
