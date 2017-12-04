@@ -8,7 +8,7 @@ import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import { updateOutcomePrice } from 'modules/markets/actions/update-outcome-price'
 // import { fillOrder } from 'modules/bids-asks/actions/update-market-order-book'
 import { updateMarketTopicPopularity } from 'modules/topics/actions/update-topics'
-import { updateAccountBidsAsksData, updateAccountCancelsData, updateAccountPositionsData } from 'modules/my-positions/actions/update-account-trades-data'
+import { updateAccountTradesData, updateAccountBidsAsksData, updateAccountCancelsData, updateAccountPositionsData } from 'modules/my-positions/actions/update-account-trades-data'
 import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
 import * as TYPES from 'modules/transactions/constants/types'
 
@@ -57,7 +57,7 @@ export function listenToUpdates() {
           if (log.sender === getState().loginAccount.address) {
             dispatch(updateAccountCancelsData({
               [log.marketID]: { [log.outcome]: [log] }
-            }))
+            }, log.marketID))
             dispatch(updateAssets())
           }
         }
@@ -72,7 +72,7 @@ export function listenToUpdates() {
               [log.marketID]: {
                 [log.outcome]: [log]
               }
-            }))
+            }, log.marketID))
             dispatch(updateAssets())
           }
         }
@@ -84,9 +84,13 @@ export function listenToUpdates() {
           dispatch(updateOutcomePrice(log.marketID, log.outcome, new BigNumber(log.price, 10)))
           dispatch(updateMarketTopicPopularity(log.market, log.amount))
           const { address } = getState().loginAccount
-          // TODO: need to figure out what's going to happen here instead.
-          // if (log.sender !== address) dispatch(fillOrder(log))
           if (log.sender === address || log.owner === address) {
+            // dispatch(convertLogsToTransactions(TYPES.FILL_ORDER, [log]))
+            updateAccountTradesData(updateAccountTradesData({
+              [log.marketID]: {
+                [log.outcome]: [log]
+              }
+            }, log.marketID))
             dispatch(updateAccountPositionsData({
               [log.marketID]: { [log.outcome]: [{
                 ...log,
