@@ -2,7 +2,7 @@ import { describe, it } from 'mocha'
 import { assert } from 'chai'
 
 describe('modules/bids-asks/helpers/is-order-of-user.js', () => {
-  const isOrderOfUser = require('../../../src/modules/bids-asks/helpers/is-order-of-user').isOrderOfUser
+  const { isOrderOfUser } = require('../../../src/modules/bids-asks/helpers/is-order-of-user')
 
   describe('isOrderOfUser', () => {
     it('should return false if order is not of user', () => {
