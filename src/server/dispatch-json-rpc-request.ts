@@ -60,7 +60,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callba
     case "getOrders":
       return getOrders(db, request.params.universe, request.params.marketID, request.params.outcome, request.params.orderType, request.params.creator, request.params.orderState, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getBetterWorseOrders":
-      return getBetterWorseOrders(db, request.params.marketID, request.params.outcome, request.params.amount, request.params.normalizedPrice, callback);
+      return getBetterWorseOrders(db, request.params.marketID, request.params.outcome, request.params.amount, request.params.price, callback);
     default:
       callback(new Error("unknown json rpc method"));
   }
