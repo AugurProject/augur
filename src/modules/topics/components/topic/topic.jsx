@@ -24,14 +24,16 @@ export default class Topic extends Component {
     this.state = {
       popularityChange: null
     }
+
+    this.updatePopularity = this.updatePopularity.bind(this)
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (this.props.popularity !== nextProps.popularity) {
-      const popularityChange = nextProps.popularity > this.props.popularity ? TOPIC_VOLUME_INCREASED : TOPIC_VOLUME_DECREASED
+    if (this.props.popularity !== nextProps.popularity) this.updatePopularity(nextProps.popularity > this.props.popularity ? TOPIC_VOLUME_INCREASED : TOPIC_VOLUME_DECREASED)
+  }
 
-      this.setState({ popularityChange })
-    }
+  updatePopularity(popularityChange) {
+    this.setState({ popularityChange })
   }
 
   render() {
@@ -74,7 +76,8 @@ export default class Topic extends Component {
                 'bounce-up-and-flash': s.popularityChange === TOPIC_VOLUME_INCREASED,
                 'bounce-down-and-flash': s.popularityChange === TOPIC_VOLUME_DECREASED
               })}
-              data-tip data-for="topic-volume-tooltip"
+              data-tip
+              data-for="topic-volume-tooltip"
             >
               {popString}
             </span>

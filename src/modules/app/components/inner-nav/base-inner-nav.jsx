@@ -75,9 +75,7 @@ export default class BaseInnerNav extends Component {
           {this.getSubMenuData().map(dataToItem)}
         </ul>
         <ul
-          className={classNames(
-            Styles.InnerNav__menu, Styles['InnerNav__menu--main']
-          )}
+          className={classNames(Styles.InnerNav__menu, Styles['InnerNav__menu--main'])}
         >
           {this.getMainMenuData().map(dataToItem)}
         </ul>

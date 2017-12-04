@@ -10,10 +10,6 @@ import Styles from 'modules/portfolio/components/transactions/transactions.style
 import Dropdown from 'modules/common/components/dropdown/dropdown'
 
 export default class Transactions extends Component {
-  static defaultProps = {
-    transactions: []
-  }
-
   static propTypes = {
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,

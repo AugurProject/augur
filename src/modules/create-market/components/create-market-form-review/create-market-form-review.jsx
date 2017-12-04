@@ -25,10 +25,10 @@ export default class CreateMarketReview extends Component {
       gasCost: null,
       validityBond: null,
       designatedReportNoShowReputationBond: null,
-      initialLiquidity: {
-        gas: null,
-        fees: null
-      },
+      // initialLiquidity: {
+      // gas: null,
+      // fees: null
+      // },
       formattedInitialLiquidityEth: formatEtherTokensEstimate(this.props.newMarket.initialLiquidityEth),
       formattedInitialLiquidityGas: formatEtherEstimate(this.props.newMarket.initialLiquidityGas),
       formattedInitialLiquidityFees: formatEtherTokensEstimate(this.props.newMarket.initialLiquidityFees)

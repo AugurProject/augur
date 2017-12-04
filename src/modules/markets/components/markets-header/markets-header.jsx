@@ -9,11 +9,12 @@ import PropTypes from 'prop-types'
 import parseQuery from 'modules/routes/helpers/parse-query'
 import parsePath from 'modules/routes/helpers/parse-path'
 
-import { MARKETS, FAVORITES } from 'modules/routes/constants/views'
+import { MARKETS } from 'modules/routes/constants/views'
 import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/markets/components/markets-header/markets-header.styles'
 
+// NOTE -- commented out state due to temp lack of utilization + linting
 export default class MarketsHeader extends Component {
   static propTypes = {
     isLogged: PropTypes.bool.isRequired,
@@ -26,12 +27,12 @@ export default class MarketsHeader extends Component {
 
     this.state = {
       headerTitle: null,
-      capitalizeTitle: false,
-      filterByMarketFavorites: false
+      // capitalizeTitle: false,
+      // filterByMarketFavorites: false
     }
 
     this.setHeaderTitle = this.setHeaderTitle.bind(this)
-    this.setPathDependentFilters = this.setPathDependentFilters.bind(this)
+    // this.setPathDependentFilters = this.setPathDependentFilters.bind(this)
   }
 
   componentWillMount() {
@@ -52,7 +53,7 @@ export default class MarketsHeader extends Component {
     if (searchParams[TOPIC_PARAM_NAME]) {
       this.setState({
         headerTitle: searchParams[TOPIC_PARAM_NAME],
-        capitalizeTitle: false
+        // capitalizeTitle: false
       })
     } else {
       const path = parsePath(location.pathname)
@@ -60,18 +61,18 @@ export default class MarketsHeader extends Component {
       if (path[0] === MARKETS) {
         this.setState({
           headerTitle: path[0],
-          capitalizeTitle: true
+          // capitalizeTitle: true
         })
       }
     }
   }
 
-  setPathDependentFilters(location) {
-    const path = parsePath(location.pathname)[0]
-
-    const filterByMarketFavorites = path === FAVORITES
-    this.setState({ filterByMarketFavorites })
-  }
+  // setPathDependentFilters(location) {
+  //   const path = parsePath(location.pathname)[0]
+  //
+  //   const filterByMarketFavorites = path === FAVORITES
+  //   this.setState({ filterByMarketFavorites })
+  // }
 
   render() {
     // const p = this.props

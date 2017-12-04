@@ -25,14 +25,18 @@ const Outcome = (p) => {
   const lastPricePercent = getValue(p, 'outcome.lastPricePercent.full')
 
   return (
-    <ul className={classNames(Styles.Outcome, { [`${Styles.active}`]: p.selectedOutcomes.indexOf(p.outcome.id) > -1 })} onClick={e => p.updateSelectedOutcomes(p.outcome.id)}>
-      <li>{outcomeName} <span className={Styles.Outcome__percent}>{lastPricePercent}</span></li>
-      <li><ValueDenomination formatted={topBidShares} /></li>
-      <li><ValueDenomination formatted={topBidPrice} /></li>
-      <li><ValueDenomination formatted={topAskPrice} /></li>
-      <li><ValueDenomination formatted={topAskShares} /></li>
-      <li><ValueDenomination formatted={lastPrice} /></li>
-    </ul>
+    <button
+      onClick={e => p.updateSelectedOutcomes(p.outcome.id)}
+    >
+      <ul className={classNames(Styles.Outcome, { [`${Styles.active}`]: p.selectedOutcomes.indexOf(p.outcome.id) > -1 })}>
+        <li>{outcomeName} <span className={Styles.Outcome__percent}>{lastPricePercent}</span></li>
+        <li><ValueDenomination formatted={topBidShares} /></li>
+        <li><ValueDenomination formatted={topBidPrice} /></li>
+        <li><ValueDenomination formatted={topAskPrice} /></li>
+        <li><ValueDenomination formatted={topAskShares} /></li>
+        <li><ValueDenomination formatted={lastPrice} /></li>
+      </ul>
+    </button>
   )
 }
 

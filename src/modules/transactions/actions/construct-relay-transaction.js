@@ -7,8 +7,8 @@ import makePath from 'modules/routes/helpers/make-path'
 import { TRANSACTIONS } from 'modules/routes/constants/views'
 
 export const constructRelayTransaction = tx => (dispatch, getState) => {
-  const hash = tx.hash
-  const status = tx.status
+  const { hash } = tx
+  const { status } = tx
   const unpackedParams = unpackTransactionParameters(tx)
   console.log('unpacked:', JSON.stringify(unpackedParams, null, 2))
   const timestamp = tx.response.timestamp || parseInt(Date.now() / 1000, 10)

@@ -210,10 +210,14 @@ export function formatBlank() {
   }
 }
 
-export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, denomination: '', roundUp: false, roundDown: false, positiveSign: false, zeroStyled: true, minimized: false, blankZero: false, bigUnitPostfix: false }) {
+export function formatNumber(num, opts = {
+  decimals: 0, decimalsRounded: 0, denomination: '', roundUp: false, roundDown: false, positiveSign: false, zeroStyled: true, minimized: false, blankZero: false, bigUnitPostfix: false
+}) {
   const { minimized, bigUnitPostfix } = opts
   const o = {}
-  let { value, decimals, decimalsRounded, denomination, roundUp, roundDown, positiveSign, zeroStyled, blankZero } = opts
+  let {
+    value, decimals, decimalsRounded, denomination, roundUp, roundDown, positiveSign, zeroStyled, blankZero
+  } = opts
 
   decimals = decimals || 0
   decimalsRounded = decimalsRounded || 0

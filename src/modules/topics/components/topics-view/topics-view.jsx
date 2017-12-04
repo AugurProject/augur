@@ -35,16 +35,8 @@ export default class TopicsView extends Component {
 
     this.state = {
       lowerBound: null,
-      upperBound: null,
       boundedLength: null,
       itemsPerPage: 9,
-      filteredTopics: [],
-      filteredTopicsLength: 0,
-      hasKeywords: false,
-      paginatedTopics: [],
-      pagination: {},
-      fontAwesomeClasses: [],
-      icoFontClasses: [],
       heroTopicIndex: null,
       heroTopicOpacity: 0
     }
@@ -71,7 +63,10 @@ export default class TopicsView extends Component {
   }
 
   setSegment(lowerBound, upperBound, boundedLength) {
-    this.setState({ lowerBound, upperBound, boundedLength })
+    this.setState({
+      lowerBound,
+      boundedLength
+    })
   }
 
   startCategoryCarousel() {

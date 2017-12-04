@@ -105,10 +105,12 @@ class MyMarkets extends Component {
 
   // TODO -- clean up this method
   changeDropdown(value) {
-    let sortTypeReporting = this.state.sortTypeReporting
-    let filterTypeReporting = this.state.filterTypeReporting
-    let sortTypeDesignatedReporting = this.state.sortTypeDesignatedReporting
-    let filterTypeDesignatedReporting = this.state.filterTypeDesignatedReporting
+    let {
+      sortTypeReporting,
+      filterTypeReporting,
+      sortTypeDesignatedReporting,
+      filterTypeDesignatedReporting
+    } = this.state
 
     this.state.sortOptionsReporting.forEach((type, ind) => {
       if (type.value === value) {

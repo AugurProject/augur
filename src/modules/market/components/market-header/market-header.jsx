@@ -19,7 +19,7 @@ export default class MarketHeader extends Component {
     super(props)
 
     this.state = {
-      animationSpeed: parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-normal'), 10),
+      // animationSpeed: parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-normal'), 10),
       detailsExpanded: false
     }
   }

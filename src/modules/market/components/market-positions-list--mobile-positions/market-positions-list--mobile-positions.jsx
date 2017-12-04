@@ -62,7 +62,8 @@ export default class MobilePositions extends Component {
           <button
             className={Styles.MobilePositions__close}
             onClick={e => this.setState({ showConfirm: !s.showConfirm })}
-          >Close</button>
+          >Close
+          </button>
         </div>
         <div className={Styles.MobilePositions__positions}>
           <ul className={Styles.MobilePositions__position}>

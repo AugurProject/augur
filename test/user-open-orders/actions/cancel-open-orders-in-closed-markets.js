@@ -18,7 +18,12 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
         '../selectors/open-orders': openOrders
       }).default
       sinon.stub(CancelOrder, 'cancelOrder', (orderID, marketID, outcome, type) => (dispatch, getState) => {
-        dispatch({ type: 'CANCEL_ORDER', params: { orderID, marketID, outcome, type } })
+        dispatch({
+          type: 'CANCEL_ORDER',
+          params: {
+            orderID, marketID, outcome, type
+          }
+        })
       })
       store.dispatch(cancelOpenOrdersInClosedMarkets())
       t.assertions(store.getActions())

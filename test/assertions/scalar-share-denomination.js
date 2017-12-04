@@ -7,7 +7,7 @@ export default function (scalarShareDenomination) {
 
 
   describe('scalarShareDenomination.markets', () => {
-    const markets = scalarShareDenomination.markets
+    const { markets } = scalarShareDenomination
 
     assert.isDefined(markets, `markets isn't defined`)
     assert.isObject(markets, `markets isn't an object`)
@@ -20,7 +20,7 @@ export default function (scalarShareDenomination) {
   })
 
   describe('scalarShareDenomination.denominations', () => {
-    const denominations = scalarShareDenomination.denominations
+    const { denominations } = scalarShareDenomination
 
     assert.isDefined(denominations, `denominations isn't defined`)
     assert.isArray(denominations, `denominations isn't an array`);

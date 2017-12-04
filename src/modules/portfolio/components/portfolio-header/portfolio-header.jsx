@@ -43,7 +43,7 @@ function getTitle(path) {
   }
 }
 
-PortfolioHeader.PropTypes = {
+PortfolioHeader.propTypes = {
   triggerTransactionsExport: PropTypes.func.isRequired,
   location: PropTypes.object,
   match: PropTypes.object

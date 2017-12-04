@@ -134,14 +134,14 @@ export default class KeystoreConnect extends Component {
                 htmlFor="keyword_create_passphrase"
               >
                 Passphrase
+                <input
+                  id="keyword_create_passphrase"
+                  type="password"
+                  value={s.password}
+                  placeholder="Passphrase"
+                  onChange={e => this.setState({ password: e.target.value })}
+                />
               </label>
-              <input
-                id="keyword_create_passphrase"
-                type="password"
-                value={s.password}
-                placeholder="Passphrase"
-                onChange={e => this.setState({ password: e.target.value })}
-              />
             </div>
             <div className={Styles.Keystore__actions}>
               <button

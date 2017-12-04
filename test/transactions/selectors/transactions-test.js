@@ -176,7 +176,8 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
           repChange: '5',
           ethTokens: formatEtherTokens(2),
           shares: formatShares(4),
-          rep: formatRep(5) },
+          rep: formatRep(5)
+        },
         {
           status: 'failed',
           message: 'Sell 30 shares of test outcome',

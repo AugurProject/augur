@@ -138,7 +138,7 @@ class PerformanceGraph extends Component {
           let positions = [this.dataMin, (this.dataMax / 2), Math.ceil(this.dataMax) + (this.dataMax * 0.05)]
 
           if (this.series[0] && this.series[0].length > 0) {
-            const data = this.series[0].data
+            const { data } = this.series[0]
             const i = data.length / 2
             const median = i % 1 === 0 ? (data[i - 1] + data[i]) / 2 : data[Math.floor(i)]
             positions = [this.dataMin, median, Math.ceil(this.dataMax) + (this.dataMax * 0.05)]

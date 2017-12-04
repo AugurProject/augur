@@ -46,8 +46,8 @@ class PositionsMarketsList extends Component {
   }
 
   changeDropdown(value) {
-    let sortType = this.state.sortType
-    let filterType = this.state.filterType
+    let { sortType } = this.state
+    let { filterType } = this.state
 
     this.state.sortOptions.forEach((type, ind) => {
       if (type.value === value) {
@@ -93,9 +93,8 @@ class PositionsMarketsList extends Component {
               history={p.history}
               linkType={p.linkType}
               positionsDefault={p.positionsDefault}
-            />)
-          ):
-          <NullStateMessage message={'No Markets Available'} />}
+            />)):
+          <NullStateMessage message="No Markets Available" />}
       </div>
     )
   }

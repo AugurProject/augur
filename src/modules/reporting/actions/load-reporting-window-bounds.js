@@ -29,6 +29,7 @@ export const loadReportingWindowBounds = () => (dispatch, getState) => {
         const stake = Object.keys(tokens).reduce((p, tokenID) => p + tokens.tokenID.amountStaked, 0)
 
         dispatch(updateReportingWindowStats({ stake }))
-      })
+      }
+    )
   })
 }

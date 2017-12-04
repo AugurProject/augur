@@ -28,7 +28,7 @@ export default class KeystoreCreate extends Component {
     this.state = {
       password: '',
       passwordConfirm: '',
-      currentScore: 0,
+      // currentScore: 0,
       passwordSuggestions: [],
       keystoreCreationError: null,
       passwordsMatch: false,
@@ -41,6 +41,7 @@ export default class KeystoreCreate extends Component {
     }
 
     this.scorePassword = this.scorePassword.bind(this)
+    this.clearKeystoreValues = this.clearKeystoreValues.bind(this)
   }
 
   componentDidMount() {
@@ -81,11 +82,7 @@ export default class KeystoreCreate extends Component {
       nextState.keystore !== null &&
       !nextState.passwordsMatch
     ) {
-      this.setState({
-        keystore: null,
-        downloadAccountDataString: null,
-        downloadAccountFileName: null
-      })
+      this.clearKeystoreValues()
     }
 
     if (
@@ -114,7 +111,6 @@ export default class KeystoreCreate extends Component {
     const currentScore = scoreResult.score
 
     this.setState({
-      currentScore,
       passwordSuggestions
     })
 
@@ -131,6 +127,14 @@ export default class KeystoreCreate extends Component {
     } else if (this.state.isStrongPass === true) {
       this.setState({ isStrongPass: false })
     }
+  }
+
+  clearKeystoreValues() {
+    this.setState({
+      keystore: null,
+      downloadAccountDataString: null,
+      downloadAccountFileName: null
+    })
   }
 
   render() {
@@ -154,21 +158,21 @@ export default class KeystoreCreate extends Component {
                 htmlFor="keyword_create_passphrase"
               >
                 Passphrase
+                <input
+                  id="keyword_create_passphrase"
+                  type="password"
+                  value={s.password}
+                  onChange={(e) => {
+                    const password = e.target.value
+                    this.setState({
+                      password,
+                      passwordConfirm: '',
+                      passwordsMatch: false
+                    })
+                    this.scorePassword(password)
+                  }}
+                />
               </label>
-              <input
-                id="keyword_create_passphrase"
-                type="password"
-                value={s.password}
-                onChange={(e) => {
-                  const password = e.target.value
-                  this.setState({
-                    password,
-                    passwordConfirm: '',
-                    passwordsMatch: false
-                  })
-                  this.scorePassword(password)
-                }}
-              />
             </div>
             <div
               className={Styles.Keystore__input}
@@ -177,19 +181,19 @@ export default class KeystoreCreate extends Component {
                 htmlFor="keyword_create_passphrase-confirm"
               >
                 Confirm
+                <input
+                  id="keyword_create_passphrase_confirm"
+                  type="password"
+                  value={s.passwordConfirm}
+                  onChange={(e) => {
+                    const passwordConfirm = e.target.value
+                    this.setState({
+                      passwordConfirm,
+                      passwordsMatch: s.password === passwordConfirm
+                    })
+                  }}
+                />
               </label>
-              <input
-                id="keyword_create_passphrase_confirm"
-                type="password"
-                value={s.passwordConfirm}
-                onChange={(e) => {
-                  const passwordConfirm = e.target.value
-                  this.setState({
-                    passwordConfirm,
-                    passwordsMatch: s.password === passwordConfirm
-                  })
-                }}
-              />
             </div>
             <div className={Styles.Keystore__actions}>
               { document.queryCommandSupported('copy') &&
@@ -204,7 +208,8 @@ export default class KeystoreCreate extends Component {
               }
               <a
                 className={
-                  classNames(Styles.Keystore__button,
+                  classNames(
+                    Styles.Keystore__button,
                     {
                       [Styles[`button--disabled`]]: s.keystore === null
                     }

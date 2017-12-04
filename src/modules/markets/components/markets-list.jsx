@@ -118,7 +118,7 @@ export default class MarketsList extends Component {
 
             return null
           }) :
-          <NullStateMessage message={'No Markets Available'} /> }
+          <NullStateMessage message="No Markets Available" /> }
         {!!marketsLength && p.showPagination &&
           <Paginator
             itemsLength={marketsLength}

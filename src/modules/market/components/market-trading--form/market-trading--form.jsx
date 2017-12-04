@@ -48,11 +48,13 @@ class MarketTradingForm extends Component {
             <button
               className={classNames({ [`${Styles.active}`]: p.orderType === MARKET })}
               onClick={() => p.updateState('orderType', MARKET)}
-            >Market</button>
+            >Market
+            </button>
             <button
               className={classNames({ [`${Styles.active}`]: p.orderType === LIMIT })}
               onClick={() => p.updateState('orderType', LIMIT)}
-            >Limit</button>
+            >Limit
+            </button>
           </div>
         </li>
         { p.orderType === LIMIT && !p.isMobile && p.market.marketType !== SCALAR &&
@@ -124,7 +126,8 @@ class MarketTradingForm extends Component {
           <button
             disabled={!p.isOrderValid}
             onClick={p.isOrderValid && p.nextPage}
-          >Review</button>
+          >Review
+          </button>
         </li>
       </ul>
     )

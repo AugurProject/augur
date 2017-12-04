@@ -49,15 +49,14 @@ describe('modules/notifications/reducers/notifications', () => {
   test({
     description: `should return the expected array for type REMOVE_NOTIFICATION`,
     assertions: () => {
-      const actual = notifications(
-        [
-          {
-            id: '0xTEST'
-          }
-        ], {
-          type: REMOVE_NOTIFICATION,
-          data: '0xTEST'
-        })
+      const actual = notifications([
+        {
+          id: '0xTEST'
+        }
+      ], {
+        type: REMOVE_NOTIFICATION,
+        data: '0xTEST'
+      })
 
       const expected = []
 
@@ -68,24 +67,23 @@ describe('modules/notifications/reducers/notifications', () => {
   test({
     description: `should return the expected array for type UPDATE_NOTIFICATION`,
     assertions: () => {
-      const actual = notifications(
-        [
-          {
-            id: '0xTEST0'
-          },
-          {
-            id: '0xTest1',
-            testing: 'old object'
+      const actual = notifications([
+        {
+          id: '0xTEST0'
+        },
+        {
+          id: '0xTest1',
+          testing: 'old object'
+        }
+      ], {
+        type: UPDATE_NOTIFICATION,
+        data: {
+          id: '0xTest1',
+          notification: {
+            testing: 'new object'
           }
-        ], {
-          type: UPDATE_NOTIFICATION,
-          data: {
-            id: '0xTest1',
-            notification: {
-              testing: 'new object'
-            }
-          }
-        })
+        }
+      })
 
       const expected = [
         {
@@ -104,14 +102,13 @@ describe('modules/notifications/reducers/notifications', () => {
   test({
     description: `should return the expected array for type CLEAR_NOTIFICATIONS`,
     assertions: () => {
-      const actual = notifications(
-        [
-          {
-            id: '0xTEST'
-          }
-        ], {
-          type: CLEAR_NOTIFICATIONS
-        })
+      const actual = notifications([
+        {
+          id: '0xTEST'
+        }
+      ], {
+        type: CLEAR_NOTIFICATIONS
+      })
 
       const expected = []
 

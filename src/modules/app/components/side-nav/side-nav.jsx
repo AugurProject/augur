@@ -64,22 +64,24 @@ export default class SideNav extends Component {
   }
 
   render() {
-    const mobile = this.props.isMobile
-    const logged = this.props.isLogged
-    const toggleNotifications = this.props.toggleNotifications
-    const unseenCount = this.props.unseenCount
+    const {
+      isMobile,
+      isLogged,
+      toggleNotifications,
+      unseenCount
+    } = this.props
 
-    const accessFilteredMenu = this.props.menuData.filter(item => !(item.requireLogin && !logged))
+    const accessFilteredMenu = this.props.menuData.filter(item => !(item.requireLogin && !isLogged))
 
     return (
       <aside className={classNames(Styles.SideNav, { [`${Styles.mobileShow}`]: this.props.mobileShow })}>
         <ul className={Styles.SideNav__nav}>
           {accessFilteredMenu.map((item, index) => {
             const Icon = item.icon
-            const selected = !mobile && this.isCurrentItem(item)
+            const selected = !isMobile && this.isCurrentItem(item)
 
             const linkClickHandler = () => {
-              if (mobile) {
+              if (isMobile) {
                 if (item.mobileClick) {
                   item.mobileClick()
                 } else {
@@ -103,7 +105,7 @@ export default class SideNav extends Component {
               </li>
             )
           })}
-          {logged && mobile &&
+          {isLogged && isMobile &&
             <li
               key="notifications"
             >

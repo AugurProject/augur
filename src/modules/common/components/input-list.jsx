@@ -78,7 +78,7 @@ export default class InputList extends Component {
   render() {
     const p = this.props
     const s = this.state
-    let list = s.list
+    let { list } = s
 
     if (!p.listMaxElements || list.length < p.listMaxElements) {
       list = list.slice()
