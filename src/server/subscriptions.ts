@@ -8,6 +8,7 @@ export class Subscriptions extends EventEmitter {
   constructor(parentEmitter: EventEmitter) {
     super();
     this.parentEmitter = parentEmitter;
+    this.setMaxListeners(0); // Subscriptions all need to listen to removeAllListeners for the global teardown
   }
 
   public subscribe(eventName: string, params: any, publish: (data: {}) => void): string {
