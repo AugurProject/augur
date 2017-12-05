@@ -109,7 +109,7 @@ export function listenToUpdates() {
         if (err) return console.error('TradingProceedsClaimed:', err)
         if (log) {
           console.log('TradingProceedsClaimed:', log)
-          if (log && log.sender === getState().loginAccount.address) {
+          if (log.sender === getState().loginAccount.address) {
             dispatch(updateAssets())
             dispatch(convertLogsToTransactions(TYPES.PAYOUT, [log]))
           }
@@ -125,7 +125,7 @@ export function listenToUpdates() {
         if (err) return console.error('ReportSubmitted:', err)
         if (log) {
           console.log('ReportSubmitted:', log)
-          if (log && log.sender === getState().loginAccount.address) {
+          if (log.sender === getState().loginAccount.address) {
             dispatch(updateAssets())
             dispatch(convertLogsToTransactions(TYPES.SUBMIT_REPORT, [log]))
           }
@@ -135,7 +135,7 @@ export function listenToUpdates() {
         if (err) return console.error('WinningTokensRedeemed:', err)
         if (log) {
           console.log('WinningTokensRedeemed:', log)
-          if (log && log.reporter === getState().loginAccount.address) {
+          if (log.reporter === getState().loginAccount.address) {
             dispatch(updateAssets())
             dispatch(convertLogsToTransactions(TYPES.REDEEM_WINNING_TOKENS, [log]))
           }
