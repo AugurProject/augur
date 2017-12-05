@@ -30,6 +30,17 @@
   height: 100%;
 
   :global {
+    #hovered_candlestick_price_label {
+      .caps--small();
+
+      stroke: @color-white;
+    }
+
+    .overlay {
+      fill: none;
+      pointer-events: visible;
+    }
+
     .tick-line {
       stroke: @color-gray;
     }
@@ -63,6 +74,12 @@
     .period-volume {
       fill: @color-white;
       opacity: 0.2;
+    }
+
+    .line .crosshair {
+      fill: none;
+      stroke: @color-white;
+      stroke-dasharray: 5;
     }
 
     .period-hover {

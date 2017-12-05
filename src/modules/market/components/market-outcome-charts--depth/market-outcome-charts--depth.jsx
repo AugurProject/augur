@@ -16,7 +16,7 @@ export default class MarketOutcomeDepth extends Component {
     orderBookMid: PropTypes.number.isRequired,
     orderBookMax: PropTypes.number.isRequired,
     hoveredPrice: PropTypes.any,
-    updateHoveredValues: PropTypes.func.isRequired
+    updateHoveredPrice: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -24,7 +24,9 @@ export default class MarketOutcomeDepth extends Component {
 
     this.state = {
       chart: null,
-      hoveredDepth: []
+      hoveredDepth: [],
+      chartWidth: 0,
+      yScale: null
     }
 
     this.drawChart = this.drawChart.bind(this)
@@ -38,10 +40,30 @@ export default class MarketOutcomeDepth extends Component {
 
   componentDidUpdate(prevProps) {
     if (!isEqual(prevProps.marketDepth, this.props.marketDepth)) this.updateGraph()
+
+    if(!isEqual(prevProps.hoveredPrice, this.props.hoveredPrice)) this.updateHoveredPriceCrosshair(this.props.hoveredPrice, this.state.yScale, this.state.chartWidth)
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.drawChart)
+  }
+
+  updateHoveredPriceCrosshair(hoveredPrice, yScale, chartWidth) {
+    if (hoveredPrice == null) {
+      d3.select('#crosshairs').style('display', 'none')
+      d3.select('#hovered_price_label').text('')
+    } else {
+      d3.select('#crosshairs').style('display', null)
+      d3.select('#crosshairY')
+        .attr('x1', 0)
+        .attr('y1', yScale(hoveredPrice))
+        .attr('x2', chartWidth)
+        .attr('y2', yScale(hoveredPrice))
+      d3.select('#hovered_price_label')
+        .attr('x', 0)
+        .attr('y', yScale(hoveredPrice) + 12)
+        .text(hoveredPrice)
+    }
   }
 
   drawChart() {
@@ -179,6 +201,7 @@ export default class MarketOutcomeDepth extends Component {
           this.setState({ hoveredDepth: [] })
           d3.select('#crosshairs').style('display', 'none')
           d3.select('#hovered_price_label').text('')
+          this.props.updateHoveredPrice(null)
         })
         .on('mousemove', () => {
           const mouse = d3.mouse(d3.select('#outcome_depth').node())
@@ -223,13 +246,18 @@ export default class MarketOutcomeDepth extends Component {
             .attr('y', y + 12)
             .text(yValue)
 
+          this.props.updateHoveredPrice(yValue)
           this.setState({ hoveredDepth: nearestCompletelyFillingOrder })
         })
         .on('click', () => {
           console.log('TODO -- fill order form')
         })
 
-      this.setState({ chart: fauxDiv.toReact() })
+      this.setState({
+        yScale,
+        chartWidth: width,
+        chart: fauxDiv.toReact()
+      })
     }
   }
 

@@ -30,12 +30,14 @@ export default class MarketOutcomeCharts extends Component {
       hoveredDepth: []
     }
 
-    this.updateHoveredValues = this.updateHoveredValues.bind(this)
+    this.updateHoveredPrice = this.updateHoveredPrice.bind(this)
     this.updatePrecision = this.updatePrecision.bind(this)
   }
 
-  updateHoveredValues(value, origin) {
-    console.log('value, origin -- ', value, origin)
+  updateHoveredPrice(hoveredPrice) {
+    this.setState({
+      hoveredPrice
+    })
   }
 
   updatePrecision(isIncreasing) {
@@ -72,7 +74,7 @@ export default class MarketOutcomeCharts extends Component {
             marketMax={1}
             marketMin={0}
             hoveredPrice={s.hoveredPrice}
-            updateHoveredValues={this.updateHoveredValues}
+            updateHoveredPrice={this.updateHoveredPrice}
           />
           <MarketOutcomeDepth
             orderBookMin={p.orderBookMin}
@@ -80,12 +82,12 @@ export default class MarketOutcomeCharts extends Component {
             orderBookMax={p.orderBookMax}
             marketDepth={p.marketDepth}
             hoveredPrice={s.hoveredPrice}
-            updateHoveredValues={this.updateHoveredValues}
+            updateHoveredPrice={this.updateHoveredPrice}
           />
           <MarketOutcomeOrderBook
             orderBook={p.orderBook}
             hoveredPrice={s.hoveredPrice}
-            updateHoveredValues={this.updateHoveredValues}
+            updateHoveredPrice={this.updateHoveredPrice}
           />
         </div>
       </section>

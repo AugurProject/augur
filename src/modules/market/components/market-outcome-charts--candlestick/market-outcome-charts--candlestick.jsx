@@ -18,7 +18,7 @@ export default class MarketOutcomeCandlestick extends Component {
     marketMin: PropTypes.number.isRequired,
     marketMax: PropTypes.number.isRequired,
     hoveredPrice: PropTypes.any,
-    updateHoveredValues: PropTypes.func.isRequired,
+    updateHoveredPrice: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -26,7 +26,10 @@ export default class MarketOutcomeCandlestick extends Component {
 
     this.state = {
       chart: null,
-      hoveredPeriod: {}
+      chartWidth: 0,
+      yScale: null,
+      hoveredPeriod: {},
+      hoveredPrice: null
     }
 
     this.drawChart = this.drawChart.bind(this)
@@ -38,8 +41,32 @@ export default class MarketOutcomeCandlestick extends Component {
     window.addEventListener('resize', this.drawChart)
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (!isEqual(prevProps.marketPriceHistory, this.props.marketPriceHistory)) this.drawChart()
+
+    if (!isEqual(prevProps.hoveredPrice, this.props.hoveredPrice)) this.updateHoveredPriceCrosshair(this.props.hoveredPrice, this.state.yScale, this.state.chartWidth)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.drawChart)
+  }
+
+  updateHoveredPriceCrosshair(hoveredPrice, yScale, chartWidth) {
+    if (hoveredPrice == null) {
+      d3.select('#candlestick_crosshairs').style('display', 'none')
+      d3.select('#hovered_candlestick_price_label').text('')
+    } else {
+      d3.select('#candlestick_crosshairs').style('display', null)
+      d3.select('#candlestick_crosshairY')
+        .attr('x1', 0)
+        .attr('y1', yScale(hoveredPrice))
+        .attr('x2', chartWidth)
+        .attr('y2', yScale(hoveredPrice))
+      d3.select('#hovered_candlestick_price_label')
+        .attr('x', 0)
+        .attr('y', yScale(hoveredPrice) + 12)
+        .text(hoveredPrice)
+    }
   }
 
   drawChart() {
@@ -155,6 +182,13 @@ export default class MarketOutcomeCandlestick extends Component {
         .attr('width', d => (0.40 * (width - (2 * margin.stick))) / priceHistory.length)
         .attr('class', 'period-volume') // eslint-disable-line no-confusing-arrow
 
+      chart.append('rect')
+        .attr('class', 'overlay')
+        .attr('width', width)
+        .attr('height', height)
+        .on('mousemove', () => this.props.updateHoveredPrice(yScale.invert(d3.mouse(d3.select('#outcome_candlestick').node())[1])))
+        .on('mouseout', () => this.props.updateHoveredPrice(null))
+
       chart.selectAll('rect.hover')
         .data(priceHistory)
         .enter().append('rect')
@@ -164,9 +198,29 @@ export default class MarketOutcomeCandlestick extends Component {
         .attr('width', d => (0.5 * (width - (2 * margin.stick))) / priceHistory.length)
         .attr('class', 'period-hover')
         .on('mouseover', d => this.setState({ hoveredPeriod: d }))
-        .on('mouseout', () => this.setState({ hoveredPeriod: {} }))
+        .on('mousemove', () => this.props.updateHoveredPrice(yScale.invert(d3.mouse(d3.select('#outcome_candlestick').node())[1])))
+        .on('mouseout', () => {
+          this.setState({ hoveredPeriod: {} })
+          this.props.updateHoveredPrice(null)
+        })
 
-      this.setState({ chart: fauxDiv.toReact() })
+      chart.append('text')
+        .attr('id', 'hovered_candlestick_price_label')
+
+      const crosshair = chart.append('g')
+        .attr('id', 'candlestick_crosshairs')
+        .attr('class', 'line')
+        .attr('style', { display: 'none' })
+
+      crosshair.append('line')
+        .attr('id', 'candlestick_crosshairY')
+        .attr('class', 'crosshair')
+
+      this.setState({
+        yScale,
+        chartWidth: width,
+        chart: fauxDiv.toReact()
+      })
     }
   }
 
