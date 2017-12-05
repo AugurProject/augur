@@ -160,7 +160,7 @@ export default class MarketOutcomeDepth extends Component {
         .attr('class', 'line')
         .attr('style', { display: 'none' })
 
-    // create horizontal line
+      // create horizontal line
       crosshair.append('line')
         .attr('id', 'crosshairX')
         .attr('class', 'crosshair')
@@ -219,9 +219,9 @@ export default class MarketOutcomeDepth extends Component {
             .attr('y2', height)
 
           d3.select('#hovered_price_label')
-          .attr('x', 0)
-          .attr('y', y + 12)
-          .text(yValue)
+            .attr('x', 0)
+            .attr('y', y + 12)
+            .text(yValue)
 
           this.setState({ hoveredDepth: nearestCompletelyFillingOrder })
         })
