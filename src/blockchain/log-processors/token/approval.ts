@@ -3,13 +3,14 @@ import * as Knex from "knex";
 import { FormattedEventLog, ErrorCallback } from "../../../types";
 
 export function processApprovalLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
+  // TODO divide value by numTicks for share tokens transfer logs
   db.transacting(trx).insert({
     transactionHash: log.transactionHash,
     logIndex:        log.logIndex,
     owner:           log.owner,
     spender:         log.spender,
     token:           log.address,
-    value:           log.value || log.amount,
+    value:           log.value,
     blockNumber:     log.blockNumber,
   }).into("approvals").asCallback(callback);
 }

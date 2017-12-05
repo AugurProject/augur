@@ -3,15 +3,15 @@ import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import { Address, Bytes32, TradesRow, ErrorCallback } from "../../../types";
 import { calculateNumberOfSharesTraded } from "./calculate-number-of-shares-traded";
-import { convertFixedPointToDecimal } from "../../../utils/convert-fixed-point-to-decimal";
+import { convertFixedPointToDecimal, convertOnChainSharesToHumanReadableShares } from "../../../utils/convert-fixed-point-to-decimal";
 
-export function updateVolumetrics(db: Knex, augur: Augur, trx: Knex.Transaction, category: string, marketID: Address, outcome: number, blockNumber: number, orderID: Bytes32, orderCreator: Address, isIncrease: boolean, callback: ErrorCallback): void {
+export function updateVolumetrics(db: Knex, augur: Augur, trx: Knex.Transaction, category: string, marketID: Address, outcome: number, blockNumber: number, orderID: Bytes32, orderCreator: Address, tickSize: string, isIncrease: boolean, callback: ErrorCallback): void {
   augur.api.Market.getShareToken({ _outcome: outcome, tx: { to: marketID } }, (err: Error|null, shareToken: Address): void => {
     if (err) return callback(err);
     const shareTokenPayload = { tx: { to: shareToken } };
     augur.api.ShareToken.totalSupply(shareTokenPayload, (err: Error|null, sharesOutstanding?: any): void => {
       if (err) return callback(err);
-      db("markets").transacting(trx).where({ marketID }).update({ sharesOutstanding }).asCallback((err: Error|null): void => {
+      db("markets").transacting(trx).where({ marketID }).update({ sharesOutstanding: convertOnChainSharesToHumanReadableShares(sharesOutstanding, tickSize) }).asCallback((err: Error|null): void => {
         if (err) return callback(err);
         trx.first(["numCreatorShares", "numCreatorTokens", "price"]).from("trades").where({ marketID, outcome, orderID, blockNumber }).asCallback((err: Error|null, tradesRow?: Partial<TradesRow>): void => {
           if (err) return callback(err);

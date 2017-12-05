@@ -57,6 +57,7 @@ describe("server/getters/get-markets-info", () => {
           designatedReportStake: 10,
           resolutionSource: "http://www.trusted-third-party.com",
           numTicks: 10000,
+          tickSize: "0.0001",
           consensus: null,
           outcomes: [{
             id: 0,
@@ -129,6 +130,7 @@ describe("server/getters/get-markets-info", () => {
           designatedReportStake: 10,
           resolutionSource: "http://www.trusted-third-party.com",
           numTicks: 10000,
+          tickSize: "0.0001",
           consensus: null,
           outcomes: [{
             id: 0,
@@ -186,6 +188,7 @@ describe("server/getters/get-markets-info", () => {
           designatedReportStake: 10,
           resolutionSource: "http://www.trusted-third-party.com",
           numTicks: 10000,
+          tickSize: "0.0001",
           consensus: null,
           outcomes: [{
             id: 0,
@@ -259,6 +262,7 @@ describe("server/getters/get-markets-info", () => {
           designatedReportStake: 10,
           resolutionSource: "http://www.trusted-third-party.com",
           numTicks: 10000,
+          tickSize: "0.0001",
           consensus: null,
           outcomes: [{
             id: 0,
@@ -315,6 +319,7 @@ describe("server/getters/get-markets-info", () => {
           designatedReportStake: 10,
           resolutionSource: "http://www.trusted-third-party.com",
           numTicks: 10000,
+          tickSize: "0.0001",
           consensus: null,
           outcomes: [{
             id: 0,
@@ -357,6 +362,7 @@ describe("server/getters/get-markets-info", () => {
           designatedReportStake: 10,
           resolutionSource: "http://www.trusted-third-party.com",
           numTicks: 10000,
+          tickSize: "0.0001",
           consensus: null,
           outcomes: [{
             id: 0,

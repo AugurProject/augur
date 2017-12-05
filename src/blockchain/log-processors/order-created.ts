@@ -4,7 +4,7 @@ import * as Knex from "knex";
 import { Address, Bytes32, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, OrderState, ErrorCallback, AsyncCallback } from "../../types";
 import { processOrderCanceledLog } from "./order-canceled";
 import { augurEmitter } from "../../events";
-import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
+import { convertFixedPointToDecimal, convertOnChainSharesToHumanReadableShares, convertNumTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { denormalizePrice } from "../../utils/denormalize-price";
 import { formatOrderAmount, formatOrderPrice } from "../../utils/format-order";
 import { WEI_PER_ETHER, ZERO } from "../../constants";
@@ -39,7 +39,8 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
       const maxPrice = marketsRow.maxPrice!;
       const numTicks = marketsRow.numTicks!;
       const ordersPayload = { _orderId: log.orderId };
-      const fullPrecisionAmount = convertFixedPointToDecimal(amount, WEI_PER_ETHER);
+      const tickSize = convertNumTicksToTickSize(numTicks, minPrice, maxPrice);
+      const fullPrecisionAmount = convertOnChainSharesToHumanReadableShares(amount, tickSize);
       const fullPrecisionPrice = denormalizePrice(minPrice, maxPrice, convertFixedPointToDecimal(price, numTicks));
       const orderTypeLabel = orderType === "0" ? "buy" : "sell";
       const orderData: OrdersRow = {
@@ -58,7 +59,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
         fullPrecisionPrice,
         fullPrecisionAmount,
         tokensEscrowed: convertFixedPointToDecimal(moneyEscrowed, WEI_PER_ETHER),
-        sharesEscrowed: convertFixedPointToDecimal(sharesEscrowed, WEI_PER_ETHER),
+        sharesEscrowed: convertOnChainSharesToHumanReadableShares(sharesEscrowed, tickSize),
       };
       const orderID = { orderID: log.orderId };
       augurEmitter.emit("OrderCreated", Object.assign(orderData, orderID));

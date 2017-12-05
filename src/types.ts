@@ -277,7 +277,8 @@ export interface UIMarketInfo {
   designatedReporter: Address;
   designatedReportStake: string|number;
   resolutionSource?: string|null;
-  numTicks: number;
+  numTicks: string|number;
+  tickSize: string|number;
   consensus: UIConsensusInfo|null;
   outcomes: Array<UIOutcomeInfo>;
 }

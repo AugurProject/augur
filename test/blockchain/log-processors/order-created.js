@@ -1,7 +1,9 @@
 "use strict";
 
 const assert = require("chai").assert;
+const { fix } = require("speedomatic");
 const setupTestDb = require("../../test.database");
+const { convertHumanReadableSharesToOnChainShares } = require("../../../build/utils/convert-fixed-point-to-decimal");
 const { processOrderCreatedLog, processOrderCreatedLogRemoval } = require("../../../build/blockchain/log-processors/order-created");
 
 describe("blockchain/log-processors/order-created", () => {
@@ -34,9 +36,9 @@ describe("blockchain/log-processors/order-created", () => {
         orderType: "0",
         shareToken: "0x1000000000000000000000000000000000000000",
         price: "7500",
-        amount: "3000000000000000000",
+        amount: convertHumanReadableSharesToOnChainShares("3", "0.0001"),
         sharesEscrowed: "0",
-        moneyEscrowed: "2250000000000000000",
+        moneyEscrowed: fix("2.25", "string"),
         creator: "CREATOR_ADDRESS",
         orderId: "ORDER_ID",
         tradeGroupId: "TRADE_GROUP_ID",

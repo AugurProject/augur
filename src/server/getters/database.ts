@@ -2,6 +2,7 @@ import * as Knex from "knex";
 import BigNumber from "bignumber.js";
 import { sortDirection } from "../../utils/sort-direction";
 import { MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIConsensusInfo, UIOutcomeInfo, StakeTokensRowWithReportingState, UIStakeTokenInfo } from "../../types";
+import { convertNumTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 
 export function queryModifier(query: Knex.QueryBuilder, defaultSortBy: string, defaultSortOrder: string, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined): Knex.QueryBuilder {
   query = query.orderBy(sortBy || defaultSortBy, sortDirection(isSortDescending, defaultSortOrder));
@@ -56,6 +57,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
     designatedReportStake: row.designatedReportStake,
     resolutionSource: row.resolutionSource,
     numTicks: row.numTicks,
+    tickSize: convertNumTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice),
     consensus,
     outcomes: outcomesInfo,
   };
