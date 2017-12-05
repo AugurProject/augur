@@ -92,10 +92,12 @@ export function listenToUpdates() {
               }
             }, log.marketID))
             dispatch(updateAccountPositionsData({
-              [log.marketID]: { [log.outcome]: [{
-                ...log,
-                maker: log.creator === address
-              }] }
+              [log.marketID]: {
+                [log.outcome]: [{
+                  ...log,
+                  maker: log.creator === address
+                }]
+              }
             }))
             dispatch(updateAssets())
             dispatch(loadMarketsInfo([log.marketID]))

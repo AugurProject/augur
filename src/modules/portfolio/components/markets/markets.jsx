@@ -109,7 +109,9 @@ class MyMarkets extends Component {
         }
       })
 
-      this.setState({ filteredMarketsReporting, reportingMarkets, filteredMarketsDesignatedReporting, designatedReportingMarkets })
+      this.setState({
+        filteredMarketsReporting, reportingMarkets, filteredMarketsDesignatedReporting, designatedReportingMarkets
+      })
     }
   }
 

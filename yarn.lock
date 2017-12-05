@@ -515,22 +515,22 @@ augur-contracts@3.4.0-8:
   version "3.4.0-8"
   resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-3.4.0-8.tgz#9b53618c83ab7bd4070b43e057284bffd4472be8"
 
-augur.js@4.7.0-16:
-  version "4.7.0-16"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.7.0-16.tgz#ae61f4db81da9468d29f976f630ffaff7a056a69"
+augur.js@4.7.0-17:
+  version "4.7.0-17"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.7.0-17.tgz#9606d49441e355210353c264c682bb727ec81d55"
   dependencies:
     async "1.5.2"
     augur-contracts "3.4.0-8"
     bignumber.js "2.3.0"
     clone "1.0.2"
-    ethereumjs-connect "4.4.3"
-    ethrpc "4.4.6"
+    ethereumjs-connect "4.4.4"
+    ethrpc "4.4.7"
     immutable-delete "1.1.0"
     keccak "1.2.0"
     keythereum "1.0.2"
     lodash.assign "4.2.0"
     lodash.isequal "4.5.0"
-    speedomatic "2.0.4"
+    speedomatic "2.1.0"
     uuid "3.0.0"
     uuid-parse "1.0.0"
 
@@ -3704,13 +3704,13 @@ ethereumjs-blockstream@2.0.7:
     source-map-support "0.4.14"
     uuid "3.0.1"
 
-ethereumjs-connect@4.4.3:
-  version "4.4.3"
-  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.4.3.tgz#185978ba4bced91d9d21207deec18526ed65daf9"
+ethereumjs-connect@4.4.4:
+  version "4.4.4"
+  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.4.4.tgz#882e26c7116a6cc432fd59657097d6e3f7e5daba"
   dependencies:
     async "1.5.2"
     clone "1.0.2"
-    ethrpc "4.4.6"
+    ethrpc "4.4.7"
 
 ethereumjs-ledger@2.1.4:
   version "2.1.4"
@@ -3790,9 +3790,9 @@ ethrpc@4.4.4:
     request "2.67.0"
     websocket "1.0.23"
 
-ethrpc@4.4.6:
-  version "4.4.6"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.4.6.tgz#66562a7b56e96c1f3adc931f4b2b93b00356c49b"
+ethrpc@4.4.7:
+  version "4.4.7"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.4.7.tgz#285240261de14f126159018da5e6b7d231b48b94"
   dependencies:
     async "1.5.2"
     bignumber.js "2.3.0"
@@ -3809,7 +3809,7 @@ ethrpc@4.4.6:
     oboe "2.1.3"
     redux "3.6.0"
     redux-thunk-subscribe "1.0.3"
-    speedomatic "2.0.4"
+    speedomatic "2.1.0"
     sync-request "2.0.1"
     uuid "3.0.1"
   optionalDependencies:
@@ -9052,6 +9052,13 @@ specificity@^0.3.1:
 speedomatic@2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/speedomatic/-/speedomatic-2.0.4.tgz#3c184f14ae4d2504bcd734e77190e8a026b8236d"
+  dependencies:
+    bignumber.js "2.3.0"
+    ethereumjs-abi "0.6.4"
+
+speedomatic@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/speedomatic/-/speedomatic-2.1.0.tgz#bd7a80215f49386e72d297ee40fcf41d04ce0632"
   dependencies:
     bignumber.js "2.3.0"
     ethereumjs-abi "0.6.4"
