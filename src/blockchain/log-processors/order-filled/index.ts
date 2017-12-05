@@ -2,6 +2,7 @@ import { Augur } from "augur.js";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import { Address, FormattedEventLog, TokensRow, MarketsRow, OrdersRow, AsyncCallback, ErrorCallback } from "../../../types";
+import { calculateFillPrice } from "./calculate-fill-price";
 import { calculateNumberOfSharesTraded } from "./calculate-number-of-shares-traded";
 import { updateOrdersAndPositions } from "./update-orders-and-positions";
 import { updateVolumetrics } from "./update-volumetrics";
@@ -46,10 +47,7 @@ export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transact
         const numFillerShares = convertOnChainSharesToHumanReadableShares(log.numFillerShares, tickSize);
         const marketCreatorFees = convertFixedPointToDecimal(log.marketCreatorFees, WEI_PER_ETHER);
         const reporterFees = convertFixedPointToDecimal(log.reporterFees, WEI_PER_ETHER);
-        const normalizedPrice = augur.trading.normalizePrice({ minPrice, maxPrice, price });
-        const fillPrice = orderType === "sell" ? normalizedPrice : new BigNumber(1, 10).minus(new BigNumber(normalizedPrice, 10)).toFixed();
-        const amount = calculateNumberOfSharesTraded(numCreatorShares, numCreatorTokens, fillPrice);
-        console.log({ numCreatorShares, numCreatorTokens, fillPrice, normalizedPrice, price, amount, orderType });
+        const amount = calculateNumberOfSharesTraded(numCreatorShares, numCreatorTokens, calculateFillPrice(augur, price, minPrice, maxPrice, orderType));
         const tradeData = {
           marketID,
           outcome,
@@ -74,7 +72,7 @@ export function processOrderFilledLog(db: Knex, augur: Augur, trx: Knex.Transact
         augurEmitter.emit("OrderFilled", tradeData);
         db.transacting(trx).insert(tradeData).into("trades").asCallback((err: Error|null): void => {
           if (err) return callback(err);
-          updateVolumetrics(db, augur, trx, category, marketID, outcome, blockNumber, orderID, orderCreator, tickSize, true, (err: Error|null): void => {
+          updateVolumetrics(db, augur, trx, category, marketID, outcome, blockNumber, orderID, orderCreator, tickSize, minPrice, maxPrice, true, (err: Error|null): void => {
             if (err) return callback(err);
             updateOrdersAndPositions(db, augur, trx, marketID, orderID, orderCreator, filler, numTicks, tickSize, callback);
           });
@@ -88,7 +86,7 @@ export function processOrderFilledLogRemoval(db: Knex, augur: Augur, trx: Knex.T
   augurEmitter.emit("OrderFilled", log);
   const shareToken: Address = log.shareToken;
   const blockNumber: number = log.blockNumber;
-  trx.first(["tokens.marketID", "tokens.outcome", "markets.numTicks", "markets.category", "markets.minPrice", "markets.maxPrice"]).from("tokens").join("markets", "tokens.marketID", "markets.marketID").where("tokens.contractAddress", shareToken).asCallback((err: Error|null, tokensRow?: Partial<TokensRowWithNumTicksAndCategory>): void => {
+  trx.first("tokens.marketID", "tokens.outcome", "markets.numTicks", "markets.category", "markets.minPrice", "markets.maxPrice").from("tokens").join("markets", "tokens.marketID", "markets.marketID").where("tokens.contractAddress", shareToken).asCallback((err: Error|null, tokensRow?: Partial<TokensRowWithNumTicksAndCategory>): void => {
     if (err) return callback(err);
     if (!tokensRow) return callback(new Error("market and outcome not found"));
     const marketID = tokensRow.marketID!;
@@ -103,7 +101,7 @@ export function processOrderFilledLogRemoval(db: Knex, augur: Augur, trx: Knex.T
       if (!ordersRow) return callback(new Error("order not found"));
       const orderCreator = ordersRow.orderCreator!;
       const tickSize = convertNumTicksToTickSize(numTicks, minPrice, maxPrice);
-      updateVolumetrics(db, augur, trx, category, marketID, outcome, blockNumber, orderID, orderCreator, tickSize, false, (err: Error|null): void => {
+      updateVolumetrics(db, augur, trx, category, marketID, outcome, blockNumber, orderID, orderCreator, tickSize, minPrice, maxPrice, false, (err: Error|null): void => {
         if (err) return callback(err);
         db.transacting(trx).from("trades").where({ marketID, outcome, orderID, blockNumber }).del().asCallback((err?: Error|null): void => {
           if (err) return callback(err);
