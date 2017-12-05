@@ -9,7 +9,7 @@ describe("server/getters/get-better-worse-orders", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getBetterWorseOrders(db, t.params.marketID, t.params.outcome, t.params.amount, t.params.price, (err, betterWorseOrders) => {
+        getBetterWorseOrders(db, t.params.marketID, t.params.outcome, t.params.orderType, t.params.price, (err, betterWorseOrders) => {
           t.assertions(err, betterWorseOrders);
           done();
         });
@@ -19,17 +19,64 @@ describe("server/getters/get-better-worse-orders", () => {
   test({
     description: "get better worse with no orders",
     params: {
-      marketID: "0x0000000000000000000000000000000000000011",
+      marketID: "0x00000000000000000000000000000fffffffff11",
       outcome: 1,
-      amount: 1,
+      orderType: "buy",
       price: 2,
     },
     assertions: (err, betterWorseOrders) => {
       assert.isNull(err);
       assert.deepEqual(betterWorseOrders, {
-        immediateFill: true,
-        betterOrderID: 0,
-        worseOrderID: 0,
+        betterOrderID: null,
+        worseOrderID: null,
+      });
+    },
+  });
+  test({
+    description: "get better worse with better orders",
+    params: {
+      marketID: "0x0000000000000000000000000000000000000001",
+      outcome: 0,
+      orderType: "buy",
+      price: 0.4,
+    },
+    assertions: (err, betterWorseOrders) => {
+      assert.isNull(err);
+      assert.deepEqual(betterWorseOrders, {
+        betterOrderID: "0x2000000000000000000000000000000000000000000000000000000000000000",
+        worseOrderID: null,
+      });
+    },
+  });
+  test({
+    description: "get better worse with worse orders",
+    params: {
+      marketID: "0x0000000000000000000000000000000000000001",
+      outcome: 0,
+      orderType: "buy",
+      price: 0.99,
+    },
+    assertions: (err, betterWorseOrders) => {
+      assert.isNull(err);
+      assert.deepEqual(betterWorseOrders, {
+        betterOrderID: null,
+        worseOrderID: "0x1000000000000000000000000000000000000000000000000000000000000000",
+      });
+    },
+  });
+  test({
+    description: "get better worse with better and worse orders",
+    params: {
+      marketID: "0x0000000000000000000000000000000000000001",
+      outcome: 0,
+      orderType: "buy",
+      price: 0.65,
+    },
+    assertions: (err, betterWorseOrders) => {
+      assert.isNull(err);
+      assert.deepEqual(betterWorseOrders, {
+        betterOrderID: "0x1000000000000000000000000000000000000000000000000000000000000000",
+        worseOrderID: "0x2000000000000000000000000000000000000000000000000000000000000000",
       });
     },
   });

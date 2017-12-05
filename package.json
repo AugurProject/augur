@@ -28,7 +28,9 @@
     "coverage": "istanbul cover --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test",
     "postinstall": "postinstall-build build",
     "postdeploy": "npm run migrate_pg",
-    "link": "npm link augur.js speedomatic"
+    "link": "npm link augur.js speedomatic",
+    "clean": "rm -rf augur.db build",
+    "clean-start": "npm run clean && npm run build && npm run migrate && npm start"
   },
   "repository": {
     "type": "git",
