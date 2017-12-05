@@ -1,0 +1,5 @@
+version: '3'
+services:
+  augur-node:
+    build: .
+    image: augurproject/augur-node:dev
