@@ -78,8 +78,8 @@ describe("trading/get-trade-amount-remaining", function () {
     description: "get trade amount remaining using transaction hash",
     params: {
       transactionHash: "TRANSACTION_HASH",
-      startingAmount: "7",
-      priceNumTicksRepresentation: "0x1500",
+      startingOnChainAmount: "0x5af3107a4000", // 1
+      priceNumTicksRepresentation: "0x1500", // 0.0276
     },
     mock: {
       contracts: {
@@ -109,14 +109,14 @@ describe("trading/get-trade-amount-remaining", function () {
     },
     assertions: function (err, tradeAmountRemaining) {
       assert.isNull(err);
-      assert.strictEqual(tradeAmountRemaining, "6.99999486607142857143");
+      assert.strictEqual(tradeAmountRemaining, "94866071428571.42857142857142857143");
     },
   });
   test({
     description: "logs not present in receipt",
     params: {
       transactionHash: "TRANSACTION_HASH",
-      startingAmount: "7",
+      startingOnChainAmount: "0x5af3107a4000",
       priceNumTicksRepresentation: "0x1500",
     },
     mock: {

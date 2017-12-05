@@ -34,7 +34,22 @@ midnightTomorrow.setDate(midnightTomorrow.getDate() + 1);
 midnightTomorrow.setHours(0, 0, 0, 0);
 var today = new Date();
 
-var arbitrarySharesMultiplierThatExistsSolelyToAvoidAddingLotsOfZerosToAllTheSharesValues = new BigNumber(10, 10).toPower(11);
+var binaryMarketOrderBook = {
+  buy: {
+    "0": [
+      { shares: "0.1", price: "0.2" },
+      { shares: "0.2", price: "0.18" },
+      { shares: "0.3", price: "0.15" },
+    ],
+  },
+  sell: {
+    "0": [
+      { shares: "0.15", price: "0.23" },
+      { shares: "0.1", price: "0.26" },
+      { shares: "0.3", price: "0.29" },
+    ],
+  },
+};
 
 var cannedMarkets = [{
   marketType: "binary",
@@ -46,22 +61,7 @@ var cannedMarkets = [{
     tags: ["SpaceX", "spaceflight"],
     longDescription: "SpaceX hit a big milestone on Friday with NASA confirming on Friday that the Elon Musk-led space cargo business will launch astronauts to the International Space Station by 2017.\n\nLast year, the space agency tentatively awarded a $2.6 billion contract to SpaceX to carry crew to space. NASA’s announcement on Friday formalizes the deal, which involves SpaceX loading its Crew Dragon spacecraft with astronauts and sending them beyond the stratosphere.",
   },
-  orderBook: {
-    buy: {
-      "0": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
-      ],
-    },
-    sell: {
-      "0": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
-      ],
-    },
-  },
+  orderBook: binaryMarketOrderBook,
 }, {
   marketType: "binary",
   _description: "Will California secede from the United States before January 1, 2020?",
@@ -72,22 +72,104 @@ var cannedMarkets = [{
     tags: ["California", "Calexit"],
     longDescription: "In the Spring of 2019, Californians will go to the polls in a historic vote to decide by referendum if California should exit the Union, a #Calexit vote. http://www.yescalifornia.org",
   },
-  orderBook: {
-    buy: {
-      "0": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
-      ],
-    },
-    sell: {
-      "0": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
-      ],
-    },
+  orderBook: binaryMarketOrderBook,
+}, {
+  marketType: "binary",
+  _description: "Will the Dow Jones Industrial Average close at a higher price on " + today.toLocaleDateString() + " than it closed at the previous day?",
+  _endTime: parseInt(closingBell.getTime() / 1000, 10),
+  _topic: "finance",
+  _extraInfo: {
+    resolutionSource: "https://www.google.com/finance?q=INDEXDJX:.DJI",
+    tags: ["stocks", "Dow Jones"],
+    longDescription: "The Daily Dow market lives again! https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average",
   },
+  orderBook: binaryMarketOrderBook,
+}, {
+  marketType: "binary",
+  _description: "Will Augur's live release happen by the end of December, 2017?",
+  _endTime: parseInt(new Date("1/1/2018").getTime() / 1000, 10),
+  _topic: "Augur",
+  _extraInfo: {
+    resolutionSource: "https://www.augur.net",
+    tags: ["release date", "Ethereum"],
+    longDescription: "https://www.augur.net",
+  },
+  orderBook: binaryMarketOrderBook,
+}, {
+  marketType: "binary",
+  _description: "Will Donald Trump be impeached and removed from the Presidency within two years of his inauguration?",
+  _endTime: parseInt(new Date("2/1/2019").getTime() / 1000, 10),
+  _topic: "politics",
+  _extraInfo: {
+    resolutionSource: "",
+    tags: ["Trump", "impeachment"],
+    longDescription: "",
+  },
+  orderBook: binaryMarketOrderBook,
+}, {
+  marketType: "binary",
+  _description: "Will Jair Messias Bolsonaro be elected the president of Brazil in 2018?",
+  _endTime: parseInt(new Date("12/31/2018").getTime() / 1000, 10),
+  _topic: "politics",
+  _extraInfo: {
+    resolutionSource: "",
+    tags: ["elections", "Brazil"],
+    longDescription: "",
+  },
+  orderBook: binaryMarketOrderBook,
+}, {
+  marketType: "binary",
+  _description: "Will REP tokens be worth more than 100 USD each any time on or before January 1, 2018 on CoinMarketCap?",
+  _endTime: parseInt(new Date("1/2/2018").getTime() / 1000, 10),
+  _topic: "trading",
+  _extraInfo: {
+    resolutionSource: "http://coinmarketcap.com",
+    tags: ["Augur", "Reputation"],
+    longDescription: "https://www.reddit.com/r/reptrader",
+  },
+  orderBook: binaryMarketOrderBook,
+}, {
+  marketType: "binary",
+  _description: "Will Ethereum trade at $400 or higher by midnight EST on November 30, 2018?",
+  _endTime: parseInt(new Date("12/1/2018").getTime() / 1000, 10),
+  _topic: "trading",
+  _extraInfo: {
+    resolutionSource: "http://coinmarketcap.com",
+    tags: ["trading", "Ethereum", "currencies"],
+    longDescription: "http://coinmarketcap.com/currencies/ethereum",
+  },
+  orderBook: binaryMarketOrderBook,
+}, {
+  marketType: "binary",
+  _description: "Will the Larsen B ice shelf collapse by November 1, 2018?",
+  _endTime: parseInt(new Date("11-2-2018").getTime() / 1000, 10),
+  _topic: "climate",
+  _extraInfo: {
+    resolutionSource: "",
+    tags: ["Antarctica", "warming"],
+  },
+  orderBook: binaryMarketOrderBook,
+}, {
+  marketType: "binary",
+  _description: "Will the Golden State Warriors win the 2018 NBA Championship?",
+  _endTime: parseInt(new Date("6-20-2018").getTime() / 1000, 10),
+  _topic: "sports",
+  _extraInfo: {
+    resolutionSource: "ESPN",
+    tags: ["basketball", "Warriors"],
+    longDescription: "",
+  },
+  orderBook: binaryMarketOrderBook,
+}, {
+  marketType: "binary",
+  _description: "Will antibiotics be outlawed for agricultural use in China by the end of 2020?",
+  _endTime: parseInt(new Date("1-1-2021").getTime() / 1000, 10),
+  _topic: "agriculture",
+  _extraInfo: {
+    tags: ["antibiotics", "China"],
+    longDescription: "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?",
+  },
+  orderBook: binaryMarketOrderBook,
 }, {
   marketType: "scalar",
   _description: "High temperature (in degrees Fahrenheit) on " + today.toLocaleDateString() + " at the San Francisco International Airport, as reported by Weather Underground",
@@ -104,210 +186,16 @@ var cannedMarkets = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "0.1", price: "20" },
-        { shares: "0.1", price: "0" },
-        { shares: "0.2", price: "-5" },
+        { shares: "0.01", price: "20" },
+        { shares: "0.01", price: "0" },
+        { shares: "0.02", price: "-5" },
       ],
     },
     sell: {
       "0": [
-        { shares: "0.2", price: "25" },
-        { shares: "0.1", price: "50" },
-        { shares: "0.1", price: "51" },
-      ],
-    },
-  },
-}, {
-  marketType: "binary",
-  _description: "Will the Dow Jones Industrial Average close at a higher price on " + today.toLocaleDateString() + " than it closed at the previous day?",
-  _endTime: parseInt(closingBell.getTime() / 1000, 10),
-  _topic: "finance",
-  _extraInfo: {
-    resolutionSource: "https://www.google.com/finance?q=INDEXDJX:.DJI",
-    tags: ["stocks", "Dow Jones"],
-    longDescription: "The Daily Dow market lives again! https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average",
-  },
-  orderBook: {
-    buy: {
-      "0": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
-      ],
-    },
-    sell: {
-      "0": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
-      ],
-    },
-  },
-}, {
-  marketType: "binary",
-  _description: "Will Augur's live release happen by the end of December, 2017?",
-  _endTime: parseInt(new Date("1/1/2018").getTime() / 1000, 10),
-  _topic: "Augur",
-  _extraInfo: {
-    resolutionSource: "https://www.augur.net",
-    tags: ["release date", "Ethereum"],
-    longDescription: "https://www.augur.net",
-  },
-  orderBook: {
-    buy: {
-      "0": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
-      ],
-    },
-    sell: {
-      "0": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
-      ],
-    },
-  },
-}, {
-  marketType: "categorical",
-  _description: "Who will win the University of Georgia vs. University of Florida football game in 2018?",
-  _endTime: parseInt(new Date("10/30/2018").getTime() / 1000, 10),
-  _numOutcomes: 2,
-  _topic: "sports",
-  _extraInfo: {
-    resolutionSource: "",
-    tags: ["college football", "football"],
-    outcomeNames: ["Georgia", "Florida"],
-    longDescription: "",
-  },
-  orderBook: {
-    buy: {
-      "0": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
-      ],
-      "1": [
-        { shares: "300", price: "0.48" },
-        { shares: "150", price: "0.45" },
-        { shares: "200", price: "0.41" },
-      ],
-    },
-    sell: {
-      "0": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
-      ],
-      "1": [
-        { shares: "150", price: "0.53" },
-        { shares: "200", price: "0.57" },
-        { shares: "250", price: "0.61" },
-      ],
-    },
-  },
-}, {
-  marketType: "binary",
-  _description: "Will Donald Trump be impeached and removed from the Presidency within two years of his inauguration?",
-  _endTime: parseInt(new Date("2/1/2019").getTime() / 1000, 10),
-  _topic: "politics",
-  _extraInfo: {
-    resolutionSource: "",
-    tags: ["Trump", "impeachment"],
-    longDescription: "",
-  },
-  orderBook: {
-    buy: {
-      "0": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
-      ],
-    },
-    sell: {
-      "0": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
-      ],
-    },
-  },
-}, {
-  marketType: "binary",
-  _description: "Will Jair Messias Bolsonaro be elected the president of Brazil in 2018?",
-  _endTime: parseInt(new Date("12/31/2018").getTime() / 1000, 10),
-  _topic: "politics",
-  _extraInfo: {
-    resolutionSource: "",
-    tags: ["elections", "Brazil"],
-    longDescription: "",
-  },
-  orderBook: {
-    buy: {
-      "0": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
-      ],
-    },
-    sell: {
-      "0": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
-      ],
-    },
-  },
-}, {
-  marketType: "binary",
-  _description: "Will REP tokens be worth more than 100 USD each any time on or before January 1, 2018 on CoinMarketCap?",
-  _endTime: parseInt(new Date("1/2/2018").getTime() / 1000, 10),
-  _topic: "trading",
-  _extraInfo: {
-    resolutionSource: "http://coinmarketcap.com",
-    tags: ["Augur", "Reputation"],
-    longDescription: "https://www.reddit.com/r/reptrader",
-  },
-  orderBook: {
-    buy: {
-      "0": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
-      ],
-    },
-    sell: {
-      "0": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
-      ],
-    },
-  },
-}, {
-  marketType: "binary",
-  _description: "Will Ethereum trade at $400 or higher by midnight EST on November 30, 2018?",
-  _endTime: parseInt(new Date("12/1/2018").getTime() / 1000, 10),
-  _topic: "trading",
-  _extraInfo: {
-    resolutionSource: "http://coinmarketcap.com",
-    tags: ["trading", "Ethereum", "currencies"],
-    longDescription: "http://coinmarketcap.com/currencies/ethereum",
-  },
-  orderBook: {
-    buy: {
-      "0": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
-      ],
-    },
-    sell: {
-      "0": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
+        { shares: "0.02", price: "25" },
+        { shares: "0.01", price: "50" },
+        { shares: "0.01", price: "51" },
       ],
     },
   },
@@ -326,41 +214,16 @@ var cannedMarkets = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "0.1", price: "20" },
-        { shares: "0.2", price: "0" },
-        { shares: "0.3", price: "-5" },
+        { shares: "0.01", price: "20" },
+        { shares: "0.02", price: "0" },
+        { shares: "0.03", price: "-5" },
       ],
     },
     sell: {
       "0": [
-        { shares: "0.1", price: "25" },
+        { shares: "0.01", price: "25" },
         { shares: "0.01", price: "50" },
-        { shares: "0.01", price: "100" },
-      ],
-    },
-  },
-}, {
-  marketType: "binary",
-  _description: "Will the Larsen B ice shelf collapse by November 1, 2018?",
-  _endTime: parseInt(new Date("11-2-2018").getTime() / 1000, 10),
-  _topic: "climate",
-  _extraInfo: {
-    resolutionSource: "",
-    tags: ["Antarctica", "warming"],
-  },
-  orderBook: {
-    buy: {
-      "0": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
-      ],
-    },
-    sell: {
-      "0": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
+        { shares: "0.005", price: "100" },
       ],
     },
   },
@@ -389,7 +252,7 @@ var cannedMarkets = [{
       "0": [
         { shares: "0.02", price: "250" },
         { shares: "0.01", price: "350" },
-        { shares: "0.01", price: "450" },
+        { shares: "0.005", price: "450" },
       ],
     },
   },
@@ -409,42 +272,16 @@ var cannedMarkets = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "0.01", price: "1000" },
+        { shares: "0.005", price: "1000" },
         { shares: "0.02", price: "900" },
         { shares: "0.03", price: "775" },
       ],
     },
     sell: {
       "0": [
-        { shares: "0.03", price: "1050" },
-        { shares: "0.01", price: "1250" },
-        { shares: "0.01", price: "1500" },
-      ],
-    },
-  },
-}, {
-  marketType: "binary",
-  _description: "Will the Golden State Warriors win the 2018 NBA Championship?",
-  _endTime: parseInt(new Date("6-20-2018").getTime() / 1000, 10),
-  _topic: "sports",
-  _extraInfo: {
-    resolutionSource: "ESPN",
-    tags: ["basketball", "Warriors"],
-    longDescription: "",
-  },
-  orderBook: {
-    buy: {
-      "0": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
-      ],
-    },
-    sell: {
-      "0": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
+        { shares: "0.01", price: "1050" },
+        { shares: "0.005", price: "1250" },
+        { shares: "0.0025", price: "1500" },
       ],
     },
   },
@@ -465,41 +302,54 @@ var cannedMarkets = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "0.5", price: "2" },
-        { shares: "0.2", price: "18" },
-        { shares: "0.3", price: "15" },
+        { shares: "0.05", price: "2" },
+        { shares: "0.02", price: "18" },
+        { shares: "0.01", price: "15" },
       ],
     },
     sell: {
       "0": [
-        { shares: "0.2", price: "23" },
-        { shares: "0.1", price: "26" },
-        { shares: "0.2", price: "29" },
+        { shares: "0.02", price: "23" },
+        { shares: "0.01", price: "26" },
+        { shares: "0.01", price: "29" },
       ],
     },
   },
 }, {
-  marketType: "binary",
-  _description: "Will antibiotics be outlawed for agricultural use in China by the end of 2020?",
-  _endTime: parseInt(new Date("1-1-2021").getTime() / 1000, 10),
-  _topic: "agriculture",
+  marketType: "categorical",
+  _description: "Who will win the University of Georgia vs. University of Florida football game in 2018?",
+  _endTime: parseInt(new Date("10/30/2018").getTime() / 1000, 10),
+  _numOutcomes: 2,
+  _topic: "sports",
   _extraInfo: {
-    tags: ["antibiotics", "China"],
-    longDescription: "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?",
+    resolutionSource: "",
+    tags: ["college football", "football"],
+    outcomeNames: ["Georgia", "Florida"],
+    longDescription: "",
   },
   orderBook: {
     buy: {
       "0": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
+        { shares: "0.10", price: "0.2" },
+        { shares: "0.20", price: "0.18" },
+        { shares: "0.30", price: "0.15" },
+      ],
+      "1": [
+        { shares: "0.30", price: "0.48" },
+        { shares: "0.15", price: "0.45" },
+        { shares: "0.20", price: "0.41" },
       ],
     },
     sell: {
       "0": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
+        { shares: "0.15", price: "0.23" },
+        { shares: "0.10", price: "0.26" },
+        { shares: "0.30", price: "0.29" },
+      ],
+      "1": [
+        { shares: "0.15", price: "0.53" },
+        { shares: "0.20", price: "0.57" },
+        { shares: "0.25", price: "0.61" },
       ],
     },
   },
@@ -518,36 +368,36 @@ var cannedMarkets = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
+        { shares: "0.10", price: "0.2" },
+        { shares: "0.20", price: "0.18" },
+        { shares: "0.30", price: "0.15" },
       ],
       "1": [
-        { shares: "300", price: "0.48" },
-        { shares: "150", price: "0.45" },
-        { shares: "200", price: "0.41" },
+        { shares: "0.30", price: "0.48" },
+        { shares: "0.15", price: "0.45" },
+        { shares: "0.20", price: "0.41" },
       ],
       "2": [
-        { shares: "150", price: "0.18" },
-        { shares: "250", price: "0.15" },
-        { shares: "200", price: "0.12" },
+        { shares: "0.15", price: "0.18" },
+        { shares: "0.25", price: "0.15" },
+        { shares: "0.20", price: "0.12" },
       ],
     },
     sell: {
       "0": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
+        { shares: "0.15", price: "0.23" },
+        { shares: "0.10", price: "0.26" },
+        { shares: "0.30", price: "0.29" },
       ],
       "1": [
-        { shares: "150", price: "0.53" },
-        { shares: "200", price: "0.57" },
-        { shares: "250", price: "0.61" },
+        { shares: "0.15", price: "0.53" },
+        { shares: "0.20", price: "0.57" },
+        { shares: "0.25", price: "0.61" },
       ],
       "2": [
-        { shares: "100", price: "0.21" },
-        { shares: "100", price: "0.24" },
-        { shares: "200", price: "0.27" },
+        { shares: "0.10", price: "0.21" },
+        { shares: "0.10", price: "0.24" },
+        { shares: "0.20", price: "0.27" },
       ],
     },
   },
@@ -566,66 +416,66 @@ var cannedMarkets = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
+        { shares: "0.10", price: "0.2" },
+        { shares: "0.20", price: "0.18" },
+        { shares: "0.30", price: "0.15" },
       ],
       "1": [
-        { shares: "300", price: "0.48" },
-        { shares: "150", price: "0.45" },
-        { shares: "200", price: "0.41" },
+        { shares: "0.30", price: "0.48" },
+        { shares: "0.15", price: "0.45" },
+        { shares: "0.20", price: "0.41" },
       ],
       "2": [
-        { shares: "150", price: "0.18" },
-        { shares: "250", price: "0.15" },
-        { shares: "200", price: "0.12" },
+        { shares: "0.15", price: "0.18" },
+        { shares: "0.25", price: "0.15" },
+        { shares: "0.20", price: "0.12" },
       ],
       "3": [
-        { shares: "100", price: "0.13" },
-        { shares: "150", price: "0.1" },
-        { shares: "200", price: "0.08" },
+        { shares: "0.10", price: "0.13" },
+        { shares: "0.15", price: "0.1" },
+        { shares: "0.20", price: "0.08" },
       ],
       "4": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
+        { shares: "0.10", price: "0.2" },
+        { shares: "0.20", price: "0.18" },
+        { shares: "0.30", price: "0.15" },
       ],
       "5": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
+        { shares: "0.10", price: "0.2" },
+        { shares: "0.20", price: "0.18" },
+        { shares: "0.30", price: "0.15" },
       ],
     },
     sell: {
       "0": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
+        { shares: "0.15", price: "0.23" },
+        { shares: "0.10", price: "0.26" },
+        { shares: "0.30", price: "0.29" },
       ],
       "1": [
-        { shares: "150", price: "0.53" },
-        { shares: "200", price: "0.57" },
-        { shares: "250", price: "0.61" },
+        { shares: "0.15", price: "0.53" },
+        { shares: "0.20", price: "0.57" },
+        { shares: "0.25", price: "0.61" },
       ],
       "2": [
-        { shares: "100", price: "0.21" },
-        { shares: "100", price: "0.24" },
-        { shares: "200", price: "0.27" },
+        { shares: "0.10", price: "0.21" },
+        { shares: "0.10", price: "0.24" },
+        { shares: "0.20", price: "0.27" },
       ],
       "3": [
-        { shares: "150", price: "0.17" },
-        { shares: "250", price: "0.2" },
-        { shares: "150", price: "0.23" },
+        { shares: "0.15", price: "0.17" },
+        { shares: "0.25", price: "0.2" },
+        { shares: "0.15", price: "0.23" },
       ],
       "4": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
+        { shares: "0.15", price: "0.23" },
+        { shares: "0.10", price: "0.26" },
+        { shares: "0.30", price: "0.29" },
       ],
       "5": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
+        { shares: "0.15", price: "0.23" },
+        { shares: "0.10", price: "0.26" },
+        { shares: "0.30", price: "0.29" },
       ],
     },
   },
@@ -642,86 +492,86 @@ var cannedMarkets = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
+        { shares: "0.10", price: "0.2" },
+        { shares: "0.20", price: "0.18" },
+        { shares: "0.30", price: "0.15" },
       ],
       "1": [
-        { shares: "300", price: "0.48" },
-        { shares: "150", price: "0.45" },
-        { shares: "200", price: "0.41" },
+        { shares: "0.30", price: "0.48" },
+        { shares: "0.15", price: "0.45" },
+        { shares: "0.20", price: "0.41" },
       ],
       "2": [
-        { shares: "150", price: "0.18" },
-        { shares: "250", price: "0.15" },
-        { shares: "200", price: "0.12" },
+        { shares: "0.15", price: "0.18" },
+        { shares: "0.25", price: "0.15" },
+        { shares: "0.20", price: "0.12" },
       ],
       "3": [
-        { shares: "100", price: "0.13" },
-        { shares: "150", price: "0.1" },
-        { shares: "200", price: "0.08" },
+        { shares: "0.10", price: "0.13" },
+        { shares: "0.15", price: "0.1" },
+        { shares: "0.20", price: "0.08" },
       ],
       "4": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
+        { shares: "0.10", price: "0.2" },
+        { shares: "0.20", price: "0.18" },
+        { shares: "0.30", price: "0.15" },
       ],
       "5": [
-        { shares: "100", price: "0.2" },
-        { shares: "200", price: "0.18" },
-        { shares: "300", price: "0.15" },
+        { shares: "0.10", price: "0.2" },
+        { shares: "0.20", price: "0.18" },
+        { shares: "0.30", price: "0.15" },
       ],
       "6": [
-        { shares: "100", price: "0.13" },
-        { shares: "150", price: "0.1" },
-        { shares: "200", price: "0.08" },
+        { shares: "0.10", price: "0.13" },
+        { shares: "0.15", price: "0.1" },
+        { shares: "0.20", price: "0.08" },
       ],
       "7": [
-        { shares: "100", price: "0.13" },
-        { shares: "150", price: "0.1" },
-        { shares: "200", price: "0.08" },
+        { shares: "0.10", price: "0.13" },
+        { shares: "0.15", price: "0.1" },
+        { shares: "0.20", price: "0.08" },
       ],
     },
     sell: {
       "0": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
+        { shares: "0.15", price: "0.23" },
+        { shares: "0.10", price: "0.26" },
+        { shares: "0.30", price: "0.29" },
       ],
       "1": [
-        { shares: "150", price: "0.53" },
-        { shares: "200", price: "0.57" },
-        { shares: "250", price: "0.61" },
+        { shares: "0.15", price: "0.53" },
+        { shares: "0.20", price: "0.57" },
+        { shares: "0.25", price: "0.61" },
       ],
       "2": [
-        { shares: "100", price: "0.21" },
-        { shares: "100", price: "0.24" },
-        { shares: "200", price: "0.27" },
+        { shares: "0.10", price: "0.21" },
+        { shares: "0.10", price: "0.24" },
+        { shares: "0.20", price: "0.27" },
       ],
       "3": [
-        { shares: "150", price: "0.17" },
-        { shares: "250", price: "0.2" },
-        { shares: "150", price: "0.23" },
+        { shares: "0.15", price: "0.17" },
+        { shares: "0.25", price: "0.2" },
+        { shares: "0.15", price: "0.23" },
       ],
       "4": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
+        { shares: "0.15", price: "0.23" },
+        { shares: "0.10", price: "0.26" },
+        { shares: "0.30", price: "0.29" },
       ],
       "5": [
-        { shares: "150", price: "0.23" },
-        { shares: "100", price: "0.26" },
-        { shares: "300", price: "0.29" },
+        { shares: "0.15", price: "0.23" },
+        { shares: "0.10", price: "0.26" },
+        { shares: "0.30", price: "0.29" },
       ],
       "6": [
-        { shares: "150", price: "0.17" },
-        { shares: "250", price: "0.2" },
-        { shares: "150", price: "0.23" },
+        { shares: "0.15", price: "0.17" },
+        { shares: "0.25", price: "0.2" },
+        { shares: "0.15", price: "0.23" },
       ],
       "7": [
-        { shares: "150", price: "0.17" },
-        { shares: "250", price: "0.2" },
-        { shares: "150", price: "0.23" },
+        { shares: "0.15", price: "0.17" },
+        { shares: "0.25", price: "0.2" },
+        { shares: "0.15", price: "0.23" },
       ],
     },
   },
@@ -729,22 +579,22 @@ var cannedMarkets = [{
 
 function createOrder(marketID, outcome, numOutcomes, maxPrice, minPrice, numTicks, orderType, order, callback) {
   var normalizedPrice = augur.trading.normalizePrice({ price: order.price, maxPrice: maxPrice, minPrice: minPrice });
-  var bnNumTicks = new BigNumber(numTicks, 10);
-  var bnShares = new BigNumber(order.shares, 10).times(arbitrarySharesMultiplierThatExistsSolelyToAvoidAddingLotsOfZerosToAllTheSharesValues);
-  var bnPrice = new BigNumber(convertDecimalToFixedPoint(normalizedPrice, bnNumTicks.toFixed()), 16);
+  var tickSize = (new BigNumber(maxPrice, 10).minus(new BigNumber(minPrice, 10))).dividedBy(new BigNumber(numTicks, 10)).toFixed();
+  var bnOnChainShares = new BigNumber(convertDecimalToFixedPoint(order.shares, speedomatic.fix(tickSize, "string")), 16);
+  var bnPrice = new BigNumber(convertDecimalToFixedPoint(normalizedPrice, numTicks), 16);
   var orderTypeCode, bnCost;
   if (orderType === "buy") {
     orderTypeCode = 0;
-    bnCost = bnShares.times(bnPrice);
+    bnCost = bnOnChainShares.times(bnPrice);
   } else {
     orderTypeCode = 1;
-    bnCost = bnShares.times(bnNumTicks.minus(bnPrice));
+    bnCost = bnOnChainShares.times(new BigNumber(numTicks, 10).minus(bnPrice));
   }
   if (DEBUG) console.log("cost:", speedomatic.unfix(bnCost, "string"));
   var params = {
     tx: { value: "0x" + bnCost.toString(16), gas: constants.CREATE_ORDER_GAS },
     _type: orderTypeCode,
-    _attoshares: "0x" + bnShares.toString(16),
+    _attoshares: "0x" + bnOnChainShares.toString(16),
     _displayPrice: "0x" + bnPrice.toString(16),
     _market: marketID,
     _outcome: outcome,

@@ -14,19 +14,19 @@ describe("format/log/format-log-message", function () {
   };
   test({
     params: {
-      contractName: "LegacyRepContract",
+      contractName: "LegacyReputationToken",
       eventName: "Approval",
       message: {
         owner: "0x1",
         spender: "0x2",
-        fxpValue: speedomatic.fix("10", "hex"),
+        value: speedomatic.fix("10", "hex"),
       },
     },
     assertions: function (message) {
       assert.deepEqual(message, {
         owner: "0x1",
         spender: "0x2",
-        fxpValue: "10",
+        value: "10",
       });
     },
   });

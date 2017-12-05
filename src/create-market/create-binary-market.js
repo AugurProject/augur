@@ -42,6 +42,7 @@ function createBinaryMarket(p) {
         });
       },
     });
+    console.log("createBinaryMarketParams:", createBinaryMarketParams);
     api().Universe.createBinaryMarket(createBinaryMarketParams);
   });
 }

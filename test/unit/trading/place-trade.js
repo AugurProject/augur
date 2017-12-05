@@ -29,7 +29,7 @@ describe("trading/place-trade", function () {
       limitPrice: "2",
       minPrice: "1",
       maxPrice: "3",
-      numTicks: 10752,
+      tickSize: "0.0001",
       _direction: 0,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
@@ -89,7 +89,7 @@ describe("trading/place-trade", function () {
       limitPrice: "2",
       minPrice: "1",
       maxPrice: "3",
-      numTicks: 10752,
+      tickSize: "0.0001",
       _direction: 0,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
@@ -127,8 +127,8 @@ describe("trading/place-trade", function () {
               assert.strictEqual(p._type, 0);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
-              assert.strictEqual(p._attoshares, "0x8ac7230489e80000");
-              assert.strictEqual(p._displayPrice, "0x1500");
+              assert.strictEqual(p._attoshares, "0x38d7ea4c68000");
+              assert.strictEqual(p._displayPrice, "0x2710");
               assert.strictEqual(p._tradeGroupId, "0x1");
               assert.isFunction(p.onSent);
               assert.isFunction(p.onSuccess);

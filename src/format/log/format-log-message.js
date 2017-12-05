@@ -1,7 +1,7 @@
 "use strict";
 
 var assign = require("lodash.assign");
-var unfix = require("speedomatic").unfix;
+var speedomatic = require("speedomatic");
 var decodeTag = require("../tag/decode-tag");
 
 function formatLogMessage(contractName, eventName, message) {
@@ -18,34 +18,34 @@ function formatLogMessage(contractName, eventName, message) {
           }
           return assign({}, message, {
             extraInfo: extraInfo,
-            marketCreationFee: unfix(message.marketCreationFee, "string"),
+            marketCreationFee: speedomatic.unfix(message.marketCreationFee, "string"),
             topic: decodeTag(message.topic),
           });
         case "WinningTokensRedeemed":
           return assign({}, message, {
-            amountRedeemed: unfix(message.amountRedeemed, "string"),
-            reportingFeesReceived: unfix(message.reportingFeesReceived, "string"),
+            amountRedeemed: speedomatic.unfix(message.amountRedeemed, "string"),
+            reportingFeesReceived: speedomatic.unfix(message.reportingFeesReceived, "string"),
           });
         case "ReportSubmitted":
           return assign({}, message, {
-            amountStaked: unfix(message.amountStaked, "string"),
+            amountStaked: speedomatic.unfix(message.amountStaked, "string"),
           });
         case "TokensTransferred":
           return assign({}, message, {
-            value: unfix(message.value, "string"),
+            value: speedomatic.unfix(message.value, "string"),
           });
         default:
           return message;
       }
-    case "LegacyRepContract":
+    case "LegacyReputationToken":
       switch (eventName) {
         case "Approval":
           return assign({}, message, {
-            fxpValue: unfix(message.fxpValue, "string"),
+            value: speedomatic.unfix(message.value, "string"),
           });
         case "Transfer":
           return assign({}, message, {
-            value: unfix(message.value, "string"),
+            value: speedomatic.unfix(message.value, "string"),
           });
         default:
           return message;

@@ -16,7 +16,7 @@ var ethereumNode = {
 var augurNode = "ws://127.0.0.1:9001";
 
 var outcomeToTrade = 0;
-var sharesToTrade = "0.000012";
+var sharesToTrade = "1";
 
 function fillAskOrder(universe, fillerAddress, outcomeToTrade, sharesToTrade, callback) {
   augur.markets.getMarkets({ universe: universe, limit: 1 }, function (err, marketIDs) {
@@ -38,6 +38,7 @@ function fillAskOrder(universe, fillerAddress, outcomeToTrade, sharesToTrade, ca
           _fxpAmount: sharesToTrade,
           _price: augur.trading.normalizePrice({ minPrice: marketInfo.minPrice, maxPrice: marketInfo.maxPrice, price: orderToFill.fullPrecisionPrice.toString() }),
           numTicks: marketInfo.numTicks,
+          tickSize: marketInfo.tickSize,
           _direction: 0,
           _market: marketID,
           _outcome: outcomeToTrade,

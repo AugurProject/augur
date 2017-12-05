@@ -53,19 +53,25 @@ function connect(connectOptions, callback) {
   }
   async.parallel({
     augurNode: function (next) {
-      console.log("connecting to augur-node...", connectOptions);
+      console.log("connecting to augur-node:", connectOptions.augurNode);
       if (!connectOptions.augurNode) return next(null);
       connectToAugurNode(connectOptions.augurNode, function (err) {
-        if (err) return next(err);
+        if (err) {
+          console.warn("could not connect to augur-node at", connectOptions.augurNode);
+          return next(err);
+        }
         console.log("connected to augur");
         next(null, connectOptions.augurNode);
       });
     },
     ethereumNode: function (next) {
-      console.log("connecting to ethereum-node...", connectOptions);
+      console.log("connecting to ethereum-node:", JSON.stringify(connectOptions.ethereumNode));
       if (!connectOptions.ethereumNode) return next(null);
       ethereumConnector.connect(ethereumNodeConnectOptions, function (err, ethereumConnectionInfo) {
-        if (err) return next(err);
+        if (err) {
+          console.warn("could not connect to ethereum-node at", JSON.stringify(connectOptions.ethereumNode));
+          return next(err);
+        }
         console.log("connected to ethereum");
         ethereumConnectionInfo.contracts = ethereumConnectionInfo.contracts || contracts.addresses[DEFAULT_NETWORK_ID];
         self.api = api.generateContractApi(ethereumConnectionInfo.abi.functions);
@@ -74,7 +80,7 @@ function connect(connectOptions, callback) {
       });
     },
   }, function (err, connectionInfo) {
-    if (err) return callback(err);
+    if (err && !connectionInfo.augurNode && !connectionInfo.ethereumNode) return callback(err);
     callback(null, connectionInfo);
   });
 }

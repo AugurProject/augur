@@ -17,7 +17,7 @@ var constants = require("../constants");
  * @param {string} p.limitPrice Display (non-normalized) limit price for this trade, as a base-10 string.
  * @param {string} p.minPrice The minimum display (non-normalized) price for this market, as a base-10 string.
  * @param {string} p.maxPrice The maximum display (non-normalized) price for this market, as a base-10 string.
- * @param {string} p.numTicks The number of ticks for this market.
+ * @param {string} p.tickSize The tick size (interval) for this market.
  * @param {number} p._direction Order type (0 for "buy", 1 for "sell").
  * @param {string} p._market Market in which to trade, as a hex string.
  * @param {number} p._outcome Outcome ID to trade, must be an integer value on [0, 7].
@@ -30,6 +30,7 @@ var constants = require("../constants");
  */
 function placeTrade(p) {
   var normalizedPrice = normalizePrice({ minPrice: p.minPrice, maxPrice: p.maxPrice, price: p.limitPrice });
+  var numTicks = new BigNumber(p.maxPrice, 10).minus(new BigNumber(p.minPrice, 10)).dividedBy(new BigNumber(p.tickSize, 10)).toFixed();
   getBetterWorseOrders({
     marketID: p._market,
     outcome: p._outcome,
@@ -43,10 +44,10 @@ function placeTrade(p) {
         _fxpAmount: p.amount,
       }));
     } else {
-      var displayPrice = convertDecimalToFixedPoint(normalizedPrice, p.numTicks);
-      var attoshares = speedomatic.fix(p.amount);
-      var cost = p._direction === 0 ? attoshares.times(new BigNumber(displayPrice, 16)) : attoshares.times(new BigNumber(p.numTicks, 10).minus(new BigNumber(displayPrice, 16)));
-      api().CreateOrder.publicCreateOrder(assign({}, immutableDelete(p, ["doNotCreateOrders", "minPrice", "maxPrice", "numTicks", "amount", "limitPrice", "_direction"]), {
+      var displayPrice = convertDecimalToFixedPoint(normalizedPrice, numTicks); // note: not actually display price
+      var attoshares = new BigNumber(convertDecimalToFixedPoint(p.amount, speedomatic.fix(p.tickSize, "string")), 10); // note: not actually attoshares
+      var cost = p._direction === 0 ? attoshares.times(new BigNumber(displayPrice, 16)) : attoshares.times(new BigNumber(numTicks, 10).minus(new BigNumber(displayPrice, 16)));
+      api().CreateOrder.publicCreateOrder(assign({}, immutableDelete(p, ["doNotCreateOrders", "minPrice", "maxPrice", "amount", "limitPrice", "_direction", "tickSize"]), {
         tx: { value: "0x" + cost.toString(16), gas: constants.CREATE_ORDER_GAS },
         _type: p._direction,
         _attoshares: "0x" + attoshares.toString(16),

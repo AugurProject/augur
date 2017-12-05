@@ -3,29 +3,31 @@
 "use strict";
 
 var assert = require("chai").assert;
+var BigNumber = require("bignumber.js");
+var speedomatic = require("speedomatic");
 var proxyquire = require("proxyquire").noPreserveCache();
-
-var shareTokenAddresses = [
-  "SHARE_TOKEN_ADDRESS_0",
-  "SHARE_TOKEN_ADDRESS_1",
-  "SHARE_TOKEN_ADDRESS_2",
-  "SHARE_TOKEN_ADDRESS_3",
-  "SHARE_TOKEN_ADDRESS_4",
-  "SHARE_TOKEN_ADDRESS_5",
-  "SHARE_TOKEN_ADDRESS_6",
-];
-
-var shareTokenBalances = {
-  "SHARE_TOKEN_ADDRESS_0": "0x2a00",
-  "SHARE_TOKEN_ADDRESS_1": "0x1500",
-  "SHARE_TOKEN_ADDRESS_2": "0x2a00",
-  "SHARE_TOKEN_ADDRESS_3": "0x0",
-  "SHARE_TOKEN_ADDRESS_4": "0x0",
-  "SHARE_TOKEN_ADDRESS_5": "0x2a00",
-  "SHARE_TOKEN_ADDRESS_6": "0x3f00",
-};
+var constants = require("../../../src/constants");
 
 describe("trading/get-position-in-market", function () {
+  var tickSize = new BigNumber(1, 10).dividedBy(constants.DEFAULT_NUM_TICKS["7"]);
+  var shareTokenAddresses = [
+    "SHARE_TOKEN_ADDRESS_0",
+    "SHARE_TOKEN_ADDRESS_1",
+    "SHARE_TOKEN_ADDRESS_2",
+    "SHARE_TOKEN_ADDRESS_3",
+    "SHARE_TOKEN_ADDRESS_4",
+    "SHARE_TOKEN_ADDRESS_5",
+    "SHARE_TOKEN_ADDRESS_6",
+  ];
+  var shareTokenBalances = {
+    "SHARE_TOKEN_ADDRESS_0": speedomatic.fix(tickSize, "string"),
+    "SHARE_TOKEN_ADDRESS_1": speedomatic.fix(tickSize).dividedBy("2").toFixed(),
+    "SHARE_TOKEN_ADDRESS_2": speedomatic.fix(tickSize, "string"),
+    "SHARE_TOKEN_ADDRESS_3": "0",
+    "SHARE_TOKEN_ADDRESS_4": "0",
+    "SHARE_TOKEN_ADDRESS_5": speedomatic.fix(tickSize, "string"),
+    "SHARE_TOKEN_ADDRESS_6": speedomatic.fix(tickSize).times("1.5").toFixed(),
+  };
   var test = function (t) {
     it(t.description, function (done) {
       var getPositionInMarket = proxyquire("../../../src/trading/get-position-in-market", {
@@ -42,6 +44,7 @@ describe("trading/get-position-in-market", function () {
     params: {
       address: "USER_ADDRESS",
       market: "MARKET_ADDRESS",
+      tickSize: tickSize,
     },
     stub: {
       api: function () {
@@ -49,11 +52,7 @@ describe("trading/get-position-in-market", function () {
           Market: {
             getNumberOfOutcomes: function (p, callback) {
               assert.deepEqual(p, { tx: { to: "MARKET_ADDRESS" } });
-              callback(null, "0x7");
-            },
-            getNumTicks: function (p, callback) {
-              assert.deepEqual(p, { tx: { to: "MARKET_ADDRESS" } });
-              callback(null, "0x2a00");
+              callback(null, "7");
             },
             getShareToken: function (p, callback) {
               assert.oneOf(p._outcome, [0, 1, 2, 3, 4, 5, 6]);
