@@ -1,14 +1,25 @@
-FROM node:8
+FROM node:8 as builder
 
-EXPOSE 9001
+WORKDIR /root/
+COPY config.json config.json
+COPY tsconfig.json tsconfig.json
+COPY package.json package.json
+COPY src src
 
-COPY config.json /root/augur-node/config.json
-COPY tsconfig.json /root/augur-node/tsconfig.json
-COPY package.json /root/augur-node/package.json
-COPY src /root/augur-node/src
-
-WORKDIR /root/augur-node
 RUN npm install
 RUN npm run build
+
+COPY knexfile.js knexfile.js
+RUN npm run migrate
+
+FROM node:8
+EXPOSE 9001
+WORKDIR /root/
+COPY --from=builder /root/build build
+COPY --from=builder /root/node_modules node_modules
+
+COPY --from=builder /root/augur.db augur.db
+COPY --from=builder /root/config.json config.json
+COPY --from=builder /root/package.json package.json
 
 ENTRYPOINT ["npm", "start"]
