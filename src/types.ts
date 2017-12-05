@@ -54,14 +54,14 @@ export type Bytes32 = string;
 export type Int256 = string;
 
 export interface MarketCreatedLogExtraInfo {
-  minPrice: string;
-  maxPrice: string;
+  minPrice?: string;
+  maxPrice?: string;
   tags?: Array<string|null>;
   outcomeNames?: Array<string|number|null>;
-  description: string;
+  description?: string;
   longDescription?: string|null;
   resolutionSource?: string|null;
-  marketType: string;
+  marketType?: string;
 }
 
 export interface MarketCreatedOnContractInfo {
