@@ -10,8 +10,8 @@ interface PricesResult {
 }
 
 export function getBetterWorseOrders(db: Knex, marketID: Address, outcome: number, orderType: string, price: number, callback: (err?: Error|null, result?: any) => void): void {
-  if (marketID == null || outcome == null || orderType == null) return callback(new Error("Must provide marketID, outcome, and orderType"));
-  if ( orderType !== "buy" && orderType !== "sell" ) return callback(new Error(`orderType must be either "bid" or "ask"`));
+  if (marketID == null || outcome == null || orderType == null || price == null) return callback(new Error("Must provide marketID, outcome, orderType, and price"));
+  if (orderType !== "buy" && orderType !== "sell") return callback(new Error(`orderType must be either "bid" or "ask"`));
   const ordersQuery = db("orders").first("orderID").where({ orderState: "OPEN", marketID, outcome, orderType });
   parallel({
     higherPriceRow: (next: AsyncCallback) => ordersQuery.clone().where("price", ">", price).orderBy("price", "ASC").asCallback(next),
