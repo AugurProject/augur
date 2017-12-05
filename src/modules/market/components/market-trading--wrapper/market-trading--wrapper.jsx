@@ -53,6 +53,7 @@ class MarketTradingWrapper extends Component {
     this.nextPage = this.nextPage.bind(this)
     this.updateState = this.updateState.bind(this)
     this.validateForm = this.validateForm.bind(this)
+    this.updateOrderEstimate = this.updateOrderEstimate.bind(this)
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -61,7 +62,8 @@ class MarketTradingWrapper extends Component {
       if (nextState.orderQuantity instanceof BigNumber && nextState.orderPrice instanceof BigNumber) {
         orderEstimate = `${nextState.orderQuantity.times(nextState.orderPrice).toNumber()} ETH`
       }
-      this.setState({ orderEstimate })
+
+      this.updateOrderEstimate(orderEstimate)
     }
   }
 
@@ -89,6 +91,12 @@ class MarketTradingWrapper extends Component {
     this.setState({ [property]: value })
   }
 
+  updateOrderEstimate(orderEstimate) {
+    this.setState({
+      orderEstimate
+    })
+  }
+
   render() {
     const s = this.state
     const p = this.props
@@ -103,7 +111,8 @@ class MarketTradingWrapper extends Component {
             <button
               className={Styles['TradingWrapper__mobile-header-close']}
               onClick={p.toggleForm}
-            >{ Close }</button>
+            >{ Close }
+            </button>
             <span className={Styles['TradingWrapper__mobile-header-outcome']}>{ p.selectedOutcome.name }</span>
             <span className={Styles['TradingWrapper__mobile-header-last']}><ValueDenomination formatted={lastPrice} /></span>
           </div>

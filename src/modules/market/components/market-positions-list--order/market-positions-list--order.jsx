@@ -21,8 +21,10 @@ export default class Order extends Component {
   }
 
   toggleConfirm() {
-    let confirmHeight = this.state.confirmHeight
-    let confirmMargin = this.state.confirmMargin
+    let {
+      confirmHeight,
+      confirmMargin
+    } = this.state
 
     if (!this.state.showConfirm) {
       confirmHeight = `${this.order.clientHeight}px`

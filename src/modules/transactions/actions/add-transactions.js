@@ -169,7 +169,9 @@ export function addOpenOrderTransactions(openOrders) {
       eachOf(value, (value2, index) => {
         eachOf(value2, (value3, type) => {
           eachOf(value3, (value4, outcomeID) => {
-            const transaction = { marketID, type, outcomeID, ...value4 }
+            const transaction = {
+              marketID, type, outcomeID, ...value4
+            }
             transaction.id = transaction.transactionHash + transaction.logIndex
             transaction.message = `${transaction.orderState} - ${type} ${transaction.amount} Shares @ ${transaction.price} ETH`
             const meta = {}
@@ -209,7 +211,9 @@ export function addReportingTransactions(reports) {
       eachOf(value, (value1, marketID) => {
         eachOf(value1, (report, index) => {
           const market = getMarketById(marketsData, marketID)
-          const transaction = { universe, marketID, ...report, market }
+          const transaction = {
+            universe, marketID, ...report, market
+          }
           transaction.id = transaction.transactionHash + transaction.logIndex
           const meta = {}
           meta.marketID = transaction.marketID

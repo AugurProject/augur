@@ -14,7 +14,7 @@ export const selectClosedMarketsWithWinningShares = createSelector(
   selectOutcomesDataState,
   selectLoginAccountPositions,
   (outcomesData, loginAccountPositions) => {
-    const markets = loginAccountPositions.markets
+    const { markets } = loginAccountPositions
     const numPositions = markets.length
     const closedMarketsWithWinningShares = []
     for (let i = 0; i < numPositions; ++i) {

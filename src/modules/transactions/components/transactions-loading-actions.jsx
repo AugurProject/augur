@@ -41,21 +41,22 @@ const TransactionsLoadingActions = p => (
         <Spinner />
       </div>
     }
-    {!p.transactionsLoading && p.hasAllTransactionsLoaded && <div className="transactions-loaded">
-      <span
-        className="transactions-all-loaded-message"
-      >
-        All History Loaded
-      </span>
-      <button
-        className={classNames('unstyled', { disabled: p.transactionsLoading }, { hidden: !p.allowExport })}
-        onClick={() => {
-          p.triggerTransactionsExport()
-        }}
-      >
-        <span>Export All</span>
-      </button>
-    </div>
+    {!p.transactionsLoading && p.hasAllTransactionsLoaded &&
+      <div className="transactions-loaded">
+        <span
+          className="transactions-all-loaded-message"
+        >
+          All History Loaded
+        </span>
+        <button
+          className={classNames('unstyled', { disabled: p.transactionsLoading }, { hidden: !p.allowExport })}
+          onClick={() => {
+            p.triggerTransactionsExport()
+          }}
+        >
+          <span>Export All</span>
+        </button>
+      </div>
     }
   </article>
 )

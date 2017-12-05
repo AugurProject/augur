@@ -47,10 +47,9 @@ if (process.env.NODE_ENV !== 'production') {
   middleware = applyMiddleware(thunk, localStorageMiddleware)
 }
 // middleware
-const store = createStore(
-  combineReducers({
-    ...createReducer()
-  }), middleware)
+const store = createStore(combineReducers({
+  ...createReducer()
+}), middleware)
 
 // TODO -- fix this
 if (module.hot) {

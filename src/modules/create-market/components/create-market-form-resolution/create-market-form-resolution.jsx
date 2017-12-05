@@ -44,7 +44,7 @@ export default class CreateMarketResolution extends Component {
     super(props)
 
     this.state = {
-      expirySourceType: false,
+      // expirySourceType: false,
       date: Object.keys(this.props.newMarket.endDate).length ? moment(this.props.newMarket.endDate.timestamp) : null,
       focused: false,
     }
@@ -55,7 +55,7 @@ export default class CreateMarketResolution extends Component {
   validateExpiryType(value) {
     const p = this.props
     const updatedMarket = { ...p.newMarket }
-    const currentStep = p.newMarket.currentStep
+    const { currentStep } = p.newMarket
 
     if (value === EXPIRY_SOURCE_SPECIFIC) {
       updatedMarket.validations[currentStep].expirySource =
@@ -86,14 +86,16 @@ export default class CreateMarketResolution extends Component {
             <li>
               <button
                 className={classNames({ [`${StylesForm.active}`]: p.newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC })}
-                onClick={(e) => { this.setState({ expirySourceType: EXPIRY_SOURCE_GENERIC }); this.validateExpiryType(EXPIRY_SOURCE_GENERIC) }}
-              >Outcome will be determined by news media</button>
+                onClick={() => this.validateExpiryType(EXPIRY_SOURCE_GENERIC)}
+              >Outcome will be determined by news media
+              </button>
             </li>
             <li className={Styles['CreateMarketResolution__expiry-source-specific']}>
               <button
                 className={classNames({ [`${StylesForm.active}`]: p.newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC })}
-                onClick={(e) => { this.setState({ expirySourceType: EXPIRY_SOURCE_SPECIFIC }); this.validateExpiryType(EXPIRY_SOURCE_SPECIFIC) }}
-              >Outcome will be detailed on a public website</button>
+                onClick={() => this.validateExpiryType(EXPIRY_SOURCE_SPECIFIC)}
+              >Outcome will be detailed on a public website
+              </button>
               { p.newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC &&
                 <input
                   type="text"

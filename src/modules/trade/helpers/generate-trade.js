@@ -48,8 +48,8 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, o
       market.settlementFee,
       market.cumulativeScale,
       outcomeTradeInProgress,
-      market.type === 'scalar' ? market.minPrice : null)
-    )
+      market.type === 'scalar' ? market.minPrice : null
+    ))
   } else {
     maxNumShares = formatShares(0)
   }
@@ -121,7 +121,7 @@ export const generateTradeOrders = memoize((market, outcome, outcomeTradeInProgr
   const outcomeID = outcome.id
   const marketType = market.type
   const outcomeName = outcome.name
-  const description = market.description
+  const { description } = market
   return tradeActions.map((tradeAction) => {
     const numShares = new BigNumber(tradeAction.shares, 10)
     const costEth = new BigNumber(tradeAction.costEth, 10).abs()
@@ -129,7 +129,9 @@ export const generateTradeOrders = memoize((market, outcome, outcomeTradeInProgr
     const noFeePrice = market.type === 'scalar' ? outcomeTradeInProgress.limitPrice : tradeAction.noFeePrice
     return {
       type: TRANSACTIONS_TYPES[tradeAction.action],
-      data: { marketID, outcomeID, marketType, outcomeName },
+      data: {
+        marketID, outcomeID, marketType, outcomeName
+      },
       description,
       numShares: formatShares(tradeAction.shares),
       avgPrice: formatEtherTokens(avgPrice),

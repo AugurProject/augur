@@ -6,7 +6,9 @@ import { updateReports } from 'modules/reports/actions/update-reports'
 
 export function loadReportDescriptors(callback) {
   return (dispatch, getState) => {
-    const { branch, loginAccount, marketsData, reports } = getState()
+    const {
+      branch, loginAccount, marketsData, reports
+    } = getState()
     const branchReports = { ...reports[branch.id] }
     async.forEachOfSeries(branchReports, (report, eventID, nextReport) => {
       const marketData = marketsData[report.marketID]

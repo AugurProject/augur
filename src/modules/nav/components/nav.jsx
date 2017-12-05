@@ -121,7 +121,7 @@ export default class Nav extends Component {
               return [VIEWS.MY_MARKETS, VIEWS.MY_REPORTS].find(path => makePath(path) === location.pathname)
             }}
             onClick={() => this.collapseFooter()}
-            className={'link app-nav-link'}
+            className="link app-nav-link"
           >
             <i className="nav-icon fa fa-money" />
             Portfolio
@@ -132,7 +132,7 @@ export default class Nav extends Component {
             to={makePath(VIEWS.TRANSACTIONS)}
             activeClassName="active"
             onClick={() => this.collapseFooter()}
-            className={'link app-nav-link'}
+            className="link app-nav-link"
           >
             <i className="nav-icon fa fa-tasks" />
             Transactions
@@ -142,7 +142,7 @@ export default class Nav extends Component {
           <NavLink
             to={makePath(VIEWS.ACCOUNT)}
             activeClassName="active"
-            className={'link app-nav-link'}
+            className="link app-nav-link"
             onClick={() => this.collapseFooter()}
           >
             <i className="nav-icon fa fa-cog" />
@@ -153,7 +153,7 @@ export default class Nav extends Component {
           <NavLink
             to={makePath(VIEWS.AUTHENTICATION)}
             activeClassName="active"
-            className={'link app-nav-link'}
+            className="link app-nav-link"
             onClick={() => this.collapseFooter()}
           >
             <div className="nav-icon-google-translate-fix">

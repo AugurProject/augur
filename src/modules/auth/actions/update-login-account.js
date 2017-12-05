@@ -5,7 +5,7 @@ export const CLEAR_LOGIN_ACCOUNT = 'CLEAR_LOGIN_ACCOUNT'
 
 export const updateLoginAccount = loginAccount => (dispatch) => {
   dispatch({ type: UPDATE_LOGIN_ACCOUNT, data: loginAccount })
-  const address = loginAccount.address
+  const { address } = loginAccount
   if (address) dispatch(updateFromAddress(address))
 }
 

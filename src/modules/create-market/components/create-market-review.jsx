@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unused-state */
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { augur } from 'services/augurjs'
@@ -30,12 +32,12 @@ export default class CreateMarketReview extends Component {
     super(props)
 
     this.state = {
-      creationFee: null,
-      gasCost: null,
-      initialLiquidity: {
-        gas: null,
-        fees: null
-      },
+      // creationFee: null,
+      // gasCost: null,
+      // initialLiquidity: {
+      // gas: null,
+      // fees: null
+      // },
       formattedInitialLiquidityEth: formatEtherTokensEstimate(this.props.initialLiquidityEth),
       formattedInitialLiquidityGas: formatEtherEstimate(this.props.initialLiquidityGas),
       formattedInitialLiquidityFees: formatEtherTokensEstimate(this.props.initialLiquidityFees)

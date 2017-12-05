@@ -130,52 +130,58 @@ export default class AccountWithdraw extends Component {
           <div className={Styles.AccountWithdraw__form}>
             <div className={Styles.AccountWithdraw__formTopRow}>
               <div className={Styles.AccountWithdraw__inputContain}>
-                <label htmlFor="currency">Select Currency</label>
-                <InputDropdown
-                  name="currency"
-                  className={Styles.AccountWithdraw__dropdown}
-                  label="Select Currency"
-                  options={['ETH', 'REP']}
-                  default="ETH"
-                  type="text"
-                  isMobileSmall={p.isMobileSmall}
-                  onChange={(type) => {
-                    const selectedAsset = (type === 'ETH') ? ETH : REP
-                    const upperBound = (type === 'ETH') ? p.eth.value : p.rep.value
-                    this.setState({
-                      selectedAsset,
-                      upperBound
-                    })
-                  }}
-                />
+                <label htmlFor="currency">
+                  Select Currency
+                  <InputDropdown
+                    name="currency"
+                    className={Styles.AccountWithdraw__dropdown}
+                    label="Select Currency"
+                    options={['ETH', 'REP']}
+                    default="ETH"
+                    type="text"
+                    isMobileSmall={p.isMobileSmall}
+                    onChange={(type) => {
+                      const selectedAsset = (type === 'ETH') ? ETH : REP
+                      const upperBound = (type === 'ETH') ? p.eth.value : p.rep.value
+                      this.setState({
+                        selectedAsset,
+                        upperBound
+                      })
+                    }}
+                  />
+                </label>
               </div>
               <div className={Styles.AccountWithdraw__inputContain}>
-                <label htmlFor="quantity">Quantity</label>
-                <Input
-                  name="quantity"
-                  label="Quantity"
-                  type="number"
-                  isIncrementable
-                  incrementAmount={1}
-                  max={s.upperBound}
-                  min={0.1}
-                  value={s.amount}
-                  updateValue={amount => this.validateAmount(amount)}
-                  onChange={amount => this.validateAmount(amount)}
-                />
+                <label htmlFor="quantity">
+                  Quantity
+                  <Input
+                    name="quantity"
+                    label="Quantity"
+                    type="number"
+                    isIncrementable
+                    incrementAmount={1}
+                    max={s.upperBound}
+                    min={0.1}
+                    value={s.amount}
+                    updateValue={amount => this.validateAmount(amount)}
+                    onChange={amount => this.validateAmount(amount)}
+                  />
+                </label>
               </div>
             </div>
             <div className={Styles.AccountWithdraw__formBottomRow}>
               <div className={Styles.AccountWithdraw__inputContain}>
-                <label htmlFor="address">Recipient Account Address</label>
-                <Input
-                  name="address"
-                  label="Recipient Account Address"
-                  type="text"
-                  value={s.address}
-                  updateValue={address => this.validateAddress(address)}
-                  onChange={address => this.validateAddress(address)}
-                />
+                <label htmlFor="address">
+                  Recipient Account Address
+                  <Input
+                    name="address"
+                    label="Recipient Account Address"
+                    type="text"
+                    value={s.address}
+                    updateValue={address => this.validateAddress(address)}
+                    onChange={address => this.validateAddress(address)}
+                  />
+                </label>
               </div>
             </div>
             <button

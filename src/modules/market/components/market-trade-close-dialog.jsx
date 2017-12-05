@@ -23,7 +23,7 @@ export default class MarketTradeCloseDialog extends Component {
 
     this.state = {
       isConfirming: false,
-      status: props.status
+      // status: props.status
     }
 
     this.renderCloseDialogContent = this.renderCloseDialogContent.bind(this)
@@ -108,16 +108,14 @@ export default class MarketTradeCloseDialog extends Component {
     return (
       <article
         className={
-          classNames(
-            'close-dialog', {
-              'action-disabled': p.closeType === POSITION,
-              'action-running': p.status === CLOSE_DIALOG_CLOSING,
-              'action-failed': p.status === CLOSE_DIALOG_NO_ORDERS ||
+          classNames('close-dialog', {
+            'action-disabled': p.closeType === POSITION,
+            'action-running': p.status === CLOSE_DIALOG_CLOSING,
+            'action-failed': p.status === CLOSE_DIALOG_NO_ORDERS ||
                 p.status === CLOSE_DIALOG_FAILED ||
                 p.status === CLOSE_DIALOG_PARTIALLY_FAILED,
-              'action-succeeded': p.status === CLOSE_DIALOG_SUCCESS
-            }
-          )
+            'action-succeeded': p.status === CLOSE_DIALOG_SUCCESS
+          })
         }
       >
         {

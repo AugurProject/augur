@@ -19,7 +19,6 @@ export default class Input extends Component {
     min: PropTypes.any,
     // isMultiline: PropTypes.bool,
     isClearable: PropTypes.bool,
-    debounceMS: PropTypes.number,
     onChange: PropTypes.func.isRequired,
     updateValue: PropTypes.func,
     onBlur: PropTypes.func,
@@ -37,7 +36,6 @@ export default class Input extends Component {
 
     this.state = {
       value: this.props.value || '',
-      timeoutID: '',
       isHiddenContentVisible: false
     }
 
@@ -56,7 +54,7 @@ export default class Input extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     if (nextProps.canToggleVisibility && !nextState.value && nextState.isHiddenContentVisible) {
-      this.setState({ isHiddenContentVisible: false })
+      this.updateIsHiddenContentVisible(false)
     }
 
     if (this.state.isHiddenContentVisible !== nextState.isHiddenContentVisible && nextState.isHiddenContentVisible) {
@@ -81,16 +79,20 @@ export default class Input extends Component {
     this.props.onChange('')
   };
 
-  handleToggleVisibility = () => {
-    this.setState({ isHiddenContentVisible: !this.state.isHiddenContentVisible })
-  };
+  handleToggleVisibility = () => this.updateIsHiddenContentVisible(!this.state.isHiddenContentVisible)
 
-  timeoutVisibleHiddenContent = () => {
-    this.setState({ isHiddenContentVisible: false })
-  };
+  timeoutVisibleHiddenContent = () => this.updateIsHiddenContentVisible(false)
+
+  updateIsHiddenContentVisible(isHiddenContentVisible) {
+    this.setState({
+      isHiddenContentVisible
+    })
+  }
 
   render() {
-    const { debounceMS, isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, min, max, ...p } = this.props // eslint-disable-line no-unused-vars
+    const {
+      isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, min, max, ...p
+    } = this.props // eslint-disable-line no-unused-vars
     const s = this.state
 
     return (
