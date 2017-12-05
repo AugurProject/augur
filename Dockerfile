@@ -3,10 +3,11 @@ FROM node:8 as builder
 WORKDIR /root/
 COPY config.json config.json
 COPY tsconfig.json tsconfig.json
-COPY package.json package.json
-COPY src src
 
+COPY package.json package.json
 RUN npm install
+
+COPY src src
 RUN npm run build
 
 COPY knexfile.js knexfile.js
