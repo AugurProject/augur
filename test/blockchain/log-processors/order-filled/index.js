@@ -150,15 +150,15 @@ describe("blockchain/log-processors/order-filled", () => {
           marketCreatorFees: 0,
           reporterFees: 0,
           price: 0.7,
-          amount: 1.4285714285714286,
+          amount: 3.3333333333333335,
           tradeGroupID: "TRADE_GROUP_ID",
         }]);
         assert.deepEqual(records.markets, {
-          volume: 1.4285714285714286,
+          volume: 3.3333333333333335,
           sharesOutstanding: 2,
         });
         assert.deepEqual(records.outcomes, [
-          { price: 0.7, volume: 101.4285714285714286 },
+          { price: 0.7, volume: 103.3333333333333335 },
           { price: 0.125, volume: 100 },
           { price: 0.125, volume: 100 },
           { price: 0.125, volume: 100 },
@@ -168,7 +168,7 @@ describe("blockchain/log-processors/order-filled", () => {
           { price: 0.125, volume: 100 },
         ]);
         assert.deepEqual(records.categories, {
-          popularity: 1.4285714285714286,
+          popularity: 3.3333333333333335,
         });
         assert.deepEqual(records.positions, [{
           positionID: 17,
