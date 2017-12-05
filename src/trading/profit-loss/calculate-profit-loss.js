@@ -14,7 +14,7 @@ var ZERO = constants.ZERO;
  * Note: buy/sell labels are from taker's point-of-view.
  *
  * @param {Object} p Parameters object.
- * @param {Object[]} p.trades Trades for a single outcome {type, shares, price, maker}.
+ * @param {Object[]} p.trades Trades for a single outcome {type, amount, price, maker}.
  * @param {string=} p.lastPrice Price of this outcome's most recent trade, as a base-10 string (default: 0).
  * @return {Object} Realized and unrealized P/L {position, realized, unrealized}.
  */

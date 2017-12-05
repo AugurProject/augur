@@ -26,7 +26,7 @@ function getTradeAmountRemaining(p, callback) {
     for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
       if (logs[i].topics[0] === orderFilledEventSignature) {
         var orderFilledLog = parseLogMessage("Augur", "OrderFilled", logs[i], eventsAbi.Augur.OrderFilled.inputs);
-        var totalFill = calculateTotalFill(orderFilledLog.numFillerShares, orderFilledLog.numFillerTokens, p.priceNumTicksRepresentation);
+        var totalFill = calculateTotalFill(orderFilledLog.numCreatorShares, orderFilledLog.numCreatorTokens, p.priceNumTicksRepresentation);
         tradeOnChainAmountRemaining = tradeOnChainAmountRemaining.minus(totalFill);
       }
     }

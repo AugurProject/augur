@@ -109,7 +109,7 @@ describe("trading/get-trade-amount-remaining", function () {
     },
     assertions: function (err, tradeAmountRemaining) {
       assert.isNull(err);
-      assert.strictEqual(tradeAmountRemaining, "94866071428571.42857142857142857143");
+      assert.strictEqual(tradeAmountRemaining, "82812500000000");
     },
   });
   test({
