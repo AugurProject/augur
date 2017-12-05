@@ -20,7 +20,7 @@
     "lit": "echo 'so lit'",
     "test": "node scripts/test.js",
     "___": "",
-    "link": "npm link augur.js && npm link keythereum",
+    "link": "npm link augur.js keythereum",
     "----": "",
     "deploy": "node scripts/deploy.js",
     "deploy-dev": "node scripts/deploy-dev.js"
@@ -28,7 +28,7 @@
   "dependencies": {
     "airbitz-core-js-ui": "0.1.7",
     "async": "2.6.0",
-    "augur.js": "4.7.0-16",
+    "augur.js": "4.7.0-17",
     "bignumber.js": "5.0.0",
     "bs58": "4.0.1",
     "classnames": "2.2.5",
