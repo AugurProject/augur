@@ -29,7 +29,7 @@ export const loginWithAirbitz = (airbitzAccount, history) => (dispatch) => {
   if (ethereumWallet != null) {
     return dispatch(loginWithAirbitzEthereumWallet(airbitzAccount, ethereumWallet, history))
   }
-  airbitzAccount.createWallet(AIRBITZ_WALLET_TYPE, { ethereumKey: new Buffer(secureRandom(32)).toString('hex') }, (err, id) => {
+  airbitzAccount.createWallet(AIRBITZ_WALLET_TYPE, { ethereumKey: Buffer.from(secureRandom(32)).toString('hex') }, (err, id) => {
     if (err) return console.error({ code: 0, message: 'could not create wallet' })
     dispatch(loginWithAirbitzEthereumWallet(airbitzAccount, airbitzAccount.getWallet(id), history))
   })

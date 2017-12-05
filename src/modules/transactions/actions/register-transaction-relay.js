@@ -7,7 +7,7 @@ import { constructRelayTransaction } from 'modules/transactions/actions/construc
 
 export const handleRelayTransaction = tx => (dispatch, getState) => {
   if (tx && tx.response && tx.data) {
-    const hash = tx.hash
+    const { hash } = tx
     if (!hash) return console.error('uncaught relayed transaction', tx)
     const { loginAccount, transactionsData } = getState()
     if (tx.data.from === loginAccount.address) {

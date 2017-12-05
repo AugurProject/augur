@@ -9,7 +9,9 @@ describe('modules/my-markets/selectors/my-markets-summary', () => {
   proxyquire.noPreserveCache().noCallThru()
   let actual
   const { store } = mockStore.default
-  const { loginAccount, allMarkets, marketTrades, priceHistory, marketCreatorFees } = store.getState()
+  const {
+    loginAccount, allMarkets, marketTrades, priceHistory, marketCreatorFees
+  } = store.getState()
 
   const MarketsAll = () => allMarkets
 

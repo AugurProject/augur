@@ -4,7 +4,7 @@ import { assert } from 'chai'
 import { formatShares, formatEtherTokens } from 'utils/format-number'
 
 describe(`modules/bids-asks/helpers/select-order-book.js`, () => {
-  const selectAggregateOrderBook = require('../../../src/modules/bids-asks/helpers/select-order-book').selectAggregateOrderBook
+  const { selectAggregateOrderBook } = require('../../../src/modules/bids-asks/helpers/select-order-book')
 
   it(`should return empty order book for no orders`, () => {
     const orderBook = selectAggregateOrderBook('1', null, {})

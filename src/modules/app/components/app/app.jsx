@@ -273,12 +273,10 @@ export default class AppView extends Component {
         step: (newState) => {
           setMenuState(Object.assign({}, baseMenuState, { scalar: newState.value }))
         }
-      }).then(
-        () => {
-          if (cb && (typeof cb) === 'function') cb()
-          setMenuState({ locked: false, currentTween: null })
-        }
-      )
+      }).then(() => {
+        if (cb && (typeof cb) === 'function') cb()
+        setMenuState({ locked: false, currentTween: null })
+      })
       setMenuState({ currentTween })
     }
   }

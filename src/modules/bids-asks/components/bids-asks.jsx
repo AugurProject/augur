@@ -12,8 +12,7 @@ const BidsAsks = p => (
             bids={outcome.orderBook.bids}
             asks={outcome.orderBook.asks}
           />
-        )
-      )
+        ))
     }
   </div>
 )

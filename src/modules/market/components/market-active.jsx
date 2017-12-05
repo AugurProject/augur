@@ -76,7 +76,7 @@ export default class MarketActive extends Component {
       const orderBookSide = getValue(outcome, `orderBook.${side === BUY ? BIDS : ASKS}`)
       const order = (orderBookSide && orderBookSide[orderIndex]) || null
       const price = getValue(order, 'price.value') || ''
-      const trade = outcome.trade
+      const { trade } = outcome
       const tradeSide = side === BUY ? SELL : BUY
 
       if (orderValueType === PRICE) {

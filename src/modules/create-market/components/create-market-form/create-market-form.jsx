@@ -59,7 +59,7 @@ export default class CreateMarketForm extends Component {
 
   validateField(fieldName, value, maxLength) {
     const p = this.props
-    const currentStep = p.newMarket.currentStep
+    const { currentStep } = p.newMarket
 
     const updatedMarket = { ...p.newMarket }
 
@@ -83,7 +83,7 @@ export default class CreateMarketForm extends Component {
   validateNumber(fieldName, rawValue, humanName, min, max, decimals = 0, leadingZero = false) {
     const p = this.props
     const updatedMarket = { ...p.newMarket }
-    const currentStep = p.newMarket.currentStep
+    const { currentStep } = p.newMarket
 
     let value = rawValue
 
@@ -181,19 +181,22 @@ export default class CreateMarketForm extends Component {
                 <button
                   className={classNames(Styles.CreateMarketForm__prev, { [`${Styles['hide-button']}`]: p.newMarket.currentStep === 0 })}
                   onClick={this.prevPage}
-                >Previous: {s.pages[p.newMarket.currentStep - 1]}</button>
+                >Previous: {s.pages[p.newMarket.currentStep - 1]}
+                </button>
                 { p.newMarket.currentStep < 4 &&
                   <button
                     className={classNames(Styles.CreateMarketForm__next, { [`${Styles['hide-button']}`]: p.newMarket.currentStep === s.pages.length - 1 })}
                     disabled={!p.newMarket.isValid}
                     onClick={p.newMarket.isValid && this.nextPage}
-                  >Next: {s.pages[p.newMarket.currentStep + 1]}</button>
+                  >Next: {s.pages[p.newMarket.currentStep + 1]}
+                  </button>
                 }
                 { p.newMarket.currentStep === 4 &&
                   <button
                     className={Styles.CreateMarketForm__submit}
                     onClick={e => p.submitNewMarket(p.newMarket, p.history)}
-                  >Submit</button>
+                  >Submit
+                  </button>
                 }
               </div>
             </div>

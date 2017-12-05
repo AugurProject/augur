@@ -31,7 +31,7 @@ export default class OutcomeTrade extends Component {
     this.state = {
       timestamp: Date.now(), // Utilized to force a re-render and subsequent update of the input fields' values on `selectedOutcome` change
       shareInputPlaceholder: generateShareInputPlaceholder(props.selectedShareDenomination),
-      maxSharesDenominated: denominateShares(getValue(props, 'selectedOutcome.trade.maxNumShares.value', SHARE, props.selectedShareDenomination)), // NOTE -- this value is not currently used in the component, but may be used later, so leaving here until this decision is finalized
+      // maxSharesDenominated: denominateShares(getValue(props, 'selectedOutcome.trade.maxNumShares.value', SHARE, props.selectedShareDenomination)), // NOTE -- this value is not currently used in the component, but may be used later, so leaving here until this decision is finalized
       sharesDenominated: denominateShares(getValue(props, 'selectedOutcome.trade.numShares'), SHARE, props.selectedShareDenomination) || '',
       minLimitPrice: props.marketType && props.marketType === SCALAR ? props.minLimitPrice : 0,
       maxLimitPrice: props.marketType && props.marketType === SCALAR ? props.maxLimitPrice : 1,
@@ -61,7 +61,7 @@ export default class OutcomeTrade extends Component {
     if (newTrade !== oldTrade || this.props.selectedShareDenomination !== nextProps.selectedShareDenomination) {
       this.setState({
         shareInputPlaceholder: generateShareInputPlaceholder(nextProps.selectedShareDenomination),
-        maxSharesDenominated: denominateShares(getValue(nextProps, 'selectedOutcome.trade.maxNumShares.value', SHARE, nextProps.selectedShareDenomination)),
+        // maxSharesDenominated: denominateShares(getValue(nextProps, 'selectedOutcome.trade.maxNumShares.value', SHARE, nextProps.selectedShareDenomination)),
         sharesDenominated: denominateShares(getValue(nextProps, 'selectedOutcome.trade.numShares'), SHARE, nextProps.selectedShareDenomination) || ''
       })
     }
@@ -150,7 +150,8 @@ export default class OutcomeTrade extends Component {
         {p.marketType !== SCALAR ?
           <h3>Create Order {name &&
             <span>&mdash; {name}</span>
-          }</h3> :
+          }
+          </h3> :
           <h3>Create Order</h3>
         }
         {trade &&

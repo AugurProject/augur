@@ -19,7 +19,7 @@ export const selectTransactions = createSelector(
     const tradeGroups = []
     const formattedTransactions = Object.keys(transactionsData || {})
       .reduce((p, id) => {
-        const tradeGroupID = transactionsData[id].tradeGroupID
+        const { tradeGroupID } = transactionsData[id]
         if (tradeGroupID) {
           if (tradeGroups.indexOf(tradeGroupID) === -1) {
             tradeGroups.push(tradeGroupID)

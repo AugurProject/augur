@@ -25,7 +25,9 @@ export function loadUserTradingHistory(options, callback = logError) {
     if (!loginAccount.address || !options) return callback(null)
     const marketID = options.market
     if (!marketID) dispatch(clearAccountTrades())
-    augur.trading.getUserTradingHistory({ ...options, account: loginAccount.address, universe: universe.id, marketID }, (err, userTradingHistory) => {
+    augur.trading.getUserTradingHistory({
+      ...options, account: loginAccount.address, universe: universe.id, marketID
+    }, (err, userTradingHistory) => {
       if (err) return callback(err)
       if (userTradingHistory == null || Object.keys(userTradingHistory).length === 0) return callback(null)
       const marketIDs = Object.keys(userTradingHistory).reduce((p, index, i) => {

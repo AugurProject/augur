@@ -14,7 +14,7 @@ const mapDispatchToProps = dispatch => ({
   }),
   airbitzOnLoad: (history) => {
     const abcUi = selectABCUIContext()
-    const abcContext = abcUi.abcContext
+    const { abcContext } = abcUi
     const usernames = abcContext.listUsernames()
     if (usernames.length > 0) {
       abcUi.openLoginWindow((result, airbitzAccount) => {

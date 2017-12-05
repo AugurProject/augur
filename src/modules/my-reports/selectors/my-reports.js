@@ -27,7 +27,7 @@ export default function () {
       const isChallenged = marketsWithAccountReport[marketID].isChallenged || null
       const isChallengeable = isFinal != null && isChallenged != null && !isFinal && !isChallenged
       const period = marketsWithAccountReport[marketID].period || null
-      const isSubmitted = marketsWithAccountReport[marketID].isSubmitted
+      const { isSubmitted } = marketsWithAccountReport[marketID]
 
       return {
         ...marketsData[marketID] || {}, // TODO -- clean up this object
@@ -59,10 +59,8 @@ export default function () {
 
 export const calculateFeesEarned = (market) => {
   if (!market.marketFees || !market.repBalance || !market.marketWeight) return null
-  return formatEtherTokens(
-    new BigNumber(market.marketFees, 10)
-      .times(new BigNumber(market.repBalance, 10))
-      .dividedBy(TWO)
-      .dividedBy(new BigNumber(market.marketWeight, 10))
-  )
+  return formatEtherTokens(new BigNumber(market.marketFees, 10)
+    .times(new BigNumber(market.repBalance, 10))
+    .dividedBy(TWO)
+    .dividedBy(new BigNumber(market.marketWeight, 10)))
 }

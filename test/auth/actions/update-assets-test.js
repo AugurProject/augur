@@ -89,8 +89,7 @@ describe('modules/auth/actions/update-assets.js', () => {
               callback: () => { }
             }
 
-            sinon.stub(callbackStub, 'callback', err => assert.deepEqual(err, ERR, `didn't call the callback with the expected error`)
-            )
+            sinon.stub(callbackStub, 'callback', err => assert.deepEqual(err, ERR, `didn't call the callback with the expected error`))
 
             store.dispatch(updateAssets(callbackStub.callback))
 

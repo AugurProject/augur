@@ -7,9 +7,11 @@ import { UPDATE_ORDER_BOOK, REPLACE_ORDER_BOOK, CLEAR_ORDER_BOOK } from 'modules
 export default function (orderBooks = {}, action) {
   switch (action.type) {
     case UPDATE_ORDER_BOOK: {
-      const marketID = action.marketID
-      const outcome = action.outcome
-      const orderTypeLabel = action.orderTypeLabel
+      const {
+        marketID,
+        outcome,
+        orderTypeLabel
+      } = action
       const marketOrderBook = orderBooks[marketID] || {}
       const outcomeOrderBook = marketOrderBook[outcome] || {}
       return {
@@ -27,9 +29,11 @@ export default function (orderBooks = {}, action) {
       }
     }
     case REPLACE_ORDER_BOOK: {
-      const marketID = action.marketID
-      const outcome = action.outcome
-      const orderTypeLabel = action.orderTypeLabel
+      const {
+        marketID,
+        outcome,
+        orderTypeLabel
+      } = action
       const marketOrderBook = orderBooks[marketID] || {}
       const outcomeOrderBook = marketOrderBook[outcome] || {}
       return {
@@ -44,9 +48,11 @@ export default function (orderBooks = {}, action) {
       }
     }
     case CLEAR_ORDER_BOOK: {
-      const marketID = action.marketID
-      const outcome = action.outcome
-      const orderTypeLabel = action.orderTypeLabel
+      const {
+        marketID,
+        outcome,
+        orderTypeLabel
+      } = action
       const marketOrderBook = orderBooks[marketID] || {}
       const outcomeOrderBook = marketOrderBook[outcome] || {}
       return {

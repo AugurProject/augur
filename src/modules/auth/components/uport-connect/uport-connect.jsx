@@ -21,7 +21,8 @@ export default class UportConnect extends Component {
   constructor() {
     super()
 
-    this.uPort = new Connect('AUGUR -- DEV',
+    this.uPort = new Connect(
+      'AUGUR -- DEV',
       {
         clientId: '2ofGiHuZhhpDMAQeDxjoDhEsUQd1MayECgd'
       },

@@ -2,7 +2,7 @@ import { UPDATE_MARKETS_DATA } from 'modules/markets/actions/update-markets-data
 import { UPDATE_OUTCOME_PRICE } from 'modules/markets/actions/update-outcome-price'
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
-import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR, BINARY_YES_ID, SCALAR_UP_ID } from 'modules/markets/constants/market-outcomes'
+import { BINARY_YES_ID, SCALAR_UP_ID } from 'modules/markets/constants/market-outcomes'
 
 export default function (outcomesData = {}, action) {
   switch (action.type) {
@@ -69,9 +69,6 @@ function parseOutcomes(newMarketsData, outcomesData) {
   }, {})
 
   function parseBinaryOutcomes(marketData, marketID) {
-    if (marketData.description.split(CATEGORICAL_OUTCOMES_SEPARATOR).length === 2) {
-      return parseCategoricalOutcomes(marketData, marketID)
-    }
     return marketData.outcomes.reduce((p, outcome) => {
       if (outcome.id !== BINARY_YES_ID) return p
       p[outcome.id] = { ...outcome }
@@ -81,23 +78,9 @@ function parseOutcomes(newMarketsData, outcomesData) {
   }
 
   function parseCategoricalOutcomes(marketData, marketID) {
-    // parse outcome names from description
-    const splitDescription = marketData.description.split(CATEGORICAL_OUTCOMES_SEPARATOR)
-    if (splitDescription.length < 2) {
-      console.warn('Missing outcome names in description for categorical market:', marketID, marketData)
-      return {}
-    }
-
-    // parse individual outcomes from outcomes string
-    const categoricalOutcomeNames = splitDescription.pop().split(CATEGORICAL_OUTCOME_SEPARATOR)
-    if (categoricalOutcomeNames.length !== marketData.outcomes.length) {
-      console.warn('Number of outcomes parsed from description do not match number of outcomes in market for for categorical market:', marketID, marketData)
-      return {}
-    }
-
     return marketData.outcomes.reduce((p, outcome, i) => {
       p[outcome.id] = { ...outcome }
-      p[outcome.id].name = categoricalOutcomeNames[i].toString().trim()
+      p[outcome.id].name = outcome.description.toString().trim()
       delete p[outcome.id].id
       return p
     }, {})

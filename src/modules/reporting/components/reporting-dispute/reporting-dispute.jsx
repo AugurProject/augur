@@ -22,7 +22,6 @@ export default class ReportingDispute extends Component {
       stakeIsRequired: false,
       minimumStakeRequired: false,
       currentStep: 0,
-      isFormValid: true,
       isMarketValid: null,
       disputeBond: '10000',
       selectedOutcome: '',
@@ -93,12 +92,14 @@ export default class ReportingDispute extends Component {
             <button
               className={classNames(FormStyles.Form__prev, { [`${FormStyles['hide-button']}`]: s.currentStep === 0 })}
               onClick={this.prevPage}
-            >Previous</button>
+            >Previous
+            </button>
             <button
               className={classNames(FormStyles.Form__next, { [`${FormStyles['hide-button']}`]: s.currentStep === 1 })}
               disabled={!Object.keys(s.validations).every(key => s.validations[key] === true)}
               onClick={Object.keys(s.validations).every(key => s.validations[key] === true) && this.nextPage}
-            >Dispute</button>
+            >Dispute
+            </button>
             { s.currentStep === 1 &&
               <button className={FormStyles.Form__submit}>Submit</button>
             }

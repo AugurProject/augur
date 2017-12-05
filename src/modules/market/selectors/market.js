@@ -60,7 +60,9 @@ export default function () {
 export const selectSelectedMarket = state => selectMarket(state.selectedMarketID)
 
 export const selectMarket = (marketID) => {
-  const { marketsData, marketLoading, favorites, reports, outcomesData, accountTrades, tradesInProgress, priceHistory, orderBooks, universe, orderCancellation, smallestPositions, loginAccount } = store.getState()
+  const {
+    marketsData, marketLoading, favorites, reports, outcomesData, accountTrades, tradesInProgress, priceHistory, orderBooks, universe, orderCancellation, smallestPositions, loginAccount
+  } = store.getState()
   const accountPositions = selectAccountPositions()
 
   if (!marketID || !marketsData || !marketsData[marketID]) {
@@ -96,7 +98,8 @@ export const selectMarket = (marketID) => {
     orderCancellation,
     (smallestPositions || {})[marketID],
     loginAccount,
-    store.dispatch)
+    store.dispatch
+  )
 }
 
 const assembledMarketsCache = {}
@@ -122,7 +125,8 @@ export function assembleMarket(
   orderCancellation,
   smallestPosition,
   loginAccount,
-  dispatch) {
+  dispatch
+) {
 
   if (!assembledMarketsCache[marketID]) {
     assembledMarketsCache[marketID] = memoize((
@@ -146,7 +150,8 @@ export function assembleMarket(
       orderCancellation,
       smallestPosition,
       loginAccount,
-      dispatch) => {
+      dispatch
+    ) => {
 
       const market = {
         ...marketData,

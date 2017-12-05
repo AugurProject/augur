@@ -116,13 +116,15 @@ const ReportingReportForm = p => (
           <button
             className={classNames({ [`${FormStyles.active}`]: p.isMarketValid === true })}
             onClick={(e) => { validateIsMarketValid(p.validations, p.updateState, true) }}
-          >Yes</button>
+          >Yes
+          </button>
         </li>
         <li>
           <button
             className={classNames({ [`${FormStyles.active}`]: p.isMarketValid === false })}
             onClick={(e) => { validateIsMarketValid(p.validations, p.updateState, false) }}
-          >No</button>
+          >No
+          </button>
         </li>
       </ul>
     </li>
@@ -137,7 +139,8 @@ const ReportingReportForm = p => (
               <button
                 className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.name })}
                 onClick={(e) => { validateOutcome(p.validations, p.updateState, outcome.name) }}
-              >{outcome.name} &nbsp;|&nbsp; {outcome.stake} REP</button>
+              >{outcome.name} &nbsp;|&nbsp; {outcome.stake} REP
+              </button>
             </li>
           ))
           }

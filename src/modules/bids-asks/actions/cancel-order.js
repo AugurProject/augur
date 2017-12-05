@@ -9,11 +9,13 @@ import logError from 'utils/log-error'
 const TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS = 3000
 
 export const cancelOrder = (orderID, marketID, outcome, orderTypeLabel, callback = logError) => (dispatch, getState) => {
-  const { loginAccount, orderBooks, outcomesData, marketsData } = getState()
+  const {
+    loginAccount, orderBooks, outcomesData, marketsData
+  } = getState()
   const order = selectOrder(orderID, marketID, outcome, orderTypeLabel, orderBooks)
   const market = marketsData[marketID]
   if (order != null && market != null && outcomesData[marketID] != null) {
-    const outcome = outcomesData[marketID][outcome]
+    const outcome = outcomesData[marketID][outcome] // eslint-disable-line prefer-destructuring
     if (outcome != null) {
       dispatch(updateOrderStatus(orderID, CLOSE_DIALOG_CLOSING, marketID, outcome, orderTypeLabel))
       augur.api.CancelOrder.cancelOrder({

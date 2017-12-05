@@ -127,8 +127,7 @@ export default class FilterSortController extends Component {
   updateSortedFiltered(rawSorted, combined) { // If we want to accomodate more than one sorting mechanism across a filtered list, we'll need to re-architect things a bit
     this.props.updateFilteredItems(rawSorted !== null ?
       (rawSorted || []).filter(itemIndex => combined.indexOf(itemIndex) !== -1) :
-      combined
-    )
+      combined)
   }
 
 

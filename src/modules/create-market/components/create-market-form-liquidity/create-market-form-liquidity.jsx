@@ -55,6 +55,7 @@ export default class CreateMarketLiquidity extends Component {
     this.sortOrderBook = this.sortOrderBook.bind(this)
     this.updateInitialLiquidityCosts = this.updateInitialLiquidityCosts.bind(this)
     this.validateForm = this.validateForm.bind(this)
+    this.updateOrderEstimate = this.updateOrderEstimate.bind(this)
   }
 
   componentWillMount() {
@@ -82,7 +83,8 @@ export default class CreateMarketLiquidity extends Component {
       if (nextState.orderQuantity instanceof BigNumber && nextState.orderPrice instanceof BigNumber) {
         orderEstimate = `${nextState.orderQuantity.times(nextState.orderPrice).toNumber()} ETH`
       }
-      this.setState({ orderEstimate })
+
+      this.updateOrderEstimate(orderEstimate)
     }
   }
 
@@ -345,6 +347,10 @@ export default class CreateMarketLiquidity extends Component {
     })
   }
 
+  updateOrderEstimate(orderEstimate) {
+    this.setState({ orderEstimate })
+  }
+
   render() {
     const p = this.props
     const s = this.state
@@ -393,13 +399,15 @@ export default class CreateMarketLiquidity extends Component {
                       <button
                         className={classNames({ [`${StylesForm.active}`]: s.selectedOutcome === 'Yes' })}
                         onClick={() => this.setState({ selectedOutcome: 'Yes' })}
-                      >Yes</button>
+                      >Yes
+                      </button>
                     </li>
                     <li>
                       <button
                         className={classNames({ [`${StylesForm.active}`]: s.selectedOutcome === 'No' })}
                         onClick={() => this.setState({ selectedOutcome: 'No' })}
-                      >No</button>
+                      >No
+                      </button>
                     </li>
                   </ul>
                 </li>
@@ -410,7 +418,7 @@ export default class CreateMarketLiquidity extends Component {
                   <InputDropdown
                     className={Styles['CreateMarketLiquidity__outcomes-categorical']}
                     label="Choose an Outcome"
-                    default={''}
+                    default=""
                     options={p.newMarket.outcomes.filter(outcome => outcome !== '')}
                     onChange={value => this.setState({ selectedOutcome: value })}
                     isMobileSmall={this.props.isMobileSmall}
@@ -452,7 +460,8 @@ export default class CreateMarketLiquidity extends Component {
                 <button
                   disabled={!s.isOrderValid}
                   onClick={this.handleAddOrder}
-                >Add Order</button>
+                >Add Order
+                </button>
               </li>
             </ul>
           </div>
