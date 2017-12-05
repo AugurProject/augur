@@ -33,7 +33,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
         if (err) return callback(err);
         if (!marketStateRow || !marketStateRow.length) return callback(new Error("No market state ID"));
         const marketStateID = marketStateRow[0];
-        const extraInfo: MarketCreatedLogExtraInfo = log.extraInfo;
+        const extraInfo: MarketCreatedLogExtraInfo = log.extraInfo ? log.extraInfo : {};
         const numOutcomes = parseInt(onMarketContractData!.numberOfOutcomes!, 10);
         const marketType: string = ["binary", "categorical", "scalar"][log.marketType];
         const marketsDataToInsert: MarketsRow = {
