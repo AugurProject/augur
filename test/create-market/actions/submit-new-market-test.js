@@ -76,9 +76,9 @@ describe('modules/create-market/actions/submit-new-market', () => {
         universe: '1010101',
         _endTime: 1234567890,
         _denominationToken: 'domnination',
+        _description: 'test description',
         _extraInfo: {
           marketType: 'categorical',
-          description: 'test description',
           longDescription: '',
           outcomeNames: [
             'one',
@@ -152,9 +152,9 @@ describe('modules/create-market/actions/submit-new-market', () => {
         universe: '1010101',
         _endTime: 1234567890,
         _denominationToken: 'domnination',
+        _description: 'test description',
         _extraInfo: {
           marketType: 'binary',
-          description: 'test description',
           longDescription: '',
           resolutionSource: '',
           tags: []
@@ -196,7 +196,8 @@ describe('modules/create-market/actions/submit-new-market', () => {
         type: SCALAR,
         scalarSmallNum: '-10', // String for the test case, normally a BigNumber
         scalarBigNum: '10', // String for the test case, normally a BigNumber
-        scalarDenomination: '%'
+        scalarDenomination: '%',
+        tickSize: 1000,
       }
     },
     assertions: (store) => {
@@ -226,16 +227,17 @@ describe('modules/create-market/actions/submit-new-market', () => {
         universe: '1010101',
         _endTime: 1234567890,
         _denominationToken: 'domnination',
+        _description: 'test description',
         _extraInfo: {
           _scalarDenomination: '%',
           marketType: 'scalar',
-          description: 'test description',
           longDescription: '',
           resolutionSource: '',
           tags: []
         },
-        maxPrice: '10',
-        minPrice: '-10',
+        _maxPrice: '10',
+        _minPrice: '-10',
+        tickSize: 1000,
         _topic: 'test topic',
         _feePerEthInWei: '0x470de4df820000'
       }
