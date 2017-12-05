@@ -1,55 +1,34 @@
-import { each } from "async";
+import { parallel } from "async";
 import * as Knex from "knex";
 import * as _ from "lodash";
-import { Address, MarketsContractAddressRow } from "../../types";
+import { Address, MarketsContractAddressRow, AsyncCallback } from "../../types";
 import { queryModifier, getMarketsWithReportingState } from "./database";
 
-/*
-Logic:
-immediateFill = There's two ways an order can be resolved.
-     1.) An open order for the same outcome !orderType (buy->sell) with >=amount or "better" price (means diff things based on buy|sell)
-     2.) If binary/scalar, an open order for the OPPOSITE outcome, with a price that allows us to reach that of complete set
-
-*/
-
-interface OrderPrice {
-  orderID: Address;
-  fullPrecisionPrice: string;
-  orderType: string;
+interface PricesResult {
+  higherPriceRow: {orderID: string|null};
+  lowerPriceRow: {orderID: string|null};
 }
 
-export function getBetterWorseOrders(db: Knex, marketID: Address, outcome: number, orderType: string, amount: string, price: string|number, callback: (err?: Error|null, result?: any) => void): void {
-  if (marketID == null || outcome == null || price == null) return callback(new Error("Must provide marketID, outcome, and price"));
-  if ( orderType !== "buy" && orderType !== "sell" ) return callback(new Error(`orderType must be either buy|sell`));
-  const query: Knex.QueryBuilder = db.select("orderID", "fullPrecisionPrice", "orderType").from("orders").where({ marketID, outcome });
-  query.orderBy("fullPrecisionPrice", "asc");
-  let betterOrderID: string;
-  let worseOrderID: string;
-  query.asCallback((err: Error|null, orderPrices?: Array<OrderPrice>): void => {
-    let immediateFill = false;
-    if (orderPrices == null || orderPrices.length == 0) { 
-      return callback(null, {immediateFill: false,
-        betterOrderID: "",
-        worseOrderID: "",
+export function getBetterWorseOrders(db: Knex, marketID: Address, outcome: number, orderType: string, price: number, callback: (err?: Error|null, result?: any) => void): void {
+  if (marketID == null || outcome == null || orderType == null) return callback(new Error("Must provide marketID, outcome, and orderType"));
+  if ( orderType !== "buy" && orderType !== "sell" ) return callback(new Error(`orderType must be either "bid" or "ask"`));
+  const ordersQuery = db("orders").first("orderID").where({ orderState: "OPEN", marketID });
+  parallel({
+    higherPriceRow: (next: AsyncCallback) => ordersQuery.clone().where("price", ">", price).orderBy("price", "ASC").asCallback(next),
+    lowerPriceRow: (next: AsyncCallback) => ordersQuery.clone().where("price", "<", price).orderBy("price", "DESC").asCallback(next),
+  }, (err: Error|null, pricesResult: PricesResult ): void => {
+    if (err) return callback(err);
+    const { higherPriceRow, lowerPriceRow } = pricesResult;
+    if (orderType === "buy") {
+      return callback(null, {
+        betterOrderID: (higherPriceRow ? higherPriceRow.orderID : null),
+        worseOrderID: (lowerPriceRow ? lowerPriceRow.orderID : null),
       });
     } else {
-      const typedOrders = _.keyBy(orderPrices, (order) => order.orderType );
-      const counterSide = (orderType == "sell") ? "buy" : "sell";
-      let bestOrder: OrderPrice;
-      let worseOrder = orderPrices[orderPrices.length];
-      if ( orderType === "buy" ) {
-        bestOrder = orderPrices[0];
-        worseOrder = orderPrices[orderPrices.length];        
-      } else if (orderType === "sell" ) {
-
-      } else {
-        return callback(new Error(`orderType must be "buy" or "sell"`))
-      }
-      console.log(typedOrders );
-      callback(null, {immediateFill: true,
-        betterOrderID: 0,
-        worseOrderID: 0,
+      return callback(null, {
+        betterOrderID: (lowerPriceRow ? lowerPriceRow.orderID : null),
+        worseOrderID: (higherPriceRow ? higherPriceRow.orderID : null),
       });
-    }  
+    }
   });
 }
