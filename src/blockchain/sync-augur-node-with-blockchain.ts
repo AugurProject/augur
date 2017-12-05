@@ -40,19 +40,15 @@ export function syncAugurNodeWithBlockchain(db: Knex,  augur: Augur, ethereumNod
           if (err) return callback(err);
           if (!rows || !rows.length || !rows[0]) return callback(new Error("blockchain_sync_history lookup failed"));
           const row: HighestBlockNumberRow = rows[0];
-          if (row.highestBlockNumber === null) { // sync from scratch
-            const fromBlock: number = (!row || !row.highestBlockNumber) ? uploadBlockNumbers[networkID!] : row.highestBlockNumber + 1;
-            const highestBlockNumber: number = parseInt(augur.rpc.getCurrentBlock().number, 16) - 1;
-            if (fromBlock >= highestBlockNumber) return callback(null); // augur-node is already up-to-date
-            downloadAugurLogs(db, augur, fromBlock, highestBlockNumber, (err?: Error|null): void => {
-              if (err) return callback(err);
-              db.insert({ highestBlockNumber }).into("blockchain_sync_history").asCallback(callback);
-              console.log(`Finished batch load from ${fromBlock} to ${highestBlockNumber}`);
-              startAugurListeners(db, augur, highestBlockNumber);
-            });
-          } else {
-            callback(new Error("Please clear your augur.db and start over (must sync from scratch until issue #4386 is resolved)"));
-          }
+          const fromBlock: number = (!row || !row.highestBlockNumber) ? uploadBlockNumbers[networkID!] : row.highestBlockNumber + 1;
+          const highestBlockNumber: number = parseInt(augur.rpc.getCurrentBlock().number, 16) - 1;
+          if (fromBlock >= highestBlockNumber) return callback(null); // augur-node is already up-to-date
+          downloadAugurLogs(db, augur, fromBlock, highestBlockNumber, (err?: Error|null): void => {
+            if (err) return callback(err);
+            db.insert({ highestBlockNumber }).into("blockchain_sync_history").asCallback(callback);
+            console.log(`Finished batch load from ${fromBlock} to ${highestBlockNumber}`);
+            startAugurListeners(db, augur, highestBlockNumber);
+          });
         });
       });
     });
