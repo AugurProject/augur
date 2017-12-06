@@ -33,6 +33,7 @@ function fillAskOrder(universe, fillerAddress, outcomeToTrade, sharesToTrade, ca
         if (!orders[marketID] || !orders[marketID][outcomeToTrade] || !orders[marketID][outcomeToTrade].sell) return callback(orders);
         var orderIDToFill = Object.keys(orders[marketID][outcomeToTrade].sell)[0];
         var orderToFill = orders[marketID][outcomeToTrade].sell[orderIDToFill];
+        if (orderToFill.orderState === "CANCELED") return callback(orders);
         console.log("filling order:", orderIDToFill, orderToFill);
         augur.trading.tradeUntilAmountIsZero({
           _fxpAmount: sharesToTrade,
