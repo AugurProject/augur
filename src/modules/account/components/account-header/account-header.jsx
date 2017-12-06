@@ -88,7 +88,8 @@ class AccountHeader extends Component {
         {repValue !== '0' && !p.isMobile &&
           <div
             ref={(repCurrencyContainer) => { this.repCurrencyContainer = repCurrencyContainer }}
-            title={p.stats[0].totalRep.title} className={Styles.AccountHeader__Currency}
+            title={p.stats[0].totalRep.title}
+            className={Styles.AccountHeader__Currency}
           >
             <span
               ref={(repCurrencyValue) => { this.repCurrencyValue = repCurrencyValue }}

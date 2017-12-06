@@ -23,7 +23,7 @@ export default class MarketOutcomesChart extends Component {
     this.state = {
       chart: null,
       hoveredOutcome: null,
-      selectedOutcome: null // NOTE -- Just a placeholder until outcomes are implemented
+      // selectedOutcome: null // NOTE -- Just a placeholder until outcomes are implemented
     }
 
     this.drawChart = this.drawChart.bind(this)
@@ -45,7 +45,7 @@ export default class MarketOutcomesChart extends Component {
       const chart = d3.select(fauxDiv)
         .append('svg')
 
-      const priceHistory = this.props.priceHistory
+      const { priceHistory } = this.props
 
       const margin = {
         top: 20,

@@ -23,7 +23,7 @@ if (process.env.NODE_ENV === 'development') {
 
   console.log(`
   *******************************************
-          DEVELOPMENT MODE (v3)
+        DEVELOPMENT MODE (seadragon)
     window.app        -- root app element
     window.state      -- raw state data
     window.selectors  -- processed state data

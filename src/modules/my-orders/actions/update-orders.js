@@ -21,7 +21,7 @@ export function updateOrders(data, isAddition) {
 function dispatchOrderUpdates(marketOrderData, isAddition, dispatch, getState) {
   Object.keys(marketOrderData).forEach((outcome) => {
     marketOrderData[outcome].forEach((orderLog) => {
-      const transactionsData = getState().transactionsData
+      const { transactionsData } = getState()
       const cancelledOrder = Object.keys(transactionsData).find(id => transactionsData[id].orderId === orderLog.orderId && transactionsData[id].type === CANCEL_ORDER)
       if (isAddition && !cancelledOrder) {
         // dispatch(addOrder(orderLog));

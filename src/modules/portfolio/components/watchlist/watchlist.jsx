@@ -47,8 +47,8 @@ class WatchList extends Component {
   }
 
   changeDropdown(value) {
-    let sortType = this.state.sortType
-    let filterType = this.state.filterType
+    let { sortType } = this.state
+    let { filterType } = this.state
 
     this.state.sortOptions.forEach((type, ind) => {
       if (type.value === value) {

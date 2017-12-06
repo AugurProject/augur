@@ -19,7 +19,7 @@ export default class Checkbox extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      isLabelTruncated: false,
+      // isLabelTruncated: false,
       dataTip: this.props.title || this.props.text
     }
     this.isLabelTruncated = debounce(this.isLabelTruncated.bind(this), 100)
@@ -38,12 +38,12 @@ export default class Checkbox extends Component {
     if (this.labelText) {
       if (this.labelText.offsetWidth < this.labelText.scrollWidth) {
         this.setState({
-          isLabelTruncated: true,
+          // isLabelTruncated: true,
           dataTip: this.props.title || this.props.text
         })
       } else {
         this.setState({
-          isLabelTruncated: false,
+          // isLabelTruncated: false,
           dataTip: this.props.title || ''
         })
       }

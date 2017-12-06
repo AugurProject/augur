@@ -87,11 +87,13 @@ const MarketTradingConfirm = (p) => {
         <button
           className={Styles['TradingConfirmation__button--back']}
           onClick={p.prevPage}
-        >Back</button>
+        >Back
+        </button>
         <button
           className={Styles['TradingConfirmation__button--submit']}
           onClick={e => console.log('submit order')}
-        >Confirm</button>
+        >Confirm
+        </button>
       </div>
     </section>
   )

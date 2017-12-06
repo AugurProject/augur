@@ -24,11 +24,11 @@ export function submitNewMarket(newMarket, history) {
       _endTime: parseInt(newMarket.endDate.timestamp / 1000, 10),
       _feePerEthInWei: speedomatic.fix(newMarket.settlementFee / 100, 'hex'),
       _denominationToken: contractAddresses.Cash,
+      _description: newMarket.description,
       _designatedReporterAddress: loginAccount.address, // FIXME prompt user for actual automated reporter address
       _topic: newMarket.category,
       _extraInfo: {
         marketType: newMarket.type,
-        description: newMarket.description,
         longDescription: newMarket.detailsText,
         resolutionSource: newMarket.expirySource,
         tags
@@ -44,8 +44,9 @@ export function submitNewMarket(newMarket, history) {
         createMarket = augur.createMarket.createCategoricalMarket
         break
       case SCALAR:
-        formattedNewMarket.minPrice = newMarket.scalarSmallNum.toString()
-        formattedNewMarket.maxPrice = newMarket.scalarBigNum.toString()
+        formattedNewMarket.tickSize = newMarket.tickSize
+        formattedNewMarket._minPrice = newMarket.scalarSmallNum.toString()
+        formattedNewMarket._maxPrice = newMarket.scalarBigNum.toString()
         formattedNewMarket._extraInfo._scalarDenomination = newMarket.scalarDenomination
         createMarket = augur.createMarket.createScalarMarket
         break

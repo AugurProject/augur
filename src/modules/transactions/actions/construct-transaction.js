@@ -91,7 +91,7 @@ export function constructCollectedFeesTransaction(log) {
 export function constructCreateMarketTransaction(log, description, dispatch) {
   const transaction = { data: {} }
   transaction.type = TYPES.CREATE_MARKET
-  transaction.description = description.split('~|>')[0]
+  transaction.description = description.split('~|>')[0] // eslint-disable-line prefer-destructuring
   transaction.topic = log.topic
   transaction.marketCreationFee = formatEtherTokens(log.marketCreationFee)
   transaction.data.marketID = log.marketID ? log.marketID : null
@@ -252,7 +252,7 @@ export const constructFillOrderTransaction = (trade, marketID, marketType, descr
   if (!trade.amount) return null
   if (!trade.price) return null
   const transactionID = `${trade.transactionHash}-${trade.orderId}`
-  const tradeGroupID = trade.tradeGroupID
+  const { tradeGroupID } = trade
   const displayPrice = augur.trading.denormalizePrice({ normalizedPrice: trade.price, minPrice, maxPrice })
   const formattedPrice = formatEtherTokens(displayPrice)
   const formattedShares = formatShares(trade.amount)
@@ -311,7 +311,9 @@ export const constructFillOrderTransaction = (trade, marketID, marketType, descr
 export const constructTradingTransaction = (label, trade, marketID, outcomeID, status) => (dispatch, getState) => {
   console.log('constructTradingTransaction:', label, trade)
   const { marketsData, outcomesData } = getState()
-  const { marketType, description, minPrice, maxPrice, settlementFee } = marketsData[marketID]
+  const {
+    marketType, description, minPrice, maxPrice, settlementFee
+  } = marketsData[marketID]
   const marketOutcomesData = outcomesData[marketID]
   let outcomeName
   if (marketType === BINARY || marketType === SCALAR) {

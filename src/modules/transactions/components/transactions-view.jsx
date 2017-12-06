@@ -37,6 +37,8 @@ export default class TransactionsView extends Component {
     }
 
     this.handleScroll = debounce(this.handleScroll.bind(this), 100)
+    this.manageScrollEventListener = this.manageScrollEventListener.bind(this)
+    this.updatePageChanged = this.updatePageChanged.bind(this)
     this.setSegment = this.setSegment.bind(this)
   }
 
@@ -50,16 +52,11 @@ export default class TransactionsView extends Component {
     this.manageScrollEventListener(this.props, this.state)
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    // These are to prevent the CSSTransitionGroup from transitioning transactions on pagination
-    if (this.state.pageChanged !== nextState.pageChanged) this.setState({ pageChanged: false })
-
-    if (!nextState.hasAttachedScrollListener && nextProps.isMobile) this.setState({ hasAttachedScrollListener: true })
-    if (nextState.hasAttachedScrollListener && !nextProps.isMobile) this.setState({ hasAttachedScrollListener: false })
-  }
-
   componentDidUpdate(prevProps, prevState) {
     this.manageScrollEventListener(this.props, this.state)
+
+    // These are to prevent the CSSTransitionGroup from transitioning transactions on pagination
+    if (prevState.pageChanged !== this.state.pageChanged) this.updatePageChanged(false)
   }
 
   componentWillUnmount() {
@@ -92,6 +89,12 @@ export default class TransactionsView extends Component {
       window.removeEventListener('scroll', this.handleScroll)
       this.setState({ hasAttachedScrollListener: false })
     }
+  }
+
+  updatePageChanged(pageChanged) {
+    this.setState({
+      pageChanged
+    })
   }
 
   render() {

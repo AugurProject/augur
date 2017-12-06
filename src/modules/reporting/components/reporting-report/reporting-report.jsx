@@ -20,7 +20,6 @@ export default class ReportingReport extends Component {
 
     this.state = {
       currentStep: 0,
-      isFormValid: true,
       isMarketValid: null,
       selectedOutcome: '',
       stake: '',
@@ -87,12 +86,14 @@ export default class ReportingReport extends Component {
             <button
               className={classNames(FormStyles.Form__prev, { [`${FormStyles['hide-button']}`]: s.currentStep === 0 })}
               onClick={this.prevPage}
-            >Previous</button>
+            >Previous
+            </button>
             <button
               className={classNames(FormStyles.Form__next, { [`${FormStyles['hide-button']}`]: s.currentStep === 1 })}
               disabled={!Object.keys(s.validations).every(key => s.validations[key] === true)}
               onClick={Object.keys(s.validations).every(key => s.validations[key] === true) && this.nextPage}
-            >Report</button>
+            >Report
+            </button>
             { s.currentStep === 1 &&
               <button className={FormStyles.Form__submit}>Submit</button>
             }

@@ -44,7 +44,8 @@ const TransactionDetails = (p) => {
             }
             {!!b.balance &&
               <ValueDenomination
-                prefix=" [ balance:" postfix="]"
+                prefix=" [ balance:"
+                postfix="]"
                 {...b.balance}
               />
             }

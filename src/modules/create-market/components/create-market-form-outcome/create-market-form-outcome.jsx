@@ -33,7 +33,7 @@ export default class CreateMarketOutcome extends Component {
     super(props)
 
     this.state = {
-      marketType: false,
+      // marketType: false,
       outcomeFieldCount: CreateMarketOutcome.calculateOutcomeFieldCount(this.props),
       showAddOutcome: CreateMarketOutcome.calculateOutcomeFieldCount(this.props) < 8,
       scalarMin: speedomatic.unfix(speedomatic.constants.INT256_MIN_VALUE).round(18, BigNumber.ROUND_DOWN),
@@ -91,7 +91,7 @@ export default class CreateMarketOutcome extends Component {
 
   validateScalarNum(value, type) {
     const p = this.props
-    const currentStep = p.newMarket.currentStep
+    const { currentStep } = p.newMarket
 
     const updatedMarket = { ...p.newMarket }
     let scalarSmallNum = type === 'small' ? value : updatedMarket.scalarSmallNum
@@ -154,10 +154,10 @@ export default class CreateMarketOutcome extends Component {
 
   validateOutcomes(value, index) {
     const p = this.props
-    const currentStep = p.newMarket.currentStep
+    const { currentStep } = p.newMarket
 
     const updatedMarket = { ...p.newMarket }
-    const outcomes = updatedMarket.outcomes
+    const { outcomes } = updatedMarket
     outcomes[index] = value
     const cleanedOutcomes = outcomes.filter(outcome => outcome !== '')
 
@@ -195,20 +195,23 @@ export default class CreateMarketOutcome extends Component {
             <li>
               <button
                 className={classNames({ [`${StylesForm.active}`]: p.newMarket.type === BINARY })}
-                onClick={(e) => { this.setState({ marketType: BINARY }); this.validateType(BINARY) }}
-              >Yes/No</button>
+                onClick={() => this.validateType(BINARY)}
+              >Yes/No
+              </button>
             </li>
             <li>
               <button
                 className={classNames({ [`${StylesForm.active}`]: p.newMarket.type === CATEGORICAL })}
-                onClick={(e) => { this.setState({ marketType: CATEGORICAL }); this.validateType(CATEGORICAL) }}
-              >Multiple Choice</button>
+                onClick={() => this.validateType(CATEGORICAL)}
+              >Multiple Choice
+              </button>
             </li>
             <li>
               <button
                 className={classNames({ [`${StylesForm.active}`]: p.newMarket.type === SCALAR })}
-                onClick={(e) => { this.setState({ marketType: SCALAR }); this.validateType(SCALAR) }}
-              >Numerical Range</button>
+                onClick={() => this.validateType(SCALAR)}
+              >Numerical Range
+              </button>
             </li>
           </ul>
         </li>

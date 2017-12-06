@@ -30,8 +30,7 @@ export default function (search, keys, items) {
         if (typeof key === 'string') return checkStringMatch((item[key] || ''), search)
 
         return checkArrayMatch(item, key, search)
-      }
-      ))
+      }))
 
     if (matchedSearch) {
       return [...p, i]

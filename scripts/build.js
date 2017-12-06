@@ -8,10 +8,10 @@ const BUILD_DIRECTORY = path.resolve(__dirname, '../build');
 const NODE_MODULES = path.resolve(__dirname, '../node_modules');
 
 if(process.argv[2] === 'dev' || process.argv[2] === 'development') {
-  process.env.NODE_ENV = 'development';
+  process.env.NODE_ENV = process.env.BABEL_ENV = 'development';
   process.env.DEBUG_BUILD = true;
 } else {
-  process.env.NODE_ENV = 'production';
+  process.env.NODE_ENV = process.env.BABEL_ENV = 'production';
 }
 
 process.env.FORCE_COLOR = true;

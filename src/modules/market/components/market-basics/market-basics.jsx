@@ -29,8 +29,7 @@ const MarketBasics = p => (
               <button onClick={() => toggleTag(tag, p.location, p.history)}>
                 {tag}
               </button>
-            </li>
-          )}
+            </li>)}
         </ul>
         <MarketStatusIcon isOpen={p.isOpen} isReported={p.isReported} />
       </div>

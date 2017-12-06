@@ -50,10 +50,12 @@ export default class GraphBG extends Component {
     if (this.hasWebGL) {
       p.perspective() // forces P5 to acknowledge next ortho() call
       const pixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1
-      p.ortho(-width / pixelRatio,
+      p.ortho(
+        -width / pixelRatio,
         width / pixelRatio,
         height / pixelRatio,
-        -height / pixelRatio, -1, 10000)
+        -height / pixelRatio, -1, 10000
+      )
     }
   }
 
@@ -74,7 +76,9 @@ export default class GraphBG extends Component {
         origin.x += this.screenMid.x
         origin.y += this.screenMid.y
       }
-      this.circles.push({ origin, x: origin.x, y: origin.y, distScalar, angle, links: 0 })
+      this.circles.push({
+        origin, x: origin.x, y: origin.y, distScalar, angle, links: 0
+      })
     }
 
     this.circles.forEach((circleA, ai) => {
@@ -90,12 +94,16 @@ export default class GraphBG extends Component {
         const minCenterDist = 0
         const maxCenterDist = 0.35
         const angleRange = 15
-        const tierLink = withinRange(centerDist,
+        const tierLink = withinRange(
+          centerDist,
           minCenterDist,
-          maxCenterDist)
-        const angLink = withinRange(circleA.angle,
+          maxCenterDist
+        )
+        const angLink = withinRange(
+          circleA.angle,
           (circleB.angle - angleRange) % 360,
-          (circleB.angle + angleRange) % 360)
+          (circleB.angle + angleRange) % 360
+        )
 
         if (localLink || (tierLink && angLink)) {
           const linekey = [ai, bi].sort().join('_')
@@ -157,9 +165,11 @@ export default class GraphBG extends Component {
         p.beginShape(P5.prototype.LINES)
         p.translate(circleA.x, circleA.y, 0)
         p.vertex(0, 0, 0)
-        p.vertex((circleB.x - circleA.x),
+        p.vertex(
+          (circleB.x - circleA.x),
           (circleB.y - circleA.y),
-          0)
+          0
+        )
         p.fill(83, 76, 101) // prevent P5 spamming shader uniform warnings
         p.stroke(83, 76, 101)
         p.endShape()

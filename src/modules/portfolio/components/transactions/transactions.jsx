@@ -10,10 +10,6 @@ import Styles from 'modules/portfolio/components/transactions/transactions.style
 import Dropdown from 'modules/common/components/dropdown/dropdown'
 
 export default class Transactions extends Component {
-  static defaultProps = {
-    transactions: []
-  }
-
   static propTypes = {
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
@@ -98,7 +94,7 @@ export default class Transactions extends Component {
           [...Array(s.boundedLength)].map((unused, i) => {
             const transaction = p.transactions[(s.lowerBound - 1) + i]
             if (transaction) {
-              if (transaction.transactions.length <= 1) {
+              if (transaction.transactions && transaction.transactions.length <= 1) {
                 return <TransactionSingle key={transaction.hash} transaction={transaction} />
               }
               return <TransactionMultiple key={transaction.hash} transaction={transaction} />

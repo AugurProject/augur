@@ -82,7 +82,7 @@ export default function (market) {
       assert.isBoolean(market.isPendingReport)
     })
 
-    const tags = market.tags
+    const { tags } = market
     it('market.tags', () => {
       assert.isDefined(tags)
       assert.isArray(tags)
@@ -135,7 +135,7 @@ export default function (market) {
           assertFormattedNumber(outcome.lastPricePercent, 'outcome.lastPricePercent')
         })
 
-        const trade = outcome.trade
+        const { trade } = outcome
         it(`market.outcomes[${i}].trade`, () => {
           assert.isDefined(trade)
           assert.isObject(trade)
@@ -172,7 +172,7 @@ export default function (market) {
           assert.isFunction(trade.updateTradeOrder)
         })
 
-        const orderBook = outcome.orderBook
+        const { orderBook } = outcome
         it(`market.outcomes[${i}].orderBook`, () => {
           // NOTE -- shallow check here due to deep check further down of the same selector method
           assert.isDefined(orderBook)
@@ -199,7 +199,7 @@ export default function (market) {
           assert.isDefined(outcome.topAsk)
         })
 
-        const userOpenOrders = outcome.userOpenOrders
+        const { userOpenOrders } = outcome
         it(`market.outcomes[${i}].userOpenOrders`, () => {
           assert.isDefined(userOpenOrders)
           assert.isArray(userOpenOrders)
@@ -271,7 +271,7 @@ export default function (market) {
       assert.isString(indeterminateItem.name)
     })
 
-    const tradeSummary = market.tradeSummary
+    const { tradeSummary } = market
     it('market.tradeSummary', () => {
       assert.isDefined(tradeSummary)
       assert.isObject(tradeSummary)
@@ -286,7 +286,7 @@ export default function (market) {
       assert.isBoolean(tradeSummary.hasUserEnoughFunds)
     })
 
-    const tradeOrders = tradeSummary.tradeOrders
+    const { tradeOrders } = tradeSummary
     it('market.tradeSummary.tradeOrders', () => {
       assert.isDefined(tradeOrders)
       assert.isArray(tradeOrders)
@@ -366,7 +366,7 @@ export default function (market) {
       assertFormattedNumber(market.userOpenOrdersSummary.openOrdersCount, 'market.userOpenOrdersSummary.openOrdersCount')
     })
 
-    const myPositionsSummary = market.myPositionsSummary
+    const { myPositionsSummary } = market
     it('market.myPositionsSummary', () => {
       assert.isDefined(myPositionsSummary)
       assert.isObject(myPositionsSummary)
@@ -402,7 +402,7 @@ export default function (market) {
       assertFormattedNumber(myPositionsSummary.totalNet, 'myPositionsSummary.totalNet')
     })
 
-    const report = market.report
+    const { report } = market
     it('market.report', () => {
       assert.isDefined(report)
       assert.isObject(report)
@@ -413,7 +413,7 @@ export default function (market) {
       assert.isFunction(report.onSubmitReport)
     })
 
-    const onSubmitPlaceTrade = market.onSubmitPlaceTrade
+    const { onSubmitPlaceTrade } = market
     it('market.onSubmitPlaceTrade', () => {
       assert.isDefined(onSubmitPlaceTrade)
       assert.isFunction(onSubmitPlaceTrade)

@@ -15,7 +15,7 @@ describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
   })
 
   it(`should check if a transaction is working`, () => {
-    let transactionsData = state.transactionsData
+    let { transactionsData } = state
     actual = selector.selectIsWorking({ transactionsData })
 
     assert.isFalse(actual, `Didn't mark the transaction as not working when status was ${FAILED}.`)
