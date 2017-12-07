@@ -187,7 +187,7 @@ export default class CreateMarketForm extends Component {
                   <button
                     className={classNames(Styles.CreateMarketForm__next, { [`${Styles['hide-button']}`]: p.newMarket.currentStep === s.pages.length - 1 })}
                     disabled={!p.newMarket.isValid}
-                    onClick={p.newMarket.isValid && this.nextPage}
+                    onClick={p.newMarket.isValid ? this.nextPage : null}
                   >Next: {s.pages[p.newMarket.currentStep + 1]}
                   </button>
                 }
