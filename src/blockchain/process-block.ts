@@ -1,9 +1,9 @@
 import Augur from "augur.js";
-import { parallel, times } from "async";
+import { parallel } from "async";
 import * as Knex from "knex";
 import { each } from "async";
 import { logError } from "../utils/log-error";
-import { Address, Block, BlocksRow, Int256, AsyncCallback, ErrorCallback, ReportingState } from "../types";
+import { Block, BlocksRow, AsyncCallback, ErrorCallback } from "../types";
 import { updateMarketState } from "./log-processors/database";
 
 function advanceTime(db: Knex, augur: Augur, trx: Knex.Transaction, blockNumber: number, timestamp: number, callback: AsyncCallback) {
