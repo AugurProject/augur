@@ -32,8 +32,8 @@ body {
   .animation(flash-slow @animation-speed-slow @animation-default-type infinite alternate);
 
   .keyframes(flash-slow, {
-  0% { background: fade(@color, @amount-subtle) }
-  100% { background: fade(@color, @amount-light) }
+    0% { background: fade(@color, @amount-subtle) }
+    100% { background: fade(@color, @amount-light) }
   });
 }
 
@@ -57,9 +57,9 @@ body {
 // Shared Animations
 
 .keyframes(expandElementHeight, {
-to { height: auto; }
+  to { height: auto; }
 });
 
 .keyframes(collapseElementHeight, {
-to { height: 0; }
+  to { height: 0; }
 });
