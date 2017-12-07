@@ -6,19 +6,19 @@ import { logError } from "../utils/log-error";
 import { Address, Block, BlocksRow, Int256, AsyncCallback, ErrorCallback, ReportingState } from "../types";
 import { updateMarketState } from "./log-processors/database";
 
-function advanceTime(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+function advanceTime(db: Knex, augur: Augur, trx: Knex.Transaction, blockNumber: number, timestamp: number, callback: AsyncCallback) {
   parallel( {
-    advanceMarketReachingEndTime: (next: AsyncCallback) => advanceMarketReachingEndTime(db, augur, blockNumber, timestamp, next),
+    advanceMarketReachingEndTime: (next: AsyncCallback) => advanceMarketReachingEndTime(db, augur, trx, blockNumber, timestamp, next),
   }, callback);
 }
 
-function advanceMarketReachingEndTime(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+function advanceMarketReachingEndTime(db: Knex, augur: Augur, trx: Knex.Transaction, blockNumber: number, timestamp: number, callback: AsyncCallback) {
   const designatedDisputeQuery = db("markets").select("markets.marketID").join("market_state", "market_state.marketStateID", "markets.marketStateID");
   designatedDisputeQuery.where("reportingState", augur.constants.REPORTING_STATE.PRE_REPORTING).where("endTime", ">", timestamp);
   designatedDisputeQuery.asCallback( (err: Error|null, designatedDisputeMarketIDs: Array<any> ) => {
     if (err) return callback(err);
     each(designatedDisputeMarketIDs, (marketIDRow, nextMarketID: ErrorCallback) => {
-      updateMarketState(db, marketIDRow.marketID, blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_REPORTING, nextMarketID);
+      updateMarketState(db, marketIDRow.marketID, trx, blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_REPORTING, nextMarketID);
     }, callback);
   });
 }
@@ -43,7 +43,7 @@ export function processBlock(db: Knex, augur: Augur, block: Block): void {
           trx.rollback(err);
           logError(err);
         } else {
-          advanceTime(trx, augur, blockNumber, timestamp, (err: Error|null) => {
+          advanceTime(db, augur, trx, blockNumber, timestamp, (err: Error|null) => {
             if (err != null) {
               trx.rollback(err);
               logError(err);

@@ -24,7 +24,7 @@ export function insertStakeToken(db: Knex, trx: Knex.Transaction, stakeToken: Ad
 }
 
 export function processDesignatedReportSubmittedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  updateMarketState( db, log.market, log.blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_DISPUTE, (err: Error|null): void => {
+  updateMarketState( db, log.market, trx, log.blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_DISPUTE, (err: Error|null): void => {
     if (err) return callback(err);
     insertStakeToken(db, trx, log.stakeToken, log.market, log.payoutNumerators, (err: Error|null) => {
       if (err) return callback(err);
