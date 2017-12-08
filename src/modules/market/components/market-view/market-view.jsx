@@ -14,9 +14,7 @@ export default class MarketView extends Component {
     marketId: PropTypes.string.isRequired,
     isConnected: PropTypes.bool.isRequired,
     isMarketLoaded: PropTypes.bool.isRequired,
-    location: PropTypes.object.isRequired,
-    loadFullMarket: PropTypes.func.isRequired,
-    universe: PropTypes.object.isRequired
+    loadFullMarket: PropTypes.func.isRequired
   }
 
   static loadFullMarket(marketId, options, force) {
@@ -41,8 +39,8 @@ export default class MarketView extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     if (
-      (this.props.isConnected === false && nextProps.isConnected === true) ||
-      this.props.marketId !== nextProps.marketId
+      (this.props.isConnected === false && nextProps.isConnected === true) &&
+      nextProps.marketId
     ) {
       nextProps.loadFullMarket()
     }
