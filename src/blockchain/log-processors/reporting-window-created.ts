@@ -4,7 +4,6 @@ import { FormattedEventLog, ErrorCallback, OrderState } from "../../types";
 import { augurEmitter } from "../../events";
 
 export function processReportingWindowCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  augurEmitter.emit("ReportingWindowCreated", log);
   const reportingWindowToInsert = {
     reportingWindow: log.reportingWindow,
     reportingWindowID: log.id,
