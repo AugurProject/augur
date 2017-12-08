@@ -40,7 +40,7 @@ export default class MarketView extends Component {
   componentWillUpdate(nextProps, nextState) {
     if (
       (this.props.isConnected === false && nextProps.isConnected === true) &&
-      nextProps.marketId
+      !!nextProps.marketId
     ) {
       nextProps.loadFullMarket()
     }
