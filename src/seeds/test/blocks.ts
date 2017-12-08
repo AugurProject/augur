@@ -40,6 +40,10 @@ exports.seed = async (knex: Knex): Promise<any> => {
       blockNumber: 1400101,
       blockHash: "0x1400101",
       timestamp: 1506480015,
+    }, {
+      blockNumber: 1500001,
+      blockHash: "0x1500001",
+      timestamp: 1509065474,
     }];
     return knex.batchInsert("blocks", seedData, seedData.length);
   });
