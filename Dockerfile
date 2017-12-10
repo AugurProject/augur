@@ -22,6 +22,7 @@ COPY --from=builder /app/node_modules node_modules
 COPY --from=builder /app/augur-node*.tgz /app
 RUN tar xzf augur-node*.tgz && mv package/* . && rm -rf package
 
-COPY --from=builder /app/augur.db augur.db
+COPY --from=builder /app/augur.db augur.db.tpl
+COPY docker-entrypoint.sh docker-entrypoint.sh
 
-ENTRYPOINT ["npm", "start"]
+ENTRYPOINT ["./docker-entrypoint.sh"]
