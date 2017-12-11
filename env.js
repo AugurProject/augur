@@ -22,6 +22,7 @@ augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
   global.universe = augur.contracts.addresses[networkID].Universe;
   console.log(chalk.cyan("Network"), chalk.green(networkID));
   const account = augur.rpc.getCoinbase();
+  console.log(chalk.cyan("Account"), chalk.green(account));
   augur.api.Universe.getReputationToken({ tx: { to: universe } }, (err, reputationTokenAddress) => {
     if (err) return console.error("getReputationToken failed:", err);
     augur.api.ReputationToken.balanceOf({ tx: { to: reputationTokenAddress }, _owner: account }, (err, reputationBalance) => {

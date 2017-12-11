@@ -20,7 +20,7 @@ augur.connect(connectionEndpoints, function (err) {
   approveAugurEternalApprovalValue(augur, augur.rpc.getCoinbase(), function (err) {
     if (err) return console.error(err);
     var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
-    augur.markets.getMarkets({ universe: universe, sortBy: "creationBlockNumber" }, function (err, marketIDs) {
+    augur.markets.getMarkets({ universe: universe, sortBy: "creationBlock" }, function (err, marketIDs) {
       if (err) return console.error(err);
       augur.markets.getMarketsInfo({ marketIDs: marketIDs }, function (err, marketsInfo) {
         if (err) return console.error(err);
