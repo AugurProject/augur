@@ -17,14 +17,18 @@
 }
 
 .CreateMarketForm__error {
-  background-color: @color-purple;
-  border-radius: 3px;
-  color: @color-white;
-  font-size: 0.625rem;
-  line-height: 0.625rem;
-  padding: 0.2rem 0.5rem;
+  color: @color-negative;
+  font-size: 1rem;
+  line-height: 1rem;
   text-transform: none;
   white-space: nowrap;
+}
+
+.CreateMarketForm__error > svg {
+  margin: 0 0.2rem;
+  max-height: 1rem;
+  max-width: 1rem;
+  vertical-align: top;
 }
 
 .CreateMarketForm__error--field-50 {
