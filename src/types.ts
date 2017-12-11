@@ -252,7 +252,7 @@ export interface UIOutcomeInfo {
 export interface UIMarketInfo {
   id: Address;
   universe: Address;
-  type: string;
+  marketType: string;
   numOutcomes: number;
   minPrice: string|number;
   maxPrice: string|number;
@@ -261,6 +261,7 @@ export interface UIMarketInfo {
   creationTime: number;
   creationBlock: number;
   creationFee: string|number;
+  settlementFee: string;
   reportingFeeRate: string|number;
   marketCreatorFeeRate: string|number;
   marketCreatorFeesCollected: string|number|null;
