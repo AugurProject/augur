@@ -1,17 +1,7 @@
 import * as _ from "lodash";
 import * as Knex from "knex";
-import { Address, Bytes32, Order, OrdersRow, OrderState } from "../../types";
+import { Address, Bytes32, OrdersRow, OrderState, UIOrders } from "../../types";
 import { queryModifier } from "./database";
-
-interface Orders {
-  [marketID: string]: {
-    [outcome: number]: {
-      [orderType: string]: {
-        [orderID: string]: Order;
-      };
-    };
-  };
-}
 
 interface OrdersRowWithCreationTime extends OrdersRow {
   creationTime: number;
@@ -33,17 +23,19 @@ export function getOrders(db: Knex, universe: Address|null, marketID: Address|nu
   query.where(queryData);
   if (earliestCreationTime != null) query.where("creationTime", ">=", earliestCreationTime);
   if (latestCreationTime != null) query.where("creationTime", "<=", latestCreationTime);
+  query.whereNull("isRemoved");
   if ( orderState != null && orderState !== OrderState.ALL) query.where("orderState", orderState);
   queryModifier(query, "volume", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, ordersRows?: Array<OrdersRowWithCreationTime>): void => {
     if (err) return callback(err);
     if (!ordersRows) return callback(new Error("Unexpected error fetching order rows"));
-    const orders: Orders = {};
+    const orders: UIOrders = {};
     ordersRows.forEach((row: OrdersRowWithCreationTime): void => {
       if (!orders[row.marketID]) orders[row.marketID] = {};
       if (!orders[row.marketID][row.outcome]) orders[row.marketID][row.outcome] = {};
       if (!orders[row.marketID][row.outcome][row.orderType]) orders[row.marketID][row.outcome][row.orderType] = {};
       orders[row.marketID][row.outcome][row.orderType][row.orderID!] = {
+        orderID: row.orderID!,
         creationBlockNumber: row.blockNumber,
         transactionHash: row.transactionHash,
         logIndex: row.logIndex,
