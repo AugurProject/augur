@@ -13,7 +13,7 @@ function advanceTime(db: Knex, augur: Augur, trx: Knex.Transaction, blockNumber:
 }
 
 function advanceMarketReachingEndTime(db: Knex, augur: Augur, trx: Knex.Transaction, blockNumber: number, timestamp: number, callback: AsyncCallback) {
-  const designatedDisputeQuery = db("markets").select("markets.marketID").join("market_state", "market_state.marketStateID", "markets.marketStateID");
+  const designatedDisputeQuery = db("markets").transacting(trx).select("markets.marketID").join("market_state", "market_state.marketStateID", "markets.marketStateID");
   designatedDisputeQuery.where("reportingState", augur.constants.REPORTING_STATE.PRE_REPORTING).where("endTime", ">", timestamp);
   designatedDisputeQuery.asCallback( (err: Error|null, designatedDisputeMarketIDs: Array<any> ) => {
     if (err) return callback(err);
