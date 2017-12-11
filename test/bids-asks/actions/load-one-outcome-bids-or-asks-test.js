@@ -36,7 +36,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       augurjs: {
         augur: {
           trading: {
-            getOpenOrders: () => assert.fail()
+            getOrders: () => assert.fail()
           }
         }
       },
@@ -63,7 +63,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       augurjs: {
         augur: {
           trading: {
-            getOpenOrders: () => assert.fail()
+            getOrders: () => assert.fail()
           }
         }
       },
@@ -90,7 +90,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       augurjs: {
         augur: {
           trading: {
-            getOpenOrders: () => assert.fail()
+            getOrders: () => assert.fail()
           }
         }
       },
@@ -117,7 +117,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       augurjs: {
         augur: {
           trading: {
-            getOpenOrders: () => assert.fail()
+            getOrders: () => assert.fail()
           }
         }
       },
@@ -144,7 +144,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       augurjs: {
         augur: {
           trading: {
-            getOpenOrders: (p, callback) => {
+            getOrders: (p, callback) => {
               callback(null, {})
             }
           }
@@ -191,7 +191,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       augurjs: {
         augur: {
           trading: {
-            getOpenOrders: (p, callback) => {
+            getOrders: (p, callback) => {
               callback(null, { '0x1': order1, '0x2': order2 })
             }
           }

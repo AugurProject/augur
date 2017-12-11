@@ -90,7 +90,7 @@ export default class NotificationsView extends Component {
               />
             ))}
           </div> :
-          <NullStateMessage message="No Notifications" />
+          <NullStateMessage className={Styles.NullStateMessage} message="No Notifications" />
         }
       </section>
     )
