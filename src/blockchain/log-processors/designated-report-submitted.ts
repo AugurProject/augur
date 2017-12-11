@@ -1,6 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { FormattedEventLog, ErrorCallback, Address } from "../../types";
+import { updateMarketState } from "./database";
 import { augurEmitter } from "../../events";
 
 // Ensures stakeToken entry exists in the database. May not need to be inserted, there's no upsert required
@@ -24,23 +25,11 @@ export function insertStakeToken(db: Knex, trx: Knex.Transaction, stakeToken: Ad
 }
 
 export function processDesignatedReportSubmittedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  const marketStateDataToInsert: { [index: string]: string|number|boolean } = {
-    marketID: log.market,
-    reportingState: augur.constants.REPORTING_STATE.DESIGNATED_DISPUTE,
-    blockNumber: log.blockNumber,
-  };
-  db.transacting(trx).insert(marketStateDataToInsert).returning("marketStateID").into("market_state").asCallback((err: Error|null, marketStateID?: Array<number>): void => {
+  updateMarketState( db, log.market, trx, log.blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_DISPUTE, (err: Error|null): void => {
     if (err) return callback(err);
-    if (!marketStateID || !marketStateID.length) return callback(new Error("Failed to generate new marketStateID for marketID:" + log.market));
-    const newMarketStateID = marketStateID[0];
-    db("markets").transacting(trx).update({ marketStateID: newMarketStateID }).where("marketID", log.market).asCallback((err: Error|null): void => {
+    insertStakeToken(db, trx, log.stakeToken, log.market, log.payoutNumerators, (err: Error|null) => {
       if (err) return callback(err);
-      insertStakeToken(db, trx, log.stakeToken, log.market, log.payoutNumerators, (err: Error|null) => {
-        if (err) return callback(err);
-        const designatedReportDataToInsert = {marketID: log.market, stakeToken: log.stakeToken};
-        augurEmitter.emit("DesignatedReportSubmitted", designatedReportDataToInsert);
-        db.transacting(trx).insert({marketID: log.market, stakeToken: log.stakeToken}).into("reports_designated").asCallback(callback);
-      });
+      db.transacting(trx).insert({marketID: log.market, stakeToken: log.stakeToken}).into("reports_designated").asCallback(callback);
     });
   });
 }
