@@ -373,7 +373,7 @@ export default class AppView extends Component {
           />
         </section>
         <section className={Styles.Main}>
-          <section>
+          <section className={Styles.TopBar}>
             <TopBar
               isMobile={p.isMobile}
               isLogged={p.isLogged}

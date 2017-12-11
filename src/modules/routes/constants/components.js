@@ -58,7 +58,7 @@ export const Create = asyncComponent({
 
 export const Market = asyncComponent({
   moduleName: 'Market',
-  loader: () => import(/* webpackChunkName: 'market' */ 'modules/market/components/market-view/market-view')
+  loader: () => import(/* webpackChunkName: 'market' */ 'modules/market/containers/market-view')
     .then(module => module.default)
 })
 
