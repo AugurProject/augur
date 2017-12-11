@@ -55,7 +55,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
         tradeGroupID: log.tradeGroupId,
         orderType: orderTypeLabel,
         price: formatOrderPrice(orderTypeLabel, minPrice, maxPrice, fullPrecisionPrice),
-        amount: formatOrderAmount(minPrice, maxPrice, fullPrecisionAmount),
+        amount: formatOrderAmount(fullPrecisionAmount),
         fullPrecisionPrice,
         fullPrecisionAmount,
         tokensEscrowed: convertFixedPointToDecimal(moneyEscrowed, WEI_PER_ETHER),

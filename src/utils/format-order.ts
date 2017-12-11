@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js";
 import { roundToPrecision } from "./round-to-precision";
 import { MINIMUM_TRADE_SIZE, PRECISION } from "../constants";
 
-export function formatOrderAmount(minPrice: string|number, maxPrice: string|number, fullPrecisionAmount: string|number): string {
+export function formatOrderAmount(fullPrecisionAmount: string|number): string {
   return roundToPrecision(fullPrecisionAmount, MINIMUM_TRADE_SIZE);
 }
 
