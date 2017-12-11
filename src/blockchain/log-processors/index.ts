@@ -11,6 +11,7 @@ import { processWinningTokensRedeemedLog, processWinningTokensRedeemedLogRemoval
 import { processReportsDisputedLog, processReportsDisputedLogRemoval } from "./reports-disputed";
 import { processMarketFinalizedLog, processMarketFinalizedLogRemoval } from "./market-finalized";
 import { processUniverseForkedLog, processUniverseForkedLogRemoval } from "./universe-forked";
+import { processReportingWindowCreatedLog, processReportingWindowCreatedLogRemoval } from "./reporting-window-created";
 import { processTransferLog, processTransferLogRemoval } from "./token/transfer";
 import { processApprovalLog, processApprovalLogRemoval } from "./token/approval";
 import { processMintLog, processMintLogRemoval } from "./token/mint";
@@ -68,6 +69,10 @@ export const logProcessors: LogProcessors = {
     MarketFinalized: {
       add: processMarketFinalizedLog,
       remove: processMarketFinalizedLogRemoval,
+    },
+    ReportingWindowCreated: {
+      add: processReportingWindowCreatedLog,
+      remove: processReportingWindowCreatedLogRemoval,
     },
     UniverseForked: {
       add: processUniverseForkedLog,

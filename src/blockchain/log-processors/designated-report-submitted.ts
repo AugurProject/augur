@@ -2,6 +2,7 @@ import Augur from "augur.js";
 import * as Knex from "knex";
 import { FormattedEventLog, ErrorCallback, Address } from "../../types";
 import { updateMarketState } from "./database";
+import { augurEmitter } from "../../events";
 
 // Ensures stakeToken entry exists in the database. May not need to be inserted, there's no upsert required
 export function insertStakeToken(db: Knex, trx: Knex.Transaction, stakeToken: Address, marketID: Address, payoutNumerators: Array<string|number|null>, callback: ErrorCallback): void {
@@ -34,6 +35,7 @@ export function processDesignatedReportSubmittedLog(db: Knex, augur: Augur, trx:
 }
 
 export function processDesignatedReportSubmittedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
+  augurEmitter.emit("DesignatedReportSubmitted", log);
   db("market_state").transacting(trx).delete().where({marketID: log.market, reportingState: augur.constants.REPORTING_STATE.DESIGNATED_DISPUTE}).asCallback((err: Error|null): void => {
     if (err) return callback(err);
     db("market_state").transacting(trx).max("marketStateID as previousMarketStateID").first().where({marketID: log.market}).asCallback((err: Error|null, {previousMarketStateID }: {previousMarketStateID: number}): void => {

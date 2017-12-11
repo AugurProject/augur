@@ -4,5 +4,4 @@ coverage/
 build/
 definitions/
 *.db*
-*.sh
 tags
