@@ -10,7 +10,6 @@ import footerHeight from 'modules/app/reducers/footer-height'
 
 import loginAccount from 'modules/auth/reducers/login-account'
 import isLogged from 'modules/auth/reducers/is-logged'
-import accountName from 'modules/account/reducers/account-name'
 
 import newMarket from 'modules/create-market/reducers/new-market'
 
@@ -66,7 +65,6 @@ export function createReducer() {
 
     loginAccount,
     isLogged,
-    accountName,
 
     newMarket,
 

@@ -56,12 +56,6 @@ export const Create = asyncComponent({
     .then(module => module.default)
 })
 
-export const Transactions = asyncComponent({
-  moduleName: 'Transactions',
-  loader: () => import(/* webpackChunkName: 'transactions' */ 'modules/transactions/container')
-    .then(module => module.default)
-})
-
 export const Market = asyncComponent({
   moduleName: 'Market',
   loader: () => import(/* webpackChunkName: 'market' */ 'modules/market/containers/market-view')
@@ -83,11 +77,5 @@ export const CreateMarket = asyncComponent({
 export const Reporting = asyncComponent({
   moduleName: 'Reporting',
   loader: () => import(/* webpackChunkName: 'reporting' */ 'modules/reporting/components/reporting-view/reporting-view')
-    .then(module => module.default)
-})
-
-export const StyleSandbox = asyncComponent({
-  moduleName: 'StyleSandbox',
-  loader: () => import(/* webpackChunkName: 'style-sandbox' */ 'modules/style-sandbox/components/style-sandbox/style-sandbox')
     .then(module => module.default)
 })
