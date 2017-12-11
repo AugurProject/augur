@@ -1,31 +1,6 @@
-#!/usr/bin/env node
-/**
- * Create a handful of canned markets for us to test with.
- */
-
 "use strict";
 
-var async = require("async");
-var BigNumber = require("bignumber.js");
-var chalk = require("chalk");
-var immutableDelete = require("immutable-delete");
-var speedomatic = require("speedomatic");
-var approveAugurEternalApprovalValue = require("./approve-augur-eternal-approval-value");
-var Augur = require("../src");
-var convertDecimalToFixedPoint = require("../src/utils/convert-decimal-to-fixed-point");
-var constants = require("../src/constants");
-
-var augur = new Augur();
-
-var DEBUG = true;
-
-augur.rpc.setDebugOptions({ connect: true, broadcast: false, tx: false });
-
-var ethereumNode = {
-  http: "http://127.0.0.1:8545",
-  ws: "ws://127.0.0.1:8546",
-};
-var augurNode = "ws://127.0.0.1:9001";
+var binaryMarketOrderBook = require("./binary-order-book-data");
 
 var closingBell = new Date();
 closingBell.setHours(20, 0, 0, 0);
@@ -34,24 +9,7 @@ midnightTomorrow.setDate(midnightTomorrow.getDate() + 1);
 midnightTomorrow.setHours(0, 0, 0, 0);
 var today = new Date();
 
-var binaryMarketOrderBook = {
-  buy: {
-    "0": [
-      { shares: "0.1", price: "0.2" },
-      { shares: "0.2", price: "0.18" },
-      { shares: "0.3", price: "0.15" },
-    ],
-  },
-  sell: {
-    "0": [
-      { shares: "0.15", price: "0.23" },
-      { shares: "0.1", price: "0.26" },
-      { shares: "0.3", price: "0.29" },
-    ],
-  },
-};
-
-var cannedMarkets = [{
+module.exports = [{
   marketType: "binary",
   _description: "Will SpaceX successfully complete a manned flight to the International Space Station by the end of 2018?",
   _endTime: parseInt(new Date("1/1/2019").getTime() / 1000, 10),
@@ -576,119 +534,3 @@ var cannedMarkets = [{
     },
   },
 }];
-
-function createOrder(marketID, outcome, numOutcomes, maxPrice, minPrice, numTicks, orderType, order, callback) {
-  var normalizedPrice = augur.trading.normalizePrice({ price: order.price, maxPrice: maxPrice, minPrice: minPrice });
-  var tickSize = (new BigNumber(maxPrice, 10).minus(new BigNumber(minPrice, 10))).dividedBy(new BigNumber(numTicks, 10)).toFixed();
-  var bnOnChainShares = new BigNumber(convertDecimalToFixedPoint(order.shares, speedomatic.fix(tickSize, "string")), 16);
-  var bnPrice = new BigNumber(convertDecimalToFixedPoint(normalizedPrice, numTicks), 16);
-  var orderTypeCode, bnCost;
-  if (orderType === "buy") {
-    orderTypeCode = 0;
-    bnCost = bnOnChainShares.times(bnPrice);
-  } else {
-    orderTypeCode = 1;
-    bnCost = bnOnChainShares.times(new BigNumber(numTicks, 10).minus(bnPrice));
-  }
-  if (DEBUG) console.log("cost:", speedomatic.unfix(bnCost, "string"));
-  var params = {
-    tx: { value: "0x" + bnCost.toString(16), gas: constants.CREATE_ORDER_GAS },
-    _type: orderTypeCode,
-    _attoshares: "0x" + bnOnChainShares.toString(16),
-    _displayPrice: "0x" + bnPrice.toString(16),
-    _market: marketID,
-    _outcome: outcome,
-    _betterOrderId: 0,
-    _worseOrderId: 0,
-    _tradeGroupId: 0,
-    onSent: function (res) {
-      if (DEBUG) console.log("publicCreateOrder sent:", order, res.hash);
-    },
-    onSuccess: function (res) {
-      if (DEBUG) console.log("publicCreateOrder success:", order, res.callReturn);
-      callback(null);
-    },
-    onFailed: function (err) {
-      if (DEBUG) console.error("publicCreateOrder failed:", order);
-      callback(err);
-    },
-  };
-  if (DEBUG) console.log("createOrder params:", params);
-  augur.api.CreateOrder.publicCreateOrder(params);
-}
-
-function createOrderBook(marketID, numOutcomes, maxPrice, minPrice, numTicks, orderBook, callback) {
-  async.forEachOf(orderBook, function (orders, orderType, nextOrderType) {
-    if (DEBUG) console.log("orderType:", orderType);
-    async.forEachOf(orders, function (outcomeOrders, outcome, nextOutcome) {
-      if (DEBUG) console.log("outcome:", outcome);
-      async.each(outcomeOrders, function (order, nextOrder) {
-        createOrder(marketID, parseInt(outcome, 10), numOutcomes, maxPrice, minPrice, numTicks, orderType, order, nextOrder);
-      }, nextOutcome);
-    }, nextOrderType);
-  }, callback);
-}
-
-function createNewMarket(market, callback) {
-  var createMarket;
-  switch (market._extraInfo.marketType) {
-    case "categorical":
-      createMarket = augur.createMarket.createCategoricalMarket;
-      break;
-    case "scalar":
-      createMarket = augur.createMarket.createScalarMarket;
-      break;
-    case "binary":
-    default:
-      createMarket = augur.createMarket.createBinaryMarket;
-  }
-  var createMarketParams = Object.assign({}, immutableDelete(market, ["orderBook", "marketType"]), {
-    universe: augur.contracts.addresses[augur.rpc.getNetworkID()].Universe,
-    _feePerEthInWei: "0x123456",
-    _denominationToken: augur.contracts.addresses[augur.rpc.getNetworkID()].Cash,
-    _designatedReporterAddress: augur.rpc.getCoinbase(),
-    onSent: function (res) {
-      if (DEBUG) console.log("createMarket sent:", res.hash);
-    },
-    onSuccess: function (res) {
-      if (DEBUG) console.log("createMarket success:", res.callReturn);
-      callback(null, res.callReturn);
-    },
-    onFailed: function (err) {
-      if (DEBUG) console.error(chalk.red.bold("createMarket failed:"), err);
-      callback(err);
-    },
-  });
-  if (DEBUG) console.log("createMarket params:", createMarketParams);
-  createMarket(createMarketParams);
-}
-
-augur.connect({ ethereumNode: ethereumNode, augurNode: augurNode }, function (err) {
-  if (err) return console.error(err);
-  approveAugurEternalApprovalValue(augur, augur.rpc.getCoinbase(), function (err) {
-    if (err) return console.error(err);
-    async.eachSeries(cannedMarkets, function (market, nextMarket) {
-      createNewMarket(market, function (err, marketID) {
-        if (err) return nextMarket(err);
-        console.log(chalk.green(marketID), chalk.cyan.dim(market._description));
-        var minPrice, maxPrice, numTicks;
-        if (market.marketType === "scalar") {
-          minPrice = market._minPrice;
-          maxPrice = market._maxPrice;
-          numTicks = new BigNumber(maxPrice, 10).minus(new BigNumber(minPrice, 10)).dividedBy(market.tickSize || constants.DEFAULT_SCALAR_TICK_SIZE).toNumber();
-        } else {
-          minPrice = "0";
-          maxPrice = "1";
-          numTicks = constants.DEFAULT_NUM_TICKS[market._numOutcomes || 2];
-        }
-        createOrderBook(marketID, market._numOutcomes, maxPrice, minPrice, numTicks, market.orderBook, function (err) {
-          if (err) return nextMarket(err);
-          nextMarket();
-        });
-      });
-    }, function (err) {
-      if (err) console.error("canned market creation failed:", err);
-      process.exit();
-    });
-  });
-});

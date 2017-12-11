@@ -1,8 +1,8 @@
 "use strict";
 
 var BigNumber = require("bignumber.js");
-var noop = require("../src/utils/noop");
-var constants = require("../src/constants");
+var noop = require("../../src/utils/noop");
+var constants = require("../../src/constants");
 
 function approveAugurEternalApprovalValue(augur, address, callback) {
   var augurContract = augur.contracts.addresses[augur.rpc.getNetworkID()].Augur;

@@ -5,21 +5,13 @@
 var async = require("async");
 var chalk = require("chalk");
 var approveAugurEternalApprovalValue = require("./approve-augur-eternal-approval-value");
-var Augur = require("../src");
-var noop = require("../src/utils/noop");
-var constants = require("../src/constants");
+var Augur = require("../../src");
+var noop = require("../../src/utils/noop");
+var constants = require("../../src/constants");
+var connectionEndpoints = require("./connection-endpoints");
+var debugOptions = require("./debug-options");
 
-var augur = new Augur();
-
-augur.rpc.setDebugOptions({ connect: true, broadcast: false, tx: false });
-
-var ethereumNode = {
-  http: "http://127.0.0.1:8545",
-  ws: "ws://127.0.0.1:8546",
-};
-var augurNode = "ws://127.0.0.1:9001";
-
-function cancelOrder(orderID, orderType, marketID, outcome, callback) {
+function cancelOrder(augur, orderID, orderType, marketID, outcome, callback) {
   augur.api.CancelOrder.cancelOrder({
     tx: { gas: constants.CANCEL_ORDER_GAS },
     _orderId: orderID,
@@ -39,7 +31,7 @@ function cancelOrder(orderID, orderType, marketID, outcome, callback) {
   });
 }
 
-function cancelAllOrders(creator, universe, callback) {
+function cancelAllOrders(augur, creator, universe, callback) {
   console.log("Canceling orders for", creator, "in universe", universe);
   augur.trading.getOrders({ creator: creator, universe: universe }, function (err, orders) {
     if (err) return callback(err);
@@ -47,7 +39,7 @@ function cancelAllOrders(creator, universe, callback) {
       async.forEachOf(ordersInMarket, function (ordersInOutcome, outcome, nextOutcome) {
         async.forEachOf(ordersInOutcome, function (buyOrSellOrders, orderType, nextOrderType) {
           async.each(Object.keys(buyOrSellOrders), function (orderID, nextOrder) {
-            cancelOrder(orderID, orderType, marketID, outcome, nextOrder);
+            cancelOrder(augur, orderID, orderType, marketID, outcome, nextOrder);
           }, nextOrderType);
         }, nextOutcome);
       }, nextMarket);
@@ -55,13 +47,17 @@ function cancelAllOrders(creator, universe, callback) {
   });
 }
 
-augur.connect({ ethereumNode: ethereumNode, augurNode: augurNode }, function (err) {
+var augur = new Augur();
+
+augur.rpc.setDebugOptions(debugOptions);
+
+augur.connect(connectionEndpoints, function (err) {
   if (err) return console.error(err);
   var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
   var creatorAddress = augur.rpc.getCoinbase();
   approveAugurEternalApprovalValue(augur, creatorAddress, function (err) {
     if (err) return console.error(err);
-    cancelAllOrders(creatorAddress, universe, function (err) {
+    cancelAllOrders(augur, creatorAddress, universe, function (err) {
       if (err) console.error(err);
       process.exit();
     });
