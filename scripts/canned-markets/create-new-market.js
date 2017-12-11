@@ -2,7 +2,7 @@
 
 var chalk = require("chalk");
 var immutableDelete = require("immutable-delete");
-var DEBUG = require("./debug-options").cannedMarkets;
+var DEBUG = require("../debug-options").cannedMarkets;
 
 function createNewMarket(augur, market, callback) {
   var createMarket;

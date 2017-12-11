@@ -8,8 +8,8 @@ var approveAugurEternalApprovalValue = require("./approve-augur-eternal-approval
 var Augur = require("../../src");
 var noop = require("../../src/utils/noop");
 var constants = require("../../src/constants");
-var connectionEndpoints = require("./connection-endpoints");
-var debugOptions = require("./debug-options");
+var connectionEndpoints = require("../connection-endpoints");
+var debugOptions = require("../debug-options");
 
 function cancelOrder(augur, orderID, orderType, marketID, outcome, callback) {
   augur.api.CancelOrder.cancelOrder({

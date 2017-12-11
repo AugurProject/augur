@@ -5,7 +5,7 @@ var BigNumber = require("bignumber.js");
 var speedomatic = require("speedomatic");
 var convertDecimalToFixedPoint = require("../../src/utils/convert-decimal-to-fixed-point");
 var constants = require("../../src/constants");
-var DEBUG = require("./debug-options").cannedMarkets;
+var DEBUG = require("../debug-options").cannedMarkets;
 
 function createOrder(augur, marketID, outcome, numOutcomes, maxPrice, minPrice, numTicks, orderType, order, callback) {
   var normalizedPrice = augur.trading.normalizePrice({ price: order.price, maxPrice: maxPrice, minPrice: minPrice });

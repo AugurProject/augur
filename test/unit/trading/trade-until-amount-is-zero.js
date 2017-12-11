@@ -102,7 +102,7 @@ describe("trading/trade-until-amount-is-zero", function () {
     mock: {
       getTradeAmountRemaining: function (p, callback) {
         if (p.transactionHash === "TRANSACTION_HASH_1") {
-          callback(null, "3");
+          callback(null, "300000000000000");
         } else {
           callback(null, "0");
         }

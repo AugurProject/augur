@@ -8,11 +8,12 @@
 var async = require("async");
 var chalk = require("chalk");
 var Augur = require("../../src");
+var constants = require("../../src/constants");
 var approveAugurEternalApprovalValue = require("./approve-augur-eternal-approval-value");
 var createNewMarket = require("./create-new-market");
 var cannedMarketsData = require("./markets-data");
-var connectionEndpoints = require("./connection-endpoints");
-var debugOptions = require("./debug-options");
+var connectionEndpoints = require("../connection-endpoints");
+var debugOptions = require("../debug-options");
 
 var augur = new Augur();
 
@@ -22,7 +23,7 @@ augur.connect(connectionEndpoints, function (err) {
   if (err) return console.error(err);
   approveAugurEternalApprovalValue(augur, augur.rpc.getCoinbase(), function (err) {
     if (err) return console.error(err);
-    async.eachSeries(cannedMarketsData, function (market, nextMarket) {
+    async.eachLimit(cannedMarketsData, constants.PARALLEL_LIMIT, function (market, nextMarket) {
       createNewMarket(augur, market, function (err, marketID) {
         if (err) return nextMarket(err);
         console.log(chalk.green(marketID), chalk.cyan.dim(market._description));

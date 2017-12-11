@@ -17,6 +17,7 @@ function calculateTotalFill(numShares, numTokens, priceNumTicksRepresentation) {
  */
 function getTradeAmountRemaining(p, callback) {
   var tradeOnChainAmountRemaining = new BigNumber(p.startingOnChainAmount, 16);
+  // console.log("remaining:", tradeOnChainAmountRemaining.toFixed());
   ethrpc.getTransactionReceipt(p.transactionHash, function (transactionReceipt) {
     if (!transactionReceipt || transactionReceipt.error || !Array.isArray(transactionReceipt.logs) || !transactionReceipt.logs.length) {
       return callback("logs not found");
@@ -27,7 +28,9 @@ function getTradeAmountRemaining(p, callback) {
       if (logs[i].topics[0] === orderFilledEventSignature) {
         var orderFilledLog = parseLogMessage("Augur", "OrderFilled", logs[i], eventsAbi.Augur.OrderFilled.inputs);
         var totalFill = calculateTotalFill(orderFilledLog.numCreatorShares, orderFilledLog.numCreatorTokens, p.priceNumTicksRepresentation);
+        // console.log("fill:", totalFill.toFixed());
         tradeOnChainAmountRemaining = tradeOnChainAmountRemaining.minus(totalFill);
+        // console.log("remaining:", tradeOnChainAmountRemaining.toFixed());
       }
     }
     callback(null, tradeOnChainAmountRemaining.toFixed());

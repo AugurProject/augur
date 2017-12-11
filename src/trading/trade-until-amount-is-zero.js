@@ -35,7 +35,7 @@ function tradeUntilAmountIsZero(p) {
   var cost = new BigNumber(onChainAmount, 16).times(adjustedPrice);
   if (cost.lt(constants.PRECISION.zero)) return p.onSuccess(null);
   console.log("cost:", speedomatic.unfix(cost, "string"), "ether");
-  var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks"]), {
+  var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "tickSize"]), {
     tx: { value: speedomatic.hex(cost), gas: constants.TRADE_GAS },
     _fxpAmount: onChainAmount,
     _price: priceNumTicksRepresentation,
@@ -46,14 +46,14 @@ function tradeUntilAmountIsZero(p) {
         priceNumTicksRepresentation: priceNumTicksRepresentation,
       }, function (err, tradeOnChainAmountRemaining) {
         if (err) return p.onFailed(err);
-        console.log("starting amount:", p._fxpAmount);
-        console.log(convertFixedPointToDecimal(tradeOnChainAmountRemaining, speedomatic.fix(p.tickSize, "string")));
+        console.log("starting amount: ", p._fxpAmount);
+        console.log("amount remaining:", convertFixedPointToDecimal(tradeOnChainAmountRemaining, speedomatic.fix(p.tickSize, "string")));
         if (new BigNumber(tradeOnChainAmountRemaining, 10).eq(new BigNumber(onChainAmount, 16))) {
           if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining);
           return p.onFailed("Trade completed but amount of trade unchanged");
         }
         tradeUntilAmountIsZero(assign({}, p, {
-          _fxpAmount: tradeOnChainAmountRemaining,
+          _fxpAmount: convertFixedPointToDecimal(tradeOnChainAmountRemaining, speedomatic.fix(p.tickSize, "string")),
           onSent: noop, // so that p.onSent only fires when the first transaction is sent
         }));
       });

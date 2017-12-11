@@ -8,8 +8,8 @@ var Augur = require("../../src");
 var approveAugurEternalApprovalValue = require("./approve-augur-eternal-approval-value");
 var createOrderBook = require("./create-order-book");
 var cannedMarketsData = require("./markets-data");
-var connectionEndpoints = require("./connection-endpoints");
-var debugOptions = require("./debug-options");
+var connectionEndpoints = require("../connection-endpoints");
+var debugOptions = require("../debug-options");
 
 var augur = new Augur();
 

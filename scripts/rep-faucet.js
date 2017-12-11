@@ -3,8 +3,8 @@
 var BigNumber = require("bignumber.js");
 var speedomatic = require("speedomatic");
 var Augur = require("../src");
-var connectionEndpoints = require("./canned-markets/connection-endpoints");
-var debugOptions = require("./canned-markets/debug-options");
+var connectionEndpoints = require("./connection-endpoints");
+var debugOptions = require("./debug-options");
 
 function faucetInAndMigrate(augur, universe, callback) {
   augur.api.LegacyReputationToken.faucet({

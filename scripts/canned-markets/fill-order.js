@@ -5,8 +5,8 @@
 var async = require("async");
 var Augur = require("../../src");
 var approveAugurEternalApprovalValue = require("./approve-augur-eternal-approval-value");
-var connectionEndpoints = require("./connection-endpoints");
-var debugOptions = require("./debug-options");
+var connectionEndpoints = require("../connection-endpoints");
+var debugOptions = require("../debug-options");
 var DEBUG = debugOptions.cannedMarkets;
 
 var outcomeToTrade = 0;
@@ -20,8 +20,9 @@ function getOrderToFill(augur, marketID, outcomeToTrade, orderType, fillerAddres
     }
     var orders = orderBook[marketID][outcomeToTrade][orderType];
     var orderIDToFill = Object.keys(orders).find(function (orderID) {
-      return orders[orderID].orderState !== "CANCELED" && orders[orderID].creator !== fillerAddress;
+      return orders[orderID].orderState !== "CANCELED" && orders[orderID].owner !== fillerAddress;
     });
+    if (orderIDToFill == null) return callback(null);
     if (DEBUG) console.log("orderToFill:", orderType, orderIDToFill, orders[orderIDToFill]);
     callback(null, orders[orderIDToFill]);
   });
@@ -35,10 +36,10 @@ function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade
       if (err) return callback(err);
       if (!marketsInfo || !Array.isArray(marketsInfo) || !marketsInfo.length) return callback(marketsInfo);
       async.eachSeries(marketsInfo, function (marketInfo, nextMarket) {
-        if (DEBUG) console.log("marketInfo:", marketInfo);
         getOrderToFill(augur, marketInfo.id, outcomeToTrade, orderType, fillerAddress, function (err, orderToFill) {
           if (err) return callback(err);
-          if (orderToFill === null) return nextMarket();
+          if (orderToFill == null) return nextMarket();
+          console.log("filling order:", orderType, orderToFill);
           augur.trading.tradeUntilAmountIsZero({
             _fxpAmount: sharesToTrade,
             _price: augur.trading.normalizePrice({
@@ -55,7 +56,7 @@ function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade
             doNotCreateOrders: true,
             onSent: function () {},
             onSuccess: function (tradeAmountRemaining) {
-              console.log("Trade completed,", tradeAmountRemaining, "shares remaining");
+              console.log("Trade completed,", orderType, tradeAmountRemaining, "shares remaining");
               nextMarket(true);
             },
             onFailed: nextMarket,
@@ -82,13 +83,13 @@ augur.connect(connectionEndpoints, function (err) {
     async.parallel([
       function (next) {
         fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade, "sell", function (err) {
-          if (err) console.error("fill ask order failed:", err);
+          if (err) console.error("fill sell order failed:", err);
           next();
         });
       },
       function (next) {
         fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade, "buy", function (err) {
-          if (err) console.error("fill bid order failed:", err);
+          if (err) console.error("fill buy order failed:", err);
           next();
         });
       },
