@@ -27,7 +27,7 @@ augur.connect(connectionEndpoints, function (err) {
         async.eachSeries(marketsInfo, function (marketInfo, nextMarket) {
           console.log(chalk.green(marketInfo.id), chalk.cyan.dim(marketInfo.description));
           var cannedMarket = cannedMarketsData.find(function (cannedMarketData) {
-            return cannedMarketData._description === marketInfo.description && cannedMarketData.marketType === marketInfo.type;
+            return cannedMarketData._description === marketInfo.description && cannedMarketData.marketType === marketInfo.marketType;
           });
           if (!cannedMarket || !cannedMarket.orderBook) return nextMarket();
           createOrderBook(augur, marketInfo.id, marketInfo.numOutcomes, marketInfo.maxPrice, marketInfo.minPrice, marketInfo.numTicks, cannedMarket.orderBook, function (err) {
