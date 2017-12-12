@@ -7,7 +7,7 @@ const colors = require('./common/colors');
 const BUILD_DIRECTORY = path.resolve(__dirname, '../build');
 const NODE_MODULES = path.resolve(__dirname, '../node_modules');
 
-const FLAGS = process.argv.filter(arg => arg.indexOf('--') !== -1);
+const FLAGS = JSON.parse(process.env.npm_config_argv).original.filter(arg => arg.indexOf('--') !== -1);
 
 process.env.NODE_ENV = process.env.BABEL_ENV = FLAGS.indexOf('--dev') !== -1 ? 'development' : 'production';
 process.env.DEBUG_BUILD = FLAGS.indexOf('--dev') !== -1 ? true : false;

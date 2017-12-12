@@ -9,7 +9,7 @@ const testPath = path.resolve(__dirname, '../test');
 
 process.env.FORCE_COLOR = true;
 
-const FLAGS = process.argv.filter(arg => arg.indexOf('--') !== -1);
+const FLAGS = JSON.parse(process.env.npm_config_argv).original.filter(arg => arg.indexOf('--') !== -1);
 
 const shouldFix = FLAGS.indexOf('--fix') !== -1 ? true : false;
 
