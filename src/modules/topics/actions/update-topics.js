@@ -1,6 +1,3 @@
-import { augur } from 'services/augurjs'
-import { updateMarketTopic } from 'modules/markets/actions/update-markets-data'
-
 export const UPDATE_TOPICS = 'UPDATE_TOPICS'
 export const CLEAR_TOPICS = 'CLEAR_TOPICS'
 export const UPDATE_TOPIC_POPULARITY = 'UPDATE_TOPIC_POPULARITY'
@@ -11,15 +8,9 @@ export const updateTopicPopularity = (topic, amount) => ({ type: UPDATE_TOPIC_PO
 
 export const updateMarketTopicPopularity = (marketID, amount) => (dispatch, getState) => {
   const market = getState().marketsData[marketID]
-  if (market && market.topic !== undefined) {
-    if (market.topic !== null) dispatch(updateTopicPopularity(market.topic, Number(amount)))
+  if (market && market.category !== undefined) {
+    if (market.category !== null) dispatch(updateTopicPopularity(market.category, Number(amount)))
   } else {
-    augur.api.Markets.returnTags({ market: marketID }, (err, tags) => {
-      if (tags && tags.constructor === Array && tags.length && tags[0] !== null) {
-        const topic = augur.format.tag.decodeTag(tags[0])
-        dispatch(updateTopicPopularity(topic, Number(amount)))
-        dispatch(updateMarketTopic(marketID, topic))
-      }
-    })
+    dispatch(updateTopicPopularity(market.category, Number(amount)))
   }
 }
