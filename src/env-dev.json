@@ -1,9 +1,9 @@
 {
-  "gethHttpURL": "http://127.0.0.1:8545",
-  "gethWebsocketsURL": "ws://127.0.0.1:8546",
-  "augurNodeUrl": "ws://127.0.0.1:9001",
+  "gethHttpURL": "http://rinkeby.augur.net:8545",
+  "gethWebsocketsURL": "ws://rinkeby.augur.net:8546",
+  "augurNodeUrl": "ws://rinkeby.augur.nodes.augur.net:9001",
   "networkID": null,
-  "autoLogin": true,
+  "autoLogin": false,
   "universe": null,
   "debug": {
     "connect": true,

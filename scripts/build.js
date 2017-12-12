@@ -7,17 +7,15 @@ const colors = require('./common/colors');
 const BUILD_DIRECTORY = path.resolve(__dirname, '../build');
 const NODE_MODULES = path.resolve(__dirname, '../node_modules');
 
-if(process.argv[2] === 'dev' || process.argv[2] === 'development') {
-  process.env.NODE_ENV = process.env.BABEL_ENV = 'development';
-  process.env.DEBUG_BUILD = true;
-} else {
-  process.env.NODE_ENV = process.env.BABEL_ENV = 'production';
-}
+const FLAGS = process.argv.filter(arg => arg.indexOf('--') !== -1);
+
+process.env.NODE_ENV = process.env.BABEL_ENV = FLAGS.indexOf('--dev') !== -1 ? 'development' : 'production';
+process.env.DEBUG_BUILD = FLAGS.indexOf('--dev') !== -1 ? true : false;
 
 process.env.FORCE_COLOR = true;
 
 shell.echo(`
-${colors.title(`== Building Augur${process.env.NODE_ENV === 'development' ? ' -- Development' : ''} ==`)}
+${colors.title(`== Building Augur${process.env.NODE_ENV === 'development' ? ' -- Debug Mode' : ''} ==`)}
 
 ${colors.notice('NOTE')}	${colors.dim('| This will take some time.')}
 `);
