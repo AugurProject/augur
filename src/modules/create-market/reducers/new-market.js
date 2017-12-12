@@ -22,6 +22,8 @@ const DEFAULT_STATE = {
       type: false,
     },
     {
+      designatedReporterType: false,
+      designatedReporterAddress: false,
       expirySourceType: false,
       endDate: false,
       hour: false,
@@ -41,6 +43,8 @@ const DEFAULT_STATE = {
   description: '',
   expirySourceType: '',
   expirySource: '',
+  designatedReporterType: '',
+  designatedReporterAddress: '',
   endDate: {},
   hour: '',
   minute: '',
