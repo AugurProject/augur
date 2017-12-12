@@ -307,17 +307,16 @@ export const Alert = (
 
 export const ExclamationCircle = (
   <svg viewBox="0 0 16 16">
-      <defs></defs>
-      <g id="Updated-Screens" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-          <g id="New-Market_11" transform="translate(-682.000000, -464.000000)">
-              <g id="Icon/Error" transform="translate(682.000000, 464.000000)">
-                  <circle id="Oval" stroke="#FF0068" stroke-width="1" cx="8" cy="8" r="7"></circle>
-                  <text id="!" transform="translate(8.000000, 7.500000) scale(-1, 1) translate(-8.000000, -7.500000) " font-family=".AppleSystemUIFont" font-size="10.5" font-weight="normal" letter-spacing="0.262500018" fill="#FF0068">
-                      <tspan x="6.1" y="11">!</tspan>
-                  </text>
-              </g>
-          </g>
+    <g id="Updated-Screens" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g id="New-Market_11" transform="translate(-682.000000, -464.000000)">
+        <g id="Icon/Error" transform="translate(682.000000, 464.000000)">
+          <circle id="Oval" stroke="#FF0068" strokeWidth="1" cx="8" cy="8" r="7" />
+          <text id="!" transform="translate(8.000000, 7.500000) scale(-1, 1) translate(-8.000000, -7.500000) " fontFamily=".AppleSystemUIFont" fontSize="10.5" fontWeight="normal" letterSpacing="0.262500018" fill="#FF0068">
+            <tspan x="6.1" y="11">!</tspan>
+          </text>
+        </g>
       </g>
+    </g>
   </svg>
 )
 
