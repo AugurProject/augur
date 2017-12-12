@@ -2,20 +2,20 @@
 
 var chalk = require("chalk");
 var immutableDelete = require("immutable-delete");
-var DEBUG = require("../debug-options").cannedMarkets;
+var debugOptions = require("../../debug-options");
 
-function createNewMarket(augur, market, callback) {
-  var createMarket;
+function createMarket(augur, market, callback) {
+  var createMarketOfType;
   switch (market._extraInfo.marketType) {
     case "categorical":
-      createMarket = augur.createMarket.createCategoricalMarket;
+      createMarketOfType = augur.createMarket.createCategoricalMarket;
       break;
     case "scalar":
-      createMarket = augur.createMarket.createScalarMarket;
+      createMarketOfType = augur.createMarket.createScalarMarket;
       break;
     case "binary":
     default:
-      createMarket = augur.createMarket.createBinaryMarket;
+      createMarketOfType = augur.createMarket.createBinaryMarket;
   }
   var createMarketParams = Object.assign({}, immutableDelete(market, ["orderBook", "marketType"]), {
     universe: augur.contracts.addresses[augur.rpc.getNetworkID()].Universe,
@@ -23,19 +23,19 @@ function createNewMarket(augur, market, callback) {
     _denominationToken: augur.contracts.addresses[augur.rpc.getNetworkID()].Cash,
     _designatedReporterAddress: augur.rpc.getCoinbase(),
     onSent: function (res) {
-      if (DEBUG) console.log("createMarket sent:", res.hash);
+      if (debugOptions.cannedMarkets) console.log("createMarket sent:", res.hash);
     },
     onSuccess: function (res) {
-      if (DEBUG) console.log("createMarket success:", res.callReturn);
+      if (debugOptions.cannedMarkets) console.log("createMarket success:", res.callReturn);
       callback(null, res.callReturn);
     },
     onFailed: function (err) {
-      if (DEBUG) console.error(chalk.red.bold("createMarket failed:"), err);
+      if (debugOptions.cannedMarkets) console.error(chalk.red.bold("createMarket failed:"), err);
       callback(err);
     },
   });
-  if (DEBUG) console.log("createMarket params:", createMarketParams);
-  createMarket(createMarketParams);
+  if (debugOptions.cannedMarkets) console.log("createMarket params:", createMarketParams);
+  createMarketOfType(createMarketParams);
 }
 
-module.exports = createNewMarket;
+module.exports = createMarket;

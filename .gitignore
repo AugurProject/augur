@@ -12,9 +12,5 @@ data
 *.dat
 *.db
 *.csv
-lib
-link
-qtest.js
-nuke
 .idea/
 yarn.lock

@@ -1,6 +1,6 @@
 "use strict";
 
-var binaryMarketOrderBook = require("./binary-order-book-data");
+var binaryOrderBook = require("./binary-order-book");
 
 var closingBell = new Date();
 closingBell.setHours(20, 0, 0, 0);
@@ -19,7 +19,7 @@ module.exports = [{
     tags: ["SpaceX", "spaceflight"],
     longDescription: "SpaceX hit a big milestone on Friday with NASA confirming on Friday that the Elon Musk-led space cargo business will launch astronauts to the International Space Station by 2017.\n\nLast year, the space agency tentatively awarded a $2.6 billion contract to SpaceX to carry crew to space. NASA’s announcement on Friday formalizes the deal, which involves SpaceX loading its Crew Dragon spacecraft with astronauts and sending them beyond the stratosphere.",
   },
-  orderBook: binaryMarketOrderBook,
+  orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
   _description: "Will California secede from the United States before January 1, 2020?",
@@ -30,7 +30,7 @@ module.exports = [{
     tags: ["California", "Calexit"],
     longDescription: "In the Spring of 2019, Californians will go to the polls in a historic vote to decide by referendum if California should exit the Union, a #Calexit vote. http://www.yescalifornia.org",
   },
-  orderBook: binaryMarketOrderBook,
+  orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
   _description: "Will the Dow Jones Industrial Average close at a higher price on " + today.toLocaleDateString() + " than it closed at the previous day?",
@@ -41,7 +41,7 @@ module.exports = [{
     tags: ["stocks", "Dow Jones"],
     longDescription: "The Daily Dow market lives again! https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average",
   },
-  orderBook: binaryMarketOrderBook,
+  orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
   _description: "Will Augur's live release happen by the end of December, 2017?",
@@ -52,7 +52,7 @@ module.exports = [{
     tags: ["release date", "Ethereum"],
     longDescription: "https://www.augur.net",
   },
-  orderBook: binaryMarketOrderBook,
+  orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
   _description: "Will Donald Trump be impeached and removed from the Presidency within two years of his inauguration?",
@@ -63,7 +63,7 @@ module.exports = [{
     tags: ["Trump", "impeachment"],
     longDescription: "",
   },
-  orderBook: binaryMarketOrderBook,
+  orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
   _description: "Will Jair Messias Bolsonaro be elected the president of Brazil in 2018?",
@@ -74,7 +74,7 @@ module.exports = [{
     tags: ["elections", "Brazil"],
     longDescription: "",
   },
-  orderBook: binaryMarketOrderBook,
+  orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
   _description: "Will REP tokens be worth more than 100 USD each any time on or before January 1, 2018 on CoinMarketCap?",
@@ -85,7 +85,7 @@ module.exports = [{
     tags: ["Augur", "Reputation"],
     longDescription: "https://www.reddit.com/r/reptrader",
   },
-  orderBook: binaryMarketOrderBook,
+  orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
   _description: "Will Ethereum trade at $400 or higher by midnight EST on November 30, 2018?",
@@ -96,7 +96,7 @@ module.exports = [{
     tags: ["trading", "Ethereum", "currencies"],
     longDescription: "http://coinmarketcap.com/currencies/ethereum",
   },
-  orderBook: binaryMarketOrderBook,
+  orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
   _description: "Will the Larsen B ice shelf collapse by November 1, 2018?",
@@ -106,7 +106,7 @@ module.exports = [{
     resolutionSource: "",
     tags: ["Antarctica", "warming"],
   },
-  orderBook: binaryMarketOrderBook,
+  orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
   _description: "Will the Golden State Warriors win the 2018 NBA Championship?",
@@ -117,7 +117,7 @@ module.exports = [{
     tags: ["basketball", "Warriors"],
     longDescription: "",
   },
-  orderBook: binaryMarketOrderBook,
+  orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
   _description: "Will antibiotics be outlawed for agricultural use in China by the end of 2020?",
@@ -127,7 +127,7 @@ module.exports = [{
     tags: ["antibiotics", "China"],
     longDescription: "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?",
   },
-  orderBook: binaryMarketOrderBook,
+  orderBook: binaryOrderBook,
 }, {
   marketType: "scalar",
   _description: "High temperature (in degrees Fahrenheit) on " + today.toLocaleDateString() + " at the San Francisco International Airport, as reported by Weather Underground",
