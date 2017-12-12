@@ -252,7 +252,7 @@ export interface UIOutcomeInfo {
 export interface UIMarketInfo {
   id: Address;
   universe: Address;
-  type: string;
+  marketType: string;
   numOutcomes: number;
   minPrice: string|number;
   maxPrice: string|number;
@@ -261,6 +261,7 @@ export interface UIMarketInfo {
   creationTime: number;
   creationBlock: number;
   creationFee: string|number;
+  settlementFee: string;
   reportingFeeRate: string|number;
   marketCreatorFeeRate: string|number;
   marketCreatorFeesCollected: string|number|null;
@@ -286,7 +287,8 @@ export interface UIMarketInfo {
 export type UIMarketsInfo = Array<UIMarketInfo|null>;
 
 // Does not extend BaseTransaction since UI is expecting "creationBlockNumber"
-export interface Order {
+export interface UIOrder {
+  orderID: Bytes32;
   transactionHash: Bytes32;
   logIndex: number;
   shareToken: Address;
@@ -300,6 +302,16 @@ export interface Order {
   fullPrecisionAmount: number|string;
   tokensEscrowed: number|string;
   sharesEscrowed: number|string;
+}
+
+export interface UIOrders {
+  [marketID: string]: {
+    [outcome: number]: {
+      [orderType: string]: {
+        [orderID: string]: UIOrder;
+      };
+    };
+  };
 }
 
 export interface OrdersRow extends BaseTransactionRow {

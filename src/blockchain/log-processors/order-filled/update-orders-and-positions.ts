@@ -4,6 +4,7 @@ import * as Knex from "knex";
 import { Address, Bytes32, AsyncCallback, ErrorCallback } from "../../../types";
 import { upsertPositionInMarket } from "./upsert-position-in-market";
 import { convertOnChainSharesToHumanReadableShares } from "../../../utils/convert-fixed-point-to-decimal";
+import { formatOrderAmount } from "../../../utils/format-order";
 
 interface OrderFilledOnContractData {
   amount: string;
@@ -19,8 +20,10 @@ export function updateOrdersAndPositions(db: Knex, augur: Augur, trx: Knex.Trans
   }, (err: Error|null, onContractData: OrderFilledOnContractData): void => {
     if (err) return callback(err);
     const { amount, creatorPositionInMarket, fillerPositionInMarket } = onContractData!;
-    const amountRemainingInOrder = convertOnChainSharesToHumanReadableShares(amount, tickSize);
-    const updateParams = amountRemainingInOrder === "0" ? { amount: amountRemainingInOrder, isRemoved: 1 } : { amount: amountRemainingInOrder };
+    const fullPrecisionAmountRemainingInOrder = convertOnChainSharesToHumanReadableShares(amount, tickSize);
+    const amountRemainingInOrder = formatOrderAmount(fullPrecisionAmountRemainingInOrder);
+    const updateAmountsParams = { fullPrecisionAmount: fullPrecisionAmountRemainingInOrder, amount: amountRemainingInOrder };
+    const updateParams = fullPrecisionAmountRemainingInOrder === "0" ? Object.assign({}, updateAmountsParams, { isRemoved: 1 }) : updateAmountsParams;
     db("orders").transacting(trx).where({ orderID }).update(updateParams).asCallback((err: Error|null): void => {
       if (err) return callback(err);
       parallel([
