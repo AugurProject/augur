@@ -10,6 +10,7 @@ import speedomatic from 'speedomatic'
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import { CATEGORICAL_OUTCOMES_MIN_NUM, CATEGORICAL_OUTCOMES_MAX_NUM, CATEGORICAL_OUTCOME_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints'
 
+import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons/icons'
 import Styles from 'modules/create-market/components/create-market-form-outcome/create-market-form-outcome.styles'
 import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'
 
@@ -222,7 +223,7 @@ export default class CreateMarketOutcome extends Component {
             </label>
             { p.newMarket.validations[p.newMarket.currentStep].outcomes.length &&
               <span className={StylesForm.CreateMarketForm__error}>
-                { p.newMarket.validations[p.newMarket.currentStep].outcomes }
+                {InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].outcomes }
               </span>
             }
             <div className={Styles.CreateMarketOutcome__categorical}>
@@ -259,12 +260,12 @@ export default class CreateMarketOutcome extends Component {
             </label>
             { p.newMarket.validations[p.newMarket.currentStep].scalarSmallNum.length &&
               <span className={StylesForm.CreateMarketForm__error}>
-                { p.newMarket.validations[p.newMarket.currentStep].scalarSmallNum }
+                {InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].scalarSmallNum }
               </span>
             }
             { p.newMarket.validations[p.newMarket.currentStep].scalarBigNum.length &&
               <span className={StylesForm['CreateMarketForm__error--field-50']}>
-                { p.newMarket.validations[p.newMarket.currentStep].scalarBigNum }
+                {InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].scalarBigNum }
               </span>
             }
             <div className={Styles.CreateMarketOutcome__scalar}>
