@@ -15,6 +15,7 @@ export default class MarketOutcomeDepth extends Component {
     orderBookMin: PropTypes.number.isRequired,
     orderBookMid: PropTypes.number.isRequired,
     orderBookMax: PropTypes.number.isRequired,
+    fixedPrecision: PropTypes.number.isRequired,
     hoveredPrice: PropTypes.any,
     updateHoveredPrice: PropTypes.func.isRequired
   }

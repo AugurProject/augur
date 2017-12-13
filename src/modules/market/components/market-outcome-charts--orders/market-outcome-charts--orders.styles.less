@@ -3,15 +3,22 @@
 .MarketOutcomeOrderBook {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
-.MarketOutcomeOrderBook__side {
+.MarketOutcomeOrderBook__Side {
   &:extend(.caps--small);
 
   flex: 1 1 auto;
   overflow-y: auto;
+}
 
-  span {
+.MarketOutcomeOrderBook__Row {
+  display: flex;
+  width: 100%;
 
+  & > span {
+    flex: 1 1 auto;
+    overflow: hidden;
   }
 }

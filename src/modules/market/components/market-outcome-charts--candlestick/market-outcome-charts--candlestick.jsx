@@ -12,6 +12,7 @@ import Styles from 'modules/market/components/market-outcome-charts--candlestick
 export default class MarketOutcomeCandlestick extends Component {
   static propTypes = {
     marketPriceHistory: PropTypes.array.isRequired,
+    fixedPrecision: PropTypes.number.isRequired,
     outcomeMin: PropTypes.number.isRequired,
     outcomeMax: PropTypes.number.isRequired,
     orderBookMid: PropTypes.number.isRequired,

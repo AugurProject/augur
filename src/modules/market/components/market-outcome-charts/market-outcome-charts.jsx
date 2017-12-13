@@ -68,6 +68,7 @@ export default class MarketOutcomeCharts extends Component {
     return (
       <section className={Styles.MarketOutcomeCharts}>
         <MarketOutcomeChartsHeader
+          selectedOutcome={p.selectedOutcome}
           updatePrecision={this.updatePrecision}
           hoveredPeriod={s.hoveredPeriod}
           fixedPrecision={s.fixedPrecision}
@@ -76,6 +77,7 @@ export default class MarketOutcomeCharts extends Component {
           <div className={Styles.MarketOutcomeCharts__Candlestick}>
             <MarketOutcomeCandlestick
               marketPriceHistory={p.marketPriceHistory}
+              fixedPrecision={s.fixedPrecision}
               outcomeMin={p.marketMin}
               orderBookMid={p.orderBookMid}
               outcomeMax={p.marketMax}
@@ -88,6 +90,7 @@ export default class MarketOutcomeCharts extends Component {
           </div>
           <div className={Styles.MarketOutcomeCharts__Depth}>
             <MarketOutcomeDepth
+            fixedPrecision={s.fixedPrecision}
               orderBookMin={p.orderBookMin}
               orderBookMid={p.orderBookMid}
               orderBookMax={p.orderBookMax}
@@ -98,6 +101,7 @@ export default class MarketOutcomeCharts extends Component {
           </div>
           <div className={Styles.MarketOutcomeCharts__Orders}>
             <MarketOutcomeOrderBook
+              fixedPrecision={s.fixedPrecision}
               orderBook={p.orderBook}
               hoveredPrice={s.hoveredPrice}
               updateHoveredPrice={this.updateHoveredPrice}

@@ -26,12 +26,16 @@ const MarketOutcomeChartsHeader = p => (
     <div
       className={Styles.MarketOutcomeChartsHeader__Depth}
     >
-      <MarketOutcomeChartHeaderDepth />
+      <MarketOutcomeChartHeaderDepth
+        fixedPrecision={p.fixedPrecision}
+      />
     </div>
     <div
       className={Styles.MarketOutcomeChartsHeader__Orders}
     >
-      <MarketOutcomeChartHeaderOrders />
+      <MarketOutcomeChartHeaderOrders
+        fixedPrecision={p.fixedPrecision}
+      />
     </div>
   </section>
 )

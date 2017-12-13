@@ -12,7 +12,8 @@ export default MarketOutcomeDepthHeader
 MarketOutcomeDepthHeader.propTypes = {
   side: PropTypes.string,
   quantity: PropTypes.number,
-  depth: PropTypes.number
+  depth: PropTypes.number,
+  fixedPrecision: PropTypes.number.isRequired
 }
 
 // <section className={Styles[`MarketOutcomeDepth__depth-hover-values`]}>

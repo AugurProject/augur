@@ -7,6 +7,7 @@ export default class MarketOutcomeOrderbook extends Component {
   static propTypes = {
     selectedOutcome: PropTypes.any,
     orderBook: PropTypes.object.isRequired,
+    fixedPrecision: PropTypes.number.isRequired,
     updateHoveredPrice: PropTypes.func.isRequired
   }
 
@@ -21,12 +22,12 @@ export default class MarketOutcomeOrderbook extends Component {
       <section className={Styles.MarketOutcomeOrderBook}>
         <div
           ref={(asks) => { this.asks = asks }}
-          className={Styles.MarketOutcomeOrderBook__side}
+          className={Styles.MarketOutcomeOrderBook__Side}
         >
           {(p.orderBook.asks || []).map(order => (
             <div
               key={order.cumulativeShares}
-              className={Styles.MarketOutcomeOrderBook__side}
+              className={Styles.MarketOutcomeOrderBook__Row}
               onMouseEnter={() => p.updateHoveredPrice(order.price)}
               onMouseLeave={() => p.updateHoveredPrice(null)}
             >
@@ -37,10 +38,11 @@ export default class MarketOutcomeOrderbook extends Component {
           ))}
         </div>
         <span>Price</span>
-        <div className={Styles.MarketOutcomeOrderBook__side} >
+        <div className={Styles.MarketOutcomeOrderBook__Side} >
           {(p.orderBook.bids || []).map(order => (
             <div
               key={order.cumulativeShares}
+              className={Styles.MarketOutcomeOrderBook__Row}
               onMouseEnter={() => p.updateHoveredPrice(order.price)}
               onMouseLeave={() => p.updateHoveredPrice(null)}
             >
