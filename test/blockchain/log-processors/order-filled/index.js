@@ -179,6 +179,7 @@ describe("blockchain/log-processors/order-filled", () => {
           numSharesAdjustedForUserIntention: 2,
           realizedProfitLoss: 0,
           unrealizedProfitLoss: 0,
+          averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
           positionID: 18,
@@ -189,6 +190,7 @@ describe("blockchain/log-processors/order-filled", () => {
           numSharesAdjustedForUserIntention: 0,
           realizedProfitLoss: 0,
           unrealizedProfitLoss: 0,
+          averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
           positionID: 19,
@@ -199,6 +201,7 @@ describe("blockchain/log-processors/order-filled", () => {
           numSharesAdjustedForUserIntention: 0,
           realizedProfitLoss: 0,
           unrealizedProfitLoss: 0,
+          averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
           positionID: 20,
@@ -209,6 +212,7 @@ describe("blockchain/log-processors/order-filled", () => {
           numSharesAdjustedForUserIntention: 0,
           realizedProfitLoss: 0,
           unrealizedProfitLoss: 0,
+          averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
           positionID: 21,
@@ -219,6 +223,7 @@ describe("blockchain/log-processors/order-filled", () => {
           numSharesAdjustedForUserIntention: 0,
           realizedProfitLoss: 0,
           unrealizedProfitLoss: 0,
+          averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
           positionID: 22,
@@ -229,6 +234,7 @@ describe("blockchain/log-processors/order-filled", () => {
           numSharesAdjustedForUserIntention: 0,
           realizedProfitLoss: 0,
           unrealizedProfitLoss: 0,
+          averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
           positionID: 23,
@@ -239,6 +245,7 @@ describe("blockchain/log-processors/order-filled", () => {
           numSharesAdjustedForUserIntention: 0,
           realizedProfitLoss: 0,
           unrealizedProfitLoss: 0,
+          averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
           positionID: 24,
@@ -249,6 +256,7 @@ describe("blockchain/log-processors/order-filled", () => {
           numSharesAdjustedForUserIntention: 0,
           realizedProfitLoss: 0,
           unrealizedProfitLoss: 0,
+          averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }]);
       },
@@ -301,6 +309,7 @@ describe("blockchain/log-processors/order-filled", () => {
           numSharesAdjustedForUserIntention: 0,
           realizedProfitLoss: 0,
           unrealizedProfitLoss: 0,
+          averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
           positionID: 18,
@@ -311,6 +320,7 @@ describe("blockchain/log-processors/order-filled", () => {
           numSharesAdjustedForUserIntention: 0,
           realizedProfitLoss: 0,
           unrealizedProfitLoss: 0,
+          averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
           positionID: 19,
@@ -321,6 +331,7 @@ describe("blockchain/log-processors/order-filled", () => {
           numSharesAdjustedForUserIntention: 0,
           realizedProfitLoss: 0,
           unrealizedProfitLoss: 0,
+          averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
           positionID: 20,
@@ -331,6 +342,7 @@ describe("blockchain/log-processors/order-filled", () => {
           numSharesAdjustedForUserIntention: 0,
           realizedProfitLoss: 0,
           unrealizedProfitLoss: 0,
+          averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
           positionID: 21,
@@ -341,6 +353,7 @@ describe("blockchain/log-processors/order-filled", () => {
           numSharesAdjustedForUserIntention: 0,
           realizedProfitLoss: 0,
           unrealizedProfitLoss: 0,
+          averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
           positionID: 22,
@@ -351,6 +364,7 @@ describe("blockchain/log-processors/order-filled", () => {
           numSharesAdjustedForUserIntention: 0,
           realizedProfitLoss: 0,
           unrealizedProfitLoss: 0,
+          averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
           positionID: 23,
@@ -361,6 +375,7 @@ describe("blockchain/log-processors/order-filled", () => {
           numSharesAdjustedForUserIntention: 0,
           realizedProfitLoss: 0,
           unrealizedProfitLoss: 0,
+          averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
           positionID: 24,
@@ -371,6 +386,7 @@ describe("blockchain/log-processors/order-filled", () => {
           numSharesAdjustedForUserIntention: 0,
           realizedProfitLoss: 0,
           unrealizedProfitLoss: 0,
+          averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }]);
       },
