@@ -9,9 +9,6 @@
   "typescript": {
     "definition": "definitions/index"
   },
-  "engines": {
-    "node": "~8"
-  },
   "directories": {
     "src": "src",
     "test": "test"
