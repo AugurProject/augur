@@ -36,7 +36,6 @@ export default class MarketOutcomeCharts extends Component {
   }
 
   updateHoveredPeriod(hoveredPeriod) {
-    console.log('hovered -- ', hoveredPeriod)
     this.setState({
       hoveredPeriod
     })
