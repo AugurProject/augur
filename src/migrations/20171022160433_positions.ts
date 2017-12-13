@@ -11,6 +11,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.specificType("numSharesAdjustedForUserIntention", "NUMERIC").defaultTo(0).nullable();
       table.specificType("realizedProfitLoss", "NUMERIC").defaultTo(0).nullable();
       table.specificType("unrealizedProfitLoss", "NUMERIC").defaultTo(0).nullable();
+      table.specificType("averagePrice", "NUMERIC").defaultTo(0).nullable();
       table.timestamp("lastUpdated").defaultTo(knex.fn.now()).notNullable();
     });
   });

@@ -37,6 +37,7 @@ describe("server/getters/get-user-trading-positions", () => {
         "numSharesAdjustedForUserIntention": 0.2,
         "realizedProfitLoss": 0,
         "unrealizedProfitLoss": 11,
+        "averagePrice": 0,
       }, {
         "marketID": "0x0000000000000000000000000000000000000001",
         "outcome": 1,
@@ -44,6 +45,7 @@ describe("server/getters/get-user-trading-positions", () => {
         "numSharesAdjustedForUserIntention": 0,
         "realizedProfitLoss": 0,
         "unrealizedProfitLoss": 0,
+        "averagePrice": 0,
       }, {
         "marketID": "0x0000000000000000000000000000000000000001",
         "outcome": 2,
@@ -51,6 +53,7 @@ describe("server/getters/get-user-trading-positions", () => {
         "numSharesAdjustedForUserIntention": 0,
         "realizedProfitLoss": 0,
         "unrealizedProfitLoss": 0,
+        "averagePrice": 0,
       }, {
         "marketID": "0x0000000000000000000000000000000000000001",
         "outcome": 3,
@@ -58,6 +61,7 @@ describe("server/getters/get-user-trading-positions", () => {
         "numSharesAdjustedForUserIntention": 0,
         "realizedProfitLoss": 0,
         "unrealizedProfitLoss": 0,
+        "averagePrice": 0,
       }, {
         "marketID": "0x0000000000000000000000000000000000000001",
         "outcome": 4,
@@ -65,6 +69,7 @@ describe("server/getters/get-user-trading-positions", () => {
         "numSharesAdjustedForUserIntention": 0,
         "realizedProfitLoss": 0,
         "unrealizedProfitLoss": 0,
+        "averagePrice": 0,
       }, {
         "marketID": "0x0000000000000000000000000000000000000001",
         "outcome": 5,
@@ -72,6 +77,7 @@ describe("server/getters/get-user-trading-positions", () => {
         "numSharesAdjustedForUserIntention": 0,
         "realizedProfitLoss": 0,
         "unrealizedProfitLoss": 0,
+        "averagePrice": 0,
       }, {
         "marketID": "0x0000000000000000000000000000000000000001",
         "outcome": 6,
@@ -79,6 +85,7 @@ describe("server/getters/get-user-trading-positions", () => {
         "numSharesAdjustedForUserIntention": 0,
         "realizedProfitLoss": 0,
         "unrealizedProfitLoss": 0,
+        "averagePrice": 0,
       }, {
         "marketID": "0x0000000000000000000000000000000000000001",
         "outcome": 7,
@@ -86,6 +93,7 @@ describe("server/getters/get-user-trading-positions", () => {
         "numSharesAdjustedForUserIntention": 0,
         "realizedProfitLoss": 0,
         "unrealizedProfitLoss": 0,
+        "averagePrice": 0,
       }]);
     },
   });
@@ -109,6 +117,7 @@ describe("server/getters/get-user-trading-positions", () => {
         "numSharesAdjustedForUserIntention": 0,
         "realizedProfitLoss": 0,
         "unrealizedProfitLoss": 0,
+        "averagePrice": 0,
       }]);
     },
   });
