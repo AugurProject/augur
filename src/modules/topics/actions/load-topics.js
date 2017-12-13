@@ -6,6 +6,7 @@ const loadTopics = (callback = logError) => (dispatch, getState) => {
   const { universe } = getState()
   if (!universe.id) return callback(null)
   augur.markets.getCategories({ universe: universe.id }, (err, topics) => {
+    console.log('tes it')
     if (err) return callback(err)
     if (topics == null) return callback(null)
     if (Object.keys(topics).length) {

@@ -59,6 +59,7 @@ if (module.hot) {
     [
       './selectors-raw',
       './modules/app/containers/app',
+      './select-state'
     ],
     () => {
       handleRender()

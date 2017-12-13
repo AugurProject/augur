@@ -26,7 +26,7 @@ export default class MarketView extends Component {
     super(props)
 
     this.state = {
-      selectedOutcomes: [],
+      selectedOutcomes: []
     }
 
     this.updateSelectedOutcomes = this.updateSelectedOutcomes.bind(this)

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import MarketOutcomeChartsHeaderCandlestick from 'modules/market/components/market-outcome-charts--header-candlestick/market-outcome-charts--header-candlestick'
 import MarketOutcomeChartHeaderDepth from 'modules/market/components/market-outcome-charts--header-depth/market-outcome-charts--header-depth'
@@ -8,13 +9,24 @@ import Styles from 'modules/market/components/market-outcome-charts--header/mark
 
 const MarketOutcomeChartsHeader = p => (
   <section className={Styles.MarketOutcomeChartsHeader}>
-    <MarketOutcomeChartsHeaderCandlestick />
+    <MarketOutcomeChartsHeaderCandlestick
+      volume={p.hoveredPeriod.volume}
+      open={p.hoveredPeriod.open}
+      high={p.hoveredPeriod.high}
+      low={p.hoveredPeriod.low}
+      close={p.hoveredPeriod.close}
+      fixedPrecision={p.fixedPrecision}
+    />
     <MarketOutcomeChartHeaderDepth />
     <MarketOutcomeChartHeaderOrders />
   </section>
 )
 
 export default MarketOutcomeChartsHeader
+
+MarketOutcomeChartsHeader.propTypes = {
+  hoveredPeriod: PropTypes.object.isRequired
+}
 
 
 // <h3><span>OUTCOME TODO</span> price(eth)</h3>

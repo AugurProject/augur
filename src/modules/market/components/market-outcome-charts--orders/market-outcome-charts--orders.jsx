@@ -7,12 +7,8 @@ export default class MarketOutcomeOrderbook extends Component {
   static propTypes = {
     selectedOutcome: PropTypes.any,
     orderBook: PropTypes.object.isRequired,
-    updateHoveredValues: PropTypes.func.isRequired
+    updateHoveredPrice: PropTypes.func.isRequired
   }
-
-  // constructor(props) {
-  //   super(props)
-  // }
 
   componentDidMount() {
     this.asks.scrollTo(0, (this.asks.scrollHeight || 0))
@@ -31,6 +27,8 @@ export default class MarketOutcomeOrderbook extends Component {
             <div
               key={order.cumulativeShares}
               className={Styles.MarketOutcomeOrderBook__side}
+              onMouseEnter={() => p.updateHoveredPrice(order.price)}
+              onMouseLeave={() => p.updateHoveredPrice(null)}
             >
               <span>{order.price}</span>
               <span>{order.shares}</span>
@@ -41,7 +39,11 @@ export default class MarketOutcomeOrderbook extends Component {
         <span>Price</span>
         <div className={Styles.MarketOutcomeOrderBook__side} >
           {(p.orderBook.bids || []).map(order => (
-            <div key={order.cumulativeShares} >
+            <div
+              key={order.cumulativeShares}
+              onMouseEnter={() => p.updateHoveredPrice(order.price)}
+              onMouseLeave={() => p.updateHoveredPrice(null)}
+            >
               <span>{order.price}</span>
               <span>{order.shares}</span>
               <span>{order.cumulativeShares}</span>

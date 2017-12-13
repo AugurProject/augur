@@ -25,13 +25,20 @@ export default class MarketOutcomeCharts extends Component {
     super(props)
 
     this.state = {
+      hoveredPeriod: {},
       hoveredPrice: null,
-      fixedPrecision: 4,
-      hoveredDepth: []
+      fixedPrecision: 4
     }
 
+    this.updateHoveredPeriod = this.updateHoveredPeriod.bind(this)
     this.updateHoveredPrice = this.updateHoveredPrice.bind(this)
     this.updatePrecision = this.updatePrecision.bind(this)
+  }
+
+  updateHoveredPeriod(hoveredPeriod) {
+    this.setState({
+      hoveredPeriod
+    })
   }
 
   updateHoveredPrice(hoveredPrice) {
@@ -61,8 +68,8 @@ export default class MarketOutcomeCharts extends Component {
     return (
       <section className={Styles.MarketOutcomeCharts}>
         <MarketOutcomeChartsHeader
-          selectedOutcome={p.selectedOutcomes[0]}
           updatePrecision={this.updatePrecision}
+          hoveredPeriod={s.hoveredPeriod}
           fixedPrecision={s.fixedPrecision}
         />
         <div className={Styles.MarketOutcomeCharts__Charts}>
@@ -75,6 +82,7 @@ export default class MarketOutcomeCharts extends Component {
             marketMin={0}
             hoveredPrice={s.hoveredPrice}
             updateHoveredPrice={this.updateHoveredPrice}
+            updateHoveredPeriod={this.updateHoveredPeriod}
           />
           <MarketOutcomeDepth
             orderBookMin={p.orderBookMin}
