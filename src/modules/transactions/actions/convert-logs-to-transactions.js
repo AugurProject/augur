@@ -4,6 +4,7 @@ import { SUCCESS } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { updateMarketsData } from 'modules/markets/actions/update-markets-data'
 import { constructTransaction, constructTradingTransaction, constructBasicTransaction } from 'modules/transactions/actions/construct-transaction'
+import logError from 'utils/log-error'
 
 export function convertTradeLogToTransaction(label, data, marketID) {
   return (dispatch, getState) => {
@@ -29,16 +30,17 @@ export function convertTradeLogsToTransactions(label, data, marketID) {
   return (dispatch, getState) => {
     const { marketsData } = getState()
     async.forEachOfSeries(data, (marketTrades, marketID, next) => {
-      if (marketsData[marketID]) {
+      if (marketsData[marketID] != null && marketsData[marketID].id != null) {
         dispatch(convertTradeLogToTransaction(label, data, marketID))
         return next()
       }
       console.log('getting market info for', marketID)
-      augur.markets.getMarketInfo({ marketID }, (marketInfo) => {
-        if (!marketInfo || marketInfo.error) {
-          if (marketInfo && marketInfo.error) console.error('augur.markets.getMarketInfo:', marketInfo)
+      augur.markets.getMarketsInfo({ marketIDs: [marketID] }, (err, marketsInfo) => {
+        if (!marketsInfo || marketsInfo.error || !Array.isArray(marketsInfo) || !marketsInfo.length || !marketsInfo[0]) {
+          if (marketsInfo && marketsInfo.error) console.error('augur.markets.getMarketsInfo:', marketsInfo)
           return next(`[${label}] couldn't load market info for market ${marketID}: ${JSON.stringify(data)}`)
         }
+        const marketInfo = marketsInfo[0]
         dispatch(updateMarketsData({ [marketID]: marketInfo }))
         dispatch(convertTradeLogToTransaction(label, data, marketID))
         next()
@@ -47,18 +49,16 @@ export function convertTradeLogsToTransactions(label, data, marketID) {
   }
 }
 
-export const convertLogToTransaction = (label, log, status, isRetry, cb) => (dispatch, getState) => {
+export const convertLogToTransaction = (label, log, status, isRetry, callback = logError) => (dispatch, getState) => {
   console.log('convertLogToTransaction', label)
   console.log(log)
-  const callback = cb || (e => e && console.error('convertLogToTransaction:', e))
   const hash = log.transactionHash
   if (hash) {
     const transactionData = getState().transactionsData[hash]
     const gasFees = (transactionData && transactionData.gasFees) ? transactionData.gasFees.value : null
     if (log.removed) {
-      // TODO rollback: use augur.trading.orderBook.removeOrder for targeted order removal (if order exists/is live)
-      //                or just reload orders and trades (brute-force) for this market
-      console.debug('!!! log removed:', log)
+      // TODO rollback
+      return console.warn('!!! log removed:', log)
     }
     const transaction = dispatch(constructTransaction(label, log, isRetry, callback))
     if (transaction) {
