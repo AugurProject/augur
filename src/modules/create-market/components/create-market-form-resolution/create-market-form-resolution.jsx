@@ -78,8 +78,8 @@ export default class CreateMarketResolution extends Component {
 
   validateDesignatedReporterAddress(value) {
     const p = this.props
-    const { currentStep } = p.newMarket
 
+    const { currentStep } = p.newMarket
     const updatedMarket = { ...p.newMarket }
 
     if (!isAddress(value)) {
@@ -96,8 +96,9 @@ export default class CreateMarketResolution extends Component {
 
   validateExpiryType(value) {
     const p = this.props
-    const updatedMarket = { ...p.newMarket }
+
     const { currentStep } = p.newMarket
+    const updatedMarket = { ...p.newMarket }
 
     if (value === EXPIRY_SOURCE_SPECIFIC) {
       updatedMarket.validations[currentStep].expirySource =
@@ -172,7 +173,6 @@ export default class CreateMarketResolution extends Component {
               </button>
               { p.newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC &&
                 <input
-                  type="text"
                   value={p.newMarket.designatedReporterAddress}
                   placeholder="Designated Reporter Address"
                   onChange={e => this.validateDesignatedReporterAddress(e.target.value)}
