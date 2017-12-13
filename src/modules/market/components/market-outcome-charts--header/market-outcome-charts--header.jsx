@@ -8,17 +8,31 @@ import MarketOutcomeChartHeaderOrders from 'modules/market/components/market-out
 import Styles from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles'
 
 const MarketOutcomeChartsHeader = p => (
-  <section className={Styles.MarketOutcomeChartsHeader}>
-    <MarketOutcomeChartsHeaderCandlestick
-      volume={p.hoveredPeriod.volume}
-      open={p.hoveredPeriod.open}
-      high={p.hoveredPeriod.high}
-      low={p.hoveredPeriod.low}
-      close={p.hoveredPeriod.close}
-      fixedPrecision={p.fixedPrecision}
-    />
-    <MarketOutcomeChartHeaderDepth />
-    <MarketOutcomeChartHeaderOrders />
+  <section
+    className={Styles.MarketOutcomeChartsHeader}
+  >
+    <div
+      className={Styles.MarketOutcomeChartsHeader__Candlestick}
+    >
+      <MarketOutcomeChartsHeaderCandlestick
+        volume={p.hoveredPeriod.volume}
+        open={p.hoveredPeriod.open}
+        high={p.hoveredPeriod.high}
+        low={p.hoveredPeriod.low}
+        close={p.hoveredPeriod.close}
+        fixedPrecision={p.fixedPrecision}
+      />
+    </div>
+    <div
+      className={Styles.MarketOutcomeChartsHeader__Depth}
+    >
+      <MarketOutcomeChartHeaderDepth />
+    </div>
+    <div
+      className={Styles.MarketOutcomeChartsHeader__Orders}
+    >
+      <MarketOutcomeChartHeaderOrders />
+    </div>
   </section>
 )
 
