@@ -19,6 +19,7 @@ export default class MarketOutcomeCandlestick extends Component {
     marketMax: PropTypes.number.isRequired,
     hoveredPrice: PropTypes.any,
     updateHoveredPrice: PropTypes.func.isRequired,
+    updateHoveredPeriod: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -197,10 +198,10 @@ export default class MarketOutcomeCandlestick extends Component {
         .attr('height', height - margin.bottom)
         .attr('width', d => (0.5 * (width - (2 * margin.stick))) / priceHistory.length)
         .attr('class', 'period-hover')
-        .on('mouseover', d => this.setState({ hoveredPeriod: d }))
+        .on('mouseover', d => this.props.updateHoveredPeriod(d))
         .on('mousemove', () => this.props.updateHoveredPrice(yScale.invert(d3.mouse(d3.select('#outcome_candlestick').node())[1])))
         .on('mouseout', () => {
-          this.setState({ hoveredPeriod: {} })
+          this.props.updateHoveredPeriod({})
           this.props.updateHoveredPrice(null)
         })
 
