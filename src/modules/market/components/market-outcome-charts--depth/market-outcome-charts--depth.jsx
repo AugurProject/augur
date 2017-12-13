@@ -17,7 +17,8 @@ export default class MarketOutcomeDepth extends Component {
     orderBookMax: PropTypes.number.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
     hoveredPrice: PropTypes.any,
-    updateHoveredPrice: PropTypes.func.isRequired
+    updateHoveredPrice: PropTypes.func.isRequired,
+    updateHoveredDepth: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -202,23 +203,27 @@ export default class MarketOutcomeDepth extends Component {
     if (this.props.hoveredPrice == null) {
       d3.select('#crosshairs').style('display', 'none')
       d3.select('#hovered_price_label').text('')
+      this.props.updateHoveredDepth([])
     } else {
       const nearestCompletelyFillingOrder = Object.keys(this.props.marketDepth).reduce((p, side) => {
         const fillingSideOrder = this.props.marketDepth[side].reduce((p, order) => {
           if (p === null) return order
           if (side === ASKS) {
-            return (this.props.hoveredPrice > p[1] && this.props.hoveredPrice < order[1]) ? order : p
+            return (this.props.hoveredPrice > p[1] && this.props.hoveredPrice < order[1]) ? order: p
           }
 
           return (this.props.hoveredPrice < p[1] && this.props.hoveredPrice > order[1]) ? order : p
         }, null)
 
+        // TODO -- this is actually pushing a TON of extra sides into the array...initial look confused me, moving on, will circle back
         fillingSideOrder.push(side)
 
         // We actually infer the side based on proximity
         if (p === null) return fillingSideOrder
         return Math.abs(this.props.hoveredPrice - p[1]) < Math.abs(this.props.hoveredPrice - fillingSideOrder[1]) ? p : fillingSideOrder
       }, null)
+
+      this.props.updateHoveredDepth(nearestCompletelyFillingOrder)
 
       d3.select('#crosshairs').style('display', null)
 

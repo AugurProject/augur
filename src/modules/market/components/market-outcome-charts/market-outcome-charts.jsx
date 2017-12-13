@@ -26,6 +26,7 @@ export default class MarketOutcomeCharts extends Component {
 
     this.state = {
       hoveredPeriod: {},
+      hoveredDepth: [],
       hoveredPrice: null,
       fixedPrecision: 4
     }
@@ -33,11 +34,19 @@ export default class MarketOutcomeCharts extends Component {
     this.updateHoveredPeriod = this.updateHoveredPeriod.bind(this)
     this.updateHoveredPrice = this.updateHoveredPrice.bind(this)
     this.updatePrecision = this.updatePrecision.bind(this)
+    this.updateHoveredDepth = this.updateHoveredDepth.bind(this)
   }
 
   updateHoveredPeriod(hoveredPeriod) {
     this.setState({
       hoveredPeriod
+    })
+  }
+
+  updateHoveredDepth(hoveredDepth) {
+    console.log('depth -- ', hoveredDepth)
+    this.setState({
+      hoveredDepth
     })
   }
 
@@ -71,6 +80,7 @@ export default class MarketOutcomeCharts extends Component {
           selectedOutcome={p.selectedOutcome}
           updatePrecision={this.updatePrecision}
           hoveredPeriod={s.hoveredPeriod}
+          hoveredDepth={s.hoveredDepth}
           fixedPrecision={s.fixedPrecision}
         />
         <div className={Styles.MarketOutcomeCharts__Charts}>
@@ -97,6 +107,7 @@ export default class MarketOutcomeCharts extends Component {
               marketDepth={p.marketDepth}
               hoveredPrice={s.hoveredPrice}
               updateHoveredPrice={this.updateHoveredPrice}
+              updateHoveredDepth={this.updateHoveredDepth}
             />
           </div>
           <div className={Styles.MarketOutcomeCharts__Orders}>
