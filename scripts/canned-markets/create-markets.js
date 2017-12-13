@@ -11,7 +11,7 @@ var Augur = require("../../src");
 var approveAugurEternalApprovalValue = require("./lib/approve-augur-eternal-approval-value");
 var createMarket = require("./lib/create-market");
 var createOrders = require("./lib/create-orders");
-var cannedMarketsData = require("./data/canned-markets").slice(0, 3);
+var cannedMarketsData = require("./data/canned-markets");
 var connectionEndpoints = require("../connection-endpoints");
 var debugOptions = require("../debug-options");
 
