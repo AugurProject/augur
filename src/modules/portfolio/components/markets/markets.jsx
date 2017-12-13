@@ -25,23 +25,45 @@ class MyMarkets extends Component {
   constructor(props) {
     super(props)
     // NOTE: from here to this.state was added to sort markets, this might need to be more robust in the future.
+    const openMarkets = []
     const reportingMarkets = []
-    const designatedReportingMarkets = []
+    const finalMarkets = []
+    const filteredMarketsOpen = []
     const filteredMarketsReporting = []
-    const filteredMarketsDesignatedReporting = []
+    const filteredMarketsFinal = []
     this.reportingStates = constants.REPORTING_STATE
 
     this.props.myMarkets.forEach((market, index) => {
       if (market.reportingState === this.reportingStates.DESIGNATED_REPORTING) {
-        designatedReportingMarkets.push(market)
-        filteredMarketsDesignatedReporting.push(market.id)
-      } else if (market.reportingState === this.reportingStates.FIRST_REPORTING || market.reportingState === this.reportingStates.LAST_REPORTING) {
+        openMarkets.push(market)
+        filteredMarketsOpen.push(market.id)
+      } else if (market.reportingState === this.reportingStates.FINALIZED) {
+        finalMarkets.push(market)
+        filteredMarketsFinal.push(market.id)
+      } else {
         reportingMarkets.push(market)
         filteredMarketsReporting.push(market.id)
       }
     })
 
     this.state = {
+      sortOptionsOpen: [
+        { label: 'Volume', value: 'volume' },
+        { label: 'Newest', value: 'newest' },
+        { label: 'Fees', value: 'fees' },
+        { label: 'Expiring Soon', value: 'expiring' }
+      ],
+      sortDefaultOpen: 'volume',
+      sortTypeOpen: 'volume',
+      filterOptionsOpen: [
+        { label: 'Sports', value: 'sports' },
+        { label: 'Finance', value: 'finance' },
+        { label: 'Healthcare', value: 'healthcare' },
+        { label: 'Politics', value: 'politics' },
+        { label: 'Environment', value: 'environment' },
+      ],
+      filterDefaultOpen: 'finance',
+      filterTypeOpen: 'finance',
       sortOptionsReporting: [
         { label: 'Volume', value: 'volume' },
         { label: 'Newest', value: 'newest' },
@@ -57,29 +79,31 @@ class MyMarkets extends Component {
         { label: 'Politics', value: 'politics' },
         { label: 'Environment', value: 'environment' },
       ],
-      filterDefaultReporting: 'finance',
-      filterTypeReporting: 'finance',
-      sortOptionsDesignatedReporting: [
+      filterDefaultReporting: 'sports',
+      filterTypeReporting: 'sports',
+      sortOptionsFinal: [
         { label: 'Volume', value: 'volume' },
         { label: 'Newest', value: 'newest' },
         { label: 'Fees', value: 'fees' },
         { label: 'Expiring Soon', value: 'expiring' }
       ],
-      sortDefaultDesignatedReporting: 'volume',
-      sortTypeDesignatedReporting: 'volume',
-      filterOptionsDesignatedReporting: [
+      sortDefaultFinal: 'volume',
+      sortTypeFinal: 'volume',
+      filterOptionsFinal: [
         { label: 'Sports', value: 'sports' },
         { label: 'Finance', value: 'finance' },
         { label: 'Healthcare', value: 'healthcare' },
         { label: 'Politics', value: 'politics' },
         { label: 'Environment', value: 'environment' },
       ],
-      filterDefaultDesignatedReporting: 'sports',
-      filterTypeDesignatedReporting: 'sports',
+      filterDefaultFinal: 'healthcare',
+      filterTypeFinal: 'healthcare',
+      openMarkets,
       reportingMarkets,
-      designatedReportingMarkets,
+      finalMarkets,
+      filteredMarketsOpen,
       filteredMarketsReporting,
-      filteredMarketsDesignatedReporting
+      filteredMarketsFinal
     }
 
     this.changeDropdown = this.changeDropdown.bind(this)
@@ -94,23 +118,33 @@ class MyMarkets extends Component {
   componentWillReceiveProps(nextProps) {
     // update the filtered markets if the myMarkets prop changes
     if (this.props.myMarkets !== nextProps.myMarkets) {
+      const openMarkets = []
       const reportingMarkets = []
-      const designatedReportingMarkets = []
+      const finalMarkets = []
+      const filteredMarketsOpen = []
       const filteredMarketsReporting = []
-      const filteredMarketsDesignatedReporting = []
+      const filteredMarketsFinal = []
 
       nextProps.myMarkets.forEach((market, index) => {
         if (market.reportingState === this.reportingStates.DESIGNATED_REPORTING) {
-          designatedReportingMarkets.push(market)
-          filteredMarketsDesignatedReporting.push(market.id)
-        } else if (market.reportingState === this.reportingStates.FIRST_REPORTING || market.reportingState === this.reportingStates.LAST_REPORTING) {
+          openMarkets.push(market)
+          filteredMarketsOpen.push(market.id)
+        } else if (market.reportingState === this.reportingStates.FINALIZED) {
+          finalMarkets.push(market)
+          filteredMarketsFinal.push(market.id)
+        } else {
           reportingMarkets.push(market)
           filteredMarketsReporting.push(market.id)
         }
       })
 
       this.setState({
-        filteredMarketsReporting, reportingMarkets, filteredMarketsDesignatedReporting, designatedReportingMarkets
+        filteredMarketsOpen,
+        openMarkets,
+        filteredMarketsReporting,
+        reportingMarkets,
+        filteredMarketsFinal,
+        finalMarkets
       })
     }
   }
@@ -118,11 +152,25 @@ class MyMarkets extends Component {
   // TODO -- clean up this method
   changeDropdown(value) {
     let {
+      sortTypeOpen,
+      filterTypeOpen,
       sortTypeReporting,
       filterTypeReporting,
-      sortTypeDesignatedReporting,
-      filterTypeDesignatedReporting
+      sortTypeFinal,
+      filterTypeFinal
     } = this.state
+
+    this.state.sortOptionsOpen.forEach((type, ind) => {
+      if (type.value === value) {
+        sortTypeOpen = value
+      }
+    })
+
+    this.state.filterOptionsOpen.forEach((type, ind) => {
+      if (type.value === value) {
+        filterTypeOpen = value
+      }
+    })
 
     this.state.sortOptionsReporting.forEach((type, ind) => {
       if (type.value === value) {
@@ -136,24 +184,26 @@ class MyMarkets extends Component {
       }
     })
 
-    this.state.sortOptionsDesignatedReporting.forEach((type, ind) => {
+    this.state.sortOptionsFinal.forEach((type, ind) => {
       if (type.value === value) {
-        sortTypeDesignatedReporting = value
+        sortTypeFinal = value
       }
     })
 
-    this.state.filterOptionsDesignatedReporting.forEach((type, ind) => {
+    this.state.filterOptionsFinal.forEach((type, ind) => {
       if (type.value === value) {
-        filterTypeDesignatedReporting = value
+        filterTypeFinal = value
       }
     })
 
 
     this.setState({
+      sortTypeOpen,
+      filterTypeOpen,
       sortTypeReporting,
       filterTypeReporting,
-      sortTypeDesignatedReporting,
-      filterTypeDesignatedReporting
+      sortTypeFinal,
+      filterTypeFinal,
     })
   }
 
@@ -172,7 +222,39 @@ class MyMarkets extends Component {
           <div
             className={Styles['Markets__SortBar-title']}
           >
-            Reporting
+            Open
+          </div>
+          <div
+            className={Styles['Markets__SortBar-sort']}
+          >
+            <Dropdown default={s.sortDefaultOpen} options={s.sortOptionsOpen} onChange={this.changeDropdown} />
+          </div>
+          <div
+            className={Styles['Markets__SortBar-filter']}
+          >
+            <Dropdown default={s.filterDefaultOpen} options={s.filterOptionsOpen} onChange={this.changeDropdown} />
+          </div>
+        </div>
+        <MarketsList
+          isLogged={p.isLogged}
+          markets={s.openMarkets}
+          filteredMarkets={s.filteredMarketsOpen}
+          location={p.location}
+          history={p.history}
+          scalarShareDenomination={p.scalarShareDenomination}
+          toggleFavorite={p.toggleFavorite}
+          loadMarketsInfo={p.loadMarketsInfo}
+          linkType={TYPE_REPORT}
+          outstandingReturns
+          pageParam="open"
+        />
+        <div
+          className={Styles.Markets__SortBar}
+        >
+          <div
+            className={Styles['Markets__SortBar-title']}
+          >
+            In Reporting
           </div>
           <div
             className={Styles['Markets__SortBar-sort']}
@@ -204,23 +286,23 @@ class MyMarkets extends Component {
           <div
             className={Styles['Markets__SortBar-title']}
           >
-            Designated Reporting
+            Finalized
           </div>
           <div
             className={Styles['Markets__SortBar-sort']}
           >
-            <Dropdown default={s.sortDefaultDesignatedReporting} options={s.sortOptionsDesignatedReporting} onChange={this.changeDropdown} />
+            <Dropdown default={s.sortDefaultFinal} options={s.sortOptionsFinal} onChange={this.changeDropdown} />
           </div>
           <div
             className={Styles['Markets__SortBar-filter']}
           >
-            <Dropdown default={s.filterDefaultDesignatedReporting} options={s.filterOptionsDesignatedReporting} onChange={this.changeDropdown} />
+            <Dropdown default={s.filterDefaultFinal} options={s.filterOptionsFinal} onChange={this.changeDropdown} />
           </div>
         </div>
         <MarketsList
           isLogged={p.isLogged}
-          markets={s.designatedReportingMarkets}
-          filteredMarkets={s.filteredMarketsDesignatedReporting}
+          markets={s.finalMarkets}
+          filteredMarkets={s.filteredMarketsFinal}
           location={p.location}
           history={p.history}
           scalarShareDenomination={p.scalarShareDenomination}
@@ -228,7 +310,7 @@ class MyMarkets extends Component {
           loadMarketsInfo={p.loadMarketsInfo}
           linkType={TYPE_REPORT}
           outstandingReturns
-          pageParam="designated"
+          pageParam="final"
         />
       </section>
     )
