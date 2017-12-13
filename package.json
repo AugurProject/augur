@@ -68,6 +68,7 @@
     "mocha": "3.2.0",
     "mocha-lcov-reporter": "0.0.2",
     "node-gyp": "^3.6.2",
+    "node-pre-gyp": "^0.6.39",
     "proxyquire": "1.7.11",
     "replace-in-file": "3.0.0",
     "tslint": "5.7.0",
