@@ -1,10 +1,17 @@
+@import (reference) '~assets/styles/shared';
+
 .MarketOutcomeOrderBook {
   display: flex;
-  flex: 1;
   flex-direction: column;
 }
 
 .MarketOutcomeOrderBook__side {
-  flex: 1;
+  &:extend(.caps--small);
+
+  flex: 1 1 auto;
   overflow-y: auto;
+
+  span {
+
+  }
 }

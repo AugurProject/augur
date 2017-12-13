@@ -73,30 +73,36 @@ export default class MarketOutcomeCharts extends Component {
           fixedPrecision={s.fixedPrecision}
         />
         <div className={Styles.MarketOutcomeCharts__Charts}>
-          <MarketOutcomeCandlestick
-            marketPriceHistory={p.marketPriceHistory}
-            outcomeMin={p.marketMin}
-            orderBookMid={p.orderBookMid}
-            outcomeMax={p.marketMax}
-            marketMax={1}
-            marketMin={0}
-            hoveredPrice={s.hoveredPrice}
-            updateHoveredPrice={this.updateHoveredPrice}
-            updateHoveredPeriod={this.updateHoveredPeriod}
-          />
-          <MarketOutcomeDepth
-            orderBookMin={p.orderBookMin}
-            orderBookMid={p.orderBookMid}
-            orderBookMax={p.orderBookMax}
-            marketDepth={p.marketDepth}
-            hoveredPrice={s.hoveredPrice}
-            updateHoveredPrice={this.updateHoveredPrice}
-          />
-          <MarketOutcomeOrderBook
-            orderBook={p.orderBook}
-            hoveredPrice={s.hoveredPrice}
-            updateHoveredPrice={this.updateHoveredPrice}
-          />
+          <div className={Styles.MarketOutcomeCharts__Candlestick}>
+            <MarketOutcomeCandlestick
+              marketPriceHistory={p.marketPriceHistory}
+              outcomeMin={p.marketMin}
+              orderBookMid={p.orderBookMid}
+              outcomeMax={p.marketMax}
+              marketMax={1}
+              marketMin={0}
+              hoveredPrice={s.hoveredPrice}
+              updateHoveredPrice={this.updateHoveredPrice}
+              updateHoveredPeriod={this.updateHoveredPeriod}
+            />
+          </div>
+          <div className={Styles.MarketOutcomeCharts__Depth}>
+            <MarketOutcomeDepth
+              orderBookMin={p.orderBookMin}
+              orderBookMid={p.orderBookMid}
+              orderBookMax={p.orderBookMax}
+              marketDepth={p.marketDepth}
+              hoveredPrice={s.hoveredPrice}
+              updateHoveredPrice={this.updateHoveredPrice}
+            />
+          </div>
+          <div className={Styles.MarketOutcomeCharts__Orders}>
+            <MarketOutcomeOrderBook
+              orderBook={p.orderBook}
+              hoveredPrice={s.hoveredPrice}
+              updateHoveredPrice={this.updateHoveredPrice}
+            />
+          </div>
         </div>
       </section>
     )
