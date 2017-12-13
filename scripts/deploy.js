@@ -14,16 +14,18 @@ const PRODUCTION_USER = null;
 const PRODUCTION_SERVERS = null;
 const PRODUCTION_LOAD_BALANCER = null;
 
-const FLAGS = process.argv.filter(arg => arg.indexOf('--') !== -1);
+const FLAGS = JSON.parse(process.env.npm_config_argv).original.filter(arg => arg.indexOf('--') !== -1);
 
 const isProduction = FLAGS.indexOf('--prod') !== -1 || FLAGS.indexOf('--production') !== -1;
+
+const BRANCH = isProduction ? process.env.PRODUCTION_BRANCH : process.env.DEV_BRANCH;
 
 if (isProduction) {
   console.log('== DEPLOYING TO -- PRODUCTION SERVERS ==');
 
   eachOfSeries(
     PRODUCTION_SERVERS,
-    (item, key, callback) => deployBuild(item, PRODUCTION_USER, callback),
+    (item, key, callback) => deployBuild(item, PRODUCTION_USER, BRANCH, isProduction, callback),
     e => {
       if (e != null) return console.log('Failed to deployed to all servers, code: ', e);
 
@@ -36,7 +38,7 @@ if (isProduction) {
 
   eachOfSeries(
     DEV_SERVERS,
-    (item, key, callback) => deployBuild(item, DEV_USER, callback),
+    (item, key, callback) => deployBuild(item, DEV_USER, BRANCH, isProduction, callback),
     e => {
       if (e != null) return console.log('Failed to deployed to all servers, code: ', e);
 
@@ -46,7 +48,7 @@ if (isProduction) {
   );
 }
 
-function deployBuild(server, user, callback) {
+function deployBuild(server, user, branch, isProduction, callback) {
   console.log('Deploying to: ', server);
 
   const deploy = spawn('ssh',
@@ -66,7 +68,9 @@ function deployBuild(server, user, callback) {
       "echo '-- TRAVERSING INTO AUGUR --';",
       "cd ~/ipfs-deploy/augur;",
       "echo '-- CHECKING OUT CORRECT BRANCH --';",
-      "git checkout v3;",
+      `git checkout ${branch};`,
+      "echo '-- BUILDING AUGUR --';",
+      `npm i && npm run build${isProduction ? '' : ' --dev'};`,
       "echo '-- ADDING BUILD TO IPFS --';",
       "export NEW_BUILD_HASH=$(/home/"+user+"/bin/ipfs add -r build/ | tail -n 1 | awk '{print $2}');",
       "echo '-- PUBLISHING BUILD --';",
