@@ -10,7 +10,7 @@ const MarketOutcomeCandlestickHeader = p => (
         volume
       </span>
       <span className={Styles[`MarketOutcomeCandlestick__period-stat-value`]}>
-        {p.volume ? p.volume.toFixed(p.fixedPrecision).toString() : ''}
+        {p.volume ? p.volume.toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
       </span>
     </span>
     <span className={Styles[`MarketOutcomeCandlestick__period-stat`]}>
@@ -18,7 +18,7 @@ const MarketOutcomeCandlestickHeader = p => (
         open
       </span>
       <span className={Styles[`MarketOutcomeCandlestick__period-stat-value`]}>
-        {p.open ? p.open.toFixed(p.fixedPrecision).toString() : ''}
+        {p.open ? p.open.toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
       </span>
     </span>
     <span className={Styles[`MarketOutcomeCandlestick__period-stat`]}>
@@ -26,7 +26,7 @@ const MarketOutcomeCandlestickHeader = p => (
         high
       </span>
       <span className={Styles[`MarketOutcomeCandlestick__period-stat-value`]}>
-        {p.high ? p.high.toFixed(p.fixedPrecision).toString() : ''}
+        {p.high ? p.high.toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
       </span>
     </span>
     <span className={Styles[`MarketOutcomeCandlestick__period-stat`]}>
@@ -34,7 +34,7 @@ const MarketOutcomeCandlestickHeader = p => (
         low
       </span>
       <span className={Styles[`MarketOutcomeCandlestick__period-stat-value`]}>
-        {p.low ? p.low.toFixed(p.fixedPrecision).toString() : ''}
+        {p.low ? p.low.toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
       </span>
     </span>
     <span className={Styles[`MarketOutcomeCandlestick__period-stat`]}>
@@ -42,7 +42,7 @@ const MarketOutcomeCandlestickHeader = p => (
         close
       </span>
       <span className={Styles[`MarketOutcomeCandlestick__period-stat-value`]}>
-        {p.close ? p.close.toFixed(p.fixedPrecision).toString() : ''}
+        {p.close ? p.close.toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
       </span>
     </span>
   </div>
