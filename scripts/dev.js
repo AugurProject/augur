@@ -9,7 +9,7 @@ const SERVER = path.resolve(__dirname, '../server.js');
 process.env.NODE_ENV = 'development';
 process.env.FORCE_COLOR = true;
 
-const FLAGS = process.argv.filter(arg => arg.indexOf('--') !== -1);
+const FLAGS = JSON.parse(process.env.npm_config_argv).original.filter(arg => arg.indexOf('--') !== -1);
 process.env.USE_SSL = FLAGS.indexOf('--ssl') !== -1 ? true : false;
 
 // START DEVELOPMENT SERVER

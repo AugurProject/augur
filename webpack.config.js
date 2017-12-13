@@ -103,10 +103,6 @@ let config = {
         to: path.resolve(PATHS.BUILD, 'assets/styles')
       },
       {
-        from: path.resolve(PATHS.APP, 'env.json'),
-        to: path.resolve(PATHS.BUILD, 'config')
-      },
-      {
         from: path.resolve(PATHS.APP, 'manifest.json'),
         to: path.resolve(PATHS.BUILD, 'config')
       },
@@ -203,6 +199,12 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
+      new CopyWebpackPlugin([
+        {
+          from: path.resolve(PATHS.APP, 'env-local.json'),
+          to: path.resolve(PATHS.BUILD, 'config/env.json')
+        },
+      ])
     ]
   });
 // PRODUCTION DEBUG CONFIG (unminified build + more specific source maps + no hot reload)
@@ -237,7 +239,15 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
         }
       ]
     },
-    devtool: 'eval-source-map'
+    devtool: 'eval-source-map',
+    plugins: [
+      new CopyWebpackPlugin([
+        {
+          from: path.resolve(PATHS.APP, 'env-dev.json'),
+          to: path.resolve(PATHS.BUILD, 'config/env.json')
+        },
+      ])
+    ]
   });
 // PRODUCTION CONFIG
 } else {
@@ -276,6 +286,12 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
       new ExtractTextPlugin({
         filename: '[name].css'
       }),
+      new CopyWebpackPlugin([
+        {
+          from: path.resolve(PATHS.APP, 'env-production.json'),
+          to: path.resolve(PATHS.BUILD, 'config/env.json')
+        },
+      ])
       // new UglifyESPlugin({
       //   comments: false,
       //   dropConsole: true,
