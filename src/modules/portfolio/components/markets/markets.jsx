@@ -170,7 +170,7 @@ class MyMarkets extends Component {
         <Helmet>
           <title>My Markets</title>
         </Helmet>
-        {p.myMarkets && p.myMarkets.length > 0 &&
+        {p.myMarkets && !!p.myMarkets.length &&
           <div
             className={Styles.Markets__SortBar}
           >
@@ -191,7 +191,7 @@ class MyMarkets extends Component {
             </div>
           </div>
         }
-        {p.myMarkets && p.myMarkets.length > 0 &&
+        {p.myMarkets && !!p.myMarkets.length &&
           <MarketsList
             isLogged={p.isLogged}
             markets={s.reportingMarkets}
@@ -206,7 +206,7 @@ class MyMarkets extends Component {
             pageParam="reporting"
           />
         }
-        {p.myMarkets && p.myMarkets.length > 0 &&
+        {p.myMarkets && !!p.myMarkets.length &&
           <div
             className={Styles.Markets__SortBar}
           >
@@ -227,7 +227,7 @@ class MyMarkets extends Component {
             </div>
           </div>
         }
-        {p.myMarkets && p.myMarkets.length > 0 &&
+        {p.myMarkets && !!p.myMarkets.length &&
           <MarketsList
             isLogged={p.isLogged}
             markets={s.designatedReportingMarkets}
@@ -242,7 +242,7 @@ class MyMarkets extends Component {
             pageParam="designated"
           />
         }
-        {p.myMarkets && p.myMarkets.length === 0 &&
+        {(p.myMarkets == null || (p.myMarkets && p.myMarkets.length === 0)) &&
           <div className={Styles.NoMarkets__container} >
             <span>You haven&apos;t created any markets.</span>
             <Link
