@@ -8,6 +8,7 @@ import BigNumber from 'bignumber.js'
 import { augur } from 'services/augurjs'
 
 import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'
+import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons/icons'
 
 import { BID, ASK } from 'modules/transactions/constants/types'
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
@@ -363,7 +364,7 @@ export default class CreateMarketLiquidity extends Component {
           <label htmlFor="cm__input--settlement">
             <span>Settlement Fee</span>
             { p.newMarket.validations[p.newMarket.currentStep].settlementFee.length &&
-              <span className={StylesForm.CreateMarketForm__error}>{ p.newMarket.validations[p.newMarket.currentStep].settlementFee }</span>
+              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon} { p.newMarket.validations[p.newMarket.currentStep].settlementFee }</span>
             }
           </label>
           <input
