@@ -164,15 +164,15 @@ export default class CreateMarketResolution extends Component {
                 onClick={() => this.validateDesignatedReporterType(DESIGNATED_REPORTER_SELF)}
               >Myself
               </button>
+            </li>
+            <li className={Styles['CreateMarketResolution__designated-reporter-specific']}>
               { designatedReporterError &&
-              	<span className={StylesForm['CreateMarketForm__error']}>
+                <span className={StylesForm['CreateMarketForm__error']}>
                   {InputErrorIcon}{
                     p.newMarket.validations[p.newMarket.currentStep].designatedReporterAddress
                   }
                 </span>
               }
-            </li>
-            <li className={Styles['CreateMarketResolution__designated-reporter-specific']}>
               <button
                 className={classNames({ [`${StylesForm.active}`]: p.newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC })}
                 onClick={() => this.validateDesignatedReporterType(DESIGNATED_REPORTER_SPECIFIC)}
