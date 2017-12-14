@@ -8,6 +8,7 @@
 .MarketOutcomeChartsHeader__Header {
   display: flex;
   flex: 1;
+  margin-bottom: 1em;
 
   h2,
   span {
@@ -16,10 +17,25 @@
 
   h2 {
     color: @color-white;
+    margin-right: 1em;
   }
 
   span {
     color: @color-gray;
+  }
+}
+
+.MarketOutcomeChartsHeader__precision-selector {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+
+  button {
+    color: @color-gray;
+    padding: 0 0.15em;
+    position: relative;
+    top: -8px;
+    font-size: @font-size-rather-large;
   }
 }
 
