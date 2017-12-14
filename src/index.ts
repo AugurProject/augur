@@ -49,7 +49,7 @@ checkAugurDbSetup(db, (err?: Error|null): void => {
     websocketServer.close();
     process.exit(1);
   }
-  syncAugurNodeWithBlockchain(db, augur, ethereumNodeEndpoints, uploadBlockNumbers, (err?: Error|null): void => {
+  syncAugurNodeWithBlockchain(db, augur, configuredEndpoints, uploadBlockNumbers, (err?: Error|null): void => {
     if (err) {
       console.error("syncAugurNodeWithBlockchain:", err);
       websocketServer.close();
