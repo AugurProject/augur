@@ -32,12 +32,17 @@
   flex: 1;
 }
 
+.MarketOutcomeChartsHeader__stat--right {
+  &:extend(.MarketOutcomeChartsHeader__stat);
+
+  justify-content: flex-end;
+}
+
 .MarketOutcomeChartsHeader__stat-title {
   color: @color-white;
 }
 
 .MarketOutcomeChartsHeader__stat-value {
-
   color: @color-gray;
   flex: 1 0 50%;
   margin-left: 0.4em;

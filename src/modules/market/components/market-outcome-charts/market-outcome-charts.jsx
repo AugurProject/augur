@@ -44,7 +44,6 @@ export default class MarketOutcomeCharts extends Component {
   }
 
   updateHoveredDepth(hoveredDepth) {
-    console.log('depth -- ', hoveredDepth)
     this.setState({
       hoveredDepth
     })

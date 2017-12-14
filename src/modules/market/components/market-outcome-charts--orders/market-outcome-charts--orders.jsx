@@ -18,6 +18,24 @@ export default class MarketOutcomeOrderbook extends Component {
   render() {
     const p = this.props
 
+    console.log(p.orderBook)
+
+    const marketMidPoint = () => {
+      let midPoint;
+
+      if (p.orderBook.asks.length === 0 && p.orderBook.bids.length === 0) {
+        return 'No Orders'
+      } else if (p.orderBook.asks.length === 0 && p.orderBook.bids.length > 0) {
+        midPoint = p.orderBook.bids[0]
+      } else if (p.orderBook.asks.length > 0 && p.orderBook.bids.length === 0) {
+        midPoint = p.orderBook.asks[p.orderBook.asks.length - 1]
+      } else {
+        midPoint = (p.orderBook.asks[p.orderBook.asks.length - 1].price + p.orderBook.bids[0].price) / 2
+      }
+
+      return `${midPoint.toFixed(p.fixedPrecision).toString()} ETH`
+    }
+
     return (
       <section className={Styles.MarketOutcomeOrderBook}>
         <div
@@ -31,13 +49,19 @@ export default class MarketOutcomeOrderbook extends Component {
               onMouseEnter={() => p.updateHoveredPrice(order.price)}
               onMouseLeave={() => p.updateHoveredPrice(null)}
             >
-              <span>{order.price}</span>
-              <span>{order.shares}</span>
-              <span>{order.cumulativeShares}</span>
+              <div className={Styles.MarketOutcomeOrderBook__RowItem}>
+                <span>{order.price.toFixed(p.fixedPrecision).toString()}</span>
+              </div>
+              <div className={Styles.MarketOutcomeOrderBook__RowItem}>
+                <span>{order.shares.toFixed(p.fixedPrecision).toString()}</span>
+              </div>
+              <div className={Styles.MarketOutcomeOrderBook__RowItem}>
+                <span>{order.cumulativeShares.toFixed(p.fixedPrecision).toString()}</span>
+              </div>
             </div>
           ))}
         </div>
-        <span>Price</span>
+        <span className={Styles.MarketOutcomeOrderBook__Midmarket}>{marketMidPoint()}</span>
         <div className={Styles.MarketOutcomeOrderBook__Side} >
           {(p.orderBook.bids || []).map(order => (
             <div
@@ -46,9 +70,15 @@ export default class MarketOutcomeOrderbook extends Component {
               onMouseEnter={() => p.updateHoveredPrice(order.price)}
               onMouseLeave={() => p.updateHoveredPrice(null)}
             >
-              <span>{order.price}</span>
-              <span>{order.shares}</span>
-              <span>{order.cumulativeShares}</span>
+              <div className={Styles.MarketOutcomeOrderBook__RowItem}>
+                <span>{order.price.toFixed(p.fixedPrecision).toString()}</span>
+              </div>
+              <div className={Styles.MarketOutcomeOrderBook__RowItem}>
+                <span>{order.shares.toFixed(p.fixedPrecision).toString()}</span>
+              </div>
+              <div className={Styles.MarketOutcomeOrderBook__RowItem}>
+                <span>{order.cumulativeShares.toFixed(p.fixedPrecision).toString()}</span>
+              </div>
             </div>
           ))}
         </div>

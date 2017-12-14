@@ -16,9 +16,17 @@
 .MarketOutcomeOrderBook__Row {
   display: flex;
   width: 100%;
+}
 
-  & > span {
-    flex: 1 1 auto;
-    overflow: hidden;
-  }
+.MarketOutcomeOrderBook__RowItem {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.MarketOutcomeOrderBook__Midmarket {
+  color: @color-white;
+  align-self: flex-end;
+  margin: 0.5em 0;
 }
