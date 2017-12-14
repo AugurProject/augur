@@ -36,6 +36,7 @@ const MarketOutcomeChartsHeader = p => (
     >
       <MarketOutcomeChartHeaderOrders
         fixedPrecision={p.fixedPrecision}
+        updatePrecision={p.updatePrecision}
       />
     </div>
   </section>
@@ -45,7 +46,9 @@ export default MarketOutcomeChartsHeader
 
 MarketOutcomeChartsHeader.propTypes = {
   hoveredPeriod: PropTypes.object.isRequired,
-  hoveredDepth: PropTypes.array.isRequired
+  hoveredDepth: PropTypes.array.isRequired,
+  fixedPrecision: PropTypes.number.isRequired,
+  updatePrecision: PropTypes.func.isRequired
 }
 
 

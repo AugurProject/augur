@@ -8,10 +8,14 @@ const MarketOutcomeChartsHeaderOrders = p => (
     <div className={Styles.MarketOutcomeChartsHeader__Header} >
       <span>Order Book</span>
       <div className={Styles['MarketOutcomeChartsHeader__precision-selector']}>
-        <button>
+        <button
+          onClick={() => p.updatePrecision(false)}
+        >
           -
         </button>
-        <button>
+        <button
+          onClick={() => p.updatePrecision(true)}
+        >
           +
         </button>
       </div>
@@ -39,5 +43,6 @@ const MarketOutcomeChartsHeaderOrders = p => (
 export default MarketOutcomeChartsHeaderOrders
 
 MarketOutcomeChartsHeaderOrders.propTypes = {
-  fixedPrecision: PropTypes.number.isRequired
+  fixedPrecision: PropTypes.number.isRequired,
+  updatePrecision: PropTypes.func.isRequired
 }

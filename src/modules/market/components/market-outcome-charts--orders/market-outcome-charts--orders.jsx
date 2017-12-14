@@ -18,8 +18,6 @@ export default class MarketOutcomeOrderbook extends Component {
   render() {
     const p = this.props
 
-    console.log(p.orderBook)
-
     const marketMidPoint = () => {
       let midPoint;
 

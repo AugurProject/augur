@@ -8,6 +8,8 @@ import MarketOutcomeOrderBook from 'modules/market/components/market-outcome-cha
 
 import Styles from 'modules/market/components/market-outcome-charts/market-outcome-charts.styles'
 
+import { isEqual } from 'lodash'
+
 export default class MarketOutcomeCharts extends Component {
   static propTypes = {
     marketPriceHistory: PropTypes.array.isRequired,
@@ -28,6 +30,7 @@ export default class MarketOutcomeCharts extends Component {
       hoveredPeriod: {},
       hoveredDepth: [],
       hoveredPrice: null,
+      fullPrice: null,
       fixedPrecision: 4
     }
 
@@ -35,6 +38,23 @@ export default class MarketOutcomeCharts extends Component {
     this.updateHoveredPrice = this.updateHoveredPrice.bind(this)
     this.updatePrecision = this.updatePrecision.bind(this)
     this.updateHoveredDepth = this.updateHoveredDepth.bind(this)
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if(
+      !isEqual(this.state.fixedPrecision, nextState.fixedPrecision) ||
+      !isEqual(this.state.fullPrice, nextState.fullPrice)
+    ) {
+      if (nextState.fullPrice === null) {
+        this.setState({
+          hoveredPrice: null
+        })
+      } else {
+        this.setState({
+          hoveredPrice: nextState.fullPrice.toFixed(nextState.fixedPrecision).toString()
+        })
+      }
+    }
   }
 
   updateHoveredPeriod(hoveredPeriod) {
@@ -51,11 +71,13 @@ export default class MarketOutcomeCharts extends Component {
 
   updateHoveredPrice(hoveredPrice) {
     this.setState({
-      hoveredPrice
+      fullPrice: hoveredPrice
     })
   }
 
   updatePrecision(isIncreasing) {
+    // TODO -- make this accomdate scale changes as well (microETH, nanoETH, K, M, B, etc.)
+
     let fixedPrecision = this.state.fixedPrecision
 
     if (isIncreasing) {
@@ -77,10 +99,10 @@ export default class MarketOutcomeCharts extends Component {
       <section className={Styles.MarketOutcomeCharts}>
         <MarketOutcomeChartsHeader
           selectedOutcome={p.selectedOutcome}
-          updatePrecision={this.updatePrecision}
           hoveredPeriod={s.hoveredPeriod}
           hoveredDepth={s.hoveredDepth}
           fixedPrecision={s.fixedPrecision}
+          updatePrecision={this.updatePrecision}
         />
         <div className={Styles.MarketOutcomeCharts__Charts}>
           <div className={Styles.MarketOutcomeCharts__Candlestick}>
