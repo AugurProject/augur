@@ -30,12 +30,12 @@ if (process.env.DATABASE_URL) {
   });
 }
 
-const envEndpoints = _.omitBy({
+const envEndpoints: EthereumNodeEndpoints = _.omitBy({
   http: process.env.ENDPOINT_HTTP,
   ws: process.env.ENDPOINT_WS,
 }, _.isNil);
 
-const configuredEndpoints: any = _.isEmpty(envEndpoints) ? ethereumNodeEndpoints : envEndpoints;
+const configuredEndpoints: EthereumNodeEndpoints = _.isEmpty(envEndpoints) ? ethereumNodeEndpoints : envEndpoints;
 
 const websocketServer: WebSocket.Server = runWebsocketServer(db, websocketPort);
 
