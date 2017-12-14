@@ -5,8 +5,26 @@
   width: 100%;
 }
 
+.MarketOutcomeChartsHeader__Header {
+  display: flex;
+  flex: 1;
+
+  h2,
+  span {
+    &:extend(.caps--large);
+  }
+
+  h2 {
+    color: @color-white;
+  }
+
+  span {
+    color: @color-gray;
+  }
+}
+
 .MarketOutcomeChartsHeader__Candlestick {
-  flex: 3;
+  flex: 2.5;
 }
 
 .MarketOutcomeChartsHeader__Depth {

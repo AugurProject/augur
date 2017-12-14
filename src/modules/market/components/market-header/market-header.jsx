@@ -47,9 +47,9 @@ export default class MarketHeader extends Component {
           }
         </div>
         <div className={Styles[`MarketHeader__main-values`]}>
-          <span className={Styles.MarketHeader__description}>
+          <h1 className={Styles.MarketHeader__description}>
             {p.description}
-          </span>
+          </h1>
           <div className={Styles.MarketHeader__properties}>
             {!!p.coreProperties &&
               Object.keys(p.coreProperties).map(property => (
