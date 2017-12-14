@@ -1,3 +1,5 @@
+@import (reference) '~assets/styles/shared';
+
 .MarketOutcomeChartsHeader {
   display: flex;
   width: 100%;
@@ -13,4 +15,30 @@
 
 .MarketOutcomeChartsHeader__Orders {
   flex: 1;
+}
+
+.MarketOutcomeChartsHeader__stats {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 100%;
+  width: 100%;
+}
+
+.MarketOutcomeChartsHeader__stat {
+  &:extend(.caps--extra-small);
+
+  display: flex;
+  flex: 1;
+}
+
+.MarketOutcomeChartsHeader__stat-title {
+  color: @color-white;
+}
+
+.MarketOutcomeChartsHeader__stat-value {
+
+  color: @color-gray;
+  flex: 1 0 50%;
+  margin-left: 0.4em;
 }
