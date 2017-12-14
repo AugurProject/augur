@@ -118,6 +118,9 @@ export default class CreateMarketResolution extends Component {
 
   render() {
     const p = this.props
+    const validations = p.newMarket.validations[p.newMarket.currentStep]
+
+    const designatedReporterError = p.newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC && validations.designatedReporterAddress && !!validations.designatedReporterAddress.length
 
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
@@ -154,9 +157,6 @@ export default class CreateMarketResolution extends Component {
           <label>
             <span>Designated Reporter</span>
           </label>
-          { p.newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC && p.newMarket.validations[p.newMarket.currentStep].designatedReporterAddress.length &&
-            <span className={StylesForm.CreateMarketForm__error}>{ p.newMarket.validations[p.newMarket.currentStep].designatedReporterAddress }</span>
-          }
           <ul className={StylesForm['CreateMarketForm__radio-buttons--per-line']}>
             <li>
               <button
@@ -164,6 +164,13 @@ export default class CreateMarketResolution extends Component {
                 onClick={() => this.validateDesignatedReporterType(DESIGNATED_REPORTER_SELF)}
               >Myself
               </button>
+              { designatedReporterError &&
+              	<span className={StylesForm['CreateMarketForm__error']}>
+                  {InputErrorIcon}{
+                    p.newMarket.validations[p.newMarket.currentStep].designatedReporterAddress
+                  }
+                </span>
+              }
             </li>
             <li className={Styles['CreateMarketResolution__designated-reporter-specific']}>
               <button
@@ -173,6 +180,7 @@ export default class CreateMarketResolution extends Component {
               </button>
               { p.newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC &&
                 <input
+                  className={classNames({[`${StylesForm['CreateMarketForm__error--field']}`]: designatedReporterError})}
                   value={p.newMarket.designatedReporterAddress}
                   placeholder="Designated Reporter Address"
                   onChange={e => this.validateDesignatedReporterAddress(e.target.value)}
