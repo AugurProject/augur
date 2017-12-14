@@ -21,6 +21,7 @@
   display: inline-block;
   font-size: 1rem;
   line-height: 1rem;
+  margin-right: 1.5rem;
   text-transform: none;
   white-space: nowrap;
 }
@@ -204,6 +205,15 @@
     height: 5.1rem;
   }
 
+  .CreateMarketForm__fields > li > label {
+    display: block;
+  }
+
+  .CreateMarketForm__error, .CreateMarketForm__error--field-50 {
+    white-space: normal;
+    width: 100%;
+  }
+
   .CreateMarketForm__radio-buttons {
     display: block;
 
@@ -254,9 +264,9 @@
     top: auto;
   }
 
-  .CreateMarketForm__error + .CreateMarketForm__error--field-50 {
-    left: 0.5rem;
-  }
+  // .CreateMarketForm__error + .CreateMarketForm__error--field-50 {
+  //   left: 0.5rem;
+  // }
 
   .CreateMarketForm__fields > li.field--50 {
     width: 100%;
