@@ -185,6 +185,7 @@ export default class CreateMarketOutcome extends Component {
   render() {
     const p = this.props
     const s = this.state
+    const cleanedOutcomes = p.newMarket.outcomes.filter(outcome => outcome !== '')
 
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
@@ -230,10 +231,16 @@ export default class CreateMarketOutcome extends Component {
               {
                 [...Array(s.outcomeFieldCount).keys()].map((i) => {
                   const placeholderText = i < 2 ? 'Outcome' : 'Optional Outcome'
+                  const isError = typeof p.newMarket.validations[1].outcomes === 'string'
+                  const isDuplicate = cleanedOutcomes.filter(outcome => outcome === p.newMarket.outcomes[i]).length >= 2
+                  const needMinimum = isError && i < 2 && (p.newMarket.outcomes[0] === '' || p.newMarket.outcomes[1] === '')
+                  const tooMany = cleanedOutcomes.length > CATEGORICAL_OUTCOMES_MAX_NUM
+                  const highlightInput = isDuplicate || needMinimum || tooMany
                   return (
                     <input
                       key={i}
                       type="text"
+                      className={classNames({[`${StylesForm['CreateMarketForm__error--field']}`]: highlightInput})}
                       value={p.newMarket.outcomes[i]}
                       placeholder={placeholderText}
                       maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
