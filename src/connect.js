@@ -19,7 +19,7 @@ var DEFAULT_NETWORK_ID = require("./constants").DEFAULT_NETWORK_ID;
 function connect(connectOptions, callback) {
   if (!isFunction(callback)) callback = noop;
   if (!isObject(connectOptions)) {
-    return callback("Connection info required, e.g. { ethereumNode: { http: 'http://ethereum.node.url', ws: 'ws://ethereum.node.websocket' }, augurNode: 'ws://augur.node.websocket' }");
+    return callback("Connection info required, e.g. { ethereumNode: { http: \"http://ethereum.node.url\", ws: \"ws://ethereum.node.websocket\" }, augurNode: \"ws://augur.node.websocket\" }");
   }
   var self = this;
   var ethereumNodeConnectOptions = {
@@ -60,11 +60,11 @@ function connect(connectOptions, callback) {
           console.warn("could not connect to augur-node at", connectOptions.augurNode);
           return next(err);
         }
-        transport.addReconnectListener(function() {
-          augurNode.emit('reconnect');
+        transport.addReconnectListener(function () {
+          augurNode.emit("reconnect");
         });
-        transport.addReconnectListener(function() {
-          augurNode.emit('disconnect');
+        transport.addReconnectListener(function () {
+          augurNode.emit("disconnect");
         });
         console.log("connected to augur");
         next(null, connectOptions.augurNode);
@@ -82,11 +82,11 @@ function connect(connectOptions, callback) {
         ethereumConnectionInfo.contracts = ethereumConnectionInfo.contracts || contracts.addresses[DEFAULT_NETWORK_ID];
         self.api = api.generateContractApi(ethereumConnectionInfo.abi.functions);
         self.rpc = rpcInterface.createRpcInterface(ethereumConnectionInfo.rpc);
-        ethereumConnectionInfo.rpc.getTransport().addReconnectListener(function() {
-          rpcInterface.emit('reconnect');
+        ethereumConnectionInfo.rpc.getTransport().addReconnectListener(function () {
+          rpcInterface.emit("reconnect");
         });
-        ethereumConnectionInfo.rpc.getTransport().addDisconnectListener(function() {
-          rpcInterface.emit('disconnect');
+        ethereumConnectionInfo.rpc.getTransport().addDisconnectListener(function () {
+          rpcInterface.emit("disconnect");
         });
         next(null, ethereumConnectionInfo);
       });
