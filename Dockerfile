@@ -3,6 +3,7 @@ FROM node:8 as builder
 WORKDIR /app/
 COPY config.json config.json
 COPY tsconfig.json tsconfig.json
+COPY certs certs
 
 COPY package.json package.json
 RUN npm install
