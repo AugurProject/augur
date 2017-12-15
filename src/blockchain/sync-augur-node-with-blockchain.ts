@@ -24,7 +24,7 @@ function getNetworkID(db: Knex, augur: Augur, callback: (err: Error|null, networ
       if (networkID === lastNetworkID) {
         db("network_id").update({lastLaunched: db.fn.now()}).asCallback( (err: Error|null): void => callback(err, networkID) );
       } else {
-        callback(new Error(`NetworkID mismatch: current: ${networkID}, expected ${lastNetworkID}`), networkID);
+        callback(new Error(`NetworkID mismatch: current: ${networkID}, expected ${lastNetworkID}`), null);
       }
     }
   });
@@ -36,11 +36,12 @@ export function syncAugurNodeWithBlockchain(db: Knex,  augur: Augur, ethereumNod
     getNetworkID(db, augur, (err: Error|null, networkID: string|null) => {
       if (err) return callback(err);
       augur.rpc.eth.getBlockByNumber(["latest", false], (block: any): void => {
-        db("blockchain_sync_history").max("blockNumber as highestBlockNumber").asCallback((err: Error|null, rows?: Array<HighestBlockNumberRow>): void => {
+        db("blockchain_sync_history").max("highestBlockNumber as highestBlockNumber").asCallback((err: Error|null, rows?: Array<HighestBlockNumberRow>): void => {
           if (err) return callback(err);
           if (!rows || !rows.length || !rows[0]) return callback(new Error("blockchain_sync_history lookup failed"));
           const row: HighestBlockNumberRow = rows[0];
-          const fromBlock: number = (!row || !row.highestBlockNumber) ? uploadBlockNumbers[networkID!] : row.highestBlockNumber + 1;
+          const uploadBlockNumber: number = uploadBlockNumbers[networkID!] || 0;
+          const fromBlock: number = (!row || !row.highestBlockNumber) ? uploadBlockNumber : row.highestBlockNumber + 1;
           const highestBlockNumber: number = parseInt(augur.rpc.getCurrentBlock().number, 16) - 1;
           if (fromBlock >= highestBlockNumber) return callback(null); // augur-node is already up-to-date
           downloadAugurLogs(db, augur, fromBlock, highestBlockNumber, (err?: Error|null): void => {
