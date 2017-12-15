@@ -63,7 +63,7 @@ function connect(connectOptions, callback) {
         transport.addReconnectListener(function () {
           augurNode.emit("reconnect");
         });
-        transport.addReconnectListener(function () {
+        transport.addDisconnectListener(function () {
           augurNode.emit("disconnect");
         });
         console.log("connected to augur");

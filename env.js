@@ -16,7 +16,7 @@ const ethereumNode = {
 };
 const augurNode = "ws://127.0.0.1:9001";
 
-augur.connect({ ethereumNode }, (err, connectionInfo) => {
+augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
   if (err) return console.error(err);
   global.networkID = augur.rpc.getNetworkID();
   global.universe = augur.contracts.addresses[networkID].Universe;
