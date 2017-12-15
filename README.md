@@ -16,6 +16,29 @@ If you just wanna get up an running quickly there is a one-click heroku deployme
 ## Building
 This project uses typescript and can be safely built via: `npm run build` or directly with `tsc`
 
+## Connecting to an Ethereum Node
+
+By default, Augur Node is configured to connect to a locally-running Ethereum node. To connect to a hosted Ethereum node instead, change the `http` and `ws` values in the `ethereumNodeEndpoints` object of [config.json](https://github.com/AugurProject/augur-node/blob/master/config.json) as follows:
+
+    {
+        "augurDbPath": "./augur.db",
+        "ethereumNodeEndpoints": {
+            "http": "https://eth9000.augur.net", // Defaults to "http://localhost:8545"
+            "ws": "wss://ws9000.augur.net" // Defaults to "ws://localhost:8546"
+        },
+        "uploadBlockNumbers": {
+            "1": 4086425,
+            "3": 1377804,
+            "4": 1347000
+        },
+        "websocketPort": 9001
+    }
+
+Another way to connect to a hosted Ethereum node is by setting the ENDPOINT_HTTP and ENDPOINT_WS environment variables, as follows:
+
+    $ export ENDPOINT_HTTP=https://eth9000.augur.net 
+    $ export ENDPOINT_WS=wss://ws9000.augur.net
+
 ## Schema Migrations
 Migrations are managed via knex and behave similarly to ActiveRecord
 migrations. As you add migrations, knex tracks the currect applied state in the
