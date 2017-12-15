@@ -55,11 +55,17 @@ function connect(connectOptions, callback) {
     augurNode: function (next) {
       console.log("connecting to augur-node:", connectOptions.augurNode);
       if (!connectOptions.augurNode) return next(null);
-      connectToAugurNode(connectOptions.augurNode, function (err) {
+      connectToAugurNode(connectOptions.augurNode, function (err, transport) {
         if (err) {
           console.warn("could not connect to augur-node at", connectOptions.augurNode);
           return next(err);
         }
+        transport.addReconnectListener(function() {
+          self.emit('augur-node:reconnect');
+        });
+        transport.addReconnectListener(function() {
+          self.emit('augur-node:disconnect');
+        });
         console.log("connected to augur");
         next(null, connectOptions.augurNode);
       });
@@ -76,6 +82,12 @@ function connect(connectOptions, callback) {
         ethereumConnectionInfo.contracts = ethereumConnectionInfo.contracts || contracts.addresses[DEFAULT_NETWORK_ID];
         self.api = api.generateContractApi(ethereumConnectionInfo.abi.functions);
         self.rpc = rpcInterface.createRpcInterface(ethereumConnectionInfo.rpc);
+        ethereumConnectionInfo.rpc.getTransport().addReconnectListener(function() {
+          self.emit('ethereum-node:reconnect');
+        });
+        ethereumConnectionInfo.rpc.getTransport().addDisconnectListener(function() {
+          self.emit('ethereum-node:disconnect');
+        });
         next(null, ethereumConnectionInfo);
       });
     },

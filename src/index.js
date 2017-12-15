@@ -9,6 +9,7 @@ var BigNumber = require("bignumber.js");
 var keythereum = require("keythereum");
 var ROUNDS = require("./constants").ROUNDS;
 var version = require("./version");
+var ee = require("event-emitter");
 
 BigNumber.config({
   MODULO_MODE: BigNumber.EUCLID,
@@ -41,6 +42,7 @@ function Augur() {
   this.trading = require("./trading");
   this.augurNode = require("./augur-node");
 }
+ee(Augur.prototype); // Mix EventEmitter onto Augur
 
 module.exports = Augur;
 module.exports.version = version;

@@ -16,7 +16,7 @@ const ethereumNode = {
 };
 const augurNode = "ws://127.0.0.1:9001";
 
-augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
+augur.connect({ ethereumNode }, (err, connectionInfo) => {
   if (err) return console.error(err);
   global.networkID = augur.rpc.getNetworkID();
   global.universe = augur.contracts.addresses[networkID].Universe;
@@ -41,4 +41,17 @@ augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
       });
     });
   }
+});
+
+augur.on('augur-node:disconnect', function() {
+  console.log('Augur Node Disconnected');
+});
+augur.on('augur-node:reconnect', function() {
+  console.log('Augur Node Resconnected');
+});
+augur.on('ethereum-node:disconnect', function() {
+  console.log('Ethereum Node Disconnected');
+});
+augur.on('ethereum-node:reconnect', function() {
+  console.log('Ethereum Node Reconnected');
 });
