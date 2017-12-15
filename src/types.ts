@@ -41,6 +41,11 @@ export interface BaseTransaction extends BaseTransactionRow {
   blockHash: Bytes32;
 }
 
+export interface WebSocketConfigs {
+  ws?: {[config: string]: any};
+  wss?: {[config: string]: any};
+}
+
 export interface EthereumNodeEndpoints {
   [protocol: string]: string;
 }

@@ -10,7 +10,7 @@ import { runWebsocketServer } from "./server/run-websocket-server";
 import { ErrorCallback } from "./types";
 
 // tslint:disable-next-line:no-var-requires
-const { augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers, websocketPort } = require("../config");
+const {augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers, websocketConfigs } = require("../config");
 
 let db: Knex;
 if (process.env.DATABASE_URL) {
@@ -37,7 +37,7 @@ const envEndpoints: EthereumNodeEndpoints = _.omitBy({
 
 const configuredEndpoints: EthereumNodeEndpoints = _.isEmpty(envEndpoints) ? ethereumNodeEndpoints : envEndpoints;
 
-const websocketServer: WebSocket.Server = runWebsocketServer(db, websocketPort);
+const websocketServers: Array<WebSocket.Server> = runWebsocketServer(db, websocketConfigs);
 
 const augur: Augur = new Augur();
 
@@ -46,13 +46,13 @@ augur.rpc.setDebugOptions({ broadcast: false });
 checkAugurDbSetup(db, (err?: Error|null): void => {
   if (err) {
     console.error("checkAugurDbSetup:", err);
-    websocketServer.close();
+    websocketServers.forEach((websocketServer) => websocketServer.close());
     process.exit(1);
   }
   syncAugurNodeWithBlockchain(db, augur, configuredEndpoints, uploadBlockNumbers, (err?: Error|null): void => {
     if (err) {
       console.error("syncAugurNodeWithBlockchain:", err);
-      websocketServer.close();
+      websocketServers.forEach((websocketServer) => websocketServer.close());
       process.exit(1);
     }
     console.log("Sync with blockchain complete.");
