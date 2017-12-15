@@ -15,8 +15,8 @@
     },
     "wss": {
       "port": 9002,
-      "certificateFile": "certificate.pem",
-      "certificateKeyFile": "key.pem"
+      "certificateFile": "certs/ssl-cert-snakeoil.pem",
+      "certificateKeyFile": "certs/ssl-cert-snakeoil.key"
     }
   }
 }
