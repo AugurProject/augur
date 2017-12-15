@@ -6,7 +6,7 @@ var ethrpc = require("ethrpc");
 var contracts = require("./contracts");
 var api = require("./api");
 var rpcInterface = require("./rpc-interface");
-var connectToAugurNode = require("./augur-node").connect;
+var augurNode = require("./augur-node").connect;
 var isFunction = require("./utils/is-function");
 var isObject = require("./utils/is-object");
 var noop = require("./utils/noop");
@@ -55,16 +55,16 @@ function connect(connectOptions, callback) {
     augurNode: function (next) {
       console.log("connecting to augur-node:", connectOptions.augurNode);
       if (!connectOptions.augurNode) return next(null);
-      connectToAugurNode(connectOptions.augurNode, function (err, transport) {
+      augurNode.connect(connectOptions.augurNode, function (err, transport) {
         if (err) {
           console.warn("could not connect to augur-node at", connectOptions.augurNode);
           return next(err);
         }
         transport.addReconnectListener(function() {
-          self.emit('augur-node:reconnect');
+          augurNode.emit('reconnect');
         });
         transport.addReconnectListener(function() {
-          self.emit('augur-node:disconnect');
+          augurNode.emit('disconnect');
         });
         console.log("connected to augur");
         next(null, connectOptions.augurNode);
@@ -83,10 +83,10 @@ function connect(connectOptions, callback) {
         self.api = api.generateContractApi(ethereumConnectionInfo.abi.functions);
         self.rpc = rpcInterface.createRpcInterface(ethereumConnectionInfo.rpc);
         ethereumConnectionInfo.rpc.getTransport().addReconnectListener(function() {
-          self.emit('ethereum-node:reconnect');
+          rpcInterface.emit('reconnect');
         });
         ethereumConnectionInfo.rpc.getTransport().addDisconnectListener(function() {
-          self.emit('ethereum-node:disconnect');
+          rpcInterface.emit('disconnect');
         });
         next(null, ethereumConnectionInfo);
       });
