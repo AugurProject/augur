@@ -28,10 +28,10 @@ function getAllAugurLogs(p, callback) {
   var filterParams = { address: listContracts(contractNameToAddressMap) };
   var fromBlock = p.fromBlock ? encodeNumberAsJSNumber(p.fromBlock) : constants.AUGUR_UPLOAD_BLOCK_NUMBER;
   var currentBlock = parseInt(ethrpc.getCurrentBlock().number, 16);
-  if (fromBlock > currentBlock) {
-    return callback(new Error("From block " + fromBlock + " is greater than currentBlock " + currentBlock));
-  }
   var toBlock = p.toBlock ? encodeNumberAsJSNumber(p.toBlock) : currentBlock;
+  if (fromBlock > currentBlock || toBlock > currentBlock) {
+    return callback(new Error("Block range " + fromBlock + " to " + toBlock + " exceeds currentBlock " + currentBlock));
+  }
   async.eachSeries(chunkBlocks(fromBlock, toBlock).reverse(), function (chunkOfBlocks, nextChunkOfBlocks) {
     ethrpc.getLogs(assign({}, filterParams, chunkOfBlocks), function (logs) {
       if (logs && logs.error) return nextChunkOfBlocks(logs);
