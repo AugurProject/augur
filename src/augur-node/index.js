@@ -1,7 +1,7 @@
 "use strict";
-var ee = require("event-emitter");
+var EventEmitter = require("event-emitter");
 
-module.exports = ee({
+module.exports = EventEmitter({
   connect: require("./connect"),
   submitRequest: require("./submit-json-rpc-request"),
   subscribeToEvent: require("./subscribe-to-event"),

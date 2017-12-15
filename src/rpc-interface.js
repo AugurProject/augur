@@ -1,5 +1,5 @@
 "use strict";
-var ee = require("event-emitter");
+var EventEmitter = require("event-emitter");
 
 var createRpcInterface = function (ethrpc) {
   return {
@@ -29,6 +29,6 @@ var createRpcInterface = function (ethrpc) {
 
 var ethrpc = createRpcInterface(require("ethrpc"));
 ethrpc.createRpcInterface = createRpcInterface;
-ee(ethrpc);
+EventEmitter(ethrpc);
 
 module.exports = ethrpc;
