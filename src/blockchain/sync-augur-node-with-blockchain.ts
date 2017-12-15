@@ -43,7 +43,6 @@ export function syncAugurNodeWithBlockchain(db: Knex,  augur: Augur, ethereumNod
           const uploadBlockNumber: number = uploadBlockNumbers[networkID!] || 0;
           const fromBlock: number = (!row || !row.highestBlockNumber) ? uploadBlockNumber : row.highestBlockNumber + 1;
           const highestBlockNumber: number = parseInt(augur.rpc.getCurrentBlock().number, 16) - 1;
-          if (fromBlock >= highestBlockNumber) return callback(null); // augur-node is already up-to-date
           downloadAugurLogs(db, augur, fromBlock, highestBlockNumber, (err?: Error|null): void => {
             if (err) return callback(err);
             db.insert({ highestBlockNumber }).into("blockchain_sync_history").asCallback(callback);
