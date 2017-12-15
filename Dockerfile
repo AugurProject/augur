@@ -15,7 +15,7 @@ COPY knexfile.js knexfile.js
 RUN npm run migrate
 
 FROM node:8
-EXPOSE 9001
+EXPOSE 9002
 WORKDIR /app/
 COPY --from=builder /app/node_modules node_modules
 
