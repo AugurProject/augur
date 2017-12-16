@@ -77,9 +77,6 @@ class PositionsMarketsList extends Component {
           <div className={Styles['PositionsMarketsList__SortBar-sort']}>
             <Dropdown default={s.defaultSortType} options={s.sortOptions} onChange={this.changeDropdown} />
           </div>
-          <div className={Styles['PositionsMarketsList__SortBar-filter']}>
-            <Dropdown default={s.defaultFilterType} options={s.filterOptions} onChange={this.changeDropdown} />
-          </div>
         </div>
         {p.markets.length ?
           p.markets.map(market =>

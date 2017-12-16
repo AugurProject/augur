@@ -8,7 +8,7 @@ import getOpenOrders from 'modules/user-open-orders/selectors/open-orders'
 import getClosePositionStatus from 'modules/my-positions/selectors/close-position-status'
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
 import getOrderCancellation from 'modules/bids-asks/selectors/order-cancellation'
-import { loadAccountHistory } from 'modules/auth/actions/load-account-history'
+import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades'
 import { triggerTransactionsExport } from 'modules/transactions/actions/trigger-transactions-export'
 import { constants } from 'services/augurjs'
 
@@ -46,8 +46,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  loadMoreTransactions: () => dispatch(loadAccountHistory()),
-  loadAllTransactions: () => dispatch(loadAccountHistory(true)),
+  loadAccountTrades: () => dispatch(loadAccountTrades()),
   triggerTransactionsExport: () => dispatch(triggerTransactionsExport()),
 })
 
