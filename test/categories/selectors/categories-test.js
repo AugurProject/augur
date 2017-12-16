@@ -2,7 +2,7 @@ import { describe, it } from 'mocha'
 import { assert } from 'chai'
 import { selectTopics } from 'modules/categories/selectors/categories'
 
-describe(`modules/topics/selectors/topics.js`, () => {
+describe(`modules/categories/selectors/categories.js`, () => {
   const test = t => it(t.description, () => (
     t.assertions(selectTopics({ topics: t.topics }))
   ))

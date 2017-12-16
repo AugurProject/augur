@@ -5,7 +5,7 @@ import hasLoadedTopic from 'modules/categories/reducers/has-loaded-category'
 
 import { UPDATE_HAS_LOADED_TOPIC } from 'modules/categories/actions/update-has-loaded-category'
 
-describe('modules/topics/reducers/has-loaded-topic.js', () => {
+describe('modules/categories/reducers/has-loaded-category.js', () => {
   const test = (t) => {
     it(t.describe, () => {
       t.assertions()
