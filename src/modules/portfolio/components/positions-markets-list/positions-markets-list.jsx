@@ -33,7 +33,6 @@ class PositionsMarketsList extends Component {
         { label: 'Fees', value: 'fees' }
       ],
       filterType: 'cryptocurrency',
-      defaultFilterType: 'cryptocurrency',
       filterOptions: [
         { label: 'Cryptocurrency', value: 'cryptocurrency' },
         { label: 'Blockchain', value: 'blockchain' },
