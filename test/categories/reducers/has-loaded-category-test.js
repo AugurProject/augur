@@ -1,9 +1,9 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
 
-import hasLoadedTopic from 'modules/topics/reducers/has-loaded-topic'
+import hasLoadedTopic from 'modules/categories/reducers/has-loaded-category'
 
-import { UPDATE_HAS_LOADED_TOPIC } from 'modules/topics/actions/update-has-loaded-topic'
+import { UPDATE_HAS_LOADED_TOPIC } from 'modules/categories/actions/update-has-loaded-category'
 
 describe('modules/topics/reducers/has-loaded-topic.js', () => {
   const test = (t) => {

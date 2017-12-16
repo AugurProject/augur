@@ -1,9 +1,9 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import TopicsView from 'modules/topics/components/topics-view/topics-view'
+import TopicsView from 'modules/categories/components/categories-view/categories-view'
 
 import { selectLoginAccount } from 'modules/auth/selectors/login-account'
-import { selectTopics } from 'modules/topics/selectors/topics'
+import { selectTopics } from 'modules/categories/selectors/categories'
 
 const mapStateToProps = state => ({
   universe: state.universe,

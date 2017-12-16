@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
-import { selectTopics } from 'modules/topics/selectors/topics'
+import { selectTopics } from 'modules/categories/selectors/categories'
 
 describe(`modules/topics/selectors/topics.js`, () => {
   const test = t => it(t.description, () => (

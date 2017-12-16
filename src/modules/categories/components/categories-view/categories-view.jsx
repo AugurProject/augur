@@ -5,14 +5,14 @@ import { Helmet } from 'react-helmet'
 
 // TODO: implement null state for topics list (needs design)
 // import NullStateMessage from 'modules/common/components/null-state-message';
-import TopicList from 'modules/topics/components/topic-list/topic-list'
+import TopicList from 'modules/categories/components/category-list/category-list'
 import Paginator from 'modules/common/components/paginator/paginator'
 import GraphBG from 'modules/common/components/graph-background/graph-background'
 
 import makePath from 'modules/routes/helpers/make-path'
 import makeQuery from 'modules/routes/helpers/make-query'
 
-import Styles from 'modules/topics/components/topics-view/topics-view.styles'
+import Styles from 'modules/categories/components/categories-view/categories-view.styles'
 
 import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 import { MARKETS } from 'modules/routes/constants/views'

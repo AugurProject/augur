@@ -1,5 +1,5 @@
 import { augur } from 'services/augurjs'
-import { updateHasLoadedTopic } from 'modules/topics/actions/update-has-loaded-topic'
+import { updateHasLoadedTopic } from 'modules/categories/actions/update-has-loaded-category'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import { updateMarketsFilteredSorted, clearMarketsFilteredSorted } from 'modules/markets/actions/update-markets-filtered-sorted'
 

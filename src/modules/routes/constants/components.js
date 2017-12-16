@@ -4,7 +4,7 @@ import asyncComponent from 'modules/common/components/async-component'
 
 export const Topics = asyncComponent({
   moduleName: 'Topics',
-  loader: () => import(/* webpackChunkName: 'topics' */ 'modules/topics/container')
+  loader: () => import(/* webpackChunkName: 'topics' */ 'modules/categories/container')
     .then(module => module.default)
 })
 

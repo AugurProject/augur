@@ -6,7 +6,7 @@ import syncUniverse from 'modules/universe/actions/sync-universe'
 import getReportingCycle from 'modules/universe/selectors/reporting-cycle'
 import { syncBlockchain } from 'modules/app/actions/sync-blockchain'
 import { listenToUpdates } from 'modules/app/actions/listen-to-updates'
-import loadTopics from 'modules/topics/actions/load-topics'
+import loadTopics from 'modules/categories/actions/load-categories'
 import { loadMarketsToReportOn } from 'modules/reports/actions/load-markets-to-report-on'
 import logError from 'utils/log-error'
 
