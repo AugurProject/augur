@@ -9,7 +9,7 @@ export function getUserTradingPositions(db: Knex, universe: Address|null, accoun
   if (account == null) return callback(new Error("Missing required parameter: account"));
   const query = db.select(["positions.marketID", "outcome", "averagePrice", "numShares", "numSharesAdjustedForUserIntention", "realizedProfitLoss", "unrealizedProfitLoss"]).from("positions").where({ account });
   if (universe != null) query.join("markets", "markets.marketID", "positions.marketID" ).where({ universe });
-  if (marketID != null) query.where("markets.marketID", marketID);
+  if (marketID != null) query.where("positions.marketID", marketID);
   if (outcome != null) query.where({ outcome });
   queryModifier(query, "outcome", "asc", sortBy, isSortDescending, limit, offset);
   query.asCallback(callback);
