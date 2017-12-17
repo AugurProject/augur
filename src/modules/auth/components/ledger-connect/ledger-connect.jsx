@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { LedgerEthereum, BrowserLedgerConnectionFactory, Network } from 'ethereumjs-ledger'
 
+import { Alert } from 'modules/common/components/icons/icons'
+
 import Spinner from 'modules/common/components/spinner/spinner'
 
 import Styles from 'modules/auth/components/ledger-connect/ledger-connect.styles'
@@ -43,7 +45,7 @@ export default class Ledger extends Component {
       nextState.ledgerState !== this.LEDGER_STATES.ATTEMPTING_CONNECTION &&
       this.state.ledgerState !== nextState.ledgerState
     ) {
-      this.updateDisplayInstructions(true)
+      // this.updateDisplayInstructions(true)
     }
   }
 
@@ -117,7 +119,9 @@ export default class Ledger extends Component {
             }
           </button>
         </div>
+        {s.ledgerState &&
         <div className={classNames(Styles.LedgerConnect__messages, { [Styles[`LedgerConnect__messages--visible`]]: s.ledgerState })}>
+          {Alert}
           <h3>Make sure you have: </h3>
           <ul>
             <li>
@@ -137,6 +141,7 @@ export default class Ledger extends Component {
             </li>
           </ul>
         </div>
+        }
       </section>
     )
   }
