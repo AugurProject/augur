@@ -1,10 +1,10 @@
 import { assert } from 'chai'
 
-export default function (keywords) {
-  assert.isDefined(keywords, `keywords isn't defined`)
-  assert.isObject(keywords, `keywords isn't an object`)
-  assert.isDefined(keywords.value, `keywords.value isn't defined`)
-  assert.isString(keywords.value, `keywords.value isn't a string`)
-  assert.isDefined(keywords.onChangeKeywords, `keywords.onChangeKeywords isn't defined`)
-  assert.isFunction(keywords.onChangeKeywords, `keywords.onChangeKeywords isn't a function`)
+export default function (tags) {
+  assert.isDefined(tags, `tags isn't defined`)
+  assert.isObject(tags, `tags isn't an object`)
+  assert.isDefined(tags.value, `tags.value isn't defined`)
+  assert.isString(tags.value, `tags.value isn't a string`)
+  assert.isDefined(tags.onChangeTags, `tags.onChangeTags isn't defined`)
+  assert.isFunction(tags.onChangeTags, `tags.onChangeTags isn't a function`)
 }

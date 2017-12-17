@@ -131,11 +131,11 @@ export default class KeystoreConnect extends Component {
               className={Styles.Keystore__input}
             >
               <label
-                htmlFor="keyword_create_passphrase"
+                htmlFor="tag_create_passphrase"
               >
                 Passphrase
                 <input
-                  id="keyword_create_passphrase"
+                  id="tag_create_passphrase"
                   type="password"
                   value={s.password}
                   placeholder="Passphrase"
