@@ -1,7 +1,7 @@
 import { augur } from 'services/augurjs'
 import logError from 'utils/log-error'
 import { addOpenOrderTransactions } from 'modules/transactions/actions/add-transactions'
-import { loadMarketsInfoOnly } from 'modules/markets/actions/load-markets-info'
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 
 export const loadAccountOrders = (options, callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
@@ -10,7 +10,7 @@ export const loadAccountOrders = (options, callback = logError) => (dispatch, ge
     if (orders == null || Object.keys(orders).length === 0) return callback(null)
     const marketIDs = Object.keys(orders)
     // TODO: consolidate all the getting of maket infos for load account history
-    dispatch(loadMarketsInfoOnly(marketIDs.slice(), () => {
+    dispatch(loadMarketsInfo(marketIDs.slice(), () => {
       dispatch(addOpenOrderTransactions(orders))
       // TODO update user's open orders
       callback(null, orders)

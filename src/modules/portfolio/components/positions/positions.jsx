@@ -32,7 +32,7 @@ export default class Positions extends Component {
           <title>Positions</title>
         </Helmet>
         <PositionsMarketsList
-          title="Positions"
+          title="Open"
           markets={p.openPositionMarkets}
           closePositionStatus={p.closePositionStatus}
           scalarShareDenomination={p.scalarShareDenomination}
