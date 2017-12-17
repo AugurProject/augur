@@ -9,9 +9,16 @@ export const loadAccountPositions = (options, callback = logError) => (dispatch,
   augur.trading.getUserTradingPositions({ ...options, account: loginAccount.address, universe: universe.id }, (err, shareBalances) => {
     if (err) return callback(err)
     if (shareBalances == null) return callback(null)
-    async.forEachOfSeries(shareBalances, (position, index, next) => {
-      dispatch(updateAccountPositionsData(position, position.marketID))
-      return next()
+    // TODO: need better way to consolidate by marketID
+    const marketIDs = shareBalances.reduce((collapsed, position) => {
+      if (!collapsed[position.marketID]) {
+        collapsed[position.marketID] = []
+      }
+      collapsed[position.marketID].push(position)
+      return collapsed
+    }, {})
+    async.forEachOfSeries(marketIDs, (positions, id, nextID) => {
+      dispatch(updateAccountPositionsData(marketIDs, id))
     })
     callback(null, shareBalances)
   })

@@ -6,7 +6,7 @@ import PositionsMarketsList from 'modules/portfolio/components/positions-markets
 import { TYPE_CHALLENGE } from 'modules/market/constants/link-types'
 
 export default class Positions extends Component {
-  propTypes = {
+  static propTypes = {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     openPositionMarkets: PropTypes.array.isRequired,
@@ -21,10 +21,6 @@ export default class Positions extends Component {
 
   componentWillMount() {
     this.props.loadAccountTrades()
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-
   }
 
   render() {
