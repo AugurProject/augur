@@ -16,6 +16,7 @@ import {
   selectLoginAccountState
 } from 'src/select-state'
 import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks'
+import selectUserOpenOrders from 'modules/user-open-orders/selectors/user-open-orders'
 import { assembleMarket, selectMarketReport } from 'modules/market/selectors/market'
 
 import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open'
@@ -54,7 +55,7 @@ export const selectMarkets = createSelector(
         isMarketDataExpired(marketsData[marketID], new Date().getTime()),
 
         !!favorites[marketID],
-        outcomesData[marketID],
+        addUserOpenOrders(outcomesData[marketID], orderBooks),
 
         selectMarketReport(marketID, reports[marketsData[marketID].universeID]),
         (accountPositions || {})[marketID],
@@ -75,3 +76,11 @@ export const selectMarkets = createSelector(
     })
   }
 )
+
+function addUserOpenOrders(outcomeData, orderBooks) {
+  if (outcomeData) {
+    const userOrderData = selectUserOpenOrders(outcomeData.id, orderBooks)
+    outcomeData.userOpenOrders = userOrderData
+    return outcomeData
+  }
+}
