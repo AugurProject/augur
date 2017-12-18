@@ -7,6 +7,7 @@ import getMyMarkets from 'modules/my-markets/selectors/my-markets'
 // import { triggerTransactionsExport } from 'modules/transactions/actions/trigger-transactions-export'
 import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 import loadMarkets from 'modules/markets/actions/load-markets'
+import loadUserMarkets from 'modules/markets/actions/load-user-markets'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
 
@@ -21,7 +22,11 @@ const mapStateToProps = state =>
   })
 
 const mapDispatchToProps = dispatch => ({
-  loadMarkets: () => dispatch(loadMarkets()),
+  loadMarkets: () => dispatch(loadUserMarkets((err, marketIDs) => {
+    if (err) return logError(err)
+    // if we have marketIDs back, lets load the info so that we can properly display myMarkets.
+    dispatch(loadMarketsInfo(marketIDs))
+  })),
   loadMarketsInfo: marketIDs => dispatch(loadMarketsInfo(marketIDs)),
   toggleFavorite: marketID => dispatch(toggleFavorite(marketID)),
 })
