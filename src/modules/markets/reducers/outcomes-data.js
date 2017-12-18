@@ -36,11 +36,11 @@ function parseOutcomes(newMarketsData, outcomesData) {
   return Object.keys(newMarketsData).reduce((p, marketID) => {
     const marketData = newMarketsData[marketID]
 
-    if (!marketData.type || !marketData.outcomes || !marketData.outcomes.length) {
+    if (!marketData.marketType || !marketData.outcomes || !marketData.outcomes.length) {
       return p
     }
 
-    switch (marketData.type) {
+    switch (marketData.marketType) {
       case BINARY:
         p[marketID] = {
           ...outcomesData[marketID],
@@ -63,7 +63,7 @@ function parseOutcomes(newMarketsData, outcomesData) {
         return p
 
       default:
-        console.warn('Unknown market type:', marketID, marketData.type, marketData)
+        console.warn('Unknown market type:', marketID, marketData.marketType, marketData)
         return p
     }
   }, {})

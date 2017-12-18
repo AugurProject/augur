@@ -29,19 +29,21 @@ const TopBar = props => (
           <div className={Styles.TopBar__stat}>
             <div
               className={Styles['TopBar__stat-label']}
-              dangerouslySetInnerHTML={{ __html: `<span>30 Day P/L</span>` }}
-            />
+            >
+              <span>{props.stats[1].totalPLMonth.label}</span>
+            </div>
             <span className={Styles['TopBar__stat-value']}>
-              123
+              {props.stats[1].totalPLMonth.value.formatted}
             </span>
           </div>
           <div className={Styles.TopBar__stat}>
             <div
               className={Styles['TopBar__stat-label']}
-              dangerouslySetInnerHTML={{ __html: `<span>1 Day P/L</span>` }}
-            />
+            >
+              <span>{props.stats[1].totalPLDay.label}</span>
+            </div>
             <span className={Styles['TopBar__stat-value']}>
-              123
+              {props.stats[1].totalPLDay.value.formatted}
             </span>
           </div>
         </div>

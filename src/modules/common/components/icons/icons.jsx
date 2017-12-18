@@ -305,6 +305,21 @@ export const Alert = (
   </svg>
 )
 
+export const ExclamationCircle = (
+  <svg viewBox="0 0 16 16">
+    <g id="Updated-Screens" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g id="New-Market_11" transform="translate(-682.000000, -464.000000)">
+        <g id="Icon/Error" transform="translate(682.000000, 464.000000)">
+          <circle id="Oval" stroke="#FF0068" strokeWidth="1" cx="8" cy="8" r="7" />
+          <text id="!" transform="translate(8.000000, 7.500000) scale(-1, 1) translate(-8.000000, -7.500000) " fontFamily=".AppleSystemUIFont" fontSize="10.5" fontWeight="normal" letterSpacing="0.262500018" fill="#FF0068">
+            <tspan x="6.1" y="11">!</tspan>
+          </text>
+        </g>
+      </g>
+    </g>
+  </svg>
+)
+
 export const CheckboxOff = (
   <svg id="13de3723-afc4-43e5-966e-01b702ca5297" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21.16 21.16">
     <defs>

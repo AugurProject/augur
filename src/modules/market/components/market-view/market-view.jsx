@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 import MarketHeader from 'modules/market/containers/market-header'
 import MarketOutcomesChart from 'modules/market/containers/market-outcomes-chart'
@@ -9,6 +10,16 @@ import MarketTrading from 'modules/market/containers/market-trading'
 import Styles from 'modules/market/components/market-view/market-view.styles'
 
 export default class MarketView extends Component {
+  static propTypes = {
+    marketId: PropTypes.string.isRequired,
+    isConnected: PropTypes.bool.isRequired,
+    isMarketLoaded: PropTypes.bool.isRequired,
+    loadFullMarket: PropTypes.func.isRequired
+  }
+
+  static loadFullMarket(marketId, options, force) {
+  }
+
   constructor(props) {
     super(props)
 
@@ -18,6 +29,21 @@ export default class MarketView extends Component {
 
     this.updateSelectedOutcomes = this.updateSelectedOutcomes.bind(this)
     this.clearSelectedOutcomes = this.clearSelectedOutcomes.bind(this)
+  }
+
+  componentWillMount() {
+    if (this.props.isConnected && !this.props.isMarketLoaded) {
+      this.props.loadFullMarket()
+    }
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (
+      (this.props.isConnected === false && nextProps.isConnected === true) &&
+      !!nextProps.marketId
+    ) {
+      nextProps.loadFullMarket()
+    }
   }
 
   updateSelectedOutcomes(selectedOutcome) {

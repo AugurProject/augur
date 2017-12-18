@@ -19,7 +19,7 @@ function deployDev() {
       "echo '-- TRAVERSING INTO AUGUR --';",
       "cd ~/ipfs-deploy/augur;",
       "echo '-- CHECKING OUT CORRECT BRANCH --';",
-      "git checkout v3;",
+      "git checkout seadragon;",
       "echo '-- ADDING BUILD TO IPFS --';",
       "export NEW_BUILD_HASH=$(/home/augur/go/bin/ipfs add -r build/ | tail -n 1 | awk '{print $2}');",
       "echo '-- PUBLISHING BUILD --';",

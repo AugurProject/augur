@@ -98,9 +98,10 @@ export default class Notification extends Component {
       >
         <Link
           className={Styles.Notification__link}
-          to={p.linkPath}
+          to={p.linkPath ? p.linkPath : ''}
           onClick={(e) => {
             e.stopPropagation()
+            if (!p.linkPath) e.preventDefault()
             if (p.linkPath && p.onClick) p.toggleNotifications()
           }}
         >
@@ -110,6 +111,7 @@ export default class Notification extends Component {
             className={Styles.Notification__close}
             onClick={(e) => {
               e.stopPropagation()
+              e.preventDefault()
               p.removeNotification()
             }}
           >

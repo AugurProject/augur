@@ -10,7 +10,7 @@ import { updateHasLoadedMarkets } from 'modules/markets/actions/update-has-loade
 const loadMarkets = (callback = logError) => (dispatch, getState) => {
   const { universe } = getState()
 
-  augur.augurNode.submitRequest('getMarkets', { universe: universe.id }, (err, marketsArray) => {
+  augur.markets.getMarkets({ universe: universe.id }, (err, marketsArray) => {
     if (err) return callback(err)
 
     const marketsData = marketsArray.reduce((p, id) => ({
