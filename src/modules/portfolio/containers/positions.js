@@ -8,7 +8,7 @@ import getOpenOrders from 'modules/user-open-orders/selectors/open-orders'
 import getClosePositionStatus from 'modules/my-positions/selectors/close-position-status'
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
 import getOrderCancellation from 'modules/bids-asks/selectors/order-cancellation'
-import { loadAccountTrades } from 'modules/auth/actions/load-account-history'
+import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades'
 import { triggerTransactionsExport } from 'modules/transactions/actions/trigger-transactions-export'
 import { constants } from 'services/augurjs'
 
