@@ -20,7 +20,7 @@ export const selectHasLoadedReportsState = state => state.hasLoadedReports
 export const selectSelectedMarketIDState = state => state.selectedMarketID
 export const selectSelectedMarketsSubsetState = state => state.selectedMarketsSubset
 export const selectSelectedMarketsHeaderState = state => state.selectedMarketsHeader
-export const selectKeywordsState = state => state.keywords
+export const selectTagsState = state => state.tags
 export const selectTopicsState = state => state.topics
 export const selectHasLoadedTopicState = state => state.hasLoadedTopic
 export const selectSelectedTopicState = state => state.selectedTopic

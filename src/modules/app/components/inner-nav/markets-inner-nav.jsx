@@ -25,9 +25,9 @@ export default class MarketsInnerNav extends BaseInnerNav {
   constructor() {
     super()
     this.state = {
-      actualCurrentKeywords: [],
-      visibleKeywords: {},
-      selectedKeywords: []
+      actualCurrentTags: [],
+      visibleTags: {},
+      selectedTags: []
     }
   }
 
@@ -37,74 +37,74 @@ export default class MarketsInnerNav extends BaseInnerNav {
       !isEqual(this.props.marketsFilteredSorted, nextProps.marketsFilteredSorted) ||
       !isEqual(this.props.location.search, nextProps.location.search)
     ) {
-      this.updateFilteredKeywords(nextProps.markets, nextProps.marketsFilteredSorted, nextProps.location)
+      this.updateFilteredTags(nextProps.markets, nextProps.marketsFilteredSorted, nextProps.location)
     }
   }
 
-  updateFilteredKeywords(markets, marketsFilteredSorted, location) {
+  updateFilteredTags(markets, marketsFilteredSorted, location) {
     // make sure all selected tags are displayed, even if markets haven't loaded yet
-    const selectedKeywords = parseStringToArray(decodeURIComponent(parseQuery(location.search)[TAGS_PARAM_NAME] || ''), QUERY_VALUE_DELIMITER)
+    const selectedTags = parseStringToArray(decodeURIComponent(parseQuery(location.search)[TAGS_PARAM_NAME] || ''), QUERY_VALUE_DELIMITER)
 
-    let filteredKeywords = flatMap(marketsFilteredSorted, (index) => {
+    let filteredTags = flatMap(marketsFilteredSorted, (index) => {
       const market = markets.find(market => market.id === index)
       return (market ? [market.tags[0] || '', market.tags[1] || ''] : null)
-    }).filter(keyword => !!keyword)
+    }).filter(tag => !!tag)
 
-    filteredKeywords = concat(filteredKeywords, selectedKeywords)
-    // TODO: discuss uppercase/lowercase variant keywords and how they function differently
-    // lowercasing all keywords will make some function improperly re: markets view expects
+    filteredTags = concat(filteredTags, selectedTags)
+    // TODO: discuss uppercase/lowercase variant tags and how they function differently
+    // lowercasing all tags will make some function improperly re: markets view expects
     // correct "original" capitalization
-    filteredKeywords = uniq(filteredKeywords)
+    filteredTags = uniq(filteredTags)
       .slice(0, 50)
 
-    const newKeywords = difference(filteredKeywords, this.state.actualCurrentKeywords)
-    const oldKeywords = difference(this.state.actualCurrentKeywords, filteredKeywords)
-    if (newKeywords.length > 0) this.addKeywords(newKeywords)
-    if (oldKeywords.length > 0) this.removeKeywords(oldKeywords)
+    const newTags = difference(filteredTags, this.state.actualCurrentTags)
+    const oldTags = difference(this.state.actualCurrentTags, filteredTags)
+    if (newTags.length > 0) this.addTags(newTags)
+    if (oldTags.length > 0) this.removeTags(oldTags)
 
-    this.setState({ actualCurrentKeywords: filteredKeywords, selectedKeywords })
+    this.setState({ actualCurrentTags: filteredTags, selectedTags })
   }
 
-  addKeywords(keywords) {
-    const newKeywords = {}
-    keywords.forEach((keyword) => {
-      newKeywords[keyword] = { visible: false }
+  addTags(tags) {
+    const newTags = {}
+    tags.forEach((tag) => {
+      newTags[tag] = { visible: false }
     })
 
-    const visibleKeywords = { ...this.state.visibleKeywords, ...newKeywords }
-    this.setState({ visibleKeywords })
+    const visibleTags = { ...this.state.visibleTags, ...newTags }
+    this.setState({ visibleTags })
 
-    // animate keywords after mounting
+    // animate tags after mounting
     window.setTimeout(() => {
-      const animKeywords = {}
-      keywords.forEach((keyword) => {
-        animKeywords[keyword] = { visible: true }
+      const animTags = {}
+      tags.forEach((tag) => {
+        animTags[tag] = { visible: true }
       })
-      const visibleKeywords = { ...this.state.visibleKeywords, ...animKeywords }
-      this.setState({ visibleKeywords })
+      const visibleTags = { ...this.state.visibleTags, ...animTags }
+      this.setState({ visibleTags })
     }, 50)
   }
 
-  removeKeywords(keywords) {
-    const oldKeywords = {}
-    keywords.forEach((keyword) => {
-      oldKeywords[keyword] = { visible: false }
+  removeTags(tags) {
+    const oldTags = {}
+    tags.forEach((tag) => {
+      oldTags[tag] = { visible: false }
     })
-    const visibleKeywords = { ...this.state.visibleKeywords, ...oldKeywords }
-    this.setState({ visibleKeywords })
+    const visibleTags = { ...this.state.visibleTags, ...oldTags }
+    this.setState({ visibleTags })
 
-    // TODO: consider removing keywords from state when transition ends?
+    // TODO: consider removing tags from state when transition ends?
     // main difficulty is grabbing the correct DOM element to bind events.
     // currently, the behavior works perfectly visually
-    // plus the likelihood of keyword reuse is high, so removal likely
-    // is useless because the keyword would be re-added soon
+    // plus the likelihood of tag reuse is high, so removal likely
+    // is useless because the tag would be re-added soon
   }
 
-  toggleKeyword(keyword) {
+  toggleTag(tag) {
     let searchParams = parseQuery(this.props.location.search)
 
     if (searchParams[TAGS_PARAM_NAME] == null || !searchParams[TAGS_PARAM_NAME].length) {
-      searchParams[TAGS_PARAM_NAME] = [encodeURIComponent(keyword)]
+      searchParams[TAGS_PARAM_NAME] = [encodeURIComponent(tag)]
       searchParams = makeQuery(searchParams)
 
       return this.props.history.push({
@@ -113,16 +113,16 @@ export default class MarketsInnerNav extends BaseInnerNav {
       })
     }
 
-    const keywords = parseStringToArray(decodeURIComponent(searchParams[TAGS_PARAM_NAME]), QUERY_VALUE_DELIMITER)
+    const tags = parseStringToArray(decodeURIComponent(searchParams[TAGS_PARAM_NAME]), QUERY_VALUE_DELIMITER)
 
-    if (keywords.indexOf(keyword) !== -1) { // Remove Tag
-      keywords.splice(keywords.indexOf(keyword), 1)
+    if (tags.indexOf(tag) !== -1) { // Remove Tag
+      tags.splice(tags.indexOf(tag), 1)
     } else { // add tag
-      keywords.push(keyword)
+      tags.push(tag)
     }
 
-    if (keywords.length) {
-      searchParams[TAGS_PARAM_NAME] = keywords.join(QUERY_VALUE_DELIMITER)
+    if (tags.length) {
+      searchParams[TAGS_PARAM_NAME] = tags.join(QUERY_VALUE_DELIMITER)
     } else {
       delete searchParams[TAGS_PARAM_NAME]
     }
@@ -155,11 +155,11 @@ export default class MarketsInnerNav extends BaseInnerNav {
   }
 
   getSubMenuData() {
-    return map(this.state.visibleKeywords, (keywordState, keyword) => ({
-      label: keyword,
-      isSelected: (this.state.selectedKeywords.indexOf(keyword) > -1),
-      onClick: () => this.toggleKeyword(keyword),
-      visible: keywordState.visible
+    return map(this.state.visibleTags, (tagState, tag) => ({
+      label: tag,
+      isSelected: (this.state.selectedTags.indexOf(tag) > -1),
+      onClick: () => this.toggleTag(tag),
+      visible: tagState.visible
     }))
   }
 }
