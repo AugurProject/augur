@@ -1,4 +1,4 @@
-import { UPDATE_HAS_LOADED_TOPIC } from 'modules/topics/actions/update-has-loaded-topic'
+import { UPDATE_HAS_LOADED_TOPIC } from 'modules/categories/actions/update-has-loaded-category'
 
 export default function (hasLoadedTopic = {}, action) {
   switch (action.type) {

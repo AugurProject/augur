@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { selectTopics } from 'modules/topics/selectors/topics'
+import { selectTopics } from 'modules/categories/selectors/categories'
 import { submitNewMarket } from 'modules/create-market/actions/submit-new-market'
 import {
   addOrderToNewMarket,

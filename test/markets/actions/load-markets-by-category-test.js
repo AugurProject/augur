@@ -6,7 +6,7 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import testState from 'test/testState'
 
-describe('modules/markets/actions/load-markets-by-topic.js', () => {
+describe('modules/markets/actions/load-markets-by-category.js', () => {
   proxyquire.noPreserveCache().noCallThru()
   const middlewares = [thunk]
   const mockStore = configureMockStore(middlewares)
@@ -31,7 +31,7 @@ describe('modules/markets/actions/load-markets-by-topic.js', () => {
       if (t.toTest === 'array') AugurJS.augur.markets.getMarketsInCategory.yields(null, ['0x1, 0x2'])
       if (t.toTest === 'empty-array') AugurJS.augur.markets.getMarketsInCategory.yields(null, [])
 
-      const action = proxyquire('../../../src/modules/markets/actions/load-markets-by-topic', {
+      const action = proxyquire('../../../src/modules/markets/actions/load-markets-by-category', {
         '../../../services/augurjs': AugurJS,
         './load-markets-info': mockLoadMarketsInfo
       })

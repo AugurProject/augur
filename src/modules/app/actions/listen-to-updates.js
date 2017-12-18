@@ -7,7 +7,7 @@ import { convertLogsToTransactions } from 'modules/transactions/actions/convert-
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import { updateOutcomePrice } from 'modules/markets/actions/update-outcome-price'
 // import { fillOrder } from 'modules/bids-asks/actions/update-market-order-book'
-import { updateMarketTopicPopularity } from 'modules/topics/actions/update-topics'
+import { updateMarketTopicPopularity } from 'modules/categories/actions/update-categories'
 import { updateAccountTradesData, updateAccountBidsAsksData, updateAccountCancelsData, updateAccountPositionsData } from 'modules/my-positions/actions/update-account-trades-data'
 import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
 import * as TYPES from 'modules/transactions/constants/types'
