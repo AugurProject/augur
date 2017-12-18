@@ -1,4 +1,4 @@
-import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKET_TOPIC, UPDATE_MARKETS_LOADING_STATUS } from 'modules/markets/actions/update-markets-data'
+import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKET_CATEGORY, UPDATE_MARKETS_LOADING_STATUS } from 'modules/markets/actions/update-markets-data'
 
 export default function (marketsData = {}, action) {
   switch (action.type) {
@@ -18,13 +18,13 @@ export default function (marketsData = {}, action) {
           return p
         }, {})
       }
-    case UPDATE_MARKET_TOPIC:
+    case UPDATE_MARKET_CATEGORY:
       if (!action.marketID) return marketsData
       return {
         ...marketsData,
         [action.marketID]: {
           ...marketsData[action.marketID],
-          topic: action.topic
+          category: action.category
         }
       }
     case CLEAR_MARKETS_DATA:

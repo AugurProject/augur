@@ -1,16 +1,16 @@
 import { createSelector } from 'reselect'
 import store from 'src/store'
-import { selectTopicsState } from 'src/select-state'
+import { selectCategoriesState } from 'src/select-state'
 
 export default function () {
-  return selectTopics(store.getState())
+  return selectCategories(store.getState())
 }
 
-export const selectTopics = createSelector(
-  selectTopicsState,
-  topics => Object.keys(topics || {})
-    .map(topic => ({ popularity: topics[topic].popularity, topic: topics[topic].category }))
+export const selectCategories = createSelector(
+  selectCategoriesState,
+  categories => Object.keys(categories || {})
+    .map(category => ({ popularity: categories[category].popularity, category: categories[category].category }))
     .sort(popularityDifference)
 )
 
-const popularityDifference = (topic1, topic2) => topic2.popularity - topic1.popularity
+const popularityDifference = (category1, category2) => category2.popularity - category1.popularity

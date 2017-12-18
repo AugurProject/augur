@@ -1,19 +1,19 @@
 import { augur } from 'services/augurjs'
-import { clearTopics, updateTopics } from 'modules/categories/actions/update-categories'
+import { clearCategories, updateCategories } from 'modules/categories/actions/update-categories'
 import logError from 'utils/log-error'
 
-const loadTopics = (callback = logError) => (dispatch, getState) => {
+const loadCategories = (callback = logError) => (dispatch, getState) => {
   const { universe } = getState()
   if (!universe.id) return callback(null)
-  augur.markets.getCategories({ universe: universe.id }, (err, topics) => {
+  augur.markets.getCategories({ universe: universe.id }, (err, categories) => {
     if (err) return callback(err)
-    if (topics == null) return callback(null)
-    if (Object.keys(topics).length) {
-      dispatch(clearTopics())
-      dispatch(updateTopics(topics))
+    if (categories == null) return callback(null)
+    if (Object.keys(categories).length) {
+      dispatch(clearCategories())
+      dispatch(updateCategories(categories))
     }
-    callback(null, topics)
+    callback(null, categories)
   })
 }
 
-export default loadTopics
+export default loadCategories

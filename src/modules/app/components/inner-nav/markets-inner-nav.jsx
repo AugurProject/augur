@@ -9,7 +9,7 @@ import makeQuery from 'modules/routes/helpers/make-query'
 import makePath from 'modules/routes/helpers/make-path'
 
 import { QUERY_VALUE_DELIMITER } from 'modules/routes/constants/query-value-delimiter'
-import { TOPIC_PARAM_NAME, TAGS_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
+import { CATEGORY_PARAM_NAME, TAGS_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 import { MARKETS } from 'modules/routes/constants/views'
 
 export default class MarketsInnerNav extends BaseInnerNav {
@@ -137,10 +137,10 @@ export default class MarketsInnerNav extends BaseInnerNav {
 
   getMainMenuData() {
     const searchParams = parseQuery(this.props.location.search)
-    const selectedCategory = searchParams[TOPIC_PARAM_NAME]
+    const selectedCategory = searchParams[CATEGORY_PARAM_NAME]
     return this.props.categories.map(item => ({
-      label: item.topic,
-      isSelected: item.topic === selectedCategory,
+      label: item.category,
+      isSelected: item.category === selectedCategory,
       visible: true,
       onClick: () => {
         if (this.props.isMobile) this.props.openSubMenu()
@@ -148,7 +148,7 @@ export default class MarketsInnerNav extends BaseInnerNav {
       link: {
         pathname: makePath(MARKETS),
         search: makeQuery({
-          [TOPIC_PARAM_NAME]: item.topic
+          [CATEGORY_PARAM_NAME]: item.category
         })
       }
     }))

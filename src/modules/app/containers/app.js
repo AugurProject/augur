@@ -6,7 +6,7 @@ import App from 'modules/app/components/app/app'
 import { selectNotificationsAndSeenCount } from 'modules/notifications/selectors/notifications'
 import { selectMarketsHeader } from 'modules/markets/selectors/markets-header'
 import { selectCoreStats } from 'modules/account/selectors/core-stats'
-import { selectTopics } from 'modules/categories/selectors/categories'
+import { selectCategories } from 'modules/categories/selectors/categories'
 import portfolio from 'modules/portfolio/selectors/portfolio'
 import { updateIsMobile, updateIsMobileSmall } from 'modules/app/actions/update-is-mobile'
 import { updateHeaderHeight } from 'modules/app/actions/update-header-height'
@@ -27,8 +27,8 @@ const mapStateToProps = state => ({
   footerHeight: state.footerHeight,
   markets: getAllMarkets(),
   marketsFilteredSorted: state.marketsFilteredSorted,
-  categories: selectTopics(state),
-  selectedCategory: state.selectedTopic
+  categories: selectCategories(state),
+  selectedCategory: state.selectedCategory
 })
 
 const mapDispatchToProps = dispatch => ({

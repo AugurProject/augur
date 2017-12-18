@@ -9,11 +9,11 @@ import Styles from 'modules/categories/components/category/category.styles'
 import makePath from 'modules/routes/helpers/make-path'
 import makeQuery from 'modules/routes/helpers/make-query'
 
-import { TOPIC_VOLUME_INCREASED, TOPIC_VOLUME_DECREASED } from 'modules/categories/constants/category-popularity-change'
+import { CATEGORY_VOLUME_INCREASED, CATEGORY_VOLUME_DECREASED } from 'modules/categories/constants/category-popularity-change'
 import { MARKETS } from 'modules/routes/constants/views'
-import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
+import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
-export default class Topic extends Component {
+export default class Category extends Component {
   static propTypes = {
     popularity: PropTypes.number
   }
@@ -29,7 +29,7 @@ export default class Topic extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (this.props.popularity !== nextProps.popularity) this.updatePopularity(nextProps.popularity > this.props.popularity ? TOPIC_VOLUME_INCREASED : TOPIC_VOLUME_DECREASED)
+    if (this.props.popularity !== nextProps.popularity) this.updatePopularity(nextProps.popularity > this.props.popularity ? CATEGORY_VOLUME_INCREASED : CATEGORY_VOLUME_DECREASED)
   }
 
   updatePopularity(popularityChange) {
@@ -40,7 +40,7 @@ export default class Topic extends Component {
     const p = this.props
     const s = this.state
 
-    const isNullTopic = p.topic === 'null-topic' && p.popularity === 0
+    const isNullCategory = p.category === 'null-category' && p.popularity === 0
     const roundedPop = BigNumber(p.popularity).round(0, BigNumber.ROUND_HALF_EVEN)
     let popString = roundedPop.toNumber() === 1 ? ' SHARE' : ' SHARES'
     if (roundedPop > 1000) {
@@ -56,28 +56,28 @@ export default class Topic extends Component {
         to={{
           pathname: makePath(MARKETS),
           search: makeQuery({
-            [TOPIC_PARAM_NAME]: p.topic
+            [CATEGORY_PARAM_NAME]: p.category
           })
         }}
-        className={isNullTopic ? Styles['Topic__link-hidden'] : Styles.Topic__link}
+        className={isNullCategory ? Styles['Category__link-hidden'] : Styles.Category__link}
       >
         <div
-          ref={(topicNameContainer) => { this.topicNameContainer = topicNameContainer }}
+          ref={(categoryNameContainer) => { this.categoryNameContainer = categoryNameContainer }}
         >
-          <div className={Styles.Topic__name} >
-            <span ref={(topicName) => { this.topicName = topicName }}>
-              {p.topic.toUpperCase()}
+          <div className={Styles.Category__name} >
+            <span ref={(categoryName) => { this.categoryName = categoryName }}>
+              {p.category.toUpperCase()}
             </span>
           </div>
-          <div className={Styles.Topic__separator} />
-          <div className={Styles.Topic__popularity} >
+          <div className={Styles.Category__separator} />
+          <div className={Styles.Category__popularity} >
             <span
               className={classNames({
-                'bounce-up-and-flash': s.popularityChange === TOPIC_VOLUME_INCREASED,
-                'bounce-down-and-flash': s.popularityChange === TOPIC_VOLUME_DECREASED
+                'bounce-up-and-flash': s.popularityChange === CATEGORY_VOLUME_INCREASED,
+                'bounce-down-and-flash': s.popularityChange === CATEGORY_VOLUME_DECREASED
               })}
               data-tip
-              data-for="topic-volume-tooltip"
+              data-for="category-volume-tooltip"
             >
               {popString}
             </span>
