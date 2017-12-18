@@ -11,7 +11,6 @@ describe("trading/place-trade", function () {
       var placeTrade = proxyquire("../../../src/trading/place-trade", {
         "./get-better-worse-orders": t.mock.getBetterWorseOrders,
         "./trade-until-amount-is-zero": t.mock.tradeUntilAmountIsZero,
-        "../api": t.mock.api,
       });
       placeTrade(Object.assign({}, t.params, {
         onSuccess: function (res) {
@@ -22,7 +21,7 @@ describe("trading/place-trade", function () {
     });
   };
   test({
-    description: "immediate fill -> trade until amount is zero",
+    description: "trade until amount is zero, without better/worse",
     params: {
       meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       amount: "10",
@@ -53,7 +52,7 @@ describe("trading/place-trade", function () {
           outcome: 2,
           price: "0.5",
         });
-        callback(null, { immediateFill: true });
+        callback(null, { betterOrderID: null, worseOrderID: null });
       },
       tradeUntilAmountIsZero: function (p) {
         assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
@@ -64,25 +63,18 @@ describe("trading/place-trade", function () {
         assert.strictEqual(p._fxpAmount, "10");
         assert.strictEqual(p._price, "0.5");
         assert.strictEqual(p._tradeGroupId, "0x1");
+        assert.isNull(p._betterOrderID);
+        assert.isNull(p._worseOrderID);
         assert.isFunction(p.onSent);
         assert.isFunction(p.onSuccess);
         assert.isFunction(p.onFailed);
         p.onSent({ hash: "TRANSACTION_HASH" });
         p.onSuccess({ hash: "TRANSACTION_HASH" });
       },
-      api: function () {
-        return {
-          CreateOrder: {
-            publicCreateOrder: function (/*p*/) {
-              assert.fail();
-            },
-          },
-        };
-      },
     },
   });
   test({
-    description: "no immediate fill -> create order",
+    description: "trade until amount is zero, with better/worse",
     params: {
       meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       amount: "10",
@@ -116,32 +108,18 @@ describe("trading/place-trade", function () {
         callback(null, { betterOrderID: "BETTER_ORDER_ID", worseOrderID: "WORSE_ORDER_ID" });
       },
       tradeUntilAmountIsZero: function (p) {
+        assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
+        assert.strictEqual(p.meta.accountType, "privateKey");
+        assert.strictEqual(p._direction, 0);
+        assert.strictEqual(p._market, "MARKET_ADDRESS");
+        assert.strictEqual(p._outcome, 2);
+        assert.strictEqual(p._fxpAmount, "10");
+        assert.strictEqual(p._price, "0.5");
+        assert.strictEqual(p._tradeGroupId, "0x1");
         assert.strictEqual(p._betterOrderID, "BETTER_ORDER_ID");
         assert.strictEqual(p._worseOrderID, "WORSE_ORDER_ID");
-
         p.onSent({ hash: "TRANSACTION_HASH" });
         p.onSuccess({ hash: "TRANSACTION_HASH" });
-      },
-      api: function () {
-        return {
-          CreateOrder: {
-            publicCreateOrder: function (p) {
-              assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
-              assert.strictEqual(p.meta.accountType, "privateKey");
-              assert.strictEqual(p._type, 0);
-              assert.strictEqual(p._market, "MARKET_ADDRESS");
-              assert.strictEqual(p._outcome, 2);
-              assert.strictEqual(p._attoshares, "0x38d7ea4c68000");
-              assert.strictEqual(p._displayPrice, "0x2710");
-              assert.strictEqual(p._tradeGroupId, "0x1");
-              assert.isFunction(p.onSent);
-              assert.isFunction(p.onSuccess);
-              assert.isFunction(p.onFailed);
-              p.onSent({ hash: "TRANSACTION_HASH" });
-              p.onSuccess({ hash: "TRANSACTION_HASH" });
-            },
-          },
-        };
       },
     },
   });
