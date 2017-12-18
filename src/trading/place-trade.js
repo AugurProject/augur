@@ -33,7 +33,7 @@ function placeTrade(p) {
   var numTicks = new BigNumber(p.maxPrice, 10).minus(new BigNumber(p.minPrice, 10)).dividedBy(new BigNumber(p.tickSize, 10)).toFixed();
   var orderType = (["buy", "sell"])[p._direction];
   getBetterWorseOrders({
-    orderType,
+    orderType: orderType,
     marketID: p._market,
     outcome: p._outcome,
     price: p.limitPrice,
