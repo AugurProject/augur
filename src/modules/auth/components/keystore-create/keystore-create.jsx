@@ -5,7 +5,7 @@ import zxcvbn from 'zxcvbn'
 import Clipboard from 'clipboard'
 import classNames from 'classnames'
 
-import { Alert, CheckboxOff, CheckboxOn } from 'modules/common/components/icons/icons'
+import { Alert } from 'modules/common/components/icons/icons'
 
 import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-account-link'
 
@@ -247,25 +247,9 @@ export default class KeystoreCreate extends Component {
                   Store your passphrase and private key in a secure place. They cannot be recovered if lost or stolen!
                 </span>
                 <div className={Styles.Keystore__confirm}>
-                  <input
-                    id="assert_competence"
-                    className={Styles.Keystore__competence}
-                    type="checkbox"
-                    checked={s.assertedCompetence}
-                    value={s.assertedCompetence}
-                    onChange={() => this.setState({ assertedCompetence: !s.assertedCompetence })}
-                  />
-                  <label
-                    htmlFor="assert_competence"
-                  >
-                    <span>
-                      {s.assertedCompetence ?
-                        CheckboxOn :
-                        CheckboxOff
-                      }
-                    </span>
-                    Accept & Connect
-                  </label>
+                  <button onClick={() => this.setState({ assertedCompetence: true })}>
+                    Accept &amp; Connect
+                  </button>
                 </div>
               </div>
             }
