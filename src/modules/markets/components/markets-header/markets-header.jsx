@@ -10,7 +10,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 import parsePath from 'modules/routes/helpers/parse-path'
 
 import { MARKETS } from 'modules/routes/constants/views'
-import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
+import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/markets/components/markets-header/markets-header.styles'
 
@@ -50,9 +50,9 @@ export default class MarketsHeader extends Component {
   setHeaderTitle(location) {
     const searchParams = parseQuery(location.search)
 
-    if (searchParams[TOPIC_PARAM_NAME]) {
+    if (searchParams[CATEGORY_PARAM_NAME]) {
       this.setState({
-        headerTitle: searchParams[TOPIC_PARAM_NAME],
+        headerTitle: searchParams[CATEGORY_PARAM_NAME],
         // capitalizeTitle: false
       })
     } else {

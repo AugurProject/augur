@@ -92,7 +92,7 @@ export function constructCreateMarketTransaction(log, description, dispatch) {
   const transaction = { data: {} }
   transaction.type = TYPES.CREATE_MARKET
   transaction.description = description.split('~|>')[0] // eslint-disable-line prefer-destructuring
-  transaction.topic = log.topic
+  transaction.category = log.category
   transaction.marketCreationFee = formatEtherTokens(log.marketCreationFee)
   transaction.data.marketID = log.marketID ? log.marketID : null
   transaction.bond = { label: 'validity', value: formatEtherTokens(log.validityBond) }

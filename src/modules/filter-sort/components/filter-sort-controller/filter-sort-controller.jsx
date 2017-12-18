@@ -8,7 +8,7 @@ import parseStringToArray from 'modules/routes/helpers/parse-string-to-array'
 import parseQuery from 'modules/routes/helpers/parse-query'
 import getValue from 'utils/get-value'
 
-import { SORT_MARKET_PARAM, TAGS_PARAM_NAME, TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
+import { SORT_MARKET_PARAM, TAGS_PARAM_NAME, CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 import { QUERY_VALUE_DELIMITER } from 'modules/routes/constants/query-value-delimiter'
 
 export default class FilterSortController extends Component {
@@ -73,7 +73,7 @@ export default class FilterSortController extends Component {
     // Catgories
     if (
       !isEqual(this.props.items, nextProps.items) ||
-      !isEqual(oldSearch[TOPIC_PARAM_NAME], newSearch[TOPIC_PARAM_NAME])
+      !isEqual(oldSearch[CATEGORY_PARAM_NAME], newSearch[CATEGORY_PARAM_NAME])
     ) {
       this.callFilterByCategory(newSearch, nextProps.items)
     }
@@ -88,10 +88,10 @@ export default class FilterSortController extends Component {
   }
 
   callFilterByCategory(query, items) {
-    const category = query[TOPIC_PARAM_NAME] != null ? decodeURIComponent(query[TOPIC_PARAM_NAME]) : null
+    const category = query[CATEGORY_PARAM_NAME] != null ? decodeURIComponent(query[CATEGORY_PARAM_NAME]) : null
 
     this.updateIndices({
-      type: TOPIC_PARAM_NAME,
+      type: CATEGORY_PARAM_NAME,
       indices: filterByCategory(category, items)
     })
   }

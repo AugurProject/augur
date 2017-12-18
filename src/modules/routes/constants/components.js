@@ -2,9 +2,9 @@ import asyncComponent from 'modules/common/components/async-component'
 
 // NOTE -- Webpack code splits at each of these imports to reduce the initial load time.
 
-export const Topics = asyncComponent({
-  moduleName: 'Topics',
-  loader: () => import(/* webpackChunkName: 'topics' */ 'modules/categories/container')
+export const Categories = asyncComponent({
+  moduleName: 'Categories',
+  loader: () => import(/* webpackChunkName: 'categories' */ 'modules/categories/container')
     .then(module => module.default)
 })
 
