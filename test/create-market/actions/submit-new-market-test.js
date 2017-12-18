@@ -7,6 +7,7 @@ import configureMockStore from 'redux-mock-store'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { DESIGNATED_REPORTER_SELF, DESIGNATED_REPORTER_SPECIFIC } from 'modules/create-market/constants/new-market-constraints'
 
 describe('modules/create-market/actions/submit-new-market', () => {
   const mockStore = configureMockStore([thunk])
@@ -38,10 +39,11 @@ describe('modules/create-market/actions/submit-new-market', () => {
         },
         expirySource: '',
         settlementFee: 2,
+        designatedReporterType: DESIGNATED_REPORTER_SELF,
         makerFee: 1,
         detailsText: '',
-        category: 'test topic',
-        keywords: [],
+        category: 'test category',
+        tags: [],
         type: CATEGORICAL,
         outcomes: [
           'one',
@@ -88,7 +90,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
           tags: []
         },
         _numOutcomes: 2,
-        _topic: 'test topic',
+        _topic: 'test category',
         _feePerEthInWei: '0x470de4df820000',
       }
 
@@ -118,10 +120,12 @@ describe('modules/create-market/actions/submit-new-market', () => {
         },
         expirySource: '',
         settlementFee: 2,
+        designatedReporterAddress: '0x01234abcd',
+        designatedReporterType: DESIGNATED_REPORTER_SPECIFIC,
         makerFee: 1,
         detailsText: '',
-        category: 'test topic',
-        keywords: [],
+        category: 'test category',
+        tags: [],
         type: BINARY
       }
     },
@@ -145,7 +149,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       store.dispatch(submitNewMarket(store.getState().newMarket))
 
       const expected = {
-        _designatedReporterAddress: '0x1233',
+        _designatedReporterAddress: '0x01234abcd',
         meta: {
           test: 'object'
         },
@@ -159,7 +163,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
           resolutionSource: '',
           tags: []
         },
-        _topic: 'test topic',
+        _topic: 'test category',
         _feePerEthInWei: '0x470de4df820000'
       }
 
@@ -190,9 +194,11 @@ describe('modules/create-market/actions/submit-new-market', () => {
         expirySource: '',
         settlementFee: 2,
         makerFee: 1,
+        designatedReporterAddress: '0x01234abcd',
+        designatedReporterType: DESIGNATED_REPORTER_SPECIFIC,
         detailsText: '',
-        category: 'test topic',
-        keywords: [],
+        category: 'test category',
+        tags: [],
         type: SCALAR,
         scalarSmallNum: '-10', // String for the test case, normally a BigNumber
         scalarBigNum: '10', // String for the test case, normally a BigNumber
@@ -223,7 +229,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         meta: {
           test: 'object'
         },
-        _designatedReporterAddress: '0x1233',
+        _designatedReporterAddress: '0x01234abcd',
         universe: '1010101',
         _endTime: 1234567890,
         _denominationToken: 'domnination',
@@ -238,7 +244,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         _maxPrice: '10',
         _minPrice: '-10',
         tickSize: 1000,
-        _topic: 'test topic',
+        _topic: 'test category',
         _feePerEthInWei: '0x470de4df820000'
       }
 
@@ -268,10 +274,12 @@ describe('modules/create-market/actions/submit-new-market', () => {
         },
         expirySource: '',
         settlementFee: 2,
+        designatedReporterAddress: false,
+        designatedReporterType: DESIGNATED_REPORTER_SELF,
         makerFee: 1,
         detailsText: '',
-        topic: 'test topic',
-        keywords: [],
+        category: 'test category',
+        tags: [],
         type: BINARY
       }
     },
@@ -332,11 +340,13 @@ describe('modules/create-market/actions/submit-new-market', () => {
           timestamp: 1234567890000
         },
         expirySource: '',
+        designatedReporterAddress: false,
+        designatedReporterType: DESIGNATED_REPORTER_SELF,
         settlementFee: 2,
         makerFee: 1,
         detailsText: '',
-        topic: 'test topic',
-        keywords: [],
+        category: 'test category',
+        tags: [],
         type: BINARY
       }
     },
@@ -392,10 +402,12 @@ describe('modules/create-market/actions/submit-new-market', () => {
         },
         expirySource: '',
         settlementFee: 2,
+        designatedReporterAddress: false,
+        designatedReporterType: DESIGNATED_REPORTER_SELF,
         makerFee: 1,
         detailsText: '',
-        topic: 'test topic',
-        keywords: [],
+        category: 'test category',
+        tags: [],
         type: BINARY,
         orderBook: {}
       }
@@ -447,9 +459,11 @@ describe('modules/create-market/actions/submit-new-market', () => {
         expirySource: '',
         settlementFee: 2,
         makerFee: 1,
+        designatedReporterAddress: false,
+        designatedReporterType: DESIGNATED_REPORTER_SELF,
         detailsText: '',
-        topic: 'test topic',
-        keywords: [],
+        category: 'test category',
+        tags: [],
         type: CATEGORICAL,
         outcomes: [
           'one',
@@ -681,11 +695,13 @@ describe('modules/create-market/actions/submit-new-market', () => {
           timestamp: 1234567890000
         },
         expirySource: '',
+        designatedReporterAddress: false,
+        designatedReporterType: DESIGNATED_REPORTER_SELF,
         settlementFee: 2,
         makerFee: 1,
         detailsText: '',
-        topic: 'test topic',
-        keywords: [],
+        category: 'test category',
+        tags: [],
         type: BINARY
       }
     },

@@ -155,11 +155,11 @@ export default class KeystoreCreate extends Component {
               className={Styles.Keystore__input}
             >
               <label
-                htmlFor="keyword_create_passphrase"
+                htmlFor="tag_create_passphrase"
               >
                 Passphrase
                 <input
-                  id="keyword_create_passphrase"
+                  id="tag_create_passphrase"
                   type="password"
                   value={s.password}
                   onChange={(e) => {
@@ -178,11 +178,11 @@ export default class KeystoreCreate extends Component {
               className={Styles.Keystore__input}
             >
               <label
-                htmlFor="keyword_create_passphrase-confirm"
+                htmlFor="tag_create_passphrase-confirm"
               >
                 Confirm
                 <input
-                  id="keyword_create_passphrase_confirm"
+                  id="tag_create_passphrase_confirm"
                   type="password"
                   value={s.passwordConfirm}
                   onChange={(e) => {

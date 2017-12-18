@@ -7,7 +7,7 @@ import { convertLogsToTransactions } from 'modules/transactions/actions/convert-
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import { updateOutcomePrice } from 'modules/markets/actions/update-outcome-price'
 // import { fillOrder } from 'modules/bids-asks/actions/update-market-order-book'
-import { updateMarketTopicPopularity } from 'modules/topics/actions/update-topics'
+import { updateMarketCategoryPopularity } from 'modules/categories/actions/update-categories'
 import { updateAccountTradesData, updateAccountBidsAsksData, updateAccountCancelsData, updateAccountPositionsData } from 'modules/my-positions/actions/update-account-trades-data'
 import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
 import * as TYPES from 'modules/transactions/constants/types'
@@ -82,7 +82,7 @@ export function listenToUpdates() {
         if (log) {
           console.log('OrderFilled:', log)
           dispatch(updateOutcomePrice(log.marketID, log.outcome, new BigNumber(log.price, 10)))
-          dispatch(updateMarketTopicPopularity(log.market, log.amount))
+          dispatch(updateMarketCategoryPopularity(log.market, log.amount))
           const { address } = getState().loginAccount
           if (log.sender === address || log.owner === address) {
             // dispatch(convertLogsToTransactions(TYPES.FILL_ORDER, [log]))
@@ -155,7 +155,7 @@ export function listenToUpdates() {
           if (universe.id === log.universe) {
             dispatch(loadMarketsInfo([log.marketID], () => {
               const { volume } = getState().marketsData[log.marketID]
-              dispatch(updateMarketTopicPopularity(log.marketID, new BigNumber(volume, 10).neg().toNumber()))
+              dispatch(updateMarketCategoryPopularity(log.marketID, new BigNumber(volume, 10).neg().toNumber()))
               if (loginAccount.address) dispatch(claimTradingProceeds())
             }))
           }
