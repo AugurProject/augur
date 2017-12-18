@@ -8,7 +8,7 @@
   padding: 2rem;
   width: 100%;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-small-desktop {
     flex-flow: column;
   }
 }
@@ -16,18 +16,18 @@
 .LedgerConnect__action {
   align-items: center;
   display: flex;
-  flex: 3;
+  flex: 3 0 auto;
   justify-content: center;
 
-  @media @breakpoint-mobile {
-    margin-bottom: 1rem;
+  @media @breakpoint-small-desktop {
+    margin-bottom: 2rem;
   }
 }
 
 .LedgerConnect__button {
   &:extend(.button--purple all);
 
-  min-width: 22.4rem;
+  padding: 0 2.2rem .166rem;
 }
 
 .LedgerConnect__messages {
@@ -37,12 +37,17 @@
   background-color: @color-gray;
   color: @color-white;
   display: flex;
-  flex: 1.5;
+  flex: 1 0 auto;
   flex-direction: column;
   height: 100%;
   justify-content: flex-start;
   padding: 1.5em 0;
   visibility: hidden;
+
+  @media @breakpoint-small-desktop {
+    min-width: 100%;
+    flex: 1 1 auto;
+  }
 
   svg {
     align-self: center;
