@@ -26,7 +26,7 @@ export function submitNewMarket(newMarket, history) {
       _denominationToken: contractAddresses.Cash,
       _description: newMarket.description,
       _designatedReporterAddress: loginAccount.address, // FIXME prompt user for actual automated reporter address
-      _topic: newMarket.category,
+      _category: newMarket.category,
       _extraInfo: {
         marketType: newMarket.type,
         longDescription: newMarket.detailsText,

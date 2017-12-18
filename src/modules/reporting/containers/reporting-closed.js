@@ -55,7 +55,7 @@ const markets = [
       denomination: ' shares',
       full: '3,000 shares'
     },
-    topic: 'Cryptocurrency',
+    category: 'Cryptocurrency',
     tags: [
       'Cryptocurrency',
       'Bitcoin',
@@ -317,7 +317,7 @@ const markets = [
       denomination: ' shares',
       full: '30.5 shares'
     },
-    topic: 'MLB Baseball',
+    category: 'MLB Baseball',
     tags: [
       'MLB Baseball',
       'Baseball'

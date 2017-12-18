@@ -39,7 +39,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 import getValue from 'utils/get-value'
 
 import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT, MY_MARKETS, MY_POSITIONS, WATCHLIST, PORTFOLIO_TRANSACTIONS, CREATE_MARKET, CATEGORIES, REPORTING_OPEN, REPORTING_CLOSED, AUTHENTICATION } from 'modules/routes/constants/views'
-import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
+import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
 
@@ -142,7 +142,7 @@ export default class AppView extends Component {
 
     this.changeMenu(currentPath)
     if (currentPath === MARKETS) {
-      const selectedCategory = parseQuery(this.props.location.search)[TOPIC_PARAM_NAME]
+      const selectedCategory = parseQuery(this.props.location.search)[CATEGORY_PARAM_NAME]
       if (selectedCategory) this.toggleMenuTween(SUB_MENU, true)
     }
   }
@@ -164,7 +164,7 @@ export default class AppView extends Component {
       const lastBasePath = parsePath(this.props.location.pathname)[0]
       const nextBasePath = parsePath(nextProps.location.pathname)[0]
 
-      const selectedCategory = parseQuery(nextProps.location.search)[TOPIC_PARAM_NAME]
+      const selectedCategory = parseQuery(nextProps.location.search)[CATEGORY_PARAM_NAME]
 
       if (lastBasePath !== nextBasePath) {
         this.setState({ currentBasePath: nextBasePath })
@@ -330,7 +330,7 @@ export default class AppView extends Component {
     }
 
     let categoriesMargin
-    let keywordsMargin
+    let tagsMargin
     let origamiScalar = 0
 
     if (!p.isMobile) {
@@ -340,7 +340,7 @@ export default class AppView extends Component {
         categoriesMargin = -110 + (110 * mainMenu.scalar)
       }
 
-      keywordsMargin = 110 * subMenu.scalar
+      tagsMargin = 110 * subMenu.scalar
 
       // ensure origami fold-out moves perfectly with submenu
       origamiScalar = Math.max(0, (subMenu.scalar + mainMenu.scalar) - 1)
@@ -409,7 +409,7 @@ export default class AppView extends Component {
             }
             <section
               className={Styles.Main__content}
-              style={{ marginLeft: keywordsMargin }}
+              style={{ marginLeft: tagsMargin }}
             >
               <Routes />
             </section>
