@@ -14,11 +14,11 @@ describe(`modules/markets/actions/update-markets-data.js`, () => {
     }
     assert.deepEqual(action.updateMarketsData(marketsOutcomesData), expectedOutput, `Update Markets Data action misfired.`)
   })
-  it(`should dispatch an UPDATE_MARKET_TOPIC action`, () => {
-    assert.deepEqual(action.updateMarketTopic('0xa1', 'potent potables'), {
-      type: action.UPDATE_MARKET_TOPIC,
+  it(`should dispatch an UPDATE_MARKET_CATEGORY action`, () => {
+    assert.deepEqual(action.updateMarketCategory('0xa1', 'potent potables'), {
+      type: action.UPDATE_MARKET_CATEGORY,
       marketID: '0xa1',
-      topic: 'potent potables'
+      category: 'potent potables'
     })
   })
   it(`should dispatch an UPDATE_MARKETS_LOADING_STATUS action`, () => {

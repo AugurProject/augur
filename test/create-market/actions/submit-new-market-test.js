@@ -42,7 +42,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         designatedReporterType: DESIGNATED_REPORTER_SELF,
         makerFee: 1,
         detailsText: '',
-        category: 'test topic',
+        category: 'test category',
         tags: [],
         type: CATEGORICAL,
         outcomes: [
@@ -90,7 +90,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
           tags: []
         },
         _numOutcomes: 2,
-        _topic: 'test topic',
+        _topic: 'test category',
         _feePerEthInWei: '0x470de4df820000',
       }
 
@@ -124,7 +124,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         designatedReporterType: DESIGNATED_REPORTER_SPECIFIC,
         makerFee: 1,
         detailsText: '',
-        category: 'test topic',
+        category: 'test category',
         tags: [],
         type: BINARY
       }
@@ -163,7 +163,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
           resolutionSource: '',
           tags: []
         },
-        _topic: 'test topic',
+        _topic: 'test category',
         _feePerEthInWei: '0x470de4df820000'
       }
 
@@ -197,7 +197,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         designatedReporterAddress: '0x01234abcd',
         designatedReporterType: DESIGNATED_REPORTER_SPECIFIC,
         detailsText: '',
-        category: 'test topic',
+        category: 'test category',
         tags: [],
         type: SCALAR,
         scalarSmallNum: '-10', // String for the test case, normally a BigNumber
@@ -244,7 +244,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         _maxPrice: '10',
         _minPrice: '-10',
         tickSize: 1000,
-        _topic: 'test topic',
+        _topic: 'test category',
         _feePerEthInWei: '0x470de4df820000'
       }
 
@@ -278,7 +278,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         designatedReporterType: DESIGNATED_REPORTER_SELF,
         makerFee: 1,
         detailsText: '',
-        topic: 'test topic',
+        category: 'test category',
         tags: [],
         type: BINARY
       }
@@ -345,7 +345,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         settlementFee: 2,
         makerFee: 1,
         detailsText: '',
-        topic: 'test topic',
+        category: 'test category',
         tags: [],
         type: BINARY
       }
@@ -406,7 +406,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         designatedReporterType: DESIGNATED_REPORTER_SELF,
         makerFee: 1,
         detailsText: '',
-        topic: 'test topic',
+        category: 'test category',
         tags: [],
         type: BINARY,
         orderBook: {}
@@ -462,7 +462,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         designatedReporterAddress: false,
         designatedReporterType: DESIGNATED_REPORTER_SELF,
         detailsText: '',
-        topic: 'test topic',
+        category: 'test category',
         tags: [],
         type: CATEGORICAL,
         outcomes: [
@@ -700,7 +700,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         settlementFee: 2,
         makerFee: 1,
         detailsText: '',
-        topic: 'test topic',
+        category: 'test category',
         tags: [],
         type: BINARY
       }
