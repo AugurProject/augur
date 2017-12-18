@@ -58,7 +58,7 @@ const testState = {
     realEther: 0,
     rep: 0
   },
-  keywords: 'test testtag',
+  tags: 'test testtag',
   marketsData: {
     testMarketID: {
       author: '0x0000000000000000000000000000000000000001',

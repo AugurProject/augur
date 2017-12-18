@@ -37,7 +37,7 @@ export default class CreateMarketDefine extends Component {
 
   filterCategories(category) {
     const userString = category.toLowerCase()
-    return this.props.categories.filter(cat => cat.topic.toLowerCase().indexOf(userString) === 0)
+    return this.props.categories.filter(cat => cat.category.toLowerCase().indexOf(userString) === 0)
   }
 
   updateFilteredCategories(userString, clearSuggestions = false) {
@@ -138,11 +138,11 @@ export default class CreateMarketDefine extends Component {
               <li key={i}>
                 <button
                   onClick={() => {
-                    this.updateFilteredCategories(cat.topic, true)
-                    this.catInput.value = cat.topic
-                    this.validateTag('category', cat.topic, TAGS_MAX_LENGTH)
+                    this.updateFilteredCategories(cat.category, true)
+                    this.catInput.value = cat.category
+                    this.validateTag('category', cat.category, TAGS_MAX_LENGTH)
                   }}
-                >{cat.topic}
+                >{cat.category}
                 </button>
               </li>
             ))}
