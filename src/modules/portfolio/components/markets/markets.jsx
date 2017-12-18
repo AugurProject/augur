@@ -1,12 +1,16 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
+import { Link } from 'react-router-dom'
+
+import makePath from 'modules/routes/helpers/make-path'
 
 import Dropdown from 'modules/common/components/dropdown/dropdown'
 import MarketsList from 'modules/markets/components/markets-list'
 import Styles from 'modules/portfolio/components/markets/markets.styles'
 import { TYPE_REPORT } from 'modules/market/constants/link-types'
 import { constants } from 'services/augurjs'
+import { CREATE_MARKET } from 'modules/routes/constants/views'
 
 class MyMarkets extends Component {
   static propTypes = {
@@ -216,6 +220,7 @@ class MyMarkets extends Component {
         <Helmet>
           <title>My Markets</title>
         </Helmet>
+        {p.myMarkets && !!p.myMarkets.length &&
         <div
           className={Styles.Markets__SortBar}
         >
@@ -235,83 +240,105 @@ class MyMarkets extends Component {
             <Dropdown default={s.filterDefaultOpen} options={s.filterOptionsOpen} onChange={this.changeDropdown} />
           </div>
         </div>
-        <MarketsList
-          isLogged={p.isLogged}
-          markets={s.openMarkets}
-          filteredMarkets={s.filteredMarketsOpen}
-          location={p.location}
-          history={p.history}
-          scalarShareDenomination={p.scalarShareDenomination}
-          toggleFavorite={p.toggleFavorite}
-          loadMarketsInfo={p.loadMarketsInfo}
-          linkType={TYPE_REPORT}
-          outstandingReturns
-          pageParam="open"
-        />
-        <div
-          className={Styles.Markets__SortBar}
-        >
+        }
+        {p.myMarkets && !!p.myMarkets.length &&
+          <MarketsList
+            isLogged={p.isLogged}
+            markets={s.openMarkets}
+            filteredMarkets={s.filteredMarketsOpen}
+            location={p.location}
+            history={p.history}
+            scalarShareDenomination={p.scalarShareDenomination}
+            toggleFavorite={p.toggleFavorite}
+            loadMarketsInfo={p.loadMarketsInfo}
+            linkType={TYPE_REPORT}
+            outstandingReturns
+            pageParam="open"
+          />
+        }
+        {p.myMarkets && !!p.myMarkets.length &&
           <div
-            className={Styles['Markets__SortBar-title']}
+            className={Styles.Markets__SortBar}
           >
-            In Reporting
+            <div
+              className={Styles['Markets__SortBar-title']}
+            >
+              In Reporting
+            </div>
+            <div
+              className={Styles['Markets__SortBar-sort']}
+            >
+              <Dropdown default={s.sortDefaultReporting} options={s.sortOptionsReporting} onChange={this.changeDropdown} />
+            </div>
+            <div
+              className={Styles['Markets__SortBar-filter']}
+            >
+              <Dropdown default={s.filterDefaultReporting} options={s.filterOptionsReporting} onChange={this.changeDropdown} />
+            </div>
           </div>
+        }
+        {p.myMarkets && !!p.myMarkets.length &&
+          <MarketsList
+            isLogged={p.isLogged}
+            markets={s.reportingMarkets}
+            filteredMarkets={s.filteredMarketsReporting}
+            location={p.location}
+            history={p.history}
+            scalarShareDenomination={p.scalarShareDenomination}
+            toggleFavorite={p.toggleFavorite}
+            loadMarketsInfo={p.loadMarketsInfo}
+            linkType={TYPE_REPORT}
+            outstandingReturns
+            pageParam="reporting"
+          />
+        }
+        {p.myMarkets && !!p.myMarkets.length &&
           <div
-            className={Styles['Markets__SortBar-sort']}
+            className={Styles.Markets__SortBar}
           >
-            <Dropdown default={s.sortDefaultReporting} options={s.sortOptionsReporting} onChange={this.changeDropdown} />
+            <div
+              className={Styles['Markets__SortBar-title']}
+            >
+              Finalized
+            </div>
+            <div
+              className={Styles.Markets__SortBar}
+            >
+              <Dropdown default={s.sortDefaultFinal} options={s.sortOptionsFinal} onChange={this.changeDropdown} />
+            </div>
+            <div
+              className={Styles['Markets__SortBar-filter']}
+            >
+              <Dropdown default={s.filterDefaultFinal} options={s.filterOptionsFinal} onChange={this.changeDropdown} />
+            </div>
           </div>
-          <div
-            className={Styles['Markets__SortBar-filter']}
-          >
-            <Dropdown default={s.filterDefaultReporting} options={s.filterOptionsReporting} onChange={this.changeDropdown} />
+        }
+        {p.myMarkets && !!p.myMarkets.length &&
+          <MarketsList
+            isLogged={p.isLogged}
+            markets={s.finalMarkets}
+            filteredMarkets={s.filteredMarketsFinal}
+            location={p.location}
+            history={p.history}
+            scalarShareDenomination={p.scalarShareDenomination}
+            toggleFavorite={p.toggleFavorite}
+            loadMarketsInfo={p.loadMarketsInfo}
+            linkType={TYPE_REPORT}
+            outstandingReturns
+            pageParam="final"
+          />
+      }
+      {(p.myMarkets == null || (p.myMarkets && p.myMarkets.length === 0)) &&
+          <div className={Styles.NoMarkets__container} >
+            <span>You haven&apos;t created any markets.</span>
+            <Link
+              className={Styles.NoMarkets__link}
+              to={makePath(CREATE_MARKET)}
+            >
+              <span>Click here to create a new market.</span>
+            </Link>
           </div>
-        </div>
-        <MarketsList
-          isLogged={p.isLogged}
-          markets={s.reportingMarkets}
-          filteredMarkets={s.filteredMarketsReporting}
-          location={p.location}
-          history={p.history}
-          scalarShareDenomination={p.scalarShareDenomination}
-          toggleFavorite={p.toggleFavorite}
-          loadMarketsInfo={p.loadMarketsInfo}
-          linkType={TYPE_REPORT}
-          outstandingReturns
-          pageParam="reporting"
-        />
-        <div
-          className={Styles.Markets__SortBar}
-        >
-          <div
-            className={Styles['Markets__SortBar-title']}
-          >
-            Finalized
-          </div>
-          <div
-            className={Styles['Markets__SortBar-sort']}
-          >
-            <Dropdown default={s.sortDefaultFinal} options={s.sortOptionsFinal} onChange={this.changeDropdown} />
-          </div>
-          <div
-            className={Styles['Markets__SortBar-filter']}
-          >
-            <Dropdown default={s.filterDefaultFinal} options={s.filterOptionsFinal} onChange={this.changeDropdown} />
-          </div>
-        </div>
-        <MarketsList
-          isLogged={p.isLogged}
-          markets={s.finalMarkets}
-          filteredMarkets={s.filteredMarketsFinal}
-          location={p.location}
-          history={p.history}
-          scalarShareDenomination={p.scalarShareDenomination}
-          toggleFavorite={p.toggleFavorite}
-          loadMarketsInfo={p.loadMarketsInfo}
-          linkType={TYPE_REPORT}
-          outstandingReturns
-          pageParam="final"
-        />
+        }
       </section>
     )
   }
