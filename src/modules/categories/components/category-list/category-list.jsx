@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import Topic from 'modules/topics/components/topic/topic'
+import Topic from 'modules/categories/components/category/category'
 
-import Styles from 'modules/topics/components/topic-list/topic-list.styles'
+import Styles from 'modules/categories/components/category-list/category-list.styles'
 
 const TopicList = p => (
   <div>

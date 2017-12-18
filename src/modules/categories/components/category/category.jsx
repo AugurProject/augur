@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import BigNumber from 'bignumber.js'
 
-import Styles from 'modules/topics/components/topic/topic.styles'
+import Styles from 'modules/categories/components/category/category.styles'
 
 import makePath from 'modules/routes/helpers/make-path'
 import makeQuery from 'modules/routes/helpers/make-query'
 
-import { TOPIC_VOLUME_INCREASED, TOPIC_VOLUME_DECREASED } from 'modules/topics/constants/topic-popularity-change'
+import { TOPIC_VOLUME_INCREASED, TOPIC_VOLUME_DECREASED } from 'modules/categories/constants/category-popularity-change'
 import { MARKETS } from 'modules/routes/constants/views'
 import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 

@@ -1,4 +1,4 @@
-import { UPDATE_TOPICS, CLEAR_TOPICS, UPDATE_TOPIC_POPULARITY } from 'modules/topics/actions/update-topics'
+import { UPDATE_TOPICS, CLEAR_TOPICS, UPDATE_TOPIC_POPULARITY } from 'modules/categories/actions/update-categories'
 
 export default function (topics = {}, action) {
   switch (action.type) {

@@ -35,8 +35,8 @@ import transactionsLoading from 'modules/transactions/reducers/transactions-load
 import scalarMarketsShareDenomination from 'modules/market/reducers/scalar-markets-share-denomination'
 import closePositionTradeGroups from 'modules/my-positions/reducers/close-position-trade-groups'
 
-import topics from 'modules/topics/reducers/topics-data'
-import hasLoadedTopic from 'modules/topics/reducers/has-loaded-topic'
+import topics from 'modules/categories/reducers/categories-data'
+import hasLoadedTopic from 'modules/categories/reducers/has-loaded-category'
 
 import selectedMarketID from 'modules/market/reducers/selected-market-id'
 import tradesInProgress from 'modules/trade/reducers/trades-in-progress'

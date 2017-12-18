@@ -17,7 +17,7 @@ import store from 'src/store'
   pendingReports: {},
   selectedMarketID: null,
   selectedMarketsHeader: null,
-  keywords: '',
+  tags: '',
   selectedFilters: { isOpen: true },
   selectedSort: { prop: 'volume', isDesc: true },
   tradesInProgress: {},

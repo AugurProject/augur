@@ -5,7 +5,7 @@ import zxcvbn from 'zxcvbn'
 import Clipboard from 'clipboard'
 import classNames from 'classnames'
 
-import { Alert, CheckboxOff, CheckboxOn } from 'modules/common/components/icons/icons'
+import { Alert } from 'modules/common/components/icons/icons'
 
 import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-account-link'
 
@@ -155,11 +155,11 @@ export default class KeystoreCreate extends Component {
               className={Styles.Keystore__input}
             >
               <label
-                htmlFor="keyword_create_passphrase"
+                htmlFor="tag_create_passphrase"
               >
                 Passphrase
                 <input
-                  id="keyword_create_passphrase"
+                  id="tag_create_passphrase"
                   type="password"
                   value={s.password}
                   onChange={(e) => {
@@ -178,11 +178,11 @@ export default class KeystoreCreate extends Component {
               className={Styles.Keystore__input}
             >
               <label
-                htmlFor="keyword_create_passphrase-confirm"
+                htmlFor="tag_create_passphrase-confirm"
               >
                 Confirm
                 <input
-                  id="keyword_create_passphrase_confirm"
+                  id="tag_create_passphrase_confirm"
                   type="password"
                   value={s.passwordConfirm}
                   onChange={(e) => {
@@ -247,25 +247,9 @@ export default class KeystoreCreate extends Component {
                   Store your passphrase and private key in a secure place. They cannot be recovered if lost or stolen!
                 </span>
                 <div className={Styles.Keystore__confirm}>
-                  <input
-                    id="assert_competence"
-                    className={Styles.Keystore__competence}
-                    type="checkbox"
-                    checked={s.assertedCompetence}
-                    value={s.assertedCompetence}
-                    onChange={() => this.setState({ assertedCompetence: !s.assertedCompetence })}
-                  />
-                  <label
-                    htmlFor="assert_competence"
-                  >
-                    <span>
-                      {s.assertedCompetence ?
-                        CheckboxOn :
-                        CheckboxOff
-                      }
-                    </span>
-                    Accept & Connect
-                  </label>
+                  <button onClick={() => this.setState({ assertedCompetence: true })}>
+                    Accept &amp; Connect
+                  </button>
                 </div>
               </div>
             }

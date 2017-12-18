@@ -41,7 +41,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         makerFee: 1,
         detailsText: '',
         category: 'test topic',
-        keywords: [],
+        tags: [],
         type: CATEGORICAL,
         outcomes: [
           'one',
@@ -121,7 +121,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         makerFee: 1,
         detailsText: '',
         category: 'test topic',
-        keywords: [],
+        tags: [],
         type: BINARY
       }
     },
@@ -192,7 +192,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         makerFee: 1,
         detailsText: '',
         category: 'test topic',
-        keywords: [],
+        tags: [],
         type: SCALAR,
         scalarSmallNum: '-10', // String for the test case, normally a BigNumber
         scalarBigNum: '10', // String for the test case, normally a BigNumber
@@ -271,7 +271,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         makerFee: 1,
         detailsText: '',
         topic: 'test topic',
-        keywords: [],
+        tags: [],
         type: BINARY
       }
     },
@@ -336,7 +336,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         makerFee: 1,
         detailsText: '',
         topic: 'test topic',
-        keywords: [],
+        tags: [],
         type: BINARY
       }
     },
@@ -395,7 +395,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         makerFee: 1,
         detailsText: '',
         topic: 'test topic',
-        keywords: [],
+        tags: [],
         type: BINARY,
         orderBook: {}
       }
@@ -449,7 +449,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         makerFee: 1,
         detailsText: '',
         topic: 'test topic',
-        keywords: [],
+        tags: [],
         type: CATEGORICAL,
         outcomes: [
           'one',
@@ -685,7 +685,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         makerFee: 1,
         detailsText: '',
         topic: 'test topic',
-        keywords: [],
+        tags: [],
         type: BINARY
       }
     },
