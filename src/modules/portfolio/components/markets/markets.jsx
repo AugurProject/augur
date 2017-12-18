@@ -221,25 +221,25 @@ class MyMarkets extends Component {
           <title>My Markets</title>
         </Helmet>
         {p.myMarkets && !!p.myMarkets.length &&
-        <div
-          className={Styles.Markets__SortBar}
-        >
           <div
-            className={Styles['Markets__SortBar-title']}
+            className={Styles.Markets__SortBar}
           >
-            Open
+            <div
+              className={Styles['Markets__SortBar-title']}
+            >
+              Open
+            </div>
+            <div
+              className={Styles['Markets__SortBar-sort']}
+            >
+              <Dropdown default={s.sortDefaultOpen} options={s.sortOptionsOpen} onChange={this.changeDropdown} />
+            </div>
+            <div
+              className={Styles['Markets__SortBar-filter']}
+            >
+              <Dropdown default={s.filterDefaultOpen} options={s.filterOptionsOpen} onChange={this.changeDropdown} />
+            </div>
           </div>
-          <div
-            className={Styles['Markets__SortBar-sort']}
-          >
-            <Dropdown default={s.sortDefaultOpen} options={s.sortOptionsOpen} onChange={this.changeDropdown} />
-          </div>
-          <div
-            className={Styles['Markets__SortBar-filter']}
-          >
-            <Dropdown default={s.filterDefaultOpen} options={s.filterOptionsOpen} onChange={this.changeDropdown} />
-          </div>
-        </div>
         }
         {p.myMarkets && !!p.myMarkets.length &&
           <MarketsList
@@ -327,8 +327,8 @@ class MyMarkets extends Component {
             outstandingReturns
             pageParam="final"
           />
-      }
-      {(p.myMarkets == null || (p.myMarkets && p.myMarkets.length === 0)) &&
+        }
+        {(p.myMarkets == null || (p.myMarkets && p.myMarkets.length === 0)) &&
           <div className={Styles.NoMarkets__container} >
             <span>You haven&apos;t created any markets.</span>
             <Link
