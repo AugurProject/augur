@@ -29,7 +29,6 @@ var constants = require("../constants");
  * @param {function} p.onFailed Called if any part of the trade fails.
  */
 
-
 function placeTrade(p) {
   var normalizedPrice = normalizePrice({ minPrice: p.minPrice, maxPrice: p.maxPrice, price: p.limitPrice });
   var numTicks = new BigNumber(p.maxPrice, 10).minus(new BigNumber(p.minPrice, 10)).dividedBy(new BigNumber(p.tickSize, 10)).toFixed();
