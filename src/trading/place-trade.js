@@ -1,15 +1,10 @@
 "use strict";
 
 var assign = require("lodash.assign");
-var BigNumber = require("bignumber.js");
-var speedomatic = require("speedomatic");
 var immutableDelete = require("immutable-delete");
 var getBetterWorseOrders = require("./get-better-worse-orders");
 var tradeUntilAmountIsZero = require("./trade-until-amount-is-zero");
 var normalizePrice = require("./normalize-price");
-var convertDecimalToFixedPoint = require("../utils/convert-decimal-to-fixed-point");
-var api = require("../api");
-var constants = require("../constants");
 
 /**
  * @param {Object} p Parameters object.
@@ -30,7 +25,6 @@ var constants = require("../constants");
  */
 function placeTrade(p) {
   var normalizedPrice = normalizePrice({ minPrice: p.minPrice, maxPrice: p.maxPrice, price: p.limitPrice });
-  var numTicks = new BigNumber(p.maxPrice, 10).minus(new BigNumber(p.minPrice, 10)).dividedBy(new BigNumber(p.tickSize, 10)).toFixed();
   var orderType = (["buy", "sell"])[p._direction];
   getBetterWorseOrders({
     orderType: orderType,
