@@ -49,8 +49,8 @@ describe("trading/place-trade", function () {
       getBetterWorseOrders: function (p, callback) {
         assert.deepEqual(p, {
           marketID: "MARKET_ADDRESS",
+          orderType: "buy",
           outcome: 2,
-          amount: "10",
           price: "0.5",
         });
         callback(null, { immediateFill: true });
@@ -110,13 +110,17 @@ describe("trading/place-trade", function () {
         assert.deepEqual(p, {
           marketID: "MARKET_ADDRESS",
           outcome: 2,
-          amount: "10",
+          orderType: "buy",
           price: "0.5",
         });
         callback(null, { betterOrderID: "BETTER_ORDER_ID", worseOrderID: "WORSE_ORDER_ID" });
       },
-      tradeUntilAmountIsZero: function (/*p*/) {
-        assert.fail();
+      tradeUntilAmountIsZero: function (p) {
+        assert.strictEqual(p._betterOrderID, "BETTER_ORDER_ID");
+        assert.strictEqual(p._worseOrderID, "WORSE_ORDER_ID");
+
+        p.onSent({ hash: "TRANSACTION_HASH" });
+        p.onSuccess({ hash: "TRANSACTION_HASH" });
       },
       api: function () {
         return {

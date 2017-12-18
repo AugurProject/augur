@@ -28,34 +28,25 @@ var constants = require("../constants");
  * @param {function} p.onSuccess Called when the full trade completes successfully.
  * @param {function} p.onFailed Called if any part of the trade fails.
  */
+
+
 function placeTrade(p) {
   var normalizedPrice = normalizePrice({ minPrice: p.minPrice, maxPrice: p.maxPrice, price: p.limitPrice });
   var numTicks = new BigNumber(p.maxPrice, 10).minus(new BigNumber(p.minPrice, 10)).dividedBy(new BigNumber(p.tickSize, 10)).toFixed();
+  var orderType = (["buy", "sell"])[p._direction];
   getBetterWorseOrders({
     marketID: p._market,
     outcome: p._outcome,
-    amount: p.amount,
+    orderType,
     price: normalizedPrice,
   }, function (err, betterWorseOrders) {
     if (err) return p.onFailed(err);
-    if (betterWorseOrders.immediateFill === true) {
-      tradeUntilAmountIsZero(assign({}, immutableDelete(p, ["limitPrice", "amount", "minPrice", "maxPrice"]), {
-        _price: normalizedPrice,
-        _fxpAmount: p.amount,
-      }));
-    } else {
-      var displayPrice = convertDecimalToFixedPoint(normalizedPrice, numTicks); // note: not actually display price
-      var attoshares = new BigNumber(convertDecimalToFixedPoint(p.amount, speedomatic.fix(p.tickSize, "string")), 10); // note: not actually attoshares
-      var cost = p._direction === 0 ? attoshares.times(new BigNumber(displayPrice, 16)) : attoshares.times(new BigNumber(numTicks, 10).minus(new BigNumber(displayPrice, 16)));
-      api().CreateOrder.publicCreateOrder(assign({}, immutableDelete(p, ["doNotCreateOrders", "minPrice", "maxPrice", "amount", "limitPrice", "_direction", "tickSize"]), {
-        tx: { value: "0x" + cost.toString(16), gas: constants.CREATE_ORDER_GAS },
-        _type: p._direction,
-        _attoshares: "0x" + attoshares.toString(16),
-        _displayPrice: displayPrice,
-        _betterOrderId: betterWorseOrders.betterOrderID,
-        _worseOrderId: betterWorseOrders.worseOrderID,
-      }));
-    }
+    tradeUntilAmountIsZero(assign({}, immutableDelete(p, ["limitPrice", "amount", "minPrice", "maxPrice"]), {
+      _price: normalizedPrice,
+      _fxpAmount: p.amount,
+      _betterOrderID: betterWorseOrders.betterOrderID,
+      _worseOrderID: betterWorseOrders.worseOrderID,
+    }));
   });
 }
 
