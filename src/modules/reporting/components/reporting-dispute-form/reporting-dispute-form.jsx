@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import BigNumber from 'bignumber.js'
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
@@ -61,16 +62,25 @@ const validateNumber = (validations, updateState, fieldName, value, humanName, m
   })
 }
 
-const validateStake = (p, stake) => {
+const validateStake = (p, rawStake) => {
   const updatedValidations = { ...p.validations }
+  const minStake = p.minimumStakeRequired instanceof BigNumber ? p.minimumStakeRequired : new BigNumber(p.minimumStakeRequired)
+  const minStakeNum = p.minimumStakeRequired instanceof BigNumber ? p.minimumStakeRequired.toNumber() : p.minimumStakeRequired
+
+  let stake = rawStake
+
+  if (stake !== '' && !(stake instanceof BigNumber)) {
+    stake = new BigNumber(rawStake)
+    stake = stake.round(4)
+  }
 
   if (p.stakeIsRequired) {
     switch (true) {
       case stake === '':
         updatedValidations.stake = 'The stake field is required.'
         break
-      case parseFloat(stake) <= parseFloat(p.minimumStakeRequired):
-        updatedValidations.stake = `Please enter a stake greater than ${p.minimumStakeRequired}.`
+      case stake <= minStake:
+        updatedValidations.stake = `Please enter a stake greater than ${minStakeNum}.`
         break
       default:
         updatedValidations.stake = true
@@ -135,8 +145,8 @@ export default class ReportingDisputeForm extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.minimumStakeRequired !== false && prevProps.stake !== '' && (
-          prevProps.minimumStakeRequired !== this.props.minimumStakeRequired || prevProps.isMarketValid !== this.props.isMarketValid
-        )) {
+      prevProps.minimumStakeRequired !== this.props.minimumStakeRequired || prevProps.isMarketValid !== this.props.isMarketValid
+    )) {
       validateStake(this.props, this.props.stake)
     }
   }
@@ -181,13 +191,15 @@ export default class ReportingDisputeForm extends Component {
               <button
                 className={classNames({ [`${FormStyles.active}`]: p.isMarketValid === true })}
                 onClick={(e) => { validateIsMarketValid(p.validations, p.updateState, true) }}
-              >Yes</button>
+              >Yes
+              </button>
             </li>
             <li>
               <button
                 className={classNames({ [`${FormStyles.active}`]: p.isMarketValid === false })}
                 onClick={(e) => { validateIsMarketValid(p.validations, p.updateState, false) }}
-              >No</button>
+              >No
+              </button>
             </li>
           </ul>
         </li>
@@ -202,9 +214,10 @@ export default class ReportingDisputeForm extends Component {
                   <button
                     className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.name })}
                     onClick={(e) => { validateOutcome(p.validations, p.updateState, outcome.name) }}
-                  >{outcome.name} &nbsp;|&nbsp; {outcome.stake} REP</button>
+                  >{outcome.name} &nbsp;|&nbsp; {outcome.stake} REP
+                  </button>
                 </li>
-                ))
+              ))
               }
             </ul>
           </li>

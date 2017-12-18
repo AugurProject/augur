@@ -15,7 +15,7 @@ export const commitReport = (market, reportedOutcomeID, isUnethical, isIndetermi
   if (!loginAccount.address || !market || !reportedOutcomeID) {
     return console.error('commitReport failed:', loginAccount.address, market, reportedOutcomeID)
   }
-  const eventID = market.eventID
+  const { eventID } = market
   if (reportCommitLock[eventID]) {
     return console.warn('reportCommitLock set:', eventID, reportCommitLock)
   }

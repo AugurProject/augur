@@ -35,7 +35,7 @@ export default class FilterSortController extends Component {
     this.injectChildren = this.injectChildren.bind(this)
     this.updateIndices = this.updateIndices.bind(this)
     this.callFilterByCategory = this.callFilterByCategory.bind(this)
-    this.callFilterByKeywords = this.callFilterByKeywords.bind(this)
+    this.callFilterByTags = this.callFilterByTags.bind(this)
   }
 
   componentWillMount() {
@@ -45,7 +45,7 @@ export default class FilterSortController extends Component {
 
     const search = parseQuery(this.props.location.search)
     this.callFilterByCategory(search, this.props.items)
-    this.callFilterByKeywords(search, this.props.items)
+    this.callFilterByTags(search, this.props.items)
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -78,12 +78,12 @@ export default class FilterSortController extends Component {
       this.callFilterByCategory(newSearch, nextProps.items)
     }
 
-    // Keywords
+    // Tags
     if (
       !isEqual(this.props.items, nextProps.items) ||
       !isEqual(oldSearch[TAGS_PARAM_NAME], newSearch[TAGS_PARAM_NAME])
     ) {
-      this.callFilterByKeywords(newSearch, nextProps.items)
+      this.callFilterByTags(newSearch, nextProps.items)
     }
   }
 
@@ -96,12 +96,12 @@ export default class FilterSortController extends Component {
     })
   }
 
-  callFilterByKeywords(query, items) {
-    const keywordsArray = parseStringToArray(decodeURIComponent(query[TAGS_PARAM_NAME] || ''), QUERY_VALUE_DELIMITER)
+  callFilterByTags(query, items) {
+    const tagsArray = parseStringToArray(decodeURIComponent(query[TAGS_PARAM_NAME] || ''), QUERY_VALUE_DELIMITER)
 
     this.updateIndices({
       type: TAGS_PARAM_NAME,
-      indices: filterByTags(keywordsArray, items)
+      indices: filterByTags(tagsArray, items)
     })
   }
 
@@ -127,8 +127,7 @@ export default class FilterSortController extends Component {
   updateSortedFiltered(rawSorted, combined) { // If we want to accomodate more than one sorting mechanism across a filtered list, we'll need to re-architect things a bit
     this.props.updateFilteredItems(rawSorted !== null ?
       (rawSorted || []).filter(itemIndex => combined.indexOf(itemIndex) !== -1) :
-      combined
-    )
+      combined)
   }
 
 

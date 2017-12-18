@@ -1,7 +1,6 @@
 import { augur } from 'services/augurjs'
-import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions'
-import { TRANSFER } from 'modules/transactions/constants/types'
 import logError from 'utils/log-error'
+import { addTransferTransactions } from 'modules/transactions/actions/add-transactions'
 
 export function loadFundingHistory(options, callback = logError) {
   return (dispatch, getState) => {
@@ -10,9 +9,7 @@ export function loadFundingHistory(options, callback = logError) {
     augur.accounts.getAccountTransferHistory({ ...options, account: loginAccount.address }, (err, transferHistory) => {
       if (err) return callback(err)
       if (transferHistory == null) return callback(null)
-      if (Array.isArray(transferHistory) && transferHistory.length) {
-        dispatch(convertLogsToTransactions(TRANSFER, transferHistory))
-      }
+      dispatch(addTransferTransactions(transferHistory))
       callback(null, transferHistory)
     })
   }

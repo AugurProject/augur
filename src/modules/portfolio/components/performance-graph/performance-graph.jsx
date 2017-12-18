@@ -71,10 +71,10 @@ class PerformanceGraph extends Component {
             this.xAxis[0].toPixels(20),
             this.yAxis[0].toPixels(60)
           )
-          .css({
-            fontSize: '10px'
-          })
-          .add()
+            .css({
+              fontSize: '10px'
+            })
+            .add()
 
           this.customTexts.push(text)
         },
@@ -138,7 +138,7 @@ class PerformanceGraph extends Component {
           let positions = [this.dataMin, (this.dataMax / 2), Math.ceil(this.dataMax) + (this.dataMax * 0.05)]
 
           if (this.series[0] && this.series[0].length > 0) {
-            const data = this.series[0].data
+            const { data } = this.series[0]
             const i = data.length / 2
             const median = i % 1 === 0 ? (data[i - 1] + data[i]) / 2 : data[Math.floor(i)]
             positions = [this.dataMin, median, Math.ceil(this.dataMax) + (this.dataMax * 0.05)]
@@ -190,7 +190,7 @@ class PerformanceGraph extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.performanceData !== this.props.performanceData || prevState.graphType !== this.state.graphType || prevState.graphPeriod !== this.state.graphPeriod) this.updateChart()
+    if (prevState.graphType !== this.state.graphType || prevState.graphPeriod !== this.state.graphPeriod) this.updateChart()
   }
 
   componentWillUnmount() {

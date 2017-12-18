@@ -9,7 +9,8 @@ const MenuItem = p => (
     className={classNames({
       [Styles['InnerNav__menu-item']]: true,
       [Styles['InnerNav__menu-item--selected']]: p.isSelected,
-      [Styles['InnerNav__menu-item--visible']]: p.visible })}
+      [Styles['InnerNav__menu-item--visible']]: p.visible
+    })}
     key={p.key}
   >
     {p.children}

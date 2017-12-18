@@ -11,9 +11,7 @@ export function nextReportPage(history) {
     const { universe, reports } = getState()
     const universeReports = reports[universe.id]
     if (!universeReports) return history.push(makePath(MARKETS))
-    const nextPendingReportMarket = selectMarket(Reflect.ownKeys(universeReports).find(
-      marketID => !universeReports[marketID].isSubmitted
-    ))
+    const nextPendingReportMarket = selectMarket(Reflect.ownKeys(universeReports).find(marketID => !universeReports[marketID].isSubmitted))
     if (!nextPendingReportMarket || !nextPendingReportMarket.id) return history.push(makePath(MARKETS))
 
     // Go To Next Report

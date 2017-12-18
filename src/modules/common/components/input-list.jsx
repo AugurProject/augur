@@ -1,4 +1,4 @@
-/* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance as potentially two items have itentical values
+/* eslint react/no-array-index-key: 0 */ // It's OK in this specific instance as potentially two items have itentical values
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
@@ -78,7 +78,7 @@ export default class InputList extends Component {
   render() {
     const p = this.props
     const s = this.state
-    let list = s.list
+    let { list } = s
 
     if (!p.listMaxElements || list.length < p.listMaxElements) {
       list = list.slice()

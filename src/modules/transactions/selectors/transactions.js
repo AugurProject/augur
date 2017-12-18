@@ -19,7 +19,7 @@ export const selectTransactions = createSelector(
     const tradeGroups = []
     const formattedTransactions = Object.keys(transactionsData || {})
       .reduce((p, id) => {
-        const tradeGroupID = transactionsData[id].tradeGroupID
+        const { tradeGroupID } = transactionsData[id]
         if (tradeGroupID) {
           if (tradeGroups.indexOf(tradeGroupID) === -1) {
             tradeGroups.push(tradeGroupID)
@@ -39,6 +39,7 @@ export const selectTransactions = createSelector(
         return p
       }, [])
       .sort((a, b) => getValue(b, 'timestamp.timestamp') - getValue(a, 'timestamp.timestamp'))
+      .sort((a, b) => a.sortOrder - b.sortOrder)
 
     return formattedTransactions
   }

@@ -13,6 +13,7 @@ import { formatDate } from 'utils/format-date'
 import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints'
 
 import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'
+import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons/icons'
 
 import Styles from 'modules/create-market/components/create-market-form-resolution/create-market-form-resolution.styles'
 import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'
@@ -44,7 +45,7 @@ export default class CreateMarketResolution extends Component {
     super(props)
 
     this.state = {
-      expirySourceType: false,
+      // expirySourceType: false,
       date: Object.keys(this.props.newMarket.endDate).length ? moment(this.props.newMarket.endDate.timestamp) : null,
       focused: false,
     }
@@ -55,7 +56,7 @@ export default class CreateMarketResolution extends Component {
   validateExpiryType(value) {
     const p = this.props
     const updatedMarket = { ...p.newMarket }
-    const currentStep = p.newMarket.currentStep
+    const { currentStep } = p.newMarket
 
     if (value === EXPIRY_SOURCE_SPECIFIC) {
       updatedMarket.validations[currentStep].expirySource =
@@ -86,14 +87,16 @@ export default class CreateMarketResolution extends Component {
             <li>
               <button
                 className={classNames({ [`${StylesForm.active}`]: p.newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC })}
-                onClick={(e) => { this.setState({ expirySourceType: EXPIRY_SOURCE_GENERIC }); this.validateExpiryType(EXPIRY_SOURCE_GENERIC) }}
-              >Outcome will be determined by news media</button>
+                onClick={() => this.validateExpiryType(EXPIRY_SOURCE_GENERIC)}
+              >Outcome will be determined by news media
+              </button>
             </li>
             <li className={Styles['CreateMarketResolution__expiry-source-specific']}>
               <button
                 className={classNames({ [`${StylesForm.active}`]: p.newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC })}
-                onClick={(e) => { this.setState({ expirySourceType: EXPIRY_SOURCE_SPECIFIC }); this.validateExpiryType(EXPIRY_SOURCE_SPECIFIC) }}
-              >Outcome will be detailed on a public website</button>
+                onClick={() => this.validateExpiryType(EXPIRY_SOURCE_SPECIFIC)}
+              >Outcome will be detailed on a public website
+              </button>
               { p.newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC &&
                 <input
                   type="text"
@@ -125,10 +128,10 @@ export default class CreateMarketResolution extends Component {
           <label htmlFor="cm__input--time">
             <span>Expiration Time</span>
             { p.newMarket.validations[p.newMarket.currentStep].hour.length &&
-              <span className={StylesForm.CreateMarketForm__error}>{ p.newMarket.validations[p.newMarket.currentStep].hour }</span>
+              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].hour }</span>
             }
             { p.newMarket.validations[p.newMarket.currentStep].minute.length &&
-              <span className={StylesForm.CreateMarketForm__error}>{ p.newMarket.validations[p.newMarket.currentStep].minute }</span>
+              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].minute }</span>
             }
           </label>
           <div className={Styles.CreateMarketResolution__time}>

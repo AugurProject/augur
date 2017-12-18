@@ -7,7 +7,7 @@ export const CATEGORICAL_OUTCOME_MAX_LENGTH = 250
 
 export const TAGS_MAX_LENGTH = 25
 
-export const KEYWORDS_MAX_NUM = 2
+export const TAGS_MAX_NUM = 2
 
 export const RESOURCES_MAX_NUM = 5
 export const RESOURCES_MAX_LENGTH = 1250

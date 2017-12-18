@@ -23,9 +23,6 @@ export default class ReportForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      type: props.type,
-      minPrice: props.minPrice,
-      maxPrice: props.maxPrice,
       reportedOutcomeID: props.reportedOutcomeID,
       amountToStake: props.amountToStake,
       isIndeterminate: props.isIndeterminate,

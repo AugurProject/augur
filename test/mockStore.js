@@ -19,4 +19,6 @@ function actionCreator() {
   })
 }
 
-export default { store, state, mockStore, actionCreator }
+export default {
+  store, state, mockStore, actionCreator
+}

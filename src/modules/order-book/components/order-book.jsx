@@ -50,7 +50,8 @@ export default class OrderBook extends Component {
             {p.marketType !== SCALAR ?
               <h3>Order Book {name &&
                 <span>&mdash; {name}</span>
-              }</h3> :
+              }
+              </h3> :
               <h3>Order Book</h3>
             }
             <ComponentNav

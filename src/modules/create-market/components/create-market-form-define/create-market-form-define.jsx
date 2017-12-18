@@ -6,6 +6,8 @@ import PropTypes from 'prop-types'
 
 import { DESCRIPTION_MAX_LENGTH, TAGS_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints'
 
+import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons/icons'
+
 import Styles from 'modules/create-market/components/create-market-form-define/create-market-form-define.styles'
 import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'
 
@@ -24,7 +26,7 @@ export default class CreateMarketDefine extends Component {
     this.state = {
       suggestedCategories: this.filterCategories(this.props.newMarket.category),
       shownSuggestions: 2,
-      suggestedCatClicked: false,
+      // suggestedCatClicked: false,
     }
 
     this.filterCategories = this.filterCategories.bind(this)
@@ -52,7 +54,7 @@ export default class CreateMarketDefine extends Component {
 
   validateTag(fieldName, value, maxLength, isRequired = true) {
     const p = this.props
-    const currentStep = p.newMarket.currentStep
+    const { currentStep } = p.newMarket
 
     const updatedMarket = { ...p.newMarket }
 
@@ -95,7 +97,7 @@ export default class CreateMarketDefine extends Component {
           <label htmlFor="cm__input--desc">
             <span>Market Question</span>
             { p.newMarket.validations[p.newMarket.currentStep].description.length &&
-              <span className={StylesForm.CreateMarketForm__error}>{ p.newMarket.validations[p.newMarket.currentStep].description }</span>
+              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].description }</span>
             }
           </label>
           <input
@@ -111,7 +113,7 @@ export default class CreateMarketDefine extends Component {
           <label htmlFor="cm__input--cat">
             <span>Category</span>
             { p.newMarket.validations[p.newMarket.currentStep].category.length &&
-              <span className={StylesForm.CreateMarketForm__error}>{ p.newMarket.validations[p.newMarket.currentStep].category }</span>
+              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].category }</span>
             }
           </label>
           <input
@@ -137,10 +139,10 @@ export default class CreateMarketDefine extends Component {
                     this.catInput.value = cat.topic
                     this.validateTag('category', cat.topic, TAGS_MAX_LENGTH)
                   }}
-                >{cat.topic}</button>
+                >{cat.topic}
+                </button>
               </li>
-              )
-            )}
+            ))}
             {p.newMarket.category && s.suggestedCategories.length > s.shownSuggestions &&
               <li>
                 <button onClick={() => this.setState({ shownSuggestions: s.suggestedCategories.length })}>+ {s.suggestedCategories.length - 2} more</button>
@@ -152,11 +154,11 @@ export default class CreateMarketDefine extends Component {
           <label htmlFor="cm__input--tag1">
             <span>Tags</span>
             { p.newMarket.validations[p.newMarket.currentStep].tag1.length &&
-              <span className={StylesForm.CreateMarketForm__error}>{ p.newMarket.validations[p.newMarket.currentStep].tag1 }</span>
+              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].tag1 }</span>
             }
             { p.newMarket.validations[p.newMarket.currentStep].tag2.length &&
               <span className={StylesForm['CreateMarketForm__error--field-50']}>
-                { p.newMarket.validations[p.newMarket.currentStep].tag2 }
+                {InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].tag2 }
               </span>
             }
           </label>

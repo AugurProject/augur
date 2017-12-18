@@ -37,6 +37,7 @@ const DEFAULT_STATE = {
   outcomes: Array(8).fill(''),
   scalarSmallNum: '',
   scalarBigNum: '',
+  scalarDenomination: '',
   description: '',
   expirySourceType: '',
   expirySource: '',

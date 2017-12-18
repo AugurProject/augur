@@ -28,8 +28,7 @@ export default class Ledger extends Component {
     this.LedgerEthereum = null
 
     this.state = {
-      ledgerState: null,
-      displayInstructions: false
+      ledgerState: null
     }
 
     this.connectLedger = this.connectLedger.bind(this)
@@ -44,9 +43,7 @@ export default class Ledger extends Component {
       nextState.ledgerState !== this.LEDGER_STATES.ATTEMPTING_CONNECTION &&
       this.state.ledgerState !== nextState.ledgerState
     ) {
-      this.setState({
-        displayInstructions: true
-      })
+      this.updateDisplayInstructions(true)
     }
   }
 
@@ -54,35 +51,27 @@ export default class Ledger extends Component {
   // NOTE --  basically the only state that gets called is 'connect' until success,
   //          but potentially the other will at a later point
   async onConnectLedgerRequest() {
-    this.setState(
-      {
-        ledgerState: this.LEDGER_STATES.CONNECT_LEDGER
-      }
-    )
+    this.setState({
+      ledgerState: this.LEDGER_STATES.CONNECT_LEDGER
+    })
   }
 
   async onOpenEthereumAppRequest() {
-    this.setState(
-      {
-        ledgerState: this.LEDGER_STATES.OPEN_APP
-      }
-    )
+    this.setState({
+      ledgerState: this.LEDGER_STATES.OPEN_APP
+    })
   }
 
   async onSwitchLedgerModeRequest() {
-    this.setState(
-      {
-        ledgerState: this.LEDGER_STATES.SWITCH_MODE
-      }
-    )
+    this.setState({
+      ledgerState: this.LEDGER_STATES.SWITCH_MODE
+    })
   }
 
   async onEnableContractSupportRequest() {
-    this.setState(
-      {
-        ledgerState: this.LEDGER_STATES.ENABLE_CONTRACT_SUPPORT
-      }
-    )
+    this.setState({
+      ledgerState: this.LEDGER_STATES.ENABLE_CONTRACT_SUPPORT
+    })
   }
 
   async connectLedger() {
@@ -103,7 +92,7 @@ export default class Ledger extends Component {
       return this.props.loginWithLedger(address, ledgerEthereum)
     }
 
-    this.setState({ ledgerStatus: this.LEDGER_STATES.OTHER_ISSUE })
+    this.setState({ ledgerState: this.LEDGER_STATES.OTHER_ISSUE })
   }
 
   render() {

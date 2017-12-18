@@ -273,12 +273,10 @@ export default class AppView extends Component {
         step: (newState) => {
           setMenuState(Object.assign({}, baseMenuState, { scalar: newState.value }))
         }
-      }).then(
-        () => {
-          if (cb && (typeof cb) === 'function') cb()
-          setMenuState({ locked: false, currentTween: null })
-        }
-      )
+      }).then(() => {
+        if (cb && (typeof cb) === 'function') cb()
+        setMenuState({ locked: false, currentTween: null })
+      })
       setMenuState({ currentTween })
     }
   }
@@ -332,7 +330,7 @@ export default class AppView extends Component {
     }
 
     let categoriesMargin
-    let keywordsMargin
+    let tagsMargin
     let origamiScalar = 0
 
     if (!p.isMobile) {
@@ -342,7 +340,7 @@ export default class AppView extends Component {
         categoriesMargin = -110 + (110 * mainMenu.scalar)
       }
 
-      keywordsMargin = 110 * subMenu.scalar
+      tagsMargin = 110 * subMenu.scalar
 
       // ensure origami fold-out moves perfectly with submenu
       origamiScalar = Math.max(0, (subMenu.scalar + mainMenu.scalar) - 1)
@@ -375,7 +373,7 @@ export default class AppView extends Component {
           />
         </section>
         <section className={Styles.Main}>
-          <section>
+          <section className={Styles.TopBar}>
             <TopBar
               isMobile={p.isMobile}
               isLogged={p.isLogged}
@@ -411,7 +409,7 @@ export default class AppView extends Component {
             }
             <section
               className={Styles.Main__content}
-              style={{ marginLeft: keywordsMargin }}
+              style={{ marginLeft: tagsMargin }}
             >
               <Routes />
             </section>

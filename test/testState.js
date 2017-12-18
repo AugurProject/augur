@@ -1,6 +1,6 @@
 // Generic starting test state.
 // Goal: To help keep these unit tests as DRY as possible.
-import env from 'src/env'
+import env from 'src/env-local'
 
 import { formatNumber, formatShares } from 'utils/format-number'
 import { formatDate } from 'utils/format-date'
@@ -58,7 +58,7 @@ const testState = {
     realEther: 0,
     rep: 0
   },
-  keywords: 'test testtag',
+  tags: 'test testtag',
   marketsData: {
     testMarketID: {
       author: '0x0000000000000000000000000000000000000001',

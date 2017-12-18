@@ -58,15 +58,13 @@ export const calculateMaxPossibleShares = memoize((loginAccount, orders, makerFe
         .times(TEN_TO_THE_EIGHTEENTH_POWER)
         .floor()
       if (order.type === 'buy') {
-        remainingShares = speedomatic.unfix(
-          remainingEther.dividedBy(feePerShare)
-            .times(TEN_TO_THE_EIGHTEENTH_POWER)
-            .floor())
+        remainingShares = speedomatic.unfix(remainingEther.dividedBy(feePerShare)
+          .times(TEN_TO_THE_EIGHTEENTH_POWER)
+          .floor())
       } else {
-        remainingShares = speedomatic.unfix(
-          remainingEther.dividedBy(feePerShare.plus(speedomatic.fix(fullPrecisionPrice)))
-            .times(TEN_TO_THE_EIGHTEENTH_POWER)
-            .floor())
+        remainingShares = speedomatic.unfix(remainingEther.dividedBy(feePerShare.plus(speedomatic.fix(fullPrecisionPrice)))
+          .times(TEN_TO_THE_EIGHTEENTH_POWER)
+          .floor())
       }
       maxPossibleShares = maxPossibleShares.plus(remainingShares)
       break

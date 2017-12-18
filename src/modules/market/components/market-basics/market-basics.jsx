@@ -1,4 +1,4 @@
-/* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance as order remains the same
+/* eslint react/no-array-index-key: 0 */ // It's OK in this specific instance as order remains the same
 
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -29,8 +29,7 @@ const MarketBasics = p => (
               <button onClick={() => toggleTag(tag, p.location, p.history)}>
                 {tag}
               </button>
-            </li>
-          )}
+            </li>)}
         </ul>
         <MarketStatusIcon isOpen={p.isOpen} isReported={p.isReported} />
       </div>

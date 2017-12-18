@@ -10,7 +10,6 @@ import footerHeight from 'modules/app/reducers/footer-height'
 
 import loginAccount from 'modules/auth/reducers/login-account'
 import isLogged from 'modules/auth/reducers/is-logged'
-import accountName from 'modules/account/reducers/account-name'
 
 import newMarket from 'modules/create-market/reducers/new-market'
 
@@ -36,8 +35,8 @@ import transactionsLoading from 'modules/transactions/reducers/transactions-load
 import scalarMarketsShareDenomination from 'modules/market/reducers/scalar-markets-share-denomination'
 import closePositionTradeGroups from 'modules/my-positions/reducers/close-position-trade-groups'
 
-import topics from 'modules/topics/reducers/topics-data'
-import hasLoadedTopic from 'modules/topics/reducers/has-loaded-topic'
+import topics from 'modules/categories/reducers/categories-data'
+import hasLoadedTopic from 'modules/categories/reducers/has-loaded-category'
 
 import selectedMarketID from 'modules/market/reducers/selected-market-id'
 import tradesInProgress from 'modules/trade/reducers/trades-in-progress'
@@ -66,7 +65,6 @@ export function createReducer() {
 
     loginAccount,
     isLogged,
-    accountName,
 
     newMarket,
 

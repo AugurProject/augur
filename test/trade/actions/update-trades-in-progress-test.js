@@ -163,7 +163,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     })
 
     it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradesInProgress is defined for an outcome.', () => {
-			// set the current Trade in Progress for BUY to a 10 share .5 limit buy order
+      // set the current Trade in Progress for BUY to a 10 share .5 limit buy order
       store.getState().tradesInProgress = {
         testBinaryMarketID: {
           0: {
@@ -203,7 +203,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     })
 
     it('should handle clearing out a trade in progress if limitPrice is set to 0 on a trade ready to be placed', () => {
-			// marketID, outcomeID, side, numShares, limitPrice, maxCost
+      // marketID, outcomeID, side, numShares, limitPrice, maxCost
       store.dispatch(action.updateTradesInProgress('testBinaryMarketID', 0, BUY, undefined, '0', undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
@@ -407,7 +407,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     })
 
     it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradesInProgress is defined for an outcome.', () => {
-			// set the current Trade in Progress for BUY to a 10 share .5 limit buy order
+      // set the current Trade in Progress for BUY to a 10 share .5 limit buy order
       store.getState().tradesInProgress = {
         testCategoricalMarketID: {
           0: {
@@ -663,7 +663,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     })
 
     it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradesInProgress is defined for an outcome.', () => {
-			// set the current Trade in Progress for BUY to a 10 share .5 limit buy order
+      // set the current Trade in Progress for BUY to a 10 share .5 limit buy order
       store.getState().tradesInProgress = {
         testScalarMarketID: {
           0: {

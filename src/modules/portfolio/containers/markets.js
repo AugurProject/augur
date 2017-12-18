@@ -12,13 +12,13 @@ import getScalarShareDenomination from 'modules/market/selectors/scalar-share-de
 
 const mapStateToProps = state =>
   // getMyMarkets or it's equivalent will need a way of calculating the outstanding returns for a market and attaching it to each market object. Currently I've just added a key/value pair to the market objects im using below.
-   ({
-     isLogged: state.isLogged,
-     myMarkets: getMyMarkets(),
-     transactionsLoading: state.transactionsLoading,
-     scalarShareDenomination: getScalarShareDenomination(),
-     hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber // FIXME
-   })
+  ({
+    isLogged: state.isLogged,
+    myMarkets: getMyMarkets(),
+    transactionsLoading: state.transactionsLoading,
+    scalarShareDenomination: getScalarShareDenomination(),
+    hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber // FIXME
+  })
 
 const mapDispatchToProps = dispatch => ({
   loadMarkets: () => dispatch(loadMarkets()),

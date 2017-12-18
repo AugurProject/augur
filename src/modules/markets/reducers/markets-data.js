@@ -1,6 +1,4 @@
-import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKET_TOPIC } from 'modules/markets/actions/update-markets-data'
-import { CATEGORICAL, BINARY } from 'modules/markets/constants/market-types'
-import { CATEGORICAL_OUTCOMES_SEPARATOR } from 'modules/markets/constants/market-outcomes'
+import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKET_TOPIC, UPDATE_MARKETS_LOADING_STATUS } from 'modules/markets/actions/update-markets-data'
 
 export default function (marketsData = {}, action) {
   switch (action.type) {
@@ -8,6 +6,17 @@ export default function (marketsData = {}, action) {
       return {
         ...marketsData,
         ...processMarketsData(action.marketsData, marketsData)
+      }
+    case UPDATE_MARKETS_LOADING_STATUS:
+      return {
+        ...marketsData,
+        ...action.marketIDs.reduce((p, marketID) => {
+          p[marketID] = {
+            ...marketsData[marketID],
+            isLoading: action.isLoading
+          }
+          return p
+        }, {})
       }
     case UPDATE_MARKET_TOPIC:
       if (!action.marketID) return marketsData
@@ -30,17 +39,6 @@ function processMarketsData(newMarketsData, existingMarketsData) {
     const marketData = {
       ...existingMarketsData[marketID],
       ...newMarketsData[marketID]
-    }
-
-    // clean description
-    if (marketData.type === CATEGORICAL) {
-      marketData.description = marketData.description.split(CATEGORICAL_OUTCOMES_SEPARATOR).slice(0, -1).join()
-    }
-    if (marketData.type === BINARY) {
-      const splitDescription = marketData.description.split(CATEGORICAL_OUTCOMES_SEPARATOR)
-      if (splitDescription.length === 2) {
-        marketData.description = splitDescription.slice(0, -1).join()
-      }
     }
 
     // mark whether details have been loaded

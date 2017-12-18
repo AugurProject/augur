@@ -60,7 +60,7 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
         accounts: {
           account: {
             address: '0xb0b',
-            privateKey: new Buffer('0x0c33')
+            privateKey: Buffer.from('0x0c33')
           },
           from: null
         }
@@ -81,7 +81,7 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
         accounts: {
           account: {
             address: '0xb0b',
-            privateKey: new Buffer('0x0c33')
+            privateKey: Buffer.from('0x0c33')
           },
           from: '0xd00d'
         }
