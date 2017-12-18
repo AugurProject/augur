@@ -11,5 +11,5 @@ export const selectPositionsMarkets = createSelector(
   selectMarkets,
   selectAccountPositionsState,
   selectAccountTradesState,
-  (markets, positions, trades) => (markets || []).filter(market => Object.keys(positions || {}).find(positionMarketID => market.id === positionMarketID) && Object.keys(trades || {}).find(tradeMarketID => market.id === tradeMarketID))
+  (markets, positions, trades) => (markets || []).filter(market => Object.keys(positions || {}).find(positionMarketID => market.id === positionMarketID) || Object.keys(trades || {}).find(tradeMarketID => market.id === tradeMarketID))
 )

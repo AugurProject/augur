@@ -70,6 +70,7 @@ class PositionsMarketsList extends Component {
 
     return (
       <div className={Styles.PositionsMarketsList}>
+        { p.markets.length &&
         <div className={Styles.PositionsMarketsList__SortBar}>
           <div className={Styles['PositionsMarketsList__SortBar-title']}>
             {p.title}
@@ -80,7 +81,7 @@ class PositionsMarketsList extends Component {
           <div className={Styles['PositionsMarketsList__SortBar-filter']}>
             <Dropdown default={s.defaultFilterType} options={s.filterOptions} onChange={this.changeDropdown} />
           </div>
-        </div>
+        </div> }
         {p.markets.length ?
           p.markets.map(market =>
             (<MarketPortfolioCard
