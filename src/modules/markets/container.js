@@ -10,7 +10,7 @@ import { updateMarketsFilteredSorted, clearMarketsFilteredSorted } from 'modules
 import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 
 import loadMarkets from 'modules/markets/actions/load-markets'
-import { loadMarketsByTopic } from 'modules/markets/actions/load-markets-by-category'
+import { loadMarketsByCategory } from 'modules/markets/actions/load-markets-by-category'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 
 import getValue from 'utils/get-value'
@@ -24,12 +24,12 @@ const mapStateToProps = state => ({
   canLoadMarkets: !!getValue(state, 'universe.id'),
   scalarShareDenomination: getScalarShareDenomination(),
   hasLoadedMarkets: state.hasLoadedMarkets,
-  hasLoadedTopic: state.hasLoadedTopic
+  hasLoadedCategory: state.hasLoadedCategory
 })
 
 const mapDispatchToProps = dispatch => ({
   loadMarkets: () => dispatch(loadMarkets()),
-  loadMarketsByTopic: topic => dispatch(loadMarketsByTopic(topic)),
+  loadMarketsByCategory: category => dispatch(loadMarketsByCategory(category)),
   updateMarketsFilteredSorted: filteredMarkets => dispatch(updateMarketsFilteredSorted(filteredMarkets)),
   clearMarketsFilteredSorted: () => dispatch(clearMarketsFilteredSorted()),
   toggleFavorite: marketID => dispatch(toggleFavorite(marketID)),

@@ -36,7 +36,7 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
         './load-markets-info': mockLoadMarketsInfo
       })
 
-      store.dispatch(action.loadMarketsByTopic())
+      store.dispatch(action.loadMarketsByCategory())
 
       t.assertions(store.getActions(), mockLoadMarketsInfo.loadMarketsInfo)
     })
@@ -48,12 +48,12 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
     assertions: (actions) => {
       const expected = [
         {
-          type: 'UPDATE_HAS_LOADED_TOPIC',
-          hasLoadedTopic: { 'fail-err': true }
+          type: 'UPDATE_HAS_LOADED_CATEGORY',
+          hasLoadedCategory: { 'fail-err': true }
         },
         {
-          type: 'UPDATE_HAS_LOADED_TOPIC',
-          hasLoadedTopic: { 'fail-err': false }
+          type: 'UPDATE_HAS_LOADED_CATEGORY',
+          hasLoadedCategory: { 'fail-err': false }
         }
       ]
 
@@ -67,12 +67,12 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
     assertions: (actions) => {
       const expected = [
         {
-          type: 'UPDATE_HAS_LOADED_TOPIC',
-          hasLoadedTopic: { 'fail-err': true }
+          type: 'UPDATE_HAS_LOADED_CATEGORY',
+          hasLoadedCategory: { 'fail-err': true }
         },
         {
-          type: 'UPDATE_HAS_LOADED_TOPIC',
-          hasLoadedTopic: { 'fail-err': false }
+          type: 'UPDATE_HAS_LOADED_CATEGORY',
+          hasLoadedCategory: { 'fail-err': false }
         }
       ]
 
@@ -86,8 +86,8 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
     assertions: (actions, loadMarketsInfo) => {
       const expected = [
         {
-          type: 'UPDATE_HAS_LOADED_TOPIC',
-          hasLoadedTopic: { 'fail-err': true }
+          type: 'UPDATE_HAS_LOADED_CATEGORY',
+          hasLoadedCategory: { 'fail-err': true }
         }
       ]
 
@@ -102,8 +102,8 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
     assertions: (actions, loadMarketsInfo) => {
       const expected = [
         {
-          type: 'UPDATE_HAS_LOADED_TOPIC',
-          hasLoadedTopic: { 'fail-err': true }
+          type: 'UPDATE_HAS_LOADED_CATEGORY',
+          hasLoadedCategory: { 'fail-err': true }
         }
       ]
 

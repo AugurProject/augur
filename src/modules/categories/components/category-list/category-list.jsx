@@ -1,24 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import Topic from 'modules/categories/components/category/category'
+import Category from 'modules/categories/components/category/category'
 
 import Styles from 'modules/categories/components/category-list/category-list.styles'
 
-const TopicList = p => (
+const CategoryList = p => (
   <div>
     {[...Array(p.boundedLength)].map((_, i) => {
-      const topicIndex = (p.lowerBound - 1) + i
-      const topic = (p.topics && p.topics[topicIndex]) ? p.topics[topicIndex] : null
+      const categoryIndex = (p.lowerBound - 1) + i
+      const category = (p.categories && p.categories[categoryIndex]) ? p.categories[categoryIndex] : null
 
       return (
         <div
-          className={Styles.TopicList__topicwrap}
-          key={topic !== null ? JSON.stringify(topic) : `${JSON.stringify(topic)}${topicIndex}`}
+          className={Styles.CategoryList__categorywrap}
+          key={category !== null ? JSON.stringify(category) : `${JSON.stringify(category)}${categoryIndex}`}
         >
-          <Topic
-            topic={topic !== null ? topic.topic : 'null-topic'}
-            popularity={topic !== null ? topic.popularity : 0}
+          <Category
+            category={category !== null ? category.category : 'null-category'}
+            popularity={category !== null ? category.popularity : 0}
           />
         </div>
       )
@@ -26,10 +26,10 @@ const TopicList = p => (
   </div>
 )
 
-TopicList.propTypes = {
-  topics: PropTypes.array.isRequired,
+CategoryList.propTypes = {
+  categories: PropTypes.array.isRequired,
   lowerBound: PropTypes.number,
   boundedLength: PropTypes.number
 }
 
-export default TopicList
+export default CategoryList

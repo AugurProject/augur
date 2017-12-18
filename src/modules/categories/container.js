@@ -1,18 +1,18 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import TopicsView from 'modules/categories/components/categories-view/categories-view'
+import CategoriesView from 'modules/categories/components/categories-view/categories-view'
 
 import { selectLoginAccount } from 'modules/auth/selectors/login-account'
-import { selectTopics } from 'modules/categories/selectors/categories'
+import { selectCategories } from 'modules/categories/selectors/categories'
 
 const mapStateToProps = state => ({
   universe: state.universe,
   isMobile: state.isMobile,
-  topics: selectTopics(state),
+  categories: selectCategories(state),
   loginAccount: selectLoginAccount(state),
   isLogged: state.isLogged
 })
 
-const Topics = withRouter(connect(mapStateToProps)(TopicsView))
+const Categories = withRouter(connect(mapStateToProps)(CategoriesView))
 
-export default Topics
+export default Categories

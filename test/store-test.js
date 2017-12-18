@@ -11,7 +11,7 @@ import store from 'src/store'
   universe: {},
   auth: { selectedAuthType: 'register', err: null },
   loginAccount: {},
-  activePage: 'topics',
+  activePage: 'categorys',
   marketsData: {},
   favorites: {},
   pendingReports: {},

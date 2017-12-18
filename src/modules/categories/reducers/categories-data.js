@@ -1,20 +1,20 @@
-import { UPDATE_TOPICS, CLEAR_TOPICS, UPDATE_TOPIC_POPULARITY } from 'modules/categories/actions/update-categories'
+import { UPDATE_CATEGORIES, CLEAR_CATEGORIES, UPDATE_CATEGORY_POPULARITY } from 'modules/categories/actions/update-categories'
 
-export default function (topics = {}, action) {
+export default function (categories = {}, action) {
   switch (action.type) {
-    case UPDATE_TOPICS:
+    case UPDATE_CATEGORIES:
       return {
-        ...topics,
-        ...action.topics
+        ...categories,
+        ...action.categories
       }
-    case UPDATE_TOPIC_POPULARITY:
+    case UPDATE_CATEGORY_POPULARITY:
       return {
-        ...topics,
-        [action.topic]: !topics[action.topic] ? action.amount : topics[action.topic] + action.amount
+        ...categories,
+        [action.category]: !categories[action.category] ? action.amount : categories[action.category] + action.amount
       }
-    case CLEAR_TOPICS:
+    case CLEAR_CATEGORIES:
       return {}
     default:
-      return topics
+      return categories
   }
 }

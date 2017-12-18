@@ -1,16 +1,16 @@
-export const UPDATE_TOPICS = 'UPDATE_TOPICS'
-export const CLEAR_TOPICS = 'CLEAR_TOPICS'
-export const UPDATE_TOPIC_POPULARITY = 'UPDATE_TOPIC_POPULARITY'
+export const UPDATE_CATEGORIES = 'UPDATE_CATEGORIES'
+export const CLEAR_CATEGORIES = 'CLEAR_CATEGORIES'
+export const UPDATE_CATEGORY_POPULARITY = 'UPDATE_CATEGORY_POPULARITY'
 
-export const updateTopics = topics => ({ type: UPDATE_TOPICS, topics })
-export const clearTopics = () => ({ type: CLEAR_TOPICS })
-export const updateTopicPopularity = (topic, amount) => ({ type: UPDATE_TOPIC_POPULARITY, topic, amount })
+export const updateCategories = categories => ({ type: UPDATE_CATEGORIES, categories })
+export const clearCategories = () => ({ type: CLEAR_CATEGORIES })
+export const updateCategoryPopularity = (category, amount) => ({ type: UPDATE_CATEGORY_POPULARITY, category, amount })
 
-export const updateMarketTopicPopularity = (marketID, amount) => (dispatch, getState) => {
+export const updateMarketCategoryPopularity = (marketID, amount) => (dispatch, getState) => {
   const market = getState().marketsData[marketID]
   if (market && market.category !== undefined) {
-    if (market.category !== null) dispatch(updateTopicPopularity(market.category, Number(amount)))
+    if (market.category !== null) dispatch(updateCategoryPopularity(market.category, Number(amount)))
   } else {
-    dispatch(updateTopicPopularity(market.category, Number(amount)))
+    dispatch(updateCategoryPopularity(market.category, Number(amount)))
   }
 }
