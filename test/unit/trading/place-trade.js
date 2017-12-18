@@ -50,7 +50,7 @@ describe("trading/place-trade", function () {
           marketID: "MARKET_ADDRESS",
           orderType: "buy",
           outcome: 2,
-          price: "0.5",
+          price: "2",
         });
         callback(null, { betterOrderID: null, worseOrderID: null });
       },
@@ -103,7 +103,7 @@ describe("trading/place-trade", function () {
           marketID: "MARKET_ADDRESS",
           outcome: 2,
           orderType: "buy",
-          price: "0.5",
+          price: "2",
         });
         callback(null, { betterOrderID: "BETTER_ORDER_ID", worseOrderID: "WORSE_ORDER_ID" });
       },
