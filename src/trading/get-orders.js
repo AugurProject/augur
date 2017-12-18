@@ -1,14 +1,29 @@
 "use strict";
 
+/**
+ * Serves as an enum for the state of an order.
+ * @typedef {Object} ORDER_STATE
+ * @property {string} ALL Order is open, closed, or cancelled. (If no order state is specified, this is the default value.)
+ * @property {string} OPEN Order is available to be filled.
+ * @property {string} CLOSED Order has been filled.
+ * @property {string} CANCELED Order has been canceled (although it may have been partially filled).
+ */
+
 /** Type definition for Order.
  * @typedef {Object} Order
- * @property {string} amount Rounded number of shares to trade, as a base-10 string.
- * @property {string} fullPrecisionAmount Full-precision (un-rounded) number of shares to trade, as a base-10 string.
- * @property {string} price Rounded display price, as a base-10 string.
- * @property {string} fullPrecisionPrice Full-precision (un-rounded) display price, as a base-10 string.
- * @property {string} sharesEscrowed Number of the order maker's shares held in escrow, as a base-10 string.
- * @property {string} tokensEscrowed Number of the order maker's tokens held in escrow, as a base-10 string.
+ * @property {string} shareToken Contract address of the share token for which the order was placed, as a hexadecimal string.
+ * @property {string} transactionHash Hash to look up the order transaction receipt.
+ * @property {number} logIndex Number of the log index position in the Ethereum block containing the order transaction.
  * @property {string} owner The order maker's Ethereum address, as a hexadecimal string.
+ * @property {number} creationTime Timestamp, in seconds, when the Ethereum block containing the order transaction was created.
+ * @property {number} creationBlockNumber Number of the Ethereum block containing the order transaction.
+ * @property {ORDER_STATE} orderState State of orders by which to filter results. Valid values are "ALL", "CANCELLED", "CLOSED", & "OPEN".
+ * @property {number} price Rounded display price, as a base-10 number.
+ * @property {number} amount Rounded number of shares to trade, as a base-10 number.
+ * @property {string} fullPrecisionPrice Full-precision (un-rounded) display price, as a base-10 number.
+ * @property {number} fullPrecisionAmount Full-precision (un-rounded) number of shares to trade, as a base-10 number.
+ * @property {number} tokensEscrowed Number of the order maker's tokens held in escrow, as a base-10 number.
+ * @property {number} sharesEscrowed Number of the order maker's shares held in escrow, as a base-10 number.
  */
 
 /** Type definition for SingleOutcomeOrderBookSide.
@@ -19,22 +34,21 @@
 var augurNode = require("../augur-node");
 
 /**
- * @typedef {String} OrderState
- * @value 'OPEN' Limit to orders available to be filled
- * @value 'CLOSED' Limit to orders that have been filled
- * @value 'CANCELED' Limit to orders that have been canceled (although they might have been partially filled)
- */
-
-/**
- * Looks up the order book for a specified market/outcome/type/account.
+ * Returns a list of orders in a given universe or market. Requires an Augur Node connection.
  * @param {Object} p Parameters object.
- * @param {number} p.type Order type (0 for "buy", 1 for "sell").
- * @param {string} p.market Ethereum address of this market's contract instance, as a hexadecimal string.
- * @param {number} p.outcome Outcome ID to look up the order book for, must be an integer value on [0, 7].
- * @param {number=} p.limit Number of orders to load, as a whole number (default: 0 / load all orders).
- * @param {OrderState=} p.orderState Filter to orders of a specific state. See: ORDER_STATE enum
- * @param {function} callback Called when the requested order book for this market/outcome/type has been received and parsed.
- * @return {SingleOutcomeOrderBookSide} One side of the order book (buy or sell) for this market and outcome.
+ * @param {string=} p.universe Contract address of the universe from which to retrieve orders, as a hexadecimal string. Either this parameter or the marketID must be specified.
+ * @param {string=} p.marketID Contract address of the market from which to retrieve orders, as a hexadecimal string. Either this parameter or the universe must be specified.
+ * @param {number=} p.outcome Market outcome to filter results by. Valid values are in the range [0,7].
+ * @param {string=} p.creator Ethereum address of the order creator, as a hexadecimal string.
+ * @param {ORDER_STATE=} p.orderState State of orders by which to filter results. Valid values are "ALL", "CANCELLED", "CLOSED", & "OPEN".
+ * @param {number=} p.earliestCreationTime Earliest timestamp, in seconds, at which to truncate order results. (This timestamp is when the block on the Ethereum blockchain containing the transfer was created.)
+ * @param {number=} p.latestCreationTime Latest timestamp, in seconds, at which to truncate order results. (This timestamp is when the block on the Ethereum blockchain containing the transfer was created.)
+ * @param {string=} p.sortBy Field name by which to sort the orders.
+ * @param {boolean=} p.isSortDescending Whether to sort orders in descending order by sortBy field.
+ * @param {string=} p.limit Maximum number of orders to return.
+ * @param {string=} p.offset Number of orders to truncate from the beginning of the results.
+ * @param {function} callback Called when the requested orders for this market/universe have been received and parsed.
+ * @return {SingleOutcomeOrderBookSide} One side of the order book (buy or sell) for the specified market/universe and outcome.
  */
 function getOrders(p, callback) {
   augurNode.submitRequest("getOrders", p, function (err, openOrders) {
