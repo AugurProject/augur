@@ -49,6 +49,7 @@ export function processBlock(db: Knex, augur: Augur, block: Block): void {
               logError(err);
             } else {
               trx.commit();
+              console.log("finished block:", blockNumber, timestamp);
             }
           });
         }
