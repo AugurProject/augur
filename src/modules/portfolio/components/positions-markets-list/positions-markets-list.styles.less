@@ -6,6 +6,15 @@
   width: 100%;
 }
 
+.PositionMarketsListNullState {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  @media @breakpoint-mobile {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+}
+
 .PositionsMarketsList__SortBar {
   align-items: baseline;
   display: flex;
@@ -16,7 +25,9 @@
 
 .PositionsMarketsList__SortBar-title {
   color: @color-white;
-  font-size: @font-size-extra-large;
+  font-size: @font-size-large;
+  text-transform: uppercase;
+  font-weight: bold;
 }
 
 .PositionsMarketsList__SortBar-sort {

@@ -4,7 +4,7 @@ import { clearAccountTrades } from 'modules/my-positions/actions/clear-account-t
 import { addTradeTransactions } from 'modules/transactions/actions/add-transactions'
 import { loadAccountPositions } from 'modules/my-positions/actions/load-account-positions'
 import { loadAccountOrders } from 'modules/bids-asks/actions/load-account-orders'
-import { loadMarketsInfoOnly } from 'modules/markets/actions/load-markets-info'
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import logError from 'utils/log-error'
 
 export function loadAccountTrades(options, callback = logError) {
@@ -36,7 +36,7 @@ export function loadUserTradingHistory(options, callback = logError) {
       }, [])
       // TODO: update account trades, not sure why market is needed here
       /* dispatch({ type: UPDATE_ACCOUNT_TRADES_DATA, market, data: data[market] }) */
-      dispatch(loadMarketsInfoOnly(marketIDs.slice(), () => {
+      dispatch(loadMarketsInfo(marketIDs.slice(), () => {
         dispatch(addTradeTransactions(userTradingHistory))
         callback(null, userTradingHistory)
       }))

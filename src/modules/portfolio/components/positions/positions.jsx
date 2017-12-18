@@ -35,7 +35,7 @@ export default class Positions extends Component {
         <Helmet>
           <title>Positions</title>
         </Helmet>
-        { p.openPositionMarkets.length !== 0 &&
+        { p.marketsCount !== 0 &&
         <PositionsMarketsList
           title="Open"
           markets={p.openPositionMarkets}
@@ -45,9 +45,9 @@ export default class Positions extends Component {
           location={p.location}
           history={p.history}
         /> }
-        { p.reportingMarkets.length !== 0 &&
+        { p.marketsCount !== 0 &&
         <PositionsMarketsList
-          title="Reporting"
+          title="In Reporting"
           markets={p.reportingMarkets}
           closePositionStatus={p.closePositionStatus}
           scalarShareDenomination={p.scalarShareDenomination}
@@ -57,7 +57,7 @@ export default class Positions extends Component {
           linkType={TYPE_CHALLENGE}
           positionsDefault={false}
         /> }
-        { p.closedMarkets.length !== 0 &&
+        { p.marketsCount !== 0 &&
         <PositionsMarketsList
           title="Finalized"
           markets={p.closedMarkets}

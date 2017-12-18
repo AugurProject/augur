@@ -2,6 +2,7 @@ import async from 'async'
 import { augur } from 'services/augurjs'
 import { updateAccountPositionsData } from 'modules/my-positions/actions/update-account-trades-data'
 import logError from 'utils/log-error'
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 
 export const loadAccountPositions = (options, callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
@@ -17,9 +18,11 @@ export const loadAccountPositions = (options, callback = logError) => (dispatch,
       collapsed[position.marketID].push(position)
       return collapsed
     }, {})
-    async.forEachOfSeries(marketIDs, (positions, id, nextID) => {
-      dispatch(updateAccountPositionsData(marketIDs, id))
-    })
-    callback(null, shareBalances)
+    dispatch(loadMarketsInfo(Object.keys(marketIDs).slice(), () => {
+      async.forEachOfSeries(marketIDs, (positions, id, nextID) => {
+        dispatch(updateAccountPositionsData(marketIDs, id))
+      })
+      callback(null, shareBalances)
+    }))
   })
 }
