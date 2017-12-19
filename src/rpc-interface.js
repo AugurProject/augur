@@ -3,6 +3,7 @@ var EventEmitter = require("event-emitter");
 
 var createRpcInterface = function (ethrpc) {
   return {
+    constants: ethrpc.constants,
     errors: ethrpc.errors,
     eth: ethrpc.eth,
     clear: ethrpc.clear,
