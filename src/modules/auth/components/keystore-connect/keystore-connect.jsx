@@ -1,3 +1,5 @@
+/* eslint jsx-a11y/label-has-for: 0 */
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
@@ -73,67 +75,15 @@ export default class KeystoreConnect extends Component {
               }
             }}
           >
-            <div
-              className={Styles.Keystore__input}
-            >
-              <input
-                id="keystore_connect_file"
-                className={Styles.Keystore__file}
-                type="file"
-                onChange={(e) => {
-                  if (e.target.files.length) {
-                    if (e.target.files[0].type !== '') {
-                      this.setState({
-                        error: 'Incorrect file type',
-                        password: '',
-                        keystore: null
-                      })
-                    }
-                    const fileReader = new FileReader()
-
-                    fileReader.readAsText(e.target.files[0])
-
-                    fileReader.onload = (e) => {
-                      try {
-                        const keystore = JSON.parse(e.target.result)
-                        this.setState({
-                          error: null,
-                          keystore,
-                        })
-                      } catch (err) {
-                        this.setState({
-                          error: 'Malformed account file',
-                          password: '',
-                          keystore: null
-                        })
-                      }
-                    }
-                  } else {
-                    this.setState({
-                      error: null,
-                      password: '',
-                      keystore: null
-                    })
-                  }
-                }}
-              />
-              <label
-                htmlFor="keystore_connect_file"
+            <div className={Styles['Keystore__input-wrapper']}>
+              <div
+                className={Styles.Keystore__input}
               >
-                <span>{Export}</span>
-                {s.keystore === null ?
-                  'Upload File' :
-                  trimString(s.keystore.address)
-                }
-              </label>
-            </div>
-            <div
-              className={Styles.Keystore__input}
-            >
-              <label
-                htmlFor="keyword_create_passphrase"
-              >
-                Passphrase
+                <label
+                  htmlFor="keyword_create_passphrase"
+                >
+                  Enter Passphrase
+                </label>
                 <input
                   id="keyword_create_passphrase"
                   type="password"
@@ -141,7 +91,62 @@ export default class KeystoreConnect extends Component {
                   placeholder="Passphrase"
                   onChange={e => this.setState({ password: e.target.value })}
                 />
-              </label>
+              </div>
+              <div
+                className={Styles.Keystore__input}
+              >
+                <input
+                  id="keystore_connect_file"
+                  className={Styles.Keystore__file}
+                  type="file"
+                  onChange={(e) => {
+                    if (e.target.files.length) {
+                      if (e.target.files[0].type !== '') {
+                        this.setState({
+                          error: 'Incorrect file type',
+                          password: '',
+                          keystore: null
+                        })
+                      }
+                      const fileReader = new FileReader()
+
+                      fileReader.readAsText(e.target.files[0])
+
+                      fileReader.onload = (e) => {
+                        try {
+                          const keystore = JSON.parse(e.target.result)
+                          this.setState({
+                            error: null,
+                            keystore,
+                          })
+                        } catch (err) {
+                          this.setState({
+                            error: 'Malformed account file',
+                            password: '',
+                            keystore: null
+                          })
+                        }
+                      }
+                    } else {
+                      this.setState({
+                        error: null,
+                        password: '',
+                        keystore: null
+                      })
+                    }
+                  }}
+                />
+                <label
+                  className={Styles['Keystore__label--upload']}
+                  htmlFor="keystore_connect_file"
+                >
+                  <span>{Export}</span>
+                  {s.keystore === null ?
+                    'Upload File' :
+                    trimString(s.keystore.address)
+                  }
+                </label>
+              </div>
             </div>
             <div className={Styles.Keystore__actions}>
               <button
@@ -153,10 +158,7 @@ export default class KeystoreConnect extends Component {
           </form>
           <div className={Styles.Keystore__instruction}>
             {s.error !== null &&
-              <div>
-                <h3>Error:</h3>
-                <span>{s.error}</span>
-              </div>
+              <h3>Error: <span>{s.error}</span></h3>
             }
           </div>
         </div>

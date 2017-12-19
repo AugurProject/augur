@@ -13,7 +13,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 // import makePath from 'modules/routes/helpers/make-path'
 
 // import { FAVORITES, MARKETS } from 'modules/routes/constants/views'
-import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
+import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 import { TYPE_TRADE } from 'modules/market/constants/link-types'
 
 export default class MarketsView extends Component {
@@ -24,9 +24,9 @@ export default class MarketsView extends Component {
     filteredMarkets: PropTypes.array.isRequired,
     canLoadMarkets: PropTypes.bool.isRequired,
     hasLoadedMarkets: PropTypes.bool.isRequired,
-    hasLoadedTopic: PropTypes.object.isRequired,
+    hasLoadedCategory: PropTypes.object.isRequired,
     loadMarkets: PropTypes.func.isRequired,
-    loadMarketsByTopic: PropTypes.func.isRequired,
+    loadMarketsByCategory: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     updateMarketsFilteredSorted: PropTypes.func.isRequired,
@@ -40,9 +40,9 @@ export default class MarketsView extends Component {
       canLoadMarkets: this.props.canLoadMarkets,
       location: this.props.location,
       loadMarkets: this.props.loadMarkets,
-      loadMarketsByTopic: this.props.loadMarketsByTopic,
+      loadMarketsByCategory: this.props.loadMarketsByCategory,
       hasLoadedMarkets: this.props.hasLoadedMarkets,
-      hasLoadedTopic: this.props.hasLoadedTopic
+      hasLoadedCategory: this.props.hasLoadedCategory
     })
   }
 
@@ -50,16 +50,16 @@ export default class MarketsView extends Component {
     if (
       (this.props.canLoadMarkets !== nextProps.canLoadMarkets && nextProps.canLoadMarkets) ||
       this.props.location !== nextProps.location ||
-      this.props.hasLoadedTopic !== nextProps.hasLoadedTopic ||
+      this.props.hasLoadedCategory !== nextProps.hasLoadedCategory ||
       (this.props.hasLoadedMarkets !== nextProps.hasLoadedMarkets && !nextProps.hasLoadedMarkets)
     ) {
       loadMarkets({
         canLoadMarkets: nextProps.canLoadMarkets,
         location: nextProps.location,
         loadMarkets: nextProps.loadMarkets,
-        loadMarketsByTopic: nextProps.loadMarketsByTopic,
+        loadMarketsByCategory: nextProps.loadMarketsByCategory,
         hasLoadedMarkets: this.props.hasLoadedMarkets,
-        hasLoadedTopic: this.props.hasLoadedTopic
+        hasLoadedCategory: this.props.hasLoadedCategory
       })
     }
   }
@@ -106,11 +106,11 @@ export default class MarketsView extends Component {
 
 function loadMarkets(options) {
   if (options.canLoadMarkets) {
-    const topic = parseQuery(options.location.search)[TOPIC_PARAM_NAME]
+    const category = parseQuery(options.location.search)[CATEGORY_PARAM_NAME]
 
-    if (topic && !options.hasLoadedTopic[topic]) {
-      options.loadMarketsByTopic(topic)
-    } else if (!topic) {
+    if (category && !options.hasLoadedCategory[category]) {
+      options.loadMarketsByCategory(category)
+    } else if (!category) {
       options.loadMarkets()
     }
   }

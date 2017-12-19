@@ -1,7 +1,7 @@
 {
   "gethHttpURL": "https://rinkeby.augur.net:8545",
   "gethWebsocketsURL": "wss://rinkeby.augur.net:8546",
-  "augurNodeUrl": "wss://rinkeby.augur.nodes.augur.net:9001",
+  "augurNodeUrl": "wss://rinkeby.augur.nodes.augur.net:9002",
   "networkID": null,
   "autoLogin": false,
   "universe": null,

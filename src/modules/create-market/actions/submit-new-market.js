@@ -10,6 +10,7 @@ import makePath from 'modules/routes/helpers/make-path'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { DESIGNATED_REPORTER_SELF } from 'modules/create-market/constants/new-market-constraints'
 import { TRANSACTIONS } from 'modules/routes/constants/views'
 
 export function submitNewMarket(newMarket, history) {
@@ -25,7 +26,7 @@ export function submitNewMarket(newMarket, history) {
       _feePerEthInWei: speedomatic.fix(newMarket.settlementFee / 100, 'hex'),
       _denominationToken: contractAddresses.Cash,
       _description: newMarket.description,
-      _designatedReporterAddress: loginAccount.address, // FIXME prompt user for actual automated reporter address
+      _designatedReporterAddress: newMarket.designatedReporterType === DESIGNATED_REPORTER_SELF ? loginAccount.address : newMarket.designatedReporterAddress,
       _topic: newMarket.category,
       _extraInfo: {
         marketType: newMarket.type,
