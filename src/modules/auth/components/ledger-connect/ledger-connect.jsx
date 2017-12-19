@@ -119,29 +119,29 @@ export default class Ledger extends Component {
             }
           </button>
         </div>
+        {s.ledgerState &&
         <div className={classNames(Styles.LedgerConnect__messages, { [Styles[`LedgerConnect__messages--visible`]]: s.ledgerState })}>
-          <div>
-            {Alert}
-            <h3>Make sure you have: </h3>
-            <ul>
-              <li>
-                  Accessed Augur via HTTPS
-              </li>
-              <li>
-                  Connected your Ledger
-              </li>
-              <li>
-                  Opened the Ethereum App
-              </li>
-              <li>
-                  Enabled Contract Data
-              </li>
-              <li>
-                  Enabled Browser Support
-              </li>
-            </ul>
-          </div>
+          {Alert}
+          <h3>Make sure you have: </h3>
+          <ul>
+            <li>
+              Accessed Augur via HTTPS
+            </li>
+            <li>
+              Connected your Ledger
+            </li>
+            <li>
+              Opened the Ethereum App
+            </li>
+            <li>
+              Enabled Contract Data
+            </li>
+            <li>
+              Enabled Browser Support
+            </li>
+          </ul>
         </div>
+        }
       </section>
     )
   }
