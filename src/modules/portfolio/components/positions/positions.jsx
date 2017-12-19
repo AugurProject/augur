@@ -36,38 +36,38 @@ export default class Positions extends Component {
           <title>Positions</title>
         </Helmet>
         { p.marketsCount !== 0 &&
-        <PositionsMarketsList
-          title="Open"
-          markets={p.openPositionMarkets}
-          closePositionStatus={p.closePositionStatus}
-          scalarShareDenomination={p.scalarShareDenomination}
-          orderCancellation={p.orderCancellation}
-          location={p.location}
-          history={p.history}
-        /> }
-        { p.marketsCount !== 0 &&
-        <PositionsMarketsList
-          title="In Reporting"
-          markets={p.reportingMarkets}
-          closePositionStatus={p.closePositionStatus}
-          scalarShareDenomination={p.scalarShareDenomination}
-          orderCancellation={p.orderCancellation}
-          location={p.location}
-          history={p.history}
-          linkType={TYPE_CHALLENGE}
-          positionsDefault={false}
-        /> }
-        { p.marketsCount !== 0 &&
-        <PositionsMarketsList
-          title="Finalized"
-          markets={p.closedMarkets}
-          closePositionStatus={p.closePositionStatus}
-          scalarShareDenomination={p.scalarShareDenomination}
-          orderCancellation={p.orderCancellation}
-          location={p.location}
-          history={p.history}
-          positionsDefault={false}
-        /> }
+        <div>
+          <PositionsMarketsList
+            title="Open"
+            markets={p.openPositionMarkets}
+            closePositionStatus={p.closePositionStatus}
+            scalarShareDenomination={p.scalarShareDenomination}
+            orderCancellation={p.orderCancellation}
+            location={p.location}
+            history={p.history}
+          />
+          <PositionsMarketsList
+            title="In Reporting"
+            markets={p.reportingMarkets}
+            closePositionStatus={p.closePositionStatus}
+            scalarShareDenomination={p.scalarShareDenomination}
+            orderCancellation={p.orderCancellation}
+            location={p.location}
+            history={p.history}
+            linkType={TYPE_CHALLENGE}
+            positionsDefault={false}
+          />
+          <PositionsMarketsList
+            title="Finalized"
+            markets={p.closedMarkets}
+            closePositionStatus={p.closePositionStatus}
+            scalarShareDenomination={p.scalarShareDenomination}
+            orderCancellation={p.orderCancellation}
+            location={p.location}
+            history={p.history}
+            positionsDefault={false}
+          />
+        </div>}
         { p.marketsCount === 0 &&
           <div className={PortfolioStyles.NoMarkets__container} >
             <span>You don&apos;t have any positions.</span>
