@@ -331,7 +331,7 @@ class MyMarkets extends Component {
         }
         {(p.myMarkets == null || (p.myMarkets && p.myMarkets.length === 0)) &&
           <div className={PortfolioStyles.NoMarkets__container} >
-            <span>You haven't created any markets.</span>
+            <span>You haven&apos;t created any markets.</span>
             <Link
               className={PortfolioStyles.NoMarkets__link}
               to={makePath(CREATE_MARKET)}
