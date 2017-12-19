@@ -19,9 +19,9 @@ export default class Positions extends Component {
     closePositionStatus: PropTypes.object.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired,
     orderCancellation: PropTypes.object.isRequired,
-    registerBlockNumber: PropTypes.number,
     loadAccountTrades: PropTypes.func.isRequired,
     marketsCount: PropTypes.number.isRequired,
+    registerBlockNumber: PropTypes.number,
   }
 
   componentWillMount() {
