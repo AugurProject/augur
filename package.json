@@ -46,7 +46,7 @@
     "@types/lodash": "4.14.77",
     "@types/uuid": "3.4.3",
     "async": "1.5.2",
-    "augur.js": "4.7.0-19",
+    "augur.js": "4.7.0-22",
     "bignumber.js": "4.1.0",
     "knex": "0.13.0",
     "lodash.isnull": "3.0.0",
@@ -54,7 +54,7 @@
     "lodash.omit": "4.5.0",
     "pg": "7.3.0",
     "postinstall-build": "5.0.1",
-    "speedomatic": "2.1.0",
+    "speedomatic": "2.1.1",
     "sqlite3": "3.1.8",
     "uuid": "3.1.0",
     "ws": "3.2.0"
