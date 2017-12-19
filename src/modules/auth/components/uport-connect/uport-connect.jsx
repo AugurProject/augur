@@ -57,10 +57,10 @@ export default class UportConnect extends Component {
 
   setQRSize() {
     const width = getValue(this, 'uPortCreate.clientWidth')
-    
+
     if (width) {
       let qrSize
-      
+
       switch (true) {
         case this.props.isMobileSmall:
           qrSize = width / 1.2
