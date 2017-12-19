@@ -730,7 +730,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           marketCreationFee: '10',
           marketID: '0xMARKETID',
           validityBond: '10',
-          topic: 'Testing'
+          category: 'Testing'
         }
         const description = 'test description~|>one|two|three'
 
@@ -742,7 +742,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           },
           type: TYPES.CREATE_MARKET,
           description: 'test description',
-          topic: 'Testing',
+          category: 'Testing',
           marketCreationFee: formatEtherTokens(log.marketCreationFee),
           bond: {
             label: 'validity',
@@ -763,7 +763,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           marketCreationFee: '10',
           marketID: '0xMARKETID',
           validityBond: '10',
-          topic: 'Testing'
+          category: 'Testing'
         }
         const description = 'test description~|>one|two|three'
 
@@ -775,7 +775,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           },
           type: TYPES.CREATE_MARKET,
           description: 'test description',
-          topic: 'Testing',
+          category: 'Testing',
           marketCreationFee: formatEtherTokens(log.marketCreationFee),
           bond: {
             label: 'validity',
@@ -899,7 +899,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           marketCreationFee: '10',
           //           marketID: '0xMARKETID',
           //           eventBond: '10',
-          //           topic: 'Testing'
+          //           category: 'Testing'
           //         }
           //         const description = 'test description~|>one|two|three'
 
@@ -911,7 +911,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           },
           //           type: CREATE_MARKET,
           //           description: 'test description',
-          //           topic: 'Testing',
+          //           category: 'Testing',
           //           marketCreationFee: formatEtherTokens(log.marketCreationFee),
           //           bond: {
           //             label: 'event validity',
@@ -932,7 +932,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           marketCreationFee: '10',
           //           marketID: '0xMARKETID',
           //           eventBond: '10',
-          //           topic: 'Testing'
+          //           category: 'Testing'
           //         }
           //         const description = 'test description~|>one|two|three'
 
@@ -944,7 +944,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           },
           //           type: CREATE_MARKET,
           //           description: 'test description',
-          //           topic: 'Testing',
+          //           category: 'Testing',
           //           marketCreationFee: formatEtherTokens(log.marketCreationFee),
           //           bond: {
           //             label: 'event validity',
