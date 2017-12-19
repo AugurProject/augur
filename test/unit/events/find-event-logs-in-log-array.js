@@ -38,9 +38,9 @@ describe("events/find-event-logs-in-log-array", function () {
         address: "0x981ad7d64272db031468756a0332baf20d2f6198",
         topics: [
           mockMarketCreatedData.eventSignature,
-          "0x0000000000000000000000006eabb9367012c0a84473e1e6d7a7ce39a54d77bb",
-          "0x7370616365000000000000000000000000000000000000000000000000000000",
-          "0x00000000000000000000000001114f4bda09ed6c6715cf0baf606b5bce1dc96a",
+          "0x7370616365000000000000000000000000000000000000000000000000000000", //topic
+          "0x0000000000000000000000006eabb9367012c0a84473e1e6d7a7ce39a54d77bb", //universe
+          "0x00000000000000000000000001114f4bda09ed6c6715cf0baf606b5bce1dc96a", //marketcreator
         ],
         data: mockMarketCreatedData.abiEncodedData,
         blockNumber: "0x149eb3",
@@ -75,11 +75,7 @@ describe("events/find-event-logs-in-log-array", function () {
         maxPrice: "10000",
         marketType: "0",
         description: "Will SpaceX successfully complete a manned flight to the International Space Station by the end of 2018?",
-        extraInfo: {
-          resolutionSource: "http://www.spacex.com",
-          tags: ["SpaceX", "spaceflight"],
-          longDescription: "SpaceX hit a big milestone on Friday with NASA confirming on Friday that the Elon Musk-led space cargo business will launch astronauts to the International Space Station by 2017.\n\nLast year, the space agency tentatively awarded a $2.6 billion contract to SpaceX to carry crew to space. NASA’s announcement on Friday formalizes the deal, which involves SpaceX loading its Crew Dragon spacecraft with astronauts and sending them beyond the stratosphere.",
-        },
+        extraInfo: JSON.parse(mockMarketCreatedData.params.extraInfo),
         address: "0x981ad7d64272db031468756a0332baf20d2f6198",
         removed: false,
         transactionHash: "0xca49fcf3a4ef3fedca8bddfe0bf87e34285cc72eabbbd0f5fa6053ff209af272",

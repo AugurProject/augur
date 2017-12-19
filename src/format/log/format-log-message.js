@@ -1,6 +1,7 @@
 "use strict";
 
 var assign = require("lodash.assign");
+var immutableDelete = require("immutable-delete");
 var speedomatic = require("speedomatic");
 var decodeTag = require("../tag/decode-tag");
 
@@ -16,11 +17,17 @@ function formatLogMessage(contractName, eventName, message) {
             if (exc.constructor !== SyntaxError) throw exc;
             extraInfo = null;
           }
-          return assign({}, message, {
+          var formattedMessage = {
             extraInfo: extraInfo,
             marketCreationFee: speedomatic.unfix(message.marketCreationFee, "string"),
             topic: decodeTag(message.topic),
-          });
+          };
+          if (message.marketType === 1) {
+            formattedMessage.outcomes = message.outcomes.map(function (outcome) {
+              return decodeTag(outcome);
+            });
+          }
+          return assign({}, immutableDelete(message, "outcomes"), formattedMessage);
         case "WinningTokensRedeemed":
           return assign({}, message, {
             amountRedeemed: speedomatic.unfix(message.amountRedeemed, "string"),
