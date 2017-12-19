@@ -1,13 +1,13 @@
-import { UPDATE_HAS_LOADED_TOPIC } from 'modules/categories/actions/update-has-loaded-category'
+import { UPDATE_HAS_LOADED_CATEGORY } from 'modules/categories/actions/update-has-loaded-category'
 
-export default function (hasLoadedTopic = {}, action) {
+export default function (hasLoadedCategory = {}, action) {
   switch (action.type) {
-    case UPDATE_HAS_LOADED_TOPIC:
+    case UPDATE_HAS_LOADED_CATEGORY:
       return ({
-        ...hasLoadedTopic,
-        ...action.hasLoadedTopic
+        ...hasLoadedCategory,
+        ...action.hasLoadedCategory
       })
     default:
-      return hasLoadedTopic
+      return hasLoadedCategory
   }
 }

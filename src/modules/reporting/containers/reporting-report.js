@@ -40,7 +40,7 @@ export default Reporting
 //     denomination: ' shares',
 //     full: '3,000 shares'
 //   },
-//   topic: 'Cryptocurrency',
+//   category: 'Cryptocurrency',
 //   tags: [
 //     'Cryptocurrency',
 //     'Bitcoin',
@@ -430,7 +430,7 @@ export default Reporting
 //     denomination: ' shares',
 //     full: '380 shares'
 //   },
-//   topic: 'science',
+//   category: 'science',
 //   tags: [
 //     'science',
 //     'extinction',
@@ -556,7 +556,7 @@ const market = {
     denomination: ' shares',
     full: '2,661.9 shares'
   },
-  topic: 'housing',
+  category: 'housing',
   tags: [
     'housing',
     'economy',

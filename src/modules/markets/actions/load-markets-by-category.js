@@ -1,20 +1,20 @@
 import { augur } from 'services/augurjs'
-import { updateHasLoadedTopic } from 'modules/categories/actions/update-has-loaded-category'
+import { updateHasLoadedCategory } from 'modules/categories/actions/update-has-loaded-category'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import { updateMarketsFilteredSorted, clearMarketsFilteredSorted } from 'modules/markets/actions/update-markets-filtered-sorted'
 
-export const loadMarketsByTopic = category => (dispatch, getState) => {
+export const loadMarketsByCategory = category => (dispatch, getState) => {
   const { universe } = getState()
 
   augur.markets.getMarketsInCategory({ category, universe: universe.id }, (err, marketIDs) => {
     if (err) {
-      console.error('ERROR findMarketsWithTopic()', err)
-      dispatch(updateHasLoadedTopic({ [category]: false }))
+      console.error('ERROR findMarketsWithCategory()', err)
+      dispatch(updateHasLoadedCategory({ [category]: false }))
     } else if (!marketIDs) {
-      console.warn('WARN findMarketsWithTopic()', `no market id's returned`)
-      dispatch(updateHasLoadedTopic({ [category]: false }))
+      console.warn('WARN findMarketsWithCategory()', `no market id's returned`)
+      dispatch(updateHasLoadedCategory({ [category]: false }))
     } else if (marketIDs.length) {
-      dispatch(updateHasLoadedTopic({ [category]: true }))
+      dispatch(updateHasLoadedCategory({ [category]: true }))
       dispatch(clearMarketsFilteredSorted())
       dispatch(updateMarketsFilteredSorted(marketIDs))
       dispatch(loadMarketsInfo(marketIDs))

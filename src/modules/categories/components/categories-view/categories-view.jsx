@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
-// TODO: implement null state for topics list (needs design)
+// TODO: implement null state for categories list (needs design)
 // import NullStateMessage from 'modules/common/components/null-state-message';
-import TopicList from 'modules/categories/components/category-list/category-list'
+import CategoryList from 'modules/categories/components/category-list/category-list'
 import Paginator from 'modules/common/components/paginator/paginator'
 import GraphBG from 'modules/common/components/graph-background/graph-background'
 
@@ -14,18 +14,18 @@ import makeQuery from 'modules/routes/helpers/make-query'
 
 import Styles from 'modules/categories/components/categories-view/categories-view.styles'
 
-import { TOPIC_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
+import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 import { MARKETS } from 'modules/routes/constants/views'
 
 import { tween } from 'shifty'
 
-export default class TopicsView extends Component {
+export default class CategoriesView extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     isLogged: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
-    topics: PropTypes.array,
+    categories: PropTypes.array,
     universe: PropTypes.object,
     loginAccount: PropTypes.object
   }
@@ -37,8 +37,8 @@ export default class TopicsView extends Component {
       lowerBound: null,
       boundedLength: null,
       itemsPerPage: 9,
-      heroTopicIndex: null,
-      heroTopicOpacity: 0
+      heroCategoryIndex: null,
+      heroCategoryOpacity: 0
     }
 
     this.setSegment = this.setSegment.bind(this)
@@ -47,13 +47,13 @@ export default class TopicsView extends Component {
   }
 
   componentDidMount() {
-    if (this.props.topics.length > 0) {
+    if (this.props.categories.length > 0) {
       this.startCategoryCarousel()
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.topics.length === 0 && nextProps.topics.length > 0) {
+    if (this.props.categories.length === 0 && nextProps.categories.length > 0) {
       this.startCategoryCarousel()
     }
   }
@@ -70,7 +70,7 @@ export default class TopicsView extends Component {
   }
 
   startCategoryCarousel() {
-    this.setState({ heroTopicIndex: 0 })
+    this.setState({ heroCategoryIndex: 0 })
 
     const doCarouselTween = (from, to, cb) => tween({
       from: { value: from },
@@ -78,7 +78,7 @@ export default class TopicsView extends Component {
       duration: 500,
       easing: 'easeOutQuad',
       step: (stepObj) => {
-        this.setState({ heroTopicOpacity: stepObj.value })
+        this.setState({ heroCategoryOpacity: stepObj.value })
       }
     }).then(cb)
 
@@ -87,8 +87,8 @@ export default class TopicsView extends Component {
         doCarouselTween(1, 0, () => {
           const s = this.state
           const p = this.props
-          const nextIndex = (s.heroTopicIndex + 1) % p.topics.length
-          this.setState({ heroTopicIndex: nextIndex })
+          const nextIndex = (s.heroCategoryIndex + 1) % p.categories.length
+          this.setState({ heroCategoryIndex: nextIndex })
           doCarouselTween(0, 1, waitThenChange)
         })
       }, 5000)
@@ -107,46 +107,46 @@ export default class TopicsView extends Component {
   render() {
     const p = this.props
     const s = this.state
-    const heroTopic = p.topics[s.heroTopicIndex]
+    const heroCategory = p.categories[s.heroCategoryIndex]
 
     return (
-      <section className={Styles.Topics}>
+      <section className={Styles.Categories}>
         <Helmet>
           <title>Categories</title>
         </Helmet>
         <GraphBG />
-        <div className={Styles.Topics__container}>
-          <div className={Styles.TopicsHeading}>
+        <div className={Styles.Categories__container}>
+          <div className={Styles.CategoriesHeading}>
             <h3>Bet on</h3>
-            <h2 style={{ opacity: s.heroTopicOpacity }}>
-              {heroTopic &&
+            <h2 style={{ opacity: s.heroCategoryOpacity }}>
+              {heroCategory &&
                 <Link
                   to={{
                     pathname: makePath(MARKETS),
                     search: makeQuery({
-                      [TOPIC_PARAM_NAME]: heroTopic.topic
+                      [CATEGORY_PARAM_NAME]: heroCategory.Category
                     })
                   }}
                 >
-                  {heroTopic.topic}
+                  {heroCategory.Category}
                 </Link>
               }
-              {!heroTopic && '...'}
+              {!heroCategory && '...'}
             </h2>
-            <div className={Styles.TopicsHeading__separator} />
+            <div className={Styles.CategoriesHeading__separator} />
           </div>
-          {!!(p.topics && p.topics.length && s.boundedLength) &&
-            <TopicList
-              topics={p.topics}
+          {!!(p.categories && p.categories.length && s.boundedLength) &&
+            <CategoryList
+              categories={p.categories}
               lowerBound={s.lowerBound}
               boundedLength={p.isMobile ? s.boundedLength : s.itemsPerPage}
             />
           }
         </div>
-        {!!(p.topics && p.topics.length) &&
-          <div className={Styles.Topics__paginator}>
+        {!!(p.categories && p.categories.length) &&
+          <div className={Styles.Categories__paginator}>
             <Paginator
-              itemsLength={p.topics.length}
+              itemsLength={p.categories.length}
               itemsPerPage={s.itemsPerPage}
               location={p.location}
               history={p.history}

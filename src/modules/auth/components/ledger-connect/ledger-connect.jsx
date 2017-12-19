@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { LedgerEthereum, BrowserLedgerConnectionFactory, Network } from 'ethereumjs-ledger'
 
+import { Alert } from 'modules/common/components/icons/icons'
+
 import Spinner from 'modules/common/components/spinner/spinner'
 
 import Styles from 'modules/auth/components/ledger-connect/ledger-connect.styles'
@@ -43,7 +45,7 @@ export default class Ledger extends Component {
       nextState.ledgerState !== this.LEDGER_STATES.ATTEMPTING_CONNECTION &&
       this.state.ledgerState !== nextState.ledgerState
     ) {
-      this.updateDisplayInstructions(true)
+      // this.updateDisplayInstructions(true)
     }
   }
 
@@ -118,24 +120,27 @@ export default class Ledger extends Component {
           </button>
         </div>
         <div className={classNames(Styles.LedgerConnect__messages, { [Styles[`LedgerConnect__messages--visible`]]: s.ledgerState })}>
-          <h3>Make sure you have: </h3>
-          <ul>
-            <li>
-              Accessed Augur via HTTPS
-            </li>
-            <li>
-              Connected your Ledger
-            </li>
-            <li>
-              Opened the Ethereum App
-            </li>
-            <li>
-              Enabled Contract Data
-            </li>
-            <li>
-              Enabled Browser Support
-            </li>
-          </ul>
+          <div>
+            {Alert}
+            <h3>Make sure you have: </h3>
+            <ul>
+              <li>
+                  Accessed Augur via HTTPS
+              </li>
+              <li>
+                  Connected your Ledger
+              </li>
+              <li>
+                  Opened the Ethereum App
+              </li>
+              <li>
+                  Enabled Contract Data
+              </li>
+              <li>
+                  Enabled Browser Support
+              </li>
+            </ul>
+          </div>
         </div>
       </section>
     )

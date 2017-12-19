@@ -10,7 +10,9 @@ import 'react-dates/lib/css/_datepicker.css'
 import { SingleDatePicker } from 'react-dates'
 
 import { formatDate } from 'utils/format-date'
-import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints'
+import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC, DESIGNATED_REPORTER_SELF, DESIGNATED_REPORTER_SPECIFIC } from 'modules/create-market/constants/new-market-constraints'
+
+import isAddress from 'modules/auth/helpers/is-address'
 
 import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons/icons'
@@ -53,10 +55,50 @@ export default class CreateMarketResolution extends Component {
     this.validateExpiryType = this.validateExpiryType.bind(this)
   }
 
-  validateExpiryType(value) {
+  validateDesignatedReporterType(value) {
     const p = this.props
     const updatedMarket = { ...p.newMarket }
     const { currentStep } = p.newMarket
+
+    if (value === DESIGNATED_REPORTER_SPECIFIC) {
+      updatedMarket.validations[currentStep].designatedReporterAddress =
+        updatedMarket.validations[currentStep].designatedReporterAddress
+          ? updatedMarket.validations[currentStep].designatedReporterAddress
+          : false
+    } else {
+      delete updatedMarket.validations[currentStep].designatedReporterAddress
+    }
+
+    updatedMarket.validations[currentStep].designatedReporterType = true
+    updatedMarket.designatedReporterType = value
+    updatedMarket.isValid = p.isValid(currentStep)
+
+    p.updateNewMarket(updatedMarket)
+  }
+
+  validateDesignatedReporterAddress(value) {
+    const p = this.props
+
+    const { currentStep } = p.newMarket
+    const updatedMarket = { ...p.newMarket }
+
+    if (!isAddress(value)) {
+      updatedMarket.validations[currentStep].designatedReporterAddress = 'The Designated Reporter Address must be a valid Ethereum Address.'
+    } else {
+      updatedMarket.validations[currentStep].designatedReporterAddress = true
+    }
+
+    updatedMarket.designatedReporterAddress = value
+    updatedMarket.isValid = p.isValid(currentStep)
+
+    p.updateNewMarket(updatedMarket)
+  }
+
+  validateExpiryType(value) {
+    const p = this.props
+
+    const { currentStep } = p.newMarket
+    const updatedMarket = { ...p.newMarket }
 
     if (value === EXPIRY_SOURCE_SPECIFIC) {
       updatedMarket.validations[currentStep].expirySource =
@@ -76,6 +118,9 @@ export default class CreateMarketResolution extends Component {
 
   render() {
     const p = this.props
+    const validations = p.newMarket.validations[p.newMarket.currentStep]
+
+    const designatedReporterError = p.newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC && validations.designatedReporterAddress && !!validations.designatedReporterAddress.length
 
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
@@ -103,6 +148,42 @@ export default class CreateMarketResolution extends Component {
                   value={p.newMarket.expirySource}
                   placeholder="Define URL"
                   onChange={e => p.validateField('expirySource', e.target.value)}
+                />
+              }
+            </li>
+          </ul>
+        </li>
+        <li>
+          <label>
+            <span>Designated Reporter</span>
+          </label>
+          <ul className={StylesForm['CreateMarketForm__radio-buttons--per-line']}>
+            <li>
+              <button
+                className={classNames({ [`${StylesForm.active}`]: p.newMarket.designatedReporterType === DESIGNATED_REPORTER_SELF })}
+                onClick={() => this.validateDesignatedReporterType(DESIGNATED_REPORTER_SELF)}
+              >Myself
+              </button>
+            </li>
+            <li className={Styles['CreateMarketResolution__designated-reporter-specific']}>
+              { designatedReporterError &&
+                <span className={StylesForm.CreateMarketForm__error}>
+                  {InputErrorIcon}{
+                    p.newMarket.validations[p.newMarket.currentStep].designatedReporterAddress
+                  }
+                </span>
+              }
+              <button
+                className={classNames({ [`${StylesForm.active}`]: p.newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC })}
+                onClick={() => this.validateDesignatedReporterType(DESIGNATED_REPORTER_SPECIFIC)}
+              >Someone Else
+              </button>
+              { p.newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC &&
+                <input
+                  className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: designatedReporterError })}
+                  value={p.newMarket.designatedReporterAddress}
+                  placeholder="Designated Reporter Address"
+                  onChange={e => this.validateDesignatedReporterAddress(e.target.value)}
                 />
               }
             </li>
