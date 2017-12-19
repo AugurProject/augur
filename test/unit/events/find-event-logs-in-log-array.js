@@ -38,8 +38,8 @@ describe("events/find-event-logs-in-log-array", function () {
         address: "0x981ad7d64272db031468756a0332baf20d2f6198",
         topics: [
           mockMarketCreatedData.eventSignature,
-          "0x7370616365000000000000000000000000000000000000000000000000000000", //topic
           "0x0000000000000000000000006eabb9367012c0a84473e1e6d7a7ce39a54d77bb", //universe
+          "0x7370616365000000000000000000000000000000000000000000000000000000", //topic
           "0x00000000000000000000000001114f4bda09ed6c6715cf0baf606b5bce1dc96a", //marketcreator
         ],
         data: mockMarketCreatedData.abiEncodedData,
