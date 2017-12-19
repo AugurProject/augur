@@ -17,7 +17,7 @@ var noop = require("../utils/noop");
 function startBlockchainEventListeners(eventCallbacks, startingBlockNumber, onSetupComplete) {
   if (!isFunction(onSetupComplete)) onSetupComplete = noop;
   if (typeof startingBlockNumber !== "undefined") {
-    console.log("starting blockstream at ", startingBlockNumber);
+    console.log("Starting blockstream at block ", startingBlockNumber);
     ethrpc.startBlockStream(startingBlockNumber);
   }
   var blockStream = ethrpc.getBlockStream();
