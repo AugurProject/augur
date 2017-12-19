@@ -45,7 +45,7 @@ export default class MarketOutcomeDepth extends Component {
   componentDidUpdate(prevProps) {
     if (!isEqual(prevProps.marketDepth, this.props.marketDepth)) this.drawChart()
 
-    if(!isEqual(prevProps.hoveredPrice, this.props.hoveredPrice)) this.drawCrosshairs()
+    if (!isEqual(prevProps.hoveredPrice, this.props.hoveredPrice)) this.drawCrosshairs()
   }
 
   componentWillUnmount() {

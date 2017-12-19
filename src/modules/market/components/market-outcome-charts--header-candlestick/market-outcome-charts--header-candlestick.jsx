@@ -9,8 +9,8 @@ const MarketOutcomeCandlestickHeader = p => (
       <h2>Placeholder Outcome</h2>
       <span>price (eth)</span>
     </div>
-    <div className={Styles[`MarketOutcomeChartsHeader__stats`]}>
-      <span className={Styles[`MarketOutcomeChartsHeader__stat`]}>
+    <div className={Styles.MarketOutcomeChartsHeader__stats}>
+      <span className={Styles.MarketOutcomeChartsHeader__stat}>
         <span className={Styles[`MarketOutcomeChartsHeader__stat-title`]}>
           volume
         </span>
@@ -18,7 +18,7 @@ const MarketOutcomeCandlestickHeader = p => (
           {p.volume ? p.volume.toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
         </span>
       </span>
-      <span className={Styles[`MarketOutcomeChartsHeader__stat`]}>
+      <span className={Styles.MarketOutcomeChartsHeader__stat}>
         <span className={Styles[`MarketOutcomeChartsHeader__stat-title`]}>
           open
         </span>
@@ -26,7 +26,7 @@ const MarketOutcomeCandlestickHeader = p => (
           {p.open ? p.open.toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
         </span>
       </span>
-      <span className={Styles[`MarketOutcomeChartsHeader__stat`]}>
+      <span className={Styles.MarketOutcomeChartsHeader__stat}>
         <span className={Styles[`MarketOutcomeChartsHeader__stat-title`]}>
           high
         </span>
@@ -34,7 +34,7 @@ const MarketOutcomeCandlestickHeader = p => (
           {p.high ? p.high.toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
         </span>
       </span>
-      <span className={Styles[`MarketOutcomeChartsHeader__stat`]}>
+      <span className={Styles.MarketOutcomeChartsHeader__stat}>
         <span className={Styles[`MarketOutcomeChartsHeader__stat-title`]}>
           low
         </span>
@@ -42,7 +42,7 @@ const MarketOutcomeCandlestickHeader = p => (
           {p.low ? p.low.toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
         </span>
       </span>
-      <span className={Styles[`MarketOutcomeChartsHeader__stat`]}>
+      <span className={Styles.MarketOutcomeChartsHeader__stat}>
         <span className={Styles[`MarketOutcomeChartsHeader__stat-title`]}>
           close
         </span>

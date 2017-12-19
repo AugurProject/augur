@@ -8,10 +8,11 @@ import Styles from 'modules/market/components/market-outcome-charts--orders/mark
 
 export default class MarketOutcomeOrderbook extends Component {
   static propTypes = {
-    selectedOutcome: PropTypes.any,
     orderBook: PropTypes.object.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
-    updateHoveredPrice: PropTypes.func.isRequired
+    updateHoveredPrice: PropTypes.func.isRequired,
+    selectedOutcome: PropTypes.any,
+    hoveredPrice: PropTypes.any
   }
 
   constructor(props) {
@@ -32,7 +33,7 @@ export default class MarketOutcomeOrderbook extends Component {
     const s = this.state
 
     const marketMidPoint = () => {
-      let midPoint;
+      let midPoint
 
       if (p.orderBook.asks.length === 0 && p.orderBook.bids.length === 0) {
         return 'No Orders'

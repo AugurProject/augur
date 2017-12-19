@@ -20,7 +20,7 @@ const MarketOutcomeChartsHeaderOrders = p => (
         </button>
       </div>
     </div>
-    <div className={Styles['MarketOutcomeChartsHeader__stats']}>
+    <div className={Styles.MarketOutcomeChartsHeader__stats}>
       <div className={Styles['MarketOutcomeChartsHeader__stat--right']}>
         <span className={Styles['MarketOutcomeChartsHeader__stat-title']}>
           ask qty

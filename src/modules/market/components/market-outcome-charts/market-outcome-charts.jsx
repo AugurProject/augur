@@ -41,7 +41,7 @@ export default class MarketOutcomeCharts extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if(
+    if (
       !isEqual(this.state.fixedPrecision, nextState.fixedPrecision) ||
       !isEqual(this.state.fullPrice, nextState.fullPrice)
     ) {
@@ -121,7 +121,7 @@ export default class MarketOutcomeCharts extends Component {
           </div>
           <div className={Styles.MarketOutcomeCharts__Depth}>
             <MarketOutcomeDepth
-            fixedPrecision={s.fixedPrecision}
+              fixedPrecision={s.fixedPrecision}
               orderBookMin={p.orderBookMin}
               orderBookMid={p.orderBookMid}
               orderBookMax={p.orderBookMax}

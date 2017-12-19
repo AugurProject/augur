@@ -10,8 +10,8 @@ const MarketOutcomeDepthHeader = p => (
     <div className={Styles.MarketOutcomeChartsHeader__Header} >
       <span>Market Depth</span>
     </div>
-    <div className={Styles['MarketOutcomeChartsHeader__stats']}>
-      <span className={Styles['MarketOutcomeChartsHeader__stat']}>
+    <div className={Styles.MarketOutcomeChartsHeader__stats}>
+      <span className={Styles.MarketOutcomeChartsHeader__stat}>
         <span className={Styles['MarketOutcomeChartsHeader__stat-title']}>
           {p.hoveredDepth[3] === ASKS ? 'ask' : 'bid'} price
         </span>
@@ -19,7 +19,7 @@ const MarketOutcomeDepthHeader = p => (
           {p.hoveredDepth[1] ? p.hoveredDepth[1].toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
         </span>
       </span>
-      <span className={Styles[`MarketOutcomeChartsHeader__stat`]}>
+      <span className={Styles.MarketOutcomeChartsHeader__stat}>
         <span className={Styles[`MarketOutcomeChartsHeader__stat-title`]}>
           qty
         </span>
@@ -27,7 +27,7 @@ const MarketOutcomeDepthHeader = p => (
           {p.hoveredDepth[2] ? p.hoveredDepth[2].toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
         </span>
       </span>
-      <span className={Styles[`MarketOutcomeChartsHeader__stat`]}>
+      <span className={Styles.MarketOutcomeChartsHeader__stat}>
         <span className={Styles[`MarketOutcomeChartsHeader__stat-title`]}>
           depth
         </span>
