@@ -16,44 +16,38 @@
 .LedgerConnect__action {
   align-items: center;
   display: flex;
-  flex: 1;
+  flex: 3 1 auto;
   justify-content: center;
-  padding-right: 2em;
 
   @media @breakpoint-small-desktop {
-    padding-bottom: 2em;
-    padding-right: 0;
+    flex: 1 auto;
+    margin-bottom: 2rem;
   }
 }
 
 .LedgerConnect__button {
   &:extend(.button--purple all);
 
-  padding-left: 2rem;
-  padding-right: 2rem;
+  padding: 0 2rem;
 }
 
 .LedgerConnect__messages {
   .border(true, @border-top, @border-light);
 
+  align-items: center;
   background-color: @color-gray;
   color: @color-white;
-  flex: 1;
+  display: flex;
+  flex: 0.5 0 auto;
+  flex-direction: column;
   height: 100%;
-  max-width: 300px;
+  justify-content: flex-start;
   padding: 1.5em 0;
   visibility: hidden;
 
   @media @breakpoint-small-desktop {
+    flex: 2 0 0%;
     min-width: 100%;
-  }
-
-  div {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: 0 1em;
   }
 
   svg {
