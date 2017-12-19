@@ -42,6 +42,11 @@ function getAllAugurLogs(p, callback) {
         if (log && Array.isArray(log.topics) && log.topics.length) {
           var contractName = contractAddressToNameMap[log.address];
           var eventName = eventSignatureToNameMap[contractName][log.topics[0]];
+          if (eventName == null) {
+            console.log("Contract " + contractName + " has no event signature " +
+              log.topics[0] + " found on tx " + log.transactionHash);
+            return;
+          }
           try {
             var parsedLog = parseLogMessage(contractName, eventName, log, eventsAbi[contractName][eventName].inputs);
             allAugurLogs.push(parsedLog);
