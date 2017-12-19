@@ -35,6 +35,7 @@ export default class MarketTable extends Component {
                     Styles.MarketTable__title,
                     { [Styles['MarketTable__title--mobilehide']]: mobileHide }
                   )}
+                  key={`${title}`}
                 >
                   <span className={Styles['MarketTable__titlestring--desktop']}>{title}</span>
                   <span className={Styles['MarketTable__titlestring--mobile']}>{mobileTitle}</span>

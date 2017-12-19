@@ -11,10 +11,12 @@ export const loadAccountPositions = (options, callback = logError) => (dispatch,
     if (err) return callback(err)
     if (positions == null) return callback(null)
     const marketIDs = Array.from(new Set([...positions.reduce((p, position) => [...p, position.marketID], [])]))
-
     dispatch(loadMarketsInfo(marketIDs, () => {
-      async.forEachOfSeries(marketIDs, (positions, id, nextID) => {
-        dispatch(updateAccountPositionsData(marketIDs, id))
+      async.forEachOfSeries(marketIDs, (marketID, id, nextID) => {
+        const marketPos = []
+        marketPos[marketID] = [positions.filter(position => position.marketID === marketID)]
+        dispatch(updateAccountPositionsData(marketPos, marketID))
+        nextID(null)
       })
       callback(null, positions)
     }))
