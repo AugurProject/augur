@@ -1,6 +1,6 @@
 "use strict";
 
-var hashEventSignature = require("../events/hash-event-signature");
+var hashEventAbi = require("../events/hash-event-abi");
 
 function generateAbiMap(abi) {
   var functions = {};
@@ -34,12 +34,10 @@ function generateAbiMap(abi) {
         functions[contractName][name] = functionAbiMap;
       } else if (functionOrEvent.type === "event") {
         if (!events[contractName]) events[contractName] = {};
-        var methodSignature = functionOrEvent.name +
-          "(" + functionOrEvent.inputs.map(function (input) { return input.type; }).join(",") + ")";
         events[contractName][name] = {
           contract: contractName,
           inputs: functionOrEvent.inputs,
-          signature: hashEventSignature(methodSignature),
+          signature: hashEventAbi(functionOrEvent),
         };
       }
     });

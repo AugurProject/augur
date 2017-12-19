@@ -1,5 +1,6 @@
 "use strict";
 
+var speedomatic = require("speedomatic");
 var eventsAbi = require("../contracts").abi.events;
 var parseLogMessage = require("./parse-message/parse-log-message");
 
@@ -11,7 +12,7 @@ function findEventLogsInLogArray(contractName, eventName, logs) {
   var eventInputs = eventAbi.inputs;
   if (eventSignature == null) return null;
   return logs.reduce(function (reducedLogs, log) {
-    if (log.topics[0] !== eventSignature) return reducedLogs;
+    if (speedomatic.formatInt256(log.topics[0]) !== eventSignature) return reducedLogs;
     return reducedLogs.concat(parseLogMessage(contractName, eventName, log, eventInputs));
   }, []);
 }
