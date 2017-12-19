@@ -2,7 +2,7 @@
 
 /** Type definition for TimestampedPrice.
  * @typedef {Object} TimestampedPrice
- * @property {string} price Display (non-normalized) price, as a base-10 string.
+ * @property {number} price Display (non-normalized) price, as a base-10 number.
  * @property {number} timestamp Unix timestamp for this price in seconds, as an integer.
  */
 
@@ -19,9 +19,9 @@
 var augurNode = require("../augur-node");
 
 /**
+ * Returns the prices and timestamps of a specific market's outcomes over time. Requires an Augur Node connection.
  * @param {Object} p Parameters object.
- * @param {string} p.market Market contract address for which to lookup orders, as a hexadecimal string.
- * @param {number=} p.outcome Outcome ID for which to lookup orders (if not provided, lookup all outcomes).
+ * @param {string} p.marketID Market contract address for which to look up orders, as a hexadecimal string.
  * @param {function} callback Called after the price time-series has been received and parsed.
  * @return {MarketPriceTimeSeries} This market's price time-series, keyed by outcome ID.
  */
