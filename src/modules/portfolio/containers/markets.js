@@ -8,6 +8,7 @@ import getMyMarkets from 'modules/my-markets/selectors/my-markets'
 import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 // import loadMarkets from 'modules/markets/actions/load-markets'
 import loadUserMarkets from 'modules/markets/actions/load-user-markets'
+import loadUnclaimedFees from 'modules/markets/actions/load-unclaimed-fees'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
 import logError from 'utils/log-error'
@@ -27,6 +28,7 @@ const mapDispatchToProps = dispatch => ({
     if (err) return logError(err)
     // if we have marketIDs back, lets load the info so that we can properly display myMarkets.
     dispatch(loadMarketsInfo(marketIDs))
+    dispatch(loadUnclaimedFees(marketIDs))
   })),
   loadMarketsInfo: marketIDs => dispatch(loadMarketsInfo(marketIDs)),
   toggleFavorite: marketID => dispatch(toggleFavorite(marketID)),
