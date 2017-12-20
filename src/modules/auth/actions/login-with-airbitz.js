@@ -3,7 +3,6 @@ import { augur } from 'services/augurjs'
 import { AIRBITZ_WALLET_TYPE } from 'modules/auth/constants/auth-types'
 import { loadAccountData } from 'modules/auth/actions/load-account-data'
 import { updateIsLogged } from 'modules/auth/actions/update-is-logged'
-import { constants as ETHRPC_CONSTANTS } from 'ethrpc'
 
 export const loginWithAirbitzEthereumWallet = (airbitzAccount, ethereumWallet, history) => (dispatch) => {
   const privateKey = ethereumWallet.keys.ethereumKey
@@ -16,7 +15,7 @@ export const loginWithAirbitzEthereumWallet = (airbitzAccount, ethereumWallet, h
     ...account,
     meta: {
       signer: privateKey,
-      accountType: ETHRPC_CONSTANTS.ACCOUNT_TYPES.PRIVATE_KEY
+      accountType: augur.rpc.constants.ACCOUNT_TYPES.PRIVATE_KEY
     },
     name: airbitzAccount.username,
     airbitzAccount

@@ -29,7 +29,7 @@
   "dependencies": {
     "airbitz-core-js-ui": "0.1.7",
     "async": "2.6.0",
-    "augur.js": "4.7.0-22",
+    "augur.js": "4.7.0-24",
     "bignumber.js": "5.0.0",
     "bs58": "4.0.1",
     "classnames": "2.2.5",
@@ -37,7 +37,6 @@
     "core-js": "2.5.1",
     "d3": "4.12.0",
     "ethereumjs-ledger": "2.1.4",
-    "ethrpc": "4.4.4",
     "express": "4.16.2",
     "hammerjs": "2.0.8",
     "helmet": "3.9.0",
