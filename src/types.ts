@@ -242,6 +242,10 @@ export interface UIStakeTokens {
   [stakeToken: string]: UIStakeTokenInfo;
 }
 
+export interface UIMarketCreatorFees {
+  [marketID: string]: number;
+}
+
 export interface UIConsensusInfo {
   outcomeID: number;
   isIndeterminate: boolean;
