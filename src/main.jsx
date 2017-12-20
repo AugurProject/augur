@@ -40,8 +40,6 @@ if (process.env.NODE_ENV === 'development') {
 store.dispatch(initAugur())
 
 function render(Root) {
-    console.log('render again...')
-
   ReactDOM.render(
     <Provider store={store}>
       <AppContainer>
@@ -61,9 +59,8 @@ handleRender(App)
 if (module.hot) {
   module.hot.accept(
     [
-      // './main',
-      './modules/app/actions/init-augur',
       './selectors-raw',
+      './modules/app/actions/init-augur',
       './modules/app/containers/app',
     ],
     () => {
