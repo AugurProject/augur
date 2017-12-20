@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
 import thunk from 'redux-thunk'
-import { constants as ETHRPC_CONSTANTS } from 'ethrpc'
+import { augur } from 'services/augurjs'
 
 describe(`modules/auth/actions/use-unlocked-account.js`, () => {
   proxyquire.noPreserveCache()
@@ -81,7 +81,7 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
             isUnlocked: true,
             meta: {
               signer: null,
-              accountType: ETHRPC_CONSTANTS.ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE
+              accountType: augur.rpc.contants.ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE
             }
           }
         }

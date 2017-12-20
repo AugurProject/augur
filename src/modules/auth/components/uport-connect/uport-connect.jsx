@@ -15,6 +15,7 @@ import Styles from 'modules/auth/components/uport-connect/uport-connect.styles'
 export default class UportConnect extends Component {
   static propTypes = {
     isMobile: PropTypes.bool.isRequired,
+    isMobileSmall: PropTypes.bool.isRequired,
     login: PropTypes.func.isRequired
   }
 
@@ -56,7 +57,23 @@ export default class UportConnect extends Component {
 
   setQRSize() {
     const width = getValue(this, 'uPortCreate.clientWidth')
-    if (width) this.setState({ qrSize: this.props.isMobile ? width / 1.2 : width / 3 })
+
+    if (width) {
+      let qrSize
+
+      switch (true) {
+        case this.props.isMobileSmall:
+          qrSize = width / 1.2
+          break
+        case this.props.isMobile:
+          qrSize = width / 2
+          break
+        default:
+          qrSize = width / 3.5
+      }
+
+      this.setState({ qrSize })
+    }
   }
 
   uPortURIHandler(uri) {
@@ -71,27 +88,29 @@ export default class UportConnect extends Component {
         ref={(uPortCreate) => { this.uPortCreate = uPortCreate }}
         className={Styles.Uport__connect}
       >
-        <h3>Connect a uPort Account</h3>
-        <QRCode
-          value={s.uri}
-          size={s.qrSize}
-        />
-        <h4>Need a uPort Account?</h4>
-        <div className={Styles.Uport__apps}>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://play.google.com/store/apps/details?id=com.uportMobile"
-          >
-            <GooglePlayStore />
-          </a>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://itunes.apple.com/us/app/uport-id/id1123434510"
-          >
-            <AppleAppStore />
-          </a>
+        <div className={Styles['Uport__connect-wrapper']}>
+          <h3>Connect a uPort Account</h3>
+          <QRCode
+            value={s.uri}
+            size={s.qrSize}
+          />
+          <h4>Need a uPort Account?</h4>
+          <div className={Styles.Uport__apps}>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://play.google.com/store/apps/details?id=com.uportMobile"
+            >
+              <GooglePlayStore />
+            </a>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://itunes.apple.com/us/app/uport-id/id1123434510"
+            >
+              <AppleAppStore />
+            </a>
+          </div>
         </div>
       </section>
     )

@@ -28,7 +28,7 @@
 .LedgerConnect__button {
   &:extend(.button--purple all);
 
-  padding: 0 2.2rem 0.166rem;
+  padding: 0 2rem;
 }
 
 .LedgerConnect__messages {
@@ -70,4 +70,19 @@
 
 .LedgerConnect__messages--visible {
   visibility: visible;
+}
+
+@media @breakpoint-mobile-small {
+  .LedgerConnect {
+    flex-wrap: wrap;
+  }
+
+  .LedgerConnect__action {
+    flex: auto;
+    margin-bottom: 2rem;
+  }
+
+  .LedgerConnect__messages {
+    flex: auto;
+  }
 }
