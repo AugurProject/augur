@@ -36,7 +36,8 @@ let config = {
   output: {
     filename: '[name].[chunkhash].js',
     chunkFilename: '[name].[chunkhash].js',
-    path: PATHS.BUILD
+    path: PATHS.BUILD,
+    publicPath: '/'
   },
   resolve: {
     modules: ['node_modules', PATHS.APP],
@@ -164,8 +165,9 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
   config = merge(config, {
     entry: {
       main: [
+        // 'webpack-hot-middleware/client?reload=true',
         'react-hot-loader/patch',
-        'webpack-hot-middleware/client?reload=true',
+        'webpack-hot-middleware/client',
         `${PATHS.APP}/main`
       ]
     },
