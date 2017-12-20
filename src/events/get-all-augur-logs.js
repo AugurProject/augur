@@ -21,13 +21,19 @@ var constants = require("../constants");
  */
 function getAllAugurLogs(p, callback) {
   var allAugurLogs = [];
-  var contractNameToAddressMap = contracts.addresses[ethrpc.getNetworkID()];
+  var networkId = ethrpc.getNetworkID();
+  var contractNameToAddressMap = contracts.addresses[networkId];
+  if (contractNameToAddressMap == null) return callback(new Error("No contract address map for networkID: " + networkId));
   var eventsAbi = contracts.abi.events;
   var contractAddressToNameMap = mapContractAddressesToNames(contractNameToAddressMap);
   var eventSignatureToNameMap = mapEventSignaturesToNames(eventsAbi);
   var filterParams = { address: listContracts(contractNameToAddressMap) };
   var fromBlock = p.fromBlock ? encodeNumberAsJSNumber(p.fromBlock) : constants.AUGUR_UPLOAD_BLOCK_NUMBER;
-  var toBlock = p.toBlock ? encodeNumberAsJSNumber(p.toBlock) : parseInt(ethrpc.getCurrentBlock().number, 16);
+  var currentBlock = parseInt(ethrpc.getCurrentBlock().number, 16);
+  var toBlock = p.toBlock ? encodeNumberAsJSNumber(p.toBlock) : currentBlock;
+  if (fromBlock > currentBlock || toBlock > currentBlock) {
+    return callback(new Error("Block range " + fromBlock + " to " + toBlock + " exceeds currentBlock " + currentBlock));
+  }
   async.eachSeries(chunkBlocks(fromBlock, toBlock).reverse(), function (chunkOfBlocks, nextChunkOfBlocks) {
     ethrpc.getLogs(assign({}, filterParams, chunkOfBlocks), function (logs) {
       if (logs && logs.error) return nextChunkOfBlocks(logs);
