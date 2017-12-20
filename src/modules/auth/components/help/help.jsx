@@ -49,19 +49,19 @@ export default class Help extends Component {
     return (
       <div className={Styles.Help} >
         <button
-          className={Styles.Help__Header}
+          className={Styles.Help__header}
           onClick={() => toggleHeight(this.helpItems, s.areQuestionsVisible, () => this.setState({ areQuestionsVisible: !s.areQuestionsVisible }))}
         >
           Confused? Get Help Here.
         </button>
         <div
           ref={(helpItems) => { this.helpItems = helpItems }}
-          className={classNames(Styles.Help__Items, ToggleHeightStyles['toggle-height-target'])}
+          className={classNames(Styles.Help__items, ToggleHeightStyles['toggle-height-target'])}
         >
           {helps.map((help, i) => (
             <div
               key={help.title}
-              className={Styles.Help__Item}
+              className={Styles.Help__item}
             >
               <button
                 onClick={() => toggleHeight(this.helpItem[i], this.state.visibleDefinitions.indexOf(i) !== -1, () => this.toggleDefinition(i))}
@@ -70,7 +70,7 @@ export default class Help extends Component {
               </button>
               <div
                 ref={(helpItem) => { this.helpItem[i] = helpItem }}
-                className={classNames(Styles.Help__Item, ToggleHeightStyles['toggle-height-target'])}
+                className={classNames(Styles.Help__item, ToggleHeightStyles['toggle-height-target'])}
               >
                 <p>
                   {help.def}

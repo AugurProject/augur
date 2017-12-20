@@ -8,6 +8,7 @@ import makePath from 'modules/routes/helpers/make-path'
 import Dropdown from 'modules/common/components/dropdown/dropdown'
 import MarketsList from 'modules/markets/components/markets-list'
 import Styles from 'modules/portfolio/components/markets/markets.styles'
+import PortfolioStyles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles'
 import { TYPE_REPORT, TYPE_TRADE, TYPE_CLOSED } from 'modules/market/constants/link-types'
 import { constants } from 'services/augurjs'
 import { CREATE_MARKET } from 'modules/routes/constants/views'
@@ -329,10 +330,10 @@ class MyMarkets extends Component {
           />
         }
         {(p.myMarkets == null || (p.myMarkets && p.myMarkets.length === 0)) &&
-          <div className={Styles.NoMarkets__container} >
+          <div className={PortfolioStyles.NoMarkets__container} >
             <span>You haven&apos;t created any markets.</span>
             <Link
-              className={Styles.NoMarkets__link}
+              className={PortfolioStyles.NoMarkets__link}
               to={makePath(CREATE_MARKET)}
             >
               <span>Click here to create a new market.</span>
