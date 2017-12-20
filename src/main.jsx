@@ -13,6 +13,8 @@ import store from 'src/store'
 
 import { augur } from 'services/augurjs'
 
+console.log('test')
+
 // require('core-js/fn/array/find')
 // require('core-js/fn/string/starts-with')
 
@@ -38,6 +40,8 @@ if (process.env.NODE_ENV === 'development') {
 store.dispatch(initAugur())
 
 function render(Root) {
+    console.log('render again...')
+
   ReactDOM.render(
     <Provider store={store}>
       <AppContainer>
@@ -57,6 +61,8 @@ handleRender(App)
 if (module.hot) {
   module.hot.accept(
     [
+      // './main',
+      './modules/app/actions/init-augur',
       './selectors-raw',
       './modules/app/containers/app',
     ],
