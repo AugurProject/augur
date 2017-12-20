@@ -246,7 +246,6 @@ export interface UIMarketCreatorFees {
   [marketID: string]: number;
 }
 
-
 export interface UIConsensusInfo {
   outcomeID: number;
   isIndeterminate: boolean;
