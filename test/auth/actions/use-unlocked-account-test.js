@@ -15,7 +15,14 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       const AugurJS = {
         augur: {
           accounts: { logout: () => {} },
-          rpc: { isUnlocked: () => {} }
+          rpc: {
+            constants: {
+              ACCOUNT_TYPES: {
+                UNLOCKED_ETHEREUM_NODE: 'unlockedEthereumNode'
+              }
+            },
+            isUnlocked: () => {}
+          }
         }
       }
       const LoadAccountData = { loadAccountData: () => {} }
@@ -81,7 +88,7 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
             isUnlocked: true,
             meta: {
               signer: null,
-              accountType: augur.rpc.contants.ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE
+              accountType: augur.rpc.constants.ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE
             }
           }
         }
