@@ -51,11 +51,12 @@ const store = createStore(combineReducers({
   ...createReducer()
 }), middleware)
 
-// TODO -- fix this
 if (module.hot) {
   module.hot.accept('./reducers', (changed) => {
-    const hotReducer = require('src/reducers').createReducer
-    store.replaceReducer(hotReducer())
+    const nextReducers = require('src/reducers')
+    store.replaceReducer(combineReducers({
+      ...nextReducers.createReducer()
+    }))
   })
 }
 

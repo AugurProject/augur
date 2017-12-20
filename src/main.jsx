@@ -13,6 +13,8 @@ import store from 'src/store'
 
 import { augur } from 'services/augurjs'
 
+console.log('test')
+
 // require('core-js/fn/array/find')
 // require('core-js/fn/string/starts-with')
 
@@ -58,6 +60,7 @@ if (module.hot) {
   module.hot.accept(
     [
       './selectors-raw',
+      './modules/app/actions/init-augur',
       './modules/app/containers/app',
       './select-state'
     ],
