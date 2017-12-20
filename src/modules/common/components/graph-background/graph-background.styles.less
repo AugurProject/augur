@@ -8,9 +8,15 @@
   top: 0;
   z-index: @default-z-index;
 
-  canvas {
+  > canvas {
     margin-left: 50%;
     margin-top: 2.625rem;
     transform: translateX(-50%);
+  }
+}
+
+@media @breakpoint-mobile {
+  .CanvasContainer > canvas {
+    margin-top: 1.5rem;
   }
 }

@@ -1,7 +1,7 @@
 // NOTE -- no longer used, leaving temporarily for historical ref
 
 import loginAccount from 'modules/auth/selectors/login-account'
-import topics from 'modules/topics/selectors/topics'
+import categories from 'modules/categories/selectors/categories'
 import marketsHeader from 'modules/markets/selectors/markets-header'
 import marketsTotals from 'modules/markets/selectors/markets-totals'
 import allMarkets from 'modules/markets/selectors/markets-all'
@@ -29,7 +29,7 @@ const selectors = {
   allMarkets,
   orderCancellation,
   market,
-  topics,
+  categories,
   portfolio,
   loginAccountPositions,
   transactions,

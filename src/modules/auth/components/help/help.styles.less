@@ -4,27 +4,29 @@
   color: @color-text-light;
 
   @media @breakpoint-mobile {
-    padding: 0 2em;
+    padding: 0 2rem 4rem;
   }
 }
 
-.Help__Header {
+.Help__header {
   &:extend(.caps--large);
 
-  margin: 1em 0;
+  font-weight: 700;
+  margin-top: 1em;
 }
 
-.Help__Item {
+.Help__item {
   font-size: @font-size-large;
   position: relative;
 
-  button {
+  > button {
     color: @color-text-light-muted;
     display: block;
-    margin-bottom: 1em;
+    line-height: @font-size-rather-large;
+    margin-bottom: 0.5rem;
   }
 
-  p {
+  > p {
     line-height: 1.3em;
     margin: 0 0 1.5em;
   }
@@ -32,7 +34,7 @@
 
 .Help__items {
   height: 0;
-  margin: @font-size-medium;
+  margin-top: @font-size-medium;
   overflow: auto;
   transition: height @animation-speed-normal @animation-default-type;
 

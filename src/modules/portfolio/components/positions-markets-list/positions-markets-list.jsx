@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-
+import classNames from 'classnames'
 import Dropdown from 'modules/common/components/dropdown/dropdown'
 import MarketPortfolioCard from 'modules/market/components/market-portfolio-card/market-portfolio-card'
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
@@ -32,13 +32,6 @@ class PositionsMarketsList extends Component {
         { label: 'Expiring Soon', value: 'expiring' },
         { label: 'Fees', value: 'fees' }
       ],
-      filterType: 'cryptocurrency',
-      filterOptions: [
-        { label: 'Cryptocurrency', value: 'cryptocurrency' },
-        { label: 'Blockchain', value: 'blockchain' },
-        { label: 'Bitcoin', value: 'bitcoin' },
-        { label: 'Ethereum', value: 'ethereum' }
-      ]
     }
 
     this.changeDropdown = this.changeDropdown.bind(this)
@@ -68,7 +61,7 @@ class PositionsMarketsList extends Component {
     const s = this.state
 
     return (
-      <div className={Styles.PositionsMarketsList}>
+      <div className={classNames(Styles.PositionsMarketsList, { [`${Styles.PositionMarketsListNullState}`]: p.markets.length === 0 })}>
         <div className={Styles.PositionsMarketsList__SortBar}>
           <div className={Styles['PositionsMarketsList__SortBar-title']}>
             {p.title}

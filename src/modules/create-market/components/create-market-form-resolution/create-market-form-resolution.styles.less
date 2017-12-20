@@ -1,6 +1,8 @@
 @import (reference) '~assets/styles/shared';
 
-.CreateMarketResolution__expiry-source-specific {
+li.CreateMarketResolution__expiry-source-specific,
+li.CreateMarketResolution__designated-reporter-specific {
+  flex-wrap: wrap;
   min-height: 3.25rem;
 
   > button {
@@ -10,6 +12,14 @@
   > input {
     margin-left: 3.75rem;
     max-width: 50%;
+  }
+
+  > span {
+    bottom: 40%;
+    margin-bottom: 0.5rem;
+    position: absolute;
+    text-align: center;
+    width: 100%;
   }
 }
 
@@ -140,14 +150,28 @@
 }
 
 @media @breakpoint-mobile {
-  li.CreateMarketResolution__expiry-source-specific {
+  li.CreateMarketResolution__expiry-source-specific,
+  li.CreateMarketResolution__designated-reporter-specific {
     flex-wrap: wrap;
+
+    > button {
+      order: 1;
+    }
 
     > input {
       margin-left: 0;
-      margin-top: 2rem;
+      // margin-top: 2rem;
       max-width: none;
+      order: 3;
       width: 100%;
+    }
+
+    > span {
+      bottom: 0;
+      margin: 0.5rem 0;
+      order: 2;
+      position: initial;
+      white-space: normal;
     }
   }
 }

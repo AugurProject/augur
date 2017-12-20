@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { selectTopics } from 'modules/topics/selectors/topics'
+import { selectCategories } from 'modules/categories/selectors/categories'
 import { submitNewMarket } from 'modules/create-market/actions/submit-new-market'
 import {
   addOrderToNewMarket,
@@ -18,7 +18,7 @@ const mapStateToProps = state => ({
   meta: getValue(state, 'loginAccount.meta'),
   newMarket: state.newMarket,
   footerHeight: state.footerHeight,
-  categories: selectTopics(state),
+  categories: selectCategories(state),
   isMobileSmall: state.isMobileSmall,
 })
 

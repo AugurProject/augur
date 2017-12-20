@@ -2,8 +2,18 @@
 
 .PositionsMarketsList {
   align-items: center;
+  padding: 0 2rem 2rem 0;
   text-align: left;
   width: 100%;
+}
+
+.PositionMarketsListNullState {
+  padding-bottom: 3rem;
+  padding-top: 3rem;
+
+  @media @breakpoint-mobile {
+    padding: 1.5rem 0;
+  }
 }
 
 .PositionsMarketsList__SortBar {
@@ -16,7 +26,9 @@
 
 .PositionsMarketsList__SortBar-title {
   color: @color-white;
-  font-size: @font-size-extra-large;
+  font-size: @font-size-large;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .PositionsMarketsList__SortBar-sort {

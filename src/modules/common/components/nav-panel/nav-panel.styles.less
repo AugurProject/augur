@@ -40,11 +40,22 @@
 
   @media @breakpoint-mobile {
     & {
-      border-bottom: none; // TODO - fix border in mobile
+      border-left: 1px solid @color-grayish-purple;
       flex-basis: 33%;
       flex-flow: wrap column;
       height: 6em;
       padding: 1em;
+
+      &:nth-child(1),
+      &:nth-child(4) {
+        border-left-width: 0;
+      }
+
+      &:nth-child(4),
+      &:nth-child(5),
+      &:nth-child(6) {
+        border-bottom-width: 0;
+      }
     }
   }
 }

@@ -3,7 +3,7 @@ import { assert } from 'chai'
 import reducer from 'modules/markets/reducers/markets-data'
 
 describe(`modules/markets/reducers/markets-data.js`, () => {
-  describe('UPDATE_MARKET_TOPIC', () => {
+  describe('UPDATE_MARKET_CATEGORY', () => {
     const test = t => it(t.description, () => {
       t.assertions(reducer(t.marketsData, t.action))
     })
@@ -12,117 +12,117 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       marketsData: {
         '0xa1': {
           id: '0xa1',
-          topic: undefined
+          category: undefined
         },
         '0xa2': {
           id: '0xa2',
-          topic: 'regular potables'
+          category: 'regular potables'
         }
       },
       action: {
-        type: 'UPDATE_MARKET_TOPIC',
+        type: 'UPDATE_MARKET_CATEGORY',
         marketID: undefined,
-        topic: 'potent potables'
+        category: 'potent potables'
       },
       assertions: (reducedData) => {
         assert.deepEqual(reducedData, {
           '0xa1': {
             id: '0xa1',
-            topic: undefined
+            category: undefined
           },
           '0xa2': {
             id: '0xa2',
-            topic: 'regular potables'
+            category: 'regular potables'
           }
         })
       }
     })
     test({
-      description: 'set market topic',
+      description: 'set market category',
       marketsData: {
         '0xa1': {
           id: '0xa1',
-          topic: undefined
+          category: undefined
         },
         '0xa2': {
           id: '0xa2',
-          topic: 'regular potables'
+          category: 'regular potables'
         }
       },
       action: {
-        type: 'UPDATE_MARKET_TOPIC',
+        type: 'UPDATE_MARKET_CATEGORY',
         marketID: '0xa1',
-        topic: 'potent potables'
+        category: 'potent potables'
       },
       assertions: (reducedData) => {
         assert.deepEqual(reducedData, {
           '0xa1': {
             id: '0xa1',
-            topic: 'potent potables'
+            category: 'potent potables'
           },
           '0xa2': {
             id: '0xa2',
-            topic: 'regular potables'
+            category: 'regular potables'
           }
         })
       }
     })
     test({
-      description: 'unset market topic',
+      description: 'unset market category',
       marketsData: {
         '0xa1': {
           id: '0xa1',
-          topic: 'potent potables'
+          category: 'potent potables'
         },
         '0xa2': {
           id: '0xa2',
-          topic: 'regular potables'
+          category: 'regular potables'
         }
       },
       action: {
-        type: 'UPDATE_MARKET_TOPIC',
+        type: 'UPDATE_MARKET_CATEGORY',
         marketID: '0xa1',
-        topic: undefined
+        category: undefined
       },
       assertions: (reducedData) => {
         assert.deepEqual(reducedData, {
           '0xa1': {
             id: '0xa1',
-            topic: undefined
+            category: undefined
           },
           '0xa2': {
             id: '0xa2',
-            topic: 'regular potables'
+            category: 'regular potables'
           }
         })
       }
     })
     test({
-      description: 'update market topic',
+      description: 'update market category',
       marketsData: {
         '0xa1': {
           id: '0xa1',
-          topic: 'regular potables'
+          category: 'regular potables'
         },
         '0xa2': {
           id: '0xa2',
-          topic: 'regular potables'
+          category: 'regular potables'
         }
       },
       action: {
-        type: 'UPDATE_MARKET_TOPIC',
+        type: 'UPDATE_MARKET_CATEGORY',
         marketID: '0xa1',
-        topic: 'potent potables'
+        category: 'potent potables'
       },
       assertions: (reducedData) => {
         assert.deepEqual(reducedData, {
           '0xa1': {
             id: '0xa1',
-            topic: 'potent potables'
+            category: 'potent potables'
           },
           '0xa2': {
             id: '0xa2',
-            topic: 'regular potables'
+            category: 'regular potables'
           }
         })
       }

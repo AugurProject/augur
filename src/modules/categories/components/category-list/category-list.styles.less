@@ -1,0 +1,34 @@
+@import (reference) '~assets/styles/shared';
+
+.CategoryList__categorywrap {
+  display: inline-block;
+  margin-top: 8rem;
+  text-align: center;
+  width: 33.33%;
+
+  &:nth-child(1),
+  &:nth-child(2),
+  &:nth-child(3) {
+    margin: 0;
+  }
+}
+
+@media @breakpoint-small-desktop {
+  .CategoryList__categorywrap {
+    width: 50%;
+
+    &:nth-child(3) {
+      margin-top: 8rem;
+    }
+  }
+}
+
+@media @breakpoint-mobile {
+  .CategoryList__categorywrap {
+    width: 100%;
+
+    &:nth-child(2) {
+      margin-top: 8rem;
+    }
+  }
+}

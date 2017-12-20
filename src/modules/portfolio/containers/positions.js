@@ -22,6 +22,7 @@ const mapStateToProps = (state) => {
   // NOTE: for data wiring, this should probably be just done as calls for getting openPosition Markets, getting Reporting Markets, and getting Closed Markets respectively from the node and just passed the expected keys below
   const markets = getPositionsMarkets(positions, openOrders)
   // TODO -- getting each section of markets should be it's own call
+  const marketsCount = markets.length
   markets.forEach((market, index) => {
     if (market.reportingState === reportingStates.FINALIZED) {
       closedMarkets.push(market)
@@ -33,6 +34,7 @@ const mapStateToProps = (state) => {
   })
 
   return {
+    marketsCount,
     openPositionMarkets,
     reportingMarkets,
     closedMarkets,
