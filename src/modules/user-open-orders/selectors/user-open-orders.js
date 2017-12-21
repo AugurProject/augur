@@ -26,16 +26,16 @@ export function selectAllUserOpenOrderMarkets() {
 }
 
 /**
- *
+ * Pulls off existing order book in state
  * @param {String} outcomeId
- * @param {{buy: object, sell: object}} marketOrderBook
+ * @param {String} marketID
  *
  * @return {Array}
  */
-export function selectUserOpenOrders(outcomeId, marketOrderBook) {
-  const { loginAccount, orderCancellation } = store.getState()
-
-  return userOpenOrders(outcomeId, loginAccount, marketOrderBook, orderCancellation)
+export function selectUserOpenOrders(outcomeId, marketID) {
+  const { loginAccount, orderCancellation, orderBooks } = store.getState()
+  const marketOrderBook = orderBooks[marketID]
+  return userOpenOrders(outcomeId, loginAccount, marketOrderBook, orderCancellation, marketID)
 }
 
 /**
@@ -47,16 +47,16 @@ export function selectUserOpenOrders(outcomeId, marketOrderBook) {
  *
  * @return {Array}
  */
-const userOpenOrders = memoize((outcomeID, loginAccount, marketOrderBook, orderCancellation) => {
+const userOpenOrders = memoize((outcomeID, loginAccount, marketOrderBook, orderCancellation, marketID) => {
   const isUserLoggedIn = loginAccount.address != null
 
   if (!isUserLoggedIn || marketOrderBook == null) {
     return []
   }
+  const orderData = marketOrderBook[outcomeID]
 
-  const userBids = marketOrderBook.buy == null ? [] : getUserOpenOrders(marketOrderBook.buy, BUY, outcomeID, loginAccount.address, orderCancellation)
-
-  const userAsks = marketOrderBook.sell == null ? [] : getUserOpenOrders(marketOrderBook.sell, SELL, outcomeID, loginAccount.address, orderCancellation)
+  const userBids = (orderData == null || orderData.buy == null) ? [] : getUserOpenOrders(marketOrderBook[outcomeID], BUY, outcomeID, loginAccount.address, orderCancellation, marketID)
+  const userAsks = (orderData == null || orderData.sell == null) ? [] : getUserOpenOrders(marketOrderBook[outcomeID], SELL, outcomeID, loginAccount.address, orderCancellation, marketID)
 
   return userAsks.concat(userBids)
 }, { max: 10 })
@@ -72,15 +72,16 @@ const userOpenOrders = memoize((outcomeID, loginAccount, marketOrderBook, orderC
  *
  * @return {Array}
  */
-function getUserOpenOrders(orders, orderType, outcomeID, userID, orderCancellation) {
-  return Object.keys(orders)
-    .map(orderId => orders[orderId])
-    .filter(order => order.outcome === outcomeID && isOrderOfUser(order, userID) && orderCancellation[order.id] !== CLOSE_DIALOG_CLOSING)
+function getUserOpenOrders(orders, orderType, outcomeID, userID, orderCancellation, marketID) {
+  const typeOrders = orders[orderType]
+  return Object.keys(typeOrders)
+    .map(orderId => typeOrders[orderId])
+    .filter(order => isOrderOfUser(order, userID) && orderCancellation[order.id] !== CLOSE_DIALOG_CLOSING)
     .sort((order1, order2) => new BigNumber(order2.price, 10).comparedTo(new BigNumber(order1.price, 10)))
     .map(order => (
       {
-        id: order.id,
-        marketID: speedomatic.formatInt256(order.market),
+        id: order.orderID,
+        marketID: speedomatic.formatInt256(marketID),
         type: orderType,
         originalShares: formatNone(),
         avgPrice: formatEtherTokens(order.price),

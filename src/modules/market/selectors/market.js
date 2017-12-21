@@ -259,7 +259,7 @@ export function assembleMarket(
 
         marketTradeOrders = marketTradeOrders.concat(outcome.trade.tradeSummary.tradeOrders)
 
-        outcome.userOpenOrders = selectUserOpenOrders(outcomeID, orderBooks)
+        outcome.userOpenOrders = selectUserOpenOrders(outcomeID, marketID)
 
         return outcome
       }).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1))
