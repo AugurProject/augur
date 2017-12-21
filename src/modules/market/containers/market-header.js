@@ -5,13 +5,10 @@ import MarketHeader from 'modules/market/components/market-header/market-header'
 
 import { selectMarket } from 'modules/market/selectors/market'
 
-import parseQuery from 'modules/routes/helpers/parse-query'
-
 import getValue from 'utils/get-value'
 
 const mergeProps = (sP, dP, oP) => {
-  const queryParams = parseQuery(oP.location.search)
-  const market = selectMarket(queryParams.id)
+  const market = selectMarket(oP.marketId)
 
   return {
     ...oP,

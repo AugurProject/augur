@@ -63,12 +63,14 @@ export default class MarketView extends Component {
   }
 
   render() {
+    const p = this.props
     const s = this.state
 
     return (
       <section>
         <div className={Styles.Market__upper}>
           <MarketHeader
+            marketId={p.marketId}
             selectedOutcomes={s.selectedOutcomes}
             updateSelectedOutcomes={this.updateSelectedOutcomes}
             clearSelectedOutcomes={this.clearSelectedOutcomes}
@@ -77,12 +79,14 @@ export default class MarketView extends Component {
         <section className={Styles.Market__details}>
           <div className={Styles['Market__details-outcomes']}>
             <MarketOutcomesAndPositions
+              marketId={p.marketId}
               selectedOutcomes={s.selectedOutcomes}
               updateSelectedOutcomes={this.updateSelectedOutcomes}
             />
           </div>
           <div className={Styles['Market__details-trading']}>
             <MarketTrading
+              marketId={p.marketId}
               selectedOutcomes={s.selectedOutcomes}
             />
           </div>
