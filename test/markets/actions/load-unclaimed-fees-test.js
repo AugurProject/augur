@@ -22,15 +22,15 @@ describe('modules/markets/actions/load-unclaimed-fees.js', () => {
 
     __RewireAPI__.__Rewire__('augur', {
       augurNode: {
-      	submitRequest: (label, p, cb) => {
+        submitRequest: (label, p, cb) => {
           assert.deepEqual(label, 'getUnclaimedMarketCreatorFees', `Didn't call the correct getter function from augurNode`)
           if (!p.marketIDs) return cb({ error: 'must include marketIDs parameter' })
           if (p.marketIDs.length === 0) return cb(null, {})
-          cb(null, {'0xabc1': 0, '0xabc2': 0, '0xabc3': 0 })
+          cb(null, { '0xabc1': 0, '0xabc2': 0, '0xabc3': 0 })
         }
       }
     })
-    __RewireAPI__.__Rewire__('updateMarketsData', (marketsData) => ({
+    __RewireAPI__.__Rewire__('updateMarketsData', marketsData => ({
       type: ACTIONS.UPDATE_MARKETS_DATA,
       data: {
         marketsData
@@ -46,7 +46,7 @@ describe('modules/markets/actions/load-unclaimed-fees.js', () => {
         // use default MarketIDs, which is []
         store.dispatch(loadUnclaimedFees(undefined, (err, unclaimedFees) => {
           assert.isNull(err, `Didn't return null for error as expected`)
-          assert.deepEqual(unclaimedFees, {},`Expected unclaimedFees to be an empty object`)
+          assert.deepEqual(unclaimedFees, {}, `Expected unclaimedFees to be an empty object`)
         }))
 
         const actual = store.getActions()
@@ -73,7 +73,7 @@ describe('modules/markets/actions/load-unclaimed-fees.js', () => {
           const expectedError = { error: 'must include marketIDs parameter' }
 
           assert.deepEqual(err, expectedError, `Didn't return the expected error`)
-          assert.isUndefined(unclaimedFees,`Expected unclaimedFees to be an empty object`)
+          assert.isUndefined(unclaimedFees, `Expected unclaimedFees to be an empty object`)
         }))
 
         const actual = store.getActions()

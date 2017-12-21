@@ -22,14 +22,14 @@ describe('modules/markets/actions/load-user-markets.js', () => {
 
     __RewireAPI__.__Rewire__('augur', {
       markets: {
-      	getMarketsCreatedByUser: (p, cb) => {
+        getMarketsCreatedByUser: (p, cb) => {
           if (!p.universe || !p.creator) return cb({ error: 'error message' })
           if (p.universe === 'noUserMarketsUniverse') return cb(null)
           cb(null, ['0xabc1', '0xabc2', '0xabc3'])
         }
       }
     })
-    __RewireAPI__.__Rewire__('updateMarketsData', (marketsData) => ({
+    __RewireAPI__.__Rewire__('updateMarketsData', marketsData => ({
       type: ACTIONS.UPDATE_MARKETS_DATA,
       data: {
         marketsData
