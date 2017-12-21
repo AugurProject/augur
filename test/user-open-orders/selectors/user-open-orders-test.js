@@ -302,5 +302,36 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
     assert.lengthOf(userOpenOrderMarkets, 2)
     assert.deepEqual(userOpenOrderMarkets, ['bobMarket', 'leeroyMarket'])
   })
-
+  it(`should return no user open orders markets, user not logged in`, () => {
+    state.loginAccount = {}
+    state.orderBooks = {
+      bobMarket: {
+        0: {
+          buy: {
+            order1: {
+              orderID: 'order1',
+              price: '10',
+              amount: '1',
+              owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
+              outcome: '2'
+            }
+          }
+        }
+      },
+      leeroyMarket: {
+        1: {
+          sell: {
+            order3: {
+              orderID: 'order3',
+              price: '100',
+              amount: '22'
+            }
+          }
+        }
+      }
+    }
+    const userOpenOrderMarkets = selectAllUserOpenOrderMarkets()
+    assert.lengthOf(userOpenOrderMarkets, 0)
+    assert.deepEqual(userOpenOrderMarkets, [])
+  })
 })
