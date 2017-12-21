@@ -1,4 +1,5 @@
 import Augur from "augur.js";
+import * as express from "express";
 import * as WebSocket from "ws";
 import * as Knex from "knex";
 import * as sqlite3 from "sqlite3";
@@ -37,7 +38,8 @@ const envEndpoints: EthereumNodeEndpoints = _.omitBy({
 
 const configuredEndpoints: EthereumNodeEndpoints = _.isEmpty(envEndpoints) ? ethereumNodeEndpoints : envEndpoints;
 
-const websocketServers: Array<WebSocket.Server> = runWebsocketServer(db, websocketConfigs);
+const app = express();
+const websocketServers: Array<WebSocket.Server> = runWebsocketServer(db, app, websocketConfigs);
 
 const augur: Augur = new Augur();
 

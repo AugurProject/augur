@@ -1,3 +1,4 @@
+import * as express from "express";
 import * as WebSocket from "ws";
 import * as Knex from "knex";
 import { EventEmitter } from "events";
@@ -11,16 +12,17 @@ import { Subscriptions } from "./subscriptions";
 import * as fs from "fs";
 import * as https from "https";
 
-export function runWebsocketServer(db: Knex, webSocketConfigs: WebSocketConfigs): Array<WebSocket.Server> {
+export function runWebsocketServer(db: Knex, app: express.Application, webSocketConfigs: WebSocketConfigs): Array<WebSocket.Server> {
 
   const websocketServers: Array<WebSocket.Server> = [];
 
   if ( webSocketConfigs.wss != null ) {
     console.log("Starting websocket secure server on port", webSocketConfigs.wss.port);
-    const server = https.createServer({
+    const httpsOptions: https.ServerOptions = {
       cert: fs.readFileSync(webSocketConfigs.wss.certificateFile),
       key: fs.readFileSync(webSocketConfigs.wss.certificateKeyFile),
-    });
+    };
+    const server = https.createServer(httpsOptions, app);
     server.listen(webSocketConfigs.wss.port);
     websocketServers.push( new WebSocket.Server({  server }) );
   }
