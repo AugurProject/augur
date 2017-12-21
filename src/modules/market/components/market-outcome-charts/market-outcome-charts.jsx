@@ -46,13 +46,9 @@ export default class MarketOutcomeCharts extends Component {
       !isEqual(this.state.fullPrice, nextState.fullPrice)
     ) {
       if (nextState.fullPrice === null) {
-        this.setState({
-          hoveredPrice: null
-        })
+        this.updateHoveredPrice(null)
       } else {
-        this.setState({
-          hoveredPrice: nextState.fullPrice.toFixed(nextState.fixedPrecision).toString()
-        })
+        this.updateHoveredPrice(nextState.fullPrice.toFixed(nextState.fixedPrecision).toString())
       }
     }
   }
@@ -78,7 +74,7 @@ export default class MarketOutcomeCharts extends Component {
   updatePrecision(isIncreasing) {
     // TODO -- make this accomdate scale changes as well (microETH, nanoETH, K, M, B, etc.)
 
-    let fixedPrecision = this.state.fixedPrecision
+    let { fixedPrecision } = this.state
 
     if (isIncreasing) {
       fixedPrecision += 1

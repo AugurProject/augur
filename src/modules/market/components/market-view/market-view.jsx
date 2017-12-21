@@ -19,9 +19,6 @@ export default class MarketView extends Component {
     loadFullMarket: PropTypes.func.isRequired
   }
 
-  static loadFullMarket(marketId, options, force) {
-  }
-
   constructor(props) {
     super(props)
 
@@ -76,9 +73,6 @@ export default class MarketView extends Component {
             updateSelectedOutcomes={this.updateSelectedOutcomes}
             clearSelectedOutcomes={this.clearSelectedOutcomes}
           />
-          <MarketOutcomeCharts
-            selectedOutcomes={s.selectedOutcomes}
-          />
         </div>
         <section className={Styles.Market__details}>
           <div className={Styles['Market__details-outcomes']}>
@@ -97,6 +91,10 @@ export default class MarketView extends Component {
     )
   }
 }
+
+// <MarketOutcomeCharts
+//   selectedOutcomes={s.selectedOutcomes}
+// />
 //
 // {s.selectedOutcomes.length === 0 &&
 //   <MarketOutcomesChart

@@ -83,9 +83,9 @@ export default class MarketOutcomeDepth extends Component {
         tickOffset: 10
       }
 
+      const { marketDepth } = this.props
       const width = this.depthChart.clientWidth
       const height = this.depthChart.clientHeight
-      const marketDepth = this.props.marketDepth
 
       chart.attr('id', 'outcome_depth')
 

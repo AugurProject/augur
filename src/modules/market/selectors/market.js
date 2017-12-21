@@ -268,7 +268,8 @@ export function assembleMarket(
 
       market.outstandingShares = formatNumber(getOutstandingShares(marketOutcomesData || {}))
 
-      market.priceTimeSeries = selectPriceTimeSeries(market.outcomes, marketPriceHistory)
+      // TODO -- put back
+      // market.priceTimeSeries = selectPriceTimeSeries(market.outcomes, marketPriceHistory)
 
       market.reportableOutcomes = selectReportableOutcomes(market.type, market.outcomes)
       const indeterminateOutcomeID = market.type === BINARY ? BINARY_INDETERMINATE_OUTCOME_ID : CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID
