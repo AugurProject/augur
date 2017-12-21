@@ -3,11 +3,11 @@ import logError from 'utils/log-error'
 import { updateMarketsData } from 'modules/markets/actions/update-markets-data'
 
 // NOTE -- We ONLY load the market ids during this step.
-const loadUserMarkets = (callback = logError) => (dispatch, getState) => {
+export const loadUserMarkets = (callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
 
   augur.markets.getMarketsCreatedByUser({ universe: universe.id, creator: loginAccount.address }, (err, marketsArray) => {
-    if (err) return callback(err)
+    if (err || !marketsArray) return callback(err)
 
     const marketsData = marketsArray.reduce((p, id) => ({
       ...p,
@@ -17,5 +17,3 @@ const loadUserMarkets = (callback = logError) => (dispatch, getState) => {
     callback(null, marketsArray)
   })
 }
-
-export default loadUserMarkets
