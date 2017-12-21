@@ -18,7 +18,7 @@ export const loadAccountOrders = (options, callback = logError) => (dispatch, ge
         const outcomes = Object.keys(orders[marketID])
         async.forEachOfSeries(outcomes, (outcome, id, nextOutcome) => {
           const orderTypeLabels = Object.keys(orders[marketID][outcome])
-          orderTypeLabels.forEach((orderType) => dispatch(updateOrderBook(marketID, outcome, orderType, orders[marketID][outcome][orderType])))
+          orderTypeLabels.forEach(orderType => dispatch(updateOrderBook(marketID, outcome, orderType, orders[marketID][outcome][orderType])))
           nextOutcome(null)
         })
         next(null)
