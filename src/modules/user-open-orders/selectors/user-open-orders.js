@@ -11,6 +11,20 @@ import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-stat
 
 import { formatNone, formatEtherTokens, formatShares } from 'utils/format-number'
 
+export function selectAllUserOpenOrderMarkets() {
+  const { loginAccount, orderBooks } = store.getState()
+
+  if (!loginAccount.address || orderBooks == null) {
+    return []
+  }
+
+  return Object.keys(orderBooks)
+    .filter(marketID => Object.keys(orderBooks[marketID])
+      .filter(outcome => Object.keys(orderBooks[marketID][outcome])
+        .filter(type => Object.keys(orderBooks[marketID][outcome][type])
+          .filter(hash => orderBooks[marketID][outcome][type][hash].owner === loginAccount.address))))
+}
+
 /**
  *
  * @param {String} outcomeId
@@ -18,10 +32,10 @@ import { formatNone, formatEtherTokens, formatShares } from 'utils/format-number
  *
  * @return {Array}
  */
-export default function (outcomeId, marketOrderBook) {
+export function selectUserOpenOrders(outcomeId, marketOrderBook) {
   const { loginAccount, orderCancellation } = store.getState()
 
-  return selectUserOpenOrders(outcomeId, loginAccount, marketOrderBook, orderCancellation)
+  return userOpenOrders(outcomeId, loginAccount, marketOrderBook, orderCancellation)
 }
 
 /**
@@ -33,7 +47,7 @@ export default function (outcomeId, marketOrderBook) {
  *
  * @return {Array}
  */
-const selectUserOpenOrders = memoize((outcomeID, loginAccount, marketOrderBook, orderCancellation) => {
+const userOpenOrders = memoize((outcomeID, loginAccount, marketOrderBook, orderCancellation) => {
   const isUserLoggedIn = loginAccount.address != null
 
   if (!isUserLoggedIn || marketOrderBook == null) {
