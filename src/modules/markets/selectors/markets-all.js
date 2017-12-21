@@ -17,9 +17,7 @@ import {
 } from 'src/select-state'
 import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks'
 
-import { assembleMarket, selectMarketReport } from 'modules/market/selectors/market'
-
-import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open'
+import { selectMarket } from 'modules/market/selectors/market'
 
 export default function () {
   return selectMarkets(store.getState())
@@ -44,35 +42,7 @@ export const selectMarkets = createSelector(
     if (!marketsData) return []
     return Object.keys(marketsData).map((marketID) => {
       if (!marketID || !marketsData[marketID]) return {}
-      const endDate = new Date((marketsData[marketID].endDate * 1000) || 0)
-
-      return assembleMarket(
-        marketID,
-        marketsData[marketID],
-        marketLoading.indexOf(marketID) !== -1,
-        priceHistory[marketID],
-        isMarketDataOpen(marketsData[marketID]),
-        isMarketDataExpired(marketsData[marketID], new Date().getTime()),
-
-        !!favorites[marketID],
-        outcomesData[marketID],
-
-        selectMarketReport(marketID, reports[marketsData[marketID].universeID]),
-        (accountPositions || {})[marketID],
-        (accountTrades || {})[marketID],
-        tradesInProgress[marketID],
-
-        // the reason we pass in the date parts broken up like this, is because date objects are never equal, thereby always triggering re-assembly, never hitting the memoization cache
-        endDate.getFullYear(),
-        endDate.getMonth(),
-        endDate.getDate(),
-        universe && universe.currentReportingWindowAddress,
-        orderBooks[marketID],
-        orderCancellation,
-        (smallestPositions || {})[marketID],
-        loginAccount,
-        store.dispatch
-      )
+      return selectMarket(marketID)
     })
   }
 )
