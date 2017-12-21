@@ -34,6 +34,7 @@ export function selectAllUserOpenOrderMarkets() {
  */
 export function selectUserOpenOrders(outcomeId, marketID) {
   const { loginAccount, orderCancellation, orderBooks } = store.getState()
+  if (!loginAccount.address || orderBooks == null || orderBooks[marketID] == null) return []
   const marketOrderBook = orderBooks[marketID]
   return userOpenOrders(outcomeId, loginAccount, marketOrderBook, orderCancellation, marketID)
 }
@@ -48,11 +49,6 @@ export function selectUserOpenOrders(outcomeId, marketID) {
  * @return {Array}
  */
 const userOpenOrders = memoize((outcomeID, loginAccount, marketOrderBook, orderCancellation, marketID) => {
-  const isUserLoggedIn = loginAccount.address != null
-
-  if (!isUserLoggedIn || marketOrderBook == null) {
-    return []
-  }
   const orderData = marketOrderBook[outcomeID]
 
   const userBids = (orderData == null || orderData.buy == null) ? [] : getUserOpenOrders(marketOrderBook[outcomeID], BUY, outcomeID, loginAccount.address, orderCancellation, marketID)
