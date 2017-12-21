@@ -1,6 +1,5 @@
 import memoize from 'memoizee'
 import BigNumber from 'bignumber.js'
-import speedomatic from 'speedomatic'
 
 import store from 'src/store'
 
