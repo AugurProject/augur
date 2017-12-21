@@ -8,7 +8,7 @@ function connect(augurNodeUrl, callback) {
   new WsTransport(augurNodeUrl, 100, dispatchJsonRpcResponse, function (err, transport) {
     if (err) return callback(err);
     augurNodeState.setTransport(transport);
-    callback(null);
+    callback(null, transport);
   });
 }
 

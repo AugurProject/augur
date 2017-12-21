@@ -42,3 +42,16 @@ augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
     });
   }
 });
+
+augur.augurNode.on("disconnect", function() {
+  console.log("Augur Node Disconnected");
+});
+augur.augurNode.on("reconnect", function() {
+  console.log("Augur Node Resconnected");
+});
+augur.rpc.on("disconnect", function() {
+  console.log("Ethereum Node Disconnected");
+});
+augur.rpc.on("reconnect", function() {
+  console.log("Ethereum Node Reconnected");
+});
