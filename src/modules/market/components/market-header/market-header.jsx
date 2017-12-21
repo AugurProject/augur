@@ -12,14 +12,13 @@ export default class MarketHeader extends Component {
     description: PropTypes.string.isRequired,
     details: PropTypes.string.isRequired,
     coreProperties: PropTypes.object.isRequired,
-    selectedOutcomes: PropTypes.any // NOTE -- There is a PR to handle null values, but until then..
+    selectedOutcomes: PropTypes.any
   }
 
   constructor(props) {
     super(props)
 
     this.state = {
-      // animationSpeed: parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-normal'), 10),
       detailsExpanded: false
     }
   }

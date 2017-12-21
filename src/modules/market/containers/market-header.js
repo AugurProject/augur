@@ -11,7 +11,7 @@ import getValue from 'utils/get-value'
 
 const mergeProps = (sP, dP, oP) => {
   const queryParams = parseQuery(oP.location.search)
-  const market = selectMarket(queryParams.id) // NOTE -- commented out for mocking sake
+  const market = selectMarket(queryParams.id)
 
   return {
     ...oP,
@@ -19,7 +19,7 @@ const mergeProps = (sP, dP, oP) => {
     details: market.extraInfo,
     coreProperties: {
       volume: getValue(market, 'volume.formatted'),
-      fee: getValue(market, 'settlementFeePercent.formatted'), // NOTE -- right now really small fees display as 0.0
+      fee: getValue(market, 'settlementFeePercent.formatted'), // FIXME -- right now really small fees display as 0.0
       expires: getValue(market, 'endDate.formattedLocal')
     }
   }
