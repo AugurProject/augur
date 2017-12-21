@@ -36,7 +36,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       '../../../store': store
     })
 
-    state.orderBooks = {
+    const orderBooks = {
       bobMarket: {
         0: {
           buy: {
@@ -61,7 +61,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       }
     }
 
-    assert.lengthOf(selectUserOpenOrders('1', 'bobMarket'), 0)
+    assert.lengthOf(selectUserOpenOrders('1', orderBooks), 0)
   })
 
   it(`should return no user open orders if there are no orders`, () => {
@@ -69,7 +69,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
   })
 
   it(`should return empty user open orders if there are no matching orders`, () => {
-    state.orderBooks = {
+    const orderBooks = {
       bobMarket: {
         0: {
           buy: {
@@ -114,91 +114,82 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
         }
       }
     }
-    assert.lengthOf(selectUserOpenOrders('1', 'bobMarket'), 0)
+    assert.lengthOf(selectUserOpenOrders('1', orderBooks), 0)
   })
 
   it(`should return user open orders for logged-in user who has orders`, () => {
-    state.orderBooks = {
-      testMarketId: {
-        1: {
-          buy: {
-            order13: {
-              orderID: 'order13',
-              market: 'testMarketId',
-              price: '20',
-              amount: '2',
-              owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
-              outcome: '1'
-            },
-            order14: {
-              orderID: 'order14',
-              market: 'testMarketId',
-              price: '10',
-              amount: '1',
-              owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
-              outcome: '1'
-            },
-            order12: {
-              orderID: 'order12',
-              market: 'testMarketId',
-              price: '40',
-              amount: '4',
-              owner: 'some other address',
-              outcome: '1'
-            },
-            order11: {
-              orderID: 'order11',
-              market: 'testMarketId',
-              price: '60',
-              amount: '6',
-              owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
-              outcome: '1'
-            }
+    const orderBooks = {
+      1: {
+        buy: {
+          order13: {
+            orderID: 'order13',
+            price: '20',
+            amount: '2',
+            owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
+            outcome: '1'
           },
-          sell: {
-            order2: {
-              orderID: 'order2',
-              market: 'testMarketId',
-              price: '70',
-              amount: '7',
-              owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
-              outcome: '1'
-            },
-            order1: {
-              orderID: 'order1',
-              market: 'testMarketId',
-              price: '100',
-              amount: '10',
-              owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
-              outcome: '1'
-            },
-            order3: {
-              orderID: 'order3',
-              market: 'testMarketId',
-              price: '10',
-              amount: '10',
-              owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
-              outcome: '1'
-            },
-            order4: {
-              orderID: 'order11',
-              market: 'testMarketId',
-              price: '110',
-              amount: '11',
-              owner: 'different owner',
-              outcome: '1'
-            }
+          order14: {
+            orderID: 'order14',
+            price: '10',
+            amount: '1',
+            owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
+            outcome: '1'
+          },
+          order12: {
+            orderID: 'order12',
+            price: '40',
+            amount: '4',
+            owner: 'some other address',
+            outcome: '1'
+          },
+          order11: {
+            orderID: 'order11',
+            price: '60',
+            amount: '6',
+            owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
+            outcome: '1'
+          }
+        },
+        sell: {
+          order2: {
+            orderID: 'order2',
+            price: '70',
+            amount: '7',
+            owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
+            outcome: '1'
+          },
+          order1: {
+            orderID: 'order1',
+            price: '100',
+            amount: '10',
+            owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
+            outcome: '1'
+          },
+          order3: {
+            orderID: 'order3',
+            price: '10',
+            amount: '10',
+            owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
+            outcome: '1'
+          },
+          order4: {
+            orderID: 'order11',
+            market: 'testMarketId',
+            price: '110',
+            amount: '11',
+            owner: 'different owner',
+            outcome: '1'
           }
         }
       }
     }
+  
 
-    const userOpenOrders = selectUserOpenOrders('1', 'testMarketId')
+    const userOpenOrders = selectUserOpenOrders('1', orderBooks)
     assert.lengthOf(userOpenOrders, 6)
     assert.deepEqual(userOpenOrders, [{
       id: 'order1',
       avgPrice: formatEtherTokens('100'),
-      marketID: speedomatic.formatInt256('testMarketId'),
       type: 'sell',
       matchedShares: formatNone(),
       originalShares: formatNone(),
@@ -206,7 +197,6 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
     }, {
       id: 'order2',
       avgPrice: formatEtherTokens('70'),
-      marketID: speedomatic.formatInt256('testMarketId'),
       type: 'sell',
       matchedShares: formatNone(),
       originalShares: formatNone(),
@@ -214,7 +204,6 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
     }, {
       id: 'order3',
       avgPrice: formatEtherTokens('10'),
-      marketID: speedomatic.formatInt256('testMarketId'),
       type: 'sell',
       matchedShares: formatNone(),
       originalShares: formatNone(),
@@ -222,7 +211,6 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
     }, {
       id: 'order11',
       avgPrice: formatEtherTokens('60'),
-      marketID: speedomatic.formatInt256('testMarketId'),
       type: 'buy',
       matchedShares: formatNone(),
       originalShares: formatNone(),
@@ -230,7 +218,6 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
     }, {
       id: 'order13',
       avgPrice: formatEtherTokens('20'),
-      marketID: speedomatic.formatInt256('testMarketId'),
       type: 'buy',
       matchedShares: formatNone(),
       originalShares: formatNone(),
@@ -238,7 +225,6 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
     }, {
       id: 'order14',
       avgPrice: formatEtherTokens('10'),
-      marketID: speedomatic.formatInt256('testMarketId'),
       type: 'buy',
       matchedShares: formatNone(),
       originalShares: formatNone(),
