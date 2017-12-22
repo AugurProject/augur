@@ -9,7 +9,7 @@ function convertDecimalToFixedPoint(decimalValue, conversionFactor) {
   return new BigNumber(decimalValue, 10).times(new BigNumber(conversionFactor, 10)).floor().toFixed();
 }
 
-function createOrder(augur, marketID, outcome, numOutcomes, maxPrice, minPrice, numTicks, orderType, order, callback) {
+function createOrder(augur, marketID, outcome, numOutcomes, maxPrice, minPrice, numTicks, orderType, order, auth, callback) {
   var normalizedPrice = augur.trading.normalizePrice({ price: order.price, maxPrice: maxPrice, minPrice: minPrice });
   var tickSize = (new BigNumber(maxPrice, 10).minus(new BigNumber(minPrice, 10))).dividedBy(new BigNumber(numTicks, 10)).toFixed();
   var bnOnChainShares = new BigNumber(convertDecimalToFixedPoint(order.shares, speedomatic.fix(tickSize, "string")), 10);
@@ -24,6 +24,7 @@ function createOrder(augur, marketID, outcome, numOutcomes, maxPrice, minPrice, 
   }
   if (debugOptions.cannedMarkets) console.log("cost:", speedomatic.unfix(bnCost, "string"));
   var params = {
+    meta: auth,
     tx: { value: "0x" + bnCost.toString(16), gas: augur.constants.CREATE_ORDER_GAS },
     _type: orderTypeCode,
     _attoshares: "0x" + bnOnChainShares.toString(16),
@@ -49,13 +50,13 @@ function createOrder(augur, marketID, outcome, numOutcomes, maxPrice, minPrice, 
   augur.api.CreateOrder.publicCreateOrder(params);
 }
 
-function createOrderBook(augur, marketID, numOutcomes, maxPrice, minPrice, numTicks, orderBook, callback) {
+function createOrderBook(augur, marketID, numOutcomes, maxPrice, minPrice, numTicks, orderBook, auth, callback) {
   async.forEachOf(orderBook, function (orders, orderType, nextOrderType) {
     if (debugOptions.cannedMarkets) console.log("orderType:", orderType);
     async.forEachOf(orders, function (outcomeOrders, outcome, nextOutcome) {
       if (debugOptions.cannedMarkets) console.log("outcome:", outcome);
       async.each(outcomeOrders, function (order, nextOrder) {
-        createOrder(augur, marketID, parseInt(outcome, 10), numOutcomes, maxPrice, minPrice, numTicks, orderType, order, nextOrder);
+        createOrder(augur, marketID, parseInt(outcome, 10), numOutcomes, maxPrice, minPrice, numTicks, orderType, order, auth, nextOrder);
       }, nextOutcome);
     }, nextOrderType);
   }, callback);

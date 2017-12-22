@@ -28,11 +28,11 @@ function createBinaryMarket(p) {
   getMarketCreationCost({ universe: p.universe }, function (err, marketCreationCost) {
     if (err) return p.onFailed(err);
     var createBinaryMarketParams = assign({}, immutableDelete(p, ["universe"]), {
-      tx: {
+      tx: assign({
         to: p.universe,
         value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
         gas: constants.CREATE_BINARY_MARKET_GAS,
-      },
+      }, p.tx),
       _topic: encodeTag(p._topic),
       _extraInfo: JSON.stringify(p._extraInfo || {}),
       onSuccess: function (res) {

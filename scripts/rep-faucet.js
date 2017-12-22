@@ -1,13 +1,19 @@
 #!/usr/bin/env node
 
+var fs = require("fs");
+var keythereum = require("keythereum");
 var BigNumber = require("bignumber.js");
 var speedomatic = require("speedomatic");
 var Augur = require("../src");
 var connectionEndpoints = require("./connection-endpoints");
 var debugOptions = require("./debug-options");
 
-function faucetInAndMigrate(augur, universe, callback) {
+var keyFilePath = process.argv[2];
+
+function faucetInAndMigrate(augur, universe, auth, callback) {
+  console.log("auth:", auth);
   augur.api.LegacyReputationToken.faucet({
+    meta: auth,
     _amount: speedomatic.fix(100000, "hex"),
     onSent: function (res) {
       console.log("faucet sent:", res.hash);
@@ -18,6 +24,7 @@ function faucetInAndMigrate(augur, universe, callback) {
         if (err) return callback(err);
         console.log("reputationToken:", reputationToken);
         augur.api.LegacyReputationToken.approve({
+          meta: auth,
           _spender: reputationToken,
           _value: speedomatic.prefixHex(new BigNumber(2, 10).toPower(255).minus(1).toString(16)),
           onSent: function (res) {
@@ -26,6 +33,7 @@ function faucetInAndMigrate(augur, universe, callback) {
           onSuccess: function (res) {
             console.log("approve success:", res.callReturn);
             augur.api.ReputationToken.migrateFromLegacyReputationToken({
+              meta: auth,
               tx: { to: reputationToken },
               onSent: function (res) {
                 console.log("migrateFromLegacyReputationToken sent:", res.hash);
@@ -49,13 +57,23 @@ var augur = new Augur();
 
 augur.rpc.setDebugOptions(debugOptions);
 
-augur.connect(connectionEndpoints, function (err) {
-  if (err) return console.error(err);
-  console.log("networkID:", augur.rpc.getNetworkID());
-  var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
-  console.log("universe:", universe);
-  faucetInAndMigrate(augur, universe, function (err) {
-    if (err) return console.error("faucetInAndMigrate failed:", err);
-    process.exit();
+fs.readFile(keyFilePath, function (err, keystoreJson) {
+  if (err) throw err;
+  var keystore = JSON.parse(keystoreJson);
+  var sender = speedomatic.formatEthereumAddress(keystore.address);
+  console.log("sender:", sender);
+  keythereum.recover(process.env.GETH_PASSWORD, keystore, function (privateKey) {
+    if (privateKey == null || privateKey.error) throw new Error("private key decryption failed");
+    var auth = { address: sender, signer: privateKey, accountType: "privateKey" };
+    augur.connect(connectionEndpoints, function (err) {
+      if (err) return console.error(err);
+      console.log("networkID:", augur.rpc.getNetworkID());
+      var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
+      console.log("universe:", universe);
+      faucetInAndMigrate(augur, universe, auth, function (err) {
+        if (err) return console.error("faucetInAndMigrate failed:", err);
+        process.exit();
+      });
+    });
   });
 });

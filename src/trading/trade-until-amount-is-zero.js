@@ -36,7 +36,7 @@ function tradeUntilAmountIsZero(p) {
   if (cost.lt(constants.PRECISION.zero)) return p.onSuccess(null);
   console.log("cost:", speedomatic.unfix(cost, "string"), "ether");
   var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "tickSize"]), {
-    tx: { value: speedomatic.hex(cost), gas: constants.TRADE_GAS },
+    tx: assign({ value: speedomatic.hex(cost), gas: constants.TRADE_GAS }, p.tx),
     _fxpAmount: onChainAmount,
     _price: priceNumTicksRepresentation,
     onSuccess: function (res) {

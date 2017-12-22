@@ -9,7 +9,6 @@ var constants = require("../../../src/constants");
 describe("create-market/create-categorical-market", function () {
   var extraInfo = {
     longDescription: "One Market to rule them all, One Market to bind them, One Market to bring them all, and in the darkness bind them.",
-    outcomeNames: ["Yes", "Strong Yes", "Emphatic Yes"],
     tags: ["Ancient evil", "Large flaming eyes"],
   };
   var test = function (t) {
@@ -34,7 +33,7 @@ describe("create-market/create-categorical-market", function () {
       universe: "UNIVERSE_ADDRESS",
       _endTime: 2345678901,
       _description: "Will this market be the One Market?",
-      _numOutcomes: 3,
+      _outcomes: ["Yes", "Strong Yes", "Emphatic Yes"],
       _feePerEthInWei: "0x4321",
       _denominationToken: "TOKEN_ADDRESS",
       _designatedReporterAddress: "DESIGNATED_REPORTER_ADDRESS",
@@ -69,7 +68,11 @@ describe("create-market/create-categorical-market", function () {
                 gas: constants.CREATE_CATEGORICAL_MARKET_GAS,
               });
               assert.strictEqual(p._endTime, 2345678901);
-              assert.strictEqual(p._numOutcomes, 3);
+              assert.deepEqual(p._outcomes, [
+                "0x5965730000000000000000000000000000000000000000000000000000000000",
+                "0x5374726f6e672059657300000000000000000000000000000000000000000000",
+                "0x456d706861746963205965730000000000000000000000000000000000000000",
+              ]);
               assert.strictEqual(p._feePerEthInWei, "0x4321");
               assert.strictEqual(p._denominationToken, "TOKEN_ADDRESS");
               assert.strictEqual(p._designatedReporterAddress, "DESIGNATED_REPORTER_ADDRESS");
