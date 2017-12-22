@@ -26,7 +26,7 @@ const mapStateToProps = state =>
 const mapDispatchToProps = dispatch => ({
   loadMarkets: () => dispatch(loadUserMarkets((err, marketIDs) => {
     if (err) return logError(err)
-    // if we have marketIDs back, lets load the info so that we can properly display myMarkets.
+    // if we have marketIDs back, let's load the info so that we can properly display myMarkets.
     dispatch(loadMarketsInfo(marketIDs))
     dispatch(loadUnclaimedFees(marketIDs))
   })),
