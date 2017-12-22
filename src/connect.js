@@ -57,8 +57,8 @@ function connect(connectOptions, callback) {
       if (!connectOptions.augurNode) return next(null);
       augurNode.connect(connectOptions.augurNode, function (err, transport) {
         if (err) {
-          console.warn("could not connect to augur-node at", connectOptions.augurNode);
-          return next(err);
+          console.warn("could not connect to augur-node at", connectOptions.augurNode, err);
+          return next(null);
         }
         transport.addReconnectListener(function () {
           augurNode.emit("reconnect");
@@ -75,8 +75,8 @@ function connect(connectOptions, callback) {
       if (!connectOptions.ethereumNode) return next(null);
       ethereumConnector.connect(ethereumNodeConnectOptions, function (err, ethereumConnectionInfo) {
         if (err) {
-          console.warn("could not connect to ethereum-node at", JSON.stringify(connectOptions.ethereumNode));
-          return next(err);
+          console.warn("could not connect to ethereum-node at", JSON.stringify(connectOptions.ethereumNode), err);
+          return next(null);
         }
         console.log("connected to ethereum");
         ethereumConnectionInfo.contracts = ethereumConnectionInfo.contracts || contracts.addresses[DEFAULT_NETWORK_ID];
@@ -91,8 +91,8 @@ function connect(connectOptions, callback) {
         next(null, ethereumConnectionInfo);
       });
     },
-  }, function (err, connectionInfo) {
-    if (err && !connectionInfo.augurNode && !connectionInfo.ethereumNode) return callback(err);
+  }, function (_, connectionInfo) {
+    if (!connectionInfo.augurNode && !connectionInfo.ethereumNode) return callback(new Error("Connection failed"));
     callback(null, connectionInfo);
   });
 }
