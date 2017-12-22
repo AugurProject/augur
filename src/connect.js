@@ -6,7 +6,7 @@ var ethrpc = require("ethrpc");
 var contracts = require("./contracts");
 var api = require("./api");
 var rpcInterface = require("./rpc-interface");
-var connectToAugurNode = require("./augur-node").connect;
+var augurNode = require("./augur-node");
 var isFunction = require("./utils/is-function");
 var isObject = require("./utils/is-object");
 var noop = require("./utils/noop");
@@ -19,7 +19,7 @@ var DEFAULT_NETWORK_ID = require("./constants").DEFAULT_NETWORK_ID;
 function connect(connectOptions, callback) {
   if (!isFunction(callback)) callback = noop;
   if (!isObject(connectOptions)) {
-    return callback("Connection info required, e.g. { ethereumNode: { http: 'http://ethereum.node.url', ws: 'ws://ethereum.node.websocket' }, augurNode: 'ws://augur.node.websocket' }");
+    return callback("Connection info required, e.g. { ethereumNode: { http: \"http://ethereum.node.url\", ws: \"ws://ethereum.node.websocket\" }, augurNode: \"ws://augur.node.websocket\" }");
   }
   var self = this;
   var ethereumNodeConnectOptions = {
@@ -55,11 +55,17 @@ function connect(connectOptions, callback) {
     augurNode: function (next) {
       console.log("connecting to augur-node:", connectOptions.augurNode);
       if (!connectOptions.augurNode) return next(null);
-      connectToAugurNode(connectOptions.augurNode, function (err) {
+      augurNode.connect(connectOptions.augurNode, function (err, transport) {
         if (err) {
-          console.warn("could not connect to augur-node at", connectOptions.augurNode);
-          return next(err);
+          console.warn("could not connect to augur-node at", connectOptions.augurNode, err);
+          return next(null);
         }
+        transport.addReconnectListener(function () {
+          augurNode.emit("reconnect");
+        });
+        transport.addDisconnectListener(function () {
+          augurNode.emit("disconnect");
+        });
         console.log("connected to augur");
         next(null, connectOptions.augurNode);
       });
@@ -69,18 +75,24 @@ function connect(connectOptions, callback) {
       if (!connectOptions.ethereumNode) return next(null);
       ethereumConnector.connect(ethereumNodeConnectOptions, function (err, ethereumConnectionInfo) {
         if (err) {
-          console.warn("could not connect to ethereum-node at", JSON.stringify(connectOptions.ethereumNode));
-          return next(err);
+          console.warn("could not connect to ethereum-node at", JSON.stringify(connectOptions.ethereumNode), err);
+          return next(null);
         }
         console.log("connected to ethereum");
         ethereumConnectionInfo.contracts = ethereumConnectionInfo.contracts || contracts.addresses[DEFAULT_NETWORK_ID];
         self.api = api.generateContractApi(ethereumConnectionInfo.abi.functions);
         self.rpc = rpcInterface.createRpcInterface(ethereumConnectionInfo.rpc);
+        ethereumConnectionInfo.rpc.getTransport().addReconnectListener(function () {
+          rpcInterface.emit("reconnect");
+        });
+        ethereumConnectionInfo.rpc.getTransport().addDisconnectListener(function () {
+          rpcInterface.emit("disconnect");
+        });
         next(null, ethereumConnectionInfo);
       });
     },
-  }, function (err, connectionInfo) {
-    if (err && !connectionInfo.augurNode && !connectionInfo.ethereumNode) return callback(err);
+  }, function (_, connectionInfo) {
+    if (!connectionInfo.augurNode && !connectionInfo.ethereumNode) return callback(new Error("Connection failed"));
     callback(null, connectionInfo);
   });
 }

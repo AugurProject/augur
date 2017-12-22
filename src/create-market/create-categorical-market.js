@@ -16,6 +16,7 @@ var constants = require("../constants");
  * @param {string=} p._feePerEthInWei Amount of wei per ether settled that goes to the market creator, as a base-10 string.
  * @param {string} p._denominationToken Ethereum address of the token used as this market's currency.
  * @param {string} p._designatedReporterAddress Ethereum address of this market's designated reporter.
+ * @param {string[]} p._outcomes Descriptions for each outcome, as an array of UTF8 strings, with between [2, 8] elements in the array.
  * @param {number} p._numOutcomes Number of outcomes this market has, as an integer on [2, 8].
  * @param {string} p._topic The topic (category) to which this market belongs, as a UTF8 string.
  * @param {string} p._description Description of the market, as a UTF8 string.
@@ -34,6 +35,7 @@ function createCategoricalMarket(p) {
         value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
         gas: constants.CREATE_CATEGORICAL_MARKET_GAS,
       },
+      _outcomes: p._outcomes.map(function (outcome) { return encodeTag(outcome); }),
       _topic: encodeTag(p._topic),
       _extraInfo: JSON.stringify(p._extraInfo || {}),
       onSuccess: function (res) {
@@ -43,6 +45,7 @@ function createCategoricalMarket(p) {
         });
       },
     });
+    console.log("createCategoricalMarketParams:", createCategoricalMarketParams);
     api().Universe.createCategoricalMarket(createCategoricalMarketParams);
   });
 }

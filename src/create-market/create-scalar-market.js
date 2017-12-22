@@ -50,6 +50,7 @@ function createScalarMarket(p) {
         });
       },
     });
+    console.log("createScalarMarketParams:", createScalarMarketParams);
     api().Universe.createScalarMarket(createScalarMarketParams);
   });
 }
