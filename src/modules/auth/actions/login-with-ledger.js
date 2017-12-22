@@ -9,6 +9,7 @@ export default function loginWithLedger(address, authLib) {
       address,
       authLib,
       meta: {
+        address,
         signer: authLib.signTransactionByBip44Index,
         accountType: augur.rpc.constants.ACCOUNT_TYPES.LEDGER
       }
