@@ -12,7 +12,7 @@ export const loadAccountOrders = (options, callback = logError) => (dispatch, ge
     if (orders == null || Object.keys(orders).length === 0) return callback(null)
     const marketIDs = Object.keys(orders)
     // TODO: consolidate all the getting of maket infos for load account history
-    dispatch(loadMarketsInfo(marketIDs.slice(), () => {
+    dispatch(loadMarketsInfo(marketIDs, () => {
       dispatch(addOpenOrderTransactions(orders))
       async.forEachOfSeries(marketIDs, (marketID, id, next) => {
         const outcomes = Object.keys(orders[marketID])
