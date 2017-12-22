@@ -22,6 +22,7 @@ export const login = (keystore, password, callback = logError) => (dispatch, get
         ...account,
         address,
         meta: {
+          address,
           signer: account.privateKey,
           accountType: augur.rpc.constants.ACCOUNT_TYPES.PRIVATE_KEY
         }
