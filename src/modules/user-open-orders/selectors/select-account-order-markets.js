@@ -10,8 +10,6 @@ export const selectAllUserOpenOrderMarkets = createSelector(
   selectLoginAccountAddress,
   selectOrderBooksState,
   (loginAccountAddress, orderBooks) => {
-    console.log(loginAccountAddress)
-    console.log(orderBooks)
     if (loginAccountAddress == null || orderBooks == null || Object.keys(orderBooks).length === 0) {
       return []
     }
