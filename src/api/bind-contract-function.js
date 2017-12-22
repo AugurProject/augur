@@ -18,7 +18,8 @@ function bindContractFunction(functionAbi) {
       var callback;
       if (params && isObject(params[0])) {
         payload.params = encodeTransactionInputs(params[0], payload.inputs, payload.signature);
-        if (isObject(params[0].tx)) assign(payload, params[0].tx);
+        if (isObject(params[0].meta) && params[0].meta.address) assign(payload, { from: params[0].meta.address });
+        if (isObject(params[0].tx)) assign(payload, { from: (params[0].meta || {}).address }, params[0].tx);
       }
       if (isFunction(params[params.length - 1])) callback = params.pop();
       if (!isFunction(callback)) return ethrpc.callContractFunction(payload);
@@ -35,7 +36,9 @@ function bindContractFunction(functionAbi) {
       onFailed = params[0].onFailed;
       payload.params = encodeTransactionInputs(params[0], payload.inputs, payload.signature);
       // returns: "null" is a workaround for unsolved no-response-to-initial-eth_call issue
-      if (isObject(params[0].tx)) assign(payload, { returns: "null" }, params[0].tx);
+      assign(payload, { returns: "null" });
+      if (isObject(params[0].meta) && params[0].meta.address) assign(payload, { from: params[0].meta.address });
+      if (isObject(params[0].tx)) assign(payload, params[0].tx);
       signer = (params[0].meta || {}).signer;
       accountType = (params[0].meta || {}).accountType;
     }
