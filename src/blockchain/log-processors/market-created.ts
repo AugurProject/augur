@@ -10,7 +10,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
   const marketPayload: {} = { tx: { to: log.market } };
   parallel({
     numberOfOutcomes: (next: AsyncCallback): void => augur.api.Market.getNumberOfOutcomes(marketPayload, next),
-    reportingWindow: (next: AsyncCallback): void => augur.api.Market.getReportingWindow(marketPayload, next),
+    feeWindow: (next: AsyncCallback): void => augur.api.Market.getFeeWindow(marketPayload, next),
     endTime: (next: AsyncCallback): void => augur.api.Market.getEndTime(marketPayload, next),
     designatedReporter: (next: AsyncCallback): void => augur.api.Market.getDesignatedReporter(marketPayload, next),
     numTicks: (next: AsyncCallback): void => augur.api.Market.getNumTicks(marketPayload, next),
@@ -53,7 +53,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
           universe:                   onMarketContractData!.universe,
           numOutcomes,
           marketStateID,
-          reportingWindow:            onMarketContractData!.reportingWindow,
+          reportingWindow:            onMarketContractData!.feeWindow, // TODO update db to use "fee window" instead of "reporting window"
           endTime:                    parseInt(onMarketContractData!.endTime!, 10),
           designatedReporter:         onMarketContractData!.designatedReporter,
           designatedReportStake:      onUniverseContractData!.designatedReportStake,

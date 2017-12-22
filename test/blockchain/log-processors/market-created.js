@@ -62,7 +62,7 @@ describe("blockchain/log-processors/market-created", () => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
               callback(null, "2");
             },
-            getReportingWindow: (p, callback) => {
+            getFeeWindow: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
               callback(null, "0x1000000000000000000000000000000000000001");
             },
@@ -215,7 +215,7 @@ describe("blockchain/log-processors/market-created", () => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111112");
               callback(null, "4");
             },
-            getReportingWindow: (p, callback) => {
+            getFeeWindow: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111112");
               callback(null, "0x1000000000000000000000000000000000000001");
             },
@@ -389,7 +389,7 @@ describe("blockchain/log-processors/market-created", () => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111113");
               callback(null, "2");
             },
-            getReportingWindow: (p, callback) => {
+            getFeeWindow: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111113");
               callback(null, "0x1000000000000000000000000000000000000001");
             },
@@ -537,7 +537,7 @@ describe("blockchain/log-processors/market-created", () => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
               callback(null, "2");
             },
-            getReportingWindow: (p, callback) => {
+            getFeeWindow: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
               callback(null, "0x1000000000000000000000000000000000000001");
             },
