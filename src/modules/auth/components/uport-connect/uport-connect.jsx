@@ -63,10 +63,10 @@ export default class UportConnect extends Component {
 
       switch (true) {
         case this.props.isMobileSmall:
-          qrSize = width / 1.2
+          qrSize = width / 1.5
           break
         case this.props.isMobile:
-          qrSize = width / 2
+          qrSize = width / 2.3
           break
         default:
           qrSize = width / 3.5
