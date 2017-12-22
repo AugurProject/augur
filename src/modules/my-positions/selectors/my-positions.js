@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect'
 import store from 'src/store'
 import { selectMarkets } from 'modules/markets/selectors/markets-all'
-import { selectAllUserOpenOrderMarkets } from 'modules/user-open-orders/selectors/user-open-orders'
+import { selectAllUserOpenOrderMarkets } from 'modules/user-open-orders/selectors/select-account-order-markets'
 import { selectAccountPositionsState } from 'src/select-state'
 
 export default function () {

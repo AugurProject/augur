@@ -54,17 +54,18 @@ describe(`modules/my-positions/selectors/my-positions.js`, () => {
               '0xMARKETID3': {}
             }
           ),
-          selectAccountTradesState: () => (
-            {
-              '0xMARKETID1': {},
-              '0xMARKETID2': {},
-              '0xMARKETID3': {}
-            }
+        }
+        const userMarkets = {
+          selectAllUserOpenOrderMarkets: () => (
+            [
+              '0xMARKETID2',
+            ]
           )
         }
 
         const selector = proxyquire('../../../src/modules/my-positions/selectors/my-positions.js', {
           '../../markets/selectors/markets-all': mockMarketsAll,
+          '../../user-open-orders/selectors/select-account-order-markets': userMarkets,
           '../../../select-state': mockSelectState
         })
 
@@ -73,6 +74,9 @@ describe(`modules/my-positions/selectors/my-positions.js`, () => {
         const expected = [
           {
             id: '0xMARKETID1'
+          },
+          {
+            id: '0xMARKETID2'
           },
           {
             id: '0xMARKETID3'
