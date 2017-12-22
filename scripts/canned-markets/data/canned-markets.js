@@ -192,7 +192,6 @@ module.exports = [{
   _minPrice: "0",
   _maxPrice: "10000",
   tickSize: "500",
-  _numOutcomes: 2,
   _topic: "science",
   _extraInfo: {
     resolutionSource: "science!",
@@ -250,7 +249,6 @@ module.exports = [{
   _minPrice: "0",
   _maxPrice: "30",
   tickSize: "1",
-  _numOutcomes: 2,
   _topic: "medicine",
   _extraInfo: {
     resolutionSource: "FDA",
@@ -277,12 +275,11 @@ module.exports = [{
   marketType: "categorical",
   _description: "Who will win the University of Georgia vs. University of Florida football game in 2018?",
   _endTime: parseInt(new Date("10/30/2018").getTime() / 1000, 10),
-  _numOutcomes: 2,
+  _outcomes: ["Georgia", "Florida"],
   _topic: "sports",
   _extraInfo: {
     resolutionSource: "",
     tags: ["college football", "football"],
-    outcomeNames: ["Georgia", "Florida"],
     longDescription: "",
   },
   orderBook: {
@@ -315,12 +312,11 @@ module.exports = [{
   marketType: "categorical",
   _description: "What will be the status of the U.S. electoral college on January 1, 2020?",
   _endTime: parseInt(new Date("1/2/2020").getTime() / 1000, 10),
-  _numOutcomes: 3,
+  _outcomes: ["Unchanged from 2016", "Undermined but still in existence (e.g., National Popular Vote bill)", "Formally abolished"],
   _topic: "politics",
   _extraInfo: {
     resolutionSource: "",
     tags: ["elections", "US politics"],
-    outcomeNames: ["Unchanged from 2016", "Undermined but still in existence (e.g., National Popular Vote bill)", "Formally abolished"],
     longDescription: "The National Popular Vote bill would guarantee the Presidency to the candidate who receives the most popular votes nationwide (i.e., all 50 states and the District of Columbia).  It has been enacted into law in 11 states with 165 electoral votes, and will take effect when enacted by states with 105 more electoral votes. The bill has passed one chamber in 12 additional states with 96 electoral votes.   Most recently, the bill was passed by a bipartisan 40–16 vote in the Republican-controlled Arizona House, 28–18 in Republican-controlled Oklahoma Senate, 57–4 in Republican-controlled New York Senate, and 37–21 in Democratic-controlled Oregon House. http://www.nationalpopularvote.com",
   },
   orderBook: {
@@ -363,12 +359,11 @@ module.exports = [{
   marketType: "categorical",
   _description: "What will be the number one killer in the United States by January 1, 2025?",
   _endTime: parseInt(new Date("1-2-2025").getTime() / 1000, 10),
-  _numOutcomes: 6,
+  _outcomes: ["cancer", "heart attacks", "infectious diseases", "starvation", "lava", "other"],
   _topic: "science",
   _extraInfo: {
     resolutionSource: "CDC",
     tags: ["mortality", "United States"],
-    outcomeNames: ["cancer", "heart attacks", "infectious diseases", "starvation", "lava", "other"],
     longDescription: "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?",
   },
   orderBook: {
@@ -441,11 +436,10 @@ module.exports = [{
   marketType: "categorical",
   _description: "Which city will have the highest median single-family home price for September 2018?",
   _endTime: parseInt(new Date("10-2-2018").getTime() / 1000, 10),
-  _numOutcomes: 8,
+  _outcomes: ["London", "New York", "Los Angeles", "San Francisco", "Tokyo", "Palo Alto", "Hong Kong", "other"],
   _topic: "housing",
   _extraInfo: {
     tags: ["economy", "bubble"],
-    outcomeNames: ["London", "New York", "Los Angeles", "San Francisco", "Tokyo", "Palo Alto", "Hong Kong", "other"],
   },
   orderBook: {
     buy: {
