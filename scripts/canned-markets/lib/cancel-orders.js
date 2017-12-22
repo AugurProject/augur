@@ -4,11 +4,12 @@ var async = require("async");
 var chalk = require("chalk");
 var debugOptions = require("../../debug-options");
 
-function cancelOrder(augur, orderID, orderType, marketID, outcome, callback) {
+function cancelOrder(augur, orderID, orderType, marketID, outcome, auth, callback) {
   augur.api.Orders.getAmount({ _orderId: orderID }, function (err, amount) {
     if (err) return callback(err);
     if (amount === "0") return callback(null);
     augur.api.CancelOrder.cancelOrder({
+      meta: auth,
       tx: { gas: augur.constants.CANCEL_ORDER_GAS },
       _orderId: orderID,
       _type: orderType === "buy" ? 0 : 1,
@@ -28,7 +29,7 @@ function cancelOrder(augur, orderID, orderType, marketID, outcome, callback) {
   });
 }
 
-function cancelOrders(augur, creator, universe, callback) {
+function cancelOrders(augur, creator, universe, auth, callback) {
   console.log(chalk.cyan("Canceling orders for"), chalk.green(creator), chalk.cyan("in universe"), chalk.green(universe));
   augur.trading.getOrders({ creator: creator, universe: universe }, function (err, orders) {
     if (err) return callback(err);
@@ -37,7 +38,7 @@ function cancelOrders(augur, creator, universe, callback) {
         async.forEachOfSeries(ordersInOutcome, function (buyOrSellOrders, orderType, nextOrderType) {
           async.eachSeries(Object.keys(buyOrSellOrders), function (orderID, nextOrder) {
             if (debugOptions.cannedMarkets) console.log(chalk.green(orderID), chalk.red.bold(orderType), JSON.stringify(buyOrSellOrders[orderID], null, 2));
-            cancelOrder(augur, orderID, orderType, marketID, parseInt(outcome, 10), nextOrder);
+            cancelOrder(augur, orderID, orderType, marketID, parseInt(outcome, 10), auth, nextOrder);
           }, nextOrderType);
         }, nextOutcome);
       }, nextMarket);

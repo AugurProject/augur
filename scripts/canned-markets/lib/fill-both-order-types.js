@@ -3,10 +3,10 @@
 var async = require("async");
 var fillOrder = require("./fill-order");
 
-function fillBothOrderTypes(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade, callback) {
+function fillBothOrderTypes(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade, auth, callback) {
   async.parallel([
-    function (next) { fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade, "sell", next); },
-    function (next) { fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade, "buy", next); },
+    function (next) { fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade, "sell", auth, next); },
+    function (next) { fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade, "buy", auth, next); },
   ], callback);
 }
 

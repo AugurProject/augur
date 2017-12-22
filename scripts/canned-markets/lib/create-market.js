@@ -4,7 +4,7 @@ var chalk = require("chalk");
 var immutableDelete = require("immutable-delete");
 var debugOptions = require("../../debug-options");
 
-function createMarket(augur, market, callback) {
+function createMarket(augur, market, designatedReporterAddress, auth, callback) {
   var createMarketOfType;
   switch (market._extraInfo.marketType) {
     case "categorical":
@@ -18,10 +18,11 @@ function createMarket(augur, market, callback) {
       createMarketOfType = augur.createMarket.createBinaryMarket;
   }
   var createMarketParams = Object.assign({}, immutableDelete(market, ["orderBook", "marketType"]), {
+    meta: auth,
     universe: augur.contracts.addresses[augur.rpc.getNetworkID()].Universe,
     _feePerEthInWei: "0x123456",
     _denominationToken: augur.contracts.addresses[augur.rpc.getNetworkID()].Cash,
-    _designatedReporterAddress: augur.rpc.getCoinbase(),
+    _designatedReporterAddress: designatedReporterAddress,
     onSent: function (res) {
       if (debugOptions.cannedMarkets) console.log("createMarket sent:", res.hash);
     },

@@ -15,7 +15,7 @@ var approveAugurEternalApprovalValue = require("./lib/approve-augur-eternal-appr
 var createMarket = require("./lib/create-market");
 var createOrders = require("./lib/create-orders");
 var cannedMarketsData = require("./data/canned-markets");
-// var connectionEndpoints = require("../connection-endpoints");
+var connectionEndpoints = require("../connection-endpoints");
 var debugOptions = require("../debug-options");
 
 var augur = new Augur();
@@ -24,14 +24,6 @@ var keyFilePath = process.argv[2];
 
 augur.rpc.setDebugOptions(debugOptions);
 
-var connectionEndpoints = {
-  "ethereumNode": {
-    "http": "http://rinkeby.augur.net:8545",
-    "ws": "ws://rinkeby.augur.net:8546",
-  },
-  "augurNode": "ws://127.0.0.1:9001",
-};
-
 fs.readFile(keyFilePath, function (err, keystoreJson) {
   if (err) throw err;
   var keystore = JSON.parse(keystoreJson);
@@ -39,16 +31,15 @@ fs.readFile(keyFilePath, function (err, keystoreJson) {
   console.log("sender:", sender);
   keythereum.recover(process.env.GETH_PASSWORD, keystore, function (privateKey) {
     if (privateKey == null || privateKey.error) throw new Error("private key decryption failed");
-    var auth = { privateKeyOrSigner: privateKey, accountType: "privateKey" };
-    console.log("auth:", auth);
+    var auth = { address: sender, signer: privateKey, accountType: "privateKey" };
     augur.connect(connectionEndpoints, function (err) {
       if (err) return console.error(err);
-      approveAugurEternalApprovalValue(augur, augur.rpc.getCoinbase(), function (err) {
+      approveAugurEternalApprovalValue(augur, sender, auth, function (err) {
         if (err) return console.error(err);
         console.log(chalk.cyan("Creating canned markets..."));
         var newMarketIDs = [];
-        async.eachLimit(cannedMarketsData, augur.constants.PARALLEL_LIMIT, function (market, nextMarket) {
-          createMarket(augur, market, function (err, marketID) {
+        async.eachLimit(cannedMarketsData, 1 || augur.constants.PARALLEL_LIMIT, function (market, nextMarket) {
+          createMarket(augur, market, auth, function (err, marketID) {
             if (err) return nextMarket(err);
             console.log(chalk.green(marketID), chalk.cyan.dim(market._description));
             newMarketIDs.push(marketID);
@@ -59,7 +50,7 @@ fs.readFile(keyFilePath, function (err, keystoreJson) {
             console.error(chalk.red.bold("Canned market creation failed:"), err);
             process.exit(1);
           }
-          createOrders(augur, newMarketIDs, function (err) {
+          createOrders(augur, newMarketIDs, auth, function (err) {
             if (err) console.error(chalk.red.bold("Order book creation failed:"), err);
             process.exit();
           });

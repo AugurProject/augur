@@ -5,7 +5,7 @@ var chalk = require("chalk");
 var getOrderToFill = require("./get-order-to-fill");
 var debugOptions = require("../../debug-options");
 
-function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade, orderType, callback) {
+function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade, orderType, auth, callback) {
   augur.markets.getMarkets({ universe: universe, sortBy: "creationBlock" }, function (err, marketIDs) {
     if (err) return callback(err);
     if (!marketIDs || !Array.isArray(marketIDs) || !marketIDs.length) return callback(marketIDs);
@@ -18,6 +18,7 @@ function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade
           if (orderToFill == null) return nextMarket();
           if (debugOptions.cannedMarkets) console.log(chalk.cyan("Filling order:"), chalk.red.bold(orderType), orderToFill);
           augur.trading.tradeUntilAmountIsZero({
+            meta: auth,
             _fxpAmount: sharesToTrade,
             _price: augur.trading.normalizePrice({
               minPrice: marketInfo.minPrice,

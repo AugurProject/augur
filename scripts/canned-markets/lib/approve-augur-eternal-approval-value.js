@@ -2,7 +2,7 @@
 
 var BigNumber = require("bignumber.js");
 
-function approveAugurEternalApprovalValue(augur, address, callback) {
+function approveAugurEternalApprovalValue(augur, address, auth, callback) {
   var augurContract = augur.contracts.addresses[augur.rpc.getNetworkID()].Augur;
   augur.api.Cash.allowance({ _owner: address, _spender: augurContract }, function (err, allowance) {
     if (err) return callback(err);
@@ -10,6 +10,7 @@ function approveAugurEternalApprovalValue(augur, address, callback) {
       return callback(null);
     }
     augur.api.Cash.approve({
+      meta: auth,
       _spender: augurContract,
       _value: augur.constants.ETERNAL_APPROVAL_VALUE,
       onSent: function () {},
