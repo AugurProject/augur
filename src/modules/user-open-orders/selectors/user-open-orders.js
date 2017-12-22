@@ -10,20 +10,6 @@ import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-stat
 
 import { formatNone, formatEtherTokens, formatShares } from 'utils/format-number'
 
-export function selectAllUserOpenOrderMarkets() {
-  const { loginAccount, orderBooks } = store.getState()
-
-  if (!loginAccount.address || orderBooks == null) {
-    return []
-  }
-
-  return Object.keys(orderBooks)
-    .filter(marketID => Object.keys(orderBooks[marketID])
-      .filter(outcome => Object.keys(orderBooks[marketID][outcome])
-        .filter(type => Object.keys(orderBooks[marketID][outcome][type])
-          .filter(hash => orderBooks[marketID][outcome][type][hash].owner === loginAccount.address))))
-}
-
 /**
  * Pulls off existing order book in state
  * @param {String} outcomeId
