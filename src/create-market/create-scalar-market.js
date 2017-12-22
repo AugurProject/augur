@@ -33,11 +33,11 @@ function createScalarMarket(p) {
     if (err) return p.onFailed(err);
     var numTicks = calculateNumTicks(p.tickSize || constants.DEFAULT_SCALAR_TICK_SIZE, p._minPrice, p._maxPrice);
     var createScalarMarketParams = assign({}, immutableDelete(p, ["universe", "tickSize"]), {
-      tx: {
+      tx: assign({
         to: p.universe,
         value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
         gas: constants.CREATE_SCALAR_MARKET_GAS,
-      },
+      }, p.tx),
       _numTicks: speedomatic.hex(numTicks),
       _minPrice: speedomatic.fix(p._minPrice, "hex"),
       _maxPrice: speedomatic.fix(p._maxPrice, "hex"),

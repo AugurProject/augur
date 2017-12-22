@@ -30,11 +30,11 @@ function createCategoricalMarket(p) {
   getMarketCreationCost({ universe: p.universe }, function (err, marketCreationCost) {
     if (err) return p.onFailed(err);
     var createCategoricalMarketParams = assign({}, immutableDelete(p, ["universe"]), {
-      tx: {
+      tx: assign({
         to: p.universe,
         value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
         gas: constants.CREATE_CATEGORICAL_MARKET_GAS,
-      },
+      }, p.tx),
       _outcomes: p._outcomes.map(function (outcome) { return encodeTag(outcome); }),
       _topic: encodeTag(p._topic),
       _extraInfo: JSON.stringify(p._extraInfo || {}),
