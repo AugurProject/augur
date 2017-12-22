@@ -2,7 +2,7 @@ import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKET_CATEGORY, UPDATE
 
 export default function (marketsData = {}, action) {
   switch (action.type) {
-    case UPDATE_MARKETS_DATA:
+    case UPDATE_MARKETS_DATA: // TODO -- allow for the consumption of partial market objects
       return {
         ...marketsData,
         ...processMarketsData(action.marketsData, marketsData)
