@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-import { formatEther } from 'utils/format-number'
 import MarketBasics from 'modules/market/components/market-basics/market-basics'
 import MarketProperties from 'modules/market/components/market-properties/market-properties'
 import OutstandingReturns from 'modules/market/components/market-outstanding-returns/market-outstanding-returns'
@@ -18,7 +17,7 @@ const MarketPreview = p => (
     </div>
     {p.outstandingReturns &&
       <div className={classNames(Styles.MarketPreview__footer, { [`${Styles['single-card']}`]: p.cardStyle === 'single-card' })}>
-        <OutstandingReturns outstandingReturns={formatEther(p.unclaimedCreatorFees)} />
+        <OutstandingReturns unclaimedCreatorFees={p.unclaimedCreatorFees} />
       </div>
     }
   </article>
