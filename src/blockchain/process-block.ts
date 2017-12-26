@@ -31,7 +31,10 @@ export function processBlock(db: Knex, augur: Augur, block: Block): void {
   console.log("new block:", blockNumber, timestamp);
   db.transaction((trx: Knex.Transaction): void => {
     trx("blocks").where({ blockNumber }).asCallback((err: Error|null, blocksRows?: Array<BlocksRow>): void => {
-      if (err) return logError(err);
+      if (err) {
+        trx.rollback();
+        return logError(err);
+      }
       let query: Knex.QueryBuilder;
       if (!blocksRows || !blocksRows.length) {
         query = db.transacting(trx).insert({ blockNumber, blockHash, timestamp }).into("blocks");
