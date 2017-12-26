@@ -48,10 +48,23 @@
 .CreateMarketReview__wrapper {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 3rem;
 
   > div {
     width: 14.375rem;
   }
+}
+
+.CreateMarketReview__smallheading {
+  &:extend(.caps--small);
+
+  margin-bottom: 1rem;
+}
+
+.CreateMarketReview__smallparagraph {
+  color: @color-lightgray;
+  font-size: @font-size-medium;
+  margin: 0 0 3rem;
 }
 
 @media @breakpoint-mobile-medium {
