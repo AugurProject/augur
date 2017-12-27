@@ -44,7 +44,7 @@ export default class TransactionMultiple extends Component {
           <span className={classNames(CommonStyles['Transaction__linked-more-chevron'], { [`${CommonStyles['is-open']}`]: s.isOpen })}>{ ChevronDown }</span>
         </button>
         <div className={ToggleHeightStyles['toggle-height-target']} ref={(multipleTransactions) => { this.multipleTransactions = multipleTransactions }}>
-          { transaction.transactions.map((linkedTransaction, i) => (
+          { transaction.transactions && transaction.transactions.map((linkedTransaction, i) => (
             <LinkedTransaction key={i} transaction={linkedTransaction} />
           ))}
         </div>
