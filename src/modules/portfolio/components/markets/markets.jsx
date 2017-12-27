@@ -257,6 +257,7 @@ class MyMarkets extends Component {
             paginationPageParam="open"
           />
         }
+        {s.filteredMarketsOpen.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
         {p.myMarkets && !!p.myMarkets.length &&
           <div
             className={Styles.Markets__SortBar}
@@ -293,6 +294,7 @@ class MyMarkets extends Component {
             paginationPageParam="reporting"
           />
         }
+        {s.filteredMarketsReporting.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
         {p.myMarkets && !!p.myMarkets.length &&
           <div
             className={Styles.Markets__SortBar}
@@ -329,6 +331,7 @@ class MyMarkets extends Component {
             paginationPageParam="final"
           />
         }
+        {s.filteredMarketsFinal.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
         {(p.myMarkets == null || (p.myMarkets && p.myMarkets.length === 0)) &&
           <div className={PortfolioStyles.NoMarkets__container} >
             <span>You haven&apos;t created any markets.</span>
