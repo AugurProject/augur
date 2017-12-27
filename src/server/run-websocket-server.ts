@@ -3,6 +3,7 @@ import * as Knex from "knex";
 import { EventEmitter } from "events";
 import { augurEmitter } from "../events";
 import { JsonRpcRequest, WebSocketConfigs } from "../types";
+import { addressFormatReviver } from "./address-format-reviver";
 import { isJsonRpcRequest } from "./is-json-rpc-request";
 import { dispatchJsonRpcRequest } from "./dispatch-json-rpc-request";
 import { makeJsonRpcResponse } from "./make-json-rpc-response";
@@ -36,7 +37,7 @@ export function runWebsocketServer(db: Knex, webSocketConfigs: WebSocketConfigs)
       websocket.on("message", (data: WebSocket.Data): void => {
         let message: any;
         try {
-          message = JSON.parse(data as string);
+          message = JSON.parse(data as string, addressFormatReviver);
           if (!isJsonRpcRequest(message)) return console.error("bad json rpc message received:", message);
         } catch (exc) {
           return websocket.send(makeJsonRpcError("-1", JsonRpcErrorCode.ParseError, "Bad JSON RPC Message Received", { originalText: data as string }));
