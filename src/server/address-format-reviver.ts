@@ -4,7 +4,7 @@ A reviver is a function that prescribes how the value originally produced by JSO
 
 import { formatEthereumAddress } from "speedomatic";
 
-export const inputsExpectedAsAddress : string[] = [
+export const inputsExpectedAsAddress: Array<string> = [
   "account",
   "category",
   "creator",
@@ -20,12 +20,12 @@ export const inputsExpectedAsAddress : string[] = [
   "universe",
 ];
 
-export function addressFormatReviver (key : any, value : any) {
-  const valueIsOfAddressType : boolean = typeof value === "string" || Array.isArray(value);
-  const keyIsInWhitelist = inputsExpectedAsAddress.some(x => x === key);
+export function addressFormatReviver (key: any, value: any) {
+  const valueIsOfAddressType: boolean = typeof value === "string" || Array.isArray(value);
+  const keyIsInWhitelist = inputsExpectedAsAddress.some((x) => x === key);
   if (valueIsOfAddressType && keyIsInWhitelist) {
     return formatEthereumAddress(value);
   }
 
   return value;
-};
+}
