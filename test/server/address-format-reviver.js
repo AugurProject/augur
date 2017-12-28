@@ -63,8 +63,8 @@ describe("server/address-format-reviver", () => {
   });
 
   describe("verify completeness of inputs expected to be address", () => {
-    const addressVariables = {};
-    const nonAddressVariables = {};
+    const addressDefinitions = {};
+    const nonAddressDefinitions = {};
     const files = fs.readdirSync("./definitions/server/getters");
     files.forEach(path => {
       const content = fs.readFileSync(`./definitions/server/getters/${path}`, "utf8");
@@ -77,23 +77,24 @@ describe("server/address-format-reviver", () => {
           const variableName = variableDeclaration[0].trim().replace("?", "");
           const variableType = variableDeclaration[1];
           const isTypeAddress = variableType.includes("Address");
-          (isTypeAddress ? addressVariables : nonAddressVariables)[variableName] = "";
+          (isTypeAddress ? addressDefinitions : nonAddressDefinitions)[variableName] = "";
         }
       });
     });
 
     it("inputsExpectedAsAddress matches Address variables in definitions/server/getters", () => {
-      const addressesThatWillBeFormatted = Object.keys(inputsExpectedAsAddress).sort();
-      const allAddressVariablesInTypesDefinition = Object.keys(addressVariables).sort();
-      expect(addressesThatWillBeFormatted).to.deep.eq(allAddressVariablesInTypesDefinition);
+      const actualAddressList = Object.keys(inputsExpectedAsAddress).sort();
+      const expectedAddressDefinitions = Object.keys(addressDefinitions)
+        .filter(a => a !== "result") /* Result is used as a variable name of the callback only */
+        .sort();
+      expect(actualAddressList).to.deep.eq(expectedAddressDefinitions);
     });
 
     it("getter definitions do not use a variable name in inputsExpectedAsAddress which is not an address", () => {
-      const addressesThatWillBeFormatted = Object.keys(inputsExpectedAsAddress).sort();
-      const nonAddressVariablesInTypesDefinition = Object.keys(nonAddressVariables)
-        .filter(a => a !== "result") /* Result is often used as a variable name of the function callback and can be any type */
+      const actualAddressList = Object.keys(inputsExpectedAsAddress).sort();
+      const expectedNonAddressDefinitions = Object.keys(nonAddressDefinitions)
         .sort();
-      nonAddressVariablesInTypesDefinition.forEach(v => expect(addressesThatWillBeFormatted).to.not.include(v));
+      expectedNonAddressDefinitions.forEach(v => expect(actualAddressList).to.not.include(v));
     });
   });
 });
