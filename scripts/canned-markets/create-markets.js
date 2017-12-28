@@ -29,7 +29,7 @@ fs.readFile(keyFilePath, function (err, keystoreJson) {
   var keystore = JSON.parse(keystoreJson);
   var sender = speedomatic.formatEthereumAddress(keystore.address);
   console.log("sender:", sender);
-  keythereum.recover(process.env.GETH_PASSWORD, keystore, function (privateKey) {
+  keythereum.recover(process.env.ETHEREUM_PASSWORD, keystore, function (privateKey) {
     if (privateKey == null || privateKey.error) throw new Error("private key decryption failed");
     var auth = { address: sender, signer: privateKey, accountType: "privateKey" };
     augur.connect(connectionEndpoints, function (err) {
@@ -38,8 +38,8 @@ fs.readFile(keyFilePath, function (err, keystoreJson) {
         if (err) return console.error(err);
         console.log(chalk.cyan("Creating canned markets..."));
         var newMarketIDs = [];
-        async.eachLimit(cannedMarketsData, 1 || augur.constants.PARALLEL_LIMIT, function (market, nextMarket) {
-          createMarket(augur, market, auth, function (err, marketID) {
+        async.eachLimit(cannedMarketsData, augur.constants.PARALLEL_LIMIT, function (market, nextMarket) {
+          createMarket(augur, market, sender, auth, function (err, marketID) {
             if (err) return nextMarket(err);
             console.log(chalk.green(marketID), chalk.cyan.dim(market._description));
             newMarketIDs.push(marketID);

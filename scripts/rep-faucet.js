@@ -11,7 +11,6 @@ var debugOptions = require("./debug-options");
 var keyFilePath = process.argv[2];
 
 function faucetInAndMigrate(augur, universe, auth, callback) {
-  console.log("auth:", auth);
   augur.api.LegacyReputationToken.faucet({
     meta: auth,
     _amount: speedomatic.fix(100000, "hex"),
@@ -62,7 +61,7 @@ fs.readFile(keyFilePath, function (err, keystoreJson) {
   var keystore = JSON.parse(keystoreJson);
   var sender = speedomatic.formatEthereumAddress(keystore.address);
   console.log("sender:", sender);
-  keythereum.recover(process.env.GETH_PASSWORD, keystore, function (privateKey) {
+  keythereum.recover(process.env.ETHEREUM_PASSWORD, keystore, function (privateKey) {
     if (privateKey == null || privateKey.error) throw new Error("private key decryption failed");
     var auth = { address: sender, signer: privateKey, accountType: "privateKey" };
     augur.connect(connectionEndpoints, function (err) {
