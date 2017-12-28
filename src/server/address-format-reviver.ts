@@ -4,26 +4,27 @@ A reviver is a function that prescribes how the value originally produced by JSO
 
 import { formatEthereumAddress } from "speedomatic";
 
-export const inputsExpectedAsAddress: Array<string> = [
-  "account",
-  "category",
-  "creator",
-  "designatedReporter",
-  "marketID",
-  "marketIDs",
-  "recipient",
-  "reporter",
-  "reportingWindow",
-  "result",
-  "sender",
-  "token",
-  "universe",
-];
+export interface StringToBoolMap {
+  [key: string]: boolean;
+}
 
-export function addressFormatReviver (key: any, value: any) {
+export const inputsExpectedAsAddress: StringToBoolMap = {
+  account: true,
+  category: true,
+  creator: true,
+  designatedReporter: true,
+  marketID: true,
+  marketIDs: true,
+  reporter: true,
+  reportingWindow: true,
+  result: true,
+  token: true,
+  universe: true,
+};
+
+export function addressFormatReviver (key: string, value: any) {
   const valueIsOfAddressType: boolean = typeof value === "string" || Array.isArray(value);
-  const keyIsInWhitelist = inputsExpectedAsAddress.some((x) => x === key);
-  if (valueIsOfAddressType && keyIsInWhitelist) {
+  if (valueIsOfAddressType && inputsExpectedAsAddress[key] === true) {
     return formatEthereumAddress(value);
   }
 

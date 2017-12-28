@@ -6,16 +6,16 @@ const { expect } = require("chai");
 const { inputsExpectedAsAddress, addressFormatReviver } = require("../../build/server/address-format-reviver");
 
 describe("server/address-format-reviver", () => {
-  describe("unit", () => {
-    it("Value not in whitelist passes through unaltered", () => {
+  describe("addressFormatReviver unit tests", () => {
+    it("value not in whitelist passes through unaltered", () => {
       expect(addressFormatReviver("not-in-whitelist", "0x0")).to.eq("0x0");
     });
 
-    it("Value in whitelist is formatted as valid eth address", () => {
+    it("value in whitelist is formatted as valid eth address", () => {
       expect(addressFormatReviver("marketID", "0x0")).to.eq("0x0000000000000000000000000000000000000000");
     });
 
-    it("Null as passthrough", () => {
+    it("null as passthrough", () => {
       expect(addressFormatReviver("marketID", null)).to.eq(null);
       expect(addressFormatReviver("not-in-whitelist", null)).to.eq(null);
     });
@@ -26,7 +26,7 @@ describe("server/address-format-reviver", () => {
     });
   });
 
-  describe("integration as JSON reviver", () => {
+  describe("integration of addressFormatReviver as JSON.parse reviver", () => {
     it("parse empty object", () => {
       expect(JSON.parse("{}", addressFormatReviver)).to.deep.eq({});
     });
@@ -68,7 +68,8 @@ describe("server/address-format-reviver", () => {
     const files = fs.readdirSync("./definitions/server/getters");
     files.forEach(path => {
       const content = fs.readFileSync(`./definitions/server/getters/${path}`, "utf8");
-      const componentParts = content.split(/[\n(),]+/);
+      const publicFunctionDefinitions = content.split("\n").filter(line => line.startsWith("export declare"));
+      const componentParts = publicFunctionDefinitions.reduce((a, b) => a.concat(b)).split(/[(),]+/);
       componentParts.forEach(componentPart => {
         console.log("componentPart", componentPart);
         const variableDeclaration = componentPart.split(":", 2);
@@ -81,14 +82,18 @@ describe("server/address-format-reviver", () => {
       });
     });
 
-    it("inputsExpectedAsAddress matches getter definitions", () => {
-      const actualAddressVariablesInTypesDefinition = Object.keys(addressVariables).sort();
-      expect(inputsExpectedAsAddress).to.deep.eq(actualAddressVariablesInTypesDefinition);
+    it("inputsExpectedAsAddress matches Address variables in definitions/server/getters", () => {
+      const addressesThatWillBeFormatted = Object.keys(inputsExpectedAsAddress).sort();
+      const allAddressVariablesInTypesDefinition = Object.keys(addressVariables).sort();
+      expect(addressesThatWillBeFormatted).to.deep.eq(allAddressVariablesInTypesDefinition);
     });
 
-    it("getter definitions do not use a inputsExpectedAsAddress which is not an address", () => {
-      const actualNonAddressVariablesInTypesDefinition = Object.keys(nonAddressVariables).sort();
-      expect(actualNonAddressVariablesInTypesDefinition).to.not.deep.include(inputsExpectedAsAddress);
+    it("getter definitions do not use a variable name in inputsExpectedAsAddress which is not an address", () => {
+      const addressesThatWillBeFormatted = Object.keys(inputsExpectedAsAddress).sort();
+      const nonAddressVariablesInTypesDefinition = Object.keys(nonAddressVariables)
+        .filter(a => a !== "result") /* Result is often used as a variable name of the function callback and can be any type */
+        .sort();
+      nonAddressVariablesInTypesDefinition.forEach(v => expect(addressesThatWillBeFormatted).to.not.include(v));
     });
   });
 });
