@@ -11,7 +11,7 @@ const { websocketConfigs } = require("../../config");
 
 export interface RunServerResult {
   app: express.Application;
-  servers: Array<WebSocket.Server>
+  servers: Array<WebSocket.Server>;
 }
 
 export function runServer(db: Knex, augur: Augur): RunServerResult {
@@ -35,7 +35,7 @@ export function runServer(db: Knex, augur: Augur): RunServerResult {
           res.send( { status: "up", universe } );
         }
       });
-    } catch(e) {
+    } catch (e) {
       res.send({status: "down", reason: e});
     }
   });
