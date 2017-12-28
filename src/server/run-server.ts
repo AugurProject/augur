@@ -29,9 +29,11 @@ export function runServer(db: Knex, augur: Augur): RunServerResult {
       const universe: Address = augur.contracts.addresses[networkId].Universe;
 
       getMarkets(db, universe, undefined, undefined, undefined, undefined, (err: Error|null, result?: any): void => {
-        if (result.length === 0) throw new Error("No markets exist");
-
-        res.send( { status: "up", universe } );
+        if (err || result.length === 0) {
+          res.send( { status: "down", reason: err || "No markets found", universe });
+        } else {
+          res.send( { status: "up", universe } );
+        }
       });
     } catch(e) {
       res.send({status: "down", reason: e});
