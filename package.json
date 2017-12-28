@@ -26,7 +26,7 @@
     "postinstall": "postinstall-build build",
     "postdeploy": "npm run migrate_pg",
     "link": "npm link augur.js speedomatic",
-    "clean": "rm -rf augur.db build",
+    "clean": "rm -rf augur.db build definitions",
     "rebuild": "npm run clean && npm run build && npm run migrate",
     "clean-start": "npm run rebuild && npm start",
     "clean-start-local": "npm run rebuild && ENDPOINT_HTTP=http://127.0.0.1:8545 ENDPOINT_WS=ws://127.0.0.1:8546 npm start",
