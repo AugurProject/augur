@@ -71,7 +71,6 @@ describe("server/address-format-reviver", () => {
       const publicFunctionDefinitions = content.split("\n").filter(line => line.startsWith("export declare"));
       const componentParts = publicFunctionDefinitions.reduce((a, b) => a.concat(b)).split(/[(),]+/);
       componentParts.forEach(componentPart => {
-        console.log("componentPart", componentPart);
         const variableDeclaration = componentPart.split(":", 2);
         if (variableDeclaration.length === 2) {
           const variableName = variableDeclaration[0].trim().replace("?", "");
