@@ -2,6 +2,7 @@
 
 var chalk = require("chalk");
 var immutableDelete = require("immutable-delete");
+var printTransactionStatus = require("./print-transaction-status");
 var debugOptions = require("../../debug-options");
 
 function createMarket(augur, market, designatedReporterAddress, auth, callback) {
@@ -24,14 +25,20 @@ function createMarket(augur, market, designatedReporterAddress, auth, callback) 
     _denominationToken: augur.contracts.addresses[augur.rpc.getNetworkID()].Cash,
     _designatedReporterAddress: designatedReporterAddress,
     onSent: function (res) {
-      if (debugOptions.cannedMarkets) console.log("createMarket sent:", res.hash);
+      if (debugOptions.cannedMarkets) console.log(chalk.green.dim("createMarket sent:"), chalk.green(res.hash));
     },
     onSuccess: function (res) {
-      if (debugOptions.cannedMarkets) console.log("createMarket success:", res.callReturn);
+      if (debugOptions.cannedMarkets) {
+        console.log(chalk.green.dim("createMarket success:"), chalk.green(res.callReturn));
+        printTransactionStatus(augur.rpc, res.hash);
+      }
       callback(null, res.callReturn);
     },
     onFailed: function (err) {
-      if (debugOptions.cannedMarkets) console.error(chalk.red.bold("createMarket failed:"), err);
+      if (debugOptions.cannedMarkets) {
+        console.error(chalk.red.bold("createMarket failed:"), err);
+        if (err != null) printTransactionStatus(augur.rpc, err.hash);
+      }
       callback(err);
     },
   });

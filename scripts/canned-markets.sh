@@ -26,7 +26,8 @@ elif [ "$network" == "instantseal" ]; then
 elif [ "$network" == "rinkeby" ]; then
   export AUGUR_WS="wss://rinkeby.augur.nodes.augur.net"
   export ETHEREUM_HTTP="https://rinkeby.ethereum.nodes.augur.net"
-  export ETHEREUM_PASSWORD=""
+  export ETHEREUM_WS="wss://websocket-rinkeby.ethereum.nodes.augur.net"
+  export ETHEREUM_PASSWORD="$(cat $HERE/../../keys/rinkeby/signer/fc18cbc391de84dbd87db83b20935d3e89f5dd91.txt)"
   keystorePath="$HERE/../../keys/rinkeby/signer/fc18cbc391de84dbd87db83b20935d3e89f5dd91"
 fi
 
