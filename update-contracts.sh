@@ -14,19 +14,10 @@ if [[ "$AUTOCOMMIT" == "true" ]]; then
   git commit -m "Auto-updating from push to augur-core#${BRANCH} (${COMMIT})"
 
   case $BRANCH in
-    v+([0-9]).+([0-9]).+([0-9])?(-+([0-9])))
-      if [[ "$BRANCH" == "$TAG" ]]; then
-        # Commit on a tag, this will do all the work of commiting and pushing
-        # a new release
-        echo "Update master of augur-contracts, and publishing new NPM version"
-        npm version prerelease
-        git tag augur-core/$TAG # create a tag to match the augur-core tag
-        git push && git push --tags && npm publish --tag dev
-      fi
-      ;;
-    master)
-      echo "Update master of augur-contracts, manual NPM release needed"
-      git push
+    master | v+([0-9]).+([0-9]).+([0-9])?(-+([0-9])))
+      echo "Update master of augur-contracts, and publishing new NPM version"
+      npm version prerelease
+      git push && git push --tags && npm publish --tag dev
       ;;
     develop)
       echo "Updating develop branch of augur-contracts with force push"
