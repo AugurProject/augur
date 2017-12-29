@@ -2,6 +2,7 @@
 
 "use strict";
 
+var chalk = require("chalk");
 var Augur = require("../../src");
 var approveAugurEternalApprovalValue = require("./lib/approve-augur-eternal-approval-value");
 var createOrders = require("./lib/create-orders");
@@ -19,9 +20,11 @@ getPrivateKey(keystoreFilePath, function (err, auth) {
   if (err) return console.error("getPrivateKey failed:", err);
   augur.connect(connectionEndpoints, function (err) {
     if (err) return console.error(err);
+    console.log(chalk.cyan.dim("networkID:"), chalk.cyan(augur.rpc.getNetworkID()));
+    var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
+    console.log(chalk.green.dim("universe:"), chalk.green(universe));
     approveAugurEternalApprovalValue(augur, auth.address, auth, function (err) {
       if (err) return console.error(err);
-      var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
       augur.markets.getMarkets({ universe: universe, sortBy: "creationBlock" }, function (err, marketIDs) {
         if (err) return console.error(err);
         createOrders(augur, marketIDs, auth, function (err) {
