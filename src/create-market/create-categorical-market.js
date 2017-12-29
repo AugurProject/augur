@@ -45,7 +45,6 @@ function createCategoricalMarket(p) {
         });
       },
     });
-    console.log("createCategoricalMarketParams:", createCategoricalMarketParams);
     api().Universe.createCategoricalMarket(createCategoricalMarketParams);
   });
 }
