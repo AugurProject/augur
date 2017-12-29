@@ -4,8 +4,6 @@ network="$1"
 scriptsPath="$(dirname $(readlink -f "$0"))"
 keystorePath="$scriptsPath/dev-key.json"
 
-echo "ethereum private key: $ETHEREUM_PRIVATE_KEY"
-
 if [ ! -n "$ETHEREUM_PRIVATE_KEY" ]; then
   if [ ! -n "$ETHEREUM_PASSWORD" ]; then
     export ETHEREUM_PASSWORD=""
