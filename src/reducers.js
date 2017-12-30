@@ -40,7 +40,7 @@ import hasLoadedCategory from 'modules/categories/reducers/has-loaded-category'
 
 import selectedMarketID from 'modules/market/reducers/selected-market-id'
 import tradesInProgress from 'modules/trade/reducers/trades-in-progress'
-// import createMarketInProgress from 'modules/create-market/reducers/create-market-in-progress';
+// import createMarketInProgress from 'modules/create-market/reducers/create-market-in-progress'
 import priceHistory from 'modules/markets/reducers/price-history'
 
 import marketCreatorFees from 'modules/my-markets/reducers/market-creator-fees'
