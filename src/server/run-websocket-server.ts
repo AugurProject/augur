@@ -1,3 +1,4 @@
+import * as express from "express";
 import * as WebSocket from "ws";
 import * as Knex from "knex";
 import { EventEmitter } from "events";
@@ -11,27 +12,32 @@ import { makeJsonRpcError, JsonRpcErrorCode } from "./make-json-rpc-error";
 import { Subscriptions } from "./subscriptions";
 import * as fs from "fs";
 import * as https from "https";
+import * as http from "http";
 
-export function runWebsocketServer(db: Knex, webSocketConfigs: WebSocketConfigs): Array<WebSocket.Server> {
+export function runWebsocketServer(db: Knex, app: express.Application, webSocketConfigs: WebSocketConfigs): Array<WebSocket.Server> {
 
-  const websocketServers: Array<WebSocket.Server> = [];
+  const servers: Array<WebSocket.Server> = [];
 
   if ( webSocketConfigs.wss != null ) {
     console.log("Starting websocket secure server on port", webSocketConfigs.wss.port);
-    const server = https.createServer({
+    const httpsOptions: https.ServerOptions = {
       cert: fs.readFileSync(webSocketConfigs.wss.certificateFile),
       key: fs.readFileSync(webSocketConfigs.wss.certificateKeyFile),
-    });
+    };
+    const server = https.createServer(httpsOptions, app);
     server.listen(webSocketConfigs.wss.port);
-    websocketServers.push( new WebSocket.Server({  server }) );
-  }
-  if ( webSocketConfigs.ws != null ) {
-    console.log("Starting websocket server on port", webSocketConfigs.ws.port);
-    websocketServers.push( new WebSocket.Server({  port: webSocketConfigs.ws.port }) );
+    servers.push( new WebSocket.Server({ server }) );
   }
 
-  websocketServers.forEach((websocketServer) => {
-    websocketServer.on("connection", (websocket: WebSocket): void => {
+  if ( webSocketConfigs.ws != null ) {
+    console.log("Starting websocket server on port", webSocketConfigs.ws.port);
+    const server = http.createServer(app);
+    server.listen(webSocketConfigs.ws.port);
+    servers.push( new WebSocket.Server({ server }) );
+  }
+
+  servers.forEach((server) => {
+    server.on("connection", (websocket: WebSocket): void => {
       const subscriptions = new Subscriptions(augurEmitter);
 
       websocket.on("message", (data: WebSocket.Data): void => {
@@ -79,10 +85,11 @@ export function runWebsocketServer(db: Knex, webSocketConfigs: WebSocketConfigs)
       });
     });
 
-    websocketServer.on("error", (err: Error): void => {
+    server.on("error", (err: Error): void => {
       console.log("websocket error:", err);
       // TODO reconnect
     });
   });
-  return websocketServers;
+
+  return servers;
 }

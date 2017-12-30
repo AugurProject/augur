@@ -1,4 +1,5 @@
 import Augur from "augur.js";
+import * as express from "express";
 import * as WebSocket from "ws";
 import * as Knex from "knex";
 import * as sqlite3 from "sqlite3";
@@ -6,11 +7,11 @@ import * as _ from "lodash";
 import { EthereumNodeEndpoints, FormattedEventLog } from "./types";
 import { checkAugurDbSetup } from "./setup/check-augur-db-setup";
 import { syncAugurNodeWithBlockchain } from "./blockchain/sync-augur-node-with-blockchain";
-import { runWebsocketServer } from "./server/run-websocket-server";
+import { runServer } from "./server/run-server";
 import { ErrorCallback } from "./types";
 
 // tslint:disable-next-line:no-var-requires
-const {augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers, websocketConfigs } = require("../config");
+const {augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers } = require("../config");
 
 let db: Knex;
 if (process.env.DATABASE_URL) {
@@ -37,22 +38,22 @@ const envEndpoints: EthereumNodeEndpoints = _.omitBy({
 
 const configuredEndpoints: EthereumNodeEndpoints = _.isEmpty(envEndpoints) ? ethereumNodeEndpoints : envEndpoints;
 
-const websocketServers: Array<WebSocket.Server> = runWebsocketServer(db, websocketConfigs);
-
 const augur: Augur = new Augur();
 
 augur.rpc.setDebugOptions({ broadcast: false });
 
+const { app, servers }  = runServer(db, augur);
+
 checkAugurDbSetup(db, (err?: Error|null): void => {
   if (err) {
     console.error("checkAugurDbSetup:", err);
-    websocketServers.forEach((websocketServer) => websocketServer.close());
+    servers.forEach((websocketServer) => websocketServer.close());
     process.exit(1);
   }
   syncAugurNodeWithBlockchain(db, augur, configuredEndpoints, uploadBlockNumbers, (err?: Error|null): void => {
     if (err) {
       console.error("syncAugurNodeWithBlockchain:", err);
-      websocketServers.forEach((websocketServer) => websocketServer.close());
+      servers.forEach((websocketServer) => websocketServer.close());
       process.exit(1);
     }
     console.log("Sync with blockchain complete.");
