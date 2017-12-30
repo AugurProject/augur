@@ -11,7 +11,7 @@ describe('init-augur', () => {
   // const middleware = [thunk];
   // const mockStore = configureMockStore(middleware);
   // const mainState = {
-  //   env: { augurNodeWebsocket },
+  //   env: { 'augur-node': augurNodeWebsocket },
   //   connectionInfo: {
   //     ethereumNode: {
   //       contracts: {},
