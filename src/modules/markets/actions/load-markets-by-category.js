@@ -5,7 +5,6 @@ import { updateMarketsFilteredSorted, clearMarketsFilteredSorted } from 'modules
 
 export const loadMarketsByCategory = category => (dispatch, getState) => {
   const { universe } = getState()
-
   augur.markets.getMarketsInCategory({ category, universe: universe.id }, (err, marketIDs) => {
     if (err) {
       console.error('ERROR findMarketsWithCategory()', err)
