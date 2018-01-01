@@ -11,18 +11,10 @@ import Styles from 'modules/create-market/components/create-market-form-review/c
 import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'
 
 export default class CreateMarketReview extends Component {
-  static formatResolutionSource(expirySourceType, expirySource) {
-    if (expirySourceType === EXPIRY_SOURCE_GENERIC) {
-      return 'Outcome will be determined by news media'
-    }
-
-    return `Outcome will be detailed on public website: ${expirySource}`
-  }
-
   static propTypes = {
     newMarket: PropTypes.object.isRequired,
     universe: PropTypes.object.isRequired,
-    meta: PropTypes.object,
+    meta: PropTypes.object
   }
 
   constructor(props) {
@@ -39,12 +31,10 @@ export default class CreateMarketReview extends Component {
       // },
       formattedInitialLiquidityEth: formatEtherTokensEstimate(this.props.newMarket.initialLiquidityEth),
       formattedInitialLiquidityGas: formatEtherEstimate(this.props.newMarket.initialLiquidityGas),
-      formattedInitialLiquidityFees: formatEtherTokensEstimate(this.props.newMarket.initialLiquidityFees),
-      formattedResolutionSource: CreateMarketReview.formatResolutionSource(this.props.newMarket.expirySourceType, this.props.newMarket.expirySource),
+      formattedInitialLiquidityFees: formatEtherTokensEstimate(this.props.newMarket.initialLiquidityFees)
     }
 
     this.calculateMarketCreationCosts = this.calculateMarketCreationCosts.bind(this)
-    CreateMarketReview.formatResolutionSource = CreateMarketReview.formatResolutionSource.bind(this)
   }
 
   componentWillMount() {
@@ -55,9 +45,6 @@ export default class CreateMarketReview extends Component {
     if (this.props.newMarket.initialLiquidityEth !== nextProps.newMarket.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherTokensEstimate(nextProps.newMarket.initialLiquidityEth) })
     if (this.props.newMarket.initialLiquidityGas !== nextProps.newMarket.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(nextProps.newMarket.initialLiquidityGas) })
     if (this.props.newMarket.initialLiquidityFees !== nextProps.newMarket.initialLiquidityFees) this.setState({ formattedInitialLiquidityFees: formatEtherTokensEstimate(nextProps.newMarket.initialLiquidityFees) })
-    if (this.props.newMarket.expirySourceType !== nextProps.newMarket.expirySourceType || this.props.newMarket.expirySource !== nextProps.newMarket.expirySource) {
-      this.setState({ formattedResolutionSource: CreateMarketReview.formatResolutionSource(nextProps.newMarket.expirySourceType, nextProps.newMarket.expirySource) })
-    }
   }
 
   calculateMarketCreationCosts() {
@@ -123,7 +110,13 @@ export default class CreateMarketReview extends Component {
           </div>
           <div className={Styles.CreateMarketReview__resolution}>
             <h4 className={Styles.CreateMarketReview__smallheading}>Resolution Source</h4>
-            <p className={Styles.CreateMarketReview__smallparagraph}>{s.formattedResolutionSource}</p>
+            <p className={Styles.CreateMarketReview__smallparagraph}>
+              {
+                p.newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC ?
+                  'Outcome will be determined by news media' :
+                  `Outcome will be detailed on public website: ${p.newMarket.expirySource}`
+              }
+            </p>
           </div>
           <div className={Styles.CreateMarketReview__addedDetails}>
             <h4 className={Styles.CreateMarketReview__smallheading}>Additional Details</h4>
