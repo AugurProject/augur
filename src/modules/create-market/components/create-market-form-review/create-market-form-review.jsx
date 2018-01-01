@@ -5,12 +5,12 @@ import { augur } from 'services/augurjs'
 // import BigNumber from 'bignumber.js'
 
 import { formatEtherEstimate, formatEtherTokensEstimate } from 'utils/format-number'
+import { EXPIRY_SOURCE_GENERIC } from 'modules/create-market/constants/new-market-constraints'
 
 import Styles from 'modules/create-market/components/create-market-form-review/create-market-form-review.styles'
 import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'
 
 export default class CreateMarketReview extends Component {
-
   static propTypes = {
     newMarket: PropTypes.object.isRequired,
     universe: PropTypes.object.isRequired,
@@ -61,6 +61,7 @@ export default class CreateMarketReview extends Component {
   }
 
   render() {
+    const p = this.props
     const s = this.state
 
     return (
@@ -106,6 +107,20 @@ export default class CreateMarketReview extends Component {
                 </li>
               </ul>
             </div>
+          </div>
+          <div className={Styles.CreateMarketReview__resolution}>
+            <h4 className={Styles.CreateMarketReview__smallheading}>Resolution Source</h4>
+            <p className={Styles.CreateMarketReview__smallparagraph}>
+              {
+                p.newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC ?
+                  'Outcome will be determined by news media' :
+                  `Outcome will be detailed on public website: ${p.newMarket.expirySource}`
+              }
+            </p>
+          </div>
+          <div className={Styles.CreateMarketReview__addedDetails}>
+            <h4 className={Styles.CreateMarketReview__smallheading}>Additional Details</h4>
+            <p className={Styles.CreateMarketReview__smallparagraph}>{p.newMarket.detailsText || 'None'}</p>
           </div>
         </div>
       </article>
