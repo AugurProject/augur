@@ -9,7 +9,7 @@ import Dropdown from 'modules/common/components/dropdown/dropdown'
 import MarketsList from 'modules/markets/components/markets-list'
 import Styles from 'modules/portfolio/components/markets/markets.styles'
 import PortfolioStyles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles'
-import { TYPE_REPORT } from 'modules/market/constants/link-types'
+import { TYPE_REPORT, TYPE_TRADE, TYPE_CLOSED } from 'modules/market/constants/link-types'
 import { constants } from 'services/augurjs'
 import { CREATE_MARKET } from 'modules/routes/constants/views'
 
@@ -252,11 +252,12 @@ class MyMarkets extends Component {
             scalarShareDenomination={p.scalarShareDenomination}
             toggleFavorite={p.toggleFavorite}
             loadMarketsInfo={p.loadMarketsInfo}
-            linkType={TYPE_REPORT}
+            linkType={TYPE_TRADE}
             outstandingReturns
-            pageParam="open"
+            paginationPageParam="open"
           />
         }
+        {s.filteredMarketsOpen.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
         {p.myMarkets && !!p.myMarkets.length &&
           <div
             className={Styles.Markets__SortBar}
@@ -290,9 +291,10 @@ class MyMarkets extends Component {
             loadMarketsInfo={p.loadMarketsInfo}
             linkType={TYPE_REPORT}
             outstandingReturns
-            pageParam="reporting"
+            paginationPageParam="reporting"
           />
         }
+        {s.filteredMarketsReporting.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
         {p.myMarkets && !!p.myMarkets.length &&
           <div
             className={Styles.Markets__SortBar}
@@ -324,11 +326,12 @@ class MyMarkets extends Component {
             scalarShareDenomination={p.scalarShareDenomination}
             toggleFavorite={p.toggleFavorite}
             loadMarketsInfo={p.loadMarketsInfo}
-            linkType={TYPE_REPORT}
+            linkType={TYPE_CLOSED}
             outstandingReturns
-            pageParam="final"
+            paginationPageParam="final"
           />
         }
+        {s.filteredMarketsFinal.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
         {(p.myMarkets == null || (p.myMarkets && p.myMarkets.length === 0)) &&
           <div className={PortfolioStyles.NoMarkets__container} >
             <span>You haven&apos;t created any markets.</span>

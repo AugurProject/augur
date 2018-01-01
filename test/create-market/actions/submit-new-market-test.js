@@ -82,14 +82,13 @@ describe('modules/create-market/actions/submit-new-market', () => {
         _extraInfo: {
           marketType: 'categorical',
           longDescription: '',
-          outcomeNames: [
-            'one',
-            'two'
-          ],
           resolutionSource: '',
           tags: []
         },
-        _numOutcomes: 2,
+        _outcomes: [
+          'one',
+          'two'
+        ],
         _topic: 'test category',
         _feePerEthInWei: '0x470de4df820000',
       }

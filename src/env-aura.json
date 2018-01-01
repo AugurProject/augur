@@ -1,10 +1,10 @@
 {
-  "augur-node": "wss://ropsten.augur.nodes.augur.net",
+  "augur-node": "wss://aura.augur.nodes.augur.net",
   "ethereum-node": {
-    "http": "https://ropsten.ethereum.nodes.augur.net",
+    "http": "https://aura.ethereum.nodes.augur.net",
     "ws": null
   },
-  "network-id": 3,
+  "network-id": 8995,
   "auto-login": false,
   "universe": null,
   "debug": {

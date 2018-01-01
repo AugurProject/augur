@@ -87,6 +87,7 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
             address: '0xb0b',
             isUnlocked: true,
             meta: {
+              address: '0xb0b',
               signer: null,
               accountType: augur.rpc.constants.ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE
             }

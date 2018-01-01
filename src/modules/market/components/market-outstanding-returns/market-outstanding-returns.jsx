@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 
 const OutstandingReturns = p => (
   <div>
-      Outstanding Returns {p.outstandingReturns.full}
+      Outstanding Returns {p.unclaimedCreatorFees.full}
   </div>
 )
 
 OutstandingReturns.propTypes = {
-  outstandingReturns: PropTypes.object.isRequired
+  unclaimedCreatorFees: PropTypes.object.isRequired
 }
 
 export default OutstandingReturns
