@@ -57,6 +57,13 @@ export default class UportConnect extends Component {
 
   setQRSize() {
     const width = getValue(this, 'uPortCreate.clientWidth')
+    const height = getValue(this, 'uPortCreate.clientHeight')
+
+    if (width > height) { // Height is the constraining dimension
+
+    } else { // Width is the constraining dimension
+
+    }
 
     if (width) {
       let qrSize
