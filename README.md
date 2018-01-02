@@ -1,4 +1,4 @@
-# Augur | Client
+# augur | Client
 [![Build Status](https://travis-ci.org/AugurProject/augur.svg?branch=v3)](https://travis-ci.org/AugurProject/augur)
 [![Coverage Status](https://coveralls.io/repos/github/AugurProject/augur/badge.svg?branch=v3)](https://coveralls.io/github/AugurProject/augur?branch=v3)
 
