@@ -7,11 +7,11 @@ import { describe } from 'mocha'
 // import configureMockStore from 'redux-mock-store';
 
 describe('init-augur', () => {
-  // const augurNodeUrl = 'http://blah.blah.com';
+  // const augurNodeWebsocket = 'http://blah.blah.com';
   // const middleware = [thunk];
   // const mockStore = configureMockStore(middleware);
   // const mainState = {
-  //   env: { augurNodeUrl },
+  //   env: { 'augur-node': augurNodeWebsocket },
   //   connectionInfo: {
   //     ethereumNode: {
   //       contracts: {},
@@ -27,7 +27,7 @@ describe('init-augur', () => {
   // const ACTIONS = {
   //   SET_LOGIN_ACCOUNT: { type: 'SET_LOGIN_ACCOUNT' },
   //   REGISTER_TRANSACTION_RELAY: { type: 'REGISTER_TRANSACTION_RELAY' },
-  //   UPDATE_ENV: { type: 'UPDATE_ENV', env: { reportingTest: false } },
+  //   UPDATE_ENV: { type: 'UPDATE_ENV', env: { reporting-test: false } },
   //   UPDATE_CONNECTION_STATUS: { isConnected: true, type: 'UPDATE_CONNECTION_STATUS' },
   //   UPDATE_AUGUR_NODE_CONN_STATUS: { type: 'UPDATE_AUGUR_NODE_CONN_STATUS' },
   //   UPDATE_CONTRACT_ADDRESSES: { type: 'UPDATE_CONTRACT_ADDRESSES' },
@@ -107,7 +107,7 @@ describe('init-augur', () => {
   //     callback(null, mainState.connectionInfo);
   //   },
   //   resolve: () => {
-  //     global.requests[0].respond(200, { contentType: 'text/json' }, `{ "reportingTest": false, "augurNodeUrl":"blah.com", "autoLogin":true }`);
+  //     global.requests[0].respond(200, { contentType: 'text/json' }, `{ "reporting-test": false, "augur-node":"blah.com", "auto-login": true }`);
   //   },
   //   assertions: (err, store) => {
   //     const out = [ACTIONS.UPDATE_ENV, ACTIONS.UPDATE_CONNECTION_STATUS, ACTIONS.UPDATE_CONTRACT_ADDRESSES, ACTIONS.UPDATE_FUNCTIONS_API, ACTIONS.UPDATE_EVENTS_API, ACTIONS.UPDATE_AUGUR_NODE_CONN_STATUS, ACTIONS.REGISTER_TRANSACTION_RELAY, ACTIONS.SET_LOGIN_ACCOUNT, ACTIONS.LOAD_UNIVERSE];
@@ -130,7 +130,7 @@ describe('init-augur', () => {
   //     callback(null, mainState.connectionInfo);
   //   },
   //   resolve: () => {
-  //     global.requests[0].respond(200, { contentType: 'text/json' }, `{ "reportingTest": false, "autoLogin":true }`);
+  //     global.requests[0].respond(200, { contentType: 'text/json' }, `{ "reporting-test": false, "auto-login": true }`);
   //   },
   //   assertions: (err, store) => {
   //     const out = [ACTIONS.UPDATE_ENV, ACTIONS.UPDATE_CONNECTION_STATUS, ACTIONS.UPDATE_CONTRACT_ADDRESSES, ACTIONS.UPDATE_FUNCTIONS_API, ACTIONS.UPDATE_EVENTS_API, ACTIONS.REGISTER_TRANSACTION_RELAY, ACTIONS.SET_LOGIN_ACCOUNT, ACTIONS.LOAD_UNIVERSE];
@@ -153,7 +153,7 @@ describe('init-augur', () => {
   //     callback('ERROR', mainState.connectionInfo);
   //   },
   //   resolve: () => {
-  //     global.requests[0].respond(200, { contentType: 'text/json' }, `{ "reportingTest": false, "autoLogin":true }`);
+  //     global.requests[0].respond(200, { contentType: 'text/json' }, `{ "reporting-test": false, "auto-login": true }`);
   //   },
   //   assertions: (err, store) => {
   //     const out = [ACTIONS.UPDATE_ENV];
@@ -174,7 +174,7 @@ describe('init-augur', () => {
   //   description: 'should not initiate the augur app, http request returns 404, no actions fired',
   //   connect: null,
   //   resolve: () => {
-  //     global.requests[0].respond(404, { contentType: 'text/json' }, `{ "reportingTest": false, "autoLogin":true }`);
+  //     global.requests[0].respond(404, { contentType: 'text/json' }, `{ "reporting-test": false, "auto-login": true }`);
   //   },
   //   assertions: (err, store) => {
   //     const out = [];
