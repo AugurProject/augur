@@ -17,16 +17,16 @@ const syncUniverse = (callback = logError) => (dispatch, getState) => {
   console.log('syncing universe...')
   const universePayload = { tx: { to: universe.id } }
   async.parallel({
-    currentReportingWindowAddress: (next) => {
-      augur.api.Universe.getCurrentReportingWindow(universePayload, (err, currentReportingWindowAddress) => {
+    currentFeeWindowAddress: (next) => {
+      augur.api.Universe.getCurrentFeeWindow(universePayload, (err, currentFeeWindowAddress) => {
         if (err) return next(err)
-        next(null, currentReportingWindowAddress)
+        next(null, currentFeeWindowAddress)
       })
     },
-    nextReportingWindowAddress: (next) => {
-      augur.api.Universe.getNextReportingWindow(universePayload, (err, nextReportingWindowAddress) => {
+    nextFeeWindowAddress: (next) => {
+      augur.api.Universe.getNextFeeWindow(universePayload, (err, nextFeeWindowAddress) => {
         if (err) return next(err)
-        next(null, nextReportingWindowAddress)
+        next(null, nextFeeWindowAddress)
       })
     }
   }, (err, universeReportingWindowData) => {

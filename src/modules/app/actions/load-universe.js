@@ -21,10 +21,10 @@ export const loadUniverse = (universeID, callback = logError) => (dispatch, getS
         next(null, reputationTokenAddress)
       })
     },
-    reportingPeriodDurationInSeconds: (next) => {
-      augur.api.Universe.getReportingPeriodDurationInSeconds(universePayload, (err, reportingPeriodDurationInSeconds) => {
+    disputeRoundDurationInSeconds: (next) => {
+      augur.api.Universe.getDisputeRoundDurationInSeconds(universePayload, (err, disputeRoundDurationInSeconds) => {
         if (err) return next(err)
-        next(null, new BigNumber(reportingPeriodDurationInSeconds, 16).toFixed())
+        next(null, new BigNumber(disputeRoundDurationInSeconds, 16).toFixed())
       })
     }
   }, (err, staticUniverseData) => {

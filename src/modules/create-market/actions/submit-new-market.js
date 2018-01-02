@@ -40,8 +40,7 @@ export function submitNewMarket(newMarket, history) {
     let createMarket
     switch (newMarket.type) {
       case CATEGORICAL:
-        formattedNewMarket._numOutcomes = newMarket.outcomes.filter(outcome => outcome !== '').length
-        formattedNewMarket._extraInfo.outcomeNames = newMarket.outcomes.filter(outcome => outcome !== '')
+        formattedNewMarket._outcomes = newMarket.outcomes.filter(outcome => outcome !== '')
         createMarket = augur.createMarket.createCategoricalMarket
         break
       case SCALAR:

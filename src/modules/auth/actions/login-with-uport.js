@@ -8,6 +8,7 @@ export default function loginWithUport(account, signer) {
     dispatch(loadAccountData({
       ...account,
       meta: {
+        address: account.address,
         signer,
         accountType: augur.rpc.constants.ACCOUNT_TYPES.U_PORT
       }

@@ -55,8 +55,16 @@ export default class UportCreate extends Component {
   }
 
   setQRSize() {
-    const width = getValue(this, 'uPortCreate.clientWidth')
-    if (width) this.setState({ qrSize: this.props.isMobile ? width / 1.2 : width / 3 })
+    const width = getValue(this, 'uPortCreateQR.clientWidth')
+    const height = getValue(this, 'uPortCreateQR.clientHeight')
+
+    console.log('w/h -- ', width, height)
+
+    if (width > height) { // Height is the constraining value
+      this.setState({ qrSize: this.props.isMobile ? height / 1.2 : height / 1.2 })
+    } else { // Width is the constraining value
+      this.setState({ qrSize: this.props.isMobile ? width / 1.2 : width / 3 })
+    }
   }
 
   uPortURIHandler(uri) {
@@ -68,12 +76,13 @@ export default class UportCreate extends Component {
 
     return (
       <section
-        ref={(uPortCreate) => { this.uPortCreate = uPortCreate }}
         className={Styles.Uport__create}
       >
         <h3>Create a uPort Account</h3>
         <h4>1. Download the uPort App + Create Account</h4>
-        <div className={Styles.Uport__apps}>
+        <div
+          className={Styles.Uport__apps}
+        >
           <a
             target="_blank"
             rel="noopener noreferrer"
@@ -90,10 +99,15 @@ export default class UportCreate extends Component {
           </a>
         </div>
         <h4>2. Scan the QR Code</h4>
-        <QRCode
-          value={s.uri}
-          size={s.qrSize}
-        />
+        <div
+          ref={(uPortCreateQR) => { this.uPortCreateQR = uPortCreateQR }}
+          className={Styles.Uport__qr}
+        >
+          <QRCode
+            value={s.uri}
+            size={s.qrSize}
+          />
+        </div>
       </section>
     )
   }

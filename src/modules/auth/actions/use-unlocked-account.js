@@ -15,6 +15,7 @@ export const useUnlockedAccount = unlockedAddress => (dispatch) => {
     dispatch(loadAccountData({
       address: unlockedAddress,
       meta: {
+        address: unlockedAddress,
         signer: null,
         accountType: augur.rpc.constants.ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE
       },

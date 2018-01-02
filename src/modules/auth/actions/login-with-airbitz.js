@@ -14,6 +14,7 @@ export const loginWithAirbitzEthereumWallet = (airbitzAccount, ethereumWallet, h
   dispatch(loadAccountData({
     ...account,
     meta: {
+      address: account.address,
       signer: privateKey,
       accountType: augur.rpc.constants.ACCOUNT_TYPES.PRIVATE_KEY
     },
