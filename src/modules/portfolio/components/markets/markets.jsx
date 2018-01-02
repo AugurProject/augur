@@ -215,6 +215,7 @@ class MyMarkets extends Component {
   render() {
     const p = this.props
     const s = this.state
+    const haveMarkets = p.myMarkets && !!p.myMarkets.length
 
     return (
       <section className={Styles.Markets}>
@@ -242,7 +243,7 @@ class MyMarkets extends Component {
             </div>
           </div>
         }
-        {p.myMarkets && !!p.myMarkets.length &&
+        {haveMarkets &&
           <MarketsList
             isLogged={p.isLogged}
             markets={s.openMarkets}
@@ -257,8 +258,8 @@ class MyMarkets extends Component {
             paginationPageParam="open"
           />
         }
-        {s.filteredMarketsOpen.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
-        {p.myMarkets && !!p.myMarkets.length &&
+        {haveMarkets && s.filteredMarketsOpen.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
+        {haveMarkets &&
           <div
             className={Styles.Markets__SortBar}
           >
@@ -279,7 +280,7 @@ class MyMarkets extends Component {
             </div>
           </div>
         }
-        {p.myMarkets && !!p.myMarkets.length &&
+        {haveMarkets &&
           <MarketsList
             isLogged={p.isLogged}
             markets={s.reportingMarkets}
@@ -294,8 +295,8 @@ class MyMarkets extends Component {
             paginationPageParam="reporting"
           />
         }
-        {s.filteredMarketsReporting.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
-        {p.myMarkets && !!p.myMarkets.length &&
+        {haveMarkets && s.filteredMarketsReporting.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
+        {haveMarkets &&
           <div
             className={Styles.Markets__SortBar}
           >
@@ -316,7 +317,7 @@ class MyMarkets extends Component {
             </div>
           </div>
         }
-        {p.myMarkets && !!p.myMarkets.length &&
+        {haveMarkets &&
           <MarketsList
             isLogged={p.isLogged}
             markets={s.finalMarkets}
@@ -331,7 +332,7 @@ class MyMarkets extends Component {
             paginationPageParam="final"
           />
         }
-        {s.filteredMarketsFinal.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
+        {haveMarkets && s.filteredMarketsFinal.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
         {(p.myMarkets == null || (p.myMarkets && p.myMarkets.length === 0)) &&
           <div className={PortfolioStyles.NoMarkets__container} >
             <span>You haven&apos;t created any markets.</span>

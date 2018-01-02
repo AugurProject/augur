@@ -511,20 +511,20 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
-augur-contracts@3.5.0-0:
-  version "3.5.0-0"
-  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-3.5.0-0.tgz#bb7a0f6f906be92138608d3cee0f5bfc850f2a57"
+augur-contracts@3.5.0-4:
+  version "3.5.0-4"
+  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-3.5.0-4.tgz#765eb10f550ef39d49d91658ae91a9a092dbaaef"
 
-augur.js@4.7.0-29:
-  version "4.7.0-29"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.7.0-29.tgz#cda76cea5fe82121206f77294403e6ac09727fc6"
+augur.js@4.7.0-32:
+  version "4.7.0-32"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.7.0-32.tgz#a7a9e4aef5986a8d4e3d9709031cf6a27054e106"
   dependencies:
     async "1.5.2"
-    augur-contracts "3.5.0-0"
+    augur-contracts "3.5.0-4"
     bignumber.js "2.3.0"
     clone "2.1.1"
-    ethereumjs-connect "4.4.7"
-    ethrpc "4.5.2"
+    ethereumjs-connect "4.4.8"
+    ethrpc "4.5.3"
     event-emitter "0.3.5"
     immutable-delete "1.1.0"
     keccak "1.2.0"
@@ -3705,13 +3705,13 @@ ethereumjs-blockstream@2.0.7:
     source-map-support "0.4.14"
     uuid "3.0.1"
 
-ethereumjs-connect@4.4.7:
-  version "4.4.7"
-  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.4.7.tgz#c94b4bcc4c907e03b2be4af88bd01260fcbfb617"
+ethereumjs-connect@4.4.8:
+  version "4.4.8"
+  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.4.8.tgz#53850af11254655ccc650f291013fbf1020809ca"
   dependencies:
     async "1.5.2"
     clone "2.1.1"
-    ethrpc "4.5.2"
+    ethrpc "4.5.3"
 
 ethereumjs-ledger@2.1.4:
   version "2.1.4"
@@ -3765,9 +3765,9 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@4.5.2:
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.5.2.tgz#bfc5abd3e858234c13b9425962c543ea3d5d3233"
+ethrpc@4.5.3:
+  version "4.5.3"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.5.3.tgz#2ddc1221525e33fc8af2bd8190d68e183b1b3c5d"
   dependencies:
     async "1.5.2"
     bignumber.js "2.3.0"
