@@ -7,7 +7,7 @@ It runs locally in your browser and communicates directly with the ethereum netw
 
 There are several ways to run it:
 
-* Easiest: **visit [app.augur.net](http://app.augur.net)**  
+* Easiest: **visit [dev.augur.net](http://dev.augur.net)**  
 * Best: [run ethereum locally](#eth_local)
 
 ## Requirements
