@@ -351,10 +351,10 @@ export default function (market) {
       })
     })
 
-    it('market.priceTimeSeries', () => {
-      assert.isDefined(market.priceTimeSeries)
-      assert.isArray(market.priceTimeSeries)
-    })
+    // it('market.priceTimeSeries', () => {
+    // assert.isDefined(market.priceTimeSeries)
+    // assert.isArray(market.priceTimeSeries)
+    // })
 
     it('market.userOpenOrdersSummary', () => {
       assert.isDefined(market.userOpenOrdersSummary)

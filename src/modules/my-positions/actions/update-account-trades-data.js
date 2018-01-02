@@ -33,3 +33,7 @@ export function updateAccountCancelsData(data, marketID) {
 export function updateAccountPositionsData(data, marketID) {
   return { type: UPDATE_ACCOUNT_POSITIONS_DATA, data, marketID }
 }
+
+export function updateAccountTradeData(data, market) {
+  return { type: UPDATE_ACCOUNT_TRADES_DATA, data, market }
+}

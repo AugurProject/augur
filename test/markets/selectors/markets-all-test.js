@@ -83,10 +83,10 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
   })
   const store = mockStore(state)
   const mockMarket = {
-    assembleMarket: () => {},
+    selectMarket: () => {},
     selectMarketReport: () => {}
   }
-  sinon.stub(mockMarket, 'assembleMarket', (marketID, market, priceHistory, isMarketOpen, isMarketExpired, favorite, outcomes, reports, accountTrades, tradesInProgress, endYear, endMonth, endDate, isBlockchainReportPhase, marketOrderBook, orderCancellation, loginAccount, dispatch) => market)
+  sinon.stub(mockMarket, 'selectMarket', (marketID, market, priceHistory, isMarketOpen, isMarketExpired, favorite, outcomes, reports, accountTrades, tradesInProgress, endYear, endMonth, endDate, isBlockchainReportPhase, marketOrderBook, orderCancellation, loginAccount, dispatch) => market)
   sinon.stub(mockMarket, 'selectMarketReport', (marketID, universeReports) => ({}))
 
   const selector = proxyquire('../../../src/modules/markets/selectors/markets-all.js', {
@@ -100,7 +100,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
     const actual = selector.default()
 
     marketsAssertions(actual)
-    assert(mockMarket.assembleMarket.calledThrice, `assembleMarket wasn't called 3 times as expected`)
+    assert(mockMarket.selectMarket.calledThrice, `selectMarket wasn't called 3 times as expected`)
   })
 })
 
