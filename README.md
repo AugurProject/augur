@@ -101,3 +101,25 @@ npm run build
 npm test
 ```
 
+
+# Docker Cloud Deployment Workflow
+Getting from code to deployed relies on several pieces that all work together in a simple way, but the number of peices makes the whole thing seem complicated. This section discusses how these pieces fit together.
+
+Thise GitHub repository (augur-node) has several webhooks. On PRs, for instance, it notifies travis to execute a test build (which posts back the test state to the commit that was acted on). However, travis is not involved with augur-node deployment (unlike contract deployment!). A different webhook calls out to Docker Cloud to trigger the build of a docker container.
+Links:
+- [GitHub: Augur-node webhooks](https://github.com/AugurProject/augur-node/settings/hooks)
+- [Docker Cloud: Augur-node build job](https://cloud.docker.com/app/augurproject/repository/docker/augurproject/augur-node/general)
+- [Docker Cloud: Augur-node build job branch specs](https://cloud.docker.com/app/augurproject/repository/docker/augurproject/augur-node/builds/edit)
+
+In Docker Cloud, a new Docker image is built on deploy to master, with the Docker image tag "dev". The full image reference is `AugurProject/augur-node:dev`, which always tracks successful builds of master. This image is used across several different augur-node "services" (which are backed by one or more "containers"). Let's look at Rinkeby as an example, but the following holds true for all other augur-node services (clique, aura, instantseal)
+
+[Augur-Node-Rinkeby Docker Cloud Service](https://cloud.docker.com/app/augurproject/service/5100a824-9b1c-4506-91d0-d84346fb3d3a/general)
+
+The Augur-Node-Rinkeby Docker Cloud Service specifies that we want to use the (above-built) "AugurProject/augur-node:dev", deployed to 3 containers, each with an ENDPOINT_HTTP that points at an Ethereum Node Sync'd to Rinkeby (http://rinkeby.ethereum.origin.augur.net:8545). It is this single environment variable that influences an augur-node to become associated with a specific network.
+
+The Augur-Node-Rinkeby Docker Cloud Service has the "AUTOREDEPLOY" option enabled, which monitors for new versions of the corresponding image (`AugurProject/augur-node:dev`) and redeploys (terminates containers, starts new containers) the service's containers with the new image. This will create brand new containers (with the `ENDPOINT_HTTP` still set appropriately, as it comes from the service). 
+
+Before we move on to haproxy, let's note what we have here. We have a system where
+- pushing a commit to augur-node's master branch causes a new Docker image to be built: AugurProject/augur-node:dev
+- many services are all relying on this one docker image, each specifying a different `ENDPOINT_(WS|HTTP)` value to change which network the augur-node operates on.
+- A new Docker image being pushed forces a redeploy of all dependent services, ensuring they get the new code, deployed to fresh containers, with the appropriate variables set (since they are defined in the service)
