@@ -36,10 +36,10 @@ import { submitReport } from 'modules/reports/actions/submit-report'
 import store from 'src/store'
 
 import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks'
-import selectUserOpenOrders from 'modules/user-open-orders/selectors/user-open-orders'
+import { selectUserOpenOrders } from 'modules/user-open-orders/selectors/user-open-orders'
 import selectUserOpenOrdersSummary from 'modules/user-open-orders/selectors/user-open-orders-summary'
 
-import { selectPriceTimeSeries } from 'modules/market/selectors/price-time-series'
+// import { selectPriceTimeSeries } from 'modules/market/selectors/price-time-series'
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from 'modules/bids-asks/helpers/select-order-book'
 import getOrderBookSeries from 'modules/order-book/selectors/order-book-series'
