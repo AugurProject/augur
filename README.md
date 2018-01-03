@@ -123,3 +123,17 @@ Before we move on to haproxy, let's note what we have here. We have a system whe
 - pushing a commit to augur-node's master branch causes a new Docker image to be built: AugurProject/augur-node:dev
 - many services are all relying on this one docker image, each specifying a different `ENDPOINT_(WS|HTTP)` value to change which network the augur-node operates on.
 - A new Docker image being pushed forces a redeploy of all dependent services, ensuring they get the new code, deployed to fresh containers, with the appropriate variables set (since they are defined in the service)
+
+= Haproxy
+The above system auto-deploys augur-node Docker containers, sync'd to a variety of networks. The problem we haven't solved yet is how the clients will end up discovering and using these services. Some services (aura/clique) are backed by just a single augur-node. Other services (rinkeby) are backed by 3. If any of these services or nodes fail, the issue should be routed around seamlessly. Additionally, when new versions are deployed, they could land on different servers, and often times one physical host is running multiple augur-node's, even exposing the ports without causing conflicts gets complicated.
+
+For this, we use haproxy. Haproxy itself runs inside of a container. The haproxy Docker Cloud service configuration specifies other Docker Cloud services which are "linked". A linked service has data about the containers that make up a service provided as environment variables, such as `AUGUR_NODE_RINKEBY_ENV_DOCKERCLOUD_IP_ADDRESS=10.7.0.8/16`. This information is dynamic, so as the location and configuration of the services change, haproxy can continue to find the backing services. From this (rather large) set of environment variables provided to the haproxy container, the haproxy container generates its own configuration file. Now, by exposing only haproxy, all other services can be discovered, regardless of where they are currently running or how many. Additionally, since haproxy is operating at the http layer, we can use name-based virtual hosting to allow all services to listen on the same port (such as 80 and 443) and select the correct backing server based on the name lookup, as well as provide SSL termination.
+
+Haproxy determines the hostname-to-service mapping via an environment variable that is exported by the backing service itself. For instance, let's look at the configuration for the Augur-Node-Rinkeby Service. One of the environment variables the service defines:
+```
+VIRTUAL_HOST=https://rinkeby.augur.nodes.augur.net:443,\
+	http://rinkeby.augur.nodes.augur.net:80,\
+	http://rinkeby.augur.origin.augur.net:9001
+```
+
+Docker provides haproxy with environment variables from linked services/containers. When haproxy is generating its configs, it will read through all exported VIRTUAL_HOST entries from each linked service, and create front-end (handling the connection from the client) configurations to route to the backend, any container for that service. In the above example, hitting any of those 3 endpoints will route to a container running augur-node-rinkeby.
