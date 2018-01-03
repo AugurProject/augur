@@ -8,11 +8,14 @@ var midnightTomorrow = new Date();
 midnightTomorrow.setDate(midnightTomorrow.getDate() + 1);
 midnightTomorrow.setHours(0, 0, 0, 0);
 var today = new Date();
+var thisYear = today.getUTCFullYear();
+var nextYear = thisYear + 1;
+console.log("thisYear:", thisYear, nextYear);
 
 module.exports = [{
   marketType: "binary",
-  _description: "Will SpaceX successfully complete a manned flight to the International Space Station by the end of 2018?",
-  _endTime: parseInt(new Date("1/1/2019").getTime() / 1000, 10),
+  _description: "Will SpaceX successfully complete a manned flight to the International Space Station by the end of " + thisYear + "?",
+  _endTime: parseInt(new Date("1/1/" + nextYear).getTime() / 1000, 10),
   _topic: "space",
   _extraInfo: {
     resolutionSource: "http://www.spacex.com",
@@ -22,8 +25,8 @@ module.exports = [{
   orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
-  _description: "Will California secede from the United States before January 1, 2020?",
-  _endTime: parseInt(new Date("1/1/2020").getTime() / 1000, 10),
+  _description: "Will California secede from the United States before January 1, " + nextYear + "?",
+  _endTime: parseInt(new Date("1/1/" + nextYear).getTime() / 1000, 10),
   _topic: "politics",
   _extraInfo: {
     resolutionSource: "",
@@ -44,30 +47,19 @@ module.exports = [{
   orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
-  _description: "Will Augur's live release happen by the end of December, 2017?",
-  _endTime: parseInt(new Date("1/1/2018").getTime() / 1000, 10),
+  _description: "Will Augur's live release happen by the end of " + thisYear + "?",
+  _endTime: parseInt(new Date("1/1/" + nextYear).getTime() / 1000, 10),
   _topic: "Augur",
   _extraInfo: {
-    resolutionSource: "https://www.augur.net",
+    resolutionSource: "https://augur.net",
     tags: ["release date", "Ethereum"],
-    longDescription: "https://www.augur.net",
-  },
-  orderBook: binaryOrderBook,
-}, {
-  marketType: "binary",
-  _description: "Will Donald Trump be impeached and removed from the Presidency within two years of his inauguration?",
-  _endTime: parseInt(new Date("2/1/2019").getTime() / 1000, 10),
-  _topic: "politics",
-  _extraInfo: {
-    resolutionSource: "",
-    tags: ["Trump", "impeachment"],
     longDescription: "",
   },
   orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
-  _description: "Will Jair Messias Bolsonaro be elected the president of Brazil in 2018?",
-  _endTime: parseInt(new Date("12/31/2018").getTime() / 1000, 10),
+  _description: "Will Jair Messias Bolsonaro be elected the president of Brazil in " + thisYear + "?",
+  _endTime: parseInt(new Date("1/1/" + nextYear).getTime() / 1000, 10),
   _topic: "politics",
   _extraInfo: {
     resolutionSource: "",
@@ -77,30 +69,30 @@ module.exports = [{
   orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
-  _description: "Will REP tokens be worth more than 100 USD each any time on or before January 1, 2018 on CoinMarketCap?",
-  _endTime: parseInt(new Date("1/2/2018").getTime() / 1000, 10),
+  _description: "Will REP tokens be worth more than 500 USD each any time during " + thisYear + " on CoinMarketCap?",
+  _endTime: parseInt(new Date("1/1/" + nextYear).getTime() / 1000, 10),
   _topic: "trading",
   _extraInfo: {
-    resolutionSource: "http://coinmarketcap.com",
+    resolutionSource: "https://api.coinmarketcap.com/v1/ticker/augur",
     tags: ["Augur", "Reputation"],
-    longDescription: "https://www.reddit.com/r/reptrader",
-  },
-  orderBook: binaryOrderBook,
-}, {
-  marketType: "binary",
-  _description: "Will Ethereum trade at $400 or higher by midnight EST on November 30, 2018?",
-  _endTime: parseInt(new Date("12/1/2018").getTime() / 1000, 10),
-  _topic: "trading",
-  _extraInfo: {
-    resolutionSource: "http://coinmarketcap.com",
-    tags: ["trading", "Ethereum", "currencies"],
     longDescription: "http://coinmarketcap.com/currencies/ethereum",
   },
   orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
-  _description: "Will the Larsen B ice shelf collapse by November 1, 2018?",
-  _endTime: parseInt(new Date("11-2-2018").getTime() / 1000, 10),
+  _description: "Will Ethereum trade at $1000 or higher before the end of " + thisYear + "?",
+  _endTime: parseInt(new Date("1/1/" + nextYear).getTime() / 1000, 10),
+  _topic: "trading",
+  _extraInfo: {
+    resolutionSource: "https://api.coinmarketcap.com/v1/ticker/ethereum",
+    tags: ["trading", "Ethereum", "cryptocurrency"],
+    longDescription: "http://coinmarketcap.com/currencies/ethereum",
+  },
+  orderBook: binaryOrderBook,
+}, {
+  marketType: "binary",
+  _description: "Will the Larsen B ice shelf collapse by the end of November " + nextYear + "?",
+  _endTime: parseInt(new Date("12-1-" + nextYear).getTime() / 1000, 10),
   _topic: "climate",
   _extraInfo: {
     resolutionSource: "",
@@ -109,8 +101,8 @@ module.exports = [{
   orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
-  _description: "Will the Golden State Warriors win the 2018 NBA Championship?",
-  _endTime: parseInt(new Date("6-20-2018").getTime() / 1000, 10),
+  _description: "Will the Golden State Warriors win the " + nextYear + " NBA Championship?",
+  _endTime: parseInt(new Date("6-20-" + nextYear).getTime() / 1000, 10),
   _topic: "sports",
   _extraInfo: {
     resolutionSource: "ESPN",
@@ -120,8 +112,8 @@ module.exports = [{
   orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
-  _description: "Will antibiotics be outlawed for agricultural use in China by the end of 2020?",
-  _endTime: parseInt(new Date("1-1-2021").getTime() / 1000, 10),
+  _description: "Will antibiotics be outlawed for agricultural use in China by the end of " + nextYear + "?",
+  _endTime: parseInt(new Date("1-1-" + nextYear + 1).getTime() / 1000, 10),
   _topic: "agriculture",
   _extraInfo: {
     tags: ["antibiotics", "China"],
@@ -157,38 +149,10 @@ module.exports = [{
       ],
     },
   },
-}, {
+},{
   marketType: "scalar",
-  _description: "High temperature (in degrees Fahrenheit) in San Francisco, California, on July 1, 2018",
-  _endTime: parseInt(new Date("7-2-2018").getTime() / 1000, 10),
-  _minPrice: "-10",
-  _maxPrice: "120",
-  tickSize: "10",
-  _topic: "temperature",
-  _extraInfo: {
-    resolutionSource: "http://forecast.weather.gov",
-    tags: ["San Francisco", "weather"],
-  },
-  orderBook: {
-    buy: {
-      "0": [
-        { shares: "0.01", price: "20" },
-        { shares: "0.02", price: "0" },
-        { shares: "0.03", price: "-5" },
-      ],
-    },
-    sell: {
-      "0": [
-        { shares: "0.01", price: "25" },
-        { shares: "0.01", price: "50" },
-        { shares: "0.005", price: "100" },
-      ],
-    },
-  },
-}, {
-  marketType: "scalar",
-  _description: "Marine species extinctions between January 1, 2016 and January 1, 2018",
-  _endTime: parseInt(new Date("1-2-2018").getTime() / 1000, 10),
+  _description: "Number of marine species extinctions between " + today.toLocaleDateString() + " and January 1, " + nextYear,
+  _endTime: parseInt(new Date("1-2-" + nextYear).getTime() / 1000, 10),
   _minPrice: "0",
   _maxPrice: "10000",
   tickSize: "500",
@@ -215,8 +179,8 @@ module.exports = [{
   },
 }, {
   marketType: "scalar",
-  _description: "Average tropospheric methane concentration (in parts-per-billion) between January 1, 2018 and January 1, 2019",
-  _endTime: parseInt(new Date("1-2-2019").getTime() / 1000, 10),
+  _description: "Average tropospheric methane concentration (in parts-per-billion) between " + today.toLocaleDateString() + " and January 1, " + nextYear,
+  _endTime: parseInt(new Date("1-2-" + nextYear).getTime() / 1000, 10),
   _minPrice: "700",
   _maxPrice: "5000",
   tickSize: "100",
@@ -244,8 +208,8 @@ module.exports = [{
   },
 }, {
   marketType: "scalar",
-  _description: "New antibiotics approved by the FDA between March 1, 2016 and the end of 2020",
-  _endTime: parseInt(new Date("1-1-2021").getTime() / 1000, 10),
+  _description: "New antibiotics approved by the FDA between " + today.toLocaleDateString() + "and the end of " + nextYear,
+  _endTime: parseInt(new Date("1-1-" + nextYear).getTime() / 1000, 10),
   _minPrice: "0",
   _maxPrice: "30",
   tickSize: "1",
@@ -273,8 +237,8 @@ module.exports = [{
   },
 }, {
   marketType: "categorical",
-  _description: "Who will win the University of Georgia vs. University of Florida football game in 2018?",
-  _endTime: parseInt(new Date("10/30/2018").getTime() / 1000, 10),
+  _description: "Who will win the University of Georgia vs. University of Florida football game in " + nextYear + "?",
+  _endTime: parseInt(new Date("10/30/" + nextYear).getTime() / 1000, 10),
   _outcomes: ["Georgia", "Florida"],
   _topic: "sports",
   _extraInfo: {
@@ -310,8 +274,8 @@ module.exports = [{
   },
 }, {
   marketType: "categorical",
-  _description: "What will be the status of the U.S. electoral college on January 1, 2020?",
-  _endTime: parseInt(new Date("1/2/2020").getTime() / 1000, 10),
+  _description: "What will be the status of the U.S. electoral college on January 1, " + nextYear + "?",
+  _endTime: parseInt(new Date("1/2/" + nextYear).getTime() / 1000, 10),
   _outcomes: ["Unchanged from 2016", "Undermined but still in existence (e.g., National Popular Vote bill)", "Formally abolished"],
   _topic: "politics",
   _extraInfo: {
@@ -357,8 +321,8 @@ module.exports = [{
   },
 }, {
   marketType: "categorical",
-  _description: "What will be the number one killer in the United States by January 1, 2025?",
-  _endTime: parseInt(new Date("1-2-2025").getTime() / 1000, 10),
+  _description: "What will be the number one killer in the United States by January 1, " + nextYear + "?",
+  _endTime: parseInt(new Date("1-2-" + nextYear).getTime() / 1000, 10),
   _outcomes: ["cancer", "heart attacks", "infectious diseases", "starvation", "lava", "other"],
   _topic: "science",
   _extraInfo: {
@@ -434,8 +398,8 @@ module.exports = [{
   },
 }, {
   marketType: "categorical",
-  _description: "Which city will have the highest median single-family home price for September 2018?",
-  _endTime: parseInt(new Date("10-2-2018").getTime() / 1000, 10),
+  _description: "Which city will have the highest median single-family home price in " + thisYear + "?",
+  _endTime: parseInt(new Date("1-1-" + nextYear).getTime() / 1000, 10),
   _outcomes: ["London", "New York", "Los Angeles", "San Francisco", "Tokyo", "Palo Alto", "Hong Kong", "other"],
   _topic: "housing",
   _extraInfo: {
