@@ -9,7 +9,7 @@ import Dropdown from 'modules/common/components/dropdown/dropdown'
 import MarketsList from 'modules/markets/components/markets-list'
 import Styles from 'modules/portfolio/components/markets/markets.styles'
 import PortfolioStyles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles'
-import { TYPE_REPORT, TYPE_TRADE, TYPE_CLOSED } from 'modules/market/constants/link-types'
+import { TYPE_REPORT, TYPE_TRADE, TYPE_CLOSED, TYPE_COLLECT_FEES } from 'modules/market/constants/link-types'
 import { constants } from 'services/augurjs'
 import { CREATE_MARKET } from 'modules/routes/constants/views'
 
@@ -253,7 +253,7 @@ class MyMarkets extends Component {
             scalarShareDenomination={p.scalarShareDenomination}
             toggleFavorite={p.toggleFavorite}
             loadMarketsInfo={p.loadMarketsInfo}
-            linkType={TYPE_TRADE}
+            linkType={TYPE_COLLECT_FEES}
             outstandingReturns
             paginationPageParam="open"
           />
@@ -290,7 +290,7 @@ class MyMarkets extends Component {
             scalarShareDenomination={p.scalarShareDenomination}
             toggleFavorite={p.toggleFavorite}
             loadMarketsInfo={p.loadMarketsInfo}
-            linkType={TYPE_REPORT}
+            linkType={TYPE_COLLECT_FEES}
             outstandingReturns
             paginationPageParam="reporting"
           />
@@ -327,7 +327,7 @@ class MyMarkets extends Component {
             scalarShareDenomination={p.scalarShareDenomination}
             toggleFavorite={p.toggleFavorite}
             loadMarketsInfo={p.loadMarketsInfo}
-            linkType={TYPE_CLOSED}
+            linkType={TYPE_COLLECT_FEES}
             outstandingReturns
             paginationPageParam="final"
           />
