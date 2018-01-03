@@ -10,7 +10,7 @@ import { updateOutcomePrice } from 'modules/markets/actions/update-outcome-price
 import { updateMarketCategoryPopularity } from 'modules/categories/actions/update-categories'
 import { updateAccountTradesData, updateAccountBidsAsksData, updateAccountCancelsData, updateAccountPositionsData } from 'modules/my-positions/actions/update-account-trades-data'
 import { addNotification } from 'modules/notifications/actions/update-notifications'
-import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
+// import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
 import makePath from 'modules/routes/helpers/make-path'
 import * as TYPES from 'modules/transactions/constants/types'
 import { MY_MARKETS } from 'modules/routes/constants/views'
@@ -159,14 +159,16 @@ export function listenToUpdates() {
             dispatch(loadMarketsInfo([log.marketID], () => {
               const { volume, author, description } = getState().marketsData[log.marketID]
               dispatch(updateMarketCategoryPopularity(log.marketID, new BigNumber(volume, 10).neg().toNumber()))
-              if (loginAccount.address === author) dispatch(addNotification({
-                id: log.hash,
-                timestamp: log.timestamp,
-                blockNumber: log.blockNumber,
-                title: `Collect Fees`,
-                description: `Market Finalized: "${description}"`,
-                linkPath: makePath(MY_MARKETS)
-              }))
+              if (loginAccount.address === author) {
+                dispatch(addNotification({
+                  id: log.hash,
+                  timestamp: log.timestamp,
+                  blockNumber: log.blockNumber,
+                  title: `Collect Fees`,
+                  description: `Market Finalized: "${description}"`,
+                  linkPath: makePath(MY_MARKETS)
+                }))
+              }
             }))
           }
         }
