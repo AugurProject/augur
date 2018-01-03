@@ -48,6 +48,7 @@ export default class MarketTable extends Component {
           {p.data.map(dataRow => (
             <tr
               className={Styles.MarketTable__row}
+              key={`tr-${dataRow.id}`}
             >
               {p.titleKeyPairs.map((titlePair, ind) => {
                 const dataKey = titlePair[1]
@@ -96,6 +97,7 @@ export default class MarketTable extends Component {
                       Styles.MarketTable__value,
                       { [Styles['MarketTable__value--mobilehide']]: mobileHide }
                     )}
+                    key={`${dataRow.id}-${data}-${dataRow.marketID}-${dataKey}`}
                   >
                     {data || ''}
                   </td>

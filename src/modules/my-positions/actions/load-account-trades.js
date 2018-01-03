@@ -5,6 +5,7 @@ import { addTradeTransactions } from 'modules/transactions/actions/add-transacti
 import { loadAccountPositions } from 'modules/my-positions/actions/load-account-positions'
 import { loadAccountOrders } from 'modules/bids-asks/actions/load-account-orders'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
+import { updateAccountTradeData } from 'modules/my-positions/actions/update-account-trades-data'
 import logError from 'utils/log-error'
 
 export function loadAccountTrades(options, callback = logError) {
@@ -22,8 +23,8 @@ export function loadAccountTrades(options, callback = logError) {
 export function loadUserTradingHistory(options, callback = logError) {
   return (dispatch, getState) => {
     const { universe, loginAccount } = getState()
-    if (!loginAccount.address || !options) return callback(null)
-    const marketID = options.market
+    if (!loginAccount.address) return callback(null)
+    const marketID = typeof options === 'object' ? options.market : null
     if (!marketID) dispatch(clearAccountTrades())
     augur.trading.getUserTradingHistory({
       ...options, account: loginAccount.address, universe: universe.id, marketID
@@ -31,12 +32,20 @@ export function loadUserTradingHistory(options, callback = logError) {
       if (err) return callback(err)
       if (userTradingHistory == null || Object.keys(userTradingHistory).length === 0) return callback(null)
       const marketIDs = Object.keys(userTradingHistory).reduce((p, index, i) => {
-        p[userTradingHistory[index].marketID] = {}
+        p.push(userTradingHistory[index].marketID)
         return p
       }, [])
-      // TODO: update account trades, not sure why market is needed here
-      /* dispatch({ type: UPDATE_ACCOUNT_TRADES_DATA, market, data: data[market] }) */
-      dispatch(loadMarketsInfo(marketIDs.slice(), () => {
+      dispatch(loadMarketsInfo(marketIDs, () => {
+        marketIDs.forEach((marketID) => {
+          const trades = {}
+          userTradingHistory.filter(trade => trade.marketID === marketID).forEach((trade) => {
+            if (trades[trade.outcome] == null) {
+              trades[trade.outcome] = []
+            }
+            trades[trade.outcome] = [...trades[trade.outcome], trade]
+          })
+          dispatch(updateAccountTradeData(trades, marketID))
+        })
         dispatch(addTradeTransactions(userTradingHistory))
         callback(null, userTradingHistory)
       }))

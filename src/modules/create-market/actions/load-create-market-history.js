@@ -1,7 +1,7 @@
 import { augur } from 'services/augurjs'
 import logError from 'utils/log-error'
 import { addMarketCreationTransactions } from 'modules/transactions/actions/add-transactions'
-import { loadMarketsInfoOnly } from 'modules/markets/actions/load-markets-info'
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 
 export function loadCreateMarketHistory(options, callback = logError) {
   return (dispatch, getState) => {
@@ -11,7 +11,7 @@ export function loadCreateMarketHistory(options, callback = logError) {
       // note: marketsCreatedByUser is an array of market IDs
       if (err) return callback(err)
       if ((marketsCreatedByUser == null) || (Array.isArray(marketsCreatedByUser) && marketsCreatedByUser.length === 0)) return callback(null)
-      dispatch(loadMarketsInfoOnly(marketsCreatedByUser, () => {
+      dispatch(loadMarketsInfo(marketsCreatedByUser, () => {
         dispatch(addMarketCreationTransactions(marketsCreatedByUser))
         // TODO save markets created by user to state
         callback(null, marketsCreatedByUser)
