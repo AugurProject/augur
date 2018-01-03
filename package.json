@@ -24,7 +24,10 @@
     "reinstall": "./scripts/reinstall.sh",
     "----": "",
     "deploy": "node scripts/deploy.js",
-    "deploy-dev": "node scripts/deploy-dev.js"
+    "deploy-dev": "node scripts/deploy-dev.js",
+    "----": "",
+    "docker:build": "docker build --tag augurproject/augur:latest  .",
+    "docker:push": "docker push augurproject/augur:latest"
   },
   "dependencies": {
     "airbitz-core-js-ui": "0.1.7",
