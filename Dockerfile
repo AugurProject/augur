@@ -29,5 +29,8 @@ COPY . /augur
 RUN rm /augur/yarn.lock
 
 RUN yarn build
+
+EXPOSE 8080
+
 WORKDIR /augur
 ENTRYPOINT [ "yarn", "dev" ]
