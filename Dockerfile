@@ -3,6 +3,7 @@ FROM node:8-alpine
 ENV PATH /root/.yarn/bin:$PATH
 
 # begin install yarn
+# libusb-dev required for node-hid, required for ledger support (ethereumjs-ledger)
 RUN apk update \
   && apk add git python make g++ bash curl binutils tar libusb-dev \
   && rm -rf /var/cache/apk/* \
