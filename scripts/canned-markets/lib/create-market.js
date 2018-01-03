@@ -36,7 +36,7 @@ function createMarket(augur, market, designatedReporterAddress, auth, callback) 
     },
     onFailed: function (err) {
       if (debugOptions.cannedMarkets) {
-        console.error(chalk.red.bold("createMarket failed:"), err);
+        console.error(chalk.red.bold("createMarket failed:"), err, market);
         if (err != null) printTransactionStatus(augur.rpc, err.hash);
       }
       callback(err);

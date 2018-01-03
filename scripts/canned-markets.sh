@@ -33,7 +33,7 @@ elif [ "$network" == "rinkeby" ]; then
   # export ETHEREUM_HTTP="https://rinkeby.ethereum.nodes.augur.net"
   # export ETHEREUM_WS="wss://websocket-rinkeby.ethereum.nodes.augur.net"
   export AUGUR_WS="ws://rinkeby.augur.origin.augur.net:9001"
-  export ETHEREUM_HTTP="http://rinkeby.ethereum.origin.augur.net:8545 "
+  export ETHEREUM_HTTP="http://rinkeby.ethereum.origin.augur.net:8545"
 fi
 
 if [ "$2" == "orders" ]; then
