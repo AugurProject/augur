@@ -160,7 +160,7 @@ export function listenToUpdates() {
               const { volume, author, description } = getState().marketsData[log.marketID]
               dispatch(updateMarketCategoryPopularity(log.marketID, new BigNumber(volume, 10).neg().toNumber()))
               if (loginAccount.address === author) dispatch(addNotification({
-                id: log.marketID,
+                id: log.hash,
                 timestamp: log.timestamp,
                 blockNumber: log.blockNumber,
                 title: `Collect Fees`,
