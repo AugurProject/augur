@@ -80,7 +80,7 @@ function parseOutcomes(newMarketsData, outcomesData) {
   function parseCategoricalOutcomes(marketData, marketID) {
     return marketData.outcomes.reduce((p, outcome, i) => {
       p[outcome.id] = { ...outcome }
-      p[outcome.id].name = outcome.description.toString().trim()
+      p[outcome.id].name = (outcome.description && outcome.description.toString().trim()) || ''
       delete p[outcome.id].id
       return p
     }, {})

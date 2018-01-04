@@ -11,6 +11,7 @@ import { loadUserMarkets } from 'modules/markets/actions/load-user-markets'
 import { loadUnclaimedFees } from 'modules/markets/actions/load-unclaimed-fees'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
+import { collectMarketCreatorFees } from 'modules/portfolio/actions/collect-market-creator-fees'
 import logError from 'utils/log-error'
 
 const mapStateToProps = state =>
@@ -30,6 +31,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(loadMarketsInfo(marketIDs))
     dispatch(loadUnclaimedFees(marketIDs))
   })),
+  collectMarketCreatorFees: (marketId, callback = logError) => dispatch(collectMarketCreatorFees(marketId, callback = logError)),
   loadMarketsInfo: marketIDs => dispatch(loadMarketsInfo(marketIDs)),
   toggleFavorite: marketID => dispatch(toggleFavorite(marketID)),
 })

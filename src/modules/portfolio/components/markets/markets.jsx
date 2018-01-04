@@ -256,6 +256,7 @@ class MyMarkets extends Component {
             linkType={TYPE_COLLECT_FEES}
             outstandingReturns
             paginationPageParam="open"
+            collectMarketCreatorFees={p.collectMarketCreatorFees}
           />
         }
         {haveMarkets && s.filteredMarketsOpen.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}

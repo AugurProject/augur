@@ -85,7 +85,10 @@ const MarketProperties = (p) => {
         { p.linkType && p.linkType === TYPE_COLLECT_FEES &&
           <button
             className={Styles.MarketProperties__trade}
-            onClick={e => console.log('call to Collect Fees as Market Creator!')}
+            disabled={(p.unclaimedCreatorFees.formattedValue > 0)}
+            onClick={e => {
+              p.collectMarketCreatorFees(p.id)
+            }}
           >
             { p.buttonText || buttonText }
           </button>
