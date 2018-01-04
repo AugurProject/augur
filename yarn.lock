@@ -511,16 +511,16 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
-augur-contracts@3.5.0-4:
-  version "3.5.0-4"
-  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-3.5.0-4.tgz#765eb10f550ef39d49d91658ae91a9a092dbaaef"
+augur-contracts@3.5.0-9:
+  version "3.5.0-9"
+  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-3.5.0-9.tgz#f21fb7c403225841d23a44414848bffd1262faf2"
 
-augur.js@4.7.0-32:
-  version "4.7.0-32"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.7.0-32.tgz#a7a9e4aef5986a8d4e3d9709031cf6a27054e106"
+augur.js@4.7.0-37:
+  version "4.7.0-37"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.7.0-37.tgz#b9aa50cd67bf9b391c90c9b891c6767f4c936738"
   dependencies:
     async "1.5.2"
-    augur-contracts "3.5.0-4"
+    augur-contracts "3.5.0-9"
     bignumber.js "2.3.0"
     clone "2.1.1"
     ethereumjs-connect "4.4.8"
