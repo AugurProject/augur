@@ -25,14 +25,13 @@
     "----": "",
     "deploy": "node scripts/deploy.js",
     "deploy-dev": "node scripts/deploy-dev.js",
-    "----": "",
     "docker:build": "docker build --tag augurproject/augur:latest  .",
     "docker:push": "docker push augurproject/augur:latest"
   },
   "dependencies": {
     "airbitz-core-js-ui": "0.1.7",
     "async": "2.6.0",
-    "augur.js": "4.7.0-32",
+    "augur.js": "4.7.0-37",
     "bignumber.js": "5.0.0",
     "bs58": "4.0.1",
     "classnames": "2.2.5",
