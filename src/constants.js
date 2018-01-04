@@ -45,7 +45,6 @@ module.exports = {
     multiple: multiple,
   },
   MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
-  DUST_THRESHOLD: new BigNumber(1, 10), // placeholder value
 
   ETERNAL_APPROVAL_VALUE: "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", // 2^256 - 1
 

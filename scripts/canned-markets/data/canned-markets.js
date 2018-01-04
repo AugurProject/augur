@@ -149,7 +149,7 @@ module.exports = [{
       ],
     },
   },
-},{
+}, {
   marketType: "scalar",
   _description: "Number of marine species extinctions between " + today.toLocaleDateString() + " and January 1, " + nextYear,
   _endTime: parseInt(new Date("1-2-" + nextYear).getTime() / 1000, 10),

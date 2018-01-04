@@ -17,10 +17,10 @@ function finalizeMarket(p) {
   api().Market.isFinalized(marketPayload, function (err, isFinalized) {
     if (err) return p.onFailed(err);
     if (parseInt(isFinalized, 16) === 1) return p.onSuccess(true);
-    api().Market.tryFinalize(assign({}, marketPayload, { tx: assign({}, marketPayload.tx, { send: false }) }), function (err, readyToFinalize) {
+    api().Market.finalize(assign({}, marketPayload, { tx: assign({}, marketPayload.tx, { send: false }) }), function (err, readyToFinalize) {
       if (err) return p.onFailed(err);
       if (parseInt(readyToFinalize, 16) !== 1) return p.onSuccess(false);
-      api().Market.tryFinalize(assign({}, immutableDelete(p, "market"), marketPayload));
+      api().Market.finalize(assign({}, immutableDelete(p, "market"), marketPayload));
     });
   });
 }

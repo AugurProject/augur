@@ -34,7 +34,7 @@ describe("reporting/finalize-market", function () {
               assert.deepEqual(payload, { tx: { to: "MARKET_CONTRACT_ADDRESS" } });
               callback(null, "0x1");
             },
-            tryFinalize: function () {
+            finalize: function () {
               assert.fail();
             },
           },
@@ -59,7 +59,7 @@ describe("reporting/finalize-market", function () {
               assert.deepEqual(payload, { tx: { to: "MARKET_CONTRACT_ADDRESS" } });
               callback(null, "0x0");
             },
-            tryFinalize: function (payload, callback) {
+            finalize: function (payload, callback) {
               assert.deepEqual(payload.tx, { to: "MARKET_CONTRACT_ADDRESS", send: false });
               callback(null, "0x0");
             },
@@ -85,7 +85,7 @@ describe("reporting/finalize-market", function () {
               assert.deepEqual(payload, { tx: { to: "MARKET_CONTRACT_ADDRESS" } });
               callback(null, "0x0");
             },
-            tryFinalize: function (payload, callback) {
+            finalize: function (payload, callback) {
               assert.strictEqual(payload.tx.to, "MARKET_CONTRACT_ADDRESS");
               if (payload.tx.send === false) return callback(null, "0x1");
               assert.strictEqual(payload.meta.signer.toString("utf8"), "PRIVATE_KEY");
