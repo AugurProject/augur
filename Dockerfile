@@ -5,13 +5,18 @@ ENV PATH /root/.yarn/bin:$PATH
 # begin install yarn
 # libusb-dev required for node-hid, required for ledger support (ethereumjs-ledger)
 RUN apk update \
-  && apk add git python make g++ bash curl binutils tar libusb-dev \
+  && apk add git python make g++ bash curl binutils tar libusb-dev nginx \
   && rm -rf /var/cache/apk/* \
   && /bin/bash \
   && touch ~/.bashrc \
   && curl -o- -L https://yarnpkg.com/install.sh | bash \
-  && apk del curl tar binutils
+  && apk del curl tar binutils \
+  && echo "pid /var/run/nginx.pid;" >> /etc/nginx/nginx.conf \
+  && echo "daemon off;" >> /etc/nginx/nginx.conf
 # end install yarn
+
+# Vhost to serve files
+COPY support/nginx-default.conf /etc/nginx/conf.d/default.conf
 
 # begin create caching layer
 COPY package.json /augur/package.json
@@ -30,4 +35,4 @@ RUN rm /augur/yarn.lock
 
 RUN ETHEREUM_NETWORK=rinkeby yarn build
 WORKDIR /augur
-ENTRYPOINT [ "yarn", "dev" ]
+ENTRYPOINT [ "nginx" ]
