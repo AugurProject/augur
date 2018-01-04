@@ -254,7 +254,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
 // PRODUCTION CONFIG
 } else {
   // get network name like 'rinkeby' or 'clique' to set environment for UI
-  const target = process.env.NETWORK ? `env-${process.env.NETWORK}.json` : 'env-production.json'
+  const target = process.env.ETHEREUM_NETWORK ? `env-${process.env.ETHEREUM_NETWORK}.json` : 'env-production.json'
   config = merge(config, {
     entry: {
       main: `${PATHS.APP}/main`
