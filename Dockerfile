@@ -28,6 +28,6 @@ COPY . /augur
 # workaround a bug when running inside an alpine docker image
 RUN rm /augur/yarn.lock
 
-RUN NETWORK=rinkeby yarn build
+RUN ETHEREUM_NETWORK=rinkeby yarn build
 WORKDIR /augur
 ENTRYPOINT [ "yarn", "dev" ]
