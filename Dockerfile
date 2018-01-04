@@ -34,5 +34,8 @@ COPY . /augur
 RUN rm /augur/yarn.lock
 
 RUN ETHEREUM_NETWORK=rinkeby yarn build
+
+EXPOSE 8080
+
 WORKDIR /augur
 ENTRYPOINT [ "nginx" ]
