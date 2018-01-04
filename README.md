@@ -1,4 +1,4 @@
-# Augur | Client
+# augur | Client
 [![Build Status](https://travis-ci.org/AugurProject/augur.svg?branch=v3)](https://travis-ci.org/AugurProject/augur)
 [![Coverage Status](https://coveralls.io/repos/github/AugurProject/augur/badge.svg?branch=v3)](https://coveralls.io/github/AugurProject/augur?branch=v3)
 
@@ -7,7 +7,7 @@ It runs locally in your browser and communicates directly with the ethereum netw
 
 There are several ways to run it:
 
-* Easiest: **visit [app.augur.net](http://app.augur.net)**  
+* Easiest: **visit [dev.augur.net](http://dev.augur.net)**  
 * Best: [run ethereum locally](#eth_local)
 
 ## Requirements
