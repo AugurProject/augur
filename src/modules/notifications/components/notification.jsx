@@ -118,7 +118,7 @@ export default class Notification extends Component {
             {CloseBlack}
           </button>
           <span className={Styles.Notification__description}>{p.description}</span>
-          <span className={Styles.Notification__time}>{moment(p.timestamp, 'YYYYMMDD').fromNow()}</span>
+          <span className={Styles.Notification__time}>{moment.unix(p.timestamp).fromNow()}</span>
         </Link>
       </article>
     )
