@@ -6,7 +6,9 @@
  * @property {string} etherRequiredToCreateMarket Sum of the Ether required to pay for Reporters' gas costs and the validity bond, as a base-10 string.
  */
 
+var assign = require("lodash.assign");
 var async = require("async");
+var immutableDelete = require("immutable-delete");
 var speedomatic = require("speedomatic");
 var api = require("../api");
 
@@ -18,7 +20,7 @@ var api = require("../api");
  * @return {MarketCreationCost} Costs of creating a new market.
  */
 function getMarketCreationCost(p, callback) {
-  var universePayload = { tx: { to: p.universe, send: false } };
+  var universePayload = assign({}, immutableDelete(p, "universe"), { tx: assign({ to: p.universe, send: false }, p.tx) });
   async.parallel({
     designatedReportNoShowReputationBond: function (next) {
       api().Universe.getOrCacheDesignatedReportNoShowBond(universePayload, function (err, designatedReportNoShowBond) {

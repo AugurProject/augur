@@ -3,6 +3,7 @@
 "use strict";
 
 var assert = require("chai").assert;
+var speedomatic = require("speedomatic");
 var proxyquire = require("proxyquire").noPreserveCache();
 
 describe("create-market/get-market-creation-cost", function () {
@@ -21,7 +22,6 @@ describe("create-market/get-market-creation-cost", function () {
     description: "happy path",
     params: {
       universe: "UNIVERSE_ADDRESS",
-      meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
     },
     stub: {
       api: function () {
@@ -29,11 +29,11 @@ describe("create-market/get-market-creation-cost", function () {
           Universe: {
             getOrCacheDesignatedReportNoShowBond: function (p, callback) {
               assert.deepEqual(p, { tx: { to: "UNIVERSE_ADDRESS", send: false } });
-              callback(null, "0xde0b6b3a7640000");
+              callback(null, speedomatic.fix("1", "string"));
             },
             getOrCacheMarketCreationCost: function (p, callback) {
               assert.deepEqual(p, { tx: { to: "UNIVERSE_ADDRESS", send: false } });
-              callback(null, "0x3a4965bf58a40000");
+              callback(null, speedomatic.fix("4.2", "string"));
             },
           },
         };

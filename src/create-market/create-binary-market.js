@@ -27,7 +27,7 @@ var constants = require("../constants");
 function createBinaryMarket(p) {
   getMarketCreationCost({ universe: p.universe }, function (err, marketCreationCost) {
     if (err) return p.onFailed(err);
-    var createBinaryMarketParams = assign({}, immutableDelete(p, ["universe"]), {
+    var createBinaryMarketParams = assign({}, immutableDelete(p, "universe"), {
       tx: assign({
         to: p.universe,
         value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),

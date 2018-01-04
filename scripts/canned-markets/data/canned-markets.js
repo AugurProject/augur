@@ -10,7 +10,6 @@ midnightTomorrow.setHours(0, 0, 0, 0);
 var today = new Date();
 var thisYear = today.getUTCFullYear();
 var nextYear = thisYear + 1;
-console.log("thisYear:", thisYear, nextYear);
 
 module.exports = [{
   marketType: "binary",

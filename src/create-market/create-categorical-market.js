@@ -29,7 +29,7 @@ var constants = require("../constants");
 function createCategoricalMarket(p) {
   getMarketCreationCost({ universe: p.universe }, function (err, marketCreationCost) {
     if (err) return p.onFailed(err);
-    var createCategoricalMarketParams = assign({}, immutableDelete(p, ["universe"]), {
+    var createCategoricalMarketParams = assign({}, immutableDelete(p, "universe"), {
       tx: assign({
         to: p.universe,
         value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
