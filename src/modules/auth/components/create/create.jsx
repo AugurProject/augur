@@ -6,7 +6,6 @@ import NavPanel from 'modules/common/components/nav-panel/nav-panel'
 import Help from 'modules/auth/components/help/help'
 import Airbitz from 'modules/auth/containers/airbitz-create'
 import UportCreate from 'modules/auth/containers/uport-create'
-import KeystoreCreate from 'modules/auth/containers/keystore-create'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 
@@ -42,9 +41,6 @@ export default function AuthCreate(p) {
             }
             {selectedNav === PARAMS.UPORT &&
               <UportCreate />
-            }
-            {selectedNav === PARAMS.KEYSTORE &&
-              <KeystoreCreate />
             }
           </div>
         </div>
