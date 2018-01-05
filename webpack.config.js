@@ -211,6 +211,9 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
   });
 // PRODUCTION DEBUG CONFIG (unminified build + more specific source maps + no hot reload)
 } else if (process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
+  // get network name like 'rinkeby' or 'clique' to set environment for UI
+  const target = process.env.ETHEREUM_NETWORK ? `env-${process.env.ETHEREUM_NETWORK}.json` : 'env-dev.json'
+
   config = merge(config, {
     entry: {
       main: `${PATHS.APP}/main`
@@ -245,7 +248,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
     plugins: [
       new CopyWebpackPlugin([
         {
-          from: path.resolve(PATHS.APP, 'env-dev.json'),
+          from: path.resolve(PATHS.APP, target),
           to: path.resolve(PATHS.BUILD, 'config/env.json')
         },
       ])
@@ -253,8 +256,6 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
   });
 // PRODUCTION CONFIG
 } else {
-  // get network name like 'rinkeby' or 'clique' to set environment for UI
-  const target = process.env.ETHEREUM_NETWORK ? `env-${process.env.ETHEREUM_NETWORK}.json` : 'env-production.json'
   config = merge(config, {
     entry: {
       main: `${PATHS.APP}/main`
@@ -292,7 +293,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
       }),
       new CopyWebpackPlugin([
         {
-          from: path.resolve(PATHS.APP, target),
+          from: path.resolve(PATHS.APP, 'config/env-production.json'),
           to: path.resolve(PATHS.BUILD, 'config/env.json')
         },
       ])
