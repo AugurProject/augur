@@ -33,7 +33,10 @@ COPY . /augur
 # workaround a bug when running inside an alpine docker image
 RUN rm /augur/yarn.lock
 
-RUN yarn build
+RUN ETHEREUM_NETWORK=rinkeby yarn build --dev
+
+RUN git rev-parse HEAD > /augur/build/git-hash.txt \
+  && git log -1 > /augur/build/git-commit.txt
 
 EXPOSE 8080
 
