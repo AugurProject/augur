@@ -1,4 +1,4 @@
-FROM node:8-alpine
+FROM node:8-wheezy
 
 ENV PATH /root/.yarn/bin:$PATH
 
@@ -33,7 +33,7 @@ COPY . /augur
 # workaround a bug when running inside an alpine docker image
 RUN rm /augur/yarn.lock
 
-RUN ETHEREUM_NETWORK=rinkeby yarn build
+RUN ETHEREUM_NETWORK=rinkeby yarn build --dev
 
 EXPOSE 8080
 
