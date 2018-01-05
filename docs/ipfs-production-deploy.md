@@ -8,7 +8,7 @@ Augur **_does not_** serve **_any_** of the files required to run the client, bu
 
 It's up to third parties to pin the corresponding build files to their IPFS daemon or for the end user to build/serve/run the client themselves as they see fit.
 
-If you are a party interested in pinning augur's production builds, please reference our IPFS pinning instructions [here](./third-party-ipfs-pinning-instructions.md).
+If you are a party interested in pinning augur's production builds, please reference our IPFS pinning instructions [here](./ipfs-pinning.md).
 
 ---
 
