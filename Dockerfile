@@ -1,4 +1,4 @@
-FROM node:8-wheezy
+FROM node:8-alpine
 
 ENV PATH /root/.yarn/bin:$PATH
 
