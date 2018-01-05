@@ -33,7 +33,7 @@ COPY . /augur
 # workaround a bug when running inside an alpine docker image
 RUN rm /augur/yarn.lock
 
-RUN yarn build
+RUN ETHEREUM_NETWORK=rinkeby yarn build
 
 EXPOSE 8080
 
