@@ -27,11 +27,7 @@ try {
 	const changes = replace.sync({
 		files: 'src/seeds/test/*',
 		from: /0x000000000000000000000000000000000000000b/g,
-<<<<<<< HEAD
 		to: '0x2218f21dbb6c30f269389f095d71e2d44afbacf5',
-=======
-		to: '0xa09a8d70063c5948b3a196170dfe08c5fe322ba9',
->>>>>>> 72773ce... update
 	});
 	console.log('Modified files:', changes.join(', '));
 } catch (error) {
