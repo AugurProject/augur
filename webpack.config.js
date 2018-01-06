@@ -293,7 +293,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
       }),
       new CopyWebpackPlugin([
         {
-          from: path.resolve(PATHS.APP, 'config/env-production.json'),
+          from: path.resolve(PATHS.APP, 'env-production.json'),
           to: path.resolve(PATHS.BUILD, 'config/env.json')
         },
       ])
