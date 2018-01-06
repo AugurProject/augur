@@ -8,7 +8,7 @@ import MarketStatusIcon from 'modules/market/components/market-status-icon/marke
 import MarketTable from 'modules/market/components/market-tables/market-tables'
 import CaretDropdown from 'modules/common/components/caret-dropdown/caret-dropdown'
 import MarketLink from 'modules/market/components/market-link/market-link'
-import { TYPE_REPORT, TYPE_CHALLENGE } from 'modules/market/constants/link-types'
+import { TYPE_REPORT, TYPE_CHALLENGE, TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
@@ -44,7 +44,7 @@ export default class MarketPortfolioCard extends React.Component {
   render() {
     const p = this.props
     const myPositionsSummary = getValue(this.props, 'market.myPositionsSummary')
-    const myPositionOutcomes = getValue(this.props, 'market.myPositionOutcomes')
+    const myPositionOutcomes = getValue(this.props, 'market.outcomes')
 
     let buttonText
 
@@ -54,6 +54,9 @@ export default class MarketPortfolioCard extends React.Component {
         break
       case TYPE_CHALLENGE:
         buttonText = 'Challenge'
+        break
+      case TYPE_CLAIM_PROCEEDS:
+        buttonText = 'Claim Proceeds'
         break
       default:
         buttonText = 'View'
@@ -174,7 +177,7 @@ export default class MarketPortfolioCard extends React.Component {
                 'Action'
               ]}
               data={
-                (myPositionOutcomes || []).map(outcome => ({
+                (myPositionOutcomes || []).filter(outcome => outcome.position).map(outcome => ({
                   ...outcome,
                   ...outcome.position,
                   dialogButton: {
