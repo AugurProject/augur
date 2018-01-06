@@ -30,11 +30,11 @@ exports.seed = async (knex: Knex): Promise<any> => {
       unrealizedProfitLoss: "0.03",
     }, {
       account: "0x0000000000000000000000000000000000000b0b",
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketID: "0x0000000000000000000000000000000000000019",
       outcome: 3,
       numShares: "0",
       numSharesAdjustedForUserIntention: "0",
-      realizedProfitLoss: "0",
+      realizedProfitLoss: "0.1",
       unrealizedProfitLoss: "0",
     }, {
       account: "0x0000000000000000000000000000000000000b0b",
@@ -42,7 +42,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       outcome: 4,
       numShares: "0.3",
       numSharesAdjustedForUserIntention: "0",
-      realizedProfitLoss: "0",
+      realizedProfitLoss: "0.10",
       unrealizedProfitLoss: "0.03",
     }, {
       account: "0x0000000000000000000000000000000000000b0b",
