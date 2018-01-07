@@ -22,7 +22,7 @@ This will result in the `build` directory being create.  You'll ultimately point
 
 Before you add the files to IPFS, confirm that you have the current version pointed to by the IP_NS_ hash value.
 
-You can find this value on the landing page of [augur.net](augur.net)
+You can find this value on the landing page of [augur.net](http://augur.net)
 
     ipfs name resolve <ipns hash>
 
