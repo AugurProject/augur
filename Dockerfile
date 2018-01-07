@@ -1,18 +1,19 @@
-FROM node:8-wheezy
+FROM node:8-stretch
 
 ENV PATH /root/.yarn/bin:$PATH
 
 # begin install yarn
 # libusb-dev required for node-hid, required for ledger support (ethereumjs-ledger)
 RUN apt-get -y update \
-  && apt-get -y install git python make g++ bash curl binutils tar libusb-dev build-essential nginx \
+  && apt-get -y install git python make g++ bash curl binutils tar libusb-1.0-0-dev libudev-dev build-essential nginx \
   && /bin/bash \
   && touch ~/.bashrc \
   && curl -o- -L https://yarnpkg.com/install.sh | bash \
-  && apt-get -y remove curl binutils \
   && echo "pid /var/run/nginx.pid;" >> /etc/nginx/nginx.conf \
   && echo "daemon off;" >> /etc/nginx/nginx.conf
 # end install yarn
+
+RUN npm install node-hid
 
 # Vhost to serve files
 COPY support/nginx-default.conf /etc/nginx/conf.d/default.conf
