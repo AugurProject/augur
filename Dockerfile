@@ -31,6 +31,7 @@ RUN git init \
 
 COPY . /augur
 COPY ipfs-configure.sh /augur/ipfs-configure.sh
+COPY ipfs-run.sh /augur/ipfs-run.sh
 
 # workaround a bug when running inside an alpine docker image
 RUN rm /augur/yarn.lock
@@ -45,10 +46,17 @@ RUN git rev-parse HEAD > /augur/build/git-hash.txt \
   && ./install.sh \
   && ipfs init \
   && chmod 755 /augur/ipfs-configure.sh \
+  && chmod 755 /augur/ipfs-run.sh \
   && cd /augur \
   && /bin/bash -c /augur/ipfs-configure.sh
 
 EXPOSE 8080
 
 WORKDIR /augur
-ENTRYPOINT [ "nginx" ]
+# Add Tini
+ENV TINI_VERSION v0.16.1
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
+
+CMD ["bash", "/augur/ipfs-run.sh"]
