@@ -5,7 +5,7 @@ ENV PATH /root/.yarn/bin:$PATH
 # begin install yarn
 # libusb-dev required for node-hid, required for ledger support (ethereumjs-ledger)
 RUN apt-get -y update \
-  && apt-get -y install git python make g++ bash curl binutils tar libusb-1.0-0-dev libudev-dev build-essential nginx \
+  && apt-get -y install git python make g++ bash curl binutils tar libusb-1.0-0-dev nginx \
   && /bin/bash \
   && touch ~/.bashrc \
   && curl -o- -L https://yarnpkg.com/install.sh | bash \
