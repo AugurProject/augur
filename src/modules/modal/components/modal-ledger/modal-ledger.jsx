@@ -1,10 +1,10 @@
 import React from 'react'
 
-import Styles from 'modules/modal/components/modal-ledger/modal-ledger'
+import Styles from 'modules/modal/components/modal-ledger/modal-ledger.styles'
 
 const ModalLedger = p => (
   <section className={Styles.ModalLedger}>
-    <span>Ledger barh</span>
+    <span>FAAAAAK</span>
   </section>
 )
 
