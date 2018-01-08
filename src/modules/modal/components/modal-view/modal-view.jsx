@@ -1,51 +1,28 @@
-import React, { Component } from 'react'
-// import PropTypes from 'proptypes'
-// import { Switch, Route } from 'react-router-dom'
-
-// import parseQuery from 'modules/routes/helpers/parse-query'
-// import makeQuery from 'modules/routes/helpers/make-query'
+import React from 'react'
+import PropTypes from 'prop-types'
 
 import ModalLedger from 'modules/modal/containers/modal-ledger'
-import ParamsRoute from 'modules/routes/components/params-route/params-route'
 
-// import { MODAL_PARAM_NAME } from 'modules/routers/constants/param-names'
+import { MODAL_LEDGER } from 'modules/modal/constants/modal-types'
 
 import Styles from 'modules/modal/components/modal-view/modal-view.styles'
 
-export default class ModalView extends Component {
-  constructor(props) {
-    super(props)
+const ModalView = p => (
+  <section
+    className={Styles.ModalView}
+  >
+    <div
+      className={Styles.ModalView__content}
+    >
+      {p.modal.type === MODAL_LEDGER &&
+        <ModalLedger />
+      }
+    </div>
+  </section>
+)
 
-    // this.updateIsModalVisible = this.updateIsModalVisible.bind(this)
-  }
+export default ModalView
 
-  componentWillMount() {
-
-  }
-
-  componentWillUnmount() {
-
-  }
-
-  // isModalVisible() {
-  //   // TODO -- determine
-  //   // this.props.updateIsModalVisible(isModalVisible)
-  // }
-
-  render() {
-    return (
-      <section
-        className={Styles.ModalView}
-      >
-        <div
-          className={Styles.ModalView__content}
-        >
-          <ParamsRoute
-            component={ModalLedger}
-            params={{ test: 'test', aight: 'dood' }}
-          />
-        </div>
-      </section>
-    )
-  }
+ModalView.propTypes = {
+  modal: PropTypes.object.isRequired
 }

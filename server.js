@@ -31,8 +31,8 @@ app.listen = function () {
   let server = null;
 
   if (process.env.USE_SSL === 'true') {
-    const key = fs.readFileSync('augur-dev.key');
-    const cert = fs.readFileSync('augur-dev.crt');
+    const key = fs.readFileSync('augur-local.key');
+    const cert = fs.readFileSync('augur-local.crt');
 
     server = https.createServer(
       {
