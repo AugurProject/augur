@@ -1,11 +1,12 @@
 FROM node:8-stretch
 
 ENV PATH /root/.yarn/bin:$PATH
+ARG ipfskey=augur-ui
 
 # begin install yarn
 # libusb-dev required for node-hid, required for ledger support (ethereumjs-ledger)
 RUN apt-get -y update \
-  && apt-get -y install git python make g++ bash curl binutils tar libusb-1.0-0-dev nginx \
+  && apt-get -y install git python make g++ bash curl binutils tar libusb-1.0-0-dev cron nginx \
   && /bin/bash \
   && touch ~/.bashrc \
   && curl -o- -L https://yarnpkg.com/install.sh | bash \
@@ -32,12 +33,14 @@ RUN git init \
 COPY . /augur
 COPY ipfs-configure.sh /augur/ipfs-configure.sh
 COPY ipfs-run.sh /augur/ipfs-run.sh
+COPY ipfs-crontab /etc/cron.d/ipfs-cron
 
 # workaround a bug when running inside an alpine docker image
 RUN rm /augur/yarn.lock
 
 RUN ETHEREUM_NETWORK=rinkeby yarn build --dev
 
+# need arg to pass in for augur-ui (production) and augur-dev (dev)
 RUN git rev-parse HEAD > /augur/build/git-hash.txt \
   && git log -1 > /augur/build/git-commit.txt \
   && curl -O https://dist.ipfs.io/go-ipfs/v0.4.13/go-ipfs_v0.4.13_linux-amd64.tar.gz \
@@ -45,8 +48,11 @@ RUN git rev-parse HEAD > /augur/build/git-hash.txt \
   && cd go-ipfs \
   && ./install.sh \
   && ipfs init \
-  && chmod 755 /augur/ipfs-configure.sh \
+  && ipfs key gen --type=rsa --size=2048 ${ipfskey} \
   && chmod 755 /augur/ipfs-run.sh \
+  && chmod 755 /augur/ipfs-configure.sh \
+  && chmod 0644 /etc/cron.d/ipfs-cron \
+  && touch /var/log/cron.log \
   && cd /augur \
   && /bin/bash -c /augur/ipfs-configure.sh
 

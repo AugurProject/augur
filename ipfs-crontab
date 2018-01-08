@@ -1,0 +1,1 @@
+0 */12 * * * ipfs name publish --key=augur-ui $(cat /augur/ipfs-deploy/NEW_BUILD_HASH)

@@ -2,8 +2,10 @@
 
 ipfs daemon &
 sleep 10s
-ipfs key gen --type=rsa --size=2048 augur-ui
-export HASH_KEY=$(ipfs add -r build/ | tail -n 1 | awk '{print $2}')
-echo "Using hash key of $HASH_KEY"
-ipfs name publish --key=augur-ui $HASH_KEY
-echo `ipfs ls /ipfs/$HASH_KEY`
+export NEW_BUILD_HASH=$(ipfs add -r build/ | tail -n 1 | awk '{print $2}')
+echo "Using hash key of $NEW_BUILD_HASH"
+export IPFS_KEY=$(ipfs key list | tail -1)
+echo "Using ipfs key: $IPFS_KEY"
+ipfs name publish --key=$IPFS_KEY $NEW_BUILD_HASH
+mkdir /augur/ipfs-deploy
+echo $NEW_BUILD_HASH > /augur/ipfs-deploy/NEW_BUILD_HASH
