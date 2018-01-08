@@ -90,11 +90,7 @@ export default class Ledger extends Component {
       this.onEnableContractSupportRequest
     )
 
-    console.log('ledgerEthereum -- ', ledgerEthereum)
-
     const address = await ledgerEthereum.getAddressByBip44Index(0)
-
-    console.log('address -- ', address)
 
     if (address) {
       return this.props.loginWithLedger(address, ledgerEthereum)
