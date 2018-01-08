@@ -10,7 +10,6 @@ RUN apt-get -y update \
   && /bin/bash \
   && touch ~/.bashrc \
   && curl -o- -L https://yarnpkg.com/install.sh | bash \
-  && echo "pid /var/run/nginx.pid;" >> /etc/nginx/nginx.conf \
   && echo "daemon off;" >> /etc/nginx/nginx.conf
 # end install yarn
 
@@ -55,7 +54,7 @@ RUN git rev-parse HEAD > /augur/build/git-hash.txt \
   && cd /augur \
   && /bin/bash -c /augur/ipfs-configure.sh
 
-EXPOSE 8080
+EXPOSE 8181
 
 WORKDIR /augur
 # Add Tini
