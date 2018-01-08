@@ -7,14 +7,16 @@ export const collectMarketCreatorFees = (marketId, callback = logError) => (disp
   augur.api.Market.getMarketCreatorMailbox({ tx: { to: marketId } }, (err, marketMailboxAddress) => {
     if (err) return callback(err)
     augur.api.Cash.getBalance({ _address: marketMailboxAddress }, (err, cashBal) => {
-      const cashBalance = speedomatic.unfix(cashBal, 'number')
+      if (err) return callback(err)
+      const cashBalance = speedomatic.bignum(cashBal)
       augur.rpc.eth.getBalance([marketMailboxAddress, 'latest'], (attoEthBalance) => {
-        const ethBalance = speedomatic.unfix(attoEthBalance, 'number')
-        const combined = ethBalance + cashBalance
+        const ethBalance = speedomatic.bignum(attoEthBalance)
+        const combined = speedomatic.unfix(ethBalance.add(cashBalance), 'string')
         if (combined > 0) {
           augur.api.Mailbox.withdrawEther({ tx: { to: marketMailboxAddress } }, logError)
           dispatch(loadMarketsInfo([marketId]))
         }
+        callback(null, combined)
       })
     })
   })
