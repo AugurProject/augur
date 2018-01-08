@@ -85,8 +85,8 @@ const MarketProperties = (p) => {
         { p.linkType && p.linkType === TYPE_COLLECT_FEES &&
           <button
             className={Styles.MarketProperties__trade}
-            disabled={(p.unclaimedCreatorFees.formattedValue > 0)}
-            onClick={e => {
+            disabled={(p.unclaimedCreatorFees.formattedValue === 0)}
+            onClick={() => {
               p.collectMarketCreatorFees(p.id)
             }}
           >
