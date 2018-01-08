@@ -201,11 +201,11 @@ describe("blockchain/log-processors/market-created", () => {
         minPrice: "0",
         maxPrice: "1",
         description: "this is a test market",
+        outcomes: ["test outcome 0", "test outcome 1", "test outcome 2", "test outcome 3"],
         extraInfo: {
           tags: ["TEST_TAG_1", "TEST_TAG_2"],
           longDescription: "this is the long description of a test market",
           resolutionSource: "https://www.trusted-third-party-co.com",
-          outcomeNames: ["test outcome 0", "test outcome 1", "test outcome 2", "test outcome 3"],
         },
       },
       augur: {
