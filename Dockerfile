@@ -29,9 +29,9 @@ RUN git init \
 # end create caching layer
 
 COPY . /augur
-COPY ipfs-configure.sh /augur/ipfs-configure.sh
-COPY ipfs-run.sh /augur/ipfs-run.sh
-COPY ipfs-crontab /etc/cron.d/ipfs-cron
+COPY support/ipfs-configure.sh /augur/ipfs-configure.sh
+COPY support/ipfs-run.sh /augur/ipfs-run.sh
+COPY support/ipfs-crontab /etc/cron.d/ipfs-cron
 
 # workaround a bug when running inside an alpine docker image
 RUN rm /augur/yarn.lock
@@ -53,7 +53,7 @@ RUN git rev-parse HEAD > /augur/build/git-hash.txt \
   && cd /augur \
   && /bin/bash -c /augur/ipfs-configure.sh
 
-EXPOSE 8181
+EXPOSE 80
 
 WORKDIR /augur
 # Add Tini
