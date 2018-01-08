@@ -22,7 +22,7 @@ function formatLogMessage(contractName, eventName, message) {
             marketCreationFee: speedomatic.unfix(message.marketCreationFee, "string"),
             topic: decodeTag(message.topic),
           };
-          if (message.marketType === 1) {
+          if (message.marketType === "1") {
             formattedMessage.outcomes = message.outcomes.map(function (outcome) {
               return decodeTag(outcome);
             });
