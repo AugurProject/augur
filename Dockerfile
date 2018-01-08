@@ -1,7 +1,6 @@
 FROM node:8-stretch
 
 ENV PATH /root/.yarn/bin:$PATH
-ARG ipfskey=self
 
 # begin install yarn
 # libusb-dev required for node-hid, required for ledger support (ethereumjs-ledger)
