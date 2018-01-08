@@ -1,7 +1,7 @@
 FROM node:8-stretch
 
 ENV PATH /root/.yarn/bin:$PATH
-ARG ipfskey=augur-ui
+ARG ipfskey=self
 
 # begin install yarn
 # libusb-dev required for node-hid, required for ledger support (ethereumjs-ledger)
@@ -48,7 +48,6 @@ RUN git rev-parse HEAD > /augur/build/git-hash.txt \
   && cd go-ipfs \
   && ./install.sh \
   && ipfs init \
-  && ipfs key gen --type=rsa --size=2048 ${ipfskey} \
   && chmod 755 /augur/ipfs-run.sh \
   && chmod 755 /augur/ipfs-configure.sh \
   && chmod 0644 /etc/cron.d/ipfs-cron \

@@ -20,7 +20,7 @@ This will result in the `build` directory being create.  You'll ultimately point
 
 ## Pin Build
 
-Before you add the files to IPFS, confirm that you have the current version pointed to by the IP_NS_ hash value.
+Before you add the files to IPFS, confirm that you have the current version pointed to by the IPNS hash value.
 
 You can find this value on the landing page of [augur.net](http://augur.net)
 
