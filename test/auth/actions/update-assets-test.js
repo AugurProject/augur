@@ -12,10 +12,11 @@ const REP = 'rep'
 describe('modules/auth/actions/update-assets.js', () => {
   const mockStore = configureMockStore([thunk])
 
-  const updateLoginAccount = sinon.stub().returns({
+  const stubbedUpdateLoginAccount = sinon.stub().returns({
     type: 'updateLoginAccount'
   })
-  updateAssetsRewireAPI.__Rewire__('updateLoginAccount', updateLoginAccount)
+
+  updateAssetsRewireAPI.__Rewire__('updateLoginAccount', stubbedUpdateLoginAccount)
 
   const test = t => it(t.description, (done) => {
     const store = mockStore(t.state || {})
@@ -24,7 +25,7 @@ describe('modules/auth/actions/update-assets.js', () => {
   })
 
   afterEach(() => {
-    updateLoginAccount.reset()
+    stubbedUpdateLoginAccount.resetHistory()
   })
 
   test({
@@ -36,7 +37,7 @@ describe('modules/auth/actions/update-assets.js', () => {
     assertions: (store, done) => {
       store.dispatch(updateAssets())
 
-      assert(updateLoginAccount.calledOnce, `didn't call 'updateLoginAccount' once as expected`)
+      assert(stubbedUpdateLoginAccount.calledOnce, `didn't call 'updateLoginAccount' once as expected`)
 
       done()
     }
@@ -89,7 +90,7 @@ describe('modules/auth/actions/update-assets.js', () => {
               callback: () => { }
             }
 
-            sinon.stub(callbackStub, 'callback', err => assert.deepEqual(err, ERR, `didn't call the callback with the expected error`))
+            sinon.stub(callbackStub, 'callback').callsFake(err => assert.deepEqual(err, ERR, `didn't call the callback with the expected error`))
 
             store.dispatch(updateAssets(callbackStub.callback))
 
@@ -106,13 +107,11 @@ describe('modules/auth/actions/update-assets.js', () => {
             }
           },
           assertions: (store, done) => {
-            updateAssetsRewireAPI.__Rewire__('augur', {
-
-            })
+            updateAssetsRewireAPI.__Rewire__('augur', {})
 
             store.dispatch(updateAssets())
 
-            assert(updateLoginAccount.calledOnce, `didn't call 'updateLoginAccount' once as expected`)
+            assert(stubbedUpdateLoginAccount.calledOnce, `didn't call 'updateLoginAccount' once as expected`)
 
             done()
           }
@@ -135,7 +134,7 @@ describe('modules/auth/actions/update-assets.js', () => {
 
             store.dispatch(updateAssets())
 
-            assert(updateLoginAccount.calledOnce, `didn't call 'updateLoginAccount' once as expected`)
+            assert(stubbedUpdateLoginAccount.calledOnce, `didn't call 'updateLoginAccount' once as expected`)
 
             done()
           }
@@ -190,7 +189,7 @@ describe('modules/auth/actions/update-assets.js', () => {
             const callbackStub = {
               callback: () => { }
             }
-            sinon.stub(callbackStub, 'callback', (err, balances) => {
+            sinon.stub(callbackStub, 'callback').callsFake((err, balances) => {
               assert.isNull(err, `didn't call the callback with the expected error`)
               assert.deepEqual(balances, testValue, `didn't call the callback with the expected balances`)
             })

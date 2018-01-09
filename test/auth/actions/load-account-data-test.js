@@ -20,11 +20,11 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         './update-login-account': UpdateLoginAccount
       })
       LoadAccountDataFromLocalStorage.loadAccountDataFromLocalStorage = sinon.stub().returns({ type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE' })
-      sinon.stub(UpdateAssets, 'updateAssets', callback => (dispatch) => {
+      sinon.stub(UpdateAssets, 'updateAssets').callsFake(callback => (dispatch) => {
         dispatch({ type: 'UPDATE_ASSETS' })
         if (callback) callback(null, t.blockchain.balances)
       })
-      sinon.stub(UpdateLoginAccount, 'updateLoginAccount', data => (dispatch) => {
+      sinon.stub(UpdateLoginAccount, 'updateLoginAccount').callsFake(data => (dispatch) => {
         dispatch({ type: 'UPDATE_LOGIN_ACCOUNT', data })
       })
       store.dispatch(action.loadAccountData(t.params.account))
