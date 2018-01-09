@@ -37,7 +37,7 @@ COPY support/ipfs-crontab /etc/cron.d/ipfs-cron
 # workaround a bug when running inside an alpine docker image
 RUN rm /augur/yarn.lock
 
-RUN ETHEREUM_NETWORK={$ethereum_network} yarn build --dev
+RUN ETHEREUM_NETWORK=$ethereum_network yarn build --dev
 
 # need arg to pass in for augur-ui (production) and augur-dev (dev)
 RUN git rev-parse HEAD > /augur/build/git-hash.txt \
