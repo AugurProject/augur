@@ -31,7 +31,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(loadMarketsInfo(marketIDs))
     dispatch(loadUnclaimedFees(marketIDs))
   })),
-  collectMarketCreatorFees: (marketId, callback = logError) => dispatch(collectMarketCreatorFees(marketId, callback)),
+  collectMarketCreatorFees: (marketId, callback) => dispatch(collectMarketCreatorFees(marketId, callback)),
   loadMarketsInfo: marketIDs => dispatch(loadMarketsInfo(marketIDs)),
   toggleFavorite: marketID => dispatch(toggleFavorite(marketID)),
 })
