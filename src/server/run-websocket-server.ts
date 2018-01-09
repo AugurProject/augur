@@ -13,7 +13,7 @@ import { Subscriptions } from "./subscriptions";
 import * as fs from "fs";
 import * as https from "https";
 import * as http from "http";
-import { clearInterval } from "timers";
+import { clearInterval, setInterval } from "timers";
 
 export function runWebsocketServer(db: Knex, app: express.Application, webSocketConfigs: WebSocketConfigs): Array<WebSocket.Server> {
 
