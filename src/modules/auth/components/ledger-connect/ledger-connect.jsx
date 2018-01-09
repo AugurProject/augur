@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
 import { LedgerEthereum, BrowserLedgerConnectionFactory, Network } from 'ethereumjs-ledger'
 
 import { Alert } from 'modules/common/components/icons/icons'

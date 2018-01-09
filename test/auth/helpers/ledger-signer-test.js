@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 
-import { default as ledgerSigner, __RewireAPI__ } from 'modules/auth/helpers/ledger-signer'
+import ledgerSigner, { __RewireAPI__ } from 'modules/auth/helpers/ledger-signer'
 
 describe('modules/auth/helpers/ledger-signer', () => {
   const middlewares = [thunk]
