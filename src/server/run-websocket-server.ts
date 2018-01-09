@@ -2,6 +2,7 @@ import * as express from "express";
 import * as WebSocket from "ws";
 import * as Knex from "knex";
 import { EventEmitter } from "events";
+import { clearInterval, setInterval } from "timers";
 import { augurEmitter } from "../events";
 import { JsonRpcRequest, WebSocketConfigs } from "../types";
 import { addressFormatReviver } from "./address-format-reviver";
@@ -13,7 +14,6 @@ import { Subscriptions } from "./subscriptions";
 import * as fs from "fs";
 import * as https from "https";
 import * as http from "http";
-import { clearInterval, setInterval } from "timers";
 
 export function runWebsocketServer(db: Knex, app: express.Application, webSocketConfigs: WebSocketConfigs): Array<WebSocket.Server> {
 
