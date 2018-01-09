@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import makePath from 'modules/routes/helpers/make-path'
 
 import PositionsMarketsList from 'modules/portfolio/components/positions-markets-list/positions-markets-list'
-import { TYPE_CHALLENGE } from 'modules/market/constants/link-types'
+import { TYPE_CHALLENGE, TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import PortfolioStyles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles'
 import { MARKETS } from 'modules/routes/constants/views'
 
@@ -22,6 +22,7 @@ export default class Positions extends Component {
     loadAccountTrades: PropTypes.func.isRequired,
     marketsCount: PropTypes.number.isRequired,
     registerBlockNumber: PropTypes.number,
+    claimTradingProceeds: PropTypes.func.isRequired,
   }
 
   componentWillMount() {
@@ -66,6 +67,8 @@ export default class Positions extends Component {
             location={p.location}
             history={p.history}
             positionsDefault={false}
+            linkType={TYPE_CLAIM_PROCEEDS}
+            claimTradingProceeds={p.claimTradingProceeds}
           />
         </div>}
         { p.marketsCount === 0 &&

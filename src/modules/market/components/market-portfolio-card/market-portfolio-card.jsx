@@ -20,7 +20,8 @@ export default class MarketPortfolioCard extends React.Component {
     scalarShareDenomination: PropTypes.object.isRequired,
     orderCancellation: PropTypes.object.isRequired,
     linkType: PropTypes.string,
-    positionsDefault: PropTypes.bool
+    positionsDefault: PropTypes.bool,
+    claimTradingProceeds: PropTypes.func,
   }
 
   static defaultProps = {
@@ -133,27 +134,38 @@ export default class MarketPortfolioCard extends React.Component {
           </div>
         </section>
         <section className={Styles.MarketCard__tablesection}>
-          <div className={Styles.MarketCard__headingcontainer}>
-            <h1 className={Styles.MarketCard__tableheading}>
-              My Positions
-            </h1>
-            {p.linkType &&
-              <MarketLink
-                className={Styles.MarketCard__action}
-                id={p.market.id}
-                formattedDescription={p.market.description}
-                linkType={p.linkType}
+          { myPositionOutcomes && myPositionOutcomes.filter(outcome => outcome.position).length !== 0 &&
+            <div className={Styles.MarketCard__headingcontainer}>
+              <h1 className={Styles.MarketCard__tableheading}>
+                My Positions
+              </h1>
+              {p.linkType && p.linkType !== TYPE_CLAIM_PROCEEDS &&
+                <MarketLink
+                  className={Styles.MarketCard__action}
+                  id={p.market.id}
+                  formattedDescription={p.market.description}
+                  linkType={p.linkType}
+                >
+                  { p.buttonText || buttonText }
+                </MarketLink>
+              }
+              {p.linkType && p.linkType === TYPE_CLAIM_PROCEEDS && (myPositionOutcomes && myPositionOutcomes.filter(outcome => outcome.position).length > 0 && myPositionOutcomes.filter(outcome => outcome.position && outcome.position.unrealizedNet.formattedValue > 0).length > 0) &&
+                <button
+                  className={Styles.MarketCard__action}
+                  onClick={() => p.claimTradingProceeds([p.market.id])
+                  }
+                >
+                  { p.buttonText || buttonText }
+                </button>
+              }
+              <button
+                className={Styles.MarketCard__tabletoggle}
+                onClick={() => this.toggleTable('myPositions')}
               >
-                { p.buttonText || buttonText }
-              </MarketLink>
-            }
-            <button
-              className={Styles.MarketCard__tabletoggle}
-              onClick={() => this.toggleTable('myPositions')}
-            >
-              <CaretDropdown flipped={this.state.tableOpen.myPositions} />
-            </button>
-          </div>
+                <CaretDropdown flipped={this.state.tableOpen.myPositions} />
+              </button>
+            </div>
+          }
           {this.state.tableOpen.myPositions &&
             <MarketTable
               titleKeyPairs={[
@@ -236,8 +248,8 @@ export default class MarketPortfolioCard extends React.Component {
                     dialogButton: {
                       label: 'Close',
                       dialogText: `Cancel order of ${order.unmatchedShares.formatted}
-                                   shares of ${outcome.name} at ${order.purchasePrice.formatted} ETH?`,
-                      confirm: outcome.position.closePosition
+                                   shares of ${outcome.name} at ${order.avgPrice.formatted} ETH?`,
+                      confirm: outcome.position && outcome.position.closePosition
                     }
                   }))
 

@@ -16,18 +16,16 @@ export default function () {
   return generateMarketsPositionsSummary(myPositions)
 }
 
-export const generateOutcomePositionSummary = memoize((adjustedPosition, outcomeAccountTrades, lastPrice, orderBook) => {
-  if ((!outcomeAccountTrades || !outcomeAccountTrades.length) && !adjustedPosition) {
+export const generateOutcomePositionSummary = memoize((adjustedPosition) => {
+  if (!adjustedPosition) {
     return null
   }
   const outcomePositions = Array.isArray(adjustedPosition) ? adjustedPosition.length : 1
-  // const trades = outcomeAccountTrades ? outcomeAccountTrades.slice() : []
-  // const { realized, unrealized, meanOpenPrice } = augur.trading.calculateProfitLoss({ trades, lastPrice })
   const qtyShares = accumulate(adjustedPosition, 'numShares')
   const realized = accumulate(adjustedPosition, 'realizedProfitLoss')
   const unrealized = accumulate(adjustedPosition, 'unrealizedProfitLoss')
   // todo: check if this calculation is correct for UI
-  const averagePrice = accumulate(adjustedPosition, 'averagePrice') / qtyShares
+  const averagePrice = accumulate(adjustedPosition, 'averagePrice')
   const isClosable = !!new BigNumber(qtyShares || '0').toNumber() // Based on position, can we attempt to close this position
 
   return {
