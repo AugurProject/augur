@@ -1,6 +1,7 @@
 FROM node:8-stretch
 
 ENV PATH /root/.yarn/bin:$PATH
+ARG ethereum_network=rinkeby
 
 # begin install yarn
 # libusb-dev required for node-hid, required for ledger support (ethereumjs-ledger)
@@ -12,10 +13,10 @@ RUN apt-get -y update \
   && echo "daemon off;" >> /etc/nginx/nginx.conf
 # end install yarn
 
-RUN npm install node-hid
+#RUN npm install node-hid
 
 # Vhost to serve files
-COPY support/nginx-default.conf /etc/nginx/conf.d/default.conf
+COPY support/nginx-default.conf /etc/nginx/sites-available/default
 
 # begin create caching layer
 COPY package.json /augur/package.json
@@ -36,7 +37,7 @@ COPY support/ipfs-crontab /etc/cron.d/ipfs-cron
 # workaround a bug when running inside an alpine docker image
 RUN rm /augur/yarn.lock
 
-RUN ETHEREUM_NETWORK=rinkeby yarn build --dev
+RUN ETHEREUM_NETWORK={$ethereum_network} yarn build --dev
 
 # need arg to pass in for augur-ui (production) and augur-dev (dev)
 RUN git rev-parse HEAD > /augur/build/git-hash.txt \
