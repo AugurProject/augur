@@ -2,7 +2,7 @@
 var EventEmitter = require("event-emitter");
 
 var createRpcInterface = function (ethrpc) {
-  return {
+  return EventEmitter({
     constants: ethrpc.constants,
     errors: ethrpc.errors,
     eth: ethrpc.eth,
@@ -25,11 +25,10 @@ var createRpcInterface = function (ethrpc) {
     setDebugOptions: ethrpc.setDebugOptions,
     WsTransport: ethrpc.WsTransport,
     publish: ethrpc.publish,
-  };
+  });
 };
 
 var ethrpc = createRpcInterface(require("ethrpc"));
 ethrpc.createRpcInterface = createRpcInterface;
-EventEmitter(ethrpc);
 
 module.exports = ethrpc;

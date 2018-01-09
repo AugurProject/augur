@@ -9,8 +9,8 @@ global.augur = new Augur();
 augur.rpc.setDebugOptions({ connect: true, broadcast: false });
 
 const ethereumNode = {
-  // http: "http://rinkeby.augur.net:8545",
-  // ws: "ws://rinkeby.augur.net:8546",
+  // http: "http://rinkeby.ethereum.nodes.augur.net",
+  // ws: "ws://rinkeby.ethereum.nodes.augur.net",
   http: "http://127.0.0.1:8545",
   ws: "ws://127.0.0.1:8546",
 };
