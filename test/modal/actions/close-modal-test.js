@@ -10,7 +10,7 @@ describe('modules/modal/actions/close-modal', () => {
     description: 'should return the expected value',
     assertions: () => {
       const actual = closeModal()
-      
+
       const expected = {
         type: CLOSE_MODAL
       }
