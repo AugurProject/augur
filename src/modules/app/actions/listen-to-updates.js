@@ -180,5 +180,21 @@ export function listenToUpdates() {
         }
       },
     }, err => console.log(err || 'Listening for events'))
+    augur.augurNode.on('disconnect', (...args) => {
+      console.log('AugurNode Disconnected')
+      console.log(...args)
+    })
+    augur.augurNode.on('reconnect', (...args) => {
+      console.log('AugurNode Reconnected')
+      console.log(...args)
+    })
+    augur.rpc.on('disconnect', (...args) => {
+      console.log('Ethereum Node Disconnected')
+      console.log(...args)
+    })
+    augur.rpc.on('reconnect', (...args) => {
+      console.log('Ethereum Node Reconnected')
+      console.log(...args)
+    })
   }
 }
