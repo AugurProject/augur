@@ -1,18 +1,21 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
 
-import { CLOSE_MODAL, closeModal } from 'modules/modal/actions/close-modal'
+import { UPDATE_MODAL, updateModal } from 'modules/modal/actions/update-modal'
 
-describe('modules/modal/actions/close-modal', () => {
+describe('modules/modal/actions/update-modal', () => {
   const test = t => it(t.description, () => t.assertions())
 
   test({
     description: 'should return the expected value',
     assertions: () => {
-      const actual = closeModal()
-      
+      const actual = updateModal({ test: 'TEST' })
+
       const expected = {
-        type: CLOSE_MODAL
+        type: UPDATE_MODAL,
+        data: {
+          test: 'TEST'
+        }
       }
 
       assert(actual, expected, `didn't return the expected object`)
