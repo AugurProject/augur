@@ -2,6 +2,7 @@ import * as express from "express";
 import * as WebSocket from "ws";
 import * as Knex from "knex";
 import { EventEmitter } from "events";
+import { clearInterval, setInterval } from "timers";
 import { augurEmitter } from "../events";
 import { JsonRpcRequest, WebSocketConfigs } from "../types";
 import { addressFormatReviver } from "./address-format-reviver";
@@ -39,6 +40,7 @@ export function runWebsocketServer(db: Knex, app: express.Application, webSocket
   servers.forEach((server) => {
     server.on("connection", (websocket: WebSocket): void => {
       const subscriptions = new Subscriptions(augurEmitter);
+      const pingInterval = setInterval(() => websocket.ping(), webSocketConfigs.pingMs || 12000);
 
       websocket.on("message", (data: WebSocket.Data): void => {
         let message: any;
@@ -81,6 +83,7 @@ export function runWebsocketServer(db: Knex, app: express.Application, webSocket
       });
 
       websocket.on("close", () => {
+        clearInterval(pingInterval);
         subscriptions.removeAllListeners();
       });
     });

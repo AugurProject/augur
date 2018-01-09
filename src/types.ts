@@ -42,6 +42,7 @@ export interface BaseTransaction extends BaseTransactionRow {
 }
 
 export interface WebSocketConfigs {
+  pingMs?: number;
   ws?: {[config: string]: any};
   wss?: {[config: string]: any};
 }
