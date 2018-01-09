@@ -10,6 +10,7 @@
     "4": 1490000
   },
   "websocketConfigs": {
+    "pingMs": 12000,
     "ws": {
       "port": 9001
     },

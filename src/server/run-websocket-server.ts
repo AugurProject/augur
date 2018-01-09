@@ -13,6 +13,7 @@ import { Subscriptions } from "./subscriptions";
 import * as fs from "fs";
 import * as https from "https";
 import * as http from "http";
+import { clearInterval } from "timers";
 
 export function runWebsocketServer(db: Knex, app: express.Application, webSocketConfigs: WebSocketConfigs): Array<WebSocket.Server> {
 
@@ -39,6 +40,7 @@ export function runWebsocketServer(db: Knex, app: express.Application, webSocket
   servers.forEach((server) => {
     server.on("connection", (websocket: WebSocket): void => {
       const subscriptions = new Subscriptions(augurEmitter);
+      const pingInterval = setInterval(() => websocket.ping(), webSocketConfigs.pingMs || 12000);
 
       websocket.on("message", (data: WebSocket.Data): void => {
         let message: any;
@@ -81,6 +83,7 @@ export function runWebsocketServer(db: Knex, app: express.Application, webSocket
       });
 
       websocket.on("close", () => {
+        clearInterval(pingInterval);
         subscriptions.removeAllListeners();
       });
     });
