@@ -8,7 +8,7 @@ const ledgerSigner = async (passedArguments, ledgerLib, dispatch) => {
     type: MODAL_LEDGER
   }))
 
-  ledgerLib.signTransactionByBip44Index(...passedArguments)
+  return ledgerLib.signTransactionByBip44Index(...passedArguments)
     .then((res) => {
       dispatch(closeModal())
     })
