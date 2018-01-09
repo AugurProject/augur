@@ -15,7 +15,15 @@ const ModalView = p => (
       className={Styles.ModalView__content}
     >
       {p.modal.type === MODAL_LEDGER &&
-        <ModalLedger />
+        <ModalLedger {...p.modal} />
+      }
+      {p.modal.canClose &&
+        <button
+          className={Styles.ModalView__button}
+          onClick={p.closeModal}
+        >
+          Close
+        </button>
       }
     </div>
   </section>
@@ -24,5 +32,6 @@ const ModalView = p => (
 export default ModalView
 
 ModalView.propTypes = {
-  modal: PropTypes.object.isRequired
+  modal: PropTypes.object.isRequired,
+  closeModal: PropTypes.func.isRequired
 }

@@ -1,6 +1,7 @@
 @import (reference) "~assets/styles/shared";
 
 .ModalView {
+  background-color: fadeout(@color-purple, 10);
   height: 100vh;
   position: fixed;
   width: 100vw;
@@ -15,4 +16,10 @@
   justify-content: center;
   min-height: 100%;
   position: relative;
+}
+
+.ModalView__button {
+  &:extend(.button--white);
+
+  margin-top: 2rem;
 }
