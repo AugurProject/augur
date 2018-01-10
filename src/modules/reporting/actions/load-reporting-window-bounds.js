@@ -4,15 +4,15 @@ import { updateReportingWindowStats } from 'modules/reporting/actions/update-rep
 export const loadReportingWindowBounds = () => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
 
-  augur.api.Universe.getCurrentReportingWindow({ universe: universe.id }, (err, reportingWindow) => {
+  augur.api.Universe.getCurrentFeeWindow({ universe: universe.id }, (err, reportingWindow) => {
     if (err) return
 
-    augur.api.ReportingWindow.getStartTime({ tx: { to: reportingWindow } }, (err, startTime) => {
+    augur.api.FeeWindow.getStartTime({ tx: { to: reportingWindow } }, (err, startTime) => {
       if (err) return
       dispatch(updateReportingWindowStats({ startTime }))
     })
 
-    augur.api.ReportingWindow.getEndTime({ tx: { to: reportingWindow } }, (err, endTime) => {
+    augur.api.FeeWindow.getEndTime({ tx: { to: reportingWindow } }, (err, endTime) => {
       if (err) return
       dispatch(updateReportingWindowStats({ endTime }))
     })

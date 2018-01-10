@@ -9,7 +9,7 @@ import Dropdown from 'modules/common/components/dropdown/dropdown'
 import MarketsList from 'modules/markets/components/markets-list'
 import Styles from 'modules/portfolio/components/markets/markets.styles'
 import PortfolioStyles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles'
-import { TYPE_REPORT, TYPE_TRADE, TYPE_CLOSED } from 'modules/market/constants/link-types'
+import { TYPE_COLLECT_FEES } from 'modules/market/constants/link-types'
 import { constants } from 'services/augurjs'
 import { CREATE_MARKET } from 'modules/routes/constants/views'
 
@@ -215,6 +215,7 @@ class MyMarkets extends Component {
   render() {
     const p = this.props
     const s = this.state
+    const haveMarkets = p.myMarkets && !!p.myMarkets.length
 
     return (
       <section className={Styles.Markets}>
@@ -242,7 +243,7 @@ class MyMarkets extends Component {
             </div>
           </div>
         }
-        {p.myMarkets && !!p.myMarkets.length &&
+        {haveMarkets &&
           <MarketsList
             isLogged={p.isLogged}
             markets={s.openMarkets}
@@ -252,13 +253,14 @@ class MyMarkets extends Component {
             scalarShareDenomination={p.scalarShareDenomination}
             toggleFavorite={p.toggleFavorite}
             loadMarketsInfo={p.loadMarketsInfo}
-            linkType={TYPE_TRADE}
+            linkType={TYPE_COLLECT_FEES}
             outstandingReturns
             paginationPageParam="open"
+            collectMarketCreatorFees={p.collectMarketCreatorFees}
           />
         }
-        {s.filteredMarketsOpen.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
-        {p.myMarkets && !!p.myMarkets.length &&
+        {haveMarkets && s.filteredMarketsOpen.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
+        {haveMarkets &&
           <div
             className={Styles.Markets__SortBar}
           >
@@ -279,7 +281,7 @@ class MyMarkets extends Component {
             </div>
           </div>
         }
-        {p.myMarkets && !!p.myMarkets.length &&
+        {haveMarkets &&
           <MarketsList
             isLogged={p.isLogged}
             markets={s.reportingMarkets}
@@ -289,13 +291,13 @@ class MyMarkets extends Component {
             scalarShareDenomination={p.scalarShareDenomination}
             toggleFavorite={p.toggleFavorite}
             loadMarketsInfo={p.loadMarketsInfo}
-            linkType={TYPE_REPORT}
+            linkType={TYPE_COLLECT_FEES}
             outstandingReturns
             paginationPageParam="reporting"
           />
         }
-        {s.filteredMarketsReporting.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
-        {p.myMarkets && !!p.myMarkets.length &&
+        {haveMarkets && s.filteredMarketsReporting.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
+        {haveMarkets &&
           <div
             className={Styles.Markets__SortBar}
           >
@@ -316,7 +318,7 @@ class MyMarkets extends Component {
             </div>
           </div>
         }
-        {p.myMarkets && !!p.myMarkets.length &&
+        {haveMarkets &&
           <MarketsList
             isLogged={p.isLogged}
             markets={s.finalMarkets}
@@ -326,12 +328,12 @@ class MyMarkets extends Component {
             scalarShareDenomination={p.scalarShareDenomination}
             toggleFavorite={p.toggleFavorite}
             loadMarketsInfo={p.loadMarketsInfo}
-            linkType={TYPE_CLOSED}
+            linkType={TYPE_COLLECT_FEES}
             outstandingReturns
             paginationPageParam="final"
           />
         }
-        {s.filteredMarketsFinal.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
+        {haveMarkets && s.filteredMarketsFinal.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
         {(p.myMarkets == null || (p.myMarkets && p.myMarkets.length === 0)) &&
           <div className={PortfolioStyles.NoMarkets__container} >
             <span>You haven&apos;t created any markets.</span>

@@ -24,6 +24,7 @@ export default class MarketsList extends Component {
     linkType: PropTypes.string,
     showPagination: PropTypes.bool,
     outstandingReturns: PropTypes.bool,
+    collectMarketCreatorFees: PropTypes.func,
   }
 
   static defaultProps = {
@@ -112,6 +113,7 @@ export default class MarketsList extends Component {
                   location={p.location}
                   history={p.history}
                   outstandingReturns={p.outstandingReturns}
+                  collectMarketCreatorFees={p.collectMarketCreatorFees}
                 />
               )
             }

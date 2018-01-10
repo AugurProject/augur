@@ -10,6 +10,7 @@ import getScalarShareDenomination from 'modules/market/selectors/scalar-share-de
 import getOrderCancellation from 'modules/bids-asks/selectors/order-cancellation'
 import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades'
 import { triggerTransactionsExport } from 'modules/transactions/actions/trigger-transactions-export'
+import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
 import { constants } from 'services/augurjs'
 
 const mapStateToProps = (state) => {
@@ -50,6 +51,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
   loadAccountTrades: () => dispatch(loadAccountTrades()),
   triggerTransactionsExport: () => dispatch(triggerTransactionsExport()),
+  claimTradingProceeds: marketIds => dispatch(claimTradingProceeds(marketIds)),
 })
 
 const getPositionsMarkets = memoize((positions, openOrders) => Array.from(new Set([...positions.markets, ...openOrders])), { max: 1 })
