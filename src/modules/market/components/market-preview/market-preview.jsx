@@ -40,6 +40,7 @@ MarketPreview.propTypes = {
   cardStyle: PropTypes.string,
   linkType: PropTypes.string,
   outstandingReturns: PropTypes.bool,
+  collectMarketCreatorFees: PropTypes.func,
 }
 
 export default MarketPreview
