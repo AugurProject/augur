@@ -33,6 +33,13 @@
     "test": {
       "presets": ["es2015", "stage-0", "react"],
       "plugins": [
+        [
+          "transform-runtime",
+          {
+            "polyfill": false,
+            "regenerator": true
+          }
+        ],
         "rewire",
         ["module-resolver", {
           "root": ["./src", "./test"],

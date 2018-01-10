@@ -49,20 +49,20 @@ describe('modules/portfolio/selectors/nav-items', () => {
     selectLinks: () => {}
   }
 
-  const stubbedMyPositionsSummary = sinon.stub(selectors, 'selectMyPositionsSummary', () => (
+  const stubbedMyPositionsSummary = sinon.stub(selectors, 'selectMyPositionsSummary').callsFake(() => (
     {
       numPositions: formatNumber(10, { denomination: 'positions' }),
       totalNet: formatEtherTokens(2)
     }
   ))
-  const stubbedMyMarketsSummary = sinon.stub(selectors, 'selectMyMarketsSummary', () => (
+  const stubbedMyMarketsSummary = sinon.stub(selectors, 'selectMyMarketsSummary').callsFake(() => (
     {
       numMarkets: 30,
       totalValue: 10
     }
   ))
 
-  const stubbedMyReportsSummary = sinon.stub(selectors, 'selectMyReportsSummary', () => (
+  const stubbedMyReportsSummary = sinon.stub(selectors, 'selectMyReportsSummary').callsFake(() => (
     {
       numReports: 10,
       netRep: 5

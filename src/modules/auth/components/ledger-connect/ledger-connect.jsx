@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
 import { LedgerEthereum, BrowserLedgerConnectionFactory, Network } from 'ethereumjs-ledger'
 
 import { Alert } from 'modules/common/components/icons/icons'
@@ -30,7 +29,8 @@ export default class Ledger extends Component {
     this.LedgerEthereum = null
 
     this.state = {
-      ledgerState: null
+      ledgerState: null,
+      displayInstructions: false
     }
 
     this.connectLedger = this.connectLedger.bind(this)
@@ -38,6 +38,7 @@ export default class Ledger extends Component {
     this.onOpenEthereumAppRequest = this.onOpenEthereumAppRequest.bind(this)
     this.onSwitchLedgerModeRequest = this.onSwitchLedgerModeRequest.bind(this)
     this.onEnableContractSupportRequest = this.onEnableContractSupportRequest.bind(this)
+    this.updateDisplayInstructions = this.updateDisplayInstructions.bind(this)
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -45,7 +46,7 @@ export default class Ledger extends Component {
       nextState.ledgerState !== this.LEDGER_STATES.ATTEMPTING_CONNECTION &&
       this.state.ledgerState !== nextState.ledgerState
     ) {
-      // this.updateDisplayInstructions(true)
+      this.updateDisplayInstructions(true)
     }
   }
 
@@ -97,6 +98,10 @@ export default class Ledger extends Component {
     this.setState({ ledgerState: this.LEDGER_STATES.OTHER_ISSUE })
   }
 
+  updateDisplayInstructions(displayInstructions) {
+    this.setState({ displayInstructions })
+  }
+
   render() {
     const s = this.state
 
@@ -113,34 +118,34 @@ export default class Ledger extends Component {
                 .catch(() => this.setState({ ledgerState: this.LEDGER_STATES.OTHER_ISSUE }))
             }}
           >
-            {s.ledgerState !== this.ATTEMPTING_CONNECTION ?
+            {s.ledgerState !== this.LEDGER_STATES.ATTEMPTING_CONNECTION ?
               'Connect Ledger' :
-              <Spinner />
+              <Spinner light />
             }
           </button>
         </div>
-        {s.ledgerState &&
-        <div className={classNames(Styles.LedgerConnect__messages, { [Styles[`LedgerConnect__messages--visible`]]: s.ledgerState })}>
-          {Alert}
-          <h3>Make sure you have: </h3>
-          <ul>
-            <li>
-              Accessed Augur via HTTPS
-            </li>
-            <li>
-              Connected your Ledger
-            </li>
-            <li>
-              Opened the Ethereum App
-            </li>
-            <li>
-              Enabled Contract Data
-            </li>
-            <li>
-              Enabled Browser Support
-            </li>
-          </ul>
-        </div>
+        { s.displayInstructions &&
+          <div className={Styles.LedgerConnect__messages} >
+            {Alert}
+            <h3>Make sure you have: </h3>
+            <ul>
+              <li>
+                Accessed Augur via HTTPS
+              </li>
+              <li>
+                Connected your Ledger
+              </li>
+              <li>
+                Opened the Ethereum App
+              </li>
+              <li>
+                Enabled Contract Data
+              </li>
+              <li>
+                Enabled Browser Support
+              </li>
+            </ul>
+          </div>
         }
       </section>
     )
