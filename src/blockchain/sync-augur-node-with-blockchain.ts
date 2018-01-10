@@ -30,14 +30,25 @@ function getNetworkID(db: Knex, augur: Augur, callback: (err: Error|null, networ
   });
 }
 
-export function syncAugurNodeWithBlockchain(db: Knex,  augur: Augur, ethereumNodeEndpoints: EthereumNodeEndpoints, uploadBlockNumbers: UploadBlockNumbers, callback: ErrorCallback): void {
-  augur.connect({ ethereumNode: ethereumNodeEndpoints, startBlockStreamOnConnect: false }, (): void => {
-    console.log("Started blockchain event listeners", augur.rpc.getCurrentBlock());
-    augur.rpc.on("disconnect", () => {
-      callback(new Error("Disconnected from eth node"));
+function monitorEthereumNodeHealth(augur: Augur) {
+  const networkID: string = augur.rpc.getNetworkID();
+  const universe: string = augur.contracts.addresses[networkID].Universe;
+  const controller: string = augur.contracts.addresses[networkID].Controller;
+  setInterval(() => {
+    augur.api.Universe.getController({ tx: { to: universe } }, (err: Error, universeController: string) => {
+      if (err) throw err;
+      if (universeController !== controller) {
+        throw new Error("Controller mismatch");
+      }
     });
-    getNetworkID(db, augur, (err: Error|null, networkID: string|null) => {
+  }, 5000);
+}
+
+export function syncAugurNodeWithBlockchain(db: Knex, augur: Augur, ethereumNodeEndpoints: EthereumNodeEndpoints, uploadBlockNumbers: UploadBlockNumbers, callback: ErrorCallback): void {
+  augur.connect({ ethereumNode: ethereumNodeEndpoints, startBlockStreamOnConnect: false }, (): void => {
+    getNetworkID(db, augur, (err: Error | null, networkID: string|null) => {
       if (err) return callback(err);
+      monitorEthereumNodeHealth(augur);
       augur.rpc.eth.getBlockByNumber(["latest", false], (block: any): void => {
         db("blockchain_sync_history").max("highestBlockNumber as highestBlockNumber").asCallback((err: Error|null, rows?: Array<HighestBlockNumberRow>): void => {
           if (err) return callback(err);
