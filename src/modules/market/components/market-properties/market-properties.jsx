@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
-import { TYPE_REPORT, TYPE_CHALLENGE, TYPE_TRADE, TYPE_CLOSED } from 'modules/market/constants/link-types'
+import { TYPE_REPORT, TYPE_CHALLENGE, TYPE_TRADE, TYPE_CLOSED, TYPE_COLLECT_FEES } from 'modules/market/constants/link-types'
 
 import getValue from 'utils/get-value'
 import setShareDenomination from 'utils/set-share-denomination'
@@ -28,6 +28,9 @@ const MarketProperties = (p) => {
       break
     case TYPE_TRADE:
       buttonText = 'Trade'
+      break
+    case TYPE_COLLECT_FEES:
+      buttonText = 'Collect Fees'
       break
     default:
       buttonText = 'View'
@@ -61,7 +64,7 @@ const MarketProperties = (p) => {
             }
           </button>
         }
-        { (p.linkType === undefined || (p.linkType && p.linkType !== TYPE_CLOSED)) &&
+        { (p.linkType === undefined || (p.linkType && p.linkType !== TYPE_CLOSED && p.linkType !== TYPE_COLLECT_FEES)) &&
           <MarketLink
             className={Styles.MarketProperties__trade}
             id={p.id}
@@ -77,6 +80,17 @@ const MarketProperties = (p) => {
             onClick={e => console.log('call to finalize market')}
           >
             Finalize
+          </button>
+        }
+        { p.linkType && p.linkType === TYPE_COLLECT_FEES &&
+          <button
+            className={Styles.MarketProperties__trade}
+            disabled={(p.unclaimedCreatorFees.formattedValue === 0)}
+            onClick={() => {
+              p.collectMarketCreatorFees(p.id)
+            }}
+          >
+            { p.buttonText || buttonText }
           </button>
         }
       </div>
