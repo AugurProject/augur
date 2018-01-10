@@ -2,6 +2,7 @@
 
 import { Block } from 'ethereumjs-blockstream'
 export { Block }
+import { EventEmitter} from "events";
 
 type AbiEncodedData = string;
 type Address = string;
@@ -127,7 +128,7 @@ export interface SimulatedTrade {
   shareBalances: Array<string>;
 }
 
-export interface RpcInterface {
+export interface RpcInterface extends EventEmitter {
   errors: any; // TODO define RPC errors object
   eth: {
     [jsonRpcMethodName: string]: (params?: any, callback?: (response: any) => void) => string|number|null;

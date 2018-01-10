@@ -2402,7 +2402,7 @@ module.exports = {
 var EventEmitter = require("event-emitter");
 
 var createRpcInterface = function createRpcInterface(ethrpc) {
-  return {
+  return EventEmitter({
     constants: ethrpc.constants,
     errors: ethrpc.errors,
     eth: ethrpc.eth,
@@ -2425,12 +2425,11 @@ var createRpcInterface = function createRpcInterface(ethrpc) {
     setDebugOptions: ethrpc.setDebugOptions,
     WsTransport: ethrpc.WsTransport,
     publish: ethrpc.publish
-  };
+  });
 };
 
 var ethrpc = createRpcInterface(require("ethrpc"));
 ethrpc.createRpcInterface = createRpcInterface;
-EventEmitter(ethrpc);
 
 module.exports = ethrpc;
 },{"ethrpc":294,"event-emitter":386}],78:[function(require,module,exports){
