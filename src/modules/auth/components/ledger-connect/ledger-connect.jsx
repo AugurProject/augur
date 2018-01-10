@@ -114,7 +114,6 @@ export default class Ledger extends Component {
             className={Styles.LedgerConnect__button}
             onClick={() => {
               this.connectLedger()
-                .then(() => this.setState({ ledgerState: null }))
                 .catch(() => this.setState({ ledgerState: this.LEDGER_STATES.OTHER_ISSUE }))
             }}
           >
