@@ -53,5 +53,5 @@ stats.json
 src/newrelic.js
 
 # ssl certs
-augur-dev.key
-augur-dev.crt
+augur-local.key
+augur-local.crt
