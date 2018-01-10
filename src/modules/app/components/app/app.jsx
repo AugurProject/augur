@@ -5,6 +5,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
+import classNames from 'classnames'
 
 import shouldComponentUpdatePure from 'utils/should-component-update-pure'
 import debounce from 'utils/debounce'
@@ -12,6 +13,7 @@ import debounce from 'utils/debounce'
 import { tween } from 'shifty'
 import { isEqual } from 'lodash'
 
+import Modal from 'modules/modal/containers/modal-view'
 import TopBar from 'modules/app/components/top-bar/top-bar'
 import MarketsInnerNav from 'modules/app/components/inner-nav/markets-inner-nav'
 import PortfolioInnerNav from 'modules/app/components/inner-nav/portfolio-inner-nav'
@@ -75,6 +77,7 @@ export default class AppView extends Component {
     isMobileSmall: PropTypes.bool.isRequired,
     updateIsMobile: PropTypes.func.isRequired,
     updateIsMobileSmall: PropTypes.func.isRequired,
+    modal: PropTypes.object.isRequired,
     selectedCategory: PropTypes.string,
     url: PropTypes.string
   }
@@ -347,74 +350,86 @@ export default class AppView extends Component {
     }
 
     return (
-      <main className={Styles.App}>
+      <main>
         <Helmet
           defaultTitle="Decentralized Prediction Markets | Augur"
           titleTemplate="%s | Augur"
         />
-        <section className={Styles.SideBar}>
-          <Origami
-            isMobile={p.isMobile}
-            menuScalar={origamiScalar}
-          />
-          <Link to={makePath(CATEGORIES)}>
-            <Logo />
-          </Link>
-          {this.renderMobileMenuButton(unseenCount)}
-          <SideNav
-            defaultMobileClick={() => this.setState({ mobileMenuState: mobileMenuStates.CLOSED })}
-            isMobile={p.isMobile}
-            isLogged={p.isLogged}
-            mobileShow={s.mobileMenuState === mobileMenuStates.SIDEBAR_OPEN}
-            menuScalar={subMenu.scalar}
-            menuData={this.sideNavMenuData}
-            unseenCount={unseenCount}
-            toggleNotifications={this.toggleNotifications}
-          />
-        </section>
-        <section className={Styles.Main}>
-          <section className={Styles.TopBar}>
-            <TopBar
+        {Object.keys(p.modal).length !== 0 &&
+          <Modal />
+        }
+        <div
+          className={classNames(
+            Styles.App,
+            {
+              [Styles[`App--blur`]]: Object.keys(p.modal).length !== 0
+            }
+          )}
+        >
+          <section className={Styles.SideBar}>
+            <Origami
+              isMobile={p.isMobile}
+              menuScalar={origamiScalar}
+            />
+            <Link to={makePath(CATEGORIES)}>
+              <Logo />
+            </Link>
+            {this.renderMobileMenuButton(unseenCount)}
+            <SideNav
+              defaultMobileClick={() => this.setState({ mobileMenuState: mobileMenuStates.CLOSED })}
               isMobile={p.isMobile}
               isLogged={p.isLogged}
-              stats={p.coreStats}
+              mobileShow={s.mobileMenuState === mobileMenuStates.SIDEBAR_OPEN}
+              menuScalar={subMenu.scalar}
+              menuData={this.sideNavMenuData}
               unseenCount={unseenCount}
-              isNotificationsVisible={s.isNotificationsVisible}
               toggleNotifications={this.toggleNotifications}
-              notifications={p.notifications}
             />
           </section>
-          <section
-            className={Styles.Main__wrap}
-            style={{ marginLeft: categoriesMargin }}
-          >
-            {InnerNav &&
-              <InnerNav
-                currentBasePath={this.state.currentBasePath}
+          <section className={Styles.Main}>
+            <section className={Styles.TopBar}>
+              <TopBar
                 isMobile={p.isMobile}
-                mobileMenuState={s.mobileMenuState}
-                mobileMenuClick={innerNavMenuMobileClick}
-                subMenuScalar={subMenu.scalar}
-                categories={p.categories}
-                markets={p.markets}
-                marketsFilteredSorted={p.marketsFilteredSorted}
-                openSubMenu={() => this.setState({ mobileMenuState: mobileMenuStates.SUBMENU_OPEN })}
-                privateKey={p.loginAccount.privateKey}
-                location={p.location}
-                history={p.history}
+                isLogged={p.isLogged}
+                stats={p.coreStats}
+                unseenCount={unseenCount}
+                isNotificationsVisible={s.isNotificationsVisible}
+                toggleNotifications={this.toggleNotifications}
+                notifications={p.notifications}
               />
-            }
-            {!InnerNav &&
-              <div className="no-nav-placehold" />
-            }
+            </section>
             <section
-              className={Styles.Main__content}
-              style={{ marginLeft: tagsMargin }}
+              className={Styles.Main__wrap}
+              style={{ marginLeft: categoriesMargin }}
             >
-              <Routes />
+              {InnerNav &&
+                <InnerNav
+                  currentBasePath={this.state.currentBasePath}
+                  isMobile={p.isMobile}
+                  mobileMenuState={s.mobileMenuState}
+                  mobileMenuClick={innerNavMenuMobileClick}
+                  subMenuScalar={subMenu.scalar}
+                  categories={p.categories}
+                  markets={p.markets}
+                  marketsFilteredSorted={p.marketsFilteredSorted}
+                  openSubMenu={() => this.setState({ mobileMenuState: mobileMenuStates.SUBMENU_OPEN })}
+                  privateKey={p.loginAccount.privateKey}
+                  location={p.location}
+                  history={p.history}
+                />
+              }
+              {!InnerNav &&
+                <div className="no-nav-placehold" />
+              }
+              <section
+                className={Styles.Main__content}
+                style={{ marginLeft: tagsMargin }}
+              >
+                <Routes />
+              </section>
             </section>
           </section>
-        </section>
+        </div>
       </main>
     )
   }

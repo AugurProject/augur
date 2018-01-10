@@ -13,7 +13,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     testState.loginAccount = { privateKey: Buffer.from('PRIVATE_KEY', 'utf8') }
     const store = mockStore(testState)
     const SelectMarket = { selectMarket: () => {} }
-    sinon.stub(SelectMarket, 'selectMarket', marketID => store.getState().marketsData[marketID])
+    sinon.stub(SelectMarket, 'selectMarket').callsFake(marketID => store.getState().marketsData[marketID])
     const action = proxyquire('../../../src/modules/trade/actions/place-trade.js', {
       '../../market/selectors/market': SelectMarket
     })
@@ -35,7 +35,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     testState.loginAccount = { privateKey: Buffer.from('PRIVATE_KEY', 'utf8') }
     const store = mockStore(testState)
     const SelectMarket = { selectMarket: () => {} }
-    sinon.stub(SelectMarket, 'selectMarket', marketID => store.getState().marketsData[marketID])
+    sinon.stub(SelectMarket, 'selectMarket').callsFake(marketID => store.getState().marketsData[marketID])
     const action = proxyquire('../../../src/modules/trade/actions/place-trade.js', {
       '../../market/selectors/market': SelectMarket
     })

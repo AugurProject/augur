@@ -16,7 +16,7 @@ describe(`modules/market/selectors/market.js`, () => {
     getMarketCreatorFeesCollected: () => {},
     abi: { bignum: n => n }
   }
-  sinon.stub(stubbedAugurJS, 'getMarketCreatorFeesCollected', () => 10)
+  sinon.stub(stubbedAugurJS, 'getMarketCreatorFeesCollected').callsFake(() => 10)
 
   const selector = proxyquire('../../../src/modules/market/selectors/market.js', {
     '../../../store': store,

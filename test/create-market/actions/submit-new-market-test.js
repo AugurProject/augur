@@ -58,7 +58,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         createMarket: { createCategoricalMarket: () => { } }
       }
       let formattedNewMarket = null
-      sinon.stub(mockAugur.createMarket, 'createCategoricalMarket', (createMarketObject) => {
+      sinon.stub(mockAugur.createMarket, 'createCategoricalMarket').callsFake((createMarketObject) => {
         delete createMarketObject.onSent
         delete createMarketObject.onSuccess
         delete createMarketObject.onFailed
@@ -135,7 +135,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         createMarket: { createBinaryMarket: () => { } }
       }
       let formattedNewMarket = null
-      sinon.stub(mockAugur.createMarket, 'createBinaryMarket', (createMarketObject) => {
+      sinon.stub(mockAugur.createMarket, 'createBinaryMarket').callsFake((createMarketObject) => {
         delete createMarketObject.onSent
         delete createMarketObject.onSuccess
         delete createMarketObject.onFailed
@@ -212,7 +212,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         createMarket: { createScalarMarket: () => { } }
       }
       let formattedNewMarket = null
-      sinon.stub(mockAugur.createMarket, 'createScalarMarket', (createMarketObject) => {
+      sinon.stub(mockAugur.createMarket, 'createScalarMarket').callsFake((createMarketObject) => {
         delete createMarketObject.onSent
         delete createMarketObject.onSuccess
         delete createMarketObject.onFailed
