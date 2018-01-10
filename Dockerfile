@@ -52,7 +52,8 @@ RUN git rev-parse HEAD > /augur/build/git-hash.txt \
   && chmod 0644 /etc/cron.d/ipfs-cron \
   && touch /var/log/cron.log \
   && cd /augur \
-  && /bin/bash -c /augur/ipfs-configure.sh
+  && /bin/bash -c /augur/ipfs-configure.sh \
+  && crontab /etc/cron.d/ipfs-cron
 
 EXPOSE 80
 
