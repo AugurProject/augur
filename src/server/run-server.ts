@@ -55,7 +55,7 @@ export function runServer(db: Knex, augur: Augur): RunServerResult {
       const timestampDelta: number = Math.round((Date.now() / 1000) - newestBlock.timestamp);
       const timestampDeltaThreshold = (typeof req.query.time === "undefined") ? 120 : parseInt(req.query.time, 10);
       if ( isNaN(timestampDeltaThreshold) ) {
-        res.status(500).send({error: "Bad value for time parameter, must be an integer in base 10"});
+        res.status(400).send({error: "Bad value for time parameter, must be an integer in base 10"});
       }
       const status = timestampDelta > timestampDeltaThreshold ? "down" : "up";
       return res.status(status === "up" ? 200 : 500).send(Object.assign( {status, timestampDelta}, newestBlock ));
