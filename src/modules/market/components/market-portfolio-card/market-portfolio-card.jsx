@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
@@ -13,7 +13,7 @@ import { TYPE_REPORT, TYPE_CHALLENGE, TYPE_CLAIM_PROCEEDS } from 'modules/market
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 
-export default class MarketPortfolioCard extends React.Component {
+export default class MarketPortfolioCard extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
     closePositionStatus: PropTypes.object.isRequired,
