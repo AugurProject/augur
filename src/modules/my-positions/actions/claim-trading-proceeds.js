@@ -7,15 +7,15 @@ import selectWinningPositions from 'modules/my-positions/selectors/winning-posit
 import noop from 'utils/noop'
 import logError from 'utils/log-error'
 
-const claimTradingProceeds = (callback = logError) => (dispatch, getState) => {
+const claimTradingProceeds = (marketIds, callback = logError) => (dispatch, getState) => {
   const { loginAccount } = getState()
   if (!loginAccount.address) return callback(null)
   const winningPositions = selectWinningPositions()
-  if (winningPositions.length) {
-    console.log('finalized markets with winning shares:', winningPositions)
+  const markets = !marketIds || marketIds.length === 0 ? winningPositions.map(winningPosition => winningPosition.id) : marketIds
+  if (markets.length > 0) {
     augur.trading.claimMarketsTradingProceeds({
       meta: loginAccount.meta,
-      markets: winningPositions.map(winningPosition => winningPosition.id),
+      markets,
       onSent: noop,
       onSuccess: (claimedMarkets) => {
         dispatch(updateAssets())
@@ -26,7 +26,10 @@ const claimTradingProceeds = (callback = logError) => (dispatch, getState) => {
       onFailed: err => callback(err)
     })
   }
-  dispatch(cancelOpenOrdersInClosedMarkets())
+  // has claimed proceeds on all finalized markets so close open orders
+  if (!marketIds) {
+    dispatch(cancelOpenOrdersInClosedMarkets())
+  }
 }
 
 export default claimTradingProceeds
