@@ -162,7 +162,7 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
     selectFavoriteMarkets: () => mockSelectors.favoriteMarkets
   }
 
-  sinon.stub(mockPositions, 'selectPositionsSummary', (numPositions, qtyShares, totalValue, totalCost) => ({
+  sinon.stub(mockPositions, 'selectPositionsSummary').callsFake((numPositions, qtyShares, totalValue, totalCost) => ({
     numPositions,
     qtyShares,
     totalValue,

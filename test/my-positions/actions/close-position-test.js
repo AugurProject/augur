@@ -21,7 +21,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
   const mockUpdateTradesInProgress = {
     updateTradesInProgress: () => { }
   }
-  sinon.stub(mockUpdateTradesInProgress, 'updateTradesInProgress', (marketID, outcomeID, side, numShares, limitPrice, maxCost, cb) => (dispatch, getState) => cb())
+  sinon.stub(mockUpdateTradesInProgress, 'updateTradesInProgress').callsFake((marketID, outcomeID, side, numShares, limitPrice, maxCost, cb) => (dispatch, getState) => cb())
   const mockClearClosePositionOutcome = {
     clearClosePositionOutcome: sinon.stub().returns({ type: MOCK_ACTION_TYPES.CLEAR_CLOSE_POSITION_OUTCOME })
   }
@@ -72,7 +72,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
       it(t.description, () => {
         const store = mockStore(t.state || {})
 
-        sinon.stub(mockPlaceTrade, 'placeTrade', (marketID, outcomeID, tradesInProgress, doNotCreateOrders, cb) => (dispatch, getState) => {
+        sinon.stub(mockPlaceTrade, 'placeTrade').callsFake((marketID, outcomeID, tradesInProgress, doNotCreateOrders, cb) => (dispatch, getState) => {
           if (t.placeTradeFails) {
             cb(true)
           } else {
@@ -161,7 +161,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
         marketsData: {
           '0xMARKETID': {
             myPositionOutcomes: [
-              0: {
+              {
                 id: '1',
                 position: {
                   qtyShares: {

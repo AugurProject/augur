@@ -8,6 +8,11 @@ import makePath from 'modules/routes/helpers/make-path'
 import * as VIEWS from 'modules/routes/constants/views'
 import * as COMPONENTS from 'modules/routes/constants/components'
 
+
+// NOTE --  Routes are declarative, meaning ONLY top level views should be declared here.
+//          Sub-views should be declared as needed at their respective inclusion points.
+
+// TODO -- due to side-bar matching constraints, the below does not conform to the above.
 const Routes = p => (
   <Switch>
     <Route exact path={makePath(VIEWS.DEFAULT_VIEW)} component={COMPONENTS.Categories} />

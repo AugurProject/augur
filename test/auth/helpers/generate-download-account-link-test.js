@@ -13,7 +13,7 @@ describe('modules/auth/helpers/generate-download-account-link.js', () => {
       const Speedomatic = {
         byteArrayToHexString: () => {}
       }
-      sinon.stub(Speedomatic, 'byteArrayToHexString', privateKey => privateKey)
+      sinon.stub(Speedomatic, 'byteArrayToHexString').callsFake(privateKey => privateKey)
       linkRewireAPI.__Rewire__('speedomatic', Speedomatic)
 
       const augur = {
@@ -28,7 +28,7 @@ describe('modules/auth/helpers/generate-download-account-link.js', () => {
       const keythereum = {
         generateKeystoreFilename: () => {}
       }
-      sinon.stub(keythereum, 'generateKeystoreFilename', address => address)
+      sinon.stub(keythereum, 'generateKeystoreFilename').callsFake(address => address)
       linkRewireAPI.__Rewire__('keythereum', keythereum)
 
       const actual = generateDownloadAccountLink('0xtest', { keystore: 'object' }, '123privatekey')

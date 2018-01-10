@@ -28,12 +28,12 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
         '../../auth/actions/update-assets': UpdateAssets,
         '../selectors/winning-positions': WinningPositions
       }).default
-      sinon.stub(Speedomatic, 'bignum', n => new BigNumber(n, 10))
-      sinon.stub(AugurJS.augur.trading, 'claimMarketsTradingProceeds', (p) => {
+      sinon.stub(Speedomatic, 'bignum').callsFake(n => new BigNumber(n, 10))
+      sinon.stub(AugurJS.augur.trading, 'claimMarketsTradingProceeds').callsFake((p) => {
         store.dispatch({ type: 'CLAIM_MARKETS_TRADING_PROCEEDS', markets: p.markets })
         p.onSuccess(p.markets)
       })
-      sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', (marketIDs, callback) => (dispatch, getState) => {
+      sinon.stub(LoadMarketsInfo, 'loadMarketsInfo').callsFake((marketIDs, callback) => (dispatch, getState) => {
         dispatch({ type: 'LOAD_MARKETS_INFO', marketIDs })
         callback(null)
       })
