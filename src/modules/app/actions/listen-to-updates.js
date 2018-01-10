@@ -188,13 +188,13 @@ export function listenToUpdates() {
       console.log('AugurNode Reconnected')
       console.log(...args)
     })
-    augur.rpc.on('disconnect', (...args) => {
-      console.log('Ethereum Node Disconnected')
-      console.log(...args)
-    })
-    augur.rpc.on('reconnect', (...args) => {
-      console.log('Ethereum Node Reconnected')
-      console.log(...args)
-    })
+    // augur.rpc.on('disconnect', (...args) => {
+    //   console.log('Ethereum Node Disconnected')
+    //   console.log(...args)
+    // })
+    // augur.rpc.on('reconnect', (...args) => {
+    //   console.log('Ethereum Node Reconnected')
+    //   console.log(...args)
+    // })
   }
 }
