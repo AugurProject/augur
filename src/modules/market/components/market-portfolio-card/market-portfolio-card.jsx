@@ -134,7 +134,7 @@ export default class MarketPortfolioCard extends React.Component {
           </div>
         </section>
         <section className={Styles.MarketCard__tablesection}>
-          { myPositionOutcomes && myPositionOutcomes.filter(outcome => outcome.position).length !== 0 &&
+          {(myPositionOutcomes || []).filter(outcome => outcome.position).length !== 0 &&
             <div className={Styles.MarketCard__headingcontainer}>
               <h1 className={Styles.MarketCard__tableheading}>
                 My Positions
