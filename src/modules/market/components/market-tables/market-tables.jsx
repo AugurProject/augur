@@ -97,7 +97,7 @@ export default class MarketTable extends Component {
                       Styles.MarketTable__value,
                       { [Styles['MarketTable__value--mobilehide']]: mobileHide }
                     )}
-                    key={`${dataRow.id}-${data}-${dataRow.marketID}-${dataKey}`}
+                    key={`td-${dataRow.id}-${dataKey}`}
                   >
                     {data || ''}
                   </td>
