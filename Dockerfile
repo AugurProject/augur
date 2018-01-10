@@ -55,7 +55,7 @@ RUN git rev-parse HEAD > /augur/build/git-hash.txt \
   && /bin/bash -c /augur/ipfs-configure.sh \
   && crontab /etc/cron.d/ipfs-cron
 
-EXPOSE 80
+EXPOSE 80 8001
 
 WORKDIR /augur
 # Add Tini
