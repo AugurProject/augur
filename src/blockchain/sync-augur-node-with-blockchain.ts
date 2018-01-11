@@ -46,7 +46,8 @@ function monitorEthereumNodeHealth(augur: Augur) {
 
 export function syncAugurNodeWithBlockchain(db: Knex, augur: Augur, ethereumNodeEndpoints: EthereumNodeEndpoints, uploadBlockNumbers: UploadBlockNumbers, callback: ErrorCallback): void {
   augur.connect({ ethereumNode: ethereumNodeEndpoints, startBlockStreamOnConnect: false }, (): void => {
-    getNetworkID(db, augur, (err: Error | null, networkID: string|null) => {
+    console.log("Started blockchain event listeners", augur.rpc.getCurrentBlock());
+    getNetworkID(db, augur, (err: Error|null, networkID: string|null) => {
       if (err) return callback(err);
       monitorEthereumNodeHealth(augur);
       augur.rpc.eth.getBlockByNumber(["latest", false], (block: any): void => {
