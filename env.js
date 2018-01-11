@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var nodeEvents = require("./src/events").nodes;
+var events = require("./src/events");
 global.chalk = require("chalk");
 global.speedomatic = require("speedomatic");
 global.Augur = require("./src");
@@ -50,15 +50,15 @@ augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
   }
 });
 
-nodeEvents.augur.on("disconnect", function() {
+events.nodes.augur.on("disconnect", function() {
   console.log("Augur Node Disconnected");
 });
-nodeEvents.augur.on("reconnect", function() {
+events.nodes.augur.on("reconnect", function() {
   console.log("Augur Node Resconnected");
 });
-nodeEvents.ethereum.on("disconnect", function() {
+events.nodes.ethereum.on("disconnect", function() {
   console.log("Ethereum Node Disconnected");
 });
-nodeEvents.ethereum.on("reconnect", function() {
+events.nodes.ethereum.on("reconnect", function() {
   console.log("Ethereum Node Reconnected");
 });

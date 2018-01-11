@@ -572,16 +572,14 @@ module.exports = dispatchJsonRpcResponse;
 },{"../utils/is-function":119,"../utils/is-object":120,"./state":20}],19:[function(require,module,exports){
 "use strict";
 
-var EventEmitter = require("event-emitter");
-
-module.exports = EventEmitter({
+module.exports = {
   connect: require("./connect"),
   submitRequest: require("./submit-json-rpc-request"),
   subscribeToEvent: require("./subscribe-to-event"),
   unsubcribeFromEvent: require("./unsubscribe-from-event"),
   unsubscribeFromAllEvents: require("./unsubscribe-from-all-events")
-});
-},{"./connect":17,"./submit-json-rpc-request":21,"./subscribe-to-event":22,"./unsubscribe-from-all-events":23,"./unsubscribe-from-event":24,"event-emitter":386}],20:[function(require,module,exports){
+};
+},{"./connect":17,"./submit-json-rpc-request":21,"./subscribe-to-event":22,"./unsubscribe-from-all-events":23,"./unsubscribe-from-event":24}],20:[function(require,module,exports){
 "use strict";
 
 var state = {
@@ -703,7 +701,7 @@ var ethereumConnector = require("ethereumjs-connect");
 var ethrpc = require("ethrpc");
 var contracts = require("./contracts");
 var api = require("./api");
-var nodeEvents = require('./events').nodes;
+var events = require("./events");
 var rpcInterface = require("./rpc-interface");
 var _augurNode = require("./augur-node");
 var isFunction = require("./utils/is-function");
@@ -760,10 +758,10 @@ function connect(connectOptions, callback) {
           return next(null);
         }
         transport.addReconnectListener(function () {
-          nodeEvents.augur.emit("reconnect");
+          events.nodes.augur.emit("reconnect");
         });
         transport.addDisconnectListener(function () {
-          nodeEvents.augur.emit("disconnect");
+          events.nodes.augur.emit("disconnect");
         });
         console.log("connected to augur");
         next(null, connectOptions.augurNode);
@@ -782,10 +780,10 @@ function connect(connectOptions, callback) {
         self.api = api.generateContractApi(ethereumConnectionInfo.abi.functions);
         self.rpc = rpcInterface.createRpcInterface(ethereumConnectionInfo.rpc);
         ethereumConnectionInfo.rpc.getTransport().addReconnectListener(function () {
-          nodeEvents.ethereum.emit('reconnect');
+          events.nodes.ethereum.emit("reconnect");
         });
         ethereumConnectionInfo.rpc.getTransport().addDisconnectListener(function () {
-          nodeEvents.ethereum.emit('disconnect');
+          events.nodes.ethereum.emit("disconnect");
         });
         next(null, ethereumConnectionInfo);
       });
@@ -1370,7 +1368,7 @@ module.exports = hashEventSignature;
 },{"../utils/keccak256":121,"buffer":187,"speedomatic":530}],42:[function(require,module,exports){
 "use strict";
 
-var EventEmitter = require('event-emitter');
+var EventEmitter = require("event-emitter");
 
 module.exports = {
   getAllAugurLogs: require("./get-all-augur-logs"),
@@ -2406,10 +2404,8 @@ module.exports = {
 },{"./finalize-market":69,"./get-current-period-progress":70,"./get-reporting-history":71,"./get-reporting-summary":72,"./get-reporting-windows-with-unclaimed-fees":73,"./get-stake-required-for-designated-reporter":74,"./get-stake-tokens":75}],77:[function(require,module,exports){
 "use strict";
 
-var EventEmitter = require("event-emitter");
-
 var createRpcInterface = function createRpcInterface(ethrpc) {
-  return EventEmitter({
+  return {
     constants: ethrpc.constants,
     errors: ethrpc.errors,
     eth: ethrpc.eth,
@@ -2432,14 +2428,14 @@ var createRpcInterface = function createRpcInterface(ethrpc) {
     setDebugOptions: ethrpc.setDebugOptions,
     WsTransport: ethrpc.WsTransport,
     publish: ethrpc.publish
-  });
+  };
 };
 
 var ethrpc = createRpcInterface(require("ethrpc"));
 ethrpc.createRpcInterface = createRpcInterface;
 
 module.exports = ethrpc;
-},{"ethrpc":294,"event-emitter":386}],78:[function(require,module,exports){
+},{"ethrpc":294}],78:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
