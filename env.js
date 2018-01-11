@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+var nodeEvents = require("./src/events").nodes;
 global.chalk = require("chalk");
 global.speedomatic = require("speedomatic");
 global.Augur = require("./src");
@@ -8,12 +9,18 @@ global.augur = new Augur();
 
 augur.rpc.setDebugOptions({ connect: true, broadcast: false });
 
-const ethereumNode = {
-  // http: "http://rinkeby.ethereum.nodes.augur.net",
-  // ws: "ws://rinkeby.ethereum.nodes.augur.net",
-  http: "http://127.0.0.1:8545",
-  ws: "ws://127.0.0.1:8546",
+const nodes = {
+  rinkeby: {
+    http: "http://rinkeby.ethereum.nodes.augur.net",
+      ws: "wss://rinkeby.ethereum.nodes.augur.net",
+  },
+  local: {
+    http: "http://127.0.0.1:8545",
+      ws: "ws://127.0.0.1:8546",
+  }
 };
+
+const ethereumNode = nodes.rinkeby;
 const augurNode = "ws://127.0.0.1:9001";
 
 augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
@@ -43,15 +50,15 @@ augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
   }
 });
 
-augur.augurNode.on("disconnect", function() {
+nodeEvents.augur.on("disconnect", function() {
   console.log("Augur Node Disconnected");
 });
-augur.augurNode.on("reconnect", function() {
+nodeEvents.augur.on("reconnect", function() {
   console.log("Augur Node Resconnected");
 });
-augur.rpc.on("disconnect", function() {
+nodeEvents.ethereum.on("disconnect", function() {
   console.log("Ethereum Node Disconnected");
 });
-augur.rpc.on("reconnect", function() {
+nodeEvents.ethereum.on("reconnect", function() {
   console.log("Ethereum Node Reconnected");
 });

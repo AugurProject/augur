@@ -703,6 +703,7 @@ var ethereumConnector = require("ethereumjs-connect");
 var ethrpc = require("ethrpc");
 var contracts = require("./contracts");
 var api = require("./api");
+var nodeEvents = require('./events').nodes;
 var rpcInterface = require("./rpc-interface");
 var _augurNode = require("./augur-node");
 var isFunction = require("./utils/is-function");
@@ -759,10 +760,10 @@ function connect(connectOptions, callback) {
           return next(null);
         }
         transport.addReconnectListener(function () {
-          _augurNode.emit("reconnect");
+          nodeEvents.augur.emit("reconnect");
         });
         transport.addDisconnectListener(function () {
-          _augurNode.emit("disconnect");
+          nodeEvents.augur.emit("disconnect");
         });
         console.log("connected to augur");
         next(null, connectOptions.augurNode);
@@ -781,10 +782,10 @@ function connect(connectOptions, callback) {
         self.api = api.generateContractApi(ethereumConnectionInfo.abi.functions);
         self.rpc = rpcInterface.createRpcInterface(ethereumConnectionInfo.rpc);
         ethereumConnectionInfo.rpc.getTransport().addReconnectListener(function () {
-          rpcInterface.emit("reconnect");
+          nodeEvents.ethereum.emit('reconnect');
         });
         ethereumConnectionInfo.rpc.getTransport().addDisconnectListener(function () {
-          rpcInterface.emit("disconnect");
+          nodeEvents.ethereum.emit('disconnect');
         });
         next(null, ethereumConnectionInfo);
       });
@@ -796,7 +797,7 @@ function connect(connectOptions, callback) {
 }
 
 module.exports = connect;
-},{"./api":11,"./augur-node":19,"./constants":26,"./contracts":28,"./rpc-interface":77,"./utils/is-function":119,"./utils/is-object":120,"./utils/noop":125,"async":144,"ethereumjs-connect":257,"ethrpc":294}],26:[function(require,module,exports){
+},{"./api":11,"./augur-node":19,"./constants":26,"./contracts":28,"./events":42,"./rpc-interface":77,"./utils/is-function":119,"./utils/is-object":120,"./utils/noop":125,"async":144,"ethereumjs-connect":257,"ethrpc":294}],26:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -1369,6 +1370,8 @@ module.exports = hashEventSignature;
 },{"../utils/keccak256":121,"buffer":187,"speedomatic":530}],42:[function(require,module,exports){
 "use strict";
 
+var EventEmitter = require('event-emitter');
+
 module.exports = {
   getAllAugurLogs: require("./get-all-augur-logs"),
   startAugurNodeEventListeners: require("./start-augur-node-event-listeners"),
@@ -1376,9 +1379,13 @@ module.exports = {
   startBlockchainEventListeners: require("./start-blockchain-event-listeners"),
   stopBlockchainEventListeners: require("./stop-blockchain-event-listeners"),
   startBlockListeners: require("./start-block-listeners"),
-  stopBlockListeners: require("./stop-block-listeners")
+  stopBlockListeners: require("./stop-block-listeners"),
+  nodes: {
+    augur: EventEmitter(),
+    ethereum: EventEmitter()
+  }
 };
-},{"./get-all-augur-logs":39,"./start-augur-node-event-listeners":45,"./start-block-listeners":46,"./start-blockchain-event-listeners":47,"./stop-augur-node-event-listeners":48,"./stop-block-listeners":49,"./stop-blockchain-event-listeners":50}],43:[function(require,module,exports){
+},{"./get-all-augur-logs":39,"./start-augur-node-event-listeners":45,"./start-block-listeners":46,"./start-blockchain-event-listeners":47,"./stop-augur-node-event-listeners":48,"./stop-block-listeners":49,"./stop-blockchain-event-listeners":50,"event-emitter":386}],43:[function(require,module,exports){
 "use strict";
 
 function parseBlockMessage(message, onMessage) {
