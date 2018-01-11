@@ -12,6 +12,7 @@ import { updateIsMobile, updateIsMobileSmall } from 'modules/app/actions/update-
 import { updateHeaderHeight } from 'modules/app/actions/update-header-height'
 import { updateFooterHeight } from 'modules/app/actions/update-footer-height'
 import getAllMarkets from 'modules/markets/selectors/markets-all'
+import { initAugur } from 'modules/app/actions/init-augur'
 
 const mapStateToProps = state => ({
   url: state.url,
@@ -36,7 +37,8 @@ const mapDispatchToProps = dispatch => ({
   updateIsMobile: isMobile => dispatch(updateIsMobile(isMobile)),
   updateIsMobileSmall: isMobileSmall => dispatch(updateIsMobileSmall(isMobileSmall)),
   updateHeaderHeight: headerHeight => dispatch(updateHeaderHeight(headerHeight)),
-  updateFooterHeight: footerHeight => dispatch(updateFooterHeight(footerHeight))
+  updateFooterHeight: footerHeight => dispatch(updateFooterHeight(footerHeight)),
+  initAugur: history => dispatch(initAugur(history))
 })
 
 const AppContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(App))

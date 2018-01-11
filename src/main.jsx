@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import { HashRouter } from 'react-router-dom'
 
-import { initAugur } from 'modules/app/actions/init-augur'
+// import { initAugur } from 'modules/app/actions/init-augur'
 
 import App from 'modules/app/containers/app'
 import MainErrorBoundary from 'modules/common/components/main-error-boundary'
@@ -12,7 +12,6 @@ import MainErrorBoundary from 'modules/common/components/main-error-boundary'
 import store from 'src/store'
 
 import { augur } from 'services/augurjs'
-import { resetState } from 'modules/app/actions/reset-state'
 // require('core-js/fn/array/find')
 // require('core-js/fn/string/starts-with')
 
@@ -20,7 +19,6 @@ import { resetState } from 'modules/app/actions/reset-state'
 if (process.env.NODE_ENV === 'development') {
   Object.defineProperty(window, 'state', { get: store.getState, enumerable: true })
   window.augur = augur
-  window.rs = () => store.dispatch(resetState())
 
   console.log(`
   *******************************************
@@ -36,7 +34,7 @@ if (process.env.NODE_ENV === 'development') {
   `)
 }
 
-store.dispatch(initAugur())
+// store.dispatch(initAugur())
 
 function render(Root) {
   ReactDOM.render(

@@ -13,11 +13,11 @@ import { addNotification } from 'modules/notifications/actions/update-notificati
 // import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
 import makePath from 'modules/routes/helpers/make-path'
 import * as TYPES from 'modules/transactions/constants/types'
-import { MY_MARKETS } from 'modules/routes/constants/views'
+import { MY_MARKETS, DEFAULT_VIEW } from 'modules/routes/constants/views'
 import { resetState } from 'modules/app/actions/reset-state'
 import { initAugur } from 'modules/app/actions/init-augur'
 
-export function listenToUpdates() {
+export function listenToUpdates(history) {
   return (dispatch, getState) => {
     augur.events.startBlockListeners({
       onAdded: (block) => {
@@ -182,24 +182,22 @@ export function listenToUpdates() {
         }
       },
     }, err => console.log(err || 'Listening for events'))
-    augur.augurNode.on('disconnect', (...args) => {
+    augur.augurNode.on('disconnect', () => {
       console.log('AugurNode Disconnected')
-      console.log(...args)
       dispatch(resetState())
+      history.push(makePath(DEFAULT_VIEW))
       dispatch(initAugur())
     })
-    augur.augurNode.on('reconnect', (...args) => {
+    augur.augurNode.on('reconnect', () => {
+      // reconnect events might not be needed on the UI
       console.log('AugurNode Reconnected')
-      console.log(...args)
     })
-    // augur.rpc.on('disconnect', (...args) => {
+    // augur.rpc.on('disconnect', () => {
     //   console.log('Ethereum Node Disconnected')
-    //   console.log(...args)
     //   dispatch(resetState())
     // })
-    // augur.rpc.on('reconnect', (...args) => {
+    // augur.rpc.on('reconnect', () => {
     //   console.log('Ethereum Node Reconnected')
-    //   console.log(...args)
     // })
   }
 }

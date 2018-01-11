@@ -1,11 +1,11 @@
 {
-  "augur-node": "ws://127.0.0.1:9001",
+  "augur-node": "wss://rinkeby.augur.nodes.augur.net",
   "ethereum-node": {
-    "http": "http://127.0.0.1:8545",
-    "ws": "ws://127.0.0.1:8546"
+    "http": "https://rinkeby.ethereum.nodes.augur.net",
+    "ws": "wss://websocket-rinkeby.ethereum.nodes.augur.net"
   },
   "network-id": 4,
-  "auto-login": true,
+  "auto-login": false,
   "universe": null,
   "debug": {
     "connect": true,

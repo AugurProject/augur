@@ -77,6 +77,7 @@ export default class AppView extends Component {
     isMobileSmall: PropTypes.bool.isRequired,
     updateIsMobile: PropTypes.func.isRequired,
     updateIsMobileSmall: PropTypes.func.isRequired,
+    initAugur: PropTypes.func.isRequired,
     modal: PropTypes.object.isRequired,
     selectedCategory: PropTypes.string,
     url: PropTypes.string
@@ -140,6 +141,7 @@ export default class AppView extends Component {
   }
 
   componentWillMount() {
+    this.props.initAugur(this.props.history)
     const currentPath = parsePath(this.props.location.pathname)[0]
     this.setState({ currentBasePath: currentPath })
 
