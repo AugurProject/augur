@@ -29,9 +29,9 @@ export default class ModalUport extends Component {
     const height = getValue(this, 'uPortQR.clientHeight')
 
     if (width > height) { // Height is the constraining value
-      this.setState({ qrSize: height / 1.2 })
+      this.setState({ qrSize: height / 2 > 300 ? 300 : height / 2 })
     } else { // Width is the constraining value
-      this.setState({ qrSize: width / 3 })
+      this.setState({ qrSize: width / 3 > 300 ? 300 : width / 3 })
     }
   }
 
@@ -40,14 +40,14 @@ export default class ModalUport extends Component {
     const p = this.props
 
     return (
-      <section className={Styles.ModalUport}>
+      <section
+        ref={(uPortQR) => { this.uPortQR = uPortQR }}
+        className={Styles.ModalUport}
+      >
         <div className={Styles.ModalUport__header}>
           <h1>Sign Transaction</h1>
         </div>
-        <div
-          ref={(uPortQR) => { this.uPortQR = uPortQR }}
-          className={Styles.ModalUport__qr}
-        >
+        <div className={Styles.ModalUport__qr}>
           <QRCode
             value={p.uri}
             size={s.qrSize}
