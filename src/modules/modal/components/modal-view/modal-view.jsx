@@ -12,6 +12,10 @@ import { MODAL_LEDGER, MODAL_UPORT } from 'modules/modal/constants/modal-types'
 import Styles from 'modules/modal/components/modal-view/modal-view.styles'
 
 export default class ModalView extends Component {
+  static propTypes = {
+    modal: PropTypes.object.isRequired,
+    closeModal: PropTypes.func.isRequired
+  }
 
   constructor(props) {
     super(props)
@@ -73,8 +77,3 @@ export default class ModalView extends Component {
     )
   }
 }
-
-// ModalView.propTypes = {
-//   modal: PropTypes.object.isRequired,
-//   closeModal: PropTypes.func.isRequired
-// }

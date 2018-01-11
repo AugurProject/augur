@@ -6,8 +6,6 @@ import { closeModal } from 'modules/modal/actions/close-modal'
 import { MODAL_UPORT } from 'modules/modal/constants/modal-types'
 
 export default function uPortSigner(txObj, dispatch) {
-  console.log('uPortSigner -- ', txObj)
-
   new Connect(
     'AUGUR -- DEV',
     {

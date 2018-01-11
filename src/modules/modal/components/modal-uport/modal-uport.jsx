@@ -11,8 +11,6 @@ const ModalUport = (p) => {
     return p.modalWidth / 3 > 300 ? 300 : p.modalWidth / 3
   }
 
-  console.log('size -- ', p, qrSize())
-
   return (
     <section className={Styles.ModalUport} >
       <div className={Styles.ModalUport__header}>
