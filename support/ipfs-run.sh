@@ -5,6 +5,11 @@ sleep 5s
 
 # publish files with key if available
 /augur/ipfs-configure.sh
+
+if [ "$PUBLISH_ONLY" = "true" ]; then
+  exit
+fi
+
 cd /etc/nginx/
 # configure nginx to be proxy for ipfs
 if [ ! -f cache ]; then

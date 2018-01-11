@@ -4,6 +4,7 @@ ENV PATH /root/.yarn/bin:$PATH
 ARG ethereum_network=rinkeby
 ENV ETHEREUM_NETWORK=$ethereum_network
 ARG ipfs_key
+ENV PUBLISH_ONLY=false
 
 # begin install yarn
 # libusb-dev required for node-hid, required for ledger support (ethereumjs-ledger)
