@@ -1,6 +1,6 @@
 "use strict";
 
-var EventEmitter = require('event-emitter');
+var EventEmitter = require("event-emitter");
 
 module.exports = {
   getAllAugurLogs: require("./get-all-augur-logs"),
@@ -12,6 +12,6 @@ module.exports = {
   stopBlockListeners: require("./stop-block-listeners"),
   nodes: {
     augur: EventEmitter(),
-    ethereum: EventEmitter()
-  }
+    ethereum: EventEmitter(),
+  },
 };
