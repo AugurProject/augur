@@ -14,6 +14,8 @@ import { addNotification } from 'modules/notifications/actions/update-notificati
 import makePath from 'modules/routes/helpers/make-path'
 import * as TYPES from 'modules/transactions/constants/types'
 import { MY_MARKETS } from 'modules/routes/constants/views'
+import { resetState } from 'modules/app/actions/reset-state'
+import { initAugur } from 'modules/app/actions/init-augur'
 
 export function listenToUpdates() {
   return (dispatch, getState) => {
@@ -183,6 +185,8 @@ export function listenToUpdates() {
     augur.augurNode.on('disconnect', (...args) => {
       console.log('AugurNode Disconnected')
       console.log(...args)
+      dispatch(resetState())
+      dispatch(initAugur())
     })
     augur.augurNode.on('reconnect', (...args) => {
       console.log('AugurNode Reconnected')
@@ -191,6 +195,7 @@ export function listenToUpdates() {
     // augur.rpc.on('disconnect', (...args) => {
     //   console.log('Ethereum Node Disconnected')
     //   console.log(...args)
+    //   dispatch(resetState())
     // })
     // augur.rpc.on('reconnect', (...args) => {
     //   console.log('Ethereum Node Reconnected')

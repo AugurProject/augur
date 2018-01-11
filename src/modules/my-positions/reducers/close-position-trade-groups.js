@@ -1,7 +1,10 @@
 import { ADD_CLOSE_POSITION_TRADE_GROUP } from 'modules/my-positions/actions/add-close-position-trade-group'
 import { CLEAR_CLOSE_POSITION_OUTCOME } from 'modules/my-positions/actions/clear-close-position-outcome'
+import { RESET_STATE } from 'modules/app/actions/reset-state'
 
-export default function (closePositionTradeGroups = {}, action) {
+const DEFAULT_STATE = {}
+
+export default function (closePositionTradeGroups = DEFAULT_STATE, action) {
   switch (action.type) {
     case ADD_CLOSE_POSITION_TRADE_GROUP: {
       const oldTradeGroups = (closePositionTradeGroups[action.marketID] && closePositionTradeGroups[action.marketID][action.outcomeID]) || []
@@ -43,6 +46,8 @@ export default function (closePositionTradeGroups = {}, action) {
 
       return updatedClosePositionTradeGroups
     }
+    case RESET_STATE:
+      return DEFAULT_STATE
     default:
       return closePositionTradeGroups
   }
