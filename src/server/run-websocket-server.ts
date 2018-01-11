@@ -1,6 +1,7 @@
 import * as express from "express";
 import * as WebSocket from "ws";
 import * as Knex from "knex";
+import Augur from "augur.js";
 import { EventEmitter } from "events";
 import { clearInterval, setInterval } from "timers";
 import { augurEmitter } from "../events";
@@ -15,7 +16,7 @@ import * as fs from "fs";
 import * as https from "https";
 import * as http from "http";
 
-export function runWebsocketServer(db: Knex, app: express.Application, webSocketConfigs: WebSocketConfigs): Array<WebSocket.Server> {
+export function runWebsocketServer(db: Knex, app: express.Application, augur: Augur, webSocketConfigs: WebSocketConfigs): Array<WebSocket.Server> {
 
   const servers: Array<WebSocket.Server> = [];
 
@@ -68,7 +69,7 @@ export function runWebsocketServer(db: Knex, app: express.Application, webSocket
             subscriptions.unsubscribe(subscription);
             websocket.send(makeJsonRpcResponse(message.id, true));
           } else {
-            dispatchJsonRpcRequest(db, message as JsonRpcRequest, (err: Error|null, result?: any): void => {
+            dispatchJsonRpcRequest(db, message as JsonRpcRequest, augur, (err: Error|null, result?: any): void => {
               if (err) {
                 console.error("getter error: ", err);
                 websocket.send(makeJsonRpcError(message.id, JsonRpcErrorCode.InvalidParams, err.message, false));

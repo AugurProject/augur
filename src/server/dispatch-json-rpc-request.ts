@@ -1,4 +1,5 @@
 import * as Knex from "knex";
+import Augur from "augur.js";
 import { JsonRpcRequest } from "../types";
 import { getAccountTransferHistory } from "./getters/get-account-transfer-history";
 import { getCategories } from "./getters/get-categories";
@@ -20,8 +21,9 @@ import { getMarketsClosingInDateRange } from "./getters/get-markets-closing-in-d
 import { getMarketsInfo } from "./getters/get-markets-info";
 import { getOrders } from "./getters/get-orders";
 import { getBetterWorseOrders } from "./getters/get-better-worse-orders";
+import { getContractAddresses } from "./getters/get-contract-addresses";
 
-export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callback: (err?: Error|null, result?: any) => void): void {
+export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur: Augur, callback: (err?: Error|null, result?: any) => void): void {
   console.log(request);
   switch (request.method) {
     case "getAccountTransferHistory":
@@ -64,6 +66,8 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, callba
       return getOrders(db, request.params.universe, request.params.marketID, request.params.outcome, request.params.orderType, request.params.creator, request.params.orderState, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getBetterWorseOrders":
       return getBetterWorseOrders(db, request.params.marketID, request.params.outcome, request.params.orderType, request.params.price, callback);
+    case "getContractAddresses":
+      return getContractAddresses(augur, callback);
     default:
       callback(new Error("unknown json rpc method"));
   }

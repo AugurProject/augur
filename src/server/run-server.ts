@@ -17,7 +17,7 @@ export interface RunServerResult {
 export function runServer(db: Knex, augur: Augur): RunServerResult {
   const app: express.Application = express();
 
-  const servers: Array<WebSocket.Server> = runWebsocketServer(db, app, websocketConfigs);
+  const servers: Array<WebSocket.Server> = runWebsocketServer(db, app, augur, websocketConfigs);
 
   app.get("/", (req, res) => {
     res.send("Hello World");
