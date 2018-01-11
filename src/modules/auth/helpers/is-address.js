@@ -20,7 +20,8 @@ export default function isAddress(address) {
   }
 
   // Otherwise check each case
-  return isChecksumAddress(address)
+  return true // NOTE -- temp
+  // return isChecksumAddress(address)
 }
 /**
  * Checks if the given string is a checksummed address

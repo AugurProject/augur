@@ -8,8 +8,6 @@ import { AppleAppStore, GooglePlayStore } from 'modules/common/components/icons/
 import debounce from 'utils/debounce'
 import getValue from 'utils/get-value'
 
-import uPortSigningNotifier from 'modules/auth/helpers/uport-signing-notifier'
-
 import Styles from 'modules/auth/components/uport-connect/uport-connect.styles'
 
 export default class UportConnect extends Component {
@@ -26,8 +24,7 @@ export default class UportConnect extends Component {
       'AUGUR -- DEV',
       {
         clientId: '2ofGiHuZhhpDMAQeDxjoDhEsUQd1MayECgd'
-      },
-      uPortSigningNotifier
+      }
     )
 
     this.state = {

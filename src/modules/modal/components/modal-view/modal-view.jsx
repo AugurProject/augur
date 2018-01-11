@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import ModalLedger from 'modules/modal/containers/modal-ledger'
+import ModalLedger from 'modules/modal/components/modal-ledger/modal-ledger'
+import ModalUport from 'modules/modal/components/modal-uport/modal-uport'
 
-import { MODAL_LEDGER } from 'modules/modal/constants/modal-types'
+import { MODAL_LEDGER, MODAL_UPORT } from 'modules/modal/constants/modal-types'
 
 import Styles from 'modules/modal/components/modal-view/modal-view.styles'
 
@@ -16,6 +17,9 @@ const ModalView = p => (
     >
       {p.modal.type === MODAL_LEDGER &&
         <ModalLedger {...p.modal} />
+      }
+      {p.modal.type === MODAL_UPORT &&
+        <ModalUport {...p.modal} />
       }
       {p.modal.canClose &&
         <button

@@ -10,8 +10,6 @@ import getValue from 'utils/get-value'
 
 import { decode } from 'mnid'
 
-import uPortSigningNotifier from 'modules/auth/helpers/uport-signing-notifier'
-
 import Styles from 'modules/auth/components/uport-create/uport-create.styles'
 
 export default class UportCreate extends Component {
@@ -27,8 +25,7 @@ export default class UportCreate extends Component {
       'AUGUR -- DEV',
       {
         clientId: '2ofGiHuZhhpDMAQeDxjoDhEsUQd1MayECgd'
-      },
-      uPortSigningNotifier
+      }
     )
 
     this.state = {
@@ -49,7 +46,7 @@ export default class UportCreate extends Component {
       this.uPortURIHandler
     )
       .then((account) => {
-        this.props.login(decode(account.address), this.uPort.getWeb3().eth.sendTransaction)
+        this.props.login(decode(account.address), this.uPort.sendTransaction)
       })
   }
 
