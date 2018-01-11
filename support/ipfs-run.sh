@@ -1,10 +1,15 @@
 #!/bin/bash
 
 ipfs daemon &
-sleep 10s
+sleep 5s
 
+# publish files with key if available
+/augur/ipfs-configure.sh
+cd /etc/nginx/
 # configure nginx to be proxy for ipfs
-cat /augur/ipfs-deploy/NEW_BUILD_HASH
-cd /etc/nginx && rm -rf ./cache/* && mkdir ./cache && mkdir ./cache/temp && chown www-data ./cache/temp
+if [ ! -f cache ]; then
+  mkdir cache
+fi
+rm -rf ./cache/* && mkdir ./cache/temp && chown www-data ./cache/temp
 service cron start
 nginx

@@ -1,10 +1,19 @@
 #!/bin/bash
 
-ipfs daemon &
-sleep 10s
+if [ ! -z "$IPFS_KEY" ]; then
+  echo "key found updating keystore"
+  echo $IPFS_KEY | base64 -d > ~/.ipfs/keystore/augur
+fi
+
 export NEW_BUILD_HASH=$(ipfs add -r build/ | tail -n 1 | awk '{print $2}')
-echo "Using hash key of $NEW_BUILD_HASH"
-ipfs name publish $NEW_BUILD_HASH
+echo "Using build dir hash $NEW_BUILD_HASH"
+if [ ! -z "$IPFS_KEY" ]; then
+  echo "publishing with key to update ipns"
+  echo ipfs name publish --key=augur $NEW_BUILD_HASH
+else
+  echo "publishing/pinning build directory"
+  echo ipfs name publish $NEW_BUILD_HASH
+fi
+
 mkdir /augur/ipfs-deploy
 echo $NEW_BUILD_HASH > /augur/ipfs-deploy/NEW_BUILD_HASH
-#sed -i 's/NEW_BUILD_HASH/'"$NEW_BUILD_HASH"'/g' /etc/nginx/sites-available/default

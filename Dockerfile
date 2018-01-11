@@ -2,6 +2,8 @@ FROM node:8-stretch
 
 ENV PATH /root/.yarn/bin:$PATH
 ARG ethereum_network=rinkeby
+ENV ETHEREUM_NETWORK=$ethereum_network
+ARG ipfs_key
 
 # begin install yarn
 # libusb-dev required for node-hid, required for ledger support (ethereumjs-ledger)
@@ -12,8 +14,6 @@ RUN apt-get -y update \
   && curl -o- -L https://yarnpkg.com/install.sh | bash \
   && echo "daemon off;" >> /etc/nginx/nginx.conf
 # end install yarn
-
-#RUN npm install node-hid
 
 # Vhost to serve files
 COPY support/nginx-default.conf /etc/nginx/sites-available/default
@@ -52,7 +52,6 @@ RUN git rev-parse HEAD > /augur/build/git-hash.txt \
   && chmod 0644 /etc/cron.d/ipfs-cron \
   && touch /var/log/cron.log \
   && cd /augur \
-  && /bin/bash -c /augur/ipfs-configure.sh \
   && crontab /etc/cron.d/ipfs-cron
 
 EXPOSE 80 8001
