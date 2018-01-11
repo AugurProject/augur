@@ -56,6 +56,10 @@ export default class UportCreate extends Component {
     window.addEventListener('resize', this.debouncedSetQRSize)
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.debouncedSetQRSize)
+  }
+
   setQRSize() {
     const width = getValue(this, 'uPortCreateQR.clientWidth')
     const height = getValue(this, 'uPortCreateQR.clientHeight')

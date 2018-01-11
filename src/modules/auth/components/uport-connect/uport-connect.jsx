@@ -52,6 +52,10 @@ export default class UportConnect extends Component {
     window.addEventListener('resize', this.debouncedSetQRSize)
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.debouncedSetQRSize)
+  }
+
   setQRSize() {
     const width = getValue(this, 'uPortCreate.clientWidth')
     const height = getValue(this, 'uPortCreate.clientHeight')
