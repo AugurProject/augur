@@ -23,7 +23,7 @@ function advanceMarketReachingEndTime(db: Knex, augur: Augur, trx: Knex.Transact
   });
 }
 
-export function processBlock(db: Knex, augur: Augur, block: Block): void {
+export function processBlock(db: Knex, augur: Augur, block: Block, callback: ErrorCallback): void {
   if (!block || !block.timestamp) return logError(new Error(JSON.stringify(block)));
   const blockNumber = parseInt(block.number, 16);
   const blockHash = block.hash;
@@ -50,9 +50,11 @@ export function processBlock(db: Knex, augur: Augur, block: Block): void {
             if (err != null) {
               trx.rollback(err);
               logError(err);
+              callback(err);
             } else {
               trx.commit();
               console.log("finished block:", blockNumber, timestamp);
+              callback(null);
             }
           });
         }
@@ -61,13 +63,13 @@ export function processBlock(db: Knex, augur: Augur, block: Block): void {
   });
 }
 
-export function processBlockByNumber(db: Knex, augur: Augur, blockNumber: number): void {
+export function processBlockByNumber(db: Knex, augur: Augur, blockNumber: number, callback: ErrorCallback): void {
   augur.rpc.eth.getBlockByNumber([blockNumber, false], (block: Block): void => {
-    processBlock(db, augur, block);
+    processBlock(db, augur, block, callback);
   });
 }
 
-export function processBlockRemoval(db: Knex, block: Block): void {
+export function processBlockRemoval(db: Knex, block: Block, callback: ErrorCallback): void {
   const blockNumber = parseInt(block.number, 16);
   console.log("block removed:", blockNumber);
   db.transaction((trx: Knex.Transaction): void => {
@@ -75,8 +77,10 @@ export function processBlockRemoval(db: Knex, block: Block): void {
       if (err) {
         trx.rollback(err);
         logError(err);
+        callback(err);
       } else {
         trx.commit();
+        callback(null);
       }
     });
   });
