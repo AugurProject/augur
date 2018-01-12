@@ -128,7 +128,7 @@ export interface SimulatedTrade {
   shareBalances: Array<string>;
 }
 
-export interface RpcInterface extends EventEmitter {
+export interface RpcInterface {
   errors: any; // TODO define RPC errors object
   eth: {
     [jsonRpcMethodName: string]: (params?: any, callback?: (response: any) => void) => string|number|null;
