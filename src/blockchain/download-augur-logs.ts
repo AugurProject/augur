@@ -1,7 +1,6 @@
 import { Augur } from "augur.js";
 import { eachSeries } from "async";
 import * as Knex from "knex";
-import * as _ from "lodash";
 import { ErrorCallback, FormattedEventLog } from "../types";
 import { processLog } from "./process-logs";
 import { logProcessors } from "./log-processors";
