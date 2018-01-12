@@ -10,6 +10,8 @@ echo "Using build dir hash $NEW_BUILD_HASH"
 if [ ! -z "$IPFS_KEY" ]; then
   echo "publishing with key to update ipns"
   echo ipfs name publish --key=augur $NEW_BUILD_HASH
+  # remove key after initial publishing
+  rm ~/.ipfs/keystore/augur
 else
   echo "publishing/pinning build directory"
   echo ipfs name publish $NEW_BUILD_HASH
