@@ -15,7 +15,7 @@ export const loginWithAirbitzEthereumWallet = (airbitzAccount, ethereumWallet, h
     ...account,
     meta: {
       address: account.address,
-      signer: typeof privateKey === 'string' ? Buffer.from(privateKey, 'hex') : privateKey,
+      signer: Buffer.from(privateKey, 'hex'),
       accountType: augur.rpc.constants.ACCOUNT_TYPES.PRIVATE_KEY
     },
     name: airbitzAccount.username,
