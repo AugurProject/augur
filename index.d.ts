@@ -128,7 +128,7 @@ export interface SimulatedTrade {
   shareBalances: Array<string>;
 }
 
-export interface RpcInterface extends EventEmitter {
+export interface RpcInterface {
   errors: any; // TODO define RPC errors object
   eth: {
     [jsonRpcMethodName: string]: (params?: any, callback?: (response: any) => void) => string|number|null;
@@ -189,6 +189,10 @@ export class Augur {
     stopBlockchainEventListeners(): boolean;
     startAugurNodeEventListeners(eventCallbacks: EventSubscriptionCallbacks, onSetupComplete?: (err: Error|null) => void): void;
     stopAugurNodeEventListeners(callback?: (err: Error|null) => void): void;
+    nodes: {
+      augur: EventEmitter;
+      ethereum: EventEmitter;
+    }
   };
   public markets: {
     getMarketInfo: ApiFunction;
