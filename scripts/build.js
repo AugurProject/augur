@@ -22,11 +22,8 @@ if (FLAGS.indexOf('--rinkeby') !== -1) {
 }
 process.env.ETHEREUM_NETWORK =  network
 process.env.FORCE_COLOR = true;
+network ? console.log(`Using Network: ${network}`) : console.log('Using local network');
 
-console.log('flags ' + FLAGS)
-console.log('node env ' + process.env.NODE_ENV)
-console.log('process.env.DEBUG_BUILD ' + process.env.DEBUG_BUILD)
-return
 shell.echo(`
 ${colors.title(`== Building Augur${process.env.NODE_ENV === 'development' ? ' -- Debug Mode' : ''} ==`)}
 
