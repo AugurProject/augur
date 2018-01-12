@@ -30,8 +30,8 @@ export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: 
     },
   }, highestBlockNumber, (err: Error) => {
     augur.events.startBlockListeners({
-      onAdded: (block: Block): void => processBlock(db, augur, block, _.noop),
-      onRemoved: (block: Block): void => processBlockRemoval(db, block, _.noop),
+      onAdded: (block: Block): void => processBlock(db, augur, block),
+      onRemoved: (block: Block): void => processBlockRemoval(db, block),
     });
   });
 }
