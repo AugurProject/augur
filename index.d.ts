@@ -189,6 +189,10 @@ export class Augur {
     stopBlockchainEventListeners(): boolean;
     startAugurNodeEventListeners(eventCallbacks: EventSubscriptionCallbacks, onSetupComplete?: (err: Error|null) => void): void;
     stopAugurNodeEventListeners(callback?: (err: Error|null) => void): void;
+    nodes: {
+      augur: EventEmitter;
+      ethereum: EventEmitter;
+    }
   };
   public markets: {
     getMarketInfo: ApiFunction;
