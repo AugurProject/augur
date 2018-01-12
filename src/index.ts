@@ -41,7 +41,7 @@ const configuredEndpoints: EthereumNodeEndpoints = _.isEmpty(envEndpoints) ? eth
 const augur: Augur = new Augur();
 
 augur.rpc.setDebugOptions({ broadcast: false });
-augur.rpc.on("disconnect", () => {
+augur.events.nodes.ethereum.on("disconnect", () => {
   console.log(("Disconnected from eth node"));
   process.exit(1);
 });
