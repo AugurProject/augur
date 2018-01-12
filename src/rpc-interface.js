@@ -1,8 +1,7 @@
 "use strict";
-var EventEmitter = require("event-emitter");
 
 var createRpcInterface = function (ethrpc) {
-  return EventEmitter({
+  return {
     constants: ethrpc.constants,
     errors: ethrpc.errors,
     eth: ethrpc.eth,
@@ -26,7 +25,7 @@ var createRpcInterface = function (ethrpc) {
     WsTransport: ethrpc.WsTransport,
     publish: ethrpc.publish,
     sha3: ethrpc.sha3,
-  });
+  };
 };
 
 var ethrpc = createRpcInterface(require("ethrpc"));
