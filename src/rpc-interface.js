@@ -24,6 +24,7 @@ var createRpcInterface = function (ethrpc) {
     setDebugOptions: ethrpc.setDebugOptions,
     WsTransport: ethrpc.WsTransport,
     publish: ethrpc.publish,
+    sha3: ethrpc.sha3,
   };
 };
 
