@@ -1,5 +1,4 @@
 import Augur from "augur.js";
-import * as _ from "lodash";
 import * as Knex from "knex";
 import { Int256, FormattedEventLog, Block } from "../types";
 import { logProcessors } from "./log-processors";
