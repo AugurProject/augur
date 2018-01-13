@@ -56,8 +56,8 @@ RUN git rev-parse HEAD > /augur/build/git-hash.txt \
   && crontab /etc/cron.d/ipfs-cron
 
 EXPOSE 80 8001
-# ipfs swarming
-EXPOSE 4001
+# ipfs communication
+EXPOSE 4001 5001 8080
 
 WORKDIR /augur
 # Add Tini
