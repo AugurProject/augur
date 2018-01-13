@@ -11,7 +11,7 @@ export function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, toB
   augur.events.getAllAugurLogs({ fromBlock, toBlock }, (err?: string|object|null, allAugurLogs?: Array<FormattedEventLog>): void => {
     if (err) return callback(err instanceof Error ? err : new Error(JSON.stringify(err)));
     const blockNumbers = allAugurLogs!.reduce( (set, log) => set.add(log.blockNumber), new Set<number>() );
-    blockNumbers.forEach( (blockNumber: number): void => processBlockByNumber(db, augur, blockNumber));
+    eachSeries(Array.from(blockNumbers), (blockNumber: number, nextBlock: ErrorCallback): void => processBlockByNumber(db, augur, blockNumber, nextBlock) );
     eachSeries(allAugurLogs!, (log: FormattedEventLog, nextLog: ErrorCallback) => {
       const contractName = log.contractName;
       const eventName = log.eventName;

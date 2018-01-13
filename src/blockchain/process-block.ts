@@ -5,25 +5,23 @@ import { each } from "async";
 import { logError } from "../utils/log-error";
 import { Block, BlocksRow, AsyncCallback, ErrorCallback } from "../types";
 import { updateMarketState } from "./log-processors/database";
+import { processQueue, BLOCK_PRIORITY } from "./process-queue";
 
-function advanceTime(db: Knex, augur: Augur, trx: Knex.Transaction, blockNumber: number, timestamp: number, callback: AsyncCallback) {
-  parallel( {
-    advanceMarketReachingEndTime: (next: AsyncCallback) => advanceMarketReachingEndTime(db, augur, trx, blockNumber, timestamp, next),
-  }, callback);
+export function processBlock(db: Knex, augur: Augur, block: Block): void {
+  processQueue.push((callback) => _processBlock(db, augur, block, callback), BLOCK_PRIORITY);
 }
 
-function advanceMarketReachingEndTime(db: Knex, augur: Augur, trx: Knex.Transaction, blockNumber: number, timestamp: number, callback: AsyncCallback) {
-  const designatedDisputeQuery = db("markets").transacting(trx).select("markets.marketID").join("market_state", "market_state.marketStateID", "markets.marketStateID");
-  designatedDisputeQuery.where("reportingState", augur.constants.REPORTING_STATE.PRE_REPORTING).where("endTime", ">", timestamp);
-  designatedDisputeQuery.asCallback( (err: Error|null, designatedDisputeMarketIDs: Array<any> ) => {
-    if (err) return callback(err);
-    each(designatedDisputeMarketIDs, (marketIDRow, nextMarketID: ErrorCallback) => {
-      updateMarketState(db, marketIDRow.marketID, trx, blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_REPORTING, nextMarketID);
-    }, callback);
+export function processBlockRemoval(db: Knex, block: Block): void {
+  processQueue.push((callback) => _processBlockRemoval(db, block, callback), BLOCK_PRIORITY);
+}
+
+export function processBlockByNumber(db: Knex, augur: Augur, blockNumber: number, callback: ErrorCallback): void {
+  augur.rpc.eth.getBlockByNumber([blockNumber, false], (block: Block): void => {
+    _processBlock(db, augur, block, callback);
   });
 }
 
-export function processBlock(db: Knex, augur: Augur, block: Block): void {
+function _processBlock(db: Knex, augur: Augur, block: Block, callback: ErrorCallback): void {
   if (!block || !block.timestamp) return logError(new Error(JSON.stringify(block)));
   const blockNumber = parseInt(block.number, 16);
   const blockHash = block.hash;
@@ -50,9 +48,11 @@ export function processBlock(db: Knex, augur: Augur, block: Block): void {
             if (err != null) {
               trx.rollback(err);
               logError(err);
+              callback(err);
             } else {
               trx.commit();
               console.log("finished block:", blockNumber, timestamp);
+              callback(null);
             }
           });
         }
@@ -61,13 +61,7 @@ export function processBlock(db: Knex, augur: Augur, block: Block): void {
   });
 }
 
-export function processBlockByNumber(db: Knex, augur: Augur, blockNumber: number): void {
-  augur.rpc.eth.getBlockByNumber([blockNumber, false], (block: Block): void => {
-    processBlock(db, augur, block);
-  });
-}
-
-export function processBlockRemoval(db: Knex, block: Block): void {
+function _processBlockRemoval(db: Knex, block: Block, callback: ErrorCallback): void {
   const blockNumber = parseInt(block.number, 16);
   console.log("block removed:", blockNumber);
   db.transaction((trx: Knex.Transaction): void => {
@@ -75,9 +69,28 @@ export function processBlockRemoval(db: Knex, block: Block): void {
       if (err) {
         trx.rollback(err);
         logError(err);
+        callback(err);
       } else {
         trx.commit();
+        callback(null);
       }
     });
+  });
+}
+
+function advanceTime(db: Knex, augur: Augur, trx: Knex.Transaction, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+  parallel( {
+    advanceMarketReachingEndTime: (next: AsyncCallback) => advanceMarketReachingEndTime(db, augur, trx, blockNumber, timestamp, next),
+  }, callback);
+}
+
+function advanceMarketReachingEndTime(db: Knex, augur: Augur, trx: Knex.Transaction, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+  const designatedDisputeQuery = db("markets").transacting(trx).select("markets.marketID").join("market_state", "market_state.marketStateID", "markets.marketStateID");
+  designatedDisputeQuery.where("reportingState", augur.constants.REPORTING_STATE.PRE_REPORTING).where("endTime", ">", timestamp);
+  designatedDisputeQuery.asCallback( (err: Error|null, designatedDisputeMarketIDs: Array<any> ) => {
+    if (err) return callback(err);
+    each(designatedDisputeMarketIDs, (marketIDRow, nextMarketID: ErrorCallback) => {
+      updateMarketState(db, marketIDRow.marketID, trx, blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_REPORTING, nextMarketID);
+    }, callback);
   });
 }
