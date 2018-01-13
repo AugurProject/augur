@@ -20,7 +20,9 @@ if (FLAGS.indexOf('--rinkeby') !== -1) {
 } else if (FLAGS.indexOf('--aura') !== -1) {
   network = 'aura'
 }
-process.env.ETHEREUM_NETWORK =  network
+
+// environment variable trumps passed in flag
+if (network && !process.env.ETHEREUM_NETWORK) { process.env.ETHEREUM_NETWORK = network }
 process.env.FORCE_COLOR = true;
 network ? console.log(`Using Network: ${network}`) : console.log('Using local network');
 
