@@ -33,7 +33,8 @@ exports.up = async (knex: Knex): Promise<any> => {
       "numTicks" integer NOT NULL,
       "consensusOutcome" integer,
       "isInvalid" boolean
-    )`);
+    )`)
+    .raw("CREATE INDEX endTime ON markets (endTime)");
   });
 };
 
