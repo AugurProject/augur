@@ -37,7 +37,7 @@ let config = {
     filename: '[name].[chunkhash].js',
     chunkFilename: '[name].[chunkhash].js',
     path: PATHS.BUILD,
-    publicPath: '/'
+    publicPath: ''
   },
   resolve: {
     modules: ['node_modules', PATHS.APP],
