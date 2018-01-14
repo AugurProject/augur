@@ -67,7 +67,8 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
         market: '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
         outcome: '2',
         minimumTradeSize: '0x2386f26fc10000',
-        tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
+        tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
+        type: 'Bid'
       })
     }
   })
@@ -142,7 +143,8 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
         market: '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
         outcome: '2',
         minimumTradeSize: '0x2386f26fc10000',
-        tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
+        tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
+        type: 'Bid'
       })
     }
   })
