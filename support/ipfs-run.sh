@@ -1,8 +1,8 @@
 #!/bin/bash
 
-if [ "$RUN_LOCAL_ONLY" = "false" ]; then
+if [ "$RUN_LOCAL_ONLY" != "true" ]; then
   ipfs daemon &
-  sleep 5s
+  sleep 10s
 
   # publish files with key if available
   /augur/ipfs-configure.sh
@@ -11,8 +11,8 @@ if [ "$RUN_LOCAL_ONLY" = "false" ]; then
     exit
   fi
 
+  echo "Finished IPFS configuration"
 fi
-
 
 cd /etc/nginx/
 # configure nginx to be proxy for ipfs
