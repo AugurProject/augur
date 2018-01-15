@@ -515,9 +515,9 @@ augur-contracts@3.5.0-13:
   version "3.5.0-13"
   resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-3.5.0-13.tgz#afbfaaa05b24a98d7369b998d42ba69498822dab"
 
-augur.js@4.7.0-45:
-  version "4.7.0-45"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.7.0-45.tgz#6f1a1fc1d365721dd963dd5e176f15bb021ec77e"
+augur.js@4.7.0-46:
+  version "4.7.0-46"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.7.0-46.tgz#0be24bd728eb06f31a4e00e7b32fde965cee5e6c"
   dependencies:
     async "1.5.2"
     augur-contracts "3.5.0-13"
@@ -3727,6 +3727,13 @@ ethereumjs-ledger@2.1.4:
 ethereumjs-tx@1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/ethereumjs-tx/-/ethereumjs-tx-1.3.1.tgz#d6909abcfb37da6404fc18124d351eda20047dac"
+  dependencies:
+    ethereum-common "^0.0.18"
+    ethereumjs-util "^5.0.0"
+
+ethereumjs-tx@^1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/ethereumjs-tx/-/ethereumjs-tx-1.3.3.tgz#ece051d3efdbe771ad2a518d61632ca2ab75ecbb"
   dependencies:
     ethereum-common "^0.0.18"
     ethereumjs-util "^5.0.0"
