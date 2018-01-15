@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Connect } from 'uport-connect'
 import QRCode from 'qrcode.react'
+import { decode } from 'mnid'
 
 import { AppleAppStore, GooglePlayStore } from 'modules/common/components/icons/icons'
 
@@ -42,7 +43,7 @@ export default class UportConnect extends Component {
       notifcations: true
     }, this.uPortURIHandler).then((account) => {
       const signingMethod = this.uPort.getWeb3().eth.sendTransaction
-      this.props.login(account, signingMethod)
+      this.props.login(decode(account.address), signingMethod)
     })
   }
 
