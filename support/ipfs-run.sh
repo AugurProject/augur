@@ -1,13 +1,17 @@
 #!/bin/bash
 
-ipfs daemon &
-sleep 5s
+if [ "$RUN_LOCAL_ONLY" != "true" ]; then
+  ipfs daemon &
+  sleep 10s
 
-# publish files with key if available
-/augur/ipfs-configure.sh
+  # publish files with key if available
+  /augur/ipfs-configure.sh
 
-if [ "$PUBLISH_ONLY" = "true" ]; then
-  exit
+  if [ "$PUBLISH_ONLY" = "true" ]; then
+    exit
+  fi
+
+  echo "Finished IPFS configuration"
 fi
 
 cd /etc/nginx/
