@@ -37,7 +37,7 @@ let config = {
     filename: '[name].[chunkhash].js',
     chunkFilename: '[name].[chunkhash].js',
     path: PATHS.BUILD,
-    publicPath: '/'
+    publicPath: ''
   },
   resolve: {
     modules: ['node_modules', PATHS.APP],
@@ -213,6 +213,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
 } else if (process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
   // get network name like 'rinkeby' or 'clique' to set environment for UI
   const target = process.env.ETHEREUM_NETWORK ? `env-${process.env.ETHEREUM_NETWORK}.json` : 'env-dev.json'
+  console.log(`Using development config file ${target}`)
   config = merge(config, {
     entry: {
       main: `${PATHS.APP}/main`

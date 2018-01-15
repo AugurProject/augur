@@ -5,6 +5,7 @@ ARG ethereum_network=rinkeby
 ENV ETHEREUM_NETWORK=$ethereum_network
 ARG ipfs_key
 ENV PUBLISH_ONLY=false
+ENV RUN_LOCAL_ONLY=false
 
 # begin install yarn
 # libusb-dev required for node-hid, required for ledger support (ethereumjs-ledger)
@@ -53,9 +54,12 @@ RUN git rev-parse HEAD > /augur/build/git-hash.txt \
   && chmod 0644 /etc/cron.d/ipfs-cron \
   && touch /var/log/cron.log \
   && cd /augur \
-  && crontab /etc/cron.d/ipfs-cron
+  && crontab /etc/cron.d/ipfs-cron \
+  && rm -rf go-ipfs \
+  && rm go-ipfs_v0.4.13_linux-amd64.tar.gz
 
 EXPOSE 80 8001
+EXPOSE 4001
 
 WORKDIR /augur
 # Add Tini
