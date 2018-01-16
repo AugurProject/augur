@@ -29,7 +29,6 @@ export function getUnclaimedMarketCreatorFees(db: Knex, marketIDs: Array<Address
         };
       }
     });
-    callback(null,
-      feeResult);
+    callback(null, feeResult);
   });
 }
