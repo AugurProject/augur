@@ -1,7 +1,3 @@
-/**
- * @todo Query augur.js version and contract address set from augur-node.
- */
-
 "use strict";
 
 var submitRequest = require("./submit-json-rpc-request");
