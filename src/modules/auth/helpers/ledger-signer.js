@@ -1,28 +1,34 @@
 import { updateModal } from 'modules/modal/actions/update-modal'
 import { closeModal } from 'modules/modal/actions/close-modal'
-import EthereumTX from 'ethereumjs-tx'
+import EthTX from 'ethereumjs-tx'
 import { prefixHex } from 'speedomatic'
 
 import { MODAL_LEDGER } from 'modules/modal/constants/modal-types'
 
-const ledgerSigner = async (passedArguments, ledgerLib, dispatch) => {
+const ledgerSigner = async (rawTxArgs, ledgerLib, dispatch) => {
   dispatch(updateModal({
     type: MODAL_LEDGER
   }))
 
-  const tx = new EthereumTX(passedArguments[0])
+  const tx = rawTxArgs[0]
+  const callback = rawTxArgs[1]
 
-  return ledgerLib.signTransactionByBip44Index(tx.serialize().toString('hex'), 7)
+  const formattedTx = new EthTX(rawTxArgs[0])
+
+  return ledgerLib.signTransactionByBip44Index(formattedTx.serialize().toString('hex'))
     .then((res) => {
-      tx.r = Buffer.from(res.r, 'hex')
-      tx.s = Buffer.from(res.s, 'hex')
-      tx.v = Buffer.from(res.v, 'hex')
+      tx.r = prefixHex(res.r)
+      tx.s = prefixHex(res.s)
+      tx.v = prefixHex(res.v)
 
-      passedArguments[1](null, prefixHex(tx.serialize().toString('hex')))
+      const signedTx = new EthTX(tx)
+
+      callback(null, prefixHex(signedTx.serialize().toString('hex')))
+
       dispatch(closeModal())
     })
     .catch((err) => {
-      passedArguments[1](err)
+      callback(err)
 
       dispatch(updateModal({
         type: MODAL_LEDGER,
