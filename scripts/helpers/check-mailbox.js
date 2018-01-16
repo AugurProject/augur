@@ -24,7 +24,7 @@ augur.connect(connectionEndpoints, function (err) {
         var ethBalance = speedomatic.bignum(attoEthBalance);
         var combined = speedomatic.unfix(ethBalance.add(cashBalance), "string");
         console.log(chalk.green.dim("Total balance:"), chalk.green(combined));
-        process.exit();
+        process.exit();        process.exit();
       });
     });
   });

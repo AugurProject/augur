@@ -5,7 +5,6 @@
 var Augur = require("../../src");
 var chalk = require("chalk");
 var connectionEndpoints = require("../connection-endpoints");
-var BigNumber = require("bignumber.js");
 
 var marketID = process.argv[2];
 var outcome = process.argv[3];
@@ -15,13 +14,12 @@ var augur = new Augur();
 
 augur.connect(connectionEndpoints, function (err) {
   if (err) return console.error(err);
-  if (!invalid) invalid = false;
+  if (!invalid) { invalid = false; } else { invalid = true; }
   augur.markets.getMarketsInfo({ marketIDs: [marketID] }, function (err, marketsInfo) {
     var market = marketsInfo[0];
     var numTicks = market.numTicks;
-    var payoutNumerators = Array(market.numOutcomes).fill(new BigNumber(0, 10));
-    payoutNumerators[outcome] = new BigNumber(numTicks, 10);
-
+    var payoutNumerators = Array(market.numOutcomes).fill(0);
+    payoutNumerators[outcome] = numTicks;
 
     var reportPayload = { tx: { to: marketID  },
       _payoutNumerators: payoutNumerators,
