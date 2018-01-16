@@ -29,9 +29,6 @@ const MarketProperties = (p) => {
     case TYPE_TRADE:
       buttonText = 'Trade'
       break
-    case TYPE_COLLECT_FEES:
-      buttonText = 'Collect Fees'
-      break
     default:
       buttonText = 'View'
   }
@@ -51,6 +48,12 @@ const MarketProperties = (p) => {
           <span>Expires</span>
           <span>{ p.endDate.formatted }</span>
         </li>
+        {p.linkType && p.linkType === TYPE_COLLECT_FEES &&
+          <li>
+            <span>Collected Returns</span>
+            <ValueDenomination formatted={p.marketCreatorFeesCollected.rounded} denomination={p.marketCreatorFeesCollected.denomination} />
+          </li>
+        }
       </ul>
       <div className={Styles.MarketProperties__actions}>
         { p.isLogged && p.toggleFavorite &&
@@ -80,17 +83,6 @@ const MarketProperties = (p) => {
             onClick={e => console.log('call to finalize market')}
           >
             Finalize
-          </button>
-        }
-        { p.linkType && p.linkType === TYPE_COLLECT_FEES &&
-          <button
-            className={Styles.MarketProperties__trade}
-            disabled={(p.unclaimedCreatorFees.formattedValue === 0)}
-            onClick={() => {
-              p.collectMarketCreatorFees(p.id)
-            }}
-          >
-            { p.buttonText || buttonText }
           </button>
         }
       </div>
