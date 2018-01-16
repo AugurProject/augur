@@ -243,8 +243,9 @@ export interface UIStakeTokens {
   [stakeToken: string]: UIStakeTokenInfo;
 }
 
-export interface UIMarketCreatorFees {
-  [marketID: string]: number;
+export interface UIMarketCreatorFee {
+  marketID: Address;
+  unclaimedFee: string;
 }
 
 export interface UIConsensusInfo {
