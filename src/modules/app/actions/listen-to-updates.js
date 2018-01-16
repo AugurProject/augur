@@ -182,16 +182,16 @@ export function listenToUpdates(history) {
         }
       },
     }, err => console.log(err || 'Listening for events'))
-    augur.augurNode.on('disconnect', () => {
+    augur.events.nodes.augur.on('disconnect', () => {
       console.log('AugurNode Disconnected')
       dispatch(resetState())
       history.push(makePath(DEFAULT_VIEW))
-      dispatch(initAugur())
+      dispatch(initAugur(history))
     })
-    augur.augurNode.on('reconnect', () => {
-      // reconnect events might not be needed on the UI
-      console.log('AugurNode Reconnected')
-    })
+    // augur.augurNode.on('reconnect', () => {
+    //   // reconnect events might not be needed on the UI
+    //   console.log('AugurNode Reconnected')
+    // })
     // augur.rpc.on('disconnect', () => {
     //   console.log('Ethereum Node Disconnected')
     //   dispatch(resetState())
