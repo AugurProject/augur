@@ -42,9 +42,9 @@ describe('modules/auth/helpers/ledger-signer', () => {
         }
       ]
 
-      ledgerLib.signTransactionByBip44Index.resolves()
+      ledgerLib.signTransactionByBip44Index.resolves({ r: 'blah', s: 'test', v: 'bob' })
 
-      await ledgerSigner('testing', ledgerLib, store.dispatch)
+      await ledgerSigner(['testing', () => {}], ledgerLib, store.dispatch)
         .then((res) => {
           actual = store.getActions()
         })
@@ -71,7 +71,7 @@ describe('modules/auth/helpers/ledger-signer', () => {
 
       ledgerLib.signTransactionByBip44Index.rejects()
 
-      await ledgerSigner('testing', ledgerLib, store.dispatch)
+      await ledgerSigner(['testing', () => {}], ledgerLib, store.dispatch)
         .then(() => {
           assert(false, `didn't reject as expected`)
         })
