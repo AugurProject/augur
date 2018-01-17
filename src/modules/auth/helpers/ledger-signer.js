@@ -1,6 +1,6 @@
 import { updateModal } from 'modules/modal/actions/update-modal'
 import { closeModal } from 'modules/modal/actions/close-modal'
-import EthTX from 'ethereumjs-tx'
+import TX from 'ethereumjs-tx'
 import { prefixHex } from 'speedomatic'
 
 import { MODAL_LEDGER } from 'modules/modal/constants/modal-types'
@@ -15,7 +15,7 @@ const ledgerSigner = async (rawTxArgs, ledgerLib, dispatch) => {
 
   const callback = rawTxArgs[1]
 
-  const formattedTx = new EthTX(rawTxArgs[0])
+  const formattedTx = new TX(rawTxArgs[0])
 
   return ledgerLib.signTransactionByBip44Index(formattedTx.serialize().toString('hex'))
     .then((res) => {
@@ -23,7 +23,7 @@ const ledgerSigner = async (rawTxArgs, ledgerLib, dispatch) => {
       tx.s = prefixHex(res.s)
       tx.v = prefixHex(res.v)
 
-      const signedTx = new EthTX(tx)
+      const signedTx = new TX(tx)
 
       callback(null, prefixHex(signedTx.serialize().toString('hex')))
 
