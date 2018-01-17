@@ -12,10 +12,16 @@ var augur = new Augur();
 
 augur.connect(connectionEndpoints, function (err) {
   if (err) return console.error(err);
-  augur.api.Market.getInitialReporter({ tx: { to: marketID  }}, function (err, result) {
+  if (!marketID) { console.log(chalk.red("marketID is needed")); process.exit(1); }
+  augur.api.Market.getInitialReporter({ tx: { to: marketID  }}, function (err, contractID) {
     if (err) console.log(chalk.red.dim("Error:"), chalk.green(JSON.stringify(err)));
-    console.log(chalk.green.dim("Success:"), chalk.green(JSON.stringify(result)));
-    process.exit(0);
+    console.log(chalk.green.dim("Initial Reporter Contract address:"), chalk.green(JSON.stringify(contractID)));
+
+    augur.api.InitialReporter.getOwner({ tx: { to: contractID  }}, function (err, userAddress) {
+      if (err) console.log(chalk.red.dim("Error:"), chalk.green(JSON.stringify(err)));
+      console.log(chalk.green.dim("User address:"), chalk.green(JSON.stringify(userAddress)));
+      process.exit(0);
+    });
   });
 });
 
