@@ -19,8 +19,11 @@ const OutstandingReturns = p => (
   </div>
 )
 
+
 OutstandingReturns.propTypes = {
-  unclaimedCreatorFees: PropTypes.object.isRequired
+  id: PropTypes.string.isRequired,
+  unclaimedCreatorFees: PropTypes.object.isRequired,
+  collectMarketCreatorFees: PropTypes.func.isRequired,
 }
 
 export default OutstandingReturns

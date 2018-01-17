@@ -51,7 +51,10 @@ const MarketProperties = (p) => {
         {p.linkType && p.linkType === TYPE_COLLECT_FEES &&
           <li>
             <span>Collected Returns</span>
-            <ValueDenomination formatted={p.marketCreatorFeesCollected.rounded} denomination={p.marketCreatorFeesCollected.denomination} />
+            <ValueDenomination
+              formatted={p.marketCreatorFeesCollected.rounded}
+              denomination={p.marketCreatorFeesCollected.denomination}
+            />
           </li>
         }
       </ul>
