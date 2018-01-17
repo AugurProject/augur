@@ -63,7 +63,7 @@ getPrivateKey(keystoreFilePath, function (err, auth) {
               }
             },
             onFailed: function (err) {
-              console.log(chalk.red("err"), chalk.red(err));
+              console.log(chalk.red("err"), chalk.red(JSON.stringify(err)));
               return;
             },
           });
