@@ -9,13 +9,13 @@ ___
 
 ## Dockerfile
 
-The dockerfile in augur repository hosts augur client in two ways; port 8001 hosts the build directory via nginx and port 80 is a pass through to the IPFS gateway internal port 8080.
+The dockerfile in augur repository hosts augur client in two ways; port 8001 hosts the build directory via nginx and port 80 is a pass through to the IPFS gateway internal port 8080. 
 
 ___
 
 ## Docker cloud
 
-When augur dev branch is updated docker cloud gets kicked off and redeploys two docker containers. dev.augur.net routes port 8001 and ipfs-dev.augur.net routes to port 80.
+When augur dev branch is updated docker cloud gets kicked off and redeploys two docker containers. One container for dev.augur.net and one for ipfs-dev.augur.net.
 
 ## IPFS
 
@@ -23,11 +23,7 @@ ipfs-dev.augur.net can be tested by going to IPNS hash
 
     https://ipfs-dev.augur.net/ipns/QmQBVeHLXPB7ifmCWZUw9PDktUoTEJfQLpR3bSVUgZgLR8/index.html
 
-DNS will be updated to shortcut the IPNS url 
-
-    dnslink=/ipns/QmQBVeHLXPB7ifmCWZUw9PDktUoTEJfQLpR3bSVUgZgLR8
-
-This will allow for https://ipfs-dev.augur.net to resolve like any other domain but IPFS is hosting Augur client on the back-end.
+This uses https://ipfs-dev.augur.net as a ipfs gateway to resolve to the build directory hash which changes per build. The ipns hash doesn't not change from build to build. 
 
 
 ### Updating IPNS using Key

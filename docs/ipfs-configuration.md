@@ -1,5 +1,7 @@
 # Augur | Manual IPFS Configuration
 
+Audience: For those community members that are already familiar with ipfs and want to manually pin files.
+
 ## Prerequisites
 * Git -- https://git-scm.com/downloads
 * Node -- https://nodejs.org/en/download/
@@ -10,7 +12,7 @@
 
     git clone https://github.com/AugurProject/augur.git
 
-## Building Client
+## Building Augur Client
 
     cd <augur repository>
     npm i
