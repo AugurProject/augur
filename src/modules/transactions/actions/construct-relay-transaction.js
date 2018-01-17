@@ -22,7 +22,8 @@ export const constructRelayTransaction = tx => (dispatch, getState) => {
       blockNumber,
       title: `${unpackedParams.type} - ${status}`,
       description: unpackedParams._description || '',
-      linkPath: makePath(TRANSACTIONS)
+      linkPath: makePath(TRANSACTIONS),
+      seen: false // Manually set to false to ensure notification
     }))
   } else {
     dispatch(addNotification({
