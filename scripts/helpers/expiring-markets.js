@@ -21,7 +21,7 @@ augur.connect(connectionEndpoints, function (err) {
         var endDate = marketInfo.endDate;
         var date = new Date(endDate * 1000);
         var ended = date - currentTime > 0 ? "NO" : "YES";
-        console.log(chalk.cyan("endDate:"), chalk.cyan(endDate), chalk.red(date), ended ? chalk.yellow(ended) : chalk.red(ended));
+        console.log(chalk.cyan("endDate:"), chalk.cyan(endDate), chalk.red(date), ended ? chalk.yellow(ended) : chalk.red(ended), chalk.blue(marketInfo.reportingState));
         console.log(chalk.green.dim(marketInfo.id), chalk.green(marketInfo.description));
         nextMarket();
       }, function () {
