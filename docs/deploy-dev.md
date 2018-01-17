@@ -3,7 +3,7 @@ Augur | dev deployment
 ___
 ## Summary
 
-Unlike production, Augur client is hosted for development. There are two domains available, dev.augur.net and ipfs-dev.augur.net. These sites are hosted from docker container from the dockerfile in augur repository. 
+Unlike production, Augur client is hosted for development. There are two domains available, dev.augur.net and ipfs-dev.augur.net. These sites are hosted from a docker container, built from the dockerfile in augur repository. 
 
 ___
 
