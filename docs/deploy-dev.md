@@ -32,7 +32,7 @@ In the docker container IPNS hash is updated to point to the latest build direct
 
 The key is copied to ~/.ipfs/keystore location then this command is run 
 
-  ipfs name  publid --key=<key name> <new build hash>
+  ipfs name  publish --key=<key name> <new build hash>
 
 
 This will re-point the IPNS hash to the new build directory hash. The dnslink doesn't need to change, that is the awesomeness of IPNS.
