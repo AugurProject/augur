@@ -136,6 +136,6 @@ Want to see how the login account gets updated? Search the files for `login` >>>
 
 ## Sponsorships
 
-![BrowserStack](/src/assets/images/browser-stack.png?raw=true "BrowserStack")
+[![BrowserStack](/src/assets/images/browser-stack.png?raw=true "BrowserStack")](https://www.browserstack.com/)
 
-As an open source project, we'd like to thank BrowserStack for providing access to their environment testing platform free of charge!
+As an open source project, we'd like to thank [BrowserStack](https://www.browserstack.com/) for providing free access to their environment testing platform!
