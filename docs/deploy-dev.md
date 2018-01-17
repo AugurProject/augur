@@ -23,7 +23,7 @@ ipfs-dev.augur.net can be tested by going to IPNS hash
 
     https://ipfs-dev.augur.net/ipns/QmQBVeHLXPB7ifmCWZUw9PDktUoTEJfQLpR3bSVUgZgLR8/index.html
 
-This uses https://ipfs-dev.augur.net as a ipfs gateway to resolve to the build directory hash which changes per build. The ipns hash doesn't not change from build to build. 
+This uses https://ipfs-dev.augur.net as an IPFS gateway to resolve to the build directory hash which changes per build. The ipns hash doesn't not change from build to build. 
 
 
 ### Updating IPNS using Key
