@@ -270,6 +270,8 @@ export function assembleMarket(
 
       market.unclaimedCreatorFees = formatEther(marketData.unclaimedCreatorFees)
 
+      market.marketCreatorFeesCollected = formatEther(marketData.marketCreatorFeesCollected || 0)
+
       // market.priceTimeSeries = selectPriceTimeSeries(market.outcomes, marketPriceHistory)
 
       market.reportableOutcomes = selectReportableOutcomes(market.type, market.outcomes)

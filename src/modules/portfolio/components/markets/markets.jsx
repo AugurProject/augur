@@ -294,6 +294,7 @@ class MyMarkets extends Component {
             linkType={TYPE_COLLECT_FEES}
             outstandingReturns
             paginationPageParam="reporting"
+            collectMarketCreatorFees={p.collectMarketCreatorFees}
           />
         }
         {haveMarkets && s.filteredMarketsReporting.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
@@ -331,6 +332,7 @@ class MyMarkets extends Component {
             linkType={TYPE_COLLECT_FEES}
             outstandingReturns
             paginationPageParam="final"
+            collectMarketCreatorFees={p.collectMarketCreatorFees}
           />
         }
         {haveMarkets && s.filteredMarketsFinal.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
