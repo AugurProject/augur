@@ -17,7 +17,7 @@ ___
 
 When augur dev branch is updated docker cloud gets kicked off and redeploys two docker containers. dev.augur.net routes port 8001 and ipfs-dev.augur.net routes to port 80.
 
-## ipfs 
+## IPFS
 
 ipfs-dev.augur.net can be tested by going to ipns hash
 
@@ -30,7 +30,7 @@ DNS will be updated to shortcut the ipns url
 This will allow for https://ipfs-dev.augur.net to resolve like any other domain but ipfs is hosting Augur client on the back-end.
 
 
-### Updating ipns using Key
+### Updating IPNS using Key
 
 In the docker container ipns hash is updated to point to the latest build directory hash. This is done for dev and production, using different keys. A base64 version of the key is passed into docker run via environment variable.
 
