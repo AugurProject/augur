@@ -16,9 +16,14 @@ import * as TYPES from 'modules/transactions/constants/types'
 import { MY_MARKETS, DEFAULT_VIEW } from 'modules/routes/constants/views'
 import { resetState } from 'modules/app/actions/reset-state'
 import { initAugur } from 'modules/app/actions/init-augur'
+import { updateConnectionStatus, updateAugurNodeConnectionStatus } from 'modules/app/actions/update-connection'
+import debounce from 'utils/debounce'
 
 export function listenToUpdates(history) {
   return (dispatch, getState) => {
+    augur.events.stopBlockListeners()
+    augur.events.stopAugurNodeEventListeners()
+    augur.events.stopBlockchainEventListeners()
     augur.events.startBlockListeners({
       onAdded: (block) => {
         console.log('block added:', block)
@@ -182,22 +187,40 @@ export function listenToUpdates(history) {
         }
       },
     }, err => console.log(err || 'Listening for events'))
+
+    const retryFunc = () => {
+      const retryTimer = 3000;
+      const retry = () => {
+        const { connection } = getState()
+        if (!connection.isConnected) {
+          dispatch(initAugur(history))
+        }
+      }
+      const debounceCall = debounce(retry, retryTimer)
+      debounceCall()
+    }
+
     augur.events.nodes.augur.on('disconnect', () => {
-      console.log('AugurNode Disconnected')
-      dispatch(resetState())
-      history.push(makePath(DEFAULT_VIEW))
-      dispatch(initAugur(history))
+      console.log('AugurNode Disconnected! Attempting Reconnection...')
+      const { connection } = getState()
+      if (connection.isConnected) {
+        // if we were connected when disconnect occured, then resetState and redirect.
+        dispatch(resetState())
+        history.push(makePath(DEFAULT_VIEW))
+      }
+      // attempt re-initAugur every 3 seconds.
+      retryFunc()
     })
-    // augur.augurNode.on('reconnect', () => {
-    //   // reconnect events might not be needed on the UI
-    //   console.log('AugurNode Reconnected')
-    // })
-    // augur.rpc.on('disconnect', () => {
-    //   console.log('Ethereum Node Disconnected')
-    //   dispatch(resetState())
-    // })
-    // augur.rpc.on('reconnect', () => {
-    //   console.log('Ethereum Node Reconnected')
-    // })
+    augur.events.nodes.ethereum.on('disconnect', () => {
+      console.log('Ethereum Disconnected! Attempting Reconnection...')
+      const { connection } = getState()
+      if (connection.isConnected) {
+        // if we were connected when disconnect occured, then resetState and redirect.
+        dispatch(resetState())
+        history.push(makePath(DEFAULT_VIEW))
+      }
+      // attempt re-initAugur every 3 seconds.
+      retryFunc()
+    })
   }
 }
