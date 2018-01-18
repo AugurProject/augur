@@ -29,7 +29,7 @@ Run the following command to bring up the newly built docker image and map port 
 
     docker run -e "RUN_LOCAL_ONLY=true" -p 80:80 <docker image hash>
 
-Once the docker continer is up and listening, you will see message `Now listening ...`, point your web browser to http://localhost:80/index.html or just http://localhost/index.html since port 80 is default.
+Once the docker continer is up and listening, you will see message `Now listening ...`, point your web browser to http://localhost/index.html.
 
 To stop your docker container, run these commands in a different command prompt:
 
