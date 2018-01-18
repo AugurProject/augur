@@ -2,6 +2,7 @@
 
 import { Block } from 'ethereumjs-blockstream'
 export { Block }
+import { EventEmitter} from "events";
 
 type AbiEncodedData = string;
 type Address = string;
@@ -188,6 +189,10 @@ export class Augur {
     stopBlockchainEventListeners(): boolean;
     startAugurNodeEventListeners(eventCallbacks: EventSubscriptionCallbacks, onSetupComplete?: (err: Error|null) => void): void;
     stopAugurNodeEventListeners(callback?: (err: Error|null) => void): void;
+    nodes: {
+      augur: EventEmitter;
+      ethereum: EventEmitter;
+    }
   };
   public markets: {
     getMarketInfo: ApiFunction;

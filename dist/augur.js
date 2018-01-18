@@ -572,16 +572,14 @@ module.exports = dispatchJsonRpcResponse;
 },{"../utils/is-function":119,"../utils/is-object":120,"./state":20}],19:[function(require,module,exports){
 "use strict";
 
-var EventEmitter = require("event-emitter");
-
-module.exports = EventEmitter({
+module.exports = {
   connect: require("./connect"),
   submitRequest: require("./submit-json-rpc-request"),
   subscribeToEvent: require("./subscribe-to-event"),
   unsubcribeFromEvent: require("./unsubscribe-from-event"),
   unsubscribeFromAllEvents: require("./unsubscribe-from-all-events")
-});
-},{"./connect":17,"./submit-json-rpc-request":21,"./subscribe-to-event":22,"./unsubscribe-from-all-events":23,"./unsubscribe-from-event":24,"event-emitter":386}],20:[function(require,module,exports){
+};
+},{"./connect":17,"./submit-json-rpc-request":21,"./subscribe-to-event":22,"./unsubscribe-from-all-events":23,"./unsubscribe-from-event":24}],20:[function(require,module,exports){
 "use strict";
 
 var state = {
@@ -703,6 +701,7 @@ var ethereumConnector = require("ethereumjs-connect");
 var ethrpc = require("ethrpc");
 var contracts = require("./contracts");
 var api = require("./api");
+var events = require("./events");
 var rpcInterface = require("./rpc-interface");
 var _augurNode = require("./augur-node");
 var isFunction = require("./utils/is-function");
@@ -759,10 +758,10 @@ function connect(connectOptions, callback) {
           return next(null);
         }
         transport.addReconnectListener(function () {
-          _augurNode.emit("reconnect");
+          events.nodes.augur.emit("reconnect");
         });
         transport.addDisconnectListener(function () {
-          _augurNode.emit("disconnect");
+          events.nodes.augur.emit("disconnect");
         });
         console.log("connected to augur");
         next(null, connectOptions.augurNode);
@@ -781,10 +780,10 @@ function connect(connectOptions, callback) {
         self.api = api.generateContractApi(ethereumConnectionInfo.abi.functions);
         self.rpc = rpcInterface.createRpcInterface(ethereumConnectionInfo.rpc);
         ethereumConnectionInfo.rpc.getTransport().addReconnectListener(function () {
-          rpcInterface.emit("reconnect");
+          events.nodes.ethereum.emit("reconnect");
         });
         ethereumConnectionInfo.rpc.getTransport().addDisconnectListener(function () {
-          rpcInterface.emit("disconnect");
+          events.nodes.ethereum.emit("disconnect");
         });
         next(null, ethereumConnectionInfo);
       });
@@ -796,7 +795,7 @@ function connect(connectOptions, callback) {
 }
 
 module.exports = connect;
-},{"./api":11,"./augur-node":19,"./constants":26,"./contracts":28,"./rpc-interface":77,"./utils/is-function":119,"./utils/is-object":120,"./utils/noop":125,"async":144,"ethereumjs-connect":257,"ethrpc":294}],26:[function(require,module,exports){
+},{"./api":11,"./augur-node":19,"./constants":26,"./contracts":28,"./events":42,"./rpc-interface":77,"./utils/is-function":119,"./utils/is-object":120,"./utils/noop":125,"async":144,"ethereumjs-connect":257,"ethrpc":294}],26:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -1369,6 +1368,8 @@ module.exports = hashEventSignature;
 },{"../utils/keccak256":121,"buffer":187,"speedomatic":530}],42:[function(require,module,exports){
 "use strict";
 
+var EventEmitter = require("event-emitter");
+
 module.exports = {
   getAllAugurLogs: require("./get-all-augur-logs"),
   startAugurNodeEventListeners: require("./start-augur-node-event-listeners"),
@@ -1376,9 +1377,13 @@ module.exports = {
   startBlockchainEventListeners: require("./start-blockchain-event-listeners"),
   stopBlockchainEventListeners: require("./stop-blockchain-event-listeners"),
   startBlockListeners: require("./start-block-listeners"),
-  stopBlockListeners: require("./stop-block-listeners")
+  stopBlockListeners: require("./stop-block-listeners"),
+  nodes: {
+    augur: EventEmitter(),
+    ethereum: EventEmitter()
+  }
 };
-},{"./get-all-augur-logs":39,"./start-augur-node-event-listeners":45,"./start-block-listeners":46,"./start-blockchain-event-listeners":47,"./stop-augur-node-event-listeners":48,"./stop-block-listeners":49,"./stop-blockchain-event-listeners":50}],43:[function(require,module,exports){
+},{"./get-all-augur-logs":39,"./start-augur-node-event-listeners":45,"./start-block-listeners":46,"./start-blockchain-event-listeners":47,"./stop-augur-node-event-listeners":48,"./stop-block-listeners":49,"./stop-blockchain-event-listeners":50,"event-emitter":386}],43:[function(require,module,exports){
 "use strict";
 
 function parseBlockMessage(message, onMessage) {
@@ -2399,8 +2404,6 @@ module.exports = {
 },{"./finalize-market":69,"./get-current-period-progress":70,"./get-reporting-history":71,"./get-reporting-summary":72,"./get-reporting-windows-with-unclaimed-fees":73,"./get-stake-required-for-designated-reporter":74,"./get-stake-tokens":75}],77:[function(require,module,exports){
 "use strict";
 
-var EventEmitter = require("event-emitter");
-
 var createRpcInterface = function createRpcInterface(ethrpc) {
   return {
     constants: ethrpc.constants,
@@ -2424,16 +2427,16 @@ var createRpcInterface = function createRpcInterface(ethrpc) {
     registerTransactionRelay: ethrpc.registerTransactionRelay,
     setDebugOptions: ethrpc.setDebugOptions,
     WsTransport: ethrpc.WsTransport,
-    publish: ethrpc.publish
+    publish: ethrpc.publish,
+    sha3: ethrpc.sha3
   };
 };
 
 var ethrpc = createRpcInterface(require("ethrpc"));
 ethrpc.createRpcInterface = createRpcInterface;
-EventEmitter(ethrpc);
 
 module.exports = ethrpc;
-},{"ethrpc":294,"event-emitter":386}],78:[function(require,module,exports){
+},{"ethrpc":294}],78:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -3910,7 +3913,7 @@ module.exports = sha256;
 'use strict';
 
 // generated by genversion
-module.exports = '4.7.0-45';
+module.exports = '4.7.0-47';
 },{}],128:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
@@ -36093,7 +36096,7 @@ module.exports={
   "_args": [
     [
       "elliptic@6.4.0",
-      "/storage/home/pg/Development/augur/augur.js"
+      "/home/jack/src/augur.js"
     ]
   ],
   "_from": "elliptic@6.4.0",
@@ -36120,7 +36123,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
   "_spec": "6.4.0",
-  "_where": "/storage/home/pg/Development/augur/augur.js",
+  "_where": "/home/jack/src/augur.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
