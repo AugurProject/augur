@@ -66,11 +66,11 @@ After docker image has been built successfully, check for message `Successfully 
 
     docker run -p 4001:4001 -p 8001:8001 <image hash>
 
-Example using as ipfs gateway, point web browser to, make sure the container is fully up and you see `Now listening ...`:
+Example using an ipfs gateway: Make sure the container is fully up and you see `Now listening ...`, then point your web browser to:
 
     http://localhost:8001/ipfs/<build dir hash>
 
-If you are running a ipfs node behind a firewall makes sure port 4001 traffic flows, Firewall and network configurations are beyond the scope of this document.
+If you are running an ipfs node behind a firewall make sure port 4001 traffic flows. Firewall and network configurations are beyond the scope of this document.
 
 You can run as ipfs node and have augur client build directory in one docker container. Here is the command to let docker map all ports for you:
 
