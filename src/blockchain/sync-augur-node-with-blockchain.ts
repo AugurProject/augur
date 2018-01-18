@@ -15,6 +15,7 @@ interface NetworkIDRow {
 function getNetworkID(db: Knex, augur: Augur, callback: (err: Error|null, networkID: string|null) => void) {
   const networkID: string = augur.rpc.getNetworkID();
   db.select("networkID").from("network_id").limit(1).asCallback( (err: Error|null, rows: Array<NetworkIDRow>): void => {
+    if (err) return callback(err, null);
     if (rows.length === 0) {
       db.insert({networkID}).into("network_id").asCallback( (err: Error|null): void => {
         callback(err, networkID);
