@@ -1,0 +1,26 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketOutstandingReturns {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.MarketOutstandingReturns__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.MarketOutstandingReturns__collect {
+  &:extend(.button--purple all);
+}
+
+@media @breakpoint-mobile-medium {
+  .MarketOutstandingReturns {
+    display: block;
+  }
+
+  .MarketOutstandingReturns__actions {
+    margin-top: 1.5rem;
+  }
+}

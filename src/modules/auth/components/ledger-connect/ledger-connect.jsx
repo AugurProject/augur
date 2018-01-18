@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { LedgerEthereum, BrowserLedgerConnectionFactory, Network } from 'ethereumjs-ledger'
+import { LedgerEthereum, BrowserLedgerConnectionFactory } from 'ethereumjs-ledger'
 
 import { Alert } from 'modules/common/components/icons/icons'
 
@@ -11,7 +11,8 @@ import Styles from 'modules/auth/components/ledger-connect/ledger-connect.styles
 export default class Ledger extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
-    loginWithLedger: PropTypes.func.isRequired
+    loginWithLedger: PropTypes.func.isRequired,
+    networkId: PropTypes.number.isRequired
   }
 
   constructor(props) {
@@ -81,7 +82,7 @@ export default class Ledger extends Component {
     this.setState({ ledgerState: this.LEDGER_STATES.ATTEMPTING_CONNECTION })
 
     const ledgerEthereum = new LedgerEthereum(
-      Network.Main,
+      this.props.networkId,
       BrowserLedgerConnectionFactory,
       this.onConnectLedgerRequest,
       this.onOpenEthereumAppRequest,
@@ -89,7 +90,7 @@ export default class Ledger extends Component {
       this.onEnableContractSupportRequest
     )
 
-    const address = await ledgerEthereum.getAddressByBip44Index(0)
+    const address = await ledgerEthereum.getAddressByBip44Index()
 
     if (address) {
       return this.props.loginWithLedger(address, ledgerEthereum)

@@ -6,7 +6,7 @@ if [ "$RUN_LOCAL_ONLY" != "true" ]; then
 
   # publish files with key if available
   /augur/ipfs-configure.sh
-
+  service cron start
   if [ "$PUBLISH_ONLY" = "true" ]; then
     exit
   fi
@@ -20,5 +20,5 @@ if [ ! -f cache ]; then
   mkdir cache
 fi
 rm -rf ./cache/* && mkdir ./cache/temp && chown www-data ./cache/temp
-service cron start
+echo "Now listening ..."
 nginx
