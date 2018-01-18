@@ -10,7 +10,7 @@
     "lint": "eslint src test/unit scripts/canned-markets",
     "coverage-save": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit/",
     "coverage": "istanbul cover --include-all-sources --root ./src ./node_modules/mocha/bin/_mocha test/unit",
-    "link": "npm link ethrpc ethereumjs-connect keythereum speedomatic augur-contracts",
+    "link": "npm link ethrpc ethereumjs-connect keythereum speedomatic",
     "build": "genversion src/version.js && babel ./node_modules/uuid-parse --source-root ./node_modules/uuid-parse -d ./node_modules/uuid-parse && babel ./src --source-root ./src -d ./build && browserify ./exports.js > ./dist/augur.js && uglifyjs ./dist/augur.js > ./dist/augur.min.js",
     "preversion": "npm test",
     "version": "npm run build && git add -A dist src/version.js package.json package-lock.json",
@@ -32,7 +32,6 @@
   },
   "dependencies": {
     "async": "1.5.2",
-    "augur-contracts": "3.5.0-13",
     "bignumber.js": "2.3.0",
     "clone": "2.1.1",
     "ethereumjs-connect": "4.4.8",
