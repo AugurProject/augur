@@ -25,11 +25,11 @@ Also make sure git is installed and in your execution path.
 
 The above steps pull down the augur client code and build the docker file. Take note of the message `Successfully built <image hash>` you will need the image hash next.
 
-Run the following command to bring up the newly built docker image and map port 8001 to internal docker container port 8001. The "RUN_LOCAL_ONLY=true" tells the docker container to bypass starting up ipfs. More on ipfs later.
+Run the following command to bring up the newly built docker image and map port 80 to internal docker container port 80. The "RUN_LOCAL_ONLY=true" tells the docker container to bypass starting up ipfs. More on ipfs later.
 
-    docker run -e "RUN_LOCAL_ONLY=true" -p 8001:8001 <docker image hash>
+    docker run -e "RUN_LOCAL_ONLY=true" -p 80:80 <docker image hash>
 
-Once the docker continer is up and listening, you will see message `Now listening ...`, point your web browser to http://localhost:8001/index.html.
+Once the docker continer is up and listening, you will see message `Now listening ...`, point your web browser to http://localhost:80/index.html or just http://localhost/index.html since port 80 is default.
 
 To stop your docker container, run these commands in a different command prompt:
 
@@ -62,17 +62,34 @@ The same dockerfile describe above is used to host a ipfs node. Side note, if yo
     cd <augur repository>
     docker build .
 
-After docker image has been built successfully, check for message `Successfully built <image hash>`, run it with -p to map port to the internal docker container port, ipfs swarm will serve up files via port 4001.
+After docker image has been built successfully, check for message `Successfully built <image hash>`, run it with -p to map port to the internal docker container port, ipfs swarm will serve up files via port 4001. Optionally port 8001 uses nginx to pass requests to ipfs gateway hosted in the docker container. 
 
-    docker run -p 4001:4001 <image hash>
+    docker run -p 4001:4001 -p 8001:8001 <image hash>
 
-If you are running a ipfs node behind a firewall makes sure port 4001 traffic flows, Firewall and network configurations are beyond the scope of this document, 
+Example using as ipfs gateway, point web browser to, make sure the container is fully up and you see `Now listening ...`:
 
+    http://localhost:8001/ipfs/<build dir hash>
 
-Notice that all ports can be available on the docker container which will allow for local access to Augur client and serve up Augur client via ipfs. In order to keep augur client files pinned in ipfs a cron job runs every 24 hours to re-publish. 
+If you are running a ipfs node behind a firewall makes sure port 4001 traffic flows, Firewall and network configurations are beyond the scope of this document.
+
+You can run as ipfs node and have augur client build directory in one docker container. Here is the command to let docker map all ports for you:
 
     docker run -P <image hash>
 
+This command will tell you which local ports are mapped to ports on the docker container.
+
+    docker ps
+
+You will see output like this:
+
+    CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                                                                     NAMES
+    55ac13ede02a        25cb4b4ca479        "/tini -- bash /augu…"   11 seconds ago      Up 10 seconds       0.0.0.0:32800->80/tcp, 0.0.0.0:32799->4001/tcp, 0.0.0.0:32798->8001/tcp   dreamy_mccarthy
+
+Notice all docker container ports have been mapped to local ports. This will allow for local access to Augur client and serve up Augur client via ipfs. For example, to serve up augur client point your web browser to:
+
+    http://localhost:32800/
+
+### Stoping docker container
 To stop your docker container, run these commands in a different command prompt:
 
     docker ps
@@ -82,6 +99,8 @@ Get the CONTAINER ID in order to stop the running container
 
 ## Note
 
-annoying is the ipfs publish message of `...ERROR        dht: loggableKey could not cast key...`.This is a known issue and can be ignored. It would be more accurate if it was logged as a WARNING.
+In order to keep augur client files pinned in ipfs a cron job runs every 24 hours to re-publish. 
+
+Annoying is the ipfs publish message of `...ERROR        dht: loggableKey could not cast key...`.This is a known issue and can be ignored. It would be more accurate if it was logged as a WARNING.
 
 ---

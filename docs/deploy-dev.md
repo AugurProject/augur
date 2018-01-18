@@ -9,7 +9,7 @@ ___
 
 ## Dockerfile
 
-The dockerfile in augur repository hosts augur client in two ways; port 8001 hosts the build directory via nginx and port 80 is a pass through to the IPFS gateway internal port 8080. 
+The dockerfile in augur repository hosts augur client in two ways; port 80 hosts the build directory via nginx and port 8001 is a pass through to the IPFS gateway.
 
 ___
 
