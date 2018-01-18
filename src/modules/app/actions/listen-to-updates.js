@@ -16,7 +16,6 @@ import * as TYPES from 'modules/transactions/constants/types'
 import { MY_MARKETS, DEFAULT_VIEW } from 'modules/routes/constants/views'
 import { resetState } from 'modules/app/actions/reset-state'
 import { initAugur } from 'modules/app/actions/init-augur'
-import { updateConnectionStatus, updateAugurNodeConnectionStatus } from 'modules/app/actions/update-connection'
 import debounce from 'utils/debounce'
 
 export function listenToUpdates(history) {
@@ -189,7 +188,7 @@ export function listenToUpdates(history) {
     }, err => console.log(err || 'Listening for events'))
 
     const retryFunc = () => {
-      const retryTimer = 3000;
+      const retryTimer = 3000
       const retry = () => {
         const { connection } = getState()
         if (!connection.isConnected) {
