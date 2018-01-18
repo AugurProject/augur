@@ -286,6 +286,7 @@ export default class AppView extends Component {
 
   mobileMenuButtonClick() {
     const menuState = this.state.mobileMenuState
+
     switch (menuState) {
       case mobileMenuStates.CLOSED:
         this.setState({ mobileMenuState: mobileMenuStates.SIDEBAR_OPEN })
@@ -335,6 +336,12 @@ export default class AppView extends Component {
     let categoriesMargin
     let tagsMargin
     let origamiScalar = 0
+
+    const mainSectionClickHandler = () => {
+      if (this.props.isMobile && this.state.mobileMenuState !== mobileMenuStates.CLOSED) {
+        this.setState({ mobileMenuState: mobileMenuStates.CLOSED })
+      }
+    }
 
     if (!p.isMobile) {
       if (parsePath(p.location.pathname)[0] === AUTHENTICATION) { // NOTE -- quick patch ahead of larger refactor
@@ -424,6 +431,8 @@ export default class AppView extends Component {
               <section
                 className={Styles.Main__content}
                 style={{ marginLeft: tagsMargin }}
+                onClick={mainSectionClickHandler}
+                role="presentation"
               >
                 <Routes />
               </section>
