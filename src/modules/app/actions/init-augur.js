@@ -4,9 +4,28 @@ import { updateConnectionStatus, updateAugurNodeConnectionStatus } from 'modules
 import { updateContractAddresses } from 'modules/contracts/actions/update-contract-addresses'
 import { updateFunctionsAPI, updateEventsAPI } from 'modules/contracts/actions/update-contract-api'
 import { setLoginAccount } from 'modules/auth/actions/set-login-account'
+import { logout } from 'modules/auth/actions/logout'
 import { loadUniverse } from 'modules/app/actions/load-universe'
 import { registerTransactionRelay } from 'modules/transactions/actions/register-transaction-relay'
 import logError from 'utils/log-error'
+
+function pollForAccount(dispatch) {
+  let account
+
+  setInterval(() => {
+    AugurJS.augur.rpc.eth.accounts((accounts) => {
+      if (account !== accounts[0]) {
+        account = accounts[0]
+
+        if (account) {
+          dispatch(setLoginAccount(true, account))
+        } else {
+          dispatch(logout())
+        }
+      }
+    })
+  }, 250)
+}
 
 export function initAugur(callback = logError) {
   return (dispatch, getState) => {
@@ -24,8 +43,8 @@ export function initAugur(callback = logError) {
             dispatch(updateEventsAPI(ethereumNodeConnectionInfo.abi.events))
             dispatch(updateAugurNodeConnectionStatus(true))
             dispatch(registerTransactionRelay())
-            dispatch(setLoginAccount(env['auto-login'], ethereumNodeConnectionInfo.coinbase))
             dispatch(loadUniverse(env.universe || AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()].Universe))
+            pollForAccount(dispatch)
             callback()
           })
         } else {
