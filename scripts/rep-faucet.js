@@ -15,7 +15,7 @@ function faucetInAndMigrate(augur, universe, auth, callback) {
     augur.api.ReputationToken.balanceOf({ _owner: auth.address, tx: { to: reputationToken } }, function (err, reputationTokenBalance) {
       if (err) return callback(err);
       console.log("reputationTokenBalance:", reputationTokenBalance);
-      if (new BigNumber(reputationTokenBalance, 10).gt(new BigNumber("100000", 10))) return callback(null);
+      if (new BigNumber(reputationTokenBalance, 10).gt(new BigNumber("100000", 10))) return Error("Already loaded");
       augur.api.LegacyReputationToken.faucet({
         meta: auth,
         _amount: speedomatic.fix(100000, "hex"),
