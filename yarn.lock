@@ -272,20 +272,21 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
-augur-contracts@3.4.0-8:
-  version "3.4.0-8"
-  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-3.4.0-8.tgz#9b53618c83ab7bd4070b43e057284bffd4472be8"
+augur-contracts@3.5.0-13:
+  version "3.5.0-13"
+  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-3.5.0-13.tgz#afbfaaa05b24a98d7369b998d42ba69498822dab"
 
-augur.js@4.7.0-22:
-  version "4.7.0-22"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.7.0-22.tgz#74503957f51de44be8a690685c8bcdaa6168e7ad"
+augur.js@4.7.0-49:
+  version "4.7.0-49"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.7.0-49.tgz#6c4ea0a142bbbdc761e51062b497c44acb31bacf"
   dependencies:
     async "1.5.2"
-    augur-contracts "3.4.0-8"
+    augur-contracts "3.5.0-13"
     bignumber.js "2.3.0"
     clone "2.1.1"
-    ethereumjs-connect "4.4.6"
-    ethrpc "4.5.1"
+    ethereumjs-connect "4.4.8"
+    ethrpc "4.5.5"
+    event-emitter "0.3.5"
     immutable-delete "1.1.0"
     keccak "1.2.0"
     keythereum "1.0.2"
@@ -1452,13 +1453,13 @@ ethereumjs-blockstream@2.0.7:
     source-map-support "0.4.14"
     uuid "3.0.1"
 
-ethereumjs-connect@4.4.6:
-  version "4.4.6"
-  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.4.6.tgz#cb96e58af23ec14cc87ba3a30424531ef56075b8"
+ethereumjs-connect@4.4.8:
+  version "4.4.8"
+  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.4.8.tgz#53850af11254655ccc650f291013fbf1020809ca"
   dependencies:
     async "1.5.2"
     clone "2.1.1"
-    ethrpc "4.5.1"
+    ethrpc "4.5.3"
 
 ethereumjs-tx@1.3.1:
   version "1.3.1"
@@ -1497,9 +1498,9 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@4.5.1:
-  version "4.5.1"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.5.1.tgz#8daebf75bd51282c8ed88edd0323152ce18abcde"
+ethrpc@4.5.3:
+  version "4.5.3"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.5.3.tgz#2ddc1221525e33fc8af2bd8190d68e183b1b3c5d"
   dependencies:
     async "1.5.2"
     bignumber.js "2.3.0"
@@ -1523,7 +1524,33 @@ ethrpc@4.5.1:
     request "2.67.0"
     websocket "1.0.23"
 
-event-emitter@~0.3.5:
+ethrpc@4.5.5:
+  version "4.5.5"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.5.5.tgz#fd8656c620be516f9fd0f04999f3cc9312ae13d7"
+  dependencies:
+    async "1.5.2"
+    bignumber.js "2.3.0"
+    browser-request "0.3.3"
+    clone "2.1.1"
+    ethereumjs-blockstream "2.0.7"
+    ethereumjs-tx "1.3.1"
+    immutable-delete "1.0.1"
+    keccak "1.2.0"
+    lodash.assign "4.2.0"
+    lodash.get "4.4.2"
+    lodash.set "4.3.2"
+    lodash.unset "4.5.2"
+    oboe "2.1.3"
+    redux "3.6.0"
+    redux-thunk-subscribe "1.0.3"
+    speedomatic "2.1.1"
+    sync-request "2.0.1"
+    uuid "3.0.1"
+  optionalDependencies:
+    request "2.67.0"
+    websocket "1.0.23"
+
+event-emitter@0.3.5, event-emitter@~0.3.5:
   version "0.3.5"
   resolved "https://registry.yarnpkg.com/event-emitter/-/event-emitter-0.3.5.tgz#df8c69eef1647923c7157b9ce83840610b02cc39"
   dependencies:
@@ -2792,13 +2819,9 @@ mute-stream@0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.5.tgz#8fbfabb0a98a253d3184331f9e8deb7372fac6c0"
 
-nan@^2.0.5, nan@^2.2.1, nan@^2.3.3:
+nan@^2.0.5, nan@^2.2.1, nan@^2.3.3, nan@~2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.7.0.tgz#d95bf721ec877e08db276ed3fc6eb78f9083ad46"
-
-nan@~2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/nan/-/nan-2.4.0.tgz#fb3c59d45fe4effe215f0b890f8adf6eb32d2232"
 
 natural-compare@^1.4.0:
   version "1.4.0"
@@ -2832,7 +2855,7 @@ node-gyp@^3.6.2:
     tar "^2.0.0"
     which "1"
 
-node-pre-gyp@^0.6.39, node-pre-gyp@~0.6.31:
+node-pre-gyp@^0.6.39, node-pre-gyp@~0.6.38:
   version "0.6.39"
   resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.6.39.tgz#c00e96860b23c0e1420ac7befc5044e1d78d8649"
   dependencies:
@@ -3749,12 +3772,12 @@ sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
 
-sqlite3@3.1.8:
-  version "3.1.8"
-  resolved "https://registry.yarnpkg.com/sqlite3/-/sqlite3-3.1.8.tgz#4cbcf965d8b901d1b1015cbc7fc415aae157dfaa"
+sqlite3@3.1.13:
+  version "3.1.13"
+  resolved "https://registry.yarnpkg.com/sqlite3/-/sqlite3-3.1.13.tgz#d990a05627392768de6278bafd1a31fdfe907dd9"
   dependencies:
-    nan "~2.4.0"
-    node-pre-gyp "~0.6.31"
+    nan "~2.7.0"
+    node-pre-gyp "~0.6.38"
 
 sshpk@^1.7.0:
   version "1.13.1"
