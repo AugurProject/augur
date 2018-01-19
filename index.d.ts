@@ -176,7 +176,10 @@ export class Augur {
   };
   public contracts: {
     abi: AbiMap;
-    addresses: ContractNameToAddressMap
+    addresses: ContractNameToAddressMap;
+    uploadBlockNumbers: {
+      [networkID: string]: number
+    };
   };
   public createMarket: {
     [functionName: string]: ApiFunction,
