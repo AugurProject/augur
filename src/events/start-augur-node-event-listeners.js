@@ -15,7 +15,7 @@ function startAugurNodeEventListeners(eventCallbacks, onSetupComplete) {
   if (!isFunction(onSetupComplete)) onSetupComplete = noop;
   if (!isObject(eventCallbacks)) return onSetupComplete(new Error("No callbacks found"));
   async.forEachOf(eventCallbacks, function (callback, eventName, nextEvent) {
-    augurNode.subscribeToEvent(eventName, null, callback, nextEvent);
+    augurNode.subscribeToEvent(eventName, callback, nextEvent);
   }, onSetupComplete);
 }
 
