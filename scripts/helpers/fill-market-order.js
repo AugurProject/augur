@@ -38,8 +38,8 @@ getPrivateKey(keystoreFilePath, function (err, auth) {
         console.log(chalk.yellow.dim("outcomeToFill"), chalk.yellow(outcomeToFill));
         console.log(chalk.yellow.dim("filler address"), chalk.yellow(fillerAddress));
         getOrderToFill(augur, marketID, outcomeToFill, orderType, fillerAddress, function (err, orderToFill) {
-          if (err) { console.log(chalk.red(err)); return; }
-          if (orderToFill == null)  { console.log(chalk.red("No order found")); return; }
+          if (err) { console.log(chalk.red(err)); process.exit(1); }
+          if (orderToFill == null)  { console.log(chalk.red("No order found")); process.exit(1); }
           if (debugOptions.cannedMarkets) console.log(chalk.cyan("Filling order:"), chalk.red.bold(orderType), orderToFill);
           augur.trading.tradeUntilAmountIsZero({
             meta: auth,
