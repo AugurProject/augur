@@ -20,7 +20,7 @@ cat $SOURCE/abi.json ./src/contracts/abi.json
 [[ $? == 0 ]] || exit 1
 
 if [[ "$AUTOCOMMIT" == "true" ]]; then
-  git add addresses.json abi.json upload-block-numbers.json
+  git add ./src/contracts/addresses.json ./src/contracts/abi.json ./src/contracts/upload-block-numbers.json
   git commit -m "Auto-updating from push to augur-core#${BRANCH} (${COMMIT})"
 
   case $BRANCH in
