@@ -61,10 +61,11 @@ getPrivateKey(keystoreFilePath, function (err, auth) {
               if (debugOptions.cannedMarkets) {
                 console.log(chalk.cyan("Trade completed,"), chalk.red.bold(orderType), chalk.green(tradeAmountRemaining), chalk.cyan.dim("shares remaining"));
               }
+              process.exit(0);
             },
             onFailed: function (err) {
               console.log(chalk.red("err"), chalk.red(JSON.stringify(err)));
-              return;
+              process.exit(1);
             },
           });
         });

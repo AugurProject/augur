@@ -23,7 +23,7 @@ getPrivateKey(keystoreFilePath, function (err, auth) {
     var controller = augur.contracts.addresses[augur.rpc.getNetworkID()].Controller;
 
     augur.api.Controller.lookup({ meta: auth, tx: {to: controller}, _key: encodeTag("Time")}, function (err, timeAddress) {
-      console.log("Time Address", timeAddress);
+
       var timePayload = {
         meta: auth,
         tx: { to: timeAddress  },

@@ -15,9 +15,11 @@ augur.connect(connectionEndpoints, function (err) {
   var timestamp = augur.api.Controller.getTimestamp();
   var currentTime = new Date(timestamp * 1000);
   augur.markets.getMarkets({ universe: universe, sortBy: "endDate", isSortDescending: true }, function (err, marketIDs) {
-    augur.markets.getMarketsInfo({ marketIDs: marketIDs }, function (err, marketsInfo) {
-      if (!marketsInfo || !Array.isArray(marketsInfo) || !marketsInfo.length) return;
-      async.eachSeries(marketsInfo, function (marketInfo, nextMarket) {
+    if (!marketIDs || marketIDs.length === 0) { console.log(chalk.red("No markets available")); process.exit(0);}
+    augur.markets.getMarketsInfo({ marketIDs: marketIDs }, function (err, marketInfos) {
+      if (!marketInfos || !Array.isArray(marketInfos) || !marketInfos.length) return;
+      var infos = marketInfos.sort(function (a, b) { return b.endDate - a.endDate; });
+      async.eachSeries(infos, function (marketInfo, nextMarket) {
         var endDate = marketInfo.endDate;
         var date = new Date(endDate * 1000);
         var ended = date - currentTime > 0 ? "NO" : "YES";

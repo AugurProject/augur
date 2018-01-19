@@ -48,6 +48,9 @@ getPrivateKey(keystoreFilePath, function (err, auth) {
             if (err) console.error("create-orders failed:", err);
             nextMarket();
           });
+        }, function (err) {
+          if (err) console.log(chalk.red(err));
+          process.exit(0);
         });
       });
     });
