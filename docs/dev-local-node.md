@@ -75,6 +75,7 @@ Only two things need to be done, update env-dev.json and make sure to yarn link.
 
     cd augur
     yarn link augur.js
+    yarn build
   	yarn dev
 
 
@@ -123,6 +124,7 @@ Here is a misc script to do operations on the local node and to change time. not
     ETHEREUM_WS=http://127.0.0.1:47625 ETHEREUM_HTTP=http://127.0.0.1:47624 node scripts/helpers/get-initial-report.js <market id>
 
 
+TODO: added script for creating many user accounts and spreading around the ETH
 
 ## Summary
 
