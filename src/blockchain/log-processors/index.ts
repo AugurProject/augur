@@ -5,13 +5,13 @@ import { processOrderCanceledLog, processOrderCanceledLogRemoval } from "./order
 import { processOrderCreatedLog, processOrderCreatedLogRemoval } from "./order-created";
 import { processOrderFilledLog, processOrderFilledLogRemoval } from "./order-filled";
 import { processTradingProceedsClaimedLog, processTradingProceedsClaimedLogRemoval } from "./trading-proceeds-claimed";
-import { processDesignatedReportSubmittedLog, processDesignatedReportSubmittedLogRemoval } from "./designated-report-submitted";
 import { processReportSubmittedLog, processReportSubmittedLogRemoval } from "./report-submitted";
 import { processWinningTokensRedeemedLog, processWinningTokensRedeemedLogRemoval } from "./winning-tokens-redeemed";
 import { processReportsDisputedLog, processReportsDisputedLogRemoval } from "./reports-disputed";
+import { processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval } from "./initial-report-submitted";
 import { processMarketFinalizedLog, processMarketFinalizedLogRemoval } from "./market-finalized";
 import { processUniverseForkedLog, processUniverseForkedLogRemoval } from "./universe-forked";
-import { processReportingWindowCreatedLog, processReportingWindowCreatedLogRemoval } from "./reporting-window-created";
+import { processFeeWindowCreatedLog, processFeeWindowCreatedLogRemoval } from "./fee-window-created";
 import { processTransferLog, processTransferLogRemoval } from "./token/transfer";
 import { processApprovalLog, processApprovalLogRemoval } from "./token/approval";
 import { processMintLog, processMintLogRemoval } from "./token/mint";
@@ -20,13 +20,13 @@ import { processFundedAccountLog } from "./token/funded-account";
 
 export const logProcessors: LogProcessors = {
   Augur: {
-    DesignatedReportSubmitted: {
-      add: processDesignatedReportSubmittedLog,
-      remove: processDesignatedReportSubmittedLogRemoval,
-    },
     FeeWindowCreated: {
-      add: processReportingWindowCreatedLog,
-      remove: processReportingWindowCreatedLogRemoval,
+      add: processFeeWindowCreatedLog,
+      remove: processFeeWindowCreatedLogRemoval,
+    },
+    InitialReportSubmitted: {
+      add: processInitialReportSubmittedLog,
+      remove: processInitialReportSubmittedLogRemoval,
     },
     MarketCreated: {
       add: processMarketCreatedLog,
