@@ -27,9 +27,8 @@ describe("events/start-augur-node-event-listeners", function () {
     },
     stub: {
       augurNode: {
-        subscribeToEvent: function (eventName, params, subscriptionCallback, onComplete) {
+        subscribeToEvent: function (eventName, subscriptionCallback, onComplete) {
           assert.oneOf(eventName, ["TestEventName1", "TestEventName2", "TestEventName3"]);
-          assert.isNull(params);
           assert.strictEqual(subscriptionCallback, noop);
           assert.isFunction(onComplete);
           onComplete(null);
