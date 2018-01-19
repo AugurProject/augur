@@ -8,11 +8,11 @@ if [[ "${SOURCE}x" == "x" ]]; then
   exit 1
 fi
 
-npx dotsunited-merge-json addresses.json $SOURCE/addresses.json | npx jq.node --color=false --json > ./updated.json
+npx dotsunited-merge-json ./source/contracts/addresses.json $SOURCE/addresses.json | npx jq.node --color=false --json > ./updated.json
 [[ $? == 0 ]] || exit 1
 mv updated.json ./source/contracts/addresses.json
 
-npx dotsunited-merge-json upload-block-numbers.json $SOURCE/upload-block-numbers.json | npx jq.node --color=false --json > ./updated.json
+npx dotsunited-merge-json ./source/contracts/upload-block-numbers.json $SOURCE/upload-block-numbers.json | npx jq.node --color=false --json > ./updated.json
 [[ $? == 0 ]] || exit 1
 mv updated.json ./source/contracts/upload-block-numbers.json
 
