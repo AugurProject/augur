@@ -45,7 +45,7 @@ function createOrder(augur, marketID, outcome, numOutcomes, maxPrice, minPrice, 
         console.log(chalk.green.dim("publicCreateOrder success:"), chalk.green(res.callReturn), chalk.cyan.dim(JSON.stringify(order)));
         printTransactionStatus(augur.rpc, res.hash);
       }
-      callback(null);
+      callback(null, res);
     },
     onFailed: function (err) {
       if (debugOptions.cannedMarkets) {
