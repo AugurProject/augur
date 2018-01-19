@@ -18,11 +18,11 @@ augur.connect(connectionEndpoints, function (err) {
     },
     onSuccess: function (result) {
       console.log(chalk.green.dim("Success:"), chalk.green(JSON.stringify(result)));
-      process.exit(1);
+      process.exit(0);
     },
     onFailed: function (result) {
       console.log(chalk.red.dim("Failed:"), chalk.red(JSON.stringify(result)));
-      process.exit(0);
+      process.exit(1);
     },
   };
 

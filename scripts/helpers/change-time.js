@@ -34,11 +34,11 @@ getPrivateKey(keystoreFilePath, function (err, auth) {
         onSuccess: function (result) {
           console.log(chalk.green.dim("Success:"), chalk.green(JSON.stringify(result)));
           console.log(chalk.green.dim("Current Time"), chalk.green(augur.api.Controller.getTimestamp()));
-          process.exit(1);
+          process.exit(0);
         },
         onFailed: function (result) {
           console.log(chalk.red.dim("Failed:"), chalk.red(JSON.stringify(result)));
-          process.exit(0);
+          process.exit(1);
         },
       };
       augur.api.TimeControlled.setTimestamp(timePayload);
