@@ -8,15 +8,15 @@ if [[ "${SOURCE}x" == "x" ]]; then
   exit 1
 fi
 
-npx dotsunited-merge-json ./source/contracts/addresses.json $SOURCE/addresses.json | npx jq.node --color=false --json > ./updated.json
+npx dotsunited-merge-json ./src/contracts/addresses.json $SOURCE/addresses.json | npx jq.node --color=false --json > ./updated.json
 [[ $? == 0 ]] || exit 1
-mv updated.json ./source/contracts/addresses.json
+mv updated.json ./src/contracts/addresses.json
 
-npx dotsunited-merge-json ./source/contracts/upload-block-numbers.json $SOURCE/upload-block-numbers.json | npx jq.node --color=false --json > ./updated.json
+npx dotsunited-merge-json ./src/contracts/upload-block-numbers.json $SOURCE/upload-block-numbers.json | npx jq.node --color=false --json > ./updated.json
 [[ $? == 0 ]] || exit 1
-mv updated.json ./source/contracts/upload-block-numbers.json
+mv updated.json ./src/contracts/upload-block-numbers.json
 
-cat $SOURCE/abi.json ./source/contracts/abi.json
+cat $SOURCE/abi.json ./src/contracts/abi.json
 [[ $? == 0 ]] || exit 1
 
 if [[ "$AUTOCOMMIT" == "true" ]]; then
