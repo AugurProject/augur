@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
-import { TYPE_REPORT, TYPE_CHALLENGE, TYPE_TRADE, TYPE_CLOSED, TYPE_COLLECT_FEES } from 'modules/market/constants/link-types'
+import { TYPE_REPORT, TYPE_CHALLENGE, TYPE_TRADE, TYPE_CLOSED } from 'modules/market/constants/link-types'
 
 import getValue from 'utils/get-value'
 import setShareDenomination from 'utils/set-share-denomination'
@@ -48,7 +48,7 @@ const MarketProperties = (p) => {
           <span>Expires</span>
           <span>{ p.endDate.formatted }</span>
         </li>
-        {p.linkType && p.linkType === TYPE_COLLECT_FEES &&
+        {p.outstandingReturns &&
           <li>
             <span>Collected Returns</span>
             <ValueDenomination
@@ -70,7 +70,7 @@ const MarketProperties = (p) => {
             }
           </button>
         }
-        { (p.linkType === undefined || (p.linkType && p.linkType !== TYPE_CLOSED && p.linkType !== TYPE_COLLECT_FEES)) &&
+        { (p.linkType === undefined || (p.linkType && p.linkType !== TYPE_CLOSED)) &&
           <MarketLink
             className={Styles.MarketProperties__trade}
             id={p.id}
