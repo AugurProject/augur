@@ -137,6 +137,9 @@ Here is a misc script to do operations on the local node and to change time. not
     ** create open order
     ETHEREUM_WS=http://127.0.0.1:47625 ETHEREUM_HTTP=http://127.0.0.1:47624 ETHEREUM_PRIVATE_KEY=0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a OUTCOME_TO_FILL=0 SHARES_TO_FILL=10 node scripts/helpers/create-simple-order.js null <market id> <buy | sell> <outcome> <num shares> <price>
 
+    ** for creating a lot of `liquidity` on a market, it will create buy and sell orders for each outcome, starting at market minimum price increasing by 10% until market maximum price. 
+    ETHEREUM_WS=http://127.0.0.1:47625 ETHEREUM_HTTP=http://127.0.0.1:47624 ETHEREUM_PRIVATE_KEY=0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a node scripts/helpers/create-spread-orders.js <market id>
+
     ** fill existing order
     ETHEREUM_WS=http://127.0.0.1:47625 ETHEREUM_HTTP=http://127.0.0.1:47624 ETHEREUM_PRIVATE_KEY=0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a node scripts/helpers/fill-market-order.js null <market id> <buy | sell> <outcome> <num shares>
 
