@@ -23,6 +23,7 @@ import SideNav from 'modules/app/components/side-nav/side-nav'
 import Origami from 'modules/app/components/origami-svg/origami-svg'
 import Logo from 'modules/app/components/logo/logo'
 import Routes from 'modules/routes/components/routes/routes'
+import NotificationsContainer from 'modules/notifications/container'
 
 import MobileNavHamburgerIcon from 'modules/common/components/mobile-nav-hamburger-icon'
 import MobileNavCloseIcon from 'modules/common/components/mobile-nav-close-icon'
@@ -338,8 +339,21 @@ export default class AppView extends Component {
     let origamiScalar = 0
 
     const mainSectionClickHandler = () => {
+      const stateUpdate = {}
+      let updateState = false
+
       if (this.props.isMobile && this.state.mobileMenuState !== mobileMenuStates.CLOSED) {
-        this.setState({ mobileMenuState: mobileMenuStates.CLOSED })
+        stateUpdate.mobileMenuState = mobileMenuStates.CLOSED
+        updateState = true
+      }
+
+      if (this.state.isNotificationsVisible) {
+        stateUpdate.isNotificationsVisible = false
+        updateState = true
+      }
+
+      if (updateState) {
+        this.setState(stateUpdate)
       }
     }
 
@@ -355,7 +369,7 @@ export default class AppView extends Component {
       // ensure origami fold-out moves perfectly with submenu
       origamiScalar = Math.max(0, (subMenu.scalar + mainMenu.scalar) - 1)
     }
-
+    // console.log('rendering app', p)
     return (
       <main>
         <Helmet
@@ -400,11 +414,14 @@ export default class AppView extends Component {
                 isLogged={p.isLogged}
                 stats={p.coreStats}
                 unseenCount={unseenCount}
-                isNotificationsVisible={s.isNotificationsVisible}
                 toggleNotifications={this.toggleNotifications}
-                notifications={p.notifications}
               />
             </section>
+            {p.isLogged && s.isNotificationsVisible &&
+              <NotificationsContainer
+                toggleNotifications={() => this.toggleNotifications()}
+              />
+            }
             <section
               className={Styles.Main__wrap}
               style={{ marginLeft: categoriesMargin }}
