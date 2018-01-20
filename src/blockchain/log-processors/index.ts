@@ -7,7 +7,9 @@ import { processOrderFilledLog, processOrderFilledLogRemoval } from "./order-fil
 import { processTradingProceedsClaimedLog, processTradingProceedsClaimedLogRemoval } from "./trading-proceeds-claimed";
 import { processReportSubmittedLog, processReportSubmittedLogRemoval } from "./report-submitted";
 import { processWinningTokensRedeemedLog, processWinningTokensRedeemedLogRemoval } from "./winning-tokens-redeemed";
-import { processReportsDisputedLog, processReportsDisputedLogRemoval } from "./reports-disputed";
+import { processDisputeCrowdsourcerCreatedLog, processDisputeCrowdsourcerCreatedLogRemoval } from "./crowdsourcer";
+import { processDisputeCrowdsourcerContributionLog, processDisputeCrowdsourcerContributionLogRemoval } from "./crowdsourcer";
+import { processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompletedLogRemoval } from "./crowdsourcer";
 import { processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval } from "./initial-report-submitted";
 import { processMarketFinalizedLog, processMarketFinalizedLogRemoval } from "./market-finalized";
 import { processUniverseForkedLog, processUniverseForkedLogRemoval } from "./universe-forked";
@@ -50,13 +52,17 @@ export const logProcessors: LogProcessors = {
       add: processOrderFilledLog,
       remove: processOrderFilledLogRemoval,
     },
-    ReportsDisputed: {
-      add: processReportsDisputedLog,
-      remove: processReportsDisputedLogRemoval,
+    DisputeCrowdsourcerCreated: {
+      add: processDisputeCrowdsourcerCreatedLog,
+      remove: processDisputeCrowdsourcerCreatedLogRemoval,
     },
-    ReportSubmitted: {
-      add: processReportSubmittedLog,
-      remove: processReportSubmittedLogRemoval,
+    DisputeCrowdsourcerContribution: {
+      add: processDisputeCrowdsourcerContributionLog,
+      remove: processDisputeCrowdsourcerContributionLogRemoval,
+    },
+    DisputeCrowdsourcerCompleted: {
+      add: processDisputeCrowdsourcerCompletedLog,
+      remove: processDisputeCrowdsourcerCompletedLogRemoval,
     },
     TokensMinted: {
       add: processMintLog,

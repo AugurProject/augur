@@ -2,13 +2,13 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { processReportingWindowCreatedLog, processReportingWindowCreatedLogRemoval } = require("../../../build/blockchain/log-processors/reporting-window-created");
+const { processFeeWindowCreatedLog, processFeeWindowCreatedLogRemoval } = require("../../../build/blockchain/log-processors/fee-window-created");
 
-const getReportingWindow = (db, params, callback) => {
-  db("reporting_windows").first(["reportingWindow", "reportingWindowID", "endTime"]).where({reportingWindow: params.log.reportingWindow}).asCallback(callback);
+const getFeeWindow = (db, params, callback) => {
+  db("fee_windows").first(["feeWindow", "feeWindowID", "endTime"]).where({feeWindow: params.log.feeWindow}).asCallback(callback);
 };
 
-describe("blockchain/log-processors/reporting-window-created", () => {
+describe("blockchain/log-processors/fee-window-created", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
@@ -16,10 +16,10 @@ describe("blockchain/log-processors/reporting-window-created", () => {
         db.transaction((trx) => {
           processReportingWindowCreatedLog(db, t.params.augur, trx, t.params.log, (err) => {
             assert.isNull(err);
-            getReportingWindow(trx, t.params, (err, records) => {
+            getFeeWindow(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processReportingWindowCreatedLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
-                getReportingWindow(trx, t.params, (err, records) => {
+                getFeeWindow(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();
                 });

@@ -26,7 +26,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
   if (row.consensusOutcome === null) {
     consensus = null;
   } else {
-    consensus = { outcomeID: row.consensusOutcome, isIndeterminate: row.isInvalid } as UIConsensusInfo;
+    consensus = { outcomeID: row.consensusOutcome, isInvalid: row.isInvalid } as UIConsensusInfo;
   }
   const marketInfo: UIMarketInfo = {
     id: row.marketID,

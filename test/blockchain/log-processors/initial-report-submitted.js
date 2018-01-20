@@ -4,23 +4,23 @@ const Augur = require("augur.js");
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { processDesignatedReportSubmittedLog, processDesignatedReportSubmittedLogRemoval } = require("../../../build/blockchain/log-processors/designated-report-submitted");
+const { processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval } = require("../../../build/blockchain/log-processors/initial-report-submitted");
 
 const getReportingState = (db, params, callback) => {
   db("markets").first("reportingState").where("markets.marketID", params.log.market).join("market_state", "market_state.marketStateID", "markets.marketStateID").asCallback(callback);
 };
 
-describe("blockchain/log-processors/designated-report-submitted", () => {
+describe("blockchain/log-processors/initial-report-submitted", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processDesignatedReportSubmittedLog(db, t.params.augur, trx, t.params.log, (err) => {
+          processInitialReportSubmittedLog(db, t.params.augur, trx, t.params.log, (err) => {
             assert.isNull(err);
             getReportingState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
-              processDesignatedReportSubmittedLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+              processInitialReportSubmittedLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
                 getReportingState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();
@@ -33,7 +33,7 @@ describe("blockchain/log-processors/designated-report-submitted", () => {
     });
   };
   test({
-    description: "Designated report submitted",
+    description: "Initial report submitted",
     params: {
       log: {
         universe: "0x000000000000000000000000000000000000000b",

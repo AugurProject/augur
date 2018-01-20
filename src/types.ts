@@ -200,18 +200,9 @@ export interface BlocksRow {
   timestamp: number;
 }
 
-export interface StakeTokensRow {
+export interface StakeTokensRow  extends Payout {
   stakeToken: Address;
   marketID: Address;
-  payout0: string|number|null;
-  payout1: string|number|null;
-  payout2: string|number|null;
-  payout3: string|number|null;
-  payout4: string|number|null;
-  payout5: string|number|null;
-  payout6: string|number|null;
-  payout7: string|number|null;
-  isInvalid: number;
   amountStaked: number;
   claimed: number;
   winningToken: number|null;
@@ -221,11 +212,9 @@ export interface StakeTokensRowWithReportingState extends StakeTokensRow {
   ReportingState: ReportingState;
 }
 
-export interface UIStakeTokenInfo {
-  stakeToken: Address;
-  marketID: Address;
-  payout0: string|number|null;
-  payout1: string|number|null;
+export interface Payout {
+  payout0: string|number;
+  payout1: string|number;
   payout2: string|number|null;
   payout3: string|number|null;
   payout4: string|number|null;
@@ -233,6 +222,11 @@ export interface UIStakeTokenInfo {
   payout6: string|number|null;
   payout7: string|number|null;
   isInvalid: boolean;
+}
+
+export interface UIStakeTokenInfo extends Payout {
+  stakeToken: Address;
+  marketID: Address;
   amountStaked: number;
   claimed: boolean;
   winningToken: boolean|null;
@@ -250,7 +244,7 @@ export interface UIMarketCreatorFee {
 
 export interface UIConsensusInfo {
   outcomeID: number;
-  isIndeterminate: boolean;
+  isInvalid: boolean;
 }
 
 export interface UIOutcomeInfo {
@@ -391,7 +385,7 @@ export interface MarketsRowWithCreationTime extends MarketsRow {
   creationTime: number;
 }
 
-export interface JoinedReportsMarketsRow {
+export interface JoinedReportsMarketsRow extends Payout {
   creationBlockNumber: number;
   creationTime: number;
   logIndex: number;
@@ -404,15 +398,6 @@ export interface JoinedReportsMarketsRow {
   stakeToken: Address;
   marketType: string;
   amountStaked: string|number;
-  payout0: string|number|null;
-  payout1: string|number|null;
-  payout2: string|number|null;
-  payout3: string|number|null;
-  payout4: string|number|null;
-  payout5: string|number|null;
-  payout6: string|number|null;
-  payout7: string|number|null;
-  isInvalid: number;
 }
 
 export interface UIReport {
