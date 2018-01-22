@@ -23,8 +23,8 @@ By default, Augur Node is configured to connect to a locally-running Ethereum no
     {
         "augurDbPath": "./augur.db",
         "ethereumNodeEndpoints": {
-            "http": "https://eth9000.augur.net", // Defaults to "http://localhost:8545"
-            "ws": "wss://ws9000.augur.net" // Defaults to "ws://localhost:8546"
+            "http": "https://rinkeby.ethereum.nodes.augur.net", // Defaults to "http://localhost:8545"
+            "ws": "wss://websocket-rinkeby.ethereum.nodes.augur.net" // Defaults to "ws://localhost:8546"
         },
         "uploadBlockNumbers": {
             "1": 4086425,
@@ -36,8 +36,8 @@ By default, Augur Node is configured to connect to a locally-running Ethereum no
 
 Another way to connect to a hosted Ethereum node is by setting the ENDPOINT_HTTP and ENDPOINT_WS environment variables, as follows:
 
-    $ export ENDPOINT_HTTP=https://eth9000.augur.net 
-    $ export ENDPOINT_WS=wss://ws9000.augur.net
+    $ export ENDPOINT_HTTP=https://rinkeby.ethereum.nodes.augur.net 
+    $ export ENDPOINT_WS=wss://websocket-rinkeby.ethereum.nodes.augur.net
 
 ## Schema Migrations
 Migrations are managed via knex and behave similarly to ActiveRecord
