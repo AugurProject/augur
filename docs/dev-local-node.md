@@ -58,7 +58,7 @@ Soon to be removed repository, this repository needs to be linked to augur.js
 
 The helper scripts live in augur.js, both augur-node and augur (ui) repositories rely in augur.js. It needs to be built and link up augur-contracts (soon to be removed)  
 
-    npm i; yarn build; yarn link augur-contracts
+    npm i; yarn build; yarn link augur-contracts; yarn link
 
 ### augur-node
 
