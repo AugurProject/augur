@@ -1,7 +1,9 @@
 "use strict";
 
-var assign = require("lodash.assign");
-var contracts = require("augur-contracts");
 var generateAbiMap = require("./generate-abi-map");
 
-module.exports = assign({}, contracts, { abi: generateAbiMap(contracts.abi) });
+module.exports = {
+  abi: generateAbiMap(require("./abi")),
+  addresses: require("./addresses"),
+  uploadBlockNumbers: require("./upload-block-numbers"),
+};

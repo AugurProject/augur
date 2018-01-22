@@ -10,7 +10,6 @@ var chalk = require("chalk");
 var Augur = require("../../src");
 var approveAugurEternalApprovalValue = require("./lib/approve-augur-eternal-approval-value");
 var createMarket = require("./lib/create-market");
-var createOrders = require("./lib/create-orders");
 var getPrivateKey = require("./lib/get-private-key");
 var cannedMarketsData = require("./data/canned-markets");
 var connectionEndpoints = require("../connection-endpoints");
@@ -42,10 +41,7 @@ getPrivateKey(keystoreFilePath, function (err, auth) {
           console.error(chalk.red.bold("Canned market creation failed:"), err);
           process.exit(1);
         }
-        createOrders(augur, newMarketIDs, auth, function (err) {
-          if (err) console.error(chalk.red.bold("Order book creation failed:"), err);
-          process.exit();
-        });
+        process.exit();
       });
     });
   });

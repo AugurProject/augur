@@ -1,11 +1,11 @@
 "use strict";
 
-var augurContracts = require("augur-contracts");
+var abi = require("../../../src/contracts/abi");
 var speedomatic = require("speedomatic");
 var encodeTransactionInputs = require("../../../src/api/encode-transaction-inputs");
 var hashEventAbi = require("../../../src/events/hash-event-abi");
 
-var marketCreatedEventAbi = augurContracts.abi.Augur.find(function (abi) {
+var marketCreatedEventAbi = abi.Augur.find(function (abi) {
   return abi.type === "event" && abi.name === "MarketCreated";
 });
 var marketCreatedEventNonIndexedInputs = marketCreatedEventAbi.inputs.filter(function (abi) { return !abi.indexed; });
