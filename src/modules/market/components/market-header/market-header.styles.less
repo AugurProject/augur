@@ -34,22 +34,22 @@
 }
 
 .MarketHeader__description {
-  .Market__upper--left;
-  .caps--extra-large();
-
   color: @color-white;
+  max-width: 700px;
 }
 
 .MarketHeader__properties {
-  .Market__upper--right();
-
   display: flex;
-  justify-content: space-around;
+  margin-left: 75px;
 }
 
 .MarketHeader__property {
   display: flex;
   flex-direction: column;
+
+  &:not(:last-of-type) {
+    margin-right: 72px;
+  }
 
   span:first-of-type {
     .caps--small();
