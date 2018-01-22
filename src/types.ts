@@ -162,7 +162,7 @@ export interface MarketsRow {
   designatedReportStake: string|number;
   resolutionSource?: string|null;
   numTicks: number;
-  consensusOutcome?: number|null;
+  consensusPayoutID?: number|null;
   isInvalid?: boolean|null;
 }
 
@@ -200,7 +200,7 @@ export interface BlocksRow {
   timestamp: number;
 }
 
-export interface StakeTokensRow  extends Payout {
+export interface StakeTokensRow extends Payout {
   stakeToken: Address;
   marketID: Address;
   amountStaked: number;

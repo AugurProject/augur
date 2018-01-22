@@ -23,10 +23,11 @@ export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow): UIO
 
 export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime, outcomesInfo: Array<UIOutcomeInfo>): UIMarketInfo {
   let consensus: UIConsensusInfo|null;
-  if (row.consensusOutcome === null) {
+  console.log(row);
+  if (row.consensusPayoutID === null) {
     consensus = null;
   } else {
-    consensus = { outcomeID: row.consensusOutcome, isInvalid: row.isInvalid } as UIConsensusInfo;
+    consensus = { outcomeID: row.consensusPayoutID, isInvalid: row.isInvalid } as UIConsensusInfo;
   }
   const marketInfo: UIMarketInfo = {
     id: row.marketID,

@@ -40,6 +40,7 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
         market: "0x0000000000000000000000000000000000000001",
         stakeToken: "0x1000000000000000000000000000000000000000",
         reporter: "0x0000000000000000000000000000000000000b0b",
+        isDesignatedReporter: true,
         payoutNumerators: [0, 1],
         blockNumber: 1400100,
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",

@@ -28,7 +28,7 @@ import { augurEmitter } from "../../events";
           */
 
 export function processFeeWindowCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  const reportingWindowToInsert = {
+  const feeWindowToInsert = {
     feeWindow: log.feeWindow,
     feeWindowID: log.id,
     universe: log.universe,
@@ -38,11 +38,11 @@ export function processFeeWindowCreatedLog(db: Knex, augur: Augur, trx: Knex.Tra
     endTime: log.endTime,
     fees: 0,
   };
-  augurEmitter.emit("FeeWindowCreated", reportingWindowToInsert);
-  db.transacting(trx).from("fee_windows").insert(reportingWindowToInsert).asCallback(callback);
+  augurEmitter.emit("FeeWindowCreated", feeWindowToInsert);
+  db.transacting(trx).from("fee_windows").insert(feeWindowToInsert).asCallback(callback);
 }
 
 export function processFeeWindowCreatedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   augurEmitter.emit("FeeWindowCreated", log);
-  db.transacting(trx).from("fee_windows").where({reportingWindow: log.reportingWindow}).del().asCallback(callback);
+  db.transacting(trx).from("fee_windows").where({feeWindow: log.feeWindow}).del().asCallback(callback);
 }

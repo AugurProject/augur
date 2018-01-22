@@ -9,11 +9,13 @@ exports.up = async (knex: Knex): Promise<any> => {
         table.specificType(`payout${i}`, "NUMERIC").nullable();
       }
       table.integer("isInvalid");
+      table.integer("winning").nullable();
+
       table.index(["marketID"]);
     });
   });
 };
 
 exports.down = async (knex: Knex): Promise<any> => {
-  return knex.schema.dropTableIfExists("stake_tokens");
+  return knex.schema.dropTableIfExists("payouts");
 };

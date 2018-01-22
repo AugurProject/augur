@@ -139,7 +139,7 @@ describe("blockchain/log-processors/market-created", () => {
             designatedReportStake: 16777216,
             resolutionSource: "https://www.trusted-third-party-co.com",
             numTicks: 10000,
-            consensusOutcome: null,
+            consensusPayoutID: null,
             isInvalid: null,
           }],
           categories: [{
@@ -292,7 +292,7 @@ describe("blockchain/log-processors/market-created", () => {
             designatedReportStake: 16777216,
             resolutionSource: "https://www.trusted-third-party-co.com",
             numTicks: 10000,
-            consensusOutcome: null,
+            consensusPayoutID: null,
             isInvalid: null,
           }],
           categories: [{
@@ -466,7 +466,7 @@ describe("blockchain/log-processors/market-created", () => {
             designatedReportStake: 16777216,
             resolutionSource: "https://www.trusted-third-party-co.com",
             numTicks: 10000,
-            consensusOutcome: null,
+            consensusPayoutID: null,
             isInvalid: null,
           }],
           categories: [{
@@ -614,7 +614,7 @@ describe("blockchain/log-processors/market-created", () => {
             designatedReportStake: 16777216,
             resolutionSource: null,
             numTicks: 10000,
-            consensusOutcome: null,
+            consensusPayoutID: null,
             isInvalid: null,
           }],
           categories: [{
