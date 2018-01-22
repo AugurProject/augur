@@ -255,7 +255,7 @@ export function assembleMarket(
         outcome.orderBookSeries = getOrderBookSeries(orderBook)
         outcome.topBid = selectTopBid(orderBook, false)
         outcome.topAsk = selectTopAsk(orderBook, false)
-        outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID], (marketAccountTrades || {})[outcomeID], outcome.lastPrice.value, orderBook)
+        outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID])
 
         marketTradeOrders = marketTradeOrders.concat(outcome.trade.tradeSummary.tradeOrders)
 
@@ -271,6 +271,8 @@ export function assembleMarket(
       // market.priceTimeSeries = selectPriceTimeSeries(market.outcomes, marketPriceHistory)
 
       market.unclaimedCreatorFees = formatEther(marketData.unclaimedCreatorFees)
+
+      market.marketCreatorFeesCollected = formatEther(marketData.marketCreatorFeesCollected || 0)
 
       market.reportableOutcomes = selectReportableOutcomes(market.type, market.outcomes)
       const indeterminateOutcomeID = market.type === BINARY ? BINARY_INDETERMINATE_OUTCOME_ID : CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID

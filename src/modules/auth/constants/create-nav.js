@@ -1,4 +1,4 @@
-import { Airbitz, uPort, Key } from 'modules/common/components/icons/icons'
+import { Airbitz, uPort } from 'modules/common/components/icons/icons'
 
 export const PARAMS = {
   AIRBITZ: 'airbitz',
@@ -17,10 +17,5 @@ export const ITEMS = [
     param: PARAMS.UPORT,
     title: 'uPort',
     icon: uPort
-  },
-  {
-    param: PARAMS.KEYSTORE,
-    title: 'Keystore',
-    icon: Key
   }
 ]

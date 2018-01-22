@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
-import { LedgerEthereum, BrowserLedgerConnectionFactory, Network } from 'ethereumjs-ledger'
+import { LedgerEthereum, BrowserLedgerConnectionFactory } from 'ethereumjs-ledger'
 
 import { Alert } from 'modules/common/components/icons/icons'
 
@@ -12,7 +11,8 @@ import Styles from 'modules/auth/components/ledger-connect/ledger-connect.styles
 export default class Ledger extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
-    loginWithLedger: PropTypes.func.isRequired
+    loginWithLedger: PropTypes.func.isRequired,
+    networkId: PropTypes.number.isRequired
   }
 
   constructor(props) {
@@ -30,7 +30,8 @@ export default class Ledger extends Component {
     this.LedgerEthereum = null
 
     this.state = {
-      ledgerState: null
+      ledgerState: null,
+      displayInstructions: false
     }
 
     this.connectLedger = this.connectLedger.bind(this)
@@ -38,6 +39,7 @@ export default class Ledger extends Component {
     this.onOpenEthereumAppRequest = this.onOpenEthereumAppRequest.bind(this)
     this.onSwitchLedgerModeRequest = this.onSwitchLedgerModeRequest.bind(this)
     this.onEnableContractSupportRequest = this.onEnableContractSupportRequest.bind(this)
+    this.updateDisplayInstructions = this.updateDisplayInstructions.bind(this)
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -45,7 +47,7 @@ export default class Ledger extends Component {
       nextState.ledgerState !== this.LEDGER_STATES.ATTEMPTING_CONNECTION &&
       this.state.ledgerState !== nextState.ledgerState
     ) {
-      // this.updateDisplayInstructions(true)
+      this.updateDisplayInstructions(true)
     }
   }
 
@@ -80,7 +82,7 @@ export default class Ledger extends Component {
     this.setState({ ledgerState: this.LEDGER_STATES.ATTEMPTING_CONNECTION })
 
     const ledgerEthereum = new LedgerEthereum(
-      Network.Main,
+      this.props.networkId,
       BrowserLedgerConnectionFactory,
       this.onConnectLedgerRequest,
       this.onOpenEthereumAppRequest,
@@ -88,13 +90,17 @@ export default class Ledger extends Component {
       this.onEnableContractSupportRequest
     )
 
-    const address = await ledgerEthereum.getAddressByBip44Index(0)
+    const address = await ledgerEthereum.getAddressByBip44Index()
 
     if (address) {
       return this.props.loginWithLedger(address, ledgerEthereum)
     }
 
     this.setState({ ledgerState: this.LEDGER_STATES.OTHER_ISSUE })
+  }
+
+  updateDisplayInstructions(displayInstructions) {
+    this.setState({ displayInstructions })
   }
 
   render() {
@@ -109,38 +115,37 @@ export default class Ledger extends Component {
             className={Styles.LedgerConnect__button}
             onClick={() => {
               this.connectLedger()
-                .then(() => this.setState({ ledgerState: null }))
                 .catch(() => this.setState({ ledgerState: this.LEDGER_STATES.OTHER_ISSUE }))
             }}
           >
-            {s.ledgerState !== this.ATTEMPTING_CONNECTION ?
+            {s.ledgerState !== this.LEDGER_STATES.ATTEMPTING_CONNECTION ?
               'Connect Ledger' :
-              <Spinner />
+              <Spinner light />
             }
           </button>
         </div>
-        {s.ledgerState &&
-        <div className={classNames(Styles.LedgerConnect__messages, { [Styles[`LedgerConnect__messages--visible`]]: s.ledgerState })}>
-          {Alert}
-          <h3>Make sure you have: </h3>
-          <ul>
-            <li>
-              Accessed Augur via HTTPS
-            </li>
-            <li>
-              Connected your Ledger
-            </li>
-            <li>
-              Opened the Ethereum App
-            </li>
-            <li>
-              Enabled Contract Data
-            </li>
-            <li>
-              Enabled Browser Support
-            </li>
-          </ul>
-        </div>
+        { s.displayInstructions &&
+          <div className={Styles.LedgerConnect__messages} >
+            {Alert}
+            <h3>Make sure you have: </h3>
+            <ul>
+              <li>
+                Accessed Augur via HTTPS
+              </li>
+              <li>
+                Connected your Ledger
+              </li>
+              <li>
+                Opened the Ethereum App
+              </li>
+              <li>
+                Enabled Contract Data
+              </li>
+              <li>
+                Enabled Browser Support
+              </li>
+            </ul>
+          </div>
         }
       </section>
     )

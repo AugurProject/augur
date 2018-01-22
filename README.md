@@ -1,4 +1,4 @@
-# Augur | Client
+# augur | client
 [![Build Status](https://travis-ci.org/AugurProject/augur.svg?branch=v3)](https://travis-ci.org/AugurProject/augur)
 [![Coverage Status](https://coveralls.io/repos/github/AugurProject/augur/badge.svg?branch=v3)](https://coveralls.io/github/AugurProject/augur?branch=v3)
 
@@ -7,7 +7,7 @@ It runs locally in your browser and communicates directly with the ethereum netw
 
 There are several ways to run it:
 
-* Easiest: **visit [app.augur.net](http://app.augur.net)**  
+* Easiest: **visit [dev.augur.net](http://dev.augur.net)**  
 * Best: [run ethereum locally](#eth_local)
 
 ## Requirements
@@ -133,3 +133,9 @@ Since our code is structured in many small files that are named the same as the 
 Want to know where the css for pagination is? Don't bother tracing where/how they're included, just search your files for `pag` >>>and `pagination.less` will pop up.
 
 Want to see how the login account gets updated? Search the files for `login` >>> and `update-login-account.js` will appear.
+
+## Sponsorships
+
+[![BrowserStack](/src/assets/images/browser-stack.png?raw=true "BrowserStack")](https://www.browserstack.com/)
+
+As an open source project, we'd like to thank [BrowserStack](https://www.browserstack.com/) for providing free access to their environment testing platform!

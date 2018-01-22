@@ -2,13 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Connect } from 'uport-connect'
 import QRCode from 'qrcode.react'
+import { decode } from 'mnid'
 
 import { AppleAppStore, GooglePlayStore } from 'modules/common/components/icons/icons'
 
 import debounce from 'utils/debounce'
 import getValue from 'utils/get-value'
-
-import uPortSigningNotifier from 'modules/auth/helpers/uport-signing-notifier'
 
 import Styles from 'modules/auth/components/uport-connect/uport-connect.styles'
 
@@ -26,8 +25,7 @@ export default class UportConnect extends Component {
       'AUGUR -- DEV',
       {
         clientId: '2ofGiHuZhhpDMAQeDxjoDhEsUQd1MayECgd'
-      },
-      uPortSigningNotifier
+      }
     )
 
     this.state = {
@@ -45,7 +43,7 @@ export default class UportConnect extends Component {
       notifcations: true
     }, this.uPortURIHandler).then((account) => {
       const signingMethod = this.uPort.getWeb3().eth.sendTransaction
-      this.props.login(account, signingMethod)
+      this.props.login(decode(account.address), signingMethod)
     })
   }
 
@@ -53,6 +51,10 @@ export default class UportConnect extends Component {
     this.setQRSize()
 
     window.addEventListener('resize', this.debouncedSetQRSize)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.debouncedSetQRSize)
   }
 
   setQRSize() {
@@ -95,7 +97,7 @@ export default class UportConnect extends Component {
         ref={(uPortCreate) => { this.uPortCreate = uPortCreate }}
         className={Styles.Uport__connect}
       >
-        <div className={Styles['Uport__connect-wrapper']}>
+        <div>
           <h3>Connect a uPort Account</h3>
           <QRCode
             value={s.uri}

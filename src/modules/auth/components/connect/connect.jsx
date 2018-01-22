@@ -7,9 +7,7 @@ import Help from 'modules/auth/components/help/help'
 import Airbitz from 'modules/auth/containers/airbitz-connect'
 import LedgerConnect from 'modules/auth/containers/ledger-connect'
 import UportConnect from 'modules/auth/containers/uport-connect'
-import KeystoreConnect from 'modules/auth/containers/keystore-connect'
-import Trezor from 'modules/auth/containers/trezor'
-import Metamask from 'modules/auth/components/metamask/metamask'
+import MetaMaskConnect from 'modules/auth/components/metamask/metamask'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 
@@ -43,20 +41,14 @@ export default function AuthConnect(p) {
             {selectedNav == null &&
               <Airbitz />
             }
-            {selectedNav === PARAMS.METAMASK &&
-              <Metamask />
-            }
             {selectedNav === PARAMS.LEDGER &&
               <LedgerConnect />
             }
             {selectedNav === PARAMS.UPORT &&
               <UportConnect />
             }
-            {selectedNav === PARAMS.KEYSTORE &&
-              <KeystoreConnect />
-            }
-            {selectedNav === PARAMS.TREZOR &&
-              <Trezor />
+            {selectedNav === PARAMS.METAMASK &&
+              <MetaMaskConnect />
             }
           </div>
         </div>

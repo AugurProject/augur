@@ -12,7 +12,19 @@ const FLAGS = JSON.parse(process.env.npm_config_argv).original.filter(arg => arg
 process.env.NODE_ENV = process.env.BABEL_ENV = FLAGS.indexOf('--dev') !== -1 ? 'development' : 'production';
 process.env.DEBUG_BUILD = FLAGS.indexOf('--dev') !== -1 ? true : false;
 
+let network = ""
+if (FLAGS.indexOf('--rinkeby') !== -1) {
+  network = 'rinkeby'
+} else if (FLAGS.indexOf('--clique') !== -1) {
+  network = 'clique'
+} else if (FLAGS.indexOf('--aura') !== -1) {
+  network = 'aura'
+}
+
+if (network) { process.env.ETHEREUM_NETWORK = network }
+
 process.env.FORCE_COLOR = true;
+network ? console.log(`Using Network: ${network}`) : console.log('Using local network');
 
 shell.echo(`
 ${colors.title(`== Building Augur${process.env.NODE_ENV === 'development' ? ' -- Debug Mode' : ''} ==`)}

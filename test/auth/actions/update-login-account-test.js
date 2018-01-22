@@ -15,7 +15,7 @@ describe(`modules/auth/actions/update-login-account.js`, () => {
       const action = proxyquire('../../../src/modules/auth/actions/update-login-account.js', {
         '../../contracts/actions/update-contract-api': UpdateFromAddress
       })
-      sinon.stub(UpdateFromAddress, 'updateFromAddress', address => ({ type: 'UPDATE_FROM_ADDRESS', address }))
+      sinon.stub(UpdateFromAddress, 'updateFromAddress').callsFake(address => ({ type: 'UPDATE_FROM_ADDRESS', address }))
       store.dispatch(action[t.method](t.param))
       t.assertions(store.getActions())
       store.clearActions()

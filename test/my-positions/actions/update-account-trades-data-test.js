@@ -32,7 +32,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
   const mockConvertTradeLogsToTransactions = {
     convertTradeLogsToTransactions: () => { }
   }
-  sinon.stub(mockConvertTradeLogsToTransactions, 'convertTradeLogsToTransactions', (logType, data, marketID) => ({
+  sinon.stub(mockConvertTradeLogsToTransactions, 'convertTradeLogsToTransactions').callsFake((logType, data, marketID) => ({
     type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_DATA,
     logType,
     data,
@@ -41,7 +41,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
   const mockUpdateOrders = {
     updateOrders: () => { }
   }
-  sinon.stub(mockUpdateOrders, 'updateOrders', (data, isAddition) => ({
+  sinon.stub(mockUpdateOrders, 'updateOrders').callsFake((data, isAddition) => ({
     type: MOCK_ACTION_TYPES.UPDATE_ORDERS,
     data,
     isAddition
@@ -50,7 +50,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
   const mockLoadBidsAsksHistory = {
     loadAccountOrders: () => { }
   }
-  sinon.stub(mockLoadBidsAsksHistory, 'loadAccountOrders', market => ({
+  sinon.stub(mockLoadBidsAsksHistory, 'loadAccountOrders').callsFake(market => ({
     type: MOCK_ACTION_TYPES.LOAD_BIDS_ASKS_HISTORY,
     data: { ...market }
   }))
@@ -140,7 +140,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             }
           }
         }
-        sinon.stub(mockAugur.augur.api.MarketFetcher, 'getPositionInMarket', ({ _account: account, _market: market }, callback) => callback({}))
+        sinon.stub(mockAugur.augur.api.MarketFetcher, 'getPositionInMarket').callsFake(({ _account: account, _market: market }, callback) => callback({}))
 
         const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
           '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,

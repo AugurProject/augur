@@ -18,6 +18,7 @@ class PositionsMarketsList extends Component {
     history: PropTypes.object.isRequired,
     linkType: PropTypes.string,
     positionsDefault: PropTypes.bool,
+    claimTradingProceeds: PropTypes.func,
   }
 
   constructor(props) {
@@ -82,6 +83,7 @@ class PositionsMarketsList extends Component {
               history={p.history}
               linkType={p.linkType}
               positionsDefault={p.positionsDefault}
+              claimTradingProceeds={p.claimTradingProceeds}
             />)):
           <NullStateMessage message="No Markets Available" />}
       </div>

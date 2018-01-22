@@ -8,7 +8,7 @@ import { AppleAppStore, GooglePlayStore } from 'modules/common/components/icons/
 import debounce from 'utils/debounce'
 import getValue from 'utils/get-value'
 
-import uPortSigningNotifier from 'modules/auth/helpers/uport-signing-notifier'
+import { decode } from 'mnid'
 
 import Styles from 'modules/auth/components/uport-create/uport-create.styles'
 
@@ -25,8 +25,7 @@ export default class UportCreate extends Component {
       'AUGUR -- DEV',
       {
         clientId: '2ofGiHuZhhpDMAQeDxjoDhEsUQd1MayECgd'
-      },
-      uPortSigningNotifier
+      }
     )
 
     this.state = {
@@ -40,12 +39,15 @@ export default class UportCreate extends Component {
   }
 
   componentWillMount() {
-    this.uPort.requestCredentials({
-      notifcations: true
-    }, this.uPortURIHandler).then((account) => {
-      const signingMethod = this.uPort.getWeb3().eth.sendTransaction
-      this.props.login(account, signingMethod)
-    })
+    this.uPort.requestCredentials(
+      {
+        notifcations: true
+      },
+      this.uPortURIHandler
+    )
+      .then((account) => {
+        this.props.login(decode(account.address), this.uPort.sendTransaction)
+      })
   }
 
   componentDidMount() {
@@ -54,11 +56,13 @@ export default class UportCreate extends Component {
     window.addEventListener('resize', this.debouncedSetQRSize)
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.debouncedSetQRSize)
+  }
+
   setQRSize() {
     const width = getValue(this, 'uPortCreateQR.clientWidth')
     const height = getValue(this, 'uPortCreateQR.clientHeight')
-
-    console.log('w/h -- ', width, height)
 
     if (width > height) { // Height is the constraining value
       this.setState({ qrSize: this.props.isMobile ? height / 1.2 : height / 1.2 })

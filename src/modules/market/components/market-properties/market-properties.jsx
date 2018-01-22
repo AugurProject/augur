@@ -48,6 +48,15 @@ const MarketProperties = (p) => {
           <span>Expires</span>
           <span>{ p.endDate.formatted }</span>
         </li>
+        {p.outstandingReturns &&
+          <li>
+            <span>Collected Returns</span>
+            <ValueDenomination
+              formatted={p.marketCreatorFeesCollected.rounded}
+              denomination={p.marketCreatorFeesCollected.denomination}
+            />
+          </li>
+        }
       </ul>
       <div className={Styles.MarketProperties__actions}>
         { p.isLogged && p.toggleFavorite &&

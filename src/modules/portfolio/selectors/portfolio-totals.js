@@ -7,7 +7,7 @@ export default function () {
   const positionsSummary = selectMyPositionsSummary()
   const marketsSummary = selectMyMarketsSummary()
 
-  const totalValue = formatEtherTokens(new BigNumber((positionsSummary && positionsSummary.totalValue && positionsSummary.totalValue.value) || 0, 10).plus(new BigNumber((marketsSummary && marketsSummary.totalValue) || 0, 10)))
+  const totalValue = formatEtherTokens(new BigNumber((positionsSummary && positionsSummary.totalNet && positionsSummary.totalNet.value) || 0, 10).plus(new BigNumber((marketsSummary && marketsSummary.totalNet) || 0, 10)))
   const netChange = formatEtherTokens(new BigNumber((positionsSummary && positionsSummary.netChange && positionsSummary.netChange.value) || 0, 10).plus(new BigNumber((marketsSummary && marketsSummary.totalValue) || 0, 10)))
 
   return {
