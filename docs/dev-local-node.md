@@ -40,7 +40,7 @@ augur-contracts repo is going to be merged into augur.js (TODO: update when that
 
 Since we are using local contracts we need to make sure all repositories are looking at the same dependencies, we're going to use yarn link to help us out. The following are examples, we'll execute in each repository section:
 
-    -- yarn link stuff examples:
+    -- yarn link examples:
     in augur-contracts:> yarn link
     in augur.js:> npm i; yarn build; yarn link augur-contracts
     in augur.js:> yarn link
@@ -58,7 +58,10 @@ Soon to be removed repository, this repository needs to be linked to augur.js
 
 The helper scripts live in augur.js, both augur-node and augur (ui) repositories rely in augur.js. It needs to be built and link up augur-contracts (soon to be removed)  
 
-    npm i; yarn build; yarn link augur-contracts; yarn link
+    npm i; 
+    yarn build; 
+    yarn link augur-contracts; 
+    yarn link;
 
 ### augur-node
 
@@ -74,9 +77,9 @@ We will see ENDPOINT_HTTP and ENDPOINT_WS often it tells augur-node or augur.js 
 Only two things need to be done, update env-dev.json and make sure to yarn link. 
 
     cd augur
-    yarn link augur.js
-    yarn build
-  	yarn dev
+    yarn link augur.js;
+    yarn build;
+  	yarn dev;
 
 
 Example of the changed endpoints in the env-dev.json file
