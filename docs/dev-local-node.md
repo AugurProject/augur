@@ -59,8 +59,8 @@ Soon to be removed repository, this repository needs to be linked to augur.js
 The helper scripts live in augur.js, both augur-node and augur (ui) repositories rely in augur.js. It needs to be built and link up augur-contracts (soon to be removed)  
 
     npm i; 
-    yarn build; 
     yarn link augur-contracts; 
+    yarn build; 
     yarn link;
 
 ### augur-node
@@ -94,6 +94,9 @@ There are a few helper node scripts in augur.js. There is the canned market scri
 
 Also there are eight user accounts baked into the docker node that have plenty of ETH, Here is the list:
 
+    default user: 0x1fd9274a2fe0e86f5a7b5bde57b93c8c9b62e21d
+    private key: 0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a
+    
     ethereum addr: 0xbd355a7e5a7adb23b51f54027e624bfe0e238df6
     private key: 48c5da6dff330a9829d843ea90c2629e8134635a294c7e62ad4466eb2ae03712
 
