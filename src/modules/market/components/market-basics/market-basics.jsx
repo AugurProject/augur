@@ -43,11 +43,11 @@ const MarketBasics = p => (
         </MarketLink>
       </h1>
 
-      {(p.type === BINARY || p.type === SCALAR) &&
-        <MarketOutcomesBinaryScalar outcomes={p.outcomes} min={p.minValue} max={p.maxValue} type={p.type} />
+      {(p.marketType === BINARY || p.marketType === SCALAR) &&
+        <MarketOutcomesBinaryScalar outcomes={p.outcomes} min={p.minValue} max={p.maxValue} type={p.marketType} />
       }
 
-      {p.type === 'categorical' &&
+      {p.marketType === 'categorical' &&
         <MarketOutcomesCategorical outcomes={p.outcomes} />
       }
     </div>

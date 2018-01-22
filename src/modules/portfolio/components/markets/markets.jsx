@@ -9,7 +9,7 @@ import Dropdown from 'modules/common/components/dropdown/dropdown'
 import MarketsList from 'modules/markets/components/markets-list'
 import Styles from 'modules/portfolio/components/markets/markets.styles'
 import PortfolioStyles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles'
-import { TYPE_COLLECT_FEES } from 'modules/market/constants/link-types'
+import { TYPE_TRADE, TYPE_REPORT, TYPE_CLOSED } from 'modules/market/constants/link-types'
 import { constants } from 'services/augurjs'
 import { CREATE_MARKET } from 'modules/routes/constants/views'
 
@@ -131,7 +131,7 @@ class MyMarkets extends Component {
       const filteredMarketsFinal = []
 
       nextProps.myMarkets.forEach((market, index) => {
-        if (market.reportingState === this.reportingStates.DESIGNATED_REPORTING) {
+        if (market.reportingState === this.reportingStates.PRE_REPORTING) {
           openMarkets.push(market)
           filteredMarketsOpen.push(market.id)
         } else if (market.reportingState === this.reportingStates.FINALIZED) {
@@ -253,7 +253,7 @@ class MyMarkets extends Component {
             scalarShareDenomination={p.scalarShareDenomination}
             toggleFavorite={p.toggleFavorite}
             loadMarketsInfo={p.loadMarketsInfo}
-            linkType={TYPE_COLLECT_FEES}
+            linkType={TYPE_TRADE}
             outstandingReturns
             paginationPageParam="open"
             collectMarketCreatorFees={p.collectMarketCreatorFees}
@@ -291,7 +291,7 @@ class MyMarkets extends Component {
             scalarShareDenomination={p.scalarShareDenomination}
             toggleFavorite={p.toggleFavorite}
             loadMarketsInfo={p.loadMarketsInfo}
-            linkType={TYPE_COLLECT_FEES}
+            linkType={TYPE_REPORT}
             outstandingReturns
             paginationPageParam="reporting"
             collectMarketCreatorFees={p.collectMarketCreatorFees}
@@ -329,7 +329,7 @@ class MyMarkets extends Component {
             scalarShareDenomination={p.scalarShareDenomination}
             toggleFavorite={p.toggleFavorite}
             loadMarketsInfo={p.loadMarketsInfo}
-            linkType={TYPE_COLLECT_FEES}
+            linkType={TYPE_CLOSED}
             outstandingReturns
             paginationPageParam="final"
             collectMarketCreatorFees={p.collectMarketCreatorFees}
