@@ -37,10 +37,12 @@ elif [ "$network" == "rinkeby" ]; then
 fi
 
 if [ "$2" == "orders" ]; then
-  node $scriptsPath/canned-markets/create-orders.js $keystorePath
+  node $scriptsPath/canned-markets/create-orders.js $keystorePath || exit 1
 else
-  node $scriptsPath/rep-faucet.js $keystorePath
-  node $scriptsPath/canned-markets/create-markets.js $keystorePath
+  node $scriptsPath/rep-faucet.js $keystorePath || exit 1
+  node $scriptsPath/canned-markets/create-markets.js $keystorePath || exit 1
 fi
 
 rm -f $keystorePath
+
+exit 0
