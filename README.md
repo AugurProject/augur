@@ -26,12 +26,12 @@ By default, Augur Node is configured to connect to a locally-running Ethereum no
             "http": "https://rinkeby.ethereum.nodes.augur.net", // Defaults to "http://localhost:8545"
             "ws": "wss://websocket-rinkeby.ethereum.nodes.augur.net" // Defaults to "ws://localhost:8546"
         },
+        "websocketPort": 80,
         "uploadBlockNumbers": {
             "1": 4086425,
             "3": 1377804,
             "4": 1347000
-        },
-        "websocketPort": 9001
+        }
     }
 
 Another way to connect to a hosted Ethereum node is by setting the ENDPOINT_HTTP and ENDPOINT_WS environment variables, as follows:
