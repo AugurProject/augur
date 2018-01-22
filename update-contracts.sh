@@ -16,7 +16,7 @@ npx dotsunited-merge-json ./src/contracts/upload-block-numbers.json $SOURCE/uplo
 [[ $? == 0 ]] || exit 1
 mv updated.json ./src/contracts/upload-block-numbers.json
 
-cat $SOURCE/abi.json ./src/contracts/abi.json
+cp $SOURCE/abi.json ./src/contracts/abi.json
 [[ $? == 0 ]] || exit 1
 
 if [[ "$AUTOCOMMIT" == "true" ]]; then
