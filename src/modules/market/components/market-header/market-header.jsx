@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { CSSTransition } from 'react-transition-group'
+import classNames from 'classnames'
+
+import toggleHeight from 'utils/toggle-height/toggle-height'
 
 import { ChevronLeft, ChevronDown, ChevronUp } from 'modules/common/components/icons/icons'
 
 import Styles from 'modules/market/components/market-header/market-header.styles'
+import ToggleHeightStyles from 'utils/toggle-height/toggle-height.styles'
 
 export default class MarketHeader extends Component {
   static propTypes = {
@@ -12,6 +15,7 @@ export default class MarketHeader extends Component {
     description: PropTypes.string.isRequired,
     details: PropTypes.string.isRequired,
     coreProperties: PropTypes.object.isRequired,
+    resolutionSource: PropTypes.any,
     selectedOutcomes: PropTypes.any
   }
 
@@ -19,7 +23,7 @@ export default class MarketHeader extends Component {
     super(props)
 
     this.state = {
-      detailsExpanded: false
+      areMarketDetailsVisible: false
     }
   }
 
@@ -66,21 +70,30 @@ export default class MarketHeader extends Component {
         <div className={Styles[`MarketHeader__details-wrapper`]}>
           <button
             className={Styles[`MarketHeader__details-button`]}
-            onClick={() => this.setState({ detailsExpanded: !s.detailsExpanded })}
+            onClick={() => toggleHeight(this.marketDetails, s.areMarketDetailsVisible, () => this.setState({ areMarketDetailsVisible: !s.areMarketDetailsVisible }))}
           >
-            additional details {s.detailsExpanded ? ChevronUp : ChevronDown}
+            additional details {s.areMarketDetailsVisible ? ChevronUp : ChevronDown}
           </button>
-          <CSSTransition
-            in={s.detailsExpanded}
-            addEndListener={node => (
-              node.addEventListener(null, null) // NOTE -- intentional to persist classes
-            )}
-            classNames="market-details"
+          <div
+            ref={(marketDetails) => { this.marketDetails = marketDetails }}
+            className={classNames(Styles[`MarketHeader__details-container`], ToggleHeightStyles['toggle-height-target'])}
           >
-            <div className={Styles.MarketHeader__details}>
-              <span>{p.details}</span>
+            {p.details != null &&
+              <div
+                className={Styles.MarketHeader__details}
+              >
+                <span>
+                  {p.details}
+                </span>
+              </div>
+            }
+            <div
+              className={Styles[`MarketHeader__resolution-source`]}
+            >
+              <h4>Resolution Source:</h4>
+              <span>{p.resolutionSource || 'Outcome will be determined by news media'}</span>
             </div>
-          </CSSTransition>
+          </div>
         </div>
       </section>
     )

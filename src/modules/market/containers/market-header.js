@@ -14,6 +14,7 @@ const mergeProps = (sP, dP, oP) => {
     ...oP,
     description: market.description,
     details: market.extraInfo,
+    resolutionSource: market.resolutionSource,
     coreProperties: {
       volume: getValue(market, 'volume.formatted'),
       fee: getValue(market, 'settlementFeePercent.formatted'), // FIXME -- right now really small fees display as 0.0
