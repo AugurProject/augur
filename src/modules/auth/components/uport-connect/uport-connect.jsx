@@ -97,7 +97,7 @@ export default class UportConnect extends Component {
         ref={(uPortCreate) => { this.uPortCreate = uPortCreate }}
         className={Styles.Uport__connect}
       >
-        <div className={Styles['Uport__connect-wrapper']}>
+        <div>
           <h3>Connect a uPort Account</h3>
           <QRCode
             value={s.uri}

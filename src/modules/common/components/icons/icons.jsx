@@ -240,7 +240,7 @@ export const Key = (
   </svg>
 )
 
-export const Metamask = (
+export const MetaMask = (
   <svg id="c4506631-ac2b-422f-a95b-84a8a4c4482a" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41.89 45.08">
     <defs>
       <style>

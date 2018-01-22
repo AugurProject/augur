@@ -42,6 +42,27 @@
   min-height: 500px;
   width: 100%;
 
+  h3 {
+    &:extend(.caps--large);
+
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  h4 {
+    align-self: center;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+  }
+
+  span {
+    display: block;
+
+    &:not(:last-of-type) {
+      margin-bottom: 1em;
+    }
+  }
+
   @media @breakpoint-mobile {
     & {
       flex-direction: column;

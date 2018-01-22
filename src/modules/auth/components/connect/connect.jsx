@@ -7,7 +7,7 @@ import Help from 'modules/auth/components/help/help'
 import Airbitz from 'modules/auth/containers/airbitz-connect'
 import LedgerConnect from 'modules/auth/containers/ledger-connect'
 import UportConnect from 'modules/auth/containers/uport-connect'
-import Trezor from 'modules/auth/containers/trezor'
+import MetaMaskConnect from 'modules/auth/components/metamask/metamask'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 
@@ -47,8 +47,8 @@ export default function AuthConnect(p) {
             {selectedNav === PARAMS.UPORT &&
               <UportConnect />
             }
-            {selectedNav === PARAMS.TREZOR &&
-              <Trezor />
+            {selectedNav === PARAMS.METAMASK &&
+              <MetaMaskConnect />
             }
           </div>
         </div>
