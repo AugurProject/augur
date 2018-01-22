@@ -4,7 +4,7 @@
   background: @color-lightergray;
   box-shadow: @box-shadow-notifications;
   color: @color-text-dark;
-  display: block;
+  display: flex;
   height: 30.25rem;
   max-height: 80%;
   padding: 0.25em;
@@ -39,7 +39,11 @@
 .Notification__close {
   cursor: pointer;
   display: none;
-  width: @font-size-rather-large;
+  height: @font-size-normal;
+  left: @font-size-normal;
+  position: absolute;
+  top: @font-size-normal;
+  width: @font-size-normal;
 }
 
 .NullStateMessage {
@@ -85,5 +89,9 @@
 
   .Notification__close {
     display: block;
+  }
+
+  .NullStateMessage {
+    margin: auto 0;
   }
 }
