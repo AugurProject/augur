@@ -10,7 +10,7 @@ const getReport = (db, params, callback) => {
 
 describe("blockchain/log-processors/report-submitted", () => {
   const test = (t) => {
-    it(t.description, (done) => {
+    xit(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {

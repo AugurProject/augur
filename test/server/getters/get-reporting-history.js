@@ -9,7 +9,7 @@ describe("server/getters/get-reporting-history", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getReportingHistory(db, t.params.reporter, t.params.universe, t.params.marketID, t.params.reportingWindow, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, reportingHistory) => {
+        getReportingHistory(db, t.params.reporter, t.params.universe, t.params.marketID, t.params.feeWindow, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, reportingHistory) => {
           t.assertions(err, reportingHistory);
           done();
         });
@@ -33,14 +33,13 @@ describe("server/getters/get-reporting-history", () => {
             blockHash: "0x1400051",
             creationTime: 1506474500,
             marketID: "0x0000000000000000000000000000000000000011",
-            marketReportingState: "DESIGNATED_REPORTING",
-            reportingWindow: "0x1000000000000000000000000000000000000000",
+            feeWindow: "0x1000000000000000000000000000000000000000",
             payoutNumerators: [0, 2],
             amountStaked: 17,
-            stakeToken: "0x0000000000000000001000000000000000000001",
+            crowdsourcerID: "0x0000000000000000001000000000000000000001",
             isCategorical: false,
             isScalar: false,
-            isIndeterminate: false,
+            isInvalid: false,
             isSubmitted: true,
           }],
           "0x0000000000000000000000000000000000000019": [{
@@ -50,14 +49,13 @@ describe("server/getters/get-reporting-history", () => {
             blockHash: "0x1400052",
             creationTime: 1506474515,
             marketID: "0x0000000000000000000000000000000000000019",
-            marketReportingState: "FIRST_REPORTING",
-            reportingWindow: "0x1000000000000000000000000000000000000000",
+            feeWindow: "0x1000000000000000000000000000000000000000",
             payoutNumerators: [1, 1],
             amountStaked: 229,
-            stakeToken: "0x0000000000000000001000000000000000000003",
+            crowdsourcerID: "0x0000000000000000001000000000000000000003",
             isCategorical: false,
             isScalar: false,
-            isIndeterminate: false,
+            isInvalid: false,
             isSubmitted: true,
           }],
         },
@@ -83,14 +81,13 @@ describe("server/getters/get-reporting-history", () => {
             blockHash: "0x1400052",
             creationTime: 1506474515,
             marketID: "0x0000000000000000000000000000000000000019",
-            marketReportingState: "FIRST_REPORTING",
-            reportingWindow: "0x1000000000000000000000000000000000000000",
+            feeWindow: "0x1000000000000000000000000000000000000000",
             payoutNumerators: [1, 1],
             amountStaked: 229,
-            stakeToken: "0x0000000000000000001000000000000000000003",
+            crowdsourcerID: "0x0000000000000000001000000000000000000003",
             isCategorical: false,
             isScalar: false,
-            isIndeterminate: false,
+            isInvalid: false,
             isSubmitted: true,
           }],
         },

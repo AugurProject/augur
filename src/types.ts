@@ -18,7 +18,7 @@ export enum ReportingState {
   FINALIZED = "FINALIZED",
 }
 
-export enum StakeTokenState {
+export enum DisputeTokenState {
   ALL = "ALL",
   UNCLAIMED = "UNCLAIMED",
   UNFINALIZED = "UNFINALIZED",
@@ -72,7 +72,7 @@ export interface MarketCreatedLogExtraInfo {
 
 export interface MarketCreatedOnContractInfo {
   marketCreatorFeeRate: string;
-  reportingWindow: Address;
+  feeWindow: Address;
   endTime: string;
   designatedReporter: Address;
   designatedReportStake: string;
@@ -152,7 +152,7 @@ export interface MarketsRow {
   volume: string|number;
   sharesOutstanding: string|number;
   marketStateID: number;
-  reportingWindow: Address;
+  feeWindow: Address;
   endTime: number;
   finalizationTime?: number|null;
   reportingState?: ReportingState|null;
@@ -162,7 +162,7 @@ export interface MarketsRow {
   designatedReportStake: string|number;
   resolutionSource?: string|null;
   numTicks: number;
-  consensusOutcome?: number|null;
+  consensusPayoutID?: number|null;
   isInvalid?: boolean|null;
 }
 
@@ -200,32 +200,21 @@ export interface BlocksRow {
   timestamp: number;
 }
 
-export interface StakeTokensRow {
-  stakeToken: Address;
+export interface DisputeTokensRow extends Payout {
+  disputeToken: Address;
   marketID: Address;
-  payout0: string|number|null;
-  payout1: string|number|null;
-  payout2: string|number|null;
-  payout3: string|number|null;
-  payout4: string|number|null;
-  payout5: string|number|null;
-  payout6: string|number|null;
-  payout7: string|number|null;
-  isInvalid: number;
   amountStaked: number;
   claimed: number;
-  winningToken: number|null;
+  winning: number|null;
 }
 
-export interface StakeTokensRowWithReportingState extends StakeTokensRow {
+export interface DisputeTokensRowWithTokenState extends DisputeTokensRow {
   ReportingState: ReportingState;
 }
 
-export interface UIStakeTokenInfo {
-  stakeToken: Address;
-  marketID: Address;
-  payout0: string|number|null;
-  payout1: string|number|null;
+export interface Payout {
+  payout0: string|number;
+  payout1: string|number;
   payout2: string|number|null;
   payout3: string|number|null;
   payout4: string|number|null;
@@ -233,14 +222,19 @@ export interface UIStakeTokenInfo {
   payout6: string|number|null;
   payout7: string|number|null;
   isInvalid: boolean;
+}
+
+export interface UIDisputeTokenInfo extends Payout {
+  disputeToken: Address;
+  marketID: Address;
   amountStaked: number;
   claimed: boolean;
   winningToken: boolean|null;
   ReportingState: ReportingState;
 }
 
-export interface UIStakeTokens {
-  [stakeToken: string]: UIStakeTokenInfo;
+export interface UIDisputeTokens {
+  [stakeToken: string]: UIDisputeTokenInfo;
 }
 
 export interface UIMarketCreatorFee {
@@ -250,7 +244,7 @@ export interface UIMarketCreatorFee {
 
 export interface UIConsensusInfo {
   outcomeID: number;
-  isIndeterminate: boolean;
+  isInvalid: boolean;
 }
 
 export interface UIOutcomeInfo {
@@ -280,7 +274,7 @@ export interface UIMarketInfo {
   tags: Array<string|null>;
   volume: string|number;
   outstandingShares: string|number;
-  reportingWindow: Address;
+  feeWindow: Address;
   endDate: number;
   finalizationTime?: number|null;
   reportingState?: ReportingState|null;
@@ -391,28 +385,19 @@ export interface MarketsRowWithCreationTime extends MarketsRow {
   creationTime: number;
 }
 
-export interface JoinedReportsMarketsRow {
+export interface JoinedReportsMarketsRow extends Payout {
   creationBlockNumber: number;
   creationTime: number;
   logIndex: number;
   transactionHash: Bytes32;
   blockHash: Bytes32;
   marketID: Address;
-  marketReportingState: string;
   universe: Address;
-  reportingWindow: Address;
-  stakeToken: Address;
+  feeWindow: Address;
+  crowdsourcerID: Address;
   marketType: string;
   amountStaked: string|number;
-  payout0: string|number|null;
-  payout1: string|number|null;
-  payout2: string|number|null;
-  payout3: string|number|null;
-  payout4: string|number|null;
-  payout5: string|number|null;
-  payout6: string|number|null;
-  payout7: string|number|null;
-  isInvalid: number;
+
 }
 
 export interface UIReport {
@@ -422,13 +407,12 @@ export interface UIReport {
   transactionHash: Bytes32;
   blockHash: Bytes32;
   marketID: Address;
-  marketReportingState: string;
-  reportingWindow: Address;
+  feeWindow: Address;
   payoutNumerators: Array<string|number|null>;
   amountStaked: string|number;
-  stakeToken: Address;
+  crowdsourcerID: Address;
   isCategorical: boolean;
   isScalar: boolean;
-  isIndeterminate: boolean;
+  isInvalid: boolean;
   isSubmitted: boolean;
 }

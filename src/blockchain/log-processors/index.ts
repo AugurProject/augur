@@ -5,13 +5,14 @@ import { processOrderCanceledLog, processOrderCanceledLogRemoval } from "./order
 import { processOrderCreatedLog, processOrderCreatedLogRemoval } from "./order-created";
 import { processOrderFilledLog, processOrderFilledLogRemoval } from "./order-filled";
 import { processTradingProceedsClaimedLog, processTradingProceedsClaimedLogRemoval } from "./trading-proceeds-claimed";
-import { processDesignatedReportSubmittedLog, processDesignatedReportSubmittedLogRemoval } from "./designated-report-submitted";
-import { processReportSubmittedLog, processReportSubmittedLogRemoval } from "./report-submitted";
 import { processWinningTokensRedeemedLog, processWinningTokensRedeemedLogRemoval } from "./winning-tokens-redeemed";
-import { processReportsDisputedLog, processReportsDisputedLogRemoval } from "./reports-disputed";
+import { processDisputeCrowdsourcerCreatedLog, processDisputeCrowdsourcerCreatedLogRemoval } from "./crowdsourcer";
+import { processDisputeCrowdsourcerContributionLog, processDisputeCrowdsourcerContributionLogRemoval } from "./crowdsourcer";
+import { processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompletedLogRemoval } from "./crowdsourcer";
+import { processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval } from "./initial-report-submitted";
 import { processMarketFinalizedLog, processMarketFinalizedLogRemoval } from "./market-finalized";
 import { processUniverseForkedLog, processUniverseForkedLogRemoval } from "./universe-forked";
-import { processReportingWindowCreatedLog, processReportingWindowCreatedLogRemoval } from "./reporting-window-created";
+import { processFeeWindowCreatedLog, processFeeWindowCreatedLogRemoval } from "./fee-window-created";
 import { processTransferLog, processTransferLogRemoval } from "./token/transfer";
 import { processApprovalLog, processApprovalLogRemoval } from "./token/approval";
 import { processMintLog, processMintLogRemoval } from "./token/mint";
@@ -20,17 +21,21 @@ import { processFundedAccountLog } from "./token/funded-account";
 
 export const logProcessors: LogProcessors = {
   Augur: {
+    FeeWindowCreated: {
+      add: processFeeWindowCreatedLog,
+      remove: processFeeWindowCreatedLogRemoval,
+    },
+    InitialReportSubmitted: {
+      add: processInitialReportSubmittedLog,
+      remove: processInitialReportSubmittedLogRemoval,
+    },
     MarketCreated: {
       add: processMarketCreatedLog,
       remove: processMarketCreatedLogRemoval,
     },
-    TokensTransferred: {
-      add: processTokensTransferredLog,
-      remove: processTokensTransferredLogRemoval,
-    },
-    TokensMinted: {
-      add: processMintLog,
-      remove: processMintLogRemoval,
+    MarketFinalized: {
+      add: processMarketFinalizedLog,
+      remove: processMarketFinalizedLogRemoval,
     },
     OrderCanceled: {
       add: processOrderCanceledLog,
@@ -46,37 +51,37 @@ export const logProcessors: LogProcessors = {
       add: processOrderFilledLog,
       remove: processOrderFilledLogRemoval,
     },
+    DisputeCrowdsourcerCreated: {
+      add: processDisputeCrowdsourcerCreatedLog,
+      remove: processDisputeCrowdsourcerCreatedLogRemoval,
+    },
+    DisputeCrowdsourcerContribution: {
+      add: processDisputeCrowdsourcerContributionLog,
+      remove: processDisputeCrowdsourcerContributionLogRemoval,
+    },
+    DisputeCrowdsourcerCompleted: {
+      add: processDisputeCrowdsourcerCompletedLog,
+      remove: processDisputeCrowdsourcerCompletedLogRemoval,
+    },
+    TokensMinted: {
+      add: processMintLog,
+      remove: processMintLogRemoval,
+    },
+    TokensTransferred: {
+      add: processTokensTransferredLog,
+      remove: processTokensTransferredLogRemoval,
+    },
     TradingProceedsClaimed: {
       add: processTradingProceedsClaimedLog,
       remove: processTradingProceedsClaimedLogRemoval,
     },
-    DesignatedReportSubmitted: {
-      add: processDesignatedReportSubmittedLog,
-      remove: processDesignatedReportSubmittedLogRemoval,
-    },
-    ReportSubmitted: {
-      add: processReportSubmittedLog,
-      remove: processReportSubmittedLogRemoval,
+    UniverseForked: {
+      add: processUniverseForkedLog,
+      remove: processUniverseForkedLogRemoval,
     },
     WinningTokensRedeemed: {
       add: processWinningTokensRedeemedLog,
       remove: processWinningTokensRedeemedLogRemoval,
-    },
-    ReportsDisputed: {
-      add: processReportsDisputedLog,
-      remove: processReportsDisputedLogRemoval,
-    },
-    MarketFinalized: {
-      add: processMarketFinalizedLog,
-      remove: processMarketFinalizedLogRemoval,
-    },
-    ReportingWindowCreated: {
-      add: processReportingWindowCreatedLog,
-      remove: processReportingWindowCreatedLogRemoval,
-    },
-    UniverseForked: {
-      add: processUniverseForkedLog,
-      remove: processUniverseForkedLogRemoval,
     },
   },
   LegacyReputationToken: {

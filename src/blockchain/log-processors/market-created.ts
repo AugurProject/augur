@@ -53,7 +53,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
           universe:                   onMarketContractData!.universe,
           numOutcomes,
           marketStateID,
-          reportingWindow:            onMarketContractData!.feeWindow, // TODO update db to use "fee window" instead of "reporting window"
+          feeWindow:                  onMarketContractData!.feeWindow,
           endTime:                    parseInt(onMarketContractData!.endTime!, 10),
           designatedReporter:         onMarketContractData!.designatedReporter,
           designatedReportStake:      onUniverseContractData!.designatedReportStake,

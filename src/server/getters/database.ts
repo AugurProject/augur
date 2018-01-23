@@ -1,7 +1,8 @@
 import * as Knex from "knex";
+import * as _ from "lodash";
 import BigNumber from "bignumber.js";
 import { sortDirection } from "../../utils/sort-direction";
-import { MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIConsensusInfo, UIOutcomeInfo, StakeTokensRowWithReportingState, UIStakeTokenInfo } from "../../types";
+import { MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIConsensusInfo, UIOutcomeInfo, DisputeTokensRowWithTokenState, UIDisputeTokenInfo } from "../../types";
 import { convertNumTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 
 export function queryModifier(query: Knex.QueryBuilder, defaultSortBy: string, defaultSortOrder: string, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined): Knex.QueryBuilder {
@@ -23,10 +24,10 @@ export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow): UIO
 
 export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime, outcomesInfo: Array<UIOutcomeInfo>): UIMarketInfo {
   let consensus: UIConsensusInfo|null;
-  if (row.consensusOutcome === null) {
+  if (row.consensusPayoutID === null) {
     consensus = null;
   } else {
-    consensus = { outcomeID: row.consensusOutcome, isIndeterminate: row.isInvalid } as UIConsensusInfo;
+    consensus = { outcomeID: row.consensusPayoutID, isInvalid: row.isInvalid } as UIConsensusInfo;
   }
   const marketInfo: UIMarketInfo = {
     id: row.marketID,
@@ -48,7 +49,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
     tags: [row.tag1, row.tag2],
     volume: row.volume,
     outstandingShares: row.sharesOutstanding,
-    reportingWindow: row.reportingWindow,
+    feeWindow: row.feeWindow,
     endDate: row.endTime,
     finalizationTime: row.finalizationTime,
     reportingState: row.reportingState,
@@ -65,11 +66,11 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
   return marketInfo;
 }
 
-export function reshapeStakeTokensRowToUIStakeTokenInfo(stakeTokenRow: StakeTokensRowWithReportingState): UIStakeTokenInfo {
-  const stakeTokenInfo: UIStakeTokenInfo = Object.assign(stakeTokenRow, {
-      isInvalid: !!stakeTokenRow.isInvalid,
-      claimed: !!stakeTokenRow.claimed,
-      winningToken: (stakeTokenRow.winningToken == null) ? null : !!stakeTokenRow.winningToken,
+export function reshapeDisputeTokensRowToUIDisputeTokenInfo(disputeTokenRow: DisputeTokensRowWithTokenState): UIDisputeTokenInfo {
+  const stakeTokenInfo: UIDisputeTokenInfo = Object.assign(_.omit(disputeTokenRow, ["payoutID", "winning"]) as DisputeTokensRowWithTokenState, {
+      isInvalid: !!disputeTokenRow.isInvalid,
+      claimed: !!disputeTokenRow.claimed,
+      winningToken: (disputeTokenRow.winning == null) ? null : !!disputeTokenRow.winning,
   });
   return stakeTokenInfo;
 }
