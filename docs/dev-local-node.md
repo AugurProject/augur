@@ -65,6 +65,7 @@ We will see ENDPOINT_HTTP and ENDPOINT_WS often it tells augur-node or augur.js 
 Only two things need to be done, update env-dev.json and make sure to yarn link. 
 
     cd augur
+    npm i
     yarn link augur.js;
     yarn build;
   	yarn dev;
@@ -74,6 +75,11 @@ Example of the changed endpoints in the env-dev.json file
 
     "http": "http://127.0.0.1:47624",
     "ws": "ws://127.0.0.1:47625"
+
+## Note (MetaMask)
+If MetaMask browser extension is install, it will need to be configured. Create custom RPC endpoint, same as the "http" url in the env-dev.json file
+
+    http://127.0.0.1:47624
 
 
 ## Helper Scripts
