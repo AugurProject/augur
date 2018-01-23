@@ -35,7 +35,7 @@ export function getReportingHistory(db: Knex, reporter: Address, universe: Addre
     "payouts.payout7",
   ]).from("disputes").where({reporter});
   query.join("crowdsourcers", "disputes.crowdsourcerID", "crowdsourcers.crowdsourcerID");
-  query.join("markets", "markets.marketID", "crowdsourcers.marketID")
+  query.join("markets", "markets.marketID", "crowdsourcers.marketID");
   query.join("payouts", "crowdsourcers.payoutID", "payouts.payoutID");
   query.join("blocks", "blocks.blockNumber", "disputes.blockNumber");
   if (marketID != null) query.where("crowdsourcers.marketID", marketID);

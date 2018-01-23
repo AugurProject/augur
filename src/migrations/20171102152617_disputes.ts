@@ -12,7 +12,6 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.specificType("amountStaked", "NUMERIC").defaultTo(0).notNullable();
       table.integer("redeemed").nullable();
 
-
       table.index(["crowdsourcer"]);
       table.index(["reporter"]);
       table.unique(["transactionHash", "logIndex"]);

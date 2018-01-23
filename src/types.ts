@@ -18,7 +18,7 @@ export enum ReportingState {
   FINALIZED = "FINALIZED",
 }
 
-export enum StakeTokenState {
+export enum DisputeTokenState {
   ALL = "ALL",
   UNCLAIMED = "UNCLAIMED",
   UNFINALIZED = "UNFINALIZED",
@@ -208,7 +208,7 @@ export interface StakeTokensRow extends Payout {
   winningToken: number|null;
 }
 
-export interface StakeTokensRowWithReportingState extends StakeTokensRow {
+export interface DisputeTokensRowWithTokenState extends StakeTokensRow {
   ReportingState: ReportingState;
 }
 
@@ -224,7 +224,7 @@ export interface Payout {
   isInvalid: boolean;
 }
 
-export interface UIStakeTokenInfo extends Payout {
+export interface UIDisputeTokenInfo extends Payout {
   stakeToken: Address;
   marketID: Address;
   amountStaked: number;
@@ -233,8 +233,8 @@ export interface UIStakeTokenInfo extends Payout {
   ReportingState: ReportingState;
 }
 
-export interface UIStakeTokens {
-  [stakeToken: string]: UIStakeTokenInfo;
+export interface UIDisputeTokens {
+  [stakeToken: string]: UIDisputeTokenInfo;
 }
 
 export interface UIMarketCreatorFee {

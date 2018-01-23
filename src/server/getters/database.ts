@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 import BigNumber from "bignumber.js";
 import { sortDirection } from "../../utils/sort-direction";
-import { MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIConsensusInfo, UIOutcomeInfo, StakeTokensRowWithReportingState, UIStakeTokenInfo } from "../../types";
+import { MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIConsensusInfo, UIOutcomeInfo, DisputeTokensRowWithTokenState, UIDisputeTokenInfo } from "../../types";
 import { convertNumTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 
 export function queryModifier(query: Knex.QueryBuilder, defaultSortBy: string, defaultSortOrder: string, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined): Knex.QueryBuilder {
@@ -65,8 +65,8 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
   return marketInfo;
 }
 
-export function reshapeStakeTokensRowToUIStakeTokenInfo(stakeTokenRow: StakeTokensRowWithReportingState): UIStakeTokenInfo {
-  const stakeTokenInfo: UIStakeTokenInfo = Object.assign(stakeTokenRow, {
+export function reshapeDisputeTokensRowToUIDisputeTokenInfo(stakeTokenRow: DisputeTokensRowWithTokenState): UIDisputeTokenInfo {
+  const stakeTokenInfo: UIDisputeTokenInfo = Object.assign(stakeTokenRow, {
       isInvalid: !!stakeTokenRow.isInvalid,
       claimed: !!stakeTokenRow.claimed,
       winningToken: (stakeTokenRow.winningToken == null) ? null : !!stakeTokenRow.winningToken,

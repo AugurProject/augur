@@ -6,7 +6,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.increments("initialReportID");
       table.string("marketID", 42).notNullable();
       table.boolean("isDesignatedReporter").notNullable();
-      
+
       table.integer("payoutID").notNullable();
     });
   });

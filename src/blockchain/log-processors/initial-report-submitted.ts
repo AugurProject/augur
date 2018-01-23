@@ -36,7 +36,7 @@ export function processInitialReportSubmittedLog(db: Knex, augur: Augur, trx: Kn
         payoutID,
       };
       db.transacting(trx).insert(reportToInsert).into("initial_reports").asCallback(callback);
-    } )
+    });
   });
 }
 
