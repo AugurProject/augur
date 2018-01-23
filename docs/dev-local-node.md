@@ -1,18 +1,26 @@
 # Augur | Local Node Configuration
 
-This is for developers already familiar with the code repositories and want run a private local node and do end-to-end testing. It uses a docker container to upload smart contracts, point local augur-node and spin up augur client. The document will be organized into setup per layer, core, middleware and UI. Calls to execute smart contracts will be made through the middleware. 
+This is for developers already familiar with the code repositories and who want to run a private local node and do end-to-end testing.  
+This process uses a docker container to upload the smart contracts, point to the local augur-node and spin up the augur client.  
+The document will be organized into setup per: layer, core, middleware, and UI.  
+Calls to execute smart contracts will be made through the middleware.
 
 ## augur-core
 
-After pulling down all the code. Well spin up a docker container that runs a local geth node. 
+After pulling down all the code we'll spin up a docker container that runs a local geth node.
 
     docker-compose -f support/test/integration/docker-compose.yml up --abort-on-container-exit --build --force-recreate geth-dev-node
 
-Verify the mapped ports, They should be, we are interested in HTTP: 47624 and ws: 47625 (ws isn't critical) 
+Verify the mapped ports.  
+We are interested in:  
+* HTTP: 47624  
+* WS: 47625 (WS isn't critical)
+
 
     f6b4f100be73        augurproject/dev-node-geth:latest   "/start.sh"         5 minutes ago       Up 5 minutes        30303/tcp, 30303-30304/udp, 0.0.0.0:47624->8545/tcp, 0.0.0.0:47625->8546/tcp   integration_geth-dev-node_1
 
-You'll need these environmental variables before uploading the contracts, copy paste them into your command-line (linux or mac):
+You'll need these environmental variables before uploading the contracts.  
+Copy/Paste them into your command-line (linux or mac):
 
     export ETHEREUM_HOST="localhost"
     export ETHEREUM_PORT="47624"
@@ -39,16 +47,16 @@ Now we need to make the reset of the system aware of the new contract address th
 Since we are using local contracts we need to make sure all repositories are looking at the same dependencies, we're going to use yarn link to help us out. The following are examples, we'll execute in each repository section:
 
     -- yarn link examples:
-    in augur.js:> npm i; yarn build; yarn link
-    in augur-node:> yarn link augur.js
-    in augur (ui):> yarn link augur.js
+    inside augur.js:> npm i; yarn build; yarn link
+    inside augur-node:> yarn link augur.js
+    inside augur (ui):> yarn link augur.js
 
 ### augur.js
 
-The helper scripts live in augur.js, both augur-node and augur (ui) repositories rely in augur.js. It needs to be built and link
+The helper scripts live in augur.js, both augur-node and augur (ui) repositories rely on augur.js. It needs to be built and linked.
 
-    npm i; 
-    yarn build; 
+    npm i;
+    yarn build;
     yarn link;
 
 ### augur-node
@@ -62,7 +70,7 @@ We will see ENDPOINT_HTTP and ENDPOINT_WS often it tells augur-node or augur.js 
 
 ### augur (ui)
 
-Only two things need to be done, update env-dev.json and make sure to yarn link. 
+Only two things need to be done, update env-dev.json and make sure to yarn link.
 
     cd augur
     npm i
@@ -94,7 +102,7 @@ Also there are eight user accounts baked into the docker node that have plenty o
 
     default user: 0x1fd9274a2fe0e86f5a7b5bde57b93c8c9b62e21d
     private key: 0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a
-    
+
     ethereum addr: 0xbd355a7e5a7adb23b51f54027e624bfe0e238df6
     private key: 0x48c5da6dff330a9829d843ea90c2629e8134635a294c7e62ad4466eb2ae03712
 
@@ -121,19 +129,19 @@ To allow flexibility, the REP faucet can be run on which ever accounts you want 
 
 
     cd augur.js
-    
+
     ** give default user REP
     ETHEREUM_WS=http://127.0.0.1:47625 ETHEREUM_HTTP=http://127.0.0.1:47624 ETHEREUM_PRIVATE_KEY=0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a node scripts/rep-faucet.js
-    
+
     ** create canned markets
     ETHEREUM_WS=http://127.0.0.1:47625 ETHEREUM_HTTP=http://127.0.0.1:47624 ETHEREUM_PRIVATE_KEY=0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a node scripts/canned-markets/create-markets.js
-    
+
     ** verify end dates for markets
     ETHEREUM_WS=http://127.0.0.1:47625 ETHEREUM_HTTP=http://127.0.0.1:47624 node scripts/helpers/expiring-markets.js
 
 
 
-Here is a misc script to do operations on the local node and to change time. 
+Here is a misc script to do operations on the local node and to change time.
 
     ** change time
     ETHEREUM_WS=http://127.0.0.1:47625 ETHEREUM_HTTP=http://127.0.0.1:47624 ETHEREUM_PRIVATE_KEY=0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a node scripts/helpers/change-time.js <unix timestamp>
@@ -141,7 +149,7 @@ Here is a misc script to do operations on the local node and to change time.
     ** create open order
     ETHEREUM_WS=http://127.0.0.1:47625 ETHEREUM_HTTP=http://127.0.0.1:47624 ETHEREUM_PRIVATE_KEY=0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a OUTCOME_TO_FILL=0 SHARES_TO_FILL=10 node scripts/helpers/create-simple-order.js <market id> <buy | sell> <outcome> <num shares> <price>
 
-    ** for creating a lot of `liquidity` on a market, it will create buy and sell orders for each outcome, starting at market minimum price increasing by 10% until market maximum price. 
+    ** for creating a lot of `liquidity` on a market, it will create buy and sell orders for each outcome, starting at market minimum price increasing by 10% until market maximum price.
     ETHEREUM_WS=http://127.0.0.1:47625 ETHEREUM_HTTP=http://127.0.0.1:47624 ETHEREUM_PRIVATE_KEY=0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a node scripts/helpers/create-spread-orders.js <market id>
 
     ** fill existing order
@@ -153,10 +161,8 @@ Here is a misc script to do operations on the local node and to change time.
     ** do initial reporter
     ETHEREUM_WS=http://127.0.0.1:47625 ETHEREUM_HTTP=http://127.0.0.1:47624 ETHEREUM_PRIVATE_KEY=0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a node scripts/helpers/do-initial-report <market id> <market outcome>
 
-    ** confirm initial report 
+    ** confirm initial report
     ETHEREUM_WS=http://127.0.0.1:47625 ETHEREUM_HTTP=http://127.0.0.1:47624 node scripts/helpers/get-initial-report.js <market id>
-
-
 
 ## Summary
 
