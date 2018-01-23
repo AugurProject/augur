@@ -9,7 +9,6 @@ import getValue from 'utils/get-value'
 const mapStateToProps = state => ({
   marketID: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
   scalarShareDenomination: getScalarShareDenomination(),
-  outcomes,
   positions,
   openOrders,
   isMobile: state.isMobile,
@@ -23,6 +22,7 @@ const mergeProps = (sP, dP, oP) => {
   return {
     ...sP,
     ...oP,
+    outcomes: market.outcomes
     // TODO -- need to rethink best shape for `userOpenOrders`
     // openOrder: getValue(market, 'outcomes')
   }
