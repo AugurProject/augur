@@ -1,7 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { FormattedEventLog, ErrorCallback } from "../../types";
-import { insertPayout } from "./initial-report-submitted";
+import { insertPayout } from "./database";
 import { augurEmitter } from "../../events";
 
 export function processReportSubmittedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
