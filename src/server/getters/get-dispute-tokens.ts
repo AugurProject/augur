@@ -16,7 +16,7 @@ export function getDisputeTokens(db: Knex, universe: Address, account: Address, 
     } else if ( disputeTokenState === DisputeTokenState.UNFINALIZED ) {
       query.whereNot("market_state.reportingState", ReportingState.FINALIZED);
     } else if ( disputeTokenState === DisputeTokenState.UNCLAIMED ) {
-      query.where("payouts.winning", 1).where("reports.claimed", 0);
+      query.where("payouts.winning", 1).where("disputes.claimed", 0);
     } else {
       return callback(new Error("Invalid disputeTokenState"));
     }
