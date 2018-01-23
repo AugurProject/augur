@@ -9,6 +9,7 @@ var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
 /**
  * @param {Object} p Parameters object.
  * @param {string} p.markets Array of market addresses for which to claim proceeds.
+ * @param {string} p._shareHolder User address that holds the shares.
  * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
  * @param {function} p.onSent Called if/when each transaction is broadcast to the network.
  * @param {function} p.onSuccess Called if/when all transactions are sealed and confirmed.
