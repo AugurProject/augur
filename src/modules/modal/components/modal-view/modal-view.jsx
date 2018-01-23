@@ -1,13 +1,16 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+// TODO -- generalize modals where possible
+
 import ModalLedger from 'modules/modal/components/modal-ledger/modal-ledger'
 import ModalUport from 'modules/modal/components/modal-uport/modal-uport'
+import ModalNetworkMismatch from 'modules/modal/components/modal-network-mismatch/modal-network-mismatch'
 
 import debounce from 'utils/debounce'
 import getValue from 'utils/get-value'
 
-import { MODAL_LEDGER, MODAL_UPORT } from 'modules/modal/constants/modal-types'
+import { MODAL_LEDGER, MODAL_UPORT, MODAL_NETWORK_MISMATCH } from 'modules/modal/constants/modal-types'
 
 import Styles from 'modules/modal/components/modal-view/modal-view.styles'
 
@@ -63,6 +66,9 @@ export default class ModalView extends Component {
               modalWidth={s.modalWidth}
               modalHeight={s.modalHeight}
             />
+          }
+          {p.modal.type === MODAL_NETWORK_MISMATCH &&
+            <ModalNetworkMismatch {...p.modal} />
           }
           {p.modal.canClose &&
             <button
