@@ -5,7 +5,6 @@ import { sortDirection } from "../../utils/sort-direction";
 import { MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIConsensusInfo, UIOutcomeInfo, DisputeTokensRowWithTokenState, UIDisputeTokenInfo } from "../../types";
 import { convertNumTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 
-
 export function queryModifier(query: Knex.QueryBuilder, defaultSortBy: string, defaultSortOrder: string, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined): Knex.QueryBuilder {
   query = query.orderBy(sortBy || defaultSortBy, sortDirection(isSortDescending, defaultSortOrder));
   if (limit != null) query = query.limit(limit);
@@ -68,7 +67,6 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
 }
 
 export function reshapeDisputeTokensRowToUIDisputeTokenInfo(disputeTokenRow: DisputeTokensRowWithTokenState): UIDisputeTokenInfo {
-
   const stakeTokenInfo: UIDisputeTokenInfo = Object.assign(_.omit(disputeTokenRow, ["payoutID", "winning"]) as DisputeTokensRowWithTokenState, {
       isInvalid: !!disputeTokenRow.isInvalid,
       claimed: !!disputeTokenRow.claimed,
