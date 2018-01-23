@@ -76,10 +76,14 @@ Example of the changed endpoints in the env-dev.json file
     "http": "http://127.0.0.1:47624",
     "ws": "ws://127.0.0.1:47625"
 
-## Note (MetaMask)
+## Login with MetaMask
 If MetaMask browser extension is install, it will need to be configured. Create custom RPC endpoint, same as the "http" url in the env-dev.json file
 
     http://127.0.0.1:47624
+
+Use MetaMask to login as different users, use the `Import Account` to paste in the private key of one of the existing accounts. This will auto login and you should see lots and lots of ETH.
+
+Importing multiple accounts allows you to flip from one account to another, but you need to switch to the new user and sign out of MetaMask then back in and hard refresh augur UI.
 
 
 ## Helper Scripts
