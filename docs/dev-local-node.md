@@ -29,11 +29,9 @@ Upload the contracts to the local docker node, it relies on the above environmen
 
 
 Now we need to make the reset of the system aware of the new contract address that were uploaded. Copy from and to, make sure to replace existing 12346 network:
-### Note: 
-augur-contracts repo is going to be merged into augur.js (TODO: update when that occurs, should be soon!)
 
     augur-core/output/contracts/addresses.json
-    augur-contracts/addresses.json
+    augur.js/src/contracts/addresses.json
 
 
 ## augur middleware
@@ -41,25 +39,16 @@ augur-contracts repo is going to be merged into augur.js (TODO: update when that
 Since we are using local contracts we need to make sure all repositories are looking at the same dependencies, we're going to use yarn link to help us out. The following are examples, we'll execute in each repository section:
 
     -- yarn link examples:
-    in augur-contracts:> yarn link
-    in augur.js:> npm i; yarn build; yarn link augur-contracts
+    in augur.js:> npm i; yarn build; yarn link
     in augur.js:> yarn link
     in augur-node:> yarn link augur.js
     in augur (ui):> yarn link augur.js
 
-### augur-contracts
-
-Soon to be removed repository, this repository needs to be linked to augur.js
-
-    cd augur-contracts
-    yarn link
-
 ### augur.js
 
-The helper scripts live in augur.js, both augur-node and augur (ui) repositories rely in augur.js. It needs to be built and link up augur-contracts (soon to be removed)  
+The helper scripts live in augur.js, both augur-node and augur (ui) repositories rely in augur.js. It needs to be built and link
 
     npm i; 
-    yarn link augur-contracts; 
     yarn build; 
     yarn link;
 
