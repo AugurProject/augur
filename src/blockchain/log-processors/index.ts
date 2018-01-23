@@ -5,7 +5,6 @@ import { processOrderCanceledLog, processOrderCanceledLogRemoval } from "./order
 import { processOrderCreatedLog, processOrderCreatedLogRemoval } from "./order-created";
 import { processOrderFilledLog, processOrderFilledLogRemoval } from "./order-filled";
 import { processTradingProceedsClaimedLog, processTradingProceedsClaimedLogRemoval } from "./trading-proceeds-claimed";
-import { processReportSubmittedLog, processReportSubmittedLogRemoval } from "./report-submitted";
 import { processWinningTokensRedeemedLog, processWinningTokensRedeemedLogRemoval } from "./winning-tokens-redeemed";
 import { processDisputeCrowdsourcerCreatedLog, processDisputeCrowdsourcerCreatedLogRemoval } from "./crowdsourcer";
 import { processDisputeCrowdsourcerContributionLog, processDisputeCrowdsourcerContributionLogRemoval } from "./crowdsourcer";

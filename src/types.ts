@@ -392,12 +392,12 @@ export interface JoinedReportsMarketsRow extends Payout {
   transactionHash: Bytes32;
   blockHash: Bytes32;
   marketID: Address;
-  marketReportingState: string;
   universe: Address;
-  reportingWindow: Address;
-  stakeToken: Address;
+  feeWindow: Address;
+  crowdsourcerID: Address;
   marketType: string;
   amountStaked: string|number;
+
 }
 
 export interface UIReport {
@@ -407,13 +407,12 @@ export interface UIReport {
   transactionHash: Bytes32;
   blockHash: Bytes32;
   marketID: Address;
-  marketReportingState: string;
-  reportingWindow: Address;
+  feeWindow: Address;
   payoutNumerators: Array<string|number|null>;
   amountStaked: string|number;
-  stakeToken: Address;
+  crowdsourcerID: Address;
   isCategorical: boolean;
   isScalar: boolean;
-  isIndeterminate: boolean;
+  isInvalid: boolean;
   isSubmitted: boolean;
 }

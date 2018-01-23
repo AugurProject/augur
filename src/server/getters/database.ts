@@ -23,7 +23,6 @@ export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow): UIO
 
 export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime, outcomesInfo: Array<UIOutcomeInfo>): UIMarketInfo {
   let consensus: UIConsensusInfo|null;
-  console.log(row);
   if (row.consensusPayoutID === null) {
     consensus = null;
   } else {

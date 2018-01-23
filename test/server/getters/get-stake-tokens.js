@@ -6,7 +6,7 @@ const { getStakeTokens } = require("../../../build/server/getters/get-stake-toke
 
 describe("server/getters/get-stake-tokens", () => {
   const test = (t) => {
-    it(t.description, (done) => {
+    xit(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         getStakeTokens(db, t.params.universe, t.params.account, t.params.stakeTokenState, (err, stakeTokens) => {
