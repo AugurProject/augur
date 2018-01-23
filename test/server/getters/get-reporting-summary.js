@@ -19,7 +19,7 @@ describe("server/getters/get-reporting-summary", () => {
   test({
     description: "get valid reporting window",
     params: {
-      reportingWindow: "0x1000000000000000000000000000000000000000",
+      feeWindow: "0x1000000000000000000000000000000000000000",
     },
     assertions: (err, reportingSummary) => {
       assert.isNull(err);
@@ -34,7 +34,7 @@ describe("server/getters/get-reporting-summary", () => {
   test({
     description: "non-existent reporting window",
     params: {
-      reportingWindow: "0xfffffffffffff000000000000000000000000000",
+      feeWindow: "0xfffffffffffff000000000000000000000000000",
     },
     assertions: (err, reportingSummary) => {
       assert.isNull(err);
