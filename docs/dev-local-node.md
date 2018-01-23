@@ -40,7 +40,6 @@ Since we are using local contracts we need to make sure all repositories are loo
 
     -- yarn link examples:
     in augur.js:> npm i; yarn build; yarn link
-    in augur.js:> yarn link
     in augur-node:> yarn link augur.js
     in augur (ui):> yarn link augur.js
 
