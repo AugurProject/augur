@@ -6,27 +6,23 @@ var Augur = require("../../src");
 var chalk = require("chalk");
 var connectionEndpoints = require("../connection-endpoints");
 var getPrivateKey = require("../canned-markets/lib/get-private-key");
-var encodeTag = require("../../src/format/tag/encode-tag");
+var getTime = require("./get-timestamp");
 
-var keystoreFilePath = process.argv[2];
-var time = process.argv[3];
+var time = process.argv[2];
 
 var augur = new Augur();
 
-getPrivateKey(keystoreFilePath, function (err, auth) {
+getPrivateKey(null, function (err, auth) {
   if (err) return console.error("getPrivateKey failed:", err);
   augur.connect(connectionEndpoints, function (err) {
     if (err) return console.error(err);
-    var timestamp = augur.api.Controller.getTimestamp();
-    console.log(chalk.yellow.dim("current timestamp: "), chalk.yellow(timestamp));
     console.log(chalk.yellow.dim("setting to: "), chalk.yellow(time));
-    var controller = augur.contracts.addresses[augur.rpc.getNetworkID()].Controller;
 
-    augur.api.Controller.lookup({ meta: auth, tx: {to: controller}, _key: encodeTag("Time")}, function (err, timeAddress) {
-
+    getTime(auth, function (result) {
+      console.log(chalk.yellow.dim("current timestamp: "), chalk.yellow(result.timestamp));
       var timePayload = {
         meta: auth,
-        tx: { to: timeAddress  },
+        tx: { to: result.timeAddress  },
         _timestamp: parseInt(time, 10),
         onSent: function (result) {
           console.log(chalk.yellow.dim("Sent:"), chalk.yellow(JSON.stringify(result)));
