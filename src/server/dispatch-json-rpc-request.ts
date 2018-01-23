@@ -13,9 +13,9 @@ import { getReportingSummary } from "./getters/get-reporting-summary";
 import { getUserTradingHistory } from "./getters/get-user-trading-history";
 import { getMarketPriceHistory } from "./getters/get-market-price-history";
 import { getUserTradingPositions } from "./getters/get-user-trading-positions";
-import { getReportingWindowsWithUnclaimedFees } from "./getters/get-reporting-windows-with-unclaimed-fees";
+import { getFeeWindowsWithUnclaimedFees } from "./getters/get-fee-windows-with-unclaimed-fees";
 import { getUnclaimedMarketCreatorFees } from "./getters/get-unclaimed-market-creator-fees";
-import { getStakeTokens } from "./getters/get-stake-tokens";
+import { getDisputeTokens } from "./getters/get-dispute-tokens";
 import { getMarkets } from "./getters/get-markets";
 import { getMarketsClosingInDateRange } from "./getters/get-markets-closing-in-date-range";
 import { getMarketsInfo } from "./getters/get-markets-info";
@@ -50,12 +50,12 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return getMarketPriceHistory(db, request.params.marketID, callback);
     case "getUserTradingPositions":
       return getUserTradingPositions(db, request.params.universe, request.params.account, request.params.marketID, request.params.outcome, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
-    case "getReportingWindowsWithUnclaimedFees":
-      return getReportingWindowsWithUnclaimedFees(db, request.params.universe, request.params.account, callback);
+    case "getFeeWindowsWithUnclaimedFees":
+      return getFeeWindowsWithUnclaimedFees(db, request.params.universe, request.params.account, callback);
     case "getUnclaimedMarketCreatorFees":
       return getUnclaimedMarketCreatorFees(db, request.params.marketIDs, callback);
     case "getStakeTokens":
-      return getStakeTokens(db, request.params.universe, request.params.account, request.params.stakeTokenState, callback);
+      return getDisputeTokens(db, request.params.universe, request.params.account, request.params.stakeTokenState, callback);
     case "getMarketsClosingInDateRange":
       return getMarketsClosingInDateRange(db, request.params.earliestClosingTime, request.params.latestClosingTime, request.params.universe, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarkets":

@@ -9,7 +9,7 @@ describe("server/getters/get-reporting-summary", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getReportingSummary(db, t.params.reportingWindow, (err, reportingSummary) => {
+        getReportingSummary(db, t.params.feeWindow, (err, reportingSummary) => {
           t.assertions(err, reportingSummary);
           done();
         });

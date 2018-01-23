@@ -2,14 +2,14 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getStakeTokens } = require("../../../build/server/getters/get-stake-tokens");
+const { getDisputeTokens } = require("../../../build/server/getters/get-dispute-tokens");
 
-describe("server/getters/get-stake-tokens", () => {
+describe("server/getters/get-dispute-tokens", () => {
   const test = (t) => {
-    xit(t.description, (done) => {
+    it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getStakeTokens(db, t.params.universe, t.params.account, t.params.stakeTokenState, (err, stakeTokens) => {
+        getDisputeTokens(db, t.params.universe, t.params.account, t.params.stakeTokenState, (err, stakeTokens) => {
           t.assertions(err, stakeTokens);
           done();
         });
@@ -27,7 +27,7 @@ describe("server/getters/get-stake-tokens", () => {
       assert.isNull(err);
       assert.deepEqual(stakeTokens, {
         "0x0000000000000000001000000000000000000001": {
-          stakeToken: "0x0000000000000000001000000000000000000001",
+          disputeToken: "0x0000000000000000001000000000000000000001",
           marketID: "0x0000000000000000000000000000000000000011",
           payout0: 0,
           payout1: 2,
@@ -57,7 +57,7 @@ describe("server/getters/get-stake-tokens", () => {
       assert.isNull(err);
       assert.deepEqual(stakeTokens, {
         "0x0000000000000000001000000000000000000003": {
-          stakeToken: "0x0000000000000000001000000000000000000003",
+          disputeToken: "0x0000000000000000001000000000000000000003",
           marketID: "0x0000000000000000000000000000000000000019",
           payout0: 1,
           payout1: 1,
@@ -87,7 +87,7 @@ describe("server/getters/get-stake-tokens", () => {
       assert.isNull(err);
       assert.deepEqual(stakeTokens, {
         "0x0000000000000000001000000000000000000003": {
-          stakeToken: "0x0000000000000000001000000000000000000003",
+          disputeToken: "0x0000000000000000001000000000000000000003",
           marketID: "0x0000000000000000000000000000000000000019",
           payout0: 1,
           payout1: 1,
@@ -128,7 +128,7 @@ describe("server/getters/get-stake-tokens", () => {
       assert.isNull(err);
       assert.deepEqual(stakeTokens, {
         "0x0000000000000000001000000000000000000001": {
-          stakeToken: "0x0000000000000000001000000000000000000001",
+          disputeToken: "0x0000000000000000001000000000000000000001",
           marketID: "0x0000000000000000000000000000000000000011",
           payout0: 0,
           payout1: 2,
@@ -145,7 +145,7 @@ describe("server/getters/get-stake-tokens", () => {
           reportingState: "FIRST_REPORTING",
         },
         "0x0000000000000000001000000000000000000003": {
-          stakeToken: "0x0000000000000000001000000000000000000003",
+          disputeToken: "0x0000000000000000001000000000000000000003",
           marketID: "0x0000000000000000000000000000000000000019",
           payout0: 1,
           payout1: 1,

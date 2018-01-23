@@ -72,7 +72,7 @@ export interface MarketCreatedLogExtraInfo {
 
 export interface MarketCreatedOnContractInfo {
   marketCreatorFeeRate: string;
-  reportingWindow: Address;
+  feeWindow: Address;
   endTime: string;
   designatedReporter: Address;
   designatedReportStake: string;
@@ -152,7 +152,7 @@ export interface MarketsRow {
   volume: string|number;
   sharesOutstanding: string|number;
   marketStateID: number;
-  reportingWindow: Address;
+  feeWindow: Address;
   endTime: number;
   finalizationTime?: number|null;
   reportingState?: ReportingState|null;
@@ -200,15 +200,15 @@ export interface BlocksRow {
   timestamp: number;
 }
 
-export interface StakeTokensRow extends Payout {
-  stakeToken: Address;
+export interface DisputeTokensRow extends Payout {
+  disputeToken: Address;
   marketID: Address;
   amountStaked: number;
   claimed: number;
-  winningToken: number|null;
+  winning: number|null;
 }
 
-export interface DisputeTokensRowWithTokenState extends StakeTokensRow {
+export interface DisputeTokensRowWithTokenState extends DisputeTokensRow {
   ReportingState: ReportingState;
 }
 
@@ -225,7 +225,7 @@ export interface Payout {
 }
 
 export interface UIDisputeTokenInfo extends Payout {
-  stakeToken: Address;
+  disputeToken: Address;
   marketID: Address;
   amountStaked: number;
   claimed: boolean;
@@ -274,7 +274,7 @@ export interface UIMarketInfo {
   tags: Array<string|null>;
   volume: string|number;
   outstandingShares: string|number;
-  reportingWindow: Address;
+  feeWindow: Address;
   endDate: number;
   finalizationTime?: number|null;
   reportingState?: ReportingState|null;

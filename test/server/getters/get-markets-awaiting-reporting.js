@@ -9,7 +9,7 @@ describe("server/getters/get-markets-awaiting-reporting", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getMarketsAwaitingReporting(db, t.params.universe, t.params.reportingWindow, t.params.reportingState, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsAwaitingReporting) => {
+        getMarketsAwaitingReporting(db, t.params.universe, t.params.feeWindow, t.params.reportingState, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsAwaitingReporting) => {
           t.assertions(err, marketsAwaitingReporting);
           done();
         });
@@ -17,9 +17,9 @@ describe("server/getters/get-markets-awaiting-reporting", () => {
     });
   };
   test({
-    description: "get markets awaiting unknown reportingWindow",
+    description: "get markets awaiting unknown feeWindow",
     params: {
-      reportingWindow: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
+      feeWindow: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
     },
     assertions: (err, marketsAwaitingReporting) => {
       assert.isNull(err);

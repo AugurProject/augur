@@ -1,8 +1,10 @@
 import * as Knex from "knex";
+import * as _ from "lodash";
 import BigNumber from "bignumber.js";
 import { sortDirection } from "../../utils/sort-direction";
 import { MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIConsensusInfo, UIOutcomeInfo, DisputeTokensRowWithTokenState, UIDisputeTokenInfo } from "../../types";
 import { convertNumTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
+
 
 export function queryModifier(query: Knex.QueryBuilder, defaultSortBy: string, defaultSortOrder: string, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined): Knex.QueryBuilder {
   query = query.orderBy(sortBy || defaultSortBy, sortDirection(isSortDescending, defaultSortOrder));
@@ -48,7 +50,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
     tags: [row.tag1, row.tag2],
     volume: row.volume,
     outstandingShares: row.sharesOutstanding,
-    reportingWindow: row.reportingWindow,
+    feeWindow: row.feeWindow,
     endDate: row.endTime,
     finalizationTime: row.finalizationTime,
     reportingState: row.reportingState,
@@ -65,11 +67,12 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
   return marketInfo;
 }
 
-export function reshapeDisputeTokensRowToUIDisputeTokenInfo(stakeTokenRow: DisputeTokensRowWithTokenState): UIDisputeTokenInfo {
-  const stakeTokenInfo: UIDisputeTokenInfo = Object.assign(stakeTokenRow, {
-      isInvalid: !!stakeTokenRow.isInvalid,
-      claimed: !!stakeTokenRow.claimed,
-      winningToken: (stakeTokenRow.winningToken == null) ? null : !!stakeTokenRow.winningToken,
+export function reshapeDisputeTokensRowToUIDisputeTokenInfo(disputeTokenRow: DisputeTokensRowWithTokenState): UIDisputeTokenInfo {
+
+  const stakeTokenInfo: UIDisputeTokenInfo = Object.assign(_.omit(disputeTokenRow, ["payoutID", "winning"]) as DisputeTokensRowWithTokenState, {
+      isInvalid: !!disputeTokenRow.isInvalid,
+      claimed: !!disputeTokenRow.claimed,
+      winningToken: (disputeTokenRow.winning == null) ? null : !!disputeTokenRow.winning,
   });
   return stakeTokenInfo;
 }
