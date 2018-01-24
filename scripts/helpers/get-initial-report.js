@@ -16,9 +16,12 @@ augur.connect(connectionEndpoints, function (err) {
   augur.api.Market.getInitialReporter({ tx: { to: marketID  }}, function (err, contractID) {
     if (err) console.log(chalk.red.dim("Error:"), chalk.green(JSON.stringify(err)));
     console.log(chalk.green.dim("Initial Reporter Contract address:"), chalk.green(JSON.stringify(contractID)));
-
+    augur.api.InitialReporter.getReportTimestamp({ tx: { to: contractID  }}, function (err, value) {
+      if (err) console.log(chalk.red.dim("Error:"), chalk.red(JSON.stringify(err)));
+      console.log(chalk.green.dim("Report timestamp:"), chalk.green(JSON.stringify(value)));
+    });
     augur.api.InitialReporter.getOwner({ tx: { to: contractID  }}, function (err, userAddress) {
-      if (err) console.log(chalk.red.dim("Error:"), chalk.green(JSON.stringify(err)));
+      if (err) console.log(chalk.red.dim("Error:"), chalk.red(JSON.stringify(err)));
       console.log(chalk.green.dim("User address:"), chalk.green(JSON.stringify(userAddress)));
       process.exit(0);
     });
