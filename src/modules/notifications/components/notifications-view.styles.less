@@ -2,18 +2,18 @@
 
 .NotificationsView {
   background: @color-lightergray;
-  box-shadow: 0.1rem 0.2rem 0.5rem @color-almostblack;
+  box-shadow: @box-shadow-notifications;
   color: @color-text-dark;
-  display: block;
+  display: flex;
   height: 30.25rem;
   max-height: 80%;
   padding: 0.25em;
   position: absolute;
-  right: 0.25rem;
+  right: 1.8rem;
   text-align: left;
   top: 3rem;
-  width: 20em;
-  z-index: 1000;
+  width: 22.75rem;
+  z-index: @mask-above;
 }
 
 .NotificationsView::after {
@@ -39,11 +39,18 @@
 .Notification__close {
   cursor: pointer;
   display: none;
-  width: @font-size-rather-large;
+  height: @font-size-normal;
+  left: @font-size-normal;
+  position: absolute;
+  top: @font-size-normal;
+  width: @font-size-normal;
 }
 
 .NullStateMessage {
-  color: @color-text-dark;
+  align-self: center;
+  color: @color-lightgray;
+  font-size: 1rem;
+  font-weight: 400;
   text-align: center;
   width: 100%;
 }
@@ -52,7 +59,6 @@
   .NotificationsView {
     background: @color-lightergray;
     bottom: 0;
-    box-shadow: 0.1rem 0.2rem 0.5rem @color-almostblack;
     color: @color-text-dark;
     display: flex;
     flex-flow: column nowrap;
@@ -65,7 +71,7 @@
     text-align: left;
     top: 0;
     width: 100%;
-    z-index: 1000;
+    z-index: @mask-above;
   }
 
   .NotificationsView::after {
@@ -83,5 +89,9 @@
 
   .Notification__close {
     display: block;
+  }
+
+  .NullStateMessage {
+    margin-top: 0.5rem;
   }
 }
