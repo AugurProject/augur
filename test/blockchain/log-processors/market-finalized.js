@@ -2,7 +2,6 @@
 
 const Augur = require("augur.js");
 const assert = require("chai").assert;
-const { parallel } = require("async");
 const setupTestDb = require("../../test.database");
 const { processMarketFinalizedLog, processMarketFinalizedLogRemoval } = require("../../../build/blockchain/log-processors/market-finalized");
 const { getMarketsWithReportingState } = require("../../../build/server/getters/database");
@@ -41,7 +40,7 @@ describe("blockchain/log-processors/market-finalized", () => {
         logIndex: 0,
       },
       augur: {
-        constants: new Augur().constants,
+        constants: constants,
       },
     },
     assertions: {
@@ -59,6 +58,6 @@ describe("blockchain/log-processors/market-finalized", () => {
           reportingState: "AWAITING_FINALIZATION",
         });
       },
-    }
+    },
   });
 });
