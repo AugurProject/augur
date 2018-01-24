@@ -11,7 +11,7 @@ export const connect = (env, callback = logError) => {
   augur.connect(connectOptions, (err, connectionInfo) => {
     if (err) return callback(err)
     console.log('connected:', connectionInfo)
-    callback(null, connectionInfo.ethereumNode)
+    callback(null, connectionInfo)
   })
 }
 
