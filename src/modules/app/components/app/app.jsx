@@ -369,7 +369,7 @@ export default class AppView extends Component {
       // ensure origami fold-out moves perfectly with submenu
       origamiScalar = Math.max(0, (subMenu.scalar + mainMenu.scalar) - 1)
     }
-    // console.log('rendering app', p)
+
     return (
       <main>
         <Helmet
