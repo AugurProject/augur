@@ -5,13 +5,18 @@ exports.up = async (knex: Knex): Promise<any> => {
     return knex.schema.createTable("payouts", (table: Knex.CreateTableBuilder): void => {
       table.increments("payoutID");
       table.string("marketID", 42).notNullable();
+
+      const uniqueIndex = ["marketID", "isInvalid"];
       for (let i: number = 0; i <= 7; i++ ) {
-        table.specificType(`payout${i}`, "NUMERIC").nullable();
+        const column = `payout${i}`;
+        table.specificType(column, "NUMERIC").nullable();
+        uniqueIndex.push(column);
       }
       table.integer("isInvalid");
       table.integer("winning").nullable();
 
       table.index(["marketID"]);
+      table.unique(uniqueIndex);
     });
   });
 };
