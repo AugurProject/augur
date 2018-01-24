@@ -27,7 +27,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
               assert.isNull(err);
               getter(trx, t.params, (err, records) => {
                 assert.isNull(err);
-                checker(err,records);
+                checker(err, records);
                 callback();
               });
             });
