@@ -16,6 +16,7 @@ const claimTradingProceeds = (marketIds, callback = logError) => (dispatch, getS
     augur.trading.claimMarketsTradingProceeds({
       meta: loginAccount.meta,
       markets,
+      _shareHolder: loginAccount.address,
       onSent: noop,
       onSuccess: (claimedMarkets) => {
         dispatch(updateAssets())
