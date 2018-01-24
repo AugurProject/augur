@@ -210,7 +210,7 @@ export function listenToUpdates(history) {
 
       const cb = (err, connection) => {
         // both args should be undefined if we are connected.
-        if (!err && !connection) return;
+        if (!err && !connection) return
         if (err || !connection.augurNode || !connection.ethereumNode) {
           debounceCall(cb)
         }
