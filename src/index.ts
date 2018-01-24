@@ -15,6 +15,7 @@ const {augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers } = require("../co
 
 let db: Knex;
 if (process.env.DATABASE_URL) {
+  // Be careful about non-serializable transactions. We expect database writes to be processed from the blockchain, serially, in block order.
   db = Knex({
     client: "pg",
     connection: process.env.DATABASE_URL,
