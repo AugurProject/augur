@@ -15,34 +15,28 @@ const getDisputesFromCrowdsourcer = (db, params, callback) => {
   db("disputes").where({crowdsourcerID: params.log.disputeCrowdsourcer}).asCallback(callback);
 };
 
+
 describe("blockchain/log-processors/crowdsourcers", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processDisputeCrowdsourcerCreatedLog(db, t.params.augur, trx, t.params.log, (err) => {
-            assert.isNull(err);
-            getMarketFromCrowdsourcer(trx, t.params, (err, records) => {
+          function verify(processor, getter, checker, callback) {
+            processor(db, t.params.augur, trx, t.params.log, (err) => {
               assert.isNull(err);
-              t.assertions.onCreated(err, records);
-              processDisputeCrowdsourcerContributionLog(db, t.params.augur, trx, t.params.log, (err) => {
+              getter(trx, t.params, (err, records) => {
                 assert.isNull(err);
-                getDisputesFromCrowdsourcer(trx, t.params, (err, records) => {
-                  t.assertions.onContributed(err, records);
-                  processDisputeCrowdsourcerContributionLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
-                    assert.isNull(err);
-                    getDisputesFromCrowdsourcer(trx, t.params, (err, records) => {
-                      t.assertions.onContributedRemoved(err, records);
-                      processDisputeCrowdsourcerCreatedLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
-                        assert.isNull(err);
-                        getMarketFromCrowdsourcer(trx, t.params, (err, records) => {
-                          t.assertions.onCreatedRemoved(err, records);
-                          done();
-                        });
-                      });
-                    });
-                  });
+                checker(err,records);
+                callback();
+              });
+            });
+          }
+          verify(processDisputeCrowdsourcerCreatedLog, getMarketFromCrowdsourcer, t.assertions.onCreated, () => {
+            verify(processDisputeCrowdsourcerContributionLog, getDisputesFromCrowdsourcer, t.assertions.onContributed, () => {
+              verify(processDisputeCrowdsourcerContributionLogRemoval, getDisputesFromCrowdsourcer, t.assertions.onContributedRemoved, () => {
+                verify(processDisputeCrowdsourcerCreatedLogRemoval, getMarketFromCrowdsourcer, t.assertions.onCreatedRemoved, () => {
+                  done();
                 });
               });
             });
@@ -59,6 +53,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         market: "0x0000000000000000000000000000000000000001",
         disputeCrowdsourcer: "0x0000000000000000002000000000000000000001",
         reporter: "0x0000000000000000000000000000000000000b0b",
+        size: 20000,
         amountStaked: 19381,
         payoutNumerators: [0, 1],
         invalid: false,
