@@ -3,12 +3,12 @@
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { processDisputeCrowdsourcerCreatedLog, processDisputeCrowdsourcerCreatedLogRemoval,
-  processDisputeCrowdsourcerContributionLog, processDisputeCrowdsourcerContributionLogRemoval }
+  processDisputeCrowdsourcerContributionLog, processDisputeCrowdsourcerContributionLogRemoval,
+  processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompletedLogRemoval }
   = require("../../../build/blockchain/log-processors/crowdsourcer");
-// processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompletedLogRemoval
 
-const getMarketFromCrowdsourcer = (db, params, callback) => {
-  db("crowdsourcers").first(["marketID"]).where({crowdsourcerID: params.log.disputeCrowdsourcer}).asCallback(callback);
+const getCrowdsourcer = (db, params, callback) => {
+  db("crowdsourcers").first(["marketID", "completed"]).where({crowdsourcerID: params.log.disputeCrowdsourcer}).asCallback(callback);
 };
 
 const getDisputesFromCrowdsourcer = (db, params, callback) => {
@@ -32,11 +32,15 @@ describe("blockchain/log-processors/crowdsourcers", () => {
               });
             });
           }
-          verify(processDisputeCrowdsourcerCreatedLog, getMarketFromCrowdsourcer, t.assertions.onCreated, () => {
+          verify(processDisputeCrowdsourcerCreatedLog, getCrowdsourcer, t.assertions.onCreated, () => {
             verify(processDisputeCrowdsourcerContributionLog, getDisputesFromCrowdsourcer, t.assertions.onContributed, () => {
-              verify(processDisputeCrowdsourcerContributionLogRemoval, getDisputesFromCrowdsourcer, t.assertions.onContributedRemoved, () => {
-                verify(processDisputeCrowdsourcerCreatedLogRemoval, getMarketFromCrowdsourcer, t.assertions.onCreatedRemoved, () => {
-                  done();
+              verify(processDisputeCrowdsourcerCompletedLog, getCrowdsourcer, t.assertions.onCompleted, () => {
+                verify(processDisputeCrowdsourcerCompletedLogRemoval, getCrowdsourcer, t.assertions.onCompletedRemoved, () => {
+                  verify(processDisputeCrowdsourcerContributionLogRemoval, getDisputesFromCrowdsourcer, t.assertions.onContributedRemoved, () => {
+                    verify(processDisputeCrowdsourcerCreatedLogRemoval, getCrowdsourcer, t.assertions.onCreatedRemoved, () => {
+                      done();
+                    });
+                  });
                 });
               });
             });
@@ -67,6 +71,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         assert.isNull(err);
         assert.deepEqual(records, {
           marketID: "0x0000000000000000000000000000000000000001",
+          completed: null,
         });
       },
       onCreatedRemoved: (err, records) => {
@@ -89,6 +94,20 @@ describe("blockchain/log-processors/crowdsourcers", () => {
       onContributedRemoved: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, []);
+      },
+      onCompleted: (err, records) => {
+        assert.isNull(err);
+        assert.deepEqual(records, {
+          marketID: "0x0000000000000000000000000000000000000001",
+          completed: 1,
+        });
+      },
+      onCompletedRemoved: (err, records) => {
+        assert.isNull(err);
+        assert.deepEqual(records, {
+          marketID: "0x0000000000000000000000000000000000000001",
+          completed: 0,
+        });
       },
     },
   });

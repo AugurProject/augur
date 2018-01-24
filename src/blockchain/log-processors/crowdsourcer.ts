@@ -12,6 +12,7 @@ export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, trx
       logIndex: log.logIndex,
       crowdsourcerID: log.disputeCrowdsourcer,
       marketID: log.market,
+      size: log.size,
       payoutID,
     };
     db.transacting(trx).insert(crowdsourcerToInsert).into("crowdsourcers").returning("crowdsourcerID").asCallback(callback);
@@ -44,14 +45,11 @@ export function processDisputeCrowdsourcerContributionLogRemoval(db: Knex, augur
 
 // event DisputeCrowdsourcerCompleted(address indexed universe, address indexed market, address disputeCrowdsourcer);
 export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  console.log("TODO: DisputeCrowdsourcerCompleted");
-  console.log(log);
-  callback(null);
+  db("crowdsourcers").transacting(trx).update({completed: 1}).where({crowdsourcerID: log.disputeCrowdsourcer}).asCallback(callback);
+  augurEmitter.emit("DisputeCrowdsourcerCompleted", log);
 }
 
 export function processDisputeCrowdsourcerCompletedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  console.log("TODO: DisputeCrowdsourcerCompleted removal");
-  console.log(log);
+  db("crowdsourcers").transacting(trx).update({completed: 0}).where({crowdsourcerID: log.disputeCrowdsourcer}).asCallback(callback);
   augurEmitter.emit("DisputeCrowdsourcerCompleted", log);
-  callback(null);
 }
