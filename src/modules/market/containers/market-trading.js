@@ -28,39 +28,6 @@ const MarketTradingContainer = withRouter(connect(mapStateToProps, mapDispatchTo
 
 export default MarketTradingContainer
 
-// const market = {
-//   marketType: 'categorical',
-//   tradeSummary: {
-//     hasUserEnoughFunds: true,
-//   },
-//   submitTrade: () => console.log('submit trade'),
-// }
-
-// const selectedOutcome = {
-//   id: '1',
-//   name: 'Example Name',
-//   lastPrice: {
-//     formatted: '0.3872',
-//   },
-//   trade: {
-//     potentialEthProfit: {
-//       formatted: '+7.2477',
-//     },
-//     potentialEthLoss: {
-//       formatted: '-5.0458',
-//     },
-//     potentialLossPercent: {
-//       formatted: '+150',
-//     },
-//     potentialProfitPercent: {
-//       formatted: '-150',
-//     },
-//     totalCost: {
-//       formatted: '4.574',
-//     },
-//   }
-// }
-
 const outcomes = [
   {
     name: '1. HARTNELL (12)',

@@ -83,6 +83,9 @@ class MarketTradingWrapper extends Component {
 
   validateForm(property, rawValue) { // needs actual validation
     let value = rawValue
+    // TODO --
+    //    eth amount (buy/sell side max/min)
+    //    share presence
 
     if (!(value instanceof BigNumber) && value !== '') {
       value = new BigNumber(value)
