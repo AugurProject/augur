@@ -7,7 +7,6 @@ import MarketTrading from 'modules/market/components/market-trading/market-tradi
 const mapStateToProps = state => ({
   hasFunds: !!parseFloat(state.loginAccount.eth),
   outcomes,
-  selectedOutcome,
   isLogged: state.isLogged,
   isMobile: state.isMobile,
 })
@@ -37,30 +36,30 @@ export default MarketTradingContainer
 //   submitTrade: () => console.log('submit trade'),
 // }
 
-const selectedOutcome = {
-  id: '1',
-  name: 'Example Name',
-  lastPrice: {
-    formatted: '0.3872',
-  },
-  trade: {
-    potentialEthProfit: {
-      formatted: '+7.2477',
-    },
-    potentialEthLoss: {
-      formatted: '-5.0458',
-    },
-    potentialLossPercent: {
-      formatted: '+150',
-    },
-    potentialProfitPercent: {
-      formatted: '-150',
-    },
-    totalCost: {
-      formatted: '4.574',
-    },
-  }
-}
+// const selectedOutcome = {
+//   id: '1',
+//   name: 'Example Name',
+//   lastPrice: {
+//     formatted: '0.3872',
+//   },
+//   trade: {
+//     potentialEthProfit: {
+//       formatted: '+7.2477',
+//     },
+//     potentialEthLoss: {
+//       formatted: '-5.0458',
+//     },
+//     potentialLossPercent: {
+//       formatted: '+150',
+//     },
+//     potentialProfitPercent: {
+//       formatted: '-150',
+//     },
+//     totalCost: {
+//       formatted: '4.574',
+//     },
+//   }
+// }
 
 const outcomes = [
   {

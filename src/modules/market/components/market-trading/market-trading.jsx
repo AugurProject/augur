@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 
 import MarketTradingWrapper from 'modules/market/components/market-trading--wrapper/market-trading--wrapper'
 import { Check, Close } from 'modules/common/components/icons/icons'
+import { isEqual } from 'lodash'
 
 import getValue from 'utils/get-value'
 
@@ -25,9 +26,25 @@ class MarketTrading extends Component {
     this.state = {
       showForm: false,
       showOrderPlaced: false,
+      selectedOutcome: null
     }
 
     this.toggleForm = this.toggleForm.bind(this)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (
+      !isEqual(this.props.selectedOutcomes, nextProps.selectedOutcomes) &&
+      nextProps.selectedOutcomes.length === 1
+    ) {
+      this.setState({
+        selectedOutcome: nextProps.market.outcomes.find(outcome => outcome.id === nextProps.selectedOutcomes[0])
+      })
+    } else {
+      this.setState({
+        selectedOutcome: null
+      })
+    }
   }
 
   toggleForm() {
@@ -38,7 +55,7 @@ class MarketTrading extends Component {
     const s = this.state
     const p = this.props
 
-    const hasSelectedOutcome = p.selectedOutcomes.length === 1
+    const hasSelectedOutcome = s.selectedOutcome !== null
 
     let initialMessage = ''
 
@@ -65,20 +82,19 @@ class MarketTrading extends Component {
           <MarketTradingWrapper
             market={p.market}
             isLogged={p.isLogged}
-            selectedOutcomes={p.selectedOutcomes}
-            selectedOutcome={p.selectedOutcome}
+            selectedOutcome={s.selectedOutcome}
             initialMessage={initialMessage}
             isMobile={p.isMobile}
             toggleForm={this.toggleForm}
             hasFunds={p.hasFunds}
           />
         }
-        { p.isMobile && p.selectedOutcomes.length > 0 && initialMessage &&
+        { p.isMobile && hasSelectedOutcome && initialMessage &&
           <div className={Styles['Trading__initial-message']}>
             <p>{ initialMessage }</p>
           </div>
         }
-        { p.isMobile && p.selectedOutcomes.length > 0 && !initialMessage && !s.showForm && // this needs to be changed to use p.selectedOutcome (should only show on mobile when an outcome has been selected)
+        { p.isMobile && hasSelectedOutcome && !initialMessage && !s.showForm && // this needs to be changed to use p.selectedOutcome (should only show on mobile when an outcome has been selected)
           <div className={Styles['Trading__button--trade']}>
             <button onClick={this.toggleForm}>Trade</button>
           </div>
