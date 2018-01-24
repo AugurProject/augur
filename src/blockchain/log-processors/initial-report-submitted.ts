@@ -12,13 +12,17 @@ export function processInitialReportSubmittedLog(db: Knex, augur: Augur, trx: Kn
         isDesignatedReporter: log.isDesignatedReporter,
         payoutID,
       };
-      db.transacting(trx).insert(reportToInsert).into("initial_reports").asCallback(callback);
+      db.transacting(trx).insert(reportToInsert).into("initial_reports").asCallback((err: Error|null): void => {
+        if (err) return callback(err);
+        augurEmitter.emit("InitialReportSubmitted", log);
+        callback(null);
+      });
     });
   });
 }
 
 export function processInitialReportSubmittedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  augurEmitter.emit("DesignatedReportSubmitted", log);
+  augurEmitter.emit("InitialReportSubmitted", log);
   db("market_state").transacting(trx).delete().where({marketID: log.market, reportingState: augur.constants.REPORTING_STATE.DESIGNATED_DISPUTE}).asCallback((err: Error|null): void => {
     if (err) return callback(err);
     db("market_state").transacting(trx).max("marketStateID as previousMarketStateID").first().where({marketID: log.market}).asCallback((err: Error|null, {previousMarketStateID }: {previousMarketStateID: number}): void => {
