@@ -13,9 +13,9 @@ import Styles from 'modules/market/components/market-trading/market-trading.styl
 class MarketTrading extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
+    hasFunds: PropTypes.bool.isRequired,
     isLogged: PropTypes.bool.isRequired,
     selectedOutcomes: PropTypes.array.isRequired,
-    selectedOutcome: PropTypes.object.isRequired,
     isMobile: PropTypes.bool.isRequired,
   }
 
@@ -38,8 +38,7 @@ class MarketTrading extends Component {
     const s = this.state
     const p = this.props
 
-    const hasFunds = getValue(p, 'market.tradeSummary.hasUserEnoughFunds')
-    const hasSelectedOutcome = p.selectedOutcomes.length > 0
+    const hasSelectedOutcome = p.selectedOutcomes.length === 1
 
     let initialMessage = ''
 
@@ -50,10 +49,10 @@ class MarketTrading extends Component {
       case !p.isLogged:
         initialMessage = 'Log in to trade.'
         break
-      case p.isLogged && !hasFunds:
+      case p.isLogged && !p.hasFunds:
         initialMessage = 'Add funds to begin trading.'
         break
-      case p.isLogged && hasFunds && !hasSelectedOutcome:
+      case p.isLogged && p.hasFunds && !hasSelectedOutcome:
         initialMessage = 'Select an outcome to begin placing an order.'
         break
       default:
@@ -71,6 +70,7 @@ class MarketTrading extends Component {
             initialMessage={initialMessage}
             isMobile={p.isMobile}
             toggleForm={this.toggleForm}
+            hasFunds={p.hasFunds}
           />
         }
         { p.isMobile && p.selectedOutcomes.length > 0 && initialMessage &&

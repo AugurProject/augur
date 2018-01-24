@@ -101,7 +101,6 @@ class MarketTradingWrapper extends Component {
     const s = this.state
     const p = this.props
 
-    const hasFunds = getValue(p, 'market.tradeSummary.hasUserEnoughFunds')
     const lastPrice = getValue(p, 'selectedOutcome.lastPrice.formatted')
 
     return (
@@ -130,7 +129,7 @@ class MarketTradingWrapper extends Component {
             { p.initialMessage &&
               <p className={Styles['TradingWrapper__initial-message']}>{ p.initialMessage }</p>
             }
-            { p.initialMessage && p.isLogged && !hasFunds &&
+            { p.initialMessage && p.isLogged && !p.hasFunds &&
               <Link className={Styles['TradingWrapper__button--add-funds']} to={makePath(ACCOUNT_DEPOSIT)}>Add Funds</Link>
             }
             { !p.initialMessage &&

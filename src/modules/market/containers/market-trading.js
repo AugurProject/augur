@@ -1,28 +1,41 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
+import { selectMarket } from 'modules/market/selectors/market'
 import MarketTrading from 'modules/market/components/market-trading/market-trading'
 
 const mapStateToProps = state => ({
-  marketID: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
-  market,
+  hasFunds: !!parseFloat(state.loginAccount.eth),
   outcomes,
   selectedOutcome,
   isLogged: state.isLogged,
   isMobile: state.isMobile,
 })
 
-const MarketTradingContainer = withRouter(connect(mapStateToProps)(MarketTrading))
+const mapDispatchToProps = dispatch => ({})
+
+const mergeProps = (sP, dP, oP) => {
+  const market = selectMarket(oP.marketId)
+
+  return {
+    ...sP,
+    ...dP,
+    ...oP,
+    market
+  }
+}
+
+const MarketTradingContainer = withRouter(connect(mapStateToProps, mapDispatchToProps, mergeProps)(MarketTrading))
 
 export default MarketTradingContainer
 
-const market = {
-  marketType: 'categorical',
-  tradeSummary: {
-    hasUserEnoughFunds: true,
-  },
-  submitTrade: () => console.log('submit trade'),
-}
+// const market = {
+//   marketType: 'categorical',
+//   tradeSummary: {
+//     hasUserEnoughFunds: true,
+//   },
+//   submitTrade: () => console.log('submit trade'),
+// }
 
 const selectedOutcome = {
   id: '1',
