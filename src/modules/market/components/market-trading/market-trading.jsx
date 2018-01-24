@@ -33,17 +33,16 @@ class MarketTrading extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (
-      !isEqual(this.props.selectedOutcomes, nextProps.selectedOutcomes) &&
-      nextProps.selectedOutcomes.length === 1
-    ) {
-      this.setState({
-        selectedOutcome: nextProps.market.outcomes.find(outcome => outcome.id === nextProps.selectedOutcomes[0])
-      })
-    } else {
-      this.setState({
-        selectedOutcome: null
-      })
+    if (!isEqual(this.props.selectedOutcomes, nextProps.selectedOutcomes)) {
+      if (nextProps.selectedOutcomes.length === 1) {
+        this.setState({
+          selectedOutcome: nextProps.market.outcomes.find(outcome => outcome.id === nextProps.selectedOutcomes[0])
+        })
+      } else {
+        this.setState({
+          selectedOutcome: null
+        })
+      }
     }
   }
 
