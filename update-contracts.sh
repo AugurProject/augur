@@ -16,9 +16,6 @@ npx dotsunited-merge-json ./src/contracts/upload-block-numbers.json $SOURCE/uplo
 [[ $? == 0 ]] || exit 1
 mv updated.json ./src/contracts/upload-block-numbers.json
 
-cp $SOURCE/abi.json ./src/contracts/abi.json
-[[ $? == 0 ]] || exit 1
-
 if [[ "$AUTOCOMMIT" == "true" ]]; then
   git add ./src/contracts/addresses.json ./src/contracts/abi.json ./src/contracts/upload-block-numbers.json
   git commit -m "Auto-updating from push to augur-core#${BRANCH} (${COMMIT})"
