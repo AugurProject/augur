@@ -11,7 +11,8 @@ module.exports = {
     },
     migrations: {
       directory: './src/migrations'
-    }
+    },
+    useNullAsDefault: true
   },
   build: {
     client: 'sqlite3',
@@ -23,7 +24,8 @@ module.exports = {
     },
     migrations: {
       directory: './build/migrations'
-    }
+    },
+    useNullAsDefault: true
   },
   build_postgres: {
     client: 'postgresql',
