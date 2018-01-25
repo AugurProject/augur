@@ -5,7 +5,7 @@ import MarketTradingWrapper from 'modules/market/components/market-trading--wrap
 import { Check, Close } from 'modules/common/components/icons/icons'
 import { isEqual } from 'lodash'
 
-import getValue from 'utils/get-value'
+import BigNumber from 'bignumber.js'
 
 import { SCALAR } from 'modules/markets/constants/market-types'
 
@@ -14,7 +14,7 @@ import Styles from 'modules/market/components/market-trading/market-trading.styl
 class MarketTrading extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
-    hasFunds: PropTypes.bool.isRequired,
+    availableFunds: PropTypes.instanceOf(BigNumber).isRequied,
     isLogged: PropTypes.bool.isRequired,
     selectedOutcomes: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
@@ -54,6 +54,7 @@ class MarketTrading extends Component {
     const s = this.state
     const p = this.props
 
+    const hasFunds = p.availableFunds.gt(0)
     const hasSelectedOutcome = s.selectedOutcome !== null
 
     let initialMessage = ''
@@ -65,10 +66,10 @@ class MarketTrading extends Component {
       case !p.isLogged:
         initialMessage = 'Log in to trade.'
         break
-      case p.isLogged && !p.hasFunds:
+      case p.isLogged && !hasFunds:
         initialMessage = 'Add funds to begin trading.'
         break
-      case p.isLogged && p.hasFunds && !hasSelectedOutcome:
+      case p.isLogged && hasFunds && !hasSelectedOutcome:
         initialMessage = 'Select an outcome to begin placing an order.'
         break
       default:
@@ -85,7 +86,7 @@ class MarketTrading extends Component {
             initialMessage={initialMessage}
             isMobile={p.isMobile}
             toggleForm={this.toggleForm}
-            hasFunds={p.hasFunds}
+            availableFunds={p.availableFunds}
           />
         }
         { p.isMobile && hasSelectedOutcome && initialMessage &&

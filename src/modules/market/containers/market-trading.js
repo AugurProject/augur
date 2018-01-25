@@ -1,11 +1,13 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
+import BigNumber from 'bignumber.js'
+
 import { selectMarket } from 'modules/market/selectors/market'
 import MarketTrading from 'modules/market/components/market-trading/market-trading'
 
 const mapStateToProps = state => ({
-  hasFunds: !!parseFloat(state.loginAccount.eth),
+  availableFunds: new BigNumber(state.loginAccount.eth),
   outcomes,
   isLogged: state.isLogged,
   isMobile: state.isMobile,
