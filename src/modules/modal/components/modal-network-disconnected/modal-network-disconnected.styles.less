@@ -1,36 +1,5 @@
 @import (reference) "~assets/styles/shared";
 
-.ModalNetworkDisconnected {
-  position: relative;
-
-  h1,
-  span {
-    color: @color-white;
-  }
-
-  h1 {
-    .caps--extra-large();
-  }
-
-  a {
-    text-decoration: underline;
-  }
-}
-
-.ModalNetworkDisconnected__form {
-  h1,
-  input,
-  label {
-    margin-top: 1rem;
-  }
-
-  button {
-    &:extend(.button--white);
-
-    margin-top: 2rem;
-  }
-}
-
 @keyframes drawout-inner {
   0% {
     stroke-dashoffset: 335;
@@ -67,47 +36,86 @@
   }
 }
 
+.ModalNetworkDisconnected {
+  position: relative;
+
+  h1,
+  span {
+    color: @color-white;
+  }
+
+  h1 {
+    .caps--extra-large();
+  }
+
+  a {
+    text-decoration: underline;
+  }
+}
+
+.ModalNetworkDisconnected__form {
+  h1,
+  input,
+  label {
+    margin-top: 1rem;
+  }
+
+  button {
+    &:extend(.button--white);
+
+    margin-top: 2rem;
+  }
+}
+
 .ModalNetworkDisconnected__AugurLogo {
   backface-visibility: hidden; /* VERY IMPORTANT - PREVENTS FLICKER */
   width: 12rem;
-}
 
-.AugurLoadingLogo-outer-lines {
-  fill: none;
-  stroke: @color-white;
-  stroke-dashoffset: 0;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-miterlimit: 10;
-  stroke-width: 5;
-}
+  svg {
+    :global {
+      .outer-lines {
+        fill: none;
+        stroke: @color-white;
+        stroke-dashoffset: 0;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 5;
+      }
 
-.AugurLoadingLogo-inner-lines {
-  animation: drawout-inner 2.5s both infinite;
-  animation-direction: alternate;
-  fill: none;
-  stroke: @color-white;
-  stroke-dasharray: 230;
-  stroke-dashoffset: 230;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-miterlimit: 10;
-  stroke-width: 5;
-}
+      .inner-lines {
+        :local {
+          animation: drawout-inner 2.5s both infinite;
+          animation-direction: alternate;
+        }
+        fill: none;
+        stroke: @color-white;
+        stroke-dasharray: 230;
+        stroke-dashoffset: 230;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 5;
+      }
 
-.AugurLoadingLogo-inner-bottom-line {
-  animation: drawout-inner-inverse 2.5s both infinite;
-  animation-direction: alternate;
-  fill: none;
-  stroke: @color-white;
-  stroke-dasharray: 82;
-  stroke-dashoffset: 82;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-miterlimit: 10;
-  stroke-width: 5;
-}
+      .inner-bottom-line {
+        :local {
+          animation: drawout-inner-inverse 2.5s both infinite;
+          animation-direction: alternate;
+        }
+        fill: none;
+        stroke: @color-white;
+        stroke-dasharray: 82;
+        stroke-dashoffset: 82;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 5;
+      }
 
-.AugurLoadingLogo-mask {
-  fill: @color-purple;
+      .mask {
+        fill: @color-purple;
+      }
+    }
+  }
 }
