@@ -11,7 +11,7 @@ import { processDisputeCrowdsourcerContributionLog, processDisputeCrowdsourcerCo
 import { processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompletedLogRemoval } from "./crowdsourcer";
 import { processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval } from "./initial-report-submitted";
 import { processMarketFinalizedLog, processMarketFinalizedLogRemoval } from "./market-finalized";
-import { processUniverseForkedLog, processUniverseForkedLogRemoval } from "./universe-forked";
+import { processUniverseCreatedLog, processUniverseCreatedLogRemoval } from "./universe-created";
 import { processFeeWindowCreatedLog, processFeeWindowCreatedLogRemoval } from "./fee-window-created";
 import { processTransferLog, processTransferLogRemoval } from "./token/transfer";
 import { processApprovalLog, processApprovalLogRemoval } from "./token/approval";
@@ -76,8 +76,8 @@ export const logProcessors: LogProcessors = {
       remove: processTradingProceedsClaimedLogRemoval,
     },
     UniverseForked: {
-      add: processUniverseForkedLog,
-      remove: processUniverseForkedLogRemoval,
+      add: processUniverseCreatedLog,
+      remove: processUniverseCreatedLogRemoval,
     },
     WinningTokensRedeemed: {
       add: processWinningTokensRedeemedLog,
