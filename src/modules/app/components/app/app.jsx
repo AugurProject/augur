@@ -391,6 +391,7 @@ export default class AppView extends Component {
               menuData={this.sideNavMenuData}
               unseenCount={unseenCount}
               toggleNotifications={this.toggleNotifications}
+              stats={p.coreStats}
             />
           </section>
           <section className={Styles.Main}>

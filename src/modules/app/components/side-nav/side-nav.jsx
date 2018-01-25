@@ -17,7 +17,8 @@ export default class SideNav extends Component {
     menuData: PropTypes.array.isRequired,
     mobileShow: PropTypes.bool.isRequired,
     toggleNotifications: PropTypes.func.isRequired,
-    unseenCount: PropTypes.number.isRequired
+    unseenCount: PropTypes.number.isRequired,
+    stats: PropTypes.array.isRequired,
   };
 
   constructor() {
@@ -122,6 +123,23 @@ export default class SideNav extends Component {
             </li>
           }
         </ul>
+        {isLogged && isMobile &&
+          <div className={Styles.SideNav__amt}>
+            <div className={Styles.SideNav__nav__separator} />
+            <div className={Styles.SideName__placement}>
+              <div className={Styles['SideNav__stat-label']}>ETH
+                <span className={Styles['SideNav__stat-value']}>
+                  {this.props.stats[0].totalRealEth.value.formatted}
+                </span>
+              </div>
+              <div className={Styles['SideNav__stat-label']}>REP
+                <span className={Styles['SideNav__stat-value']}>
+                  {this.props.stats[0].totalRep.value.formatted}
+                </span>
+              </div>
+            </div>
+          </div>
+        }
       </aside>
     )
   }
