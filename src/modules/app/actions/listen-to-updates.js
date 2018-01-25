@@ -28,12 +28,10 @@ export function listenToUpdates(history) {
     augur.events.stopBlockchainEventListeners()
     augur.events.startBlockListeners({
       onAdded: (block) => {
-        console.log('block added:', block)
         dispatch(syncBlockchain())
         dispatch(syncUniverse())
       },
       onRemoved: (block) => {
-        console.log('block removed:', block)
         dispatch(syncBlockchain())
         dispatch(syncUniverse())
       }
@@ -194,9 +192,10 @@ export function listenToUpdates(history) {
       const retryTimer = 3000
 
       const retry = (cb) => {
-        const { connection, env } = getState()
+        const { connection, env, modal } = getState()
         if (!connection.isConnected) {
           dispatch(updateModal({
+            ...modal,
             type: MODAL_NETWORK_DISCONNECTED,
             canClose: false,
             connection,

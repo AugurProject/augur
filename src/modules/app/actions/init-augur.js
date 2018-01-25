@@ -13,10 +13,13 @@ import logError from 'utils/log-error'
 
 import { MODAL_NETWORK_MISMATCH, MODAL_NETWORK_DISCONNECTED } from 'modules/modal/constants/modal-types'
 
-function pollForAccount(dispatch) {
+function pollForAccount(dispatch, getState) {
   let account
 
   setInterval(() => {
+    const { modal } = getState()
+    if (!!modal.type && modal.type === MODAL_NETWORK_DISCONNECTED) return
+
     AugurJS.augur.rpc.eth.accounts((accounts) => {
       if (account !== accounts[0]) {
         account = accounts[0]
@@ -31,14 +34,14 @@ function pollForAccount(dispatch) {
   }, 250)
 }
 
-function pollForNetwork(dispatch, getState, expectedNetwork) {
+function pollForNetwork(dispatch, getState) {
   let networkId
 
   setInterval(() => {
+    const { modal, env } = getState()
+    const expectedNetwork = env['network-id']
     if (parseInt(AugurJS.augur.rpc.getNetworkID(), 10) !== networkId) {
       networkId = parseInt(AugurJS.augur.rpc.getNetworkID(), 10)
-
-      const { modal } = getState()
 
       if (networkId !== expectedNetwork && !!modal.type && modal.type !== MODAL_NETWORK_DISCONNECTED) {
         dispatch(updateModal({
@@ -68,8 +71,9 @@ export function reconnectAugur(history, env, callback = logError) {
       dispatch(loadUniverse(env.universe || AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()].Universe, history))
       // close any modals that may be open because of reconnection
       dispatch(closeModal())
-      pollForAccount(dispatch)
-      pollForNetwork(dispatch, getState, env['network-id'])
+      // shouldn't need these as they should be running already...
+      // pollForAccount(dispatch, getState)
+      // pollForNetwork(dispatch, getState, env['network-id'])
       callback()
     })
   }
@@ -93,8 +97,8 @@ export function initAugur(history, callback = logError) {
             dispatch(updateAugurNodeConnectionStatus(true))
             dispatch(registerTransactionRelay())
             dispatch(loadUniverse(env.universe || AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()].Universe, history))
-            pollForAccount(dispatch)
-            pollForNetwork(dispatch, getState, env['network-id'])
+            pollForAccount(dispatch, getState)
+            pollForNetwork(dispatch, getState)
             callback()
           })
         } else {
