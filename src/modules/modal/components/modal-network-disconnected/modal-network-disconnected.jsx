@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+import { AugurLoadingLogo } from 'modules/common/components/icons/icons'
 import Styles from 'modules/modal/components/modal-network-disconnected/modal-network-disconnected.styles'
 
 export default class ModalNetworkDisconnected extends Component {
@@ -54,6 +55,14 @@ export default class ModalNetworkDisconnected extends Component {
 
     return (
       <section className={Styles.ModalNetworkDisconnected}>
+        <div className={Styles.ModalNetworkDisconnected__AugurLogo}>
+          {AugurLoadingLogo({
+            outerLines: Styles['AugurLoadingLogo-outer-lines'],
+            innerLines: Styles['AugurLoadingLogo-inner-lines'],
+            innerBottomLine: Styles['AugurLoadingLogo-inner-bottom-line'],
+            mask: Styles['AugurLoadingLogo-mask']
+          })}
+        </div>
         <h1>Reconnecting to Augur Node</h1>
         <span>You have been disconnected from your Augur Node. Please wait while we try to reconnect you, or update your node addresses <a href="#" onClick={this.showForm}>here.</a></span>
         {s.showEnvForm &&
