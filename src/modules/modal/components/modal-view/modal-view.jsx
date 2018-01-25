@@ -72,7 +72,7 @@ export default class ModalView extends Component {
             <ModalNetworkMismatch {...p.modal} />
           }
           {p.modal.type === MODAL_NETWORK_DISCONNECTED &&
-            <ModalNetworkDisconnected {...p.modal} />
+            <ModalNetworkDisconnected {...p} />
           }
           {p.modal.canClose &&
             <button
