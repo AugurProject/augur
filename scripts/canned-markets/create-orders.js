@@ -26,6 +26,7 @@ getPrivateKey(keystoreFilePath, function (err, auth) {
     approveAugurEternalApprovalValue(augur, auth.address, auth, function (err) {
       if (err) return console.error(err);
       augur.markets.getMarkets({ universe: universe, sortBy: "creationBlock" }, function (err, marketIDs) {
+        console.log("marketIDs:", marketIDs);
         if (err) return console.error(err);
         createOrders(augur, marketIDs, auth, function (err) {
           if (err) console.error("create-orders failed:", err);

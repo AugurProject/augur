@@ -70,10 +70,10 @@ module.exports = [{
   marketType: "binary",
   _description: "Will REP tokens be worth more than 500 USD each any time during " + thisYear + " on CoinMarketCap?",
   _endTime: parseInt(new Date("1/1/" + nextYear).getTime() / 1000, 10),
-  _topic: "trading",
+  _topic: "crypto",
   _extraInfo: {
     resolutionSource: "https://api.coinmarketcap.com/v1/ticker/augur",
-    tags: ["Augur", "Reputation"],
+    tags: ["trading", "Reputation"],
     longDescription: "http://coinmarketcap.com/currencies/ethereum",
   },
   orderBook: binaryOrderBook,
@@ -81,10 +81,10 @@ module.exports = [{
   marketType: "binary",
   _description: "Will Ethereum trade at $1000 or higher before the end of " + thisYear + "?",
   _endTime: parseInt(new Date("1/1/" + nextYear).getTime() / 1000, 10),
-  _topic: "trading",
+  _topic: "crypto",
   _extraInfo: {
     resolutionSource: "https://api.coinmarketcap.com/v1/ticker/ethereum",
-    tags: ["trading", "Ethereum", "cryptocurrency"],
+    tags: ["Ethereum", "trading"],
     longDescription: "http://coinmarketcap.com/currencies/ethereum",
   },
   orderBook: binaryOrderBook,
@@ -135,16 +135,16 @@ module.exports = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "0.01", price: "20" },
-        { shares: "0.01", price: "0" },
-        { shares: "0.02", price: "-5" },
+        { shares: "0.005", price: "20" },
+        { shares: "0.005", price: "0" },
+        { shares: "0.01", price: "-5" },
       ],
     },
     sell: {
       "0": [
-        { shares: "0.02", price: "25" },
-        { shares: "0.01", price: "50" },
-        { shares: "0.01", price: "51" },
+        { shares: "0.001", price: "25" },
+        { shares: "0.001", price: "50" },
+        { shares: "0.001", price: "51" },
       ],
     },
   },
@@ -180,7 +180,7 @@ module.exports = [{
   marketType: "scalar",
   _description: "Average tropospheric methane concentration (in parts-per-billion) between " + today.toLocaleDateString() + " and January 1, " + nextYear,
   _endTime: parseInt(new Date("1-2-" + nextYear).getTime() / 1000, 10),
-  _minPrice: "700",
+  _minPrice: "600",
   _maxPrice: "5000",
   tickSize: "100",
   _topic: "science",
@@ -192,16 +192,16 @@ module.exports = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "0.005", price: "1000" },
-        { shares: "0.02", price: "900" },
-        { shares: "0.03", price: "775" },
+        { shares: "0.000005", price: "1000" },
+        { shares: "0.00002", price: "900" },
+        { shares: "0.00003", price: "775" },
       ],
     },
     sell: {
       "0": [
-        { shares: "0.01", price: "1050" },
-        { shares: "0.005", price: "1250" },
-        { shares: "0.0025", price: "1500" },
+        { shares: "0.00001", price: "1050" },
+        { shares: "0.000005", price: "1250" },
+        { shares: "0.0000025", price: "1500" },
       ],
     },
   },
@@ -229,8 +229,37 @@ module.exports = [{
     sell: {
       "0": [
         { shares: "0.02", price: "23" },
-        { shares: "0.01", price: "26" },
+        { shares: "0.02", price: "26" },
         { shares: "0.01", price: "29" },
+      ],
+    },
+  },
+}, {
+  marketType: "scalar",
+  _description: "Millions of Tether tokens issued on " + today.toLocaleDateString() + " (round down)",
+  _endTime: parseInt(midnightTomorrow.getTime() / 1000, 10),
+  _minPrice: "0",
+  _maxPrice: "10000",
+  tickSize: "1",
+  _topic: "crypto",
+  _extraInfo: {
+    resolutionSource: "http://omnichest.info/lookupadd.aspx?address=3MbYQMMmSkC3AgWkj9FMo5LsPTW1zBTwXL",
+    tags: ["Tether", "trading"],
+    longDescription: "The curious tale of Tethers: https://hackernoon.com/the-curious-tale-of-tethers-6b0031eead87",
+  },
+  orderBook: {
+    buy: {
+      "0": [
+        { shares: "0.00001", price: "100" },
+        { shares: "0.00001", price: "150" },
+        { shares: "0.00001", price: "200" },
+      ],
+    },
+    sell: {
+      "0": [
+        { shares: "0.00001", price: "225" },
+        { shares: "0.00001", price: "250" },
+        { shares: "0.00001", price: "300" },
       ],
     },
   },

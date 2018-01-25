@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var events = require("./src/events");
+var getBalances = require("./scripts/canned-markets/lib/get-balances");
 global.chalk = require("chalk");
 global.speedomatic = require("speedomatic");
 global.Augur = require("./src");
@@ -11,12 +12,12 @@ augur.rpc.setDebugOptions({ connect: true, broadcast: false });
 
 const nodes = {
   rinkeby: {
-    http: "http://rinkeby.ethereum.nodes.augur.net",
-      ws: "wss://rinkeby.ethereum.nodes.augur.net",
+    http: "https://rinkeby.ethereum.nodes.augur.net",
+    ws: "wss://websocket-rinkeby.ethereum.nodes.augur.net",
   },
   local: {
     http: "http://127.0.0.1:8545",
-      ws: "ws://127.0.0.1:8546",
+    ws: "ws://127.0.0.1:8546",
   }
 };
 
@@ -31,21 +32,11 @@ augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
   const account = augur.rpc.getCoinbase();
   if (account != null) {
     console.log(chalk.cyan("Account"), chalk.green(account));
-    augur.api.Universe.getReputationToken({ tx: { to: universe } }, (err, reputationTokenAddress) => {
-      if (err) return console.error("getReputationToken failed:", err);
-      augur.api.ReputationToken.balanceOf({ tx: { to: reputationTokenAddress }, _owner: account }, (err, reputationBalance) => {
-        if (err) return console.error("ReputationToken.balanceOf failed:", err);
-        augur.rpc.eth.getBalance([account, "latest"], (etherBalance) => {
-          if (!etherBalance || etherBalance.error) return console.error("rpc.eth.getBalance failed:", etherBalance);
-          const balances = {
-            reputation: speedomatic.unfix(reputationBalance, "string"),
-            ether: speedomatic.unfix(etherBalance, "string"),
-          };
-          console.log(chalk.cyan("Balances:"));
-          console.log("Ether:      " + chalk.green(balances.ether));
-          console.log("Reputation: " + chalk.green(balances.reputation));
-        });
-      });
+    getBalances(augur, universe, account, function (err, balances) {
+      if (err) return console.error("getBalances failed:", err);
+      console.log(chalk.cyan("Balances:"));
+      console.log("Ether:      " + chalk.green(balances.ether));
+      console.log("Reputation: " + chalk.green(balances.reputation));
     });
   }
 });

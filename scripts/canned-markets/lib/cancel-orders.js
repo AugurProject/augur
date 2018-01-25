@@ -33,10 +33,10 @@ function cancelOrders(augur, creator, universe, auth, callback) {
   console.log(chalk.cyan("Canceling orders for"), chalk.green(creator), chalk.cyan("in universe"), chalk.green(universe));
   augur.trading.getOrders({ creator: creator, universe: universe }, function (err, orders) {
     if (err) return callback(err);
-    async.forEachOfSeries(orders, function (ordersInMarket, marketID, nextMarket) {
-      async.forEachOfSeries(ordersInMarket, function (ordersInOutcome, outcome, nextOutcome) {
-        async.forEachOfSeries(ordersInOutcome, function (buyOrSellOrders, orderType, nextOrderType) {
-          async.eachSeries(Object.keys(buyOrSellOrders), function (orderID, nextOrder) {
+    async.forEachOf(orders, function (ordersInMarket, marketID, nextMarket) {
+      async.forEachOf(ordersInMarket, function (ordersInOutcome, outcome, nextOutcome) {
+        async.forEachOf(ordersInOutcome, function (buyOrSellOrders, orderType, nextOrderType) {
+          async.each(Object.keys(buyOrSellOrders), function (orderID, nextOrder) {
             if (debugOptions.cannedMarkets) console.log(chalk.green(orderID), chalk.red.bold(orderType), JSON.stringify(buyOrSellOrders[orderID], null, 2));
             cancelOrder(augur, orderID, orderType, marketID, parseInt(outcome, 10), auth, nextOrder);
           }, nextOrderType);

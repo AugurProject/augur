@@ -23,11 +23,6 @@ elif [ "$network" == "clique" ]; then
   export ETHEREUM_HTTP="https://clique.ethereum.nodes.augur.net"
   # export AUGUR_WS="ws://clique.augur.origin.augur.net:9001"
   # export ETHEREUM_HTTP="http://clique.ethereum.origin.augur.net:8545"
-elif [ "$network" == "instantseal" ]; then
-  export AUGUR_WS="wss://instantseal.augur.nodes.augur.net"
-  export ETHEREUM_HTTP="https://instantseal.ethereum.nodes.augur.net"
-  # export AUGUR_WS="ws://instantseal.augur.origin.augur.net:9001"
-  # export ETHEREUM_HTTP="http://instantseal.ethereum.origin.augur.net:8545"
 elif [ "$network" == "rinkeby" ]; then
   export AUGUR_WS="wss://rinkeby.augur.nodes.augur.net"
   export ETHEREUM_HTTP="https://rinkeby.ethereum.nodes.augur.net"

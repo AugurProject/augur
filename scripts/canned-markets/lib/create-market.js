@@ -7,7 +7,7 @@ var debugOptions = require("../../debug-options");
 
 function createMarket(augur, market, designatedReporterAddress, auth, callback) {
   var createMarketOfType;
-  switch (market._extraInfo.marketType) {
+  switch (market.marketType) {
     case "categorical":
       createMarketOfType = augur.createMarket.createCategoricalMarket;
       break;

@@ -28,7 +28,7 @@ var constants = require("../constants");
  * @param {function} p.onFailed Called if any part of the trade fails.
  */
 function tradeUntilAmountIsZero(p) {
-  console.log("tradeUntilAmountIsZero:", JSON.stringify(p, null, 2));
+  console.log("tradeUntilAmountIsZero:", JSON.stringify(immutableDelete(p, "meta"), null, 2));
   var priceNumTicksRepresentation = convertDecimalToFixedPoint(p._price, p.numTicks);
   var adjustedPrice = p._direction === 0 ? new BigNumber(priceNumTicksRepresentation, 16) : new BigNumber(p.numTicks, 10).minus(new BigNumber(priceNumTicksRepresentation, 16));
   var onChainAmount = convertDecimalToFixedPoint(p._fxpAmount, speedomatic.fix(p.tickSize, "string"));
@@ -59,7 +59,6 @@ function tradeUntilAmountIsZero(p) {
       });
     },
   });
-  console.log("tradePayload:", JSON.stringify(tradePayload, null, 2));
   if (p.doNotCreateOrders) {
     api().Trade.publicTakeBestOrder(tradePayload);
   } else {

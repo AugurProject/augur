@@ -12,6 +12,8 @@ function convertDecimalToFixedPoint(decimalValue, conversionFactor) {
 
 function createOrder(augur, marketID, outcome, numOutcomes, maxPrice, minPrice, numTicks, orderType, order, auth, callback) {
   var normalizedPrice = augur.trading.normalizePrice({ price: order.price, maxPrice: maxPrice, minPrice: minPrice });
+  console.log("price:", order.price);
+  console.log("normalizedPrice:", normalizedPrice);
   var tickSize = (new BigNumber(maxPrice, 10).minus(new BigNumber(minPrice, 10))).dividedBy(new BigNumber(numTicks, 10)).toFixed();
   var bnOnChainShares = new BigNumber(convertDecimalToFixedPoint(order.shares, speedomatic.fix(tickSize, "string")), 10);
   var bnPrice = new BigNumber(convertDecimalToFixedPoint(normalizedPrice, numTicks), 10);
@@ -21,7 +23,10 @@ function createOrder(augur, marketID, outcome, numOutcomes, maxPrice, minPrice, 
     bnCost = bnOnChainShares.times(bnPrice);
   } else {
     orderTypeCode = 1;
-    bnCost = bnOnChainShares.times(new BigNumber(numTicks, 10).minus(bnPrice));
+    console.log("on chain shares:", bnOnChainShares.toFixed());
+    console.log("numTicks:", numTicks);
+    console.log("price:", bnPrice.toFixed());
+    bnCost = bnOnChainShares.times(new BigNumber(numTicks, 10).minus(bnPrice)).times(10);
   }
   if (debugOptions.cannedMarkets) console.log(chalk.cyan.dim("cost:"), chalk.cyan(speedomatic.unfix(bnCost, "string")));
   var params = {
