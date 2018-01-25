@@ -11,8 +11,6 @@ import { SCALAR } from 'modules/markets/constants/market-types'
 
 import Styles from 'modules/market/components/market-trading--form/market-trading--form.styles'
 
-const PRECISION = 4
-
 class MarketTradingForm extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
@@ -38,6 +36,7 @@ class MarketTradingForm extends Component {
   render() {
     const p = this.props
 
+    const tickSize = parseFloat(p.market.tickSize)
     const errors = Array.from(new Set([...p.errors.quantity, ...p.errors.price]))
 
     return (
@@ -70,7 +69,7 @@ class MarketTradingForm extends Component {
               className={classNames({ [`${Styles.error}`]: p.errors.marketOrderTotal.length })}
               id="tr__input--total-cost"
               type="number"
-              step={10**-PRECISION}
+              step={tickSize}
               placeholder="0.0000 ETH"
               value={p.marketOrderTotal instanceof BigNumber ? p.marketOrderTotal.toNumber() : p.marketOrderTotal}
               onChange={e => p.validateForm('marketOrderTotal', e.target.value)}
@@ -84,7 +83,7 @@ class MarketTradingForm extends Component {
               className={classNames({ [`${Styles.error}`]: p.errors.quantity.length })}
               id="tr__input--quantity"
               type="number"
-              step={10**-PRECISION}
+              step={tickSize}
               placeholder="0.0000 Shares"
               value={p.orderQuantity instanceof BigNumber ? p.orderQuantity.toNumber() : p.orderQuantity}
               onChange={e => p.validateForm('orderQuantity', e.target.value)}
@@ -98,7 +97,7 @@ class MarketTradingForm extends Component {
               className={classNames({ [`${Styles.error}`]: p.errors.price.length })}
               id="tr__input--limit-price"
               type="number"
-              step={10**-PRECISION}
+              step={tickSize}
               placeholder="0.0000 ETH"
               value={p.orderPrice instanceof BigNumber ? p.orderPrice.toNumber() : p.orderPrice}
               onChange={e => p.validateForm('orderPrice', e.target.value)}
