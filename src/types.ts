@@ -146,6 +146,7 @@ export interface MarketsRow {
   reportingFeeRate: string|number;
   marketCreatorFeeRate: string|number;
   marketCreatorFeesCollected: string|number|null;
+  initialReportSize: string|number|null;
   category: string;
   tag1: string|null;
   tag2: string|null;
@@ -270,6 +271,7 @@ export interface UIMarketInfo {
   reportingFeeRate: string|number;
   marketCreatorFeeRate: string|number;
   marketCreatorFeesCollected: string|number|null;
+  initialReportSize: string|number|null;
   category: string;
   tags: Array<string|null>;
   volume: string|number;
