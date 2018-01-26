@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import { Notifications } from 'modules/common/components/icons/icons'
-import NotificationsContainer from 'modules/notifications/container'
 
 import Styles from 'modules/app/components/top-bar/top-bar.styles'
 
@@ -58,11 +57,6 @@ const TopBar = props => (
           >
             {Notifications(props.unseenCount)}
           </button>
-          {props.isLogged && props.isNotificationsVisible &&
-            <NotificationsContainer
-              toggleNotifications={() => props.toggleNotifications()}
-            />
-          }
         </div>
       </section>
     }
@@ -74,9 +68,7 @@ TopBar.propTypes = {
   isLogged: PropTypes.bool.isRequired,
   stats: PropTypes.array.isRequired,
   unseenCount: PropTypes.number.isRequired,
-  isNotificationsVisible: PropTypes.bool.isRequired,
   toggleNotifications: PropTypes.func.isRequired,
-  notifications: PropTypes.object
 }
 
 export default TopBar
