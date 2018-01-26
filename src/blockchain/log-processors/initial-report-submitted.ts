@@ -51,6 +51,6 @@ export function processInitialReportSubmittedLogRemoval(db: Knex, augur: Augur, 
       if (err) return callback(err);
       augurEmitter.emit("InitialReportSubmitted", log);
       callback();
-    });
-
+    }
+  );
 }
