@@ -8,6 +8,7 @@ import { convertFixedPointToDecimal, convertOnChainSharesToHumanReadableShares, 
 import { denormalizePrice } from "../../utils/denormalize-price";
 import { formatOrderAmount, formatOrderPrice } from "../../utils/format-order";
 import { WEI_PER_ETHER, ZERO } from "../../constants";
+import { QueryBuilder } from "knex";
 
 interface OrderCreatedOnContractData {
   orderType: string;
@@ -62,20 +63,28 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
         sharesEscrowed: convertOnChainSharesToHumanReadableShares(sharesEscrowed, tickSize),
       };
       const orderID = { orderID: log.orderId };
-      augurEmitter.emit("OrderCreated", Object.assign(orderData, orderID));
       trx.select("marketID").from("orders").where(orderID).asCallback((err: Error|null, ordersRows?: Array<Partial<OrdersRow>>): void => {
         if (err) return callback(err);
+        let upsertOrder: QueryBuilder;
         if (!ordersRows || !ordersRows.length) {
-          db.transacting(trx).insert(Object.assign(orderData, orderID)).into("orders").asCallback(callback);
+          upsertOrder = db.transacting(trx).insert(Object.assign(orderData, orderID)).into("orders");
         } else {
-          db.transacting(trx).from("orders").where(orderID).update(orderData).asCallback(callback);
+          upsertOrder = db.transacting(trx).from("orders").where(orderID).update(orderData);
         }
+        upsertOrder.asCallback((err: Error|null): void => {
+          if (err) return callback(err);
+          augurEmitter.emit("OrderCreated", Object.assign(orderData, orderID));
+          callback(null);
+        });
       });
     });
   });
 }
 
 export function processOrderCreatedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  augurEmitter.emit("OrderCreated", log);
-  db.transacting(trx).from("orders").where("orderID", log.orderId).update({ isRemoved: 1 }).asCallback(callback);
+  db.transacting(trx).from("orders").where("orderID", log.orderId).update({ isRemoved: 1 }).asCallback((err: Error|null): void => {
+    if (err) return callback(err);
+    augurEmitter.emit("OrderCreated", log);
+    callback(null);
+  });
 }
