@@ -15,7 +15,7 @@ import makePath from 'modules/routes/helpers/make-path'
 import * as TYPES from 'modules/transactions/constants/types'
 import { MY_MARKETS, DEFAULT_VIEW } from 'modules/routes/constants/views'
 import { resetState } from 'modules/app/actions/reset-state'
-import { reconnectAugur } from 'modules/app/actions/init-augur'
+import { connectAugur } from 'modules/app/actions/init-augur'
 import { updateModal } from 'modules/modal/actions/update-modal'
 import { MODAL_NETWORK_DISCONNECTED } from 'modules/modal/constants/modal-types'
 import debounce from 'utils/debounce'
@@ -192,16 +192,14 @@ export function listenToUpdates(history) {
       const retryTimer = 3000
 
       const retry = (cb) => {
-        const { connection, env, modal } = getState()
+        const { connection, env } = getState()
         if (!connection.isConnected) {
           dispatch(updateModal({
-            ...modal,
             type: MODAL_NETWORK_DISCONNECTED,
-            canClose: false,
             connection,
             env
           }))
-          dispatch(reconnectAugur(history, env, cb))
+          dispatch(connectAugur(history, env, false, cb))
         }
       }
 
@@ -225,7 +223,6 @@ export function listenToUpdates(history) {
         dispatch(resetState())
         dispatch(updateModal({
           type: MODAL_NETWORK_DISCONNECTED,
-          canClose: false,
           connection: getState().connection,
           env
         }))
@@ -241,7 +238,6 @@ export function listenToUpdates(history) {
         dispatch(resetState())
         dispatch(updateModal({
           type: MODAL_NETWORK_DISCONNECTED,
-          canClose: false,
           connection: getState().connection,
           env
         }))

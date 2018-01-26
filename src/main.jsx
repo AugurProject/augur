@@ -5,7 +5,7 @@ import { AppContainer } from 'react-hot-loader'
 import { HashRouter } from 'react-router-dom'
 // TODO: Investigate this import see CH issue:
 // https://app.clubhouse.io/augur/story/5572/initaugur-import-issue
-import { initAugur } from 'modules/app/actions/init-augur' // eslint-disable-line
+import { initAugur, connectAugur } from 'modules/app/actions/init-augur' // eslint-disable-line
 
 import App from 'modules/app/containers/app'
 import MainErrorBoundary from 'modules/common/components/main-error-boundary'
@@ -34,8 +34,6 @@ if (process.env.NODE_ENV === 'development') {
   *******************************************
   `)
 }
-
-// store.dispatch(initAugur())
 
 function render(Root) {
   ReactDOM.render(

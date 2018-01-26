@@ -13,6 +13,8 @@ import logError from 'utils/log-error'
 
 import { MODAL_NETWORK_MISMATCH, MODAL_NETWORK_DISCONNECTED } from 'modules/modal/constants/modal-types'
 
+const POLL_INTERVAL_DURATION = 250
+
 function pollForAccount(dispatch, getState) {
   let account
 
@@ -31,7 +33,7 @@ function pollForAccount(dispatch, getState) {
         }
       }
     })
-  }, 250)
+  }, POLL_INTERVAL_DURATION)
 }
 
 function pollForNetwork(dispatch, getState) {
@@ -52,10 +54,10 @@ function pollForNetwork(dispatch, getState) {
         dispatch(closeModal())
       }
     }
-  })
+  }, POLL_INTERVAL_DURATION)
 }
 
-export function reconnectAugur(history, env, callback = logError) {
+export function connectAugur(history, env, isInitialConnection = false, callback = logError) {
   return (dispatch, getState) => {
     AugurJS.connect(env, (err, ConnectionInfo) => {
       if (err || !ConnectionInfo.augurNode || !ConnectionInfo.ethereumNode) {
@@ -69,11 +71,11 @@ export function reconnectAugur(history, env, callback = logError) {
       dispatch(updateAugurNodeConnectionStatus(true))
       dispatch(registerTransactionRelay())
       dispatch(loadUniverse(env.universe || AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()].Universe, history))
-      // close any modals that may be open because of reconnection
       dispatch(closeModal())
-      // shouldn't need these as they should be running already...
-      // pollForAccount(dispatch, getState)
-      // pollForNetwork(dispatch, getState, env['network-id'])
+      if (isInitialConnection) {
+        pollForAccount(dispatch, getState)
+        pollForNetwork(dispatch, getState)
+      }
       callback()
     })
   }
@@ -87,20 +89,7 @@ export function initAugur(history, callback = logError) {
         if (xhttp.status === 200) {
           const env = JSON.parse(xhttp.responseText)
           dispatch(updateEnv(env))
-          AugurJS.connect(env, (err, ConnectionInfo) => {
-            if (err) return callback(err)
-            const ethereumNodeConnectionInfo = ConnectionInfo.ethereumNode
-            dispatch(updateConnectionStatus(true))
-            dispatch(updateContractAddresses(ethereumNodeConnectionInfo.contracts))
-            dispatch(updateFunctionsAPI(ethereumNodeConnectionInfo.abi.functions))
-            dispatch(updateEventsAPI(ethereumNodeConnectionInfo.abi.events))
-            dispatch(updateAugurNodeConnectionStatus(true))
-            dispatch(registerTransactionRelay())
-            dispatch(loadUniverse(env.universe || AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()].Universe, history))
-            pollForAccount(dispatch, getState)
-            pollForNetwork(dispatch, getState)
-            callback()
-          })
+          connectAugur(history, env, true, callback)(dispatch, getState)
         } else {
           callback(xhttp.statusText)
         }

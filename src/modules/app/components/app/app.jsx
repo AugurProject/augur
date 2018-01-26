@@ -143,7 +143,9 @@ export default class AppView extends Component {
   }
 
   componentWillMount() {
-    this.props.initAugur(this.props.history)
+    this.props.initAugur(this.props.history, function(...args) {
+      console.log('cb from init', args)
+    })
     const currentPath = parsePath(this.props.location.pathname)[0]
     this.setState({ currentBasePath: currentPath })
 
