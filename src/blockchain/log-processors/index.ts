@@ -63,6 +63,10 @@ export const logProcessors: LogProcessors = {
       add: processDisputeCrowdsourcerCompletedLog,
       remove: processDisputeCrowdsourcerCompletedLogRemoval,
     },
+    TokensBurned: {
+      add: processBurnLog,
+      remove: processBurnLogRemoval,
+    },
     TokensMinted: {
       add: processMintLog,
       remove: processMintLogRemoval,
@@ -75,7 +79,7 @@ export const logProcessors: LogProcessors = {
       add: processTradingProceedsClaimedLog,
       remove: processTradingProceedsClaimedLogRemoval,
     },
-    UniverseForked: {
+    UniverseCreated: {
       add: processUniverseCreatedLog,
       remove: processUniverseCreatedLogRemoval,
     },
