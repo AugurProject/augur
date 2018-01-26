@@ -11,10 +11,7 @@ After pulling down all the code we'll spin up a docker container that runs a loc
 
     docker-compose -f support/test/integration/docker-compose.yml up --abort-on-container-exit --build --force-recreate geth-dev-node
 
-Verify the mapped ports.  
-We are interested in:  
-* HTTP: 47624  
-* WS: 47625 (WS isn't critical)
+Verify the mapped ports. We are interested in, HTTP: 47624 and WS: 47625 (WS isn't critical). Following is output via `docker ps`
 
 
     f6b4f100be73        augurproject/dev-node-geth:latest   "/start.sh"         5 minutes ago       Up 5 minutes        30303/tcp, 30303-30304/udp, 0.0.0.0:47624->8545/tcp, 0.0.0.0:47625->8546/tcp   integration_geth-dev-node_1
