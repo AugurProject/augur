@@ -16,8 +16,11 @@ export function processMarketFinalizedLogRemoval(db: Knex, augur: Augur, trx: Kn
     if (err) return callback(err);
     db("market_state").transacting(trx).max("marketStateID as previousMarketStateID").first().where({marketID: log.market}).asCallback((err: Error|null, {previousMarketStateID }: {previousMarketStateID: number}): void => {
       if (err) return callback(err);
-      augurEmitter.emit("MarketFinalized", log);
-      db("markets").transacting(trx).update({marketStateID: previousMarketStateID}).where({marketID: log.market }).asCallback(callback);
+      db("markets").transacting(trx).update({marketStateID: previousMarketStateID}).where({marketID: log.market }).asCallback((err: Error|null): void => {
+        if (err) return callback(err);
+        augurEmitter.emit("MarketFinalized", log);
+        callback(null);
+      });
     });
   });
 }

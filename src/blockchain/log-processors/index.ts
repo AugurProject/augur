@@ -5,7 +5,7 @@ import { processOrderCanceledLog, processOrderCanceledLogRemoval } from "./order
 import { processOrderCreatedLog, processOrderCreatedLogRemoval } from "./order-created";
 import { processOrderFilledLog, processOrderFilledLogRemoval } from "./order-filled";
 import { processTradingProceedsClaimedLog, processTradingProceedsClaimedLogRemoval } from "./trading-proceeds-claimed";
-import { processWinningTokensRedeemedLog, processWinningTokensRedeemedLogRemoval } from "./winning-tokens-redeemed";
+import { processWinningsRedeemedLog, processWinningsRedeemedLogRemoval } from "./winnings-redeemed";
 import { processDisputeCrowdsourcerCreatedLog, processDisputeCrowdsourcerCreatedLogRemoval } from "./crowdsourcer";
 import { processDisputeCrowdsourcerContributionLog, processDisputeCrowdsourcerContributionLogRemoval } from "./crowdsourcer";
 import { processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompletedLogRemoval } from "./crowdsourcer";
@@ -63,6 +63,10 @@ export const logProcessors: LogProcessors = {
       add: processDisputeCrowdsourcerCompletedLog,
       remove: processDisputeCrowdsourcerCompletedLogRemoval,
     },
+    TokensBurned: {
+      add: processBurnLog,
+      remove: processBurnLogRemoval,
+    },
     TokensMinted: {
       add: processMintLog,
       remove: processMintLogRemoval,
@@ -75,13 +79,13 @@ export const logProcessors: LogProcessors = {
       add: processTradingProceedsClaimedLog,
       remove: processTradingProceedsClaimedLogRemoval,
     },
-    UniverseForked: {
+    UniverseCreated: {
       add: processUniverseCreatedLog,
       remove: processUniverseCreatedLogRemoval,
     },
-    WinningTokensRedeemed: {
-      add: processWinningTokensRedeemedLog,
-      remove: processWinningTokensRedeemedLogRemoval,
+    WinningsRedeemed: {
+      add: processWinningsRedeemedLog,
+      remove: processWinningsRedeemedLogRemoval,
     },
   },
   LegacyReputationToken: {

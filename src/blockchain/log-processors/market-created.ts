@@ -122,5 +122,9 @@ export function processMarketCreatedLogRemoval(db: Knex, augur: Augur, trx: Knex
     (next: AsyncCallback): void => {
       db.transacting(trx).from("market_state").where({ marketID: log.market }).del().asCallback(next);
     },
-  ], callback);
+  ], (err) => {
+    if (err) callback(err);
+    augurEmitter.emit("MarketCreated", log);
+    callback(null);
+  });
 }
