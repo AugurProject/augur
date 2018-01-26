@@ -72,6 +72,10 @@
 
 @media @breakpoint-mobile {
   .SideNav {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    overflow: scroll;
     height: 100vh;
     left: -12.5rem;
     padding-top: 2.8125rem;
@@ -101,16 +105,17 @@
     padding-left: 0.5rem;
   }
 
+  .SideName__space {
+    flex-grow: 3;
+  }
+
   .SideName__placement {
-    padding-bottom: 15px;
-    padding-left: 20%;
-    padding-top: 10%;
+    padding: 20% 0 20% 20%;
   }
 
   .SideNav__amt {
-    bottom: 5%;
+    bottom: 0;
     font-size: 0.925rem;
-    position: absolute;
     width: 100%;
 
     span {

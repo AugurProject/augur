@@ -124,6 +124,9 @@ export default class SideNav extends Component {
           }
         </ul>
         {isLogged && isMobile &&
+        <div className={Styles.SideName__space} />
+        }
+        {isLogged && isMobile &&
           <div className={Styles.SideNav__amt}>
             <div className={Styles.SideNav__nav__separator} />
             <div className={Styles.SideName__placement}>
