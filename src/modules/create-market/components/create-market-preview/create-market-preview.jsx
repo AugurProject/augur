@@ -11,7 +11,7 @@ import { CreateMarketEdit } from 'modules/common/components/icons/icons'
 
 import CreateMarketPreviewRange from 'modules/create-market/components/create-market-preview-range/create-market-preview-range'
 import CreateMarketPreviewCategorical from 'modules/create-market/components/create-market-preview-categorical/create-market-preview-categorical'
-
+import { dateHasPassed } from 'utils/format-date'
 import Styles from 'modules/create-market/components/create-market-preview/create-market-preview.styles'
 
 export default class CreateMarketPreview extends Component {
@@ -127,7 +127,7 @@ export default class CreateMarketPreview extends Component {
                 <span>{ p.newMarket.settlementFee ? p.newMarket.settlementFee : '0.0'}%</span>
               </li>
               <li>
-                <span>Expires</span>
+                <span>{dateHasPassed(p.newMarket.endDate.timestamp) ? 'Expired' : 'Expires'}</span>
                 <span>{ s.expirationDate }</span>
               </li>
             </ul>

@@ -10,7 +10,7 @@ import { TYPE_REPORT, TYPE_CHALLENGE, TYPE_TRADE, TYPE_CLOSED } from 'modules/ma
 import getValue from 'utils/get-value'
 import setShareDenomination from 'utils/set-share-denomination'
 import shareDenominationLabel from 'utils/share-denomination-label'
-
+import { dateHasPassed } from 'utils/format-date'
 import Styles from 'modules/market/components/market-properties/market-properties.styles'
 
 const MarketProperties = (p) => {
@@ -45,7 +45,7 @@ const MarketProperties = (p) => {
           <ValueDenomination {...p.settlementFeePercent} />
         </li>
         <li>
-          <span>Expires</span>
+          <span>{dateHasPassed(p.endDate.timestamp) ? 'Expired' : 'Expires'}</span>
           <span>{ p.endDate.formatted }</span>
         </li>
         {p.outstandingReturns &&

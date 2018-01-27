@@ -28,7 +28,7 @@ export function formatDate(d) {
     formattedLocal: `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(':')} ${localAMPM} (UTC ${localOffset})`, // local time
     formattedLocalShort: `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} (UTC ${localOffset})`, // local time
     full: date.toUTCString(),
-    timestamp: date.getTime()
+    timestamp: date.getTime() / 1000
   }
 }
 
@@ -61,4 +61,9 @@ export function getBeginDate(periodString) {
     return null
   }
   return beginDate.unix()
+}
+
+export function dateHasPassed(unitTimestamp) {
+  const date = moment().utc()
+  return (date.unix() >= unitTimestamp)
 }
