@@ -1,12 +1,138 @@
-import { describe } from 'mocha'
-// import { initAugur, __RewireAPI__ as ReWireModule } from 'modules/app/actions/init-augur';
-// import { describe, it, beforeEach, afterEach } from 'mocha';
-// import { assert } from 'chai';
-// import sinon from 'sinon';
-// import thunk from 'redux-thunk';
-// import configureMockStore from 'redux-mock-store';
+import { describe, it, beforeEach, afterEach } from 'mocha'
+import { assert } from 'chai'
+import sinon from 'sinon'
+import thunk from 'redux-thunk'
+import configureMockStore from 'redux-mock-store'
+import realStore from 'src/store'
+
+import { initAugur, connectAugur, __RewireAPI__ as ReWireModule } from 'modules/app/actions/init-augur';
 
 describe('init-augur', () => {
+  const augurNodeWS = 'wss://some.web.socket.com'
+  const ethereumNodeConnectionInfo = {
+    http: 'http://some.eth.node.com',
+    ws: 'wss://some.eth.ws.node.com'
+  }
+  const middleware = [thunk]
+  const mockStore = configureMockStore(middleware)
+  const mockEnv = {
+    'augur-node': augurNodeWS,
+    'ethereum-node': ethereumNodeConnectionInfo,
+    'network-id': 4
+  }
+  const realSetInterval = global.setInterval
+  const store = mockStore({
+    ...realStore.getState(),
+    env: mockEnv
+  })
+  const ACTIONS = {
+    'UPDATE_ENV': { type: 'UPDATE_ENV' },
+    'UPDATE_CONNECTION_STATUS': { type: 'UPDATE_CONNECTION_STATUS' },
+    'UPDATE_AUGUR_NODE_CONNECTION_STATUS': { type: 'UPDATE_AUGUR_NODE_CONNECTION_STATUS' },
+    'UPDATE_CONTRACT_ADDRESSES': { type: 'UPDATE_CONTRACT_ADDRESSES' },
+    'UPDATE_FUNCTIONS_API': { type: 'UPDATE_FUNCTIONS_API' },
+    'UPDATE_EVENTS_API': { type: 'UPDATE_EVENTS_API' },
+    'SET_LOGIN_ACCOUNT': { type: 'SET_LOGIN_ACCOUNT' },
+    'LOGOUT': { type: 'LOGOUT' },
+    'LOAD_UNIVERSE': { type: 'LOAD_UNIVERSE' },
+    'REGISTER_TRANSACTION_RELAY': { type: 'REGISTER_TRANSACTION_RELAY' },
+    'UPDATE_MODAL': { type: 'UPDATE_MODAL' },
+    'CLOSE_MODAL': { type: 'CLOSE_MODAL' },
+  }
+
+  ReWireModule.__Rewire__('updateEnv', () => ACTIONS.UPDATE_ENV)
+  ReWireModule.__Rewire__('updateConnectionStatus', () => ACTIONS.UPDATE_CONNECTION_STATUS)
+  ReWireModule.__Rewire__('updateContractAddresses', () => ACTIONS.UPDATE_CONTRACT_ADDRESSES)
+  ReWireModule.__Rewire__('updateFunctionsAPI', () => ACTIONS.UPDATE_FUNCTIONS_API)
+  ReWireModule.__Rewire__('updateEventsAPI', () => ACTIONS.UPDATE_EVENTS_API)
+  ReWireModule.__Rewire__('updateAugurNodeConnectionStatus', () => ACTIONS.UPDATE_AUGUR_NODE_CONNECTION_STATUS)
+  ReWireModule.__Rewire__('registerTransactionRelay', () => ACTIONS.REGISTER_TRANSACTION_RELAY)
+  ReWireModule.__Rewire__('setLoginAccount', () => ACTIONS.SET_LOGIN_ACCOUNT)
+  ReWireModule.__Rewire__('loadUniverse', () => ACTIONS.LOAD_UNIVERSE)
+
+  beforeEach(() => {
+    global.XMLHttpRequest = sinon.useFakeXMLHttpRequest({
+      readyState: 4,
+      status: 200,
+    })
+    global.requests = []
+    const requests = global.requests
+
+    global.XMLHttpRequest.onCreate = (xhr) => {
+      requests.push(xhr)
+    };
+
+    global.setInterval = (f, interval) => {
+      f()
+    }
+
+    store.clearActions()
+  });
+
+  afterEach(() => {
+    global.XMLHttpRequest.restore()
+    global.setInterval = realSetInterval
+    store.clearActions()
+  })
+
+  describe('initAugur', () => {
+    const test = t => it(t.description, (done) => t.assertions(done))
+    test({
+      description: 'Should InitAugur',
+      assertions: (done) => {
+        ReWireModule.__Rewire__('AugurJS', {
+          connect: (env, cb) => {
+            cb(null, {
+              ethereumNode: {
+                ...ethereumNodeConnectionInfo,
+                contracts: {},
+                abi: {
+                  functions: {},
+                  events: {}
+                }
+              },
+              augurNode: augurNodeWS
+            })
+          },
+          augur: {
+            contracts: { addresses: { 4: { Universe: '0xb0b' } } },
+            rpc: {
+              getNetworkID: () => 4,
+              eth: { accounts: (cb) => cb(['0xa11ce']) },
+            }
+          }
+        })
+
+        store.dispatch(initAugur({}, (err, connInfo) => {
+          assert.isUndefined(err, 'callback passed to initAugur had a first argument when expecting undefined.')
+          assert.isUndefined(connInfo, 'callback passed to initAugur had a second argument when expecting undefined.')
+          done()
+        }))
+
+        global.requests[0].respond(
+          200,
+          { "Content-Type": "application/json" },
+          JSON.stringify(mockEnv)
+        )
+
+        const expected = [
+          { type: 'UPDATE_ENV' },
+          { type: 'UPDATE_CONNECTION_STATUS' },
+          { type: 'UPDATE_CONTRACT_ADDRESSES' },
+          { type: 'UPDATE_FUNCTIONS_API' },
+          { type: 'UPDATE_EVENTS_API' },
+          { type: 'UPDATE_AUGUR_NODE_CONNECTION_STATUS' },
+          { type: 'REGISTER_TRANSACTION_RELAY' },
+          { type: 'LOAD_UNIVERSE' },
+          { type: 'CLOSE_MODAL' },
+          { type: 'SET_LOGIN_ACCOUNT' }
+        ]
+
+        assert.deepEqual(store.getActions(), expected, `Didn't fire the expected actions`)
+      }
+    })
+  })
+})
   // const augurNodeWebsocket = 'http://blah.blah.com';
   // const middleware = [thunk];
   // const mockStore = configureMockStore(middleware);
@@ -47,28 +173,10 @@ describe('init-augur', () => {
   // const mockUpdateEventsAPI = sinon.stub().returns(ACTIONS.UPDATE_EVENTS_API);
   // const mockUniverseId = sinon.stub().returns('blah');
 
-  // ReWireModule.__Rewire__('updateEnv', mockUpdateEnv);
-  // ReWireModule.__Rewire__('updateConnectionStatus', mockUpdateConnectionStatus);
-  // ReWireModule.__Rewire__('updateContractAddresses', mockUpdateContractAddresses);
-  // ReWireModule.__Rewire__('updateFunctionsAPI', mockUpdateFunctionsAPI);
-  // ReWireModule.__Rewire__('updateEventsAPI', mockUpdateEventsAPI);
-  // ReWireModule.__Rewire__('updateAugurNodeConnectionStatus', mockUpdateAugurNodeConnectionStatus);
-  // ReWireModule.__Rewire__('registerTransactionRelay', mockRegisterTransactionRelay);
-  // ReWireModule.__Rewire__('setLoginAccount', mockSetLoginAccount);
-  // ReWireModule.__Rewire__('loadUniverse', mockLoadUniverse);
-  // ReWireModule.__Rewire__('UNIVERSE_ID', mockUniverseId);
 
 
-  // beforeEach(() => {
-  //   global.XMLHttpRequest = sinon.useFakeXMLHttpRequest();
-  //   global.requests = [];
-  //   const requests = global.requests;
 
-  //   global.XMLHttpRequest.onCreate = (xhr) => {
-  //     requests.push(xhr);
-  //   };
-  //   store.clearActions();
-  // });
+
 
   // afterEach(() => {
   //   global.XMLHttpRequest.restore();
@@ -190,4 +298,3 @@ describe('init-augur', () => {
   //     assert.deepEqual(store.getActions(), out, `one dispatch action object fired`);
   //   }
   // });
-})
