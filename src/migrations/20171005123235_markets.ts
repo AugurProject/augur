@@ -16,6 +16,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       "marketCreatorFeeRate" numeric NOT NULL CONSTRAINT "nonnegativeMarketCreatorFeeRate" CHECK ("marketCreatorFeeRate" >= 0),
       "marketCreatorFeesClaimed" numeric DEFAULT 0 CONSTRAINT "nonnegativeMarketCreatorFeesClaimed" CHECK ("marketCreatorFeesClaimed" >= 0),
       "marketCreatorFeesCollected" numeric DEFAULT 0 CONSTRAINT "nonnegativeMarketCreatorFeesCollected" CHECK ("marketCreatorFeesCollected" >= 0),
+      "initialReportSize" numeric DEFAULT NULL CONSTRAINT "nonnegativeIntitialReportSize" CHECK ("intitialReportSize" >= 0),
       category varchar(255) NOT NULL,
       tag1 varchar(255),
       tag2 varchar(255),

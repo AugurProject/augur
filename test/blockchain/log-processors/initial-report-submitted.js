@@ -7,7 +7,7 @@ const setupTestDb = require("../../test.database");
 const { processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval } = require("../../../build/blockchain/log-processors/initial-report-submitted");
 
 const getReportingState = (db, params, callback) => {
-  db("markets").first("reportingState").where("markets.marketID", params.log.market).join("market_state", "market_state.marketStateID", "markets.marketStateID").asCallback(callback);
+  db("markets").first(["reportingState", "initialReportSize"]).where("markets.marketID", params.log.market).join("market_state", "market_state.marketStateID", "markets.marketStateID").asCallback(callback);
 };
 
 describe("blockchain/log-processors/initial-report-submitted", () => {
@@ -43,6 +43,7 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
         isDesignatedReporter: true,
         payoutNumerators: [0, 1],
         blockNumber: 1400100,
+        amountStaked: 2829,
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
         logIndex: 0,
       },
@@ -52,12 +53,14 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
       onAdded: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, {
+          initialReportSize: 2829,
           reportingState: "DESIGNATED_DISPUTE",
         });
       },
       onRemoved: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, {
+          initialReportSize: null,
           reportingState: "DESIGNATED_REPORTING",
         });
       },

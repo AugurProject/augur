@@ -59,6 +59,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
           designatedReportStake:      onUniverseContractData!.designatedReportStake,
           numTicks:                   onMarketContractData!.numTicks,
           marketCreatorFeeRate:       convertDivisorToRate(onMarketContractData!.marketCreatorSettlementFeeDivisor!, 10),
+          initialReportSize:          null,
           reportingFeeRate:           convertDivisorToRate(onUniverseContractData!.reportingFeeDivisor!, 10),
           marketCreatorFeesCollected: "0",
           volume:                     "0",
