@@ -44,7 +44,8 @@ const mapStateToProps = (state) => {
     orderCancellation: getOrderCancellation(),
     transactionsLoading: state.transactionsLoading,
     hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber,
-    registerBlockNumber: state.loginAccount.registerBlockNumber
+    registerBlockNumber: state.loginAccount.registerBlockNumber,
+    isMobile: state.isMobile,
   }
 }
 

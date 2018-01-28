@@ -23,6 +23,7 @@ export default class Positions extends Component {
     marketsCount: PropTypes.number.isRequired,
     registerBlockNumber: PropTypes.number,
     claimTradingProceeds: PropTypes.func.isRequired,
+    isMobile: PropTypes.bool,
   }
 
   componentWillMount() {
@@ -46,6 +47,7 @@ export default class Positions extends Component {
             orderCancellation={p.orderCancellation}
             location={p.location}
             history={p.history}
+            isMobile={p.isMobile}
           />
           <PositionsMarketsList
             title="In Reporting"
@@ -57,6 +59,7 @@ export default class Positions extends Component {
             history={p.history}
             linkType={TYPE_CHALLENGE}
             positionsDefault={false}
+            isMobile={p.isMobile}
           />
           <PositionsMarketsList
             title="Finalized"
@@ -69,6 +72,7 @@ export default class Positions extends Component {
             positionsDefault={false}
             linkType={TYPE_CLAIM_PROCEEDS}
             claimTradingProceeds={p.claimTradingProceeds}
+            isMobile={p.isMobile}
           />
         </div>}
         { p.marketsCount === 0 &&

@@ -17,6 +17,7 @@ export default class ReportingClosed extends Component {
     toggleFavorite: PropTypes.func.isRequired,
     loadMarketsInfo: PropTypes.func.isRequired,
     isLogged: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool,
   }
 
   constructor(props) {
@@ -50,6 +51,7 @@ export default class ReportingClosed extends Component {
           loadMarketsInfo={p.loadMarketsInfo}
           linkType={TYPE_CLOSED}
           paginationPageParam="reporting-closed-page"
+          isMobile={p.isMobile}
         />
       </section>
     )

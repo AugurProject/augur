@@ -24,7 +24,8 @@ const mapStateToProps = state => ({
   canLoadMarkets: !!getValue(state, 'universe.id'),
   scalarShareDenomination: getScalarShareDenomination(),
   hasLoadedMarkets: state.hasLoadedMarkets,
-  hasLoadedCategory: state.hasLoadedCategory
+  hasLoadedCategory: state.hasLoadedCategory,
+  isMobile: state.isMobile,
 })
 
 const mapDispatchToProps = dispatch => ({

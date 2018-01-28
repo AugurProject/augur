@@ -18,6 +18,7 @@ export default class ReportingOpen extends Component {
     toggleFavorite: PropTypes.func.isRequired,
     loadMarketsInfo: PropTypes.func.isRequired,
     isLogged: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool,
   }
 
   constructor(props) {

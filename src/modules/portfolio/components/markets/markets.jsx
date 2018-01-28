@@ -25,6 +25,7 @@ class MyMarkets extends Component {
     toggleFavorite: PropTypes.func.isRequired,
     loadMarkets: PropTypes.func.isRequired,
     loadMarketsInfo: PropTypes.func.isRequired,
+    isMobile: PropTypes.bool,
   }
 
   constructor(props) {
@@ -257,6 +258,7 @@ class MyMarkets extends Component {
             outstandingReturns
             paginationPageParam="open"
             collectMarketCreatorFees={p.collectMarketCreatorFees}
+            isMobile={p.isMobile}
           />
         }
         {haveMarkets && s.filteredMarketsOpen.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
@@ -295,6 +297,7 @@ class MyMarkets extends Component {
             outstandingReturns
             paginationPageParam="reporting"
             collectMarketCreatorFees={p.collectMarketCreatorFees}
+            isMobile={p.isMobile}
           />
         }
         {haveMarkets && s.filteredMarketsReporting.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
@@ -333,6 +336,7 @@ class MyMarkets extends Component {
             outstandingReturns
             paginationPageParam="final"
             collectMarketCreatorFees={p.collectMarketCreatorFees}
+            isMobile={p.isMobile}
           />
         }
         {haveMarkets && s.filteredMarketsFinal.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}

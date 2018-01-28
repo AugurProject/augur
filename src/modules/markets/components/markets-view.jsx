@@ -32,7 +32,8 @@ export default class MarketsView extends Component {
     updateMarketsFilteredSorted: PropTypes.func.isRequired,
     clearMarketsFilteredSorted: PropTypes.func.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
-    loadMarketsInfo: PropTypes.func.isRequired
+    loadMarketsInfo: PropTypes.func.isRequired,
+    isMobile: PropTypes.bool,
   }
 
   componentWillMount() {
@@ -98,6 +99,7 @@ export default class MarketsView extends Component {
           toggleFavorite={p.toggleFavorite}
           loadMarketsInfo={p.loadMarketsInfo}
           linkType={TYPE_TRADE}
+          isMobile={p.isMobile}
         />
       </section>
     )

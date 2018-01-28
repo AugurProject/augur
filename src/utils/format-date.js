@@ -7,6 +7,12 @@ const months = [
   'October', 'November', 'December'
 ]
 
+const shortMonths = [
+  'Jan', 'Feb', 'Mar',
+  'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sept',
+  'Oct', 'Nov', 'Dec'
+]
 export function formatDate(d) {
   const date = (d instanceof Date) ? d : new Date(0)
 
@@ -25,6 +31,7 @@ export function formatDate(d) {
     value: date,
     simpleDate: `${date.getUTCDate()} ${months[date.getUTCMonth()]}`,
     formatted: `${months[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()} ${utcTimeTwelve.join(':')} ${utcAMPM}`, // UTC time
+    formattedShort: `${shortMonths[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()} ${utcTimeTwelve.join(':')} ${utcAMPM}`, // UTC time
     formattedLocal: `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(':')} ${localAMPM} (UTC ${localOffset})`, // local time
     formattedLocalShort: `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} (UTC ${localOffset})`, // local time
     full: date.toUTCString(),
