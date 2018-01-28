@@ -9,7 +9,7 @@ import MarketTable from 'modules/market/components/market-tables/market-tables'
 import CaretDropdown from 'modules/common/components/caret-dropdown/caret-dropdown'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import { TYPE_REPORT, TYPE_CHALLENGE, TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
-import { dateHasPassed, convertUnix } from 'utils/format-date'
+import { dateHasPassed } from 'utils/format-date'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 
