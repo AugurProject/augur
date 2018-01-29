@@ -13,18 +13,25 @@ import { addNotification } from 'modules/notifications/actions/update-notificati
 // import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
 import makePath from 'modules/routes/helpers/make-path'
 import * as TYPES from 'modules/transactions/constants/types'
-import { MY_MARKETS } from 'modules/routes/constants/views'
+import { MY_MARKETS, DEFAULT_VIEW } from 'modules/routes/constants/views'
+import { resetState } from 'modules/app/actions/reset-state'
+import { connectAugur } from 'modules/app/actions/init-augur'
+import { updateModal } from 'modules/modal/actions/update-modal'
+import { MODAL_NETWORK_DISCONNECTED } from 'modules/modal/constants/modal-types'
+import debounce from 'utils/debounce'
 
-export function listenToUpdates() {
+
+export function listenToUpdates(history) {
   return (dispatch, getState) => {
+    augur.events.stopBlockListeners()
+    augur.events.stopAugurNodeEventListeners()
+    augur.events.stopBlockchainEventListeners()
     augur.events.startBlockListeners({
       onAdded: (block) => {
-        console.log('block added:', block)
         dispatch(syncBlockchain())
         dispatch(syncUniverse())
       },
       onRemoved: (block) => {
-        console.log('block removed:', block)
         dispatch(syncBlockchain())
         dispatch(syncUniverse())
       }
@@ -180,5 +187,64 @@ export function listenToUpdates() {
         }
       },
     }, err => console.log(err || 'Listening for events'))
+
+    const retryFunc = () => {
+      const retryTimer = 3000
+
+      const retry = (cb) => {
+        const { connection, env } = getState()
+        if (!connection.isConnected) {
+          dispatch(updateModal({
+            type: MODAL_NETWORK_DISCONNECTED,
+            connection,
+            env
+          }))
+          dispatch(connectAugur(history, env, false, cb))
+        }
+      }
+
+      const debounceCall = debounce(retry, retryTimer)
+
+      const cb = (err, connection) => {
+        // both args should be undefined if we are connected.
+        if (!err && !connection) return
+        if (err || !connection.augurNode || !connection.ethereumNode) {
+          debounceCall(cb)
+        }
+      }
+
+      debounceCall(cb)
+    }
+
+    augur.events.nodes.augur.on('disconnect', () => {
+      const { connection, env } = getState()
+      if (connection.isConnected) {
+        // if we were connected when disconnect occured, then resetState and redirect.
+        dispatch(resetState())
+        dispatch(updateModal({
+          type: MODAL_NETWORK_DISCONNECTED,
+          connection: getState().connection,
+          env
+        }))
+        history.push(makePath(DEFAULT_VIEW))
+      }
+      // attempt re-initAugur every 3 seconds.
+      retryFunc()
+    })
+    augur.events.nodes.ethereum.on('disconnect', () => {
+      const { connection, env } = getState()
+      if (connection.isConnected) {
+        // if we were connected when disconnect occured, then resetState and redirect.
+        dispatch(resetState())
+        dispatch(updateModal({
+          type: MODAL_NETWORK_DISCONNECTED,
+          connection: getState().connection,
+          env
+        }))
+        history.push(makePath(DEFAULT_VIEW))
+      }
+      // attempt re-initAugur every 3 seconds.
+      retryFunc()
+    })
   }
 }

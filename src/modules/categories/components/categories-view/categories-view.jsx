@@ -104,6 +104,8 @@ export default class CategoriesView extends Component {
     }
   }
 
+  // TODO -- currently heroCategory is never populated.  Per discussion, punting on fixiing this for the time being.
+
   render() {
     const p = this.props
     const s = this.state
@@ -118,6 +120,7 @@ export default class CategoriesView extends Component {
         <div className={Styles.Categories__container}>
           <div className={Styles.CategoriesHeading}>
             <h3>Bet on</h3>
+            {heroCategory &&
             <h2 style={{ opacity: s.heroCategoryOpacity }}>
               {heroCategory &&
                 <Link
@@ -133,6 +136,7 @@ export default class CategoriesView extends Component {
               }
               {!heroCategory && '...'}
             </h2>
+            }
             <div className={Styles.CategoriesHeading__separator} />
           </div>
           {!!(p.categories && p.categories.length && s.boundedLength) &&

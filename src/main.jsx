@@ -3,8 +3,9 @@ import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import { HashRouter } from 'react-router-dom'
-
-import { initAugur } from 'modules/app/actions/init-augur'
+// TODO: Investigate this import see CH issue:
+// https://app.clubhouse.io/augur/story/5572/initaugur-import-issue
+import { initAugur, connectAugur } from 'modules/app/actions/init-augur' // eslint-disable-line
 
 import App from 'modules/app/containers/app'
 import MainErrorBoundary from 'modules/common/components/main-error-boundary'
@@ -12,7 +13,6 @@ import MainErrorBoundary from 'modules/common/components/main-error-boundary'
 import store from 'src/store'
 
 import { augur } from 'services/augurjs'
-
 // require('core-js/fn/array/find')
 // require('core-js/fn/string/starts-with')
 
@@ -34,8 +34,6 @@ if (process.env.NODE_ENV === 'development') {
   *******************************************
   `)
 }
-
-store.dispatch(initAugur())
 
 function render(Root) {
   ReactDOM.render(
@@ -60,6 +58,7 @@ if (module.hot) {
       './selectors-raw',
       './modules/app/actions/init-augur',
       './modules/app/containers/app',
+      './select-state'
     ],
     () => {
       handleRender()

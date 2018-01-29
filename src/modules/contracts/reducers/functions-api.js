@@ -1,6 +1,9 @@
 import { UPDATE_FUNCTIONS_API, UPDATE_FROM_ADDRESS } from 'modules/contracts/actions/update-contract-api'
+import { RESET_STATE } from 'modules/app/actions/reset-state'
 
-export default function (functionsAPI = {}, action) {
+const DEFAULT_STATE = {}
+
+export default function (functionsAPI = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_FUNCTIONS_API:
       return action.functionsAPI
@@ -15,6 +18,8 @@ export default function (functionsAPI = {}, action) {
         }, {})
         return p
       }, {})
+    case RESET_STATE:
+      return DEFAULT_STATE
     default:
       return functionsAPI
   }

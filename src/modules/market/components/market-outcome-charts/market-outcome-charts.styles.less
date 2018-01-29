@@ -1,0 +1,46 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketOutcomeCharts {
+  display: flex;
+  flex-direction: column;
+  height: 400px;
+  width: 100%;
+
+  & > *:not(:last-of-type) {
+    margin-right: 1rem;
+  }
+
+  h3 {
+    &:extend(.caps--large all);
+
+    color: @color-gray;
+    margin-bottom: 1.2rem;
+
+    span {
+      color: @color-white;
+      margin-right: 1rem;
+    }
+  }
+}
+
+.MarketOutcomeCharts__Charts {
+  display: flex;
+  height: 100%;
+  width: 100%;
+
+  & > * {
+    overflow: hidden;
+  }
+}
+
+.MarketOutcomeCharts__Candlestick {
+  flex: 2.5;
+}
+
+.MarketOutcomeCharts__Depth {
+  flex: 1;
+}
+
+.MarketOutcomeCharts__Orders {
+  flex: 1;
+}

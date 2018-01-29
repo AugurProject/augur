@@ -4,7 +4,7 @@ import {
   UPDATE_NEW_MARKET,
   CLEAR_NEW_MARKET
 } from 'modules/create-market/actions/update-new-market'
-
+import { RESET_STATE } from 'modules/app/actions/reset-state'
 import { SETTLEMENT_FEE_DEFAULT } from 'modules/create-market/constants/new-market-constraints'
 
 import BigNumber from 'bignumber.js'
@@ -98,6 +98,7 @@ export default function (newMarket = DEFAULT_STATE, action) {
         ...newMarket,
         ...action.data
       }
+    case RESET_STATE:
     case CLEAR_NEW_MARKET:
       return DEFAULT_STATE
     default:

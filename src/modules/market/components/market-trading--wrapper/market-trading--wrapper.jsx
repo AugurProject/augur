@@ -25,6 +25,7 @@ class MarketTradingWrapper extends Component {
     selectedOutcomes: PropTypes.array.isRequired,
     selectedOutcome: PropTypes.object.isRequired,
     initialMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
+    availableFunds: PropTypes.instanceOf(BigNumber).isRequied,
     isMobile: PropTypes.bool.isRequired,
     toggleForm: PropTypes.func.isRequired,
   }
@@ -33,12 +34,6 @@ class MarketTradingWrapper extends Component {
     super(props)
 
     this.state = {
-      errors: {
-        quantity: [],
-        price: [],
-        marketOrderTotal: [],
-      },
-      isOrderValid: true,
       orderType: LIMIT,
       orderPrice: '',
       orderQuantity: '',
@@ -52,7 +47,6 @@ class MarketTradingWrapper extends Component {
     this.prevPage = this.prevPage.bind(this)
     this.nextPage = this.nextPage.bind(this)
     this.updateState = this.updateState.bind(this)
-    this.validateForm = this.validateForm.bind(this)
     this.updateOrderEstimate = this.updateOrderEstimate.bind(this)
   }
 
@@ -81,16 +75,6 @@ class MarketTradingWrapper extends Component {
     this.setState({ [property]: value })
   }
 
-  validateForm(property, rawValue) { // needs actual validation
-    let value = rawValue
-
-    if (!(value instanceof BigNumber) && value !== '') {
-      value = new BigNumber(value)
-    }
-
-    this.setState({ [property]: value })
-  }
-
   updateOrderEstimate(orderEstimate) {
     this.setState({
       orderEstimate
@@ -101,7 +85,6 @@ class MarketTradingWrapper extends Component {
     const s = this.state
     const p = this.props
 
-    const hasFunds = getValue(p, 'market.tradeSummary.hasUserEnoughFunds')
     const lastPrice = getValue(p, 'selectedOutcome.lastPrice.formatted')
 
     return (
@@ -130,12 +113,16 @@ class MarketTradingWrapper extends Component {
             { p.initialMessage &&
               <p className={Styles['TradingWrapper__initial-message']}>{ p.initialMessage }</p>
             }
-            { p.initialMessage && p.isLogged && !hasFunds &&
+            { p.initialMessage && p.isLogged && p.availableFunds.lte(0) &&
               <Link className={Styles['TradingWrapper__button--add-funds']} to={makePath(ACCOUNT_DEPOSIT)}>Add Funds</Link>
             }
             { !p.initialMessage &&
               <MarketTradingForm
                 market={p.market}
+                marketType={getValue(p, 'market.marketType')}
+                maxPrice={getValue(p, 'market.maxPrice')}
+                minPrice={getValue(p, 'market.minPrice')}
+                availableFunds={p.availableFunds}
                 selectedNav={s.selectedNav}
                 orderType={s.orderType}
                 orderPrice={s.orderPrice}
@@ -143,13 +130,10 @@ class MarketTradingWrapper extends Component {
                 orderEstimate={s.orderEstimate}
                 marketOrderTotal={s.marketOrderTotal}
                 marketQuantity={s.marketQuantity}
-                isOrderValid={s.isOrderValid}
                 selectedOutcome={p.selectedOutcome}
                 nextPage={this.nextPage}
                 updateState={this.updateState}
-                validateForm={this.validateForm}
                 isMobile={p.isMobile}
-                errors={s.errors}
               />
             }
           </div>

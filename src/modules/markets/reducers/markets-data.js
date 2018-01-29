@@ -1,6 +1,9 @@
 import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKET_CATEGORY, UPDATE_MARKETS_LOADING_STATUS } from 'modules/markets/actions/update-markets-data'
+import { RESET_STATE } from 'modules/app/actions/reset-state'
 
-export default function (marketsData = {}, action) {
+const DEFAULT_STATE = {}
+
+export default function (marketsData = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_MARKETS_DATA: // TODO -- allow for the consumption of partial market objects
       return {
@@ -27,8 +30,9 @@ export default function (marketsData = {}, action) {
           category: action.category
         }
       }
+    case RESET_STATE:
     case CLEAR_MARKETS_DATA:
-      return {}
+      return DEFAULT_STATE
     default:
       return marketsData
   }
