@@ -4,7 +4,7 @@ import {
   UPDATE_NOTIFICATION,
   CLEAR_NOTIFICATIONS
 } from 'modules/notifications/actions/update-notifications'
-
+import { RESET_STATE } from 'modules/app/actions/reset-state'
 import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account'
 
 const DEFAULT_STATE = []
@@ -45,6 +45,7 @@ export default function (notifications = DEFAULT_STATE, action) {
           ...action.data.notification
         }
       })
+    case RESET_STATE:
     case CLEAR_NOTIFICATIONS:
     case CLEAR_LOGIN_ACCOUNT:
       return DEFAULT_STATE
