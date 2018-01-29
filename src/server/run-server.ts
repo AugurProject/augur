@@ -52,6 +52,7 @@ export function runServer(db: Knex, augur: Augur): RunServerResult {
   app.get("/status/blockage", (req, res) => {
     db("blocks").orderBy("blockNumber", "DESC").first().asCallback( (err: Error, newestBlock: any) => {
       if (err) return res.status(500).send({error: err.message });
+      if (newestBlock == null) return res.status(500).send({error: "No blocks available"});
       const timestampDelta: number = Math.round((Date.now() / 1000) - newestBlock.timestamp);
       const timestampDeltaThreshold = (typeof req.query.time === "undefined") ? 120 : parseInt(req.query.time, 10);
       if ( isNaN(timestampDeltaThreshold) ) {
