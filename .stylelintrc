@@ -16,7 +16,7 @@
     "plugin/no-browser-hacks": true,
     # "declaration-block-trailing-semicolon": "never",
     selector-pseudo-class-no-unknown: [true, {
-      ignorePseudoClasses: ["global"]
+      ignorePseudoClasses: ["global", "local"]
     }],
   }
 }

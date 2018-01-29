@@ -11,7 +11,7 @@ import ToggleHeightStyles from 'utils/toggle-height/toggle-height.styles'
 
 export default class MarketOutcomesList extends Component {
   static propTypes = {
-    marketID: PropTypes.string.isRequired,
+    marketId: PropTypes.string.isRequired,
     outcomes: PropTypes.array.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired,
     selectedOutcomes: PropTypes.array.isRequired,
@@ -60,7 +60,7 @@ export default class MarketOutcomesList extends Component {
                 <MarketOutcomesListOutcome
                   key={outcome.id}
                   outcome={outcome}
-                  marketID={p.marketID}
+                  marketId={p.marketId}
                   scalarShareDenomination={p.scalarShareDenomination}
                   selectedOutcomes={p.selectedOutcomes}
                   updateSelectedOutcomes={p.updateSelectedOutcomes}

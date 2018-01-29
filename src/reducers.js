@@ -4,8 +4,6 @@ import universe from 'modules/universe/reducers/universe'
 import connection from 'modules/app/reducers/connection'
 import isMobile from 'modules/app/reducers/is-mobile'
 import isMobileSmall from 'modules/app/reducers/is-mobile-small'
-import headerHeight from 'modules/app/reducers/header-height'
-import footerHeight from 'modules/app/reducers/footer-height'
 import loginAccount from 'modules/auth/reducers/login-account'
 import isLogged from 'modules/auth/reducers/is-logged'
 import newMarket from 'modules/create-market/reducers/new-market'
@@ -50,8 +48,6 @@ export function createReducer() {
     connection,
     isMobile,
     isMobileSmall,
-    headerHeight,
-    footerHeight,
     loginAccount,
     isLogged,
     newMarket,

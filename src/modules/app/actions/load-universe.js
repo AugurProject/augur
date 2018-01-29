@@ -10,7 +10,7 @@ import loadCategories from 'modules/categories/actions/load-categories'
 import { loadMarketsToReportOn } from 'modules/reports/actions/load-markets-to-report-on'
 import logError from 'utils/log-error'
 
-export const loadUniverse = (universeID, callback = logError) => (dispatch, getState) => {
+export const loadUniverse = (universeID, history, callback = logError) => (dispatch, getState) => {
   const universePayload = { tx: { to: universeID } }
   // NOTE: Temporarily added below dispatch so we atleast get universe ID set because the async calls below are going to fail without contracts...
   dispatch(updateUniverse({ id: universeID }))
@@ -34,7 +34,7 @@ export const loadUniverse = (universeID, callback = logError) => (dispatch, getS
     dispatch(syncBlockchain())
     dispatch(syncUniverse((err) => {
       if (err) return callback(err)
-      dispatch(listenToUpdates())
+      dispatch(listenToUpdates(history))
       callback(null)
     }))
     dispatch(loadCategories())

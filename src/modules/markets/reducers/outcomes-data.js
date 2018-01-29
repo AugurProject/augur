@@ -1,17 +1,18 @@
 import { UPDATE_MARKETS_DATA } from 'modules/markets/actions/update-markets-data'
 import { UPDATE_OUTCOME_PRICE } from 'modules/markets/actions/update-outcome-price'
-
+import { RESET_STATE } from 'modules/app/actions/reset-state'
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import { BINARY_YES_ID, SCALAR_UP_ID } from 'modules/markets/constants/market-outcomes'
 
-export default function (outcomesData = {}, action) {
+const DEFAULT_STATE = {}
+
+export default function (outcomesData = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_MARKETS_DATA:
       return {
         ...outcomesData,
         ...parseOutcomes(action.marketsData, outcomesData)
       }
-
     case UPDATE_OUTCOME_PRICE:
       if (!outcomesData || !outcomesData[action.marketID] || !outcomesData[action.marketID][action.outcomeID]) {
         return outcomesData
@@ -26,7 +27,8 @@ export default function (outcomesData = {}, action) {
           }
         }
       }
-
+    case RESET_STATE:
+      return DEFAULT_STATE
     default:
       return outcomesData
   }
