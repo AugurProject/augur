@@ -4,7 +4,9 @@ import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import { Address, Int256, FormattedEventLog, MarketCreatedLogExtraInfo, MarketCreatedOnContractInfo, MarketsRow, OutcomesRow, TokensRow, CategoriesRow, ErrorCallback, AsyncCallback } from "../../types";
 import { convertDivisorToRate } from "../../utils/convert-divisor-to-rate";
+import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
 import { augurEmitter } from "../../events";
+import { WEI_PER_ETHER } from "../../constants";
 
 export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   const marketPayload: {} = { tx: { to: log.market } };
@@ -56,7 +58,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, trx: Knex.Transa
           feeWindow:                  onMarketContractData!.feeWindow,
           endTime:                    parseInt(onMarketContractData!.endTime!, 10),
           designatedReporter:         onMarketContractData!.designatedReporter,
-          designatedReportStake:      onUniverseContractData!.designatedReportStake,
+          designatedReportStake:      convertFixedPointToDecimal(onUniverseContractData!.designatedReportStake, WEI_PER_ETHER),
           numTicks:                   onMarketContractData!.numTicks,
           marketCreatorFeeRate:       convertDivisorToRate(onMarketContractData!.marketCreatorSettlementFeeDivisor!, 10),
           initialReportSize:          null,

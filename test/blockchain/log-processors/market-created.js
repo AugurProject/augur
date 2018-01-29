@@ -97,7 +97,7 @@ describe("blockchain/log-processors/market-created", () => {
             },
             getOrCacheDesignatedReportStake: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "16777216");
+              callback(null, "16777216000000000000000000");
             },
           },
         },
@@ -251,7 +251,7 @@ describe("blockchain/log-processors/market-created", () => {
             },
             getOrCacheDesignatedReportStake: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "16777216");
+              callback(null, "16777216000000000000000000");
             },
           },
         },
@@ -426,7 +426,7 @@ describe("blockchain/log-processors/market-created", () => {
             },
             getOrCacheDesignatedReportStake: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "16777216");
+              callback(null, "16777216000000000000000000");
             },
           },
         },
@@ -575,7 +575,7 @@ describe("blockchain/log-processors/market-created", () => {
             },
             getOrCacheDesignatedReportStake: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "16777216");
+              callback(null, "16777216000000000000000000");
             },
           },
         },
