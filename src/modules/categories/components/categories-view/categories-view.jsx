@@ -104,6 +104,8 @@ export default class CategoriesView extends Component {
     }
   }
 
+  // TODO -- currently heroCategory is never populated.  Per discussion, punting on fixiing this for the time being.
+
   render() {
     const p = this.props
     const s = this.state
