@@ -48,6 +48,9 @@ module.exports = {
 
   ETERNAL_APPROVAL_VALUE: "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", // 2^256 - 1
 
+  REFRESH_APPROVAL_VALUE: "0x56bc75e2d63100000",
+  // 100000000000000000000 (100 ETH)
+
   DEFAULT_NETWORK_ID: "3",
   DEFAULT_GASPRICE: 20000000000,
   DEFAULT_SCALAR_TICK_SIZE: "0.0001",

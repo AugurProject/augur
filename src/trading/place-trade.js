@@ -5,6 +5,7 @@ var immutableDelete = require("immutable-delete");
 var getBetterWorseOrders = require("./get-better-worse-orders");
 var tradeUntilAmountIsZero = require("./trade-until-amount-is-zero");
 var normalizePrice = require("./normalize-price");
+var approvalCheck = require("../accounts/approval-check");
 
 /**
  * @param {Object} p Parameters object.
@@ -26,20 +27,23 @@ var normalizePrice = require("./normalize-price");
 function placeTrade(p) {
   var normalizedPrice = normalizePrice({ minPrice: p.minPrice, maxPrice: p.maxPrice, price: p.limitPrice });
   var orderType = (["buy", "sell"])[p._direction];
-  getBetterWorseOrders({
-    orderType: orderType,
-    marketID: p._market,
-    outcome: p._outcome,
-    price: p.limitPrice,
-  }, function (err, betterWorseOrders) {
+  approvalCheck(p.meta.address, p.meta, function(err) {
     if (err) return p.onFailed(err);
-    tradeUntilAmountIsZero(assign({}, immutableDelete(p, ["limitPrice", "amount", "minPrice", "maxPrice"]), {
-      _price: normalizedPrice,
-      _fxpAmount: p.amount,
-      _betterOrderID: betterWorseOrders.betterOrderID,
-      _worseOrderID: betterWorseOrders.worseOrderID,
-    }));
-  });
+    getBetterWorseOrders({
+      orderType: orderType,
+      marketID: p._market,
+      outcome: p._outcome,
+      price: p.limitPrice,
+    }, function (err, betterWorseOrders) {
+      if (err) return p.onFailed(err);
+      tradeUntilAmountIsZero(assign({}, immutableDelete(p, ["limitPrice", "amount", "minPrice", "maxPrice"]), {
+        _price: normalizedPrice,
+        _fxpAmount: p.amount,
+        _betterOrderId: betterWorseOrders.betterOrderID,
+        _worseOrderId: betterWorseOrders.worseOrderID,
+      }));
+    });
+  })
 }
 
 module.exports = placeTrade;
