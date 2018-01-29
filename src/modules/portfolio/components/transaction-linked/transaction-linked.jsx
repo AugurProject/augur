@@ -40,7 +40,7 @@ export default class LinkedTransaction extends Component {
           ref={(metaWrapper) => { this.metaWrapper = metaWrapper }}
           className={ToggleHeightStyles['toggle-height-target']}
         >
-          <TransactionMeta meta={p.transaction.meta} />
+          <TransactionMeta meta={p.transaction.meta} networkId={p.networkId} />
         </div>
       </div>
     )

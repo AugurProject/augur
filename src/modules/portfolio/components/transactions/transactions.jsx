@@ -16,6 +16,7 @@ export default class Transactions extends Component {
     transactions: PropTypes.array.isRequired,
     loadAccountHistoryTransactions: PropTypes.func.isRequired,
     transactionPeriod: PropTypes.string,
+    networkId: PropTypes.number,
   }
 
   constructor(props) {
@@ -95,9 +96,9 @@ export default class Transactions extends Component {
             const transaction = p.transactions[(s.lowerBound - 1) + i]
             if (transaction) {
               if (transaction.transactions && transaction.transactions.length <= 1) {
-                return <TransactionSingle key={transaction.hash} transaction={transaction} />
+                return <TransactionSingle key={transaction.hash} transaction={transaction} networkId={p.networkId} />
               }
-              return <TransactionMultiple key={transaction.hash} transaction={transaction} />
+              return <TransactionMultiple key={transaction.hash} transaction={transaction} networkId={p.networkId} />
             }
             return null
           })

@@ -15,6 +15,7 @@ export default class TransactionSingle extends Component {
 
   static propTypes = {
     transaction: PropTypes.object.isRequired,
+    networkId: PropTypes.number,
   }
 
   constructor(props) {
@@ -27,7 +28,7 @@ export default class TransactionSingle extends Component {
 
   render() {
     const s = this.state
-    const { transaction } = this.props
+    const { transaction, networkId } = this.props
 
     return (
       <div className={CommonStyles.Transaction__item}>
@@ -42,7 +43,7 @@ export default class TransactionSingle extends Component {
           ref={(singleTransactionMeta) => { this.singleTransactionMeta = singleTransactionMeta }}
           className={ToggleHeightStyles['toggle-height-target']}
         >
-          <TransactionMeta meta={transaction.transactions[0].meta} />
+          <TransactionMeta meta={transaction.transactions[0].meta} networkId={networkId} />
         </div>
       </div>
     )
