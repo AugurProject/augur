@@ -2,6 +2,8 @@
 
 .SideNav {
   background: @color-purple;
+  display: flex;
+  flex-flow: column nowrap;
 }
 
 .SideNav__nav {
@@ -72,8 +74,11 @@
 
 @media @breakpoint-mobile {
   .SideNav {
+    display: flex;
+    flex-flow: column nowrap;
     height: 100vh;
     left: -12.5rem;
+    overflow: auto;
     padding-top: 2.8125rem;
     position: absolute;
     transition: left 0.2s ease-in-out;
@@ -84,9 +89,45 @@
     }
   }
 
+  .SideNav__nav__separator {
+    background: @color-lightpurple;
+    height: 0.0625rem;
+    margin: 1rem 0 0.5rem;
+    width: 12.125rem;
+  }
+
+  .SideNav__stat-label {
+    color: fadeout(@color-white, 75);
+    padding-bottom: 0.5rem;
+  }
+
+  .SideNav__stat-value {
+    color: @color-white;
+    padding-left: 0.5rem;
+  }
+
+  .SideName__placement {
+    padding: 20% 0 20% 20%;
+  }
+
+  .SideNav__amt {
+    align-self: flex-end;
+    font-size: 0.925rem;
+    margin-top: auto;
+    width: 100%;
+
+    span {
+      display: inline-block;
+      font-weight: 400;
+      position: static;
+      text-align: left;
+    }
+  }
+
   .SideNav__nav {
     border: none;
     padding-left: 1rem;
+    padding-top: 10px;
 
     > li {
       border: none;
@@ -99,10 +140,6 @@
         text-align: left;
 
         &:hover { background: none; }
-
-        svg {
-          width: 1.875rem;
-        }
 
         span {
           display: inline-block;
