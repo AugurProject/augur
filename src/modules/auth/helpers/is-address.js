@@ -32,10 +32,10 @@ export default function isAddress(address) {
 function isChecksumAddress(address) {
   // Check each case
   const formattedAddress = address.replace('0x', '')
-  const addressHash = augur.rpc.sha3(formattedAddress.toLowerCase(), 'hex')
+  const addressHash = augur.rpc.sha3(formattedAddress.toLowerCase())
   for (let i = 0; i < 40; i++) {
     // the nth letter should be uppercase if the nth digit of casemap is 1
-    if ((parseInt(addressHash[i], 16) > 7 && formattedAddress[i].toUpperCase() !== formattedAddress[i]) || (parseInt(addressHash[i], 16) <= 7 && formattedAddress[i].toLowerCase() !== formattedAddress[i])) {
+    if ((parseInt(addressHash[i], 16) > 7 && address[i].toUpperCase() !== address[i]) || (parseInt(addressHash[i], 16) <= 7 && address[i].toLowerCase() !== address[i])) {
       return false
     }
   }
