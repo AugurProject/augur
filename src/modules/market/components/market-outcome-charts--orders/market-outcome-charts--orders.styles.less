@@ -1,0 +1,49 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketOutcomeOrderBook {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-bottom: 30px;
+}
+
+.MarketOutcomeOrderBook__Side {
+  &:extend(.caps--small);
+
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.MarketOutcomeOrderBook__row {
+  display: flex;
+  padding: 0.4em;
+  width: 100%;
+}
+
+.MarketOutcomeOrderBook__row--head {
+  .MarketOutcomeOrderBook__RowItem {
+    color: @color-white;
+  }
+}
+
+.MarketOutcomeOrderBook__row--hover {
+  background-color: fade(@color-white, 10%);
+}
+
+.MarketOutcomeOrderbook__row--hover-encompassed {
+  background-color: fade(@color-white, 5%);
+}
+
+.MarketOutcomeOrderBook__RowItem {
+  color: @color-gray;
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.MarketOutcomeOrderBook__Midmarket {
+  align-self: flex-end;
+  color: @color-white;
+  margin: 0.5em 0;
+}

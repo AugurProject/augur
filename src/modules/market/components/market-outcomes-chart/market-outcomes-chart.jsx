@@ -39,11 +39,14 @@ export default class MarketOutcomesChart extends Component {
     if (!isEqual(prevProps.priceHistory, this.props.priceHistory)) this.drawChart()
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.drawChart)
+  }
+
   drawChart() {
     if (this.outcomesChart) {
       const fauxDiv = new ReactFauxDOM.Element('div')
-      const chart = d3.select(fauxDiv)
-        .append('svg')
+      const chart = d3.select(fauxDiv).append('svg')
 
       const { priceHistory } = this.props
 
@@ -77,6 +80,7 @@ export default class MarketOutcomesChart extends Component {
         .x(d => xScale(d[0]))
         .y(d => yScale(d[1]))
 
+      // TODO -- refactor this to be more correct in d3 conventions, i.e. -- chart.select....
       priceHistory.forEach((outcome, i) => {
         chart.append('path')
           .data([priceHistory[i].data])

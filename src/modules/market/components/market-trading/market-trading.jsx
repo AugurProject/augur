@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 
 import MarketTradingWrapper from 'modules/market/components/market-trading--wrapper/market-trading--wrapper'
 import { Check, Close } from 'modules/common/components/icons/icons'
+import { isEqual } from 'lodash'
 
-import getValue from 'utils/get-value'
+import BigNumber from 'bignumber.js'
 
 import { SCALAR } from 'modules/markets/constants/market-types'
 
@@ -13,9 +14,9 @@ import Styles from 'modules/market/components/market-trading/market-trading.styl
 class MarketTrading extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
+    availableFunds: PropTypes.instanceOf(BigNumber).isRequied,
     isLogged: PropTypes.bool.isRequired,
     selectedOutcomes: PropTypes.array.isRequired,
-    selectedOutcome: PropTypes.object.isRequired,
     isMobile: PropTypes.bool.isRequired,
   }
 
@@ -25,9 +26,24 @@ class MarketTrading extends Component {
     this.state = {
       showForm: false,
       showOrderPlaced: false,
+      selectedOutcome: null
     }
 
     this.toggleForm = this.toggleForm.bind(this)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!isEqual(this.props.selectedOutcomes, nextProps.selectedOutcomes)) {
+      if (nextProps.selectedOutcomes.length === 1) {
+        this.setState({
+          selectedOutcome: nextProps.market.outcomes.find(outcome => outcome.id === nextProps.selectedOutcomes[0])
+        })
+      } else {
+        this.setState({
+          selectedOutcome: null
+        })
+      }
+    }
   }
 
   toggleForm() {
@@ -38,8 +54,8 @@ class MarketTrading extends Component {
     const s = this.state
     const p = this.props
 
-    const hasFunds = getValue(p, 'market.tradeSummary.hasUserEnoughFunds')
-    const hasSelectedOutcome = p.selectedOutcomes.length > 0
+    const hasFunds = p.availableFunds.gt(0)
+    const hasSelectedOutcome = s.selectedOutcome !== null
 
     let initialMessage = ''
 
@@ -66,19 +82,19 @@ class MarketTrading extends Component {
           <MarketTradingWrapper
             market={p.market}
             isLogged={p.isLogged}
-            selectedOutcomes={p.selectedOutcomes}
-            selectedOutcome={p.selectedOutcome}
+            selectedOutcome={s.selectedOutcome}
             initialMessage={initialMessage}
             isMobile={p.isMobile}
             toggleForm={this.toggleForm}
+            availableFunds={p.availableFunds}
           />
         }
-        { p.isMobile && p.selectedOutcomes.length > 0 && initialMessage &&
+        { p.isMobile && hasSelectedOutcome && initialMessage &&
           <div className={Styles['Trading__initial-message']}>
             <p>{ initialMessage }</p>
           </div>
         }
-        { p.isMobile && p.selectedOutcomes.length > 0 && !initialMessage && !s.showForm && // this needs to be changed to use p.selectedOutcome (should only show on mobile when an outcome has been selected)
+        { p.isMobile && hasSelectedOutcome && !initialMessage && !s.showForm && // this needs to be changed to use p.selectedOutcome (should only show on mobile when an outcome has been selected)
           <div className={Styles['Trading__button--trade']}>
             <button onClick={this.toggleForm}>Trade</button>
           </div>

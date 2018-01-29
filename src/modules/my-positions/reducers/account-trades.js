@@ -1,6 +1,7 @@
 import { UPDATE_ACCOUNT_TRADES_DATA } from 'modules/my-positions/actions/update-account-trades-data'
 import { CLEAR_ACCOUNT_TRADES } from 'modules/my-positions/actions/clear-account-trades'
 import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account'
+import { RESET_STATE } from 'modules/app/actions/reset-state'
 
 const DEFAULT_STATE = {}
 
@@ -30,8 +31,8 @@ export default function (accountTrades = DEFAULT_STATE, action) {
         }
       }
     }
+    case RESET_STATE:
     case CLEAR_LOGIN_ACCOUNT:
-      return DEFAULT_STATE
     case CLEAR_ACCOUNT_TRADES:
       return DEFAULT_STATE
     default:

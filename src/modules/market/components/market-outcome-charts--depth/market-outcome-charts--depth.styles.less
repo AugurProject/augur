@@ -1,0 +1,72 @@
+@import (reference) "~assets/styles/shared";
+
+.MarketOutcomeDepth {
+  height: 100%;
+}
+
+.MarketOutcomeDepth__depth-hover-values {
+  &:extend(.caps--small all);
+
+  display: flex;
+}
+
+.MarketOutcomeDepth__hover-depth {
+  display: flex;
+}
+
+.MarketOutcomeDepth__depth-hover-title {
+  color: @color-white;
+  margin-right: 0.3em;
+}
+
+.MarketOutcomeDepth__depth-hover-value {
+  color: @color-lightgray;
+  width: 5em;
+}
+
+.MarketOutcomeDepth__chart {
+  cursor: cell;
+  height: 100%;
+
+  :global {
+    #outcome_depth {
+      height: 100%;
+      width: 100%;
+    }
+
+    #hovered_price_label {
+      .caps--small();
+
+      stroke: @color-white;
+    }
+
+    .depth-line {
+      fill: none;
+      stroke: @color-lighter-purple;
+    }
+
+    .stop-left {
+      stop-color: transparent;
+    }
+
+    .stop-right {
+      stop-color: @color-lighter-purple;
+    }
+
+    .filled-subtle {
+      fill: url("#subtleGradient");
+      opacity: 0.15;
+    }
+
+    .line .crosshair {
+      fill: none;
+      stroke: @color-white;
+      stroke-dasharray: 5;
+    }
+
+    .overlay {
+      fill: none;
+      pointer-events: visible;
+    }
+  }
+}

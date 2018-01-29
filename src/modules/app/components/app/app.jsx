@@ -23,6 +23,7 @@ import SideNav from 'modules/app/components/side-nav/side-nav'
 import Origami from 'modules/app/components/origami-svg/origami-svg'
 import Logo from 'modules/app/components/logo/logo'
 import Routes from 'modules/routes/components/routes/routes'
+import NotificationsContainer from 'modules/notifications/container'
 
 import MobileNavHamburgerIcon from 'modules/common/components/mobile-nav-hamburger-icon'
 import MobileNavCloseIcon from 'modules/common/components/mobile-nav-close-icon'
@@ -32,7 +33,7 @@ import NavAccountIcon from 'modules/common/components/nav-account-icon'
 import NavCreateIcon from 'modules/common/components/nav-create-icon'
 import NavMarketsIcon from 'modules/common/components/nav-markets-icon'
 import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon'
-import { AlertCircle, NavReportingIcon } from 'modules/common/components/icons/icons'
+import { AlertCircle } from 'modules/common/components/icons/icons' // NavReportingIcon
 
 import parsePath from 'modules/routes/helpers/parse-path'
 import makePath from 'modules/routes/helpers/make-path'
@@ -77,6 +78,7 @@ export default class AppView extends Component {
     isMobileSmall: PropTypes.bool.isRequired,
     updateIsMobile: PropTypes.func.isRequired,
     updateIsMobileSmall: PropTypes.func.isRequired,
+    initAugur: PropTypes.func.isRequired,
     modal: PropTypes.object.isRequired,
     selectedCategory: PropTypes.string,
     url: PropTypes.string
@@ -116,13 +118,14 @@ export default class AppView extends Component {
         route: MY_POSITIONS,
         requireLogin: true
       },
-      {
-        title: 'Reporting',
-        iconName: 'nav-reporting-icon',
-        icon: NavReportingIcon,
-        route: REPORTING_OPEN,
-        requireLogin: true
-      },
+      // NOTE -- TEMPORARILY disabled until new mocks + related middleware changes are in place
+      // {
+      //   title: 'Reporting',
+      //   iconName: 'nav-reporting-icon',
+      //   icon: NavReportingIcon,
+      //   route: REPORTING_OPEN,
+      //   requireLogin: true
+      // },
       {
         title: 'Account',
         iconName: 'nav-account-icon',
@@ -140,6 +143,7 @@ export default class AppView extends Component {
   }
 
   componentWillMount() {
+    this.props.initAugur(this.props.history)
     const currentPath = parsePath(this.props.location.pathname)[0]
     this.setState({ currentBasePath: currentPath })
 
@@ -338,8 +342,21 @@ export default class AppView extends Component {
     let origamiScalar = 0
 
     const mainSectionClickHandler = () => {
+      const stateUpdate = {}
+      let updateState = false
+
       if (this.props.isMobile && this.state.mobileMenuState !== mobileMenuStates.CLOSED) {
-        this.setState({ mobileMenuState: mobileMenuStates.CLOSED })
+        stateUpdate.mobileMenuState = mobileMenuStates.CLOSED
+        updateState = true
+      }
+
+      if (this.state.isNotificationsVisible) {
+        stateUpdate.isNotificationsVisible = false
+        updateState = true
+      }
+
+      if (updateState) {
+        this.setState(stateUpdate)
       }
     }
 
@@ -401,11 +418,14 @@ export default class AppView extends Component {
                 isLogged={p.isLogged}
                 stats={p.coreStats}
                 unseenCount={unseenCount}
-                isNotificationsVisible={s.isNotificationsVisible}
                 toggleNotifications={this.toggleNotifications}
-                notifications={p.notifications}
               />
             </section>
+            {p.isLogged && s.isNotificationsVisible &&
+              <NotificationsContainer
+                toggleNotifications={() => this.toggleNotifications()}
+              />
+            }
             <section
               className={Styles.Main__wrap}
               style={{ marginLeft: categoriesMargin }}
