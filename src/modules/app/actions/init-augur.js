@@ -11,12 +11,17 @@ import { updateModal } from 'modules/modal/actions/update-modal'
 import { closeModal } from 'modules/modal/actions/close-modal'
 import logError from 'utils/log-error'
 
-import { MODAL_NETWORK_MISMATCH } from 'modules/modal/constants/modal-types'
+import { MODAL_NETWORK_MISMATCH, MODAL_NETWORK_DISCONNECTED } from 'modules/modal/constants/modal-types'
 
-function pollForAccount(dispatch) {
+const POLL_INTERVAL_DURATION = 250
+
+function pollForAccount(dispatch, getState) {
   let account
 
   setInterval(() => {
+    const { modal } = getState()
+    if (!!modal.type && modal.type === MODAL_NETWORK_DISCONNECTED) return
+
     AugurJS.augur.rpc.eth.accounts((accounts) => {
       if (account !== accounts[0]) {
         account = accounts[0]
@@ -28,29 +33,55 @@ function pollForAccount(dispatch) {
         }
       }
     })
-  }, 250)
+  }, POLL_INTERVAL_DURATION)
 }
 
-function pollForNetwork(dispatch, expectedNetwork) {
+function pollForNetwork(dispatch, getState) {
   let networkId
 
   setInterval(() => {
+    const { modal, env } = getState()
+    const expectedNetwork = env['network-id']
     if (parseInt(AugurJS.augur.rpc.getNetworkID(), 10) !== networkId) {
       networkId = parseInt(AugurJS.augur.rpc.getNetworkID(), 10)
 
-      if (networkId !== expectedNetwork) {
+      if (networkId !== expectedNetwork && !!modal.type && modal.type !== MODAL_NETWORK_DISCONNECTED) {
         dispatch(updateModal({
           type: MODAL_NETWORK_MISMATCH,
           expectedNetwork
         }))
-      } else {
+      } else if (!!modal.type && modal.type === MODAL_NETWORK_MISMATCH) {
         dispatch(closeModal())
       }
     }
-  })
+  }, POLL_INTERVAL_DURATION)
 }
 
-export function initAugur(callback = logError) {
+export function connectAugur(history, env, isInitialConnection = false, callback = logError) {
+  return (dispatch, getState) => {
+    AugurJS.connect(env, (err, ConnectionInfo) => {
+      if (err || !ConnectionInfo.augurNode || !ConnectionInfo.ethereumNode) {
+        return callback(err, ConnectionInfo)
+      }
+      const ethereumNodeConnectionInfo = ConnectionInfo.ethereumNode
+      dispatch(updateConnectionStatus(true))
+      dispatch(updateContractAddresses(ethereumNodeConnectionInfo.contracts))
+      dispatch(updateFunctionsAPI(ethereumNodeConnectionInfo.abi.functions))
+      dispatch(updateEventsAPI(ethereumNodeConnectionInfo.abi.events))
+      dispatch(updateAugurNodeConnectionStatus(true))
+      dispatch(registerTransactionRelay())
+      dispatch(loadUniverse(env.universe || AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()].Universe, history))
+      dispatch(closeModal())
+      if (isInitialConnection) {
+        pollForAccount(dispatch, getState)
+        pollForNetwork(dispatch, getState)
+      }
+      callback()
+    })
+  }
+}
+
+export function initAugur(history, callback = logError) {
   return (dispatch, getState) => {
     const xhttp = new XMLHttpRequest()
     xhttp.onreadystatechange = () => {
@@ -58,19 +89,7 @@ export function initAugur(callback = logError) {
         if (xhttp.status === 200) {
           const env = JSON.parse(xhttp.responseText)
           dispatch(updateEnv(env))
-          AugurJS.connect(env, (err, ethereumNodeConnectionInfo) => {
-            if (err) return callback(err)
-            dispatch(updateConnectionStatus(true))
-            dispatch(updateContractAddresses(ethereumNodeConnectionInfo.contracts))
-            dispatch(updateFunctionsAPI(ethereumNodeConnectionInfo.abi.functions))
-            dispatch(updateEventsAPI(ethereumNodeConnectionInfo.abi.events))
-            dispatch(updateAugurNodeConnectionStatus(true))
-            dispatch(registerTransactionRelay())
-            dispatch(loadUniverse(env.universe || AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()].Universe))
-            pollForAccount(dispatch)
-            pollForNetwork(dispatch, env['network-id'])
-            callback()
-          })
+          connectAugur(history, env, true, callback)(dispatch, getState)
         } else {
           callback(xhttp.statusText)
         }

@@ -1,7 +1,10 @@
 import { UPDATE_REPORTS, UPDATE_REPORT, CLEAR_REPORTS } from 'modules/reports/actions/update-reports'
 import { CLEAR_OLD_REPORTS } from 'modules/reports/actions/clear-old-reports'
+import { RESET_STATE } from 'modules/app/actions/reset-state'
 
-export default function (reports = {}, action) {
+const DEFAULT_STATE = {}
+
+export default function (reports = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_REPORTS: {
       let universeID
@@ -39,8 +42,9 @@ export default function (reports = {}, action) {
         }, {})
       }
     }
+    case RESET_STATE:
     case CLEAR_REPORTS:
-      return {}
+      return DEFAULT_STATE
     default:
       return reports
   }
