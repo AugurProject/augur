@@ -14,7 +14,7 @@ var marketCreatedParamObject = {
   market: "0xbb785f16f6aab68007e897ac3560378d8d6ffd16",
   marketCreationFee: speedomatic.fix("0.010000000006", "hex"),
   minPrice: "0x0",
-  maxPrice: "0x2710",
+  maxPrice: speedomatic.fix("10000", "hex"),
   marketType: "0x0",
   description: "Will SpaceX successfully complete a manned flight to the International Space Station by the end of 2018?",
   outcomes: [0, 0],

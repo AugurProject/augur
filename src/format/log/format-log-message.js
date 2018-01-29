@@ -21,6 +21,8 @@ function formatLogMessage(contractName, eventName, message) {
             extraInfo: extraInfo,
             marketCreationFee: speedomatic.unfix(message.marketCreationFee, "string"),
             topic: decodeTag(message.topic),
+            minPrice: speedomatic.unfix(message.minPrice, "string"),
+            maxPrice: speedomatic.unfix(message.maxPrice, "string"),
           };
           if (message.marketType === "1") {
             formattedMessage.outcomes = message.outcomes.map(function (outcome) {

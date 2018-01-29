@@ -163,16 +163,16 @@ module.exports = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "0.01", price: "200" },
-        { shares: "0.02", price: "100" },
-        { shares: "0.05", price: "10" },
+        { shares: "0.0001", price: "1000" },
+        { shares: "0.0005", price: "750" },
+        { shares: "0.0005", price: "500" },
       ],
     },
     sell: {
       "0": [
-        { shares: "0.02", price: "250" },
-        { shares: "0.01", price: "350" },
-        { shares: "0.005", price: "450" },
+        { shares: "0.00001", price: "400" },
+        { shares: "0.00002", price: "350" },
+        { shares: "0.00003", price: "250" },
       ],
     },
   },
