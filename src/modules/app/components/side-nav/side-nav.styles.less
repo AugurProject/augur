@@ -2,6 +2,8 @@
 
 .SideNav {
   background: @color-purple;
+  display: flex;
+  flex-flow: column nowrap;
 }
 
 .SideNav__nav {
@@ -95,7 +97,7 @@
   }
 
   .SideNav__stat-label {
-    color: rgba(255, 255, 255, 0.25);
+    color: fadeout(@color-white, 75);
     padding-bottom: 0.5rem;
   }
 
@@ -104,17 +106,14 @@
     padding-left: 0.5rem;
   }
 
-  .SideName__space {
-    flex-grow: 3;
-  }
-
   .SideName__placement {
     padding: 20% 0 20% 20%;
   }
 
   .SideNav__amt {
-    bottom: 0;
+    align-self: flex-end;
     font-size: 0.925rem;
+    margin-top: auto;
     width: 100%;
 
     span {
