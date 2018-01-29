@@ -178,7 +178,7 @@ export default class MarketOutcomeDepth extends Component {
           const mouse = d3.mouse(d3.select('#outcome_depth').node())
 
           // Draw crosshairs
-          const y = mouse[1]
+          // const y = mouse[1]
 
           // Determine closest order
           const hoveredPrice = this.state.yScale.invert(mouse[1])
