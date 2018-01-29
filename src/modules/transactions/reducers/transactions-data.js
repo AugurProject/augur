@@ -1,8 +1,11 @@
 import { UPDATE_TRANSACTIONS_DATA } from 'modules/transactions/actions/update-transactions-data'
 import { DELETE_TRANSACTION, CLEAR_TRANSACTION_DATA } from 'modules/transactions/actions/delete-transaction'
 import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account'
+import { RESET_STATE } from 'modules/app/actions/reset-state'
 
-export default function (transactionsData = {}, action) {
+const DEFAULT_STATE = {}
+
+export default function (transactionsData = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_TRANSACTIONS_DATA:
       return Object.keys(action.transactionsData).reduce((p, transactionID) => {
@@ -13,7 +16,6 @@ export default function (transactionsData = {}, action) {
         }
         return p
       }, { ...transactionsData })
-
     case DELETE_TRANSACTION:
       return Object.keys(transactionsData).reduce((p, transactionID) => {
         if (action.transactionID !== transactionID) {
@@ -21,15 +23,11 @@ export default function (transactionsData = {}, action) {
         }
         return p
       }, {})
-
     case CLEAR_TRANSACTION_DATA:
-      return {}
-
+    case RESET_STATE:
     case CLEAR_LOGIN_ACCOUNT:
-      return {}
-
+      return DEFAULT_STATE
     default:
       return transactionsData
   }
 }
-

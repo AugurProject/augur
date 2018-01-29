@@ -1,10 +1,12 @@
 import { UPDATE_ORDER_BOOK, REPLACE_ORDER_BOOK, CLEAR_ORDER_BOOK } from 'modules/bids-asks/actions/update-order-book'
+import { RESET_STATE } from 'modules/app/actions/reset-state'
 
+const DEFAULT_STATE = {}
 /**
  * @param {Object} orderBooks
  * @param {Object} action
  */
-export default function (orderBooks = {}, action) {
+export default function (orderBooks = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_ORDER_BOOK: {
       const {
@@ -66,6 +68,8 @@ export default function (orderBooks = {}, action) {
         }
       }
     }
+    case RESET_STATE:
+      return DEFAULT_STATE
     default:
       return orderBooks
   }

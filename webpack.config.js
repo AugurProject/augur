@@ -23,7 +23,7 @@ const PATHS = {
 // COMMON CONFIG
 let config = {
   entry: {
-    'assets/styles/styles': `${PATHS.APP}/styles`,
+    // 'assets/styles/styles': `${PATHS.APP}/styles`,
     'assets/scripts/vendor': [
       'react',
       'react-dom',
