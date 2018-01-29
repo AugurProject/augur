@@ -19,6 +19,7 @@ class PositionsMarketsList extends Component {
     linkType: PropTypes.string,
     positionsDefault: PropTypes.bool,
     claimTradingProceeds: PropTypes.func,
+    isMobile: PropTypes.bool,
   }
 
   constructor(props) {
@@ -84,6 +85,7 @@ class PositionsMarketsList extends Component {
               linkType={p.linkType}
               positionsDefault={p.positionsDefault}
               claimTradingProceeds={p.claimTradingProceeds}
+              isMobile={p.isMobile}
             />)):
           <NullStateMessage message="No Markets Available" />}
       </div>

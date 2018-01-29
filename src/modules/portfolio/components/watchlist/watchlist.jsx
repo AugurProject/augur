@@ -19,6 +19,7 @@ class WatchList extends Component {
     scalarShareDenomination: PropTypes.object.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
     loadMarketsInfo: PropTypes.func.isRequired,
+    isMobile: PropTypes.bool,
   }
 
   constructor(props) {
@@ -103,6 +104,7 @@ class WatchList extends Component {
           toggleFavorite={p.toggleFavorite}
           loadMarketsInfo={p.loadMarketsInfo}
           linkType={TYPE_TRADE}
+          isMobile={p.isMobile}
         />
       </section>
     )

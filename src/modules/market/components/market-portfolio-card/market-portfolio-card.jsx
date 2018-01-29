@@ -9,7 +9,7 @@ import MarketTable from 'modules/market/components/market-tables/market-tables'
 import CaretDropdown from 'modules/common/components/caret-dropdown/caret-dropdown'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import { TYPE_REPORT, TYPE_CHALLENGE, TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
-
+import { dateHasPassed } from 'utils/format-date'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 
@@ -22,6 +22,7 @@ export default class MarketPortfolioCard extends Component {
     linkType: PropTypes.string,
     positionsDefault: PropTypes.bool,
     claimTradingProceeds: PropTypes.func,
+    isMobile: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -46,7 +47,6 @@ export default class MarketPortfolioCard extends Component {
     const p = this.props
     const myPositionsSummary = getValue(this.props, 'market.myPositionsSummary')
     const myPositionOutcomes = getValue(this.props, 'market.outcomes')
-
     let buttonText
 
     switch (p.linkType) {
@@ -79,7 +79,8 @@ export default class MarketPortfolioCard extends Component {
           >
             <div className={Styles.MarketCard__headertext}>
               <span className={Styles['MarketCard__expiration--mobile']}>
-                Expires June 31, 2017 7:00 AM
+                {dateHasPassed(p.market.endDate.timestamp) ? 'Expired ' : 'Expires '}
+                { p.isMobile ? p.market.endDate.formattedShort : p.market.endDate.formatted }
               </span>
               <h1 className={CommonStyles.MarketCommon__description}>
                 {this.props.market.description}

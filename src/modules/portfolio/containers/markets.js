@@ -21,6 +21,7 @@ const mapStateToProps = state =>
     myMarkets: getMyMarkets(),
     transactionsLoading: state.transactionsLoading,
     scalarShareDenomination: getScalarShareDenomination(),
+    isMobile: state.isMobile,
     hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber // FIXME
   })
 

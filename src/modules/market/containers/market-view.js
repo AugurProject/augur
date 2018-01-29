@@ -12,7 +12,8 @@ const mapStateToProps = state => ({
   isLogged: state.isLogged,
   isConnected: state.connection.isConnected,
   universe: state.universe,
-  marketsData: state.marketsData
+  marketsData: state.marketsData,
+  isMobile: state.isMobile,
 })
 
 const mapDispatchToProps = dispatch => ({
