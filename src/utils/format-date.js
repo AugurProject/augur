@@ -70,7 +70,7 @@ export function getBeginDate(periodString) {
   return beginDate.unix()
 }
 
-export function dateHasPassed(unitTimestamp) {
+export function dateHasPassed(unixTimestamp) {
   const date = moment().utc()
-  return (date.unix() >= unitTimestamp)
+  return (date.unix() >= unixTimestamp)
 }
