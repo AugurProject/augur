@@ -31,7 +31,7 @@ function cancelOrder(augur, orderID, orderType, marketID, outcome, auth, callbac
 
 function cancelOrders(augur, creator, universe, auth, callback) {
   console.log(chalk.cyan("Canceling orders for"), chalk.green(creator), chalk.cyan("in universe"), chalk.green(universe));
-  augur.trading.getOrders({ creator: creator, universe: universe }, function (err, orders) {
+  augur.trading.getOrders({ creator: creator, universe: universe, orderState: augur.constants.ORDER_STATE.OPEN }, function (err, orders) {
     if (err) return callback(err);
     async.forEachOf(orders, function (ordersInMarket, marketID, nextMarket) {
       async.forEachOf(ordersInMarket, function (ordersInOutcome, outcome, nextOutcome) {
