@@ -10,7 +10,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       startBlockNumber: 1400000,
       universe: "0x000000000000000000000000000000000000000b",
       startTime: 1506473473,
-      endBlockNumber: null,
+      endBlockNumber: 1500001,
       endTime: 1509065473,
       fees: 0,
     }, {
