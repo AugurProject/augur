@@ -43,12 +43,7 @@ Now we need to make the reset of the system aware of the new contract address th
 
 ## augur middleware
 
-Since we are using local contracts we need to make sure all repositories are looking at the same dependencies, we're going to use yarn link to help us out. The following are examples, we'll execute in each repository section:
-
-    -- yarn link examples:
-    inside augur.js:> npm i; yarn build; yarn link
-    inside augur-node:> yarn link augur.js
-    inside augur (ui):> yarn link augur.js
+Since we are using local contracts we need to make sure all repositories are looking at the same dependencies, we're going to use yarn link to help us out.
 
 ### augur.js
 
@@ -74,7 +69,6 @@ Only two things need to be done, update env-dev.json and make sure to yarn link.
     cd augur
     npm i
     yarn link augur.js;
-    yarn build;
   	yarn dev;
 
 
