@@ -29,7 +29,6 @@ describe("server/getters/get-fee-window-current", () => {
         endTime: 1511657473,
         feeWindow: "0x2000000000000000000000000000000000000000",
         feeWindowID: 457,
-        fees: 0,
         startBlockNumber: 1500001,
         startTime: 1509065473,
         universe: "0x000000000000000000000000000000000000000b",

@@ -3,7 +3,16 @@ import {Address, FeeWindowRow} from "../../types";
 
 export function getFeeWindowCurrent(db: Knex, universe: Address, callback: (err?: Error|null, result?: any) => void): void {
   if (universe == null) return callback(new Error("Must provide universe"));
-  const query = db.select("*").first().from("fee_windows")
+  const query = db.select(
+    [
+      "endBlockNumber",
+      "endTime",
+      "feeWindow",
+      "feeWindowID",
+      "startBlockNumber",
+      "startTime",
+      "universe",
+    ]).first().from("fee_windows")
     .whereNull("endBlockNumber")
     .where({universe})
     .orderBy("startTime", "ASC");
