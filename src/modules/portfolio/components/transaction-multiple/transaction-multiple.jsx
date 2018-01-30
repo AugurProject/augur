@@ -17,7 +17,6 @@ export default class TransactionMultiple extends Component {
 
   static propTypes = {
     transaction: PropTypes.object.isRequired,
-    networkId: PropTypes.number,
   }
 
   constructor(props) {
@@ -30,7 +29,7 @@ export default class TransactionMultiple extends Component {
 
   render() {
     const s = this.state
-    const { transaction, networkId } = this.props
+    const { transaction } = this.props
 
     return (
       <div className={CommonStyles.Transaction__item}>
@@ -46,7 +45,7 @@ export default class TransactionMultiple extends Component {
         </button>
         <div className={ToggleHeightStyles['toggle-height-target']} ref={(multipleTransactions) => { this.multipleTransactions = multipleTransactions }}>
           { (transaction.transactions || []).map((linkedTransaction, i) => (
-            <LinkedTransaction key={i} transaction={linkedTransaction} networkId={networkId} />
+            <LinkedTransaction key={i} transaction={linkedTransaction} />
           ))}
         </div>
       </div>

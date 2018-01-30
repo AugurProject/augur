@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import TransactionHeader from 'modules/portfolio/components/transaction-header/transaction-header'
-import TransactionMeta from 'modules/portfolio/components/transaction-meta/transaction-meta'
+import TransactionMeta from 'modules/portfolio/containers/transaction-meta'
 import { ChevronDown } from 'modules/common/components/icons/icons'
 
 import toggleHeight from 'utils/toggle-height/toggle-height'
@@ -15,7 +15,6 @@ export default class TransactionSingle extends Component {
 
   static propTypes = {
     transaction: PropTypes.object.isRequired,
-    networkId: PropTypes.number,
   }
 
   constructor(props) {
@@ -28,7 +27,7 @@ export default class TransactionSingle extends Component {
 
   render() {
     const s = this.state
-    const { transaction, networkId } = this.props
+    const { transaction } = this.props
 
     return (
       <div className={CommonStyles.Transaction__item}>
@@ -43,7 +42,7 @@ export default class TransactionSingle extends Component {
           ref={(singleTransactionMeta) => { this.singleTransactionMeta = singleTransactionMeta }}
           className={ToggleHeightStyles['toggle-height-target']}
         >
-          <TransactionMeta meta={transaction.transactions[0].meta} networkId={networkId} />
+          <TransactionMeta meta={transaction.transactions[0].meta} />
         </div>
       </div>
     )

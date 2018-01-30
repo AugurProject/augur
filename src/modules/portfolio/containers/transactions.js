@@ -7,7 +7,6 @@ import TransactionsList from 'modules/portfolio/components/transactions/transact
 const mapStateToProps = state => ({
   transactions: selectTransactions(state),
   transactionsLoading: state.transactionsLoading,
-  networkId: state.env['network-id'],
 })
 
 const mapDispatchToProps = dispatch => ({
