@@ -1,4 +1,3 @@
-import { Augur } from "augur.js";
 import * as Knex from "knex";
 import { Address, PositionsRow, ErrorCallback } from "../../../types";
 

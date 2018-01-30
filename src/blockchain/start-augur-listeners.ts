@@ -1,10 +1,8 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { Int256, FormattedEventLog, Block } from "../types";
-import { logProcessors } from "./log-processors";
+import { Block } from "../types";
 import { makeLogListener } from "./make-log-listener";
 import { processBlock, processBlockRemoval } from "./process-block";
-import { logError } from "../utils/log-error";
 
 export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: number): void {
   augur.events.startBlockchainEventListeners({

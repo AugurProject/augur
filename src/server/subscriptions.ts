@@ -1,6 +1,5 @@
 import * as uuidv4 from "uuid/v4";
 import { EventEmitter } from "events";
-import { ErrorCallback } from "../types";
 
 export class Subscriptions extends EventEmitter {
   private parentEmitter: EventEmitter;

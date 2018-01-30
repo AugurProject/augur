@@ -1,5 +1,4 @@
 import * as Knex from "knex";
-import BigNumber from "bignumber.js";
 import { Address, ReportingState, AsyncCallback } from "../../types";
 
 export function updateMarketState(db: Knex, marketID: Address, trx: Knex.Transaction, blockNumber: number, reportingState: ReportingState , callback: AsyncCallback) {

@@ -1,7 +1,7 @@
 import { Augur, CalculatedProfitLoss } from "augur.js";
 import { forEachOf } from "async";
 import * as Knex from "knex";
-import { Address, Int256, PositionsRow, UITrade, AsyncCallback, ErrorCallback } from "../../../types";
+import { Address, Int256, PositionsRow, AsyncCallback, ErrorCallback } from "../../../types";
 import { calculateProfitLossInOutcome } from "./calculate-profit-loss-in-outcome";
 import { insertPositionInMarket } from "./insert-position-in-market";
 import { updatePositionInMarket } from "./update-position-in-market";

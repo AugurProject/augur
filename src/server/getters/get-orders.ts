@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import * as Knex from "knex";
-import { Address, Bytes32, OrdersRow, OrderState, UIOrders } from "../../types";
+import { Address, OrdersRow, OrderState, UIOrders } from "../../types";
 import { queryModifier } from "./database";
 
 interface OrdersRowWithCreationTime extends OrdersRow {
