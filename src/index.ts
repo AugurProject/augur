@@ -1,14 +1,11 @@
 import Augur from "augur.js";
-import * as express from "express";
-import * as WebSocket from "ws";
 import * as Knex from "knex";
 import * as sqlite3 from "sqlite3";
 import * as _ from "lodash";
-import { EthereumNodeEndpoints, FormattedEventLog } from "./types";
+import { EthereumNodeEndpoints } from "./types";
 import { checkAugurDbSetup } from "./setup/check-augur-db-setup";
 import { syncAugurNodeWithBlockchain } from "./blockchain/sync-augur-node-with-blockchain";
 import { runServer } from "./server/run-server";
-import { ErrorCallback } from "./types";
 
 // tslint:disable-next-line:no-var-requires
 const {augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers } = require("../config");
