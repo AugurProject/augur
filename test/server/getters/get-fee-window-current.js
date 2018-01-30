@@ -2,42 +2,38 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getMarkets } = require("../../../build/server/getters/get-markets");
+const { getFeeWindowCurrent } = require("../../../build/server/getters/get-fee-window-current");
 
 
-describe("server/getters/get-markets", () => {
+describe("server/getters/get-fee-window-current", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getMarkets(db, t.params.universe, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsMatched) => {
-          t.assertions(err, marketsMatched);
+        getFeeWindowCurrent(db, t.params.universe, (err, feeWindow) => {
+          t.assertions(err, feeWindow);
           done();
         });
       });
     });
   };
   test({
-    description: "get markets in universe b",
+    description: "get feeWindow",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
     },
-    assertions: (err, marketsMatched) => {
+    assertions: (err, feeWindow) => {
       assert.isNull(err);
-      assert.deepEqual(marketsMatched, [
-        "0x0000000000000000000000000000000000000012",
-        "0x0000000000000000000000000000000000000013",
-        "0x0000000000000000000000000000000000000014",
-        "0x0000000000000000000000000000000000000015",
-        "0x0000000000000000000000000000000000000016",
-        "0x0000000000000000000000000000000000000017",
-        "0x0000000000000000000000000000000000000018",
-        "0x0000000000000000000000000000000000000019",
-        "0x0000000000000000000000000000000000000001",
-        "0x0000000000000000000000000000000000000002",
-        "0x0000000000000000000000000000000000000003",
-        "0x0000000000000000000000000000000000000011",
-      ]);
+      assert.deepEqual(feeWindow, {
+        endBlockNumber: null,
+        endTime: 1599999999,
+        feeWindow: "0x2000000000000000000000000000000000000000",
+        feeWindowID: 457,
+        fees: 0,
+        startBlockNumber: 1500001,
+        startTime: 1509065473,
+        universe: "0x000000000000000000000000000000000000000b",
+      });
     },
   });
   test({
@@ -45,9 +41,9 @@ describe("server/getters/get-markets", () => {
     params: {
       universe: "0x1010101010101010101010101010101010101010",
     },
-    assertions: (err, marketsMatched) => {
+    assertions: (err, feeWindow) => {
       assert.isNull(err);
-      assert.deepEqual(marketsMatched, []);
+      assert.isNull(feeWindow);
     },
   });
 });
