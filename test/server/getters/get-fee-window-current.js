@@ -26,7 +26,7 @@ describe("server/getters/get-fee-window-current", () => {
       assert.isNull(err);
       assert.deepEqual(feeWindow, {
         endBlockNumber: null,
-        endTime: 1599999999,
+        endTime: 1511657473,
         feeWindow: "0x2000000000000000000000000000000000000000",
         feeWindowID: 457,
         fees: 0,
