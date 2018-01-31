@@ -8,7 +8,7 @@ export function loadFundingHistory(options, callback = logError) {
     if (!loginAccount.address) return callback(null)
     augur.accounts.getAccountTransferHistory({ ...options, account: loginAccount.address }, (err, transferHistory) => {
       if (err) return callback(err)
-      if (transferHistory == null) return callback(null)
+      if (transferHistory == null || transferHistory.length === 0) return callback(null)
       dispatch(addTransferTransactions(transferHistory))
       callback(null, transferHistory)
     })

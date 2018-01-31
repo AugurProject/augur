@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
 
-import TransactionMeta from 'modules/portfolio/components/transaction-meta/transaction-meta'
+import TransactionMeta from 'modules/portfolio/containers/transaction-meta'
 import { ChevronDown } from 'modules/common/components/icons/icons'
 
 import toggleHeight from 'utils/toggle-height/toggle-height'

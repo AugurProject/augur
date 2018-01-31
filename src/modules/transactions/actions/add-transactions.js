@@ -102,11 +102,11 @@ export function addTransferTransactions(transfers) {
       const header = buildHeader(transaction, TRANSFER, SUCCESS)
       header.transactions = [transaction]
       const meta = {}
-      meta.hash = transaction.id
+      meta.txhash = transaction.transactionHash
       meta.recipient = transaction.recipient
       meta.sender = transaction.sender
       meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
-      meta.confirmations = blockchain.currentBlockNumber - transaction.blockNumber
+      meta.confirmations = blockchain.currentBlockNumber - transaction.creationBlockNumber
       transaction.meta = meta
       header.message = 'Transfer'
       header.description = `${transaction.value} ${transaction.symbol} transferred from ${transaction.sender} to ${transaction.recipient}`
@@ -131,6 +131,7 @@ export function addMarketCreationTransactions(marketsCreated) {
       meta.market = transaction.marketID
       meta['creation fee'] = transaction.hasOwnProperty('creationFee') && transaction.creationFee !== undefined ? transaction.creationFee : 0
       meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
+
       transaction.meta = meta
       const header = buildHeader(transaction, MARKET_CREATION, SUCCESS)
       header.message = 'Market Creation'
@@ -176,6 +177,7 @@ export function addOpenOrderTransactions(openOrders) {
             transaction.message = `${transaction.orderState} - ${type} ${transaction.amount} Shares @ ${transaction.price} ETH`
             const meta = {}
             creationTime = convertUnix(transaction.creationTime)
+            meta.txhash = transaction.transactionHash
             meta.timestamp = creationTime.full
             meta.outcome = outcomeID // need to get payNumerators ?
             meta.status = transaction.orderState
@@ -216,6 +218,7 @@ export function addReportingTransactions(reports) {
           }
           transaction.id = transaction.transactionHash + transaction.logIndex
           const meta = {}
+          meta.txhash = transaction.transactionHash
           meta.marketID = transaction.marketID
           meta.staked = `${transaction.amountStaked} REP`
           meta.numerators = JSON.stringify(transaction.payoutNumerators)
@@ -240,7 +243,7 @@ function buildHeader(item, type, status) {
   header.status = status
   header.hash = item.id
   // TODO: need to sort by datetime in render
-  header.timestamp = convertUnix(item.timestamp)
+  header.timestamp = convertUnix(item.timestamp ? item.timestamp : item.creationTime)
   header.sortOrder = getSortOrder(type)
   return header
 }
