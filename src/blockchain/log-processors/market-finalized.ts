@@ -5,7 +5,7 @@ import { augurEmitter } from "../../events";
 import { updateMarketState } from "./database";
 
 export function processMarketFinalizedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  updateMarketState( db, log.market, trx, log.blockNumber, augur.constants.REPORTING_STATE.FINALIZED, (err: Error|null): void => {
+  updateMarketState( trx, log.market, log.blockNumber, augur.constants.REPORTING_STATE.FINALIZED, (err: Error|null): void => {
     if (null) return callback(err);
     augurEmitter.emit("MarketFinalized", log);
     callback(null);

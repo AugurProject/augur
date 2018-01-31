@@ -6,7 +6,7 @@ import { updateMarketState, insertPayout } from "./database";
 import { augurEmitter } from "../../events";
 
 export function processInitialReportSubmittedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  updateMarketState( db, log.market, trx, log.blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_DISPUTE, (err: Error|null): void => {
+  updateMarketState( trx, log.market, log.blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_DISPUTE, (err: Error|null): void => {
     insertPayout( db, trx, log.market, log.payoutNumerators, false, (err, payoutID) => {
       const reportToInsert = {
         marketID: log.market,
