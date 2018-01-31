@@ -2,10 +2,15 @@ import Augur from "augur.js";
 import { parallel } from "async";
 import * as Knex from "knex";
 import { each } from "async";
+import { augurEmitter } from "../events";
 import { logError } from "../utils/log-error";
 import { Block, BlocksRow, AsyncCallback, ErrorCallback } from "../types";
 import { updateMarketState } from "./log-processors/database";
 import { processQueue, BLOCK_PRIORITY } from "./process-queue";
+
+interface FeeWindowIDRow {
+  feeWindowID: number;
+}
 
 export function processBlock(db: Knex, augur: Augur, block: Block): void {
   processQueue.push((callback) => _processBlock(db, augur, block, callback), BLOCK_PRIORITY);
@@ -79,18 +84,37 @@ function _processBlockRemoval(db: Knex, block: Block, callback: ErrorCallback): 
 }
 
 function advanceTime(db: Knex, augur: Augur, trx: Knex.Transaction, blockNumber: number, timestamp: number, callback: AsyncCallback) {
-  parallel( {
-    advanceMarketReachingEndTime: (next: AsyncCallback) => advanceMarketReachingEndTime(db, augur, trx, blockNumber, timestamp, next),
-  }, callback);
+  parallel([
+    (next: AsyncCallback) => advanceMarketReachingEndTime(db, augur, trx, blockNumber, timestamp, next),
+    (next: AsyncCallback) => advanceFeeWindowActive(trx, blockNumber, timestamp, next),
+  ], callback);
 }
 
 function advanceMarketReachingEndTime(db: Knex, augur: Augur, trx: Knex.Transaction, blockNumber: number, timestamp: number, callback: AsyncCallback) {
   const designatedDisputeQuery = db("markets").transacting(trx).select("markets.marketID").join("market_state", "market_state.marketStateID", "markets.marketStateID");
   designatedDisputeQuery.where("reportingState", augur.constants.REPORTING_STATE.PRE_REPORTING).where("endTime", "<", timestamp);
-  designatedDisputeQuery.asCallback( (err: Error|null, designatedDisputeMarketIDs: Array<any> ) => {
+  designatedDisputeQuery.asCallback((err: Error|null, designatedDisputeMarketIDs: Array<any>) => {
     if (err) return callback(err);
     each(designatedDisputeMarketIDs, (marketIDRow, nextMarketID: ErrorCallback) => {
-      updateMarketState(db, marketIDRow.marketID, trx, blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_REPORTING, nextMarketID);
+      updateMarketState(db, marketIDRow.marketID, trx, blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_REPORTING, (err: Error|null) => {
+        if (err) return nextMarketID(err);
+        augurEmitter.emit("MarketState", {
+          marketID: marketIDRow.marketID,
+          reportingState: augur.constants.REPORTING_STATE.DESIGNATED_REPORTING,
+        });
+        nextMarketID();
+      });
     }, callback);
+  });
+}
+
+function advanceFeeWindowActive(db: Knex, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+  db("fee_windows").first().select("feeWindowID").where("endTime", "<", timestamp).whereNull("endBlockNumber").asCallback((err: Error|null, feeWindowRow?: FeeWindowIDRow) => {
+    if (err || feeWindowRow == null) return callback(err);
+    db("fee_windows").update("endBlockNumber", blockNumber).where("feeWindowID", feeWindowRow.feeWindowID).asCallback((err: Error|null) => {
+      if (err) return callback(err);
+      augurEmitter.emit("FeeWindowClosed", { feeWindowID: feeWindowRow.feeWindowID, blockNumber, timestamp });
+      callback(null);
+    });
   });
 }
