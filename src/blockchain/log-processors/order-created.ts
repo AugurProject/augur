@@ -1,13 +1,11 @@
 import Augur from "augur.js";
-import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { Address, Bytes32, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, OrderState, ErrorCallback, AsyncCallback } from "../../types";
-import { processOrderCanceledLog } from "./order-canceled";
+import { Address, Bytes32, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, OrderState, ErrorCallback} from "../../types";
 import { augurEmitter } from "../../events";
 import { convertFixedPointToDecimal, convertOnChainSharesToHumanReadableShares, convertNumTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { denormalizePrice } from "../../utils/denormalize-price";
 import { formatOrderAmount, formatOrderPrice } from "../../utils/format-order";
-import { WEI_PER_ETHER, ZERO } from "../../constants";
+import { WEI_PER_ETHER} from "../../constants";
 import { QueryBuilder } from "knex";
 
 interface OrderCreatedOnContractData {

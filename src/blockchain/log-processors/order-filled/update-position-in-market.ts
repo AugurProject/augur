@@ -1,4 +1,3 @@
-import { Augur } from "augur.js";
 import { forEachOf } from "async";
 import * as Knex from "knex";
 import { Address, ErrorCallback } from "../../../types";

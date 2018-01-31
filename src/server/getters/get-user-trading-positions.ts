@@ -1,6 +1,5 @@
 import * as Knex from "knex";
 import { Address } from "../../types";
-import { sortDirection } from "../../utils/sort-direction";
 import { queryModifier } from "./database";
 
 // Look up a user's current trading positions. Should take account (address) as a required parameter and market and outcome as optional parameters. Response should include the user's position after the trade, in both "raw" and "adjusted-for-user-intention" formats -- the latter meaning that short positions are shown as negative, rather than as positive positions in the other outcomes), and realized and unrealized profit/loss.

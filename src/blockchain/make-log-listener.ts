@@ -1,12 +1,10 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import * as async from "async";
 import { ErrorCallback, FormattedEventLog } from "../types";
 import { logProcessors } from "./log-processors";
 import { processLog } from "./process-logs";
 import { augurEmitter } from "../events";
-import { logError } from "../utils/log-error";
-import { processQueue, LOG_PRIORITY } from "../blockchain/process-queue";
+import { processQueue, LOG_PRIORITY } from "./process-queue";
 
 export function makeLogListener(db: Knex, augur: Augur, contractName: string, eventName: string) {
   return (log: FormattedEventLog): void => {

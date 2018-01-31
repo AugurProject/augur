@@ -1,8 +1,7 @@
-import { parallel } from "async";
 import * as Knex from "knex";
 import * as _ from "lodash";
-import { Address, MarketsRowWithCreationTime, UIMarketCreatorFee, ErrorCallback, AsyncCallback, ReportingState} from "../../types";
-import { reshapeOutcomesRowToUIOutcomeInfo, reshapeMarketsRowToUIMarketInfo, getMarketsWithReportingState } from "./database";
+import { Address, UIMarketCreatorFee, ReportingState} from "../../types";
+import { getMarketsWithReportingState } from "./database";
 
 interface MarketCreatorFeesRow {
   marketID: Address;

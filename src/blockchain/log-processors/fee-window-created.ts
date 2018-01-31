@@ -1,6 +1,6 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { FormattedEventLog, ErrorCallback, OrderState } from "../../types";
+import { FormattedEventLog, ErrorCallback} from "../../types";
 import { augurEmitter } from "../../events";
 
 /*          "name": "universe",

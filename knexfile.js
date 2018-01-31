@@ -2,52 +2,52 @@ const { augurDbPath } = require("./config.json");
 
 module.exports = {
   development: {
-    client: 'sqlite3',
+    client: "sqlite3",
     connection: {
-      filename: './augur.dev.db',
+      filename: "./augur.dev.db",
     },
     seeds: {
-      directory: './src/seeds/test'
+      directory: "./src/seeds/test",
     },
     migrations: {
-      directory: './src/migrations'
+      directory: "./src/migrations",
     },
-    useNullAsDefault: true
+    useNullAsDefault: true,
   },
   build: {
-    client: 'sqlite3',
+    client: "sqlite3",
     connection: {
       filename: augurDbPath,
     },
     seeds: {
-      directory: './build/seeds/test'
+      directory: "./build/seeds/test",
     },
     migrations: {
-      directory: './build/migrations'
+      directory: "./build/migrations",
     },
-    useNullAsDefault: true
+    useNullAsDefault: true,
   },
   build_postgres: {
-    client: 'postgresql',
+    client: "postgresql",
     connection: process.env.DATABASE_URL,
     seeds: {
-      directory: './build/seeds/test'
+      directory: "./build/seeds/test",
     },
     migrations: {
-      directory: './build/migrations'
-    }
+      directory: "./build/migrations",
+    },
   },
   test: {
-    client: 'sqlite3',
+    client: "sqlite3",
     connection: {
-      filename: ':memory:',
+      filename: ":memory:",
     },
     seeds: {
-      directory: './build/seeds/test'
+      directory: "./build/seeds/test",
     },
     migrations: {
-      directory: './build/migrations'
+      directory: "./build/migrations",
     },
-    useNullAsDefault: true
-  }
+    useNullAsDefault: true,
+  },
 };

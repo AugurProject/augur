@@ -2,7 +2,6 @@ import * as express from "express";
 import * as WebSocket from "ws";
 import * as Knex from "knex";
 import Augur from "augur.js";
-import { EventEmitter } from "events";
 import { clearInterval, setInterval } from "timers";
 import { augurEmitter } from "../events";
 import { JsonRpcRequest, WebSocketConfigs } from "../types";

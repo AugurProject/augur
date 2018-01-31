@@ -1,6 +1,6 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { EthereumNodeEndpoints, UploadBlockNumbers, FormattedEventLog, ErrorCallback, Block } from "../types";
+import { EthereumNodeEndpoints, UploadBlockNumbers, ErrorCallback} from "../types";
 import { startAugurListeners } from "./start-augur-listeners";
 import { downloadAugurLogs } from "./download-augur-logs";
 

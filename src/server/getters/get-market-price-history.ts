@@ -1,6 +1,5 @@
 import * as Knex from "knex";
-import { Address, TimestampedPrice, MarketPriceHistory } from "../../types";
-import { queryModifier } from "./database";
+import { Address, MarketPriceHistory } from "../../types";
 
 interface MarketPriceHistoryRow {
   outcome: number;
