@@ -48,7 +48,7 @@ function _processBlock(db: Knex, augur: Augur, block: Block, callback: ErrorCall
           trx.rollback(err);
           logError(err);
         } else {
-          advanceTime(trx, augur, trx, blockNumber, timestamp, (err: Error|null) => {
+          advanceTime(db, augur, trx, blockNumber, timestamp, (err: Error|null) => {
             if (err != null) {
               trx.rollback(err);
               logError(err);
