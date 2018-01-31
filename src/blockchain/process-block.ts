@@ -101,7 +101,7 @@ function advanceMarketReachingEndTime(db: Knex, augur: Augur, trx: Knex.Transact
 }
 
 function advanceFeeWindowActive(db: Knex, blockNumber: number, timestamp: number, callback: AsyncCallback) {
-  db("fee_windows").first().select("feeWindowID").where("endTime", "<", timestamp).whereNull("endBlockNumber").asCallback((err: Error|null, feeWindowRow: FeeWindowIDRow|null) => {
+  db("fee_windows").first().select("feeWindowID").where("endTime", "<", timestamp).whereNull("endBlockNumber").asCallback((err: Error|null, feeWindowRow?: FeeWindowIDRow) => {
     if (err || feeWindowRow == null) return callback(err);
     db("fee_windows").update("endBlockNumber", blockNumber).where("feeWindowID", feeWindowRow.feeWindowID).asCallback(callback);
   });
