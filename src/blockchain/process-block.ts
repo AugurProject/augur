@@ -48,7 +48,7 @@ function _processBlock(db: Knex, augur: Augur, block: Block, callback: ErrorCall
           trx.rollback(err);
           logError(err);
         } else {
-          advanceTime(db, augur, trx, blockNumber, timestamp, (err: Error|null) => {
+          advanceTime(trx, augur, trx, blockNumber, timestamp, (err: Error|null) => {
             if (err != null) {
               trx.rollback(err);
               logError(err);
@@ -85,7 +85,7 @@ function _processBlockRemoval(db: Knex, block: Block, callback: ErrorCallback): 
 function advanceTime(db: Knex, augur: Augur, trx: Knex.Transaction, blockNumber: number, timestamp: number, callback: AsyncCallback) {
   parallel( [
     (next: AsyncCallback) => advanceMarketReachingEndTime(db, augur, trx, blockNumber, timestamp, next),
-    (next: AsyncCallback) => advanceFeeWindowActive(db, trx, blockNumber, timestamp, next),
+    (next: AsyncCallback) => advanceFeeWindowActive(trx, blockNumber, timestamp, next),
   ], callback);
 }
 
@@ -100,9 +100,9 @@ function advanceMarketReachingEndTime(db: Knex, augur: Augur, trx: Knex.Transact
   });
 }
 
-function advanceFeeWindowActive(db: Knex, trx: Knex.Transaction, blockNumber: number, timestamp: number, callback: AsyncCallback) {
-  db("fee_windows").transacting(trx).first().select("feeWindowID").where("endTime", "<", timestamp).whereNull("endBlockNumber").asCallback((err: Error|null, feeWindowRow: FeeWindowIDRow|null) => {
+function advanceFeeWindowActive(db: Knex, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+  db("fee_windows").first().select("feeWindowID").where("endTime", "<", timestamp).whereNull("endBlockNumber").asCallback((err: Error|null, feeWindowRow: FeeWindowIDRow|null) => {
     if (err || feeWindowRow == null) return callback(err);
-    db("fee_windows").transacting(trx).update("endBlockNumber", blockNumber).where("feeWindowID", feeWindowRow.feeWindowID).asCallback(callback);
+    db("fee_windows").update("endBlockNumber", blockNumber).where("feeWindowID", feeWindowRow.feeWindowID).asCallback(callback);
   });
 }
