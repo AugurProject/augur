@@ -36,7 +36,7 @@ export function runServer(db: Knex, augur: Augur): RunServerResult {
         }
       });
     } catch (e) {
-      res.send({status: "down", reason: e});
+      res.send({status: "down", reason: e.message});
     }
   });
 
