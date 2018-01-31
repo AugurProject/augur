@@ -1,8 +1,6 @@
 import { parallel } from "async";
 import * as Knex from "knex";
-import * as _ from "lodash";
-import { Address, MarketsContractAddressRow, AsyncCallback } from "../../types";
-import { queryModifier, getMarketsWithReportingState } from "./database";
+import { Address, AsyncCallback } from "../../types";
 
 interface PricesResult {
   higherPriceRow: {orderID: string|null};

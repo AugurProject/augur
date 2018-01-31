@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { Address, Bytes32, TradesRow, UITrade } from "../../types";
+import { Address, TradesRow, UITrade } from "../../types";
 import { queryModifier } from "./database";
 
 interface TradingHistoryRow extends TradesRow {

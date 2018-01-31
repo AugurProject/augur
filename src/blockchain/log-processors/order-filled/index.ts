@@ -1,7 +1,6 @@
 import { Augur } from "augur.js";
-import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { Address, FormattedEventLog, TokensRow, MarketsRow, OrdersRow, AsyncCallback, ErrorCallback } from "../../../types";
+import { Address, FormattedEventLog, TokensRow, MarketsRow, OrdersRow, ErrorCallback } from "../../../types";
 import { calculateFillPrice } from "./calculate-fill-price";
 import { calculateNumberOfSharesTraded } from "./calculate-number-of-shares-traded";
 import { updateOrdersAndPositions } from "./update-orders-and-positions";

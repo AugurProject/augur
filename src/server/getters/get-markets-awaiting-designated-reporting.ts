@@ -1,4 +1,3 @@
-import { each } from "async";
 import * as Knex from "knex";
 import { Address, MarketsContractAddressRow, ReportingState } from "../../types";
 import { queryModifier, getMarketsWithReportingState } from "./database";

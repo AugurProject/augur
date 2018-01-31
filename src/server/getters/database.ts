@@ -13,13 +13,12 @@ export function queryModifier(query: Knex.QueryBuilder, defaultSortBy: string, d
 }
 
 export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow): UIOutcomeInfo {
-  const outcomeInfo: UIOutcomeInfo = {
+  return {
     id: outcomesRow.outcome,
     volume: outcomesRow.volume,
     price: outcomesRow.price,
     description: outcomesRow.description,
   };
-  return outcomeInfo;
 }
 
 export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime, outcomesInfo: Array<UIOutcomeInfo>): UIMarketInfo {
@@ -29,7 +28,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
   } else {
     consensus = { outcomeID: row.consensusPayoutID, isInvalid: row.isInvalid } as UIConsensusInfo;
   }
-  const marketInfo: UIMarketInfo = {
+  return {
     id: row.marketID,
     universe: row.universe,
     marketType: row.marketType,
@@ -64,16 +63,14 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
     consensus,
     outcomes: outcomesInfo,
   };
-  return marketInfo;
 }
 
 export function reshapeDisputeTokensRowToUIDisputeTokenInfo(disputeTokenRow: DisputeTokensRowWithTokenState): UIDisputeTokenInfo {
-  const stakeTokenInfo: UIDisputeTokenInfo = Object.assign(_.omit(disputeTokenRow, ["payoutID", "winning"]) as DisputeTokensRowWithTokenState, {
+  return Object.assign(_.omit(disputeTokenRow, ["payoutID", "winning"]) as DisputeTokensRowWithTokenState, {
       isInvalid: !!disputeTokenRow.isInvalid,
       claimed: !!disputeTokenRow.claimed,
       winningToken: (disputeTokenRow.winning == null) ? null : !!disputeTokenRow.winning,
   });
-  return stakeTokenInfo;
 }
 
 export function getMarketsWithReportingState(db: Knex, selectColumns?: Array<string>): Knex.QueryBuilder {

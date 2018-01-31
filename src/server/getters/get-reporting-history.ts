@@ -1,4 +1,3 @@
-import * as _ from "lodash";
 import * as Knex from "knex";
 import { Address, JoinedReportsMarketsRow, UIReport } from "../../types";
 import { queryModifier } from "./database";

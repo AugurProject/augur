@@ -4,7 +4,7 @@ import * as Knex from "knex";
 import Augur from "augur.js";
 import { runWebsocketServer } from "./run-websocket-server";
 import { getMarkets } from "./getters/get-markets";
-import { Address, MarketsRow } from "../types";
+import { Address} from "../types";
 
 // tslint:disable-next-line:no-var-requires
 const { websocketConfigs } = require("../../config");
