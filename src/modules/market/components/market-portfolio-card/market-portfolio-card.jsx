@@ -4,14 +4,17 @@ import PropTypes from 'prop-types'
 
 import getValue from 'utils/get-value'
 
+import MarketPositionsListPosition from 'modules/market/components/market-positions-list--position/market-positions-list--position'
 import MarketStatusIcon from 'modules/market/components/market-status-icon/market-status-icon'
-import MarketTable from 'modules/market/components/market-tables/market-tables'
+import MarketPositionsListOrder from 'modules/market/components/market-positions-list--order/market-positions-list--order'
+import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 import CaretDropdown from 'modules/common/components/caret-dropdown/caret-dropdown'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import { TYPE_REPORT, TYPE_CHALLENGE, TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import { dateHasPassed } from 'utils/format-date'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
+import PositionStyles from 'modules/market/components/market-positions-list/market-positions-list.styles'
 
 export default class MarketPortfolioCard extends Component {
   static propTypes = {
@@ -167,97 +170,60 @@ export default class MarketPortfolioCard extends Component {
               </button>
             </div>
           }
-          {this.state.tableOpen.myPositions &&
-            <MarketTable
-              titleKeyPairs={[
-                ['Outcome', 'name'],
-                ['Quantity', 'qtyShares.formatted'],
-                ['Avg Price', 'purchasePrice.formatted'],
-                ['Last Price', 'lastPrice.formatted'],
-                ['Realized P/L', 'realizedNet.formatted'],
-                ['Unrealized P/L', 'unrealizedNet.formatted'],
-                ['Total P/L', 'totalNet.formatted'],
-                ['Action', 'dialogButton']
-              ]}
-              mobileTitles={[
-                'Outcome',
-                'Qty',
-                null,
-                'Last',
-                null,
-                null,
-                'Total P/L',
-                'Action'
-              ]}
-              data={
-                (myPositionOutcomes || []).filter(outcome => outcome.position).map(outcome => ({
-                  ...outcome,
-                  ...outcome.position,
-                  dialogButton: {
-                    label: 'Close',
-                    dialogText: `Close position by selling ${outcome.position.qtyShares.formatted}
-                                 shares of ${outcome.name} at ${outcome.position.purchasePrice.formatted} ETH?`,
-                    confirm: outcome.position.closePosition
-                  }
-                }))
-              }
-            />
-          }
-          {this.props.market.outcomes[0] && this.props.market.outcomes[0].userOpenOrders && this.props.market.outcomes[0].userOpenOrders.length !== 0 &&
-            <div className={Styles.MarketCard__headingcontainer}>
-              <h1 className={Styles.MarketCard__tableheading}>
-                Open Orders
-              </h1>
-              <button
-                className={Styles.MarketCard__tabletoggle}
-                onClick={() => this.toggleTable('openOrders')}
-              >
-                <CaretDropdown flipped={this.state.tableOpen.openOrders} />
-              </button>
-            </div>
-          }
-          {this.state.tableOpen.openOrders &&
-            <MarketTable
-              hideTitles
-              titleKeyPairs={[
-                ['Outcome', 'name'],
-                ['Quantity', 'unmatchedShares.formatted'],
-                ['Avg Price', 'avgPrice.formatted'],
-                ['Last Price', null],
-                ['Realized P/L', null],
-                ['Unrealized P/L', null],
-                ['Total P/L', null],
-                ['Action', 'dialogButton']
-              ]}
-              mobileTitles={[
-                'Outcome',
-                'Qty',
-                null,
-                'Last',
-                null,
-                null,
-                'Total P/L',
-                'Action'
-              ]}
-              data={
-                this.props.market.outcomes.reduce((accumulator, outcome) => {
-                  const tempAccumulator = accumulator || []
-
-                  outcome.userOpenOrders.forEach(order => tempAccumulator.push({
-                    ...order,
-                    name: outcome.name,
-                    dialogButton: {
-                      label: 'Close',
-                      dialogText: `Cancel order of ${order.unmatchedShares.formatted}
-                                   shares of ${outcome.name} at ${order.avgPrice.formatted} ETH?`,
-                      confirm: outcome.position && outcome.position.closePosition
-                    }
-                  }))
-
-                  return tempAccumulator
-                }, [])
-              }
-            />
+          <div className={PositionStyles.MarketPositionsList__table}>
+            { this.state.tableOpen.myPositions &&
+              <ul className={PositionStyles['MarketPositionsList__table-header']}>
+                <li>Outcome</li>
+                <li><span>Quantity</span></li>
+                <li><span>Avg Price</span></li>
+                <li><span>Last Price</span></li>
+                <li><span>Realized <span />P/L</span></li>
+                <li><span>Unrealized <span />P/L</span></li>
+                <li><span>Total <span />P/L</span></li>
+                <li><span>Action</span></li>
+              </ul>
+            }
+            {this.state.tableOpen.myPositions && (myPositionOutcomes || []).filter(outcome => outcome.position).map(outcome => (
+              <div className={PositionStyles['MarketPositionsList__table-body']}>
+                { <MarketPositionsListPosition
+                  key={outcome.id}
+                  name={outcome.name}
+                  position={outcome.position}
+                  openOrders={outcome.userOpenOrders ? outcome.userOpenOrders.filter(order => order.id === outcome.position.id && order.pending === true) : []}
+                  isExtendedDisplay
+                />
+                }
+              </div>
+            ))}
+            {this.props.market.outcomes[0] && this.props.market.outcomes[0].userOpenOrders && this.props.market.outcomes[0].userOpenOrders.length !== 0 &&
+              <div className={Styles.MarketCard__headingcontainer}>
+                <h1 className={Styles.MarketCard__tableheading}>
+                  Open Orders
+                </h1>
+                <button
+                  className={Styles.MarketCard__tabletoggle}
+                  onClick={() => this.toggleTable('openOrders')}
+                >
+                  <CaretDropdown flipped={this.state.tableOpen.openOrders} />
+                </button>
+              </div>
+            }
+            { this.state.tableOpen.openOrders && (myPositionOutcomes || []).filter(outcome => outcome.openUserOrders).map(outcome => (
+              <div className={PositionStyles['MarketPositionsList__table-body']}>
+                { outcome.openUserOrders.map((order, i) => (
+                  <MarketPositionsListOrder
+                    key={order.id}
+                    name={order.name}
+                    order={order.order}
+                    pending={order.pending}
+                  />
+                ))}
+              </div>
+            ))
+            }
+          </div>
+          { !myPositionOutcomes && !myPositionsSummary &&
+            <NullStateMessage className={PositionStyles['MarketPositionsList__null-state']} message="No positions or open orders" />
           }
         </section>
         {p.linkType &&

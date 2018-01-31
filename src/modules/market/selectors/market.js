@@ -256,6 +256,8 @@ export function assembleMarket(
         outcome.topBid = selectTopBid(orderBook, false)
         outcome.topAsk = selectTopAsk(orderBook, false)
         outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID])
+        // needed for my-position display
+        if (outcome.position) outcome.position.lastPrice = outcome.lastPrice
 
         marketTradeOrders = marketTradeOrders.concat(outcome.trade.tradeSummary.tradeOrders)
 

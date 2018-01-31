@@ -136,6 +136,8 @@ const positions = [
     name: '1. HARTNELL (12)',
     id: '1',
     position: {
+      marketId: 'dummy market id',
+      outcomeId: 'dummy outcome id',
       qtyShares: {
         formatted: '10',
         formattedValue: 10,
@@ -153,6 +155,8 @@ const positions = [
     id: '2',
     name: '2. ALMANDIN (14)',
     position: {
+      marketId: 'dummy market id',
+      outcomeId: 'dummy outcome id',
       qtyShares: {
         formatted: '5',
         formattedValue: 5,

@@ -67,8 +67,14 @@ export default class Order extends Component {
         <li>
           { getValue(p, 'order.purchasePrice.formatted') }
         </li>
+        { p.isExtendedDisplay &&
+          <li />
+        }
         <li />
         <li />
+        { p.isExtendedDisplay &&
+          <li />
+        }
         <li>
           <button onClick={this.toggleConfirm}>Cancel</button>
         </li>
