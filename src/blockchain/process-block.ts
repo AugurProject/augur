@@ -7,6 +7,10 @@ import { Block, BlocksRow, AsyncCallback, ErrorCallback } from "../types";
 import { updateMarketState } from "./log-processors/database";
 import { processQueue, BLOCK_PRIORITY } from "./process-queue";
 
+interface FeeWindowIDRow {
+  feeWindowID: number;
+}
+
 export function processBlock(db: Knex, augur: Augur, block: Block): void {
   processQueue.push((callback) => _processBlock(db, augur, block, callback), BLOCK_PRIORITY);
 }
@@ -81,6 +85,7 @@ function _processBlockRemoval(db: Knex, block: Block, callback: ErrorCallback): 
 function advanceTime(db: Knex, augur: Augur, trx: Knex.Transaction, blockNumber: number, timestamp: number, callback: AsyncCallback) {
   parallel( {
     advanceMarketReachingEndTime: (next: AsyncCallback) => advanceMarketReachingEndTime(db, augur, trx, blockNumber, timestamp, next),
+    advanceFeeWindowActive: (next: AsyncCallback) => advanceFeeWindowActive(db, trx, blockNumber, timestamp, next),
   }, callback);
 }
 
@@ -92,5 +97,12 @@ function advanceMarketReachingEndTime(db: Knex, augur: Augur, trx: Knex.Transact
     each(designatedDisputeMarketIDs, (marketIDRow, nextMarketID: ErrorCallback) => {
       updateMarketState(db, marketIDRow.marketID, trx, blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_REPORTING, nextMarketID);
     }, callback);
+  });
+}
+
+function advanceFeeWindowActive(db: Knex, trx: Knex.Transaction, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+  db("fee_windows").transacting(trx).first().select("feeWindowID").where("endTime", "<", timestamp).whereNull("endBlockNumber").asCallback((err: Error|null, feeWindowRow: FeeWindowIDRow|null) => {
+    if (err || feeWindowRow == null) return callback(err);
+    db("fee_windows").transacting(trx).update("endBlockNumber", blockNumber).where("feeWindowID", feeWindowRow.feeWindowID).asCallback(callback);
   });
 }
