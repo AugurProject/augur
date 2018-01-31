@@ -2,11 +2,12 @@
 
 var binaryOrderBook = require("./binary-order-book");
 
-var closingBell = new Date();
-closingBell.setHours(20, 0, 0, 0);
 var midnightTomorrow = new Date();
 midnightTomorrow.setDate(midnightTomorrow.getDate() + 1);
 midnightTomorrow.setHours(0, 0, 0, 0);
+var closingBellTomorrow = new Date();
+closingBellTomorrow.setDate(closingBellTomorrow.getDate() + 1);
+closingBellTomorrow.setHours(20, 0, 0, 0);
 var today = new Date();
 var thisYear = today.getUTCFullYear();
 var nextYear = thisYear + 1;
@@ -35,8 +36,8 @@ module.exports = [{
   orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
-  _description: "Will the Dow Jones Industrial Average close at a higher price on " + today.toLocaleDateString() + " than it closed at the previous day?",
-  _endTime: parseInt(closingBell.getTime() / 1000, 10),
+  _description: "Will the Dow Jones Industrial Average close at a higher price on " + closingBellTomorrow.toLocaleDateString() + " than it closed at the previous day?",
+  _endTime: parseInt(closingBellTomorrow.getTime() / 1000, 10),
   _topic: "finance",
   _extraInfo: {
     resolutionSource: "https://www.google.com/finance?q=INDEXDJX:.DJI",
