@@ -418,3 +418,14 @@ export interface UIReport {
   isInvalid: boolean;
   isSubmitted: boolean;
 }
+
+export interface FeeWindowRow {
+    feeWindow: Address;
+    feeWindowID: number;
+    startBlockNumber: number;
+    universe: Address;
+    startTime: number;
+    endBlockNumber: null|number;
+    endTime: number;
+    fees: number|string;
+}

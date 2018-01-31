@@ -1,0 +1,8 @@
+{
+  "id": 4,
+  "jsonrpc": "2.0",
+  "method": "getFeeWindowCurrent",
+  "params": {
+    "universe": "0x000000000000000000000000000000000000000b"
+  }
+}
