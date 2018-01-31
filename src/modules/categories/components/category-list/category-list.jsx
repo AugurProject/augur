@@ -6,36 +6,15 @@ import Category from 'modules/categories/components/category/category'
 import Styles from 'modules/categories/components/category-list/category-list.styles'
 
 const CategoryList = (p) => {
-  const isSingle = (p.categories.length === 1)
-  const isDouble = (p.categories.length === 2)
+  const isShortList = (p.categories.length <= 2)
+  const arrayLength = isShortList ? p.categories.length : p.boundedLength
+  const categoryStyling = isShortList ? Styles['CategoryList__categorywrap-short'] : Styles.CategoryList__categorywrap
 
   return (
-    <div>
-      {isDouble &&
-        <div
-          className={Styles['CategoryList__categorywrap-double']}
-          key={`${null}"null-0"`}
-        >
-          <Category
-            category="null-category"
-            popularity={0}
-          />
-        </div>
-      }
-      {[...Array(p.boundedLength)].map((_, i) => {
-        let categoryIndex = (p.lowerBound - 1) + i
-        let categoryStyling = Styles.CategoryList__categorywrap
-
-        if (isSingle) {
-          // put only cat in the 2nd position so it's centered
-          categoryIndex -= 1
-        }
-
-        const isLimitedCategories = ((p.categories.length <= 2) && (i <= 2))
+    <div className={Styles.CategoryList}>
+      {[...Array(arrayLength)].map((_, i) => {
+        const categoryIndex = (p.lowerBound - 1) + i
         const category = (p.categories && p.categories[categoryIndex]) ? p.categories[categoryIndex] : null
-
-        categoryStyling = (isDouble && isLimitedCategories) ? Styles['CategoryList__categorywrap-double'] : categoryStyling
-
 
         return (
           <div
