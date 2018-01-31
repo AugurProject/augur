@@ -83,10 +83,10 @@ function _processBlockRemoval(db: Knex, block: Block, callback: ErrorCallback): 
 }
 
 function advanceTime(db: Knex, augur: Augur, trx: Knex.Transaction, blockNumber: number, timestamp: number, callback: AsyncCallback) {
-  parallel( {
-    advanceMarketReachingEndTime: (next: AsyncCallback) => advanceMarketReachingEndTime(db, augur, trx, blockNumber, timestamp, next),
-    advanceFeeWindowActive: (next: AsyncCallback) => advanceFeeWindowActive(db, trx, blockNumber, timestamp, next),
-  }, callback);
+  parallel( [
+    (next: AsyncCallback) => advanceMarketReachingEndTime(db, augur, trx, blockNumber, timestamp, next),
+    (next: AsyncCallback) => advanceFeeWindowActive(db, trx, blockNumber, timestamp, next),
+  ], callback);
 }
 
 function advanceMarketReachingEndTime(db: Knex, augur: Augur, trx: Knex.Transaction, blockNumber: number, timestamp: number, callback: AsyncCallback) {
