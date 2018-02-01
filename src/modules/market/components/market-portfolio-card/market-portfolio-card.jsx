@@ -162,28 +162,20 @@ export default class MarketPortfolioCard extends Component {
                   { p.buttonText || buttonText }
                 </button>
               }
-              <button
-                className={Styles.MarketCard__tabletoggle}
-                onClick={() => this.toggleTable('myPositions')}
-              >
-                <CaretDropdown flipped={this.state.tableOpen.myPositions} />
-              </button>
             </div>
           }
           <div className={PositionStyles.MarketPositionsList__table}>
-            { this.state.tableOpen.myPositions &&
-              <ul className={PositionStyles['MarketPositionsList__table-header']}>
-                <li>Outcome</li>
-                <li><span>Quantity</span></li>
-                <li><span>Avg Price</span></li>
-                <li><span>Last Price</span></li>
-                <li><span>Realized <span />P/L</span></li>
-                <li><span>Unrealized <span />P/L</span></li>
-                <li><span>Total <span />P/L</span></li>
-                <li><span>Action</span></li>
-              </ul>
-            }
-            {this.state.tableOpen.myPositions && (myPositionOutcomes || []).filter(outcome => outcome.position).map(outcome => (
+            <ul className={PositionStyles['MarketPositionsList__table-header']}>
+              <li>Outcome</li>
+              <li><span>Quantity</span></li>
+              <li><span>Avg Price</span></li>
+              <li><span>Last Price</span></li>
+              <li><span>Realized <span />P/L</span></li>
+              <li><span>Unrealized <span />P/L</span></li>
+              <li><span>Total <span />P/L</span></li>
+              <li><span>Action</span></li>
+            </ul>
+            { (myPositionOutcomes || []).filter(outcome => outcome.position).map(outcome => (
               <div className={PositionStyles['MarketPositionsList__table-body']}>
                 { <MarketPositionsListPosition
                   key={outcome.id}
@@ -197,7 +189,7 @@ export default class MarketPortfolioCard extends Component {
             ))}
             {this.props.market.outcomes[0] && this.props.market.outcomes[0].userOpenOrders && this.props.market.outcomes[0].userOpenOrders.length !== 0 &&
               <div className={Styles.MarketCard__headingcontainer}>
-                <h1 className={Styles.MarketCard__tableheading}>
+                <h1 className={Styles.MarketCard__tableheading_orders}>
                   Open Orders
                 </h1>
                 <button
@@ -208,23 +200,21 @@ export default class MarketPortfolioCard extends Component {
                 </button>
               </div>
             }
-            { this.state.tableOpen.openOrders && (myPositionOutcomes || []).filter(outcome => outcome.openUserOrders).map(outcome => (
+            { this.state.tableOpen.openOrders && (myPositionOutcomes || []).filter(outcome => outcome.userOpenOrders).map(outcome => (
               <div className={PositionStyles['MarketPositionsList__table-body']}>
-                { outcome.openUserOrders.map((order, i) => (
+                { outcome.userOpenOrders.map((order, i) => (
                   <MarketPositionsListOrder
                     key={order.id}
-                    name={order.name}
-                    order={order.order}
+                    name={outcome.name}
+                    order={order}
                     pending={order.pending}
+                    isExtendedDisplay
                   />
                 ))}
               </div>
             ))
             }
           </div>
-          { !myPositionOutcomes && !myPositionsSummary &&
-            <NullStateMessage className={PositionStyles['MarketPositionsList__null-state']} message="No positions or open orders" />
-          }
         </section>
         {p.linkType &&
           <section className={Styles['MarketCard__tablesection-mobile']}>

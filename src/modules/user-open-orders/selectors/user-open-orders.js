@@ -6,10 +6,9 @@ import store from 'src/store'
 import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
-import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status'
 
 import { formatNone, formatEtherTokens, formatShares } from 'utils/format-number'
-
+import { cancelOrder } from 'modules/bids-asks/actions/cancel-order'
 /**
  * Pulls off existing order book in state
  * @param {String} outcomeId
@@ -17,11 +16,11 @@ import { formatNone, formatEtherTokens, formatShares } from 'utils/format-number
  *
  * @return {Array}
  */
-export function selectUserOpenOrders(outcomeId, marketOrderBook) {
-  const { loginAccount, orderCancellation } = store.getState()
+export function selectUserOpenOrders(marketId, outcomeId, marketOrderBook) {
+  const { loginAccount } = store.getState()
   if (!loginAccount.address || marketOrderBook == null) return []
 
-  return userOpenOrders(outcomeId, loginAccount, marketOrderBook, orderCancellation)
+  return userOpenOrders(marketId, outcomeId, loginAccount, marketOrderBook)
 }
 
 /**
@@ -33,11 +32,11 @@ export function selectUserOpenOrders(outcomeId, marketOrderBook) {
  *
  * @return {Array}
  */
-const userOpenOrders = memoize((outcomeID, loginAccount, marketOrderBook, orderCancellation) => {
+const userOpenOrders = memoize((marketId, outcomeID, loginAccount, marketOrderBook) => {
   const orderData = marketOrderBook[outcomeID]
 
-  const userBids = (orderData == null || orderData.buy == null) ? [] : getUserOpenOrders(marketOrderBook[outcomeID], BUY, outcomeID, loginAccount.address, orderCancellation)
-  const userAsks = (orderData == null || orderData.sell == null) ? [] : getUserOpenOrders(marketOrderBook[outcomeID], SELL, outcomeID, loginAccount.address, orderCancellation)
+  const userBids = (orderData == null || orderData.buy == null) ? [] : getUserOpenOrders(marketId, marketOrderBook[outcomeID], BUY, outcomeID, loginAccount.address)
+  const userAsks = (orderData == null || orderData.sell == null) ? [] : getUserOpenOrders(marketId, marketOrderBook[outcomeID], SELL, outcomeID, loginAccount.address)
 
   return userAsks.concat(userBids)
 }, { max: 10 })
@@ -49,24 +48,28 @@ const userOpenOrders = memoize((outcomeID, loginAccount, marketOrderBook, orderC
  * @param {String} orderType
  * @param {String} outcomeID
  * @param {String} userID
- * @param {Object} orderCancellation
  *
  * @return {Array}
  */
-function getUserOpenOrders(orders, orderType, outcomeID, userID, orderCancellation) {
+function getUserOpenOrders(marketId, orders, orderType, outcomeID, userID) {
   const typeOrders = orders[orderType]
   return Object.keys(typeOrders)
     .map(orderId => typeOrders[orderId])
-    .filter(order => isOrderOfUser(order, userID) && orderCancellation[order.id] !== CLOSE_DIALOG_CLOSING)
+    .filter(order => isOrderOfUser(order, userID))
     .sort((order1, order2) => new BigNumber(order2.price, 10).comparedTo(new BigNumber(order1.price, 10)))
     .map(order => (
       {
         id: order.orderID,
         type: orderType,
+        marketId,
+        outcomeID,
         originalShares: formatNone(),
         avgPrice: formatEtherTokens(order.price),
         matchedShares: formatNone(),
-        unmatchedShares: formatShares(order.amount)
+        unmatchedShares: formatShares(order.amount),
+        cancelOrder: (orderID, marketID, outcome, type) => {
+          store.dispatch(cancelOrder(orderID, marketID, outcome, type))
+        }
       }
     ))
 }

@@ -38,11 +38,11 @@ const openOrders = [
     id: '1',
     pending: false,
     order: {
-      qtyShares: {
+      unmatchedShares: {
         formatted: '10.942',
         formattedValue: 10.942,
       },
-      purchasePrice: {
+      avgPrice: {
         formatted: '0.3938',
         formattedValue: 0.3938,
       },
@@ -54,11 +54,11 @@ const openOrders = [
     id: '1',
     pending: true,
     order: {
-      qtyShares: {
+      unmatchedShares: {
         formatted: '4.942',
         formattedValue: 4.942,
       },
-      purchasePrice: {
+      avgPrice: {
         formatted: '0.6',
         formattedValue: 0.6,
       },
@@ -70,11 +70,11 @@ const openOrders = [
     id: '1',
     pending: false,
     order: {
-      qtyShares: {
+      unmatchedShares: {
         formatted: '7',
         formattedValue: 7,
       },
-      purchasePrice: {
+      avgPrice: {
         formatted: '0.38',
         formattedValue: 0.38,
       },
@@ -86,11 +86,11 @@ const openOrders = [
     id: '1',
     pending: false,
     order: {
-      qtyShares: {
+      unmatchedShares: {
         formatted: '15.203',
         formattedValue: 15.203,
       },
-      purchasePrice: {
+      avgPrice: {
         formatted: '0.3507',
         formattedValue: 0.3507,
       },
@@ -102,11 +102,11 @@ const openOrders = [
     id: '1',
     pending: false,
     order: {
-      qtyShares: {
+      unmatchedShares: {
         formatted: '2.942',
         formattedValue: 2.942,
       },
-      purchasePrice: {
+      avgPrice: {
         formatted: '0.35',
         formattedValue: 0.35,
       },
@@ -118,11 +118,11 @@ const openOrders = [
     id: '2',
     pending: false,
     order: {
-      qtyShares: {
+      unmatchedShares: {
         formatted: '9.5',
         formattedValue: 9.5,
       },
-      purchasePrice: {
+      avgPrice: {
         formatted: '0.8',
         formattedValue: 0.8,
       },
