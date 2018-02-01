@@ -36,7 +36,7 @@ Copy/Paste them into your command-line (linux or mac):
 
 Build augur-core    
 
-    npm i; npx tsc; USE_NORMAL_TIME=false npm run build
+    yarn i; npx tsc; USE_NORMAL_TIME=false yarn run build
 
 Upload the contracts to the local docker node, it relies on the above environment variables
 
@@ -51,23 +51,25 @@ Now we need to make the reset of the system aware of the new contract address th
 
 ## augur middleware
 
-Since we are using local contracts we need to make sure all repositories are looking at the same dependencies, we're going to use npm link to help us out.
+Since we are using local contracts we need to make sure all repositories are looking at the same dependencies, we're going to use yarn link to help us out.
 
 ### augur.js
 
 The helper scripts live in augur.js, both augur-node and augur (ui) repositories rely on augur.js. It needs to be built and linked.
 
+NOTE -- intentionally `npm i` here, as `yarn` has exhibited issues.
+
     npm i;
-    npm run build;
-    npm link;
+    yarn build;
+    yarn link;
 
 ### augur-node
 
-We will see ENDPOINT_HTTP and ENDPOINT_WS often it tells augur-node or augur.js scripts where to connect, make sure to npm link augur.js
+We will see ENDPOINT_HTTP and ENDPOINT_WS often it tells augur-node or augur.js scripts where to connect, make sure to yarn link augur.js
 
     cd augur-node
-    npm link augur.js
-    npm run rebuild && ENDPOINT_HTTP=http://127.0.0.1:47624 ENDPOINT_WS=ws://127.0.0.1:47625 npm run start
+    yarn link augur.js
+    yarn run rebuild && ENDPOINT_HTTP=http://127.0.0.1:47624 ENDPOINT_WS=ws://127.0.0.1:47625 yarn run start
 
 
 ### augur (ui)
@@ -75,8 +77,8 @@ We will see ENDPOINT_HTTP and ENDPOINT_WS often it tells augur-node or augur.js 
 Link augur.js:
 
     cd augur
-    npm i
-    npm link augur.js;
+    yarn
+    yarn link augur.js;
 
 Update the `env-dev.json` file to point to the local docker node:
 
@@ -91,7 +93,7 @@ Update the `env-dev.json` file to point to the local docker node:
 
 Start the augur development server:
 
-    npm run dev
+    yarn run dev
 
 ## Login with MetaMask
 If MetaMask browser extension is install, it will need to be configured. Create custom RPC endpoint, same as the "http" url in the env-dev.json file
