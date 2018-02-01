@@ -85,6 +85,14 @@
 .MarketCard__tablesection {
   overflow: hidden;
   padding: 1.5rem 2rem;
+
+  &:first-of-type {
+    padding-bottom: 0;
+  }
+
+  &:last-of-type {
+    padding-top: 0;
+  }
 }
 
 .MarketCard__tablesection-mobile {
@@ -98,18 +106,6 @@
   clear: both;
   display: flex;
   flex-flow: row nowrap;
-}
-
-.MarketCard__tableheading_orders {
-  color: @color-darkpurple;
-  flex: 1;
-  float: left;
-  font-size: 1.125rem;
-  font-weight: 500;
-  line-height: unset;
-  margin: 1.5rem 0;
-  padding-left: 0.5rem;
-  text-transform: uppercase;
 }
 
 .MarketCard__headingcontainer-mobile {
