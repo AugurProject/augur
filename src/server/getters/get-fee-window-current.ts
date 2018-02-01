@@ -8,7 +8,7 @@ interface StakeRows {
   InitialReports: any;
 }
 
-export function getFeeWindowCurrent(db: Knex, universe: Address, account: Address, callback: (err?: Error|null, result?: any) => void): void {
+export function getFeeWindowCurrent(db: Knex, universe: Address, reporter: Address, callback: (err?: Error|null, result?: any) => void): void {
   if (universe == null) return callback(new Error("Must provide universe"));
   const query = db.select(
     [
@@ -27,17 +27,19 @@ export function getFeeWindowCurrent(db: Knex, universe: Address, account: Addres
   query.asCallback((err: Error|null, feeWindowRow?: FeeWindowRow): void => {
     if (err) return callback(err);
     if (!feeWindowRow) return callback(null, null);
-    if (account == null) {
+    if (reporter == null) {
       return callback(null, feeWindowRow);
     } else {
       // populate account element
       const initialReportQuery = db.first().sum("markets.initialReportSize as totalInitialReportSize").from("initial_reports")
         .join("markets", "markets.marketID", "initial_reports.marketID")
-        .where("markets.feeWindow", feeWindowRow.feeWindow);
+        .where("markets.feeWindow", feeWindowRow.feeWindow)
+        .where("initial_reports.reporter", reporter);
       const disputesQuery = db.first().sum("amountStaked as totalDisputeStake").from("disputes")
         .join("crowdsourcers", "crowdsourcers.crowdsourcerID", "disputes.crowdsourcerID")
         .join("markets", "markets.marketID", "crowdsourcers.marketID")
-        .where("markets.feeWindow", feeWindowRow.feeWindow);
+        .where("markets.feeWindow", feeWindowRow.feeWindow)
+        .where("disputes.reporter", reporter);
       parallel({
         InitialReports: (next: AsyncCallback) => initialReportQuery.asCallback(next),
         Disputes: (next: AsyncCallback) => disputesQuery.asCallback(next),

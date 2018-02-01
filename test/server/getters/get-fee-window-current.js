@@ -10,7 +10,7 @@ describe("server/getters/get-fee-window-current", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getFeeWindowCurrent(db, t.params.universe, t.params.account, (err, feeWindow) => {
+        getFeeWindowCurrent(db, t.params.universe, t.params.reporter, (err, feeWindow) => {
           t.assertions(err, feeWindow);
           done();
         });
@@ -39,7 +39,7 @@ describe("server/getters/get-fee-window-current", () => {
     description: "get feeWindow with account b0b on fee window 0x2",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
-      account: "0x0000000000000000000000000000000000000b0b",
+      reporter: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, feeWindow) => {
       assert.isNull(err);
