@@ -30,10 +30,6 @@ function loadTransactions(dispatch, getState, options, cb) {
       if (err) next(err)
       next(null)
     })),
-    next => dispatch(loadAccountOrders(options, (err) => {
-      if (err) next(err)
-      next(null)
-    })),
     next => dispatch(loadCreateMarketHistory(options, (err) => {
       if (err) next(err)
       next(null)

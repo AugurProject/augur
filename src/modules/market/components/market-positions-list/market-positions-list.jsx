@@ -60,7 +60,7 @@ export default class MarketPositionsList extends Component {
                   <MarketPositionsListPosition
                     key={i}
                     name={position.name}
-                    position={position.position}
+                    position={position}
                     openOrders={p.openOrders.filter(order => order.id === position.id && order.pending === true)}
                   />
                 ))}
@@ -82,7 +82,7 @@ export default class MarketPositionsList extends Component {
                   <MarketPositionsListOrder
                     key={i}
                     name={order.name}
-                    order={order.order}
+                    order={order}
                     pending={order.pending}
                   />
                 ))}

@@ -18,17 +18,25 @@ const mergeProps = (sP, dP, oP) => {
   let openOrders = []
   let positions = []
   if (market && market.outcomes && market.outcomes.length > 0) {
-    openOrders = market.outcomes[0].userOpenOrders ? market.outcomes[0].userOpenOrders : []
-    positions = market.outcomes[0].positions ? market.outcomes[0].positions : []
+    openOrders = market.outcomes.reduce((p, outcome) => {
+      if (outcome.userOpenOrders && outcome.userOpenOrders.length > 0) {
+        outcome.userOpenOrders.forEach(order => p.push(order))
+      }
+      return p
+    }, [])
+    positions = market.outcomes.reduce((p, outcome) => {
+      if (outcome.position) {
+        p.push(outcome.position)
+      }
+      return p
+    }, [])
   }
   return {
     ...sP,
     ...oP,
     outcomes: market.outcomes,
+    positions,
     openOrders,
-    positions
-    // TODO -- need to rethink best shape for `userOpenOrders`
-    // openOrder: getValue(market, 'outcomes')
   }
 }
 
