@@ -321,7 +321,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       tag2: "test tag 2",
       volume: "0",
       sharesOutstanding: "0",
-      marketStateID: 4,
+      marketStateID: 15,
       feeWindow: "0x2000000000000000000000000000000000000000",
       endTime: 1507573470,
       shortDescription: "This is a binary test market created by b0b awaiting round 1 reporting.",
