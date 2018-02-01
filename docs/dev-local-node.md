@@ -5,6 +5,14 @@ This process uses a docker container to upload the smart contracts, point to the
 The document will be organized into setup per: layer, core, middleware, and UI.  
 Calls to execute smart contracts will be made through the middleware.
 
+## Requirements
+
+You'll need to clone the following repositories prior to starting:
+
+* [augur-core](https://github.com/AugurProject/augur-core)
+* [augur-.js](https://github.com/AugurProject/augur.js)
+* [augur](https://github.com/AugurProject/augur)
+
 ## augur-core
 
 After pulling down all the code we'll spin up a docker container that runs a local geth node.
@@ -28,7 +36,7 @@ Copy/Paste them into your command-line (linux or mac):
 
 Build augur-core    
 
-    npm i; npx tsc; USE_NORMAL_TIME=false yarn build
+    npm i; npx tsc; USE_NORMAL_TIME=false npm run build
 
 Upload the contracts to the local docker node, it relies on the above environment variables
 
@@ -43,39 +51,47 @@ Now we need to make the reset of the system aware of the new contract address th
 
 ## augur middleware
 
-Since we are using local contracts we need to make sure all repositories are looking at the same dependencies, we're going to use yarn link to help us out.
+Since we are using local contracts we need to make sure all repositories are looking at the same dependencies, we're going to use npm link to help us out.
 
 ### augur.js
 
 The helper scripts live in augur.js, both augur-node and augur (ui) repositories rely on augur.js. It needs to be built and linked.
 
     npm i;
-    yarn build;
-    yarn link;
+    npm run build;
+    npm link;
 
 ### augur-node
 
-We will see ENDPOINT_HTTP and ENDPOINT_WS often it tells augur-node or augur.js scripts where to connect, make sure to yarn link augur.js
+We will see ENDPOINT_HTTP and ENDPOINT_WS often it tells augur-node or augur.js scripts where to connect, make sure to npm link augur.js
 
     cd augur-node
-    yarn link augur.js
-    npm run rebuild && ENDPOINT_HTTP=http://127.0.0.1:47624 ENDPOINT_WS=ws://127.0.0.1:47625 npm start
+    npm link augur.js
+    npm run rebuild && ENDPOINT_HTTP=http://127.0.0.1:47624 ENDPOINT_WS=ws://127.0.0.1:47625 npm run start
 
 
 ### augur (ui)
 
-Only two things need to be done, update env-dev.json and make sure to yarn link.
+Link augur.js:
 
     cd augur
     npm i
-    yarn link augur.js;
-  	yarn dev;
+    npm link augur.js;
 
+Update the `env-dev.json` file to point to the local docker node:
 
-Example of the changed endpoints in the env-dev.json file
-
+```
+...
+  "ethereum-node": {
     "http": "http://127.0.0.1:47624",
     "ws": "ws://127.0.0.1:47625"
+  },
+...
+```
+
+Start the augur development server:
+
+    npm run dev
 
 ## Login with MetaMask
 If MetaMask browser extension is install, it will need to be configured. Create custom RPC endpoint, same as the "http" url in the env-dev.json file
