@@ -33,7 +33,7 @@ import NavAccountIcon from 'modules/common/components/nav-account-icon'
 import NavCreateIcon from 'modules/common/components/nav-create-icon'
 import NavMarketsIcon from 'modules/common/components/nav-markets-icon'
 import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon'
-import { AlertCircle } from 'modules/common/components/icons/icons' // NavReportingIcon
+import { AlertCircle, NavReportingIcon } from 'modules/common/components/icons/icons'
 
 import parsePath from 'modules/routes/helpers/parse-path'
 import makePath from 'modules/routes/helpers/make-path'
@@ -118,14 +118,13 @@ export default class AppView extends Component {
         route: MY_POSITIONS,
         requireLogin: true
       },
-      // NOTE -- TEMPORARILY disabled until new mocks + related middleware changes are in place
-      // {
-      //   title: 'Reporting',
-      //   iconName: 'nav-reporting-icon',
-      //   icon: NavReportingIcon,
-      //   route: REPORTING_OPEN,
-      //   requireLogin: true
-      // },
+      {
+        title: 'Reporting',
+        iconName: 'nav-reporting-icon',
+        icon: NavReportingIcon,
+        route: REPORTING_OPEN,
+        requireLogin: true
+      },
       {
         title: 'Account',
         iconName: 'nav-account-icon',
