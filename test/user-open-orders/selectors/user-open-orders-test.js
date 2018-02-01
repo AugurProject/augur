@@ -5,7 +5,6 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import { formatEtherTokens, formatShares, formatNone } from 'utils/format-number'
 import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status'
-import { cancelOrder } from '../../../src/modules/bids-asks/actions/cancel-order';
 
 describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
   proxyquire.noPreserveCache().noCallThru()
