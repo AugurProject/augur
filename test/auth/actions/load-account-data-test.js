@@ -14,10 +14,12 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       const LoadAccountDataFromLocalStorage = {}
       const UpdateAssets = { updateAssets: () => {} }
       const UpdateLoginAccount = { updateLoginAccount: () => {} }
+      const LoadAccountPositions = { loadAccountPositions: () => {} }
       const action = proxyquire('../../../src/modules/auth/actions/load-account-data.js', {
         './load-account-data-from-local-storage': LoadAccountDataFromLocalStorage,
         './update-assets': UpdateAssets,
-        './update-login-account': UpdateLoginAccount
+        './update-login-account': UpdateLoginAccount,
+        '../../my-positions/actions/load-account-positions': LoadAccountPositions,
       })
       LoadAccountDataFromLocalStorage.loadAccountDataFromLocalStorage = sinon.stub().returns({ type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE' })
       sinon.stub(UpdateAssets, 'updateAssets').callsFake(callback => (dispatch) => {
@@ -26,6 +28,9 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       })
       sinon.stub(UpdateLoginAccount, 'updateLoginAccount').callsFake(data => (dispatch) => {
         dispatch({ type: 'UPDATE_LOGIN_ACCOUNT', data })
+      })
+      sinon.stub(LoadAccountPositions, 'loadAccountPositions').callsFake(data => (dispatch) => {
+        dispatch({ type: 'UPDATE_ACCOUNT_TRADES_DATA' })
       })
       store.dispatch(action.loadAccountData(t.params.account))
       t.assertions(store.getActions())
@@ -75,6 +80,8 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
           address: '0xb0b'
         }
       }, {
+        type: 'UPDATE_ACCOUNT_TRADES_DATA'
+      }, {
         type: 'UPDATE_ASSETS'
       }])
     }
@@ -98,6 +105,8 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
           address: '0xb0b'
         }
       }, {
+        type: 'UPDATE_ACCOUNT_TRADES_DATA'
+      }, {
         type: 'UPDATE_ASSETS'
       }])
     }
@@ -120,6 +129,8 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         data: {
           address: '0xb0b'
         }
+      }, {
+        type: 'UPDATE_ACCOUNT_TRADES_DATA'
       }, {
         type: 'UPDATE_ASSETS'
       }])
@@ -150,6 +161,8 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
           airbitzAccount: { username: 'jack' }
         }
       }, {
+        type: 'UPDATE_ACCOUNT_TRADES_DATA'
+      }, {
         type: 'UPDATE_ASSETS'
       }])
     }
@@ -172,6 +185,8 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         data: {
           address: '0xb0b'
         }
+      }, {
+        type: 'UPDATE_ACCOUNT_TRADES_DATA'
       }, {
         type: 'UPDATE_ASSETS'
       }])
