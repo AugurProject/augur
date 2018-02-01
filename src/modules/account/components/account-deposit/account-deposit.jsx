@@ -28,7 +28,7 @@ export default class AccountDeposit extends Component {
         <div className={Styles.AccountDeposit__main}>
           <div className={Styles.AccountDeposit__description}>
             <p>
-              Deposit Ethereum or Reputation from your connected Trading Account to another account.
+              DO NOT send real ETH or REP to this account. Augur is currently on the Rinkeby Ethereum testnet.
             </p>
             <a href="https://shapeshift.io">Use Shapeshift</a>
           </div>
