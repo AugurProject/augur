@@ -1,7 +1,14 @@
 import * as Knex from "knex";
-import {Address, FeeWindowRow} from "../../types";
+import { Address, AsyncCallback, FeeWindowRow } from "../../types";
+import { parallel } from "async";
+import { BigNumber } from "bignumber.js";
 
-export function getFeeWindowCurrent(db: Knex, universe: Address, callback: (err?: Error|null, result?: any) => void): void {
+interface StakeRows {
+  Disputes: any;
+  InitialReports: any;
+}
+
+export function getFeeWindowCurrent(db: Knex, universe: Address, account: Address, callback: (err?: Error|null, result?: any) => void): void {
   if (universe == null) return callback(new Error("Must provide universe"));
   const query = db.select(
     [
@@ -14,12 +21,37 @@ export function getFeeWindowCurrent(db: Knex, universe: Address, callback: (err?
       "universe",
     ]).first().from("fee_windows")
     .whereNull("endBlockNumber")
-    .where({universe})
+    .where({ universe })
     .orderBy("startTime", "ASC");
 
-  query.asCallback((err: Error|null, feeWindow?: FeeWindowRow): void => {
+  query.asCallback((err: Error|null, feeWindowRow?: FeeWindowRow): void => {
     if (err) return callback(err);
-    if (!feeWindow) return callback(null, null);
-    callback(null, feeWindow);
+    if (!feeWindowRow) return callback(null, null);
+    if (account == null) {
+      return callback(null, feeWindowRow);
+    } else {
+      // populate account element
+      const initialReportQuery = db.first().sum("markets.initialReportSize as totalInitialReportSize").from("initial_reports")
+        .join("markets", "markets.marketID", "initial_reports.marketID")
+        .where("markets.feeWindow", feeWindowRow.feeWindow);
+      const disputesQuery = db.first().sum("amountStaked as totalDisputeStake").from("disputes")
+        .join("crowdsourcers", "crowdsourcers.crowdsourcerID", "disputes.crowdsourcerID")
+        .join("markets", "markets.marketID", "crowdsourcers.marketID")
+        .where("markets.feeWindow", feeWindowRow.feeWindow);
+      parallel({
+        InitialReports: (next: AsyncCallback) => initialReportQuery.asCallback(next),
+        Disputes: (next: AsyncCallback) => disputesQuery.asCallback(next),
+      }, (err: Error|null, stakes: StakeRows): void => {
+        if (err) return callback(err);
+        if (stakes == null || stakes.InitialReports == null || stakes.Disputes == null) return callback(new Error("Bad results from stake query"));
+        const totalStake = new BigNumber(stakes.InitialReports.totalInitialReportSize || 0, 10)
+          .add(new BigNumber(stakes.Disputes.totalDisputeStake || 0, 10));
+        callback(null, Object.assign(
+          {},
+          feeWindowRow,
+          { totalStake: totalStake.toFixed() },
+        ));
+      });
+    }
   });
 }
