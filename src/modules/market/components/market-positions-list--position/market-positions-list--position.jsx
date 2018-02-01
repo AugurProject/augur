@@ -95,7 +95,7 @@ export default class Position extends Component {
           ))}
         </li>
         <li>
-          { getValue(p, 'position.avgPrice.formatted') }
+          { getValue(p, 'position.purchasePrice.formatted') }
           { p.openOrders && p.openOrders.length > 0 && p.openOrders.map((order, i) => (
             <div key={i} className={Styles.Position__pending}>
               <span>{ Position.calcAvgDiff(p.position, order) }</span>
