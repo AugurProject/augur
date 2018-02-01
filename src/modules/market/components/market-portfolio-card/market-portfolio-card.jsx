@@ -171,7 +171,7 @@ export default class MarketPortfolioCard extends Component {
             </div>
           }
           <div className={PositionStyles.MarketPositionsList__table}>
-            { this.state.tableOpen.myPositions && myPositionOutcomes &&
+            { this.state.tableOpen.myPositions && (myPositionOutcomes || []).filter(outcome => outcome.position).length > 0 &&
               <ul className={PositionStyles['MarketPositionsList__table-header']}>
                 <li>Outcome</li>
                 <li><span>Quantity</span></li>
