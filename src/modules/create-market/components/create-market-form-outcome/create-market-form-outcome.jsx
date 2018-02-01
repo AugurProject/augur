@@ -14,6 +14,8 @@ import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/i
 import Styles from 'modules/create-market/components/create-market-form-outcome/create-market-form-outcome.styles'
 import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'
 
+const { DEFAULT_SCALAR_TICK_SIZE } = require('augur.js/src/constants')
+
 export default class CreateMarketOutcome extends Component {
 
   static propTypes = {
@@ -68,6 +70,9 @@ export default class CreateMarketOutcome extends Component {
     const validations = updatedMarket.validations[p.newMarket.currentStep]
 
     const updatedValidations = Object.keys(validations).reduce((p, key) => (validations[key] === true ? { ...p, [key]: true } : p), {})
+
+    // Reset tickSize as it only applies to 'scalar' markets and we are 'defaulting' the value in the componenet.
+    delete updatedMarket.tickSize
 
     switch (value) {
       case CATEGORICAL:
@@ -301,6 +306,14 @@ export default class CreateMarketOutcome extends Component {
                 maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
                 placeholder="Range Denomination"
                 onChange={e => p.validateField('scalarDenomination', e.target.value, CATEGORICAL_OUTCOME_MAX_LENGTH)}
+              />
+              <input
+                id="cm__input--ticksize"
+                type="number"
+                step="0.0001"
+                value={p.newMarket.tickSize || DEFAULT_SCALAR_TICK_SIZE}
+                placeholder="Tick Size"
+                onChange={e => p.validateField('tickSize', e.target.value, CATEGORICAL_OUTCOME_MAX_LENGTH)}
               />
             </div>
           </li>
