@@ -1,14 +1,14 @@
 import * as Knex from "knex";
-import { Address, AsyncCallback, FeeWindowRow } from "../../types";
+import { Address, AsyncCallback, FeeWindowRow, UIFeeWindowCurrent } from "../../types";
 import { parallel } from "async";
 import { BigNumber } from "bignumber.js";
 
 interface StakeRows {
-  Disputes: any;
-  InitialReports: any;
+  Disputes: { totalDisputeStake: string|null };
+  InitialReports: { totalInitialReportSize: string|null };
 }
 
-export function getFeeWindowCurrent(db: Knex, universe: Address, reporter: Address, callback: (err?: Error|null, result?: any) => void): void {
+export function getFeeWindowCurrent(db: Knex, universe: Address, reporter: Address, callback: (err?: Error|null, result?: UIFeeWindowCurrent|null) => void): void {
   if (universe == null) return callback(new Error("Must provide universe"));
   const query = db.select(
     [
