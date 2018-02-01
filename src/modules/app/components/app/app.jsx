@@ -41,7 +41,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 
 import getValue from 'utils/get-value'
 
-import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT, MY_MARKETS, MY_POSITIONS, WATCHLIST, PORTFOLIO_TRANSACTIONS, CREATE_MARKET, CATEGORIES, REPORTING_OPEN, REPORTING_CLOSED, AUTHENTICATION } from 'modules/routes/constants/views'
+import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT, MY_MARKETS, MY_POSITIONS, WATCHLIST, PORTFOLIO_TRANSACTIONS, CREATE_MARKET, CATEGORIES, REPORTING_OPEN, REPORTING_DISPUTE, REPORTING_CLOSED, AUTHENTICATION } from 'modules/routes/constants/views'
 import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
@@ -66,6 +66,7 @@ const navTypes = {
   [ACCOUNT_WITHDRAW]: AccountInnerNav,
   [ACCOUNT_EXPORT]: AccountInnerNav,
   [REPORTING_OPEN]: ReportingInnerNav,
+  [REPORTING_DISPUTE]: ReportingInnerNav,
   [REPORTING_CLOSED]: ReportingInnerNav,
 }
 
@@ -122,7 +123,7 @@ export default class AppView extends Component {
         title: 'Reporting',
         iconName: 'nav-reporting-icon',
         icon: NavReportingIcon,
-        route: REPORTING_OPEN,
+        route: REPORTING_DISPUTE,
         requireLogin: true
       },
       {
@@ -222,6 +223,7 @@ export default class AppView extends Component {
         case ACCOUNT_WITHDRAW:
         case ACCOUNT_EXPORT:
         case REPORTING_OPEN:
+        case REPORTING_DISPUTE:
         case REPORTING_CLOSED:
           openNewMenu()
           break
