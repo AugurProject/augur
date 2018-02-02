@@ -36,7 +36,9 @@ Copy/Paste them into your command-line (linux or mac):
 
 Build augur-core    
 
-    yarn; npx tsc; USE_NORMAL_TIME=false yarn build
+    yarn
+    npx tsc
+    USE_NORMAL_TIME=false yarn build
 
 Upload the contracts to the local docker node, it relies on the above environment variables
 
@@ -59,17 +61,19 @@ The helper scripts live in augur.js, both augur-node and augur (ui) repositories
 
 NOTE -- intentionally `npm i` here, as `yarn` has exhibited issues.
 
-    npm i;
-    yarn build;
-    yarn link;
+    npm i
+    yarn build
+    yarn link
 
 ### augur-node
 
 We will see ENDPOINT_HTTP and ENDPOINT_WS often it tells augur-node or augur.js scripts where to connect, make sure to yarn link augur.js
 
     cd augur-node
+    yarn
     yarn link augur.js
-    yarn rebuild && ENDPOINT_HTTP=http://127.0.0.1:47624 ENDPOINT_WS=ws://127.0.0.1:47625 yarn start
+    yarn rebuild
+    ENDPOINT_HTTP=http://127.0.0.1:47624 ENDPOINT_WS=ws://127.0.0.1:47625 yarn start
 
 
 ### augur (ui)
@@ -78,7 +82,7 @@ Link augur.js:
 
     cd augur
     yarn
-    yarn link augur.js;
+    yarn link augur.js
 
 Update the `env-dev.json` file to point to the local docker node:
 
