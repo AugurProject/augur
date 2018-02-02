@@ -11,7 +11,7 @@ var api = require("../api");
  * @param {function} callback Called when the check has completed, returns null on success or an error if there was a failure.
  */
 function approveAugur(address, auth, callback) {
-  augurNode.getContractAddresses(function(err, contractsInfo) {
+  augurNode.getContractAddresses(function (err, contractsInfo) {
     if (err) return callback(err);
     var augurContract = contractsInfo.addresses.Augur;
     api().Cash.allowance({ _owner: address, _spender: augurContract }, function (err, allowance) {
@@ -25,11 +25,9 @@ function approveAugur(address, auth, callback) {
         _value: constants.ETERNAL_APPROVAL_VALUE,
         onSent: function () {},
         onSuccess: function (res) {
-          console.log("Augur.approve success:", address, res.callReturn, res.hash);
-          callback(null);
+          callback(null, res);
         },
         onFailed: function (err) {
-          console.error("Augur.approve failed:", address, err);
           callback(err);
         },
       });
@@ -37,4 +35,4 @@ function approveAugur(address, auth, callback) {
   });
 }
 
-module.exports = approvalCheck;
+module.exports = approveAugur;
