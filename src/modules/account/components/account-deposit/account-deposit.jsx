@@ -28,7 +28,7 @@ export default class AccountDeposit extends Component {
         <div className={Styles.AccountDeposit__main}>
           <div className={Styles.AccountDeposit__description}>
             <p>
-              DO NOT send real ETH or REP to this account. Augur is currently on Ethereum's Rinkeby testnet.
+              DO NOT send real ETH or REP to this account. Augur is currently on Ethereum&#39;s Rinkeby testnet.
             </p>
             <a href="https://shapeshift.io">Use Shapeshift</a>
           </div>
