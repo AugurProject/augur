@@ -104,8 +104,6 @@ export default class CategoriesView extends Component {
     }
   }
 
-  // TODO -- currently heroCategory is never populated.  Per discussion, punting on fixiing this for the time being.
-
   render() {
     const p = this.props
     const s = this.state
@@ -127,11 +125,11 @@ export default class CategoriesView extends Component {
                   to={{
                     pathname: makePath(MARKETS),
                     search: makeQuery({
-                      [CATEGORY_PARAM_NAME]: heroCategory.Category
+                      [CATEGORY_PARAM_NAME]: heroCategory.category
                     })
                   }}
                 >
-                  {heroCategory.Category}
+                  {heroCategory.category}
                 </Link>
               }
               {!heroCategory && '...'}
