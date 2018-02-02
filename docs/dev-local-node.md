@@ -36,7 +36,7 @@ Copy/Paste them into your command-line (linux or mac):
 
 Build augur-core    
 
-    yarn i; npx tsc; USE_NORMAL_TIME=false yarn run build
+    yarn; npx tsc; USE_NORMAL_TIME=false yarn run build
 
 Upload the contracts to the local docker node, it relies on the above environment variables
 
