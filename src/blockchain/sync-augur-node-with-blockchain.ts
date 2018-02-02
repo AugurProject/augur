@@ -1,6 +1,6 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { EthereumNodeEndpoints, UploadBlockNumbers, ErrorCallback} from "../types";
+import { EthereumNodeEndpoints, UploadBlockNumbers, ErrorCallback, Block } from "../types";
 import { startAugurListeners } from "./start-augur-listeners";
 import { downloadAugurLogs } from "./download-augur-logs";
 
@@ -14,16 +14,16 @@ interface NetworkIDRow {
 
 function getNetworkID(db: Knex, augur: Augur, callback: (err: Error|null, networkID: string|null) => void) {
   const networkID: string = augur.rpc.getNetworkID();
-  db.select("networkID").from("network_id").limit(1).asCallback( (err: Error|null, rows: Array<NetworkIDRow>): void => {
+  db.select("networkID").from("network_id").limit(1).asCallback((err: Error|null, rows: Array<NetworkIDRow>): void => {
     if (err) return callback(err, null);
     if (rows.length === 0) {
-      db.insert({networkID}).into("network_id").asCallback( (err: Error|null): void => {
+      db.insert({ networkID }).into("network_id").asCallback((err: Error|null): void => {
         callback(err, networkID);
       });
     } else {
       const lastNetworkID: string = rows[0].networkID;
       if (networkID === lastNetworkID) {
-        db("network_id").update({lastLaunched: db.fn.now()}).asCallback( (err: Error|null): void => callback(err, networkID) );
+        db("network_id").update({ lastLaunched: db.fn.now() }).asCallback((err: Error|null): void => callback(err, networkID));
       } else {
         callback(new Error(`NetworkID mismatch: current: ${networkID}, expected ${lastNetworkID}`), null);
       }
@@ -50,15 +50,17 @@ export function syncAugurNodeWithBlockchain(db: Knex, augur: Augur, ethereumNode
     console.log("Started blockchain event listeners", augur.rpc.getCurrentBlock());
     getNetworkID(db, augur, (err: Error|null, networkID: string|null) => {
       if (err) return callback(err);
+      if (networkID == null) return callback(new Error("could not get networkID"));
       monitorEthereumNodeHealth(augur);
-      augur.rpc.eth.getBlockByNumber(["latest", false], (block: any): void => {
+      augur.rpc.eth.getBlockByNumber(["latest", false], (block: Block): void => {
         db("blockchain_sync_history").max("highestBlockNumber as highestBlockNumber").asCallback((err: Error|null, rows?: Array<HighestBlockNumberRow>): void => {
           if (err) return callback(err);
+          if (block == null || block.number === "0") return callback(new Error("Could not fetch block"));
           if (!rows || !rows.length || !rows[0]) return callback(new Error("blockchain_sync_history lookup failed"));
           const row: HighestBlockNumberRow = rows[0];
-          const uploadBlockNumber: number = uploadBlockNumbers[networkID!] || 0;
+          const uploadBlockNumber: number = augur.contracts.uploadBlockNumbers[networkID] || 0;
           const fromBlock: number = (!row || !row.highestBlockNumber) ? uploadBlockNumber : row.highestBlockNumber + 1;
-          const highestBlockNumber: number = parseInt(augur.rpc.getCurrentBlock().number, 16) - 1;
+          const highestBlockNumber: number = parseInt(block.number, 16) - 1;
           downloadAugurLogs(db, augur, fromBlock, highestBlockNumber, (err?: Error|null): void => {
             if (err) return callback(err);
             db.insert({ highestBlockNumber }).into("blockchain_sync_history").asCallback(callback);
