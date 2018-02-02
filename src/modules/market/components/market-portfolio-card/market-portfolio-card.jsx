@@ -174,11 +174,11 @@ export default class MarketPortfolioCard extends Component {
             { this.state.tableOpen.myPositions && (myPositionOutcomes || []).filter(outcome => outcome.position).length > 0 &&
               <ul className={PositionStyles['MarketPositionsList__table-header']}>
                 <li>Outcome</li>
-                <li><span>Quantity</span></li>
-                <li><span>Avg Price</span></li>
-                <li><span>Last Price</span></li>
-                <li><span>Realized <span />P/L</span></li>
-                <li><span>Unrealized <span />P/L</span></li>
+                { p.isMobile ? <li><span>Qty</span></li> : <li><span>Quantity</span></li>}
+                { p.isMobile ? <li><span>Avg</span></li> : <li><span>Avg Price</span></li>}
+                { !p.isMobile && <li><span>Last Price</span></li> }
+                { !p.isMobile && <li><span>Realized <span />P/L</span></li>}
+                { !p.isMobile && <li><span>Unrealized <span />P/L</span></li>}
                 <li><span>Total <span />P/L</span></li>
                 <li><span>Action</span></li>
               </ul>
@@ -191,6 +191,7 @@ export default class MarketPortfolioCard extends Component {
                   position={outcome.position}
                   openOrders={outcome.userOpenOrders ? outcome.userOpenOrders.filter(order => order.id === outcome.position.id && order.pending === true) : []}
                   isExtendedDisplay
+                  isMobile={p.isMobile}
                 />
                 }
               </div>
@@ -214,16 +215,16 @@ export default class MarketPortfolioCard extends Component {
             }
             <div className={PositionStyles.MarketPositionsList__table}>
               { this.state.tableOpen.openOrders &&
-                <ul className={PositionStyles['MarketPositionsList__table-header']}>
-                  <li>Outcome</li>
-                  <li><span>Quantity</span></li>
-                  <li><span>Avg Price</span></li>
-                  <li><span>Last Price</span></li>
-                  <li><span>Realized <span />P/L</span></li>
-                  <li><span>Unrealized <span />P/L</span></li>
-                  <li><span>Total <span />P/L</span></li>
-                  <li><span>Action</span></li>
-                </ul>
+              <ul className={PositionStyles['MarketPositionsList__table-header']}>
+                <li>Outcome</li>
+                { p.isMobile ? <li><span>Qty</span></li> : <li><span>Quantity</span></li>}
+                { p.isMobile ? <li><span>Avg</span></li> : <li><span>Avg Price</span></li>}
+                { !p.isMobile && <li><span>Last Price</span></li> }
+                { !p.isMobile && <li><span>Realized <span />P/L</span></li>}
+                { !p.isMobile && <li><span>Unrealized <span />P/L</span></li>}
+                <li><span>Total <span />P/L</span></li>
+                <li><span>Action</span></li>
+              </ul>
               }
               { this.state.tableOpen.openOrders && (myPositionOutcomes || []).filter(outcome => outcome.userOpenOrders).map(outcome => (
                 <div key={`table-body-order-${outcome.id}${outcome.marketID}`} className={PositionStyles['MarketPositionsList__table-body']}>
@@ -234,6 +235,7 @@ export default class MarketPortfolioCard extends Component {
                       order={order}
                       pending={order.pending}
                       isExtendedDisplay
+                      isMobile={p.isMobile}
                     />
                   ))}
                 </div>

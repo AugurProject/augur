@@ -15,6 +15,7 @@ export default class Position extends Component {
     position: PropTypes.object.isRequired,
     openOrders: PropTypes.array.isRequired,
     isExtendedDisplay: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool.isRequired,
   }
 
   static calcAvgDiff(position, order) {
@@ -75,7 +76,7 @@ export default class Position extends Component {
     return (
       <ul
         ref={(position) => { this.position = position }}
-        className={Styles.Position}
+        className={!p.isMobile ? Styles.Position : Styles.PortMobile}
       >
         <li>
           { getValue(p, 'name') }
@@ -102,13 +103,13 @@ export default class Position extends Component {
             </div>
           ))}
         </li>
-        { p.isExtendedDisplay &&
+        { p.isExtendedDisplay && !p.isMobile &&
           <li>
             {getValue(p, 'position.lastPrice.formatted') }
           </li>
         }
-        <li>{ getValue(p, 'position.unrealizedNet.formatted') }</li>
-        <li>{ getValue(p, 'position.realizedNet.formatted') }</li>
+        { !p.isMobile && <li>{ getValue(p, 'position.unrealizedNet.formatted') }</li>}
+        { !p.isMobile && <li>{ getValue(p, 'position.realizedNet.formatted')} </li> }
         { p.isExtendedDisplay &&
           <li>
             {getValue(p, 'position.totalNet.formatted') }

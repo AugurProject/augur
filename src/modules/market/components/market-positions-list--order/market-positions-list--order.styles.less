@@ -38,6 +38,44 @@
   }
 }
 
+.PortMobile {
+  display: table-row;
+  transition: background-color 0.15s ease;
+
+  &:first-child > li {
+    border-top-width: 0;
+  }
+
+  > li {
+    border-top: 1px solid @color-lightest-gray;
+    display: table-cell;
+    max-width: 19vw;
+    overflow: hidden;
+    padding: 1.125rem 0;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:first-child {
+      padding-left: 2rem;
+      position: relative;
+      text-align: left;
+
+      > .Position__pending {
+        justify-content: flex-start;
+      }
+    }
+
+    &:last-of-type {
+      padding-right: 1rem;
+
+      > button {
+        font-weight: 500;
+      }
+    }
+  }
+}
+
 .Order__confirm {
   background-color: @color-purple;
   color: @color-white;
@@ -98,11 +136,11 @@
       color: inherit;
 
       &:first-child {
-        padding-left: 1rem;
+        padding-left: 0;
       }
 
       &:last-of-type {
-        padding-right: 1rem;
+        padding-right: 0;
       }
 
       &:not(:first-child) {
@@ -110,10 +148,37 @@
       }
     }
   }
+
+  .PortMobile {
+    > li {
+      border-top-color: @color-darkpurple;
+      color: inherit;
+
+      &:first-child {
+        padding-left: 0.5rem;
+      }
+
+      &:last-of-type {
+        padding-right: 0.5rem;
+      }
+    }
+  }
 }
 
 @media @breakpoint-mobile-medium {
   .Order {
+    &:first-child > li {
+      border-top-width: 1px;
+    }
+
+    > li {
+      font-size: @font-size-medium;
+      line-height: @font-size-medium;
+      max-width: 25vw;
+    }
+  }
+
+  .PortMobile {
     &:first-child > li {
       border-top-width: 1px;
     }

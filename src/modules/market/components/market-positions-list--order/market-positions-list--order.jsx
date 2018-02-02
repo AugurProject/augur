@@ -53,7 +53,7 @@ export default class Order extends Component {
     return (
       <ul
         ref={(order) => { this.order = order }}
-        className={Styles.Order}
+        className={!p.isMobile ? Styles.Order : Styles.PortMobile}
       >
         <li>
           { getValue(p, 'name') }
@@ -67,11 +67,11 @@ export default class Order extends Component {
         <li>
           { getValue(p, 'order.avgPrice.formatted') }
         </li>
-        { p.isExtendedDisplay &&
+        { p.isExtendedDisplay && !p.isMobile &&
           <li />
         }
-        <li />
-        <li />
+        { !p.isMobile && <li /> }
+        { !p.isMobile && <li /> }
         { p.isExtendedDisplay &&
           <li />
         }
