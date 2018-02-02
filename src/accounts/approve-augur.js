@@ -10,13 +10,13 @@ var api = require("../api");
  * @param {{signer: buffer|function, accountType: string}=} auth Authentication metadata for raw transactions.
  * @param {function} callback Called when the check has completed, returns null on success or an error if there was a failure.
  */
-function approvalCheck(address, auth, callback) {
+function approveAugur(address, auth, callback) {
   augurNode.getContractAddresses(function(err, contractsInfo) {
     if (err) return callback(err);
     var augurContract = contractsInfo.addresses.Augur;
     api().Cash.allowance({ _owner: address, _spender: augurContract }, function (err, allowance) {
       if (err) return callback(err);
-      if (new BigNumber(allowance, 10).gte(new BigNumber(constants.REFRESH_APPROVAL_VALUE, 16))) {
+      if (new BigNumber(allowance, 10).gte(new BigNumber(constants.ETERNAL_APPROVAL_VALUE, 16))) {
         return callback(null);
       }
       api().Cash.approve({
