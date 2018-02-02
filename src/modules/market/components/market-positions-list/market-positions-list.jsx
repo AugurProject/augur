@@ -62,6 +62,8 @@ export default class MarketPositionsList extends Component {
                     name={position.name}
                     position={position}
                     openOrders={p.openOrders.filter(order => order.id === position.id && order.pending === true)}
+                    isExtendedDisplay={false}
+                    isMobile={false}
                   />
                 ))}
               </div>
@@ -84,6 +86,8 @@ export default class MarketPositionsList extends Component {
                     name={order.name}
                     order={order}
                     pending={order.pending}
+                    isExtendedDisplay={false}
+                    isMobile={false}
                   />
                 ))}
               </div>
