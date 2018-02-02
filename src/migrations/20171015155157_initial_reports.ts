@@ -5,6 +5,7 @@ exports.up = async (knex: Knex): Promise<any> => {
     return  knex.schema.createTable("initial_reports", (table: Knex.CreateTableBuilder): void => {
       table.increments("initialReportID");
       table.string("marketID", 42).notNullable();
+      table.string("reporter", 42).notNullable();
       table.boolean("isDesignatedReporter").notNullable();
 
       table.integer("payoutID").notNullable();

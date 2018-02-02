@@ -52,7 +52,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getUserTradingPositions":
       return getUserTradingPositions(db, request.params.universe, request.params.account, request.params.marketID, request.params.outcome, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getFeeWindowCurrent":
-      return getFeeWindowCurrent(db, request.params.universe, callback);
+      return getFeeWindowCurrent(db, request.params.universe, request.params.account, callback);
     case "getFeeWindowsWithUnclaimedFees":
       return getFeeWindowsWithUnclaimedFees(db, request.params.universe, request.params.account, callback);
     case "getUnclaimedMarketCreatorFees":

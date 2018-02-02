@@ -84,7 +84,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           blockNumber: 1400100,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
           logIndex: 0,
-          disputeID: 7,
+          disputeID: 8,
           crowdsourcerID: "0x0000000000000000002000000000000000000001",
           reporter: "0x0000000000000000000000000000000000000b0b",
           amountStaked: 19381,

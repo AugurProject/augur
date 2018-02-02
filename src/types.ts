@@ -238,6 +238,18 @@ export interface UIDisputeTokens {
   [stakeToken: string]: UIDisputeTokenInfo;
 }
 
+export interface UIFeeWindowCurrent {
+  endBlockNumber: number|null;
+  endTime: number;
+  feeWindow: Address;
+  feeWindowID: number;
+  startBlockNumber: number;
+  startTime: number;
+  universe: Address;
+  totalStake?: number;
+
+}
+
 export interface UIMarketCreatorFee {
   marketID: Address;
   unclaimedFee: string;
