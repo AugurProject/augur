@@ -33,7 +33,7 @@ import NavAccountIcon from 'modules/common/components/nav-account-icon'
 import NavCreateIcon from 'modules/common/components/nav-create-icon'
 import NavMarketsIcon from 'modules/common/components/nav-markets-icon'
 import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon'
-import { AlertCircle } from 'modules/common/components/icons/icons' // NavReportingIcon
+import { AlertCircle, NavReportingIcon } from 'modules/common/components/icons/icons'
 
 import parsePath from 'modules/routes/helpers/parse-path'
 import makePath from 'modules/routes/helpers/make-path'
@@ -41,7 +41,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 
 import getValue from 'utils/get-value'
 
-import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT, MY_MARKETS, MY_POSITIONS, WATCHLIST, PORTFOLIO_TRANSACTIONS, CREATE_MARKET, CATEGORIES, REPORTING_OPEN, REPORTING_CLOSED, AUTHENTICATION } from 'modules/routes/constants/views'
+import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_EXPORT, MY_MARKETS, MY_POSITIONS, WATCHLIST, PORTFOLIO_TRANSACTIONS, CREATE_MARKET, CATEGORIES, REPORTING_OPEN, REPORTING_DISPUTE, REPORTING_CLOSED, AUTHENTICATION } from 'modules/routes/constants/views'
 import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
@@ -66,6 +66,7 @@ const navTypes = {
   [ACCOUNT_WITHDRAW]: AccountInnerNav,
   [ACCOUNT_EXPORT]: AccountInnerNav,
   [REPORTING_OPEN]: ReportingInnerNav,
+  [REPORTING_DISPUTE]: ReportingInnerNav,
   [REPORTING_CLOSED]: ReportingInnerNav,
 }
 
@@ -118,14 +119,13 @@ export default class AppView extends Component {
         route: MY_POSITIONS,
         requireLogin: true
       },
-      // NOTE -- TEMPORARILY disabled until new mocks + related middleware changes are in place
-      // {
-      //   title: 'Reporting',
-      //   iconName: 'nav-reporting-icon',
-      //   icon: NavReportingIcon,
-      //   route: REPORTING_OPEN,
-      //   requireLogin: true
-      // },
+      {
+        title: 'Reporting',
+        iconName: 'nav-reporting-icon',
+        icon: NavReportingIcon,
+        route: REPORTING_DISPUTE,
+        requireLogin: true
+      },
       {
         title: 'Account',
         iconName: 'nav-account-icon',
@@ -223,6 +223,7 @@ export default class AppView extends Component {
         case ACCOUNT_WITHDRAW:
         case ACCOUNT_EXPORT:
         case REPORTING_OPEN:
+        case REPORTING_DISPUTE:
         case REPORTING_CLOSED:
           openNewMenu()
           break
