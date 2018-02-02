@@ -4,11 +4,6 @@
     "http": "http://localhost:8545",
     "ws": "ws://localhost:8546"
   },
-  "uploadBlockNumbers": {
-    "1": 4086425,
-    "3": 1377804,
-    "4": 1490000
-  },
   "websocketConfigs": {
     "pingMs": 12000,
     "ws": {
