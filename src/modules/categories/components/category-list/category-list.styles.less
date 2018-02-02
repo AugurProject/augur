@@ -1,7 +1,13 @@
 @import (reference) '~assets/styles/shared';
 
+.CategoryList {
+  display: flex;
+  flex-flow: row wrap;
+}
+
 .CategoryList__categorywrap {
   display: inline-block;
+  height: 6.25rem;
   margin-top: 8rem;
   text-align: center;
   width: 33.33%;
@@ -13,7 +19,37 @@
   }
 }
 
+.CategoryList__categorywrap-short {
+  display: inline-block;
+  flex: 0 1 33.33%;
+  height: 6.25rem;
+  margin-bottom: 28.5rem;
+  text-align: center;
+
+  &:nth-child(1) {
+    margin-left: auto;
+  }
+
+  &:only-of-type {
+    flex: 1;
+    margin-left: 0;
+  }
+
+  &:nth-child(2) {
+    margin-right: auto;
+  }
+}
+
 @media @breakpoint-small-desktop {
+  .CategoryList__categorywrap-short {
+    flex: 1 33.33%;
+
+    &:nth-child(1),
+    &:nth-child(2) {
+      margin: 0 0 28.5rem;
+    }
+  }
+
   .CategoryList__categorywrap {
     width: 50%;
 
@@ -24,6 +60,13 @@
 }
 
 @media @breakpoint-mobile {
+  .CategoryList__categorywrap-short {
+    &:nth-child(1),
+    &:nth-child(2) {
+      margin: 0 0 8rem;
+    }
+  }
+
   .CategoryList__categorywrap {
     width: 100%;
 

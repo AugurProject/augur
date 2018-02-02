@@ -35,9 +35,8 @@ export default class BaseInnerNav extends Component {
       subMenuAnimatedStyle = { left: (110 * this.props.subMenuScalar) }
     }
 
-    const dataToItem = item => (
+    const DataToItem = item => (
       <MenuItem
-        key={item.label}
         isSelected={item.isSelected}
         visible={item.visible}
       >
@@ -72,12 +71,12 @@ export default class BaseInnerNav extends Component {
           )}
           style={subMenuAnimatedStyle}
         >
-          {this.getSubMenuData().map(dataToItem)}
+          {this.getSubMenuData().map(item => <DataToItem key={item.label} {...item} />)}
         </ul>
         <ul
           className={classNames(Styles.InnerNav__menu, Styles['InnerNav__menu--main'])}
         >
-          {this.getMainMenuData().map(dataToItem)}
+          {this.getMainMenuData().map(item => <DataToItem key={item.label} {...item} />)}
         </ul>
       </aside>
     )
