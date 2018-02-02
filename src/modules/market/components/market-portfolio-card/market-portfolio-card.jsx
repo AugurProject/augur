@@ -183,9 +183,9 @@ export default class MarketPortfolioCard extends Component {
                 <li><span>Action</span></li>
               </ul>
             }
-            { this.state.tableOpen.myPositions && (myPositionOutcomes || []).filter(outcome => outcome.position).map(outcome => (
-              <div key={`table-body-position-${outcome.id}${outcome.marketID}`} className={PositionStyles['MarketPositionsList__table-body']}>
-                { <MarketPositionsListPosition
+            <div className={PositionStyles['MarketPositionsList__table-body']}>
+              { this.state.tableOpen.myPositions && (myPositionOutcomes || []).filter(outcome => outcome.position).map(outcome => (
+                <MarketPositionsListPosition
                   key={outcome.id + outcome.marketID}
                   name={outcome.name}
                   position={outcome.position}
@@ -193,9 +193,8 @@ export default class MarketPortfolioCard extends Component {
                   isExtendedDisplay
                   isMobile={p.isMobile}
                 />
-                }
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </section>
         <section className={Styles.MarketCard__tablesection}>
