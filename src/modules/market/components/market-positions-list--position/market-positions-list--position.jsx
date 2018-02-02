@@ -116,7 +116,7 @@ export default class Position extends Component {
           </li>
         }
         <li>
-          <button onClick={this.toggleConfirm}>Close</button>
+          { getValue(p, 'position.qtyShares.value') > 0 ? <button onClick={this.toggleConfirm}>Close</button> : <span className={Styles.NotActive}>Close</span>}
         </li>
         <div
           ref={(confirmMessage) => { this.confirmMessage = confirmMessage }}
