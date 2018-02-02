@@ -36,7 +36,7 @@ Copy/Paste them into your command-line (linux or mac):
 
 Build augur-core    
 
-    yarn; npx tsc; USE_NORMAL_TIME=false yarn run build
+    yarn; npx tsc; USE_NORMAL_TIME=false yarn build
 
 Upload the contracts to the local docker node, it relies on the above environment variables
 
@@ -69,7 +69,7 @@ We will see ENDPOINT_HTTP and ENDPOINT_WS often it tells augur-node or augur.js 
 
     cd augur-node
     yarn link augur.js
-    yarn run rebuild && ENDPOINT_HTTP=http://127.0.0.1:47624 ENDPOINT_WS=ws://127.0.0.1:47625 yarn run start
+    yarn rebuild && ENDPOINT_HTTP=http://127.0.0.1:47624 ENDPOINT_WS=ws://127.0.0.1:47625 yarn start
 
 
 ### augur (ui)
@@ -93,7 +93,7 @@ Update the `env-dev.json` file to point to the local docker node:
 
 Start the augur development server:
 
-    yarn run dev
+    yarn dev
 
 ## Login with MetaMask
 If MetaMask browser extension is install, it will need to be configured. Create custom RPC endpoint, same as the "http" url in the env-dev.json file
