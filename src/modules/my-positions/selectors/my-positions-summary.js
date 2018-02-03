@@ -28,7 +28,13 @@ export const generateOutcomePositionSummary = memoize((adjustedPosition) => {
   const averagePrice = accumulate(adjustedPosition, 'averagePrice')
   const isClosable = !!new BigNumber(qtyShares || '0').toNumber() // Based on position, can we attempt to close this position
 
+  const marketId = Array.isArray(adjustedPosition) && adjustedPosition.length > 0 ? adjustedPosition[outcomePositions-1].marketID : null
+  const outcomeId = Array.isArray(adjustedPosition) && adjustedPosition.length > 0 ? adjustedPosition[outcomePositions-1].outcome : null
+
   return {
+    // if in case of multiple positions for same outcome use the last one, marketId and outcome will be the same
+    marketId,
+    outcomeId,
     ...generatePositionsSummary(outcomePositions, qtyShares, averagePrice, realized, unrealized),
     isClosable,
     closePosition: (marketID, outcomeID) => {

@@ -14,6 +14,8 @@ export default class Position extends Component {
     name: PropTypes.string.isRequired,
     position: PropTypes.object.isRequired,
     openOrders: PropTypes.array.isRequired,
+    isExtendedDisplay: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool.isRequired,
   }
 
   static calcAvgDiff(position, order) {
@@ -74,7 +76,7 @@ export default class Position extends Component {
     return (
       <ul
         ref={(position) => { this.position = position }}
-        className={Styles.Position}
+        className={!p.isMobile ? Styles.Position : Styles.PortMobile}
       >
         <li>
           { getValue(p, 'name') }
@@ -94,17 +96,27 @@ export default class Position extends Component {
           ))}
         </li>
         <li>
-          { getValue(p, 'position.avgPrice.formatted') }
+          { getValue(p, 'position.purchasePrice.formatted') }
           { p.openOrders && p.openOrders.length > 0 && p.openOrders.map((order, i) => (
             <div key={i} className={Styles.Position__pending}>
               <span>{ Position.calcAvgDiff(p.position, order) }</span>
             </div>
           ))}
         </li>
-        <li>{ getValue(p, 'position.unrealizedNet.formatted') }</li>
-        <li>{ getValue(p, 'position.realizedNet.formatted') }</li>
+        { p.isExtendedDisplay && !p.isMobile &&
+          <li>
+            {getValue(p, 'position.lastPrice.formatted') }
+          </li>
+        }
+        { !p.isMobile && <li>{ getValue(p, 'position.unrealizedNet.formatted') }</li>}
+        { !p.isMobile && <li>{ getValue(p, 'position.realizedNet.formatted')} </li> }
+        { p.isExtendedDisplay &&
+          <li>
+            {getValue(p, 'position.totalNet.formatted') }
+          </li>
+        }
         <li>
-          <button onClick={this.toggleConfirm}>Close</button>
+          { getValue(p, 'position.qtyShares.value') > 0 ? <button onClick={this.toggleConfirm}>Close</button> : <span className={Styles.NotActive}>Close</span>}
         </li>
         <div
           ref={(confirmMessage) => { this.confirmMessage = confirmMessage }}
@@ -122,7 +134,7 @@ export default class Position extends Component {
             <div className={Styles['Position__confirm-details']}>
               <p>Close position by selling { getValue(p, 'position.qtyShares.formatted') } shares of “{ getValue(p, 'name') }” at { getValue(p, 'position.avgPrice.formatted') } ETH?</p>
               <div className={Styles['Position__confirm-options']}>
-                <button onClick={(e) => { p.position.closePosition(); this.toggleConfirm() }}>Yes</button>
+                <button onClick={(e) => { p.position.closePosition(p.position.marketId, p.position.outcomeId); this.toggleConfirm() }}>Yes</button>
                 <button onClick={this.toggleConfirm}>No</button>
               </div>
             </div>

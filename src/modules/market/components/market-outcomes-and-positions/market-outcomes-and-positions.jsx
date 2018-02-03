@@ -8,7 +8,7 @@ const MarketOutcomesAndPositions = p => (
   <section>
     { (!p.isMobile || (p.isMobile && p.selectedOutcomes.length === 0)) &&
       <MarketOutcomesList
-        marketID={p.marketID}
+        marketId={p.marketId}
         outcomes={p.outcomes}
         scalarShareDenomination={p.scalarShareDenomination}
         selectedOutcomes={p.selectedOutcomes}

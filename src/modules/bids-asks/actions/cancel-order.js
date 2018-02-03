@@ -14,24 +14,21 @@ export const cancelOrder = (orderID, marketID, outcome, orderTypeLabel, callback
   } = getState()
   const order = selectOrder(orderID, marketID, outcome, orderTypeLabel, orderBooks)
   const market = marketsData[marketID]
-  if (order != null && market != null && outcomesData[marketID] != null) {
-    const outcome = outcomesData[marketID][outcome] // eslint-disable-line prefer-destructuring
-    if (outcome != null) {
-      dispatch(updateOrderStatus(orderID, CLOSE_DIALOG_CLOSING, marketID, outcome, orderTypeLabel))
-      augur.api.CancelOrder.cancelOrder({
-        meta: loginAccount.meta,
-        _market: marketID,
-        _orderId: orderID,
-        _outcome: outcome,
-        _type: orderTypeLabel === BUY ? 1 : 2,
-        onSent: noop,
-        onSuccess: () => callback(null),
-        onFailed: (err) => {
-          dispatch(updateOrderStatus(orderID, CLOSE_DIALOG_FAILED, marketID, outcome, orderTypeLabel))
-          setTimeout(() => dispatch(updateOrderStatus(orderID, null, marketID, outcome, orderTypeLabel)), TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS)
-          callback(err)
-        }
-      })
-    }
+  if (order && market && outcomesData[marketID] && outcomesData[marketID][outcome]) {
+    dispatch(updateOrderStatus(orderID, CLOSE_DIALOG_CLOSING, marketID, outcome, orderTypeLabel))
+    augur.api.CancelOrder.cancelOrder({
+      meta: loginAccount.meta,
+      _market: marketID,
+      _orderId: orderID,
+      _outcome: outcome,
+      _type: orderTypeLabel === BUY ? 1 : 2,
+      onSent: noop,
+      onSuccess: () => callback(null),
+      onFailed: (err) => {
+        dispatch(updateOrderStatus(orderID, CLOSE_DIALOG_FAILED, marketID, outcome, orderTypeLabel))
+        setTimeout(() => dispatch(updateOrderStatus(orderID, null, marketID, outcome, orderTypeLabel)), TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS)
+        callback(err)
+      }
+    })
   }
 }

@@ -85,6 +85,14 @@
 .MarketCard__tablesection {
   overflow: hidden;
   padding: 1.5rem 2rem;
+
+  &:first-of-type {
+    padding-bottom: 0;
+  }
+
+  &:last-of-type {
+    padding-top: 0;
+  }
 }
 
 .MarketCard__tablesection-mobile {
@@ -138,6 +146,7 @@
 
 @media @breakpoint-mobile {
   .MarketCard__topcontent {
+    border-bottom: 1px solid @color-lightest-gray;
     padding: 1rem 1rem 0.625rem;
   }
 

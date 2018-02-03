@@ -39,7 +39,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
   const selectAllMarkets = sinon.stub().returns([
     {
       id: '0xMARKETID',
-      myPositionOutcomes: [
+      outcomes: [
         {
           id: '1',
           position: {
