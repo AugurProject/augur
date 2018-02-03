@@ -63,12 +63,12 @@ if (require.main === module) {
 
   augur.rpc.setDebugOptions(debugOptions);
 
-  getPrivateKey(keystoreFilePath, function (err, auth) {
+  getPrivateKey(keystoreFilePath, (err, auth) => {
     if (err) return console.error("getPrivateKey failed:", err);
-    augur.connect(connectionEndpoints, function (err) {
+    augur.connect(connectionEndpoints, (err) => {
       if (err) return console.error("connect failed:", err);
 
-      createMarkets(augur, (err) => {
+      createMarkets(augur, auth, (err) => {
         if (err) {
           console.error(chalk.red.bold("Canned market creation failed:"), err);
           process.exit(1);

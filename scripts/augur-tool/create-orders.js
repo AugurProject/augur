@@ -10,7 +10,7 @@ var getPrivateKey = require("./lib/get-private-key");
 var connectionEndpoints = require("../connection-endpoints");
 var debugOptions = require("../debug-options");
 
-function createOrders(augur, auth, callback) {
+function _createOrders(augur, auth, callback) {
   console.log(chalk.cyan.dim("networkID:"), chalk.cyan(augur.rpc.getNetworkID()));
   var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
   console.log(chalk.green.dim("universe:"), chalk.green(universe));
@@ -20,13 +20,13 @@ function createOrders(augur, auth, callback) {
       console.log("marketIDs:", marketIDs);
       if (err) return console.error(err);
       createOrders(augur, marketIDs, auth, function (err) {
-        if (err) console.error("create-orders failed:", err);
-        process.exit();
+        if (err) callback(err);
+        callback(null);
       });
     });
   });
 }
-module.exports = createOrders;
+module.exports = _createOrders;
 
 if (require.main === module) {
   var keystoreFilePath = process.argv[2];
@@ -35,9 +35,9 @@ if (require.main === module) {
 
   augur.rpc.setDebugOptions(debugOptions);
 
-  getPrivateKey(keystoreFilePath, function (err, auth) {
+  getPrivateKey(keystoreFilePath, (err, auth) => {
     if (err) return console.error("getPrivateKey failed:", err);
-    augur.connect(connectionEndpoints, function (err) {
+    augur.connect(connectionEndpoints, (err) => {
       if (err) return console.error(err);
 
       createOrders(augur, auth, (err) => {

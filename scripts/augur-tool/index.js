@@ -2,7 +2,7 @@ const { promisify } = require("util");
 const path = require("path");
 const Augur = require("../../src");
 const debugOptions = require("../debug-options");
-const { ContractDeployer, DeployerConfiguration, NetworkConfiguration } = require("augur-core")
+const { ContractDeployer, DeployerConfiguration, NetworkConfiguration } = require("augur-core");
 const { getPrivateKeyFromString } = require("./lib/get-private-key");
 
 const repFaucet = promisify(require("../rep-faucet"));
@@ -12,14 +12,14 @@ const createOrders = promisify(require("./create-orders"));
 async function runCannedData(command, networks) {
   const deployerConfiguration = DeployerConfiguration.create(path.join(__dirname, "../../src/contracts"));
   const networkConfigurations = networks.map(NetworkConfiguration.create);
-  for(const network of networkConfigurations) {
+  for (const network of networkConfigurations) {
     const augur = new Augur();
     augur.rpc.setDebugOptions(debugOptions);
 
     const connect = promisify(augur.connect);
     await connect({ ethereumNode: { http: network.http } });
 
-    const auth = getPrivateKeyFromString(network.privateKey)
+    const auth = getPrivateKeyFromString(network.privateKey);
     switch (command) {
       case "deploy": {
         await ContractDeployer.deployToNetwork(network, deployerConfiguration);
@@ -49,6 +49,8 @@ async function runCannedData(command, networks) {
         break;
       }
 
+      default:
+        throw new Error("Cannot handle " + command + " while deploying " + network.networkName);
     }
   }
 }
@@ -57,8 +59,8 @@ if (require.main === module) {
   const command = process.argv[2];
   const networks = process.argv.slice(3);
 
-  if (["deploy", "rep-faucet", "create-markets", "create-orders", "deploy-with-data"].indexOf(command) == -1 ) {
-    console.log("Invalid Command "+ command + ", first argument must be create-markets or create-orders")
+  if (["deploy", "rep-faucet", "create-markets", "create-orders", "deploy-with-data"].indexOf(command) === -1) {
+    console.log("Invalid Command "+ command + ", first argument must be create-markets or create-orders");
     process.exit(1);
   }
 
