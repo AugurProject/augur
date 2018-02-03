@@ -52,21 +52,18 @@ export function syncAugurNodeWithBlockchain(db: Knex, augur: Augur, ethereumNode
       if (err) return callback(err);
       if (networkID == null) return callback(new Error("could not get networkID"));
       monitorEthereumNodeHealth(augur);
-      augur.rpc.eth.getBlockByNumber(["latest", false], (block: Block): void => {
-        db("blockchain_sync_history").max("highestBlockNumber as highestBlockNumber").asCallback((err: Error|null, rows?: Array<HighestBlockNumberRow>): void => {
+      db("blockchain_sync_history").max("highestBlockNumber as highestBlockNumber").asCallback((err: Error|null, rows?: Array<HighestBlockNumberRow>): void => {
+        if (err) return callback(err);
+        if (!rows || !rows.length || !rows[0]) return callback(new Error("blockchain_sync_history lookup failed"));
+        const row: HighestBlockNumberRow = rows[0];
+        const uploadBlockNumber: number = augur.contracts.uploadBlockNumbers[networkID] || 0;
+        const fromBlock: number = (!row || !row.highestBlockNumber) ? uploadBlockNumber : row.highestBlockNumber + 1;
+        const highestBlockNumber: number = parseInt(augur.rpc.getCurrentBlock().number, 16) - 1;
+        downloadAugurLogs(db, augur, fromBlock, highestBlockNumber, (err?: Error|null): void => {
           if (err) return callback(err);
-          if (block == null || block.number === "0") return callback(new Error("Could not fetch block"));
-          if (!rows || !rows.length || !rows[0]) return callback(new Error("blockchain_sync_history lookup failed"));
-          const row: HighestBlockNumberRow = rows[0];
-          const uploadBlockNumber: number = augur.contracts.uploadBlockNumbers[networkID] || 0;
-          const fromBlock: number = (!row || !row.highestBlockNumber) ? uploadBlockNumber : row.highestBlockNumber + 1;
-          const highestBlockNumber: number = parseInt(block.number, 16) - 1;
-          downloadAugurLogs(db, augur, fromBlock, highestBlockNumber, (err?: Error|null): void => {
-            if (err) return callback(err);
-            db.insert({ highestBlockNumber }).into("blockchain_sync_history").asCallback(callback);
-            console.log(`Finished batch load from ${fromBlock} to ${highestBlockNumber}`);
-            startAugurListeners(db, augur, highestBlockNumber);
-          });
+          db.insert({ highestBlockNumber }).into("blockchain_sync_history").asCallback(callback);
+          console.log(`Finished batch load from ${fromBlock} to ${highestBlockNumber}`);
+          startAugurListeners(db, augur, highestBlockNumber);
         });
       });
     });
