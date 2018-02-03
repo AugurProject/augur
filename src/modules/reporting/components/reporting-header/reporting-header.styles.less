@@ -49,7 +49,7 @@
 }
 
 .ReportingHeader__graph-wrapper {
-  margin-top: 1rem;
+  margin-top: 0.25rem;
 }
 
 .ReportingHeader__header {
@@ -59,9 +59,8 @@
 }
 
 .ReportingHeader__heading {
-  &:extend(.h1--heavy);
-
-  margin-bottom: 0;
+  margin: 1rem 0;
+  text-transform: uppercase;
 }
 
 .ReportingHeader__labels {
@@ -81,7 +80,9 @@
 .ReportingHeader__stake {
   &:extend(.caps--extra-small);
 
+  color: fadeout(@color-white, 75);
   font-weight: 700;
+  padding-left: 1rem;
 }
 
 @media @breakpoint-mobile-medium {

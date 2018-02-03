@@ -10,7 +10,7 @@ export default class ReportingHeader extends Component {
     heading: PropTypes.string.isRequired,
     showReportingEndDate: PropTypes.bool.isRequired,
     loadReportingWindowBounds: PropTypes.func.isRequired,
-    reportingWindowStats: PropTypes.object.isRequired
+    reportingWindowStats: PropTypes.object.isRequired,
   }
 
   componentWillMount() {
@@ -33,13 +33,19 @@ export default class ReportingHeader extends Component {
       <article className={Styles.ReportingHeader}>
         <div className={Styles.ReportingHeader__header}>
           <div>
-            <h1 className={Styles.ReportingHeader__heading}>{p.heading}</h1>
+            { p.heading === 'Reporting' &&
+              <h1 className={Styles.ReportingHeader__heading}>{p.heading}</h1>
+            }
+            { p.heading !== 'Reporting' &&
+              <h1 className={Styles.ReportingHeader__heading}>Reporting: {p.heading}</h1>
+            }
             { p.showReportingEndDate &&
               <span className={Styles.ReportingHeader__endDate}>Reporting cycle ends { formattedDate.formattedLocalShort }</span>
             }
+            <span className={Styles.ReportingHeader__stake}> | </span><span className={Styles.ReportingHeader__stake}>{ p.reportingWindowStats.stake } REP Staked</span>
           </div>
           <div>
-            <span className={Styles.ReportingHeader__stake}>Total Stake: { p.reportingWindowStats.stake } REP</span>
+            Participate placeholder
           </div>
         </div>
         <div className={Styles['ReportingHeader__graph-wrapper']}>
