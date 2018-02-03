@@ -59,7 +59,7 @@ if (require.main === module) {
   const command = process.argv[2];
   const networks = process.argv.slice(3);
 
-  if (["deploy", "rep-faucet", "create-markets", "create-orders", "deploy-with-data"].indexOf(command) === -1) {
+  if (["deploy", "rep-faucet", "create-markets", "create-orders", "upload"].indexOf(command) === -1) {
     console.log("Invalid Command "+ command + ", first argument must be create-markets or create-orders");
     process.exit(1);
   }
