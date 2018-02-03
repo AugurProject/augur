@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet'
 // import NullStateMessage from 'modules/common/components/null-state-message';
 import CategoryList from 'modules/categories/components/category-list/category-list'
 import Paginator from 'modules/common/components/paginator/paginator'
-import GraphBG from 'modules/common/components/graph-background/graph-background'
+
 
 import makePath from 'modules/routes/helpers/make-path'
 import makeQuery from 'modules/routes/helpers/make-query'
@@ -114,7 +114,7 @@ export default class CategoriesView extends Component {
         <Helmet>
           <title>Categories</title>
         </Helmet>
-        <GraphBG />
+
         <div className={Styles.Categories__container}>
           <div className={Styles.CategoriesHeading}>
             <h3>Bet on</h3>

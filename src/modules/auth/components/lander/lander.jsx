@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import GraphBG from 'modules/common/components/graph-background/graph-background'
 import TermsAndConditions from 'modules/app/components/terms-and-conditions/terms-and-conditions'
 
 import makePath from 'modules/routes/helpers/make-path'
@@ -13,7 +12,6 @@ import Styles from 'modules/auth/components/lander/lander.styles'
 export default function Lander(p) {
   return (
     <div className={Styles.Lander}>
-      <GraphBG />
       <div className={Styles.Lander__content}>
         <div className={Styles.Lander__spacer}>
           <h1 className={Styles.Lander__header}>Link an ethereum account {!p.isMobile && <br />} to bet on anything from anywhere</h1>
