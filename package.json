@@ -20,7 +20,7 @@
     "update-contracts": "bash update-contracts.sh",
     "deploy:aura": "node scripts/augur-tool deploy-with-data aura",
     "deploy:clique": "node scripts/augur-tool deploy-with-data clique",
-    "deploy:local": "node scripts/augur-tool deploy-with-data environment",
+    "deploy:environment": "node scripts/augur-tool deploy-with-data environment",
     "deploy:rinkeby": "node scripts/augur-tool deploy-with-data rinkeby",
     "deploy": "node scripts/augur-tool deploy-with-data",
     "canned-markets:aura": "node scripts/canned-markets aura",
@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "async": "1.5.2",
-    "augur-core": "0.12.0-12",
+    "augur-core": "0.12.0-13",
     "bignumber.js": "2.3.0",
     "clone": "2.1.1",
     "ethereumjs-connect": "4.4.9",
