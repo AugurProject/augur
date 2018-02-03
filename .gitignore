@@ -6,7 +6,7 @@ old
 npm-debug*
 *scratch*
 build
-data
+./data
 *synctex*
 *.aux
 *.dat
