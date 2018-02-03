@@ -8,7 +8,7 @@ interface StakeRows {
   InitialReports: { totalInitialReportSize: string|null };
 }
 
-export function getFeeWindowCurrent(db: Knex, universe: Address, reporter: Address, callback: (err?: Error|null, result?: UIFeeWindowCurrent|null) => void): void {
+export function getFeeWindowCurrent(db: Knex, universe: Address, reporter: Address|null, callback: (err?: Error|null, result?: UIFeeWindowCurrent|null) => void): void {
   if (universe == null) return callback(new Error("Must provide universe"));
   const query = db.select(
     [
