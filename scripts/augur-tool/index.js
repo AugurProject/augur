@@ -21,7 +21,7 @@ async function runCannedData(command, networks) {
 
     const auth = getPrivateKeyFromString(network.privateKey);
     switch (command) {
-      case "deploy": {
+      case "upload": {
         await ContractDeployer.deployToNetwork(network, deployerConfiguration);
         break;
       }
@@ -42,7 +42,7 @@ async function runCannedData(command, networks) {
         break;
       }
 
-      case "deploy-with-data": {
+      case "deploy": {
         await ContractDeployer.deployToNetwork(network, deployerConfiguration);
         await repFaucet(augur, auth);
         await createMarkets(augur, auth);
