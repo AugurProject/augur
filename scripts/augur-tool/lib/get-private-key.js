@@ -6,11 +6,15 @@ var keythereum = require("keythereum");
 var speedomatic = require("speedomatic");
 var debugOptions = require("../../debug-options");
 
-function getPrivateKeyFromEnv() {
-  var privateKey = Buffer.from(speedomatic.strip0xPrefix(process.env.ETHEREUM_PRIVATE_KEY), "hex");
+function getPrivateKeyFromString(privateKey) {
+  privateKey = Buffer.from(speedomatic.strip0xPrefix(privateKey), "hex");
   var address = keythereum.privateKeyToAddress(privateKey);
   if (debugOptions.cannedMarkets) console.log(chalk.green.dim("sender:"), chalk.green(address));
   return { accountType: "privateKey", signer: privateKey, address: address };
+}
+
+function getPrivateKeyFromEnv() {
+  return getPrivateKeyFromString(process.env.ETHEREUM_PRIVATE_KEY);
 }
 
 function getPrivateKeyFromKeystoreFile(keystoreFilePath, callback) {
@@ -41,4 +45,4 @@ function getPrivateKey(keystoreFilePath, callback) {
   }
 }
 
-module.exports = getPrivateKey;
+module.exports = { getPrivateKey, getPrivateKeyFromString };

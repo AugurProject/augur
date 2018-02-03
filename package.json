@@ -5,6 +5,9 @@
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
   "main": "src/index.js",
+  "bin": {
+    "augur-tool": "scripts/augur-tool"
+  },
   "scripts": {
     "test": "mocha test/unit",
     "lint": "eslint src test/unit scripts/canned-markets",
@@ -19,10 +22,10 @@
     "deploy:clique": "bash scripts/deploy.sh clique",
     "deploy:local": "bash scripts/deploy.sh environment",
     "deploy:rinkeby": "bash scripts/deploy.sh rinkeby",
-    "deploy": "bash scripts/deploy.sh aura clique rinkeby",
-    "canned-markets:aura": "bash scripts/canned-markets.sh aura",
-    "canned-markets:clique": "bash scripts/canned-markets.sh clique",
-    "canned-markets:rinkeby": "bash scripts/canned-markets.sh rinkeby",
+    "deploy": "bash scripts/deploy.sh",
+    "canned-markets:aura": "node scripts/canned-markets aura",
+    "canned-markets:clique": "node scripts/canned-markets clique",
+    "canned-markets:rinkeby": "node scripts/canned-markets rinkeby",
     "canned-markets": "bash scripts/canned-markets.sh",
     "canned-orders:aura": "bash scripts/canned-markets.sh aura orders",
     "canned-orders:clique": "bash scripts/canned-markets.sh clique orders",

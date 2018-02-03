@@ -4,7 +4,7 @@ var chalk = require("chalk");
 var BigNumber = require("bignumber.js");
 var speedomatic = require("speedomatic");
 var Augur = require("../src");
-var getPrivateKey = require("./canned-markets/lib/get-private-key");
+const { getPrivateKey } = require("./augur-tool/lib/get-private-key");
 var connectionEndpoints = require("./connection-endpoints");
 var debugOptions = require("./debug-options");
 
@@ -15,7 +15,11 @@ function faucetInAndMigrate(augur, universe, auth, callback) {
     augur.api.ReputationToken.balanceOf({ _owner: auth.address, tx: { to: reputationToken } }, function (err, reputationTokenBalance) {
       if (err) return callback(err);
       console.log("reputationTokenBalance:", reputationTokenBalance);
-      if (new BigNumber(reputationTokenBalance, 10).gt(new BigNumber("100000", 10))) return Error("Already loaded");
+      if (new BigNumber(reputationTokenBalance, 10).gt(new BigNumber("100000", 10))) {
+        console.log("Address already loaded by rep faucet");
+        return callback();
+      }
+
       augur.api.LegacyReputationToken.faucet({
         meta: auth,
         _amount: speedomatic.fix(100000, "hex"),
@@ -55,22 +59,35 @@ function faucetInAndMigrate(augur, universe, auth, callback) {
   });
 }
 
-var keystoreFilePath = process.argv[2];
+function repFaucet(augur, auth, callback) {
+  var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
+  console.log(chalk.green.dim("universe:"), chalk.green(universe));
 
-var augur = new Augur();
+  faucetInAndMigrate(augur, universe, auth, callback);
+}
+module.exports = repFaucet;
 
-augur.rpc.setDebugOptions(debugOptions);
+if (require.main === module) {
+  // invoked from the command line
+  var augur = new Augur();
+  augur.rpc.setDebugOptions(debugOptions);
+  const keystoreFilePath = process.argv[2];
 
-getPrivateKey(keystoreFilePath, function (err, auth) {
-  if (err) return console.error("getPrivateKey failed:", err);
   augur.connect(connectionEndpoints, function (err) {
     if (err) return console.error(err);
     console.log(chalk.cyan.dim("networkID:"), chalk.cyan(augur.rpc.getNetworkID()));
-    var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
-    console.log(chalk.green.dim("universe:"), chalk.green(universe));
-    faucetInAndMigrate(augur, universe, auth, function (err) {
-      if (err) return console.error("faucetInAndMigrate failed:", err);
-      process.exit();
+    getPrivateKey(keystoreFilePath, (err, auth) => {
+      if (err) return console.log("Error: ", err);
+
+      repFaucet(augur, auth, (err) => {
+        if (err) {
+          console.log("Error: ", err);
+          process.exit(1);
+        }
+
+        console.log("Rep Faucet Success");
+        process.exit(0);
+      });
     });
   });
-});
+}

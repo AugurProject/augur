@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var events = require("./src/events");
-var getBalances = require("./scripts/canned-markets/lib/get-balances");
+var getBalances = require("./scripts/augur-tool/lib/get-balances");
 global.chalk = require("chalk");
 global.speedomatic = require("speedomatic");
 global.Augur = require("./src");

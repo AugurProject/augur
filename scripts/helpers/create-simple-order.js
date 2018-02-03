@@ -5,11 +5,11 @@
 var async = require("async");
 var chalk = require("chalk");
 var Augur = require("../../src");
-var approveAugurEternalApprovalValue = require("../canned-markets/lib/approve-augur-eternal-approval-value");
-var getPrivateKey = require("../canned-markets/lib/get-private-key");
+var approveAugurEternalApprovalValue = require("../augur-tool/lib/approve-augur-eternal-approval-value");
+var getPrivateKey = require("../augur-tool/lib/get-private-key");
 var connectionEndpoints = require("../connection-endpoints");
 var debugOptions = require("../debug-options");
-var createOrder = require("../canned-markets/lib/create-order");
+var createOrder = require("../augur-tool/lib/create-order");
 
 var marketID = process.argv[2];
 var orderType = process.argv[3];
