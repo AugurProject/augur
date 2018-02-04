@@ -86,8 +86,8 @@ async function help() {
     env: "ETHEREUM_PRIVATE_KEY",
     Description: "HEX Private Key used for transactions on this eth node"
   }, {
-    env: "GAS_PRICE_IN_ATTOETH",
-    Description: "The transaction gas price to use, specified in attoeth (default: 1)"
+    env: "GAS_PRICE_IN_NANOETH",
+    Description: "The transaction gas price to use, specified in nanoeth (default: varies)"
   }], {
     columnSplitter: ' - ',
     minWidth: 20,
@@ -95,6 +95,20 @@ async function help() {
     showHeaders: false
   }));
 
+  console.log(chalk.underline("\nPrivate Keys (for any named environment)"));
+  console.log(columnify([{
+    env: "AURA_PRIVATE_KEY",
+    description: "Set the private key to use with the named network"
+  },
+  {env: "CLIQUE_PRIVATE_KEY"},
+  {env: "RINKEBY_PRIVATE_KEY"},
+  {env: "ROPSTEN_PRIVATE_KEY"},
+  ], {
+    columnSplitter: ' - ',
+    minWidth: 20,
+    maxWidth: 80,
+    showHeaders: false
+  }));
   console.log(chalk.underline("\nUpload Configs"));
   console.log(columnify([{
     env: "PRODUCTION",
