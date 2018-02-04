@@ -7,6 +7,8 @@ const debugOptions = require("../debug-options");
 const { ContractDeployer, DeployerConfiguration, NetworkConfiguration } = require("augur-core");
 const { getPrivateKeyFromString } = require("./lib/get-private-key");
 const parrotSay = require('parrotsay-api');
+const chalk = require('chalk');
+const columnify = require('columnify')
 
 const repFaucet = promisify(require("../rep-faucet"));
 const createMarkets = promisify(require("./create-markets"));
@@ -63,26 +65,49 @@ async function runCannedData(command, networks) {
 }
 
 async function help() {
-  console.log(await parrotSay("Ask @pg for more help!"));
-  console.log("Usage: dp <command> <network 1> <network 2> ... <network N>");
+  console.log(await parrotSay(" Augur Deployment a.k.a. Disco Parrot "));
+  console.log("Usage: dp <command> <network 1> <network 2> ... <network N>\n\n");
 
-  console.log("Commands: ");
+  console.log(chalk.underline("Commands"));
   console.log(commands.join(", "), "or help for this message");
 
-  console.log("\nNetworks: ");
+  console.log(chalk.underline("\nNetworks"));
   console.log(networks.join(", "));
 
-  console.log("\nEnvironment Configs: ");
-  console.log("Set the following environment variables to modify the behavior of the deployment process");
+  console.log(chalk.underline("\nConfiguration"));
+  console.log("Set the following " + chalk.bold("environment variables") + " to modify the behavior of the deployment process");
   console.log("ex: USE_NORMAL_TIME=false dp deploy aura")
 
-  console.log("\nNetwork 'environment'");
-  console.log("ETHEREUM_HTTP - The http(s) address of your ethereum endpoint (default: http://localhost:8545)");
-  console.log("ETHEREUM_PRIVATE_KEY - HEX Private Key used for transactions on this eth node");
-  console.log("GAS_PRICE_IN_ATTOETH - The transaction gas price to use, specified in attoeth (default: 1)");
+  console.log(chalk.underline("\nNetwork (when using 'environment' for the network)"));
+  console.log(columnify([{
+    env: "ETHEREUM_HTTP",
+    Description: "The http(s) address of your ethereum endpoint (default: http://localhost:8545)"
+  }, {
+    env: "ETHEREUM_PRIVATE_KEY",
+    Description: "HEX Private Key used for transactions on this eth node"
+  }, {
+    env: "GAS_PRICE_IN_ATTOETH",
+    Description: "The transaction gas price to use, specified in attoeth (default: 1)"
+  }], {
+    columnSplitter: ' - ',
+    minWidth: 20,
+    maxWidth: 80,
+    showHeaders: false
+  }));
 
-  console.log("\nUpload Configs: ");
-  console.log("USE_NORMAL_TIME - Should time flow normally or be adjusted using the custom time management [true, false] (default: true)");
+  console.log(chalk.underline("\nUpload Configs"));
+  console.log(columnify([{
+    env: "PRODUCTION",
+    description: "[true, false] If true force USE_NORMAL_TIME to true and potentially other optimizations. (default: false)"
+  }, {
+    env: "USE_NORMAL_TIME",
+    description: "[true, false] Should time flow normally or be adjusted using the custom time management (default: true)"
+  }], {
+    columnSplitter: ' - ',
+    minWidth: 20,
+    maxWidth: 80,
+    showHeaders: false
+  }));
 }
 
 if (require.main === module) {
