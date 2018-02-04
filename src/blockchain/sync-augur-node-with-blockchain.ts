@@ -47,7 +47,6 @@ function monitorEthereumNodeHealth(augur: Augur) {
 
 export function syncAugurNodeWithBlockchain(db: Knex, augur: Augur, ethereumNodeEndpoints: EthereumNodeEndpoints, uploadBlockNumbers: UploadBlockNumbers, callback: ErrorCallback): void {
   augur.connect({ ethereumNode: ethereumNodeEndpoints, startBlockStreamOnConnect: false }, (): void => {
-    console.log("Started blockchain event listeners", augur.rpc.getCurrentBlock());
     getNetworkID(db, augur, (err: Error|null, networkID: string|null) => {
       if (err) return callback(err);
       if (networkID == null) return callback(new Error("could not get networkID"));
@@ -57,8 +56,14 @@ export function syncAugurNodeWithBlockchain(db: Knex, augur: Augur, ethereumNode
         if (!rows || !rows.length || !rows[0]) return callback(new Error("blockchain_sync_history lookup failed"));
         const row: HighestBlockNumberRow = rows[0];
         const uploadBlockNumber: number = augur.contracts.uploadBlockNumbers[networkID] || 0;
-        const fromBlock: number = (!row || !row.highestBlockNumber) ? uploadBlockNumber : row.highestBlockNumber + 1;
         const highestBlockNumber: number = parseInt(augur.rpc.getCurrentBlock().number, 16) - 1;
+        let fromBlock: number;
+        if (uploadBlockNumber > highestBlockNumber) {
+          console.log(`UploadBlockNumber (${uploadBlockNumber}) exceeds HighestBlockNumber (${highestBlockNumber}), starting from 0 instead`);
+          fromBlock = 0;
+        } else {
+          fromBlock = (!row || !row.highestBlockNumber) ? uploadBlockNumber : row.highestBlockNumber + 1;
+        }
         downloadAugurLogs(db, augur, fromBlock, highestBlockNumber, (err?: Error|null): void => {
           if (err) return callback(err);
           db.insert({ highestBlockNumber }).into("blockchain_sync_history").asCallback(callback);
