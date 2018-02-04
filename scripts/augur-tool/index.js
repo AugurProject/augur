@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const { promisify } = require("util");
 const path = require("path");
 const Augur = require("../../src");

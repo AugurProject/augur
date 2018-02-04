@@ -6,7 +6,7 @@
   "license": "MIT",
   "main": "src/index.js",
   "bin": {
-    "augur-tool": "scripts/augur-tool"
+    "augur-tool": "./scripts/augur-tool/index.js"
   },
   "scripts": {
     "test": "mocha test/unit",
