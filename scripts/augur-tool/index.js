@@ -6,10 +6,14 @@ const Augur = require("../../src");
 const debugOptions = require("../debug-options");
 const { ContractDeployer, DeployerConfiguration, NetworkConfiguration } = require("augur-core");
 const { getPrivateKeyFromString } = require("./lib/get-private-key");
+const parrotSay = require('parrotsay-api');
 
 const repFaucet = promisify(require("../rep-faucet"));
 const createMarkets = promisify(require("./create-markets"));
 const createOrders = promisify(require("./create-orders"));
+
+const commands = ["create-markets", "create-orders", "deploy", "rep-faucet", "upload"];
+const networks = ["aura", "clique", "environment", "rinkeby", "ropsten"];
 
 async function runCannedData(command, networks) {
   const deployerConfiguration = DeployerConfiguration.create(path.join(__dirname, "../../src/contracts"));
@@ -51,31 +55,55 @@ async function runCannedData(command, networks) {
         break;
       }
 
-      default:
-        throw new Error("Cannot handle " + command + " while deploying " + network.networkName);
+      default: {
+        console.log((await parrotSay("Hello")).length);
+      }
     }
   }
+}
+
+async function help() {
+  console.log(await parrotSay("Ask @pg for more help!"));
+  console.log("Usage: dp <command> <network 1> <network 2> ... <network N>");
+
+  console.log("Commands: ");
+  console.log(commands.join(", "), "or help for this message");
+
+  console.log("\nNetworks: ");
+  console.log(networks.join(", "));
+
+  console.log("\nEnvironment Configs: ");
+  console.log("Set the following environment variables to modify the behavior of the deployment process");
+  console.log("ex: USE_NORMAL_TIME=false dp deploy aura")
+
+  console.log("\nNetwork 'environment'");
+  console.log("ETHEREUM_HTTP - The http(s) address of your ethereum endpoint (default: http://localhost:8545)");
+  console.log("ETHEREUM_PRIVATE_KEY - HEX Private Key used for transactions on this eth node");
+  console.log("GAS_PRICE_IN_ATTOETH - The transaction gas price to use, specified in attoeth (default: 1)");
+
+  console.log("\nUpload Configs: ");
+  console.log("USE_NORMAL_TIME - Should time flow normally or be adjusted using the custom time management [true, false] (default: true)");
 }
 
 if (require.main === module) {
   const command = process.argv[2];
   const networks = process.argv.slice(3);
 
-  if (["deploy", "rep-faucet", "create-markets", "create-orders", "upload"].indexOf(command) === -1) {
-    console.log("Invalid Command "+ command + ", first argument must be create-markets or create-orders");
-    process.exit(1);
+  if (commands.indexOf(command) === -1 || command === "help") {
+    help().then(() => {
+      process.exit();
+    });
+  } else {
+    runCannedData(command, networks).then(() => {
+      process.exit();
+    }).catch((error) => {
+      console.log("Failure!\n", error.message);
+      if (error.stack && debugOptions.cannedMarkets) {
+        console.log("-------- BACKTRACE ------");
+        console.log(error.stack);
+      }
+      process.exit(1);
+    });
   }
-
-  runCannedData(command, networks).then(() => {
-    console.log("Success!");
-    process.exit();
-  }).catch((error) => {
-    console.log("Failure!\n", error.message);
-    if (error.stack && debugOptions.cannedMarkets) {
-      console.log("-------- BACKTRACE ------");
-      console.log(error.stack);
-    }
-    process.exit(1);
-  });
 }
 

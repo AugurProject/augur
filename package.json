@@ -6,7 +6,7 @@
   "license": "MIT",
   "main": "src/index.js",
   "bin": {
-    "augur-tool": "./scripts/augur-tool/index.js"
+    "dp": "./scripts/augur-tool/index.js"
   },
   "scripts": {
     "test": "mocha test/unit",
@@ -54,6 +54,7 @@
     "keythereum": "1.0.2",
     "lodash.assign": "4.2.0",
     "lodash.isequal": "4.5.0",
+    "parrotsay-api": "0.1.1",
     "speedomatic": "2.1.2",
     "uuid": "3.0.0",
     "uuid-parse": "1.0.0"
