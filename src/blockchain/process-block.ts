@@ -7,6 +7,7 @@ import { logError } from "../utils/log-error";
 import { Block, BlocksRow, AsyncCallback, ErrorCallback, MarketsContractAddressRow } from "../types";
 import { updateMarketState } from "./log-processors/database";
 import { processQueue, BLOCK_PRIORITY } from "./process-queue";
+import { QueryBuilder } from "knex";
 
 interface FeeWindowIDRow {
   feeWindowID: number;
@@ -113,8 +114,22 @@ function advanceFeeWindowActive(db: Knex, blockNumber: number, timestamp: number
     if (err || feeWindowRow == null) return callback(err);
     db("fee_windows").update("endBlockNumber", blockNumber).where("feeWindowID", feeWindowRow.feeWindowID).asCallback((err: Error|null) => {
       if (err) return callback(err);
-      augurEmitter.emit("FeeWindowClosed", { feeWindowID: feeWindowRow.feeWindowID, blockNumber, timestamp });
-      callback(null);
+      advanceIncompleteCrowdsourcers(db, blockNumber, timestamp, (err: Error|null) => {
+        if (err) return callback(err);
+        augurEmitter.emit("FeeWindowClosed", { feeWindowID: feeWindowRow.feeWindowID, blockNumber, timestamp });
+        callback(null);
+      });
     });
   });
+}
+
+function advanceIncompleteCrowdsourcers(db: Knex, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+  // Finds crowdsourcers rows that we don't know the completion of, but are attached to feeWindows that have ended
+  // They did not reach their goal, so set completed to 0.
+  db("crowdsourcers").update("completed", 0)
+    .whereNull("completed")
+    .whereIn("feeWindow", (subQuery: QueryBuilder) => {
+      subQuery.select("feeWindow").from("fee_windows").whereNotNull("endBlockNumber");
+    })
+    .asCallback(callback);
 }

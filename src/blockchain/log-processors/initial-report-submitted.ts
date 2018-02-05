@@ -12,6 +12,7 @@ export function processInitialReportSubmittedLog(db: Knex, augur: Augur, trx: Kn
         marketID: log.market,
         isDesignatedReporter: log.isDesignatedReporter,
         reporter: log.reporter,
+        amountStaked: log.amountStaked,
         payoutID,
       };
       parallel({
