@@ -110,9 +110,8 @@ export default class CreateMarketDefine extends Component {
             placeholder="What question do you want the world to predict?"
             onChange={e => p.validateField('description', e.target.value, DESCRIPTION_MAX_LENGTH)}
           />
-          <div
-            className={Styles['CreateMarketDefine__question-disclaimer']}>
-            The Augur platform does not work well for markets that are subjective or ambiguous. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the expiration date, you should not create this market.
+          <div className={Styles['CreateMarketDefine__question-disclaimer']}>
+          The Augur platform does not work well for markets that are subjective or ambiguous. If you&#39;re not sure that the market&#39;s outcome will be known beyond a reasonable doubt by the expiration date, you should not create this market.
           </div>
         </li>
         <li className={StylesForm['field--50']}>
