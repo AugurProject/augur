@@ -3,10 +3,10 @@ import { withRouter } from 'react-router-dom'
 
 import ReportingReporting from 'modules/reporting/components/reporting-reporting/reporting-reporting'
 
-// const mapStateToProps = state => ({})
+const mapStateToProps = state => ({})
 
-// const mapDispatchToProps = dispatch => ({})
+const mapDispatchToProps = dispatch => ({})
 
-const Reporting = withRouter(connect()(ReportingReporting))
+const ReportingReportingContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(ReportingReporting))
 
-export default Reporting
+export default ReportingReportingContainer
