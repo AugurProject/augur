@@ -256,10 +256,15 @@ export function assembleMarket(
         outcome.topBid = selectTopBid(orderBook, false)
         outcome.topAsk = selectTopAsk(orderBook, false)
         outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID])
-
+        // needed for my-position display
+        if (outcome.position) {
+          outcome.position.lastPrice = outcome.lastPrice
+          outcome.position.name = outcome.name
+        }
         marketTradeOrders = marketTradeOrders.concat(outcome.trade.tradeSummary.tradeOrders)
 
-        outcome.userOpenOrders = selectUserOpenOrders(outcomeID, orderBooks)
+        outcome.userOpenOrders = selectUserOpenOrders(marketID, outcomeID, orderBooks)
+        if (outcome.userOpenOrders) outcome.userOpenOrders.forEach((item) => { item.name = outcome.name })
 
         return outcome
       }).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1))

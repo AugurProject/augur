@@ -53,7 +53,7 @@ export default class Order extends Component {
     return (
       <ul
         ref={(order) => { this.order = order }}
-        className={Styles.Order}
+        className={!p.isMobile ? Styles.Order : Styles.PortMobile}
       >
         <li>
           { getValue(p, 'name') }
@@ -62,13 +62,19 @@ export default class Order extends Component {
           }
         </li>
         <li>
-          { getValue(p, 'order.qtyShares.formatted') }
+          { getValue(p, 'order.unmatchedShares.formatted') }
         </li>
         <li>
-          { getValue(p, 'order.purchasePrice.formatted') }
+          { getValue(p, 'order.avgPrice.formatted') }
         </li>
-        <li />
-        <li />
+        { p.isExtendedDisplay && !p.isMobile &&
+          <li />
+        }
+        { !p.isMobile && <li /> }
+        { !p.isMobile && <li /> }
+        { p.isExtendedDisplay &&
+          <li />
+        }
         <li>
           <button onClick={this.toggleConfirm}>Cancel</button>
         </li>
@@ -88,7 +94,7 @@ export default class Order extends Component {
             <div className={Styles['Order__confirm-details']}>
               <p>Cancel order for { getValue(p, 'order.qtyShares.formatted') } shares of &ldquo;{ getValue(p, 'name') }&rdquo; at { getValue(p, 'order.purchasePrice.formatted') } ETH?</p>
               <div className={Styles['Order__confirm-options']}>
-                <button onClick={(e) => { p.order.cancelOrder(); this.toggleConfirm() }}>Yes</button>
+                <button onClick={(e) => { p.order.cancelOrder(p.order.id, p.order.marketId, p.order.outcomeID, p.order.type); this.toggleConfirm() }}>Yes</button>
                 <button onClick={this.toggleConfirm}>No</button>
               </div>
             </div>

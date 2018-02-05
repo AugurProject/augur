@@ -2,7 +2,7 @@ import { UPDATE_MARKETS_DATA } from 'modules/markets/actions/update-markets-data
 import { UPDATE_OUTCOME_PRICE } from 'modules/markets/actions/update-outcome-price'
 import { RESET_STATE } from 'modules/app/actions/reset-state'
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
-import { BINARY_YES_ID, SCALAR_UP_ID } from 'modules/markets/constants/market-outcomes'
+import { BINARY_YES_ID, SCALAR_UP_ID, BINARY_YES_OUTCOME_NAME } from 'modules/markets/constants/market-outcomes'
 
 const DEFAULT_STATE = {}
 
@@ -71,10 +71,13 @@ function parseOutcomes(newMarketsData, outcomesData) {
   }, {})
 
   function parseBinaryOutcomes(marketData, marketID) {
-    return marketData.outcomes.reduce((p, outcome) => {
-      if (outcome.id !== BINARY_YES_ID) return p
-      p[outcome.id] = { ...outcome }
-      p[outcome.id].name = 'Yes'
+    return marketData.outcomes.reduce((p, outcome, i) => {
+      if (outcome.id === BINARY_YES_ID) {
+        p[outcome.id] = { ...outcome }
+        p[outcome.id].name = BINARY_YES_OUTCOME_NAME
+        return p
+      }
+
       return p
     }, {})
   }

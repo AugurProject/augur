@@ -40,10 +40,9 @@ export const ACCOUNT_WITHDRAW = 'withdraw-funds'
 export const ACCOUNT_EXPORT = 'export-account'
 
 // Reporting
-export const REPORTING_OPEN = 'reporting-open'
-export const REPORTING_CLOSED = 'reporting-closed'
-export const REPORTING_REPORT = 'reporting-report'
 export const REPORTING_DISPUTE = 'reporting-dispute'
+export const REPORTING_REPORTING = 'reporting-reporting'
+export const REPORTING_REPORT = 'reporting-report' // NOTE -- Not currently used...but will be shortly
 
 // Dev only
 export const STYLE_SANDBOX = 'style-sandbox'

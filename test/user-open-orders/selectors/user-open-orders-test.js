@@ -181,50 +181,86 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       }
     }
 
-    const userOpenOrders = selectUserOpenOrders('1', orderBooks)
+    const userOpenOrders = selectUserOpenOrders('MARKET_ID', '1', orderBooks)
     assert.lengthOf(userOpenOrders, 6)
-    assert.deepEqual(userOpenOrders, [{
+
+    const results =[{
       id: 'order1',
       avgPrice: formatEtherTokens('100'),
       type: 'sell',
       matchedShares: formatNone(),
       originalShares: formatNone(),
-      unmatchedShares: formatShares('10')
+      unmatchedShares: formatShares('10'),
+      marketId: 'MARKET_ID',
+      outcomeID: '1',
+      cancelOrder: () => { }
     }, {
       id: 'order2',
       avgPrice: formatEtherTokens('70'),
       type: 'sell',
       matchedShares: formatNone(),
       originalShares: formatNone(),
-      unmatchedShares: formatShares('7')
+      unmatchedShares: formatShares('7'),
+      marketId: 'MARKET_ID',
+      outcomeID: '1',
+      cancelOrder: () => { }
     }, {
       id: 'order3',
       avgPrice: formatEtherTokens('10'),
       type: 'sell',
       matchedShares: formatNone(),
       originalShares: formatNone(),
-      unmatchedShares: formatShares('10')
+      unmatchedShares: formatShares('10'),
+      marketId: 'MARKET_ID',
+      outcomeID: '1',
+      cancelOrder: () => { }
     }, {
       id: 'order11',
       avgPrice: formatEtherTokens('60'),
       type: 'buy',
       matchedShares: formatNone(),
       originalShares: formatNone(),
-      unmatchedShares: formatShares('6')
+      unmatchedShares: formatShares('6'),
+      marketId: 'MARKET_ID',
+      outcomeID: '1',
+      cancelOrder: () => { }
     }, {
       id: 'order13',
       avgPrice: formatEtherTokens('20'),
       type: 'buy',
       matchedShares: formatNone(),
       originalShares: formatNone(),
-      unmatchedShares: formatShares('2')
+      unmatchedShares: formatShares('2'),
+      marketId: 'MARKET_ID',
+      outcomeID: '1',
+      cancelOrder: () => { }
     }, {
       id: 'order14',
       avgPrice: formatEtherTokens('10'),
       type: 'buy',
       matchedShares: formatNone(),
       originalShares: formatNone(),
-      unmatchedShares: formatShares('1')
-    }])
+      unmatchedShares: formatShares('1'),
+      marketId: 'MARKET_ID',
+      outcomeID: '1',
+      cancelOrder: () => { }
+    }]
+
+    for (let i = 0; i < results.length; i++) {
+      const expected = results[i]
+      const actual = userOpenOrders[i]
+
+      assert.deepEqual(actual.id, expected.id, `id Didn't return the expected object`)
+      assert.deepEqual(actual.type, expected.type, `type Didn't return the expected object`)
+      assert.deepEqual(actual.matchedShares, expected.matchedShares, `matchedShares Didn't return the expected object`)
+      assert.deepEqual(actual.originalShares, expected.originalShares, `originalShares Didn't return the expected object`)
+      assert.deepEqual(actual.unmatchedShares, expected.unmatchedShares, `unmatchedShares Didn't return the expected object`)
+      assert.deepEqual(actual.marketId, expected.marketId, `marketId Didn't return the expected object`)
+      assert.strictEqual(actual.outcomeID, expected.outcomeID, `outcomeID Didn't return the expected value`)
+      assert.isFunction(actual.cancelOrder, `cancelOrder Didn't return a function as expected`)
+
+    }
+
+
   })
 })

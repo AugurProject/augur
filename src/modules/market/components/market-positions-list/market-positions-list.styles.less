@@ -78,3 +78,29 @@
   max-height: 20.5rem;
   overflow-y: scroll;
 }
+
+@media @breakpoint-mobile {
+  .MarketPositionsList__table-body {
+    background-color: @color-input-background;
+    display: table-row-group;
+    font-size: @font-size-small;
+    line-height: @font-size-small;
+  }
+
+  .MarketPositionsList__table-header {
+    > li {
+      display: table-cell;
+      padding: 1rem 0 0.625rem;
+      text-align: right;
+
+      &:first-child {
+        padding-left: 0.75rem;
+        text-align: left;
+      }
+
+      &:last-child {
+        padding-right: 0.5rem;
+      }
+    }
+  }
+}
