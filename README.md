@@ -96,6 +96,68 @@ USE_NORMAL_TIME      - [true, false] Should time flow normally or be adjusted us
 
 ### Deploying to all testnets
 
+#### Contract Uploads
+To deploy all testnets, we will use `dp` to perform steps 1-3 above, and `npm release` to perform step 4.
+
+To begin, to deploy multiple networks at once, simply list them after the command being invoked. This will sequentially perform the command on the named networks.
+
+#### Deploy Configuration
+
+The contract uploading stage has some possible configurations. For `aura` and `clique` networks, the private key used to perform the deploys has a hardcoded default of augur's dev key. To deploy to Rinkeby or Ropsten, you must configure an environement variable to contain the private key.
+
+For Augur team members, the Rinkeby and Ropsten private keys are avaialbe in our Keybase repository under "keys". Export RINKEBY_PRIVATE_KEY to contain the hex value to use it in the deploy process.
+```
+%> export RINKEBY_PRIVATE_KEY=$(cat $HOME/dev/keys/deploy_keys/rinkeby.prv)
+```
+
+Running the deployment process is as simple as invoking dp with the names of the networks we want to deploy. This will perform a contract upload, create test markets, and create test orders for those markets.
+```
+%> npm run dp -- deploy aura clique rinkeby
+```
+
+#### Releasing Augur.js
+After this succeeds for each market, your local tree will be updated with new contract addresses, and starting block numbers. These files are by default placed in the right spot of the source tree: `src/contracts/addresses.json` and `src/contracts/upload-block-numbers.json`.
+
+After testing augur.js works with augur-node and augur-ui (guides will be provded in their respective repositories), it is time to create a new NPM package version for augur.js.
+
+While in development, we want to increment pre-release versions of augur.js, and publish it to the @dev tag on NPM, while on production we will update a major, minor, or patch number and publish to @latest. Helpers for this process are defined as npm scripts:
+
+```
+npm run release:dev
+npm run release:patch
+npm run release:minor
+rpm run release:major
+```
+
+These helper scripts will ensure that the version has been updated and build artifacts have been created in dist, and git tags have been pushed to origin.
+
+To begin, commit the new deploment artifacts changes to your augur.js repository:
+
+```
+%> git add src/contracts/{addresses,upload-block-numbers}.json
+%> git commit -m 'Bumping augur.js deployment to new contract uploads'
+```
+
+then, run release on augur.js to publish it to the world:
+
+```
+%> npm run release:dev
+```
+
+To perform this npm update, you must have access to the augurproject NPM repository.
+
+
+### Summary (Example Full Deploy, to a new version of augur-core)
+
+```
+%> npm install augur-core@latest
+%> git add package.json package-lock.json
+%> RINKEBY_PRIVATE_KEY=$(cat $HOME/dev/key/deploy_keys.prv) npm run dp -- deploy aura clique rinkeby
+%> git add src/contracts/{address,upload-block-numbers}.json
+%> git commit -m 'Bumping contracts to new deploy for updated augur-contracts'
+%> npm run release:dev
+```
+
 ## Documentation
 
 [http://docs.augur.net](http://docs.augur.net)
