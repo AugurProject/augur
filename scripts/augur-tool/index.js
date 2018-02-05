@@ -25,6 +25,7 @@ async function runCannedData(command, networks) {
     augur.rpc.setDebugOptions(debugOptions);
 
     const connect = promisify(augur.connect);
+    const reloadAddresses = promisify(augur.contracts.reloadAddresses);
 
     const auth = getPrivateKeyFromString(network.privateKey);
     switch (command) {
@@ -54,8 +55,7 @@ async function runCannedData(command, networks) {
 
       case "deploy": {
         await ContractDeployer.deployToNetwork(network, deployerConfiguration);
-        await augur.contracts.reloadAddresses();
-
+        await reloadAddresses();
         await connect({ ethereumNode: { http: network.http } });
         await repFaucet(augur, auth);
         await createMarkets(augur, auth);

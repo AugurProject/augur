@@ -1,15 +1,15 @@
-const { promisify } = require("util");
 const fs = require("fs");
 
-function readJsonFileCallback(path, cb) {
+function readJsonFile(path, callback) {
   fs.readFile(path, (err, data) => {
-    if (err)
-      cb(err)
-    else
-      cb(null, JSON.parse(data))
-  })
+    try {
+      if (err) return callback(err)
+
+      callback(null, JSON.parse(data));
+    } catch (e) {
+      callback(e);
+    }
+  });
 }
 
-const readJsonFile = promisify(readJsonFileCallback);
-
-module.exports = { readJsonFileCallback, readJsonFile };
+module.exports = { readJsonFile };

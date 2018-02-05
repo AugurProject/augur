@@ -24,6 +24,16 @@ augur.connect({ ethereumNode, augurNode }, (err) => {
 });
 ```
 
+## Deployment
+
+Deployment of Augur Contracts and Augur.js consists of two to three steps. For production deploys, we will not perform the market data seeding step.
+
+1. Contract Uploading - This is handled by the deployment code within the `augur-core` npm package. The deploy process handles uploading/versioning contracts and generating deployment artifacts.
+2. Install Artifacts - Here we take the generated artifacts from (1) and wrap them into an Augur.js version, along with any necessary changes to augur.js to interface with the uploaded contracts.
+2. Market Data Seeding - After installing the new deployment artifacts into augur.js after step (1), this happens only on non-production deploys.
+
+### Using `dp`
+
 ## Documentation
 
 [http://docs.augur.net](http://docs.augur.net)
