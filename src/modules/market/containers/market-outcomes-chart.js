@@ -2,6 +2,12 @@ import { connect } from 'react-redux'
 
 import MarketOutcomesChart from 'modules/market/components/market-outcomes-chart/market-outcomes-chart'
 
+import { selectMarket } from 'modules/market/selectors/market'
+
+const mapStateToProps = (state, ownProps) => ({
+  market: selectMarket(ownProps.marketId)
+})
+
 const mergeProps = (sP, dP, oP) => {
   // const queryParams = parseQuery(ownProps.location.search)
   // const market = selectMarket(queryParams.id) // NOTE -- commented out for mocking sake
@@ -53,10 +59,12 @@ const mergeProps = (sP, dP, oP) => {
     ]
   }
 
+  console.log(sP.market)
+
   return {
     ...oP,
     priceHistory: market.priceHistory
   }
 }
 
-export default connect(null, null, mergeProps)(MarketOutcomesChart)
+export default connect(mapStateToProps, null, mergeProps)(MarketOutcomesChart)
