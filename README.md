@@ -6,8 +6,14 @@
 
 ## Installation
 
+To install augur.js in your project, add it as a dependency:
 ```
-npm install augur.js
+npm install --save-exaxt augur.js
+```
+
+To develop augur.js, deploy contracts and publish it, make sure you've installed its dev dependencies
+```
+augur.js$ npm install
 ```
 
 ## Usage
