@@ -13,7 +13,7 @@ export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, trx
       .orderBy("startTime", "ASC");
     feeWindowQuery.asCallback((err: Error|null, feeWindowRow?: {feeWindow: string}|null): void => {
       if (err) return callback(err);
-      if (feeWindowRow == null) return callback(new Error(`could not retrieve feeWindow for crowdsourcer: ${log.disputeCrowdsourcer}`))
+      if (feeWindowRow == null) return callback(new Error(`could not retrieve feeWindow for crowdsourcer: ${log.disputeCrowdsourcer}`));
       const crowdsourcerToInsert = {
         blockNumber: log.blockNumber,
         transactionHash: log.transactionHash,
