@@ -57,7 +57,6 @@ Link augur.js:
     cd augur
     npm install
     yarn link augur.js
-    yarn build
 
 The `env-dev.json` file points to the local node by default, also `"auto-login": true` change this to `false` to use MetaMask users if you want to switch between multiple users in the UI:
 
