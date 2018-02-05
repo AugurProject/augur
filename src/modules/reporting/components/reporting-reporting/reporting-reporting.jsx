@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Styles = require('./reporting-dispute.styles')
+import Styles from 'modules/reporting/components/reporting-dispute/reporting-dispute.styles'
 
 export default function ReportingDispute() {
   return (
     <section className={Styles.ReportingDispute}>
-      <span>Dispute</span>
+      <span>Reporting</span>
     </section>
   )
 }
