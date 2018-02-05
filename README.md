@@ -150,7 +150,7 @@ To perform this npm update, you must have access to the augurproject NPM reposit
 ### Summary (Example Full Deploy, to a new version of augur-core)
 
 ```
-%> npm install augur-core@latest
+%> npm install --save-exact augur-core@latest
 %> git add package.json package-lock.json
 %> RINKEBY_PRIVATE_KEY=$(cat $HOME/dev/key/deploy_keys.prv) npm run dp -- deploy aura clique rinkeby
 %> git add src/contracts/{address,upload-block-numbers}.json
