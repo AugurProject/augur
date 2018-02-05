@@ -38,7 +38,7 @@ The first three of these steps can be handled by the included helper application
 
 ### `dp` Help Output:
 ```
-%> npm run dp
+augur.js$ npm run dp
 
 > augur.js@4.7.0-61 dp /mnt/Volume-Home/home/pg/Development/augur/augur.js
 > node scripts/augur-tool
@@ -107,12 +107,12 @@ The contract uploading stage has some possible configurations. For `aura` and `c
 
 For Augur team members, the Rinkeby and Ropsten private keys are avaialbe in our Keybase repository under "keys". Export RINKEBY_PRIVATE_KEY to contain the hex value to use it in the deploy process.
 ```
-%> export RINKEBY_PRIVATE_KEY=$(cat $HOME/dev/keys/deploy_keys/rinkeby.prv)
+augur.js$ export RINKEBY_PRIVATE_KEY=$(cat $HOME/dev/keys/deploy_keys/rinkeby.prv)
 ```
 
 Running the deployment process is as simple as invoking dp with the names of the networks we want to deploy. This will perform a contract upload, create test markets, and create test orders for those markets.
 ```
-%> npm run dp -- deploy aura clique rinkeby
+augur.js$ npm run dp -- deploy aura clique rinkeby
 ```
 
 #### Releasing Augur.js
@@ -134,14 +134,14 @@ These helper scripts will ensure that the version has been updated and build art
 To begin, commit the new deploment artifacts changes to your augur.js repository:
 
 ```
-%> git add src/contracts/{addresses,upload-block-numbers}.json
-%> git commit -m 'Bumping augur.js deployment to new contract uploads'
+augur.js$ git add src/contracts/{addresses,upload-block-numbers}.json
+augur.js$ git commit -m 'Bumping augur.js deployment to new contract uploads'
 ```
 
 then, run release on augur.js to publish it to the world:
 
 ```
-%> npm run release:dev
+augur.js$ npm run release:dev
 ```
 
 To perform this npm update, you must have access to the augurproject NPM repository.
@@ -150,12 +150,12 @@ To perform this npm update, you must have access to the augurproject NPM reposit
 ### Summary (Example Full Deploy, to a new version of augur-core)
 
 ```
-%> npm install --save-exact augur-core@latest
-%> git add package.json package-lock.json
-%> RINKEBY_PRIVATE_KEY=$(cat $HOME/dev/key/deploy_keys.prv) npm run dp -- deploy aura clique rinkeby
-%> git add src/contracts/{address,upload-block-numbers}.json
-%> git commit -m 'Bumping contracts to new deploy for updated augur-contracts'
-%> npm run release:dev
+augur.js$ npm install --save-exact augur-core@latest
+augur.js$ git add package.json package-lock.json
+augur.js$ RINKEBY_PRIVATE_KEY=$(cat $HOME/dev/key/deploy_keys.prv) npm run dp -- deploy aura clique rinkeby
+augur.js$ git add src/contracts/{address,upload-block-numbers}.json
+augur.js$ git commit -m 'Bumping contracts to new deploy for updated augur-contracts'
+augur.js$ npm run release:dev
 ```
 
 ## Documentation
