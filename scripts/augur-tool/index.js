@@ -25,7 +25,6 @@ async function runCannedData(command, networks) {
     augur.rpc.setDebugOptions(debugOptions);
 
     const connect = promisify(augur.connect);
-    await connect({ ethereumNode: { http: network.http } });
 
     const auth = getPrivateKeyFromString(network.privateKey);
     switch (command) {
@@ -35,17 +34,20 @@ async function runCannedData(command, networks) {
       }
 
       case "rep-faucet": {
+        await connect({ ethereumNode: { http: network.http } });
         await repFaucet(augur, auth);
         break;
       }
 
       case "create-markets": {
+        await connect({ ethereumNode: { http: network.http } });
         await repFaucet(augur, auth);
         await createMarkets(augur, auth);
         break;
       }
 
       case "create-orders": {
+        await connect({ ethereumNode: { http: network.http } });
         await createOrders(augur, auth);
         break;
       }
@@ -53,6 +55,8 @@ async function runCannedData(command, networks) {
       case "deploy": {
         await ContractDeployer.deployToNetwork(network, deployerConfiguration);
         await augur.contracts.reloadAddresses();
+
+        await connect({ ethereumNode: { http: network.http } });
         await repFaucet(augur, auth);
         await createMarkets(augur, auth);
         break;
@@ -129,7 +133,7 @@ if (require.main === module) {
   const command = process.argv[2];
   const networks = process.argv.slice(3);
 
-  if (commands.indexOf(command) === -1 || command === "help") {
+  if (commands.indexOf(command) === -1 || command === "help" || networks.length === 0) {
     help().then(() => {
       process.exit();
     });
