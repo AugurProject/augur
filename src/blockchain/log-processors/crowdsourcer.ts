@@ -76,7 +76,6 @@ export function processDisputeCrowdsourcerContributionLogRemoval(db: Knex, augur
   });
 }
 
-// event DisputeCrowdsourcerCompleted(address indexed universe, address indexed market, address disputeCrowdsourcer);
 export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   db("crowdsourcers").transacting(trx).update({ completed: 1 }).where({ crowdsourcerID: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
     if (err) return callback(err);
