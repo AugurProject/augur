@@ -36,8 +36,8 @@ NOTE -- intentionally mixing the use of `npm` and `yarn` because npm link has ex
 We are going to use environment variables for convenience, ENDPOINT_HTTP and ENDPOINT_WS tell either augur-node or augur.js scripts where to connect. Here we deploy smart contracts to our local node we started by the command above. The `npm explore augur.js -- npm run deploy:environment` does the deploy based on the environment variables. It will create/populate with markets and open orders. The ETHEREUM_PRIVATE_KEY specifies the market creater and owner of the open orders, the public adderss is 0x1fd9274a2fe0e86f5a7b5bde57b93c8c9b62e21d. Import this address into MetaMask to see the markets and open orders.
 
     cd augur-node
-    yarn link augur.js
     npm install
+    yarn link augur.js
 
     export USE_NORMAL_TIME="false"
     export ETHEREUM_HOST="localhost"
