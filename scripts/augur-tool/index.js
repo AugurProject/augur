@@ -52,6 +52,7 @@ async function runCannedData(command, networks) {
 
       case "deploy": {
         await ContractDeployer.deployToNetwork(network, deployerConfiguration);
+        await augur.contracts.reloadAddresses();
         await repFaucet(augur, auth);
         await createMarkets(augur, auth);
         break;
