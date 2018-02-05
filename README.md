@@ -118,7 +118,7 @@ augur.js$ export RINKEBY_PRIVATE_KEY=$(cat $HOME/dev/keys/deploy_keys/rinkeby.pr
 
 Running the deployment process is as simple as invoking dp with the names of the networks we want to deploy. This will perform a contract upload, create test markets, and create test orders for those markets.
 ```
-augur.js$ npm run dp -- deploy aura clique rinkeby
+augur.js$ node scripts/dp deploy aura clique rinkeby
 ```
 
 #### Releasing Augur.js
@@ -158,7 +158,7 @@ To perform this npm update, you must have access to the augurproject NPM reposit
 ```
 augur.js$ npm install --save-exact augur-core@latest
 augur.js$ git add package.json package-lock.json
-augur.js$ RINKEBY_PRIVATE_KEY=$(cat $HOME/dev/key/deploy_keys.prv) npm run dp -- deploy aura clique rinkeby
+augur.js$ RINKEBY_PRIVATE_KEY=$(cat $HOME/dev/key/deploy_keys.prv) node scripts/dp deploy aura clique rinkeby
 augur.js$ git add src/contracts/{address,upload-block-numbers}.json
 augur.js$ git commit -m 'Bumping contracts to new deploy for updated augur-contracts'
 augur.js$ npm run release:dev
