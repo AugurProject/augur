@@ -7,11 +7,11 @@ import { insertPayout } from "./database";
 export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   insertPayout(db, trx, log.market, log.payoutNumerators, log.invalid, (err, payoutID) => {
     if (err) return callback(err);
-    const feeWindowQuery = trx("fee_windows").select(["feeWindow"]).first()
+    trx("fee_windows").select(["feeWindow"]).first()
       .whereNull("endBlockNumber")
       .where({ universe: log.universe })
-      .orderBy("startTime", "ASC");
-    feeWindowQuery.asCallback((err: Error|null, feeWindowRow?: {feeWindow: string}|null): void => {
+      .orderBy("startTime", "ASC")
+      .asCallback((err: Error|null, feeWindowRow?: {feeWindow: string}|null): void => {
       if (err) return callback(err);
       if (feeWindowRow == null) return callback(new Error(`could not retrieve feeWindow for crowdsourcer: ${log.disputeCrowdsourcer}`));
       const crowdsourcerToInsert = {
