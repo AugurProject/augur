@@ -4,8 +4,8 @@
 
 var Augur = require("../../src");
 var chalk = require("chalk");
-var approveAugurEternalApprovalValue = require("../augur-tool/lib/approve-augur-eternal-approval-value");
-var getPrivateKey = require("../augur-tool/lib/get-private-key");
+var approveAugurEternalApprovalValue = require("../dp/lib/approve-augur-eternal-approval-value");
+var getPrivateKey = require("../dp/lib/get-private-key");
 var connectionEndpoints = require("../connection-endpoints");
 var debugOptions = require("../debug-options");
 

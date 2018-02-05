@@ -47,7 +47,7 @@ The first three of these steps can be handled by the included helper application
 augur.js$ npm run dp
 
 > augur.js@4.7.0-61 dp /mnt/Volume-Home/home/pg/Development/augur/augur.js
-> node scripts/augur-tool
+> node scripts/dp
 
 +--------------------------------------+
 | Augur Deployment a.k.a. Disco Parrot |

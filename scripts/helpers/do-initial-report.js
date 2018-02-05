@@ -5,7 +5,7 @@
 var Augur = require("../../src");
 var chalk = require("chalk");
 var connectionEndpoints = require("../connection-endpoints");
-var getPrivateKey = require("../augur-tool/lib/get-private-key");
+var getPrivateKey = require("../dp/lib/get-private-key");
 var getTime = require("./get-timestamp");
 
 var marketID = process.argv[2];

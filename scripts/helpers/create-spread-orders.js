@@ -4,10 +4,10 @@
 
 var chalk = require("chalk");
 var Augur = require("../../src");
-var approveAugurEternalApprovalValue = require("../augur-tool/lib/approve-augur-eternal-approval-value");
-var getPrivateKey = require("../augur-tool/lib/get-private-key");
+var approveAugurEternalApprovalValue = require("../dp/lib/approve-augur-eternal-approval-value");
+var getPrivateKey = require("../dp/lib/get-private-key");
 var connectionEndpoints = require("../connection-endpoints");
-var createOrder = require("../augur-tool/lib/create-order");
+var createOrder = require("../dp/lib/create-order");
 
 var marketID = process.argv[2];
 
