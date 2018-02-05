@@ -39,13 +39,17 @@ We are going to use environment variables for convenience, ENDPOINT_HTTP and END
     npm install
     yarn link augur.js
 
-    export USE_NORMAL_TIME="false"
-    export ETHEREUM_HOST="localhost"
+    # All of these keys are optional, and have the defaults listed here
+    export USE_NORMAL_TIME="false"                # need to beable to change time manually
+    export ETHEREUM_HOST="localhost"              # where the ethereum node is running
     export ETHEREUM_GAS_PRICE_IN_NANOETH="1"
-    export ETHEREUM_HTTP=http://127.0.0.1:8545
+    export ETHEREUM_HTTP=http://127.0.0.1:8545    # http endpoint scripts are going to use
     export ETHEREUM_WS=http://127.0.0.1:8546
+    
+    # default user wallet to use for scripts (0x1fd9274a2fe0e86f5a7b5bde57b93c8c9b62e21d)
     export ETHEREUM_PRIVATE_KEY="fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a"
 
+    # Use dp to deploy to the configuration specified in your local environment (above)
     npm explore augur.js -- npm run deploy:environment
     npm run clean-start
 
