@@ -221,9 +221,8 @@ export default class AppView extends Component {
         case ACCOUNT_DEPOSIT:
         case ACCOUNT_WITHDRAW:
         case ACCOUNT_EXPORT:
-        case REPORTING_OPEN:
         case REPORTING_DISPUTE:
-        case REPORTING_CLOSED:
+        case REPORTING_REPORTING:
           openNewMenu()
           break
         default:
