@@ -5,7 +5,7 @@
 var chalk = require("chalk");
 var Augur = require("../../src");
 var approveAugurEternalApprovalValue = require("../augur-tool/lib/approve-augur-eternal-approval-value");
-var getPrivateKey = require("../augur-tool/lib/get-private-key");
+var { getPrivateKey } = require("../augur-tool/lib/get-private-key");
 var connectionEndpoints = require("../connection-endpoints");
 var createOrder = require("../augur-tool/lib/create-order");
 
@@ -14,19 +14,19 @@ var marketID = process.argv[2];
 var augur = new Augur();
 
 getPrivateKey(null, function (err, auth) {
-  if (err) return console.error("getPrivateKey failed:", err);
+  if (err) { console.error("getPrivateKey failed:", err);process.exit(1); }
   augur.connect(connectionEndpoints, function (err) {
-    if (err) return console.error(err);
+    if (err) { console.error(err);process.exit(1); }
     console.log(chalk.cyan.dim("networkID:"), chalk.cyan(augur.rpc.getNetworkID()));
     var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
     console.log(chalk.green.dim("universe:"), chalk.green(universe));
     approveAugurEternalApprovalValue(augur, auth.address, auth, function (err) {
-      if (err) return console.error("Could not approve ...", err);
+      if (err) { console.error("Could not approve ...", err);process.exit(1); }
       augur.markets.getMarketsInfo({ marketIDs: [marketID] }, function (err, marketsInfo) {
-        if (err) return console.error("Could not get markets Info", err);
+        if (err) { console.error("Could not get markets Info", err);process.exit(1); }
         if (!marketsInfo || marketsInfo.length === 0) return console.error("Market not found");
         var marketInfo = marketsInfo[0];
-        if (!marketInfo) return console.error("Could not get markets Info", err);
+        if (!marketInfo) { console.error("Could not get markets Info", err);process.exit(1); }
         console.log(chalk.yellow.dim("Market:"), chalk.yellow(marketInfo.id));
         console.log(chalk.yellow.dim("outcomes:"), chalk.yellow(marketInfo.numOutcomes));
         // each outcome create buy and sell open orders

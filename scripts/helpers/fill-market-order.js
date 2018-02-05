@@ -5,7 +5,7 @@
 var Augur = require("../../src");
 var chalk = require("chalk");
 var approveAugurEternalApprovalValue = require("../augur-tool/lib/approve-augur-eternal-approval-value");
-var getPrivateKey = require("../augur-tool/lib/get-private-key");
+var { getPrivateKey } = require("../augur-tool/lib/get-private-key");
 var connectionEndpoints = require("../connection-endpoints");
 var debugOptions = require("../debug-options");
 
@@ -18,12 +18,12 @@ var augur = new Augur();
 augur.rpc.setDebugOptions(debugOptions);
 
 getPrivateKey(null, function (err, auth) {
-  if (err) return console.error("getPrivateKey failed:", err);
+  if (err) { console.error("getPrivateKey failed:", err); process.exit(1); }
   augur.connect(connectionEndpoints, function (err) {
-    if (err) return console.error(err);
+    if (err) { console.error(err); process.exit(1); }
     var fillerAddress = auth.address;
     approveAugurEternalApprovalValue(augur, fillerAddress, auth, function (err) {
-      if (err) return console.error(err);
+      if (err) { console.error(err);process.exit(1); }
       if (!outcomeToFill) console.log(chalk.red("outcome is needed"));
       if (!sharesToFill) console.log(chalk.red("shares to fill is needed"));
       if (!outcomeToFill || !sharesToFill) return;

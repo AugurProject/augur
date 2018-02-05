@@ -19,9 +19,9 @@ augur.connect(connectionEndpoints, function (err) {
   var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
   console.log(chalk.green.dim("universe:"), chalk.green(universe));
   augur.api.Universe.getReputationToken({ tx: { to: universe } }, function (err, reputationTokenAddress) {
-    if (err) return console.error("Could not get universe");
+    if (err) { console.error("Could not get universe"); process.exit(1); }
     augur.api.ReputationToken.balanceOf({ tx: { to: reputationTokenAddress }, _owner: account }, function (err, reputationBalance) {
-      if (err) return console.error("ReputationToken.balanceOf failed:", err);
+      if (err) { console.error("ReputationToken.balanceOf failed:", err); process.exit(1); }
       augur.rpc.eth.getBalance([account, "latest"], function (etherBalance) {
         if (!etherBalance || etherBalance.error) return console.error("rpc.eth.getBalance failed:", etherBalance);
         var balances = {

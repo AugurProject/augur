@@ -5,7 +5,7 @@
 var Augur = require("../../src");
 var chalk = require("chalk");
 var connectionEndpoints = require("../connection-endpoints");
-var getPrivateKey = require("../augur-tool/lib/get-private-key");
+var { getPrivateKey } = require("../augur-tool/lib/get-private-key");
 var marketID = process.argv[2];
 var getTime = require("./get-timestamp");
 
@@ -15,9 +15,9 @@ var augur = new Augur();
  * Get Market Fee window and set the time to the end then do market finalization
  */
 getPrivateKey(null, function (err, auth) {
-  if (err) return console.error("getPrivateKey failed:", err);
+  if (err) { console.error("getPrivateKey failed:", err); process.exit(1); }
   augur.connect(connectionEndpoints, function (err) {
-    if (err) return console.error(err);
+    if (err) { console.error(err); process.exit(1); }
     var marketPayload = { tx: { to: marketID } };
     augur.api.Market.getFeeWindow(marketPayload, function (err, feeWindowAddress) {
       var feeWindowPayload = { tx: { to: feeWindowAddress } };
