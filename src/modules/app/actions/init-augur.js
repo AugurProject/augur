@@ -60,7 +60,6 @@ function pollForNetwork(dispatch, getState) {
 export function connectAugur(history, env, isInitialConnection = false, callback = logError) {
   return (dispatch, getState) => {
     AugurJS.connect(env, (err, ConnectionInfo) => {
-      pollForAccount(dispatch, getState)
       if (err || !ConnectionInfo.augurNode || !ConnectionInfo.ethereumNode) {
         return callback(err, ConnectionInfo)
       }
