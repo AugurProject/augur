@@ -112,7 +112,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           crowdsourcerID: "0x0000000000000000002000000000000000000001",
           marketID: "0x0000000000000000000000000000000000000001",
           feeWindow: "0x2000000000000000000000000000000000000000",
-          completed: 0,
+          completed: null,
         });
       },
     },

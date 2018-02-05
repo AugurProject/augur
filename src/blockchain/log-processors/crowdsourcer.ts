@@ -32,7 +32,6 @@ export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, trx
       });
     });
   });
-
 }
 
 export function processDisputeCrowdsourcerCreatedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
@@ -85,7 +84,7 @@ export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, t
 }
 
 export function processDisputeCrowdsourcerCompletedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  db("crowdsourcers").transacting(trx).update({ completed: 0 }).where({ crowdsourcerID: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
+  db("crowdsourcers").transacting(trx).update({ completed: null }).where({ crowdsourcerID: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
     if (err) return callback(err);
     augurEmitter.emit("DisputeCrowdsourcerCompleted", log);
     callback(null);
