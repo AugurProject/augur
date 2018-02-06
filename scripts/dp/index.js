@@ -6,9 +6,9 @@ const Augur = require("../../src");
 const debugOptions = require("../debug-options");
 const { ContractDeployer, DeployerConfiguration, NetworkConfiguration } = require("augur-core");
 const { getPrivateKeyFromString } = require("./lib/get-private-key");
-const parrotSay = require('parrotsay-api');
-const chalk = require('chalk');
-const columnify = require('columnify')
+const parrotSay = require("parrotsay-api");
+const chalk = require("chalk");
+const columnify = require("columnify");
 
 const repFaucet = promisify(require("../rep-faucet"));
 const createMarkets = promisify(require("./create-markets"));
@@ -81,51 +81,51 @@ async function help() {
 
   console.log(chalk.underline("\nConfiguration"));
   console.log("Set the following " + chalk.bold("environment variables") + " to modify the behavior of the deployment process");
-  console.log("ex: USE_NORMAL_TIME=false dp deploy aura")
+  console.log("ex: USE_NORMAL_TIME=false dp deploy aura");
 
   console.log(chalk.underline("\nNetwork (when using 'environment' for the network)"));
   console.log(columnify([{
     env: "ETHEREUM_HTTP",
-    Description: "The http(s) address of your ethereum endpoint (default: http://localhost:8545)"
+    Description: "The http(s) address of your ethereum endpoint (default: http://localhost:8545)",
   }, {
     env: "ETHEREUM_PRIVATE_KEY",
-    Description: "HEX Private Key used for transactions on this eth node"
+    Description: "HEX Private Key used for transactions on this eth node",
   }, {
     env: "GAS_PRICE_IN_NANOETH",
-    Description: "The transaction gas price to use, specified in nanoeth (default: varies)"
+    Description: "The transaction gas price to use, specified in nanoeth (default: varies)",
   }], {
-    columnSplitter: ' - ',
+    columnSplitter: " - ",
     minWidth: 20,
     maxWidth: 80,
-    showHeaders: false
+    showHeaders: false,
   }));
 
   console.log(chalk.underline("\nPrivate Keys (for any named environment)"));
   console.log(columnify([{
     env: "AURA_PRIVATE_KEY",
-    description: "Set the private key to use with the named network"
+    description: "Set the private key to use with the named network",
   },
   {env: "CLIQUE_PRIVATE_KEY"},
   {env: "RINKEBY_PRIVATE_KEY"},
   {env: "ROPSTEN_PRIVATE_KEY"},
   ], {
-    columnSplitter: ' - ',
+    columnSplitter: " - ",
     minWidth: 20,
     maxWidth: 80,
-    showHeaders: false
+    showHeaders: false,
   }));
   console.log(chalk.underline("\nUpload Configs"));
   console.log(columnify([{
     env: "PRODUCTION",
-    description: "[true, false] If true force USE_NORMAL_TIME to true and potentially other optimizations. (default: false)"
+    description: "[true, false] If true force USE_NORMAL_TIME to true and potentially other optimizations. (default: false)",
   }, {
     env: "USE_NORMAL_TIME",
-    description: "[true, false] Should time flow normally or be adjusted using the custom time management (default: true)"
+    description: "[true, false] Should time flow normally or be adjusted using the custom time management (default: true)",
   }], {
-    columnSplitter: ' - ',
+    columnSplitter: " - ",
     minWidth: 20,
     maxWidth: 80,
-    showHeaders: false
+    showHeaders: false,
   }));
 }
 
