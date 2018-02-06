@@ -13,6 +13,6 @@ const mapDispatchToProps = dispatch => ({
 
 })
 
-const Reporting = withRouter(connect(mapStateToProps, mapDispatchToProps)(ReportingDispute))
+const ReportingDisputeContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(ReportingDispute))
 
-export default Reporting
+export default ReportingDisputeContainer

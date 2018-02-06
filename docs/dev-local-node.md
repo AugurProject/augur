@@ -33,19 +33,23 @@ NOTE -- intentionally mixing the use of `npm` and `yarn` because npm link has ex
 
 ### augur-node
 
-We are going to use environment variables for convenience, ENDPOINT_HTTP and ENDPOINT_WS tell either augur-node or augur.js scripts where to connect. Here we deploy smart contracts to our local node we started by the command above. The `npm explore augur.js -- npm run deploy:environment` does the deploy based on the environment variables. It will create/populate with markets and open orders. The ETHEREUM_PRIVATE_KEY specifies the market creater and owner of the open orders, the public adderss is 0x1fd9274a2fe0e86f5a7b5bde57b93c8c9b62e21d. Import this address into MetaMask to see the markets and open orders.
+We are going to use environment variables for convenience, ENDPOINT_HTTP and ENDPOINT_WS tell either augur-node or augur.js scripts where to connect. Here we deploy smart contracts to our local node we started by the command above. The `npm explore augur.js -- npm run deploy:environment` does the deploy based on the environment variables. It will create/populate with markets and open orders. The ETHEREUM_PRIVATE_KEY specifies the market creater and owner of the open orders, the public adderss is 0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb. Import this address into MetaMask to see the markets and open orders.
 
     cd augur-node
-    yarn link augur.js
     npm install
+    yarn link augur.js
 
-    export USE_NORMAL_TIME="false"
-    export ETHEREUM_HOST="localhost"
+    # All of these keys are optional, and have the defaults listed here
+    export USE_NORMAL_TIME="false"                # need to beable to change time manually
+    export ETHEREUM_HOST="localhost"              # where the ethereum node is running
     export ETHEREUM_GAS_PRICE_IN_NANOETH="1"
-    export ETHEREUM_HTTP=http://127.0.0.1:8545
+    export ETHEREUM_HTTP=http://127.0.0.1:8545    # http endpoint scripts are going to use
     export ETHEREUM_WS=http://127.0.0.1:8546
+
+    # default user wallet to use for scripts (0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb)
     export ETHEREUM_PRIVATE_KEY="fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a"
 
+    # Use dp to deploy to the configuration specified in your local environment (above)
     npm explore augur.js -- npm run deploy:environment
     npm run clean-start
 
@@ -81,7 +85,7 @@ There are a few helper node scripts in augur.js. There is the canned market scri
 
 Also there are eight user accounts baked into the docker node that have plenty of ETH, Here is the list:
 
-    default user: 0x1fd9274a2fe0e86f5a7b5bde57b93c8c9b62e21d
+    default user: 0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb
     private key: fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a
 
     ethereum addr: 0xbd355a7e5a7adb23b51f54027e624bfe0e238df6
@@ -111,7 +115,7 @@ To allow flexibility, the REP faucet can be run on which ever accounts you want 
     cd augur.js
 
     ** give default user REP or change the ETHEREUM_PRIVATE_KEY value to give another user REP
-    ETHEREUM_PRIVATE_KEY=cfa5622e09afac03fb5dfa5cb54e52c9d37e06a5b07d5598850b62304639b815 node scripts/augur-tool rep-faucet environment
+    ETHEREUM_PRIVATE_KEY=48c5da6dff330a9829d843ea90c2629e8134635a294c7e62ad4466eb2ae03712 node scripts/augur-tool rep-faucet environment
 
     ** create canned markets if not already created by the deploy script above.
     augur.js directory
