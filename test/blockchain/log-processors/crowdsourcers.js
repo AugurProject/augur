@@ -8,7 +8,7 @@ const { processDisputeCrowdsourcerCreatedLog, processDisputeCrowdsourcerCreatedL
   = require("../../../build/blockchain/log-processors/crowdsourcer");
 
 const getCrowdsourcer = (db, params, callback) => {
-  db("crowdsourcers").first(["marketID", "completed"]).where({crowdsourcerID: params.log.disputeCrowdsourcer}).asCallback(callback);
+  db("crowdsourcers").first(["crowdSourcerID", "marketID", "completed", "feeWindow"]).where({crowdsourcerID: params.log.disputeCrowdsourcer}).asCallback(callback);
 };
 
 const getDisputesFromCrowdsourcer = (db, params, callback) => {
@@ -70,7 +70,9 @@ describe("blockchain/log-processors/crowdsourcers", () => {
       onCreated: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, {
+          crowdsourcerID: "0x0000000000000000002000000000000000000001",
           marketID: "0x0000000000000000000000000000000000000001",
+          feeWindow: "0x2000000000000000000000000000000000000000",
           completed: null,
         });
       },
@@ -98,15 +100,19 @@ describe("blockchain/log-processors/crowdsourcers", () => {
       onCompleted: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, {
+          crowdsourcerID: "0x0000000000000000002000000000000000000001",
           marketID: "0x0000000000000000000000000000000000000001",
+          feeWindow: "0x2000000000000000000000000000000000000000",
           completed: 1,
         });
       },
       onCompletedRemoved: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, {
+          crowdsourcerID: "0x0000000000000000002000000000000000000001",
           marketID: "0x0000000000000000000000000000000000000001",
-          completed: 0,
+          feeWindow: "0x2000000000000000000000000000000000000000",
+          completed: null,
         });
       },
     },

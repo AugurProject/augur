@@ -35,7 +35,7 @@ export function getFeeWindowCurrent(db: Knex, universe: Address, reporter: Addre
         .join("markets", "markets.marketID", "initial_reports.marketID")
         .where("markets.feeWindow", feeWindowRow.feeWindow)
         .where("initial_reports.reporter", reporter);
-      const disputesQuery = db.first().sum("amountStaked as totalDisputeStake").from("disputes")
+      const disputesQuery = db.first().sum("disputes.amountStaked as totalDisputeStake").from("disputes")
         .join("crowdsourcers", "crowdsourcers.crowdsourcerID", "disputes.crowdsourcerID")
         .join("markets", "markets.marketID", "crowdsourcers.marketID")
         .where("markets.feeWindow", feeWindowRow.feeWindow)

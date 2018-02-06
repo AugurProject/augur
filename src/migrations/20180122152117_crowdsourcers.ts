@@ -10,9 +10,11 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.specificType("logIndex", "integer NOT NULL CONSTRAINT \"nonnegativelogIndex\" CHECK (\"logIndex\" >= 0)");
 
       table.string("marketID", 42).notNullable();
+      table.string("feeWindow", 42).notNullable();
       table.integer("payoutID").notNullable();
 
       table.specificType("size", "numeric NOT NULL CONSTRAINT \"nonnegativeSize\" CHECK (\"size\" >= 0)");
+      table.specificType("amountStaked", "numeric").defaultTo(0);
       table.integer("completed").nullable();
 
       table.index(["marketID"]);
