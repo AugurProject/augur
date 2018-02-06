@@ -227,7 +227,7 @@ export default class MarketPortfolioCard extends Component {
               }
               { this.state.tableOpen.openOrders && (myPositionOutcomes || []).filter(outcome => outcome.userOpenOrders).map(outcome => (
                 <div key={`table-body-order-${outcome.id}${outcome.marketID}`} className={PositionStyles['MarketPositionsList__table-body']}>
-                  { outcome.userOpenOrders.map((order, i) => (
+                  { outcome.userOpenOrders.sort((a, b) => a.type - b.type).sort((a, b) => b.avgPrice.value - a.avgPrice.value).map((order, i) => (
                     <MarketPositionsListOrder
                       key={order.id}
                       name={outcome.name}
