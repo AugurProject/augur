@@ -238,6 +238,17 @@ export interface UIDisputeTokens {
   [stakeToken: string]: UIDisputeTokenInfo;
 }
 
+export interface StakeDetails extends Payout {
+  totalStaked: number;
+  size: number;
+  amountStaked: number;
+}
+
+export interface UIStakeInfo {
+  marketID: Address;
+  stakes: Array<StakeDetails>;
+}
+
 export interface UIFeeWindowCurrent {
   endBlockNumber: number|null;
   endTime: number;

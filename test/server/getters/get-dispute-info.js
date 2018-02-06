@@ -30,9 +30,9 @@ describe("server/getters/get-dispute-info", () => {
       assert.deepEqual(disputeInfo, [
         {
           marketID: "0x0000000000000000000000000000000000000211",
-          stakeResults: [
+          stakes: [
             {
-              invalid: false,
+              isInvalid: false,
               payout: [
                 0,
                 10000,
@@ -45,9 +45,9 @@ describe("server/getters/get-dispute-info", () => {
         },
         {
           marketID: "0x0000000000000000000000000000000000000011",
-          stakeResults: [
+          stakes: [
             {
-              invalid: false,
+              isInvalid: false,
               payout: [
                 0,
                 2,
@@ -57,7 +57,7 @@ describe("server/getters/get-dispute-info", () => {
               amountStaked: 20000,
             },
             {
-              invalid: true,
+              isInvalid: true,
               payout: [
                 1,
                 1,
@@ -86,9 +86,9 @@ describe("server/getters/get-dispute-info", () => {
         null,
         {
           marketID: "0x0000000000000000000000000000000000000211",
-          stakeResults: [
+          stakes: [
             {
-              invalid: false,
+              isInvalid: false,
               payout: [
                 0,
                 10000,
@@ -116,9 +116,9 @@ describe("server/getters/get-dispute-info", () => {
       assert.deepEqual(disputeInfo, [
         {
           marketID: "0x0000000000000000000000000000000000000011",
-          stakeResults: [
+          stakes: [
             {
-              invalid: false,
+              isInvalid: false,
               payout: [
                 0,
                 2,
@@ -128,7 +128,7 @@ describe("server/getters/get-dispute-info", () => {
               amountStaked: 20000,
             },
             {
-              invalid: true,
+              isInvalid: true,
               payout: [
                 1,
                 1,
@@ -141,9 +141,9 @@ describe("server/getters/get-dispute-info", () => {
         },
         {
           marketID: "0x0000000000000000000000000000000000000211",
-          stakeResults: [
+          stakes: [
             {
-              invalid: false,
+              isInvalid: false,
               payout: [
                 0,
                 10000,

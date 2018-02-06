@@ -84,7 +84,7 @@ export function getMarketsWithReportingState(db: Knex, selectColumns?: Array<str
 
 export function normalizePayouts(payoutRow: any) {
   const payoutResponse: any = {
-    invalid: !!payoutRow.isInvalid,
+    isInvalid: !!payoutRow.isInvalid,
   };
   payoutResponse.payout = [];
   for (let i = 0; i < 8; i++) {
