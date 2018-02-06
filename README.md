@@ -60,12 +60,14 @@ yarn
 yarn dev
 ```
 
-### [Docker](https://www.docker.com/)
+### [Docker](https://www.docker.com/) 
+To run augur ui in docker map your external port (8080) to docker container port 80
 ```
-docker run -p 8080:8080 augur
+docker run -p 8080:80 augur
 ```
 
 Visit [http://localhost:8080](http://localhost:8080)
+
 
 ## Run Ethereum Locally <a name="eth_local"></a>
 
@@ -77,17 +79,19 @@ Depending on how you'll be running Augur (Development OR Production), follow the
 
 *NOTE --* Unless you have a specific reason for doing so, generally you should not simultaneously run geth and another Ethereum client (such as Mist or Parity).
 
-### Development -- Testnet (Ropsten)
+See more detail notes to run augur UI on local ethereum node and augur-node [dev-local-node](https://github.com/AugurProject/augur/blob/seadragon/docs/dev-local-node.md)
+
+### Development -- Testnet (Rinkeby)
 
 Create an Ethereum account (if needed):
 ```
-geth --testnet account new
+geth --rinkeby account new
 ```
 Be sure to securely store your password and remember the account address (displayed after account creation).
 
 Start geth:  
 ```
-geth --testnet --unlock 0 --rpc --ws --rpcapi eth,net,shh,admin,txpool,web3,personal --wsapi eth,net,shh,web3,admin,txpool,personal --rpccorsdomain '*' --wsorigins '*' --cache 2048 console
+geth --rinkeby --unlock 0 --rpc --ws --rpcapi eth,net,shh,admin,txpool,web3,personal --wsapi eth,net,shh,web3,admin,txpool,personal --rpccorsdomain '*' --wsorigins '*' --cache 2048 console
 ```
 
 Additional points of note:  
@@ -100,7 +104,7 @@ Important note: the Augur contracts have **not** yet been uploaded to the live E
 
 Create an Ethereum account (if needed):
 ```
-geth account new
+geth --rinkeby account new
 ```
 Be sure to securely store your password and remember the account address (displayed after account creation).
 
@@ -110,6 +114,13 @@ Start geth:
 ```
 geth --unlock 0 --rpc --ws --rpcapi eth,net,shh,admin,txpool,web3,personal --wsapi eth,net,shh,web3,admin,txpool,personal --rpccorsdomain '<domain of server>' --wsorigins '<domain of server>' --cache 2048 console
 ```
+
+**Testing local geth node**
+
+    curl --data '{"method":"net_version","params":[],"id":67,"jsonrpc":"2.0"}' -H "Content-Type: application/json" -X POST localhost:8545
+    
+    returns network id: should be 4 for rinkeby
+    {"jsonrpc":"2.0","id":67,"result":"4"}
 
 Additional resources:  
 [JSON RPC API Documentation](https://github.com/ethereum/wiki/wiki/JSON-RPC)  
@@ -123,6 +134,7 @@ Additional points of note:
 ## Documentation
 
 [http://docs.augur.net](http://docs.augur.net)
+
 
 ## Development Tips
 
