@@ -17,7 +17,7 @@ You'll need to clone the following repositories prior to starting:
 
 After pulling down all the code we'll spin up a docker container that runs a local geth node.
 
-    docker run -it -p 8545:8545 augurproject/dev-node-geth:latest
+    docker run -it -p 8545:8545 -p 8546:8546 augurproject/dev-node-geth:latest
 
 Since we are going to be uploading smart contracts locally we need to make sure both augur-node and augur (ui) repositories are looking at the same augur.js, we're going to use yarn link to help us out.
 
