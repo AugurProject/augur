@@ -44,30 +44,26 @@ The first three of these steps can be handled by the included helper application
 
 ### `dp` Help Output:
 ```
-augur.js$ npm run dp
-
-> augur.js@4.7.0-61 dp /mnt/Volume-Home/home/pg/Development/augur/augur.js
-> node scripts/dp
-
+augur.js$ node scripts/dp                                                                                                                                                                                                                                                                                                   8.7.0    16:21
 +--------------------------------------+
 | Augur Deployment a.k.a. Disco Parrot |
 +--------------------------------------+
-       \
-        \     ▄▄▄▄▄▄▄▄
-         \  ▄ ▄      ▄▄ ▄
-          ▄ ▄            ▄
-          ▄      ▄▄▄▄▄
-         ▄               ▄ ▄
-        ▄
-                 ▄
-                  ▄ ▄
-         ▄        ▄ ▄      ▄▄ ▄
-          ▄                   ▄▄ ▄
-          ▄ ▄▄▄▄                 ▄▄ ▄
-              ▄▄▄▄                  ▄▄
-        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+       \<span style="">
+        \     [38;5;16m▄▄▄[38;5;232m▄[38;5;16m▄▄▄▄
+         \  ▄[48;5;16m [38;5;75m▄[48;5;75m      [48;5;232m▄[48;5;16m▄ </span><span style="">[38;5;16m▄
+          ▄[48;5;16m [38;5;75m▄[48;5;75m           [48;5;16m </span><span style="">[38;5;16m▄
+         [48;5;16m [38;5;75m▄[48;5;75m   [48;5;16m [48;5;75m  [38;5;232m▄[48;5;16m[38;5;132m▄▄▄[48;5;75m[38;5;16m▄ [48;5;16m [48;5;75m [48;5;16m </span><span style="">
+        [48;5;16m [38;5;75m▄[48;5;75m      [48;5;16m [48;5;132m     [48;5;16m [48;5;75m  [48;5;16m▄ </span><span style="">[38;5;16m▄
+       [48;5;16m [38;5;75m▄[48;5;75m       [48;5;16m [48;5;132m     [48;5;16m [48;5;75m    [48;5;16m </span><span style="">
+       [48;5;16m [48;5;75m        [48;5;16m [48;5;132m[38;5;233m▄    [48;5;16m [48;5;75m    [48;5;16m </span><span style="">
+       [48;5;16m [48;5;75m         [48;5;16m [48;5;132m[38;5;232m▄ [38;5;16m▄[48;5;16m [48;5;75m     [48;5;16m </span><span style="">
+       [48;5;16m  [48;5;75m▄        [48;5;16m[38;5;75m▄ ▄[48;5;75m      [48;5;16m▄▄ </span><span style="">[38;5;16m▄
+        [48;5;16m  [48;5;75m▄                   [48;5;233m[38;5;75m▄[48;5;16m▄ </span><span style="">[38;5;16m▄
+        [48;5;16m [48;5;75m [48;5;16m[38;5;75m▄ [48;5;75m[38;5;16m▄▄▄▄                 [48;5;16m[38;5;75m▄▄ </span><span style="">[38;5;16m▄
+        [48;5;16m [48;5;75m     [48;5;16m[38;5;75m▄▄▄▄[48;5;75m                  [48;5;232m▄[48;5;16m▄ </span><span style="">
+        [38;5;16m▀[38;5;232m▀▀▀[38;5;16m▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-
+        </span><span style="">
 
 Usage: dp <command> <network 1> <network 2> ... <network N>
 
@@ -88,16 +84,17 @@ ETHEREUM_PRIVATE_KEY - HEX Private Key used for transactions on this eth node
 GAS_PRICE_IN_NANOETH - The transaction gas price to use, specified in nanoeth (default: varies)
 
 Private Keys (for any named environment)
-AURA_PRIVATE_KEY     - Set the private key to use with the named network
-CLIQUE_PRIVATE_KEY   -
-RINKEBY_PRIVATE_KEY  -
-ROPSTEN_PRIVATE_KEY  -
+AURA_PRIVATE_KEY     - Override key used to deploy to Aura, defaults to the dev key
+CLIQUE_PRIVATE_KEY   - Override key used to deploy to Clique, defaults to the dev key
+RINKEBY_PRIVATE_KEY  - Set key used to deploy to Rinkeby, default is blank and will error if not set
+ROPSTEN_PRIVATE_KEY  - Set key used to deploy to Ropsten, default is blank and will error if not set
 
 Upload Configs
 PRODUCTION           - [true, false] If true force USE_NORMAL_TIME to true and potentially other
                      - optimizations. (default: false)
 USE_NORMAL_TIME      - [true, false] Should time flow normally or be adjusted using the custom time
                      - management (default: true)
+</span>
 ```
 
 ### Deploying to all testnets

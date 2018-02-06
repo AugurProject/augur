@@ -103,12 +103,17 @@ async function help() {
   console.log(chalk.underline("\nPrivate Keys (for any named environment)"));
   console.log(columnify([{
     env: "AURA_PRIVATE_KEY",
-    description: "Set the private key to use with the named network",
-  },
-  {env: "CLIQUE_PRIVATE_KEY"},
-  {env: "RINKEBY_PRIVATE_KEY"},
-  {env: "ROPSTEN_PRIVATE_KEY"},
-  ], {
+    description: "Override key used to deploy to Aura, defaults to the dev key",
+  }, {
+    env: "CLIQUE_PRIVATE_KEY",
+    description: "Override key used to deploy to Clique, defaults to the dev key",
+  }, {
+    env: "RINKEBY_PRIVATE_KEY",
+    description: "Set key used to deploy to Rinkeby, default is blank and " + chalk.bold("will error if not set"),
+  }, {
+    env: "ROPSTEN_PRIVATE_KEY",
+    description: "Set key used to deploy to Ropsten, default is blank and " + chalk.bold("will error if not set"),
+  }], {
     columnSplitter: " - ",
     minWidth: 20,
     maxWidth: 80,
