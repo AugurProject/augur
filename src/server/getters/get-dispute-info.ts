@@ -3,6 +3,7 @@ import * as Knex from "knex";
 import * as _ from "lodash";
 import { Address, MarketsRowWithCreationTime, OutcomesRow, AsyncCallback, Payout, UIStakeInfo } from "../../types";
 import { getMarketsWithReportingState, normalizePayouts } from "./database";
+import { BigNumber } from "bignumber.js";
 
 interface DisputesResult {
   markets: Array<MarketsRowWithCreationTime>;
@@ -63,9 +64,9 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
     return Object.assign({},
       normalizePayouts(stakes[0]),
       {
-        totalStaked,
-        size,
-        amountStaked,
+        totalStaked: totalStaked.toFixed(),
+        size: new BigNumber(size).toFixed(),
+        amountStaked: amountStaked.toFixed(),
       },
     );
   });

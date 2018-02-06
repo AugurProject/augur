@@ -222,7 +222,7 @@ export interface Payout {
   payout5: string|number|null;
   payout6: string|number|null;
   payout7: string|number|null;
-  isInvalid: boolean;
+  isInvalid: boolean|number;
 }
 
 export interface UIDisputeTokenInfo extends Payout {
@@ -239,9 +239,9 @@ export interface UIDisputeTokens {
 }
 
 export interface StakeDetails extends Payout {
-  totalStaked: number;
-  size: number;
-  amountStaked: number;
+  totalStaked: string;
+  size: string;
+  amountStaked: string;
 }
 
 export interface UIStakeInfo {
