@@ -48,22 +48,22 @@ augur.js$ node scripts/dp                                                       
 +--------------------------------------+
 | Augur Deployment a.k.a. Disco Parrot |
 +--------------------------------------+
-       \<span style="">
-        \     [38;5;16m▄▄▄[38;5;232m▄[38;5;16m▄▄▄▄
-         \  ▄[48;5;16m [38;5;75m▄[48;5;75m      [48;5;232m▄[48;5;16m▄ </span><span style="">[38;5;16m▄
-          ▄[48;5;16m [38;5;75m▄[48;5;75m           [48;5;16m </span><span style="">[38;5;16m▄
-         [48;5;16m [38;5;75m▄[48;5;75m   [48;5;16m [48;5;75m  [38;5;232m▄[48;5;16m[38;5;132m▄▄▄[48;5;75m[38;5;16m▄ [48;5;16m [48;5;75m [48;5;16m </span><span style="">
-        [48;5;16m [38;5;75m▄[48;5;75m      [48;5;16m [48;5;132m     [48;5;16m [48;5;75m  [48;5;16m▄ </span><span style="">[38;5;16m▄
-       [48;5;16m [38;5;75m▄[48;5;75m       [48;5;16m [48;5;132m     [48;5;16m [48;5;75m    [48;5;16m </span><span style="">
-       [48;5;16m [48;5;75m        [48;5;16m [48;5;132m[38;5;233m▄    [48;5;16m [48;5;75m    [48;5;16m </span><span style="">
-       [48;5;16m [48;5;75m         [48;5;16m [48;5;132m[38;5;232m▄ [38;5;16m▄[48;5;16m [48;5;75m     [48;5;16m </span><span style="">
-       [48;5;16m  [48;5;75m▄        [48;5;16m[38;5;75m▄ ▄[48;5;75m      [48;5;16m▄▄ </span><span style="">[38;5;16m▄
-        [48;5;16m  [48;5;75m▄                   [48;5;233m[38;5;75m▄[48;5;16m▄ </span><span style="">[38;5;16m▄
-        [48;5;16m [48;5;75m [48;5;16m[38;5;75m▄ [48;5;75m[38;5;16m▄▄▄▄                 [48;5;16m[38;5;75m▄▄ </span><span style="">[38;5;16m▄
-        [48;5;16m [48;5;75m     [48;5;16m[38;5;75m▄▄▄▄[48;5;75m                  [48;5;232m▄[48;5;16m▄ </span><span style="">
-        [38;5;16m▀[38;5;232m▀▀▀[38;5;16m▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+       \
+        \     ▄▄▄▄▄▄▄▄
+         \  ▄ ▄      ▄▄ ▄
+          ▄ ▄            ▄
+          ▄      ▄▄▄▄▄
+         ▄               ▄ ▄
+        ▄
+                 ▄
+                  ▄ ▄
+         ▄        ▄ ▄      ▄▄ ▄
+          ▄                   ▄▄ ▄
+          ▄ ▄▄▄▄                 ▄▄ ▄
+              ▄▄▄▄                  ▄▄
+        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-        </span><span style="">
+
 
 Usage: dp <command> <network 1> <network 2> ... <network N>
 
@@ -94,7 +94,6 @@ PRODUCTION           - [true, false] If true force USE_NORMAL_TIME to true and p
                      - optimizations. (default: false)
 USE_NORMAL_TIME      - [true, false] Should time flow normally or be adjusted using the custom time
                      - management (default: true)
-</span>
 ```
 
 ### Deploying to all testnets
