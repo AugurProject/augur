@@ -28,9 +28,6 @@ describe('create-market-form-outcome', () => {
         },
         {
           type: false,
-          scalarSmallNum: '',
-          scalarBigNum: '',
-          tickSize: '',
         },
         {
           designatedReporterType: false,

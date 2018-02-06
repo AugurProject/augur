@@ -94,6 +94,7 @@ export default class CreateMarketOutcome extends Component {
       case SCALAR:
         updatedValidations.scalarSmallNum = updatedValidations.scalarSmallNum ? updatedValidations.scalarSmallNum : false
         updatedValidations.scalarBigNum = updatedValidations.scalarBigNum ? updatedValidations.scalarBigNum : false
+        updatedValidations.tickSize = updatedValidations.tickSize ? updatedValidations.tickSize : false
         break
       default:
         break
