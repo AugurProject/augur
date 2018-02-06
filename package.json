@@ -20,6 +20,7 @@
     "lint": "node scripts/lint.js",
     "lit": "echo 'so lit'",
     "test": "node scripts/test.js",
+    "kickoff": "./scripts/setup-local-dev.sh",
     "___": "",
     "link": "npm link augur.js keythereum",
     "reinstall": "./scripts/reinstall.sh",
