@@ -12,9 +12,6 @@ function cancelOrder(augur, orderID, orderType, marketID, outcome, auth, callbac
       meta: auth,
       tx: { gas: augur.constants.CANCEL_ORDER_GAS },
       _orderId: orderID,
-      _type: orderType === "buy" ? 0 : 1,
-      _market: marketID,
-      _outcome: outcome,
       onSent: function () {},
       onSuccess: function () {
         if (debugOptions.cannedMarkets) console.log(chalk.green(marketID + " " + outcome + " ") + chalk.red.bold(orderType) + chalk.green(" " + orderID));
