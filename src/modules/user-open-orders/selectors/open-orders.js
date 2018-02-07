@@ -35,10 +35,12 @@ const hasOpenOrdersInMarket = (market) => {
 }
 
 
-const getHighestPrice = (outcome) => {
-  return outcome.userOpenOrders.reduce((p, order) => {
-    return p > order.avgPrice.value ? p : order.avgPrice.value
-  }, 0)
+function getHighestPrice(outcome) {
+  return outcome.userOpenOrders.reduce((p, order) => comparePrice(p, order), 0)
+}
+
+function comparePrice(p, order) {
+  return p > order.avgPrice.value ? p : order.avgPrice.value
 }
 
 export function sortOpenOrders(market) {
