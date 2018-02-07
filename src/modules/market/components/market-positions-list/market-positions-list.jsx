@@ -80,7 +80,7 @@ export default class MarketPositionsList extends Component {
             }
             { p.openOrders.length > 0 &&
               <div className={Styles['MarketPositionsList__table-body']}>
-                { p.openOrders.sort((a, b) => a.type - b.type).sort((a, b) => b.avgPrice.value - a.avgPrice.value).map((order, i) => (
+                { p.openOrders.map((order, i) => (
                   <MarketPositionsListOrder
                     key={i}
                     name={order.name}

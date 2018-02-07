@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 import MarketOutcomesAndPositions from 'modules/market/components/market-outcomes-and-positions/market-outcomes-and-positions'
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
 import { selectMarket } from 'modules/market/selectors/market'
+import { sortOpenOrders } from 'modules/user-open-orders/selectors/open-orders'
 // import getValue from 'utils/get-value'
 
 const mapStateToProps = state => ({
@@ -18,7 +19,8 @@ const mergeProps = (sP, dP, oP) => {
   let openOrders = []
   let positions = []
   if (market && market.outcomes && market.outcomes.length > 0) {
-    openOrders = market.outcomes.reduce((p, outcome) => {
+    const newMarket = sortOpenOrders(market)
+    openOrders = newMarket.outcomes.reduce((p, outcome) => {
       if (outcome.userOpenOrders && outcome.userOpenOrders.length > 0) {
         outcome.userOpenOrders.forEach(order => p.push(order))
       }
