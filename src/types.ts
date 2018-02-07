@@ -222,7 +222,7 @@ export interface Payout {
   payout5: string|number|null;
   payout6: string|number|null;
   payout7: string|number|null;
-  isInvalid: boolean;
+  isInvalid: boolean|number;
 }
 
 export interface UIDisputeTokenInfo extends Payout {
@@ -236,6 +236,17 @@ export interface UIDisputeTokenInfo extends Payout {
 
 export interface UIDisputeTokens {
   [stakeToken: string]: UIDisputeTokenInfo;
+}
+
+export interface StakeDetails extends Payout {
+  totalStaked: string;
+  size: string;
+  amountStaked: string;
+}
+
+export interface UIStakeInfo {
+  marketID: Address;
+  stakes: Array<StakeDetails>;
 }
 
 export interface UIFeeWindowCurrent {

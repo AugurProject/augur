@@ -81,3 +81,16 @@ export function getMarketsWithReportingState(db: Knex, selectColumns?: Array<str
     .leftJoin("market_state", "markets.marketStateID", "market_state.marketStateID")
     .leftJoin("blocks", "markets.creationBlockNumber", "blocks.blockNumber");
 }
+
+export function normalizePayouts(payoutRow: any) {
+  const payoutResponse: any = {
+    isInvalid: !!payoutRow.isInvalid,
+  };
+  payoutResponse.payout = [];
+  for (let i = 0; i < 8; i++) {
+    const payoutNumerator = payoutRow["payout" + i];
+    if (payoutNumerator == null) break;
+    payoutResponse.payout.push(payoutNumerator);
+  }
+  return payoutResponse;
+}
