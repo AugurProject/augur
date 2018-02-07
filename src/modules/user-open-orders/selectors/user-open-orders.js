@@ -63,6 +63,7 @@ function getUserOpenOrders(marketId, orders, orderType, outcomeID, userID) {
         type: orderType,
         marketId,
         outcomeID,
+        orderState: order.orderState,
         originalShares: formatNone(),
         avgPrice: formatEtherTokens(order.price),
         matchedShares: formatNone(),
