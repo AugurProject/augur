@@ -7,7 +7,6 @@ var chalk = require("chalk");
 var connectionEndpoints = require("../connection-endpoints");
 var { getPrivateKey, getPrivateKeyFromString } = require("../augur-tool/lib/get-private-key");
 var getTime = require("./get-timestamp");
-var speedomatic = require("speedomatic");
 var BigNumber = require("bignumber.js");
 
 var marketID = process.argv[2];
