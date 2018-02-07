@@ -19,7 +19,10 @@ export const cancelOrder = (orderID, marketID, outcome, orderTypeLabel, callback
       meta: loginAccount.meta,
       _orderId: orderID,
       onSent: noop,
-      onSuccess: () => callback(null),
+      onSuccess: () => {
+        // TODO: do we need to update anything or will the update come in on emitter
+        callback(null)
+      },
       onFailed: (err) => {
         dispatch(updateOrderStatus(orderID, CLOSE_DIALOG_FAILED, marketID, outcome, orderTypeLabel))
         setTimeout(() => dispatch(updateOrderStatus(orderID, null, marketID, outcome, orderTypeLabel)), TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS)
