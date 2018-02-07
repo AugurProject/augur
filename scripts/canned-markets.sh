@@ -26,10 +26,10 @@ elif [ "$network" == "rinkeby" ]; then
 fi
 
 if [ "$2" == "orders" ]; then
-  node $scriptsPath/augur-tool/create-orders.js $keystorePath || exit 1
+  node $scriptsPath/dp/create-orders.js $keystorePath || exit 1
 else
-  node $scriptsPath/augur-tool/rep-faucet.js $keystorePath || exit 1
-  node $scriptsPath/augur-tool/create-markets.js $keystorePath || exit 1
+  node $scriptsPath/dp/rep-faucet.js $keystorePath || exit 1
+  node $scriptsPath/dp/create-markets.js $keystorePath || exit 1
 fi
 
 rm -f $keystorePath

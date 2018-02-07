@@ -4,7 +4,7 @@ var chalk = require("chalk");
 var BigNumber = require("bignumber.js");
 var speedomatic = require("speedomatic");
 var Augur = require("../src");
-const { getPrivateKey } = require("./augur-tool/lib/get-private-key");
+const { getPrivateKey } = require("./dp/lib/get-private-key");
 var connectionEndpoints = require("./connection-endpoints");
 var debugOptions = require("./debug-options");
 

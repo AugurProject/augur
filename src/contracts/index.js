@@ -6,12 +6,12 @@ const { readJsonFile } = require("../utils/read-json-file");
 const e = module.exports = {
   abi: generateAbiMap(require("augur-core").abi),
   addresses: require("./addresses"),
-  uploadBlockNumbers: require("./upload-block-numbers")
-}
+  uploadBlockNumbers: require("./upload-block-numbers"),
+};
 
 module.exports.reloadAddresses = (callback) => {
   readJsonFile(require.resolve("./addresses"), (err, data) => {
-    if(err) return callback(err);
+    if (err) return callback(err);
 
     e.addresses = data;
 
@@ -22,4 +22,4 @@ module.exports.reloadAddresses = (callback) => {
       callback(null, e);
     });
   });
-}
+};
