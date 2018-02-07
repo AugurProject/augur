@@ -123,6 +123,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
             price: '20',
             amount: '2',
             owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
+            orderState: 'OPEN',
             outcome: '1'
           },
           order14: {
@@ -130,6 +131,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
             price: '10',
             amount: '1',
             owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
+            orderState: 'OPEN',
             outcome: '1'
           },
           order12: {
@@ -137,6 +139,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
             price: '40',
             amount: '4',
             owner: 'some other address',
+            orderState: 'OPEN',
             outcome: '1'
           },
           order11: {
@@ -144,6 +147,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
             price: '60',
             amount: '6',
             owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
+            orderState: 'OPEN',
             outcome: '1'
           }
         },
@@ -153,6 +157,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
             price: '70',
             amount: '7',
             owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
+            orderState: 'OPEN',
             outcome: '1'
           },
           order1: {
@@ -160,6 +165,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
             price: '100',
             amount: '10',
             owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
+            orderState: 'OPEN',
             outcome: '1'
           },
           order3: {
@@ -167,6 +173,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
             price: '10',
             amount: '10',
             owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
+            orderState: 'OPEN',
             outcome: '1'
           },
           order4: {
@@ -175,6 +182,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
             price: '110',
             amount: '11',
             owner: 'different owner',
+            orderState: 'OPEN',
             outcome: '1'
           }
         }
