@@ -20,7 +20,8 @@ export const cancelOrder = (orderID, marketID, outcome, orderTypeLabel, callback
       _orderId: orderID,
       onSent: noop,
       onSuccess: () => {
-        // TODO: do we need to update anything or will the update come in on emitter
+        // update order cancellation state
+        dispatch(updateOrderStatus(orderID, CLOSE_DIALOG_CLOSING, marketID, outcome, orderTypeLabel))
         callback(null)
       },
       onFailed: (err) => {
