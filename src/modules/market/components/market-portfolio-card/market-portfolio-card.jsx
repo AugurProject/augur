@@ -85,7 +85,12 @@ export default class MarketPortfolioCard extends Component {
                 { p.isMobile ? p.market.endDate.formattedShort : p.market.endDate.formatted }
               </span>
               <h1 className={CommonStyles.MarketCommon__description}>
-                {this.props.market.description}
+                <MarketLink
+                  id={this.props.market.id}
+                  formattedDescription={this.props.market.description}
+                >
+                  {this.props.market.description}
+                </MarketLink>
               </h1>
             </div>
             <MarketStatusIcon className={Styles.MarketCard__statusicon} isOpen={p.market.isOpen} isReported={p.market.isReported} />

@@ -17,7 +17,7 @@ You'll need to clone the following repositories prior to starting:
 
 After pulling down all the code we'll spin up a docker container that runs a local geth node.
 
-    docker run -it -p 8545:8545 augurproject/dev-node-geth:latest
+    docker run -it -p 8545:8545 -p 8546:8546 augurproject/dev-node-geth:latest
 
 Since we are going to be uploading smart contracts locally we need to make sure both augur-node and augur (ui) repositories are looking at the same augur.js, we're going to use yarn link to help us out.
 
@@ -115,11 +115,11 @@ To allow flexibility, the REP faucet can be run on which ever accounts you want 
     cd augur.js
 
     ** give default user REP or change the ETHEREUM_PRIVATE_KEY value to give another user REP
-    ETHEREUM_PRIVATE_KEY=48c5da6dff330a9829d843ea90c2629e8134635a294c7e62ad4466eb2ae03712 node scripts/augur-tool rep-faucet environment
+    ETHEREUM_PRIVATE_KEY=48c5da6dff330a9829d843ea90c2629e8134635a294c7e62ad4466eb2ae03712 node scripts/dp rep-faucet environment
 
     ** create canned markets if not already created by the deploy script above.
     augur.js directory
-    node scripts/augur-tool create-markets environment
+    node scripts/dp create-markets environment
 
     ** verify end dates for markets
     node scripts/helpers/expiring-markets.js
@@ -127,6 +127,7 @@ To allow flexibility, the REP faucet can be run on which ever accounts you want 
     ** get account balance for user
     node scripts/helpers/get-account-balance.js 0x1fd9274a2fe0e86f5a7b5bde57b93c8c9b62e21d
 
+For more information on the script tool disco parrot (dp) [disco parrot](https://github.com/AugurProject/augur.js) in augur.js repository.
 
 Here are misc. script to do operations on the local node and to change time. More scripts will be created as they are needed, enivronment variables can be used or passed into the command like ETHEREUM_PRIVATE_KEY is in the examples below:
 
