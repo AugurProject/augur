@@ -19,11 +19,7 @@ export const cancelOrder = (orderID, marketID, outcome, orderTypeLabel, callback
       meta: loginAccount.meta,
       _orderId: orderID,
       onSent: noop,
-      onSuccess: () => {
-        // update order cancellation state
-        dispatch(updateOrderStatus(orderID, CLOSE_DIALOG_CLOSING, marketID, outcome, orderTypeLabel))
-        callback(null)
-      },
+      onSuccess: () => callback(null),
       onFailed: (err) => {
         dispatch(updateOrderStatus(orderID, CLOSE_DIALOG_FAILED, marketID, outcome, orderTypeLabel))
         setTimeout(() => dispatch(updateOrderStatus(orderID, null, marketID, outcome, orderTypeLabel)), TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS)
