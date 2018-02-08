@@ -3,6 +3,8 @@ import { updateIsFirstOrderBookChunkLoaded } from 'modules/bids-asks/actions/upd
 import insertOrderBookChunkToOrderBook from 'modules/bids-asks/actions/insert-order-book-chunk-to-order-book'
 import logError from 'utils/log-error'
 
+import { has } from 'lodash'
+
 const loadOneOutcomeBidsOrAsks = (marketID, outcome, orderTypeLabel, callback = logError) => (dispatch, getState) => {
   const { marketsData } = getState()
   if (marketID == null || outcome == null || orderTypeLabel == null) {
@@ -14,8 +16,7 @@ const loadOneOutcomeBidsOrAsks = (marketID, outcome, orderTypeLabel, callback = 
   augur.trading.getOrders({ marketID, outcome, orderType: orderTypeLabel }, (err, orders) => {
     if (err) return callback(err)
     if (orders != null) {
-      // TODO verify that orders is the correct shape for insertion
-      dispatch(insertOrderBookChunkToOrderBook(marketID, outcome, orderTypeLabel, orders))
+      dispatch(insertOrderBookChunkToOrderBook(marketID, outcome, orderTypeLabel, has(orders, [marketID, outcome, orderTypeLabel]) ? orders[marketID][outcome][orderTypeLabel] : {}))
     }
     callback(null)
   })

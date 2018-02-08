@@ -192,7 +192,16 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
         augur: {
           trading: {
             getOrders: (p, callback) => {
-              callback(null, { '0x1': order1, '0x2': order2 })
+              callback(null, {
+                MARKET_0: {
+                  3: {
+                    sell: {
+                      '0x1': order1,
+                      '0x2': order2
+                    }
+                  }
+                }
+              })
             }
           }
         }
