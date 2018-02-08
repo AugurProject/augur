@@ -215,6 +215,7 @@ export default class CreateMarketOutcome extends Component {
     const s = this.state
     const cleanedOutcomes = p.newMarket.outcomes.filter(outcome => outcome !== '')
 
+    const validation = p.newMarket.validations[p.newMarket.currentStep]
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
         <li>
@@ -250,9 +251,9 @@ export default class CreateMarketOutcome extends Component {
           <label htmlFor="cm__input--outcome1">
             <span>Potential Outcomes</span>
           </label>
-          {p.newMarket.validations[p.newMarket.currentStep].outcomes.length &&
+          {validation.outcomes && validation.outcomes.length &&
           <span className={StylesForm.CreateMarketForm__error}>
-            {InputErrorIcon}{p.newMarket.validations[p.newMarket.currentStep].outcomes}
+            {InputErrorIcon}{validation.outcomes}
           </span>
           }
           <div className={Styles.CreateMarketOutcome__categorical}>
@@ -292,19 +293,19 @@ export default class CreateMarketOutcome extends Component {
         }
         {p.newMarket.type === SCALAR &&
         <li>
-          {p.newMarket.validations[p.newMarket.currentStep].scalarSmallNum.length &&
+          {validation.scalarSmallNum && validation.scalarSmallNum.length &&
           <span className={StylesForm.CreateMarketForm__error}>
-            {InputErrorIcon}{p.newMarket.validations[p.newMarket.currentStep].scalarSmallNum}
+            {InputErrorIcon}{validation.scalarSmallNum}
           </span>
           }
-          {p.newMarket.validations[p.newMarket.currentStep].scalarBigNum.length &&
+          {validation.scalarBigNum && validation.scalarBigNum.length &&
           <span className={StylesForm['CreateMarketForm__error--field-50']}>
-            {InputErrorIcon}{p.newMarket.validations[p.newMarket.currentStep].scalarBigNum}
+            {InputErrorIcon}{validation.scalarBigNum}
           </span>
           }
-          {p.newMarket.validations[p.newMarket.currentStep].tickSize.length &&
+          {validation.tickSize && validation.tickSize.length &&
           <span className={StylesForm['CreateMarketForm__error--field-50']}>
-            {InputErrorIcon}{p.newMarket.validations[p.newMarket.currentStep].tickSize}
+            {InputErrorIcon}{validation.tickSize}
           </span>
           }
           <div className={Styles.CreateMarketOutcome__scalar}>
