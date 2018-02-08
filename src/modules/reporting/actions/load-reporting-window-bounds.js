@@ -18,17 +18,14 @@ export const loadReportingWindowBounds = () => (dispatch, getState) => {
     })
 
     augur.augurNode.submitRequest(
-      'getStakeTokens',
+      'getFeeWindowCurrent',
       {
         universe: universe.id,
-        account: loginAccount.address,
-        stakeTokenState: 'UNCLAIMED'
-      }, (err, tokens) => {
+        reporter: loginAccount.address
+      }, (err, result) => {
         if (err) return
 
-        const stake = Object.keys(tokens).reduce((p, tokenID) => p + tokens.tokenID.amountStaked, 0)
-
-        dispatch(updateReportingWindowStats({ stake }))
+        dispatch(updateReportingWindowStats({ stake: result.totalStake }))
       }
     )
   })

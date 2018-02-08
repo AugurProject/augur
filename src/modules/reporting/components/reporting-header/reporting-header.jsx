@@ -44,9 +44,6 @@ export default class ReportingHeader extends Component {
             }
             <span className={Styles.ReportingHeader__stake}> | </span><span className={Styles.ReportingHeader__stake}>{ p.reportingWindowStats.stake } REP Staked</span>
           </div>
-          <div>
-            Participate placeholder
-          </div>
         </div>
         <div className={Styles['ReportingHeader__graph-wrapper']}>
           <div className={Styles.ReportingHeader__graph}>
