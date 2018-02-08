@@ -30,6 +30,7 @@ describe("server/getters/get-market-price-history", () => {
       assert.deepEqual(marketPriceHistory, {
         0: [{
           price: 5.5,
+          amount: 0.2,
           timestamp: 1506474500,
         }],
       });

@@ -397,13 +397,14 @@ export interface TradesRow extends BaseTransactionRow {
   tradeGroupID: Bytes32|null;
 }
 
-export interface TimestampedPrice {
+export interface TimestampedPriceAmount {
   price: string|number;
+  amount: string|number;
   timestamp: number;
 }
 
 export interface MarketPriceHistory {
-  [outcome: number]: Array<TimestampedPrice>;
+  [outcome: number]: Array<TimestampedPriceAmount>;
 }
 
 export interface MarketsRowWithCreationTime extends MarketsRow {
