@@ -72,6 +72,7 @@ export const selectTopAsk = memoize((marketOrderBook, excludeCurrentUser) => {
  * Selects price points with aggregated amount of shares
  *
  * @param {String} outcomeID
+ * @param {String} side
  * @param {{String, Object}} orders Key is order ID, value is order
  */
 const selectAggregatePricePoints = memoize((outcomeID, side, orders, orderCancellation) => {
