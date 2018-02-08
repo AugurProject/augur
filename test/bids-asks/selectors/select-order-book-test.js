@@ -17,26 +17,22 @@ describe(`modules/bids-asks/helpers/select-order-book.js`, () => {
 
   it(`should return aggregate sorted orders for specified outcome`, () => {
     const orderBook = selectAggregateOrderBook('1', {
-      buy: {
-        order1: { amount: '8', price: '0.3', outcome: '2' },
-        order2: { amount: '4', price: '0.2', outcome: '1' },
-        order3: { amount: '6', price: '0.2', outcome: '1' },
-        order4: { amount: '2', price: '0.1', outcome: '1' },
-        order5: { amount: '7', price: '0.2', outcome: '2' },
-        order6: { amount: '10', price: '0.4', outcome: '1' },
-        order7: { amount: '12', price: '0.1', outcome: '3' },
-        order8: { amount: '14', price: '0.1', outcome: '1' }
-      },
-      sell: {
-        order10: { amount: '6', price: '0.7', outcome: '1' },
-        order20: { amount: '4', price: '0.7', outcome: '1' },
-        order30: { amount: '2', price: '0.8', outcome: '1' },
-        order40: { amount: '7', price: '0.8', outcome: '2' },
-        order50: { amount: '8', price: '0.6', outcome: '2' },
-        order60: { amount: '10', price: '0.6', outcome: '1' },
-        order70: { amount: '12', price: '0.7', outcome: '3' },
-        order80: { amount: '13', price: '0.6', outcome: '1' },
-        order90: { amount: '14', price: '0.5', outcome: '1' }
+      1: {
+        buy: {
+          order2: { amount: '4', price: '0.2', outcome: '1' },
+          order3: { amount: '6', price: '0.2', outcome: '1' },
+          order4: { amount: '2', price: '0.1', outcome: '1' },
+          order6: { amount: '10', price: '0.4', outcome: '1' },
+          order8: { amount: '14', price: '0.1', outcome: '1' }
+        },
+        sell: {
+          order10: { amount: '6', price: '0.7', outcome: '1' },
+          order20: { amount: '4', price: '0.7', outcome: '1' },
+          order30: { amount: '2', price: '0.8', outcome: '1' },
+          order60: { amount: '10', price: '0.6', outcome: '1' },
+          order80: { amount: '13', price: '0.6', outcome: '1' },
+          order90: { amount: '14', price: '0.5', outcome: '1' }
+        }
       }
     }, {})
 

@@ -256,45 +256,38 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
         const selectAggregatePricePoints = selectOrderBookRewireAPI.__get__('selectAggregatePricePoints')
 
         const orders = {
-          '0xorder1': {
-            outcome: '1',
-            price: '0.1',
-            amount: '1'
-          },
-          '0xorder2': {
-            outcome: '1',
-            price: '0.1',
-            amount: '1'
-          },
-          '0xorder3': {
-            outcome: '1',
-            price: '0.2',
-            amount: '1'
-          },
-          '0xorder4': {
-            outcome: '1',
-            price: '0.2',
-            amount: '1'
-          },
-          '0xorder5': {
-            owner: '0xtest',
-            outcome: '1',
-            price: '0.2',
-            amount: '1'
-          },
-          '0xorder6': {
-            outcome: '1',
-            price: '0.3',
-            amount: '1'
-          },
-          '0xorder7': {
-            outcome: '2',
-            price: '0.1',
-            amount: '1'
-          },
+          1: {
+            buy: {
+              '0xorder1': {
+                price: '0.1',
+                amount: '1'
+              },
+              '0xorder2': {
+                price: '0.1',
+                amount: '1'
+              },
+              '0xorder3': {
+                price: '0.2',
+                amount: '1'
+              },
+              '0xorder4': {
+                price: '0.2',
+                amount: '1'
+              },
+              '0xorder5': {
+                owner: '0xtest',
+                price: '0.2',
+                amount: '1'
+              },
+              '0xorder6': {
+                price: '0.3',
+                amount: '1'
+              }
+            }
+          }
         }
 
-        const actual = selectAggregatePricePoints('1', orders, { '0xorder5': CLOSE_DIALOG_CLOSING })
+        const actual = selectAggregatePricePoints('1', 'buy', orders, { '0xorder5': CLOSE_DIALOG_CLOSING })
 
         const expected = [
           {
