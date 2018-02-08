@@ -13,7 +13,6 @@ env:
 node_js:
   - "9"
   - "8"
-  - "6"
 
 addons:
   apt:
