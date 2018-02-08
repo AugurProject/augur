@@ -79,6 +79,11 @@ exports.seed = async (knex: Knex): Promise<any> => {
       marketID: "0x0000000000000000000000000000000000000211",
       reportingState: "FIRST_REPORTING",
       blockNumber: 1500001,
+    }, {
+      marketStateID: 16,
+      marketID: "0x0000000000000000000000000000000000000222",
+      reportingState: "PRE_REPORTING",
+      blockNumber: 1500001,
     }], 1000);
   });
 };
