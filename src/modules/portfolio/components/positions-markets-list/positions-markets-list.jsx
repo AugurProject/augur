@@ -13,7 +13,6 @@ class PositionsMarketsList extends Component {
     markets: PropTypes.array.isRequired,
     closePositionStatus: PropTypes.object.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired,
-    orderCancellation: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     linkType: PropTypes.string,
@@ -79,7 +78,6 @@ class PositionsMarketsList extends Component {
               market={market}
               closePositionStatus={p.closePositionStatus}
               scalarShareDenomination={p.scalarShareDenomination}
-              orderCancellation={p.orderCancellation}
               location={p.location}
               history={p.history}
               linkType={p.linkType}

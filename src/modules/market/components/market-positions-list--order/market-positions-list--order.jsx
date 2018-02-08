@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import classNames from 'classnames'
 
 import getValue from 'utils/get-value'
-
+import { CANCELED } from 'modules/transactions/constants/types'
 import Styles from 'modules/market/components/market-positions-list--order/market-positions-list--order.styles'
 
 export default class Order extends Component {
@@ -76,7 +76,11 @@ export default class Order extends Component {
           <li />
         }
         <li>
-          <button onClick={this.toggleConfirm}>Cancel</button>
+          { p.orderState === CANCELED ?
+            <span className={Styles.NotActive}>Canceled</span>
+            :
+            <button onClick={this.toggleConfirm}>Cancel</button>
+          }
         </li>
         <div
           ref={(confirmMessage) => { this.confirmMessage = confirmMessage }}
