@@ -30,6 +30,7 @@ describe("server/getters/get-dispute-info", () => {
       assert.deepEqual(disputeInfo, [
         {
           marketID: "0x0000000000000000000000000000000000000211",
+          disputeRound: 0,
           stakes: [
             {
               isInvalid: false,
@@ -45,6 +46,7 @@ describe("server/getters/get-dispute-info", () => {
         },
         {
           marketID: "0x0000000000000000000000000000000000000011",
+          disputeRound: 1,
           stakes: [
             {
               isInvalid: false,
@@ -52,11 +54,12 @@ describe("server/getters/get-dispute-info", () => {
                 0,
                 2,
               ],
-              totalStaked: "20000",
+              totalStaked: "40102",
               size: "20000",
-              amountStaked: "20000",
+              amountStaked: "10000",
             },
             {
+              disputeRound: 0,
               isInvalid: true,
               payout: [
                 1,
@@ -86,6 +89,7 @@ describe("server/getters/get-dispute-info", () => {
         null,
         {
           marketID: "0x0000000000000000000000000000000000000211",
+          disputeRound: 0,
           stakes: [
             {
               isInvalid: false,
@@ -116,6 +120,7 @@ describe("server/getters/get-dispute-info", () => {
       assert.deepEqual(disputeInfo, [
         {
           marketID: "0x0000000000000000000000000000000000000011",
+          disputeRound: 1,
           stakes: [
             {
               isInvalid: false,
@@ -141,6 +146,7 @@ describe("server/getters/get-dispute-info", () => {
         },
         {
           marketID: "0x0000000000000000000000000000000000000211",
+          disputeRound: 1,
           stakes: [
             {
               isInvalid: false,

@@ -246,6 +246,7 @@ export interface StakeDetails extends Payout {
 
 export interface UIStakeInfo {
   marketID: Address;
+  disputeRound: number|null;
   stakes: Array<StakeDetails>;
 }
 

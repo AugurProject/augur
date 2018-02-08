@@ -26,7 +26,7 @@ export function getDisputeInfo(db: Knex, marketIDs: Array<Address>, callback: (e
   // TODO: add disputes by reporter
   parallel({
     markets: (next: AsyncCallback) => getMarketsWithReportingState(db).whereIn("markets.marketID", marketIDs).asCallback(next),
-    // disputes: (next: AsyncCallback) => db("disputes").select("*").join("crowdsourcers", "crowdsourcers.crowdsourcerID", "disputes.crowdsourcerID").whereIn("marketID", marketIDs).asCallback(next),
+    // disputeRound: (next: AsyncCallback) => db("disputes").select("*").join("crowdsourcers", "crowdsourcers.crowdsourcerID", "disputes.crowdsourcerID").whereIn("marketID", marketIDs).asCallback(next),
     crowdsourcers: (next: AsyncCallback) => db("crowdsourcers").select("*").join("payouts", "payouts.payoutID", "crowdsourcers.payoutID").whereIn("crowdsourcers.marketID", marketIDs).asCallback(next),
     initialReport: (next: AsyncCallback) => db("initial_reports").select("*").join("payouts", "payouts.payoutID", "initial_reports.payoutID").whereIn("initial_reports.marketID", marketIDs).asCallback(next),
   }, (err: Error|null, stakeResults: DisputesResult): void => {
@@ -45,7 +45,10 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
   if (stakeRows.markets.length === 0) {
     return null;
   }
+  const disputeRound: number|null = stakeRows.initialReport.length === 0 ? null :
+    _.size( _.filter( stakeRows.crowdsourcers, (crowdsourcer) => crowdsourcer.completed === 1 )) + 1;
   const payoutGrouped: { [payoutID: number]: Array<StakeRow>} = _.groupBy(stakeRows.crowdsourcers.concat(stakeRows.initialReport), "payoutID");
+
   const stakeResults = _.map(payoutGrouped, (stakes: Array<StakeRow>) => {
     const totalStaked = _.sumBy(stakes, (stake: StakeRow) => {
       return stake.amountStaked;
@@ -73,5 +76,6 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
   return {
     marketID: stakeRows.markets[0].marketID,
     stakes: stakeResults,
+    disputeRound,
   };
 }

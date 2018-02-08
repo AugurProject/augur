@@ -5,6 +5,12 @@ exports.seed = async (knex: Knex): Promise<any> => {
   return knex("initial_reports").del().then(async (): Promise<any> => {
     // Inserts seed entries
     const seedData = [{
+      marketID: "0x0000000000000000000000000000000000000011",
+      reporter: "0x0000000000000000000000000000000000000b0b",
+      payoutID: 1,
+      isDesignatedReporter: false,
+      amountStaked: 102,
+    }, {
       marketID: "0x0000000000000000000000000000000000000211",
       reporter: "0x0000000000000000000000000000000000000b0b",
       payoutID: 5,
