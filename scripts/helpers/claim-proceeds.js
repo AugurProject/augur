@@ -5,7 +5,7 @@
 var Augur = require("../../src");
 var chalk = require("chalk");
 var connectionEndpoints = require("../connection-endpoints");
-var getPrivateKey = require("../dp/lib/get-private-key");
+var { getPrivateKey } = require("../dp/lib/get-private-key");
 var claimMarketsTradingProceeds = require("../../src/trading/claim-markets-trading-proceeds");
 
 var marketID = process.argv[2];
