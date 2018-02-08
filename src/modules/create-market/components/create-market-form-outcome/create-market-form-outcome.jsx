@@ -8,11 +8,17 @@ import BigNumber from 'bignumber.js'
 import speedomatic from 'speedomatic'
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
-import { CATEGORICAL_OUTCOMES_MIN_NUM, CATEGORICAL_OUTCOMES_MAX_NUM, CATEGORICAL_OUTCOME_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints'
+import {
+  CATEGORICAL_OUTCOMES_MIN_NUM,
+  CATEGORICAL_OUTCOMES_MAX_NUM,
+  CATEGORICAL_OUTCOME_MAX_LENGTH
+} from 'modules/create-market/constants/new-market-constraints'
 
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons/icons'
 import Styles from 'modules/create-market/components/create-market-form-outcome/create-market-form-outcome.styles'
 import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'
+
+const { DEFAULT_SCALAR_TICK_SIZE } = require('augur.js/src/constants')
 
 export default class CreateMarketOutcome extends Component {
 
@@ -51,7 +57,10 @@ export default class CreateMarketOutcome extends Component {
     if (this.props.isMobileSmall !== nextProps.isMobileSmall) {
       const outcomeFieldCount = CreateMarketOutcome.calculateOutcomeFieldCount(nextProps)
       const showAddOutcome = nextProps.isMobileSmall ? !(outcomeFieldCount >= nextProps.newMarket.outcomes.length) : false
-      this.setState({ outcomeFieldCount, showAddOutcome })
+      this.setState({
+        outcomeFieldCount,
+        showAddOutcome
+      })
     }
   }
 
@@ -59,7 +68,10 @@ export default class CreateMarketOutcome extends Component {
     const totalOutcomes = this.props.newMarket.outcomes.length
     const outcomeFieldCount = Math.min(this.state.outcomeFieldCount + 1, totalOutcomes)
     const showAddOutcome = !(outcomeFieldCount >= totalOutcomes)
-    this.setState({ outcomeFieldCount, showAddOutcome })
+    this.setState({
+      outcomeFieldCount,
+      showAddOutcome
+    })
   }
 
   validateType(value) {
@@ -67,7 +79,13 @@ export default class CreateMarketOutcome extends Component {
     const updatedMarket = { ...p.newMarket }
     const validations = updatedMarket.validations[p.newMarket.currentStep]
 
-    const updatedValidations = Object.keys(validations).reduce((p, key) => (validations[key] === true ? { ...p, [key]: true } : p), {})
+    const updatedValidations = Object.keys(validations).reduce((p, key) => (validations[key] === true ? {
+      ...p,
+      [key]: true
+    } : p), {})
+
+    // Reset tickSize as it only applies to 'scalar' markets and we are 'defaulting' the value in the componenet.
+    delete updatedMarket.tickSize
 
     switch (value) {
       case CATEGORICAL:
@@ -76,6 +94,7 @@ export default class CreateMarketOutcome extends Component {
       case SCALAR:
         updatedValidations.scalarSmallNum = updatedValidations.scalarSmallNum ? updatedValidations.scalarSmallNum : false
         updatedValidations.scalarBigNum = updatedValidations.scalarBigNum ? updatedValidations.scalarBigNum : false
+        updatedValidations.tickSize = updatedValidations.tickSize ? updatedValidations.tickSize : false
         break
       default:
         break
@@ -148,6 +167,15 @@ export default class CreateMarketOutcome extends Component {
       updatedMarket.scalarBigNum = scalarBigNum
     }
 
+    if (type === 'tickSize') {
+      if (value < 0) {
+        updatedMarket.validations[currentStep].tickSize = 'Tick size cannot be below zero.'
+      } else {
+        updatedMarket.validations[currentStep].tickSize = true
+      }
+      updatedMarket.tickSize = value
+    }
+
     updatedMarket.isValid = p.isValid(currentStep)
 
     p.updateNewMarket(updatedMarket)
@@ -217,26 +245,27 @@ export default class CreateMarketOutcome extends Component {
             </li>
           </ul>
         </li>
-        { p.newMarket.type === CATEGORICAL &&
-          <li>
-            <label htmlFor="cm__input--outcome1">
-              <span>Potential Outcomes</span>
-            </label>
-            { p.newMarket.validations[p.newMarket.currentStep].outcomes.length &&
-              <span className={StylesForm.CreateMarketForm__error}>
-                {InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].outcomes }
-              </span>
-            }
-            <div className={Styles.CreateMarketOutcome__categorical}>
-              {
-                [...Array(s.outcomeFieldCount).keys()].map((i) => {
-                  const placeholderText = i < 2 ? 'Outcome' : 'Optional Outcome'
-                  const isError = typeof p.newMarket.validations[1].outcomes === 'string'
-                  const isDuplicate = cleanedOutcomes.filter(outcome => outcome === p.newMarket.outcomes[i]).length >= 2
-                  const needMinimum = isError && i < 2 && (p.newMarket.outcomes[0] === '' || p.newMarket.outcomes[1] === '')
-                  const tooMany = cleanedOutcomes.length > CATEGORICAL_OUTCOMES_MAX_NUM
-                  const highlightInput = isDuplicate || needMinimum || tooMany
-                  return (
+        {p.newMarket.type === CATEGORICAL &&
+        <li>
+          <label htmlFor="cm__input--outcome1">
+            <span>Potential Outcomes</span>
+          </label>
+          {p.newMarket.validations[p.newMarket.currentStep].outcomes.length &&
+          <span className={StylesForm.CreateMarketForm__error}>
+            {InputErrorIcon}{p.newMarket.validations[p.newMarket.currentStep].outcomes}
+          </span>
+          }
+          <div className={Styles.CreateMarketOutcome__categorical}>
+            {
+              [...Array(s.outcomeFieldCount).keys()].map((i) => {
+                const placeholderText = i < 2 ? 'Outcome' : 'Optional Outcome'
+                const isError = typeof p.newMarket.validations[1].outcomes === 'string'
+                const isDuplicate = cleanedOutcomes.filter(outcome => outcome === p.newMarket.outcomes[i]).length >= 2
+                const needMinimum = isError && i < 2 && (p.newMarket.outcomes[0] === '' || p.newMarket.outcomes[1] === '')
+                const tooMany = cleanedOutcomes.length > CATEGORICAL_OUTCOMES_MAX_NUM
+                const highlightInput = isDuplicate || needMinimum || tooMany
+                return (
+                  <div>
                     <input
                       key={i}
                       type="text"
@@ -246,36 +275,43 @@ export default class CreateMarketOutcome extends Component {
                       maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
                       onChange={e => this.validateOutcomes(e.target.value, i)}
                     />
-                  )
-                })
-              }
-              { s.showAddOutcome &&
-                <button
-                  className={Styles['CreateMarketOutcome__show-more']}
-                  onClick={this.handleAddOutcomeClick}
-                >
-                  + Add Outcome
-                </button>
-              }
-            </div>
-          </li>
+                  </div>
+                )
+              })
+            }
+            {s.showAddOutcome &&
+            <button
+              className={Styles['CreateMarketOutcome__show-more']}
+              onClick={this.handleAddOutcomeClick}
+            >
+              + Add Outcome
+            </button>
+            }
+          </div>
+        </li>
         }
-        { p.newMarket.type === SCALAR &&
-          <li>
-            <label htmlFor="cm__input--min">
-              <span>Range Values</span>
-            </label>
-            { p.newMarket.validations[p.newMarket.currentStep].scalarSmallNum.length &&
-              <span className={StylesForm.CreateMarketForm__error}>
-                {InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].scalarSmallNum }
-              </span>
-            }
-            { p.newMarket.validations[p.newMarket.currentStep].scalarBigNum.length &&
-              <span className={StylesForm['CreateMarketForm__error--field-50']}>
-                {InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].scalarBigNum }
-              </span>
-            }
-            <div className={Styles.CreateMarketOutcome__scalar}>
+        {p.newMarket.type === SCALAR &&
+        <li>
+          {p.newMarket.validations[p.newMarket.currentStep].scalarSmallNum.length &&
+          <span className={StylesForm.CreateMarketForm__error}>
+            {InputErrorIcon}{p.newMarket.validations[p.newMarket.currentStep].scalarSmallNum}
+          </span>
+          }
+          {p.newMarket.validations[p.newMarket.currentStep].scalarBigNum.length &&
+          <span className={StylesForm['CreateMarketForm__error--field-50']}>
+            {InputErrorIcon}{p.newMarket.validations[p.newMarket.currentStep].scalarBigNum}
+          </span>
+          }
+          {p.newMarket.validations[p.newMarket.currentStep].tickSize.length &&
+          <span className={StylesForm['CreateMarketForm__error--field-50']}>
+            {InputErrorIcon}{p.newMarket.validations[p.newMarket.currentStep].tickSize}
+          </span>
+          }
+          <div className={Styles.CreateMarketOutcome__scalar}>
+            <div>
+              <label htmlFor="cm__input--min">
+                <span>Range Values</span>
+              </label>
               <input
                 id="cm__input--min"
                 type="number"
@@ -283,8 +319,15 @@ export default class CreateMarketOutcome extends Component {
                 max={s.scalarMax}
                 value={p.newMarket.scalarSmallNum instanceof BigNumber ? p.newMarket.scalarSmallNum.toNumber() : p.newMarket.scalarSmallNum}
                 placeholder="Min Value"
-                onChange={(e) => { this.validateScalarNum(e.target.value, 'small') }}
+                onChange={(e) => {
+                  this.validateScalarNum(e.target.value, 'small')
+                }}
               />
+            </div>
+            <div>
+              <label htmlFor="cm__input--max">
+                <span>&nbsp;</span>
+              </label>
               <input
                 id="cm__input--max"
                 type="number"
@@ -292,31 +335,54 @@ export default class CreateMarketOutcome extends Component {
                 max={s.scalarMax}
                 value={p.newMarket.scalarBigNum instanceof BigNumber ? p.newMarket.scalarBigNum.toNumber() : p.newMarket.scalarBigNum}
                 placeholder="Max Value"
-                onChange={(e) => { this.validateScalarNum(e.target.value, 'big') }}
+                onChange={(e) => {
+                  this.validateScalarNum(e.target.value, 'big')
+                }}
               />
+            </div>
+            <div>
+              <label htmlFor="cm__input--denomination">
+                <span>&nbsp;</span>
+              </label>
               <input
                 id="cm__input--denomination"
                 type="text"
                 value={p.newMarket.scalarDenomination}
                 maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
-                placeholder="Range Denomination"
+                placeholder="Denomination"
                 onChange={e => p.validateField('scalarDenomination', e.target.value, CATEGORICAL_OUTCOME_MAX_LENGTH)}
               />
             </div>
-          </li>
+            <div>
+              <label htmlFor="cm__input--ticksize">
+                <span>Tick size</span>
+              </label>
+              <input
+                id="cm__input--ticksize"
+                type="number"
+                step="0.0001"
+                value={p.newMarket.tickSize || DEFAULT_SCALAR_TICK_SIZE}
+                placeholder="Tick Size"
+                onChange={e => this.validateScalarNum(e.target.value, 'tickSize')}
+              />
+            </div>
+          </div>
+        </li>
         }
-        { p.newMarket.type &&
-          <li>
-            <label htmlFor="cm__input--details">
-              <span>Additional Details</span>
-            </label>
-            <textarea
-              id="cm__input--details"
-              value={p.newMarket.detailsText}
-              placeholder="Optional - Include any additional information that traders should know about this market."
-              onChange={(e) => { p.updateNewMarket({ detailsText: e.target.value }) }}
-            />
-          </li>
+        {p.newMarket.type &&
+        <li>
+          <label htmlFor="cm__input--details">
+            <span>Additional Details</span>
+          </label>
+          <textarea
+            id="cm__input--details"
+            value={p.newMarket.detailsText}
+            placeholder="Optional - Include any additional information that traders should know about this market."
+            onChange={(e) => {
+              p.updateNewMarket({ detailsText: e.target.value })
+            }}
+          />
+        </li>
         }
       </ul>
     )

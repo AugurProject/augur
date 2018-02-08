@@ -1,61 +1,63 @@
 @import (reference) '~assets/styles/shared';
 
-.CreateMarketOutcome__categorical {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-
-  > input {
-    width: 24%;
-
-    &:nth-child(-n+4) {
-      margin-bottom: 1rem;
-    }
-  }
-}
-
-.CreateMarketOutcome__scalar {
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-
-  > input {
-    width: 31%;
-  }
-}
-
-.CreateMarketOutcome__show-more {
-  color: @color-white;
-  text-transform: uppercase;
-}
-
-@media @breakpoint-mobile {
-  .CreateMarketOutcome__categorical > input {
-    width: 48%;
-
-    &:nth-child(-n+6) {
-      margin-bottom: 1rem;
-    }
-  }
-}
-
-@media @breakpoint-mobile-small {
-  .CreateMarketOutcome__categorical > input {
-    width: 100%;
-
-    &:nth-child(-n+7) {
-      margin-bottom: 1rem;
-    }
-  }
-
-  .CreateMarketOutcome__scalar {
+.CreateMarketOutcome__ {
+  &scalar,
+  &categorical {
+    display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
 
-    > input {
+    > div {
+      width: 24%;
+
+      &:nth-child(-n+4) {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+
+  &show-more {
+    color: @color-white;
+    text-transform: uppercase;
+  }
+
+  @media @breakpoint-mobile {
+    &categorical > div,
+    &scalar > div {
+      width: 48%;
+    }
+
+    &categorical > div {
+      &:nth-child(-n+6) {
+        margin-bottom: 1rem;
+      }
+    }
+
+    &scalar > div {
+      &:nth-child(-n+4) {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+
+  @media @breakpoint-mobile-small {
+    &categorical > input {
       width: 100%;
 
-      &:not(:first-child) {
-        margin-top: 1rem;
+      &:nth-child(-n+7) {
+        margin-bottom: 1rem;
+      }
+    }
+
+    &scalar {
+      flex-wrap: wrap;
+
+      > input {
+        width: 100%;
+
+        &:not(:first-child) {
+          margin-top: 1rem;
+        }
       }
     }
   }
