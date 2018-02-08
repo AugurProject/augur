@@ -80,7 +80,7 @@ function importAccount(p, callback) {
 }
 
 module.exports = importAccount;
-},{"../rpc-interface":82,"keythereum":418,"speedomatic":531}],3:[function(require,module,exports){
+},{"../rpc-interface":83,"keythereum":422,"speedomatic":535}],3:[function(require,module,exports){
 /**
  * Client-side / in-browser accounts.
  */
@@ -101,7 +101,7 @@ module.exports = {
   logout: require("./logout"),
   register: require("./register")
 };
-},{"../constants":27,"./get-account-transfer-history":1,"./import-account":2,"./login":5,"./login-with-master-key":4,"./logout":6,"./register":7,"keythereum":418}],4:[function(require,module,exports){
+},{"../constants":27,"./get-account-transfer-history":1,"./import-account":2,"./login":5,"./login-with-master-key":4,"./logout":6,"./register":7,"keythereum":422}],4:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -134,7 +134,7 @@ function loginWithMasterKey(p) {
 
 module.exports = loginWithMasterKey;
 }).call(this,require("buffer").Buffer)
-},{"../utils/sha256":131,"buffer":188,"keythereum":418,"speedomatic":531}],5:[function(require,module,exports){
+},{"../utils/sha256":133,"buffer":192,"keythereum":422,"speedomatic":535}],5:[function(require,module,exports){
 "use strict";
 
 /** Type definition for Pbkdf2Params.
@@ -224,11 +224,11 @@ function login(p, callback) {
 }
 
 module.exports = login;
-},{"../rpc-interface":82,"keythereum":418,"speedomatic":531}],6:[function(require,module,exports){
+},{"../rpc-interface":83,"keythereum":422,"speedomatic":535}],6:[function(require,module,exports){
 "use strict";
 
 module.exports = require("../rpc-interface").clear;
-},{"../rpc-interface":82}],7:[function(require,module,exports){
+},{"../rpc-interface":83}],7:[function(require,module,exports){
 "use strict";
 
 /** Type definition for Account.
@@ -305,7 +305,7 @@ function register(p, callback) {
 }
 
 module.exports = register;
-},{"../constants":27,"../rpc-interface":82,"keythereum":418,"speedomatic":531,"uuid":562}],8:[function(require,module,exports){
+},{"../constants":27,"../rpc-interface":83,"keythereum":422,"speedomatic":535,"uuid":566}],8:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -355,7 +355,7 @@ function bindContractFunction(functionAbi) {
 }
 
 module.exports = bindContractFunction;
-},{"../rpc-interface":82,"../utils/is-function":124,"../utils/is-object":125,"./encode-transaction-inputs":9,"lodash.assign":426}],9:[function(require,module,exports){
+},{"../rpc-interface":83,"../utils/is-function":125,"../utils/is-object":126,"./encode-transaction-inputs":9,"lodash.assign":430}],9:[function(require,module,exports){
 "use strict";
 
 var transactionInputEncoders = require("./transaction-input-encoders");
@@ -414,7 +414,7 @@ getAPI.generateContractApi = function (functionsAbi) {
 };
 
 module.exports = getAPI;
-},{"../contracts":31,"./generate-contract-api":10}],12:[function(require,module,exports){
+},{"../contracts":30,"./generate-contract-api":10}],12:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -429,7 +429,7 @@ module.exports = {
   "uint256[]": speedomatic.formatInt256.bind(speedomatic),
   "bytes32[]": speedomatic.formatInt256.bind(speedomatic)
 };
-},{"speedomatic":531}],13:[function(require,module,exports){
+},{"speedomatic":535}],13:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -451,7 +451,7 @@ function depositEther(p) {
 }
 
 module.exports = depositEther;
-},{"../api":11,"lodash.assign":426,"speedomatic":531}],14:[function(require,module,exports){
+},{"../api":11,"lodash.assign":430,"speedomatic":535}],14:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -485,7 +485,7 @@ function sendEther(p) {
 }
 
 module.exports = sendEther;
-},{"../rpc-interface":82,"speedomatic":531}],16:[function(require,module,exports){
+},{"../rpc-interface":83,"speedomatic":535}],16:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -514,7 +514,7 @@ function sendReputation(p) {
 }
 
 module.exports = sendReputation;
-},{"../api":11,"lodash.assign":426,"speedomatic":531}],17:[function(require,module,exports){
+},{"../api":11,"lodash.assign":430,"speedomatic":535}],17:[function(require,module,exports){
 "use strict";
 
 var augurNodeState = require("./state");
@@ -530,7 +530,7 @@ function connect(augurNodeUrl, callback) {
 }
 
 module.exports = connect;
-},{"../rpc-interface":82,"./dispatch-json-rpc-response":18,"./state":21}],18:[function(require,module,exports){
+},{"../rpc-interface":83,"./dispatch-json-rpc-response":18,"./state":21}],18:[function(require,module,exports){
 "use strict";
 
 var augurNodeState = require("./state");
@@ -569,7 +569,7 @@ function dispatchJsonRpcResponse(err, jsonRpcResponse) {
 }
 
 module.exports = dispatchJsonRpcResponse;
-},{"../utils/is-function":124,"../utils/is-object":125,"./state":21}],19:[function(require,module,exports){
+},{"../utils/is-function":125,"../utils/is-object":126,"./state":21}],19:[function(require,module,exports){
 "use strict";
 
 var submitRequest = require("./submit-json-rpc-request");
@@ -689,7 +689,7 @@ function unsubscribeFromAllEvents(callback) {
 }
 
 module.exports = unsubscribeFromAllEvents;
-},{"./state":21,"./unsubscribe-from-event":25,"async":149}],25:[function(require,module,exports){
+},{"./state":21,"./unsubscribe-from-event":25,"async":151}],25:[function(require,module,exports){
 "use strict";
 
 var augurNodeState = require("./state");
@@ -808,7 +808,7 @@ function connect(connectOptions, callback) {
 }
 
 module.exports = connect;
-},{"./api":11,"./augur-node":20,"./constants":27,"./contracts":31,"./events":46,"./rpc-interface":82,"./utils/is-function":124,"./utils/is-object":125,"./utils/noop":130,"async":149,"ethereumjs-connect":255,"ethrpc":292}],27:[function(require,module,exports){
+},{"./api":11,"./augur-node":20,"./constants":27,"./contracts":30,"./events":45,"./rpc-interface":83,"./utils/is-function":125,"./utils/is-object":126,"./utils/noop":131,"async":151,"ethereumjs-connect":259,"ethrpc":296}],27:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -899,7 +899,6593 @@ module.exports = {
   IVSIZE: 16
 
 };
-},{"bignumber.js":151}],28:[function(require,module,exports){
+},{"bignumber.js":155}],28:[function(require,module,exports){
+module.exports={
+  "1": {
+    "Augur": "0x96a8238db7ad03e505840bd361dc2f521a72adbc",
+    "LegacyReputationToken": "0xe94327d07fc17907b4db788e5adf2ed424addff6"
+  },
+  "3": {
+    "Augur": "0x8d7c8b6dbb38e34c08459695bf2d7c72b1a8f5c0",
+    "LegacyReputationToken": "0x7a305d9b681fb164dc5ad628b5992177dc66aec8"
+  },
+  "4": {
+    "Controller": "0x563eba58086fb4d067a46718198c11d8ac6a89f4",
+    "Universe": "0xcef1b521bccebf2e7aaeac4e6f2396d603032ff9",
+    "Augur": "0x67cbf60a24ab922af99e6f335c0ff2b084d5bdbe",
+    "LegacyReputationToken": "0x2dbeced090898314bf6c57b101069c2fd8d8fce1",
+    "CancelOrder": "0x430a9f3cab33de41cd5986be394809bcb5ad7e85",
+    "Cash": "0xec28e64edbce62bde48a14b04f0b557b974a22a9",
+    "ClaimTradingProceeds": "0x07ea893e683308403e09b0f634d8a05e1a09850e",
+    "CompleteSets": "0x351fc58d9bbef0b06dbbe98fa8f4638e293e5907",
+    "CreateOrder": "0x7a60b178edb03ad15dc61b9ac0d3aa50e1d2304b",
+    "FillOrder": "0x30904c793b29930458ee788edd3e12b658b0ee04",
+    "Order": "0x57f16e72d831cf1ebecce88076ff0d87e00159ad",
+    "Orders": "0x46f2947f1acd53815d6bda44b2ebe89a894a75f3",
+    "OrdersFetcher": "0x9be5d14539ff4c614ffae9280221f80e32522fbf",
+    "ShareToken": "0x9496f45957c6089c435d82b4185ba9c9fda9457b",
+    "Trade": "0x53d732fa2d525528f524c424c1399823c0dd1e45",
+    "TradingEscapeHatch": "0xfed812d74e861811c81c0647e9438f7ed8419851"
+  },
+  "8995": {
+    "Controller": "0x5b18fd1b354522da7da6d5f31f915e8710995d7d",
+    "Universe": "0x21a458943173beeb4addac3ad77ae72994bf2ccd",
+    "Augur": "0x6580a474c2c44cb4b9cf1e901195c04c805435f1",
+    "LegacyReputationToken": "0x0c4906f7cb888bbfbb7946a3be684e6373afda7a",
+    "CancelOrder": "0xcb7e6ec698c421f6d58317220a161822fc07c625",
+    "Cash": "0xcb41839567ca37f682c42cd7e540297f6c952b57",
+    "ClaimTradingProceeds": "0x357e04a461709096ad1694b7ef431d5292b40f82",
+    "CompleteSets": "0xfee1947685bfcbfb1807a4fedfb0573ab0b4c957",
+    "CreateOrder": "0x71abed188da8032b6eab1c5d36a1ffa4d2ebfd7e",
+    "FillOrder": "0x96400194cc446134a9a8dc0d8cb39beeee106039",
+    "Order": "0x2766c1b415bd707ef1ed961727ab2a5d66ab9cad",
+    "Orders": "0x240a57fd5bab0d4ece5c1a664f64d5fd5b90c93c",
+    "OrdersFetcher": "0xba516b53a1061a274c1ba149695578a723d72f25",
+    "ShareToken": "0xf998bd33b45cbf72611b4c3876d586906f032c87",
+    "Trade": "0x1c8a9d0f6ee313b9fc4688f62374204db37e792d",
+    "TradingEscapeHatch": "0xb04c5673ff80e3efcca6b9c067d9c9f25f331b85"
+  },
+  "12346": {
+    "Controller": "0xbbcb01ff3fc287bef3f7f7a64c714f717178919a",
+    "Universe": "0xed383df057501b69095e0eae57129fa6010fe7fc",
+    "Augur": "0xd45c96d78afd093cb332992e86ac7283cc9d576e",
+    "LegacyReputationToken": "0x1e2715e679ada130482f53de15abec4a0f7f39cd",
+    "CancelOrder": "0xce44a47b88a91fe46f33a5d810918b51bfd15afc",
+    "Cash": "0xbb8904c5a38990d08890c6233f764511b1b3a812",
+    "ClaimTradingProceeds": "0xe82ff2f71dd7299ba3142f9a99291bbca818643f",
+    "CompleteSets": "0x891cf8b9cb806f75a01e19c0729718c903eec60a",
+    "CreateOrder": "0xf7f1574cbf5f1638453487967adfe0e968322b7f",
+    "FillOrder": "0x35a3b6a65c71e54015baff542eb64fe975475df2",
+    "Order": "0x364f1b07d079e9138e5cfc1c4a5c40a6991f0833",
+    "Orders": "0xf9e351b489bee692185bf774b07c05f386dad4bd",
+    "OrdersFetcher": "0x52b47fee9a697123bfb3e3df2adca4d7c1c5f3a8",
+    "ShareToken": "0x5d3a6af2a52fde0467510babf10dd0c8b0435d5e",
+    "Trade": "0x21dfa8b50283d5aaa661b650e049ba5feb32dbbf",
+    "TradingEscapeHatch": "0x00889ab19df32825e03e454273f0325ff4c94c17"
+  }
+}
+
+},{}],29:[function(require,module,exports){
+"use strict";
+
+var hashEventAbi = require("../events/hash-event-abi");
+
+function generateAbiMap(abi) {
+  var functions = {};
+  var events = {};
+  Object.keys(abi).forEach(function (contractName) {
+    var functionsAndEventsArray = abi[contractName];
+    functionsAndEventsArray.forEach(function (functionOrEvent) {
+      var name = functionOrEvent.name;
+      if (functionOrEvent.type === "function") {
+        var functionAbiMap = {
+          constant: functionOrEvent.constant,
+          name: functionOrEvent.name
+        };
+        var inputs = [];
+        var signature = [];
+        if (functionOrEvent.inputs) {
+          functionOrEvent.inputs.forEach(function (input) {
+            inputs.push(input.name);
+            signature.push(input.type);
+          });
+        }
+        if (inputs.length) functionAbiMap.inputs = inputs;
+        if (signature.length) functionAbiMap.signature = signature;
+        if (functionOrEvent.outputs && functionOrEvent.outputs.length) {
+          var output = functionOrEvent.outputs[0];
+          functionAbiMap.returns = output.type;
+        } else {
+          functionAbiMap.returns = "null";
+        }
+        if (!functions[contractName]) functions[contractName] = {};
+        functions[contractName][name] = functionAbiMap;
+      } else if (functionOrEvent.type === "event") {
+        if (!events[contractName]) events[contractName] = {};
+        events[contractName][name] = {
+          contract: contractName,
+          inputs: functionOrEvent.inputs,
+          signature: hashEventAbi(functionOrEvent)
+        };
+      }
+    });
+  });
+  return { functions: functions, events: events };
+}
+
+module.exports = generateAbiMap;
+},{"../events/hash-event-abi":43}],30:[function(require,module,exports){
+"use strict";
+
+var generateAbiMap = require("./generate-abi-map");
+
+var _require = require("../utils/read-json-file"),
+    readJsonFile = _require.readJsonFile;
+
+var e = module.exports = {
+  abi: generateAbiMap(require("augur-core").abi),
+  addresses: require("./addresses"),
+  uploadBlockNumbers: require("./upload-block-numbers")
+};
+
+module.exports.reloadAddresses = function (callback) {
+  readJsonFile(require.resolve("./addresses"), function (err, data) {
+    if (err) return callback(err);
+
+    e.addresses = data;
+
+    readJsonFile(require.resolve("./upload-block-numbers"), function (err, data) {
+      if (err) return callback(err);
+      e.uploadBlockNumbers = data;
+
+      callback(null, e);
+    });
+  });
+};
+},{"../utils/read-json-file":132,"./addresses":28,"./generate-abi-map":29,"./upload-block-numbers":31,"augur-core":152}],31:[function(require,module,exports){
+module.exports={
+  "4": 1703565,
+  "8995": 2625,
+  "12346": 271130
+}
+
+},{}],32:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+
+function calculateNumTicks(tickSize, minPrice, maxPrice) {
+  return new BigNumber(maxPrice, 10).minus(new BigNumber(minPrice, 10)).dividedBy(new BigNumber(tickSize, 10)).toFixed();
+}
+
+module.exports = calculateNumTicks;
+},{"bignumber.js":155}],33:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash.assign");
+var immutableDelete = require("immutable-delete");
+var speedomatic = require("speedomatic");
+var getMarketCreationCost = require("./get-market-creation-cost");
+var getMarketFromCreateMarketReceipt = require("./get-market-from-create-market-receipt");
+var api = require("../api");
+var encodeTag = require("../format/tag/encode-tag");
+var constants = require("../constants");
+
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p.universe Universe on which to create this market.
+ * @param {number} p._endTime Market expiration timestamp, in seconds.
+ * @param {string=} p._feePerEthInWei Amount of wei per ether settled that goes to the market creator, as a base-10 string.
+ * @param {string} p._denominationToken Ethereum address of the token used as this market's currency.
+ * @param {string} p._designatedReporterAddress Ethereum address of this market's designated reporter.
+ * @param {string} p._topic The topic (category) to which this market belongs, as a UTF8 string.
+ * @param {string} p._description Description of the market, as a UTF8 string.
+ * @param {Object=} p._extraInfo Extra info which will be converted to JSON and logged to the chain in the CreateMarket event.
+ * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
+ * @param {function} p.onSent Called if/when the createBinaryMarket transaction is broadcast to the network.
+ * @param {function} p.onSuccess Called if/when the createBinaryMarket transaction is sealed and confirmed.
+ * @param {function} p.onFailed Called if/when the createBinaryMarket transaction fails.
+ */
+function createBinaryMarket(p) {
+  getMarketCreationCost({ universe: p.universe }, function (err, marketCreationCost) {
+    if (err) return p.onFailed(err);
+    var createBinaryMarketParams = assign({}, immutableDelete(p, "universe"), {
+      tx: assign({
+        to: p.universe,
+        value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
+        gas: constants.CREATE_BINARY_MARKET_GAS
+      }, p.tx),
+      _topic: encodeTag(p._topic),
+      _extraInfo: JSON.stringify(p._extraInfo || {}),
+      onSuccess: function onSuccess(res) {
+        getMarketFromCreateMarketReceipt(res.hash, function (err, marketID) {
+          if (err) return p.onFailed(err);
+          p.onSuccess(assign({}, res, { callReturn: marketID }));
+        });
+      }
+    });
+    api().Universe.createBinaryMarket(createBinaryMarketParams);
+  });
+}
+
+module.exports = createBinaryMarket;
+},{"../api":11,"../constants":27,"../format/tag/encode-tag":59,"./get-market-creation-cost":37,"./get-market-from-create-market-receipt":38,"immutable-delete":407,"lodash.assign":430,"speedomatic":535}],34:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash.assign");
+var immutableDelete = require("immutable-delete");
+var speedomatic = require("speedomatic");
+var getMarketCreationCost = require("./get-market-creation-cost");
+var getMarketFromCreateMarketReceipt = require("./get-market-from-create-market-receipt");
+var api = require("../api");
+var encodeTag = require("../format/tag/encode-tag");
+var constants = require("../constants");
+
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p.universe Universe on which to create this market.
+ * @param {number} p._endTime Market expiration timestamp, in seconds.
+ * @param {string=} p._feePerEthInWei Amount of wei per ether settled that goes to the market creator, as a base-10 string.
+ * @param {string} p._denominationToken Ethereum address of the token used as this market's currency.
+ * @param {string} p._designatedReporterAddress Ethereum address of this market's designated reporter.
+ * @param {string[]} p._outcomes Descriptions for each outcome, as an array of UTF8 strings, with between [2, 8] elements in the array.
+ * @param {number} p._numOutcomes Number of outcomes this market has, as an integer on [2, 8].
+ * @param {string} p._topic The topic (category) to which this market belongs, as a UTF8 string.
+ * @param {string} p._description Description of the market, as a UTF8 string.
+ * @param {Object=} p._extraInfo Extra info which will be converted to JSON and logged to the chain in the CreateMarket event.
+ * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
+ * @param {function} p.onSent Called if/when the createCategoricalMarket transaction is broadcast to the network.
+ * @param {function} p.onSuccess Called if/when the createCategoricalMarket transaction is sealed and confirmed.
+ * @param {function} p.onFailed Called if/when the createCategoricalMarket transaction fails.
+ */
+function createCategoricalMarket(p) {
+  getMarketCreationCost({ universe: p.universe }, function (err, marketCreationCost) {
+    if (err) return p.onFailed(err);
+    var createCategoricalMarketParams = assign({}, immutableDelete(p, "universe"), {
+      tx: assign({
+        to: p.universe,
+        value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
+        gas: constants.CREATE_CATEGORICAL_MARKET_GAS
+      }, p.tx),
+      _outcomes: p._outcomes.map(function (outcome) {
+        return encodeTag(outcome);
+      }),
+      _topic: encodeTag(p._topic),
+      _extraInfo: JSON.stringify(p._extraInfo || {}),
+      onSuccess: function onSuccess(res) {
+        getMarketFromCreateMarketReceipt(res.hash, function (err, marketID) {
+          if (err) return p.onFailed(err);
+          p.onSuccess(assign({}, res, { callReturn: marketID }));
+        });
+      }
+    });
+    api().Universe.createCategoricalMarket(createCategoricalMarketParams);
+  });
+}
+
+module.exports = createCategoricalMarket;
+},{"../api":11,"../constants":27,"../format/tag/encode-tag":59,"./get-market-creation-cost":37,"./get-market-from-create-market-receipt":38,"immutable-delete":407,"lodash.assign":430,"speedomatic":535}],35:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash.assign");
+var immutableDelete = require("immutable-delete");
+var speedomatic = require("speedomatic");
+var calculateNumTicks = require("./calculate-num-ticks");
+var getMarketCreationCost = require("./get-market-creation-cost");
+var getMarketFromCreateMarketReceipt = require("./get-market-from-create-market-receipt");
+var api = require("../api");
+var encodeTag = require("../format/tag/encode-tag");
+var constants = require("../constants");
+
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p.universe Universe on which to create this market.
+ * @param {number} p._endTime Market expiration timestamp, in seconds.
+ * @param {string=} p._feePerEthInWei Amount of wei per ether settled that goes to the market creator, as a base-10 string.
+ * @param {string} p._denominationToken Ethereum address of the token used as this market's currency.
+ * @param {string} p._minPrice Minimum display (non-normalized) price for this market, as a base-10 string.
+ * @param {string} p._maxPrice Maximum display (non-normalized) price for this market, as a base-10 string.
+ * @param {string} p._designatedReporterAddress Ethereum address of this market's designated reporter.
+ * @param {string} p._topic The topic (category) to which this market belongs, as a UTF8 string.
+ * @param {string} p._description Description of the market, as a UTF8 string.
+ * @param {string=} p.tickSize The tick size for this market, as a base-10 string.
+ * @param {Object=} p._extraInfo Extra info which will be converted to JSON and logged to the chain in the CreateMarket event.
+ * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
+ * @param {function} p.onSent Called if/when the createScalarMarket transaction is broadcast to the network.
+ * @param {function} p.onSuccess Called if/when the createScalarMarket transaction is sealed and confirmed.
+ * @param {function} p.onFailed Called if/when the createScalarMarket transaction fails.
+ */
+function createScalarMarket(p) {
+  getMarketCreationCost({ universe: p.universe }, function (err, marketCreationCost) {
+    if (err) return p.onFailed(err);
+    var numTicks = calculateNumTicks(p.tickSize || constants.DEFAULT_SCALAR_TICK_SIZE, p._minPrice, p._maxPrice);
+    var createScalarMarketParams = assign({}, immutableDelete(p, ["universe", "tickSize"]), {
+      tx: assign({
+        to: p.universe,
+        value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
+        gas: constants.CREATE_SCALAR_MARKET_GAS
+      }, p.tx),
+      _numTicks: speedomatic.hex(numTicks),
+      _minPrice: speedomatic.fix(p._minPrice, "hex"),
+      _maxPrice: speedomatic.fix(p._maxPrice, "hex"),
+      _topic: encodeTag(p._topic),
+      _extraInfo: JSON.stringify(p._extraInfo || {}),
+      onSuccess: function onSuccess(res) {
+        getMarketFromCreateMarketReceipt(res.hash, function (err, marketID) {
+          if (err) return p.onFailed(err);
+          p.onSuccess(assign({}, res, { callReturn: marketID }));
+        });
+      }
+    });
+    api().Universe.createScalarMarket(createScalarMarketParams);
+  });
+}
+
+module.exports = createScalarMarket;
+},{"../api":11,"../constants":27,"../format/tag/encode-tag":59,"./calculate-num-ticks":32,"./get-market-creation-cost":37,"./get-market-from-create-market-receipt":38,"immutable-delete":407,"lodash.assign":430,"speedomatic":535}],36:[function(require,module,exports){
+"use strict";
+
+/** Type definition for MarketCreationCostBreakdown.
+ * @typedef {Object} MarketCreationCostBreakdown
+ * @property {string} designatedReportNoShowReputationBond Amount of Reputation required to incentivize the designated reporter to show up and report, as a base-10 string.
+ * @property {string} targetReporterGasCosts Amount of Ether required to pay for the gas to Report on this market, as a base-10 string.
+ * @property {string} validityBond Amount of Ether to be held on-contract and repaid when the market is resolved with a non-Invalid outcome, as a base-10 string.
+ */
+
+var async = require("async");
+var speedomatic = require("speedomatic");
+var api = require("../api");
+
+/**
+ * Note: this function will send a transaction if needed to create the current reporting window.
+ * @param {Object} p Parameters object.
+ * @param {string} p.universe Universe on which to create this market.
+ * @param {function} callback Called when all market creation costs have been looked up.
+ * @return {MarketCreationCostBreakdown} Cost breakdown for creating a new market.
+ */
+function getMarketCreationCostBreakdown(p, callback) {
+  var universePayload = { tx: { to: p.universe, send: false } };
+  async.parallel({
+    designatedReportNoShowReputationBond: function designatedReportNoShowReputationBond(next) {
+      api().Universe.getOrCacheDesignatedReportNoShowBond(universePayload, function (err, designatedReportNoShowBond) {
+        if (err) return next(err);
+        next(null, speedomatic.unfix(designatedReportNoShowBond, "string"));
+      });
+    },
+    targetReporterGasCosts: function targetReporterGasCosts(next) {
+      api().Universe.getOrCacheTargetReporterGasCosts(universePayload, function (err, targetReporterGasCosts) {
+        if (err) return next(err);
+        next(null, speedomatic.unfix(targetReporterGasCosts, "string"));
+      });
+    },
+    validityBond: function validityBond(next) {
+      api().Universe.getOrCacheValidityBond(universePayload, function (err, validityBond) {
+        if (err) return next(err);
+        next(null, speedomatic.unfix(validityBond, "string"));
+      });
+    }
+  }, callback);
+}
+
+module.exports = getMarketCreationCostBreakdown;
+},{"../api":11,"async":151,"speedomatic":535}],37:[function(require,module,exports){
+"use strict";
+
+/** Type definition for MarketCreationCost.
+ * @typedef {Object} MarketCreationCost
+ * @property {string} designatedReportNoShowReputationBond Amount of Reputation required to incentivize the designated reporter to show up and report, as a base-10 string.
+ * @property {string} etherRequiredToCreateMarket Sum of the Ether required to pay for Reporters' gas costs and the validity bond, as a base-10 string.
+ */
+
+var assign = require("lodash.assign");
+var async = require("async");
+var immutableDelete = require("immutable-delete");
+var speedomatic = require("speedomatic");
+var api = require("../api");
+
+/**
+ * Note: this function will send a transaction if needed to create the current reporting window.
+ * @param {Object} p Parameters object.
+ * @param {string} p.universe Universe on which to create this market.
+ * @param {function} callback Called after the market creation cost has been looked up.
+ * @return {MarketCreationCost} Costs of creating a new market.
+ */
+function getMarketCreationCost(p, callback) {
+  var universePayload = assign({}, immutableDelete(p, "universe"), { tx: assign({ to: p.universe, send: false }, p.tx) });
+  async.parallel({
+    designatedReportNoShowReputationBond: function designatedReportNoShowReputationBond(next) {
+      api().Universe.getOrCacheDesignatedReportNoShowBond(universePayload, function (err, designatedReportNoShowBond) {
+        if (err) return next(err);
+        next(null, speedomatic.unfix(designatedReportNoShowBond, "string"));
+      });
+    },
+    etherRequiredToCreateMarket: function etherRequiredToCreateMarket(next) {
+      api().Universe.getOrCacheMarketCreationCost(universePayload, function (err, marketCreationCost) {
+        if (err) return next(err);
+        next(null, speedomatic.unfix(marketCreationCost, "string"));
+      });
+    }
+  }, callback);
+}
+
+module.exports = getMarketCreationCost;
+},{"../api":11,"async":151,"immutable-delete":407,"lodash.assign":430,"speedomatic":535}],38:[function(require,module,exports){
+"use strict";
+
+var ethrpc = require("../rpc-interface");
+var findEventLogsInLogArray = require("../events/find-event-logs-in-log-array");
+var isObject = require("../utils/is-object");
+
+function getMarketFromCreateMarketReceipt(transactionHash, callback) {
+  ethrpc.getTransactionReceipt(transactionHash, function (receipt) {
+    if (!isObject(receipt) || receipt.error) return callback(new Error("Transaction receipt not found for " + transactionHash));
+    var marketCreatedLogs = findEventLogsInLogArray("Augur", "MarketCreated", receipt.logs);
+    if (marketCreatedLogs == null || !marketCreatedLogs.length || marketCreatedLogs[0] == null || marketCreatedLogs[0].market == null) {
+      return callback(new Error("MarketCreated log not found for " + transactionHash));
+    }
+    callback(null, marketCreatedLogs[0].market);
+  });
+}
+
+module.exports = getMarketFromCreateMarketReceipt;
+},{"../events/find-event-logs-in-log-array":41,"../rpc-interface":83,"../utils/is-object":126}],39:[function(require,module,exports){
+"use strict";
+
+module.exports = {
+  createBinaryMarket: require("./create-binary-market"),
+  createCategoricalMarket: require("./create-categorical-market"),
+  createScalarMarket: require("./create-scalar-market"),
+  getMarketCreationCost: require("./get-market-creation-cost"),
+  getMarketCreationCostBreakdown: require("./get-market-creation-cost-breakdown"),
+  getMarketFromCreateMarketReceipt: require("./get-market-from-create-market-receipt")
+};
+},{"./create-binary-market":33,"./create-categorical-market":34,"./create-scalar-market":35,"./get-market-creation-cost":37,"./get-market-creation-cost-breakdown":36,"./get-market-from-create-market-receipt":38}],40:[function(require,module,exports){
+"use strict";
+
+var parseLogMessage = require("./parse-message/parse-log-message");
+
+function addFilter(blockStream, contractName, eventName, eventAbi, contracts, addSubscription, onMessage) {
+  if (!eventAbi) return false;
+  if (!eventAbi.contract || !eventAbi.signature || !eventAbi.inputs) return false;
+  if (!contracts[eventAbi.contract]) return false;
+  var contractAddress = contracts[eventAbi.contract];
+  addSubscription(contractAddress, eventAbi.signature, blockStream.addLogFilter({
+    address: contractAddress,
+    topics: [eventAbi.signature]
+  }), function (message) {
+    parseLogMessage(contractName, eventName, message, eventAbi.inputs, onMessage);
+  });
+  return true;
+}
+
+module.exports = addFilter;
+},{"./parse-message/parse-log-message":47}],41:[function(require,module,exports){
+"use strict";
+
+var speedomatic = require("speedomatic");
+var eventsAbi = require("../contracts").abi.events;
+var parseLogMessage = require("./parse-message/parse-log-message");
+
+function findEventLogsInLogArray(contractName, eventName, logs) {
+  if (!Array.isArray(logs) || !logs.length) return null;
+  var eventAbi = ((eventsAbi || {})[contractName] || {})[eventName];
+  if (eventAbi == null) return null;
+  var eventSignature = eventAbi.signature;
+  var eventInputs = eventAbi.inputs;
+  if (eventSignature == null) return null;
+  return logs.reduce(function (reducedLogs, log) {
+    if (speedomatic.formatInt256(log.topics[0]) !== eventSignature) return reducedLogs;
+    return reducedLogs.concat(parseLogMessage(contractName, eventName, log, eventInputs));
+  }, []);
+}
+
+module.exports = findEventLogsInLogArray;
+},{"../contracts":30,"./parse-message/parse-log-message":47,"speedomatic":535}],42:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash.assign");
+var async = require("async");
+var encodeNumberAsJSNumber = require("speedomatic").encodeNumberAsJSNumber;
+var parseLogMessage = require("./parse-message/parse-log-message");
+var contracts = require("../contracts");
+var ethrpc = require("../rpc-interface");
+var chunkBlocks = require("../utils/chunk-blocks");
+var listContracts = require("../utils/list-contracts");
+var mapContractAddressesToNames = require("../utils/map-contract-addresses-to-names");
+var mapEventSignaturesToNames = require("../utils/map-event-signatures-to-names");
+var constants = require("../constants");
+
+/**
+ * @param {Object} p Parameters object.
+ * @param {number=} p.fromBlock Block number to start looking up logs (default: constants.AUGUR_UPLOAD_BLOCK_NUMBER).
+ * @param {number=} p.toBlock Block number where the log lookup should stop (default: current block number).
+ * @param {function} callback Called when all data has been received and parsed.
+ * @return { contractName => { eventName => [parsed event logs] } }
+ */
+function getAllAugurLogs(p, callback) {
+  var allAugurLogs = [];
+  var networkId = ethrpc.getNetworkID();
+  var contractNameToAddressMap = contracts.addresses[networkId];
+  if (contractNameToAddressMap == null) return callback(new Error("No contract address map for networkID: " + networkId));
+  var eventsAbi = contracts.abi.events;
+  var contractAddressToNameMap = mapContractAddressesToNames(contractNameToAddressMap);
+  var eventSignatureToNameMap = mapEventSignaturesToNames(eventsAbi);
+  var filterParams = { address: listContracts(contractNameToAddressMap) };
+  var fromBlock = p.fromBlock ? encodeNumberAsJSNumber(p.fromBlock) : constants.AUGUR_UPLOAD_BLOCK_NUMBER;
+  var currentBlock = parseInt(ethrpc.getCurrentBlock().number, 16);
+  var toBlock = p.toBlock ? encodeNumberAsJSNumber(p.toBlock) : currentBlock;
+  if (fromBlock > currentBlock || toBlock > currentBlock) {
+    return callback(new Error("Block range " + fromBlock + " to " + toBlock + " exceeds currentBlock " + currentBlock));
+  }
+  async.eachSeries(chunkBlocks(fromBlock, toBlock).reverse(), function (chunkOfBlocks, nextChunkOfBlocks) {
+    ethrpc.getLogs(assign({}, filterParams, chunkOfBlocks), function (logs) {
+      if (logs && logs.error) return nextChunkOfBlocks(logs);
+      if (!Array.isArray(logs) || !logs.length) return nextChunkOfBlocks(null);
+      logs.forEach(function (log) {
+        if (log && Array.isArray(log.topics) && log.topics.length) {
+          var contractName = contractAddressToNameMap[log.address];
+          var eventName = eventSignatureToNameMap[contractName][log.topics[0]];
+          if (eventName == null) {
+            console.log("Contract " + contractName + " has no event signature " + log.topics[0] + " found on tx " + log.transactionHash);
+            return;
+          }
+          try {
+            var parsedLog = parseLogMessage(contractName, eventName, log, eventsAbi[contractName][eventName].inputs);
+            allAugurLogs.push(parsedLog);
+          } catch (exc) {
+            console.error("parseLogMessage error", exc);
+            console.log(contractName, eventName, log, eventsAbi[contractName], chunkOfBlocks);
+          }
+        }
+      });
+      nextChunkOfBlocks(null);
+    });
+  }, function (err) {
+    if (err) return callback(err);
+    callback(null, allAugurLogs);
+  });
+}
+
+module.exports = getAllAugurLogs;
+},{"../constants":27,"../contracts":30,"../rpc-interface":83,"../utils/chunk-blocks":122,"../utils/list-contracts":128,"../utils/map-contract-addresses-to-names":129,"../utils/map-event-signatures-to-names":130,"./parse-message/parse-log-message":47,"async":151,"lodash.assign":430,"speedomatic":535}],43:[function(require,module,exports){
+"use strict";
+
+var hashEventSignature = require("./hash-event-signature");
+
+function hashEventAbi(eventAbi) {
+  return hashEventSignature(eventAbi.name + "(" + eventAbi.inputs.map(function (input) {
+    return input.type;
+  }).join(",") + ")");
+}
+
+module.exports = hashEventAbi;
+},{"./hash-event-signature":44}],44:[function(require,module,exports){
+(function (Buffer){
+"use strict";
+
+var speedomatic = require("speedomatic");
+var keccak256 = require("../utils/keccak256");
+
+function hashEventSignature(eventName) {
+  return speedomatic.formatInt256(keccak256(Buffer.from(eventName, "utf8")).toString("hex"));
+}
+
+module.exports = hashEventSignature;
+}).call(this,require("buffer").Buffer)
+},{"../utils/keccak256":127,"buffer":192,"speedomatic":535}],45:[function(require,module,exports){
+"use strict";
+
+var EventEmitter = require("event-emitter");
+
+module.exports = {
+  getAllAugurLogs: require("./get-all-augur-logs"),
+  startAugurNodeEventListeners: require("./start-augur-node-event-listeners"),
+  stopAugurNodeEventListeners: require("./stop-augur-node-event-listeners"),
+  startBlockchainEventListeners: require("./start-blockchain-event-listeners"),
+  stopBlockchainEventListeners: require("./stop-blockchain-event-listeners"),
+  startBlockListeners: require("./start-block-listeners"),
+  stopBlockListeners: require("./stop-block-listeners"),
+  nodes: {
+    augur: EventEmitter(),
+    ethereum: EventEmitter()
+  }
+};
+},{"./get-all-augur-logs":42,"./start-augur-node-event-listeners":48,"./start-block-listeners":49,"./start-blockchain-event-listeners":50,"./stop-augur-node-event-listeners":51,"./stop-block-listeners":52,"./stop-blockchain-event-listeners":53,"event-emitter":388}],46:[function(require,module,exports){
+"use strict";
+
+function parseBlockMessage(message, onMessage) {
+  if (message) {
+    if (message.length && Array.isArray(message)) {
+      for (var i = 0, len = message.length; i < len; ++i) {
+        if (message[i]) {
+          onMessage(message[i]);
+        }
+      }
+    } else {
+      onMessage(message);
+    }
+  }
+}
+
+module.exports = parseBlockMessage;
+},{}],47:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash.assign");
+var formatLoggedEventInputs = require("../../format/log/format-logged-event-inputs");
+var formatLogMessage = require("../../format/log/format-log-message");
+var isFunction = require("../../utils/is-function");
+var isObject = require("../../utils/is-object");
+
+function parseLogMessage(contractName, eventName, message, abiEventInputs, onMessage) {
+  if (message != null) {
+    if (Array.isArray(message)) {
+      message.map(function (singleMessage) {
+        return parseLogMessage(contractName, eventName, singleMessage, abiEventInputs, onMessage);
+      });
+    } else if (isObject(message) && !message.error && message.topics && message.data) {
+      var parsedMessage = assign(formatLoggedEventInputs(message.topics, message.data, abiEventInputs), {
+        address: message.address,
+        removed: message.removed,
+        transactionHash: message.transactionHash,
+        transactionIndex: parseInt(message.transactionIndex, 16),
+        logIndex: parseInt(message.logIndex, 16),
+        blockNumber: parseInt(message.blockNumber, 16),
+        contractName: contractName,
+        eventName: eventName
+      });
+      if (!isFunction(onMessage)) return formatLogMessage(contractName, eventName, parsedMessage);
+      onMessage(formatLogMessage(contractName, eventName, parsedMessage));
+    } else {
+      throw new Error("Bad event log(s) received: " + JSON.stringify(message));
+    }
+  }
+}
+
+module.exports = parseLogMessage;
+},{"../../format/log/format-log-message":55,"../../format/log/format-logged-event-inputs":56,"../../utils/is-function":125,"../../utils/is-object":126,"lodash.assign":430}],48:[function(require,module,exports){
+"use strict";
+
+var async = require("async");
+var augurNode = require("../augur-node");
+var isFunction = require("../utils/is-function");
+var isObject = require("../utils/is-object");
+var noop = require("../utils/noop");
+
+/**
+ * Start listening for events emitted by augur-node.
+ * @param {Object.<function>} eventCallbacks Callbacks to fire when events are received, keyed by event name.
+ * @param {function=} onSetupComplete Called when all listeners are successfully set up.
+ */
+function startAugurNodeEventListeners(eventCallbacks, onSetupComplete) {
+  if (!isFunction(onSetupComplete)) onSetupComplete = noop;
+  if (!isObject(eventCallbacks)) return onSetupComplete(new Error("No callbacks found"));
+  async.forEachOf(eventCallbacks, function (callback, eventName, nextEvent) {
+    augurNode.subscribeToEvent(eventName, callback, nextEvent);
+  }, onSetupComplete);
+}
+
+module.exports = startAugurNodeEventListeners;
+},{"../augur-node":20,"../utils/is-function":125,"../utils/is-object":126,"../utils/noop":131,"async":151}],49:[function(require,module,exports){
+"use strict";
+
+var subscriptions = require("./subscriptions");
+var parseBlockMessage = require("./parse-message/parse-block-message");
+var ethrpc = require("../rpc-interface");
+var isFunction = require("../utils/is-function");
+
+/**
+ * Start listening for blocks.
+ * @param {function=} blockCallbacks.onAdded Callback to fire when new blocks are received.
+ * @param {function=} blockCallbacks.onRemoved Callback to fire when blocks are removed.
+ * @return {boolean} True if listeners were successfully started; false otherwise.
+ */
+function startBlockListeners(blockCallbacks) {
+  var blockStream = ethrpc.getBlockStream();
+  if (!blockStream) return false;
+  if (isFunction(blockCallbacks.onAdded)) {
+    subscriptions.addOnBlockAddedSubscription(blockStream.subscribeToOnBlockAdded(function (newBlock) {
+      parseBlockMessage(newBlock, blockCallbacks.onAdded);
+    }));
+  }
+  if (isFunction(blockCallbacks.onRemoved)) {
+    subscriptions.addOnBlockRemovedSubscription(blockStream.subscribeToOnBlockRemoved(function (removedBlock) {
+      parseBlockMessage(removedBlock, blockCallbacks.onRemoved);
+    }));
+  }
+  return true;
+}
+
+module.exports = startBlockListeners;
+},{"../rpc-interface":83,"../utils/is-function":125,"./parse-message/parse-block-message":46,"./subscriptions":54}],50:[function(require,module,exports){
+"use strict";
+
+var async = require("async");
+var addFilter = require("./add-filter");
+var subscriptions = require("./subscriptions");
+var contracts = require("../contracts");
+var ethrpc = require("../rpc-interface");
+var isFunction = require("../utils/is-function");
+var isObject = require("../utils/is-object");
+var noop = require("../utils/noop");
+
+/**
+ * Start listening for events emitted by the Ethereum blockchain.
+ * @param {Object.<function>=} eventCallbacks Callbacks to fire when events are received, keyed by contract name and event name.
+ * @param {function=} onSetupComplete Called when all listeners are successfully set up.
+ */
+function startBlockchainEventListeners(eventCallbacks, startingBlockNumber, onSetupComplete) {
+  if (!isFunction(onSetupComplete)) onSetupComplete = noop;
+  if (typeof startingBlockNumber !== "undefined") {
+    console.log("Starting blockstream at block ", startingBlockNumber);
+    ethrpc.startBlockStream(startingBlockNumber);
+  }
+  var blockStream = ethrpc.getBlockStream();
+  if (!blockStream) return onSetupComplete(new Error("Not connected to Ethereum"));
+  if (!isObject(eventCallbacks)) return onSetupComplete(new Error("No event callbacks found"));
+  var eventsAbi = contracts.abi.events;
+  var activeContracts = contracts.addresses[ethrpc.getNetworkID()];
+  blockStream.subscribeToOnLogAdded(subscriptions.onLogAdded);
+  blockStream.subscribeToOnLogRemoved(subscriptions.onLogRemoved);
+  async.forEachOf(eventCallbacks, function (callbacks, contractName, nextContract) {
+    async.forEachOf(callbacks, function (callback, eventName, nextEvent) {
+      if (!isFunction(callback) || !eventsAbi[contractName] || !eventsAbi[contractName][eventName]) {
+        return nextEvent(new Error("ABI not found for event " + eventName + " on contract " + contractName));
+      }
+      if (!addFilter(blockStream, contractName, eventName, eventsAbi[contractName][eventName], activeContracts, subscriptions.addSubscription, callback)) {
+        return nextEvent(new Error("Event subscription setup failed: " + contractName + " " + eventName));
+      }
+      nextEvent(null);
+    }, nextContract);
+  }, function (err) {
+    if (err) return onSetupComplete(err);
+    onSetupComplete(null);
+  });
+}
+
+module.exports = startBlockchainEventListeners;
+},{"../contracts":30,"../rpc-interface":83,"../utils/is-function":125,"../utils/is-object":126,"../utils/noop":131,"./add-filter":40,"./subscriptions":54,"async":151}],51:[function(require,module,exports){
+"use strict";
+
+var augurNode = require("../augur-node");
+var noop = require("../utils/noop");
+
+/**
+ * Removes all active listeners for events emitted by augur-node.
+ * @param {function=} callback
+ */
+function stopAugurNodeEventListeners(callback) {
+  augurNode.unsubscribeFromAllEvents(callback || noop);
+}
+
+module.exports = stopAugurNodeEventListeners;
+},{"../augur-node":20,"../utils/noop":131}],52:[function(require,module,exports){
+"use strict";
+
+var ethrpc = require("../rpc-interface");
+var subscriptions = require("./subscriptions");
+
+/**
+ * Stop listening for blocks and block removals.
+ * @return {boolean} True if listeners were successfully stopped; false otherwise.
+ */
+function stopBlockListeners() {
+  var blockStream = ethrpc.getBlockStream();
+  if (!blockStream) return false;
+  var blockSubscriptions = subscriptions.getSubscriptions().block;
+  if (blockSubscriptions.added) {
+    blockStream.unsubscribeFromOnBlockAdded(blockSubscriptions.added);
+    subscriptions.removeOnBlockAddedSubscription();
+  }
+  if (blockSubscriptions.removed) {
+    blockStream.unsubscribeFromOnBlockRemoved(blockSubscriptions.removed);
+    subscriptions.removeOnBlockRemovedSubscription();
+  }
+  return true;
+}
+
+module.exports = stopBlockListeners;
+},{"../rpc-interface":83,"./subscriptions":54}],53:[function(require,module,exports){
+"use strict";
+
+var ethrpc = require("../rpc-interface");
+var subscriptions = require("./subscriptions");
+
+/**
+ * Removes all active listeners for events emitted by the Ethereum blockchain.
+ * @return {boolean} True if listeners were successfully stopped; false otherwise.
+ */
+function stopBlockchainEventListeners() {
+  var token,
+      blockStream = ethrpc.getBlockStream();
+  if (!blockStream) return false;
+  for (token in blockStream.onLogAddedSubscribers) {
+    if (blockStream.onLogAddedSubscribers.hasOwnProperty(token)) {
+      blockStream.unsubscribeFromOnLogAdded(token);
+    }
+  }
+  for (token in blockStream.onLogRemovedSubscribers) {
+    if (blockStream.onLogRemovedSubscribers.hasOwnProperty(token)) {
+      blockStream.unsubscribeFromOnLogRemoved(token);
+    }
+  }
+  for (token in subscriptions.getSubscriptions()) {
+    if (blockStream.logFilters.hasOwnProperty(token)) {
+      blockStream.removeLogFilter(token);
+      subscriptions.removeSubscription(token);
+    }
+  }
+  return true;
+}
+
+module.exports = stopBlockchainEventListeners;
+},{"../rpc-interface":83,"./subscriptions":54}],54:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash.assign");
+
+var initialState = { block: {} };
+
+var subscriptions = assign({}, initialState);
+
+module.exports.onLogAdded = function (log) {
+  if (subscriptions[log.address] && subscriptions[log.address][log.topics[0]]) {
+    subscriptions[log.address][log.topics[0]].callback(log);
+  }
+};
+
+module.exports.onLogRemoved = function (log) {
+  if (subscriptions[log.address] && subscriptions[log.address][log.topics[0]]) {
+    log.removed = true;
+    subscriptions[log.address][log.topics[0]].callback(log);
+  }
+};
+
+module.exports.getSubscriptions = function () {
+  return subscriptions;
+};
+
+module.exports.addSubscription = function (contractAddress, eventSignature, token, callback) {
+  if (!subscriptions[contractAddress]) subscriptions[contractAddress] = {};
+  subscriptions[contractAddress][eventSignature] = { token: token, callback: callback };
+};
+
+module.exports.removeSubscription = function (token) {
+  subscriptions = Object.keys(subscriptions).reduce(function (p, contractAddress) {
+    Object.keys(subscriptions[contractAddress]).forEach(function (eventSignature) {
+      if (subscriptions[contractAddress][eventSignature].token !== token) {
+        p[contractAddress][eventSignature] = subscriptions[contractAddress][eventSignature];
+      }
+    });
+    return p;
+  }, {});
+};
+
+module.exports.addOnBlockAddedSubscription = function (token) {
+  subscriptions.block.added = token;
+};
+
+module.exports.addOnBlockRemovedSubscription = function (token) {
+  subscriptions.block.removed = token;
+};
+
+module.exports.removeOnBlockAddedSubscription = function () {
+  delete subscriptions.block.added;
+};
+
+module.exports.removeOnBlockRemovedSubscription = function () {
+  delete subscriptions.block.removed;
+};
+
+module.exports.resetState = function () {
+  subscriptions = assign({}, initialState);
+};
+},{"lodash.assign":430}],55:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash.assign");
+var immutableDelete = require("immutable-delete");
+var speedomatic = require("speedomatic");
+var decodeTag = require("../tag/decode-tag");
+
+function formatLogMessage(contractName, eventName, message) {
+  switch (contractName) {
+    case "Augur":
+      switch (eventName) {
+        case "MarketCreated":
+          var extraInfo;
+          try {
+            extraInfo = JSON.parse(message.extraInfo);
+          } catch (exc) {
+            if (exc.constructor !== SyntaxError) throw exc;
+            extraInfo = null;
+          }
+          var formattedMessage = {
+            extraInfo: extraInfo,
+            marketCreationFee: speedomatic.unfix(message.marketCreationFee, "string"),
+            topic: decodeTag(message.topic),
+            minPrice: speedomatic.unfix(message.minPrice, "string"),
+            maxPrice: speedomatic.unfix(message.maxPrice, "string")
+          };
+          if (message.marketType === "1") {
+            formattedMessage.outcomes = message.outcomes.map(function (outcome) {
+              return decodeTag(outcome);
+            });
+          }
+          return assign({}, immutableDelete(message, "outcomes"), formattedMessage);
+        case "WinningTokensRedeemed":
+          return assign({}, message, {
+            amountRedeemed: speedomatic.unfix(message.amountRedeemed, "string"),
+            reportingFeesReceived: speedomatic.unfix(message.reportingFeesReceived, "string")
+          });
+        case "ReportSubmitted":
+          return assign({}, message, {
+            amountStaked: speedomatic.unfix(message.amountStaked, "string")
+          });
+        case "TokensTransferred":
+          return assign({}, message, {
+            value: speedomatic.unfix(message.value, "string")
+          });
+        default:
+          return message;
+      }
+    case "LegacyReputationToken":
+      switch (eventName) {
+        case "Approval":
+          return assign({}, message, {
+            value: speedomatic.unfix(message.value, "string")
+          });
+        case "Transfer":
+          return assign({}, message, {
+            value: speedomatic.unfix(message.value, "string")
+          });
+        default:
+          return message;
+      }
+    default:
+      return message;
+  }
+}
+
+module.exports = formatLogMessage;
+},{"../tag/decode-tag":58,"immutable-delete":407,"lodash.assign":430,"speedomatic":535}],56:[function(require,module,exports){
+"use strict";
+
+var speedomatic = require("speedomatic");
+var formatLoggedEventTopic = require("./format-logged-event-topic");
+
+function formatLoggedEventInputs(loggedTopics, loggedData, abiEventInputs) {
+  var decodedData = speedomatic.abiDecodeData(abiEventInputs, loggedData);
+  var topicIndex = 0;
+  var dataIndex = 0;
+  return abiEventInputs.reduce(function (p, eventInput) {
+    if (eventInput.indexed) {
+      p[eventInput.name] = formatLoggedEventTopic(loggedTopics[topicIndex + 1], eventInput.type);
+      ++topicIndex;
+    } else {
+      p[eventInput.name] = decodedData[dataIndex];
+      ++dataIndex;
+    }
+    return p;
+  }, {});
+}
+
+module.exports = formatLoggedEventInputs;
+},{"./format-logged-event-topic":57,"speedomatic":535}],57:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var speedomatic = require("speedomatic");
+
+function formatLoggedEventTopic(unformattedValue, inputType) {
+  switch (inputType) {
+    case "int256":
+      return new BigNumber(unformattedValue, 16).toFixed();
+    case "uint256":
+      return new BigNumber(unformattedValue, 16).abs().toFixed();
+    case "int256[]":
+    case "uint256[]":
+      return unformattedValue.map(function (value) {
+        return formatLoggedEventTopic(value, inputType.slice(0, -2));
+      });
+    case "address":
+    case "address[]":
+      return speedomatic.formatEthereumAddress(unformattedValue);
+    case "bytes32":
+    case "bytes32[]":
+      return speedomatic.formatInt256(unformattedValue);
+    default:
+      return unformattedValue;
+  }
+}
+
+module.exports = formatLoggedEventTopic;
+},{"bignumber.js":155,"speedomatic":535}],58:[function(require,module,exports){
+"use strict";
+
+var speedomatic = require("speedomatic");
+
+var decodeTag = function decodeTag(tag) {
+  try {
+    return tag && tag !== "0x0" && tag !== "0x" ? speedomatic.abiDecodeShortStringAsInt256(speedomatic.unfork(tag, true)) : null;
+  } catch (exc) {
+    console.error("decodeTag failed:", exc, tag);
+    return null;
+  }
+};
+
+module.exports = decodeTag;
+},{"speedomatic":535}],59:[function(require,module,exports){
+"use strict";
+
+var speedomatic = require("speedomatic");
+
+var encodeTag = function encodeTag(tag) {
+  if (tag == null || tag === "") return "0x0";
+  return speedomatic.abiEncodeShortStringAsInt256(tag.trim());
+};
+
+module.exports = encodeTag;
+},{"speedomatic":535}],60:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var keythereum = require("keythereum");
+var ROUNDS = require("./constants").ROUNDS;
+var version = require("./version");
+
+BigNumber.config({
+  MODULO_MODE: BigNumber.EUCLID,
+  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+});
+
+keythereum.constants.pbkdf2.c = ROUNDS;
+keythereum.constants.scrypt.n = ROUNDS;
+
+function Augur() {
+  this.version = version;
+  this.options = {
+    debug: {
+      broadcast: false, // broadcast debug logging in ethrpc
+      connect: false // connection debug logging in ethrpc and ethereumjs-connect
+    }
+  };
+  this.accounts = require("./accounts");
+  this.api = require("./api")();
+  this.generateContractApi = require("./api").generateContractApi;
+  this.assets = require("./assets");
+  this.connect = require("./connect").bind(this);
+  this.constants = require("./constants");
+  this.contracts = require("./contracts");
+  this.createMarket = require("./create-market");
+  this.events = require("./events");
+  this.markets = require("./markets");
+  this.reporting = require("./reporting");
+  this.rpc = require("./rpc-interface");
+  this.trading = require("./trading");
+  this.augurNode = require("./augur-node");
+}
+
+module.exports = Augur;
+module.exports.version = version;
+module.exports.Augur = Augur;
+module.exports.default = Augur;
+},{"./accounts":3,"./api":11,"./assets":14,"./augur-node":20,"./connect":26,"./constants":27,"./contracts":30,"./create-market":39,"./events":45,"./markets":72,"./reporting":82,"./rpc-interface":83,"./trading":94,"./version":134,"bignumber.js":155,"keythereum":422}],61:[function(require,module,exports){
+/**
+ * @todo Provide details for how category popularity is calculated.
+ */
+
+"use strict";
+
+/**
+ * @typedef {Object} Category
+ * @property {string} category Name of a category.
+ * @property {number|string} popularity Category popularity. (The exact method for calculating this value is still pending.)
+ */
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns the market categories in a specific universe. Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string} p.universe Contract address of the universe from which to retrieve the categories, as a hexadecimal string.
+ * @param {string=} p.sortBy Field name by which to sort the categories.
+ * @param {boolean=} p.isSortDescending Whether to sort categories in descending order by sortBy field.
+ * @param {string=} p.limit Maximum number of categories to return.
+ * @param {string=} p.offset Number of categories to truncate from the beginning of the results.
+ * @param {function} callback Called after the categories have been retrieved.
+ * @return {Category[]} Array representing the categories in the specified universe.
+ */
+function getCategories(p, callback) {
+  augurNode.submitRequest("getCategories", p, callback);
+}
+
+module.exports = getCategories;
+},{"../augur-node":20}],62:[function(require,module,exports){
+/**
+ * @todo Update function description & return information once function has been implemented.
+ */
+
+"use strict";
+
+var augurNode = require("../augur-node");
+
+/**
+ * This function has not been implemented yet. Returns the markets in a specific reporting window that are able to be disputed, along with the value of the dispute bond needed to dispute each market’s result. Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string} p.reportingWindow Contract address of the reporting window from which to retrieve the disputable markets.
+ * @param {string=} p.sortBy Field name by which to sort the markets.
+ * @param {boolean=} p.isSortDescending Whether to sort markets in descending order by sortBy field.
+ * @param {string=} p.limit Maximum number of markets to return.
+ * @param {string=} p.offset Number of markets to truncate from the beginning of the results.
+ * @param {function} callback Called after the markets have been retrieved.
+ * @return {} Pending.
+ */
+function getDisputableMarkets(p, callback) {
+  augurNode.submitRequest("getDisputableMarkets", p, callback);
+}
+
+module.exports = getDisputableMarkets;
+},{"../augur-node":20}],63:[function(require,module,exports){
+"use strict";
+
+/** Type definition for TimestampedPrice.
+ * @typedef {Object} TimestampedPrice
+ * @property {number} price Display (non-normalized) price, as a base-10 number.
+ * @property {number} timestamp Unix timestamp for this price in seconds, as an integer.
+ */
+
+/** Type definition for SingleOutcomePriceTimeSeries.
+ * @typedef {Object} SingleOutcomePriceTimeSeries
+ * @property {TimestampedPrice[]} Array of timestamped price points for this outcome.
+ */
+
+/** Type definition for MarketPriceTimeSeries.
+ * @typedef {Object} MarketPriceTimeSeries
+ * @property {SingleOutcomePriceTimeSeries} Price time-series for a single outcome, keyed by outcome ID.
+ */
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns the prices and timestamps of a specific market's outcomes over time. Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string} p.marketID Market contract address for which to look up orders, as a hexadecimal string.
+ * @param {function} callback Called after the price time-series has been received and parsed.
+ * @return {MarketPriceTimeSeries} This market's price time-series, keyed by outcome ID.
+ */
+function getMarketPriceHistory(p, callback) {
+  augurNode.submitRequest("getMarketPriceHistory", p, callback);
+  // getLogsChunked({ label: "FillOrder", filter: p }, onChunkReceived, function (err, logs) {
+  //   if (err) return onComplete(err);
+  //   var mergedLogs = {};
+  //   logs.forEach(function (log) {
+  //     if (!mergedLogs[log.outcome]) mergedLogs[log.outcome] = [];
+  //     mergedLogs[log.outcome].push({ price: log.price, timestamp: log.timestamp });
+  //   });
+  //   onComplete(null, mergedLogs);
+  // });
+}
+
+module.exports = getMarketPriceHistory;
+},{"../augur-node":20}],64:[function(require,module,exports){
+"use strict";
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns the markets in a specific universe that are waiting for a designated report to be submitted. Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string} p.universe Contract address of the universe from which to retrieve markets, as a hexadecimal string.
+ * @param {string=} p.designatedReporter Address of a specific designated reporter by which to filter the results, as a hexadecimal string.
+ * @param {string=} p.sortBy Field name by which to sort the markets.
+ * @param {boolean=} p.isSortDescending Whether to sort the markets in descending order by sortBy field.
+ * @param {string=} p.limit Maximum number of markets to return.
+ * @param {string=} p.offset Number of markets to truncate from the beginning of the results.
+ * @param {function} callback Called after the markets have been retrieved.
+ * @return {string[]} Array of market addresses awaiting a designated report, as hexadecimal strings.
+ */
+function getMarketsAwaitingDesignatedReporting(p, callback) {
+  augurNode.submitRequest("getMarketsAwaitingDesignatedReporting", p, callback);
+}
+
+module.exports = getMarketsAwaitingDesignatedReporting;
+},{"../augur-node":20}],65:[function(require,module,exports){
+/**
+ * @todo Update `p.reportingState` once new reporting changes are added.
+ */
+
+"use strict";
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns the markets in a particular universe or reporting window that are waiting for a designated report to be submitted or waiting for the reporting phase to end. Either the universe or reporting window must be specified. Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string=} p.universe Contract address of the universe from which to retrieve markets, as a hexadecimal string. If this parameter is not specified, a reporting window must be specified instead.
+ * @param {string=} p.reportingWindow Contract address of the reporting window from which to retrieve the markets, as a hexadecimal string. If this parameter is not specified, a universe must be specified instead.
+ * @param {string=} p.reportingState Description pending.
+ * @param {string=} p.sortBy Field name by which to sort the markets.
+ * @param {boolean=} p.isSortDescending Whether to sort the markets in descending order by sortBy field.
+ * @param {string=} p.limit Maximum number of markets to return.
+ * @param {string=} p.offset Number of markets to truncate from the beginning of the results.
+ * @param {function} callback Called after the markets have been retrieved.
+ * @return {string[]} Array of market addresses awaiting a designated report, as hexadecimal strings.
+ */
+function getMarketsAwaitingReporting(p, callback) {
+  augurNode.submitRequest("getMarketsAwaitingReporting", p, callback);
+}
+
+module.exports = getMarketsAwaitingReporting;
+},{"../augur-node":20}],66:[function(require,module,exports){
+"use strict";
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns the markets closing between a given time range in a specific universe. Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string} p.universe Contract address of the universe from which to get the markets, as a hexadecimal string.
+ * @param {number} p.earliestClosingTime Earliest market close timestamp at which to truncate market results, in seconds.
+ * @param {number} p.latestClosingTime Latest market close timestamp at which to truncate market results, in seconds.
+ * @param {string=} p.sortBy Field name by which to sort the markets.
+ * @param {boolean=} p.isSortDescending Whether to sort the markets in descending order by sortBy field.
+ * @param {string=} p.limit Maximum number of markets to return.
+ * @param {string=} p.offset Number of markets to truncate from the beginning of the results.
+ * @param {function} callback Called after the markets have been retrieved.
+ * @return {string[]} Array of closing market addresses, as hexadecimal strings.
+ */
+function getMarketsClosingInDateRange(p, callback) {
+  augurNode.submitRequest("getMarketsClosingInDateRange", p, callback);
+}
+
+module.exports = getMarketsClosingInDateRange;
+},{"../augur-node":20}],67:[function(require,module,exports){
+"use strict";
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns the markets created by a specific user, as well as the total amount of fees earned so far by that user. Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string} p.universe Contract address of the universe from which to get the markets, as a hexadecimal string.
+ * @param {string} p.creator Ethereum address of the creator who created the markets, as a hexadecimal string.
+ * @param {string=} p.sortBy Field name by which to sort the markets.
+ * @param {boolean=} p.isSortDescending Whether to sort the markets in descending order by sortBy field.
+ * @param {string=} p.limit Maximum number of markets to return.
+ * @param {string=} p.offset Number of markets to truncate from the beginning of the results.
+ * @param {function} callback Called after the markets have been retrieved.
+ * @return {string[]} Array of market addresses created by the specified user, as hexadecimal strings.
+ */
+function getMarketsCreatedByAccount(p, callback) {
+  augurNode.submitRequest("getMarketsCreatedByUser", p, callback);
+}
+
+module.exports = getMarketsCreatedByAccount;
+},{"../augur-node":20}],68:[function(require,module,exports){
+"use strict";
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns the markets within a specific category. Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string} p.universe Contract address of the universe from which to get the markets, as a hexadecimal string.
+ * @param {string} p.category Name of the category from which to get the markets.
+ * @param {string=} p.sortBy Field name by which to sort the markets.
+ * @param {boolean=} p.isSortDescending Whether to sort the markets in descending order by sortBy field.
+ * @param {string=} p.limit Maximum number of markets to return.
+ * @param {string=} p.offset Number of markets to truncate from the beginning of the results.
+ * @param {function} callback Called after the markets have been retrieved.
+ * @return {string[]} Array of market addresses in the specified category, as hexadecimal strings.
+ */
+function getMarketsInCategory(p, callback) {
+  augurNode.submitRequest("getMarketsInCategory", p, callback);
+}
+
+module.exports = getMarketsInCategory;
+},{"../augur-node":20}],69:[function(require,module,exports){
+/**
+ * @todo Add more details for how outstanding shares, outcome volume, & market volume are calculated.
+ */
+"use strict";
+
+/**
+ * @typedef {Object} OutcomeInfo
+ * @property {number} id Market outcome ID
+ * @property {number} volume Trading volume for this outcome. (Method for calculating this is pending.)
+ * @property {number} price Price of the outcome.
+ * @property {string|null} description Description for the outcome.
+ */
+
+/**
+ * @typedef {Object} MarketInfo
+ * @property {string} id Address of a market, as a hexadecimal string.
+ * @property {string} universe Address of a universe, as a hexadecimal string.
+ * @property {string} type Type of market ("binary", "categorical", or "scalar").
+ * @property {number} numOutcomes Total possible outcomes for the market.
+ * @property {number} minPrice Minimum price allowed for a share on a market, in ETH. For binary & categorical markets, this is 0 ETH. For scalar markets, this is the bottom end of the range set by the market creator.
+ * @property {number} maxPrice Maximum price allowed for a share on a market, in ETH. For binary & categorical markets, this is 1 ETH. For scalar markets, this is the top end of the range set by the market creator.
+ * @property {string} cumulativeScale Difference between maxPrice and minPrice.
+ * @property {string} author Ethereum address of the creator of the market, as a hexadecimal string.
+ * @property {number} creationTime Timestamp when the Ethereum block containing the market creation was created, in seconds.
+ * @property {number} creationBlock Number of the Ethereum block containing the market creation.
+ * @property {number} creationFee Fee paid by the market creator to create the market, in ETH.
+ * @property {number} reportingFeeRate Percentage rate of ETH sent to the reporting window containing the market whenever shares are settled. Reporting fees are later used to pay REP holders for Reporting on the Outcome of Markets.
+ * @property {number} marketCreatorFeeRate Percentage rate of ETH paid to the market creator whenever shares are settled.
+ * @property {number|null} marketCreatorFeesCollected Amount of fees the market creator collected from the market, in ETH.
+ * @property {string} category Name of the category the market is in.
+ * @property {Array<string|null>} tags Names with which the market has been tagged.
+ * @property {number} volume Trading volume for this outcome. (Method for calculating this is pending.)
+ * @property {number} outstandingShares Total shares in the market. (Method for calculating this is pending.)
+ * @property {REPORTING_STATE|null} reportingState Reporting state name.
+ * @property {string} reportingWindow Contract address of the reporting window the market is in, as a hexadecimal string.
+ * @property {number} endDate Timestamp when the market event ends, in seconds.
+ * @property {number|null} finalizationTime Timestamp when the market was finalized (if any), in seconds.
+ * @property {string} description Description of the market.
+ * @property {string|null} extraInfo Stringified JSON object containing resolutionSource, tags, longDescription, and outcomeNames (for categorical markets).
+ * @property {string} designatedReporter Ethereum address of the market's designated report, as a hexadecimal string.
+ * @property {number} designatedReportStake Amount of ETH the designated reporter staked on the outcome submitted in the designated report.
+ * @property {string|null} resolutionSource Reference source used to determine the outcome of the market event.
+ * @property {number} numTicks Number of possible prices, or ticks, between a market's minimum price and maximum price.
+ * @property {number|null} consensus Consensus outcome for the market.
+ * @property {OutcomeInfo[]} outcomes Array of OutcomeInfo objects.
+ */
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns information about markets that are stored on-contract. The returned result includes basic information about the markets as well as information about each market outcome. It does not include Order Book information; however the function `augur.trading.getOrders` can be used to get information about orders for the specified market. Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string[]} p.marketIDs Contract addresses of the markets for which to get details, as hexadecimal strings.
+ * @return {MarketInfo[]}
+ */
+function getMarketsInfo(p, callback) {
+  augurNode.submitRequest("getMarketsInfo", p, callback);
+}
+
+module.exports = getMarketsInfo;
+},{"../augur-node":20}],70:[function(require,module,exports){
+"use strict";
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns an array of markets in a specific universe. Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string} p.universe Contract address of the universe from which to get transfer history.
+ * @param {string=} p.sortBy Field name by which to sort the markets.
+ * @param {boolean=} p.isSortDescending Whether to sort the markets in descending order by sortBy field.
+ * @param {string=} p.limit Maximum number of markets to return.
+ * @param {string=} p.offset Number of markts to truncate from the beginning of the results.
+ * @param {function} callback Called after the markets have been retrieved.
+ * @return {string[]} Array of market addresses in the universe, as hexadecimal strings.
+ */
+function getMarkets(p, callback) {
+  augurNode.submitRequest("getMarkets", p, callback);
+}
+
+module.exports = getMarkets;
+},{"../augur-node":20}],71:[function(require,module,exports){
+"use strict";
+
+/**
+* @typedef {Object} MarketCreatorFee
+* @property {string} marketID Address of a market, as a hexadecimal string.
+* @property {number|string} unclaimedFee Fee available to be claimed from the market, by the market creator, in attoETH
+*/
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns information about unclaimed market creator fees. Fees are only available on finalized markets.
+ * @param {Object} p Parameters object.
+ * @param {string[]} p.marketIDs Contract addresses of the markets for which to get details, as hexadecimal strings.
+ * @returns {MarketCreatorFee[]}
+ */
+function getUnclaimedMarketCreatorFees(p, callback) {
+  augurNode.submitRequest("getUnclaimedMarketCreatorFees", p, callback);
+}
+
+module.exports = getUnclaimedMarketCreatorFees;
+},{"../augur-node":20}],72:[function(require,module,exports){
+"use strict";
+
+module.exports = {
+  getMarketsInfo: require("./get-markets-info"),
+  getDisputableMarkets: require("./get-disputable-markets"),
+  getMarketPriceHistory: require("./get-market-price-history"),
+  getMarkets: require("./get-markets"),
+  getMarketsAwaitingReporting: require("./get-markets-awaiting-reporting"),
+  getMarketsAwaitingDesignatedReporting: require("./get-markets-awaiting-designated-reporting"),
+  getMarketsInCategory: require("./get-markets-in-category"),
+  getMarketsClosingInDateRange: require("./get-markets-closing-in-date-range"),
+  getMarketsCreatedByUser: require("./get-markets-created-by-user"),
+  getUnclaimedMarketCreatorFees: require("./get-unclaimed-market-creator-fees"),
+  getCategories: require("./get-categories")
+};
+},{"./get-categories":61,"./get-disputable-markets":62,"./get-market-price-history":63,"./get-markets":70,"./get-markets-awaiting-designated-reporting":64,"./get-markets-awaiting-reporting":65,"./get-markets-closing-in-date-range":66,"./get-markets-created-by-user":67,"./get-markets-in-category":68,"./get-markets-info":69,"./get-unclaimed-market-creator-fees":71}],73:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash.assign");
+var immutableDelete = require("immutable-delete");
+var api = require("../api");
+
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p.market Address of the market to finalize, as a hex string.
+ * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
+ * @param {function} p.onSent Called if/when the transaction is broadcast to the network.
+ * @param {function} p.onSuccess Called if/when the transaction is sealed and confirmed.
+ * @param {function} p.onFailed Called if/when the transaction fails.
+ */
+function finalizeMarket(p) {
+  var marketPayload = { tx: { to: p.market } };
+  api().Market.isFinalized(marketPayload, function (err, isFinalized) {
+    if (err) return p.onFailed(err);
+    if (parseInt(isFinalized, 16) === 1) return p.onSuccess(true);
+    api().Market.finalize(assign({}, marketPayload, { tx: assign({}, marketPayload.tx, { send: false }) }), function (err, readyToFinalize) {
+      if (err) return p.onFailed(err);
+      if (parseInt(readyToFinalize, 16) !== 1) return p.onSuccess(false);
+      api().Market.finalize(assign({}, immutableDelete(p, "market"), marketPayload));
+    });
+  });
+}
+
+module.exports = finalizeMarket;
+},{"../api":11,"immutable-delete":407,"lodash.assign":430}],74:[function(require,module,exports){
+"use strict";
+
+function getCurrentPeriodProgress(reportingPeriodDurationInSeconds, timestamp) {
+  var t = timestamp || parseInt(new Date().getTime() / 1000, 10);
+  return 100 * (t % reportingPeriodDurationInSeconds) / reportingPeriodDurationInSeconds;
+}
+
+module.exports = getCurrentPeriodProgress;
+},{}],75:[function(require,module,exports){
+/**
+ * @todo Update function return information
+ */
+
+"use strict";
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns dispute information about markets. The returned result includes dispute round, and an array of payouts. Optionally includes "reporter" stake in each payout. Requires an Augur Node connection.
+
+ * @param {Object} p Parameters object.
+ * @param {string[]} p.marketIDs Contract addresses of the markets for which to get details, as hexadecimal strings.
+ * @param {string} p.reporter Ethereum address of the user who has staked rep, as a hexadecimal string.
+ * @return {DisuteInfo[]}
+ */
+function getDisputeInfo(p, callback) {
+  augurNode.submitRequest("getDisputeInfo", p, callback);
+}
+
+module.exports = getDisputeInfo;
+},{"../augur-node":20}],76:[function(require,module,exports){
+/**
+ * @todo Update function description & return information once function has been implemented.
+ */
+
+"use strict";
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns the current active fee window for a universe. Optionally, get a reporter's stake. Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string} p.universe Contract address of the universe to query for active fee window, as a hexadecimal string.
+ * @param {string} p.reporter Ethereum address of the user who has staked rep on fee window fees, as a hexadecimal string.
+ * @param {function} callback Called after the fee windows have been retrieved.
+ * @return {} Pending.
+ */
+function getFeeWindowCurrent(p, callback) {
+  augurNode.submitRequest("getFeeWindowCurrent", p, callback);
+}
+
+module.exports = getFeeWindowCurrent;
+},{"../augur-node":20}],77:[function(require,module,exports){
+/**
+ * @todo Update function description & return information once function has been implemented.
+ */
+
+"use strict";
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns the fee windows where a specific user has unclaimed reporting fees. Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string} p.universe Contract address of the universe in which the fee windows exist, as a hexadecimal string.
+ * @param {string} p.account Ethereum address of the user who has unclaimed reporting fees, as a hexadecimal string.
+ * @param {function} callback Called after the fee windows have been retrieved.
+ * @return {} Pending.
+ */
+function getFeeWindowsWithUnclaimedFees(p, callback) {
+  augurNode.submitRequest("getFeeWindowsWithUnclaimedFees", p, callback);
+}
+
+module.exports = getFeeWindowsWithUnclaimedFees;
+},{"../augur-node":20}],78:[function(require,module,exports){
+/**
+ * @todo Add descriptions for Report.isIndeterminate & Report.isSubmitted.
+ */
+
+"use strict";
+
+/**
+ * Serves as an enum for the state of a stake token.
+ * @typedef {Object} REPORTING_STATE
+ * @property {string} PRE_REPORTING Market's end time has not yet come to pass.
+ * @property {string} DESIGNATED_REPORTING Market's end time has occurred, and it is pending a designated report.
+ * @property {string} DESIGNATED_DISPUTE Market's designated report has been submitted and is allowed to be disputed.
+ * @property {string} AWAITING_NO_REPORT_MIGRATION Either the disignated report was disputed, or the designated reporter failed to submit a report, and the market is waiting for the next reporting phase to begin.
+ * @property {string} FIRST_REPORTING Market's designated report was disputed, and users can place stake on outcomes.
+ * @property {string} FIRST_DISPUTE Market's first report has been submitted and is allowed to be disputed.
+ * @property {string} LAST_REPORTING Market's first report was disputed, and users can place stake on outcomes.
+ * @property {string} LAST_DISPUTE Market's first report has been submitted and is allowed to be disputed to cause a fork.
+ * @property {string} FORKING Market's last report was disputed, causing a fork. Users can migrate their REP to the universe of their choice.
+ * @property {string} FINALIZED An outcome for the market has been determined.
+ * @property {string} AWAITING_FORK_MIGRATION Pending documentation. Possibly deprecated.
+ * @property {string} AWAITING_FINALIZATION Pending documentation. Possibly deprecated.
+ */
+
+/**
+ * @typedef {Object} Report
+ * @property {string} transactionHash Hash to look up the reporting transaction receipt.
+ * @property {number} logIndex Number of the log index position in the Ethereum block containing the reporting transaction.
+ * @property {number} creationBlockNumber Number of the Ethereum block containing the reporting transaction.
+ * @property {string} blockHash Hash of the Ethereum block containing the reporting transaction.
+ * @property {number} creationTime Timestamp, in seconds, when the Ethereum block containing the reporting transaction was created.
+ * @property {string} marketID Contract address of the market, as a hexadecimal string.
+ * @property {REPORTING_STATE} marketReportingState Reporting state of the market.
+ * @property {string} reportingWindow Reporting window the market is in currently.
+ * @property {number[]} payoutNumerators Array representing the payout set.
+ * @property {number} amountStaked Description the reporter has staked on the outcome of their report.
+ * @property {string} stakeToken Contract address of the stake token, as a hexadecimal string.
+ * @property {boolean} isCategorical Whether the market is categorical.
+ * @property {boolean} isScalar Whether the market is scalar.
+ * @property {boolean} isIndeterminate Description pending.
+ * @property {boolean} isSubmitted Description pending.
+ */
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns information about the reports submitted by a particular user. For reporting windows that have ended, this includes the final outcome of the market, whether the user’s report matched that final outcome, how much REP the user gained or lost from redistribution, and how much the user earned in reporting fees. Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string} p.reporter Ethereum address of the reporter for which to retrieve reporting history, as a hexadecimal string.
+ * @param {string=} p.universe Contract address of the universe in which to look up the reporting history, as a hexadecimal string. Either this parameter, the market ID, or the reporting window must be specified.
+ * @param {string=} p.marketID Contract address of the market in which to look up the reporting history, as a hexadecimal string. Either this parameter, the universe, or the reporting window must be specified.
+ * @param {string=} p.reportingWindow Contract address of the reporting window in which to look up the reporting history, as a hexadecimal string. Either this parameter, the universe, or the market ID must be specified.
+ * @param {number=} p.earliestCreationTime Earliest timestamp, in seconds, at which to truncate history results. (This timestamp is when the block on the Ethereum blockchain containing the report submission was created.)
+ * @param {number=} p.latestCreationTime Latest timestamp, in seconds, at which to truncate history results. (This timestamp is when the block on the Ethereum blockchain containing the report submission was created.)
+ * @param {string=} p.sortBy Field name by which to sort the reporting history.
+ * @param {boolean=} p.isSortDescending Whether to sort the reporting history in descending order by sortBy field.
+ * @param {string=} p.limit Maximum number of reporting history reports to return.
+ * @param {string=} p.offset Number of reporting history reports to truncate from the beginning of the results.
+ * @param {function} callback Called when reporting history has been received and parsed.
+ * @return {Object} Reporting history, keyed by universe or market ID. Each report is of type {@link Report}.
+ */
+function getReportingHistory(p, callback) {
+  augurNode.submitRequest("getReportingHistory", p, callback);
+}
+
+module.exports = getReportingHistory;
+},{"../augur-node":20}],79:[function(require,module,exports){
+"use strict";
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns the number of markets in various reporting phases, including “DESIGNATED_REPORTING”, “FIRST_REPORTING”, “LAST_REPORTING”, “AWAITING_FINALIZATION” (when a market has been reported on and is in a dispute phase), “FORKING” (for the market that has forked), “AWAITING_FORK_MIGRATION” (for markets that are waiting for a forked market to resolve), and “FINALIZED”. Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string} p.reportingWindow Contract address of the reporting window for which to get the summary, as a hexadecimal string.
+ * @param {function} callback Called after the reporting summary has been retrieved.
+ * @return {Object} Summary of the number of markets in each reporting phase, keyed by reporting phase.
+ */
+function getReportingSummary(p, callback) {
+  augurNode.submitRequest("getReportingSummary", p, callback);
+}
+
+module.exports = getReportingSummary;
+},{"../augur-node":20}],80:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash.assign");
+var immutableDelete = require("immutable-delete");
+var speedomatic = require("speedomatic");
+var api = require("../api");
+
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p.universe Universe address.
+ * @param {function} callback Called after stake required has been retrieved.
+ * @return {string} Amount of stake required for the designated reporter on this universe, as a base-10 string.
+ */
+function getStakeRequiredForDesignatedReporter(p, callback) {
+  var universePayload = assign({}, immutableDelete(p, "universe"), { tx: assign({ to: p.universe, send: false }, p.tx) });
+  api().Universe.getOrCacheDesignatedReportStake(universePayload, function (err, designatedReportStake) {
+    if (err) return callback(err);
+    callback(null, speedomatic.unfix(designatedReportStake, "string"));
+  });
+}
+
+module.exports = getStakeRequiredForDesignatedReporter;
+},{"../api":11,"immutable-delete":407,"lodash.assign":430,"speedomatic":535}],81:[function(require,module,exports){
+"use strict";
+
+/**
+ * Serves as an enum for the state of a stake token.
+ * @typedef {Object} STAKE_TOKEN_STATE
+ * @property {string} ALL Stake token can be in any state. (If no stake token state is specified, this is the default value.)
+ * @property {string} UNFINALIZED Stake token is in a market that has not been finalized.
+ * @property {string} UNCLAIMED Stake token is in a finalized market, was staked on the correct outcome, and has not been claimed yet.
+ */
+
+/**
+ * @typedef {Object} StakeToken
+ * @property {string} stakeToken Contract address of the stake token, as a hexidecimal string.
+ * @property {string} marketID ID of the market, as a hexidecimal string.
+ * @property {number|null} payout0 Payout numerator 0 of the stake token's payout set.
+ * @property {number|null} payout1 Payout numerator 1 of the stake token's payout set.
+ * @property {number|null} payout2 Payout numerator 2 of the stake token's payout set. Set to null for binary and scalar markets.
+ * @property {number|null} payout3 Payout numerator 3 of the stake token's payout set. Set to null for binary and scalar markets.
+ * @property {number|null} payout4 Payout numerator 4 of the stake token's payout set. Set to null for binary and scalar markets.
+ * @property {number|null} payout5 Payout numerator 5 of the stake token's payout set. Set to null for binary and scalar markets.
+ * @property {number|null} payout6 Payout numerator 6 of the stake token's payout set. Set to null for binary and scalar markets.
+ * @property {number|null} payout7 Payout numerator 7 of the stake token's payout set. Set to null for binary and scalar markets.
+ * @property {boolean} isInvalid Whether the market was determined to be invalid.
+ * @property {number} amountStaked Amount the stake token owner has staked, in ETH.
+ * @property {number|null} winningToken Description pending.
+ * @property {boolean} claimed Whether the stake token has been claimed by the owner.
+ * @property {REPORTING_STATE} reportingState Reporting state of the market.
+ */
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns the stake tokens owned by a specific user that are either unclaimed or are in markets that have not been finalized. Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string} p.universe Contract address of the universe in which to retrieve the stake tokens, as a hexadecimal string.
+ * @param {string} p.account Contract address of the account for which to retrieve the stake tokens, as a hexadecimal string.
+ * @param {STAKE_TOKEN_STATE=} p.stakeTokenState Token state by which to filter results.
+ * @param {function} callback Called when reporting history has been received and parsed.
+ * @return {StakeToken[]} Stake token details, keyed by stake token ID.
+ */
+function getStakeTokens(p, callback) {
+  augurNode.submitRequest("getStakeTokens", p, callback);
+}
+
+module.exports = getStakeTokens;
+},{"../augur-node":20}],82:[function(require,module,exports){
+"use strict";
+
+module.exports = {
+  getReportingHistory: require("./get-reporting-history"),
+  getStakeTokens: require("./get-stake-tokens"),
+  getReportingSummary: require("./get-reporting-summary"),
+  getFeeWindowsWithUnclaimedFees: require("./get-fee-windows-with-unclaimed-fees"),
+  getFeeWindowCurrent: require("./get-fee-window-current"),
+  getDisputeInfo: require("./get-dispute-info"),
+  getStakeRequiredForDesignatedReporter: require("./get-stake-required-for-designated-reporter"),
+  getCurrentPeriodProgress: require("./get-current-period-progress"),
+  finalizeMarket: require("./finalize-market")
+};
+},{"./finalize-market":73,"./get-current-period-progress":74,"./get-dispute-info":75,"./get-fee-window-current":76,"./get-fee-windows-with-unclaimed-fees":77,"./get-reporting-history":78,"./get-reporting-summary":79,"./get-stake-required-for-designated-reporter":80,"./get-stake-tokens":81}],83:[function(require,module,exports){
+"use strict";
+
+var createRpcInterface = function createRpcInterface(ethrpc) {
+  return {
+    constants: ethrpc.constants,
+    errors: ethrpc.errors,
+    eth: ethrpc.eth,
+    clear: ethrpc.clear,
+    startBlockStream: ethrpc.startBlockStream,
+    getBlockStream: ethrpc.getBlockStream,
+    getCoinbase: ethrpc.getCoinbase,
+    getCurrentBlock: ethrpc.getCurrentBlock,
+    getGasPrice: ethrpc.getGasPrice,
+    getNetworkID: ethrpc.getNetworkID,
+    getLogs: ethrpc.getLogs,
+    getTransactionReceipt: ethrpc.getTransactionReceipt,
+    isUnlocked: ethrpc.isUnlocked,
+    sendEther: ethrpc.sendEther,
+    packageAndSubmitRawTransaction: ethrpc.packageAndSubmitRawTransaction,
+    callContractFunction: ethrpc.callContractFunction,
+    transact: ethrpc.transact,
+    excludeFromTransactionRelay: ethrpc.excludeFromTransactionRelay,
+    registerTransactionRelay: ethrpc.registerTransactionRelay,
+    setDebugOptions: ethrpc.setDebugOptions,
+    WsTransport: ethrpc.WsTransport,
+    publish: ethrpc.publish,
+    sha3: ethrpc.sha3
+  };
+};
+
+var ethrpc = createRpcInterface(require("ethrpc"));
+ethrpc.createRpcInterface = createRpcInterface;
+
+module.exports = ethrpc;
+},{"ethrpc":296}],84:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash.assign");
+var async = require("async");
+var immutableDelete = require("immutable-delete");
+var claimTradingProceeds = require("./claim-trading-proceeds");
+var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
+
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p.markets Array of market addresses for which to claim proceeds.
+ * @param {string} p._shareHolder User address that holds the shares.
+ * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
+ * @param {function} p.onSent Called if/when each transaction is broadcast to the network.
+ * @param {function} p.onSuccess Called if/when all transactions are sealed and confirmed.
+ * @param {function} p.onFailed Called if/when any of the transactions fail.
+ */
+function claimMarketsTradingProceeds(p) {
+  var claimTradingProceedsPayload = immutableDelete(p, "markets");
+  var claimedMarkets = [];
+  async.eachLimit(p.markets, PARALLEL_LIMIT, function (market, nextMarket) {
+    claimTradingProceeds(assign({}, claimTradingProceedsPayload, {
+      _market: market,
+      onSuccess: function onSuccess() {
+        claimedMarkets.push(market);
+        nextMarket();
+      },
+      onFailed: nextMarket
+    }));
+  }, function (err) {
+    if (err) return p.onFailed(err);
+    p.onSuccess(claimedMarkets);
+  });
+}
+
+module.exports = claimMarketsTradingProceeds;
+},{"../constants":27,"./claim-trading-proceeds":85,"async":151,"immutable-delete":407,"lodash.assign":430}],85:[function(require,module,exports){
+"use strict";
+
+var api = require("../api");
+
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p._market Market address for which to claim proceeds.
+ * @param {string} p._shareHolder User address that holds the shares.
+ * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
+ * @param {function} p.onSent Called if/when each transaction is broadcast to the network.
+ * @param {function} p.onSuccess Called if/when all transactions are sealed and confirmed.
+ * @param {function} p.onFailed Called if/when any of the transactions fail.
+ */
+function claimTradingProceeds(p) {
+  api().Market.getFinalizationTime({ tx: { to: p._market } }, function (err, finalizationTime) {
+    if (err) return p.onFailed(err);
+    if (parseInt(finalizationTime, 16) === 0) return p.onFailed(null); // market not yet finalized
+    api().ClaimTradingProceeds.claimTradingProceeds(p);
+  });
+}
+
+module.exports = claimTradingProceeds;
+},{"../api":11}],86:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+
+/**
+ * Rescale a price to its display range [minPrice, maxPrice]: displayPrice = normalizedPrice*(maxPrice - minPrice) + minPrice
+ * @param {Object} p Parameters object.
+ * @param {BigNumber|string} p.minPrice This market's minimum possible price, as a BigNumber or base-10 string.
+ * @param {BigNumber|string} p.maxPrice This market's maximum possible price, as a BigNumber or base-10 string.
+ * @param {BigNumber|string} p.normalizedPrice The price to be denormalized, as a BigNumber or base-10 string.
+ * @return {string} Price rescaled to [minPrice, maxPrice], as a base-10 string.
+ */
+function denormalizePrice(p) {
+  var minPrice = p.minPrice;
+  var maxPrice = p.maxPrice;
+  var normalizedPrice = p.normalizedPrice;
+  if (minPrice.constructor !== BigNumber) minPrice = new BigNumber(minPrice, 10);
+  if (maxPrice.constructor !== BigNumber) maxPrice = new BigNumber(maxPrice, 10);
+  if (normalizedPrice.constructor !== BigNumber) normalizedPrice = new BigNumber(normalizedPrice, 10);
+  if (minPrice.gt(maxPrice)) throw new Error("Minimum value larger than maximum value");
+  if (normalizedPrice.lt(0)) throw new Error("Normalized price is below 0");
+  if (normalizedPrice.gt(1)) throw new Error("Normalized price is above 1");
+  return normalizedPrice.times(maxPrice.minus(minPrice)).plus(minPrice).toFixed();
+}
+
+module.exports = denormalizePrice;
+},{"bignumber.js":155}],87:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+
+var compareOrdersByPrice = {
+  1: function _(order1, order2) {
+    return order1.fullPrecisionPrice - order2.fullPrecisionPrice;
+  },
+  2: function _(order1, order2) {
+    return order2.fullPrecisionPrice - order1.fullPrecisionPrice;
+  }
+};
+
+/**
+ * Bids are sorted descendingly, asks are sorted ascendingly.
+ * @param {require("./simulate-trade").OrderBook} orderBook Bids or asks
+ * @param {number} orderType Order type (0 for "buy", 1 for "sell").
+ * @param {string} price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
+ * @param {string} userAddress The user's Ethereum address, as a hexadecimal string.
+ * @return {require("./simulate-trade").OrderBook} Filtered and sorted orders.
+ */
+function filterByPriceAndOutcomeAndUserSortByPrice(orderBook, orderType, price, userAddress) {
+  var isMarketOrder, filteredOrders;
+  if (!orderBook) return [];
+  isMarketOrder = price == null;
+  filteredOrders = Object.keys(orderBook).map(function (orderId) {
+    return orderBook[orderId];
+  }).filter(function (order) {
+    var isMatchingPrice;
+    if (!order || !order.fullPrecisionPrice) return false;
+    if (isMarketOrder) {
+      isMatchingPrice = true;
+    } else {
+      isMatchingPrice = orderType === 0 ? new BigNumber(order.fullPrecisionPrice, 10).lte(price) : new BigNumber(order.fullPrecisionPrice, 10).gte(price);
+    }
+    return order.owner !== userAddress && isMatchingPrice;
+  });
+  return filteredOrders.sort(compareOrdersByPrice[orderType]);
+}
+
+module.exports = filterByPriceAndOutcomeAndUserSortByPrice;
+},{"bignumber.js":155}],88:[function(require,module,exports){
+"use strict";
+
+/**
+ * @typedef BetterWorseOrders
+ * @property {string|null} betterOrderID ID of the order with the next best price over the specified order ID, as a hexadecimal string.
+ * @property {string|null} worseOrderID ID of the order with the next worse price over the specified order ID, as a hexadecimal string.
+ */
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns the IDs of the orders for a given outcome that have a better and worse price than the specified price. If no better/worse orders exist, null will be returned. This function should be called prior to calling augur.api.CreateOrder.publicCreateOrder in order to get the _betterOrderId and _worseOrderId parameters that it accepts. (_betterOrderId and _worseOrderId are used to optimize the sorting of Orders on the Order Book.) Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string} p.marketID Contract address of the market for which to retrieve the better/worse orders, as a hexadecimal string.
+ * @param {string} p.outcome Market outcome for which to find better/worse orders.
+ * @param {string} p.orderType Desired type of order. Valid values are "buy" and "sell".
+ * @param {number} p.price Price point at which to find better/worse orders.
+ * @param {function} callback Called when better/worse orders have been retrieved.
+ * @return {BetterWorseOrders} Object containing the better/worse order IDs, as hexidecimal strings.
+ */
+function getBetterWorseOrders(p, callback) {
+  augurNode.submitRequest("getBetterWorseOrders", p, callback);
+}
+
+module.exports = getBetterWorseOrders;
+},{"../augur-node":20}],89:[function(require,module,exports){
+"use strict";
+
+/**
+ * Serves as an enum for the state of an order.
+ * @typedef {Object} ORDER_STATE
+ * @property {string} ALL Order is open, closed, or cancelled. (If no order state is specified, this is the default value.)
+ * @property {string} OPEN Order is available to be filled.
+ * @property {string} CLOSED Order has been filled.
+ * @property {string} CANCELED Order has been canceled (although it may have been partially filled).
+ */
+
+/** Type definition for Order.
+ * @typedef {Object} Order
+ * @property {string} shareToken Contract address of the share token for which the order was placed, as a hexadecimal string.
+ * @property {string} transactionHash Hash to look up the order transaction receipt.
+ * @property {number} logIndex Number of the log index position in the Ethereum block containing the order transaction.
+ * @property {string} owner The order maker's Ethereum address, as a hexadecimal string.
+ * @property {number} creationTime Timestamp, in seconds, when the Ethereum block containing the order transaction was created.
+ * @property {number} creationBlockNumber Number of the Ethereum block containing the order transaction.
+ * @property {ORDER_STATE} orderState State of orders by which to filter results. Valid values are "ALL", "CANCELLED", "CLOSED", & "OPEN".
+ * @property {number} price Rounded display price, as a base-10 number.
+ * @property {number} amount Rounded number of shares to trade, as a base-10 number.
+ * @property {string} fullPrecisionPrice Full-precision (un-rounded) display price, as a base-10 number.
+ * @property {number} fullPrecisionAmount Full-precision (un-rounded) number of shares to trade, as a base-10 number.
+ * @property {number} tokensEscrowed Number of the order maker's tokens held in escrow, as a base-10 number.
+ * @property {number} sharesEscrowed Number of the order maker's shares held in escrow, as a base-10 number.
+ */
+
+/** Type definition for SingleOutcomeOrderBookSide.
+ * @typedef {Object} SingleOutcomeOrderBookSide
+ * @property {Order} Buy (bid) or sell (ask) orders, indexed by order ID.
+ */
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns a list of orders in a given universe or market. Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string=} p.universe Contract address of the universe from which to retrieve orders, as a hexadecimal string. Either this parameter or the marketID must be specified.
+ * @param {string=} p.marketID Contract address of the market from which to retrieve orders, as a hexadecimal string. Either this parameter or the universe must be specified.
+ * @param {number=} p.outcome Market outcome to filter results by. Valid values are in the range [0,7].
+ * @param {string=} p.creator Ethereum address of the order creator, as a hexadecimal string.
+ * @param {ORDER_STATE=} p.orderState State of orders by which to filter results. Valid values are "ALL", "CANCELLED", "CLOSED", & "OPEN".
+ * @param {number=} p.earliestCreationTime Earliest timestamp, in seconds, at which to truncate order results. (This timestamp is when the block on the Ethereum blockchain containing the transfer was created.)
+ * @param {number=} p.latestCreationTime Latest timestamp, in seconds, at which to truncate order results. (This timestamp is when the block on the Ethereum blockchain containing the transfer was created.)
+ * @param {string=} p.sortBy Field name by which to sort the orders.
+ * @param {boolean=} p.isSortDescending Whether to sort orders in descending order by sortBy field.
+ * @param {string=} p.limit Maximum number of orders to return.
+ * @param {string=} p.offset Number of orders to truncate from the beginning of the results.
+ * @param {function} callback Called when the requested orders for this market/universe have been received and parsed.
+ * @return {SingleOutcomeOrderBookSide} One side of the order book (buy or sell) for the specified market/universe and outcome.
+ */
+function getOrders(p, callback) {
+  augurNode.submitRequest("getOrders", p, function (err, openOrders) {
+    if (err) return callback(err);
+    callback(null, openOrders || {});
+  });
+}
+
+module.exports = getOrders;
+},{"../augur-node":20}],90:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash.assign");
+var async = require("async");
+var speedomatic = require("speedomatic");
+var api = require("../api");
+var convertFixedPointToDecimal = require("../utils/convert-fixed-point-to-decimal");
+
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p.address Address for which to look up share balances.
+ * @param {string} p.market Market for which to look up share balances.
+ * @param {string} p.tickSize Tick size (interval) for this market.
+ * @return {string[]} Number of shares for each outcome of this market.
+ */
+function getPositionInMarket(p, callback) {
+  var marketPayload = { tx: { to: p.market } };
+  api().Market.getNumberOfOutcomes(marketPayload, function (err, numberOfOutcomes) {
+    if (err) return callback(err);
+    var positionInMarket = new Array(parseInt(numberOfOutcomes, 16));
+    async.forEachOf(positionInMarket, function (_, outcome, nextOutcome) {
+      api().Market.getShareToken(assign({ _outcome: outcome }, marketPayload), function (err, shareToken) {
+        if (err) return nextOutcome(err);
+        api().ShareToken.balanceOf({ _owner: p.address, tx: { to: shareToken } }, function (err, shareTokenBalance) {
+          if (err) return nextOutcome(err);
+          positionInMarket[outcome] = convertFixedPointToDecimal(shareTokenBalance, speedomatic.fix(p.tickSize, "string"));
+          nextOutcome();
+        });
+      });
+    }, function (err) {
+      if (err) return callback(err);
+      callback(null, positionInMarket);
+    });
+  });
+}
+
+module.exports = getPositionInMarket;
+},{"../api":11,"../utils/convert-fixed-point-to-decimal":124,"async":151,"lodash.assign":430,"speedomatic":535}],91:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var eventsAbi = require("../contracts").abi.events;
+var ethrpc = require("../rpc-interface");
+var parseLogMessage = require("../events/parse-message/parse-log-message");
+
+function calculateTotalFill(numShares, numTokens, priceNumTicksRepresentation) {
+  return new BigNumber(numShares, 10).plus(new BigNumber(numTokens, 10).dividedBy(new BigNumber(priceNumTicksRepresentation, 16)));
+}
+
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p.transactionHash Transaction hash to look up a receipt for.
+ * @param {string} p.startingOnChainAmount Amount remaining in the trade prior to this transaction (base-16).
+ * @param {string} p.priceNumTicksRepresentation Price in its numTicks representation (base-16).
+ */
+function getTradeAmountRemaining(p, callback) {
+  var tradeOnChainAmountRemaining = new BigNumber(p.startingOnChainAmount, 16);
+  // console.log("remaining:", tradeOnChainAmountRemaining.toFixed());
+  ethrpc.getTransactionReceipt(p.transactionHash, function (transactionReceipt) {
+    if (!transactionReceipt || transactionReceipt.error || !Array.isArray(transactionReceipt.logs) || !transactionReceipt.logs.length) {
+      return callback("logs not found");
+    }
+    var orderFilledEventSignature = eventsAbi.Augur.OrderFilled.signature;
+    var logs = transactionReceipt.logs;
+    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+      if (logs[i].topics[0] === orderFilledEventSignature) {
+        var orderFilledLog = parseLogMessage("Augur", "OrderFilled", logs[i], eventsAbi.Augur.OrderFilled.inputs);
+        var totalFill = calculateTotalFill(orderFilledLog.numCreatorShares, orderFilledLog.numCreatorTokens, p.priceNumTicksRepresentation);
+        // console.log("fill:", totalFill.toFixed());
+        tradeOnChainAmountRemaining = tradeOnChainAmountRemaining.minus(totalFill);
+        // console.log("remaining:", tradeOnChainAmountRemaining.toFixed());
+      }
+    }
+    callback(null, tradeOnChainAmountRemaining.toFixed());
+  });
+}
+
+module.exports = getTradeAmountRemaining;
+},{"../contracts":30,"../events/parse-message/parse-log-message":47,"../rpc-interface":83,"bignumber.js":155}],92:[function(require,module,exports){
+/**
+ * @todo Add descriptions for UserTrade.price, UserTrade.amount, UserTrade.timestamp, & UserTrade.tradeGroupID.
+ */
+"use strict";
+
+/**
+ * @typedef {Object} UserTrade
+ * @property {string} transactionHash Hash to look up the trade transaction receipt.
+ * @property {number} logIndex Number of the log index position in the Ethereum block containing the trade transaction.
+ * @property {string} type Type of trade. Valid values are "buy" and "sell".
+ * @property {number} price Description pending.
+ * @property {number} amount Description pending.
+ * @property {boolean} maker Whether the specified user is the order maker (as opposed to filler).
+ * @property {number} marketCreatorFees Amount of fees paid to market creator, in ETH.
+ * @property {number} reporterFees Amount of fees paid to reporters, in ETH.
+ * @property {string} marketID Contract address of the market, as a hexadecimal string.
+ * @property {number} outcome Outcome being bought/sold.
+ * @property {string} shareToken Contract address of the share token that was bought or sold, as a hexadecimal string.
+ * @property {number} timestamp Description pending.
+ * @property {number|null} tradeGroupID Description pending.
+ */
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns information about the trades a specific user has made. Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string} p.account Ethereum address of the user for which to retrieve trading history, as a hexadecimal string.
+ * @param {string=} p.universe Contract address of the universe in which to look up the trading history, as a hexadecimal string. Either this parameter or the market ID must be specified.
+ * @param {string=} p.marketID Contract address of the market in which to look up the trading history, as a hexadecimal string. Either this parameter or the universe must be specified.
+ * @param {string} p.outcome Outcome of the share being bought/sold.
+ * @param {string} p.orderType Type of trade. Valid values are "buy" and "sell".
+ * @param {string=} p.sortBy Field name by which to sort the trading history.
+ * @param {boolean=} p.isSortDescending Whether to sort the trading history in descending order by sortBy field.
+ * @param {string=} p.limit Maximum number of trading history reports to return.
+ * @param {string=} p.offset Number of trading history reports to truncate from the beginning of the results.
+ * @param {function} callback Called when trading history has been received and parsed.
+ * @return {UserTrade[]} Array of the user's trades, keyed by universe/market ID.
+*/
+function getUserTradingHistory(p, callback) {
+  augurNode.submitRequest("getUserTradingHistory", p, callback);
+}
+
+module.exports = getUserTradingHistory;
+},{"../augur-node":20}],93:[function(require,module,exports){
+/**
+ * @todo Add descriptions for UserTradePosition.numSharesAdjustedForUserIntention, UserTradePosition.realizedProfitLoss, & UserTradePosition.unrealizedProfitLoss.
+ */
+"use strict";
+
+/**
+ * @typedef {Object} UserTradePosition
+ * @property {string} marketID Contract address of the market, as a hexadecimal string.
+ * @property {number} outcome Outcome of the shares the user owns.
+ * @property {number} numShares Quantity of shares currently owned by the user.
+ * @property {number} numSharesAdjustedForUserIntention Description pending.
+ * @property {number} realizedProfitLoss Description pending.
+ * @property {number} unrealizedProfitLoss Description pending.
+ */
+
+var augurNode = require("../augur-node");
+
+/**
+ * Returns the trading positions held by a specific user. Requires an Augur Node connection.
+ * @param {Object} p Parameters object.
+ * @param {string} p.account Ethereum address of the user for which to retrieve trading positions, as a hexadecimal string.
+ * @param {string=} p.universe Contract address of the universe in which to look up the trading positions, as a hexadecimal string. Either this parameter or the market ID must be specified.
+ * @param {string=} p.marketID Contract address of the market in which to look up the trading positions, as a hexadecimal string. Either this parameter or the universe must be specified.
+ * @param {string} p.outcome Outcome of the share held for the market.
+ * @param {string=} p.sortBy Field name by which to sort the trading positions.
+ * @param {boolean=} p.isSortDescending Whether to sort the trading positions in descending order by sortBy field.
+ * @param {string=} p.limit Maximum number of trading positions reports to return.
+ * @param {string=} p.offset Number of trading positions reports to truncate from the beginning of the results.
+ * @param {function} callback Called when the trading positions have been received and parsed.
+ * @return {UserTradePosition[]} Array of the user's trading positions.
+ */
+function getUserTradingPositions(p, callback) {
+  augurNode.submitRequest("getUserTradingPositions", p, callback);
+}
+
+module.exports = getUserTradingPositions;
+},{"../augur-node":20}],94:[function(require,module,exports){
+"use strict";
+
+module.exports = {
+  getBetterWorseOrders: require("./get-better-worse-orders"),
+  getUserTradingHistory: require("./get-user-trading-history"),
+  getUserTradingPositions: require("./get-user-trading-positions"),
+  getPositionInMarket: require("./get-position-in-market"),
+  filterByPriceAndOutcomeAndUserSortByPrice: require("./filter-by-price-and-outcome-and-user-sort-by-price"),
+  claimMarketsTradingProceeds: require("./claim-markets-trading-proceeds"),
+  claimTradingProceeds: require("./claim-trading-proceeds"),
+  simulateTrade: require("./simulation"),
+  calculateProfitLoss: require("./profit-loss"),
+  normalizePrice: require("./normalize-price"),
+  denormalizePrice: require("./denormalize-price"),
+  placeTrade: require("./place-trade"),
+  tradeUntilAmountIsZero: require("./trade-until-amount-is-zero"),
+  getOrders: require("./get-orders")
+};
+},{"./claim-markets-trading-proceeds":84,"./claim-trading-proceeds":85,"./denormalize-price":86,"./filter-by-price-and-outcome-and-user-sort-by-price":87,"./get-better-worse-orders":88,"./get-orders":89,"./get-position-in-market":90,"./get-user-trading-history":92,"./get-user-trading-positions":93,"./normalize-price":95,"./place-trade":96,"./profit-loss":103,"./simulation":112,"./trade-until-amount-is-zero":121}],95:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+
+/**
+ * Rescale a price to lie on [0, 1]: normalizedPrice = (price - minPrice) / (maxPrice - minPrice)
+ * @param {Object} p Parameters object.
+ * @param {BigNumber|string} p.minPrice This market's minimum possible price, as a BigNumber or base-10 string.
+ * @param {BigNumber|string} p.maxPrice This market's maximum possible price, as a BigNumber or base-10 string.
+ * @param {BigNumber|string} p.price The price to be normalized, as a BigNumber or base-10 string.
+ * @return {string} Price rescaled to [0, 1], as a base-10 string.
+ */
+function normalizePrice(p) {
+  var minPrice = p.minPrice;
+  var maxPrice = p.maxPrice;
+  var price = p.price;
+  if (minPrice.constructor !== BigNumber) minPrice = new BigNumber(minPrice, 10);
+  if (maxPrice.constructor !== BigNumber) maxPrice = new BigNumber(maxPrice, 10);
+  if (price.constructor !== BigNumber) price = new BigNumber(price, 10);
+  if (minPrice.gt(maxPrice)) throw new Error("Minimum value larger than maximum value");
+  if (price.lt(minPrice)) throw new Error("Price is below the minimum value");
+  if (price.gt(maxPrice)) throw new Error("Price is above the maximum value");
+  return price.minus(minPrice).dividedBy(maxPrice.minus(minPrice)).toFixed();
+}
+
+module.exports = normalizePrice;
+},{"bignumber.js":155}],96:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash.assign");
+var immutableDelete = require("immutable-delete");
+var getBetterWorseOrders = require("./get-better-worse-orders");
+var tradeUntilAmountIsZero = require("./trade-until-amount-is-zero");
+var normalizePrice = require("./normalize-price");
+
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p.amount Number of shares to trade, as a base-10 string.
+ * @param {string} p.limitPrice Display (non-normalized) limit price for this trade, as a base-10 string.
+ * @param {string} p.minPrice The minimum display (non-normalized) price for this market, as a base-10 string.
+ * @param {string} p.maxPrice The maximum display (non-normalized) price for this market, as a base-10 string.
+ * @param {string} p.tickSize The tick size (interval) for this market.
+ * @param {number} p._direction Order type (0 for "buy", 1 for "sell").
+ * @param {string} p._market Market in which to trade, as a hex string.
+ * @param {number} p._outcome Outcome ID to trade, must be an integer value on [0, 7].
+ * @param {string=} p._tradeGroupId ID logged with each trade transaction (can be used to group trades client-side), as a hex string.
+ * @param {boolean=} p.doNotCreateOrders If set to true, this trade will only take existing orders off the book, not create new ones (default: false).
+ * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
+ * @param {function} p.onSent Called when the first trading transaction is broadcast to the network.
+ * @param {function} p.onSuccess Called when the full trade completes successfully.
+ * @param {function} p.onFailed Called if any part of the trade fails.
+ */
+function placeTrade(p) {
+  var normalizedPrice = normalizePrice({ minPrice: p.minPrice, maxPrice: p.maxPrice, price: p.limitPrice });
+  var orderType = ["buy", "sell"][p._direction];
+  getBetterWorseOrders({
+    orderType: orderType,
+    marketID: p._market,
+    outcome: p._outcome,
+    price: p.limitPrice
+  }, function (err, betterWorseOrders) {
+    if (err) return p.onFailed(err);
+    tradeUntilAmountIsZero(assign({}, immutableDelete(p, ["limitPrice", "amount", "minPrice", "maxPrice"]), {
+      _price: normalizedPrice,
+      _fxpAmount: p.amount,
+      _betterOrderID: betterWorseOrders.betterOrderID,
+      _worseOrderID: betterWorseOrders.worseOrderID
+    }));
+  });
+}
+
+module.exports = placeTrade;
+},{"./get-better-worse-orders":88,"./normalize-price":95,"./trade-until-amount-is-zero":121,"immutable-delete":407,"lodash.assign":430}],97:[function(require,module,exports){
+"use strict";
+
+var longerPositionPL = require("./longer-position-pl");
+var shorterPositionPL = require("./shorter-position-pl");
+
+// Trades where user is the maker:
+//  - buy orders (matched user's ask): user loses shares, gets cash
+//  - sell orders (matched user's bid): user loses cash, gets shares
+function calculateMakerPL(PL, type, price, shares) {
+
+  // Sell: matched user's bid order
+  if (type === "sell") {
+    // console.log('sell (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
+    return longerPositionPL(PL, shares, price);
+  }
+
+  // Buy: matched user's ask order
+  // console.log('buy (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
+  return shorterPositionPL(PL, shares, price);
+}
+
+module.exports = calculateMakerPL;
+},{"./longer-position-pl":104,"./shorter-position-pl":106}],98:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var immutableDelete = require("immutable-delete");
+var calculateUnrealizedPL = require("./calculate-unrealized-pl");
+var calculateTradesPL = require("./calculate-trades-pl");
+var updateRealizedPL = require("./update-realized-pl");
+var constants = require("../../constants");
+var ZERO = constants.ZERO;
+
+/**
+ * Calculates realized and unrealized profit/loss for trades in a single outcome.
+ *
+ * Note: buy/sell labels are from taker's point-of-view.
+ *
+ * @param {Object} p Parameters object.
+ * @param {Object[]} p.trades Trades for a single outcome {type, amount, price, maker}.
+ * @param {string=} p.lastPrice Price of this outcome's most recent trade, as a base-10 string (default: 0).
+ * @return {Object} Realized and unrealized P/L {position, realized, unrealized}.
+ */
+function calculateProfitLoss(p) {
+  var PL = {
+    position: ZERO,
+    meanOpenPrice: ZERO,
+    realized: ZERO,
+    unrealized: ZERO,
+    queued: ZERO,
+    completeSetsBought: ZERO,
+    tradeQueue: []
+  };
+  var lastPrice = p.lastPrice == null ? ZERO : new BigNumber(p.lastPrice, 10);
+  if (p.trades) {
+    PL = calculateTradesPL(PL, p.trades);
+    // console.log("Raw P/L:", JSON.stringify(PL, null, 2));
+    var queuedShares = ZERO;
+    if (PL.tradeQueue && PL.tradeQueue.length) {
+      // console.log("Trade queue:", JSON.stringify(PL.tradeQueue));
+      for (var i = 0, n = PL.tradeQueue.length; i < n; ++i) {
+        queuedShares = queuedShares.plus(PL.tradeQueue[i].shares);
+        PL.queued = updateRealizedPL(PL.tradeQueue[i].meanOpenPrice, PL.queued, PL.tradeQueue[i].shares.neg(), PL.tradeQueue[i].price);
+      }
+    }
+    // console.log("Queued shares:", queuedShares.toFixed());
+    // console.log("Last trade price:", lastPrice.toFixed());
+    PL.unrealized = calculateUnrealizedPL(PL.position, PL.meanOpenPrice, lastPrice);
+    // console.log("Unrealized P/L:", PL.unrealized.toFixed());
+    if (PL.position.abs().lt(constants.PRECISION.zero)) {
+      PL.position = ZERO;
+      PL.meanOpenPrice = ZERO;
+      PL.unrealized = ZERO;
+    }
+  }
+  PL.position = PL.position.toFixed();
+  PL.meanOpenPrice = PL.meanOpenPrice.toFixed();
+  PL.realized = PL.realized.toFixed();
+  PL.unrealized = PL.unrealized.plus(PL.queued).toFixed();
+  PL.queued = PL.queued.toFixed();
+  // console.log("Queued P/L:", PL.queued);
+  return immutableDelete(immutableDelete(PL, "completeSetsBought"), "tradeQueue");
+}
+
+module.exports = calculateProfitLoss;
+},{"../../constants":27,"./calculate-trades-pl":101,"./calculate-unrealized-pl":102,"./update-realized-pl":108,"bignumber.js":155,"immutable-delete":407}],99:[function(require,module,exports){
+"use strict";
+
+var longerPositionPL = require("./longer-position-pl");
+var shorterPositionPL = require("./shorter-position-pl");
+
+// Trades where user is the taker:
+//  - buy orders: user loses cash, gets shares
+//  - sell orders: user loses shares, gets cash
+function calculateTakerPL(PL, type, price, shares) {
+
+  // Buy order
+  if (type === "buy") {
+    // console.log('buy (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
+    return longerPositionPL(PL, shares, price);
+  }
+
+  // Sell order
+  // console.log('sell (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
+  return shorterPositionPL(PL, shares, price);
+}
+
+module.exports = calculateTakerPL;
+},{"./longer-position-pl":104,"./shorter-position-pl":106}],100:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var calculateTakerPL = require("./calculate-taker-pl");
+var sellCompleteSetsPL = require("./sell-complete-sets-pl");
+var calculateMakerPL = require("./calculate-maker-pl");
+
+function calculateTradePL(PL, trade) {
+  if (trade.isCompleteSet) {
+    if (trade.type === "buy") {
+      return calculateTakerPL(PL, trade.type, new BigNumber(trade.price, 10), new BigNumber(trade.amount, 10));
+    }
+    return sellCompleteSetsPL(PL, new BigNumber(trade.amount, 10), new BigNumber(trade.price, 10));
+  } else if (trade.maker) {
+    return calculateMakerPL(PL, trade.type, new BigNumber(trade.price, 10), new BigNumber(trade.amount, 10));
+  }
+  return calculateTakerPL(PL, trade.type, new BigNumber(trade.price, 10), new BigNumber(trade.amount, 10));
+}
+
+module.exports = calculateTradePL;
+},{"./calculate-maker-pl":97,"./calculate-taker-pl":99,"./sell-complete-sets-pl":105,"bignumber.js":155}],101:[function(require,module,exports){
+"use strict";
+
+var calculateTradePL = require("./calculate-trade-pl");
+
+function calculateTradesPL(PL, trades) {
+  var i,
+      numTrades = trades.length;
+  if (numTrades) {
+    for (i = 0; i < numTrades; ++i) {
+      PL = calculateTradePL(PL, trades[i]);
+    }
+  }
+  return PL;
+}
+
+module.exports = calculateTradesPL;
+},{"./calculate-trade-pl":100}],102:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var ZERO = require("../../constants").ZERO;
+
+// unrealized P/L: shares held * (last trade price - price on buy in)
+function calculateUnrealizedPL(position, meanOpenPrice, lastTradePrice) {
+  if (lastTradePrice.eq(ZERO)) return ZERO;
+  return position.times(new BigNumber(lastTradePrice, 10).minus(meanOpenPrice));
+}
+
+module.exports = calculateUnrealizedPL;
+},{"../../constants":27,"bignumber.js":155}],103:[function(require,module,exports){
+"use strict";
+
+module.exports = require("./calculate-profit-loss");
+},{"./calculate-profit-loss":98}],104:[function(require,module,exports){
+"use strict";
+
+var updateMeanOpenPrice = require("./update-mean-open-price");
+var constants = require("../../constants");
+var PRECISION = constants.PRECISION;
+var ZERO = constants.ZERO;
+
+// weighted price = (old total shares / new total shares) * weighted price + (shares traded / new total shares) * trade price
+// realized P/L = shares sold * (price on cash out - price on buy in)
+function longerPositionPL(PL, shares, price) {
+  var updatedPL = {
+    position: PL.position.plus(shares),
+    meanOpenPrice: PL.meanOpenPrice,
+    realized: PL.realized,
+    completeSetsBought: PL.completeSetsBought,
+    queued: PL.queued,
+    tradeQueue: PL.tradeQueue
+  };
+
+  // If position >= 0, user is increasing a long position:
+  //  - update weighted price of open positions
+  if (PL.position.abs().lte(PRECISION.zero)) {
+    updatedPL.meanOpenPrice = price;
+  } else if (PL.position.gt(PRECISION.zero)) {
+    updatedPL.meanOpenPrice = updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares, price);
+
+    // If position < 0, user is decreasing a short position:
+  } else {
+    if (!updatedPL.tradeQueue) updatedPL.tradeQueue = [];
+
+    // If |position| >= shares, user is buying back a short position:
+    //  - update queued P/L (becomes realized P/L when complete sets sold)
+    if (PL.position.abs().gte(shares)) {
+      updatedPL.tradeQueue.push({
+        meanOpenPrice: PL.meanOpenPrice,
+        realized: PL.realized,
+        shares: shares,
+        price: price
+      });
+
+      // If |position| < shares, user is buying back short then going long:
+      //  - update queued P/L for the short position (buy to 0)
+      //  - update mean open price for the remainder of shares
+    } else {
+      updatedPL.tradeQueue.push({
+        meanOpenPrice: PL.meanOpenPrice,
+        realized: PL.realized,
+        shares: PL.position.abs(),
+        price: price
+      });
+      updatedPL.meanOpenPrice = updateMeanOpenPrice(ZERO, PL.meanOpenPrice, PL.position.plus(shares), price);
+    }
+  }
+
+  return updatedPL;
+}
+
+module.exports = longerPositionPL;
+},{"../../constants":27,"./update-mean-open-price":107}],105:[function(require,module,exports){
+"use strict";
+
+var updateRealizedPL = require("./update-realized-pl");
+var ZERO = require("../../constants").ZERO;
+
+function sellCompleteSetsPL(PL, shares, price) {
+  var updatedPL = {
+    position: PL.position,
+    meanOpenPrice: PL.meanOpenPrice,
+    realized: PL.realized,
+    completeSetsBought: PL.completeSetsBought,
+    queued: PL.queued,
+    tradeQueue: PL.tradeQueue
+  };
+
+  // If position <= 0, user is closing out a short position:
+  //  - update realized P/L
+  if (PL.position.lte(ZERO)) {
+    if (shares.gt(ZERO) && updatedPL.tradeQueue && updatedPL.tradeQueue.length) {
+      while (updatedPL.tradeQueue.length) {
+        if (updatedPL.tradeQueue[0].shares.gt(shares)) {
+          updatedPL.realized = updateRealizedPL(updatedPL.tradeQueue[0].meanOpenPrice, updatedPL.realized, shares.neg(), updatedPL.tradeQueue[0].price);
+          updatedPL.tradeQueue[0].shares = updatedPL.tradeQueue[0].shares.minus(shares);
+          break;
+        } else {
+          updatedPL.realized = updateRealizedPL(updatedPL.tradeQueue[0].meanOpenPrice, updatedPL.realized, updatedPL.tradeQueue[0].shares.neg(), updatedPL.tradeQueue[0].price);
+          updatedPL.tradeQueue.splice(0, 1);
+        }
+      }
+    }
+
+    // If position > 0, user is decreasing their long position:
+    //  - decrease position
+  } else {
+    updatedPL.position = updatedPL.position.minus(shares);
+    updatedPL.realized = updateRealizedPL(PL.meanOpenPrice, PL.realized, shares, price);
+  }
+
+  return updatedPL;
+}
+
+module.exports = sellCompleteSetsPL;
+},{"../../constants":27,"./update-realized-pl":108}],106:[function(require,module,exports){
+"use strict";
+
+var updateMeanOpenPrice = require("./update-mean-open-price");
+var updateRealizedPL = require("./update-realized-pl");
+var constants = require("../../constants");
+var PRECISION = constants.PRECISION;
+var ZERO = constants.ZERO;
+
+function shorterPositionPL(PL, shares, price) {
+  var updatedPL = {
+    position: PL.position.minus(shares),
+    meanOpenPrice: PL.meanOpenPrice,
+    realized: PL.realized,
+    completeSetsBought: PL.completeSetsBought,
+    queued: PL.queued,
+    tradeQueue: PL.tradeQueue
+  };
+
+  // If position < 0, user is increasing a short position:
+  //  - treat as a "negative buy" for P/L
+  //  - update weighted price of open positions
+  if (PL.position.abs().lte(PRECISION.zero)) {
+    updatedPL.meanOpenPrice = price;
+  } else if (PL.position.lt(PRECISION.zero)) {
+    updatedPL.meanOpenPrice = updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares.neg(), price);
+
+    // If position > 0, user is decreasing a long position
+  } else {
+
+    // If position >= shares, user is doing a regular sale:
+    //  - update realized P/L
+    if (PL.position.gte(shares)) {
+      updatedPL.realized = updateRealizedPL(PL.meanOpenPrice, PL.realized, shares, price);
+
+      // If position < shares, user is selling then short selling:
+      //  - update realized P/L for the current position (sell to 0)
+      //  - update mean open price for the remainder of shares (short sell)
+    } else {
+      updatedPL.realized = updateRealizedPL(PL.meanOpenPrice, PL.realized, PL.position, price);
+      updatedPL.meanOpenPrice = updateMeanOpenPrice(ZERO, PL.meanOpenPrice, PL.position.minus(shares), price);
+    }
+  }
+
+  return updatedPL;
+}
+
+module.exports = shorterPositionPL;
+},{"../../constants":27,"./update-mean-open-price":107,"./update-realized-pl":108}],107:[function(require,module,exports){
+"use strict";
+
+function updateMeanOpenPrice(position, meanOpenPrice, shares, price) {
+  return position.dividedBy(shares.plus(position)).times(meanOpenPrice).plus(shares.dividedBy(shares.plus(position)).times(price));
+}
+
+module.exports = updateMeanOpenPrice;
+},{}],108:[function(require,module,exports){
+"use strict";
+
+function updateRealizedPL(meanOpenPrice, realized, shares, price) {
+  return realized.plus(shares.times(price.minus(meanOpenPrice)));
+}
+
+module.exports = updateRealizedPL;
+},{}],109:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+
+function calculateNearlyCompleteSets(outcomeID, desiredShares, shareBalances) {
+  var sharesAvailable = desiredShares;
+  for (var i = 0; i < shareBalances.length; ++i) {
+    if (i !== outcomeID) {
+      sharesAvailable = BigNumber.min(shareBalances[i], sharesAvailable);
+    }
+  }
+  return sharesAvailable;
+}
+
+module.exports = calculateNearlyCompleteSets;
+},{"bignumber.js":155}],110:[function(require,module,exports){
+"use strict";
+
+var constants = require("../../constants");
+var ZERO = constants.ZERO;
+
+// sharePrice can be long (taking ask, making a bid) or short (taking bid, making an ask)
+// range in this context is used similarly to numTicks
+function calculateSettlementFee(completeSets, marketCreatorFeeRate, range, shouldCollectReportingFees, reportingFeeRate, sharePrice) {
+  var payout = completeSets.times(sharePrice).times(range);
+  var marketCreatorFee = payout.times(marketCreatorFeeRate).div(range);
+  var reportingFee = payout.times(shouldCollectReportingFees ? reportingFeeRate : ZERO).div(range);
+  var fee = marketCreatorFee.plus(reportingFee);
+  return fee;
+}
+
+module.exports = calculateSettlementFee;
+},{"../../constants":27}],111:[function(require,module,exports){
+"use strict";
+
+function depleteOtherShareBalances(outcomeID, sharesDepleted, shareBalances) {
+  var numOutcomes = shareBalances.length;
+  var depletedShareBalances = new Array(numOutcomes);
+  for (var i = 0; i < numOutcomes; ++i) {
+    depletedShareBalances[i] = i === outcomeID ? shareBalances[i] : shareBalances[i].minus(sharesDepleted);
+  }
+  return depletedShareBalances;
+}
+
+module.exports = depleteOtherShareBalances;
+},{}],112:[function(require,module,exports){
+"use strict";
+
+module.exports = require("./simulate-trade");
+},{"./simulate-trade":119}],113:[function(require,module,exports){
+"use strict";
+
+var simulateCreateBidOrder = require("./simulate-create-bid-order");
+var simulateFillAskOrder = require("./simulate-fill-ask-order");
+var sumSimulatedResults = require("./sum-simulated-results");
+var filterByPriceAndOutcomeAndUserSortByPrice = require("../filter-by-price-and-outcome-and-user-sort-by-price");
+var constants = require("../../constants");
+var PRECISION = constants.PRECISION;
+var ZERO = constants.ZERO;
+
+function simulateBuy(outcome, sharesToCover, shareBalances, tokenBalance, userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, sellOrderBook) {
+  var simulatedBuy = {
+    settlementFees: ZERO,
+    worstCaseFees: ZERO,
+    gasFees: ZERO,
+    sharesDepleted: ZERO,
+    otherSharesDepleted: ZERO,
+    tokensDepleted: ZERO,
+    shareBalances: shareBalances
+  };
+  var matchingSortedAsks = filterByPriceAndOutcomeAndUserSortByPrice(sellOrderBook, 0, price, userAddress);
+
+  // if no matching asks, then user is bidding: no settlement fees
+  if (!matchingSortedAsks.length) {
+    simulatedBuy = sumSimulatedResults(simulatedBuy, simulateCreateBidOrder(sharesToCover, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances));
+
+    // if there are matching asks, user is buying
+  } else {
+    var simulatedFillAskOrder = simulateFillAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedAsks, outcome, shareBalances);
+    simulatedBuy = sumSimulatedResults(simulatedBuy, simulatedFillAskOrder);
+    if (simulatedFillAskOrder.sharesToCover.gt(PRECISION.zero)) {
+      simulatedBuy = sumSimulatedResults(simulatedBuy, simulateCreateBidOrder(simulatedFillAskOrder.sharesToCover, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances));
+    }
+  }
+
+  return simulatedBuy;
+}
+
+module.exports = simulateBuy;
+},{"../../constants":27,"../filter-by-price-and-outcome-and-user-sort-by-price":87,"./simulate-create-bid-order":115,"./simulate-fill-ask-order":116,"./sum-simulated-results":120}],114:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var constants = require("../../constants");
+var PRECISION = constants.PRECISION;
+var ZERO = constants.ZERO;
+var calculateSettlementFee = require("./calculate-settlement-fee");
+
+function simulateCreateAskOrder(numShares, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances) {
+  var numOutcomes = shareBalances.length;
+  if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
+  if (numShares.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
+  if (price.gt(maxPrice)) throw new Error("Price is above the maximum price");
+  var gasFees = ZERO;
+  var worstCaseFees = ZERO;
+  var tokensEscrowed = ZERO;
+  var sharesEscrowed = ZERO;
+  var sharePriceLong = price.minus(minPrice);
+  if (shareBalances[outcome].gt(ZERO)) {
+    sharesEscrowed = BigNumber.min(shareBalances[outcome], numShares);
+    numShares = numShares.minus(sharesEscrowed);
+    shareBalances[outcome] = shareBalances[outcome].minus(sharesEscrowed);
+  }
+  if (numShares.gt(ZERO)) tokensEscrowed = numShares.times(maxPrice.minus(price));
+  if (sharesEscrowed.gt(ZERO)) worstCaseFees = calculateSettlementFee(sharesEscrowed, marketCreatorFeeRate, maxPrice.minus(minPrice), shouldCollectReportingFees, reportingFeeRate, sharePriceLong);
+  return {
+    gasFees: gasFees,
+    worstCaseFees: worstCaseFees,
+    sharesDepleted: sharesEscrowed,
+    tokensDepleted: tokensEscrowed,
+    shareBalances: shareBalances
+  };
+}
+
+module.exports = simulateCreateAskOrder;
+},{"../../constants":27,"./calculate-settlement-fee":110,"bignumber.js":155}],115:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var constants = require("../../constants");
+var PRECISION = constants.PRECISION;
+var ZERO = constants.ZERO;
+var calculateSettlementFee = require("./calculate-settlement-fee");
+
+function simulateCreateBidOrder(numShares, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances) {
+  var numOutcomes = shareBalances.length;
+  if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
+  if (numShares.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
+  if (price.lt(minPrice)) throw new Error("Price is below the minimum price");
+  var gasFees = ZERO;
+  var worstCaseFees = ZERO;
+  var sharePriceLong = price.minus(minPrice);
+  var sharePriceShort = maxPrice.minus(price);
+  var tokensEscrowed = ZERO;
+  var sharesEscrowed = new BigNumber(2, 10).toPower(254);
+  for (var i = 0; i < numOutcomes; ++i) {
+    if (i !== outcome) {
+      sharesEscrowed = BigNumber.min(shareBalances[i], sharesEscrowed);
+    }
+  }
+  sharesEscrowed = BigNumber.min(sharesEscrowed, numShares);
+  if (sharesEscrowed.gt(ZERO)) {
+    numShares = numShares.minus(sharesEscrowed);
+    for (i = 0; i < numOutcomes; ++i) {
+      if (i !== outcome) {
+        shareBalances[i] = shareBalances[i].minus(sharesEscrowed);
+      }
+    }
+
+    worstCaseFees = calculateSettlementFee(sharesEscrowed, marketCreatorFeeRate, maxPrice.minus(minPrice), shouldCollectReportingFees, reportingFeeRate, sharePriceShort);
+  }
+  if (numShares.gt(ZERO)) tokensEscrowed = numShares.times(sharePriceLong);
+  return {
+    gasFees: gasFees,
+    worstCaseFees: worstCaseFees,
+    otherSharesDepleted: sharesEscrowed,
+    tokensDepleted: tokensEscrowed,
+    shareBalances: shareBalances
+  };
+}
+
+module.exports = simulateCreateBidOrder;
+},{"../../constants":27,"./calculate-settlement-fee":110,"bignumber.js":155}],116:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var calculateNearlyCompleteSets = require("./calculate-nearly-complete-sets");
+var calculateSettlementFee = require("./calculate-settlement-fee");
+var depleteOtherShareBalances = require("./deplete-other-share-balances");
+var constants = require("../../constants");
+var PRECISION = constants.PRECISION;
+var ZERO = constants.ZERO;
+
+function simulateFillAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedAsks, outcome, shareBalances) {
+  var numOutcomes = shareBalances.length;
+  if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
+  if (sharesToCover.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
+  var settlementFees = ZERO;
+  var gasFees = ZERO;
+  var makerSharesDepleted = ZERO;
+  var makerTokensDepleted = ZERO;
+  var takerSharesDepleted = ZERO;
+  var takerTokensDepleted = ZERO;
+  matchingSortedAsks.forEach(function (matchingAsk) {
+    var takerDesiredShares = BigNumber.min(new BigNumber(matchingAsk.amount, 10), sharesToCover);
+    var makerSharesEscrowed = BigNumber.min(new BigNumber(matchingAsk.sharesEscrowed, 10), sharesToCover);
+    var orderDisplayPrice = new BigNumber(matchingAsk.fullPrecisionPrice, 10);
+    var sharePriceShort = maxPrice.minus(orderDisplayPrice);
+    var sharePriceLong = orderDisplayPrice.minus(minPrice);
+    var takerSharesAvailable = calculateNearlyCompleteSets(outcome, takerDesiredShares, shareBalances);
+    sharesToCover = sharesToCover.minus(takerDesiredShares);
+
+    // complete sets sold if maker is closing a long, taker is closing a short
+    if (makerSharesEscrowed.gt(PRECISION.zero) && takerSharesAvailable.gt(PRECISION.zero)) {
+      var completeSets = BigNumber.min(makerSharesEscrowed, takerSharesAvailable);
+      settlementFees = settlementFees.plus(calculateSettlementFee(completeSets, marketCreatorFeeRate, maxPrice.minus(minPrice), shouldCollectReportingFees, reportingFeeRate, sharePriceShort));
+      makerSharesDepleted = makerSharesDepleted.plus(completeSets);
+      takerSharesDepleted = takerSharesDepleted.plus(completeSets);
+      takerDesiredShares = takerDesiredShares.minus(completeSets);
+      makerSharesEscrowed = makerSharesEscrowed.minus(completeSets);
+    }
+
+    // maker is closing a long, taker is opening a long: no complete sets sold
+    if (makerSharesEscrowed.gt(PRECISION.zero) && takerDesiredShares.gt(PRECISION.zero)) {
+      var tokensRequiredToCoverTaker = makerSharesEscrowed.times(sharePriceLong);
+      makerSharesDepleted = makerSharesDepleted.plus(makerSharesEscrowed);
+      takerTokensDepleted = takerTokensDepleted.plus(tokensRequiredToCoverTaker);
+      takerDesiredShares = takerDesiredShares.minus(makerSharesEscrowed);
+      makerSharesEscrowed = ZERO;
+    }
+
+    // maker is opening a short, taker is closing a short
+    if (takerSharesAvailable.gt(PRECISION.zero) && takerDesiredShares.gt(PRECISION.zero)) {
+      var tokensRequiredToCoverMaker = takerSharesAvailable.times(sharePriceShort);
+      makerTokensDepleted = makerTokensDepleted.plus(tokensRequiredToCoverMaker);
+      takerSharesDepleted = takerSharesDepleted.plus(takerSharesAvailable);
+      takerDesiredShares = takerDesiredShares.minus(takerSharesAvailable);
+      takerSharesAvailable = ZERO;
+    }
+
+    // maker is opening a short, taker is opening a long
+    if (takerDesiredShares.gt(PRECISION.zero)) {
+      var takerPortionOfCompleteSetCost = takerDesiredShares.times(sharePriceLong);
+      var makerPortionOfCompleteSetCost = takerDesiredShares.times(sharePriceShort);
+      makerTokensDepleted = makerTokensDepleted.plus(makerPortionOfCompleteSetCost);
+      takerTokensDepleted = takerTokensDepleted.plus(takerPortionOfCompleteSetCost);
+      takerDesiredShares = ZERO;
+    }
+  });
+  if (takerSharesDepleted.gt(ZERO)) {
+    shareBalances = depleteOtherShareBalances(outcome, takerSharesDepleted, shareBalances);
+  }
+  return {
+    sharesToCover: sharesToCover,
+    settlementFees: settlementFees,
+    worstCaseFees: settlementFees,
+    gasFees: gasFees,
+    otherSharesDepleted: takerSharesDepleted,
+    tokensDepleted: takerTokensDepleted,
+    shareBalances: shareBalances
+  };
+}
+
+module.exports = simulateFillAskOrder;
+},{"../../constants":27,"./calculate-nearly-complete-sets":109,"./calculate-settlement-fee":110,"./deplete-other-share-balances":111,"bignumber.js":155}],117:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var calculateSettlementFee = require("./calculate-settlement-fee");
+var constants = require("../../constants");
+var PRECISION = constants.PRECISION;
+var ZERO = constants.ZERO;
+
+function simulateFillBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedBids, outcome, shareBalances) {
+  var numOutcomes = shareBalances.length;
+  if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
+  if (sharesToCover.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
+  var settlementFees = ZERO;
+  var gasFees = ZERO;
+  var makerSharesDepleted = ZERO;
+  var makerTokensDepleted = ZERO;
+  var takerSharesDepleted = ZERO;
+  var takerTokensDepleted = ZERO;
+  matchingSortedBids.forEach(function (matchingBid) {
+    var takerDesiredSharesForThisOrder = BigNumber.min(new BigNumber(matchingBid.amount, 10), sharesToCover);
+    var orderDisplayPrice = new BigNumber(matchingBid.fullPrecisionPrice, 10);
+    var sharePriceShort = maxPrice.minus(orderDisplayPrice);
+    var sharePriceLong = orderDisplayPrice.minus(minPrice);
+    var makerSharesEscrowed = BigNumber.min(new BigNumber(matchingBid.sharesEscrowed, 10), sharesToCover);
+    sharesToCover = sharesToCover.minus(takerDesiredSharesForThisOrder);
+    var takerSharesAvailable = BigNumber.min(takerDesiredSharesForThisOrder, shareBalances[outcome]);
+
+    // maker is closing a short, taker is closing a long: complete sets sold
+    if (makerSharesEscrowed.gt(PRECISION.zero) && takerSharesAvailable.gt(PRECISION.zero)) {
+      var completeSets = BigNumber.min(makerSharesEscrowed, takerSharesAvailable);
+      settlementFees = settlementFees.plus(calculateSettlementFee(completeSets, marketCreatorFeeRate, maxPrice.minus(minPrice), shouldCollectReportingFees, reportingFeeRate, sharePriceLong));
+      makerSharesDepleted = makerSharesDepleted.plus(completeSets);
+      takerSharesDepleted = takerSharesDepleted.plus(completeSets);
+      takerSharesAvailable = takerSharesAvailable.minus(completeSets);
+      makerSharesEscrowed = makerSharesEscrowed.minus(completeSets);
+      takerDesiredSharesForThisOrder = takerDesiredSharesForThisOrder.minus(completeSets);
+    }
+
+    // maker is closing a short, taker is opening a short
+    if (makerSharesEscrowed.gt(PRECISION.zero) && takerDesiredSharesForThisOrder.gt(PRECISION.zero)) {
+      var tokensRequiredToCoverTaker = makerSharesEscrowed.times(sharePriceShort);
+      makerSharesDepleted = makerSharesDepleted.plus(makerSharesEscrowed);
+      takerTokensDepleted = takerTokensDepleted.plus(tokensRequiredToCoverTaker);
+      takerDesiredSharesForThisOrder = takerDesiredSharesForThisOrder.minus(makerSharesEscrowed);
+      makerSharesEscrowed = ZERO;
+    }
+
+    // maker is opening a long, taker is closing a long
+    if (takerSharesAvailable.gt(PRECISION.zero) && takerDesiredSharesForThisOrder.gt(PRECISION.zero)) {
+      var tokensRequiredToCoverMaker = takerSharesAvailable.times(sharePriceLong);
+      makerTokensDepleted = makerTokensDepleted.plus(tokensRequiredToCoverMaker);
+      takerSharesDepleted = takerSharesDepleted.plus(takerSharesAvailable);
+      takerDesiredSharesForThisOrder = takerDesiredSharesForThisOrder.minus(takerSharesAvailable);
+      takerSharesAvailable = ZERO;
+    }
+
+    // maker is opening a long, taker is opening a short
+    if (takerDesiredSharesForThisOrder.gt(PRECISION.zero)) {
+      var takerPortionOfCompleteSetCost = takerDesiredSharesForThisOrder.times(sharePriceShort);
+      var makerPortionOfCompleteSetCost = takerDesiredSharesForThisOrder.times(sharePriceLong);
+      makerTokensDepleted = makerTokensDepleted.plus(makerPortionOfCompleteSetCost);
+      takerTokensDepleted = takerTokensDepleted.plus(takerPortionOfCompleteSetCost);
+      takerDesiredSharesForThisOrder = ZERO;
+    }
+  });
+  shareBalances[outcome] = shareBalances[outcome].minus(takerSharesDepleted);
+  return {
+    sharesToCover: sharesToCover,
+    settlementFees: settlementFees,
+    worstCaseFees: settlementFees,
+    gasFees: gasFees,
+    sharesDepleted: takerSharesDepleted,
+    tokensDepleted: takerTokensDepleted,
+    shareBalances: shareBalances
+  };
+}
+
+module.exports = simulateFillBidOrder;
+},{"../../constants":27,"./calculate-settlement-fee":110,"bignumber.js":155}],118:[function(require,module,exports){
+"use strict";
+
+var simulateCreateAskOrder = require("./simulate-create-ask-order");
+var simulateFillBidOrder = require("./simulate-fill-bid-order");
+var sumSimulatedResults = require("./sum-simulated-results");
+var filterByPriceAndOutcomeAndUserSortByPrice = require("../filter-by-price-and-outcome-and-user-sort-by-price");
+var constants = require("../../constants");
+var PRECISION = constants.PRECISION;
+var ZERO = constants.ZERO;
+
+function simulateSell(outcome, sharesToCover, shareBalances, tokenBalance, userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, buyOrderBook) {
+  var simulatedSell = {
+    settlementFees: ZERO,
+    worstCaseFees: ZERO,
+    gasFees: ZERO,
+    sharesDepleted: ZERO,
+    otherSharesDepleted: ZERO,
+    tokensDepleted: ZERO,
+    shareBalances: shareBalances
+  };
+  var matchingSortedBids = filterByPriceAndOutcomeAndUserSortByPrice(buyOrderBook, 1, price, userAddress);
+
+  // if no matching bids, then user is asking: no settlement fees
+  if (!matchingSortedBids.length) {
+    simulatedSell = sumSimulatedResults(simulatedSell, simulateCreateAskOrder(sharesToCover, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances));
+
+    // if there are matching bids, user is selling
+  } else {
+    var simulatedFillBidOrder = simulateFillBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedBids, outcome, shareBalances);
+    simulatedSell = sumSimulatedResults(simulatedSell, simulatedFillBidOrder);
+    if (simulatedFillBidOrder.sharesToCover.gt(PRECISION.zero)) {
+      simulatedSell = sumSimulatedResults(simulatedSell, simulateCreateAskOrder(simulatedFillBidOrder.sharesToCover, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances));
+    }
+  }
+
+  return simulatedSell;
+}
+
+module.exports = simulateSell;
+},{"../../constants":27,"../filter-by-price-and-outcome-and-user-sort-by-price":87,"./simulate-create-ask-order":114,"./simulate-fill-bid-order":117,"./sum-simulated-results":120}],119:[function(require,module,exports){
+"use strict";
+
+/** Type definition for SingleOutcomeOrderBook.
+ * @typedef {Object} SingleOutcomeOrderBook
+ * @property {require("../get-open-orders").SingleOutcomeOrderBookSide} buy Buy orders (bids) indexed by order ID.
+ * @property {require("../get-open-orders").SingleOutcomeOrderBookSide} sell Sell orders (asks) indexed by order ID.
+ */
+
+/** Type definition for MarketOrderBook.
+ * @typedef {Object} MarketOrderBook
+ * @property {SingleOutcomeOrderBook|undefined} 1 Full order book (buy and sell) for outcome 1 of this market.
+ * @property {SingleOutcomeOrderBook|undefined} 2 Full order book (buy and sell) for outcome 2 of this market.
+ * @property {SingleOutcomeOrderBook|undefined} 3 Full order book (buy and sell) for outcome 3 of this market.
+ * @property {SingleOutcomeOrderBook|undefined} 4 Full order book (buy and sell) for outcome 4 of this market.
+ * @property {SingleOutcomeOrderBook|undefined} 5 Full order book (buy and sell) for outcome 5 of this market.
+ * @property {SingleOutcomeOrderBook|undefined} 6 Full order book (buy and sell) for outcome 6 of this market.
+ * @property {SingleOutcomeOrderBook|undefined} 7 Full order book (buy and sell) for outcome 7 of this market.
+ * @property {SingleOutcomeOrderBook|undefined} 8 Full order book (buy and sell) for outcome 8 of this market.
+ */
+
+/** Type definition for SimulatedTrade.
+ * @typedef {Object} SimulatedTrade
+ * @property {string} settlementFees Projected settlement fees paid on this trade, as a base-10 string.
+ * @property {string} gasFees Projected gas fees paid on this trade, as a base-10 string.
+ * @property {string} sharesDepleted Projected number of shares of the traded outcome spent on this trade, as a base-10 string.
+ * @property {string} otherSharesDepleted Projected number of shares of the other (non-traded) outcomes spent on this trade, as a base-10 string.
+ * @property {string} tokensDepleted Projected number of tokens spent on this trade, as a base-10 string.
+ * @property {string[]} shareBalances Projected final balances after the trade is complete, as an array of base-10 strings.
+ */
+
+var BigNumber = require("bignumber.js");
+var simulateBuy = require("./simulate-buy");
+var simulateSell = require("./simulate-sell");
+
+/**
+ * Determine the sequence of makes/takes that will be executed to fill the specified order, and return the user's
+ * projected balances and fees paid after this sequence is completed.
+ * Note: simulateTrade automatically normalizes share prices, so "display prices" can be directly passed in
+ * for minPrice, maxPrice, and price.
+ * @param {Object} p Trade simulation parameters.
+ * @param {number} p.orderType Order type (0 for "buy", 1 for "sell").
+ * @param {number} p.outcome Outcome ID to trade, must be an integer value on [0, 7].
+ * @param {string[]} p.shareBalances Number of shares the user owns of each outcome in ascending order, as an array of base-10 strings.
+ * @param {string} p.tokenBalance Number of tokens (e.g., wrapped ether) the user owns, as a base-10 string.
+ * @param {string} p.userAddress The user's Ethereum address, as a hexadecimal string.
+ * @param {string} p.minPrice This market's minimum possible price, as a base-10 string.
+ * @param {string} p.maxPrice This market's maximum possible price, as a base-10 string.
+ * @param {string} p.price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
+ * @param {string} p.shares Number of shares to trade, as a base-10 string.
+ * @param {string} p.marketCreatorFeeRate The fee rate charged by the market creator (e.g., pass in "0.01" if the fee is 1%), as a base-10 string.
+ * @param {MarketOrderBook} p.marketOrderBook The full order book (buy and sell) for this market and outcome.
+ * @param {boolean=} p.shouldCollectReportingFees False if reporting fees are not collected; this is rare and only occurs in disowned markets (default: true).
+ * @return {SimulatedTrade} Projected fees paid, shares and tokens spent, and final balances after the trade is complete.
+ */
+function simulateTrade(p) {
+  if (p.orderType !== 0 && p.orderType !== 1) throw new Error("Order type must be 0 (buy) or 1 (sell)");
+  var sharesToCover = new BigNumber(p.shares, 10);
+  var price = new BigNumber(p.price, 10);
+  var tokenBalance = new BigNumber(p.tokenBalance, 10);
+  var minPrice = new BigNumber(p.minPrice, 10);
+  var maxPrice = new BigNumber(p.maxPrice, 10);
+  var marketCreatorFeeRate = new BigNumber(p.marketCreatorFeeRate, 10);
+  var reportingFeeRate = new BigNumber(p.reportingFeeRate, 10);
+  var shouldCollectReportingFees = p.shouldCollectReportingFees === false ? 0 : 1;
+  var shareBalances = p.shareBalances.map(function (shareBalance) {
+    return new BigNumber(shareBalance, 10);
+  });
+  var simulatedTrade = p.orderType === 0 ? simulateBuy(p.outcome, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.marketOrderBook.sell) : simulateSell(p.outcome, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.marketOrderBook.buy);
+  return {
+    settlementFees: simulatedTrade.settlementFees.toFixed(),
+    worstCaseFees: simulatedTrade.worstCaseFees.toFixed(),
+    gasFees: simulatedTrade.gasFees.toFixed(),
+    sharesDepleted: simulatedTrade.sharesDepleted.toFixed(),
+    otherSharesDepleted: simulatedTrade.otherSharesDepleted.toFixed(),
+    tokensDepleted: simulatedTrade.tokensDepleted.toFixed(),
+    shareBalances: simulatedTrade.shareBalances.map(function (shareBalance) {
+      return shareBalance.toFixed();
+    })
+  };
+}
+
+module.exports = simulateTrade;
+},{"./simulate-buy":113,"./simulate-sell":118,"bignumber.js":155}],120:[function(require,module,exports){
+"use strict";
+
+function sumSimulatedResults(sumOfSimulatedResults, simulatedResults) {
+  return Object.keys(sumOfSimulatedResults).reduce(function (updatedSumOfSimulatedResults, tradeField) {
+    if (tradeField === "shareBalances") {
+      updatedSumOfSimulatedResults[tradeField] = simulatedResults[tradeField];
+    } else if (simulatedResults[tradeField] !== undefined) {
+      updatedSumOfSimulatedResults[tradeField] = sumOfSimulatedResults[tradeField].plus(simulatedResults[tradeField]);
+    } else {
+      updatedSumOfSimulatedResults[tradeField] = sumOfSimulatedResults[tradeField];
+    }
+    return updatedSumOfSimulatedResults;
+  }, {});
+}
+
+module.exports = sumSimulatedResults;
+},{}],121:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash.assign");
+var BigNumber = require("bignumber.js");
+var speedomatic = require("speedomatic");
+var immutableDelete = require("immutable-delete");
+var getTradeAmountRemaining = require("./get-trade-amount-remaining");
+var convertDecimalToFixedPoint = require("../utils/convert-decimal-to-fixed-point");
+var convertFixedPointToDecimal = require("../utils/convert-fixed-point-to-decimal");
+var api = require("../api");
+var noop = require("../utils/noop");
+var constants = require("../constants");
+
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p._price Display (non-normalized) limit price for this trade, as a base-10 string.
+ * @param {string} p._fxpAmount Number of shares to trade, as a base-10 string.
+ * @param {string} p.numTicks The number of ticks for this market.
+ * @param {string} p.tickSize The tick size (interval) for this market.
+ * @param {number} p._direction Order type (0 for "buy", 1 for "sell").
+ * @param {string} p._market Market in which to trade, as a hex string.
+ * @param {number} p._outcome Outcome ID to trade, must be an integer value on [0, 7].
+ * @param {string=} p._tradeGroupId ID logged with each trade transaction (can be used to group trades client-side), as a hex string.
+ * @param {boolean=} p.doNotCreateOrders If set to true, this trade will only take existing orders off the book, not create new ones (default: false).
+ * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
+ * @param {function} p.onSent Called when the first trading transaction is broadcast to the network.
+ * @param {function} p.onSuccess Called when the full trade completes successfully.
+ * @param {function} p.onFailed Called if any part of the trade fails.
+ */
+function tradeUntilAmountIsZero(p) {
+  console.log("tradeUntilAmountIsZero:", JSON.stringify(immutableDelete(p, "meta"), null, 2));
+  var priceNumTicksRepresentation = convertDecimalToFixedPoint(p._price, p.numTicks);
+  var adjustedPrice = p._direction === 0 ? new BigNumber(priceNumTicksRepresentation, 16) : new BigNumber(p.numTicks, 10).minus(new BigNumber(priceNumTicksRepresentation, 16));
+  var onChainAmount = convertDecimalToFixedPoint(p._fxpAmount, speedomatic.fix(p.tickSize, "string"));
+  var cost = new BigNumber(onChainAmount, 16).times(adjustedPrice);
+  if (cost.lt(constants.PRECISION.zero)) return p.onSuccess(null);
+  console.log("cost:", speedomatic.unfix(cost, "string"), "ether");
+  var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "tickSize"]), {
+    tx: assign({ value: speedomatic.hex(cost), gas: constants.TRADE_GAS }, p.tx),
+    _fxpAmount: onChainAmount,
+    _price: priceNumTicksRepresentation,
+    onSuccess: function onSuccess(res) {
+      getTradeAmountRemaining({
+        transactionHash: res.hash,
+        startingOnChainAmount: onChainAmount,
+        priceNumTicksRepresentation: priceNumTicksRepresentation
+      }, function (err, tradeOnChainAmountRemaining) {
+        if (err) return p.onFailed(err);
+        console.log("starting amount: ", p._fxpAmount);
+        console.log("amount remaining:", convertFixedPointToDecimal(tradeOnChainAmountRemaining, speedomatic.fix(p.tickSize, "string")));
+        if (new BigNumber(tradeOnChainAmountRemaining, 10).eq(new BigNumber(onChainAmount, 16))) {
+          if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining);
+          return p.onFailed("Trade completed but amount of trade unchanged");
+        }
+        tradeUntilAmountIsZero(assign({}, p, {
+          _fxpAmount: convertFixedPointToDecimal(tradeOnChainAmountRemaining, speedomatic.fix(p.tickSize, "string")),
+          onSent: noop // so that p.onSent only fires when the first transaction is sent
+        }));
+      });
+    }
+  });
+  if (p.doNotCreateOrders) {
+    api().Trade.publicTakeBestOrder(tradePayload);
+  } else {
+    api().Trade.publicTrade(tradePayload);
+  }
+}
+
+module.exports = tradeUntilAmountIsZero;
+},{"../api":11,"../constants":27,"../utils/convert-decimal-to-fixed-point":123,"../utils/convert-fixed-point-to-decimal":124,"../utils/noop":131,"./get-trade-amount-remaining":91,"bignumber.js":155,"immutable-delete":407,"lodash.assign":430,"speedomatic":535}],122:[function(require,module,exports){
+"use strict";
+
+var BLOCKS_PER_CHUNK = require("../constants").BLOCKS_PER_CHUNK;
+
+function chunkBlocks(fromBlock, toBlock) {
+  var toBlockChunk, fromBlockChunk, chunks;
+  if (fromBlock < 1) fromBlock = 1;
+  if (toBlock < fromBlock) return [];
+  toBlockChunk = toBlock;
+  fromBlockChunk = toBlock - BLOCKS_PER_CHUNK;
+  chunks = [];
+  while (toBlockChunk >= fromBlock) {
+    if (fromBlockChunk < fromBlock) {
+      fromBlockChunk = fromBlock;
+    }
+    chunks.push({ fromBlock: fromBlockChunk, toBlock: toBlockChunk });
+    fromBlockChunk -= BLOCKS_PER_CHUNK;
+    toBlockChunk -= BLOCKS_PER_CHUNK;
+    if (toBlockChunk === toBlock - BLOCKS_PER_CHUNK) {
+      toBlockChunk--;
+    }
+  }
+  return chunks;
+}
+
+module.exports = chunkBlocks;
+},{"../constants":27}],123:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var prefixHex = require("speedomatic").prefixHex;
+
+/**
+ * @param {string|number} decimalValue
+ * @param {string|number} conversionFactor
+ * @return {string}
+ */
+function convertDecimalToFixedPoint(decimalValue, conversionFactor) {
+  return prefixHex(new BigNumber(decimalValue, 10).times(new BigNumber(conversionFactor, 10)).floor().toString(16));
+}
+
+module.exports = convertDecimalToFixedPoint;
+},{"bignumber.js":155,"speedomatic":535}],124:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+
+/**
+ * @param {string|number} decimalValue
+ * @param {string|number} conversionFactor
+ * @return {string}
+ */
+function convertFixedPointToDecimal(fixedPointValue, conversionFactor) {
+  return new BigNumber(fixedPointValue, 10).dividedBy(new BigNumber(conversionFactor, 10)).toFixed();
+}
+
+module.exports = convertFixedPointToDecimal;
+},{"bignumber.js":155}],125:[function(require,module,exports){
+"use strict";
+
+var isFunction = function isFunction(f) {
+  return typeof f === "function";
+};
+
+module.exports = isFunction;
+},{}],126:[function(require,module,exports){
+"use strict";
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+module.exports = function (item) {
+  return (typeof item === "undefined" ? "undefined" : _typeof(item)) === "object" && !Array.isArray(item) && item !== null;
+};
+},{}],127:[function(require,module,exports){
+"use strict";
+
+var createKeccakHash = require("keccak/js");
+
+function keccak256(buffer) {
+  return createKeccakHash("keccak256").update(buffer).digest();
+}
+
+module.exports = keccak256;
+},{"keccak/js":415}],128:[function(require,module,exports){
+"use strict";
+
+module.exports = function (contracts) {
+  return Object.keys(contracts).map(function (contractName) {
+    return contracts[contractName];
+  });
+};
+},{}],129:[function(require,module,exports){
+"use strict";
+
+module.exports = function (contracts) {
+  return Object.keys(contracts).reduce(function (p, contractName) {
+    p[contracts[contractName]] = contractName;
+    return p;
+  }, {});
+};
+},{}],130:[function(require,module,exports){
+"use strict";
+
+module.exports = function (eventsAbi) {
+  return Object.keys(eventsAbi).reduce(function (p, contractName) {
+    if (!p[contractName]) p[contractName] = {};
+    var contractEventsAbi = eventsAbi[contractName];
+    Object.keys(contractEventsAbi).forEach(function (eventName) {
+      p[contractName][contractEventsAbi[eventName].signature] = eventName;
+    });
+    return p;
+  }, {});
+};
+},{}],131:[function(require,module,exports){
+"use strict";
+
+var noop = function noop() {};
+
+module.exports = noop;
+},{}],132:[function(require,module,exports){
+"use strict";
+
+var fs = require("fs");
+
+function readJsonFile(path, callback) {
+  fs.readFile(path, function (err, data) {
+    try {
+      if (err) return callback(err);
+
+      callback(null, JSON.parse(data));
+    } catch (e) {
+      callback(e);
+    }
+  });
+}
+
+module.exports = { readJsonFile: readJsonFile };
+},{"fs":189}],133:[function(require,module,exports){
+"use strict";
+
+var crypto = require("crypto");
+var speedomatic = require("speedomatic");
+
+var sha256 = function sha256(hashable) {
+  return speedomatic.hex(speedomatic.prefixHex(crypto.createHash("sha256").update(speedomatic.serialize(hashable)).digest("hex")), true);
+};
+
+module.exports = sha256;
+},{"crypto":202,"speedomatic":535}],134:[function(require,module,exports){
+'use strict';
+
+// generated by genversion
+module.exports = '4.7.0-62';
+},{}],135:[function(require,module,exports){
+(function (global){
+var augur = global.augur || require("./build/index");
+global.augur = augur;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./build/index":60}],136:[function(require,module,exports){
+var asn1 = exports;
+
+asn1.bignum = require('bn.js');
+
+asn1.define = require('./asn1/api').define;
+asn1.base = require('./asn1/base');
+asn1.constants = require('./asn1/constants');
+asn1.decoders = require('./asn1/decoders');
+asn1.encoders = require('./asn1/encoders');
+
+},{"./asn1/api":137,"./asn1/base":139,"./asn1/constants":143,"./asn1/decoders":145,"./asn1/encoders":148,"bn.js":157}],137:[function(require,module,exports){
+var asn1 = require('../asn1');
+var inherits = require('inherits');
+
+var api = exports;
+
+api.define = function define(name, body) {
+  return new Entity(name, body);
+};
+
+function Entity(name, body) {
+  this.name = name;
+  this.body = body;
+
+  this.decoders = {};
+  this.encoders = {};
+};
+
+Entity.prototype._createNamed = function createNamed(base) {
+  var named;
+  try {
+    named = require('vm').runInThisContext(
+      '(function ' + this.name + '(entity) {\n' +
+      '  this._initNamed(entity);\n' +
+      '})'
+    );
+  } catch (e) {
+    named = function (entity) {
+      this._initNamed(entity);
+    };
+  }
+  inherits(named, base);
+  named.prototype._initNamed = function initnamed(entity) {
+    base.call(this, entity);
+  };
+
+  return new named(this);
+};
+
+Entity.prototype._getDecoder = function _getDecoder(enc) {
+  enc = enc || 'der';
+  // Lazily create decoder
+  if (!this.decoders.hasOwnProperty(enc))
+    this.decoders[enc] = this._createNamed(asn1.decoders[enc]);
+  return this.decoders[enc];
+};
+
+Entity.prototype.decode = function decode(data, enc, options) {
+  return this._getDecoder(enc).decode(data, options);
+};
+
+Entity.prototype._getEncoder = function _getEncoder(enc) {
+  enc = enc || 'der';
+  // Lazily create encoder
+  if (!this.encoders.hasOwnProperty(enc))
+    this.encoders[enc] = this._createNamed(asn1.encoders[enc]);
+  return this.encoders[enc];
+};
+
+Entity.prototype.encode = function encode(data, enc, /* internal */ reporter) {
+  return this._getEncoder(enc).encode(data, reporter);
+};
+
+},{"../asn1":136,"inherits":410,"vm":567}],138:[function(require,module,exports){
+var inherits = require('inherits');
+var Reporter = require('../base').Reporter;
+var Buffer = require('buffer').Buffer;
+
+function DecoderBuffer(base, options) {
+  Reporter.call(this, options);
+  if (!Buffer.isBuffer(base)) {
+    this.error('Input not Buffer');
+    return;
+  }
+
+  this.base = base;
+  this.offset = 0;
+  this.length = base.length;
+}
+inherits(DecoderBuffer, Reporter);
+exports.DecoderBuffer = DecoderBuffer;
+
+DecoderBuffer.prototype.save = function save() {
+  return { offset: this.offset, reporter: Reporter.prototype.save.call(this) };
+};
+
+DecoderBuffer.prototype.restore = function restore(save) {
+  // Return skipped data
+  var res = new DecoderBuffer(this.base);
+  res.offset = save.offset;
+  res.length = this.offset;
+
+  this.offset = save.offset;
+  Reporter.prototype.restore.call(this, save.reporter);
+
+  return res;
+};
+
+DecoderBuffer.prototype.isEmpty = function isEmpty() {
+  return this.offset === this.length;
+};
+
+DecoderBuffer.prototype.readUInt8 = function readUInt8(fail) {
+  if (this.offset + 1 <= this.length)
+    return this.base.readUInt8(this.offset++, true);
+  else
+    return this.error(fail || 'DecoderBuffer overrun');
+}
+
+DecoderBuffer.prototype.skip = function skip(bytes, fail) {
+  if (!(this.offset + bytes <= this.length))
+    return this.error(fail || 'DecoderBuffer overrun');
+
+  var res = new DecoderBuffer(this.base);
+
+  // Share reporter state
+  res._reporterState = this._reporterState;
+
+  res.offset = this.offset;
+  res.length = this.offset + bytes;
+  this.offset += bytes;
+  return res;
+}
+
+DecoderBuffer.prototype.raw = function raw(save) {
+  return this.base.slice(save ? save.offset : this.offset, this.length);
+}
+
+function EncoderBuffer(value, reporter) {
+  if (Array.isArray(value)) {
+    this.length = 0;
+    this.value = value.map(function(item) {
+      if (!(item instanceof EncoderBuffer))
+        item = new EncoderBuffer(item, reporter);
+      this.length += item.length;
+      return item;
+    }, this);
+  } else if (typeof value === 'number') {
+    if (!(0 <= value && value <= 0xff))
+      return reporter.error('non-byte EncoderBuffer value');
+    this.value = value;
+    this.length = 1;
+  } else if (typeof value === 'string') {
+    this.value = value;
+    this.length = Buffer.byteLength(value);
+  } else if (Buffer.isBuffer(value)) {
+    this.value = value;
+    this.length = value.length;
+  } else {
+    return reporter.error('Unsupported type: ' + typeof value);
+  }
+}
+exports.EncoderBuffer = EncoderBuffer;
+
+EncoderBuffer.prototype.join = function join(out, offset) {
+  if (!out)
+    out = new Buffer(this.length);
+  if (!offset)
+    offset = 0;
+
+  if (this.length === 0)
+    return out;
+
+  if (Array.isArray(this.value)) {
+    this.value.forEach(function(item) {
+      item.join(out, offset);
+      offset += item.length;
+    });
+  } else {
+    if (typeof this.value === 'number')
+      out[offset] = this.value;
+    else if (typeof this.value === 'string')
+      out.write(this.value, offset);
+    else if (Buffer.isBuffer(this.value))
+      this.value.copy(out, offset);
+    offset += this.length;
+  }
+
+  return out;
+};
+
+},{"../base":139,"buffer":192,"inherits":410}],139:[function(require,module,exports){
+var base = exports;
+
+base.Reporter = require('./reporter').Reporter;
+base.DecoderBuffer = require('./buffer').DecoderBuffer;
+base.EncoderBuffer = require('./buffer').EncoderBuffer;
+base.Node = require('./node');
+
+},{"./buffer":138,"./node":140,"./reporter":141}],140:[function(require,module,exports){
+var Reporter = require('../base').Reporter;
+var EncoderBuffer = require('../base').EncoderBuffer;
+var DecoderBuffer = require('../base').DecoderBuffer;
+var assert = require('minimalistic-assert');
+
+// Supported tags
+var tags = [
+  'seq', 'seqof', 'set', 'setof', 'objid', 'bool',
+  'gentime', 'utctime', 'null_', 'enum', 'int', 'objDesc',
+  'bitstr', 'bmpstr', 'charstr', 'genstr', 'graphstr', 'ia5str', 'iso646str',
+  'numstr', 'octstr', 'printstr', 't61str', 'unistr', 'utf8str', 'videostr'
+];
+
+// Public methods list
+var methods = [
+  'key', 'obj', 'use', 'optional', 'explicit', 'implicit', 'def', 'choice',
+  'any', 'contains'
+].concat(tags);
+
+// Overrided methods list
+var overrided = [
+  '_peekTag', '_decodeTag', '_use',
+  '_decodeStr', '_decodeObjid', '_decodeTime',
+  '_decodeNull', '_decodeInt', '_decodeBool', '_decodeList',
+
+  '_encodeComposite', '_encodeStr', '_encodeObjid', '_encodeTime',
+  '_encodeNull', '_encodeInt', '_encodeBool'
+];
+
+function Node(enc, parent) {
+  var state = {};
+  this._baseState = state;
+
+  state.enc = enc;
+
+  state.parent = parent || null;
+  state.children = null;
+
+  // State
+  state.tag = null;
+  state.args = null;
+  state.reverseArgs = null;
+  state.choice = null;
+  state.optional = false;
+  state.any = false;
+  state.obj = false;
+  state.use = null;
+  state.useDecoder = null;
+  state.key = null;
+  state['default'] = null;
+  state.explicit = null;
+  state.implicit = null;
+  state.contains = null;
+
+  // Should create new instance on each method
+  if (!state.parent) {
+    state.children = [];
+    this._wrap();
+  }
+}
+module.exports = Node;
+
+var stateProps = [
+  'enc', 'parent', 'children', 'tag', 'args', 'reverseArgs', 'choice',
+  'optional', 'any', 'obj', 'use', 'alteredUse', 'key', 'default', 'explicit',
+  'implicit', 'contains'
+];
+
+Node.prototype.clone = function clone() {
+  var state = this._baseState;
+  var cstate = {};
+  stateProps.forEach(function(prop) {
+    cstate[prop] = state[prop];
+  });
+  var res = new this.constructor(cstate.parent);
+  res._baseState = cstate;
+  return res;
+};
+
+Node.prototype._wrap = function wrap() {
+  var state = this._baseState;
+  methods.forEach(function(method) {
+    this[method] = function _wrappedMethod() {
+      var clone = new this.constructor(this);
+      state.children.push(clone);
+      return clone[method].apply(clone, arguments);
+    };
+  }, this);
+};
+
+Node.prototype._init = function init(body) {
+  var state = this._baseState;
+
+  assert(state.parent === null);
+  body.call(this);
+
+  // Filter children
+  state.children = state.children.filter(function(child) {
+    return child._baseState.parent === this;
+  }, this);
+  assert.equal(state.children.length, 1, 'Root node can have only one child');
+};
+
+Node.prototype._useArgs = function useArgs(args) {
+  var state = this._baseState;
+
+  // Filter children and args
+  var children = args.filter(function(arg) {
+    return arg instanceof this.constructor;
+  }, this);
+  args = args.filter(function(arg) {
+    return !(arg instanceof this.constructor);
+  }, this);
+
+  if (children.length !== 0) {
+    assert(state.children === null);
+    state.children = children;
+
+    // Replace parent to maintain backward link
+    children.forEach(function(child) {
+      child._baseState.parent = this;
+    }, this);
+  }
+  if (args.length !== 0) {
+    assert(state.args === null);
+    state.args = args;
+    state.reverseArgs = args.map(function(arg) {
+      if (typeof arg !== 'object' || arg.constructor !== Object)
+        return arg;
+
+      var res = {};
+      Object.keys(arg).forEach(function(key) {
+        if (key == (key | 0))
+          key |= 0;
+        var value = arg[key];
+        res[value] = key;
+      });
+      return res;
+    });
+  }
+};
+
+//
+// Overrided methods
+//
+
+overrided.forEach(function(method) {
+  Node.prototype[method] = function _overrided() {
+    var state = this._baseState;
+    throw new Error(method + ' not implemented for encoding: ' + state.enc);
+  };
+});
+
+//
+// Public methods
+//
+
+tags.forEach(function(tag) {
+  Node.prototype[tag] = function _tagMethod() {
+    var state = this._baseState;
+    var args = Array.prototype.slice.call(arguments);
+
+    assert(state.tag === null);
+    state.tag = tag;
+
+    this._useArgs(args);
+
+    return this;
+  };
+});
+
+Node.prototype.use = function use(item) {
+  assert(item);
+  var state = this._baseState;
+
+  assert(state.use === null);
+  state.use = item;
+
+  return this;
+};
+
+Node.prototype.optional = function optional() {
+  var state = this._baseState;
+
+  state.optional = true;
+
+  return this;
+};
+
+Node.prototype.def = function def(val) {
+  var state = this._baseState;
+
+  assert(state['default'] === null);
+  state['default'] = val;
+  state.optional = true;
+
+  return this;
+};
+
+Node.prototype.explicit = function explicit(num) {
+  var state = this._baseState;
+
+  assert(state.explicit === null && state.implicit === null);
+  state.explicit = num;
+
+  return this;
+};
+
+Node.prototype.implicit = function implicit(num) {
+  var state = this._baseState;
+
+  assert(state.explicit === null && state.implicit === null);
+  state.implicit = num;
+
+  return this;
+};
+
+Node.prototype.obj = function obj() {
+  var state = this._baseState;
+  var args = Array.prototype.slice.call(arguments);
+
+  state.obj = true;
+
+  if (args.length !== 0)
+    this._useArgs(args);
+
+  return this;
+};
+
+Node.prototype.key = function key(newKey) {
+  var state = this._baseState;
+
+  assert(state.key === null);
+  state.key = newKey;
+
+  return this;
+};
+
+Node.prototype.any = function any() {
+  var state = this._baseState;
+
+  state.any = true;
+
+  return this;
+};
+
+Node.prototype.choice = function choice(obj) {
+  var state = this._baseState;
+
+  assert(state.choice === null);
+  state.choice = obj;
+  this._useArgs(Object.keys(obj).map(function(key) {
+    return obj[key];
+  }));
+
+  return this;
+};
+
+Node.prototype.contains = function contains(item) {
+  var state = this._baseState;
+
+  assert(state.use === null);
+  state.contains = item;
+
+  return this;
+};
+
+//
+// Decoding
+//
+
+Node.prototype._decode = function decode(input, options) {
+  var state = this._baseState;
+
+  // Decode root node
+  if (state.parent === null)
+    return input.wrapResult(state.children[0]._decode(input, options));
+
+  var result = state['default'];
+  var present = true;
+
+  var prevKey = null;
+  if (state.key !== null)
+    prevKey = input.enterKey(state.key);
+
+  // Check if tag is there
+  if (state.optional) {
+    var tag = null;
+    if (state.explicit !== null)
+      tag = state.explicit;
+    else if (state.implicit !== null)
+      tag = state.implicit;
+    else if (state.tag !== null)
+      tag = state.tag;
+
+    if (tag === null && !state.any) {
+      // Trial and Error
+      var save = input.save();
+      try {
+        if (state.choice === null)
+          this._decodeGeneric(state.tag, input, options);
+        else
+          this._decodeChoice(input, options);
+        present = true;
+      } catch (e) {
+        present = false;
+      }
+      input.restore(save);
+    } else {
+      present = this._peekTag(input, tag, state.any);
+
+      if (input.isError(present))
+        return present;
+    }
+  }
+
+  // Push object on stack
+  var prevObj;
+  if (state.obj && present)
+    prevObj = input.enterObject();
+
+  if (present) {
+    // Unwrap explicit values
+    if (state.explicit !== null) {
+      var explicit = this._decodeTag(input, state.explicit);
+      if (input.isError(explicit))
+        return explicit;
+      input = explicit;
+    }
+
+    var start = input.offset;
+
+    // Unwrap implicit and normal values
+    if (state.use === null && state.choice === null) {
+      if (state.any)
+        var save = input.save();
+      var body = this._decodeTag(
+        input,
+        state.implicit !== null ? state.implicit : state.tag,
+        state.any
+      );
+      if (input.isError(body))
+        return body;
+
+      if (state.any)
+        result = input.raw(save);
+      else
+        input = body;
+    }
+
+    if (options && options.track && state.tag !== null)
+      options.track(input.path(), start, input.length, 'tagged');
+
+    if (options && options.track && state.tag !== null)
+      options.track(input.path(), input.offset, input.length, 'content');
+
+    // Select proper method for tag
+    if (state.any)
+      result = result;
+    else if (state.choice === null)
+      result = this._decodeGeneric(state.tag, input, options);
+    else
+      result = this._decodeChoice(input, options);
+
+    if (input.isError(result))
+      return result;
+
+    // Decode children
+    if (!state.any && state.choice === null && state.children !== null) {
+      state.children.forEach(function decodeChildren(child) {
+        // NOTE: We are ignoring errors here, to let parser continue with other
+        // parts of encoded data
+        child._decode(input, options);
+      });
+    }
+
+    // Decode contained/encoded by schema, only in bit or octet strings
+    if (state.contains && (state.tag === 'octstr' || state.tag === 'bitstr')) {
+      var data = new DecoderBuffer(result);
+      result = this._getUse(state.contains, input._reporterState.obj)
+          ._decode(data, options);
+    }
+  }
+
+  // Pop object
+  if (state.obj && present)
+    result = input.leaveObject(prevObj);
+
+  // Set key
+  if (state.key !== null && (result !== null || present === true))
+    input.leaveKey(prevKey, state.key, result);
+  else if (prevKey !== null)
+    input.exitKey(prevKey);
+
+  return result;
+};
+
+Node.prototype._decodeGeneric = function decodeGeneric(tag, input, options) {
+  var state = this._baseState;
+
+  if (tag === 'seq' || tag === 'set')
+    return null;
+  if (tag === 'seqof' || tag === 'setof')
+    return this._decodeList(input, tag, state.args[0], options);
+  else if (/str$/.test(tag))
+    return this._decodeStr(input, tag, options);
+  else if (tag === 'objid' && state.args)
+    return this._decodeObjid(input, state.args[0], state.args[1], options);
+  else if (tag === 'objid')
+    return this._decodeObjid(input, null, null, options);
+  else if (tag === 'gentime' || tag === 'utctime')
+    return this._decodeTime(input, tag, options);
+  else if (tag === 'null_')
+    return this._decodeNull(input, options);
+  else if (tag === 'bool')
+    return this._decodeBool(input, options);
+  else if (tag === 'objDesc')
+    return this._decodeStr(input, tag, options);
+  else if (tag === 'int' || tag === 'enum')
+    return this._decodeInt(input, state.args && state.args[0], options);
+
+  if (state.use !== null) {
+    return this._getUse(state.use, input._reporterState.obj)
+        ._decode(input, options);
+  } else {
+    return input.error('unknown tag: ' + tag);
+  }
+};
+
+Node.prototype._getUse = function _getUse(entity, obj) {
+
+  var state = this._baseState;
+  // Create altered use decoder if implicit is set
+  state.useDecoder = this._use(entity, obj);
+  assert(state.useDecoder._baseState.parent === null);
+  state.useDecoder = state.useDecoder._baseState.children[0];
+  if (state.implicit !== state.useDecoder._baseState.implicit) {
+    state.useDecoder = state.useDecoder.clone();
+    state.useDecoder._baseState.implicit = state.implicit;
+  }
+  return state.useDecoder;
+};
+
+Node.prototype._decodeChoice = function decodeChoice(input, options) {
+  var state = this._baseState;
+  var result = null;
+  var match = false;
+
+  Object.keys(state.choice).some(function(key) {
+    var save = input.save();
+    var node = state.choice[key];
+    try {
+      var value = node._decode(input, options);
+      if (input.isError(value))
+        return false;
+
+      result = { type: key, value: value };
+      match = true;
+    } catch (e) {
+      input.restore(save);
+      return false;
+    }
+    return true;
+  }, this);
+
+  if (!match)
+    return input.error('Choice not matched');
+
+  return result;
+};
+
+//
+// Encoding
+//
+
+Node.prototype._createEncoderBuffer = function createEncoderBuffer(data) {
+  return new EncoderBuffer(data, this.reporter);
+};
+
+Node.prototype._encode = function encode(data, reporter, parent) {
+  var state = this._baseState;
+  if (state['default'] !== null && state['default'] === data)
+    return;
+
+  var result = this._encodeValue(data, reporter, parent);
+  if (result === undefined)
+    return;
+
+  if (this._skipDefault(result, reporter, parent))
+    return;
+
+  return result;
+};
+
+Node.prototype._encodeValue = function encode(data, reporter, parent) {
+  var state = this._baseState;
+
+  // Decode root node
+  if (state.parent === null)
+    return state.children[0]._encode(data, reporter || new Reporter());
+
+  var result = null;
+
+  // Set reporter to share it with a child class
+  this.reporter = reporter;
+
+  // Check if data is there
+  if (state.optional && data === undefined) {
+    if (state['default'] !== null)
+      data = state['default']
+    else
+      return;
+  }
+
+  // Encode children first
+  var content = null;
+  var primitive = false;
+  if (state.any) {
+    // Anything that was given is translated to buffer
+    result = this._createEncoderBuffer(data);
+  } else if (state.choice) {
+    result = this._encodeChoice(data, reporter);
+  } else if (state.contains) {
+    content = this._getUse(state.contains, parent)._encode(data, reporter);
+    primitive = true;
+  } else if (state.children) {
+    content = state.children.map(function(child) {
+      if (child._baseState.tag === 'null_')
+        return child._encode(null, reporter, data);
+
+      if (child._baseState.key === null)
+        return reporter.error('Child should have a key');
+      var prevKey = reporter.enterKey(child._baseState.key);
+
+      if (typeof data !== 'object')
+        return reporter.error('Child expected, but input is not object');
+
+      var res = child._encode(data[child._baseState.key], reporter, data);
+      reporter.leaveKey(prevKey);
+
+      return res;
+    }, this).filter(function(child) {
+      return child;
+    });
+    content = this._createEncoderBuffer(content);
+  } else {
+    if (state.tag === 'seqof' || state.tag === 'setof') {
+      // TODO(indutny): this should be thrown on DSL level
+      if (!(state.args && state.args.length === 1))
+        return reporter.error('Too many args for : ' + state.tag);
+
+      if (!Array.isArray(data))
+        return reporter.error('seqof/setof, but data is not Array');
+
+      var child = this.clone();
+      child._baseState.implicit = null;
+      content = this._createEncoderBuffer(data.map(function(item) {
+        var state = this._baseState;
+
+        return this._getUse(state.args[0], data)._encode(item, reporter);
+      }, child));
+    } else if (state.use !== null) {
+      result = this._getUse(state.use, parent)._encode(data, reporter);
+    } else {
+      content = this._encodePrimitive(state.tag, data);
+      primitive = true;
+    }
+  }
+
+  // Encode data itself
+  var result;
+  if (!state.any && state.choice === null) {
+    var tag = state.implicit !== null ? state.implicit : state.tag;
+    var cls = state.implicit === null ? 'universal' : 'context';
+
+    if (tag === null) {
+      if (state.use === null)
+        reporter.error('Tag could be omitted only for .use()');
+    } else {
+      if (state.use === null)
+        result = this._encodeComposite(tag, primitive, cls, content);
+    }
+  }
+
+  // Wrap in explicit
+  if (state.explicit !== null)
+    result = this._encodeComposite(state.explicit, false, 'context', result);
+
+  return result;
+};
+
+Node.prototype._encodeChoice = function encodeChoice(data, reporter) {
+  var state = this._baseState;
+
+  var node = state.choice[data.type];
+  if (!node) {
+    assert(
+        false,
+        data.type + ' not found in ' +
+            JSON.stringify(Object.keys(state.choice)));
+  }
+  return node._encode(data.value, reporter);
+};
+
+Node.prototype._encodePrimitive = function encodePrimitive(tag, data) {
+  var state = this._baseState;
+
+  if (/str$/.test(tag))
+    return this._encodeStr(data, tag);
+  else if (tag === 'objid' && state.args)
+    return this._encodeObjid(data, state.reverseArgs[0], state.args[1]);
+  else if (tag === 'objid')
+    return this._encodeObjid(data, null, null);
+  else if (tag === 'gentime' || tag === 'utctime')
+    return this._encodeTime(data, tag);
+  else if (tag === 'null_')
+    return this._encodeNull();
+  else if (tag === 'int' || tag === 'enum')
+    return this._encodeInt(data, state.args && state.reverseArgs[0]);
+  else if (tag === 'bool')
+    return this._encodeBool(data);
+  else if (tag === 'objDesc')
+    return this._encodeStr(data, tag);
+  else
+    throw new Error('Unsupported tag: ' + tag);
+};
+
+Node.prototype._isNumstr = function isNumstr(str) {
+  return /^[0-9 ]*$/.test(str);
+};
+
+Node.prototype._isPrintstr = function isPrintstr(str) {
+  return /^[A-Za-z0-9 '\(\)\+,\-\.\/:=\?]*$/.test(str);
+};
+
+},{"../base":139,"minimalistic-assert":447}],141:[function(require,module,exports){
+var inherits = require('inherits');
+
+function Reporter(options) {
+  this._reporterState = {
+    obj: null,
+    path: [],
+    options: options || {},
+    errors: []
+  };
+}
+exports.Reporter = Reporter;
+
+Reporter.prototype.isError = function isError(obj) {
+  return obj instanceof ReporterError;
+};
+
+Reporter.prototype.save = function save() {
+  var state = this._reporterState;
+
+  return { obj: state.obj, pathLen: state.path.length };
+};
+
+Reporter.prototype.restore = function restore(data) {
+  var state = this._reporterState;
+
+  state.obj = data.obj;
+  state.path = state.path.slice(0, data.pathLen);
+};
+
+Reporter.prototype.enterKey = function enterKey(key) {
+  return this._reporterState.path.push(key);
+};
+
+Reporter.prototype.exitKey = function exitKey(index) {
+  var state = this._reporterState;
+
+  state.path = state.path.slice(0, index - 1);
+};
+
+Reporter.prototype.leaveKey = function leaveKey(index, key, value) {
+  var state = this._reporterState;
+
+  this.exitKey(index);
+  if (state.obj !== null)
+    state.obj[key] = value;
+};
+
+Reporter.prototype.path = function path() {
+  return this._reporterState.path.join('/');
+};
+
+Reporter.prototype.enterObject = function enterObject() {
+  var state = this._reporterState;
+
+  var prev = state.obj;
+  state.obj = {};
+  return prev;
+};
+
+Reporter.prototype.leaveObject = function leaveObject(prev) {
+  var state = this._reporterState;
+
+  var now = state.obj;
+  state.obj = prev;
+  return now;
+};
+
+Reporter.prototype.error = function error(msg) {
+  var err;
+  var state = this._reporterState;
+
+  var inherited = msg instanceof ReporterError;
+  if (inherited) {
+    err = msg;
+  } else {
+    err = new ReporterError(state.path.map(function(elem) {
+      return '[' + JSON.stringify(elem) + ']';
+    }).join(''), msg.message || msg, msg.stack);
+  }
+
+  if (!state.options.partial)
+    throw err;
+
+  if (!inherited)
+    state.errors.push(err);
+
+  return err;
+};
+
+Reporter.prototype.wrapResult = function wrapResult(result) {
+  var state = this._reporterState;
+  if (!state.options.partial)
+    return result;
+
+  return {
+    result: this.isError(result) ? null : result,
+    errors: state.errors
+  };
+};
+
+function ReporterError(path, msg) {
+  this.path = path;
+  this.rethrow(msg);
+};
+inherits(ReporterError, Error);
+
+ReporterError.prototype.rethrow = function rethrow(msg) {
+  this.message = msg + ' at: ' + (this.path || '(shallow)');
+  if (Error.captureStackTrace)
+    Error.captureStackTrace(this, ReporterError);
+
+  if (!this.stack) {
+    try {
+      // IE only adds stack when thrown
+      throw new Error(this.message);
+    } catch (e) {
+      this.stack = e.stack;
+    }
+  }
+  return this;
+};
+
+},{"inherits":410}],142:[function(require,module,exports){
+var constants = require('../constants');
+
+exports.tagClass = {
+  0: 'universal',
+  1: 'application',
+  2: 'context',
+  3: 'private'
+};
+exports.tagClassByName = constants._reverse(exports.tagClass);
+
+exports.tag = {
+  0x00: 'end',
+  0x01: 'bool',
+  0x02: 'int',
+  0x03: 'bitstr',
+  0x04: 'octstr',
+  0x05: 'null_',
+  0x06: 'objid',
+  0x07: 'objDesc',
+  0x08: 'external',
+  0x09: 'real',
+  0x0a: 'enum',
+  0x0b: 'embed',
+  0x0c: 'utf8str',
+  0x0d: 'relativeOid',
+  0x10: 'seq',
+  0x11: 'set',
+  0x12: 'numstr',
+  0x13: 'printstr',
+  0x14: 't61str',
+  0x15: 'videostr',
+  0x16: 'ia5str',
+  0x17: 'utctime',
+  0x18: 'gentime',
+  0x19: 'graphstr',
+  0x1a: 'iso646str',
+  0x1b: 'genstr',
+  0x1c: 'unistr',
+  0x1d: 'charstr',
+  0x1e: 'bmpstr'
+};
+exports.tagByName = constants._reverse(exports.tag);
+
+},{"../constants":143}],143:[function(require,module,exports){
+var constants = exports;
+
+// Helper
+constants._reverse = function reverse(map) {
+  var res = {};
+
+  Object.keys(map).forEach(function(key) {
+    // Convert key to integer if it is stringified
+    if ((key | 0) == key)
+      key = key | 0;
+
+    var value = map[key];
+    res[value] = key;
+  });
+
+  return res;
+};
+
+constants.der = require('./der');
+
+},{"./der":142}],144:[function(require,module,exports){
+var inherits = require('inherits');
+
+var asn1 = require('../../asn1');
+var base = asn1.base;
+var bignum = asn1.bignum;
+
+// Import DER constants
+var der = asn1.constants.der;
+
+function DERDecoder(entity) {
+  this.enc = 'der';
+  this.name = entity.name;
+  this.entity = entity;
+
+  // Construct base tree
+  this.tree = new DERNode();
+  this.tree._init(entity.body);
+};
+module.exports = DERDecoder;
+
+DERDecoder.prototype.decode = function decode(data, options) {
+  if (!(data instanceof base.DecoderBuffer))
+    data = new base.DecoderBuffer(data, options);
+
+  return this.tree._decode(data, options);
+};
+
+// Tree methods
+
+function DERNode(parent) {
+  base.Node.call(this, 'der', parent);
+}
+inherits(DERNode, base.Node);
+
+DERNode.prototype._peekTag = function peekTag(buffer, tag, any) {
+  if (buffer.isEmpty())
+    return false;
+
+  var state = buffer.save();
+  var decodedTag = derDecodeTag(buffer, 'Failed to peek tag: "' + tag + '"');
+  if (buffer.isError(decodedTag))
+    return decodedTag;
+
+  buffer.restore(state);
+
+  return decodedTag.tag === tag || decodedTag.tagStr === tag ||
+    (decodedTag.tagStr + 'of') === tag || any;
+};
+
+DERNode.prototype._decodeTag = function decodeTag(buffer, tag, any) {
+  var decodedTag = derDecodeTag(buffer,
+                                'Failed to decode tag of "' + tag + '"');
+  if (buffer.isError(decodedTag))
+    return decodedTag;
+
+  var len = derDecodeLen(buffer,
+                         decodedTag.primitive,
+                         'Failed to get length of "' + tag + '"');
+
+  // Failure
+  if (buffer.isError(len))
+    return len;
+
+  if (!any &&
+      decodedTag.tag !== tag &&
+      decodedTag.tagStr !== tag &&
+      decodedTag.tagStr + 'of' !== tag) {
+    return buffer.error('Failed to match tag: "' + tag + '"');
+  }
+
+  if (decodedTag.primitive || len !== null)
+    return buffer.skip(len, 'Failed to match body of: "' + tag + '"');
+
+  // Indefinite length... find END tag
+  var state = buffer.save();
+  var res = this._skipUntilEnd(
+      buffer,
+      'Failed to skip indefinite length body: "' + this.tag + '"');
+  if (buffer.isError(res))
+    return res;
+
+  len = buffer.offset - state.offset;
+  buffer.restore(state);
+  return buffer.skip(len, 'Failed to match body of: "' + tag + '"');
+};
+
+DERNode.prototype._skipUntilEnd = function skipUntilEnd(buffer, fail) {
+  while (true) {
+    var tag = derDecodeTag(buffer, fail);
+    if (buffer.isError(tag))
+      return tag;
+    var len = derDecodeLen(buffer, tag.primitive, fail);
+    if (buffer.isError(len))
+      return len;
+
+    var res;
+    if (tag.primitive || len !== null)
+      res = buffer.skip(len)
+    else
+      res = this._skipUntilEnd(buffer, fail);
+
+    // Failure
+    if (buffer.isError(res))
+      return res;
+
+    if (tag.tagStr === 'end')
+      break;
+  }
+};
+
+DERNode.prototype._decodeList = function decodeList(buffer, tag, decoder,
+                                                    options) {
+  var result = [];
+  while (!buffer.isEmpty()) {
+    var possibleEnd = this._peekTag(buffer, 'end');
+    if (buffer.isError(possibleEnd))
+      return possibleEnd;
+
+    var res = decoder.decode(buffer, 'der', options);
+    if (buffer.isError(res) && possibleEnd)
+      break;
+    result.push(res);
+  }
+  return result;
+};
+
+DERNode.prototype._decodeStr = function decodeStr(buffer, tag) {
+  if (tag === 'bitstr') {
+    var unused = buffer.readUInt8();
+    if (buffer.isError(unused))
+      return unused;
+    return { unused: unused, data: buffer.raw() };
+  } else if (tag === 'bmpstr') {
+    var raw = buffer.raw();
+    if (raw.length % 2 === 1)
+      return buffer.error('Decoding of string type: bmpstr length mismatch');
+
+    var str = '';
+    for (var i = 0; i < raw.length / 2; i++) {
+      str += String.fromCharCode(raw.readUInt16BE(i * 2));
+    }
+    return str;
+  } else if (tag === 'numstr') {
+    var numstr = buffer.raw().toString('ascii');
+    if (!this._isNumstr(numstr)) {
+      return buffer.error('Decoding of string type: ' +
+                          'numstr unsupported characters');
+    }
+    return numstr;
+  } else if (tag === 'octstr') {
+    return buffer.raw();
+  } else if (tag === 'objDesc') {
+    return buffer.raw();
+  } else if (tag === 'printstr') {
+    var printstr = buffer.raw().toString('ascii');
+    if (!this._isPrintstr(printstr)) {
+      return buffer.error('Decoding of string type: ' +
+                          'printstr unsupported characters');
+    }
+    return printstr;
+  } else if (/str$/.test(tag)) {
+    return buffer.raw().toString();
+  } else {
+    return buffer.error('Decoding of string type: ' + tag + ' unsupported');
+  }
+};
+
+DERNode.prototype._decodeObjid = function decodeObjid(buffer, values, relative) {
+  var result;
+  var identifiers = [];
+  var ident = 0;
+  while (!buffer.isEmpty()) {
+    var subident = buffer.readUInt8();
+    ident <<= 7;
+    ident |= subident & 0x7f;
+    if ((subident & 0x80) === 0) {
+      identifiers.push(ident);
+      ident = 0;
+    }
+  }
+  if (subident & 0x80)
+    identifiers.push(ident);
+
+  var first = (identifiers[0] / 40) | 0;
+  var second = identifiers[0] % 40;
+
+  if (relative)
+    result = identifiers;
+  else
+    result = [first, second].concat(identifiers.slice(1));
+
+  if (values) {
+    var tmp = values[result.join(' ')];
+    if (tmp === undefined)
+      tmp = values[result.join('.')];
+    if (tmp !== undefined)
+      result = tmp;
+  }
+
+  return result;
+};
+
+DERNode.prototype._decodeTime = function decodeTime(buffer, tag) {
+  var str = buffer.raw().toString();
+  if (tag === 'gentime') {
+    var year = str.slice(0, 4) | 0;
+    var mon = str.slice(4, 6) | 0;
+    var day = str.slice(6, 8) | 0;
+    var hour = str.slice(8, 10) | 0;
+    var min = str.slice(10, 12) | 0;
+    var sec = str.slice(12, 14) | 0;
+  } else if (tag === 'utctime') {
+    var year = str.slice(0, 2) | 0;
+    var mon = str.slice(2, 4) | 0;
+    var day = str.slice(4, 6) | 0;
+    var hour = str.slice(6, 8) | 0;
+    var min = str.slice(8, 10) | 0;
+    var sec = str.slice(10, 12) | 0;
+    if (year < 70)
+      year = 2000 + year;
+    else
+      year = 1900 + year;
+  } else {
+    return buffer.error('Decoding ' + tag + ' time is not supported yet');
+  }
+
+  return Date.UTC(year, mon - 1, day, hour, min, sec, 0);
+};
+
+DERNode.prototype._decodeNull = function decodeNull(buffer) {
+  return null;
+};
+
+DERNode.prototype._decodeBool = function decodeBool(buffer) {
+  var res = buffer.readUInt8();
+  if (buffer.isError(res))
+    return res;
+  else
+    return res !== 0;
+};
+
+DERNode.prototype._decodeInt = function decodeInt(buffer, values) {
+  // Bigint, return as it is (assume big endian)
+  var raw = buffer.raw();
+  var res = new bignum(raw);
+
+  if (values)
+    res = values[res.toString(10)] || res;
+
+  return res;
+};
+
+DERNode.prototype._use = function use(entity, obj) {
+  if (typeof entity === 'function')
+    entity = entity(obj);
+  return entity._getDecoder('der').tree;
+};
+
+// Utility methods
+
+function derDecodeTag(buf, fail) {
+  var tag = buf.readUInt8(fail);
+  if (buf.isError(tag))
+    return tag;
+
+  var cls = der.tagClass[tag >> 6];
+  var primitive = (tag & 0x20) === 0;
+
+  // Multi-octet tag - load
+  if ((tag & 0x1f) === 0x1f) {
+    var oct = tag;
+    tag = 0;
+    while ((oct & 0x80) === 0x80) {
+      oct = buf.readUInt8(fail);
+      if (buf.isError(oct))
+        return oct;
+
+      tag <<= 7;
+      tag |= oct & 0x7f;
+    }
+  } else {
+    tag &= 0x1f;
+  }
+  var tagStr = der.tag[tag];
+
+  return {
+    cls: cls,
+    primitive: primitive,
+    tag: tag,
+    tagStr: tagStr
+  };
+}
+
+function derDecodeLen(buf, primitive, fail) {
+  var len = buf.readUInt8(fail);
+  if (buf.isError(len))
+    return len;
+
+  // Indefinite form
+  if (!primitive && len === 0x80)
+    return null;
+
+  // Definite form
+  if ((len & 0x80) === 0) {
+    // Short form
+    return len;
+  }
+
+  // Long form
+  var num = len & 0x7f;
+  if (num > 4)
+    return buf.error('length octect is too long');
+
+  len = 0;
+  for (var i = 0; i < num; i++) {
+    len <<= 8;
+    var j = buf.readUInt8(fail);
+    if (buf.isError(j))
+      return j;
+    len |= j;
+  }
+
+  return len;
+}
+
+},{"../../asn1":136,"inherits":410}],145:[function(require,module,exports){
+var decoders = exports;
+
+decoders.der = require('./der');
+decoders.pem = require('./pem');
+
+},{"./der":144,"./pem":146}],146:[function(require,module,exports){
+var inherits = require('inherits');
+var Buffer = require('buffer').Buffer;
+
+var DERDecoder = require('./der');
+
+function PEMDecoder(entity) {
+  DERDecoder.call(this, entity);
+  this.enc = 'pem';
+};
+inherits(PEMDecoder, DERDecoder);
+module.exports = PEMDecoder;
+
+PEMDecoder.prototype.decode = function decode(data, options) {
+  var lines = data.toString().split(/[\r\n]+/g);
+
+  var label = options.label.toUpperCase();
+
+  var re = /^-----(BEGIN|END) ([^-]+)-----$/;
+  var start = -1;
+  var end = -1;
+  for (var i = 0; i < lines.length; i++) {
+    var match = lines[i].match(re);
+    if (match === null)
+      continue;
+
+    if (match[2] !== label)
+      continue;
+
+    if (start === -1) {
+      if (match[1] !== 'BEGIN')
+        break;
+      start = i;
+    } else {
+      if (match[1] !== 'END')
+        break;
+      end = i;
+      break;
+    }
+  }
+  if (start === -1 || end === -1)
+    throw new Error('PEM section not found for: ' + label);
+
+  var base64 = lines.slice(start + 1, end).join('');
+  // Remove excessive symbols
+  base64.replace(/[^a-z0-9\+\/=]+/gi, '');
+
+  var input = new Buffer(base64, 'base64');
+  return DERDecoder.prototype.decode.call(this, input, options);
+};
+
+},{"./der":144,"buffer":192,"inherits":410}],147:[function(require,module,exports){
+var inherits = require('inherits');
+var Buffer = require('buffer').Buffer;
+
+var asn1 = require('../../asn1');
+var base = asn1.base;
+
+// Import DER constants
+var der = asn1.constants.der;
+
+function DEREncoder(entity) {
+  this.enc = 'der';
+  this.name = entity.name;
+  this.entity = entity;
+
+  // Construct base tree
+  this.tree = new DERNode();
+  this.tree._init(entity.body);
+};
+module.exports = DEREncoder;
+
+DEREncoder.prototype.encode = function encode(data, reporter) {
+  return this.tree._encode(data, reporter).join();
+};
+
+// Tree methods
+
+function DERNode(parent) {
+  base.Node.call(this, 'der', parent);
+}
+inherits(DERNode, base.Node);
+
+DERNode.prototype._encodeComposite = function encodeComposite(tag,
+                                                              primitive,
+                                                              cls,
+                                                              content) {
+  var encodedTag = encodeTag(tag, primitive, cls, this.reporter);
+
+  // Short form
+  if (content.length < 0x80) {
+    var header = new Buffer(2);
+    header[0] = encodedTag;
+    header[1] = content.length;
+    return this._createEncoderBuffer([ header, content ]);
+  }
+
+  // Long form
+  // Count octets required to store length
+  var lenOctets = 1;
+  for (var i = content.length; i >= 0x100; i >>= 8)
+    lenOctets++;
+
+  var header = new Buffer(1 + 1 + lenOctets);
+  header[0] = encodedTag;
+  header[1] = 0x80 | lenOctets;
+
+  for (var i = 1 + lenOctets, j = content.length; j > 0; i--, j >>= 8)
+    header[i] = j & 0xff;
+
+  return this._createEncoderBuffer([ header, content ]);
+};
+
+DERNode.prototype._encodeStr = function encodeStr(str, tag) {
+  if (tag === 'bitstr') {
+    return this._createEncoderBuffer([ str.unused | 0, str.data ]);
+  } else if (tag === 'bmpstr') {
+    var buf = new Buffer(str.length * 2);
+    for (var i = 0; i < str.length; i++) {
+      buf.writeUInt16BE(str.charCodeAt(i), i * 2);
+    }
+    return this._createEncoderBuffer(buf);
+  } else if (tag === 'numstr') {
+    if (!this._isNumstr(str)) {
+      return this.reporter.error('Encoding of string type: numstr supports ' +
+                                 'only digits and space');
+    }
+    return this._createEncoderBuffer(str);
+  } else if (tag === 'printstr') {
+    if (!this._isPrintstr(str)) {
+      return this.reporter.error('Encoding of string type: printstr supports ' +
+                                 'only latin upper and lower case letters, ' +
+                                 'digits, space, apostrophe, left and rigth ' +
+                                 'parenthesis, plus sign, comma, hyphen, ' +
+                                 'dot, slash, colon, equal sign, ' +
+                                 'question mark');
+    }
+    return this._createEncoderBuffer(str);
+  } else if (/str$/.test(tag)) {
+    return this._createEncoderBuffer(str);
+  } else if (tag === 'objDesc') {
+    return this._createEncoderBuffer(str);
+  } else {
+    return this.reporter.error('Encoding of string type: ' + tag +
+                               ' unsupported');
+  }
+};
+
+DERNode.prototype._encodeObjid = function encodeObjid(id, values, relative) {
+  if (typeof id === 'string') {
+    if (!values)
+      return this.reporter.error('string objid given, but no values map found');
+    if (!values.hasOwnProperty(id))
+      return this.reporter.error('objid not found in values map');
+    id = values[id].split(/[\s\.]+/g);
+    for (var i = 0; i < id.length; i++)
+      id[i] |= 0;
+  } else if (Array.isArray(id)) {
+    id = id.slice();
+    for (var i = 0; i < id.length; i++)
+      id[i] |= 0;
+  }
+
+  if (!Array.isArray(id)) {
+    return this.reporter.error('objid() should be either array or string, ' +
+                               'got: ' + JSON.stringify(id));
+  }
+
+  if (!relative) {
+    if (id[1] >= 40)
+      return this.reporter.error('Second objid identifier OOB');
+    id.splice(0, 2, id[0] * 40 + id[1]);
+  }
+
+  // Count number of octets
+  var size = 0;
+  for (var i = 0; i < id.length; i++) {
+    var ident = id[i];
+    for (size++; ident >= 0x80; ident >>= 7)
+      size++;
+  }
+
+  var objid = new Buffer(size);
+  var offset = objid.length - 1;
+  for (var i = id.length - 1; i >= 0; i--) {
+    var ident = id[i];
+    objid[offset--] = ident & 0x7f;
+    while ((ident >>= 7) > 0)
+      objid[offset--] = 0x80 | (ident & 0x7f);
+  }
+
+  return this._createEncoderBuffer(objid);
+};
+
+function two(num) {
+  if (num < 10)
+    return '0' + num;
+  else
+    return num;
+}
+
+DERNode.prototype._encodeTime = function encodeTime(time, tag) {
+  var str;
+  var date = new Date(time);
+
+  if (tag === 'gentime') {
+    str = [
+      two(date.getFullYear()),
+      two(date.getUTCMonth() + 1),
+      two(date.getUTCDate()),
+      two(date.getUTCHours()),
+      two(date.getUTCMinutes()),
+      two(date.getUTCSeconds()),
+      'Z'
+    ].join('');
+  } else if (tag === 'utctime') {
+    str = [
+      two(date.getFullYear() % 100),
+      two(date.getUTCMonth() + 1),
+      two(date.getUTCDate()),
+      two(date.getUTCHours()),
+      two(date.getUTCMinutes()),
+      two(date.getUTCSeconds()),
+      'Z'
+    ].join('');
+  } else {
+    this.reporter.error('Encoding ' + tag + ' time is not supported yet');
+  }
+
+  return this._encodeStr(str, 'octstr');
+};
+
+DERNode.prototype._encodeNull = function encodeNull() {
+  return this._createEncoderBuffer('');
+};
+
+DERNode.prototype._encodeInt = function encodeInt(num, values) {
+  if (typeof num === 'string') {
+    if (!values)
+      return this.reporter.error('String int or enum given, but no values map');
+    if (!values.hasOwnProperty(num)) {
+      return this.reporter.error('Values map doesn\'t contain: ' +
+                                 JSON.stringify(num));
+    }
+    num = values[num];
+  }
+
+  // Bignum, assume big endian
+  if (typeof num !== 'number' && !Buffer.isBuffer(num)) {
+    var numArray = num.toArray();
+    if (!num.sign && numArray[0] & 0x80) {
+      numArray.unshift(0);
+    }
+    num = new Buffer(numArray);
+  }
+
+  if (Buffer.isBuffer(num)) {
+    var size = num.length;
+    if (num.length === 0)
+      size++;
+
+    var out = new Buffer(size);
+    num.copy(out);
+    if (num.length === 0)
+      out[0] = 0
+    return this._createEncoderBuffer(out);
+  }
+
+  if (num < 0x80)
+    return this._createEncoderBuffer(num);
+
+  if (num < 0x100)
+    return this._createEncoderBuffer([0, num]);
+
+  var size = 1;
+  for (var i = num; i >= 0x100; i >>= 8)
+    size++;
+
+  var out = new Array(size);
+  for (var i = out.length - 1; i >= 0; i--) {
+    out[i] = num & 0xff;
+    num >>= 8;
+  }
+  if(out[0] & 0x80) {
+    out.unshift(0);
+  }
+
+  return this._createEncoderBuffer(new Buffer(out));
+};
+
+DERNode.prototype._encodeBool = function encodeBool(value) {
+  return this._createEncoderBuffer(value ? 0xff : 0);
+};
+
+DERNode.prototype._use = function use(entity, obj) {
+  if (typeof entity === 'function')
+    entity = entity(obj);
+  return entity._getEncoder('der').tree;
+};
+
+DERNode.prototype._skipDefault = function skipDefault(dataBuffer, reporter, parent) {
+  var state = this._baseState;
+  var i;
+  if (state['default'] === null)
+    return false;
+
+  var data = dataBuffer.join();
+  if (state.defaultBuffer === undefined)
+    state.defaultBuffer = this._encodeValue(state['default'], reporter, parent).join();
+
+  if (data.length !== state.defaultBuffer.length)
+    return false;
+
+  for (i=0; i < data.length; i++)
+    if (data[i] !== state.defaultBuffer[i])
+      return false;
+
+  return true;
+};
+
+// Utility methods
+
+function encodeTag(tag, primitive, cls, reporter) {
+  var res;
+
+  if (tag === 'seqof')
+    tag = 'seq';
+  else if (tag === 'setof')
+    tag = 'set';
+
+  if (der.tagByName.hasOwnProperty(tag))
+    res = der.tagByName[tag];
+  else if (typeof tag === 'number' && (tag | 0) === tag)
+    res = tag;
+  else
+    return reporter.error('Unknown tag: ' + tag);
+
+  if (res >= 0x1f)
+    return reporter.error('Multi-octet tag encoding unsupported');
+
+  if (!primitive)
+    res |= 0x20;
+
+  res |= (der.tagClassByName[cls || 'universal'] << 6);
+
+  return res;
+}
+
+},{"../../asn1":136,"buffer":192,"inherits":410}],148:[function(require,module,exports){
+var encoders = exports;
+
+encoders.der = require('./der');
+encoders.pem = require('./pem');
+
+},{"./der":147,"./pem":149}],149:[function(require,module,exports){
+var inherits = require('inherits');
+
+var DEREncoder = require('./der');
+
+function PEMEncoder(entity) {
+  DEREncoder.call(this, entity);
+  this.enc = 'pem';
+};
+inherits(PEMEncoder, DEREncoder);
+module.exports = PEMEncoder;
+
+PEMEncoder.prototype.encode = function encode(data, options) {
+  var buf = DEREncoder.prototype.encode.call(this, data);
+
+  var p = buf.toString('base64');
+  var out = [ '-----BEGIN ' + options.label + '-----' ];
+  for (var i = 0; i < p.length; i += 64)
+    out.push(p.slice(i, i + 64));
+  out.push('-----END ' + options.label + '-----');
+  return out.join('\n');
+};
+
+},{"./der":147,"inherits":410}],150:[function(require,module,exports){
+// http://wiki.commonjs.org/wiki/Unit_Testing/1.0
+//
+// THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
+//
+// Originally from narwhal.js (http://narwhaljs.org)
+// Copyright (c) 2009 Thomas Robinson <280north.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the 'Software'), to
+// deal in the Software without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+// sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+// ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// when used in node, this will actually load the util module we depend on
+// versus loading the builtin util module as happens otherwise
+// this is a bug in node module loading as far as I am concerned
+var util = require('util/');
+
+var pSlice = Array.prototype.slice;
+var hasOwn = Object.prototype.hasOwnProperty;
+
+// 1. The assert module provides functions that throw
+// AssertionError's when particular conditions are not met. The
+// assert module must conform to the following interface.
+
+var assert = module.exports = ok;
+
+// 2. The AssertionError is defined in assert.
+// new assert.AssertionError({ message: message,
+//                             actual: actual,
+//                             expected: expected })
+
+assert.AssertionError = function AssertionError(options) {
+  this.name = 'AssertionError';
+  this.actual = options.actual;
+  this.expected = options.expected;
+  this.operator = options.operator;
+  if (options.message) {
+    this.message = options.message;
+    this.generatedMessage = false;
+  } else {
+    this.message = getMessage(this);
+    this.generatedMessage = true;
+  }
+  var stackStartFunction = options.stackStartFunction || fail;
+
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(this, stackStartFunction);
+  }
+  else {
+    // non v8 browsers so we can have a stacktrace
+    var err = new Error();
+    if (err.stack) {
+      var out = err.stack;
+
+      // try to strip useless frames
+      var fn_name = stackStartFunction.name;
+      var idx = out.indexOf('\n' + fn_name);
+      if (idx >= 0) {
+        // once we have located the function frame
+        // we need to strip out everything before it (and its line)
+        var next_line = out.indexOf('\n', idx + 1);
+        out = out.substring(next_line + 1);
+      }
+
+      this.stack = out;
+    }
+  }
+};
+
+// assert.AssertionError instanceof Error
+util.inherits(assert.AssertionError, Error);
+
+function replacer(key, value) {
+  if (util.isUndefined(value)) {
+    return '' + value;
+  }
+  if (util.isNumber(value) && !isFinite(value)) {
+    return value.toString();
+  }
+  if (util.isFunction(value) || util.isRegExp(value)) {
+    return value.toString();
+  }
+  return value;
+}
+
+function truncate(s, n) {
+  if (util.isString(s)) {
+    return s.length < n ? s : s.slice(0, n);
+  } else {
+    return s;
+  }
+}
+
+function getMessage(self) {
+  return truncate(JSON.stringify(self.actual, replacer), 128) + ' ' +
+         self.operator + ' ' +
+         truncate(JSON.stringify(self.expected, replacer), 128);
+}
+
+// At present only the three keys mentioned above are used and
+// understood by the spec. Implementations or sub modules can pass
+// other keys to the AssertionError's constructor - they will be
+// ignored.
+
+// 3. All of the following functions must throw an AssertionError
+// when a corresponding condition is not met, with a message that
+// may be undefined if not provided.  All assertion methods provide
+// both the actual and expected values to the assertion error for
+// display purposes.
+
+function fail(actual, expected, message, operator, stackStartFunction) {
+  throw new assert.AssertionError({
+    message: message,
+    actual: actual,
+    expected: expected,
+    operator: operator,
+    stackStartFunction: stackStartFunction
+  });
+}
+
+// EXTENSION! allows for well behaved errors defined elsewhere.
+assert.fail = fail;
+
+// 4. Pure assertion tests whether a value is truthy, as determined
+// by !!guard.
+// assert.ok(guard, message_opt);
+// This statement is equivalent to assert.equal(true, !!guard,
+// message_opt);. To test strictly for the value true, use
+// assert.strictEqual(true, guard, message_opt);.
+
+function ok(value, message) {
+  if (!value) fail(value, true, message, '==', assert.ok);
+}
+assert.ok = ok;
+
+// 5. The equality assertion tests shallow, coercive equality with
+// ==.
+// assert.equal(actual, expected, message_opt);
+
+assert.equal = function equal(actual, expected, message) {
+  if (actual != expected) fail(actual, expected, message, '==', assert.equal);
+};
+
+// 6. The non-equality assertion tests for whether two objects are not equal
+// with != assert.notEqual(actual, expected, message_opt);
+
+assert.notEqual = function notEqual(actual, expected, message) {
+  if (actual == expected) {
+    fail(actual, expected, message, '!=', assert.notEqual);
+  }
+};
+
+// 7. The equivalence assertion tests a deep equality relation.
+// assert.deepEqual(actual, expected, message_opt);
+
+assert.deepEqual = function deepEqual(actual, expected, message) {
+  if (!_deepEqual(actual, expected)) {
+    fail(actual, expected, message, 'deepEqual', assert.deepEqual);
+  }
+};
+
+function _deepEqual(actual, expected) {
+  // 7.1. All identical values are equivalent, as determined by ===.
+  if (actual === expected) {
+    return true;
+
+  } else if (util.isBuffer(actual) && util.isBuffer(expected)) {
+    if (actual.length != expected.length) return false;
+
+    for (var i = 0; i < actual.length; i++) {
+      if (actual[i] !== expected[i]) return false;
+    }
+
+    return true;
+
+  // 7.2. If the expected value is a Date object, the actual value is
+  // equivalent if it is also a Date object that refers to the same time.
+  } else if (util.isDate(actual) && util.isDate(expected)) {
+    return actual.getTime() === expected.getTime();
+
+  // 7.3 If the expected value is a RegExp object, the actual value is
+  // equivalent if it is also a RegExp object with the same source and
+  // properties (`global`, `multiline`, `lastIndex`, `ignoreCase`).
+  } else if (util.isRegExp(actual) && util.isRegExp(expected)) {
+    return actual.source === expected.source &&
+           actual.global === expected.global &&
+           actual.multiline === expected.multiline &&
+           actual.lastIndex === expected.lastIndex &&
+           actual.ignoreCase === expected.ignoreCase;
+
+  // 7.4. Other pairs that do not both pass typeof value == 'object',
+  // equivalence is determined by ==.
+  } else if (!util.isObject(actual) && !util.isObject(expected)) {
+    return actual == expected;
+
+  // 7.5 For all other Object pairs, including Array objects, equivalence is
+  // determined by having the same number of owned properties (as verified
+  // with Object.prototype.hasOwnProperty.call), the same set of keys
+  // (although not necessarily the same order), equivalent values for every
+  // corresponding key, and an identical 'prototype' property. Note: this
+  // accounts for both named and indexed properties on Arrays.
+  } else {
+    return objEquiv(actual, expected);
+  }
+}
+
+function isArguments(object) {
+  return Object.prototype.toString.call(object) == '[object Arguments]';
+}
+
+function objEquiv(a, b) {
+  if (util.isNullOrUndefined(a) || util.isNullOrUndefined(b))
+    return false;
+  // an identical 'prototype' property.
+  if (a.prototype !== b.prototype) return false;
+  // if one is a primitive, the other must be same
+  if (util.isPrimitive(a) || util.isPrimitive(b)) {
+    return a === b;
+  }
+  var aIsArgs = isArguments(a),
+      bIsArgs = isArguments(b);
+  if ((aIsArgs && !bIsArgs) || (!aIsArgs && bIsArgs))
+    return false;
+  if (aIsArgs) {
+    a = pSlice.call(a);
+    b = pSlice.call(b);
+    return _deepEqual(a, b);
+  }
+  var ka = objectKeys(a),
+      kb = objectKeys(b),
+      key, i;
+  // having the same number of owned properties (keys incorporates
+  // hasOwnProperty)
+  if (ka.length != kb.length)
+    return false;
+  //the same set of keys (although not necessarily the same order),
+  ka.sort();
+  kb.sort();
+  //~~~cheap key test
+  for (i = ka.length - 1; i >= 0; i--) {
+    if (ka[i] != kb[i])
+      return false;
+  }
+  //equivalent values for every corresponding key, and
+  //~~~possibly expensive deep test
+  for (i = ka.length - 1; i >= 0; i--) {
+    key = ka[i];
+    if (!_deepEqual(a[key], b[key])) return false;
+  }
+  return true;
+}
+
+// 8. The non-equivalence assertion tests for any deep inequality.
+// assert.notDeepEqual(actual, expected, message_opt);
+
+assert.notDeepEqual = function notDeepEqual(actual, expected, message) {
+  if (_deepEqual(actual, expected)) {
+    fail(actual, expected, message, 'notDeepEqual', assert.notDeepEqual);
+  }
+};
+
+// 9. The strict equality assertion tests strict equality, as determined by ===.
+// assert.strictEqual(actual, expected, message_opt);
+
+assert.strictEqual = function strictEqual(actual, expected, message) {
+  if (actual !== expected) {
+    fail(actual, expected, message, '===', assert.strictEqual);
+  }
+};
+
+// 10. The strict non-equality assertion tests for strict inequality, as
+// determined by !==.  assert.notStrictEqual(actual, expected, message_opt);
+
+assert.notStrictEqual = function notStrictEqual(actual, expected, message) {
+  if (actual === expected) {
+    fail(actual, expected, message, '!==', assert.notStrictEqual);
+  }
+};
+
+function expectedException(actual, expected) {
+  if (!actual || !expected) {
+    return false;
+  }
+
+  if (Object.prototype.toString.call(expected) == '[object RegExp]') {
+    return expected.test(actual);
+  } else if (actual instanceof expected) {
+    return true;
+  } else if (expected.call({}, actual) === true) {
+    return true;
+  }
+
+  return false;
+}
+
+function _throws(shouldThrow, block, expected, message) {
+  var actual;
+
+  if (util.isString(expected)) {
+    message = expected;
+    expected = null;
+  }
+
+  try {
+    block();
+  } catch (e) {
+    actual = e;
+  }
+
+  message = (expected && expected.name ? ' (' + expected.name + ').' : '.') +
+            (message ? ' ' + message : '.');
+
+  if (shouldThrow && !actual) {
+    fail(actual, expected, 'Missing expected exception' + message);
+  }
+
+  if (!shouldThrow && expectedException(actual, expected)) {
+    fail(actual, expected, 'Got unwanted exception' + message);
+  }
+
+  if ((shouldThrow && actual && expected &&
+      !expectedException(actual, expected)) || (!shouldThrow && actual)) {
+    throw actual;
+  }
+}
+
+// 11. Expected to throw an error:
+// assert.throws(block, Error_opt, message_opt);
+
+assert.throws = function(block, /*optional*/error, /*optional*/message) {
+  _throws.apply(this, [true].concat(pSlice.call(arguments)));
+};
+
+// EXTENSION! This is annoying to write outside this module.
+assert.doesNotThrow = function(block, /*optional*/message) {
+  _throws.apply(this, [false].concat(pSlice.call(arguments)));
+};
+
+assert.ifError = function(err) { if (err) {throw err;}};
+
+var objectKeys = Object.keys || function (obj) {
+  var keys = [];
+  for (var key in obj) {
+    if (hasOwn.call(obj, key)) keys.push(key);
+  }
+  return keys;
+};
+
+},{"util/":564}],151:[function(require,module,exports){
+(function (process,global){
+/*!
+ * async
+ * https://github.com/caolan/async
+ *
+ * Copyright 2010-2014 Caolan McMahon
+ * Released under the MIT license
+ */
+(function () {
+
+    var async = {};
+    function noop() {}
+    function identity(v) {
+        return v;
+    }
+    function toBool(v) {
+        return !!v;
+    }
+    function notId(v) {
+        return !v;
+    }
+
+    // global on the server, window in the browser
+    var previous_async;
+
+    // Establish the root object, `window` (`self`) in the browser, `global`
+    // on the server, or `this` in some virtual machines. We use `self`
+    // instead of `window` for `WebWorker` support.
+    var root = typeof self === 'object' && self.self === self && self ||
+            typeof global === 'object' && global.global === global && global ||
+            this;
+
+    if (root != null) {
+        previous_async = root.async;
+    }
+
+    async.noConflict = function () {
+        root.async = previous_async;
+        return async;
+    };
+
+    function only_once(fn) {
+        return function() {
+            if (fn === null) throw new Error("Callback was already called.");
+            fn.apply(this, arguments);
+            fn = null;
+        };
+    }
+
+    function _once(fn) {
+        return function() {
+            if (fn === null) return;
+            fn.apply(this, arguments);
+            fn = null;
+        };
+    }
+
+    //// cross-browser compatiblity functions ////
+
+    var _toString = Object.prototype.toString;
+
+    var _isArray = Array.isArray || function (obj) {
+        return _toString.call(obj) === '[object Array]';
+    };
+
+    // Ported from underscore.js isObject
+    var _isObject = function(obj) {
+        var type = typeof obj;
+        return type === 'function' || type === 'object' && !!obj;
+    };
+
+    function _isArrayLike(arr) {
+        return _isArray(arr) || (
+            // has a positive integer length property
+            typeof arr.length === "number" &&
+            arr.length >= 0 &&
+            arr.length % 1 === 0
+        );
+    }
+
+    function _arrayEach(arr, iterator) {
+        var index = -1,
+            length = arr.length;
+
+        while (++index < length) {
+            iterator(arr[index], index, arr);
+        }
+    }
+
+    function _map(arr, iterator) {
+        var index = -1,
+            length = arr.length,
+            result = Array(length);
+
+        while (++index < length) {
+            result[index] = iterator(arr[index], index, arr);
+        }
+        return result;
+    }
+
+    function _range(count) {
+        return _map(Array(count), function (v, i) { return i; });
+    }
+
+    function _reduce(arr, iterator, memo) {
+        _arrayEach(arr, function (x, i, a) {
+            memo = iterator(memo, x, i, a);
+        });
+        return memo;
+    }
+
+    function _forEachOf(object, iterator) {
+        _arrayEach(_keys(object), function (key) {
+            iterator(object[key], key);
+        });
+    }
+
+    function _indexOf(arr, item) {
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i] === item) return i;
+        }
+        return -1;
+    }
+
+    var _keys = Object.keys || function (obj) {
+        var keys = [];
+        for (var k in obj) {
+            if (obj.hasOwnProperty(k)) {
+                keys.push(k);
+            }
+        }
+        return keys;
+    };
+
+    function _keyIterator(coll) {
+        var i = -1;
+        var len;
+        var keys;
+        if (_isArrayLike(coll)) {
+            len = coll.length;
+            return function next() {
+                i++;
+                return i < len ? i : null;
+            };
+        } else {
+            keys = _keys(coll);
+            len = keys.length;
+            return function next() {
+                i++;
+                return i < len ? keys[i] : null;
+            };
+        }
+    }
+
+    // Similar to ES6's rest param (http://ariya.ofilabs.com/2013/03/es6-and-rest-parameter.html)
+    // This accumulates the arguments passed into an array, after a given index.
+    // From underscore.js (https://github.com/jashkenas/underscore/pull/2140).
+    function _restParam(func, startIndex) {
+        startIndex = startIndex == null ? func.length - 1 : +startIndex;
+        return function() {
+            var length = Math.max(arguments.length - startIndex, 0);
+            var rest = Array(length);
+            for (var index = 0; index < length; index++) {
+                rest[index] = arguments[index + startIndex];
+            }
+            switch (startIndex) {
+                case 0: return func.call(this, rest);
+                case 1: return func.call(this, arguments[0], rest);
+            }
+            // Currently unused but handle cases outside of the switch statement:
+            // var args = Array(startIndex + 1);
+            // for (index = 0; index < startIndex; index++) {
+            //     args[index] = arguments[index];
+            // }
+            // args[startIndex] = rest;
+            // return func.apply(this, args);
+        };
+    }
+
+    function _withoutIndex(iterator) {
+        return function (value, index, callback) {
+            return iterator(value, callback);
+        };
+    }
+
+    //// exported async module functions ////
+
+    //// nextTick implementation with browser-compatible fallback ////
+
+    // capture the global reference to guard against fakeTimer mocks
+    var _setImmediate = typeof setImmediate === 'function' && setImmediate;
+
+    var _delay = _setImmediate ? function(fn) {
+        // not a direct alias for IE10 compatibility
+        _setImmediate(fn);
+    } : function(fn) {
+        setTimeout(fn, 0);
+    };
+
+    if (typeof process === 'object' && typeof process.nextTick === 'function') {
+        async.nextTick = process.nextTick;
+    } else {
+        async.nextTick = _delay;
+    }
+    async.setImmediate = _setImmediate ? _delay : async.nextTick;
+
+
+    async.forEach =
+    async.each = function (arr, iterator, callback) {
+        return async.eachOf(arr, _withoutIndex(iterator), callback);
+    };
+
+    async.forEachSeries =
+    async.eachSeries = function (arr, iterator, callback) {
+        return async.eachOfSeries(arr, _withoutIndex(iterator), callback);
+    };
+
+
+    async.forEachLimit =
+    async.eachLimit = function (arr, limit, iterator, callback) {
+        return _eachOfLimit(limit)(arr, _withoutIndex(iterator), callback);
+    };
+
+    async.forEachOf =
+    async.eachOf = function (object, iterator, callback) {
+        callback = _once(callback || noop);
+        object = object || [];
+
+        var iter = _keyIterator(object);
+        var key, completed = 0;
+
+        while ((key = iter()) != null) {
+            completed += 1;
+            iterator(object[key], key, only_once(done));
+        }
+
+        if (completed === 0) callback(null);
+
+        function done(err) {
+            completed--;
+            if (err) {
+                callback(err);
+            }
+            // Check key is null in case iterator isn't exhausted
+            // and done resolved synchronously.
+            else if (key === null && completed <= 0) {
+                callback(null);
+            }
+        }
+    };
+
+    async.forEachOfSeries =
+    async.eachOfSeries = function (obj, iterator, callback) {
+        callback = _once(callback || noop);
+        obj = obj || [];
+        var nextKey = _keyIterator(obj);
+        var key = nextKey();
+        function iterate() {
+            var sync = true;
+            if (key === null) {
+                return callback(null);
+            }
+            iterator(obj[key], key, only_once(function (err) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    key = nextKey();
+                    if (key === null) {
+                        return callback(null);
+                    } else {
+                        if (sync) {
+                            async.setImmediate(iterate);
+                        } else {
+                            iterate();
+                        }
+                    }
+                }
+            }));
+            sync = false;
+        }
+        iterate();
+    };
+
+
+
+    async.forEachOfLimit =
+    async.eachOfLimit = function (obj, limit, iterator, callback) {
+        _eachOfLimit(limit)(obj, iterator, callback);
+    };
+
+    function _eachOfLimit(limit) {
+
+        return function (obj, iterator, callback) {
+            callback = _once(callback || noop);
+            obj = obj || [];
+            var nextKey = _keyIterator(obj);
+            if (limit <= 0) {
+                return callback(null);
+            }
+            var done = false;
+            var running = 0;
+            var errored = false;
+
+            (function replenish () {
+                if (done && running <= 0) {
+                    return callback(null);
+                }
+
+                while (running < limit && !errored) {
+                    var key = nextKey();
+                    if (key === null) {
+                        done = true;
+                        if (running <= 0) {
+                            callback(null);
+                        }
+                        return;
+                    }
+                    running += 1;
+                    iterator(obj[key], key, only_once(function (err) {
+                        running -= 1;
+                        if (err) {
+                            callback(err);
+                            errored = true;
+                        }
+                        else {
+                            replenish();
+                        }
+                    }));
+                }
+            })();
+        };
+    }
+
+
+    function doParallel(fn) {
+        return function (obj, iterator, callback) {
+            return fn(async.eachOf, obj, iterator, callback);
+        };
+    }
+    function doParallelLimit(fn) {
+        return function (obj, limit, iterator, callback) {
+            return fn(_eachOfLimit(limit), obj, iterator, callback);
+        };
+    }
+    function doSeries(fn) {
+        return function (obj, iterator, callback) {
+            return fn(async.eachOfSeries, obj, iterator, callback);
+        };
+    }
+
+    function _asyncMap(eachfn, arr, iterator, callback) {
+        callback = _once(callback || noop);
+        arr = arr || [];
+        var results = _isArrayLike(arr) ? [] : {};
+        eachfn(arr, function (value, index, callback) {
+            iterator(value, function (err, v) {
+                results[index] = v;
+                callback(err);
+            });
+        }, function (err) {
+            callback(err, results);
+        });
+    }
+
+    async.map = doParallel(_asyncMap);
+    async.mapSeries = doSeries(_asyncMap);
+    async.mapLimit = doParallelLimit(_asyncMap);
+
+    // reduce only has a series version, as doing reduce in parallel won't
+    // work in many situations.
+    async.inject =
+    async.foldl =
+    async.reduce = function (arr, memo, iterator, callback) {
+        async.eachOfSeries(arr, function (x, i, callback) {
+            iterator(memo, x, function (err, v) {
+                memo = v;
+                callback(err);
+            });
+        }, function (err) {
+            callback(err, memo);
+        });
+    };
+
+    async.foldr =
+    async.reduceRight = function (arr, memo, iterator, callback) {
+        var reversed = _map(arr, identity).reverse();
+        async.reduce(reversed, memo, iterator, callback);
+    };
+
+    async.transform = function (arr, memo, iterator, callback) {
+        if (arguments.length === 3) {
+            callback = iterator;
+            iterator = memo;
+            memo = _isArray(arr) ? [] : {};
+        }
+
+        async.eachOf(arr, function(v, k, cb) {
+            iterator(memo, v, k, cb);
+        }, function(err) {
+            callback(err, memo);
+        });
+    };
+
+    function _filter(eachfn, arr, iterator, callback) {
+        var results = [];
+        eachfn(arr, function (x, index, callback) {
+            iterator(x, function (v) {
+                if (v) {
+                    results.push({index: index, value: x});
+                }
+                callback();
+            });
+        }, function () {
+            callback(_map(results.sort(function (a, b) {
+                return a.index - b.index;
+            }), function (x) {
+                return x.value;
+            }));
+        });
+    }
+
+    async.select =
+    async.filter = doParallel(_filter);
+
+    async.selectLimit =
+    async.filterLimit = doParallelLimit(_filter);
+
+    async.selectSeries =
+    async.filterSeries = doSeries(_filter);
+
+    function _reject(eachfn, arr, iterator, callback) {
+        _filter(eachfn, arr, function(value, cb) {
+            iterator(value, function(v) {
+                cb(!v);
+            });
+        }, callback);
+    }
+    async.reject = doParallel(_reject);
+    async.rejectLimit = doParallelLimit(_reject);
+    async.rejectSeries = doSeries(_reject);
+
+    function _createTester(eachfn, check, getResult) {
+        return function(arr, limit, iterator, cb) {
+            function done() {
+                if (cb) cb(getResult(false, void 0));
+            }
+            function iteratee(x, _, callback) {
+                if (!cb) return callback();
+                iterator(x, function (v) {
+                    if (cb && check(v)) {
+                        cb(getResult(true, x));
+                        cb = iterator = false;
+                    }
+                    callback();
+                });
+            }
+            if (arguments.length > 3) {
+                eachfn(arr, limit, iteratee, done);
+            } else {
+                cb = iterator;
+                iterator = limit;
+                eachfn(arr, iteratee, done);
+            }
+        };
+    }
+
+    async.any =
+    async.some = _createTester(async.eachOf, toBool, identity);
+
+    async.someLimit = _createTester(async.eachOfLimit, toBool, identity);
+
+    async.all =
+    async.every = _createTester(async.eachOf, notId, notId);
+
+    async.everyLimit = _createTester(async.eachOfLimit, notId, notId);
+
+    function _findGetResult(v, x) {
+        return x;
+    }
+    async.detect = _createTester(async.eachOf, identity, _findGetResult);
+    async.detectSeries = _createTester(async.eachOfSeries, identity, _findGetResult);
+    async.detectLimit = _createTester(async.eachOfLimit, identity, _findGetResult);
+
+    async.sortBy = function (arr, iterator, callback) {
+        async.map(arr, function (x, callback) {
+            iterator(x, function (err, criteria) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    callback(null, {value: x, criteria: criteria});
+                }
+            });
+        }, function (err, results) {
+            if (err) {
+                return callback(err);
+            }
+            else {
+                callback(null, _map(results.sort(comparator), function (x) {
+                    return x.value;
+                }));
+            }
+
+        });
+
+        function comparator(left, right) {
+            var a = left.criteria, b = right.criteria;
+            return a < b ? -1 : a > b ? 1 : 0;
+        }
+    };
+
+    async.auto = function (tasks, concurrency, callback) {
+        if (typeof arguments[1] === 'function') {
+            // concurrency is optional, shift the args.
+            callback = concurrency;
+            concurrency = null;
+        }
+        callback = _once(callback || noop);
+        var keys = _keys(tasks);
+        var remainingTasks = keys.length;
+        if (!remainingTasks) {
+            return callback(null);
+        }
+        if (!concurrency) {
+            concurrency = remainingTasks;
+        }
+
+        var results = {};
+        var runningTasks = 0;
+
+        var hasError = false;
+
+        var listeners = [];
+        function addListener(fn) {
+            listeners.unshift(fn);
+        }
+        function removeListener(fn) {
+            var idx = _indexOf(listeners, fn);
+            if (idx >= 0) listeners.splice(idx, 1);
+        }
+        function taskComplete() {
+            remainingTasks--;
+            _arrayEach(listeners.slice(0), function (fn) {
+                fn();
+            });
+        }
+
+        addListener(function () {
+            if (!remainingTasks) {
+                callback(null, results);
+            }
+        });
+
+        _arrayEach(keys, function (k) {
+            if (hasError) return;
+            var task = _isArray(tasks[k]) ? tasks[k]: [tasks[k]];
+            var taskCallback = _restParam(function(err, args) {
+                runningTasks--;
+                if (args.length <= 1) {
+                    args = args[0];
+                }
+                if (err) {
+                    var safeResults = {};
+                    _forEachOf(results, function(val, rkey) {
+                        safeResults[rkey] = val;
+                    });
+                    safeResults[k] = args;
+                    hasError = true;
+
+                    callback(err, safeResults);
+                }
+                else {
+                    results[k] = args;
+                    async.setImmediate(taskComplete);
+                }
+            });
+            var requires = task.slice(0, task.length - 1);
+            // prevent dead-locks
+            var len = requires.length;
+            var dep;
+            while (len--) {
+                if (!(dep = tasks[requires[len]])) {
+                    throw new Error('Has nonexistent dependency in ' + requires.join(', '));
+                }
+                if (_isArray(dep) && _indexOf(dep, k) >= 0) {
+                    throw new Error('Has cyclic dependencies');
+                }
+            }
+            function ready() {
+                return runningTasks < concurrency && _reduce(requires, function (a, x) {
+                    return (a && results.hasOwnProperty(x));
+                }, true) && !results.hasOwnProperty(k);
+            }
+            if (ready()) {
+                runningTasks++;
+                task[task.length - 1](taskCallback, results);
+            }
+            else {
+                addListener(listener);
+            }
+            function listener() {
+                if (ready()) {
+                    runningTasks++;
+                    removeListener(listener);
+                    task[task.length - 1](taskCallback, results);
+                }
+            }
+        });
+    };
+
+
+
+    async.retry = function(times, task, callback) {
+        var DEFAULT_TIMES = 5;
+        var DEFAULT_INTERVAL = 0;
+
+        var attempts = [];
+
+        var opts = {
+            times: DEFAULT_TIMES,
+            interval: DEFAULT_INTERVAL
+        };
+
+        function parseTimes(acc, t){
+            if(typeof t === 'number'){
+                acc.times = parseInt(t, 10) || DEFAULT_TIMES;
+            } else if(typeof t === 'object'){
+                acc.times = parseInt(t.times, 10) || DEFAULT_TIMES;
+                acc.interval = parseInt(t.interval, 10) || DEFAULT_INTERVAL;
+            } else {
+                throw new Error('Unsupported argument type for \'times\': ' + typeof t);
+            }
+        }
+
+        var length = arguments.length;
+        if (length < 1 || length > 3) {
+            throw new Error('Invalid arguments - must be either (task), (task, callback), (times, task) or (times, task, callback)');
+        } else if (length <= 2 && typeof times === 'function') {
+            callback = task;
+            task = times;
+        }
+        if (typeof times !== 'function') {
+            parseTimes(opts, times);
+        }
+        opts.callback = callback;
+        opts.task = task;
+
+        function wrappedTask(wrappedCallback, wrappedResults) {
+            function retryAttempt(task, finalAttempt) {
+                return function(seriesCallback) {
+                    task(function(err, result){
+                        seriesCallback(!err || finalAttempt, {err: err, result: result});
+                    }, wrappedResults);
+                };
+            }
+
+            function retryInterval(interval){
+                return function(seriesCallback){
+                    setTimeout(function(){
+                        seriesCallback(null);
+                    }, interval);
+                };
+            }
+
+            while (opts.times) {
+
+                var finalAttempt = !(opts.times-=1);
+                attempts.push(retryAttempt(opts.task, finalAttempt));
+                if(!finalAttempt && opts.interval > 0){
+                    attempts.push(retryInterval(opts.interval));
+                }
+            }
+
+            async.series(attempts, function(done, data){
+                data = data[data.length - 1];
+                (wrappedCallback || opts.callback)(data.err, data.result);
+            });
+        }
+
+        // If a callback is passed, run this as a controll flow
+        return opts.callback ? wrappedTask() : wrappedTask;
+    };
+
+    async.waterfall = function (tasks, callback) {
+        callback = _once(callback || noop);
+        if (!_isArray(tasks)) {
+            var err = new Error('First argument to waterfall must be an array of functions');
+            return callback(err);
+        }
+        if (!tasks.length) {
+            return callback();
+        }
+        function wrapIterator(iterator) {
+            return _restParam(function (err, args) {
+                if (err) {
+                    callback.apply(null, [err].concat(args));
+                }
+                else {
+                    var next = iterator.next();
+                    if (next) {
+                        args.push(wrapIterator(next));
+                    }
+                    else {
+                        args.push(callback);
+                    }
+                    ensureAsync(iterator).apply(null, args);
+                }
+            });
+        }
+        wrapIterator(async.iterator(tasks))();
+    };
+
+    function _parallel(eachfn, tasks, callback) {
+        callback = callback || noop;
+        var results = _isArrayLike(tasks) ? [] : {};
+
+        eachfn(tasks, function (task, key, callback) {
+            task(_restParam(function (err, args) {
+                if (args.length <= 1) {
+                    args = args[0];
+                }
+                results[key] = args;
+                callback(err);
+            }));
+        }, function (err) {
+            callback(err, results);
+        });
+    }
+
+    async.parallel = function (tasks, callback) {
+        _parallel(async.eachOf, tasks, callback);
+    };
+
+    async.parallelLimit = function(tasks, limit, callback) {
+        _parallel(_eachOfLimit(limit), tasks, callback);
+    };
+
+    async.series = function(tasks, callback) {
+        _parallel(async.eachOfSeries, tasks, callback);
+    };
+
+    async.iterator = function (tasks) {
+        function makeCallback(index) {
+            function fn() {
+                if (tasks.length) {
+                    tasks[index].apply(null, arguments);
+                }
+                return fn.next();
+            }
+            fn.next = function () {
+                return (index < tasks.length - 1) ? makeCallback(index + 1): null;
+            };
+            return fn;
+        }
+        return makeCallback(0);
+    };
+
+    async.apply = _restParam(function (fn, args) {
+        return _restParam(function (callArgs) {
+            return fn.apply(
+                null, args.concat(callArgs)
+            );
+        });
+    });
+
+    function _concat(eachfn, arr, fn, callback) {
+        var result = [];
+        eachfn(arr, function (x, index, cb) {
+            fn(x, function (err, y) {
+                result = result.concat(y || []);
+                cb(err);
+            });
+        }, function (err) {
+            callback(err, result);
+        });
+    }
+    async.concat = doParallel(_concat);
+    async.concatSeries = doSeries(_concat);
+
+    async.whilst = function (test, iterator, callback) {
+        callback = callback || noop;
+        if (test()) {
+            var next = _restParam(function(err, args) {
+                if (err) {
+                    callback(err);
+                } else if (test.apply(this, args)) {
+                    iterator(next);
+                } else {
+                    callback.apply(null, [null].concat(args));
+                }
+            });
+            iterator(next);
+        } else {
+            callback(null);
+        }
+    };
+
+    async.doWhilst = function (iterator, test, callback) {
+        var calls = 0;
+        return async.whilst(function() {
+            return ++calls <= 1 || test.apply(this, arguments);
+        }, iterator, callback);
+    };
+
+    async.until = function (test, iterator, callback) {
+        return async.whilst(function() {
+            return !test.apply(this, arguments);
+        }, iterator, callback);
+    };
+
+    async.doUntil = function (iterator, test, callback) {
+        return async.doWhilst(iterator, function() {
+            return !test.apply(this, arguments);
+        }, callback);
+    };
+
+    async.during = function (test, iterator, callback) {
+        callback = callback || noop;
+
+        var next = _restParam(function(err, args) {
+            if (err) {
+                callback(err);
+            } else {
+                args.push(check);
+                test.apply(this, args);
+            }
+        });
+
+        var check = function(err, truth) {
+            if (err) {
+                callback(err);
+            } else if (truth) {
+                iterator(next);
+            } else {
+                callback(null);
+            }
+        };
+
+        test(check);
+    };
+
+    async.doDuring = function (iterator, test, callback) {
+        var calls = 0;
+        async.during(function(next) {
+            if (calls++ < 1) {
+                next(null, true);
+            } else {
+                test.apply(this, arguments);
+            }
+        }, iterator, callback);
+    };
+
+    function _queue(worker, concurrency, payload) {
+        if (concurrency == null) {
+            concurrency = 1;
+        }
+        else if(concurrency === 0) {
+            throw new Error('Concurrency must not be zero');
+        }
+        function _insert(q, data, pos, callback) {
+            if (callback != null && typeof callback !== "function") {
+                throw new Error("task callback must be a function");
+            }
+            q.started = true;
+            if (!_isArray(data)) {
+                data = [data];
+            }
+            if(data.length === 0 && q.idle()) {
+                // call drain immediately if there are no tasks
+                return async.setImmediate(function() {
+                    q.drain();
+                });
+            }
+            _arrayEach(data, function(task) {
+                var item = {
+                    data: task,
+                    callback: callback || noop
+                };
+
+                if (pos) {
+                    q.tasks.unshift(item);
+                } else {
+                    q.tasks.push(item);
+                }
+
+                if (q.tasks.length === q.concurrency) {
+                    q.saturated();
+                }
+            });
+            async.setImmediate(q.process);
+        }
+        function _next(q, tasks) {
+            return function(){
+                workers -= 1;
+
+                var removed = false;
+                var args = arguments;
+                _arrayEach(tasks, function (task) {
+                    _arrayEach(workersList, function (worker, index) {
+                        if (worker === task && !removed) {
+                            workersList.splice(index, 1);
+                            removed = true;
+                        }
+                    });
+
+                    task.callback.apply(task, args);
+                });
+                if (q.tasks.length + workers === 0) {
+                    q.drain();
+                }
+                q.process();
+            };
+        }
+
+        var workers = 0;
+        var workersList = [];
+        var q = {
+            tasks: [],
+            concurrency: concurrency,
+            payload: payload,
+            saturated: noop,
+            empty: noop,
+            drain: noop,
+            started: false,
+            paused: false,
+            push: function (data, callback) {
+                _insert(q, data, false, callback);
+            },
+            kill: function () {
+                q.drain = noop;
+                q.tasks = [];
+            },
+            unshift: function (data, callback) {
+                _insert(q, data, true, callback);
+            },
+            process: function () {
+                while(!q.paused && workers < q.concurrency && q.tasks.length){
+
+                    var tasks = q.payload ?
+                        q.tasks.splice(0, q.payload) :
+                        q.tasks.splice(0, q.tasks.length);
+
+                    var data = _map(tasks, function (task) {
+                        return task.data;
+                    });
+
+                    if (q.tasks.length === 0) {
+                        q.empty();
+                    }
+                    workers += 1;
+                    workersList.push(tasks[0]);
+                    var cb = only_once(_next(q, tasks));
+                    worker(data, cb);
+                }
+            },
+            length: function () {
+                return q.tasks.length;
+            },
+            running: function () {
+                return workers;
+            },
+            workersList: function () {
+                return workersList;
+            },
+            idle: function() {
+                return q.tasks.length + workers === 0;
+            },
+            pause: function () {
+                q.paused = true;
+            },
+            resume: function () {
+                if (q.paused === false) { return; }
+                q.paused = false;
+                var resumeCount = Math.min(q.concurrency, q.tasks.length);
+                // Need to call q.process once per concurrent
+                // worker to preserve full concurrency after pause
+                for (var w = 1; w <= resumeCount; w++) {
+                    async.setImmediate(q.process);
+                }
+            }
+        };
+        return q;
+    }
+
+    async.queue = function (worker, concurrency) {
+        var q = _queue(function (items, cb) {
+            worker(items[0], cb);
+        }, concurrency, 1);
+
+        return q;
+    };
+
+    async.priorityQueue = function (worker, concurrency) {
+
+        function _compareTasks(a, b){
+            return a.priority - b.priority;
+        }
+
+        function _binarySearch(sequence, item, compare) {
+            var beg = -1,
+                end = sequence.length - 1;
+            while (beg < end) {
+                var mid = beg + ((end - beg + 1) >>> 1);
+                if (compare(item, sequence[mid]) >= 0) {
+                    beg = mid;
+                } else {
+                    end = mid - 1;
+                }
+            }
+            return beg;
+        }
+
+        function _insert(q, data, priority, callback) {
+            if (callback != null && typeof callback !== "function") {
+                throw new Error("task callback must be a function");
+            }
+            q.started = true;
+            if (!_isArray(data)) {
+                data = [data];
+            }
+            if(data.length === 0) {
+                // call drain immediately if there are no tasks
+                return async.setImmediate(function() {
+                    q.drain();
+                });
+            }
+            _arrayEach(data, function(task) {
+                var item = {
+                    data: task,
+                    priority: priority,
+                    callback: typeof callback === 'function' ? callback : noop
+                };
+
+                q.tasks.splice(_binarySearch(q.tasks, item, _compareTasks) + 1, 0, item);
+
+                if (q.tasks.length === q.concurrency) {
+                    q.saturated();
+                }
+                async.setImmediate(q.process);
+            });
+        }
+
+        // Start with a normal queue
+        var q = async.queue(worker, concurrency);
+
+        // Override push to accept second parameter representing priority
+        q.push = function (data, priority, callback) {
+            _insert(q, data, priority, callback);
+        };
+
+        // Remove unshift function
+        delete q.unshift;
+
+        return q;
+    };
+
+    async.cargo = function (worker, payload) {
+        return _queue(worker, 1, payload);
+    };
+
+    function _console_fn(name) {
+        return _restParam(function (fn, args) {
+            fn.apply(null, args.concat([_restParam(function (err, args) {
+                if (typeof console === 'object') {
+                    if (err) {
+                        if (console.error) {
+                            console.error(err);
+                        }
+                    }
+                    else if (console[name]) {
+                        _arrayEach(args, function (x) {
+                            console[name](x);
+                        });
+                    }
+                }
+            })]));
+        });
+    }
+    async.log = _console_fn('log');
+    async.dir = _console_fn('dir');
+    /*async.info = _console_fn('info');
+    async.warn = _console_fn('warn');
+    async.error = _console_fn('error');*/
+
+    async.memoize = function (fn, hasher) {
+        var memo = {};
+        var queues = {};
+        var has = Object.prototype.hasOwnProperty;
+        hasher = hasher || identity;
+        var memoized = _restParam(function memoized(args) {
+            var callback = args.pop();
+            var key = hasher.apply(null, args);
+            if (has.call(memo, key)) {   
+                async.setImmediate(function () {
+                    callback.apply(null, memo[key]);
+                });
+            }
+            else if (has.call(queues, key)) {
+                queues[key].push(callback);
+            }
+            else {
+                queues[key] = [callback];
+                fn.apply(null, args.concat([_restParam(function (args) {
+                    memo[key] = args;
+                    var q = queues[key];
+                    delete queues[key];
+                    for (var i = 0, l = q.length; i < l; i++) {
+                        q[i].apply(null, args);
+                    }
+                })]));
+            }
+        });
+        memoized.memo = memo;
+        memoized.unmemoized = fn;
+        return memoized;
+    };
+
+    async.unmemoize = function (fn) {
+        return function () {
+            return (fn.unmemoized || fn).apply(null, arguments);
+        };
+    };
+
+    function _times(mapper) {
+        return function (count, iterator, callback) {
+            mapper(_range(count), iterator, callback);
+        };
+    }
+
+    async.times = _times(async.map);
+    async.timesSeries = _times(async.mapSeries);
+    async.timesLimit = function (count, limit, iterator, callback) {
+        return async.mapLimit(_range(count), limit, iterator, callback);
+    };
+
+    async.seq = function (/* functions... */) {
+        var fns = arguments;
+        return _restParam(function (args) {
+            var that = this;
+
+            var callback = args[args.length - 1];
+            if (typeof callback == 'function') {
+                args.pop();
+            } else {
+                callback = noop;
+            }
+
+            async.reduce(fns, args, function (newargs, fn, cb) {
+                fn.apply(that, newargs.concat([_restParam(function (err, nextargs) {
+                    cb(err, nextargs);
+                })]));
+            },
+            function (err, results) {
+                callback.apply(that, [err].concat(results));
+            });
+        });
+    };
+
+    async.compose = function (/* functions... */) {
+        return async.seq.apply(null, Array.prototype.reverse.call(arguments));
+    };
+
+
+    function _applyEach(eachfn) {
+        return _restParam(function(fns, args) {
+            var go = _restParam(function(args) {
+                var that = this;
+                var callback = args.pop();
+                return eachfn(fns, function (fn, _, cb) {
+                    fn.apply(that, args.concat([cb]));
+                },
+                callback);
+            });
+            if (args.length) {
+                return go.apply(this, args);
+            }
+            else {
+                return go;
+            }
+        });
+    }
+
+    async.applyEach = _applyEach(async.eachOf);
+    async.applyEachSeries = _applyEach(async.eachOfSeries);
+
+
+    async.forever = function (fn, callback) {
+        var done = only_once(callback || noop);
+        var task = ensureAsync(fn);
+        function next(err) {
+            if (err) {
+                return done(err);
+            }
+            task(next);
+        }
+        next();
+    };
+
+    function ensureAsync(fn) {
+        return _restParam(function (args) {
+            var callback = args.pop();
+            args.push(function () {
+                var innerArgs = arguments;
+                if (sync) {
+                    async.setImmediate(function () {
+                        callback.apply(null, innerArgs);
+                    });
+                } else {
+                    callback.apply(null, innerArgs);
+                }
+            });
+            var sync = true;
+            fn.apply(this, args);
+            sync = false;
+        });
+    }
+
+    async.ensureAsync = ensureAsync;
+
+    async.constant = _restParam(function(values) {
+        var args = [null].concat(values);
+        return function (callback) {
+            return callback.apply(this, args);
+        };
+    });
+
+    async.wrapSync =
+    async.asyncify = function asyncify(func) {
+        return _restParam(function (args) {
+            var callback = args.pop();
+            var result;
+            try {
+                result = func.apply(this, args);
+            } catch (e) {
+                return callback(e);
+            }
+            // if result is Promise object
+            if (_isObject(result) && typeof result.then === "function") {
+                result.then(function(value) {
+                    callback(null, value);
+                })["catch"](function(err) {
+                    callback(err.message ? err : new Error(err));
+                });
+            } else {
+                callback(null, result);
+            }
+        });
+    };
+
+    // Node.js
+    if (typeof module === 'object' && module.exports) {
+        module.exports = async;
+    }
+    // AMD / RequireJS
+    else if (typeof define === 'function' && define.amd) {
+        define([], function () {
+            return async;
+        });
+    }
+    // included directly via <script> tag
+    else {
+        root.async = async;
+    }
+
+}());
+
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"_process":462}],152:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.abi = require('./contracts/abi');
+
+},{"./contracts/abi":153}],153:[function(require,module,exports){
 module.exports={
 	"Augur": [
 		{
@@ -6606,6 +13192,20 @@ module.exports={
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [],
+			"name": "migrateREP",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "getController",
@@ -8428,6 +15028,33 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_payoutNumerators",
+					"type": "uint256[]"
+				},
+				{
+					"name": "_invalid",
+					"type": "bool"
+				},
+				{
+					"name": "_attotokens",
+					"type": "uint256"
+				}
+			],
+			"name": "migrateOutByPayout",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -13451,6505 +20078,7 @@ module.exports={
 		}
 	]
 }
-},{}],29:[function(require,module,exports){
-module.exports={
-  "1": {
-    "Augur": "0x96a8238db7ad03e505840bd361dc2f521a72adbc",
-    "LegacyReputationToken": "0xe94327d07fc17907b4db788e5adf2ed424addff6"
-  },
-  "3": {
-    "Augur": "0x8d7c8b6dbb38e34c08459695bf2d7c72b1a8f5c0",
-    "LegacyReputationToken": "0x7a305d9b681fb164dc5ad628b5992177dc66aec8"
-  },
-  "4": {
-    "Controller": "0x83865ac0c3967fe1c682fefeabf2f04a0c685c2c",
-    "Universe": "0xe99f56edea4799632435757b453b8d52003e9b66",
-    "Augur": "0x5a63d57708e57600ea5b474984b9e23f5132f9b9",
-    "LegacyReputationToken": "0xb1cc1d41d0ffa088b9b65d12b33f7dfe26dd326e",
-    "CancelOrder": "0xa29c56131997bd0c02a2af02573b0c5aded06e9f",
-    "Cash": "0x7b83e81f71008e153e748f30c25f7d0f0b5af542",
-    "ClaimTradingProceeds": "0x0185ff8228518a931d145604d5bea309f6475886",
-    "CompleteSets": "0x97a6b8a78eb776104a10666fc496e304ebce65d3",
-    "CreateOrder": "0xdf8b0265182633db6cbc1fcf2955861b8ac22a0f",
-    "FillOrder": "0x84c17d480c34904a810da152ccfa66db80f77601",
-    "Order": "0xc36f0456313da3a3406a6262238d74d7454747f9",
-    "Orders": "0x30f6661e026961a34f18c53026d045d20b1241a3",
-    "OrdersFetcher": "0x3bdff48c886930f9d98041c97650594e0d281561",
-    "ShareToken": "0x0699bed513f5e4b035d4ad2275f7653b8ad9aa42",
-    "Trade": "0xca13c1703effecb859ab7ea10f6aaccb335d8fad",
-    "TradingEscapeHatch": "0x318cda9d09d39a71eabb4e78d208997b2b032e24"
-  },
-  "8995": {
-    "Controller": "0xc4138bd2d7b98313c9f2ff4549f8c8e8c16d7331",
-    "Universe": "0x5b8a40b609dff082f5ac7f0ff9dfe781a2fe2981",
-    "Augur": "0x8104a6ac147551812aedbcb03b955caf719d51d8",
-    "LegacyReputationToken": "0x1eb687f6aa6cfc6772fbafa2b193e4f8bca2539e",
-    "CancelOrder": "0x8e2e253017c79e04972f6b9a6822e82e0333245c",
-    "Cash": "0x0844da43d394b7de09622eac7840652649d9361c",
-    "ClaimTradingProceeds": "0xf8474589af5e0249c43d46c2fd23f2230f509b3b",
-    "CompleteSets": "0x8c6bf3a1d55828965b7636d02c4f04fa8b43ce1e",
-    "CreateOrder": "0x7514632ddb4a9a3c0e7dbd4e9ba3cb910fbe7cde",
-    "FillOrder": "0x974e360c838b58acdb1cf6253424f44d89ed8ff4",
-    "Order": "0x450ee3881671a382dacb2010bd0356529a2cf8b8",
-    "Orders": "0xdbcae3637fa44acd544ea7973518032f45ca8701",
-    "OrdersFetcher": "0xbd73fa9226b0b467d28ae3fff928990344938b75",
-    "ShareToken": "0x11f59362f4ffc20e5d55ab45485d10e853b0d3a2",
-    "Trade": "0xaed71861d25579b819b12898e03c3d96c1d6ced5",
-    "TradingEscapeHatch": "0xcc726cb63a68ae3f20f3bd402f1dc4d3b31a115f"
-  },
-  "12346": {
-    "Controller": "0xe8c16ec852df1790e0a07997ef1a2148a50ec4fa",
-    "Universe": "0x82e2722975ceffb1af6b2780ec47e45e0c968000",
-    "Augur": "0x86ad41234b28f7ece49d68f2df05be06ff5c7820",
-    "LegacyReputationToken": "0xe21634d611e0038def2a49182b7bbf35732cb971",
-    "CancelOrder": "0xc8ef7511fc148d38576e092d31f3c196ec9d9a11",
-    "Cash": "0xa2119ad0c7aef8e12df58272169d1afbda99844c",
-    "ClaimTradingProceeds": "0x9f78a59c14cb368c5f6bc79099f33a0ab389e045",
-    "CompleteSets": "0xcb41839567ca37f682c42cd7e540297f6c952b57",
-    "CreateOrder": "0xd83cb1ec58cf85c57b0e50d623007444f289b15b",
-    "FillOrder": "0xd415713718dd8dec0bc2967b727676eeb837bccb",
-    "Order": "0xca7a626511bb326c0e19801274e49190f07f537f",
-    "Orders": "0xd456993970453ffa9a747b3beabf3c897906b3fe",
-    "OrdersFetcher": "0x86bc9038c29e311ccf32ee14112e38d19cf56d61",
-    "ShareToken": "0xde572aa5945fa9b9807190798b3f0b7fa2084b01",
-    "Trade": "0xb6941190b6652a14aab16a321d836b3cd1c82f04",
-    "TradingEscapeHatch": "0xaa56d9acc5a3480a6edff419b3228c1a4ca3ba08"
-  }
-}
-
-},{}],30:[function(require,module,exports){
-"use strict";
-
-var hashEventAbi = require("../events/hash-event-abi");
-
-function generateAbiMap(abi) {
-  var functions = {};
-  var events = {};
-  Object.keys(abi).forEach(function (contractName) {
-    var functionsAndEventsArray = abi[contractName];
-    functionsAndEventsArray.forEach(function (functionOrEvent) {
-      var name = functionOrEvent.name;
-      if (functionOrEvent.type === "function") {
-        var functionAbiMap = {
-          constant: functionOrEvent.constant,
-          name: functionOrEvent.name
-        };
-        var inputs = [];
-        var signature = [];
-        if (functionOrEvent.inputs) {
-          functionOrEvent.inputs.forEach(function (input) {
-            inputs.push(input.name);
-            signature.push(input.type);
-          });
-        }
-        if (inputs.length) functionAbiMap.inputs = inputs;
-        if (signature.length) functionAbiMap.signature = signature;
-        if (functionOrEvent.outputs && functionOrEvent.outputs.length) {
-          var output = functionOrEvent.outputs[0];
-          functionAbiMap.returns = output.type;
-        } else {
-          functionAbiMap.returns = "null";
-        }
-        if (!functions[contractName]) functions[contractName] = {};
-        functions[contractName][name] = functionAbiMap;
-      } else if (functionOrEvent.type === "event") {
-        if (!events[contractName]) events[contractName] = {};
-        events[contractName][name] = {
-          contract: contractName,
-          inputs: functionOrEvent.inputs,
-          signature: hashEventAbi(functionOrEvent)
-        };
-      }
-    });
-  });
-  return { functions: functions, events: events };
-}
-
-module.exports = generateAbiMap;
-},{"../events/hash-event-abi":44}],31:[function(require,module,exports){
-"use strict";
-
-var generateAbiMap = require("./generate-abi-map");
-
-module.exports = {
-  abi: generateAbiMap(require("./abi")),
-  addresses: require("./addresses"),
-  uploadBlockNumbers: require("./upload-block-numbers")
-};
-},{"./abi":28,"./addresses":29,"./generate-abi-map":30,"./upload-block-numbers":32}],32:[function(require,module,exports){
-module.exports={
-  "4": 1641305,
-  "8995": 5506,
-  "12346": 537076
-}
-
-},{}],33:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-
-function calculateNumTicks(tickSize, minPrice, maxPrice) {
-  return new BigNumber(maxPrice, 10).minus(new BigNumber(minPrice, 10)).dividedBy(new BigNumber(tickSize, 10)).toFixed();
-}
-
-module.exports = calculateNumTicks;
-},{"bignumber.js":151}],34:[function(require,module,exports){
-"use strict";
-
-var assign = require("lodash.assign");
-var immutableDelete = require("immutable-delete");
-var speedomatic = require("speedomatic");
-var getMarketCreationCost = require("./get-market-creation-cost");
-var getMarketFromCreateMarketReceipt = require("./get-market-from-create-market-receipt");
-var api = require("../api");
-var encodeTag = require("../format/tag/encode-tag");
-var constants = require("../constants");
-
-/**
- * @param {Object} p Parameters object.
- * @param {string} p.universe Universe on which to create this market.
- * @param {number} p._endTime Market expiration timestamp, in seconds.
- * @param {string=} p._feePerEthInWei Amount of wei per ether settled that goes to the market creator, as a base-10 string.
- * @param {string} p._denominationToken Ethereum address of the token used as this market's currency.
- * @param {string} p._designatedReporterAddress Ethereum address of this market's designated reporter.
- * @param {string} p._topic The topic (category) to which this market belongs, as a UTF8 string.
- * @param {string} p._description Description of the market, as a UTF8 string.
- * @param {Object=} p._extraInfo Extra info which will be converted to JSON and logged to the chain in the CreateMarket event.
- * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
- * @param {function} p.onSent Called if/when the createBinaryMarket transaction is broadcast to the network.
- * @param {function} p.onSuccess Called if/when the createBinaryMarket transaction is sealed and confirmed.
- * @param {function} p.onFailed Called if/when the createBinaryMarket transaction fails.
- */
-function createBinaryMarket(p) {
-  getMarketCreationCost({ universe: p.universe }, function (err, marketCreationCost) {
-    if (err) return p.onFailed(err);
-    var createBinaryMarketParams = assign({}, immutableDelete(p, "universe"), {
-      tx: assign({
-        to: p.universe,
-        value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
-        gas: constants.CREATE_BINARY_MARKET_GAS
-      }, p.tx),
-      _topic: encodeTag(p._topic),
-      _extraInfo: JSON.stringify(p._extraInfo || {}),
-      onSuccess: function onSuccess(res) {
-        getMarketFromCreateMarketReceipt(res.hash, function (err, marketID) {
-          if (err) return p.onFailed(err);
-          p.onSuccess(assign({}, res, { callReturn: marketID }));
-        });
-      }
-    });
-    api().Universe.createBinaryMarket(createBinaryMarketParams);
-  });
-}
-
-module.exports = createBinaryMarket;
-},{"../api":11,"../constants":27,"../format/tag/encode-tag":60,"./get-market-creation-cost":38,"./get-market-from-create-market-receipt":39,"immutable-delete":403,"lodash.assign":426,"speedomatic":531}],35:[function(require,module,exports){
-"use strict";
-
-var assign = require("lodash.assign");
-var immutableDelete = require("immutable-delete");
-var speedomatic = require("speedomatic");
-var getMarketCreationCost = require("./get-market-creation-cost");
-var getMarketFromCreateMarketReceipt = require("./get-market-from-create-market-receipt");
-var api = require("../api");
-var encodeTag = require("../format/tag/encode-tag");
-var constants = require("../constants");
-
-/**
- * @param {Object} p Parameters object.
- * @param {string} p.universe Universe on which to create this market.
- * @param {number} p._endTime Market expiration timestamp, in seconds.
- * @param {string=} p._feePerEthInWei Amount of wei per ether settled that goes to the market creator, as a base-10 string.
- * @param {string} p._denominationToken Ethereum address of the token used as this market's currency.
- * @param {string} p._designatedReporterAddress Ethereum address of this market's designated reporter.
- * @param {string[]} p._outcomes Descriptions for each outcome, as an array of UTF8 strings, with between [2, 8] elements in the array.
- * @param {number} p._numOutcomes Number of outcomes this market has, as an integer on [2, 8].
- * @param {string} p._topic The topic (category) to which this market belongs, as a UTF8 string.
- * @param {string} p._description Description of the market, as a UTF8 string.
- * @param {Object=} p._extraInfo Extra info which will be converted to JSON and logged to the chain in the CreateMarket event.
- * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
- * @param {function} p.onSent Called if/when the createCategoricalMarket transaction is broadcast to the network.
- * @param {function} p.onSuccess Called if/when the createCategoricalMarket transaction is sealed and confirmed.
- * @param {function} p.onFailed Called if/when the createCategoricalMarket transaction fails.
- */
-function createCategoricalMarket(p) {
-  getMarketCreationCost({ universe: p.universe }, function (err, marketCreationCost) {
-    if (err) return p.onFailed(err);
-    var createCategoricalMarketParams = assign({}, immutableDelete(p, "universe"), {
-      tx: assign({
-        to: p.universe,
-        value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
-        gas: constants.CREATE_CATEGORICAL_MARKET_GAS
-      }, p.tx),
-      _outcomes: p._outcomes.map(function (outcome) {
-        return encodeTag(outcome);
-      }),
-      _topic: encodeTag(p._topic),
-      _extraInfo: JSON.stringify(p._extraInfo || {}),
-      onSuccess: function onSuccess(res) {
-        getMarketFromCreateMarketReceipt(res.hash, function (err, marketID) {
-          if (err) return p.onFailed(err);
-          p.onSuccess(assign({}, res, { callReturn: marketID }));
-        });
-      }
-    });
-    api().Universe.createCategoricalMarket(createCategoricalMarketParams);
-  });
-}
-
-module.exports = createCategoricalMarket;
-},{"../api":11,"../constants":27,"../format/tag/encode-tag":60,"./get-market-creation-cost":38,"./get-market-from-create-market-receipt":39,"immutable-delete":403,"lodash.assign":426,"speedomatic":531}],36:[function(require,module,exports){
-"use strict";
-
-var assign = require("lodash.assign");
-var immutableDelete = require("immutable-delete");
-var speedomatic = require("speedomatic");
-var calculateNumTicks = require("./calculate-num-ticks");
-var getMarketCreationCost = require("./get-market-creation-cost");
-var getMarketFromCreateMarketReceipt = require("./get-market-from-create-market-receipt");
-var api = require("../api");
-var encodeTag = require("../format/tag/encode-tag");
-var constants = require("../constants");
-
-/**
- * @param {Object} p Parameters object.
- * @param {string} p.universe Universe on which to create this market.
- * @param {number} p._endTime Market expiration timestamp, in seconds.
- * @param {string=} p._feePerEthInWei Amount of wei per ether settled that goes to the market creator, as a base-10 string.
- * @param {string} p._denominationToken Ethereum address of the token used as this market's currency.
- * @param {string} p._minPrice Minimum display (non-normalized) price for this market, as a base-10 string.
- * @param {string} p._maxPrice Maximum display (non-normalized) price for this market, as a base-10 string.
- * @param {string} p._designatedReporterAddress Ethereum address of this market's designated reporter.
- * @param {string} p._topic The topic (category) to which this market belongs, as a UTF8 string.
- * @param {string} p._description Description of the market, as a UTF8 string.
- * @param {string=} p.tickSize The tick size for this market, as a base-10 string.
- * @param {Object=} p._extraInfo Extra info which will be converted to JSON and logged to the chain in the CreateMarket event.
- * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
- * @param {function} p.onSent Called if/when the createScalarMarket transaction is broadcast to the network.
- * @param {function} p.onSuccess Called if/when the createScalarMarket transaction is sealed and confirmed.
- * @param {function} p.onFailed Called if/when the createScalarMarket transaction fails.
- */
-function createScalarMarket(p) {
-  getMarketCreationCost({ universe: p.universe }, function (err, marketCreationCost) {
-    if (err) return p.onFailed(err);
-    var numTicks = calculateNumTicks(p.tickSize || constants.DEFAULT_SCALAR_TICK_SIZE, p._minPrice, p._maxPrice);
-    var createScalarMarketParams = assign({}, immutableDelete(p, ["universe", "tickSize"]), {
-      tx: assign({
-        to: p.universe,
-        value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
-        gas: constants.CREATE_SCALAR_MARKET_GAS
-      }, p.tx),
-      _numTicks: speedomatic.hex(numTicks),
-      _minPrice: speedomatic.fix(p._minPrice, "hex"),
-      _maxPrice: speedomatic.fix(p._maxPrice, "hex"),
-      _topic: encodeTag(p._topic),
-      _extraInfo: JSON.stringify(p._extraInfo || {}),
-      onSuccess: function onSuccess(res) {
-        getMarketFromCreateMarketReceipt(res.hash, function (err, marketID) {
-          if (err) return p.onFailed(err);
-          p.onSuccess(assign({}, res, { callReturn: marketID }));
-        });
-      }
-    });
-    api().Universe.createScalarMarket(createScalarMarketParams);
-  });
-}
-
-module.exports = createScalarMarket;
-},{"../api":11,"../constants":27,"../format/tag/encode-tag":60,"./calculate-num-ticks":33,"./get-market-creation-cost":38,"./get-market-from-create-market-receipt":39,"immutable-delete":403,"lodash.assign":426,"speedomatic":531}],37:[function(require,module,exports){
-"use strict";
-
-/** Type definition for MarketCreationCostBreakdown.
- * @typedef {Object} MarketCreationCostBreakdown
- * @property {string} designatedReportNoShowReputationBond Amount of Reputation required to incentivize the designated reporter to show up and report, as a base-10 string.
- * @property {string} targetReporterGasCosts Amount of Ether required to pay for the gas to Report on this market, as a base-10 string.
- * @property {string} validityBond Amount of Ether to be held on-contract and repaid when the market is resolved with a non-Invalid outcome, as a base-10 string.
- */
-
-var async = require("async");
-var speedomatic = require("speedomatic");
-var api = require("../api");
-
-/**
- * Note: this function will send a transaction if needed to create the current reporting window.
- * @param {Object} p Parameters object.
- * @param {string} p.universe Universe on which to create this market.
- * @param {function} callback Called when all market creation costs have been looked up.
- * @return {MarketCreationCostBreakdown} Cost breakdown for creating a new market.
- */
-function getMarketCreationCostBreakdown(p, callback) {
-  var universePayload = { tx: { to: p.universe, send: false } };
-  async.parallel({
-    designatedReportNoShowReputationBond: function designatedReportNoShowReputationBond(next) {
-      api().Universe.getOrCacheDesignatedReportNoShowBond(universePayload, function (err, designatedReportNoShowBond) {
-        if (err) return next(err);
-        next(null, speedomatic.unfix(designatedReportNoShowBond, "string"));
-      });
-    },
-    targetReporterGasCosts: function targetReporterGasCosts(next) {
-      api().Universe.getOrCacheTargetReporterGasCosts(universePayload, function (err, targetReporterGasCosts) {
-        if (err) return next(err);
-        next(null, speedomatic.unfix(targetReporterGasCosts, "string"));
-      });
-    },
-    validityBond: function validityBond(next) {
-      api().Universe.getOrCacheValidityBond(universePayload, function (err, validityBond) {
-        if (err) return next(err);
-        next(null, speedomatic.unfix(validityBond, "string"));
-      });
-    }
-  }, callback);
-}
-
-module.exports = getMarketCreationCostBreakdown;
-},{"../api":11,"async":149,"speedomatic":531}],38:[function(require,module,exports){
-"use strict";
-
-/** Type definition for MarketCreationCost.
- * @typedef {Object} MarketCreationCost
- * @property {string} designatedReportNoShowReputationBond Amount of Reputation required to incentivize the designated reporter to show up and report, as a base-10 string.
- * @property {string} etherRequiredToCreateMarket Sum of the Ether required to pay for Reporters' gas costs and the validity bond, as a base-10 string.
- */
-
-var assign = require("lodash.assign");
-var async = require("async");
-var immutableDelete = require("immutable-delete");
-var speedomatic = require("speedomatic");
-var api = require("../api");
-
-/**
- * Note: this function will send a transaction if needed to create the current reporting window.
- * @param {Object} p Parameters object.
- * @param {string} p.universe Universe on which to create this market.
- * @param {function} callback Called after the market creation cost has been looked up.
- * @return {MarketCreationCost} Costs of creating a new market.
- */
-function getMarketCreationCost(p, callback) {
-  var universePayload = assign({}, immutableDelete(p, "universe"), { tx: assign({ to: p.universe, send: false }, p.tx) });
-  async.parallel({
-    designatedReportNoShowReputationBond: function designatedReportNoShowReputationBond(next) {
-      api().Universe.getOrCacheDesignatedReportNoShowBond(universePayload, function (err, designatedReportNoShowBond) {
-        if (err) return next(err);
-        next(null, speedomatic.unfix(designatedReportNoShowBond, "string"));
-      });
-    },
-    etherRequiredToCreateMarket: function etherRequiredToCreateMarket(next) {
-      api().Universe.getOrCacheMarketCreationCost(universePayload, function (err, marketCreationCost) {
-        if (err) return next(err);
-        next(null, speedomatic.unfix(marketCreationCost, "string"));
-      });
-    }
-  }, callback);
-}
-
-module.exports = getMarketCreationCost;
-},{"../api":11,"async":149,"immutable-delete":403,"lodash.assign":426,"speedomatic":531}],39:[function(require,module,exports){
-"use strict";
-
-var ethrpc = require("../rpc-interface");
-var findEventLogsInLogArray = require("../events/find-event-logs-in-log-array");
-var isObject = require("../utils/is-object");
-
-function getMarketFromCreateMarketReceipt(transactionHash, callback) {
-  ethrpc.getTransactionReceipt(transactionHash, function (receipt) {
-    if (!isObject(receipt) || receipt.error) return callback(new Error("Transaction receipt not found for " + transactionHash));
-    var marketCreatedLogs = findEventLogsInLogArray("Augur", "MarketCreated", receipt.logs);
-    if (marketCreatedLogs == null || !marketCreatedLogs.length || marketCreatedLogs[0] == null || marketCreatedLogs[0].market == null) {
-      return callback(new Error("MarketCreated log not found for " + transactionHash));
-    }
-    callback(null, marketCreatedLogs[0].market);
-  });
-}
-
-module.exports = getMarketFromCreateMarketReceipt;
-},{"../events/find-event-logs-in-log-array":42,"../rpc-interface":82,"../utils/is-object":125}],40:[function(require,module,exports){
-"use strict";
-
-module.exports = {
-  createBinaryMarket: require("./create-binary-market"),
-  createCategoricalMarket: require("./create-categorical-market"),
-  createScalarMarket: require("./create-scalar-market"),
-  getMarketCreationCost: require("./get-market-creation-cost"),
-  getMarketCreationCostBreakdown: require("./get-market-creation-cost-breakdown")
-};
-},{"./create-binary-market":34,"./create-categorical-market":35,"./create-scalar-market":36,"./get-market-creation-cost":38,"./get-market-creation-cost-breakdown":37}],41:[function(require,module,exports){
-"use strict";
-
-var parseLogMessage = require("./parse-message/parse-log-message");
-
-function addFilter(blockStream, contractName, eventName, eventAbi, contracts, addSubscription, onMessage) {
-  if (!eventAbi) return false;
-  if (!eventAbi.contract || !eventAbi.signature || !eventAbi.inputs) return false;
-  if (!contracts[eventAbi.contract]) return false;
-  var contractAddress = contracts[eventAbi.contract];
-  addSubscription(contractAddress, eventAbi.signature, blockStream.addLogFilter({
-    address: contractAddress,
-    topics: [eventAbi.signature]
-  }), function (message) {
-    parseLogMessage(contractName, eventName, message, eventAbi.inputs, onMessage);
-  });
-  return true;
-}
-
-module.exports = addFilter;
-},{"./parse-message/parse-log-message":48}],42:[function(require,module,exports){
-"use strict";
-
-var speedomatic = require("speedomatic");
-var eventsAbi = require("../contracts").abi.events;
-var parseLogMessage = require("./parse-message/parse-log-message");
-
-function findEventLogsInLogArray(contractName, eventName, logs) {
-  if (!Array.isArray(logs) || !logs.length) return null;
-  var eventAbi = ((eventsAbi || {})[contractName] || {})[eventName];
-  if (eventAbi == null) return null;
-  var eventSignature = eventAbi.signature;
-  var eventInputs = eventAbi.inputs;
-  if (eventSignature == null) return null;
-  return logs.reduce(function (reducedLogs, log) {
-    if (speedomatic.formatInt256(log.topics[0]) !== eventSignature) return reducedLogs;
-    return reducedLogs.concat(parseLogMessage(contractName, eventName, log, eventInputs));
-  }, []);
-}
-
-module.exports = findEventLogsInLogArray;
-},{"../contracts":31,"./parse-message/parse-log-message":48,"speedomatic":531}],43:[function(require,module,exports){
-"use strict";
-
-var assign = require("lodash.assign");
-var async = require("async");
-var encodeNumberAsJSNumber = require("speedomatic").encodeNumberAsJSNumber;
-var parseLogMessage = require("./parse-message/parse-log-message");
-var contracts = require("../contracts");
-var ethrpc = require("../rpc-interface");
-var chunkBlocks = require("../utils/chunk-blocks");
-var listContracts = require("../utils/list-contracts");
-var mapContractAddressesToNames = require("../utils/map-contract-addresses-to-names");
-var mapEventSignaturesToNames = require("../utils/map-event-signatures-to-names");
-var constants = require("../constants");
-
-/**
- * @param {Object} p Parameters object.
- * @param {number=} p.fromBlock Block number to start looking up logs (default: constants.AUGUR_UPLOAD_BLOCK_NUMBER).
- * @param {number=} p.toBlock Block number where the log lookup should stop (default: current block number).
- * @param {function} callback Called when all data has been received and parsed.
- * @return { contractName => { eventName => [parsed event logs] } }
- */
-function getAllAugurLogs(p, callback) {
-  var allAugurLogs = [];
-  var networkId = ethrpc.getNetworkID();
-  var contractNameToAddressMap = contracts.addresses[networkId];
-  if (contractNameToAddressMap == null) return callback(new Error("No contract address map for networkID: " + networkId));
-  var eventsAbi = contracts.abi.events;
-  var contractAddressToNameMap = mapContractAddressesToNames(contractNameToAddressMap);
-  var eventSignatureToNameMap = mapEventSignaturesToNames(eventsAbi);
-  var filterParams = { address: listContracts(contractNameToAddressMap) };
-  var fromBlock = p.fromBlock ? encodeNumberAsJSNumber(p.fromBlock) : constants.AUGUR_UPLOAD_BLOCK_NUMBER;
-  var currentBlock = parseInt(ethrpc.getCurrentBlock().number, 16);
-  var toBlock = p.toBlock ? encodeNumberAsJSNumber(p.toBlock) : currentBlock;
-  if (fromBlock > currentBlock || toBlock > currentBlock) {
-    return callback(new Error("Block range " + fromBlock + " to " + toBlock + " exceeds currentBlock " + currentBlock));
-  }
-  async.eachSeries(chunkBlocks(fromBlock, toBlock).reverse(), function (chunkOfBlocks, nextChunkOfBlocks) {
-    ethrpc.getLogs(assign({}, filterParams, chunkOfBlocks), function (logs) {
-      if (logs && logs.error) return nextChunkOfBlocks(logs);
-      if (!Array.isArray(logs) || !logs.length) return nextChunkOfBlocks(null);
-      logs.forEach(function (log) {
-        if (log && Array.isArray(log.topics) && log.topics.length) {
-          var contractName = contractAddressToNameMap[log.address];
-          var eventName = eventSignatureToNameMap[contractName][log.topics[0]];
-          if (eventName == null) {
-            console.log("Contract " + contractName + " has no event signature " + log.topics[0] + " found on tx " + log.transactionHash);
-            return;
-          }
-          try {
-            var parsedLog = parseLogMessage(contractName, eventName, log, eventsAbi[contractName][eventName].inputs);
-            allAugurLogs.push(parsedLog);
-          } catch (exc) {
-            console.error("parseLogMessage error", exc);
-            console.log(contractName, eventName, log, eventsAbi[contractName], chunkOfBlocks);
-          }
-        }
-      });
-      nextChunkOfBlocks(null);
-    });
-  }, function (err) {
-    if (err) return callback(err);
-    callback(null, allAugurLogs);
-  });
-}
-
-module.exports = getAllAugurLogs;
-},{"../constants":27,"../contracts":31,"../rpc-interface":82,"../utils/chunk-blocks":121,"../utils/list-contracts":127,"../utils/map-contract-addresses-to-names":128,"../utils/map-event-signatures-to-names":129,"./parse-message/parse-log-message":48,"async":149,"lodash.assign":426,"speedomatic":531}],44:[function(require,module,exports){
-"use strict";
-
-var hashEventSignature = require("./hash-event-signature");
-
-function hashEventAbi(eventAbi) {
-  return hashEventSignature(eventAbi.name + "(" + eventAbi.inputs.map(function (input) {
-    return input.type;
-  }).join(",") + ")");
-}
-
-module.exports = hashEventAbi;
-},{"./hash-event-signature":45}],45:[function(require,module,exports){
-(function (Buffer){
-"use strict";
-
-var speedomatic = require("speedomatic");
-var keccak256 = require("../utils/keccak256");
-
-function hashEventSignature(eventName) {
-  return speedomatic.formatInt256(keccak256(Buffer.from(eventName, "utf8")).toString("hex"));
-}
-
-module.exports = hashEventSignature;
-}).call(this,require("buffer").Buffer)
-},{"../utils/keccak256":126,"buffer":188,"speedomatic":531}],46:[function(require,module,exports){
-"use strict";
-
-var EventEmitter = require("event-emitter");
-
-module.exports = {
-  getAllAugurLogs: require("./get-all-augur-logs"),
-  startAugurNodeEventListeners: require("./start-augur-node-event-listeners"),
-  stopAugurNodeEventListeners: require("./stop-augur-node-event-listeners"),
-  startBlockchainEventListeners: require("./start-blockchain-event-listeners"),
-  stopBlockchainEventListeners: require("./stop-blockchain-event-listeners"),
-  startBlockListeners: require("./start-block-listeners"),
-  stopBlockListeners: require("./stop-block-listeners"),
-  nodes: {
-    augur: EventEmitter(),
-    ethereum: EventEmitter()
-  }
-};
-},{"./get-all-augur-logs":43,"./start-augur-node-event-listeners":49,"./start-block-listeners":50,"./start-blockchain-event-listeners":51,"./stop-augur-node-event-listeners":52,"./stop-block-listeners":53,"./stop-blockchain-event-listeners":54,"event-emitter":384}],47:[function(require,module,exports){
-"use strict";
-
-function parseBlockMessage(message, onMessage) {
-  if (message) {
-    if (message.length && Array.isArray(message)) {
-      for (var i = 0, len = message.length; i < len; ++i) {
-        if (message[i]) {
-          onMessage(message[i]);
-        }
-      }
-    } else {
-      onMessage(message);
-    }
-  }
-}
-
-module.exports = parseBlockMessage;
-},{}],48:[function(require,module,exports){
-"use strict";
-
-var assign = require("lodash.assign");
-var formatLoggedEventInputs = require("../../format/log/format-logged-event-inputs");
-var formatLogMessage = require("../../format/log/format-log-message");
-var isFunction = require("../../utils/is-function");
-var isObject = require("../../utils/is-object");
-
-function parseLogMessage(contractName, eventName, message, abiEventInputs, onMessage) {
-  if (message != null) {
-    if (Array.isArray(message)) {
-      message.map(function (singleMessage) {
-        return parseLogMessage(contractName, eventName, singleMessage, abiEventInputs, onMessage);
-      });
-    } else if (isObject(message) && !message.error && message.topics && message.data) {
-      var parsedMessage = assign(formatLoggedEventInputs(message.topics, message.data, abiEventInputs), {
-        address: message.address,
-        removed: message.removed,
-        transactionHash: message.transactionHash,
-        transactionIndex: parseInt(message.transactionIndex, 16),
-        logIndex: parseInt(message.logIndex, 16),
-        blockNumber: parseInt(message.blockNumber, 16),
-        contractName: contractName,
-        eventName: eventName
-      });
-      if (!isFunction(onMessage)) return formatLogMessage(contractName, eventName, parsedMessage);
-      onMessage(formatLogMessage(contractName, eventName, parsedMessage));
-    } else {
-      throw new Error("Bad event log(s) received: " + JSON.stringify(message));
-    }
-  }
-}
-
-module.exports = parseLogMessage;
-},{"../../format/log/format-log-message":56,"../../format/log/format-logged-event-inputs":57,"../../utils/is-function":124,"../../utils/is-object":125,"lodash.assign":426}],49:[function(require,module,exports){
-"use strict";
-
-var async = require("async");
-var augurNode = require("../augur-node");
-var isFunction = require("../utils/is-function");
-var isObject = require("../utils/is-object");
-var noop = require("../utils/noop");
-
-/**
- * Start listening for events emitted by augur-node.
- * @param {Object.<function>} eventCallbacks Callbacks to fire when events are received, keyed by event name.
- * @param {function=} onSetupComplete Called when all listeners are successfully set up.
- */
-function startAugurNodeEventListeners(eventCallbacks, onSetupComplete) {
-  if (!isFunction(onSetupComplete)) onSetupComplete = noop;
-  if (!isObject(eventCallbacks)) return onSetupComplete(new Error("No callbacks found"));
-  async.forEachOf(eventCallbacks, function (callback, eventName, nextEvent) {
-    augurNode.subscribeToEvent(eventName, callback, nextEvent);
-  }, onSetupComplete);
-}
-
-module.exports = startAugurNodeEventListeners;
-},{"../augur-node":20,"../utils/is-function":124,"../utils/is-object":125,"../utils/noop":130,"async":149}],50:[function(require,module,exports){
-"use strict";
-
-var subscriptions = require("./subscriptions");
-var parseBlockMessage = require("./parse-message/parse-block-message");
-var ethrpc = require("../rpc-interface");
-var isFunction = require("../utils/is-function");
-
-/**
- * Start listening for blocks.
- * @param {function=} blockCallbacks.onAdded Callback to fire when new blocks are received.
- * @param {function=} blockCallbacks.onRemoved Callback to fire when blocks are removed.
- * @return {boolean} True if listeners were successfully started; false otherwise.
- */
-function startBlockListeners(blockCallbacks) {
-  var blockStream = ethrpc.getBlockStream();
-  if (!blockStream) return false;
-  if (isFunction(blockCallbacks.onAdded)) {
-    subscriptions.addOnBlockAddedSubscription(blockStream.subscribeToOnBlockAdded(function (newBlock) {
-      parseBlockMessage(newBlock, blockCallbacks.onAdded);
-    }));
-  }
-  if (isFunction(blockCallbacks.onRemoved)) {
-    subscriptions.addOnBlockRemovedSubscription(blockStream.subscribeToOnBlockRemoved(function (removedBlock) {
-      parseBlockMessage(removedBlock, blockCallbacks.onRemoved);
-    }));
-  }
-  return true;
-}
-
-module.exports = startBlockListeners;
-},{"../rpc-interface":82,"../utils/is-function":124,"./parse-message/parse-block-message":47,"./subscriptions":55}],51:[function(require,module,exports){
-"use strict";
-
-var async = require("async");
-var addFilter = require("./add-filter");
-var subscriptions = require("./subscriptions");
-var contracts = require("../contracts");
-var ethrpc = require("../rpc-interface");
-var isFunction = require("../utils/is-function");
-var isObject = require("../utils/is-object");
-var noop = require("../utils/noop");
-
-/**
- * Start listening for events emitted by the Ethereum blockchain.
- * @param {Object.<function>=} eventCallbacks Callbacks to fire when events are received, keyed by contract name and event name.
- * @param {function=} onSetupComplete Called when all listeners are successfully set up.
- */
-function startBlockchainEventListeners(eventCallbacks, startingBlockNumber, onSetupComplete) {
-  if (!isFunction(onSetupComplete)) onSetupComplete = noop;
-  if (typeof startingBlockNumber !== "undefined") {
-    console.log("Starting blockstream at block ", startingBlockNumber);
-    ethrpc.startBlockStream(startingBlockNumber);
-  }
-  var blockStream = ethrpc.getBlockStream();
-  if (!blockStream) return onSetupComplete(new Error("Not connected to Ethereum"));
-  if (!isObject(eventCallbacks)) return onSetupComplete(new Error("No event callbacks found"));
-  var eventsAbi = contracts.abi.events;
-  var activeContracts = contracts.addresses[ethrpc.getNetworkID()];
-  blockStream.subscribeToOnLogAdded(subscriptions.onLogAdded);
-  blockStream.subscribeToOnLogRemoved(subscriptions.onLogRemoved);
-  async.forEachOf(eventCallbacks, function (callbacks, contractName, nextContract) {
-    async.forEachOf(callbacks, function (callback, eventName, nextEvent) {
-      if (!isFunction(callback) || !eventsAbi[contractName] || !eventsAbi[contractName][eventName]) {
-        return nextEvent(new Error("ABI not found for event " + eventName + " on contract " + contractName));
-      }
-      if (!addFilter(blockStream, contractName, eventName, eventsAbi[contractName][eventName], activeContracts, subscriptions.addSubscription, callback)) {
-        return nextEvent(new Error("Event subscription setup failed: " + contractName + " " + eventName));
-      }
-      nextEvent(null);
-    }, nextContract);
-  }, function (err) {
-    if (err) return onSetupComplete(err);
-    onSetupComplete(null);
-  });
-}
-
-module.exports = startBlockchainEventListeners;
-},{"../contracts":31,"../rpc-interface":82,"../utils/is-function":124,"../utils/is-object":125,"../utils/noop":130,"./add-filter":41,"./subscriptions":55,"async":149}],52:[function(require,module,exports){
-"use strict";
-
-var augurNode = require("../augur-node");
-var noop = require("../utils/noop");
-
-/**
- * Removes all active listeners for events emitted by augur-node.
- * @param {function=} callback
- */
-function stopAugurNodeEventListeners(callback) {
-  augurNode.unsubscribeFromAllEvents(callback || noop);
-}
-
-module.exports = stopAugurNodeEventListeners;
-},{"../augur-node":20,"../utils/noop":130}],53:[function(require,module,exports){
-"use strict";
-
-var ethrpc = require("../rpc-interface");
-var subscriptions = require("./subscriptions");
-
-/**
- * Stop listening for blocks and block removals.
- * @return {boolean} True if listeners were successfully stopped; false otherwise.
- */
-function stopBlockListeners() {
-  var blockStream = ethrpc.getBlockStream();
-  if (!blockStream) return false;
-  var blockSubscriptions = subscriptions.getSubscriptions().block;
-  if (blockSubscriptions.added) {
-    blockStream.unsubscribeFromOnBlockAdded(blockSubscriptions.added);
-    subscriptions.removeOnBlockAddedSubscription();
-  }
-  if (blockSubscriptions.removed) {
-    blockStream.unsubscribeFromOnBlockRemoved(blockSubscriptions.removed);
-    subscriptions.removeOnBlockRemovedSubscription();
-  }
-  return true;
-}
-
-module.exports = stopBlockListeners;
-},{"../rpc-interface":82,"./subscriptions":55}],54:[function(require,module,exports){
-"use strict";
-
-var ethrpc = require("../rpc-interface");
-var subscriptions = require("./subscriptions");
-
-/**
- * Removes all active listeners for events emitted by the Ethereum blockchain.
- * @return {boolean} True if listeners were successfully stopped; false otherwise.
- */
-function stopBlockchainEventListeners() {
-  var token,
-      blockStream = ethrpc.getBlockStream();
-  if (!blockStream) return false;
-  for (token in blockStream.onLogAddedSubscribers) {
-    if (blockStream.onLogAddedSubscribers.hasOwnProperty(token)) {
-      blockStream.unsubscribeFromOnLogAdded(token);
-    }
-  }
-  for (token in blockStream.onLogRemovedSubscribers) {
-    if (blockStream.onLogRemovedSubscribers.hasOwnProperty(token)) {
-      blockStream.unsubscribeFromOnLogRemoved(token);
-    }
-  }
-  for (token in subscriptions.getSubscriptions()) {
-    if (blockStream.logFilters.hasOwnProperty(token)) {
-      blockStream.removeLogFilter(token);
-      subscriptions.removeSubscription(token);
-    }
-  }
-  return true;
-}
-
-module.exports = stopBlockchainEventListeners;
-},{"../rpc-interface":82,"./subscriptions":55}],55:[function(require,module,exports){
-"use strict";
-
-var assign = require("lodash.assign");
-
-var initialState = { block: {} };
-
-var subscriptions = assign({}, initialState);
-
-module.exports.onLogAdded = function (log) {
-  if (subscriptions[log.address] && subscriptions[log.address][log.topics[0]]) {
-    subscriptions[log.address][log.topics[0]].callback(log);
-  }
-};
-
-module.exports.onLogRemoved = function (log) {
-  if (subscriptions[log.address] && subscriptions[log.address][log.topics[0]]) {
-    log.removed = true;
-    subscriptions[log.address][log.topics[0]].callback(log);
-  }
-};
-
-module.exports.getSubscriptions = function () {
-  return subscriptions;
-};
-
-module.exports.addSubscription = function (contractAddress, eventSignature, token, callback) {
-  if (!subscriptions[contractAddress]) subscriptions[contractAddress] = {};
-  subscriptions[contractAddress][eventSignature] = { token: token, callback: callback };
-};
-
-module.exports.removeSubscription = function (token) {
-  subscriptions = Object.keys(subscriptions).reduce(function (p, contractAddress) {
-    Object.keys(subscriptions[contractAddress]).forEach(function (eventSignature) {
-      if (subscriptions[contractAddress][eventSignature].token !== token) {
-        p[contractAddress][eventSignature] = subscriptions[contractAddress][eventSignature];
-      }
-    });
-    return p;
-  }, {});
-};
-
-module.exports.addOnBlockAddedSubscription = function (token) {
-  subscriptions.block.added = token;
-};
-
-module.exports.addOnBlockRemovedSubscription = function (token) {
-  subscriptions.block.removed = token;
-};
-
-module.exports.removeOnBlockAddedSubscription = function () {
-  delete subscriptions.block.added;
-};
-
-module.exports.removeOnBlockRemovedSubscription = function () {
-  delete subscriptions.block.removed;
-};
-
-module.exports.resetState = function () {
-  subscriptions = assign({}, initialState);
-};
-},{"lodash.assign":426}],56:[function(require,module,exports){
-"use strict";
-
-var assign = require("lodash.assign");
-var immutableDelete = require("immutable-delete");
-var speedomatic = require("speedomatic");
-var decodeTag = require("../tag/decode-tag");
-
-function formatLogMessage(contractName, eventName, message) {
-  switch (contractName) {
-    case "Augur":
-      switch (eventName) {
-        case "MarketCreated":
-          var extraInfo;
-          try {
-            extraInfo = JSON.parse(message.extraInfo);
-          } catch (exc) {
-            if (exc.constructor !== SyntaxError) throw exc;
-            extraInfo = null;
-          }
-          var formattedMessage = {
-            extraInfo: extraInfo,
-            marketCreationFee: speedomatic.unfix(message.marketCreationFee, "string"),
-            topic: decodeTag(message.topic),
-            minPrice: speedomatic.unfix(message.minPrice, "string"),
-            maxPrice: speedomatic.unfix(message.maxPrice, "string")
-          };
-          if (message.marketType === "1") {
-            formattedMessage.outcomes = message.outcomes.map(function (outcome) {
-              return decodeTag(outcome);
-            });
-          }
-          return assign({}, immutableDelete(message, "outcomes"), formattedMessage);
-        case "WinningTokensRedeemed":
-          return assign({}, message, {
-            amountRedeemed: speedomatic.unfix(message.amountRedeemed, "string"),
-            reportingFeesReceived: speedomatic.unfix(message.reportingFeesReceived, "string")
-          });
-        case "ReportSubmitted":
-          return assign({}, message, {
-            amountStaked: speedomatic.unfix(message.amountStaked, "string")
-          });
-        case "TokensTransferred":
-          return assign({}, message, {
-            value: speedomatic.unfix(message.value, "string")
-          });
-        default:
-          return message;
-      }
-    case "LegacyReputationToken":
-      switch (eventName) {
-        case "Approval":
-          return assign({}, message, {
-            value: speedomatic.unfix(message.value, "string")
-          });
-        case "Transfer":
-          return assign({}, message, {
-            value: speedomatic.unfix(message.value, "string")
-          });
-        default:
-          return message;
-      }
-    default:
-      return message;
-  }
-}
-
-module.exports = formatLogMessage;
-},{"../tag/decode-tag":59,"immutable-delete":403,"lodash.assign":426,"speedomatic":531}],57:[function(require,module,exports){
-"use strict";
-
-var speedomatic = require("speedomatic");
-var formatLoggedEventTopic = require("./format-logged-event-topic");
-
-function formatLoggedEventInputs(loggedTopics, loggedData, abiEventInputs) {
-  var decodedData = speedomatic.abiDecodeData(abiEventInputs, loggedData);
-  var topicIndex = 0;
-  var dataIndex = 0;
-  return abiEventInputs.reduce(function (p, eventInput) {
-    if (eventInput.indexed) {
-      p[eventInput.name] = formatLoggedEventTopic(loggedTopics[topicIndex + 1], eventInput.type);
-      ++topicIndex;
-    } else {
-      p[eventInput.name] = decodedData[dataIndex];
-      ++dataIndex;
-    }
-    return p;
-  }, {});
-}
-
-module.exports = formatLoggedEventInputs;
-},{"./format-logged-event-topic":58,"speedomatic":531}],58:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var speedomatic = require("speedomatic");
-
-function formatLoggedEventTopic(unformattedValue, inputType) {
-  switch (inputType) {
-    case "int256":
-      return new BigNumber(unformattedValue, 16).toFixed();
-    case "uint256":
-      return new BigNumber(unformattedValue, 16).abs().toFixed();
-    case "int256[]":
-    case "uint256[]":
-      return unformattedValue.map(function (value) {
-        return formatLoggedEventTopic(value, inputType.slice(0, -2));
-      });
-    case "address":
-    case "address[]":
-      return speedomatic.formatEthereumAddress(unformattedValue);
-    case "bytes32":
-    case "bytes32[]":
-      return speedomatic.formatInt256(unformattedValue);
-    default:
-      return unformattedValue;
-  }
-}
-
-module.exports = formatLoggedEventTopic;
-},{"bignumber.js":151,"speedomatic":531}],59:[function(require,module,exports){
-"use strict";
-
-var speedomatic = require("speedomatic");
-
-var decodeTag = function decodeTag(tag) {
-  try {
-    return tag && tag !== "0x0" && tag !== "0x" ? speedomatic.abiDecodeShortStringAsInt256(speedomatic.unfork(tag, true)) : null;
-  } catch (exc) {
-    console.error("decodeTag failed:", exc, tag);
-    return null;
-  }
-};
-
-module.exports = decodeTag;
-},{"speedomatic":531}],60:[function(require,module,exports){
-"use strict";
-
-var speedomatic = require("speedomatic");
-
-var encodeTag = function encodeTag(tag) {
-  if (tag == null || tag === "") return "0x0";
-  return speedomatic.abiEncodeShortStringAsInt256(tag.trim());
-};
-
-module.exports = encodeTag;
-},{"speedomatic":531}],61:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var keythereum = require("keythereum");
-var ROUNDS = require("./constants").ROUNDS;
-var version = require("./version");
-
-BigNumber.config({
-  MODULO_MODE: BigNumber.EUCLID,
-  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
-});
-
-keythereum.constants.pbkdf2.c = ROUNDS;
-keythereum.constants.scrypt.n = ROUNDS;
-
-function Augur() {
-  this.version = version;
-  this.options = {
-    debug: {
-      broadcast: false, // broadcast debug logging in ethrpc
-      connect: false // connection debug logging in ethrpc and ethereumjs-connect
-    }
-  };
-  this.accounts = require("./accounts");
-  this.api = require("./api")();
-  this.generateContractApi = require("./api").generateContractApi;
-  this.assets = require("./assets");
-  this.connect = require("./connect").bind(this);
-  this.constants = require("./constants");
-  this.contracts = require("./contracts");
-  this.createMarket = require("./create-market");
-  this.events = require("./events");
-  this.markets = require("./markets");
-  this.reporting = require("./reporting");
-  this.rpc = require("./rpc-interface");
-  this.trading = require("./trading");
-  this.augurNode = require("./augur-node");
-}
-
-module.exports = Augur;
-module.exports.version = version;
-module.exports.Augur = Augur;
-module.exports.default = Augur;
-},{"./accounts":3,"./api":11,"./assets":14,"./augur-node":20,"./connect":26,"./constants":27,"./contracts":31,"./create-market":40,"./events":46,"./markets":73,"./reporting":81,"./rpc-interface":82,"./trading":93,"./version":132,"bignumber.js":151,"keythereum":418}],62:[function(require,module,exports){
-/**
- * @todo Provide details for how category popularity is calculated.
- */
-
-"use strict";
-
-/**
- * @typedef {Object} Category
- * @property {string} category Name of a category.
- * @property {number|string} popularity Category popularity. (The exact method for calculating this value is still pending.)
- */
-
-var augurNode = require("../augur-node");
-
-/**
- * Returns the market categories in a specific universe. Requires an Augur Node connection.
- * @param {Object} p Parameters object.
- * @param {string} p.universe Contract address of the universe from which to retrieve the categories, as a hexadecimal string.
- * @param {string=} p.sortBy Field name by which to sort the categories.
- * @param {boolean=} p.isSortDescending Whether to sort categories in descending order by sortBy field.
- * @param {string=} p.limit Maximum number of categories to return.
- * @param {string=} p.offset Number of categories to truncate from the beginning of the results.
- * @param {function} callback Called after the categories have been retrieved.
- * @return {Category[]} Array representing the categories in the specified universe.
- */
-function getCategories(p, callback) {
-  augurNode.submitRequest("getCategories", p, callback);
-}
-
-module.exports = getCategories;
-},{"../augur-node":20}],63:[function(require,module,exports){
-/**
- * @todo Update function description & return information once function has been implemented.
- */
-
-"use strict";
-
-var augurNode = require("../augur-node");
-
-/**
- * This function has not been implemented yet. Returns the markets in a specific reporting window that are able to be disputed, along with the value of the dispute bond needed to dispute each market’s result. Requires an Augur Node connection.
- * @param {Object} p Parameters object.
- * @param {string} p.reportingWindow Contract address of the reporting window from which to retrieve the disputable markets.
- * @param {string=} p.sortBy Field name by which to sort the markets.
- * @param {boolean=} p.isSortDescending Whether to sort markets in descending order by sortBy field.
- * @param {string=} p.limit Maximum number of markets to return.
- * @param {string=} p.offset Number of markets to truncate from the beginning of the results.
- * @param {function} callback Called after the markets have been retrieved.
- * @return {} Pending.
- */
-function getDisputableMarkets(p, callback) {
-  augurNode.submitRequest("getDisputableMarkets", p, callback);
-}
-
-module.exports = getDisputableMarkets;
-},{"../augur-node":20}],64:[function(require,module,exports){
-"use strict";
-
-/** Type definition for TimestampedPrice.
- * @typedef {Object} TimestampedPrice
- * @property {number} price Display (non-normalized) price, as a base-10 number.
- * @property {number} timestamp Unix timestamp for this price in seconds, as an integer.
- */
-
-/** Type definition for SingleOutcomePriceTimeSeries.
- * @typedef {Object} SingleOutcomePriceTimeSeries
- * @property {TimestampedPrice[]} Array of timestamped price points for this outcome.
- */
-
-/** Type definition for MarketPriceTimeSeries.
- * @typedef {Object} MarketPriceTimeSeries
- * @property {SingleOutcomePriceTimeSeries} Price time-series for a single outcome, keyed by outcome ID.
- */
-
-var augurNode = require("../augur-node");
-
-/**
- * Returns the prices and timestamps of a specific market's outcomes over time. Requires an Augur Node connection.
- * @param {Object} p Parameters object.
- * @param {string} p.marketID Market contract address for which to look up orders, as a hexadecimal string.
- * @param {function} callback Called after the price time-series has been received and parsed.
- * @return {MarketPriceTimeSeries} This market's price time-series, keyed by outcome ID.
- */
-function getMarketPriceHistory(p, callback) {
-  augurNode.submitRequest("getMarketPriceHistory", p, callback);
-  // getLogsChunked({ label: "FillOrder", filter: p }, onChunkReceived, function (err, logs) {
-  //   if (err) return onComplete(err);
-  //   var mergedLogs = {};
-  //   logs.forEach(function (log) {
-  //     if (!mergedLogs[log.outcome]) mergedLogs[log.outcome] = [];
-  //     mergedLogs[log.outcome].push({ price: log.price, timestamp: log.timestamp });
-  //   });
-  //   onComplete(null, mergedLogs);
-  // });
-}
-
-module.exports = getMarketPriceHistory;
-},{"../augur-node":20}],65:[function(require,module,exports){
-"use strict";
-
-var augurNode = require("../augur-node");
-
-/**
- * Returns the markets in a specific universe that are waiting for a designated report to be submitted. Requires an Augur Node connection.
- * @param {Object} p Parameters object.
- * @param {string} p.universe Contract address of the universe from which to retrieve markets, as a hexadecimal string.
- * @param {string=} p.designatedReporter Address of a specific designated reporter by which to filter the results, as a hexadecimal string.
- * @param {string=} p.sortBy Field name by which to sort the markets.
- * @param {boolean=} p.isSortDescending Whether to sort the markets in descending order by sortBy field.
- * @param {string=} p.limit Maximum number of markets to return.
- * @param {string=} p.offset Number of markets to truncate from the beginning of the results.
- * @param {function} callback Called after the markets have been retrieved.
- * @return {string[]} Array of market addresses awaiting a designated report, as hexadecimal strings.
- */
-function getMarketsAwaitingDesignatedReporting(p, callback) {
-  augurNode.submitRequest("getMarketsAwaitingDesignatedReporting", p, callback);
-}
-
-module.exports = getMarketsAwaitingDesignatedReporting;
-},{"../augur-node":20}],66:[function(require,module,exports){
-/**
- * @todo Update `p.reportingState` once new reporting changes are added.
- */
-
-"use strict";
-
-var augurNode = require("../augur-node");
-
-/**
- * Returns the markets in a particular universe or reporting window that are waiting for a designated report to be submitted or waiting for the reporting phase to end. Either the universe or reporting window must be specified. Requires an Augur Node connection.
- * @param {Object} p Parameters object.
- * @param {string=} p.universe Contract address of the universe from which to retrieve markets, as a hexadecimal string. If this parameter is not specified, a reporting window must be specified instead.
- * @param {string=} p.reportingWindow Contract address of the reporting window from which to retrieve the markets, as a hexadecimal string. If this parameter is not specified, a universe must be specified instead.
- * @param {string=} p.reportingState Description pending.
- * @param {string=} p.sortBy Field name by which to sort the markets.
- * @param {boolean=} p.isSortDescending Whether to sort the markets in descending order by sortBy field.
- * @param {string=} p.limit Maximum number of markets to return.
- * @param {string=} p.offset Number of markets to truncate from the beginning of the results.
- * @param {function} callback Called after the markets have been retrieved.
- * @return {string[]} Array of market addresses awaiting a designated report, as hexadecimal strings.
- */
-function getMarketsAwaitingReporting(p, callback) {
-  augurNode.submitRequest("getMarketsAwaitingReporting", p, callback);
-}
-
-module.exports = getMarketsAwaitingReporting;
-},{"../augur-node":20}],67:[function(require,module,exports){
-"use strict";
-
-var augurNode = require("../augur-node");
-
-/**
- * Returns the markets closing between a given time range in a specific universe. Requires an Augur Node connection.
- * @param {Object} p Parameters object.
- * @param {string} p.universe Contract address of the universe from which to get the markets, as a hexadecimal string.
- * @param {number} p.earliestClosingTime Earliest market close timestamp at which to truncate market results, in seconds.
- * @param {number} p.latestClosingTime Latest market close timestamp at which to truncate market results, in seconds.
- * @param {string=} p.sortBy Field name by which to sort the markets.
- * @param {boolean=} p.isSortDescending Whether to sort the markets in descending order by sortBy field.
- * @param {string=} p.limit Maximum number of markets to return.
- * @param {string=} p.offset Number of markets to truncate from the beginning of the results.
- * @param {function} callback Called after the markets have been retrieved.
- * @return {string[]} Array of closing market addresses, as hexadecimal strings.
- */
-function getMarketsClosingInDateRange(p, callback) {
-  augurNode.submitRequest("getMarketsClosingInDateRange", p, callback);
-}
-
-module.exports = getMarketsClosingInDateRange;
-},{"../augur-node":20}],68:[function(require,module,exports){
-"use strict";
-
-var augurNode = require("../augur-node");
-
-/**
- * Returns the markets created by a specific user, as well as the total amount of fees earned so far by that user. Requires an Augur Node connection.
- * @param {Object} p Parameters object.
- * @param {string} p.universe Contract address of the universe from which to get the markets, as a hexadecimal string.
- * @param {string} p.creator Ethereum address of the creator who created the markets, as a hexadecimal string.
- * @param {string=} p.sortBy Field name by which to sort the markets.
- * @param {boolean=} p.isSortDescending Whether to sort the markets in descending order by sortBy field.
- * @param {string=} p.limit Maximum number of markets to return.
- * @param {string=} p.offset Number of markets to truncate from the beginning of the results.
- * @param {function} callback Called after the markets have been retrieved.
- * @return {string[]} Array of market addresses created by the specified user, as hexadecimal strings.
- */
-function getMarketsCreatedByAccount(p, callback) {
-  augurNode.submitRequest("getMarketsCreatedByUser", p, callback);
-}
-
-module.exports = getMarketsCreatedByAccount;
-},{"../augur-node":20}],69:[function(require,module,exports){
-"use strict";
-
-var augurNode = require("../augur-node");
-
-/**
- * Returns the markets within a specific category. Requires an Augur Node connection.
- * @param {Object} p Parameters object.
- * @param {string} p.universe Contract address of the universe from which to get the markets, as a hexadecimal string.
- * @param {string} p.category Name of the category from which to get the markets.
- * @param {string=} p.sortBy Field name by which to sort the markets.
- * @param {boolean=} p.isSortDescending Whether to sort the markets in descending order by sortBy field.
- * @param {string=} p.limit Maximum number of markets to return.
- * @param {string=} p.offset Number of markets to truncate from the beginning of the results.
- * @param {function} callback Called after the markets have been retrieved.
- * @return {string[]} Array of market addresses in the specified category, as hexadecimal strings.
- */
-function getMarketsInCategory(p, callback) {
-  augurNode.submitRequest("getMarketsInCategory", p, callback);
-}
-
-module.exports = getMarketsInCategory;
-},{"../augur-node":20}],70:[function(require,module,exports){
-/**
- * @todo Add more details for how outstanding shares, outcome volume, & market volume are calculated.
- */
-"use strict";
-
-/**
- * @typedef {Object} OutcomeInfo
- * @property {number} id Market outcome ID
- * @property {number} volume Trading volume for this outcome. (Method for calculating this is pending.)
- * @property {number} price Price of the outcome.
- * @property {string|null} description Description for the outcome.
- */
-
-/**
- * @typedef {Object} MarketInfo
- * @property {string} id Address of a market, as a hexadecimal string.
- * @property {string} universe Address of a universe, as a hexadecimal string.
- * @property {string} type Type of market ("binary", "categorical", or "scalar").
- * @property {number} numOutcomes Total possible outcomes for the market.
- * @property {number} minPrice Minimum price allowed for a share on a market, in ETH. For binary & categorical markets, this is 0 ETH. For scalar markets, this is the bottom end of the range set by the market creator.
- * @property {number} maxPrice Maximum price allowed for a share on a market, in ETH. For binary & categorical markets, this is 1 ETH. For scalar markets, this is the top end of the range set by the market creator.
- * @property {string} cumulativeScale Difference between maxPrice and minPrice.
- * @property {string} author Ethereum address of the creator of the market, as a hexadecimal string.
- * @property {number} creationTime Timestamp when the Ethereum block containing the market creation was created, in seconds.
- * @property {number} creationBlock Number of the Ethereum block containing the market creation.
- * @property {number} creationFee Fee paid by the market creator to create the market, in ETH.
- * @property {number} reportingFeeRate Percentage rate of ETH sent to the reporting window containing the market whenever shares are settled. Reporting fees are later used to pay REP holders for Reporting on the Outcome of Markets.
- * @property {number} marketCreatorFeeRate Percentage rate of ETH paid to the market creator whenever shares are settled.
- * @property {number|null} marketCreatorFeesCollected Amount of fees the market creator collected from the market, in ETH.
- * @property {string} category Name of the category the market is in.
- * @property {Array<string|null>} tags Names with which the market has been tagged.
- * @property {number} volume Trading volume for this outcome. (Method for calculating this is pending.)
- * @property {number} outstandingShares Total shares in the market. (Method for calculating this is pending.)
- * @property {REPORTING_STATE|null} reportingState Reporting state name.
- * @property {string} reportingWindow Contract address of the reporting window the market is in, as a hexadecimal string.
- * @property {number} endDate Timestamp when the market event ends, in seconds.
- * @property {number|null} finalizationTime Timestamp when the market was finalized (if any), in seconds.
- * @property {string} description Description of the market.
- * @property {string|null} extraInfo Stringified JSON object containing resolutionSource, tags, longDescription, and outcomeNames (for categorical markets).
- * @property {string} designatedReporter Ethereum address of the market's designated report, as a hexadecimal string.
- * @property {number} designatedReportStake Amount of ETH the designated reporter staked on the outcome submitted in the designated report.
- * @property {string|null} resolutionSource Reference source used to determine the outcome of the market event.
- * @property {number} numTicks Number of possible prices, or ticks, between a market's minimum price and maximum price.
- * @property {number|null} consensus Consensus outcome for the market.
- * @property {OutcomeInfo[]} outcomes Array of OutcomeInfo objects.
- */
-
-var augurNode = require("../augur-node");
-
-/**
- * Returns information about markets that are stored on-contract. The returned result includes basic information about the markets as well as information about each market outcome. It does not include Order Book information; however the function `augur.trading.getOrders` can be used to get information about orders for the specified market. Requires an Augur Node connection.
- * @param {Object} p Parameters object.
- * @param {string[]} p.marketIDs Contract addresses of the markets for which to get details, as hexadecimal strings.
- * @return {MarketInfo[]}
- */
-function getMarketsInfo(p, callback) {
-  augurNode.submitRequest("getMarketsInfo", p, callback);
-}
-
-module.exports = getMarketsInfo;
-},{"../augur-node":20}],71:[function(require,module,exports){
-"use strict";
-
-var augurNode = require("../augur-node");
-
-/**
- * Returns an array of markets in a specific universe. Requires an Augur Node connection.
- * @param {Object} p Parameters object.
- * @param {string} p.universe Contract address of the universe from which to get transfer history.
- * @param {string=} p.sortBy Field name by which to sort the markets.
- * @param {boolean=} p.isSortDescending Whether to sort the markets in descending order by sortBy field.
- * @param {string=} p.limit Maximum number of markets to return.
- * @param {string=} p.offset Number of markts to truncate from the beginning of the results.
- * @param {function} callback Called after the markets have been retrieved.
- * @return {string[]} Array of market addresses in the universe, as hexadecimal strings.
- */
-function getMarkets(p, callback) {
-  augurNode.submitRequest("getMarkets", p, callback);
-}
-
-module.exports = getMarkets;
-},{"../augur-node":20}],72:[function(require,module,exports){
-"use strict";
-
-/**
-* @typedef {Object} MarketCreatorFee
-* @property {string} marketID Address of a market, as a hexadecimal string.
-* @property {number|string} unclaimedFee Fee available to be claimed from the market, by the market creator, in attoETH
-*/
-
-var augurNode = require("../augur-node");
-
-/**
- * Returns information about unclaimed market creator fees. Fees are only available on finalized markets.
- * @param {Object} p Parameters object.
- * @param {string[]} p.marketIDs Contract addresses of the markets for which to get details, as hexadecimal strings.
- * @returns {MarketCreatorFee[]}
- */
-function getUnclaimedMarketCreatorFees(p, callback) {
-  augurNode.submitRequest("getUnclaimedMarketCreatorFees", p, callback);
-}
-
-module.exports = getUnclaimedMarketCreatorFees;
-},{"../augur-node":20}],73:[function(require,module,exports){
-"use strict";
-
-module.exports = {
-  getMarketsInfo: require("./get-markets-info"),
-  getDisputableMarkets: require("./get-disputable-markets"),
-  getMarketPriceHistory: require("./get-market-price-history"),
-  getMarkets: require("./get-markets"),
-  getMarketsAwaitingReporting: require("./get-markets-awaiting-reporting"),
-  getMarketsAwaitingDesignatedReporting: require("./get-markets-awaiting-designated-reporting"),
-  getMarketsInCategory: require("./get-markets-in-category"),
-  getMarketsClosingInDateRange: require("./get-markets-closing-in-date-range"),
-  getMarketsCreatedByUser: require("./get-markets-created-by-user"),
-  getUnclaimedMarketCreatorFees: require("./get-unclaimed-market-creator-fees"),
-  getCategories: require("./get-categories")
-};
-},{"./get-categories":62,"./get-disputable-markets":63,"./get-market-price-history":64,"./get-markets":71,"./get-markets-awaiting-designated-reporting":65,"./get-markets-awaiting-reporting":66,"./get-markets-closing-in-date-range":67,"./get-markets-created-by-user":68,"./get-markets-in-category":69,"./get-markets-info":70,"./get-unclaimed-market-creator-fees":72}],74:[function(require,module,exports){
-"use strict";
-
-var assign = require("lodash.assign");
-var immutableDelete = require("immutable-delete");
-var api = require("../api");
-
-/**
- * @param {Object} p Parameters object.
- * @param {string} p.market Address of the market to finalize, as a hex string.
- * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
- * @param {function} p.onSent Called if/when the transaction is broadcast to the network.
- * @param {function} p.onSuccess Called if/when the transaction is sealed and confirmed.
- * @param {function} p.onFailed Called if/when the transaction fails.
- */
-function finalizeMarket(p) {
-  var marketPayload = { tx: { to: p.market } };
-  api().Market.isFinalized(marketPayload, function (err, isFinalized) {
-    if (err) return p.onFailed(err);
-    if (parseInt(isFinalized, 16) === 1) return p.onSuccess(true);
-    api().Market.finalize(assign({}, marketPayload, { tx: assign({}, marketPayload.tx, { send: false }) }), function (err, readyToFinalize) {
-      if (err) return p.onFailed(err);
-      if (parseInt(readyToFinalize, 16) !== 1) return p.onSuccess(false);
-      api().Market.finalize(assign({}, immutableDelete(p, "market"), marketPayload));
-    });
-  });
-}
-
-module.exports = finalizeMarket;
-},{"../api":11,"immutable-delete":403,"lodash.assign":426}],75:[function(require,module,exports){
-"use strict";
-
-function getCurrentPeriodProgress(reportingPeriodDurationInSeconds, timestamp) {
-  var t = timestamp || parseInt(new Date().getTime() / 1000, 10);
-  return 100 * (t % reportingPeriodDurationInSeconds) / reportingPeriodDurationInSeconds;
-}
-
-module.exports = getCurrentPeriodProgress;
-},{}],76:[function(require,module,exports){
-/**
- * @todo Add descriptions for Report.isIndeterminate & Report.isSubmitted.
- */
-
-"use strict";
-
-/**
- * Serves as an enum for the state of a stake token.
- * @typedef {Object} REPORTING_STATE
- * @property {string} PRE_REPORTING Market's end time has not yet come to pass.
- * @property {string} DESIGNATED_REPORTING Market's end time has occurred, and it is pending a designated report.
- * @property {string} DESIGNATED_DISPUTE Market's designated report has been submitted and is allowed to be disputed.
- * @property {string} AWAITING_NO_REPORT_MIGRATION Either the disignated report was disputed, or the designated reporter failed to submit a report, and the market is waiting for the next reporting phase to begin.
- * @property {string} FIRST_REPORTING Market's designated report was disputed, and users can place stake on outcomes.
- * @property {string} FIRST_DISPUTE Market's first report has been submitted and is allowed to be disputed.
- * @property {string} LAST_REPORTING Market's first report was disputed, and users can place stake on outcomes.
- * @property {string} LAST_DISPUTE Market's first report has been submitted and is allowed to be disputed to cause a fork.
- * @property {string} FORKING Market's last report was disputed, causing a fork. Users can migrate their REP to the universe of their choice.
- * @property {string} FINALIZED An outcome for the market has been determined.
- * @property {string} AWAITING_FORK_MIGRATION Pending documentation. Possibly deprecated.
- * @property {string} AWAITING_FINALIZATION Pending documentation. Possibly deprecated.
- */
-
-/**
- * @typedef {Object} Report
- * @property {string} transactionHash Hash to look up the reporting transaction receipt.
- * @property {number} logIndex Number of the log index position in the Ethereum block containing the reporting transaction.
- * @property {number} creationBlockNumber Number of the Ethereum block containing the reporting transaction.
- * @property {string} blockHash Hash of the Ethereum block containing the reporting transaction.
- * @property {number} creationTime Timestamp, in seconds, when the Ethereum block containing the reporting transaction was created.
- * @property {string} marketID Contract address of the market, as a hexadecimal string.
- * @property {REPORTING_STATE} marketReportingState Reporting state of the market.
- * @property {string} reportingWindow Reporting window the market is in currently.
- * @property {number[]} payoutNumerators Array representing the payout set.
- * @property {number} amountStaked Description the reporter has staked on the outcome of their report.
- * @property {string} stakeToken Contract address of the stake token, as a hexadecimal string.
- * @property {boolean} isCategorical Whether the market is categorical.
- * @property {boolean} isScalar Whether the market is scalar.
- * @property {boolean} isIndeterminate Description pending.
- * @property {boolean} isSubmitted Description pending.
- */
-
-var augurNode = require("../augur-node");
-
-/**
- * Returns information about the reports submitted by a particular user. For reporting windows that have ended, this includes the final outcome of the market, whether the user’s report matched that final outcome, how much REP the user gained or lost from redistribution, and how much the user earned in reporting fees. Requires an Augur Node connection.
- * @param {Object} p Parameters object.
- * @param {string} p.reporter Ethereum address of the reporter for which to retrieve reporting history, as a hexadecimal string.
- * @param {string=} p.universe Contract address of the universe in which to look up the reporting history, as a hexadecimal string. Either this parameter, the market ID, or the reporting window must be specified.
- * @param {string=} p.marketID Contract address of the market in which to look up the reporting history, as a hexadecimal string. Either this parameter, the universe, or the reporting window must be specified.
- * @param {string=} p.reportingWindow Contract address of the reporting window in which to look up the reporting history, as a hexadecimal string. Either this parameter, the universe, or the market ID must be specified.
- * @param {number=} p.earliestCreationTime Earliest timestamp, in seconds, at which to truncate history results. (This timestamp is when the block on the Ethereum blockchain containing the report submission was created.)
- * @param {number=} p.latestCreationTime Latest timestamp, in seconds, at which to truncate history results. (This timestamp is when the block on the Ethereum blockchain containing the report submission was created.)
- * @param {string=} p.sortBy Field name by which to sort the reporting history.
- * @param {boolean=} p.isSortDescending Whether to sort the reporting history in descending order by sortBy field.
- * @param {string=} p.limit Maximum number of reporting history reports to return.
- * @param {string=} p.offset Number of reporting history reports to truncate from the beginning of the results.
- * @param {function} callback Called when reporting history has been received and parsed.
- * @return {Object} Reporting history, keyed by universe or market ID. Each report is of type {@link Report}.
- */
-function getReportingHistory(p, callback) {
-  augurNode.submitRequest("getReportingHistory", p, callback);
-}
-
-module.exports = getReportingHistory;
-},{"../augur-node":20}],77:[function(require,module,exports){
-"use strict";
-
-var augurNode = require("../augur-node");
-
-/**
- * Returns the number of markets in various reporting phases, including “DESIGNATED_REPORTING”, “FIRST_REPORTING”, “LAST_REPORTING”, “AWAITING_FINALIZATION” (when a market has been reported on and is in a dispute phase), “FORKING” (for the market that has forked), “AWAITING_FORK_MIGRATION” (for markets that are waiting for a forked market to resolve), and “FINALIZED”. Requires an Augur Node connection.
- * @param {Object} p Parameters object.
- * @param {string} p.reportingWindow Contract address of the reporting window for which to get the summary, as a hexadecimal string.
- * @param {function} callback Called after the reporting summary has been retrieved.
- * @return {Object} Summary of the number of markets in each reporting phase, keyed by reporting phase.
- */
-function getReportingSummary(p, callback) {
-  augurNode.submitRequest("getReportingSummary", p, callback);
-}
-
-module.exports = getReportingSummary;
-},{"../augur-node":20}],78:[function(require,module,exports){
-/**
- * @todo Update function description & return information once function has been implemented.
- */
-
-"use strict";
-
-var augurNode = require("../augur-node");
-
-/**
- * This function has not been implemented yet. Returns the reporting windows where a specific user has unclaimed reporting fees. Requires an Augur Node connection.
- * @param {Object} p Parameters object.
- * @param {string} p.universe Contract address of the universe in which the reporting windows exist, as a hexadecimal string.
- * @param {string} p.account Ethereum address of the user who has unclaimed reporting fees, as a hexadecimal string.
- * @param {function} callback Called after the reporting windows have been retrieved.
- * @return {} Pending.
- */
-function getReportingWindowsWithUnclaimedFees(p, callback) {
-  augurNode.submitRequest("getReportingWindowsWithUnclaimedFees", p, callback);
-}
-
-module.exports = getReportingWindowsWithUnclaimedFees;
-},{"../augur-node":20}],79:[function(require,module,exports){
-"use strict";
-
-var assign = require("lodash.assign");
-var immutableDelete = require("immutable-delete");
-var speedomatic = require("speedomatic");
-var api = require("../api");
-
-/**
- * @param {Object} p Parameters object.
- * @param {string} p.universe Universe address.
- * @param {function} callback Called after stake required has been retrieved.
- * @return {string} Amount of stake required for the designated reporter on this universe, as a base-10 string.
- */
-function getStakeRequiredForDesignatedReporter(p, callback) {
-  var universePayload = assign({}, immutableDelete(p, "universe"), { tx: assign({ to: p.universe, send: false }, p.tx) });
-  api().Universe.getOrCacheDesignatedReportStake(universePayload, function (err, designatedReportStake) {
-    if (err) return callback(err);
-    callback(null, speedomatic.unfix(designatedReportStake, "string"));
-  });
-}
-
-module.exports = getStakeRequiredForDesignatedReporter;
-},{"../api":11,"immutable-delete":403,"lodash.assign":426,"speedomatic":531}],80:[function(require,module,exports){
-"use strict";
-
-/**
- * Serves as an enum for the state of a stake token.
- * @typedef {Object} STAKE_TOKEN_STATE
- * @property {string} ALL Stake token can be in any state. (If no stake token state is specified, this is the default value.)
- * @property {string} UNFINALIZED Stake token is in a market that has not been finalized.
- * @property {string} UNCLAIMED Stake token is in a finalized market, was staked on the correct outcome, and has not been claimed yet.
- */
-
-/**
- * @typedef {Object} StakeToken
- * @property {string} stakeToken Contract address of the stake token, as a hexidecimal string.
- * @property {string} marketID ID of the market, as a hexidecimal string.
- * @property {number|null} payout0 Payout numerator 0 of the stake token's payout set.
- * @property {number|null} payout1 Payout numerator 1 of the stake token's payout set.
- * @property {number|null} payout2 Payout numerator 2 of the stake token's payout set. Set to null for binary and scalar markets.
- * @property {number|null} payout3 Payout numerator 3 of the stake token's payout set. Set to null for binary and scalar markets.
- * @property {number|null} payout4 Payout numerator 4 of the stake token's payout set. Set to null for binary and scalar markets.
- * @property {number|null} payout5 Payout numerator 5 of the stake token's payout set. Set to null for binary and scalar markets.
- * @property {number|null} payout6 Payout numerator 6 of the stake token's payout set. Set to null for binary and scalar markets.
- * @property {number|null} payout7 Payout numerator 7 of the stake token's payout set. Set to null for binary and scalar markets.
- * @property {boolean} isInvalid Whether the market was determined to be invalid.
- * @property {number} amountStaked Amount the stake token owner has staked, in ETH.
- * @property {number|null} winningToken Description pending.
- * @property {boolean} claimed Whether the stake token has been claimed by the owner.
- * @property {REPORTING_STATE} reportingState Reporting state of the market.
- */
-
-var augurNode = require("../augur-node");
-
-/**
- * Returns the stake tokens owned by a specific user that are either unclaimed or are in markets that have not been finalized. Requires an Augur Node connection.
- * @param {Object} p Parameters object.
- * @param {string} p.universe Contract address of the universe in which to retrieve the stake tokens, as a hexadecimal string.
- * @param {string} p.account Contract address of the account for which to retrieve the stake tokens, as a hexadecimal string.
- * @param {STAKE_TOKEN_STATE=} p.stakeTokenState Token state by which to filter results.
- * @param {function} callback Called when reporting history has been received and parsed.
- * @return {StakeToken[]} Stake token details, keyed by stake token ID.
- */
-function getStakeTokens(p, callback) {
-  augurNode.submitRequest("getStakeTokens", p, callback);
-}
-
-module.exports = getStakeTokens;
-},{"../augur-node":20}],81:[function(require,module,exports){
-"use strict";
-
-module.exports = {
-  getReportingHistory: require("./get-reporting-history"),
-  getStakeTokens: require("./get-stake-tokens"),
-  getReportingSummary: require("./get-reporting-summary"),
-  getReportingWindowsWithUnclaimedFees: require("./get-reporting-windows-with-unclaimed-fees"),
-  getStakeRequiredForDesignatedReporter: require("./get-stake-required-for-designated-reporter"),
-  getCurrentPeriodProgress: require("./get-current-period-progress"),
-  finalizeMarket: require("./finalize-market")
-};
-},{"./finalize-market":74,"./get-current-period-progress":75,"./get-reporting-history":76,"./get-reporting-summary":77,"./get-reporting-windows-with-unclaimed-fees":78,"./get-stake-required-for-designated-reporter":79,"./get-stake-tokens":80}],82:[function(require,module,exports){
-"use strict";
-
-var createRpcInterface = function createRpcInterface(ethrpc) {
-  return {
-    constants: ethrpc.constants,
-    errors: ethrpc.errors,
-    eth: ethrpc.eth,
-    clear: ethrpc.clear,
-    startBlockStream: ethrpc.startBlockStream,
-    getBlockStream: ethrpc.getBlockStream,
-    getCoinbase: ethrpc.getCoinbase,
-    getCurrentBlock: ethrpc.getCurrentBlock,
-    getGasPrice: ethrpc.getGasPrice,
-    getNetworkID: ethrpc.getNetworkID,
-    getLogs: ethrpc.getLogs,
-    getTransactionReceipt: ethrpc.getTransactionReceipt,
-    isUnlocked: ethrpc.isUnlocked,
-    sendEther: ethrpc.sendEther,
-    packageAndSubmitRawTransaction: ethrpc.packageAndSubmitRawTransaction,
-    callContractFunction: ethrpc.callContractFunction,
-    transact: ethrpc.transact,
-    excludeFromTransactionRelay: ethrpc.excludeFromTransactionRelay,
-    registerTransactionRelay: ethrpc.registerTransactionRelay,
-    setDebugOptions: ethrpc.setDebugOptions,
-    WsTransport: ethrpc.WsTransport,
-    publish: ethrpc.publish,
-    sha3: ethrpc.sha3
-  };
-};
-
-var ethrpc = createRpcInterface(require("ethrpc"));
-ethrpc.createRpcInterface = createRpcInterface;
-
-module.exports = ethrpc;
-},{"ethrpc":292}],83:[function(require,module,exports){
-"use strict";
-
-var assign = require("lodash.assign");
-var async = require("async");
-var immutableDelete = require("immutable-delete");
-var claimTradingProceeds = require("./claim-trading-proceeds");
-var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
-
-/**
- * @param {Object} p Parameters object.
- * @param {string} p.markets Array of market addresses for which to claim proceeds.
- * @param {string} p._shareHolder User address that holds the shares.
- * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
- * @param {function} p.onSent Called if/when each transaction is broadcast to the network.
- * @param {function} p.onSuccess Called if/when all transactions are sealed and confirmed.
- * @param {function} p.onFailed Called if/when any of the transactions fail.
- */
-function claimMarketsTradingProceeds(p) {
-  var claimTradingProceedsPayload = immutableDelete(p, "markets");
-  var claimedMarkets = [];
-  async.eachLimit(p.markets, PARALLEL_LIMIT, function (market, nextMarket) {
-    claimTradingProceeds(assign({}, claimTradingProceedsPayload, {
-      _market: market,
-      onSuccess: function onSuccess() {
-        claimedMarkets.push(market);
-        nextMarket();
-      },
-      onFailed: nextMarket
-    }));
-  }, function (err) {
-    if (err) return p.onFailed(err);
-    p.onSuccess(claimedMarkets);
-  });
-}
-
-module.exports = claimMarketsTradingProceeds;
-},{"../constants":27,"./claim-trading-proceeds":84,"async":149,"immutable-delete":403,"lodash.assign":426}],84:[function(require,module,exports){
-"use strict";
-
-var api = require("../api");
-
-/**
- * @param {Object} p Parameters object.
- * @param {string} p._market Market address for which to claim proceeds.
- * @param {string} p._shareHolder User address that holds the shares.
- * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
- * @param {function} p.onSent Called if/when each transaction is broadcast to the network.
- * @param {function} p.onSuccess Called if/when all transactions are sealed and confirmed.
- * @param {function} p.onFailed Called if/when any of the transactions fail.
- */
-function claimTradingProceeds(p) {
-  api().Market.getFinalizationTime({ tx: { to: p._market } }, function (err, finalizationTime) {
-    if (err) return p.onFailed(err);
-    if (parseInt(finalizationTime, 16) === 0) return p.onFailed(null); // market not yet finalized
-    api().ClaimTradingProceeds.claimTradingProceeds(p);
-  });
-}
-
-module.exports = claimTradingProceeds;
-},{"../api":11}],85:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-
-/**
- * Rescale a price to its display range [minPrice, maxPrice]: displayPrice = normalizedPrice*(maxPrice - minPrice) + minPrice
- * @param {Object} p Parameters object.
- * @param {BigNumber|string} p.minPrice This market's minimum possible price, as a BigNumber or base-10 string.
- * @param {BigNumber|string} p.maxPrice This market's maximum possible price, as a BigNumber or base-10 string.
- * @param {BigNumber|string} p.normalizedPrice The price to be denormalized, as a BigNumber or base-10 string.
- * @return {string} Price rescaled to [minPrice, maxPrice], as a base-10 string.
- */
-function denormalizePrice(p) {
-  var minPrice = p.minPrice;
-  var maxPrice = p.maxPrice;
-  var normalizedPrice = p.normalizedPrice;
-  if (minPrice.constructor !== BigNumber) minPrice = new BigNumber(minPrice, 10);
-  if (maxPrice.constructor !== BigNumber) maxPrice = new BigNumber(maxPrice, 10);
-  if (normalizedPrice.constructor !== BigNumber) normalizedPrice = new BigNumber(normalizedPrice, 10);
-  if (minPrice.gt(maxPrice)) throw new Error("Minimum value larger than maximum value");
-  if (normalizedPrice.lt(0)) throw new Error("Normalized price is below 0");
-  if (normalizedPrice.gt(1)) throw new Error("Normalized price is above 1");
-  return normalizedPrice.times(maxPrice.minus(minPrice)).plus(minPrice).toFixed();
-}
-
-module.exports = denormalizePrice;
-},{"bignumber.js":151}],86:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-
-var compareOrdersByPrice = {
-  1: function _(order1, order2) {
-    return order1.fullPrecisionPrice - order2.fullPrecisionPrice;
-  },
-  2: function _(order1, order2) {
-    return order2.fullPrecisionPrice - order1.fullPrecisionPrice;
-  }
-};
-
-/**
- * Bids are sorted descendingly, asks are sorted ascendingly.
- * @param {require("./simulate-trade").OrderBook} orderBook Bids or asks
- * @param {number} orderType Order type (0 for "buy", 1 for "sell").
- * @param {string} price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
- * @param {string} userAddress The user's Ethereum address, as a hexadecimal string.
- * @return {require("./simulate-trade").OrderBook} Filtered and sorted orders.
- */
-function filterByPriceAndOutcomeAndUserSortByPrice(orderBook, orderType, price, userAddress) {
-  var isMarketOrder, filteredOrders;
-  if (!orderBook) return [];
-  isMarketOrder = price == null;
-  filteredOrders = Object.keys(orderBook).map(function (orderId) {
-    return orderBook[orderId];
-  }).filter(function (order) {
-    var isMatchingPrice;
-    if (!order || !order.fullPrecisionPrice) return false;
-    if (isMarketOrder) {
-      isMatchingPrice = true;
-    } else {
-      isMatchingPrice = orderType === 0 ? new BigNumber(order.fullPrecisionPrice, 10).lte(price) : new BigNumber(order.fullPrecisionPrice, 10).gte(price);
-    }
-    return order.owner !== userAddress && isMatchingPrice;
-  });
-  return filteredOrders.sort(compareOrdersByPrice[orderType]);
-}
-
-module.exports = filterByPriceAndOutcomeAndUserSortByPrice;
-},{"bignumber.js":151}],87:[function(require,module,exports){
-"use strict";
-
-/**
- * @typedef BetterWorseOrders
- * @property {string|null} betterOrderID ID of the order with the next best price over the specified order ID, as a hexadecimal string.
- * @property {string|null} worseOrderID ID of the order with the next worse price over the specified order ID, as a hexadecimal string.
- */
-
-var augurNode = require("../augur-node");
-
-/**
- * Returns the IDs of the orders for a given outcome that have a better and worse price than the specified price. If no better/worse orders exist, null will be returned. This function should be called prior to calling augur.api.CreateOrder.publicCreateOrder in order to get the _betterOrderId and _worseOrderId parameters that it accepts. (_betterOrderId and _worseOrderId are used to optimize the sorting of Orders on the Order Book.) Requires an Augur Node connection.
- * @param {Object} p Parameters object.
- * @param {string} p.marketID Contract address of the market for which to retrieve the better/worse orders, as a hexadecimal string.
- * @param {string} p.outcome Market outcome for which to find better/worse orders.
- * @param {string} p.orderType Desired type of order. Valid values are "buy" and "sell".
- * @param {number} p.price Price point at which to find better/worse orders.
- * @param {function} callback Called when better/worse orders have been retrieved.
- * @return {BetterWorseOrders} Object containing the better/worse order IDs, as hexidecimal strings.
- */
-function getBetterWorseOrders(p, callback) {
-  augurNode.submitRequest("getBetterWorseOrders", p, callback);
-}
-
-module.exports = getBetterWorseOrders;
-},{"../augur-node":20}],88:[function(require,module,exports){
-"use strict";
-
-/**
- * Serves as an enum for the state of an order.
- * @typedef {Object} ORDER_STATE
- * @property {string} ALL Order is open, closed, or cancelled. (If no order state is specified, this is the default value.)
- * @property {string} OPEN Order is available to be filled.
- * @property {string} CLOSED Order has been filled.
- * @property {string} CANCELED Order has been canceled (although it may have been partially filled).
- */
-
-/** Type definition for Order.
- * @typedef {Object} Order
- * @property {string} shareToken Contract address of the share token for which the order was placed, as a hexadecimal string.
- * @property {string} transactionHash Hash to look up the order transaction receipt.
- * @property {number} logIndex Number of the log index position in the Ethereum block containing the order transaction.
- * @property {string} owner The order maker's Ethereum address, as a hexadecimal string.
- * @property {number} creationTime Timestamp, in seconds, when the Ethereum block containing the order transaction was created.
- * @property {number} creationBlockNumber Number of the Ethereum block containing the order transaction.
- * @property {ORDER_STATE} orderState State of orders by which to filter results. Valid values are "ALL", "CANCELLED", "CLOSED", & "OPEN".
- * @property {number} price Rounded display price, as a base-10 number.
- * @property {number} amount Rounded number of shares to trade, as a base-10 number.
- * @property {string} fullPrecisionPrice Full-precision (un-rounded) display price, as a base-10 number.
- * @property {number} fullPrecisionAmount Full-precision (un-rounded) number of shares to trade, as a base-10 number.
- * @property {number} tokensEscrowed Number of the order maker's tokens held in escrow, as a base-10 number.
- * @property {number} sharesEscrowed Number of the order maker's shares held in escrow, as a base-10 number.
- */
-
-/** Type definition for SingleOutcomeOrderBookSide.
- * @typedef {Object} SingleOutcomeOrderBookSide
- * @property {Order} Buy (bid) or sell (ask) orders, indexed by order ID.
- */
-
-var augurNode = require("../augur-node");
-
-/**
- * Returns a list of orders in a given universe or market. Requires an Augur Node connection.
- * @param {Object} p Parameters object.
- * @param {string=} p.universe Contract address of the universe from which to retrieve orders, as a hexadecimal string. Either this parameter or the marketID must be specified.
- * @param {string=} p.marketID Contract address of the market from which to retrieve orders, as a hexadecimal string. Either this parameter or the universe must be specified.
- * @param {number=} p.outcome Market outcome to filter results by. Valid values are in the range [0,7].
- * @param {string=} p.creator Ethereum address of the order creator, as a hexadecimal string.
- * @param {ORDER_STATE=} p.orderState State of orders by which to filter results. Valid values are "ALL", "CANCELLED", "CLOSED", & "OPEN".
- * @param {number=} p.earliestCreationTime Earliest timestamp, in seconds, at which to truncate order results. (This timestamp is when the block on the Ethereum blockchain containing the transfer was created.)
- * @param {number=} p.latestCreationTime Latest timestamp, in seconds, at which to truncate order results. (This timestamp is when the block on the Ethereum blockchain containing the transfer was created.)
- * @param {string=} p.sortBy Field name by which to sort the orders.
- * @param {boolean=} p.isSortDescending Whether to sort orders in descending order by sortBy field.
- * @param {string=} p.limit Maximum number of orders to return.
- * @param {string=} p.offset Number of orders to truncate from the beginning of the results.
- * @param {function} callback Called when the requested orders for this market/universe have been received and parsed.
- * @return {SingleOutcomeOrderBookSide} One side of the order book (buy or sell) for the specified market/universe and outcome.
- */
-function getOrders(p, callback) {
-  augurNode.submitRequest("getOrders", p, function (err, openOrders) {
-    if (err) return callback(err);
-    callback(null, openOrders || {});
-  });
-}
-
-module.exports = getOrders;
-},{"../augur-node":20}],89:[function(require,module,exports){
-"use strict";
-
-var assign = require("lodash.assign");
-var async = require("async");
-var speedomatic = require("speedomatic");
-var api = require("../api");
-var convertFixedPointToDecimal = require("../utils/convert-fixed-point-to-decimal");
-
-/**
- * @param {Object} p Parameters object.
- * @param {string} p.address Address for which to look up share balances.
- * @param {string} p.market Market for which to look up share balances.
- * @param {string} p.tickSize Tick size (interval) for this market.
- * @return {string[]} Number of shares for each outcome of this market.
- */
-function getPositionInMarket(p, callback) {
-  var marketPayload = { tx: { to: p.market } };
-  api().Market.getNumberOfOutcomes(marketPayload, function (err, numberOfOutcomes) {
-    if (err) return callback(err);
-    var positionInMarket = new Array(parseInt(numberOfOutcomes, 16));
-    async.forEachOf(positionInMarket, function (_, outcome, nextOutcome) {
-      api().Market.getShareToken(assign({ _outcome: outcome }, marketPayload), function (err, shareToken) {
-        if (err) return nextOutcome(err);
-        api().ShareToken.balanceOf({ _owner: p.address, tx: { to: shareToken } }, function (err, shareTokenBalance) {
-          if (err) return nextOutcome(err);
-          positionInMarket[outcome] = convertFixedPointToDecimal(shareTokenBalance, speedomatic.fix(p.tickSize, "string"));
-          nextOutcome();
-        });
-      });
-    }, function (err) {
-      if (err) return callback(err);
-      callback(null, positionInMarket);
-    });
-  });
-}
-
-module.exports = getPositionInMarket;
-},{"../api":11,"../utils/convert-fixed-point-to-decimal":123,"async":149,"lodash.assign":426,"speedomatic":531}],90:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var eventsAbi = require("../contracts").abi.events;
-var ethrpc = require("../rpc-interface");
-var parseLogMessage = require("../events/parse-message/parse-log-message");
-
-function calculateTotalFill(numShares, numTokens, priceNumTicksRepresentation) {
-  return new BigNumber(numShares, 10).plus(new BigNumber(numTokens, 10).dividedBy(new BigNumber(priceNumTicksRepresentation, 16)));
-}
-
-/**
- * @param {Object} p Parameters object.
- * @param {string} p.transactionHash Transaction hash to look up a receipt for.
- * @param {string} p.startingOnChainAmount Amount remaining in the trade prior to this transaction (base-16).
- * @param {string} p.priceNumTicksRepresentation Price in its numTicks representation (base-16).
- */
-function getTradeAmountRemaining(p, callback) {
-  var tradeOnChainAmountRemaining = new BigNumber(p.startingOnChainAmount, 16);
-  // console.log("remaining:", tradeOnChainAmountRemaining.toFixed());
-  ethrpc.getTransactionReceipt(p.transactionHash, function (transactionReceipt) {
-    if (!transactionReceipt || transactionReceipt.error || !Array.isArray(transactionReceipt.logs) || !transactionReceipt.logs.length) {
-      return callback("logs not found");
-    }
-    var orderFilledEventSignature = eventsAbi.Augur.OrderFilled.signature;
-    var logs = transactionReceipt.logs;
-    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-      if (logs[i].topics[0] === orderFilledEventSignature) {
-        var orderFilledLog = parseLogMessage("Augur", "OrderFilled", logs[i], eventsAbi.Augur.OrderFilled.inputs);
-        var totalFill = calculateTotalFill(orderFilledLog.numCreatorShares, orderFilledLog.numCreatorTokens, p.priceNumTicksRepresentation);
-        // console.log("fill:", totalFill.toFixed());
-        tradeOnChainAmountRemaining = tradeOnChainAmountRemaining.minus(totalFill);
-        // console.log("remaining:", tradeOnChainAmountRemaining.toFixed());
-      }
-    }
-    callback(null, tradeOnChainAmountRemaining.toFixed());
-  });
-}
-
-module.exports = getTradeAmountRemaining;
-},{"../contracts":31,"../events/parse-message/parse-log-message":48,"../rpc-interface":82,"bignumber.js":151}],91:[function(require,module,exports){
-/**
- * @todo Add descriptions for UserTrade.price, UserTrade.amount, UserTrade.timestamp, & UserTrade.tradeGroupID.
- */
-"use strict";
-
-/**
- * @typedef {Object} UserTrade
- * @property {string} transactionHash Hash to look up the trade transaction receipt.
- * @property {number} logIndex Number of the log index position in the Ethereum block containing the trade transaction.
- * @property {string} type Type of trade. Valid values are "buy" and "sell".
- * @property {number} price Description pending.
- * @property {number} amount Description pending.
- * @property {boolean} maker Whether the specified user is the order maker (as opposed to filler).
- * @property {number} marketCreatorFees Amount of fees paid to market creator, in ETH.
- * @property {number} reporterFees Amount of fees paid to reporters, in ETH.
- * @property {string} marketID Contract address of the market, as a hexadecimal string.
- * @property {number} outcome Outcome being bought/sold.
- * @property {string} shareToken Contract address of the share token that was bought or sold, as a hexadecimal string.
- * @property {number} timestamp Description pending.
- * @property {number|null} tradeGroupID Description pending.
- */
-
-var augurNode = require("../augur-node");
-
-/**
- * Returns information about the trades a specific user has made. Requires an Augur Node connection.
- * @param {Object} p Parameters object.
- * @param {string} p.account Ethereum address of the user for which to retrieve trading history, as a hexadecimal string.
- * @param {string=} p.universe Contract address of the universe in which to look up the trading history, as a hexadecimal string. Either this parameter or the market ID must be specified.
- * @param {string=} p.marketID Contract address of the market in which to look up the trading history, as a hexadecimal string. Either this parameter or the universe must be specified.
- * @param {string} p.outcome Outcome of the share being bought/sold.
- * @param {string} p.orderType Type of trade. Valid values are "buy" and "sell".
- * @param {string=} p.sortBy Field name by which to sort the trading history.
- * @param {boolean=} p.isSortDescending Whether to sort the trading history in descending order by sortBy field.
- * @param {string=} p.limit Maximum number of trading history reports to return.
- * @param {string=} p.offset Number of trading history reports to truncate from the beginning of the results.
- * @param {function} callback Called when trading history has been received and parsed.
- * @return {UserTrade[]} Array of the user's trades, keyed by universe/market ID.
-*/
-function getUserTradingHistory(p, callback) {
-  augurNode.submitRequest("getUserTradingHistory", p, callback);
-}
-
-module.exports = getUserTradingHistory;
-},{"../augur-node":20}],92:[function(require,module,exports){
-/**
- * @todo Add descriptions for UserTradePosition.numSharesAdjustedForUserIntention, UserTradePosition.realizedProfitLoss, & UserTradePosition.unrealizedProfitLoss.
- */
-"use strict";
-
-/**
- * @typedef {Object} UserTradePosition
- * @property {string} marketID Contract address of the market, as a hexadecimal string.
- * @property {number} outcome Outcome of the shares the user owns.
- * @property {number} numShares Quantity of shares currently owned by the user.
- * @property {number} numSharesAdjustedForUserIntention Description pending.
- * @property {number} realizedProfitLoss Description pending.
- * @property {number} unrealizedProfitLoss Description pending.
- */
-
-var augurNode = require("../augur-node");
-
-/**
- * Returns the trading positions held by a specific user. Requires an Augur Node connection.
- * @param {Object} p Parameters object.
- * @param {string} p.account Ethereum address of the user for which to retrieve trading positions, as a hexadecimal string.
- * @param {string=} p.universe Contract address of the universe in which to look up the trading positions, as a hexadecimal string. Either this parameter or the market ID must be specified.
- * @param {string=} p.marketID Contract address of the market in which to look up the trading positions, as a hexadecimal string. Either this parameter or the universe must be specified.
- * @param {string} p.outcome Outcome of the share held for the market.
- * @param {string=} p.sortBy Field name by which to sort the trading positions.
- * @param {boolean=} p.isSortDescending Whether to sort the trading positions in descending order by sortBy field.
- * @param {string=} p.limit Maximum number of trading positions reports to return.
- * @param {string=} p.offset Number of trading positions reports to truncate from the beginning of the results.
- * @param {function} callback Called when the trading positions have been received and parsed.
- * @return {UserTradePosition[]} Array of the user's trading positions.
- */
-function getUserTradingPositions(p, callback) {
-  augurNode.submitRequest("getUserTradingPositions", p, callback);
-}
-
-module.exports = getUserTradingPositions;
-},{"../augur-node":20}],93:[function(require,module,exports){
-"use strict";
-
-module.exports = {
-  getBetterWorseOrders: require("./get-better-worse-orders"),
-  getUserTradingHistory: require("./get-user-trading-history"),
-  getUserTradingPositions: require("./get-user-trading-positions"),
-  getPositionInMarket: require("./get-position-in-market"),
-  filterByPriceAndOutcomeAndUserSortByPrice: require("./filter-by-price-and-outcome-and-user-sort-by-price"),
-  claimMarketsTradingProceeds: require("./claim-markets-trading-proceeds"),
-  claimTradingProceeds: require("./claim-trading-proceeds"),
-  simulateTrade: require("./simulation"),
-  calculateProfitLoss: require("./profit-loss"),
-  normalizePrice: require("./normalize-price"),
-  denormalizePrice: require("./denormalize-price"),
-  placeTrade: require("./place-trade"),
-  tradeUntilAmountIsZero: require("./trade-until-amount-is-zero"),
-  getOrders: require("./get-orders")
-};
-},{"./claim-markets-trading-proceeds":83,"./claim-trading-proceeds":84,"./denormalize-price":85,"./filter-by-price-and-outcome-and-user-sort-by-price":86,"./get-better-worse-orders":87,"./get-orders":88,"./get-position-in-market":89,"./get-user-trading-history":91,"./get-user-trading-positions":92,"./normalize-price":94,"./place-trade":95,"./profit-loss":102,"./simulation":111,"./trade-until-amount-is-zero":120}],94:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-
-/**
- * Rescale a price to lie on [0, 1]: normalizedPrice = (price - minPrice) / (maxPrice - minPrice)
- * @param {Object} p Parameters object.
- * @param {BigNumber|string} p.minPrice This market's minimum possible price, as a BigNumber or base-10 string.
- * @param {BigNumber|string} p.maxPrice This market's maximum possible price, as a BigNumber or base-10 string.
- * @param {BigNumber|string} p.price The price to be normalized, as a BigNumber or base-10 string.
- * @return {string} Price rescaled to [0, 1], as a base-10 string.
- */
-function normalizePrice(p) {
-  var minPrice = p.minPrice;
-  var maxPrice = p.maxPrice;
-  var price = p.price;
-  if (minPrice.constructor !== BigNumber) minPrice = new BigNumber(minPrice, 10);
-  if (maxPrice.constructor !== BigNumber) maxPrice = new BigNumber(maxPrice, 10);
-  if (price.constructor !== BigNumber) price = new BigNumber(price, 10);
-  if (minPrice.gt(maxPrice)) throw new Error("Minimum value larger than maximum value");
-  if (price.lt(minPrice)) throw new Error("Price is below the minimum value");
-  if (price.gt(maxPrice)) throw new Error("Price is above the maximum value");
-  return price.minus(minPrice).dividedBy(maxPrice.minus(minPrice)).toFixed();
-}
-
-module.exports = normalizePrice;
-},{"bignumber.js":151}],95:[function(require,module,exports){
-"use strict";
-
-var assign = require("lodash.assign");
-var immutableDelete = require("immutable-delete");
-var getBetterWorseOrders = require("./get-better-worse-orders");
-var tradeUntilAmountIsZero = require("./trade-until-amount-is-zero");
-var normalizePrice = require("./normalize-price");
-
-/**
- * @param {Object} p Parameters object.
- * @param {string} p.amount Number of shares to trade, as a base-10 string.
- * @param {string} p.limitPrice Display (non-normalized) limit price for this trade, as a base-10 string.
- * @param {string} p.minPrice The minimum display (non-normalized) price for this market, as a base-10 string.
- * @param {string} p.maxPrice The maximum display (non-normalized) price for this market, as a base-10 string.
- * @param {string} p.tickSize The tick size (interval) for this market.
- * @param {number} p._direction Order type (0 for "buy", 1 for "sell").
- * @param {string} p._market Market in which to trade, as a hex string.
- * @param {number} p._outcome Outcome ID to trade, must be an integer value on [0, 7].
- * @param {string=} p._tradeGroupId ID logged with each trade transaction (can be used to group trades client-side), as a hex string.
- * @param {boolean=} p.doNotCreateOrders If set to true, this trade will only take existing orders off the book, not create new ones (default: false).
- * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
- * @param {function} p.onSent Called when the first trading transaction is broadcast to the network.
- * @param {function} p.onSuccess Called when the full trade completes successfully.
- * @param {function} p.onFailed Called if any part of the trade fails.
- */
-function placeTrade(p) {
-  var normalizedPrice = normalizePrice({ minPrice: p.minPrice, maxPrice: p.maxPrice, price: p.limitPrice });
-  var orderType = ["buy", "sell"][p._direction];
-  getBetterWorseOrders({
-    orderType: orderType,
-    marketID: p._market,
-    outcome: p._outcome,
-    price: p.limitPrice
-  }, function (err, betterWorseOrders) {
-    if (err) return p.onFailed(err);
-    tradeUntilAmountIsZero(assign({}, immutableDelete(p, ["limitPrice", "amount", "minPrice", "maxPrice"]), {
-      _price: normalizedPrice,
-      _fxpAmount: p.amount,
-      _betterOrderID: betterWorseOrders.betterOrderID,
-      _worseOrderID: betterWorseOrders.worseOrderID
-    }));
-  });
-}
-
-module.exports = placeTrade;
-},{"./get-better-worse-orders":87,"./normalize-price":94,"./trade-until-amount-is-zero":120,"immutable-delete":403,"lodash.assign":426}],96:[function(require,module,exports){
-"use strict";
-
-var longerPositionPL = require("./longer-position-pl");
-var shorterPositionPL = require("./shorter-position-pl");
-
-// Trades where user is the maker:
-//  - buy orders (matched user's ask): user loses shares, gets cash
-//  - sell orders (matched user's bid): user loses cash, gets shares
-function calculateMakerPL(PL, type, price, shares) {
-
-  // Sell: matched user's bid order
-  if (type === "sell") {
-    // console.log('sell (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
-    return longerPositionPL(PL, shares, price);
-  }
-
-  // Buy: matched user's ask order
-  // console.log('buy (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
-  return shorterPositionPL(PL, shares, price);
-}
-
-module.exports = calculateMakerPL;
-},{"./longer-position-pl":103,"./shorter-position-pl":105}],97:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var immutableDelete = require("immutable-delete");
-var calculateUnrealizedPL = require("./calculate-unrealized-pl");
-var calculateTradesPL = require("./calculate-trades-pl");
-var updateRealizedPL = require("./update-realized-pl");
-var constants = require("../../constants");
-var ZERO = constants.ZERO;
-
-/**
- * Calculates realized and unrealized profit/loss for trades in a single outcome.
- *
- * Note: buy/sell labels are from taker's point-of-view.
- *
- * @param {Object} p Parameters object.
- * @param {Object[]} p.trades Trades for a single outcome {type, amount, price, maker}.
- * @param {string=} p.lastPrice Price of this outcome's most recent trade, as a base-10 string (default: 0).
- * @return {Object} Realized and unrealized P/L {position, realized, unrealized}.
- */
-function calculateProfitLoss(p) {
-  var PL = {
-    position: ZERO,
-    meanOpenPrice: ZERO,
-    realized: ZERO,
-    unrealized: ZERO,
-    queued: ZERO,
-    completeSetsBought: ZERO,
-    tradeQueue: []
-  };
-  var lastPrice = p.lastPrice == null ? ZERO : new BigNumber(p.lastPrice, 10);
-  if (p.trades) {
-    PL = calculateTradesPL(PL, p.trades);
-    // console.log("Raw P/L:", JSON.stringify(PL, null, 2));
-    var queuedShares = ZERO;
-    if (PL.tradeQueue && PL.tradeQueue.length) {
-      // console.log("Trade queue:", JSON.stringify(PL.tradeQueue));
-      for (var i = 0, n = PL.tradeQueue.length; i < n; ++i) {
-        queuedShares = queuedShares.plus(PL.tradeQueue[i].shares);
-        PL.queued = updateRealizedPL(PL.tradeQueue[i].meanOpenPrice, PL.queued, PL.tradeQueue[i].shares.neg(), PL.tradeQueue[i].price);
-      }
-    }
-    // console.log("Queued shares:", queuedShares.toFixed());
-    // console.log("Last trade price:", lastPrice.toFixed());
-    PL.unrealized = calculateUnrealizedPL(PL.position, PL.meanOpenPrice, lastPrice);
-    // console.log("Unrealized P/L:", PL.unrealized.toFixed());
-    if (PL.position.abs().lt(constants.PRECISION.zero)) {
-      PL.position = ZERO;
-      PL.meanOpenPrice = ZERO;
-      PL.unrealized = ZERO;
-    }
-  }
-  PL.position = PL.position.toFixed();
-  PL.meanOpenPrice = PL.meanOpenPrice.toFixed();
-  PL.realized = PL.realized.toFixed();
-  PL.unrealized = PL.unrealized.plus(PL.queued).toFixed();
-  PL.queued = PL.queued.toFixed();
-  // console.log("Queued P/L:", PL.queued);
-  return immutableDelete(immutableDelete(PL, "completeSetsBought"), "tradeQueue");
-}
-
-module.exports = calculateProfitLoss;
-},{"../../constants":27,"./calculate-trades-pl":100,"./calculate-unrealized-pl":101,"./update-realized-pl":107,"bignumber.js":151,"immutable-delete":403}],98:[function(require,module,exports){
-"use strict";
-
-var longerPositionPL = require("./longer-position-pl");
-var shorterPositionPL = require("./shorter-position-pl");
-
-// Trades where user is the taker:
-//  - buy orders: user loses cash, gets shares
-//  - sell orders: user loses shares, gets cash
-function calculateTakerPL(PL, type, price, shares) {
-
-  // Buy order
-  if (type === "buy") {
-    // console.log('buy (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
-    return longerPositionPL(PL, shares, price);
-  }
-
-  // Sell order
-  // console.log('sell (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
-  return shorterPositionPL(PL, shares, price);
-}
-
-module.exports = calculateTakerPL;
-},{"./longer-position-pl":103,"./shorter-position-pl":105}],99:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var calculateTakerPL = require("./calculate-taker-pl");
-var sellCompleteSetsPL = require("./sell-complete-sets-pl");
-var calculateMakerPL = require("./calculate-maker-pl");
-
-function calculateTradePL(PL, trade) {
-  if (trade.isCompleteSet) {
-    if (trade.type === "buy") {
-      return calculateTakerPL(PL, trade.type, new BigNumber(trade.price, 10), new BigNumber(trade.amount, 10));
-    }
-    return sellCompleteSetsPL(PL, new BigNumber(trade.amount, 10), new BigNumber(trade.price, 10));
-  } else if (trade.maker) {
-    return calculateMakerPL(PL, trade.type, new BigNumber(trade.price, 10), new BigNumber(trade.amount, 10));
-  }
-  return calculateTakerPL(PL, trade.type, new BigNumber(trade.price, 10), new BigNumber(trade.amount, 10));
-}
-
-module.exports = calculateTradePL;
-},{"./calculate-maker-pl":96,"./calculate-taker-pl":98,"./sell-complete-sets-pl":104,"bignumber.js":151}],100:[function(require,module,exports){
-"use strict";
-
-var calculateTradePL = require("./calculate-trade-pl");
-
-function calculateTradesPL(PL, trades) {
-  var i,
-      numTrades = trades.length;
-  if (numTrades) {
-    for (i = 0; i < numTrades; ++i) {
-      PL = calculateTradePL(PL, trades[i]);
-    }
-  }
-  return PL;
-}
-
-module.exports = calculateTradesPL;
-},{"./calculate-trade-pl":99}],101:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var ZERO = require("../../constants").ZERO;
-
-// unrealized P/L: shares held * (last trade price - price on buy in)
-function calculateUnrealizedPL(position, meanOpenPrice, lastTradePrice) {
-  if (lastTradePrice.eq(ZERO)) return ZERO;
-  return position.times(new BigNumber(lastTradePrice, 10).minus(meanOpenPrice));
-}
-
-module.exports = calculateUnrealizedPL;
-},{"../../constants":27,"bignumber.js":151}],102:[function(require,module,exports){
-"use strict";
-
-module.exports = require("./calculate-profit-loss");
-},{"./calculate-profit-loss":97}],103:[function(require,module,exports){
-"use strict";
-
-var updateMeanOpenPrice = require("./update-mean-open-price");
-var constants = require("../../constants");
-var PRECISION = constants.PRECISION;
-var ZERO = constants.ZERO;
-
-// weighted price = (old total shares / new total shares) * weighted price + (shares traded / new total shares) * trade price
-// realized P/L = shares sold * (price on cash out - price on buy in)
-function longerPositionPL(PL, shares, price) {
-  var updatedPL = {
-    position: PL.position.plus(shares),
-    meanOpenPrice: PL.meanOpenPrice,
-    realized: PL.realized,
-    completeSetsBought: PL.completeSetsBought,
-    queued: PL.queued,
-    tradeQueue: PL.tradeQueue
-  };
-
-  // If position >= 0, user is increasing a long position:
-  //  - update weighted price of open positions
-  if (PL.position.abs().lte(PRECISION.zero)) {
-    updatedPL.meanOpenPrice = price;
-  } else if (PL.position.gt(PRECISION.zero)) {
-    updatedPL.meanOpenPrice = updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares, price);
-
-    // If position < 0, user is decreasing a short position:
-  } else {
-    if (!updatedPL.tradeQueue) updatedPL.tradeQueue = [];
-
-    // If |position| >= shares, user is buying back a short position:
-    //  - update queued P/L (becomes realized P/L when complete sets sold)
-    if (PL.position.abs().gte(shares)) {
-      updatedPL.tradeQueue.push({
-        meanOpenPrice: PL.meanOpenPrice,
-        realized: PL.realized,
-        shares: shares,
-        price: price
-      });
-
-      // If |position| < shares, user is buying back short then going long:
-      //  - update queued P/L for the short position (buy to 0)
-      //  - update mean open price for the remainder of shares
-    } else {
-      updatedPL.tradeQueue.push({
-        meanOpenPrice: PL.meanOpenPrice,
-        realized: PL.realized,
-        shares: PL.position.abs(),
-        price: price
-      });
-      updatedPL.meanOpenPrice = updateMeanOpenPrice(ZERO, PL.meanOpenPrice, PL.position.plus(shares), price);
-    }
-  }
-
-  return updatedPL;
-}
-
-module.exports = longerPositionPL;
-},{"../../constants":27,"./update-mean-open-price":106}],104:[function(require,module,exports){
-"use strict";
-
-var updateRealizedPL = require("./update-realized-pl");
-var ZERO = require("../../constants").ZERO;
-
-function sellCompleteSetsPL(PL, shares, price) {
-  var updatedPL = {
-    position: PL.position,
-    meanOpenPrice: PL.meanOpenPrice,
-    realized: PL.realized,
-    completeSetsBought: PL.completeSetsBought,
-    queued: PL.queued,
-    tradeQueue: PL.tradeQueue
-  };
-
-  // If position <= 0, user is closing out a short position:
-  //  - update realized P/L
-  if (PL.position.lte(ZERO)) {
-    if (shares.gt(ZERO) && updatedPL.tradeQueue && updatedPL.tradeQueue.length) {
-      while (updatedPL.tradeQueue.length) {
-        if (updatedPL.tradeQueue[0].shares.gt(shares)) {
-          updatedPL.realized = updateRealizedPL(updatedPL.tradeQueue[0].meanOpenPrice, updatedPL.realized, shares.neg(), updatedPL.tradeQueue[0].price);
-          updatedPL.tradeQueue[0].shares = updatedPL.tradeQueue[0].shares.minus(shares);
-          break;
-        } else {
-          updatedPL.realized = updateRealizedPL(updatedPL.tradeQueue[0].meanOpenPrice, updatedPL.realized, updatedPL.tradeQueue[0].shares.neg(), updatedPL.tradeQueue[0].price);
-          updatedPL.tradeQueue.splice(0, 1);
-        }
-      }
-    }
-
-    // If position > 0, user is decreasing their long position:
-    //  - decrease position
-  } else {
-    updatedPL.position = updatedPL.position.minus(shares);
-    updatedPL.realized = updateRealizedPL(PL.meanOpenPrice, PL.realized, shares, price);
-  }
-
-  return updatedPL;
-}
-
-module.exports = sellCompleteSetsPL;
-},{"../../constants":27,"./update-realized-pl":107}],105:[function(require,module,exports){
-"use strict";
-
-var updateMeanOpenPrice = require("./update-mean-open-price");
-var updateRealizedPL = require("./update-realized-pl");
-var constants = require("../../constants");
-var PRECISION = constants.PRECISION;
-var ZERO = constants.ZERO;
-
-function shorterPositionPL(PL, shares, price) {
-  var updatedPL = {
-    position: PL.position.minus(shares),
-    meanOpenPrice: PL.meanOpenPrice,
-    realized: PL.realized,
-    completeSetsBought: PL.completeSetsBought,
-    queued: PL.queued,
-    tradeQueue: PL.tradeQueue
-  };
-
-  // If position < 0, user is increasing a short position:
-  //  - treat as a "negative buy" for P/L
-  //  - update weighted price of open positions
-  if (PL.position.abs().lte(PRECISION.zero)) {
-    updatedPL.meanOpenPrice = price;
-  } else if (PL.position.lt(PRECISION.zero)) {
-    updatedPL.meanOpenPrice = updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares.neg(), price);
-
-    // If position > 0, user is decreasing a long position
-  } else {
-
-    // If position >= shares, user is doing a regular sale:
-    //  - update realized P/L
-    if (PL.position.gte(shares)) {
-      updatedPL.realized = updateRealizedPL(PL.meanOpenPrice, PL.realized, shares, price);
-
-      // If position < shares, user is selling then short selling:
-      //  - update realized P/L for the current position (sell to 0)
-      //  - update mean open price for the remainder of shares (short sell)
-    } else {
-      updatedPL.realized = updateRealizedPL(PL.meanOpenPrice, PL.realized, PL.position, price);
-      updatedPL.meanOpenPrice = updateMeanOpenPrice(ZERO, PL.meanOpenPrice, PL.position.minus(shares), price);
-    }
-  }
-
-  return updatedPL;
-}
-
-module.exports = shorterPositionPL;
-},{"../../constants":27,"./update-mean-open-price":106,"./update-realized-pl":107}],106:[function(require,module,exports){
-"use strict";
-
-function updateMeanOpenPrice(position, meanOpenPrice, shares, price) {
-  return position.dividedBy(shares.plus(position)).times(meanOpenPrice).plus(shares.dividedBy(shares.plus(position)).times(price));
-}
-
-module.exports = updateMeanOpenPrice;
-},{}],107:[function(require,module,exports){
-"use strict";
-
-function updateRealizedPL(meanOpenPrice, realized, shares, price) {
-  return realized.plus(shares.times(price.minus(meanOpenPrice)));
-}
-
-module.exports = updateRealizedPL;
-},{}],108:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-
-function calculateNearlyCompleteSets(outcomeID, desiredShares, shareBalances) {
-  var sharesAvailable = desiredShares;
-  for (var i = 0; i < shareBalances.length; ++i) {
-    if (i !== outcomeID) {
-      sharesAvailable = BigNumber.min(shareBalances[i], sharesAvailable);
-    }
-  }
-  return sharesAvailable;
-}
-
-module.exports = calculateNearlyCompleteSets;
-},{"bignumber.js":151}],109:[function(require,module,exports){
-"use strict";
-
-var constants = require("../../constants");
-var ZERO = constants.ZERO;
-
-// sharePrice can be long (taking ask, making a bid) or short (taking bid, making an ask)
-// range in this context is used similarly to numTicks
-function calculateSettlementFee(completeSets, marketCreatorFeeRate, range, shouldCollectReportingFees, reportingFeeRate, sharePrice) {
-  var payout = completeSets.times(sharePrice).times(range);
-  var marketCreatorFee = payout.times(marketCreatorFeeRate).div(range);
-  var reportingFee = payout.times(shouldCollectReportingFees ? reportingFeeRate : ZERO).div(range);
-  var fee = marketCreatorFee.plus(reportingFee);
-  return fee;
-}
-
-module.exports = calculateSettlementFee;
-},{"../../constants":27}],110:[function(require,module,exports){
-"use strict";
-
-function depleteOtherShareBalances(outcomeID, sharesDepleted, shareBalances) {
-  var numOutcomes = shareBalances.length;
-  var depletedShareBalances = new Array(numOutcomes);
-  for (var i = 0; i < numOutcomes; ++i) {
-    depletedShareBalances[i] = i === outcomeID ? shareBalances[i] : shareBalances[i].minus(sharesDepleted);
-  }
-  return depletedShareBalances;
-}
-
-module.exports = depleteOtherShareBalances;
-},{}],111:[function(require,module,exports){
-"use strict";
-
-module.exports = require("./simulate-trade");
-},{"./simulate-trade":118}],112:[function(require,module,exports){
-"use strict";
-
-var simulateCreateBidOrder = require("./simulate-create-bid-order");
-var simulateFillAskOrder = require("./simulate-fill-ask-order");
-var sumSimulatedResults = require("./sum-simulated-results");
-var filterByPriceAndOutcomeAndUserSortByPrice = require("../filter-by-price-and-outcome-and-user-sort-by-price");
-var constants = require("../../constants");
-var PRECISION = constants.PRECISION;
-var ZERO = constants.ZERO;
-
-function simulateBuy(outcome, sharesToCover, shareBalances, tokenBalance, userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, sellOrderBook) {
-  var simulatedBuy = {
-    settlementFees: ZERO,
-    worstCaseFees: ZERO,
-    gasFees: ZERO,
-    sharesDepleted: ZERO,
-    otherSharesDepleted: ZERO,
-    tokensDepleted: ZERO,
-    shareBalances: shareBalances
-  };
-  var matchingSortedAsks = filterByPriceAndOutcomeAndUserSortByPrice(sellOrderBook, 0, price, userAddress);
-
-  // if no matching asks, then user is bidding: no settlement fees
-  if (!matchingSortedAsks.length) {
-    simulatedBuy = sumSimulatedResults(simulatedBuy, simulateCreateBidOrder(sharesToCover, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances));
-
-    // if there are matching asks, user is buying
-  } else {
-    var simulatedFillAskOrder = simulateFillAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedAsks, outcome, shareBalances);
-    simulatedBuy = sumSimulatedResults(simulatedBuy, simulatedFillAskOrder);
-    if (simulatedFillAskOrder.sharesToCover.gt(PRECISION.zero)) {
-      simulatedBuy = sumSimulatedResults(simulatedBuy, simulateCreateBidOrder(simulatedFillAskOrder.sharesToCover, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances));
-    }
-  }
-
-  return simulatedBuy;
-}
-
-module.exports = simulateBuy;
-},{"../../constants":27,"../filter-by-price-and-outcome-and-user-sort-by-price":86,"./simulate-create-bid-order":114,"./simulate-fill-ask-order":115,"./sum-simulated-results":119}],113:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var constants = require("../../constants");
-var PRECISION = constants.PRECISION;
-var ZERO = constants.ZERO;
-var calculateSettlementFee = require("./calculate-settlement-fee");
-
-function simulateCreateAskOrder(numShares, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances) {
-  var numOutcomes = shareBalances.length;
-  if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
-  if (numShares.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
-  if (price.gt(maxPrice)) throw new Error("Price is above the maximum price");
-  var gasFees = ZERO;
-  var worstCaseFees = ZERO;
-  var tokensEscrowed = ZERO;
-  var sharesEscrowed = ZERO;
-  var sharePriceLong = price.minus(minPrice);
-  if (shareBalances[outcome].gt(ZERO)) {
-    sharesEscrowed = BigNumber.min(shareBalances[outcome], numShares);
-    numShares = numShares.minus(sharesEscrowed);
-    shareBalances[outcome] = shareBalances[outcome].minus(sharesEscrowed);
-  }
-  if (numShares.gt(ZERO)) tokensEscrowed = numShares.times(maxPrice.minus(price));
-  if (sharesEscrowed.gt(ZERO)) worstCaseFees = calculateSettlementFee(sharesEscrowed, marketCreatorFeeRate, maxPrice.minus(minPrice), shouldCollectReportingFees, reportingFeeRate, sharePriceLong);
-  return {
-    gasFees: gasFees,
-    worstCaseFees: worstCaseFees,
-    sharesDepleted: sharesEscrowed,
-    tokensDepleted: tokensEscrowed,
-    shareBalances: shareBalances
-  };
-}
-
-module.exports = simulateCreateAskOrder;
-},{"../../constants":27,"./calculate-settlement-fee":109,"bignumber.js":151}],114:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var constants = require("../../constants");
-var PRECISION = constants.PRECISION;
-var ZERO = constants.ZERO;
-var calculateSettlementFee = require("./calculate-settlement-fee");
-
-function simulateCreateBidOrder(numShares, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances) {
-  var numOutcomes = shareBalances.length;
-  if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
-  if (numShares.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
-  if (price.lt(minPrice)) throw new Error("Price is below the minimum price");
-  var gasFees = ZERO;
-  var worstCaseFees = ZERO;
-  var sharePriceLong = price.minus(minPrice);
-  var sharePriceShort = maxPrice.minus(price);
-  var tokensEscrowed = ZERO;
-  var sharesEscrowed = new BigNumber(2, 10).toPower(254);
-  for (var i = 0; i < numOutcomes; ++i) {
-    if (i !== outcome) {
-      sharesEscrowed = BigNumber.min(shareBalances[i], sharesEscrowed);
-    }
-  }
-  sharesEscrowed = BigNumber.min(sharesEscrowed, numShares);
-  if (sharesEscrowed.gt(ZERO)) {
-    numShares = numShares.minus(sharesEscrowed);
-    for (i = 0; i < numOutcomes; ++i) {
-      if (i !== outcome) {
-        shareBalances[i] = shareBalances[i].minus(sharesEscrowed);
-      }
-    }
-
-    worstCaseFees = calculateSettlementFee(sharesEscrowed, marketCreatorFeeRate, maxPrice.minus(minPrice), shouldCollectReportingFees, reportingFeeRate, sharePriceShort);
-  }
-  if (numShares.gt(ZERO)) tokensEscrowed = numShares.times(sharePriceLong);
-  return {
-    gasFees: gasFees,
-    worstCaseFees: worstCaseFees,
-    otherSharesDepleted: sharesEscrowed,
-    tokensDepleted: tokensEscrowed,
-    shareBalances: shareBalances
-  };
-}
-
-module.exports = simulateCreateBidOrder;
-},{"../../constants":27,"./calculate-settlement-fee":109,"bignumber.js":151}],115:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var calculateNearlyCompleteSets = require("./calculate-nearly-complete-sets");
-var calculateSettlementFee = require("./calculate-settlement-fee");
-var depleteOtherShareBalances = require("./deplete-other-share-balances");
-var constants = require("../../constants");
-var PRECISION = constants.PRECISION;
-var ZERO = constants.ZERO;
-
-function simulateFillAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedAsks, outcome, shareBalances) {
-  var numOutcomes = shareBalances.length;
-  if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
-  if (sharesToCover.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
-  var settlementFees = ZERO;
-  var gasFees = ZERO;
-  var makerSharesDepleted = ZERO;
-  var makerTokensDepleted = ZERO;
-  var takerSharesDepleted = ZERO;
-  var takerTokensDepleted = ZERO;
-  matchingSortedAsks.forEach(function (matchingAsk) {
-    var takerDesiredShares = BigNumber.min(new BigNumber(matchingAsk.amount, 10), sharesToCover);
-    var makerSharesEscrowed = BigNumber.min(new BigNumber(matchingAsk.sharesEscrowed, 10), sharesToCover);
-    var orderDisplayPrice = new BigNumber(matchingAsk.fullPrecisionPrice, 10);
-    var sharePriceShort = maxPrice.minus(orderDisplayPrice);
-    var sharePriceLong = orderDisplayPrice.minus(minPrice);
-    var takerSharesAvailable = calculateNearlyCompleteSets(outcome, takerDesiredShares, shareBalances);
-    sharesToCover = sharesToCover.minus(takerDesiredShares);
-
-    // complete sets sold if maker is closing a long, taker is closing a short
-    if (makerSharesEscrowed.gt(PRECISION.zero) && takerSharesAvailable.gt(PRECISION.zero)) {
-      var completeSets = BigNumber.min(makerSharesEscrowed, takerSharesAvailable);
-      settlementFees = settlementFees.plus(calculateSettlementFee(completeSets, marketCreatorFeeRate, maxPrice.minus(minPrice), shouldCollectReportingFees, reportingFeeRate, sharePriceShort));
-      makerSharesDepleted = makerSharesDepleted.plus(completeSets);
-      takerSharesDepleted = takerSharesDepleted.plus(completeSets);
-      takerDesiredShares = takerDesiredShares.minus(completeSets);
-      makerSharesEscrowed = makerSharesEscrowed.minus(completeSets);
-    }
-
-    // maker is closing a long, taker is opening a long: no complete sets sold
-    if (makerSharesEscrowed.gt(PRECISION.zero) && takerDesiredShares.gt(PRECISION.zero)) {
-      var tokensRequiredToCoverTaker = makerSharesEscrowed.times(sharePriceLong);
-      makerSharesDepleted = makerSharesDepleted.plus(makerSharesEscrowed);
-      takerTokensDepleted = takerTokensDepleted.plus(tokensRequiredToCoverTaker);
-      takerDesiredShares = takerDesiredShares.minus(makerSharesEscrowed);
-      makerSharesEscrowed = ZERO;
-    }
-
-    // maker is opening a short, taker is closing a short
-    if (takerSharesAvailable.gt(PRECISION.zero) && takerDesiredShares.gt(PRECISION.zero)) {
-      var tokensRequiredToCoverMaker = takerSharesAvailable.times(sharePriceShort);
-      makerTokensDepleted = makerTokensDepleted.plus(tokensRequiredToCoverMaker);
-      takerSharesDepleted = takerSharesDepleted.plus(takerSharesAvailable);
-      takerDesiredShares = takerDesiredShares.minus(takerSharesAvailable);
-      takerSharesAvailable = ZERO;
-    }
-
-    // maker is opening a short, taker is opening a long
-    if (takerDesiredShares.gt(PRECISION.zero)) {
-      var takerPortionOfCompleteSetCost = takerDesiredShares.times(sharePriceLong);
-      var makerPortionOfCompleteSetCost = takerDesiredShares.times(sharePriceShort);
-      makerTokensDepleted = makerTokensDepleted.plus(makerPortionOfCompleteSetCost);
-      takerTokensDepleted = takerTokensDepleted.plus(takerPortionOfCompleteSetCost);
-      takerDesiredShares = ZERO;
-    }
-  });
-  if (takerSharesDepleted.gt(ZERO)) {
-    shareBalances = depleteOtherShareBalances(outcome, takerSharesDepleted, shareBalances);
-  }
-  return {
-    sharesToCover: sharesToCover,
-    settlementFees: settlementFees,
-    worstCaseFees: settlementFees,
-    gasFees: gasFees,
-    otherSharesDepleted: takerSharesDepleted,
-    tokensDepleted: takerTokensDepleted,
-    shareBalances: shareBalances
-  };
-}
-
-module.exports = simulateFillAskOrder;
-},{"../../constants":27,"./calculate-nearly-complete-sets":108,"./calculate-settlement-fee":109,"./deplete-other-share-balances":110,"bignumber.js":151}],116:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var calculateSettlementFee = require("./calculate-settlement-fee");
-var constants = require("../../constants");
-var PRECISION = constants.PRECISION;
-var ZERO = constants.ZERO;
-
-function simulateFillBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedBids, outcome, shareBalances) {
-  var numOutcomes = shareBalances.length;
-  if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
-  if (sharesToCover.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
-  var settlementFees = ZERO;
-  var gasFees = ZERO;
-  var makerSharesDepleted = ZERO;
-  var makerTokensDepleted = ZERO;
-  var takerSharesDepleted = ZERO;
-  var takerTokensDepleted = ZERO;
-  matchingSortedBids.forEach(function (matchingBid) {
-    var takerDesiredSharesForThisOrder = BigNumber.min(new BigNumber(matchingBid.amount, 10), sharesToCover);
-    var orderDisplayPrice = new BigNumber(matchingBid.fullPrecisionPrice, 10);
-    var sharePriceShort = maxPrice.minus(orderDisplayPrice);
-    var sharePriceLong = orderDisplayPrice.minus(minPrice);
-    var makerSharesEscrowed = BigNumber.min(new BigNumber(matchingBid.sharesEscrowed, 10), sharesToCover);
-    sharesToCover = sharesToCover.minus(takerDesiredSharesForThisOrder);
-    var takerSharesAvailable = BigNumber.min(takerDesiredSharesForThisOrder, shareBalances[outcome]);
-
-    // maker is closing a short, taker is closing a long: complete sets sold
-    if (makerSharesEscrowed.gt(PRECISION.zero) && takerSharesAvailable.gt(PRECISION.zero)) {
-      var completeSets = BigNumber.min(makerSharesEscrowed, takerSharesAvailable);
-      settlementFees = settlementFees.plus(calculateSettlementFee(completeSets, marketCreatorFeeRate, maxPrice.minus(minPrice), shouldCollectReportingFees, reportingFeeRate, sharePriceLong));
-      makerSharesDepleted = makerSharesDepleted.plus(completeSets);
-      takerSharesDepleted = takerSharesDepleted.plus(completeSets);
-      takerSharesAvailable = takerSharesAvailable.minus(completeSets);
-      makerSharesEscrowed = makerSharesEscrowed.minus(completeSets);
-      takerDesiredSharesForThisOrder = takerDesiredSharesForThisOrder.minus(completeSets);
-    }
-
-    // maker is closing a short, taker is opening a short
-    if (makerSharesEscrowed.gt(PRECISION.zero) && takerDesiredSharesForThisOrder.gt(PRECISION.zero)) {
-      var tokensRequiredToCoverTaker = makerSharesEscrowed.times(sharePriceShort);
-      makerSharesDepleted = makerSharesDepleted.plus(makerSharesEscrowed);
-      takerTokensDepleted = takerTokensDepleted.plus(tokensRequiredToCoverTaker);
-      takerDesiredSharesForThisOrder = takerDesiredSharesForThisOrder.minus(makerSharesEscrowed);
-      makerSharesEscrowed = ZERO;
-    }
-
-    // maker is opening a long, taker is closing a long
-    if (takerSharesAvailable.gt(PRECISION.zero) && takerDesiredSharesForThisOrder.gt(PRECISION.zero)) {
-      var tokensRequiredToCoverMaker = takerSharesAvailable.times(sharePriceLong);
-      makerTokensDepleted = makerTokensDepleted.plus(tokensRequiredToCoverMaker);
-      takerSharesDepleted = takerSharesDepleted.plus(takerSharesAvailable);
-      takerDesiredSharesForThisOrder = takerDesiredSharesForThisOrder.minus(takerSharesAvailable);
-      takerSharesAvailable = ZERO;
-    }
-
-    // maker is opening a long, taker is opening a short
-    if (takerDesiredSharesForThisOrder.gt(PRECISION.zero)) {
-      var takerPortionOfCompleteSetCost = takerDesiredSharesForThisOrder.times(sharePriceShort);
-      var makerPortionOfCompleteSetCost = takerDesiredSharesForThisOrder.times(sharePriceLong);
-      makerTokensDepleted = makerTokensDepleted.plus(makerPortionOfCompleteSetCost);
-      takerTokensDepleted = takerTokensDepleted.plus(takerPortionOfCompleteSetCost);
-      takerDesiredSharesForThisOrder = ZERO;
-    }
-  });
-  shareBalances[outcome] = shareBalances[outcome].minus(takerSharesDepleted);
-  return {
-    sharesToCover: sharesToCover,
-    settlementFees: settlementFees,
-    worstCaseFees: settlementFees,
-    gasFees: gasFees,
-    sharesDepleted: takerSharesDepleted,
-    tokensDepleted: takerTokensDepleted,
-    shareBalances: shareBalances
-  };
-}
-
-module.exports = simulateFillBidOrder;
-},{"../../constants":27,"./calculate-settlement-fee":109,"bignumber.js":151}],117:[function(require,module,exports){
-"use strict";
-
-var simulateCreateAskOrder = require("./simulate-create-ask-order");
-var simulateFillBidOrder = require("./simulate-fill-bid-order");
-var sumSimulatedResults = require("./sum-simulated-results");
-var filterByPriceAndOutcomeAndUserSortByPrice = require("../filter-by-price-and-outcome-and-user-sort-by-price");
-var constants = require("../../constants");
-var PRECISION = constants.PRECISION;
-var ZERO = constants.ZERO;
-
-function simulateSell(outcome, sharesToCover, shareBalances, tokenBalance, userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, buyOrderBook) {
-  var simulatedSell = {
-    settlementFees: ZERO,
-    worstCaseFees: ZERO,
-    gasFees: ZERO,
-    sharesDepleted: ZERO,
-    otherSharesDepleted: ZERO,
-    tokensDepleted: ZERO,
-    shareBalances: shareBalances
-  };
-  var matchingSortedBids = filterByPriceAndOutcomeAndUserSortByPrice(buyOrderBook, 1, price, userAddress);
-
-  // if no matching bids, then user is asking: no settlement fees
-  if (!matchingSortedBids.length) {
-    simulatedSell = sumSimulatedResults(simulatedSell, simulateCreateAskOrder(sharesToCover, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances));
-
-    // if there are matching bids, user is selling
-  } else {
-    var simulatedFillBidOrder = simulateFillBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedBids, outcome, shareBalances);
-    simulatedSell = sumSimulatedResults(simulatedSell, simulatedFillBidOrder);
-    if (simulatedFillBidOrder.sharesToCover.gt(PRECISION.zero)) {
-      simulatedSell = sumSimulatedResults(simulatedSell, simulateCreateAskOrder(simulatedFillBidOrder.sharesToCover, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances));
-    }
-  }
-
-  return simulatedSell;
-}
-
-module.exports = simulateSell;
-},{"../../constants":27,"../filter-by-price-and-outcome-and-user-sort-by-price":86,"./simulate-create-ask-order":113,"./simulate-fill-bid-order":116,"./sum-simulated-results":119}],118:[function(require,module,exports){
-"use strict";
-
-/** Type definition for SingleOutcomeOrderBook.
- * @typedef {Object} SingleOutcomeOrderBook
- * @property {require("../get-open-orders").SingleOutcomeOrderBookSide} buy Buy orders (bids) indexed by order ID.
- * @property {require("../get-open-orders").SingleOutcomeOrderBookSide} sell Sell orders (asks) indexed by order ID.
- */
-
-/** Type definition for MarketOrderBook.
- * @typedef {Object} MarketOrderBook
- * @property {SingleOutcomeOrderBook|undefined} 1 Full order book (buy and sell) for outcome 1 of this market.
- * @property {SingleOutcomeOrderBook|undefined} 2 Full order book (buy and sell) for outcome 2 of this market.
- * @property {SingleOutcomeOrderBook|undefined} 3 Full order book (buy and sell) for outcome 3 of this market.
- * @property {SingleOutcomeOrderBook|undefined} 4 Full order book (buy and sell) for outcome 4 of this market.
- * @property {SingleOutcomeOrderBook|undefined} 5 Full order book (buy and sell) for outcome 5 of this market.
- * @property {SingleOutcomeOrderBook|undefined} 6 Full order book (buy and sell) for outcome 6 of this market.
- * @property {SingleOutcomeOrderBook|undefined} 7 Full order book (buy and sell) for outcome 7 of this market.
- * @property {SingleOutcomeOrderBook|undefined} 8 Full order book (buy and sell) for outcome 8 of this market.
- */
-
-/** Type definition for SimulatedTrade.
- * @typedef {Object} SimulatedTrade
- * @property {string} settlementFees Projected settlement fees paid on this trade, as a base-10 string.
- * @property {string} gasFees Projected gas fees paid on this trade, as a base-10 string.
- * @property {string} sharesDepleted Projected number of shares of the traded outcome spent on this trade, as a base-10 string.
- * @property {string} otherSharesDepleted Projected number of shares of the other (non-traded) outcomes spent on this trade, as a base-10 string.
- * @property {string} tokensDepleted Projected number of tokens spent on this trade, as a base-10 string.
- * @property {string[]} shareBalances Projected final balances after the trade is complete, as an array of base-10 strings.
- */
-
-var BigNumber = require("bignumber.js");
-var simulateBuy = require("./simulate-buy");
-var simulateSell = require("./simulate-sell");
-
-/**
- * Determine the sequence of makes/takes that will be executed to fill the specified order, and return the user's
- * projected balances and fees paid after this sequence is completed.
- * Note: simulateTrade automatically normalizes share prices, so "display prices" can be directly passed in
- * for minPrice, maxPrice, and price.
- * @param {Object} p Trade simulation parameters.
- * @param {number} p.orderType Order type (0 for "buy", 1 for "sell").
- * @param {number} p.outcome Outcome ID to trade, must be an integer value on [0, 7].
- * @param {string[]} p.shareBalances Number of shares the user owns of each outcome in ascending order, as an array of base-10 strings.
- * @param {string} p.tokenBalance Number of tokens (e.g., wrapped ether) the user owns, as a base-10 string.
- * @param {string} p.userAddress The user's Ethereum address, as a hexadecimal string.
- * @param {string} p.minPrice This market's minimum possible price, as a base-10 string.
- * @param {string} p.maxPrice This market's maximum possible price, as a base-10 string.
- * @param {string} p.price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
- * @param {string} p.shares Number of shares to trade, as a base-10 string.
- * @param {string} p.marketCreatorFeeRate The fee rate charged by the market creator (e.g., pass in "0.01" if the fee is 1%), as a base-10 string.
- * @param {MarketOrderBook} p.marketOrderBook The full order book (buy and sell) for this market and outcome.
- * @param {boolean=} p.shouldCollectReportingFees False if reporting fees are not collected; this is rare and only occurs in disowned markets (default: true).
- * @return {SimulatedTrade} Projected fees paid, shares and tokens spent, and final balances after the trade is complete.
- */
-function simulateTrade(p) {
-  if (p.orderType !== 0 && p.orderType !== 1) throw new Error("Order type must be 0 (buy) or 1 (sell)");
-  var sharesToCover = new BigNumber(p.shares, 10);
-  var price = new BigNumber(p.price, 10);
-  var tokenBalance = new BigNumber(p.tokenBalance, 10);
-  var minPrice = new BigNumber(p.minPrice, 10);
-  var maxPrice = new BigNumber(p.maxPrice, 10);
-  var marketCreatorFeeRate = new BigNumber(p.marketCreatorFeeRate, 10);
-  var reportingFeeRate = new BigNumber(p.reportingFeeRate, 10);
-  var shouldCollectReportingFees = p.shouldCollectReportingFees === false ? 0 : 1;
-  var shareBalances = p.shareBalances.map(function (shareBalance) {
-    return new BigNumber(shareBalance, 10);
-  });
-  var simulatedTrade = p.orderType === 0 ? simulateBuy(p.outcome, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.marketOrderBook.sell) : simulateSell(p.outcome, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.marketOrderBook.buy);
-  return {
-    settlementFees: simulatedTrade.settlementFees.toFixed(),
-    worstCaseFees: simulatedTrade.worstCaseFees.toFixed(),
-    gasFees: simulatedTrade.gasFees.toFixed(),
-    sharesDepleted: simulatedTrade.sharesDepleted.toFixed(),
-    otherSharesDepleted: simulatedTrade.otherSharesDepleted.toFixed(),
-    tokensDepleted: simulatedTrade.tokensDepleted.toFixed(),
-    shareBalances: simulatedTrade.shareBalances.map(function (shareBalance) {
-      return shareBalance.toFixed();
-    })
-  };
-}
-
-module.exports = simulateTrade;
-},{"./simulate-buy":112,"./simulate-sell":117,"bignumber.js":151}],119:[function(require,module,exports){
-"use strict";
-
-function sumSimulatedResults(sumOfSimulatedResults, simulatedResults) {
-  return Object.keys(sumOfSimulatedResults).reduce(function (updatedSumOfSimulatedResults, tradeField) {
-    if (tradeField === "shareBalances") {
-      updatedSumOfSimulatedResults[tradeField] = simulatedResults[tradeField];
-    } else if (simulatedResults[tradeField] !== undefined) {
-      updatedSumOfSimulatedResults[tradeField] = sumOfSimulatedResults[tradeField].plus(simulatedResults[tradeField]);
-    } else {
-      updatedSumOfSimulatedResults[tradeField] = sumOfSimulatedResults[tradeField];
-    }
-    return updatedSumOfSimulatedResults;
-  }, {});
-}
-
-module.exports = sumSimulatedResults;
-},{}],120:[function(require,module,exports){
-"use strict";
-
-var assign = require("lodash.assign");
-var BigNumber = require("bignumber.js");
-var speedomatic = require("speedomatic");
-var immutableDelete = require("immutable-delete");
-var getTradeAmountRemaining = require("./get-trade-amount-remaining");
-var convertDecimalToFixedPoint = require("../utils/convert-decimal-to-fixed-point");
-var convertFixedPointToDecimal = require("../utils/convert-fixed-point-to-decimal");
-var api = require("../api");
-var noop = require("../utils/noop");
-var constants = require("../constants");
-
-/**
- * @param {Object} p Parameters object.
- * @param {string} p._price Display (non-normalized) limit price for this trade, as a base-10 string.
- * @param {string} p._fxpAmount Number of shares to trade, as a base-10 string.
- * @param {string} p.numTicks The number of ticks for this market.
- * @param {string} p.tickSize The tick size (interval) for this market.
- * @param {number} p._direction Order type (0 for "buy", 1 for "sell").
- * @param {string} p._market Market in which to trade, as a hex string.
- * @param {number} p._outcome Outcome ID to trade, must be an integer value on [0, 7].
- * @param {string=} p._tradeGroupId ID logged with each trade transaction (can be used to group trades client-side), as a hex string.
- * @param {boolean=} p.doNotCreateOrders If set to true, this trade will only take existing orders off the book, not create new ones (default: false).
- * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
- * @param {function} p.onSent Called when the first trading transaction is broadcast to the network.
- * @param {function} p.onSuccess Called when the full trade completes successfully.
- * @param {function} p.onFailed Called if any part of the trade fails.
- */
-function tradeUntilAmountIsZero(p) {
-  console.log("tradeUntilAmountIsZero:", JSON.stringify(immutableDelete(p, "meta"), null, 2));
-  var priceNumTicksRepresentation = convertDecimalToFixedPoint(p._price, p.numTicks);
-  var adjustedPrice = p._direction === 0 ? new BigNumber(priceNumTicksRepresentation, 16) : new BigNumber(p.numTicks, 10).minus(new BigNumber(priceNumTicksRepresentation, 16));
-  var onChainAmount = convertDecimalToFixedPoint(p._fxpAmount, speedomatic.fix(p.tickSize, "string"));
-  var cost = new BigNumber(onChainAmount, 16).times(adjustedPrice);
-  if (cost.lt(constants.PRECISION.zero)) return p.onSuccess(null);
-  console.log("cost:", speedomatic.unfix(cost, "string"), "ether");
-  var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "tickSize"]), {
-    tx: assign({ value: speedomatic.hex(cost), gas: constants.TRADE_GAS }, p.tx),
-    _fxpAmount: onChainAmount,
-    _price: priceNumTicksRepresentation,
-    onSuccess: function onSuccess(res) {
-      getTradeAmountRemaining({
-        transactionHash: res.hash,
-        startingOnChainAmount: onChainAmount,
-        priceNumTicksRepresentation: priceNumTicksRepresentation
-      }, function (err, tradeOnChainAmountRemaining) {
-        if (err) return p.onFailed(err);
-        console.log("starting amount: ", p._fxpAmount);
-        console.log("amount remaining:", convertFixedPointToDecimal(tradeOnChainAmountRemaining, speedomatic.fix(p.tickSize, "string")));
-        if (new BigNumber(tradeOnChainAmountRemaining, 10).eq(new BigNumber(onChainAmount, 16))) {
-          if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining);
-          return p.onFailed("Trade completed but amount of trade unchanged");
-        }
-        tradeUntilAmountIsZero(assign({}, p, {
-          _fxpAmount: convertFixedPointToDecimal(tradeOnChainAmountRemaining, speedomatic.fix(p.tickSize, "string")),
-          onSent: noop // so that p.onSent only fires when the first transaction is sent
-        }));
-      });
-    }
-  });
-  if (p.doNotCreateOrders) {
-    api().Trade.publicTakeBestOrder(tradePayload);
-  } else {
-    api().Trade.publicTrade(tradePayload);
-  }
-}
-
-module.exports = tradeUntilAmountIsZero;
-},{"../api":11,"../constants":27,"../utils/convert-decimal-to-fixed-point":122,"../utils/convert-fixed-point-to-decimal":123,"../utils/noop":130,"./get-trade-amount-remaining":90,"bignumber.js":151,"immutable-delete":403,"lodash.assign":426,"speedomatic":531}],121:[function(require,module,exports){
-"use strict";
-
-var BLOCKS_PER_CHUNK = require("../constants").BLOCKS_PER_CHUNK;
-
-function chunkBlocks(fromBlock, toBlock) {
-  var toBlockChunk, fromBlockChunk, chunks;
-  if (fromBlock < 1) fromBlock = 1;
-  if (toBlock < fromBlock) return [];
-  toBlockChunk = toBlock;
-  fromBlockChunk = toBlock - BLOCKS_PER_CHUNK;
-  chunks = [];
-  while (toBlockChunk >= fromBlock) {
-    if (fromBlockChunk < fromBlock) {
-      fromBlockChunk = fromBlock;
-    }
-    chunks.push({ fromBlock: fromBlockChunk, toBlock: toBlockChunk });
-    fromBlockChunk -= BLOCKS_PER_CHUNK;
-    toBlockChunk -= BLOCKS_PER_CHUNK;
-    if (toBlockChunk === toBlock - BLOCKS_PER_CHUNK) {
-      toBlockChunk--;
-    }
-  }
-  return chunks;
-}
-
-module.exports = chunkBlocks;
-},{"../constants":27}],122:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var prefixHex = require("speedomatic").prefixHex;
-
-/**
- * @param {string|number} decimalValue
- * @param {string|number} conversionFactor
- * @return {string}
- */
-function convertDecimalToFixedPoint(decimalValue, conversionFactor) {
-  return prefixHex(new BigNumber(decimalValue, 10).times(new BigNumber(conversionFactor, 10)).floor().toString(16));
-}
-
-module.exports = convertDecimalToFixedPoint;
-},{"bignumber.js":151,"speedomatic":531}],123:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-
-/**
- * @param {string|number} decimalValue
- * @param {string|number} conversionFactor
- * @return {string}
- */
-function convertFixedPointToDecimal(fixedPointValue, conversionFactor) {
-  return new BigNumber(fixedPointValue, 10).dividedBy(new BigNumber(conversionFactor, 10)).toFixed();
-}
-
-module.exports = convertFixedPointToDecimal;
-},{"bignumber.js":151}],124:[function(require,module,exports){
-"use strict";
-
-var isFunction = function isFunction(f) {
-  return typeof f === "function";
-};
-
-module.exports = isFunction;
-},{}],125:[function(require,module,exports){
-"use strict";
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-module.exports = function (item) {
-  return (typeof item === "undefined" ? "undefined" : _typeof(item)) === "object" && !Array.isArray(item) && item !== null;
-};
-},{}],126:[function(require,module,exports){
-"use strict";
-
-var createKeccakHash = require("keccak/js");
-
-function keccak256(buffer) {
-  return createKeccakHash("keccak256").update(buffer).digest();
-}
-
-module.exports = keccak256;
-},{"keccak/js":411}],127:[function(require,module,exports){
-"use strict";
-
-module.exports = function (contracts) {
-  return Object.keys(contracts).map(function (contractName) {
-    return contracts[contractName];
-  });
-};
-},{}],128:[function(require,module,exports){
-"use strict";
-
-module.exports = function (contracts) {
-  return Object.keys(contracts).reduce(function (p, contractName) {
-    p[contracts[contractName]] = contractName;
-    return p;
-  }, {});
-};
-},{}],129:[function(require,module,exports){
-"use strict";
-
-module.exports = function (eventsAbi) {
-  return Object.keys(eventsAbi).reduce(function (p, contractName) {
-    if (!p[contractName]) p[contractName] = {};
-    var contractEventsAbi = eventsAbi[contractName];
-    Object.keys(contractEventsAbi).forEach(function (eventName) {
-      p[contractName][contractEventsAbi[eventName].signature] = eventName;
-    });
-    return p;
-  }, {});
-};
-},{}],130:[function(require,module,exports){
-"use strict";
-
-var noop = function noop() {};
-
-module.exports = noop;
-},{}],131:[function(require,module,exports){
-"use strict";
-
-var crypto = require("crypto");
-var speedomatic = require("speedomatic");
-
-var sha256 = function sha256(hashable) {
-  return speedomatic.hex(speedomatic.prefixHex(crypto.createHash("sha256").update(speedomatic.serialize(hashable)).digest("hex")), true);
-};
-
-module.exports = sha256;
-},{"crypto":198,"speedomatic":531}],132:[function(require,module,exports){
-'use strict';
-
-// generated by genversion
-module.exports = '4.7.0-59';
-},{}],133:[function(require,module,exports){
-(function (global){
-var augur = global.augur || require("./build/index");
-global.augur = augur;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./build/index":61}],134:[function(require,module,exports){
-var asn1 = exports;
-
-asn1.bignum = require('bn.js');
-
-asn1.define = require('./asn1/api').define;
-asn1.base = require('./asn1/base');
-asn1.constants = require('./asn1/constants');
-asn1.decoders = require('./asn1/decoders');
-asn1.encoders = require('./asn1/encoders');
-
-},{"./asn1/api":135,"./asn1/base":137,"./asn1/constants":141,"./asn1/decoders":143,"./asn1/encoders":146,"bn.js":153}],135:[function(require,module,exports){
-var asn1 = require('../asn1');
-var inherits = require('inherits');
-
-var api = exports;
-
-api.define = function define(name, body) {
-  return new Entity(name, body);
-};
-
-function Entity(name, body) {
-  this.name = name;
-  this.body = body;
-
-  this.decoders = {};
-  this.encoders = {};
-};
-
-Entity.prototype._createNamed = function createNamed(base) {
-  var named;
-  try {
-    named = require('vm').runInThisContext(
-      '(function ' + this.name + '(entity) {\n' +
-      '  this._initNamed(entity);\n' +
-      '})'
-    );
-  } catch (e) {
-    named = function (entity) {
-      this._initNamed(entity);
-    };
-  }
-  inherits(named, base);
-  named.prototype._initNamed = function initnamed(entity) {
-    base.call(this, entity);
-  };
-
-  return new named(this);
-};
-
-Entity.prototype._getDecoder = function _getDecoder(enc) {
-  enc = enc || 'der';
-  // Lazily create decoder
-  if (!this.decoders.hasOwnProperty(enc))
-    this.decoders[enc] = this._createNamed(asn1.decoders[enc]);
-  return this.decoders[enc];
-};
-
-Entity.prototype.decode = function decode(data, enc, options) {
-  return this._getDecoder(enc).decode(data, options);
-};
-
-Entity.prototype._getEncoder = function _getEncoder(enc) {
-  enc = enc || 'der';
-  // Lazily create encoder
-  if (!this.encoders.hasOwnProperty(enc))
-    this.encoders[enc] = this._createNamed(asn1.encoders[enc]);
-  return this.encoders[enc];
-};
-
-Entity.prototype.encode = function encode(data, enc, /* internal */ reporter) {
-  return this._getEncoder(enc).encode(data, reporter);
-};
-
-},{"../asn1":134,"inherits":406,"vm":563}],136:[function(require,module,exports){
-var inherits = require('inherits');
-var Reporter = require('../base').Reporter;
-var Buffer = require('buffer').Buffer;
-
-function DecoderBuffer(base, options) {
-  Reporter.call(this, options);
-  if (!Buffer.isBuffer(base)) {
-    this.error('Input not Buffer');
-    return;
-  }
-
-  this.base = base;
-  this.offset = 0;
-  this.length = base.length;
-}
-inherits(DecoderBuffer, Reporter);
-exports.DecoderBuffer = DecoderBuffer;
-
-DecoderBuffer.prototype.save = function save() {
-  return { offset: this.offset, reporter: Reporter.prototype.save.call(this) };
-};
-
-DecoderBuffer.prototype.restore = function restore(save) {
-  // Return skipped data
-  var res = new DecoderBuffer(this.base);
-  res.offset = save.offset;
-  res.length = this.offset;
-
-  this.offset = save.offset;
-  Reporter.prototype.restore.call(this, save.reporter);
-
-  return res;
-};
-
-DecoderBuffer.prototype.isEmpty = function isEmpty() {
-  return this.offset === this.length;
-};
-
-DecoderBuffer.prototype.readUInt8 = function readUInt8(fail) {
-  if (this.offset + 1 <= this.length)
-    return this.base.readUInt8(this.offset++, true);
-  else
-    return this.error(fail || 'DecoderBuffer overrun');
-}
-
-DecoderBuffer.prototype.skip = function skip(bytes, fail) {
-  if (!(this.offset + bytes <= this.length))
-    return this.error(fail || 'DecoderBuffer overrun');
-
-  var res = new DecoderBuffer(this.base);
-
-  // Share reporter state
-  res._reporterState = this._reporterState;
-
-  res.offset = this.offset;
-  res.length = this.offset + bytes;
-  this.offset += bytes;
-  return res;
-}
-
-DecoderBuffer.prototype.raw = function raw(save) {
-  return this.base.slice(save ? save.offset : this.offset, this.length);
-}
-
-function EncoderBuffer(value, reporter) {
-  if (Array.isArray(value)) {
-    this.length = 0;
-    this.value = value.map(function(item) {
-      if (!(item instanceof EncoderBuffer))
-        item = new EncoderBuffer(item, reporter);
-      this.length += item.length;
-      return item;
-    }, this);
-  } else if (typeof value === 'number') {
-    if (!(0 <= value && value <= 0xff))
-      return reporter.error('non-byte EncoderBuffer value');
-    this.value = value;
-    this.length = 1;
-  } else if (typeof value === 'string') {
-    this.value = value;
-    this.length = Buffer.byteLength(value);
-  } else if (Buffer.isBuffer(value)) {
-    this.value = value;
-    this.length = value.length;
-  } else {
-    return reporter.error('Unsupported type: ' + typeof value);
-  }
-}
-exports.EncoderBuffer = EncoderBuffer;
-
-EncoderBuffer.prototype.join = function join(out, offset) {
-  if (!out)
-    out = new Buffer(this.length);
-  if (!offset)
-    offset = 0;
-
-  if (this.length === 0)
-    return out;
-
-  if (Array.isArray(this.value)) {
-    this.value.forEach(function(item) {
-      item.join(out, offset);
-      offset += item.length;
-    });
-  } else {
-    if (typeof this.value === 'number')
-      out[offset] = this.value;
-    else if (typeof this.value === 'string')
-      out.write(this.value, offset);
-    else if (Buffer.isBuffer(this.value))
-      this.value.copy(out, offset);
-    offset += this.length;
-  }
-
-  return out;
-};
-
-},{"../base":137,"buffer":188,"inherits":406}],137:[function(require,module,exports){
-var base = exports;
-
-base.Reporter = require('./reporter').Reporter;
-base.DecoderBuffer = require('./buffer').DecoderBuffer;
-base.EncoderBuffer = require('./buffer').EncoderBuffer;
-base.Node = require('./node');
-
-},{"./buffer":136,"./node":138,"./reporter":139}],138:[function(require,module,exports){
-var Reporter = require('../base').Reporter;
-var EncoderBuffer = require('../base').EncoderBuffer;
-var DecoderBuffer = require('../base').DecoderBuffer;
-var assert = require('minimalistic-assert');
-
-// Supported tags
-var tags = [
-  'seq', 'seqof', 'set', 'setof', 'objid', 'bool',
-  'gentime', 'utctime', 'null_', 'enum', 'int', 'objDesc',
-  'bitstr', 'bmpstr', 'charstr', 'genstr', 'graphstr', 'ia5str', 'iso646str',
-  'numstr', 'octstr', 'printstr', 't61str', 'unistr', 'utf8str', 'videostr'
-];
-
-// Public methods list
-var methods = [
-  'key', 'obj', 'use', 'optional', 'explicit', 'implicit', 'def', 'choice',
-  'any', 'contains'
-].concat(tags);
-
-// Overrided methods list
-var overrided = [
-  '_peekTag', '_decodeTag', '_use',
-  '_decodeStr', '_decodeObjid', '_decodeTime',
-  '_decodeNull', '_decodeInt', '_decodeBool', '_decodeList',
-
-  '_encodeComposite', '_encodeStr', '_encodeObjid', '_encodeTime',
-  '_encodeNull', '_encodeInt', '_encodeBool'
-];
-
-function Node(enc, parent) {
-  var state = {};
-  this._baseState = state;
-
-  state.enc = enc;
-
-  state.parent = parent || null;
-  state.children = null;
-
-  // State
-  state.tag = null;
-  state.args = null;
-  state.reverseArgs = null;
-  state.choice = null;
-  state.optional = false;
-  state.any = false;
-  state.obj = false;
-  state.use = null;
-  state.useDecoder = null;
-  state.key = null;
-  state['default'] = null;
-  state.explicit = null;
-  state.implicit = null;
-  state.contains = null;
-
-  // Should create new instance on each method
-  if (!state.parent) {
-    state.children = [];
-    this._wrap();
-  }
-}
-module.exports = Node;
-
-var stateProps = [
-  'enc', 'parent', 'children', 'tag', 'args', 'reverseArgs', 'choice',
-  'optional', 'any', 'obj', 'use', 'alteredUse', 'key', 'default', 'explicit',
-  'implicit', 'contains'
-];
-
-Node.prototype.clone = function clone() {
-  var state = this._baseState;
-  var cstate = {};
-  stateProps.forEach(function(prop) {
-    cstate[prop] = state[prop];
-  });
-  var res = new this.constructor(cstate.parent);
-  res._baseState = cstate;
-  return res;
-};
-
-Node.prototype._wrap = function wrap() {
-  var state = this._baseState;
-  methods.forEach(function(method) {
-    this[method] = function _wrappedMethod() {
-      var clone = new this.constructor(this);
-      state.children.push(clone);
-      return clone[method].apply(clone, arguments);
-    };
-  }, this);
-};
-
-Node.prototype._init = function init(body) {
-  var state = this._baseState;
-
-  assert(state.parent === null);
-  body.call(this);
-
-  // Filter children
-  state.children = state.children.filter(function(child) {
-    return child._baseState.parent === this;
-  }, this);
-  assert.equal(state.children.length, 1, 'Root node can have only one child');
-};
-
-Node.prototype._useArgs = function useArgs(args) {
-  var state = this._baseState;
-
-  // Filter children and args
-  var children = args.filter(function(arg) {
-    return arg instanceof this.constructor;
-  }, this);
-  args = args.filter(function(arg) {
-    return !(arg instanceof this.constructor);
-  }, this);
-
-  if (children.length !== 0) {
-    assert(state.children === null);
-    state.children = children;
-
-    // Replace parent to maintain backward link
-    children.forEach(function(child) {
-      child._baseState.parent = this;
-    }, this);
-  }
-  if (args.length !== 0) {
-    assert(state.args === null);
-    state.args = args;
-    state.reverseArgs = args.map(function(arg) {
-      if (typeof arg !== 'object' || arg.constructor !== Object)
-        return arg;
-
-      var res = {};
-      Object.keys(arg).forEach(function(key) {
-        if (key == (key | 0))
-          key |= 0;
-        var value = arg[key];
-        res[value] = key;
-      });
-      return res;
-    });
-  }
-};
-
-//
-// Overrided methods
-//
-
-overrided.forEach(function(method) {
-  Node.prototype[method] = function _overrided() {
-    var state = this._baseState;
-    throw new Error(method + ' not implemented for encoding: ' + state.enc);
-  };
-});
-
-//
-// Public methods
-//
-
-tags.forEach(function(tag) {
-  Node.prototype[tag] = function _tagMethod() {
-    var state = this._baseState;
-    var args = Array.prototype.slice.call(arguments);
-
-    assert(state.tag === null);
-    state.tag = tag;
-
-    this._useArgs(args);
-
-    return this;
-  };
-});
-
-Node.prototype.use = function use(item) {
-  assert(item);
-  var state = this._baseState;
-
-  assert(state.use === null);
-  state.use = item;
-
-  return this;
-};
-
-Node.prototype.optional = function optional() {
-  var state = this._baseState;
-
-  state.optional = true;
-
-  return this;
-};
-
-Node.prototype.def = function def(val) {
-  var state = this._baseState;
-
-  assert(state['default'] === null);
-  state['default'] = val;
-  state.optional = true;
-
-  return this;
-};
-
-Node.prototype.explicit = function explicit(num) {
-  var state = this._baseState;
-
-  assert(state.explicit === null && state.implicit === null);
-  state.explicit = num;
-
-  return this;
-};
-
-Node.prototype.implicit = function implicit(num) {
-  var state = this._baseState;
-
-  assert(state.explicit === null && state.implicit === null);
-  state.implicit = num;
-
-  return this;
-};
-
-Node.prototype.obj = function obj() {
-  var state = this._baseState;
-  var args = Array.prototype.slice.call(arguments);
-
-  state.obj = true;
-
-  if (args.length !== 0)
-    this._useArgs(args);
-
-  return this;
-};
-
-Node.prototype.key = function key(newKey) {
-  var state = this._baseState;
-
-  assert(state.key === null);
-  state.key = newKey;
-
-  return this;
-};
-
-Node.prototype.any = function any() {
-  var state = this._baseState;
-
-  state.any = true;
-
-  return this;
-};
-
-Node.prototype.choice = function choice(obj) {
-  var state = this._baseState;
-
-  assert(state.choice === null);
-  state.choice = obj;
-  this._useArgs(Object.keys(obj).map(function(key) {
-    return obj[key];
-  }));
-
-  return this;
-};
-
-Node.prototype.contains = function contains(item) {
-  var state = this._baseState;
-
-  assert(state.use === null);
-  state.contains = item;
-
-  return this;
-};
-
-//
-// Decoding
-//
-
-Node.prototype._decode = function decode(input, options) {
-  var state = this._baseState;
-
-  // Decode root node
-  if (state.parent === null)
-    return input.wrapResult(state.children[0]._decode(input, options));
-
-  var result = state['default'];
-  var present = true;
-
-  var prevKey = null;
-  if (state.key !== null)
-    prevKey = input.enterKey(state.key);
-
-  // Check if tag is there
-  if (state.optional) {
-    var tag = null;
-    if (state.explicit !== null)
-      tag = state.explicit;
-    else if (state.implicit !== null)
-      tag = state.implicit;
-    else if (state.tag !== null)
-      tag = state.tag;
-
-    if (tag === null && !state.any) {
-      // Trial and Error
-      var save = input.save();
-      try {
-        if (state.choice === null)
-          this._decodeGeneric(state.tag, input, options);
-        else
-          this._decodeChoice(input, options);
-        present = true;
-      } catch (e) {
-        present = false;
-      }
-      input.restore(save);
-    } else {
-      present = this._peekTag(input, tag, state.any);
-
-      if (input.isError(present))
-        return present;
-    }
-  }
-
-  // Push object on stack
-  var prevObj;
-  if (state.obj && present)
-    prevObj = input.enterObject();
-
-  if (present) {
-    // Unwrap explicit values
-    if (state.explicit !== null) {
-      var explicit = this._decodeTag(input, state.explicit);
-      if (input.isError(explicit))
-        return explicit;
-      input = explicit;
-    }
-
-    var start = input.offset;
-
-    // Unwrap implicit and normal values
-    if (state.use === null && state.choice === null) {
-      if (state.any)
-        var save = input.save();
-      var body = this._decodeTag(
-        input,
-        state.implicit !== null ? state.implicit : state.tag,
-        state.any
-      );
-      if (input.isError(body))
-        return body;
-
-      if (state.any)
-        result = input.raw(save);
-      else
-        input = body;
-    }
-
-    if (options && options.track && state.tag !== null)
-      options.track(input.path(), start, input.length, 'tagged');
-
-    if (options && options.track && state.tag !== null)
-      options.track(input.path(), input.offset, input.length, 'content');
-
-    // Select proper method for tag
-    if (state.any)
-      result = result;
-    else if (state.choice === null)
-      result = this._decodeGeneric(state.tag, input, options);
-    else
-      result = this._decodeChoice(input, options);
-
-    if (input.isError(result))
-      return result;
-
-    // Decode children
-    if (!state.any && state.choice === null && state.children !== null) {
-      state.children.forEach(function decodeChildren(child) {
-        // NOTE: We are ignoring errors here, to let parser continue with other
-        // parts of encoded data
-        child._decode(input, options);
-      });
-    }
-
-    // Decode contained/encoded by schema, only in bit or octet strings
-    if (state.contains && (state.tag === 'octstr' || state.tag === 'bitstr')) {
-      var data = new DecoderBuffer(result);
-      result = this._getUse(state.contains, input._reporterState.obj)
-          ._decode(data, options);
-    }
-  }
-
-  // Pop object
-  if (state.obj && present)
-    result = input.leaveObject(prevObj);
-
-  // Set key
-  if (state.key !== null && (result !== null || present === true))
-    input.leaveKey(prevKey, state.key, result);
-  else if (prevKey !== null)
-    input.exitKey(prevKey);
-
-  return result;
-};
-
-Node.prototype._decodeGeneric = function decodeGeneric(tag, input, options) {
-  var state = this._baseState;
-
-  if (tag === 'seq' || tag === 'set')
-    return null;
-  if (tag === 'seqof' || tag === 'setof')
-    return this._decodeList(input, tag, state.args[0], options);
-  else if (/str$/.test(tag))
-    return this._decodeStr(input, tag, options);
-  else if (tag === 'objid' && state.args)
-    return this._decodeObjid(input, state.args[0], state.args[1], options);
-  else if (tag === 'objid')
-    return this._decodeObjid(input, null, null, options);
-  else if (tag === 'gentime' || tag === 'utctime')
-    return this._decodeTime(input, tag, options);
-  else if (tag === 'null_')
-    return this._decodeNull(input, options);
-  else if (tag === 'bool')
-    return this._decodeBool(input, options);
-  else if (tag === 'objDesc')
-    return this._decodeStr(input, tag, options);
-  else if (tag === 'int' || tag === 'enum')
-    return this._decodeInt(input, state.args && state.args[0], options);
-
-  if (state.use !== null) {
-    return this._getUse(state.use, input._reporterState.obj)
-        ._decode(input, options);
-  } else {
-    return input.error('unknown tag: ' + tag);
-  }
-};
-
-Node.prototype._getUse = function _getUse(entity, obj) {
-
-  var state = this._baseState;
-  // Create altered use decoder if implicit is set
-  state.useDecoder = this._use(entity, obj);
-  assert(state.useDecoder._baseState.parent === null);
-  state.useDecoder = state.useDecoder._baseState.children[0];
-  if (state.implicit !== state.useDecoder._baseState.implicit) {
-    state.useDecoder = state.useDecoder.clone();
-    state.useDecoder._baseState.implicit = state.implicit;
-  }
-  return state.useDecoder;
-};
-
-Node.prototype._decodeChoice = function decodeChoice(input, options) {
-  var state = this._baseState;
-  var result = null;
-  var match = false;
-
-  Object.keys(state.choice).some(function(key) {
-    var save = input.save();
-    var node = state.choice[key];
-    try {
-      var value = node._decode(input, options);
-      if (input.isError(value))
-        return false;
-
-      result = { type: key, value: value };
-      match = true;
-    } catch (e) {
-      input.restore(save);
-      return false;
-    }
-    return true;
-  }, this);
-
-  if (!match)
-    return input.error('Choice not matched');
-
-  return result;
-};
-
-//
-// Encoding
-//
-
-Node.prototype._createEncoderBuffer = function createEncoderBuffer(data) {
-  return new EncoderBuffer(data, this.reporter);
-};
-
-Node.prototype._encode = function encode(data, reporter, parent) {
-  var state = this._baseState;
-  if (state['default'] !== null && state['default'] === data)
-    return;
-
-  var result = this._encodeValue(data, reporter, parent);
-  if (result === undefined)
-    return;
-
-  if (this._skipDefault(result, reporter, parent))
-    return;
-
-  return result;
-};
-
-Node.prototype._encodeValue = function encode(data, reporter, parent) {
-  var state = this._baseState;
-
-  // Decode root node
-  if (state.parent === null)
-    return state.children[0]._encode(data, reporter || new Reporter());
-
-  var result = null;
-
-  // Set reporter to share it with a child class
-  this.reporter = reporter;
-
-  // Check if data is there
-  if (state.optional && data === undefined) {
-    if (state['default'] !== null)
-      data = state['default']
-    else
-      return;
-  }
-
-  // Encode children first
-  var content = null;
-  var primitive = false;
-  if (state.any) {
-    // Anything that was given is translated to buffer
-    result = this._createEncoderBuffer(data);
-  } else if (state.choice) {
-    result = this._encodeChoice(data, reporter);
-  } else if (state.contains) {
-    content = this._getUse(state.contains, parent)._encode(data, reporter);
-    primitive = true;
-  } else if (state.children) {
-    content = state.children.map(function(child) {
-      if (child._baseState.tag === 'null_')
-        return child._encode(null, reporter, data);
-
-      if (child._baseState.key === null)
-        return reporter.error('Child should have a key');
-      var prevKey = reporter.enterKey(child._baseState.key);
-
-      if (typeof data !== 'object')
-        return reporter.error('Child expected, but input is not object');
-
-      var res = child._encode(data[child._baseState.key], reporter, data);
-      reporter.leaveKey(prevKey);
-
-      return res;
-    }, this).filter(function(child) {
-      return child;
-    });
-    content = this._createEncoderBuffer(content);
-  } else {
-    if (state.tag === 'seqof' || state.tag === 'setof') {
-      // TODO(indutny): this should be thrown on DSL level
-      if (!(state.args && state.args.length === 1))
-        return reporter.error('Too many args for : ' + state.tag);
-
-      if (!Array.isArray(data))
-        return reporter.error('seqof/setof, but data is not Array');
-
-      var child = this.clone();
-      child._baseState.implicit = null;
-      content = this._createEncoderBuffer(data.map(function(item) {
-        var state = this._baseState;
-
-        return this._getUse(state.args[0], data)._encode(item, reporter);
-      }, child));
-    } else if (state.use !== null) {
-      result = this._getUse(state.use, parent)._encode(data, reporter);
-    } else {
-      content = this._encodePrimitive(state.tag, data);
-      primitive = true;
-    }
-  }
-
-  // Encode data itself
-  var result;
-  if (!state.any && state.choice === null) {
-    var tag = state.implicit !== null ? state.implicit : state.tag;
-    var cls = state.implicit === null ? 'universal' : 'context';
-
-    if (tag === null) {
-      if (state.use === null)
-        reporter.error('Tag could be omitted only for .use()');
-    } else {
-      if (state.use === null)
-        result = this._encodeComposite(tag, primitive, cls, content);
-    }
-  }
-
-  // Wrap in explicit
-  if (state.explicit !== null)
-    result = this._encodeComposite(state.explicit, false, 'context', result);
-
-  return result;
-};
-
-Node.prototype._encodeChoice = function encodeChoice(data, reporter) {
-  var state = this._baseState;
-
-  var node = state.choice[data.type];
-  if (!node) {
-    assert(
-        false,
-        data.type + ' not found in ' +
-            JSON.stringify(Object.keys(state.choice)));
-  }
-  return node._encode(data.value, reporter);
-};
-
-Node.prototype._encodePrimitive = function encodePrimitive(tag, data) {
-  var state = this._baseState;
-
-  if (/str$/.test(tag))
-    return this._encodeStr(data, tag);
-  else if (tag === 'objid' && state.args)
-    return this._encodeObjid(data, state.reverseArgs[0], state.args[1]);
-  else if (tag === 'objid')
-    return this._encodeObjid(data, null, null);
-  else if (tag === 'gentime' || tag === 'utctime')
-    return this._encodeTime(data, tag);
-  else if (tag === 'null_')
-    return this._encodeNull();
-  else if (tag === 'int' || tag === 'enum')
-    return this._encodeInt(data, state.args && state.reverseArgs[0]);
-  else if (tag === 'bool')
-    return this._encodeBool(data);
-  else if (tag === 'objDesc')
-    return this._encodeStr(data, tag);
-  else
-    throw new Error('Unsupported tag: ' + tag);
-};
-
-Node.prototype._isNumstr = function isNumstr(str) {
-  return /^[0-9 ]*$/.test(str);
-};
-
-Node.prototype._isPrintstr = function isPrintstr(str) {
-  return /^[A-Za-z0-9 '\(\)\+,\-\.\/:=\?]*$/.test(str);
-};
-
-},{"../base":137,"minimalistic-assert":443}],139:[function(require,module,exports){
-var inherits = require('inherits');
-
-function Reporter(options) {
-  this._reporterState = {
-    obj: null,
-    path: [],
-    options: options || {},
-    errors: []
-  };
-}
-exports.Reporter = Reporter;
-
-Reporter.prototype.isError = function isError(obj) {
-  return obj instanceof ReporterError;
-};
-
-Reporter.prototype.save = function save() {
-  var state = this._reporterState;
-
-  return { obj: state.obj, pathLen: state.path.length };
-};
-
-Reporter.prototype.restore = function restore(data) {
-  var state = this._reporterState;
-
-  state.obj = data.obj;
-  state.path = state.path.slice(0, data.pathLen);
-};
-
-Reporter.prototype.enterKey = function enterKey(key) {
-  return this._reporterState.path.push(key);
-};
-
-Reporter.prototype.exitKey = function exitKey(index) {
-  var state = this._reporterState;
-
-  state.path = state.path.slice(0, index - 1);
-};
-
-Reporter.prototype.leaveKey = function leaveKey(index, key, value) {
-  var state = this._reporterState;
-
-  this.exitKey(index);
-  if (state.obj !== null)
-    state.obj[key] = value;
-};
-
-Reporter.prototype.path = function path() {
-  return this._reporterState.path.join('/');
-};
-
-Reporter.prototype.enterObject = function enterObject() {
-  var state = this._reporterState;
-
-  var prev = state.obj;
-  state.obj = {};
-  return prev;
-};
-
-Reporter.prototype.leaveObject = function leaveObject(prev) {
-  var state = this._reporterState;
-
-  var now = state.obj;
-  state.obj = prev;
-  return now;
-};
-
-Reporter.prototype.error = function error(msg) {
-  var err;
-  var state = this._reporterState;
-
-  var inherited = msg instanceof ReporterError;
-  if (inherited) {
-    err = msg;
-  } else {
-    err = new ReporterError(state.path.map(function(elem) {
-      return '[' + JSON.stringify(elem) + ']';
-    }).join(''), msg.message || msg, msg.stack);
-  }
-
-  if (!state.options.partial)
-    throw err;
-
-  if (!inherited)
-    state.errors.push(err);
-
-  return err;
-};
-
-Reporter.prototype.wrapResult = function wrapResult(result) {
-  var state = this._reporterState;
-  if (!state.options.partial)
-    return result;
-
-  return {
-    result: this.isError(result) ? null : result,
-    errors: state.errors
-  };
-};
-
-function ReporterError(path, msg) {
-  this.path = path;
-  this.rethrow(msg);
-};
-inherits(ReporterError, Error);
-
-ReporterError.prototype.rethrow = function rethrow(msg) {
-  this.message = msg + ' at: ' + (this.path || '(shallow)');
-  if (Error.captureStackTrace)
-    Error.captureStackTrace(this, ReporterError);
-
-  if (!this.stack) {
-    try {
-      // IE only adds stack when thrown
-      throw new Error(this.message);
-    } catch (e) {
-      this.stack = e.stack;
-    }
-  }
-  return this;
-};
-
-},{"inherits":406}],140:[function(require,module,exports){
-var constants = require('../constants');
-
-exports.tagClass = {
-  0: 'universal',
-  1: 'application',
-  2: 'context',
-  3: 'private'
-};
-exports.tagClassByName = constants._reverse(exports.tagClass);
-
-exports.tag = {
-  0x00: 'end',
-  0x01: 'bool',
-  0x02: 'int',
-  0x03: 'bitstr',
-  0x04: 'octstr',
-  0x05: 'null_',
-  0x06: 'objid',
-  0x07: 'objDesc',
-  0x08: 'external',
-  0x09: 'real',
-  0x0a: 'enum',
-  0x0b: 'embed',
-  0x0c: 'utf8str',
-  0x0d: 'relativeOid',
-  0x10: 'seq',
-  0x11: 'set',
-  0x12: 'numstr',
-  0x13: 'printstr',
-  0x14: 't61str',
-  0x15: 'videostr',
-  0x16: 'ia5str',
-  0x17: 'utctime',
-  0x18: 'gentime',
-  0x19: 'graphstr',
-  0x1a: 'iso646str',
-  0x1b: 'genstr',
-  0x1c: 'unistr',
-  0x1d: 'charstr',
-  0x1e: 'bmpstr'
-};
-exports.tagByName = constants._reverse(exports.tag);
-
-},{"../constants":141}],141:[function(require,module,exports){
-var constants = exports;
-
-// Helper
-constants._reverse = function reverse(map) {
-  var res = {};
-
-  Object.keys(map).forEach(function(key) {
-    // Convert key to integer if it is stringified
-    if ((key | 0) == key)
-      key = key | 0;
-
-    var value = map[key];
-    res[value] = key;
-  });
-
-  return res;
-};
-
-constants.der = require('./der');
-
-},{"./der":140}],142:[function(require,module,exports){
-var inherits = require('inherits');
-
-var asn1 = require('../../asn1');
-var base = asn1.base;
-var bignum = asn1.bignum;
-
-// Import DER constants
-var der = asn1.constants.der;
-
-function DERDecoder(entity) {
-  this.enc = 'der';
-  this.name = entity.name;
-  this.entity = entity;
-
-  // Construct base tree
-  this.tree = new DERNode();
-  this.tree._init(entity.body);
-};
-module.exports = DERDecoder;
-
-DERDecoder.prototype.decode = function decode(data, options) {
-  if (!(data instanceof base.DecoderBuffer))
-    data = new base.DecoderBuffer(data, options);
-
-  return this.tree._decode(data, options);
-};
-
-// Tree methods
-
-function DERNode(parent) {
-  base.Node.call(this, 'der', parent);
-}
-inherits(DERNode, base.Node);
-
-DERNode.prototype._peekTag = function peekTag(buffer, tag, any) {
-  if (buffer.isEmpty())
-    return false;
-
-  var state = buffer.save();
-  var decodedTag = derDecodeTag(buffer, 'Failed to peek tag: "' + tag + '"');
-  if (buffer.isError(decodedTag))
-    return decodedTag;
-
-  buffer.restore(state);
-
-  return decodedTag.tag === tag || decodedTag.tagStr === tag ||
-    (decodedTag.tagStr + 'of') === tag || any;
-};
-
-DERNode.prototype._decodeTag = function decodeTag(buffer, tag, any) {
-  var decodedTag = derDecodeTag(buffer,
-                                'Failed to decode tag of "' + tag + '"');
-  if (buffer.isError(decodedTag))
-    return decodedTag;
-
-  var len = derDecodeLen(buffer,
-                         decodedTag.primitive,
-                         'Failed to get length of "' + tag + '"');
-
-  // Failure
-  if (buffer.isError(len))
-    return len;
-
-  if (!any &&
-      decodedTag.tag !== tag &&
-      decodedTag.tagStr !== tag &&
-      decodedTag.tagStr + 'of' !== tag) {
-    return buffer.error('Failed to match tag: "' + tag + '"');
-  }
-
-  if (decodedTag.primitive || len !== null)
-    return buffer.skip(len, 'Failed to match body of: "' + tag + '"');
-
-  // Indefinite length... find END tag
-  var state = buffer.save();
-  var res = this._skipUntilEnd(
-      buffer,
-      'Failed to skip indefinite length body: "' + this.tag + '"');
-  if (buffer.isError(res))
-    return res;
-
-  len = buffer.offset - state.offset;
-  buffer.restore(state);
-  return buffer.skip(len, 'Failed to match body of: "' + tag + '"');
-};
-
-DERNode.prototype._skipUntilEnd = function skipUntilEnd(buffer, fail) {
-  while (true) {
-    var tag = derDecodeTag(buffer, fail);
-    if (buffer.isError(tag))
-      return tag;
-    var len = derDecodeLen(buffer, tag.primitive, fail);
-    if (buffer.isError(len))
-      return len;
-
-    var res;
-    if (tag.primitive || len !== null)
-      res = buffer.skip(len)
-    else
-      res = this._skipUntilEnd(buffer, fail);
-
-    // Failure
-    if (buffer.isError(res))
-      return res;
-
-    if (tag.tagStr === 'end')
-      break;
-  }
-};
-
-DERNode.prototype._decodeList = function decodeList(buffer, tag, decoder,
-                                                    options) {
-  var result = [];
-  while (!buffer.isEmpty()) {
-    var possibleEnd = this._peekTag(buffer, 'end');
-    if (buffer.isError(possibleEnd))
-      return possibleEnd;
-
-    var res = decoder.decode(buffer, 'der', options);
-    if (buffer.isError(res) && possibleEnd)
-      break;
-    result.push(res);
-  }
-  return result;
-};
-
-DERNode.prototype._decodeStr = function decodeStr(buffer, tag) {
-  if (tag === 'bitstr') {
-    var unused = buffer.readUInt8();
-    if (buffer.isError(unused))
-      return unused;
-    return { unused: unused, data: buffer.raw() };
-  } else if (tag === 'bmpstr') {
-    var raw = buffer.raw();
-    if (raw.length % 2 === 1)
-      return buffer.error('Decoding of string type: bmpstr length mismatch');
-
-    var str = '';
-    for (var i = 0; i < raw.length / 2; i++) {
-      str += String.fromCharCode(raw.readUInt16BE(i * 2));
-    }
-    return str;
-  } else if (tag === 'numstr') {
-    var numstr = buffer.raw().toString('ascii');
-    if (!this._isNumstr(numstr)) {
-      return buffer.error('Decoding of string type: ' +
-                          'numstr unsupported characters');
-    }
-    return numstr;
-  } else if (tag === 'octstr') {
-    return buffer.raw();
-  } else if (tag === 'objDesc') {
-    return buffer.raw();
-  } else if (tag === 'printstr') {
-    var printstr = buffer.raw().toString('ascii');
-    if (!this._isPrintstr(printstr)) {
-      return buffer.error('Decoding of string type: ' +
-                          'printstr unsupported characters');
-    }
-    return printstr;
-  } else if (/str$/.test(tag)) {
-    return buffer.raw().toString();
-  } else {
-    return buffer.error('Decoding of string type: ' + tag + ' unsupported');
-  }
-};
-
-DERNode.prototype._decodeObjid = function decodeObjid(buffer, values, relative) {
-  var result;
-  var identifiers = [];
-  var ident = 0;
-  while (!buffer.isEmpty()) {
-    var subident = buffer.readUInt8();
-    ident <<= 7;
-    ident |= subident & 0x7f;
-    if ((subident & 0x80) === 0) {
-      identifiers.push(ident);
-      ident = 0;
-    }
-  }
-  if (subident & 0x80)
-    identifiers.push(ident);
-
-  var first = (identifiers[0] / 40) | 0;
-  var second = identifiers[0] % 40;
-
-  if (relative)
-    result = identifiers;
-  else
-    result = [first, second].concat(identifiers.slice(1));
-
-  if (values) {
-    var tmp = values[result.join(' ')];
-    if (tmp === undefined)
-      tmp = values[result.join('.')];
-    if (tmp !== undefined)
-      result = tmp;
-  }
-
-  return result;
-};
-
-DERNode.prototype._decodeTime = function decodeTime(buffer, tag) {
-  var str = buffer.raw().toString();
-  if (tag === 'gentime') {
-    var year = str.slice(0, 4) | 0;
-    var mon = str.slice(4, 6) | 0;
-    var day = str.slice(6, 8) | 0;
-    var hour = str.slice(8, 10) | 0;
-    var min = str.slice(10, 12) | 0;
-    var sec = str.slice(12, 14) | 0;
-  } else if (tag === 'utctime') {
-    var year = str.slice(0, 2) | 0;
-    var mon = str.slice(2, 4) | 0;
-    var day = str.slice(4, 6) | 0;
-    var hour = str.slice(6, 8) | 0;
-    var min = str.slice(8, 10) | 0;
-    var sec = str.slice(10, 12) | 0;
-    if (year < 70)
-      year = 2000 + year;
-    else
-      year = 1900 + year;
-  } else {
-    return buffer.error('Decoding ' + tag + ' time is not supported yet');
-  }
-
-  return Date.UTC(year, mon - 1, day, hour, min, sec, 0);
-};
-
-DERNode.prototype._decodeNull = function decodeNull(buffer) {
-  return null;
-};
-
-DERNode.prototype._decodeBool = function decodeBool(buffer) {
-  var res = buffer.readUInt8();
-  if (buffer.isError(res))
-    return res;
-  else
-    return res !== 0;
-};
-
-DERNode.prototype._decodeInt = function decodeInt(buffer, values) {
-  // Bigint, return as it is (assume big endian)
-  var raw = buffer.raw();
-  var res = new bignum(raw);
-
-  if (values)
-    res = values[res.toString(10)] || res;
-
-  return res;
-};
-
-DERNode.prototype._use = function use(entity, obj) {
-  if (typeof entity === 'function')
-    entity = entity(obj);
-  return entity._getDecoder('der').tree;
-};
-
-// Utility methods
-
-function derDecodeTag(buf, fail) {
-  var tag = buf.readUInt8(fail);
-  if (buf.isError(tag))
-    return tag;
-
-  var cls = der.tagClass[tag >> 6];
-  var primitive = (tag & 0x20) === 0;
-
-  // Multi-octet tag - load
-  if ((tag & 0x1f) === 0x1f) {
-    var oct = tag;
-    tag = 0;
-    while ((oct & 0x80) === 0x80) {
-      oct = buf.readUInt8(fail);
-      if (buf.isError(oct))
-        return oct;
-
-      tag <<= 7;
-      tag |= oct & 0x7f;
-    }
-  } else {
-    tag &= 0x1f;
-  }
-  var tagStr = der.tag[tag];
-
-  return {
-    cls: cls,
-    primitive: primitive,
-    tag: tag,
-    tagStr: tagStr
-  };
-}
-
-function derDecodeLen(buf, primitive, fail) {
-  var len = buf.readUInt8(fail);
-  if (buf.isError(len))
-    return len;
-
-  // Indefinite form
-  if (!primitive && len === 0x80)
-    return null;
-
-  // Definite form
-  if ((len & 0x80) === 0) {
-    // Short form
-    return len;
-  }
-
-  // Long form
-  var num = len & 0x7f;
-  if (num > 4)
-    return buf.error('length octect is too long');
-
-  len = 0;
-  for (var i = 0; i < num; i++) {
-    len <<= 8;
-    var j = buf.readUInt8(fail);
-    if (buf.isError(j))
-      return j;
-    len |= j;
-  }
-
-  return len;
-}
-
-},{"../../asn1":134,"inherits":406}],143:[function(require,module,exports){
-var decoders = exports;
-
-decoders.der = require('./der');
-decoders.pem = require('./pem');
-
-},{"./der":142,"./pem":144}],144:[function(require,module,exports){
-var inherits = require('inherits');
-var Buffer = require('buffer').Buffer;
-
-var DERDecoder = require('./der');
-
-function PEMDecoder(entity) {
-  DERDecoder.call(this, entity);
-  this.enc = 'pem';
-};
-inherits(PEMDecoder, DERDecoder);
-module.exports = PEMDecoder;
-
-PEMDecoder.prototype.decode = function decode(data, options) {
-  var lines = data.toString().split(/[\r\n]+/g);
-
-  var label = options.label.toUpperCase();
-
-  var re = /^-----(BEGIN|END) ([^-]+)-----$/;
-  var start = -1;
-  var end = -1;
-  for (var i = 0; i < lines.length; i++) {
-    var match = lines[i].match(re);
-    if (match === null)
-      continue;
-
-    if (match[2] !== label)
-      continue;
-
-    if (start === -1) {
-      if (match[1] !== 'BEGIN')
-        break;
-      start = i;
-    } else {
-      if (match[1] !== 'END')
-        break;
-      end = i;
-      break;
-    }
-  }
-  if (start === -1 || end === -1)
-    throw new Error('PEM section not found for: ' + label);
-
-  var base64 = lines.slice(start + 1, end).join('');
-  // Remove excessive symbols
-  base64.replace(/[^a-z0-9\+\/=]+/gi, '');
-
-  var input = new Buffer(base64, 'base64');
-  return DERDecoder.prototype.decode.call(this, input, options);
-};
-
-},{"./der":142,"buffer":188,"inherits":406}],145:[function(require,module,exports){
-var inherits = require('inherits');
-var Buffer = require('buffer').Buffer;
-
-var asn1 = require('../../asn1');
-var base = asn1.base;
-
-// Import DER constants
-var der = asn1.constants.der;
-
-function DEREncoder(entity) {
-  this.enc = 'der';
-  this.name = entity.name;
-  this.entity = entity;
-
-  // Construct base tree
-  this.tree = new DERNode();
-  this.tree._init(entity.body);
-};
-module.exports = DEREncoder;
-
-DEREncoder.prototype.encode = function encode(data, reporter) {
-  return this.tree._encode(data, reporter).join();
-};
-
-// Tree methods
-
-function DERNode(parent) {
-  base.Node.call(this, 'der', parent);
-}
-inherits(DERNode, base.Node);
-
-DERNode.prototype._encodeComposite = function encodeComposite(tag,
-                                                              primitive,
-                                                              cls,
-                                                              content) {
-  var encodedTag = encodeTag(tag, primitive, cls, this.reporter);
-
-  // Short form
-  if (content.length < 0x80) {
-    var header = new Buffer(2);
-    header[0] = encodedTag;
-    header[1] = content.length;
-    return this._createEncoderBuffer([ header, content ]);
-  }
-
-  // Long form
-  // Count octets required to store length
-  var lenOctets = 1;
-  for (var i = content.length; i >= 0x100; i >>= 8)
-    lenOctets++;
-
-  var header = new Buffer(1 + 1 + lenOctets);
-  header[0] = encodedTag;
-  header[1] = 0x80 | lenOctets;
-
-  for (var i = 1 + lenOctets, j = content.length; j > 0; i--, j >>= 8)
-    header[i] = j & 0xff;
-
-  return this._createEncoderBuffer([ header, content ]);
-};
-
-DERNode.prototype._encodeStr = function encodeStr(str, tag) {
-  if (tag === 'bitstr') {
-    return this._createEncoderBuffer([ str.unused | 0, str.data ]);
-  } else if (tag === 'bmpstr') {
-    var buf = new Buffer(str.length * 2);
-    for (var i = 0; i < str.length; i++) {
-      buf.writeUInt16BE(str.charCodeAt(i), i * 2);
-    }
-    return this._createEncoderBuffer(buf);
-  } else if (tag === 'numstr') {
-    if (!this._isNumstr(str)) {
-      return this.reporter.error('Encoding of string type: numstr supports ' +
-                                 'only digits and space');
-    }
-    return this._createEncoderBuffer(str);
-  } else if (tag === 'printstr') {
-    if (!this._isPrintstr(str)) {
-      return this.reporter.error('Encoding of string type: printstr supports ' +
-                                 'only latin upper and lower case letters, ' +
-                                 'digits, space, apostrophe, left and rigth ' +
-                                 'parenthesis, plus sign, comma, hyphen, ' +
-                                 'dot, slash, colon, equal sign, ' +
-                                 'question mark');
-    }
-    return this._createEncoderBuffer(str);
-  } else if (/str$/.test(tag)) {
-    return this._createEncoderBuffer(str);
-  } else if (tag === 'objDesc') {
-    return this._createEncoderBuffer(str);
-  } else {
-    return this.reporter.error('Encoding of string type: ' + tag +
-                               ' unsupported');
-  }
-};
-
-DERNode.prototype._encodeObjid = function encodeObjid(id, values, relative) {
-  if (typeof id === 'string') {
-    if (!values)
-      return this.reporter.error('string objid given, but no values map found');
-    if (!values.hasOwnProperty(id))
-      return this.reporter.error('objid not found in values map');
-    id = values[id].split(/[\s\.]+/g);
-    for (var i = 0; i < id.length; i++)
-      id[i] |= 0;
-  } else if (Array.isArray(id)) {
-    id = id.slice();
-    for (var i = 0; i < id.length; i++)
-      id[i] |= 0;
-  }
-
-  if (!Array.isArray(id)) {
-    return this.reporter.error('objid() should be either array or string, ' +
-                               'got: ' + JSON.stringify(id));
-  }
-
-  if (!relative) {
-    if (id[1] >= 40)
-      return this.reporter.error('Second objid identifier OOB');
-    id.splice(0, 2, id[0] * 40 + id[1]);
-  }
-
-  // Count number of octets
-  var size = 0;
-  for (var i = 0; i < id.length; i++) {
-    var ident = id[i];
-    for (size++; ident >= 0x80; ident >>= 7)
-      size++;
-  }
-
-  var objid = new Buffer(size);
-  var offset = objid.length - 1;
-  for (var i = id.length - 1; i >= 0; i--) {
-    var ident = id[i];
-    objid[offset--] = ident & 0x7f;
-    while ((ident >>= 7) > 0)
-      objid[offset--] = 0x80 | (ident & 0x7f);
-  }
-
-  return this._createEncoderBuffer(objid);
-};
-
-function two(num) {
-  if (num < 10)
-    return '0' + num;
-  else
-    return num;
-}
-
-DERNode.prototype._encodeTime = function encodeTime(time, tag) {
-  var str;
-  var date = new Date(time);
-
-  if (tag === 'gentime') {
-    str = [
-      two(date.getFullYear()),
-      two(date.getUTCMonth() + 1),
-      two(date.getUTCDate()),
-      two(date.getUTCHours()),
-      two(date.getUTCMinutes()),
-      two(date.getUTCSeconds()),
-      'Z'
-    ].join('');
-  } else if (tag === 'utctime') {
-    str = [
-      two(date.getFullYear() % 100),
-      two(date.getUTCMonth() + 1),
-      two(date.getUTCDate()),
-      two(date.getUTCHours()),
-      two(date.getUTCMinutes()),
-      two(date.getUTCSeconds()),
-      'Z'
-    ].join('');
-  } else {
-    this.reporter.error('Encoding ' + tag + ' time is not supported yet');
-  }
-
-  return this._encodeStr(str, 'octstr');
-};
-
-DERNode.prototype._encodeNull = function encodeNull() {
-  return this._createEncoderBuffer('');
-};
-
-DERNode.prototype._encodeInt = function encodeInt(num, values) {
-  if (typeof num === 'string') {
-    if (!values)
-      return this.reporter.error('String int or enum given, but no values map');
-    if (!values.hasOwnProperty(num)) {
-      return this.reporter.error('Values map doesn\'t contain: ' +
-                                 JSON.stringify(num));
-    }
-    num = values[num];
-  }
-
-  // Bignum, assume big endian
-  if (typeof num !== 'number' && !Buffer.isBuffer(num)) {
-    var numArray = num.toArray();
-    if (!num.sign && numArray[0] & 0x80) {
-      numArray.unshift(0);
-    }
-    num = new Buffer(numArray);
-  }
-
-  if (Buffer.isBuffer(num)) {
-    var size = num.length;
-    if (num.length === 0)
-      size++;
-
-    var out = new Buffer(size);
-    num.copy(out);
-    if (num.length === 0)
-      out[0] = 0
-    return this._createEncoderBuffer(out);
-  }
-
-  if (num < 0x80)
-    return this._createEncoderBuffer(num);
-
-  if (num < 0x100)
-    return this._createEncoderBuffer([0, num]);
-
-  var size = 1;
-  for (var i = num; i >= 0x100; i >>= 8)
-    size++;
-
-  var out = new Array(size);
-  for (var i = out.length - 1; i >= 0; i--) {
-    out[i] = num & 0xff;
-    num >>= 8;
-  }
-  if(out[0] & 0x80) {
-    out.unshift(0);
-  }
-
-  return this._createEncoderBuffer(new Buffer(out));
-};
-
-DERNode.prototype._encodeBool = function encodeBool(value) {
-  return this._createEncoderBuffer(value ? 0xff : 0);
-};
-
-DERNode.prototype._use = function use(entity, obj) {
-  if (typeof entity === 'function')
-    entity = entity(obj);
-  return entity._getEncoder('der').tree;
-};
-
-DERNode.prototype._skipDefault = function skipDefault(dataBuffer, reporter, parent) {
-  var state = this._baseState;
-  var i;
-  if (state['default'] === null)
-    return false;
-
-  var data = dataBuffer.join();
-  if (state.defaultBuffer === undefined)
-    state.defaultBuffer = this._encodeValue(state['default'], reporter, parent).join();
-
-  if (data.length !== state.defaultBuffer.length)
-    return false;
-
-  for (i=0; i < data.length; i++)
-    if (data[i] !== state.defaultBuffer[i])
-      return false;
-
-  return true;
-};
-
-// Utility methods
-
-function encodeTag(tag, primitive, cls, reporter) {
-  var res;
-
-  if (tag === 'seqof')
-    tag = 'seq';
-  else if (tag === 'setof')
-    tag = 'set';
-
-  if (der.tagByName.hasOwnProperty(tag))
-    res = der.tagByName[tag];
-  else if (typeof tag === 'number' && (tag | 0) === tag)
-    res = tag;
-  else
-    return reporter.error('Unknown tag: ' + tag);
-
-  if (res >= 0x1f)
-    return reporter.error('Multi-octet tag encoding unsupported');
-
-  if (!primitive)
-    res |= 0x20;
-
-  res |= (der.tagClassByName[cls || 'universal'] << 6);
-
-  return res;
-}
-
-},{"../../asn1":134,"buffer":188,"inherits":406}],146:[function(require,module,exports){
-var encoders = exports;
-
-encoders.der = require('./der');
-encoders.pem = require('./pem');
-
-},{"./der":145,"./pem":147}],147:[function(require,module,exports){
-var inherits = require('inherits');
-
-var DEREncoder = require('./der');
-
-function PEMEncoder(entity) {
-  DEREncoder.call(this, entity);
-  this.enc = 'pem';
-};
-inherits(PEMEncoder, DEREncoder);
-module.exports = PEMEncoder;
-
-PEMEncoder.prototype.encode = function encode(data, options) {
-  var buf = DEREncoder.prototype.encode.call(this, data);
-
-  var p = buf.toString('base64');
-  var out = [ '-----BEGIN ' + options.label + '-----' ];
-  for (var i = 0; i < p.length; i += 64)
-    out.push(p.slice(i, i + 64));
-  out.push('-----END ' + options.label + '-----');
-  return out.join('\n');
-};
-
-},{"./der":145,"inherits":406}],148:[function(require,module,exports){
-// http://wiki.commonjs.org/wiki/Unit_Testing/1.0
-//
-// THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
-//
-// Originally from narwhal.js (http://narwhaljs.org)
-// Copyright (c) 2009 Thomas Robinson <280north.com>
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the 'Software'), to
-// deal in the Software without restriction, including without limitation the
-// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-// sell copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-// ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// when used in node, this will actually load the util module we depend on
-// versus loading the builtin util module as happens otherwise
-// this is a bug in node module loading as far as I am concerned
-var util = require('util/');
-
-var pSlice = Array.prototype.slice;
-var hasOwn = Object.prototype.hasOwnProperty;
-
-// 1. The assert module provides functions that throw
-// AssertionError's when particular conditions are not met. The
-// assert module must conform to the following interface.
-
-var assert = module.exports = ok;
-
-// 2. The AssertionError is defined in assert.
-// new assert.AssertionError({ message: message,
-//                             actual: actual,
-//                             expected: expected })
-
-assert.AssertionError = function AssertionError(options) {
-  this.name = 'AssertionError';
-  this.actual = options.actual;
-  this.expected = options.expected;
-  this.operator = options.operator;
-  if (options.message) {
-    this.message = options.message;
-    this.generatedMessage = false;
-  } else {
-    this.message = getMessage(this);
-    this.generatedMessage = true;
-  }
-  var stackStartFunction = options.stackStartFunction || fail;
-
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(this, stackStartFunction);
-  }
-  else {
-    // non v8 browsers so we can have a stacktrace
-    var err = new Error();
-    if (err.stack) {
-      var out = err.stack;
-
-      // try to strip useless frames
-      var fn_name = stackStartFunction.name;
-      var idx = out.indexOf('\n' + fn_name);
-      if (idx >= 0) {
-        // once we have located the function frame
-        // we need to strip out everything before it (and its line)
-        var next_line = out.indexOf('\n', idx + 1);
-        out = out.substring(next_line + 1);
-      }
-
-      this.stack = out;
-    }
-  }
-};
-
-// assert.AssertionError instanceof Error
-util.inherits(assert.AssertionError, Error);
-
-function replacer(key, value) {
-  if (util.isUndefined(value)) {
-    return '' + value;
-  }
-  if (util.isNumber(value) && !isFinite(value)) {
-    return value.toString();
-  }
-  if (util.isFunction(value) || util.isRegExp(value)) {
-    return value.toString();
-  }
-  return value;
-}
-
-function truncate(s, n) {
-  if (util.isString(s)) {
-    return s.length < n ? s : s.slice(0, n);
-  } else {
-    return s;
-  }
-}
-
-function getMessage(self) {
-  return truncate(JSON.stringify(self.actual, replacer), 128) + ' ' +
-         self.operator + ' ' +
-         truncate(JSON.stringify(self.expected, replacer), 128);
-}
-
-// At present only the three keys mentioned above are used and
-// understood by the spec. Implementations or sub modules can pass
-// other keys to the AssertionError's constructor - they will be
-// ignored.
-
-// 3. All of the following functions must throw an AssertionError
-// when a corresponding condition is not met, with a message that
-// may be undefined if not provided.  All assertion methods provide
-// both the actual and expected values to the assertion error for
-// display purposes.
-
-function fail(actual, expected, message, operator, stackStartFunction) {
-  throw new assert.AssertionError({
-    message: message,
-    actual: actual,
-    expected: expected,
-    operator: operator,
-    stackStartFunction: stackStartFunction
-  });
-}
-
-// EXTENSION! allows for well behaved errors defined elsewhere.
-assert.fail = fail;
-
-// 4. Pure assertion tests whether a value is truthy, as determined
-// by !!guard.
-// assert.ok(guard, message_opt);
-// This statement is equivalent to assert.equal(true, !!guard,
-// message_opt);. To test strictly for the value true, use
-// assert.strictEqual(true, guard, message_opt);.
-
-function ok(value, message) {
-  if (!value) fail(value, true, message, '==', assert.ok);
-}
-assert.ok = ok;
-
-// 5. The equality assertion tests shallow, coercive equality with
-// ==.
-// assert.equal(actual, expected, message_opt);
-
-assert.equal = function equal(actual, expected, message) {
-  if (actual != expected) fail(actual, expected, message, '==', assert.equal);
-};
-
-// 6. The non-equality assertion tests for whether two objects are not equal
-// with != assert.notEqual(actual, expected, message_opt);
-
-assert.notEqual = function notEqual(actual, expected, message) {
-  if (actual == expected) {
-    fail(actual, expected, message, '!=', assert.notEqual);
-  }
-};
-
-// 7. The equivalence assertion tests a deep equality relation.
-// assert.deepEqual(actual, expected, message_opt);
-
-assert.deepEqual = function deepEqual(actual, expected, message) {
-  if (!_deepEqual(actual, expected)) {
-    fail(actual, expected, message, 'deepEqual', assert.deepEqual);
-  }
-};
-
-function _deepEqual(actual, expected) {
-  // 7.1. All identical values are equivalent, as determined by ===.
-  if (actual === expected) {
-    return true;
-
-  } else if (util.isBuffer(actual) && util.isBuffer(expected)) {
-    if (actual.length != expected.length) return false;
-
-    for (var i = 0; i < actual.length; i++) {
-      if (actual[i] !== expected[i]) return false;
-    }
-
-    return true;
-
-  // 7.2. If the expected value is a Date object, the actual value is
-  // equivalent if it is also a Date object that refers to the same time.
-  } else if (util.isDate(actual) && util.isDate(expected)) {
-    return actual.getTime() === expected.getTime();
-
-  // 7.3 If the expected value is a RegExp object, the actual value is
-  // equivalent if it is also a RegExp object with the same source and
-  // properties (`global`, `multiline`, `lastIndex`, `ignoreCase`).
-  } else if (util.isRegExp(actual) && util.isRegExp(expected)) {
-    return actual.source === expected.source &&
-           actual.global === expected.global &&
-           actual.multiline === expected.multiline &&
-           actual.lastIndex === expected.lastIndex &&
-           actual.ignoreCase === expected.ignoreCase;
-
-  // 7.4. Other pairs that do not both pass typeof value == 'object',
-  // equivalence is determined by ==.
-  } else if (!util.isObject(actual) && !util.isObject(expected)) {
-    return actual == expected;
-
-  // 7.5 For all other Object pairs, including Array objects, equivalence is
-  // determined by having the same number of owned properties (as verified
-  // with Object.prototype.hasOwnProperty.call), the same set of keys
-  // (although not necessarily the same order), equivalent values for every
-  // corresponding key, and an identical 'prototype' property. Note: this
-  // accounts for both named and indexed properties on Arrays.
-  } else {
-    return objEquiv(actual, expected);
-  }
-}
-
-function isArguments(object) {
-  return Object.prototype.toString.call(object) == '[object Arguments]';
-}
-
-function objEquiv(a, b) {
-  if (util.isNullOrUndefined(a) || util.isNullOrUndefined(b))
-    return false;
-  // an identical 'prototype' property.
-  if (a.prototype !== b.prototype) return false;
-  // if one is a primitive, the other must be same
-  if (util.isPrimitive(a) || util.isPrimitive(b)) {
-    return a === b;
-  }
-  var aIsArgs = isArguments(a),
-      bIsArgs = isArguments(b);
-  if ((aIsArgs && !bIsArgs) || (!aIsArgs && bIsArgs))
-    return false;
-  if (aIsArgs) {
-    a = pSlice.call(a);
-    b = pSlice.call(b);
-    return _deepEqual(a, b);
-  }
-  var ka = objectKeys(a),
-      kb = objectKeys(b),
-      key, i;
-  // having the same number of owned properties (keys incorporates
-  // hasOwnProperty)
-  if (ka.length != kb.length)
-    return false;
-  //the same set of keys (although not necessarily the same order),
-  ka.sort();
-  kb.sort();
-  //~~~cheap key test
-  for (i = ka.length - 1; i >= 0; i--) {
-    if (ka[i] != kb[i])
-      return false;
-  }
-  //equivalent values for every corresponding key, and
-  //~~~possibly expensive deep test
-  for (i = ka.length - 1; i >= 0; i--) {
-    key = ka[i];
-    if (!_deepEqual(a[key], b[key])) return false;
-  }
-  return true;
-}
-
-// 8. The non-equivalence assertion tests for any deep inequality.
-// assert.notDeepEqual(actual, expected, message_opt);
-
-assert.notDeepEqual = function notDeepEqual(actual, expected, message) {
-  if (_deepEqual(actual, expected)) {
-    fail(actual, expected, message, 'notDeepEqual', assert.notDeepEqual);
-  }
-};
-
-// 9. The strict equality assertion tests strict equality, as determined by ===.
-// assert.strictEqual(actual, expected, message_opt);
-
-assert.strictEqual = function strictEqual(actual, expected, message) {
-  if (actual !== expected) {
-    fail(actual, expected, message, '===', assert.strictEqual);
-  }
-};
-
-// 10. The strict non-equality assertion tests for strict inequality, as
-// determined by !==.  assert.notStrictEqual(actual, expected, message_opt);
-
-assert.notStrictEqual = function notStrictEqual(actual, expected, message) {
-  if (actual === expected) {
-    fail(actual, expected, message, '!==', assert.notStrictEqual);
-  }
-};
-
-function expectedException(actual, expected) {
-  if (!actual || !expected) {
-    return false;
-  }
-
-  if (Object.prototype.toString.call(expected) == '[object RegExp]') {
-    return expected.test(actual);
-  } else if (actual instanceof expected) {
-    return true;
-  } else if (expected.call({}, actual) === true) {
-    return true;
-  }
-
-  return false;
-}
-
-function _throws(shouldThrow, block, expected, message) {
-  var actual;
-
-  if (util.isString(expected)) {
-    message = expected;
-    expected = null;
-  }
-
-  try {
-    block();
-  } catch (e) {
-    actual = e;
-  }
-
-  message = (expected && expected.name ? ' (' + expected.name + ').' : '.') +
-            (message ? ' ' + message : '.');
-
-  if (shouldThrow && !actual) {
-    fail(actual, expected, 'Missing expected exception' + message);
-  }
-
-  if (!shouldThrow && expectedException(actual, expected)) {
-    fail(actual, expected, 'Got unwanted exception' + message);
-  }
-
-  if ((shouldThrow && actual && expected &&
-      !expectedException(actual, expected)) || (!shouldThrow && actual)) {
-    throw actual;
-  }
-}
-
-// 11. Expected to throw an error:
-// assert.throws(block, Error_opt, message_opt);
-
-assert.throws = function(block, /*optional*/error, /*optional*/message) {
-  _throws.apply(this, [true].concat(pSlice.call(arguments)));
-};
-
-// EXTENSION! This is annoying to write outside this module.
-assert.doesNotThrow = function(block, /*optional*/message) {
-  _throws.apply(this, [false].concat(pSlice.call(arguments)));
-};
-
-assert.ifError = function(err) { if (err) {throw err;}};
-
-var objectKeys = Object.keys || function (obj) {
-  var keys = [];
-  for (var key in obj) {
-    if (hasOwn.call(obj, key)) keys.push(key);
-  }
-  return keys;
-};
-
-},{"util/":560}],149:[function(require,module,exports){
-(function (process,global){
-/*!
- * async
- * https://github.com/caolan/async
- *
- * Copyright 2010-2014 Caolan McMahon
- * Released under the MIT license
- */
-(function () {
-
-    var async = {};
-    function noop() {}
-    function identity(v) {
-        return v;
-    }
-    function toBool(v) {
-        return !!v;
-    }
-    function notId(v) {
-        return !v;
-    }
-
-    // global on the server, window in the browser
-    var previous_async;
-
-    // Establish the root object, `window` (`self`) in the browser, `global`
-    // on the server, or `this` in some virtual machines. We use `self`
-    // instead of `window` for `WebWorker` support.
-    var root = typeof self === 'object' && self.self === self && self ||
-            typeof global === 'object' && global.global === global && global ||
-            this;
-
-    if (root != null) {
-        previous_async = root.async;
-    }
-
-    async.noConflict = function () {
-        root.async = previous_async;
-        return async;
-    };
-
-    function only_once(fn) {
-        return function() {
-            if (fn === null) throw new Error("Callback was already called.");
-            fn.apply(this, arguments);
-            fn = null;
-        };
-    }
-
-    function _once(fn) {
-        return function() {
-            if (fn === null) return;
-            fn.apply(this, arguments);
-            fn = null;
-        };
-    }
-
-    //// cross-browser compatiblity functions ////
-
-    var _toString = Object.prototype.toString;
-
-    var _isArray = Array.isArray || function (obj) {
-        return _toString.call(obj) === '[object Array]';
-    };
-
-    // Ported from underscore.js isObject
-    var _isObject = function(obj) {
-        var type = typeof obj;
-        return type === 'function' || type === 'object' && !!obj;
-    };
-
-    function _isArrayLike(arr) {
-        return _isArray(arr) || (
-            // has a positive integer length property
-            typeof arr.length === "number" &&
-            arr.length >= 0 &&
-            arr.length % 1 === 0
-        );
-    }
-
-    function _arrayEach(arr, iterator) {
-        var index = -1,
-            length = arr.length;
-
-        while (++index < length) {
-            iterator(arr[index], index, arr);
-        }
-    }
-
-    function _map(arr, iterator) {
-        var index = -1,
-            length = arr.length,
-            result = Array(length);
-
-        while (++index < length) {
-            result[index] = iterator(arr[index], index, arr);
-        }
-        return result;
-    }
-
-    function _range(count) {
-        return _map(Array(count), function (v, i) { return i; });
-    }
-
-    function _reduce(arr, iterator, memo) {
-        _arrayEach(arr, function (x, i, a) {
-            memo = iterator(memo, x, i, a);
-        });
-        return memo;
-    }
-
-    function _forEachOf(object, iterator) {
-        _arrayEach(_keys(object), function (key) {
-            iterator(object[key], key);
-        });
-    }
-
-    function _indexOf(arr, item) {
-        for (var i = 0; i < arr.length; i++) {
-            if (arr[i] === item) return i;
-        }
-        return -1;
-    }
-
-    var _keys = Object.keys || function (obj) {
-        var keys = [];
-        for (var k in obj) {
-            if (obj.hasOwnProperty(k)) {
-                keys.push(k);
-            }
-        }
-        return keys;
-    };
-
-    function _keyIterator(coll) {
-        var i = -1;
-        var len;
-        var keys;
-        if (_isArrayLike(coll)) {
-            len = coll.length;
-            return function next() {
-                i++;
-                return i < len ? i : null;
-            };
-        } else {
-            keys = _keys(coll);
-            len = keys.length;
-            return function next() {
-                i++;
-                return i < len ? keys[i] : null;
-            };
-        }
-    }
-
-    // Similar to ES6's rest param (http://ariya.ofilabs.com/2013/03/es6-and-rest-parameter.html)
-    // This accumulates the arguments passed into an array, after a given index.
-    // From underscore.js (https://github.com/jashkenas/underscore/pull/2140).
-    function _restParam(func, startIndex) {
-        startIndex = startIndex == null ? func.length - 1 : +startIndex;
-        return function() {
-            var length = Math.max(arguments.length - startIndex, 0);
-            var rest = Array(length);
-            for (var index = 0; index < length; index++) {
-                rest[index] = arguments[index + startIndex];
-            }
-            switch (startIndex) {
-                case 0: return func.call(this, rest);
-                case 1: return func.call(this, arguments[0], rest);
-            }
-            // Currently unused but handle cases outside of the switch statement:
-            // var args = Array(startIndex + 1);
-            // for (index = 0; index < startIndex; index++) {
-            //     args[index] = arguments[index];
-            // }
-            // args[startIndex] = rest;
-            // return func.apply(this, args);
-        };
-    }
-
-    function _withoutIndex(iterator) {
-        return function (value, index, callback) {
-            return iterator(value, callback);
-        };
-    }
-
-    //// exported async module functions ////
-
-    //// nextTick implementation with browser-compatible fallback ////
-
-    // capture the global reference to guard against fakeTimer mocks
-    var _setImmediate = typeof setImmediate === 'function' && setImmediate;
-
-    var _delay = _setImmediate ? function(fn) {
-        // not a direct alias for IE10 compatibility
-        _setImmediate(fn);
-    } : function(fn) {
-        setTimeout(fn, 0);
-    };
-
-    if (typeof process === 'object' && typeof process.nextTick === 'function') {
-        async.nextTick = process.nextTick;
-    } else {
-        async.nextTick = _delay;
-    }
-    async.setImmediate = _setImmediate ? _delay : async.nextTick;
-
-
-    async.forEach =
-    async.each = function (arr, iterator, callback) {
-        return async.eachOf(arr, _withoutIndex(iterator), callback);
-    };
-
-    async.forEachSeries =
-    async.eachSeries = function (arr, iterator, callback) {
-        return async.eachOfSeries(arr, _withoutIndex(iterator), callback);
-    };
-
-
-    async.forEachLimit =
-    async.eachLimit = function (arr, limit, iterator, callback) {
-        return _eachOfLimit(limit)(arr, _withoutIndex(iterator), callback);
-    };
-
-    async.forEachOf =
-    async.eachOf = function (object, iterator, callback) {
-        callback = _once(callback || noop);
-        object = object || [];
-
-        var iter = _keyIterator(object);
-        var key, completed = 0;
-
-        while ((key = iter()) != null) {
-            completed += 1;
-            iterator(object[key], key, only_once(done));
-        }
-
-        if (completed === 0) callback(null);
-
-        function done(err) {
-            completed--;
-            if (err) {
-                callback(err);
-            }
-            // Check key is null in case iterator isn't exhausted
-            // and done resolved synchronously.
-            else if (key === null && completed <= 0) {
-                callback(null);
-            }
-        }
-    };
-
-    async.forEachOfSeries =
-    async.eachOfSeries = function (obj, iterator, callback) {
-        callback = _once(callback || noop);
-        obj = obj || [];
-        var nextKey = _keyIterator(obj);
-        var key = nextKey();
-        function iterate() {
-            var sync = true;
-            if (key === null) {
-                return callback(null);
-            }
-            iterator(obj[key], key, only_once(function (err) {
-                if (err) {
-                    callback(err);
-                }
-                else {
-                    key = nextKey();
-                    if (key === null) {
-                        return callback(null);
-                    } else {
-                        if (sync) {
-                            async.setImmediate(iterate);
-                        } else {
-                            iterate();
-                        }
-                    }
-                }
-            }));
-            sync = false;
-        }
-        iterate();
-    };
-
-
-
-    async.forEachOfLimit =
-    async.eachOfLimit = function (obj, limit, iterator, callback) {
-        _eachOfLimit(limit)(obj, iterator, callback);
-    };
-
-    function _eachOfLimit(limit) {
-
-        return function (obj, iterator, callback) {
-            callback = _once(callback || noop);
-            obj = obj || [];
-            var nextKey = _keyIterator(obj);
-            if (limit <= 0) {
-                return callback(null);
-            }
-            var done = false;
-            var running = 0;
-            var errored = false;
-
-            (function replenish () {
-                if (done && running <= 0) {
-                    return callback(null);
-                }
-
-                while (running < limit && !errored) {
-                    var key = nextKey();
-                    if (key === null) {
-                        done = true;
-                        if (running <= 0) {
-                            callback(null);
-                        }
-                        return;
-                    }
-                    running += 1;
-                    iterator(obj[key], key, only_once(function (err) {
-                        running -= 1;
-                        if (err) {
-                            callback(err);
-                            errored = true;
-                        }
-                        else {
-                            replenish();
-                        }
-                    }));
-                }
-            })();
-        };
-    }
-
-
-    function doParallel(fn) {
-        return function (obj, iterator, callback) {
-            return fn(async.eachOf, obj, iterator, callback);
-        };
-    }
-    function doParallelLimit(fn) {
-        return function (obj, limit, iterator, callback) {
-            return fn(_eachOfLimit(limit), obj, iterator, callback);
-        };
-    }
-    function doSeries(fn) {
-        return function (obj, iterator, callback) {
-            return fn(async.eachOfSeries, obj, iterator, callback);
-        };
-    }
-
-    function _asyncMap(eachfn, arr, iterator, callback) {
-        callback = _once(callback || noop);
-        arr = arr || [];
-        var results = _isArrayLike(arr) ? [] : {};
-        eachfn(arr, function (value, index, callback) {
-            iterator(value, function (err, v) {
-                results[index] = v;
-                callback(err);
-            });
-        }, function (err) {
-            callback(err, results);
-        });
-    }
-
-    async.map = doParallel(_asyncMap);
-    async.mapSeries = doSeries(_asyncMap);
-    async.mapLimit = doParallelLimit(_asyncMap);
-
-    // reduce only has a series version, as doing reduce in parallel won't
-    // work in many situations.
-    async.inject =
-    async.foldl =
-    async.reduce = function (arr, memo, iterator, callback) {
-        async.eachOfSeries(arr, function (x, i, callback) {
-            iterator(memo, x, function (err, v) {
-                memo = v;
-                callback(err);
-            });
-        }, function (err) {
-            callback(err, memo);
-        });
-    };
-
-    async.foldr =
-    async.reduceRight = function (arr, memo, iterator, callback) {
-        var reversed = _map(arr, identity).reverse();
-        async.reduce(reversed, memo, iterator, callback);
-    };
-
-    async.transform = function (arr, memo, iterator, callback) {
-        if (arguments.length === 3) {
-            callback = iterator;
-            iterator = memo;
-            memo = _isArray(arr) ? [] : {};
-        }
-
-        async.eachOf(arr, function(v, k, cb) {
-            iterator(memo, v, k, cb);
-        }, function(err) {
-            callback(err, memo);
-        });
-    };
-
-    function _filter(eachfn, arr, iterator, callback) {
-        var results = [];
-        eachfn(arr, function (x, index, callback) {
-            iterator(x, function (v) {
-                if (v) {
-                    results.push({index: index, value: x});
-                }
-                callback();
-            });
-        }, function () {
-            callback(_map(results.sort(function (a, b) {
-                return a.index - b.index;
-            }), function (x) {
-                return x.value;
-            }));
-        });
-    }
-
-    async.select =
-    async.filter = doParallel(_filter);
-
-    async.selectLimit =
-    async.filterLimit = doParallelLimit(_filter);
-
-    async.selectSeries =
-    async.filterSeries = doSeries(_filter);
-
-    function _reject(eachfn, arr, iterator, callback) {
-        _filter(eachfn, arr, function(value, cb) {
-            iterator(value, function(v) {
-                cb(!v);
-            });
-        }, callback);
-    }
-    async.reject = doParallel(_reject);
-    async.rejectLimit = doParallelLimit(_reject);
-    async.rejectSeries = doSeries(_reject);
-
-    function _createTester(eachfn, check, getResult) {
-        return function(arr, limit, iterator, cb) {
-            function done() {
-                if (cb) cb(getResult(false, void 0));
-            }
-            function iteratee(x, _, callback) {
-                if (!cb) return callback();
-                iterator(x, function (v) {
-                    if (cb && check(v)) {
-                        cb(getResult(true, x));
-                        cb = iterator = false;
-                    }
-                    callback();
-                });
-            }
-            if (arguments.length > 3) {
-                eachfn(arr, limit, iteratee, done);
-            } else {
-                cb = iterator;
-                iterator = limit;
-                eachfn(arr, iteratee, done);
-            }
-        };
-    }
-
-    async.any =
-    async.some = _createTester(async.eachOf, toBool, identity);
-
-    async.someLimit = _createTester(async.eachOfLimit, toBool, identity);
-
-    async.all =
-    async.every = _createTester(async.eachOf, notId, notId);
-
-    async.everyLimit = _createTester(async.eachOfLimit, notId, notId);
-
-    function _findGetResult(v, x) {
-        return x;
-    }
-    async.detect = _createTester(async.eachOf, identity, _findGetResult);
-    async.detectSeries = _createTester(async.eachOfSeries, identity, _findGetResult);
-    async.detectLimit = _createTester(async.eachOfLimit, identity, _findGetResult);
-
-    async.sortBy = function (arr, iterator, callback) {
-        async.map(arr, function (x, callback) {
-            iterator(x, function (err, criteria) {
-                if (err) {
-                    callback(err);
-                }
-                else {
-                    callback(null, {value: x, criteria: criteria});
-                }
-            });
-        }, function (err, results) {
-            if (err) {
-                return callback(err);
-            }
-            else {
-                callback(null, _map(results.sort(comparator), function (x) {
-                    return x.value;
-                }));
-            }
-
-        });
-
-        function comparator(left, right) {
-            var a = left.criteria, b = right.criteria;
-            return a < b ? -1 : a > b ? 1 : 0;
-        }
-    };
-
-    async.auto = function (tasks, concurrency, callback) {
-        if (typeof arguments[1] === 'function') {
-            // concurrency is optional, shift the args.
-            callback = concurrency;
-            concurrency = null;
-        }
-        callback = _once(callback || noop);
-        var keys = _keys(tasks);
-        var remainingTasks = keys.length;
-        if (!remainingTasks) {
-            return callback(null);
-        }
-        if (!concurrency) {
-            concurrency = remainingTasks;
-        }
-
-        var results = {};
-        var runningTasks = 0;
-
-        var hasError = false;
-
-        var listeners = [];
-        function addListener(fn) {
-            listeners.unshift(fn);
-        }
-        function removeListener(fn) {
-            var idx = _indexOf(listeners, fn);
-            if (idx >= 0) listeners.splice(idx, 1);
-        }
-        function taskComplete() {
-            remainingTasks--;
-            _arrayEach(listeners.slice(0), function (fn) {
-                fn();
-            });
-        }
-
-        addListener(function () {
-            if (!remainingTasks) {
-                callback(null, results);
-            }
-        });
-
-        _arrayEach(keys, function (k) {
-            if (hasError) return;
-            var task = _isArray(tasks[k]) ? tasks[k]: [tasks[k]];
-            var taskCallback = _restParam(function(err, args) {
-                runningTasks--;
-                if (args.length <= 1) {
-                    args = args[0];
-                }
-                if (err) {
-                    var safeResults = {};
-                    _forEachOf(results, function(val, rkey) {
-                        safeResults[rkey] = val;
-                    });
-                    safeResults[k] = args;
-                    hasError = true;
-
-                    callback(err, safeResults);
-                }
-                else {
-                    results[k] = args;
-                    async.setImmediate(taskComplete);
-                }
-            });
-            var requires = task.slice(0, task.length - 1);
-            // prevent dead-locks
-            var len = requires.length;
-            var dep;
-            while (len--) {
-                if (!(dep = tasks[requires[len]])) {
-                    throw new Error('Has nonexistent dependency in ' + requires.join(', '));
-                }
-                if (_isArray(dep) && _indexOf(dep, k) >= 0) {
-                    throw new Error('Has cyclic dependencies');
-                }
-            }
-            function ready() {
-                return runningTasks < concurrency && _reduce(requires, function (a, x) {
-                    return (a && results.hasOwnProperty(x));
-                }, true) && !results.hasOwnProperty(k);
-            }
-            if (ready()) {
-                runningTasks++;
-                task[task.length - 1](taskCallback, results);
-            }
-            else {
-                addListener(listener);
-            }
-            function listener() {
-                if (ready()) {
-                    runningTasks++;
-                    removeListener(listener);
-                    task[task.length - 1](taskCallback, results);
-                }
-            }
-        });
-    };
-
-
-
-    async.retry = function(times, task, callback) {
-        var DEFAULT_TIMES = 5;
-        var DEFAULT_INTERVAL = 0;
-
-        var attempts = [];
-
-        var opts = {
-            times: DEFAULT_TIMES,
-            interval: DEFAULT_INTERVAL
-        };
-
-        function parseTimes(acc, t){
-            if(typeof t === 'number'){
-                acc.times = parseInt(t, 10) || DEFAULT_TIMES;
-            } else if(typeof t === 'object'){
-                acc.times = parseInt(t.times, 10) || DEFAULT_TIMES;
-                acc.interval = parseInt(t.interval, 10) || DEFAULT_INTERVAL;
-            } else {
-                throw new Error('Unsupported argument type for \'times\': ' + typeof t);
-            }
-        }
-
-        var length = arguments.length;
-        if (length < 1 || length > 3) {
-            throw new Error('Invalid arguments - must be either (task), (task, callback), (times, task) or (times, task, callback)');
-        } else if (length <= 2 && typeof times === 'function') {
-            callback = task;
-            task = times;
-        }
-        if (typeof times !== 'function') {
-            parseTimes(opts, times);
-        }
-        opts.callback = callback;
-        opts.task = task;
-
-        function wrappedTask(wrappedCallback, wrappedResults) {
-            function retryAttempt(task, finalAttempt) {
-                return function(seriesCallback) {
-                    task(function(err, result){
-                        seriesCallback(!err || finalAttempt, {err: err, result: result});
-                    }, wrappedResults);
-                };
-            }
-
-            function retryInterval(interval){
-                return function(seriesCallback){
-                    setTimeout(function(){
-                        seriesCallback(null);
-                    }, interval);
-                };
-            }
-
-            while (opts.times) {
-
-                var finalAttempt = !(opts.times-=1);
-                attempts.push(retryAttempt(opts.task, finalAttempt));
-                if(!finalAttempt && opts.interval > 0){
-                    attempts.push(retryInterval(opts.interval));
-                }
-            }
-
-            async.series(attempts, function(done, data){
-                data = data[data.length - 1];
-                (wrappedCallback || opts.callback)(data.err, data.result);
-            });
-        }
-
-        // If a callback is passed, run this as a controll flow
-        return opts.callback ? wrappedTask() : wrappedTask;
-    };
-
-    async.waterfall = function (tasks, callback) {
-        callback = _once(callback || noop);
-        if (!_isArray(tasks)) {
-            var err = new Error('First argument to waterfall must be an array of functions');
-            return callback(err);
-        }
-        if (!tasks.length) {
-            return callback();
-        }
-        function wrapIterator(iterator) {
-            return _restParam(function (err, args) {
-                if (err) {
-                    callback.apply(null, [err].concat(args));
-                }
-                else {
-                    var next = iterator.next();
-                    if (next) {
-                        args.push(wrapIterator(next));
-                    }
-                    else {
-                        args.push(callback);
-                    }
-                    ensureAsync(iterator).apply(null, args);
-                }
-            });
-        }
-        wrapIterator(async.iterator(tasks))();
-    };
-
-    function _parallel(eachfn, tasks, callback) {
-        callback = callback || noop;
-        var results = _isArrayLike(tasks) ? [] : {};
-
-        eachfn(tasks, function (task, key, callback) {
-            task(_restParam(function (err, args) {
-                if (args.length <= 1) {
-                    args = args[0];
-                }
-                results[key] = args;
-                callback(err);
-            }));
-        }, function (err) {
-            callback(err, results);
-        });
-    }
-
-    async.parallel = function (tasks, callback) {
-        _parallel(async.eachOf, tasks, callback);
-    };
-
-    async.parallelLimit = function(tasks, limit, callback) {
-        _parallel(_eachOfLimit(limit), tasks, callback);
-    };
-
-    async.series = function(tasks, callback) {
-        _parallel(async.eachOfSeries, tasks, callback);
-    };
-
-    async.iterator = function (tasks) {
-        function makeCallback(index) {
-            function fn() {
-                if (tasks.length) {
-                    tasks[index].apply(null, arguments);
-                }
-                return fn.next();
-            }
-            fn.next = function () {
-                return (index < tasks.length - 1) ? makeCallback(index + 1): null;
-            };
-            return fn;
-        }
-        return makeCallback(0);
-    };
-
-    async.apply = _restParam(function (fn, args) {
-        return _restParam(function (callArgs) {
-            return fn.apply(
-                null, args.concat(callArgs)
-            );
-        });
-    });
-
-    function _concat(eachfn, arr, fn, callback) {
-        var result = [];
-        eachfn(arr, function (x, index, cb) {
-            fn(x, function (err, y) {
-                result = result.concat(y || []);
-                cb(err);
-            });
-        }, function (err) {
-            callback(err, result);
-        });
-    }
-    async.concat = doParallel(_concat);
-    async.concatSeries = doSeries(_concat);
-
-    async.whilst = function (test, iterator, callback) {
-        callback = callback || noop;
-        if (test()) {
-            var next = _restParam(function(err, args) {
-                if (err) {
-                    callback(err);
-                } else if (test.apply(this, args)) {
-                    iterator(next);
-                } else {
-                    callback.apply(null, [null].concat(args));
-                }
-            });
-            iterator(next);
-        } else {
-            callback(null);
-        }
-    };
-
-    async.doWhilst = function (iterator, test, callback) {
-        var calls = 0;
-        return async.whilst(function() {
-            return ++calls <= 1 || test.apply(this, arguments);
-        }, iterator, callback);
-    };
-
-    async.until = function (test, iterator, callback) {
-        return async.whilst(function() {
-            return !test.apply(this, arguments);
-        }, iterator, callback);
-    };
-
-    async.doUntil = function (iterator, test, callback) {
-        return async.doWhilst(iterator, function() {
-            return !test.apply(this, arguments);
-        }, callback);
-    };
-
-    async.during = function (test, iterator, callback) {
-        callback = callback || noop;
-
-        var next = _restParam(function(err, args) {
-            if (err) {
-                callback(err);
-            } else {
-                args.push(check);
-                test.apply(this, args);
-            }
-        });
-
-        var check = function(err, truth) {
-            if (err) {
-                callback(err);
-            } else if (truth) {
-                iterator(next);
-            } else {
-                callback(null);
-            }
-        };
-
-        test(check);
-    };
-
-    async.doDuring = function (iterator, test, callback) {
-        var calls = 0;
-        async.during(function(next) {
-            if (calls++ < 1) {
-                next(null, true);
-            } else {
-                test.apply(this, arguments);
-            }
-        }, iterator, callback);
-    };
-
-    function _queue(worker, concurrency, payload) {
-        if (concurrency == null) {
-            concurrency = 1;
-        }
-        else if(concurrency === 0) {
-            throw new Error('Concurrency must not be zero');
-        }
-        function _insert(q, data, pos, callback) {
-            if (callback != null && typeof callback !== "function") {
-                throw new Error("task callback must be a function");
-            }
-            q.started = true;
-            if (!_isArray(data)) {
-                data = [data];
-            }
-            if(data.length === 0 && q.idle()) {
-                // call drain immediately if there are no tasks
-                return async.setImmediate(function() {
-                    q.drain();
-                });
-            }
-            _arrayEach(data, function(task) {
-                var item = {
-                    data: task,
-                    callback: callback || noop
-                };
-
-                if (pos) {
-                    q.tasks.unshift(item);
-                } else {
-                    q.tasks.push(item);
-                }
-
-                if (q.tasks.length === q.concurrency) {
-                    q.saturated();
-                }
-            });
-            async.setImmediate(q.process);
-        }
-        function _next(q, tasks) {
-            return function(){
-                workers -= 1;
-
-                var removed = false;
-                var args = arguments;
-                _arrayEach(tasks, function (task) {
-                    _arrayEach(workersList, function (worker, index) {
-                        if (worker === task && !removed) {
-                            workersList.splice(index, 1);
-                            removed = true;
-                        }
-                    });
-
-                    task.callback.apply(task, args);
-                });
-                if (q.tasks.length + workers === 0) {
-                    q.drain();
-                }
-                q.process();
-            };
-        }
-
-        var workers = 0;
-        var workersList = [];
-        var q = {
-            tasks: [],
-            concurrency: concurrency,
-            payload: payload,
-            saturated: noop,
-            empty: noop,
-            drain: noop,
-            started: false,
-            paused: false,
-            push: function (data, callback) {
-                _insert(q, data, false, callback);
-            },
-            kill: function () {
-                q.drain = noop;
-                q.tasks = [];
-            },
-            unshift: function (data, callback) {
-                _insert(q, data, true, callback);
-            },
-            process: function () {
-                while(!q.paused && workers < q.concurrency && q.tasks.length){
-
-                    var tasks = q.payload ?
-                        q.tasks.splice(0, q.payload) :
-                        q.tasks.splice(0, q.tasks.length);
-
-                    var data = _map(tasks, function (task) {
-                        return task.data;
-                    });
-
-                    if (q.tasks.length === 0) {
-                        q.empty();
-                    }
-                    workers += 1;
-                    workersList.push(tasks[0]);
-                    var cb = only_once(_next(q, tasks));
-                    worker(data, cb);
-                }
-            },
-            length: function () {
-                return q.tasks.length;
-            },
-            running: function () {
-                return workers;
-            },
-            workersList: function () {
-                return workersList;
-            },
-            idle: function() {
-                return q.tasks.length + workers === 0;
-            },
-            pause: function () {
-                q.paused = true;
-            },
-            resume: function () {
-                if (q.paused === false) { return; }
-                q.paused = false;
-                var resumeCount = Math.min(q.concurrency, q.tasks.length);
-                // Need to call q.process once per concurrent
-                // worker to preserve full concurrency after pause
-                for (var w = 1; w <= resumeCount; w++) {
-                    async.setImmediate(q.process);
-                }
-            }
-        };
-        return q;
-    }
-
-    async.queue = function (worker, concurrency) {
-        var q = _queue(function (items, cb) {
-            worker(items[0], cb);
-        }, concurrency, 1);
-
-        return q;
-    };
-
-    async.priorityQueue = function (worker, concurrency) {
-
-        function _compareTasks(a, b){
-            return a.priority - b.priority;
-        }
-
-        function _binarySearch(sequence, item, compare) {
-            var beg = -1,
-                end = sequence.length - 1;
-            while (beg < end) {
-                var mid = beg + ((end - beg + 1) >>> 1);
-                if (compare(item, sequence[mid]) >= 0) {
-                    beg = mid;
-                } else {
-                    end = mid - 1;
-                }
-            }
-            return beg;
-        }
-
-        function _insert(q, data, priority, callback) {
-            if (callback != null && typeof callback !== "function") {
-                throw new Error("task callback must be a function");
-            }
-            q.started = true;
-            if (!_isArray(data)) {
-                data = [data];
-            }
-            if(data.length === 0) {
-                // call drain immediately if there are no tasks
-                return async.setImmediate(function() {
-                    q.drain();
-                });
-            }
-            _arrayEach(data, function(task) {
-                var item = {
-                    data: task,
-                    priority: priority,
-                    callback: typeof callback === 'function' ? callback : noop
-                };
-
-                q.tasks.splice(_binarySearch(q.tasks, item, _compareTasks) + 1, 0, item);
-
-                if (q.tasks.length === q.concurrency) {
-                    q.saturated();
-                }
-                async.setImmediate(q.process);
-            });
-        }
-
-        // Start with a normal queue
-        var q = async.queue(worker, concurrency);
-
-        // Override push to accept second parameter representing priority
-        q.push = function (data, priority, callback) {
-            _insert(q, data, priority, callback);
-        };
-
-        // Remove unshift function
-        delete q.unshift;
-
-        return q;
-    };
-
-    async.cargo = function (worker, payload) {
-        return _queue(worker, 1, payload);
-    };
-
-    function _console_fn(name) {
-        return _restParam(function (fn, args) {
-            fn.apply(null, args.concat([_restParam(function (err, args) {
-                if (typeof console === 'object') {
-                    if (err) {
-                        if (console.error) {
-                            console.error(err);
-                        }
-                    }
-                    else if (console[name]) {
-                        _arrayEach(args, function (x) {
-                            console[name](x);
-                        });
-                    }
-                }
-            })]));
-        });
-    }
-    async.log = _console_fn('log');
-    async.dir = _console_fn('dir');
-    /*async.info = _console_fn('info');
-    async.warn = _console_fn('warn');
-    async.error = _console_fn('error');*/
-
-    async.memoize = function (fn, hasher) {
-        var memo = {};
-        var queues = {};
-        var has = Object.prototype.hasOwnProperty;
-        hasher = hasher || identity;
-        var memoized = _restParam(function memoized(args) {
-            var callback = args.pop();
-            var key = hasher.apply(null, args);
-            if (has.call(memo, key)) {   
-                async.setImmediate(function () {
-                    callback.apply(null, memo[key]);
-                });
-            }
-            else if (has.call(queues, key)) {
-                queues[key].push(callback);
-            }
-            else {
-                queues[key] = [callback];
-                fn.apply(null, args.concat([_restParam(function (args) {
-                    memo[key] = args;
-                    var q = queues[key];
-                    delete queues[key];
-                    for (var i = 0, l = q.length; i < l; i++) {
-                        q[i].apply(null, args);
-                    }
-                })]));
-            }
-        });
-        memoized.memo = memo;
-        memoized.unmemoized = fn;
-        return memoized;
-    };
-
-    async.unmemoize = function (fn) {
-        return function () {
-            return (fn.unmemoized || fn).apply(null, arguments);
-        };
-    };
-
-    function _times(mapper) {
-        return function (count, iterator, callback) {
-            mapper(_range(count), iterator, callback);
-        };
-    }
-
-    async.times = _times(async.map);
-    async.timesSeries = _times(async.mapSeries);
-    async.timesLimit = function (count, limit, iterator, callback) {
-        return async.mapLimit(_range(count), limit, iterator, callback);
-    };
-
-    async.seq = function (/* functions... */) {
-        var fns = arguments;
-        return _restParam(function (args) {
-            var that = this;
-
-            var callback = args[args.length - 1];
-            if (typeof callback == 'function') {
-                args.pop();
-            } else {
-                callback = noop;
-            }
-
-            async.reduce(fns, args, function (newargs, fn, cb) {
-                fn.apply(that, newargs.concat([_restParam(function (err, nextargs) {
-                    cb(err, nextargs);
-                })]));
-            },
-            function (err, results) {
-                callback.apply(that, [err].concat(results));
-            });
-        });
-    };
-
-    async.compose = function (/* functions... */) {
-        return async.seq.apply(null, Array.prototype.reverse.call(arguments));
-    };
-
-
-    function _applyEach(eachfn) {
-        return _restParam(function(fns, args) {
-            var go = _restParam(function(args) {
-                var that = this;
-                var callback = args.pop();
-                return eachfn(fns, function (fn, _, cb) {
-                    fn.apply(that, args.concat([cb]));
-                },
-                callback);
-            });
-            if (args.length) {
-                return go.apply(this, args);
-            }
-            else {
-                return go;
-            }
-        });
-    }
-
-    async.applyEach = _applyEach(async.eachOf);
-    async.applyEachSeries = _applyEach(async.eachOfSeries);
-
-
-    async.forever = function (fn, callback) {
-        var done = only_once(callback || noop);
-        var task = ensureAsync(fn);
-        function next(err) {
-            if (err) {
-                return done(err);
-            }
-            task(next);
-        }
-        next();
-    };
-
-    function ensureAsync(fn) {
-        return _restParam(function (args) {
-            var callback = args.pop();
-            args.push(function () {
-                var innerArgs = arguments;
-                if (sync) {
-                    async.setImmediate(function () {
-                        callback.apply(null, innerArgs);
-                    });
-                } else {
-                    callback.apply(null, innerArgs);
-                }
-            });
-            var sync = true;
-            fn.apply(this, args);
-            sync = false;
-        });
-    }
-
-    async.ensureAsync = ensureAsync;
-
-    async.constant = _restParam(function(values) {
-        var args = [null].concat(values);
-        return function (callback) {
-            return callback.apply(this, args);
-        };
-    });
-
-    async.wrapSync =
-    async.asyncify = function asyncify(func) {
-        return _restParam(function (args) {
-            var callback = args.pop();
-            var result;
-            try {
-                result = func.apply(this, args);
-            } catch (e) {
-                return callback(e);
-            }
-            // if result is Promise object
-            if (_isObject(result) && typeof result.then === "function") {
-                result.then(function(value) {
-                    callback(null, value);
-                })["catch"](function(err) {
-                    callback(err.message ? err : new Error(err));
-                });
-            } else {
-                callback(null, result);
-            }
-        });
-    };
-
-    // Node.js
-    if (typeof module === 'object' && module.exports) {
-        module.exports = async;
-    }
-    // AMD / RequireJS
-    else if (typeof define === 'function' && define.amd) {
-        define([], function () {
-            return async;
-        });
-    }
-    // included directly via <script> tag
-    else {
-        root.async = async;
-    }
-
-}());
-
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":458}],150:[function(require,module,exports){
+},{}],154:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -20075,7 +20204,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],151:[function(require,module,exports){
+},{}],155:[function(require,module,exports){
 /*! bignumber.js v2.3.0 https://github.com/MikeMcl/bignumber.js/LICENCE */
 
 ;(function (globalObj) {
@@ -22810,7 +22939,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
     }
 })(this);
 
-},{}],152:[function(require,module,exports){
+},{}],156:[function(require,module,exports){
 // Reference https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki
 // Format: 0x30 [total-length] 0x02 [R-length] [R] 0x02 [S-length] [S]
 // NOTE: SIGHASH byte ignored AND restricted, truncate before use
@@ -22925,7 +23054,7 @@ module.exports = {
   encode: encode
 }
 
-},{"safe-buffer":490}],153:[function(require,module,exports){
+},{"safe-buffer":494}],157:[function(require,module,exports){
 (function (module, exports) {
   'use strict';
 
@@ -26354,7 +26483,7 @@ module.exports = {
   };
 })(typeof module === 'undefined' || module, this);
 
-},{"buffer":156}],154:[function(require,module,exports){
+},{"buffer":160}],158:[function(require,module,exports){
 var r;
 
 module.exports = function rand(len) {
@@ -26421,7 +26550,7 @@ if (typeof self === 'object') {
   }
 }
 
-},{"crypto":156}],155:[function(require,module,exports){
+},{"crypto":160}],159:[function(require,module,exports){
 // Browser Request
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -26917,9 +27046,9 @@ function b64_enc (data) {
 }));
 //UMD FOOTER END
 
-},{}],156:[function(require,module,exports){
+},{}],160:[function(require,module,exports){
 
-},{}],157:[function(require,module,exports){
+},{}],161:[function(require,module,exports){
 // based on the aes implimentation in triple sec
 // https://github.com/keybase/triplesec
 // which is in turn based on the one from crypto-js
@@ -27149,7 +27278,7 @@ AES.prototype.scrub = function () {
 
 module.exports.AES = AES
 
-},{"safe-buffer":490}],158:[function(require,module,exports){
+},{"safe-buffer":494}],162:[function(require,module,exports){
 var aes = require('./aes')
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('cipher-base')
@@ -27268,7 +27397,7 @@ StreamCipher.prototype.setAAD = function setAAD (buf) {
 
 module.exports = StreamCipher
 
-},{"./aes":157,"./ghash":162,"./incr32":163,"buffer-xor":187,"cipher-base":189,"inherits":406,"safe-buffer":490}],159:[function(require,module,exports){
+},{"./aes":161,"./ghash":166,"./incr32":167,"buffer-xor":191,"cipher-base":193,"inherits":410,"safe-buffer":494}],163:[function(require,module,exports){
 var ciphers = require('./encrypter')
 var deciphers = require('./decrypter')
 var modes = require('./modes/list.json')
@@ -27283,7 +27412,7 @@ exports.createDecipher = exports.Decipher = deciphers.createDecipher
 exports.createDecipheriv = exports.Decipheriv = deciphers.createDecipheriv
 exports.listCiphers = exports.getCiphers = getCiphers
 
-},{"./decrypter":160,"./encrypter":161,"./modes/list.json":171}],160:[function(require,module,exports){
+},{"./decrypter":164,"./encrypter":165,"./modes/list.json":175}],164:[function(require,module,exports){
 var AuthCipher = require('./authCipher')
 var Buffer = require('safe-buffer').Buffer
 var MODES = require('./modes')
@@ -27406,7 +27535,7 @@ function createDecipher (suite, password) {
 exports.createDecipher = createDecipher
 exports.createDecipheriv = createDecipheriv
 
-},{"./aes":157,"./authCipher":158,"./modes":170,"./streamCipher":173,"cipher-base":189,"evp_bytestokey":386,"inherits":406,"safe-buffer":490}],161:[function(require,module,exports){
+},{"./aes":161,"./authCipher":162,"./modes":174,"./streamCipher":177,"cipher-base":193,"evp_bytestokey":390,"inherits":410,"safe-buffer":494}],165:[function(require,module,exports){
 var MODES = require('./modes')
 var AuthCipher = require('./authCipher')
 var Buffer = require('safe-buffer').Buffer
@@ -27522,7 +27651,7 @@ function createCipher (suite, password) {
 exports.createCipheriv = createCipheriv
 exports.createCipher = createCipher
 
-},{"./aes":157,"./authCipher":158,"./modes":170,"./streamCipher":173,"cipher-base":189,"evp_bytestokey":386,"inherits":406,"safe-buffer":490}],162:[function(require,module,exports){
+},{"./aes":161,"./authCipher":162,"./modes":174,"./streamCipher":177,"cipher-base":193,"evp_bytestokey":390,"inherits":410,"safe-buffer":494}],166:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var ZEROES = Buffer.alloc(16, 0)
 
@@ -27613,7 +27742,7 @@ GHASH.prototype.final = function (abl, bl) {
 
 module.exports = GHASH
 
-},{"safe-buffer":490}],163:[function(require,module,exports){
+},{"safe-buffer":494}],167:[function(require,module,exports){
 function incr32 (iv) {
   var len = iv.length
   var item
@@ -27630,7 +27759,7 @@ function incr32 (iv) {
 }
 module.exports = incr32
 
-},{}],164:[function(require,module,exports){
+},{}],168:[function(require,module,exports){
 var xor = require('buffer-xor')
 
 exports.encrypt = function (self, block) {
@@ -27649,7 +27778,7 @@ exports.decrypt = function (self, block) {
   return xor(out, pad)
 }
 
-},{"buffer-xor":187}],165:[function(require,module,exports){
+},{"buffer-xor":191}],169:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var xor = require('buffer-xor')
 
@@ -27684,7 +27813,7 @@ exports.encrypt = function (self, data, decrypt) {
   return out
 }
 
-},{"buffer-xor":187,"safe-buffer":490}],166:[function(require,module,exports){
+},{"buffer-xor":191,"safe-buffer":494}],170:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 function encryptByte (self, byteParam, decrypt) {
@@ -27728,7 +27857,7 @@ exports.encrypt = function (self, chunk, decrypt) {
   return out
 }
 
-},{"safe-buffer":490}],167:[function(require,module,exports){
+},{"safe-buffer":494}],171:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 function encryptByte (self, byteParam, decrypt) {
@@ -27755,7 +27884,7 @@ exports.encrypt = function (self, chunk, decrypt) {
   return out
 }
 
-},{"safe-buffer":490}],168:[function(require,module,exports){
+},{"safe-buffer":494}],172:[function(require,module,exports){
 var xor = require('buffer-xor')
 var Buffer = require('safe-buffer').Buffer
 var incr32 = require('../incr32')
@@ -27787,7 +27916,7 @@ exports.encrypt = function (self, chunk) {
   return xor(chunk, pad)
 }
 
-},{"../incr32":163,"buffer-xor":187,"safe-buffer":490}],169:[function(require,module,exports){
+},{"../incr32":167,"buffer-xor":191,"safe-buffer":494}],173:[function(require,module,exports){
 exports.encrypt = function (self, block) {
   return self._cipher.encryptBlock(block)
 }
@@ -27796,7 +27925,7 @@ exports.decrypt = function (self, block) {
   return self._cipher.decryptBlock(block)
 }
 
-},{}],170:[function(require,module,exports){
+},{}],174:[function(require,module,exports){
 var modeModules = {
   ECB: require('./ecb'),
   CBC: require('./cbc'),
@@ -27816,7 +27945,7 @@ for (var key in modes) {
 
 module.exports = modes
 
-},{"./cbc":164,"./cfb":165,"./cfb1":166,"./cfb8":167,"./ctr":168,"./ecb":169,"./list.json":171,"./ofb":172}],171:[function(require,module,exports){
+},{"./cbc":168,"./cfb":169,"./cfb1":170,"./cfb8":171,"./ctr":172,"./ecb":173,"./list.json":175,"./ofb":176}],175:[function(require,module,exports){
 module.exports={
   "aes-128-ecb": {
     "cipher": "AES",
@@ -28009,7 +28138,7 @@ module.exports={
   }
 }
 
-},{}],172:[function(require,module,exports){
+},{}],176:[function(require,module,exports){
 (function (Buffer){
 var xor = require('buffer-xor')
 
@@ -28029,7 +28158,7 @@ exports.encrypt = function (self, chunk) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":188,"buffer-xor":187}],173:[function(require,module,exports){
+},{"buffer":192,"buffer-xor":191}],177:[function(require,module,exports){
 var aes = require('./aes')
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('cipher-base')
@@ -28058,7 +28187,7 @@ StreamCipher.prototype._final = function () {
 
 module.exports = StreamCipher
 
-},{"./aes":157,"cipher-base":189,"inherits":406,"safe-buffer":490}],174:[function(require,module,exports){
+},{"./aes":161,"cipher-base":193,"inherits":410,"safe-buffer":494}],178:[function(require,module,exports){
 var ebtk = require('evp_bytestokey')
 var aes = require('browserify-aes/browser')
 var DES = require('browserify-des')
@@ -28133,7 +28262,7 @@ function getCiphers () {
 }
 exports.listCiphers = exports.getCiphers = getCiphers
 
-},{"browserify-aes/browser":159,"browserify-aes/modes":170,"browserify-des":175,"browserify-des/modes":176,"evp_bytestokey":386}],175:[function(require,module,exports){
+},{"browserify-aes/browser":163,"browserify-aes/modes":174,"browserify-des":179,"browserify-des/modes":180,"evp_bytestokey":390}],179:[function(require,module,exports){
 (function (Buffer){
 var CipherBase = require('cipher-base')
 var des = require('des.js')
@@ -28180,7 +28309,7 @@ DES.prototype._final = function () {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":188,"cipher-base":189,"des.js":200,"inherits":406}],176:[function(require,module,exports){
+},{"buffer":192,"cipher-base":193,"des.js":204,"inherits":410}],180:[function(require,module,exports){
 exports['des-ecb'] = {
   key: 8,
   iv: 0
@@ -28206,7 +28335,7 @@ exports['des-ede'] = {
   iv: 0
 }
 
-},{}],177:[function(require,module,exports){
+},{}],181:[function(require,module,exports){
 (function (Buffer){
 var bn = require('bn.js');
 var randomBytes = require('randombytes');
@@ -28250,7 +28379,7 @@ function getr(priv) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":153,"buffer":188,"randombytes":465}],178:[function(require,module,exports){
+},{"bn.js":157,"buffer":192,"randombytes":469}],182:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -28288,10 +28417,10 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":188,"js-sha3":410}],179:[function(require,module,exports){
+},{"buffer":192,"js-sha3":414}],183:[function(require,module,exports){
 module.exports = require('./browser/algorithms.json')
 
-},{"./browser/algorithms.json":180}],180:[function(require,module,exports){
+},{"./browser/algorithms.json":184}],184:[function(require,module,exports){
 module.exports={
   "sha224WithRSAEncryption": {
     "sign": "rsa",
@@ -28445,7 +28574,7 @@ module.exports={
   }
 }
 
-},{}],181:[function(require,module,exports){
+},{}],185:[function(require,module,exports){
 module.exports={
   "1.3.132.0.10": "secp256k1",
   "1.3.132.0.33": "p224",
@@ -28455,7 +28584,7 @@ module.exports={
   "1.3.132.0.35": "p521"
 }
 
-},{}],182:[function(require,module,exports){
+},{}],186:[function(require,module,exports){
 (function (Buffer){
 var createHash = require('create-hash')
 var stream = require('stream')
@@ -28550,7 +28679,7 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./algorithms.json":180,"./sign":183,"./verify":184,"buffer":188,"create-hash":193,"inherits":406,"stream":544}],183:[function(require,module,exports){
+},{"./algorithms.json":184,"./sign":187,"./verify":188,"buffer":192,"create-hash":197,"inherits":410,"stream":548}],187:[function(require,module,exports){
 (function (Buffer){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var createHmac = require('create-hmac')
@@ -28699,7 +28828,7 @@ module.exports.getKey = getKey
 module.exports.makeKey = makeKey
 
 }).call(this,require("buffer").Buffer)
-},{"./curves.json":181,"bn.js":153,"browserify-rsa":177,"buffer":188,"create-hmac":196,"elliptic":210,"parse-asn1":450}],184:[function(require,module,exports){
+},{"./curves.json":185,"bn.js":157,"browserify-rsa":181,"buffer":192,"create-hmac":200,"elliptic":214,"parse-asn1":454}],188:[function(require,module,exports){
 (function (Buffer){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var BN = require('bn.js')
@@ -28786,9 +28915,9 @@ function checkValue (b, q) {
 module.exports = verify
 
 }).call(this,require("buffer").Buffer)
-},{"./curves.json":181,"bn.js":153,"buffer":188,"elliptic":210,"parse-asn1":450}],185:[function(require,module,exports){
-arguments[4][156][0].apply(exports,arguments)
-},{"dup":156}],186:[function(require,module,exports){
+},{"./curves.json":185,"bn.js":157,"buffer":192,"elliptic":214,"parse-asn1":454}],189:[function(require,module,exports){
+arguments[4][160][0].apply(exports,arguments)
+},{"dup":160}],190:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -29011,7 +29140,7 @@ function base64DetectIncompleteChar(buffer) {
   this.charLength = this.charReceived ? 3 : 0;
 }
 
-},{"buffer":188}],187:[function(require,module,exports){
+},{"buffer":192}],191:[function(require,module,exports){
 (function (Buffer){
 module.exports = function xor (a, b) {
   var length = Math.min(a.length, b.length)
@@ -29025,7 +29154,7 @@ module.exports = function xor (a, b) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":188}],188:[function(require,module,exports){
+},{"buffer":192}],192:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -30577,7 +30706,7 @@ function blitBuffer (src, dst, offset, length) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":150,"ieee754":402,"isarray":409}],189:[function(require,module,exports){
+},{"base64-js":154,"ieee754":406,"isarray":413}],193:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('stream').Transform
 var StringDecoder = require('string_decoder').StringDecoder
@@ -30678,7 +30807,7 @@ CipherBase.prototype._toString = function (value, enc, fin) {
 
 module.exports = CipherBase
 
-},{"inherits":406,"safe-buffer":490,"stream":544,"string_decoder":186}],190:[function(require,module,exports){
+},{"inherits":410,"safe-buffer":494,"stream":548,"string_decoder":190}],194:[function(require,module,exports){
 (function (Buffer){
 var clone = (function() {
 'use strict';
@@ -30933,7 +31062,7 @@ if (typeof module === 'object' && module.exports) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":188}],191:[function(require,module,exports){
+},{"buffer":192}],195:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -31044,7 +31173,7 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":407}],192:[function(require,module,exports){
+},{"../../is-buffer/index.js":411}],196:[function(require,module,exports){
 (function (Buffer){
 var elliptic = require('elliptic');
 var BN = require('bn.js');
@@ -31170,7 +31299,7 @@ function formatReturnValue(bn, enc, len) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":153,"buffer":188,"elliptic":210}],193:[function(require,module,exports){
+},{"bn.js":157,"buffer":192,"elliptic":214}],197:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var inherits = require('inherits')
@@ -31226,7 +31355,7 @@ module.exports = function createHash (alg) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./md5":195,"buffer":188,"cipher-base":189,"inherits":406,"ripemd160":488,"sha.js":498}],194:[function(require,module,exports){
+},{"./md5":199,"buffer":192,"cipher-base":193,"inherits":410,"ripemd160":492,"sha.js":502}],198:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var intSize = 4
@@ -31260,7 +31389,7 @@ module.exports = function hash (buf, fn) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":188}],195:[function(require,module,exports){
+},{"buffer":192}],199:[function(require,module,exports){
 'use strict'
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
@@ -31413,7 +31542,7 @@ module.exports = function md5 (buf) {
   return makeHash(buf, core_md5)
 }
 
-},{"./make-hash":194}],196:[function(require,module,exports){
+},{"./make-hash":198}],200:[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
 var Legacy = require('./legacy')
@@ -31477,7 +31606,7 @@ module.exports = function createHmac (alg, key) {
   return new Hmac(alg, key)
 }
 
-},{"./legacy":197,"cipher-base":189,"create-hash/md5":195,"inherits":406,"ripemd160":488,"safe-buffer":490,"sha.js":498}],197:[function(require,module,exports){
+},{"./legacy":201,"cipher-base":193,"create-hash/md5":199,"inherits":410,"ripemd160":492,"safe-buffer":494,"sha.js":502}],201:[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
 var Buffer = require('safe-buffer').Buffer
@@ -31525,7 +31654,7 @@ Hmac.prototype._final = function () {
 }
 module.exports = Hmac
 
-},{"cipher-base":189,"inherits":406,"safe-buffer":490}],198:[function(require,module,exports){
+},{"cipher-base":193,"inherits":410,"safe-buffer":494}],202:[function(require,module,exports){
 'use strict'
 
 exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = require('randombytes')
@@ -31624,7 +31753,7 @@ exports.constants = {
   'POINT_CONVERSION_HYBRID': 6
 }
 
-},{"browserify-cipher":174,"browserify-sign":182,"browserify-sign/algos":179,"create-ecdh":192,"create-hash":193,"create-hmac":196,"diffie-hellman":206,"pbkdf2":452,"public-encrypt":459,"randombytes":465,"randomfill":466}],199:[function(require,module,exports){
+},{"browserify-cipher":178,"browserify-sign":186,"browserify-sign/algos":183,"create-ecdh":196,"create-hash":197,"create-hmac":200,"diffie-hellman":210,"pbkdf2":456,"public-encrypt":463,"randombytes":469,"randomfill":470}],203:[function(require,module,exports){
 'use strict';
 
 var assign        = require('es5-ext/object/assign')
@@ -31689,7 +31818,7 @@ d.gs = function (dscr, get, set/*, options*/) {
 	return !options ? desc : assign(normalizeOpts(options), desc);
 };
 
-},{"es5-ext/object/assign":227,"es5-ext/object/is-callable":230,"es5-ext/object/normalize-options":235,"es5-ext/string/#/contains":238}],200:[function(require,module,exports){
+},{"es5-ext/object/assign":231,"es5-ext/object/is-callable":234,"es5-ext/object/normalize-options":239,"es5-ext/string/#/contains":242}],204:[function(require,module,exports){
 'use strict';
 
 exports.utils = require('./des/utils');
@@ -31698,7 +31827,7 @@ exports.DES = require('./des/des');
 exports.CBC = require('./des/cbc');
 exports.EDE = require('./des/ede');
 
-},{"./des/cbc":201,"./des/cipher":202,"./des/des":203,"./des/ede":204,"./des/utils":205}],201:[function(require,module,exports){
+},{"./des/cbc":205,"./des/cipher":206,"./des/des":207,"./des/ede":208,"./des/utils":209}],205:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -31765,7 +31894,7 @@ proto._update = function _update(inp, inOff, out, outOff) {
   }
 };
 
-},{"inherits":406,"minimalistic-assert":443}],202:[function(require,module,exports){
+},{"inherits":410,"minimalistic-assert":447}],206:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -31908,7 +32037,7 @@ Cipher.prototype._finalDecrypt = function _finalDecrypt() {
   return this._unpad(out);
 };
 
-},{"minimalistic-assert":443}],203:[function(require,module,exports){
+},{"minimalistic-assert":447}],207:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -32053,7 +32182,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
   utils.rip(l, r, out, off);
 };
 
-},{"../des":200,"inherits":406,"minimalistic-assert":443}],204:[function(require,module,exports){
+},{"../des":204,"inherits":410,"minimalistic-assert":447}],208:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -32110,7 +32239,7 @@ EDE.prototype._update = function _update(inp, inOff, out, outOff) {
 EDE.prototype._pad = DES.prototype._pad;
 EDE.prototype._unpad = DES.prototype._unpad;
 
-},{"../des":200,"inherits":406,"minimalistic-assert":443}],205:[function(require,module,exports){
+},{"../des":204,"inherits":410,"minimalistic-assert":447}],209:[function(require,module,exports){
 'use strict';
 
 exports.readUInt32BE = function readUInt32BE(bytes, off) {
@@ -32368,7 +32497,7 @@ exports.padSplit = function padSplit(num, size, group) {
   return out.join(' ');
 };
 
-},{}],206:[function(require,module,exports){
+},{}],210:[function(require,module,exports){
 (function (Buffer){
 var generatePrime = require('./lib/generatePrime')
 var primes = require('./lib/primes.json')
@@ -32414,7 +32543,7 @@ exports.DiffieHellmanGroup = exports.createDiffieHellmanGroup = exports.getDiffi
 exports.createDiffieHellman = exports.DiffieHellman = createDiffieHellman
 
 }).call(this,require("buffer").Buffer)
-},{"./lib/dh":207,"./lib/generatePrime":208,"./lib/primes.json":209,"buffer":188}],207:[function(require,module,exports){
+},{"./lib/dh":211,"./lib/generatePrime":212,"./lib/primes.json":213,"buffer":192}],211:[function(require,module,exports){
 (function (Buffer){
 var BN = require('bn.js');
 var MillerRabin = require('miller-rabin');
@@ -32582,7 +32711,7 @@ function formatReturnValue(bn, enc) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./generatePrime":208,"bn.js":153,"buffer":188,"miller-rabin":442,"randombytes":465}],208:[function(require,module,exports){
+},{"./generatePrime":212,"bn.js":157,"buffer":192,"miller-rabin":446,"randombytes":469}],212:[function(require,module,exports){
 var randomBytes = require('randombytes');
 module.exports = findPrime;
 findPrime.simpleSieve = simpleSieve;
@@ -32689,7 +32818,7 @@ function findPrime(bits, gen) {
 
 }
 
-},{"bn.js":153,"miller-rabin":442,"randombytes":465}],209:[function(require,module,exports){
+},{"bn.js":157,"miller-rabin":446,"randombytes":469}],213:[function(require,module,exports){
 module.exports={
     "modp1": {
         "gen": "02",
@@ -32724,7 +32853,7 @@ module.exports={
         "prime": "ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca18217c32905e462e36ce3be39e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf6955817183995497cea956ae515d2261898fa051015728e5a8aaac42dad33170d04507a33a85521abdf1cba64ecfb850458dbef0a8aea71575d060c7db3970f85a6e1e4c7abf5ae8cdb0933d71e8c94e04a25619dcee3d2261ad2ee6bf12ffa06d98a0864d87602733ec86a64521f2b18177b200cbbe117577a615d6c770988c0bad946e208e24fa074e5ab3143db5bfce0fd108e4b82d120a92108011a723c12a787e6d788719a10bdba5b2699c327186af4e23c1a946834b6150bda2583e9ca2ad44ce8dbbbc2db04de8ef92e8efc141fbecaa6287c59474e6bc05d99b2964fa090c3a2233ba186515be7ed1f612970cee2d7afb81bdd762170481cd0069127d5b05aa993b4ea988d8fddc186ffb7dc90a6c08f4df435c93402849236c3fab4d27c7026c1d4dcb2602646dec9751e763dba37bdf8ff9406ad9e530ee5db382f413001aeb06a53ed9027d831179727b0865a8918da3edbebcf9b14ed44ce6cbaced4bb1bdb7f1447e6cc254b332051512bd7af426fb8f401378cd2bf5983ca01c64b92ecf032ea15d1721d03f482d7ce6e74fef6d55e702f46980c82b5a84031900b1c9e59e7c97fbec7e8f323a97a7e36cc88be0f1d45b7ff585ac54bd407b22b4154aacc8f6d7ebf48e1d814cc5ed20f8037e0a79715eef29be32806a1d58bb7c5da76f550aa3d8a1fbff0eb19ccb1a313d55cda56c9ec2ef29632387fe8d76e3c0468043e8f663f4860ee12bf2d5b0b7474d6e694f91e6dbe115974a3926f12fee5e438777cb6a932df8cd8bec4d073b931ba3bc832b68d9dd300741fa7bf8afc47ed2576f6936ba424663aab639c5ae4f5683423b4742bf1c978238f16cbe39d652de3fdb8befc848ad922222e04a4037c0713eb57a81a23f0c73473fc646cea306b4bcbc8862f8385ddfa9d4b7fa2c087e879683303ed5bdd3a062b3cf5b3a278a66d2a13f83f44f82ddf310ee074ab6a364597e899a0255dc164f31cc50846851df9ab48195ded7ea1b1d510bd7ee74d73faf36bc31ecfa268359046f4eb879f924009438b481c6cd7889a002ed5ee382bc9190da6fc026e479558e4475677e9aa9e3050e2765694dfc81f56e880b96e7160c980dd98edd3dfffffffffffffffff"
     }
 }
-},{}],210:[function(require,module,exports){
+},{}],214:[function(require,module,exports){
 'use strict';
 
 var elliptic = exports;
@@ -32739,7 +32868,7 @@ elliptic.curves = require('./elliptic/curves');
 elliptic.ec = require('./elliptic/ec');
 elliptic.eddsa = require('./elliptic/eddsa');
 
-},{"../package.json":225,"./elliptic/curve":213,"./elliptic/curves":216,"./elliptic/ec":217,"./elliptic/eddsa":220,"./elliptic/utils":224,"brorand":154}],211:[function(require,module,exports){
+},{"../package.json":229,"./elliptic/curve":217,"./elliptic/curves":220,"./elliptic/ec":221,"./elliptic/eddsa":224,"./elliptic/utils":228,"brorand":158}],215:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -33116,7 +33245,7 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../../elliptic":210,"bn.js":153}],212:[function(require,module,exports){
+},{"../../elliptic":214,"bn.js":157}],216:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -33551,7 +33680,7 @@ Point.prototype.eqXToP = function eqXToP(x) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../../elliptic":210,"../curve":213,"bn.js":153,"inherits":406}],213:[function(require,module,exports){
+},{"../../elliptic":214,"../curve":217,"bn.js":157,"inherits":410}],217:[function(require,module,exports){
 'use strict';
 
 var curve = exports;
@@ -33561,7 +33690,7 @@ curve.short = require('./short');
 curve.mont = require('./mont');
 curve.edwards = require('./edwards');
 
-},{"./base":211,"./edwards":212,"./mont":214,"./short":215}],214:[function(require,module,exports){
+},{"./base":215,"./edwards":216,"./mont":218,"./short":219}],218:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -33743,7 +33872,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../../elliptic":210,"../curve":213,"bn.js":153,"inherits":406}],215:[function(require,module,exports){
+},{"../../elliptic":214,"../curve":217,"bn.js":157,"inherits":410}],219:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -34683,7 +34812,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":210,"../curve":213,"bn.js":153,"inherits":406}],216:[function(require,module,exports){
+},{"../../elliptic":214,"../curve":217,"bn.js":157,"inherits":410}],220:[function(require,module,exports){
 'use strict';
 
 var curves = exports;
@@ -34890,7 +35019,7 @@ defineCurve('secp256k1', {
   ]
 });
 
-},{"../elliptic":210,"./precomputed/secp256k1":223,"hash.js":388}],217:[function(require,module,exports){
+},{"../elliptic":214,"./precomputed/secp256k1":227,"hash.js":392}],221:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -35132,7 +35261,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../../elliptic":210,"./key":218,"./signature":219,"bn.js":153,"hmac-drbg":400}],218:[function(require,module,exports){
+},{"../../elliptic":214,"./key":222,"./signature":223,"bn.js":157,"hmac-drbg":404}],222:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -35253,7 +35382,7 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
-},{"../../elliptic":210,"bn.js":153}],219:[function(require,module,exports){
+},{"../../elliptic":214,"bn.js":157}],223:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -35390,7 +35519,7 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
-},{"../../elliptic":210,"bn.js":153}],220:[function(require,module,exports){
+},{"../../elliptic":214,"bn.js":157}],224:[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
@@ -35510,7 +35639,7 @@ EDDSA.prototype.isPoint = function isPoint(val) {
   return val instanceof this.pointClass;
 };
 
-},{"../../elliptic":210,"./key":221,"./signature":222,"hash.js":388}],221:[function(require,module,exports){
+},{"../../elliptic":214,"./key":225,"./signature":226,"hash.js":392}],225:[function(require,module,exports){
 'use strict';
 
 var elliptic = require('../../elliptic');
@@ -35608,7 +35737,7 @@ KeyPair.prototype.getPublic = function getPublic(enc) {
 
 module.exports = KeyPair;
 
-},{"../../elliptic":210}],222:[function(require,module,exports){
+},{"../../elliptic":214}],226:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -35676,7 +35805,7 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../../elliptic":210,"bn.js":153}],223:[function(require,module,exports){
+},{"../../elliptic":214,"bn.js":157}],227:[function(require,module,exports){
 module.exports = {
   doubles: {
     step: 4,
@@ -36458,7 +36587,7 @@ module.exports = {
   }
 };
 
-},{}],224:[function(require,module,exports){
+},{}],228:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -36580,12 +36709,12 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":153,"minimalistic-assert":443,"minimalistic-crypto-utils":444}],225:[function(require,module,exports){
+},{"bn.js":157,"minimalistic-assert":447,"minimalistic-crypto-utils":448}],229:[function(require,module,exports){
 module.exports={
   "_args": [
     [
       "elliptic@6.4.0",
-      "/home/jack/src/augur.js"
+      "/mnt/Volume-Home/home/pg/Development/augur/augur.js"
     ]
   ],
   "_from": "elliptic@6.4.0",
@@ -36612,7 +36741,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
   "_spec": "6.4.0",
-  "_where": "/home/jack/src/augur.js",
+  "_where": "/mnt/Volume-Home/home/pg/Development/augur/augur.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -36674,20 +36803,20 @@ module.exports={
   "version": "6.4.0"
 }
 
-},{}],226:[function(require,module,exports){
+},{}],230:[function(require,module,exports){
 "use strict";
 
 // eslint-disable-next-line no-empty-function
 module.exports = function () {};
 
-},{}],227:[function(require,module,exports){
+},{}],231:[function(require,module,exports){
 "use strict";
 
 module.exports = require("./is-implemented")()
 	? Object.assign
 	: require("./shim");
 
-},{"./is-implemented":228,"./shim":229}],228:[function(require,module,exports){
+},{"./is-implemented":232,"./shim":233}],232:[function(require,module,exports){
 "use strict";
 
 module.exports = function () {
@@ -36698,7 +36827,7 @@ module.exports = function () {
 	return (obj.foo + obj.bar + obj.trzy) === "razdwatrzy";
 };
 
-},{}],229:[function(require,module,exports){
+},{}],233:[function(require,module,exports){
 "use strict";
 
 var keys  = require("../keys")
@@ -36723,7 +36852,7 @@ module.exports = function (dest, src /*, …srcn*/) {
 	return dest;
 };
 
-},{"../keys":232,"../valid-value":237}],230:[function(require,module,exports){
+},{"../keys":236,"../valid-value":241}],234:[function(require,module,exports){
 // Deprecated
 
 "use strict";
@@ -36732,7 +36861,7 @@ module.exports = function (obj) {
  return typeof obj === "function";
 };
 
-},{}],231:[function(require,module,exports){
+},{}],235:[function(require,module,exports){
 "use strict";
 
 var _undefined = require("../function/noop")(); // Support ES3 engines
@@ -36741,14 +36870,14 @@ module.exports = function (val) {
  return (val !== _undefined) && (val !== null);
 };
 
-},{"../function/noop":226}],232:[function(require,module,exports){
+},{"../function/noop":230}],236:[function(require,module,exports){
 "use strict";
 
 module.exports = require("./is-implemented")()
 	? Object.keys
 	: require("./shim");
 
-},{"./is-implemented":233,"./shim":234}],233:[function(require,module,exports){
+},{"./is-implemented":237,"./shim":238}],237:[function(require,module,exports){
 "use strict";
 
 module.exports = function () {
@@ -36760,7 +36889,7 @@ module.exports = function () {
 }
 };
 
-},{}],234:[function(require,module,exports){
+},{}],238:[function(require,module,exports){
 "use strict";
 
 var isValue = require("../is-value");
@@ -36771,7 +36900,7 @@ module.exports = function (object) {
 	return keys(isValue(object) ? Object(object) : object);
 };
 
-},{"../is-value":231}],235:[function(require,module,exports){
+},{"../is-value":235}],239:[function(require,module,exports){
 "use strict";
 
 var isValue = require("./is-value");
@@ -36793,7 +36922,7 @@ module.exports = function (opts1 /*, …options*/) {
 	return result;
 };
 
-},{"./is-value":231}],236:[function(require,module,exports){
+},{"./is-value":235}],240:[function(require,module,exports){
 "use strict";
 
 module.exports = function (fn) {
@@ -36801,7 +36930,7 @@ module.exports = function (fn) {
 	return fn;
 };
 
-},{}],237:[function(require,module,exports){
+},{}],241:[function(require,module,exports){
 "use strict";
 
 var isValue = require("./is-value");
@@ -36811,14 +36940,14 @@ module.exports = function (value) {
 	return value;
 };
 
-},{"./is-value":231}],238:[function(require,module,exports){
+},{"./is-value":235}],242:[function(require,module,exports){
 "use strict";
 
 module.exports = require("./is-implemented")()
 	? String.prototype.contains
 	: require("./shim");
 
-},{"./is-implemented":239,"./shim":240}],239:[function(require,module,exports){
+},{"./is-implemented":243,"./shim":244}],243:[function(require,module,exports){
 "use strict";
 
 var str = "razdwatrzy";
@@ -36828,7 +36957,7 @@ module.exports = function () {
 	return (str.contains("dwa") === true) && (str.contains("foo") === false);
 };
 
-},{}],240:[function(require,module,exports){
+},{}],244:[function(require,module,exports){
 "use strict";
 
 var indexOf = String.prototype.indexOf;
@@ -36837,7 +36966,7 @@ module.exports = function (searchString/*, position*/) {
 	return indexOf.call(this, searchString, arguments[1]) > -1;
 };
 
-},{}],241:[function(require,module,exports){
+},{}],245:[function(require,module,exports){
 module.exports={
   "genesisGasLimit": {
     "v": 5000,
@@ -37074,7 +37203,7 @@ module.exports={
   }
 }
 
-},{}],242:[function(require,module,exports){
+},{}],246:[function(require,module,exports){
 var v1 = require('./v1');
 var v4 = require('./v4');
 
@@ -37084,7 +37213,7 @@ uuid.v4 = v4;
 
 module.exports = uuid;
 
-},{"./v1":245,"./v4":246}],243:[function(require,module,exports){
+},{"./v1":249,"./v4":250}],247:[function(require,module,exports){
 /**
  * Convert array of 16 byte values to UUID string format of the form:
  * XXXXXXXX-XXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
@@ -37109,7 +37238,7 @@ function bytesToUuid(buf, offset) {
 
 module.exports = bytesToUuid;
 
-},{}],244:[function(require,module,exports){
+},{}],248:[function(require,module,exports){
 (function (global){
 // Unique ID creation requires a high quality random # generator.  In the
 // browser this is a little complicated due to unknown quality of Math.random()
@@ -37146,7 +37275,7 @@ if (!rng) {
 module.exports = rng;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],245:[function(require,module,exports){
+},{}],249:[function(require,module,exports){
 // Unique ID creation requires a high quality random # generator.  We feature
 // detect to determine the best RNG source, normalizing to a function that
 // returns 128-bits of randomness, since that's what's usually required
@@ -37251,7 +37380,7 @@ function v1(options, buf, offset) {
 
 module.exports = v1;
 
-},{"./lib/bytesToUuid":243,"./lib/rng":244}],246:[function(require,module,exports){
+},{"./lib/bytesToUuid":247,"./lib/rng":248}],250:[function(require,module,exports){
 var rng = require('./lib/rng');
 var bytesToUuid = require('./lib/bytesToUuid');
 
@@ -37282,7 +37411,7 @@ function v4(options, buf, offset) {
 
 module.exports = v4;
 
-},{"./lib/bytesToUuid":243,"./lib/rng":244}],247:[function(require,module,exports){
+},{"./lib/bytesToUuid":247,"./lib/rng":248}],251:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -37504,7 +37633,7 @@ function logAndSwallowWrapper(callback) {
     };
 }
 
-},{"./block-reconciler":248,"./log-reconciler":250,"immutable":404,"uuid":242}],248:[function(require,module,exports){
+},{"./block-reconciler":252,"./log-reconciler":254,"immutable":408,"uuid":246}],252:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -37659,7 +37788,7 @@ var parentHashIsInHistory = function (blockHistory, newBlock) {
     return blockHistory.some(function (block) { return block.hash === newBlock.parentHash; });
 };
 
-},{}],249:[function(require,module,exports){
+},{}],253:[function(require,module,exports){
 "use strict";
 // NOTE -- 	
 //  Commented out to avoid cross origin error produced when running again webpack
@@ -37672,7 +37801,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var block_and_log_streamer_1 = require("./block-and-log-streamer");
 exports.BlockAndLogStreamer = block_and_log_streamer_1.BlockAndLogStreamer;
 
-},{"./block-and-log-streamer":247}],250:[function(require,module,exports){
+},{"./block-and-log-streamer":251}],254:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -37840,7 +37969,7 @@ function reconcileLogHistoryWithRemovedBlock(logHistory, removedBlock, onLogRemo
 }
 exports.reconcileLogHistoryWithRemovedBlock = reconcileLogHistoryWithRemovedBlock;
 
-},{}],251:[function(require,module,exports){
+},{}],255:[function(require,module,exports){
 "use strict";
 
 var async = require("async");
@@ -37878,7 +38007,7 @@ function asyncConnect(rpc, configuration, callback) {
 
 module.exports = asyncConnect;
 
-},{"./create-ethrpc-configuration":254,"./set-block-number":256,"./set-coinbase":257,"./set-contracts":258,"./set-from":259,"./set-gas-price":260,"./set-network-id":261,"./setup-events-abi":262,"./setup-functions-abi":263,"async":149}],252:[function(require,module,exports){
+},{"./create-ethrpc-configuration":258,"./set-block-number":260,"./set-coinbase":261,"./set-contracts":262,"./set-from":263,"./set-gas-price":264,"./set-network-id":265,"./setup-events-abi":266,"./setup-functions-abi":267,"async":151}],256:[function(require,module,exports){
 "use strict";
 
 var rpc = require("ethrpc");
@@ -37896,7 +38025,7 @@ function connect(options, callback) {
 
 module.exports = connect;
 
-},{"./async-connect":251,"./create-configuration":253,"ethrpc":292}],253:[function(require,module,exports){
+},{"./async-connect":255,"./create-configuration":257,"ethrpc":296}],257:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -37916,7 +38045,7 @@ function createConfiguration(options) {
 
 module.exports = createConfiguration;
 
-},{"lodash.assign":426}],254:[function(require,module,exports){
+},{"lodash.assign":430}],258:[function(require,module,exports){
 "use strict";
 
 function createEthrpcConfiguration(configuration) {
@@ -37934,7 +38063,7 @@ function createEthrpcConfiguration(configuration) {
 
 module.exports = createEthrpcConfiguration;
 
-},{}],255:[function(require,module,exports){
+},{}],259:[function(require,module,exports){
 "use strict";
 
 var setFrom = require("./set-from");
@@ -37950,7 +38079,7 @@ module.exports = {
   connect: connect
 };
 
-},{"./connect":252,"./set-from":259,"./setup-events-abi":262,"./setup-functions-abi":263}],256:[function(require,module,exports){
+},{"./connect":256,"./set-from":263,"./setup-events-abi":266,"./setup-functions-abi":267}],260:[function(require,module,exports){
 "use strict";
 
 function setBlockNumber(rpc, callback) {
@@ -37963,7 +38092,7 @@ function setBlockNumber(rpc, callback) {
 
 module.exports = setBlockNumber;
 
-},{}],257:[function(require,module,exports){
+},{}],261:[function(require,module,exports){
 "use strict";
 
 // this is a best effort, if coinbase isn't available then just move on
@@ -37977,7 +38106,7 @@ function setCoinbase(rpc, callback) {
 
 module.exports = setCoinbase;
 
-},{}],258:[function(require,module,exports){
+},{}],262:[function(require,module,exports){
 "use strict";
 
 function setContracts(networkID, allContracts) {
@@ -37987,7 +38116,7 @@ function setContracts(networkID, allContracts) {
 
 module.exports = setContracts;
 
-},{}],259:[function(require,module,exports){
+},{}],263:[function(require,module,exports){
 "use strict";
 
 function setFrom(functionsABI, fromAddress) {
@@ -38007,7 +38136,7 @@ function setFrom(functionsABI, fromAddress) {
 
 module.exports = setFrom;
 
-},{}],260:[function(require,module,exports){
+},{}],264:[function(require,module,exports){
 "use strict";
 
 function setGasPrice(rpc, callback) {
@@ -38020,7 +38149,7 @@ function setGasPrice(rpc, callback) {
 
 module.exports = setGasPrice;
 
-},{}],261:[function(require,module,exports){
+},{}],265:[function(require,module,exports){
 "use strict";
 
 function setNetworkID(rpc, callback) {
@@ -38033,7 +38162,7 @@ function setNetworkID(rpc, callback) {
 
 module.exports = setNetworkID;
 
-},{}],262:[function(require,module,exports){
+},{}],266:[function(require,module,exports){
 "use strict";
 
 function setupEventsABI(eventsABI, contracts) {
@@ -38054,7 +38183,7 @@ function setupEventsABI(eventsABI, contracts) {
 
 module.exports = setupEventsABI;
 
-},{}],263:[function(require,module,exports){
+},{}],267:[function(require,module,exports){
 "use strict";
 
 function setupFunctionsABI(functionsABI, contracts) {
@@ -38074,7 +38203,7 @@ function setupFunctionsABI(functionsABI, contracts) {
 
 module.exports = setupFunctionsABI;
 
-},{}],264:[function(require,module,exports){
+},{}],268:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -38415,7 +38544,7 @@ var Transaction = function () {
 module.exports = Transaction;
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":188,"ethereum-common/params.json":241,"ethereumjs-util":265}],265:[function(require,module,exports){
+},{"buffer":192,"ethereum-common/params.json":245,"ethereumjs-util":269}],269:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -39086,7 +39215,7 @@ exports.defineProperties = function (self, fields, data) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"assert":148,"bn.js":153,"buffer":188,"create-hash":193,"ethjs-util":266,"keccak":411,"rlp":489,"secp256k1":491}],266:[function(require,module,exports){
+},{"assert":150,"bn.js":157,"buffer":192,"create-hash":197,"ethjs-util":270,"keccak":415,"rlp":493,"secp256k1":495}],270:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -39309,7 +39438,7 @@ module.exports = {
   isHexString: isHexString
 };
 }).call(this,require("buffer").Buffer)
-},{"buffer":188,"is-hex-prefixed":408,"strip-hex-prefix":546}],267:[function(require,module,exports){
+},{"buffer":192,"is-hex-prefixed":412,"strip-hex-prefix":550}],271:[function(require,module,exports){
 "use strict";
 
 /**
@@ -39326,7 +39455,7 @@ module.exports = function (originalObject, excludeKey) {
   }, {});
 };
 
-},{}],268:[function(require,module,exports){
+},{}],272:[function(require,module,exports){
 "use strict";
 
 var Notifier = require("./notifier.js");
@@ -39355,7 +39484,7 @@ BlockNotifier.prototype.constructor = BlockNotifier;
 
 module.exports = BlockNotifier;
 
-},{"./notifier.js":272,"./polling-block-notifier.js":274,"./subscribing-block-notifier.js":275}],269:[function(require,module,exports){
+},{"./notifier.js":276,"./polling-block-notifier.js":278,"./subscribing-block-notifier.js":279}],273:[function(require,module,exports){
 "use strict";
 
 var BlockAndLogStreamer = require("ethereumjs-blockstream").BlockAndLogStreamer;
@@ -39435,7 +39564,7 @@ function createBlockAndLogStreamer(configuration, transport) {
 
 module.exports = createBlockAndLogStreamer;
 
-},{"../block-management/block-notifier":268,"../internal-state":293,"../wrappers/eth":369,"ethereumjs-blockstream":249}],270:[function(require,module,exports){
+},{"../block-management/block-notifier":272,"../internal-state":297,"../wrappers/eth":373,"ethereumjs-blockstream":253}],274:[function(require,module,exports){
 "use strict";
 
 var onNewBlock = require("../block-management/on-new-block");
@@ -39467,7 +39596,7 @@ function ensureLatestBlock(callback) {
 
 module.exports = ensureLatestBlock;
 
-},{"../block-management/on-new-block":273,"../utils/is-function":353,"../wrappers/eth":369}],271:[function(require,module,exports){
+},{"../block-management/on-new-block":277,"../utils/is-function":357,"../wrappers/eth":373}],275:[function(require,module,exports){
 "use strict";
 
 var eth = require("../wrappers/eth");
@@ -39536,7 +39665,7 @@ function createTransportAdapter(transporter) {
 
 module.exports = createTransportAdapter;
 
-},{"../errors/error-splitting-wrapper":289,"../subscriptions/add-new-heads-subscription":324,"../subscriptions/remove-subscription":327,"../utils/noop":359,"../wrappers/eth":369}],272:[function(require,module,exports){
+},{"../errors/error-splitting-wrapper":293,"../subscriptions/add-new-heads-subscription":328,"../subscriptions/remove-subscription":331,"../utils/noop":363,"../wrappers/eth":373}],276:[function(require,module,exports){
 "use strict";
 
 /**
@@ -39575,7 +39704,7 @@ Notifier.prototype.constructor = Notifier;
 
 module.exports = Notifier;
 
-},{}],273:[function(require,module,exports){
+},{}],277:[function(require,module,exports){
 "use strict";
 
 var reprocessTransactions = require("../transact/reprocess-transactions");
@@ -39592,7 +39721,7 @@ function onNewBlock(block) {
 
 module.exports = onNewBlock;
 
-},{"../transact/reprocess-transactions":332,"../utils/is-object":357}],274:[function(require,module,exports){
+},{"../transact/reprocess-transactions":336,"../utils/is-object":361}],278:[function(require,module,exports){
 "use strict";
 
 var Notifier = require("./notifier");
@@ -39627,7 +39756,7 @@ PollingBlockNotifier.prototype.constructor = PollingBlockNotifier;
 
 module.exports = PollingBlockNotifier;
 
-},{"../validate/validate-block":363,"./notifier":272}],275:[function(require,module,exports){
+},{"../validate/validate-block":367,"./notifier":276}],279:[function(require,module,exports){
 "use strict";
 
 var Notifier = require("./notifier");
@@ -39681,7 +39810,7 @@ SubscribingBlockNotifier.prototype.constructor = SubscribingBlockNotifier;
 
 module.exports = SubscribingBlockNotifier;
 
-},{"../validate/validate-block":363,"./notifier":272}],276:[function(require,module,exports){
+},{"../validate/validate-block":367,"./notifier":276}],280:[function(require,module,exports){
 "use strict";
 
 var eth_blockNumber = require("../wrappers/eth").blockNumber;
@@ -39719,7 +39848,7 @@ module.exports = function (blocks, mine, callback) {
   };
 };
 
-},{"../constants":279,"../utils/is-function":353,"../wrappers/eth":369,"../wrappers/miner":372}],277:[function(require,module,exports){
+},{"../constants":283,"../utils/is-function":357,"../wrappers/eth":373,"../wrappers/miner":376}],281:[function(require,module,exports){
 "use strict";
 
 var isObject = require("./utils/is-object");
@@ -39741,7 +39870,7 @@ function clearTransactions() {
 
 module.exports = clearTransactions;
 
-},{"./internal-state":293,"./utils/is-object":357}],278:[function(require,module,exports){
+},{"./internal-state":297,"./utils/is-object":361}],282:[function(require,module,exports){
 "use strict";
 
 var async = require("async");
@@ -39825,7 +39954,7 @@ function connect(configuration, initialConnectCallback) {
 
 module.exports = connect;
 
-},{"./block-management/ensure-latest-block":270,"./block-management/ethrpc-transport-adapter":271,"./block-management/on-new-block":273,"./errors":290,"./internal-state":293,"./reset-state":320,"./start-block-stream":323,"./transport/transporter":349,"./utils/is-function":353,"./validate/validate-configuration":364,"./wrappers/net":373,"./wrappers/set-coinbase":380,"./wrappers/set-gas-price":381,"async":149}],279:[function(require,module,exports){
+},{"./block-management/ensure-latest-block":274,"./block-management/ethrpc-transport-adapter":275,"./block-management/on-new-block":277,"./errors":294,"./internal-state":297,"./reset-state":324,"./start-block-stream":327,"./transport/transporter":353,"./utils/is-function":357,"./validate/validate-configuration":368,"./wrappers/net":377,"./wrappers/set-coinbase":384,"./wrappers/set-gas-price":385,"async":151}],283:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -39862,7 +39991,7 @@ module.exports = {
 
 };
 
-},{"bignumber.js":151}],280:[function(require,module,exports){
+},{"bignumber.js":155}],284:[function(require,module,exports){
 "use strict";
 
 var createStore = require("redux").createStore;
@@ -40110,7 +40239,7 @@ var createEthrpc = function (reducer) {
 
 module.exports = createEthrpc;
 
-},{"./block-management/ensure-latest-block":270,"./block-management/wait-for-next-blocks":276,"./clear-transactions":277,"./connect":278,"./constants":279,"./debug/set-debug-options":281,"./decode-response/handle-rpc-error":282,"./encode-request/package-request":286,"./errors/codes":288,"./internal-state":293,"./raw-transactions/package-and-sign-raw-transaction":299,"./raw-transactions/package-and-submit-raw-transaction":300,"./raw-transactions/package-raw-transaction":301,"./raw-transactions/sign-raw-transaction":305,"./raw-transactions/sign-raw-transaction-with-key":304,"./reset-state":320,"./start-block-stream.js":323,"./transact/call-contract-function":329,"./transact/call-or-send-transaction":330,"./transact/transact":334,"./transaction-relay/exclude-from-transaction-relay":339,"./transaction-relay/include-in-transaction-relay":340,"./transaction-relay/register-transaction-relay":341,"./transaction-relay/unregister-transaction-relay":342,"./transport/ws-transport":351,"./utils/is-function":353,"./utils/sha3":360,"./validate/validate-and-default-block-number":362,"./validate/validate-transaction":366,"./wrappers/bind-dispatch":368,"./wrappers/eth":369,"./wrappers/is-unlocked":370,"./wrappers/miner":372,"./wrappers/net":373,"./wrappers/personal":374,"./wrappers/publish":375,"./wrappers/raw":376,"./wrappers/resend-raw-transaction":377,"./wrappers/resend-transaction":378,"./wrappers/send-ether":379,"./wrappers/shh":382,"./wrappers/web3":383,"redux":486,"redux-thunk-subscribe":480}],281:[function(require,module,exports){
+},{"./block-management/ensure-latest-block":274,"./block-management/wait-for-next-blocks":280,"./clear-transactions":281,"./connect":282,"./constants":283,"./debug/set-debug-options":285,"./decode-response/handle-rpc-error":286,"./encode-request/package-request":290,"./errors/codes":292,"./internal-state":297,"./raw-transactions/package-and-sign-raw-transaction":303,"./raw-transactions/package-and-submit-raw-transaction":304,"./raw-transactions/package-raw-transaction":305,"./raw-transactions/sign-raw-transaction":309,"./raw-transactions/sign-raw-transaction-with-key":308,"./reset-state":324,"./start-block-stream.js":327,"./transact/call-contract-function":333,"./transact/call-or-send-transaction":334,"./transact/transact":338,"./transaction-relay/exclude-from-transaction-relay":343,"./transaction-relay/include-in-transaction-relay":344,"./transaction-relay/register-transaction-relay":345,"./transaction-relay/unregister-transaction-relay":346,"./transport/ws-transport":355,"./utils/is-function":357,"./utils/sha3":364,"./validate/validate-and-default-block-number":366,"./validate/validate-transaction":370,"./wrappers/bind-dispatch":372,"./wrappers/eth":373,"./wrappers/is-unlocked":374,"./wrappers/miner":376,"./wrappers/net":377,"./wrappers/personal":378,"./wrappers/publish":379,"./wrappers/raw":380,"./wrappers/resend-raw-transaction":381,"./wrappers/resend-transaction":382,"./wrappers/send-ether":383,"./wrappers/shh":386,"./wrappers/web3":387,"redux":490,"redux-thunk-subscribe":484}],285:[function(require,module,exports){
 "use strict";
 
 module.exports = function (debugOptions) {
@@ -40119,7 +40248,7 @@ module.exports = function (debugOptions) {
   };
 };
 
-},{}],282:[function(require,module,exports){
+},{}],286:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -40152,7 +40281,7 @@ var handleRPCError = function (method, returns, response) {
 
 module.exports = handleRPCError;
 
-},{"../errors/codes":288,"speedomatic":531}],283:[function(require,module,exports){
+},{"../errors/codes":292,"speedomatic":535}],287:[function(require,module,exports){
 "use strict";
 
 var clone = require("clone");
@@ -40197,7 +40326,7 @@ function parseEthereumResponse(origResponse, callback) {
 
 module.exports = parseEthereumResponse;
 
-},{"../errors/codes":288,"../errors/rpc-error":291,"../utils/is-function":353,"../utils/is-object":357,"clone":190}],284:[function(require,module,exports){
+},{"../errors/codes":292,"../errors/rpc-error":295,"../utils/is-function":357,"../utils/is-object":361,"clone":194}],288:[function(require,module,exports){
 "use strict";
 
 var isFunction = require("../utils/is-function");
@@ -40245,7 +40374,7 @@ module.exports = {
   encodeObject: encodeObject
 };
 
-},{"../utils/is-function":353}],285:[function(require,module,exports){
+},{"../utils/is-function":357}],289:[function(require,module,exports){
 "use strict";
 
 var abiEncode = require("./abi-encode");
@@ -40273,7 +40402,7 @@ var makeRequestPayload = function (command, params, prefix) {
 
 module.exports = makeRequestPayload;
 
-},{"./abi-encode":284}],286:[function(require,module,exports){
+},{"./abi-encode":288}],290:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -40332,7 +40461,7 @@ var packageRequest = function (payload) {
 
 module.exports = packageRequest;
 
-},{"../constants":279,"../errors/codes":288,"../errors/rpc-error":291,"clone":190,"speedomatic":531}],287:[function(require,module,exports){
+},{"../constants":283,"../errors/codes":292,"../errors/rpc-error":295,"clone":194,"speedomatic":535}],291:[function(require,module,exports){
 "use strict";
 
 var stripReturnsTypeAndInvocation = function (tx) {
@@ -40352,7 +40481,7 @@ var stripReturnsTypeAndInvocation = function (tx) {
 
 module.exports = stripReturnsTypeAndInvocation;
 
-},{}],288:[function(require,module,exports){
+},{}],292:[function(require,module,exports){
 module.exports={
   "0x": "no response or bad input",
   "buy": {
@@ -40681,7 +40810,7 @@ module.exports={
   }
 }
 
-},{}],289:[function(require,module,exports){
+},{}],293:[function(require,module,exports){
 "use strict";
 
 function errorSplittingWrapper(callback) {
@@ -40695,7 +40824,7 @@ function errorSplittingWrapper(callback) {
 
 module.exports = errorSplittingWrapper;
 
-},{}],290:[function(require,module,exports){
+},{}],294:[function(require,module,exports){
 "use strict";
 
 function BetterError(message) {
@@ -40734,7 +40863,7 @@ module.exports = {
   ErrorWithCodeAndData: ErrorWithCodeAndData
 };
 
-},{}],291:[function(require,module,exports){
+},{}],295:[function(require,module,exports){
 "use strict";
 
 function RPCError(err) {
@@ -40747,7 +40876,7 @@ RPCError.prototype = Error.prototype;
 
 module.exports = RPCError;
 
-},{}],292:[function(require,module,exports){
+},{}],296:[function(require,module,exports){
 "use strict";
 
 var createEthrpc = require("./create-ethrpc");
@@ -40761,7 +40890,7 @@ ethrpc.withCustomReducer = function (customReducer) {
 
 module.exports = ethrpc;
 
-},{"./create-ethrpc":280,"./reducers":314,"./reducers/compose-reducers":308}],293:[function(require,module,exports){
+},{"./create-ethrpc":284,"./reducers":318,"./reducers/compose-reducers":312}],297:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -40777,21 +40906,21 @@ module.exports.setState = function (newState) { assign(state, newState); };
 module.exports.set = function (path, newState) { set(state, path, newState); };
 module.exports.unset = function (path) { unset(state, path); };
 
-},{"lodash.assign":426,"lodash.get":427,"lodash.set":428,"lodash.unset":429}],294:[function(require,module,exports){
+},{"lodash.assign":430,"lodash.get":431,"lodash.set":432,"lodash.unset":433}],298:[function(require,module,exports){
 (function (process){
 "use strict";
 
 module.exports = (typeof module !== "undefined") && process && !process.browser;
 
 }).call(this,require('_process'))
-},{"_process":458}],295:[function(require,module,exports){
+},{"_process":462}],299:[function(require,module,exports){
 "use strict";
 
 var isNodeJs = require("./is-node-js");
 
 module.exports = isNodeJs ? require("request") : require("browser-request");
 
-},{"./is-node-js":294,"browser-request":155,"request":156}],296:[function(require,module,exports){
+},{"./is-node-js":298,"browser-request":159,"request":160}],300:[function(require,module,exports){
 "use strict";
 
 var syncRequest = require("sync-request");
@@ -40804,13 +40933,13 @@ module.exports = function (method, uri, options) {
   return syncRequest(method, uri, options);
 };
 
-},{"sync-request":550}],297:[function(require,module,exports){
+},{"sync-request":554}],301:[function(require,module,exports){
 "use strict";
 
 var isNode = require("./is-node-js.js");
 if (isNode)  {module.exports = require("websocket").w3cwebsocket;} else	{module.exports = WebSocket;}
 
-},{"./is-node-js.js":294,"websocket":156}],298:[function(require,module,exports){
+},{"./is-node-js.js":298,"websocket":160}],302:[function(require,module,exports){
 "use strict";
 
 var errors = require("../errors/codes");
@@ -40834,7 +40963,7 @@ function handleRawTransactionError(rawTransactionResponse) {
 
 module.exports = handleRawTransactionError;
 
-},{"../errors/codes":288}],299:[function(require,module,exports){
+},{"../errors/codes":292}],303:[function(require,module,exports){
 "use strict";
 
 var packageRawTransaction = require("./package-raw-transaction");
@@ -40875,7 +41004,7 @@ function packageAndSignRawTransaction(payload, address, privateKeyOrSigner, acco
 
 module.exports = packageAndSignRawTransaction;
 
-},{"../errors/codes":288,"../errors/rpc-error":291,"../utils/is-function":353,"./package-raw-transaction":301,"./set-raw-transaction-gas-price":302,"./set-raw-transaction-nonce":303,"./sign-raw-transaction":305}],300:[function(require,module,exports){
+},{"../errors/codes":292,"../errors/rpc-error":295,"../utils/is-function":357,"./package-raw-transaction":305,"./set-raw-transaction-gas-price":306,"./set-raw-transaction-nonce":307,"./sign-raw-transaction":309}],304:[function(require,module,exports){
 "use strict";
 
 var eth_sendRawTransaction = require("../wrappers/eth").sendRawTransaction;
@@ -40922,7 +41051,7 @@ function packageAndSubmitRawTransaction(payload, address, privateKeyOrSigner, ac
 
 module.exports = packageAndSubmitRawTransaction;
 
-},{"../constants":279,"../errors/codes":288,"../errors/rpc-error":291,"../utils/is-function":353,"../wrappers/eth":369,"./handle-raw-transaction-error":298,"./package-and-sign-raw-transaction":299}],301:[function(require,module,exports){
+},{"../constants":283,"../errors/codes":292,"../errors/rpc-error":295,"../utils/is-function":357,"../wrappers/eth":373,"./handle-raw-transaction-error":302,"./package-and-sign-raw-transaction":303}],305:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -40958,7 +41087,7 @@ function packageRawTransaction(payload, address, networkID, currentBlock) {
 
 module.exports = packageRawTransaction;
 
-},{"../constants":279,"../encode-request/package-request":286,"speedomatic":531}],302:[function(require,module,exports){
+},{"../constants":283,"../encode-request/package-request":290,"speedomatic":535}],306:[function(require,module,exports){
 "use strict";
 
 var eth_gasPrice = require("../wrappers/eth").gasPrice;
@@ -40993,7 +41122,7 @@ var setRawTransactionGasPrice = function (packaged, callback) {
 
 module.exports = setRawTransactionGasPrice;
 
-},{"../errors/codes":288,"../errors/rpc-error":291,"../utils/is-function":353,"../wrappers/eth":369}],303:[function(require,module,exports){
+},{"../errors/codes":292,"../errors/rpc-error":295,"../utils/is-function":357,"../wrappers/eth":373}],307:[function(require,module,exports){
 "use strict";
 
 var eth = require("../wrappers/eth");
@@ -41022,7 +41151,7 @@ function setRawTransactionNonce(packaged, address, callback) {
 
 module.exports = setRawTransactionNonce;
 
-},{"../utils/is-function":353,"../wrappers/eth":369,"./verify-raw-transaction-nonce":306}],304:[function(require,module,exports){
+},{"../utils/is-function":357,"../wrappers/eth":373,"./verify-raw-transaction-nonce":310}],308:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -41060,7 +41189,7 @@ function signRawTransactionWithKey(packaged, privateKey, callback) {
 module.exports = signRawTransactionWithKey;
 
 }).call(this,require("buffer").Buffer)
-},{"../errors/codes":288,"../errors/rpc-error":291,"../utils/is-function":353,"buffer":188,"ethereumjs-tx":264,"speedomatic":531}],305:[function(require,module,exports){
+},{"../errors/codes":292,"../errors/rpc-error":295,"../utils/is-function":357,"buffer":192,"ethereumjs-tx":268,"speedomatic":535}],309:[function(require,module,exports){
 "use strict";
 
 var immutableDelete = require("immutable-delete");
@@ -41097,7 +41226,7 @@ function signRawTransaction(packaged, privateKeyOrSigner, accountType, callback)
 
 module.exports = signRawTransaction;
 
-},{"../constants":279,"../utils/is-function":353,"./sign-raw-transaction-with-key":304,"immutable-delete":267}],306:[function(require,module,exports){
+},{"../constants":283,"../utils/is-function":357,"./sign-raw-transaction-with-key":308,"immutable-delete":271}],310:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -41123,7 +41252,7 @@ function verifyRawTransactionNonce(nonce) {
 
 module.exports = verifyRawTransactionNonce;
 
-},{"speedomatic":531}],307:[function(require,module,exports){
+},{"speedomatic":535}],311:[function(require,module,exports){
 "use strict";
 
 var initialState = require("./initial-state").coinbase;
@@ -41142,7 +41271,7 @@ module.exports = function (coinbase, action) {
   }
 };
 
-},{"./initial-state":315}],308:[function(require,module,exports){
+},{"./initial-state":319}],312:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -41159,7 +41288,7 @@ function composeReducers(customReducer, reducer) {
 
 module.exports = composeReducers;
 
-},{"lodash.assign":426}],309:[function(require,module,exports){
+},{"lodash.assign":430}],313:[function(require,module,exports){
 "use strict";
 
 var isFunction = require("../utils/is-function");
@@ -41188,7 +41317,7 @@ module.exports = function (configuration, action) {
   }
 };
 
-},{"../utils/is-function":353,"./initial-state":315}],310:[function(require,module,exports){
+},{"../utils/is-function":357,"./initial-state":319}],314:[function(require,module,exports){
 "use strict";
 
 var clone = require("clone");
@@ -41208,7 +41337,7 @@ module.exports = function (currentBlock, action) {
   }
 };
 
-},{"./initial-state":315,"clone":190}],311:[function(require,module,exports){
+},{"./initial-state":319,"clone":194}],315:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -41228,7 +41357,7 @@ module.exports = function (debug, action) {
   }
 };
 
-},{"./initial-state":315,"lodash.assign":426}],312:[function(require,module,exports){
+},{"./initial-state":319,"lodash.assign":430}],316:[function(require,module,exports){
 "use strict";
 
 var initialState = require("./initial-state").gasPrice;
@@ -41247,7 +41376,7 @@ module.exports = function (gasPrice, action) {
   }
 };
 
-},{"./initial-state":315}],313:[function(require,module,exports){
+},{"./initial-state":319}],317:[function(require,module,exports){
 "use strict";
 
 var initialState = require("./initial-state").highestNonce;
@@ -41270,7 +41399,7 @@ module.exports = function (highestNonce, action) {
   }
 };
 
-},{"./initial-state":315}],314:[function(require,module,exports){
+},{"./initial-state":319}],318:[function(require,module,exports){
 "use strict";
 
 var debugReducer = require("./debug");
@@ -41306,7 +41435,7 @@ module.exports = function (state, action) {
   return reducer(state || {}, action);
 };
 
-},{"./coinbase":307,"./configuration":309,"./current-block":310,"./debug":311,"./gas-price":312,"./highest-nonce":313,"./network-id":316,"./no-relay":317,"./subscriptions":318,"./transactions":319}],315:[function(require,module,exports){
+},{"./coinbase":311,"./configuration":313,"./current-block":314,"./debug":315,"./gas-price":316,"./highest-nonce":317,"./network-id":320,"./no-relay":321,"./subscriptions":322,"./transactions":323}],319:[function(require,module,exports){
 "use strict";
 
 module.exports.debug = {
@@ -41335,7 +41464,7 @@ module.exports.transactions = {};
 module.exports.subscriptions = {};
 module.exports.coinbase = null;
 
-},{}],316:[function(require,module,exports){
+},{}],320:[function(require,module,exports){
 "use strict";
 
 var initialState = require("./initial-state").networkID;
@@ -41354,7 +41483,7 @@ module.exports = function (networkID, action) {
   }
 };
 
-},{"./initial-state":315}],317:[function(require,module,exports){
+},{"./initial-state":319}],321:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -41381,7 +41510,7 @@ module.exports = function (noRelay, action) {
   }
 };
 
-},{"./initial-state":315,"lodash.assign":426}],318:[function(require,module,exports){
+},{"./initial-state":319,"lodash.assign":430}],322:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -41411,7 +41540,7 @@ module.exports = function (subscriptions, action) {
   }
 };
 
-},{"./initial-state":315,"immutable-delete":267,"lodash.assign":426}],319:[function(require,module,exports){
+},{"./initial-state":319,"immutable-delete":271,"lodash.assign":430}],323:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -41495,7 +41624,7 @@ module.exports = function (transactions, action) {
   }
 };
 
-},{"../utils/is-object":357,"./initial-state":315,"immutable-delete":267,"lodash.assign":426}],320:[function(require,module,exports){
+},{"../utils/is-object":361,"./initial-state":319,"immutable-delete":271,"lodash.assign":430}],324:[function(require,module,exports){
 "use strict";
 
 var blockchainMessageHandler = require("./rpc/blockchain-message-handler");
@@ -41556,7 +41685,7 @@ function resetState() {
 
 module.exports = resetState;
 
-},{"./clear-transactions":277,"./internal-state":293,"./rpc/blockchain-message-handler":321,"./subscriptions/store-observer":328,"./utils/is-object":357}],321:[function(require,module,exports){
+},{"./clear-transactions":281,"./internal-state":297,"./rpc/blockchain-message-handler":325,"./subscriptions/store-observer":332,"./utils/is-object":361}],325:[function(require,module,exports){
 "use strict";
 
 var parseEthereumResponse = require("../decode-response/parse-ethereum-response");
@@ -41638,7 +41767,7 @@ function blockchainMessageHandler(error, jso) {
 
 module.exports = blockchainMessageHandler;
 
-},{"../decode-response/parse-ethereum-response":283,"../errors":290,"../internal-state":293,"../utils/is-object":357}],322:[function(require,module,exports){
+},{"../decode-response/parse-ethereum-response":287,"../errors":294,"../internal-state":297,"../utils/is-object":361}],326:[function(require,module,exports){
 "use strict";
 
 var stripReturnsTypeAndInvocation = require("../encode-request/strip-returns-type-and-invocation");
@@ -41698,7 +41827,7 @@ function submitRequestToBlockchain(jso, transportRequirements, callback) {
 
 module.exports = submitRequestToBlockchain;
 
-},{"../encode-request/strip-returns-type-and-invocation":287,"../internal-state":293,"../utils/is-function":353}],323:[function(require,module,exports){
+},{"../encode-request/strip-returns-type-and-invocation":291,"../internal-state":297,"../utils/is-function":357}],327:[function(require,module,exports){
 "use strict";
 
 var createBlockAndLogStreamer = require("./block-management/create-block-and-log-streamer");
@@ -41720,7 +41849,7 @@ module.exports = function (startingBlockNumber) {
   };
 };
 
-},{"./block-management/create-block-and-log-streamer":269,"./block-management/ethrpc-transport-adapter":271,"./block-management/on-new-block":273,"./internal-state":293}],324:[function(require,module,exports){
+},{"./block-management/create-block-and-log-streamer":273,"./block-management/ethrpc-transport-adapter":275,"./block-management/on-new-block":277,"./internal-state":297}],328:[function(require,module,exports){
 "use strict";
 
 var addSubscription = require("./add-subscription");
@@ -41737,7 +41866,7 @@ function addNewHeadsSubscription(id, onStateChange) {
 
 module.exports = addNewHeadsSubscription;
 
-},{"./add-subscription":325}],325:[function(require,module,exports){
+},{"./add-subscription":329}],329:[function(require,module,exports){
 "use strict";
 
 var addStoreListener = require("./store-observer").addStoreListener;
@@ -41755,7 +41884,7 @@ function addSubscription(id, reaction, select, onStateChange) {
 
 module.exports = addSubscription;
 
-},{"./store-observer":328}],326:[function(require,module,exports){
+},{"./store-observer":332}],330:[function(require,module,exports){
 "use strict";
 
 var addSubscription = require("./add-subscription");
@@ -41773,7 +41902,7 @@ function addTransactionsSubscription(onStateChange) {
 
 module.exports = addTransactionsSubscription;
 
-},{"./add-subscription":325}],327:[function(require,module,exports){
+},{"./add-subscription":329}],331:[function(require,module,exports){
 "use strict";
 
 var removeStoreListener = require("./store-observer").removeStoreListener;
@@ -41790,7 +41919,7 @@ function removeSubscription(id) {
 
 module.exports = removeSubscription;
 
-},{"./store-observer":328}],328:[function(require,module,exports){
+},{"./store-observer":332}],332:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -41835,7 +41964,7 @@ module.exports.addStoreListener = addStoreListener;
 module.exports.removeStoreListener = removeStoreListener;
 module.exports.removeAllStoreListeners = removeAllStoreListeners;
 
-},{"../utils/is-function":353,"immutable-delete":267,"lodash.assign":426}],329:[function(require,module,exports){
+},{"../utils/is-function":357,"immutable-delete":271,"lodash.assign":430}],333:[function(require,module,exports){
 "use strict";
 
 var clone = require("clone");
@@ -41887,7 +42016,7 @@ function callContractFunction(payload, callback, callbackWrapper, extraArgument)
 
 module.exports = callContractFunction;
 
-},{"../decode-response/handle-rpc-error":282,"../errors/codes":288,"../errors/rpc-error":291,"../transact/call-or-send-transaction":330,"../utils/is-function":353,"clone":190,"speedomatic":531}],330:[function(require,module,exports){
+},{"../decode-response/handle-rpc-error":286,"../errors/codes":292,"../errors/rpc-error":295,"../transact/call-or-send-transaction":334,"../utils/is-function":357,"clone":194,"speedomatic":535}],334:[function(require,module,exports){
 "use strict";
 
 var eth = require("../wrappers/eth");
@@ -41926,7 +42055,7 @@ function callOrSendTransaction(payload, callback) {
 
 module.exports = callOrSendTransaction;
 
-},{"../encode-request/package-request":286,"../errors/codes":288,"../utils/is-function":353,"../utils/is-object":357,"../wrappers/eth":369}],331:[function(require,module,exports){
+},{"../encode-request/package-request":290,"../errors/codes":292,"../utils/is-function":357,"../utils/is-object":361,"../wrappers/eth":373}],335:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -41957,7 +42086,7 @@ function getLoggedReturnValue(txHash, callback) {
 
 module.exports = getLoggedReturnValue;
 
-},{"../errors/codes":288,"../wrappers/eth":369,"bignumber.js":151}],332:[function(require,module,exports){
+},{"../errors/codes":292,"../wrappers/eth":373,"bignumber.js":155}],336:[function(require,module,exports){
 "use strict";
 
 var updateTx = require("./update-tx");
@@ -41976,7 +42105,7 @@ function reprocessTransactions() {
 
 module.exports = reprocessTransactions;
 
-},{"./update-tx":337}],333:[function(require,module,exports){
+},{"./update-tx":341}],337:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -42020,7 +42149,7 @@ function transactAsync(payload, callReturn, privateKeyOrSigner, accountType, onS
 
 module.exports = transactAsync;
 
-},{"../errors/codes":288,"../raw-transactions/package-and-submit-raw-transaction":300,"../transact/call-or-send-transaction":330,"../transact/verify-tx-submitted":338,"immutable-delete":267,"speedomatic":531}],334:[function(require,module,exports){
+},{"../errors/codes":292,"../raw-transactions/package-and-submit-raw-transaction":304,"../transact/call-or-send-transaction":334,"../transact/verify-tx-submitted":342,"immutable-delete":271,"speedomatic":535}],338:[function(require,module,exports){
 /**
  * Send-call-confirm callback sequence
  */
@@ -42068,7 +42197,7 @@ function transact(payload, privateKeyOrSigner, accountType, onSent, onSuccess, o
 
 module.exports = transact;
 
-},{"../errors/codes":288,"../transact/call-contract-function":329,"../transact/call-or-send-transaction":330,"../transact/transact-async":333,"../utils/is-function":353,"../utils/noop":359,"../utils/sha3":360}],335:[function(require,module,exports){
+},{"../errors/codes":292,"../transact/call-contract-function":333,"../transact/call-or-send-transaction":334,"../transact/transact-async":337,"../utils/is-function":357,"../utils/noop":363,"../utils/sha3":364}],339:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -42151,7 +42280,7 @@ function updateMinedTx(txHash) {
 
 module.exports = updateMinedTx;
 
-},{"../constants":279,"../decode-response/handle-rpc-error":282,"../errors/codes":288,"../transact/call-contract-function":329,"../transact/get-logged-return-value":331,"../utils/is-function":353,"../wrappers/eth":369,"bignumber.js":151,"speedomatic":531}],336:[function(require,module,exports){
+},{"../constants":283,"../decode-response/handle-rpc-error":286,"../errors/codes":292,"../transact/call-contract-function":333,"../transact/get-logged-return-value":335,"../utils/is-function":357,"../wrappers/eth":373,"bignumber.js":155,"speedomatic":535}],340:[function(require,module,exports){
 "use strict";
 
 var clone = require("clone");
@@ -42241,7 +42370,7 @@ function updatePendingTx(txHash) {
 
 module.exports = updatePendingTx;
 
-},{"../constants":279,"../errors/codes":288,"../transact/transact":334,"../transact/update-mined-tx":335,"../utils/is-function":353,"../wrappers/eth":369,"clone":190}],337:[function(require,module,exports){
+},{"../constants":283,"../errors/codes":292,"../transact/transact":338,"../transact/update-mined-tx":339,"../utils/is-function":357,"../wrappers/eth":373,"clone":194}],341:[function(require,module,exports){
 "use strict";
 
 var updateMinedTx = require("../transact/update-mined-tx");
@@ -42273,7 +42402,7 @@ function updateTx(txHash) {
 
 module.exports.default = updateTx;
 
-},{"../transact/update-mined-tx":335,"../transact/update-pending-tx":336}],338:[function(require,module,exports){
+},{"../transact/update-mined-tx":339,"../transact/update-pending-tx":340}],342:[function(require,module,exports){
 "use strict";
 
 var updateTx = require("../transact/update-tx");
@@ -42313,7 +42442,7 @@ function verifyTxSubmitted(payload, txHash, callReturn, privateKeyOrSigner, acco
 
 module.exports = verifyTxSubmitted;
 
-},{"../errors/codes":288,"../errors/rpc-error":291,"../transact/update-tx":337,"../utils/is-function":353}],339:[function(require,module,exports){
+},{"../errors/codes":292,"../errors/rpc-error":295,"../transact/update-tx":341,"../utils/is-function":357}],343:[function(require,module,exports){
 "use strict";
 
 function excludeFromTransactionRelay(method) {
@@ -42333,7 +42462,7 @@ function excludeFromTransactionRelay(method) {
 
 module.exports = excludeFromTransactionRelay;
 
-},{}],340:[function(require,module,exports){
+},{}],344:[function(require,module,exports){
 "use strict";
 
 function includeInTransactionRelay(method) {
@@ -42353,7 +42482,7 @@ function includeInTransactionRelay(method) {
 
 module.exports = includeInTransactionRelay;
 
-},{}],341:[function(require,module,exports){
+},{}],345:[function(require,module,exports){
 "use strict";
 
 var addTransactionsSubscription = require("../subscriptions/add-transactions-subscription");
@@ -42383,7 +42512,7 @@ function registerTransactionRelay(transactionRelay) {
 
 module.exports = registerTransactionRelay;
 
-},{"../subscriptions/add-transactions-subscription":326}],342:[function(require,module,exports){
+},{"../subscriptions/add-transactions-subscription":330}],346:[function(require,module,exports){
 "use strict";
 
 var removeSubscription = require("../subscriptions/remove-subscription");
@@ -42396,7 +42525,7 @@ function unregisterTransactionRelay() {
 
 module.exports = unregisterTransactionRelay;
 
-},{"../subscriptions/remove-subscription":327}],343:[function(require,module,exports){
+},{"../subscriptions/remove-subscription":331}],347:[function(require,module,exports){
 "use strict";
 
 /**
@@ -42615,7 +42744,7 @@ function notifyDisconnectListeners(abstractTransport) {
 }
 module.exports = AbstractTransport;
 
-},{}],344:[function(require,module,exports){
+},{}],348:[function(require,module,exports){
 "use strict";
 
 var isUndefined = require("../../utils/is-undefined");
@@ -42676,7 +42805,7 @@ function checkIfComplete(transporter, resultAggregator, onCompleteCallback) {
 
 module.exports = checkIfComplete;
 
-},{"../../utils/is-not-null":355,"../../utils/is-null":356,"../../utils/is-undefined":358}],345:[function(require,module,exports){
+},{"../../utils/is-not-null":359,"../../utils/is-null":360,"../../utils/is-undefined":362}],349:[function(require,module,exports){
 "use strict";
 
 var isNotNull = require("../../utils/is-not-null");
@@ -42711,7 +42840,7 @@ function chooseTransport(internalState, requirements) {
 
 module.exports = chooseTransport;
 
-},{"../../utils/is-not-null":355}],346:[function(require,module,exports){
+},{"../../utils/is-not-null":359}],350:[function(require,module,exports){
 "use strict";
 
 var AbstractTransport = require("./abstract-transport.js");
@@ -42783,7 +42912,7 @@ HttpTransport.prototype.submitRpcRequest = function (rpcObject, errorCallback) {
 
 module.exports = HttpTransport;
 
-},{"../platform/request.js":295,"./abstract-transport.js":343}],347:[function(require,module,exports){
+},{"../platform/request.js":299,"./abstract-transport.js":347}],351:[function(require,module,exports){
 "use strict";
 
 var net = require("net");
@@ -42844,7 +42973,7 @@ IpcTransport.prototype.submitRpcRequest = function (rpcJso, errorCallback) {
 
 module.exports = IpcTransport;
 
-},{"./abstract-transport.js":343,"net":185,"oboe":445}],348:[function(require,module,exports){
+},{"./abstract-transport.js":347,"net":189,"oboe":449}],352:[function(require,module,exports){
 "use strict";
 
 var AbstractTransport = require("./abstract-transport.js");
@@ -42895,7 +43024,7 @@ SyncTransport.prototype.submitRpcRequest = function (/*rpcObject, errorCallback*
 
 module.exports = SyncTransport;
 
-},{"../platform/sync-request.js":296,"./abstract-transport.js":343,"./http-transport.js":346}],349:[function(require,module,exports){
+},{"../platform/sync-request.js":300,"./abstract-transport.js":347,"./http-transport.js":350}],353:[function(require,module,exports){
 "use strict";
 
 var HttpTransport = require("./http-transport");
@@ -43064,7 +43193,7 @@ Transporter.prototype.removeDisconnectListener = function (token) {
 
 module.exports = Transporter;
 
-},{"../utils/create-array-with-default-value":352,"./helpers/check-if-complete":344,"./helpers/choose-transport":345,"./http-transport":346,"./ipc-transport":347,"./sync-transport":348,"./web3-transport":350,"./ws-transport":351}],350:[function(require,module,exports){
+},{"../utils/create-array-with-default-value":356,"./helpers/check-if-complete":348,"./helpers/choose-transport":349,"./http-transport":350,"./ipc-transport":351,"./sync-transport":352,"./web3-transport":354,"./ws-transport":355}],354:[function(require,module,exports){
 "use strict";
 
 var AbstractTransport = require("./abstract-transport.js");
@@ -43096,7 +43225,7 @@ Web3Transport.prototype.submitRpcRequest = function (rpcObject, errorCallback) {
 
 module.exports = Web3Transport;
 
-},{"./abstract-transport.js":343}],351:[function(require,module,exports){
+},{"./abstract-transport.js":347}],355:[function(require,module,exports){
 "use strict";
 
 var AbstractTransport = require("./abstract-transport");
@@ -43160,7 +43289,7 @@ WsTransport.prototype.submitRpcRequest = function (rpcJso, errorCallback) {
 
 module.exports = WsTransport;
 
-},{"../platform/web-socket-client":297,"./abstract-transport":343}],352:[function(require,module,exports){
+},{"../platform/web-socket-client":301,"./abstract-transport":347}],356:[function(require,module,exports){
 "use strict";
 
 var createArrayWithDefaultValue = function (size, defaultValue) {
@@ -43171,7 +43300,7 @@ var createArrayWithDefaultValue = function (size, defaultValue) {
 
 module.exports = createArrayWithDefaultValue;
 
-},{}],353:[function(require,module,exports){
+},{}],357:[function(require,module,exports){
 "use strict";
 
 var isFunction = function (f) {
@@ -43180,7 +43309,7 @@ var isFunction = function (f) {
 
 module.exports = isFunction;
 
-},{}],354:[function(require,module,exports){
+},{}],358:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -43196,7 +43325,7 @@ module.exports = function (str) {
   return false;
 };
 
-},{"speedomatic":531}],355:[function(require,module,exports){
+},{"speedomatic":535}],359:[function(require,module,exports){
 "use strict";
 
 var isNotNull = function (value) {
@@ -43205,7 +43334,7 @@ var isNotNull = function (value) {
 
 module.exports = isNotNull;
 
-},{}],356:[function(require,module,exports){
+},{}],360:[function(require,module,exports){
 "use strict";
 
 var isNull = function (value) {
@@ -43214,7 +43343,7 @@ var isNull = function (value) {
 
 module.exports = isNull;
 
-},{}],357:[function(require,module,exports){
+},{}],361:[function(require,module,exports){
 "use strict";
 
 function isObject(item) {
@@ -43223,7 +43352,7 @@ function isObject(item) {
 
 module.exports = isObject;
 
-},{}],358:[function(require,module,exports){
+},{}],362:[function(require,module,exports){
 "use strict";
 
 var isUndefined = function (value) {
@@ -43232,14 +43361,14 @@ var isUndefined = function (value) {
 
 module.exports = isUndefined;
 
-},{}],359:[function(require,module,exports){
+},{}],363:[function(require,module,exports){
 "use strict";
 
 var noop = function () { };
 
 module.exports = noop;
 
-},{}],360:[function(require,module,exports){
+},{}],364:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -43262,7 +43391,7 @@ module.exports = function (data, encoding, callback) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../utils/is-function":353,"buffer":188,"keccak/js":411,"speedomatic":531}],361:[function(require,module,exports){
+},{"../utils/is-function":357,"buffer":192,"keccak/js":415,"speedomatic":535}],365:[function(require,module,exports){
 "use strict";
 var sha3 = require("../utils/sha3");
 
@@ -43306,7 +43435,7 @@ var validateAddress = function (address) {
 
 module.exports = validateAddress;
 
-},{"../utils/sha3":360}],362:[function(require,module,exports){
+},{"../utils/sha3":364}],366:[function(require,module,exports){
 "use strict";
 
 var validateNumber = require("./validate-number");
@@ -43326,7 +43455,7 @@ var validateAndDefaultBlockNumber = function (blockNumber) {
 
 module.exports = validateAndDefaultBlockNumber;
 
-},{"./validate-number":365}],363:[function(require,module,exports){
+},{"./validate-number":369}],367:[function(require,module,exports){
 "use strict";
 
 var ErrorWithData = require("../errors").ErrorWithData;
@@ -43344,7 +43473,7 @@ function validateBlock(block) {
 
 module.exports = validateBlock;
 
-},{"../errors":290}],364:[function(require,module,exports){
+},{"../errors":294}],368:[function(require,module,exports){
 "use strict";
 
 function validateConfiguration(configuration) {
@@ -43366,7 +43495,7 @@ function validateConfiguration(configuration) {
 
 module.exports = validateConfiguration;
 
-},{}],365:[function(require,module,exports){
+},{}],369:[function(require,module,exports){
 "use strict";
 
 var validateNumber = function (number, parameterName) {
@@ -43380,7 +43509,7 @@ var validateNumber = function (number, parameterName) {
 
 module.exports = validateNumber;
 
-},{}],366:[function(require,module,exports){
+},{}],370:[function(require,module,exports){
 "use strict";
 
 var validateAddress = require("./validate-address");
@@ -43406,7 +43535,7 @@ var validateTransaction = function (transaction) {
 
 module.exports = validateTransaction;
 
-},{"./validate-address":361,"./validate-number":365}],367:[function(require,module,exports){
+},{"./validate-address":365,"./validate-number":369}],371:[function(require,module,exports){
 "use strict";
 
 function bindDispatchToMethod(dispatch, method) {
@@ -43417,7 +43546,7 @@ function bindDispatchToMethod(dispatch, method) {
 
 module.exports = bindDispatchToMethod;
 
-},{}],368:[function(require,module,exports){
+},{}],372:[function(require,module,exports){
 "use strict";
 
 var bindDispatchToMethod = require("./bind-dispatch-to-method");
@@ -43431,7 +43560,7 @@ function bindDispatch(dispatch, namespace) {
 
 module.exports = bindDispatch;
 
-},{"./bind-dispatch-to-method":367}],369:[function(require,module,exports){
+},{"./bind-dispatch-to-method":371}],373:[function(require,module,exports){
 "use strict";
 
 var makeWrapper = require("./make-wrapper");
@@ -43485,7 +43614,7 @@ module.exports = {
   unsubscribe: makeWrapper("eth_unsubscribe")
 };
 
-},{"./make-wrapper":371}],370:[function(require,module,exports){
+},{"./make-wrapper":375}],374:[function(require,module,exports){
 "use strict";
 
 var eth_sign = require("../wrappers/eth").sign;
@@ -43517,7 +43646,7 @@ function isUnlocked(account, callback) {
 
 module.exports = isUnlocked;
 
-},{"../utils/is-function":353,"../wrappers/eth":369}],371:[function(require,module,exports){
+},{"../utils/is-function":357,"../wrappers/eth":373}],375:[function(require,module,exports){
 "use strict";
 
 var raw = require("./raw");
@@ -43536,7 +43665,7 @@ function makeWrapper(command) {
 
 module.exports = makeWrapper;
 
-},{"../utils/is-function":353,"./raw":376}],372:[function(require,module,exports){
+},{"../utils/is-function":357,"./raw":380}],376:[function(require,module,exports){
 "use strict";
 
 var makeWrapper = require("./make-wrapper");
@@ -43546,7 +43675,7 @@ module.exports = {
   stop: makeWrapper("miner_stop")
 };
 
-},{"./make-wrapper":371}],373:[function(require,module,exports){
+},{"./make-wrapper":375}],377:[function(require,module,exports){
 "use strict";
 
 var makeWrapper = require("./make-wrapper");
@@ -43557,7 +43686,7 @@ module.exports = {
   peerCount: makeWrapper("net_peerCount")
 };
 
-},{"./make-wrapper":371}],374:[function(require,module,exports){
+},{"./make-wrapper":375}],378:[function(require,module,exports){
 "use strict";
 
 var makeWrapper = require("./make-wrapper");
@@ -43568,7 +43697,7 @@ module.exports = {
   lockAccount: makeWrapper("personal_lockAccount")
 };
 
-},{"./make-wrapper":371}],375:[function(require,module,exports){
+},{"./make-wrapper":375}],379:[function(require,module,exports){
 "use strict";
 
 var eth = require("./eth");
@@ -43589,7 +43718,7 @@ function publish(compiled, callback) {
 
 module.exports = publish;
 
-},{"../constants":279,"../utils/is-function":353,"./eth":369}],376:[function(require,module,exports){
+},{"../constants":283,"../utils/is-function":357,"./eth":373}],380:[function(require,module,exports){
 "use strict";
 
 var submitRequestToBlockchain = require("../rpc/submit-request-to-blockchain");
@@ -43605,7 +43734,7 @@ function raw(command, params, callback) {
 
 module.exports = raw;
 
-},{"../encode-request/make-request-payload":285,"../rpc/submit-request-to-blockchain":322,"../utils/is-function":353}],377:[function(require,module,exports){
+},{"../encode-request/make-request-payload":289,"../rpc/submit-request-to-blockchain":326,"../utils/is-function":357}],381:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -43626,7 +43755,7 @@ function resendRawTransaction(transaction, privateKey, gasPrice, gasLimit, callb
 
 module.exports = resendRawTransaction;
 
-},{"../raw-transactions/sign-raw-transaction-with-key":304,"../wrappers/eth":369,"clone":190,"speedomatic":531}],378:[function(require,module,exports){
+},{"../raw-transactions/sign-raw-transaction-with-key":308,"../wrappers/eth":373,"clone":194,"speedomatic":535}],382:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -43644,7 +43773,7 @@ function resendTransaction(transaction, gasPrice, gasLimit, callback) {
 
 module.exports = resendTransaction;
 
-},{"../wrappers/eth":369,"clone":190,"speedomatic":531}],379:[function(require,module,exports){
+},{"../wrappers/eth":373,"clone":194,"speedomatic":535}],383:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -43674,7 +43803,7 @@ function sendEther(to, value, from, onSent, onSuccess, onFailed) {
 
 module.exports = sendEther;
 
-},{"../transact/transact":334,"../utils/is-object":357,"speedomatic":531}],380:[function(require,module,exports){
+},{"../transact/transact":338,"../utils/is-object":361,"speedomatic":535}],384:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -43694,7 +43823,7 @@ function setCoinbase(callback) {
 
 module.exports = setCoinbase;
 
-},{"../utils/is-function":353,"./eth":369,"speedomatic":531}],381:[function(require,module,exports){
+},{"../utils/is-function":357,"./eth":373,"speedomatic":535}],385:[function(require,module,exports){
 "use strict";
 
 var eth_gasPrice = require("./eth").gasPrice;
@@ -43714,7 +43843,7 @@ function setGasPrice(callback) {
 
 module.exports = setGasPrice;
 
-},{"../utils/is-function":353,"../utils/is-hex":354,"./eth":369}],382:[function(require,module,exports){
+},{"../utils/is-function":357,"../utils/is-hex":358,"./eth":373}],386:[function(require,module,exports){
 "use strict";
 
 var makeWrapper = require("./make-wrapper");
@@ -43732,7 +43861,7 @@ module.exports = {
   getMessages: makeWrapper("shh_getMessages")
 };
 
-},{"./make-wrapper":371}],383:[function(require,module,exports){
+},{"./make-wrapper":375}],387:[function(require,module,exports){
 "use strict";
 
 var makeWrapper = require("./make-wrapper");
@@ -43747,7 +43876,7 @@ module.exports = {
   clientVersion: makeWrapper("web3_clientVersion")
 };
 
-},{"../utils/sha3":360,"./make-wrapper":371}],384:[function(require,module,exports){
+},{"../utils/sha3":364,"./make-wrapper":375}],388:[function(require,module,exports){
 'use strict';
 
 var d        = require('d')
@@ -43881,7 +44010,7 @@ module.exports = exports = function (o) {
 };
 exports.methods = methods;
 
-},{"d":199,"es5-ext/object/valid-callable":236}],385:[function(require,module,exports){
+},{"d":203,"es5-ext/object/valid-callable":240}],389:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -44185,7 +44314,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],386:[function(require,module,exports){
+},{}],390:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var MD5 = require('md5.js')
 
@@ -44232,7 +44361,7 @@ function EVP_BytesToKey (password, salt, keyBits, ivLen) {
 
 module.exports = EVP_BytesToKey
 
-},{"md5.js":440,"safe-buffer":490}],387:[function(require,module,exports){
+},{"md5.js":444,"safe-buffer":494}],391:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var Transform = require('stream').Transform
@@ -44319,7 +44448,7 @@ HashBase.prototype._digest = function () {
 module.exports = HashBase
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":188,"inherits":406,"stream":544}],388:[function(require,module,exports){
+},{"buffer":192,"inherits":410,"stream":548}],392:[function(require,module,exports){
 var hash = exports;
 
 hash.utils = require('./hash/utils');
@@ -44336,7 +44465,7 @@ hash.sha384 = hash.sha.sha384;
 hash.sha512 = hash.sha.sha512;
 hash.ripemd160 = hash.ripemd.ripemd160;
 
-},{"./hash/common":389,"./hash/hmac":390,"./hash/ripemd":391,"./hash/sha":392,"./hash/utils":399}],389:[function(require,module,exports){
+},{"./hash/common":393,"./hash/hmac":394,"./hash/ripemd":395,"./hash/sha":396,"./hash/utils":403}],393:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -44430,7 +44559,7 @@ BlockHash.prototype._pad = function pad() {
   return res;
 };
 
-},{"./utils":399,"minimalistic-assert":443}],390:[function(require,module,exports){
+},{"./utils":403,"minimalistic-assert":447}],394:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -44479,7 +44608,7 @@ Hmac.prototype.digest = function digest(enc) {
   return this.outer.digest(enc);
 };
 
-},{"./utils":399,"minimalistic-assert":443}],391:[function(require,module,exports){
+},{"./utils":403,"minimalistic-assert":447}],395:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -44627,7 +44756,7 @@ var sh = [
   8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11
 ];
 
-},{"./common":389,"./utils":399}],392:[function(require,module,exports){
+},{"./common":393,"./utils":403}],396:[function(require,module,exports){
 'use strict';
 
 exports.sha1 = require('./sha/1');
@@ -44636,7 +44765,7 @@ exports.sha256 = require('./sha/256');
 exports.sha384 = require('./sha/384');
 exports.sha512 = require('./sha/512');
 
-},{"./sha/1":393,"./sha/224":394,"./sha/256":395,"./sha/384":396,"./sha/512":397}],393:[function(require,module,exports){
+},{"./sha/1":397,"./sha/224":398,"./sha/256":399,"./sha/384":400,"./sha/512":401}],397:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -44712,7 +44841,7 @@ SHA1.prototype._digest = function digest(enc) {
     return utils.split32(this.h, 'big');
 };
 
-},{"../common":389,"../utils":399,"./common":398}],394:[function(require,module,exports){
+},{"../common":393,"../utils":403,"./common":402}],398:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -44744,7 +44873,7 @@ SHA224.prototype._digest = function digest(enc) {
 };
 
 
-},{"../utils":399,"./256":395}],395:[function(require,module,exports){
+},{"../utils":403,"./256":399}],399:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -44851,7 +44980,7 @@ SHA256.prototype._digest = function digest(enc) {
     return utils.split32(this.h, 'big');
 };
 
-},{"../common":389,"../utils":399,"./common":398,"minimalistic-assert":443}],396:[function(require,module,exports){
+},{"../common":393,"../utils":403,"./common":402,"minimalistic-assert":447}],400:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -44888,7 +45017,7 @@ SHA384.prototype._digest = function digest(enc) {
     return utils.split32(this.h.slice(0, 12), 'big');
 };
 
-},{"../utils":399,"./512":397}],397:[function(require,module,exports){
+},{"../utils":403,"./512":401}],401:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -45220,7 +45349,7 @@ function g1_512_lo(xh, xl) {
   return r;
 }
 
-},{"../common":389,"../utils":399,"minimalistic-assert":443}],398:[function(require,module,exports){
+},{"../common":393,"../utils":403,"minimalistic-assert":447}],402:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -45271,7 +45400,7 @@ function g1_256(x) {
 }
 exports.g1_256 = g1_256;
 
-},{"../utils":399}],399:[function(require,module,exports){
+},{"../utils":403}],403:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -45526,7 +45655,7 @@ function shr64_lo(ah, al, num) {
 }
 exports.shr64_lo = shr64_lo;
 
-},{"inherits":406,"minimalistic-assert":443}],400:[function(require,module,exports){
+},{"inherits":410,"minimalistic-assert":447}],404:[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
@@ -45641,7 +45770,7 @@ HmacDRBG.prototype.generate = function generate(len, enc, add, addEnc) {
   return utils.encode(res, enc);
 };
 
-},{"hash.js":388,"minimalistic-assert":443,"minimalistic-crypto-utils":444}],401:[function(require,module,exports){
+},{"hash.js":392,"minimalistic-assert":447,"minimalistic-crypto-utils":448}],405:[function(require,module,exports){
 'use strict';
 
 module.exports = Response;
@@ -45686,7 +45815,7 @@ Response.prototype.getBody = function (encoding) {
   return encoding ? this.body.toString(encoding) : this.body;
 };
 
-},{}],402:[function(require,module,exports){
+},{}],406:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -45772,7 +45901,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],403:[function(require,module,exports){
+},{}],407:[function(require,module,exports){
 "use strict";
 
 /**
@@ -45793,7 +45922,7 @@ module.exports = function (originalObject, excludeKey) {
   }, {});
 };
 
-},{}],404:[function(require,module,exports){
+},{}],408:[function(require,module,exports){
 /**
  *  Copyright (c) 2014-2015, Facebook, Inc.
  *  All rights reserved.
@@ -50773,7 +50902,7 @@ module.exports = function (originalObject, excludeKey) {
   return Immutable;
 
 }));
-},{}],405:[function(require,module,exports){
+},{}],409:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -50784,7 +50913,7 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],406:[function(require,module,exports){
+},{}],410:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -50809,7 +50938,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],407:[function(require,module,exports){
+},{}],411:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -50832,7 +50961,7 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],408:[function(require,module,exports){
+},{}],412:[function(require,module,exports){
 /**
  * Returns a `Boolean` on whether or not the a `String` starts with '0x'
  * @param {String} str the string input value
@@ -50847,14 +50976,14 @@ module.exports = function isHexPrefixed(str) {
   return str.slice(0, 2) === '0x';
 }
 
-},{}],409:[function(require,module,exports){
+},{}],413:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],410:[function(require,module,exports){
+},{}],414:[function(require,module,exports){
 (function (global){
 /*
  * js-sha3 v0.3.1
@@ -51290,11 +51419,11 @@ module.exports = Array.isArray || function (arr) {
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],411:[function(require,module,exports){
+},{}],415:[function(require,module,exports){
 'use strict'
 module.exports = require('./lib/api')(require('./lib/keccak'))
 
-},{"./lib/api":412,"./lib/keccak":416}],412:[function(require,module,exports){
+},{"./lib/api":416,"./lib/keccak":420}],416:[function(require,module,exports){
 'use strict'
 var createKeccak = require('./keccak')
 var createShake = require('./shake')
@@ -51324,7 +51453,7 @@ module.exports = function (KeccakState) {
   }
 }
 
-},{"./keccak":413,"./shake":414}],413:[function(require,module,exports){
+},{"./keccak":417,"./shake":418}],417:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var Transform = require('stream').Transform
@@ -51411,7 +51540,7 @@ module.exports = function (KeccakState) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":188,"inherits":406,"stream":544}],414:[function(require,module,exports){
+},{"buffer":192,"inherits":410,"stream":548}],418:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var Transform = require('stream').Transform
@@ -51489,7 +51618,7 @@ module.exports = function (KeccakState) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":188,"inherits":406,"stream":544}],415:[function(require,module,exports){
+},{"buffer":192,"inherits":410,"stream":548}],419:[function(require,module,exports){
 'use strict'
 var P1600_ROUND_CONSTANTS = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649, 0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0, 2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771, 2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648, 2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648]
 
@@ -51678,7 +51807,7 @@ exports.p1600 = function (s) {
   }
 }
 
-},{}],416:[function(require,module,exports){
+},{}],420:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var keccakState = require('./keccak-state-unroll')
@@ -51751,10 +51880,10 @@ Keccak.prototype.copy = function (dest) {
 module.exports = Keccak
 
 }).call(this,require("buffer").Buffer)
-},{"./keccak-state-unroll":415,"buffer":188}],417:[function(require,module,exports){
+},{"./keccak-state-unroll":419,"buffer":192}],421:[function(require,module,exports){
 module.exports = require('browserify-sha3').SHA3Hash
 
-},{"browserify-sha3":178}],418:[function(require,module,exports){
+},{"browserify-sha3":182}],422:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * Create, import, and export ethereum keys.
@@ -52302,7 +52431,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/scrypt":419,"_process":458,"buffer":188,"crypto":198,"fs":185,"keccak/js":411,"path":451,"secp256k1/elliptic":420,"sjcl":505,"uuid":562}],419:[function(require,module,exports){
+},{"./lib/scrypt":423,"_process":462,"buffer":192,"crypto":202,"fs":189,"keccak/js":415,"path":455,"secp256k1/elliptic":424,"sjcl":509,"uuid":566}],423:[function(require,module,exports){
 (function (process,__dirname){
 // https://github.com/tonyg/js-scrypt
 module.exports = function (requested_total_memory) {
@@ -64023,11 +64152,11 @@ module.exports = function (requested_total_memory) {
 };
 
 }).call(this,require('_process'),"/node_modules/keythereum/lib")
-},{"_process":458,"fs":185,"path":451}],420:[function(require,module,exports){
+},{"_process":462,"fs":189,"path":455}],424:[function(require,module,exports){
 'use strict'
 module.exports = require('./lib')(require('./lib/elliptic'))
 
-},{"./lib":424,"./lib/elliptic":423}],421:[function(require,module,exports){
+},{"./lib":428,"./lib/elliptic":427}],425:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var toString = Object.prototype.toString
@@ -64075,7 +64204,7 @@ exports.isNumberInInterval = function (number, x, y, message) {
 }
 
 }).call(this,{"isBuffer":require("../../../../is-buffer/index.js")})
-},{"../../../../is-buffer/index.js":407}],422:[function(require,module,exports){
+},{"../../../../is-buffer/index.js":411}],426:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var bip66 = require('bip66')
@@ -64276,7 +64405,7 @@ exports.signatureImportLax = function (sig) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"bip66":152,"buffer":188}],423:[function(require,module,exports){
+},{"bip66":156,"buffer":192}],427:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var createHash = require('create-hash')
@@ -64527,7 +64656,7 @@ exports.ecdhUnsafe = function (publicKey, privateKey, compressed) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../messages.json":425,"bn.js":153,"buffer":188,"create-hash":193,"elliptic":210}],424:[function(require,module,exports){
+},{"../messages.json":429,"bn.js":157,"buffer":192,"create-hash":197,"elliptic":214}],428:[function(require,module,exports){
 'use strict'
 var assert = require('./assert')
 var der = require('./der')
@@ -64760,7 +64889,7 @@ module.exports = function (secp256k1) {
   }
 }
 
-},{"./assert":421,"./der":422,"./messages.json":425}],425:[function(require,module,exports){
+},{"./assert":425,"./der":426,"./messages.json":429}],429:[function(require,module,exports){
 module.exports={
   "COMPRESSED_TYPE_INVALID": "compressed should be a boolean",
   "EC_PRIVATE_KEY_TYPE_INVALID": "private key should be a Buffer",
@@ -64798,7 +64927,7 @@ module.exports={
   "TWEAK_LENGTH_INVALID": "tweak length is invalid"
 }
 
-},{}],426:[function(require,module,exports){
+},{}],430:[function(require,module,exports){
 /**
  * lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -65437,7 +65566,7 @@ function keys(object) {
 
 module.exports = assign;
 
-},{}],427:[function(require,module,exports){
+},{}],431:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -66372,7 +66501,7 @@ function get(object, path, defaultValue) {
 module.exports = get;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],428:[function(require,module,exports){
+},{}],432:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -67366,7 +67495,7 @@ function set(object, path, value) {
 module.exports = set;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],429:[function(require,module,exports){
+},{}],433:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -68379,7 +68508,7 @@ function unset(object, path) {
 module.exports = unset;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],430:[function(require,module,exports){
+},{}],434:[function(require,module,exports){
 var root = require('./_root');
 
 /** Built-in value references. */
@@ -68387,7 +68516,7 @@ var Symbol = root.Symbol;
 
 module.exports = Symbol;
 
-},{"./_root":437}],431:[function(require,module,exports){
+},{"./_root":441}],435:[function(require,module,exports){
 var Symbol = require('./_Symbol'),
     getRawTag = require('./_getRawTag'),
     objectToString = require('./_objectToString');
@@ -68417,7 +68546,7 @@ function baseGetTag(value) {
 
 module.exports = baseGetTag;
 
-},{"./_Symbol":430,"./_getRawTag":434,"./_objectToString":435}],432:[function(require,module,exports){
+},{"./_Symbol":434,"./_getRawTag":438,"./_objectToString":439}],436:[function(require,module,exports){
 (function (global){
 /** Detect free variable `global` from Node.js. */
 var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
@@ -68425,7 +68554,7 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 module.exports = freeGlobal;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],433:[function(require,module,exports){
+},{}],437:[function(require,module,exports){
 var overArg = require('./_overArg');
 
 /** Built-in value references. */
@@ -68433,7 +68562,7 @@ var getPrototype = overArg(Object.getPrototypeOf, Object);
 
 module.exports = getPrototype;
 
-},{"./_overArg":436}],434:[function(require,module,exports){
+},{"./_overArg":440}],438:[function(require,module,exports){
 var Symbol = require('./_Symbol');
 
 /** Used for built-in method references. */
@@ -68481,7 +68610,7 @@ function getRawTag(value) {
 
 module.exports = getRawTag;
 
-},{"./_Symbol":430}],435:[function(require,module,exports){
+},{"./_Symbol":434}],439:[function(require,module,exports){
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
 
@@ -68505,7 +68634,7 @@ function objectToString(value) {
 
 module.exports = objectToString;
 
-},{}],436:[function(require,module,exports){
+},{}],440:[function(require,module,exports){
 /**
  * Creates a unary function that invokes `func` with its argument transformed.
  *
@@ -68522,7 +68651,7 @@ function overArg(func, transform) {
 
 module.exports = overArg;
 
-},{}],437:[function(require,module,exports){
+},{}],441:[function(require,module,exports){
 var freeGlobal = require('./_freeGlobal');
 
 /** Detect free variable `self`. */
@@ -68533,7 +68662,7 @@ var root = freeGlobal || freeSelf || Function('return this')();
 
 module.exports = root;
 
-},{"./_freeGlobal":432}],438:[function(require,module,exports){
+},{"./_freeGlobal":436}],442:[function(require,module,exports){
 /**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
  * and has a `typeof` result of "object".
@@ -68564,7 +68693,7 @@ function isObjectLike(value) {
 
 module.exports = isObjectLike;
 
-},{}],439:[function(require,module,exports){
+},{}],443:[function(require,module,exports){
 var baseGetTag = require('./_baseGetTag'),
     getPrototype = require('./_getPrototype'),
     isObjectLike = require('./isObjectLike');
@@ -68628,7 +68757,7 @@ function isPlainObject(value) {
 
 module.exports = isPlainObject;
 
-},{"./_baseGetTag":431,"./_getPrototype":433,"./isObjectLike":438}],440:[function(require,module,exports){
+},{"./_baseGetTag":435,"./_getPrototype":437,"./isObjectLike":442}],444:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var inherits = require('inherits')
@@ -68777,7 +68906,7 @@ function fnI (a, b, c, d, m, k, s) {
 module.exports = MD5
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":188,"hash-base":441,"inherits":406}],441:[function(require,module,exports){
+},{"buffer":192,"hash-base":445,"inherits":410}],445:[function(require,module,exports){
 'use strict'
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('stream').Transform
@@ -68874,7 +69003,7 @@ HashBase.prototype._digest = function () {
 
 module.exports = HashBase
 
-},{"inherits":406,"safe-buffer":490,"stream":544}],442:[function(require,module,exports){
+},{"inherits":410,"safe-buffer":494,"stream":548}],446:[function(require,module,exports){
 var bn = require('bn.js');
 var brorand = require('brorand');
 
@@ -68991,7 +69120,7 @@ MillerRabin.prototype.getDivisor = function getDivisor(n, k) {
   return false;
 };
 
-},{"bn.js":153,"brorand":154}],443:[function(require,module,exports){
+},{"bn.js":157,"brorand":158}],447:[function(require,module,exports){
 module.exports = assert;
 
 function assert(val, msg) {
@@ -69004,7 +69133,7 @@ assert.equal = function assertEqual(l, r, msg) {
     throw new Error(msg || ('Assertion failed: ' + l + ' != ' + r));
 };
 
-},{}],444:[function(require,module,exports){
+},{}],448:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -69064,7 +69193,7 @@ utils.encode = function encode(arr, enc) {
     return arr;
 };
 
-},{}],445:[function(require,module,exports){
+},{}],449:[function(require,module,exports){
 // This file is the concatenation of many js files.
 // See http://github.com/jimhigson/oboe.js for the raw source
 
@@ -71768,7 +71897,7 @@ oboe.drop = function() {
       }
    }()), Object, Array, Error, JSON);
 
-},{}],446:[function(require,module,exports){
+},{}],450:[function(require,module,exports){
 module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.2": "aes-128-cbc",
 "2.16.840.1.101.3.4.1.3": "aes-128-ofb",
@@ -71782,7 +71911,7 @@ module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.43": "aes-256-ofb",
 "2.16.840.1.101.3.4.1.44": "aes-256-cfb"
 }
-},{}],447:[function(require,module,exports){
+},{}],451:[function(require,module,exports){
 // from https://github.com/indutny/self-signed/blob/gh-pages/lib/asn1.js
 // Fedor, you are amazing.
 'use strict'
@@ -71906,7 +72035,7 @@ exports.signature = asn1.define('signature', function () {
   )
 })
 
-},{"./certificate":448,"asn1.js":134}],448:[function(require,module,exports){
+},{"./certificate":452,"asn1.js":136}],452:[function(require,module,exports){
 // from https://github.com/Rantanen/node-dtls/blob/25a7dc861bda38cfeac93a723500eea4f0ac2e86/Certificate.js
 // thanks to @Rantanen
 
@@ -71996,7 +72125,7 @@ var X509Certificate = asn.define('X509Certificate', function () {
 
 module.exports = X509Certificate
 
-},{"asn1.js":134}],449:[function(require,module,exports){
+},{"asn1.js":136}],453:[function(require,module,exports){
 (function (Buffer){
 // adapted from https://github.com/apatil/pemstrip
 var findProc = /Proc-Type: 4,ENCRYPTED\n\r?DEK-Info: AES-((?:128)|(?:192)|(?:256))-CBC,([0-9A-H]+)\n\r?\n\r?([0-9A-z\n\r\+\/\=]+)\n\r?/m
@@ -72030,7 +72159,7 @@ module.exports = function (okey, password) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"browserify-aes":159,"buffer":188,"evp_bytestokey":386}],450:[function(require,module,exports){
+},{"browserify-aes":163,"buffer":192,"evp_bytestokey":390}],454:[function(require,module,exports){
 (function (Buffer){
 var asn1 = require('./asn1')
 var aesid = require('./aesid.json')
@@ -72140,7 +72269,7 @@ function decrypt (data, password) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./aesid.json":446,"./asn1":447,"./fixProc":449,"browserify-aes":159,"buffer":188,"pbkdf2":452}],451:[function(require,module,exports){
+},{"./aesid.json":450,"./asn1":451,"./fixProc":453,"browserify-aes":163,"buffer":192,"pbkdf2":456}],455:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -72368,13 +72497,13 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":458}],452:[function(require,module,exports){
+},{"_process":462}],456:[function(require,module,exports){
 
 exports.pbkdf2 = require('./lib/async')
 
 exports.pbkdf2Sync = require('./lib/sync')
 
-},{"./lib/async":453,"./lib/sync":456}],453:[function(require,module,exports){
+},{"./lib/async":457,"./lib/sync":460}],457:[function(require,module,exports){
 (function (process,global){
 var checkParameters = require('./precondition')
 var defaultEncoding = require('./default-encoding')
@@ -72476,7 +72605,7 @@ module.exports = function (password, salt, iterations, keylen, digest, callback)
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./default-encoding":454,"./precondition":455,"./sync":456,"_process":458,"safe-buffer":490}],454:[function(require,module,exports){
+},{"./default-encoding":458,"./precondition":459,"./sync":460,"_process":462,"safe-buffer":494}],458:[function(require,module,exports){
 (function (process){
 var defaultEncoding
 /* istanbul ignore next */
@@ -72490,7 +72619,7 @@ if (process.browser) {
 module.exports = defaultEncoding
 
 }).call(this,require('_process'))
-},{"_process":458}],455:[function(require,module,exports){
+},{"_process":462}],459:[function(require,module,exports){
 var MAX_ALLOC = Math.pow(2, 30) - 1 // default in iojs
 module.exports = function (iterations, keylen) {
   if (typeof iterations !== 'number') {
@@ -72510,7 +72639,7 @@ module.exports = function (iterations, keylen) {
   }
 }
 
-},{}],456:[function(require,module,exports){
+},{}],460:[function(require,module,exports){
 var md5 = require('create-hash/md5')
 var rmd160 = require('ripemd160')
 var sha = require('sha.js')
@@ -72613,7 +72742,7 @@ function pbkdf2 (password, salt, iterations, keylen, digest) {
 
 module.exports = pbkdf2
 
-},{"./default-encoding":454,"./precondition":455,"create-hash/md5":195,"ripemd160":488,"safe-buffer":490,"sha.js":498}],457:[function(require,module,exports){
+},{"./default-encoding":458,"./precondition":459,"create-hash/md5":199,"ripemd160":492,"safe-buffer":494,"sha.js":502}],461:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -72660,7 +72789,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 }
 
 }).call(this,require('_process'))
-},{"_process":458}],458:[function(require,module,exports){
+},{"_process":462}],462:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -72846,7 +72975,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],459:[function(require,module,exports){
+},{}],463:[function(require,module,exports){
 exports.publicEncrypt = require('./publicEncrypt');
 exports.privateDecrypt = require('./privateDecrypt');
 
@@ -72857,7 +72986,7 @@ exports.privateEncrypt = function privateEncrypt(key, buf) {
 exports.publicDecrypt = function publicDecrypt(key, buf) {
   return exports.privateDecrypt(key, buf, true);
 };
-},{"./privateDecrypt":461,"./publicEncrypt":462}],460:[function(require,module,exports){
+},{"./privateDecrypt":465,"./publicEncrypt":466}],464:[function(require,module,exports){
 (function (Buffer){
 var createHash = require('create-hash');
 module.exports = function (seed, len) {
@@ -72876,7 +73005,7 @@ function i2ops(c) {
   return out;
 }
 }).call(this,require("buffer").Buffer)
-},{"buffer":188,"create-hash":193}],461:[function(require,module,exports){
+},{"buffer":192,"create-hash":197}],465:[function(require,module,exports){
 (function (Buffer){
 var parseKeys = require('parse-asn1');
 var mgf = require('./mgf');
@@ -72987,7 +73116,7 @@ function compare(a, b){
   return dif;
 }
 }).call(this,require("buffer").Buffer)
-},{"./mgf":460,"./withPublic":463,"./xor":464,"bn.js":153,"browserify-rsa":177,"buffer":188,"create-hash":193,"parse-asn1":450}],462:[function(require,module,exports){
+},{"./mgf":464,"./withPublic":467,"./xor":468,"bn.js":157,"browserify-rsa":181,"buffer":192,"create-hash":197,"parse-asn1":454}],466:[function(require,module,exports){
 (function (Buffer){
 var parseKeys = require('parse-asn1');
 var randomBytes = require('randombytes');
@@ -73085,7 +73214,7 @@ function nonZero(len, crypto) {
   return out;
 }
 }).call(this,require("buffer").Buffer)
-},{"./mgf":460,"./withPublic":463,"./xor":464,"bn.js":153,"browserify-rsa":177,"buffer":188,"create-hash":193,"parse-asn1":450,"randombytes":465}],463:[function(require,module,exports){
+},{"./mgf":464,"./withPublic":467,"./xor":468,"bn.js":157,"browserify-rsa":181,"buffer":192,"create-hash":197,"parse-asn1":454,"randombytes":469}],467:[function(require,module,exports){
 (function (Buffer){
 var bn = require('bn.js');
 function withPublic(paddedMsg, key) {
@@ -73098,7 +73227,7 @@ function withPublic(paddedMsg, key) {
 
 module.exports = withPublic;
 }).call(this,require("buffer").Buffer)
-},{"bn.js":153,"buffer":188}],464:[function(require,module,exports){
+},{"bn.js":157,"buffer":192}],468:[function(require,module,exports){
 module.exports = function xor(a, b) {
   var len = a.length;
   var i = -1;
@@ -73107,7 +73236,7 @@ module.exports = function xor(a, b) {
   }
   return a
 };
-},{}],465:[function(require,module,exports){
+},{}],469:[function(require,module,exports){
 (function (process,global){
 'use strict'
 
@@ -73149,7 +73278,7 @@ function randomBytes (size, cb) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":458,"safe-buffer":490}],466:[function(require,module,exports){
+},{"_process":462,"safe-buffer":494}],470:[function(require,module,exports){
 (function (process,global){
 'use strict'
 
@@ -73261,10 +73390,10 @@ function randomFillSync (buf, offset, size) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":458,"randombytes":465,"safe-buffer":490}],467:[function(require,module,exports){
+},{"_process":462,"randombytes":469,"safe-buffer":494}],471:[function(require,module,exports){
 module.exports = require('./lib/_stream_duplex.js');
 
-},{"./lib/_stream_duplex.js":468}],468:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":472}],472:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -73389,7 +73518,7 @@ function forEach(xs, f) {
     f(xs[i], i);
   }
 }
-},{"./_stream_readable":470,"./_stream_writable":472,"core-util-is":191,"inherits":406,"process-nextick-args":457}],469:[function(require,module,exports){
+},{"./_stream_readable":474,"./_stream_writable":476,"core-util-is":195,"inherits":410,"process-nextick-args":461}],473:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -73437,7 +73566,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":471,"core-util-is":191,"inherits":406}],470:[function(require,module,exports){
+},{"./_stream_transform":475,"core-util-is":195,"inherits":410}],474:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -74447,7 +74576,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":468,"./internal/streams/BufferList":473,"./internal/streams/destroy":474,"./internal/streams/stream":475,"_process":458,"core-util-is":191,"events":385,"inherits":406,"isarray":409,"process-nextick-args":457,"safe-buffer":490,"string_decoder/":545,"util":156}],471:[function(require,module,exports){
+},{"./_stream_duplex":472,"./internal/streams/BufferList":477,"./internal/streams/destroy":478,"./internal/streams/stream":479,"_process":462,"core-util-is":195,"events":389,"inherits":410,"isarray":413,"process-nextick-args":461,"safe-buffer":494,"string_decoder/":549,"util":160}],475:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -74662,7 +74791,7 @@ function done(stream, er, data) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":468,"core-util-is":191,"inherits":406}],472:[function(require,module,exports){
+},{"./_stream_duplex":472,"core-util-is":195,"inherits":410}],476:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -75329,7 +75458,7 @@ Writable.prototype._destroy = function (err, cb) {
   cb(err);
 };
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":468,"./internal/streams/destroy":474,"./internal/streams/stream":475,"_process":458,"core-util-is":191,"inherits":406,"process-nextick-args":457,"safe-buffer":490,"util-deprecate":557}],473:[function(require,module,exports){
+},{"./_stream_duplex":472,"./internal/streams/destroy":478,"./internal/streams/stream":479,"_process":462,"core-util-is":195,"inherits":410,"process-nextick-args":461,"safe-buffer":494,"util-deprecate":561}],477:[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -75404,7 +75533,7 @@ module.exports = function () {
 
   return BufferList;
 }();
-},{"safe-buffer":490}],474:[function(require,module,exports){
+},{"safe-buffer":494}],478:[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -75477,13 +75606,13 @@ module.exports = {
   destroy: destroy,
   undestroy: undestroy
 };
-},{"process-nextick-args":457}],475:[function(require,module,exports){
+},{"process-nextick-args":461}],479:[function(require,module,exports){
 module.exports = require('events').EventEmitter;
 
-},{"events":385}],476:[function(require,module,exports){
+},{"events":389}],480:[function(require,module,exports){
 module.exports = require('./readable').PassThrough
 
-},{"./readable":477}],477:[function(require,module,exports){
+},{"./readable":481}],481:[function(require,module,exports){
 exports = module.exports = require('./lib/_stream_readable.js');
 exports.Stream = exports;
 exports.Readable = exports;
@@ -75492,13 +75621,13 @@ exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":468,"./lib/_stream_passthrough.js":469,"./lib/_stream_readable.js":470,"./lib/_stream_transform.js":471,"./lib/_stream_writable.js":472}],478:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":472,"./lib/_stream_passthrough.js":473,"./lib/_stream_readable.js":474,"./lib/_stream_transform.js":475,"./lib/_stream_writable.js":476}],482:[function(require,module,exports){
 module.exports = require('./readable').Transform
 
-},{"./readable":477}],479:[function(require,module,exports){
+},{"./readable":481}],483:[function(require,module,exports){
 module.exports = require('./lib/_stream_writable.js');
 
-},{"./lib/_stream_writable.js":472}],480:[function(require,module,exports){
+},{"./lib/_stream_writable.js":476}],484:[function(require,module,exports){
 "use strict";
 
 var createThunkSubscribeEnhancer = function (extraArgument) {
@@ -75522,7 +75651,7 @@ thunkSubscribeEnhancer.withExtraArgument = createThunkSubscribeEnhancer;
 
 module.exports = thunkSubscribeEnhancer;
 
-},{}],481:[function(require,module,exports){
+},{}],485:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -75581,7 +75710,7 @@ function applyMiddleware() {
     };
   };
 }
-},{"./compose":484}],482:[function(require,module,exports){
+},{"./compose":488}],486:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -75633,7 +75762,7 @@ function bindActionCreators(actionCreators, dispatch) {
   }
   return boundActionCreators;
 }
-},{}],483:[function(require,module,exports){
+},{}],487:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -75778,7 +75907,7 @@ function combineReducers(reducers) {
   };
 }
 }).call(this,require('_process'))
-},{"./createStore":485,"./utils/warning":487,"_process":458,"lodash/isPlainObject":439}],484:[function(require,module,exports){
+},{"./createStore":489,"./utils/warning":491,"_process":462,"lodash/isPlainObject":443}],488:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -75817,7 +75946,7 @@ function compose() {
     }, last.apply(undefined, arguments));
   };
 }
-},{}],485:[function(require,module,exports){
+},{}],489:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -76079,7 +76208,7 @@ function createStore(reducer, preloadedState, enhancer) {
     replaceReducer: replaceReducer
   }, _ref2[_symbolObservable2['default']] = observable, _ref2;
 }
-},{"lodash/isPlainObject":439,"symbol-observable":547}],486:[function(require,module,exports){
+},{"lodash/isPlainObject":443,"symbol-observable":551}],490:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -76128,7 +76257,7 @@ exports.bindActionCreators = _bindActionCreators2['default'];
 exports.applyMiddleware = _applyMiddleware2['default'];
 exports.compose = _compose2['default'];
 }).call(this,require('_process'))
-},{"./applyMiddleware":481,"./bindActionCreators":482,"./combineReducers":483,"./compose":484,"./createStore":485,"./utils/warning":487,"_process":458}],487:[function(require,module,exports){
+},{"./applyMiddleware":485,"./bindActionCreators":486,"./combineReducers":487,"./compose":488,"./createStore":489,"./utils/warning":491,"_process":462}],491:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -76154,7 +76283,7 @@ function warning(message) {
   } catch (e) {}
   /* eslint-enable no-empty */
 }
-},{}],488:[function(require,module,exports){
+},{}],492:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var inherits = require('inherits')
@@ -76449,7 +76578,7 @@ function fn5 (a, b, c, d, e, m, k, s) {
 module.exports = RIPEMD160
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":188,"hash-base":387,"inherits":406}],489:[function(require,module,exports){
+},{"buffer":192,"hash-base":391,"inherits":410}],493:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -76682,7 +76811,7 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":148,"buffer":188}],490:[function(require,module,exports){
+},{"assert":150,"buffer":192}],494:[function(require,module,exports){
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
 var Buffer = buffer.Buffer
@@ -76746,9 +76875,9 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
-},{"buffer":188}],491:[function(require,module,exports){
-arguments[4][420][0].apply(exports,arguments)
-},{"./lib":495,"./lib/elliptic":494,"dup":420}],492:[function(require,module,exports){
+},{"buffer":192}],495:[function(require,module,exports){
+arguments[4][424][0].apply(exports,arguments)
+},{"./lib":499,"./lib/elliptic":498,"dup":424}],496:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var toString = Object.prototype.toString
@@ -76796,7 +76925,7 @@ exports.isNumberInInterval = function (number, x, y, message) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":407}],493:[function(require,module,exports){
+},{"../../is-buffer/index.js":411}],497:[function(require,module,exports){
 'use strict'
 var Buffer = require('safe-buffer').Buffer
 var bip66 = require('bip66')
@@ -76991,7 +77120,7 @@ exports.signatureImportLax = function (sig) {
   return { r: r, s: s }
 }
 
-},{"bip66":152,"safe-buffer":490}],494:[function(require,module,exports){
+},{"bip66":156,"safe-buffer":494}],498:[function(require,module,exports){
 'use strict'
 var Buffer = require('safe-buffer').Buffer
 var createHash = require('create-hash')
@@ -77241,11 +77370,11 @@ exports.ecdhUnsafe = function (publicKey, privateKey, compressed) {
   return Buffer.from(pair.pub.mul(scalar).encode(true, compressed))
 }
 
-},{"../messages.json":496,"bn.js":153,"create-hash":193,"elliptic":210,"safe-buffer":490}],495:[function(require,module,exports){
-arguments[4][424][0].apply(exports,arguments)
-},{"./assert":492,"./der":493,"./messages.json":496,"dup":424}],496:[function(require,module,exports){
-arguments[4][425][0].apply(exports,arguments)
-},{"dup":425}],497:[function(require,module,exports){
+},{"../messages.json":500,"bn.js":157,"create-hash":197,"elliptic":214,"safe-buffer":494}],499:[function(require,module,exports){
+arguments[4][428][0].apply(exports,arguments)
+},{"./assert":496,"./der":497,"./messages.json":500,"dup":428}],500:[function(require,module,exports){
+arguments[4][429][0].apply(exports,arguments)
+},{"dup":429}],501:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 // prototype class for hash functions
@@ -77328,7 +77457,7 @@ Hash.prototype._update = function () {
 
 module.exports = Hash
 
-},{"safe-buffer":490}],498:[function(require,module,exports){
+},{"safe-buffer":494}],502:[function(require,module,exports){
 var exports = module.exports = function SHA (algorithm) {
   algorithm = algorithm.toLowerCase()
 
@@ -77345,7 +77474,7 @@ exports.sha256 = require('./sha256')
 exports.sha384 = require('./sha384')
 exports.sha512 = require('./sha512')
 
-},{"./sha":499,"./sha1":500,"./sha224":501,"./sha256":502,"./sha384":503,"./sha512":504}],499:[function(require,module,exports){
+},{"./sha":503,"./sha1":504,"./sha224":505,"./sha256":506,"./sha384":507,"./sha512":508}],503:[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-0, as defined
  * in FIPS PUB 180-1
@@ -77441,7 +77570,7 @@ Sha.prototype._hash = function () {
 
 module.exports = Sha
 
-},{"./hash":497,"inherits":406,"safe-buffer":490}],500:[function(require,module,exports){
+},{"./hash":501,"inherits":410,"safe-buffer":494}],504:[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
  * in FIPS PUB 180-1
@@ -77542,7 +77671,7 @@ Sha1.prototype._hash = function () {
 
 module.exports = Sha1
 
-},{"./hash":497,"inherits":406,"safe-buffer":490}],501:[function(require,module,exports){
+},{"./hash":501,"inherits":410,"safe-buffer":494}],505:[function(require,module,exports){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
  * in FIPS 180-2
@@ -77597,7 +77726,7 @@ Sha224.prototype._hash = function () {
 
 module.exports = Sha224
 
-},{"./hash":497,"./sha256":502,"inherits":406,"safe-buffer":490}],502:[function(require,module,exports){
+},{"./hash":501,"./sha256":506,"inherits":410,"safe-buffer":494}],506:[function(require,module,exports){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
  * in FIPS 180-2
@@ -77734,7 +77863,7 @@ Sha256.prototype._hash = function () {
 
 module.exports = Sha256
 
-},{"./hash":497,"inherits":406,"safe-buffer":490}],503:[function(require,module,exports){
+},{"./hash":501,"inherits":410,"safe-buffer":494}],507:[function(require,module,exports){
 var inherits = require('inherits')
 var SHA512 = require('./sha512')
 var Hash = require('./hash')
@@ -77793,7 +77922,7 @@ Sha384.prototype._hash = function () {
 
 module.exports = Sha384
 
-},{"./hash":497,"./sha512":504,"inherits":406,"safe-buffer":490}],504:[function(require,module,exports){
+},{"./hash":501,"./sha512":508,"inherits":410,"safe-buffer":494}],508:[function(require,module,exports){
 var inherits = require('inherits')
 var Hash = require('./hash')
 var Buffer = require('safe-buffer').Buffer
@@ -78055,7 +78184,7 @@ Sha512.prototype._hash = function () {
 
 module.exports = Sha512
 
-},{"./hash":497,"inherits":406,"safe-buffer":490}],505:[function(require,module,exports){
+},{"./hash":501,"inherits":410,"safe-buffer":494}],509:[function(require,module,exports){
 "use strict";var sjcl={cipher:{},hash:{},keyexchange:{},mode:{},misc:{},codec:{},exception:{corrupt:function(a){this.toString=function(){return"CORRUPT: "+this.message};this.message=a},invalid:function(a){this.toString=function(){return"INVALID: "+this.message};this.message=a},bug:function(a){this.toString=function(){return"BUG: "+this.message};this.message=a},notReady:function(a){this.toString=function(){return"NOT READY: "+this.message};this.message=a}}};
 sjcl.cipher.aes=function(a){this.s[0][0][0]||this.O();var b,c,d,e,f=this.s[0][4],g=this.s[1];b=a.length;var h=1;if(4!==b&&6!==b&&8!==b)throw new sjcl.exception.invalid("invalid aes key size");this.b=[d=a.slice(0),e=[]];for(a=b;a<4*b+28;a++){c=d[a-1];if(0===a%b||8===b&&4===a%b)c=f[c>>>24]<<24^f[c>>16&255]<<16^f[c>>8&255]<<8^f[c&255],0===a%b&&(c=c<<8^c>>>24^h<<24,h=h<<1^283*(h>>7));d[a]=d[a-b]^c}for(b=0;a;b++,a--)c=d[b&3?a:a-4],e[b]=4>=a||4>b?c:g[0][f[c>>>24]]^g[1][f[c>>16&255]]^g[2][f[c>>8&255]]^g[3][f[c&
 255]]};
@@ -78117,10 +78246,10 @@ null!=d[3]?b[d[2]]=parseInt(d[3],10):null!=d[4]?b[d[2]]=d[2].match(/^(ct|adata|s
 b){var c={},d;for(d=0;d<b.length;d++)void 0!==a[b[d]]&&(c[b[d]]=a[b[d]]);return c}};sjcl.encrypt=sjcl.json.encrypt;sjcl.decrypt=sjcl.json.decrypt;sjcl.misc.pa={};sjcl.misc.cachedPbkdf2=function(a,b){var c=sjcl.misc.pa,d;b=b||{};d=b.iter||1E3;c=c[a]=c[a]||{};d=c[d]=c[d]||{firstSalt:b.salt&&b.salt.length?b.salt.slice(0):sjcl.random.randomWords(2,0)};c=void 0===b.salt?d.firstSalt:b.salt;d[c]=d[c]||sjcl.misc.pbkdf2(a,c,b.iter);return{key:d[c].slice(0),salt:c.slice(0)}};
 "undefined"!==typeof module&&module.exports&&(module.exports=sjcl);"function"===typeof define&&define([],function(){return sjcl});
 
-},{"crypto":198}],506:[function(require,module,exports){
+},{"crypto":202}],510:[function(require,module,exports){
 module.exports = require('./lib/index.js')
 
-},{"./lib/index.js":507}],507:[function(require,module,exports){
+},{"./lib/index.js":511}],511:[function(require,module,exports){
 (function (Buffer){
 const utils = require('ethereumjs-util')
 const BN = require('bn.js')
@@ -78681,7 +78810,7 @@ ABI.toSerpent = function (types) {
 module.exports = ABI
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":153,"buffer":188,"ethereumjs-util":508}],508:[function(require,module,exports){
+},{"bn.js":157,"buffer":192,"ethereumjs-util":512}],512:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('keccakjs')
 const secp256k1 = require('secp256k1')
@@ -79386,7 +79515,7 @@ exports.defineProperties = function (self, fields, data) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":148,"bn.js":153,"buffer":188,"create-hash":193,"keccakjs":417,"rlp":489,"secp256k1":491}],509:[function(require,module,exports){
+},{"assert":150,"bn.js":157,"buffer":192,"create-hash":197,"keccakjs":421,"rlp":493,"secp256k1":495}],513:[function(require,module,exports){
 "use strict";
 
 var byteArrayToUtf8String = require("./byte-array-to-utf8-string");
@@ -79406,7 +79535,7 @@ function abiDecodeBytes(abiEncodedBytes, strip) {
 
 module.exports = abiDecodeBytes;
 
-},{"./byte-array-to-utf8-string":520,"./remove-trailing-zeros":536}],510:[function(require,module,exports){
+},{"./byte-array-to-utf8-string":524,"./remove-trailing-zeros":540}],514:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -79427,7 +79556,7 @@ function abiDecodeData(inputs, abiEncodedData) {
 module.exports = abiDecodeData;
 
 }).call(this,require("buffer").Buffer)
-},{"./format-abi-raw-decoded-data-array":526,"./strip-0x-prefix":538,"buffer":188,"ethereumjs-abi":506}],511:[function(require,module,exports){
+},{"./format-abi-raw-decoded-data-array":530,"./strip-0x-prefix":542,"buffer":192,"ethereumjs-abi":510}],515:[function(require,module,exports){
 "use strict";
 
 var abiDecodeData = require("./abi-decode-data");
@@ -79446,7 +79575,7 @@ function abiDecodeRpcResponse(responseType, abiEncodedRpcResponse) {
 
 module.exports = abiDecodeRpcResponse;
 
-},{"./abi-decode-data":510,"./format-int256":529}],512:[function(require,module,exports){
+},{"./abi-decode-data":514,"./format-int256":533}],516:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -79460,7 +79589,7 @@ function abiDecodeShortStringAsInt256(int256) {
 module.exports = abiDecodeShortStringAsInt256;
 
 }).call(this,require("buffer").Buffer)
-},{"./remove-trailing-zeros":536,"./strip-0x-prefix":538,"buffer":188}],513:[function(require,module,exports){
+},{"./remove-trailing-zeros":540,"./strip-0x-prefix":542,"buffer":192}],517:[function(require,module,exports){
 "use strict";
 
 var rawEncode = require("ethereumjs-abi").rawEncode;
@@ -79475,7 +79604,7 @@ function abiEncodeBytes(bytesToEncode, isPadded) {
 
 module.exports = abiEncodeBytes;
 
-},{"./remove-trailing-zeros":536,"ethereumjs-abi":506}],514:[function(require,module,exports){
+},{"./remove-trailing-zeros":540,"ethereumjs-abi":510}],518:[function(require,module,exports){
 "use strict";
 
 var ethereumjsAbi = require("ethereumjs-abi");
@@ -79489,7 +79618,7 @@ function abiEncodeData(payload, format) {
 
 module.exports = abiEncodeData;
 
-},{"ethereumjs-abi":506}],515:[function(require,module,exports){
+},{"ethereumjs-abi":510}],519:[function(require,module,exports){
 "use strict";
 
 var rawEncode = require("ethereumjs-abi").rawEncode;
@@ -79500,7 +79629,7 @@ function abiEncodeInt256(value) {
 
 module.exports = abiEncodeInt256;
 
-},{"ethereumjs-abi":506}],516:[function(require,module,exports){
+},{"ethereumjs-abi":510}],520:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -79516,7 +79645,7 @@ function abiEncodeShortStringAsInt256(shortString) {
 module.exports = abiEncodeShortStringAsInt256;
 
 }).call(this,require("buffer").Buffer)
-},{"./pad-right":534,"./prefix-hex":535,"buffer":188}],517:[function(require,module,exports){
+},{"./pad-right":538,"./prefix-hex":539,"buffer":192}],521:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -79533,7 +79662,7 @@ function abiEncodeTransactionPayload(payload) {
 module.exports = abiEncodeTransactionPayload;
 
 }).call(this,require("buffer").Buffer)
-},{"./abi-encode-data":514,"./prefix-hex":535,"buffer":188,"ethereumjs-abi":506}],518:[function(require,module,exports){
+},{"./abi-encode-data":518,"./prefix-hex":539,"buffer":192,"ethereumjs-abi":510}],522:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -79595,7 +79724,7 @@ function bignum(n, encoding, isWrapped) {
 
 module.exports = bignum;
 
-},{"./is-hex":532,"./prefix-hex":535,"./wrap":543,"bignumber.js":151}],519:[function(require,module,exports){
+},{"./is-hex":536,"./prefix-hex":539,"./wrap":547,"bignumber.js":155}],523:[function(require,module,exports){
 "use strict";
 
 var strip0xPrefix = require("./strip-0x-prefix");
@@ -79612,7 +79741,7 @@ function byteArrayToHexString(b) {
 
 module.exports = byteArrayToHexString;
 
-},{"./strip-0x-prefix":538}],520:[function(require,module,exports){
+},{"./strip-0x-prefix":542}],524:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -79660,7 +79789,7 @@ function byteArrayToUtf8String(byteArray) {
 module.exports = byteArrayToUtf8String;
 
 }).call(this,require("buffer").Buffer)
-},{"./strip-0x-prefix":538,"bignumber.js":151,"buffer":188}],521:[function(require,module,exports){
+},{"./strip-0x-prefix":542,"bignumber.js":155,"buffer":192}],525:[function(require,module,exports){
 "use strict";
 
 function chunk(totalLength, chunkLength) {
@@ -79670,7 +79799,7 @@ function chunk(totalLength, chunkLength) {
 
 module.exports = chunk;
 
-},{}],522:[function(require,module,exports){
+},{}],526:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -79685,7 +79814,7 @@ module.exports = {
   UINT256_MAX_VALUE: TWO.toPower(new BigNumber(256, 10))
 };
 
-},{"bignumber.js":151}],523:[function(require,module,exports){
+},{"bignumber.js":155}],527:[function(require,module,exports){
 "use strict";
 
 var bignum = require("./bignum");
@@ -79696,7 +79825,7 @@ function encodeNumberAsBase10String(n, isWrapped) {
 
 module.exports = encodeNumberAsBase10String;
 
-},{"./bignum":518}],524:[function(require,module,exports){
+},{"./bignum":522}],528:[function(require,module,exports){
 "use strict";
 
 var bignum = require("./bignum");
@@ -79707,7 +79836,7 @@ function encodeNumberAsJSNumber(s, isWrapped) {
 
 module.exports = encodeNumberAsJSNumber;
 
-},{"./bignum":518}],525:[function(require,module,exports){
+},{"./bignum":522}],529:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -79753,7 +79882,7 @@ function fix(n, encoding, isWrapped) {
 
 module.exports = fix;
 
-},{"./bignum":518,"./constants":522,"./prefix-hex":535,"./wrap":543,"bignumber.js":151}],526:[function(require,module,exports){
+},{"./bignum":522,"./constants":526,"./prefix-hex":539,"./wrap":547,"bignumber.js":155}],530:[function(require,module,exports){
 "use strict";
 
 var formatAbiRawDecodedData = require("./format-abi-raw-decoded-data");
@@ -79766,7 +79895,7 @@ function formatAbiRawDecodedDataArray(dataInputTypes, decodedDataArray) {
 
 module.exports = formatAbiRawDecodedDataArray;
 
-},{"./format-abi-raw-decoded-data":527}],527:[function(require,module,exports){
+},{"./format-abi-raw-decoded-data":531}],531:[function(require,module,exports){
 "use strict";
 
 var formatEthereumAddress = require("./format-ethereum-address");
@@ -79792,7 +79921,7 @@ function formatAbiRawDecodedData(inputType, decodedData) {
 
 module.exports = formatAbiRawDecodedData;
 
-},{"./format-ethereum-address":528,"./hex":530,"./prefix-hex":535}],528:[function(require,module,exports){
+},{"./format-ethereum-address":532,"./hex":534,"./prefix-hex":539}],532:[function(require,module,exports){
 "use strict";
 
 var prefixHex = require("./prefix-hex");
@@ -79820,7 +79949,7 @@ function formatEthereumAddress(addr) {
 
 module.exports = formatEthereumAddress;
 
-},{"./prefix-hex":535,"./strip-0x-prefix":538}],529:[function(require,module,exports){
+},{"./prefix-hex":539,"./strip-0x-prefix":542}],533:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -79843,7 +79972,7 @@ function formatInt256(s) {
 module.exports = formatInt256;
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":407,"./pad-left":533,"./prefix-hex":535,"./strip-0x-prefix":538,"./unfork":541}],530:[function(require,module,exports){
+},{"../../is-buffer/index.js":411,"./pad-left":537,"./prefix-hex":539,"./strip-0x-prefix":542,"./unfork":545}],534:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -79901,7 +80030,7 @@ function hex(n, isWrapped) {
 module.exports = hex;
 
 }).call(this,require("buffer").Buffer)
-},{"./abi-encode-bytes":513,"./bignum":518,"./prefix-hex":535,"./wrap":543,"bignumber.js":151,"buffer":188}],531:[function(require,module,exports){
+},{"./abi-encode-bytes":517,"./bignum":522,"./prefix-hex":539,"./wrap":547,"bignumber.js":155,"buffer":192}],535:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -79943,7 +80072,7 @@ module.exports = {
   serialize: require("./serialize")
 };
 
-},{"./abi-decode-bytes":509,"./abi-decode-data":510,"./abi-decode-rpc-response":511,"./abi-decode-short-string-as-int256":512,"./abi-encode-bytes":513,"./abi-encode-data":514,"./abi-encode-int256":515,"./abi-encode-short-string-as-int256":516,"./abi-encode-transaction-payload":517,"./bignum":518,"./byte-array-to-hex-string":519,"./byte-array-to-utf8-string":520,"./constants":522,"./encode-number-as-base10-string":523,"./encode-number-as-js-number":524,"./fix":525,"./format-abi-raw-decoded-data":527,"./format-abi-raw-decoded-data-array":526,"./format-ethereum-address":528,"./format-int256":529,"./hex":530,"./is-hex":532,"./pad-left":533,"./pad-right":534,"./prefix-hex":535,"./serialize":537,"./strip-0x-prefix":538,"./unfix":540,"./unfix-signed":539,"./unfork":541,"./unroll-array":542,"bignumber.js":151}],532:[function(require,module,exports){
+},{"./abi-decode-bytes":513,"./abi-decode-data":514,"./abi-decode-rpc-response":515,"./abi-decode-short-string-as-int256":516,"./abi-encode-bytes":517,"./abi-encode-data":518,"./abi-encode-int256":519,"./abi-encode-short-string-as-int256":520,"./abi-encode-transaction-payload":521,"./bignum":522,"./byte-array-to-hex-string":523,"./byte-array-to-utf8-string":524,"./constants":526,"./encode-number-as-base10-string":527,"./encode-number-as-js-number":528,"./fix":529,"./format-abi-raw-decoded-data":531,"./format-abi-raw-decoded-data-array":530,"./format-ethereum-address":532,"./format-int256":533,"./hex":534,"./is-hex":536,"./pad-left":537,"./pad-right":538,"./prefix-hex":539,"./serialize":541,"./strip-0x-prefix":542,"./unfix":544,"./unfix-signed":543,"./unfork":545,"./unroll-array":546,"bignumber.js":155}],536:[function(require,module,exports){
 "use strict";
 
 function isHex(str) {
@@ -79958,7 +80087,7 @@ function isHex(str) {
 
 module.exports = isHex;
 
-},{}],533:[function(require,module,exports){
+},{}],537:[function(require,module,exports){
 "use strict";
 
 var chunk = require("./chunk");
@@ -79978,7 +80107,7 @@ function padLeft(s, chunkLength, hasPrefix) {
 
 module.exports = padLeft;
 
-},{"./chunk":521,"./prefix-hex":535,"./strip-0x-prefix":538}],534:[function(require,module,exports){
+},{"./chunk":525,"./prefix-hex":539,"./strip-0x-prefix":542}],538:[function(require,module,exports){
 "use strict";
 
 var chunk = require("./chunk");
@@ -79998,7 +80127,7 @@ function padRight(s, chunkLength, hasPrefix) {
 
 module.exports = padRight;
 
-},{"./chunk":521,"./prefix-hex":535,"./strip-0x-prefix":538}],535:[function(require,module,exports){
+},{"./chunk":525,"./prefix-hex":539,"./strip-0x-prefix":542}],539:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -80020,7 +80149,7 @@ function prefixHex(n) {
 
 module.exports = prefixHex;
 
-},{"bignumber.js":151}],536:[function(require,module,exports){
+},{"bignumber.js":155}],540:[function(require,module,exports){
 "use strict";
 
 function removeTrailingZeros(h, isUtf8) {
@@ -80039,7 +80168,7 @@ function removeTrailingZeros(h, isUtf8) {
 
 module.exports = removeTrailingZeros;
 
-},{}],537:[function(require,module,exports){
+},{}],541:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -80087,7 +80216,7 @@ function serialize(x) {
 module.exports = serialize;
 
 }).call(this,require("buffer").Buffer)
-},{"./abi-encode-int256":515,"./pad-left":533,"bignumber.js":151,"buffer":188}],538:[function(require,module,exports){
+},{"./abi-encode-int256":519,"./pad-left":537,"bignumber.js":155,"buffer":192}],542:[function(require,module,exports){
 "use strict";
 
 var isHex = require("./is-hex");
@@ -80110,7 +80239,7 @@ function strip0xPrefix(str) {
 
 module.exports = strip0xPrefix;
 
-},{"./is-hex":532}],539:[function(require,module,exports){
+},{"./is-hex":536}],543:[function(require,module,exports){
 "use strict";
 
 var hex = require("./hex");
@@ -80122,7 +80251,7 @@ function unfixSigned(n, encoding) {
 
 module.exports = unfixSigned;
 
-},{"./hex":530,"./unfix":540}],540:[function(require,module,exports){
+},{"./hex":534,"./unfix":544}],544:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -80163,7 +80292,7 @@ function unfix(n, encoding) {
 
 module.exports = unfix;
 
-},{"./bignum":518,"./constants":522,"./prefix-hex":535,"bignumber.js":151}],541:[function(require,module,exports){
+},{"./bignum":522,"./constants":526,"./prefix-hex":539,"bignumber.js":155}],545:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -80192,7 +80321,7 @@ function unfork(forked, prefix) {
 
 module.exports = unfork;
 
-},{"./bignum":518,"./constants":522,"./pad-left":533,"./prefix-hex":535,"bignumber.js":151}],542:[function(require,module,exports){
+},{"./bignum":522,"./constants":526,"./pad-left":537,"./prefix-hex":539,"bignumber.js":155}],546:[function(require,module,exports){
 "use strict";
 
 var encodeNumberAsBase10String = require("./encode-number-as-base10-string");
@@ -80229,7 +80358,7 @@ function unrollArray(string, returns, stride, init) {
 
 module.exports = unrollArray;
 
-},{"./encode-number-as-base10-string":523,"./prefix-hex":535,"./unfix-signed":539}],543:[function(require,module,exports){
+},{"./encode-number-as-base10-string":527,"./prefix-hex":539,"./unfix-signed":543}],547:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -80249,7 +80378,7 @@ function wrap(bn) {
 
 module.exports = wrap;
 
-},{"./bignum":518,"./constants":522,"bignumber.js":151}],544:[function(require,module,exports){
+},{"./bignum":522,"./constants":526,"bignumber.js":155}],548:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -80378,7 +80507,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":385,"inherits":406,"readable-stream/duplex.js":467,"readable-stream/passthrough.js":476,"readable-stream/readable.js":477,"readable-stream/transform.js":478,"readable-stream/writable.js":479}],545:[function(require,module,exports){
+},{"events":389,"inherits":410,"readable-stream/duplex.js":471,"readable-stream/passthrough.js":480,"readable-stream/readable.js":481,"readable-stream/transform.js":482,"readable-stream/writable.js":483}],549:[function(require,module,exports){
 'use strict';
 
 var Buffer = require('safe-buffer').Buffer;
@@ -80651,7 +80780,7 @@ function simpleWrite(buf) {
 function simpleEnd(buf) {
   return buf && buf.length ? this.write(buf) : '';
 }
-},{"safe-buffer":490}],546:[function(require,module,exports){
+},{"safe-buffer":494}],550:[function(require,module,exports){
 var isHexPrefixed = require('is-hex-prefixed');
 
 /**
@@ -80667,10 +80796,10 @@ module.exports = function stripHexPrefix(str) {
   return isHexPrefixed(str) ? str.slice(2) : str;
 }
 
-},{"is-hex-prefixed":408}],547:[function(require,module,exports){
+},{"is-hex-prefixed":412}],551:[function(require,module,exports){
 module.exports = require('./lib/index');
 
-},{"./lib/index":548}],548:[function(require,module,exports){
+},{"./lib/index":552}],552:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -80702,7 +80831,7 @@ if (typeof self !== 'undefined') {
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ponyfill.js":549}],549:[function(require,module,exports){
+},{"./ponyfill.js":553}],553:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80726,7 +80855,7 @@ function symbolObservablePonyfill(root) {
 
 	return result;
 };
-},{}],550:[function(require,module,exports){
+},{}],554:[function(require,module,exports){
 'use strict';
 
 var Response = require('http-response-object');
@@ -80799,7 +80928,7 @@ function doRequest(method, url, options, callback) {
   return new Response(xhr.status, headers, xhr.responseText);
 }
 
-},{"http-response-object":401,"then-request/lib/handle-qs.js":551}],551:[function(require,module,exports){
+},{"http-response-object":405,"then-request/lib/handle-qs.js":555}],555:[function(require,module,exports){
 'use strict';
 
 var parse = require('qs').parse;
@@ -80823,7 +80952,7 @@ function handleQs(url, query) {
   return start + qs + end;
 }
 
-},{"qs":553}],552:[function(require,module,exports){
+},{"qs":557}],556:[function(require,module,exports){
 'use strict';
 
 var replace = String.prototype.replace;
@@ -80843,7 +80972,7 @@ module.exports = {
     RFC3986: 'RFC3986'
 };
 
-},{}],553:[function(require,module,exports){
+},{}],557:[function(require,module,exports){
 'use strict';
 
 var stringify = require('./stringify');
@@ -80856,7 +80985,7 @@ module.exports = {
     stringify: stringify
 };
 
-},{"./formats":552,"./parse":554,"./stringify":555}],554:[function(require,module,exports){
+},{"./formats":556,"./parse":558,"./stringify":559}],558:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -81032,7 +81161,7 @@ module.exports = function (str, opts) {
     return utils.compact(obj);
 };
 
-},{"./utils":556}],555:[function(require,module,exports){
+},{"./utils":560}],559:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -81244,7 +81373,7 @@ module.exports = function (object, opts) {
     return joined.length > 0 ? prefix + joined : '';
 };
 
-},{"./formats":552,"./utils":556}],556:[function(require,module,exports){
+},{"./formats":556,"./utils":560}],560:[function(require,module,exports){
 'use strict';
 
 var has = Object.prototype.hasOwnProperty;
@@ -81448,7 +81577,7 @@ exports.isBuffer = function isBuffer(obj) {
     return !!(obj.constructor && obj.constructor.isBuffer && obj.constructor.isBuffer(obj));
 };
 
-},{}],557:[function(require,module,exports){
+},{}],561:[function(require,module,exports){
 (function (global){
 
 /**
@@ -81519,16 +81648,16 @@ function config (name) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],558:[function(require,module,exports){
-arguments[4][406][0].apply(exports,arguments)
-},{"dup":406}],559:[function(require,module,exports){
+},{}],562:[function(require,module,exports){
+arguments[4][410][0].apply(exports,arguments)
+},{"dup":410}],563:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],560:[function(require,module,exports){
+},{}],564:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -82118,7 +82247,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":559,"_process":458,"inherits":558}],561:[function(require,module,exports){
+},{"./support/isBuffer":563,"_process":462,"inherits":562}],565:[function(require,module,exports){
 (function (global){
 
 var rng;
@@ -82154,7 +82283,7 @@ module.exports = rng;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],562:[function(require,module,exports){
+},{}],566:[function(require,module,exports){
 // Unique ID creation requires a high quality random # generator.  We feature
 // detect to determine the best RNG source, normalizing to a function that
 // returns 128-bits of randomness, since that's what's usually required
@@ -82313,7 +82442,7 @@ uuid.v4 = v4;
 
 module.exports = uuid;
 
-},{"./lib/rng":561}],563:[function(require,module,exports){
+},{"./lib/rng":565}],567:[function(require,module,exports){
 var indexOf = require('indexof');
 
 var Object_keys = function (obj) {
@@ -82453,4 +82582,4 @@ exports.createContext = Script.createContext = function (context) {
     return copy;
 };
 
-},{"indexof":405}]},{},[133]);
+},{"indexof":409}]},{},[135]);
