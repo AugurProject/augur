@@ -5,6 +5,7 @@ interface MarketPriceHistoryRow {
   outcome: number;
   price: string|number;
   timestamp: number;
+  amount: number;
 }
 
 // Input: MarketID
@@ -13,6 +14,7 @@ export function getMarketPriceHistory(db: Knex, marketID: Address, callback: (er
   db.select([
     "trades.outcome",
     "trades.price",
+    "trades.amount",
     "blocks.timestamp",
   ]).from("trades").leftJoin("blocks", "trades.blockNumber", "blocks.blockNumber").where({ marketID })
   .asCallback((err: Error|null, tradesRows?: Array<MarketPriceHistoryRow>): void => {
@@ -24,6 +26,7 @@ export function getMarketPriceHistory(db: Knex, marketID: Address, callback: (er
       marketPriceHistory[trade.outcome].push({
         price: trade.price,
         timestamp: trade.timestamp,
+        amount: trade.amount,
       });
     });
     callback(null, marketPriceHistory);
