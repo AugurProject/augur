@@ -5,7 +5,7 @@
 var Augur = require("../../src");
 var chalk = require("chalk");
 var connectionEndpoints = require("../connection-endpoints");
-var getPrivateKey = require("../canned-markets/lib/get-private-key");
+var getPrivateKey = require("../dp/lib/get-private-key");
 var marketID = process.argv[2];
 var getTime = require("./get-timestamp");
 
