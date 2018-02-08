@@ -1,8 +1,21 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { FormattedEventLog, ErrorCallback, FeeWindowRow } from "../../types";
+import { FormattedEventLog, ErrorCallback, FeeWindowRow, Address } from "../../types";
 import { augurEmitter } from "../../events";
 import { insertPayout } from "./database";
+import { QueryBuilder } from "knex";
+
+function updateTentativeWinningPayout(db: Knex, marketID: Address, callback: ErrorCallback) {
+  const query = db.first("payoutID").from((builder: any) =>
+    builder.from("crowdsourcers").select("payoutID", "amountStaked").where({ completed: 1, marketID }).union( (builder: QueryBuilder) =>
+      builder.select("payoutID", "amountStaked").from("initial_reports").where("marketID", marketID),
+    )).orderBy("sum(amountStaked)", "desc").groupBy("payoutID");
+  query.asCallback((err: Error|null, crowdsourcerTotals) => {
+    if (err) return callback(err);
+    console.log(crowdsourcerTotals);
+    callback(null);
+  });
+}
 
 export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   insertPayout(db, trx, log.market, log.payoutNumerators, log.invalid, (err, payoutID) => {
@@ -11,26 +24,26 @@ export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, trx
       .whereNull("endBlockNumber")
       .where({ universe: log.universe })
       .orderBy("startTime", "ASC")
-      .asCallback((err: Error|null, feeWindowRow?: {feeWindow: string}|null): void => {
-      if (err) return callback(err);
-      if (feeWindowRow == null) return callback(new Error(`could not retrieve feeWindow for crowdsourcer: ${log.disputeCrowdsourcer}`));
-      const crowdsourcerToInsert = {
-        blockNumber: log.blockNumber,
-        transactionHash: log.transactionHash,
-        logIndex: log.logIndex,
-        crowdsourcerID: log.disputeCrowdsourcer,
-        marketID: log.market,
-        feeWindow: feeWindowRow.feeWindow,
-        size: log.size,
-        payoutID,
-        completed: null,
-      };
-      db.transacting(trx).insert(crowdsourcerToInsert).into("crowdsourcers").returning("crowdsourcerID").asCallback((err: Error|null): void => {
+      .asCallback((err: Error|null, feeWindowRow?: { feeWindow: string }|null): void => {
         if (err) return callback(err);
-        augurEmitter.emit("DisputeCrowdsourcerCreated", log);
-        callback(null);
+        if (feeWindowRow == null) return callback(new Error(`could not retrieve feeWindow for crowdsourcer: ${log.disputeCrowdsourcer}`));
+        const crowdsourcerToInsert = {
+          blockNumber: log.blockNumber,
+          transactionHash: log.transactionHash,
+          logIndex: log.logIndex,
+          crowdsourcerID: log.disputeCrowdsourcer,
+          marketID: log.market,
+          feeWindow: feeWindowRow.feeWindow,
+          size: log.size,
+          payoutID,
+          completed: null,
+        };
+        db.transacting(trx).insert(crowdsourcerToInsert).into("crowdsourcers").returning("crowdsourcerID").asCallback((err: Error|null): void => {
+          if (err) return callback(err);
+          augurEmitter.emit("DisputeCrowdsourcerCreated", log);
+          callback(null);
+        });
       });
-    });
   });
 }
 
@@ -78,8 +91,11 @@ export function processDisputeCrowdsourcerContributionLogRemoval(db: Knex, augur
 export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   db("crowdsourcers").transacting(trx).update({ completed: 1 }).where({ crowdsourcerID: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    augurEmitter.emit("DisputeCrowdsourcerCompleted", log);
-    callback(null);
+    updateTentativeWinningPayout(trx, log.market, (err: Error|null): void => {
+      if (err) return callback(err);
+      augurEmitter.emit("DisputeCrowdsourcerCompleted", log);
+      callback(null);
+    });
   });
 }
 

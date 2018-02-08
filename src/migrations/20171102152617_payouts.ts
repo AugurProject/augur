@@ -13,6 +13,7 @@ exports.up = async (knex: Knex): Promise<any> => {
         uniqueIndex.push(column);
       }
       table.integer("isInvalid");
+      // table.integer("tentativewWinning").nullable();
       table.integer("winning").nullable();
 
       table.index(["marketID"]);
