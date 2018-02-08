@@ -17,4 +17,5 @@ module.exports = {
   loginWithMasterKey: require("./login-with-master-key"),
   logout: require("./logout"),
   register: require("./register"),
+  approveAugur: require("./approve-augur"),
 };

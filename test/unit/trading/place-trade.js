@@ -63,8 +63,8 @@ describe("trading/place-trade", function () {
         assert.strictEqual(p._fxpAmount, "10");
         assert.strictEqual(p._price, "0.5");
         assert.strictEqual(p._tradeGroupId, "0x1");
-        assert.isNull(p._betterOrderID);
-        assert.isNull(p._worseOrderID);
+        assert.isUndefined(p._betterOrderID);
+        assert.isUndefined(p._worseOrderID);
         assert.isFunction(p.onSent);
         assert.isFunction(p.onSuccess);
         assert.isFunction(p.onFailed);
@@ -116,8 +116,8 @@ describe("trading/place-trade", function () {
         assert.strictEqual(p._fxpAmount, "10");
         assert.strictEqual(p._price, "0.5");
         assert.strictEqual(p._tradeGroupId, "0x1");
-        assert.strictEqual(p._betterOrderID, "BETTER_ORDER_ID");
-        assert.strictEqual(p._worseOrderID, "WORSE_ORDER_ID");
+        assert.strictEqual(p._betterOrderId, "BETTER_ORDER_ID");
+        assert.strictEqual(p._worseOrderId, "WORSE_ORDER_ID");
         p.onSent({ hash: "TRANSACTION_HASH" });
         p.onSuccess({ hash: "TRANSACTION_HASH" });
       },
