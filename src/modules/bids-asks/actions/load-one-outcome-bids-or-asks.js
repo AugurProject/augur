@@ -3,7 +3,7 @@ import { updateIsFirstOrderBookChunkLoaded } from 'modules/bids-asks/actions/upd
 import insertOrderBookChunkToOrderBook from 'modules/bids-asks/actions/insert-order-book-chunk-to-order-book'
 import logError from 'utils/log-error'
 
-import { isEmpty } from 'lodash'
+import { has } from 'lodash'
 
 const loadOneOutcomeBidsOrAsks = (marketID, outcome, orderTypeLabel, callback = logError) => (dispatch, getState) => {
   const { marketsData } = getState()
@@ -15,8 +15,8 @@ const loadOneOutcomeBidsOrAsks = (marketID, outcome, orderTypeLabel, callback = 
   dispatch(updateIsFirstOrderBookChunkLoaded(marketID, outcome, orderTypeLabel, false))
   augur.trading.getOrders({ marketID, outcome, orderType: orderTypeLabel }, (err, orders) => {
     if (err) return callback(err)
-    if (orders != null && !isEmpty(orders)) {
-      dispatch(insertOrderBookChunkToOrderBook(marketID, outcome, orderTypeLabel, orders[marketID][outcome][orderTypeLabel]))
+    if (orders != null) {
+      dispatch(insertOrderBookChunkToOrderBook(marketID, outcome, orderTypeLabel, has(orders, [marketID, outcome, orderTypeLabel]) ? orders[marketID][outcome][orderTypeLabel] : {}))
     }
     callback(null)
   })
