@@ -82,7 +82,7 @@
     "uglify-js": "2.6.1"
   },
   "engines": {
-    "node": ">= 4.2.x"
+    "node": ">= 8.0.0"
   },
   "typings": "./index.d.ts",
   "repository": {
