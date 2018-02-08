@@ -125,9 +125,7 @@ export default class MarketOutcomesChart extends Component {
               </span>
             }
           </span>
-          <div>
-            <span >Filter (TODO)</span>
-          </div>
+          <div />
         </div>
         <div
           ref={(outcomesChart) => { this.outcomesChart = outcomesChart }}
@@ -139,3 +137,6 @@ export default class MarketOutcomesChart extends Component {
     )
   }
 }
+
+// NOTE -- this goes into the self closing div
+// <span >Filter (TODO)</span>
