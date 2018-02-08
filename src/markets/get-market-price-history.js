@@ -3,6 +3,7 @@
 /** Type definition for TimestampedPrice.
  * @typedef {Object} TimestampedPrice
  * @property {number} price Display (non-normalized) price, as a base-10 number.
+ * @property {number} amount Display price, as a base-10 number.
  * @property {number} timestamp Unix timestamp for this price in seconds, as an integer.
  */
 
@@ -27,15 +28,6 @@ var augurNode = require("../augur-node");
  */
 function getMarketPriceHistory(p, callback) {
   augurNode.submitRequest("getMarketPriceHistory", p, callback);
-  // getLogsChunked({ label: "FillOrder", filter: p }, onChunkReceived, function (err, logs) {
-  //   if (err) return onComplete(err);
-  //   var mergedLogs = {};
-  //   logs.forEach(function (log) {
-  //     if (!mergedLogs[log.outcome]) mergedLogs[log.outcome] = [];
-  //     mergedLogs[log.outcome].push({ price: log.price, timestamp: log.timestamp });
-  //   });
-  //   onComplete(null, mergedLogs);
-  // });
 }
 
 module.exports = getMarketPriceHistory;
