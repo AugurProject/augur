@@ -213,6 +213,10 @@ export interface DisputeTokensRowWithTokenState extends DisputeTokensRow {
   ReportingState: ReportingState;
 }
 
+export interface PayoutRow extends Payout {
+  payoutID: number;
+}
+
 export interface Payout {
   payout0: string|number;
   payout1: string|number;
@@ -242,6 +246,7 @@ export interface StakeDetails extends Payout {
   totalStaked: string;
   size: string;
   amountStaked: string;
+  initialReport: boolean;
 }
 
 export interface UIStakeInfo {
