@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import classNames from 'classnames'
 
 import getValue from 'utils/get-value'
-import { CANCELED } from 'modules/transactions/constants/types'
+import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status'
 import Styles from 'modules/market/components/market-positions-list--order/market-positions-list--order.styles'
 
 export default class Order extends Component {
@@ -58,7 +58,11 @@ export default class Order extends Component {
         <li>
           { getValue(p, 'name') }
           { p.pending &&
-            <span className={Styles.Order__pending}>Pending</span>
+            <span className={Styles.Order__pending}>
+              { p.pending === CLOSE_DIALOG_CLOSING &&
+                <span>Cancellation Pending</span>
+              }
+            </span>
           }
         </li>
         <li>
@@ -76,8 +80,8 @@ export default class Order extends Component {
           <li />
         }
         <li>
-          { p.orderState === CANCELED ?
-            <span className={Styles.NotActive}>Canceled</span>
+          { p.pending === CLOSE_DIALOG_CLOSING ?
+            <span className={Styles.NotActive}>Cancel</span>
             :
             <button onClick={this.toggleConfirm}>Cancel</button>
           }
