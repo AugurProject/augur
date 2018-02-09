@@ -3,7 +3,7 @@
 var simulateCreateAskOrder = require("./simulate-create-ask-order");
 var simulateFillBidOrder = require("./simulate-fill-bid-order");
 var sumSimulatedResults = require("./sum-simulated-results");
-var filterByPriceAndOutcomeAndUserSortByPrice = require("../filter-by-price-and-outcome-and-user-sort-by-price");
+var filterByPriceAndUserSortByPrice = require("../filter-by-price-and-user-sort-by-price");
 var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
@@ -18,7 +18,7 @@ function simulateSell(outcome, sharesToCover, shareBalances, tokenBalance, userA
     tokensDepleted: ZERO,
     shareBalances: shareBalances,
   };
-  var matchingSortedBids = filterByPriceAndOutcomeAndUserSortByPrice(buyOrderBook, 1, price, userAddress);
+  var matchingSortedBids = filterByPriceAndUserSortByPrice(buyOrderBook, 1, price, userAddress);
 
   // if no matching bids, then user is asking: no settlement fees
   if (!matchingSortedBids.length) {

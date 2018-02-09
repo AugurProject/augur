@@ -19,7 +19,7 @@ var compareOrdersByPrice = {
  * @param {string} userAddress The user's Ethereum address, as a hexadecimal string.
  * @return {require("./simulate-trade").OrderBook} Filtered and sorted orders.
  */
-function filterByPriceAndOutcomeAndUserSortByPrice(orderBook, orderType, price, userAddress) {
+function filterByPriceAndUserSortByPrice(orderBook, orderType, price, userAddress) {
   var isMarketOrder, filteredOrders;
   if (!orderBook) return [];
   isMarketOrder = price == null;
@@ -38,4 +38,4 @@ function filterByPriceAndOutcomeAndUserSortByPrice(orderBook, orderType, price, 
   return filteredOrders.sort(compareOrdersByPrice[orderType]);
 }
 
-module.exports = filterByPriceAndOutcomeAndUserSortByPrice;
+module.exports = filterByPriceAndUserSortByPrice;
