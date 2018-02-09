@@ -1,13 +1,13 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { FormattedEventLog, ErrorCallback, FeeWindowRow, Address, AsyncCallback } from "../../types";
+import { FormattedEventLog, ErrorCallback, Address, AsyncCallback } from "../../types";
 import { augurEmitter } from "../../events";
 import { insertPayout } from "./database";
 import { QueryBuilder } from "knex";
 import { parallel } from "async";
 
 function updateTentativeWinningPayout(db: Knex, marketID: Address, callback: ErrorCallback) {
-  const query = db.first(["payoutID", "amountStaked"]).from((builder: any) =>
+  const query = db.first(["payoutID", "amountStaked"]).from((builder: QueryBuilder) =>
     builder.from("crowdsourcers").select("payoutID", "amountStaked").where({
       completed: 1,
       marketID,

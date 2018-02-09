@@ -49,7 +49,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       crowdsourcerID: "0x0000000000000000001000000000000000000004",
       marketID: "0x0000000000000000000000000000000000000211",
       feeWindow: "0x1000000000000000000000000000000000000000",
-      payoutID: 5,
+      payoutID: 6,
       amountStaked: 20,
       size: 204,
       blockNumber: 1500002,
