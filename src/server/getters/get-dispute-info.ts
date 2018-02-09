@@ -48,7 +48,6 @@ export function getDisputeInfo(db: Knex, marketIDs: Array<Address>, callback: (e
     completedStakes: (next: AsyncCallback) => completedStake.asCallback(next),
     activeCrowdsourcer: (next: AsyncCallback) => db("crowdsourcers").select(["marketID", "payoutID"]).sum("amountStaked as amountStaked").sum("size as size").groupBy(["crowdsourcers.marketID", "payoutID"]).whereNull("completed").whereIn("crowdsourcers.marketID", marketIDs).asCallback(next),
     disputeRound: (next: AsyncCallback) => db("crowdsourcers").select("marketID").count("* as disputeRound").groupBy("crowdsourcers.marketID").where("crowdsourcers.completed", 1).whereIn("crowdsourcers.marketID", marketIDs).asCallback(next),
-    initialReport: (next: AsyncCallback) => db("initial_reports").select("*").whereIn("initial_reports.marketID", marketIDs).asCallback(next),
   }, (err: Error|null, stakeResults: DisputesResult): void => {
     if (err) return callback(err);
     if (!stakeResults.markets) return callback(new Error("Could not retrieve markets"));
@@ -78,25 +77,28 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
     const completedStakeAmount = new BigNumber(completedStakes == null ? 0 : completedStakes.amountStaked);
     const totalStakeOnPayout = completedStakeAmount.add(new BigNumber(activeCrowdsourcer == null ? 0 : activeCrowdsourcer.amountStaked));
 
-    let size: BigNumber;
-    let amountStaked: BigNumber;
+    let currentAmounts: {size?: string; currentStake?: string};
+    // let size: BigNumber;
+    // let amountStaked: BigNumber;
     if (payout.tentativeWinning === 1) {
-      size = new BigNumber(0);
-      amountStaked = new BigNumber(0);
+      currentAmounts = {};
     } else if (activeCrowdsourcer == null) {
-      size = calculateBondSize(totalCompletedStakeOnAllPayouts, completedStakeAmount);
-      amountStaked = new BigNumber(0);
+      currentAmounts = {
+        size: calculateBondSize(totalCompletedStakeOnAllPayouts, completedStakeAmount).toFixed(),
+        currentStake: new BigNumber(0).toFixed(),
+      };
     } else {
-      size = new BigNumber(activeCrowdsourcer.size);
-      amountStaked = new BigNumber(activeCrowdsourcer.amountStaked);
+      currentAmounts = {
+        size: new BigNumber(activeCrowdsourcer.size).toFixed(),
+        currentStake: new BigNumber(activeCrowdsourcer.amountStaked).toFixed(),
+      };
     }
     return Object.assign({},
       normalizePayouts(payout),
+      currentAmounts,
       {
         totalStake: totalStakeOnPayout.toFixed(),
         completedStake: completedStakeAmount.toFixed(),
-        size: size.toFixed(),
-        currentStake: amountStaked.toFixed(),
         tentativeWinning: !!payout.tentativeWinning,
       },
     );

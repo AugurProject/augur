@@ -244,9 +244,10 @@ export interface UIDisputeTokens {
 }
 
 export interface StakeDetails extends Payout {
-  totalStaked: string;
-  size: string;
-  amountStaked: string;
+  totalStake: string;
+  completedStake: string;
+  size?: string;
+  currentStake?: string;
   initialReport: boolean;
   tentativeWinning: boolean;
 }
