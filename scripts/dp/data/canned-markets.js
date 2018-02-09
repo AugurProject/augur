@@ -36,7 +36,7 @@ module.exports = [{
   orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
-  _description: "Will the Dow Jones Industrial Average close at a higher price on " + closingBellTomorrow.toLocaleDateString() + " than it closed at the previous day?",
+  _description: "Will the Dow Jones Industrial Average close at a higher price on " + closingBellTomorrow.toDateString() + " than it closed at the previous day?",
   _endTime: parseInt(closingBellTomorrow.getTime() / 1000, 10),
   _topic: "finance",
   _extraInfo: {
@@ -122,7 +122,7 @@ module.exports = [{
   orderBook: binaryOrderBook,
 }, {
   marketType: "scalar",
-  _description: "High temperature (in degrees Fahrenheit) on " + today.toLocaleDateString() + " at the San Francisco International Airport, as reported by Weather Underground",
+  _description: "High temperature (in degrees Fahrenheit) on " + today.toDateString() + " at the San Francisco International Airport, as reported by Weather Underground",
   _endTime: parseInt(midnightTomorrow.getTime() / 1000, 10),
   _minPrice: "-10",
   _maxPrice: "120",
@@ -151,7 +151,7 @@ module.exports = [{
   },
 }, {
   marketType: "scalar",
-  _description: "Number of marine species extinctions between " + today.toLocaleDateString() + " and January 1, " + nextYear,
+  _description: "Number of marine species extinctions between " + today.toDateString() + " and January 1, " + nextYear,
   _endTime: parseInt(new Date("1-2-" + nextYear).getTime() / 1000, 10),
   _minPrice: "0",
   _maxPrice: "10000",
@@ -179,7 +179,7 @@ module.exports = [{
   },
 }, {
   marketType: "scalar",
-  _description: "Average tropospheric methane concentration (in parts-per-billion) between " + today.toLocaleDateString() + " and January 1, " + nextYear,
+  _description: "Average tropospheric methane concentration (in parts-per-billion) between " + today.toDateString() + " and January 1, " + nextYear,
   _endTime: parseInt(new Date("1-2-" + nextYear).getTime() / 1000, 10),
   _minPrice: "600",
   _maxPrice: "5000",
@@ -208,7 +208,7 @@ module.exports = [{
   },
 }, {
   marketType: "scalar",
-  _description: "New antibiotics approved by the FDA between " + today.toLocaleDateString() + "and the end of " + nextYear,
+  _description: "New antibiotics approved by the FDA between " + today.toDateString() + " and the end of " + nextYear,
   _endTime: parseInt(new Date("1-1-" + nextYear).getTime() / 1000, 10),
   _minPrice: "0",
   _maxPrice: "30",
@@ -237,7 +237,7 @@ module.exports = [{
   },
 }, {
   marketType: "scalar",
-  _description: "Millions of Tether tokens issued on " + today.toLocaleDateString() + " (round down)",
+  _description: "Millions of Tether tokens issued on " + today.toDateString() + " (round down)",
   _endTime: parseInt(midnightTomorrow.getTime() / 1000, 10),
   _minPrice: "0",
   _maxPrice: "10000",
