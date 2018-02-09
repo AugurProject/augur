@@ -17,7 +17,6 @@ const overrideTimestamps = Array<number>();
 
 export function setOverrideTimestamp(db: Knex, overrideTimestamp: number, callback: ErrorCallback): void {
   overrideTimestamps.push(overrideTimestamp);
-  console.log("in override");
   db("network_id").update("overrideTimestamp", overrideTimestamp).asCallback(callback);
 }
 
