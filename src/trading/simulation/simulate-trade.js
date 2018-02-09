@@ -2,8 +2,8 @@
 
 /** Type definition for SingleOutcomeOrderBook.
  * @typedef {Object} SingleOutcomeOrderBook
- * @property {require("../get-open-orders").SingleOutcomeOrderBookSide} buy Buy orders (bids) indexed by order ID.
- * @property {require("../get-open-orders").SingleOutcomeOrderBookSide} sell Sell orders (asks) indexed by order ID.
+ * @property {require("../get-orders").SingleOutcomeOrderBookSide} buy Buy orders (bids) indexed by order ID.
+ * @property {require("../get-orders").SingleOutcomeOrderBookSide} sell Sell orders (asks) indexed by order ID.
  */
 
 /** Type definition for SimulatedTrade.
