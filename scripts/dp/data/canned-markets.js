@@ -135,14 +135,14 @@ module.exports = [{
   },
   orderBook: {
     buy: {
-      "0": [
+      "1": [
         { shares: "0.005", price: "20" },
         { shares: "0.005", price: "0" },
         { shares: "0.01", price: "-5" },
       ],
     },
     sell: {
-      "0": [
+      "1": [
         { shares: "0.001", price: "25" },
         { shares: "0.001", price: "50" },
         { shares: "0.001", price: "51" },
@@ -163,14 +163,14 @@ module.exports = [{
   },
   orderBook: {
     buy: {
-      "0": [
+      "1": [
         { shares: "0.0001", price: "1000" },
         { shares: "0.0005", price: "750" },
         { shares: "0.0005", price: "500" },
       ],
     },
     sell: {
-      "0": [
+      "1": [
         { shares: "0.00001", price: "400" },
         { shares: "0.00002", price: "350" },
         { shares: "0.00003", price: "250" },
@@ -192,14 +192,14 @@ module.exports = [{
   },
   orderBook: {
     buy: {
-      "0": [
+      "1": [
         { shares: "0.000005", price: "1000" },
         { shares: "0.00002", price: "900" },
         { shares: "0.00003", price: "775" },
       ],
     },
     sell: {
-      "0": [
+      "1": [
         { shares: "0.00001", price: "1050" },
         { shares: "0.000005", price: "1250" },
         { shares: "0.0000025", price: "1500" },
@@ -221,14 +221,14 @@ module.exports = [{
   },
   orderBook: {
     buy: {
-      "0": [
+      "1": [
         { shares: "0.05", price: "2" },
         { shares: "0.02", price: "18" },
         { shares: "0.01", price: "15" },
       ],
     },
     sell: {
-      "0": [
+      "1": [
         { shares: "0.02", price: "23" },
         { shares: "0.02", price: "26" },
         { shares: "0.01", price: "29" },
@@ -250,14 +250,14 @@ module.exports = [{
   },
   orderBook: {
     buy: {
-      "0": [
+      "1": [
         { shares: "0.00001", price: "100" },
         { shares: "0.00001", price: "150" },
         { shares: "0.00001", price: "200" },
       ],
     },
     sell: {
-      "0": [
+      "1": [
         { shares: "0.00001", price: "225" },
         { shares: "0.00001", price: "250" },
         { shares: "0.00001", price: "300" },
