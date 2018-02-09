@@ -6,6 +6,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.string("networkID");
       table.dateTime("firstLaunched").defaultTo(knex.fn.now()).notNullable();
       table.dateTime("lastLaunched").defaultTo(knex.fn.now()).notNullable();
+      table.integer("overrideTimestamp").nullable();
     });
   });
 };

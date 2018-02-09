@@ -18,6 +18,7 @@ import { processApprovalLog, processApprovalLogRemoval } from "./token/approval"
 import { processMintLog, processMintLogRemoval } from "./token/mint";
 import { processBurnLog, processBurnLogRemoval } from "./token/burn";
 import { processFundedAccountLog } from "./token/funded-account";
+import { processTimestampSetLog, processTimestampSetLogRemoval } from "./timestamp-set";
 
 export const logProcessors: LogProcessors = {
   Augur: {
@@ -86,6 +87,10 @@ export const logProcessors: LogProcessors = {
     WinningsRedeemed: {
       add: processWinningsRedeemedLog,
       remove: processWinningsRedeemedLogRemoval,
+    },
+    TimestampSet: {
+      add: processTimestampSetLog,
+      remove: processTimestampSetLogRemoval,
     },
   },
   LegacyReputationToken: {

@@ -20,6 +20,7 @@ export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: 
       MarketFinalized: makeLogListener(db, augur, "Augur", "MarketFinalized"),
       feeWindowCreated: makeLogListener(db, augur, "Augur", "FeeWindowCreated"),
       UniverseForked: makeLogListener(db, augur, "Augur", "UniverseForked"),
+      TimestampSet: makeLogListener(db, augur, "Augur", "TimestampSet"),
     },
     LegacyReputationToken: {
       Transfer: makeLogListener(db, augur, "LegacyReputationToken", "Transfer"),
