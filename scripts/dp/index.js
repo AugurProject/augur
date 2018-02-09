@@ -14,8 +14,8 @@ const repFaucet = promisify(require("../rep-faucet"));
 const createMarkets = promisify(require("./create-markets"));
 const createOrders = promisify(require("./create-orders"));
 
-const commands = ["create-markets", "create-orders", "deploy", "rep-faucet", "upload"];
-const networks = ["aura", "clique", "environment", "rinkeby", "ropsten"];
+const COMMANDS = ["create-markets", "create-orders", "deploy", "rep-faucet", "upload"];
+const NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten"];
 
 async function runCannedData(command, networks) {
   const deployerConfiguration = DeployerConfiguration.create(path.join(__dirname, "../../src/contracts"));
@@ -74,10 +74,10 @@ async function help() {
   console.log("Usage: dp <command> <network 1> <network 2> ... <network N>\n\n");
 
   console.log(chalk.underline("Commands"));
-  console.log(commands.join(", "), "or help for this message");
+  console.log(COMMANDS.join(", "), "or help for this message");
 
   console.log(chalk.underline("\nNetworks"));
-  console.log(networks.join(", "));
+  console.log(NETWORKS.join(", "));
 
   console.log(chalk.underline("\nConfiguration"));
   console.log("Set the following " + chalk.bold("environment variables") + " to modify the behavior of the deployment process");
@@ -136,9 +136,13 @@ async function help() {
 
 if (require.main === module) {
   const command = process.argv[2];
-  const networks = process.argv.slice(3);
+  var networks = process.argv.slice(3);
 
-  if (commands.indexOf(command) === -1 || command === "help" || networks.length === 0) {
+  if (networks.length === 0) {
+    networks = ['environment'];
+  }
+
+  if (COMMANDS.indexOf(command) === -1 || command === "help") {
     help().then(() => {
       process.exit();
     });
