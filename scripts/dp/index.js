@@ -32,7 +32,7 @@ async function help() {
   console.log("Set the following " + chalk.bold("environment variables") + " to modify the behavior of the deployment process");
   console.log("ex: USE_NORMAL_TIME=false dp deploy aura");
 
-  console.log(chalk.underline("\nNetwork (when using "environment" for the network)"));
+  console.log(chalk.underline("\nNetwork (when using `environment` for the network)"));
   console.log(columnify([{
     env: "ETHEREUM_HTTP",
     Description: "The http(s) address of your ethereum endpoint (default: http://localhost:8545)",
