@@ -27,6 +27,8 @@ async function runCommand(command, params, networks) {
   console.log(chalk.yellow.dim("parameters"), params);
   console.log(chalk.yellow.dim("networks"), networks);
   for (const network of networkConfigurations) {
+    console.log(chalk.yellow("network:"), network);
+    console.log(chalk.yellow("network http:"), network.http);
     const augur = new Augur();
     augur.rpc.setDebugOptions(debugOptions);
 
@@ -42,13 +44,13 @@ async function runCommand(command, params, networks) {
       }
 
       case "list-markets": {
-        await connect({ ethereumNode: { http: network.http } });
+        await connect({ ethereumNode: { http: network.http }, augurNode: process.env.AUGUR_WS });
         await listMarkets(augur);
         break;
       }
 
       case "designate-report": {
-        await connect({ ethereumNode: { http: network.http } });
+        await connect({ ethereumNode: { http: network.http }, augurNode: process.env.AUGUR_WS });
         await repFaucet(augur, params, auth);
         break;
       }

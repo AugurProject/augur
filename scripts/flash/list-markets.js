@@ -30,6 +30,7 @@ function listMarketsInternal(augur, universe) {
 
 function listMarkets(augur, params, callback) {
   var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
+  console.log(chalk.green.dim("Universe"), universe);
   listMarketsInternal(augur, universe, callback);
 }
 
