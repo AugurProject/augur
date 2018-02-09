@@ -24,12 +24,12 @@ export function removeOverrideTimestamp(db: Knex, overrideTimestamp: number, cal
   const removedTimestamp = overrideTimestamps.pop();
   const priorTimestamp = getOverrideTimestamp();
   if (removedTimestamp !== overrideTimestamp || priorTimestamp == null) {
-    return logError(new Error(`Timestamp removal failed ${removedTimestamp} ${overrideTimestamp}`));
+    return callback(new Error(`Timestamp removal failed ${removedTimestamp} ${overrideTimestamp}`));
   }
   db("network_id").update("overrideTimestamp", priorTimestamp).asCallback(callback);
 }
 
-function getOverrideTimestamp(): number|null {
+export function getOverrideTimestamp(): number|null {
   if (overrideTimestamps.length === 0) return null;
   return overrideTimestamps[overrideTimestamps.length - 1];
 }
