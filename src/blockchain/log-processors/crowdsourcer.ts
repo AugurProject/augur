@@ -31,7 +31,7 @@ function updateTentativeWinningPayout(db: Knex, marketID: Address, callback: Err
 }
 
 export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  insertPayout(db, trx, log.market, log.payoutNumerators, log.invalid, (err, payoutID) => {
+  insertPayout(db, trx, log.market, log.payoutNumerators, log.invalid, false, (err, payoutID) => {
     if (err) return callback(err);
     trx("fee_windows").select(["feeWindow"]).first()
       .whereNull("endBlockNumber")
