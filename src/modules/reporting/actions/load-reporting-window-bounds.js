@@ -1,7 +1,8 @@
 import { augur } from 'services/augurjs'
+import logError from 'utils/log-error'
 import { updateReportingWindowStats } from 'modules/reporting/actions/update-reporting-window-stats'
 
-export const loadReportingWindowBounds = () => (dispatch, getState) => {
+export const loadReportingWindowBounds = (callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
   augur.augurNode.submitRequest(
     'getFeeWindowCurrent',
@@ -9,7 +10,7 @@ export const loadReportingWindowBounds = () => (dispatch, getState) => {
       universe: universe.id,
       reporter: loginAccount.address
     }, (err, result) => {
-      if (err) return
+      if (err) return callback(err)
 
       dispatch(updateReportingWindowStats({
         startTime: result.startTime,
