@@ -18,7 +18,7 @@ function simulateSell(outcome, sharesToCover, shareBalances, tokenBalance, userA
     tokensDepleted: ZERO,
     shareBalances: shareBalances,
   };
-  var matchingSortedBids = filterByPriceAndUserSortByPrice(buyOrderBook, 1, price, userAddress);
+  var matchingSortedBids = filterByPriceAndUserSortByPrice({ singleOutcomeOrderBookSide: buyOrderBook, orderType: 1, price: price, userAddress: userAddress });
 
   // if no matching bids, then user is asking: no settlement fees
   if (!matchingSortedBids.length) {

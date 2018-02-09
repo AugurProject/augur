@@ -146,7 +146,7 @@ describe("trading/simulation/simulate-trade", function () {
     },
   });
   test({
-    description: "throw if order type is not 1 or 2",
+    description: "throw if order type is not 0 or 1",
     params: {
       orderType: 3,
       outcome: 0,
