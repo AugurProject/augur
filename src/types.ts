@@ -215,6 +215,7 @@ export interface DisputeTokensRowWithTokenState extends DisputeTokensRow {
 
 export interface PayoutRow extends Payout {
   payoutID: number;
+  tentativeWinning: number;
 }
 
 export interface Payout {
@@ -247,6 +248,7 @@ export interface StakeDetails extends Payout {
   size: string;
   amountStaked: string;
   initialReport: boolean;
+  tentativeWinning: boolean;
 }
 
 export interface UIStakeInfo {

@@ -1,19 +1,32 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { FormattedEventLog, ErrorCallback, FeeWindowRow, Address } from "../../types";
+import { FormattedEventLog, ErrorCallback, FeeWindowRow, Address, AsyncCallback } from "../../types";
 import { augurEmitter } from "../../events";
 import { insertPayout } from "./database";
 import { QueryBuilder } from "knex";
+import { parallel } from "async";
 
 function updateTentativeWinningPayout(db: Knex, marketID: Address, callback: ErrorCallback) {
-  const query = db.first("payoutID").from((builder: any) =>
-    builder.from("crowdsourcers").select("payoutID", "amountStaked").where({ completed: 1, marketID }).union( (builder: QueryBuilder) =>
-      builder.select("payoutID", "amountStaked").from("initial_reports").where("marketID", marketID),
+  const query = db.first(["payoutID", "amountStaked"]).from((builder: any) =>
+    builder.from("crowdsourcers").select("payoutID", "amountStaked").where({
+      completed: 1,
+      marketID,
+    }).union((builder: QueryBuilder) =>
+      builder.select(["payoutID", "amountStaked"]).from("initial_reports").where("marketID", marketID),
     )).orderBy("sum(amountStaked)", "desc").groupBy("payoutID");
-  query.asCallback((err: Error|null, crowdsourcerTotals) => {
+  query.asCallback((err: Error|null, mostStakedPayoutID) => {
     if (err) return callback(err);
-    console.log(crowdsourcerTotals);
-    callback(null);
+    parallel([
+      (next: AsyncCallback) => {
+        const query = db("payouts").update("tentativeWinning", 0).where("marketID", marketID);
+        if (mostStakedPayoutID != null) query.whereNot("payoutID", mostStakedPayoutID.payoutID);
+        query.asCallback(next);
+      },
+      (next: AsyncCallback) => {
+        if (mostStakedPayoutID == null) return next(null);
+        db("payouts").update("tentativeWinning", 1).where("marketID", marketID).where("payoutID", mostStakedPayoutID.payoutID).asCallback(next);
+      },
+    ], callback);
   });
 }
 
@@ -102,7 +115,10 @@ export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, t
 export function processDisputeCrowdsourcerCompletedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   db("crowdsourcers").transacting(trx).update({ completed: null }).where({ crowdsourcerID: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    augurEmitter.emit("DisputeCrowdsourcerCompleted", log);
-    callback(null);
+    updateTentativeWinningPayout(trx, log.market, (err: Error|null): void => {
+      if (err) return callback(err);
+      augurEmitter.emit("DisputeCrowdsourcerCompleted", log);
+      callback(null);
+    });
   });
 }

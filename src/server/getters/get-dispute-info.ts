@@ -1,10 +1,7 @@
 import { parallel } from "async";
 import * as Knex from "knex";
 import * as _ from "lodash";
-import {
-  Address, MarketsRowWithCreationTime, OutcomesRow, AsyncCallback, Payout, UIStakeInfo,
-  PayoutRow
-} from "../../types";
+import { Address, MarketsRowWithCreationTime, OutcomesRow, AsyncCallback, Payout, UIStakeInfo, PayoutRow } from "../../types";
 import { getMarketsWithReportingState, normalizePayouts } from "./database";
 import { BigNumber } from "bignumber.js";
 
@@ -63,9 +60,6 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
   const crowdsourcerByPayout: { [payoutID: number]: Array<StakeRow> } = _.groupBy(stakeRows.crowdsourcerTotals, "payoutID");
 
   const stakeResults = _.map(stakeRows.payouts, (payout: PayoutRow) => {
-    // const totalStaked = _.sumBy(stakes, (stake: StakeRow) => {
-    //   return stake.amountStaked;
-    // });
     const completedCrowdsourcerTotals = _.find(stakeRows.crowdsourcerTotals, (crowdsourcerTotal) =>
       crowdsourcerTotal.completed === 1 && crowdsourcerTotal.payoutID === payout.payoutID);
     const activeCrowdsourcer = _.find(stakeRows.crowdsourcerTotals, (crowdsourcerTotal) =>
@@ -73,15 +67,16 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
     const initialReport = _.find(stakeRows.initialReport, (initialReport) =>
       initialReport.payoutID === payout.payoutID);
 
-    const totalCompletedStakedOnPayout = new BigNumber(
-      completedCrowdsourcerTotals == null ? 0 : completedCrowdsourcerTotals.amountStaked
-    ).add(new BigNumber(initialReport == null ? 0 : initialReport.amountStaked));
+    const totalCompletedStakedOnPayout = new BigNumber(completedCrowdsourcerTotals == null ? 0 : completedCrowdsourcerTotals.amountStaked)
+      .add(new BigNumber(initialReport == null ? 0 : initialReport.amountStaked));
     const totalActiveStakedOnPayout = new BigNumber(activeCrowdsourcer == null ? 0 : activeCrowdsourcer.amountStaked);
-
 
     let size: BigNumber;
     let amountStaked: BigNumber;
-    if (activeCrowdsourcer == null) {
+    if (payout.tentativeWinning === 1) {
+      size = new BigNumber(0);
+      amountStaked = new BigNumber(0);
+    } else if (activeCrowdsourcer == null) {
       size = totalCompletedStakeOnAllPayouts.times(2).minus(totalCompletedStakedOnPayout).times(3);
       amountStaked = new BigNumber(0);
     } else {
@@ -94,7 +89,8 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
         totalStaked: totalCompletedStakedOnPayout.plus(totalActiveStakedOnPayout).toFixed(),
         size: size.toFixed(),
         amountStaked: amountStaked.toFixed(),
-        initialReport: stakeRows.initialReport != null,
+        initialReport: initialReport != null,
+        tentativeWinning: !!payout.tentativeWinning,
       },
     );
   });

@@ -30,23 +30,36 @@ describe("server/getters/get-dispute-info", () => {
       assert.deepEqual(disputeInfo, [
         {
           marketID: "0x0000000000000000000000000000000000000211",
-          disputeRound: 0,
           stakes: [
+            {
+              isInvalid: false,
+              payout: [
+                10000,
+                0,
+              ],
+              totalStaked: "0",
+              size: "0",
+              amountStaked: "0",
+              initialReport: false,
+              tentativeWinning: false,
+            },
             {
               isInvalid: false,
               payout: [
                 0,
                 10000,
               ],
-              totalStaked: "122",
-              size: "204",
-              amountStaked: "20",
+              totalStaked: "102",
+              size: "0",
+              amountStaked: "0",
+              initialReport: true,
+              tentativeWinning: true,
             },
           ],
+          disputeRound: 0,
         },
         {
           marketID: "0x0000000000000000000000000000000000000011",
-          disputeRound: 1,
           stakes: [
             {
               isInvalid: false,
@@ -54,22 +67,26 @@ describe("server/getters/get-dispute-info", () => {
                 0,
                 2,
               ],
-              totalStaked: "40102",
-              size: "20000",
-              amountStaked: "10000",
+              totalStaked: "102",
+              size: "119694",
+              amountStaked: "0",
+              initialReport: true,
+              tentativeWinning: false,
             },
             {
-              disputeRound: 0,
               isInvalid: true,
               payout: [
                 1,
                 1,
               ],
               totalStaked: "20000",
-              size: "40000",
-              amountStaked: "20000",
+              size: "0",
+              amountStaked: "0",
+              initialReport: false,
+              tentativeWinning: true,
             },
           ],
+          disputeRound: 1,
         },
       ]);
     },
@@ -89,19 +106,33 @@ describe("server/getters/get-dispute-info", () => {
         null,
         {
           marketID: "0x0000000000000000000000000000000000000211",
-          disputeRound: 0,
           stakes: [
+            {
+              isInvalid: false,
+              payout: [
+                10000,
+                0,
+              ],
+              totalStaked: "0",
+              size: "0",
+              amountStaked: "0",
+              initialReport: false,
+              tentativeWinning: false,
+            },
             {
               isInvalid: false,
               payout: [
                 0,
                 10000,
               ],
-              totalStaked: "122",
-              size: "204",
-              amountStaked: "20",
+              totalStaked: "102",
+              size: "0",
+              amountStaked: "0",
+              initialReport: true,
+              tentativeWinning: true,
             },
           ],
+          disputeRound: 0,
         },
         null,
       ]);
@@ -120,7 +151,6 @@ describe("server/getters/get-dispute-info", () => {
       assert.deepEqual(disputeInfo, [
         {
           marketID: "0x0000000000000000000000000000000000000011",
-          disputeRound: 1,
           stakes: [
             {
               isInvalid: false,
@@ -128,9 +158,11 @@ describe("server/getters/get-dispute-info", () => {
                 0,
                 2,
               ],
-              totalStaked: "20000",
-              size: "20000",
-              amountStaked: "20000",
+              totalStaked: "102",
+              size: "119694",
+              amountStaked: "0",
+              initialReport: true,
+              tentativeWinning: false,
             },
             {
               isInvalid: true,
@@ -139,26 +171,43 @@ describe("server/getters/get-dispute-info", () => {
                 1,
               ],
               totalStaked: "20000",
-              size: "40000",
-              amountStaked: "20000",
+              size: "0",
+              amountStaked: "0",
+              initialReport: false,
+              tentativeWinning: true,
             },
           ],
+          disputeRound: 1,
         },
         {
           marketID: "0x0000000000000000000000000000000000000211",
-          disputeRound: 1,
           stakes: [
+            {
+              isInvalid: false,
+              payout: [
+                10000,
+                0,
+              ],
+              totalStaked: "0",
+              size: "0",
+              amountStaked: "0",
+              initialReport: false,
+              tentativeWinning: false,
+            },
             {
               isInvalid: false,
               payout: [
                 0,
                 10000,
               ],
-              totalStaked: "122",
-              size: "204",
-              amountStaked: "20",
+              totalStaked: "102",
+              size: "0",
+              amountStaked: "0",
+              initialReport: true,
+              tentativeWinning: true,
             },
           ],
+          disputeRound: 0,
         },
       ]);
     },
