@@ -1,7 +1,7 @@
 import { parallel } from "async";
 import * as Knex from "knex";
 import * as _ from "lodash";
-import { Address, MarketsRowWithCreationTime, OutcomesRow, AsyncCallback, Payout, UIStakeInfo, PayoutRow } from "../../types";
+import { Address, MarketsRowWithCreationTime, AsyncCallback, Payout, UIStakeInfo, PayoutRow } from "../../types";
 import { getMarketsWithReportingState, normalizePayouts } from "./database";
 import { BigNumber } from "bignumber.js";
 import { QueryBuilder } from "knex";
@@ -78,8 +78,6 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
     const totalStakeOnPayout = completedStakeAmount.add(new BigNumber(activeCrowdsourcer == null ? 0 : activeCrowdsourcer.amountStaked));
 
     let currentAmounts: {size?: string; currentStake?: string};
-    // let size: BigNumber;
-    // let amountStaked: BigNumber;
     if (payout.tentativeWinning === 1) {
       currentAmounts = {};
     } else if (activeCrowdsourcer == null) {
