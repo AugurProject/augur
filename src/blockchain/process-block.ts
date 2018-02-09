@@ -13,6 +13,28 @@ interface FeeWindowIDRow {
   feeWindowID: number;
 }
 
+const overrideTimestamps = Array<number>();
+
+export function setOverrideTimestamp(db: Knex, overrideTimestamp: number, callback: ErrorCallback): void {
+  overrideTimestamps.push(overrideTimestamp);
+  console.log("in override");
+  db("network_id").update("overrideTimestamp", overrideTimestamp).asCallback(callback);
+}
+
+export function removeOverrideTimestamp(db: Knex, overrideTimestamp: number, callback: ErrorCallback): void {
+  const removedTimestamp = overrideTimestamps.pop();
+  const priorTimestamp = getOverrideTimestamp();
+  if (removedTimestamp !== overrideTimestamp || priorTimestamp == null) {
+    return logError(new Error(`Timestamp removal failed ${removedTimestamp} ${overrideTimestamp}`));
+  }
+  db("network_id").update("overrideTimestamp", priorTimestamp).asCallback(callback);
+}
+
+function getOverrideTimestamp(): number|null {
+  if (overrideTimestamps.length === 0) return null;
+  return overrideTimestamps[overrideTimestamps.length - 1];
+}
+
 export function processBlock(db: Knex, augur: Augur, block: Block): void {
   processQueue.push((callback) => _processBlock(db, augur, block, callback), BLOCK_PRIORITY);
 }
@@ -31,7 +53,7 @@ function _processBlock(db: Knex, augur: Augur, block: Block, callback: ErrorCall
   if (!block || !block.timestamp) return logError(new Error(JSON.stringify(block)));
   const blockNumber = parseInt(block.number, 16);
   const blockHash = block.hash;
-  const timestamp = parseInt(block.timestamp, 16);
+  const timestamp = getOverrideTimestamp() || parseInt(block.timestamp, 16);
   console.log("new block:", blockNumber, timestamp);
   db.transaction((trx: Knex.Transaction): void => {
     trx("blocks").where({ blockNumber }).asCallback((err: Error|null, blocksRows?: Array<BlocksRow>): void => {
