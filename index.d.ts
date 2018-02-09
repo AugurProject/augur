@@ -1,7 +1,8 @@
 /// <reference types="node" />
 
-import { Block } from 'ethereumjs-blockstream'
-export { Block }
+import { BigNumber } from "bignumber.js";
+import { Block } from "ethereumjs-blockstream";
+export { Block };
 import { EventEmitter} from "events";
 
 type AbiEncodedData = string;
@@ -111,6 +112,35 @@ interface BlockSubscriptionCallbacks {
   onRemoved?: (block: Block) => void;
 }
 
+export enum OrderState {
+  All = "ALL",
+  Cancelled = "CANCELLED",
+  Closed = "CLOSED",
+  Open = "OPEN",
+}
+
+export interface Order {
+  shareToken: string;
+  transactionHash: string;
+  logIndex: number;
+  owner: string;
+  creationTime: number;
+  creationBlockNumber: number;
+  orderState: OrderState;
+  price: number;
+  amount: number;
+  fullPrecisionPrice: string;
+  fullPrecisionAmount: number;
+  tokensEscrowed: number;
+  sharesEscrowed: number;
+}
+
+export interface SingleOutcomeOrderBookSide {
+  [buyOrSell: string]: {
+    [orderID: string]: Order;
+  }
+}
+
 export interface CalculatedProfitLoss {
   realized: string;
   unrealized: string;
@@ -214,13 +244,17 @@ export class Augur {
   };
   public rpc: RpcInterface;
   public trading: {
-    claimMarketsProceeds: ApiFunction;
+    claimMarketsTradingProceeds: ApiFunction;
+    getOrders: ApiFunction;
     getPositionInMarket: ApiFunction;
+    placeTrade: ApiFunction;
     tradeUntilAmountIsZero: ApiFunction;
-    orderBook: {
-      getOrderBook: ApiFunction;
-      filterByPriceAndOutcomeAndUserSortByPrice(orderBook: any, orderType: number, price: any, userAddress: Address): any // TODO define order book type, import BigNumber type for price
-    }
+    filterByPriceAndUserSortByPrice(p: {
+      singleOutcomeOrderBookSide: SingleOutcomeOrderBookSide;
+      orderType: number;
+      price: BigNumber;
+      userAddress: Address;
+    }): Array<Order>;
     simulateTrade(p: ApiParams): SimulatedTrade;
     calculateProfitLoss(p: ApiParams): CalculatedProfitLoss;
     normalizePrice(p: ApiParams): string;
