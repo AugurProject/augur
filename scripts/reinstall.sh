@@ -8,11 +8,8 @@ PWD=$(pwd)
 
 cd "$(dirname $(readlink -f "$0"))/.."
 
-rm -Rf node_modules/
+rm -rf node_modules/
 
-if [ "$1" == "-l" ]; then
-  npm run link # so npm install doesn't throw if versions incremented locally
-fi
 npm install
 if [ "$1" == "-l" ]; then
   npm run link
