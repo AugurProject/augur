@@ -1,8 +1,10 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { EthereumNodeEndpoints, UploadBlockNumbers, ErrorCallback, Block } from "../types";
+
+import { EthereumNodeEndpoints, UploadBlockNumbers, ErrorCallback } from "../types";
 import { startAugurListeners } from "./start-augur-listeners";
 import { downloadAugurLogs } from "./download-augur-logs";
+import { setOverrideTimestamp } from "./process-block";
 
 interface HighestBlockNumberRow {
   highestBlockNumber: number;
@@ -10,20 +12,25 @@ interface HighestBlockNumberRow {
 
 interface NetworkIDRow {
   networkID: string;
+  overrideTimestamp: number|null;
 }
 
-function getNetworkID(db: Knex, augur: Augur, callback: (err: Error|null, networkID: string|null) => void) {
+function getNetworkID(db: Knex, augur: Augur, callback: (err?: Error|null, networkID?: string|null) => void) {
   const networkID: string = augur.rpc.getNetworkID();
-  db.select("networkID").from("network_id").limit(1).asCallback((err: Error|null, rows: Array<NetworkIDRow>): void => {
+  db.first(["networkID", "overrideTimestamp"]).from("network_id").asCallback((err: Error|null, networkRow?: NetworkIDRow): void => {
     if (err) return callback(err, null);
-    if (rows.length === 0) {
+    if (networkRow == null) {
       db.insert({ networkID }).into("network_id").asCallback((err: Error|null): void => {
         callback(err, networkID);
       });
     } else {
-      const lastNetworkID: string = rows[0].networkID;
+      const lastNetworkID: string = networkRow.networkID;
       if (networkID === lastNetworkID) {
-        db("network_id").update({ lastLaunched: db.fn.now() }).asCallback((err: Error|null): void => callback(err, networkID));
+        db("network_id").update({ lastLaunched: db.fn.now() }).asCallback((err?: Error|null): void => {
+          if (err) return callback(err, null);
+          if (networkRow.overrideTimestamp == null) return callback(err, networkID);
+          setOverrideTimestamp(db, networkRow.overrideTimestamp, (err) => callback(err, networkID));
+        });
       } else {
         callback(new Error(`NetworkID mismatch: current: ${networkID}, expected ${lastNetworkID}`), null);
       }
