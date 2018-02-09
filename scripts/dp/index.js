@@ -48,7 +48,11 @@ async function runCannedData(command, networks) {
       }
 
       case "create-orders": {
-        await connect({ ethereumNode: { http: network.http } });
+        if (typeof process.env.AUGUR_WS === "undefined") {
+          console.log("Error: Must pass augur node URI in AUGUR_WS for create-orders\n");
+          return help();
+        }
+        await connect({ ethereumNode: { http: network.http }, augurNode: {ws: process.env.AUGUR_WS} });
         await createOrders(augur, auth);
         break;
       }
@@ -75,6 +79,7 @@ async function help() {
 
   console.log(chalk.underline("Commands"));
   console.log(COMMANDS.join(", "), "or help for this message");
+  console.log("  NOTE: create-orders only supports " + chalk.bold("one network") + " at a time");
 
   console.log(chalk.underline("\nNetworks"));
   console.log(NETWORKS.join(", "));
@@ -87,6 +92,9 @@ async function help() {
   console.log(columnify([{
     env: "ETHEREUM_HTTP",
     Description: "The http(s) address of your ethereum endpoint (default: http://localhost:8545)",
+  }, {
+    env: "AUGUR_WS",
+    Description: "The websocket uri of your augur endpoint, only for " + chalk.bold("create-orders"),
   }, {
     env: "ETHEREUM_PRIVATE_KEY",
     Description: "HEX Private Key used for transactions on this eth node",
