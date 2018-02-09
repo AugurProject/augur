@@ -3,6 +3,7 @@ import * as Knex from "knex";
 import { EthereumNodeEndpoints, UploadBlockNumbers, ErrorCallback, Block } from "../types";
 import { startAugurListeners } from "./start-augur-listeners";
 import { downloadAugurLogs } from "./download-augur-logs";
+import { NetworkConfiguration } from "augur-core";
 
 interface HighestBlockNumberRow {
   highestBlockNumber: number;
@@ -45,8 +46,8 @@ function monitorEthereumNodeHealth(augur: Augur) {
   }, 5000);
 }
 
-export function syncAugurNodeWithBlockchain(db: Knex, augur: Augur, ethereumNodeEndpoints: EthereumNodeEndpoints, uploadBlockNumbers: UploadBlockNumbers, callback: ErrorCallback): void {
-  augur.connect({ ethereumNode: ethereumNodeEndpoints, startBlockStreamOnConnect: false }, (): void => {
+export function syncAugurNodeWithBlockchain(db: Knex, augur: Augur, network: NetworkConfiguration, uploadBlockNumbers: UploadBlockNumbers, callback: ErrorCallback): void {
+  augur.connect({ ethereumNode: { http: network.http, ws: network.ws }, startBlockStreamOnConnect: false }, (): void => {
     getNetworkID(db, augur, (err: Error|null, networkID: string|null) => {
       if (err) return callback(err);
       if (networkID == null) return callback(new Error("could not get networkID"));
