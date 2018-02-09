@@ -1,0 +1,9 @@
+{
+  "id": 74,
+  "jsonrpc": "2.0",
+  "method": "getMarketsUpcomingDesignatedReporting",
+  "params": {
+    "universe": "0x000000000000000000000000000000000000000b",
+    "designatedReporter": "0x0000000000000000000000000000000000000b0b"
+  }
+}

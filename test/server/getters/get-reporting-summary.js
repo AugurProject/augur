@@ -28,6 +28,7 @@ describe("server/getters/get-reporting-summary", () => {
         "DESIGNATED_REPORTING": 8,
         "FIRST_REPORTING": 2,
         "FINALIZED": 1,
+        "PRE_REPORTING": 1,
       });
     },
   });

@@ -7,6 +7,7 @@ import { getMarketsInCategory } from "./getters/get-markets-in-category";
 import { getMarketsCreatedByUser } from "./getters/get-markets-created-by-user";
 import { getReportingHistory } from "./getters/get-reporting-history";
 import { getMarketsAwaitingDesignatedReporting } from "./getters/get-markets-awaiting-designated-reporting";
+import { getMarketsUpcomingDesignatedReporting } from "./getters/get-markets-upcoming-designated-reporting";
 import { getMarketsAwaitingReporting } from "./getters/get-markets-awaiting-reporting";
 import { getDisputableMarkets } from "./getters/get-disputable-markets";
 import { getReportingSummary } from "./getters/get-reporting-summary";
@@ -40,6 +41,8 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return getReportingHistory(db, request.params.reporter, request.params.universe, request.params.marketID, request.params.reportingWindow, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsAwaitingDesignatedReporting":
       return getMarketsAwaitingDesignatedReporting(db, request.params.universe, request.params.designatedReporter, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
+    case "getMarketsUpcomingDesignatedReporting":
+      return getMarketsUpcomingDesignatedReporting(db, request.params.universe, request.params.designatedReporter, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsAwaitingReporting":
       return getMarketsAwaitingReporting(db, request.params.universe, request.params.reportingWindow, request.params.reportingRound, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getDisputableMarkets":
