@@ -7,6 +7,8 @@ import { checkAugurDbSetup } from "./setup/check-augur-db-setup";
 import { syncAugurNodeWithBlockchain } from "./blockchain/sync-augur-node-with-blockchain";
 import { runServer } from "./server/run-server";
 
+import { NetworkConfiguration } from "augur-core";
+
 // tslint:disable-next-line:no-var-requires
 const {augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers } = require("../config");
 
@@ -29,12 +31,8 @@ if (process.env.DATABASE_URL) {
   });
 }
 
-const envEndpoints: EthereumNodeEndpoints = _.omitBy({
-  http: process.env.ENDPOINT_HTTP,
-  ws: process.env.ENDPOINT_WS,
-}, _.isNil);
-
-const configuredEndpoints: EthereumNodeEndpoints = _.isEmpty(envEndpoints) ? ethereumNodeEndpoints : envEndpoints;
+const networkName = process.argv[2] || "environment";
+const networkConfig = NetworkConfiguration.create(networkName);
 
 const augur: Augur = new Augur();
 
@@ -52,7 +50,7 @@ checkAugurDbSetup(db, (err?: Error|null): void => {
     servers.forEach((websocketServer) => websocketServer.close());
     process.exit(1);
   }
-  syncAugurNodeWithBlockchain(db, augur, configuredEndpoints, uploadBlockNumbers, (err?: Error|null): void => {
+  syncAugurNodeWithBlockchain(db, augur, networkConfig, uploadBlockNumbers, (err?: Error|null): void => {
     if (err) {
       console.error("syncAugurNodeWithBlockchain:", err);
       servers.forEach((websocketServer) => websocketServer.close());
