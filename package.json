@@ -42,6 +42,7 @@
     "release:major": "npm version major && git push && git push --tags && npm publish"
   },
   "dependencies": {
+    "@types/bignumber.js": "4.0.3",
     "async": "1.5.2",
     "augur-core": "0.12.0-17",
     "bignumber.js": "2.3.0",

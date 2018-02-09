@@ -240,7 +240,7 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
   test({
     description: "return empty array if no order book provided",
     params: {
-      orderType: undefined,
+      orderType: 1,
       userAddress: "USER_ADDRESS",
       price: "0.7",
       singleOutcomeOrderBookSide: {},
