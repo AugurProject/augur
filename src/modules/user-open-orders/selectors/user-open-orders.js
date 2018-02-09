@@ -51,7 +51,7 @@ const userOpenOrders = memoize((marketId, outcomeID, loginAccount, marketOrderBo
  *
  * @return {Array}
  */
-function getUserOpenOrders(marketId, orders, orderType, outcomeID, userID, orderCancellation) {
+function getUserOpenOrders(marketId, orders, orderType, outcomeID, userID, orderCancellation={}) {
   const typeOrders = orders[orderType]
   return Object.keys(typeOrders)
     .map(orderId => typeOrders[orderId])
