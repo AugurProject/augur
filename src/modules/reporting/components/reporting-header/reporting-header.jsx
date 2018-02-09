@@ -40,12 +40,9 @@ export default class ReportingHeader extends Component {
               <h1 className={Styles.ReportingHeader__heading}>Reporting: {p.heading}</h1>
             }
             { p.showReportingEndDate &&
-              <span className={Styles.ReportingHeader__endDate}>Reporting cycle ends { formattedDate.formattedLocalShort }</span>
+              <span className={Styles.ReportingHeader__endDate}>Reporting cycle ends { formattedDate.formattedLocal }</span>
             }
             <span className={Styles.ReportingHeader__stake}> | </span><span className={Styles.ReportingHeader__stake}>{ p.reportingWindowStats.stake } REP Staked</span>
-          </div>
-          <div>
-            Participate placeholder
           </div>
         </div>
         <div className={Styles['ReportingHeader__graph-wrapper']}>

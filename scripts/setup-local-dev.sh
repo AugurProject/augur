@@ -18,7 +18,7 @@ GETH_STATE=$(docker inspect -f {{.State.Running}} geth-node);
 if [[ "$GETH_STATE" != "true" ]]; then
   echo "geth-node: ";
   docker run -it -d --rm --name geth-node -p 8545:8545 -p 8546:8546 augurproject/dev-node-geth:latest;
-  $SHOULD_SETUP_MARKETS=true;
+  SHOULD_SETUP_MARKETS=true;
 else
   echo "geth-node: already running";
 fi
