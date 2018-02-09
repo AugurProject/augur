@@ -55,7 +55,7 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
         assert.isNull(err);
         assert.deepEqual(records, {
           initialReportSize: 2829,
-          reportingState: "DESIGNATED_DISPUTE",
+          reportingState: "DESIGNATED_REPORTING",
         });
       },
       onRemoved: (err, records) => {

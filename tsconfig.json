@@ -13,8 +13,16 @@
     "noImplicitThis": true,
     "outDir": "build",
     "rootDir": "src",
+    "baseUrl": "./",
+    "paths": {
+      "*":  ["node_modules/augur-core/typings/*"]
+    },
     "typeRoots": [
+      "node_modules/augur-core/typings",
       "node_modules/@types"
+    ],
+    "types": [
+      "ethereum"
     ]
   },
   "include": [
