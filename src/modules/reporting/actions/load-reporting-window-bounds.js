@@ -14,7 +14,7 @@ export const loadReportingWindowBounds = () => (dispatch, getState) => {
       dispatch(updateReportingWindowStats({
         startTime: result.startTime,
         endTime: result.endTime,
-        stake: result.totalStake
+        stake: result.totalStake || 0
       }))
     }
   )
