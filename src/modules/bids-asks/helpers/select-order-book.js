@@ -7,7 +7,10 @@ import { ZERO } from 'modules/trade/constants/numbers'
 import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user'
 
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
+import { BUY, SELL } from 'modules/trade/constants/types'
 import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status'
+
+import { has } from 'lodash'
 
 import { formatShares, formatEtherTokens } from 'utils/format-number'
 
@@ -24,8 +27,8 @@ export const selectAggregateOrderBook = memoize((outcomeID, marketOrderBook, ord
   }
 
   return {
-    bids: selectAggregatePricePoints(outcomeID, marketOrderBook.buy, orderCancellation).sort(sortPricePointsByPriceDesc),
-    asks: selectAggregatePricePoints(outcomeID, marketOrderBook.sell, orderCancellation).sort(sortPricePointsByPriceAsc)
+    [BIDS]: selectAggregatePricePoints(outcomeID, BUY, marketOrderBook, orderCancellation).sort(sortPricePointsByPriceDesc),
+    [ASKS]: selectAggregatePricePoints(outcomeID, SELL, marketOrderBook, orderCancellation).sort(sortPricePointsByPriceAsc)
   }
 }, { max: 100 })
 
@@ -69,17 +72,18 @@ export const selectTopAsk = memoize((marketOrderBook, excludeCurrentUser) => {
  * Selects price points with aggregated amount of shares
  *
  * @param {String} outcomeID
+ * @param {String} side
  * @param {{String, Object}} orders Key is order ID, value is order
  */
-const selectAggregatePricePoints = memoize((outcomeID, orders, orderCancellation) => {
-  if (orders == null) {
+const selectAggregatePricePoints = memoize((outcomeID, side, orders, orderCancellation) => {
+  if (orders == null || !has(orders, [outcomeID, side])) {
     return []
   }
   const currentUserAddress = store.getState().loginAccount.address
 
-  const shareCountPerPrice = Object.keys(orders)
-    .map(orderId => orders[orderId])
-    .filter(order => order.outcome === outcomeID && orderCancellation[order.id] !== CLOSE_DIALOG_CLOSING)
+  const shareCountPerPrice = Object.keys(orders[outcomeID][side])
+    .map(orderId => orders[outcomeID][side][orderId])
+    .filter(order => orderCancellation[order.orderID] !== CLOSE_DIALOG_CLOSING)
     .map(order => ({
       ...order,
       isOfCurrentUser: isOrderOfUser(order, currentUserAddress)

@@ -85,7 +85,12 @@ export default class MarketPortfolioCard extends Component {
                 { p.isMobile ? p.market.endDate.formattedShort : p.market.endDate.formatted }
               </span>
               <h1 className={CommonStyles.MarketCommon__description}>
-                {this.props.market.description}
+                <MarketLink
+                  id={this.props.market.id}
+                  formattedDescription={this.props.market.description}
+                >
+                  {this.props.market.description}
+                </MarketLink>
               </h1>
             </div>
             <MarketStatusIcon className={Styles.MarketCard__statusicon} isOpen={p.market.isOpen} isReported={p.market.isReported} />
@@ -225,9 +230,9 @@ export default class MarketPortfolioCard extends Component {
                 <li><span>Action</span></li>
               </ul>
               }
-              { this.state.tableOpen.openOrders && (myPositionOutcomes || []).filter(outcome => outcome.userOpenOrders).map(outcome => (
-                <div key={`table-body-order-${outcome.id}${outcome.marketID}`} className={PositionStyles['MarketPositionsList__table-body']}>
-                  { outcome.userOpenOrders.map((order, i) => (
+              <div className={PositionStyles['MarketPositionsList__table-body']}>
+                { this.state.tableOpen.openOrders && (myPositionOutcomes || []).filter(outcome => outcome.userOpenOrders).map(outcome => (
+                  outcome.userOpenOrders.map((order, i) => (
                     <MarketPositionsListOrder
                       key={order.id}
                       name={outcome.name}
@@ -236,10 +241,10 @@ export default class MarketPortfolioCard extends Component {
                       isExtendedDisplay
                       isMobile={p.isMobile}
                     />
-                  ))}
-                </div>
-              ))
-              }
+                  ))
+                ))
+                }
+              </div>
             </div>
           </div>
         </section>

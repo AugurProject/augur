@@ -1,5 +1,7 @@
 import memoize from 'memoizee'
 
+import { has } from 'lodash'
+
 export default function (marketID, outcome, orderTypeLabel, orderBooks) {
   return getOrderBook(marketID, outcome, orderTypeLabel, orderBooks)
 }
@@ -12,7 +14,6 @@ export default function (marketID, outcome, orderTypeLabel, orderBooks) {
  * @return {Object|null}
  */
 const getOrderBook = memoize((marketID, outcome, orderTypeLabel, orderBooks) => {
-  if (orderBooks[marketID] == null) return null
-  if (orderBooks[marketID][outcome] == null) return null
+  if (!has(orderBooks, [marketID, outcome, orderTypeLabel])) return null
   return orderBooks[marketID][outcome][orderTypeLabel] || null
 }, { max: 1 })
