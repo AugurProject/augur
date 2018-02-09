@@ -1,6 +1,6 @@
 /// <reference types="node" />
 
-import BigNumber from "bignumber.js";
+import { BigNumber } from "bignumber.js";
 import { Block } from "ethereumjs-blockstream";
 export { Block };
 import { EventEmitter} from "events";
