@@ -13,7 +13,6 @@ interface DisputeRound {
 
 interface DisputesResult {
   markets: Array<MarketsRowWithCreationTime>;
-  disputes: Array<OutcomesRow>;
   completedStakes: Array<StakeRow>;
   activeCrowdsourcer: Array<ActiveCrowdsourcer>;
   payouts: Array<PayoutRow>;
@@ -29,6 +28,7 @@ interface StakeRow extends Payout {
 interface ActiveCrowdsourcer extends StakeRow {
   size: number;
 }
+
 function calculateBondSize(totalCompletedStakeOnAllPayouts: BigNumber, completedStakeAmount: BigNumber): BigNumber {
   return new BigNumber(totalCompletedStakeOnAllPayouts.times(2))
     .minus(
