@@ -34,11 +34,11 @@ function help(callback) {
 }
 
 function getBalance(augur, params, callback) {
-  var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
   if (!params || params === "help") {
     help(callback);
   } else {
     var account = params;
+    var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
     getBalanceInternal(augur, universe, account, callback);
   }
 }

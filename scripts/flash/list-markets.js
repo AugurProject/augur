@@ -29,7 +29,7 @@ function listMarketsInternal(augur, universe) {
 }
 
 function help(callback) {
-  console.log(chalk.red("params syntax -->  params="));
+  console.log(chalk.red("params syntax -->  no params needed"));
   callback(null);
 }
 

@@ -18,56 +18,9 @@ const pushTime = promisify(require("./push-time"));
 
 const commands = ["get-balance", "list-markets", "designate-report", "initial-report", "dispute", "finalize-market", "push-time", "hello"];
 const NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten"];
-
-
-function runCommandHelp(command) {
-  var help = "help";
-  switch (command) {
-
-    case "get-balance": {
-      getBalance(null, help);
-      break;
-    }
-
-    case "list-markets": {
-      listMarkets(null, help);
-      break;
-    }
-
-    case "initial-report": {
-      initialReport(null, help);
-      break;
-    }
-
-    case "designate-report": {
-      designatedReport(null, help, null);
-      break;
-    }
-
-    case "dispute": {
-      disputeContribute(null, help);
-      break;
-    }
-
-    case "finalize-market": {
-      finalizeMarket(null, help);
-      break;
-    }
-
-    case "push-time": {
-      pushTime(null, help);
-      break;
-    }
-
-    default: {
-      console.log("run help to get main help");
-    }
-  }
-  process.exit(0);
-}
+const helps = [getBalance, listMarkets, initialReport, designatedReport, disputeContribute, finalizeMarket, pushTime];
 
 async function runCommand(command, params, networks) {
-  if (params === "help") runCommandHelp(command);
   const networkConfigurations = networks.map(NetworkConfiguration.create);
   console.log(chalk.yellow.dim("command"), command);
   console.log(chalk.yellow.dim("parameters"), params);
@@ -219,7 +172,11 @@ if (require.main === module) {
         process.exit();
       });
     } else {
-      if (args.help) args.params = "help";
+      if (args.help) {
+        // just run the command to get help
+        helps[commands.indexOf(args.command)](null, "help");
+        process.exit(0);
+      }
       runCommand(args.command, args.params, args.networks).then(() => {
         process.exit();
       }).catch((error) => {
