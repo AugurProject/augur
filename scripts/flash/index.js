@@ -18,7 +18,7 @@ const pushTime = promisify(require("./push-time"));
 
 const commands = ["get-balance", "list-markets", "designate-report", "initial-report", "dispute", "finalize-market", "push-time", "hello"];
 const NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten"];
-const helps = [getBalance, listMarkets, initialReport, designatedReport, disputeContribute, finalizeMarket, pushTime];
+const methods = [getBalance, listMarkets, initialReport, designatedReport, disputeContribute, finalizeMarket, pushTime];
 
 async function runCommand(command, params, networks) {
   const networkConfigurations = networks.map(NetworkConfiguration.create);
@@ -29,58 +29,12 @@ async function runCommand(command, params, networks) {
     console.log(chalk.yellow("network http:"), network.http);
     const augur = new Augur();
     augur.rpc.setDebugOptions(debugOptions);
-
     const connect = promisify(augur.connect);
-
     const auth = getPrivateKeyFromString(network.privateKey);
-    switch (command) {
 
-      case "get-balance": {
-        await connect({ ethereumNode: { http: network.http } });
-        await getBalance(augur, params);
-        break;
-      }
+    await connect({ ethereumNode: { http: network.http }, augurNode: process.env.AUGUR_WS });
+    await methods[commands.indexOf(command)](augur, params, auth);
 
-      case "list-markets": {
-        await connect({ ethereumNode: { http: network.http }, augurNode: process.env.AUGUR_WS });
-        await listMarkets(augur);
-        break;
-      }
-
-      case "initial-report": {
-        await connect({ ethereumNode: { http: network.http }, augurNode: process.env.AUGUR_WS });
-        await initialReport(augur, params, auth);
-        break;
-      }
-
-      case "designate-report": {
-        await connect({ ethereumNode: { http: network.http }, augurNode: process.env.AUGUR_WS });
-        await designatedReport(augur, params, auth);
-        break;
-      }
-
-      case "dispute": {
-        await connect({ ethereumNode: { http: network.http }, augurNode: process.env.AUGUR_WS });
-        await disputeContribute(augur, params, auth);
-        break;
-      }
-
-      case "finalize-market": {
-        await connect({ ethereumNode: { http: network.http }, augurNode: process.env.AUGUR_WS });
-        await finalizeMarket(augur, params, auth);
-        break;
-      }
-
-      case "push-time": {
-        await connect({ ethereumNode: { http: network.http }, augurNode: process.env.AUGUR_WS });
-        await pushTime(augur, params, auth);
-        break;
-      }
-
-      default: {
-        console.log("Hello Sir");
-      }
-    }
   }
 }
 
@@ -174,7 +128,7 @@ if (require.main === module) {
     } else {
       if (args.help) {
         // just run the command to get help
-        helps[commands.indexOf(args.command)](null, "help");
+        methods[commands.indexOf(args.command)](null, "help");
         process.exit(0);
       }
       runCommand(args.command, args.params, args.networks).then(() => {
