@@ -121,7 +121,7 @@ async function runCannedData(command, networks) {
           console.log("Error: Must pass augur node URI in AUGUR_WS for create-orders\n");
           return help();
         }
-        await connect({ ethereumNode: { http: network.http }, augurNode: {ws: process.env.AUGUR_WS} });
+        await connect({ ethereumNode: { http: network.http }, augurNode: process.env.AUGUR_WS });
         await createOrders(augur, auth);
         break;
       }
