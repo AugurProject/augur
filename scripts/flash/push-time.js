@@ -64,7 +64,7 @@ function pushTime(augur, params, auth, callback) {
     var action = paramArray[0];
     var value = paramArray[1];
     getTime(augur, auth, function (timeResult) {
-      var timestamp = augur.api.Controller.getTimestamp();
+      var timestamp = parseInt(augur.api.Controller.getTimestamp(), 10);
       displayTime("current time:", timestamp);
 
       if (action === "SET") {
