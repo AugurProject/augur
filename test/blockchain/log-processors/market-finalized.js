@@ -55,7 +55,7 @@ describe("blockchain/log-processors/market-finalized", () => {
         assert.isNull(err);
         assert.deepEqual(records, {
           marketID: "0x0000000000000000000000000000000000000013",
-          reportingState: "AWAITING_FINALIZATION",
+          reportingState: "AWAITING_NEXT_WINDOW",
         });
       },
     },

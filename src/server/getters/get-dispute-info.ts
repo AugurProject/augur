@@ -1,7 +1,7 @@
 import { parallel } from "async";
 import * as Knex from "knex";
 import * as _ from "lodash";
-import { Address, MarketsRowWithCreationTime, AsyncCallback, Payout, UIStakeInfo, PayoutRow } from "../../types";
+import { Address, MarketsRowWithCreationTime, AsyncCallback, Payout, UIStakeInfo, PayoutRow, ReportingState } from "../../types";
 import { getMarketsWithReportingState, normalizePayouts } from "./database";
 import { BigNumber } from "bignumber.js";
 import { QueryBuilder } from "knex";
@@ -27,6 +27,12 @@ interface StakeRow extends Payout {
 
 interface ActiveCrowdsourcer extends StakeRow {
   size: number;
+}
+
+const activeMarketStates = ["CROWDSOURCING_DISPUTE", "AWAITING_NEXT_WINDOW", "FORKING", "AWAITING_FORK_MIGRATION"];
+function isActiveMarketState(reportingState: ReportingState|null|undefined) {
+  if (reportingState == null) return null;
+  return activeMarketStates.indexOf(reportingState) !== -1;
 }
 
 function calculateBondSize(totalCompletedStakeOnAllPayouts: BigNumber, completedStakeAmount: BigNumber): BigNumber {
@@ -61,7 +67,8 @@ export function getDisputeInfo(db: Knex, marketIDs: Array<Address>, callback: (e
 }
 
 function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|null {
-  if (stakeRows.markets.length === 0) {
+  const marketRow = stakeRows.markets[0];
+  if (marketRow == null) {
     return null;
   }
   const totalCompletedStakeOnAllPayouts = new BigNumber(
@@ -77,8 +84,8 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
     const completedStakeAmount = new BigNumber(completedStakes == null ? 0 : completedStakes.amountStaked);
     const totalStakeOnPayout = completedStakeAmount.add(new BigNumber(activeCrowdsourcer == null ? 0 : activeCrowdsourcer.amountStaked));
 
-    let currentAmounts: {size?: string; currentStake?: string};
-    if (payout.tentativeWinning === 1) {
+    let currentAmounts: { size?: string; currentStake?: string };
+    if (payout.tentativeWinning === 1 || !isActiveMarketState(marketRow.reportingState)) {
       currentAmounts = {};
     } else if (activeCrowdsourcer == null) {
       currentAmounts = {

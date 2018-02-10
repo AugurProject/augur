@@ -42,7 +42,7 @@ describe("server/getters/get-dispute-tokens", () => {
           winningToken: null,
           tentativeWinning: 0,
           claimed: false,
-          reportingState: "FIRST_REPORTING",
+          reportingState: "CROWDSOURCING_DISPUTE",
         },
       });
     },
@@ -146,7 +146,7 @@ describe("server/getters/get-dispute-tokens", () => {
           tentativeWinning: 0,
           winningToken: null,
           claimed: false,
-          reportingState: "FIRST_REPORTING",
+          reportingState: "CROWDSOURCING_DISPUTE",
         },
         "0x0000000000000000001000000000000000000003": {
           disputeToken: "0x0000000000000000001000000000000000000003",

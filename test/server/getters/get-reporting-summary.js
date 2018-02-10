@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getReportingSummary } = require("../../../build/server/getters/get-reporting-summary");
+const {getReportingSummary} = require("../../../build/server/getters/get-reporting-summary");
 
 describe("server/getters/get-reporting-summary", () => {
   const test = (t) => {
@@ -24,9 +24,9 @@ describe("server/getters/get-reporting-summary", () => {
     assertions: (err, reportingSummary) => {
       assert.isNull(err);
       assert.deepEqual(reportingSummary, {
-        "AWAITING_FINALIZATION": 1,
+        "AWAITING_NEXT_WINDOW": 1,
         "DESIGNATED_REPORTING": 8,
-        "FIRST_REPORTING": 2,
+        "CROWDSOURCING_DISPUTE": 2,
         "FINALIZED": 1,
       });
     },
