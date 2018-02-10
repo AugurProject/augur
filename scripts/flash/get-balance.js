@@ -28,12 +28,15 @@ function getBalanceInternal(augur, universe, account) {
   });
 }
 
+function help(callback) {
+  console.log(chalk.red("account address is needed to get balances"));
+  callback(null);
+}
 
 function getBalance(augur, params, callback) {
   var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
-  if (!params) {
-    console.log(chalk.red("account address is needed to get balances"));
-    callback(null);
+  if (!params || params === "help") {
+    help(callback);
   } else {
     var account = params;
     getBalanceInternal(augur, universe, account, callback);

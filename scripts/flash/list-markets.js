@@ -28,10 +28,19 @@ function listMarketsInternal(augur, universe) {
   });
 }
 
+function help(callback) {
+  console.log(chalk.red("params syntax -->  params="));
+  callback(null);
+}
+
 function listMarkets(augur, params, callback) {
-  var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
-  console.log(chalk.green.dim("Universe"), universe);
-  listMarketsInternal(augur, universe, callback);
+  if (params === "help") {
+    help(callback);
+  } else {
+    var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
+    console.log(chalk.green.dim("Universe"), universe);
+    listMarketsInternal(augur, universe, callback);
+  }
 }
 
 module.exports = listMarkets;
