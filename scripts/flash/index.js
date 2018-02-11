@@ -18,7 +18,7 @@ const pushTime = promisify(require("./push-time"));
 
 const commands = ["get-balance", "list-markets", "designate-report", "initial-report", "dispute", "finalize-market", "push-time", "hello"];
 const NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten"];
-const methods = [getBalance, listMarkets, initialReport, designatedReport, disputeContribute, finalizeMarket, pushTime];
+const methods = [getBalance, listMarkets, designatedReport, initialReport, disputeContribute, finalizeMarket, pushTime];
 
 async function runCommand(command, params, networks) {
   const networkConfigurations = networks.map(NetworkConfiguration.create);
