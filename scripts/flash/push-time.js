@@ -71,7 +71,7 @@ function pushTime(augur, params, auth, callback) {
         if (value === "CURRENT") {
           value = Math.floor(new Date().getTime()/1000);
         }
-        setTime(augur, value, timeResult.address, auth, callback);
+        setTime(augur, value, timeResult.timeAddress, auth, callback);
       } else {
         var amount = 0;
         var digit = parseInt(params.match(regex), 10);
@@ -83,7 +83,7 @@ function pushTime(augur, params, auth, callback) {
         }
         var totalMovement = amount * digit;
         var newTimestamp = subtraction ? timestamp - totalMovement : timestamp + totalMovement;
-        setTime(augur, newTimestamp, timeResult.address, auth, callback);
+        setTime(augur, newTimestamp, timeResult.timeAddress, auth, callback);
       }
     });
   }
