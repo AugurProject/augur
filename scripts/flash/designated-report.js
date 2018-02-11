@@ -5,6 +5,7 @@
 var chalk = require("chalk");
 var getTime = require("./get-timestamp");
 var setTimestamp = require("./set-timestamp");
+var doInitialReport = require("./do-initial-report");
 
 /**
  * Move time to Market end time and do initial report
@@ -22,23 +23,9 @@ function designateReportInternal(augur, marketID, outcomeID, invalid, auth) {
           var payoutNumerators = Array(market.numOutcomes).fill(0);
           payoutNumerators[outcomeID] = numTicks;
 
-          augur.api.Market.doInitialReport({
-            meta: auth,
-            tx: { to: marketID  },
-            _payoutNumerators: payoutNumerators,
-            _invalid: invalid,
-            onSent: function (result) {
-              console.log(chalk.yellow.dim("Sent:"), chalk.yellow(JSON.stringify(result)));
-              console.log(chalk.yellow.dim("Waiting for reply ...."));
-            },
-            onSuccess: function (result) {
-              console.log(chalk.green.dim("Success:"), chalk.green(JSON.stringify(result)));
-              process.exit(0);
-            },
-            onFailed: function (result) {
-              console.log(chalk.red.dim("Failed:"), chalk.red(JSON.stringify(result)));
-              process.exit(1);
-            },
+          doInitialReport(augur, marketID, payoutNumerators, invalid, auth, function (err) {
+            if (err) { console.log(chalk.red(err)); process.exit(1); }
+            console.log(chalk.green("Initial Report Done"));
           });
         });
       });
