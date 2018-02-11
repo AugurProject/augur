@@ -68,7 +68,7 @@ if (require.main === module) {
     augur.connect(connectionEndpoints, function (err) {
       if (err) return console.error("connect failed:", err);
 
-      _createMarkets(augur, auth, function (err) {
+      createMarkets(augur, auth, function (err) {
         if (err) {
           console.error(chalk.red.bold("Canned market creation failed:"), err);
           process.exit(1);
