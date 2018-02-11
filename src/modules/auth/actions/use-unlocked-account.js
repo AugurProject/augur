@@ -1,25 +1,34 @@
 import { augur } from 'services/augurjs'
 import { loadAccountData } from 'modules/auth/actions/load-account-data'
 import { updateIsLogged } from 'modules/auth/actions/update-is-logged'
+import isMetaMask from 'modules/auth/helpers/is-meta-mask'
+import logError from 'utils/log-error'
+
+const updateIsLoggedAndLoadAccountData = unlockedAddress => (dispatch) => {
+  augur.accounts.logout() // clear ethrpc transaction history, registered callbacks, and notifications
+  console.log(`using unlocked account ${unlockedAddress}`)
+  dispatch(updateIsLogged(true))
+  dispatch(loadAccountData({
+    address: unlockedAddress,
+    meta: {
+      address: unlockedAddress,
+      signer: null,
+      accountType: augur.rpc.constants.ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE
+    },
+    isUnlocked: true
+  }, true))
+}
 
 // Use unlocked local address (if actually unlocked)
-export const useUnlockedAccount = unlockedAddress => (dispatch) => {
-  if (!unlockedAddress) return console.error('no account address')
+export const useUnlockedAccount = (unlockedAddress, callback = logError) => (dispatch) => {
+  if (!unlockedAddress) return callback('no account address')
+  if (isMetaMask()) return dispatch(updateIsLoggedAndLoadAccountData(unlockedAddress))
   augur.rpc.isUnlocked(unlockedAddress, (isUnlocked) => {
     if (!isUnlocked || isUnlocked.error) {
-      return console.warn('account is locked:', unlockedAddress, isUnlocked)
+      console.warn(`account ${unlockedAddress} is locked`)
+      return callback(null)
     }
-    augur.accounts.logout() // clear the client-side account
-    console.log('using unlocked account:', unlockedAddress)
-    dispatch(updateIsLogged(true))
-    dispatch(loadAccountData({
-      address: unlockedAddress,
-      meta: {
-        address: unlockedAddress,
-        signer: null,
-        accountType: augur.rpc.constants.ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE
-      },
-      isUnlocked: true
-    }, true))
+    dispatch(updateIsLoggedAndLoadAccountData(unlockedAddress))
+    callback(null)
   })
 }
