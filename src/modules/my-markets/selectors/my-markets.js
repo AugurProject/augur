@@ -38,6 +38,7 @@ export const selectLoginAccountMarkets = createSelector(
         description: market.description,
         endDate: market.endDate,
         volume: market.volume,
+        repBalance: market.repBalance,
         fees,
         numberOfTrades,
         averageTradeSize,

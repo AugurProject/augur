@@ -1,4 +1,4 @@
-import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKET_CATEGORY, UPDATE_MARKETS_LOADING_STATUS } from 'modules/markets/actions/update-markets-data'
+import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKET_CATEGORY, UPDATE_MARKETS_LOADING_STATUS, UPDATE_MARKET_REP_BALANCE, UPDATE_MARKET_FROZEN_SHARES_VALUE } from 'modules/markets/actions/update-markets-data'
 import { RESET_STATE } from 'modules/app/actions/reset-state'
 
 const DEFAULT_STATE = {}
@@ -28,6 +28,24 @@ export default function (marketsData = DEFAULT_STATE, action) {
         [action.marketId]: {
           ...marketsData[action.marketId],
           category: action.category
+        }
+      }
+    case UPDATE_MARKET_REP_BALANCE:
+      if (!action.marketID) return marketsData
+      return {
+        ...marketsData,
+        [action.marketID]: {
+          ...marketsData[action.marketID],
+          repBalance: action.repBalance
+        }
+      }
+    case UPDATE_MARKET_FROZEN_SHARES_VALUE:
+      if (!action.marketID) return marketsData
+      return {
+        ...marketsData,
+        [action.marketID]: {
+          ...marketsData[action.marketID],
+          frozenSharesValue: action.frozenSharesValue
         }
       }
     case RESET_STATE:
