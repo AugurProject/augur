@@ -36,7 +36,7 @@ module.exports = [{
   orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
-  _description: "Will the Dow Jones Industrial Average close at a higher price on " + closingBellTomorrow.toLocaleDateString() + " than it closed at the previous day?",
+  _description: "Will the Dow Jones Industrial Average close at a higher price on " + closingBellTomorrow.toDateString() + " than it closed at the previous day?",
   _endTime: parseInt(closingBellTomorrow.getTime() / 1000, 10),
   _topic: "finance",
   _extraInfo: {
@@ -122,7 +122,7 @@ module.exports = [{
   orderBook: binaryOrderBook,
 }, {
   marketType: "scalar",
-  _description: "High temperature (in degrees Fahrenheit) on " + today.toLocaleDateString() + " at the San Francisco International Airport, as reported by Weather Underground",
+  _description: "High temperature (in degrees Fahrenheit) on " + today.toDateString() + " at the San Francisco International Airport, as reported by Weather Underground",
   _endTime: parseInt(midnightTomorrow.getTime() / 1000, 10),
   _minPrice: "-10",
   _maxPrice: "120",
@@ -135,14 +135,14 @@ module.exports = [{
   },
   orderBook: {
     buy: {
-      "0": [
+      "1": [
         { shares: "0.005", price: "20" },
         { shares: "0.005", price: "0" },
         { shares: "0.01", price: "-5" },
       ],
     },
     sell: {
-      "0": [
+      "1": [
         { shares: "0.001", price: "25" },
         { shares: "0.001", price: "50" },
         { shares: "0.001", price: "51" },
@@ -151,7 +151,7 @@ module.exports = [{
   },
 }, {
   marketType: "scalar",
-  _description: "Number of marine species extinctions between " + today.toLocaleDateString() + " and January 1, " + nextYear,
+  _description: "Number of marine species extinctions between " + today.toDateString() + " and January 1, " + nextYear,
   _endTime: parseInt(new Date("1-2-" + nextYear).getTime() / 1000, 10),
   _minPrice: "0",
   _maxPrice: "10000",
@@ -163,14 +163,14 @@ module.exports = [{
   },
   orderBook: {
     buy: {
-      "0": [
+      "1": [
         { shares: "0.0001", price: "1000" },
         { shares: "0.0005", price: "750" },
         { shares: "0.0005", price: "500" },
       ],
     },
     sell: {
-      "0": [
+      "1": [
         { shares: "0.00001", price: "400" },
         { shares: "0.00002", price: "350" },
         { shares: "0.00003", price: "250" },
@@ -179,7 +179,7 @@ module.exports = [{
   },
 }, {
   marketType: "scalar",
-  _description: "Average tropospheric methane concentration (in parts-per-billion) between " + today.toLocaleDateString() + " and January 1, " + nextYear,
+  _description: "Average tropospheric methane concentration (in parts-per-billion) between " + today.toDateString() + " and January 1, " + nextYear,
   _endTime: parseInt(new Date("1-2-" + nextYear).getTime() / 1000, 10),
   _minPrice: "600",
   _maxPrice: "5000",
@@ -192,14 +192,14 @@ module.exports = [{
   },
   orderBook: {
     buy: {
-      "0": [
+      "1": [
         { shares: "0.000005", price: "1000" },
         { shares: "0.00002", price: "900" },
         { shares: "0.00003", price: "775" },
       ],
     },
     sell: {
-      "0": [
+      "1": [
         { shares: "0.00001", price: "1050" },
         { shares: "0.000005", price: "1250" },
         { shares: "0.0000025", price: "1500" },
@@ -208,7 +208,7 @@ module.exports = [{
   },
 }, {
   marketType: "scalar",
-  _description: "New antibiotics approved by the FDA between " + today.toLocaleDateString() + "and the end of " + nextYear,
+  _description: "New antibiotics approved by the FDA between " + today.toDateString() + " and the end of " + nextYear,
   _endTime: parseInt(new Date("1-1-" + nextYear).getTime() / 1000, 10),
   _minPrice: "0",
   _maxPrice: "30",
@@ -221,14 +221,14 @@ module.exports = [{
   },
   orderBook: {
     buy: {
-      "0": [
+      "1": [
         { shares: "0.05", price: "2" },
         { shares: "0.02", price: "18" },
         { shares: "0.01", price: "15" },
       ],
     },
     sell: {
-      "0": [
+      "1": [
         { shares: "0.02", price: "23" },
         { shares: "0.02", price: "26" },
         { shares: "0.01", price: "29" },
@@ -237,7 +237,7 @@ module.exports = [{
   },
 }, {
   marketType: "scalar",
-  _description: "Millions of Tether tokens issued on " + today.toLocaleDateString() + " (round down)",
+  _description: "Millions of Tether tokens issued on " + today.toDateString() + " (round down)",
   _endTime: parseInt(midnightTomorrow.getTime() / 1000, 10),
   _minPrice: "0",
   _maxPrice: "10000",
@@ -250,14 +250,14 @@ module.exports = [{
   },
   orderBook: {
     buy: {
-      "0": [
+      "1": [
         { shares: "0.00001", price: "100" },
         { shares: "0.00001", price: "150" },
         { shares: "0.00001", price: "200" },
       ],
     },
     sell: {
-      "0": [
+      "1": [
         { shares: "0.00001", price: "225" },
         { shares: "0.00001", price: "250" },
         { shares: "0.00001", price: "300" },

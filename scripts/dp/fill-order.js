@@ -2,10 +2,11 @@
 
 "use strict";
 
+var chalk = require("chalk");
 var Augur = require("../../src");
 var approveAugurEternalApprovalValue = require("./lib/approve-augur-eternal-approval-value");
 var fillBothOrderTypes = require("./lib/fill-both-order-types");
-var getPrivateKey = require("./lib/get-private-key");
+var getPrivateKey = require("./lib/get-private-key").getPrivateKey;
 var connectionEndpoints = require("../connection-endpoints");
 var debugOptions = require("../debug-options");
 
@@ -21,6 +22,8 @@ getPrivateKey(keystoreFilePath, function (err, auth) {
     if (err) return console.error(err);
     var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
     var fillerAddress = auth.address;
+    console.log(chalk.cyan.dim("networkID:"), chalk.cyan(augur.rpc.getNetworkID()));
+    console.log(chalk.green.dim("universe:"), chalk.green(universe));
     approveAugurEternalApprovalValue(augur, fillerAddress, auth, function (err) {
       if (err) return console.error(err);
       var outcomeToFill = process.env.OUTCOME_TO_FILL || 0;

@@ -6,7 +6,7 @@ var chalk = require("chalk");
 var Augur = require("../../src");
 var approveAugurEternalApprovalValue = require("./lib/approve-augur-eternal-approval-value");
 var createOrders = require("./lib/create-orders");
-var getPrivateKey = require("./lib/get-private-key");
+var getPrivateKey = require("./lib/get-private-key").getPrivateKey;
 var connectionEndpoints = require("../connection-endpoints");
 var debugOptions = require("../debug-options");
 
@@ -35,12 +35,12 @@ if (require.main === module) {
 
   augur.rpc.setDebugOptions(debugOptions);
 
-  getPrivateKey(keystoreFilePath, (err, auth) => {
+  getPrivateKey(keystoreFilePath, function (err, auth) {
     if (err) return console.error("getPrivateKey failed:", err);
-    augur.connect(connectionEndpoints, (err) => {
+    augur.connect(connectionEndpoints, function (err) {
       if (err) return console.error(err);
 
-      createOrders(augur, auth, (err) => {
+      _createOrders(augur, auth, function (err) {
         if (err) {
           console.error(chalk.red.bold("Canned order creation failed:"), err);
           process.exit(1);

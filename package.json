@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "4.7.0-69",
+  "version": "4.7.0-70",
   "description": "Augur JavaScript API",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -42,6 +42,7 @@
     "release:major": "npm version major && git push && git push --tags && npm publish"
   },
   "dependencies": {
+    "@types/bignumber.js": "4.0.3",
     "async": "1.5.2",
     "augur-core": "0.12.0-17",
     "bignumber.js": "2.3.0",

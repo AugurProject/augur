@@ -4,7 +4,7 @@ var chalk = require("chalk");
 var BigNumber = require("bignumber.js");
 var speedomatic = require("speedomatic");
 var Augur = require("../src");
-const { getPrivateKey } = require("./dp/lib/get-private-key");
+var getPrivateKey = require("./dp/lib/get-private-key").getPrivateKey;
 var connectionEndpoints = require("./connection-endpoints");
 var debugOptions = require("./debug-options");
 
@@ -71,15 +71,15 @@ if (require.main === module) {
   // invoked from the command line
   var augur = new Augur();
   augur.rpc.setDebugOptions(debugOptions);
-  const keystoreFilePath = process.argv[2];
+  var keystoreFilePath = process.argv[2];
 
   augur.connect(connectionEndpoints, function (err) {
     if (err) return console.error(err);
     console.log(chalk.cyan.dim("networkID:"), chalk.cyan(augur.rpc.getNetworkID()));
-    getPrivateKey(keystoreFilePath, (err, auth) => {
+    getPrivateKey(keystoreFilePath, function (err, auth) {
       if (err) return console.log("Error: ", err);
 
-      repFaucet(augur, auth, (err) => {
+      repFaucet(augur, auth, function (err) {
         if (err) {
           console.log("Error: ", err);
           process.exit(1);

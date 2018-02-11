@@ -30,7 +30,7 @@ describe("trading/simulation/simulate-trade", function () {
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
       shouldCollectReportingFees: 1,
-      marketOrderBook: {
+      singleOutcomeOrderBook: {
         buy: {
           BID_0: {
             amount: "2",
@@ -76,7 +76,7 @@ describe("trading/simulation/simulate-trade", function () {
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
       shouldCollectReportingFees: 1,
-      marketOrderBook: {
+      singleOutcomeOrderBook: {
         buy: {
           BID_0: {
             amount: "2",
@@ -122,7 +122,7 @@ describe("trading/simulation/simulate-trade", function () {
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
       shouldCollectReportingFees: 1,
-      marketOrderBook: {
+      singleOutcomeOrderBook: {
         buy: {
           BID_0: {
             amount: "2",
@@ -146,7 +146,7 @@ describe("trading/simulation/simulate-trade", function () {
     },
   });
   test({
-    description: "throw if order type is not 1 or 2",
+    description: "throw if order type is not 0 or 1",
     params: {
       orderType: 3,
       outcome: 0,
@@ -160,7 +160,7 @@ describe("trading/simulation/simulate-trade", function () {
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
       shouldCollectReportingFees: 1,
-      marketOrderBook: {
+      singleOutcomeOrderBook: {
         buy: {
           BID_0: {
             amount: "2",
