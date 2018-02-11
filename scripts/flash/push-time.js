@@ -3,36 +3,9 @@
 "use strict";
 
 var chalk = require("chalk");
+var displayTime = require("./display-time");
 var getTime = require("./get-timestamp");
-
-function displayTime(message, numberTicks) {
-  var currentTime = new Date(numberTicks * 1000);
-  console.log(chalk.green.dim(message), chalk.green(currentTime), chalk.blue(numberTicks));
-}
-
-function setTime(augur, numberTicks, address, auth, callback) {
-  displayTime("setting time to:", numberTicks);
-  augur.api.TimeControlled.setTimestamp({
-    meta: auth,
-    tx: { to: address },
-    _timestamp: numberTicks,
-    onSent: function (result) {
-      console.log(chalk.yellow.dim("Sent"), chalk.yellow(JSON.stringify(result)));
-      console.log(chalk.yellow.dim("Waiting for reply ...."));
-    },
-    onSuccess: function (result) {
-      var timestamp = augur.api.Controller.getTimestamp();
-      console.log(chalk.green.dim("Success"), chalk.green(JSON.stringify(result)));
-      console.log(chalk.green("New Current Tiome"), chalk.green(timestamp));
-      displayTime("result of time change", timestamp);
-      callback(null);
-    },
-    onFailed: function (result) {
-      console.log(chalk.red.dim("Failed:"), chalk.red(JSON.stringify(result)));
-      callback(null);
-    },
-  });
-}
+var setTimestamp = require("./set-timestamp");
 
 function help(callback) {
   console.log(chalk.red("Two ways to move time"));
@@ -71,7 +44,7 @@ function pushTime(augur, params, auth, callback) {
         if (value === "CURRENT") {
           value = Math.floor(new Date().getTime()/1000);
         }
-        setTime(augur, value, timeResult.timeAddress, auth, callback);
+        setTimestamp(augur, value, timeResult.timeAddress, auth, callback);
       } else {
         var amount = 0;
         var digit = parseInt(params.match(regex), 10);
@@ -83,7 +56,7 @@ function pushTime(augur, params, auth, callback) {
         }
         var totalMovement = amount * digit;
         var newTimestamp = subtraction ? timestamp - totalMovement : timestamp + totalMovement;
-        setTime(augur, newTimestamp, timeResult.timeAddress, auth, callback);
+        setTimestamp(augur, newTimestamp, timeResult.timeAddress, auth, callback);
       }
     });
   }

@@ -7,6 +7,8 @@ var getTime = require("./get-timestamp");
 const { getPrivateKeyFromString } = require("../dp/lib/get-private-key");
 const repFaucet = require("../rep-faucet");
 var BigNumber = require("bignumber.js");
+var displayTime = require("./display-time");
+var setTimestamp = require("./set-timestamp");
 
 function disputeContributeInternal(augur, marketId, outcome, amount, disputerAuth, invalid, auth, callback) {
   repFaucet(augur, disputerAuth, function (err) {
@@ -14,34 +16,27 @@ function disputeContributeInternal(augur, marketId, outcome, amount, disputerAut
     if (err) return console.error(err);
     if (!invalid) { invalid = false; } else { invalid = true; }
     var timestamp = augur.api.Controller.getTimestamp();
-    console.log(chalk.yellow.dim("Current Timestamp"), chalk.yellow(timestamp));
+    displayTime("Current timestamp", timestamp);
     augur.markets.getMarketsInfo({ marketIDs: [marketId] }, function (err, marketsInfo) {
       var market = marketsInfo[0];
       var marketPayload = { tx: { to: marketId } };
       augur.api.Market.getFeeWindow(marketPayload, function (err, feeWindowId) {
         var feeWindowPayload = { tx: { to: feeWindowId } };
-        augur.api.FeeWindow.isActive(feeWindowPayload, function (err, result) {
-          console.log(chalk.green.dim("Few Window is active"), chalk.green(result));
-          augur.api.FeeWindow.getEndTime(feeWindowPayload, function (err, endTime) {
-            console.log(chalk.yellow.dim("Few Window End Time"), chalk.yellow(endTime));
-            getTime(auth, function (timeResult) {
-              endTime = parseInt(endTime, 10) - 10000;
-              var timeToSet = parseInt(endTime, 10);
-              console.log(chalk.yellow.dim("Current timestamp"), chalk.yellow(timeResult.timestamp), chalk.yellow.dim("set time"), chalk.yellow(timeToSet));
-
-              augur.api.TimeControlled.setTimestamp({
-                meta: auth,
-                tx: { to: timeResult.timeAddress  },
-                _timestamp: timeToSet,
-                onSent: function () {
-                },
-                onSuccess: function () {
-                  console.log(chalk.green.dim("Current time"), chalk.green(endTime));
-                  var numTicks = market.numTicks;
-                  var payoutNumerators = Array(market.numOutcomes).fill(0);
-                  payoutNumerators[outcome] = numTicks;
-                  var bnAmount = new BigNumber(amount, 10).toFixed();
-
+        augur.api.FeeWindow.getEndTime(feeWindowPayload, function (err, feeWindowEndTime) {
+          displayTime("Few Window End Time", feeWindowEndTime);
+          getTime(augur, auth, function (timeResult) {
+            var endTime = parseInt(feeWindowEndTime, 10) - 10000;
+            displayTime("Current timestamp", timeResult.timestamp);
+            displayTime("Fee Window end time", feeWindowEndTime);
+            displayTime("Set Time to", endTime);
+            setTimestamp(augur, endTime, timeResult.timeAddress, auth, function () {
+              var numTicks = market.numTicks;
+              var payoutNumerators = Array(market.numOutcomes).fill(0);
+              payoutNumerators[outcome] = numTicks;
+              var bnAmount = new BigNumber(amount, 10).toFixed();
+              augur.api.FeeWindow.isActive(feeWindowPayload, function (err, result) {
+                console.log(chalk.green.dim("Few Window is active"), chalk.green(result));
+                if (result) {
                   augur.api.Market.contribute({
                     meta: disputerAuth,
                     tx: { to: marketId  },
@@ -50,6 +45,7 @@ function disputeContributeInternal(augur, marketId, outcome, amount, disputerAut
                     _amount: bnAmount,
                     onSent: function (result) {
                       console.log(chalk.yellow.dim("Sent Dispute:"), chalk.yellow(JSON.stringify(result)));
+                      console.log(chalk.yellow.dim("Waiting for reply ...."));
                     },
                     onSuccess: function (result) {
                       console.log(chalk.green.dim("Success Dispute:"), chalk.green(JSON.stringify(result)));
@@ -60,11 +56,9 @@ function disputeContributeInternal(augur, marketId, outcome, amount, disputerAut
                       callback(result);
                     },
                   });
-                },
-                onFailed: function (result) {
-                  console.log(chalk.red.dim("Failed Setting Time:"), chalk.red(JSON.stringify(result)));
-                  callback(result);
-                },
+                } else {
+                  console.log(chalk.red("Fee Window isn't active"));
+                }
               });
             });
           });
@@ -88,6 +82,7 @@ function disputeContribute(augur, params, auth, callback) {
   if (!params || params === "help" || params.split(",").length < 3) {
     help(callback);
   } else {
+    console.log(params);
     var paramArray = params.split(",");
     var marketId = paramArray[0];
     var outcomeId = paramArray[1];
