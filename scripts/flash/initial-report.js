@@ -45,6 +45,7 @@ function help(callback) {
   console.log(chalk.red("parameter 2: outcome is needed"));
   console.log(chalk.red("parameter 3: user priv key is needed"));
   console.log(chalk.red("parameter 4: invalid is optional, default is false"));
+  console.log(chalk.yellow("user will be give REP if balance is 0"));
   callback(null);
 }
 
