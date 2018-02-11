@@ -11,7 +11,7 @@ function setTimestamp(augur, numberTicks, address, auth, callback) {
     tx: { to: address },
     _timestamp: numberTicks,
     onSent: function (result) {
-      console.log(chalk.yellow.dim("Sent"), chalk.yellow(JSON.stringify(result)));
+      console.log(chalk.yellow.dim("Sent Change Time"), chalk.yellow(JSON.stringify(result)));
       console.log(chalk.yellow.dim("Waiting for reply ...."));
     },
     onSuccess: function (result) {
