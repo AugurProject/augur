@@ -128,7 +128,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
           price: newTradeDetails.limitPrice,
           shares: newTradeDetails.numShares,
           marketCreatorFeeRate: market.settlementFee,
-          marketOrderBook: (orderBooks && orderBooks[marketID]) || {},
+          singleOutcomeOrderBook: (orderBooks && orderBooks[marketID]) || {},
           shouldCollectReportingFees: !market.isDisowned,
           reportingFeeRate: market.reportingFeeRate
         })
