@@ -1,11 +1,12 @@
 import { augur } from 'services/augurjs'
 import { loadAccountData } from 'modules/auth/actions/load-account-data'
 import { updateIsLogged } from 'modules/auth/actions/update-is-logged'
+import isMetaMask from 'modules/auth/helpers/is-meta-mask'
 import logError from 'utils/log-error'
 
-const updateAccount = unlockedAddress => (dispatch) => {
-  augur.accounts.logout() // clear the client-side account
-  console.log('using unlocked account:', unlockedAddress)
+const updateIsLoggedAndLoadAccountData = unlockedAddress => (dispatch) => {
+  augur.accounts.logout() // clear ethrpc transaction history, registered callbacks, and notifications
+  console.log(`using unlocked account ${unlockedAddress}`)
   dispatch(updateIsLogged(true))
   dispatch(loadAccountData({
     address: unlockedAddress,
@@ -21,15 +22,13 @@ const updateAccount = unlockedAddress => (dispatch) => {
 // Use unlocked local address (if actually unlocked)
 export const useUnlockedAccount = (unlockedAddress, callback = logError) => (dispatch) => {
   if (!unlockedAddress) return callback('no account address')
-  if (typeof window !== 'undefined' && (((window || {}).web3 || {}).currentProvider || {}).isMetaMask) {
-    return dispatch(updateAccount(unlockedAddress))
-  }
+  if (isMetaMask()) return dispatch(updateIsLoggedAndLoadAccountData(unlockedAddress))
   augur.rpc.isUnlocked(unlockedAddress, (isUnlocked) => {
     if (!isUnlocked || isUnlocked.error) {
-      console.warn('account is locked:', unlockedAddress, isUnlocked)
+      console.warn(`account ${unlockedAddress} is locked`)
       return callback(null)
     }
-    dispatch(updateAccount(unlockedAddress))
+    dispatch(updateIsLoggedAndLoadAccountData(unlockedAddress))
     callback(null)
   })
 }
