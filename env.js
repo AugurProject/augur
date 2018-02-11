@@ -21,7 +21,7 @@ const nodes = {
   }
 };
 
-const ethereumNode = nodes.rinkeby;
+const ethereumNode = nodes.local;
 const augurNode = "ws://127.0.0.1:9001";
 
 augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
