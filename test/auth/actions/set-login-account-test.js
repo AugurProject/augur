@@ -21,11 +21,14 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
         }
       }
       const UseUnlockedAccount = { useUnlockedAccount: () => {} }
+      const LoadAccountTrades = { loadAccountTrades: () => {} }
       const action = proxyquire('../../../src/modules/auth/actions/set-login-account.js', {
         '../../../services/augurjs': AugurJS,
+        '../../my-positions/actions/load-account-trades': LoadAccountTrades,
         './use-unlocked-account': UseUnlockedAccount
       })
       sinon.stub(UseUnlockedAccount, 'useUnlockedAccount').callsFake(account => ({ type: 'USE_UNLOCKED_ACCOUNT', account }))
+      sinon.stub(LoadAccountTrades, 'loadAccountTrades').callsFake(account => ({ type: 'LOAD_USER_TRADES', data: {} }))
       store.dispatch(action.setLoginAccount(t.params.autoLogin, t.params.account))
       t.assertions(store.getActions())
       store.clearActions()
@@ -109,6 +112,10 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
       assert.deepEqual(actions, [{
         type: 'USE_UNLOCKED_ACCOUNT',
         account: '0xtest'
+      },
+      {
+        type: 'LOAD_USER_TRADES',
+        data: {}
       }])
     }
   })
