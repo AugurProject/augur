@@ -16,7 +16,7 @@ const disputeContribute = promisify(require("./dispute-contribute"));
 const finalizeMarket = promisify(require("./finalize-market"));
 const pushTime = promisify(require("./push-time"));
 
-const commands = ["get-balance", "list-markets", "designate-report", "initial-report", "dispute", "finalize-market", "push-time", "hello"];
+const commands = ["get-balance", "list-markets", "designate-report", "initial-report", "dispute", "finalize-market", "push-time"];
 const NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten"];
 const methods = [getBalance, listMarkets, designatedReport, initialReport, disputeContribute, finalizeMarket, pushTime];
 
@@ -111,6 +111,14 @@ async function help() {
     maxWidth: 80,
     showHeaders: false,
   }));
+
+  console.log("               ");
+  console.log(chalk.underline("\Method descriptions"));
+  commands.forEach(command => {
+    console.log(chalk.underline(command));
+    methods[commands.indexOf(command)](null, "help");
+    console.log("               ");
+  });
 }
 
 if (require.main === module) {
