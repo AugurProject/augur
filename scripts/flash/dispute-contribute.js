@@ -4,19 +4,22 @@
 
 var chalk = require("chalk");
 var getTime = require("./get-timestamp");
-const { getPrivateKeyFromString } = require("../dp/lib/get-private-key");
-const repFaucet = require("../rep-faucet");
+var getPrivateKeyFromString = require("../dp/lib/get-private-key").getPrivateKeyFromString;
+var repFaucet = require("../rep-faucet");
 var BigNumber = require("bignumber.js");
 var displayTime = require("./display-time");
 var setTimestamp = require("./set-timestamp");
 
-const day = 108000; // day
+var day = 108000; // day
 
 function disputeContributeInternal(augur, marketID, outcome, amount, disputerAuth, invalid, auth, callback) {
   repFaucet(augur, disputerAuth, function (err) {
-    if (err) { console.log(chalk.red("Error"), chalk.red(err)); callback(err); }
+    if (err) {
+      console.log(chalk.red("Error"), chalk.red(err));
+      callback(err);
+    }
     if (err) return console.error(err);
-    if (!invalid) { invalid = false; } else { invalid = true; }
+    invalid = !invalid ? false : true;
     augur.markets.getMarketsInfo({ marketIDs: [marketID] }, function (err, marketsInfo) {
       var market = marketsInfo[0];
       var marketPayload = { tx: { to: marketID } };

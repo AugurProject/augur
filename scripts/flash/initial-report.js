@@ -7,15 +7,18 @@ var getTime = require("./get-timestamp");
 var setTimestamp = require("./set-timestamp");
 var displayTime = require("./display-time");
 var doInitialReport = require("./do-initial-report");
-const { getPrivateKeyFromString } = require("../dp/lib/get-private-key");
-const repFaucet = require("../rep-faucet");
+var getPrivateKeyFromString = require("../dp/lib/get-private-key").getPrivateKeyFromString;
+var repFaucet = require("../rep-faucet");
 
 /**
  * Move time to Market end time and do initial report
  */
 function initialReportInternal(augur, marketID, outcome, userAuth, invalid, auth, callback) {
   repFaucet(augur, userAuth, function (err) {
-    if (err) { console.log(chalk.red("Error"), chalk.red(err)); callback(err); }
+    if (err) {
+      console.log(chalk.red("Error"), chalk.red(err));
+      callback(err);
+    }
     augur.markets.getMarketsInfo({ marketIDs: [marketID] }, function (err, marketsInfo) {
       var market = marketsInfo[0];
       var marketPayload = { tx: { to: marketID } };
@@ -29,7 +32,10 @@ function initialReportInternal(augur, marketID, outcome, userAuth, invalid, auth
             var payoutNumerators = Array(market.numOutcomes).fill(0);
             payoutNumerators[outcome] = numTicks;
             doInitialReport(augur, marketID, payoutNumerators, invalid, userAuth, function (err) {
-              if (err) { console.log(chalk.red(err)); process.exit(1); }
+              if (err) {
+                console.log(chalk.red(err));
+                process.exit(1);
+              }
               console.log(chalk.green("Initial Report Done"));
             });
           });
