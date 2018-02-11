@@ -5,7 +5,7 @@
 var Augur = require("../../src");
 var approveAugurEternalApprovalValue = require("./lib/approve-augur-eternal-approval-value");
 var cancelOrders = require("./lib/cancel-orders");
-var getPrivateKey = require("./lib/get-private-key");
+var getPrivateKey = require("./lib/get-private-key").getPrivateKey;
 var connectionEndpoints = require("../connection-endpoints");
 var debugOptions = require("../debug-options");
 
