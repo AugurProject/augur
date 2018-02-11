@@ -75,7 +75,7 @@ function disputeContributeInternal(augur, marketId, outcome, amount, disputerAut
 }
 
 function help(callback) {
-  console.log(chalk.red("params syntax -->  params=marketId,0,<user priv key>,false"));
+  console.log(chalk.red("params syntax -->  params=marketId,0,amount,<user priv key>,false"));
   console.log(chalk.red("parameter 1: marketId is needed"));
   console.log(chalk.red("parameter 2: outcome is needed"));
   console.log(chalk.red("parameter 3: amount of REP is needed"));
