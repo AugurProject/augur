@@ -10,30 +10,30 @@ var BigNumber = require("bignumber.js");
 var displayTime = require("./display-time");
 var setTimestamp = require("./set-timestamp");
 
+const day = 108000; // day
+
 function disputeContributeInternal(augur, marketId, outcome, amount, disputerAuth, invalid, auth, callback) {
   repFaucet(augur, disputerAuth, function (err) {
     if (err) { console.log(chalk.red("Error"), chalk.red(err)); callback(err); }
     if (err) return console.error(err);
     if (!invalid) { invalid = false; } else { invalid = true; }
-    var timestamp = augur.api.Controller.getTimestamp();
-    displayTime("Current timestamp", timestamp);
     augur.markets.getMarketsInfo({ marketIDs: [marketId] }, function (err, marketsInfo) {
       var market = marketsInfo[0];
       var marketPayload = { tx: { to: marketId } };
       augur.api.Market.getFeeWindow(marketPayload, function (err, feeWindowId) {
         var feeWindowPayload = { tx: { to: feeWindowId } };
-        augur.api.FeeWindow.getEndTime(feeWindowPayload, function (err, feeWindowEndTime) {
-          displayTime("Few Window End Time", feeWindowEndTime);
+        augur.api.FeeWindow.getStartTime(feeWindowPayload, function (err, feeWindowStartTime) {
           getTime(augur, auth, function (timeResult) {
-            var endTime = parseInt(feeWindowEndTime, 10) - 10000;
+            var setTime = parseInt(feeWindowStartTime, 10) + day;
             displayTime("Current timestamp", timeResult.timestamp);
-            displayTime("Fee Window end time", feeWindowEndTime);
-            displayTime("Set Time to", endTime);
-            setTimestamp(augur, endTime, timeResult.timeAddress, auth, function () {
+            displayTime("Fee Window end time", feeWindowStartTime);
+            displayTime("Set Time to", setTime);
+            setTimestamp(augur, setTime, timeResult.timeAddress, auth, function () {
               var numTicks = market.numTicks;
               var payoutNumerators = Array(market.numOutcomes).fill(0);
               payoutNumerators[outcome] = numTicks;
               var bnAmount = new BigNumber(amount, 10).toFixed();
+              console.log(chalk.yellow("sending amount REP"), chalk.yellow(bnAmount));
               augur.api.FeeWindow.isActive(feeWindowPayload, function (err, result) {
                 console.log(chalk.green.dim("Few Window is active"), chalk.green(result));
                 if (result) {
