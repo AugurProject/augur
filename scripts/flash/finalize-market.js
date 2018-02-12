@@ -53,7 +53,7 @@ function finalizeMarketInternal(augur, marketID, auth, callback) {
 }
 
 function help(callback) {
-  console.log(chalk.red("params syntax -->  marketID"));
+  console.log(chalk.red("params syntax --> -p marketID"));
   console.log(chalk.red("parameter 1: marketID is needed"));
   callback(null);
 }

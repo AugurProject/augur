@@ -17,7 +17,7 @@ function getBalanceInternal(augur, universe, address, callback) {
 }
 
 function help(callback) {
-  console.log(chalk.red("params syntax -->  <user address>"));
+  console.log(chalk.red("params syntax --> -p <user address>"));
   console.log(chalk.red("account address is needed to get balances"));
   callback(null);
 }

@@ -14,16 +14,16 @@ function help(callback) {
   console.log(chalk.red("2) PUSH the current timestamp by days or weeks"));
   console.log(chalk.red("                           "));
   console.log(chalk.red("                           "));
-  console.log(chalk.red("SET ==> SET,1518211486 "));
+  console.log(chalk.red("SET ==> -p SET,1518211486 "));
   console.log(chalk.red("Simply setting system timestamp to 1518211486 "));
   console.log(chalk.red("                           "));
-  console.log(chalk.red("SET ==> SET,CURRENT "));
+  console.log(chalk.red("SET ==> -p SET,CURRENT "));
   console.log(chalk.red("Simply setting system timestamp to your current timestamp "));
   console.log(chalk.red("                           "));
-  console.log(chalk.red("PUSH ===> PUSH,+3d"));
+  console.log(chalk.red("PUSH ===> -p PUSH,+3d"));
   console.log(chalk.red("Here we are pushing current timestamp by adding 3 days"));
   console.log(chalk.red("                           "));
-  console.log(chalk.red("PUSH ===> PUSH,-2w"));
+  console.log(chalk.red("PUSH ===> -p PUSH,-2w"));
   console.log(chalk.red("Here we are pushing current timestamp by substracting 2 weeks"));
   callback(null);
 }
