@@ -10,5 +10,9 @@ export default function () {
 export const selectPositionsMarkets = createSelector(
   selectMarkets,
   selectAccountPositionsState,
-  (markets, positions) => (markets || []).filter(market => Object.keys(positions || {}).find(positionMarketID => market.id === positionMarketID))
+  (markets, positions) => {
+    if (!markets || markets.length === 0) return []
+    if (!positions || positions.length === 0) return []
+    return (markets || []).filter(market => positions[market.id] != null)
+  }
 )

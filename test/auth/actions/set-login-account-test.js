@@ -21,14 +21,14 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
         }
       }
       const UseUnlockedAccount = { useUnlockedAccount: () => {} }
-      const LoadAccountTrades = { loadAccountTrades: () => {} }
+      const LoadAccountHistory = { loadAccountHistory: () => {} }
       const action = proxyquire('../../../src/modules/auth/actions/set-login-account.js', {
         '../../../services/augurjs': AugurJS,
-        '../../my-positions/actions/load-account-trades': LoadAccountTrades,
+        './load-account-history': LoadAccountHistory,
         './use-unlocked-account': UseUnlockedAccount
       })
       sinon.stub(UseUnlockedAccount, 'useUnlockedAccount').callsFake(account => ({ type: 'USE_UNLOCKED_ACCOUNT', account }))
-      sinon.stub(LoadAccountTrades, 'loadAccountTrades').callsFake(account => ({ type: 'LOAD_USER_TRADES', data: {} }))
+      sinon.stub(LoadAccountHistory, 'loadAccountHistory').callsFake(account => ({ type: 'LOAD_ACCOUNT_HISTORY', data: {} }))
       store.dispatch(action.setLoginAccount(t.params.autoLogin, t.params.account))
       t.assertions(store.getActions())
       store.clearActions()
@@ -114,7 +114,7 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
         account: '0xtest'
       },
       {
-        type: 'LOAD_USER_TRADES',
+        type: 'LOAD_ACCOUNT_HISTORY',
         data: {}
       }])
     }
