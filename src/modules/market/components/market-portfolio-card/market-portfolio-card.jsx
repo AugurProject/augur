@@ -5,7 +5,6 @@ import PropTypes from 'prop-types'
 import getValue from 'utils/get-value'
 
 import MarketPositionsListPosition from 'modules/market/components/market-positions-list--position/market-positions-list--position'
-import MarketStatusIcon from 'modules/market/components/market-status-icon/market-status-icon'
 import MarketPositionsListOrder from 'modules/market/components/market-positions-list--order/market-positions-list--order'
 import CaretDropdown from 'modules/common/components/caret-dropdown/caret-dropdown'
 import MarketLink from 'modules/market/components/market-link/market-link'
@@ -93,7 +92,6 @@ export default class MarketPortfolioCard extends Component {
                 </MarketLink>
               </h1>
             </div>
-            <MarketStatusIcon className={Styles.MarketCard__statusicon} isOpen={p.market.isOpen} isReported={p.market.isReported} />
           </div>
           <div className={Styles.MarketCard__topstats}>
             <div className={Styles.MarketCard__leftstats}>
