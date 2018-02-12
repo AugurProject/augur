@@ -16,19 +16,31 @@ function disputeContributeInternal(augur, marketID, outcome, amount, disputerAut
   repFaucet(augur, disputerAuth, function (err) {
     if (err) {
       console.log(chalk.red("Error"), chalk.red(err));
-      callback(err);
+      return callback(err);
     }
     if (err) return console.error(err);
     invalid = !invalid ? false : true;
     augur.markets.getMarketsInfo({ marketIDs: [marketID] }, function (err, marketsInfo) {
+      if (err) {
+        console.log(chalk.red(err));
+        return callback("Could not get market info");
+      }
       var market = marketsInfo[0];
       var marketPayload = { tx: { to: marketID } };
       augur.api.Market.getFeeWindow(marketPayload, function (err, feeWindowId) {
+        if (err) {
+          console.log(chalk.red(err));
+          return callback("Could not get Fee Window");
+        }
+        if (feeWindowId === "0x0000000000000000000000000000000000000000") {
+          console.log(chalk.red("feeWindowId has not been created"));
+          return callback("Market doesn't have fee window, need to report");
+        }
         var feeWindowPayload = { tx: { to: feeWindowId } };
         augur.api.FeeWindow.getStartTime(feeWindowPayload, function (err, feeWindowStartTime) {
           if (err) {
             console.log(chalk.red(err));
-            callback(err);
+            callback("Could not get Fee Window");
           }
           getTime(augur, auth, function (err, timeResult) {
             if (err) {
@@ -41,6 +53,7 @@ function disputeContributeInternal(augur, marketID, outcome, amount, disputerAut
             displayTime("Fee Window end time", feeWindowStartTime);
             displayTime("Set Time to", setTime);
             setTimestamp(augur, setTime, timeResult.timeAddress, auth, function (err) {
+              console.log("set time err", err);
               if (err) {
                 console.log(chalk.red(err));
                 return callback(err);
@@ -51,6 +64,7 @@ function disputeContributeInternal(augur, marketID, outcome, amount, disputerAut
               var stringAmount = "0x" + new BigNumber(amount, 10).toString(16);
               console.log(chalk.yellow("sending amount REP"), chalk.yellow(stringAmount));
               augur.api.FeeWindow.isActive(feeWindowPayload, function (err, result) {
+                console.log("err", err, "value", result);
                 if (err) {
                   console.log(chalk.red(err));
                   return callback(err);
