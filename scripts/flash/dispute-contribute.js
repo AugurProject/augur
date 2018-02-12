@@ -36,6 +36,7 @@ function disputeContributeInternal(augur, marketID, outcome, amount, disputerAut
           console.log(chalk.red("feeWindowId has not been created"));
           return callback("Market doesn't have fee window, need to report");
         }
+        console.log(chalk.yellow("Market Fee Window"), chalk.yellow(feeWindowId));
         var feeWindowPayload = { tx: { to: feeWindowId } };
         augur.api.FeeWindow.getStartTime(feeWindowPayload, function (err, feeWindowStartTime) {
           if (err) {

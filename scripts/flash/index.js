@@ -16,10 +16,11 @@ var disputeContribute = require("./dispute-contribute");
 var finalizeMarket = require("./finalize-market");
 var pushTime = require("./push-time");
 var marketInfo = require("./market-info");
+var showInitialReporter = require("./show-initial-reporter");
 
-var commands = ["get-balance", "list-markets", "designate-report", "initial-report", "dispute", "finalize-market", "push-time", "market-info"];
+var commands = ["get-balance", "list-markets", "designate-report", "initial-report", "dispute", "finalize-market", "push-time", "market-info", "show-initial-reporter"];
 var NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten"];
-var methods = [getBalance, listMarkets, designatedReport, initialReport, disputeContribute, finalizeMarket, pushTime, marketInfo];
+var methods = [getBalance, listMarkets, designatedReport, initialReport, disputeContribute, finalizeMarket, pushTime, marketInfo, showInitialReporter];
 
 function runCommand(command, params, networks, callback) {
   console.log("networks", networks);

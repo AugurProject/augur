@@ -8,6 +8,7 @@ var displayTime = require("./display-time");
 function displayProperty(key, collection) {
   console.log(chalk.cyan(key), chalk.yellow(collection[key]));
 }
+
 function marketInfoInternal(augur, marketID, universe, callback) {
   augur.api.Controller.getTimestamp(function (err, timestamp) {
     displayTime("Current Time", timestamp);
@@ -16,11 +17,13 @@ function marketInfoInternal(augur, marketID, universe, callback) {
         console.log(chalk.red("Error "), chalk.red(err));
         return callback(err);
       }
-      if (!marketInfos || !Array.isArray(marketInfos) || !marketInfos.length) {
+      if (!marketInfos || !Array.isArray(marketInfos) || marketInfos.length === 0) {
         return callback("No Market Info");
       }
-      console.log("market info ", marketInfos[0]);
       var marketInfo = marketInfos[0];
+      if (marketInfo === null) {
+        return callback("Market is null");
+      }
       Object.keys(marketInfo).forEach(function (key) {
         var item = marketInfo[key];
         if (item) {
