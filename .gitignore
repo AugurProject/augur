@@ -7,11 +7,12 @@ npm-debug*
 *scratch*
 build
 ./data
-*synctex*
-*.aux
 *.dat
 *.db
 *.csv
 .idea/
 yarn.lock
 scripts/ethereum-nodes
+package
+pu.sh
+.vscode
