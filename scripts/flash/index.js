@@ -68,6 +68,7 @@ function help() {
   console.log(chalk.underline("\nConfiguration"));
   console.log("Set the same " + chalk.bold("environment variables") + " used in dp for deployment process");
   console.log("ex: ETHEREUM_PRIVATE_KEY=<owner priv key>");
+  console.log("ex: ETHEREUM_PRIVATE_KEY is used to change time and needs to be same account as used to upload contracts");
 
   console.log(chalk.underline("\nNetwork (when using 'environment' for the network)"));
   console.log(columnify([{
@@ -79,26 +80,6 @@ function help() {
   }, {
     env: "GAS_PRICE_IN_NANOETH",
     Description: "The transaction gas price to use, specified in nanoeth (default: varies)",
-  }], {
-    columnSplitter: " - ",
-    minWidth: 20,
-    maxWidth: 80,
-    showHeaders: false,
-  }));
-
-  console.log(chalk.underline("\nPrivate Keys (for any named environment)"));
-  console.log(columnify([{
-    env: "AURA_PRIVATE_KEY",
-    description: "Override key used to deploy to Aura, defaults to the dev key",
-  }, {
-    env: "CLIQUE_PRIVATE_KEY",
-    description: "Override key used to deploy to Clique, defaults to the dev key",
-  }, {
-    env: "RINKEBY_PRIVATE_KEY",
-    description: "Set key used to deploy to Rinkeby, default is blank and " + chalk.bold("will error if not set"),
-  }, {
-    env: "ROPSTEN_PRIVATE_KEY",
-    description: "Set key used to deploy to Ropsten, default is blank and " + chalk.bold("will error if not set"),
   }], {
     columnSplitter: " - ",
     minWidth: 20,
