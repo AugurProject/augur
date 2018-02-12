@@ -41,27 +41,32 @@ function pushTime(augur, params, auth, callback) {
         console.log(chalk.red(err));
         return callback(err);
       }
-      var timestamp = parseInt(augur.api.Controller.getTimestamp(), 10);
-      displayTime("current time:", timestamp);
-
-      if (action === "SET") {
-        if (value === "CURRENT") {
-          value = Math.floor(new Date().getTime()/1000);
+      augur.api.Controller.getTimestamp(function (err, timestamp) {
+        if (err) {
+          console.log(chalk.red("Error "), chalk.red(err));
+          return callback(err);
         }
-        setTimestamp(augur, value, timeResult.timeAddress, auth, callback);
-      } else {
-        var amount = 0;
-        var digit = parseInt(params.match(regex), 10);
-        var subtraction = params.indexOf("-") === -1 ? false : true;
-        if (params.indexOf("d") === -1) {
-          amount = 540000; // week
+        displayTime("current time:", timestamp);
+        if (action === "SET") {
+          if (value === "CURRENT") {
+            value = Math.floor(new Date().getTime()/1000);
+          }
+          setTimestamp(augur, value, timeResult.timeAddress, auth, callback);
         } else {
-          amount = 108000; // day
+          timestamp = parseInt(timestamp, 10);
+          var modTimeBy = 0;
+          var digit = parseInt(params.match(regex), 10);
+          var subtraction = params.indexOf("-") === -1 ? false : true;
+          if (params.indexOf("d") === -1) {
+            modTimeBy = 540000; // week
+          } else {
+            modTimeBy = 108000; // day
+          }
+          var totalMovement = modTimeBy * digit;
+          var newTimestamp = subtraction ? timestamp - totalMovement : timestamp + totalMovement;
+          setTimestamp(augur, newTimestamp, timeResult.timeAddress, auth, callback);
         }
-        var totalMovement = amount * digit;
-        var newTimestamp = subtraction ? timestamp - totalMovement : timestamp + totalMovement;
-        setTimestamp(augur, newTimestamp, timeResult.timeAddress, auth, callback);
-      }
+      });
     });
   }
 }

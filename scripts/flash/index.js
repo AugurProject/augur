@@ -2,11 +2,11 @@
 
 var Augur = require("../../src");
 var debugOptions = require("../debug-options");
-var { getPrivateKeyFromString } = require("../dp/lib/get-private-key");
+var getPrivateKeyFromString = require("../dp/lib/get-private-key").getPrivateKeyFromString;
 var chalk = require("chalk");
 var columnify = require("columnify");
 
-var { NetworkConfiguration } = require("augur-core");
+var NetworkConfiguration = require("augur-core").NetworkConfiguration;
 var getBalance = require("./get-balance");
 var listMarkets  = require("./list-markets");
 var designatedReport = require("./designated-report");

@@ -12,10 +12,15 @@ function getTime(augur, auth, callback) {
       console.log(chalk.red(err));
       return callback(err);
     }
-    var timestamp = augur.api.Controller.getTimestamp();
-    callback(null, {
-      timestamp: timestamp,
-      timeAddress: timeAddress,
+    augur.api.Controller.getTimestamp(function (err, timestamp) {
+      if (err) {
+        console.log(chalk.red("issue getting timestamp"));
+        return callback(err);
+      }
+      callback(null, {
+        timestamp: timestamp,
+        timeAddress: timeAddress,
+      });
     });
   });
 }
