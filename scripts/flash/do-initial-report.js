@@ -16,7 +16,7 @@ function doInitialReport(augur, marketID, payoutNumerators, invalid, auth, callb
     },
     onSuccess: function (result) {
       console.log(chalk.green.dim("Success:"), chalk.green(JSON.stringify(result)));
-      callback(result);
+      callback(null);
     },
     onFailed: function (result) {
       console.log(chalk.red.dim("Failed:"), chalk.red(JSON.stringify(result)));

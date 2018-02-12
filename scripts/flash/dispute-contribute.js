@@ -26,18 +26,35 @@ function disputeContributeInternal(augur, marketID, outcome, amount, disputerAut
       augur.api.Market.getFeeWindow(marketPayload, function (err, feeWindowId) {
         var feeWindowPayload = { tx: { to: feeWindowId } };
         augur.api.FeeWindow.getStartTime(feeWindowPayload, function (err, feeWindowStartTime) {
-          getTime(augur, auth, function (timeResult) {
+          if (err) {
+            console.log(chalk.red(err));
+            callback(err);
+          }
+          getTime(augur, auth, function (err, timeResult) {
+            if (err) {
+              console.log(chalk.red(err));
+              return callback(err);
+            }
+
             var setTime = parseInt(feeWindowStartTime, 10) + day;
             displayTime("Current timestamp", timeResult.timestamp);
             displayTime("Fee Window end time", feeWindowStartTime);
             displayTime("Set Time to", setTime);
-            setTimestamp(augur, setTime, timeResult.timeAddress, auth, function () {
+            setTimestamp(augur, setTime, timeResult.timeAddress, auth, function (err) {
+              if (err) {
+                console.log(chalk.red(err));
+                return callback(err);
+              }
               var numTicks = market.numTicks;
               var payoutNumerators = Array(market.numOutcomes).fill(0);
               payoutNumerators[outcome] = numTicks;
-              var bnAmount = new BigNumber(amount, 10).toFixed();
-              console.log(chalk.yellow("sending amount REP"), chalk.yellow(bnAmount));
+              var stringAmount = "0x" + new BigNumber(amount, 10).toString(16);
+              console.log(chalk.yellow("sending amount REP"), chalk.yellow(stringAmount));
               augur.api.FeeWindow.isActive(feeWindowPayload, function (err, result) {
+                if (err) {
+                  console.log(chalk.red(err));
+                  return callback(err);
+                }
                 console.log(chalk.green.dim("Few Window is active"), chalk.green(result));
                 if (result) {
                   augur.api.Market.contribute({
@@ -45,7 +62,7 @@ function disputeContributeInternal(augur, marketID, outcome, amount, disputerAut
                     tx: { to: marketID  },
                     _payoutNumerators: payoutNumerators,
                     _invalid: invalid,
-                    _amount: bnAmount,
+                    _amount: stringAmount,
                     onSent: function (result) {
                       console.log(chalk.yellow.dim("Sent Dispute:"), chalk.yellow(JSON.stringify(result)));
                       console.log(chalk.yellow.dim("Waiting for reply ...."));
@@ -61,6 +78,7 @@ function disputeContributeInternal(augur, marketID, outcome, amount, disputerAut
                   });
                 } else {
                   console.log(chalk.red("Fee Window isn't active"));
+                  callback("Fee Window isn't active");
                 }
               });
             });
@@ -72,7 +90,7 @@ function disputeContributeInternal(augur, marketID, outcome, amount, disputerAut
 }
 
 function help(callback) {
-  console.log(chalk.red("params syntax -->  params=marketID,0,amount,<user priv key>,false"));
+  console.log(chalk.red("params syntax -->  marketID,0,amount,<user priv key>,false"));
   console.log(chalk.red("parameter 1: marketID is needed"));
   console.log(chalk.red("parameter 2: outcome is needed"));
   console.log(chalk.red("parameter 3: amount of REP is needed"));

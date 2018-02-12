@@ -1,65 +1,73 @@
 #!/usr/bin/env node
 
-const { promisify } = require("util");
-const Augur = require("../../src");
-const debugOptions = require("../debug-options");
-const { getPrivateKeyFromString } = require("../dp/lib/get-private-key");
-const chalk = require("chalk");
-const columnify = require("columnify");
+var Augur = require("../../src");
+var debugOptions = require("../debug-options");
+var { getPrivateKeyFromString } = require("../dp/lib/get-private-key");
+var chalk = require("chalk");
+var columnify = require("columnify");
 
-const { NetworkConfiguration } = require("augur-core");
-const getBalance = promisify(require("./get-balance"));
-const listMarkets  = promisify(require("./list-markets"));
-const designatedReport = promisify(require("./designated-report"));
-const initialReport = promisify(require("./initial-report"));
-const disputeContribute = promisify(require("./dispute-contribute"));
-const finalizeMarket = promisify(require("./finalize-market"));
-const pushTime = promisify(require("./push-time"));
+var { NetworkConfiguration } = require("augur-core");
+var getBalance = require("./get-balance");
+var listMarkets  = require("./list-markets");
+var designatedReport = require("./designated-report");
+var initialReport = require("./initial-report");
+var disputeContribute = require("./dispute-contribute");
+var finalizeMarket = require("./finalize-market");
+var pushTime = require("./push-time");
 
-const commands = ["get-balance", "list-markets", "designate-report", "initial-report", "dispute", "finalize-market", "push-time"];
-const NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten"];
-const methods = [getBalance, listMarkets, designatedReport, initialReport, disputeContribute, finalizeMarket, pushTime];
+var commands = ["get-balance", "list-markets", "designate-report", "initial-report", "dispute", "finalize-market", "push-time"];
+var NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten"];
+var methods = [getBalance, listMarkets, designatedReport, initialReport, disputeContribute, finalizeMarket, pushTime];
 
-async function runCommand(command, params, networks) {
-  const networkConfigurations = networks.map(NetworkConfiguration.create);
+function runCommand(command, params, networks, callback) {
+  console.log("networks", networks);
   console.log(chalk.yellow.dim("command"), command);
   console.log(chalk.yellow.dim("parameters"), params);
   console.log(chalk.yellow.dim("networks"), networks);
-  for (const network of networkConfigurations) {
-    console.log(chalk.yellow("network http:"), network.http);
-    const augur = new Augur();
+  networks.forEach(function (network) {
+    console.log(NetworkConfiguration.create);
+    var config = NetworkConfiguration.create(network);
+    console.log(chalk.yellow("network http:"), config.http);
+    var augur = new Augur();
     augur.rpc.setDebugOptions(debugOptions);
-    const connect = promisify(augur.connect);
-    const auth = getPrivateKeyFromString(network.privateKey);
+    var auth = getPrivateKeyFromString(config.privateKey);
 
-    await connect({ ethereumNode: { http: network.http }, augurNode: process.env.AUGUR_WS });
-    await methods[commands.indexOf(command)](augur, params, auth);
-
-  }
+    augur.connect({ ethereumNode: { http: config.http }, augurNode: process.env.AUGUR_WS }, function (err) {
+      if (err) {
+        console.log(chalk.red("Error "), chalk.red(err));
+        return callback(err);
+      }
+      methods[commands.indexOf(command)](augur, params, auth, function (err) {
+        if (err) console.log(chalk.red("Error "), chalk.red(err));
+        console.log(chalk.green("Finished Execution"));
+        process.exit(0);
+      });
+    });
+  });
 }
 
 function parseArgs() {
-  const args = {};
-  process.argv.forEach(function (val, index) {
-    if (index === 2) {
-      args.command = val;
-    } else if (val.indexOf("params") > -1) {
-      args.params = val.split("=")[1];
-    } else if (val.indexOf("networks") > -1) {
-      args.networks = val.split("=")[1].split(",");
-    } else if (index === 3 && val === "help") {
-      args.help = true;
+  var args = {};
+  var networks = [];
+  process.argv.forEach(function (val) {
+    if (NETWORKS.indexOf(val) !== -1) {
+      networks.push(val);
     }
   });
+  args.command = process.argv[2];
+  args.networks = networks;
+  args.params = process.argv[3];
+  args.help = process.argv[3] === "help";
+  console.log(JSON.stringify(args));
   return args;
 }
 
-async function help() {
+function help() {
 
   console.log("                                  ");
   console.log("      Welcome to FLASH ......>    ");
   console.log("                                  ");
-  console.log("Usage: flash <command> params=param1,param,... networks=net1,net2,...");
+  console.log("Usage: flash <command> param1,param2,... network1,network2,...");
 
   console.log(chalk.underline("\nUsages"));
   console.log("Pushing Time on contracts is only possible if USE_NORMAL_TIME='false' environment variable was set when contracts were uploaded");
@@ -114,43 +122,32 @@ async function help() {
 
   console.log("               ");
   console.log(chalk.underline("\Method descriptions"));
-  commands.forEach(command => {
+  commands.forEach(function (command) {
     console.log(chalk.underline(command));
-    methods[commands.indexOf(command)](null, "help");
+    methods[commands.indexOf(command)](null, "help", null, function () { });
     console.log("               ");
   });
 }
 
 if (require.main === module) {
-  const command = process.argv[2];
-  const args = parseArgs();
+  var command = process.argv[2];
+  var args = parseArgs();
   if (commands.indexOf(command) === -1 || command === "help") {
-    help().then(() => {
+    help();
+    process.exit();
+  }
+  if (!args.help && (!args.networks || (args.networks.length === 0))) {
+    console.log(chalk.red("Need a network"));
+    help();
+  } else {
+    if (args.help) {
+      // just run the command to get help
+      methods[commands.indexOf(args.command)](null, "help", null, function () { });
+      process.exit(0);
+    }
+    console.log("im here");
+    runCommand(args.command, args.params, args.networks, function () {
       process.exit();
     });
-  } else {
-    if (!args.help && (!args.networks || (args.networks.length === 0))) {
-      help().then(() => {
-        process.exit();
-      });
-    } else {
-      if (args.help) {
-        // just run the command to get help
-        methods[commands.indexOf(args.command)](null, "help");
-        process.exit(0);
-      }
-      runCommand(args.command, args.params, args.networks).then(() => {
-        process.exit();
-      }).catch((error) => {
-        console.log("Failure!\n", error.message);
-        if (error.stack && debugOptions.cannedMarkets) {
-          console.log("-------- BACKTRACE ------");
-          console.log(error.stack);
-        }
-        process.exit(1);
-      });
-    }
   }
 }
-
-

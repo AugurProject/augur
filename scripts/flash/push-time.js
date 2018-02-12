@@ -14,16 +14,16 @@ function help(callback) {
   console.log(chalk.red("2) PUSH the current timestamp by days or weeks"));
   console.log(chalk.red("                           "));
   console.log(chalk.red("                           "));
-  console.log(chalk.red("SET ==> params=SET,1518211486 "));
+  console.log(chalk.red("SET ==> SET,1518211486 "));
   console.log(chalk.red("Simply setting system timestamp to 1518211486 "));
   console.log(chalk.red("                           "));
-  console.log(chalk.red("SET ==> params=SET,CURRENT "));
+  console.log(chalk.red("SET ==> SET,CURRENT "));
   console.log(chalk.red("Simply setting system timestamp to your current timestamp "));
   console.log(chalk.red("                           "));
-  console.log(chalk.red("PUSH ===> params=PUSH,+3d"));
+  console.log(chalk.red("PUSH ===> PUSH,+3d"));
   console.log(chalk.red("Here we are pushing current timestamp by adding 3 days"));
   console.log(chalk.red("                           "));
-  console.log(chalk.red("PUSH ===> params=PUSH,-2w"));
+  console.log(chalk.red("PUSH ===> PUSH,-2w"));
   console.log(chalk.red("Here we are pushing current timestamp by substracting 2 weeks"));
   callback(null);
 }
@@ -36,7 +36,11 @@ function pushTime(augur, params, auth, callback) {
     var paramArray = params.split(",");
     var action = paramArray[0];
     var value = paramArray[1];
-    getTime(augur, auth, function (timeResult) {
+    getTime(augur, auth, function (err, timeResult) {
+      if (err) {
+        console.log(chalk.red(err));
+        return callback(err);
+      }
       var timestamp = parseInt(augur.api.Controller.getTimestamp(), 10);
       displayTime("current time:", timestamp);
 

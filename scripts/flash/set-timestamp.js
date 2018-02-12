@@ -22,7 +22,7 @@ function setTimestamp(augur, numberTicks, address, auth, callback) {
     },
     onFailed: function (result) {
       console.log(chalk.red.dim("Failed:"), chalk.red(JSON.stringify(result)));
-      callback(null);
+      callback(result);
     },
   });
 }

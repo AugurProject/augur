@@ -10,22 +10,36 @@ var doInitialReport = require("./do-initial-report");
 /**
  * Move time to Market end time and do initial report
  */
-function designateReportInternal(augur, marketID, outcomeID, invalid, auth) {
+function designateReportInternal(augur, marketID, outcomeID, invalid, auth, callback) {
   augur.markets.getMarketsInfo({ marketIDs: [marketID] }, function (err, marketsInfo) {
     var market = marketsInfo[0];
+    if (outcomeID > market.numOutcomes - 1) {
+      return callback("outcomeID " + outcomeID + " Not Market Outcome ");
+    }
     var marketPayload = { tx: { to: marketID } };
     augur.api.Market.getEndTime(marketPayload, function (err, endTime) {
       console.log(chalk.red.dim("Market End Time"), chalk.red(endTime));
-      getTime(augur, auth, function (timeResult) {
+      getTime(augur, auth, function (err, timeResult) {
+        if (err) {
+          console.log(chalk.red(err));
+          return callback(err);
+        }
         endTime = parseInt(endTime, 10) + 10000;
-        setTimestamp(augur, endTime, timeResult.timeAddress, auth, function () {
+        setTimestamp(augur, endTime, timeResult.timeAddress, auth, function (err) {
+          if (err) {
+            console.log(chalk.red(err));
+            return callback(err);
+          }
           var numTicks = market.numTicks;
           var payoutNumerators = Array(market.numOutcomes).fill(0);
           payoutNumerators[outcomeID] = numTicks;
 
           doInitialReport(augur, marketID, payoutNumerators, invalid, auth, function (err) {
-            if (err) { console.log(chalk.red(err)); process.exit(1); }
+            if (err) {
+              return callback("Initial Report Failed");
+            }
             console.log(chalk.green("Initial Report Done"));
+            callback(null);
           });
         });
       });
@@ -34,7 +48,7 @@ function designateReportInternal(augur, marketID, outcomeID, invalid, auth) {
 }
 
 function help(callback) {
-  console.log(chalk.red("params syntax -->  params=marketID,0,false"));
+  console.log(chalk.red("params syntax -->  marketID,0,false"));
   console.log(chalk.red("parameter 1: marketID is needed"));
   console.log(chalk.red("parameter 2: outcome is needed"));
   console.log(chalk.red("parameter 3: invalid is optional, default is false"));

@@ -23,20 +23,30 @@ function initialReportInternal(augur, marketID, outcome, userAuth, invalid, auth
       var market = marketsInfo[0];
       var marketPayload = { tx: { to: marketID } };
       augur.api.Market.getEndTime(marketPayload, function (err, endTime) {
-        console.log(chalk.yellow.dim("Market End Time"), chalk.yellow(endTime));
-        getTime(augur, auth, function (timeResult) {
-          endTime = parseInt(endTime, 10) + 300000; // push time after designated reporter time
+        displayTime("Market End Time", endTime);
+        getTime(augur, auth, function (err, timeResult) {
+          if (err) {
+            console.log(chalk.red(err));
+            return callback(err);
+          }
+          var day = 108000; // day
+          endTime = parseInt(endTime, 10) + (day * 3); // push time after designated reporter time
           displayTime("Move time to ", endTime);
-          setTimestamp(augur, endTime, timeResult.timeAddress, auth, function () {
+          setTimestamp(augur, endTime, timeResult.timeAddress, auth, function (err) {
+            if (err) {
+              console.log(chalk.red(err));
+              return callback(err);
+            }
             var numTicks = market.numTicks;
             var payoutNumerators = Array(market.numOutcomes).fill(0);
             payoutNumerators[outcome] = numTicks;
             doInitialReport(augur, marketID, payoutNumerators, invalid, userAuth, function (err) {
               if (err) {
                 console.log(chalk.red(err));
-                process.exit(1);
+                return callback(err);
               }
               console.log(chalk.green("Initial Report Done"));
+              callback(null);
             });
           });
         });
@@ -46,7 +56,7 @@ function initialReportInternal(augur, marketID, outcome, userAuth, invalid, auth
 }
 
 function help(callback) {
-  console.log(chalk.red("params syntax -->  params=marketID,0,<user priv key>,false"));
+  console.log(chalk.red("params syntax -->  marketID,0,<user priv key>,false"));
   console.log(chalk.red("parameter 1: marketID is needed"));
   console.log(chalk.red("parameter 2: outcome is needed"));
   console.log(chalk.red("parameter 3: user priv key is needed"));
