@@ -67,7 +67,7 @@ export function syncAugurNodeWithBlockchain(db: Knex, augur: Augur, network: Net
         const highestBlockNumber: number = parseInt(augur.rpc.getCurrentBlock().number, 16) - 1;
         let fromBlock: number;
         if (uploadBlockNumber > highestBlockNumber) {
-          console.log(`UploadBlockNumber (${uploadBlockNumber}) exceeds HighestBlockNumber (${highestBlockNumber}), starting from 0 instead`);
+          console.log(`Synchroniation started at (${uploadBlockNumber}), which exceeds the current block from the ethereum node (${highestBlockNumber}), starting from 0 instead`);
           fromBlock = 0;
         } else {
           fromBlock = (!row || !row.highestBlockNumber) ? uploadBlockNumber : row.highestBlockNumber + 1;
