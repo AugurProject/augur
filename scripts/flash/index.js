@@ -5,6 +5,7 @@ var debugOptions = require("../debug-options");
 var getPrivateKeyFromString = require("../dp/lib/get-private-key").getPrivateKeyFromString;
 var chalk = require("chalk");
 var columnify = require("columnify");
+var options = require("options-parser");
 
 var NetworkConfiguration = require("augur-core").NetworkConfiguration;
 var getBalance = require("./get-balance");
@@ -46,28 +47,13 @@ function runCommand(command, params, networks, callback) {
   });
 }
 
-function parseArgs() {
-  var args = {};
-  var networks = [];
-  process.argv.forEach(function (val) {
-    if (NETWORKS.indexOf(val) !== -1) {
-      networks.push(val);
-    }
-  });
-  args.command = process.argv[2];
-  args.networks = networks;
-  args.params = process.argv[3];
-  args.help = process.argv[3] === "help";
-  console.log(JSON.stringify(args));
-  return args;
-}
-
 function help() {
 
   console.log("                                  ");
   console.log("      Welcome to FLASH ......>    ");
   console.log("                                  ");
-  console.log("Usage: flash <command> param1,param2,... network1,network2,...");
+  console.log("Usage: flash -c <command> -p param1,param2,... -n network1,network2,...");
+  console.log("Command Help flash -c <command> -h");
 
   console.log(chalk.underline("\nUsages"));
   console.log("Pushing Time on contracts is only possible if USE_NORMAL_TIME='false' environment variable was set when contracts were uploaded");
@@ -130,24 +116,32 @@ function help() {
 }
 
 if (require.main === module) {
-  var command = process.argv[2];
-  var args = parseArgs();
-  if (commands.indexOf(command) === -1 || command === "help") {
+  var opts = {
+    help: {flag: true, short: "h", help: "This help" },
+    params: {short: "p", help: "Parameters needed for command"},
+    networks: { multi: true, short: "n", default: ["environment"], help: "Networks to run command against"},
+    command: { required: true, short: "c", help: "Command to run" },
+  };
+  var args;
+  try {
+    args = options.parse(opts, process.argv);
+  } catch (error) {
     help();
     process.exit();
   }
-  if (!args.help && (!args.networks || (args.networks.length === 0))) {
-    console.log(chalk.red("Need a network"));
+  if (commands.indexOf(args.opt.command) === -1 && args.opt.help) {
     help();
-  } else {
-    if (args.help) {
-      // just run the command to get help
-      methods[commands.indexOf(args.command)](null, "help", null, function () { });
-      process.exit(0);
-    }
-    console.log("im here");
-    runCommand(args.command, args.params, args.networks, function () {
-      process.exit();
-    });
+    process.exit();
+  } else if (commands.indexOf(args.opt.command) > 0 && args.opt.help) {
+    console.log(chalk.yellow("Help for"), chalk.yellow.underline(args.opt.command));
+    methods[commands.indexOf(args.opt.command)](null, "help", null, function () { });
+    process.exit(0);
+  } else if (args.opt.networks.length === 0) {
+    console.log(chalk.red("Network is required"));
+    help();
+    process.exit();
   }
+  runCommand(args.opt.command, args.opt.params, args.opt.networks, function () {
+    process.exit();
+  });
 }
