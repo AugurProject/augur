@@ -15,7 +15,13 @@ function listMarketsInternal(augur, universe, callback) {
         callback("No Markets");
       }
       augur.markets.getMarketsInfo({ marketIDs: marketIDs }, function (err, marketInfos) {
-        if (!marketInfos || !Array.isArray(marketInfos) || !marketInfos.length) return;
+        if (err) {
+          console.log(chalk.red("Error "), chalk.red(err));
+          return callback(err);
+        }
+        if (!marketInfos || !Array.isArray(marketInfos) || !marketInfos.length) {
+          return callback("No Market Info");
+        }
         var infos = marketInfos.sort(function (a, b) { return b.endDate - a.endDate; });
         infos.forEach(function (marketInfo) {
           var endDate = marketInfo.endDate;
