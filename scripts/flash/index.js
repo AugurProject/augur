@@ -32,8 +32,9 @@ function runCommand(command, params, networks, callback) {
     var augur = new Augur();
     augur.rpc.setDebugOptions(debugOptions);
     var auth = getPrivateKeyFromString(config.privateKey);
+    var augurWs = process.env.AUGUR_WS ? process.env.AUGUR_WS : "http://localhost:9001";
 
-    augur.connect({ ethereumNode: { http: config.http }, augurNode: process.env.AUGUR_WS }, function (err) {
+    augur.connect({ ethereumNode: { http: config.http }, augurNode: augurWs }, function (err) {
       if (err) {
         console.log(chalk.red("Error "), chalk.red(err));
         return callback(err);
@@ -80,6 +81,9 @@ function help() {
   }, {
     env: "GAS_PRICE_IN_NANOETH",
     Description: "The transaction gas price to use, specified in nanoeth (default: varies)",
+  }, {
+    env: "AUGUR_WS",
+    Description: "The http endpoint for augur-node, (default: http://localhost:9001) ",
   }], {
     columnSplitter: " - ",
     minWidth: 20,
