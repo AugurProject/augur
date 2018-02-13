@@ -11,10 +11,10 @@ export const selectPositionsMarkets = createSelector(
   selectMarkets,
   selectAccountPositionsState,
   (markets, positions) => {
-    if (!markets || !positions) {
+    if (!markets || !positions || Object.keys(positions).length === 0) {
       return []
     }
-    (markets || []).filter(market => Object.keys(positions || {})
+    return (markets || []).filter(market => Object.keys(positions || {})
       .find(positionMarketID => market.id === positionMarketID))
   }
 )
