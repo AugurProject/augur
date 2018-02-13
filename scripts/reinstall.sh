@@ -16,7 +16,7 @@ if [ "$1" == "-l" ]; then
 fi
 npm install
 if [ "$1" == "-l" ]; then
-  npm run link
+  yarn link augur.js
 fi
 
 npm run clean
