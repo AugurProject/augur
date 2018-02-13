@@ -35,7 +35,7 @@ export function formatDate(d) {
     formattedLocal: `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(':')} ${localAMPM} (UTC ${localOffset})`, // local time
     formattedLocalShort: `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} (UTC ${localOffset})`, // local time
     full: date.toUTCString(),
-    timestamp: date.getTime() / 1000
+    timestamp: date.getTime()
   }
 }
 
