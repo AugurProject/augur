@@ -5,7 +5,7 @@
 var Augur = require("../../src");
 var chalk = require("chalk");
 var connectionEndpoints = require("../connection-endpoints");
-var { getPrivateKey } = require("../dp/lib/get-private-key");
+var getPrivateKey = require("../dp/lib/get-private-key").getPrivateKey;
 var getTime = require("./get-timestamp");
 
 var marketID = process.argv[2];
@@ -21,7 +21,7 @@ getPrivateKey(null, function (err, auth) {
   if (err) return console.error("getPrivateKey failed:", err);
   augur.connect(connectionEndpoints, function (err) {
     if (err) return console.error(err);
-    if (!invalid) { invalid = false; } else { invalid = true; }
+    invalid = !invalid ? false : true;
     augur.markets.getMarketsInfo({ marketIDs: [marketID] }, function (err, marketsInfo) {
       var market = marketsInfo[0];
       var marketPayload = { tx: { to: marketID } };
@@ -31,16 +31,14 @@ getPrivateKey(null, function (err, auth) {
           endTime = parseInt(endTime, 10) + 10000;
           var timePayload = {
             meta: auth,
-            tx: { to: timeResult.timeAddress  },
+            tx: { to: timeResult.timeAddress },
             _timestamp: parseInt(endTime, 10),
-            onSent: function () {
-            },
+            onSent: function () {},
             onSuccess: function () {
               console.log(chalk.green.dim("Current time"), chalk.green(endTime));
               var numTicks = market.numTicks;
               var payoutNumerators = Array(market.numOutcomes).fill(0);
               payoutNumerators[outcome] = numTicks;
-
               var reportPayload = {
                 meta: auth,
                 tx: { to: marketID  },
@@ -58,7 +56,6 @@ getPrivateKey(null, function (err, auth) {
                   process.exit(1);
                 },
               };
-
               console.log(chalk.green.dim("reportPayload:"), chalk.green(JSON.stringify(reportPayload)));
               augur.api.Market.doInitialReport(reportPayload);
             },
