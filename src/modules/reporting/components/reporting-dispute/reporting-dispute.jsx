@@ -5,7 +5,6 @@ import PropTypes from 'prop-types'
 import ReportingHeader from 'modules/reporting/containers/reporting-header'
 import ReportDisputeNoRepState from 'src/modules/reporting/components/reporting-dispute-no-rep-state/reporting-dispute-no-rep-state'
 
-// noinspection JSFileReferences
 const Styles = require('./reporting-dispute.styles')
 
 export default class ReportingDispute extends Component {
