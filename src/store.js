@@ -1,4 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
+import { composeWithDevTools } from 'redux-devtools-extension'
+
 import thunk from 'redux-thunk'
 // import history from 'src/history';
 // import { routerReducer, routerMiddleware } from 'react-router-redux';
@@ -42,7 +44,7 @@ let middleware
 //   middleware = applyMiddleware(routingMiddleware, thunk, localStorageMiddleware);
 // }
 if (process.env.NODE_ENV !== 'production') {
-  middleware = applyMiddleware(consoleLog, thunk, localStorageMiddleware)
+  middleware = composeWithDevTools({})(applyMiddleware(consoleLog, thunk, localStorageMiddleware))
 } else {
   middleware = applyMiddleware(thunk, localStorageMiddleware)
 }
