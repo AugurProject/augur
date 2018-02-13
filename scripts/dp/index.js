@@ -188,8 +188,8 @@ if (require.main === module) {
     });
   } else {
     try {
-      runCannedData(command, networks, function(error) {
-        if(error) return showError(error);
+      runCannedData(command, networks, function (error) {
+        if (error) return showError(error);
         process.exit();
       });
     } catch (error) {
