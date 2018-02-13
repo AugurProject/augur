@@ -81,8 +81,7 @@ export default class Order extends Component {
         }
         <li>
           { p.pending === CLOSE_DIALOG_CLOSING ?
-            <span className={Styles.NotActive}>Cancel</span>
-            :
+            <span className={Styles.NotActive}>Cancel</span> :
             <button onClick={this.toggleConfirm}>Cancel</button>
           }
         </li>
