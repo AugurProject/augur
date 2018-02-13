@@ -13,7 +13,7 @@ export const loadMarketsToReportOn = (options, callback = logError) => (dispatch
   const query = { ...options, universe: universe.id, reporter: loginAccount.address }
 
   /* TODO when getMarkets[InState] methods take a creator argument
-  
+
   if (env['bug-bounty']) {
     query.creator = env['bug-bounty-address']
   }

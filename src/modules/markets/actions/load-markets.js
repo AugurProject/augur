@@ -10,15 +10,16 @@ import { updateHasLoadedMarkets } from 'modules/markets/actions/update-has-loade
 const loadMarkets = (callback = logError) => (dispatch, getState) => {
   const { env, universe } = getState()
 
-  let params = { universe: universe.id }
-  let getMarkets = augur.markets.getMarkets;
+  let getMarketsFunc
+  const params = { universe: universe.id }
+  getMarketsFunc = augur.markets.getMarkets
 
   if (env['bug-bounty']) {
     params.creator = env['bug-bounty-address']
-    getMarkets = augur.markets.getMarketsCreatedByUser
+    getMarketsFunc = augur.markets.getMarketsCreatedByUser
   }
 
-  getMarkets(params, (err, marketsArray) => {
+  getMarketsFunc(params, (err, marketsArray) => {
     if (err) return callback(err)
 
     const marketsData = marketsArray.reduce((p, id) => ({

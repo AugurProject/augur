@@ -6,11 +6,11 @@ import { updateMarketsFilteredSorted, clearMarketsFilteredSorted } from 'modules
 export const loadMarketsByCategory = category => (dispatch, getState) => {
   const { universe } = getState()
 
-  let params = { category, universe: universe.id }
+  const params = { category, universe: universe.id }
 
   /* TODO when getMarketsInCategory takes a creator argument
   let getMarkets = augur.markets.getMarkets;
-  
+
   if (env['bug-bounty']) {
     params.creator = env['bug-bounty-address']
   }
