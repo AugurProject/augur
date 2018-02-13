@@ -8,9 +8,17 @@ import { updateHasLoadedMarkets } from 'modules/markets/actions/update-has-loade
 // From here we populate the marketsData + clearMarketsFilteredSorted
 // Any subsequent use of markets should check against the marketsFilteredSorted array for ids, then ref the marketsData (or allMarkets) for the corresponding data (or load info as needed)
 const loadMarkets = (callback = logError) => (dispatch, getState) => {
-  const { universe } = getState()
+  const { env, universe } = getState()
 
-  augur.markets.getMarkets({ universe: universe.id }, (err, marketsArray) => {
+  let params = { universe: universe.id }
+  let getMarkets = augur.markets.getMarkets;
+
+  if (env['bug-bounty']) {
+    params.creator = env['bug-bounty-address']
+    getMarkets = augur.markets.getMarketsCreatedByUser
+  }
+
+  getMarkets(params, (err, marketsArray) => {
     if (err) return callback(err)
 
     const marketsData = marketsArray.reduce((p, id) => ({

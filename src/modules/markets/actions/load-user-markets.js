@@ -6,6 +6,10 @@ import { updateMarketsData } from 'modules/markets/actions/update-markets-data'
 export const loadUserMarkets = (callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
 
+  if (env['bug-bounty'] && env['bug-bounty-address'] !== loginAccount.address) {
+    callback(null, [])
+  }
+
   augur.markets.getMarketsCreatedByUser({ universe: universe.id, creator: loginAccount.address }, (err, marketsArray) => {
     if (err || !marketsArray) return callback(err)
 

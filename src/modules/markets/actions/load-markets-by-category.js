@@ -5,7 +5,18 @@ import { updateMarketsFilteredSorted, clearMarketsFilteredSorted } from 'modules
 
 export const loadMarketsByCategory = category => (dispatch, getState) => {
   const { universe } = getState()
-  augur.markets.getMarketsInCategory({ category, universe: universe.id }, (err, marketIDs) => {
+
+  let params = { category, universe: universe.id }
+
+  /* TODO when getMarketsInCategory takes a creator argument
+  let getMarkets = augur.markets.getMarkets;
+  
+  if (env['bug-bounty']) {
+    params.creator = env['bug-bounty-address']
+  }
+  */
+
+  augur.markets.getMarketsInCategory(params, (err, marketIDs) => {
     if (err) {
       console.error('ERROR findMarketsWithCategory()', err)
       dispatch(updateHasLoadedCategory({ [category]: false }))

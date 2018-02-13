@@ -11,6 +11,14 @@ export const loadMarketsToReportOn = (options, callback = logError) => (dispatch
   if (!loginAccount.rep || loginAccount.rep === '0') return callback(null)
   if (!universe.id) return callback(null)
   const query = { ...options, universe: universe.id, reporter: loginAccount.address }
+
+  /* TODO when getMarkets[InState] methods take a creator argument
+  
+  if (env['bug-bounty']) {
+    query.creator = env['bug-bounty-address']
+  }
+  */
+
   parallel({
     designatedReporting: next => augur.markets.getMarketsAwaitingDesignatedReporting(query, next),
     limitedReporting: next => augur.markets.getMarketsAwaitingLimitedReporting(query, next),
