@@ -26,10 +26,10 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
         }
       }
       const LoadAccountData = { loadAccountData: () => {} }
-      const LoadAccountHistory = { loadAccountHistory: () => {} }
+      const LoadAccountOrders = { loadAccountOrders: () => {} }
       const action = proxyquire('../../../src/modules/auth/actions/use-unlocked-account.js', {
         '../../../services/augurjs': AugurJS,
-        './load-account-history': LoadAccountHistory,
+        '../../bids-asks/actions/load-account-orders': LoadAccountOrders,
         './load-account-data': LoadAccountData
       })
       sinon.stub(AugurJS.augur.rpc, 'isUnlocked').callsFake((address, callback) => {
@@ -38,7 +38,7 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       sinon.stub(LoadAccountData, 'loadAccountData').callsFake(account => (dispatch) => {
         dispatch({ type: 'LOAD_FULL_ACCOUNT_DATA', account })
       })
-      sinon.stub(LoadAccountHistory, 'loadAccountHistory').callsFake(account => ({ type: 'LOAD_ACCOUNT_HISTORY', data: {} }))
+      sinon.stub(LoadAccountOrders, 'loadAccountOrders').callsFake(account => ({ type: 'LOAD_ACCOUNT_ORDERS', data: {} }))
       store.dispatch(action.useUnlockedAccount(t.params.unlockedAddress))
       t.assertions(store.getActions())
       store.clearActions()
@@ -97,7 +97,7 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
           }
         }, {
           data: {},
-          type: 'LOAD_ACCOUNT_HISTORY',
+          type: 'LOAD_ACCOUNT_ORDERS',
         }
       ])
     }

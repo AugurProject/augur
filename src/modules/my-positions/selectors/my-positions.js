@@ -14,7 +14,6 @@ export const selectPositionsMarkets = createSelector(
     if (!markets || !positions || Object.keys(positions).length === 0) {
       return []
     }
-    return (markets || []).filter(market => Object.keys(positions || {})
-      .find(positionMarketID => market.id === positionMarketID))
+    return markets.filter(market => positions[market.id] != null)
   }
 )
