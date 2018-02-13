@@ -6,7 +6,7 @@ var async = require("async");
 var chalk = require("chalk");
 var Augur = require("../../src");
 var approveAugurEternalApprovalValue = require("../dp/lib/approve-augur-eternal-approval-value");
-var { getPrivateKey } = require("../dp/lib/get-private-key");
+var getPrivateKey = require("../dp/lib/get-private-key").getPrivateKey;
 var connectionEndpoints = require("../connection-endpoints");
 var debugOptions = require("../debug-options");
 var createOrder = require("../dp/lib/create-order");
@@ -27,14 +27,23 @@ console.log(chalk.red.dim("shares " + shares));
 console.log(chalk.red.dim("price " + price));
 
 getPrivateKey(null, function (err, auth) {
-  if (err) { console.error("getPrivateKey failed:", err);process.exit(1); }
+  if (err) {
+    console.error("getPrivateKey failed:", err);
+    process.exit(1);
+  }
   augur.connect(connectionEndpoints, function (err) {
-    if (err) { console.error(err);process.exit(1); }
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
     console.log(chalk.cyan.dim("networkID:"), chalk.cyan(augur.rpc.getNetworkID()));
     var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
     console.log(chalk.green.dim("universe:"), chalk.green(universe));
     approveAugurEternalApprovalValue(augur, auth.address, auth, function (err) {
-      if (err) { console.error(err);process.exit(1); }
+      if (err) {
+        console.error(err);
+        process.exit(1);
+      }
       augur.markets.getMarketsInfo({ marketIDs: [marketID] }, function (err, marketsInfo) {
         async.eachSeries(marketsInfo, function (marketInfo, nextMarket) {
           console.log(chalk.yellow.dim("max price:"), chalk.yellow(marketInfo.maxPrice));

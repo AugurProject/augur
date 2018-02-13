@@ -5,7 +5,7 @@
 var Augur = require("../../src");
 var chalk = require("chalk");
 var connectionEndpoints = require("../connection-endpoints");
-var { getPrivateKey } = require("../dp/lib/get-private-key");
+var getPrivateKey = require("../dp/lib/get-private-key").getPrivateKey;
 var getTime = require("./get-timestamp");
 
 var time = process.argv[2];
@@ -13,10 +13,19 @@ var time = process.argv[2];
 var augur = new Augur();
 
 getPrivateKey(null, function (err, auth) {
-  if (err) { console.log(chalk.red("getPrivateKey failed:"), err); process.exit(1); }
+  if (err) {
+    console.log(chalk.red("getPrivateKey failed:"), err);
+    process.exit(1);
+  }
   augur.connect(connectionEndpoints, function (err) {
-    if (err) { console.log(chalk.red(err)); process.exit(1); }
-    if (!time) { console.log(chalk.red("time needs to set")); process.exit(1); }
+    if (err) {
+      console.log(chalk.red(err));
+      process.exit(1);
+    }
+    if (!time) {
+      console.log(chalk.red("time needs to set"));
+      process.exit(1);
+    }
     console.log(chalk.yellow.dim("setting to: "), chalk.yellow(time));
     getTime(auth, function (result) {
       console.log(chalk.yellow.dim("current timestamp: "), chalk.yellow(result.timestamp));

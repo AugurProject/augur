@@ -183,7 +183,7 @@ if (require.main === module) {
   }
 
   if (COMMANDS.indexOf(command) === -1 || command === "help") {
-    help().then(() => {
+    help().then(function () {
       process.exit();
     });
   } else {

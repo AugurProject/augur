@@ -45,4 +45,5 @@ function getPrivateKey(keystoreFilePath, callback) {
   }
 }
 
-module.exports = { getPrivateKey, getPrivateKeyFromString };
+module.exports.getPrivateKey = getPrivateKey;
+module.exports.getPrivateKeyFromString = getPrivateKeyFromString;

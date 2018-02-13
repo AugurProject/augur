@@ -1,10 +1,9 @@
-const fs = require("fs");
+var fs = require("fs");
 
 function readJsonFile(path, callback) {
-  fs.readFile(path, (err, data) => {
+  fs.readFile(path, function (err, data) {
     try {
       if (err) return callback(err);
-
       callback(null, JSON.parse(data));
     } catch (e) {
       callback(e);
@@ -12,4 +11,4 @@ function readJsonFile(path, callback) {
   });
 }
 
-module.exports = { readJsonFile };
+module.exports = readJsonFile;
