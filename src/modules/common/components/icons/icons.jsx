@@ -1,23 +1,5 @@
 import React from 'react'
 
-export const MarketStatusOpen = (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-    <g fill="none" fillRule="evenodd"><g id="Markets/Card/Binary" stroke="#9B8BF5"><g id="Icon/Open"><circle id="Oval-5" cx="12" cy="12" r="4" /><circle id="Oval-5" cx="12" cy="12" r="11" /></g></g></g>
-  </svg>
-)
-
-export const MarketStatusReported = (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-    <g id="Symbols" fill="none" fillRule="evenodd"><g id="Markets/Card/Multi" stroke="#412468"><g id="Icon/Reporting"><g id="Group" transform="translate(1 1)"><path id="Page-1" strokeLinecap="round" strokeLinejoin="round" d="M5 11.43l4.708 3.44L17 7" /><circle id="Oval-2" cx="11" cy="11" r="11" /></g></g></g></g>
-  </svg>
-)
-
-export const MarketStatusClosed = (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-    <g fill="none" fillRule="evenodd"><g id="Markets/Card/Multi-Long" stroke="#A7A2B2"><g id="Icon/Closed"><g id="Group" transform="translate(1 1)"><circle id="Oval-2" cx="11" cy="11" r="11" /><path d="M3 4l15.5 14.5" id="Line" strokeLinecap="square" /></g></g></g></g>
-  </svg>
-)
-
 export const CreateMarketEdit = (
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <g id="Symbols" fill="none" fillRule="evenodd" strokeLinejoin="round"><g id="New-Market/Market-Card/2" stroke="#A7A2B2" fillRule="nonzero"><g id="Icon/Edit"><path d="M1 18.417V23h4.583l12.703-12.57-4.583-4.584L1 18.416zM22.643 5.94c.476-.476.476-1.246 0-1.723l-2.86-2.86c-.477-.476-1.247-.476-1.723 0l-2.237 2.237 4.583 4.583 2.237-2.237z" id="Shape" /></g></g></g>
