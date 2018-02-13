@@ -23,7 +23,7 @@ This is true for all selectors, but especially important for this one.
 import BigNumber from 'bignumber.js'
 import memoize from 'memoizee'
 import { formatShares, formatEtherTokens, formatEther, formatPercent, formatNumber } from 'utils/format-number'
-import { formatDate, getCurrentDateTimestamp, convertUnix } from 'utils/format-date'
+import { formatDate, getCurrentDateTimestamp, convertUnixToFormattedDate } from 'utils/format-date'
 import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open'
 
 import { UNIVERSE_ID } from 'modules/app/constants/network'
@@ -69,7 +69,7 @@ export const selectMarket = (marketID) => {
     return {}
   }
 
-  const endDate = convertUnix(marketsData[marketID].endDate)
+  const endDate = convertUnixToFormattedDate(marketsData[marketID].endDate)
 
   return assembleMarket(
     marketID,

@@ -76,7 +76,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         },
         _designatedReporterAddress: '0x1233',
         universe: '1010101',
-        _endTime: 1234567890,
+        _endTime: 1234567890000,
         _denominationToken: 'domnination',
         _description: 'test description',
         _extraInfo: {
@@ -153,7 +153,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
           test: 'object'
         },
         universe: '1010101',
-        _endTime: 1234567890,
+        _endTime: 1234567890000,
         _denominationToken: 'domnination',
         _description: 'test description',
         _extraInfo: {
@@ -230,7 +230,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         },
         _designatedReporterAddress: '0x01234abcd',
         universe: '1010101',
-        _endTime: 1234567890,
+        _endTime: 1234567890000,
         _denominationToken: 'domnination',
         _description: 'test description',
         _extraInfo: {

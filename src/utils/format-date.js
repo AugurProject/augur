@@ -51,7 +51,7 @@ function getTwelveHour(time) {
   return time
 }
 
-export function convertUnix(integer = 0) {
+export function convertUnixToFormattedDate(integer = 0) {
   return formatDate(moment.unix(integer).toDate())
 }
 

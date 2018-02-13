@@ -31,7 +31,7 @@ export function transferFunds(amount, currency, toAddress) {
               id: `onSent-${tx.hash}`,
               title: `Transfer Ether -- Pending`,
               description: `${amount} ETH -> ${trimString(to)}`,
-              timestamp: parseInt(getCurrentDateTimestamp(), 10),
+              timestamp: getCurrentDateTimestamp(),
             }))
           },
           onSuccess: (tx) => {
@@ -39,7 +39,7 @@ export function transferFunds(amount, currency, toAddress) {
               id: `onSent-${tx.hash}`,
               title: `Transfer Ether -- Success`,
               description: `${amount} ETH -> ${trimString(to)}`,
-              timestamp: parseInt(getCurrentDateTimestamp(), 10),
+              timestamp: getCurrentDateTimestamp(),
             }))
             dispatch(updateAssets)
           },
@@ -48,7 +48,7 @@ export function transferFunds(amount, currency, toAddress) {
               id: `onSent-${tx.hash}`,
               title: `Transfer Ether -- Failed`,
               description: `${amount} ETH -> ${trimString(to)}`,
-              timestamp: parseInt(getCurrentDateTimestamp(), 10),
+              timestamp: getCurrentDateTimestamp(),
             }))
           }
         })
