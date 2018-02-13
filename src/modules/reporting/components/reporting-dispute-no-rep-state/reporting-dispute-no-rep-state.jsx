@@ -2,7 +2,6 @@ import React from 'react'
 
 import PropTypes from 'prop-types'
 
-// noinspection JSFileReferences
 import Styles from './reporting-dispute-no-rep-state.styles'
 
 const ReportDisputeNoRepState = ({ message, onClickHandler, btnText='OK' }) => (
