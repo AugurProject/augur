@@ -35,7 +35,7 @@ export function formatDate(d) {
     formattedLocal: `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(':')} ${localAMPM} (UTC ${localOffset})`, // local time
     formattedLocalShort: `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} (UTC ${localOffset})`, // local time
     full: date.toUTCString(),
-    timestamp: date.getTime()
+    timestamp: date.getTime() / 1000
   }
 }
 
@@ -51,7 +51,7 @@ function getTwelveHour(time) {
   return time
 }
 
-export function convertUnix(integer) {
+export function convertUnix(integer = 0) {
   return formatDate(moment.unix(integer).toDate())
 }
 
@@ -73,4 +73,9 @@ export function getBeginDate(periodString) {
 export function dateHasPassed(unixTimestamp) {
   const date = moment().utc()
   return (date.unix() >= unixTimestamp)
+}
+
+/** timestamps are always in seconds */
+export function getCurrentDateTimestamp() {
+  return Date.now() / 1000
 }
