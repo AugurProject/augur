@@ -1,6 +1,7 @@
 import { augur } from 'services/augurjs'
 import { loadAccountData } from 'modules/auth/actions/load-account-data'
 import { updateIsLogged } from 'modules/auth/actions/update-is-logged'
+import { loadAccountHistory } from 'modules/auth/actions/load-account-history'
 import isMetaMask from 'modules/auth/helpers/is-meta-mask'
 import logError from 'utils/log-error'
 
@@ -29,6 +30,7 @@ export const useUnlockedAccount = (unlockedAddress, callback = logError) => (dis
       return callback(null)
     }
     dispatch(updateIsLoggedAndLoadAccountData(unlockedAddress))
+    dispatch(loadAccountHistory())
     callback(null)
   })
 }
