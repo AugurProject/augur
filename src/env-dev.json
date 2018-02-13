@@ -7,7 +7,7 @@
   "network-id": 4,
   "auto-login": true,
   "universe": null,
-  "bug-bounty": true,
+  "bug-bounty": false,
   "debug": {
     "connect": true,
     "broadcast": false
