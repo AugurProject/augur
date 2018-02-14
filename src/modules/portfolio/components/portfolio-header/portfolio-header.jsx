@@ -6,7 +6,7 @@ import PerformanceGraph from 'modules/portfolio/containers/performance-graph'
 import { ExportIcon } from 'modules/common/components/icons/icons'
 
 import parsePath from 'modules/routes/helpers/parse-path'
-import { MY_POSITIONS, MY_MARKETS, WATCHLIST, TRANSACTIONS } from 'modules/routes/constants/views'
+import { MY_POSITIONS, MY_MARKETS, WATCHLIST, TRANSACTIONS, PORTFOLIO_REPORTS } from 'modules/routes/constants/views'
 
 import Styles from 'modules/portfolio/components/portfolio-header/portfolio-header.styles'
 
@@ -37,6 +37,8 @@ function getTitle(path) {
       return 'watching'
     case TRANSACTIONS:
       return 'transactions'
+    case PORTFOLIO_REPORTS:
+      return 'reports'
     case MY_POSITIONS:
     default:
       return 'positions'
