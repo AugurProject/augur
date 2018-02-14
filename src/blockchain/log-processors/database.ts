@@ -10,10 +10,11 @@ export function updateMarketState(db: Knex, marketID: Address, blockNumber: numb
   });
 }
 
-export function insertPayout(db: Knex, trx: Knex.Transaction, marketID: Address, payoutNumerators: Array<string|number|null>, invalid: boolean, callback: (err: Error|null, payoutID?: number) => void): void {
+export function insertPayout(db: Knex, trx: Knex.Transaction, marketID: Address, payoutNumerators: Array<string|number|null>, invalid: boolean, tentativeWinning: boolean, callback: (err: Error|null, payoutID?: number) => void): void {
   const payoutRow: { [index: string]: string|number|boolean|null } = {
     marketID,
     isInvalid: invalid,
+    tentativeWinning,
   };
   payoutNumerators.forEach((value: number, i: number): void => {
     payoutRow["payout" + i] = value;

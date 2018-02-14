@@ -9,6 +9,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       marketID: "0x0000000000000000000000000000000000000011",
       payout0: 0,
       payout1: 2,
+      tentativeWinning: 0,
       isInvalid: 0,
     }, {
       payoutID: 2,
@@ -16,12 +17,14 @@ exports.seed = async (knex: Knex): Promise<any> => {
       payout0: 1,
       payout1: 1,
       isInvalid: 1,
+      tentativeWinning: 1,
     }, {
       payoutID: 3,
       marketID: "0x0000000000000000000000000000000000000019",
       payout0: 1,
       payout1: 1,
       isInvalid: 0,
+      tentativeWinning: 0,
       winning: 1,
     }, {
       payoutID: 4,
@@ -29,6 +32,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       payout0: 10000,
       payout1: 0,
       isInvalid: 0,
+      tentativeWinning: 0,
       winning: null,
     }, {
       payoutID: 5,
@@ -36,6 +40,15 @@ exports.seed = async (knex: Knex): Promise<any> => {
       payout0: 0,
       payout1: 10000,
       isInvalid: 0,
+      tentativeWinning: 1,
+      winning: null,
+    }, {
+      payoutID: 6,
+      marketID: "0x0000000000000000000000000000000000000211",
+      payout0: 5000,
+      payout1: 5000,
+      isInvalid: 1,
+      tentativeWinning: 0,
       winning: null,
     }];
     return knex.batchInsert("payouts", seedData, seedData.length);

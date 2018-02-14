@@ -22,7 +22,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
     }, {
       marketStateID: 4,
       marketID: "0x0000000000000000000000000000000000000011",
-      reportingState: "FIRST_REPORTING",
+      reportingState: "CROWDSOURCING_DISPUTE",
       blockNumber: 1400002,
     }, {
       marketStateID: 5,
@@ -32,7 +32,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
     }, {
       marketStateID: 6,
       marketID: "0x0000000000000000000000000000000000000013",
-      reportingState: "AWAITING_FINALIZATION",
+      reportingState: "AWAITING_NEXT_WINDOW",
       blockNumber: 1400002,
     }, {
       marketStateID: 7,
@@ -57,7 +57,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
     }, {
       marketStateID: 11,
       marketID: "0x0000000000000000000000000000000000000018",
-      reportingState: "FIRST_REPORTING",
+      reportingState: "CROWDSOURCING_DISPUTE",
       blockNumber: 1400002,
     }, {
       marketStateID: 12,
@@ -72,12 +72,12 @@ exports.seed = async (knex: Knex): Promise<any> => {
     }, {
       marketStateID: 14,
       marketID: "0x0000000000000000000000000000000000000019",
-      reportingState: "FIRST_REPORTING",
+      reportingState: "CROWDSOURCING_DISPUTE",
       blockNumber: 1400001,
     }, {
       marketStateID: 15,
       marketID: "0x0000000000000000000000000000000000000211",
-      reportingState: "FIRST_REPORTING",
+      reportingState: "CROWDSOURCING_DISPUTE",
       blockNumber: 1500001,
     }, {
       marketStateID: 16,

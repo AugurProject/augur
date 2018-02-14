@@ -8,7 +8,15 @@ const { processDisputeCrowdsourcerCreatedLog, processDisputeCrowdsourcerCreatedL
   = require("../../../build/blockchain/log-processors/crowdsourcer");
 
 const getCrowdsourcer = (db, params, callback) => {
-  db("crowdsourcers").first(["crowdSourcerID", "marketID", "completed", "feeWindow"]).where({crowdsourcerID: params.log.disputeCrowdsourcer}).asCallback(callback);
+  db("crowdsourcers").first(
+    ["crowdSourcerID",
+      "crowdsourcers.marketID",
+      "completed",
+      "feeWindow",
+      "payouts.winning",
+      "payouts.tentativeWinning"])
+    .join("payouts", "payouts.payoutID", "crowdsourcers.payoutID")
+    .where({crowdsourcerID: params.log.disputeCrowdsourcer}).asCallback(callback);
 };
 
 const getDisputesFromCrowdsourcer = (db, params, callback) => {
@@ -74,6 +82,8 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           marketID: "0x0000000000000000000000000000000000000001",
           feeWindow: "0x2000000000000000000000000000000000000000",
           completed: null,
+          tentativeWinning: 0,
+          winning: null,
         });
       },
       onCreatedRemoved: (err, records) => {
@@ -104,6 +114,8 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           marketID: "0x0000000000000000000000000000000000000001",
           feeWindow: "0x2000000000000000000000000000000000000000",
           completed: 1,
+          tentativeWinning: 1,
+          winning: null,
         });
       },
       onCompletedRemoved: (err, records) => {
@@ -113,6 +125,8 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           marketID: "0x0000000000000000000000000000000000000001",
           feeWindow: "0x2000000000000000000000000000000000000000",
           completed: null,
+          tentativeWinning: 0,
+          winning: null,
         });
       },
     },

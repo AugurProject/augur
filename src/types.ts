@@ -210,6 +210,11 @@ export interface DisputeTokensRowWithTokenState extends DisputeTokensRow {
   ReportingState: ReportingState;
 }
 
+export interface PayoutRow extends Payout {
+  payoutID: number;
+  tentativeWinning: number;
+}
+
 export interface Payout {
   payout0: string|number;
   payout1: string|number;
@@ -236,13 +241,17 @@ export interface UIDisputeTokens {
 }
 
 export interface StakeDetails extends Payout {
-  totalStaked: string;
-  size: string;
-  amountStaked: string;
+  totalStake: string;
+  completedStake: string;
+  size?: string;
+  currentStake?: string;
+  initialReport: boolean;
+  tentativeWinning: boolean;
 }
 
 export interface UIStakeInfo {
   marketID: Address;
+  disputeRound: number|null;
   stakes: Array<StakeDetails>;
 }
 
