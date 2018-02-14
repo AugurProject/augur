@@ -12,9 +12,9 @@ import Styles from 'modules/market/components/market-outcomes-chart/market-outco
 
 export default class MarketOutcomesChart extends Component {
   static propTypes = {
-    priceTimeSeries: PropTypes.array.isRequired,
-    selectedOutcomes: PropTypes.any, // NOTE -- There is a PR to handle null values, but until then..
-    updateSelectedOutcomes: PropTypes.func.isRequired
+    outcomes: PropTypes.array.isRequired,
+    updateSelectedOutcomes: PropTypes.func.isRequired,
+    selectedOutcomes: PropTypes.any, // NOTE -- There is a PR in the prop-types lib to handle null values, but until then..
   }
 
   constructor(props) {
@@ -36,7 +36,7 @@ export default class MarketOutcomesChart extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (!isEqual(prevProps.priceTimeSeries, this.props.priceTimeSeries)) this.drawChart()
+    if (!isEqual(prevProps.outcomes, this.props.outcomes)) this.drawChart()
   }
 
   componentWillUnmount() {
@@ -48,7 +48,7 @@ export default class MarketOutcomesChart extends Component {
       const fauxDiv = new ReactFauxDOM.Element('div')
       const chart = d3.select(fauxDiv).append('svg')
 
-      const { priceTimeSeries } = this.props
+      const { outcomes } = this.props
 
       const margin = {
         top: 20,
@@ -65,8 +65,8 @@ export default class MarketOutcomesChart extends Component {
       chart.attr('width', width)
       chart.attr('height', height)
 
-      const xDomain = priceTimeSeries.reduce((p, outcome) => [...p, ...outcome.data.map(dataPoint => dataPoint[0])], [])
-      const yDomain = priceTimeSeries.reduce((p, outcome) => [...p, ...outcome.data.map(dataPoint => dataPoint[1])], [])
+      const xDomain = outcomes.reduce((p, outcome) => [...p, ...outcome.priceTimeSeries.map(dataPoint => dataPoint[0])], [])
+      const yDomain = outcomes.reduce((p, outcome) => [...p, ...outcome.priceTimeSeries.map(dataPoint => dataPoint[1])], [])
 
       const xScale = d3.scaleTime()
         .domain(d3.extent(xDomain))
@@ -81,10 +81,10 @@ export default class MarketOutcomesChart extends Component {
         .y(d => yScale(d[1]))
 
       // TODO -- refactor this to be more correct in d3 conventions, i.e. -- chart.select....
-      priceTimeSeries.forEach((outcome, i) => {
+      outcomes.forEach((outcome, i) => {
         chart.append('path')
-          .data([priceTimeSeries[i].data])
-          .attr('class', `outcome-line outcome-line-${priceTimeSeries[i].id}`)
+          .data([outcome.priceTimeSeries])
+          .attr('class', `outcome-line outcome-line-${outcome.id}`)
           .attr('d', outcomeLine)
       })
 

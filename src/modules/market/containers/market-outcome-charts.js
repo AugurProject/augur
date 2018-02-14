@@ -80,10 +80,10 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     marketPriceHistory,
-    // min/max are outcome range
+    // min/max are outcome price range
     minPrice: market.minPrice,
     maxPrice: market.maxPrice,
-    // marketMin/Max are trading range
+    // marketMin/Max are trading price range
     marketMin: findMarketMin(market.priceTimeSeries, ownProps.selectedOutcome),
     marketMax: findMarketMax(market.priceTimeSeries, ownProps.selectedOutcome),
     orderBookMin,
@@ -99,10 +99,17 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(mapStateToProps)(MarketOutcomeCharts)
 
-function findMarketMin(priceTimeSeries = []) {
-  if (priceTimeSeries.length === 0) {
-
+function findMarketMin(priceTimeSeries = [], selectedOutcome) {
+  if (
+    priceTimeSeries.length === 0 ||
+    selectedOutcome == null
+  ) {
+    return null
   }
+
+  // const priceTimeSeries = priceTimeSeries.find(timeSeries => timeSeries.id === selectedOutcome).data || []
+
+  // if ()
   return priceTimeSeries.reduce((p, item, i) => {
     const currentItem = item[i][1]
 
