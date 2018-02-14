@@ -5,7 +5,8 @@
 var Augur = require("../../src");
 var chalk = require("chalk");
 var connectionEndpoints = require("../connection-endpoints");
-var { getPrivateKey, getPrivateKeyFromString } = require("../augur-tool/lib/get-private-key");
+var getPrivateKey = require("../augur-tool/lib/get-private-key").getPrivateKey;
+var getPrivateKeyFromString = require("../augur-tool/lib/get-private-key").getPrivateKeyFromString;
 var getTime = require("./get-timestamp");
 var BigNumber = require("bignumber.js");
 
@@ -17,16 +18,18 @@ var invalid = process.argv[6];
 
 var augur = new Augur();
 
-
 /**
  * Move time to Market end time and do initial report
  */
 getPrivateKey(null, function (err, auth) {
   if (err) return console.error("getPrivateKey failed:", err);
-  if (!disputer) { console.error(chalk.red("Need disputers private key")); process.exit(1); }
+  if (!disputer) {
+    console.error(chalk.red("Need disputers private key"));
+    process.exit(1);
+  }
   augur.connect(connectionEndpoints, function (err) {
     if (err) return console.error(err);
-    if (!invalid) { invalid = false; } else { invalid = true; }
+    invalid = !invalid ? false : true;
     var timestamp = augur.api.Controller.getTimestamp();
     console.log(chalk.yellow.dim("Current Timestamp"), chalk.yellow(timestamp));
     augur.markets.getMarketsInfo({ marketIDs: [marketID] }, function (err, marketsInfo) {
@@ -45,17 +48,15 @@ getPrivateKey(null, function (err, auth) {
               var disputerAuth = getPrivateKeyFromString(disputer);
               var timePayload = {
                 meta: auth,
-                tx: { to: timeResult.timeAddress  },
+                tx: { to: timeResult.timeAddress },
                 _timestamp: timeToSet,
-                onSent: function () {
-                },
+                onSent: function () {},
                 onSuccess: function () {
                   console.log(chalk.green.dim("Current time"), chalk.green(endTime));
                   var numTicks = market.numTicks;
                   var payoutNumerators = Array(market.numOutcomes).fill(0);
                   payoutNumerators[outcome] = numTicks;
                   var bnAmount = new BigNumber(amount, 10).toFixed();
-
                   var disputePayload = {
                     meta: disputerAuth,
                     tx: { to: marketID  },
@@ -74,7 +75,6 @@ getPrivateKey(null, function (err, auth) {
                       process.exit(1);
                     },
                   };
-
                   console.log(chalk.green.dim("disputePayload:"), chalk.green(JSON.stringify(disputePayload)));
                   augur.api.Market.contribute(disputePayload);
                 },
