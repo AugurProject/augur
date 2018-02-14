@@ -3,4 +3,3 @@
 --require test/setup.js
 --compilers js:babel-register
 --recursive
-test/**/*-test.{es6,js,jsx}
