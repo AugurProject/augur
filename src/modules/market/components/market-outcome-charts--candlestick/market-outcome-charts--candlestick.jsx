@@ -14,7 +14,7 @@ export default class MarketOutcomeCandlestick extends Component {
     marketPriceHistory: PropTypes.array.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
     outcomeBounds: PropTypes.object.isRequired,
-    orderBookMid: PropTypes.number.isRequired,
+    orderBookKeys: PropTypes.object.isRequired,
     marketMin: PropTypes.number.isRequired,
     marketMax: PropTypes.number.isRequired,
     hoveredPrice: PropTypes.any,
@@ -103,16 +103,16 @@ export default class MarketOutcomeCandlestick extends Component {
       const allowedFloat = 2 // TODO -- set this to the precision
 
       // Determine bounding diff
-      const maxDiff = Math.abs(this.props.orderBookMid - this.props.outcomeBounds.max)
-      const minDiff = Math.abs(this.props.orderBookMid - this.props.outcomeBounds.min)
+      const maxDiff = Math.abs(this.props.orderBookKeys.mid - this.props.outcomeBounds.max)
+      const minDiff = Math.abs(this.props.orderBookKeys.mid - this.props.outcomeBounds.min)
       const boundDiff = (maxDiff > minDiff ? maxDiff : minDiff)
 
       // Set interval step
       const step = boundDiff / ((intervals - 1) / 2)
 
       const yDomain = new Array(intervals).fill(null).reduce((p, _unused, i) => {
-        if (i === 0) return [Number((this.props.orderBookMid - boundDiff).toFixed(allowedFloat))]
-        if (i + 1 === Math.round(intervals / 2)) return [...p, this.props.orderBookMid]
+        if (i === 0) return [Number((this.props.orderBookKeys.mid - boundDiff).toFixed(allowedFloat))]
+        if (i + 1 === Math.round(intervals / 2)) return [...p, this.props.orderBookKeys.mid]
         return [...p, Number((p[i - 1] + step).toFixed(allowedFloat))]
       }, [])
 

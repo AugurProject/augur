@@ -68,7 +68,7 @@ export default class MarketOutcomeOrderbook extends Component {
                 )
               }
               onMouseEnter={() => {
-                p.updateHoveredPrice(order.price)
+                p.updateHoveredPrice(order.price.value)
                 this.setState({
                   hoveredOrderIndex: i,
                   hoveredSide: ASKS
@@ -83,10 +83,10 @@ export default class MarketOutcomeOrderbook extends Component {
               }}
             >
               <div className={Styles.MarketOutcomeOrderBook__RowItem}>
-                <span>{order.price.toFixed(p.fixedPrecision).toString()}</span>
+                <span>{order.price.value.toFixed(p.fixedPrecision).toString()}</span>
               </div>
               <div className={Styles.MarketOutcomeOrderBook__RowItem}>
-                <span>{order.shares.toFixed(p.fixedPrecision).toString()}</span>
+                <span>{order.shares.value.toFixed(p.fixedPrecision).toString()}</span>
               </div>
               <div className={Styles.MarketOutcomeOrderBook__RowItem}>
                 <span>{order.cumulativeShares.toFixed(p.fixedPrecision).toString()}</span>
@@ -110,7 +110,7 @@ export default class MarketOutcomeOrderbook extends Component {
                 )
               }
               onMouseEnter={() => {
-                p.updateHoveredPrice(order.price)
+                p.updateHoveredPrice(order.price.value)
                 this.setState({
                   hoveredOrderIndex: i,
                   hoveredSide: BIDS
@@ -125,10 +125,10 @@ export default class MarketOutcomeOrderbook extends Component {
               }}
             >
               <div className={Styles.MarketOutcomeOrderBook__RowItem}>
-                <span>{order.price.toFixed(p.fixedPrecision).toString()}</span>
+                <span>{order.price.value.toFixed(p.fixedPrecision).toString()}</span>
               </div>
               <div className={Styles.MarketOutcomeOrderBook__RowItem}>
-                <span>{order.shares.toFixed(p.fixedPrecision).toString()}</span>
+                <span>{order.shares.value.toFixed(p.fixedPrecision).toString()}</span>
               </div>
               <div className={Styles.MarketOutcomeOrderBook__RowItem}>
                 <span>{order.cumulativeShares.toFixed(p.fixedPrecision).toString()}</span>

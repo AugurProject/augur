@@ -16,10 +16,8 @@ export default class MarketOutcomeCharts extends Component {
     minPrice: PropTypes.number.isRequired,
     maxPrice: PropTypes.number.isRequired,
     outcomeBounds: PropTypes.object.isRequired,
-    orderBookMin: PropTypes.number.isRequired,
-    orderBookMid: PropTypes.number.isRequired,
-    orderBookMax: PropTypes.number.isRequired,
     orderBook: PropTypes.object.isRequired,
+    orderBookKeys: PropTypes.object.isRequired,
     marketDepth: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.string.isRequired
   }
@@ -105,7 +103,7 @@ export default class MarketOutcomeCharts extends Component {
               marketPriceHistory={p.marketPriceHistory}
               fixedPrecision={s.fixedPrecision}
               outcomeBounds={p.outcomeBounds}
-              orderBookMid={p.orderBookMid}
+              orderBookKeys={p.orderBookKeys}
               marketMax={p.maxPrice}
               marketMin={p.minPrice}
               hoveredPrice={s.hoveredPrice}
@@ -116,9 +114,7 @@ export default class MarketOutcomeCharts extends Component {
           <div className={Styles.MarketOutcomeCharts__Depth}>
             <MarketOutcomeDepth
               fixedPrecision={s.fixedPrecision}
-              orderBookMin={p.orderBookMin}
-              orderBookMid={p.orderBookMid}
-              orderBookMax={p.orderBookMax}
+              orderBookKeys={p.orderBookKeys}
               marketDepth={p.marketDepth}
               hoveredPrice={s.hoveredPrice}
               updateHoveredPrice={this.updateHoveredPrice}
