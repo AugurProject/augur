@@ -1,14 +1,14 @@
 {
-  "augur-node": "wss://rinkeby.augur.nodes.augur.net",
+  "augur-node": "ws://127.0.0.1:9001",
   "ethereum-node": {
-    "http": "https://rinkeby.ethereum.nodes.augur.net",
-    "ws": "wss://websocket-rinkeby.ethereum.nodes.augur.net"
+    "http": "http://127.0.0.1:8545",
+    "ws": "ws://127.0.0.1:8546"
   },
   "network-id": 4,
   "auto-login": true,
   "universe": null,
-  "bug-bounty": true,
-  "bug-bounty-address": "0x56ddb80fe4e5aa05182d794526ab1eff78c90688",
+  "bug-bounty": false,
+  "bug-bounty-address": "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb",
   "debug": {
     "connect": true,
     "broadcast": false
