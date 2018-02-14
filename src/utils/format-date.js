@@ -51,7 +51,7 @@ function getTwelveHour(time) {
   return time
 }
 
-export function convertUnix(integer) {
+export function convertUnixToFormattedDate(integer = 0) {
   return formatDate(moment.unix(integer).toDate())
 }
 
@@ -73,4 +73,9 @@ export function getBeginDate(periodString) {
 export function dateHasPassed(unixTimestamp) {
   const date = moment().utc()
   return (date.unix() >= unixTimestamp)
+}
+
+/** timestamps are always in seconds */
+export function getCurrentDateTimestamp() {
+  return Date.now() / 1000
 }
