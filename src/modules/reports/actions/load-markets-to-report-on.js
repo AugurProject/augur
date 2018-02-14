@@ -6,7 +6,7 @@ import { updateMarketsWithAccountReportData } from 'modules/my-reports/actions/u
 import logError from 'utils/log-error'
 
 export const loadMarketsToReportOn = (options, callback = logError) => (dispatch, getState) => {
-  const { universe, loginAccount } = getState()
+  const { env, universe, loginAccount } = getState()
   if (!loginAccount.address) return callback(null)
   if (!loginAccount.rep || loginAccount.rep === '0') return callback(null)
   if (!universe.id) return callback(null)
@@ -16,9 +16,9 @@ export const loadMarketsToReportOn = (options, callback = logError) => (dispatch
     query.creator = env['bug-bounty-address']
   }
 
-  const designatedReportingQuery = { ...query, reportingState: "DESIGNATED_REPORTING", designatedReporter: loginAccount.address }
-  const openReportingQuery = { ...query, reportingState: "OPEN_REPORTING" }
-  const reportingQuery = { ...query, reportingState: "CROWDSOURCING_DISPUTE" }
+  const designatedReportingQuery = { ...query, reportingState: 'DESIGNATED_REPORTING', designatedReporter: loginAccount.address }
+  const openReportingQuery = { ...query, reportingState: 'OPEN_REPORTING' }
+  const reportingQuery = { ...query, reportingState: 'CROWDSOURCING_DISPUTE' }
 
   parallel({
     designatedReporting: next => augur.markets.getMarkets(designatedReportingQuery, next),
