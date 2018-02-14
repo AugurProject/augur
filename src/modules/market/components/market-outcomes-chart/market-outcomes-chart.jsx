@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-// import Highstock from 'highcharts/js/highstock'
-// import noData from 'highcharts/modules/no-data-to-display'
 import { isEqual } from 'lodash'
 // import { ChevronDown, ChevronUp } from 'modules/common/components/icons/icons'
 

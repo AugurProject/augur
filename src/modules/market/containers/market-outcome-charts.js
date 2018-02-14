@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import memoize from 'memoizee'
 
 import MarketOutcomeCharts from 'modules/market/components/market-outcome-charts/market-outcome-charts'
 
@@ -53,16 +54,6 @@ const marketPriceHistory = [...new Array(30)]
   }))
   .sort((a, b) => a.x - b.x)
 
-// const marketMin = marketPriceHistory.reduce((p, item, i) => {
-//   if (i === 0) return item.low
-//   return item.low < p ? item.low : p
-// }, null)
-
-// const marketMax = marketPriceHistory.reduce((p, item, i) => {
-//   if (i === 0) return item.high
-//   return item.high > p ? item.high : p
-// }, null)
-
 Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[0]], [])], [])
 
 const orderBookMin = marketDepth.bids.reduce((p, item, i) => {
@@ -80,12 +71,9 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     marketPriceHistory,
-    // min/max are outcome price range
     minPrice: market.minPrice,
     maxPrice: market.maxPrice,
-    // marketMin/Max are trading price range
-    marketMin: findMarketMin(market.priceTimeSeries, ownProps.selectedOutcome),
-    marketMax: findMarketMax(market.priceTimeSeries, ownProps.selectedOutcome),
+    outcomeBounds: findBounds(market.outcomes, ownProps.selectedOutcome),
     orderBookMin,
     orderBookMid,
     orderBookMax,
@@ -99,32 +87,33 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(mapStateToProps)(MarketOutcomeCharts)
 
-function findMarketMin(priceTimeSeries = [], selectedOutcome) {
+// outcome specific trading price range
+const findBounds = memoize((outcomes = [], selectedOutcome = null) => {
   if (
-    priceTimeSeries.length === 0 ||
+    outcomes.length === 0 ||
     selectedOutcome == null
   ) {
     return null
   }
 
-  // const priceTimeSeries = priceTimeSeries.find(timeSeries => timeSeries.id === selectedOutcome).data || []
+  const outcome = outcomes.find(outcome => outcome.id === selectedOutcome) || {}
 
-  // if ()
-  return priceTimeSeries.reduce((p, item, i) => {
-    const currentItem = item[i][1]
+  return (outcome.priceTimeSeries || []).reduce((p, item, i) => {
+    const currentItem = item[1]
 
-    if (i === 0) return currentItem
+    if (i === 0) {
+      return {
+        min: currentItem,
+        max: currentItem
+      }
+    }
 
-    return currentItem < p ? currentItem : p
-  }, null)
-}
-
-function findMarketMax(priceTimeSeries = []) {
-  return priceTimeSeries.reduce((p, item, i) => {
-    const currentItem = item[i][1]
-
-    if (i === 0) return currentItem
-
-    return item.high > p ? item.high : p
-  }, null)
-}
+    return {
+      min: currentItem < p.min ? currentItem : p.min,
+      max: currentItem > p.max ? currentItem : p.max
+    }
+  }, {
+    min: null,
+    max: null
+  })
+})

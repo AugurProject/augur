@@ -288,8 +288,6 @@ export function assembleMarket(
 
       market.outstandingShares = formatNumber(getOutstandingShares(marketOutcomesData || {}))
 
-      market.priceTimeSeries = selectPriceTimeSeries(market.outcomes, marketPriceHistory)
-
       market.unclaimedCreatorFees = formatEther(marketData.unclaimedCreatorFees)
 
       market.marketCreatorFeesCollected = formatEther(marketData.marketCreatorFeesCollected || 0)

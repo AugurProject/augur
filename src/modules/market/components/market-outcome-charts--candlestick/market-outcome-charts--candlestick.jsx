@@ -13,8 +13,7 @@ export default class MarketOutcomeCandlestick extends Component {
   static propTypes = {
     marketPriceHistory: PropTypes.array.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
-    outcomeMin: PropTypes.number.isRequired,
-    outcomeMax: PropTypes.number.isRequired,
+    outcomeBounds: PropTypes.object.isRequired,
     orderBookMid: PropTypes.number.isRequired,
     marketMin: PropTypes.number.isRequired,
     marketMax: PropTypes.number.isRequired,
@@ -104,8 +103,8 @@ export default class MarketOutcomeCandlestick extends Component {
       const allowedFloat = 2 // TODO -- set this to the precision
 
       // Determine bounding diff
-      const maxDiff = Math.abs(this.props.orderBookMid - this.props.outcomeMax)
-      const minDiff = Math.abs(this.props.orderBookMid - this.props.outcomeMin)
+      const maxDiff = Math.abs(this.props.orderBookMid - this.props.outcomeBounds.max)
+      const minDiff = Math.abs(this.props.orderBookMid - this.props.outcomeBounds.min)
       const boundDiff = (maxDiff > minDiff ? maxDiff : minDiff)
 
       // Set interval step

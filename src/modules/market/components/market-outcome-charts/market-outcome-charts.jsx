@@ -13,14 +13,15 @@ import { isEqual } from 'lodash'
 export default class MarketOutcomeCharts extends Component {
   static propTypes = {
     marketPriceHistory: PropTypes.array.isRequired,
-    marketMin: PropTypes.number.isRequired,
-    marketMax: PropTypes.number.isRequired,
+    minPrice: PropTypes.number.isRequired,
+    maxPrice: PropTypes.number.isRequired,
+    outcomeBounds: PropTypes.object.isRequired,
     orderBookMin: PropTypes.number.isRequired,
     orderBookMid: PropTypes.number.isRequired,
     orderBookMax: PropTypes.number.isRequired,
     orderBook: PropTypes.object.isRequired,
     marketDepth: PropTypes.object.isRequired,
-    selectedOutcome: PropTypes.number.isRequired
+    selectedOutcome: PropTypes.string.isRequired
   }
 
   constructor(props) {
@@ -103,9 +104,8 @@ export default class MarketOutcomeCharts extends Component {
             <MarketOutcomeCandlestick
               marketPriceHistory={p.marketPriceHistory}
               fixedPrecision={s.fixedPrecision}
-              outcomeMin={p.marketMin}
+              outcomeBounds={p.outcomeBounds}
               orderBookMid={p.orderBookMid}
-              outcomeMax={p.marketMax}
               marketMax={p.maxPrice}
               marketMin={p.minPrice}
               hoveredPrice={s.hoveredPrice}
