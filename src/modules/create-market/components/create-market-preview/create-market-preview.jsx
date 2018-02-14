@@ -25,7 +25,7 @@ export default class CreateMarketPreview extends Component {
       return '-'
     }
 
-    const endDate = moment(p.newMarket.endDate.timestamp)
+    const endDate = moment(p.newMarket.endDate.timestamp * 1000)
     endDate.set({
       hour: p.newMarket.hour,
       minute: p.newMarket.minute,

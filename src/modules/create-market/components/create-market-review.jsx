@@ -64,7 +64,7 @@ export default class CreateMarketReview extends Component {
     const self = this
     augur.createMarket.getMarketCreationCostBreakdown({
       universe: this.props.universe.id,
-      _endTime: this.props.endDate.timestamp / 1000
+      _endTime: this.props.endDate.timestamp
     }, (err, marketCreationCostBreakdown) => {
       if (err) return console.error(err)
       self.setState({
