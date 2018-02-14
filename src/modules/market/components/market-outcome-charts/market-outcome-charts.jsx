@@ -20,7 +20,7 @@ export default class MarketOutcomeCharts extends Component {
     orderBookMax: PropTypes.number.isRequired,
     orderBook: PropTypes.object.isRequired,
     marketDepth: PropTypes.object.isRequired,
-    selectedOutcomes: PropTypes.array.isRequired
+    selectedOutcome: PropTypes.number.isRequired
   }
 
   constructor(props) {
@@ -89,8 +89,6 @@ export default class MarketOutcomeCharts extends Component {
     const s = this.state
     const p = this.props
 
-    // TODO -- wire up marketMin + marketMax
-
     return (
       <section className={Styles.MarketOutcomeCharts}>
         <MarketOutcomeChartsHeader
@@ -108,8 +106,8 @@ export default class MarketOutcomeCharts extends Component {
               outcomeMin={p.marketMin}
               orderBookMid={p.orderBookMid}
               outcomeMax={p.marketMax}
-              marketMax={1}
-              marketMin={0}
+              marketMax={p.maxPrice}
+              marketMin={p.minPrice}
               hoveredPrice={s.hoveredPrice}
               updateHoveredPrice={this.updateHoveredPrice}
               updateHoveredPeriod={this.updateHoveredPeriod}

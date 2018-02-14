@@ -73,17 +73,17 @@ export default class MarketView extends Component {
             updateSelectedOutcomes={this.updateSelectedOutcomes}
             clearSelectedOutcomes={this.clearSelectedOutcomes}
           />
-          {s.selectedOutcomes.length === 0 &&
+          {(s.selectedOutcomes.length === 0 || s.selectedOutcomes.length !== 1) &&
             <MarketOutcomesChart
               marketId={p.marketId}
               selectedOutcomes={s.selectedOutcomes}
               updateSelectedOutcomes={this.updateSelectedOutcomes}
             />
           }
-          {s.selectedOutcomes.length > 0 &&
+          {s.selectedOutcomes.length === 1 &&
             <MarketOutcomeCharts
               marketId={p.marketId}
-              selectedOutcomes={s.selectedOutcomes}
+              selectedOutcome={s.selectedOutcomes[0]}
             />
           }
         </div>

@@ -16,6 +16,7 @@ export default function (orderBooks = DEFAULT_STATE, action) {
       } = action
       const marketOrderBook = orderBooks[marketID] || {}
       const outcomeOrderBook = marketOrderBook[outcome] || {}
+
       return {
         ...orderBooks,
         [marketID]: {

@@ -2,6 +2,8 @@ import { connect } from 'react-redux'
 
 import MarketOutcomeCharts from 'modules/market/components/market-outcome-charts/market-outcome-charts'
 
+import { selectMarket } from 'modules/market/selectors/market'
+
 const bids = [...new Array(30)]
   .map((value, index) => ([Math.random() * 0.5, Math.random() * 100]))
   .sort((a, b) => b[0] - a[0])
@@ -51,14 +53,15 @@ const marketPriceHistory = [...new Array(30)]
   }))
   .sort((a, b) => a.x - b.x)
 
-const marketMin = marketPriceHistory.reduce((p, item, i) => {
-  if (i === 0) return item.low
-  return item.low < p ? item.low : p
-}, null)
-const marketMax = marketPriceHistory.reduce((p, item, i) => {
-  if (i === 0) return item.high
-  return item.high > p ? item.high : p
-}, null)
+// const marketMin = marketPriceHistory.reduce((p, item, i) => {
+//   if (i === 0) return item.low
+//   return item.low < p ? item.low : p
+// }, null)
+
+// const marketMax = marketPriceHistory.reduce((p, item, i) => {
+//   if (i === 0) return item.high
+//   return item.high > p ? item.high : p
+// }, null)
 
 Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[0]], [])], [])
 
@@ -72,19 +75,49 @@ const orderBookMax = marketDepth.asks.reduce((p, item, i) => {
   return item[1] > p ? item[1] : p
 }, null)
 
-// TODO -- wire up to augur-node
-const mapStateToProps = state => ({
-  marketPriceHistory,
-  marketMin,
-  marketMax,
-  orderBookMin,
-  orderBookMid,
-  orderBookMax,
-  orderBook: {
-    bids,
-    asks
-  },
-  marketDepth
-})
+const mapStateToProps = (state, ownProps) => {
+  const market = selectMarket(ownProps.marketId)
+
+  return {
+    marketPriceHistory,
+    // min/max are outcome range
+    minPrice: market.minPrice,
+    maxPrice: market.maxPrice,
+    // marketMin/Max are trading range
+    marketMin: findMarketMin(market.priceTimeSeries, ownProps.selectedOutcome),
+    marketMax: findMarketMax(market.priceTimeSeries, ownProps.selectedOutcome),
+    orderBookMin,
+    orderBookMid,
+    orderBookMax,
+    orderBook: {
+      bids,
+      asks
+    },
+    marketDepth
+  }
+}
 
 export default connect(mapStateToProps)(MarketOutcomeCharts)
+
+function findMarketMin(priceTimeSeries = []) {
+  if (priceTimeSeries.length === 0) {
+
+  }
+  return priceTimeSeries.reduce((p, item, i) => {
+    const currentItem = item[i][1]
+
+    if (i === 0) return currentItem
+
+    return currentItem < p ? currentItem : p
+  }, null)
+}
+
+function findMarketMax(priceTimeSeries = []) {
+  return priceTimeSeries.reduce((p, item, i) => {
+    const currentItem = item[i][1]
+
+    if (i === 0) return currentItem
+
+    return item.high > p ? item.high : p
+  }, null)
+}
