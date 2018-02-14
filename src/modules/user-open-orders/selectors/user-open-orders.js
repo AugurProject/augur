@@ -16,11 +16,11 @@ import { cancelOrder } from 'modules/bids-asks/actions/cancel-order'
  *
  * @return {Array}
  */
-export function selectUserOpenOrders(marketId, outcomeId, marketOrderBook) {
+export function selectUserOpenOrders(marketId, outcomeId, marketOrderBook, orderCancellation) {
   const { loginAccount } = store.getState()
   if (!loginAccount.address || marketOrderBook == null) return []
 
-  return userOpenOrders(marketId, outcomeId, loginAccount, marketOrderBook)
+  return userOpenOrders(marketId, outcomeId, loginAccount, marketOrderBook, orderCancellation)
 }
 
 /**
@@ -32,11 +32,11 @@ export function selectUserOpenOrders(marketId, outcomeId, marketOrderBook) {
  *
  * @return {Array}
  */
-const userOpenOrders = memoize((marketId, outcomeID, loginAccount, marketOrderBook) => {
+const userOpenOrders = memoize((marketId, outcomeID, loginAccount, marketOrderBook, orderCancellation) => {
   const orderData = marketOrderBook[outcomeID]
 
-  const userBids = (orderData == null || orderData.buy == null) ? [] : getUserOpenOrders(marketId, marketOrderBook[outcomeID], BUY, outcomeID, loginAccount.address)
-  const userAsks = (orderData == null || orderData.sell == null) ? [] : getUserOpenOrders(marketId, marketOrderBook[outcomeID], SELL, outcomeID, loginAccount.address)
+  const userBids = (orderData == null || orderData.buy == null) ? [] : getUserOpenOrders(marketId, marketOrderBook[outcomeID], BUY, outcomeID, loginAccount.address, orderCancellation)
+  const userAsks = (orderData == null || orderData.sell == null) ? [] : getUserOpenOrders(marketId, marketOrderBook[outcomeID], SELL, outcomeID, loginAccount.address, orderCancellation)
 
   return userAsks.concat(userBids)
 }, { max: 10 })
@@ -51,11 +51,11 @@ const userOpenOrders = memoize((marketId, outcomeID, loginAccount, marketOrderBo
  *
  * @return {Array}
  */
-function getUserOpenOrders(marketId, orders, orderType, outcomeID, userID) {
+function getUserOpenOrders(marketId, orders, orderType, outcomeID, userID, orderCancellation={}) {
   const typeOrders = orders[orderType]
   return Object.keys(typeOrders)
     .map(orderId => typeOrders[orderId])
-    .filter(order => isOrderOfUser(order, userID))
+    .filter(order => isOrderOfUser(order, userID) && order.orderState === 'OPEN')
     .sort((order1, order2) => new BigNumber(order2.price, 10).comparedTo(new BigNumber(order1.price, 10)))
     .map(order => (
       {
@@ -63,6 +63,7 @@ function getUserOpenOrders(marketId, orders, orderType, outcomeID, userID) {
         type: orderType,
         marketId,
         outcomeID,
+        pending: orderCancellation[order.orderID],
         originalShares: formatNone(),
         avgPrice: formatEtherTokens(order.price),
         matchedShares: formatNone(),
