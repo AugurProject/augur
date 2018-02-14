@@ -276,7 +276,7 @@ export function assembleMarket(
         }
         marketTradeOrders = marketTradeOrders.concat(outcome.trade.tradeSummary.tradeOrders)
 
-        outcome.userOpenOrders = selectUserOpenOrders(marketID, outcomeID, orderBooks)
+        outcome.userOpenOrders = selectUserOpenOrders(marketID, outcomeID, orderBooks, orderCancellation)
         if (outcome.userOpenOrders) outcome.userOpenOrders.forEach((item) => { item.name = outcome.name })
 
         outcome.priceTimeSeries = selectPriceTimeSeries(outcome, marketPriceHistory)

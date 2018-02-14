@@ -1,4 +1,4 @@
-import { UPDATE_ORDER_STATUS } from 'modules/bids-asks/actions/update-order-status'
+import { UPDATE_ORDER_STATUS, UPDATE_ORDER_REMOVE } from 'modules/bids-asks/actions/update-order-status'
 import { RESET_STATE } from 'modules/app/actions/reset-state'
 
 const DEFAULT_STATE = {}
@@ -12,6 +12,11 @@ export default function (orderCancellation = DEFAULT_STATE, action) {
       return {
         ...orderCancellation,
         [action.orderID]: action.status
+      }
+    case UPDATE_ORDER_REMOVE:
+      delete orderCancellation[action.orderID]
+      return {
+        ...orderCancellation
       }
     case RESET_STATE:
       return DEFAULT_STATE
