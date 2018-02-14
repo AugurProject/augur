@@ -3,7 +3,6 @@
 "use strict";
 
 var chalk = require("chalk");
-var getTime = require("./get-timestamp");
 var displayTime = require("./display-time");
 
 /**
@@ -21,7 +20,7 @@ function showInitialReporterInternal(augur, marketID, auth, callback) {
         console.log(chalk.red("Error"), chalk.red(err));
         callback(err);
       }
-      console.log(chalk.green.dim("Report timestamp:"), chalk.green(JSON.stringify(value)));
+      displayTime("Report timestamp:", value);
     });
     augur.api.InitialReporter.getOwner({ tx: { to: contractID  }}, function (err, userAddress) {
       if (err) {

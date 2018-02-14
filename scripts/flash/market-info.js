@@ -27,13 +27,16 @@ function marketInfoInternal(augur, marketID, universe, callback) {
       Object.keys(marketInfo).forEach(function (key) {
         var item = marketInfo[key];
         if (item) {
-          console.log(typeof(item));
           if (typeof(item) !== "object") {
             displayProperty(key, marketInfo);
           } else {
             console.log(chalk.cyan(key));
             Object.keys(item).forEach(function (itemKey) {
-              displayProperty(itemKey, item);
+              if (typeof(item) !== "object") {
+                displayProperty(itemKey, item);
+              } else {
+                console.log(chalk.yellow(JSON.stringify(item[itemKey])));
+              }
             });
           }
         }
