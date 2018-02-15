@@ -8,6 +8,7 @@
   "auto-login": false,
   "universe": null,
   "bug-bounty": false,
+  "bug-bounty-address": "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb",
   "debug": {
     "connect": true,
     "broadcast": false
