@@ -42,6 +42,8 @@ module.exports = {
     FORK_DURATION_SECONDS: 60 * SECONDS_PER_DAY,
   },
 
+  ZERO: new BigNumber(0),
+
   PRECISION: {
     decimals: decimals.toNumber(),
     limit: ten.dividedBy(multiple),
