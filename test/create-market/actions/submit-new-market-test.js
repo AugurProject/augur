@@ -11,6 +11,10 @@ import { DESIGNATED_REPORTER_SELF, DESIGNATED_REPORTER_SPECIFIC } from 'modules/
 
 describe('modules/create-market/actions/submit-new-market', () => {
   const mockStore = configureMockStore([thunk])
+  const addNewMarketCreationTransactions =
+    function addTransaction() {
+      return { type: 'addPendingTransaction' }
+    }
 
   const test = t => it(t.description, () => {
     const store = mockStore(t.state || {})
@@ -67,6 +71,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       })
 
       __RewireAPI__.__Rewire__('augur', mockAugur)
+      __RewireAPI__.__Rewire__('addNewMarketCreationTransactions', addNewMarketCreationTransactions)
 
       store.dispatch(submitNewMarket(store.getState().newMarket))
 
@@ -310,8 +315,12 @@ describe('modules/create-market/actions/submit-new-market', () => {
 
       const expected = [
         {
+          type: 'addPendingTransaction'
+        },
+        {
           type: 'createNewMarket'
-        }
+        },
+
       ]
 
       assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)

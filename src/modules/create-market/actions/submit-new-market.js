@@ -5,6 +5,7 @@ import { augur, constants } from 'services/augurjs'
 import { invalidateMarketCreation, clearNewMarket } from 'modules/create-market/actions/update-new-market'
 import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress'
 import { placeTrade } from 'modules/trade/actions/place-trade'
+import { addNewMarketCreationTransactions } from 'modules/transactions/actions/add-transactions'
 
 import makePath from 'modules/routes/helpers/make-path'
 
@@ -58,6 +59,7 @@ export function submitNewMarket(newMarket, history) {
       ...formattedNewMarket,
       meta: loginAccount.meta,
       onSent: (res) => {
+        dispatch(addNewMarketCreationTransactions({ ...formattedNewMarket, ...res }))
         history.push(makePath(TRANSACTIONS))
         dispatch(clearNewMarket())
       },
