@@ -10,7 +10,7 @@ export default function () {
 export const selectMarketsInDispute = createSelector(
   selectMarkets,
   (markets) => {
-    if (!markets) {
+    if (!markets || markets.length === 0) {
       return []
     }
     return markets.filter(market => market.reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE)
