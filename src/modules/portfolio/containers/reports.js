@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 import PortfolioReports from 'modules/portfolio/components/portfolio-reports/portfolio-reports'
 
 const mapStateToProps = (state) => {
-  const name = 'Placeholder'
+  const name = ''
   return {
     data: name,
     markets: [],

@@ -23,7 +23,9 @@ const PortfolioHeader = p => (
         { ExportIcon } Export Data
       </button>
     </div>
-    <PerformanceGraph />
+    { p.location.pathname.indexOf(PORTFOLIO_REPORTS) === -1 &&
+      <PerformanceGraph />
+    }
   </section>
 )
 
@@ -38,7 +40,7 @@ function getTitle(path) {
     case TRANSACTIONS:
       return 'transactions'
     case PORTFOLIO_REPORTS:
-      return 'reports'
+      return 'reporting'
     case MY_POSITIONS:
     default:
       return 'positions'
