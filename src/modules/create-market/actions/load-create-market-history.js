@@ -5,11 +5,8 @@ import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 
 export function loadCreateMarketHistory(options, callback = logError) {
   return (dispatch, getState) => {
-    const { env, universe, loginAccount } = getState()
+    const { universe, loginAccount } = getState()
     if (!loginAccount.address) return callback(null)
-    if (env['bug-bounty'] && env['bug-bounty-address'] !== loginAccount.address) {
-      callback(null, [])
-    }
     augur.markets.getMarketsCreatedByUser({ ...options, creator: loginAccount.address, universe: universe.id }, (err, marketsCreatedByUser) => {
       // note: marketsCreatedByUser is an array of market IDs
       if (err) return callback(err)
