@@ -39,8 +39,11 @@ export default class ReportingHeader extends Component {
             { p.heading !== 'Reporting' &&
               <h1 className={Styles.ReportingHeader__heading}>Reporting: {p.heading}</h1>
             }
-            { p.showReportingEndDate &&
+            { p.showReportingEndDate && p.heading === 'Reporting' &&
               <span className={Styles.ReportingHeader__endDate}>Reporting cycle ends { formattedDate.formattedLocal }</span>
+            }
+            { p.showReportingEndDate && p.heading !== 'Reporting' &&
+              <span className={Styles.ReportingHeader__endDate}>Dispute window ends { formattedDate.formattedLocal }</span>
             }
             <span className={Styles.ReportingHeader__stake}> | </span><span className={Styles.ReportingHeader__stake}>{ p.reportingWindowStats.stake } REP Staked</span>
           </div>

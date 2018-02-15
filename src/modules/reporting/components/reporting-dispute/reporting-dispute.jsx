@@ -18,10 +18,15 @@ export default class ReportingDispute extends Component {
     marketsCount: PropTypes.number.isRequired,
     isMobile: PropTypes.bool,
     navigateToAccountDepositHandler: PropTypes.func.isRequired,
+    isConnected: PropTypes.bool.isRequired,
+    isMarketsLoaded: PropTypes.bool.isRequired,
+    loadMarkets: PropTypes.func.isRequired
   }
 
   componentWillMount() {
-
+    if (this.props.isConnected && !this.props.isMarketsLoaded) {
+      this.props.loadMarkets()
+    }
   }
 
   render() {
@@ -54,7 +59,9 @@ export default class ReportingDispute extends Component {
               />))
         }
         { p.marketsCount === 0 &&
-          <NullStateMessage message="No Markets to Dispute" />
+          <NullStateMessage
+            message="There are currently no markets available to dispute"
+          />
         }
       </section>
     )
