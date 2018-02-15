@@ -6,6 +6,8 @@ var ten = new BigNumber(10, 10);
 var decimals = new BigNumber(4, 10);
 var multiple = ten.toPower(decimals);
 
+var SECONDS_PER_DAY = 3600 * 24;
+
 module.exports = {
 
   REPORTING_STATE: {
@@ -33,7 +35,12 @@ module.exports = {
     UNFINALIZED: "UNFINALIZED",
   },
 
-  ZERO: new BigNumber(0),
+  CONTRACT_INTERVALS: {
+    DESIGNATED_REPORTING_DURATION_SECONDS: 3 * SECONDS_PER_DAY,
+    DISPUTE_ROUND_DURATION_SECONDS: 7 * SECONDS_PER_DAY,
+    CLAIM_PROCEEDS_WAIT_TIME: 3 * SECONDS_PER_DAY,
+    FORK_DURATION_SECONDS: 60 * SECONDS_PER_DAY,
+  },
 
   PRECISION: {
     decimals: decimals.toNumber(),
