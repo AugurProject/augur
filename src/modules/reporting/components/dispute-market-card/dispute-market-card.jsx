@@ -3,12 +3,13 @@ import PropTypes from 'prop-types'
 
 import MarketLink from 'modules/market/components/market-link/market-link'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
-import toggleTag from 'modules/routes/helpers/toggle-tag'
-import MarketProperties from 'modules/market/components/market-properties/market-properties'
-import { TYPE_DISPUTE } from 'modules/market/constants/link-types'
 import BasicStyles from 'modules/market/components/market-basics/market-basics.styles'
+import MarketProperties from 'modules/market/components/market-properties/market-properties'
+
+import { TYPE_DISPUTE } from 'modules/market/constants/link-types'
 import { MARKETS } from 'modules/routes/constants/views'
 import makePath from 'modules/routes/helpers/make-path'
+import toggleTag from 'modules/routes/helpers/toggle-tag'
 
 export default class DisputeMarketCard extends Component {
   static propTypes = {
