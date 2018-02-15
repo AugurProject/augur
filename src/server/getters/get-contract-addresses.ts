@@ -4,6 +4,7 @@ import Augur from "augur.js";
 export function getContractAddresses(augur: Augur, callback: (err?: Error|null, result?: any) => void): void {
   callback(null, {
     version: augur.version,
+    net_version: augur.rpc.getNetworkID(),
     addresses: augur.contracts.addresses[augur.rpc.getNetworkID()],
   });
 }
