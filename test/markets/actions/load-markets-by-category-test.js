@@ -17,7 +17,7 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
       const store = mockStore(state)
       const AugurJS = {
         augur: {
-          markets: { getMarketsInCategory: () => {} }
+          markets: { getMarkets: () => {} }
         }
       }
 
@@ -25,11 +25,11 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
 
       mockLoadMarketsInfo.loadMarketsInfo = sinon.stub().returns(() => {})
 
-      AugurJS.augur.markets.getMarketsInCategory = sinon.stub()
-      if (t.toTest === 'err') AugurJS.augur.markets.getMarketsInCategory.yields('failed with err', null)
-      if (t.toTest === 'null-markets') AugurJS.augur.markets.getMarketsInCategory.yields(null, null)
-      if (t.toTest === 'array') AugurJS.augur.markets.getMarketsInCategory.yields(null, ['0x1, 0x2'])
-      if (t.toTest === 'empty-array') AugurJS.augur.markets.getMarketsInCategory.yields(null, [])
+      AugurJS.augur.markets.getMarkets = sinon.stub()
+      if (t.toTest === 'err') AugurJS.augur.markets.getMarkets.yields('failed with err', null)
+      if (t.toTest === 'null-markets') AugurJS.augur.markets.getMarkets.yields(null, null)
+      if (t.toTest === 'array') AugurJS.augur.markets.getMarkets.yields(null, ['0x1, 0x2'])
+      if (t.toTest === 'empty-array') AugurJS.augur.markets.getMarkets.yields(null, [])
 
       const action = proxyquire('../../../src/modules/markets/actions/load-markets-by-category', {
         '../../../services/augurjs': AugurJS,
