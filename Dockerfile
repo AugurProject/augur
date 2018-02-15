@@ -6,7 +6,7 @@ COPY tsconfig.json tsconfig.json
 COPY certs certs
 
 COPY package.json package.json
-RUN npm install
+RUN git init && npm install && rm -rf .git
 
 COPY src src
 RUN npm run build
