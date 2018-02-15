@@ -9,6 +9,10 @@ function getBalanceInternal(augur, universe, address, callback) {
   console.log(chalk.green.dim("address:"), chalk.green(address));
   console.log(chalk.green.dim("universe:"), chalk.green(universe));
   theGetBalance(augur, universe, address, function (err, balances) {
+    if (err) {
+      console.log(chalk.red(err));
+      return callback(JSON.stringify(err));
+    }
     console.log(chalk.cyan("Balances:"));
     console.log("Ether:      " + chalk.green(balances.ether));
     console.log("Reputation: " + chalk.green(balances.reputation));

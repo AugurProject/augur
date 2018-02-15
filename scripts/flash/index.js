@@ -55,8 +55,8 @@ function help() {
   console.log("                                  ");
   console.log("      Welcome to FLASH ......>    ");
   console.log("                                  ");
-  console.log("Usage: flash -c <command> -p param1,param2,... -n network1,network2,...");
-  console.log("Command Help flash -c <command> -h");
+  console.log("Usage: flash <command> param1,param2,... -n network1,network2,...");
+  console.log("Command Help flash <command> -h");
 
   console.log(chalk.underline("\nUsages"));
   console.log("Pushing Time on contracts is only possible if USE_NORMAL_TIME='false' environment variable was set when contracts were uploaded");
@@ -105,14 +105,17 @@ function help() {
 if (require.main === module) {
   var opts = {
     help: {flag: true, short: "h", help: "This help" },
-    params: {short: "p", help: "Parameters needed for command"},
     networks: { multi: true, short: "n", default: ["environment"], help: "Networks to run command against"},
-    command: { required: true, short: "c", help: "Command to run" },
   };
   var args;
   try {
     args = options.parse(opts, process.argv);
+    console.log(JSON.stringify(args));
+    args.opt.command = args.args[2];
+    args.opt.params = args.args[3];
+    console.log(JSON.stringify(args));
   } catch (error) {
+    console.log(error);
     help();
     process.exit();
   }
