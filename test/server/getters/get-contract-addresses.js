@@ -34,6 +34,7 @@ describe("server/getters/get-contract-addresses", () => {
       assert.isNull(err);
       assert.deepEqual(contractAddresses, {
         version: "the-version-string",
+        net_version: 974,
         addresses: {
           universe: "the-universe-address",
           controller: "the-controller-address",
