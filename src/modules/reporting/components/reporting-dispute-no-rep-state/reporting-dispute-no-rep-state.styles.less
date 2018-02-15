@@ -1,0 +1,32 @@
+@import (reference) '~assets/styles/shared';
+
+.ReportDispute_noRepState {
+  align-items: center;
+  background: @color-darkgray;
+  color: @color-lightgray;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  padding: 0.5em 2em;
+
+  > button {
+    &:extend(.button--white all);
+
+    white-space: nowrap;
+  }
+
+  @media @breakpoint-mobile {
+    justify-content: flex-end;
+    padding: 0.5em 1em;
+
+    & > span {
+      width: 100%;
+    }
+
+    & > button {
+      border-radius: 0;
+      margin-top: 1em;
+      width: 100%;
+    }
+  }
+}

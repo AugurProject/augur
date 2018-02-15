@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import classNames from 'classnames'
 
 import getValue from 'utils/get-value'
-
+import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status'
 import Styles from 'modules/market/components/market-positions-list--order/market-positions-list--order.styles'
 
 export default class Order extends Component {
@@ -58,7 +58,11 @@ export default class Order extends Component {
         <li>
           { getValue(p, 'name') }
           { p.pending &&
-            <span className={Styles.Order__pending}>Pending</span>
+            <span className={Styles.Order__pending}>
+              { p.pending === CLOSE_DIALOG_CLOSING &&
+                <span>Cancellation Pending</span>
+              }
+            </span>
           }
         </li>
         <li>
@@ -76,7 +80,10 @@ export default class Order extends Component {
           <li />
         }
         <li>
-          <button onClick={this.toggleConfirm}>Cancel</button>
+          { p.pending === CLOSE_DIALOG_CLOSING ?
+            <span className={Styles.NotActive}>Cancel</span> :
+            <button onClick={this.toggleConfirm}>Cancel</button>
+          }
         </li>
         <div
           ref={(confirmMessage) => { this.confirmMessage = confirmMessage }}
@@ -89,8 +96,7 @@ export default class Order extends Component {
               <div className={Styles['Order__confirm-options']}>
                 <button onClick={this.toggleConfirm}>Ok</button>
               </div>
-            </div>
-            :
+            </div> :
             <div className={Styles['Order__confirm-details']}>
               <p>Cancel order for { getValue(p, 'order.qtyShares.formatted') } shares of &ldquo;{ getValue(p, 'name') }&rdquo; at { getValue(p, 'order.purchasePrice.formatted') } ETH?</p>
               <div className={Styles['Order__confirm-options']}>

@@ -48,7 +48,7 @@ export default class CreateMarketResolution extends Component {
 
     this.state = {
       // expirySourceType: false,
-      date: Object.keys(this.props.newMarket.endDate).length ? moment(this.props.newMarket.endDate.timestamp) : null,
+      date: Object.keys(this.props.newMarket.endDate).length ? moment(this.props.newMarket.endDate.timestamp * 1000) : null,
       focused: false,
     }
 

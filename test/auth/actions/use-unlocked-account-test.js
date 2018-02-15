@@ -26,8 +26,10 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
         }
       }
       const LoadAccountData = { loadAccountData: () => {} }
+      const LoadAccountOrders = { loadAccountOrders: () => {} }
       const action = proxyquire('../../../src/modules/auth/actions/use-unlocked-account.js', {
         '../../../services/augurjs': AugurJS,
+        '../../bids-asks/actions/load-account-orders': LoadAccountOrders,
         './load-account-data': LoadAccountData
       })
       sinon.stub(AugurJS.augur.rpc, 'isUnlocked').callsFake((address, callback) => {
@@ -36,6 +38,7 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       sinon.stub(LoadAccountData, 'loadAccountData').callsFake(account => (dispatch) => {
         dispatch({ type: 'LOAD_FULL_ACCOUNT_DATA', account })
       })
+      sinon.stub(LoadAccountOrders, 'loadAccountOrders').callsFake(account => ({ type: 'LOAD_ACCOUNT_ORDERS', data: {} }))
       store.dispatch(action.useUnlockedAccount(t.params.unlockedAddress))
       t.assertions(store.getActions())
       store.clearActions()
@@ -92,6 +95,9 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
               accountType: augur.rpc.constants.ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE
             }
           }
+        }, {
+          data: {},
+          type: 'LOAD_ACCOUNT_ORDERS',
         }
       ])
     }

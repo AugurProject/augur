@@ -2,7 +2,7 @@ import { MARKET_CREATION, TRANSFER, REPORTING, TRADE, OPEN_ORDER, BUY, SELL } fr
 import { SUCCESS } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { eachOf, each, groupBy } from 'async'
-import { convertUnix } from 'src/utils/format-date'
+import { convertUnixToFormattedDate } from 'src/utils/format-date'
 
 export function addTransactions(transactionsArray) {
   return (dispatch, getState) => {
@@ -176,7 +176,7 @@ export function addOpenOrderTransactions(openOrders) {
             transaction.id = transaction.transactionHash + transaction.logIndex
             transaction.message = `${transaction.orderState} - ${type} ${transaction.amount} Shares @ ${transaction.price} ETH`
             const meta = {}
-            creationTime = convertUnix(transaction.creationTime)
+            creationTime = convertUnixToFormattedDate(transaction.creationTime)
             meta.txhash = transaction.transactionHash
             meta.timestamp = creationTime.full
             meta.outcome = outcomeID // need to get payNumerators ?
@@ -243,7 +243,7 @@ function buildHeader(item, type, status) {
   header.status = status
   header.hash = item.id
   // TODO: need to sort by datetime in render
-  header.timestamp = convertUnix(item.timestamp ? item.timestamp : item.creationTime)
+  header.timestamp = convertUnixToFormattedDate(item.timestamp ? item.timestamp : item.creationTime)
   header.sortOrder = getSortOrder(type)
   return header
 }

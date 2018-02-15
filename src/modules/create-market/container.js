@@ -20,6 +20,7 @@ const mapStateToProps = state => ({
   footerHeight: state.footerHeight,
   categories: selectCategories(state),
   isMobileSmall: state.isMobileSmall,
+  isBugBounty: state.env['bug-bounty'],
 })
 
 const mapDispatchToProps = dispatch => ({

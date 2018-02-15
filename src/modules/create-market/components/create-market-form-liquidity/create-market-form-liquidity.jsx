@@ -361,7 +361,7 @@ export default class CreateMarketLiquidity extends Component {
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
         <li className={Styles.CreateMarketLiquidity__settlement}>
-          <label htmlFor="cm__input--settlement">
+          <label htmlFor="cm__input--settlement" className={Styles.CreateMarketLiquidity__settlementLabel}>
             <span>Settlement Fee</span>
             { p.newMarket.validations[p.newMarket.currentStep].settlementFee.length &&
               <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon} { p.newMarket.validations[p.newMarket.currentStep].settlementFee }</span>
@@ -374,6 +374,7 @@ export default class CreateMarketLiquidity extends Component {
             placeholder="0%"
             onChange={e => p.validateNumber('settlementFee', e.target.value, 'settlement fee', 0, 100, 1)}
           />
+          <span className={Styles.CreateMarketLiquidity__settlementFeePercent}>%</span>
         </li>
         <li>
           <label>

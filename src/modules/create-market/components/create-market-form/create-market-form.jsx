@@ -25,6 +25,7 @@ export default class CreateMarketForm extends Component {
     history: PropTypes.object.isRequired,
     universe: PropTypes.object.isRequired,
     meta: PropTypes.object,
+    isBugBounty: PropTypes.bool.isRequired,
   }
 
   constructor(props) {
@@ -135,6 +136,7 @@ export default class CreateMarketForm extends Component {
                 validateField={this.validateField}
                 categories={p.categories}
                 isValid={this.isValid}
+                isBugBounty={p.isBugBounty}
               />
             }
             { p.newMarket.currentStep === 1 &&
@@ -194,6 +196,7 @@ export default class CreateMarketForm extends Component {
                 { p.newMarket.currentStep === 4 &&
                   <button
                     className={Styles.CreateMarketForm__submit}
+                    disabled={p.isBugBounty}
                     onClick={e => p.submitNewMarket(p.newMarket, p.history)}
                   >Submit
                   </button>

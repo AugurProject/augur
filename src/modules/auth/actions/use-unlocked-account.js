@@ -1,6 +1,7 @@
 import { augur } from 'services/augurjs'
 import { loadAccountData } from 'modules/auth/actions/load-account-data'
 import { updateIsLogged } from 'modules/auth/actions/update-is-logged'
+import { loadAccountOrders } from 'modules/bids-asks/actions/load-account-orders'
 import isMetaMask from 'modules/auth/helpers/is-meta-mask'
 import logError from 'utils/log-error'
 
@@ -17,6 +18,7 @@ const updateIsLoggedAndLoadAccountData = unlockedAddress => (dispatch) => {
     },
     isUnlocked: true
   }, true))
+  dispatch(loadAccountOrders())
 }
 
 // Use unlocked local address (if actually unlocked)

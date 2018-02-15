@@ -2,6 +2,7 @@ import speedomatic from 'speedomatic'
 import { augur } from 'services/augurjs'
 import { updateAssets } from 'modules/auth/actions/update-assets'
 import { addNotification } from 'modules/notifications/actions/update-notifications'
+import { getCurrentDateTimestamp } from 'utils/format-date'
 
 import trimString from 'utils/trim-string'
 
@@ -30,7 +31,7 @@ export function transferFunds(amount, currency, toAddress) {
               id: `onSent-${tx.hash}`,
               title: `Transfer Ether -- Pending`,
               description: `${amount} ETH -> ${trimString(to)}`,
-              timestamp: parseInt(Date.now() / 1000, 10),
+              timestamp: getCurrentDateTimestamp(),
             }))
           },
           onSuccess: (tx) => {
@@ -38,7 +39,7 @@ export function transferFunds(amount, currency, toAddress) {
               id: `onSent-${tx.hash}`,
               title: `Transfer Ether -- Success`,
               description: `${amount} ETH -> ${trimString(to)}`,
-              timestamp: parseInt(Date.now() / 1000, 10),
+              timestamp: getCurrentDateTimestamp(),
             }))
             dispatch(updateAssets)
           },
@@ -47,7 +48,7 @@ export function transferFunds(amount, currency, toAddress) {
               id: `onSent-${tx.hash}`,
               title: `Transfer Ether -- Failed`,
               description: `${amount} ETH -> ${trimString(to)}`,
-              timestamp: parseInt(Date.now() / 1000, 10),
+              timestamp: getCurrentDateTimestamp(),
             }))
           }
         })

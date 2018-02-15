@@ -12,7 +12,7 @@ rm -rf node_modules/
 
 npm install
 if [ "$1" == "-l" ]; then
-  npm run link
+  yarn link augur.js
 fi
 
 npm run lint
