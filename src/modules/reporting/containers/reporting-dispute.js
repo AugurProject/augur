@@ -5,13 +5,16 @@ import ReportingDispute from 'modules/reporting/components/reporting-dispute/rep
 import makePath from 'src/modules/routes/helpers/make-path'
 import { ACCOUNT_DEPOSIT } from 'src/modules/routes/constants/views'
 import { selectLoginAccount } from 'src/modules/auth/selectors/login-account'
+import selectMarketsInDispute from 'modules/reporting/selectors/select-dispute-markets'
 
 const mapStateToProps = (state, { history }) => {
   const loginAccount = selectLoginAccount(state)
+  const disputeMarkets = selectMarketsInDispute() || []
+
   return ({
-    doesUserHasRep: (loginAccount.rep.value > 0),
-    markets: [],
-    marketsCount: 0,
+    doesUserHaveRep: (loginAccount.rep.value > 0),
+    markets: disputeMarkets,
+    marketsCount: disputeMarkets.length,
     isMobile: state.isMobile,
     navigateToAccountDepositHandler: () => history.push(makePath(ACCOUNT_DEPOSIT)),
   })

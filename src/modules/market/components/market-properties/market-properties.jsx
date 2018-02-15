@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
-import { TYPE_REPORT, TYPE_CHALLENGE, TYPE_TRADE, TYPE_CLOSED } from 'modules/market/constants/link-types'
+import { TYPE_REPORT, TYPE_CHALLENGE, TYPE_TRADE, TYPE_CLOSED, TYPE_DISPUTE } from 'modules/market/constants/link-types'
 
 import getValue from 'utils/get-value'
 import setShareDenomination from 'utils/set-share-denomination'
@@ -28,6 +28,9 @@ const MarketProperties = (p) => {
       break
     case TYPE_TRADE:
       buttonText = 'Trade'
+      break
+    case TYPE_DISPUTE:
+      buttonText = 'Dispute'
       break
     default:
       buttonText = 'View'
