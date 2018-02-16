@@ -13,10 +13,7 @@
         "SwitchCase": 1
       }
     ],
-    "linebreak-style": [
-      2,
-      "unix"
-    ],
+    "linebreak-style": 0,
     "quotes": [
       1,
       "double"

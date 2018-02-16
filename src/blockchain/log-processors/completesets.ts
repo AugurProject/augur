@@ -5,14 +5,13 @@ import { augurEmitter } from "../../events";
 import { upsertPositionInMarket } from "./order-filled/upsert-position-in-market";
 import { convertNumTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 
-
 export function processCompleteSetsPurchasedOrSoldLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   const marketID: Address = log.market;
   const blockNumber: number = log.blockNumber;
   const account: Address = log.account;
   trx.first("minPrice", "maxPrice", "numTicks", "category").from("markets").where({ marketID }).asCallback((err: Error|null, marketsRow?: Partial<MarketsRow>): void => {
     if (err) return callback(err);
-    if (!marketsRow) return callback(new Error("market min price, max price, and/or num ticks not found"));
+    if (!marketsRow) return callback(new Error("market not found"));
     const minPrice = marketsRow.minPrice!;
     const maxPrice = marketsRow.maxPrice!;
     const numTicks = marketsRow.numTicks!;
@@ -51,4 +50,3 @@ export function processCompleteSetsPurchasedOrSoldLogRemoval(db: Knex, augur: Au
       });
     });
   }
-  
