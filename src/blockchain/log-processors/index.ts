@@ -19,6 +19,7 @@ import { processMintLog, processMintLogRemoval } from "./token/mint";
 import { processBurnLog, processBurnLogRemoval } from "./token/burn";
 import { processFundedAccountLog } from "./token/funded-account";
 import { processTimestampSetLog, processTimestampSetLogRemoval } from "./timestamp-set";
+import { processCompleteSetsPurchasedOrSoldLog, processCompleteSetsPurchasedOrSoldLogRemoval } from "./completesets";
 
 export const logProcessors: LogProcessors = {
   Augur: {
@@ -91,6 +92,14 @@ export const logProcessors: LogProcessors = {
     TimestampSet: {
       add: processTimestampSetLog,
       remove: processTimestampSetLogRemoval,
+    },
+    CompleteSetsPurchased: {
+      add: processCompleteSetsPurchasedOrSoldLog,
+      remove: processCompleteSetsPurchasedOrSoldLogRemoval,
+    },
+    CompleteSetsSold: {
+      add: processCompleteSetsPurchasedOrSoldLog,
+      remove: processCompleteSetsPurchasedOrSoldLogRemoval,
     },
   },
   LegacyReputationToken: {
