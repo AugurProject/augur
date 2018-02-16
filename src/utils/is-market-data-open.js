@@ -6,7 +6,7 @@ export function isMarketDataExpired(marketData, currentTime) {
   if (!marketData || !marketData.endDate || !currentTime) {
     return false
   }
-  return marketData.endDate < parseInt(currentTime / 1000, 10)
+  return marketData.endDate < parseInt(currentTime, 10)
 }
 
 export function isMarketDataPreviousReportPeriod(marketData, currentPeriod, reportingPeriodDurationInSeconds) {

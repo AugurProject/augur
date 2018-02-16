@@ -181,12 +181,13 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
 
   describe('updateAccountCancelsData', () => {
     test({
-      description: `should return the expected action`,
+      description: `should return the expected action from cancel order`,
       assertions: (store) => {
         const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
           '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
           '../../my-orders/actions/update-orders': mockUpdateOrders,
-          './load-account-positions': mockloadAccountPositions
+          './load-account-positions': mockloadAccountPositions,
+          '../../bids-asks/actions/load-account-orders': mockLoadBidsAsksHistory
         })
 
         store.dispatch(action.updateAccountCancelsData({ '0xMARKETID': {} }, '0xMARKETID'))
@@ -202,6 +203,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             },
             marketID: '0xMARKETID'
           },
+          { type: MOCK_ACTION_TYPES.LOAD_BIDS_ASKS_HISTORY, data: {} },
           {
             type: MOCK_ACTION_TYPES.UPDATE_ORDERS,
             data: {
@@ -210,8 +212,9 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             isAddition: false
           }
         ]
-
-        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`)
+        console.log(actual)
+        assert.lengthOf(actual, 3)
+        assert.deepEqual(actual, expected, `Didn't dispatch the expect action, cancel order`)
       }
     })
   })

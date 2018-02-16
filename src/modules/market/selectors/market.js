@@ -23,7 +23,7 @@ This is true for all selectors, but especially important for this one.
 import BigNumber from 'bignumber.js'
 import memoize from 'memoizee'
 import { formatShares, formatEtherTokens, formatEther, formatPercent, formatNumber } from 'utils/format-number'
-import { formatDate } from 'utils/format-date'
+import { formatDate, getCurrentDateTimestamp, convertUnixToFormattedDate } from 'utils/format-date'
 import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open'
 
 import { UNIVERSE_ID } from 'modules/app/constants/network'
@@ -69,7 +69,7 @@ export const selectMarket = (marketID) => {
     return {}
   }
 
-  const endDate = new Date((marketsData[marketID].endDate * 1000) || 0)
+  const endDate = convertUnixToFormattedDate(marketsData[marketID].endDate)
 
   return assembleMarket(
     marketID,
@@ -77,7 +77,7 @@ export const selectMarket = (marketID) => {
     marketLoading.indexOf(marketID) !== -1,
     priceHistory[marketID],
     isMarketDataOpen(marketsData[marketID]),
-    isMarketDataExpired(marketsData[marketID], new Date().getTime()),
+    isMarketDataExpired(marketsData[marketID], getCurrentDateTimestamp()),
 
     !!favorites[marketID],
     outcomesData[marketID],
@@ -88,9 +88,9 @@ export const selectMarket = (marketID) => {
     tradesInProgress[marketID],
 
     // the reason we pass in the date parts broken up like this, is because date objects are never equal, thereby always triggering re-assembly, and never hitting the memoization cache
-    endDate.getFullYear(),
-    endDate.getMonth(),
-    endDate.getDate(),
+    endDate.value.getFullYear(),
+    endDate.value.getMonth(),
+    endDate.value.getDate(),
 
     universe && universe.currentReportingWindowAddress,
 
@@ -263,7 +263,7 @@ export function assembleMarket(
         }
         marketTradeOrders = marketTradeOrders.concat(outcome.trade.tradeSummary.tradeOrders)
 
-        outcome.userOpenOrders = selectUserOpenOrders(marketID, outcomeID, orderBooks)
+        outcome.userOpenOrders = selectUserOpenOrders(marketID, outcomeID, orderBooks, orderCancellation)
         if (outcome.userOpenOrders) outcome.userOpenOrders.forEach((item) => { item.name = outcome.name })
 
         return outcome

@@ -1,7 +1,7 @@
 import selectOrder from 'modules/bids-asks/selectors/select-order'
 
 export const UPDATE_ORDER_STATUS = 'UPDATE_ORDER_STATUS'
-
+export const UPDATE_ORDER_REMOVE = 'UPDATE_ORDER_REMOVE'
 /**
  *
  * @param {String} orderID
@@ -23,6 +23,8 @@ export const updateOrderStatus = (orderID, status, marketID, outcome, orderTypeL
     orderType: orderTypeLabel
   })
 }
+
+export const removeCanceledOrder = orderID => dispatch => dispatch({ type: UPDATE_ORDER_REMOVE, orderID })
 
 function warnNonExistingOrder(orderID, status, marketID, outcome, orderTypeLabel) {
   return console.warn('updateOrderStatus: can\'t update %o', orderID, status, marketID, outcome, orderTypeLabel)

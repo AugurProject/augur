@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import makePath from 'modules/routes/helpers/make-path'
 
 import PositionsMarketsList from 'modules/portfolio/components/positions-markets-list/positions-markets-list'
-import { TYPE_CHALLENGE, TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
+import { TYPE_DISPUTE, TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import PortfolioStyles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles'
 import { MARKETS } from 'modules/routes/constants/views'
 
@@ -18,7 +18,6 @@ export default class Positions extends Component {
     closedMarkets: PropTypes.array.isRequired,
     closePositionStatus: PropTypes.object.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired,
-    orderCancellation: PropTypes.object.isRequired,
     loadAccountTrades: PropTypes.func.isRequired,
     marketsCount: PropTypes.number.isRequired,
     registerBlockNumber: PropTypes.number,
@@ -44,7 +43,6 @@ export default class Positions extends Component {
             markets={p.openPositionMarkets}
             closePositionStatus={p.closePositionStatus}
             scalarShareDenomination={p.scalarShareDenomination}
-            orderCancellation={p.orderCancellation}
             location={p.location}
             history={p.history}
             isMobile={p.isMobile}
@@ -54,10 +52,9 @@ export default class Positions extends Component {
             markets={p.reportingMarkets}
             closePositionStatus={p.closePositionStatus}
             scalarShareDenomination={p.scalarShareDenomination}
-            orderCancellation={p.orderCancellation}
             location={p.location}
             history={p.history}
-            linkType={TYPE_CHALLENGE}
+            linkType={TYPE_DISPUTE}
             positionsDefault={false}
             isMobile={p.isMobile}
           />
@@ -66,7 +63,6 @@ export default class Positions extends Component {
             markets={p.closedMarkets}
             closePositionStatus={p.closePositionStatus}
             scalarShareDenomination={p.scalarShareDenomination}
-            orderCancellation={p.orderCancellation}
             location={p.location}
             history={p.history}
             positionsDefault={false}
