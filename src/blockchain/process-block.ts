@@ -8,6 +8,7 @@ import { Block, BlocksRow, AsyncCallback, ErrorCallback, MarketsContractAddressR
 import { updateMarketState } from "./log-processors/database";
 import { processQueue, BLOCK_PRIORITY } from "./process-queue";
 import { QueryBuilder } from "knex";
+import { getMarketsWithReportingState } from "../server/getters/database";
 
 interface FeeWindowIDRow {
   feeWindowID: number;
@@ -108,6 +109,7 @@ function _processBlockRemoval(db: Knex, block: Block, callback: ErrorCallback): 
 function advanceTime(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
   parallel([
     (next: AsyncCallback) => advanceMarketReachingEndTime(db, augur, blockNumber, timestamp, next),
+    (next: AsyncCallback) => advanceMarketMissingDesignatedReport(db, augur, blockNumber, timestamp, next),
     (next: AsyncCallback) => advanceFeeWindowActive(db, blockNumber, timestamp, next),
   ], callback);
 }
@@ -125,6 +127,25 @@ function advanceMarketReachingEndTime(db: Knex, augur: Augur, blockNumber: numbe
           reportingState: augur.constants.REPORTING_STATE.DESIGNATED_REPORTING,
         });
         nextMarketID();
+      });
+    }, callback);
+  });
+}
+
+function advanceMarketMissingDesignatedReport(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+  const marketsMissingDesignatedReport = getMarketsWithReportingState(db, ["markets.marketID"])
+    .where("endTime", "<", timestamp + augur.constants.CONTRACT_INTERVAL.DESIGNATED_REPORTING_DURATION_SECONDS)
+    .where("reportingState", augur.constants.REPORTING_STATE.DESIGNATED_REPORTING);
+  marketsMissingDesignatedReport.asCallback((err, marketAddressRows: Array<MarketsContractAddressRow>) => {
+    if (err) return callback(err);
+    each(marketAddressRows, (marketIDRow, nextMarketIDRow: ErrorCallback) => {
+      updateMarketState(db, marketIDRow.marketID, blockNumber, augur.constants.REPORTING_STATE.OPEN_REPORTING, (err) => {
+        if (err) return callback(err);
+        augurEmitter.emit("MarketState", {
+          marketID: marketIDRow.marketID,
+          reportingState: augur.constants.REPORTING_STATE.OPEN_REPORTING,
+        });
+        nextMarketIDRow();
       });
     }, callback);
   });
