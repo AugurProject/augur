@@ -23,3 +23,11 @@ export const MINIMUM_TRADE_SIZE = "0.01";
 export const WEI_PER_ETHER: string = new BigNumber(10, 10).toPower(18).toFixed();
 
 export const ZERO = new BigNumber(0);
+
+export enum TokenType {
+  ReputationToken,
+  ShareToken,
+  DisputeCrowdsourcer,
+  FeeWindow,
+  FeeToken,
+}
