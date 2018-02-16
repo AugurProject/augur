@@ -33,30 +33,32 @@ export default class ReportingHeader extends Component {
       <article className={Styles.ReportingHeader}>
         <div className={Styles.ReportingHeader__header}>
           <div>
-            { p.heading === 'Reporting' &&
-              <h1 className={Styles.ReportingHeader__heading}>{p.heading}</h1>
-            }
-            { p.heading !== 'Reporting' &&
-              <h1 className={Styles.ReportingHeader__heading}>Reporting: {p.heading}</h1>
-            }
-            { p.showReportingEndDate &&
-              <span className={Styles.ReportingHeader__endDate}>Reporting cycle ends { formattedDate.formattedLocal }</span>
-            }
-            <span className={Styles.ReportingHeader__stake}> | </span><span className={Styles.ReportingHeader__stake}>{ p.reportingWindowStats.stake } REP Staked</span>
-          </div>
-        </div>
-        <div className={Styles['ReportingHeader__graph-wrapper']}>
-          <div className={Styles.ReportingHeader__graph}>
-            <div className={Styles['ReportingHeader__graph-current']}>
-              <div style={currentPeriodStyle}>
-                <span>{ Math.floor(daysLeft) } days left</span>
+            <h1 className={Styles.ReportingHeader__heading}>Reporting: {p.heading}</h1>
+            { p.heading === 'Dispute' &&
+              <div className={Styles['ReportingHeader__dispute-wrapper']}>
+                <div className={Styles['ReportingHeader__dispute-header']}>
+                  <div className={Styles['ReportingHeader__meta-wrapper']}>
+                    <span className={Styles.ReportingHeader__endDate}>Reporting cycle ends { formattedDate.formattedLocal }</span>
+                    <span className={Styles.ReportingHeader__stake}> | </span><span className={Styles.ReportingHeader__stake}>{ p.reportingWindowStats.stake } REP Staked</span>
+                  </div>
+                  <span className={Styles.ReportingHeader__participationTokens}>Example Tooltip</span>
+                </div>
+                <div className={Styles['ReportingHeader__dispute-graph']}>
+                  <div className={Styles.ReportingHeader__graph}>
+                    <div className={Styles['ReportingHeader__graph-current']}>
+                      <div style={currentPeriodStyle}>
+                        <span>{ Math.floor(daysLeft) } days left</span>
+                      </div>
+                    </div>
+                    <div className={Styles['ReportingHeader__graph-dispute']} />
+                  </div>
+                  <div className={Styles.ReportingHeader__labels}>
+                    <span>Current Cycle</span>
+                    <span>Dispute</span>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className={Styles['ReportingHeader__graph-dispute']} />
-          </div>
-          <div className={Styles.ReportingHeader__labels}>
-            <span>Current Cycle</span>
-            <span>Dispute</span>
+            }
           </div>
         </div>
       </article>

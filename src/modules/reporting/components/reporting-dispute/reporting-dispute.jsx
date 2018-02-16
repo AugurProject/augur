@@ -30,6 +30,7 @@ export default class ReportingDispute extends Component {
         <ReportingHeader
           heading="Dispute"
           showReportingEndDate
+          showParticipationTokens
         />
         {this.props.doesUserHaveRep || <ReportDisputeNoRepState
           btnText="Add Funds"
