@@ -16,12 +16,14 @@ const PortfolioHeader = p => (
   >
     <div className={Styles.PortfolioHeader__header}>
       <h1 className={Styles.PortfolioHeader__title}>portfolio: {getTitle(p.location.pathname)}</h1>
-      <button
-        className={Styles.PortfolioHeader__export}
-        onClick={p.triggerTransactionsExport}
-      >
-        { ExportIcon } Export Data
-      </button>
+      { p.location.pathname.indexOf(PORTFOLIO_REPORTS) === -1 &&
+        <button
+          className={Styles.PortfolioHeader__export}
+          onClick={p.triggerTransactionsExport}
+        >
+          { ExportIcon } Export Data
+        </button>
+      }
     </div>
     { p.location.pathname.indexOf(PORTFOLIO_REPORTS) === -1 &&
       <PerformanceGraph />
