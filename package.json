@@ -64,6 +64,7 @@
     "react-modal-dialog": "4.0.7",
     "react-redux": "5.0.6",
     "react-router-dom": "4.2.2",
+    "react-tooltip": "^3.4.0",
     "react-transition-group": "2.2.1",
     "redux": "3.7.2",
     "redux-devtools-extension": "2.13.2",
