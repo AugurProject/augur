@@ -128,7 +128,7 @@ export function addNewMarketCreationTransactions(market) {
     }
     const meta = {
       market: market.hash,
-      'designated reporter ': market._designatedReporterAddress,
+      'designated reporter': market._designatedReporterAddress,
       'creation fee': 0,
       'gas fees': 0,
     }
