@@ -3,7 +3,7 @@ import { assert } from 'chai'
 
 import { ACCOUNT_NAV_ITEMS } from 'modules/account/constants/account-nav-items'
 
-import { ACCOUNT_DEPOSIT, ACCOUNT_TRANSFER, ACCOUNT_EXPORT } from 'modules/routes/constants/views'
+import { ACCOUNT_DEPOSIT, ACCOUNT_TRANSFER } from 'modules/routes/constants/views'
 
 describe('modules/account/constants/account-nav-items.js', () => {
   const test = t => it(t.description, () => t.assertions())
@@ -18,9 +18,6 @@ describe('modules/account/constants/account-nav-items.js', () => {
         [ACCOUNT_TRANSFER]: {
           label: 'Transfer'
         },
-        [ACCOUNT_EXPORT]: {
-          label: 'Export'
-        }
       }
 
       assert.deepEqual(ACCOUNT_NAV_ITEMS, expected, `Didn't return the expected constants`)
