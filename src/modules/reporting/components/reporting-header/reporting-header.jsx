@@ -8,7 +8,6 @@ import Styles from 'modules/reporting/components/reporting-header/reporting-head
 export default class ReportingHeader extends Component {
   static propTypes = {
     heading: PropTypes.string.isRequired,
-    showReportingEndDate: PropTypes.bool.isRequired,
     loadReportingWindowBounds: PropTypes.func.isRequired,
     reportingWindowStats: PropTypes.object.isRequired,
   }
