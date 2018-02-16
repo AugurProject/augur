@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import ReactTooltip from 'react-tooltip'
 
 import { formatDate } from 'utils/format-date'
 
 import Styles from 'modules/reporting/components/reporting-header/reporting-header.styles'
+import TooltipStyles from 'modules/common/less/tooltip'
 
 export default class ReportingHeader extends Component {
   static propTypes = {
@@ -40,7 +42,22 @@ export default class ReportingHeader extends Component {
                     <span className={Styles.ReportingHeader__endDate}>Reporting cycle ends { formattedDate.formattedLocal }</span>
                     <span className={Styles.ReportingHeader__stake}> | </span><span className={Styles.ReportingHeader__stake}>{ p.reportingWindowStats.stake } REP Staked</span>
                   </div>
-                  <span className={Styles.ReportingHeader__participationTokens}>Example Tooltip</span>
+                  <span
+                    className={Styles.ReportingHeader__participationTokens}
+                    data-tip
+                    data-for="tooltip--participation-tokens"
+                  >Example Tooltip
+                  </span>
+                  <ReactTooltip
+                    id="tooltip--participation-tokens"
+                    className={TooltipStyles.Tooltip}
+                    effect="solid"
+                    place="left"
+                    type="light"
+                  >
+                    <h4>Don&apos;t see any markets that need to be disputed?</h4>
+                    <p>Purchase participation tokens to earn a share of the reporting fees collected during this dispute window.</p>
+                  </ReactTooltip>
                 </div>
                 <div className={Styles['ReportingHeader__dispute-graph']}>
                   <div className={Styles.ReportingHeader__graph}>
