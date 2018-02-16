@@ -67,7 +67,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getDisputeInfo":
       return getDisputeInfo(db, request.params.marketIDs, callback);
     case "getInitialReporters":
-      return getInitialReporters(db, request.params.reporter, callback);
+      return getInitialReporters(db, request.params.reporter, request.params.redeemed, callback);
     case "getMarketsClosingInDateRange":
       return getMarketsClosingInDateRange(db, request.params.earliestClosingTime, request.params.latestClosingTime, request.params.universe, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarkets":

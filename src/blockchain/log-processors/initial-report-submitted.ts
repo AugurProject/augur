@@ -14,6 +14,7 @@ export function processInitialReportSubmittedLog(db: Knex, augur: Augur, trx: Kn
         reporter: log.reporter,
         amountStaked: log.amountStaked,
         payoutID,
+        redeemed: false,
       };
       parallel({
         initialReport: (next: AsyncCallback) => {

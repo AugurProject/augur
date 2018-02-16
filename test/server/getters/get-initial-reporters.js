@@ -9,7 +9,7 @@ describe("server/getters/get-initial-reporters", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getInitialReporters(db, t.params.reporter, (err, initialReporters) => {
+        getInitialReporters(db, t.params.reporter, t.params.redeemed, (err, initialReporters) => {
           t.assertions(err, initialReporters);
           done();
         });
@@ -28,11 +28,13 @@ describe("server/getters/get-initial-reporters", () => {
         reporter: "0x0000000000000000000000000000000000000b0b",
         amountStaked: 102,
         initialReporter: "0x0000000000000000000000000000000000abe123",
+        redeemed: 0,
       }, {
         marketID: "0x0000000000000000000000000000000000000211",
         reporter: "0x0000000000000000000000000000000000000b0b",
         amountStaked: 102,
         initialReporter: "0x0000000000000000000000000000000000abe321",
+        redeemed: 0,
       }]);
     },
   });

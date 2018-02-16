@@ -20,6 +20,8 @@ import { processBurnLog, processBurnLogRemoval } from "./token/burn";
 import { processFundedAccountLog } from "./token/funded-account";
 import { processTimestampSetLog, processTimestampSetLogRemoval } from "./timestamp-set";
 import { processCompleteSetsPurchasedOrSoldLog, processCompleteSetsPurchasedOrSoldLogRemoval } from "./completesets";
+import { processInitialReporterRedeemedLog, processInitialReporterRedeemedLogRemoval } from "./initial-report-redeemed";
+import { processInitialReporterTransferredLog, processInitialReporterTransferredLogRemoval } from "./initial-report-transferred";
 
 export const logProcessors: LogProcessors = {
   Augur: {
@@ -30,6 +32,14 @@ export const logProcessors: LogProcessors = {
     InitialReportSubmitted: {
       add: processInitialReportSubmittedLog,
       remove: processInitialReportSubmittedLogRemoval,
+    },
+    InitialReporterRedeemed: {
+      add: processInitialReporterRedeemedLog,
+      remove: processInitialReporterRedeemedLogRemoval,
+    },
+    InitialReporterTransfered: {
+      add: processInitialReporterTransferredLog,
+      remove: processInitialReporterTransferredLogRemoval,
     },
     MarketCreated: {
       add: processMarketCreatedLog,
