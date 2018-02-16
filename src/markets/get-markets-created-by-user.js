@@ -14,8 +14,8 @@ var augurNode = require("../augur-node");
  * @param {function} callback Called after the markets have been retrieved.
  * @return {string[]} Array of market addresses created by the specified user, as hexadecimal strings.
  */
-function getMarketsCreatedByAccount(p, callback) {
+function getMarketsCreatedByUser(p, callback) {
   augurNode.submitRequest("getMarketsCreatedByUser", p, callback);
 }
 
-module.exports = getMarketsCreatedByAccount;
+module.exports = getMarketsCreatedByUser;
