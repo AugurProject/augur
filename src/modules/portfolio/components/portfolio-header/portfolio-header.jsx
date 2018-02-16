@@ -6,7 +6,7 @@ import PerformanceGraph from 'modules/portfolio/containers/performance-graph'
 import { ExportIcon } from 'modules/common/components/icons/icons'
 
 import parsePath from 'modules/routes/helpers/parse-path'
-import { MY_POSITIONS, MY_MARKETS, WATCHLIST, TRANSACTIONS } from 'modules/routes/constants/views'
+import { MY_POSITIONS, MY_MARKETS, WATCHLIST, TRANSACTIONS, PORTFOLIO_REPORTS } from 'modules/routes/constants/views'
 
 import Styles from 'modules/portfolio/components/portfolio-header/portfolio-header.styles'
 
@@ -16,14 +16,18 @@ const PortfolioHeader = p => (
   >
     <div className={Styles.PortfolioHeader__header}>
       <h1 className={Styles.PortfolioHeader__title}>portfolio: {getTitle(p.location.pathname)}</h1>
-      <button
-        className={Styles.PortfolioHeader__export}
-        onClick={p.triggerTransactionsExport}
-      >
-        { ExportIcon } Export Data
-      </button>
+      { p.location.pathname.indexOf(PORTFOLIO_REPORTS) === -1 &&
+        <button
+          className={Styles.PortfolioHeader__export}
+          onClick={p.triggerTransactionsExport}
+        >
+          { ExportIcon } Export Data
+        </button>
+      }
     </div>
-    <PerformanceGraph />
+    { p.location.pathname.indexOf(PORTFOLIO_REPORTS) === -1 &&
+      <PerformanceGraph />
+    }
   </section>
 )
 
@@ -37,6 +41,8 @@ function getTitle(path) {
       return 'watching'
     case TRANSACTIONS:
       return 'transactions'
+    case PORTFOLIO_REPORTS:
+      return 'reporting'
     case MY_POSITIONS:
     default:
       return 'positions'
