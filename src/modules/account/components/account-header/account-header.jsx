@@ -105,43 +105,6 @@ class AccountHeader extends Component {
             </span>
           </div>
         }
-        <div className={Styles.AccountHeader__Charts}>
-          <div className={Styles.AccountHeader__Chart}>
-            <ProfitLossChart
-              series={p.series.totalPLSeries}
-              label={p.stats[1].totalPL.label}
-              title="X Day P/L"
-              id="_X_Day"
-              totalValue={totalPLValue}
-              isMobile={p.isMobile}
-            />
-          </div>
-          {repValue === '0' && !p.isMobile &&
-            <div className={Styles.AccountHeader__Chart}>
-              <ProfitLossChart
-                series={p.series.totalPLMonthSeries}
-                label={p.stats[1].totalPLMonth.label}
-                title="30 Day P/L"
-                id="_30_Day"
-                totalValue={totalPLMonthValue}
-                isMobile={p.isMobile}
-              />
-            </div>
-          }
-          {repValue === '0' && !p.isMobile &&
-            <div className={Styles.AccountHeader__Chart}>
-              <ProfitLossChart
-                className={Styles.AccountHeader__Chart}
-                series={p.series.totalPLDaySeries}
-                label={p.stats[1].totalPLDay.label}
-                title="1 Day P/L"
-                id="_1_Day"
-                totalValue={totalPLDayValue}
-                isMobile={p.isMobile}
-              />
-            </div>
-          }
-        </div>
       </div>
     )
   }
