@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import makePath from 'modules/routes/helpers/make-path'
 
 import PositionsMarketsList from 'modules/portfolio/components/positions-markets-list/positions-markets-list'
-import { TYPE_CHALLENGE, TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
+import { TYPE_DISPUTE, TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import PortfolioStyles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles'
 import { MARKETS } from 'modules/routes/constants/views'
 
@@ -54,7 +54,7 @@ export default class Positions extends Component {
             scalarShareDenomination={p.scalarShareDenomination}
             location={p.location}
             history={p.history}
-            linkType={TYPE_CHALLENGE}
+            linkType={TYPE_DISPUTE}
             positionsDefault={false}
             isMobile={p.isMobile}
           />
