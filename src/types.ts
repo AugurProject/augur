@@ -459,3 +459,11 @@ export interface FeeWindowRow {
     endTime: number;
     fees: number|string;
 }
+
+export interface InitialReportersRow {
+  initialReportID: number;
+  marketID: Address;
+  reporter: Address;
+  isDesignatedReporter: boolean;
+  amountStaked: number;
+}
