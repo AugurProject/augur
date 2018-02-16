@@ -203,13 +203,4 @@ describe('modules/app/constants/views', () => {
       assert.strictEqual(views.ACCOUNT_TRANSFER, expected, `didn't return the expected string`)
     }
   })
-
-  test({
-    description: `should return the expected value 'ACCOUNT_EXPORT'`,
-    assertions: () => {
-      const expected = 'export-account'
-
-      assert.strictEqual(views.ACCOUNT_EXPORT, expected, `didn't return the expected string`)
-    }
-  })
 })
