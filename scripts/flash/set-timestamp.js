@@ -22,7 +22,7 @@ function setTimestamp(augur, newTimestamp, address, auth, callback) {
         }
         console.log(chalk.green.dim("Success"), chalk.green(JSON.stringify(result)));
         displayTime("result of time change", timestamp);
-        callback(null);
+        callback(null, result);
       });
     },
     onFailed: function (result) {
