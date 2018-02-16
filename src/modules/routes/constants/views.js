@@ -10,6 +10,7 @@ export const CONNECT = 'connect'
 export const CREATE = 'create'
 export const CATEGORIES = 'categories'
 export const REPORTING = 'reporting'
+export const REPORT = 'report'
 
 export const DEFAULT_VIEW = CATEGORIES
 
