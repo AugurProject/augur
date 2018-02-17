@@ -8,6 +8,7 @@ describe("blockchain/log-processors/tokens-transferred", () => {
   const test = (t) => {
     const getState = (db, params, callback) => db("transfers").where({ transactionHash: params.log.transactionHash, logIndex: params.log.logIndex }).asCallback(callback);
     const getPositionsState = (db, params, callback) => db("positions").where({ account: params.log.from, marketID: params.log.market }).asCallback(callback);
+    const getTokenBalances = (db, params, callback) => db("balances").where({ token: params.log.token }).asCallback(callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
@@ -18,10 +19,16 @@ describe("blockchain/log-processors/tokens-transferred", () => {
               t.assertions.onAdded(err, records);
               getPositionsState(trx, t.params, (err, positions) => {
                 t.assertions.onUpdatedPositions(err, positions);
-                processTokensTransferredLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
-                  getState(trx, t.params, (err, records) => {
-                    t.assertions.onRemoved(err, records);
-                    done();
+                getTokenBalances(trx, t.params, (err, balances) => {
+                  t.assertions.onInitialBalances(err, balances);
+                  processTokensTransferredLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+                    getState(trx, t.params, (err, records) => {
+                      t.assertions.onRemoved(err, records);
+                      getTokenBalances(trx, t.params, (err, balances) => {
+                        t.assertions.onRemovedBalances(err, balances);
+                        done();
+                      });
+                    });
                   });
                 });
               });
@@ -63,6 +70,30 @@ describe("blockchain/log-processors/tokens-transferred", () => {
         assert.deepEqual(records, []);
       },
       onUpdatedPositions: (err, records) => {},
+      onInitialBalances: (err, balances) => {
+        assert.isNull(err);
+        assert.deepEqual(balances, [{
+          token: "TOKEN_ADDRESS",
+          owner: "FROM_ADDRESS",
+          balance: 1,
+        }, {
+          token: "TOKEN_ADDRESS",
+          owner: "TO_ADDRESS",
+          balance: 9000,
+        }]);
+      },
+      onRemovedBalances: (err, balances) => {
+        assert.isNull(err);
+        assert.deepEqual(balances, [{
+          token: "TOKEN_ADDRESS",
+          owner: "FROM_ADDRESS",
+          balance: 9001,
+        }, {
+          token: "TOKEN_ADDRESS",
+          owner: "TO_ADDRESS",
+          balance: 0,
+        }]);
+      },
     },
   });
   test({
@@ -125,6 +156,12 @@ describe("blockchain/log-processors/tokens-transferred", () => {
       onRemoved: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, []);
+      },
+      onInitialBalances: (err, balances) => {
+        assert.isNull(err);
+      },
+      onRemovedBalances: (err, balances) => {
+        assert.isNull(err);
       },
       onUpdatedPositions: (err, positions) => {
         assert.isNull(err);

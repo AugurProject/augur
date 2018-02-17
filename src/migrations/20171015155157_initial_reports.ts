@@ -11,6 +11,8 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.string("initialReporter").notNullable();
       table.boolean("redeemed").notNullable();
       table.integer("payoutID").notNullable();
+
+      table.index(["reporter"]);
     });
   });
 };

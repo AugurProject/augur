@@ -5,18 +5,18 @@ import { getMarketsWithReportingState, reshapeDisputeTokensRowToUIDisputeTokenIn
 
 export function getDisputeTokens(db: Knex, universe: Address, account: Address, disputeTokenState: DisputeTokenState|null, callback: (err: Error|null, result?: any) => void): void {
     if (universe == null || account == null) return callback(new Error("Must provide both universe and account"));
-    const query: Knex.QueryBuilder = getMarketsWithReportingState(db, ["payouts.*", "disputes.crowdsourcerID as disputeToken", "disputes.claimed", "disputes.amountStaked", "market_state.reportingState"]).from("disputes");
-    query.sum("disputes.amountStaked as amountStaked").groupBy("disputes.crowdsourcerID");
+    const query: Knex.QueryBuilder = getMarketsWithReportingState(db, ["payouts.*", "disputes.crowdsourcerID as disputeToken", "balances.balance", "market_state.reportingState"]).from("disputes");
     query.join("markets", "markets.marketID", "crowdsourcers.marketID");
     query.join("crowdsourcers", "crowdsourcers.crowdsourcerID", "disputes.crowdsourcerID");
     query.join("payouts", "payouts.payoutID", "crowdsourcers.payoutID");
-    query.where("universe", universe).where("disputes.reporter", account);
+    query.join("balances", "crowdsourcers.crowdsourcerID", "balances.token");
+    query.where("universe", universe).where("disputes.reporter", account).where("balances.balance", ">", 0).where("balances.owner", account);
     if ( disputeTokenState == null || disputeTokenState === DisputeTokenState.ALL ) {
       // currently, do nothing, leaving this in case we want to flavor how we group or present response
     } else if ( disputeTokenState === DisputeTokenState.UNFINALIZED ) {
       query.whereNot("market_state.reportingState", ReportingState.FINALIZED);
     } else if ( disputeTokenState === DisputeTokenState.UNCLAIMED ) {
-      query.where("payouts.winning", 1).where("disputes.claimed", 0);
+      query.where("payouts.winning", 1);
     } else {
       return callback(new Error("Invalid disputeTokenState"));
     }
