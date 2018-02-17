@@ -25,42 +25,33 @@ export default class ReportingReportForm extends Component {
     super(props)
 
     this.state = {
-      validations: {},
-      selectedOutcome: '',
+      outcomes: []
     }
   }
 
-  validateIsMarketValid(validations, updateState, isMarketValid, selectedOutcome) {
+  validateIsMarketValid(validations, isMarketValid, selectedOutcome) {
     const updatedValidations = { ...validations }
-    updatedValidations.isMarketValid = true
+    updatedValidations.selectedOutcome = true
 
-    if (isMarketValid) {
-      if (!updatedValidations.hasOwnProperty('selectedOutcome')) {
-        updatedValidations.selectedOutcome = ''
-      }
-    } else if (updatedValidations.hasOwnProperty('selectedOutcome') && updatedValidations.selectedOutcome === '') {
-      delete updatedValidations.selectedOutcome
-    }
-
-    this.setState({
+    this.props.updateState({
       validations: updatedValidations,
       isMarketValid,
       selectedOutcome: '',
     })
   }
 
-  validateOutcome(validations, updateState, selectedOutcome) {
+  validateOutcome(validations, selectedOutcome) {
     const updatedValidations = { ...validations }
     updatedValidations.selectedOutcome = true
 
-    this.setState({
+    this.props.updateState({
       validations: updatedValidations,
       selectedOutcome,
       isMarketValid: true
     })
   }
 
-  validateNumber(validations, updateState, fieldName, value, humanName, min, max) {
+  validateNumber(validations, fieldName, value, humanName, min, max) {
     const updatedValidations = { ...validations }
 
     const minValue = parseFloat(min)
@@ -76,12 +67,12 @@ export default class ReportingReportForm extends Component {
         break
       default:
         updatedValidations[fieldName] = true
+        updatedValidations.selectedOutcome = true
         break
     }
 
-    this.setState({
+    this.props.updateState({
       validations: updatedValidations,
-      [fieldName]: value,
       selectedOutcome: value,
       isMarketValid: true,
     })
@@ -102,9 +93,9 @@ export default class ReportingReportForm extends Component {
           <label>
             <span>Outcome</span>
           </label>
-          { s.validations.hasOwnProperty('selectedOutcome') && s.validations.selectedOutcome.length &&
+          { p.validations.hasOwnProperty('selectedOutcome') && p.validations.selectedOutcome.length &&
             <span className={FormStyles.Form__error}>
-              {InputErrorIcon}{ s.validations.selectedOutcome }
+              {InputErrorIcon}{ p.validations.selectedOutcome }
             </span>
           }
         </li>
@@ -114,8 +105,8 @@ export default class ReportingReportForm extends Component {
               { s.outcomes && s.outcomes.sort((a, b) => b.stake - a.stake).map(outcome => (
                 <li key={outcome.id}>
                   <button
-                    className={classNames({ [`${FormStyles.active}`]: s.selectedOutcome === outcome.name })}
-                    onClick={(e) => { this.validateOutcome(s.validations, p.updateState, outcome.name) }}
+                    className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.name })}
+                    onClick={(e) => { this.validateOutcome(p.validations, outcome.name) }}
                   >{outcome.name}
                   </button>
                 </li>
@@ -123,8 +114,8 @@ export default class ReportingReportForm extends Component {
               }
               <li className={FormStyles['Form__radio-buttons--per-line']}>
                 <button
-                  className={classNames({ [`${FormStyles.active}`]: s.isMarketValid === false })}
-                  onClick={(e) => { this.validateIsMarketValid(s.validations, p.updateState, false, s.selectedOutcome) }}
+                  className={classNames({ [`${FormStyles.active}`]: p.isMarketValid === false })}
+                  onClick={(e) => { this.validateIsMarketValid(p.validations, false, p.selectedOutcome) }}
                 >Market is invalid
                 </button>
               </li>
@@ -136,24 +127,24 @@ export default class ReportingReportForm extends Component {
             <ul className={FormStyles['Form__radio-buttons--per-line']}>
               <li>
                 <button
-                  className={classNames({ [`${FormStyles.active}`]: s.selectedOutcome !== '' })}
-                  onClick={(e) => { this.validateOutcome(s.validations, p.updateState, 'selectedOutcome') }}
+                  className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome !== '' })}
+                  onClick={(e) => { this.validateOutcome(p.validations, 'selectedOutcome') }}
                 />
                 <input
                   id="sr__input--outcome-scalar"
                   type="number"
-                  min={p.market.minValue}
-                  max={p.market.maxValue}
-                  placeholder="0"
-                  value={s.selectedOutcome}
-                  className={classNames({ [`${FormStyles['Form__error--field']}`]: s.validations.hasOwnProperty('selectedOutcome') && s.validations.selectedOutcome.length })}
-                  onChange={(e) => { this.validateNumber(s.validations, p.updateState, 'selectedOutcome', e.target.value, 'outcome', p.market.minValue, p.market.maxValue) }}
+                  min={p.market.minPrice}
+                  max={p.market.maxPrice}
+                  placeholder={p.market.minPrice}
+                  value={p.selectedOutcome}
+                  className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('selectedOutcome') && p.validations.selectedOutcome.length })}
+                  onChange={(e) => { this.validateNumber(p.validations, 'selectedOutcome', e.target.value, 'outcome', p.market.minPrice, p.market.maxPrice) }}
                 />
               </li>
               <li className={FormStyles['Form__radio-buttons--per-line']}>
                 <button
-                  className={classNames({ [`${FormStyles.active}`]: s.isMarketValid === false })}
-                  onClick={(e) => { this.validateIsMarketValid(s.validations, p.updateState, false, s.selectedOutcome) }}
+                  className={classNames({ [`${FormStyles.active}`]: p.isMarketValid === false })}
+                  onClick={(e) => { this.validateIsMarketValid(p.validations, false, p.selectedOutcome) }}
                 >Market is invalid
                 </button>
               </li>
@@ -163,9 +154,9 @@ export default class ReportingReportForm extends Component {
         <li className={Styles.ReportingReport__RepLabel}>
           <label>
             <span htmlFor="sr__input--stake">Required Stake</span>
-            { s.validations.hasOwnProperty('stake') && s.validations.stake.length &&
+            { p.validations.hasOwnProperty('stake') && p.validations.stake.length &&
               <span className={FormStyles.Form__error}>
-                { s.validations.stake }
+                { p.validations.stake }
               </span>
             }
           </label>

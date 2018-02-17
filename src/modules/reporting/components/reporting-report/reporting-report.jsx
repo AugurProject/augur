@@ -28,10 +28,12 @@ export default class ReportingReport extends Component {
       currentStep: 0,
       isMarketValid: null,
       selectedOutcome: '',
+      // need to get value from augur-node
       stake: '0',
       validations: {
-        isMarketValid: false,
-        stake: false,
+        selectedOutcome: false,
+        // have to make configurable for dispute reporting forms
+        stake: true,
       }
     }
 
