@@ -7,12 +7,11 @@
 }
 
 .Form__error {
-  background-color: @color-purple;
-  border-radius: 3px;
-  color: @color-white;
-  font-size: @font-size-extra-small;
-  line-height: @font-size-extra-small;
-  padding: 0.2rem 0.5rem;
+  color: @color-negative;
+  display: inline-block;
+  font-size: 1rem;
+  line-height: 1rem;
+  margin-right: 1.5rem;
   text-transform: none;
   white-space: nowrap;
 }
@@ -26,6 +25,19 @@
   top: -3px;
 }
 
+.Form__error > svg,
+.Form__error--field-50 > svg {
+  margin: 0 0.2rem;
+  max-height: 1rem;
+  max-width: 1rem;
+  vertical-align: top;
+}
+
+.Form__error--field {
+  border-color: @color-negative;
+  border-width: 0.1rem;
+}
+
 .Form__fields {
   align-content: flex-start;
   display: flex;
@@ -35,7 +47,7 @@
   padding: 0 2rem;
 
   > li {
-    margin-bottom: 3.7rem;
+    margin-bottom: 1.7rem;
     position: relative;
     width: 100%;
 
@@ -250,6 +262,11 @@
     left: 0;
     position: relative;
     top: auto;
+  }
+
+  .Form__error--field {
+    border-color: @color-negative;
+    border-width: 0.1rem;
   }
 
   .Form__error + .Form__error--field-50 {

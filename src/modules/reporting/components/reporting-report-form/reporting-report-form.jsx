@@ -1,201 +1,179 @@
 /* eslint jsx-a11y/label-has-for: 0 */
 
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import BigNumber from 'bignumber.js'
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-report-form/reporting-report-form.styles'
+import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons/icons'
 
-const validateIsMarketValid = (validations, updateState, isMarketValid) => {
-  const updatedValidations = { ...validations }
-  updatedValidations.isMarketValid = true
+export default class ReportingReportForm extends Component {
 
-  if (isMarketValid) {
-    if (!updatedValidations.hasOwnProperty('selectedOutcome')) {
-      updatedValidations.selectedOutcome = false
+  static propTypes = {
+    market: PropTypes.object.isRequired,
+    updateState: PropTypes.func.isRequired,
+    validations: PropTypes.object.isRequired,
+    selectedOutcome: PropTypes.string.isRequired,
+    stake: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+    isMarketValid: PropTypes.bool
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      validations: {},
+      selectedOutcome: '',
     }
-  } else if (updatedValidations.hasOwnProperty('selectedOutcome') && updatedValidations.selectedOutcome === false) {
-    delete updatedValidations.selectedOutcome
   }
 
-  updateState({
-    validations: updatedValidations,
-    isMarketValid
-  })
-}
+  validateIsMarketValid(validations, updateState, isMarketValid, selectedOutcome) {
+    const updatedValidations = { ...validations }
+    updatedValidations.isMarketValid = true
 
-const validateOutcome = (validations, updateState, selectedOutcome) => {
-  const updatedValidations = { ...validations }
-  updatedValidations.selectedOutcome = true
-
-  updateState({
-    validations: updatedValidations,
-    selectedOutcome
-  })
-}
-
-const validateNumber = (validations, updateState, fieldName, value, humanName, min, max) => {
-  const updatedValidations = { ...validations }
-
-  const minValue = parseFloat(min)
-  const maxValue = parseFloat(max)
-
-  switch (true) {
-    case value === '':
-      updatedValidations[fieldName] = `The ${humanName} field is required.`
-      break
-    case (value > maxValue || value < minValue):
-      updatedValidations[fieldName] = `Please enter a ${humanName} between ${min} and ${max}.`
-      break
-    default:
-      updatedValidations[fieldName] = true
-      break
-  }
-
-  updateState({
-    validations: updatedValidations,
-    [fieldName]: value
-  })
-}
-
-const validateStake = (validations, updateState, rawStake) => {
-  const updatedValidations = { ...validations }
-  const minStake = new BigNumber(0)
-
-  let stake = rawStake
-
-  if (stake !== '' && !(stake instanceof BigNumber)) {
-    stake = new BigNumber(rawStake)
-    stake = stake.round(4)
-  }
-
-  switch (true) {
-    case stake === '':
-      updatedValidations.stake = `The stake field is required.`
-      break
-    case stake <= minStake:
-      updatedValidations.stake = `Please enter a stake greater than 0.`
-      break
-    default:
-      updatedValidations.stake = true
-      break
-  }
-
-  updateState({
-    validations: updatedValidations,
-    stake
-  })
-}
-
-const ReportingReportForm = p => (
-  <ul className={classNames(Styles.ReportingReportForm__fields, FormStyles.Form__fields)}>
-    { p.market.extraInfo &&
-      <li>
-        <label>
-          <span>Market Details</span>
-        </label>
-        <p>{ p.market.extraInfo }</p>
-      </li>
+    if (isMarketValid) {
+      if (!updatedValidations.hasOwnProperty('selectedOutcome')) {
+        updatedValidations.selectedOutcome = ''
+      }
+    } else if (updatedValidations.hasOwnProperty('selectedOutcome') && updatedValidations.selectedOutcome === '') {
+      delete updatedValidations.selectedOutcome
     }
-    <li>
-      <label>
-        <span>Resolution Source</span>
-      </label>
-      <p>Outcome will be detailed on a public website: <a href="http://www.example.com" target="_blank" rel="noopener noreferrer">http://www.example.com</a></p>
-    </li>
-    <li>
-      <label>
-        <span>Is Market Valid?</span>
-      </label>
-      <ul className={FormStyles['Form__radio-buttons--per-line']}>
+
+    this.setState({
+      validations: updatedValidations,
+      isMarketValid,
+      selectedOutcome: '',
+    })
+  }
+
+  validateOutcome(validations, updateState, selectedOutcome) {
+    const updatedValidations = { ...validations }
+    updatedValidations.selectedOutcome = true
+
+    this.setState({
+      validations: updatedValidations,
+      selectedOutcome,
+      isMarketValid: true
+    })
+  }
+
+  validateNumber(validations, updateState, fieldName, value, humanName, min, max) {
+    const updatedValidations = { ...validations }
+
+    const minValue = parseFloat(min)
+    const maxValue = parseFloat(max)
+    const valueValue = parseFloat(value)
+
+    switch (true) {
+      case value === '':
+        updatedValidations[fieldName] = `The ${humanName} field is required.`
+        break
+      case (valueValue > maxValue || valueValue < minValue):
+        updatedValidations[fieldName] = `Please enter a ${humanName} between ${min} and ${max}.`
+        break
+      default:
+        updatedValidations[fieldName] = true
+        break
+    }
+
+    this.setState({
+      validations: updatedValidations,
+      [fieldName]: value,
+      selectedOutcome: value,
+      isMarketValid: true,
+    })
+  }
+
+  render() {
+    const p = this.props
+    const s = this.state
+
+    s.outcomes = p.market ? p.market.outcomes.slice() : []
+    if (p.market && p.market.marketType === BINARY && p.market.outcomes.length === 1) {
+      s.outcomes.push({ id: 0, name: 'No' })
+    }
+
+    return (
+      <ul className={classNames(Styles.ReportingReportForm__fields, FormStyles.Form__fields)}>
         <li>
-          <button
-            className={classNames({ [`${FormStyles.active}`]: p.isMarketValid === true })}
-            onClick={(e) => { validateIsMarketValid(p.validations, p.updateState, true) }}
-          >Yes
-          </button>
-        </li>
-        <li>
-          <button
-            className={classNames({ [`${FormStyles.active}`]: p.isMarketValid === false })}
-            onClick={(e) => { validateIsMarketValid(p.validations, p.updateState, false) }}
-          >No
-          </button>
-        </li>
-      </ul>
-    </li>
-    { p.isMarketValid && (p.market.type === BINARY || p.market.type === CATEGORICAL) &&
-      <li>
-        <label>
-          <span>Outcome</span>
-        </label>
-        <ul className={FormStyles['Form__radio-buttons--per-line']}>
-          { p.market.outcomes && p.market.outcomes.sort((a, b) => b.stake - a.stake).map(outcome => (
-            <li key={outcome.id}>
-              <button
-                className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.name })}
-                onClick={(e) => { validateOutcome(p.validations, p.updateState, outcome.name) }}
-              >{outcome.name} &nbsp;|&nbsp; {outcome.stake} REP
-              </button>
-            </li>
-          ))
-          }
-        </ul>
-      </li>
-    }
-    { p.isMarketValid && p.market.type === SCALAR &&
-      <li className={FormStyles['field--short']}>
-        <label>
-          <span htmlFor="sr__input--outcome-scalar">Outcome</span>
-          { p.validations.hasOwnProperty('selectedOutcome') && p.validations.selectedOutcome.length &&
+          <label>
+            <span>Outcome</span>
+          </label>
+          { s.validations.hasOwnProperty('selectedOutcome') && s.validations.selectedOutcome.length &&
             <span className={FormStyles.Form__error}>
-              { p.validations.selectedOutcome }
+              {InputErrorIcon}{ s.validations.selectedOutcome }
             </span>
           }
-        </label>
-        <input
-          id="sr__input--outcome-scalar"
-          type="number"
-          min={p.market.minValue}
-          max={p.market.maxValue}
-          placeholder="0"
-          value={p.selectedOutcome}
-          onChange={(e) => { validateNumber(p.validations, p.updateState, 'selectedOutcome', e.target.value, 'outcome', p.market.minValue, p.market.maxValue) }}
-        />
-      </li>
-    }
-    <li className={FormStyles['field--short']}>
-      <label>
-        <span htmlFor="sr__input--stake">Stake</span>
-        { p.validations.hasOwnProperty('stake') && p.validations.stake.length &&
-          <span className={FormStyles.Form__error}>
-            { p.validations.stake }
-          </span>
+        </li>
+        { (p.market.marketType === BINARY || p.market.marketType === CATEGORICAL) &&
+          <li>
+            <ul className={FormStyles['Form__radio-buttons--per-line']}>
+              { s.outcomes && s.outcomes.sort((a, b) => b.stake - a.stake).map(outcome => (
+                <li key={outcome.id}>
+                  <button
+                    className={classNames({ [`${FormStyles.active}`]: s.selectedOutcome === outcome.name })}
+                    onClick={(e) => { this.validateOutcome(s.validations, p.updateState, outcome.name) }}
+                  >{outcome.name}
+                  </button>
+                </li>
+              ))
+              }
+              <li className={FormStyles['Form__radio-buttons--per-line']}>
+                <button
+                  className={classNames({ [`${FormStyles.active}`]: s.isMarketValid === false })}
+                  onClick={(e) => { this.validateIsMarketValid(s.validations, p.updateState, false, s.selectedOutcome) }}
+                >Market is invalid
+                </button>
+              </li>
+            </ul>
+          </li>
         }
-      </label>
-      <input
-        id="sr__input--stake"
-        type="number"
-        min="0"
-        placeholder="0.0000 REP"
-        value={p.stake instanceof BigNumber ? p.stake.toNumber() : p.stake}
-        onChange={(e) => { validateStake(p.validations, p.updateState, e.target.value) }}
-      />
-    </li>
-  </ul>
-)
-
-ReportingReportForm.propTypes = {
-  market: PropTypes.object.isRequired,
-  updateState: PropTypes.func.isRequired,
-  validations: PropTypes.object.isRequired,
-  selectedOutcome: PropTypes.string.isRequired,
-  stake: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-  isMarketValid: PropTypes.bool,
+        { p.market.marketType === SCALAR &&
+          <li className={FormStyles['field--short']}>
+            <ul className={FormStyles['Form__radio-buttons--per-line']}>
+              <li>
+                <button
+                  className={classNames({ [`${FormStyles.active}`]: s.selectedOutcome !== '' })}
+                  onClick={(e) => { this.validateOutcome(s.validations, p.updateState, 'selectedOutcome') }}
+                />
+                <input
+                  id="sr__input--outcome-scalar"
+                  type="number"
+                  min={p.market.minValue}
+                  max={p.market.maxValue}
+                  placeholder="0"
+                  value={s.selectedOutcome}
+                  className={classNames({ [`${FormStyles['Form__error--field']}`]: s.validations.hasOwnProperty('selectedOutcome') && s.validations.selectedOutcome.length })}
+                  onChange={(e) => { this.validateNumber(s.validations, p.updateState, 'selectedOutcome', e.target.value, 'outcome', p.market.minValue, p.market.maxValue) }}
+                />
+              </li>
+              <li className={FormStyles['Form__radio-buttons--per-line']}>
+                <button
+                  className={classNames({ [`${FormStyles.active}`]: s.isMarketValid === false })}
+                  onClick={(e) => { this.validateIsMarketValid(s.validations, p.updateState, false, s.selectedOutcome) }}
+                >Market is invalid
+                </button>
+              </li>
+            </ul>
+          </li>
+        }
+        <li className={Styles.ReportingReport__RepLabel}>
+          <label>
+            <span htmlFor="sr__input--stake">Required Stake</span>
+            { s.validations.hasOwnProperty('stake') && s.validations.stake.length &&
+              <span className={FormStyles.Form__error}>
+                { s.validations.stake }
+              </span>
+            }
+          </label>
+        </li>
+        <li className={Styles.ReportingReport__RepAmount}>
+          <span>{p.stake} REP</span>
+        </li>
+      </ul>
+    )
+  }
 }
-
-export default ReportingReportForm
