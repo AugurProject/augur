@@ -28,8 +28,11 @@ export default class ReportingReport extends Component {
       currentStep: 0,
       isMarketValid: null,
       selectedOutcome: '',
-      // need to get value from augur-node
-      stake: '0',
+      // false if stake input is needed, needs to be dynamic
+      displayStakeOnly: true,
+      // need to get value from augur-node for
+      // designated reporter or initial reporter (open reporting)
+      stake: '',
       validations: {
         selectedOutcome: false,
         // have to make configurable for dispute reporting forms
@@ -95,6 +98,7 @@ export default class ReportingReport extends Component {
                 market={p.market}
                 updateState={this.updateState}
                 isMarketValid={s.isMarketValid}
+                displayStakeOnly={s.displayStakeOnly}
                 selectedOutcome={s.selectedOutcome}
                 stake={s.stake}
                 validations={s.validations}
