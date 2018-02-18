@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Helmet } from 'react-helmet'
+import { augur } from 'services/augurjs'
 
+import { formatEtherEstimate } from 'utils/format-number'
 import MarketPreview from 'modules/market/components/market-preview/market-preview'
 import ReportingReportForm from 'modules/reporting/components/reporting-report-form/reporting-report-form'
 import ReportingReportConfirm from 'modules/reporting/components/reporting-report-confirm/reporting-report-confirm'
@@ -13,6 +15,8 @@ export default class ReportingReport extends Component {
 
   static propTypes = {
     market: PropTypes.object.isRequired,
+    isOpenReporting: PropTypes.bool.isRequired,
+    universe: PropTypes.string.isRequired,
   }
 
   constructor(props) {
@@ -26,13 +30,22 @@ export default class ReportingReport extends Component {
       validations: {
         isMarketValid: false,
         stake: false,
-      }
+      },
+      reporterGasCost: null,
+      designatedReportNoShowReputationBond: null,
     }
 
     this.prevPage = this.prevPage.bind(this)
     this.nextPage = this.nextPage.bind(this)
     this.updateState = this.updateState.bind(this)
   }
+
+  componentWillMount() {
+    if (this.props.isOpenReporting) {
+      this.calculateMarketCreationCosts()
+    }
+  }
+
 
   prevPage() {
     this.setState({ currentStep: this.state.currentStep <= 0 ? 0 : this.state.currentStep - 1 })
@@ -44,6 +57,18 @@ export default class ReportingReport extends Component {
 
   updateState(newState) {
     this.setState(newState)
+  }
+
+  calculateMarketCreationCosts() {
+    // TODO: might have short-cut, reporter gas cost (creationFee) and designatedReportStake is on market from augur-node
+    augur.createMarket.getMarketCreationCostBreakdown({ universe: this.props.universe }, (err, marketCreationCostBreakdown) => {
+      if (err) return console.error(err)
+
+      this.setState({
+        designatedReportNoShowReputationBond: formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond),
+        reporterGasCost: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
+      })
+    })
   }
 
   render() {
@@ -80,6 +105,9 @@ export default class ReportingReport extends Component {
               isMarketValid={s.isMarketValid}
               selectedOutcome={s.selectedOutcome}
               stake={s.stake}
+              designatedReportNoShowReputationBond={s.designatedReportNoShowReputationBond}
+              reporterGasCost={s.reporterGasCost}
+              isOpenReporting={p.isOpenReporting}
             />
           }
           <div className={FormStyles.Form__navigation}>

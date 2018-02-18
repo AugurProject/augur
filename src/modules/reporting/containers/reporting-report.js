@@ -5,8 +5,12 @@ import ReportingReport from 'modules/reporting/components/reporting-report/repor
 
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
-  market
+  market,
+  isOpenReporting: false, // need to get reporting state to compare to OPEN REPORTING
+  // might need to call get market cost breakdown, it's on market from augur-node
+  universe: state.universe.id
 })
+
 
 // const mapDispatchToProps = dispatch => ({
 // })

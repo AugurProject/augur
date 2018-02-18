@@ -28,11 +28,16 @@ const ReportingReportConfirm = p => (
             </li>
             <li>
               <span>Gas</span>
-              <span>0.0023 ETH (2.8%)</span>
+              <span>-- ETH</span>
             </li>
           </ul>
         </div>
       </div>
+      { p.isOpenReporting && p.designatedReportNoShowReputationBond && p.reporterGasCost &&
+        <div className={ConfirmStyles.Confirm__note_text}>
+        If your report is accepted as the winning outcome, you will receive at least {p.designatedReportNoShowReputationBond.formatted} REP and {p.reporterGasCost.formatted} ETH
+        </div>
+      }
     </div>
   </article>
 )
@@ -42,6 +47,9 @@ ReportingReportConfirm.propTypes = {
   selectedOutcome: PropTypes.string.isRequired,
   stake: PropTypes.string.isRequired,
   isMarketValid: PropTypes.bool,
+  designatedReportNoShowReputationBond: PropTypes.string,
+  reporterGasCost: PropTypes.string,
+  isOpenReporting: PropTypes.bool.isRequired,
 }
 
 export default ReportingReportConfirm
