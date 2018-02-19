@@ -4,12 +4,12 @@ import { ErrorCallback, FormattedEventLog } from "../types";
 import { logProcessors } from "./log-processors";
 import { processLog } from "./process-logs";
 import { augurEmitter } from "../events";
-import { processQueue, LOG_PRIORITY } from "./process-queue";
+import { logQueueAdd, LOG_PRIORITY } from "./process-queue";
 
 export function makeLogListener(db: Knex, augur: Augur, contractName: string, eventName: string) {
   return (log: FormattedEventLog): void => {
     console.log("log queued:", contractName, eventName, log);
-    processQueue.push( (callback: ErrorCallback) => {
+    logQueueAdd(log.blockNumber, (callback: ErrorCallback) => {
       console.log("log processing:", contractName, eventName, log);
       const logProcessor = logProcessors[contractName][eventName];
       if (!logProcessor.noAutoEmit) augurEmitter.emit(eventName, log);
@@ -20,6 +20,6 @@ export function makeLogListener(db: Knex, augur: Augur, contractName: string, ev
           trx.commit();
         }
       })).asCallback(callback);
-  }, LOG_PRIORITY);
+    });
   };
 }

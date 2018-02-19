@@ -6,7 +6,7 @@ import { augurEmitter } from "../events";
 import { logError } from "../utils/log-error";
 import { Block, BlocksRow, AsyncCallback, ErrorCallback, MarketsContractAddressRow } from "../types";
 import { updateMarketState } from "./log-processors/database";
-import { processQueue, BLOCK_PRIORITY } from "./process-queue";
+import { processQueue, BLOCK_PRIORITY, logQueueProcess } from "./process-queue";
 import { QueryBuilder } from "knex";
 import { getMarketsWithReportingState } from "../server/getters/database";
 
@@ -49,6 +49,22 @@ export function processBlockByNumber(db: Knex, augur: Augur, blockNumber: number
   });
 }
 
+function insertBlockRow(trx: Knex.Transaction, blockNumber: number, blockHash: string, timestamp: number, callback: ErrorCallback) {
+  trx("blocks").where({ blockNumber }).asCallback((err: Error|null, blocksRows?: Array<BlocksRow>): void => {
+    if (err) {
+      trx.rollback();
+      return callback(err);
+    }
+    let query: Knex.QueryBuilder;
+    if (!blocksRows || !blocksRows.length) {
+      query = trx.transacting(trx).insert({ blockNumber, blockHash, timestamp }).into("blocks");
+    } else {
+      query = trx("blocks").transacting(trx).where({ blockNumber }).update({ blockHash, timestamp });
+    }
+    query.asCallback(callback);
+  });
+}
+
 function _processBlock(db: Knex, augur: Augur, block: Block, callback: ErrorCallback): void {
   if (!block || !block.timestamp) return logError(new Error(JSON.stringify(block)));
   const blockNumber = parseInt(block.number, 16);
@@ -56,35 +72,23 @@ function _processBlock(db: Knex, augur: Augur, block: Block, callback: ErrorCall
   const timestamp = getOverrideTimestamp() || parseInt(block.timestamp, 16);
   console.log("new block:", blockNumber, timestamp);
   db.transaction((trx: Knex.Transaction): void => {
-    trx("blocks").where({ blockNumber }).asCallback((err: Error|null, blocksRows?: Array<BlocksRow>): void => {
+    insertBlockRow(trx, blockNumber, blockHash, timestamp, (err: Error|null) => {
       if (err) {
-        trx.rollback();
-        return logError(err);
-      }
-      let query: Knex.QueryBuilder;
-      if (!blocksRows || !blocksRows.length) {
-        query = db.transacting(trx).insert({ blockNumber, blockHash, timestamp }).into("blocks");
+        trx.rollback(err);
+        logError(err);
       } else {
-        query = db("blocks").transacting(trx).where({ blockNumber }).update({ blockHash, timestamp });
-      }
-      query.asCallback((err: Error|null): void => {
-        if (err) {
-          trx.rollback(err);
-          logError(err);
-        } else {
-          advanceTime(trx, augur, blockNumber, timestamp, (err: Error|null) => {
+        advanceTime(trx, augur, blockNumber, timestamp, (err: Error|null) => {
+          logQueueProcess(blockNumber, (err: Error|null) => {
             if (err != null) {
               trx.rollback(err);
               logError(err);
-              callback(err);
             } else {
               trx.commit();
-              console.log("finished block:", blockNumber, timestamp);
-              callback(null);
             }
+            callback(err);
           });
-        }
-      });
+        });
+      }
     });
   });
 }
