@@ -20,7 +20,8 @@ export default class ReportingDispute extends Component {
     navigateToAccountDepositHandler: PropTypes.func.isRequired,
     isConnected: PropTypes.bool.isRequired,
     isMarketsLoaded: PropTypes.bool.isRequired,
-    loadMarkets: PropTypes.func.isRequired
+    loadMarkets: PropTypes.func.isRequired,
+    disputeRound: PropTypes.string.isRequired,
   }
 
   componentWillMount() {
@@ -53,6 +54,7 @@ export default class ReportingDispute extends Component {
               (<DisputeMarketCard
                 key={market.id}
                 market={market}
+                disputeRound={p.disputeRound}
                 isMobile={p.isMobile}
                 location={p.location}
                 history={p.history}
