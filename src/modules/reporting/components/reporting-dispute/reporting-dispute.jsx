@@ -65,6 +65,14 @@ export default class ReportingDispute extends Component {
             message="There are currently no markets available for dispute."
           />
         }
+        <ReportingHeader
+          heading="Dispute"
+        />
+        {this.props.doesUserHaveRep || <ReportDisputeNoRepState
+          btnText="Add Funds"
+          message="You have 0 REP available. Add funds to dispute markets or purchase participation tokens."
+          onClickHandler={this.props.navigateToAccountDepositHandler}
+        />}
       </section>
     )
   }

@@ -25,10 +25,10 @@ const Routes = p => (
     <AuthenticatedRoute path={makePath(VIEWS.MY_MARKETS)} component={COMPONENTS.Portfolio} />
     <AuthenticatedRoute path={makePath(VIEWS.WATCHLIST)} component={COMPONENTS.Portfolio} />
     <AuthenticatedRoute path={makePath(VIEWS.PORTFOLIO_TRANSACTIONS)} component={COMPONENTS.Portfolio} />
+    <AuthenticatedRoute path={makePath(VIEWS.PORTFOLIO_REPORTS)} component={COMPONENTS.Portfolio} />
     <AuthenticatedRoute path={makePath(VIEWS.ACCOUNT)} component={COMPONENTS.Account} />
     <AuthenticatedRoute path={makePath(VIEWS.ACCOUNT_DEPOSIT)} component={COMPONENTS.Account} />
     <AuthenticatedRoute path={makePath(VIEWS.ACCOUNT_WITHDRAW)} component={COMPONENTS.Account} />
-    <AuthenticatedRoute path={makePath(VIEWS.ACCOUNT_EXPORT)} component={COMPONENTS.Account} />
     <AuthenticatedRoute path={makePath(VIEWS.CREATE_MARKET)} component={COMPONENTS.CreateMarket} />
     <AuthenticatedRoute path={makePath(VIEWS.REPORTING_DISPUTE)} component={COMPONENTS.Reporting} />
     <AuthenticatedRoute path={makePath(VIEWS.REPORTING_REPORTING)} component={COMPONENTS.Reporting} />
