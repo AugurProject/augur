@@ -13,7 +13,6 @@ import { processInitialReportSubmittedLog, processInitialReportSubmittedLogRemov
 import { processMarketFinalizedLog, processMarketFinalizedLogRemoval } from "./market-finalized";
 import { processUniverseCreatedLog, processUniverseCreatedLogRemoval } from "./universe-created";
 import { processFeeWindowCreatedLog, processFeeWindowCreatedLogRemoval } from "./fee-window-created";
-import { processTransferLog, processTransferLogRemoval } from "./token/transfer";
 import { processApprovalLog, processApprovalLogRemoval } from "./token/approval";
 import { processMintLog, processMintLogRemoval } from "./token/mint";
 import { processBurnLog, processBurnLogRemoval } from "./token/burn";
@@ -114,8 +113,8 @@ export const logProcessors: LogProcessors = {
   },
   LegacyReputationToken: {
     Transfer: {
-      add: processTransferLog,
-      remove: processTransferLogRemoval,
+      add: processTokensTransferredLog,
+      remove: processTokensTransferredLogRemoval,
     },
     Approval: {
       add: processApprovalLog,
@@ -132,8 +131,8 @@ export const logProcessors: LogProcessors = {
   },
   Cash: {
     Transfer: {
-      add: processTransferLog,
-      remove: processTransferLogRemoval,
+      add: processTokensTransferredLog,
+      remove: processTokensTransferredLogRemoval,
     },
     Approval: {
       add: processApprovalLog,
