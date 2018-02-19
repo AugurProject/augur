@@ -17,6 +17,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
     'getMarkets',
     {
       reportingState: constants.REPORTING_STATE.PRE_REPORTING,
+      sortBy: 'endDate',
       ...args,
     },
     (err, result) => {
@@ -33,6 +34,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
     'getMarkets',
     {
       reportingState: constants.REPORTING_STATE.DESIGNATED_REPORTING,
+      sortBy: 'endDate',
       ...args,
     },
     (err, result) => {
@@ -49,6 +51,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
     'getMarkets',
     {
       reportingState: constants.REPORTING_STATE.OPEN_REPORTING,
+      sortBy: 'endDate',
       ...args,
     },
     (err, result) => {
