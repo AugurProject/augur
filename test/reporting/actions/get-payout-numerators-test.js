@@ -2,7 +2,7 @@ import { describe, it } from 'mocha'
 import { assert } from 'chai'
 import proxyquire from 'proxyquire'
 
-import { getPayoutNumerators } from 'modules/reporting/actions/get-payout-numerators'
+import { getPayoutNumerators } from 'modules/reporting/selectors/get-payout-numerators'
 
 describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
   proxyquire.noPreserveCache().noCallThru()
