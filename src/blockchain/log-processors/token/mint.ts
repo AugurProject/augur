@@ -22,7 +22,6 @@ export function processMintLog(db: Knex, augur: Augur, trx: Knex.Transaction, lo
       (next: AsyncCallback): void => increaseTokenSupply(db, augur, trx, log.token || log.address, Number(log.amount || log.value), next),
       (next: AsyncCallback): void => increaseTokenBalance(db, augur, trx, log.token || log.address, log.target, Number(log.amount || log.value), next),
     ], callback);
-    ;
   });
 }
 

@@ -13,6 +13,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       endBlockNumber: 1500001,
       endTime: 1509065473,
       fees: 0,
+      feeToken: "FEE_TOKEN_1",
     }, {
       feeWindow: "0x2000000000000000000000000000000000000000",
       feeWindowID: 457,
@@ -22,6 +23,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       endBlockNumber: null,
       endTime: 1511657473,
       fees: 0,
+      feeToken: "FEE_TOKEN_2",
     }];
     return knex.batchInsert("fee_windows", seedData, seedData.length);
   });

@@ -41,6 +41,15 @@ describe("blockchain/log-processors/fee-window-created", () => {
         id: 40304,
         blockNumber: 160101,
       },
+      augur: {
+        api: {
+          FeeWindow: {
+            getFeeToken: (p, callback) => {
+              callback(null, "FEE_TOKEN");
+            },
+          },
+        },
+      },
     },
     assertions: {
       onAdded: (err, records) => {

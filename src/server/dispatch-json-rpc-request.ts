@@ -14,7 +14,7 @@ import { getReportingSummary } from "./getters/get-reporting-summary";
 import { getUserTradingHistory } from "./getters/get-user-trading-history";
 import { getMarketPriceHistory } from "./getters/get-market-price-history";
 import { getUserTradingPositions } from "./getters/get-user-trading-positions";
-import { getFeeWindowsWithUnclaimedFees } from "./getters/get-fee-windows-with-unclaimed-fees";
+import { getFeeWindows } from "./getters/get-fee-windows";
 import { getFeeWindowCurrent } from "./getters/get-fee-window-current";
 import { getUnclaimedMarketCreatorFees } from "./getters/get-unclaimed-market-creator-fees";
 import { getDisputeTokens } from "./getters/get-dispute-tokens";
@@ -58,8 +58,8 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return getUserTradingPositions(db, request.params.universe, request.params.account, request.params.marketID, request.params.outcome, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getFeeWindowCurrent":
       return getFeeWindowCurrent(db, request.params.universe, request.params.account, callback);
-    case "getFeeWindowsWithUnclaimedFees":
-      return getFeeWindowsWithUnclaimedFees(db, request.params.universe, request.params.account, callback);
+    case "getFeeWindows":
+      return getFeeWindows(db, request.params.universe, request.params.account, request.params.includeCurrent, callback);
     case "getUnclaimedMarketCreatorFees":
       return getUnclaimedMarketCreatorFees(db, request.params.marketIDs, callback);
     case "getStakeTokens":

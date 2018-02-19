@@ -7,13 +7,13 @@ export function getFeeWindows(db: Knex, universe: Address, account: Address, inc
     .join("balances", "fee_windows.feeWindow", "balances.token")
     .join("token_supply AS participation_token", "participation_token.token", "fee_windows.fee_window")
     .join("token_supply AS fee_token", "fee_token.token", "fee_windows.fee_token")
-    .join("balances AS cash", "cash.token", cashAddress)
+    .join("balances AS cash", "cash.token", "CASH_ADDRESS_TODO")
     .where("fee_windows.universe", universe)
     .where("balances.balance", ">", 0)
     .where("balances.owner", account)
     .where("cash.owner", "fee_window.feeWindow");
   query.asCallback((err: Error|null, disputeTokens: Array<UnclaimedFeeWindowsRow>): void => {
     if (err) return callback(err);
-    //callback(null, disputeTokens.reduce((acc: UIDisputeTokens, cur) => {acc[cur.disputeToken] = reshapeDisputeTokensRowToUIDisputeTokenInfo(cur); return acc; }, {}));
+    // callback(null, disputeTokens.reduce((acc: UIDisputeTokens, cur) => {acc[cur.disputeToken] = reshapeDisputeTokensRowToUIDisputeTokenInfo(cur); return acc; }, {}));
   });
 }
