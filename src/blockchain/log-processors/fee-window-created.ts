@@ -1,6 +1,6 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { FormattedEventLog, ErrorCallback} from "../../types";
+import { FormattedEventLog, ErrorCallback, Address } from "../../types";
 import { augurEmitter } from "../../events";
 
 /*          "name": "universe",
@@ -28,18 +28,22 @@ import { augurEmitter } from "../../events";
           */
 
 export function processFeeWindowCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  const feeWindowToInsert = {
-    feeWindow: log.feeWindow,
-    feeWindowID: log.id,
-    universe: log.universe,
-    startBlockNumber: log.blockNumber,
-    startTime: log.startTime,
-    endBlockNumber: null,
-    endTime: log.endTime,
-    fees: 0,
-  };
-  augurEmitter.emit("FeeWindowCreated", feeWindowToInsert);
-  db.transacting(trx).from("fee_windows").insert(feeWindowToInsert).asCallback(callback);
+  augur.api.FeeWindow.getFeeToken({ tx: { to: log.feeWindow }}, (err: Error|null, feeToken?: Address): void => {
+    if (err) return callback(err);
+    const feeWindowToInsert = {
+      feeWindow: log.feeWindow,
+      feeWindowID: log.id,
+      universe: log.universe,
+      startBlockNumber: log.blockNumber,
+      startTime: log.startTime,
+      endBlockNumber: null,
+      endTime: log.endTime,
+      fees: 0,
+      feeToken,
+    };
+    augurEmitter.emit("FeeWindowCreated", feeWindowToInsert);
+    db.transacting(trx).from("fee_windows").insert(feeWindowToInsert).asCallback(callback);
+  });
 }
 
 export function processFeeWindowCreatedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {

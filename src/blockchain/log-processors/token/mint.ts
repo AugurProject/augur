@@ -1,8 +1,11 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { FormattedEventLog, ErrorCallback } from "../../../types";
+import { parallel } from "async";
+import { FormattedEventLog, ErrorCallback, AsyncCallback } from "../../../types";
 import { increaseTokenBalance } from "./increase-token-balance";
+import { increaseTokenSupply } from "./increase-token-supply";
 import { decreaseTokenBalance } from "./decrease-token-balance";
+import { decreaseTokenSupply } from "./decrease-token-supply";
 
 export function processMintLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   db.transacting(trx).insert({
@@ -15,13 +18,20 @@ export function processMintLog(db: Knex, augur: Augur, trx: Knex.Transaction, lo
     blockNumber:     log.blockNumber,
   }).into("transfers").asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    increaseTokenBalance(db, augur, trx, log.token || log.address, log.target, Number(log.amount || log.value), callback);
+    parallel([
+      (next: AsyncCallback): void => increaseTokenSupply(db, augur, trx, log.token || log.address, Number(log.amount || log.value), next),
+      (next: AsyncCallback): void => increaseTokenBalance(db, augur, trx, log.token || log.address, log.target, Number(log.amount || log.value), next),
+    ], callback);
+    ;
   });
 }
 
 export function processMintLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
   db.transacting(trx).from("transfers").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del().asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    decreaseTokenBalance(db, augur, trx, log.token || log.address, log.target, Number(log.amount || log.value), callback);
+    parallel([
+      (next: AsyncCallback): void => decreaseTokenSupply(db, augur, trx, log.token || log.address, Number(log.amount || log.value), next),
+      (next: AsyncCallback): void => decreaseTokenBalance(db, augur, trx, log.token || log.address, log.target, Number(log.amount || log.value), next),
+    ], callback);
   });
 }

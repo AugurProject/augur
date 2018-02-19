@@ -467,3 +467,12 @@ export interface InitialReportersRow {
   isDesignatedReporter: boolean;
   amountStaked: number;
 }
+
+export interface UnclaimedFeeWindowsRow {
+  feeWindow: Address;
+  startTime: number;
+  endTime: number;
+  balance: number;
+  totalStake: number;
+  totalFees: number;
+}
