@@ -60,7 +60,7 @@ export default class ReportingDispute extends Component {
         }
         { p.marketsCount === 0 &&
           <NullStateMessage
-            message="There are currently no markets available to dispute"
+            message="There are currently no markets available for dispute."
           />
         }
       </section>
