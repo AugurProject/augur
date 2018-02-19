@@ -54,7 +54,6 @@ We are going to use environment variables for convenience, ENDPOINT_HTTP and END
     npm explore augur.js -- npm run deploy:environment
     npm run clean-start
 
-
 ### augur (ui)
 
 Link augur.js:

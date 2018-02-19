@@ -6,6 +6,7 @@ import { HashRouter } from 'react-router-dom'
 // TODO: Investigate this import see CH issue:
 // https://app.clubhouse.io/augur/story/5572/initaugur-import-issue
 import { initAugur, connectAugur } from 'modules/app/actions/init-augur' // eslint-disable-line
+// import { checkAccountAllowance, approveAugurForAccount } from 'modules/auth/actions/approve-account'
 
 import App from 'modules/app/containers/app'
 import MainErrorBoundary from 'modules/common/components/main-error-boundary'
@@ -20,7 +21,8 @@ import { augur } from 'services/augurjs'
 if (process.env.NODE_ENV === 'development') {
   Object.defineProperty(window, 'state', { get: store.getState, enumerable: true })
   window.augur = augur
-
+  // window.allowance = () => store.dispatch(checkAccountAllowance(function(err, allowance) { console.log('callback from allowance:', err, allowance); }))
+  // window.approve = () => store.dispatch(approveAugurForAccount(function(err, approvalAmount) { console.log('callback from approve', err, approvalAmount); }))
   console.log(`
   *******************************************
         DEVELOPMENT MODE (seadragon)
