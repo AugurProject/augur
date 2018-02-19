@@ -50,6 +50,7 @@
         "styles": "always"
       }
     ],
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*[-.]test.js?(x)", "test/**/*.js?(x)"]}],
     "semi": [2, "never"],
     "no-useless-rename": 2,
     "prefer-arrow-callback": 2,
