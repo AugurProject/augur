@@ -119,7 +119,7 @@ function importAccount(p, callback) {
 }
 
 module.exports = importAccount;
-},{"../rpc-interface":84,"keythereum":545,"speedomatic":655}],4:[function(require,module,exports){
+},{"../rpc-interface":84,"keythereum":555,"speedomatic":665}],4:[function(require,module,exports){
 /**
  * Client-side / in-browser accounts.
  */
@@ -141,7 +141,7 @@ module.exports = {
   register: require("./register"),
   approveAugur: require("./approve-augur")
 };
-},{"../constants":28,"./approve-augur":1,"./get-account-transfer-history":2,"./import-account":3,"./login":6,"./login-with-master-key":5,"./logout":7,"./register":8,"keythereum":545}],5:[function(require,module,exports){
+},{"../constants":28,"./approve-augur":1,"./get-account-transfer-history":2,"./import-account":3,"./login":6,"./login-with-master-key":5,"./logout":7,"./register":8,"keythereum":555}],5:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -174,7 +174,7 @@ function loginWithMasterKey(p) {
 
 module.exports = loginWithMasterKey;
 }).call(this,require("buffer").Buffer)
-},{"../utils/sha256":134,"buffer":192,"keythereum":545,"speedomatic":655}],6:[function(require,module,exports){
+},{"../utils/sha256":134,"buffer":192,"keythereum":555,"speedomatic":665}],6:[function(require,module,exports){
 "use strict";
 
 /** Type definition for Pbkdf2Params.
@@ -264,7 +264,7 @@ function login(p, callback) {
 }
 
 module.exports = login;
-},{"../rpc-interface":84,"keythereum":545,"speedomatic":655}],7:[function(require,module,exports){
+},{"../rpc-interface":84,"keythereum":555,"speedomatic":665}],7:[function(require,module,exports){
 "use strict";
 
 module.exports = require("../rpc-interface").clear;
@@ -345,7 +345,7 @@ function register(p, callback) {
 }
 
 module.exports = register;
-},{"../constants":28,"../rpc-interface":84,"keythereum":545,"speedomatic":655,"uuid":685}],9:[function(require,module,exports){
+},{"../constants":28,"../rpc-interface":84,"keythereum":555,"speedomatic":665,"uuid":695}],9:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -395,7 +395,7 @@ function bindContractFunction(functionAbi) {
 }
 
 module.exports = bindContractFunction;
-},{"../rpc-interface":84,"../utils/is-function":126,"../utils/is-object":127,"./encode-transaction-inputs":10,"lodash.assign":553}],10:[function(require,module,exports){
+},{"../rpc-interface":84,"../utils/is-function":126,"../utils/is-object":127,"./encode-transaction-inputs":10,"lodash.assign":563}],10:[function(require,module,exports){
 "use strict";
 
 var transactionInputEncoders = require("./transaction-input-encoders");
@@ -469,7 +469,7 @@ module.exports = {
   "uint256[]": speedomatic.formatInt256.bind(speedomatic),
   "bytes32[]": speedomatic.formatInt256.bind(speedomatic)
 };
-},{"speedomatic":655}],14:[function(require,module,exports){
+},{"speedomatic":665}],14:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -491,7 +491,7 @@ function depositEther(p) {
 }
 
 module.exports = depositEther;
-},{"../api":12,"lodash.assign":553,"speedomatic":655}],15:[function(require,module,exports){
+},{"../api":12,"lodash.assign":563,"speedomatic":665}],15:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -525,7 +525,7 @@ function sendEther(p) {
 }
 
 module.exports = sendEther;
-},{"../rpc-interface":84,"speedomatic":655}],17:[function(require,module,exports){
+},{"../rpc-interface":84,"speedomatic":665}],17:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -554,7 +554,7 @@ function sendReputation(p) {
 }
 
 module.exports = sendReputation;
-},{"../api":12,"lodash.assign":553,"speedomatic":655}],18:[function(require,module,exports){
+},{"../api":12,"lodash.assign":563,"speedomatic":665}],18:[function(require,module,exports){
 "use strict";
 
 var augurNodeState = require("./state");
@@ -848,7 +848,7 @@ function connect(connectOptions, callback) {
 }
 
 module.exports = connect;
-},{"./api":12,"./augur-node":21,"./constants":28,"./contracts":31,"./events":46,"./rpc-interface":84,"./utils/is-function":126,"./utils/is-object":127,"./utils/noop":132,"async":151,"ethereumjs-connect":382,"ethrpc":419}],28:[function(require,module,exports){
+},{"./api":12,"./augur-node":21,"./constants":28,"./contracts":31,"./events":46,"./rpc-interface":84,"./utils/is-function":126,"./utils/is-object":127,"./utils/noop":132,"async":151,"ethereumjs-connect":382,"ethrpc":429}],28:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -1151,7 +1151,7 @@ function createBinaryMarket(p) {
 }
 
 module.exports = createBinaryMarket;
-},{"../api":12,"../constants":28,"../format/tag/encode-tag":60,"./get-market-creation-cost":38,"./get-market-from-create-market-receipt":39,"immutable-delete":531,"lodash.assign":553,"speedomatic":655}],35:[function(require,module,exports){
+},{"../api":12,"../constants":28,"../format/tag/encode-tag":60,"./get-market-creation-cost":38,"./get-market-from-create-market-receipt":39,"immutable-delete":541,"lodash.assign":563,"speedomatic":665}],35:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -1206,7 +1206,7 @@ function createCategoricalMarket(p) {
 }
 
 module.exports = createCategoricalMarket;
-},{"../api":12,"../constants":28,"../format/tag/encode-tag":60,"./get-market-creation-cost":38,"./get-market-from-create-market-receipt":39,"immutable-delete":531,"lodash.assign":553,"speedomatic":655}],36:[function(require,module,exports){
+},{"../api":12,"../constants":28,"../format/tag/encode-tag":60,"./get-market-creation-cost":38,"./get-market-from-create-market-receipt":39,"immutable-delete":541,"lodash.assign":563,"speedomatic":665}],36:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -1264,7 +1264,7 @@ function createScalarMarket(p) {
 }
 
 module.exports = createScalarMarket;
-},{"../api":12,"../constants":28,"../format/tag/encode-tag":60,"./calculate-num-ticks":33,"./get-market-creation-cost":38,"./get-market-from-create-market-receipt":39,"immutable-delete":531,"lodash.assign":553,"speedomatic":655}],37:[function(require,module,exports){
+},{"../api":12,"../constants":28,"../format/tag/encode-tag":60,"./calculate-num-ticks":33,"./get-market-creation-cost":38,"./get-market-from-create-market-receipt":39,"immutable-delete":541,"lodash.assign":563,"speedomatic":665}],37:[function(require,module,exports){
 "use strict";
 
 /** Type definition for MarketCreationCostBreakdown.
@@ -1310,7 +1310,7 @@ function getMarketCreationCostBreakdown(p, callback) {
 }
 
 module.exports = getMarketCreationCostBreakdown;
-},{"../api":12,"async":151,"speedomatic":655}],38:[function(require,module,exports){
+},{"../api":12,"async":151,"speedomatic":665}],38:[function(require,module,exports){
 "use strict";
 
 /** Type definition for MarketCreationCost.
@@ -1351,7 +1351,7 @@ function getMarketCreationCost(p, callback) {
 }
 
 module.exports = getMarketCreationCost;
-},{"../api":12,"async":151,"immutable-delete":531,"lodash.assign":553,"speedomatic":655}],39:[function(require,module,exports){
+},{"../api":12,"async":151,"immutable-delete":541,"lodash.assign":563,"speedomatic":665}],39:[function(require,module,exports){
 "use strict";
 
 var ethrpc = require("../rpc-interface");
@@ -1422,7 +1422,7 @@ function findEventLogsInLogArray(contractName, eventName, logs) {
 }
 
 module.exports = findEventLogsInLogArray;
-},{"../contracts":31,"./parse-message/parse-log-message":48,"speedomatic":655}],43:[function(require,module,exports){
+},{"../contracts":31,"./parse-message/parse-log-message":48,"speedomatic":665}],43:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -1489,7 +1489,7 @@ function getAllAugurLogs(p, callback) {
 }
 
 module.exports = getAllAugurLogs;
-},{"../constants":28,"../contracts":31,"../rpc-interface":84,"../utils/chunk-blocks":123,"../utils/list-contracts":129,"../utils/map-contract-addresses-to-names":130,"../utils/map-event-signatures-to-names":131,"./parse-message/parse-log-message":48,"async":151,"lodash.assign":553,"speedomatic":655}],44:[function(require,module,exports){
+},{"../constants":28,"../contracts":31,"../rpc-interface":84,"../utils/chunk-blocks":123,"../utils/list-contracts":129,"../utils/map-contract-addresses-to-names":130,"../utils/map-event-signatures-to-names":131,"./parse-message/parse-log-message":48,"async":151,"lodash.assign":563,"speedomatic":665}],44:[function(require,module,exports){
 "use strict";
 
 var hashEventSignature = require("./hash-event-signature");
@@ -1514,7 +1514,7 @@ function hashEventSignature(eventName) {
 
 module.exports = hashEventSignature;
 }).call(this,require("buffer").Buffer)
-},{"../utils/keccak256":128,"buffer":192,"speedomatic":655}],46:[function(require,module,exports){
+},{"../utils/keccak256":128,"buffer":192,"speedomatic":665}],46:[function(require,module,exports){
 "use strict";
 
 var EventEmitter = require("event-emitter");
@@ -1532,7 +1532,7 @@ module.exports = {
     ethereum: EventEmitter()
   }
 };
-},{"./get-all-augur-logs":43,"./start-augur-node-event-listeners":49,"./start-block-listeners":50,"./start-blockchain-event-listeners":51,"./stop-augur-node-event-listeners":52,"./stop-block-listeners":53,"./stop-blockchain-event-listeners":54,"event-emitter":512}],47:[function(require,module,exports){
+},{"./get-all-augur-logs":43,"./start-augur-node-event-listeners":49,"./start-block-listeners":50,"./start-blockchain-event-listeners":51,"./stop-augur-node-event-listeners":52,"./stop-block-listeners":53,"./stop-blockchain-event-listeners":54,"event-emitter":522}],47:[function(require,module,exports){
 "use strict";
 
 function parseBlockMessage(message, onMessage) {
@@ -1585,7 +1585,7 @@ function parseLogMessage(contractName, eventName, message, abiEventInputs, onMes
 }
 
 module.exports = parseLogMessage;
-},{"../../format/log/format-log-message":56,"../../format/log/format-logged-event-inputs":57,"../../utils/is-function":126,"../../utils/is-object":127,"lodash.assign":553}],49:[function(require,module,exports){
+},{"../../format/log/format-log-message":56,"../../format/log/format-logged-event-inputs":57,"../../utils/is-function":126,"../../utils/is-object":127,"lodash.assign":563}],49:[function(require,module,exports){
 "use strict";
 
 var async = require("async");
@@ -1822,7 +1822,7 @@ module.exports.removeOnBlockRemovedSubscription = function () {
 module.exports.resetState = function () {
   subscriptions = assign({}, initialState);
 };
-},{"lodash.assign":553}],56:[function(require,module,exports){
+},{"lodash.assign":563}],56:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -1890,7 +1890,7 @@ function formatLogMessage(contractName, eventName, message) {
 }
 
 module.exports = formatLogMessage;
-},{"../tag/decode-tag":59,"immutable-delete":531,"lodash.assign":553,"speedomatic":655}],57:[function(require,module,exports){
+},{"../tag/decode-tag":59,"immutable-delete":541,"lodash.assign":563,"speedomatic":665}],57:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -1913,7 +1913,7 @@ function formatLoggedEventInputs(loggedTopics, loggedData, abiEventInputs) {
 }
 
 module.exports = formatLoggedEventInputs;
-},{"./format-logged-event-topic":58,"speedomatic":655}],58:[function(require,module,exports){
+},{"./format-logged-event-topic":58,"speedomatic":665}],58:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -1942,7 +1942,7 @@ function formatLoggedEventTopic(unformattedValue, inputType) {
 }
 
 module.exports = formatLoggedEventTopic;
-},{"bignumber.js":154,"speedomatic":655}],59:[function(require,module,exports){
+},{"bignumber.js":154,"speedomatic":665}],59:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -1957,7 +1957,7 @@ var decodeTag = function decodeTag(tag) {
 };
 
 module.exports = decodeTag;
-},{"speedomatic":655}],60:[function(require,module,exports){
+},{"speedomatic":665}],60:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -1968,7 +1968,7 @@ var encodeTag = function encodeTag(tag) {
 };
 
 module.exports = encodeTag;
-},{"speedomatic":655}],61:[function(require,module,exports){
+},{"speedomatic":665}],61:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -2017,7 +2017,7 @@ module.exports = Augur;
 module.exports.version = version;
 module.exports.Augur = Augur;
 module.exports.default = Augur;
-},{"./accounts":4,"./api":12,"./assets":15,"./augur-node":21,"./connect":27,"./constants":28,"./contracts":31,"./create-market":40,"./events":46,"./markets":73,"./reporting":83,"./rpc-interface":84,"./trading":95,"./version":135,"bignumber.js":154,"keythereum":545}],62:[function(require,module,exports){
+},{"./accounts":4,"./api":12,"./assets":15,"./augur-node":21,"./connect":27,"./constants":28,"./contracts":31,"./create-market":40,"./events":46,"./markets":73,"./reporting":83,"./rpc-interface":84,"./trading":95,"./version":135,"bignumber.js":154,"keythereum":555}],62:[function(require,module,exports){
 /**
  * @todo Provide details for how category popularity is calculated.
  */
@@ -2372,7 +2372,7 @@ function finalizeMarket(p) {
 }
 
 module.exports = finalizeMarket;
-},{"../api":12,"immutable-delete":531,"lodash.assign":553}],75:[function(require,module,exports){
+},{"../api":12,"immutable-delete":541,"lodash.assign":563}],75:[function(require,module,exports){
 "use strict";
 
 function getCurrentPeriodProgress(reportingPeriodDurationInSeconds, timestamp) {
@@ -2553,7 +2553,7 @@ function getStakeRequiredForDesignatedReporter(p, callback) {
 }
 
 module.exports = getStakeRequiredForDesignatedReporter;
-},{"../api":12,"immutable-delete":531,"lodash.assign":553,"speedomatic":655}],82:[function(require,module,exports){
+},{"../api":12,"immutable-delete":541,"lodash.assign":563,"speedomatic":665}],82:[function(require,module,exports){
 "use strict";
 
 /**
@@ -2648,7 +2648,7 @@ var ethrpc = createRpcInterface(require("ethrpc"));
 ethrpc.createRpcInterface = createRpcInterface;
 
 module.exports = ethrpc;
-},{"ethrpc":419}],85:[function(require,module,exports){
+},{"ethrpc":429}],85:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -2685,7 +2685,7 @@ function claimMarketsTradingProceeds(p) {
 }
 
 module.exports = claimMarketsTradingProceeds;
-},{"../constants":28,"./claim-trading-proceeds":86,"async":151,"immutable-delete":531,"lodash.assign":553}],86:[function(require,module,exports){
+},{"../constants":28,"./claim-trading-proceeds":86,"async":151,"immutable-delete":541,"lodash.assign":563}],86:[function(require,module,exports){
 "use strict";
 
 var api = require("../api");
@@ -2901,7 +2901,7 @@ function getPositionInMarket(p, callback) {
 }
 
 module.exports = getPositionInMarket;
-},{"../api":12,"../utils/convert-fixed-point-to-decimal":125,"async":151,"lodash.assign":553,"speedomatic":655}],92:[function(require,module,exports){
+},{"../api":12,"../utils/convert-fixed-point-to-decimal":125,"async":151,"lodash.assign":563,"speedomatic":665}],92:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -3116,7 +3116,7 @@ function placeTrade(p) {
 }
 
 module.exports = placeTrade;
-},{"./get-better-worse-orders":89,"./normalize-price":96,"./trade-until-amount-is-zero":122,"immutable-delete":531,"lodash.assign":553}],98:[function(require,module,exports){
+},{"./get-better-worse-orders":89,"./normalize-price":96,"./trade-until-amount-is-zero":122,"immutable-delete":541,"lodash.assign":563}],98:[function(require,module,exports){
 "use strict";
 
 var longerPositionPL = require("./longer-position-pl");
@@ -3202,7 +3202,7 @@ function calculateProfitLoss(p) {
 }
 
 module.exports = calculateProfitLoss;
-},{"../../constants":28,"./calculate-trades-pl":102,"./calculate-unrealized-pl":103,"./update-realized-pl":109,"bignumber.js":154,"immutable-delete":531}],100:[function(require,module,exports){
+},{"../../constants":28,"./calculate-trades-pl":102,"./calculate-unrealized-pl":103,"./update-realized-pl":109,"bignumber.js":154,"immutable-delete":541}],100:[function(require,module,exports){
 "use strict";
 
 var longerPositionPL = require("./longer-position-pl");
@@ -3978,7 +3978,7 @@ function tradeUntilAmountIsZero(p) {
 }
 
 module.exports = tradeUntilAmountIsZero;
-},{"../api":12,"../constants":28,"../utils/convert-decimal-to-fixed-point":124,"../utils/convert-fixed-point-to-decimal":125,"../utils/noop":132,"./get-trade-amount-remaining":92,"bignumber.js":154,"immutable-delete":531,"lodash.assign":553,"speedomatic":655}],123:[function(require,module,exports){
+},{"../api":12,"../constants":28,"../utils/convert-decimal-to-fixed-point":124,"../utils/convert-fixed-point-to-decimal":125,"../utils/noop":132,"./get-trade-amount-remaining":92,"bignumber.js":154,"immutable-delete":541,"lodash.assign":563,"speedomatic":665}],123:[function(require,module,exports){
 "use strict";
 
 var BLOCKS_PER_CHUNK = require("../constants").BLOCKS_PER_CHUNK;
@@ -4021,7 +4021,7 @@ function convertDecimalToFixedPoint(decimalValue, conversionFactor) {
 }
 
 module.exports = convertDecimalToFixedPoint;
-},{"bignumber.js":154,"speedomatic":655}],125:[function(require,module,exports){
+},{"bignumber.js":154,"speedomatic":665}],125:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -4062,7 +4062,7 @@ function keccak256(buffer) {
 }
 
 module.exports = keccak256;
-},{"keccak/js":538}],129:[function(require,module,exports){
+},{"keccak/js":548}],129:[function(require,module,exports){
 "use strict";
 
 module.exports = function (contracts) {
@@ -4126,11 +4126,11 @@ var sha256 = function sha256(hashable) {
 };
 
 module.exports = sha256;
-},{"crypto":205,"speedomatic":655}],135:[function(require,module,exports){
+},{"crypto":205,"speedomatic":665}],135:[function(require,module,exports){
 'use strict';
 
 // generated by genversion
-module.exports = '4.7.2-4';
+module.exports = '4.7.2-5';
 },{}],136:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
@@ -4211,7 +4211,7 @@ Entity.prototype.encode = function encode(data, enc, /* internal */ reporter) {
   return this._getEncoder(enc).encode(data, reporter);
 };
 
-},{"../asn1":137,"inherits":534,"vm":686}],139:[function(require,module,exports){
+},{"../asn1":137,"inherits":544,"vm":696}],139:[function(require,module,exports){
 var inherits = require('inherits');
 var Reporter = require('../base').Reporter;
 var Buffer = require('buffer').Buffer;
@@ -4329,7 +4329,7 @@ EncoderBuffer.prototype.join = function join(out, offset) {
   return out;
 };
 
-},{"../base":140,"buffer":192,"inherits":534}],140:[function(require,module,exports){
+},{"../base":140,"buffer":192,"inherits":544}],140:[function(require,module,exports){
 var base = exports;
 
 base.Reporter = require('./reporter').Reporter;
@@ -4973,7 +4973,7 @@ Node.prototype._isPrintstr = function isPrintstr(str) {
   return /^[A-Za-z0-9 '\(\)\+,\-\.\/:=\?]*$/.test(str);
 };
 
-},{"../base":140,"minimalistic-assert":570}],142:[function(require,module,exports){
+},{"../base":140,"minimalistic-assert":580}],142:[function(require,module,exports){
 var inherits = require('inherits');
 
 function Reporter(options) {
@@ -5096,7 +5096,7 @@ ReporterError.prototype.rethrow = function rethrow(msg) {
   return this;
 };
 
-},{"inherits":534}],143:[function(require,module,exports){
+},{"inherits":544}],143:[function(require,module,exports){
 var constants = require('../constants');
 
 exports.tagClass = {
@@ -5487,7 +5487,7 @@ function derDecodeLen(buf, primitive, fail) {
   return len;
 }
 
-},{"../../asn1":137,"inherits":534}],146:[function(require,module,exports){
+},{"../../asn1":137,"inherits":544}],146:[function(require,module,exports){
 var decoders = exports;
 
 decoders.der = require('./der');
@@ -5544,7 +5544,7 @@ PEMDecoder.prototype.decode = function decode(data, options) {
   return DERDecoder.prototype.decode.call(this, input, options);
 };
 
-},{"./der":145,"buffer":192,"inherits":534}],148:[function(require,module,exports){
+},{"./der":145,"buffer":192,"inherits":544}],148:[function(require,module,exports){
 var inherits = require('inherits');
 var Buffer = require('buffer').Buffer;
 
@@ -5841,7 +5841,7 @@ function encodeTag(tag, primitive, cls, reporter) {
   return res;
 }
 
-},{"../../asn1":137,"buffer":192,"inherits":534}],149:[function(require,module,exports){
+},{"../../asn1":137,"buffer":192,"inherits":544}],149:[function(require,module,exports){
 var encoders = exports;
 
 encoders.der = require('./der');
@@ -5870,7 +5870,7 @@ PEMEncoder.prototype.encode = function encode(data, options) {
   return out.join('\n');
 };
 
-},{"./der":148,"inherits":534}],151:[function(require,module,exports){
+},{"./der":148,"inherits":544}],151:[function(require,module,exports){
 (function (process,global){
 /*!
  * async
@@ -7139,7 +7139,7 @@ PEMEncoder.prototype.encode = function encode(data, options) {
 }());
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":585}],152:[function(require,module,exports){
+},{"_process":595}],152:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.abi = require('./contracts/abi');
@@ -22587,7 +22587,7 @@ module.exports = {
   encode: encode
 }
 
-},{"safe-buffer":617}],156:[function(require,module,exports){
+},{"safe-buffer":627}],156:[function(require,module,exports){
 (function (module, exports) {
   'use strict';
 
@@ -26811,7 +26811,7 @@ AES.prototype.scrub = function () {
 
 module.exports.AES = AES
 
-},{"safe-buffer":617}],161:[function(require,module,exports){
+},{"safe-buffer":627}],161:[function(require,module,exports){
 var aes = require('./aes')
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('cipher-base')
@@ -26930,7 +26930,7 @@ StreamCipher.prototype.setAAD = function setAAD (buf) {
 
 module.exports = StreamCipher
 
-},{"./aes":160,"./ghash":165,"./incr32":166,"buffer-xor":195,"cipher-base":196,"inherits":534,"safe-buffer":617}],162:[function(require,module,exports){
+},{"./aes":160,"./ghash":165,"./incr32":166,"buffer-xor":195,"cipher-base":196,"inherits":544,"safe-buffer":627}],162:[function(require,module,exports){
 var ciphers = require('./encrypter')
 var deciphers = require('./decrypter')
 var modes = require('./modes/list.json')
@@ -27068,7 +27068,7 @@ function createDecipher (suite, password) {
 exports.createDecipher = createDecipher
 exports.createDecipheriv = createDecipheriv
 
-},{"./aes":160,"./authCipher":161,"./modes":173,"./streamCipher":176,"cipher-base":196,"evp_bytestokey":514,"inherits":534,"safe-buffer":617}],164:[function(require,module,exports){
+},{"./aes":160,"./authCipher":161,"./modes":173,"./streamCipher":176,"cipher-base":196,"evp_bytestokey":524,"inherits":544,"safe-buffer":627}],164:[function(require,module,exports){
 var MODES = require('./modes')
 var AuthCipher = require('./authCipher')
 var Buffer = require('safe-buffer').Buffer
@@ -27184,7 +27184,7 @@ function createCipher (suite, password) {
 exports.createCipheriv = createCipheriv
 exports.createCipher = createCipher
 
-},{"./aes":160,"./authCipher":161,"./modes":173,"./streamCipher":176,"cipher-base":196,"evp_bytestokey":514,"inherits":534,"safe-buffer":617}],165:[function(require,module,exports){
+},{"./aes":160,"./authCipher":161,"./modes":173,"./streamCipher":176,"cipher-base":196,"evp_bytestokey":524,"inherits":544,"safe-buffer":627}],165:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var ZEROES = Buffer.alloc(16, 0)
 
@@ -27275,7 +27275,7 @@ GHASH.prototype.final = function (abl, bl) {
 
 module.exports = GHASH
 
-},{"safe-buffer":617}],166:[function(require,module,exports){
+},{"safe-buffer":627}],166:[function(require,module,exports){
 function incr32 (iv) {
   var len = iv.length
   var item
@@ -27346,7 +27346,7 @@ exports.encrypt = function (self, data, decrypt) {
   return out
 }
 
-},{"buffer-xor":195,"safe-buffer":617}],169:[function(require,module,exports){
+},{"buffer-xor":195,"safe-buffer":627}],169:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 function encryptByte (self, byteParam, decrypt) {
@@ -27390,7 +27390,7 @@ exports.encrypt = function (self, chunk, decrypt) {
   return out
 }
 
-},{"safe-buffer":617}],170:[function(require,module,exports){
+},{"safe-buffer":627}],170:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 function encryptByte (self, byteParam, decrypt) {
@@ -27417,7 +27417,7 @@ exports.encrypt = function (self, chunk, decrypt) {
   return out
 }
 
-},{"safe-buffer":617}],171:[function(require,module,exports){
+},{"safe-buffer":627}],171:[function(require,module,exports){
 var xor = require('buffer-xor')
 var Buffer = require('safe-buffer').Buffer
 var incr32 = require('../incr32')
@@ -27449,7 +27449,7 @@ exports.encrypt = function (self, chunk) {
   return xor(chunk, pad)
 }
 
-},{"../incr32":166,"buffer-xor":195,"safe-buffer":617}],172:[function(require,module,exports){
+},{"../incr32":166,"buffer-xor":195,"safe-buffer":627}],172:[function(require,module,exports){
 exports.encrypt = function (self, block) {
   return self._cipher.encryptBlock(block)
 }
@@ -27720,7 +27720,7 @@ StreamCipher.prototype._final = function () {
 
 module.exports = StreamCipher
 
-},{"./aes":160,"cipher-base":196,"inherits":534,"safe-buffer":617}],177:[function(require,module,exports){
+},{"./aes":160,"cipher-base":196,"inherits":544,"safe-buffer":627}],177:[function(require,module,exports){
 var ebtk = require('evp_bytestokey')
 var aes = require('browserify-aes/browser')
 var DES = require('browserify-des')
@@ -27795,7 +27795,7 @@ function getCiphers () {
 }
 exports.listCiphers = exports.getCiphers = getCiphers
 
-},{"browserify-aes/browser":162,"browserify-aes/modes":173,"browserify-des":178,"browserify-des/modes":179,"evp_bytestokey":514}],178:[function(require,module,exports){
+},{"browserify-aes/browser":162,"browserify-aes/modes":173,"browserify-des":178,"browserify-des/modes":179,"evp_bytestokey":524}],178:[function(require,module,exports){
 (function (Buffer){
 var CipherBase = require('cipher-base')
 var des = require('des.js')
@@ -27842,7 +27842,7 @@ DES.prototype._final = function () {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":192,"cipher-base":196,"des.js":207,"inherits":534}],179:[function(require,module,exports){
+},{"buffer":192,"cipher-base":196,"des.js":207,"inherits":544}],179:[function(require,module,exports){
 exports['des-ecb'] = {
   key: 8,
   iv: 0
@@ -27912,7 +27912,7 @@ function getr(priv) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":156,"buffer":192,"randombytes":592}],181:[function(require,module,exports){
+},{"bn.js":156,"buffer":192,"randombytes":602}],181:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -28648,7 +28648,7 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./algorithms.json":184,"./sign":187,"./verify":188,"buffer":192,"create-hash":200,"inherits":534,"stream":668}],187:[function(require,module,exports){
+},{"./algorithms.json":184,"./sign":187,"./verify":188,"buffer":192,"create-hash":200,"inherits":544,"stream":678}],187:[function(require,module,exports){
 (function (Buffer){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var createHmac = require('create-hmac')
@@ -28797,7 +28797,7 @@ module.exports.getKey = getKey
 module.exports.makeKey = makeKey
 
 }).call(this,require("buffer").Buffer)
-},{"./curves.json":185,"bn.js":156,"browserify-rsa":180,"buffer":192,"create-hmac":203,"elliptic":217,"parse-asn1":577}],188:[function(require,module,exports){
+},{"./curves.json":185,"bn.js":156,"browserify-rsa":180,"buffer":192,"create-hmac":203,"elliptic":217,"parse-asn1":587}],188:[function(require,module,exports){
 (function (Buffer){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var BN = require('bn.js')
@@ -28884,7 +28884,7 @@ function checkValue (b, q) {
 module.exports = verify
 
 }).call(this,require("buffer").Buffer)
-},{"./curves.json":185,"bn.js":156,"buffer":192,"elliptic":217,"parse-asn1":577}],189:[function(require,module,exports){
+},{"./curves.json":185,"bn.js":156,"buffer":192,"elliptic":217,"parse-asn1":587}],189:[function(require,module,exports){
 arguments[4][159][0].apply(exports,arguments)
 },{"dup":159}],190:[function(require,module,exports){
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
@@ -29247,7 +29247,7 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-},{"util/":683}],191:[function(require,module,exports){
+},{"util/":693}],191:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -30925,7 +30925,7 @@ function blitBuffer (src, dst, offset, length) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":191,"ieee754":530,"isarray":193}],193:[function(require,module,exports){
+},{"base64-js":191,"ieee754":540,"isarray":193}],193:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
@@ -31270,7 +31270,7 @@ CipherBase.prototype._toString = function (value, enc, fin) {
 
 module.exports = CipherBase
 
-},{"inherits":534,"safe-buffer":617,"stream":668,"string_decoder":194}],197:[function(require,module,exports){
+},{"inherits":544,"safe-buffer":627,"stream":678,"string_decoder":194}],197:[function(require,module,exports){
 (function (Buffer){
 var clone = (function() {
 'use strict';
@@ -31636,7 +31636,7 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":535}],199:[function(require,module,exports){
+},{"../../is-buffer/index.js":545}],199:[function(require,module,exports){
 (function (Buffer){
 var elliptic = require('elliptic');
 var BN = require('bn.js');
@@ -31818,7 +31818,7 @@ module.exports = function createHash (alg) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./md5":202,"buffer":192,"cipher-base":196,"inherits":534,"ripemd160":615,"sha.js":625}],201:[function(require,module,exports){
+},{"./md5":202,"buffer":192,"cipher-base":196,"inherits":544,"ripemd160":625,"sha.js":635}],201:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var intSize = 4
@@ -32069,7 +32069,7 @@ module.exports = function createHmac (alg, key) {
   return new Hmac(alg, key)
 }
 
-},{"./legacy":204,"cipher-base":196,"create-hash/md5":202,"inherits":534,"ripemd160":615,"safe-buffer":617,"sha.js":625}],204:[function(require,module,exports){
+},{"./legacy":204,"cipher-base":196,"create-hash/md5":202,"inherits":544,"ripemd160":625,"safe-buffer":627,"sha.js":635}],204:[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
 var Buffer = require('safe-buffer').Buffer
@@ -32117,7 +32117,7 @@ Hmac.prototype._final = function () {
 }
 module.exports = Hmac
 
-},{"cipher-base":196,"inherits":534,"safe-buffer":617}],205:[function(require,module,exports){
+},{"cipher-base":196,"inherits":544,"safe-buffer":627}],205:[function(require,module,exports){
 'use strict'
 
 exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = require('randombytes')
@@ -32216,7 +32216,7 @@ exports.constants = {
   'POINT_CONVERSION_HYBRID': 6
 }
 
-},{"browserify-cipher":177,"browserify-sign":186,"browserify-sign/algos":183,"create-ecdh":199,"create-hash":200,"create-hmac":203,"diffie-hellman":213,"pbkdf2":579,"public-encrypt":586,"randombytes":592,"randomfill":593}],206:[function(require,module,exports){
+},{"browserify-cipher":177,"browserify-sign":186,"browserify-sign/algos":183,"create-ecdh":199,"create-hash":200,"create-hmac":203,"diffie-hellman":213,"pbkdf2":589,"public-encrypt":596,"randombytes":602,"randomfill":603}],206:[function(require,module,exports){
 'use strict';
 
 var assign        = require('es5-ext/object/assign')
@@ -32357,7 +32357,7 @@ proto._update = function _update(inp, inOff, out, outOff) {
   }
 };
 
-},{"inherits":534,"minimalistic-assert":570}],209:[function(require,module,exports){
+},{"inherits":544,"minimalistic-assert":580}],209:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -32500,7 +32500,7 @@ Cipher.prototype._finalDecrypt = function _finalDecrypt() {
   return this._unpad(out);
 };
 
-},{"minimalistic-assert":570}],210:[function(require,module,exports){
+},{"minimalistic-assert":580}],210:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -32645,7 +32645,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
   utils.rip(l, r, out, off);
 };
 
-},{"../des":207,"inherits":534,"minimalistic-assert":570}],211:[function(require,module,exports){
+},{"../des":207,"inherits":544,"minimalistic-assert":580}],211:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -32702,7 +32702,7 @@ EDE.prototype._update = function _update(inp, inOff, out, outOff) {
 EDE.prototype._pad = DES.prototype._pad;
 EDE.prototype._unpad = DES.prototype._unpad;
 
-},{"../des":207,"inherits":534,"minimalistic-assert":570}],212:[function(require,module,exports){
+},{"../des":207,"inherits":544,"minimalistic-assert":580}],212:[function(require,module,exports){
 'use strict';
 
 exports.readUInt32BE = function readUInt32BE(bytes, off) {
@@ -33174,7 +33174,7 @@ function formatReturnValue(bn, enc) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./generatePrime":215,"bn.js":156,"buffer":192,"miller-rabin":569,"randombytes":592}],215:[function(require,module,exports){
+},{"./generatePrime":215,"bn.js":156,"buffer":192,"miller-rabin":579,"randombytes":602}],215:[function(require,module,exports){
 var randomBytes = require('randombytes');
 module.exports = findPrime;
 findPrime.simpleSieve = simpleSieve;
@@ -33281,7 +33281,7 @@ function findPrime(bits, gen) {
 
 }
 
-},{"bn.js":156,"miller-rabin":569,"randombytes":592}],216:[function(require,module,exports){
+},{"bn.js":156,"miller-rabin":579,"randombytes":602}],216:[function(require,module,exports){
 module.exports={
     "modp1": {
         "gen": "02",
@@ -34143,7 +34143,7 @@ Point.prototype.eqXToP = function eqXToP(x) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../../elliptic":217,"../curve":220,"bn.js":156,"inherits":534}],220:[function(require,module,exports){
+},{"../../elliptic":217,"../curve":220,"bn.js":156,"inherits":544}],220:[function(require,module,exports){
 'use strict';
 
 var curve = exports;
@@ -34335,7 +34335,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../../elliptic":217,"../curve":220,"bn.js":156,"inherits":534}],222:[function(require,module,exports){
+},{"../../elliptic":217,"../curve":220,"bn.js":156,"inherits":544}],222:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -35275,7 +35275,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":217,"../curve":220,"bn.js":156,"inherits":534}],223:[function(require,module,exports){
+},{"../../elliptic":217,"../curve":220,"bn.js":156,"inherits":544}],223:[function(require,module,exports){
 'use strict';
 
 var curves = exports;
@@ -35482,7 +35482,7 @@ defineCurve('secp256k1', {
   ]
 });
 
-},{"../elliptic":217,"./precomputed/secp256k1":230,"hash.js":516}],224:[function(require,module,exports){
+},{"../elliptic":217,"./precomputed/secp256k1":230,"hash.js":526}],224:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -35724,7 +35724,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../../elliptic":217,"./key":225,"./signature":226,"bn.js":156,"hmac-drbg":528}],225:[function(require,module,exports){
+},{"../../elliptic":217,"./key":225,"./signature":226,"bn.js":156,"hmac-drbg":538}],225:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -36102,7 +36102,7 @@ EDDSA.prototype.isPoint = function isPoint(val) {
   return val instanceof this.pointClass;
 };
 
-},{"../../elliptic":217,"./key":228,"./signature":229,"hash.js":516}],228:[function(require,module,exports){
+},{"../../elliptic":217,"./key":228,"./signature":229,"hash.js":526}],228:[function(require,module,exports){
 'use strict';
 
 var elliptic = require('../../elliptic');
@@ -37172,7 +37172,7 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":156,"minimalistic-assert":570,"minimalistic-crypto-utils":571}],232:[function(require,module,exports){
+},{"bn.js":156,"minimalistic-assert":580,"minimalistic-crypto-utils":581}],232:[function(require,module,exports){
 module.exports={
   "_args": [
     [
@@ -38935,7 +38935,7 @@ exports.defineProperties = function (self, fields, data) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":190,"bn.js":156,"buffer":192,"create-hash":200,"keccakjs":544,"rlp":616,"secp256k1":618}],252:[function(require,module,exports){
+},{"assert":190,"bn.js":156,"buffer":192,"create-hash":200,"keccakjs":554,"rlp":626,"secp256k1":628}],252:[function(require,module,exports){
 var v1 = require('./v1');
 var v4 = require('./v4');
 
@@ -39365,7 +39365,7 @@ function logAndSwallowWrapper(callback) {
     };
 }
 
-},{"./block-reconciler":258,"./log-reconciler":260,"immutable":532,"uuid":252}],258:[function(require,module,exports){
+},{"./block-reconciler":258,"./log-reconciler":260,"immutable":542,"uuid":252}],258:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -40485,7 +40485,7 @@ var createEthrpc = function (reducer) {
 
 module.exports = createEthrpc;
 
-},{"./block-management/ensure-latest-block":263,"./block-management/wait-for-next-blocks":269,"./clear-transactions":270,"./connect":271,"./constants":272,"./debug/set-debug-options":274,"./decode-response/handle-rpc-error":275,"./encode-request/package-request":279,"./errors/codes":281,"./internal-state":286,"./raw-transactions/package-and-sign-raw-transaction":292,"./raw-transactions/package-and-submit-raw-transaction":293,"./raw-transactions/package-raw-transaction":294,"./raw-transactions/sign-raw-transaction":298,"./raw-transactions/sign-raw-transaction-with-key":297,"./reset-state":313,"./start-block-stream.js":316,"./transact/call-contract-function":322,"./transact/call-or-send-transaction":323,"./transact/transact":327,"./transaction-relay/exclude-from-transaction-relay":332,"./transaction-relay/include-in-transaction-relay":333,"./transaction-relay/register-transaction-relay":334,"./transaction-relay/unregister-transaction-relay":335,"./transport/ws-transport":344,"./utils/is-function":346,"./utils/sha3":353,"./validate/validate-and-default-block-number":355,"./validate/validate-transaction":359,"./wrappers/bind-dispatch":361,"./wrappers/eth":362,"./wrappers/is-unlocked":363,"./wrappers/miner":365,"./wrappers/net":366,"./wrappers/personal":367,"./wrappers/publish":368,"./wrappers/raw":369,"./wrappers/resend-raw-transaction":370,"./wrappers/resend-transaction":371,"./wrappers/send-ether":372,"./wrappers/shh":375,"./wrappers/web3":376,"redux":613,"redux-thunk-subscribe":607}],274:[function(require,module,exports){
+},{"./block-management/ensure-latest-block":263,"./block-management/wait-for-next-blocks":269,"./clear-transactions":270,"./connect":271,"./constants":272,"./debug/set-debug-options":274,"./decode-response/handle-rpc-error":275,"./encode-request/package-request":279,"./errors/codes":281,"./internal-state":286,"./raw-transactions/package-and-sign-raw-transaction":292,"./raw-transactions/package-and-submit-raw-transaction":293,"./raw-transactions/package-raw-transaction":294,"./raw-transactions/sign-raw-transaction":298,"./raw-transactions/sign-raw-transaction-with-key":297,"./reset-state":313,"./start-block-stream.js":316,"./transact/call-contract-function":322,"./transact/call-or-send-transaction":323,"./transact/transact":327,"./transaction-relay/exclude-from-transaction-relay":332,"./transaction-relay/include-in-transaction-relay":333,"./transaction-relay/register-transaction-relay":334,"./transaction-relay/unregister-transaction-relay":335,"./transport/ws-transport":344,"./utils/is-function":346,"./utils/sha3":353,"./validate/validate-and-default-block-number":355,"./validate/validate-transaction":359,"./wrappers/bind-dispatch":361,"./wrappers/eth":362,"./wrappers/is-unlocked":363,"./wrappers/miner":365,"./wrappers/net":366,"./wrappers/personal":367,"./wrappers/publish":368,"./wrappers/raw":369,"./wrappers/resend-raw-transaction":370,"./wrappers/resend-transaction":371,"./wrappers/send-ether":372,"./wrappers/shh":375,"./wrappers/web3":376,"redux":623,"redux-thunk-subscribe":617}],274:[function(require,module,exports){
 "use strict";
 
 module.exports = function (debugOptions) {
@@ -40527,7 +40527,7 @@ var handleRPCError = function (method, returns, response) {
 
 module.exports = handleRPCError;
 
-},{"../errors/codes":281,"speedomatic":655}],276:[function(require,module,exports){
+},{"../errors/codes":281,"speedomatic":665}],276:[function(require,module,exports){
 "use strict";
 
 var clone = require("clone");
@@ -40707,7 +40707,7 @@ var packageRequest = function (payload) {
 
 module.exports = packageRequest;
 
-},{"../constants":272,"../errors/codes":281,"../errors/rpc-error":284,"clone":197,"speedomatic":655}],280:[function(require,module,exports){
+},{"../constants":272,"../errors/codes":281,"../errors/rpc-error":284,"clone":197,"speedomatic":665}],280:[function(require,module,exports){
 "use strict";
 
 var stripReturnsTypeAndInvocation = function (tx) {
@@ -41152,14 +41152,14 @@ module.exports.setState = function (newState) { assign(state, newState); };
 module.exports.set = function (path, newState) { set(state, path, newState); };
 module.exports.unset = function (path) { unset(state, path); };
 
-},{"lodash.assign":553,"lodash.get":554,"lodash.set":555,"lodash.unset":556}],287:[function(require,module,exports){
+},{"lodash.assign":563,"lodash.get":564,"lodash.set":565,"lodash.unset":566}],287:[function(require,module,exports){
 (function (process){
 "use strict";
 
 module.exports = (typeof module !== "undefined") && process && !process.browser;
 
 }).call(this,require('_process'))
-},{"_process":585}],288:[function(require,module,exports){
+},{"_process":595}],288:[function(require,module,exports){
 "use strict";
 
 var isNodeJs = require("./is-node-js");
@@ -41179,7 +41179,7 @@ module.exports = function (method, uri, options) {
   return syncRequest(method, uri, options);
 };
 
-},{"sync-request":673}],290:[function(require,module,exports){
+},{"sync-request":683}],290:[function(require,module,exports){
 "use strict";
 
 var isNode = require("./is-node-js.js");
@@ -41333,7 +41333,7 @@ function packageRawTransaction(payload, address, networkID, currentBlock) {
 
 module.exports = packageRawTransaction;
 
-},{"../constants":272,"../encode-request/package-request":279,"speedomatic":655}],295:[function(require,module,exports){
+},{"../constants":272,"../encode-request/package-request":279,"speedomatic":665}],295:[function(require,module,exports){
 "use strict";
 
 var eth_gasPrice = require("../wrappers/eth").gasPrice;
@@ -41435,7 +41435,7 @@ function signRawTransactionWithKey(packaged, privateKey, callback) {
 module.exports = signRawTransactionWithKey;
 
 }).call(this,require("buffer").Buffer)
-},{"../errors/codes":281,"../errors/rpc-error":284,"../utils/is-function":346,"buffer":192,"ethereumjs-tx":391,"speedomatic":655}],298:[function(require,module,exports){
+},{"../errors/codes":281,"../errors/rpc-error":284,"../utils/is-function":346,"buffer":192,"ethereumjs-tx":391,"speedomatic":665}],298:[function(require,module,exports){
 "use strict";
 
 var immutableDelete = require("immutable-delete");
@@ -41498,7 +41498,7 @@ function verifyRawTransactionNonce(nonce) {
 
 module.exports = verifyRawTransactionNonce;
 
-},{"speedomatic":655}],300:[function(require,module,exports){
+},{"speedomatic":665}],300:[function(require,module,exports){
 "use strict";
 
 var initialState = require("./initial-state").coinbase;
@@ -41534,7 +41534,7 @@ function composeReducers(customReducer, reducer) {
 
 module.exports = composeReducers;
 
-},{"lodash.assign":553}],302:[function(require,module,exports){
+},{"lodash.assign":563}],302:[function(require,module,exports){
 "use strict";
 
 var isFunction = require("../utils/is-function");
@@ -41603,7 +41603,7 @@ module.exports = function (debug, action) {
   }
 };
 
-},{"./initial-state":308,"lodash.assign":553}],305:[function(require,module,exports){
+},{"./initial-state":308,"lodash.assign":563}],305:[function(require,module,exports){
 "use strict";
 
 var initialState = require("./initial-state").gasPrice;
@@ -41756,7 +41756,7 @@ module.exports = function (noRelay, action) {
   }
 };
 
-},{"./initial-state":308,"lodash.assign":553}],311:[function(require,module,exports){
+},{"./initial-state":308,"lodash.assign":563}],311:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -41786,7 +41786,7 @@ module.exports = function (subscriptions, action) {
   }
 };
 
-},{"./initial-state":308,"immutable-delete":377,"lodash.assign":553}],312:[function(require,module,exports){
+},{"./initial-state":308,"immutable-delete":377,"lodash.assign":563}],312:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -41870,7 +41870,7 @@ module.exports = function (transactions, action) {
   }
 };
 
-},{"../utils/is-object":350,"./initial-state":308,"immutable-delete":377,"lodash.assign":553}],313:[function(require,module,exports){
+},{"../utils/is-object":350,"./initial-state":308,"immutable-delete":377,"lodash.assign":563}],313:[function(require,module,exports){
 "use strict";
 
 var blockchainMessageHandler = require("./rpc/blockchain-message-handler");
@@ -42210,7 +42210,7 @@ module.exports.addStoreListener = addStoreListener;
 module.exports.removeStoreListener = removeStoreListener;
 module.exports.removeAllStoreListeners = removeAllStoreListeners;
 
-},{"../utils/is-function":346,"immutable-delete":377,"lodash.assign":553}],322:[function(require,module,exports){
+},{"../utils/is-function":346,"immutable-delete":377,"lodash.assign":563}],322:[function(require,module,exports){
 "use strict";
 
 var clone = require("clone");
@@ -42262,7 +42262,7 @@ function callContractFunction(payload, callback, callbackWrapper, extraArgument)
 
 module.exports = callContractFunction;
 
-},{"../decode-response/handle-rpc-error":275,"../errors/codes":281,"../errors/rpc-error":284,"../transact/call-or-send-transaction":323,"../utils/is-function":346,"clone":197,"speedomatic":655}],323:[function(require,module,exports){
+},{"../decode-response/handle-rpc-error":275,"../errors/codes":281,"../errors/rpc-error":284,"../transact/call-or-send-transaction":323,"../utils/is-function":346,"clone":197,"speedomatic":665}],323:[function(require,module,exports){
 "use strict";
 
 var eth = require("../wrappers/eth");
@@ -42395,7 +42395,7 @@ function transactAsync(payload, callReturn, privateKeyOrSigner, accountType, onS
 
 module.exports = transactAsync;
 
-},{"../errors/codes":281,"../raw-transactions/package-and-submit-raw-transaction":293,"../transact/call-or-send-transaction":323,"../transact/verify-tx-submitted":331,"immutable-delete":377,"speedomatic":655}],327:[function(require,module,exports){
+},{"../errors/codes":281,"../raw-transactions/package-and-submit-raw-transaction":293,"../transact/call-or-send-transaction":323,"../transact/verify-tx-submitted":331,"immutable-delete":377,"speedomatic":665}],327:[function(require,module,exports){
 /**
  * Send-call-confirm callback sequence
  */
@@ -42526,7 +42526,7 @@ function updateMinedTx(txHash) {
 
 module.exports = updateMinedTx;
 
-},{"../constants":272,"../decode-response/handle-rpc-error":275,"../errors/codes":281,"../transact/call-contract-function":322,"../transact/get-logged-return-value":324,"../utils/is-function":346,"../wrappers/eth":362,"bignumber.js":154,"speedomatic":655}],329:[function(require,module,exports){
+},{"../constants":272,"../decode-response/handle-rpc-error":275,"../errors/codes":281,"../transact/call-contract-function":322,"../transact/get-logged-return-value":324,"../utils/is-function":346,"../wrappers/eth":362,"bignumber.js":154,"speedomatic":665}],329:[function(require,module,exports){
 "use strict";
 
 var clone = require("clone");
@@ -43219,7 +43219,7 @@ IpcTransport.prototype.submitRpcRequest = function (rpcJso, errorCallback) {
 
 module.exports = IpcTransport;
 
-},{"./abstract-transport.js":336,"net":189,"oboe":572}],341:[function(require,module,exports){
+},{"./abstract-transport.js":336,"net":189,"oboe":582}],341:[function(require,module,exports){
 "use strict";
 
 var AbstractTransport = require("./abstract-transport.js");
@@ -43571,7 +43571,7 @@ module.exports = function (str) {
   return false;
 };
 
-},{"speedomatic":655}],348:[function(require,module,exports){
+},{"speedomatic":665}],348:[function(require,module,exports){
 "use strict";
 
 var isNotNull = function (value) {
@@ -43637,7 +43637,7 @@ module.exports = function (data, encoding, callback) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../utils/is-function":346,"buffer":192,"keccak/js":538,"speedomatic":655}],354:[function(require,module,exports){
+},{"../utils/is-function":346,"buffer":192,"keccak/js":548,"speedomatic":665}],354:[function(require,module,exports){
 "use strict";
 var sha3 = require("../utils/sha3");
 
@@ -44001,7 +44001,7 @@ function resendRawTransaction(transaction, privateKey, gasPrice, gasLimit, callb
 
 module.exports = resendRawTransaction;
 
-},{"../raw-transactions/sign-raw-transaction-with-key":297,"../wrappers/eth":362,"clone":197,"speedomatic":655}],371:[function(require,module,exports){
+},{"../raw-transactions/sign-raw-transaction-with-key":297,"../wrappers/eth":362,"clone":197,"speedomatic":665}],371:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -44019,7 +44019,7 @@ function resendTransaction(transaction, gasPrice, gasLimit, callback) {
 
 module.exports = resendTransaction;
 
-},{"../wrappers/eth":362,"clone":197,"speedomatic":655}],372:[function(require,module,exports){
+},{"../wrappers/eth":362,"clone":197,"speedomatic":665}],372:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -44049,7 +44049,7 @@ function sendEther(to, value, from, onSent, onSuccess, onFailed) {
 
 module.exports = sendEther;
 
-},{"../transact/transact":327,"../utils/is-object":350,"speedomatic":655}],373:[function(require,module,exports){
+},{"../transact/transact":327,"../utils/is-object":350,"speedomatic":665}],373:[function(require,module,exports){
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -44069,7 +44069,7 @@ function setCoinbase(callback) {
 
 module.exports = setCoinbase;
 
-},{"../utils/is-function":346,"./eth":362,"speedomatic":655}],374:[function(require,module,exports){
+},{"../utils/is-function":346,"./eth":362,"speedomatic":665}],374:[function(require,module,exports){
 "use strict";
 
 var eth_gasPrice = require("./eth").gasPrice;
@@ -44215,7 +44215,7 @@ function createConfiguration(options) {
 
 module.exports = createConfiguration;
 
-},{"lodash.assign":553}],381:[function(require,module,exports){
+},{"lodash.assign":563}],381:[function(require,module,exports){
 "use strict";
 
 function createEthrpcConfiguration(configuration) {
@@ -45414,7 +45414,7 @@ exports.defineProperties = function (self, fields, data) {
   }
 };
 
-},{"assert":190,"bn.js":156,"create-hash":200,"ethjs-util":393,"keccak":538,"rlp":616,"safe-buffer":617,"secp256k1":618}],393:[function(require,module,exports){
+},{"assert":190,"bn.js":156,"create-hash":200,"ethjs-util":393,"keccak":548,"rlp":626,"safe-buffer":627,"secp256k1":628}],393:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -45637,11 +45637,5564 @@ module.exports = {
   isHexString: isHexString
 };
 }).call(this,require("buffer").Buffer)
-},{"buffer":192,"is-hex-prefixed":536,"strip-hex-prefix":670}],394:[function(require,module,exports){
+},{"buffer":192,"is-hex-prefixed":546,"strip-hex-prefix":680}],394:[function(require,module,exports){
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var block_reconciler_1 = require("./block-reconciler");
+var log_reconciler_1 = require("./log-reconciler");
+var immutable_1 = require("immutable");
+var createUuid = require("uuid");
+var BlockAndLogStreamer = /** @class */ (function () {
+    function BlockAndLogStreamer(getBlockByHash, getLogs, configuration) {
+        var _this = this;
+        this.blockHistory = Promise.resolve(immutable_1.List());
+        this.logHistory = Promise.resolve(immutable_1.List());
+        this.latestBlock = null;
+        this.logFilters = {};
+        this.onBlockAddedSubscribers = {};
+        this.onBlockRemovedSubscribers = {};
+        this.onLogAddedSubscribers = {};
+        this.onLogRemovedSubscribers = {};
+        this.reconcileNewBlock = function (block) { return __awaiter(_this, void 0, void 0, function () {
+            var blockHistory;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.blockHistory = block_reconciler_1.reconcileBlockHistory(this.getBlockByHash, this.blockHistory, block, this.onBlockAdded, this.onBlockRemoved, this.blockRetention);
+                        return [4 /*yield*/, this.blockHistory];
+                    case 1:
+                        blockHistory = _a.sent();
+                        this.latestBlock = blockHistory.last();
+                        return [2 /*return*/];
+                }
+            });
+        }); };
+        this.reconcileNewBlockCallbackStyle = function (block, callback) { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                console.warn("Deprecation Warning: The callback interface for ethereumjs-blockstream is deprecated and will be removed in a future version of this library.  Use BlockAndLogStreamer.reconcileNewBlock instead.");
+                this.reconcileNewBlock(block)
+                    .then(function () { return callback(undefined); })
+                    .catch(function (error) { return callback(error); });
+                return [2 /*return*/];
+            });
+        }); };
+        this.onBlockAdded = function (block) { return __awaiter(_this, void 0, void 0, function () {
+            var _this = this;
+            var logFilters;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        logFilters = Object.keys(this.logFilters).map(function (key) { return _this.logFilters[key]; });
+                        this.logHistory = log_reconciler_1.reconcileLogHistoryWithAddedBlock(this.getLogs, this.logHistory, block, this.onLogAdded, logFilters, this.blockRetention);
+                        return [4 /*yield*/, this.logHistory];
+                    case 1:
+                        _a.sent();
+                        Object.keys(this.onBlockAddedSubscribers)
+                            .map(function (key) { return _this.onBlockAddedSubscribers[key]; })
+                            .map(function (callback) { return logAndSwallowWrapper(callback); })
+                            .forEach(function (callback) { return callback(block); });
+                        return [2 /*return*/];
+                }
+            });
+        }); };
+        this.onBlockRemoved = function (block) { return __awaiter(_this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.logHistory = log_reconciler_1.reconcileLogHistoryWithRemovedBlock(this.logHistory, block, this.onLogRemoved);
+                        return [4 /*yield*/, this.logHistory];
+                    case 1:
+                        _a.sent();
+                        Object.keys(this.onBlockRemovedSubscribers)
+                            .map(function (key) { return _this.onBlockRemovedSubscribers[key]; })
+                            .map(function (callback) { return logAndSwallowWrapper(callback); })
+                            .forEach(function (callback) { return callback(block); });
+                        return [2 /*return*/];
+                }
+            });
+        }); };
+        this.onLogAdded = function (log) { return __awaiter(_this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                Object.keys(this.onLogAddedSubscribers)
+                    .map(function (key) { return _this.onLogAddedSubscribers[key]; })
+                    .map(function (callback) { return logAndSwallowWrapper(callback); })
+                    .forEach(function (callback) { return callback(log); });
+                return [2 /*return*/];
+            });
+        }); };
+        this.onLogRemoved = function (log) { return __awaiter(_this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                Object.keys(this.onLogRemovedSubscribers)
+                    .map(function (key) { return _this.onLogRemovedSubscribers[key]; })
+                    .map(function (callback) { return logAndSwallowWrapper(callback); })
+                    .forEach(function (callback) { return callback(log); });
+                return [2 /*return*/];
+            });
+        }); };
+        this.getLatestReconciledBlock = function () {
+            return _this.latestBlock;
+        };
+        this.addLogFilter = function (filter) {
+            var uuid = "log filter token " + createUuid();
+            _this.logFilters[uuid] = filter;
+            return uuid;
+        };
+        this.removeLogFilter = function (token) {
+            if (!token.startsWith("log filter token "))
+                throw new Error("Expected a log filter token.  Actual: " + token);
+            delete _this.logFilters[token];
+        };
+        this.subscribeToOnBlockAdded = function (onBlockAdded) {
+            var uuid = "on block added token " + createUuid();
+            _this.onBlockAddedSubscribers[uuid] = onBlockAdded;
+            return uuid;
+        };
+        this.unsubscribeFromOnBlockAdded = function (token) {
+            if (!token.startsWith("on block added token "))
+                throw new Error("Expected a block added subscription token.  Actual: " + token);
+            delete _this.onBlockAddedSubscribers[token];
+        };
+        this.subscribeToOnBlockRemoved = function (onBlockRemoved) {
+            var uuid = "on block removed token " + createUuid();
+            _this.onBlockRemovedSubscribers[uuid] = onBlockRemoved;
+            return uuid;
+        };
+        this.unsubscribeFromOnBlockRemoved = function (token) {
+            if (!token.startsWith("on block removed token "))
+                throw new Error("Expected a block added subscription token.  Actual: " + token);
+            delete _this.onBlockRemovedSubscribers[token];
+        };
+        this.subscribeToOnLogAdded = function (onLogAdded) {
+            var uuid = "on log added token " + createUuid();
+            _this.onLogAddedSubscribers[uuid] = onLogAdded;
+            return uuid;
+        };
+        this.unsubscribeFromOnLogAdded = function (token) {
+            if (!token.startsWith("on log added token "))
+                throw new Error("Expected a log added subscription token.  Actual: " + token);
+            delete _this.onLogAddedSubscribers[token];
+        };
+        this.subscribeToOnLogRemoved = function (onLogRemoved) {
+            var uuid = "on log removed token " + createUuid();
+            _this.onLogRemovedSubscribers[uuid] = onLogRemoved;
+            return uuid;
+        };
+        this.unsubscribeFromOnLogRemoved = function (token) {
+            if (!token.startsWith("on log removed token "))
+                throw new Error("Expected a log added subscription token.  Actual: " + token);
+            delete _this.onLogRemovedSubscribers[token];
+        };
+        this.getBlockByHash = getBlockByHash;
+        this.getLogs = getLogs;
+        this.blockRetention = (configuration && configuration.blockRetention) ? configuration.blockRetention : 100;
+    }
+    BlockAndLogStreamer.createCallbackStyle = function (getBlockByHash, getLogs, configuration) {
+        console.warn("Deprecation Warning: The callback interface for ethereumjs-blockstream is deprecated and will be removed in a future version of this library.  Use BlockAndLogStreamer constructor instead.");
+        var wrappedGetBlockByHash = function (hash) {
+            return new Promise(function (resolve, reject) {
+                getBlockByHash(hash, function (error, block) {
+                    if (error)
+                        throw error;
+                    else
+                        resolve(block);
+                });
+            });
+        };
+        var wrappedGetLogs = function (filterOptions) { return new Promise(function (resolve, reject) {
+            getLogs(filterOptions, function (error, logs) {
+                if (error)
+                    throw error;
+                if (!logs)
+                    throw new Error("Received null/undefined logs and no error.");
+                resolve(logs);
+            });
+        }); };
+        return new BlockAndLogStreamer(wrappedGetBlockByHash, wrappedGetLogs, configuration);
+    };
+    return BlockAndLogStreamer;
+}());
+exports.BlockAndLogStreamer = BlockAndLogStreamer;
+function logAndSwallowWrapper(callback) {
+    return function (parameter) {
+        try {
+            callback(parameter);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    };
+}
+
+},{"./block-reconciler":395,"./log-reconciler":397,"immutable":399,"uuid":400}],395:[function(require,module,exports){
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.reconcileBlockHistory = function (getBlockByHash, blockHistory, newBlock, onBlockAdded, onBlockRemoved, blockRetention) {
+    if (blockRetention === void 0) { blockRetention = 100; }
+    return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, blockHistory];
+                case 1:
+                    blockHistory = _a.sent();
+                    if (!isFirstBlock(blockHistory)) return [3 /*break*/, 3];
+                    return [4 /*yield*/, addNewHeadBlock(blockHistory, newBlock, onBlockAdded, blockRetention)];
+                case 2: return [2 /*return*/, _a.sent()];
+                case 3:
+                    if (!isOlderThanOldestBlock(blockHistory, newBlock)) return [3 /*break*/, 6];
+                    return [4 /*yield*/, rollback(blockHistory, onBlockRemoved)];
+                case 4:
+                    blockHistory = _a.sent();
+                    return [4 /*yield*/, addNewHeadBlock(blockHistory, newBlock, onBlockAdded, blockRetention)];
+                case 5: return [2 /*return*/, _a.sent()];
+                case 6:
+                    if (isAlreadyInHistory(blockHistory, newBlock))
+                        return [2 /*return*/, blockHistory];
+                    if (!isNewHeadBlock(blockHistory, newBlock)) return [3 /*break*/, 8];
+                    return [4 /*yield*/, addNewHeadBlock(blockHistory, newBlock, onBlockAdded, blockRetention)];
+                case 7: return [2 /*return*/, _a.sent()];
+                case 8:
+                    if (!parentHashIsInHistory(blockHistory, newBlock)) return [3 /*break*/, 13];
+                    _a.label = 9;
+                case 9:
+                    if (!(blockHistory.last().hash !== newBlock.parentHash)) return [3 /*break*/, 11];
+                    return [4 /*yield*/, removeHeadBlock(blockHistory, onBlockRemoved)];
+                case 10:
+                    blockHistory = _a.sent();
+                    return [3 /*break*/, 9];
+                case 11: return [4 /*yield*/, addNewHeadBlock(blockHistory, newBlock, onBlockAdded, blockRetention)];
+                case 12: return [2 /*return*/, _a.sent()];
+                case 13: return [4 /*yield*/, backfill(getBlockByHash, blockHistory, newBlock, onBlockAdded, onBlockRemoved, blockRetention)];
+                case 14: return [2 /*return*/, _a.sent()];
+            }
+        });
+    });
+};
+var rollback = function (blockHistory, onBlockRemoved) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!!blockHistory.isEmpty()) return [3 /*break*/, 2];
+                return [4 /*yield*/, removeHeadBlock(blockHistory, onBlockRemoved)];
+            case 1:
+                // CONSIDER: if this throws an exception, removals may have been announced that are actually still in history since throwing will result in no history update. we can't catch errors here because there isn't a clear way to recover from them, the failure may be a downstream system telling us that the block removal isn't possible because they are in a bad state. we could try re-announcing the successfully added blocks, but there would still be a problem with the failed block (should it be re-announced?) and the addition announcements may also fail
+                blockHistory = _a.sent();
+                return [3 /*break*/, 0];
+            case 2: return [2 /*return*/, blockHistory];
+        }
+    });
+}); };
+var backfill = function (getBlockByHash, blockHistory, newBlock, onBlockAdded, onBlockRemoved, blockRetention) { return __awaiter(_this, void 0, void 0, function () {
+    var parentBlock;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (newBlock.parentHash === "0x0000000000000000000000000000000000000000000000000000000000000000")
+                    return [2 /*return*/, rollback(blockHistory, onBlockRemoved)];
+                return [4 /*yield*/, getBlockByHash(newBlock.parentHash)];
+            case 1:
+                parentBlock = _a.sent();
+                if (parentBlock === null)
+                    throw new Error("Failed to fetch parent block.");
+                if (parseInt(parentBlock.number, 16) + blockRetention < parseInt(blockHistory.last().number, 16))
+                    return [2 /*return*/, rollback(blockHistory, onBlockRemoved)];
+                return [4 /*yield*/, exports.reconcileBlockHistory(getBlockByHash, blockHistory, parentBlock, onBlockAdded, onBlockRemoved, blockRetention)];
+            case 2:
+                blockHistory = _a.sent();
+                return [4 /*yield*/, exports.reconcileBlockHistory(getBlockByHash, blockHistory, newBlock, onBlockAdded, onBlockRemoved, blockRetention)];
+            case 3: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+var addNewHeadBlock = function (blockHistory, newBlock, onBlockAdded, blockRetention) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                // this is here as a final sanity check, in case we somehow got into an unexpected state, there are no known (and should never be) ways to reach this exception
+                if (!blockHistory.isEmpty() && blockHistory.last().hash !== newBlock.parentHash)
+                    throw new Error("New head block's parent isn't our current head.");
+                // CONSIDER: the user getting this notification won't have any visibility into the updated block history yet. should we announce new blocks in a `setTimeout`? should we provide block history with new logs? an announcement failure will result in unwinding the stack and returning the original blockHistory, if we are in the process of backfilling we may have already announced previous blocks that won't actually end up in history (they won't get removed if a re-org occurs and may be re-announced). we can't catch errors thrown by the callback because it may be trying to signal to use that the block has become invalid and is un-processable
+                return [4 /*yield*/, onBlockAdded(newBlock)];
+            case 1:
+                // CONSIDER: the user getting this notification won't have any visibility into the updated block history yet. should we announce new blocks in a `setTimeout`? should we provide block history with new logs? an announcement failure will result in unwinding the stack and returning the original blockHistory, if we are in the process of backfilling we may have already announced previous blocks that won't actually end up in history (they won't get removed if a re-org occurs and may be re-announced). we can't catch errors thrown by the callback because it may be trying to signal to use that the block has become invalid and is un-processable
+                _a.sent();
+                blockHistory = blockHistory.push(newBlock);
+                return [2 /*return*/, blockHistory.takeLast(blockRetention).toList()];
+        }
+    });
+}); };
+var removeHeadBlock = function (blockHistory, onBlockRemoved) { return __awaiter(_this, void 0, void 0, function () {
+    var removedBlock;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                removedBlock = blockHistory.last();
+                blockHistory = blockHistory.pop();
+                return [4 /*yield*/, onBlockRemoved(removedBlock)];
+            case 1:
+                _a.sent();
+                return [2 /*return*/, blockHistory];
+        }
+    });
+}); };
+var isFirstBlock = function (blockHistory) {
+    return blockHistory.isEmpty();
+};
+var isOlderThanOldestBlock = function (blockHistory, newBlock) {
+    return parseInt(blockHistory.first().number, 16) > parseInt(newBlock.number, 16);
+};
+var isAlreadyInHistory = function (blockHistory, newBlock) {
+    // `block!` is required until the next version of `immutable` is published to NPM (current version 3.8.1) which improves the type definitions
+    return blockHistory.some(function (block) { return block.hash === newBlock.hash; });
+};
+var isNewHeadBlock = function (blockHistory, newBlock) {
+    return blockHistory.last().hash === newBlock.parentHash;
+};
+var parentHashIsInHistory = function (blockHistory, newBlock) {
+    // `block!` is required until the next version of `immutable` is published to NPM (current version 3.8.1) which improves the type definitions
+    return blockHistory.some(function (block) { return block.hash === newBlock.parentHash; });
+};
+
+},{}],396:[function(require,module,exports){
+arguments[4][259][0].apply(exports,arguments)
+},{"./block-and-log-streamer":394,"dup":259}],397:[function(require,module,exports){
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.reconcileLogHistoryWithAddedBlock = function (getLogs, logHistory, newBlock, onLogAdded, filters, historyBlockLength) {
+    if (filters === void 0) { filters = []; }
+    if (historyBlockLength === void 0) { historyBlockLength = 100; }
+    return __awaiter(_this, void 0, void 0, function () {
+        var logs;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, logHistory];
+                case 1:
+                    logHistory = _a.sent();
+                    return [4 /*yield*/, getFilteredLogs(getLogs, newBlock, filters)];
+                case 2:
+                    logs = _a.sent();
+                    return [4 /*yield*/, addNewLogsToHead(logHistory, logs, onLogAdded)];
+                case 3:
+                    logHistory = _a.sent();
+                    return [4 /*yield*/, pruneOldLogs(logHistory, newBlock, historyBlockLength)];
+                case 4:
+                    logHistory = _a.sent();
+                    return [2 /*return*/, logHistory];
+            }
+        });
+    });
+};
+var getFilteredLogs = function (getLogs, newBlock, filters) { return __awaiter(_this, void 0, void 0, function () {
+    var logPromises, nestedLogs;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                logPromises = filters
+                    .map(function (filter) { return ({ fromBlock: newBlock.number, toBlock: newBlock.number, address: filter.address, topics: filter.topics, }); })
+                    .map(function (filter) { return getLogs(filter); });
+                return [4 /*yield*/, Promise.all(logPromises)];
+            case 1:
+                nestedLogs = _a.sent();
+                return [2 /*return*/, nestedLogs.reduce(function (allLogs, logs) { return allLogs.concat(logs); }, [])];
+        }
+    });
+}); };
+var addNewLogsToHead = function (logHistory, newLogs, onLogAdded) { return __awaiter(_this, void 0, void 0, function () {
+    var sortedLogs, _loop_1, _i, sortedLogs_1, logToAdd;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                sortedLogs = newLogs.sort(function (logA, logB) { return parseInt(logA.logIndex, 16) - parseInt(logB.logIndex, 16); });
+                _loop_1 = function (logToAdd) {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                // we may already have this log because two filters can return the same log
+                                if (logHistory.some(function (logInHistory) { return logInHistory.blockHash === logToAdd.blockHash && logInHistory.logIndex === logToAdd.logIndex; }))
+                                    return [2 /*return*/, "continue"];
+                                ensureOrder(logHistory.last(), logToAdd);
+                                return [4 /*yield*/, addNewLogToHead(logHistory, logToAdd, onLogAdded)];
+                            case 1:
+                                logHistory = _a.sent();
+                                return [2 /*return*/];
+                        }
+                    });
+                };
+                _i = 0, sortedLogs_1 = sortedLogs;
+                _a.label = 1;
+            case 1:
+                if (!(_i < sortedLogs_1.length)) return [3 /*break*/, 4];
+                logToAdd = sortedLogs_1[_i];
+                return [5 /*yield**/, _loop_1(logToAdd)];
+            case 2:
+                _a.sent();
+                _a.label = 3;
+            case 3:
+                _i++;
+                return [3 /*break*/, 1];
+            case 4: return [2 /*return*/, logHistory];
+        }
+    });
+}); };
+var pruneOldLogs = function (logHistory, newBlock, historyBlockLength) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        // `log!` is required until the next major version of `immutable` is published to NPM (current version 3.8.2) which improves the type definitions
+        return [2 /*return*/, logHistory.skipUntil(function (log) { return parseInt(newBlock.number, 16) - parseInt(log.blockNumber, 16) < historyBlockLength; }).toList()];
+    });
+}); };
+var addNewLogToHead = function (logHistory, newLog, onLogAdded) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                logHistory = logHistory.push(newLog);
+                // CONSIDER: the user getting this notification won't have any visibility into the updated log history yet. should we announce new logs in a `setTimeout`? should we provide log history with new logs?
+                return [4 /*yield*/, onLogAdded(newLog)];
+            case 1:
+                // CONSIDER: the user getting this notification won't have any visibility into the updated log history yet. should we announce new logs in a `setTimeout`? should we provide log history with new logs?
+                _a.sent();
+                return [2 /*return*/, logHistory];
+        }
+    });
+}); };
+var ensureOrder = function (headLog, newLog) {
+    if (headLog === undefined)
+        return;
+    var headBlockNumber = parseInt(headLog.blockNumber, 16);
+    var newLogBlockNumber = parseInt(newLog.blockNumber, 16);
+    if (headBlockNumber > newLogBlockNumber)
+        throw new Error("received log for a block (" + newLogBlockNumber + ") older than current head log's block (" + headBlockNumber + ")");
+    if (headBlockNumber !== newLogBlockNumber)
+        return;
+    var headLogIndex = parseInt(headLog.logIndex, 16);
+    var newLogIndex = parseInt(newLog.logIndex, 16);
+    if (headLogIndex >= newLogIndex)
+        throw new Error("received log with same block number (" + newLogBlockNumber + ") but index (" + newLogIndex + ") is the same or older than previous index (" + headLogIndex + ")");
+};
+exports.reconcileLogHistoryWithRemovedBlock = function (logHistory, removedBlock, onLogRemoved) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, logHistory];
+            case 1:
+                logHistory = _a.sent();
+                _a.label = 2;
+            case 2:
+                if (!(!logHistory.isEmpty() && logHistory.last().blockHash === removedBlock.hash)) return [3 /*break*/, 4];
+                return [4 /*yield*/, onLogRemoved(logHistory.last())];
+            case 3:
+                _a.sent();
+                logHistory = logHistory.pop();
+                return [3 /*break*/, 2];
+            case 4:
+                // sanity check, no known way to trigger the error
+                if (logHistory.some(function (log) { return log.blockHash === removedBlock.hash; }))
+                    throw new Error("found logs for removed block not at head of log history");
+                return [2 /*return*/, logHistory];
+        }
+    });
+}); };
+
+},{}],398:[function(require,module,exports){
 arguments[4][377][0].apply(exports,arguments)
-},{"dup":377}],395:[function(require,module,exports){
+},{"dup":377}],399:[function(require,module,exports){
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global.Immutable = factory());
+}(this, function () { 'use strict';var SLICE$0 = Array.prototype.slice;
+
+  function createClass(ctor, superClass) {
+    if (superClass) {
+      ctor.prototype = Object.create(superClass.prototype);
+    }
+    ctor.prototype.constructor = ctor;
+  }
+
+  function Iterable(value) {
+      return isIterable(value) ? value : Seq(value);
+    }
+
+
+  createClass(KeyedIterable, Iterable);
+    function KeyedIterable(value) {
+      return isKeyed(value) ? value : KeyedSeq(value);
+    }
+
+
+  createClass(IndexedIterable, Iterable);
+    function IndexedIterable(value) {
+      return isIndexed(value) ? value : IndexedSeq(value);
+    }
+
+
+  createClass(SetIterable, Iterable);
+    function SetIterable(value) {
+      return isIterable(value) && !isAssociative(value) ? value : SetSeq(value);
+    }
+
+
+
+  function isIterable(maybeIterable) {
+    return !!(maybeIterable && maybeIterable[IS_ITERABLE_SENTINEL]);
+  }
+
+  function isKeyed(maybeKeyed) {
+    return !!(maybeKeyed && maybeKeyed[IS_KEYED_SENTINEL]);
+  }
+
+  function isIndexed(maybeIndexed) {
+    return !!(maybeIndexed && maybeIndexed[IS_INDEXED_SENTINEL]);
+  }
+
+  function isAssociative(maybeAssociative) {
+    return isKeyed(maybeAssociative) || isIndexed(maybeAssociative);
+  }
+
+  function isOrdered(maybeOrdered) {
+    return !!(maybeOrdered && maybeOrdered[IS_ORDERED_SENTINEL]);
+  }
+
+  Iterable.isIterable = isIterable;
+  Iterable.isKeyed = isKeyed;
+  Iterable.isIndexed = isIndexed;
+  Iterable.isAssociative = isAssociative;
+  Iterable.isOrdered = isOrdered;
+
+  Iterable.Keyed = KeyedIterable;
+  Iterable.Indexed = IndexedIterable;
+  Iterable.Set = SetIterable;
+
+
+  var IS_ITERABLE_SENTINEL = '@@__IMMUTABLE_ITERABLE__@@';
+  var IS_KEYED_SENTINEL = '@@__IMMUTABLE_KEYED__@@';
+  var IS_INDEXED_SENTINEL = '@@__IMMUTABLE_INDEXED__@@';
+  var IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
+
+  // Used for setting prototype methods that IE8 chokes on.
+  var DELETE = 'delete';
+
+  // Constants describing the size of trie nodes.
+  var SHIFT = 5; // Resulted in best performance after ______?
+  var SIZE = 1 << SHIFT;
+  var MASK = SIZE - 1;
+
+  // A consistent shared value representing "not set" which equals nothing other
+  // than itself, and nothing that could be provided externally.
+  var NOT_SET = {};
+
+  // Boolean references, Rough equivalent of `bool &`.
+  var CHANGE_LENGTH = { value: false };
+  var DID_ALTER = { value: false };
+
+  function MakeRef(ref) {
+    ref.value = false;
+    return ref;
+  }
+
+  function SetRef(ref) {
+    ref && (ref.value = true);
+  }
+
+  // A function which returns a value representing an "owner" for transient writes
+  // to tries. The return value will only ever equal itself, and will not equal
+  // the return of any subsequent call of this function.
+  function OwnerID() {}
+
+  // http://jsperf.com/copy-array-inline
+  function arrCopy(arr, offset) {
+    offset = offset || 0;
+    var len = Math.max(0, arr.length - offset);
+    var newArr = new Array(len);
+    for (var ii = 0; ii < len; ii++) {
+      newArr[ii] = arr[ii + offset];
+    }
+    return newArr;
+  }
+
+  function ensureSize(iter) {
+    if (iter.size === undefined) {
+      iter.size = iter.__iterate(returnTrue);
+    }
+    return iter.size;
+  }
+
+  function wrapIndex(iter, index) {
+    // This implements "is array index" which the ECMAString spec defines as:
+    //
+    //     A String property name P is an array index if and only if
+    //     ToString(ToUint32(P)) is equal to P and ToUint32(P) is not equal
+    //     to 2^32−1.
+    //
+    // http://www.ecma-international.org/ecma-262/6.0/#sec-array-exotic-objects
+    if (typeof index !== 'number') {
+      var uint32Index = index >>> 0; // N >>> 0 is shorthand for ToUint32
+      if ('' + uint32Index !== index || uint32Index === 4294967295) {
+        return NaN;
+      }
+      index = uint32Index;
+    }
+    return index < 0 ? ensureSize(iter) + index : index;
+  }
+
+  function returnTrue() {
+    return true;
+  }
+
+  function wholeSlice(begin, end, size) {
+    return (begin === 0 || (size !== undefined && begin <= -size)) &&
+      (end === undefined || (size !== undefined && end >= size));
+  }
+
+  function resolveBegin(begin, size) {
+    return resolveIndex(begin, size, 0);
+  }
+
+  function resolveEnd(end, size) {
+    return resolveIndex(end, size, size);
+  }
+
+  function resolveIndex(index, size, defaultIndex) {
+    return index === undefined ?
+      defaultIndex :
+      index < 0 ?
+        Math.max(0, size + index) :
+        size === undefined ?
+          index :
+          Math.min(size, index);
+  }
+
+  /* global Symbol */
+
+  var ITERATE_KEYS = 0;
+  var ITERATE_VALUES = 1;
+  var ITERATE_ENTRIES = 2;
+
+  var REAL_ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
+  var FAUX_ITERATOR_SYMBOL = '@@iterator';
+
+  var ITERATOR_SYMBOL = REAL_ITERATOR_SYMBOL || FAUX_ITERATOR_SYMBOL;
+
+
+  function Iterator(next) {
+      this.next = next;
+    }
+
+    Iterator.prototype.toString = function() {
+      return '[Iterator]';
+    };
+
+
+  Iterator.KEYS = ITERATE_KEYS;
+  Iterator.VALUES = ITERATE_VALUES;
+  Iterator.ENTRIES = ITERATE_ENTRIES;
+
+  Iterator.prototype.inspect =
+  Iterator.prototype.toSource = function () { return this.toString(); }
+  Iterator.prototype[ITERATOR_SYMBOL] = function () {
+    return this;
+  };
+
+
+  function iteratorValue(type, k, v, iteratorResult) {
+    var value = type === 0 ? k : type === 1 ? v : [k, v];
+    iteratorResult ? (iteratorResult.value = value) : (iteratorResult = {
+      value: value, done: false
+    });
+    return iteratorResult;
+  }
+
+  function iteratorDone() {
+    return { value: undefined, done: true };
+  }
+
+  function hasIterator(maybeIterable) {
+    return !!getIteratorFn(maybeIterable);
+  }
+
+  function isIterator(maybeIterator) {
+    return maybeIterator && typeof maybeIterator.next === 'function';
+  }
+
+  function getIterator(iterable) {
+    var iteratorFn = getIteratorFn(iterable);
+    return iteratorFn && iteratorFn.call(iterable);
+  }
+
+  function getIteratorFn(iterable) {
+    var iteratorFn = iterable && (
+      (REAL_ITERATOR_SYMBOL && iterable[REAL_ITERATOR_SYMBOL]) ||
+      iterable[FAUX_ITERATOR_SYMBOL]
+    );
+    if (typeof iteratorFn === 'function') {
+      return iteratorFn;
+    }
+  }
+
+  function isArrayLike(value) {
+    return value && typeof value.length === 'number';
+  }
+
+  createClass(Seq, Iterable);
+    function Seq(value) {
+      return value === null || value === undefined ? emptySequence() :
+        isIterable(value) ? value.toSeq() : seqFromValue(value);
+    }
+
+    Seq.of = function(/*...values*/) {
+      return Seq(arguments);
+    };
+
+    Seq.prototype.toSeq = function() {
+      return this;
+    };
+
+    Seq.prototype.toString = function() {
+      return this.__toString('Seq {', '}');
+    };
+
+    Seq.prototype.cacheResult = function() {
+      if (!this._cache && this.__iterateUncached) {
+        this._cache = this.entrySeq().toArray();
+        this.size = this._cache.length;
+      }
+      return this;
+    };
+
+    // abstract __iterateUncached(fn, reverse)
+
+    Seq.prototype.__iterate = function(fn, reverse) {
+      return seqIterate(this, fn, reverse, true);
+    };
+
+    // abstract __iteratorUncached(type, reverse)
+
+    Seq.prototype.__iterator = function(type, reverse) {
+      return seqIterator(this, type, reverse, true);
+    };
+
+
+
+  createClass(KeyedSeq, Seq);
+    function KeyedSeq(value) {
+      return value === null || value === undefined ?
+        emptySequence().toKeyedSeq() :
+        isIterable(value) ?
+          (isKeyed(value) ? value.toSeq() : value.fromEntrySeq()) :
+          keyedSeqFromValue(value);
+    }
+
+    KeyedSeq.prototype.toKeyedSeq = function() {
+      return this;
+    };
+
+
+
+  createClass(IndexedSeq, Seq);
+    function IndexedSeq(value) {
+      return value === null || value === undefined ? emptySequence() :
+        !isIterable(value) ? indexedSeqFromValue(value) :
+        isKeyed(value) ? value.entrySeq() : value.toIndexedSeq();
+    }
+
+    IndexedSeq.of = function(/*...values*/) {
+      return IndexedSeq(arguments);
+    };
+
+    IndexedSeq.prototype.toIndexedSeq = function() {
+      return this;
+    };
+
+    IndexedSeq.prototype.toString = function() {
+      return this.__toString('Seq [', ']');
+    };
+
+    IndexedSeq.prototype.__iterate = function(fn, reverse) {
+      return seqIterate(this, fn, reverse, false);
+    };
+
+    IndexedSeq.prototype.__iterator = function(type, reverse) {
+      return seqIterator(this, type, reverse, false);
+    };
+
+
+
+  createClass(SetSeq, Seq);
+    function SetSeq(value) {
+      return (
+        value === null || value === undefined ? emptySequence() :
+        !isIterable(value) ? indexedSeqFromValue(value) :
+        isKeyed(value) ? value.entrySeq() : value
+      ).toSetSeq();
+    }
+
+    SetSeq.of = function(/*...values*/) {
+      return SetSeq(arguments);
+    };
+
+    SetSeq.prototype.toSetSeq = function() {
+      return this;
+    };
+
+
+
+  Seq.isSeq = isSeq;
+  Seq.Keyed = KeyedSeq;
+  Seq.Set = SetSeq;
+  Seq.Indexed = IndexedSeq;
+
+  var IS_SEQ_SENTINEL = '@@__IMMUTABLE_SEQ__@@';
+
+  Seq.prototype[IS_SEQ_SENTINEL] = true;
+
+
+
+  createClass(ArraySeq, IndexedSeq);
+    function ArraySeq(array) {
+      this._array = array;
+      this.size = array.length;
+    }
+
+    ArraySeq.prototype.get = function(index, notSetValue) {
+      return this.has(index) ? this._array[wrapIndex(this, index)] : notSetValue;
+    };
+
+    ArraySeq.prototype.__iterate = function(fn, reverse) {
+      var array = this._array;
+      var maxIndex = array.length - 1;
+      for (var ii = 0; ii <= maxIndex; ii++) {
+        if (fn(array[reverse ? maxIndex - ii : ii], ii, this) === false) {
+          return ii + 1;
+        }
+      }
+      return ii;
+    };
+
+    ArraySeq.prototype.__iterator = function(type, reverse) {
+      var array = this._array;
+      var maxIndex = array.length - 1;
+      var ii = 0;
+      return new Iterator(function() 
+        {return ii > maxIndex ?
+          iteratorDone() :
+          iteratorValue(type, ii, array[reverse ? maxIndex - ii++ : ii++])}
+      );
+    };
+
+
+
+  createClass(ObjectSeq, KeyedSeq);
+    function ObjectSeq(object) {
+      var keys = Object.keys(object);
+      this._object = object;
+      this._keys = keys;
+      this.size = keys.length;
+    }
+
+    ObjectSeq.prototype.get = function(key, notSetValue) {
+      if (notSetValue !== undefined && !this.has(key)) {
+        return notSetValue;
+      }
+      return this._object[key];
+    };
+
+    ObjectSeq.prototype.has = function(key) {
+      return this._object.hasOwnProperty(key);
+    };
+
+    ObjectSeq.prototype.__iterate = function(fn, reverse) {
+      var object = this._object;
+      var keys = this._keys;
+      var maxIndex = keys.length - 1;
+      for (var ii = 0; ii <= maxIndex; ii++) {
+        var key = keys[reverse ? maxIndex - ii : ii];
+        if (fn(object[key], key, this) === false) {
+          return ii + 1;
+        }
+      }
+      return ii;
+    };
+
+    ObjectSeq.prototype.__iterator = function(type, reverse) {
+      var object = this._object;
+      var keys = this._keys;
+      var maxIndex = keys.length - 1;
+      var ii = 0;
+      return new Iterator(function()  {
+        var key = keys[reverse ? maxIndex - ii : ii];
+        return ii++ > maxIndex ?
+          iteratorDone() :
+          iteratorValue(type, key, object[key]);
+      });
+    };
+
+  ObjectSeq.prototype[IS_ORDERED_SENTINEL] = true;
+
+
+  createClass(IterableSeq, IndexedSeq);
+    function IterableSeq(iterable) {
+      this._iterable = iterable;
+      this.size = iterable.length || iterable.size;
+    }
+
+    IterableSeq.prototype.__iterateUncached = function(fn, reverse) {
+      if (reverse) {
+        return this.cacheResult().__iterate(fn, reverse);
+      }
+      var iterable = this._iterable;
+      var iterator = getIterator(iterable);
+      var iterations = 0;
+      if (isIterator(iterator)) {
+        var step;
+        while (!(step = iterator.next()).done) {
+          if (fn(step.value, iterations++, this) === false) {
+            break;
+          }
+        }
+      }
+      return iterations;
+    };
+
+    IterableSeq.prototype.__iteratorUncached = function(type, reverse) {
+      if (reverse) {
+        return this.cacheResult().__iterator(type, reverse);
+      }
+      var iterable = this._iterable;
+      var iterator = getIterator(iterable);
+      if (!isIterator(iterator)) {
+        return new Iterator(iteratorDone);
+      }
+      var iterations = 0;
+      return new Iterator(function()  {
+        var step = iterator.next();
+        return step.done ? step : iteratorValue(type, iterations++, step.value);
+      });
+    };
+
+
+
+  createClass(IteratorSeq, IndexedSeq);
+    function IteratorSeq(iterator) {
+      this._iterator = iterator;
+      this._iteratorCache = [];
+    }
+
+    IteratorSeq.prototype.__iterateUncached = function(fn, reverse) {
+      if (reverse) {
+        return this.cacheResult().__iterate(fn, reverse);
+      }
+      var iterator = this._iterator;
+      var cache = this._iteratorCache;
+      var iterations = 0;
+      while (iterations < cache.length) {
+        if (fn(cache[iterations], iterations++, this) === false) {
+          return iterations;
+        }
+      }
+      var step;
+      while (!(step = iterator.next()).done) {
+        var val = step.value;
+        cache[iterations] = val;
+        if (fn(val, iterations++, this) === false) {
+          break;
+        }
+      }
+      return iterations;
+    };
+
+    IteratorSeq.prototype.__iteratorUncached = function(type, reverse) {
+      if (reverse) {
+        return this.cacheResult().__iterator(type, reverse);
+      }
+      var iterator = this._iterator;
+      var cache = this._iteratorCache;
+      var iterations = 0;
+      return new Iterator(function()  {
+        if (iterations >= cache.length) {
+          var step = iterator.next();
+          if (step.done) {
+            return step;
+          }
+          cache[iterations] = step.value;
+        }
+        return iteratorValue(type, iterations, cache[iterations++]);
+      });
+    };
+
+
+
+
+  // # pragma Helper functions
+
+  function isSeq(maybeSeq) {
+    return !!(maybeSeq && maybeSeq[IS_SEQ_SENTINEL]);
+  }
+
+  var EMPTY_SEQ;
+
+  function emptySequence() {
+    return EMPTY_SEQ || (EMPTY_SEQ = new ArraySeq([]));
+  }
+
+  function keyedSeqFromValue(value) {
+    var seq =
+      Array.isArray(value) ? new ArraySeq(value).fromEntrySeq() :
+      isIterator(value) ? new IteratorSeq(value).fromEntrySeq() :
+      hasIterator(value) ? new IterableSeq(value).fromEntrySeq() :
+      typeof value === 'object' ? new ObjectSeq(value) :
+      undefined;
+    if (!seq) {
+      throw new TypeError(
+        'Expected Array or iterable object of [k, v] entries, '+
+        'or keyed object: ' + value
+      );
+    }
+    return seq;
+  }
+
+  function indexedSeqFromValue(value) {
+    var seq = maybeIndexedSeqFromValue(value);
+    if (!seq) {
+      throw new TypeError(
+        'Expected Array or iterable object of values: ' + value
+      );
+    }
+    return seq;
+  }
+
+  function seqFromValue(value) {
+    var seq = maybeIndexedSeqFromValue(value) ||
+      (typeof value === 'object' && new ObjectSeq(value));
+    if (!seq) {
+      throw new TypeError(
+        'Expected Array or iterable object of values, or keyed object: ' + value
+      );
+    }
+    return seq;
+  }
+
+  function maybeIndexedSeqFromValue(value) {
+    return (
+      isArrayLike(value) ? new ArraySeq(value) :
+      isIterator(value) ? new IteratorSeq(value) :
+      hasIterator(value) ? new IterableSeq(value) :
+      undefined
+    );
+  }
+
+  function seqIterate(seq, fn, reverse, useKeys) {
+    var cache = seq._cache;
+    if (cache) {
+      var maxIndex = cache.length - 1;
+      for (var ii = 0; ii <= maxIndex; ii++) {
+        var entry = cache[reverse ? maxIndex - ii : ii];
+        if (fn(entry[1], useKeys ? entry[0] : ii, seq) === false) {
+          return ii + 1;
+        }
+      }
+      return ii;
+    }
+    return seq.__iterateUncached(fn, reverse);
+  }
+
+  function seqIterator(seq, type, reverse, useKeys) {
+    var cache = seq._cache;
+    if (cache) {
+      var maxIndex = cache.length - 1;
+      var ii = 0;
+      return new Iterator(function()  {
+        var entry = cache[reverse ? maxIndex - ii : ii];
+        return ii++ > maxIndex ?
+          iteratorDone() :
+          iteratorValue(type, useKeys ? entry[0] : ii - 1, entry[1]);
+      });
+    }
+    return seq.__iteratorUncached(type, reverse);
+  }
+
+  function fromJS(json, converter) {
+    return converter ?
+      fromJSWith(converter, json, '', {'': json}) :
+      fromJSDefault(json);
+  }
+
+  function fromJSWith(converter, json, key, parentJSON) {
+    if (Array.isArray(json)) {
+      return converter.call(parentJSON, key, IndexedSeq(json).map(function(v, k)  {return fromJSWith(converter, v, k, json)}));
+    }
+    if (isPlainObj(json)) {
+      return converter.call(parentJSON, key, KeyedSeq(json).map(function(v, k)  {return fromJSWith(converter, v, k, json)}));
+    }
+    return json;
+  }
+
+  function fromJSDefault(json) {
+    if (Array.isArray(json)) {
+      return IndexedSeq(json).map(fromJSDefault).toList();
+    }
+    if (isPlainObj(json)) {
+      return KeyedSeq(json).map(fromJSDefault).toMap();
+    }
+    return json;
+  }
+
+  function isPlainObj(value) {
+    return value && (value.constructor === Object || value.constructor === undefined);
+  }
+
+  /**
+   * An extension of the "same-value" algorithm as [described for use by ES6 Map
+   * and Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#Key_equality)
+   *
+   * NaN is considered the same as NaN, however -0 and 0 are considered the same
+   * value, which is different from the algorithm described by
+   * [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is).
+   *
+   * This is extended further to allow Objects to describe the values they
+   * represent, by way of `valueOf` or `equals` (and `hashCode`).
+   *
+   * Note: because of this extension, the key equality of Immutable.Map and the
+   * value equality of Immutable.Set will differ from ES6 Map and Set.
+   *
+   * ### Defining custom values
+   *
+   * The easiest way to describe the value an object represents is by implementing
+   * `valueOf`. For example, `Date` represents a value by returning a unix
+   * timestamp for `valueOf`:
+   *
+   *     var date1 = new Date(1234567890000); // Fri Feb 13 2009 ...
+   *     var date2 = new Date(1234567890000);
+   *     date1.valueOf(); // 1234567890000
+   *     assert( date1 !== date2 );
+   *     assert( Immutable.is( date1, date2 ) );
+   *
+   * Note: overriding `valueOf` may have other implications if you use this object
+   * where JavaScript expects a primitive, such as implicit string coercion.
+   *
+   * For more complex types, especially collections, implementing `valueOf` may
+   * not be performant. An alternative is to implement `equals` and `hashCode`.
+   *
+   * `equals` takes another object, presumably of similar type, and returns true
+   * if the it is equal. Equality is symmetrical, so the same result should be
+   * returned if this and the argument are flipped.
+   *
+   *     assert( a.equals(b) === b.equals(a) );
+   *
+   * `hashCode` returns a 32bit integer number representing the object which will
+   * be used to determine how to store the value object in a Map or Set. You must
+   * provide both or neither methods, one must not exist without the other.
+   *
+   * Also, an important relationship between these methods must be upheld: if two
+   * values are equal, they *must* return the same hashCode. If the values are not
+   * equal, they might have the same hashCode; this is called a hash collision,
+   * and while undesirable for performance reasons, it is acceptable.
+   *
+   *     if (a.equals(b)) {
+   *       assert( a.hashCode() === b.hashCode() );
+   *     }
+   *
+   * All Immutable collections implement `equals` and `hashCode`.
+   *
+   */
+  function is(valueA, valueB) {
+    if (valueA === valueB || (valueA !== valueA && valueB !== valueB)) {
+      return true;
+    }
+    if (!valueA || !valueB) {
+      return false;
+    }
+    if (typeof valueA.valueOf === 'function' &&
+        typeof valueB.valueOf === 'function') {
+      valueA = valueA.valueOf();
+      valueB = valueB.valueOf();
+      if (valueA === valueB || (valueA !== valueA && valueB !== valueB)) {
+        return true;
+      }
+      if (!valueA || !valueB) {
+        return false;
+      }
+    }
+    if (typeof valueA.equals === 'function' &&
+        typeof valueB.equals === 'function' &&
+        valueA.equals(valueB)) {
+      return true;
+    }
+    return false;
+  }
+
+  function deepEqual(a, b) {
+    if (a === b) {
+      return true;
+    }
+
+    if (
+      !isIterable(b) ||
+      a.size !== undefined && b.size !== undefined && a.size !== b.size ||
+      a.__hash !== undefined && b.__hash !== undefined && a.__hash !== b.__hash ||
+      isKeyed(a) !== isKeyed(b) ||
+      isIndexed(a) !== isIndexed(b) ||
+      isOrdered(a) !== isOrdered(b)
+    ) {
+      return false;
+    }
+
+    if (a.size === 0 && b.size === 0) {
+      return true;
+    }
+
+    var notAssociative = !isAssociative(a);
+
+    if (isOrdered(a)) {
+      var entries = a.entries();
+      return b.every(function(v, k)  {
+        var entry = entries.next().value;
+        return entry && is(entry[1], v) && (notAssociative || is(entry[0], k));
+      }) && entries.next().done;
+    }
+
+    var flipped = false;
+
+    if (a.size === undefined) {
+      if (b.size === undefined) {
+        if (typeof a.cacheResult === 'function') {
+          a.cacheResult();
+        }
+      } else {
+        flipped = true;
+        var _ = a;
+        a = b;
+        b = _;
+      }
+    }
+
+    var allEqual = true;
+    var bSize = b.__iterate(function(v, k)  {
+      if (notAssociative ? !a.has(v) :
+          flipped ? !is(v, a.get(k, NOT_SET)) : !is(a.get(k, NOT_SET), v)) {
+        allEqual = false;
+        return false;
+      }
+    });
+
+    return allEqual && a.size === bSize;
+  }
+
+  createClass(Repeat, IndexedSeq);
+
+    function Repeat(value, times) {
+      if (!(this instanceof Repeat)) {
+        return new Repeat(value, times);
+      }
+      this._value = value;
+      this.size = times === undefined ? Infinity : Math.max(0, times);
+      if (this.size === 0) {
+        if (EMPTY_REPEAT) {
+          return EMPTY_REPEAT;
+        }
+        EMPTY_REPEAT = this;
+      }
+    }
+
+    Repeat.prototype.toString = function() {
+      if (this.size === 0) {
+        return 'Repeat []';
+      }
+      return 'Repeat [ ' + this._value + ' ' + this.size + ' times ]';
+    };
+
+    Repeat.prototype.get = function(index, notSetValue) {
+      return this.has(index) ? this._value : notSetValue;
+    };
+
+    Repeat.prototype.includes = function(searchValue) {
+      return is(this._value, searchValue);
+    };
+
+    Repeat.prototype.slice = function(begin, end) {
+      var size = this.size;
+      return wholeSlice(begin, end, size) ? this :
+        new Repeat(this._value, resolveEnd(end, size) - resolveBegin(begin, size));
+    };
+
+    Repeat.prototype.reverse = function() {
+      return this;
+    };
+
+    Repeat.prototype.indexOf = function(searchValue) {
+      if (is(this._value, searchValue)) {
+        return 0;
+      }
+      return -1;
+    };
+
+    Repeat.prototype.lastIndexOf = function(searchValue) {
+      if (is(this._value, searchValue)) {
+        return this.size;
+      }
+      return -1;
+    };
+
+    Repeat.prototype.__iterate = function(fn, reverse) {
+      for (var ii = 0; ii < this.size; ii++) {
+        if (fn(this._value, ii, this) === false) {
+          return ii + 1;
+        }
+      }
+      return ii;
+    };
+
+    Repeat.prototype.__iterator = function(type, reverse) {var this$0 = this;
+      var ii = 0;
+      return new Iterator(function() 
+        {return ii < this$0.size ? iteratorValue(type, ii++, this$0._value) : iteratorDone()}
+      );
+    };
+
+    Repeat.prototype.equals = function(other) {
+      return other instanceof Repeat ?
+        is(this._value, other._value) :
+        deepEqual(other);
+    };
+
+
+  var EMPTY_REPEAT;
+
+  function invariant(condition, error) {
+    if (!condition) throw new Error(error);
+  }
+
+  createClass(Range, IndexedSeq);
+
+    function Range(start, end, step) {
+      if (!(this instanceof Range)) {
+        return new Range(start, end, step);
+      }
+      invariant(step !== 0, 'Cannot step a Range by 0');
+      start = start || 0;
+      if (end === undefined) {
+        end = Infinity;
+      }
+      step = step === undefined ? 1 : Math.abs(step);
+      if (end < start) {
+        step = -step;
+      }
+      this._start = start;
+      this._end = end;
+      this._step = step;
+      this.size = Math.max(0, Math.ceil((end - start) / step - 1) + 1);
+      if (this.size === 0) {
+        if (EMPTY_RANGE) {
+          return EMPTY_RANGE;
+        }
+        EMPTY_RANGE = this;
+      }
+    }
+
+    Range.prototype.toString = function() {
+      if (this.size === 0) {
+        return 'Range []';
+      }
+      return 'Range [ ' +
+        this._start + '...' + this._end +
+        (this._step !== 1 ? ' by ' + this._step : '') +
+      ' ]';
+    };
+
+    Range.prototype.get = function(index, notSetValue) {
+      return this.has(index) ?
+        this._start + wrapIndex(this, index) * this._step :
+        notSetValue;
+    };
+
+    Range.prototype.includes = function(searchValue) {
+      var possibleIndex = (searchValue - this._start) / this._step;
+      return possibleIndex >= 0 &&
+        possibleIndex < this.size &&
+        possibleIndex === Math.floor(possibleIndex);
+    };
+
+    Range.prototype.slice = function(begin, end) {
+      if (wholeSlice(begin, end, this.size)) {
+        return this;
+      }
+      begin = resolveBegin(begin, this.size);
+      end = resolveEnd(end, this.size);
+      if (end <= begin) {
+        return new Range(0, 0);
+      }
+      return new Range(this.get(begin, this._end), this.get(end, this._end), this._step);
+    };
+
+    Range.prototype.indexOf = function(searchValue) {
+      var offsetValue = searchValue - this._start;
+      if (offsetValue % this._step === 0) {
+        var index = offsetValue / this._step;
+        if (index >= 0 && index < this.size) {
+          return index
+        }
+      }
+      return -1;
+    };
+
+    Range.prototype.lastIndexOf = function(searchValue) {
+      return this.indexOf(searchValue);
+    };
+
+    Range.prototype.__iterate = function(fn, reverse) {
+      var maxIndex = this.size - 1;
+      var step = this._step;
+      var value = reverse ? this._start + maxIndex * step : this._start;
+      for (var ii = 0; ii <= maxIndex; ii++) {
+        if (fn(value, ii, this) === false) {
+          return ii + 1;
+        }
+        value += reverse ? -step : step;
+      }
+      return ii;
+    };
+
+    Range.prototype.__iterator = function(type, reverse) {
+      var maxIndex = this.size - 1;
+      var step = this._step;
+      var value = reverse ? this._start + maxIndex * step : this._start;
+      var ii = 0;
+      return new Iterator(function()  {
+        var v = value;
+        value += reverse ? -step : step;
+        return ii > maxIndex ? iteratorDone() : iteratorValue(type, ii++, v);
+      });
+    };
+
+    Range.prototype.equals = function(other) {
+      return other instanceof Range ?
+        this._start === other._start &&
+        this._end === other._end &&
+        this._step === other._step :
+        deepEqual(this, other);
+    };
+
+
+  var EMPTY_RANGE;
+
+  createClass(Collection, Iterable);
+    function Collection() {
+      throw TypeError('Abstract');
+    }
+
+
+  createClass(KeyedCollection, Collection);function KeyedCollection() {}
+
+  createClass(IndexedCollection, Collection);function IndexedCollection() {}
+
+  createClass(SetCollection, Collection);function SetCollection() {}
+
+
+  Collection.Keyed = KeyedCollection;
+  Collection.Indexed = IndexedCollection;
+  Collection.Set = SetCollection;
+
+  var imul =
+    typeof Math.imul === 'function' && Math.imul(0xffffffff, 2) === -2 ?
+    Math.imul :
+    function imul(a, b) {
+      a = a | 0; // int
+      b = b | 0; // int
+      var c = a & 0xffff;
+      var d = b & 0xffff;
+      // Shift by 0 fixes the sign on the high part.
+      return (c * d) + ((((a >>> 16) * d + c * (b >>> 16)) << 16) >>> 0) | 0; // int
+    };
+
+  // v8 has an optimization for storing 31-bit signed numbers.
+  // Values which have either 00 or 11 as the high order bits qualify.
+  // This function drops the highest order bit in a signed number, maintaining
+  // the sign bit.
+  function smi(i32) {
+    return ((i32 >>> 1) & 0x40000000) | (i32 & 0xBFFFFFFF);
+  }
+
+  function hash(o) {
+    if (o === false || o === null || o === undefined) {
+      return 0;
+    }
+    if (typeof o.valueOf === 'function') {
+      o = o.valueOf();
+      if (o === false || o === null || o === undefined) {
+        return 0;
+      }
+    }
+    if (o === true) {
+      return 1;
+    }
+    var type = typeof o;
+    if (type === 'number') {
+      if (o !== o || o === Infinity) {
+        return 0;
+      }
+      var h = o | 0;
+      if (h !== o) {
+        h ^= o * 0xFFFFFFFF;
+      }
+      while (o > 0xFFFFFFFF) {
+        o /= 0xFFFFFFFF;
+        h ^= o;
+      }
+      return smi(h);
+    }
+    if (type === 'string') {
+      return o.length > STRING_HASH_CACHE_MIN_STRLEN ? cachedHashString(o) : hashString(o);
+    }
+    if (typeof o.hashCode === 'function') {
+      return o.hashCode();
+    }
+    if (type === 'object') {
+      return hashJSObj(o);
+    }
+    if (typeof o.toString === 'function') {
+      return hashString(o.toString());
+    }
+    throw new Error('Value type ' + type + ' cannot be hashed.');
+  }
+
+  function cachedHashString(string) {
+    var hash = stringHashCache[string];
+    if (hash === undefined) {
+      hash = hashString(string);
+      if (STRING_HASH_CACHE_SIZE === STRING_HASH_CACHE_MAX_SIZE) {
+        STRING_HASH_CACHE_SIZE = 0;
+        stringHashCache = {};
+      }
+      STRING_HASH_CACHE_SIZE++;
+      stringHashCache[string] = hash;
+    }
+    return hash;
+  }
+
+  // http://jsperf.com/hashing-strings
+  function hashString(string) {
+    // This is the hash from JVM
+    // The hash code for a string is computed as
+    // s[0] * 31 ^ (n - 1) + s[1] * 31 ^ (n - 2) + ... + s[n - 1],
+    // where s[i] is the ith character of the string and n is the length of
+    // the string. We "mod" the result to make it between 0 (inclusive) and 2^31
+    // (exclusive) by dropping high bits.
+    var hash = 0;
+    for (var ii = 0; ii < string.length; ii++) {
+      hash = 31 * hash + string.charCodeAt(ii) | 0;
+    }
+    return smi(hash);
+  }
+
+  function hashJSObj(obj) {
+    var hash;
+    if (usingWeakMap) {
+      hash = weakMap.get(obj);
+      if (hash !== undefined) {
+        return hash;
+      }
+    }
+
+    hash = obj[UID_HASH_KEY];
+    if (hash !== undefined) {
+      return hash;
+    }
+
+    if (!canDefineProperty) {
+      hash = obj.propertyIsEnumerable && obj.propertyIsEnumerable[UID_HASH_KEY];
+      if (hash !== undefined) {
+        return hash;
+      }
+
+      hash = getIENodeHash(obj);
+      if (hash !== undefined) {
+        return hash;
+      }
+    }
+
+    hash = ++objHashUID;
+    if (objHashUID & 0x40000000) {
+      objHashUID = 0;
+    }
+
+    if (usingWeakMap) {
+      weakMap.set(obj, hash);
+    } else if (isExtensible !== undefined && isExtensible(obj) === false) {
+      throw new Error('Non-extensible objects are not allowed as keys.');
+    } else if (canDefineProperty) {
+      Object.defineProperty(obj, UID_HASH_KEY, {
+        'enumerable': false,
+        'configurable': false,
+        'writable': false,
+        'value': hash
+      });
+    } else if (obj.propertyIsEnumerable !== undefined &&
+               obj.propertyIsEnumerable === obj.constructor.prototype.propertyIsEnumerable) {
+      // Since we can't define a non-enumerable property on the object
+      // we'll hijack one of the less-used non-enumerable properties to
+      // save our hash on it. Since this is a function it will not show up in
+      // `JSON.stringify` which is what we want.
+      obj.propertyIsEnumerable = function() {
+        return this.constructor.prototype.propertyIsEnumerable.apply(this, arguments);
+      };
+      obj.propertyIsEnumerable[UID_HASH_KEY] = hash;
+    } else if (obj.nodeType !== undefined) {
+      // At this point we couldn't get the IE `uniqueID` to use as a hash
+      // and we couldn't use a non-enumerable property to exploit the
+      // dontEnum bug so we simply add the `UID_HASH_KEY` on the node
+      // itself.
+      obj[UID_HASH_KEY] = hash;
+    } else {
+      throw new Error('Unable to set a non-enumerable property on object.');
+    }
+
+    return hash;
+  }
+
+  // Get references to ES5 object methods.
+  var isExtensible = Object.isExtensible;
+
+  // True if Object.defineProperty works as expected. IE8 fails this test.
+  var canDefineProperty = (function() {
+    try {
+      Object.defineProperty({}, '@', {});
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }());
+
+  // IE has a `uniqueID` property on DOM nodes. We can construct the hash from it
+  // and avoid memory leaks from the IE cloneNode bug.
+  function getIENodeHash(node) {
+    if (node && node.nodeType > 0) {
+      switch (node.nodeType) {
+        case 1: // Element
+          return node.uniqueID;
+        case 9: // Document
+          return node.documentElement && node.documentElement.uniqueID;
+      }
+    }
+  }
+
+  // If possible, use a WeakMap.
+  var usingWeakMap = typeof WeakMap === 'function';
+  var weakMap;
+  if (usingWeakMap) {
+    weakMap = new WeakMap();
+  }
+
+  var objHashUID = 0;
+
+  var UID_HASH_KEY = '__immutablehash__';
+  if (typeof Symbol === 'function') {
+    UID_HASH_KEY = Symbol(UID_HASH_KEY);
+  }
+
+  var STRING_HASH_CACHE_MIN_STRLEN = 16;
+  var STRING_HASH_CACHE_MAX_SIZE = 255;
+  var STRING_HASH_CACHE_SIZE = 0;
+  var stringHashCache = {};
+
+  function assertNotInfinite(size) {
+    invariant(
+      size !== Infinity,
+      'Cannot perform this action with an infinite size.'
+    );
+  }
+
+  createClass(Map, KeyedCollection);
+
+    // @pragma Construction
+
+    function Map(value) {
+      return value === null || value === undefined ? emptyMap() :
+        isMap(value) && !isOrdered(value) ? value :
+        emptyMap().withMutations(function(map ) {
+          var iter = KeyedIterable(value);
+          assertNotInfinite(iter.size);
+          iter.forEach(function(v, k)  {return map.set(k, v)});
+        });
+    }
+
+    Map.of = function() {var keyValues = SLICE$0.call(arguments, 0);
+      return emptyMap().withMutations(function(map ) {
+        for (var i = 0; i < keyValues.length; i += 2) {
+          if (i + 1 >= keyValues.length) {
+            throw new Error('Missing value for key: ' + keyValues[i]);
+          }
+          map.set(keyValues[i], keyValues[i + 1]);
+        }
+      });
+    };
+
+    Map.prototype.toString = function() {
+      return this.__toString('Map {', '}');
+    };
+
+    // @pragma Access
+
+    Map.prototype.get = function(k, notSetValue) {
+      return this._root ?
+        this._root.get(0, undefined, k, notSetValue) :
+        notSetValue;
+    };
+
+    // @pragma Modification
+
+    Map.prototype.set = function(k, v) {
+      return updateMap(this, k, v);
+    };
+
+    Map.prototype.setIn = function(keyPath, v) {
+      return this.updateIn(keyPath, NOT_SET, function()  {return v});
+    };
+
+    Map.prototype.remove = function(k) {
+      return updateMap(this, k, NOT_SET);
+    };
+
+    Map.prototype.deleteIn = function(keyPath) {
+      return this.updateIn(keyPath, function()  {return NOT_SET});
+    };
+
+    Map.prototype.update = function(k, notSetValue, updater) {
+      return arguments.length === 1 ?
+        k(this) :
+        this.updateIn([k], notSetValue, updater);
+    };
+
+    Map.prototype.updateIn = function(keyPath, notSetValue, updater) {
+      if (!updater) {
+        updater = notSetValue;
+        notSetValue = undefined;
+      }
+      var updatedValue = updateInDeepMap(
+        this,
+        forceIterator(keyPath),
+        notSetValue,
+        updater
+      );
+      return updatedValue === NOT_SET ? undefined : updatedValue;
+    };
+
+    Map.prototype.clear = function() {
+      if (this.size === 0) {
+        return this;
+      }
+      if (this.__ownerID) {
+        this.size = 0;
+        this._root = null;
+        this.__hash = undefined;
+        this.__altered = true;
+        return this;
+      }
+      return emptyMap();
+    };
+
+    // @pragma Composition
+
+    Map.prototype.merge = function(/*...iters*/) {
+      return mergeIntoMapWith(this, undefined, arguments);
+    };
+
+    Map.prototype.mergeWith = function(merger) {var iters = SLICE$0.call(arguments, 1);
+      return mergeIntoMapWith(this, merger, iters);
+    };
+
+    Map.prototype.mergeIn = function(keyPath) {var iters = SLICE$0.call(arguments, 1);
+      return this.updateIn(
+        keyPath,
+        emptyMap(),
+        function(m ) {return typeof m.merge === 'function' ?
+          m.merge.apply(m, iters) :
+          iters[iters.length - 1]}
+      );
+    };
+
+    Map.prototype.mergeDeep = function(/*...iters*/) {
+      return mergeIntoMapWith(this, deepMerger, arguments);
+    };
+
+    Map.prototype.mergeDeepWith = function(merger) {var iters = SLICE$0.call(arguments, 1);
+      return mergeIntoMapWith(this, deepMergerWith(merger), iters);
+    };
+
+    Map.prototype.mergeDeepIn = function(keyPath) {var iters = SLICE$0.call(arguments, 1);
+      return this.updateIn(
+        keyPath,
+        emptyMap(),
+        function(m ) {return typeof m.mergeDeep === 'function' ?
+          m.mergeDeep.apply(m, iters) :
+          iters[iters.length - 1]}
+      );
+    };
+
+    Map.prototype.sort = function(comparator) {
+      // Late binding
+      return OrderedMap(sortFactory(this, comparator));
+    };
+
+    Map.prototype.sortBy = function(mapper, comparator) {
+      // Late binding
+      return OrderedMap(sortFactory(this, comparator, mapper));
+    };
+
+    // @pragma Mutability
+
+    Map.prototype.withMutations = function(fn) {
+      var mutable = this.asMutable();
+      fn(mutable);
+      return mutable.wasAltered() ? mutable.__ensureOwner(this.__ownerID) : this;
+    };
+
+    Map.prototype.asMutable = function() {
+      return this.__ownerID ? this : this.__ensureOwner(new OwnerID());
+    };
+
+    Map.prototype.asImmutable = function() {
+      return this.__ensureOwner();
+    };
+
+    Map.prototype.wasAltered = function() {
+      return this.__altered;
+    };
+
+    Map.prototype.__iterator = function(type, reverse) {
+      return new MapIterator(this, type, reverse);
+    };
+
+    Map.prototype.__iterate = function(fn, reverse) {var this$0 = this;
+      var iterations = 0;
+      this._root && this._root.iterate(function(entry ) {
+        iterations++;
+        return fn(entry[1], entry[0], this$0);
+      }, reverse);
+      return iterations;
+    };
+
+    Map.prototype.__ensureOwner = function(ownerID) {
+      if (ownerID === this.__ownerID) {
+        return this;
+      }
+      if (!ownerID) {
+        this.__ownerID = ownerID;
+        this.__altered = false;
+        return this;
+      }
+      return makeMap(this.size, this._root, ownerID, this.__hash);
+    };
+
+
+  function isMap(maybeMap) {
+    return !!(maybeMap && maybeMap[IS_MAP_SENTINEL]);
+  }
+
+  Map.isMap = isMap;
+
+  var IS_MAP_SENTINEL = '@@__IMMUTABLE_MAP__@@';
+
+  var MapPrototype = Map.prototype;
+  MapPrototype[IS_MAP_SENTINEL] = true;
+  MapPrototype[DELETE] = MapPrototype.remove;
+  MapPrototype.removeIn = MapPrototype.deleteIn;
+
+
+  // #pragma Trie Nodes
+
+
+
+    function ArrayMapNode(ownerID, entries) {
+      this.ownerID = ownerID;
+      this.entries = entries;
+    }
+
+    ArrayMapNode.prototype.get = function(shift, keyHash, key, notSetValue) {
+      var entries = this.entries;
+      for (var ii = 0, len = entries.length; ii < len; ii++) {
+        if (is(key, entries[ii][0])) {
+          return entries[ii][1];
+        }
+      }
+      return notSetValue;
+    };
+
+    ArrayMapNode.prototype.update = function(ownerID, shift, keyHash, key, value, didChangeSize, didAlter) {
+      var removed = value === NOT_SET;
+
+      var entries = this.entries;
+      var idx = 0;
+      for (var len = entries.length; idx < len; idx++) {
+        if (is(key, entries[idx][0])) {
+          break;
+        }
+      }
+      var exists = idx < len;
+
+      if (exists ? entries[idx][1] === value : removed) {
+        return this;
+      }
+
+      SetRef(didAlter);
+      (removed || !exists) && SetRef(didChangeSize);
+
+      if (removed && entries.length === 1) {
+        return; // undefined
+      }
+
+      if (!exists && !removed && entries.length >= MAX_ARRAY_MAP_SIZE) {
+        return createNodes(ownerID, entries, key, value);
+      }
+
+      var isEditable = ownerID && ownerID === this.ownerID;
+      var newEntries = isEditable ? entries : arrCopy(entries);
+
+      if (exists) {
+        if (removed) {
+          idx === len - 1 ? newEntries.pop() : (newEntries[idx] = newEntries.pop());
+        } else {
+          newEntries[idx] = [key, value];
+        }
+      } else {
+        newEntries.push([key, value]);
+      }
+
+      if (isEditable) {
+        this.entries = newEntries;
+        return this;
+      }
+
+      return new ArrayMapNode(ownerID, newEntries);
+    };
+
+
+
+
+    function BitmapIndexedNode(ownerID, bitmap, nodes) {
+      this.ownerID = ownerID;
+      this.bitmap = bitmap;
+      this.nodes = nodes;
+    }
+
+    BitmapIndexedNode.prototype.get = function(shift, keyHash, key, notSetValue) {
+      if (keyHash === undefined) {
+        keyHash = hash(key);
+      }
+      var bit = (1 << ((shift === 0 ? keyHash : keyHash >>> shift) & MASK));
+      var bitmap = this.bitmap;
+      return (bitmap & bit) === 0 ? notSetValue :
+        this.nodes[popCount(bitmap & (bit - 1))].get(shift + SHIFT, keyHash, key, notSetValue);
+    };
+
+    BitmapIndexedNode.prototype.update = function(ownerID, shift, keyHash, key, value, didChangeSize, didAlter) {
+      if (keyHash === undefined) {
+        keyHash = hash(key);
+      }
+      var keyHashFrag = (shift === 0 ? keyHash : keyHash >>> shift) & MASK;
+      var bit = 1 << keyHashFrag;
+      var bitmap = this.bitmap;
+      var exists = (bitmap & bit) !== 0;
+
+      if (!exists && value === NOT_SET) {
+        return this;
+      }
+
+      var idx = popCount(bitmap & (bit - 1));
+      var nodes = this.nodes;
+      var node = exists ? nodes[idx] : undefined;
+      var newNode = updateNode(node, ownerID, shift + SHIFT, keyHash, key, value, didChangeSize, didAlter);
+
+      if (newNode === node) {
+        return this;
+      }
+
+      if (!exists && newNode && nodes.length >= MAX_BITMAP_INDEXED_SIZE) {
+        return expandNodes(ownerID, nodes, bitmap, keyHashFrag, newNode);
+      }
+
+      if (exists && !newNode && nodes.length === 2 && isLeafNode(nodes[idx ^ 1])) {
+        return nodes[idx ^ 1];
+      }
+
+      if (exists && newNode && nodes.length === 1 && isLeafNode(newNode)) {
+        return newNode;
+      }
+
+      var isEditable = ownerID && ownerID === this.ownerID;
+      var newBitmap = exists ? newNode ? bitmap : bitmap ^ bit : bitmap | bit;
+      var newNodes = exists ? newNode ?
+        setIn(nodes, idx, newNode, isEditable) :
+        spliceOut(nodes, idx, isEditable) :
+        spliceIn(nodes, idx, newNode, isEditable);
+
+      if (isEditable) {
+        this.bitmap = newBitmap;
+        this.nodes = newNodes;
+        return this;
+      }
+
+      return new BitmapIndexedNode(ownerID, newBitmap, newNodes);
+    };
+
+
+
+
+    function HashArrayMapNode(ownerID, count, nodes) {
+      this.ownerID = ownerID;
+      this.count = count;
+      this.nodes = nodes;
+    }
+
+    HashArrayMapNode.prototype.get = function(shift, keyHash, key, notSetValue) {
+      if (keyHash === undefined) {
+        keyHash = hash(key);
+      }
+      var idx = (shift === 0 ? keyHash : keyHash >>> shift) & MASK;
+      var node = this.nodes[idx];
+      return node ? node.get(shift + SHIFT, keyHash, key, notSetValue) : notSetValue;
+    };
+
+    HashArrayMapNode.prototype.update = function(ownerID, shift, keyHash, key, value, didChangeSize, didAlter) {
+      if (keyHash === undefined) {
+        keyHash = hash(key);
+      }
+      var idx = (shift === 0 ? keyHash : keyHash >>> shift) & MASK;
+      var removed = value === NOT_SET;
+      var nodes = this.nodes;
+      var node = nodes[idx];
+
+      if (removed && !node) {
+        return this;
+      }
+
+      var newNode = updateNode(node, ownerID, shift + SHIFT, keyHash, key, value, didChangeSize, didAlter);
+      if (newNode === node) {
+        return this;
+      }
+
+      var newCount = this.count;
+      if (!node) {
+        newCount++;
+      } else if (!newNode) {
+        newCount--;
+        if (newCount < MIN_HASH_ARRAY_MAP_SIZE) {
+          return packNodes(ownerID, nodes, newCount, idx);
+        }
+      }
+
+      var isEditable = ownerID && ownerID === this.ownerID;
+      var newNodes = setIn(nodes, idx, newNode, isEditable);
+
+      if (isEditable) {
+        this.count = newCount;
+        this.nodes = newNodes;
+        return this;
+      }
+
+      return new HashArrayMapNode(ownerID, newCount, newNodes);
+    };
+
+
+
+
+    function HashCollisionNode(ownerID, keyHash, entries) {
+      this.ownerID = ownerID;
+      this.keyHash = keyHash;
+      this.entries = entries;
+    }
+
+    HashCollisionNode.prototype.get = function(shift, keyHash, key, notSetValue) {
+      var entries = this.entries;
+      for (var ii = 0, len = entries.length; ii < len; ii++) {
+        if (is(key, entries[ii][0])) {
+          return entries[ii][1];
+        }
+      }
+      return notSetValue;
+    };
+
+    HashCollisionNode.prototype.update = function(ownerID, shift, keyHash, key, value, didChangeSize, didAlter) {
+      if (keyHash === undefined) {
+        keyHash = hash(key);
+      }
+
+      var removed = value === NOT_SET;
+
+      if (keyHash !== this.keyHash) {
+        if (removed) {
+          return this;
+        }
+        SetRef(didAlter);
+        SetRef(didChangeSize);
+        return mergeIntoNode(this, ownerID, shift, keyHash, [key, value]);
+      }
+
+      var entries = this.entries;
+      var idx = 0;
+      for (var len = entries.length; idx < len; idx++) {
+        if (is(key, entries[idx][0])) {
+          break;
+        }
+      }
+      var exists = idx < len;
+
+      if (exists ? entries[idx][1] === value : removed) {
+        return this;
+      }
+
+      SetRef(didAlter);
+      (removed || !exists) && SetRef(didChangeSize);
+
+      if (removed && len === 2) {
+        return new ValueNode(ownerID, this.keyHash, entries[idx ^ 1]);
+      }
+
+      var isEditable = ownerID && ownerID === this.ownerID;
+      var newEntries = isEditable ? entries : arrCopy(entries);
+
+      if (exists) {
+        if (removed) {
+          idx === len - 1 ? newEntries.pop() : (newEntries[idx] = newEntries.pop());
+        } else {
+          newEntries[idx] = [key, value];
+        }
+      } else {
+        newEntries.push([key, value]);
+      }
+
+      if (isEditable) {
+        this.entries = newEntries;
+        return this;
+      }
+
+      return new HashCollisionNode(ownerID, this.keyHash, newEntries);
+    };
+
+
+
+
+    function ValueNode(ownerID, keyHash, entry) {
+      this.ownerID = ownerID;
+      this.keyHash = keyHash;
+      this.entry = entry;
+    }
+
+    ValueNode.prototype.get = function(shift, keyHash, key, notSetValue) {
+      return is(key, this.entry[0]) ? this.entry[1] : notSetValue;
+    };
+
+    ValueNode.prototype.update = function(ownerID, shift, keyHash, key, value, didChangeSize, didAlter) {
+      var removed = value === NOT_SET;
+      var keyMatch = is(key, this.entry[0]);
+      if (keyMatch ? value === this.entry[1] : removed) {
+        return this;
+      }
+
+      SetRef(didAlter);
+
+      if (removed) {
+        SetRef(didChangeSize);
+        return; // undefined
+      }
+
+      if (keyMatch) {
+        if (ownerID && ownerID === this.ownerID) {
+          this.entry[1] = value;
+          return this;
+        }
+        return new ValueNode(ownerID, this.keyHash, [key, value]);
+      }
+
+      SetRef(didChangeSize);
+      return mergeIntoNode(this, ownerID, shift, hash(key), [key, value]);
+    };
+
+
+
+  // #pragma Iterators
+
+  ArrayMapNode.prototype.iterate =
+  HashCollisionNode.prototype.iterate = function (fn, reverse) {
+    var entries = this.entries;
+    for (var ii = 0, maxIndex = entries.length - 1; ii <= maxIndex; ii++) {
+      if (fn(entries[reverse ? maxIndex - ii : ii]) === false) {
+        return false;
+      }
+    }
+  }
+
+  BitmapIndexedNode.prototype.iterate =
+  HashArrayMapNode.prototype.iterate = function (fn, reverse) {
+    var nodes = this.nodes;
+    for (var ii = 0, maxIndex = nodes.length - 1; ii <= maxIndex; ii++) {
+      var node = nodes[reverse ? maxIndex - ii : ii];
+      if (node && node.iterate(fn, reverse) === false) {
+        return false;
+      }
+    }
+  }
+
+  ValueNode.prototype.iterate = function (fn, reverse) {
+    return fn(this.entry);
+  }
+
+  createClass(MapIterator, Iterator);
+
+    function MapIterator(map, type, reverse) {
+      this._type = type;
+      this._reverse = reverse;
+      this._stack = map._root && mapIteratorFrame(map._root);
+    }
+
+    MapIterator.prototype.next = function() {
+      var type = this._type;
+      var stack = this._stack;
+      while (stack) {
+        var node = stack.node;
+        var index = stack.index++;
+        var maxIndex;
+        if (node.entry) {
+          if (index === 0) {
+            return mapIteratorValue(type, node.entry);
+          }
+        } else if (node.entries) {
+          maxIndex = node.entries.length - 1;
+          if (index <= maxIndex) {
+            return mapIteratorValue(type, node.entries[this._reverse ? maxIndex - index : index]);
+          }
+        } else {
+          maxIndex = node.nodes.length - 1;
+          if (index <= maxIndex) {
+            var subNode = node.nodes[this._reverse ? maxIndex - index : index];
+            if (subNode) {
+              if (subNode.entry) {
+                return mapIteratorValue(type, subNode.entry);
+              }
+              stack = this._stack = mapIteratorFrame(subNode, stack);
+            }
+            continue;
+          }
+        }
+        stack = this._stack = this._stack.__prev;
+      }
+      return iteratorDone();
+    };
+
+
+  function mapIteratorValue(type, entry) {
+    return iteratorValue(type, entry[0], entry[1]);
+  }
+
+  function mapIteratorFrame(node, prev) {
+    return {
+      node: node,
+      index: 0,
+      __prev: prev
+    };
+  }
+
+  function makeMap(size, root, ownerID, hash) {
+    var map = Object.create(MapPrototype);
+    map.size = size;
+    map._root = root;
+    map.__ownerID = ownerID;
+    map.__hash = hash;
+    map.__altered = false;
+    return map;
+  }
+
+  var EMPTY_MAP;
+  function emptyMap() {
+    return EMPTY_MAP || (EMPTY_MAP = makeMap(0));
+  }
+
+  function updateMap(map, k, v) {
+    var newRoot;
+    var newSize;
+    if (!map._root) {
+      if (v === NOT_SET) {
+        return map;
+      }
+      newSize = 1;
+      newRoot = new ArrayMapNode(map.__ownerID, [[k, v]]);
+    } else {
+      var didChangeSize = MakeRef(CHANGE_LENGTH);
+      var didAlter = MakeRef(DID_ALTER);
+      newRoot = updateNode(map._root, map.__ownerID, 0, undefined, k, v, didChangeSize, didAlter);
+      if (!didAlter.value) {
+        return map;
+      }
+      newSize = map.size + (didChangeSize.value ? v === NOT_SET ? -1 : 1 : 0);
+    }
+    if (map.__ownerID) {
+      map.size = newSize;
+      map._root = newRoot;
+      map.__hash = undefined;
+      map.__altered = true;
+      return map;
+    }
+    return newRoot ? makeMap(newSize, newRoot) : emptyMap();
+  }
+
+  function updateNode(node, ownerID, shift, keyHash, key, value, didChangeSize, didAlter) {
+    if (!node) {
+      if (value === NOT_SET) {
+        return node;
+      }
+      SetRef(didAlter);
+      SetRef(didChangeSize);
+      return new ValueNode(ownerID, keyHash, [key, value]);
+    }
+    return node.update(ownerID, shift, keyHash, key, value, didChangeSize, didAlter);
+  }
+
+  function isLeafNode(node) {
+    return node.constructor === ValueNode || node.constructor === HashCollisionNode;
+  }
+
+  function mergeIntoNode(node, ownerID, shift, keyHash, entry) {
+    if (node.keyHash === keyHash) {
+      return new HashCollisionNode(ownerID, keyHash, [node.entry, entry]);
+    }
+
+    var idx1 = (shift === 0 ? node.keyHash : node.keyHash >>> shift) & MASK;
+    var idx2 = (shift === 0 ? keyHash : keyHash >>> shift) & MASK;
+
+    var newNode;
+    var nodes = idx1 === idx2 ?
+      [mergeIntoNode(node, ownerID, shift + SHIFT, keyHash, entry)] :
+      ((newNode = new ValueNode(ownerID, keyHash, entry)), idx1 < idx2 ? [node, newNode] : [newNode, node]);
+
+    return new BitmapIndexedNode(ownerID, (1 << idx1) | (1 << idx2), nodes);
+  }
+
+  function createNodes(ownerID, entries, key, value) {
+    if (!ownerID) {
+      ownerID = new OwnerID();
+    }
+    var node = new ValueNode(ownerID, hash(key), [key, value]);
+    for (var ii = 0; ii < entries.length; ii++) {
+      var entry = entries[ii];
+      node = node.update(ownerID, 0, undefined, entry[0], entry[1]);
+    }
+    return node;
+  }
+
+  function packNodes(ownerID, nodes, count, excluding) {
+    var bitmap = 0;
+    var packedII = 0;
+    var packedNodes = new Array(count);
+    for (var ii = 0, bit = 1, len = nodes.length; ii < len; ii++, bit <<= 1) {
+      var node = nodes[ii];
+      if (node !== undefined && ii !== excluding) {
+        bitmap |= bit;
+        packedNodes[packedII++] = node;
+      }
+    }
+    return new BitmapIndexedNode(ownerID, bitmap, packedNodes);
+  }
+
+  function expandNodes(ownerID, nodes, bitmap, including, node) {
+    var count = 0;
+    var expandedNodes = new Array(SIZE);
+    for (var ii = 0; bitmap !== 0; ii++, bitmap >>>= 1) {
+      expandedNodes[ii] = bitmap & 1 ? nodes[count++] : undefined;
+    }
+    expandedNodes[including] = node;
+    return new HashArrayMapNode(ownerID, count + 1, expandedNodes);
+  }
+
+  function mergeIntoMapWith(map, merger, iterables) {
+    var iters = [];
+    for (var ii = 0; ii < iterables.length; ii++) {
+      var value = iterables[ii];
+      var iter = KeyedIterable(value);
+      if (!isIterable(value)) {
+        iter = iter.map(function(v ) {return fromJS(v)});
+      }
+      iters.push(iter);
+    }
+    return mergeIntoCollectionWith(map, merger, iters);
+  }
+
+  function deepMerger(existing, value, key) {
+    return existing && existing.mergeDeep && isIterable(value) ?
+      existing.mergeDeep(value) :
+      is(existing, value) ? existing : value;
+  }
+
+  function deepMergerWith(merger) {
+    return function(existing, value, key)  {
+      if (existing && existing.mergeDeepWith && isIterable(value)) {
+        return existing.mergeDeepWith(merger, value);
+      }
+      var nextValue = merger(existing, value, key);
+      return is(existing, nextValue) ? existing : nextValue;
+    };
+  }
+
+  function mergeIntoCollectionWith(collection, merger, iters) {
+    iters = iters.filter(function(x ) {return x.size !== 0});
+    if (iters.length === 0) {
+      return collection;
+    }
+    if (collection.size === 0 && !collection.__ownerID && iters.length === 1) {
+      return collection.constructor(iters[0]);
+    }
+    return collection.withMutations(function(collection ) {
+      var mergeIntoMap = merger ?
+        function(value, key)  {
+          collection.update(key, NOT_SET, function(existing )
+            {return existing === NOT_SET ? value : merger(existing, value, key)}
+          );
+        } :
+        function(value, key)  {
+          collection.set(key, value);
+        }
+      for (var ii = 0; ii < iters.length; ii++) {
+        iters[ii].forEach(mergeIntoMap);
+      }
+    });
+  }
+
+  function updateInDeepMap(existing, keyPathIter, notSetValue, updater) {
+    var isNotSet = existing === NOT_SET;
+    var step = keyPathIter.next();
+    if (step.done) {
+      var existingValue = isNotSet ? notSetValue : existing;
+      var newValue = updater(existingValue);
+      return newValue === existingValue ? existing : newValue;
+    }
+    invariant(
+      isNotSet || (existing && existing.set),
+      'invalid keyPath'
+    );
+    var key = step.value;
+    var nextExisting = isNotSet ? NOT_SET : existing.get(key, NOT_SET);
+    var nextUpdated = updateInDeepMap(
+      nextExisting,
+      keyPathIter,
+      notSetValue,
+      updater
+    );
+    return nextUpdated === nextExisting ? existing :
+      nextUpdated === NOT_SET ? existing.remove(key) :
+      (isNotSet ? emptyMap() : existing).set(key, nextUpdated);
+  }
+
+  function popCount(x) {
+    x = x - ((x >> 1) & 0x55555555);
+    x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
+    x = (x + (x >> 4)) & 0x0f0f0f0f;
+    x = x + (x >> 8);
+    x = x + (x >> 16);
+    return x & 0x7f;
+  }
+
+  function setIn(array, idx, val, canEdit) {
+    var newArray = canEdit ? array : arrCopy(array);
+    newArray[idx] = val;
+    return newArray;
+  }
+
+  function spliceIn(array, idx, val, canEdit) {
+    var newLen = array.length + 1;
+    if (canEdit && idx + 1 === newLen) {
+      array[idx] = val;
+      return array;
+    }
+    var newArray = new Array(newLen);
+    var after = 0;
+    for (var ii = 0; ii < newLen; ii++) {
+      if (ii === idx) {
+        newArray[ii] = val;
+        after = -1;
+      } else {
+        newArray[ii] = array[ii + after];
+      }
+    }
+    return newArray;
+  }
+
+  function spliceOut(array, idx, canEdit) {
+    var newLen = array.length - 1;
+    if (canEdit && idx === newLen) {
+      array.pop();
+      return array;
+    }
+    var newArray = new Array(newLen);
+    var after = 0;
+    for (var ii = 0; ii < newLen; ii++) {
+      if (ii === idx) {
+        after = 1;
+      }
+      newArray[ii] = array[ii + after];
+    }
+    return newArray;
+  }
+
+  var MAX_ARRAY_MAP_SIZE = SIZE / 4;
+  var MAX_BITMAP_INDEXED_SIZE = SIZE / 2;
+  var MIN_HASH_ARRAY_MAP_SIZE = SIZE / 4;
+
+  createClass(List, IndexedCollection);
+
+    // @pragma Construction
+
+    function List(value) {
+      var empty = emptyList();
+      if (value === null || value === undefined) {
+        return empty;
+      }
+      if (isList(value)) {
+        return value;
+      }
+      var iter = IndexedIterable(value);
+      var size = iter.size;
+      if (size === 0) {
+        return empty;
+      }
+      assertNotInfinite(size);
+      if (size > 0 && size < SIZE) {
+        return makeList(0, size, SHIFT, null, new VNode(iter.toArray()));
+      }
+      return empty.withMutations(function(list ) {
+        list.setSize(size);
+        iter.forEach(function(v, i)  {return list.set(i, v)});
+      });
+    }
+
+    List.of = function(/*...values*/) {
+      return this(arguments);
+    };
+
+    List.prototype.toString = function() {
+      return this.__toString('List [', ']');
+    };
+
+    // @pragma Access
+
+    List.prototype.get = function(index, notSetValue) {
+      index = wrapIndex(this, index);
+      if (index >= 0 && index < this.size) {
+        index += this._origin;
+        var node = listNodeFor(this, index);
+        return node && node.array[index & MASK];
+      }
+      return notSetValue;
+    };
+
+    // @pragma Modification
+
+    List.prototype.set = function(index, value) {
+      return updateList(this, index, value);
+    };
+
+    List.prototype.remove = function(index) {
+      return !this.has(index) ? this :
+        index === 0 ? this.shift() :
+        index === this.size - 1 ? this.pop() :
+        this.splice(index, 1);
+    };
+
+    List.prototype.insert = function(index, value) {
+      return this.splice(index, 0, value);
+    };
+
+    List.prototype.clear = function() {
+      if (this.size === 0) {
+        return this;
+      }
+      if (this.__ownerID) {
+        this.size = this._origin = this._capacity = 0;
+        this._level = SHIFT;
+        this._root = this._tail = null;
+        this.__hash = undefined;
+        this.__altered = true;
+        return this;
+      }
+      return emptyList();
+    };
+
+    List.prototype.push = function(/*...values*/) {
+      var values = arguments;
+      var oldSize = this.size;
+      return this.withMutations(function(list ) {
+        setListBounds(list, 0, oldSize + values.length);
+        for (var ii = 0; ii < values.length; ii++) {
+          list.set(oldSize + ii, values[ii]);
+        }
+      });
+    };
+
+    List.prototype.pop = function() {
+      return setListBounds(this, 0, -1);
+    };
+
+    List.prototype.unshift = function(/*...values*/) {
+      var values = arguments;
+      return this.withMutations(function(list ) {
+        setListBounds(list, -values.length);
+        for (var ii = 0; ii < values.length; ii++) {
+          list.set(ii, values[ii]);
+        }
+      });
+    };
+
+    List.prototype.shift = function() {
+      return setListBounds(this, 1);
+    };
+
+    // @pragma Composition
+
+    List.prototype.merge = function(/*...iters*/) {
+      return mergeIntoListWith(this, undefined, arguments);
+    };
+
+    List.prototype.mergeWith = function(merger) {var iters = SLICE$0.call(arguments, 1);
+      return mergeIntoListWith(this, merger, iters);
+    };
+
+    List.prototype.mergeDeep = function(/*...iters*/) {
+      return mergeIntoListWith(this, deepMerger, arguments);
+    };
+
+    List.prototype.mergeDeepWith = function(merger) {var iters = SLICE$0.call(arguments, 1);
+      return mergeIntoListWith(this, deepMergerWith(merger), iters);
+    };
+
+    List.prototype.setSize = function(size) {
+      return setListBounds(this, 0, size);
+    };
+
+    // @pragma Iteration
+
+    List.prototype.slice = function(begin, end) {
+      var size = this.size;
+      if (wholeSlice(begin, end, size)) {
+        return this;
+      }
+      return setListBounds(
+        this,
+        resolveBegin(begin, size),
+        resolveEnd(end, size)
+      );
+    };
+
+    List.prototype.__iterator = function(type, reverse) {
+      var index = 0;
+      var values = iterateList(this, reverse);
+      return new Iterator(function()  {
+        var value = values();
+        return value === DONE ?
+          iteratorDone() :
+          iteratorValue(type, index++, value);
+      });
+    };
+
+    List.prototype.__iterate = function(fn, reverse) {
+      var index = 0;
+      var values = iterateList(this, reverse);
+      var value;
+      while ((value = values()) !== DONE) {
+        if (fn(value, index++, this) === false) {
+          break;
+        }
+      }
+      return index;
+    };
+
+    List.prototype.__ensureOwner = function(ownerID) {
+      if (ownerID === this.__ownerID) {
+        return this;
+      }
+      if (!ownerID) {
+        this.__ownerID = ownerID;
+        return this;
+      }
+      return makeList(this._origin, this._capacity, this._level, this._root, this._tail, ownerID, this.__hash);
+    };
+
+
+  function isList(maybeList) {
+    return !!(maybeList && maybeList[IS_LIST_SENTINEL]);
+  }
+
+  List.isList = isList;
+
+  var IS_LIST_SENTINEL = '@@__IMMUTABLE_LIST__@@';
+
+  var ListPrototype = List.prototype;
+  ListPrototype[IS_LIST_SENTINEL] = true;
+  ListPrototype[DELETE] = ListPrototype.remove;
+  ListPrototype.setIn = MapPrototype.setIn;
+  ListPrototype.deleteIn =
+  ListPrototype.removeIn = MapPrototype.removeIn;
+  ListPrototype.update = MapPrototype.update;
+  ListPrototype.updateIn = MapPrototype.updateIn;
+  ListPrototype.mergeIn = MapPrototype.mergeIn;
+  ListPrototype.mergeDeepIn = MapPrototype.mergeDeepIn;
+  ListPrototype.withMutations = MapPrototype.withMutations;
+  ListPrototype.asMutable = MapPrototype.asMutable;
+  ListPrototype.asImmutable = MapPrototype.asImmutable;
+  ListPrototype.wasAltered = MapPrototype.wasAltered;
+
+
+
+    function VNode(array, ownerID) {
+      this.array = array;
+      this.ownerID = ownerID;
+    }
+
+    // TODO: seems like these methods are very similar
+
+    VNode.prototype.removeBefore = function(ownerID, level, index) {
+      if (index === level ? 1 << level : 0 || this.array.length === 0) {
+        return this;
+      }
+      var originIndex = (index >>> level) & MASK;
+      if (originIndex >= this.array.length) {
+        return new VNode([], ownerID);
+      }
+      var removingFirst = originIndex === 0;
+      var newChild;
+      if (level > 0) {
+        var oldChild = this.array[originIndex];
+        newChild = oldChild && oldChild.removeBefore(ownerID, level - SHIFT, index);
+        if (newChild === oldChild && removingFirst) {
+          return this;
+        }
+      }
+      if (removingFirst && !newChild) {
+        return this;
+      }
+      var editable = editableVNode(this, ownerID);
+      if (!removingFirst) {
+        for (var ii = 0; ii < originIndex; ii++) {
+          editable.array[ii] = undefined;
+        }
+      }
+      if (newChild) {
+        editable.array[originIndex] = newChild;
+      }
+      return editable;
+    };
+
+    VNode.prototype.removeAfter = function(ownerID, level, index) {
+      if (index === (level ? 1 << level : 0) || this.array.length === 0) {
+        return this;
+      }
+      var sizeIndex = ((index - 1) >>> level) & MASK;
+      if (sizeIndex >= this.array.length) {
+        return this;
+      }
+
+      var newChild;
+      if (level > 0) {
+        var oldChild = this.array[sizeIndex];
+        newChild = oldChild && oldChild.removeAfter(ownerID, level - SHIFT, index);
+        if (newChild === oldChild && sizeIndex === this.array.length - 1) {
+          return this;
+        }
+      }
+
+      var editable = editableVNode(this, ownerID);
+      editable.array.splice(sizeIndex + 1);
+      if (newChild) {
+        editable.array[sizeIndex] = newChild;
+      }
+      return editable;
+    };
+
+
+
+  var DONE = {};
+
+  function iterateList(list, reverse) {
+    var left = list._origin;
+    var right = list._capacity;
+    var tailPos = getTailOffset(right);
+    var tail = list._tail;
+
+    return iterateNodeOrLeaf(list._root, list._level, 0);
+
+    function iterateNodeOrLeaf(node, level, offset) {
+      return level === 0 ?
+        iterateLeaf(node, offset) :
+        iterateNode(node, level, offset);
+    }
+
+    function iterateLeaf(node, offset) {
+      var array = offset === tailPos ? tail && tail.array : node && node.array;
+      var from = offset > left ? 0 : left - offset;
+      var to = right - offset;
+      if (to > SIZE) {
+        to = SIZE;
+      }
+      return function()  {
+        if (from === to) {
+          return DONE;
+        }
+        var idx = reverse ? --to : from++;
+        return array && array[idx];
+      };
+    }
+
+    function iterateNode(node, level, offset) {
+      var values;
+      var array = node && node.array;
+      var from = offset > left ? 0 : (left - offset) >> level;
+      var to = ((right - offset) >> level) + 1;
+      if (to > SIZE) {
+        to = SIZE;
+      }
+      return function()  {
+        do {
+          if (values) {
+            var value = values();
+            if (value !== DONE) {
+              return value;
+            }
+            values = null;
+          }
+          if (from === to) {
+            return DONE;
+          }
+          var idx = reverse ? --to : from++;
+          values = iterateNodeOrLeaf(
+            array && array[idx], level - SHIFT, offset + (idx << level)
+          );
+        } while (true);
+      };
+    }
+  }
+
+  function makeList(origin, capacity, level, root, tail, ownerID, hash) {
+    var list = Object.create(ListPrototype);
+    list.size = capacity - origin;
+    list._origin = origin;
+    list._capacity = capacity;
+    list._level = level;
+    list._root = root;
+    list._tail = tail;
+    list.__ownerID = ownerID;
+    list.__hash = hash;
+    list.__altered = false;
+    return list;
+  }
+
+  var EMPTY_LIST;
+  function emptyList() {
+    return EMPTY_LIST || (EMPTY_LIST = makeList(0, 0, SHIFT));
+  }
+
+  function updateList(list, index, value) {
+    index = wrapIndex(list, index);
+
+    if (index !== index) {
+      return list;
+    }
+
+    if (index >= list.size || index < 0) {
+      return list.withMutations(function(list ) {
+        index < 0 ?
+          setListBounds(list, index).set(0, value) :
+          setListBounds(list, 0, index + 1).set(index, value)
+      });
+    }
+
+    index += list._origin;
+
+    var newTail = list._tail;
+    var newRoot = list._root;
+    var didAlter = MakeRef(DID_ALTER);
+    if (index >= getTailOffset(list._capacity)) {
+      newTail = updateVNode(newTail, list.__ownerID, 0, index, value, didAlter);
+    } else {
+      newRoot = updateVNode(newRoot, list.__ownerID, list._level, index, value, didAlter);
+    }
+
+    if (!didAlter.value) {
+      return list;
+    }
+
+    if (list.__ownerID) {
+      list._root = newRoot;
+      list._tail = newTail;
+      list.__hash = undefined;
+      list.__altered = true;
+      return list;
+    }
+    return makeList(list._origin, list._capacity, list._level, newRoot, newTail);
+  }
+
+  function updateVNode(node, ownerID, level, index, value, didAlter) {
+    var idx = (index >>> level) & MASK;
+    var nodeHas = node && idx < node.array.length;
+    if (!nodeHas && value === undefined) {
+      return node;
+    }
+
+    var newNode;
+
+    if (level > 0) {
+      var lowerNode = node && node.array[idx];
+      var newLowerNode = updateVNode(lowerNode, ownerID, level - SHIFT, index, value, didAlter);
+      if (newLowerNode === lowerNode) {
+        return node;
+      }
+      newNode = editableVNode(node, ownerID);
+      newNode.array[idx] = newLowerNode;
+      return newNode;
+    }
+
+    if (nodeHas && node.array[idx] === value) {
+      return node;
+    }
+
+    SetRef(didAlter);
+
+    newNode = editableVNode(node, ownerID);
+    if (value === undefined && idx === newNode.array.length - 1) {
+      newNode.array.pop();
+    } else {
+      newNode.array[idx] = value;
+    }
+    return newNode;
+  }
+
+  function editableVNode(node, ownerID) {
+    if (ownerID && node && ownerID === node.ownerID) {
+      return node;
+    }
+    return new VNode(node ? node.array.slice() : [], ownerID);
+  }
+
+  function listNodeFor(list, rawIndex) {
+    if (rawIndex >= getTailOffset(list._capacity)) {
+      return list._tail;
+    }
+    if (rawIndex < 1 << (list._level + SHIFT)) {
+      var node = list._root;
+      var level = list._level;
+      while (node && level > 0) {
+        node = node.array[(rawIndex >>> level) & MASK];
+        level -= SHIFT;
+      }
+      return node;
+    }
+  }
+
+  function setListBounds(list, begin, end) {
+    // Sanitize begin & end using this shorthand for ToInt32(argument)
+    // http://www.ecma-international.org/ecma-262/6.0/#sec-toint32
+    if (begin !== undefined) {
+      begin = begin | 0;
+    }
+    if (end !== undefined) {
+      end = end | 0;
+    }
+    var owner = list.__ownerID || new OwnerID();
+    var oldOrigin = list._origin;
+    var oldCapacity = list._capacity;
+    var newOrigin = oldOrigin + begin;
+    var newCapacity = end === undefined ? oldCapacity : end < 0 ? oldCapacity + end : oldOrigin + end;
+    if (newOrigin === oldOrigin && newCapacity === oldCapacity) {
+      return list;
+    }
+
+    // If it's going to end after it starts, it's empty.
+    if (newOrigin >= newCapacity) {
+      return list.clear();
+    }
+
+    var newLevel = list._level;
+    var newRoot = list._root;
+
+    // New origin might need creating a higher root.
+    var offsetShift = 0;
+    while (newOrigin + offsetShift < 0) {
+      newRoot = new VNode(newRoot && newRoot.array.length ? [undefined, newRoot] : [], owner);
+      newLevel += SHIFT;
+      offsetShift += 1 << newLevel;
+    }
+    if (offsetShift) {
+      newOrigin += offsetShift;
+      oldOrigin += offsetShift;
+      newCapacity += offsetShift;
+      oldCapacity += offsetShift;
+    }
+
+    var oldTailOffset = getTailOffset(oldCapacity);
+    var newTailOffset = getTailOffset(newCapacity);
+
+    // New size might need creating a higher root.
+    while (newTailOffset >= 1 << (newLevel + SHIFT)) {
+      newRoot = new VNode(newRoot && newRoot.array.length ? [newRoot] : [], owner);
+      newLevel += SHIFT;
+    }
+
+    // Locate or create the new tail.
+    var oldTail = list._tail;
+    var newTail = newTailOffset < oldTailOffset ?
+      listNodeFor(list, newCapacity - 1) :
+      newTailOffset > oldTailOffset ? new VNode([], owner) : oldTail;
+
+    // Merge Tail into tree.
+    if (oldTail && newTailOffset > oldTailOffset && newOrigin < oldCapacity && oldTail.array.length) {
+      newRoot = editableVNode(newRoot, owner);
+      var node = newRoot;
+      for (var level = newLevel; level > SHIFT; level -= SHIFT) {
+        var idx = (oldTailOffset >>> level) & MASK;
+        node = node.array[idx] = editableVNode(node.array[idx], owner);
+      }
+      node.array[(oldTailOffset >>> SHIFT) & MASK] = oldTail;
+    }
+
+    // If the size has been reduced, there's a chance the tail needs to be trimmed.
+    if (newCapacity < oldCapacity) {
+      newTail = newTail && newTail.removeAfter(owner, 0, newCapacity);
+    }
+
+    // If the new origin is within the tail, then we do not need a root.
+    if (newOrigin >= newTailOffset) {
+      newOrigin -= newTailOffset;
+      newCapacity -= newTailOffset;
+      newLevel = SHIFT;
+      newRoot = null;
+      newTail = newTail && newTail.removeBefore(owner, 0, newOrigin);
+
+    // Otherwise, if the root has been trimmed, garbage collect.
+    } else if (newOrigin > oldOrigin || newTailOffset < oldTailOffset) {
+      offsetShift = 0;
+
+      // Identify the new top root node of the subtree of the old root.
+      while (newRoot) {
+        var beginIndex = (newOrigin >>> newLevel) & MASK;
+        if (beginIndex !== (newTailOffset >>> newLevel) & MASK) {
+          break;
+        }
+        if (beginIndex) {
+          offsetShift += (1 << newLevel) * beginIndex;
+        }
+        newLevel -= SHIFT;
+        newRoot = newRoot.array[beginIndex];
+      }
+
+      // Trim the new sides of the new root.
+      if (newRoot && newOrigin > oldOrigin) {
+        newRoot = newRoot.removeBefore(owner, newLevel, newOrigin - offsetShift);
+      }
+      if (newRoot && newTailOffset < oldTailOffset) {
+        newRoot = newRoot.removeAfter(owner, newLevel, newTailOffset - offsetShift);
+      }
+      if (offsetShift) {
+        newOrigin -= offsetShift;
+        newCapacity -= offsetShift;
+      }
+    }
+
+    if (list.__ownerID) {
+      list.size = newCapacity - newOrigin;
+      list._origin = newOrigin;
+      list._capacity = newCapacity;
+      list._level = newLevel;
+      list._root = newRoot;
+      list._tail = newTail;
+      list.__hash = undefined;
+      list.__altered = true;
+      return list;
+    }
+    return makeList(newOrigin, newCapacity, newLevel, newRoot, newTail);
+  }
+
+  function mergeIntoListWith(list, merger, iterables) {
+    var iters = [];
+    var maxSize = 0;
+    for (var ii = 0; ii < iterables.length; ii++) {
+      var value = iterables[ii];
+      var iter = IndexedIterable(value);
+      if (iter.size > maxSize) {
+        maxSize = iter.size;
+      }
+      if (!isIterable(value)) {
+        iter = iter.map(function(v ) {return fromJS(v)});
+      }
+      iters.push(iter);
+    }
+    if (maxSize > list.size) {
+      list = list.setSize(maxSize);
+    }
+    return mergeIntoCollectionWith(list, merger, iters);
+  }
+
+  function getTailOffset(size) {
+    return size < SIZE ? 0 : (((size - 1) >>> SHIFT) << SHIFT);
+  }
+
+  createClass(OrderedMap, Map);
+
+    // @pragma Construction
+
+    function OrderedMap(value) {
+      return value === null || value === undefined ? emptyOrderedMap() :
+        isOrderedMap(value) ? value :
+        emptyOrderedMap().withMutations(function(map ) {
+          var iter = KeyedIterable(value);
+          assertNotInfinite(iter.size);
+          iter.forEach(function(v, k)  {return map.set(k, v)});
+        });
+    }
+
+    OrderedMap.of = function(/*...values*/) {
+      return this(arguments);
+    };
+
+    OrderedMap.prototype.toString = function() {
+      return this.__toString('OrderedMap {', '}');
+    };
+
+    // @pragma Access
+
+    OrderedMap.prototype.get = function(k, notSetValue) {
+      var index = this._map.get(k);
+      return index !== undefined ? this._list.get(index)[1] : notSetValue;
+    };
+
+    // @pragma Modification
+
+    OrderedMap.prototype.clear = function() {
+      if (this.size === 0) {
+        return this;
+      }
+      if (this.__ownerID) {
+        this.size = 0;
+        this._map.clear();
+        this._list.clear();
+        return this;
+      }
+      return emptyOrderedMap();
+    };
+
+    OrderedMap.prototype.set = function(k, v) {
+      return updateOrderedMap(this, k, v);
+    };
+
+    OrderedMap.prototype.remove = function(k) {
+      return updateOrderedMap(this, k, NOT_SET);
+    };
+
+    OrderedMap.prototype.wasAltered = function() {
+      return this._map.wasAltered() || this._list.wasAltered();
+    };
+
+    OrderedMap.prototype.__iterate = function(fn, reverse) {var this$0 = this;
+      return this._list.__iterate(
+        function(entry ) {return entry && fn(entry[1], entry[0], this$0)},
+        reverse
+      );
+    };
+
+    OrderedMap.prototype.__iterator = function(type, reverse) {
+      return this._list.fromEntrySeq().__iterator(type, reverse);
+    };
+
+    OrderedMap.prototype.__ensureOwner = function(ownerID) {
+      if (ownerID === this.__ownerID) {
+        return this;
+      }
+      var newMap = this._map.__ensureOwner(ownerID);
+      var newList = this._list.__ensureOwner(ownerID);
+      if (!ownerID) {
+        this.__ownerID = ownerID;
+        this._map = newMap;
+        this._list = newList;
+        return this;
+      }
+      return makeOrderedMap(newMap, newList, ownerID, this.__hash);
+    };
+
+
+  function isOrderedMap(maybeOrderedMap) {
+    return isMap(maybeOrderedMap) && isOrdered(maybeOrderedMap);
+  }
+
+  OrderedMap.isOrderedMap = isOrderedMap;
+
+  OrderedMap.prototype[IS_ORDERED_SENTINEL] = true;
+  OrderedMap.prototype[DELETE] = OrderedMap.prototype.remove;
+
+
+
+  function makeOrderedMap(map, list, ownerID, hash) {
+    var omap = Object.create(OrderedMap.prototype);
+    omap.size = map ? map.size : 0;
+    omap._map = map;
+    omap._list = list;
+    omap.__ownerID = ownerID;
+    omap.__hash = hash;
+    return omap;
+  }
+
+  var EMPTY_ORDERED_MAP;
+  function emptyOrderedMap() {
+    return EMPTY_ORDERED_MAP || (EMPTY_ORDERED_MAP = makeOrderedMap(emptyMap(), emptyList()));
+  }
+
+  function updateOrderedMap(omap, k, v) {
+    var map = omap._map;
+    var list = omap._list;
+    var i = map.get(k);
+    var has = i !== undefined;
+    var newMap;
+    var newList;
+    if (v === NOT_SET) { // removed
+      if (!has) {
+        return omap;
+      }
+      if (list.size >= SIZE && list.size >= map.size * 2) {
+        newList = list.filter(function(entry, idx)  {return entry !== undefined && i !== idx});
+        newMap = newList.toKeyedSeq().map(function(entry ) {return entry[0]}).flip().toMap();
+        if (omap.__ownerID) {
+          newMap.__ownerID = newList.__ownerID = omap.__ownerID;
+        }
+      } else {
+        newMap = map.remove(k);
+        newList = i === list.size - 1 ? list.pop() : list.set(i, undefined);
+      }
+    } else {
+      if (has) {
+        if (v === list.get(i)[1]) {
+          return omap;
+        }
+        newMap = map;
+        newList = list.set(i, [k, v]);
+      } else {
+        newMap = map.set(k, list.size);
+        newList = list.set(list.size, [k, v]);
+      }
+    }
+    if (omap.__ownerID) {
+      omap.size = newMap.size;
+      omap._map = newMap;
+      omap._list = newList;
+      omap.__hash = undefined;
+      return omap;
+    }
+    return makeOrderedMap(newMap, newList);
+  }
+
+  createClass(ToKeyedSequence, KeyedSeq);
+    function ToKeyedSequence(indexed, useKeys) {
+      this._iter = indexed;
+      this._useKeys = useKeys;
+      this.size = indexed.size;
+    }
+
+    ToKeyedSequence.prototype.get = function(key, notSetValue) {
+      return this._iter.get(key, notSetValue);
+    };
+
+    ToKeyedSequence.prototype.has = function(key) {
+      return this._iter.has(key);
+    };
+
+    ToKeyedSequence.prototype.valueSeq = function() {
+      return this._iter.valueSeq();
+    };
+
+    ToKeyedSequence.prototype.reverse = function() {var this$0 = this;
+      var reversedSequence = reverseFactory(this, true);
+      if (!this._useKeys) {
+        reversedSequence.valueSeq = function()  {return this$0._iter.toSeq().reverse()};
+      }
+      return reversedSequence;
+    };
+
+    ToKeyedSequence.prototype.map = function(mapper, context) {var this$0 = this;
+      var mappedSequence = mapFactory(this, mapper, context);
+      if (!this._useKeys) {
+        mappedSequence.valueSeq = function()  {return this$0._iter.toSeq().map(mapper, context)};
+      }
+      return mappedSequence;
+    };
+
+    ToKeyedSequence.prototype.__iterate = function(fn, reverse) {var this$0 = this;
+      var ii;
+      return this._iter.__iterate(
+        this._useKeys ?
+          function(v, k)  {return fn(v, k, this$0)} :
+          ((ii = reverse ? resolveSize(this) : 0),
+            function(v ) {return fn(v, reverse ? --ii : ii++, this$0)}),
+        reverse
+      );
+    };
+
+    ToKeyedSequence.prototype.__iterator = function(type, reverse) {
+      if (this._useKeys) {
+        return this._iter.__iterator(type, reverse);
+      }
+      var iterator = this._iter.__iterator(ITERATE_VALUES, reverse);
+      var ii = reverse ? resolveSize(this) : 0;
+      return new Iterator(function()  {
+        var step = iterator.next();
+        return step.done ? step :
+          iteratorValue(type, reverse ? --ii : ii++, step.value, step);
+      });
+    };
+
+  ToKeyedSequence.prototype[IS_ORDERED_SENTINEL] = true;
+
+
+  createClass(ToIndexedSequence, IndexedSeq);
+    function ToIndexedSequence(iter) {
+      this._iter = iter;
+      this.size = iter.size;
+    }
+
+    ToIndexedSequence.prototype.includes = function(value) {
+      return this._iter.includes(value);
+    };
+
+    ToIndexedSequence.prototype.__iterate = function(fn, reverse) {var this$0 = this;
+      var iterations = 0;
+      return this._iter.__iterate(function(v ) {return fn(v, iterations++, this$0)}, reverse);
+    };
+
+    ToIndexedSequence.prototype.__iterator = function(type, reverse) {
+      var iterator = this._iter.__iterator(ITERATE_VALUES, reverse);
+      var iterations = 0;
+      return new Iterator(function()  {
+        var step = iterator.next();
+        return step.done ? step :
+          iteratorValue(type, iterations++, step.value, step)
+      });
+    };
+
+
+
+  createClass(ToSetSequence, SetSeq);
+    function ToSetSequence(iter) {
+      this._iter = iter;
+      this.size = iter.size;
+    }
+
+    ToSetSequence.prototype.has = function(key) {
+      return this._iter.includes(key);
+    };
+
+    ToSetSequence.prototype.__iterate = function(fn, reverse) {var this$0 = this;
+      return this._iter.__iterate(function(v ) {return fn(v, v, this$0)}, reverse);
+    };
+
+    ToSetSequence.prototype.__iterator = function(type, reverse) {
+      var iterator = this._iter.__iterator(ITERATE_VALUES, reverse);
+      return new Iterator(function()  {
+        var step = iterator.next();
+        return step.done ? step :
+          iteratorValue(type, step.value, step.value, step);
+      });
+    };
+
+
+
+  createClass(FromEntriesSequence, KeyedSeq);
+    function FromEntriesSequence(entries) {
+      this._iter = entries;
+      this.size = entries.size;
+    }
+
+    FromEntriesSequence.prototype.entrySeq = function() {
+      return this._iter.toSeq();
+    };
+
+    FromEntriesSequence.prototype.__iterate = function(fn, reverse) {var this$0 = this;
+      return this._iter.__iterate(function(entry ) {
+        // Check if entry exists first so array access doesn't throw for holes
+        // in the parent iteration.
+        if (entry) {
+          validateEntry(entry);
+          var indexedIterable = isIterable(entry);
+          return fn(
+            indexedIterable ? entry.get(1) : entry[1],
+            indexedIterable ? entry.get(0) : entry[0],
+            this$0
+          );
+        }
+      }, reverse);
+    };
+
+    FromEntriesSequence.prototype.__iterator = function(type, reverse) {
+      var iterator = this._iter.__iterator(ITERATE_VALUES, reverse);
+      return new Iterator(function()  {
+        while (true) {
+          var step = iterator.next();
+          if (step.done) {
+            return step;
+          }
+          var entry = step.value;
+          // Check if entry exists first so array access doesn't throw for holes
+          // in the parent iteration.
+          if (entry) {
+            validateEntry(entry);
+            var indexedIterable = isIterable(entry);
+            return iteratorValue(
+              type,
+              indexedIterable ? entry.get(0) : entry[0],
+              indexedIterable ? entry.get(1) : entry[1],
+              step
+            );
+          }
+        }
+      });
+    };
+
+
+  ToIndexedSequence.prototype.cacheResult =
+  ToKeyedSequence.prototype.cacheResult =
+  ToSetSequence.prototype.cacheResult =
+  FromEntriesSequence.prototype.cacheResult =
+    cacheResultThrough;
+
+
+  function flipFactory(iterable) {
+    var flipSequence = makeSequence(iterable);
+    flipSequence._iter = iterable;
+    flipSequence.size = iterable.size;
+    flipSequence.flip = function()  {return iterable};
+    flipSequence.reverse = function () {
+      var reversedSequence = iterable.reverse.apply(this); // super.reverse()
+      reversedSequence.flip = function()  {return iterable.reverse()};
+      return reversedSequence;
+    };
+    flipSequence.has = function(key ) {return iterable.includes(key)};
+    flipSequence.includes = function(key ) {return iterable.has(key)};
+    flipSequence.cacheResult = cacheResultThrough;
+    flipSequence.__iterateUncached = function (fn, reverse) {var this$0 = this;
+      return iterable.__iterate(function(v, k)  {return fn(k, v, this$0) !== false}, reverse);
+    }
+    flipSequence.__iteratorUncached = function(type, reverse) {
+      if (type === ITERATE_ENTRIES) {
+        var iterator = iterable.__iterator(type, reverse);
+        return new Iterator(function()  {
+          var step = iterator.next();
+          if (!step.done) {
+            var k = step.value[0];
+            step.value[0] = step.value[1];
+            step.value[1] = k;
+          }
+          return step;
+        });
+      }
+      return iterable.__iterator(
+        type === ITERATE_VALUES ? ITERATE_KEYS : ITERATE_VALUES,
+        reverse
+      );
+    }
+    return flipSequence;
+  }
+
+
+  function mapFactory(iterable, mapper, context) {
+    var mappedSequence = makeSequence(iterable);
+    mappedSequence.size = iterable.size;
+    mappedSequence.has = function(key ) {return iterable.has(key)};
+    mappedSequence.get = function(key, notSetValue)  {
+      var v = iterable.get(key, NOT_SET);
+      return v === NOT_SET ?
+        notSetValue :
+        mapper.call(context, v, key, iterable);
+    };
+    mappedSequence.__iterateUncached = function (fn, reverse) {var this$0 = this;
+      return iterable.__iterate(
+        function(v, k, c)  {return fn(mapper.call(context, v, k, c), k, this$0) !== false},
+        reverse
+      );
+    }
+    mappedSequence.__iteratorUncached = function (type, reverse) {
+      var iterator = iterable.__iterator(ITERATE_ENTRIES, reverse);
+      return new Iterator(function()  {
+        var step = iterator.next();
+        if (step.done) {
+          return step;
+        }
+        var entry = step.value;
+        var key = entry[0];
+        return iteratorValue(
+          type,
+          key,
+          mapper.call(context, entry[1], key, iterable),
+          step
+        );
+      });
+    }
+    return mappedSequence;
+  }
+
+
+  function reverseFactory(iterable, useKeys) {
+    var reversedSequence = makeSequence(iterable);
+    reversedSequence._iter = iterable;
+    reversedSequence.size = iterable.size;
+    reversedSequence.reverse = function()  {return iterable};
+    if (iterable.flip) {
+      reversedSequence.flip = function () {
+        var flipSequence = flipFactory(iterable);
+        flipSequence.reverse = function()  {return iterable.flip()};
+        return flipSequence;
+      };
+    }
+    reversedSequence.get = function(key, notSetValue) 
+      {return iterable.get(useKeys ? key : -1 - key, notSetValue)};
+    reversedSequence.has = function(key )
+      {return iterable.has(useKeys ? key : -1 - key)};
+    reversedSequence.includes = function(value ) {return iterable.includes(value)};
+    reversedSequence.cacheResult = cacheResultThrough;
+    reversedSequence.__iterate = function (fn, reverse) {var this$0 = this;
+      return iterable.__iterate(function(v, k)  {return fn(v, k, this$0)}, !reverse);
+    };
+    reversedSequence.__iterator =
+      function(type, reverse)  {return iterable.__iterator(type, !reverse)};
+    return reversedSequence;
+  }
+
+
+  function filterFactory(iterable, predicate, context, useKeys) {
+    var filterSequence = makeSequence(iterable);
+    if (useKeys) {
+      filterSequence.has = function(key ) {
+        var v = iterable.get(key, NOT_SET);
+        return v !== NOT_SET && !!predicate.call(context, v, key, iterable);
+      };
+      filterSequence.get = function(key, notSetValue)  {
+        var v = iterable.get(key, NOT_SET);
+        return v !== NOT_SET && predicate.call(context, v, key, iterable) ?
+          v : notSetValue;
+      };
+    }
+    filterSequence.__iterateUncached = function (fn, reverse) {var this$0 = this;
+      var iterations = 0;
+      iterable.__iterate(function(v, k, c)  {
+        if (predicate.call(context, v, k, c)) {
+          iterations++;
+          return fn(v, useKeys ? k : iterations - 1, this$0);
+        }
+      }, reverse);
+      return iterations;
+    };
+    filterSequence.__iteratorUncached = function (type, reverse) {
+      var iterator = iterable.__iterator(ITERATE_ENTRIES, reverse);
+      var iterations = 0;
+      return new Iterator(function()  {
+        while (true) {
+          var step = iterator.next();
+          if (step.done) {
+            return step;
+          }
+          var entry = step.value;
+          var key = entry[0];
+          var value = entry[1];
+          if (predicate.call(context, value, key, iterable)) {
+            return iteratorValue(type, useKeys ? key : iterations++, value, step);
+          }
+        }
+      });
+    }
+    return filterSequence;
+  }
+
+
+  function countByFactory(iterable, grouper, context) {
+    var groups = Map().asMutable();
+    iterable.__iterate(function(v, k)  {
+      groups.update(
+        grouper.call(context, v, k, iterable),
+        0,
+        function(a ) {return a + 1}
+      );
+    });
+    return groups.asImmutable();
+  }
+
+
+  function groupByFactory(iterable, grouper, context) {
+    var isKeyedIter = isKeyed(iterable);
+    var groups = (isOrdered(iterable) ? OrderedMap() : Map()).asMutable();
+    iterable.__iterate(function(v, k)  {
+      groups.update(
+        grouper.call(context, v, k, iterable),
+        function(a ) {return (a = a || [], a.push(isKeyedIter ? [k, v] : v), a)}
+      );
+    });
+    var coerce = iterableClass(iterable);
+    return groups.map(function(arr ) {return reify(iterable, coerce(arr))});
+  }
+
+
+  function sliceFactory(iterable, begin, end, useKeys) {
+    var originalSize = iterable.size;
+
+    // Sanitize begin & end using this shorthand for ToInt32(argument)
+    // http://www.ecma-international.org/ecma-262/6.0/#sec-toint32
+    if (begin !== undefined) {
+      begin = begin | 0;
+    }
+    if (end !== undefined) {
+      if (end === Infinity) {
+        end = originalSize;
+      } else {
+        end = end | 0;
+      }
+    }
+
+    if (wholeSlice(begin, end, originalSize)) {
+      return iterable;
+    }
+
+    var resolvedBegin = resolveBegin(begin, originalSize);
+    var resolvedEnd = resolveEnd(end, originalSize);
+
+    // begin or end will be NaN if they were provided as negative numbers and
+    // this iterable's size is unknown. In that case, cache first so there is
+    // a known size and these do not resolve to NaN.
+    if (resolvedBegin !== resolvedBegin || resolvedEnd !== resolvedEnd) {
+      return sliceFactory(iterable.toSeq().cacheResult(), begin, end, useKeys);
+    }
+
+    // Note: resolvedEnd is undefined when the original sequence's length is
+    // unknown and this slice did not supply an end and should contain all
+    // elements after resolvedBegin.
+    // In that case, resolvedSize will be NaN and sliceSize will remain undefined.
+    var resolvedSize = resolvedEnd - resolvedBegin;
+    var sliceSize;
+    if (resolvedSize === resolvedSize) {
+      sliceSize = resolvedSize < 0 ? 0 : resolvedSize;
+    }
+
+    var sliceSeq = makeSequence(iterable);
+
+    // If iterable.size is undefined, the size of the realized sliceSeq is
+    // unknown at this point unless the number of items to slice is 0
+    sliceSeq.size = sliceSize === 0 ? sliceSize : iterable.size && sliceSize || undefined;
+
+    if (!useKeys && isSeq(iterable) && sliceSize >= 0) {
+      sliceSeq.get = function (index, notSetValue) {
+        index = wrapIndex(this, index);
+        return index >= 0 && index < sliceSize ?
+          iterable.get(index + resolvedBegin, notSetValue) :
+          notSetValue;
+      }
+    }
+
+    sliceSeq.__iterateUncached = function(fn, reverse) {var this$0 = this;
+      if (sliceSize === 0) {
+        return 0;
+      }
+      if (reverse) {
+        return this.cacheResult().__iterate(fn, reverse);
+      }
+      var skipped = 0;
+      var isSkipping = true;
+      var iterations = 0;
+      iterable.__iterate(function(v, k)  {
+        if (!(isSkipping && (isSkipping = skipped++ < resolvedBegin))) {
+          iterations++;
+          return fn(v, useKeys ? k : iterations - 1, this$0) !== false &&
+                 iterations !== sliceSize;
+        }
+      });
+      return iterations;
+    };
+
+    sliceSeq.__iteratorUncached = function(type, reverse) {
+      if (sliceSize !== 0 && reverse) {
+        return this.cacheResult().__iterator(type, reverse);
+      }
+      // Don't bother instantiating parent iterator if taking 0.
+      var iterator = sliceSize !== 0 && iterable.__iterator(type, reverse);
+      var skipped = 0;
+      var iterations = 0;
+      return new Iterator(function()  {
+        while (skipped++ < resolvedBegin) {
+          iterator.next();
+        }
+        if (++iterations > sliceSize) {
+          return iteratorDone();
+        }
+        var step = iterator.next();
+        if (useKeys || type === ITERATE_VALUES) {
+          return step;
+        } else if (type === ITERATE_KEYS) {
+          return iteratorValue(type, iterations - 1, undefined, step);
+        } else {
+          return iteratorValue(type, iterations - 1, step.value[1], step);
+        }
+      });
+    }
+
+    return sliceSeq;
+  }
+
+
+  function takeWhileFactory(iterable, predicate, context) {
+    var takeSequence = makeSequence(iterable);
+    takeSequence.__iterateUncached = function(fn, reverse) {var this$0 = this;
+      if (reverse) {
+        return this.cacheResult().__iterate(fn, reverse);
+      }
+      var iterations = 0;
+      iterable.__iterate(function(v, k, c) 
+        {return predicate.call(context, v, k, c) && ++iterations && fn(v, k, this$0)}
+      );
+      return iterations;
+    };
+    takeSequence.__iteratorUncached = function(type, reverse) {var this$0 = this;
+      if (reverse) {
+        return this.cacheResult().__iterator(type, reverse);
+      }
+      var iterator = iterable.__iterator(ITERATE_ENTRIES, reverse);
+      var iterating = true;
+      return new Iterator(function()  {
+        if (!iterating) {
+          return iteratorDone();
+        }
+        var step = iterator.next();
+        if (step.done) {
+          return step;
+        }
+        var entry = step.value;
+        var k = entry[0];
+        var v = entry[1];
+        if (!predicate.call(context, v, k, this$0)) {
+          iterating = false;
+          return iteratorDone();
+        }
+        return type === ITERATE_ENTRIES ? step :
+          iteratorValue(type, k, v, step);
+      });
+    };
+    return takeSequence;
+  }
+
+
+  function skipWhileFactory(iterable, predicate, context, useKeys) {
+    var skipSequence = makeSequence(iterable);
+    skipSequence.__iterateUncached = function (fn, reverse) {var this$0 = this;
+      if (reverse) {
+        return this.cacheResult().__iterate(fn, reverse);
+      }
+      var isSkipping = true;
+      var iterations = 0;
+      iterable.__iterate(function(v, k, c)  {
+        if (!(isSkipping && (isSkipping = predicate.call(context, v, k, c)))) {
+          iterations++;
+          return fn(v, useKeys ? k : iterations - 1, this$0);
+        }
+      });
+      return iterations;
+    };
+    skipSequence.__iteratorUncached = function(type, reverse) {var this$0 = this;
+      if (reverse) {
+        return this.cacheResult().__iterator(type, reverse);
+      }
+      var iterator = iterable.__iterator(ITERATE_ENTRIES, reverse);
+      var skipping = true;
+      var iterations = 0;
+      return new Iterator(function()  {
+        var step, k, v;
+        do {
+          step = iterator.next();
+          if (step.done) {
+            if (useKeys || type === ITERATE_VALUES) {
+              return step;
+            } else if (type === ITERATE_KEYS) {
+              return iteratorValue(type, iterations++, undefined, step);
+            } else {
+              return iteratorValue(type, iterations++, step.value[1], step);
+            }
+          }
+          var entry = step.value;
+          k = entry[0];
+          v = entry[1];
+          skipping && (skipping = predicate.call(context, v, k, this$0));
+        } while (skipping);
+        return type === ITERATE_ENTRIES ? step :
+          iteratorValue(type, k, v, step);
+      });
+    };
+    return skipSequence;
+  }
+
+
+  function concatFactory(iterable, values) {
+    var isKeyedIterable = isKeyed(iterable);
+    var iters = [iterable].concat(values).map(function(v ) {
+      if (!isIterable(v)) {
+        v = isKeyedIterable ?
+          keyedSeqFromValue(v) :
+          indexedSeqFromValue(Array.isArray(v) ? v : [v]);
+      } else if (isKeyedIterable) {
+        v = KeyedIterable(v);
+      }
+      return v;
+    }).filter(function(v ) {return v.size !== 0});
+
+    if (iters.length === 0) {
+      return iterable;
+    }
+
+    if (iters.length === 1) {
+      var singleton = iters[0];
+      if (singleton === iterable ||
+          isKeyedIterable && isKeyed(singleton) ||
+          isIndexed(iterable) && isIndexed(singleton)) {
+        return singleton;
+      }
+    }
+
+    var concatSeq = new ArraySeq(iters);
+    if (isKeyedIterable) {
+      concatSeq = concatSeq.toKeyedSeq();
+    } else if (!isIndexed(iterable)) {
+      concatSeq = concatSeq.toSetSeq();
+    }
+    concatSeq = concatSeq.flatten(true);
+    concatSeq.size = iters.reduce(
+      function(sum, seq)  {
+        if (sum !== undefined) {
+          var size = seq.size;
+          if (size !== undefined) {
+            return sum + size;
+          }
+        }
+      },
+      0
+    );
+    return concatSeq;
+  }
+
+
+  function flattenFactory(iterable, depth, useKeys) {
+    var flatSequence = makeSequence(iterable);
+    flatSequence.__iterateUncached = function(fn, reverse) {
+      var iterations = 0;
+      var stopped = false;
+      function flatDeep(iter, currentDepth) {var this$0 = this;
+        iter.__iterate(function(v, k)  {
+          if ((!depth || currentDepth < depth) && isIterable(v)) {
+            flatDeep(v, currentDepth + 1);
+          } else if (fn(v, useKeys ? k : iterations++, this$0) === false) {
+            stopped = true;
+          }
+          return !stopped;
+        }, reverse);
+      }
+      flatDeep(iterable, 0);
+      return iterations;
+    }
+    flatSequence.__iteratorUncached = function(type, reverse) {
+      var iterator = iterable.__iterator(type, reverse);
+      var stack = [];
+      var iterations = 0;
+      return new Iterator(function()  {
+        while (iterator) {
+          var step = iterator.next();
+          if (step.done !== false) {
+            iterator = stack.pop();
+            continue;
+          }
+          var v = step.value;
+          if (type === ITERATE_ENTRIES) {
+            v = v[1];
+          }
+          if ((!depth || stack.length < depth) && isIterable(v)) {
+            stack.push(iterator);
+            iterator = v.__iterator(type, reverse);
+          } else {
+            return useKeys ? step : iteratorValue(type, iterations++, v, step);
+          }
+        }
+        return iteratorDone();
+      });
+    }
+    return flatSequence;
+  }
+
+
+  function flatMapFactory(iterable, mapper, context) {
+    var coerce = iterableClass(iterable);
+    return iterable.toSeq().map(
+      function(v, k)  {return coerce(mapper.call(context, v, k, iterable))}
+    ).flatten(true);
+  }
+
+
+  function interposeFactory(iterable, separator) {
+    var interposedSequence = makeSequence(iterable);
+    interposedSequence.size = iterable.size && iterable.size * 2 -1;
+    interposedSequence.__iterateUncached = function(fn, reverse) {var this$0 = this;
+      var iterations = 0;
+      iterable.__iterate(function(v, k) 
+        {return (!iterations || fn(separator, iterations++, this$0) !== false) &&
+        fn(v, iterations++, this$0) !== false},
+        reverse
+      );
+      return iterations;
+    };
+    interposedSequence.__iteratorUncached = function(type, reverse) {
+      var iterator = iterable.__iterator(ITERATE_VALUES, reverse);
+      var iterations = 0;
+      var step;
+      return new Iterator(function()  {
+        if (!step || iterations % 2) {
+          step = iterator.next();
+          if (step.done) {
+            return step;
+          }
+        }
+        return iterations % 2 ?
+          iteratorValue(type, iterations++, separator) :
+          iteratorValue(type, iterations++, step.value, step);
+      });
+    };
+    return interposedSequence;
+  }
+
+
+  function sortFactory(iterable, comparator, mapper) {
+    if (!comparator) {
+      comparator = defaultComparator;
+    }
+    var isKeyedIterable = isKeyed(iterable);
+    var index = 0;
+    var entries = iterable.toSeq().map(
+      function(v, k)  {return [k, v, index++, mapper ? mapper(v, k, iterable) : v]}
+    ).toArray();
+    entries.sort(function(a, b)  {return comparator(a[3], b[3]) || a[2] - b[2]}).forEach(
+      isKeyedIterable ?
+      function(v, i)  { entries[i].length = 2; } :
+      function(v, i)  { entries[i] = v[1]; }
+    );
+    return isKeyedIterable ? KeyedSeq(entries) :
+      isIndexed(iterable) ? IndexedSeq(entries) :
+      SetSeq(entries);
+  }
+
+
+  function maxFactory(iterable, comparator, mapper) {
+    if (!comparator) {
+      comparator = defaultComparator;
+    }
+    if (mapper) {
+      var entry = iterable.toSeq()
+        .map(function(v, k)  {return [v, mapper(v, k, iterable)]})
+        .reduce(function(a, b)  {return maxCompare(comparator, a[1], b[1]) ? b : a});
+      return entry && entry[0];
+    } else {
+      return iterable.reduce(function(a, b)  {return maxCompare(comparator, a, b) ? b : a});
+    }
+  }
+
+  function maxCompare(comparator, a, b) {
+    var comp = comparator(b, a);
+    // b is considered the new max if the comparator declares them equal, but
+    // they are not equal and b is in fact a nullish value.
+    return (comp === 0 && b !== a && (b === undefined || b === null || b !== b)) || comp > 0;
+  }
+
+
+  function zipWithFactory(keyIter, zipper, iters) {
+    var zipSequence = makeSequence(keyIter);
+    zipSequence.size = new ArraySeq(iters).map(function(i ) {return i.size}).min();
+    // Note: this a generic base implementation of __iterate in terms of
+    // __iterator which may be more generically useful in the future.
+    zipSequence.__iterate = function(fn, reverse) {
+      /* generic:
+      var iterator = this.__iterator(ITERATE_ENTRIES, reverse);
+      var step;
+      var iterations = 0;
+      while (!(step = iterator.next()).done) {
+        iterations++;
+        if (fn(step.value[1], step.value[0], this) === false) {
+          break;
+        }
+      }
+      return iterations;
+      */
+      // indexed:
+      var iterator = this.__iterator(ITERATE_VALUES, reverse);
+      var step;
+      var iterations = 0;
+      while (!(step = iterator.next()).done) {
+        if (fn(step.value, iterations++, this) === false) {
+          break;
+        }
+      }
+      return iterations;
+    };
+    zipSequence.__iteratorUncached = function(type, reverse) {
+      var iterators = iters.map(function(i )
+        {return (i = Iterable(i), getIterator(reverse ? i.reverse() : i))}
+      );
+      var iterations = 0;
+      var isDone = false;
+      return new Iterator(function()  {
+        var steps;
+        if (!isDone) {
+          steps = iterators.map(function(i ) {return i.next()});
+          isDone = steps.some(function(s ) {return s.done});
+        }
+        if (isDone) {
+          return iteratorDone();
+        }
+        return iteratorValue(
+          type,
+          iterations++,
+          zipper.apply(null, steps.map(function(s ) {return s.value}))
+        );
+      });
+    };
+    return zipSequence
+  }
+
+
+  // #pragma Helper Functions
+
+  function reify(iter, seq) {
+    return isSeq(iter) ? seq : iter.constructor(seq);
+  }
+
+  function validateEntry(entry) {
+    if (entry !== Object(entry)) {
+      throw new TypeError('Expected [K, V] tuple: ' + entry);
+    }
+  }
+
+  function resolveSize(iter) {
+    assertNotInfinite(iter.size);
+    return ensureSize(iter);
+  }
+
+  function iterableClass(iterable) {
+    return isKeyed(iterable) ? KeyedIterable :
+      isIndexed(iterable) ? IndexedIterable :
+      SetIterable;
+  }
+
+  function makeSequence(iterable) {
+    return Object.create(
+      (
+        isKeyed(iterable) ? KeyedSeq :
+        isIndexed(iterable) ? IndexedSeq :
+        SetSeq
+      ).prototype
+    );
+  }
+
+  function cacheResultThrough() {
+    if (this._iter.cacheResult) {
+      this._iter.cacheResult();
+      this.size = this._iter.size;
+      return this;
+    } else {
+      return Seq.prototype.cacheResult.call(this);
+    }
+  }
+
+  function defaultComparator(a, b) {
+    return a > b ? 1 : a < b ? -1 : 0;
+  }
+
+  function forceIterator(keyPath) {
+    var iter = getIterator(keyPath);
+    if (!iter) {
+      // Array might not be iterable in this environment, so we need a fallback
+      // to our wrapped type.
+      if (!isArrayLike(keyPath)) {
+        throw new TypeError('Expected iterable or array-like: ' + keyPath);
+      }
+      iter = getIterator(Iterable(keyPath));
+    }
+    return iter;
+  }
+
+  createClass(Record, KeyedCollection);
+
+    function Record(defaultValues, name) {
+      var hasInitialized;
+
+      var RecordType = function Record(values) {
+        if (values instanceof RecordType) {
+          return values;
+        }
+        if (!(this instanceof RecordType)) {
+          return new RecordType(values);
+        }
+        if (!hasInitialized) {
+          hasInitialized = true;
+          var keys = Object.keys(defaultValues);
+          setProps(RecordTypePrototype, keys);
+          RecordTypePrototype.size = keys.length;
+          RecordTypePrototype._name = name;
+          RecordTypePrototype._keys = keys;
+          RecordTypePrototype._defaultValues = defaultValues;
+        }
+        this._map = Map(values);
+      };
+
+      var RecordTypePrototype = RecordType.prototype = Object.create(RecordPrototype);
+      RecordTypePrototype.constructor = RecordType;
+
+      return RecordType;
+    }
+
+    Record.prototype.toString = function() {
+      return this.__toString(recordName(this) + ' {', '}');
+    };
+
+    // @pragma Access
+
+    Record.prototype.has = function(k) {
+      return this._defaultValues.hasOwnProperty(k);
+    };
+
+    Record.prototype.get = function(k, notSetValue) {
+      if (!this.has(k)) {
+        return notSetValue;
+      }
+      var defaultVal = this._defaultValues[k];
+      return this._map ? this._map.get(k, defaultVal) : defaultVal;
+    };
+
+    // @pragma Modification
+
+    Record.prototype.clear = function() {
+      if (this.__ownerID) {
+        this._map && this._map.clear();
+        return this;
+      }
+      var RecordType = this.constructor;
+      return RecordType._empty || (RecordType._empty = makeRecord(this, emptyMap()));
+    };
+
+    Record.prototype.set = function(k, v) {
+      if (!this.has(k)) {
+        throw new Error('Cannot set unknown key "' + k + '" on ' + recordName(this));
+      }
+      if (this._map && !this._map.has(k)) {
+        var defaultVal = this._defaultValues[k];
+        if (v === defaultVal) {
+          return this;
+        }
+      }
+      var newMap = this._map && this._map.set(k, v);
+      if (this.__ownerID || newMap === this._map) {
+        return this;
+      }
+      return makeRecord(this, newMap);
+    };
+
+    Record.prototype.remove = function(k) {
+      if (!this.has(k)) {
+        return this;
+      }
+      var newMap = this._map && this._map.remove(k);
+      if (this.__ownerID || newMap === this._map) {
+        return this;
+      }
+      return makeRecord(this, newMap);
+    };
+
+    Record.prototype.wasAltered = function() {
+      return this._map.wasAltered();
+    };
+
+    Record.prototype.__iterator = function(type, reverse) {var this$0 = this;
+      return KeyedIterable(this._defaultValues).map(function(_, k)  {return this$0.get(k)}).__iterator(type, reverse);
+    };
+
+    Record.prototype.__iterate = function(fn, reverse) {var this$0 = this;
+      return KeyedIterable(this._defaultValues).map(function(_, k)  {return this$0.get(k)}).__iterate(fn, reverse);
+    };
+
+    Record.prototype.__ensureOwner = function(ownerID) {
+      if (ownerID === this.__ownerID) {
+        return this;
+      }
+      var newMap = this._map && this._map.__ensureOwner(ownerID);
+      if (!ownerID) {
+        this.__ownerID = ownerID;
+        this._map = newMap;
+        return this;
+      }
+      return makeRecord(this, newMap, ownerID);
+    };
+
+
+  var RecordPrototype = Record.prototype;
+  RecordPrototype[DELETE] = RecordPrototype.remove;
+  RecordPrototype.deleteIn =
+  RecordPrototype.removeIn = MapPrototype.removeIn;
+  RecordPrototype.merge = MapPrototype.merge;
+  RecordPrototype.mergeWith = MapPrototype.mergeWith;
+  RecordPrototype.mergeIn = MapPrototype.mergeIn;
+  RecordPrototype.mergeDeep = MapPrototype.mergeDeep;
+  RecordPrototype.mergeDeepWith = MapPrototype.mergeDeepWith;
+  RecordPrototype.mergeDeepIn = MapPrototype.mergeDeepIn;
+  RecordPrototype.setIn = MapPrototype.setIn;
+  RecordPrototype.update = MapPrototype.update;
+  RecordPrototype.updateIn = MapPrototype.updateIn;
+  RecordPrototype.withMutations = MapPrototype.withMutations;
+  RecordPrototype.asMutable = MapPrototype.asMutable;
+  RecordPrototype.asImmutable = MapPrototype.asImmutable;
+
+
+  function makeRecord(likeRecord, map, ownerID) {
+    var record = Object.create(Object.getPrototypeOf(likeRecord));
+    record._map = map;
+    record.__ownerID = ownerID;
+    return record;
+  }
+
+  function recordName(record) {
+    return record._name || record.constructor.name || 'Record';
+  }
+
+  function setProps(prototype, names) {
+    try {
+      names.forEach(setProp.bind(undefined, prototype));
+    } catch (error) {
+      // Object.defineProperty failed. Probably IE8.
+    }
+  }
+
+  function setProp(prototype, name) {
+    Object.defineProperty(prototype, name, {
+      get: function() {
+        return this.get(name);
+      },
+      set: function(value) {
+        invariant(this.__ownerID, 'Cannot set on an immutable record.');
+        this.set(name, value);
+      }
+    });
+  }
+
+  createClass(Set, SetCollection);
+
+    // @pragma Construction
+
+    function Set(value) {
+      return value === null || value === undefined ? emptySet() :
+        isSet(value) && !isOrdered(value) ? value :
+        emptySet().withMutations(function(set ) {
+          var iter = SetIterable(value);
+          assertNotInfinite(iter.size);
+          iter.forEach(function(v ) {return set.add(v)});
+        });
+    }
+
+    Set.of = function(/*...values*/) {
+      return this(arguments);
+    };
+
+    Set.fromKeys = function(value) {
+      return this(KeyedIterable(value).keySeq());
+    };
+
+    Set.prototype.toString = function() {
+      return this.__toString('Set {', '}');
+    };
+
+    // @pragma Access
+
+    Set.prototype.has = function(value) {
+      return this._map.has(value);
+    };
+
+    // @pragma Modification
+
+    Set.prototype.add = function(value) {
+      return updateSet(this, this._map.set(value, true));
+    };
+
+    Set.prototype.remove = function(value) {
+      return updateSet(this, this._map.remove(value));
+    };
+
+    Set.prototype.clear = function() {
+      return updateSet(this, this._map.clear());
+    };
+
+    // @pragma Composition
+
+    Set.prototype.union = function() {var iters = SLICE$0.call(arguments, 0);
+      iters = iters.filter(function(x ) {return x.size !== 0});
+      if (iters.length === 0) {
+        return this;
+      }
+      if (this.size === 0 && !this.__ownerID && iters.length === 1) {
+        return this.constructor(iters[0]);
+      }
+      return this.withMutations(function(set ) {
+        for (var ii = 0; ii < iters.length; ii++) {
+          SetIterable(iters[ii]).forEach(function(value ) {return set.add(value)});
+        }
+      });
+    };
+
+    Set.prototype.intersect = function() {var iters = SLICE$0.call(arguments, 0);
+      if (iters.length === 0) {
+        return this;
+      }
+      iters = iters.map(function(iter ) {return SetIterable(iter)});
+      var originalSet = this;
+      return this.withMutations(function(set ) {
+        originalSet.forEach(function(value ) {
+          if (!iters.every(function(iter ) {return iter.includes(value)})) {
+            set.remove(value);
+          }
+        });
+      });
+    };
+
+    Set.prototype.subtract = function() {var iters = SLICE$0.call(arguments, 0);
+      if (iters.length === 0) {
+        return this;
+      }
+      iters = iters.map(function(iter ) {return SetIterable(iter)});
+      var originalSet = this;
+      return this.withMutations(function(set ) {
+        originalSet.forEach(function(value ) {
+          if (iters.some(function(iter ) {return iter.includes(value)})) {
+            set.remove(value);
+          }
+        });
+      });
+    };
+
+    Set.prototype.merge = function() {
+      return this.union.apply(this, arguments);
+    };
+
+    Set.prototype.mergeWith = function(merger) {var iters = SLICE$0.call(arguments, 1);
+      return this.union.apply(this, iters);
+    };
+
+    Set.prototype.sort = function(comparator) {
+      // Late binding
+      return OrderedSet(sortFactory(this, comparator));
+    };
+
+    Set.prototype.sortBy = function(mapper, comparator) {
+      // Late binding
+      return OrderedSet(sortFactory(this, comparator, mapper));
+    };
+
+    Set.prototype.wasAltered = function() {
+      return this._map.wasAltered();
+    };
+
+    Set.prototype.__iterate = function(fn, reverse) {var this$0 = this;
+      return this._map.__iterate(function(_, k)  {return fn(k, k, this$0)}, reverse);
+    };
+
+    Set.prototype.__iterator = function(type, reverse) {
+      return this._map.map(function(_, k)  {return k}).__iterator(type, reverse);
+    };
+
+    Set.prototype.__ensureOwner = function(ownerID) {
+      if (ownerID === this.__ownerID) {
+        return this;
+      }
+      var newMap = this._map.__ensureOwner(ownerID);
+      if (!ownerID) {
+        this.__ownerID = ownerID;
+        this._map = newMap;
+        return this;
+      }
+      return this.__make(newMap, ownerID);
+    };
+
+
+  function isSet(maybeSet) {
+    return !!(maybeSet && maybeSet[IS_SET_SENTINEL]);
+  }
+
+  Set.isSet = isSet;
+
+  var IS_SET_SENTINEL = '@@__IMMUTABLE_SET__@@';
+
+  var SetPrototype = Set.prototype;
+  SetPrototype[IS_SET_SENTINEL] = true;
+  SetPrototype[DELETE] = SetPrototype.remove;
+  SetPrototype.mergeDeep = SetPrototype.merge;
+  SetPrototype.mergeDeepWith = SetPrototype.mergeWith;
+  SetPrototype.withMutations = MapPrototype.withMutations;
+  SetPrototype.asMutable = MapPrototype.asMutable;
+  SetPrototype.asImmutable = MapPrototype.asImmutable;
+
+  SetPrototype.__empty = emptySet;
+  SetPrototype.__make = makeSet;
+
+  function updateSet(set, newMap) {
+    if (set.__ownerID) {
+      set.size = newMap.size;
+      set._map = newMap;
+      return set;
+    }
+    return newMap === set._map ? set :
+      newMap.size === 0 ? set.__empty() :
+      set.__make(newMap);
+  }
+
+  function makeSet(map, ownerID) {
+    var set = Object.create(SetPrototype);
+    set.size = map ? map.size : 0;
+    set._map = map;
+    set.__ownerID = ownerID;
+    return set;
+  }
+
+  var EMPTY_SET;
+  function emptySet() {
+    return EMPTY_SET || (EMPTY_SET = makeSet(emptyMap()));
+  }
+
+  createClass(OrderedSet, Set);
+
+    // @pragma Construction
+
+    function OrderedSet(value) {
+      return value === null || value === undefined ? emptyOrderedSet() :
+        isOrderedSet(value) ? value :
+        emptyOrderedSet().withMutations(function(set ) {
+          var iter = SetIterable(value);
+          assertNotInfinite(iter.size);
+          iter.forEach(function(v ) {return set.add(v)});
+        });
+    }
+
+    OrderedSet.of = function(/*...values*/) {
+      return this(arguments);
+    };
+
+    OrderedSet.fromKeys = function(value) {
+      return this(KeyedIterable(value).keySeq());
+    };
+
+    OrderedSet.prototype.toString = function() {
+      return this.__toString('OrderedSet {', '}');
+    };
+
+
+  function isOrderedSet(maybeOrderedSet) {
+    return isSet(maybeOrderedSet) && isOrdered(maybeOrderedSet);
+  }
+
+  OrderedSet.isOrderedSet = isOrderedSet;
+
+  var OrderedSetPrototype = OrderedSet.prototype;
+  OrderedSetPrototype[IS_ORDERED_SENTINEL] = true;
+
+  OrderedSetPrototype.__empty = emptyOrderedSet;
+  OrderedSetPrototype.__make = makeOrderedSet;
+
+  function makeOrderedSet(map, ownerID) {
+    var set = Object.create(OrderedSetPrototype);
+    set.size = map ? map.size : 0;
+    set._map = map;
+    set.__ownerID = ownerID;
+    return set;
+  }
+
+  var EMPTY_ORDERED_SET;
+  function emptyOrderedSet() {
+    return EMPTY_ORDERED_SET || (EMPTY_ORDERED_SET = makeOrderedSet(emptyOrderedMap()));
+  }
+
+  createClass(Stack, IndexedCollection);
+
+    // @pragma Construction
+
+    function Stack(value) {
+      return value === null || value === undefined ? emptyStack() :
+        isStack(value) ? value :
+        emptyStack().unshiftAll(value);
+    }
+
+    Stack.of = function(/*...values*/) {
+      return this(arguments);
+    };
+
+    Stack.prototype.toString = function() {
+      return this.__toString('Stack [', ']');
+    };
+
+    // @pragma Access
+
+    Stack.prototype.get = function(index, notSetValue) {
+      var head = this._head;
+      index = wrapIndex(this, index);
+      while (head && index--) {
+        head = head.next;
+      }
+      return head ? head.value : notSetValue;
+    };
+
+    Stack.prototype.peek = function() {
+      return this._head && this._head.value;
+    };
+
+    // @pragma Modification
+
+    Stack.prototype.push = function(/*...values*/) {
+      if (arguments.length === 0) {
+        return this;
+      }
+      var newSize = this.size + arguments.length;
+      var head = this._head;
+      for (var ii = arguments.length - 1; ii >= 0; ii--) {
+        head = {
+          value: arguments[ii],
+          next: head
+        };
+      }
+      if (this.__ownerID) {
+        this.size = newSize;
+        this._head = head;
+        this.__hash = undefined;
+        this.__altered = true;
+        return this;
+      }
+      return makeStack(newSize, head);
+    };
+
+    Stack.prototype.pushAll = function(iter) {
+      iter = IndexedIterable(iter);
+      if (iter.size === 0) {
+        return this;
+      }
+      assertNotInfinite(iter.size);
+      var newSize = this.size;
+      var head = this._head;
+      iter.reverse().forEach(function(value ) {
+        newSize++;
+        head = {
+          value: value,
+          next: head
+        };
+      });
+      if (this.__ownerID) {
+        this.size = newSize;
+        this._head = head;
+        this.__hash = undefined;
+        this.__altered = true;
+        return this;
+      }
+      return makeStack(newSize, head);
+    };
+
+    Stack.prototype.pop = function() {
+      return this.slice(1);
+    };
+
+    Stack.prototype.unshift = function(/*...values*/) {
+      return this.push.apply(this, arguments);
+    };
+
+    Stack.prototype.unshiftAll = function(iter) {
+      return this.pushAll(iter);
+    };
+
+    Stack.prototype.shift = function() {
+      return this.pop.apply(this, arguments);
+    };
+
+    Stack.prototype.clear = function() {
+      if (this.size === 0) {
+        return this;
+      }
+      if (this.__ownerID) {
+        this.size = 0;
+        this._head = undefined;
+        this.__hash = undefined;
+        this.__altered = true;
+        return this;
+      }
+      return emptyStack();
+    };
+
+    Stack.prototype.slice = function(begin, end) {
+      if (wholeSlice(begin, end, this.size)) {
+        return this;
+      }
+      var resolvedBegin = resolveBegin(begin, this.size);
+      var resolvedEnd = resolveEnd(end, this.size);
+      if (resolvedEnd !== this.size) {
+        // super.slice(begin, end);
+        return IndexedCollection.prototype.slice.call(this, begin, end);
+      }
+      var newSize = this.size - resolvedBegin;
+      var head = this._head;
+      while (resolvedBegin--) {
+        head = head.next;
+      }
+      if (this.__ownerID) {
+        this.size = newSize;
+        this._head = head;
+        this.__hash = undefined;
+        this.__altered = true;
+        return this;
+      }
+      return makeStack(newSize, head);
+    };
+
+    // @pragma Mutability
+
+    Stack.prototype.__ensureOwner = function(ownerID) {
+      if (ownerID === this.__ownerID) {
+        return this;
+      }
+      if (!ownerID) {
+        this.__ownerID = ownerID;
+        this.__altered = false;
+        return this;
+      }
+      return makeStack(this.size, this._head, ownerID, this.__hash);
+    };
+
+    // @pragma Iteration
+
+    Stack.prototype.__iterate = function(fn, reverse) {
+      if (reverse) {
+        return this.reverse().__iterate(fn);
+      }
+      var iterations = 0;
+      var node = this._head;
+      while (node) {
+        if (fn(node.value, iterations++, this) === false) {
+          break;
+        }
+        node = node.next;
+      }
+      return iterations;
+    };
+
+    Stack.prototype.__iterator = function(type, reverse) {
+      if (reverse) {
+        return this.reverse().__iterator(type);
+      }
+      var iterations = 0;
+      var node = this._head;
+      return new Iterator(function()  {
+        if (node) {
+          var value = node.value;
+          node = node.next;
+          return iteratorValue(type, iterations++, value);
+        }
+        return iteratorDone();
+      });
+    };
+
+
+  function isStack(maybeStack) {
+    return !!(maybeStack && maybeStack[IS_STACK_SENTINEL]);
+  }
+
+  Stack.isStack = isStack;
+
+  var IS_STACK_SENTINEL = '@@__IMMUTABLE_STACK__@@';
+
+  var StackPrototype = Stack.prototype;
+  StackPrototype[IS_STACK_SENTINEL] = true;
+  StackPrototype.withMutations = MapPrototype.withMutations;
+  StackPrototype.asMutable = MapPrototype.asMutable;
+  StackPrototype.asImmutable = MapPrototype.asImmutable;
+  StackPrototype.wasAltered = MapPrototype.wasAltered;
+
+
+  function makeStack(size, head, ownerID, hash) {
+    var map = Object.create(StackPrototype);
+    map.size = size;
+    map._head = head;
+    map.__ownerID = ownerID;
+    map.__hash = hash;
+    map.__altered = false;
+    return map;
+  }
+
+  var EMPTY_STACK;
+  function emptyStack() {
+    return EMPTY_STACK || (EMPTY_STACK = makeStack(0));
+  }
+
+  /**
+   * Contributes additional methods to a constructor
+   */
+  function mixin(ctor, methods) {
+    var keyCopier = function(key ) { ctor.prototype[key] = methods[key]; };
+    Object.keys(methods).forEach(keyCopier);
+    Object.getOwnPropertySymbols &&
+      Object.getOwnPropertySymbols(methods).forEach(keyCopier);
+    return ctor;
+  }
+
+  Iterable.Iterator = Iterator;
+
+  mixin(Iterable, {
+
+    // ### Conversion to other types
+
+    toArray: function() {
+      assertNotInfinite(this.size);
+      var array = new Array(this.size || 0);
+      this.valueSeq().__iterate(function(v, i)  { array[i] = v; });
+      return array;
+    },
+
+    toIndexedSeq: function() {
+      return new ToIndexedSequence(this);
+    },
+
+    toJS: function() {
+      return this.toSeq().map(
+        function(value ) {return value && typeof value.toJS === 'function' ? value.toJS() : value}
+      ).__toJS();
+    },
+
+    toJSON: function() {
+      return this.toSeq().map(
+        function(value ) {return value && typeof value.toJSON === 'function' ? value.toJSON() : value}
+      ).__toJS();
+    },
+
+    toKeyedSeq: function() {
+      return new ToKeyedSequence(this, true);
+    },
+
+    toMap: function() {
+      // Use Late Binding here to solve the circular dependency.
+      return Map(this.toKeyedSeq());
+    },
+
+    toObject: function() {
+      assertNotInfinite(this.size);
+      var object = {};
+      this.__iterate(function(v, k)  { object[k] = v; });
+      return object;
+    },
+
+    toOrderedMap: function() {
+      // Use Late Binding here to solve the circular dependency.
+      return OrderedMap(this.toKeyedSeq());
+    },
+
+    toOrderedSet: function() {
+      // Use Late Binding here to solve the circular dependency.
+      return OrderedSet(isKeyed(this) ? this.valueSeq() : this);
+    },
+
+    toSet: function() {
+      // Use Late Binding here to solve the circular dependency.
+      return Set(isKeyed(this) ? this.valueSeq() : this);
+    },
+
+    toSetSeq: function() {
+      return new ToSetSequence(this);
+    },
+
+    toSeq: function() {
+      return isIndexed(this) ? this.toIndexedSeq() :
+        isKeyed(this) ? this.toKeyedSeq() :
+        this.toSetSeq();
+    },
+
+    toStack: function() {
+      // Use Late Binding here to solve the circular dependency.
+      return Stack(isKeyed(this) ? this.valueSeq() : this);
+    },
+
+    toList: function() {
+      // Use Late Binding here to solve the circular dependency.
+      return List(isKeyed(this) ? this.valueSeq() : this);
+    },
+
+
+    // ### Common JavaScript methods and properties
+
+    toString: function() {
+      return '[Iterable]';
+    },
+
+    __toString: function(head, tail) {
+      if (this.size === 0) {
+        return head + tail;
+      }
+      return head + ' ' + this.toSeq().map(this.__toStringMapper).join(', ') + ' ' + tail;
+    },
+
+
+    // ### ES6 Collection methods (ES6 Array and Map)
+
+    concat: function() {var values = SLICE$0.call(arguments, 0);
+      return reify(this, concatFactory(this, values));
+    },
+
+    includes: function(searchValue) {
+      return this.some(function(value ) {return is(value, searchValue)});
+    },
+
+    entries: function() {
+      return this.__iterator(ITERATE_ENTRIES);
+    },
+
+    every: function(predicate, context) {
+      assertNotInfinite(this.size);
+      var returnValue = true;
+      this.__iterate(function(v, k, c)  {
+        if (!predicate.call(context, v, k, c)) {
+          returnValue = false;
+          return false;
+        }
+      });
+      return returnValue;
+    },
+
+    filter: function(predicate, context) {
+      return reify(this, filterFactory(this, predicate, context, true));
+    },
+
+    find: function(predicate, context, notSetValue) {
+      var entry = this.findEntry(predicate, context);
+      return entry ? entry[1] : notSetValue;
+    },
+
+    forEach: function(sideEffect, context) {
+      assertNotInfinite(this.size);
+      return this.__iterate(context ? sideEffect.bind(context) : sideEffect);
+    },
+
+    join: function(separator) {
+      assertNotInfinite(this.size);
+      separator = separator !== undefined ? '' + separator : ',';
+      var joined = '';
+      var isFirst = true;
+      this.__iterate(function(v ) {
+        isFirst ? (isFirst = false) : (joined += separator);
+        joined += v !== null && v !== undefined ? v.toString() : '';
+      });
+      return joined;
+    },
+
+    keys: function() {
+      return this.__iterator(ITERATE_KEYS);
+    },
+
+    map: function(mapper, context) {
+      return reify(this, mapFactory(this, mapper, context));
+    },
+
+    reduce: function(reducer, initialReduction, context) {
+      assertNotInfinite(this.size);
+      var reduction;
+      var useFirst;
+      if (arguments.length < 2) {
+        useFirst = true;
+      } else {
+        reduction = initialReduction;
+      }
+      this.__iterate(function(v, k, c)  {
+        if (useFirst) {
+          useFirst = false;
+          reduction = v;
+        } else {
+          reduction = reducer.call(context, reduction, v, k, c);
+        }
+      });
+      return reduction;
+    },
+
+    reduceRight: function(reducer, initialReduction, context) {
+      var reversed = this.toKeyedSeq().reverse();
+      return reversed.reduce.apply(reversed, arguments);
+    },
+
+    reverse: function() {
+      return reify(this, reverseFactory(this, true));
+    },
+
+    slice: function(begin, end) {
+      return reify(this, sliceFactory(this, begin, end, true));
+    },
+
+    some: function(predicate, context) {
+      return !this.every(not(predicate), context);
+    },
+
+    sort: function(comparator) {
+      return reify(this, sortFactory(this, comparator));
+    },
+
+    values: function() {
+      return this.__iterator(ITERATE_VALUES);
+    },
+
+
+    // ### More sequential methods
+
+    butLast: function() {
+      return this.slice(0, -1);
+    },
+
+    isEmpty: function() {
+      return this.size !== undefined ? this.size === 0 : !this.some(function()  {return true});
+    },
+
+    count: function(predicate, context) {
+      return ensureSize(
+        predicate ? this.toSeq().filter(predicate, context) : this
+      );
+    },
+
+    countBy: function(grouper, context) {
+      return countByFactory(this, grouper, context);
+    },
+
+    equals: function(other) {
+      return deepEqual(this, other);
+    },
+
+    entrySeq: function() {
+      var iterable = this;
+      if (iterable._cache) {
+        // We cache as an entries array, so we can just return the cache!
+        return new ArraySeq(iterable._cache);
+      }
+      var entriesSequence = iterable.toSeq().map(entryMapper).toIndexedSeq();
+      entriesSequence.fromEntrySeq = function()  {return iterable.toSeq()};
+      return entriesSequence;
+    },
+
+    filterNot: function(predicate, context) {
+      return this.filter(not(predicate), context);
+    },
+
+    findEntry: function(predicate, context, notSetValue) {
+      var found = notSetValue;
+      this.__iterate(function(v, k, c)  {
+        if (predicate.call(context, v, k, c)) {
+          found = [k, v];
+          return false;
+        }
+      });
+      return found;
+    },
+
+    findKey: function(predicate, context) {
+      var entry = this.findEntry(predicate, context);
+      return entry && entry[0];
+    },
+
+    findLast: function(predicate, context, notSetValue) {
+      return this.toKeyedSeq().reverse().find(predicate, context, notSetValue);
+    },
+
+    findLastEntry: function(predicate, context, notSetValue) {
+      return this.toKeyedSeq().reverse().findEntry(predicate, context, notSetValue);
+    },
+
+    findLastKey: function(predicate, context) {
+      return this.toKeyedSeq().reverse().findKey(predicate, context);
+    },
+
+    first: function() {
+      return this.find(returnTrue);
+    },
+
+    flatMap: function(mapper, context) {
+      return reify(this, flatMapFactory(this, mapper, context));
+    },
+
+    flatten: function(depth) {
+      return reify(this, flattenFactory(this, depth, true));
+    },
+
+    fromEntrySeq: function() {
+      return new FromEntriesSequence(this);
+    },
+
+    get: function(searchKey, notSetValue) {
+      return this.find(function(_, key)  {return is(key, searchKey)}, undefined, notSetValue);
+    },
+
+    getIn: function(searchKeyPath, notSetValue) {
+      var nested = this;
+      // Note: in an ES6 environment, we would prefer:
+      // for (var key of searchKeyPath) {
+      var iter = forceIterator(searchKeyPath);
+      var step;
+      while (!(step = iter.next()).done) {
+        var key = step.value;
+        nested = nested && nested.get ? nested.get(key, NOT_SET) : NOT_SET;
+        if (nested === NOT_SET) {
+          return notSetValue;
+        }
+      }
+      return nested;
+    },
+
+    groupBy: function(grouper, context) {
+      return groupByFactory(this, grouper, context);
+    },
+
+    has: function(searchKey) {
+      return this.get(searchKey, NOT_SET) !== NOT_SET;
+    },
+
+    hasIn: function(searchKeyPath) {
+      return this.getIn(searchKeyPath, NOT_SET) !== NOT_SET;
+    },
+
+    isSubset: function(iter) {
+      iter = typeof iter.includes === 'function' ? iter : Iterable(iter);
+      return this.every(function(value ) {return iter.includes(value)});
+    },
+
+    isSuperset: function(iter) {
+      iter = typeof iter.isSubset === 'function' ? iter : Iterable(iter);
+      return iter.isSubset(this);
+    },
+
+    keyOf: function(searchValue) {
+      return this.findKey(function(value ) {return is(value, searchValue)});
+    },
+
+    keySeq: function() {
+      return this.toSeq().map(keyMapper).toIndexedSeq();
+    },
+
+    last: function() {
+      return this.toSeq().reverse().first();
+    },
+
+    lastKeyOf: function(searchValue) {
+      return this.toKeyedSeq().reverse().keyOf(searchValue);
+    },
+
+    max: function(comparator) {
+      return maxFactory(this, comparator);
+    },
+
+    maxBy: function(mapper, comparator) {
+      return maxFactory(this, comparator, mapper);
+    },
+
+    min: function(comparator) {
+      return maxFactory(this, comparator ? neg(comparator) : defaultNegComparator);
+    },
+
+    minBy: function(mapper, comparator) {
+      return maxFactory(this, comparator ? neg(comparator) : defaultNegComparator, mapper);
+    },
+
+    rest: function() {
+      return this.slice(1);
+    },
+
+    skip: function(amount) {
+      return this.slice(Math.max(0, amount));
+    },
+
+    skipLast: function(amount) {
+      return reify(this, this.toSeq().reverse().skip(amount).reverse());
+    },
+
+    skipWhile: function(predicate, context) {
+      return reify(this, skipWhileFactory(this, predicate, context, true));
+    },
+
+    skipUntil: function(predicate, context) {
+      return this.skipWhile(not(predicate), context);
+    },
+
+    sortBy: function(mapper, comparator) {
+      return reify(this, sortFactory(this, comparator, mapper));
+    },
+
+    take: function(amount) {
+      return this.slice(0, Math.max(0, amount));
+    },
+
+    takeLast: function(amount) {
+      return reify(this, this.toSeq().reverse().take(amount).reverse());
+    },
+
+    takeWhile: function(predicate, context) {
+      return reify(this, takeWhileFactory(this, predicate, context));
+    },
+
+    takeUntil: function(predicate, context) {
+      return this.takeWhile(not(predicate), context);
+    },
+
+    valueSeq: function() {
+      return this.toIndexedSeq();
+    },
+
+
+    // ### Hashable Object
+
+    hashCode: function() {
+      return this.__hash || (this.__hash = hashIterable(this));
+    }
+
+
+    // ### Internal
+
+    // abstract __iterate(fn, reverse)
+
+    // abstract __iterator(type, reverse)
+  });
+
+  // var IS_ITERABLE_SENTINEL = '@@__IMMUTABLE_ITERABLE__@@';
+  // var IS_KEYED_SENTINEL = '@@__IMMUTABLE_KEYED__@@';
+  // var IS_INDEXED_SENTINEL = '@@__IMMUTABLE_INDEXED__@@';
+  // var IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
+
+  var IterablePrototype = Iterable.prototype;
+  IterablePrototype[IS_ITERABLE_SENTINEL] = true;
+  IterablePrototype[ITERATOR_SYMBOL] = IterablePrototype.values;
+  IterablePrototype.__toJS = IterablePrototype.toArray;
+  IterablePrototype.__toStringMapper = quoteString;
+  IterablePrototype.inspect =
+  IterablePrototype.toSource = function() { return this.toString(); };
+  IterablePrototype.chain = IterablePrototype.flatMap;
+  IterablePrototype.contains = IterablePrototype.includes;
+
+  mixin(KeyedIterable, {
+
+    // ### More sequential methods
+
+    flip: function() {
+      return reify(this, flipFactory(this));
+    },
+
+    mapEntries: function(mapper, context) {var this$0 = this;
+      var iterations = 0;
+      return reify(this,
+        this.toSeq().map(
+          function(v, k)  {return mapper.call(context, [k, v], iterations++, this$0)}
+        ).fromEntrySeq()
+      );
+    },
+
+    mapKeys: function(mapper, context) {var this$0 = this;
+      return reify(this,
+        this.toSeq().flip().map(
+          function(k, v)  {return mapper.call(context, k, v, this$0)}
+        ).flip()
+      );
+    }
+
+  });
+
+  var KeyedIterablePrototype = KeyedIterable.prototype;
+  KeyedIterablePrototype[IS_KEYED_SENTINEL] = true;
+  KeyedIterablePrototype[ITERATOR_SYMBOL] = IterablePrototype.entries;
+  KeyedIterablePrototype.__toJS = IterablePrototype.toObject;
+  KeyedIterablePrototype.__toStringMapper = function(v, k)  {return JSON.stringify(k) + ': ' + quoteString(v)};
+
+
+
+  mixin(IndexedIterable, {
+
+    // ### Conversion to other types
+
+    toKeyedSeq: function() {
+      return new ToKeyedSequence(this, false);
+    },
+
+
+    // ### ES6 Collection methods (ES6 Array and Map)
+
+    filter: function(predicate, context) {
+      return reify(this, filterFactory(this, predicate, context, false));
+    },
+
+    findIndex: function(predicate, context) {
+      var entry = this.findEntry(predicate, context);
+      return entry ? entry[0] : -1;
+    },
+
+    indexOf: function(searchValue) {
+      var key = this.keyOf(searchValue);
+      return key === undefined ? -1 : key;
+    },
+
+    lastIndexOf: function(searchValue) {
+      var key = this.lastKeyOf(searchValue);
+      return key === undefined ? -1 : key;
+    },
+
+    reverse: function() {
+      return reify(this, reverseFactory(this, false));
+    },
+
+    slice: function(begin, end) {
+      return reify(this, sliceFactory(this, begin, end, false));
+    },
+
+    splice: function(index, removeNum /*, ...values*/) {
+      var numArgs = arguments.length;
+      removeNum = Math.max(removeNum | 0, 0);
+      if (numArgs === 0 || (numArgs === 2 && !removeNum)) {
+        return this;
+      }
+      // If index is negative, it should resolve relative to the size of the
+      // collection. However size may be expensive to compute if not cached, so
+      // only call count() if the number is in fact negative.
+      index = resolveBegin(index, index < 0 ? this.count() : this.size);
+      var spliced = this.slice(0, index);
+      return reify(
+        this,
+        numArgs === 1 ?
+          spliced :
+          spliced.concat(arrCopy(arguments, 2), this.slice(index + removeNum))
+      );
+    },
+
+
+    // ### More collection methods
+
+    findLastIndex: function(predicate, context) {
+      var entry = this.findLastEntry(predicate, context);
+      return entry ? entry[0] : -1;
+    },
+
+    first: function() {
+      return this.get(0);
+    },
+
+    flatten: function(depth) {
+      return reify(this, flattenFactory(this, depth, false));
+    },
+
+    get: function(index, notSetValue) {
+      index = wrapIndex(this, index);
+      return (index < 0 || (this.size === Infinity ||
+          (this.size !== undefined && index > this.size))) ?
+        notSetValue :
+        this.find(function(_, key)  {return key === index}, undefined, notSetValue);
+    },
+
+    has: function(index) {
+      index = wrapIndex(this, index);
+      return index >= 0 && (this.size !== undefined ?
+        this.size === Infinity || index < this.size :
+        this.indexOf(index) !== -1
+      );
+    },
+
+    interpose: function(separator) {
+      return reify(this, interposeFactory(this, separator));
+    },
+
+    interleave: function(/*...iterables*/) {
+      var iterables = [this].concat(arrCopy(arguments));
+      var zipped = zipWithFactory(this.toSeq(), IndexedSeq.of, iterables);
+      var interleaved = zipped.flatten(true);
+      if (zipped.size) {
+        interleaved.size = zipped.size * iterables.length;
+      }
+      return reify(this, interleaved);
+    },
+
+    keySeq: function() {
+      return Range(0, this.size);
+    },
+
+    last: function() {
+      return this.get(-1);
+    },
+
+    skipWhile: function(predicate, context) {
+      return reify(this, skipWhileFactory(this, predicate, context, false));
+    },
+
+    zip: function(/*, ...iterables */) {
+      var iterables = [this].concat(arrCopy(arguments));
+      return reify(this, zipWithFactory(this, defaultZipper, iterables));
+    },
+
+    zipWith: function(zipper/*, ...iterables */) {
+      var iterables = arrCopy(arguments);
+      iterables[0] = this;
+      return reify(this, zipWithFactory(this, zipper, iterables));
+    }
+
+  });
+
+  IndexedIterable.prototype[IS_INDEXED_SENTINEL] = true;
+  IndexedIterable.prototype[IS_ORDERED_SENTINEL] = true;
+
+
+
+  mixin(SetIterable, {
+
+    // ### ES6 Collection methods (ES6 Array and Map)
+
+    get: function(value, notSetValue) {
+      return this.has(value) ? value : notSetValue;
+    },
+
+    includes: function(value) {
+      return this.has(value);
+    },
+
+
+    // ### More sequential methods
+
+    keySeq: function() {
+      return this.valueSeq();
+    }
+
+  });
+
+  SetIterable.prototype.has = IterablePrototype.includes;
+  SetIterable.prototype.contains = SetIterable.prototype.includes;
+
+
+  // Mixin subclasses
+
+  mixin(KeyedSeq, KeyedIterable.prototype);
+  mixin(IndexedSeq, IndexedIterable.prototype);
+  mixin(SetSeq, SetIterable.prototype);
+
+  mixin(KeyedCollection, KeyedIterable.prototype);
+  mixin(IndexedCollection, IndexedIterable.prototype);
+  mixin(SetCollection, SetIterable.prototype);
+
+
+  // #pragma Helper functions
+
+  function keyMapper(v, k) {
+    return k;
+  }
+
+  function entryMapper(v, k) {
+    return [k, v];
+  }
+
+  function not(predicate) {
+    return function() {
+      return !predicate.apply(this, arguments);
+    }
+  }
+
+  function neg(predicate) {
+    return function() {
+      return -predicate.apply(this, arguments);
+    }
+  }
+
+  function quoteString(value) {
+    return typeof value === 'string' ? JSON.stringify(value) : String(value);
+  }
+
+  function defaultZipper() {
+    return arrCopy(arguments);
+  }
+
+  function defaultNegComparator(a, b) {
+    return a < b ? 1 : a > b ? -1 : 0;
+  }
+
+  function hashIterable(iterable) {
+    if (iterable.size === Infinity) {
+      return 0;
+    }
+    var ordered = isOrdered(iterable);
+    var keyed = isKeyed(iterable);
+    var h = ordered ? 1 : 0;
+    var size = iterable.__iterate(
+      keyed ?
+        ordered ?
+          function(v, k)  { h = 31 * h + hashMerge(hash(v), hash(k)) | 0; } :
+          function(v, k)  { h = h + hashMerge(hash(v), hash(k)) | 0; } :
+        ordered ?
+          function(v ) { h = 31 * h + hash(v) | 0; } :
+          function(v ) { h = h + hash(v) | 0; }
+    );
+    return murmurHashOfSize(size, h);
+  }
+
+  function murmurHashOfSize(size, h) {
+    h = imul(h, 0xCC9E2D51);
+    h = imul(h << 15 | h >>> -15, 0x1B873593);
+    h = imul(h << 13 | h >>> -13, 5);
+    h = (h + 0xE6546B64 | 0) ^ size;
+    h = imul(h ^ h >>> 16, 0x85EBCA6B);
+    h = imul(h ^ h >>> 13, 0xC2B2AE35);
+    h = smi(h ^ h >>> 16);
+    return h;
+  }
+
+  function hashMerge(a, b) {
+    return a ^ b + 0x9E3779B9 + (a << 6) + (a >> 2) | 0; // int
+  }
+
+  var Immutable = {
+
+    Iterable: Iterable,
+
+    Seq: Seq,
+    Collection: Collection,
+    Map: Map,
+    OrderedMap: OrderedMap,
+    List: List,
+    Stack: Stack,
+    Set: Set,
+    OrderedSet: OrderedSet,
+
+    Record: Record,
+    Range: Range,
+    Repeat: Repeat,
+
+    is: is,
+    fromJS: fromJS
+
+  };
+
+  return Immutable;
+
+}));
+},{}],400:[function(require,module,exports){
+arguments[4][252][0].apply(exports,arguments)
+},{"./v1":403,"./v4":404,"dup":252}],401:[function(require,module,exports){
+arguments[4][253][0].apply(exports,arguments)
+},{"dup":253}],402:[function(require,module,exports){
+arguments[4][254][0].apply(exports,arguments)
+},{"dup":254}],403:[function(require,module,exports){
+arguments[4][255][0].apply(exports,arguments)
+},{"./lib/bytesToUuid":401,"./lib/rng":402,"dup":255}],404:[function(require,module,exports){
+arguments[4][256][0].apply(exports,arguments)
+},{"./lib/bytesToUuid":401,"./lib/rng":402,"dup":256}],405:[function(require,module,exports){
 arguments[4][261][0].apply(exports,arguments)
-},{"./notifier.js":399,"./polling-block-notifier.js":401,"./subscribing-block-notifier.js":402,"dup":261}],396:[function(require,module,exports){
+},{"./notifier.js":409,"./polling-block-notifier.js":411,"./subscribing-block-notifier.js":412,"dup":261}],406:[function(require,module,exports){
 "use strict";
 
 var BlockAndLogStreamer = require("ethereumjs-blockstream").BlockAndLogStreamer;
@@ -45728,9 +51281,9 @@ function createBlockAndLogStreamer(configuration, transport, callback) {
 
 module.exports = createBlockAndLogStreamer;
 
-},{"../block-management/block-notifier":395,"../internal-state":420,"../utils/is-function":480,"ethereumjs-blockstream":259}],397:[function(require,module,exports){
+},{"../block-management/block-notifier":405,"../internal-state":430,"../utils/is-function":490,"ethereumjs-blockstream":396}],407:[function(require,module,exports){
 arguments[4][263][0].apply(exports,arguments)
-},{"../block-management/on-new-block":400,"../utils/is-function":480,"../wrappers/eth":497,"dup":263}],398:[function(require,module,exports){
+},{"../block-management/on-new-block":410,"../utils/is-function":490,"../wrappers/eth":507,"dup":263}],408:[function(require,module,exports){
 "use strict";
 
 var eth = require("../wrappers/eth");
@@ -45802,47 +51355,47 @@ function createTransportAdapter(transporter) {
 
 module.exports = createTransportAdapter;
 
-},{"../errors/error-splitting-wrapper":416,"../subscriptions/add-new-heads-subscription":451,"../subscriptions/remove-subscription":454,"../utils/noop":486,"../wrappers/eth":497}],399:[function(require,module,exports){
+},{"../errors/error-splitting-wrapper":426,"../subscriptions/add-new-heads-subscription":461,"../subscriptions/remove-subscription":464,"../utils/noop":496,"../wrappers/eth":507}],409:[function(require,module,exports){
 arguments[4][265][0].apply(exports,arguments)
-},{"dup":265}],400:[function(require,module,exports){
+},{"dup":265}],410:[function(require,module,exports){
 arguments[4][266][0].apply(exports,arguments)
-},{"../transact/reprocess-transactions":459,"../utils/is-object":484,"dup":266}],401:[function(require,module,exports){
+},{"../transact/reprocess-transactions":469,"../utils/is-object":494,"dup":266}],411:[function(require,module,exports){
 arguments[4][267][0].apply(exports,arguments)
-},{"../validate/validate-block":490,"./notifier":399,"dup":267}],402:[function(require,module,exports){
+},{"../validate/validate-block":500,"./notifier":409,"dup":267}],412:[function(require,module,exports){
 arguments[4][268][0].apply(exports,arguments)
-},{"../validate/validate-block":490,"./notifier":399,"dup":268}],403:[function(require,module,exports){
+},{"../validate/validate-block":500,"./notifier":409,"dup":268}],413:[function(require,module,exports){
 arguments[4][269][0].apply(exports,arguments)
-},{"../constants":406,"../utils/is-function":480,"../wrappers/eth":497,"../wrappers/miner":500,"dup":269}],404:[function(require,module,exports){
+},{"../constants":416,"../utils/is-function":490,"../wrappers/eth":507,"../wrappers/miner":510,"dup":269}],414:[function(require,module,exports){
 arguments[4][270][0].apply(exports,arguments)
-},{"./internal-state":420,"./utils/is-object":484,"dup":270}],405:[function(require,module,exports){
+},{"./internal-state":430,"./utils/is-object":494,"dup":270}],415:[function(require,module,exports){
 arguments[4][271][0].apply(exports,arguments)
-},{"./block-management/ensure-latest-block":397,"./block-management/ethrpc-transport-adapter":398,"./block-management/on-new-block":400,"./errors":417,"./internal-state":420,"./reset-state":447,"./start-block-stream":450,"./transport/transporter":476,"./utils/is-function":480,"./validate/validate-configuration":491,"./wrappers/net":501,"./wrappers/set-coinbase":508,"./wrappers/set-gas-price":509,"async":151,"dup":271}],406:[function(require,module,exports){
+},{"./block-management/ensure-latest-block":407,"./block-management/ethrpc-transport-adapter":408,"./block-management/on-new-block":410,"./errors":427,"./internal-state":430,"./reset-state":457,"./start-block-stream":460,"./transport/transporter":486,"./utils/is-function":490,"./validate/validate-configuration":501,"./wrappers/net":511,"./wrappers/set-coinbase":518,"./wrappers/set-gas-price":519,"async":151,"dup":271}],416:[function(require,module,exports){
 arguments[4][272][0].apply(exports,arguments)
-},{"bignumber.js":154,"dup":272}],407:[function(require,module,exports){
+},{"bignumber.js":154,"dup":272}],417:[function(require,module,exports){
 arguments[4][273][0].apply(exports,arguments)
-},{"./block-management/ensure-latest-block":397,"./block-management/wait-for-next-blocks":403,"./clear-transactions":404,"./connect":405,"./constants":406,"./debug/set-debug-options":408,"./decode-response/handle-rpc-error":409,"./encode-request/package-request":413,"./errors/codes":415,"./internal-state":420,"./raw-transactions/package-and-sign-raw-transaction":426,"./raw-transactions/package-and-submit-raw-transaction":427,"./raw-transactions/package-raw-transaction":428,"./raw-transactions/sign-raw-transaction":432,"./raw-transactions/sign-raw-transaction-with-key":431,"./reset-state":447,"./start-block-stream.js":450,"./transact/call-contract-function":456,"./transact/call-or-send-transaction":457,"./transact/transact":461,"./transaction-relay/exclude-from-transaction-relay":466,"./transaction-relay/include-in-transaction-relay":467,"./transaction-relay/register-transaction-relay":468,"./transaction-relay/unregister-transaction-relay":469,"./transport/ws-transport":478,"./utils/is-function":480,"./utils/sha3":487,"./validate/validate-and-default-block-number":489,"./validate/validate-transaction":493,"./wrappers/bind-dispatch":496,"./wrappers/eth":497,"./wrappers/is-unlocked":498,"./wrappers/miner":500,"./wrappers/net":501,"./wrappers/personal":502,"./wrappers/publish":503,"./wrappers/raw":504,"./wrappers/resend-raw-transaction":505,"./wrappers/resend-transaction":506,"./wrappers/send-ether":507,"./wrappers/shh":510,"./wrappers/web3":511,"dup":273,"redux":613,"redux-thunk-subscribe":607}],408:[function(require,module,exports){
+},{"./block-management/ensure-latest-block":407,"./block-management/wait-for-next-blocks":413,"./clear-transactions":414,"./connect":415,"./constants":416,"./debug/set-debug-options":418,"./decode-response/handle-rpc-error":419,"./encode-request/package-request":423,"./errors/codes":425,"./internal-state":430,"./raw-transactions/package-and-sign-raw-transaction":436,"./raw-transactions/package-and-submit-raw-transaction":437,"./raw-transactions/package-raw-transaction":438,"./raw-transactions/sign-raw-transaction":442,"./raw-transactions/sign-raw-transaction-with-key":441,"./reset-state":457,"./start-block-stream.js":460,"./transact/call-contract-function":466,"./transact/call-or-send-transaction":467,"./transact/transact":471,"./transaction-relay/exclude-from-transaction-relay":476,"./transaction-relay/include-in-transaction-relay":477,"./transaction-relay/register-transaction-relay":478,"./transaction-relay/unregister-transaction-relay":479,"./transport/ws-transport":488,"./utils/is-function":490,"./utils/sha3":497,"./validate/validate-and-default-block-number":499,"./validate/validate-transaction":503,"./wrappers/bind-dispatch":506,"./wrappers/eth":507,"./wrappers/is-unlocked":508,"./wrappers/miner":510,"./wrappers/net":511,"./wrappers/personal":512,"./wrappers/publish":513,"./wrappers/raw":514,"./wrappers/resend-raw-transaction":515,"./wrappers/resend-transaction":516,"./wrappers/send-ether":517,"./wrappers/shh":520,"./wrappers/web3":521,"dup":273,"redux":623,"redux-thunk-subscribe":617}],418:[function(require,module,exports){
 arguments[4][274][0].apply(exports,arguments)
-},{"dup":274}],409:[function(require,module,exports){
+},{"dup":274}],419:[function(require,module,exports){
 arguments[4][275][0].apply(exports,arguments)
-},{"../errors/codes":415,"dup":275,"speedomatic":655}],410:[function(require,module,exports){
+},{"../errors/codes":425,"dup":275,"speedomatic":665}],420:[function(require,module,exports){
 arguments[4][276][0].apply(exports,arguments)
-},{"../errors/codes":415,"../errors/rpc-error":418,"../utils/is-function":480,"../utils/is-object":484,"clone":197,"dup":276}],411:[function(require,module,exports){
+},{"../errors/codes":425,"../errors/rpc-error":428,"../utils/is-function":490,"../utils/is-object":494,"clone":197,"dup":276}],421:[function(require,module,exports){
 arguments[4][277][0].apply(exports,arguments)
-},{"../utils/is-function":480,"dup":277}],412:[function(require,module,exports){
+},{"../utils/is-function":490,"dup":277}],422:[function(require,module,exports){
 arguments[4][278][0].apply(exports,arguments)
-},{"./abi-encode":411,"dup":278}],413:[function(require,module,exports){
+},{"./abi-encode":421,"dup":278}],423:[function(require,module,exports){
 arguments[4][279][0].apply(exports,arguments)
-},{"../constants":406,"../errors/codes":415,"../errors/rpc-error":418,"clone":197,"dup":279,"speedomatic":655}],414:[function(require,module,exports){
+},{"../constants":416,"../errors/codes":425,"../errors/rpc-error":428,"clone":197,"dup":279,"speedomatic":665}],424:[function(require,module,exports){
 arguments[4][280][0].apply(exports,arguments)
-},{"dup":280}],415:[function(require,module,exports){
+},{"dup":280}],425:[function(require,module,exports){
 arguments[4][281][0].apply(exports,arguments)
-},{"dup":281}],416:[function(require,module,exports){
+},{"dup":281}],426:[function(require,module,exports){
 arguments[4][282][0].apply(exports,arguments)
-},{"dup":282}],417:[function(require,module,exports){
+},{"dup":282}],427:[function(require,module,exports){
 arguments[4][283][0].apply(exports,arguments)
-},{"dup":283}],418:[function(require,module,exports){
+},{"dup":283}],428:[function(require,module,exports){
 arguments[4][284][0].apply(exports,arguments)
-},{"dup":284}],419:[function(require,module,exports){
+},{"dup":284}],429:[function(require,module,exports){
 "use strict";
 
 var createEthrpc = require("./create-ethrpc");
@@ -45858,67 +51411,67 @@ ethrpc.withCustomReducer = function (customReducer) {
 ethrpc.lib_version = version;
 module.exports = ethrpc;
 
-},{"./create-ethrpc":407,"./reducers":441,"./reducers/compose-reducers":435,"./version":494}],420:[function(require,module,exports){
+},{"./create-ethrpc":417,"./reducers":451,"./reducers/compose-reducers":445,"./version":504}],430:[function(require,module,exports){
 arguments[4][286][0].apply(exports,arguments)
-},{"dup":286,"lodash.assign":553,"lodash.get":554,"lodash.set":555,"lodash.unset":556}],421:[function(require,module,exports){
+},{"dup":286,"lodash.assign":563,"lodash.get":564,"lodash.set":565,"lodash.unset":566}],431:[function(require,module,exports){
 arguments[4][287][0].apply(exports,arguments)
-},{"_process":585,"dup":287}],422:[function(require,module,exports){
+},{"_process":595,"dup":287}],432:[function(require,module,exports){
 arguments[4][288][0].apply(exports,arguments)
-},{"./is-node-js":421,"browser-request":158,"dup":288,"request":159}],423:[function(require,module,exports){
+},{"./is-node-js":431,"browser-request":158,"dup":288,"request":159}],433:[function(require,module,exports){
 arguments[4][289][0].apply(exports,arguments)
-},{"dup":289,"sync-request":673}],424:[function(require,module,exports){
+},{"dup":289,"sync-request":683}],434:[function(require,module,exports){
 arguments[4][290][0].apply(exports,arguments)
-},{"./is-node-js.js":421,"dup":290,"websocket":159}],425:[function(require,module,exports){
+},{"./is-node-js.js":431,"dup":290,"websocket":159}],435:[function(require,module,exports){
 arguments[4][291][0].apply(exports,arguments)
-},{"../errors/codes":415,"dup":291}],426:[function(require,module,exports){
+},{"../errors/codes":425,"dup":291}],436:[function(require,module,exports){
 arguments[4][292][0].apply(exports,arguments)
-},{"../errors/codes":415,"../errors/rpc-error":418,"../utils/is-function":480,"./package-raw-transaction":428,"./set-raw-transaction-gas-price":429,"./set-raw-transaction-nonce":430,"./sign-raw-transaction":432,"dup":292}],427:[function(require,module,exports){
+},{"../errors/codes":425,"../errors/rpc-error":428,"../utils/is-function":490,"./package-raw-transaction":438,"./set-raw-transaction-gas-price":439,"./set-raw-transaction-nonce":440,"./sign-raw-transaction":442,"dup":292}],437:[function(require,module,exports){
 arguments[4][293][0].apply(exports,arguments)
-},{"../constants":406,"../errors/codes":415,"../errors/rpc-error":418,"../utils/is-function":480,"../wrappers/eth":497,"./handle-raw-transaction-error":425,"./package-and-sign-raw-transaction":426,"dup":293}],428:[function(require,module,exports){
+},{"../constants":416,"../errors/codes":425,"../errors/rpc-error":428,"../utils/is-function":490,"../wrappers/eth":507,"./handle-raw-transaction-error":435,"./package-and-sign-raw-transaction":436,"dup":293}],438:[function(require,module,exports){
 arguments[4][294][0].apply(exports,arguments)
-},{"../constants":406,"../encode-request/package-request":413,"dup":294,"speedomatic":655}],429:[function(require,module,exports){
+},{"../constants":416,"../encode-request/package-request":423,"dup":294,"speedomatic":665}],439:[function(require,module,exports){
 arguments[4][295][0].apply(exports,arguments)
-},{"../errors/codes":415,"../errors/rpc-error":418,"../utils/is-function":480,"../wrappers/eth":497,"dup":295}],430:[function(require,module,exports){
+},{"../errors/codes":425,"../errors/rpc-error":428,"../utils/is-function":490,"../wrappers/eth":507,"dup":295}],440:[function(require,module,exports){
 arguments[4][296][0].apply(exports,arguments)
-},{"../utils/is-function":480,"../wrappers/eth":497,"./verify-raw-transaction-nonce":433,"dup":296}],431:[function(require,module,exports){
+},{"../utils/is-function":490,"../wrappers/eth":507,"./verify-raw-transaction-nonce":443,"dup":296}],441:[function(require,module,exports){
 arguments[4][297][0].apply(exports,arguments)
-},{"../errors/codes":415,"../errors/rpc-error":418,"../utils/is-function":480,"buffer":192,"dup":297,"ethereumjs-tx":391,"speedomatic":655}],432:[function(require,module,exports){
+},{"../errors/codes":425,"../errors/rpc-error":428,"../utils/is-function":490,"buffer":192,"dup":297,"ethereumjs-tx":391,"speedomatic":665}],442:[function(require,module,exports){
 arguments[4][298][0].apply(exports,arguments)
-},{"../constants":406,"../utils/is-function":480,"./sign-raw-transaction-with-key":431,"dup":298,"immutable-delete":394}],433:[function(require,module,exports){
+},{"../constants":416,"../utils/is-function":490,"./sign-raw-transaction-with-key":441,"dup":298,"immutable-delete":398}],443:[function(require,module,exports){
 arguments[4][299][0].apply(exports,arguments)
-},{"dup":299,"speedomatic":655}],434:[function(require,module,exports){
+},{"dup":299,"speedomatic":665}],444:[function(require,module,exports){
 arguments[4][300][0].apply(exports,arguments)
-},{"./initial-state":442,"dup":300}],435:[function(require,module,exports){
+},{"./initial-state":452,"dup":300}],445:[function(require,module,exports){
 arguments[4][301][0].apply(exports,arguments)
-},{"dup":301,"lodash.assign":553}],436:[function(require,module,exports){
+},{"dup":301,"lodash.assign":563}],446:[function(require,module,exports){
 arguments[4][302][0].apply(exports,arguments)
-},{"../utils/is-function":480,"./initial-state":442,"dup":302}],437:[function(require,module,exports){
+},{"../utils/is-function":490,"./initial-state":452,"dup":302}],447:[function(require,module,exports){
 arguments[4][303][0].apply(exports,arguments)
-},{"./initial-state":442,"clone":197,"dup":303}],438:[function(require,module,exports){
+},{"./initial-state":452,"clone":197,"dup":303}],448:[function(require,module,exports){
 arguments[4][304][0].apply(exports,arguments)
-},{"./initial-state":442,"dup":304,"lodash.assign":553}],439:[function(require,module,exports){
+},{"./initial-state":452,"dup":304,"lodash.assign":563}],449:[function(require,module,exports){
 arguments[4][305][0].apply(exports,arguments)
-},{"./initial-state":442,"dup":305}],440:[function(require,module,exports){
+},{"./initial-state":452,"dup":305}],450:[function(require,module,exports){
 arguments[4][306][0].apply(exports,arguments)
-},{"./initial-state":442,"dup":306}],441:[function(require,module,exports){
+},{"./initial-state":452,"dup":306}],451:[function(require,module,exports){
 arguments[4][307][0].apply(exports,arguments)
-},{"./coinbase":434,"./configuration":436,"./current-block":437,"./debug":438,"./gas-price":439,"./highest-nonce":440,"./network-id":443,"./no-relay":444,"./subscriptions":445,"./transactions":446,"dup":307}],442:[function(require,module,exports){
+},{"./coinbase":444,"./configuration":446,"./current-block":447,"./debug":448,"./gas-price":449,"./highest-nonce":450,"./network-id":453,"./no-relay":454,"./subscriptions":455,"./transactions":456,"dup":307}],452:[function(require,module,exports){
 arguments[4][308][0].apply(exports,arguments)
-},{"dup":308}],443:[function(require,module,exports){
+},{"dup":308}],453:[function(require,module,exports){
 arguments[4][309][0].apply(exports,arguments)
-},{"./initial-state":442,"dup":309}],444:[function(require,module,exports){
+},{"./initial-state":452,"dup":309}],454:[function(require,module,exports){
 arguments[4][310][0].apply(exports,arguments)
-},{"./initial-state":442,"dup":310,"lodash.assign":553}],445:[function(require,module,exports){
+},{"./initial-state":452,"dup":310,"lodash.assign":563}],455:[function(require,module,exports){
 arguments[4][311][0].apply(exports,arguments)
-},{"./initial-state":442,"dup":311,"immutable-delete":394,"lodash.assign":553}],446:[function(require,module,exports){
+},{"./initial-state":452,"dup":311,"immutable-delete":398,"lodash.assign":563}],456:[function(require,module,exports){
 arguments[4][312][0].apply(exports,arguments)
-},{"../utils/is-object":484,"./initial-state":442,"dup":312,"immutable-delete":394,"lodash.assign":553}],447:[function(require,module,exports){
+},{"../utils/is-object":494,"./initial-state":452,"dup":312,"immutable-delete":398,"lodash.assign":563}],457:[function(require,module,exports){
 arguments[4][313][0].apply(exports,arguments)
-},{"./clear-transactions":404,"./internal-state":420,"./rpc/blockchain-message-handler":448,"./subscriptions/store-observer":455,"./utils/is-object":484,"dup":313}],448:[function(require,module,exports){
+},{"./clear-transactions":414,"./internal-state":430,"./rpc/blockchain-message-handler":458,"./subscriptions/store-observer":465,"./utils/is-object":494,"dup":313}],458:[function(require,module,exports){
 arguments[4][314][0].apply(exports,arguments)
-},{"../decode-response/parse-ethereum-response":410,"../errors":417,"../internal-state":420,"../utils/is-object":484,"dup":314}],449:[function(require,module,exports){
+},{"../decode-response/parse-ethereum-response":420,"../errors":427,"../internal-state":430,"../utils/is-object":494,"dup":314}],459:[function(require,module,exports){
 arguments[4][315][0].apply(exports,arguments)
-},{"../encode-request/strip-returns-type-and-invocation":414,"../internal-state":420,"../utils/is-function":480,"dup":315}],450:[function(require,module,exports){
+},{"../encode-request/strip-returns-type-and-invocation":424,"../internal-state":430,"../utils/is-function":490,"dup":315}],460:[function(require,module,exports){
 "use strict";
 
 var createBlockAndLogStreamer = require("./block-management/create-block-and-log-streamer");
@@ -45941,19 +51494,19 @@ module.exports = function (startingBlockNumber, callback) {
   };
 };
 
-},{"./block-management/create-block-and-log-streamer":396,"./block-management/ethrpc-transport-adapter":398,"./block-management/on-new-block":400,"./internal-state":420}],451:[function(require,module,exports){
+},{"./block-management/create-block-and-log-streamer":406,"./block-management/ethrpc-transport-adapter":408,"./block-management/on-new-block":410,"./internal-state":430}],461:[function(require,module,exports){
 arguments[4][317][0].apply(exports,arguments)
-},{"./add-subscription":452,"dup":317}],452:[function(require,module,exports){
+},{"./add-subscription":462,"dup":317}],462:[function(require,module,exports){
 arguments[4][318][0].apply(exports,arguments)
-},{"./store-observer":455,"dup":318}],453:[function(require,module,exports){
+},{"./store-observer":465,"dup":318}],463:[function(require,module,exports){
 arguments[4][319][0].apply(exports,arguments)
-},{"./add-subscription":452,"dup":319}],454:[function(require,module,exports){
+},{"./add-subscription":462,"dup":319}],464:[function(require,module,exports){
 arguments[4][320][0].apply(exports,arguments)
-},{"./store-observer":455,"dup":320}],455:[function(require,module,exports){
+},{"./store-observer":465,"dup":320}],465:[function(require,module,exports){
 arguments[4][321][0].apply(exports,arguments)
-},{"../utils/is-function":480,"dup":321,"immutable-delete":394,"lodash.assign":553}],456:[function(require,module,exports){
+},{"../utils/is-function":490,"dup":321,"immutable-delete":398,"lodash.assign":563}],466:[function(require,module,exports){
 arguments[4][322][0].apply(exports,arguments)
-},{"../decode-response/handle-rpc-error":409,"../errors/codes":415,"../errors/rpc-error":418,"../transact/call-or-send-transaction":457,"../utils/is-function":480,"clone":197,"dup":322,"speedomatic":655}],457:[function(require,module,exports){
+},{"../decode-response/handle-rpc-error":419,"../errors/codes":425,"../errors/rpc-error":428,"../transact/call-or-send-transaction":467,"../utils/is-function":490,"clone":197,"dup":322,"speedomatic":665}],467:[function(require,module,exports){
 "use strict";
 
 var eth = require("../wrappers/eth");
@@ -45995,13 +51548,13 @@ function callOrSendTransaction(payload, callback) {
 
 module.exports = callOrSendTransaction;
 
-},{"../encode-request/package-request":413,"../errors/codes":415,"../utils/is-function":480,"../utils/is-object":484,"../wrappers/eth":497}],458:[function(require,module,exports){
+},{"../encode-request/package-request":423,"../errors/codes":425,"../utils/is-function":490,"../utils/is-object":494,"../wrappers/eth":507}],468:[function(require,module,exports){
 arguments[4][324][0].apply(exports,arguments)
-},{"../errors/codes":415,"../wrappers/eth":497,"bignumber.js":154,"dup":324}],459:[function(require,module,exports){
+},{"../errors/codes":425,"../wrappers/eth":507,"bignumber.js":154,"dup":324}],469:[function(require,module,exports){
 arguments[4][325][0].apply(exports,arguments)
-},{"./update-tx":464,"dup":325}],460:[function(require,module,exports){
+},{"./update-tx":474,"dup":325}],470:[function(require,module,exports){
 arguments[4][326][0].apply(exports,arguments)
-},{"../errors/codes":415,"../raw-transactions/package-and-submit-raw-transaction":427,"../transact/call-or-send-transaction":457,"../transact/verify-tx-submitted":465,"dup":326,"immutable-delete":394,"speedomatic":655}],461:[function(require,module,exports){
+},{"../errors/codes":425,"../raw-transactions/package-and-submit-raw-transaction":437,"../transact/call-or-send-transaction":467,"../transact/verify-tx-submitted":475,"dup":326,"immutable-delete":398,"speedomatic":665}],471:[function(require,module,exports){
 /**
  * Send-call-confirm callback sequence
  */
@@ -46056,39 +51609,39 @@ function transact(payload, privateKeyOrSigner, accountType, onSent, onSuccess, o
 
 module.exports = transact;
 
-},{"../errors/codes":415,"../transact/call-contract-function":456,"../transact/call-or-send-transaction":457,"../transact/transact-async":460,"../utils/is-function":480,"../utils/noop":486,"../utils/sha3":487}],462:[function(require,module,exports){
+},{"../errors/codes":425,"../transact/call-contract-function":466,"../transact/call-or-send-transaction":467,"../transact/transact-async":470,"../utils/is-function":490,"../utils/noop":496,"../utils/sha3":497}],472:[function(require,module,exports){
 arguments[4][328][0].apply(exports,arguments)
-},{"../constants":406,"../decode-response/handle-rpc-error":409,"../errors/codes":415,"../transact/call-contract-function":456,"../transact/get-logged-return-value":458,"../utils/is-function":480,"../wrappers/eth":497,"bignumber.js":154,"dup":328,"speedomatic":655}],463:[function(require,module,exports){
+},{"../constants":416,"../decode-response/handle-rpc-error":419,"../errors/codes":425,"../transact/call-contract-function":466,"../transact/get-logged-return-value":468,"../utils/is-function":490,"../wrappers/eth":507,"bignumber.js":154,"dup":328,"speedomatic":665}],473:[function(require,module,exports){
 arguments[4][329][0].apply(exports,arguments)
-},{"../constants":406,"../errors/codes":415,"../transact/transact":461,"../transact/update-mined-tx":462,"../utils/is-function":480,"../wrappers/eth":497,"clone":197,"dup":329}],464:[function(require,module,exports){
+},{"../constants":416,"../errors/codes":425,"../transact/transact":471,"../transact/update-mined-tx":472,"../utils/is-function":490,"../wrappers/eth":507,"clone":197,"dup":329}],474:[function(require,module,exports){
 arguments[4][330][0].apply(exports,arguments)
-},{"../transact/update-mined-tx":462,"../transact/update-pending-tx":463,"dup":330}],465:[function(require,module,exports){
+},{"../transact/update-mined-tx":472,"../transact/update-pending-tx":473,"dup":330}],475:[function(require,module,exports){
 arguments[4][331][0].apply(exports,arguments)
-},{"../errors/codes":415,"../errors/rpc-error":418,"../transact/update-tx":464,"../utils/is-function":480,"dup":331}],466:[function(require,module,exports){
+},{"../errors/codes":425,"../errors/rpc-error":428,"../transact/update-tx":474,"../utils/is-function":490,"dup":331}],476:[function(require,module,exports){
 arguments[4][332][0].apply(exports,arguments)
-},{"dup":332}],467:[function(require,module,exports){
+},{"dup":332}],477:[function(require,module,exports){
 arguments[4][333][0].apply(exports,arguments)
-},{"dup":333}],468:[function(require,module,exports){
+},{"dup":333}],478:[function(require,module,exports){
 arguments[4][334][0].apply(exports,arguments)
-},{"../subscriptions/add-transactions-subscription":453,"dup":334}],469:[function(require,module,exports){
+},{"../subscriptions/add-transactions-subscription":463,"dup":334}],479:[function(require,module,exports){
 arguments[4][335][0].apply(exports,arguments)
-},{"../subscriptions/remove-subscription":454,"dup":335}],470:[function(require,module,exports){
+},{"../subscriptions/remove-subscription":464,"dup":335}],480:[function(require,module,exports){
 arguments[4][336][0].apply(exports,arguments)
-},{"dup":336}],471:[function(require,module,exports){
+},{"dup":336}],481:[function(require,module,exports){
 arguments[4][337][0].apply(exports,arguments)
-},{"../../utils/is-not-null":482,"../../utils/is-null":483,"../../utils/is-undefined":485,"dup":337}],472:[function(require,module,exports){
+},{"../../utils/is-not-null":492,"../../utils/is-null":493,"../../utils/is-undefined":495,"dup":337}],482:[function(require,module,exports){
 arguments[4][338][0].apply(exports,arguments)
-},{"../../utils/is-not-null":482,"dup":338}],473:[function(require,module,exports){
+},{"../../utils/is-not-null":492,"dup":338}],483:[function(require,module,exports){
 arguments[4][339][0].apply(exports,arguments)
-},{"../platform/request.js":422,"./abstract-transport.js":470,"dup":339}],474:[function(require,module,exports){
+},{"../platform/request.js":432,"./abstract-transport.js":480,"dup":339}],484:[function(require,module,exports){
 arguments[4][340][0].apply(exports,arguments)
-},{"./abstract-transport.js":470,"dup":340,"net":189,"oboe":572}],475:[function(require,module,exports){
+},{"./abstract-transport.js":480,"dup":340,"net":189,"oboe":582}],485:[function(require,module,exports){
 arguments[4][341][0].apply(exports,arguments)
-},{"../platform/sync-request.js":423,"./abstract-transport.js":470,"./http-transport.js":473,"dup":341}],476:[function(require,module,exports){
+},{"../platform/sync-request.js":433,"./abstract-transport.js":480,"./http-transport.js":483,"dup":341}],486:[function(require,module,exports){
 arguments[4][342][0].apply(exports,arguments)
-},{"../utils/create-array-with-default-value":479,"./helpers/check-if-complete":471,"./helpers/choose-transport":472,"./http-transport":473,"./ipc-transport":474,"./sync-transport":475,"./web3-transport":477,"./ws-transport":478,"dup":342}],477:[function(require,module,exports){
+},{"../utils/create-array-with-default-value":489,"./helpers/check-if-complete":481,"./helpers/choose-transport":482,"./http-transport":483,"./ipc-transport":484,"./sync-transport":485,"./web3-transport":487,"./ws-transport":488,"dup":342}],487:[function(require,module,exports){
 arguments[4][343][0].apply(exports,arguments)
-},{"./abstract-transport.js":470,"dup":343}],478:[function(require,module,exports){
+},{"./abstract-transport.js":480,"dup":343}],488:[function(require,module,exports){
 "use strict";
 
 var AbstractTransport = require("./abstract-transport");
@@ -46152,75 +51705,75 @@ WsTransport.prototype.submitRpcRequest = function (rpcJso, errorCallback) {
 
 module.exports = WsTransport;
 
-},{"../platform/web-socket-client":424,"./abstract-transport":470}],479:[function(require,module,exports){
+},{"../platform/web-socket-client":434,"./abstract-transport":480}],489:[function(require,module,exports){
 arguments[4][345][0].apply(exports,arguments)
-},{"dup":345}],480:[function(require,module,exports){
+},{"dup":345}],490:[function(require,module,exports){
 arguments[4][346][0].apply(exports,arguments)
-},{"dup":346}],481:[function(require,module,exports){
+},{"dup":346}],491:[function(require,module,exports){
 arguments[4][347][0].apply(exports,arguments)
-},{"dup":347,"speedomatic":655}],482:[function(require,module,exports){
+},{"dup":347,"speedomatic":665}],492:[function(require,module,exports){
 arguments[4][348][0].apply(exports,arguments)
-},{"dup":348}],483:[function(require,module,exports){
+},{"dup":348}],493:[function(require,module,exports){
 arguments[4][349][0].apply(exports,arguments)
-},{"dup":349}],484:[function(require,module,exports){
+},{"dup":349}],494:[function(require,module,exports){
 arguments[4][350][0].apply(exports,arguments)
-},{"dup":350}],485:[function(require,module,exports){
+},{"dup":350}],495:[function(require,module,exports){
 arguments[4][351][0].apply(exports,arguments)
-},{"dup":351}],486:[function(require,module,exports){
+},{"dup":351}],496:[function(require,module,exports){
 arguments[4][352][0].apply(exports,arguments)
-},{"dup":352}],487:[function(require,module,exports){
+},{"dup":352}],497:[function(require,module,exports){
 arguments[4][353][0].apply(exports,arguments)
-},{"../utils/is-function":480,"buffer":192,"dup":353,"keccak/js":538,"speedomatic":655}],488:[function(require,module,exports){
+},{"../utils/is-function":490,"buffer":192,"dup":353,"keccak/js":548,"speedomatic":665}],498:[function(require,module,exports){
 arguments[4][354][0].apply(exports,arguments)
-},{"../utils/sha3":487,"dup":354}],489:[function(require,module,exports){
+},{"../utils/sha3":497,"dup":354}],499:[function(require,module,exports){
 arguments[4][355][0].apply(exports,arguments)
-},{"./validate-number":492,"dup":355}],490:[function(require,module,exports){
+},{"./validate-number":502,"dup":355}],500:[function(require,module,exports){
 arguments[4][356][0].apply(exports,arguments)
-},{"../errors":417,"dup":356}],491:[function(require,module,exports){
+},{"../errors":427,"dup":356}],501:[function(require,module,exports){
 arguments[4][357][0].apply(exports,arguments)
-},{"dup":357}],492:[function(require,module,exports){
+},{"dup":357}],502:[function(require,module,exports){
 arguments[4][358][0].apply(exports,arguments)
-},{"dup":358}],493:[function(require,module,exports){
+},{"dup":358}],503:[function(require,module,exports){
 arguments[4][359][0].apply(exports,arguments)
-},{"./validate-address":488,"./validate-number":492,"dup":359}],494:[function(require,module,exports){
+},{"./validate-address":498,"./validate-number":502,"dup":359}],504:[function(require,module,exports){
 // generated by genversion
-module.exports = '4.5.11'
+module.exports = '4.5.12'
 
-},{}],495:[function(require,module,exports){
+},{}],505:[function(require,module,exports){
 arguments[4][360][0].apply(exports,arguments)
-},{"dup":360}],496:[function(require,module,exports){
+},{"dup":360}],506:[function(require,module,exports){
 arguments[4][361][0].apply(exports,arguments)
-},{"./bind-dispatch-to-method":495,"dup":361}],497:[function(require,module,exports){
+},{"./bind-dispatch-to-method":505,"dup":361}],507:[function(require,module,exports){
 arguments[4][362][0].apply(exports,arguments)
-},{"./make-wrapper":499,"dup":362}],498:[function(require,module,exports){
+},{"./make-wrapper":509,"dup":362}],508:[function(require,module,exports){
 arguments[4][363][0].apply(exports,arguments)
-},{"../utils/is-function":480,"../wrappers/eth":497,"dup":363}],499:[function(require,module,exports){
+},{"../utils/is-function":490,"../wrappers/eth":507,"dup":363}],509:[function(require,module,exports){
 arguments[4][364][0].apply(exports,arguments)
-},{"../utils/is-function":480,"./raw":504,"dup":364}],500:[function(require,module,exports){
+},{"../utils/is-function":490,"./raw":514,"dup":364}],510:[function(require,module,exports){
 arguments[4][365][0].apply(exports,arguments)
-},{"./make-wrapper":499,"dup":365}],501:[function(require,module,exports){
+},{"./make-wrapper":509,"dup":365}],511:[function(require,module,exports){
 arguments[4][366][0].apply(exports,arguments)
-},{"./make-wrapper":499,"dup":366}],502:[function(require,module,exports){
+},{"./make-wrapper":509,"dup":366}],512:[function(require,module,exports){
 arguments[4][367][0].apply(exports,arguments)
-},{"./make-wrapper":499,"dup":367}],503:[function(require,module,exports){
+},{"./make-wrapper":509,"dup":367}],513:[function(require,module,exports){
 arguments[4][368][0].apply(exports,arguments)
-},{"../constants":406,"../utils/is-function":480,"./eth":497,"dup":368}],504:[function(require,module,exports){
+},{"../constants":416,"../utils/is-function":490,"./eth":507,"dup":368}],514:[function(require,module,exports){
 arguments[4][369][0].apply(exports,arguments)
-},{"../encode-request/make-request-payload":412,"../rpc/submit-request-to-blockchain":449,"../utils/is-function":480,"dup":369}],505:[function(require,module,exports){
+},{"../encode-request/make-request-payload":422,"../rpc/submit-request-to-blockchain":459,"../utils/is-function":490,"dup":369}],515:[function(require,module,exports){
 arguments[4][370][0].apply(exports,arguments)
-},{"../raw-transactions/sign-raw-transaction-with-key":431,"../wrappers/eth":497,"clone":197,"dup":370,"speedomatic":655}],506:[function(require,module,exports){
+},{"../raw-transactions/sign-raw-transaction-with-key":441,"../wrappers/eth":507,"clone":197,"dup":370,"speedomatic":665}],516:[function(require,module,exports){
 arguments[4][371][0].apply(exports,arguments)
-},{"../wrappers/eth":497,"clone":197,"dup":371,"speedomatic":655}],507:[function(require,module,exports){
+},{"../wrappers/eth":507,"clone":197,"dup":371,"speedomatic":665}],517:[function(require,module,exports){
 arguments[4][372][0].apply(exports,arguments)
-},{"../transact/transact":461,"../utils/is-object":484,"dup":372,"speedomatic":655}],508:[function(require,module,exports){
+},{"../transact/transact":471,"../utils/is-object":494,"dup":372,"speedomatic":665}],518:[function(require,module,exports){
 arguments[4][373][0].apply(exports,arguments)
-},{"../utils/is-function":480,"./eth":497,"dup":373,"speedomatic":655}],509:[function(require,module,exports){
+},{"../utils/is-function":490,"./eth":507,"dup":373,"speedomatic":665}],519:[function(require,module,exports){
 arguments[4][374][0].apply(exports,arguments)
-},{"../utils/is-function":480,"../utils/is-hex":481,"./eth":497,"dup":374}],510:[function(require,module,exports){
+},{"../utils/is-function":490,"../utils/is-hex":491,"./eth":507,"dup":374}],520:[function(require,module,exports){
 arguments[4][375][0].apply(exports,arguments)
-},{"./make-wrapper":499,"dup":375}],511:[function(require,module,exports){
+},{"./make-wrapper":509,"dup":375}],521:[function(require,module,exports){
 arguments[4][376][0].apply(exports,arguments)
-},{"../utils/sha3":487,"./make-wrapper":499,"dup":376}],512:[function(require,module,exports){
+},{"../utils/sha3":497,"./make-wrapper":509,"dup":376}],522:[function(require,module,exports){
 'use strict';
 
 var d        = require('d')
@@ -46354,7 +51907,7 @@ module.exports = exports = function (o) {
 };
 exports.methods = methods;
 
-},{"d":206,"es5-ext/object/valid-callable":243}],513:[function(require,module,exports){
+},{"d":206,"es5-ext/object/valid-callable":243}],523:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -46658,7 +52211,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],514:[function(require,module,exports){
+},{}],524:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var MD5 = require('md5.js')
 
@@ -46705,7 +52258,7 @@ function EVP_BytesToKey (password, salt, keyBits, ivLen) {
 
 module.exports = EVP_BytesToKey
 
-},{"md5.js":567,"safe-buffer":617}],515:[function(require,module,exports){
+},{"md5.js":577,"safe-buffer":627}],525:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var Transform = require('stream').Transform
@@ -46792,7 +52345,7 @@ HashBase.prototype._digest = function () {
 module.exports = HashBase
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":192,"inherits":534,"stream":668}],516:[function(require,module,exports){
+},{"buffer":192,"inherits":544,"stream":678}],526:[function(require,module,exports){
 var hash = exports;
 
 hash.utils = require('./hash/utils');
@@ -46809,7 +52362,7 @@ hash.sha384 = hash.sha.sha384;
 hash.sha512 = hash.sha.sha512;
 hash.ripemd160 = hash.ripemd.ripemd160;
 
-},{"./hash/common":517,"./hash/hmac":518,"./hash/ripemd":519,"./hash/sha":520,"./hash/utils":527}],517:[function(require,module,exports){
+},{"./hash/common":527,"./hash/hmac":528,"./hash/ripemd":529,"./hash/sha":530,"./hash/utils":537}],527:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -46903,7 +52456,7 @@ BlockHash.prototype._pad = function pad() {
   return res;
 };
 
-},{"./utils":527,"minimalistic-assert":570}],518:[function(require,module,exports){
+},{"./utils":537,"minimalistic-assert":580}],528:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -46952,7 +52505,7 @@ Hmac.prototype.digest = function digest(enc) {
   return this.outer.digest(enc);
 };
 
-},{"./utils":527,"minimalistic-assert":570}],519:[function(require,module,exports){
+},{"./utils":537,"minimalistic-assert":580}],529:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -47100,7 +52653,7 @@ var sh = [
   8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11
 ];
 
-},{"./common":517,"./utils":527}],520:[function(require,module,exports){
+},{"./common":527,"./utils":537}],530:[function(require,module,exports){
 'use strict';
 
 exports.sha1 = require('./sha/1');
@@ -47109,7 +52662,7 @@ exports.sha256 = require('./sha/256');
 exports.sha384 = require('./sha/384');
 exports.sha512 = require('./sha/512');
 
-},{"./sha/1":521,"./sha/224":522,"./sha/256":523,"./sha/384":524,"./sha/512":525}],521:[function(require,module,exports){
+},{"./sha/1":531,"./sha/224":532,"./sha/256":533,"./sha/384":534,"./sha/512":535}],531:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -47185,7 +52738,7 @@ SHA1.prototype._digest = function digest(enc) {
     return utils.split32(this.h, 'big');
 };
 
-},{"../common":517,"../utils":527,"./common":526}],522:[function(require,module,exports){
+},{"../common":527,"../utils":537,"./common":536}],532:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -47217,7 +52770,7 @@ SHA224.prototype._digest = function digest(enc) {
 };
 
 
-},{"../utils":527,"./256":523}],523:[function(require,module,exports){
+},{"../utils":537,"./256":533}],533:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -47324,7 +52877,7 @@ SHA256.prototype._digest = function digest(enc) {
     return utils.split32(this.h, 'big');
 };
 
-},{"../common":517,"../utils":527,"./common":526,"minimalistic-assert":570}],524:[function(require,module,exports){
+},{"../common":527,"../utils":537,"./common":536,"minimalistic-assert":580}],534:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -47361,7 +52914,7 @@ SHA384.prototype._digest = function digest(enc) {
     return utils.split32(this.h.slice(0, 12), 'big');
 };
 
-},{"../utils":527,"./512":525}],525:[function(require,module,exports){
+},{"../utils":537,"./512":535}],535:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -47693,7 +53246,7 @@ function g1_512_lo(xh, xl) {
   return r;
 }
 
-},{"../common":517,"../utils":527,"minimalistic-assert":570}],526:[function(require,module,exports){
+},{"../common":527,"../utils":537,"minimalistic-assert":580}],536:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -47744,7 +53297,7 @@ function g1_256(x) {
 }
 exports.g1_256 = g1_256;
 
-},{"../utils":527}],527:[function(require,module,exports){
+},{"../utils":537}],537:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -47999,7 +53552,7 @@ function shr64_lo(ah, al, num) {
 }
 exports.shr64_lo = shr64_lo;
 
-},{"inherits":534,"minimalistic-assert":570}],528:[function(require,module,exports){
+},{"inherits":544,"minimalistic-assert":580}],538:[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
@@ -48114,7 +53667,7 @@ HmacDRBG.prototype.generate = function generate(len, enc, add, addEnc) {
   return utils.encode(res, enc);
 };
 
-},{"hash.js":516,"minimalistic-assert":570,"minimalistic-crypto-utils":571}],529:[function(require,module,exports){
+},{"hash.js":526,"minimalistic-assert":580,"minimalistic-crypto-utils":581}],539:[function(require,module,exports){
 'use strict';
 
 module.exports = Response;
@@ -48159,7 +53712,7 @@ Response.prototype.getBody = function (encoding) {
   return encoding ? this.body.toString(encoding) : this.body;
 };
 
-},{}],530:[function(require,module,exports){
+},{}],540:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -48245,7 +53798,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],531:[function(require,module,exports){
+},{}],541:[function(require,module,exports){
 "use strict";
 
 /**
@@ -48266,7 +53819,7 @@ module.exports = function (originalObject, excludeKey) {
   }, {});
 };
 
-},{}],532:[function(require,module,exports){
+},{}],542:[function(require,module,exports){
 /**
  *  Copyright (c) 2014-2015, Facebook, Inc.
  *  All rights reserved.
@@ -53246,7 +58799,7 @@ module.exports = function (originalObject, excludeKey) {
   return Immutable;
 
 }));
-},{}],533:[function(require,module,exports){
+},{}],543:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -53257,7 +58810,7 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],534:[function(require,module,exports){
+},{}],544:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -53282,7 +58835,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],535:[function(require,module,exports){
+},{}],545:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -53305,7 +58858,7 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],536:[function(require,module,exports){
+},{}],546:[function(require,module,exports){
 /**
  * Returns a `Boolean` on whether or not the a `String` starts with '0x'
  * @param {String} str the string input value
@@ -53320,13 +58873,13 @@ module.exports = function isHexPrefixed(str) {
   return str.slice(0, 2) === '0x';
 }
 
-},{}],537:[function(require,module,exports){
+},{}],547:[function(require,module,exports){
 arguments[4][193][0].apply(exports,arguments)
-},{"dup":193}],538:[function(require,module,exports){
+},{"dup":193}],548:[function(require,module,exports){
 'use strict'
 module.exports = require('./lib/api')(require('./lib/keccak'))
 
-},{"./lib/api":539,"./lib/keccak":543}],539:[function(require,module,exports){
+},{"./lib/api":549,"./lib/keccak":553}],549:[function(require,module,exports){
 'use strict'
 var createKeccak = require('./keccak')
 var createShake = require('./shake')
@@ -53356,7 +58909,7 @@ module.exports = function (KeccakState) {
   }
 }
 
-},{"./keccak":540,"./shake":541}],540:[function(require,module,exports){
+},{"./keccak":550,"./shake":551}],550:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var Transform = require('stream').Transform
@@ -53443,7 +58996,7 @@ module.exports = function (KeccakState) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":192,"inherits":534,"stream":668}],541:[function(require,module,exports){
+},{"buffer":192,"inherits":544,"stream":678}],551:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var Transform = require('stream').Transform
@@ -53521,7 +59074,7 @@ module.exports = function (KeccakState) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":192,"inherits":534,"stream":668}],542:[function(require,module,exports){
+},{"buffer":192,"inherits":544,"stream":678}],552:[function(require,module,exports){
 'use strict'
 var P1600_ROUND_CONSTANTS = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649, 0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0, 2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771, 2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648, 2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648]
 
@@ -53710,7 +59263,7 @@ exports.p1600 = function (s) {
   }
 }
 
-},{}],543:[function(require,module,exports){
+},{}],553:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var keccakState = require('./keccak-state-unroll')
@@ -53783,10 +59336,10 @@ Keccak.prototype.copy = function (dest) {
 module.exports = Keccak
 
 }).call(this,require("buffer").Buffer)
-},{"./keccak-state-unroll":542,"buffer":192}],544:[function(require,module,exports){
+},{"./keccak-state-unroll":552,"buffer":192}],554:[function(require,module,exports){
 module.exports = require('browserify-sha3').SHA3Hash
 
-},{"browserify-sha3":181}],545:[function(require,module,exports){
+},{"browserify-sha3":181}],555:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * Create, import, and export ethereum keys.
@@ -54334,7 +59887,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/scrypt":546,"_process":585,"buffer":192,"crypto":205,"fs":189,"keccak/js":538,"path":578,"secp256k1/elliptic":547,"sjcl":632,"uuid":685}],546:[function(require,module,exports){
+},{"./lib/scrypt":556,"_process":595,"buffer":192,"crypto":205,"fs":189,"keccak/js":548,"path":588,"secp256k1/elliptic":557,"sjcl":642,"uuid":695}],556:[function(require,module,exports){
 (function (process,__dirname){
 // https://github.com/tonyg/js-scrypt
 module.exports = function (requested_total_memory) {
@@ -66055,11 +71608,11 @@ module.exports = function (requested_total_memory) {
 };
 
 }).call(this,require('_process'),"/node_modules/keythereum/lib")
-},{"_process":585,"fs":189,"path":578}],547:[function(require,module,exports){
+},{"_process":595,"fs":189,"path":588}],557:[function(require,module,exports){
 'use strict'
 module.exports = require('./lib')(require('./lib/elliptic'))
 
-},{"./lib":551,"./lib/elliptic":550}],548:[function(require,module,exports){
+},{"./lib":561,"./lib/elliptic":560}],558:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var toString = Object.prototype.toString
@@ -66107,7 +71660,7 @@ exports.isNumberInInterval = function (number, x, y, message) {
 }
 
 }).call(this,{"isBuffer":require("../../../../is-buffer/index.js")})
-},{"../../../../is-buffer/index.js":535}],549:[function(require,module,exports){
+},{"../../../../is-buffer/index.js":545}],559:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var bip66 = require('bip66')
@@ -66308,7 +71861,7 @@ exports.signatureImportLax = function (sig) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"bip66":155,"buffer":192}],550:[function(require,module,exports){
+},{"bip66":155,"buffer":192}],560:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var createHash = require('create-hash')
@@ -66559,7 +72112,7 @@ exports.ecdhUnsafe = function (publicKey, privateKey, compressed) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../messages.json":552,"bn.js":156,"buffer":192,"create-hash":200,"elliptic":217}],551:[function(require,module,exports){
+},{"../messages.json":562,"bn.js":156,"buffer":192,"create-hash":200,"elliptic":217}],561:[function(require,module,exports){
 'use strict'
 var assert = require('./assert')
 var der = require('./der')
@@ -66792,7 +72345,7 @@ module.exports = function (secp256k1) {
   }
 }
 
-},{"./assert":548,"./der":549,"./messages.json":552}],552:[function(require,module,exports){
+},{"./assert":558,"./der":559,"./messages.json":562}],562:[function(require,module,exports){
 module.exports={
   "COMPRESSED_TYPE_INVALID": "compressed should be a boolean",
   "EC_PRIVATE_KEY_TYPE_INVALID": "private key should be a Buffer",
@@ -66830,7 +72383,7 @@ module.exports={
   "TWEAK_LENGTH_INVALID": "tweak length is invalid"
 }
 
-},{}],553:[function(require,module,exports){
+},{}],563:[function(require,module,exports){
 /**
  * lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -67469,7 +73022,7 @@ function keys(object) {
 
 module.exports = assign;
 
-},{}],554:[function(require,module,exports){
+},{}],564:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -68404,7 +73957,7 @@ function get(object, path, defaultValue) {
 module.exports = get;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],555:[function(require,module,exports){
+},{}],565:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -69398,7 +74951,7 @@ function set(object, path, value) {
 module.exports = set;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],556:[function(require,module,exports){
+},{}],566:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -70411,7 +75964,7 @@ function unset(object, path) {
 module.exports = unset;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],557:[function(require,module,exports){
+},{}],567:[function(require,module,exports){
 var root = require('./_root');
 
 /** Built-in value references. */
@@ -70419,7 +75972,7 @@ var Symbol = root.Symbol;
 
 module.exports = Symbol;
 
-},{"./_root":564}],558:[function(require,module,exports){
+},{"./_root":574}],568:[function(require,module,exports){
 var Symbol = require('./_Symbol'),
     getRawTag = require('./_getRawTag'),
     objectToString = require('./_objectToString');
@@ -70449,7 +76002,7 @@ function baseGetTag(value) {
 
 module.exports = baseGetTag;
 
-},{"./_Symbol":557,"./_getRawTag":561,"./_objectToString":562}],559:[function(require,module,exports){
+},{"./_Symbol":567,"./_getRawTag":571,"./_objectToString":572}],569:[function(require,module,exports){
 (function (global){
 /** Detect free variable `global` from Node.js. */
 var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
@@ -70457,7 +76010,7 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 module.exports = freeGlobal;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],560:[function(require,module,exports){
+},{}],570:[function(require,module,exports){
 var overArg = require('./_overArg');
 
 /** Built-in value references. */
@@ -70465,7 +76018,7 @@ var getPrototype = overArg(Object.getPrototypeOf, Object);
 
 module.exports = getPrototype;
 
-},{"./_overArg":563}],561:[function(require,module,exports){
+},{"./_overArg":573}],571:[function(require,module,exports){
 var Symbol = require('./_Symbol');
 
 /** Used for built-in method references. */
@@ -70513,7 +76066,7 @@ function getRawTag(value) {
 
 module.exports = getRawTag;
 
-},{"./_Symbol":557}],562:[function(require,module,exports){
+},{"./_Symbol":567}],572:[function(require,module,exports){
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
 
@@ -70537,7 +76090,7 @@ function objectToString(value) {
 
 module.exports = objectToString;
 
-},{}],563:[function(require,module,exports){
+},{}],573:[function(require,module,exports){
 /**
  * Creates a unary function that invokes `func` with its argument transformed.
  *
@@ -70554,7 +76107,7 @@ function overArg(func, transform) {
 
 module.exports = overArg;
 
-},{}],564:[function(require,module,exports){
+},{}],574:[function(require,module,exports){
 var freeGlobal = require('./_freeGlobal');
 
 /** Detect free variable `self`. */
@@ -70565,7 +76118,7 @@ var root = freeGlobal || freeSelf || Function('return this')();
 
 module.exports = root;
 
-},{"./_freeGlobal":559}],565:[function(require,module,exports){
+},{"./_freeGlobal":569}],575:[function(require,module,exports){
 /**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
  * and has a `typeof` result of "object".
@@ -70596,7 +76149,7 @@ function isObjectLike(value) {
 
 module.exports = isObjectLike;
 
-},{}],566:[function(require,module,exports){
+},{}],576:[function(require,module,exports){
 var baseGetTag = require('./_baseGetTag'),
     getPrototype = require('./_getPrototype'),
     isObjectLike = require('./isObjectLike');
@@ -70660,7 +76213,7 @@ function isPlainObject(value) {
 
 module.exports = isPlainObject;
 
-},{"./_baseGetTag":558,"./_getPrototype":560,"./isObjectLike":565}],567:[function(require,module,exports){
+},{"./_baseGetTag":568,"./_getPrototype":570,"./isObjectLike":575}],577:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var inherits = require('inherits')
@@ -70809,7 +76362,7 @@ function fnI (a, b, c, d, m, k, s) {
 module.exports = MD5
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":192,"hash-base":568,"inherits":534}],568:[function(require,module,exports){
+},{"buffer":192,"hash-base":578,"inherits":544}],578:[function(require,module,exports){
 'use strict'
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('stream').Transform
@@ -70906,7 +76459,7 @@ HashBase.prototype._digest = function () {
 
 module.exports = HashBase
 
-},{"inherits":534,"safe-buffer":617,"stream":668}],569:[function(require,module,exports){
+},{"inherits":544,"safe-buffer":627,"stream":678}],579:[function(require,module,exports){
 var bn = require('bn.js');
 var brorand = require('brorand');
 
@@ -71023,7 +76576,7 @@ MillerRabin.prototype.getDivisor = function getDivisor(n, k) {
   return false;
 };
 
-},{"bn.js":156,"brorand":157}],570:[function(require,module,exports){
+},{"bn.js":156,"brorand":157}],580:[function(require,module,exports){
 module.exports = assert;
 
 function assert(val, msg) {
@@ -71036,7 +76589,7 @@ assert.equal = function assertEqual(l, r, msg) {
     throw new Error(msg || ('Assertion failed: ' + l + ' != ' + r));
 };
 
-},{}],571:[function(require,module,exports){
+},{}],581:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -71096,7 +76649,7 @@ utils.encode = function encode(arr, enc) {
     return arr;
 };
 
-},{}],572:[function(require,module,exports){
+},{}],582:[function(require,module,exports){
 // This file is the concatenation of many js files.
 // See http://github.com/jimhigson/oboe.js for the raw source
 
@@ -73800,7 +79353,7 @@ oboe.drop = function() {
       }
    }()), Object, Array, Error, JSON);
 
-},{}],573:[function(require,module,exports){
+},{}],583:[function(require,module,exports){
 module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.2": "aes-128-cbc",
 "2.16.840.1.101.3.4.1.3": "aes-128-ofb",
@@ -73814,7 +79367,7 @@ module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.43": "aes-256-ofb",
 "2.16.840.1.101.3.4.1.44": "aes-256-cfb"
 }
-},{}],574:[function(require,module,exports){
+},{}],584:[function(require,module,exports){
 // from https://github.com/indutny/self-signed/blob/gh-pages/lib/asn1.js
 // Fedor, you are amazing.
 'use strict'
@@ -73938,7 +79491,7 @@ exports.signature = asn1.define('signature', function () {
   )
 })
 
-},{"./certificate":575,"asn1.js":137}],575:[function(require,module,exports){
+},{"./certificate":585,"asn1.js":137}],585:[function(require,module,exports){
 // from https://github.com/Rantanen/node-dtls/blob/25a7dc861bda38cfeac93a723500eea4f0ac2e86/Certificate.js
 // thanks to @Rantanen
 
@@ -74028,7 +79581,7 @@ var X509Certificate = asn.define('X509Certificate', function () {
 
 module.exports = X509Certificate
 
-},{"asn1.js":137}],576:[function(require,module,exports){
+},{"asn1.js":137}],586:[function(require,module,exports){
 (function (Buffer){
 // adapted from https://github.com/apatil/pemstrip
 var findProc = /Proc-Type: 4,ENCRYPTED\n\r?DEK-Info: AES-((?:128)|(?:192)|(?:256))-CBC,([0-9A-H]+)\n\r?\n\r?([0-9A-z\n\r\+\/\=]+)\n\r?/m
@@ -74062,7 +79615,7 @@ module.exports = function (okey, password) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"browserify-aes":162,"buffer":192,"evp_bytestokey":514}],577:[function(require,module,exports){
+},{"browserify-aes":162,"buffer":192,"evp_bytestokey":524}],587:[function(require,module,exports){
 (function (Buffer){
 var asn1 = require('./asn1')
 var aesid = require('./aesid.json')
@@ -74172,7 +79725,7 @@ function decrypt (data, password) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./aesid.json":573,"./asn1":574,"./fixProc":576,"browserify-aes":162,"buffer":192,"pbkdf2":579}],578:[function(require,module,exports){
+},{"./aesid.json":583,"./asn1":584,"./fixProc":586,"browserify-aes":162,"buffer":192,"pbkdf2":589}],588:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -74400,13 +79953,13 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":585}],579:[function(require,module,exports){
+},{"_process":595}],589:[function(require,module,exports){
 
 exports.pbkdf2 = require('./lib/async')
 
 exports.pbkdf2Sync = require('./lib/sync')
 
-},{"./lib/async":580,"./lib/sync":583}],580:[function(require,module,exports){
+},{"./lib/async":590,"./lib/sync":593}],590:[function(require,module,exports){
 (function (process,global){
 var checkParameters = require('./precondition')
 var defaultEncoding = require('./default-encoding')
@@ -74508,7 +80061,7 @@ module.exports = function (password, salt, iterations, keylen, digest, callback)
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./default-encoding":581,"./precondition":582,"./sync":583,"_process":585,"safe-buffer":617}],581:[function(require,module,exports){
+},{"./default-encoding":591,"./precondition":592,"./sync":593,"_process":595,"safe-buffer":627}],591:[function(require,module,exports){
 (function (process){
 var defaultEncoding
 /* istanbul ignore next */
@@ -74522,7 +80075,7 @@ if (process.browser) {
 module.exports = defaultEncoding
 
 }).call(this,require('_process'))
-},{"_process":585}],582:[function(require,module,exports){
+},{"_process":595}],592:[function(require,module,exports){
 var MAX_ALLOC = Math.pow(2, 30) - 1 // default in iojs
 module.exports = function (iterations, keylen) {
   if (typeof iterations !== 'number') {
@@ -74542,7 +80095,7 @@ module.exports = function (iterations, keylen) {
   }
 }
 
-},{}],583:[function(require,module,exports){
+},{}],593:[function(require,module,exports){
 var md5 = require('create-hash/md5')
 var rmd160 = require('ripemd160')
 var sha = require('sha.js')
@@ -74645,7 +80198,7 @@ function pbkdf2 (password, salt, iterations, keylen, digest) {
 
 module.exports = pbkdf2
 
-},{"./default-encoding":581,"./precondition":582,"create-hash/md5":202,"ripemd160":615,"safe-buffer":617,"sha.js":625}],584:[function(require,module,exports){
+},{"./default-encoding":591,"./precondition":592,"create-hash/md5":202,"ripemd160":625,"safe-buffer":627,"sha.js":635}],594:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -74692,7 +80245,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 }
 
 }).call(this,require('_process'))
-},{"_process":585}],585:[function(require,module,exports){
+},{"_process":595}],595:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -74878,7 +80431,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],586:[function(require,module,exports){
+},{}],596:[function(require,module,exports){
 exports.publicEncrypt = require('./publicEncrypt');
 exports.privateDecrypt = require('./privateDecrypt');
 
@@ -74889,7 +80442,7 @@ exports.privateEncrypt = function privateEncrypt(key, buf) {
 exports.publicDecrypt = function publicDecrypt(key, buf) {
   return exports.privateDecrypt(key, buf, true);
 };
-},{"./privateDecrypt":588,"./publicEncrypt":589}],587:[function(require,module,exports){
+},{"./privateDecrypt":598,"./publicEncrypt":599}],597:[function(require,module,exports){
 (function (Buffer){
 var createHash = require('create-hash');
 module.exports = function (seed, len) {
@@ -74908,7 +80461,7 @@ function i2ops(c) {
   return out;
 }
 }).call(this,require("buffer").Buffer)
-},{"buffer":192,"create-hash":200}],588:[function(require,module,exports){
+},{"buffer":192,"create-hash":200}],598:[function(require,module,exports){
 (function (Buffer){
 var parseKeys = require('parse-asn1');
 var mgf = require('./mgf');
@@ -75019,7 +80572,7 @@ function compare(a, b){
   return dif;
 }
 }).call(this,require("buffer").Buffer)
-},{"./mgf":587,"./withPublic":590,"./xor":591,"bn.js":156,"browserify-rsa":180,"buffer":192,"create-hash":200,"parse-asn1":577}],589:[function(require,module,exports){
+},{"./mgf":597,"./withPublic":600,"./xor":601,"bn.js":156,"browserify-rsa":180,"buffer":192,"create-hash":200,"parse-asn1":587}],599:[function(require,module,exports){
 (function (Buffer){
 var parseKeys = require('parse-asn1');
 var randomBytes = require('randombytes');
@@ -75117,7 +80670,7 @@ function nonZero(len, crypto) {
   return out;
 }
 }).call(this,require("buffer").Buffer)
-},{"./mgf":587,"./withPublic":590,"./xor":591,"bn.js":156,"browserify-rsa":180,"buffer":192,"create-hash":200,"parse-asn1":577,"randombytes":592}],590:[function(require,module,exports){
+},{"./mgf":597,"./withPublic":600,"./xor":601,"bn.js":156,"browserify-rsa":180,"buffer":192,"create-hash":200,"parse-asn1":587,"randombytes":602}],600:[function(require,module,exports){
 (function (Buffer){
 var bn = require('bn.js');
 function withPublic(paddedMsg, key) {
@@ -75130,7 +80683,7 @@ function withPublic(paddedMsg, key) {
 
 module.exports = withPublic;
 }).call(this,require("buffer").Buffer)
-},{"bn.js":156,"buffer":192}],591:[function(require,module,exports){
+},{"bn.js":156,"buffer":192}],601:[function(require,module,exports){
 module.exports = function xor(a, b) {
   var len = a.length;
   var i = -1;
@@ -75139,7 +80692,7 @@ module.exports = function xor(a, b) {
   }
   return a
 };
-},{}],592:[function(require,module,exports){
+},{}],602:[function(require,module,exports){
 (function (process,global){
 'use strict'
 
@@ -75181,7 +80734,7 @@ function randomBytes (size, cb) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":585,"safe-buffer":617}],593:[function(require,module,exports){
+},{"_process":595,"safe-buffer":627}],603:[function(require,module,exports){
 (function (process,global){
 'use strict'
 
@@ -75293,10 +80846,10 @@ function randomFillSync (buf, offset, size) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":585,"randombytes":592,"safe-buffer":617}],594:[function(require,module,exports){
+},{"_process":595,"randombytes":602,"safe-buffer":627}],604:[function(require,module,exports){
 module.exports = require('./lib/_stream_duplex.js');
 
-},{"./lib/_stream_duplex.js":595}],595:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":605}],605:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -75421,7 +80974,7 @@ function forEach(xs, f) {
     f(xs[i], i);
   }
 }
-},{"./_stream_readable":597,"./_stream_writable":599,"core-util-is":198,"inherits":534,"process-nextick-args":584}],596:[function(require,module,exports){
+},{"./_stream_readable":607,"./_stream_writable":609,"core-util-is":198,"inherits":544,"process-nextick-args":594}],606:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -75469,7 +81022,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":598,"core-util-is":198,"inherits":534}],597:[function(require,module,exports){
+},{"./_stream_transform":608,"core-util-is":198,"inherits":544}],607:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -76479,7 +82032,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":595,"./internal/streams/BufferList":600,"./internal/streams/destroy":601,"./internal/streams/stream":602,"_process":585,"core-util-is":198,"events":513,"inherits":534,"isarray":537,"process-nextick-args":584,"safe-buffer":617,"string_decoder/":669,"util":159}],598:[function(require,module,exports){
+},{"./_stream_duplex":605,"./internal/streams/BufferList":610,"./internal/streams/destroy":611,"./internal/streams/stream":612,"_process":595,"core-util-is":198,"events":523,"inherits":544,"isarray":547,"process-nextick-args":594,"safe-buffer":627,"string_decoder/":679,"util":159}],608:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -76694,7 +82247,7 @@ function done(stream, er, data) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":595,"core-util-is":198,"inherits":534}],599:[function(require,module,exports){
+},{"./_stream_duplex":605,"core-util-is":198,"inherits":544}],609:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -77361,7 +82914,7 @@ Writable.prototype._destroy = function (err, cb) {
   cb(err);
 };
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":595,"./internal/streams/destroy":601,"./internal/streams/stream":602,"_process":585,"core-util-is":198,"inherits":534,"process-nextick-args":584,"safe-buffer":617,"util-deprecate":680}],600:[function(require,module,exports){
+},{"./_stream_duplex":605,"./internal/streams/destroy":611,"./internal/streams/stream":612,"_process":595,"core-util-is":198,"inherits":544,"process-nextick-args":594,"safe-buffer":627,"util-deprecate":690}],610:[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -77436,7 +82989,7 @@ module.exports = function () {
 
   return BufferList;
 }();
-},{"safe-buffer":617}],601:[function(require,module,exports){
+},{"safe-buffer":627}],611:[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -77509,13 +83062,13 @@ module.exports = {
   destroy: destroy,
   undestroy: undestroy
 };
-},{"process-nextick-args":584}],602:[function(require,module,exports){
+},{"process-nextick-args":594}],612:[function(require,module,exports){
 module.exports = require('events').EventEmitter;
 
-},{"events":513}],603:[function(require,module,exports){
+},{"events":523}],613:[function(require,module,exports){
 module.exports = require('./readable').PassThrough
 
-},{"./readable":604}],604:[function(require,module,exports){
+},{"./readable":614}],614:[function(require,module,exports){
 exports = module.exports = require('./lib/_stream_readable.js');
 exports.Stream = exports;
 exports.Readable = exports;
@@ -77524,13 +83077,13 @@ exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":595,"./lib/_stream_passthrough.js":596,"./lib/_stream_readable.js":597,"./lib/_stream_transform.js":598,"./lib/_stream_writable.js":599}],605:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":605,"./lib/_stream_passthrough.js":606,"./lib/_stream_readable.js":607,"./lib/_stream_transform.js":608,"./lib/_stream_writable.js":609}],615:[function(require,module,exports){
 module.exports = require('./readable').Transform
 
-},{"./readable":604}],606:[function(require,module,exports){
+},{"./readable":614}],616:[function(require,module,exports){
 module.exports = require('./lib/_stream_writable.js');
 
-},{"./lib/_stream_writable.js":599}],607:[function(require,module,exports){
+},{"./lib/_stream_writable.js":609}],617:[function(require,module,exports){
 "use strict";
 
 var createThunkSubscribeEnhancer = function (extraArgument) {
@@ -77554,7 +83107,7 @@ thunkSubscribeEnhancer.withExtraArgument = createThunkSubscribeEnhancer;
 
 module.exports = thunkSubscribeEnhancer;
 
-},{}],608:[function(require,module,exports){
+},{}],618:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -77613,7 +83166,7 @@ function applyMiddleware() {
     };
   };
 }
-},{"./compose":611}],609:[function(require,module,exports){
+},{"./compose":621}],619:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -77665,7 +83218,7 @@ function bindActionCreators(actionCreators, dispatch) {
   }
   return boundActionCreators;
 }
-},{}],610:[function(require,module,exports){
+},{}],620:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -77810,7 +83363,7 @@ function combineReducers(reducers) {
   };
 }
 }).call(this,require('_process'))
-},{"./createStore":612,"./utils/warning":614,"_process":585,"lodash/isPlainObject":566}],611:[function(require,module,exports){
+},{"./createStore":622,"./utils/warning":624,"_process":595,"lodash/isPlainObject":576}],621:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -77849,7 +83402,7 @@ function compose() {
     }, last.apply(undefined, arguments));
   };
 }
-},{}],612:[function(require,module,exports){
+},{}],622:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -78111,7 +83664,7 @@ function createStore(reducer, preloadedState, enhancer) {
     replaceReducer: replaceReducer
   }, _ref2[_symbolObservable2['default']] = observable, _ref2;
 }
-},{"lodash/isPlainObject":566,"symbol-observable":671}],613:[function(require,module,exports){
+},{"lodash/isPlainObject":576,"symbol-observable":681}],623:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -78160,7 +83713,7 @@ exports.bindActionCreators = _bindActionCreators2['default'];
 exports.applyMiddleware = _applyMiddleware2['default'];
 exports.compose = _compose2['default'];
 }).call(this,require('_process'))
-},{"./applyMiddleware":608,"./bindActionCreators":609,"./combineReducers":610,"./compose":611,"./createStore":612,"./utils/warning":614,"_process":585}],614:[function(require,module,exports){
+},{"./applyMiddleware":618,"./bindActionCreators":619,"./combineReducers":620,"./compose":621,"./createStore":622,"./utils/warning":624,"_process":595}],624:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -78186,7 +83739,7 @@ function warning(message) {
   } catch (e) {}
   /* eslint-enable no-empty */
 }
-},{}],615:[function(require,module,exports){
+},{}],625:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var inherits = require('inherits')
@@ -78481,7 +84034,7 @@ function fn5 (a, b, c, d, e, m, k, s) {
 module.exports = RIPEMD160
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":192,"hash-base":515,"inherits":534}],616:[function(require,module,exports){
+},{"buffer":192,"hash-base":525,"inherits":544}],626:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -78714,7 +84267,7 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":190,"buffer":192}],617:[function(require,module,exports){
+},{"assert":190,"buffer":192}],627:[function(require,module,exports){
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
 var Buffer = buffer.Buffer
@@ -78778,9 +84331,9 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
-},{"buffer":192}],618:[function(require,module,exports){
-arguments[4][547][0].apply(exports,arguments)
-},{"./lib":622,"./lib/elliptic":621,"dup":547}],619:[function(require,module,exports){
+},{"buffer":192}],628:[function(require,module,exports){
+arguments[4][557][0].apply(exports,arguments)
+},{"./lib":632,"./lib/elliptic":631,"dup":557}],629:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var toString = Object.prototype.toString
@@ -78828,7 +84381,7 @@ exports.isNumberInInterval = function (number, x, y, message) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":535}],620:[function(require,module,exports){
+},{"../../is-buffer/index.js":545}],630:[function(require,module,exports){
 'use strict'
 var Buffer = require('safe-buffer').Buffer
 var bip66 = require('bip66')
@@ -79023,7 +84576,7 @@ exports.signatureImportLax = function (sig) {
   return { r: r, s: s }
 }
 
-},{"bip66":155,"safe-buffer":617}],621:[function(require,module,exports){
+},{"bip66":155,"safe-buffer":627}],631:[function(require,module,exports){
 'use strict'
 var Buffer = require('safe-buffer').Buffer
 var createHash = require('create-hash')
@@ -79285,7 +84838,7 @@ exports.ecdhUnsafe = function (publicKey, privateKey, compressed) {
   return Buffer.from(pair.pub.mul(scalar).encode(true, compressed))
 }
 
-},{"../messages.json":623,"bn.js":156,"create-hash":200,"elliptic":217,"safe-buffer":617}],622:[function(require,module,exports){
+},{"../messages.json":633,"bn.js":156,"create-hash":200,"elliptic":217,"safe-buffer":627}],632:[function(require,module,exports){
 'use strict'
 var assert = require('./assert')
 var der = require('./der')
@@ -79532,7 +85085,7 @@ module.exports = function (secp256k1) {
   }
 }
 
-},{"./assert":619,"./der":620,"./messages.json":623}],623:[function(require,module,exports){
+},{"./assert":629,"./der":630,"./messages.json":633}],633:[function(require,module,exports){
 module.exports={
   "COMPRESSED_TYPE_INVALID": "compressed should be a boolean",
   "EC_PRIVATE_KEY_TYPE_INVALID": "private key should be a Buffer",
@@ -79571,7 +85124,7 @@ module.exports={
   "TWEAK_LENGTH_INVALID": "tweak length is invalid"
 }
 
-},{}],624:[function(require,module,exports){
+},{}],634:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 // prototype class for hash functions
@@ -79654,7 +85207,7 @@ Hash.prototype._update = function () {
 
 module.exports = Hash
 
-},{"safe-buffer":617}],625:[function(require,module,exports){
+},{"safe-buffer":627}],635:[function(require,module,exports){
 var exports = module.exports = function SHA (algorithm) {
   algorithm = algorithm.toLowerCase()
 
@@ -79671,7 +85224,7 @@ exports.sha256 = require('./sha256')
 exports.sha384 = require('./sha384')
 exports.sha512 = require('./sha512')
 
-},{"./sha":626,"./sha1":627,"./sha224":628,"./sha256":629,"./sha384":630,"./sha512":631}],626:[function(require,module,exports){
+},{"./sha":636,"./sha1":637,"./sha224":638,"./sha256":639,"./sha384":640,"./sha512":641}],636:[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-0, as defined
  * in FIPS PUB 180-1
@@ -79767,7 +85320,7 @@ Sha.prototype._hash = function () {
 
 module.exports = Sha
 
-},{"./hash":624,"inherits":534,"safe-buffer":617}],627:[function(require,module,exports){
+},{"./hash":634,"inherits":544,"safe-buffer":627}],637:[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
  * in FIPS PUB 180-1
@@ -79868,7 +85421,7 @@ Sha1.prototype._hash = function () {
 
 module.exports = Sha1
 
-},{"./hash":624,"inherits":534,"safe-buffer":617}],628:[function(require,module,exports){
+},{"./hash":634,"inherits":544,"safe-buffer":627}],638:[function(require,module,exports){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
  * in FIPS 180-2
@@ -79923,7 +85476,7 @@ Sha224.prototype._hash = function () {
 
 module.exports = Sha224
 
-},{"./hash":624,"./sha256":629,"inherits":534,"safe-buffer":617}],629:[function(require,module,exports){
+},{"./hash":634,"./sha256":639,"inherits":544,"safe-buffer":627}],639:[function(require,module,exports){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
  * in FIPS 180-2
@@ -80060,7 +85613,7 @@ Sha256.prototype._hash = function () {
 
 module.exports = Sha256
 
-},{"./hash":624,"inherits":534,"safe-buffer":617}],630:[function(require,module,exports){
+},{"./hash":634,"inherits":544,"safe-buffer":627}],640:[function(require,module,exports){
 var inherits = require('inherits')
 var SHA512 = require('./sha512')
 var Hash = require('./hash')
@@ -80119,7 +85672,7 @@ Sha384.prototype._hash = function () {
 
 module.exports = Sha384
 
-},{"./hash":624,"./sha512":631,"inherits":534,"safe-buffer":617}],631:[function(require,module,exports){
+},{"./hash":634,"./sha512":641,"inherits":544,"safe-buffer":627}],641:[function(require,module,exports){
 var inherits = require('inherits')
 var Hash = require('./hash')
 var Buffer = require('safe-buffer').Buffer
@@ -80381,7 +85934,7 @@ Sha512.prototype._hash = function () {
 
 module.exports = Sha512
 
-},{"./hash":624,"inherits":534,"safe-buffer":617}],632:[function(require,module,exports){
+},{"./hash":634,"inherits":544,"safe-buffer":627}],642:[function(require,module,exports){
 "use strict";var sjcl={cipher:{},hash:{},keyexchange:{},mode:{},misc:{},codec:{},exception:{corrupt:function(a){this.toString=function(){return"CORRUPT: "+this.message};this.message=a},invalid:function(a){this.toString=function(){return"INVALID: "+this.message};this.message=a},bug:function(a){this.toString=function(){return"BUG: "+this.message};this.message=a},notReady:function(a){this.toString=function(){return"NOT READY: "+this.message};this.message=a}}};
 sjcl.cipher.aes=function(a){this.s[0][0][0]||this.O();var b,c,d,e,f=this.s[0][4],g=this.s[1];b=a.length;var h=1;if(4!==b&&6!==b&&8!==b)throw new sjcl.exception.invalid("invalid aes key size");this.b=[d=a.slice(0),e=[]];for(a=b;a<4*b+28;a++){c=d[a-1];if(0===a%b||8===b&&4===a%b)c=f[c>>>24]<<24^f[c>>16&255]<<16^f[c>>8&255]<<8^f[c&255],0===a%b&&(c=c<<8^c>>>24^h<<24,h=h<<1^283*(h>>7));d[a]=d[a-b]^c}for(b=0;a;b++,a--)c=d[b&3?a:a-4],e[b]=4>=a||4>b?c:g[0][f[c>>>24]]^g[1][f[c>>16&255]]^g[2][f[c>>8&255]]^g[3][f[c&
 255]]};
@@ -80443,7 +85996,7 @@ null!=d[3]?b[d[2]]=parseInt(d[3],10):null!=d[4]?b[d[2]]=d[2].match(/^(ct|adata|s
 b){var c={},d;for(d=0;d<b.length;d++)void 0!==a[b[d]]&&(c[b[d]]=a[b[d]]);return c}};sjcl.encrypt=sjcl.json.encrypt;sjcl.decrypt=sjcl.json.decrypt;sjcl.misc.pa={};sjcl.misc.cachedPbkdf2=function(a,b){var c=sjcl.misc.pa,d;b=b||{};d=b.iter||1E3;c=c[a]=c[a]||{};d=c[d]=c[d]||{firstSalt:b.salt&&b.salt.length?b.salt.slice(0):sjcl.random.randomWords(2,0)};c=void 0===b.salt?d.firstSalt:b.salt;d[c]=d[c]||sjcl.misc.pbkdf2(a,c,b.iter);return{key:d[c].slice(0),salt:c.slice(0)}};
 "undefined"!==typeof module&&module.exports&&(module.exports=sjcl);"function"===typeof define&&define([],function(){return sjcl});
 
-},{"crypto":205}],633:[function(require,module,exports){
+},{"crypto":205}],643:[function(require,module,exports){
 "use strict";
 
 var byteArrayToUtf8String = require("./byte-array-to-utf8-string");
@@ -80463,7 +86016,7 @@ function abiDecodeBytes(abiEncodedBytes, strip) {
 
 module.exports = abiDecodeBytes;
 
-},{"./byte-array-to-utf8-string":644,"./remove-trailing-zeros":660}],634:[function(require,module,exports){
+},{"./byte-array-to-utf8-string":654,"./remove-trailing-zeros":670}],644:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -80484,7 +86037,7 @@ function abiDecodeData(inputs, abiEncodedData) {
 module.exports = abiDecodeData;
 
 }).call(this,require("buffer").Buffer)
-},{"./format-abi-raw-decoded-data-array":650,"./strip-0x-prefix":662,"buffer":192,"ethereumjs-abi":249}],635:[function(require,module,exports){
+},{"./format-abi-raw-decoded-data-array":660,"./strip-0x-prefix":672,"buffer":192,"ethereumjs-abi":249}],645:[function(require,module,exports){
 "use strict";
 
 var abiDecodeData = require("./abi-decode-data");
@@ -80503,7 +86056,7 @@ function abiDecodeRpcResponse(responseType, abiEncodedRpcResponse) {
 
 module.exports = abiDecodeRpcResponse;
 
-},{"./abi-decode-data":634,"./format-int256":653}],636:[function(require,module,exports){
+},{"./abi-decode-data":644,"./format-int256":663}],646:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -80517,7 +86070,7 @@ function abiDecodeShortStringAsInt256(int256) {
 module.exports = abiDecodeShortStringAsInt256;
 
 }).call(this,require("buffer").Buffer)
-},{"./remove-trailing-zeros":660,"./strip-0x-prefix":662,"buffer":192}],637:[function(require,module,exports){
+},{"./remove-trailing-zeros":670,"./strip-0x-prefix":672,"buffer":192}],647:[function(require,module,exports){
 "use strict";
 
 var rawEncode = require("ethereumjs-abi").rawEncode;
@@ -80532,7 +86085,7 @@ function abiEncodeBytes(bytesToEncode, isPadded) {
 
 module.exports = abiEncodeBytes;
 
-},{"./remove-trailing-zeros":660,"ethereumjs-abi":249}],638:[function(require,module,exports){
+},{"./remove-trailing-zeros":670,"ethereumjs-abi":249}],648:[function(require,module,exports){
 "use strict";
 
 var ethereumjsAbi = require("ethereumjs-abi");
@@ -80546,7 +86099,7 @@ function abiEncodeData(payload, format) {
 
 module.exports = abiEncodeData;
 
-},{"ethereumjs-abi":249}],639:[function(require,module,exports){
+},{"ethereumjs-abi":249}],649:[function(require,module,exports){
 "use strict";
 
 var rawEncode = require("ethereumjs-abi").rawEncode;
@@ -80557,7 +86110,7 @@ function abiEncodeInt256(value) {
 
 module.exports = abiEncodeInt256;
 
-},{"ethereumjs-abi":249}],640:[function(require,module,exports){
+},{"ethereumjs-abi":249}],650:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -80573,7 +86126,7 @@ function abiEncodeShortStringAsInt256(shortString) {
 module.exports = abiEncodeShortStringAsInt256;
 
 }).call(this,require("buffer").Buffer)
-},{"./pad-right":658,"./prefix-hex":659,"buffer":192}],641:[function(require,module,exports){
+},{"./pad-right":668,"./prefix-hex":669,"buffer":192}],651:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -80590,7 +86143,7 @@ function abiEncodeTransactionPayload(payload) {
 module.exports = abiEncodeTransactionPayload;
 
 }).call(this,require("buffer").Buffer)
-},{"./abi-encode-data":638,"./prefix-hex":659,"buffer":192,"ethereumjs-abi":249}],642:[function(require,module,exports){
+},{"./abi-encode-data":648,"./prefix-hex":669,"buffer":192,"ethereumjs-abi":249}],652:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -80652,7 +86205,7 @@ function bignum(n, encoding, isWrapped) {
 
 module.exports = bignum;
 
-},{"./is-hex":656,"./prefix-hex":659,"./wrap":667,"bignumber.js":154}],643:[function(require,module,exports){
+},{"./is-hex":666,"./prefix-hex":669,"./wrap":677,"bignumber.js":154}],653:[function(require,module,exports){
 "use strict";
 
 var strip0xPrefix = require("./strip-0x-prefix");
@@ -80669,7 +86222,7 @@ function byteArrayToHexString(b) {
 
 module.exports = byteArrayToHexString;
 
-},{"./strip-0x-prefix":662}],644:[function(require,module,exports){
+},{"./strip-0x-prefix":672}],654:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -80717,7 +86270,7 @@ function byteArrayToUtf8String(byteArray) {
 module.exports = byteArrayToUtf8String;
 
 }).call(this,require("buffer").Buffer)
-},{"./strip-0x-prefix":662,"bignumber.js":154,"buffer":192}],645:[function(require,module,exports){
+},{"./strip-0x-prefix":672,"bignumber.js":154,"buffer":192}],655:[function(require,module,exports){
 "use strict";
 
 function chunk(totalLength, chunkLength) {
@@ -80727,7 +86280,7 @@ function chunk(totalLength, chunkLength) {
 
 module.exports = chunk;
 
-},{}],646:[function(require,module,exports){
+},{}],656:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -80742,7 +86295,7 @@ module.exports = {
   UINT256_MAX_VALUE: TWO.toPower(new BigNumber(256, 10))
 };
 
-},{"bignumber.js":154}],647:[function(require,module,exports){
+},{"bignumber.js":154}],657:[function(require,module,exports){
 "use strict";
 
 var bignum = require("./bignum");
@@ -80753,7 +86306,7 @@ function encodeNumberAsBase10String(n, isWrapped) {
 
 module.exports = encodeNumberAsBase10String;
 
-},{"./bignum":642}],648:[function(require,module,exports){
+},{"./bignum":652}],658:[function(require,module,exports){
 "use strict";
 
 var bignum = require("./bignum");
@@ -80764,7 +86317,7 @@ function encodeNumberAsJSNumber(s, isWrapped) {
 
 module.exports = encodeNumberAsJSNumber;
 
-},{"./bignum":642}],649:[function(require,module,exports){
+},{"./bignum":652}],659:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -80810,7 +86363,7 @@ function fix(n, encoding, isWrapped) {
 
 module.exports = fix;
 
-},{"./bignum":642,"./constants":646,"./prefix-hex":659,"./wrap":667,"bignumber.js":154}],650:[function(require,module,exports){
+},{"./bignum":652,"./constants":656,"./prefix-hex":669,"./wrap":677,"bignumber.js":154}],660:[function(require,module,exports){
 "use strict";
 
 var formatAbiRawDecodedData = require("./format-abi-raw-decoded-data");
@@ -80823,7 +86376,7 @@ function formatAbiRawDecodedDataArray(dataInputTypes, decodedDataArray) {
 
 module.exports = formatAbiRawDecodedDataArray;
 
-},{"./format-abi-raw-decoded-data":651}],651:[function(require,module,exports){
+},{"./format-abi-raw-decoded-data":661}],661:[function(require,module,exports){
 "use strict";
 
 var formatEthereumAddress = require("./format-ethereum-address");
@@ -80849,7 +86402,7 @@ function formatAbiRawDecodedData(inputType, decodedData) {
 
 module.exports = formatAbiRawDecodedData;
 
-},{"./format-ethereum-address":652,"./hex":654,"./prefix-hex":659}],652:[function(require,module,exports){
+},{"./format-ethereum-address":662,"./hex":664,"./prefix-hex":669}],662:[function(require,module,exports){
 "use strict";
 
 var prefixHex = require("./prefix-hex");
@@ -80877,7 +86430,7 @@ function formatEthereumAddress(addr) {
 
 module.exports = formatEthereumAddress;
 
-},{"./prefix-hex":659,"./strip-0x-prefix":662}],653:[function(require,module,exports){
+},{"./prefix-hex":669,"./strip-0x-prefix":672}],663:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -80900,7 +86453,7 @@ function formatInt256(s) {
 module.exports = formatInt256;
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":535,"./pad-left":657,"./prefix-hex":659,"./strip-0x-prefix":662,"./unfork":665}],654:[function(require,module,exports){
+},{"../../is-buffer/index.js":545,"./pad-left":667,"./prefix-hex":669,"./strip-0x-prefix":672,"./unfork":675}],664:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -80958,7 +86511,7 @@ function hex(n, isWrapped) {
 module.exports = hex;
 
 }).call(this,require("buffer").Buffer)
-},{"./abi-encode-bytes":637,"./bignum":642,"./prefix-hex":659,"./wrap":667,"bignumber.js":154,"buffer":192}],655:[function(require,module,exports){
+},{"./abi-encode-bytes":647,"./bignum":652,"./prefix-hex":669,"./wrap":677,"bignumber.js":154,"buffer":192}],665:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -81000,7 +86553,7 @@ module.exports = {
   serialize: require("./serialize")
 };
 
-},{"./abi-decode-bytes":633,"./abi-decode-data":634,"./abi-decode-rpc-response":635,"./abi-decode-short-string-as-int256":636,"./abi-encode-bytes":637,"./abi-encode-data":638,"./abi-encode-int256":639,"./abi-encode-short-string-as-int256":640,"./abi-encode-transaction-payload":641,"./bignum":642,"./byte-array-to-hex-string":643,"./byte-array-to-utf8-string":644,"./constants":646,"./encode-number-as-base10-string":647,"./encode-number-as-js-number":648,"./fix":649,"./format-abi-raw-decoded-data":651,"./format-abi-raw-decoded-data-array":650,"./format-ethereum-address":652,"./format-int256":653,"./hex":654,"./is-hex":656,"./pad-left":657,"./pad-right":658,"./prefix-hex":659,"./serialize":661,"./strip-0x-prefix":662,"./unfix":664,"./unfix-signed":663,"./unfork":665,"./unroll-array":666,"bignumber.js":154}],656:[function(require,module,exports){
+},{"./abi-decode-bytes":643,"./abi-decode-data":644,"./abi-decode-rpc-response":645,"./abi-decode-short-string-as-int256":646,"./abi-encode-bytes":647,"./abi-encode-data":648,"./abi-encode-int256":649,"./abi-encode-short-string-as-int256":650,"./abi-encode-transaction-payload":651,"./bignum":652,"./byte-array-to-hex-string":653,"./byte-array-to-utf8-string":654,"./constants":656,"./encode-number-as-base10-string":657,"./encode-number-as-js-number":658,"./fix":659,"./format-abi-raw-decoded-data":661,"./format-abi-raw-decoded-data-array":660,"./format-ethereum-address":662,"./format-int256":663,"./hex":664,"./is-hex":666,"./pad-left":667,"./pad-right":668,"./prefix-hex":669,"./serialize":671,"./strip-0x-prefix":672,"./unfix":674,"./unfix-signed":673,"./unfork":675,"./unroll-array":676,"bignumber.js":154}],666:[function(require,module,exports){
 "use strict";
 
 function isHex(str) {
@@ -81015,7 +86568,7 @@ function isHex(str) {
 
 module.exports = isHex;
 
-},{}],657:[function(require,module,exports){
+},{}],667:[function(require,module,exports){
 "use strict";
 
 var chunk = require("./chunk");
@@ -81035,7 +86588,7 @@ function padLeft(s, chunkLength, hasPrefix) {
 
 module.exports = padLeft;
 
-},{"./chunk":645,"./prefix-hex":659,"./strip-0x-prefix":662}],658:[function(require,module,exports){
+},{"./chunk":655,"./prefix-hex":669,"./strip-0x-prefix":672}],668:[function(require,module,exports){
 "use strict";
 
 var chunk = require("./chunk");
@@ -81055,7 +86608,7 @@ function padRight(s, chunkLength, hasPrefix) {
 
 module.exports = padRight;
 
-},{"./chunk":645,"./prefix-hex":659,"./strip-0x-prefix":662}],659:[function(require,module,exports){
+},{"./chunk":655,"./prefix-hex":669,"./strip-0x-prefix":672}],669:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -81077,7 +86630,7 @@ function prefixHex(n) {
 
 module.exports = prefixHex;
 
-},{"bignumber.js":154}],660:[function(require,module,exports){
+},{"bignumber.js":154}],670:[function(require,module,exports){
 "use strict";
 
 function removeTrailingZeros(h, isUtf8) {
@@ -81096,7 +86649,7 @@ function removeTrailingZeros(h, isUtf8) {
 
 module.exports = removeTrailingZeros;
 
-},{}],661:[function(require,module,exports){
+},{}],671:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -81144,7 +86697,7 @@ function serialize(x) {
 module.exports = serialize;
 
 }).call(this,require("buffer").Buffer)
-},{"./abi-encode-int256":639,"./pad-left":657,"bignumber.js":154,"buffer":192}],662:[function(require,module,exports){
+},{"./abi-encode-int256":649,"./pad-left":667,"bignumber.js":154,"buffer":192}],672:[function(require,module,exports){
 "use strict";
 
 var isHex = require("./is-hex");
@@ -81167,7 +86720,7 @@ function strip0xPrefix(str) {
 
 module.exports = strip0xPrefix;
 
-},{"./is-hex":656}],663:[function(require,module,exports){
+},{"./is-hex":666}],673:[function(require,module,exports){
 "use strict";
 
 var hex = require("./hex");
@@ -81179,7 +86732,7 @@ function unfixSigned(n, encoding) {
 
 module.exports = unfixSigned;
 
-},{"./hex":654,"./unfix":664}],664:[function(require,module,exports){
+},{"./hex":664,"./unfix":674}],674:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -81220,7 +86773,7 @@ function unfix(n, encoding) {
 
 module.exports = unfix;
 
-},{"./bignum":642,"./constants":646,"./prefix-hex":659,"bignumber.js":154}],665:[function(require,module,exports){
+},{"./bignum":652,"./constants":656,"./prefix-hex":669,"bignumber.js":154}],675:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -81249,7 +86802,7 @@ function unfork(forked, prefix) {
 
 module.exports = unfork;
 
-},{"./bignum":642,"./constants":646,"./pad-left":657,"./prefix-hex":659,"bignumber.js":154}],666:[function(require,module,exports){
+},{"./bignum":652,"./constants":656,"./pad-left":667,"./prefix-hex":669,"bignumber.js":154}],676:[function(require,module,exports){
 "use strict";
 
 var encodeNumberAsBase10String = require("./encode-number-as-base10-string");
@@ -81286,7 +86839,7 @@ function unrollArray(string, returns, stride, init) {
 
 module.exports = unrollArray;
 
-},{"./encode-number-as-base10-string":647,"./prefix-hex":659,"./unfix-signed":663}],667:[function(require,module,exports){
+},{"./encode-number-as-base10-string":657,"./prefix-hex":669,"./unfix-signed":673}],677:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -81306,7 +86859,7 @@ function wrap(bn) {
 
 module.exports = wrap;
 
-},{"./bignum":642,"./constants":646,"bignumber.js":154}],668:[function(require,module,exports){
+},{"./bignum":652,"./constants":656,"bignumber.js":154}],678:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -81435,7 +86988,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":513,"inherits":534,"readable-stream/duplex.js":594,"readable-stream/passthrough.js":603,"readable-stream/readable.js":604,"readable-stream/transform.js":605,"readable-stream/writable.js":606}],669:[function(require,module,exports){
+},{"events":523,"inherits":544,"readable-stream/duplex.js":604,"readable-stream/passthrough.js":613,"readable-stream/readable.js":614,"readable-stream/transform.js":615,"readable-stream/writable.js":616}],679:[function(require,module,exports){
 'use strict';
 
 var Buffer = require('safe-buffer').Buffer;
@@ -81708,7 +87261,7 @@ function simpleWrite(buf) {
 function simpleEnd(buf) {
   return buf && buf.length ? this.write(buf) : '';
 }
-},{"safe-buffer":617}],670:[function(require,module,exports){
+},{"safe-buffer":627}],680:[function(require,module,exports){
 var isHexPrefixed = require('is-hex-prefixed');
 
 /**
@@ -81724,7 +87277,7 @@ module.exports = function stripHexPrefix(str) {
   return isHexPrefixed(str) ? str.slice(2) : str;
 }
 
-},{"is-hex-prefixed":536}],671:[function(require,module,exports){
+},{"is-hex-prefixed":546}],681:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -81756,7 +87309,7 @@ if (typeof self !== 'undefined') {
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ponyfill.js":672}],672:[function(require,module,exports){
+},{"./ponyfill.js":682}],682:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -81780,7 +87333,7 @@ function symbolObservablePonyfill(root) {
 
 	return result;
 };
-},{}],673:[function(require,module,exports){
+},{}],683:[function(require,module,exports){
 'use strict';
 
 var Response = require('http-response-object');
@@ -81853,7 +87406,7 @@ function doRequest(method, url, options, callback) {
   return new Response(xhr.status, headers, xhr.responseText);
 }
 
-},{"http-response-object":529,"then-request/lib/handle-qs.js":674}],674:[function(require,module,exports){
+},{"http-response-object":539,"then-request/lib/handle-qs.js":684}],684:[function(require,module,exports){
 'use strict';
 
 var parse = require('qs').parse;
@@ -81877,7 +87430,7 @@ function handleQs(url, query) {
   return start + qs + end;
 }
 
-},{"qs":676}],675:[function(require,module,exports){
+},{"qs":686}],685:[function(require,module,exports){
 'use strict';
 
 var replace = String.prototype.replace;
@@ -81897,7 +87450,7 @@ module.exports = {
     RFC3986: 'RFC3986'
 };
 
-},{}],676:[function(require,module,exports){
+},{}],686:[function(require,module,exports){
 'use strict';
 
 var stringify = require('./stringify');
@@ -81910,7 +87463,7 @@ module.exports = {
     stringify: stringify
 };
 
-},{"./formats":675,"./parse":677,"./stringify":678}],677:[function(require,module,exports){
+},{"./formats":685,"./parse":687,"./stringify":688}],687:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -82086,7 +87639,7 @@ module.exports = function (str, opts) {
     return utils.compact(obj);
 };
 
-},{"./utils":679}],678:[function(require,module,exports){
+},{"./utils":689}],688:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -82298,7 +87851,7 @@ module.exports = function (object, opts) {
     return joined.length > 0 ? prefix + joined : '';
 };
 
-},{"./formats":675,"./utils":679}],679:[function(require,module,exports){
+},{"./formats":685,"./utils":689}],689:[function(require,module,exports){
 'use strict';
 
 var has = Object.prototype.hasOwnProperty;
@@ -82502,7 +88055,7 @@ exports.isBuffer = function isBuffer(obj) {
     return !!(obj.constructor && obj.constructor.isBuffer && obj.constructor.isBuffer(obj));
 };
 
-},{}],680:[function(require,module,exports){
+},{}],690:[function(require,module,exports){
 (function (global){
 
 /**
@@ -82573,16 +88126,16 @@ function config (name) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],681:[function(require,module,exports){
-arguments[4][534][0].apply(exports,arguments)
-},{"dup":534}],682:[function(require,module,exports){
+},{}],691:[function(require,module,exports){
+arguments[4][544][0].apply(exports,arguments)
+},{"dup":544}],692:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],683:[function(require,module,exports){
+},{}],693:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -83172,7 +88725,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":682,"_process":585,"inherits":681}],684:[function(require,module,exports){
+},{"./support/isBuffer":692,"_process":595,"inherits":691}],694:[function(require,module,exports){
 (function (global){
 
 var rng;
@@ -83208,7 +88761,7 @@ module.exports = rng;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],685:[function(require,module,exports){
+},{}],695:[function(require,module,exports){
 // Unique ID creation requires a high quality random # generator.  We feature
 // detect to determine the best RNG source, normalizing to a function that
 // returns 128-bits of randomness, since that's what's usually required
@@ -83367,7 +88920,7 @@ uuid.v4 = v4;
 
 module.exports = uuid;
 
-},{"./lib/rng":684}],686:[function(require,module,exports){
+},{"./lib/rng":694}],696:[function(require,module,exports){
 var indexOf = require('indexof');
 
 var Object_keys = function (obj) {
@@ -83507,4 +89060,4 @@ exports.createContext = Script.createContext = function (context) {
     return copy;
 };
 
-},{"indexof":533}]},{},[136]);
+},{"indexof":543}]},{},[136]);
