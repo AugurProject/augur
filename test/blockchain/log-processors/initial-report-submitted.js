@@ -10,6 +10,10 @@ const getReportingState = (db, params, callback) => {
   db("markets").first(["reportingState", "initialReportSize"]).where("markets.marketID", params.log.market).join("market_state", "market_state.marketStateID", "markets.marketStateID").asCallback(callback);
 };
 
+const getInitialReport = (db, params, callback) => {
+  db("initial_reports").first(["reporter", "amountStaked", "initialReporter"]).where("initial_reports.marketID", params.log.market).asCallback(callback);
+};
+
 describe("blockchain/log-processors/initial-report-submitted", () => {
   const test = (t) => {
     it(t.description, (done) => {
@@ -20,10 +24,13 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
             assert.isNull(err);
             getReportingState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
-              processInitialReportSubmittedLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
-                getReportingState(trx, t.params, (err, records) => {
-                  t.assertions.onRemoved(err, records);
-                  done();
+              getInitialReport(trx, t.params, (err, records) => {
+                t.assertions.onAddedInitialReport(err, records);
+                processInitialReportSubmittedLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+                  getReportingState(trx, t.params, (err, records) => {
+                    t.assertions.onRemoved(err, records);
+                    done();
+                  });
                 });
               });
             });
@@ -48,7 +55,16 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
         logIndex: 0,
       },
-      augur: {constants: new Augur().constants},
+      augur: {
+        constants: new Augur().constants,
+        api: {
+          Market: {
+            getInitialReporter: (p, callback) => {
+              callback(null, "0x0000000000000000000000000000000000abe123");
+            },
+          },
+        },
+      },
     },
     assertions: {
       onAdded: (err, records) => {
@@ -56,6 +72,14 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
         assert.deepEqual(records, {
           initialReportSize: 2829,
           reportingState: "DESIGNATED_REPORTING",
+        });
+      },
+      onAddedInitialReport: (err, records) => {
+        assert.isNull(err);
+        assert.deepEqual(records, {
+          reporter: "0x0000000000000000000000000000000000000b0b",
+          amountStaked: 2829,
+          initialReporter: "0x0000000000000000000000000000000000abe123",
         });
       },
       onRemoved: (err, records) => {

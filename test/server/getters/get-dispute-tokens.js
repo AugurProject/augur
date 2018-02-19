@@ -38,7 +38,7 @@ describe("server/getters/get-dispute-tokens", () => {
           payout6: null,
           payout7: null,
           isInvalid: false,
-          amountStaked: 17,
+          balance: 17,
           winningToken: null,
           tentativeWinning: 0,
           claimed: false,
@@ -69,7 +69,7 @@ describe("server/getters/get-dispute-tokens", () => {
           payout6: null,
           payout7: null,
           isInvalid: false,
-          amountStaked: 229,
+          balance: 229,
           tentativeWinning: 0,
           winningToken: true,
           claimed: false,
@@ -79,7 +79,7 @@ describe("server/getters/get-dispute-tokens", () => {
     },
   });
   test({
-    description: "get unclaimed tokens for user reported twice on same token",
+    description: "get unclaimed tokens for user with no tokens",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       account: "0x0000000000000000000000000000000000000024",
@@ -87,26 +87,7 @@ describe("server/getters/get-dispute-tokens", () => {
     },
     assertions: (err, stakeTokens) => {
       assert.isNull(err);
-      assert.deepEqual(stakeTokens, {
-        "0x0000000000000000001000000000000000000003": {
-          disputeToken: "0x0000000000000000001000000000000000000003",
-          marketID: "0x0000000000000000000000000000000000000019",
-          payout0: 1,
-          payout1: 1,
-          payout2: null,
-          payout3: null,
-          payout4: null,
-          payout5: null,
-          payout6: null,
-          payout7: null,
-          isInvalid: false,
-          amountStaked: 450 + 300,
-          tentativeWinning: 0,
-          winningToken: true,
-          claimed: false,
-          reportingState: "FINALIZED",
-        },
-      });
+      assert.deepEqual(stakeTokens, {});
     },
   });
   test({
@@ -142,7 +123,7 @@ describe("server/getters/get-dispute-tokens", () => {
           payout6: null,
           payout7: null,
           isInvalid: false,
-          amountStaked: 17,
+          balance: 17,
           tentativeWinning: 0,
           winningToken: null,
           claimed: false,
@@ -160,7 +141,7 @@ describe("server/getters/get-dispute-tokens", () => {
           payout6: null,
           payout7: null,
           isInvalid: false,
-          amountStaked: 229,
+          balance: 229,
           tentativeWinning: 0,
           winningToken: true,
           claimed: false,

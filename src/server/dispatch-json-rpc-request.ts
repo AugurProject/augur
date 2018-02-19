@@ -25,6 +25,7 @@ import { getOrders } from "./getters/get-orders";
 import { getBetterWorseOrders } from "./getters/get-better-worse-orders";
 import { getContractAddresses } from "./getters/get-contract-addresses";
 import { getDisputeInfo } from "./getters/get-dispute-info";
+import { getInitialReporters } from "./getters/get-initial-reporters";
 
 export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur: Augur, callback: (err?: Error|null, result?: any) => void): void {
   console.log(request);
@@ -65,6 +66,8 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return getDisputeTokens(db, request.params.universe, request.params.account, request.params.stakeTokenState, callback);
     case "getDisputeInfo":
       return getDisputeInfo(db, request.params.marketIDs, callback);
+    case "getInitialReporters":
+      return getInitialReporters(db, request.params.reporter, request.params.redeemed, callback);
     case "getMarketsClosingInDateRange":
       return getMarketsClosingInDateRange(db, request.params.earliestClosingTime, request.params.latestClosingTime, request.params.universe, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarkets":

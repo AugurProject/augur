@@ -1,7 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { parallel } from "async";
-import { FormattedEventLog, ErrorCallback, AsyncCallback } from "../../types";
+import { FormattedEventLog, ErrorCallback, AsyncCallback, Address } from "../../types";
 import { updateMarketState, insertPayout } from "./database";
 import { augurEmitter } from "../../events";
 
@@ -14,10 +14,14 @@ export function processInitialReportSubmittedLog(db: Knex, augur: Augur, trx: Kn
         reporter: log.reporter,
         amountStaked: log.amountStaked,
         payoutID,
+        redeemed: false,
       };
       parallel({
         initialReport: (next: AsyncCallback) => {
-          db.transacting(trx).insert(reportToInsert).into("initial_reports").asCallback(next);
+          augur.api.Market.getInitialReporter({ tx: { to: log.market }}, (err: Error|null, initialReporter?: Address): void => {
+            if (err) return next(err);
+            db.transacting(trx).insert({ ...reportToInsert, initialReporter }).into("initial_reports").asCallback(next);
+          });
         },
         initialReportSizeUpdate: (next: AsyncCallback) => {
           db("markets").transacting(trx).update({initialReportSize: log.amountStaked}).where({marketID: log.market}).asCallback(next);

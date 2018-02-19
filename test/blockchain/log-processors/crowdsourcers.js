@@ -100,7 +100,6 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           crowdsourcerID: "0x0000000000000000002000000000000000000001",
           reporter: "0x0000000000000000000000000000000000000b0b",
           amountStaked: 19381,
-          claimed: 0,
         }]);
       },
       onContributedRemoved: (err, records) => {
