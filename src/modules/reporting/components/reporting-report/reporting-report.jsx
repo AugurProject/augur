@@ -98,7 +98,7 @@ export default class ReportingReport extends Component {
             { s.currentStep === 1 &&
               <button
                 className={FormStyles.Form__submit}
-                onClick={e => p.submitInitialReport(p.market.id, p.selectedOutcome)}
+                onClick={() => p.submitInitialReport(p.market.id, p.selectedOutcome)}
               >Submit
               </button>
             }

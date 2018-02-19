@@ -10,7 +10,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  submitInitialReport: (marketId, outcomeValue, invalid) => { dispatch(submitInitialReport(marketId, outcomeValue, invalid)) }
+  submitInitialReport: (marketId, outcomeValue, invalid) => dispatch(submitInitialReport(marketId, outcomeValue, invalid)),
 })
 
 const Reporting = withRouter(connect(mapStateToProps, mapDispatchToProps)(ReportingReport))
