@@ -41,7 +41,6 @@ export default class ReportingOpen extends Component {
         </Helmet>
         <ReportingHeader
           heading="Reporting"
-          showReportingEndDate
         />
         { s.filteredMarketsDispute.length &&
           <h2 className={Styles.ReportingOpen__heading}>In Dispute</h2>

@@ -6,6 +6,16 @@
   padding-top: 6em;
 }
 
+.ReportingHeader__dispute-graph {
+  margin-top: 0.25rem;
+}
+
+.ReportingHeader__dispute-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.875rem;
+}
+
 .ReportingHeader__endDate {
   &:extend(.caps--small);
 
@@ -48,19 +58,11 @@
   width: 22%;
 }
 
-.ReportingHeader__graph-wrapper {
-  margin-top: 0.25rem;
-}
-
-.ReportingHeader__header {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-}
-
 .ReportingHeader__heading {
   margin: 1rem 0;
   text-transform: uppercase;
+
+  &:extend(.h1--heavy);
 }
 
 .ReportingHeader__labels {
@@ -75,6 +77,13 @@
   > span:last-child {
     width: 22%;
   }
+}
+
+.ReportingHeader__participationTokens {
+  &:extend(.caps);
+
+  border-bottom: 1px solid @color-white;
+  padding-bottom: 2px;
 }
 
 .ReportingHeader__stake {
@@ -92,10 +101,6 @@
 }
 
 @media @breakpoint-mobile-small {
-  .ReportingHeader__header {
-    display: block;
-  }
-
   .ReportingHeader__stake {
     font-weight: 500;
   }
