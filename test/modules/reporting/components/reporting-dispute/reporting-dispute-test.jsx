@@ -41,7 +41,7 @@ describe('report dispute component', () => {
 
         it('should render ReportDisputeNoRepState component', () => {
           const cmp = shallow(<ReportingDispute {...props} doesUserHaveRep={doesUserHaveRep} />)
-          assert.lengthOf(cmp.find('ReportDisputeNoRepState'), 1)
+          assert.lengthOf(cmp.find('ReportDisputeNoRepState'), 2)
         })
       })
     })
