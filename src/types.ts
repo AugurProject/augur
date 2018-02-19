@@ -1,5 +1,5 @@
 import { Augur, FormattedEventLog } from "augur.js";
-export { Block, FormattedEventLog } from "augur.js";
+export { BlockDetail, FormattedEventLog } from "augur.js";
 
 import * as Knex from "knex";
 
