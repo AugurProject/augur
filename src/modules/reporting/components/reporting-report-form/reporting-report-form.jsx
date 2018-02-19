@@ -29,6 +29,12 @@ export default class ReportingReportForm extends Component {
     this.state = {
       outcomes: []
     }
+
+    this.state.outcomes = this.props.market ? this.props.market.outcomes.slice() : []
+    if (this.props.market && this.props.market.marketType === BINARY && this.props.market.outcomes.length === 1) {
+      this.state.outcomes.push({ id: 0, name: 'No' })
+    }
+    this.state.outcomes.sort((a, b) => a.name - b.name)
   }
 
   validateIsMarketValid(validations, isMarketValid, selectedOutcome) {
@@ -111,11 +117,6 @@ export default class ReportingReportForm extends Component {
     const p = this.props
     const s = this.state
 
-    s.outcomes = p.market ? p.market.outcomes.slice() : []
-    if (p.market && p.market.marketType === BINARY && p.market.outcomes.length === 1) {
-      s.outcomes.push({ id: 0, name: 'No' })
-    }
-
     return (
       <ul className={classNames(Styles.ReportingReportForm__fields, FormStyles.Form__fields)}>
         <li>
@@ -131,7 +132,7 @@ export default class ReportingReportForm extends Component {
         { (p.market.marketType === BINARY || p.market.marketType === CATEGORICAL) &&
           <li>
             <ul className={FormStyles['Form__radio-buttons--per-line']}>
-              { s.outcomes && s.outcomes.sort((a, b) => b.stake - a.stake).map(outcome => (
+              { s.outcomes.map(outcome => (
                 <li key={outcome.id}>
                   <button
                     className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.name })}
