@@ -47,9 +47,9 @@ ReportingReportConfirm.propTypes = {
   selectedOutcome: PropTypes.string.isRequired,
   stake: PropTypes.string.isRequired,
   isMarketValid: PropTypes.bool,
-  designatedReportNoShowReputationBond: PropTypes.string,
-  reporterGasCost: PropTypes.string,
   isOpenReporting: PropTypes.bool.isRequired,
+  designatedReportNoShowReputationBond: PropTypes.object,
+  reporterGasCost: PropTypes.object,
 }
 
 export default ReportingReportConfirm
