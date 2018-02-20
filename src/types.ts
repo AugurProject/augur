@@ -473,6 +473,18 @@ export interface UnclaimedFeeWindowsRow {
   startTime: number;
   endTime: number;
   balance: number;
-  totalStake: number;
+  participationTokenStake: number;
+  feeTokenStake: number;
   totalFees: number;
+}
+
+export interface UnclaimedFeeWindowInfo {
+  startTime: number;
+  endTime: number;
+  balance: number;
+  expectedFees: number;
+}
+
+export interface UnclaimedFeeWindows {
+  [feeWindow: string]: UnclaimedFeeWindowInfo;
 }
