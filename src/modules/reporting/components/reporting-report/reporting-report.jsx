@@ -13,6 +13,7 @@ export default class ReportingReport extends Component {
 
   static propTypes = {
     market: PropTypes.object.isRequired,
+    submitInitialReport: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -95,7 +96,11 @@ export default class ReportingReport extends Component {
             >Report
             </button>
             { s.currentStep === 1 &&
-              <button className={FormStyles.Form__submit}>Submit</button>
+              <button
+                className={FormStyles.Form__submit}
+                onClick={() => p.submitInitialReport(p.market.id, p.selectedOutcome)}
+              >Submit
+              </button>
             }
           </div>
         </article>
