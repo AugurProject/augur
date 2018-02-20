@@ -15,6 +15,11 @@ interface FeeWindowIDRow {
 }
 
 const overrideTimestamps = Array<number>();
+let blockHeadTimestamp = 0;
+
+export function getCurrentTime(): number {
+  return  getOverrideTimestamp() || blockHeadTimestamp;
+}
 
 export function setOverrideTimestamp(db: Knex, overrideTimestamp: number, callback: ErrorCallback): void {
   overrideTimestamps.push(overrideTimestamp);
@@ -53,6 +58,7 @@ function _processBlock(db: Knex, augur: Augur, block: Block, callback: ErrorCall
   if (!block || !block.timestamp) return logError(new Error(JSON.stringify(block)));
   const blockNumber = parseInt(block.number, 16);
   const blockHash = block.hash;
+  blockHeadTimestamp = block.timestamp;
   const timestamp = getOverrideTimestamp() || parseInt(block.timestamp, 16);
   console.log("new block:", blockNumber, timestamp);
   db.transaction((trx: Knex.Transaction): void => {

@@ -1,7 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { Address, UnclaimedFeeWindowsRow, UnclaimedFeeWindows } from "../../types";
-import { getCurrentTime } from "../../utils/get-current-time";
+import { getCurrentTime } from "../../blockchain/process-block";
 
 export function getFeeWindows(db: Knex, augur: Augur, universe: Address, account: Address, includeCurrent: boolean, callback: (err: Error|null, result?: any) => void): void {
   if (universe == null || account == null) return callback(new Error("Must provide both universe and account"));
