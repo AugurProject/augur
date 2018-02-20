@@ -4,7 +4,7 @@ import { ErrorCallback, FormattedEventLog } from "../types";
 import { logProcessors } from "./log-processors";
 import { processLog } from "./process-logs";
 import { augurEmitter } from "../events";
-import { logQueueAdd, LOG_PRIORITY } from "./process-queue";
+import { logQueueAdd} from "./process-queue";
 
 export function makeLogListener(db: Knex, augur: Augur, contractName: string, eventName: string) {
   return (log: FormattedEventLog): void => {

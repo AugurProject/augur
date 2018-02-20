@@ -1,6 +1,5 @@
 import * as async from "async";
 import { ErrorCallback } from "../types";
-import { EventLog } from "augur.js";
 
 export const BLOCK_PRIORITY = 10;
 export const LOG_PRIORITY = 20;
