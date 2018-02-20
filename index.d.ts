@@ -4,7 +4,7 @@ import { BigNumber } from "bignumber.js";
 import { Block, Transaction } from "ethereumjs-blockstream";
 import { EventEmitter } from "events";
 
-export { Block }
+export { Block, Transaction }
 
 type AbiEncodedData = string;
 type Address = string;
