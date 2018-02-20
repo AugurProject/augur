@@ -12,7 +12,8 @@ export default class MarketOutcomeOrderbook extends Component {
     fixedPrecision: PropTypes.number.isRequired,
     updateHoveredPrice: PropTypes.func.isRequired,
     selectedOutcome: PropTypes.any,
-    hoveredPrice: PropTypes.any
+    hoveredPrice: PropTypes.any,
+    marketMidpoint: PropTypes.any
   }
 
   constructor(props) {
@@ -31,22 +32,6 @@ export default class MarketOutcomeOrderbook extends Component {
   render() {
     const p = this.props
     const s = this.state
-
-    const marketMidPoint = () => {
-      let midPoint
-
-      if (p.orderBook.asks.length === 0 && p.orderBook.bids.length === 0) {
-        return 'No Orders'
-      } else if (p.orderBook.asks.length === 0 && p.orderBook.bids.length > 0) {
-        midPoint = p.orderBook.bids[0].value
-      } else if (p.orderBook.asks.length > 0 && p.orderBook.bids.length === 0) {
-        midPoint = p.orderBook.asks[p.orderBook.asks.length - 1].value
-      } else {
-        midPoint = (p.orderBook.asks[p.orderBook.asks.length - 1].price.value + p.orderBook.bids[0].price.value) / 2
-      }
-
-      return `${midPoint.toFixed(p.fixedPrecision).toString()} ETH`
-    }
 
     return (
       <section className={Styles.MarketOutcomeOrderBook}>
@@ -94,7 +79,12 @@ export default class MarketOutcomeOrderbook extends Component {
             </div>
           ))}
         </div>
-        <span className={Styles.MarketOutcomeOrderBook__Midmarket}>{marketMidPoint()}</span>
+        <span className={Styles.MarketOutcomeOrderBook__Midmarket}>
+          {p.marketMidpoint === null ?
+            'No Orders' :
+            `${p.marketMidpoint.toFixed(p.fixedPrecision).toString()} ETH`
+          }
+        </span>
         <div className={Styles.MarketOutcomeOrderBook__Side} >
           {(p.orderBook.bids || []).map((order, i) => (
             <div

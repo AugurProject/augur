@@ -45,29 +45,11 @@ export default class MarketOutcomeCandlestick extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (!isEqual(prevProps.marketPriceHistory, this.props.marketPriceHistory)) this.drawChart()
 
-    if (!isEqual(prevProps.hoveredPrice, this.props.hoveredPrice)) this.updateHoveredPriceCrosshair(this.props.hoveredPrice, this.state.yScale, this.state.chartWidth)
+    if (!isEqual(prevProps.hoveredPrice, this.props.hoveredPrice)) updateHoveredPriceCrosshair(this.props.hoveredPrice, this.state.yScale, this.state.chartWidth)
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.drawChart)
-  }
-
-  updateHoveredPriceCrosshair(hoveredPrice, yScale, chartWidth) {
-    if (hoveredPrice == null) {
-      d3.select('#candlestick_crosshairs').style('display', 'none')
-      d3.select('#hovered_candlestick_price_label').text('')
-    } else {
-      d3.select('#candlestick_crosshairs').style('display', null)
-      d3.select('#candlestick_crosshairY')
-        .attr('x1', 0)
-        .attr('y1', yScale(hoveredPrice))
-        .attr('x2', chartWidth)
-        .attr('y2', yScale(hoveredPrice))
-      d3.select('#hovered_candlestick_price_label')
-        .attr('x', 0)
-        .attr('y', yScale(hoveredPrice) + 12)
-        .text(hoveredPrice)
-    }
   }
 
   drawChart() {
@@ -236,5 +218,23 @@ export default class MarketOutcomeCandlestick extends Component {
         </div>
       </section>
     )
+  }
+}
+
+function updateHoveredPriceCrosshair(hoveredPrice, yScale, chartWidth) {
+  if (hoveredPrice == null) {
+    d3.select('#candlestick_crosshairs').style('display', 'none')
+    d3.select('#hovered_candlestick_price_label').text('')
+  } else {
+    d3.select('#candlestick_crosshairs').style('display', null)
+    d3.select('#candlestick_crosshairY')
+      .attr('x1', 0)
+      .attr('y1', yScale(hoveredPrice))
+      .attr('x2', chartWidth)
+      .attr('y2', yScale(hoveredPrice))
+    d3.select('#hovered_candlestick_price_label')
+      .attr('x', 0)
+      .attr('y', yScale(hoveredPrice) + 12)
+      .text(hoveredPrice)
   }
 }

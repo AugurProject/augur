@@ -29,7 +29,6 @@ export default class MarketOutcomeCharts extends Component {
       hoveredPeriod: {},
       hoveredDepth: [],
       hoveredPrice: null,
-      fullPrice: null,
       fixedPrecision: 4
     }
 
@@ -72,8 +71,6 @@ export default class MarketOutcomeCharts extends Component {
   }
 
   updatePrecision(isIncreasing) {
-    // TODO -- make this accomdate scale changes as well (microETH, nanoETH, K, M, B, etc.)
-
     let { fixedPrecision } = this.state
 
     if (isIncreasing) {
@@ -126,6 +123,7 @@ export default class MarketOutcomeCharts extends Component {
             <MarketOutcomeOrderBook
               fixedPrecision={s.fixedPrecision}
               orderBook={p.orderBook}
+              marketMidpoint={p.orderBookKeys.mid}
               hoveredPrice={s.hoveredPrice}
               updateHoveredPrice={this.updateHoveredPrice}
             />

@@ -8,42 +8,6 @@ import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
 import { selectMarket } from 'modules/market/selectors/market'
 import { isEmpty } from 'lodash'
 
-// const bids = [...new Array(30)]
-//   .map((value, index) => ([Math.random() * 0.5, Math.random() * 100]))
-//   .sort((a, b) => b[0] - a[0])
-//   .reduce((p, item, i, items) => {
-//     const shares = (Math.random() * 100)
-//     return [
-//       ...p,
-//       {
-//         price: item[0],
-//         shares,
-//         cumulativeShares: p[i - 1] != null ? p[i - 1].cumulativeShares + shares : 0
-//       }
-//     ]
-//   }, [])
-//
-// const asks = [...new Array(30)]
-//   .map((value, index) => ([(Math.random() * (1 - 0.5)) + 0.5, Math.random() * 100]))
-//   .sort((a, b) => a[0] - b[0])
-//   .reduce((p, item, i, items) => {
-//     const shares = (Math.random() * 100)
-//     return [
-//       ...p,
-//       {
-//         price: item[0],
-//         shares,
-//         cumulativeShares: p[i - 1] != null ? p[i - 1].cumulativeShares + shares : 0
-//       }
-//     ]
-//   }, [])
-//   .sort((a, b) => b.price - a.price)
-
-// const marketDepth = {
-//   bids: bids.reduce((p, item) => [...p, [item.cumulativeShares, item.price, item.shares]], []),
-//   asks: asks.reduce((p, item) => [...p, [item.cumulativeShares, item.price, item.shares]], []).sort((a, b) => a[0] - b[0]),
-// }
-
 const startTime = new Date().getTime()
 
 const marketPriceHistory = [...new Array(30)]
@@ -56,38 +20,6 @@ const marketPriceHistory = [...new Array(30)]
     volume: (Math.random() * (1000 - 10)) + 10
   }))
   .sort((a, b) => a.x - b.x)
-
-// Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[0]], [])], [])
-
-// const orderBookMin = marketDepth.bids.reduce((p, item, i) => {
-//   if (i === 0) return item[1]
-//   return item[1] < p ? item[1] : p
-// }, null)
-// const orderBookMid = (asks[asks.length - 1].price + bids[0].price) / 2
-// const orderBookMax = marketDepth.asks.reduce((p, item, i) => {
-//   if (i === 0) return item[1]
-//   return item[1] > p ? item[1] : p
-// }, null)
-
-const mapStateToProps = (state, ownProps) => {
-  const market = selectMarket(ownProps.marketId)
-  const outcome = market.outcomes.find(outcome => outcome.id === ownProps.selectedOutcome) || {}
-  const cumulativeOrderBook = orderAndAssignCumulativeShares(outcome.orderBook)
-  const marketDepth = orderForMarketDepth(cumulativeOrderBook)
-  const orderBookKeys = getOrderBookKeys(marketDepth) // min, mid, max
-
-  return {
-    marketPriceHistory,
-    minPrice: market.minPrice,
-    maxPrice: market.maxPrice,
-    outcomeBounds: findBounds(outcome),
-    orderBook: cumulativeOrderBook,
-    marketDepth,
-    orderBookKeys
-  }
-}
-
-export default connect(mapStateToProps)(MarketOutcomeCharts)
 
 // outcome specific trading price range
 const findBounds = memoize((outcome = {}) => {
@@ -168,7 +100,17 @@ const getOrderBookKeys = memoize((marketDepth) => {
     return order[1] < p ? order[1] : p
   }, null)
 
-  const mid = marketDepth[ASKS].length > 0 ? (marketDepth[ASKS][marketDepth[ASKS].length - 1][1] + marketDepth[BIDS][0][1]) / 2 : null
+  const mid = () => {
+    if (marketDepth[ASKS].length === 0 && marketDepth[BIDS].length === 0) {
+      return null
+    } else if (marketDepth[ASKS].length === 0 && marketDepth[BIDS].length > 0) {
+      return marketDepth[BIDS][0][1]
+    } else if (marketDepth[ASKS].length > 0 && marketDepth[BIDS].length === 0) {
+      return marketDepth[ASKS][0][1]
+    }
+
+    return (marketDepth[ASKS][0][1] + marketDepth[BIDS][0][1]) / 2
+  }
 
   const max = marketDepth[BIDS].reduce((p, order, i) => {
     if (i === 0) return order[1]
@@ -177,7 +119,27 @@ const getOrderBookKeys = memoize((marketDepth) => {
 
   return {
     min,
-    mid,
+    mid: mid(),
     max
   }
 })
+
+const mapStateToProps = (state, ownProps) => {
+  const market = selectMarket(ownProps.marketId)
+  const outcome = market.outcomes.find(outcome => outcome.id === ownProps.selectedOutcome) || {}
+  const cumulativeOrderBook = orderAndAssignCumulativeShares(outcome.orderBook)
+  const marketDepth = orderForMarketDepth(cumulativeOrderBook)
+  const orderBookKeys = getOrderBookKeys(marketDepth)
+
+  return {
+    marketPriceHistory,
+    minPrice: market.minPrice,
+    maxPrice: market.maxPrice,
+    outcomeBounds: findBounds(outcome),
+    orderBook: cumulativeOrderBook,
+    marketDepth,
+    orderBookKeys
+  }
+}
+
+export default connect(mapStateToProps)(MarketOutcomeCharts)
