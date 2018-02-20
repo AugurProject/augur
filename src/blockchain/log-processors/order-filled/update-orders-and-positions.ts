@@ -14,8 +14,8 @@ interface OrderFilledOnContractData {
 export function updateOrdersAndPositions(db: Knex, augur: Augur, marketID: Address, orderID: Bytes32, creator: Address, filler: Address, numTicks: string|number, tickSize: string, callback: ErrorCallback): void {
   parallel({
     amount: (next: AsyncCallback): void => augur.api.Orders.getAmount({ _orderId: orderID }, next),
-    creatorPositionInMarket: (next: AsyncCallback): void => refreshPositionInMarket(db, augur, trx, marketID, creator, next),
-    fillerPositionInMarket: (next: AsyncCallback): void => refreshPositionInMarket(db, augur, trx, marketID, filler, next),
+    creatorPositionInMarket: (next: AsyncCallback): void => refreshPositionInMarket(db, augur, marketID, creator, next),
+    fillerPositionInMarket: (next: AsyncCallback): void => refreshPositionInMarket(db, augur, marketID, filler, next),
   }, (err: Error|null, onContractData: OrderFilledOnContractData): void => {
     if (err) return callback(err);
     const { amount } = onContractData!;
@@ -23,6 +23,6 @@ export function updateOrdersAndPositions(db: Knex, augur: Augur, marketID: Addre
     const amountRemainingInOrder = formatOrderAmount(fullPrecisionAmountRemainingInOrder);
     const updateAmountsParams = { fullPrecisionAmount: fullPrecisionAmountRemainingInOrder, amount: amountRemainingInOrder };
     const updateParams = fullPrecisionAmountRemainingInOrder === "0" ? Object.assign({}, updateAmountsParams, { isRemoved: 1 }) : updateAmountsParams;
-    db("orders").transacting(trx).where({ orderID }).update(updateParams).asCallback(callback);
+    db("orders").where({ orderID }).update(updateParams).asCallback(callback);
   });
 }

@@ -31,7 +31,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
         reportingState: augur.constants.REPORTING_STATE.PRE_REPORTING,
         blockNumber: log.blockNumber,
       };
-      trx.insert(marketStateDataToInsert).returning("marketStateID").into("market_state").asCallback((err: Error|null, marketStateRow?: Array<number>): void => {
+      db.insert(marketStateDataToInsert).returning("marketStateID").into("market_state").asCallback((err: Error|null, marketStateRow?: Array<number>): void => {
         if (err) return callback(err);
         if (!marketStateRow || !marketStateRow.length) return callback(new Error("No market state ID"));
         const marketStateID = marketStateRow[0];
@@ -88,7 +88,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           const outcomeNames: Array<string|number|null> = (log.marketType === "1" && log!.outcomes) ? log!.outcomes! : new Array(numOutcomes).fill(null);
           parallel([
             (next: AsyncCallback): void => {
-              trx.insert(marketsDataToInsert).into("markets").asCallback(next);
+              db.insert(marketsDataToInsert).into("markets").asCallback(next);
             },
             (next: AsyncCallback): void => {
               db.batchInsert("outcomes", shareTokens.map((_: Address, outcome: number): Partial<OutcomesRow> => Object.assign({ outcome, description: outcomeNames[outcome] }, outcomesDataToInsert)), numOutcomes).asCallback(next);
@@ -99,10 +99,10 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           ], (err: Error|null): void => {
             if (err) return callback(err);
             augurEmitter.emit("MarketCreated", marketsDataToInsert);
-            trx.select("popularity").from("categories").where({ category: log.topic }).asCallback((err: Error|null, categoriesRows?: Array<CategoriesRow>): void => {
+            db.select("popularity").from("categories").where({ category: log.topic }).asCallback((err: Error|null, categoriesRows?: Array<CategoriesRow>): void => {
               if (err) return callback(err);
               if (categoriesRows && categoriesRows.length) return callback(null);
-              trx.insert({ category: log.topic, universe: onMarketContractData!.universe }).into("categories").asCallback(callback);
+              db.insert({ category: log.topic, universe: onMarketContractData!.universe }).into("categories").asCallback(callback);
             });
           });
         });

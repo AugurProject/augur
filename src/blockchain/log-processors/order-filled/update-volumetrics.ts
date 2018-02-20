@@ -20,11 +20,11 @@ export function updateVolumetrics(db: Knex, augur: Augur, category: string, mark
           const { numCreatorShares, numCreatorTokens, price, orderType } = tradesRow;
           let amount = new BigNumber(calculateNumberOfSharesTraded(numCreatorShares!, numCreatorTokens!, calculateFillPrice(augur, price!, minPrice, maxPrice, orderType!)), 10);
           if (isIncrease !== true) amount = amount.neg();
-          trx.raw(`UPDATE markets SET volume = volume + :amount WHERE "marketID" = :marketID`, { amount: amount.toFixed(), marketID }).asCallback((err: Error|null): void => {
+          db.raw(`UPDATE markets SET volume = volume + :amount WHERE "marketID" = :marketID`, { amount: amount.toFixed(), marketID }).asCallback((err: Error|null): void => {
             if (err) return callback(err);
-            trx.raw(`UPDATE outcomes SET volume = volume + :amount WHERE "marketID" = :marketID AND outcome = :outcome`, { amount: amount.toFixed(), marketID, outcome }).asCallback((err: Error|null): void => {
+            db.raw(`UPDATE outcomes SET volume = volume + :amount WHERE "marketID" = :marketID AND outcome = :outcome`, { amount: amount.toFixed(), marketID, outcome }).asCallback((err: Error|null): void => {
               if (err) return callback(err);
-              trx.raw(`UPDATE categories SET popularity = popularity + :amount WHERE category = :category`, { amount: amount.toFixed(), category }).asCallback((err: Error|null): void => {
+              db.raw(`UPDATE categories SET popularity = popularity + :amount WHERE category = :category`, { amount: amount.toFixed(), category }).asCallback((err: Error|null): void => {
                 if (err) return callback(err);
                 callback(null);
               });

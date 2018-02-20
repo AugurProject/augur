@@ -69,11 +69,11 @@ export function processOrderFilledLog(db: Knex, augur: Augur, log: FormattedEven
           reporterFees,
         };
         augurEmitter.emit("OrderFilled", tradeData);
-        trx.insert(tradeData).into("trades").asCallback((err: Error|null): void => {
+        db.insert(tradeData).into("trades").asCallback((err: Error|null): void => {
           if (err) return callback(err);
-          updateVolumetrics(db, augur, trx, category, marketID, outcome, blockNumber, orderID, orderCreator, tickSize, minPrice, maxPrice, true, (err: Error|null): void => {
+          updateVolumetrics(db, augur, category, marketID, outcome, blockNumber, orderID, orderCreator, tickSize, minPrice, maxPrice, true, (err: Error|null): void => {
             if (err) return callback(err);
-            updateOrdersAndPositions(db, augur, trx, marketID, orderID, orderCreator, filler, numTicks, tickSize, callback);
+            updateOrdersAndPositions(db, augur, marketID, orderID, orderCreator, filler, numTicks, tickSize, callback);
           });
         });
       });
@@ -100,11 +100,11 @@ export function processOrderFilledLogRemoval(db: Knex, augur: Augur, log: Format
       if (!ordersRow) return callback(new Error("order not found"));
       const orderCreator = ordersRow.orderCreator!;
       const tickSize = convertNumTicksToTickSize(numTicks, minPrice, maxPrice);
-      updateVolumetrics(db, augur, trx, category, marketID, outcome, blockNumber, orderID, orderCreator, tickSize, minPrice, maxPrice, false, (err: Error|null): void => {
+      updateVolumetrics(db, augur, category, marketID, outcome, blockNumber, orderID, orderCreator, tickSize, minPrice, maxPrice, false, (err: Error|null): void => {
         if (err) return callback(err);
         db.from("trades").where({ marketID, outcome, orderID, blockNumber }).del().asCallback((err?: Error|null): void => {
           if (err) return callback(err);
-          updateOrdersAndPositions(db, augur, trx, marketID, orderID, orderCreator, log.filler, numTicks, tickSize, callback);
+          updateOrdersAndPositions(db, augur, marketID, orderID, orderCreator, log.filler, numTicks, tickSize, callback);
         });
       });
     });

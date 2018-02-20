@@ -65,7 +65,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEve
         if (err) return callback(err);
         let upsertOrder: QueryBuilder;
         if (!ordersRows || !ordersRows.length) {
-          upsertOrder = trx.insert(Object.assign(orderData, orderID)).into("orders");
+          upsertOrder = db.insert(Object.assign(orderData, orderID)).into("orders");
         } else {
           upsertOrder = db.from("orders").where(orderID).update(orderData);
         }

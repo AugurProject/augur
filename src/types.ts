@@ -80,7 +80,7 @@ export type ErrorCallback = (err?: Error|null) => void;
 
 export type AsyncCallback = (err?: Error|null, result?: any) => void;
 
-export type LogProcessor = (db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback) => void;
+export type LogProcessor = (db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback) => void;
 
 export interface EventLogProcessor {
   add: LogProcessor;

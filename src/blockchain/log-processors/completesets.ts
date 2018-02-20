@@ -8,7 +8,7 @@ export function processCompleteSetsPurchasedOrSoldLog(db: Knex, augur: Augur, lo
   const blockNumber: number = log.blockNumber;
   const marketID = log.market;
   const account = log.account;
-  refreshPositionInMarket(db, augur, trx, marketID, account, (err: Error|null) => {
+  refreshPositionInMarket(db, augur, marketID, account, (err: Error|null) => {
     if (err) return callback(err);
     const completeSetPurchasedData = {
       marketID,
@@ -25,7 +25,7 @@ export function processCompleteSetsPurchasedOrSoldLog(db: Knex, augur: Augur, lo
 }
 
 export function processCompleteSetsPurchasedOrSoldLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  refreshPositionInMarket(db, augur, trx, log.market, log.account, (err: Error|null) => {
+  refreshPositionInMarket(db, augur, log.market, log.account, (err: Error|null) => {
     if (err) return callback(err);
     augurEmitter.emit(log.eventName, log);
     callback(null);
