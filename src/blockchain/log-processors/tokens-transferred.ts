@@ -9,23 +9,23 @@ import { increaseTokenBalance } from "./token/increase-token-balance";
 import { decreaseTokenBalance } from "./token/decrease-token-balance";
 
 export function processTokensTransferredLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  const tokenAddress = log.token || log.address;
-  const tokenAmount = log.value || log.amount;
+  const token = log.token || log.address;
+  const value = log.value || log.amount;
   const tokenTransferDataToInsert = {
     transactionHash: log.transactionHash,
     logIndex: log.logIndex,
     sender: log.from,
     recipient: log.to,
-    token: tokenAddress,
-    value: tokenAmount,
+    token,
+    value,
     blockNumber: log.blockNumber,
   };
   db.transacting(trx).insert(tokenTransferDataToInsert).into("transfers").asCallback((err: Error|null): void => {
     if (err) return callback(err);
     augurEmitter.emit("TokensTransferred", tokenTransferDataToInsert);
     parallel([
-      (next: AsyncCallback): void => increaseTokenBalance(db, augur, trx, tokenAddress, log.to, Number(tokenAmount), next),
-      (next: AsyncCallback): void => decreaseTokenBalance(db, augur, trx, tokenAddress, log.from, Number(tokenAmount), next),
+      (next: AsyncCallback): void => increaseTokenBalance(db, augur, trx, token, log.to, Number(value), next),
+      (next: AsyncCallback): void => decreaseTokenBalance(db, augur, trx, token, log.from, Number(value), next),
     ], (err: Error|null): void => {
       if (err) return callback(err);
       handleShareTokenTransfer(db, augur, trx, log, callback);
