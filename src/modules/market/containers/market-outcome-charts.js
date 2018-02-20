@@ -126,6 +126,7 @@ const orderAndAssignCumulativeShares = memoize((orderBook) => {
         cumulativeShares: p[i - 1] != null ? p[i - 1].cumulativeShares + order.shares.value : 0
       }
     ], [])
+    .sort((a, b) => b.price.value - a.price.value)
 
   const asks = (orderBook[ASKS] || [])
     .sort((a, b) => a[0] - b[0])
