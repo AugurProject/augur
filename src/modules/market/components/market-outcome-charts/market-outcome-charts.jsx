@@ -40,16 +40,17 @@ export default class MarketOutcomeCharts extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (
-      !isEqual(this.state.fixedPrecision, nextState.fixedPrecision) ||
-      !isEqual(this.state.fullPrice, nextState.fullPrice)
-    ) {
-      if (nextState.fullPrice === null) {
-        this.updateHoveredPrice(null)
-      } else {
-        this.updateHoveredPrice(nextState.fullPrice.toFixed(nextState.fixedPrecision).toString())
-      }
-    }
+    // if (
+    //   !isEqual(this.state.fixedPrecision, nextState.fixedPrecision) ||
+    //   !isEqual(this.state.fullPrice, nextState.fullPrice)
+    // ) {
+    //   console.log('fullPrice -- ', nextState.fullPrice)
+    //   if (nextState.fullPrice === null) {
+    //     this.updateHoveredPrice(null)
+    //   } else {
+    //     this.updateHoveredPrice(nextState.fullPrice.toFixed(nextState.fixedPrecision).toString())
+    //   }
+    // }
   }
 
   updateHoveredPeriod(hoveredPeriod) {
@@ -66,7 +67,7 @@ export default class MarketOutcomeCharts extends Component {
 
   updateHoveredPrice(hoveredPrice) {
     this.setState({
-      fullPrice: hoveredPrice
+      hoveredPrice
     })
   }
 

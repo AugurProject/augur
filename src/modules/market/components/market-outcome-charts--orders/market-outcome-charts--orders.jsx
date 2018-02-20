@@ -38,11 +38,11 @@ export default class MarketOutcomeOrderbook extends Component {
       if (p.orderBook.asks.length === 0 && p.orderBook.bids.length === 0) {
         return 'No Orders'
       } else if (p.orderBook.asks.length === 0 && p.orderBook.bids.length > 0) {
-        midPoint = p.orderBook.bids[0]
+        midPoint = p.orderBook.bids[0].value
       } else if (p.orderBook.asks.length > 0 && p.orderBook.bids.length === 0) {
-        midPoint = p.orderBook.asks[p.orderBook.asks.length - 1]
+        midPoint = p.orderBook.asks[p.orderBook.asks.length - 1].value
       } else {
-        midPoint = (p.orderBook.asks[p.orderBook.asks.length - 1].price + p.orderBook.bids[0].price) / 2
+        midPoint = (p.orderBook.asks[p.orderBook.asks.length - 1].price.value + p.orderBook.bids[0].price.value) / 2
       }
 
       return `${midPoint.toFixed(p.fixedPrecision).toString()} ETH`
