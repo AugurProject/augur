@@ -32,6 +32,7 @@ const loadMarkets = (callback = logError) => (dispatch, getState) => {
 
     dispatch(clearMarketsFilteredSorted())
     dispatch(updateMarketsFilteredSorted(marketsArray))
+    callback(null, marketsArray)
   })
 }
 

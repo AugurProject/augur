@@ -42,12 +42,28 @@
   padding: 1.5rem 1.5rem 1.0625rem;
 }
 
+.MarketCommon__footer {
+  border-top: 1px solid @color-lightest-gray;
+  padding: 1rem 2rem;
+
+  &.single-card {
+    margin: auto;
+    max-width: 62.75rem;
+    padding-bottom: 3.5rem;
+  }
+}
+
 @media @breakpoint-mobile-medium {
   .MarketCommon__topcontent {
     padding: 1rem;
   }
 
   .MarketCommon__content {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .MarketCommon__footer {
     padding-left: 1rem;
     padding-right: 1rem;
   }
