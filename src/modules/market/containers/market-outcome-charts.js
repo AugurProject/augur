@@ -72,8 +72,8 @@ const marketPriceHistory = [...new Array(30)]
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId)
   const outcome = market.outcomes.find(outcome => outcome.id === ownProps.selectedOutcome) || {}
-  const orderBook = orderAndAssignCumulativeShares(outcome.orderBook)
-  const marketDepth = orderForMarketDepth(orderBook)
+  const cumulativeOrderBook = orderAndAssignCumulativeShares(outcome.orderBook)
+  const marketDepth = orderForMarketDepth(cumulativeOrderBook)
   const orderBookKeys = getOrderBookKeys(marketDepth) // min, mid, max
 
   return {
@@ -81,7 +81,7 @@ const mapStateToProps = (state, ownProps) => {
     minPrice: market.minPrice,
     maxPrice: market.maxPrice,
     outcomeBounds: findBounds(outcome),
-    orderBook,
+    orderBook: cumulativeOrderBook,
     marketDepth,
     orderBookKeys
   }
@@ -116,7 +116,8 @@ const findBounds = memoize((outcome = {}) => {
 })
 
 const orderAndAssignCumulativeShares = memoize((orderBook) => {
-  const bids = (orderBook[BIDS] || [])
+  const rawBids = (orderBook[BIDS] || []).slice()
+  const bids = rawBids
     .sort((a, b) => b.price.value - a.price.value)
     .reduce((p, order, i, orders) => [
       ...p,
@@ -126,10 +127,10 @@ const orderAndAssignCumulativeShares = memoize((orderBook) => {
         cumulativeShares: p[i - 1] != null ? p[i - 1].cumulativeShares + order.shares.value : 0
       }
     ], [])
-    .sort((a, b) => b.price.value - a.price.value)
 
-  const asks = (orderBook[ASKS] || [])
-    .sort((a, b) => a[0] - b[0])
+  const rawAsks = (orderBook[ASKS] || []).slice()
+  const asks = rawAsks
+    .sort((a, b) => a.price.value - b.price.value)
     .reduce((p, order, i, orders) => [
       ...p,
       {
@@ -147,8 +148,13 @@ const orderAndAssignCumulativeShares = memoize((orderBook) => {
 })
 
 const orderForMarketDepth = memoize((orderBook) => {
-  const bids = (orderBook[BIDS] || []).reduce((p, order) => [...p, [order.cumulativeShares, order.price.value, order.shares.value]], [])
-  const asks = (orderBook[ASKS] || []).reduce((p, order) => [...p, [order.cumulativeShares, order.price.value, order.shares.value]], []).sort((a, b) => a[0] - b[0])
+  const rawBids = (orderBook[BIDS] || []).slice()
+  const bids = rawBids
+    .reduce((p, order) => [...p, [order.cumulativeShares, order.price.value, order.shares.value]], [])
+  const rawAsks = (orderBook[ASKS] || []).slice()
+  const asks = rawAsks
+    .sort((a, b) => a.price.value - b.price.value)
+    .reduce((p, order) => [...p, [order.cumulativeShares, order.price.value, order.shares.value]], [])
 
   return {
     [BIDS]: bids,
