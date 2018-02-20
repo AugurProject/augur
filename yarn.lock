@@ -407,9 +407,9 @@ augur-core@0.12.0-17:
     path "0.12.7"
     recursive-readdir "2.2.1"
 
-augur.js@4.7.2-2:
-  version "4.7.2-2"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.7.2-2.tgz#3676186c7877976394fd633f8b57f9f4549320fe"
+augur.js@4.7.2-6:
+  version "4.7.2-6"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.7.2-6.tgz#06e96a5363d9af42e482c0b36c04ac0cf5c91755"
   dependencies:
     "@types/bignumber.js" "4.0.3"
     async "1.5.2"
@@ -418,7 +418,7 @@ augur.js@4.7.2-2:
     clone "2.1.1"
     columnify "1.5.4"
     ethereumjs-connect "4.4.9"
-    ethrpc "4.5.10"
+    ethrpc "4.5.12"
     event-emitter "0.3.5"
     immutable-delete "1.1.0"
     keccak "1.2.0"
@@ -1868,6 +1868,14 @@ ethereumjs-blockstream@2.0.7:
     source-map-support "0.4.14"
     uuid "3.0.1"
 
+ethereumjs-blockstream@4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/ethereumjs-blockstream/-/ethereumjs-blockstream-4.0.1.tgz#976353c977ac3c7d9eebebd57a2a0bdc0fab6689"
+  dependencies:
+    immutable "3.8.2"
+    source-map-support "0.4.14"
+    uuid "3.0.1"
+
 ethereumjs-connect@4.4.9:
   version "4.4.9"
   resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.4.9.tgz#a00f4139e2b57a64c969c2143649a6b0885e20a4"
@@ -2016,15 +2024,15 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@4.5.10:
-  version "4.5.10"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.5.10.tgz#5c02af1a9cd30140d938958cc6d66933cb3296d6"
+ethrpc@4.5.12:
+  version "4.5.12"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.5.12.tgz#3ef566b43770e749fa386f60e1e0d47290b6d671"
   dependencies:
     async "1.5.2"
     bignumber.js "2.3.0"
     browser-request "0.3.3"
     clone "2.1.1"
-    ethereumjs-blockstream "2.0.7"
+    ethereumjs-blockstream "4.0.1"
     ethereumjs-tx "1.3.1"
     immutable-delete "1.0.1"
     keccak "1.2.0"
@@ -2749,6 +2757,10 @@ immutable-delete@1.1.0:
 immutable@3.8.1:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.1.tgz#200807f11ab0f72710ea485542de088075f68cd2"
+
+immutable@3.8.2:
+  version "3.8.2"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"
 
 imurmurhash@^0.1.4:
   version "0.1.4"

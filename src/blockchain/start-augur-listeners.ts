@@ -1,6 +1,6 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { Block } from "../types";
+import { BlockDetail } from "../types";
 import { makeLogListener } from "./make-log-listener";
 import { processBlock, processBlockRemoval } from "./process-block";
 
@@ -28,8 +28,8 @@ export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: 
     },
   }, highestBlockNumber, (err: Error) => {
     augur.events.startBlockListeners({
-      onAdded: (block: Block): void => processBlock(db, augur, block),
-      onRemoved: (block: Block): void => processBlockRemoval(db, block),
+      onAdded: (block: BlockDetail): void => processBlock(db, augur, block),
+      onRemoved: (block: BlockDetail): void => processBlockRemoval(db, block),
     });
   });
 }

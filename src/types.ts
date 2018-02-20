@@ -1,5 +1,5 @@
 import { Augur, FormattedEventLog } from "augur.js";
-export { Block, FormattedEventLog } from "augur.js";
+export { BlockDetail, FormattedEventLog } from "augur.js";
 
 import * as Knex from "knex";
 
@@ -466,4 +466,25 @@ export interface InitialReportersRow {
   reporter: Address;
   isDesignatedReporter: boolean;
   amountStaked: number;
+}
+
+export interface UnclaimedFeeWindowsRow {
+  feeWindow: Address;
+  startTime: number;
+  endTime: number;
+  balance: number;
+  participationTokenStake: number;
+  feeTokenStake: number;
+  totalFees: number;
+}
+
+export interface UnclaimedFeeWindowInfo {
+  startTime: number;
+  endTime: number;
+  balance: number;
+  expectedFees: number;
+}
+
+export interface UnclaimedFeeWindows {
+  [feeWindow: string]: UnclaimedFeeWindowInfo;
 }
