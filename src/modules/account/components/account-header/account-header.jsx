@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 import debounce from 'utils/debounce'
 import fitText from 'utils/fit-text'
 
-import ProfitLossChart from 'modules/account/components/profit-loss-chart/profit-loss-chart'
-
 import Styles from 'modules/account/components/account-header/account-header.styles'
 
 class AccountHeader extends Component {
@@ -59,9 +57,6 @@ class AccountHeader extends Component {
     // assign defaults incase we have nulls for value
     const ethValue = p.stats[0].totalRealEth.value.formatted
     const repValue = p.stats[0].totalRep.value.formatted
-    const totalPLValue = p.stats[1].totalPL.value === null ? '0.0000' : p.stats[1].totalPL.value.rounded
-    const totalPLMonthValue = p.stats[1].totalPLMonth.value === null ? '0' : p.stats[1].totalPLMonth.value.rounded
-    const totalPLDayValue = p.stats[1].totalPLDay.value === null ? '0' : p.stats[1].totalPLDay.value.rounded
 
     return (
       <div
