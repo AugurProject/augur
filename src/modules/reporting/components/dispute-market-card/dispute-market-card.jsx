@@ -47,8 +47,9 @@ export default class DisputeMarketCard extends Component {
                   </button>
                 </li>)}
             </ul>
-            <div>
-              <span className={Styles.DisptueMarket_label__text}>Dispute Round</span><span className={Styles.DisptueMarket_bubble__text}>{p.disputeRound}</span>
+            <div className={Styles['DisputeMarket__round-number']}>
+              <span className={Styles['DisptueMarket__round-label']}>Dispute Round</span>
+              <span className={Styles['DisptueMarket__round-text']}>{p.disputeRound}</span>
             </div>
           </div>
 
