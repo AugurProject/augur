@@ -2,102 +2,103 @@
 
 .AccountWithdraw {
   background: white;
-  padding: 5.625rem 0 3rem 4.375rem;
-  width: 100%;
+  padding: 5.5rem 4.625rem 7rem;
 }
 
 .AccountWithdraw__heading {
-  margin-bottom: 40px;
-  width: 100%;
+  margin-bottom: 2.5rem;
 
-  h1 {
+  > h1 {
     color: @color-darkpurple;
+    display: inline-block;
     font-size: 1.875rem;
     font-weight: 500;
     letter-spacing: 0.14rem;
+    margin-bottom: 0;
     margin-right: 1rem;
     text-transform: uppercase;
-  }
-
-  > * {
-    display: inline-block;
   }
 }
 
 .AccountWithdraw__main {
   display: flex;
-  width: 100%;
+  max-width: @max-width;
+
+  > div {
+    padding-left: 5%;
+    padding-right: 5%;
+
+    &:first-child {
+      padding-left: 0;
+      width: 33%;
+    }
+
+    &:last-child {
+      padding-right: 0;
+      width: 67%;
+    }
+
+    &:not(:first-child) {
+      border-left: 1px solid @color-lightergray;
+    }
+  }
 }
 
 .AccountWithdraw__description {
-  border-right: 1px solid @color-lightergray;
-  flex: 0 26.25rem;
-
-  p {
-    font-size: 1.125rem;
+  > p {
+    font-size: @font-size-large;
+    line-height: 1.5rem;
     margin: 0 0 1.5rem;
   }
 
-  a {
+  > a {
+    &:extend(.caps--large);
+
     color: @color-purple;
-    font-size: 1.125rem;
     font-weight: 500;
-    text-transform: uppercase;
   }
 }
 
-.AccountWithdraw__form {
-  flex: 1;
-  margin-left: 3.75rem;
-  max-width: 36rem;
-}
-
-.AccountWithdraw__formTopRow {
+.AccountWithdraw__form-fields {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
+}
 
-  > * {
-    width: 40%;
+.AccountWithdraw__input-wrapper {
+  margin-bottom: 1.375rem;
+  width: 100%;
+
+  &:first-child,
+  &:nth-child(2) {
+    width: 48%;
   }
-}
 
-.AccountWithdraw__formBottomRow {
-  margin-bottom: 1.5rem;
-}
+  &:first-child {
+    > div {
+      padding-bottom: 0.7rem;
+      padding-top: 0.7rem;
+    }
+  }
 
-.AccountWithdraw__inputContain {
-  label {
+  > label {
     color: @color-darkpurple;
     font-weight: 500;
+  }
+
+  > div > input {
+    border: 2px solid transparent;
+
+    &:focus {
+      border-color: @color-lightpurple;
+    }
   }
 }
 
 .AccountWithdraw__submitButton {
-  background: @color-purple;
-  border-radius: 0.1875rem;
-  color: @color-white;
+  &:extend(.button--purple all);
+
   float: right;
-  font-size: 1.125rem;
-  font-weight: 500;
-  height: 2.625rem;
-  line-height: 2.625rem;
-  padding: 0 2rem;
-  text-transform: uppercase;
-
-  &:hover {
-    background: @color-lightpurple;
-  }
-
-  &:disabled {
-    cursor: default;
-    opacity: 0.5;
-
-    &:hover {
-      background: @color-purple;
-      cursor: default;
-    }
-  }
 }
 
 @media @breakpoint-mobile {
