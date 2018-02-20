@@ -18,7 +18,8 @@ export default class ReportingReport extends Component {
     marketId: PropTypes.string.isRequired,
     isConnected: PropTypes.bool.isRequired,
     isMarketLoaded: PropTypes.bool.isRequired,
-    loadFullMarket: PropTypes.func.isRequired
+    loadFullMarket: PropTypes.func.isRequired,
+    submitInitialReport: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -28,6 +29,7 @@ export default class ReportingReport extends Component {
       currentStep: 0,
       isMarketValid: null,
       selectedOutcome: '',
+      selectedOutcomeName: '',
       // false if stake input is needed, needs to be dynamic
       displayStakeOnly: true,
       // need to get value from augur-node for
@@ -108,7 +110,7 @@ export default class ReportingReport extends Component {
               <ReportingReportConfirm
                 market={p.market}
                 isMarketValid={s.isMarketValid}
-                selectedOutcome={s.selectedOutcome}
+                selectedOutcome={s.selectedOutcomeName}
                 stake={s.stake}
               />
             }
@@ -125,7 +127,11 @@ export default class ReportingReport extends Component {
               >Report
               </button>
               { s.currentStep === 1 &&
-                <button className={FormStyles.Form__submit}>Submit</button>
+              <button
+                className={FormStyles.Form__submit}
+                onClick={() => p.submitInitialReport(p.market.id, s.selectedOutcome, s.isMarketValid)}
+              >Submit
+              </button>
               }
             </div>
           </article>

@@ -7,18 +7,21 @@ import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names'
 import { selectMarket } from 'modules/market/selectors/market'
 import parseQuery from 'modules/routes/helpers/parse-query'
 import getValue from 'utils/get-value'
+import { submitInitialReport } from 'modules/reporting/actions/submit-initial-report'
 
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
   isConnected: state.connection.isConnected,
   universe: state.universe,
   marketsData: state.marketsData,
-  isMobile: state.isMobile
+  isMobile: state.isMobile,
 })
 
 const mapDispatchToProps = dispatch => ({
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
+  submitInitialReport: (marketId, outcomeValue, invalid) => dispatch(submitInitialReport(marketId, outcomeValue, invalid)),
 })
+
 
 const mergeProps = (sP, dP, oP) => {
   const marketId = parseQuery(oP.location.search)[MARKET_ID_PARAM_NAME]
@@ -32,7 +35,8 @@ const mergeProps = (sP, dP, oP) => {
     isConnected: sP.isConnected && getValue(sP, 'universe.id') != null,
     isMarketLoaded: sP.marketsData[marketId] != null,
     market,
-    loadFullMarket: () => dP.loadFullMarket(marketId)
+    loadFullMarket: () => dP.loadFullMarket(marketId),
+    submitInitialReport: (marketId, selectedOutcome, invalid) => dP.submitInitialReport(marketId, selectedOutcome, invalid)
   }
 }
 

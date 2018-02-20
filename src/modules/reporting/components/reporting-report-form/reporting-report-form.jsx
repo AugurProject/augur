@@ -37,24 +37,26 @@ export default class ReportingReportForm extends Component {
     this.state.outcomes.sort((a, b) => a.name - b.name)
   }
 
-  validateIsMarketValid(validations, isMarketValid, selectedOutcome) {
+  validateIsMarketValid(validations, isMarketValid) {
     const updatedValidations = { ...validations }
     updatedValidations.selectedOutcome = true
 
     this.props.updateState({
       validations: updatedValidations,
       isMarketValid,
+      selectedOutcomeName: '',
       selectedOutcome: '',
     })
   }
 
-  validateOutcome(validations, selectedOutcome) {
+  validateOutcome(validations, selectedOutcome, selectedOutcomeName) {
     const updatedValidations = { ...validations }
     updatedValidations.selectedOutcome = true
 
     this.props.updateState({
       validations: updatedValidations,
       selectedOutcome,
+      selectedOutcomeName,
       isMarketValid: true
     })
   }
@@ -82,6 +84,7 @@ export default class ReportingReportForm extends Component {
     this.props.updateState({
       validations: updatedValidations,
       selectedOutcome: value,
+      selectedOutcomeName: value,
       isMarketValid: true,
     })
   }
@@ -135,8 +138,8 @@ export default class ReportingReportForm extends Component {
               { s.outcomes.map(outcome => (
                 <li key={outcome.id}>
                   <button
-                    className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.name })}
-                    onClick={(e) => { this.validateOutcome(p.validations, outcome.name) }}
+                    className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.id })}
+                    onClick={(e) => { this.validateOutcome(p.validations, outcome.id, outcome.name) }}
                   >{outcome.name}
                   </button>
                 </li>
