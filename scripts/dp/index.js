@@ -118,7 +118,6 @@ function runCannedData(command, networks, callback) {
         augur.connect({ ethereumNode: { http: network.http } }, function (err) {
           if (err) return callback(err);
           repFaucet(augur, auth, function (err) {
-            if (err) return callback(err);
             createMarkets(augur, auth, callback);
           });
         });
