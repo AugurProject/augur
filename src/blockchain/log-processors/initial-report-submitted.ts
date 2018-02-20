@@ -1,9 +1,9 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { parallel } from "async";
-import { FormattedEventLog, ErrorCallback, AsyncCallback, Address } from "./../types";
+import { FormattedEventLog, ErrorCallback, AsyncCallback, Address } from "../../types";
 import { updateMarketState, insertPayout } from "./database";
-import { augurEmitter } from "./../events";
+import { augurEmitter } from "../../events";
 
 export function processInitialReportSubmittedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   updateMarketState( db, log.market, log.blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_DISPUTE, (err: Error|null): void => {

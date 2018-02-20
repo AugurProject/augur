@@ -1,9 +1,9 @@
 import { Augur } from "augur.js";
 import * as Knex from "knex";
-import { Address, FormattedEventLog, MarketsRow, ErrorCallback } from "./../types";
-import { augurEmitter } from "./../events";
+import { Address, FormattedEventLog, MarketsRow, ErrorCallback } from "../../types";
+import { augurEmitter } from "../../events";
 import { upsertPositionInMarket } from "./order-filled/upsert-position-in-market";
-import { convertNumTicksToTickSize } from "./../utils/convert-fixed-point-to-decimal";
+import { convertNumTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 
 export function processCompleteSetsPurchasedOrSoldLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   const marketID: Address = log.market;

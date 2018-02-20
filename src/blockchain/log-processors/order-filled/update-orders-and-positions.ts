@@ -1,10 +1,10 @@
 import { Augur } from "augur.js";
 import { parallel } from "async";
 import * as Knex from "knex";
-import { Address, Bytes32, AsyncCallback, ErrorCallback } from "./../../types";
+import { Address, Bytes32, AsyncCallback, ErrorCallback } from "../../../types";
 import { upsertPositionInMarket } from "./upsert-position-in-market";
-import { convertOnChainSharesToHumanReadableShares } from "./../../utils/convert-fixed-point-to-decimal";
-import { formatOrderAmount } from "./../../utils/format-order";
+import { convertOnChainSharesToHumanReadableShares } from "../../../utils/convert-fixed-point-to-decimal";
+import { formatOrderAmount } from "../../../utils/format-order";
 
 interface OrderFilledOnContractData {
   amount: string;

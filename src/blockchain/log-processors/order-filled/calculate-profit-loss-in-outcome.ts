@@ -1,7 +1,7 @@
 import { Augur, CalculatedProfitLoss } from "augur.js";
 import * as Knex from "knex";
-import { Address, OutcomesRow, UITrade } from "./../../types";
-import { getUserTradingHistory } from "./../../server/getters/get-user-trading-history";
+import { Address, OutcomesRow, UITrade } from "../../../types";
+import { getUserTradingHistory } from "../../../server/getters/get-user-trading-history";
 
 export function calculateProfitLossInOutcome(augur: Augur, trx: Knex.Transaction, account: Address, marketID: Address, outcome: number, callback: (err: Error|null, profitLossInOutcome?: CalculatedProfitLoss) => void): void {
   getUserTradingHistory(trx, null, account, marketID, outcome, null, null, null, null, null, null, null, (err: Error|null, userTradingHistory?: Array<UITrade>): void => {

@@ -1,13 +1,13 @@
 import { Augur } from "augur.js";
 import * as Knex from "knex";
-import { Address, FormattedEventLog, TokensRow, MarketsRow, OrdersRow, ErrorCallback } from "./../../types";
+import { Address, FormattedEventLog, TokensRow, MarketsRow, OrdersRow, ErrorCallback } from "../../../types";
 import { calculateFillPrice } from "./calculate-fill-price";
 import { calculateNumberOfSharesTraded } from "./calculate-number-of-shares-traded";
 import { updateOrdersAndPositions } from "./update-orders-and-positions";
 import { updateVolumetrics } from "./update-volumetrics";
-import { augurEmitter } from "./../../events";
-import { convertFixedPointToDecimal, convertOnChainSharesToHumanReadableShares, convertNumTicksToTickSize } from "./../../utils/convert-fixed-point-to-decimal";
-import { WEI_PER_ETHER } from "./../../constants";
+import { augurEmitter } from "../../../events";
+import { convertFixedPointToDecimal, convertOnChainSharesToHumanReadableShares, convertNumTicksToTickSize } from "../../../utils/convert-fixed-point-to-decimal";
+import { WEI_PER_ETHER } from "../../../constants";
 
 interface TokensRowWithNumTicksAndCategory extends TokensRow {
   numTicks: number|string;

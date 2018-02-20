@@ -1,5 +1,5 @@
 import * as Knex from "knex";
-import { Address, ReportingState, AsyncCallback } from "./../types";
+import { Address, ReportingState, AsyncCallback } from "../../types";
 
 export function updateMarketState(db: Knex, marketID: Address, blockNumber: number, reportingState: ReportingState , callback: AsyncCallback) {
   const marketStateDataToInsert = { marketID, reportingState, blockNumber };

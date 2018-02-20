@@ -1,7 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { Bytes32, FormattedEventLog, ErrorCallback, OrderState } from "./../types";
-import { augurEmitter } from "./../events";
+import { Bytes32, FormattedEventLog, ErrorCallback, OrderState } from "../../types";
+import { augurEmitter } from "../../events";
 
 interface MarketIDAndOutcome {
   marketID: Bytes32;

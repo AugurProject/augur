@@ -1,7 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { FormattedEventLog, ErrorCallback, Address, AsyncCallback } from "./../types";
-import { augurEmitter } from "./../events";
+import { FormattedEventLog, ErrorCallback, Address, AsyncCallback } from "../../types";
+import { augurEmitter } from "../../events";
 import { insertPayout } from "./database";
 import { QueryBuilder } from "knex";
 import { parallel } from "async";
