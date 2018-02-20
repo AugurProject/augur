@@ -43,7 +43,7 @@ var simulateSell = require("./simulate-sell");
 function simulateTrade(p) {
   if (p.orderType !== 0 && p.orderType !== 1) throw new Error("Order type must be 0 (buy) or 1 (sell)");
   var sharesToCover = new BigNumber(p.shares, 10);
-  var price = new BigNumber(p.price, 10);
+  var price = p.price ? new BigNumber(p.price, 10) : p.price;
   var tokenBalance = new BigNumber(p.tokenBalance, 10);
   var minPrice = new BigNumber(p.minPrice, 10);
   var maxPrice = new BigNumber(p.maxPrice, 10);
@@ -55,6 +55,7 @@ function simulateTrade(p) {
     simulateBuy(p.outcome, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.singleOutcomeOrderBook.sell) :
     simulateSell(p.outcome, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.singleOutcomeOrderBook.buy);
   return {
+    sharesFilled: simulatedTrade.sharesFilled.toFixed(),
     settlementFees: simulatedTrade.settlementFees.toFixed(),
     worstCaseFees: simulatedTrade.worstCaseFees.toFixed(),
     gasFees: simulatedTrade.gasFees.toFixed(),

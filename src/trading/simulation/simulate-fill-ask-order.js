@@ -18,6 +18,7 @@ function simulateFillAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
   var makerTokensDepleted = ZERO;
   var takerSharesDepleted = ZERO;
   var takerTokensDepleted = ZERO;
+  var sharesFilled = ZERO;
   matchingSortedAsks.forEach(function (matchingAsk) {
     var takerDesiredShares = BigNumber.min(new BigNumber(matchingAsk.amount, 10), sharesToCover);
     var makerSharesEscrowed = BigNumber.min(new BigNumber(matchingAsk.sharesEscrowed, 10), sharesToCover);
@@ -26,6 +27,7 @@ function simulateFillAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
     var sharePriceLong = orderDisplayPrice.minus(minPrice);
     var takerSharesAvailable = calculateNearlyCompleteSets(outcome, takerDesiredShares, shareBalances);
     sharesToCover = sharesToCover.minus(takerDesiredShares);
+    sharesFilled = sharesFilled.plus(takerDesiredShares);
 
     // complete sets sold if maker is closing a long, taker is closing a short
     if (makerSharesEscrowed.gt(PRECISION.zero) && takerSharesAvailable.gt(PRECISION.zero)) {
@@ -68,6 +70,7 @@ function simulateFillAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
     shareBalances = depleteOtherShareBalances(outcome, takerSharesDepleted, shareBalances);
   }
   return {
+    sharesFilled: sharesFilled,
     sharesToCover: sharesToCover,
     settlementFees: settlementFees,
     worstCaseFees: settlementFees,

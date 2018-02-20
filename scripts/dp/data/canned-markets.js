@@ -155,7 +155,7 @@ module.exports = [{
   _endTime: parseInt(new Date("1-2-" + nextYear).getTime() / 1000, 10),
   _minPrice: "0",
   _maxPrice: "10000",
-  tickSize: "500",
+  tickSize: "1",
   _topic: "science",
   _extraInfo: {
     resolutionSource: "science!",
@@ -164,16 +164,16 @@ module.exports = [{
   orderBook: {
     buy: {
       "1": [
-        { shares: "0.0001", price: "1000" },
-        { shares: "0.0005", price: "750" },
-        { shares: "0.0005", price: "500" },
+        { shares: "0.001", price: "1000" },
+        { shares: "0.005", price: "750" },
+        { shares: "0.005", price: "500" },
       ],
     },
     sell: {
       "1": [
-        { shares: "0.00001", price: "400" },
-        { shares: "0.00002", price: "350" },
-        { shares: "0.00003", price: "250" },
+        { shares: "0.001", price: "400" },
+        { shares: "0.002", price: "350" },
+        { shares: "0.003", price: "250" },
       ],
     },
   },
@@ -183,7 +183,7 @@ module.exports = [{
   _endTime: parseInt(new Date("1-2-" + nextYear).getTime() / 1000, 10),
   _minPrice: "600",
   _maxPrice: "5000",
-  tickSize: "100",
+  tickSize: ".01",
   _topic: "science",
   _extraInfo: {
     resolutionSource: "EPA",
@@ -193,16 +193,16 @@ module.exports = [{
   orderBook: {
     buy: {
       "1": [
-        { shares: "0.000005", price: "1000" },
-        { shares: "0.00002", price: "900" },
-        { shares: "0.00003", price: "775" },
+        { shares: "0.005", price: "1000" },
+        { shares: "0.02", price: "900" },
+        { shares: "0.3", price: "775" },
       ],
     },
     sell: {
       "1": [
-        { shares: "0.00001", price: "1050" },
-        { shares: "0.000005", price: "1250" },
-        { shares: "0.0000025", price: "1500" },
+        { shares: "0.001", price: "1050" },
+        { shares: "0.005", price: "1250" },
+        { shares: "0.0025", price: "1500" },
       ],
     },
   },
@@ -251,16 +251,16 @@ module.exports = [{
   orderBook: {
     buy: {
       "1": [
-        { shares: "0.00001", price: "100" },
-        { shares: "0.00001", price: "150" },
-        { shares: "0.00001", price: "200" },
+        { shares: "1", price: "100" },
+        { shares: "1", price: "150" },
+        { shares: "1", price: "200" },
       ],
     },
     sell: {
       "1": [
-        { shares: "0.00001", price: "225" },
-        { shares: "0.00001", price: "250" },
-        { shares: "0.00001", price: "300" },
+        { shares: "1", price: "225" },
+        { shares: "1", price: "250" },
+        { shares: "1", price: "300" },
       ],
     },
   },
