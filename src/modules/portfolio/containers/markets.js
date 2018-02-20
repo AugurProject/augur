@@ -10,7 +10,6 @@ import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 import { loadUserMarkets } from 'modules/markets/actions/load-user-markets'
 import { loadUnclaimedFees } from 'modules/markets/actions/load-unclaimed-fees'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
-import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
 import { collectMarketCreatorFees } from 'modules/portfolio/actions/collect-market-creator-fees'
 import logError from 'utils/log-error'
 
@@ -20,7 +19,6 @@ const mapStateToProps = state =>
     isLogged: state.isLogged,
     myMarkets: getMyMarkets(),
     transactionsLoading: state.transactionsLoading,
-    scalarShareDenomination: getScalarShareDenomination(),
     isMobile: state.isMobile,
     hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber // FIXME
   })

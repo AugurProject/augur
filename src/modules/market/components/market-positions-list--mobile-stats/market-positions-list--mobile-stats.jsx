@@ -3,17 +3,14 @@
 import React from 'react'
 
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
-import setShareDenomination from 'utils/set-share-denomination'
 import getValue from 'utils/get-value'
 
 import Styles from 'modules/market/components/market-positions-list--mobile-stats/market-positions-list--mobile-stats.styles'
 import CommonStyles from 'modules/market/components/market-positions-list--mobile/market-positions-list--mobile.styles'
 
 const MobileStats = (p) => {
-  const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${p.marketId}`)
-
-  const topBidShares = setShareDenomination(getValue(p, 'outcome.topBid.shares.formatted'), selectedShareDenomination)
-  const topAskShares = setShareDenomination(getValue(p, 'outcome.topAsk.shares.formatted'), selectedShareDenomination)
+  const topBidShares = getValue(p, 'outcome.topBid.shares.formatted')
+  const topAskShares = getValue(p, 'outcome.topAsk.shares.formatted')
 
   const topBidPrice = getValue(p, 'outcome.topBid.price.formatted')
   const topAskPrice = getValue(p, 'outcome.topAsk.price.formatted')

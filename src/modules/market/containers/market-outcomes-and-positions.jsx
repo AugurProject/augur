@@ -2,13 +2,11 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
 import MarketOutcomesAndPositions from 'modules/market/components/market-outcomes-and-positions/market-outcomes-and-positions'
-import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
 import { selectMarket } from 'modules/market/selectors/market'
 import { sortOpenOrders } from 'modules/user-open-orders/selectors/open-orders'
 // import getValue from 'utils/get-value'
 
 const mapStateToProps = state => ({
-  scalarShareDenomination: getScalarShareDenomination(),
   isMobile: state.isMobile,
 })
 

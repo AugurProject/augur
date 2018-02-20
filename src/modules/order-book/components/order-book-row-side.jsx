@@ -6,7 +6,6 @@ import ValueDenomination from 'modules/common/components/value-denomination/valu
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 
 import getValue from 'utils/get-value'
-import setShareDenomination from 'utils/set-share-denomination'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
 import { PRICE, SHARE } from 'modules/order-book/constants/order-book-value-types'
@@ -23,7 +22,7 @@ const OrderBookRowSide = (p) => {
         <NullStateMessage message={nullMessage} /> :
         <div>
           {(p.orders || []).map((order, i) => {
-            const shares = setShareDenomination(getValue(order, 'shares.formatted'), p.selectedShareDenomination)
+            const shares = getValue(order, 'shares.formatted')
             const price = getValue(order, 'price.formatted')
             const type = p.type || SELL
 

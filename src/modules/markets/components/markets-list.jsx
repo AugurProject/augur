@@ -5,7 +5,6 @@ import MarketPreview from 'modules/market/components/market-preview/market-previ
 import Paginator from 'modules/common/components/paginator/paginator'
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 
-import getValue from 'utils/get-value'
 import isEqual from 'lodash/isEqual'
 
 import debounce from 'utils/debounce'
@@ -17,7 +16,6 @@ export default class MarketsList extends Component {
     markets: PropTypes.array.isRequired,
     filteredMarkets: PropTypes.array.isRequired,
     location: PropTypes.object.isRequired,
-    scalarShareDenomination: PropTypes.object.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
     loadMarketsInfo: PropTypes.func.isRequired,
     paginationPageParam: PropTypes.string,
@@ -91,7 +89,6 @@ export default class MarketsList extends Component {
     const s = this.state
 
     const marketsLength = p.markets.length
-    const shareDenominations = getValue(p, 'scalarShareDenomination.denominations')
 
     return (
       <article className="markets-list">
@@ -99,7 +96,6 @@ export default class MarketsList extends Component {
           [...Array(s.boundedLength)].map((unused, i) => {
             const id = p.filteredMarkets[(s.lowerBound - 1) + i]
             const market = p.markets.find(market => market.id === id)
-            const selectedShareDenomination = market ? getValue(p, `scalarShareDenomination.markets.${market.id}`) : null
 
             if (market && market.id) {
               return (
@@ -107,8 +103,6 @@ export default class MarketsList extends Component {
                   {...market}
                   key={`${market.id} - ${market.outcomes}`}
                   isLogged={p.isLogged}
-                  selectedShareDenomination={selectedShareDenomination}
-                  shareDenominations={shareDenominations}
                   toggleFavorite={p.toggleFavorite}
                   linkType={p.linkType}
                   location={p.location}

@@ -14,7 +14,6 @@ export default class MarketPositionsListMobile extends Component {
     outcome: PropTypes.object.isRequired,
     positions: PropTypes.array.isRequired,
     openOrders: PropTypes.array.isRequired,
-    scalarShareDenomination: PropTypes.object.isRequired,
   }
 
   constructor(props) {
@@ -58,7 +57,6 @@ export default class MarketPositionsListMobile extends Component {
         }
         <MobileStats
           outcome={p.outcome}
-          scalarShareDenomination={p.scalarShareDenomination}
         />
       </section>
     )

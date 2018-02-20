@@ -17,7 +17,6 @@ export default class Positions extends Component {
     reportingMarkets: PropTypes.array.isRequired,
     closedMarkets: PropTypes.array.isRequired,
     closePositionStatus: PropTypes.object.isRequired,
-    scalarShareDenomination: PropTypes.object.isRequired,
     loadAccountTrades: PropTypes.func.isRequired,
     marketsCount: PropTypes.number.isRequired,
     registerBlockNumber: PropTypes.number,
@@ -42,7 +41,6 @@ export default class Positions extends Component {
             title="Open"
             markets={p.openPositionMarkets}
             closePositionStatus={p.closePositionStatus}
-            scalarShareDenomination={p.scalarShareDenomination}
             location={p.location}
             history={p.history}
             isMobile={p.isMobile}
@@ -51,7 +49,6 @@ export default class Positions extends Component {
             title="In Reporting"
             markets={p.reportingMarkets}
             closePositionStatus={p.closePositionStatus}
-            scalarShareDenomination={p.scalarShareDenomination}
             location={p.location}
             history={p.history}
             linkType={TYPE_DISPUTE}
@@ -62,7 +59,6 @@ export default class Positions extends Component {
             title="Finalized"
             markets={p.closedMarkets}
             closePositionStatus={p.closePositionStatus}
-            scalarShareDenomination={p.scalarShareDenomination}
             location={p.location}
             history={p.history}
             positionsDefault={false}
