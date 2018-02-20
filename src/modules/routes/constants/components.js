@@ -79,3 +79,9 @@ export const Reporting = asyncComponent({
   loader: () => import(/* webpackChunkName: 'reporting' */ 'modules/reporting/components/reporting-view/reporting-view')
     .then(module => module.default)
 })
+
+export const Report = asyncComponent({
+  moduleName: 'Report',
+  loader: () => import(/* webpackChunkName: 'report' */ 'modules/reporting/containers/reporting-report')
+    .then(module => module.default)
+})

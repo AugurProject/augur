@@ -137,8 +137,8 @@ const ReportingReportForm = p => (
           { p.market.outcomes && p.market.outcomes.sort((a, b) => b.stake - a.stake).map(outcome => (
             <li key={outcome.id}>
               <button
-                className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.name })}
-                onClick={(e) => { validateOutcome(p.validations, p.updateState, outcome.name) }}
+                className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.id })}
+                onClick={(e) => { validateOutcome(p.validations, p.updateState, outcome.id) }}
               >{outcome.name} &nbsp;|&nbsp; {outcome.stake} REP
               </button>
             </li>

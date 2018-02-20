@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
 import ReportingReport from 'modules/reporting/components/reporting-report/reporting-report'
+import { submitInitialReport } from 'modules/reporting/actions/submit-initial-report'
 
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
@@ -11,11 +12,11 @@ const mapStateToProps = state => ({
   universe: state.universe.id
 })
 
+const mapDispatchToProps = dispatch => ({
+  submitInitialReport: (marketId, outcomeValue, invalid) => dispatch(submitInitialReport(marketId, outcomeValue, invalid)),
+})
 
-// const mapDispatchToProps = dispatch => ({
-// })
-
-const Reporting = withRouter(connect(mapStateToProps)(ReportingReport))
+const Reporting = withRouter(connect(mapStateToProps, mapDispatchToProps)(ReportingReport))
 
 export default Reporting
 
