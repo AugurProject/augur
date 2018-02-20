@@ -5,6 +5,8 @@ import { Block } from "ethereumjs-blockstream";
 import { EventEmitter } from "events";
 import { Transaction } from "ethjs-shared";
 
+export { Block }
+
 type AbiEncodedData = string;
 type Address = string;
 type Bytes32 = string;
@@ -46,7 +48,7 @@ export interface BlockDetail extends Block {
   gasLimit: string;
   gasUsed: string;
   timestamp: string;
-  transactions: string[] | Transaction[];
+  transactions: string[]|Transaction[];
   uncles: string[];
 }
 
