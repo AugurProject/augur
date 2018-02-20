@@ -1,9 +1,8 @@
 /// <reference types="node" />
 
 import { BigNumber } from "bignumber.js";
-import { Block } from "ethereumjs-blockstream";
+import { Block, Transaction } from "ethereumjs-blockstream";
 import { EventEmitter } from "events";
-import { Transaction } from "ethjs-shared";
 
 export { Block }
 
