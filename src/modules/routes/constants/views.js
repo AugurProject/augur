@@ -22,6 +22,7 @@ export const MY_POSITIONS = 'my-positions'
 export const MY_MARKETS = 'my-markets'
 export const WATCHLIST = 'watch-list'
 export const PORTFOLIO_TRANSACTIONS = 'transactions'
+export const PORTFOLIO_REPORTS = 'reports'
 
 //  Market (TODO -- These should be params, not routes)
 export const MARKET_DATA_NAV_OUTCOMES = 'outcomes'
@@ -37,7 +38,6 @@ export const MARKET_USER_DATA_NAV_OPEN_ORDERS = 'open-orders'
 export const ACCOUNT_DEPOSIT = 'deposit-funds'
 export const ACCOUNT_TRANSFER = 'transfer-funds'
 export const ACCOUNT_WITHDRAW = 'withdraw-funds'
-export const ACCOUNT_EXPORT = 'export-account'
 
 // Reporting
 export const REPORTING_DISPUTE = 'reporting-dispute'

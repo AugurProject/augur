@@ -1,5 +1,5 @@
 import { MARKET_CREATION, TRANSFER, REPORTING, TRADE, OPEN_ORDER, BUY, SELL } from 'modules/transactions/constants/types'
-import { SUCCESS } from 'modules/transactions/constants/statuses'
+import { SUCCESS, PENDING } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { eachOf, each, groupBy } from 'async'
 import { convertUnixToFormattedDate } from 'src/utils/format-date'
@@ -113,6 +113,36 @@ export function addTransferTransactions(transfers) {
       transactions[transaction.id] = header
     })
     dispatch(updateTransactionsData(transactions))
+  }
+}
+
+export function addNewMarketCreationTransactions(market) {
+  return (dispatch, getState) => {
+    const marketCreationData = {}
+    const { loginAccount } = getState()
+    const transaction = {
+      market,
+      timestamp: market._endTime,
+      createdBy: loginAccount.address,
+      id: market.hash
+    }
+    const meta = {
+      market: market.hash,
+      'designated reporter': market._designatedReporterAddress,
+      'creation fee': 0,
+      'gas fees': 0,
+    }
+    transaction.meta = meta
+
+    const header = {
+      ...buildHeader(transaction, MARKET_CREATION, PENDING),
+      message: 'Market Creation',
+      description: market._description,
+      transactions: [transaction]
+    }
+
+    marketCreationData[transaction.id] = header
+    dispatch(updateTransactionsData(marketCreationData))
   }
 }
 

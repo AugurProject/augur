@@ -42,7 +42,8 @@ export function listenToUpdates(history) {
         if (err) return console.error('MarketCreated:', err)
         if (log) {
           console.log('MarketCreated:', log)
-          dispatch(loadMarketsInfo([log.marketID]))
+          // augur-node emitting log.market from raw contract logs.
+          dispatch(loadMarketsInfo([log.market]))
           if (log.sender === getState().loginAccount.address) {
             dispatch(updateAssets())
             dispatch(convertLogsToTransactions(TYPES.CREATE_MARKET, [log]))

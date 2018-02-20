@@ -11,7 +11,9 @@ import { updateModal } from 'modules/modal/actions/update-modal'
 import { closeModal } from 'modules/modal/actions/close-modal'
 import logError from 'utils/log-error'
 
-import { MODAL_NETWORK_MISMATCH, MODAL_NETWORK_DISCONNECTED } from 'modules/modal/constants/modal-types'
+import { isEmpty } from 'lodash'
+
+import { MODAL_NETWORK_MISMATCH } from 'modules/modal/constants/modal-types'
 
 const POLL_INTERVAL_DURATION = 250
 
@@ -19,9 +21,6 @@ function pollForAccount(dispatch, getState) {
   let account
 
   setInterval(() => {
-    const { modal } = getState()
-    if (!!modal.type && modal.type === MODAL_NETWORK_DISCONNECTED) return
-
     AugurJS.augur.rpc.eth.accounts((accounts) => {
       if (account !== accounts[0]) {
         account = accounts[0]
@@ -42,15 +41,29 @@ function pollForNetwork(dispatch, getState) {
   setInterval(() => {
     const { modal, env } = getState()
     const expectedNetwork = env['network-id']
+
     if (parseInt(AugurJS.augur.rpc.getNetworkID(), 10) !== networkId) {
       networkId = parseInt(AugurJS.augur.rpc.getNetworkID(), 10)
 
-      if (networkId !== expectedNetwork && !!modal.type && modal.type !== MODAL_NETWORK_DISCONNECTED) {
+      if (networkId !== expectedNetwork && isEmpty(modal)) {
+        const getNetworkName = () => {
+          switch (expectedNetwork) {
+            case 1:
+              return 'Mainnet'
+            case 4:
+              return 'Rinkeby'
+            case 12346:
+              return 'Private'
+            default:
+              return expectedNetwork
+          }
+        }
+
         dispatch(updateModal({
           type: MODAL_NETWORK_MISMATCH,
-          expectedNetwork
+          expectedNetwork: getNetworkName()
         }))
-      } else if (!!modal.type && modal.type === MODAL_NETWORK_MISMATCH) {
+      } else if (modal.type === MODAL_NETWORK_MISMATCH) {
         dispatch(closeModal())
       }
     }
@@ -72,6 +85,7 @@ export function connectAugur(history, env, isInitialConnection = false, callback
       dispatch(registerTransactionRelay())
       dispatch(loadUniverse(env.universe || AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()].Universe, history))
       dispatch(closeModal())
+      console.log('isInitialConnection -- ', isInitialConnection)
       if (isInitialConnection) {
         pollForAccount(dispatch, getState)
         pollForNetwork(dispatch, getState)
