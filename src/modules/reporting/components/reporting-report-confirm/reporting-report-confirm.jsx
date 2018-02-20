@@ -14,9 +14,9 @@ const ReportingReportConfirm = p => (
           <ul className={ConfirmStyles['Confirm__list--left-align']}>
             <li>
               <span>Market</span>
-              <span>{ p.isMarketValid ? 'Valid' : 'Invalid' }</span>
+              <span>{ p.isMarketInValid ? 'Invalid' : 'Valid' }</span>
             </li>
-            { p.isMarketValid &&
+            { !p.isMarketInValid &&
               <li>
                 <span>Outcome</span>
                 <span>{ p.selectedOutcome }</span>
@@ -46,7 +46,7 @@ ReportingReportConfirm.propTypes = {
   market: PropTypes.object.isRequired,
   selectedOutcome: PropTypes.string.isRequired,
   stake: PropTypes.string.isRequired,
-  isMarketValid: PropTypes.bool,
+  isMarketInValid: PropTypes.bool,
   isOpenReporting: PropTypes.bool.isRequired,
   designatedReportNoShowReputationBond: PropTypes.object,
   reporterGasCost: PropTypes.object,

@@ -21,7 +21,7 @@ export default class ReportingReportForm extends Component {
     stake: PropTypes.string.isRequired,
     displayStakeOnly: PropTypes.bool.isRequired,
     isOpenReporting: PropTypes.bool.isRequired,
-    isMarketValid: PropTypes.bool,
+    isMarketInValid: PropTypes.bool,
   }
 
   constructor(props) {
@@ -36,23 +36,9 @@ export default class ReportingReportForm extends Component {
       this.state.outcomes.push({ id: 0, name: 'No' })
     }
     this.state.outcomes.sort((a, b) => a.name - b.name)
-
-    if (this.props.isOpenReporting) this.props.stake = 0
   }
 
-  validateIsMarketValid(validations, isMarketValid) {
-    const updatedValidations = { ...validations }
-    updatedValidations.selectedOutcome = true
-
-    this.props.updateState({
-      validations: updatedValidations,
-      isMarketValid,
-      selectedOutcomeName: '',
-      selectedOutcome: '',
-    })
-  }
-
-  validateOutcome(validations, selectedOutcome, selectedOutcomeName) {
+  validateOutcome(validations, selectedOutcome, selectedOutcomeName, isMarketInValid) {
     const updatedValidations = { ...validations }
     updatedValidations.selectedOutcome = true
 
@@ -60,7 +46,7 @@ export default class ReportingReportForm extends Component {
       validations: updatedValidations,
       selectedOutcome,
       selectedOutcomeName,
-      isMarketValid: true
+      isMarketInValid,
     })
   }
 
@@ -88,7 +74,7 @@ export default class ReportingReportForm extends Component {
       validations: updatedValidations,
       selectedOutcome: value,
       selectedOutcomeName: value,
-      isMarketValid: true,
+      isMarketInValid: false,
     })
   }
 
@@ -142,7 +128,7 @@ export default class ReportingReportForm extends Component {
                 <li key={outcome.id}>
                   <button
                     className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.id })}
-                    onClick={(e) => { this.validateOutcome(p.validations, outcome.id, outcome.name) }}
+                    onClick={(e) => { this.validateOutcome(p.validations, outcome.id, outcome.name, false) }}
                   >{outcome.name}
                   </button>
                 </li>
@@ -150,8 +136,8 @@ export default class ReportingReportForm extends Component {
               }
               <li className={FormStyles['Form__radio-buttons--per-line']}>
                 <button
-                  className={classNames({ [`${FormStyles.active}`]: p.isMarketValid === false })}
-                  onClick={(e) => { this.validateIsMarketValid(p.validations, false, p.selectedOutcome) }}
+                  className={classNames({ [`${FormStyles.active}`]: p.isMarketInValid === true })}
+                  onClick={(e) => { this.validateOutcome(p.validations, '-1', '', true) }}
                 >Market is invalid
                 </button>
               </li>
@@ -164,7 +150,7 @@ export default class ReportingReportForm extends Component {
               <li>
                 <button
                   className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome !== '' })}
-                  onClick={(e) => { this.validateOutcome(p.validations, 'selectedOutcome') }}
+                  onClick={(e) => { this.validateOutcome(p.validations, 0, 'selectedOutcome', false) }}
                 />
                 <input
                   id="sr__input--outcome-scalar"
@@ -179,8 +165,8 @@ export default class ReportingReportForm extends Component {
               </li>
               <li className={FormStyles['Form__radio-buttons--per-line']}>
                 <button
-                  className={classNames({ [`${FormStyles.active}`]: p.isMarketValid === false })}
-                  onClick={(e) => { this.validateIsMarketValid(p.validations, false, p.selectedOutcome) }}
+                  className={classNames({ [`${FormStyles.active}`]: p.isMarketInValid === true })}
+                  onClick={(e) => { this.validateOutcome(p.validations, '-1', '', true) }}
                 >Market is invalid
                 </button>
               </li>

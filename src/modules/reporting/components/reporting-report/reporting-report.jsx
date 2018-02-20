@@ -31,7 +31,7 @@ export default class ReportingReport extends Component {
 
     this.state = {
       currentStep: 0,
-      isMarketValid: null,
+      isMarketInValid: null,
       selectedOutcome: '',
       selectedOutcomeName: '',
       // false if stake input is needed, needs to be dynamic
@@ -113,7 +113,7 @@ export default class ReportingReport extends Component {
               <ReportingReportForm
                 market={p.market}
                 updateState={this.updateState}
-                isMarketValid={s.isMarketValid}
+                isMarketInValid={s.isMarketInValid}
                 displayStakeOnly={s.displayStakeOnly}
                 selectedOutcome={s.selectedOutcome}
                 stake={s.stake}
@@ -124,7 +124,7 @@ export default class ReportingReport extends Component {
             { s.currentStep === 1 &&
               <ReportingReportConfirm
                 market={p.market}
-                isMarketValid={s.isMarketValid}
+                isMarketInValid={s.isMarketInValid}
                 selectedOutcome={s.selectedOutcomeName}
                 stake={s.stake}
                 designatedReportNoShowReputationBond={s.designatedReportNoShowReputationBond}
@@ -147,7 +147,7 @@ export default class ReportingReport extends Component {
               { s.currentStep === 1 &&
               <button
                 className={FormStyles.Form__submit}
-                onClick={() => p.submitInitialReport(p.market.id, s.selectedOutcome, s.isMarketValid)}
+                onClick={() => p.submitInitialReport(p.market.id, s.selectedOutcome, s.isMarketInValid)}
               >Submit
               </button>
               }
