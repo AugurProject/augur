@@ -18,7 +18,7 @@ const overrideTimestamps = Array<number>();
 let blockHeadTimestamp = 0;
 
 export function getCurrentTime(): number {
-  return  getOverrideTimestamp() || blockHeadTimestamp;
+  return getOverrideTimestamp() || blockHeadTimestamp;
 }
 
 export function setOverrideTimestamp(db: Knex, overrideTimestamp: number, callback: ErrorCallback): void {
@@ -84,15 +84,20 @@ function _processBlock(db: Knex, augur: Augur, block: BlockDetail, callback: Err
         logError(err);
       } else {
         advanceTime(trx, augur, blockNumber, timestamp, (err: Error|null) => {
-          logQueueProcess(blockNumber, (err: Error|null) => {
-            if (err != null) {
-              trx.rollback(err);
-              logError(err);
-            } else {
-              trx.commit();
-            }
+          if (err != null) {
+            trx.rollback(err);
             callback(err);
-          });
+          } else {
+            logQueueProcess(blockNumber, (err: Error|null) => {
+              if (err != null) {
+                trx.rollback(err);
+                logError(err);
+              } else {
+                trx.commit();
+              }
+              callback(err);
+            });
+          }
         });
       }
     });
