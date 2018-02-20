@@ -21,7 +21,7 @@ export default class ReportingDispute extends Component {
     isConnected: PropTypes.bool.isRequired,
     isMarketsLoaded: PropTypes.bool.isRequired,
     loadMarkets: PropTypes.func.isRequired,
-    disputeRound: PropTypes.string.isRequired,
+    disputeRound: PropTypes.number.isRequired,
   }
 
   componentWillMount() {
