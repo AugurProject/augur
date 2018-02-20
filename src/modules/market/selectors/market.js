@@ -175,7 +175,7 @@ export function assembleMarket(
 
       const now = new Date()
 
-      switch (market.type) {
+      switch (market.marketType) {
         case BINARY:
           market.isBinary = true
           market.isCategorical = false
