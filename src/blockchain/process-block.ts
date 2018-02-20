@@ -88,7 +88,11 @@ function _processBlock(db: Knex, augur: Augur, block: BlockDetail, callback: Err
             trx.rollback(err);
             callback(err);
           } else {
+            console.log("PRE lqp");
             logQueueProcess(blockNumber, (err: Error|null) => {
+              console.log("POST lqp");
+              console.log(err);
+
               if (err != null) {
                 trx.rollback(err);
                 logError(err);
@@ -154,7 +158,7 @@ function advanceMarketMissingDesignatedReport(db: Knex, augur: Augur, blockNumbe
   marketsMissingDesignatedReport.asCallback((err, marketAddressRows: Array<MarketsContractAddressRow>) => {
     if (err) return callback(err);
     each(marketAddressRows, (marketIDRow, nextMarketIDRow: ErrorCallback) => {
-      updateMarketState(db, marketIDRow.marketID, blockNumber, augur.constants.REPORTING_STATE.OPEN_REPORTING, (err) => {
+      updateMarketState(db, marketIDRow.marketID, blockNumber, augur.constants.REPORTING_STATE.OPEN_REPORTING, (err: Error|null) => {
         if (err) return callback(err);
         augurEmitter.emit("MarketState", {
           marketID: marketIDRow.marketID,

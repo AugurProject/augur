@@ -1,7 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { FormattedEventLog, ErrorCallback, Address, AsyncCallback } from "../../types";
-import { augurEmitter } from "../../events";
+import { FormattedEventLog, ErrorCallback, Address, AsyncCallback } from "./../types";
+import { augurEmitter } from "./../events";
 import { insertPayout } from "./database";
 import { QueryBuilder } from "knex";
 import { parallel } from "async";
@@ -30,7 +30,7 @@ function updateTentativeWinningPayout(db: Knex, marketID: Address, callback: Err
   });
 }
 
-export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
+export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   insertPayout(db, trx, log.market, log.payoutNumerators, log.invalid, false, (err, payoutID) => {
     if (err) return callback(err);
     trx("fee_windows").select(["feeWindow"]).first()
@@ -51,7 +51,7 @@ export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, trx
           payoutID,
           completed: null,
         };
-        db.transacting(trx).insert(crowdsourcerToInsert).into("crowdsourcers").returning("crowdsourcerID").asCallback((err: Error|null): void => {
+        trx.insert(crowdsourcerToInsert).into("crowdsourcers").returning("crowdsourcerID").asCallback((err: Error|null): void => {
           if (err) return callback(err);
           augurEmitter.emit("DisputeCrowdsourcerCreated", log);
           callback(null);
@@ -60,15 +60,15 @@ export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, trx
   });
 }
 
-export function processDisputeCrowdsourcerCreatedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  db.transacting(trx).from("crowdsourcers").where("crowdsourcerID", log.disputeCrowdsourcer).del().asCallback((err: Error|null): void => {
+export function processDisputeCrowdsourcerCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
+  db.from("crowdsourcers").where("crowdsourcerID", log.disputeCrowdsourcer).del().asCallback((err: Error|null): void => {
     if (err) return callback(err);
     augurEmitter.emit("DisputeCrowdsourcerCreated", log);
     callback(null);
   });
 }
 
-export function processDisputeCrowdsourcerContributionLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
+export function processDisputeCrowdsourcerContributionLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   const disputeToInsert = {
     blockNumber: log.blockNumber,
     transactionHash: log.transactionHash,
@@ -77,9 +77,9 @@ export function processDisputeCrowdsourcerContributionLog(db: Knex, augur: Augur
     crowdsourcerID: log.disputeCrowdsourcer,
     amountStaked: log.amountStaked,
   };
-  db.transacting(trx).insert(disputeToInsert).into("disputes").asCallback((err: Error|null): void => {
+  trx.insert(disputeToInsert).into("disputes").asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    db.transacting(trx).update("amountStaked", db.raw(`amountStaked + ${log.amountStaked}`)).into("crowdsourcers").where("crowdsourcerID", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {
+    trx.update("amountStaked", db.raw(`amountStaked + ${log.amountStaked}`)).into("crowdsourcers").where("crowdsourcerID", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {
       if (err) return callback(err);
       augurEmitter.emit("DisputeCrowdsourcerContribution", log);
       callback(null);
@@ -87,13 +87,13 @@ export function processDisputeCrowdsourcerContributionLog(db: Knex, augur: Augur
   });
 }
 
-export function processDisputeCrowdsourcerContributionLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  db.transacting(trx).from("disputes").where({
+export function processDisputeCrowdsourcerContributionLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
+  db.from("disputes").where({
     transactionHash: log.transactionHash,
     logIndex: log.logIndex,
   }).del().asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    db.transacting(trx).update("amountStaked", db.raw(`amountStaked - ${log.amountStaked}`)).into("crowdsourcers").where("crowdsourcerID", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {
+    trx.update("amountStaked", db.raw(`amountStaked - ${log.amountStaked}`)).into("crowdsourcers").where("crowdsourcerID", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {
       if (err) return callback(err);
       augurEmitter.emit("DisputeCrowdsourcerContribution", log);
       callback(null);
@@ -101,8 +101,8 @@ export function processDisputeCrowdsourcerContributionLogRemoval(db: Knex, augur
   });
 }
 
-export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  db("crowdsourcers").transacting(trx).update({ completed: 1 }).where({ crowdsourcerID: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
+export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
+  db("crowdsourcers").update({ completed: 1 }).where({ crowdsourcerID: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
     if (err) return callback(err);
     updateTentativeWinningPayout(trx, log.market, (err: Error|null): void => {
       if (err) return callback(err);
@@ -112,8 +112,8 @@ export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, t
   });
 }
 
-export function processDisputeCrowdsourcerCompletedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  db("crowdsourcers").transacting(trx).update({ completed: null }).where({ crowdsourcerID: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
+export function processDisputeCrowdsourcerCompletedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
+  db("crowdsourcers").update({ completed: null }).where({ crowdsourcerID: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
     if (err) return callback(err);
     updateTentativeWinningPayout(trx, log.market, (err: Error|null): void => {
       if (err) return callback(err);

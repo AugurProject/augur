@@ -1,11 +1,11 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { Address, Bytes32, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, OrderState, ErrorCallback} from "../../types";
-import { augurEmitter } from "../../events";
-import { convertFixedPointToDecimal, convertOnChainSharesToHumanReadableShares, convertNumTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
-import { denormalizePrice } from "../../utils/denormalize-price";
-import { formatOrderAmount, formatOrderPrice } from "../../utils/format-order";
-import { WEI_PER_ETHER} from "../../constants";
+import { Address, Bytes32, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, OrderState, ErrorCallback} from "./../types";
+import { augurEmitter } from "./../events";
+import { convertFixedPointToDecimal, convertOnChainSharesToHumanReadableShares, convertNumTicksToTickSize } from "./../utils/convert-fixed-point-to-decimal";
+import { denormalizePrice } from "./../utils/denormalize-price";
+import { formatOrderAmount, formatOrderPrice } from "./../utils/format-order";
+import { WEI_PER_ETHER} from "./../constants";
 import { QueryBuilder } from "knex";
 
 interface OrderCreatedOnContractData {
@@ -19,19 +19,19 @@ interface OrderCreatedOnContractData {
   worseOrderID: Bytes32;
 }
 
-export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
+export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   const amount: string = log.amount;
   const price: string = log.price;
   const orderType: string = log.orderType;
   const moneyEscrowed: string = log.moneyEscrowed;
   const sharesEscrowed: string = log.sharesEscrowed;
   const shareToken: Address = log.shareToken;
-  trx.first("marketID", "outcome").from("tokens").where({ contractAddress: shareToken }).asCallback((err: Error|null, tokensRow?: TokensRow): void => {
+  db.first("marketID", "outcome").from("tokens").where({ contractAddress: shareToken }).asCallback((err: Error|null, tokensRow?: TokensRow): void => {
     if (err) return callback(err);
     if (!tokensRow) return callback(new Error("market and outcome not found"));
     const marketID = tokensRow.marketID!;
     const outcome = tokensRow.outcome!;
-    trx.first("minPrice", "maxPrice", "numTicks").from("markets").where({ marketID }).asCallback((err: Error|null, marketsRow?: MarketsRow): void => {
+    db.first("minPrice", "maxPrice", "numTicks").from("markets").where({ marketID }).asCallback((err: Error|null, marketsRow?: MarketsRow): void => {
       if (err) return callback(err);
       if (!marketsRow) return callback(new Error("market min price, max price, and/or num ticks not found"));
       const minPrice = marketsRow.minPrice!;
@@ -61,13 +61,13 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
         sharesEscrowed: convertOnChainSharesToHumanReadableShares(sharesEscrowed, tickSize),
       };
       const orderID = { orderID: log.orderId };
-      trx.select("marketID").from("orders").where(orderID).asCallback((err: Error|null, ordersRows?: Array<Partial<OrdersRow>>): void => {
+      db.select("marketID").from("orders").where(orderID).asCallback((err: Error|null, ordersRows?: Array<Partial<OrdersRow>>): void => {
         if (err) return callback(err);
         let upsertOrder: QueryBuilder;
         if (!ordersRows || !ordersRows.length) {
-          upsertOrder = db.transacting(trx).insert(Object.assign(orderData, orderID)).into("orders");
+          upsertOrder = trx.insert(Object.assign(orderData, orderID)).into("orders");
         } else {
-          upsertOrder = db.transacting(trx).from("orders").where(orderID).update(orderData);
+          upsertOrder = db.from("orders").where(orderID).update(orderData);
         }
         upsertOrder.asCallback((err: Error|null): void => {
           if (err) return callback(err);
@@ -79,8 +79,8 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, trx: Knex.Transac
   });
 }
 
-export function processOrderCreatedLogRemoval(db: Knex, augur: Augur, trx: Knex.Transaction, log: FormattedEventLog, callback: ErrorCallback): void {
-  db.transacting(trx).from("orders").where("orderID", log.orderId).update({ isRemoved: 1 }).asCallback((err: Error|null): void => {
+export function processOrderCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
+  db.from("orders").where("orderID", log.orderId).update({ isRemoved: 1 }).asCallback((err: Error|null): void => {
     if (err) return callback(err);
     augurEmitter.emit("OrderCreated", log);
     callback(null);

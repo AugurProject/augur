@@ -1,4 +1,4 @@
-import { LogProcessors } from "../../types";
+import { LogProcessors } from "./../types";
 import { processMarketCreatedLog, processMarketCreatedLogRemoval } from "./market-created";
 import { processTokensTransferredLog, processTokensTransferredLogRemoval } from "./tokens-transferred";
 import { processOrderCanceledLog, processOrderCanceledLogRemoval } from "./order-canceled";
