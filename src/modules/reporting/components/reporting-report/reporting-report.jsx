@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Helmet } from 'react-helmet'
+import { augur } from 'services/augurjs'
 
+import { formatEtherEstimate } from 'utils/format-number'
 import MarketPreview from 'modules/market/components/market-preview/market-preview'
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 import ReportingReportForm from 'modules/reporting/components/reporting-report-form/reporting-report-form'
@@ -15,6 +17,8 @@ export default class ReportingReport extends Component {
 
   static propTypes = {
     market: PropTypes.object.isRequired,
+    isOpenReporting: PropTypes.bool.isRequired,
+    universe: PropTypes.string.isRequired,
     marketId: PropTypes.string.isRequired,
     isConnected: PropTypes.bool.isRequired,
     isMarketLoaded: PropTypes.bool.isRequired,
@@ -27,7 +31,7 @@ export default class ReportingReport extends Component {
 
     this.state = {
       currentStep: 0,
-      isMarketValid: null,
+      isMarketInValid: null,
       selectedOutcome: '',
       selectedOutcomeName: '',
       // false if stake input is needed, needs to be dynamic
@@ -37,9 +41,9 @@ export default class ReportingReport extends Component {
       stake: '',
       validations: {
         selectedOutcome: false,
-        // have to make configurable for dispute reporting forms
-        stake: true,
-      }
+      },
+      reporterGasCost: null,
+      designatedReportNoShowReputationBond: 0,
     }
 
     this.prevPage = this.prevPage.bind(this)
@@ -48,17 +52,10 @@ export default class ReportingReport extends Component {
   }
 
   componentWillMount() {
+    // needed for both DR and open reporting
+    this.calculateMarketCreationCosts()
     if (this.props.isConnected && !this.props.isMarketLoaded) {
       this.props.loadFullMarket()
-    }
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    if (
-      (this.props.isConnected === false && nextProps.isConnected === true) &&
-      !!nextProps.marketId
-    ) {
-      nextProps.loadFullMarket()
     }
   }
 
@@ -72,6 +69,23 @@ export default class ReportingReport extends Component {
 
   updateState(newState) {
     this.setState(newState)
+  }
+
+  calculateMarketCreationCosts() {
+    // TODO: might have short-cut, reporter gas cost (creationFee) and designatedReportStake is on market from augur-node
+    augur.createMarket.getMarketCreationCostBreakdown({ universe: this.props.universe }, (err, marketCreationCostBreakdown) => {
+      if (err) return console.error(err)
+
+      const repAmount = formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond)
+
+      this.setState({
+        designatedReportNoShowReputationBond: repAmount,
+        reporterGasCost: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
+        stake: this.props.isOpenReporting ? 0 : repAmount.formatted,
+      })
+
+
+    })
   }
 
   render() {
@@ -99,19 +113,23 @@ export default class ReportingReport extends Component {
               <ReportingReportForm
                 market={p.market}
                 updateState={this.updateState}
-                isMarketValid={s.isMarketValid}
+                isMarketInValid={s.isMarketInValid}
                 displayStakeOnly={s.displayStakeOnly}
                 selectedOutcome={s.selectedOutcome}
                 stake={s.stake}
                 validations={s.validations}
+                isOpenReporting={p.isOpenReporting}
               />
             }
             { s.currentStep === 1 &&
               <ReportingReportConfirm
                 market={p.market}
-                isMarketValid={s.isMarketValid}
+                isMarketInValid={s.isMarketInValid}
                 selectedOutcome={s.selectedOutcomeName}
                 stake={s.stake}
+                designatedReportNoShowReputationBond={s.designatedReportNoShowReputationBond}
+                reporterGasCost={s.reporterGasCost}
+                isOpenReporting={p.isOpenReporting}
               />
             }
             <div className={FormStyles.Form__navigation}>
@@ -129,7 +147,7 @@ export default class ReportingReport extends Component {
               { s.currentStep === 1 &&
               <button
                 className={FormStyles.Form__submit}
-                onClick={() => p.submitInitialReport(p.market.id, s.selectedOutcome, s.isMarketValid)}
+                onClick={() => p.submitInitialReport(p.market.id, s.selectedOutcome, s.isMarketInValid)}
               >Submit
               </button>
               }

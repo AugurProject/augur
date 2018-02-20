@@ -5,10 +5,12 @@ import { getPayoutNumerators } from 'modules/reporting/selectors/get-payout-nume
 
 export const submitInitialReport = (marketId, selectedOutcome, invalid, callback = logError) => (dispatch, getState) => {
   const { loginAccount, marketsData } = getState()
-  if (marketId && selectedOutcome) {
+  const outcome = parseInt(selectedOutcome, 10)
+
+  if (marketId && (invalid || outcome > -1)) {
     const market = marketsData[marketId]
     if (!market) return callback('Market not found')
-    const payoutNumerators = getPayoutNumerators(market, selectedOutcome)
+    const payoutNumerators = getPayoutNumerators(market, selectedOutcome, invalid)
 
     augur.api.Market.doInitialReport({
       meta: loginAccount.meta,

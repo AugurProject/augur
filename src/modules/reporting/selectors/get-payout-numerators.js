@@ -1,10 +1,17 @@
 
-export const getPayoutNumerators = (market, selectedOutcome) => {
+import { SCALAR } from 'modules/markets/constants/market-types'
+
+export const getPayoutNumerators = (market, selectedOutcome, invalid) => {
 
   const { maxPrice, minPrice, numTicks } = market
   const payoutNumerators = Array(market.numOutcomes).fill(0)
+  const isScalar = market.marketType === SCALAR
 
-  if (market.isScalar) {
+  if (invalid) {
+    const equalValue = numTicks / market.numOutcomes
+    return Array(market.numOutcomes).fill(equalValue)
+
+  } else if (isScalar) {
     const priceRange = maxPrice - minPrice
     const reportNormalizedToZero = selectedOutcome - minPrice
     const longPayout = (reportNormalizedToZero * numTicks) / priceRange
