@@ -11,11 +11,11 @@ describe("blockchain/log-processors/token/transfer", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processTransferLog(db, t.params.augur, trx, t.params.log, (err) => {
+          processTransferLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
-              processTransferLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+              processTransferLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();

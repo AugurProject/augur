@@ -11,11 +11,11 @@ describe("blockchain/log-processors/tokens-burned", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processBurnLog(db, t.params.augur, trx, t.params.log, (err) => {
+          processBurnLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getTokenBalances(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
-              processBurnLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+              processBurnLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 assert.isNull(err);
                 getTokenBalances(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);

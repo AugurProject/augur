@@ -11,11 +11,11 @@ describe("blockchain/log-processors/tokens-minted", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processMintLog(db, t.params.augur, trx, t.params.log, (err) => {
+          processMintLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getTokenBalances(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
-              processMintLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+              processMintLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 assert.isNull(err);
                 getTokenBalances(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);

@@ -20,13 +20,13 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processInitialReportSubmittedLog(db, t.params.augur, trx, t.params.log, (err) => {
+          processInitialReportSubmittedLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getReportingState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               getInitialReport(trx, t.params, (err, records) => {
                 t.assertions.onAddedInitialReport(err, records);
-                processInitialReportSubmittedLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+                processInitialReportSubmittedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                   getReportingState(trx, t.params, (err, records) => {
                     t.assertions.onRemoved(err, records);
                     done();

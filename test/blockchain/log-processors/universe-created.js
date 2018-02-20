@@ -11,11 +11,11 @@ describe("blockchain/log-processors/market-finalized", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processUniverseCreatedLog(db, t.params.augur, trx, t.params.log, (err) => {
+          processUniverseCreatedLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getUniverse(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
-              processUniverseCreatedLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+              processUniverseCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 getUniverse(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();

@@ -11,11 +11,11 @@ describe("blockchain/log-processors/order-canceled", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processOrderCanceledLog(db, t.params.augur, trx, t.params.log, (err) => {
+          processOrderCanceledLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
-              processOrderCanceledLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+              processOrderCanceledLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();

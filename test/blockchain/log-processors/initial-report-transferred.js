@@ -16,11 +16,11 @@ describe("blockchain/log-processors/initial-report-transferred", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processInitialReporterTransferredLog(db, t.params.augur, trx, t.params.log, (err) => {
+          processInitialReporterTransferredLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getInitialReport(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
-              processInitialReporterTransferredLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+              processInitialReporterTransferredLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 getInitialReport(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();

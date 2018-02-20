@@ -31,7 +31,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         assert.isNull(err);
         db.transaction((trx) => {
           function verify(processor, getter, checker, callback) {
-            processor(db, t.params.augur, trx, t.params.log, (err) => {
+            processor(trx, t.params.augur, t.params.log, (err) => {
               assert.isNull(err);
               getter(trx, t.params, (err, records) => {
                 assert.isNull(err);

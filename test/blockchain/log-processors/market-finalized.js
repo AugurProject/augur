@@ -13,11 +13,11 @@ describe("blockchain/log-processors/market-finalized", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processMarketFinalizedLog(db, t.params.augur, trx, t.params.log, (err) => {
+          processMarketFinalizedLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getMarketState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
-              processMarketFinalizedLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+              processMarketFinalizedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 getMarketState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();
