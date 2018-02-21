@@ -13,11 +13,11 @@ export function getFeeWindows(db: Knex, augur: Augur, universe: Address, account
     .leftJoin("balances AS cash", function () {
       this
         .on("cash.token", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash)
-        .on('cash.owner', db.raw("fee_windows.feeWindow"));
-      })  
+        .on("cash.owner", db.raw("fee_windows.feeWindow"));
+      })
     .where("fee_windows.universe", universe)
     .where("balances.balance", ">", 0)
-    .where("balances.owner", account)
+    .where("balances.owner", account);
   if (!includeCurrent) query = query.where("fee_windows.startTime", "<", getCurrentTime());
   query.asCallback((err: Error|null, unclaimedFeeWindowsRows: Array<UnclaimedFeeWindowsRow>): void => {
     if (err) return callback(err);
