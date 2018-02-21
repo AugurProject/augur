@@ -8,7 +8,7 @@ interface LogQueue {
 
 export type LogProcessCallback = (db: Knex, errorCallback?: ErrorCallback) => void;
 
-export const processQueue = async.priorityQueue((processFunction: (callback: ErrorCallback) => void, nextFunction: ErrorCallback): void => {
+export const processQueue = async.queue((processFunction: (callback: ErrorCallback) => void, nextFunction: ErrorCallback): void => {
   processFunction(nextFunction);
 }, 1);
 

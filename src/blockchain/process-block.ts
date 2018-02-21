@@ -41,11 +41,11 @@ export function getOverrideTimestamp(): number|null {
 }
 
 export function processBlock(db: Knex, augur: Augur, block: BlockDetail): void {
-  processQueue.push((callback) => _processBlock(db, augur, block, callback), 1);
+  processQueue.push((callback) => _processBlock(db, augur, block, callback));
 }
 
 export function processBlockRemoval(db: Knex, block: BlockDetail): void {
-  processQueue.push((callback) => _processBlockRemoval(db, block, callback), 1);
+  processQueue.push((callback) => _processBlockRemoval(db, block, callback));
 }
 
 export function processBlockByNumber(db: Knex, augur: Augur, blockNumber: number, callback: ErrorCallback): void {
