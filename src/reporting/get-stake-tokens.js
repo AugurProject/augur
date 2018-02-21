@@ -11,7 +11,7 @@
 /**
  * @typedef {Object} StakeToken
  * @property {string} stakeToken Contract address of the stake token, as a hexidecimal string.
- * @property {string} marketID ID of the market, as a hexidecimal string.
+ * @property {string} marketId ID of the market, as a hexidecimal string.
  * @property {number|null} payout0 Payout numerator 0 of the stake token's payout set.
  * @property {number|null} payout1 Payout numerator 1 of the stake token's payout set.
  * @property {number|null} payout2 Payout numerator 2 of the stake token's payout set. Set to null for binary and scalar markets.

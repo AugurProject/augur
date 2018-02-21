@@ -10,13 +10,13 @@ var doInitialReport = require("./do-initial-report");
 /**
  * Move time to Market end time and do initial report
  */
-function designateReportInternal(augur, marketID, outcomeID, invalid, auth, callback) {
-  augur.markets.getMarketsInfo({ marketIDs: [marketID] }, function (err, marketsInfo) {
+function designateReportInternal(augur, marketId, outcomeId, invalid, auth, callback) {
+  augur.markets.getMarketsInfo({ marketIDs: [marketId] }, function (err, marketsInfo) {
     var market = marketsInfo[0];
-    if (outcomeID > market.numOutcomes - 1) {
-      return callback("outcomeID " + outcomeID + " Not Market Outcome ");
+    if (outcomeId > market.numOutcomes - 1) {
+      return callback("outcomeId " + outcomeId + " Not Market Outcome ");
     }
-    var marketPayload = { tx: { to: marketID } };
+    var marketPayload = { tx: { to: marketId } };
     augur.api.Market.getEndTime(marketPayload, function (err, endTime) {
       console.log(chalk.red.dim("Market End Time"), chalk.red(endTime));
       getTime(augur, auth, function (err, timeResult) {
@@ -32,9 +32,9 @@ function designateReportInternal(augur, marketID, outcomeID, invalid, auth, call
           }
           var numTicks = market.numTicks;
           var payoutNumerators = Array(market.numOutcomes).fill(0);
-          payoutNumerators[outcomeID] = numTicks;
+          payoutNumerators[outcomeId] = numTicks;
 
-          doInitialReport(augur, marketID, payoutNumerators, invalid, auth, function (err) {
+          doInitialReport(augur, marketId, payoutNumerators, invalid, auth, function (err) {
             if (err) {
               return callback("Initial Report Failed");
             }
@@ -48,8 +48,8 @@ function designateReportInternal(augur, marketID, outcomeID, invalid, auth, call
 }
 
 function help(callback) {
-  console.log(chalk.red("params syntax --> -p marketID,0,false"));
-  console.log(chalk.red("parameter 1: marketID is needed"));
+  console.log(chalk.red("params syntax --> -p marketId,0,false"));
+  console.log(chalk.red("parameter 1: marketId is needed"));
   console.log(chalk.red("parameter 2: outcome is needed"));
   console.log(chalk.red("parameter 3: invalid is optional, default is false"));
   callback(null);
@@ -61,12 +61,12 @@ function designateReport(augur, params, auth, callback) {
   } else {
     var paramArray = params.split(",");
     var invalid = paramArray.length === 3 ? paramArray[2] : false;
-    var marketID = paramArray[0];
+    var marketId = paramArray[0];
     var outcomeId = paramArray[1];
-    console.log(chalk.yellow.dim("marketID"), marketID);
+    console.log(chalk.yellow.dim("marketId"), marketId);
     console.log(chalk.yellow.dim("outcomeId"), outcomeId);
     console.log(chalk.yellow.dim("invalid"), invalid);
-    designateReportInternal(augur, marketID, outcomeId, invalid, auth, callback);
+    designateReportInternal(augur, marketId, outcomeId, invalid, auth, callback);
   }
 }
 

@@ -12,7 +12,7 @@ var setTimestamp = require("./set-timestamp");
 
 var day = 108000; // day
 
-function disputeContributeInternal(augur, marketID, outcome, amount, disputerAuth, invalid, auth, callback) {
+function disputeContributeInternal(augur, marketId, outcome, amount, disputerAuth, invalid, auth, callback) {
   repFaucet(augur, disputerAuth, function (err) {
     if (err) {
       console.log(chalk.red("Error"), chalk.red(err));
@@ -20,13 +20,13 @@ function disputeContributeInternal(augur, marketID, outcome, amount, disputerAut
     }
     if (err) return console.error(err);
     invalid = !invalid ? false : true;
-    augur.markets.getMarketsInfo({ marketIDs: [marketID] }, function (err, marketsInfo) {
+    augur.markets.getMarketsInfo({ marketIDs: [marketId] }, function (err, marketsInfo) {
       if (err) {
         console.log(chalk.red(err));
         return callback("Could not get market info");
       }
       var market = marketsInfo[0];
-      var marketPayload = { tx: { to: marketID } };
+      var marketPayload = { tx: { to: marketId } };
       augur.api.Market.getFeeWindow(marketPayload, function (err, feeWindowId) {
         if (err) {
           console.log(chalk.red(err));
@@ -74,7 +74,7 @@ function disputeContributeInternal(augur, marketID, outcome, amount, disputerAut
                 if (result) {
                   augur.api.Market.contribute({
                     meta: disputerAuth,
-                    tx: { to: marketID  },
+                    tx: { to: marketId  },
                     _payoutNumerators: payoutNumerators,
                     _invalid: invalid,
                     _amount: stringAmount,
@@ -105,8 +105,8 @@ function disputeContributeInternal(augur, marketID, outcome, amount, disputerAut
 }
 
 function help(callback) {
-  console.log(chalk.red("params syntax --> -p marketID,0,amount,<user priv key>,false"));
-  console.log(chalk.red("parameter 1: marketID is needed"));
+  console.log(chalk.red("params syntax --> -p marketId,0,amount,<user priv key>,false"));
+  console.log(chalk.red("parameter 1: marketId is needed"));
   console.log(chalk.red("parameter 2: outcome is needed"));
   console.log(chalk.red("parameter 3: amount of REP is needed"));
   console.log(chalk.red("parameter 4: user priv key is needed"));
@@ -121,18 +121,18 @@ function disputeContribute(augur, params, auth, callback) {
   } else {
     console.log(params);
     var paramArray = params.split(",");
-    var marketID = paramArray[0];
+    var marketId = paramArray[0];
     var outcomeId = paramArray[1];
     var amount = paramArray[2];
     var userAuth = getPrivateKeyFromString(paramArray[3]);
     var invalid = paramArray.length === 5 ? paramArray[4] : false;
-    console.log(chalk.yellow.dim("marketID"), marketID);
+    console.log(chalk.yellow.dim("marketId"), marketId);
     console.log(chalk.yellow.dim("outcomeId"), outcomeId);
     console.log(chalk.yellow.dim("amount"), amount);
     console.log(chalk.yellow.dim("reporter"), userAuth.address);
     console.log(chalk.yellow.dim("owner"), auth.address);
     console.log(chalk.yellow.dim("invalid"), invalid);
-    disputeContributeInternal(augur, marketID, outcomeId, amount, userAuth, invalid, auth, callback);
+    disputeContributeInternal(augur, marketId, outcomeId, amount, userAuth, invalid, auth, callback);
   }
 }
 

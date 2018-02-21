@@ -11,7 +11,7 @@ var connectionEndpoints = require("../connection-endpoints");
 var debugOptions = require("../debug-options");
 
 function _createOrders(augur, auth, callback) {
-  console.log(chalk.cyan.dim("networkID:"), chalk.cyan(augur.rpc.getNetworkID()));
+  console.log(chalk.cyan.dim("networkId:"), chalk.cyan(augur.rpc.getNetworkID()));
   var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
   console.log(chalk.green.dim("universe:"), chalk.green(universe));
   approveAugurEternalApprovalValue(augur, auth.address, auth, function (err) {

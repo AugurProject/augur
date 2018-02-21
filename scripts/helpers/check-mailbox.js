@@ -7,14 +7,14 @@ var chalk = require("chalk");
 var connectionEndpoints = require("../connection-endpoints");
 var speedomatic = require("speedomatic");
 
-var marketID = process.argv[2];
+var marketId = process.argv[2];
 
 var augur = new Augur();
 
 
 augur.connect(connectionEndpoints, function (err) {
   if (err) return console.error(err);
-  augur.api.Market.getMarketCreatorMailbox({ tx: { to: marketID } }, function (err, marketMailboxAddress) {
+  augur.api.Market.getMarketCreatorMailbox({ tx: { to: marketId } }, function (err, marketMailboxAddress) {
     if (err) return console.log(err);
     console.log(chalk.green.dim("market mailbox address:"), chalk.green(marketMailboxAddress));
     augur.api.Cash.getBalance({ _address: marketMailboxAddress }, function (err, cashBal) {

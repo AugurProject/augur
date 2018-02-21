@@ -2,7 +2,7 @@
 
 /**
 * @typedef {Object} MarketCreatorFee
-* @property {string} marketID Address of a market, as a hexadecimal string.
+* @property {string} marketId Address of a market, as a hexadecimal string.
 * @property {number|string} unclaimedFee Fee available to be claimed from the market, by the market creator, in attoETH
 */
 

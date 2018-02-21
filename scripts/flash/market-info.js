@@ -9,10 +9,10 @@ function displayProperty(key, collection) {
   console.log(chalk.cyan(key), chalk.yellow(collection[key]));
 }
 
-function marketInfoInternal(augur, marketID, universe, callback) {
+function marketInfoInternal(augur, marketId, universe, callback) {
   augur.api.Controller.getTimestamp(function (err, timestamp) {
     displayTime("Current Time", timestamp);
-    augur.markets.getMarketsInfo({ marketIDs: [marketID] }, function (err, marketInfos) {
+    augur.markets.getMarketsInfo({ marketIDs: [marketId] }, function (err, marketInfos) {
       if (err) {
         console.log(chalk.red("Error "), chalk.red(err));
         return callback(err);
@@ -47,7 +47,7 @@ function marketInfoInternal(augur, marketID, universe, callback) {
 }
 
 function help(callback) {
-  console.log(chalk.red("params syntax --> -p marketID"));
+  console.log(chalk.red("params syntax --> -p marketId"));
   callback(null);
 }
 
@@ -55,11 +55,11 @@ function marketInfo(augur, params, auth, callback) {
   if (params === "help") {
     help(callback);
   } else {
-    var marketID = params;
-    console.log(chalk.yellow.dim("marketID"), marketID);
+    var marketId = params;
+    console.log(chalk.yellow.dim("marketId"), marketId);
     var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
     console.log(chalk.green.dim("Universe"), universe);
-    marketInfoInternal(augur, marketID, universe, callback);
+    marketInfoInternal(augur, marketId, universe, callback);
   }
 }
 

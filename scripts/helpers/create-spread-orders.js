@@ -9,7 +9,7 @@ var getPrivateKey = require("../dp/lib/get-private-key").getPrivateKey;
 var connectionEndpoints = require("../connection-endpoints");
 var createOrder = require("../dp/lib/create-order");
 
-var marketID = process.argv[2];
+var marketId = process.argv[2];
 
 var augur = new Augur();
 
@@ -31,7 +31,7 @@ getPrivateKey(null, function (err, auth) {
       console.error(err);
       process.exit(1);
     }
-    console.log(chalk.cyan.dim("networkID:"), chalk.cyan(augur.rpc.getNetworkID()));
+    console.log(chalk.cyan.dim("networkId:"), chalk.cyan(augur.rpc.getNetworkID()));
     var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
     console.log(chalk.green.dim("universe:"), chalk.green(universe));
     approveAugurEternalApprovalValue(augur, auth.address, auth, function (err) {
@@ -39,7 +39,7 @@ getPrivateKey(null, function (err, auth) {
         console.error("Could not approve ...", err);
         process.exit(1);
       }
-      augur.markets.getMarketsInfo({ marketIDs: [marketID] }, function (err, marketsInfo) {
+      augur.markets.getMarketsInfo({ marketIDs: [marketId] }, function (err, marketsInfo) {
         if (err) {
           console.error("Could not get markets Info", err);
           process.exit(1);
@@ -80,7 +80,7 @@ getPrivateKey(null, function (err, auth) {
             var bid = { price: bidPrice, shares: sharesPerOrder };
 
             console.log(chalk.yellow.dim("bid:"), chalk.yellow(JSON.stringify(bid)));
-            createOrder(augur, marketID, outcomeI, marketInfo.numOutcomes, marketInfo.maxPrice, marketInfo.minPrice, marketInfo.numTicks, "buy", bid, auth, function (err, res) {
+            createOrder(augur, marketId, outcomeI, marketInfo.numOutcomes, marketInfo.maxPrice, marketInfo.minPrice, marketInfo.numTicks, "buy", bid, auth, function (err, res) {
               if (err) console.error("create-orders failed:", err);
               console.log(chalk.green.dim("Order Created"), chalk.green(JSON.stringify(res)));
             });
@@ -98,7 +98,7 @@ getPrivateKey(null, function (err, auth) {
             var ask = { price: askPrice, shares: sharesPerOrder };
 
             console.log(chalk.yellow.dim("ask:"), chalk.yellow(JSON.stringify(ask)));
-            createOrder(augur, marketID, outcomeI, marketInfo.numOutcomes, marketInfo.maxPrice, marketInfo.minPrice, marketInfo.numTicks, "sell", ask, auth, function (err, res) {
+            createOrder(augur, marketId, outcomeI, marketInfo.numOutcomes, marketInfo.maxPrice, marketInfo.minPrice, marketInfo.numTicks, "sell", ask, auth, function (err, res) {
               if (err) console.error("create-orders failed:", err);
               console.log(chalk.green.dim("Order Created"), chalk.green(JSON.stringify(res)));
             });

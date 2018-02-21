@@ -44,9 +44,9 @@ function createScalarMarket(p) {
       _topic: encodeTag(p._topic),
       _extraInfo: JSON.stringify(p._extraInfo || {}),
       onSuccess: function (res) {
-        getMarketFromCreateMarketReceipt(res.hash, function (err, marketID) {
+        getMarketFromCreateMarketReceipt(res.hash, function (err, marketId) {
           if (err) return p.onFailed(err);
-          p.onSuccess(assign({}, res, { callReturn: marketID }));
+          p.onSuccess(assign({}, res, { callReturn: marketId }));
         });
       },
     });

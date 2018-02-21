@@ -69,7 +69,7 @@ describe("accounts/login", function () {
     },
   });
   test({
-    description: "Should return an error on undefined loginID",
+    description: "Should return an error on undefined loginId",
     params: {
       keystore: undefined,
       password: "testpassword",

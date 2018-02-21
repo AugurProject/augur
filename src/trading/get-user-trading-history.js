@@ -1,5 +1,5 @@
 /**
- * @todo Add descriptions for UserTrade.price, UserTrade.amount, UserTrade.timestamp, & UserTrade.tradeGroupID.
+ * @todo Add descriptions for UserTrade.price, UserTrade.amount, UserTrade.timestamp, & UserTrade.tradeGroupId.
  */
 "use strict";
 
@@ -13,11 +13,11 @@
  * @property {boolean} maker Whether the specified user is the order maker (as opposed to filler).
  * @property {number} marketCreatorFees Amount of fees paid to market creator, in ETH.
  * @property {number} reporterFees Amount of fees paid to reporters, in ETH.
- * @property {string} marketID Contract address of the market, as a hexadecimal string.
+ * @property {string} marketId Contract address of the market, as a hexadecimal string.
  * @property {number} outcome Outcome being bought/sold.
  * @property {string} shareToken Contract address of the share token that was bought or sold, as a hexadecimal string.
  * @property {number} timestamp Description pending.
- * @property {number|null} tradeGroupID Description pending.
+ * @property {number|null} tradeGroupId Description pending.
  */
 
 var augurNode = require("../augur-node");
@@ -27,7 +27,7 @@ var augurNode = require("../augur-node");
  * @param {Object} p Parameters object.
  * @param {string} p.account Ethereum address of the user for which to retrieve trading history, as a hexadecimal string.
  * @param {string=} p.universe Contract address of the universe in which to look up the trading history, as a hexadecimal string. Either this parameter or the market ID must be specified.
- * @param {string=} p.marketID Contract address of the market in which to look up the trading history, as a hexadecimal string. Either this parameter or the universe must be specified.
+ * @param {string=} p.marketId Contract address of the market in which to look up the trading history, as a hexadecimal string. Either this parameter or the universe must be specified.
  * @param {string} p.outcome Outcome of the share being bought/sold.
  * @param {string} p.orderType Type of trade. Valid values are "buy" and "sell".
  * @param {string=} p.sortBy Field name by which to sort the trading history.
