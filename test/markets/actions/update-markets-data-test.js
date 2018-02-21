@@ -17,7 +17,7 @@ describe(`modules/markets/actions/update-markets-data.js`, () => {
   it(`should dispatch an UPDATE_MARKET_CATEGORY action`, () => {
     assert.deepEqual(action.updateMarketCategory('0xa1', 'potent potables'), {
       type: action.UPDATE_MARKET_CATEGORY,
-      marketID: '0xa1',
+      marketId: '0xa1',
       category: 'potent potables'
     })
   })

@@ -34,7 +34,7 @@ const mapDispatchToProps = dispatch => ({
   })),
   collectMarketCreatorFees: (marketId, callback) => dispatch(collectMarketCreatorFees(marketId, callback)),
   loadMarketsInfo: marketIDs => dispatch(loadMarketsInfo(marketIDs)),
-  toggleFavorite: marketID => dispatch(toggleFavorite(marketID)),
+  toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
 })
 
 const MyMarketsContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(MyMarkets))

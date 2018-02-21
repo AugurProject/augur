@@ -46,12 +46,12 @@ describe('modules/my-positions/reducers/close-position-trade-groups.js', () => {
     })
 
     test({
-      description: 'should add a tradeGroupID to an existing market and outcome',
+      description: 'should add a tradeGroupId to an existing market and outcome',
       action: {
         type: ADD_CLOSE_POSITION_TRADE_GROUP,
-        marketID: '0xMarketID1',
-        outcomeID: '0',
-        tradeGroupID: '0x00000TradeGroupID3'
+        marketId: '0xMarketID1',
+        outcomeId: '0',
+        tradeGroupId: '0x00000TradeGroupID3'
       },
       assertions: (res) => {
         assert.deepEqual(res, {
@@ -75,8 +75,8 @@ describe('modules/my-positions/reducers/close-position-trade-groups.js', () => {
       },
       action: {
         type: CLEAR_CLOSE_POSITION_OUTCOME,
-        marketID: '0xMarketID2',
-        outcomeID: '3'
+        marketId: '0xMarketID2',
+        outcomeId: '3'
       },
       assertions: (res) => {
         assert.deepEqual(res, {
@@ -101,8 +101,8 @@ describe('modules/my-positions/reducers/close-position-trade-groups.js', () => {
       },
       action: {
         type: CLEAR_CLOSE_POSITION_OUTCOME,
-        marketID: '0xMarketID1',
-        outcomeID: '0'
+        marketId: '0xMarketID1',
+        outcomeId: '0'
       },
       assertions: (res) => {
         assert.deepEqual(res, {

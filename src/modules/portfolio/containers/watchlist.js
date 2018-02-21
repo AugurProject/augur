@@ -32,7 +32,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => ({
   loadMarketsInfo: marketIDs => dispatch(loadMarketsInfo(marketIDs)),
-  toggleFavorite: marketID => dispatch(toggleFavorite(marketID)),
+  toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
 })
 
 const WatchListContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(Watchlist))

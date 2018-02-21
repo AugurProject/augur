@@ -10,31 +10,31 @@ export function loadReportDescriptors(callback) {
       branch, loginAccount, marketsData, reports
     } = getState()
     const branchReports = { ...reports[branch.id] }
-    async.forEachOfSeries(branchReports, (report, eventID, nextReport) => {
-      const marketData = marketsData[report.marketID]
+    async.forEachOfSeries(branchReports, (report, eventId, nextReport) => {
+      const marketData = marketsData[report.marketId]
       report.isScalar = marketData.type === SCALAR
       report.isCategorical = marketData.type === CATEGORICAL
       report.minValue = marketData.minValue
       report.maxValue = marketData.maxValue
-      if (report.reportedOutcomeID === undefined) {
+      if (report.reportedOutcomeId === undefined) {
         report.isIndeterminate = false
         report.isUnethical = false
-        branchReports[eventID] = report
+        branchReports[eventId] = report
         return nextReport()
       }
-      const indeterminateOutcomeID = marketData.type === BINARY ?
+      const indeterminateOutcomeId = marketData.type === BINARY ?
         BINARY_INDETERMINATE_OUTCOME_ID :
         CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID
-      report.isIndeterminate = report.reportedOutcomeID === indeterminateOutcomeID
+      report.isIndeterminate = report.reportedOutcomeId === indeterminateOutcomeId
       augur.api.ExpiringEvents.getEthicReport({
         branch: branch.id,
         period: branch.reportPeriod,
-        event: eventID,
+        event: eventId,
         sender: loginAccount.address
       }, (ethics) => {
         // ethics values: 0=unethical, 1=ethical
         report.isUnethical = ethics === '0'
-        branchReports[eventID] = report
+        branchReports[eventId] = report
         nextReport()
       })
     }, (e) => {

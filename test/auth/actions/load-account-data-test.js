@@ -137,7 +137,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     }
   })
   test({
-    description: 'account with address, loginID, name, isUnlocked, airbitzAccount',
+    description: 'account with address, loginId, name, isUnlocked, airbitzAccount',
     params: {
       account: {
         address: '0xb0b',
@@ -168,7 +168,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     }
   })
   test({
-    description: 'account with address and loginID',
+    description: 'account with address and loginId',
     params: {
       account: {
         address: '0xb0b'

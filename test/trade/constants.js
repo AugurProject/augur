@@ -4,17 +4,17 @@ export { BUY, SELL } from 'modules/transactions/constants/types'
 export const tradeTestState = {
   loginAccount: {
     address: 'testUser1',
-    loginID: 'longLoginID',
+    loginId: 'longLoginId',
     localNode: false,
     eth: '5',
     ethTokens: '10000',
     rep: '50.0'
   },
-  selectedMarketID: 'testBinaryMarketID',
+  selectedMarketId: 'testBinaryMarketId',
   marketsData: {
-    testBinaryMarketID: {
+    testBinaryMarketId: {
       author: 'testAuthor1',
-      universeID: '0x010101',
+      universeId: '0x010101',
       creationFee: '22.5',
       creationTime: 1475951522,
       cumulativeScale: '1',
@@ -35,9 +35,9 @@ export const tradeTestState = {
       volume: '3030',
       isDisowned: false
     },
-    testCategoricalMarketID: {
+    testCategoricalMarketId: {
       author: 'testAuthor2',
-      universeID: '0x010101',
+      universeId: '0x010101',
       creationFee: '12.857142857142857142',
       creationTime: 1476694751,
       cumulativeScale: '1',
@@ -60,9 +60,9 @@ export const tradeTestState = {
       volume: '0',
       isDisowned: false
     },
-    testScalarMarketID: {
+    testScalarMarketId: {
       author: 'testAuthor3',
-      universeID: '0x010101',
+      universeId: '0x010101',
       creationFee: '9',
       creationTime: 1476486515,
       cumulativeScale: '130',
@@ -86,7 +86,7 @@ export const tradeTestState = {
     },
   },
   outcomesData: {
-    testBinaryMarketID: {
+    testBinaryMarketId: {
       1: {
         id: 1,
         name: 'Yes',
@@ -102,7 +102,7 @@ export const tradeTestState = {
         sharesPurchased: '0'
       }
     },
-    testCategoricalMarketID: {
+    testCategoricalMarketId: {
       0: {
         name: 'Democratic',
         outstandingShares: '0',
@@ -128,7 +128,7 @@ export const tradeTestState = {
         sharesPurchased: '0'
       }
     },
-    testScalarMarketID: {
+    testScalarMarketId: {
       0: {
         id: 0,
         name: '',
@@ -149,8 +149,8 @@ export const tradeTestState = {
   transactionsData: {
     trans1: {
       data: {
-        marketID: 'testBinaryMarketID',
-        outcomeID: 1,
+        marketId: 'testBinaryMarketId',
+        outcomeId: 1,
         marketType: 'binary',
         marketDescription: 'test binary market',
         outcomeName: 'YES'
@@ -161,8 +161,8 @@ export const tradeTestState = {
     },
     trans2: {
       data: {
-        marketID: 'testCategoricalMarketID',
-        outcomeID: 0,
+        marketId: 'testCategoricalMarketId',
+        outcomeId: 0,
         marketType: 'categorical',
         marketDescription: 'test categorical market',
         outcomeName: 'Democratic'
@@ -173,8 +173,8 @@ export const tradeTestState = {
     },
     trans3: {
       data: {
-        marketID: 'testScalarMarketID',
-        outcomeID: 0,
+        marketId: 'testScalarMarketId',
+        outcomeId: 0,
         marketType: 'scalar',
         marketDescription: 'test scalar market',
         outcomeName: ''

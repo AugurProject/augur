@@ -272,7 +272,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const result = store.dispatch(action.loadDataForReportingTransaction(label, log, isRetry, callback))
 
         const expected = {
-          marketID: '0xMARKETID',
+          marketId: '0xMARKETID',
           market: {
             description: 'testing'
           },
@@ -728,7 +728,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const log = {
           inProgress: false,
           marketCreationFee: '10',
-          marketID: '0xMARKETID',
+          marketId: '0xMARKETID',
           validityBond: '10',
           category: 'Testing'
         }
@@ -738,7 +738,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
 
         const expected = {
           data: {
-            marketID: log.marketID
+            marketId: log.marketId
           },
           type: TYPES.CREATE_MARKET,
           description: 'test description',
@@ -761,7 +761,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const log = {
           inProgress: true,
           marketCreationFee: '10',
-          marketID: '0xMARKETID',
+          marketId: '0xMARKETID',
           validityBond: '10',
           category: 'Testing'
         }
@@ -771,7 +771,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
 
         const expected = {
           data: {
-            marketID: log.marketID
+            marketId: log.marketId
           },
           type: TYPES.CREATE_MARKET,
           description: 'test description',
@@ -810,7 +810,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const expected = {
           data: {
             shares: '10',
-            marketID: null
+            marketId: null
           },
           type: 'Claim Trading Payout',
           description: 'test description',
@@ -838,7 +838,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const expected = {
           data: {
             shares: '10',
-            marketID: '0xMARKETID'
+            marketId: '0xMARKETID'
           },
           type: 'Claim Trading Payout',
           description: 'test description',
@@ -868,7 +868,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const expected = {
           data: {
             shares: '10',
-            marketID: '0xMARKETID',
+            marketId: '0xMARKETID',
             balances: [
               {
                 change: formatEtherTokens(log.payoutTokens, { positiveSign: true }),
@@ -897,7 +897,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const log = {
           //           inProgress: false,
           //           marketCreationFee: '10',
-          //           marketID: '0xMARKETID',
+          //           marketId: '0xMARKETID',
           //           eventBond: '10',
           //           category: 'Testing'
           //         }
@@ -907,7 +907,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
 
           //         const expected = {
           //           data: {
-          //             marketID: log.marketID
+          //             marketId: log.marketId
           //           },
           //           type: CREATE_MARKET,
           //           description: 'test description',
@@ -930,7 +930,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const log = {
           //           inProgress: true,
           //           marketCreationFee: '10',
-          //           marketID: '0xMARKETID',
+          //           marketId: '0xMARKETID',
           //           eventBond: '10',
           //           category: 'Testing'
           //         }
@@ -940,7 +940,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
 
           //         const expected = {
           //           data: {
-          //             marketID: log.marketID
+          //             marketId: log.marketId
           //           },
           //           type: CREATE_MARKET,
           //           description: 'test description',
@@ -979,7 +979,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const expected = {
           //           data: {
           //             shares: '10',
-          //             marketID: null
+          //             marketId: null
           //           },
           //           type: 'Claim Trading Payout',
           //           description: 'test description',
@@ -1007,7 +1007,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const expected = {
           //           data: {
           //             shares: '10',
-          //             marketID: '0xMARKETID'
+          //             marketId: '0xMARKETID'
           //           },
           //           type: 'Claim Trading Payout',
           //           description: 'test description',
@@ -1037,7 +1037,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const expected = {
           //           data: {
           //             shares: '10',
-          //             marketID: '0xMARKETID',
+          //             marketId: '0xMARKETID',
           //             balances: [
           //               {
           //                 change: formatEtherTokens(log.cashPayout, { positiveSign: true }),
@@ -1061,7 +1061,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //     const test = t => it(t.description, () => t.assertions())
 
           //     test({
-          //       description: `should return the expected object with no marketID`,
+          //       description: `should return the expected object with no marketId`,
           //       assertions: () => {
           //         const log = {
           //           tradingFee: '0.01'
@@ -1074,7 +1074,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
 
           //         const expected = {
           //           data: {
-          //             marketID: null
+          //             marketId: null
           //           },
           //           description: 'test description',
           //           message: `updated trading fee: ${formatPercent(abi.bignum(log.tradingFee).times(100)).full}`
@@ -1085,10 +1085,10 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //     })
 
           //     test({
-          //       description: `should return the expected object with marketID`,
+          //       description: `should return the expected object with marketId`,
           //       assertions: () => {
           //         const log = {
-          //           marketID: '0xMARKETID',
+          //           marketId: '0xMARKETID',
           //           tradingFee: '0.01'
           //         }
           //         const market = {
@@ -1099,7 +1099,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
 
           //         const expected = {
           //           data: {
-          //             marketID: '0xMARKETID'
+          //             marketId: '0xMARKETID'
           //           },
           //           description: 'test description',
           //           message: `updated trading fee: ${formatPercent(abi.bignum(log.tradingFee).times(100)).full}`
@@ -1140,16 +1140,16 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           reportValue: '1',
           //           outcome: '2'
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const market = {
           //           description: 'test description'
           //         }
 
-          //         const result = action.constructPenalizeTransaction(log, marketID, market, {}, store.dispatch)
+          //         const result = action.constructPenalizeTransaction(log, marketId, market, {}, store.dispatch)
 
           //         const expectedResult = {
           //           data: {
-          //             marketID
+          //             marketId
           //           },
           //           type: 'Compare Report To Consensus',
           //           description: 'test description',
@@ -1179,16 +1179,16 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           repchange: '0',
           //           oldrep: '2'
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const market = {
           //           description: 'test description'
           //         }
 
-          //         const result = action.constructPenalizeTransaction(log, marketID, market, {}, store.dispatch)
+          //         const result = action.constructPenalizeTransaction(log, marketId, market, {}, store.dispatch)
 
           //         const expectedResult = {
           //           data: {
-          //             marketID,
+          //             marketId,
           //             balances: [
           //               {
           //                 change: formatRep(abi.bignum(log.repchange), { positiveSign: true }),
@@ -1227,16 +1227,16 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           repchange: '0',
           //           oldrep: '2'
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const market = {
           //           description: 'test description'
           //         }
 
-          //         const result = action.constructPenalizeTransaction(log, marketID, market, {}, store.dispatch)
+          //         const result = action.constructPenalizeTransaction(log, marketId, market, {}, store.dispatch)
 
           //         const expectedResult = {
           //           data: {
-          //             marketID,
+          //             marketId,
           //             balances: [
           //               {
           //                 change: formatRep(constants.ZERO, { positiveSign: true }),
@@ -1275,16 +1275,16 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           repchange: '0',
           //           oldrep: '2'
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const market = {
           //           description: 'test description'
           //         }
 
-          //         const result = action.constructPenalizeTransaction(log, marketID, market, {}, store.dispatch)
+          //         const result = action.constructPenalizeTransaction(log, marketId, market, {}, store.dispatch)
 
           //         const expectedResult = {
           //           data: {
-          //             marketID,
+          //             marketId,
           //             balances: [
           //               {
           //                 change: formatRep(constants.ZERO, { positiveSign: true }),
@@ -1324,16 +1324,16 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           oldrep: '2',
           //           inProgress: true
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const market = {
           //           description: 'test description'
           //         }
 
-          //         const result = action.constructPenalizeTransaction(log, marketID, market, {}, store.dispatch)
+          //         const result = action.constructPenalizeTransaction(log, marketId, market, {}, store.dispatch)
 
           //         const expectedResult = {
           //           data: {
-          //             marketID,
+          //             marketId,
           //             balances: [
           //               {
           //                 change: formatRep(constants.ZERO, { positiveSign: true }),
@@ -1405,16 +1405,16 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const log = {
           //           inProgress: true
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const market = {
           //           description: 'test description'
           //         }
 
-          //         const result = action.constructSubmittedReportHashTransaction(log, marketID, market, null, null, store.dispatch)
+          //         const result = action.constructSubmittedReportHashTransaction(log, marketId, market, null, null, store.dispatch)
 
           //         const expectedResult = {
           //           data: {
-          //             marketID,
+          //             marketId,
           //             market,
           //             isUnethical: true
           //           },
@@ -1434,16 +1434,16 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           ethics: '1',
           //           inProgress: true
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const market = {
           //           description: 'test description'
           //         }
 
-          //         const result = action.constructSubmittedReportHashTransaction(log, marketID, market, null, null, store.dispatch)
+          //         const result = action.constructSubmittedReportHashTransaction(log, marketId, market, null, null, store.dispatch)
 
           //         const expectedResult = {
           //           data: {
-          //             marketID,
+          //             marketId,
           //             market,
           //             isUnethical: false
           //           },
@@ -1463,19 +1463,19 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           ethics: '1',
           //           inProgress: true
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const market = {
           //           description: 'test description'
           //         }
 
-          //         const result = action.constructSubmittedReportHashTransaction(log, marketID, market, null, '123DECRYPTIONKEY', store.dispatch)
+          //         const result = action.constructSubmittedReportHashTransaction(log, marketId, market, null, '123DECRYPTIONKEY', store.dispatch)
 
           //         const expectedResult = {
           //           data: {
-          //             marketID,
+          //             marketId,
           //             market,
           //             isUnethical: false,
-          //             reportedOutcomeID: 'formatted reported outcome',
+          //             reportedOutcomeId: 'formatted reported outcome',
           //             outcome: {
           //               name: 'formatted reported outcome'
           //             },
@@ -1496,19 +1496,19 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           ethics: '1',
           //           inProgress: false
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const market = {
           //           description: 'test description'
           //         }
 
-          //         const result = action.constructSubmittedReportHashTransaction(log, marketID, market, null, '123DECRYPTIONKEY', store.dispatch)
+          //         const result = action.constructSubmittedReportHashTransaction(log, marketId, market, null, '123DECRYPTIONKEY', store.dispatch)
 
           //         const expectedResult = {
           //           data: {
-          //             marketID,
+          //             marketId,
           //             market,
           //             isUnethical: false,
-          //             reportedOutcomeID: 'formatted reported outcome',
+          //             reportedOutcomeId: 'formatted reported outcome',
           //             outcome: {
           //               name: 'formatted reported outcome'
           //             },
@@ -1560,19 +1560,19 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const log = {
           //           inProgress: true
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const market = {
           //           description: 'test description'
           //         }
 
-          //         const result = action.constructSubmittedReportTransaction(log, marketID, market)
+          //         const result = action.constructSubmittedReportTransaction(log, marketId, market)
 
           //         const expectedResult = {
           //           data: {
-          //             marketID,
+          //             marketId,
           //             market,
           //             isUnethical: true,
-          //             reportedOutcomeID: 'formatted reported outcome',
+          //             reportedOutcomeId: 'formatted reported outcome',
           //             outcome: {
           //               name: 'formatted reported outcome'
           //             }
@@ -1593,19 +1593,19 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           inProgress: true,
           //           ethics: '1'
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const market = {
           //           description: 'test description'
           //         }
 
-          //         const result = action.constructSubmittedReportTransaction(log, marketID, market)
+          //         const result = action.constructSubmittedReportTransaction(log, marketId, market)
 
           //         const expectedResult = {
           //           data: {
-          //             marketID,
+          //             marketId,
           //             market,
           //             isUnethical: false,
-          //             reportedOutcomeID: 'formatted reported outcome',
+          //             reportedOutcomeId: 'formatted reported outcome',
           //             outcome: {
           //               name: 'formatted reported outcome'
           //             }
@@ -1625,19 +1625,19 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const log = {
           //           ethics: '1'
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const market = {
           //           description: 'test description'
           //         }
 
-          //         const result = action.constructSubmittedReportTransaction(log, marketID, market, null, store.dispatch)
+          //         const result = action.constructSubmittedReportTransaction(log, marketId, market, null, store.dispatch)
 
           //         const expectedResult = {
           //           data: {
-          //             marketID,
+          //             marketId,
           //             market,
           //             isUnethical: false,
-          //             reportedOutcomeID: 'formatted reported outcome',
+          //             reportedOutcomeId: 'formatted reported outcome',
           //             outcome: {
           //               name: 'formatted reported outcome'
           //             }
@@ -1683,7 +1683,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
 
           //         const expected = {
           //           data: {
-          //             marketID: '0xMARKETID',
+          //             marketId: '0xMARKETID',
           //             market
           //           },
           //           description: market.description,
@@ -1712,7 +1712,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
 
           //         const expected = {
           //           data: {
-          //             marketID: '0xMARKETID',
+          //             marketId: '0xMARKETID',
           //             market
           //           },
           //           description: market.description,
@@ -1743,7 +1743,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
 
           //         const expected = {
           //           data: {
-          //             marketID: '0xMARKETID',
+          //             marketId: '0xMARKETID',
           //             market,
           //             balances: [
           //               {
@@ -1781,7 +1781,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
 
           //         const expected = {
           //           data: {
-          //             marketID: '0xMARKETID',
+          //             marketId: '0xMARKETID',
           //             market,
           //             balances: [
           //               {
@@ -1827,7 +1827,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const trade = {
           //           transactionHash: '0xHASH',
           //           tradeid: '0xTRADEID',
-          //           tradeGroupID: '0xTRADEGROUPID',
+          //           tradeGroupId: '0xTRADEGROUPID',
           //           price: '0.1',
           //           amount: '2',
           //           maker: true,
@@ -1837,11 +1837,11 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           blockNumber: 123456,
           //           gasFees: 0.001
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const marketType = BINARY
           //         const minValue = '0'
           //         const description = 'test description'
-          //         const outcomeID = '1'
+          //         const outcomeId = '1'
           //         const status = 'testing'
 
           //         const price = formatEtherTokens(trade.price)
@@ -1853,20 +1853,20 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const totalReturn = bnPrice.times(bnShares).minus(tradingFees)
           //         const totalCostPerShare = totalCost.dividedBy(bnShares)
 
-          //         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status))
+          //         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketId, marketType, minValue, description, outcomeId, null, status))
 
           //         const expected = {
           //           '0xHASH-0xTRADEID': {
           //             type: MATCH_ASK,
           //             hash: trade.transactionHash,
-          //             tradeGroupID: trade.tradeGroupID,
+          //             tradeGroupId: trade.tradeGroupId,
           //             status,
           //             description,
           //             data: {
           //               marketType,
-          //               outcomeName: outcomeID,
-          //               outcomeID,
-          //               marketID
+          //               outcomeName: outcomeId,
+          //               outcomeId,
+          //               marketId
           //             },
           //             message: `sold ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
           //             numShares: shares,
@@ -1892,7 +1892,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const trade = {
           //           transactionHash: '0xHASH',
           //           tradeid: '0xTRADEID',
-          //           tradeGroupID: '0xTRADEGROUPID',
+          //           tradeGroupId: '0xTRADEGROUPID',
           //           price: '0.1',
           //           amount: '2',
           //           maker: true,
@@ -1903,11 +1903,11 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           gasFees: 0.001,
           //           inProgress: true
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const marketType = BINARY
           //         const minValue = '0'
           //         const description = 'test description'
-          //         const outcomeID = '1'
+          //         const outcomeId = '1'
           //         const status = 'testing'
 
           //         const price = formatEtherTokens(trade.price)
@@ -1919,20 +1919,20 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const totalReturn = bnPrice.times(bnShares).minus(tradingFees)
           //         const totalCostPerShare = totalCost.dividedBy(bnShares)
 
-          //         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status))
+          //         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketId, marketType, minValue, description, outcomeId, null, status))
 
           //         const expected = {
           //           '0xHASH-0xTRADEID': {
           //             type: MATCH_ASK,
           //             hash: trade.transactionHash,
-          //             tradeGroupID: trade.tradeGroupID,
+          //             tradeGroupId: trade.tradeGroupId,
           //             status,
           //             description,
           //             data: {
           //               marketType,
-          //               outcomeName: outcomeID,
-          //               outcomeID,
-          //               marketID
+          //               outcomeName: outcomeId,
+          //               outcomeId,
+          //               marketId
           //             },
           //             message: `${MATCH_ASK} ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
           //             numShares: shares,
@@ -1958,7 +1958,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const trade = {
           //           transactionHash: '0xHASH',
           //           tradeid: '0xTRADEID',
-          //           tradeGroupID: '0xTRADEGROUPID',
+          //           tradeGroupId: '0xTRADEGROUPID',
           //           price: '0.1',
           //           amount: '2',
           //           maker: true,
@@ -1968,11 +1968,11 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           blockNumber: 123456,
           //           gasFees: 0.001
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const marketType = BINARY
           //         const minValue = '0'
           //         const description = 'test description'
-          //         const outcomeID = '1'
+          //         const outcomeId = '1'
           //         const status = 'testing'
 
           //         const price = formatEtherTokens(trade.price)
@@ -1984,20 +1984,20 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const totalReturn = bnPrice.times(bnShares).minus(tradingFees)
           //         const totalReturnPerShare = totalReturn.dividedBy(bnShares)
 
-          //         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status))
+          //         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketId, marketType, minValue, description, outcomeId, null, status))
 
           //         const expected = {
           //           '0xHASH-0xTRADEID': {
           //             type: MATCH_BID,
           //             hash: trade.transactionHash,
-          //             tradeGroupID: trade.tradeGroupID,
+          //             tradeGroupId: trade.tradeGroupId,
           //             status,
           //             description,
           //             data: {
           //               marketType,
-          //               outcomeName: outcomeID,
-          //               outcomeID,
-          //               marketID
+          //               outcomeName: outcomeId,
+          //               outcomeId,
+          //               marketId
           //             },
           //             message: `bought ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
           //             numShares: shares,
@@ -2023,7 +2023,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const trade = {
           //           transactionHash: '0xHASH',
           //           tradeid: '0xTRADEID',
-          //           tradeGroupID: '0xTRADEGROUPID',
+          //           tradeGroupId: '0xTRADEGROUPID',
           //           price: '0.1',
           //           amount: '2',
           //           maker: true,
@@ -2034,11 +2034,11 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           gasFees: 0.001,
           //           inProgress: true
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const marketType = BINARY
           //         const minValue = '0'
           //         const description = 'test description'
-          //         const outcomeID = '1'
+          //         const outcomeId = '1'
           //         const status = 'testing'
 
           //         const price = formatEtherTokens(trade.price)
@@ -2050,20 +2050,20 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const totalReturn = bnPrice.times(bnShares).minus(tradingFees)
           //         const totalReturnPerShare = totalReturn.dividedBy(bnShares)
 
-          //         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status))
+          //         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketId, marketType, minValue, description, outcomeId, null, status))
 
           //         const expected = {
           //           '0xHASH-0xTRADEID': {
           //             type: MATCH_BID,
           //             hash: trade.transactionHash,
-          //             tradeGroupID: trade.tradeGroupID,
+          //             tradeGroupId: trade.tradeGroupId,
           //             status,
           //             description,
           //             data: {
           //               marketType,
-          //               outcomeName: outcomeID,
-          //               outcomeID,
-          //               marketID
+          //               outcomeName: outcomeId,
+          //               outcomeId,
+          //               marketId
           //             },
           //             message: `${MATCH_BID} ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
           //             numShares: shares,
@@ -2089,7 +2089,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const trade = {
           //           transactionHash: '0xHASH',
           //           tradeid: '0xTRADEID',
-          //           tradeGroupID: '0xTRADEGROUPID',
+          //           tradeGroupId: '0xTRADEGROUPID',
           //           price: '0.1',
           //           amount: '2',
           //           maker: false,
@@ -2099,11 +2099,11 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           blockNumber: 123456,
           //           gasFees: 0.001
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const marketType = BINARY
           //         const minValue = '0'
           //         const description = 'test description'
-          //         const outcomeID = '1'
+          //         const outcomeId = '1'
           //         const status = 'testing'
 
           //         const price = formatEtherTokens(trade.price)
@@ -2114,20 +2114,20 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const totalCost = bnPrice.times(bnShares).plus(tradingFees)
           //         const totalCostPerShare = totalCost.dividedBy(bnShares)
 
-          //         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status))
+          //         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketId, marketType, minValue, description, outcomeId, null, status))
 
           //         const expected = {
           //           '0xHASH-0xTRADEID': {
           //             type: BUY,
           //             hash: trade.transactionHash,
-          //             tradeGroupID: trade.tradeGroupID,
+          //             tradeGroupId: trade.tradeGroupId,
           //             status,
           //             description,
           //             data: {
           //               marketType,
-          //               outcomeName: outcomeID,
-          //               outcomeID,
-          //               marketID
+          //               outcomeName: outcomeId,
+          //               outcomeId,
+          //               marketId
           //             },
           //             message: `bought ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
           //             numShares: shares,
@@ -2153,7 +2153,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const trade = {
           //           transactionHash: '0xHASH',
           //           tradeid: '0xTRADEID',
-          //           tradeGroupID: '0xTRADEGROUPID',
+          //           tradeGroupId: '0xTRADEGROUPID',
           //           price: '0.1',
           //           amount: '2',
           //           maker: false,
@@ -2164,11 +2164,11 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           gasFees: 0.001,
           //           inProgress: true
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const marketType = BINARY
           //         const minValue = '0'
           //         const description = 'test description'
-          //         const outcomeID = '1'
+          //         const outcomeId = '1'
           //         const status = 'testing'
 
           //         const price = formatEtherTokens(trade.price)
@@ -2179,20 +2179,20 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const totalCost = bnPrice.times(bnShares).plus(tradingFees)
           //         const totalCostPerShare = totalCost.dividedBy(bnShares)
 
-          //         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status))
+          //         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketId, marketType, minValue, description, outcomeId, null, status))
 
           //         const expected = {
           //           '0xHASH-0xTRADEID': {
           //             type: BUY,
           //             hash: trade.transactionHash,
-          //             tradeGroupID: trade.tradeGroupID,
+          //             tradeGroupId: trade.tradeGroupId,
           //             status,
           //             description,
           //             data: {
           //               marketType,
-          //               outcomeName: outcomeID,
-          //               outcomeID,
-          //               marketID
+          //               outcomeName: outcomeId,
+          //               outcomeId,
+          //               marketId
           //             },
           //             message: `${BUY} ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
           //             numShares: shares,
@@ -2218,7 +2218,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const trade = {
           //           transactionHash: '0xHASH',
           //           tradeid: '0xTRADEID',
-          //           tradeGroupID: '0xTRADEGROUPID',
+          //           tradeGroupId: '0xTRADEGROUPID',
           //           price: '0.1',
           //           amount: '2',
           //           maker: false,
@@ -2228,11 +2228,11 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           blockNumber: 123456,
           //           gasFees: 0.001
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const marketType = BINARY
           //         const minValue = '0'
           //         const description = 'test description'
-          //         const outcomeID = '1'
+          //         const outcomeId = '1'
           //         const status = 'testing'
 
           //         const price = formatEtherTokens(trade.price)
@@ -2244,20 +2244,20 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const totalReturn = bnPrice.times(bnShares).minus(tradingFees)
           //         const totalReturnPerShare = totalReturn.dividedBy(bnShares)
 
-          //         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status))
+          //         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketId, marketType, minValue, description, outcomeId, null, status))
 
           //         const expected = {
           //           '0xHASH-0xTRADEID': {
           //             type: SELL,
           //             hash: trade.transactionHash,
-          //             tradeGroupID: trade.tradeGroupID,
+          //             tradeGroupId: trade.tradeGroupId,
           //             status,
           //             description,
           //             data: {
           //               marketType,
-          //               outcomeName: outcomeID,
-          //               outcomeID,
-          //               marketID
+          //               outcomeName: outcomeId,
+          //               outcomeId,
+          //               marketId
           //             },
           //             message: `sold ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
           //             numShares: shares,
@@ -2283,7 +2283,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const trade = {
           //           transactionHash: '0xHASH',
           //           tradeid: '0xTRADEID',
-          //           tradeGroupID: '0xTRADEGROUPID',
+          //           tradeGroupId: '0xTRADEGROUPID',
           //           price: '0.1',
           //           amount: '2',
           //           maker: false,
@@ -2294,11 +2294,11 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           gasFees: 0.001,
           //           inProgress: true
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const marketType = BINARY
           //         const minValue = '0'
           //         const description = 'test description'
-          //         const outcomeID = '1'
+          //         const outcomeId = '1'
           //         const status = 'testing'
 
           //         const price = formatEtherTokens(trade.price)
@@ -2310,20 +2310,20 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const totalReturn = bnPrice.times(bnShares).minus(tradingFees)
           //         const totalReturnPerShare = totalReturn.dividedBy(bnShares)
 
-          //         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status))
+          //         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketId, marketType, minValue, description, outcomeId, null, status))
 
           //         const expected = {
           //           '0xHASH-0xTRADEID': {
           //             type: SELL,
           //             hash: trade.transactionHash,
-          //             tradeGroupID: trade.tradeGroupID,
+          //             tradeGroupId: trade.tradeGroupId,
           //             status,
           //             description,
           //             data: {
           //               marketType,
-          //               outcomeName: outcomeID,
-          //               outcomeID,
-          //               marketID
+          //               outcomeName: outcomeId,
+          //               outcomeId,
+          //               marketId
           //             },
           //             message: `${SELL} ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
           //             numShares: shares,
@@ -2349,7 +2349,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const trade = {
           //           transactionHash: '0xHASH',
           //           tradeid: '0xTRADEID',
-          //           tradeGroupID: '0xTRADEGROUPID',
+          //           tradeGroupId: '0xTRADEGROUPID',
           //           price: '0.1',
           //           amount: '2',
           //           maker: false,
@@ -2360,11 +2360,11 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           gasFees: 0.001,
           //           inProgress: true
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const marketType = SCALAR
           //         const minValue = '0'
           //         const description = 'test description'
-          //         const outcomeID = '1'
+          //         const outcomeId = '1'
           //         const status = 'testing'
 
           //         const price = formatEtherTokens(trade.price)
@@ -2376,20 +2376,20 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const totalReturn = bnPrice.times(bnShares).minus(tradingFees)
           //         const totalReturnPerShare = totalReturn.dividedBy(bnShares)
 
-          //         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status))
+          //         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketId, marketType, minValue, description, outcomeId, null, status))
 
           //         const expected = {
           //           '0xHASH-0xTRADEID': {
           //             type: SELL,
           //             hash: trade.transactionHash,
-          //             tradeGroupID: trade.tradeGroupID,
+          //             tradeGroupId: trade.tradeGroupId,
           //             status,
           //             description,
           //             data: {
           //               marketType,
-          //               outcomeName: outcomeID,
-          //               outcomeID,
-          //               marketID
+          //               outcomeName: outcomeId,
+          //               outcomeId,
+          //               marketId
           //             },
           //             message: `${SELL} ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
           //             numShares: shares,
@@ -2424,7 +2424,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const trade = {
           //           transactionHash: '0xHASH',
           //           tradeid: '0xTRADEID',
-          //           tradeGroupID: '0xTRADEGROUPID',
+          //           tradeGroupId: '0xTRADEGROUPID',
           //           price: '0.1',
           //           amount: '2',
           //           maker: false,
@@ -2434,11 +2434,11 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           blockNumber: 123456,
           //           gasFees: 0.001
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const marketType = BINARY
           //         const maxValue = '1'
           //         const description = 'test description'
-          //         const outcomeID = '1'
+          //         const outcomeId = '1'
           //         const status = 'testing'
 
           //         const price = formatEtherTokens(trade.price)
@@ -2449,7 +2449,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const totalCost = bnShares.minus(bnPrice.times(bnShares).plus(tradingFees))
           //         const totalCostPerShare = totalCost.dividedBy(bnShares)
 
-          //         const actual = store.dispatch(action.constructLogShortFillTxTransaction(trade, marketID, marketType, maxValue, description, outcomeID, null, status))
+          //         const actual = store.dispatch(action.constructLogShortFillTxTransaction(trade, marketId, marketType, maxValue, description, outcomeId, null, status))
 
           //         const expected = {
           //           '0xHASH-0xTRADEID': {
@@ -2459,9 +2459,9 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //             description,
           //             data: {
           //               marketType,
-          //               outcomeName: outcomeID,
-          //               outcomeID,
-          //               marketID
+          //               outcomeName: outcomeId,
+          //               outcomeId,
+          //               marketId
           //             },
           //             message: `short sold ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
           //             numShares: shares,
@@ -2486,7 +2486,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const trade = {
           //           transactionHash: '0xHASH',
           //           tradeid: '0xTRADEID',
-          //           tradeGroupID: '0xTRADEGROUPID',
+          //           tradeGroupId: '0xTRADEGROUPID',
           //           price: '0.1',
           //           amount: '2',
           //           maker: false,
@@ -2497,11 +2497,11 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           gasFees: 0.001,
           //           inProgress: true
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const marketType = BINARY
           //         const maxValue = '1'
           //         const description = 'test description'
-          //         const outcomeID = '1'
+          //         const outcomeId = '1'
           //         const status = 'testing'
 
           //         const price = formatEtherTokens(trade.price)
@@ -2512,7 +2512,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const totalCost = bnShares.minus(bnPrice.times(bnShares).plus(tradingFees))
           //         const totalCostPerShare = totalCost.dividedBy(bnShares)
 
-          //         const actual = store.dispatch(action.constructLogShortFillTxTransaction(trade, marketID, marketType, maxValue, description, outcomeID, null, status))
+          //         const actual = store.dispatch(action.constructLogShortFillTxTransaction(trade, marketId, marketType, maxValue, description, outcomeId, null, status))
 
           //         const expected = {
           //           '0xHASH-0xTRADEID': {
@@ -2522,9 +2522,9 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //             description,
           //             data: {
           //               marketType,
-          //               outcomeName: outcomeID,
-          //               outcomeID,
-          //               marketID
+          //               outcomeName: outcomeId,
+          //               outcomeId,
+          //               marketId
           //             },
           //             message: `short selling ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
           //             numShares: shares,
@@ -2549,7 +2549,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const trade = {
           //           transactionHash: '0xHASH',
           //           tradeid: '0xTRADEID',
-          //           tradeGroupID: '0xTRADEGROUPID',
+          //           tradeGroupId: '0xTRADEGROUPID',
           //           price: '0.1',
           //           amount: '2',
           //           maker: false,
@@ -2560,11 +2560,11 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           gasFees: 0.001,
           //           inProgress: true
           //         }
-          //         const marketID = '0xMARKETID'
+          //         const marketId = '0xMARKETID'
           //         const marketType = SCALAR
           //         const maxValue = '1'
           //         const description = 'test description'
-          //         const outcomeID = '1'
+          //         const outcomeId = '1'
           //         const status = 'testing'
 
           //         const price = formatEtherTokens(trade.price)
@@ -2575,7 +2575,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         const totalCost = abi.bignum(maxValue).times(bnShares).minus(bnPrice.times(bnShares).plus(tradingFees))
           //         const totalCostPerShare = totalCost.dividedBy(bnShares)
 
-          //         const actual = store.dispatch(action.constructLogShortFillTxTransaction(trade, marketID, marketType, maxValue, description, outcomeID, null, status))
+          //         const actual = store.dispatch(action.constructLogShortFillTxTransaction(trade, marketId, marketType, maxValue, description, outcomeId, null, status))
 
           //         const expected = {
           //           '0xHASH-0xTRADEID': {
@@ -2585,9 +2585,9 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //             description,
           //             data: {
           //               marketType,
-          //               outcomeName: outcomeID,
-          //               outcomeID,
-          //               marketID
+          //               outcomeName: outcomeId,
+          //               outcomeId,
+          //               marketId
           //             },
           //             message: `short selling ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
           //             numShares: shares,
@@ -2619,7 +2619,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //       let trade = {
           //         transactionHash: '0xHASH',
           //         tradeid: '0xTRADEID',
-          //         tradeGroupID: '0xTRADEGROUPID',
+          //         tradeGroupId: '0xTRADEGROUPID',
           //         price: '0.1',
           //         amount: '2',
           //         maker: false,
@@ -2629,10 +2629,10 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         blockNumber: 123456,
           //         gasFees: 0.001
           //       }
-          //       const marketID = '0xMARKETID'
+          //       const marketId = '0xMARKETID'
           //       const marketType = BINARY
           //       const description = 'test description'
-          //       const outcomeID = '1'
+          //       const outcomeId = '1'
           //       const market = {
           //         makerFee: '0.025',
           //         takerFee: '0.05',
@@ -2651,7 +2651,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //             inProgress: false
           //           }
 
-          //           const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, null, market, status))
+          //           const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketId, marketType, description, outcomeId, null, market, status))
 
           //           const expected = {
           //             '0xHASH': {
@@ -2680,7 +2680,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //             inProgress: true
           //           }
 
-          //           const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, null, market, status))
+          //           const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketId, marketType, description, outcomeId, null, market, status))
 
           //           const expected = {
           //             '0xHASH': {
@@ -2709,7 +2709,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //             inProgress: false
           //           }
 
-          //           const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, null, market, status))
+          //           const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketId, marketType, description, outcomeId, null, market, status))
 
           //           const expected = {
           //             '0xHASH': {
@@ -2738,7 +2738,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //             inProgress: true
           //           }
 
-          //           const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, null, market, status))
+          //           const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketId, marketType, description, outcomeId, null, market, status))
 
           //           const expected = {
           //             '0xHASH': {
@@ -2767,7 +2767,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //             inProgress: true
           //           }
 
-          //           const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, null, market, status))
+          //           const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketId, marketType, description, outcomeId, null, market, status))
 
           //           const expected = {
           //             '0xHASH': {
@@ -2791,7 +2791,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //       const trade = {
           //         transactionHash: '0xHASH',
           //         tradeid: '0xTRADEID',
-          //         tradeGroupID: '0xTRADEGROUPID',
+          //         tradeGroupId: '0xTRADEGROUPID',
           //         price: '0.1',
           //         amount: '2',
           //         maker: false,
@@ -2801,10 +2801,10 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         blockNumber: 123456,
           //         gasFees: 0.001
           //       }
-          //       const marketID = '0xMARKETID'
+          //       const marketId = '0xMARKETID'
           //       let marketType = BINARY
           //       const description = 'test description'
-          //       const outcomeID = '1'
+          //       const outcomeId = '1'
           //       let market = {
           //         makerFee: '0.025',
           //         takerFee: '0.05',
@@ -2816,7 +2816,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //       test({
           //         description: 'BINARY',
           //         assertions: (store) => {
-          //           const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, null, market, status))
+          //           const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketId, marketType, description, outcomeId, null, market, status))
 
           //           const expected = {
           //             '0xHASH': {
@@ -2843,7 +2843,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //             maxValue: 1
           //           }
 
-          //           const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, null, market, status))
+          //           const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketId, marketType, description, outcomeId, null, market, status))
 
           //           const expected = {
           //             '0xHASH': {
@@ -2865,7 +2865,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //       const trade = {
           //         transactionHash: '0xHASH',
           //         tradeid: '0xTRADEID',
-          //         tradeGroupID: '0xTRADEGROUPID',
+          //         tradeGroupId: '0xTRADEGROUPID',
           //         price: '0.1',
           //         amount: '2',
           //         maker: false,
@@ -2876,10 +2876,10 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //         gasFees: 0.001,
           //         inProgress: false
           //       }
-          //       const marketID = '0xMARKETID'
+          //       const marketId = '0xMARKETID'
           //       const marketType = BINARY
           //       const description = 'test description'
-          //       const outcomeID = '1'
+          //       const outcomeId = '1'
           //       const market = {
           //         makerFee: '0.025',
           //         takerFee: '0.05',
@@ -2891,7 +2891,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //       test({
           //         description: `should return the expected object`,
           //         assertions: (store) => {
-          //           const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, null, market, status))
+          //           const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketId, marketType, description, outcomeId, null, market, status))
 
           //           const expected = {
           //             '0xHASH': {
@@ -2900,9 +2900,9 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //               description,
           //               data: {
           //                 marketType,
-          //                 outcomeName: outcomeID,
-          //                 outcomeID,
-          //                 marketID
+          //                 outcomeName: outcomeId,
+          //                 outcomeId,
+          //                 marketId
           //               },
           //               message: 'ask 2 shares for 0.0991 ETH Tokens / share',
           //               numShares: formatShares(trade.amount),
@@ -2920,7 +2920,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //               totalReturn: formatEtherTokens(0.1982),
           //               gasFees: formatEther(trade.gasFees),
           //               blockNumber: trade.blockNumber,
-          //               tradeID: trade.tradeid
+          //               tradeId: trade.tradeid
           //             }
           //           }
 
@@ -2936,7 +2936,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //     let trade = {
           //       transactionHash: '0xHASH',
           //       tradeid: '0xTRADEID',
-          //       tradeGroupID: '0xTRADEGROUPID',
+          //       tradeGroupId: '0xTRADEGROUPID',
           //       price: '0.1',
           //       amount: '2',
           //       maker: false,
@@ -2948,10 +2948,10 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //       inProgress: false,
           //       cashRefund: '10'
           //     }
-          //     const marketID = '0xMARKETID'
+          //     const marketId = '0xMARKETID'
           //     const marketType = BINARY
           //     const description = 'test description'
-          //     const outcomeID = '1'
+          //     const outcomeId = '1'
           //     const status = 'testing'
 
           //     const test = t => it(t.description, () => {
@@ -2962,7 +2962,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //     test({
           //       description: `should return the expected object with inProgress false`,
           //       assertions: (store) => {
-          //         const actual = store.dispatch(action.constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, null, status))
+          //         const actual = store.dispatch(action.constructLogCancelTransaction(trade, marketId, marketType, description, outcomeId, null, status))
 
           //         const price = formatEtherTokens(trade.price)
           //         const shares = formatShares(trade.amount)
@@ -2979,10 +2979,10 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //               },
           //               marketType,
           //               outcome: {
-          //                 name: outcomeID
+          //                 name: outcomeId
           //               },
-          //               outcomeID,
-          //               marketID
+          //               outcomeId,
+          //               marketId
           //             },
           //             message: `canceled order to ${trade.type} ${shares.full} for ${price.full} each`,
           //             numShares: shares,
@@ -2993,7 +2993,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //             totalReturn: formatEtherTokens(trade.cashRefund),
           //             gasFees: formatEther(trade.gasFees),
           //             blockNumber: trade.blockNumber,
-          //             tradeID: trade.tradeid
+          //             tradeId: trade.tradeid
           //           }
           //         }
 
@@ -3009,7 +3009,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //           inProgress: true
           //         }
 
-          //         const actual = store.dispatch(action.constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, null, status))
+          //         const actual = store.dispatch(action.constructLogCancelTransaction(trade, marketId, marketType, description, outcomeId, null, status))
 
           //         const price = formatEtherTokens(trade.price)
           //         const shares = formatShares(trade.amount)
@@ -3026,10 +3026,10 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //               },
           //               marketType,
           //               outcome: {
-          //                 name: outcomeID
+          //                 name: outcomeId
           //               },
-          //               outcomeID,
-          //               marketID
+          //               outcomeId,
+          //               marketId
           //             },
           //             message: `canceling order to ${trade.type} ${shares.full} for ${price.full} each`,
           //             numShares: shares,
@@ -3040,7 +3040,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           //             totalReturn: null,
           //             gasFees: formatEther(trade.gasFees),
           //             blockNumber: trade.blockNumber,
-          //             tradeID: trade.tradeid
+          //             tradeId: trade.tradeid
           //           }
           //         }
 
@@ -3588,18 +3588,18 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const log = {
           inProgress: true
         }
-        const marketID = '0xMARKETID'
+        const marketId = '0xMARKETID'
         const market = {
           description: 'test description'
         }
 
-        const result = action.constructSubmitReportTransaction(log, marketID, market)
+        const result = action.constructSubmitReportTransaction(log, marketId, market)
 
         const expectedResult = {
           data: {
-            marketID,
+            marketId,
             market,
-            reportedOutcomeID: 'formatted reported outcome',
+            reportedOutcomeId: 'formatted reported outcome',
             outcome: {
               name: 'formatted reported outcome'
             }
@@ -3655,7 +3655,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const order = {
           transactionHash: '0xHASH',
           orderId: '0xORDERID',
-          tradeGroupID: '0xTRADEGROUPID',
+          tradeGroupId: '0xTRADEGROUPID',
           price: '0.1',
           amount: '2',
           isMaker: true,
@@ -3664,26 +3664,26 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           blockNumber: 123456,
           gasFees: '0.001'
         }
-        const marketID = '0xMARKETID'
+        const marketId = '0xMARKETID'
         const marketType = BINARY
         const minPrice = '0'
         const maxPrice = '1'
         const settlementFee = '0.01'
         const description = 'test description'
-        const outcomeID = '1'
+        const outcomeId = '1'
         const status = 'testing'
-        assert.deepEqual(store.dispatch(action.constructFillOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
+        assert.deepEqual(store.dispatch(action.constructFillOrderTransaction(order, marketId, marketType, description, outcomeId, null, minPrice, maxPrice, settlementFee, status)), {
           '0xHASH-0xORDERID': {
             type: TYPES.MATCH_ASK,
             hash: '0xHASH',
-            tradeGroupID: '0xTRADEGROUPID',
+            tradeGroupId: '0xTRADEGROUPID',
             status: 'testing',
             description: 'test description',
             data: {
               marketType: BINARY,
               outcomeName: '1',
-              outcomeID: '1',
-              marketID: '0xMARKETID'
+              outcomeId: '1',
+              marketId: '0xMARKETID'
             },
             message: 'sold 2 shares for 0.1050 ETH Tokens / share',
             numShares: formatShares('2'),
@@ -3717,7 +3717,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const order = {
           transactionHash: '0xHASH',
           orderId: '0xORDERID',
-          tradeGroupID: '0xTRADEGROUPID',
+          tradeGroupId: '0xTRADEGROUPID',
           price: '0.1',
           amount: '2',
           isMaker: true,
@@ -3726,26 +3726,26 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           blockNumber: 123456,
           gasFees: '0.001'
         }
-        const marketID = '0xMARKETID'
+        const marketId = '0xMARKETID'
         const marketType = BINARY
         const minPrice = '0'
         const maxPrice = '1'
         const settlementFee = '0.01'
         const description = 'test description'
-        const outcomeID = '1'
+        const outcomeId = '1'
         const status = 'testing'
-        assert.deepEqual(store.dispatch(action.constructFillOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
+        assert.deepEqual(store.dispatch(action.constructFillOrderTransaction(order, marketId, marketType, description, outcomeId, null, minPrice, maxPrice, settlementFee, status)), {
           '0xHASH-0xORDERID': {
             type: TYPES.MATCH_BID,
             hash: '0xHASH',
-            tradeGroupID: '0xTRADEGROUPID',
+            tradeGroupId: '0xTRADEGROUPID',
             status: 'testing',
             description: 'test description',
             data: {
               marketType: BINARY,
               outcomeName: '1',
-              outcomeID: '1',
-              marketID: '0xMARKETID'
+              outcomeId: '1',
+              marketId: '0xMARKETID'
             },
             message: 'bought 2 shares for 0.0950 ETH Tokens / share',
             numShares: formatShares('2'),
@@ -3770,7 +3770,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const order = {
           transactionHash: '0xHASH',
           orderId: '0xORDERID',
-          tradeGroupID: '0xTRADEGROUPID',
+          tradeGroupId: '0xTRADEGROUPID',
           price: '0.1',
           amount: '2',
           isMaker: false,
@@ -3779,26 +3779,26 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           blockNumber: 123456,
           gasFees: '0.001'
         }
-        const marketID = '0xMARKETID'
+        const marketId = '0xMARKETID'
         const marketType = BINARY
         const minPrice = '0'
         const maxPrice = '1'
         const settlementFee = '0.01'
         const description = 'test description'
-        const outcomeID = '1'
+        const outcomeId = '1'
         const status = 'testing'
-        assert.deepEqual(store.dispatch(action.constructFillOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
+        assert.deepEqual(store.dispatch(action.constructFillOrderTransaction(order, marketId, marketType, description, outcomeId, null, minPrice, maxPrice, settlementFee, status)), {
           '0xHASH-0xORDERID': {
             type: TYPES.BUY,
             hash: '0xHASH',
-            tradeGroupID: '0xTRADEGROUPID',
+            tradeGroupId: '0xTRADEGROUPID',
             status: 'testing',
             description: 'test description',
             data: {
               marketType: BINARY,
               outcomeName: '1',
-              outcomeID: '1',
-              marketID: '0xMARKETID'
+              outcomeId: '1',
+              marketId: '0xMARKETID'
             },
             message: 'bought 2 shares for 0.1050 ETH Tokens / share',
             numShares: formatShares('2'),
@@ -3822,7 +3822,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const order = {
           transactionHash: '0xHASH',
           orderId: '0xORDERID',
-          tradeGroupID: '0xTRADEGROUPID',
+          tradeGroupId: '0xTRADEGROUPID',
           price: '0.1',
           amount: '2',
           isMaker: false,
@@ -3831,26 +3831,26 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           blockNumber: 123456,
           gasFees: '0.001'
         }
-        const marketID = '0xMARKETID'
+        const marketId = '0xMARKETID'
         const marketType = BINARY
         const minPrice = '0'
         const maxPrice = '1'
         const settlementFee = '0.01'
         const description = 'test description'
-        const outcomeID = '1'
+        const outcomeId = '1'
         const status = 'testing'
-        assert.deepEqual(store.dispatch(action.constructFillOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
+        assert.deepEqual(store.dispatch(action.constructFillOrderTransaction(order, marketId, marketType, description, outcomeId, null, minPrice, maxPrice, settlementFee, status)), {
           '0xHASH-0xORDERID': {
             type: TYPES.SELL,
             hash: '0xHASH',
-            tradeGroupID: '0xTRADEGROUPID',
+            tradeGroupId: '0xTRADEGROUPID',
             status: 'testing',
             description: 'test description',
             data: {
               marketType: 'binary',
               outcomeName: '1',
-              outcomeID: '1',
-              marketID: '0xMARKETID'
+              outcomeId: '1',
+              marketId: '0xMARKETID'
             },
             message: 'sold 2 shares for 0.0950 ETH Tokens / share',
             numShares: formatShares('2'),
@@ -3881,7 +3881,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
       let order = {
         transactionHash: '0xHASH',
         orderId: '0xORDERID',
-        tradeGroupID: '0xTRADEGROUPID',
+        tradeGroupId: '0xTRADEGROUPID',
         price: '0.1',
         amount: '2',
         isMaker: false,
@@ -3890,13 +3890,13 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         blockNumber: 123456,
         gasFees: '0.001'
       }
-      const marketID = '0xMARKETID'
+      const marketId = '0xMARKETID'
       const marketType = BINARY
       const minPrice = '0'
       const maxPrice = '1'
       const settlementFee = '0.05'
       const description = 'test description'
-      const outcomeID = '1'
+      const outcomeId = '1'
       const status = 'testing'
 
       test({
@@ -3906,7 +3906,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
             ...order,
             orderType: TYPES.BUY
           }
-          assert.deepEqual(store.dispatch(action.constructCreateOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
+          assert.deepEqual(store.dispatch(action.constructCreateOrderTransaction(order, marketId, marketType, description, outcomeId, null, minPrice, maxPrice, settlementFee, status)), {
             '0xHASH': {
               type: 'buy',
               status: 'testing',
@@ -3914,8 +3914,8 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
               data: {
                 marketType: 'binary',
                 outcomeName: '1',
-                outcomeID: '1',
-                marketID: '0xMARKETID'
+                outcomeId: '1',
+                marketId: '0xMARKETID'
               },
               message: 'bid 2 shares for 0.1250 ETH Tokens / share',
               numShares: formatShares('2'),
@@ -3946,7 +3946,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
             ...order,
             orderType: TYPES.SELL
           }
-          assert.deepEqual(store.dispatch(action.constructCreateOrderTransaction(order, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, settlementFee, status)), {
+          assert.deepEqual(store.dispatch(action.constructCreateOrderTransaction(order, marketId, marketType, description, outcomeId, null, minPrice, maxPrice, settlementFee, status)), {
             '0xHASH': {
               type: TYPES.SELL,
               status: 'testing',
@@ -3954,8 +3954,8 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
               data: {
                 marketType: BINARY,
                 outcomeName: '1',
-                outcomeID: '1',
-                marketID: '0xMARKETID'
+                outcomeId: '1',
+                marketId: '0xMARKETID'
               },
               message: 'ask 2 shares for 0.0750 ETH Tokens / share',
               numShares: formatShares('2'),
@@ -3987,7 +3987,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
     let trade = {
       transactionHash: '0xHASH',
       orderId: '0xORDERID',
-      tradeGroupID: '0xTRADEGROUPID',
+      tradeGroupId: '0xTRADEGROUPID',
       price: '0.1',
       amount: '2',
       isMaker: false,
@@ -3998,10 +3998,10 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
       inProgress: false,
       cashRefund: '10'
     }
-    const marketID = '0xMARKETID'
+    const marketId = '0xMARKETID'
     const marketType = BINARY
     const description = 'test description'
-    const outcomeID = '1'
+    const outcomeId = '1'
     const minPrice = '0'
     const maxPrice = '1'
     const status = 'testing'
@@ -4014,7 +4014,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
     test({
       description: `should return the expected object with inProgress false`,
       assertions: (store) => {
-        const actual = store.dispatch(action.constructCancelOrderTransaction(trade, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, status))
+        const actual = store.dispatch(action.constructCancelOrderTransaction(trade, marketId, marketType, description, outcomeId, null, minPrice, maxPrice, status))
 
         const price = formatEtherTokens(trade.price)
         const shares = formatShares(trade.amount)
@@ -4031,10 +4031,10 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
               },
               marketType,
               outcome: {
-                name: outcomeID
+                name: outcomeId
               },
-              outcomeID,
-              marketID
+              outcomeId,
+              marketId
             },
             message: `canceled order to ${trade.orderType} ${shares.full} for ${price.full} each`,
             numShares: shares,
@@ -4061,7 +4061,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           inProgress: true
         }
 
-        const actual = store.dispatch(action.constructCancelOrderTransaction(trade, marketID, marketType, description, outcomeID, null, minPrice, maxPrice, status))
+        const actual = store.dispatch(action.constructCancelOrderTransaction(trade, marketId, marketType, description, outcomeId, null, minPrice, maxPrice, status))
 
         const price = formatEtherTokens(trade.price)
         const shares = formatShares(trade.amount)
@@ -4078,10 +4078,10 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
               },
               marketType,
               outcome: {
-                name: outcomeID
+                name: outcomeId
               },
-              outcomeID,
-              marketID
+              outcomeId,
+              marketId
             },
             message: `canceling order to ${trade.orderType} ${shares.full} for ${price.full} each`,
             numShares: shares,

@@ -32,8 +32,8 @@ export default function AuthSignup(p) {
 //       currentScore: 0,
 //       passwordSuggestions: [],
 //       isStrongPass: false,
-//       isGeneratingLoginID: false,
-//       loginID: null,
+//       isGeneratingLoginId: false,
+//       loginId: null,
 //       authError: false,
 //       errorMessage: null,
 //       // These prevent a flash on component mount
@@ -48,7 +48,7 @@ export default function AuthSignup(p) {
 //
 //   componentWillUpdate(nextProps, nextState) {
 //
-//     // loginID
+//     // loginId
 //     if (
 //       nextState.password &&
 //       nextState.isStrongPass &&
@@ -57,10 +57,10 @@ export default function AuthSignup(p) {
 //     ) {
 //       this.setState({
 //         isGeneratingLoginIDDisplayable: true,
-//         isGeneratingLoginID: true
+//         isGeneratingLoginId: true
 //       }, () => {
 //         setTimeout(() => {
-//           this.props.register(this.state.password, (err, loginID) => {
+//           this.props.register(this.state.password, (err, loginId) => {
 //             if (err) {
 //               this.setState({
 //                 authError: true,
@@ -68,11 +68,11 @@ export default function AuthSignup(p) {
 //                 isAuthErrorDisplayable: true
 //               })
 //             } else {
-//               this.username.value = loginID
+//               this.username.value = loginId
 //
 //               this.setState({
-//                 loginID,
-//                 isGeneratingLoginID: false,
+//                 loginId,
+//                 isGeneratingLoginId: false,
 //                 isSignUpActionsDisplayable: true
 //               })
 //             }
@@ -81,13 +81,13 @@ export default function AuthSignup(p) {
 //       })
 //     } else if (
 //       nextState.password !== nextState.passwordConfirm &&
-//       this.state.loginID
+//       this.state.loginId
 //     ) { // if a login account exists, clear it
 //       this.username.value = ''
 //
 //       this.setState({
-//         loginID: null,
-//         isGeneratingLoginID: false
+//         loginId: null,
+//         isGeneratingLoginId: false
 //       })
 //     }
 //
@@ -125,7 +125,7 @@ export default function AuthSignup(p) {
 //     const p = this.props
 //     const s = this.state
 //
-//     const loginID = s.loginID || ''
+//     const loginId = s.loginId || ''
 //
 //     return (
 //       <form
@@ -134,7 +134,7 @@ export default function AuthSignup(p) {
 //           e.preventDefault()
 //           e.persist()
 //
-//           p.setupAndFundNewAccount(s.password, loginID, (err) => {
+//           p.setupAndFundNewAccount(s.password, loginId, (err) => {
 //             if (err) {
 //               this.setState({
 //                 authError: true,
@@ -223,8 +223,8 @@ export default function AuthSignup(p) {
 //         </div>
 //         <div
 //           className={classNames('auth-generating-login-id', {
-//             animateInPartial: s.isGeneratingLoginID,
-//             animateOutPartial: !s.isGeneratingLoginID && s.isGeneratingLoginIDDisplayable
+//             animateInPartial: s.isGeneratingLoginId,
+//             animateOutPartial: !s.isGeneratingLoginId && s.isGeneratingLoginIDDisplayable
 //           })}
 //         >
 //           <span>Generating Login ID</span>
@@ -232,8 +232,8 @@ export default function AuthSignup(p) {
 //         </div>
 //         <div
 //           className={classNames('auth-signup-actions', {
-//             animateInPartial: s.loginID,
-//             animateOutPartial: !s.loginID && s.isSignUpActionsDisplayable
+//             animateInPartial: s.loginId,
+//             animateOutPartial: !s.loginId && s.isSignUpActionsDisplayable
 //           })}
 //         >
 //           <div className="login-id-messaging">
@@ -243,13 +243,13 @@ export default function AuthSignup(p) {
 //           </div>
 //           <textarea
 //             className="login-id"
-//             disabled={!s.loginID}
-//             value={loginID}
+//             disabled={!s.loginId}
+//             value={loginId}
 //             readOnly
 //           />
 //           <button
 //             className="submit"
-//             disabled={!s.loginID}
+//             disabled={!s.loginId}
 //             type="submit"
 //           >
 //             Sign Up

@@ -64,20 +64,20 @@ export function submitNewMarket(newMarket, history) {
         dispatch(clearNewMarket())
       },
       onSuccess: (res) => {
-        const marketID = res.callReturn
+        const marketId = res.callReturn
 
         if (Object.keys(newMarket.orderBook).length) {
           eachOfSeries(Object.keys(newMarket.orderBook), (outcome, index, seriesCB) => {
             eachLimit(newMarket.orderBook[outcome], constants.PARALLEL_LIMIT, (order, orderCB) => {
-              const outcomeID = newMarket.type === CATEGORICAL ? index : 1 // NOTE -- Both Scalar + Binary only trade against one outcome, that of outcomeID 1
+              const outcomeId = newMarket.type === CATEGORICAL ? index : 1 // NOTE -- Both Scalar + Binary only trade against one outcome, that of outcomeId 1
 
-              dispatch(updateTradesInProgress(marketID, outcomeID, order.type === BUY ? BUY : SELL, order.quantity, order.price, null, (tradingActions) => {
+              dispatch(updateTradesInProgress(marketId, outcomeId, order.type === BUY ? BUY : SELL, order.quantity, order.price, null, (tradingActions) => {
                 const tradeToExecute = {
-                  [outcomeID]: tradingActions
+                  [outcomeId]: tradingActions
                 }
 
                 if (tradeToExecute) {
-                  dispatch(placeTrade(marketID, outcomeID, tradeToExecute, null, (err) => {
+                  dispatch(placeTrade(marketId, outcomeId, tradeToExecute, null, (err) => {
                     if (err) return console.error('ERROR: ', err)
 
                     orderCB()

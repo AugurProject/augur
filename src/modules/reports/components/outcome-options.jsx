@@ -18,7 +18,7 @@ const OutcomeOptions = p => (
             type="text"
             className="outcome-option-input"
             name="outcome-scalar-input"
-            value={p.reportedOutcomeID}
+            value={p.reportedOutcomeId}
             disabled={p.isReported || p.isIndeterminate}
             onChange={p.onOutcomeChange}
           />
@@ -39,7 +39,7 @@ const OutcomeOptions = p => (
                   className="outcome-option-radio"
                   name="outcome-option-radio"
                   value={outcome.id}
-                  checked={p.reportedOutcomeID === outcome.id}
+                  checked={p.reportedOutcomeId === outcome.id}
                   disabled={p.isReported || p.isIndeterminate}
                   onChange={p.onOutcomeChange}
                 />
@@ -57,7 +57,7 @@ OutcomeOptions.propTypes = {
   className: PropTypes.string,
   type: PropTypes.string,
   reportableOutcomes: PropTypes.array,
-  reportedOutcomeID: PropTypes.string,
+  reportedOutcomeId: PropTypes.string,
   isReported: PropTypes.bool,
   isIndeterminate: PropTypes.bool,
   onOutcomeChange: PropTypes.func

@@ -34,7 +34,7 @@ const outcomes = [
   {
     name: '1. HARTNELL (12)',
     id: '1',
-    marketID: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
+    marketId: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
     lastPrice: {
       formatted: '0',
     },
@@ -61,7 +61,7 @@ const outcomes = [
   {
     name: '2. ALMANDIN (14)',
     id: '2',
-    marketID: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
+    marketId: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
     lastPrice: {
       formatted: '0',
     },
@@ -88,7 +88,7 @@ const outcomes = [
   {
     name: '3. HUMIDOR (13)',
     id: '3',
-    marketID: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
+    marketId: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
     lastPrice: {
       formatted: '0',
     },
@@ -117,7 +117,7 @@ const outcomes = [
   {
     name: '4. TIBERIAN (23)',
     id: '4',
-    marketID: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
+    marketId: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
     lastPrice: {
       formatted: '0',
     },
@@ -146,7 +146,7 @@ const outcomes = [
   {
     name: '5. MARMELO (16)',
     id: '5',
-    marketID: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
+    marketId: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
     lastPrice: {
       formatted: '0',
     },
@@ -175,7 +175,7 @@ const outcomes = [
   {
     name: '6. RED CARDINAL (24)',
     id: '6',
-    marketID: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
+    marketId: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
     lastPrice: {
       formatted: '0',
     },
@@ -204,7 +204,7 @@ const outcomes = [
   {
     name: '7. JOHANNES VERMEER (3)',
     id: '7',
-    marketID: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
+    marketId: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
     lastPrice: {
       formatted: '0',
     },
@@ -233,7 +233,7 @@ const outcomes = [
   {
     name: '8. BONDI BEACH (1)',
     id: '8',
-    marketID: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
+    marketId: '0x7d9f26082539a7f9793b8c3b25f2a20374ab357d73ff6d6dc99cab6145b567a0',
     lastPrice: {
       formatted: '0',
     },

@@ -14,9 +14,9 @@ export default function () {
 export const selectAuthorOwnedMarkets = createSelector(
   selectAllMarkets,
   selectLoginAccountAddress,
-  (allMarkets, authorID) => {
-    if (!allMarkets || !authorID) return null
-    return allMarkets.filter(market => market.author === authorID)
+  (allMarkets, authorId) => {
+    if (!allMarkets || !authorId) return null
+    return allMarkets.filter(market => market.author === authorId)
   }
 )
 

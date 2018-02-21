@@ -10,8 +10,8 @@ export const register = (password, callback = logError) => dispatch => (
   })
 )
 
-export const setupAndFundNewAccount = (password, loginID, callback = logError) => (dispatch, getState) => {
-  if (!loginID) return callback({ message: 'loginID is required' })
-  dispatch(loadAccountData({ loginID, ...base58Decode(loginID) }, true))
+export const setupAndFundNewAccount = (password, loginId, callback = logError) => (dispatch, getState) => {
+  if (!loginId) return callback({ message: 'loginId is required' })
+  dispatch(loadAccountData({ loginId, ...base58Decode(loginId) }, true))
   callback(null)
 }

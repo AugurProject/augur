@@ -20,15 +20,15 @@ export const selectClosedMarketsWithWinningShares = createSelector(
     for (let i = 0; i < numPositions; ++i) {
       const market = markets[i]
       if (!market.isOpen) {
-        const marketID = market.id
+        const marketId = market.id
         const isSelectTotalShares = market.type === SCALAR ||
           (market.consensus && market.consensus.isIndeterminate)
         const winningShares = isSelectTotalShares ?
-          selectTotalSharesInMarket(market, outcomesData[marketID]) :
-          selectWinningSharesInMarket(market, outcomesData[marketID])
+          selectTotalSharesInMarket(market, outcomesData[marketId]) :
+          selectWinningSharesInMarket(market, outcomesData[marketId])
         if (winningShares && winningShares.gt(ZERO)) {
           closedMarketsWithWinningShares.push({
-            id: marketID,
+            id: marketId,
             description: market.description,
             shares: winningShares.toFixed()
           })
@@ -53,8 +53,8 @@ export const selectTotalSharesInMarket = (market, marketOutcomesData) => {
 }
 
 export const selectWinningSharesInMarket = (market, marketOutcomesData) => {
-  if (market.consensus && market.consensus.outcomeID) {
-    const outcomeData = marketOutcomesData[market.consensus.outcomeID]
+  if (market.consensus && market.consensus.outcomeId) {
+    const outcomeData = marketOutcomesData[market.consensus.outcomeId]
     if (outcomeData && outcomeData.sharesPurchased) {
       const sharesPurchased = new BigNumber(outcomeData.sharesPurchased, 10)
       return sharesPurchased.gt(ZERO) ? sharesPurchased : null

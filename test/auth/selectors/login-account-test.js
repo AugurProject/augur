@@ -78,11 +78,11 @@ describe(`modules/auth/selectors/login-account.js`, () => {
     })
 
     test({
-      description: `should return the expected object when user is logged via loginID with account locked`,
+      description: `should return the expected object when user is logged via loginId with account locked`,
       assertions: (done) => {
         const loginAccount = {
           address: '0xAccountAddress',
-          loginID: '123ThisIsALoginID',
+          loginId: '123ThisIsALoginId',
           eth: '10',
           rep: '12'
         }
@@ -92,7 +92,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
 
         const expected = {
           address: '0xAccountAddress',
-          loginID: '123ThisIsALoginID',
+          loginId: '123ThisIsALoginId',
           accountName: 'testing',
           rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
           eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
@@ -106,11 +106,11 @@ describe(`modules/auth/selectors/login-account.js`, () => {
     })
 
     test({
-      description: `should return the expected object when user is logged via loginID with account locked and name encoded`,
+      description: `should return the expected object when user is logged via loginId with account locked and name encoded`,
       assertions: (done) => {
         const loginAccount = {
           address: '0xAccountAddress',
-          loginID: '123ThisIsALoginID',
+          loginId: '123ThisIsALoginId',
           eth: '10',
           rep: '12',
         }
@@ -120,7 +120,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
 
         const expected = {
           address: '0xAccountAddress',
-          loginID: '123ThisIsALoginID',
+          loginId: '123ThisIsALoginId',
           accountName: 'testing',
           rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
           eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
@@ -134,11 +134,11 @@ describe(`modules/auth/selectors/login-account.js`, () => {
     })
 
     test({
-      description: `should return the expected object when user is logged via loginID with account UNlocked`,
+      description: `should return the expected object when user is logged via loginId with account UNlocked`,
       assertions: (done) => {
         const loginAccount = {
           address: '0xAccountAddress',
-          loginID: '123ThisIsALoginID',
+          loginId: '123ThisIsALoginId',
           eth: '10',
           rep: '12',
           isUnlocked: true
@@ -149,7 +149,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
 
         const expected = {
           address: '0xAccountAddress',
-          loginID: '123ThisIsALoginID',
+          loginId: '123ThisIsALoginId',
           accountName: 'testing',
           isUnlocked: true,
           rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
@@ -169,7 +169,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
         const loginAccount = {
           airbitzAccount: {},
           address: '0xAccountAddress',
-          loginID: '123ThisIsALoginID',
+          loginId: '123ThisIsALoginId',
           eth: '10',
           rep: '12',
           isUnlocked: true
@@ -181,7 +181,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
         const expected = {
           airbitzAccount: {},
           address: '0xAccountAddress',
-          loginID: '123ThisIsALoginID',
+          loginId: '123ThisIsALoginId',
           accountName: 'testing',
           isUnlocked: true,
           rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),

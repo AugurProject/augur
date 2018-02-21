@@ -4,28 +4,28 @@ export const UPDATE_ORDER_STATUS = 'UPDATE_ORDER_STATUS'
 export const UPDATE_ORDER_REMOVE = 'UPDATE_ORDER_REMOVE'
 /**
  *
- * @param {String} orderID
+ * @param {String} orderId
  * @param {String} status
- * @param {String} marketID
+ * @param {String} marketId
  * @param {String} orderTypeLabel
  */
-export const updateOrderStatus = (orderID, status, marketID, outcome, orderTypeLabel) => (dispatch, getState) => {
+export const updateOrderStatus = (orderId, status, marketId, outcome, orderTypeLabel) => (dispatch, getState) => {
   const { orderBooks } = getState()
-  const order = selectOrder(orderID, marketID, outcome, orderTypeLabel, orderBooks)
+  const order = selectOrder(orderId, marketId, outcome, orderTypeLabel, orderBooks)
   if (order == null) {
-    return warnNonExistingOrder(orderID, status, marketID, outcome, orderTypeLabel)
+    return warnNonExistingOrder(orderId, status, marketId, outcome, orderTypeLabel)
   }
   dispatch({
     type: UPDATE_ORDER_STATUS,
-    orderID,
+    orderId,
     status,
-    marketID,
+    marketId,
     orderType: orderTypeLabel
   })
 }
 
-export const removeCanceledOrder = orderID => dispatch => dispatch({ type: UPDATE_ORDER_REMOVE, orderID })
+export const removeCanceledOrder = orderId => dispatch => dispatch({ type: UPDATE_ORDER_REMOVE, orderId })
 
-function warnNonExistingOrder(orderID, status, marketID, outcome, orderTypeLabel) {
-  return console.warn('updateOrderStatus: can\'t update %o', orderID, status, marketID, outcome, orderTypeLabel)
+function warnNonExistingOrder(orderId, status, marketId, outcome, orderTypeLabel) {
+  return console.warn('updateOrderStatus: can\'t update %o', orderId, status, marketId, outcome, orderTypeLabel)
 }

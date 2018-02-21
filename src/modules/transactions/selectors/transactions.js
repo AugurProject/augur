@@ -19,11 +19,11 @@ export const selectTransactions = createSelector(
     const tradeGroups = []
     const formattedTransactions = Object.keys(transactionsData || {})
       .reduce((p, id) => {
-        const { tradeGroupID } = transactionsData[id]
-        if (tradeGroupID) {
-          if (tradeGroups.indexOf(tradeGroupID) === -1) {
-            tradeGroups.push(tradeGroupID)
-            const filteredTransactions = Object.keys(transactionsData).filter(id => transactionsData[id].tradeGroupID === tradeGroupID).map(id => transactionsData[id])
+        const { tradeGroupId } = transactionsData[id]
+        if (tradeGroupId) {
+          if (tradeGroups.indexOf(tradeGroupId) === -1) {
+            tradeGroups.push(tradeGroupId)
+            const filteredTransactions = Object.keys(transactionsData).filter(id => transactionsData[id].tradeGroupId === tradeGroupId).map(id => transactionsData[id])
 
             if (filteredTransactions.length === 1) {
               p.push(formatTransaction(filteredTransactions[0]))

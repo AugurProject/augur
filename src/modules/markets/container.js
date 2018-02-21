@@ -33,7 +33,7 @@ const mapDispatchToProps = dispatch => ({
   loadMarketsByCategory: category => dispatch(loadMarketsByCategory(category)),
   updateMarketsFilteredSorted: filteredMarkets => dispatch(updateMarketsFilteredSorted(filteredMarkets)),
   clearMarketsFilteredSorted: () => dispatch(clearMarketsFilteredSorted()),
-  toggleFavorite: marketID => dispatch(toggleFavorite(marketID)),
+  toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
   loadMarketsInfo: marketIDs => dispatch(loadMarketsInfo(marketIDs))
 })
 

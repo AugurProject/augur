@@ -18,7 +18,7 @@ describe('modules/market/actions/update-market-loading.js', () => {
         const expected = {
           type: ADD_MARKET_LOADING,
           data: {
-            marketID: '0xMARKETID'
+            marketId: '0xMARKETID'
           }
         }
 
@@ -35,7 +35,7 @@ describe('modules/market/actions/update-market-loading.js', () => {
         const expected = {
           type: REMOVE_MARKET_LOADING,
           data: {
-            marketID: '0xMARKETID'
+            marketId: '0xMARKETID'
           }
         }
 

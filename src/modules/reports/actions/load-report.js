@@ -2,25 +2,25 @@ import { augur } from 'services/augurjs'
 import { decryptReport } from 'modules/reports/actions/report-encryption'
 import { updateReport } from 'modules/reports/actions/update-reports'
 
-export function loadReport(branchID, period, eventID, marketID, callback) {
+export function loadReport(branchId, period, eventId, marketId, callback) {
   return (dispatch, getState) => {
     const { loginAccount, marketsData } = getState()
-    const market = marketsData[marketID]
+    const market = marketsData[marketId]
     if (!market) {
-      console.error('loadReport failed:', branchID, marketID, market)
+      console.error('loadReport failed:', branchId, marketId, market)
       return callback(null)
     }
-    augur.reporting.getReport(branchID, period, eventID, loginAccount.address, market.minValue, market.maxValue, market.type, (report) => {
+    augur.reporting.getReport(branchId, period, eventId, loginAccount.address, market.minValue, market.maxValue, market.type, (report) => {
       console.log('got report:', report)
       if (!report || !report.report || report.error) {
         return callback(report || 'getReport failed')
       }
-      const reportedOutcomeID = report.report
-      if (reportedOutcomeID && reportedOutcomeID !== '0' && !reportedOutcomeID.error) {
-        dispatch(updateReport(branchID, eventID, {
+      const reportedOutcomeId = report.report
+      if (reportedOutcomeId && reportedOutcomeId !== '0' && !reportedOutcomeId.error) {
+        dispatch(updateReport(branchId, eventId, {
           period,
-          marketID,
-          reportedOutcomeID,
+          marketId,
+          reportedOutcomeId,
           isIndeterminate: report.isIndeterminate,
           reportHash: null,
           salt: null,
@@ -31,17 +31,17 @@ export function loadReport(branchID, period, eventID, marketID, callback) {
         return callback(null)
       }
       augur.api.ExpiringEvents.getReportHash({
-        branch: branchID,
+        branch: branchId,
         expDateIndex: period,
         reporter: loginAccount.address,
-        event: eventID
+        event: eventId
       }, (reportHash) => {
         if (!reportHash || reportHash.error || !parseInt(reportHash, 16)) {
           console.log('reportHash:', reportHash)
-          dispatch(updateReport(branchID, eventID, {
+          dispatch(updateReport(branchId, eventId, {
             period,
-            marketID,
-            reportedOutcomeID: null,
+            marketId,
+            reportedOutcomeId: null,
             salt: null,
             isUnethical: false,
             reportHash: null,
@@ -50,22 +50,22 @@ export function loadReport(branchID, period, eventID, marketID, callback) {
           }))
           return callback(null)
         }
-        dispatch(decryptReport(branchID, period, eventID, (err, decryptedReport) => {
+        dispatch(decryptReport(branchId, period, eventId, (err, decryptedReport) => {
           if (err) return callback(err)
           console.log('decryptedReport:', decryptedReport)
-          if (decryptedReport.reportedOutcomeID) {
+          if (decryptedReport.reportedOutcomeId) {
             const { report, isIndeterminate } = augur.reporting.format.unfixReport(
-              decryptedReport.reportedOutcomeID,
+              decryptedReport.reportedOutcomeId,
               market.minValue,
               market.maxValue,
               market.type
             )
-            decryptedReport.reportedOutcomeID = report
+            decryptedReport.reportedOutcomeId = report
             decryptedReport.isIndeterminate = isIndeterminate
           }
-          dispatch(updateReport(branchID, eventID, {
+          dispatch(updateReport(branchId, eventId, {
             period,
-            marketID,
+            marketId,
             ...decryptedReport,
             reportHash,
             isUnethical: false,
