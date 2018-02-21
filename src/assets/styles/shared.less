@@ -12,6 +12,8 @@
 @import '_responsive';
 @import '_inputs';
 
+@max-width: 75rem;
+
 html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
@@ -37,6 +39,6 @@ body {
 }
 
 .view--constrained {
-  max-width: 1200px;
+  max-width: @max-width;
   min-height: 100%;
 }

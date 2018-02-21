@@ -16,8 +16,8 @@ import Styles from 'modules/account/components/account-view/account-view.styles'
 
 const AccountView = p => (
   <section className={Styles.AccountView}>
-    <AccountHeader />
-    <div className={Styles.AccountView__content} >
+    <div>
+      <AccountHeader />
       <Switch>
         <AuthenticatedRoute path={makePath(ACCOUNT_DEPOSIT)} component={AccountDeposit} />
         <AuthenticatedRoute path={makePath(ACCOUNT_WITHDRAW)} component={AccountWithdraw} />
