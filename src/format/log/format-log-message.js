@@ -30,31 +30,9 @@ function formatLogMessage(contractName, eventName, message) {
             });
           }
           return assign({}, immutableDelete(message, "outcomes"), formattedMessage);
-        case "WinningTokensRedeemed":
-          return assign({}, message, {
-            amountRedeemed: speedomatic.unfix(message.amountRedeemed, "string"),
-            reportingFeesReceived: speedomatic.unfix(message.reportingFeesReceived, "string"),
-          });
         case "ReportSubmitted":
           return assign({}, message, {
             amountStaked: speedomatic.unfix(message.amountStaked, "string"),
-          });
-        case "TokensTransferred":
-          return assign({}, message, {
-            value: speedomatic.unfix(message.value, "string"),
-          });
-        default:
-          return message;
-      }
-    case "LegacyReputationToken":
-      switch (eventName) {
-        case "Approval":
-          return assign({}, message, {
-            value: speedomatic.unfix(message.value, "string"),
-          });
-        case "Transfer":
-          return assign({}, message, {
-            value: speedomatic.unfix(message.value, "string"),
           });
         default:
           return message;
