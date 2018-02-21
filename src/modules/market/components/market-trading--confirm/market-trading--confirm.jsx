@@ -1,7 +1,7 @@
 import React from 'react'
 import BigNumber from 'bignumber.js'
 
-import { CreateMarketEdit } from 'modules/common/components/icons/icons'
+import { CreateMarketEdit } from 'modules/common/components/icons'
 
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 

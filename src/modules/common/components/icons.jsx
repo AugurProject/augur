@@ -500,7 +500,7 @@ export const AlertCircle = (Styling, fill = '#FFFFFF') => (
   </svg>
 )
 
-export const ChevronUp = (
+export const ChevronUp = () => (
   <svg viewBox="0 0 16 16">
     <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
       <g id="Icon/Dropdown" stroke="#A7A2B2">
@@ -519,7 +519,7 @@ export const ChevronLeft = (
     </g>
   </svg>
 )
-export const ChevronDown = (
+export const ChevronDown = () => (
   <svg viewBox="0 0 16 16">
     <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
       <g id="Icon/Dropdown-Down" stroke="#A7A2B2">

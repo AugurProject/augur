@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 
 import debounce from 'utils/debounce'
-import { AlertCircle, CloseBlack } from 'modules/common/components/icons/icons'
+import { AlertCircle, CloseBlack } from 'modules/common/components/icons'
 import Styles from 'modules/notifications/components/notification.styles'
 
 export default class Notification extends Component {

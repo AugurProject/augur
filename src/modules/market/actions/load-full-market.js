@@ -6,11 +6,15 @@ import { addMarketLoading, removeMarketLoading } from 'modules/market/actions/up
 import logError from 'utils/log-error'
 
 export const loadFullMarket = (marketID, callback = logError) => (dispatch, getState) => {
+  console.log('loadFullMarket -- ', marketID)
+
   const { marketsData } = getState()
   dispatch(addMarketLoading(marketID))
 
   // if the basic data is already loaded, just load the details
   if (marketsData[marketID]) return dispatch(loadMarketDetails(marketID))
+
+  console.log('here')
 
   // if the basic data hasn't loaded yet, load it first
   dispatch(loadMarketsInfo([marketID], (err) => {

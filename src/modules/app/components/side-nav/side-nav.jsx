@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 
 import makePath from 'modules/routes/helpers/make-path'
 
-import { Notifications } from 'modules/common/components/icons/icons'
+import { Notifications } from 'modules/common/components/icons'
 
 import Styles from 'modules/app/components/side-nav/side-nav.styles'
 

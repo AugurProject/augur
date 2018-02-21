@@ -15,7 +15,7 @@ import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC, DESIGNATED_REPORTER_SELF
 import isAddress from 'modules/auth/helpers/is-address'
 
 import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'
-import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons/icons'
+import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 
 import Styles from 'modules/create-market/components/create-market-form-resolution/create-market-form-resolution.styles'
 import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'

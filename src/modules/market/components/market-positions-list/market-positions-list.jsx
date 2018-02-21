@@ -7,7 +7,7 @@ import classNames from 'classnames'
 import MarketPositionsListPosition from 'modules/market/components/market-positions-list--position/market-positions-list--position'
 import MarketPositionsListOrder from 'modules/market/components/market-positions-list--order/market-positions-list--order'
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
-import { ChevronDown } from 'modules/common/components/icons/icons'
+import { ChevronDown } from 'modules/common/components/icons'
 import toggleHeight from 'utils/toggle-height/toggle-height'
 
 import Styles from 'modules/market/components/market-positions-list/market-positions-list.styles'

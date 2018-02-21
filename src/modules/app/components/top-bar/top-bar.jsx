@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-import { Notifications } from 'modules/common/components/icons/icons'
+import { Notifications } from 'modules/common/components/icons'
 
 import Styles from 'modules/app/components/top-bar/top-bar.styles'
 

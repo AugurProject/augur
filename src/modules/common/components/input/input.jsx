@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import BigNumber from 'bignumber.js'
 
-import { IconSearch } from 'modules/common/components/icons/icons'
+import { IconSearch } from 'modules/common/components/icons'
 
 import debounce from 'utils/debounce'
 

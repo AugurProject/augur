@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-import { Close } from 'modules/common/components/icons/icons'
+import { Close } from 'modules/common/components/icons'
 
 import getValue from 'utils/get-value'
 

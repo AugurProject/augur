@@ -39,7 +39,7 @@ import selectAccountPositions from 'modules/user-open-orders/selectors/positions
 import { selectUserOpenOrders } from 'modules/user-open-orders/selectors/user-open-orders'
 import selectUserOpenOrdersSummary from 'modules/user-open-orders/selectors/user-open-orders-summary'
 
-// import { selectPriceTimeSeries } from 'modules/market/selectors/price-time-series'
+import { selectPriceTimeSeries } from 'modules/market/selectors/price-time-series'
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from 'modules/bids-asks/helpers/select-order-book'
 import getOrderBookSeries from 'modules/order-book/selectors/order-book-series'
@@ -61,8 +61,21 @@ export const selectSelectedMarket = state => selectMarket(state.selectedMarketID
 
 export const selectMarket = (marketID) => {
   const {
-    marketsData, marketLoading, favorites, reports, outcomesData, accountTrades, tradesInProgress, priceHistory, orderBooks, universe, orderCancellation, smallestPositions, loginAccount
+    marketsData,
+    marketLoading,
+    favorites,
+    reports,
+    outcomesData,
+    accountTrades,
+    tradesInProgress,
+    priceHistory,
+    orderBooks,
+    universe,
+    orderCancellation,
+    smallestPositions,
+    loginAccount
   } = store.getState()
+
   const accountPositions = selectAccountPositions()
 
   if (!marketID || !marketsData || !marketsData[marketID]) {
@@ -266,14 +279,14 @@ export function assembleMarket(
         outcome.userOpenOrders = selectUserOpenOrders(marketID, outcomeID, orderBooks, orderCancellation)
         if (outcome.userOpenOrders) outcome.userOpenOrders.forEach((item) => { item.name = outcome.name })
 
+        outcome.priceTimeSeries = selectPriceTimeSeries(outcome, marketPriceHistory)
+
         return outcome
       }).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1))
 
       market.tags = (market.tags || []).filter(tag => !!tag)
 
       market.outstandingShares = formatNumber(getOutstandingShares(marketOutcomesData || {}))
-      // TODO -- put back
-      // market.priceTimeSeries = selectPriceTimeSeries(market.outcomes, marketPriceHistory)
 
       market.unclaimedCreatorFees = formatEther(marketData.unclaimedCreatorFees)
 
