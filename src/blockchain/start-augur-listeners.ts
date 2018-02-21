@@ -9,6 +9,8 @@ export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: 
     Augur: {
       MarketCreated: makeLogListener(db, augur, "Augur", "MarketCreated"),
       TokensTransferred: makeLogListener(db, augur, "Augur", "TokensTransferred"),
+      TokensMinted: makeLogListener(db, augur, "Augur", "TokensMinted"),
+      TokensBurned: makeLogListener(db, augur, "Augur", "TokensBurned"),
       OrderCanceled: makeLogListener(db, augur, "Augur", "OrderCanceled"),
       OrderCreated: makeLogListener(db, augur, "Augur", "OrderCreated"),
       OrderFilled: makeLogListener(db, augur, "Augur", "OrderFilled"),
