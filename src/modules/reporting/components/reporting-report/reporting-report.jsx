@@ -138,7 +138,7 @@ export default class ReportingReport extends Component {
               <button
                 className={classNames(FormStyles.Form__next, { [`${FormStyles['hide-button']}`]: s.currentStep === 1 })}
                 disabled={!Object.keys(s.validations).every(key => s.validations[key] === true)}
-                onClick={Object.keys(s.validations).every(key => s.validations[key] === true) && this.nextPage}
+                onClick={Object.keys(s.validations).every(key => s.validations[key] === true) ? this.nextPage : undefined}
               >Report
               </button>
               { s.currentStep === 1 &&
