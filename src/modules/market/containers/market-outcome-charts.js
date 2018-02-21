@@ -127,7 +127,7 @@ const getOrderBookKeys = memoize((marketDepth) => {
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId)
   const outcome = market.outcomes.find(outcome => outcome.id === ownProps.selectedOutcome) || {}
-  const { priceTimeSeries } = outcome
+  const priceTimeSeries = outcome.priceTimeSeries || []
   const cumulativeOrderBook = orderAndAssignCumulativeShares(outcome.orderBook)
   const marketDepth = orderForMarketDepth(cumulativeOrderBook)
   const orderBookKeys = getOrderBookKeys(marketDepth)

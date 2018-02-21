@@ -12,7 +12,7 @@ import { isEqual } from 'lodash'
 
 export default class MarketOutcomeCharts extends Component {
   static propTypes = {
-    marketPriceHistory: PropTypes.array.isRequired,
+    priceTimeSeries: PropTypes.array.isRequired,
     minPrice: PropTypes.number.isRequired,
     maxPrice: PropTypes.number.isRequired,
     outcomeBounds: PropTypes.object.isRequired,

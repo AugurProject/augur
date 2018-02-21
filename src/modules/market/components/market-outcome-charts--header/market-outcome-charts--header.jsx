@@ -47,6 +47,7 @@ const MarketOutcomeChartsHeader = p => (
 export default MarketOutcomeChartsHeader
 
 MarketOutcomeChartsHeader.propTypes = {
+  priceTimeSeries: PropTypes.array.isRequired,
   hoveredPeriod: PropTypes.object.isRequired,
   hoveredDepth: PropTypes.array.isRequired,
   fixedPrecision: PropTypes.number.isRequired,

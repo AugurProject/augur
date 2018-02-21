@@ -66,7 +66,7 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   drawChart() {
-    console.log('draw dat chart')
+    // console.log('draw dat chart')
     // if (this.candlestickChart) {
     //   const fauxDiv = new ReactFauxDOM.Element('div')
     //   const chart = d3.select(fauxDiv).append('svg')
