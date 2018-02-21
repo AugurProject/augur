@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import * as d3 from 'd3'
 import ReactFauxDOM from 'react-faux-dom'
 
-import { isEqual } from 'lodash'
+import { isEqual, isEmpty } from 'lodash'
 
-import { ASKS } from 'modules/order-book/constants/order-book-order-types'
+import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
 
 import Styles from 'modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth.styles'
 
@@ -213,13 +213,13 @@ export default class MarketOutcomeDepth extends Component {
           return (this.props.hoveredPrice < p[1] && this.props.hoveredPrice > order[1]) ? order : p
         }, null)
 
-        // TODO -- this is actually pushing a TON of extra sides into the array...initial look confused me, moving on, will circle back
-        fillingSideOrder.push(side)
-
-        // We actually infer the side based on proximity
         if (p === null) return fillingSideOrder
+
+        fillingSideOrder.push(side)
         return Math.abs(this.props.hoveredPrice - p[1]) < Math.abs(this.props.hoveredPrice - fillingSideOrder[1]) ? p : fillingSideOrder
       }, null)
+
+      if (nearestCompletelyFillingOrder === null) return
 
       this.props.updateHoveredDepth(nearestCompletelyFillingOrder)
 
