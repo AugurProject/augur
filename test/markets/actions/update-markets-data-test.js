@@ -24,7 +24,7 @@ describe(`modules/markets/actions/update-markets-data.js`, () => {
   it(`should dispatch an UPDATE_MARKETS_LOADING_STATUS action`, () => {
     assert.deepEqual(action.updateMarketsLoadingStatus(['0xa1', '0xa2'], true), {
       type: action.UPDATE_MARKETS_LOADING_STATUS,
-      marketIDs: ['0xa1', '0xa2'],
+      marketIds: ['0xa1', '0xa2'],
       isLoading: true
     })
   })

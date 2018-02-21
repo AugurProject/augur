@@ -146,7 +146,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKETS_LOADING_STATUS',
-        marketIDs: [],
+        marketIds: [],
         isLoading: true
       },
       assertions: (reducedData) => {
@@ -172,7 +172,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKETS_LOADING_STATUS',
-        marketIDs: ['0xa1'],
+        marketIds: ['0xa1'],
         isLoading: true
       },
       assertions: (reducedData) => {
@@ -194,7 +194,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKETS_LOADING_STATUS',
-        marketIDs: ['0xa1'],
+        marketIds: ['0xa1'],
         isLoading: true
       },
       assertions: (reducedData) => {
@@ -216,7 +216,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKETS_LOADING_STATUS',
-        marketIDs: ['0xa1'],
+        marketIds: ['0xa1'],
         isLoading: true
       },
       assertions: (reducedData) => {
@@ -238,7 +238,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKETS_LOADING_STATUS',
-        marketIDs: ['0xa1'],
+        marketIds: ['0xa1'],
         isLoading: false
       },
       assertions: (reducedData) => {
@@ -264,7 +264,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKETS_LOADING_STATUS',
-        marketIDs: ['0xa1'],
+        marketIds: ['0xa1'],
         isLoading: true
       },
       assertions: (reducedData) => {
@@ -294,7 +294,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKETS_LOADING_STATUS',
-        marketIDs: ['0xa1'],
+        marketIds: ['0xa1'],
         isLoading: false
       },
       assertions: (reducedData) => {
@@ -329,7 +329,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKETS_LOADING_STATUS',
-        marketIDs: ['0xa1', '0xa3'],
+        marketIds: ['0xa1', '0xa3'],
         isLoading: true
       },
       assertions: (reducedData) => {
@@ -367,7 +367,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKETS_LOADING_STATUS',
-        marketIDs: ['0xa2', '0xa3'],
+        marketIds: ['0xa2', '0xa3'],
         isLoading: false
       },
       assertions: (reducedData) => {

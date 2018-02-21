@@ -16,11 +16,11 @@ export const selectClosePositionStatus = createSelector(
   (closePositionTradeGroups, transactionsData) => {
     const statuses = Object.keys(closePositionTradeGroups).reduce((p, marketId) => {
       const outcomeStatuses = Object.keys(closePositionTradeGroups[marketId]).reduce((p, outcomeId) => {
-        const closePositionTransactionIDs = closePositionTradeGroups[marketId][outcomeId].reduce((p, tradeGroupId) => {
-          const transactionIDs = Object.keys(transactionsData).filter(transactionId => transactionsData[transactionId].tradeGroupId === tradeGroupId)
+        const closePositionTransactionIds = closePositionTradeGroups[marketId][outcomeId].reduce((p, tradeGroupId) => {
+          const transactionIds = Object.keys(transactionsData).filter(transactionId => transactionsData[transactionId].tradeGroupId === tradeGroupId)
 
-          if (transactionIDs.length !== 0) {
-            return [...p, ...transactionIDs]
+          if (transactionIds.length !== 0) {
+            return [...p, ...transactionIds]
           }
 
           return p
@@ -28,47 +28,47 @@ export const selectClosePositionStatus = createSelector(
 
         // closing failed further up in the call chain to close position
         if (closePositionTradeGroups[marketId][outcomeId][0] === CLOSE_DIALOG_FAILED) {
-          delayClearTradeGroupIDs(marketId, outcomeId)
+          delayClearTradeGroupIds(marketId, outcomeId)
 
           return { ...p, [outcomeId]: CLOSE_DIALOG_FAILED }
         }
 
         // no orders are available within the outcome's order book
         if (closePositionTradeGroups[marketId][outcomeId][0] === CLOSE_DIALOG_NO_ORDERS) {
-          delayClearTradeGroupIDs(marketId, outcomeId)
+          delayClearTradeGroupIds(marketId, outcomeId)
 
           return { ...p, [outcomeId]: CLOSE_DIALOG_NO_ORDERS }
         }
 
         // Short Circuit until transactionsData is updated with the tradeGroupId
-        if (closePositionTransactionIDs.length === 0 && closePositionTradeGroups[marketId][outcomeId]) {
+        if (closePositionTransactionIds.length === 0 && closePositionTradeGroups[marketId][outcomeId]) {
           return { ...p, [outcomeId]: CLOSE_DIALOG_CLOSING }
         }
 
-        const numberOfFailedTransactions = closePositionTransactionIDs.filter(transactionId => transactionsData[transactionId].status === FAILED).length
+        const numberOfFailedTransactions = closePositionTransactionIds.filter(transactionId => transactionsData[transactionId].status === FAILED).length
 
         // Close Position Completely Failed
-        if (numberOfFailedTransactions === closePositionTransactionIDs.length) {
-          delayClearTradeGroupIDs(marketId, outcomeId)
+        if (numberOfFailedTransactions === closePositionTransactionIds.length) {
+          delayClearTradeGroupIds(marketId, outcomeId)
 
           return { ...p, [outcomeId]: CLOSE_DIALOG_FAILED }
         }
 
         // Close Position Completely Succeeded
-        const numberOfSuccessfulTransactions = closePositionTransactionIDs.filter(transactionId => transactionsData[transactionId].status === SUCCESS).length
+        const numberOfSuccessfulTransactions = closePositionTransactionIds.filter(transactionId => transactionsData[transactionId].status === SUCCESS).length
 
-        if (numberOfSuccessfulTransactions === closePositionTransactionIDs.length) {
-          delayClearTradeGroupIDs(marketId, outcomeId)
+        if (numberOfSuccessfulTransactions === closePositionTransactionIds.length) {
+          delayClearTradeGroupIds(marketId, outcomeId)
 
           return { ...p, [outcomeId]: CLOSE_DIALOG_SUCCESS }
         }
 
         // Close Position Partially Failed
-        if (numberOfFailedTransactions && numberOfFailedTransactions !== closePositionTransactionIDs.length && numberOfSuccessfulTransactions === 0) {
+        if (numberOfFailedTransactions && numberOfFailedTransactions !== closePositionTransactionIds.length && numberOfSuccessfulTransactions === 0) {
 
           return { ...p, [outcomeId]: CLOSE_DIALOG_PARTIALLY_FAILED }
-        } else if (numberOfFailedTransactions && numberOfFailedTransactions + numberOfSuccessfulTransactions === closePositionTransactionIDs.length) {
-          delayClearTradeGroupIDs(marketId, outcomeId)
+        } else if (numberOfFailedTransactions && numberOfFailedTransactions + numberOfSuccessfulTransactions === closePositionTransactionIds.length) {
+          delayClearTradeGroupIds(marketId, outcomeId)
 
           return { ...p, [outcomeId]: CLOSE_DIALOG_PARTIALLY_FAILED }
         }
@@ -91,6 +91,6 @@ export const selectClosePositionStatus = createSelector(
 // waits, then clears orderIds from closePositionTradeGroups
 // This will ultimately clear the outcome status and allow for the
 // user to try again if an action is available
-function delayClearTradeGroupIDs(marketId, outcomeId) {
+function delayClearTradeGroupIds(marketId, outcomeId) {
   setTimeout(() => store.dispatch(clearClosePositionOutcome(marketId, outcomeId)), 3000)
 }

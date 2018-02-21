@@ -40,11 +40,11 @@ export const selectClosedMarketsWithWinningShares = createSelector(
 )
 
 export const selectTotalSharesInMarket = (market, marketOutcomesData) => {
-  const outcomeIDs = Object.keys(marketOutcomesData)
-  const numOutcomes = outcomeIDs.length
+  const outcomeIds = Object.keys(marketOutcomesData)
+  const numOutcomes = outcomeIds.length
   let totalShares = ZERO
   for (let j = 0; j < numOutcomes; ++j) {
-    const bnSharesPurchased = new BigNumber(marketOutcomesData[outcomeIDs[j]].sharesPurchased, 10)
+    const bnSharesPurchased = new BigNumber(marketOutcomesData[outcomeIds[j]].sharesPurchased, 10)
     if (bnSharesPurchased.gt(ZERO)) {
       totalShares = totalShares.plus(bnSharesPurchased)
     }

@@ -31,7 +31,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  loadMarketsInfo: marketIDs => dispatch(loadMarketsInfo(marketIDs)),
+  loadMarketsInfo: marketIds => dispatch(loadMarketsInfo(marketIds)),
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
 })
 

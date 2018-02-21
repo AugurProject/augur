@@ -3,10 +3,10 @@ import { updateMarketsData, updateMarketsLoadingStatus } from 'modules/markets/a
 import isObject from 'utils/is-object'
 import logError from 'utils/log-error'
 
-export const loadMarketsInfo = (marketIDs, callback = logError) => (dispatch, getState) => {
-  dispatch(updateMarketsLoadingStatus(marketIDs, true))
+export const loadMarketsInfo = (marketIds, callback = logError) => (dispatch, getState) => {
+  dispatch(updateMarketsLoadingStatus(marketIds, true))
 
-  augur.markets.getMarketsInfo({ marketIDs }, (err, marketsDataArray) => {
+  augur.markets.getMarketsInfo({ marketIds }, (err, marketsDataArray) => {
     if (err) return callback(err)
 
     const marketsData = marketsDataArray.reduce((p, marketData) => ({
@@ -17,21 +17,21 @@ export const loadMarketsInfo = (marketIDs, callback = logError) => (dispatch, ge
       return callback(`no markets data received`)
     }
     if (!Object.keys(marketsData).length) return callback(null)
-    dispatch(updateMarketsLoadingStatus(marketIDs, false))
+    dispatch(updateMarketsLoadingStatus(marketIds, false))
     dispatch(updateMarketsData(marketsData))
     callback(null, marketsData)
   })
 }
 
-export const loadMarketsInfoOnly = (marketIDs, callback = logError) => (dispatch, getState) => {
-  augur.markets.getMarketsInfo({ marketIDs }, (err, marketsDataArray) => {
+export const loadMarketsInfoOnly = (marketIds, callback = logError) => (dispatch, getState) => {
+  augur.markets.getMarketsInfo({ marketIds }, (err, marketsDataArray) => {
     if (err) return callback(err)
-    const marketInfoIDs = Object.keys(marketsDataArray)
+    const marketInfoIds = Object.keys(marketsDataArray)
     const marketsData = marketsDataArray.reduce((p, marketData) => ({
       ...p,
       [marketData.id]: marketData
     }), {})
-    if (!marketInfoIDs.length) return callback(null)
+    if (!marketInfoIds.length) return callback(null)
     dispatch(updateMarketsData(marketsData))
     callback(null)
   })

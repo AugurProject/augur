@@ -74,10 +74,10 @@ export function getOpenAskShares(account, outcomeId, askOrders) {
   if (!account || !askOrders) return ZERO
   let order
   let askShares = ZERO
-  const orderIDs = Object.keys(askOrders)
-  const numOrders = orderIDs.length
+  const orderIds = Object.keys(askOrders)
+  const numOrders = orderIds.length
   for (let i = 0; i < numOrders; ++i) {
-    order = askOrders[orderIDs[i]]
+    order = askOrders[orderIds[i]]
     if (isOrderOfUser(order, account) && order.outcome === outcomeId) {
       askShares = askShares.plus(new BigNumber(order.amount, 10))
     }

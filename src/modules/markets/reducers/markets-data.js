@@ -13,7 +13,7 @@ export default function (marketsData = DEFAULT_STATE, action) {
     case UPDATE_MARKETS_LOADING_STATUS:
       return {
         ...marketsData,
-        ...action.marketIDs.reduce((p, marketId) => {
+        ...action.marketIds.reduce((p, marketId) => {
           p[marketId] = {
             ...marketsData[marketId],
             isLoading: action.isLoading

@@ -10,10 +10,10 @@ export function convertTradeLogToTransaction(label, data, marketId) {
   return (dispatch, getState) => {
     console.log('convertTradeLogToTransaction', label)
     console.log(data)
-    const outcomeIDs = Object.keys(data[marketId])
-    const numOutcomes = outcomeIDs.length
+    const outcomeIds = Object.keys(data[marketId])
+    const numOutcomes = outcomeIds.length
     for (let j = 0; j < numOutcomes; ++j) {
-      const outcomeId = outcomeIDs[j]
+      const outcomeId = outcomeIds[j]
       const numTrades = data[marketId][outcomeId].length
       if (numTrades) {
         for (let k = 0; k < numTrades; ++k) {
@@ -35,7 +35,7 @@ export function convertTradeLogsToTransactions(label, data, marketId) {
         return next()
       }
       console.log('getting market info for', marketId)
-      augur.markets.getMarketsInfo({ marketIDs: [marketId] }, (err, marketsInfo) => {
+      augur.markets.getMarketsInfo({ marketIds: [marketId] }, (err, marketsInfo) => {
         if (!marketsInfo || marketsInfo.error || !Array.isArray(marketsInfo) || !marketsInfo.length || !marketsInfo[0]) {
           if (marketsInfo && marketsInfo.error) console.error('augur.markets.getMarketsInfo:', marketsInfo)
           return next(`[${label}] couldn't load market info for market ${marketId}: ${JSON.stringify(data)}`)

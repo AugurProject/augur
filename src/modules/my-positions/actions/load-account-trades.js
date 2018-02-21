@@ -31,12 +31,12 @@ export function loadUserTradingHistory(options, callback = logError) {
     }, (err, userTradingHistory) => {
       if (err) return callback(err)
       if (userTradingHistory == null || Object.keys(userTradingHistory).length === 0) return callback(null)
-      const marketIDs = Object.keys(userTradingHistory).reduce((p, index, i) => {
+      const marketIds = Object.keys(userTradingHistory).reduce((p, index, i) => {
         p.push(userTradingHistory[index].marketId)
         return p
       }, [])
-      dispatch(loadMarketsInfo(marketIDs, () => {
-        marketIDs.forEach((marketId) => {
+      dispatch(loadMarketsInfo(marketIds, () => {
+        marketIds.forEach((marketId) => {
           const trades = {}
           userTradingHistory.filter(trade => trade.marketId === marketId).forEach((trade) => {
             if (trades[trade.outcome] == null) {

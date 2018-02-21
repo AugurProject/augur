@@ -34,7 +34,7 @@ const mapDispatchToProps = dispatch => ({
   updateMarketsFilteredSorted: filteredMarkets => dispatch(updateMarketsFilteredSorted(filteredMarkets)),
   clearMarketsFilteredSorted: () => dispatch(clearMarketsFilteredSorted()),
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
-  loadMarketsInfo: marketIDs => dispatch(loadMarketsInfo(marketIDs))
+  loadMarketsInfo: marketIds => dispatch(loadMarketsInfo(marketIds))
 })
 
 const Markets = withRouter(connect(mapStateToProps, mapDispatchToProps)(MarketsView))

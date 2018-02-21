@@ -4,7 +4,7 @@ import { convertLogsToTransactions } from 'modules/transactions/actions/convert-
 
 export function loadMarketThenRetryConversion(marketId, label, log, callback) {
   return (dispatch, getState) => {
-    augur.markets.getMarketsInfo({ marketIDs: [marketId] }, (err, marketsInfo) => {
+    augur.markets.getMarketsInfo({ marketIds: [marketId] }, (err, marketsInfo) => {
       if (!marketsInfo || marketsInfo.error || !Array.isArray(marketsInfo) || !marketsInfo.length || !marketsInfo[0]) {
         if (marketsInfo && marketsInfo.error) console.error('augur.markets.getMarketsInfo:', marketsInfo)
         return callback(`[${label}] couldn't load market info for market ${marketId}: ${JSON.stringify(marketsInfo)}`)

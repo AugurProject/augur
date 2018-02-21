@@ -26,14 +26,14 @@ const mapStateToProps = state =>
   })
 
 const mapDispatchToProps = dispatch => ({
-  loadMarkets: () => dispatch(loadUserMarkets((err, marketIDs) => {
+  loadMarkets: () => dispatch(loadUserMarkets((err, marketIds) => {
     if (err) return logError(err)
-    // if we have marketIDs back, let's load the info so that we can properly display myMarkets.
-    dispatch(loadMarketsInfo(marketIDs))
-    dispatch(loadUnclaimedFees(marketIDs))
+    // if we have marketIds back, let's load the info so that we can properly display myMarkets.
+    dispatch(loadMarketsInfo(marketIds))
+    dispatch(loadUnclaimedFees(marketIds))
   })),
   collectMarketCreatorFees: (marketId, callback) => dispatch(collectMarketCreatorFees(marketId, callback)),
-  loadMarketsInfo: marketIDs => dispatch(loadMarketsInfo(marketIDs)),
+  loadMarketsInfo: marketIds => dispatch(loadMarketsInfo(marketIds)),
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
 })
 

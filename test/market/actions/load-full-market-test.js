@@ -29,12 +29,12 @@ describe('modules/market/actions/load-full-market.js', () => {
     __RewireAPI__.__Rewire__('addMarketLoading', () => ({
       type: MOCK_ACTION_TYPES.ADD_MARKET_LOADING
     }))
-    __RewireAPI__.__Rewire__('loadMarketsInfo', (marketIDs, cb) => {
+    __RewireAPI__.__Rewire__('loadMarketsInfo', (marketIds, cb) => {
       cb()
       return {
         type: MOCK_ACTION_TYPES.LOAD_MARKETS_INFO,
         data: {
-          marketIDs
+          marketIds
         }
       }
     })
@@ -68,7 +68,7 @@ describe('modules/market/actions/load-full-market.js', () => {
           {
             type: MOCK_ACTION_TYPES.LOAD_MARKETS_INFO,
             data: {
-              marketIDs: [
+              marketIds: [
                 '0xMARKETID'
               ]
             }

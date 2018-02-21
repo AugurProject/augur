@@ -9,10 +9,10 @@ export default function (reports = DEFAULT_STATE, action) {
     case UPDATE_REPORTS: {
       let universeId
       const updatedReports = Object.assign({}, reports)
-      const universeIDs = Object.keys(action.reports)
-      const numUniverseIDs = universeIDs.length
-      for (let i = 0; i < numUniverseIDs; ++i) {
-        universeId = universeIDs[i]
+      const universeIds = Object.keys(action.reports)
+      const numUniverseIds = universeIds.length
+      for (let i = 0; i < numUniverseIds; ++i) {
+        universeId = universeIds[i]
         updatedReports[universeId] = Object.assign({}, reports[universeId], action.reports[universeId])
       }
       return updatedReports

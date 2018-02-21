@@ -334,11 +334,11 @@ export function assembleMarket(
 
 export const selectMarketReport = (marketId, universeReports) => {
   if (marketId && universeReports) {
-    const universeReportsMarketIDs = Object.keys(universeReports)
-    const numUniverseReports = universeReportsMarketIDs.length
+    const universeReportsMarketIds = Object.keys(universeReports)
+    const numUniverseReports = universeReportsMarketIds.length
     for (let i = 0; i < numUniverseReports; ++i) {
-      if (universeReports[universeReportsMarketIDs[i]].marketId === marketId) {
-        return universeReports[universeReportsMarketIDs[i]]
+      if (universeReports[universeReportsMarketIds[i]].marketId === marketId) {
+        return universeReports[universeReportsMarketIds[i]]
       }
     }
   }

@@ -30,7 +30,7 @@ export const createPeriodPLSelector = period => createSelector(
     const periodDate = new Date(Date.now() - (period*24*60*60*1000))
     const periodBlock = dateToBlock(periodDate, blockchain.currentBlockNumber)
 
-    return Object.keys(accountTrades).reduce((p, marketId) => { // Iterate over marketIDs
+    return Object.keys(accountTrades).reduce((p, marketId) => { // Iterate over marketIds
       if (!outcomesData[marketId]) return p
 
       const accumulatedPL = Object.keys(accountTrades[marketId]).reduce((p, outcomeId) => { // Iterate over outcomes
