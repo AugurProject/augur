@@ -24,7 +24,7 @@ function simulateFillBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
     var sharePriceLong = orderDisplayPrice.minus(minPrice);
     var makerSharesEscrowed = BigNumber.min(new BigNumber(matchingBid.sharesEscrowed, 10), sharesToCover);
     sharesToCover = sharesToCover.minus(takerDesiredSharesForThisOrder);
-    var takerSharesAvailable = BigNumber.min(takerDesiredSharesForThisOrder, shareBalances[outcome]);
+    var takerSharesAvailable = BigNumber.min(takerDesiredSharesForThisOrder, shareBalances[outcome].minus(takerSharesDepleted));
     sharesFilled = sharesFilled.plus(takerDesiredSharesForThisOrder);
 
     // maker is closing a short, taker is closing a long: complete sets sold
