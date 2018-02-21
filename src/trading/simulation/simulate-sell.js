@@ -20,6 +20,7 @@ function simulateSell(outcome, sharesToCover, shareBalances, tokenBalance, userA
     shareBalances: shareBalances,
   };
   var matchingSortedBids = filterByPriceAndUserSortByPrice({ singleOutcomeOrderBookSide: buyOrderBook, orderType: 1, price: price, userAddress: userAddress });
+
   // if no matching bids, then user is asking: no settlement fees
   if (!matchingSortedBids.length && price !== null) {
     simulatedSell = sumSimulatedResults(simulatedSell, simulateCreateAskOrder(sharesToCover, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances));

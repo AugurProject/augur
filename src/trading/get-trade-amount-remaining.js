@@ -19,10 +19,12 @@ function getTradeAmountRemaining(p, callback) {
   var tradeOnChainAmountRemaining = new BigNumber(p.startingOnChainAmount, 16);
   // console.log("remaining:", tradeOnChainAmountRemaining.toFixed());
   ethrpc.getTransactionReceipt(p.transactionHash, function (transactionReceipt) {
+    // console.log("receipt:", transactionReceipt);
     if (!transactionReceipt || transactionReceipt.error || !Array.isArray(transactionReceipt.logs) || !transactionReceipt.logs.length) {
       return callback("logs not found");
     }
     var orderFilledEventSignature = eventsAbi.Augur.OrderFilled.signature;
+    var orderCreatedEventSignature = eventsAbi.Augur.OrderCreated.signature;
     var logs = transactionReceipt.logs;
     for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
       if (logs[i].topics[0] === orderFilledEventSignature) {
@@ -31,6 +33,8 @@ function getTradeAmountRemaining(p, callback) {
         // console.log("fill:", totalFill.toFixed());
         tradeOnChainAmountRemaining = tradeOnChainAmountRemaining.minus(totalFill);
         // console.log("remaining:", tradeOnChainAmountRemaining.toFixed());
+      } else if (logs[i].topics[0] === orderCreatedEventSignature) {
+        tradeOnChainAmountRemaining = new BigNumber(0);
       }
     }
     callback(null, tradeOnChainAmountRemaining.toFixed());

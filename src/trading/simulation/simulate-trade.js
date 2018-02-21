@@ -33,7 +33,7 @@ var simulateSell = require("./simulate-sell");
  * @param {string} p.userAddress The user's Ethereum address, as a hexadecimal string.
  * @param {string} p.minPrice This market's minimum possible price, as a base-10 string.
  * @param {string} p.maxPrice This market's maximum possible price, as a base-10 string.
- * @param {string} p.price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
+ * @param {string|null} p.price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
  * @param {string} p.shares Number of shares to trade, as a base-10 string.
  * @param {string} p.marketCreatorFeeRate The fee rate charged by the market creator (e.g., pass in "0.01" if the fee is 1%), as a base-10 string.
  * @param {SingleOutcomeOrderBook} p.singleOutcomeOrderBook The full order book (buy and sell) for this market and outcome.
