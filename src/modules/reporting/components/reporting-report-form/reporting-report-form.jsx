@@ -9,7 +9,6 @@ import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-ty
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-report-form/reporting-report-form.styles'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons/icons'
-import BigNumber from 'bignumber.js'
 
 export default class ReportingReportForm extends Component {
 
@@ -17,9 +16,8 @@ export default class ReportingReportForm extends Component {
     market: PropTypes.object.isRequired,
     updateState: PropTypes.func.isRequired,
     validations: PropTypes.object.isRequired,
-    selectedOutcome: PropTypes.string.isRequired,
+    selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     stake: PropTypes.string.isRequired,
-    displayStakeOnly: PropTypes.bool.isRequired,
     isOpenReporting: PropTypes.bool.isRequired,
     isMarketInValid: PropTypes.bool,
   }
@@ -41,6 +39,7 @@ export default class ReportingReportForm extends Component {
   validateOutcome(validations, selectedOutcome, selectedOutcomeName, isMarketInValid) {
     const updatedValidations = { ...validations }
     updatedValidations.selectedOutcome = true
+    delete updatedValidations.err
 
     this.props.updateState({
       validations: updatedValidations,
@@ -50,60 +49,42 @@ export default class ReportingReportForm extends Component {
     })
   }
 
-  validateNumber(validations, fieldName, value, humanName, min, max) {
+  validateScalar(validations, value, humanName, min, max, isInvalid) {
     const updatedValidations = { ...validations }
 
-    const minValue = parseFloat(min)
-    const maxValue = parseFloat(max)
-    const valueValue = parseFloat(value)
+    if (isInvalid) {
+      delete updatedValidations.err
+      updatedValidations.selectedOutcome = true
 
-    switch (true) {
-      case value === '':
-        updatedValidations[fieldName] = `The ${humanName} field is required.`
-        break
-      case (valueValue > maxValue || valueValue < minValue):
-        updatedValidations[fieldName] = `Please enter a ${humanName} between ${min} and ${max}.`
-        break
-      default:
-        updatedValidations[fieldName] = true
-        updatedValidations.selectedOutcome = true
-        break
+    } else {
+      const minValue = parseFloat(min)
+      const maxValue = parseFloat(max)
+      const valueValue = parseFloat(value)
+
+      switch (true) {
+        case value === '':
+          updatedValidations.err = `The ${humanName} field is required.`
+          break
+        case isNaN(valueValue):
+          updatedValidations.err = `The ${humanName} field is a number.`
+          break
+        case (valueValue > maxValue || valueValue < minValue):
+          updatedValidations.err = `Please enter a ${humanName} between ${min} and ${max}.`
+          break
+        default:
+          delete updatedValidations.err
+          updatedValidations.selectedOutcome = true
+          break
+      }
     }
 
     this.props.updateState({
       validations: updatedValidations,
       selectedOutcome: value,
       selectedOutcomeName: value,
-      isMarketInValid: false,
+      isMarketInValid: isInvalid,
     })
   }
-
-  validateStake(validations, rawStake) {
-    const updatedValidations = { ...validations }
-    const minStake = new BigNumber(0)
-    let stake = rawStake
-    if (stake !== '' && !(stake instanceof BigNumber)) {
-      stake = new BigNumber(rawStake)
-      stake = stake.round(4)
-      switch (true) {
-        case stake === '':
-          updatedValidations.stake = `The stake field is required.`
-          break
-        case stake.lte(minStake):
-          updatedValidations.stake = `Please enter a stake greater than 0.`
-          break
-        default:
-          updatedValidations.stake = true
-          break
-      }
-
-      this.props.updateState({
-        validations: updatedValidations,
-        stake
-      })
-    }
-  }
-
 
   render() {
     const p = this.props
@@ -115,11 +96,6 @@ export default class ReportingReportForm extends Component {
           <label>
             <span>Outcome</span>
           </label>
-          { p.validations.hasOwnProperty('selectedOutcome') && p.validations.selectedOutcome.length &&
-            <span className={FormStyles.Form__error}>
-              {InputErrorIcon}{ p.validations.selectedOutcome }
-            </span>
-          }
         </li>
         { (p.market.marketType === BINARY || p.market.marketType === CATEGORICAL) &&
           <li>
@@ -137,7 +113,7 @@ export default class ReportingReportForm extends Component {
               <li className={FormStyles['Form__radio-buttons--per-line']}>
                 <button
                   className={classNames({ [`${FormStyles.active}`]: p.isMarketInValid === true })}
-                  onClick={(e) => { this.validateOutcome(p.validations, '-1', '', true) }}
+                  onClick={(e) => { this.validateOutcome(p.validations, '', '', true) }}
                 >Market is invalid
                 </button>
               </li>
@@ -150,23 +126,31 @@ export default class ReportingReportForm extends Component {
               <li>
                 <button
                   className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome !== '' })}
-                  onClick={(e) => { this.validateOutcome(p.validations, 0, 'selectedOutcome', false) }}
+                  onClick={(e) => { this.validateScalar(p.validations, 0, 'selectedOutcome', p.market.minPrice, p.market.maxPrice, false) }}
                 />
                 <input
                   id="sr__input--outcome-scalar"
                   type="number"
                   min={p.market.minPrice}
                   max={p.market.maxPrice}
+                  step={p.market.tickSize}
                   placeholder={p.market.minPrice}
                   value={p.selectedOutcome}
-                  className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('selectedOutcome') && p.validations.selectedOutcome.length })}
-                  onChange={(e) => { this.validateNumber(p.validations, 'selectedOutcome', e.target.value, 'outcome', p.market.minPrice, p.market.maxPrice) }}
+                  className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('err') && p.validations.selectedOutcome })}
+                  onChange={(e) => { this.validateScalar(p.validations, e.target.value, 'outcome', p.market.minPrice, p.market.maxPrice, false) }}
                 />
+              </li>
+              <li>
+                { p.validations.hasOwnProperty('err') &&
+                  <span className={FormStyles.Form__error}>
+                    {InputErrorIcon}{ p.validations.err }
+                  </span>
+                }
               </li>
               <li className={FormStyles['Form__radio-buttons--per-line']}>
                 <button
                   className={classNames({ [`${FormStyles.active}`]: p.isMarketInValid === true })}
-                  onClick={(e) => { this.validateOutcome(p.validations, '-1', '', true) }}
+                  onClick={(e) => { this.validateScalar(p.validations, '', '', p.market.minPrice, p.market.maxPrice, true) }}
                 >Market is invalid
                 </button>
               </li>
@@ -177,43 +161,12 @@ export default class ReportingReportForm extends Component {
         <li>
           <ul>
             <li className={Styles.ReportingReport__RepLabel}>
-              <label>
-                <span htmlFor="sr__input--stake">Required Stake</span>
-                { p.validations.hasOwnProperty('stake') && p.validations.stake.length &&
-                  <span className={FormStyles.Form__error}>
-                    { p.validations.stake }
-                  </span>
-                }
+              <label htmlFor="sr__input--stake">
+                <span>Required Stake</span>
               </label>
             </li>
             <li className={Styles.ReportingReport__RepAmount}>
               <span>{p.stake} REP</span>
-            </li>
-          </ul>
-        </li>
-        }
-        { !p.displayStakeOnly &&
-        <li>
-          <ul>
-            <li className={FormStyles['field--short']}>
-              <label>
-                <span htmlFor="sr__input--stake">Stake</span>
-                { p.validations.hasOwnProperty('stake') && p.validations.stake.length &&
-                  <span className={FormStyles.Form__error}>
-                    {InputErrorIcon}{ p.validations.stake }
-                  </span>
-                }
-              </label>
-            </li>
-            <li>
-              <input
-                id="sr__input--stake"
-                type="number"
-                min="0"
-                placeholder="0.0000 REP"
-                value={p.stake instanceof BigNumber ? p.stake.toNumber() : p.stake}
-                onChange={(e) => { this.validateStake(p.validations, e.target.value) }}
-              />
             </li>
           </ul>
         </li>
