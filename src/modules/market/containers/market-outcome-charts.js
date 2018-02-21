@@ -8,18 +8,18 @@ import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
 import { selectMarket } from 'modules/market/selectors/market'
 import { isEmpty } from 'lodash'
 
-const startTime = new Date().getTime()
-
-const marketPriceHistory = [...new Array(30)]
-  .map((value, index) => ({
-    period: startTime + (index * ((1000000000000 - 0) + 0)),
-    high: (Math.random()),
-    low: (Math.random()),
-    open: (Math.random()),
-    close: (Math.random()),
-    volume: (Math.random() * (1000 - 10)) + 10
-  }))
-  .sort((a, b) => a.x - b.x)
+// const startTime = new Date().getTime()
+//
+// const marketPriceHistory = [...new Array(30)]
+//   .map((value, index) => ({
+//     period: startTime + (index * ((1000000000000 - 0) + 0)),
+//     high: (Math.random()),
+//     low: (Math.random()),
+//     open: (Math.random()),
+//     close: (Math.random()),
+//     volume: (Math.random() * (1000 - 10)) + 10
+//   }))
+//   .sort((a, b) => a.x - b.x)
 
 // outcome specific trading price range
 const findBounds = memoize((outcome = {}) => {
@@ -127,16 +127,17 @@ const getOrderBookKeys = memoize((marketDepth) => {
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId)
   const outcome = market.outcomes.find(outcome => outcome.id === ownProps.selectedOutcome) || {}
+  const { priceTimeSeries } = outcome
   const cumulativeOrderBook = orderAndAssignCumulativeShares(outcome.orderBook)
   const marketDepth = orderForMarketDepth(cumulativeOrderBook)
   const orderBookKeys = getOrderBookKeys(marketDepth)
 
   return {
-    marketPriceHistory,
     minPrice: market.minPrice,
     maxPrice: market.maxPrice,
     outcomeBounds: findBounds(outcome),
     orderBook: cumulativeOrderBook,
+    priceTimeSeries,
     marketDepth,
     orderBookKeys
   }

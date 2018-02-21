@@ -7,7 +7,7 @@ import classNames from 'classnames'
 
 import { DESCRIPTION_MAX_LENGTH, TAGS_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints'
 
-import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons/icons'
+import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 
 import Styles from 'modules/create-market/components/create-market-form-define/create-market-form-define.styles'
 import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'

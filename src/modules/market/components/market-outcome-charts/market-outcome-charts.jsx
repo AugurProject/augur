@@ -26,6 +26,7 @@ export default class MarketOutcomeCharts extends Component {
     super(props)
 
     this.state = {
+      selectedPeriod: {},
       hoveredPeriod: {},
       hoveredDepth: [],
       hoveredPrice: null,
@@ -70,6 +71,12 @@ export default class MarketOutcomeCharts extends Component {
     })
   }
 
+  updateSelectedPeriod(selectedPeriod) {
+    this.setState({
+      selectedPeriod
+    })
+  }
+
   updatePrecision(isIncreasing) {
     let { fixedPrecision } = this.state
 
@@ -89,16 +96,19 @@ export default class MarketOutcomeCharts extends Component {
     return (
       <section className={Styles.MarketOutcomeCharts}>
         <MarketOutcomeChartsHeader
+          priceTimeSeries={p.priceTimeSeries}
           selectedOutcome={p.selectedOutcome}
           hoveredPeriod={s.hoveredPeriod}
           hoveredDepth={s.hoveredDepth}
           fixedPrecision={s.fixedPrecision}
           updatePrecision={this.updatePrecision}
+          updateSelectedPeriod={this.updateSelectedPeriod}
         />
         <div className={Styles.MarketOutcomeCharts__Charts}>
           <div className={Styles.MarketOutcomeCharts__Candlestick}>
             <MarketOutcomeCandlestick
-              marketPriceHistory={p.marketPriceHistory}
+              priceTimeSeries={p.priceTimeSeries}
+              selectedPeriod={s.selectedPeriod}
               fixedPrecision={s.fixedPrecision}
               outcomeBounds={p.outcomeBounds}
               orderBookKeys={p.orderBookKeys}

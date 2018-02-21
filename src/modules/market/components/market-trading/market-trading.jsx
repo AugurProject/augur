@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import MarketTradingWrapper from 'modules/market/components/market-trading--wrapper/market-trading--wrapper'
-import { Check, Close } from 'modules/common/components/icons/icons'
+import { Check, Close } from 'modules/common/components/icons'
 import { isEqual } from 'lodash'
 
 import BigNumber from 'bignumber.js'

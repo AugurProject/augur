@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Connect } from 'uport-connect'
 import QRCode from 'qrcode.react'
 
-import { AppleAppStore, GooglePlayStore } from 'modules/common/components/icons/icons'
+import { AppleAppStore, GooglePlayStore } from 'modules/common/components/icons'
 
 import debounce from 'utils/debounce'
 import getValue from 'utils/get-value'

@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js'
 
 import MarketTradingForm from 'modules/market/components/market-trading--form/market-trading--form'
 import MarketTradingConfirm from 'modules/market/components/market-trading--confirm/market-trading--confirm'
-import { Close } from 'modules/common/components/icons/icons'
+import { Close } from 'modules/common/components/icons'
 
 import makePath from 'modules/routes/helpers/make-path'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'

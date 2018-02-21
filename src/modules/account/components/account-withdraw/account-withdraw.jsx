@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js'
 import Input from 'modules/common/components/input/input'
 import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'
 
-import { Withdraw } from 'modules/common/components/icons/icons'
+import { Withdraw } from 'modules/common/components/icons'
 
 import { ETH, REP } from 'modules/account/constants/asset-types'
 
