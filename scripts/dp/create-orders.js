@@ -16,10 +16,10 @@ function _createOrders(augur, auth, callback) {
   console.log(chalk.green.dim("universe:"), chalk.green(universe));
   approveAugurEternalApprovalValue(augur, auth.address, auth, function (err) {
     if (err) return console.error(err);
-    augur.markets.getMarkets({ universe: universe, sortBy: "creationBlock" }, function (err, marketIDs) {
-      console.log("marketIDs:", marketIDs);
+    augur.markets.getMarkets({ universe: universe, sortBy: "creationBlock" }, function (err, marketIds) {
+      console.log("marketIds:", marketIds);
       if (err) return console.error(err);
-      createOrders(augur, marketIDs, auth, function (err) {
+      createOrders(augur, marketIds, auth, function (err) {
         if (err) callback(err);
         callback(null);
       });

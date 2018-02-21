@@ -19,7 +19,7 @@ function initialReportInternal(augur, marketId, outcome, userAuth, invalid, auth
       console.log(chalk.red("Error"), chalk.red(err));
       callback(err);
     }
-    augur.markets.getMarketsInfo({ marketIDs: [marketId] }, function (err, marketsInfo) {
+    augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
       var market = marketsInfo[0];
       var marketPayload = { tx: { to: marketId } };
       augur.api.Market.getEndTime(marketPayload, function (err, endTime) {

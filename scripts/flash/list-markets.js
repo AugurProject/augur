@@ -9,12 +9,12 @@ function listMarketsInternal(augur, universe, callback) {
   augur.api.Controller.getTimestamp(function (err, timestamp) {
     displayTime("Current Time", timestamp);
     var currentTime = new Date(timestamp * 1000);
-    augur.markets.getMarkets({ universe: universe, sortBy: "endDate", isSortDescending: true }, function (err, marketIDs) {
-      if (!marketIDs || marketIDs.length === 0) {
+    augur.markets.getMarkets({ universe: universe, sortBy: "endDate", isSortDescending: true }, function (err, marketIds) {
+      if (!marketIds || marketIds.length === 0) {
         console.log(chalk.red("No markets available"));
         callback("No Markets");
       }
-      augur.markets.getMarketsInfo({ marketIDs: marketIDs }, function (err, marketInfos) {
+      augur.markets.getMarketsInfo({ marketIds: marketIds }, function (err, marketInfos) {
         if (err) {
           console.log(chalk.red("Error "), chalk.red(err));
           return callback(err);

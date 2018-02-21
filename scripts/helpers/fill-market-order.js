@@ -37,7 +37,7 @@ getPrivateKey(null, function (err, auth) {
       if (!outcomeToFill) console.log(chalk.red("outcome is needed"));
       if (!sharesToFill) console.log(chalk.red("shares to fill is needed"));
       if (!outcomeToFill || !sharesToFill) return;
-      augur.markets.getMarketsInfo({ marketIDs: [marketId] }, function (err, marketsInfo) {
+      augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
         if (err) {
           console.log(chalk.red(err));
           process.exit(1);

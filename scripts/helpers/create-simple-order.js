@@ -44,7 +44,7 @@ getPrivateKey(null, function (err, auth) {
         console.error(err);
         process.exit(1);
       }
-      augur.markets.getMarketsInfo({ marketIDs: [marketId] }, function (err, marketsInfo) {
+      augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
         async.eachSeries(marketsInfo, function (marketInfo, nextMarket) {
           console.log(chalk.yellow.dim("max price:"), chalk.yellow(marketInfo.maxPrice));
           console.log(chalk.yellow.dim("min price:"), chalk.yellow(marketInfo.minPrice));

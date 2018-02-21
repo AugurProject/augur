@@ -22,7 +22,7 @@ getPrivateKey(null, function (err, auth) {
   augur.connect(connectionEndpoints, function (err) {
     if (err) return console.error(err);
     invalid = !invalid ? false : true;
-    augur.markets.getMarketsInfo({ marketIDs: [marketId] }, function (err, marketsInfo) {
+    augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
       var market = marketsInfo[0];
       var marketPayload = { tx: { to: marketId } };
       augur.api.Market.getEndTime(marketPayload, function (err, endTime) {

@@ -12,7 +12,7 @@ function displayProperty(key, collection) {
 function marketInfoInternal(augur, marketId, universe, callback) {
   augur.api.Controller.getTimestamp(function (err, timestamp) {
     displayTime("Current Time", timestamp);
-    augur.markets.getMarketsInfo({ marketIDs: [marketId] }, function (err, marketInfos) {
+    augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketInfos) {
       if (err) {
         console.log(chalk.red("Error "), chalk.red(err));
         return callback(err);

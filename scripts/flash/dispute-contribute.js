@@ -20,7 +20,7 @@ function disputeContributeInternal(augur, marketId, outcome, amount, disputerAut
     }
     if (err) return console.error(err);
     invalid = !invalid ? false : true;
-    augur.markets.getMarketsInfo({ marketIDs: [marketId] }, function (err, marketsInfo) {
+    augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
       if (err) {
         console.log(chalk.red(err));
         return callback("Could not get market info");

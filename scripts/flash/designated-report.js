@@ -11,7 +11,7 @@ var doInitialReport = require("./do-initial-report");
  * Move time to Market end time and do initial report
  */
 function designateReportInternal(augur, marketId, outcomeId, invalid, auth, callback) {
-  augur.markets.getMarketsInfo({ marketIDs: [marketId] }, function (err, marketsInfo) {
+  augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
     var market = marketsInfo[0];
     if (outcomeId > market.numOutcomes - 1) {
       return callback("outcomeId " + outcomeId + " Not Market Outcome ");

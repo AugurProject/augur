@@ -32,7 +32,7 @@ getPrivateKey(null, function (err, auth) {
     invalid = !invalid ? false : true;
     var timestamp = augur.api.Controller.getTimestamp();
     console.log(chalk.yellow.dim("Current Timestamp"), chalk.yellow(timestamp));
-    augur.markets.getMarketsInfo({ marketIDs: [marketId] }, function (err, marketsInfo) {
+    augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
       var market = marketsInfo[0];
       var marketPayload = { tx: { to: marketId } };
       augur.api.Market.getFeeWindow(marketPayload, function (err, feeWindowId) {

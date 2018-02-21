@@ -39,7 +39,7 @@ getPrivateKey(null, function (err, auth) {
         console.error("Could not approve ...", err);
         process.exit(1);
       }
-      augur.markets.getMarketsInfo({ marketIDs: [marketId] }, function (err, marketsInfo) {
+      augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
         if (err) {
           console.error("Could not get markets Info", err);
           process.exit(1);
