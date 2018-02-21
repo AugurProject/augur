@@ -133,6 +133,7 @@ export default class ReportingReportForm extends Component {
                   type="number"
                   min={p.market.minPrice}
                   max={p.market.maxPrice}
+                  step={p.market.tickSize}
                   placeholder={p.market.minPrice}
                   value={p.selectedOutcome}
                   className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('err') && p.validations.selectedOutcome })}
