@@ -157,6 +157,7 @@ export default class ReportingReportForm extends Component {
             </ul>
           </li>
         }
+        { !p.isOpenReporting &&
         <li>
           <ul>
             <li className={Styles.ReportingReport__RepLabel}>
@@ -169,6 +170,7 @@ export default class ReportingReportForm extends Component {
             </li>
           </ul>
         </li>
+        }
       </ul>
     )
   }

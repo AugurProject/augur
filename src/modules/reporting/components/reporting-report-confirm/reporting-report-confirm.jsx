@@ -22,10 +22,12 @@ const ReportingReportConfirm = p => (
                 <span>{ p.selectedOutcome }</span>
               </li>
             }
+            { !p.isOpenReporting &&
             <li>
               <span>Stake</span>
               <span>{ p.stake instanceof BigNumber ? p.stake.toNumber() : p.stake } REP</span>
             </li>
+            }
             <li>
               <span>Gas</span>
               <span>-- ETH</span>
