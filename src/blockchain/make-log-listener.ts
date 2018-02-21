@@ -6,14 +6,13 @@ import { processLog } from "./process-logs";
 import { augurEmitter } from "../events";
 import { logQueueAdd } from "./process-queue";
 
-export function makeLogListener(trx: Knex, augur: Augur, contractName: string, eventName: string) {
+export function makeLogListener(augur: Augur, contractName: string, eventName: string) {
   return (log: FormattedEventLog): void => {
     console.log("log queued for block:", log.blockNumber);
-    logQueueAdd(log.blockNumber, (callback: ErrorCallback) => {
-      console.log("EXECUTING log:", log.blockNumber);
+    logQueueAdd(log.blockNumber, (db, callback: ErrorCallback) => {
       const logProcessor = logProcessors[contractName][eventName];
       if (!logProcessor.noAutoEmit) augurEmitter.emit(eventName, log);
-      processLog(trx, augur, log, logProcessors[contractName][eventName], callback);
+      processLog(db, augur, log, logProcessors[contractName][eventName], callback);
     });
   };
 }

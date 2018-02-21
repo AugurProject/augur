@@ -1,14 +1,12 @@
 import * as async from "async";
 import { ErrorCallback } from "../types";
-
-export const BLOCK_PRIORITY = 10;
-export const LOG_PRIORITY = 20;
+import * as Knex from "knex";
 
 interface LogQueue {
   [blockNumber: number]: Array<LogProcessCallback>;
 }
 
-export type LogProcessCallback = (errorCallback?: ErrorCallback) => void;
+export type LogProcessCallback = (db: Knex, errorCallback?: ErrorCallback) => void;
 
 export const processQueue = async.priorityQueue((processFunction: (callback: ErrorCallback) => void, nextFunction: ErrorCallback): void => {
   processFunction(nextFunction);
@@ -34,9 +32,9 @@ export function logQueuePop(blockNumber: number): Array<LogProcessCallback> {
   return callbacks;
 }
 
-export function logQueueProcess(blockNumber: number, callback: ErrorCallback): void {
+export function logQueueProcess(db: Knex, blockNumber: number, callback: ErrorCallback): void {
   const logCallbacks = logQueuePop(blockNumber);
   async.eachSeries(logCallbacks,
-    (logCallback: LogProcessCallback, next: ErrorCallback) => logCallback(next),
+    (logCallback: LogProcessCallback, next: ErrorCallback) => logCallback(db, (err) => next(err)),
     callback);
 }

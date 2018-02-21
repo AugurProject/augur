@@ -6,7 +6,7 @@ import { augurEmitter } from "../events";
 import { logError } from "../utils/log-error";
 import { BlockDetail, BlocksRow, AsyncCallback, ErrorCallback, MarketsContractAddressRow } from "../types";
 import { updateMarketState } from "./log-processors/database";
-import { processQueue, BLOCK_PRIORITY, logQueueProcess } from "./process-queue";
+import { processQueue, logQueueProcess } from "./process-queue";
 import { QueryBuilder } from "knex";
 import { getMarketsWithReportingState } from "../server/getters/database";
 
@@ -41,11 +41,11 @@ export function getOverrideTimestamp(): number|null {
 }
 
 export function processBlock(db: Knex, augur: Augur, block: BlockDetail): void {
-  processQueue.push((callback) => _processBlock(db, augur, block, callback), BLOCK_PRIORITY);
+  processQueue.push((callback) => _processBlock(db, augur, block, callback), 1);
 }
 
 export function processBlockRemoval(db: Knex, block: BlockDetail): void {
-  processQueue.push((callback) => _processBlockRemoval(db, block, callback), BLOCK_PRIORITY);
+  processQueue.push((callback) => _processBlockRemoval(db, block, callback), 1);
 }
 
 export function processBlockByNumber(db: Knex, augur: Augur, blockNumber: number, callback: ErrorCallback): void {
@@ -88,11 +88,7 @@ function _processBlock(db: Knex, augur: Augur, block: BlockDetail, callback: Err
             trx.rollback(err);
             callback(err);
           } else {
-            console.log("PRE lqp");
-            logQueueProcess(blockNumber, (err: Error|null) => {
-              console.log("POST lqp");
-              console.log(err);
-
+            logQueueProcess(trx, blockNumber, (err: Error|null) => {
               if (err != null) {
                 trx.rollback(err);
                 logError(err);
