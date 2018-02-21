@@ -160,8 +160,8 @@ export default class ReportingReportForm extends Component {
         <li>
           <ul>
             <li className={Styles.ReportingReport__RepLabel}>
-              <label>
-                <span htmlFor="sr__input--stake">Required Stake</span>
+              <label htmlFor="sr__input--stake">
+                <span>Required Stake</span>
               </label>
             </li>
             <li className={Styles.ReportingReport__RepAmount}>
