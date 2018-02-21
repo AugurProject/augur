@@ -63,8 +63,8 @@ describe("trading/place-trade", function () {
         assert.strictEqual(p._fxpAmount, "10");
         assert.strictEqual(p._price, "0.5");
         assert.strictEqual(p._tradeGroupId, "0x1");
-        assert.isUndefined(p._betterOrderId);
-        assert.isUndefined(p._worseOrderId);
+        assert.isNull(p._betterOrderId);
+        assert.isNull(p._worseOrderId);
         assert.isFunction(p.onSent);
         assert.isFunction(p.onSuccess);
         assert.isFunction(p.onFailed);
