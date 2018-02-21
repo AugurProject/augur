@@ -8,7 +8,7 @@ import MarketOutcomeOrderBook from 'modules/market/components/market-outcome-cha
 
 import Styles from 'modules/market/components/market-outcome-charts/market-outcome-charts.styles'
 
-import { isEqual } from 'lodash'
+// import { isEqual } from 'lodash'
 
 export default class MarketOutcomeCharts extends Component {
   static propTypes = {

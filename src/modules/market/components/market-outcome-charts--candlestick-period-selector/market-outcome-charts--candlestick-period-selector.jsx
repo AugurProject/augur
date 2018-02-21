@@ -4,9 +4,9 @@ import classNames from 'classnames'
 
 import { ChevronUp, ChevronDown } from 'modules/common/components/icons'
 
-import { isEqual, isEmpty } from 'lodash'
+// import { isEqual, isEmpty } from 'lodash'
 
-import { RANGE_STEPS } from 'modules/market/constants/permissible-periods'
+// import { RANGE_STEPS } from 'modules/market/constants/permissible-periods'
 
 import Styles from 'modules/market/components/market-outcome-charts--candlestick-period-selector/market-outcome-charts--candlestick-period-selector.styles'
 
@@ -43,47 +43,47 @@ export default class PeriodSelector extends Component {
     ]
 
     this.state = {
-      selectedPeriod: null,
-      selectedRange: null,
-      permissibleValues: [],
+      // selectedPeriod: null,
+      // selectedRange: null,
+      // permissibleValues: [],
       isModalActive: false
     }
 
-    this.updatePermissibleRange = this.updatePermissibleRange.bind(this)
+    // this.updatePermissibleRange = this.updatePermissibleRange.bind(this)
   }
 
   componentWillMount() {
-    this.updatePermissibleRange(this.props.priceTimeSeries)
+    // this.updatePermissibleRange(this.props.priceTimeSeries)
   }
 
   componentWillUpdate(nextProps) {
-    if (!isEqual(this.props.priceTimeSeries, nextProps.priceTimeSeries)) this.updatePermissibleRange(nextProps.priceTimeSeries)
+    // if (!isEqual(this.props.priceTimeSeries, nextProps.priceTimeSeries)) this.updatePermissibleRange(nextProps.priceTimeSeries)
   }
 
-  updatePermissibleRange(priceTimeSeries, selectedPeriod, selectedRange) {
-    // NOTE --  fundamental assumption is that the RANGES and PERIODS arrays have
-    //          the same number of values that also directly correspond to each other
-
-    const seriesRange = !isEmpty(priceTimeSeries) ? priceTimeSeries[priceTimeSeries.length - 1][0] - priceTimeSeries[0][0] : null
-
-    const permissibleValues = RANGE_STEPS.reduce((p, currentRange, i) => {
-      if (i === 0) return i
-
-      if (currentRange === null) {
-        if (seriesRange >= RANGE_STEPS[i - 1]) return i
-
-        return p
-      }
-
-      if (seriesRange >= RANGE_STEPS[i - 1] && seriesRange < currentRange) {
-        return i
-      }
-
-      return p
-    }, [])
-
-    this.setState({ permissibleValues })
-  }
+  // updatePermissibleRange(priceTimeSeries, selectedPeriod, selectedRange) {
+  //   // NOTE --  fundamental assumption is that the RANGES and PERIODS arrays have
+  //   //          the same number of values that also directly correspond to each other
+  //
+  //   const seriesRange = !isEmpty(priceTimeSeries) ? priceTimeSeries[priceTimeSeries.length - 1][0] - priceTimeSeries[0][0] : null
+  //
+  //   const permissibleValues = RANGE_STEPS.reduce((p, currentRange, i) => {
+  //     if (i === 0) return i
+  //
+  //     if (currentRange === null) {
+  //       if (seriesRange >= RANGE_STEPS[i - 1]) return i
+  //
+  //       return p
+  //     }
+  //
+  //     if (seriesRange >= RANGE_STEPS[i - 1] && seriesRange < currentRange) {
+  //       return i
+  //     }
+  //
+  //     return p
+  //   }, [])
+  //
+  //   this.setState({ permissibleValues })
+  // }
 
   render() {
     // TODO

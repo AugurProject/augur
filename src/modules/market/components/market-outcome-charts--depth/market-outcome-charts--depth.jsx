@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import * as d3 from 'd3'
 import ReactFauxDOM from 'react-faux-dom'
 
-import { isEqual, isEmpty } from 'lodash'
+import { isEqual } from 'lodash'
 
-import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
+import { ASKS } from 'modules/order-book/constants/order-book-order-types'
 
 import Styles from 'modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth.styles'
 
