@@ -26,7 +26,7 @@ describe("format/log/format-log-message", function () {
       assert.deepEqual(message, {
         owner: "0x1",
         spender: "0x2",
-        value: "10",
+        value: "0x8ac7230489e80000",
       });
     },
   });
