@@ -173,7 +173,7 @@ export default class ReportingReportForm extends Component {
             </ul>
           </li>
         }
-        { p.displayStakeOnly &&
+        { !p.isOpenReporting &&
         <li>
           <ul>
             <li className={Styles.ReportingReport__RepLabel}>
