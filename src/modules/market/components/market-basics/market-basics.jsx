@@ -14,14 +14,18 @@ import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-basics/market-basics.styles'
+import SingleSlicePieGraph from 'src/modules/market/components/common/single-slice-pie-graph/single-slice-pie-graph'
+
 
 const MarketBasics = p => (
-  <article>
-    <div className={classNames(CommonStyles.MarketCommon__topcontent, { [`${CommonStyles['single-card']}`]: p.cardStyle === 'single-card' })}>
+  <article className={Styles.MarketBasics}>
+    <div
+      className={classNames(CommonStyles.MarketCommon__topcontent, { [`${CommonStyles['single-card']}`]: p.cardStyle === 'single-card' })}
+    >
       <div className={CommonStyles.MarketCommon__header}>
         <ul className={Styles.MarketBasics__tags}>
           {p.tags && p.tags.length > 1 &&
-            <li>Tags</li>
+          <li>Tags</li>
           }
           {(p.tags || []).map((tag, i) => i !== 0 &&
             <li key={i}>
@@ -30,8 +34,9 @@ const MarketBasics = p => (
               </button>
             </li>)}
         </ul>
-      </div>
 
+        <SingleSlicePieGraph radius={45} percentage={0.000001} />
+      </div>
       <h1 className={CommonStyles.MarketCommon__description}>
         <MarketLink
           id={p.id}
@@ -42,11 +47,11 @@ const MarketBasics = p => (
       </h1>
 
       {(p.marketType === BINARY || p.marketType === SCALAR) &&
-        <MarketOutcomesBinaryScalar outcomes={p.outcomes} min={p.minValue} max={p.maxValue} type={p.marketType} />
+      <MarketOutcomesBinaryScalar outcomes={p.outcomes} min={p.minValue} max={p.maxValue} type={p.marketType} />
       }
 
       {p.marketType === 'categorical' &&
-        <MarketOutcomesCategorical outcomes={p.outcomes} />
+      <MarketOutcomesCategorical outcomes={p.outcomes} />
       }
     </div>
   </article>

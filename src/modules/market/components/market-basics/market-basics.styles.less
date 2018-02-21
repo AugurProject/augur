@@ -1,5 +1,23 @@
 @import (reference) '~assets/styles/shared';
 
+.MarketBasics {
+  svg {
+    height: 2em;
+    width: 2em;
+
+    path {
+      fill: @color-purple;
+    }
+
+    circle {
+      fill: none;
+      stroke: @color-purple;
+      stroke-width: .5em;
+    }
+  }
+}
+
+
 .MarketBasics__tags {
   &:extend(.caps--medium);
 
