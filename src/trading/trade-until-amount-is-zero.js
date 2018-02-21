@@ -4,8 +4,8 @@ var assign = require("lodash.assign");
 var BigNumber = require("bignumber.js");
 var speedomatic = require("speedomatic");
 var immutableDelete = require("immutable-delete");
+var calculateTradeCost = require("./calculate-trade-cost");
 var getTradeAmountRemaining = require("./get-trade-amount-remaining");
-var convertDecimalToFixedPoint = require("../utils/convert-decimal-to-fixed-point");
 var convertFixedPointToDecimal = require("../utils/convert-fixed-point-to-decimal");
 var api = require("../api");
 var noop = require("../utils/noop");
@@ -30,10 +30,10 @@ var constants = require("../constants");
  */
 function tradeUntilAmountIsZero(p) {
   console.log("tradeUntilAmountIsZero:", JSON.stringify(immutableDelete(p, "meta"), null, 2));
-  var priceNumTicksRepresentation = convertDecimalToFixedPoint(p._price, p.numTicks);
-  var adjustedPrice = p._direction === 0 ? new BigNumber(priceNumTicksRepresentation, 16) : new BigNumber(p.numTicks, 10).minus(new BigNumber(priceNumTicksRepresentation, 16));
-  var onChainAmount = convertDecimalToFixedPoint(p._fxpAmount, speedomatic.fix(p.tickSize, "string"));
-  var maxCost = speedomatic.unfix(new BigNumber(onChainAmount, 16).times(adjustedPrice));
+  var tradeCost = calculateTradeCost({ price: p._price, amount: p._fxpAmount, numTicks: p.numTicks, tickSize: p.tickSize, orderType: p._direction });
+  var maxCost = new BigNumber(tradeCost.cost, 10);
+  var onChainAmount = tradeCost.onChainAmount;
+  var priceNumTicksRepresentation = tradeCost.priceNumTicksRepresentation;
   var cost = p.estimatedCost != null ? new BigNumber(p.estimatedCost, 10) : maxCost;
   if (maxCost.lt(constants.PRECISION.zero)) return p.onSuccess(null);
   console.log("cost:", cost.toFixed(), "ETH");
@@ -55,7 +55,7 @@ function tradeUntilAmountIsZero(p) {
           if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining);
           return p.onFailed("Trade completed but amount of trade unchanged");
         }
-        var updatedEstimatedCost = p.estimatedCost == null ? cost.toFixed() : cost.minus(speedomatic.unfix(res.value)).toFixed();
+        var updatedEstimatedCost = p.estimatedCost == null ? null : cost.minus(speedomatic.unfix(res.value)).toFixed();
         console.log("updated estimated cost:", updatedEstimatedCost);
         tradeUntilAmountIsZero(assign({}, p, {
           estimatedCost: updatedEstimatedCost,
