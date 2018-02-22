@@ -467,6 +467,7 @@ export interface InitialReportersRow {
   initialReporter: number;
   redeemed: boolean;
   isDesignatedReporter: boolean;
+  repBalance: number;
 }
 
 export interface UnclaimedFeeWindowsRow {
