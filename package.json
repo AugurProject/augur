@@ -56,6 +56,7 @@
     "keythereum": "1.0.2",
     "lodash.assign": "4.2.0",
     "lodash.isequal": "4.5.0",
+    "options-parser": "^0.4.0",
     "parrotsay-api": "0.1.1",
     "speedomatic": "2.1.2",
     "uuid": "3.0.0",
