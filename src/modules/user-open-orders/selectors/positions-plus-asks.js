@@ -26,18 +26,18 @@ export const selectPositionsPlusAsks = createBigCacheSelector(10)(
     const adjustedMarkets = Object.keys(positions)
     const numAdjustedMarkets = adjustedMarkets.length
     const positionsPlusAsks = {}
-    let marketID
+    let marketId
     for (let i = 0; i < numAdjustedMarkets; ++i) {
-      marketID = adjustedMarkets[i]
+      marketId = adjustedMarkets[i]
 
       // NOTE --  This conditional is here to accomodate the scenario where
       //          a user has positions within a market + no orders.
       //          The order book is not loaded due to lazy load
-      const asks = getValue(orderBooks, `${marketID}.sell`)
+      const asks = getValue(orderBooks, `${marketId}.sell`)
       if (asks && Object.keys(asks).length) {
-        positionsPlusAsks[marketID] = selectMarketPositionPlusAsks(address, positions[marketID], asks)
+        positionsPlusAsks[marketId] = selectMarketPositionPlusAsks(address, positions[marketId], asks)
       } else {
-        positionsPlusAsks[marketID] = positions[marketID]
+        positionsPlusAsks[marketId] = positions[marketId]
       }
     }
 
@@ -46,7 +46,7 @@ export const selectPositionsPlusAsks = createBigCacheSelector(10)(
 )
 
 /**
- * @param {String} marketID
+ * @param {String} marketId
  * @param {String} account
  * @param {Object} position
  * @param {Object} asks
@@ -65,20 +65,20 @@ export const selectMarketPositionPlusAsks = (account, position, asks) => {
 }
 
 /**
- * @param {String} outcomeID
+ * @param {String} outcomeId
  * @param {String} account
  * @param {Object} askOrders
  * @return {BigNumber} Total number of shares in open ask orders.
  */
-export function getOpenAskShares(account, outcomeID, askOrders) {
+export function getOpenAskShares(account, outcomeId, askOrders) {
   if (!account || !askOrders) return ZERO
   let order
   let askShares = ZERO
-  const orderIDs = Object.keys(askOrders)
-  const numOrders = orderIDs.length
+  const orderIds = Object.keys(askOrders)
+  const numOrders = orderIds.length
   for (let i = 0; i < numOrders; ++i) {
-    order = askOrders[orderIDs[i]]
-    if (isOrderOfUser(order, account) && order.outcome === outcomeID) {
+    order = askOrders[orderIds[i]]
+    if (isOrderOfUser(order, account) && order.outcome === outcomeId) {
       askShares = askShares.plus(new BigNumber(order.amount, 10))
     }
   }

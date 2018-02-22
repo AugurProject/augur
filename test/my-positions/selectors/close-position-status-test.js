@@ -39,7 +39,7 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
   }
 
   test({
-    description: 'should return CLOSE_DIALOG_CLOSING status if closePositionTradeGroups has a tradeGroupID and transactionsData does not house a corresponding tradeGroupID',
+    description: 'should return CLOSE_DIALOG_CLOSING status if closePositionTradeGroups has a tradeGroupId and transactionsData does not house a corresponding tradeGroupId',
     state: {
       closePositionTradeGroups: {
         '0xMarketID1': {
@@ -47,8 +47,8 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
         }
       },
       transactionsData: {
-        '0xUnrelatedTransactionID': {
-          tradeGroupID: '0x00000UnrelatedTradeGroupID'
+        '0xUnrelatedTransactionId': {
+          tradeGroupId: '0x00000UnrelatedTradeGroupId'
         }
       }
     },
@@ -64,7 +64,7 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
   })
 
   test({
-    description: 'should return CLOSE_DIALOG_CLOSING status if closePositionTradeGroups has a tradeGroupID and transactionsData also houses a corresponding tradeGroupID',
+    description: 'should return CLOSE_DIALOG_CLOSING status if closePositionTradeGroups has a tradeGroupId and transactionsData also houses a corresponding tradeGroupId',
     state: {
       closePositionTradeGroups: {
         '0xMarketID1': {
@@ -72,11 +72,11 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
         }
       },
       transactionsData: {
-        '0xUnrelatedTransactionID': {
-          tradeGroupID: '0x00000UnrelatedTradeGroupID'
+        '0xUnrelatedTransactionId': {
+          tradeGroupId: '0x00000UnrelatedTradeGroupId'
         },
-        '0xTargetTransactionID': {
-          tradeGroupID: '0x00000TradeGroupID1'
+        '0xTargetTransactionId': {
+          tradeGroupId: '0x00000TradeGroupID1'
         }
       }
     },
@@ -100,8 +100,8 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
         }
       },
       transactionsData: {
-        '0xUnrelatedTransactionID': {
-          tradeGroupID: '0x00000UnrelatedTradeGroupID'
+        '0xUnrelatedTransactionId': {
+          tradeGroupId: '0x00000UnrelatedTradeGroupId'
         }
       }
     },
@@ -120,8 +120,8 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
 
       expected = [{
         type: CLEAR_CLOSE_POSITION_OUTCOME,
-        marketID: '0xMarketID1',
-        outcomeID: '0'
+        marketId: '0xMarketID1',
+        outcomeId: '0'
       }]
 
       assert.deepEqual(actual, expected, `Didn't return the expected actions`)
@@ -137,15 +137,15 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
         }
       },
       transactionsData: {
-        '0xUnrelatedTransactionID': {
-          tradeGroupID: '0x00000UnrelatedTradeGroupID'
+        '0xUnrelatedTransactionId': {
+          tradeGroupId: '0x00000UnrelatedTradeGroupId'
         },
         '0xTargetTransactionID1': {
-          tradeGroupID: '0x00000TradeGroupID1',
+          tradeGroupId: '0x00000TradeGroupID1',
           status: FAILED
         },
         '0xTargetTransactionID2': {
-          tradeGroupID: '0x00000TradeGroupID1',
+          tradeGroupId: '0x00000TradeGroupID1',
           status: FAILED
         }
       }
@@ -165,8 +165,8 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
 
       expected = [{
         type: CLEAR_CLOSE_POSITION_OUTCOME,
-        marketID: '0xMarketID1',
-        outcomeID: '0'
+        marketId: '0xMarketID1',
+        outcomeId: '0'
       }]
 
       assert.deepEqual(actual, expected, `Didn't return the expected actions`)
@@ -182,15 +182,15 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
         }
       },
       transactionsData: {
-        '0xUnrelatedTransactionID': {
-          tradeGroupID: '0x00000UnrelatedTradeGroupID'
+        '0xUnrelatedTransactionId': {
+          tradeGroupId: '0x00000UnrelatedTradeGroupId'
         },
         '0xTargetTransactionID1': {
-          tradeGroupID: '0x00000TradeGroupID1',
+          tradeGroupId: '0x00000TradeGroupID1',
           status: FAILED
         },
         '0xTargetTransactionID2': {
-          tradeGroupID: '0x00000TradeGroupID1',
+          tradeGroupId: '0x00000TradeGroupID1',
           status: SUCCESS
         }
       }
@@ -210,8 +210,8 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
 
       expected = [{
         type: CLEAR_CLOSE_POSITION_OUTCOME,
-        marketID: '0xMarketID1',
-        outcomeID: '0'
+        marketId: '0xMarketID1',
+        outcomeId: '0'
       }]
 
       assert.deepEqual(actual, expected, `Didn't return the expected actions`)
@@ -227,15 +227,15 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
         }
       },
       transactionsData: {
-        '0xUnrelatedTransactionID': {
-          tradeGroupID: '0x00000UnrelatedTradeGroupID'
+        '0xUnrelatedTransactionId': {
+          tradeGroupId: '0x00000UnrelatedTradeGroupId'
         },
         '0xTargetTransactionID1': {
-          tradeGroupID: '0x00000TradeGroupID1',
+          tradeGroupId: '0x00000TradeGroupID1',
           status: FAILED
         },
         '0xTargetTransactionID2': {
-          tradeGroupID: '0x00000TradeGroupID1'
+          tradeGroupId: '0x00000TradeGroupID1'
         }
       }
     },
@@ -259,15 +259,15 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
         }
       },
       transactionsData: {
-        '0xUnrelatedTransactionID': {
-          tradeGroupID: '0x00000UnrelatedTradeGroupID'
+        '0xUnrelatedTransactionId': {
+          tradeGroupId: '0x00000UnrelatedTradeGroupId'
         },
         '0xTargetTransactionID1': {
-          tradeGroupID: '0x00000TradeGroupID1',
+          tradeGroupId: '0x00000TradeGroupID1',
           status: SUCCESS
         },
         '0xTargetTransactionID2': {
-          tradeGroupID: '0x00000TradeGroupID1',
+          tradeGroupId: '0x00000TradeGroupID1',
           status: SUCCESS
         }
       }
@@ -287,8 +287,8 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
 
       expected = [{
         type: CLEAR_CLOSE_POSITION_OUTCOME,
-        marketID: '0xMarketID1',
-        outcomeID: '0'
+        marketId: '0xMarketID1',
+        outcomeId: '0'
       }]
 
       assert.deepEqual(actual, expected, `Didn't return the expected actions`)
@@ -304,8 +304,8 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
         }
       },
       transactionsData: {
-        '0xUnrelatedTransactionID': {
-          tradeGroupID: '0x00000UnrelatedTradeGroupID'
+        '0xUnrelatedTransactionId': {
+          tradeGroupId: '0x00000UnrelatedTradeGroupId'
         }
       }
     },
@@ -324,8 +324,8 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
 
       expected = [{
         type: CLEAR_CLOSE_POSITION_OUTCOME,
-        marketID: '0xMarketID1',
-        outcomeID: '0'
+        marketId: '0xMarketID1',
+        outcomeId: '0'
       }]
 
       assert.deepEqual(actual, expected, `Didn't return the expected actions`)

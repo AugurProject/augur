@@ -11,7 +11,7 @@ const ledgerSigner = async (rawTxArgs, ledgerLib, dispatch) => {
   }))
 
   const tx = rawTxArgs[0]
-  tx.v = tx.chainId // NOTE: solves issue w/ lib setting the wrong chainID during signing, might not need in the future
+  tx.v = tx.chainId // NOTE: solves issue w/ lib setting the wrong chainId during signing, might not need in the future
 
   const callback = rawTxArgs[1]
 

@@ -14,7 +14,7 @@ run any more than it has to.
 To achieve that, we pass in the minimum number of the shallowest arguments possible.
 For example, instead of passing in the entire `favorites` collection and letting the
 function find the one it needs for the market, we instead find the specific favorite
-for that market in advance, and only pass in a boolean: `!!favorites[marketID]`
+for that market in advance, and only pass in a boolean: `!!favorites[marketId]`
 That way the market only gets re-assembled when that specific favorite changes.
 
 This is true for all selectors, but especially important for this one.
@@ -57,9 +57,9 @@ export default function () {
   return selectSelectedMarket(store.getState())
 }
 
-export const selectSelectedMarket = state => selectMarket(state.selectedMarketID)
+export const selectSelectedMarket = state => selectMarket(state.selectedMarketId)
 
-export const selectMarket = (marketID) => {
+export const selectMarket = (marketId) => {
   const {
     marketsData,
     marketLoading,
@@ -78,27 +78,27 @@ export const selectMarket = (marketID) => {
 
   const accountPositions = selectAccountPositions()
 
-  if (!marketID || !marketsData || !marketsData[marketID]) {
+  if (!marketId || !marketsData || !marketsData[marketId]) {
     return {}
   }
 
-  const endDate = convertUnixToFormattedDate(marketsData[marketID].endDate)
+  const endDate = convertUnixToFormattedDate(marketsData[marketId].endDate)
 
   return assembleMarket(
-    marketID,
-    marketsData[marketID],
-    marketLoading.indexOf(marketID) !== -1,
-    priceHistory[marketID],
-    isMarketDataOpen(marketsData[marketID]),
-    isMarketDataExpired(marketsData[marketID], getCurrentDateTimestamp()),
+    marketId,
+    marketsData[marketId],
+    marketLoading.indexOf(marketId) !== -1,
+    priceHistory[marketId],
+    isMarketDataOpen(marketsData[marketId]),
+    isMarketDataExpired(marketsData[marketId], getCurrentDateTimestamp()),
 
-    !!favorites[marketID],
-    outcomesData[marketID],
+    !!favorites[marketId],
+    outcomesData[marketId],
 
-    selectMarketReport(marketID, reports[universe.id || UNIVERSE_ID]),
-    (accountPositions || {})[marketID],
-    (accountTrades || {})[marketID],
-    tradesInProgress[marketID],
+    selectMarketReport(marketId, reports[universe.id || UNIVERSE_ID]),
+    (accountPositions || {})[marketId],
+    (accountTrades || {})[marketId],
+    tradesInProgress[marketId],
 
     // the reason we pass in the date parts broken up like this, is because date objects are never equal, thereby always triggering re-assembly, and never hitting the memoization cache
     endDate.value.getFullYear(),
@@ -107,9 +107,9 @@ export const selectMarket = (marketID) => {
 
     universe && universe.currentReportingWindowAddress,
 
-    orderBooks[marketID],
+    orderBooks[marketId],
     orderCancellation,
-    (smallestPositions || {})[marketID],
+    (smallestPositions || {})[marketId],
     loginAccount,
     store.dispatch
   )
@@ -118,7 +118,7 @@ export const selectMarket = (marketID) => {
 const assembledMarketsCache = {}
 
 export function assembleMarket(
-  marketID,
+  marketId,
   marketData,
   isMarketLoading,
   marketPriceHistory,
@@ -141,9 +141,9 @@ export function assembleMarket(
   dispatch
 ) {
 
-  if (!assembledMarketsCache[marketID]) {
-    assembledMarketsCache[marketID] = memoize((
-      marketID,
+  if (!assembledMarketsCache[marketId]) {
+    assembledMarketsCache[marketId] = memoize((
+      marketId,
       marketData,
       isMarketLoading,
       marketPriceHistory,
@@ -170,7 +170,7 @@ export function assembleMarket(
         ...marketData,
         description: marketData.description || '',
         formattedDescription: listWordsUnderLength(marketData.description || '', 100).map(word => encodeURIComponent(word.toLowerCase())).join('_'),
-        id: marketID
+        id: marketId
       }
 
       const now = new Date()
@@ -209,29 +209,29 @@ export function assembleMarket(
       market.volume = formatShares(marketData.volume, { positiveSign: false })
 
       market.isRequiredToReportByAccount = !!marketReport
-      market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportedOutcomeID // account is required to report on this market
-      market.isReported = market.isRequiredToReportByAccount && !!marketReport.reportedOutcomeID // the user has reported on this market
+      market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportedOutcomeId // account is required to report on this market
+      market.isReported = market.isRequiredToReportByAccount && !!marketReport.reportedOutcomeId // the user has reported on this market
       market.isReportTabVisible = market.isRequiredToReportByAccount
 
-      market.onSubmitPlaceTrade = outcomeID => dispatch(placeTrade(marketID, outcomeID, marketTradeInProgress[outcomeID]))
+      market.onSubmitPlaceTrade = outcomeId => dispatch(placeTrade(marketId, outcomeId, marketTradeInProgress[outcomeId]))
 
       market.report = {
         ...marketReport,
-        onSubmitReport: (reportedOutcomeID, amountToStake, isIndeterminate, history) => dispatch(submitReport(market, reportedOutcomeID, amountToStake, isIndeterminate, history))
+        onSubmitReport: (reportedOutcomeId, amountToStake, isIndeterminate, history) => dispatch(submitReport(market, reportedOutcomeId, amountToStake, isIndeterminate, history))
       }
 
       market.outcomes = []
 
       let marketTradeOrders = []
 
-      market.outcomes = Object.keys(marketOutcomesData || {}).map((outcomeID) => {
-        const outcomeData = marketOutcomesData[outcomeID]
-        const outcomeTradeInProgress = marketTradeInProgress && marketTradeInProgress[outcomeID]
+      market.outcomes = Object.keys(marketOutcomesData || {}).map((outcomeId) => {
+        const outcomeData = marketOutcomesData[outcomeId]
+        const outcomeTradeInProgress = marketTradeInProgress && marketTradeInProgress[outcomeId]
 
         const outcome = {
           ...outcomeData,
-          id: outcomeID,
-          marketID,
+          id: outcomeId,
+          marketId,
           lastPrice: formatEtherTokens(outcomeData.price || 0, { positiveSign: false })
         }
 
@@ -268,7 +268,7 @@ export function assembleMarket(
         outcome.orderBookSeries = getOrderBookSeries(orderBook)
         outcome.topBid = selectTopBid(orderBook, false)
         outcome.topAsk = selectTopAsk(orderBook, false)
-        outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID])
+        outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeId])
         // needed for my-position display
         if (outcome.position) {
           outcome.position.lastPrice = outcome.lastPrice
@@ -276,7 +276,7 @@ export function assembleMarket(
         }
         marketTradeOrders = marketTradeOrders.concat(outcome.trade.tradeSummary.tradeOrders)
 
-        outcome.userOpenOrders = selectUserOpenOrders(marketID, outcomeID, orderBooks, orderCancellation)
+        outcome.userOpenOrders = selectUserOpenOrders(marketId, outcomeId, orderBooks, orderCancellation)
         if (outcome.userOpenOrders) outcome.userOpenOrders.forEach((item) => { item.name = outcome.name })
 
         outcome.priceTimeSeries = selectPriceTimeSeries(outcome, marketPriceHistory)
@@ -293,8 +293,8 @@ export function assembleMarket(
       market.marketCreatorFeesCollected = formatEther(marketData.marketCreatorFeesCollected || 0)
 
       market.reportableOutcomes = selectReportableOutcomes(market.type, market.outcomes)
-      const indeterminateOutcomeID = market.type === BINARY ? BINARY_INDETERMINATE_OUTCOME_ID : CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID
-      market.reportableOutcomes.push({ id: indeterminateOutcomeID, name: INDETERMINATE_OUTCOME_NAME })
+      const indeterminateOutcomeId = market.type === BINARY ? BINARY_INDETERMINATE_OUTCOME_ID : CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID
+      market.reportableOutcomes.push({ id: indeterminateOutcomeId, name: INDETERMINATE_OUTCOME_NAME })
 
       market.userOpenOrdersSummary = selectUserOpenOrdersSummary(market.outcomes)
 
@@ -315,7 +315,7 @@ export function assembleMarket(
       if (marketData.consensus) {
         market.consensus = { ...marketData.consensus }
         if (market.type !== SCALAR && market.reportableOutcomes.length) {
-          const marketOutcome = market.reportableOutcomes.find(outcome => outcome.id === market.consensus.outcomeID)
+          const marketOutcome = market.reportableOutcomes.find(outcome => outcome.id === market.consensus.outcomeId)
           if (marketOutcome) market.consensus.outcomeName = marketOutcome.name
         }
         if (market.consensus.proportionCorrect) {
@@ -329,16 +329,16 @@ export function assembleMarket(
     }, { max: 1 })
   }
 
-  return assembledMarketsCache[marketID].apply(this, arguments) // eslint-disable-line prefer-rest-params
+  return assembledMarketsCache[marketId].apply(this, arguments) // eslint-disable-line prefer-rest-params
 }
 
-export const selectMarketReport = (marketID, universeReports) => {
-  if (marketID && universeReports) {
-    const universeReportsMarketIDs = Object.keys(universeReports)
-    const numUniverseReports = universeReportsMarketIDs.length
+export const selectMarketReport = (marketId, universeReports) => {
+  if (marketId && universeReports) {
+    const universeReportsMarketIds = Object.keys(universeReports)
+    const numUniverseReports = universeReportsMarketIds.length
     for (let i = 0; i < numUniverseReports; ++i) {
-      if (universeReports[universeReportsMarketIDs[i]].marketID === marketID) {
-        return universeReports[universeReportsMarketIDs[i]]
+      if (universeReports[universeReportsMarketIds[i]].marketId === marketId) {
+        return universeReports[universeReportsMarketIds[i]]
       }
     }
   }

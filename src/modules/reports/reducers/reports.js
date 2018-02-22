@@ -7,36 +7,36 @@ const DEFAULT_STATE = {}
 export default function (reports = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_REPORTS: {
-      let universeID
+      let universeId
       const updatedReports = Object.assign({}, reports)
-      const universeIDs = Object.keys(action.reports)
-      const numUniverseIDs = universeIDs.length
-      for (let i = 0; i < numUniverseIDs; ++i) {
-        universeID = universeIDs[i]
-        updatedReports[universeID] = Object.assign({}, reports[universeID], action.reports[universeID])
+      const universeIds = Object.keys(action.reports)
+      const numUniverseIds = universeIds.length
+      for (let i = 0; i < numUniverseIds; ++i) {
+        universeId = universeIds[i]
+        updatedReports[universeId] = Object.assign({}, reports[universeId], action.reports[universeId])
       }
       return updatedReports
     }
     case UPDATE_REPORT: {
-      const universeReports = reports[action.universeID] || {}
+      const universeReports = reports[action.universeId] || {}
       return {
         ...reports,
-        [action.universeID]: {
+        [action.universeId]: {
           ...universeReports,
-          [action.marketID]: {
-            ...(universeReports[action.marketID] || { marketID: action.marketID }),
+          [action.marketId]: {
+            ...(universeReports[action.marketId] || { marketId: action.marketId }),
             ...action.report
           }
         }
       }
     }
     case CLEAR_OLD_REPORTS: {
-      const universeReports = reports[action.universeID] || {}
+      const universeReports = reports[action.universeId] || {}
       return {
         ...reports,
-        [action.universeID]: Object.keys(universeReports).reduce((p, marketID) => {
-          if (universeReports[marketID].period >= action.currentReportingWindowAddress) {
-            p[marketID] = universeReports[marketID]
+        [action.universeId]: Object.keys(universeReports).reduce((p, marketId) => {
+          if (universeReports[marketId].period >= action.currentReportingWindowAddress) {
+            p[marketId] = universeReports[marketId]
           }
           return p
         }, {})

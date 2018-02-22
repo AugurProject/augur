@@ -3,13 +3,13 @@ import { updateAssets } from 'modules/auth/actions/update-assets'
 
 export const slashRep = (market, salt, report, reporter, isIndeterminate, isUnethical) => (
   dispatch => augur.reporting.slashRep({
-    branch: market.branchID,
+    branch: market.branchId,
     salt,
     report,
     reporter,
     isIndeterminate,
     isUnethical,
-    eventID: market.eventID,
+    eventId: market.eventId,
     minValue: market.minValue,
     maxValue: market.maxValue,
     type: market.type,

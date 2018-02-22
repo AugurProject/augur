@@ -16,7 +16,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       '../../../services/augurjs': t.stub.augurjs,
       './insert-order-book-chunk-to-order-book': t.stub.insertOrderBookChunkToOrderBook
     }).default
-    store.dispatch(loadOneOutcomeBidsOrAsks(t.params.marketID, t.params.outcome, t.params.orderTypeLabel, (err) => {
+    store.dispatch(loadOneOutcomeBidsOrAsks(t.params.marketId, t.params.outcome, t.params.orderTypeLabel, (err) => {
       t.assertions(err, store.getActions())
       store.clearActions()
       done()
@@ -25,7 +25,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
   test({
     description: 'short-circuit if market ID not provided',
     params: {
-      marketID: undefined,
+      marketId: undefined,
       outcome: 3,
       orderTypeLabel: 'sell'
     },
@@ -52,7 +52,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
   test({
     description: 'short-circuit if outcome not provided',
     params: {
-      marketID: 'MARKET_0',
+      marketId: 'MARKET_0',
       outcome: undefined,
       orderTypeLabel: 'sell'
     },
@@ -79,7 +79,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
   test({
     description: 'short-circuit if orderType not provided',
     params: {
-      marketID: 'MARKET_0',
+      marketId: 'MARKET_0',
       outcome: 3,
       orderType: undefined
     },
@@ -106,7 +106,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
   test({
     description: 'short-circuit if market data not found',
     params: {
-      marketID: 'MARKET_0',
+      marketId: 'MARKET_0',
       outcome: 3,
       orderTypeLabel: 'sell'
     },
@@ -133,7 +133,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
   test({
     description: 'no orders found',
     params: {
-      marketID: 'MARKET_0',
+      marketId: 'MARKET_0',
       outcome: 3,
       orderTypeLabel: 'sell'
     },
@@ -151,9 +151,9 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
         }
       },
       insertOrderBookChunkToOrderBook: {
-        default: (marketID, outcome, orderTypeLabel, orderBookChunk) => dispatch => dispatch({
+        default: (marketId, outcome, orderTypeLabel, orderBookChunk) => dispatch => dispatch({
           type: 'INSERT_ORDER_BOOK_CHUNK_TO_ORDER_BOOK',
-          marketID,
+          marketId,
           outcome,
           orderTypeLabel,
           orderBookChunk
@@ -164,13 +164,13 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       assert.isNull(err)
       assert.deepEqual(actions, [{
         type: 'UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED',
-        marketID: 'MARKET_0',
+        marketId: 'MARKET_0',
         outcome: 3,
         orderTypeLabel: 'sell',
         isLoaded: false
       }, {
         type: 'INSERT_ORDER_BOOK_CHUNK_TO_ORDER_BOOK',
-        marketID: 'MARKET_0',
+        marketId: 'MARKET_0',
         outcome: 3,
         orderTypeLabel: 'sell',
         orderBookChunk: {}
@@ -180,7 +180,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
   test({
     description: 'load two orders',
     params: {
-      marketID: 'MARKET_0',
+      marketId: 'MARKET_0',
       outcome: 3,
       orderTypeLabel: 'sell'
     },
@@ -207,9 +207,9 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
         }
       },
       insertOrderBookChunkToOrderBook: {
-        default: (marketID, outcome, orderTypeLabel, orderBookChunk) => dispatch => dispatch({
+        default: (marketId, outcome, orderTypeLabel, orderBookChunk) => dispatch => dispatch({
           type: 'INSERT_ORDER_BOOK_CHUNK_TO_ORDER_BOOK',
-          marketID,
+          marketId,
           outcome,
           orderTypeLabel,
           orderBookChunk
@@ -220,13 +220,13 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       assert.isNull(err)
       assert.deepEqual(actions, [{
         type: 'UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED',
-        marketID: 'MARKET_0',
+        marketId: 'MARKET_0',
         outcome: 3,
         orderTypeLabel: 'sell',
         isLoaded: false
       }, {
         type: 'INSERT_ORDER_BOOK_CHUNK_TO_ORDER_BOOK',
-        marketID: 'MARKET_0',
+        marketId: 'MARKET_0',
         outcome: 3,
         orderTypeLabel: 'sell',
         orderBookChunk: { '0x1': order1, '0x2': order2 }

@@ -5,18 +5,18 @@ import logError from 'utils/log-error'
 
 import { has } from 'lodash'
 
-const loadOneOutcomeBidsOrAsks = (marketID, outcome, orderTypeLabel, callback = logError) => (dispatch, getState) => {
+const loadOneOutcomeBidsOrAsks = (marketId, outcome, orderTypeLabel, callback = logError) => (dispatch, getState) => {
   const { marketsData } = getState()
-  if (marketID == null || outcome == null || orderTypeLabel == null) {
-    return callback(`must specify market ID, outcome, and order type: ${marketID} ${outcome} ${orderTypeLabel}`)
+  if (marketId == null || outcome == null || orderTypeLabel == null) {
+    return callback(`must specify market ID, outcome, and order type: ${marketId} ${outcome} ${orderTypeLabel}`)
   }
-  const market = marketsData[marketID]
-  if (!market) return callback(`market ${marketID} data not found`)
-  dispatch(updateIsFirstOrderBookChunkLoaded(marketID, outcome, orderTypeLabel, false))
-  augur.trading.getOrders({ marketID, outcome, orderType: orderTypeLabel }, (err, orders) => {
+  const market = marketsData[marketId]
+  if (!market) return callback(`market ${marketId} data not found`)
+  dispatch(updateIsFirstOrderBookChunkLoaded(marketId, outcome, orderTypeLabel, false))
+  augur.trading.getOrders({ marketId, outcome, orderType: orderTypeLabel }, (err, orders) => {
     if (err) return callback(err)
     if (orders != null) {
-      dispatch(insertOrderBookChunkToOrderBook(marketID, outcome, orderTypeLabel, has(orders, [marketID, outcome, orderTypeLabel]) ? orders[marketID][outcome][orderTypeLabel] : {}))
+      dispatch(insertOrderBookChunkToOrderBook(marketId, outcome, orderTypeLabel, has(orders, [marketId, outcome, orderTypeLabel]) ? orders[marketId][outcome][orderTypeLabel] : {}))
     }
     callback(null)
   })

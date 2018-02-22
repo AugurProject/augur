@@ -8,10 +8,10 @@ export default function (isFirstOrderBookChunkLoaded = DEFAULT_STATE, action) {
     case UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED:
       return {
         ...isFirstOrderBookChunkLoaded,
-        [action.marketID]: {
-          ...(isFirstOrderBookChunkLoaded[action.marketID] || {}),
+        [action.marketId]: {
+          ...(isFirstOrderBookChunkLoaded[action.marketId] || {}),
           [action.outcome]: {
-            ...((isFirstOrderBookChunkLoaded[action.marketID] || {})[action.outcome] || {}),
+            ...((isFirstOrderBookChunkLoaded[action.marketId] || {})[action.outcome] || {}),
             [action.orderTypeLabel]: action.isLoaded
           }
         }

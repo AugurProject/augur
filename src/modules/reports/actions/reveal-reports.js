@@ -18,19 +18,19 @@ export function revealReports(cb) {
       const branchReports = reports[branch.id]
       if (!branchReports) return callback(null)
       const revealableReports = Object.keys(branchReports)
-        .filter(eventID => branchReports[eventID].reportHash &&
-        branchReports[eventID].reportHash.length && !branchReports[eventID].isRevealed && branchReports[eventID].period === branch.reportPeriod)
-        .map((eventID) => {
-          const obj = { ...branchReports[eventID], eventID }
+        .filter(eventId => branchReports[eventId].reportHash &&
+        branchReports[eventId].reportHash.length && !branchReports[eventId].isRevealed && branchReports[eventId].period === branch.reportPeriod)
+        .map((eventId) => {
+          const obj = { ...branchReports[eventId], eventId }
           return obj
         })
       console.log('revealableReports:', revealableReports)
       if (revealableReports && revealableReports.length && loginAccount.address) {
         async.eachSeries(revealableReports, (report, nextReport) => {
-          const { eventID } = report
-          console.log('revealReportLock:', eventID, revealReportLock[eventID])
-          if (revealReportLock[eventID]) return nextReport()
-          revealReportLock[eventID] = true
+          const { eventId } = report
+          console.log('revealReportLock:', eventId, revealReportLock[eventId])
+          if (revealReportLock[eventId]) return nextReport()
+          revealReportLock[eventId] = true
           let type
           if (report.isScalar) {
             type = SCALAR
@@ -40,8 +40,8 @@ export function revealReports(cb) {
             type = BINARY
           }
           augur.reporting.submitReport({
-            event: eventID,
-            report: report.reportedOutcomeID,
+            event: eventId,
+            report: report.reportedOutcomeId,
             salt: report.salt,
             ethics: Number(!report.isUnethical),
             minValue: report.minValue,
@@ -52,10 +52,10 @@ export function revealReports(cb) {
             onSuccess: (r) => {
               console.log('submitReport success:', r)
               dispatch(updateAssets())
-              revealReportLock[eventID] = false
+              revealReportLock[eventId] = false
               dispatch(updateReports({
                 [branch.id]: {
-                  [eventID]: { ...report, isRevealed: true }
+                  [eventId]: { ...report, isRevealed: true }
                 }
               }))
               nextReport()

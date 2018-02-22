@@ -40,7 +40,7 @@ describe('modules/market/reducers/market-loading', () => {
       const actual = marketLoading([], {
         type: ADD_MARKET_LOADING,
         data: {
-          marketID: '0xMARKETID'
+          marketId: '0xMARKETID'
         }
       })
 
@@ -56,7 +56,7 @@ describe('modules/market/reducers/market-loading', () => {
       const actual = marketLoading(['0xMARKETID1', '0xMARKETID2'], {
         type: REMOVE_MARKET_LOADING,
         data: {
-          marketID: '0xMARKETID1'
+          marketId: '0xMARKETID1'
         }
       })
 

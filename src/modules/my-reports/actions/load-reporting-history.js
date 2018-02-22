@@ -11,9 +11,9 @@ export function loadReportingHistory(options, callback = logError) {
       if (err) return callback(err)
       if (err) return callback(err)
       if (reportingHistory == null || Object.keys(reportingHistory).length === 0) return callback(null)
-      const marketIDs = Object.keys(reportingHistory[universe.id])
+      const marketIds = Object.keys(reportingHistory[universe.id])
       // TODO: not sure we want to start cascading calls, need discussion
-      dispatch(loadMarketsInfo(marketIDs.slice(), () => {
+      dispatch(loadMarketsInfo(marketIds.slice(), () => {
         dispatch(addReportingTransactions(reportingHistory))
         // TODO update user's reporting history
         callback(null, reportingHistory)

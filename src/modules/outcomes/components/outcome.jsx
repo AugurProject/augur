@@ -14,7 +14,7 @@ import getValue from 'utils/get-value'
 import setShareDenomination from 'utils/set-share-denomination'
 
 const Outcome = (p) => {
-  const selectedOutcomeID = getValue(p, 'selectedOutcome.id')
+  const selectedOutcomeId = getValue(p, 'selectedOutcome.id')
 
   const outcomeName = getValue(p, 'outcome.name')
 
@@ -28,9 +28,9 @@ const Outcome = (p) => {
   const lastPricePercent = getValue(p, 'outcome.lastPricePercent.rounded')
 
   return (
-    <article className={classNames('outcome', { selected: selectedOutcomeID === p.outcome.id })}>
+    <article className={classNames('outcome', { selected: selectedOutcomeId === p.outcome.id })}>
       <a
-        className={classNames('unstlyed outcome-row-full', { selected: selectedOutcomeID === p.outcome.id })}
+        className={classNames('unstlyed outcome-row-full', { selected: selectedOutcomeId === p.outcome.id })}
         onClick={() => { p.updateSelectedOutcome(p.outcome) }}
       >
         {p.marketType === SCALAR ?
@@ -72,7 +72,7 @@ const Outcome = (p) => {
         <ValueDenomination formatted={lastPrice} />
       </a>
       <a
-        className={classNames('unstlyed outcome-row-condensed', { selected: selectedOutcomeID === p.outcome.id })}
+        className={classNames('unstlyed outcome-row-condensed', { selected: selectedOutcomeId === p.outcome.id })}
         onClick={() => { p.updateSelectedOutcome(p.outcome) }}
       >
         {p.marketType === SCALAR ?

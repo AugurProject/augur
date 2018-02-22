@@ -13,7 +13,7 @@ import Styles from 'modules/market/components/market-outcomes-list--outcome/mark
 const Outcome = (p) => {
   const outcomeName = getValue(p, 'outcome.name')
 
-  const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${p.marketID}`)
+  const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${p.marketId}`)
 
   const topBidShares = setShareDenomination(getValue(p, 'outcome.topBid.shares.formatted'), selectedShareDenomination)
   const topAskShares = setShareDenomination(getValue(p, 'outcome.topAsk.shares.formatted'), selectedShareDenomination)

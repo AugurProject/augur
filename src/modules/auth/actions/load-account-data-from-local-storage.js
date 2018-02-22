@@ -11,8 +11,8 @@ export const loadAccountDataFromLocalStorage = address => (dispatch, getState) =
         dispatch(updateFavorites(storedAccountData.favorites))
       }
       if (storedAccountData.scalarMarketsShareDenomination) {
-        Object.keys(storedAccountData.scalarMarketsShareDenomination).forEach((marketID) => {
-          dispatch(updateScalarMarketShareDenomination(marketID, storedAccountData.scalarMarketsShareDenomination[marketID]))
+        Object.keys(storedAccountData.scalarMarketsShareDenomination).forEach((marketId) => {
+          dispatch(updateScalarMarketShareDenomination(marketId, storedAccountData.scalarMarketsShareDenomination[marketId]))
         })
       }
       if (storedAccountData.reports && Object.keys(storedAccountData.reports).length) {

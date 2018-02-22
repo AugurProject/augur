@@ -29,9 +29,9 @@ const mapStateToProps = (state, { history }) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  loadMarkets: () => dispatch(loadMarkets((err, marketIDs) => {
+  loadMarkets: () => dispatch(loadMarkets((err, marketIds) => {
     if (err) return logError(err)
-    dispatch(loadMarketsInfo(marketIDs))
+    dispatch(loadMarketsInfo(marketIds))
   })),
 })
 

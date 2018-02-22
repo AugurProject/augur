@@ -11,10 +11,10 @@ export default function (orderCancellation = DEFAULT_STATE, action) {
     case UPDATE_ORDER_STATUS:
       return {
         ...orderCancellation,
-        [action.orderID]: action.status
+        [action.orderId]: action.status
       }
     case UPDATE_ORDER_REMOVE:
-      delete orderCancellation[action.orderID]
+      delete orderCancellation[action.orderId]
       return {
         ...orderCancellation
       }

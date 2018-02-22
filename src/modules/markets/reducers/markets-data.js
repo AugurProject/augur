@@ -13,20 +13,20 @@ export default function (marketsData = DEFAULT_STATE, action) {
     case UPDATE_MARKETS_LOADING_STATUS:
       return {
         ...marketsData,
-        ...action.marketIDs.reduce((p, marketID) => {
-          p[marketID] = {
-            ...marketsData[marketID],
+        ...action.marketIds.reduce((p, marketId) => {
+          p[marketId] = {
+            ...marketsData[marketId],
             isLoading: action.isLoading
           }
           return p
         }, {})
       }
     case UPDATE_MARKET_CATEGORY:
-      if (!action.marketID) return marketsData
+      if (!action.marketId) return marketsData
       return {
         ...marketsData,
-        [action.marketID]: {
-          ...marketsData[action.marketID],
+        [action.marketId]: {
+          ...marketsData[action.marketId],
           category: action.category
         }
       }
@@ -39,18 +39,18 @@ export default function (marketsData = DEFAULT_STATE, action) {
 }
 
 function processMarketsData(newMarketsData, existingMarketsData) {
-  return Object.keys(newMarketsData).reduce((p, marketID) => {
+  return Object.keys(newMarketsData).reduce((p, marketId) => {
     const marketData = {
-      ...existingMarketsData[marketID],
-      ...newMarketsData[marketID]
+      ...existingMarketsData[marketId],
+      ...newMarketsData[marketId]
     }
 
     // mark whether details have been loaded
     marketData.hasLoadedMarketInfo = !!marketData.cumulativeScale
 
     // save market (without outcomes)
-    // p[normalizedMarketID] = marketData
-    p[marketID] = marketData
+    // p[normalizedMarketId] = marketData
+    p[marketId] = marketData
 
     return p
   }, {})

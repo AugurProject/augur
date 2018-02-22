@@ -17,7 +17,7 @@ describe(`modules/auth/actions/login.js`, () => {
   //   }
   // };
   //
-  // const loginID = '2B4TRvPCMiwUu3tSG2z3eF7Wp6Dx5wnGkg34pZHE5WyKHs9wgydZc15qWM9zVh41jC3hrtXEG7xdgn3VT2UW3N6L9e2Way3ZwV9MgVxVPEnEmDjMuLKqYron9pcpaXgUBtweZcKJgQEX19fWRxJBiQEtMBpEu5M7SxsffJRnXDKEfEmawYLu3wh4Piq4vkUJyVKpQq5QnbbG9wBdwcwWQurVki38n5Dr8jPcBfv5sU53XqG943wChdDmJYcBPx4x3eGxu6BxReRBFM5tX1zquDKxidHZqFg5sjLbs5RMYD34mpKTZhhzcKmANz9UaQp3XAMPgrkht1d92qULRS7RKZDeEa7EBPTn3bcpadAL9p9jYgHhsKVZLyLRtKXqzDfvLd9ZyCZnAGQ9kDm1oYse5624CgcfXuPYmReghu28Kn4mufJVHWpQX9nXJfhXovnHTLiHSvT2bYZqqiTeqE9GENd4xCvT5Jeihyu47YfeW5oAkKekwkk23WmHiXN2knxKHwuJdSUveQDYFm2Um5MvLWV5FCFMV1wNKErnziMsS8bCbqqcBa7mA2iXLc52Xo2T8HnxQktaLsr8tHz3dy9qbcjTQwTsoegCCjAezfki8XUKhwKnFZtccW87iBf8afviXAd3yLH6jnyYXRXVnGCW2nKzYcdqPKe1uepv5Nj5Z1xMy8rWDohbGJJuiyKaRTBG1McGMiFeBCP5jZiKaQ1sY3avjgacipwb36rFkvgDX8LaNMvSRwAwbEUm1VPWmdKXiiz389bJs8ed3ahuLUPEWoLo3ZnCPuT5cZvZixhFYx3wM53yurDvCCpAFRjQHfYSzD5Q3b72L8h4kN4CVGp4MipZRM9gr36coqYfwj1CAQEH5FM3JkK83c2jsd6wVMSwicrgWGkafAehRPtzkoYchBj7s4RCoDBR3ne5exxWpFTjfyrwQZzVgTJRwx4JnSSbJxYQ6rfHYWuLTv6zKzeSXAMaDYfXXzi9pbaYo2Q4cS486zmGKkkGPJjAbqkxCg8NKaaSVW3xAaM8EWVQ9B9GLjsM7Y8obCLBNfZbUGiAk8msFbv2zEmnWr22MALMDGQizMAMeqbcPRCYSvQrDEHkXqmmK3Jk6zWe48iCZfCKNEKVYmwZaqyVfMKsMi5oY52xjyFvp72ff4GqV5thZVgNsdLSXKUBhTf6TPmG1dSNx';
+  // const loginId = '2B4TRvPCMiwUu3tSG2z3eF7Wp6Dx5wnGkg34pZHE5WyKHs9wgydZc15qWM9zVh41jC3hrtXEG7xdgn3VT2UW3N6L9e2Way3ZwV9MgVxVPEnEmDjMuLKqYron9pcpaXgUBtweZcKJgQEX19fWRxJBiQEtMBpEu5M7SxsffJRnXDKEfEmawYLu3wh4Piq4vkUJyVKpQq5QnbbG9wBdwcwWQurVki38n5Dr8jPcBfv5sU53XqG943wChdDmJYcBPx4x3eGxu6BxReRBFM5tX1zquDKxidHZqFg5sjLbs5RMYD34mpKTZhhzcKmANz9UaQp3XAMPgrkht1d92qULRS7RKZDeEa7EBPTn3bcpadAL9p9jYgHhsKVZLyLRtKXqzDfvLd9ZyCZnAGQ9kDm1oYse5624CgcfXuPYmReghu28Kn4mufJVHWpQX9nXJfhXovnHTLiHSvT2bYZqqiTeqE9GENd4xCvT5Jeihyu47YfeW5oAkKekwkk23WmHiXN2knxKHwuJdSUveQDYFm2Um5MvLWV5FCFMV1wNKErnziMsS8bCbqqcBa7mA2iXLc52Xo2T8HnxQktaLsr8tHz3dy9qbcjTQwTsoegCCjAezfki8XUKhwKnFZtccW87iBf8afviXAd3yLH6jnyYXRXVnGCW2nKzYcdqPKe1uepv5Nj5Z1xMy8rWDohbGJJuiyKaRTBG1McGMiFeBCP5jZiKaQ1sY3avjgacipwb36rFkvgDX8LaNMvSRwAwbEUm1VPWmdKXiiz389bJs8ed3ahuLUPEWoLo3ZnCPuT5cZvZixhFYx3wM53yurDvCCpAFRjQHfYSzD5Q3b72L8h4kN4CVGp4MipZRM9gr36coqYfwj1CAQEH5FM3JkK83c2jsd6wVMSwicrgWGkafAehRPtzkoYchBj7s4RCoDBR3ne5exxWpFTjfyrwQZzVgTJRwx4JnSSbJxYQ6rfHYWuLTv6zKzeSXAMaDYfXXzi9pbaYo2Q4cS486zmGKkkGPJjAbqkxCg8NKaaSVW3xAaM8EWVQ9B9GLjsM7Y8obCLBNfZbUGiAk8msFbv2zEmnWr22MALMDGQizMAMeqbcPRCYSvQrDEHkXqmmK3Jk6zWe48iCZfCKNEKVYmwZaqyVfMKsMi5oY52xjyFvp72ff4GqV5thZVgNsdLSXKUBhTf6TPmG1dSNx';
   // const loadAccountData = sinon.stub().returns({ type: 'LOAD_FULL_ACCOUNT_DATA' });
   // const updateIsLoggedStub = sinon.stub().returns({ type: 'update-is-logged' });
   //
@@ -42,7 +42,7 @@ describe(`modules/auth/actions/login.js`, () => {
   //     augur.accounts.login = t.login;
   //     const store = mockStore(t.state || {});
   //
-  //     store.dispatch(login(loginID, 'password', (err) => {
+  //     store.dispatch(login(loginId, 'password', (err) => {
   //       t.assertions(err, store);
   //       done();
   //     }));

@@ -150,7 +150,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
 
         const actual = generateOutcomePositionSummary([{
           averagePrice: 0.2,
-          marketID: 'marketID',
+          marketId: 'marketId',
           numShares: 10,
           numSharesAdjustedForUserIntention: 8,
           outcome: 3,

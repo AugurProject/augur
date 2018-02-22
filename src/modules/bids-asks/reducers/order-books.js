@@ -10,16 +10,16 @@ export default function (orderBooks = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_ORDER_BOOK: {
       const {
-        marketID,
+        marketId,
         outcome,
         orderTypeLabel
       } = action
-      const marketOrderBook = orderBooks[marketID] || {}
+      const marketOrderBook = orderBooks[marketId] || {}
       const outcomeOrderBook = marketOrderBook[outcome] || {}
 
       return {
         ...orderBooks,
-        [marketID]: {
+        [marketId]: {
           ...marketOrderBook,
           [outcome]: {
             ...outcomeOrderBook,
@@ -33,15 +33,15 @@ export default function (orderBooks = DEFAULT_STATE, action) {
     }
     case REPLACE_ORDER_BOOK: {
       const {
-        marketID,
+        marketId,
         outcome,
         orderTypeLabel
       } = action
-      const marketOrderBook = orderBooks[marketID] || {}
+      const marketOrderBook = orderBooks[marketId] || {}
       const outcomeOrderBook = marketOrderBook[outcome] || {}
       return {
         ...orderBooks,
-        [marketID]: {
+        [marketId]: {
           ...marketOrderBook,
           [outcome]: {
             ...outcomeOrderBook,
@@ -52,15 +52,15 @@ export default function (orderBooks = DEFAULT_STATE, action) {
     }
     case CLEAR_ORDER_BOOK: {
       const {
-        marketID,
+        marketId,
         outcome,
         orderTypeLabel
       } = action
-      const marketOrderBook = orderBooks[marketID] || {}
+      const marketOrderBook = orderBooks[marketId] || {}
       const outcomeOrderBook = marketOrderBook[outcome] || {}
       return {
         ...orderBooks,
-        [marketID]: {
+        [marketId]: {
           ...marketOrderBook,
           [outcome]: {
             ...outcomeOrderBook,

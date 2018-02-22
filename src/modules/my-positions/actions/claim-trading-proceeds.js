@@ -20,8 +20,8 @@ const claimTradingProceeds = (marketIds, callback = logError) => (dispatch, getS
       onSent: noop,
       onSuccess: (claimedMarkets) => {
         dispatch(updateAssets())
-        each(claimedMarkets, (marketID, nextMarketID) => {
-          dispatch(loadMarketsInfo([marketID], nextMarketID))
+        each(claimedMarkets, (marketId, nextMarketId) => {
+          dispatch(loadMarketsInfo([marketId], nextMarketId))
         }, err => callback(err))
       },
       onFailed: err => callback(err)

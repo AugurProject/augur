@@ -24,27 +24,27 @@ export function loadUserTradingHistory(options, callback = logError) {
   return (dispatch, getState) => {
     const { universe, loginAccount } = getState()
     if (!loginAccount.address) return callback(null)
-    const marketID = typeof options === 'object' ? options.market : null
-    if (!marketID) dispatch(clearAccountTrades())
+    const marketId = typeof options === 'object' ? options.market : null
+    if (!marketId) dispatch(clearAccountTrades())
     augur.trading.getUserTradingHistory({
-      ...options, account: loginAccount.address, universe: universe.id, marketID
+      ...options, account: loginAccount.address, universe: universe.id, marketId
     }, (err, userTradingHistory) => {
       if (err) return callback(err)
       if (userTradingHistory == null || Object.keys(userTradingHistory).length === 0) return callback(null)
-      const marketIDs = Object.keys(userTradingHistory).reduce((p, index, i) => {
-        p.push(userTradingHistory[index].marketID)
+      const marketIds = Object.keys(userTradingHistory).reduce((p, index, i) => {
+        p.push(userTradingHistory[index].marketId)
         return p
       }, [])
-      dispatch(loadMarketsInfo(marketIDs, () => {
-        marketIDs.forEach((marketID) => {
+      dispatch(loadMarketsInfo(marketIds, () => {
+        marketIds.forEach((marketId) => {
           const trades = {}
-          userTradingHistory.filter(trade => trade.marketID === marketID).forEach((trade) => {
+          userTradingHistory.filter(trade => trade.marketId === marketId).forEach((trade) => {
             if (trades[trade.outcome] == null) {
               trades[trade.outcome] = []
             }
             trades[trade.outcome] = [...trades[trade.outcome], trade]
           })
-          dispatch(updateAccountTradeData(trades, marketID))
+          dispatch(updateAccountTradeData(trades, marketId))
         })
         dispatch(addTradeTransactions(userTradingHistory))
         callback(null, userTradingHistory)

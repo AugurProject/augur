@@ -40,7 +40,7 @@ export default class OutcomeTradeAction extends Component {
               </button>
               <button
                 onClick={() => {
-                  p.submitTrade(p.selectedID)
+                  p.submitTrade(p.selectedId)
                 }}
               >
                 Yes

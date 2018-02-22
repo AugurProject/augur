@@ -12,13 +12,13 @@ export const UPDATE_TRADE_IN_PROGRESS = 'UPDATE_TRADE_IN_PROGRESS'
 export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS'
 
 // Updates user's trade. Only defined (i.e. !== null) parameters are updated
-export function updateTradesInProgress(marketID, outcomeID, side, numShares, limitPrice, maxCost, callback = logError) {
+export function updateTradesInProgress(marketId, outcomeId, side, numShares, limitPrice, maxCost, callback = logError) {
   return (dispatch, getState) => {
     const {
       tradesInProgress, marketsData, loginAccount, orderBooks, orderCancellation
     } = getState()
-    const outcomeTradeInProgress = (tradesInProgress && tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID]) || {}
-    const market = marketsData[marketID]
+    const outcomeTradeInProgress = (tradesInProgress && tradesInProgress[marketId] && tradesInProgress[marketId][outcomeId]) || {}
+    const market = marketsData[marketId]
     // if nothing changed, exit
     if (!market || (outcomeTradeInProgress.numShares === numShares && outcomeTradeInProgress.limitPrice === limitPrice && outcomeTradeInProgress.side === side && outcomeTradeInProgress.totalCost === maxCost)) {
       return
@@ -31,8 +31,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
       return dispatch({
         type: UPDATE_TRADE_IN_PROGRESS,
         data: {
-          marketID,
-          outcomeID,
+          marketId,
+          outcomeId,
           details: {
             side: cleanSide,
             numShares: '',
@@ -46,8 +46,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
       return dispatch({
         type: UPDATE_TRADE_IN_PROGRESS,
         data: {
-          marketID,
-          outcomeID,
+          marketId,
+          outcomeId,
           details: {
             side: cleanSide,
             limitPrice: '',
@@ -58,7 +58,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
     }
 
     // find top order to default limit price to
-    const marketOrderBook = selectAggregateOrderBook(outcomeID, orderBooks[marketID], orderCancellation)
+    const marketOrderBook = selectAggregateOrderBook(outcomeId, orderBooks[marketId], orderCancellation)
     const defaultPrice = market.type === SCALAR ?
       new BigNumber(market.maxPrice, 10)
         .plus(new BigNumber(market.minPrice, 10))
@@ -110,16 +110,16 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 
     // trade actions
     if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.address) {
-      dispatch(loadAccountPositions({ market: marketID }, (err, accountPositions) => {
+      dispatch(loadAccountPositions({ market: marketId }, (err, accountPositions) => {
         if (err) {
           return dispatch({
             type: UPDATE_TRADE_IN_PROGRESS,
-            data: { marketID, outcomeID, details: newTradeDetails }
+            data: { marketId, outcomeId, details: newTradeDetails }
           })
         }
         const simulatedTrade = augur.trading.simulateTrade({
           orderType: newTradeDetails.side === BUY ? 0 : 1,
-          outcome: parseInt(outcomeID, 10),
+          outcome: parseInt(outcomeId, 10),
           shareBalances: accountPositions,
           tokenBalance: (loginAccount.ethTokens && loginAccount.ethTokens.toString()) || '0',
           userAddress: loginAccount.address,
@@ -128,7 +128,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
           price: newTradeDetails.limitPrice,
           shares: newTradeDetails.numShares,
           marketCreatorFeeRate: market.settlementFee,
-          singleOutcomeOrderBook: (orderBooks && orderBooks[marketID]) || {},
+          singleOutcomeOrderBook: (orderBooks && orderBooks[marketId]) || {},
           shouldCollectReportingFees: !market.isDisowned,
           reportingFeeRate: market.reportingFeeRate
         })
@@ -140,20 +140,20 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
         if (isNaN(newTradeDetails.feePercent)) newTradeDetails.feePercent = '0'
         dispatch({
           type: UPDATE_TRADE_IN_PROGRESS,
-          data: { marketID, outcomeID, details: { ...newTradeDetails, ...simulatedTrade } }
+          data: { marketId, outcomeId, details: { ...newTradeDetails, ...simulatedTrade } }
         })
         callback(null, { ...newTradeDetails, ...simulatedTrade })
       }))
     } else {
       dispatch({
         type: UPDATE_TRADE_IN_PROGRESS,
-        data: { marketID, outcomeID, details: newTradeDetails }
+        data: { marketId, outcomeId, details: newTradeDetails }
       })
       callback(null)
     }
   }
 }
 
-export function clearTradeInProgress(marketID) {
-  return { type: CLEAR_TRADE_IN_PROGRESS, marketID }
+export function clearTradeInProgress(marketId) {
+  return { type: CLEAR_TRADE_IN_PROGRESS, marketId }
 }
