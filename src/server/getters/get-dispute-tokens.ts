@@ -1,6 +1,5 @@
 import * as Knex from "knex";
-import * as _ from "lodash";
-import { Address, ReportingState, DisputeTokensRowWithTokenState, DisputeTokenState, UIDisputeTokenInfo, UIDisputeTokens } from "../../types";
+import { Address, ReportingState, DisputeTokensRowWithTokenState, DisputeTokenState, UIDisputeTokens } from "../../types";
 import { getMarketsWithReportingState, reshapeDisputeTokensRowToUIDisputeTokenInfo } from "./database";
 
 export function getDisputeTokens(db: Knex, universe: Address, account: Address, disputeTokenState: DisputeTokenState|null, callback: (err: Error|null, result?: any) => void): void {
