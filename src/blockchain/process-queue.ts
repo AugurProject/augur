@@ -3,7 +3,7 @@ import { ErrorCallback } from "../types";
 import * as Knex from "knex";
 
 interface LogQueue {
-  [blockNumber: number]: Array<LogProcessCallback>;
+  [blockHash: string]: Array<LogProcessCallback>;
 }
 
 export type LogProcessCallback = (db: Knex, errorCallback?: ErrorCallback) => void;
@@ -14,26 +14,26 @@ export const processQueue = async.queue((processFunction: (callback: ErrorCallba
 
 const logQueue: LogQueue = {};
 
-export function logQueueAdd(blockNumber: number, logCallback: LogProcessCallback|Array<LogProcessCallback>) {
-  if (logQueue[blockNumber] === undefined) {
-    logQueue[blockNumber] = [];
+export function logQueueAdd(blockHash: string, logCallback: LogProcessCallback|Array<LogProcessCallback>) {
+  if (logQueue[blockHash] === undefined) {
+    logQueue[blockHash] = [];
   }
   if (Array.isArray(logCallback) ) {
-    logQueue[blockNumber] = logQueue[blockNumber].concat(logCallback);
+    logQueue[blockHash] = logQueue[blockHash].concat(logCallback);
   } else {
-    logQueue[blockNumber].push(logCallback);
+    logQueue[blockHash].push(logCallback);
   }
 }
 
-export function logQueuePop(blockNumber: number): Array<LogProcessCallback> {
-  if (logQueue[blockNumber] === undefined) return [];
-  const callbacks = logQueue[blockNumber];
-  delete logQueue[blockNumber];
+export function logQueuePop(blockHash: string): Array<LogProcessCallback> {
+  if (logQueue[blockHash] === undefined) return [];
+  const callbacks = logQueue[blockHash];
+  delete logQueue[blockHash];
   return callbacks;
 }
 
-export function logQueueProcess(db: Knex, blockNumber: number, callback: ErrorCallback): void {
-  const logCallbacks = logQueuePop(blockNumber);
+export function logQueueProcess(db: Knex, blockHash: string, callback: ErrorCallback): void {
+  const logCallbacks = logQueuePop(blockHash);
   async.eachSeries(logCallbacks,
     (logCallback: LogProcessCallback, next: ErrorCallback) => logCallback(db, (err) => next(err)),
     callback);
