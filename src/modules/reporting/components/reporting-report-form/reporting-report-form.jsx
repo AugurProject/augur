@@ -142,7 +142,7 @@ export default class ReportingReportForm extends Component {
               </li>
               <li>
                 { p.validations.hasOwnProperty('err') &&
-                  <span className={FormStyles.Form__error}>
+                  <span className={Styles.ReportingReport__Form__err}>
                     {InputErrorIcon}{ p.validations.err }
                   </span>
                 }
