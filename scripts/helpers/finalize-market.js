@@ -6,7 +6,7 @@ var Augur = require("../../src");
 var chalk = require("chalk");
 var connectionEndpoints = require("../connection-endpoints");
 var getPrivateKey = require("../dp/lib/get-private-key").getPrivateKey;
-var marketID = process.argv[2];
+var marketId = process.argv[2];
 var getTime = require("./get-timestamp");
 
 var augur = new Augur();
@@ -24,7 +24,7 @@ getPrivateKey(null, function (err, auth) {
       console.error(err);
       process.exit(1);
     }
-    var marketPayload = { tx: { to: marketID } };
+    var marketPayload = { tx: { to: marketId } };
     augur.api.Market.getFeeWindow(marketPayload, function (err, feeWindowAddress) {
       var feeWindowPayload = { tx: { to: feeWindowAddress } };
       augur.api.FeeWindow.getEndTime(feeWindowPayload, function (err, endTime) {
@@ -38,7 +38,7 @@ getPrivateKey(null, function (err, auth) {
             onSent: function () {},
             onSuccess: function () {
               console.log(chalk.green.dim("Current time"), chalk.green(endTime));
-              var finalizePayload = { tx: { to: marketID  },
+              var finalizePayload = { tx: { to: marketId  },
                 onSent: function (result) {
                   console.log(chalk.yellow.dim("Sent:"), chalk.yellow(JSON.stringify(result)));
                 },

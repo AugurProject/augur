@@ -7,8 +7,8 @@ var getTime = require("./get-timestamp");
 var setTimestamp = require("./set-timestamp");
 var displayTime = require("./display-time");
 
-function finalizeMarketInternal(augur, marketID, auth, callback) {
-  var marketPayload = { tx: { to: marketID } };
+function finalizeMarketInternal(augur, marketId, auth, callback) {
+  var marketPayload = { tx: { to: marketId } };
   augur.api.Market.getFeeWindow(marketPayload, function (err, feeWindowAddress) {
     if (err) {
       console.error(err);
@@ -32,7 +32,7 @@ function finalizeMarketInternal(augur, marketID, auth, callback) {
             console.log(chalk.red(err));
             return callback(err);
           }
-          augur.api.Market.finalize({ tx: { to: marketID  },
+          augur.api.Market.finalize({ tx: { to: marketId  },
             onSent: function (result) {
               console.log(chalk.yellow.dim("Sent:"), chalk.yellow(JSON.stringify(result)));
               console.log(chalk.yellow.dim("Waiting for reply ...."));
@@ -53,8 +53,8 @@ function finalizeMarketInternal(augur, marketID, auth, callback) {
 }
 
 function help(callback) {
-  console.log(chalk.red("params syntax --> -p marketID"));
-  console.log(chalk.red("parameter 1: marketID is needed"));
+  console.log(chalk.red("params syntax --> -p marketId"));
+  console.log(chalk.red("parameter 1: marketId is needed"));
   callback(null);
 }
 
@@ -62,10 +62,10 @@ function finalizeMarket(augur, params, auth, callback) {
   if (!params || params === "help") {
     help(callback);
   } else {
-    var marketID = params;
-    console.log(chalk.yellow.dim("marketID"), marketID);
+    var marketId = params;
+    console.log(chalk.yellow.dim("marketId"), marketId);
     console.log(chalk.yellow.dim("owner"), auth.address);
-    finalizeMarketInternal(augur, marketID, auth, callback);
+    finalizeMarketInternal(augur, marketId, auth, callback);
   }
 }
 

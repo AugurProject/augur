@@ -6,10 +6,10 @@ var getOrderToFill = require("./get-order-to-fill");
 var debugOptions = require("../../debug-options");
 
 function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade, orderType, auth, callback) {
-  augur.markets.getMarkets({ universe: universe, sortBy: "creationBlock" }, function (err, marketIDs) {
+  augur.markets.getMarkets({ universe: universe, sortBy: "creationBlock" }, function (err, marketIds) {
     if (err) return callback(err);
-    if (!marketIDs || !Array.isArray(marketIDs) || !marketIDs.length) return callback(marketIDs);
-    augur.markets.getMarketsInfo({ marketIDs: marketIDs }, function (err, marketsInfo) {
+    if (!marketIds || !Array.isArray(marketIds) || !marketIds.length) return callback(marketIds);
+    augur.markets.getMarketsInfo({ marketIds: marketIds }, function (err, marketsInfo) {
       if (err) return callback(err);
       if (!marketsInfo || !Array.isArray(marketsInfo) || !marketsInfo.length) return callback(marketsInfo);
       async.eachSeries(marketsInfo, function (marketInfo, nextMarket) {

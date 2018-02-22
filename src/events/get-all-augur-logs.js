@@ -23,7 +23,7 @@ function getAllAugurLogs(p, callback) {
   var allAugurLogs = [];
   var networkId = ethrpc.getNetworkID();
   var contractNameToAddressMap = contracts.addresses[networkId];
-  if (contractNameToAddressMap == null) return callback(new Error("No contract address map for networkID: " + networkId));
+  if (contractNameToAddressMap == null) return callback(new Error("No contract address map for networkId: " + networkId));
   var eventsAbi = contracts.abi.events;
   var contractAddressToNameMap = mapContractAddressesToNames(contractNameToAddressMap);
   var eventSignatureToNameMap = mapEventSignaturesToNames(eventsAbi);

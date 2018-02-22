@@ -11,13 +11,13 @@ var ZERO = constants.ZERO;
 describe("trading/simulation/simulate-buy", function () {
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(simulateBuy(t.params.outcomeID, t.params.sharesToCover, t.params.shareBalances, t.params.tokenBalance, t.params.userAddress, t.params.minPrice, t.params.maxPrice, t.params.price, t.params.marketCreatorFeeRate, t.params.reportingFeeRate, t.params.shouldCollectReportingFees, t.params.sellOrderBook));
+      t.assertions(simulateBuy(t.params.outcomeId, t.params.sharesToCover, t.params.shareBalances, t.params.tokenBalance, t.params.userAddress, t.params.minPrice, t.params.maxPrice, t.params.price, t.params.marketCreatorFeeRate, t.params.reportingFeeRate, t.params.shouldCollectReportingFees, t.params.sellOrderBook));
     });
   };
   test({
     description: "single matching ask, taker partially filled",
     params: {
-      outcomeID: 0,
+      outcomeId: 0,
       sharesToCover: new BigNumber("3", 10),
       shareBalances: [ZERO, new BigNumber("5", 10)],
       tokenBalance: ZERO,
@@ -53,7 +53,7 @@ describe("trading/simulation/simulate-buy", function () {
   test({
     description: "no matching asks",
     params: {
-      outcomeID: 0,
+      outcomeId: 0,
       sharesToCover: new BigNumber("3", 10),
       shareBalances: [ZERO, new BigNumber("5", 10)],
       tokenBalance: ZERO,
@@ -89,7 +89,7 @@ describe("trading/simulation/simulate-buy", function () {
   test({
     description: "two matching asks, complete fill",
     params: {
-      outcomeID: 0,
+      outcomeId: 0,
       sharesToCover: new BigNumber("3", 10),
       shareBalances: [ZERO, new BigNumber("5", 10)],
       tokenBalance: ZERO,

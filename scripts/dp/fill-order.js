@@ -22,7 +22,7 @@ getPrivateKey(keystoreFilePath, function (err, auth) {
     if (err) return console.error(err);
     var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
     var fillerAddress = auth.address;
-    console.log(chalk.cyan.dim("networkID:"), chalk.cyan(augur.rpc.getNetworkID()));
+    console.log(chalk.cyan.dim("networkId:"), chalk.cyan(augur.rpc.getNetworkID()));
     console.log(chalk.green.dim("universe:"), chalk.green(universe));
     approveAugurEternalApprovalValue(augur, fillerAddress, auth, function (err) {
       if (err) return console.error(err);

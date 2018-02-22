@@ -86,7 +86,7 @@ export interface AbiMap {
 }
 
 export interface ContractNameToAddressMap {
-  [networkID: string]: {
+  [networkId: string]: {
     [contractName: string]: Address,
   };
 }
@@ -156,7 +156,7 @@ export interface Order {
 
 export interface SingleOutcomeOrderBookSide {
   [buyOrSell: string]: {
-    [orderID: string]: Order;
+    [orderId: string]: Order;
   }
 }
 
@@ -227,7 +227,7 @@ export class Augur {
     abi: AbiMap;
     addresses: ContractNameToAddressMap;
     uploadBlockNumbers: {
-      [networkID: string]: number
+      [networkId: string]: number
     };
   };
   public createMarket: {

@@ -10,7 +10,7 @@ var getPrivateKeyFromString = require("../augur-tool/lib/get-private-key").getPr
 var getTime = require("./get-timestamp");
 var BigNumber = require("bignumber.js");
 
-var marketID = process.argv[2];
+var marketId = process.argv[2];
 var outcome = process.argv[3];
 var disputer = process.argv[4];
 var amount = process.argv[5];
@@ -32,9 +32,9 @@ getPrivateKey(null, function (err, auth) {
     invalid = !invalid ? false : true;
     var timestamp = augur.api.Controller.getTimestamp();
     console.log(chalk.yellow.dim("Current Timestamp"), chalk.yellow(timestamp));
-    augur.markets.getMarketsInfo({ marketIDs: [marketID] }, function (err, marketsInfo) {
+    augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
       var market = marketsInfo[0];
-      var marketPayload = { tx: { to: marketID } };
+      var marketPayload = { tx: { to: marketId } };
       augur.api.Market.getFeeWindow(marketPayload, function (err, feeWindowId) {
         var feeWindowPayload = { tx: { to: feeWindowId } };
         augur.api.FeeWindow.isActive(feeWindowPayload, function (err, result) {
@@ -59,7 +59,7 @@ getPrivateKey(null, function (err, auth) {
                   var bnAmount = new BigNumber(amount, 10).toFixed();
                   var disputePayload = {
                     meta: disputerAuth,
-                    tx: { to: marketID  },
+                    tx: { to: marketId  },
                     _payoutNumerators: payoutNumerators,
                     _invalid: invalid,
                     _amount: bnAmount,

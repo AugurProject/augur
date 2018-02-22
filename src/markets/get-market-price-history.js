@@ -22,7 +22,7 @@ var augurNode = require("../augur-node");
 /**
  * Returns the prices and timestamps of a specific market's outcomes over time. Requires an Augur Node connection.
  * @param {Object} p Parameters object.
- * @param {string} p.marketID Market contract address for which to look up orders, as a hexadecimal string.
+ * @param {string} p.marketId Market contract address for which to look up orders, as a hexadecimal string.
  * @param {function} callback Called after the price time-series has been received and parsed.
  * @return {MarketPriceTimeSeries} This market's price time-series, keyed by outcome ID.
  */

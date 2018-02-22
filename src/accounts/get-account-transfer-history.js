@@ -13,7 +13,7 @@
  * @property {number} value Quantity of tokens sent.
  * @property {string|null} symbol Token symbol (if any).
  * @property {number|null} outcome Market outcome with which the token is associated (if any).
- * @property {string|null} marketID Contract address of the market in which the tranfer took place, as a hexadecimal string (if any).
+ * @property {string|null} marketId Contract address of the market in which the tranfer took place, as a hexadecimal string (if any).
  */
 
 var augurNode = require("../augur-node");
