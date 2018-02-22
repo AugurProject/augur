@@ -13,7 +13,7 @@ describe("blockchain/log-processors/tokens-transferred", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processTokensTransferredLog(db, t.params.augur, trx, t.params.log, (err) => {
+          processTokensTransferredLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
@@ -21,7 +21,7 @@ describe("blockchain/log-processors/tokens-transferred", () => {
                 t.assertions.onUpdatedPositions(err, positions);
                 getTokenBalances(trx, t.params, (err, balances) => {
                   t.assertions.onInitialBalances(err, balances);
-                  processTokensTransferredLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+                  processTokensTransferredLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                     getState(trx, t.params, (err, records) => {
                       t.assertions.onRemoved(err, records);
                       getTokenBalances(trx, t.params, (err, balances) => {

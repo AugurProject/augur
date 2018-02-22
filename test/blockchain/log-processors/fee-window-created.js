@@ -14,11 +14,11 @@ describe("blockchain/log-processors/fee-window-created", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processFeeWindowCreatedLog(db, t.params.augur, trx, t.params.log, (err) => {
+          processFeeWindowCreatedLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getFeeWindow(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
-              processFeeWindowCreatedLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+              processFeeWindowCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 getFeeWindow(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();

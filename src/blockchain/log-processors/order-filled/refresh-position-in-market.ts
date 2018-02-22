@@ -4,8 +4,8 @@ import { Augur } from "augur.js";
 import { Address, MarketsRow } from "../../../types";
 import { upsertPositionInMarket } from "./upsert-position-in-market";
 
-export function refreshPositionInMarket(db: Knex, augur: Augur, trx: Knex.Transaction, marketID: Address, account: Address, callback: (err: Error|null, positions?: Array<string>) => void) {
-  trx.first("minPrice", "maxPrice", "numTicks", "category").from("markets").where({ marketID }).asCallback((err: Error|null, marketsRow?: Partial<MarketsRow>): void => {
+export function refreshPositionInMarket(db: Knex, augur: Augur, marketID: Address, account: Address, callback: (err: Error|null, positions?: Array<string>) => void) {
+  db.first("minPrice", "maxPrice", "numTicks", "category").from("markets").where({ marketID }).asCallback((err: Error|null, marketsRow?: Partial<MarketsRow>): void => {
     if (err) return callback(err);
     if (!marketsRow) return callback(new Error("market min price, max price, and/or num ticks not found"));
     const minPrice = marketsRow.minPrice!;
@@ -18,7 +18,7 @@ export function refreshPositionInMarket(db: Knex, augur: Augur, trx: Knex.Transa
       tickSize,
     }, (err: Error|null, positions: Array<string>): void => {
       if (err) return callback(err);
-      upsertPositionInMarket(db, augur, trx, account, marketID, numTicks, positions, (err: Error|null) => {
+      upsertPositionInMarket(db, augur, account, marketID, numTicks, positions, (err: Error|null) => {
         if (err) return callback(err);
         callback(err, positions);
       });

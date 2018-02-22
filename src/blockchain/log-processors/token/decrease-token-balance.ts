@@ -6,11 +6,11 @@ interface BalanceResult {
   balance: number;
 }
 
-export function decreaseTokenBalance(db: Knex, augur: Augur, trx: Knex.Transaction, token: Address, owner: Address, amount: number, callback: ErrorCallback): void {
-  trx.first("balance").from("balances").where({ token, owner }).asCallback((err: Error|null, oldBalance?: BalanceResult): void => {
+export function decreaseTokenBalance(db: Knex, augur: Augur, token: Address, owner: Address, amount: number, callback: ErrorCallback): void {
+  db.first("balance").from("balances").where({ token, owner }).asCallback((err: Error|null, oldBalance?: BalanceResult): void => {
     if (err) return callback(err);
     if (oldBalance == null) return callback(new Error("Could not find balance for token decrease"));
     const balance = oldBalance.balance - amount;
-    db.transacting(trx).update({ balance }).into("balances").where({ token, owner }).asCallback(callback);
+    db.update({ balance }).into("balances").where({ token, owner }).asCallback(callback);
   });
 }

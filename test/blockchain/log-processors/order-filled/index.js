@@ -21,11 +21,11 @@ describe("blockchain/log-processors/order-filled", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processOrderFilledLog(db, t.params.augur, trx, t.params.log, (err) => {
+          processOrderFilledLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getState(trx, t.params, t.aux, (err, records) => {
               t.assertions.onAdded(err, records);
-              processOrderFilledLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+              processOrderFilledLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 getState(trx, t.params, t.aux, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();

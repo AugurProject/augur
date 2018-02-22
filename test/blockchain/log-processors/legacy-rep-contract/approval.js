@@ -11,11 +11,11 @@ describe("blockchain/log-processors/token/approval", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processApprovalLog(db, t.params.augur, trx, t.params.log, (err) => {
+          processApprovalLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
-              processApprovalLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+              processApprovalLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();

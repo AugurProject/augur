@@ -1,6 +1,5 @@
 import * as Knex from "knex";
 import { Address } from "../../types";
-import { queryModifier } from "./database";
 import { InitialReportersRow } from "../../types";
 
 export function getInitialReporters(db: Knex, reporter: Address, redeemed: boolean|null|undefined, callback: (err: Error|null, result?: any) => void): void {

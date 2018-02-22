@@ -16,11 +16,11 @@ describe("blockchain/log-processors/initial-report-redeemed", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processInitialReporterRedeemedLog(db, t.params.augur, trx, t.params.log, (err) => {
+          processInitialReporterRedeemedLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getInitialReport(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
-              processInitialReporterRedeemedLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+              processInitialReporterRedeemedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 getInitialReport(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();

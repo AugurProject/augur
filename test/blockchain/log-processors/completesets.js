@@ -11,11 +11,11 @@ describe("blockchain/log-processors/completesets", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processCompleteSetsPurchasedOrSoldLog(db, t.params.augur, trx, t.params.log, (err) => {
+          processCompleteSetsPurchasedOrSoldLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getState(trx, t.params, (err, positions) => {
               t.assertions.onUpdated(err, positions);
-              processCompleteSetsPurchasedOrSoldLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+              processCompleteSetsPurchasedOrSoldLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 getState(trx, t.params, (err, positions) => {
                   t.assertions.onUpdated(err, positions);
                   done();

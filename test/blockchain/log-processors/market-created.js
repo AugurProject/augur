@@ -19,11 +19,11 @@ describe("blockchain/log-processors/market-created", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processMarketCreatedLog(db, t.params.augur, trx, t.params.log, (err) => {
+          processMarketCreatedLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
-              processMarketCreatedLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+              processMarketCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();

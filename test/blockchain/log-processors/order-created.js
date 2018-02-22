@@ -13,11 +13,11 @@ describe("blockchain/log-processors/order-created", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processOrderCreatedLog(db, t.params.augur, trx, t.params.log, (err) => {
+          processOrderCreatedLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
-              processOrderCreatedLogRemoval(db, t.params.augur, trx, t.params.log, (err) => {
+              processOrderCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();

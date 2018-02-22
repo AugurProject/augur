@@ -18,19 +18,19 @@ describe("blockchain/log-processors/timestamp-set", () => {
         db.transaction((trx) => {
           initializeNetwork(trx, (err) => {
             assert.isNull(err);
-            processTimestampSetLog(db, t.params.augur, trx, t.params.log1, (err) => {
+            processTimestampSetLog(trx, t.params.augur, t.params.log1, (err) => {
               assert.isNull(err);
               getTimestampState(trx, t.params, (err, records) => {
                 t.assertions.onAdded1(err, records, getOverrideTimestamp());
-                processTimestampSetLog(db, t.params.augur, trx, t.params.log2, (err) => {
+                processTimestampSetLog(trx, t.params.augur, t.params.log2, (err) => {
                   assert.isNull(err);
                   getTimestampState(trx, t.params, (err, records) => {
                     t.assertions.onAdded2(err, records, getOverrideTimestamp());
-                    processTimestampSetLogRemoval(db, t.params.augur, trx, t.params.log2, (err) => {
+                    processTimestampSetLogRemoval(trx, t.params.augur, t.params.log2, (err) => {
                       assert.isNull(err);
                       getTimestampState(trx, t.params, (err, records) => {
                         t.assertions.onRemoved2(err, records, getOverrideTimestamp());
-                        processTimestampSetLogRemoval(db, t.params.augur, trx, t.params.log1, (err) => {
+                        processTimestampSetLogRemoval(trx, t.params.augur, t.params.log1, (err) => {
                           t.assertions.onRemoved1(err, records, getOverrideTimestamp());
                           done();
                         });
