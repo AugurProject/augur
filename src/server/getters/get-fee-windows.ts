@@ -9,12 +9,15 @@ export function getFeeWindows(db: Knex, augur: Augur, universe: Address, account
   let query = db.select(["fee_windows.feeWindow", "fee_windows.startTime", "fee_windows.endTime", "balances.balance", "participation_token.supply AS participationTokenStake", "fee_token.supply AS feeTokenStake", "cash.balance as totalFees"]).from("fee_windows")
     .join("balances", "fee_windows.feeWindow", "balances.token")
     .join("token_supply AS participation_token", "participation_token.token", "fee_windows.feeWindow")
-    .join("token_supply AS fee_token", "fee_token.token", "fee_windows.feeToken")
-    .join("balances AS cash", "cash.token", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash)
+    .leftJoin("token_supply AS fee_token", "fee_token.token", "fee_windows.feeToken")
+    .leftJoin("balances AS cash", function () {
+      this
+        .on("cash.token", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash)
+        .on("cash.owner", db.raw("fee_windows.feeWindow"));
+      })
     .where("fee_windows.universe", universe)
     .where("balances.balance", ">", 0)
-    .where("balances.owner", account)
-    .where("cash.owner", db.raw("fee_windows.feeWindow"));
+    .where("balances.owner", account);
   if (!includeCurrent) query = query.where("fee_windows.startTime", "<", getCurrentTime());
   query.asCallback((err: Error|null, unclaimedFeeWindowsRows: Array<UnclaimedFeeWindowsRow>): void => {
     if (err) return callback(err);

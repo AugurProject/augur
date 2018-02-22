@@ -9,6 +9,8 @@ export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: 
     Augur: {
       MarketCreated: makeLogListener(augur, "Augur", "MarketCreated"),
       TokensTransferred: makeLogListener(augur, "Augur", "TokensTransferred"),
+      TokensMinted: makeLogListener(augur, "Augur", "TokensMinted"),
+      TokensBurned: makeLogListener(augur, "Augur", "TokensBurned"),
       OrderCanceled: makeLogListener(augur, "Augur", "OrderCanceled"),
       OrderCreated: makeLogListener(augur, "Augur", "OrderCreated"),
       OrderFilled: makeLogListener(augur, "Augur", "OrderFilled"),
@@ -21,6 +23,7 @@ export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: 
       feeWindowCreated: makeLogListener(augur, "Augur", "FeeWindowCreated"),
       UniverseForked: makeLogListener(augur, "Augur", "UniverseForked"),
       TimestampSet: makeLogListener(augur, "Augur", "TimestampSet"),
+
     },
     LegacyReputationToken: {
       Transfer: makeLogListener(augur, "LegacyReputationToken", "Transfer"),
