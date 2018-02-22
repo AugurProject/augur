@@ -82,6 +82,7 @@ describe("events/find-event-logs-in-log-array", function () {
         transactionIndex: 0,
         logIndex: 11,
         blockNumber: 1351347,
+        blockHash: "0xd859203d97bdfe8c41605b9041d52fad3c4bd5c8324cafc8109cd4fba3518b78",
         contractName: "Augur",
         eventName: "MarketCreated",
       }]);
