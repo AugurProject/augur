@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Styles from 'modules/escape-hatch/components/escape-hatch.styles'
-import { formatEtherEstimate, formatEtherTokensEstimate } from 'utils/format-number'
+import { formatGasCost, formatEtherTokensEstimate } from 'utils/format-number'
 import PropTypes from 'prop-types'
 
 export default class EscapeHatchView extends Component {
@@ -25,13 +25,20 @@ export default class EscapeHatchView extends Component {
   }
 
   componentWillMount() {
-    // Once we stop doing the signing process this may be able to be changed to just isLogged
-    if (this.props.loginAccount.isUnlocked) this.props.loadMarkets()
+    if (this.props.loginAccount.address) {
+      this.props.loadMarkets()
+      this.props.loadParticipationTokens()
+      this.props.loadInitialReporters()
+      this.props.loadDisputeCrowdsourcers()
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.loginAccount.isUnlocked && nextProps.loginAccount.isUnlocked) {
+    if (!this.props.loginAccount.address && nextProps.loginAccount.address) {
       this.props.loadMarkets()
+      this.props.loadParticipationTokens()
+      this.props.loadInitialReporters()
+      this.props.loadDisputeCrowdsourcers()
     }
     this.setState({ fundsAvailableForWithdrawl: nextProps.escapeHatchData.fundsAvailableForWithdrawl > 0 })
   }
@@ -88,11 +95,11 @@ export default class EscapeHatchView extends Component {
             </div>
             <div>
               <span className={Styles.EscapeHatch_LabelCell}>ETH</span>
-              <span>{formatEtherTokensEstimate(1).rounded}</span>
+              <span>{formatEtherTokensEstimate(p.escapeHatchData.eth).rounded}</span>
             </div>
             <div>
               <span className={Styles.EscapeHatch_LabelCell}>GAS</span>
-              <span>{formatEtherEstimate(0.004).rounded}</span>
+              <span>{formatGasCost(p.escapeHatchData.gas).rounded}</span>
             </div>
           </article>
           <hr />

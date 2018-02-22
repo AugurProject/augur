@@ -210,6 +210,22 @@ export function formatBlank() {
   }
 }
 
+export function formatGasCost(num, opts) {
+  return formatNumber(
+    num,
+    {
+      decimals: 0,
+      decimalsRounded: 0,
+      denomination: ' GWEI',
+      positiveSign: false,
+      zeroStyled: false,
+      blankZero: false,
+      bigUnitPostfix: false,
+      ...opts
+    }
+  )
+}
+
 export function formatNumber(num, opts = {
   decimals: 0, decimalsRounded: 0, denomination: '', roundUp: false, roundDown: false, positiveSign: false, zeroStyled: true, minimized: false, blankZero: false, bigUnitPostfix: false
 }) {

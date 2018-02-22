@@ -7,7 +7,7 @@ import { updateMarketRepBalance, updateMarketFrozenSharesValue } from 'modules/m
 export default function (ownedMarkets, marketsWithShares, callback = logError) {
   return (dispatch, getState) => {
 
-    const { loginAccount } = getState()
+    const { partcipationTokens, initialReporters, disputeCrowdsourcers, loginAccount } = getState()
 
     each(ownedMarkets, (market) => {
       augur.api.Market.withdrawInEmergency({
@@ -15,7 +15,7 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
         tx: { to: market.id },
         onSent: noop,
         onSuccess: (res) => {
-          console.log('market.withdrawInEmergency', res)
+          console.log('Market.withdrawInEmergency', res)
           dispatch(updateMarketRepBalance(market.id, 0))
         },
         onFailed: callback
@@ -35,10 +35,49 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
       })
     })
 
-    // TODO Dispute Crowdsourcers
+    Object.keys(disputeCrowdsourcers).forEach((disputeCrowdsourcerID) => {
+      const disputeCrowdsourcer = disputeCrowdsourcers[disputeCrowdsourcerID]
+      if (!disputeCrowdsourcer.redeemed) {
+        augur.api.DisputeCrowdsourcer.withdrawInEmergency({
+          tx: { to: disputeCrowdsourcerID },
+          onSent: noop,
+          onSuccess: (res) => {
+            console.log('DisputeCrowdsourcer.withdrawInEmergency', res)
+            dispatch(updateDisputeCrowdsourcerBalance(disputeCrowdsourcerID, 0))
+          },
+          onFailed: callback
+        })
+      }
+    })
 
-    // TODO Initial Reporters
+    Object.keys(initialReporters).forEach((initialReporterID) => {
+      const initialReporter = initialReporters[initialReporterID]
+      if (!initialReporter.redeemed) {
+        augur.api.InitialReporter.withdrawInEmergency({
+          tx: { to: initialReporterID },
+          onSent: noop,
+          onSuccess: (res) => {
+            console.log('InitialReporter.withdrawInEmergency', res)
+            dispatch(updateInitialReporterRepBalance(initialReporterID, 0))
+          },
+          onFailed: callback
+        })
+      }
+    })
 
-    // TODO Participation Tokens
+    Object.keys(partcipationTokens).forEach((participationTokenID) => {
+      const partcipationToken = partcipationTokens[participationTokenID]
+      if (partcipationToken.balance > 0) {
+        augur.api.FeeWindow.withdrawInEmergency({
+          tx: { to: feeWindowID },
+          onSent: noop,
+          onSuccess: (res) => {
+            console.log('FeeWindow.withdrawInEmergency', res)
+            dispatch(updateParticipationTokenBalance(feeWindowID, 0))
+          },
+          onFailed: callback
+        })
+      }
+    })
   }
 }
