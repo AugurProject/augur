@@ -82,7 +82,6 @@ export function processOrderFilledLog(db: Knex, augur: Augur, log: FormattedEven
 }
 
 export function processOrderFilledLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  augurEmitter.emit("OrderFilled", log);
   const shareToken: Address = log.shareToken;
   const blockNumber: number = log.blockNumber;
   db.first("tokens.marketId", "tokens.outcome", "markets.numTicks", "markets.category", "markets.minPrice", "markets.maxPrice").from("tokens").join("markets", "tokens.marketId", "markets.marketId").where("tokens.contractAddress", shareToken).asCallback((err: Error|null, tokensRow?: Partial<TokensRowWithNumTicksAndCategory>): void => {
@@ -104,7 +103,10 @@ export function processOrderFilledLogRemoval(db: Knex, augur: Augur, log: Format
         if (err) return callback(err);
         db.from("trades").where({ marketId, outcome, orderId, blockNumber }).del().asCallback((err?: Error|null): void => {
           if (err) return callback(err);
-          updateOrdersAndPositions(db, augur, marketId, orderId, orderCreator, log.filler, numTicks, tickSize, callback);
+          updateOrdersAndPositions(db, augur, marketId, orderId, orderCreator, log.filler, numTicks, tickSize, (err?: Error|null) => {
+            augurEmitter.emit("OrderFilled", Object.assign({}, log, { creator: orderCreator }));
+            callback(err);
+          });
         });
       });
     });
