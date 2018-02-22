@@ -11,8 +11,6 @@ export function makeLogListener(augur: Augur, contractName: string, eventName: s
     logQueueAdd(log.blockHash, (db, callback: ErrorCallback) => {
       const logProcessor = logProcessors[contractName][eventName];
       if (!logProcessor.noAutoEmit) augurEmitter.emit(eventName, log);
-      console.log("processing", contractName, eventName);
-      console.log(JSON.stringify(log));
       processLog(db, augur, log, logProcessors[contractName][eventName], callback);
     });
   };
