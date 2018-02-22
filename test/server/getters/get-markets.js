@@ -229,6 +229,28 @@ describe("server/getters/get-markets", () => {
     },
   });
   test({
+    description: "get all markets awaiting designated reporting, sorted ascending by reportingStateUpdatedOn",
+    params: {
+      universe: "0x000000000000000000000000000000000000000b",
+      reportingState: "DESIGNATED_REPORTING",
+      sortBy: "reportingStateUpdatedOn",
+      isSortDescending: true,
+    },
+    assertions: (err, marketsInfo) => {
+      assert.isNull(err);
+      assert.deepEqual(marketsInfo, [
+        "0x0000000000000000000000000000000000000003",
+        "0x0000000000000000000000000000000000000012",
+        "0x0000000000000000000000000000000000000014",
+        "0x0000000000000000000000000000000000000015",
+        "0x0000000000000000000000000000000000000016",
+        "0x0000000000000000000000000000000000000017",
+        "0x0000000000000000000000000000000000000002",
+        "0x0000000000000000000000000000000000000001",
+      ]);
+    },
+  });
+  test({
     description: "get all markets awaiting designated reporting by d00d",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
