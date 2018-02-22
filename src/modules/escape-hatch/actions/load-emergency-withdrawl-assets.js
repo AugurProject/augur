@@ -20,9 +20,9 @@ export default function (marketIDs, callback = logError) {
     })
 
     // Update all markets with their frozen shares value
-    Object.keys(accountPositions).forEach(function(marketID) {
-      doUpdateShareFrozenValue(marketsData[marketID], dispatch, callback);
-    });
+    Object.keys(accountPositions).forEach((marketID) => {
+      doUpdateShareFrozenValue(marketsData[marketID], dispatch, callback)
+    })
   }
 }
 
@@ -40,7 +40,7 @@ function doUpdateMarketRepBalance(market, reputationTokenAddress, dispatch, call
           tx: { estimateGas: true, to: market.id },
           onSent: noop,
           onSuccess: (attoGasCost) => {
-            const gasCost = speedomatic.encodeNumberAsJSNumber(attoGasCost);
+            const gasCost = speedomatic.encodeNumberAsJSNumber(attoGasCost)
             dispatch(updateMarketEscapeHatchGasCost(market.id, gasCost))
           },
           onFailed: callback
@@ -58,14 +58,14 @@ function doUpdateShareFrozenValue(market, dispatch, callback) {
     if (err) return callback(err)
     const frozenSharesValue = speedomatic.unfix(attoEth, 'number')
     if (!market.frozenSharesValue || market.frozenSharesValue !== frozenSharesValue) {
-      dispatch(updateMarketFrozenSharesValue(market.id, frozenSharesValue));
+      dispatch(updateMarketFrozenSharesValue(market.id, frozenSharesValue))
       if (frozenSharesValue > 0) {
         augur.api.TradingEscapeHatch.claimSharesInUpdate({
           tx: { estimateGas: true },
           _market: market.id,
           onSent: noop,
           onSuccess: (attoGasCost) => {
-            const gasCost = speedomatic.unfix(attoGasCost, 'number');
+            const gasCost = speedomatic.unfix(attoGasCost, 'number')
             dispatch(updateMarketTradingEscapeHatchGasCost(market.id, gasCost))
           },
           onFailed: callback

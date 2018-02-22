@@ -2,12 +2,14 @@ import { augur } from 'services/augurjs'
 import { each } from 'async'
 import logError from 'utils/log-error'
 import noop from 'utils/noop'
-import { updateMarketRepBalance, updateMarketFrozenSharesValue } from 'modules/markets/actions/update-markets-data'
+import { updateMarketRepBalance, updateMarketFrozenSharesValue, updateDisputeCrowdsourcerBalance, updateInitialReporterRepBalance, updateParticipationTokenBalance } from 'modules/markets/actions/update-markets-data'
 
 export default function (ownedMarkets, marketsWithShares, callback = logError) {
   return (dispatch, getState) => {
 
-    const { partcipationTokens, initialReporters, disputeCrowdsourcers, loginAccount } = getState()
+    const {
+      partcipationTokens, initialReporters, disputeCrowdsourcers, loginAccount
+    } = getState()
 
     each(ownedMarkets, (market) => {
       augur.api.Market.withdrawInEmergency({
@@ -69,11 +71,11 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
       const partcipationToken = partcipationTokens[participationTokenID]
       if (partcipationToken.balance > 0) {
         augur.api.FeeWindow.withdrawInEmergency({
-          tx: { to: feeWindowID },
+          tx: { to: participationTokenID },
           onSent: noop,
           onSuccess: (res) => {
             console.log('FeeWindow.withdrawInEmergency', res)
-            dispatch(updateParticipationTokenBalance(feeWindowID, 0))
+            dispatch(updateParticipationTokenBalance(participationTokenID, 0))
           },
           onFailed: callback
         })

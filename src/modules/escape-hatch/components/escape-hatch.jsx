@@ -10,6 +10,9 @@ export default class EscapeHatchView extends Component {
     loadMarkets: PropTypes.func.isRequired,
     withdrawFundsInEmergency: PropTypes.func.isRequired,
     escapeHatchData: PropTypes.object.isRequired,
+    loadParticipationTokens: PropTypes.func.isRequired,
+    loadInitialReporters: PropTypes.func.isRequired,
+    loadDisputeCrowdsourcers: PropTypes.func.isRequired,
   }
 
   constructor(props) {
