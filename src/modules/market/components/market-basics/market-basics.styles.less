@@ -1,6 +1,10 @@
 @import (reference) '~assets/styles/shared';
 
 .MarketBasics {
+  &__reportingends {
+    .label-12--dark;
+  }
+
   svg {
     height: 2em;
     width: 2em;
@@ -12,11 +16,10 @@
     circle {
       fill: none;
       stroke: @color-purple;
-      stroke-width: .5em;
+      stroke-width: 0.5em;
     }
   }
 }
-
 
 .MarketBasics__tags {
   &:extend(.caps--medium);
