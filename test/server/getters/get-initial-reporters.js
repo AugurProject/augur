@@ -55,7 +55,7 @@ describe("server/getters/get-initial-reporters", () => {
           redeemed: 0,
           isDesignatedReporter: 1,
           repBalance: 2000,
-        }
+        },
       });
     },
   });
