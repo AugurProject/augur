@@ -77,11 +77,11 @@ describe("blockchain/log-processors/order-created", () => {
       onAdded: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, [{
-          orderID: "ORDER_ID",
+          orderId: "ORDER_ID",
           blockNumber: 1400100,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
           logIndex: 0,
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 0,
           shareToken: "0x1000000000000000000000000000000000000000",
           orderType: "buy",
@@ -93,17 +93,17 @@ describe("blockchain/log-processors/order-created", () => {
           amount: 3,
           tokensEscrowed: 2.25,
           sharesEscrowed: 0,
-          tradeGroupID: "TRADE_GROUP_ID",
+          tradeGroupId: "TRADE_GROUP_ID",
           isRemoved: null,
         }]);
       },
       onRemoved: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, [{
-          orderID: "ORDER_ID",
+          orderId: "ORDER_ID",
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
           logIndex: 0,
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 0,
           shareToken: "0x1000000000000000000000000000000000000000",
           orderType: "buy",
@@ -116,7 +116,7 @@ describe("blockchain/log-processors/order-created", () => {
           amount: 3,
           tokensEscrowed: 2.25,
           sharesEscrowed: 0,
-          tradeGroupID: "TRADE_GROUP_ID",
+          tradeGroupId: "TRADE_GROUP_ID",
           isRemoved: 1,
         }]);
       },

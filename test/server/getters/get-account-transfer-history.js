@@ -36,7 +36,7 @@ describe("server/getters/get-account-transfer-history", () => {
         token: "0x1000000000000000000000000000000000000000",
         value: 10,
         symbol: "shares",
-        marketID: "0x0000000000000000000000000000000000000001",
+        marketId: "0x0000000000000000000000000000000000000001",
         outcome: 0,
       }, {
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000d3adb33f",
@@ -49,7 +49,7 @@ describe("server/getters/get-account-transfer-history", () => {
         token: "0x1000000000000000000000000000000000000000",
         value: 2,
         symbol: "shares",
-        marketID: "0x0000000000000000000000000000000000000001",
+        marketId: "0x0000000000000000000000000000000000000001",
         outcome: 0,
       }, {
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadb33f",
@@ -62,7 +62,7 @@ describe("server/getters/get-account-transfer-history", () => {
         token: "0x7a305d9b681fb164dc5ad628b5992177dc66aec8",
         value: 47,
         symbol: "REP",
-        marketID: null,
+        marketId: null,
         outcome: null,
       }]);
     },
@@ -89,7 +89,7 @@ describe("server/getters/get-account-transfer-history", () => {
         token: "0x1000000000000000000000000000000000000000",
         value: 10,
         symbol: "shares",
-        marketID: "0x0000000000000000000000000000000000000001",
+        marketId: "0x0000000000000000000000000000000000000001",
         outcome: 0,
       }]);
     },
@@ -114,7 +114,7 @@ describe("server/getters/get-account-transfer-history", () => {
         token: "0x7a305d9b681fb164dc5ad628b5992177dc66aec8",
         value: 47,
         symbol: "REP",
-        marketID: null,
+        marketId: null,
         outcome: null,
       }]);
     },

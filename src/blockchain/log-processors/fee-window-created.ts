@@ -32,7 +32,7 @@ export function processFeeWindowCreatedLog(db: Knex, augur: Augur, log: Formatte
     if (err) return callback(err);
     const feeWindowToInsert = {
       feeWindow: log.feeWindow,
-      feeWindowID: log.id,
+      feeWindowId: log.id,
       universe: log.universe,
       startBlockNumber: log.blockNumber,
       startTime: log.startTime,

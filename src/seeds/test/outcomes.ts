@@ -4,7 +4,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
   return knex("outcomes").del().then(async (): Promise<any> => {
     // Inserts seed entries
-    const marketOutcomeCounts: {[marketID: string]: {numOutcomes: number, price: string, volume: string }} = {
+    const marketOutcomeCounts: {[marketId: string]: {numOutcomes: number, price: string, volume: string }} = {
       "0x0000000000000000000000000000000000000001": {numOutcomes: 8, price: "0.125", volume: "100"},
       "0x0000000000000000000000000000000000000002": {numOutcomes: 2, price: "0.5", volume: "1000"},
       "0x0000000000000000000000000000000000000003": {numOutcomes: 2, price: "0.5", volume: "10"},
@@ -20,11 +20,11 @@ exports.seed = async (knex: Knex): Promise<any> => {
     };
 
     const seedData: any = [];
-    Object.keys(marketOutcomeCounts).forEach((marketID) => {
-      const { numOutcomes, price, volume } = marketOutcomeCounts[marketID];
+    Object.keys(marketOutcomeCounts).forEach((marketId) => {
+      const { numOutcomes, price, volume } = marketOutcomeCounts[marketId];
       Array(numOutcomes).fill(0).forEach((_, i) => {
         seedData.push({
-          marketID,
+          marketId,
           volume,
           price,
           outcome: i,

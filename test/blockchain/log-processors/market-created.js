@@ -10,10 +10,10 @@ const { getMarketsWithReportingState } = require("../../../build/server/getters/
 describe("blockchain/log-processors/market-created", () => {
   const test = (t) => {
     const getState = (db, params, callback) => parallel({
-      markets: next => getMarketsWithReportingState(db).where({"markets.marketID": params.log.market }).asCallback(next),
+      markets: next => getMarketsWithReportingState(db).where({"markets.marketId": params.log.market }).asCallback(next),
       categories: next => db("categories").where({ category: params.log.topic }).asCallback(next),
-      outcomes: next => db("outcomes").where({ marketID: params.log.market }).asCallback(next),
-      tokens: next => db("tokens").where({ marketID: params.log.market }).asCallback(next),
+      outcomes: next => db("outcomes").where({ marketId: params.log.market }).asCallback(next),
+      tokens: next => db("tokens").where({ marketId: params.log.market }).asCallback(next),
     }, callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
@@ -109,7 +109,7 @@ describe("blockchain/log-processors/market-created", () => {
         assert.isNull(err);
         assert.deepEqual(records, {
           markets: [{
-            marketID: "0x1111111111111111111111111111111111111111",
+            marketId: "0x1111111111111111111111111111111111111111",
             universe: "0x000000000000000000000000000000000000000b",
             marketType: "binary",
             numOutcomes: 2,
@@ -133,14 +133,14 @@ describe("blockchain/log-processors/market-created", () => {
             feeWindow: "0x1000000000000000000000000000000000000001",
             endTime: 4886718345,
             finalizationTime: null,
-            marketStateID: 17,
+            marketStateId: 17,
             shortDescription: "this is a test market",
             longDescription: "this is the long description of a test market",
             designatedReporter: "0x000000000000000000000000000000000000b0b2",
             designatedReportStake: 16777216,
             resolutionSource: "https://www.trusted-third-party-co.com",
             numTicks: 10000,
-            consensusPayoutID: null,
+            consensusPayoutId: null,
             isInvalid: null,
           }],
           categories: [{
@@ -149,13 +149,13 @@ describe("blockchain/log-processors/market-created", () => {
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [{
-            marketID: "0x1111111111111111111111111111111111111111",
+            marketId: "0x1111111111111111111111111111111111111111",
             outcome: 0,
             price: 0.5,
             volume: 0,
             description: null,
           }, {
-            marketID: "0x1111111111111111111111111111111111111111",
+            marketId: "0x1111111111111111111111111111111111111111",
             outcome: 1,
             price: 0.5,
             volume: 0,
@@ -164,12 +164,12 @@ describe("blockchain/log-processors/market-created", () => {
           tokens: [{
             contractAddress: "SHARE_TOKEN_0",
             symbol: "shares",
-            marketID: "0x1111111111111111111111111111111111111111",
+            marketId: "0x1111111111111111111111111111111111111111",
             outcome: 0,
           }, {
             contractAddress: "SHARE_TOKEN_1",
             symbol: "shares",
-            marketID: "0x1111111111111111111111111111111111111111",
+            marketId: "0x1111111111111111111111111111111111111111",
             outcome: 1,
           }],
         });
@@ -263,7 +263,7 @@ describe("blockchain/log-processors/market-created", () => {
         assert.isNull(err);
         assert.deepEqual(records, {
           markets: [{
-            marketID: "0x1111111111111111111111111111111111111112",
+            marketId: "0x1111111111111111111111111111111111111112",
             universe: "0x000000000000000000000000000000000000000b",
             marketType: "categorical",
             numOutcomes: 4,
@@ -287,14 +287,14 @@ describe("blockchain/log-processors/market-created", () => {
             feeWindow: "0x1000000000000000000000000000000000000001",
             endTime: 4886718345,
             finalizationTime: null,
-            marketStateID: 17,
+            marketStateId: 17,
             shortDescription: "this is a test market",
             longDescription: "this is the long description of a test market",
             designatedReporter: "0x000000000000000000000000000000000000b0b2",
             designatedReportStake: 16777216,
             resolutionSource: "https://www.trusted-third-party-co.com",
             numTicks: 10000,
-            consensusPayoutID: null,
+            consensusPayoutId: null,
             isInvalid: null,
           }],
           categories: [{
@@ -303,25 +303,25 @@ describe("blockchain/log-processors/market-created", () => {
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [{
-            marketID: "0x1111111111111111111111111111111111111112",
+            marketId: "0x1111111111111111111111111111111111111112",
             outcome: 0,
             price: 0.25,
             volume: 0,
             description: "test outcome 0",
           }, {
-            marketID: "0x1111111111111111111111111111111111111112",
+            marketId: "0x1111111111111111111111111111111111111112",
             outcome: 1,
             price: 0.25,
             volume: 0,
             description: "test outcome 1",
           }, {
-            marketID: "0x1111111111111111111111111111111111111112",
+            marketId: "0x1111111111111111111111111111111111111112",
             outcome: 2,
             price: 0.25,
             volume: 0,
             description: "test outcome 2",
           }, {
-            marketID: "0x1111111111111111111111111111111111111112",
+            marketId: "0x1111111111111111111111111111111111111112",
             outcome: 3,
             price: 0.25,
             volume: 0,
@@ -330,22 +330,22 @@ describe("blockchain/log-processors/market-created", () => {
           tokens: [{
             contractAddress: "SHARE_TOKEN_0",
             symbol: "shares",
-            marketID: "0x1111111111111111111111111111111111111112",
+            marketId: "0x1111111111111111111111111111111111111112",
             outcome: 0,
           }, {
             contractAddress: "SHARE_TOKEN_1",
             symbol: "shares",
-            marketID: "0x1111111111111111111111111111111111111112",
+            marketId: "0x1111111111111111111111111111111111111112",
             outcome: 1,
           }, {
             contractAddress: "SHARE_TOKEN_2",
             symbol: "shares",
-            marketID: "0x1111111111111111111111111111111111111112",
+            marketId: "0x1111111111111111111111111111111111111112",
             outcome: 2,
           }, {
             contractAddress: "SHARE_TOKEN_3",
             symbol: "shares",
-            marketID: "0x1111111111111111111111111111111111111112",
+            marketId: "0x1111111111111111111111111111111111111112",
             outcome: 3,
           }],
         });
@@ -438,7 +438,7 @@ describe("blockchain/log-processors/market-created", () => {
         assert.isNull(err);
         assert.deepEqual(records, {
           markets: [{
-            marketID: "0x1111111111111111111111111111111111111113",
+            marketId: "0x1111111111111111111111111111111111111113",
             universe: "0x000000000000000000000000000000000000000b",
             marketType: "scalar",
             numOutcomes: 2,
@@ -462,14 +462,14 @@ describe("blockchain/log-processors/market-created", () => {
             feeWindow: "0x1000000000000000000000000000000000000001",
             endTime: 4886718345,
             finalizationTime: null,
-            marketStateID: 17,
+            marketStateId: 17,
             shortDescription: "this is a test market",
             longDescription: "this is the long description of a test market",
             designatedReporter: "0x000000000000000000000000000000000000b0b2",
             designatedReportStake: 16777216,
             resolutionSource: "https://www.trusted-third-party-co.com",
             numTicks: 10000,
-            consensusPayoutID: null,
+            consensusPayoutId: null,
             isInvalid: null,
           }],
           categories: [{
@@ -478,13 +478,13 @@ describe("blockchain/log-processors/market-created", () => {
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [{
-            marketID: "0x1111111111111111111111111111111111111113",
+            marketId: "0x1111111111111111111111111111111111111113",
             outcome: 0,
             price: 6.1,
             volume: 0,
             description: null,
           }, {
-            marketID: "0x1111111111111111111111111111111111111113",
+            marketId: "0x1111111111111111111111111111111111111113",
             outcome: 1,
             price: 6.1,
             volume: 0,
@@ -493,12 +493,12 @@ describe("blockchain/log-processors/market-created", () => {
           tokens: [{
             contractAddress: "SHARE_TOKEN_0",
             symbol: "shares",
-            marketID: "0x1111111111111111111111111111111111111113",
+            marketId: "0x1111111111111111111111111111111111111113",
             outcome: 0,
           }, {
             contractAddress: "SHARE_TOKEN_1",
             symbol: "shares",
-            marketID: "0x1111111111111111111111111111111111111113",
+            marketId: "0x1111111111111111111111111111111111111113",
             outcome: 1,
           }],
         });
@@ -587,7 +587,7 @@ describe("blockchain/log-processors/market-created", () => {
         assert.isNull(err);
         assert.deepEqual(records, {
           markets: [{
-            marketID: "0x1111111111111111111111111111111111111111",
+            marketId: "0x1111111111111111111111111111111111111111",
             universe: "0x000000000000000000000000000000000000000b",
             marketType: "binary",
             numOutcomes: 2,
@@ -611,14 +611,14 @@ describe("blockchain/log-processors/market-created", () => {
             feeWindow: "0x1000000000000000000000000000000000000001",
             endTime: 4886718345,
             finalizationTime: null,
-            marketStateID: 17,
+            marketStateId: 17,
             shortDescription: "this is a test market",
             longDescription: null,
             designatedReporter: "0x000000000000000000000000000000000000b0b2",
             designatedReportStake: 16777216,
             resolutionSource: null,
             numTicks: 10000,
-            consensusPayoutID: null,
+            consensusPayoutId: null,
             isInvalid: null,
           }],
           categories: [{
@@ -627,13 +627,13 @@ describe("blockchain/log-processors/market-created", () => {
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [{
-            marketID: "0x1111111111111111111111111111111111111111",
+            marketId: "0x1111111111111111111111111111111111111111",
             outcome: 0,
             price: 0.5,
             volume: 0,
             description: null,
           }, {
-            marketID: "0x1111111111111111111111111111111111111111",
+            marketId: "0x1111111111111111111111111111111111111111",
             outcome: 1,
             price: 0.5,
             volume: 0,
@@ -642,12 +642,12 @@ describe("blockchain/log-processors/market-created", () => {
           tokens: [{
             contractAddress: "SHARE_TOKEN_0",
             symbol: "shares",
-            marketID: "0x1111111111111111111111111111111111111111",
+            marketId: "0x1111111111111111111111111111111111111111",
             outcome: 0,
           }, {
             contractAddress: "SHARE_TOKEN_1",
             symbol: "shares",
-            marketID: "0x1111111111111111111111111111111111111111",
+            marketId: "0x1111111111111111111111111111111111111111",
             outcome: 1,
           }],
         });

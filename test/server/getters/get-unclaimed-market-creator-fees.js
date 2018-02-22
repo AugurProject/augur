@@ -10,7 +10,7 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getUnclaimedMarketCreatorFees(db, t.params.marketIDs, (err, marketFees) => {
+        getUnclaimedMarketCreatorFees(db, t.params.marketIds, (err, marketFees) => {
           t.assertions(err, marketFees);
           done();
         });
@@ -20,7 +20,7 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
   test({
     description: "get fees by specifying unfinalized market IDs",
     params: {
-      marketIDs: [
+      marketIds: [
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000000000000000000002",
       ],
@@ -29,20 +29,20 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
       assert.isNull(err);
       assert.deepEqual(marketFees, [
         {
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           unclaimedFee: 0,
         },
         {
-          marketID: "0x0000000000000000000000000000000000000002",
+          marketId: "0x0000000000000000000000000000000000000002",
           unclaimedFee: 0,
         },
       ]);
     },
   });
   test({
-    description: "Empty marketIDs array",
+    description: "Empty marketIds array",
     params: {
-      marketIDs: [],
+      marketIds: [],
     },
     assertions: (err, marketFees) => {
       assert.isNull(err);

@@ -6,8 +6,8 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.string("transactionHash", 66).notNullable(),
       table.specificType("logIndex", "integer NOT NULL CONSTRAINT \"nonnegativelogIndex\" CHECK (\"logIndex\" >= 0)"),
       table.specificType("blockNumber", "integer NOT NULL CONSTRAINT positiveOrderBlockNumber CHECK (\"blockNumber\" > 0)");
-      table.string("orderID", 42).notNullable();
-      table.string("marketID", 42).notNullable();
+      table.string("orderId", 42).notNullable();
+      table.string("marketId", 42).notNullable();
       table.specificType("outcome", "integer NOT NULL CONSTRAINT \"nonnegativeTradeOutcome\" CHECK (outcome >= 0)");
       table.string("shareToken", 42).notNullable();
       table.specificType("orderType", "varchar(4) NOT NULL CONSTRAINT \"enumTradeOrderTypes\" CHECK (\"orderType\" = 'buy' OR \"orderType\" = 'sell')");
@@ -21,7 +21,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.specificType("marketCreatorFees", "numeric NOT NULL CONSTRAINT \"nonnegativeMarketCreatorFees\" CHECK (\"marketCreatorFees\" >= 0)");
       table.specificType("price", "numeric").notNullable();
       table.specificType("amount", "numeric").notNullable();
-      table.integer("tradeGroupID");
+      table.integer("tradeGroupId");
 
       table.unique(["transactionHash", "logIndex"]);
     });

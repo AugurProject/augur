@@ -10,7 +10,7 @@ describe("server/getters/get-markets-info", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getMarketsInfo(db, t.params.marketIDs, (err, marketsInfo) => {
+        getMarketsInfo(db, t.params.marketIds, (err, marketsInfo) => {
           t.assertions(err, marketsInfo);
           done();
         });
@@ -20,7 +20,7 @@ describe("server/getters/get-markets-info", () => {
   test({
     description: "get markets by specifying market IDs",
     params: {
-      marketIDs: [
+      marketIds: [
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000000000000000000002",
       ],
@@ -154,7 +154,7 @@ describe("server/getters/get-markets-info", () => {
   test({
     description: "get markets by specifying market IDs, with missing market",
     params: {
-      marketIDs: [
+      marketIds: [
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000077777777777777777",
         "0x0000000000000000000000000000000000000002",
@@ -290,7 +290,7 @@ describe("server/getters/get-markets-info", () => {
   test({
     description: "get markets by specifying market IDs, reversed",
     params: {
-      marketIDs: [
+      marketIds: [
         "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000001",
       ],
@@ -424,7 +424,7 @@ describe("server/getters/get-markets-info", () => {
   test({
     description: "market does not exist",
     params: {
-      marketIDs: ["0x1010101010101010101010101010101010101010"],
+      marketIds: ["0x1010101010101010101010101010101010101010"],
     },
     assertions: (err, marketInfo) => {
       assert.isNull(err);
@@ -432,9 +432,9 @@ describe("server/getters/get-markets-info", () => {
     },
   });
   test({
-    description: "Empty marketIDs array",
+    description: "Empty marketIds array",
     params: {
-      marketIDs: [],
+      marketIds: [],
     },
     assertions: (err, marketInfo) => {
       assert.isNull(err);
