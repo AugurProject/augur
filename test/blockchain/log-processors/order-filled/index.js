@@ -10,10 +10,10 @@ const { processOrderFilledLog, processOrderFilledLogRemoval } = require("../../.
 describe("blockchain/log-processors/order-filled", () => {
   const test = (t) => {
     const getState = (db, params, aux, callback) => parallel({
-      orders: next => db("orders").where("orderID", params.log.orderId).asCallback(next),
-      trades: next => db("trades").where("orderID", params.log.orderId).asCallback(next),
-      markets: next => db.first("volume", "sharesOutstanding").from("markets").where("marketID", aux.marketID).asCallback(next),
-      outcomes: next => db.select("price", "volume").from("outcomes").where({ marketID: aux.marketID }).asCallback(next),
+      orders: next => db("orders").where("orderId", params.log.orderId).asCallback(next),
+      trades: next => db("trades").where("orderId", params.log.orderId).asCallback(next),
+      markets: next => db.first("volume", "sharesOutstanding").from("markets").where("marketId", aux.marketId).asCallback(next),
+      outcomes: next => db.select("price", "volume").from("outcomes").where({ marketId: aux.marketId }).asCallback(next),
       categories: next => db.first("popularity").from("categories").where("category", aux.category).asCallback(next),
       positions: next => db("positions").where("account", params.log.filler).asCallback(next),
     }, callback);
@@ -106,18 +106,18 @@ describe("blockchain/log-processors/order-filled", () => {
       },
     },
     aux: {
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketId: "0x0000000000000000000000000000000000000001",
       category: "test category",
     },
     assertions: {
       onAdded: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records.orders, [{
-          orderID: "0x1000000000000000000000000000000000000000000000000000000000000000",
+          orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400001,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
           logIndex: 0,
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 0,
           shareToken: "0x1000000000000000000000000000000000000000",
           orderType: "buy",
@@ -129,15 +129,15 @@ describe("blockchain/log-processors/order-filled", () => {
           amount: 2,
           tokensEscrowed: 0.7,
           sharesEscrowed: 0,
-          tradeGroupID: null,
+          tradeGroupId: null,
           isRemoved: null,
         }]);
         assert.deepEqual(records.trades, [{
-          orderID: "0x1000000000000000000000000000000000000000000000000000000000000000",
+          orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400101,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000F00",
           logIndex: 0,
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 0,
           shareToken: "0x1000000000000000000000000000000000000000",
           orderType: "buy",
@@ -151,7 +151,7 @@ describe("blockchain/log-processors/order-filled", () => {
           reporterFees: 0,
           price: 0.7,
           amount: 3.3333333333333335,
-          tradeGroupID: "TRADE_GROUP_ID",
+          tradeGroupId: "TRADE_GROUP_ID",
         }]);
         assert.deepEqual(records.markets, {
           volume: 3.3333333333333335,
@@ -171,9 +171,9 @@ describe("blockchain/log-processors/order-filled", () => {
           popularity: 3.3333333333333335,
         });
         assert.deepEqual(records.positions, [{
-          positionID: 17,
+          positionId: 17,
           account: "FILLER_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 0,
           numShares: 2,
           numSharesAdjustedForUserIntention: 2,
@@ -182,9 +182,9 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionID: 18,
+          positionId: 18,
           account: "FILLER_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 1,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -193,9 +193,9 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionID: 19,
+          positionId: 19,
           account: "FILLER_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 2,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -204,9 +204,9 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionID: 20,
+          positionId: 20,
           account: "FILLER_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 3,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -215,9 +215,9 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionID: 21,
+          positionId: 21,
           account: "FILLER_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 4,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -226,9 +226,9 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionID: 22,
+          positionId: 22,
           account: "FILLER_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 5,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -237,9 +237,9 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionID: 23,
+          positionId: 23,
           account: "FILLER_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 6,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -248,9 +248,9 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionID: 24,
+          positionId: 24,
           account: "FILLER_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 7,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -263,11 +263,11 @@ describe("blockchain/log-processors/order-filled", () => {
       onRemoved: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records.orders, [{
-          orderID: "0x1000000000000000000000000000000000000000000000000000000000000000",
+          orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400001,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
           logIndex: 0,
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 0,
           shareToken: "0x1000000000000000000000000000000000000000",
           orderType: "buy",
@@ -279,7 +279,7 @@ describe("blockchain/log-processors/order-filled", () => {
           amount: 2,
           tokensEscrowed: 0.7,
           sharesEscrowed: 0,
-          tradeGroupID: null,
+          tradeGroupId: null,
           isRemoved: null,
         }]);
         assert.deepEqual(records.trades, []);
@@ -301,9 +301,9 @@ describe("blockchain/log-processors/order-filled", () => {
           popularity: 0,
         });
         assert.deepEqual(records.positions, [{
-          positionID: 17,
+          positionId: 17,
           account: "FILLER_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 0,
           numShares: 2,
           numSharesAdjustedForUserIntention: 0,
@@ -312,9 +312,9 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionID: 18,
+          positionId: 18,
           account: "FILLER_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 1,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -323,9 +323,9 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionID: 19,
+          positionId: 19,
           account: "FILLER_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 2,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -334,9 +334,9 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionID: 20,
+          positionId: 20,
           account: "FILLER_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 3,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -345,9 +345,9 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionID: 21,
+          positionId: 21,
           account: "FILLER_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 4,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -356,9 +356,9 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionID: 22,
+          positionId: 22,
           account: "FILLER_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 5,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -367,9 +367,9 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionID: 23,
+          positionId: 23,
           account: "FILLER_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 6,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -378,9 +378,9 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionID: 24,
+          positionId: 24,
           account: "FILLER_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 7,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,

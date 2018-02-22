@@ -11,38 +11,38 @@ interface HighestBlockNumberRow {
   highestBlockNumber: number;
 }
 
-interface NetworkIDRow {
-  networkID: string;
+interface NetworkIdRow {
+  networkId: string;
   overrideTimestamp: number|null;
 }
 
-function getNetworkID(db: Knex, augur: Augur, callback: (err?: Error|null, networkID?: string|null) => void) {
-  const networkID: string = augur.rpc.getNetworkID();
-  db.first(["networkID", "overrideTimestamp"]).from("network_id").asCallback((err: Error|null, networkRow?: NetworkIDRow): void => {
+function getNetworkID(db: Knex, augur: Augur, callback: (err?: Error|null, networkId?: string|null) => void) {
+  const networkId: string = augur.rpc.getNetworkID();
+  db.first(["networkId", "overrideTimestamp"]).from("network_id").asCallback((err: Error|null, networkRow?: NetworkIdRow): void => {
     if (err) return callback(err, null);
     if (networkRow == null) {
-      db.insert({ networkID }).into("network_id").asCallback((err: Error|null): void => {
-        callback(err, networkID);
+      db.insert({ networkId }).into("network_id").asCallback((err: Error|null): void => {
+        callback(err, networkId);
       });
     } else {
-      const lastNetworkID: string = networkRow.networkID;
-      if (networkID === lastNetworkID) {
+      const lastNetworkId: string = networkRow.networkId;
+      if (networkId === lastNetworkId) {
         db("network_id").update({ lastLaunched: db.fn.now() }).asCallback((err?: Error|null): void => {
           if (err) return callback(err, null);
-          if (networkRow.overrideTimestamp == null) return callback(err, networkID);
-          setOverrideTimestamp(db, networkRow.overrideTimestamp, (err) => callback(err, networkID));
+          if (networkRow.overrideTimestamp == null) return callback(err, networkId);
+          setOverrideTimestamp(db, networkRow.overrideTimestamp, (err) => callback(err, networkId));
         });
       } else {
-        callback(new Error(`NetworkID mismatch: current: ${networkID}, expected ${lastNetworkID}`), null);
+        callback(new Error(`NetworkId mismatch: current: ${networkId}, expected ${lastNetworkId}`), null);
       }
     }
   });
 }
 
 function monitorEthereumNodeHealth(augur: Augur) {
-  const networkID: string = augur.rpc.getNetworkID();
-  const universe: string = augur.contracts.addresses[networkID].Universe;
-  const controller: string = augur.contracts.addresses[networkID].Controller;
+  const networkId: string = augur.rpc.getNetworkID();
+  const universe: string = augur.contracts.addresses[networkId].Universe;
+  const controller: string = augur.contracts.addresses[networkId].Controller;
   setInterval(() => {
     augur.api.Universe.getController({ tx: { to: universe } }, (err: Error, universeController: string) => {
       if (err) throw err;
@@ -55,14 +55,14 @@ function monitorEthereumNodeHealth(augur: Augur) {
 
 export function syncAugurNodeWithBlockchain(db: Knex, augur: Augur, network: NetworkConfiguration, uploadBlockNumbers: UploadBlockNumbers, callback: ErrorCallback): void {
   augur.connect({ ethereumNode: { http: network.http, ws: network.ws }, startBlockStreamOnConnect: false }, (): void => {
-    getNetworkID(db, augur, (err: Error|null, networkID: string|null) => {
+    getNetworkID(db, augur, (err: Error|null, networkId: string|null) => {
       if (err) return callback(err);
-      if (networkID == null) return callback(new Error("could not get networkID"));
+      if (networkId == null) return callback(new Error("could not get networkId"));
       monitorEthereumNodeHealth(augur);
       db("blocks").max("blockNumber as highestBlockNumber").first().asCallback((err: Error|null, row?: HighestBlockNumberRow|null): void => {
         if (err) return callback(err);
         const lastSyncBlockNumber: number|null = row!.highestBlockNumber;
-        const uploadBlockNumber: number = augur.contracts.uploadBlockNumbers[networkID] || 0;
+        const uploadBlockNumber: number = augur.contracts.uploadBlockNumbers[networkId] || 0;
         const highestBlockNumber: number = parseInt(augur.rpc.getCurrentBlock().number, 16) - 1;
         let fromBlock: number;
         if (uploadBlockNumber > highestBlockNumber) {

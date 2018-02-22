@@ -7,13 +7,13 @@ import { augurEmitter } from "../../events";
 
 export function processInitialReportSubmittedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   updateMarketState( db, log.market, log.blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_DISPUTE, (err: Error|null): void => {
-    insertPayout( db, log.market, log.payoutNumerators, log.invalid, true, (err, payoutID) => {
+    insertPayout( db, log.market, log.payoutNumerators, log.invalid, true, (err, payoutId) => {
       const reportToInsert = {
-        marketID: log.market,
+        marketId: log.market,
         isDesignatedReporter: log.isDesignatedReporter,
         reporter: log.reporter,
         amountStaked: log.amountStaked,
-        payoutID,
+        payoutId,
         redeemed: false,
       };
       parallel({
@@ -24,7 +24,7 @@ export function processInitialReportSubmittedLog(db: Knex, augur: Augur, log: Fo
           });
         },
         initialReportSizeUpdate: (next: AsyncCallback) => {
-          db("markets").update({initialReportSize: log.amountStaked}).where({marketID: log.market}).asCallback(next);
+          db("markets").update({initialReportSize: log.amountStaked}).where({marketId: log.market}).asCallback(next);
         },
       }, (err: Error|null): void => {
         if (err) return callback(err);
@@ -39,19 +39,19 @@ export function processInitialReportSubmittedLogRemoval(db: Knex, augur: Augur, 
   parallel(
     {
       marketState: (next: AsyncCallback) => {
-        db("market_state").delete().where({marketID: log.market, reportingState: augur.constants.REPORTING_STATE.DESIGNATED_DISPUTE}).asCallback((err: Error|null): void => {
+        db("market_state").delete().where({marketId: log.market, reportingState: augur.constants.REPORTING_STATE.DESIGNATED_DISPUTE}).asCallback((err: Error|null): void => {
           if (err) return callback(err);
-          db("market_state").max("marketStateID as previousMarketStateID").first().where({marketID: log.market}).asCallback((err: Error|null, {previousMarketStateID }: {previousMarketStateID: number}): void => {
+          db("market_state").max("marketStateId as previousMarketStateId").first().where({marketId: log.market}).asCallback((err: Error|null, {previousMarketStateId }: {previousMarketStateId: number}): void => {
             if (err) return callback(err);
-            db("markets").update({marketStateID: previousMarketStateID}).where({marketID: log.market }).asCallback((err: Error|null) => {
+            db("markets").update({marketStateId: previousMarketStateId}).where({marketId: log.market }).asCallback((err: Error|null) => {
               if (err) return callback(err);
-              db("initial_reports").delete().where({marketID: log.market}).asCallback(next);
+              db("initial_reports").delete().where({marketId: log.market}).asCallback(next);
             });
           });
         });
       },
       initialReportSize: (next: AsyncCallback) => {
-        db("markets").update({initialReportSize: null}).where({marketID: log.market}).asCallback(next);
+        db("markets").update({initialReportSize: null}).where({marketId: log.market}).asCallback(next);
       },
     }, (err: Error|null): void => {
       if (err) return callback(err);

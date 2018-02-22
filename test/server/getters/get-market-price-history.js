@@ -9,7 +9,7 @@ describe("server/getters/get-market-price-history", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getMarketPriceHistory(db, t.params.marketID, (err, marketPriceHistory) => {
+        getMarketPriceHistory(db, t.params.marketId, (err, marketPriceHistory) => {
           t.assertions(err, marketPriceHistory);
           done();
         });
@@ -19,7 +19,7 @@ describe("server/getters/get-market-price-history", () => {
   test({
     description: "market has a single price point",
     params: {
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketId: "0x0000000000000000000000000000000000000001",
       sortBy: null,
       isSortDescending: null,
       limit: null,
@@ -39,7 +39,7 @@ describe("server/getters/get-market-price-history", () => {
   test({
     description: "market has no price history",
     params: {
-      marketID: "0x0000000000000000000000000000000000001111",
+      marketId: "0x0000000000000000000000000000000000001111",
       sortBy: null,
       isSortDescending: null,
       limit: null,

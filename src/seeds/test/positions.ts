@@ -6,7 +6,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
     // Inserts seed entries
     const seedData = [{
       account: "0x0000000000000000000000000000000000000b0b",
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketId: "0x0000000000000000000000000000000000000001",
       outcome: 0,
       numShares: "0.1",
       numSharesAdjustedForUserIntention: "-0.2",
@@ -14,7 +14,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       unrealizedProfitLoss: "0.55",
     }, {
       account: "0x0000000000000000000000000000000000000b0b",
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketId: "0x0000000000000000000000000000000000000001",
       outcome: 1,
       numShares: "0.3",
       numSharesAdjustedForUserIntention: "0",
@@ -22,7 +22,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       unrealizedProfitLoss: "0.03",
     }, {
       account: "0x0000000000000000000000000000000000000b0b",
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketId: "0x0000000000000000000000000000000000000001",
       outcome: 2,
       numShares: "0.3",
       numSharesAdjustedForUserIntention: "0",
@@ -30,7 +30,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       unrealizedProfitLoss: "0.03",
     }, {
       account: "0x0000000000000000000000000000000000000b0b",
-      marketID: "0x0000000000000000000000000000000000000019",
+      marketId: "0x0000000000000000000000000000000000000019",
       outcome: 3,
       numShares: "0",
       numSharesAdjustedForUserIntention: "0",
@@ -38,7 +38,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       unrealizedProfitLoss: "0",
     }, {
       account: "0x0000000000000000000000000000000000000b0b",
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketId: "0x0000000000000000000000000000000000000001",
       outcome: 4,
       numShares: "0.3",
       numSharesAdjustedForUserIntention: "0",
@@ -46,7 +46,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       unrealizedProfitLoss: "0.03",
     }, {
       account: "0x0000000000000000000000000000000000000b0b",
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketId: "0x0000000000000000000000000000000000000001",
       outcome: 5,
       numShares: "0.3",
       numSharesAdjustedForUserIntention: "0",
@@ -54,7 +54,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       unrealizedProfitLoss: "0.03",
     }, {
       account: "0x0000000000000000000000000000000000000b0b",
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketId: "0x0000000000000000000000000000000000000001",
       outcome: 6,
       numShares: "0.3",
       numSharesAdjustedForUserIntention: "0",
@@ -62,7 +62,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       unrealizedProfitLoss: "0.03",
     }, {
       account: "0x0000000000000000000000000000000000000b0b",
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketId: "0x0000000000000000000000000000000000000001",
       outcome: 7,
       numShares: "0.3",
       numSharesAdjustedForUserIntention: "0",
@@ -70,7 +70,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       unrealizedProfitLoss: "0.03",
     }, {
       account: "0x000000000000000000000000000000000000d00d",
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketId: "0x0000000000000000000000000000000000000001",
       outcome: 0,
       numShares: "0.2",
       numSharesAdjustedForUserIntention: "0.2",
@@ -78,7 +78,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       unrealizedProfitLoss: "11",
     }, {
       account: "0x000000000000000000000000000000000000d00d",
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketId: "0x0000000000000000000000000000000000000001",
       outcome: 1,
       numShares: "0",
       numSharesAdjustedForUserIntention: "0",
@@ -86,7 +86,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       unrealizedProfitLoss: "0",
     }, {
       account: "0x000000000000000000000000000000000000d00d",
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketId: "0x0000000000000000000000000000000000000001",
       outcome: 2,
       numShares: "0",
       numSharesAdjustedForUserIntention: "0",
@@ -94,7 +94,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       unrealizedProfitLoss: "0",
     }, {
       account: "0x000000000000000000000000000000000000d00d",
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketId: "0x0000000000000000000000000000000000000001",
       outcome: 3,
       numShares: "0",
       numSharesAdjustedForUserIntention: "0",
@@ -102,7 +102,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       unrealizedProfitLoss: "0",
     }, {
       account: "0x000000000000000000000000000000000000d00d",
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketId: "0x0000000000000000000000000000000000000001",
       outcome: 4,
       numShares: "0",
       numSharesAdjustedForUserIntention: "0",
@@ -110,7 +110,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       unrealizedProfitLoss: "0",
     }, {
       account: "0x000000000000000000000000000000000000d00d",
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketId: "0x0000000000000000000000000000000000000001",
       outcome: 5,
       numShares: "0",
       numSharesAdjustedForUserIntention: "0",
@@ -118,7 +118,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       unrealizedProfitLoss: "0",
     }, {
       account: "0x000000000000000000000000000000000000d00d",
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketId: "0x0000000000000000000000000000000000000001",
       outcome: 6,
       numShares: "0",
       numSharesAdjustedForUserIntention: "0",
@@ -126,7 +126,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       unrealizedProfitLoss: "0",
     }, {
       account: "0x000000000000000000000000000000000000d00d",
-      marketID: "0x0000000000000000000000000000000000000001",
+      marketId: "0x0000000000000000000000000000000000000001",
       outcome: 7,
       numShares: "0",
       numSharesAdjustedForUserIntention: "0",

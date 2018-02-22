@@ -9,18 +9,18 @@ const { processDisputeCrowdsourcerCreatedLog, processDisputeCrowdsourcerCreatedL
 
 const getCrowdsourcer = (db, params, callback) => {
   db("crowdsourcers").first(
-    ["crowdSourcerID",
-      "crowdsourcers.marketID",
+    ["crowdSourcerId",
+      "crowdsourcers.marketId",
       "completed",
       "feeWindow",
       "payouts.winning",
       "payouts.tentativeWinning"])
-    .join("payouts", "payouts.payoutID", "crowdsourcers.payoutID")
-    .where({crowdsourcerID: params.log.disputeCrowdsourcer}).asCallback(callback);
+    .join("payouts", "payouts.payoutId", "crowdsourcers.payoutId")
+    .where({crowdsourcerId: params.log.disputeCrowdsourcer}).asCallback(callback);
 };
 
 const getDisputesFromCrowdsourcer = (db, params, callback) => {
-  db("disputes").where({crowdsourcerID: params.log.disputeCrowdsourcer}).asCallback(callback);
+  db("disputes").where({crowdsourcerId: params.log.disputeCrowdsourcer}).asCallback(callback);
 };
 
 
@@ -78,8 +78,8 @@ describe("blockchain/log-processors/crowdsourcers", () => {
       onCreated: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, {
-          crowdsourcerID: "0x0000000000000000002000000000000000000001",
-          marketID: "0x0000000000000000000000000000000000000001",
+          crowdsourcerId: "0x0000000000000000002000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           feeWindow: "0x2000000000000000000000000000000000000000",
           completed: null,
           tentativeWinning: 0,
@@ -96,8 +96,8 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           blockNumber: 1400100,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
           logIndex: 0,
-          disputeID: 8,
-          crowdsourcerID: "0x0000000000000000002000000000000000000001",
+          disputeId: 8,
+          crowdsourcerId: "0x0000000000000000002000000000000000000001",
           reporter: "0x0000000000000000000000000000000000000b0b",
           amountStaked: 19381,
         }]);
@@ -109,8 +109,8 @@ describe("blockchain/log-processors/crowdsourcers", () => {
       onCompleted: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, {
-          crowdsourcerID: "0x0000000000000000002000000000000000000001",
-          marketID: "0x0000000000000000000000000000000000000001",
+          crowdsourcerId: "0x0000000000000000002000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           feeWindow: "0x2000000000000000000000000000000000000000",
           completed: 1,
           tentativeWinning: 1,
@@ -120,8 +120,8 @@ describe("blockchain/log-processors/crowdsourcers", () => {
       onCompletedRemoved: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, {
-          crowdsourcerID: "0x0000000000000000002000000000000000000001",
-          marketID: "0x0000000000000000000000000000000000000001",
+          crowdsourcerId: "0x0000000000000000002000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           feeWindow: "0x2000000000000000000000000000000000000000",
           completed: null,
           tentativeWinning: 0,

@@ -15,7 +15,7 @@ export function getFeeWindowCurrent(db: Knex, universe: Address, reporter: Addre
       "endBlockNumber",
       "endTime",
       "feeWindow",
-      "feeWindowID",
+      "feeWindowId",
       "startBlockNumber",
       "startTime",
       "universe",
@@ -32,12 +32,12 @@ export function getFeeWindowCurrent(db: Knex, universe: Address, reporter: Addre
     } else {
       // populate account element
       const initialReportQuery = db.first().sum("markets.initialReportSize as totalInitialReportSize").from("initial_reports")
-        .join("markets", "markets.marketID", "initial_reports.marketID")
+        .join("markets", "markets.marketId", "initial_reports.marketId")
         .where("markets.feeWindow", feeWindowRow.feeWindow)
         .where("initial_reports.reporter", reporter);
       const disputesQuery = db.first().sum("disputes.amountStaked as totalDisputeStake").from("disputes")
-        .join("crowdsourcers", "crowdsourcers.crowdsourcerID", "disputes.crowdsourcerID")
-        .join("markets", "markets.marketID", "crowdsourcers.marketID")
+        .join("crowdsourcers", "crowdsourcers.crowdsourcerId", "disputes.crowdsourcerId")
+        .join("markets", "markets.marketId", "crowdsourcers.marketId")
         .where("markets.feeWindow", feeWindowRow.feeWindow)
         .where("disputes.reporter", reporter);
       parallel({

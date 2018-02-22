@@ -24,13 +24,13 @@ describe("server/getters/get-initial-reporters", () => {
     assertions: (err, initialReporters) => {
       assert.isNull(err);
       assert.deepEqual(initialReporters, [{
-        marketID: "0x0000000000000000000000000000000000000011",
+        marketId: "0x0000000000000000000000000000000000000011",
         reporter: "0x0000000000000000000000000000000000000b0b",
         amountStaked: 102,
         initialReporter: "0x0000000000000000000000000000000000abe123",
         redeemed: 0,
       }, {
-        marketID: "0x0000000000000000000000000000000000000211",
+        marketId: "0x0000000000000000000000000000000000000211",
         reporter: "0x0000000000000000000000000000000000000b0b",
         amountStaked: 102,
         initialReporter: "0x0000000000000000000000000000000000abe321",

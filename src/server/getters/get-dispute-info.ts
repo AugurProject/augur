@@ -7,7 +7,7 @@ import { BigNumber } from "bignumber.js";
 import { QueryBuilder } from "knex";
 
 interface DisputeRound {
-  marketID: Address;
+  marketId: Address;
   disputeRound: number;
 }
 
@@ -20,9 +20,9 @@ interface DisputesResult {
 }
 
 interface StakeRow extends Payout {
-  marketID: Address;
+  marketId: Address;
   amountStaked: number;
-  payoutID: number;
+  payoutId: number;
 }
 
 interface ActiveCrowdsourcer extends StakeRow {
@@ -41,26 +41,26 @@ function calculateBondSize(totalCompletedStakeOnAllPayouts: BigNumber, completed
       new BigNumber(completedStakeAmount).times(3));
 }
 
-export function getDisputeInfo(db: Knex, marketIDs: Array<Address>, callback: (err: Error|null, result?: Array<UIStakeInfo|null>) => void): void {
-  if (marketIDs == null) return callback(new Error("must include marketIDs parameter"));
-  const completedStake = db.select(["marketID", "payoutID", "amountStaked"]).from((builder: QueryBuilder) =>
-    builder.from("crowdsourcers").select("marketID", "payoutID", "amountStaked").where("completed", 1).whereIn("marketID", marketIDs).union((builder: QueryBuilder) =>
-      builder.select(["marketID", "payoutID", "amountStaked"]).from("initial_reports").whereIn("marketID", marketIDs),
-    )).groupBy("marketID", "payoutID");
+export function getDisputeInfo(db: Knex, marketIds: Array<Address>, callback: (err: Error|null, result?: Array<UIStakeInfo|null>) => void): void {
+  if (marketIds == null) return callback(new Error("must include marketIds parameter"));
+  const completedStake = db.select(["marketId", "payoutId", "amountStaked"]).from((builder: QueryBuilder) =>
+    builder.from("crowdsourcers").select("marketId", "payoutId", "amountStaked").where("completed", 1).whereIn("marketId", marketIds).union((builder: QueryBuilder) =>
+      builder.select(["marketId", "payoutId", "amountStaked"]).from("initial_reports").whereIn("marketId", marketIds),
+    )).groupBy("marketId", "payoutId");
 
   parallel({
-    markets: (next: AsyncCallback) => getMarketsWithReportingState(db).whereIn("markets.marketID", marketIDs).asCallback(next),
-    payouts: (next: AsyncCallback) => db("payouts").whereIn("marketID", marketIDs).asCallback(next),
+    markets: (next: AsyncCallback) => getMarketsWithReportingState(db).whereIn("markets.marketId", marketIds).asCallback(next),
+    payouts: (next: AsyncCallback) => db("payouts").whereIn("marketId", marketIds).asCallback(next),
     completedStakes: (next: AsyncCallback) => completedStake.asCallback(next),
-    activeCrowdsourcer: (next: AsyncCallback) => db("crowdsourcers").select(["marketID", "payoutID"]).sum("amountStaked as amountStaked").sum("size as size").groupBy(["crowdsourcers.marketID", "payoutID"]).whereNull("completed").whereIn("crowdsourcers.marketID", marketIDs).asCallback(next),
-    disputeRound: (next: AsyncCallback) => db("crowdsourcers").select("marketID").count("* as disputeRound").groupBy("crowdsourcers.marketID").where("crowdsourcers.completed", 1).whereIn("crowdsourcers.marketID", marketIDs).asCallback(next),
+    activeCrowdsourcer: (next: AsyncCallback) => db("crowdsourcers").select(["marketId", "payoutId"]).sum("amountStaked as amountStaked").sum("size as size").groupBy(["crowdsourcers.marketId", "payoutId"]).whereNull("completed").whereIn("crowdsourcers.marketId", marketIds).asCallback(next),
+    disputeRound: (next: AsyncCallback) => db("crowdsourcers").select("marketId").count("* as disputeRound").groupBy("crowdsourcers.marketId").where("crowdsourcers.completed", 1).whereIn("crowdsourcers.marketId", marketIds).asCallback(next),
   }, (err: Error|null, stakeResults: DisputesResult): void => {
     if (err) return callback(err);
     if (!stakeResults.markets) return callback(new Error("Could not retrieve markets"));
 
     const marketDisputeDetails: Array<DisputesResult> =
-      _.map(marketIDs, (marketID: Address) =>
-        _.mapValues(stakeResults, (result) => _.filter(result, { marketID })),
+      _.map(marketIds, (marketId: Address) =>
+        _.mapValues(stakeResults, (result) => _.filter(result, { marketId })),
       );
     callback(null, _.map(marketDisputeDetails, reshapeStakeRowToUIStakeInfo));
   });
@@ -74,12 +74,12 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
   const totalCompletedStakeOnAllPayouts = new BigNumber(
     _.sum(_.map(stakeRows.completedStakes, (completedStake) => completedStake.amountStaked)));
 
-  const completedStakeByPayout: { [payoutID: number]: StakeRow } = _.keyBy(stakeRows.completedStakes, "payoutID");
-  const activeCrowdsourcerByPayout: { [payoutID: number]: ActiveCrowdsourcer } = _.keyBy(stakeRows.activeCrowdsourcer, "payoutID");
+  const completedStakeByPayout: { [payoutId: number]: StakeRow } = _.keyBy(stakeRows.completedStakes, "payoutId");
+  const activeCrowdsourcerByPayout: { [payoutId: number]: ActiveCrowdsourcer } = _.keyBy(stakeRows.activeCrowdsourcer, "payoutId");
 
   const stakeResults = _.map(stakeRows.payouts, (payout: PayoutRow) => {
-    const completedStakes = completedStakeByPayout[payout.payoutID];
-    const activeCrowdsourcer = activeCrowdsourcerByPayout[payout.payoutID];
+    const completedStakes = completedStakeByPayout[payout.payoutId];
+    const activeCrowdsourcer = activeCrowdsourcerByPayout[payout.payoutId];
 
     const completedStakeAmount = new BigNumber(completedStakes == null ? 0 : completedStakes.amountStaked);
     const totalStakeOnPayout = completedStakeAmount.add(new BigNumber(activeCrowdsourcer == null ? 0 : activeCrowdsourcer.amountStaked));
@@ -110,7 +110,7 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
   });
   const disputeRound = totalCompletedStakeOnAllPayouts.equals(0) ? null : stakeRows.disputeRound[0] == null ? 0 : stakeRows.disputeRound[0].disputeRound;
   return {
-    marketID: stakeRows.markets[0].marketID,
+    marketId: stakeRows.markets[0].marketId,
     stakes: stakeResults,
     disputeRound,
   };

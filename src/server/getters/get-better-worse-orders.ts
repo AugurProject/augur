@@ -3,14 +3,14 @@ import * as Knex from "knex";
 import { Address, AsyncCallback } from "../../types";
 
 interface PricesResult {
-  higherPriceRow: {orderID: string|null};
-  lowerPriceRow: {orderID: string|null};
+  higherPriceRow: {orderId: string|null};
+  lowerPriceRow: {orderId: string|null};
 }
 
-export function getBetterWorseOrders(db: Knex, marketID: Address, outcome: number, orderType: string, price: number, callback: (err?: Error|null, result?: any) => void): void {
-  if (marketID == null || outcome == null || orderType == null || price == null) return callback(new Error("Must provide marketID, outcome, orderType, and price"));
+export function getBetterWorseOrders(db: Knex, marketId: Address, outcome: number, orderType: string, price: number, callback: (err?: Error|null, result?: any) => void): void {
+  if (marketId == null || outcome == null || orderType == null || price == null) return callback(new Error("Must provide marketId, outcome, orderType, and price"));
   if (orderType !== "buy" && orderType !== "sell") return callback(new Error(`orderType must be either "buy" or "sell"`));
-  const ordersQuery = db("orders").first("orderID").where({ orderState: "OPEN", marketID, outcome, orderType });
+  const ordersQuery = db("orders").first("orderId").where({ orderState: "OPEN", marketId, outcome, orderType });
   parallel({
     higherPriceRow: (next: AsyncCallback) => ordersQuery.clone().where("price", ">", price).orderBy("price", "ASC").asCallback(next),
     lowerPriceRow: (next: AsyncCallback) => ordersQuery.clone().where("price", "<", price).orderBy("price", "DESC").asCallback(next),
@@ -19,13 +19,13 @@ export function getBetterWorseOrders(db: Knex, marketID: Address, outcome: numbe
     const { higherPriceRow, lowerPriceRow } = pricesResult;
     if (orderType === "buy") {
       return callback(null, {
-        betterOrderID: (higherPriceRow ? higherPriceRow.orderID : null),
-        worseOrderID: (lowerPriceRow ? lowerPriceRow.orderID : null),
+        betterOrderId: (higherPriceRow ? higherPriceRow.orderId : null),
+        worseOrderId: (lowerPriceRow ? lowerPriceRow.orderId : null),
       });
     } else {
       return callback(null, {
-        betterOrderID: (lowerPriceRow ? lowerPriceRow.orderID : null),
-        worseOrderID: (higherPriceRow ? higherPriceRow.orderID : null),
+        betterOrderId: (lowerPriceRow ? lowerPriceRow.orderId : null),
+        worseOrderId: (higherPriceRow ? higherPriceRow.orderId : null),
       });
     }
   });

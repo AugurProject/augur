@@ -7,13 +7,13 @@ import { queryModifier, getMarketsWithReportingState } from "./database";
 export function getMarketsAwaitingDesignatedReporting(db: Knex, universe: Address, designatedReporter: Address|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err?: Error|null, result?: any) => void): void {
   if (universe == null) return callback(new Error("Must provide universe"));
   // TODO: I don't have a reference to Augur object here or in calling function, figure out if we're ok with not using constant value or resolve
-  let query = getMarketsWithReportingState(db, ["markets.marketID"]).where("reportingState", ReportingState.DESIGNATED_REPORTING);
+  let query = getMarketsWithReportingState(db, ["markets.marketId"]).where("reportingState", ReportingState.DESIGNATED_REPORTING);
   if (designatedReporter != null) query = query.where({ designatedReporter });
 
   query = queryModifier(query, "endTime", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err?: Error|null, marketsRows?: Array<MarketsContractAddressRow>): void => {
     if (err) return callback(err);
     if (!marketsRows) return callback(null);
-    callback(null, marketsRows.map((marketsRow: MarketsContractAddressRow): Address => marketsRow.marketID));
+    callback(null, marketsRows.map((marketsRow: MarketsContractAddressRow): Address => marketsRow.marketId));
   });
 }

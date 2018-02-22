@@ -7,7 +7,7 @@ const setupTestDb = require("../../test.database");
 const { processInitialReporterTransferredLog, processInitialReporterTransferredLogRemoval } = require("../../../build/blockchain/log-processors/initial-report-transferred");
 
 const getInitialReport = (db, params, callback) => {
-  db("initial_reports").first(["reporter"]).where("initial_reports.marketID", params.log.market).asCallback(callback);
+  db("initial_reports").first(["reporter"]).where("initial_reports.marketId", params.log.market).asCallback(callback);
 };
 
 describe("blockchain/log-processors/initial-report-transferred", () => {

@@ -14,7 +14,7 @@ export interface TransferRow {
   value: number;
   symbol: string|null;
   outcome: number|null;
-  marketID: Address|null;
+  marketId: Address|null;
 }
 
 export function getAccountTransferHistory(db: Knex, account: Address, token: Address|null|undefined, earliestCreationTime: number|null, latestCreationTime: number|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, transferHistory?: Array<TransferRow>) => void): void {
@@ -30,7 +30,7 @@ export function getAccountTransferHistory(db: Knex, account: Address, token: Add
     "blocks.blockHash",
     "tokens.symbol",
     "tokens.outcome",
-    "tokens.marketID",
+    "tokens.marketId",
   ]).where((db: Knex): Knex.QueryBuilder => db.where("sender", account).orWhere("recipient", account));
   query.join("blocks", "blocks.blockNumber", "transfers.blockNumber" );
   query.join("tokens", "tokens.contractAddress", "transfers.token");

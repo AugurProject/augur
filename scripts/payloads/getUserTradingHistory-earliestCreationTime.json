@@ -5,7 +5,7 @@
   "params": {
       "universe": "0x000000000000000000000000000000000000000b",
       "account": "0x0000000000000000000000000000000000000b0b",
-      "marketID": null,
+      "marketId": null,
       "outcome": 0,
       "orderType": null,
       "earliestCreationTime": 1506474514,

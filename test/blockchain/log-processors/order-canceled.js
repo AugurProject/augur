@@ -47,11 +47,11 @@ describe("blockchain/log-processors/order-canceled", () => {
       onAdded: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, [{
-          orderID: "0x1000000000000000000000000000000000000000000000000000000000000000",
+          orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400001,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
           logIndex: 0,
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 0,
           shareToken: "0x1000000000000000000000000000000000000000",
           orderType: "buy",
@@ -63,18 +63,18 @@ describe("blockchain/log-processors/order-canceled", () => {
           amount: 1,
           tokensEscrowed: 0.7,
           sharesEscrowed: 0,
-          tradeGroupID: null,
+          tradeGroupId: null,
           isRemoved: null,
         }]);
       },
       onRemoved: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, [{
-          orderID: "0x1000000000000000000000000000000000000000000000000000000000000000",
+          orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400001,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
           logIndex: 0,
-          marketID: "0x0000000000000000000000000000000000000001",
+          marketId: "0x0000000000000000000000000000000000000001",
           outcome: 0,
           shareToken: "0x1000000000000000000000000000000000000000",
           orderType: "buy",
@@ -86,7 +86,7 @@ describe("blockchain/log-processors/order-canceled", () => {
           amount: 1,
           tokensEscrowed: 0.7,
           sharesEscrowed: 0,
-          tradeGroupID: null,
+          tradeGroupId: null,
           isRemoved: null,
         }]);
       },

@@ -12,16 +12,16 @@ describe("server/address-format-reviver", () => {
     });
 
     it("value in whitelist is formatted as valid eth address", () => {
-      expect(addressFormatReviver("marketID", "0x0")).to.eq("0x0000000000000000000000000000000000000000");
+      expect(addressFormatReviver("marketId", "0x0")).to.eq("0x0000000000000000000000000000000000000000");
     });
 
     it("null as passthrough", () => {
-      expect(addressFormatReviver("marketID", null)).to.eq(null);
+      expect(addressFormatReviver("marketId", null)).to.eq(null);
       expect(addressFormatReviver("not-in-whitelist", null)).to.eq(null);
     });
 
     it("undefined as passthrough", () => {
-      expect(addressFormatReviver("marketID", undefined)).to.eq(undefined);
+      expect(addressFormatReviver("marketId", undefined)).to.eq(undefined);
       expect(addressFormatReviver("not-in-whitelist", undefined)).to.eq(undefined);
     });
   });
@@ -51,12 +51,12 @@ describe("server/address-format-reviver", () => {
         "jsonrpc": "2.0",
         "method": "getUnclaimedMarketCreatorFees",
         "params": {
-          "marketIDs": ["0x0000000000000000000000000000000000000000", "0x1"],
+          "marketIds": ["0x0000000000000000000000000000000000000000", "0x1"],
         },
       };
 
       const input = JSON.stringify(mockRpcRequest);
-      const expectedOutput = Object.assign({}, mockRpcRequest, { params: { marketIDs: ["0x0000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000001"] }});
+      const expectedOutput = Object.assign({}, mockRpcRequest, { params: { marketIds: ["0x0000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000001"] }});
 
       expect(JSON.parse(input, addressFormatReviver)).to.deep.eq(expectedOutput);
     });

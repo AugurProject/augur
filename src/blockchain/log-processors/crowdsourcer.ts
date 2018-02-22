@@ -6,32 +6,32 @@ import { insertPayout } from "./database";
 import { QueryBuilder } from "knex";
 import { parallel } from "async";
 
-function updateTentativeWinningPayout(db: Knex, marketID: Address, callback: ErrorCallback) {
-  const query = db.first(["payoutID", "amountStaked"]).from((builder: QueryBuilder) =>
-    builder.from("crowdsourcers").select("payoutID", "amountStaked").where({
+function updateTentativeWinningPayout(db: Knex, marketId: Address, callback: ErrorCallback) {
+  const query = db.first(["payoutId", "amountStaked"]).from((builder: QueryBuilder) =>
+    builder.from("crowdsourcers").select("payoutId", "amountStaked").where({
       completed: 1,
-      marketID,
+      marketId,
     }).union((builder: QueryBuilder) =>
-      builder.select(["payoutID", "amountStaked"]).from("initial_reports").where("marketID", marketID),
-    )).orderBy("sum(amountStaked)", "desc").groupBy("payoutID");
-  query.asCallback((err: Error|null, mostStakedPayoutID) => {
+      builder.select(["payoutId", "amountStaked"]).from("initial_reports").where("marketId", marketId),
+    )).orderBy("sum(amountStaked)", "desc").groupBy("payoutId");
+  query.asCallback((err: Error|null, mostStakedPayoutId) => {
     if (err) return callback(err);
     parallel([
       (next: AsyncCallback) => {
-        const query = db("payouts").update("tentativeWinning", 0).where("marketID", marketID);
-        if (mostStakedPayoutID != null) query.whereNot("payoutID", mostStakedPayoutID.payoutID);
+        const query = db("payouts").update("tentativeWinning", 0).where("marketId", marketId);
+        if (mostStakedPayoutId != null) query.whereNot("payoutId", mostStakedPayoutId.payoutId);
         query.asCallback(next);
       },
       (next: AsyncCallback) => {
-        if (mostStakedPayoutID == null) return next(null);
-        db("payouts").update("tentativeWinning", 1).where("marketID", marketID).where("payoutID", mostStakedPayoutID.payoutID).asCallback(next);
+        if (mostStakedPayoutId == null) return next(null);
+        db("payouts").update("tentativeWinning", 1).where("marketId", marketId).where("payoutId", mostStakedPayoutId.payoutId).asCallback(next);
       },
     ], callback);
   });
 }
 
 export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  insertPayout(db, log.market, log.payoutNumerators, log.invalid, false, (err, payoutID) => {
+  insertPayout(db, log.market, log.payoutNumerators, log.invalid, false, (err, payoutId) => {
     if (err) return callback(err);
     db("fee_windows").select(["feeWindow"]).first()
       .whereNull("endBlockNumber")
@@ -44,14 +44,14 @@ export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, log
           blockNumber: log.blockNumber,
           transactionHash: log.transactionHash,
           logIndex: log.logIndex,
-          crowdsourcerID: log.disputeCrowdsourcer,
-          marketID: log.market,
+          crowdsourcerId: log.disputeCrowdsourcer,
+          marketId: log.market,
           feeWindow: feeWindowRow.feeWindow,
           size: log.size,
-          payoutID,
+          payoutId,
           completed: null,
         };
-        db.insert(crowdsourcerToInsert).into("crowdsourcers").returning("crowdsourcerID").asCallback((err: Error|null): void => {
+        db.insert(crowdsourcerToInsert).into("crowdsourcers").returning("crowdsourcerId").asCallback((err: Error|null): void => {
           if (err) return callback(err);
           augurEmitter.emit("DisputeCrowdsourcerCreated", log);
           callback(null);
@@ -61,7 +61,7 @@ export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, log
 }
 
 export function processDisputeCrowdsourcerCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  db.from("crowdsourcers").where("crowdsourcerID", log.disputeCrowdsourcer).del().asCallback((err: Error|null): void => {
+  db.from("crowdsourcers").where("crowdsourcerId", log.disputeCrowdsourcer).del().asCallback((err: Error|null): void => {
     if (err) return callback(err);
     augurEmitter.emit("DisputeCrowdsourcerCreated", log);
     callback(null);
@@ -74,12 +74,12 @@ export function processDisputeCrowdsourcerContributionLog(db: Knex, augur: Augur
     transactionHash: log.transactionHash,
     logIndex: log.logIndex,
     reporter: log.reporter,
-    crowdsourcerID: log.disputeCrowdsourcer,
+    crowdsourcerId: log.disputeCrowdsourcer,
     amountStaked: log.amountStaked,
   };
   db.insert(disputeToInsert).into("disputes").asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    db.update("amountStaked", db.raw(`amountStaked + ${log.amountStaked}`)).into("crowdsourcers").where("crowdsourcerID", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {
+    db.update("amountStaked", db.raw(`amountStaked + ${log.amountStaked}`)).into("crowdsourcers").where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {
       if (err) return callback(err);
       augurEmitter.emit("DisputeCrowdsourcerContribution", log);
       callback(null);
@@ -93,7 +93,7 @@ export function processDisputeCrowdsourcerContributionLogRemoval(db: Knex, augur
     logIndex: log.logIndex,
   }).del().asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    db.update("amountStaked", db.raw(`amountStaked - ${log.amountStaked}`)).into("crowdsourcers").where("crowdsourcerID", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {
+    db.update("amountStaked", db.raw(`amountStaked - ${log.amountStaked}`)).into("crowdsourcers").where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {
       if (err) return callback(err);
       augurEmitter.emit("DisputeCrowdsourcerContribution", log);
       callback(null);
@@ -102,7 +102,7 @@ export function processDisputeCrowdsourcerContributionLogRemoval(db: Knex, augur
 }
 
 export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  db("crowdsourcers").update({ completed: 1 }).where({ crowdsourcerID: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
+  db("crowdsourcers").update({ completed: 1 }).where({ crowdsourcerId: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
     if (err) return callback(err);
     updateTentativeWinningPayout(db, log.market, (err: Error|null): void => {
       if (err) return callback(err);
@@ -113,7 +113,7 @@ export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, l
 }
 
 export function processDisputeCrowdsourcerCompletedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  db("crowdsourcers").update({ completed: null }).where({ crowdsourcerID: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
+  db("crowdsourcers").update({ completed: null }).where({ crowdsourcerId: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
     if (err) return callback(err);
     updateTentativeWinningPayout(db, log.market, (err: Error|null): void => {
       if (err) return callback(err);
