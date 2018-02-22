@@ -8,19 +8,6 @@ import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
 import { selectMarket } from 'modules/market/selectors/market'
 import { isEmpty } from 'lodash'
 
-// const startTime = new Date().getTime()
-//
-// const marketPriceHistory = [...new Array(30)]
-//   .map((value, index) => ({
-//     period: startTime + (index * ((1000000000000 - 0) + 0)),
-//     high: (Math.random()),
-//     low: (Math.random()),
-//     open: (Math.random()),
-//     close: (Math.random()),
-//     volume: (Math.random() * (1000 - 10)) + 10
-//   }))
-//   .sort((a, b) => a.x - b.x)
-
 // outcome specific trading price range
 const findBounds = memoize((outcome = {}) => {
   const DEFAULT_BOUNDS = {
@@ -112,7 +99,7 @@ const getOrderBookKeys = memoize((marketDepth) => {
     return (marketDepth[ASKS][0][1] + marketDepth[BIDS][0][1]) / 2
   }
 
-  const max = marketDepth[BIDS].reduce((p, order, i) => {
+  const max = marketDepth[ASKS].reduce((p, order, i) => {
     if (i === 0) return order[1]
     return order[1] > p ? order[1] : p
   }, null)
