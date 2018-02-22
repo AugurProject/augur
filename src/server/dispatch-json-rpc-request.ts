@@ -62,12 +62,12 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return getFeeWindows(db, augur, request.params.universe, request.params.account, request.params.includeCurrent, callback);
     case "getUnclaimedMarketCreatorFees":
       return getUnclaimedMarketCreatorFees(db, request.params.marketIds, callback);
-    case "getStakeTokens":
+    case "getDisputeTokens":
       return getDisputeTokens(db, request.params.universe, request.params.account, request.params.stakeTokenState, callback);
     case "getDisputeInfo":
       return getDisputeInfo(db, request.params.marketIds, callback);
     case "getInitialReporters":
-      return getInitialReporters(db, request.params.reporter, request.params.redeemed, callback);
+      return getInitialReporters(db, augur, request.params.reporter, request.params.redeemed, request.params.withRepBalance, callback);
     case "getMarketsClosingInDateRange":
       return getMarketsClosingInDateRange(db, request.params.earliestClosingTime, request.params.latestClosingTime, request.params.universe, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarkets":

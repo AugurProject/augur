@@ -461,11 +461,12 @@ export interface FeeWindowRow {
 }
 
 export interface InitialReportersRow {
-  initialReportId: number;
   marketId: Address;
   reporter: Address;
-  isDesignatedReporter: boolean;
   amountStaked: number;
+  initialReporter: number;
+  redeemed: boolean;
+  isDesignatedReporter: boolean;
 }
 
 export interface UnclaimedFeeWindowsRow {
@@ -487,4 +488,8 @@ export interface UnclaimedFeeWindowInfo {
 
 export interface UnclaimedFeeWindows {
   [feeWindow: string]: UnclaimedFeeWindowInfo;
+}
+
+export interface UIInitialReporters {
+  [initialReporter: string]: InitialReportersRow;
 }
