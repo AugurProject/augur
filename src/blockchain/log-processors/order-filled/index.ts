@@ -104,8 +104,9 @@ export function processOrderFilledLogRemoval(db: Knex, augur: Augur, log: Format
         db.from("trades").where({ marketId, outcome, orderId, blockNumber }).del().asCallback((err?: Error|null): void => {
           if (err) return callback(err);
           updateOrdersAndPositions(db, augur, marketId, orderId, orderCreator, log.filler, numTicks, tickSize, (err?: Error|null) => {
+            if (err) return callback(err);
             augurEmitter.emit("OrderFilled", Object.assign({}, log, { creator: orderCreator }));
-            callback(err);
+            return callback(err);
           });
         });
       });
