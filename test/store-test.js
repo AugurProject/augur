@@ -15,7 +15,7 @@ import store from 'src/store'
   marketsData: {},
   favorites: {},
   pendingReports: {},
-  selectedMarketID: null,
+  selectedMarketId: null,
   selectedMarketsHeader: null,
   tags: '',
   selectedFilters: { isOpen: true },

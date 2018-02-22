@@ -28,6 +28,6 @@ const denominations = [
   }
 ]
 
-function selectShareDenomination(marketID, denomination) {
-  store.dispatch(updateScalarMarketShareDenomination(marketID, denomination))
+function selectShareDenomination(marketId, denomination) {
+  store.dispatch(updateScalarMarketShareDenomination(marketId, denomination))
 }

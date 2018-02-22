@@ -41,7 +41,7 @@ describe(`modules/transactions/reducers/transactions-data.js`, () => {
   it(`should delete transaction`, () => {
     action = {
       type: 'DELETE_TRANSACTION',
-      transactionID: 'transaction2'
+      transactionId: 'transaction2'
     }
     state.transactionsData = {
       transaction1: {

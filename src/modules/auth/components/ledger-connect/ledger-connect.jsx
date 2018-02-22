@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { LedgerEthereum, BrowserLedgerConnectionFactory } from 'ethereumjs-ledger'
 
-import { Alert } from 'modules/common/components/icons/icons'
+import { Alert } from 'modules/common/components/icons'
 
 import Spinner from 'modules/common/components/spinner/spinner'
 

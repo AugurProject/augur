@@ -4,7 +4,7 @@ import QRCode from 'qrcode.react'
 import Clipboard from 'clipboard'
 import TextFit from 'react-textfit'
 
-import { Deposit as DepositIcon, Copy as CopyIcon } from 'modules/common/components/icons/icons'
+import { Deposit as DepositIcon, Copy as CopyIcon } from 'modules/common/components/icons'
 
 import Styles from 'modules/account/components/account-deposit/account-deposit.styles'
 

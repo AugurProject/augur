@@ -11,7 +11,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-asks.js`, () => {
     const loadOneOutcomeBidsAsks = proxyquire('../../../src/modules/bids-asks/actions/load-one-outcome-bids-asks', {
       './load-one-outcome-bids-or-asks': t.stub.loadOneOutcomeBidsOrAsks
     }).default
-    store.dispatch(loadOneOutcomeBidsAsks(t.params.marketID, t.params.outcome, (err) => {
+    store.dispatch(loadOneOutcomeBidsAsks(t.params.marketId, t.params.outcome, (err) => {
       t.assertions(err, store.getActions())
       store.clearActions()
       done()
@@ -20,7 +20,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-asks.js`, () => {
   test({
     description: 'short-circuit if market ID not provided',
     params: {
-      marketID: null,
+      marketId: null,
       outcome: 3
     },
     stub: {
@@ -36,7 +36,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-asks.js`, () => {
   test({
     description: 'short-circuit if outcome not provided',
     params: {
-      marketID: 'MARKET_0',
+      marketId: 'MARKET_0',
       outcome: null
     },
     stub: {
@@ -52,15 +52,15 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-asks.js`, () => {
   test({
     description: 'load bids and asks for single outcome',
     params: {
-      marketID: 'MARKET_0',
+      marketId: 'MARKET_0',
       outcome: 3
     },
     stub: {
       loadOneOutcomeBidsOrAsks: {
-        default: (marketID, outcome, orderTypeLabel, callback) => (dispatch) => {
+        default: (marketId, outcome, orderTypeLabel, callback) => (dispatch) => {
           dispatch({
             type: 'LOAD_ONE_OUTCOME_BIDS_OR_ASKS',
-            marketID,
+            marketId,
             outcome,
             orderTypeLabel
           })
@@ -72,12 +72,12 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-asks.js`, () => {
       assert.isNull(err)
       assert.deepEqual(actions, [{
         type: 'LOAD_ONE_OUTCOME_BIDS_OR_ASKS',
-        marketID: 'MARKET_0',
+        marketId: 'MARKET_0',
         outcome: 3,
         orderTypeLabel: 'buy'
       }, {
         type: 'LOAD_ONE_OUTCOME_BIDS_OR_ASKS',
-        marketID: 'MARKET_0',
+        marketId: 'MARKET_0',
         outcome: 3,
         orderTypeLabel: 'sell'
       }])
@@ -86,15 +86,15 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-asks.js`, () => {
   test({
     description: 'propagate loadOneOutcomeBidsOrAsks error',
     params: {
-      marketID: 'MARKET_0',
+      marketId: 'MARKET_0',
       outcome: 3
     },
     stub: {
       loadOneOutcomeBidsOrAsks: {
-        default: (marketID, outcome, orderTypeLabel, callback) => (dispatch) => {
+        default: (marketId, outcome, orderTypeLabel, callback) => (dispatch) => {
           dispatch({
             type: 'LOAD_ONE_OUTCOME_BIDS_OR_ASKS',
-            marketID,
+            marketId,
             outcome,
             orderTypeLabel
           })
@@ -106,7 +106,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-asks.js`, () => {
       assert.strictEqual(err, 'ERROR_MESSAGE')
       assert.deepEqual(actions, [{
         type: 'LOAD_ONE_OUTCOME_BIDS_OR_ASKS',
-        marketID: 'MARKET_0',
+        marketId: 'MARKET_0',
         outcome: 3,
         orderTypeLabel: 'buy'
       }])

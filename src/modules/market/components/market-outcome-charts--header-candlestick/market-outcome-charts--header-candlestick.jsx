@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import PeriodSelector from 'modules/market/components/market-outcome-charts--candlestick-period-selector/market-outcome-charts--candlestick-period-selector'
+
 import Styles from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles'
 
 const MarketOutcomeCandlestickHeader = p => (
@@ -49,6 +51,12 @@ const MarketOutcomeCandlestickHeader = p => (
         <span className={Styles[`MarketOutcomeChartsHeader__stat-value`]}>
           {p.close ? p.close.toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
         </span>
+      </span>
+      <span className={Styles.MarketOutcomeChartsHeader__stat}>
+        <PeriodSelector
+          priceTimeSeries={p.priceTimeSeries}
+          updateSelectedPeriod={p.updateSelectedPeriod}
+        />
       </span>
     </div>
   </section>

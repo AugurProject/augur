@@ -66,10 +66,10 @@ export default class OutcomeTrade extends Component {
       })
     }
 
-    const oldID = getValue(this.props, 'selectedOutcome.id')
-    const newID = getValue(nextProps, 'selectedOutcome.id')
+    const oldId = getValue(this.props, 'selectedOutcome.id')
+    const newId = getValue(nextProps, 'selectedOutcome.id')
 
-    if (oldID !== newID) { // If the outcome selection changes, re-render trade component
+    if (oldId !== newId) { // If the outcome selection changes, re-render trade component
       this.updateTimestamp()
     }
 
@@ -138,11 +138,11 @@ export default class OutcomeTrade extends Component {
     const p = this.props
     const s = this.state
 
-    const selectedID = getValue(p, 'selectedOutcome.id')
+    const selectedId = getValue(p, 'selectedOutcome.id')
     const name = getValue(p, 'selectedOutcome.name')
     const trade = getValue(p, 'selectedOutcome.trade')
-    const selectedTradeSide = (selectedID && p.selectedTradeSide[selectedID]) || BUY
-    const tradeOrder = getValue(p, 'tradeSummary.tradeOrders').find(order => order.data.outcomeID === selectedID)
+    const selectedTradeSide = (selectedId && p.selectedTradeSide[selectedId]) || BUY
+    const tradeOrder = getValue(p, 'tradeSummary.tradeOrders').find(order => order.data.outcomeId === selectedId)
     const hasFunds = getValue(p, 'tradeSummary.hasUserEnoughFunds')
 
     return (
@@ -164,7 +164,7 @@ export default class OutcomeTrade extends Component {
                 fullWidth
                 navItems={p.outcomeTradeNavItems}
                 selectedNav={selectedTradeSide}
-                updateSelectedNav={(side) => { this.updateSelectedNav(side, selectedID) }}
+                updateSelectedNav={(side) => { this.updateSelectedNav(side, selectedId) }}
               />
             </div>
             <div className="outcome-trade-inputs-fields">
@@ -217,7 +217,7 @@ export default class OutcomeTrade extends Component {
         {tradeOrder && s.isSharesValueValid && s.isLimitPriceValueValid &&
           <OutcomeTradeAction
             hasFunds={hasFunds}
-            selectedID={selectedID}
+            selectedId={selectedId}
             submitTrade={p.submitTrade}
           />
         }

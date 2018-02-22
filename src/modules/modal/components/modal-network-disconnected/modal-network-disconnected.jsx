@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import { AugurLoadingLogo } from 'modules/common/components/icons/icons'
+import { AugurLoadingLogo } from 'modules/common/components/icons'
 import Styles from 'modules/modal/components/modal-network-disconnected/modal-network-disconnected.styles'
 
 export default class ModalNetworkDisconnected extends Component {

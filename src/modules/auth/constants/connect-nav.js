@@ -1,4 +1,4 @@
-import { Ledger, Airbitz, uPort, MetaMask } from 'modules/common/components/icons/icons'
+import { Ledger, Airbitz, uPort, MetaMask } from 'modules/common/components/icons'
 
 export const PARAMS = {
   AIRBITZ: 'airbitz',

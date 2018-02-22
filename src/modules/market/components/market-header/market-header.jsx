@@ -4,7 +4,7 @@ import classNames from 'classnames'
 
 import toggleHeight from 'utils/toggle-height/toggle-height'
 
-import { ChevronLeft, ChevronDown, ChevronUp } from 'modules/common/components/icons/icons'
+import { ChevronLeft, ChevronDown, ChevronUp } from 'modules/common/components/icons'
 
 import Styles from 'modules/market/components/market-header/market-header.styles'
 import ToggleHeightStyles from 'utils/toggle-height/toggle-height.styles'

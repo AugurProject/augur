@@ -8,7 +8,7 @@ import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-ty
 
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-report-form/reporting-report-form.styles'
-import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons/icons'
+import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 
 export default class ReportingReportForm extends Component {
 

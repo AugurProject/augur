@@ -29,19 +29,19 @@ describe('modules/market/actions/load-full-market.js', () => {
     __RewireAPI__.__Rewire__('addMarketLoading', () => ({
       type: MOCK_ACTION_TYPES.ADD_MARKET_LOADING
     }))
-    __RewireAPI__.__Rewire__('loadMarketsInfo', (marketIDs, cb) => {
+    __RewireAPI__.__Rewire__('loadMarketsInfo', (marketIds, cb) => {
       cb()
       return {
         type: MOCK_ACTION_TYPES.LOAD_MARKETS_INFO,
         data: {
-          marketIDs
+          marketIds
         }
       }
     })
-    __RewireAPI__.__Rewire__('loadMarketDetails', marketID => ({
+    __RewireAPI__.__Rewire__('loadMarketDetails', marketId => ({
       type: MOCK_ACTION_TYPES.LOAD_MARKET_DETAILS,
       data: {
-        marketID
+        marketId
       }
     }))
 
@@ -62,13 +62,13 @@ describe('modules/market/actions/load-full-market.js', () => {
           {
             type: MOCK_ACTION_TYPES.LOAD_MARKET_DETAILS,
             data: {
-              marketID: '0xMARKETID'
+              marketId: '0xMARKETID'
             }
           },
           {
             type: MOCK_ACTION_TYPES.LOAD_MARKETS_INFO,
             data: {
-              marketIDs: [
+              marketIds: [
                 '0xMARKETID'
               ]
             }
@@ -96,7 +96,7 @@ describe('modules/market/actions/load-full-market.js', () => {
           {
             type: MOCK_ACTION_TYPES.LOAD_MARKET_DETAILS,
             data: {
-              marketID: '0xMARKETID'
+              marketId: '0xMARKETID'
             }
           }
         ]
@@ -109,12 +109,12 @@ describe('modules/market/actions/load-full-market.js', () => {
   describe('loadMarketsDetails', () => {
     const { loadMarketDetails, __RewireAPI__ } = require('modules/market/actions/load-full-market')
 
-    __RewireAPI__.__Rewire__('loadBidsAsks', (marketID, cb) => {
+    __RewireAPI__.__Rewire__('loadBidsAsks', (marketId, cb) => {
       cb()
       return {
         type: MOCK_ACTION_TYPES.LOAD_BIDS_ASKS,
         data: {
-          marketID
+          marketId
         }
       }
     })
@@ -127,19 +127,19 @@ describe('modules/market/actions/load-full-market.js', () => {
         }
       }
     })
-    __RewireAPI__.__Rewire__('loadPriceHistory', (marketID, cb) => {
+    __RewireAPI__.__Rewire__('loadPriceHistory', (marketId, cb) => {
       cb()
       return {
         type: MOCK_ACTION_TYPES.LOAD_PRICE_HISTORY,
         data: {
-          marketID
+          marketId
         }
       }
     })
-    __RewireAPI__.__Rewire__('removeMarketLoading', marketID => ({
+    __RewireAPI__.__Rewire__('removeMarketLoading', marketId => ({
       type: MOCK_ACTION_TYPES.REMOVE_MARKET_LOADING,
       data: {
-        marketID
+        marketId
       }
     }))
 
@@ -154,13 +154,13 @@ describe('modules/market/actions/load-full-market.js', () => {
           {
             type: MOCK_ACTION_TYPES.REMOVE_MARKET_LOADING,
             data: {
-              marketID: '0xMARKETID'
+              marketId: '0xMARKETID'
             }
           },
           {
             type: MOCK_ACTION_TYPES.LOAD_PRICE_HISTORY,
             data: {
-              marketID: {
+              marketId: {
                 market: '0xMARKETID'
               }
             }
@@ -174,7 +174,7 @@ describe('modules/market/actions/load-full-market.js', () => {
           {
             type: MOCK_ACTION_TYPES.LOAD_BIDS_ASKS,
             data: {
-              marketID: '0xMARKETID'
+              marketId: '0xMARKETID'
             }
           }
         ]

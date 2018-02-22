@@ -4,7 +4,7 @@ export const clearOldReports = () => (dispatch, getState) => {
   const { universe } = getState()
   dispatch({
     type: CLEAR_OLD_REPORTS,
-    universeID: universe.id,
+    universeId: universe.id,
     currentReportingWindowAddress: universe.currentReportingWindowAddress
   })
 }

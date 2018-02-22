@@ -1,20 +1,20 @@
 export const ADD_MARKET_LOADING = 'MARKET_LOADING'
 export const REMOVE_MARKET_LOADING = 'REMOVE_MARKET_LOADING'
 
-export function addMarketLoading(marketID) {
+export function addMarketLoading(marketId) {
   return {
     type: ADD_MARKET_LOADING,
     data: {
-      marketID
+      marketId
     }
   }
 }
 
-export function removeMarketLoading(marketID) {
+export function removeMarketLoading(marketId) {
   return {
     type: REMOVE_MARKET_LOADING,
     data: {
-      marketID
+      marketId
     }
   }
 }

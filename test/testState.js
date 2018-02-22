@@ -10,8 +10,8 @@ const testState = {
   marketLoading: [],
   activeView: 'markets',
   accountTrades: {
-    testMarketID: {
-      testoutcomeID: [
+    testMarketId: {
+      testoutcomeId: [
         { type: 1, price: '0.5', amount: '50' }
       ]
     }
@@ -37,13 +37,13 @@ const testState = {
   },
   createMarketInProgress: {},
   favorites: {
-    testMarketID: true
+    testMarketId: true
   },
   env,
   loginAccount: {
     address: '0x0000000000000000000000000000000000000001',
     name: 'testTesterson',
-    loginID: 'testSecureID',
+    loginId: 'testSecureId',
     privateKey: Buffer.from('0000000000000000000000000000000000000000000000000000000000000001', 'hex'),
     derivedKey: Buffer.from('0000000000000000000000000000000000000000000000000000000000000002', 'hex'),
     keystore: {
@@ -52,7 +52,7 @@ const testState = {
     localNode: false,
     prettyAddress: '0xte...t123',
     linkText: 'testTesterson',
-    prettyLoginID: 'test...reID',
+    prettyLoginId: 'test...reId',
     ethTokens: 0,
     ether: 0,
     realEther: 0,
@@ -60,7 +60,7 @@ const testState = {
   },
   tags: 'test testtag',
   marketsData: {
-    testMarketID: {
+    testMarketId: {
       author: '0x0000000000000000000000000000000000000001',
       name: 'testMarket',
       description: 'some test description',
@@ -97,14 +97,14 @@ const testState = {
     }
   },
   orderBooks: {
-    testMarketID: {
+    testMarketId: {
       2: {
         buy: {
           '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3': {
             amount: '10',
             block: 1234,
             id: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
-            market: 'testMarketID',
+            market: 'testMarketId',
             outcome: '2',
             owner: '0x7c0d52faab596c08f423e3478aebc6205f3f5d8c',
             price: '0.42',
@@ -114,7 +114,7 @@ const testState = {
             amount: '10',
             block: 1234,
             id: 'buyOrder2ID',
-            market: 'testMarketID',
+            market: 'testMarketId',
             outcome: '2',
             owner: '0x0000000000000000000000000000000000000001',
             price: '0.42',
@@ -128,7 +128,7 @@ const testState = {
             amount: '10',
             block: 1234,
             id: 'buyOrder3ID',
-            market: 'testMarketID',
+            market: 'testMarketId',
             outcome: '1',
             owner: '0x0000000000000000000000000000000000000001',
             price: '0.42',
@@ -138,7 +138,7 @@ const testState = {
             amount: '10',
             block: 1234,
             id: 'buyOrder4ID',
-            market: 'testMarketID',
+            market: 'testMarketId',
             outcome: '1',
             owner: '0x0000000000000000000000000000000000000001',
             price: '0.44',
@@ -150,7 +150,7 @@ const testState = {
             amount: '20',
             block: 1235,
             id: '0x8ef100c8aad3c4f7b65a055643d54db7b9a506a542b1270047a314da931e37fb',
-            market: 'testMarketID',
+            market: 'testMarketId',
             outcome: '1',
             owner: '0x457435fbcd49475847f64898f933ffefc33388fc',
             price: '0.58',
@@ -160,7 +160,7 @@ const testState = {
             amount: '20',
             block: 1235,
             id: 'sellOrder2ID',
-            market: 'testMarketID',
+            market: 'testMarketId',
             outcome: '1',
             owner: '0x457435fbcd49475847f64898f933ffefc33388fc',
             price: '0.59',
@@ -171,10 +171,10 @@ const testState = {
     }
   },
   orderCancellation: {
-    'an orderID': 'a status'
+    'an orderId': 'a status'
   },
   outcomesData: {
-    testMarketID: {
+    testMarketId: {
       1: {
         id: '1',
         outstandingShares: '47',
@@ -206,7 +206,7 @@ const testState = {
     selectedPageNum: 1
   },
   priceHistory: {
-    testMarketID: {},
+    testMarketId: {},
     '0xMARKET1': {
       0: [
         { amount: 10 },
@@ -230,15 +230,15 @@ const testState = {
   },
   reports: {
     '0xf69b5': {
-      testMarketID: {
-        marketID: 'testMarketID',
+      testMarketId: {
+        marketId: 'testMarketId',
         isScalar: false,
         isIndeterminate: false,
         isSubmitted: false
       }
     }
   },
-  selectedMarketID: 'testMarketID',
+  selectedMarketId: 'testMarketId',
   selectedMarketsHeader: 'testMarketHeader',
   selectedFilterSort: {
     type: 'open',
@@ -254,7 +254,7 @@ const testState = {
     }
   },
   tradesInProgress: {
-    testMarketID: {
+    testMarketId: {
       numShares: 5000,
       limitPrice: '0.50',
       totalCost: '2500',

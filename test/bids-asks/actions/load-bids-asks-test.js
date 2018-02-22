@@ -13,7 +13,7 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
     const loadBidsAsks = proxyquire('../../../src/modules/bids-asks/actions/load-bids-asks', {
       './load-one-outcome-bids-asks': t.stub.loadOneOutcomeBidsAsks
     }).default
-    store.dispatch(loadBidsAsks(t.params.marketID, (err) => {
+    store.dispatch(loadBidsAsks(t.params.marketId, (err) => {
       t.assertions(err, store.getActions())
       store.clearActions()
       done()
@@ -22,7 +22,7 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
   test({
     description: 'short-circuit if market ID not provided',
     params: {
-      marketID: undefined
+      marketId: undefined
     },
     mock: {
       state: { marketsData }
@@ -40,7 +40,7 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
   test({
     description: 'short-circuit if market data not found',
     params: {
-      marketID: 'MARKET_0'
+      marketId: 'MARKET_0'
     },
     mock: {
       state: { marketsData: {} }
@@ -58,7 +58,7 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
   test({
     description: 'short-circuit if market numOutcomes not found',
     params: {
-      marketID: 'MARKET_0'
+      marketId: 'MARKET_0'
     },
     mock: {
       state: {
@@ -78,7 +78,7 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
   test({
     description: 'market with 2 outcomes',
     params: {
-      marketID: 'MARKET_0'
+      marketId: 'MARKET_0'
     },
     mock: {
       state: {
@@ -89,10 +89,10 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
     },
     stub: {
       loadOneOutcomeBidsAsks: {
-        default: (marketID, outcome, callback) => (dispatch) => {
+        default: (marketId, outcome, callback) => (dispatch) => {
           dispatch({
             type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
-            marketID,
+            marketId,
             outcome
           })
           callback(null)
@@ -103,11 +103,11 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
       assert.isNull(err)
       assert.deepEqual(actions, [{
         type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
-        marketID: 'MARKET_0',
+        marketId: 'MARKET_0',
         outcome: 1
       }, {
         type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
-        marketID: 'MARKET_0',
+        marketId: 'MARKET_0',
         outcome: 2
       }])
     }
@@ -115,17 +115,17 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
   test({
     description: 'market with 3 outcomes',
     params: {
-      marketID: 'MARKET_0'
+      marketId: 'MARKET_0'
     },
     mock: {
       state: { marketsData }
     },
     stub: {
       loadOneOutcomeBidsAsks: {
-        default: (marketID, outcome, callback) => (dispatch) => {
+        default: (marketId, outcome, callback) => (dispatch) => {
           dispatch({
             type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
-            marketID,
+            marketId,
             outcome
           })
           callback(null)
@@ -136,15 +136,15 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
       assert.isNull(err)
       assert.deepEqual(actions, [{
         type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
-        marketID: 'MARKET_0',
+        marketId: 'MARKET_0',
         outcome: 1
       }, {
         type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
-        marketID: 'MARKET_0',
+        marketId: 'MARKET_0',
         outcome: 2
       }, {
         type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
-        marketID: 'MARKET_0',
+        marketId: 'MARKET_0',
         outcome: 3
       }])
     }
@@ -152,17 +152,17 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
   test({
     description: 'propagate loadOneOutcomeBidsAsks error',
     params: {
-      marketID: 'MARKET_0'
+      marketId: 'MARKET_0'
     },
     mock: {
       state: { marketsData }
     },
     stub: {
       loadOneOutcomeBidsAsks: {
-        default: (marketID, outcome, callback) => (dispatch) => {
+        default: (marketId, outcome, callback) => (dispatch) => {
           dispatch({
             type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
-            marketID,
+            marketId,
             outcome
           })
           callback('ERROR_MESSAGE')
@@ -173,7 +173,7 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
       assert.strictEqual(err, 'ERROR_MESSAGE')
       assert.deepEqual(actions, [{
         type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
-        marketID: 'MARKET_0',
+        marketId: 'MARKET_0',
         outcome: 1
       }])
     }

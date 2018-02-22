@@ -3,13 +3,13 @@ import { BUY } from 'modules/transactions/constants/types'
 import { clearTradeInProgress } from 'modules/trade/actions/update-trades-in-progress'
 import logError from 'utils/log-error'
 
-export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotCreateOrders, callback = logError, onComplete = logError) => (dispatch, getState) => {
-  if (!marketID) return null
+export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrders, callback = logError, onComplete = logError) => (dispatch, getState) => {
+  if (!marketId) return null
   const { loginAccount, marketsData } = getState()
-  const market = marketsData[marketID]
-  if (!tradeInProgress || !market || outcomeID == null) {
-    console.error(`trade-in-progress not found for market ${marketID} outcome ${outcomeID}`)
-    return dispatch(clearTradeInProgress(marketID))
+  const market = marketsData[marketId]
+  if (!tradeInProgress || !market || outcomeId == null) {
+    console.error(`trade-in-progress not found for market ${marketId} outcome ${outcomeId}`)
+    return dispatch(clearTradeInProgress(marketId))
   }
   augur.trading.placeTrade({
     meta: loginAccount.meta,
@@ -20,15 +20,15 @@ export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotCreateOrde
     tickSize: market.tickSize,
     numTicks: market.numTicks,
     _direction: tradeInProgress.side === BUY ? 0 : 1,
-    _market: marketID,
-    _outcome: parseInt(outcomeID, 10),
-    _tradeGroupId: tradeInProgress.tradeGroupID,
+    _market: marketId,
+    _outcome: parseInt(outcomeId, 10),
+    _tradeGroupId: tradeInProgress.tradeGroupId,
     doNotCreateOrders,
-    onSent: () => callback(null, tradeInProgress.tradeGroupID),
+    onSent: () => callback(null, tradeInProgress.tradeGroupId),
     onFailed: callback
   }, (err) => {
     if (err) return callback(err)
     onComplete(err)
   })
-  dispatch(clearTradeInProgress(marketID))
+  dispatch(clearTradeInProgress(marketId))
 }

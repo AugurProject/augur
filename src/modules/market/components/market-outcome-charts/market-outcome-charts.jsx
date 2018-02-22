@@ -8,29 +8,28 @@ import MarketOutcomeOrderBook from 'modules/market/components/market-outcome-cha
 
 import Styles from 'modules/market/components/market-outcome-charts/market-outcome-charts.styles'
 
-import { isEqual } from 'lodash'
+// import { isEqual } from 'lodash'
 
 export default class MarketOutcomeCharts extends Component {
   static propTypes = {
-    marketPriceHistory: PropTypes.array.isRequired,
-    marketMin: PropTypes.number.isRequired,
-    marketMax: PropTypes.number.isRequired,
-    orderBookMin: PropTypes.number.isRequired,
-    orderBookMid: PropTypes.number.isRequired,
-    orderBookMax: PropTypes.number.isRequired,
+    priceTimeSeries: PropTypes.array.isRequired,
+    minPrice: PropTypes.number.isRequired,
+    maxPrice: PropTypes.number.isRequired,
+    outcomeBounds: PropTypes.object.isRequired,
     orderBook: PropTypes.object.isRequired,
+    orderBookKeys: PropTypes.object.isRequired,
     marketDepth: PropTypes.object.isRequired,
-    selectedOutcomes: PropTypes.array.isRequired
+    selectedOutcome: PropTypes.string.isRequired
   }
 
   constructor(props) {
     super(props)
 
     this.state = {
+      selectedPeriod: {},
       hoveredPeriod: {},
       hoveredDepth: [],
       hoveredPrice: null,
-      fullPrice: null,
       fixedPrecision: 4
     }
 
@@ -41,16 +40,17 @@ export default class MarketOutcomeCharts extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (
-      !isEqual(this.state.fixedPrecision, nextState.fixedPrecision) ||
-      !isEqual(this.state.fullPrice, nextState.fullPrice)
-    ) {
-      if (nextState.fullPrice === null) {
-        this.updateHoveredPrice(null)
-      } else {
-        this.updateHoveredPrice(nextState.fullPrice.toFixed(nextState.fixedPrecision).toString())
-      }
-    }
+    // if (
+    //   !isEqual(this.state.fixedPrecision, nextState.fixedPrecision) ||
+    //   !isEqual(this.state.fullPrice, nextState.fullPrice)
+    // ) {
+    //   console.log('fullPrice -- ', nextState.fullPrice)
+    //   if (nextState.fullPrice === null) {
+    //     this.updateHoveredPrice(null)
+    //   } else {
+    //     this.updateHoveredPrice(nextState.fullPrice.toFixed(nextState.fixedPrecision).toString())
+    //   }
+    // }
   }
 
   updateHoveredPeriod(hoveredPeriod) {
@@ -67,13 +67,17 @@ export default class MarketOutcomeCharts extends Component {
 
   updateHoveredPrice(hoveredPrice) {
     this.setState({
-      fullPrice: hoveredPrice
+      hoveredPrice
+    })
+  }
+
+  updateSelectedPeriod(selectedPeriod) {
+    this.setState({
+      selectedPeriod
     })
   }
 
   updatePrecision(isIncreasing) {
-    // TODO -- make this accomdate scale changes as well (microETH, nanoETH, K, M, B, etc.)
-
     let { fixedPrecision } = this.state
 
     if (isIncreasing) {
@@ -89,27 +93,27 @@ export default class MarketOutcomeCharts extends Component {
     const s = this.state
     const p = this.props
 
-    // TODO -- wire up marketMin + marketMax
-
     return (
       <section className={Styles.MarketOutcomeCharts}>
         <MarketOutcomeChartsHeader
+          priceTimeSeries={p.priceTimeSeries}
           selectedOutcome={p.selectedOutcome}
           hoveredPeriod={s.hoveredPeriod}
           hoveredDepth={s.hoveredDepth}
           fixedPrecision={s.fixedPrecision}
           updatePrecision={this.updatePrecision}
+          updateSelectedPeriod={this.updateSelectedPeriod}
         />
         <div className={Styles.MarketOutcomeCharts__Charts}>
           <div className={Styles.MarketOutcomeCharts__Candlestick}>
             <MarketOutcomeCandlestick
-              marketPriceHistory={p.marketPriceHistory}
+              priceTimeSeries={p.priceTimeSeries}
+              selectedPeriod={s.selectedPeriod}
               fixedPrecision={s.fixedPrecision}
-              outcomeMin={p.marketMin}
-              orderBookMid={p.orderBookMid}
-              outcomeMax={p.marketMax}
-              marketMax={1}
-              marketMin={0}
+              outcomeBounds={p.outcomeBounds}
+              orderBookKeys={p.orderBookKeys}
+              marketMax={p.maxPrice}
+              marketMin={p.minPrice}
               hoveredPrice={s.hoveredPrice}
               updateHoveredPrice={this.updateHoveredPrice}
               updateHoveredPeriod={this.updateHoveredPeriod}
@@ -118,9 +122,7 @@ export default class MarketOutcomeCharts extends Component {
           <div className={Styles.MarketOutcomeCharts__Depth}>
             <MarketOutcomeDepth
               fixedPrecision={s.fixedPrecision}
-              orderBookMin={p.orderBookMin}
-              orderBookMid={p.orderBookMid}
-              orderBookMax={p.orderBookMax}
+              orderBookKeys={p.orderBookKeys}
               marketDepth={p.marketDepth}
               hoveredPrice={s.hoveredPrice}
               updateHoveredPrice={this.updateHoveredPrice}
@@ -131,6 +133,7 @@ export default class MarketOutcomeCharts extends Component {
             <MarketOutcomeOrderBook
               fixedPrecision={s.fixedPrecision}
               orderBook={p.orderBook}
+              marketMidpoint={p.orderBookKeys.mid}
               hoveredPrice={s.hoveredPrice}
               updateHoveredPrice={this.updateHoveredPrice}
             />

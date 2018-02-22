@@ -40,12 +40,12 @@ describe(`modules/markets/reducers/outcomes-data.js`, () => {
       }
     };
     const price = 5;
-    const outcomeID = 'testOutcome';
-    const marketID = 'testMarket';
+    const outcomeId = 'testOutcome';
+    const marketId = 'testMarket';
     const action = {
       type: UPDATE_OUTCOME_PRICE,
-      marketID,
-      outcomeID,
+      marketId,
+      outcomeId,
       price
     };
     const expectedOutput = {

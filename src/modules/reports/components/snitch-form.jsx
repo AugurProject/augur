@@ -56,7 +56,7 @@ export default class SnitchForm extends Component {
             <OutcomeOptions
               type={p.type}
               reportableOutcomes={p.reportableOutcomes}
-              reportedOutcomeID={s.report}
+              reportedOutcomeId={s.report}
               isReported={s.isReported}
               isIndeterminate={s.isIndeterminate}
               onOutcomeChange={report => this.setState({ report: report.target.value })}

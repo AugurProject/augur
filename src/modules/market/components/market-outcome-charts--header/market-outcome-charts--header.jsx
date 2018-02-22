@@ -20,7 +20,9 @@ const MarketOutcomeChartsHeader = p => (
         high={p.hoveredPeriod.high}
         low={p.hoveredPeriod.low}
         close={p.hoveredPeriod.close}
+        priceTimeSeries={p.priceTimeSeries}
         fixedPrecision={p.fixedPrecision}
+        updateSelectedPeriod={p.updateSelectedPeriod}
       />
     </div>
     <div
@@ -45,26 +47,10 @@ const MarketOutcomeChartsHeader = p => (
 export default MarketOutcomeChartsHeader
 
 MarketOutcomeChartsHeader.propTypes = {
+  priceTimeSeries: PropTypes.array.isRequired,
   hoveredPeriod: PropTypes.object.isRequired,
   hoveredDepth: PropTypes.array.isRequired,
   fixedPrecision: PropTypes.number.isRequired,
-  updatePrecision: PropTypes.func.isRequired
+  updatePrecision: PropTypes.func.isRequired,
+  updateSelectedPeriod: PropTypes.func.isRequired
 }
-
-
-// <h3><span>OUTCOME TODO</span> price(eth)</h3>
-// <MarketOutcomeCandlestickHeader
-//   volume={s.hoveredPeriod.volume}
-//   open={s.hoveredPeriod.open}
-//   high={s.hoveredPeriod.high}
-//   low={s.hoveredPeriod.low}
-//   close={s.hoveredPeriod.close}
-// />
-
-
-// <h3>Market Depth</h3>
-// <MarketOutcomeDepthHeader
-//   side={s.hoveredDepth[3]}
-//   price={s.hoveredDepth[1]}
-//   quantity={s.hoveredDepth[2]}
-// />

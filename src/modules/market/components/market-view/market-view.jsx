@@ -2,14 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import MarketHeader from 'modules/market/containers/market-header'
-// import MarketOutcomesChart from 'modules/market/containers/market-outcomes-chart'
+import MarketOutcomesChart from 'modules/market/containers/market-outcomes-chart'
 import MarketOutcomeCharts from 'modules/market/containers/market-outcome-charts'
 import MarketOutcomesAndPositions from 'modules/market/containers/market-outcomes-and-positions'
 import MarketTrading from 'modules/market/containers/market-trading'
 
 import Styles from 'modules/market/components/market-view/market-view.styles'
-
-console.log('marketOutcome -- ', MarketOutcomeCharts)
 
 export default class MarketView extends Component {
   static propTypes = {
@@ -75,6 +73,19 @@ export default class MarketView extends Component {
             updateSelectedOutcomes={this.updateSelectedOutcomes}
             clearSelectedOutcomes={this.clearSelectedOutcomes}
           />
+          {(s.selectedOutcomes.length === 0 || s.selectedOutcomes.length !== 1) &&
+            <MarketOutcomesChart
+              marketId={p.marketId}
+              selectedOutcomes={s.selectedOutcomes}
+              updateSelectedOutcomes={this.updateSelectedOutcomes}
+            />
+          }
+          {s.selectedOutcomes.length === 1 &&
+            <MarketOutcomeCharts
+              marketId={p.marketId}
+              selectedOutcome={s.selectedOutcomes[0]}
+            />
+          }
         </div>
         <section className={Styles.Market__details}>
           <div className={Styles['Market__details-outcomes']}>
@@ -100,17 +111,7 @@ export default class MarketView extends Component {
 //   selectedOutcomes={s.selectedOutcomes}
 // />
 //
-// {s.selectedOutcomes.length === 0 &&
-//   <MarketOutcomesChart
-//     selectedOutcomes={s.selectedOutcomes}
-//     updateSelectedOutcomes={this.updateSelectedOutcomes}
-//   />
-// }
-// {s.selectedOutcomes.length > 0 &&
-//   <MarketOutcomeCharts
-//     selectedOutcomes={s.selectedOutcomes}
-//   />
-// }
+
 
 // OLD
 // import React, { Component } from 'react'
@@ -132,8 +133,8 @@ export default class MarketView extends Component {
 //   static propTypes = {
 //     isConnected: PropTypes.bool.isRequired,
 //     location: PropTypes.object.isRequired,
-//     updateSelectedMarketID: PropTypes.func.isRequired,
-//     clearSelectedMarketID: PropTypes.func.isRequired,
+//     updateSelectedMarketId: PropTypes.func.isRequired,
+//     clearSelectedMarketId: PropTypes.func.isRequired,
 //     loadFullMarket: PropTypes.func.isRequired,
 //     market: PropTypes.object.isRequired
 //   }
@@ -151,7 +152,7 @@ export default class MarketView extends Component {
 //   componentWillMount() {
 //     const marketId = speedomatic.formatInt256(parseQuery(this.props.location.search)[MARKET_ID_PARAM_NAME])
 //
-//     this.props.updateSelectedMarketID(marketId)
+//     this.props.updateSelectedMarketId(marketId)
 //     this.setState({ marketId })
 //
 //     if (this.props.isConnected && getValue(this.props, 'universe.id') && marketId) this.props.loadFullMarket(marketId)
@@ -178,7 +179,7 @@ export default class MarketView extends Component {
 //   }
 //
 //   componentWillUnmount() {
-//     this.props.clearSelectedMarketID()
+//     this.props.clearSelectedMarketId()
 //   }
 //
 //   render() {

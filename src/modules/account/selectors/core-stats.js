@@ -14,9 +14,9 @@ export default function () {
   return selectCoreStats(store.getState())
 }
 
-export const selectOutcomeLastPrice = (marketOutcomeData, outcomeID) => {
-  if (!marketOutcomeData || !outcomeID) return null
-  return (marketOutcomeData[outcomeID] || {}).price
+export const selectOutcomeLastPrice = (marketOutcomeData, outcomeId) => {
+  if (!marketOutcomeData || !outcomeId) return null
+  return (marketOutcomeData[outcomeId] || {}).price
 }
 
 // Period is in days
@@ -30,12 +30,12 @@ export const createPeriodPLSelector = period => createSelector(
     const periodDate = new Date(Date.now() - (period*24*60*60*1000))
     const periodBlock = dateToBlock(periodDate, blockchain.currentBlockNumber)
 
-    return Object.keys(accountTrades).reduce((p, marketID) => { // Iterate over marketIDs
-      if (!outcomesData[marketID]) return p
+    return Object.keys(accountTrades).reduce((p, marketId) => { // Iterate over marketIds
+      if (!outcomesData[marketId]) return p
 
-      const accumulatedPL = Object.keys(accountTrades[marketID]).reduce((p, outcomeID) => { // Iterate over outcomes
-        const periodTrades = accountTrades[marketID][outcomeID].filter(trade => trade.blockNumber > periodBlock) // Filter out trades older than 30 days
-        const lastPrice = selectOutcomeLastPrice(outcomesData[marketID], outcomeID)
+      const accumulatedPL = Object.keys(accountTrades[marketId]).reduce((p, outcomeId) => { // Iterate over outcomes
+        const periodTrades = accountTrades[marketId][outcomeId].filter(trade => trade.blockNumber > periodBlock) // Filter out trades older than 30 days
+        const lastPrice = selectOutcomeLastPrice(outcomesData[marketId], outcomeId)
         const { realized, unrealized } = augur.trading.calculateProfitLoss({ trades: periodTrades, lastPrice })
         return p.plus(new BigNumber(realized, 10).plus(new BigNumber(unrealized, 10)))
       }, ZERO)

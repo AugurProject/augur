@@ -44,7 +44,7 @@ export default Market
 // // import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
 // // import getOrderCancellation from 'modules/bids-asks/selectors/order-cancellation'
 // //
-// // import { updateSelectedMarketID, clearSelectedMarketID } from 'modules/market/actions/update-selected-market-id'
+// // import { updateSelectedMarketId, clearSelectedMarketId } from 'modules/market/actions/update-selected-market-id'
 // // import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 // //
 // // import { MARKET_USER_DATA_NAV_ITEMS } from 'modules/market/constants/market-user-data-nav-items'

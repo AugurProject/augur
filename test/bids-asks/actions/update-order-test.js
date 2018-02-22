@@ -14,18 +14,18 @@ describe('modules/bids-asks/actions/update-order-status.js', () => {
   })
   describe('updateOrderStatus', () => {
     it(`shouldn't dispatch if order cannot be found`, () => {
-      store.dispatch(updateOrderStatus('nonExistingOrderID', CLOSE_DIALOG_CLOSING, 'marketID', 2, BUY))
+      store.dispatch(updateOrderStatus('nonExistingOrderId', CLOSE_DIALOG_CLOSING, 'marketId', 2, BUY))
       assert.lengthOf(store.getActions(), 0)
-      store.dispatch(updateOrderStatus('orderID', CLOSE_DIALOG_CLOSING, 'nonExistingMarketID', 2, BUY))
+      store.dispatch(updateOrderStatus('orderId', CLOSE_DIALOG_CLOSING, 'nonExistingMarketId', 2, BUY))
       assert.lengthOf(store.getActions(), 0)
     })
     it(`should dispatch action`, () => {
-      store.dispatch(updateOrderStatus('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', CLOSE_DIALOG_CLOSING, 'testMarketID', 2, BUY))
+      store.dispatch(updateOrderStatus('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', CLOSE_DIALOG_CLOSING, 'testMarketId', 2, BUY))
       assert.deepEqual(store.getActions(), [{
         type: 'UPDATE_ORDER_STATUS',
-        orderID: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
+        orderId: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
         status: CLOSE_DIALOG_CLOSING,
-        marketID: 'testMarketID',
+        marketId: 'testMarketId',
         orderType: BUY
       }])
     })

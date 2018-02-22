@@ -40,9 +40,9 @@ export const selectMarkets = createSelector(
   selectLoginAccountState,
   (marketsData, marketLoading, favorites, reports, outcomesData, accountPositions, accountTrades, tradesInProgress, universe, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount) => {
     if (!marketsData) return []
-    return Object.keys(marketsData).map((marketID) => {
-      if (!marketID || !marketsData[marketID]) return {}
-      return selectMarket(marketID)
+    return Object.keys(marketsData).map((marketId) => {
+      if (!marketId || !marketsData[marketId]) return {}
+      return selectMarket(marketId)
     })
   }
 )
