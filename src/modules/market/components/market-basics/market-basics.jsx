@@ -9,7 +9,7 @@ import MarketOutcomesCategorical from 'modules/market/components/market-outcomes
 import MarketLink from 'modules/market/components/market-link/market-link'
 
 import toggleTag from 'modules/routes/helpers/toggle-tag'
-
+import { formatDate } from 'utils/format-date'
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 
 import CommonStyles from 'modules/market/components/common/market-common.styles'
@@ -24,10 +24,11 @@ const MarketBasics = (p) => {
   if (p.reportingState === constants.REPORTING_STATE.DESIGNATED_REPORTING) {
     const WrappedGraph = TimeRemainingIndicatorWrapper(SingleSlicePieGraph)
     const endDate = moment(p.endDate.value).add(constants.CONTRACT_INTERVAL.DESIGNATED_REPORTING_DURATION_SECONDS, 'seconds').toDate()
+    const displayDate = formatDate(endDate)
 
     ReportEndingIndicator = (
       <div className={Styles.MarketBasics__reportingends}>
-        <div>Reporting Ends {p.endDate.formatted}</div>
+        <div>Reporting Ends {displayDate.formattedShort}</div>
         <WrappedGraph startDate={p.endDate.value} endDate={endDate} />
       </div>
     )
@@ -50,7 +51,7 @@ const MarketBasics = (p) => {
                 </button>
               </li>)}
           </ul>
-          <ReportEndingIndicator />
+          { ReportEndingIndicator }
         </div>
         <h1 className={CommonStyles.MarketCommon__description}>
           <MarketLink
