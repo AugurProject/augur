@@ -51,7 +51,7 @@ We are going to use environment variables for convenience, ENDPOINT_HTTP and END
     export ETHEREUM_PRIVATE_KEY="fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a"
 
     # Use dp to deploy to the configuration specified in your local environment (above)
-    npm explore augur.js -- npm run deploy:environment
+    npx dp deploy
     npm run clean-start
 
 
@@ -63,7 +63,10 @@ Link augur.js:
     npm install
     yarn link augur.js
 
-The `env-dev.json` file points to the local node by default, also `"auto-login": true` change this to `false` to use MetaMask users if you want to switch between multiple users in the UI:
+The `env-dev.json` file points to the local node by default, the networkId needs to change:
+    
+  #### important 
+  The default NetworkId is 4, `Rinkeby` this needs to be `12346` to match local node networkId or else you will get the Network Mismatch modal:
 
 Start the augur development server:
 
@@ -132,8 +135,7 @@ For more information on the script tool disco parrot (dp) [disco parrot](https:/
 
 Here are misc. script to do operations on the local node and to change time. More scripts will be created as they are needed, enivronment variables can be used or passed into the command like ETHEREUM_PRIVATE_KEY is in the examples below:
 
-    ** change time
-    ETHEREUM_PRIVATE_KEY=fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a node scripts/helpers/change-time.js <unix timestamp>
+For changing time on the contracts, use flash in augur.js:
 
     ** create open order
     ETHEREUM_PRIVATE_KEY=fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a node scripts/helpers/create-simple-order.js <market id> <buy | sell> <outcome> <num shares> <price>
@@ -144,14 +146,37 @@ Here are misc. script to do operations on the local node and to change time. Mor
     ** fill existing order
     ETHEREUM_PRIVATE_KEY=48c5da6dff330a9829d843ea90c2629e8134635a294c7e62ad4466eb2ae03712 node scripts/helpers/fill-market-order.js <market id> <buy | sell> <outcome> <num shares>
 
-    ** finialize market
-    ETHEREUM_PRIVATE_KEY=fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a node scripts/helpers/finalize-market.js <market id>
+
+    There is a `augur.js` utility named `flash` to help with changing time and other sorted operations
+    
+    To get flash help and command names
+    node scripts/flash -h
+    node scripts/flash <command-name> -h
+
+    Examples:
+    ** change time
+    node scripts/flash push-time PUSH,+3d       # pushes time by adding 3 days
+    node scripts/flash push-time SET,CURRENT    # sets contract time to your local time
+    node scripts/flash push-time SET,1546322400 # sets the contract time to unit timestamp
 
     ** do initial reporter
-    ETHEREUM_PRIVATE_KEY=fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a node scripts/helpers/do-initial-report <market id> <market outcome>
+    node scripts/flash designate-report <market id>,<market outcome>,<invalid> # uses ETHEREUM_PRIVATE_KEY as designated reporter
 
-    ** confirm initial report
-    node scripts/helpers/get-initial-report.js <market id>
+    ** show initial report
+    node scripts/flash show-initial-reporter <market id>  # shows if market has been reported on and gives details
+
+    ** finialize market
+    node scripts/flash finalize-market <market id>  # will push time so market can be finalized, needs initial report
+
+    General helpers
+
+    ** list market
+    node scripts/flash list-markets
+
+    ** list market properties
+    node scripts/flash market-info <market id>
+
+    ** and more, more will be added so check it out
 
 ## Summary
 
