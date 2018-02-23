@@ -37,7 +37,6 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEve
       const minPrice = marketsRow.minPrice!;
       const maxPrice = marketsRow.maxPrice!;
       const numTicks = marketsRow.numTicks!;
-      const ordersPayload = { _orderId: log.orderId };
       const tickSize = convertNumTicksToTickSize(numTicks, minPrice, maxPrice);
       const fullPrecisionAmount = convertOnChainSharesToHumanReadableShares(amount, tickSize);
       const fullPrecisionPrice = denormalizePrice(minPrice, maxPrice, convertFixedPointToDecimal(price, numTicks));
