@@ -88,7 +88,7 @@ function _processBlock(db: Knex, augur: Augur, block: BlockDetail, callback: Err
             trx.rollback(err);
             callback(err);
           } else {
-            logQueueProcess(trx, blockNumber, (err: Error|null) => {
+            logQueueProcess(trx, blockHash, (err: Error|null) => {
               if (err != null) {
                 trx.rollback(err);
                 logError(err);
