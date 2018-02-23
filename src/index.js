@@ -23,7 +23,8 @@ function Augur() {
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
-      connect: false,    // connection debug logging in ethrpc and ethereumjs-connect
+      connect: false,   // connection debug logging in ethrpc and ethereumjs-connect
+      tx: false,        // transaction debug logging in ethrpc
     },
   };
   this.accounts = require("./accounts");
