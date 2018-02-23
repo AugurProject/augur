@@ -194,16 +194,6 @@ class MarketTradingForm extends Component {
 
     return (
       <ul className={Styles['TradingForm__form-body']}>
-        <li>
-          <label>Order Type</label>
-          <div className={Styles.TradingForm__type}>
-            <button
-              className={classNames({ [`${Styles.active}`]: p.orderType === LIMIT })}
-              onClick={() => p.updateState('orderType', LIMIT)}
-            >Limit
-            </button>
-          </div>
-        </li>
         { !p.isMobile && p.market.marketType !== SCALAR &&
           <li>
             <label>Outcome</label>
