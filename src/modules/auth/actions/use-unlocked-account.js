@@ -6,7 +6,7 @@ import isMetaMask from 'modules/auth/helpers/is-meta-mask'
 import logError from 'utils/log-error'
 
 const updateIsLoggedAndLoadAccountData = unlockedAddress => (dispatch) => {
-  augur.accounts.logout() // clear ethrpc transaction history, registered callbacks, and notifications
+  augur.rpc.clear() // clear ethrpc transaction history, registered callbacks, and notifications
   console.log(`using unlocked account ${unlockedAddress}`)
   dispatch(updateIsLogged(true))
   dispatch(loadAccountData({

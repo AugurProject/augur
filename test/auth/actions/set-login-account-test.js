@@ -14,8 +14,10 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
       const AugurJS = {
         augur: {
           accounts: {
-            account: { ...t.state.augur.accounts.account },
-            logout: () => {}
+            account: { ...t.state.augur.accounts.account }
+          },
+          rpc: {
+            clear: () => {}
           },
           from: t.state.augur.from
         }

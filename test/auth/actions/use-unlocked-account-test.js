@@ -14,13 +14,13 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       const store = mockStore(t.state)
       const AugurJS = {
         augur: {
-          accounts: { logout: () => {} },
           rpc: {
             constants: {
               ACCOUNT_TYPES: {
                 UNLOCKED_ETHEREUM_NODE: 'unlockedEthereumNode'
               }
             },
+            clear: () => {},
             isUnlocked: () => {}
           }
         }
