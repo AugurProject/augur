@@ -1,20 +1,22 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 import MarketTradingWrapper from 'modules/market/components/market-trading--wrapper/market-trading--wrapper'
 import { Check, Close } from 'modules/common/components/icons'
 import { isEqual } from 'lodash'
+import makePath from 'modules/routes/helpers/make-path'
 
 import BigNumber from 'bignumber.js'
 
-import { SCALAR } from 'modules/markets/constants/market-types'
+import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views'
 
 import Styles from 'modules/market/components/market-trading/market-trading.styles'
 
 class MarketTrading extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
-    availableFunds: PropTypes.instanceOf(BigNumber).isRequied,
+    availableFunds: PropTypes.instanceOf(BigNumber).isRequired,
     isLogged: PropTypes.bool.isRequired,
     selectedOutcomes: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
@@ -26,28 +28,31 @@ class MarketTrading extends Component {
     this.state = {
       showForm: false,
       showOrderPlaced: false,
-      selectedOutcome: null
+      selectedOutcome: (props.selectedOutcomes.length && props.market.outcomes) ? props.market.outcomes.find(outcome => outcome.id === props.selectedOutcomes[0]) : null
     }
 
     this.toggleForm = this.toggleForm.bind(this)
+    this.toggleShowOrderPlaced = this.toggleShowOrderPlaced.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!isEqual(this.props.selectedOutcomes, nextProps.selectedOutcomes)) {
+    if ((!isEqual(this.props.selectedOutcomes, nextProps.selectedOutcomes) || (!!this.state.selectedOutcome && !isEqual(this.state.selectedOutcome.id, nextProps.selectedOutcomes[0])) || !isEqual(this.props.market.outcomes, nextProps.market.outcomes)) && (nextProps.market && nextProps.market.outcomes)) {
       if (nextProps.selectedOutcomes.length === 1) {
         this.setState({
           selectedOutcome: nextProps.market.outcomes.find(outcome => outcome.id === nextProps.selectedOutcomes[0])
         })
       } else {
-        this.setState({
-          selectedOutcome: null
-        })
+        this.setState({ selectedOutcome: null })
       }
     }
   }
 
   toggleForm() {
     this.setState({ showForm: !this.state.showForm })
+  }
+
+  toggleShowOrderPlaced() {
+    this.setState({ showOrderPlaced: !this.state.showOrderPlaced })
   }
 
   render() {
@@ -60,9 +65,6 @@ class MarketTrading extends Component {
     let initialMessage = ''
 
     switch (true) {
-      case p.market.marketType === SCALAR:
-        initialMessage = false
-        break
       case !p.isLogged:
         initialMessage = 'Log in to trade.'
         break
@@ -86,12 +88,21 @@ class MarketTrading extends Component {
             initialMessage={initialMessage}
             isMobile={p.isMobile}
             toggleForm={this.toggleForm}
+            toggleShowOrderPlaced={this.toggleShowOrderPlaced}
             availableFunds={p.availableFunds}
+            clearTradeInProgress={p.clearTradeInProgress}
           />
         }
         { p.isMobile && hasSelectedOutcome && initialMessage &&
           <div className={Styles['Trading__initial-message']}>
             <p>{ initialMessage }</p>
+            {!hasFunds &&
+              <Link
+                to={makePath(ACCOUNT_DEPOSIT)}
+              >
+                <span className={Styles['Trading__deposit-button']}>Add Funds</span>
+              </Link>
+            }
           </div>
         }
         { p.isMobile && hasSelectedOutcome && !initialMessage && !s.showForm && // this needs to be changed to use p.selectedOutcome (should only show on mobile when an outcome has been selected)
@@ -102,7 +113,7 @@ class MarketTrading extends Component {
         { s.showOrderPlaced &&
           <div className={Styles['Trading__button--order-placed']}>
             <span>{ Check } Order placed!</span>
-            <button onClick={e => this.setState({ showOrderPlaced: false })}>{ Close }</button>
+            <button onClick={e => this.toggleShowOrderPlaced()}>{ Close }</button>
           </div>
         }
       </section>

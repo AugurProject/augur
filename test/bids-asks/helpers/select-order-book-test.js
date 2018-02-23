@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js'
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk, __RewireAPI__ as selectOrderBookRewireAPI } from 'modules/bids-asks/helpers/select-order-book'
 
-import { formatShares, formatEtherTokens } from 'utils/format-number'
+import { formatShares, formatEther } from 'utils/format-number'
 
 import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status'
 
@@ -259,29 +259,41 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
           1: {
             buy: {
               '0xorder1': {
-                price: '0.1',
-                amount: '1'
+                fullPrecisionPrice: '0.1',
+                fullPrecisionAmount: '1',
+                sharesEscrowed: '1',
+                tokensEscrowed: '0',
               },
               '0xorder2': {
-                price: '0.1',
-                amount: '1'
+                fullPrecisionPrice: '0.1',
+                fullPrecisionAmount: '1',
+                sharesEscrowed: '0',
+                tokensEscrowed: '0.1',
               },
               '0xorder3': {
-                price: '0.2',
-                amount: '1'
+                fullPrecisionPrice: '0.2',
+                fullPrecisionAmount: '1',
+                sharesEscrowed: '0',
+                tokensEscrowed: '0.2',
               },
               '0xorder4': {
-                price: '0.2',
-                amount: '1'
+                fullPrecisionPrice: '0.2',
+                fullPrecisionAmount: '1',
+                sharesEscrowed: '0',
+                tokensEscrowed: '0.2',
               },
               '0xorder5': {
                 owner: '0xtest',
-                price: '0.2',
-                amount: '1'
+                fullPrecisionPrice: '0.2',
+                fullPrecisionAmount: '1',
+                sharesEscrowed: '1',
+                tokensEscrowed: '0',
               },
               '0xorder6': {
-                price: '0.3',
-                amount: '1'
+                fullPrecisionPrice: '0.3',
+                fullPrecisionAmount: '1',
+                sharesEscrowed: '1',
+                tokensEscrowed: '0',
               }
             }
           }
@@ -293,17 +305,23 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
           {
             isOfCurrentUser: false,
             shares: formatShares('2'),
-            price: formatEtherTokens('0.1')
+            price: formatEther('0.1'),
+            sharesEscrowed: formatShares('1'),
+            tokensEscrowed: formatEther('0.1')
           },
           {
             isOfCurrentUser: true,
             shares: formatShares('3'),
-            price: formatEtherTokens('0.2')
+            price: formatEther('0.2'),
+            sharesEscrowed: formatShares('1'),
+            tokensEscrowed: formatEther('0.4')
           },
           {
             isOfCurrentUser: false,
             shares: formatShares('1'),
-            price: formatEtherTokens('0.3')
+            price: formatEther('0.3'),
+            sharesEscrowed: formatShares('1'),
+            tokensEscrowed: formatEther('0')
           }
         ]
 
@@ -322,14 +340,18 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
         const actual = reduceSharesCountByPrice({}, {
           isOfCurrentUser: false,
           outcome: '1',
-          price: '0.1',
-          amount: '1'
+          fullPrecisionPrice: '0.1',
+          fullPrecisionAmount: '1',
+          sharesEscrowed: '1',
+          tokensEscrowed: '0',
         })
 
         const expected = {
           0.1: {
             isOfCurrentUser: false,
-            shares: new BigNumber('1')
+            shares: new BigNumber('1'),
+            sharesEscrowed: new BigNumber('1'),
+            tokensEscrowed: new BigNumber('0'),
           }
         }
 
@@ -346,19 +368,25 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
         const actual = reduceSharesCountByPrice({
           0.1: {
             isOfCurrentUser: false,
-            shares: new BigNumber('1')
+            shares: new BigNumber('1'),
+            sharesEscrowed: new BigNumber('0'),
+            tokensEscrowed: new BigNumber('0.1')
           }
         }, {
           isOfCurrentUser: true,
           outcome: '1',
-          price: '0.1',
-          amount: '1'
+          fullPrecisionPrice: '0.1',
+          fullPrecisionAmount: '1',
+          sharesEscrowed: '1',
+          tokensEscrowed: '0',
         })
 
         const expected = {
           0.1: {
             isOfCurrentUser: true,
-            shares: new BigNumber('2')
+            shares: new BigNumber('2'),
+            sharesEscrowed: new BigNumber('1'),
+            tokensEscrowed: new BigNumber('0.1'),
           }
         }
 
@@ -375,23 +403,31 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
         const actual = reduceSharesCountByPrice({
           0.1: {
             isOfCurrentUser: false,
-            shares: new BigNumber('1')
+            shares: new BigNumber('1'),
+            sharesEscrowed: new BigNumber('1'),
+            tokensEscrowed: new BigNumber('0'),
           }
         }, {
           isOfCurrentUser: false,
           outcome: '1',
-          price: '0.2',
-          amount: '1'
+          fullPrecisionPrice: '0.2',
+          fullPrecisionAmount: '1',
+          sharesEscrowed: '0',
+          tokensEscrowed: '0.2',
         })
 
         const expected = {
           0.1: {
             isOfCurrentUser: false,
-            shares: new BigNumber('1')
+            shares: new BigNumber('1'),
+            sharesEscrowed: new BigNumber('1'),
+            tokensEscrowed: new BigNumber('0'),
           },
           0.2: {
             isOfCurrentUser: false,
-            shares: new BigNumber('1')
+            shares: new BigNumber('1'),
+            sharesEscrowed: new BigNumber('0'),
+            tokensEscrowed: new BigNumber('0.2'),
           }
         }
 
@@ -415,7 +451,7 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
         }, {
           isOfCurrentUser: false,
           outcome: '1',
-          amount: '1'
+          fullPrecisionAmount: '1'
         })
 
         const expected = {

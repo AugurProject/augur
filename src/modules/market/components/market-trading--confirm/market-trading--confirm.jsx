@@ -12,8 +12,8 @@ import { MARKET, LIMIT } from 'modules/transactions/constants/types'
 import Styles from 'modules/market/components/market-trading--confirm/market-trading--confirm.styles'
 
 const MarketTradingConfirm = (p) => {
-  const tradingFees = '0.0023'
-  const feePercent = '2.8'
+  const tradingFees = getValue(p, 'trade.totalFee')
+  const feePercent = getValue(p, 'trade.totalFeePercent')
   const potentialEthProfit = getValue(p, 'trade.potentialEthProfit')
   const potentialProfitPercent = getValue(p, 'trade.potentialProfitPercent')
   const potentialEthLoss = getValue(p, 'trade.potentialEthLoss')
@@ -91,7 +91,16 @@ const MarketTradingConfirm = (p) => {
         </button>
         <button
           className={Styles['TradingConfirmation__button--submit']}
-          onClick={e => console.log('submit order')}
+          onClick={(e) => {
+            p.market.onSubmitPlaceTrade(p.selectedOutcome.id, (err, tradeGroupID) => {
+              // onSent/onFailed CB
+              if (!err) p.toggleShowOrderPlaced()
+            }, (res) => {
+              // onComplete CB
+            })
+            p.clearOrderForm()
+            p.prevPage()
+          }}
         >Confirm
         </button>
       </div>

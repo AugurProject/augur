@@ -22,6 +22,42 @@ describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
   })
 
   test({
+    description: `should return null when given a SCALAR market with non numerical minPrice`,
+    assertions: () => {
+      const actual = calcProfits(
+        '10',
+        '1',
+        SELL,
+        '190-242nota valid number',
+        '10',
+        SCALAR
+      )
+
+      const expected = null
+
+      assert.strictEqual(actual, expected, `didn't return the expected value`)
+    }
+  })
+
+  test({
+    description: `should return null when given a SCALAR market with non numerical maxPrice`,
+    assertions: () => {
+      const actual = calcProfits(
+        '10',
+        '1',
+        SELL,
+        '-1',
+        '10abc this is not a valid number',
+        SCALAR
+      )
+
+      const expected = null
+
+      assert.strictEqual(actual, expected, `didn't return the expected value`)
+    }
+  })
+
+  test({
     description: `should return the expected profit and loss values for a BUY in a BINARY market`,
     assertions: () => {
       const actual = calcProfits(
@@ -30,7 +66,9 @@ describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
         BUY,
         '1',
         '2',
-        BINARY
+        BINARY,
+        '10',
+        '4'
       )
 
       const expected = {
@@ -53,7 +91,9 @@ describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
         SELL,
         '1',
         '2',
-        BINARY
+        BINARY,
+        '10',
+        '6'
       )
 
       const expected = {
@@ -76,7 +116,9 @@ describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
         BUY,
         '-5',
         '10',
-        SCALAR
+        SCALAR,
+        '10',
+        '60'
       )
 
       const expected = {
@@ -99,7 +141,9 @@ describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
         SELL,
         '-5',
         '10',
-        SCALAR
+        SCALAR,
+        '10',
+        '90'
       )
 
       const expected = {
