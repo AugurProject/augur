@@ -149,6 +149,8 @@ For changing time on the contracts, use flash in augur.js:
 
     There is a `augur.js` utility named `flash` to help with changing time and other sorted operations
     
+    A few caveats about pushing time: `augur-node` maintains a state machine, so once the time has been pushed to a certain market state that market can not go back. Time can be push and pulled, forward and backwards but know that once a block has been mined with a timestamp that changes the market state then that market can not go back:
+
     To get flash help and command names
     node scripts/flash -h
     node scripts/flash <command-name> -h
