@@ -5,7 +5,7 @@
 
 /**
  * @typedef {Object} UserTradePosition
- * @property {string} marketID Contract address of the market, as a hexadecimal string.
+ * @property {string} marketId Contract address of the market, as a hexadecimal string.
  * @property {number} outcome Outcome of the shares the user owns.
  * @property {number} numShares Quantity of shares currently owned by the user.
  * @property {number} numSharesAdjustedForUserIntention Description pending.
@@ -20,7 +20,7 @@ var augurNode = require("../augur-node");
  * @param {Object} p Parameters object.
  * @param {string} p.account Ethereum address of the user for which to retrieve trading positions, as a hexadecimal string.
  * @param {string=} p.universe Contract address of the universe in which to look up the trading positions, as a hexadecimal string. Either this parameter or the market ID must be specified.
- * @param {string=} p.marketID Contract address of the market in which to look up the trading positions, as a hexadecimal string. Either this parameter or the universe must be specified.
+ * @param {string=} p.marketId Contract address of the market in which to look up the trading positions, as a hexadecimal string. Either this parameter or the universe must be specified.
  * @param {string} p.outcome Outcome of the share held for the market.
  * @param {string=} p.sortBy Field name by which to sort the trading positions.
  * @param {boolean=} p.isSortDescending Whether to sort the trading positions in descending order by sortBy field.

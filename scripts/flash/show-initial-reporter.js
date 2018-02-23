@@ -8,21 +8,21 @@ var displayTime = require("./display-time");
 /**
  * Move time to Market end time and do initial report
  */
-function showInitialReporterInternal(augur, marketID, auth, callback) {
-  augur.api.Market.getInitialReporter({ tx: { to: marketID  }}, function (err, contractID) {
+function showInitialReporterInternal(augur, marketId, auth, callback) {
+  augur.api.Market.getInitialReporter({ tx: { to: marketId  }}, function (err, contractId) {
     if (err) {
       console.log(chalk.red("Error"), chalk.red(err));
       callback(err);
     }
-    console.log(chalk.green.dim("Initial Reporter Contract address:"), chalk.green(JSON.stringify(contractID)));
-    augur.api.InitialReporter.getReportTimestamp({ tx: { to: contractID  }}, function (err, value) {
+    console.log(chalk.green.dim("Initial Reporter Contract address:"), chalk.green(JSON.stringify(contractId)));
+    augur.api.InitialReporter.getReportTimestamp({ tx: { to: contractId  }}, function (err, value) {
       if (err) {
         console.log(chalk.red("Error"), chalk.red(err));
         callback(err);
       }
       displayTime("Report timestamp:", value);
     });
-    augur.api.InitialReporter.getOwner({ tx: { to: contractID  }}, function (err, userAddress) {
+    augur.api.InitialReporter.getOwner({ tx: { to: contractId  }}, function (err, userAddress) {
       if (err) {
         console.log(chalk.red("Error"), chalk.red(err));
         callback(err);
@@ -34,8 +34,8 @@ function showInitialReporterInternal(augur, marketID, auth, callback) {
 }
 
 function help(callback) {
-  console.log(chalk.red("params syntax --> -p marketID"));
-  console.log(chalk.red("parameter 1: marketID is needed"));
+  console.log(chalk.red("params syntax --> -p marketId"));
+  console.log(chalk.red("parameter 1: marketId is needed"));
   callback(null);
 }
 
@@ -43,9 +43,9 @@ function showInitialReporter(augur, params, auth, callback) {
   if (!params || params === "help") {
     help(callback);
   } else {
-    var marketID = params;
-    console.log(chalk.yellow.dim("marketID"), marketID);
-    showInitialReporterInternal(augur, marketID, auth, callback);
+    var marketId = params;
+    console.log(chalk.yellow.dim("marketId"), marketId);
+    showInitialReporterInternal(augur, marketId, auth, callback);
   }
 }
 

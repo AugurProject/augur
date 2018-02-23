@@ -20,6 +20,7 @@ function parseLogMessage(contractName, eventName, message, abiEventInputs, onMes
         transactionIndex: parseInt(message.transactionIndex, 16),
         logIndex: parseInt(message.logIndex, 16),
         blockNumber: parseInt(message.blockNumber, 16),
+        blockHash: message.blockHash,
         contractName: contractName,
         eventName: eventName,
       });

@@ -28,7 +28,7 @@
  * @property {number} creationBlockNumber Number of the Ethereum block containing the reporting transaction.
  * @property {string} blockHash Hash of the Ethereum block containing the reporting transaction.
  * @property {number} creationTime Timestamp, in seconds, when the Ethereum block containing the reporting transaction was created.
- * @property {string} marketID Contract address of the market, as a hexadecimal string.
+ * @property {string} marketId Contract address of the market, as a hexadecimal string.
  * @property {REPORTING_STATE} marketReportingState Reporting state of the market.
  * @property {string} reportingWindow Reporting window the market is in currently.
  * @property {number[]} payoutNumerators Array representing the payout set.
@@ -47,7 +47,7 @@ var augurNode = require("../augur-node");
  * @param {Object} p Parameters object.
  * @param {string} p.reporter Ethereum address of the reporter for which to retrieve reporting history, as a hexadecimal string.
  * @param {string=} p.universe Contract address of the universe in which to look up the reporting history, as a hexadecimal string. Either this parameter, the market ID, or the reporting window must be specified.
- * @param {string=} p.marketID Contract address of the market in which to look up the reporting history, as a hexadecimal string. Either this parameter, the universe, or the reporting window must be specified.
+ * @param {string=} p.marketId Contract address of the market in which to look up the reporting history, as a hexadecimal string. Either this parameter, the universe, or the reporting window must be specified.
  * @param {string=} p.reportingWindow Contract address of the reporting window in which to look up the reporting history, as a hexadecimal string. Either this parameter, the universe, or the market ID must be specified.
  * @param {number=} p.earliestCreationTime Earliest timestamp, in seconds, at which to truncate history results. (This timestamp is when the block on the Ethereum blockchain containing the report submission was created.)
  * @param {number=} p.latestCreationTime Latest timestamp, in seconds, at which to truncate history results. (This timestamp is when the block on the Ethereum blockchain containing the report submission was created.)

@@ -36,8 +36,8 @@ var augurNode = require("../augur-node");
 /**
  * Returns a list of orders in a given universe or market. Requires an Augur Node connection.
  * @param {Object} p Parameters object.
- * @param {string=} p.universe Contract address of the universe from which to retrieve orders, as a hexadecimal string. Either this parameter or the marketID must be specified.
- * @param {string=} p.marketID Contract address of the market from which to retrieve orders, as a hexadecimal string. Either this parameter or the universe must be specified.
+ * @param {string=} p.universe Contract address of the universe from which to retrieve orders, as a hexadecimal string. Either this parameter or the marketId must be specified.
+ * @param {string=} p.marketId Contract address of the market from which to retrieve orders, as a hexadecimal string. Either this parameter or the universe must be specified.
  * @param {number=} p.outcome Market outcome to filter results by. Valid values are in the range [0,7].
  * @param {string=} p.creator Ethereum address of the order creator, as a hexadecimal string.
  * @param {ORDER_STATE=} p.orderState State of orders by which to filter results. Valid values are "ALL", "CANCELLED", "CLOSED", & "OPEN".

@@ -23,8 +23,8 @@ var compareOrdersByPrice = {
 function filterByPriceAndUserSortByPrice(p) {
   if (!p || !p.singleOutcomeOrderBookSide) return [];
   var isMarketOrder = p.price == null;
-  return Object.keys(p.singleOutcomeOrderBookSide).map(function (orderID) {
-    return p.singleOutcomeOrderBookSide[orderID];
+  return Object.keys(p.singleOutcomeOrderBookSide).map(function (orderId) {
+    return p.singleOutcomeOrderBookSide[orderId];
   }).filter(function (order) {
     var isMatchingPrice;
     if (!order || !order.fullPrecisionPrice) return false;

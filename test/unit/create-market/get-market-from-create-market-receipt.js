@@ -12,8 +12,8 @@ describe("create-market/get-market-from-create-market-receipt", function () {
       var getMarketFromCreateMarketReceipt = proxyquire("../../../src/create-market/get-market-from-create-market-receipt", {
         "../rpc-interface": t.stub.ethrpc,
       });
-      getMarketFromCreateMarketReceipt(t.params.transactionHash, function (err, marketID) {
-        t.assertions(err, marketID);
+      getMarketFromCreateMarketReceipt(t.params.transactionHash, function (err, marketId) {
+        t.assertions(err, marketId);
         done();
       });
     });
@@ -73,9 +73,9 @@ describe("create-market/get-market-from-create-market-receipt", function () {
         },
       },
     },
-    assertions: function (err, marketID) {
+    assertions: function (err, marketId) {
       assert.isNull(err);
-      assert.strictEqual(marketID, "0xbb785f16f6aab68007e897ac3560378d8d6ffd16");
+      assert.strictEqual(marketId, "0xbb785f16f6aab68007e897ac3560378d8d6ffd16");
     },
   });
 });

@@ -8,7 +8,7 @@ var connectionEndpoints = require("../connection-endpoints");
 var getPrivateKey = require("../dp/lib/get-private-key").getPrivateKey;
 var getTime = require("./get-timestamp");
 
-var marketID = process.argv[2];
+var marketId = process.argv[2];
 var outcome = process.argv[3];
 var invalid = process.argv[4];
 
@@ -22,9 +22,9 @@ getPrivateKey(null, function (err, auth) {
   augur.connect(connectionEndpoints, function (err) {
     if (err) return console.error(err);
     invalid = !invalid ? false : true;
-    augur.markets.getMarketsInfo({ marketIDs: [marketID] }, function (err, marketsInfo) {
+    augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
       var market = marketsInfo[0];
-      var marketPayload = { tx: { to: marketID } };
+      var marketPayload = { tx: { to: marketId } };
       augur.api.Market.getEndTime(marketPayload, function (err, endTime) {
         console.log(chalk.red.dim("Market End Time"), chalk.red(endTime));
         getTime(auth, function (timeResult) {
@@ -41,7 +41,7 @@ getPrivateKey(null, function (err, auth) {
               payoutNumerators[outcome] = numTicks;
               var reportPayload = {
                 meta: auth,
-                tx: { to: marketID  },
+                tx: { to: marketId  },
                 _payoutNumerators: payoutNumerators,
                 _invalid: invalid,
                 onSent: function (result) {

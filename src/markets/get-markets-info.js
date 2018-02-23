@@ -50,7 +50,7 @@ var augurNode = require("../augur-node");
 /**
  * Returns information about markets that are stored on-contract. The returned result includes basic information about the markets as well as information about each market outcome. It does not include Order Book information; however the function `augur.trading.getOrders` can be used to get information about orders for the specified market. Requires an Augur Node connection.
  * @param {Object} p Parameters object.
- * @param {string[]} p.marketIDs Contract addresses of the markets for which to get details, as hexadecimal strings.
+ * @param {string[]} p.marketIds Contract addresses of the markets for which to get details, as hexadecimal strings.
  * @return {MarketInfo[]}
  */
 function getMarketsInfo(p, callback) {

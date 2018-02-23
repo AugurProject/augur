@@ -48,8 +48,8 @@ function connect(connectOptions, callback) {
     } else if (connectOptions.ethereumNode.ipc) {
       ethereumNodeConnectOptions.ipcAddresses = [connectOptions.ethereumNode.ipc];
     }
-    if (connectOptions.ethereumNode.networkID) {
-      ethereumNodeConnectOptions.networkID = connectOptions.ethereumNode.networkID;
+    if (connectOptions.ethereumNode.networkId) {
+      ethereumNodeConnectOptions.networkId = connectOptions.ethereumNode.networkId;
     }
   }
   async.parallel({

@@ -47,12 +47,12 @@ describe("trading/place-trade", function () {
     mock: {
       getBetterWorseOrders: function (p, callback) {
         assert.deepEqual(p, {
-          marketID: "MARKET_ADDRESS",
+          marketId: "MARKET_ADDRESS",
           orderType: "buy",
           outcome: 2,
           price: "2",
         });
-        callback(null, { betterOrderID: null, worseOrderID: null });
+        callback(null, { betterOrderId: null, worseOrderId: null });
       },
       tradeUntilAmountIsZero: function (p) {
         assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
@@ -63,8 +63,8 @@ describe("trading/place-trade", function () {
         assert.strictEqual(p._fxpAmount, "10");
         assert.strictEqual(p._price, "0.5");
         assert.strictEqual(p._tradeGroupId, "0x1");
-        assert.isUndefined(p._betterOrderID);
-        assert.isUndefined(p._worseOrderID);
+        assert.isNull(p._betterOrderId);
+        assert.isNull(p._worseOrderId);
         assert.isFunction(p.onSent);
         assert.isFunction(p.onSuccess);
         assert.isFunction(p.onFailed);
@@ -100,12 +100,12 @@ describe("trading/place-trade", function () {
     mock: {
       getBetterWorseOrders: function (p, callback) {
         assert.deepEqual(p, {
-          marketID: "MARKET_ADDRESS",
+          marketId: "MARKET_ADDRESS",
           outcome: 2,
           orderType: "buy",
           price: "2",
         });
-        callback(null, { betterOrderID: "BETTER_ORDER_ID", worseOrderID: "WORSE_ORDER_ID" });
+        callback(null, { betterOrderId: "BETTER_ORDER_ID", worseOrderId: "WORSE_ORDER_ID" });
       },
       tradeUntilAmountIsZero: function (p) {
         assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");

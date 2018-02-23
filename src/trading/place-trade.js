@@ -28,7 +28,7 @@ function placeTrade(p) {
   var orderType = (["buy", "sell"])[p._direction];
   getBetterWorseOrders({
     orderType: orderType,
-    marketID: p._market,
+    marketId: p._market,
     outcome: p._outcome,
     price: p.limitPrice,
   }, function (err, betterWorseOrders) {
@@ -36,8 +36,8 @@ function placeTrade(p) {
     tradeUntilAmountIsZero(assign({}, immutableDelete(p, ["limitPrice", "amount", "minPrice", "maxPrice"]), {
       _price: normalizedPrice,
       _fxpAmount: p.amount,
-      _betterOrderId: betterWorseOrders.betterOrderID,
-      _worseOrderId: betterWorseOrders.worseOrderID,
+      _betterOrderId: betterWorseOrders.betterOrderId,
+      _worseOrderId: betterWorseOrders.worseOrderId,
     }));
   });
 }

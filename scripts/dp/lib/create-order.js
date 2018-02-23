@@ -10,7 +10,7 @@ function convertDecimalToFixedPoint(decimalValue, conversionFactor) {
   return new BigNumber(decimalValue, 10).times(new BigNumber(conversionFactor, 10)).floor().toFixed();
 }
 
-function createOrder(augur, marketID, outcome, numOutcomes, maxPrice, minPrice, numTicks, orderType, order, auth, callback) {
+function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, numTicks, orderType, order, auth, callback) {
   var normalizedPrice = augur.trading.normalizePrice({ price: order.price, maxPrice: maxPrice, minPrice: minPrice });
   if (debugOptions.cannedMarkets) {
     console.log("price:", order.price);
@@ -39,7 +39,7 @@ function createOrder(augur, marketID, outcome, numOutcomes, maxPrice, minPrice, 
     _type: orderTypeCode,
     _attoshares: "0x" + bnOnChainShares.toString(16),
     _displayPrice: "0x" + bnPrice.toString(16),
-    _market: marketID,
+    _market: marketId,
     _outcome: outcome,
     _betterOrderId: 0,
     _worseOrderId: 0,

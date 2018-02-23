@@ -13,15 +13,15 @@ var repFaucet = require("../rep-faucet");
 /**
  * Move time to Market end time and do initial report
  */
-function initialReportInternal(augur, marketID, outcome, userAuth, invalid, auth, callback) {
+function initialReportInternal(augur, marketId, outcome, userAuth, invalid, auth, callback) {
   repFaucet(augur, userAuth, function (err) {
     if (err) {
       console.log(chalk.red("Error"), chalk.red(err));
       callback(err);
     }
-    augur.markets.getMarketsInfo({ marketIDs: [marketID] }, function (err, marketsInfo) {
+    augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
       var market = marketsInfo[0];
-      var marketPayload = { tx: { to: marketID } };
+      var marketPayload = { tx: { to: marketId } };
       augur.api.Market.getEndTime(marketPayload, function (err, endTime) {
         displayTime("Market End Time", endTime);
         getTime(augur, auth, function (err, timeResult) {
@@ -40,7 +40,7 @@ function initialReportInternal(augur, marketID, outcome, userAuth, invalid, auth
             var numTicks = market.numTicks;
             var payoutNumerators = Array(market.numOutcomes).fill(0);
             payoutNumerators[outcome] = numTicks;
-            doInitialReport(augur, marketID, payoutNumerators, invalid, userAuth, function (err) {
+            doInitialReport(augur, marketId, payoutNumerators, invalid, userAuth, function (err) {
               if (err) {
                 console.log(chalk.red(err));
                 return callback(err);
@@ -56,8 +56,8 @@ function initialReportInternal(augur, marketID, outcome, userAuth, invalid, auth
 }
 
 function help(callback) {
-  console.log(chalk.red("params syntax --> -p marketID,0,<user priv key>,false"));
-  console.log(chalk.red("parameter 1: marketID is needed"));
+  console.log(chalk.red("params syntax --> -p marketId,0,<user priv key>,false"));
+  console.log(chalk.red("parameter 1: marketId is needed"));
   console.log(chalk.red("parameter 2: outcome is needed"));
   console.log(chalk.red("parameter 3: user priv key is needed"));
   console.log(chalk.red("parameter 4: invalid is optional, default is false"));
@@ -71,15 +71,15 @@ function initialReport(augur, params, auth, callback) {
   } else {
     var paramArray = params.split(",");
     var invalid = paramArray.length === 4 ? paramArray[3] : false;
-    var marketID = paramArray[0];
+    var marketId = paramArray[0];
     var outcomeId = paramArray[1];
     var userAuth = getPrivateKeyFromString(paramArray[2]);
-    console.log(chalk.yellow.dim("marketID"), marketID);
+    console.log(chalk.yellow.dim("marketId"), marketId);
     console.log(chalk.yellow.dim("outcomeId"), outcomeId);
     console.log(chalk.yellow.dim("reporter"), userAuth.address);
     console.log(chalk.yellow.dim("owner"), auth.address);
     console.log(chalk.yellow.dim("invalid"), invalid);
-    initialReportInternal(augur, marketID, outcomeId, userAuth, invalid, auth, callback);
+    initialReportInternal(augur, marketId, outcomeId, userAuth, invalid, auth, callback);
   }
 }
 

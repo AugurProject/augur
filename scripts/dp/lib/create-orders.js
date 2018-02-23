@@ -5,8 +5,8 @@ var chalk = require("chalk");
 var createOrderBook = require("./create-order-book");
 var cannedMarketsData = require("../data/canned-markets");
 
-function createOrders(augur, marketIDs, auth, callback) {
-  augur.markets.getMarketsInfo({ marketIDs: marketIDs }, function (err, marketsInfo) {
+function createOrders(augur, marketIds, auth, callback) {
+  augur.markets.getMarketsInfo({ marketIds: marketIds }, function (err, marketsInfo) {
     if (err) return callback(err);
     console.log(chalk.cyan("Creating orders..."));
     async.eachSeries(marketsInfo, function (marketInfo, nextMarket) {
