@@ -6,6 +6,7 @@ var chalk = require("chalk");
 var displayTime = require("./display-time");
 
 function setTimestamp(augur, newTimestamp, address, auth, callback) {
+  displayTime("setting time to", newTimestamp);
   augur.api.TimeControlled.setTimestamp({
     meta: auth,
     tx: { to: address },

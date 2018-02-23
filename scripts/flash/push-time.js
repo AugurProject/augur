@@ -50,6 +50,8 @@ function pushTime(augur, params, auth, callback) {
         if (action === "SET") {
           if (value === "CURRENT") {
             value = Math.floor(new Date().getTime()/1000);
+          } else {
+            value = parseInt(value, 10);
           }
           setTimestamp(augur, value, timeResult.timeAddress, auth, callback);
         } else {
