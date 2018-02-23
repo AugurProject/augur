@@ -25,7 +25,7 @@ export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: 
       TimestampSet: makeLogListener(augur, "Augur", "TimestampSet"),
       InitialReportSubmitted: makeLogListener(augur, "Augur", "InitialReportSubmitted"),
       InitialReporterRedeemed: makeLogListener(augur, "Augur", "InitialReporterRedeemed"),
-      InitialReporterTransfered: makeLogListener(augur, "Augur", "InitialReporterTransfered"),
+      InitialReporterTransferred: makeLogListener(augur, "Augur", "InitialReporterTransferred"),
       DisputeCrowdsourcerCreated: makeLogListener(augur, "Augur", "DisputeCrowdsourcerCreated"),
       DisputeCrowdsourcerContribution: makeLogListener(augur, "Augur", "DisputeCrowdsourcerContribution"),
       DisputeCrowdsourcerCompleted: makeLogListener(augur, "Augur", "DisputeCrowdsourcerCompleted"),
