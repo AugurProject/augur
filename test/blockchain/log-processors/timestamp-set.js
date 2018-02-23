@@ -6,7 +6,7 @@ const {processTimestampSetLog, processTimestampSetLogRemoval} = require("../../.
 const {getOverrideTimestamp} = require("../../../build/blockchain/process-block");
 
 function initializeNetwork(db, callback) {
-  db.insert({networkID: 9999}).into("network_id").asCallback(callback);
+  db.insert({networkId: 9999}).into("network_id").asCallback(callback);
 }
 
 describe("blockchain/log-processors/timestamp-set", () => {

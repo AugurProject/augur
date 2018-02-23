@@ -7,10 +7,10 @@ import { augurEmitter } from "../../events";
 export function processReportSubmittedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   insertPayout(db, log.market, log.payoutNumerators, false, false, (err: Error|null) => {
     if (err) return callback(err);
-    db("market_state").first("market_state.reportingState as reportingState").join("markets", "markets.marketStateID", "market_state.marketStateID").where("markets.marketID", log.market).asCallback( (err: Error|null, { reportingState }: {reportingState: string}): void => {
+    db("market_state").first("market_state.reportingState as reportingState").join("markets", "markets.marketStateId", "market_state.marketStateId").where("markets.marketId", log.market).asCallback( (err: Error|null, { reportingState }: {reportingState: string}): void => {
       if (err) return callback(err);
       const reportDataToInsert: { [index: string]: string|number|boolean } = {
-        marketID: log.market,
+        marketId: log.market,
         stakeToken: log.stakeToken,
         blockNumber: log.blockNumber,
         reporter: log.reporter,

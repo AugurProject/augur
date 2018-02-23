@@ -8,7 +8,7 @@ const { getMarketsWithReportingState } = require("../../../build/server/getters/
 
 describe("blockchain/log-processors/market-finalized", () => {
   const test = (t) => {
-    const getMarketState = (db, params, callback) => getMarketsWithReportingState(db, ["markets.marketID", "market_state.reportingState"]).first().where({"markets.marketID": params.log.market }).asCallback(callback);
+    const getMarketState = (db, params, callback) => getMarketsWithReportingState(db, ["markets.marketId", "market_state.reportingState"]).first().where({"markets.marketId": params.log.market }).asCallback(callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
@@ -47,14 +47,14 @@ describe("blockchain/log-processors/market-finalized", () => {
       onAdded: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, {
-          marketID: "0x0000000000000000000000000000000000000013",
+          marketId: "0x0000000000000000000000000000000000000013",
           reportingState: "FINALIZED",
         });
       },
       onRemoved: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, {
-          marketID: "0x0000000000000000000000000000000000000013",
+          marketId: "0x0000000000000000000000000000000000000013",
           reportingState: "AWAITING_NEXT_WINDOW",
         });
       },

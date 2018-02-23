@@ -10,7 +10,7 @@ describe("server/getters/get-dispute-info", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getDisputeInfo(db, t.params.marketIDs, (err, disputeInfo) => {
+        getDisputeInfo(db, t.params.marketIds, (err, disputeInfo) => {
           t.assertions(err, disputeInfo);
           done();
         });
@@ -20,7 +20,7 @@ describe("server/getters/get-dispute-info", () => {
   test({
     description: "get dispute info from 2 markets",
     params: {
-      marketIDs: [
+      marketIds: [
         "0x0000000000000000000000000000000000000211",
         "0x0000000000000000000000000000000000000011",
       ],
@@ -29,7 +29,7 @@ describe("server/getters/get-dispute-info", () => {
       assert.isNull(err);
       assert.deepEqual(disputeInfo, [
         {
-          marketID: "0x0000000000000000000000000000000000000211",
+          marketId: "0x0000000000000000000000000000000000000211",
           stakes: [
             {
               isInvalid: false,
@@ -69,7 +69,7 @@ describe("server/getters/get-dispute-info", () => {
           disputeRound: 0,
         },
         {
-          marketID: "0x0000000000000000000000000000000000000011",
+          marketId: "0x0000000000000000000000000000000000000011",
           stakes: [
             {
               isInvalid: false,
@@ -102,7 +102,7 @@ describe("server/getters/get-dispute-info", () => {
   test({
     description: "get dispute info by specifying market IDs, with a missing market",
     params: {
-      marketIDs: [
+      marketIds: [
         "0x0000000000000000000000088888888888888888",
         "0x0000000000000000000000000000000000000211",
         "0x0000000000000000000000077777777777777777",
@@ -113,7 +113,7 @@ describe("server/getters/get-dispute-info", () => {
       assert.deepEqual(disputeInfo, [
         null,
         {
-          marketID: "0x0000000000000000000000000000000000000211",
+          marketId: "0x0000000000000000000000000000000000000211",
           stakes: [
             {
               isInvalid: false,
@@ -159,7 +159,7 @@ describe("server/getters/get-dispute-info", () => {
   test({
     description: "get dispute info by specifying market IDs, reversed",
     params: {
-      marketIDs: [
+      marketIds: [
         "0x0000000000000000000000000000000000000011",
         "0x0000000000000000000000000000000000000211",
       ],
@@ -168,7 +168,7 @@ describe("server/getters/get-dispute-info", () => {
       assert.isNull(err);
       assert.deepEqual(disputeInfo, [
         {
-          marketID: "0x0000000000000000000000000000000000000011",
+          marketId: "0x0000000000000000000000000000000000000011",
           stakes: [
             {
               isInvalid: false,
@@ -196,7 +196,7 @@ describe("server/getters/get-dispute-info", () => {
           disputeRound: 1,
         },
         {
-          marketID: "0x0000000000000000000000000000000000000211",
+          marketId: "0x0000000000000000000000000000000000000211",
           stakes: [
             {
               isInvalid: false,
@@ -241,7 +241,7 @@ describe("server/getters/get-dispute-info", () => {
   test({
     description: "market does not exist",
     params: {
-      marketIDs: ["0x1010101010101010101010101010101010101010"],
+      marketIds: ["0x1010101010101010101010101010101010101010"],
     },
     assertions: (err, disputeInfo) => {
       assert.isNull(err);
@@ -249,9 +249,9 @@ describe("server/getters/get-dispute-info", () => {
     },
   });
   test({
-    description: "Empty marketIDs array",
+    description: "Empty marketIds array",
     params: {
-      marketIDs: [],
+      marketIds: [],
     },
     assertions: (err, disputeInfo) => {
       assert.isNull(err);

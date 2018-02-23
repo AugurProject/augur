@@ -7,11 +7,11 @@ const setupTestDb = require("../../test.database");
 const { processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval } = require("../../../build/blockchain/log-processors/initial-report-submitted");
 
 const getReportingState = (db, params, callback) => {
-  db("markets").first(["reportingState", "initialReportSize"]).where("markets.marketID", params.log.market).join("market_state", "market_state.marketStateID", "markets.marketStateID").asCallback(callback);
+  db("markets").first(["reportingState", "initialReportSize"]).where("markets.marketId", params.log.market).join("market_state", "market_state.marketStateId", "markets.marketStateId").asCallback(callback);
 };
 
 const getInitialReport = (db, params, callback) => {
-  db("initial_reports").first(["reporter", "amountStaked", "initialReporter"]).where("initial_reports.marketID", params.log.market).asCallback(callback);
+  db("initial_reports").first(["reporter", "amountStaked", "initialReporter"]).where("initial_reports.marketId", params.log.market).asCallback(callback);
 };
 
 describe("blockchain/log-processors/initial-report-submitted", () => {

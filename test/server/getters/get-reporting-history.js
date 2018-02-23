@@ -9,7 +9,7 @@ describe("server/getters/get-reporting-history", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getReportingHistory(db, t.params.reporter, t.params.universe, t.params.marketID, t.params.feeWindow, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, reportingHistory) => {
+        getReportingHistory(db, t.params.reporter, t.params.universe, t.params.marketId, t.params.feeWindow, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, reportingHistory) => {
           t.assertions(err, reportingHistory);
           done();
         });
@@ -32,11 +32,11 @@ describe("server/getters/get-reporting-history", () => {
             creationBlockNumber: 1400051,
             blockHash: "0x1400051",
             creationTime: 1506474500,
-            marketID: "0x0000000000000000000000000000000000000011",
+            marketId: "0x0000000000000000000000000000000000000011",
             feeWindow: "0x1000000000000000000000000000000000000000",
             payoutNumerators: [0, 2],
             amountStaked: 17,
-            crowdsourcerID: "0x0000000000000000001000000000000000000001",
+            crowdsourcerId: "0x0000000000000000001000000000000000000001",
             isCategorical: false,
             isScalar: false,
             isInvalid: false,
@@ -48,11 +48,11 @@ describe("server/getters/get-reporting-history", () => {
             creationBlockNumber: 1400052,
             blockHash: "0x1400052",
             creationTime: 1506474515,
-            marketID: "0x0000000000000000000000000000000000000019",
+            marketId: "0x0000000000000000000000000000000000000019",
             feeWindow: "0x1000000000000000000000000000000000000000",
             payoutNumerators: [1, 1],
             amountStaked: 229,
-            crowdsourcerID: "0x0000000000000000001000000000000000000003",
+            crowdsourcerId: "0x0000000000000000001000000000000000000003",
             isCategorical: false,
             isScalar: false,
             isInvalid: false,
@@ -80,11 +80,11 @@ describe("server/getters/get-reporting-history", () => {
             creationBlockNumber: 1400052,
             blockHash: "0x1400052",
             creationTime: 1506474515,
-            marketID: "0x0000000000000000000000000000000000000019",
+            marketId: "0x0000000000000000000000000000000000000019",
             feeWindow: "0x1000000000000000000000000000000000000000",
             payoutNumerators: [1, 1],
             amountStaked: 229,
-            crowdsourcerID: "0x0000000000000000001000000000000000000003",
+            crowdsourcerId: "0x0000000000000000001000000000000000000003",
             isCategorical: false,
             isScalar: false,
             isInvalid: false,

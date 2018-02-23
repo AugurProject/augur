@@ -39,7 +39,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getMarketsCreatedByUser":
       return getMarketsCreatedByUser(db, request.params.universe, request.params.creator, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getReportingHistory":
-      return getReportingHistory(db, request.params.reporter, request.params.universe, request.params.marketID, request.params.reportingWindow, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
+      return getReportingHistory(db, request.params.reporter, request.params.universe, request.params.marketId, request.params.reportingWindow, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsAwaitingDesignatedReporting":
       return getMarketsAwaitingDesignatedReporting(db, request.params.universe, request.params.designatedReporter, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsUpcomingDesignatedReporting":
@@ -51,33 +51,33 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getReportingSummary":
       return getReportingSummary(db, request.params.reportingWindow, callback);
     case "getUserTradingHistory":
-      return getUserTradingHistory(db, request.params.universe, request.params.account, request.params.marketID, request.params.outcome, request.params.orderType, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
+      return getUserTradingHistory(db, request.params.universe, request.params.account, request.params.marketId, request.params.outcome, request.params.orderType, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketPriceHistory":
-      return getMarketPriceHistory(db, request.params.marketID, callback);
+      return getMarketPriceHistory(db, request.params.marketId, callback);
     case "getUserTradingPositions":
-      return getUserTradingPositions(db, request.params.universe, request.params.account, request.params.marketID, request.params.outcome, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
+      return getUserTradingPositions(db, request.params.universe, request.params.account, request.params.marketId, request.params.outcome, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getFeeWindowCurrent":
       return getFeeWindowCurrent(db, request.params.universe, request.params.account, callback);
     case "getFeeWindows":
       return getFeeWindows(db, augur, request.params.universe, request.params.account, request.params.includeCurrent, callback);
     case "getUnclaimedMarketCreatorFees":
-      return getUnclaimedMarketCreatorFees(db, request.params.marketIDs, callback);
-    case "getStakeTokens":
+      return getUnclaimedMarketCreatorFees(db, request.params.marketIds, callback);
+    case "getDisputeTokens":
       return getDisputeTokens(db, request.params.universe, request.params.account, request.params.stakeTokenState, callback);
     case "getDisputeInfo":
-      return getDisputeInfo(db, request.params.marketIDs, callback);
+      return getDisputeInfo(db, request.params.marketIds, callback);
     case "getInitialReporters":
-      return getInitialReporters(db, request.params.reporter, request.params.redeemed, callback);
+      return getInitialReporters(db, augur, request.params.reporter, request.params.redeemed, request.params.withRepBalance, callback);
     case "getMarketsClosingInDateRange":
       return getMarketsClosingInDateRange(db, request.params.earliestClosingTime, request.params.latestClosingTime, request.params.universe, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarkets":
       return getMarkets(db, request.params.universe, request.params.creator, request.params.category, request.params.reportingState, request.params.feeWindow, request.params.designatedReporter, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsInfo":
-      return getMarketsInfo(db, request.params.marketIDs, callback);
+      return getMarketsInfo(db, request.params.marketIds, callback);
     case "getOrders":
-      return getOrders(db, request.params.universe, request.params.marketID, request.params.outcome, request.params.orderType, request.params.creator, request.params.orderState, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
+      return getOrders(db, request.params.universe, request.params.marketId, request.params.outcome, request.params.orderType, request.params.creator, request.params.orderState, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getBetterWorseOrders":
-      return getBetterWorseOrders(db, request.params.marketID, request.params.outcome, request.params.orderType, request.params.price, callback);
+      return getBetterWorseOrders(db, request.params.marketId, request.params.outcome, request.params.orderType, request.params.price, callback);
     case "getContractAddresses":
       return getContractAddresses(augur, callback);
     default:

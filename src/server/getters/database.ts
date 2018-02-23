@@ -23,13 +23,13 @@ export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow): UIO
 
 export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime, outcomesInfo: Array<UIOutcomeInfo>): UIMarketInfo {
   let consensus: UIConsensusInfo|null;
-  if (row.consensusPayoutID === null) {
+  if (row.consensusPayoutId === null) {
     consensus = null;
   } else {
-    consensus = { outcomeID: row.consensusPayoutID, isInvalid: row.isInvalid } as UIConsensusInfo;
+    consensus = { outcomeId: row.consensusPayoutId, isInvalid: row.isInvalid } as UIConsensusInfo;
   }
   return {
-    id: row.marketID,
+    id: row.marketId,
     universe: row.universe,
     marketType: row.marketType,
     numOutcomes: row.numOutcomes,
@@ -66,7 +66,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
 }
 
 export function reshapeDisputeTokensRowToUIDisputeTokenInfo(disputeTokenRow: DisputeTokensRowWithTokenState): UIDisputeTokenInfo {
-  return Object.assign(_.omit(disputeTokenRow, ["payoutID", "winning"]) as DisputeTokensRowWithTokenState, {
+  return Object.assign(_.omit(disputeTokenRow, ["payoutId", "winning"]) as DisputeTokensRowWithTokenState, {
       isInvalid: !!disputeTokenRow.isInvalid,
       claimed: !!disputeTokenRow.claimed,
       winningToken: (disputeTokenRow.winning == null) ? null : !!disputeTokenRow.winning,
@@ -78,7 +78,7 @@ export function getMarketsWithReportingState(db: Knex, selectColumns?: Array<str
   const columns = selectColumns ? selectColumns.slice() : ["markets.*", "market_state.reportingState as reportingState", "blocks.timestamp as creationTime"];
   return db.select(columns)
     .from("markets")
-    .leftJoin("market_state", "markets.marketStateID", "market_state.marketStateID")
+    .leftJoin("market_state", "markets.marketStateId", "market_state.marketStateId")
     .leftJoin("blocks", "markets.creationBlockNumber", "blocks.blockNumber");
 }
 

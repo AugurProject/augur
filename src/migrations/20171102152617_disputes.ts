@@ -3,8 +3,8 @@ import * as Knex from "knex";
 exports.up = async (knex: Knex): Promise<any> => {
   return knex.schema.dropTableIfExists("disputes").then( (): PromiseLike<any> => {
     return knex.schema.createTable("disputes", (table: Knex.CreateTableBuilder): void => {
-      table.increments("disputeID");
-      table.string("crowdsourcerID", 42).notNullable();
+      table.increments("disputeId");
+      table.string("crowdsourcerId", 42).notNullable();
       table.specificType("blockNumber", "integer NOT NULL CONSTRAINT positiveOrderBlockNumber CHECK (\"blockNumber\" > 0)");
       table.string("transactionHash", 66).notNullable();
       table.specificType("logIndex", "integer NOT NULL CONSTRAINT \"nonnegativelogIndex\" CHECK (\"logIndex\" >= 0)");

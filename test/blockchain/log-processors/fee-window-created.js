@@ -5,7 +5,7 @@ const setupTestDb = require("../../test.database");
 const { processFeeWindowCreatedLog, processFeeWindowCreatedLogRemoval } = require("../../../build/blockchain/log-processors/fee-window-created");
 
 const getFeeWindow = (db, params, callback) => {
-  db("fee_windows").first(["feeWindow", "feeWindowID", "endTime"]).where({feeWindow: params.log.feeWindow}).asCallback(callback);
+  db("fee_windows").first(["feeWindow", "feeWindowId", "endTime"]).where({feeWindow: params.log.feeWindow}).asCallback(callback);
 };
 
 describe("blockchain/log-processors/fee-window-created", () => {
@@ -57,7 +57,7 @@ describe("blockchain/log-processors/fee-window-created", () => {
         assert.deepEqual(records, {
           endTime: 1512657473,
           feeWindow: "0xf000000000000000000000000000000000000000",
-          feeWindowID: 40304,
+          feeWindowId: 40304,
         });
       },
       onRemoved: (err, records) => {

@@ -7,7 +7,7 @@ const { processTokensTransferredLog, processTokensTransferredLogRemoval } = requ
 describe("blockchain/log-processors/tokens-transferred", () => {
   const test = (t) => {
     const getState = (db, params, callback) => db("transfers").where({ transactionHash: params.log.transactionHash, logIndex: params.log.logIndex }).asCallback(callback);
-    const getPositionsState = (db, params, callback) => db("positions").where({ account: params.log.from, marketID: params.log.market }).asCallback(callback);
+    const getPositionsState = (db, params, callback) => db("positions").where({ account: params.log.from, marketId: params.log.market }).asCallback(callback);
     const getTokenBalances = (db, params, callback) => db("balances").where({ token: params.log.token }).asCallback(callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
@@ -167,9 +167,9 @@ describe("blockchain/log-processors/tokens-transferred", () => {
         assert.isNull(err);
         assert.lengthOf(positions, 8);
         assert.deepEqual(positions, [{
-          positionID: positions[0].positionID,
+          positionId: positions[0].positionId,
           account: "FROM_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000002",
+          marketId: "0x0000000000000000000000000000000000000002",
           outcome: 0,
           numShares: 2,
           numSharesAdjustedForUserIntention: 0,
@@ -178,9 +178,9 @@ describe("blockchain/log-processors/tokens-transferred", () => {
           averagePrice: 0,
           lastUpdated: positions[0].lastUpdated,
         }, {
-          positionID: positions[1].positionID,
+          positionId: positions[1].positionId,
           account: "FROM_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000002",
+          marketId: "0x0000000000000000000000000000000000000002",
           outcome: 1,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -189,9 +189,9 @@ describe("blockchain/log-processors/tokens-transferred", () => {
           averagePrice: 0,
           lastUpdated: positions[0].lastUpdated,
         }, {
-          positionID: positions[2].positionID,
+          positionId: positions[2].positionId,
           account: "FROM_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000002",
+          marketId: "0x0000000000000000000000000000000000000002",
           outcome: 2,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -200,9 +200,9 @@ describe("blockchain/log-processors/tokens-transferred", () => {
           averagePrice: 0,
           lastUpdated: positions[0].lastUpdated,
         }, {
-          positionID: positions[3].positionID,
+          positionId: positions[3].positionId,
           account: "FROM_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000002",
+          marketId: "0x0000000000000000000000000000000000000002",
           outcome: 3,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -211,9 +211,9 @@ describe("blockchain/log-processors/tokens-transferred", () => {
           averagePrice: 0,
           lastUpdated: positions[0].lastUpdated,
         }, {
-          positionID: positions[4].positionID,
+          positionId: positions[4].positionId,
           account: "FROM_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000002",
+          marketId: "0x0000000000000000000000000000000000000002",
           outcome: 4,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -222,9 +222,9 @@ describe("blockchain/log-processors/tokens-transferred", () => {
           averagePrice: 0,
           lastUpdated: positions[0].lastUpdated,
         }, {
-          positionID: positions[5].positionID,
+          positionId: positions[5].positionId,
           account: "FROM_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000002",
+          marketId: "0x0000000000000000000000000000000000000002",
           outcome: 5,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -233,9 +233,9 @@ describe("blockchain/log-processors/tokens-transferred", () => {
           averagePrice: 0,
           lastUpdated: positions[0].lastUpdated,
         }, {
-          positionID: positions[6].positionID,
+          positionId: positions[6].positionId,
           account: "FROM_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000002",
+          marketId: "0x0000000000000000000000000000000000000002",
           outcome: 6,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,
@@ -244,9 +244,9 @@ describe("blockchain/log-processors/tokens-transferred", () => {
           averagePrice: 0,
           lastUpdated: positions[0].lastUpdated,
         }, {
-          positionID: positions[7].positionID,
+          positionId: positions[7].positionId,
           account: "FROM_ADDRESS",
-          marketID: "0x0000000000000000000000000000000000000002",
+          marketId: "0x0000000000000000000000000000000000000002",
           outcome: 7,
           numShares: 0,
           numSharesAdjustedForUserIntention: 0,

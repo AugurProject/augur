@@ -5,7 +5,7 @@
   "params": {
       "universe": null,
       "account": "0x000000000000000000000000000000000000d00d",
-      "marketID": "0x0000000000000000000000000000000000000001",
+      "marketId": "0x0000000000000000000000000000000000000001",
       "outcome": 0,
       "orderType": null,
       "sortBy": null,

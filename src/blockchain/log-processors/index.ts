@@ -36,7 +36,7 @@ export const logProcessors: LogProcessors = {
       add: processInitialReporterRedeemedLog,
       remove: processInitialReporterRedeemedLogRemoval,
     },
-    InitialReporterTransfered: {
+    InitialReporterTransferred: {
       add: processInitialReporterTransferredLog,
       remove: processInitialReporterTransferredLogRemoval,
     },

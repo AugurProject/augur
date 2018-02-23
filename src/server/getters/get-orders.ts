@@ -8,18 +8,18 @@ interface OrdersRowWithCreationTime extends OrdersRow {
 }
 
 // market, outcome, creator, orderType, limit, sort
-export function getOrders(db: Knex, universe: Address|null, marketID: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, orderState: OrderState|null, earliestCreationTime: number|null, latestCreationTime: number|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: any) => void): void {
-  if (universe == null && marketID == null) return callback(new Error("Must provide universe, either via universe or marketID"));
+export function getOrders(db: Knex, universe: Address|null, marketId: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, orderState: OrderState|null, earliestCreationTime: number|null, latestCreationTime: number|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: any) => void): void {
+  if (universe == null && marketId == null) return callback(new Error("Must provide universe, either via universe or marketId"));
   const queryData: {} = _.omitBy({
     universe,
     outcome,
     orderType,
     "orderCreator": creator,
-    "orders.marketID": marketID,
+    "orders.marketId": marketId,
   }, _.isNil);
   const query: Knex.QueryBuilder = db.select(["orders.*", "blocks.blockHash", `blocks.timestamp as creationTime`]).from("orders");
   query.leftJoin("blocks", "orders.blockNumber", "blocks.blockNumber");
-  query.leftJoin("markets", "orders.marketID", "markets.marketID");
+  query.leftJoin("markets", "orders.marketId", "markets.marketId");
   query.where(queryData);
   if (earliestCreationTime != null) query.where("creationTime", ">=", earliestCreationTime);
   if (latestCreationTime != null) query.where("creationTime", "<=", latestCreationTime);
@@ -31,11 +31,11 @@ export function getOrders(db: Knex, universe: Address|null, marketID: Address|nu
     if (!ordersRows) return callback(new Error("Unexpected error fetching order rows"));
     const orders: UIOrders = {};
     ordersRows.forEach((row: OrdersRowWithCreationTime): void => {
-      if (!orders[row.marketID]) orders[row.marketID] = {};
-      if (!orders[row.marketID][row.outcome]) orders[row.marketID][row.outcome] = {};
-      if (!orders[row.marketID][row.outcome][row.orderType]) orders[row.marketID][row.outcome][row.orderType] = {};
-      orders[row.marketID][row.outcome][row.orderType][row.orderID!] = {
-        orderID: row.orderID!,
+      if (!orders[row.marketId]) orders[row.marketId] = {};
+      if (!orders[row.marketId][row.outcome]) orders[row.marketId][row.outcome] = {};
+      if (!orders[row.marketId][row.outcome][row.orderType]) orders[row.marketId][row.outcome][row.orderType] = {};
+      orders[row.marketId][row.outcome][row.orderType][row.orderId!] = {
+        orderId: row.orderId!,
         creationBlockNumber: row.blockNumber,
         transactionHash: row.transactionHash,
         logIndex: row.logIndex,

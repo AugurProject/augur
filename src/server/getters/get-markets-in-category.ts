@@ -4,11 +4,11 @@ import { queryModifier } from "./database";
 
 export function getMarketsInCategory(db: Knex, universe: Address, category: string, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: Array<Address>) => void): void {
   if (universe == null) return callback(new Error("Must provide universe"));
-  let query: Knex.QueryBuilder = db.select("marketID").from("markets").where({ category, universe });
+  let query: Knex.QueryBuilder = db.select("marketId").from("markets").where({ category, universe });
   query = queryModifier(query, "volume", "desc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, marketsInCategory?: Array<MarketsContractAddressRow>): void => {
     if (err) return callback(err);
     if (!marketsInCategory) return callback(null);
-    callback(null, marketsInCategory.map((marketInCategory: MarketsContractAddressRow): Address => marketInCategory.marketID));
+    callback(null, marketsInCategory.map((marketInCategory: MarketsContractAddressRow): Address => marketInCategory.marketId));
   });
 }

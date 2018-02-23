@@ -8,12 +8,12 @@ interface TradingHistoryRow extends TradesRow {
 }
 
 // Look up a user's trading history. Should take market, outcome, and orderType as optional parameters.
-export function getUserTradingHistory(db: Knex|Knex.Transaction, universe: Address|null, account: Address, marketID: Address|null|undefined, outcome: number|null|undefined, orderType: string|null|undefined, earliestCreationTime: number|null, latestCreationTime: number|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: Array<UITrade>) => void): void {
-  if (universe == null && marketID == null ) return callback(new Error("Must provide reference to universe, specify universe or marketID"));
+export function getUserTradingHistory(db: Knex|Knex.Transaction, universe: Address|null, account: Address, marketId: Address|null|undefined, outcome: number|null|undefined, orderType: string|null|undefined, earliestCreationTime: number|null, latestCreationTime: number|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: Array<UITrade>) => void): void {
+  if (universe == null && marketId == null ) return callback(new Error("Must provide reference to universe, specify universe or marketId"));
   const query = db.select([
     "trades.transactionHash",
     "trades.logIndex",
-    "trades.marketID",
+    "trades.marketId",
     "trades.outcome",
     "trades.orderType",
     "trades.price",
@@ -23,16 +23,16 @@ export function getUserTradingHistory(db: Knex|Knex.Transaction, universe: Addre
     "trades.blockNumber",
     "trades.marketCreatorFees",
     "trades.reporterFees",
-    "trades.tradeGroupID",
+    "trades.tradeGroupId",
     "blocks.timestamp",
   ]).from("trades");
   query.leftJoin("blocks", "trades.blockNumber", "blocks.blockNumber");
-  query.leftJoin("markets", "trades.marketID", "markets.marketID");
+  query.leftJoin("markets", "trades.marketId", "markets.marketId");
   query.where((builder) => {
     builder.where("trades.creator", account).orWhere("trades.filler", account);
   });
   if (universe != null) query.where("universe", universe);
-  if (marketID != null) query.where("trades.marketID", marketID);
+  if (marketId != null) query.where("trades.marketId", marketId);
   if (outcome != null) query.where("trades.outcome", outcome);
   if (orderType != null) query.where("trades.orderType", orderType);
   if (earliestCreationTime != null) query.where("timestamp", ">=", earliestCreationTime);
@@ -51,11 +51,11 @@ export function getUserTradingHistory(db: Knex|Knex.Transaction, universe: Addre
       marketCreatorFees: trade.marketCreatorFees!,
       reporterFees: trade.reporterFees!,
       settlementFees: new BigNumber(trade.reporterFees!, 10).plus(new BigNumber(trade.marketCreatorFees!, 10)).toFixed(),
-      marketID: trade.marketID!,
+      marketId: trade.marketId!,
       outcome: trade.outcome!,
       shareToken: trade.shareToken!,
       timestamp: trade.timestamp!,
-      tradeGroupID: trade.tradeGroupID!,
+      tradeGroupId: trade.tradeGroupId!,
     })));
   });
 }

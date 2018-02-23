@@ -48,7 +48,7 @@ export interface EthereumNodeEndpoints {
   [protocol: string]: string;
 }
 export interface UploadBlockNumbers {
-  [networkID: string]: number;
+  [networkId: string]: number;
 }
 
 export type AbiEncodedData = string;
@@ -127,11 +127,11 @@ export interface GetAccountTransferHistoryRequest {
 }
 
 export interface MarketsContractAddressRow {
-  marketID: string;
+  marketId: string;
 }
 
 export interface MarketsRow {
-  marketID: Address;
+  marketId: Address;
   universe: Address;
   marketType: string;
   numOutcomes: number;
@@ -149,7 +149,7 @@ export interface MarketsRow {
   tag2: string|null;
   volume: string|number;
   sharesOutstanding: string|number;
-  marketStateID: number;
+  marketStateId: number;
   feeWindow: Address;
   endTime: number;
   finalizationTime?: number|null;
@@ -160,13 +160,13 @@ export interface MarketsRow {
   designatedReportStake: string|number;
   resolutionSource?: string|null;
   numTicks: number;
-  consensusPayoutID?: number|null;
+  consensusPayoutId?: number|null;
   isInvalid?: boolean|null;
 }
 
 export interface PositionsRow {
   outcome: number;
-  marketID?: Address;
+  marketId?: Address;
   numShares?: string|number;
   account?: Address;
   realizedProfitLoss?: string|number;
@@ -175,7 +175,7 @@ export interface PositionsRow {
 }
 
 export interface OutcomesRow {
-  marketID: Address;
+  marketId: Address;
   outcome: number;
   price: string|number;
   volume: string|number;
@@ -185,7 +185,7 @@ export interface OutcomesRow {
 export interface TokensRow {
   contractAddress?: Address;
   symbol: string;
-  marketID: Address;
+  marketId: Address;
   outcome?: number;
 }
 
@@ -200,7 +200,7 @@ export interface BlocksRow {
 
 export interface DisputeTokensRow extends Payout {
   disputeToken: Address;
-  marketID: Address;
+  marketId: Address;
   amountStaked: number;
   claimed: number;
   winning: number|null;
@@ -211,7 +211,7 @@ export interface DisputeTokensRowWithTokenState extends DisputeTokensRow {
 }
 
 export interface PayoutRow extends Payout {
-  payoutID: number;
+  payoutId: number;
   tentativeWinning: number;
 }
 
@@ -229,7 +229,7 @@ export interface Payout {
 
 export interface UIDisputeTokenInfo extends Payout {
   disputeToken: Address;
-  marketID: Address;
+  marketId: Address;
   amountStaked: number;
   claimed: boolean;
   winningToken: boolean|null;
@@ -250,7 +250,7 @@ export interface StakeDetails extends Payout {
 }
 
 export interface UIStakeInfo {
-  marketID: Address;
+  marketId: Address;
   disputeRound: number|null;
   stakes: Array<StakeDetails>;
 }
@@ -259,7 +259,7 @@ export interface UIFeeWindowCurrent {
   endBlockNumber: number|null;
   endTime: number;
   feeWindow: Address;
-  feeWindowID: number;
+  feeWindowId: number;
   startBlockNumber: number;
   startTime: number;
   universe: Address;
@@ -268,12 +268,12 @@ export interface UIFeeWindowCurrent {
 }
 
 export interface UIMarketCreatorFee {
-  marketID: Address;
+  marketId: Address;
   unclaimedFee: string;
 }
 
 export interface UIConsensusInfo {
-  outcomeID: number;
+  outcomeId: number;
   isInvalid: boolean;
 }
 
@@ -324,7 +324,7 @@ export type UIMarketsInfo = Array<UIMarketInfo|null>;
 
 // Does not extend BaseTransaction since UI is expecting "creationBlockNumber"
 export interface UIOrder {
-  orderID: Bytes32;
+  orderId: Bytes32;
   transactionHash: Bytes32;
   logIndex: number;
   shareToken: Address;
@@ -341,18 +341,18 @@ export interface UIOrder {
 }
 
 export interface UIOrders {
-  [marketID: string]: {
+  [marketId: string]: {
     [outcome: number]: {
       [orderType: string]: {
-        [orderID: string]: UIOrder;
+        [orderId: string]: UIOrder;
       };
     };
   };
 }
 
 export interface OrdersRow extends BaseTransactionRow {
-  orderID?: Bytes32;
-  marketID: Address;
+  orderId?: Bytes32;
+  marketId: Address;
   outcome: number;
   shareToken: Address;
   orderType: string;
@@ -364,7 +364,7 @@ export interface OrdersRow extends BaseTransactionRow {
   fullPrecisionAmount: string;
   tokensEscrowed: string;
   sharesEscrowed: string;
-  tradeGroupID: Bytes32|null;
+  tradeGroupId: Bytes32|null;
 }
 
 export interface UITrade {
@@ -377,16 +377,16 @@ export interface UITrade {
   marketCreatorFees: string;
   reporterFees: string;
   settlementFees: string;
-  marketID: Address;
+  marketId: Address;
   outcome: number;
   shareToken: Address;
   timestamp: number;
-  tradeGroupID: Bytes32|null;
+  tradeGroupId: Bytes32|null;
 }
 
 export interface TradesRow extends BaseTransactionRow {
-  orderID: Bytes32;
-  marketID: Address;
+  orderId: Bytes32;
+  marketId: Address;
   outcome: number;
   shareToken: Address;
   orderType: string;
@@ -400,7 +400,7 @@ export interface TradesRow extends BaseTransactionRow {
   amount: string;
   marketCreatorFees: string;
   reporterFees: string;
-  tradeGroupID: Bytes32|null;
+  tradeGroupId: Bytes32|null;
 }
 
 export interface TimestampedPriceAmount {
@@ -423,10 +423,10 @@ export interface JoinedReportsMarketsRow extends Payout {
   logIndex: number;
   transactionHash: Bytes32;
   blockHash: Bytes32;
-  marketID: Address;
+  marketId: Address;
   universe: Address;
   feeWindow: Address;
-  crowdsourcerID: Address;
+  crowdsourcerId: Address;
   marketType: string;
   amountStaked: string|number;
 
@@ -438,11 +438,11 @@ export interface UIReport {
   logIndex: number;
   transactionHash: Bytes32;
   blockHash: Bytes32;
-  marketID: Address;
+  marketId: Address;
   feeWindow: Address;
   payoutNumerators: Array<string|number|null>;
   amountStaked: string|number;
-  crowdsourcerID: Address;
+  crowdsourcerId: Address;
   isCategorical: boolean;
   isScalar: boolean;
   isInvalid: boolean;
@@ -451,7 +451,7 @@ export interface UIReport {
 
 export interface FeeWindowRow {
     feeWindow: Address;
-    feeWindowID: number;
+    feeWindowId: number;
     startBlockNumber: number;
     universe: Address;
     startTime: number;
@@ -461,11 +461,13 @@ export interface FeeWindowRow {
 }
 
 export interface InitialReportersRow {
-  initialReportID: number;
-  marketID: Address;
+  marketId: Address;
   reporter: Address;
-  isDesignatedReporter: boolean;
   amountStaked: number;
+  initialReporter: number;
+  redeemed: boolean;
+  isDesignatedReporter: boolean;
+  repBalance: number;
 }
 
 export interface UnclaimedFeeWindowsRow {
@@ -487,4 +489,8 @@ export interface UnclaimedFeeWindowInfo {
 
 export interface UnclaimedFeeWindows {
   [feeWindow: string]: UnclaimedFeeWindowInfo;
+}
+
+export interface UIInitialReporters {
+  [initialReporter: string]: InitialReportersRow;
 }

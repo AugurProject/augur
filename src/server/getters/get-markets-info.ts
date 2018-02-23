@@ -9,27 +9,27 @@ interface MarketOutcomeResult {
   outcomesRows: Array<OutcomesRow>;
 }
 
-export function getMarketsInfo(db: Knex, marketIDs: Array<Address>, callback: (err: Error|null, result?: UIMarketsInfo) => void): void {
+export function getMarketsInfo(db: Knex, marketIds: Array<Address>, callback: (err: Error|null, result?: UIMarketsInfo) => void): void {
   let marketsQuery: Knex.QueryBuilder = getMarketsWithReportingState(db);
-  if (marketIDs == null) return callback(new Error("must include marketIDs parameter"));
-  marketsQuery = marketsQuery.whereIn("markets.marketID", marketIDs);
+  if (marketIds == null) return callback(new Error("must include marketIds parameter"));
+  marketsQuery = marketsQuery.whereIn("markets.marketId", marketIds);
 
   parallel({
     marketsRows: (next: AsyncCallback) => marketsQuery.asCallback(next),
-    outcomesRows: (next: AsyncCallback) => db("outcomes").whereIn("marketID", marketIDs).asCallback(next),
+    outcomesRows: (next: AsyncCallback) => db("outcomes").whereIn("marketId", marketIds).asCallback(next),
   }, (err: Error|null, marketOutcomeResult: MarketOutcomeResult ): void => {
     const { marketsRows, outcomesRows } = marketOutcomeResult;
     if (err) return callback(err);
     if (!marketsRows) return callback(null);
-    const marketsRowsByMarket = _.keyBy(marketsRows, (r: MarketsRowWithCreationTime): string => r.marketID);
-    const outcomesRowsByMarket = _.groupBy(outcomesRows, (r: OutcomesRow): string => r.marketID);
+    const marketsRowsByMarket = _.keyBy(marketsRows, (r: MarketsRowWithCreationTime): string => r.marketId);
+    const outcomesRowsByMarket = _.groupBy(outcomesRows, (r: OutcomesRow): string => r.marketId);
 
-    const marketsInfo: UIMarketsInfo = _.map(marketIDs, (marketID: string): UIMarketInfo|null => {
-      const market = marketsRowsByMarket[marketID];
+    const marketsInfo: UIMarketsInfo = _.map(marketIds, (marketId: string): UIMarketInfo|null => {
+      const market = marketsRowsByMarket[marketId];
       if ( !market ) {
         return null;
       }
-      const outcomes = _.map(outcomesRowsByMarket[marketID], (outcomesRow: OutcomesRow): UIOutcomeInfo => reshapeOutcomesRowToUIOutcomeInfo(outcomesRow));
+      const outcomes = _.map(outcomesRowsByMarket[marketId], (outcomesRow: OutcomesRow): UIOutcomeInfo => reshapeOutcomesRowToUIOutcomeInfo(outcomesRow));
       return reshapeMarketsRowToUIMarketInfo(market, outcomes);
     });
 

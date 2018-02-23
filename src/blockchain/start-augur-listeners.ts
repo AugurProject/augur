@@ -9,6 +9,8 @@ export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: 
     Augur: {
       MarketCreated: makeLogListener(augur, "Augur", "MarketCreated"),
       TokensTransferred: makeLogListener(augur, "Augur", "TokensTransferred"),
+      TokensMinted: makeLogListener(augur, "Augur", "TokensMinted"),
+      TokensBurned: makeLogListener(augur, "Augur", "TokensBurned"),
       OrderCanceled: makeLogListener(augur, "Augur", "OrderCanceled"),
       OrderCreated: makeLogListener(augur, "Augur", "OrderCreated"),
       OrderFilled: makeLogListener(augur, "Augur", "OrderFilled"),
@@ -18,9 +20,16 @@ export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: 
       WinningTokensRedeemed: makeLogListener(augur, "Augur", "WinningTokensRedeemed"),
       ReportsDisputed: makeLogListener(augur, "Augur", "ReportsDisputed"),
       MarketFinalized: makeLogListener(augur, "Augur", "MarketFinalized"),
-      feeWindowCreated: makeLogListener(augur, "Augur", "FeeWindowCreated"),
+      FeeWindowCreated: makeLogListener(augur, "Augur", "FeeWindowCreated"),
       UniverseForked: makeLogListener(augur, "Augur", "UniverseForked"),
       TimestampSet: makeLogListener(augur, "Augur", "TimestampSet"),
+      InitialReportSubmitted: makeLogListener(augur, "Augur", "InitialReportSubmitted"),
+      InitialReporterRedeemed: makeLogListener(augur, "Augur", "InitialReporterRedeemed"),
+      InitialReporterTransferred: makeLogListener(augur, "Augur", "InitialReporterTransferred"),
+      DisputeCrowdsourcerCreated: makeLogListener(augur, "Augur", "DisputeCrowdsourcerCreated"),
+      DisputeCrowdsourcerContribution: makeLogListener(augur, "Augur", "DisputeCrowdsourcerContribution"),
+      DisputeCrowdsourcerCompleted: makeLogListener(augur, "Augur", "DisputeCrowdsourcerCompleted"),
+
     },
     LegacyReputationToken: {
       Transfer: makeLogListener(augur, "LegacyReputationToken", "Transfer"),
