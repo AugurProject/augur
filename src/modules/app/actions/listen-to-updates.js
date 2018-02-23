@@ -44,7 +44,7 @@ export function listenToUpdates(history) {
           console.log('MarketCreated:', log)
           // augur-node emitting log.market from raw contract logs.
           dispatch(loadMarketsInfo([log.market]))
-          if (log.sender === getState().loginAccount.address) {
+          if (log.marketCreator === getState().loginAccount.address) {
             dispatch(updateAssets())
             dispatch(convertLogsToTransactions(TYPES.CREATE_MARKET, [log]))
           }
@@ -66,7 +66,7 @@ export function listenToUpdates(history) {
         if (log) {
           console.log('OrderCanceled:', log)
           // if this is the user's order, then add it to the transaction display
-          if (log.sender === getState().loginAccount.address) {
+          if (log.orderCreator === getState().loginAccount.address) {
             dispatch(updateAccountCancelsData({
               [log.marketId]: { [log.outcome]: [log] }
             }, log.marketId))
@@ -80,7 +80,7 @@ export function listenToUpdates(history) {
         if (log) {
           console.log('OrderCreated:', log)
           // if this is the user's order, then add it to the transaction display
-          if (log.sender === getState().loginAccount.address) {
+          if (log.orderCreator === getState().loginAccount.address) {
             dispatch(updateAccountBidsAsksData({
               [log.marketId]: {
                 [log.outcome]: [log]
@@ -97,7 +97,7 @@ export function listenToUpdates(history) {
           dispatch(updateOutcomePrice(log.marketId, log.outcome, new BigNumber(log.price, 10)))
           dispatch(updateMarketCategoryPopularity(log.market, log.amount))
           const { address } = getState().loginAccount
-          if (log.sender === address || log.owner === address) {
+          if (log.filler === address || log.creator === address) {
             // dispatch(convertLogsToTransactions(TYPES.FILL_ORDER, [log]))
             updateAccountTradesData(updateAccountTradesData({
               [log.marketId]: {
@@ -138,7 +138,7 @@ export function listenToUpdates(history) {
         if (err) return console.error('ReportSubmitted:', err)
         if (log) {
           console.log('ReportSubmitted:', log)
-          if (log.sender === getState().loginAccount.address) {
+          if (log.reporter === getState().loginAccount.address) {
             dispatch(updateAssets())
             dispatch(convertLogsToTransactions(TYPES.SUBMIT_REPORT, [log]))
           }
