@@ -9,48 +9,70 @@ import MarketOutcomesCategorical from 'modules/market/components/market-outcomes
 import MarketLink from 'modules/market/components/market-link/market-link'
 
 import toggleTag from 'modules/routes/helpers/toggle-tag'
-
+import { formatDate } from 'utils/format-date'
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-basics/market-basics.styles'
+import SingleSlicePieGraph from 'src/modules/market/components/common/single-slice-pie-graph/single-slice-pie-graph'
+import TimeRemainingIndicatorWrapper from 'src/modules/market/components/common/time-remaining-indicator/time-remaining-indicator'
+import { constants } from 'services/augurjs'
+import moment from 'moment'
 
-const MarketBasics = p => (
-  <article>
-    <div className={classNames(CommonStyles.MarketCommon__topcontent, { [`${CommonStyles['single-card']}`]: p.cardStyle === 'single-card' })}>
-      <div className={CommonStyles.MarketCommon__header}>
-        <ul className={Styles.MarketBasics__tags}>
-          {p.tags && p.tags.length > 1 &&
-            <li>Tags</li>
-          }
-          {(p.tags || []).map((tag, i) => i !== 0 &&
-            <li key={i}>
-              <button onClick={() => toggleTag(tag, p.location, p.history)}>
-                {tag}
-              </button>
-            </li>)}
-        </ul>
+const MarketBasics = (p) => {
+  let ReportEndingIndicator = () => null
+  if (p.reportingState === constants.REPORTING_STATE.DESIGNATED_REPORTING) {
+    const WrappedGraph = TimeRemainingIndicatorWrapper(SingleSlicePieGraph)
+    const endDate = moment(p.endDate.value).add(constants.CONTRACT_INTERVAL.DESIGNATED_REPORTING_DURATION_SECONDS, 'seconds').toDate()
+    const displayDate = formatDate(endDate)
+
+    ReportEndingIndicator = (
+      <div className={Styles.MarketBasics__reportingends}>
+        <div>Reporting Ends {displayDate.formattedShort}</div>
+        <WrappedGraph startDate={p.endDate.value} endDate={endDate} />
       </div>
+    )
+  }
 
-      <h1 className={CommonStyles.MarketCommon__description}>
-        <MarketLink
-          id={p.id}
-          formattedDescription={p.formattedDescription}
-        >
-          {p.description}
-        </MarketLink>
-      </h1>
+  return (
+    <article className={Styles.MarketBasics}>
+      <div
+        className={classNames(CommonStyles.MarketCommon__topcontent, { [`${CommonStyles['single-card']}`]: p.cardStyle === 'single-card' })}
+      >
+        <div className={Styles.MarketBasics__header}>
+          <ul className={Styles.MarketBasics__tags}>
+            {p.tags && p.tags.length > 1 &&
+            <li>Tags</li>
+            }
+            {(p.tags || []).map((tag, i) => i !== 0 &&
+              <li key={i}>
+                <button onClick={() => toggleTag(tag, p.location, p.history)}>
+                  {tag}
+                </button>
+              </li>)}
+          </ul>
+          { ReportEndingIndicator }
+        </div>
+        <h1 className={CommonStyles.MarketCommon__description}>
+          <MarketLink
+            id={p.id}
+            formattedDescription={p.formattedDescription}
+          >
+            {p.description}
+          </MarketLink>
+        </h1>
 
-      {(p.marketType === BINARY || p.marketType === SCALAR) &&
+        {(p.marketType === BINARY || p.marketType === SCALAR) &&
         <MarketOutcomesBinaryScalar outcomes={p.outcomes} min={p.minValue} max={p.maxValue} type={p.marketType} />
-      }
+        }
 
-      {p.marketType === 'categorical' &&
+        {p.marketType === 'categorical' &&
         <MarketOutcomesCategorical outcomes={p.outcomes} />
-      }
-    </div>
-  </article>
-)
+        }
+      </div>
+    </article>
+  )
+}
 
 MarketBasics.propTypes = {
   history: PropTypes.object.isRequired,
