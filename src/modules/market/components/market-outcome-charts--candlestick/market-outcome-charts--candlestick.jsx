@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 // import * as d3 from 'd3'
 // import ReactFauxDOM from 'react-faux-dom'
 
-import { isEqual } from 'lodash'
+// import { isEqual } from 'lodash'
 
 import Styles from 'modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick.styles'
 
@@ -26,6 +26,19 @@ export default class MarketOutcomeCandlestick extends Component {
   constructor(props) {
     super(props)
 
+    // const startTime = new Date().getTime()
+    //
+    // const marketPriceHistory = [...new Array(30)]
+    //   .map((value, index) => ({
+    //     period: startTime + (index * ((1000000000000 - 0) + 0)),
+    //     high: (Math.random()),
+    //     low: (Math.random()),
+    //     open: (Math.random()),
+    //     close: (Math.random()),
+    //     volume: (Math.random() * (1000 - 10)) + 10
+    //   }))
+    //   .sort((a, b) => a.x - b.x)
+
     this.state = {
       chart: null,
       // chartWidth: 0,
@@ -37,7 +50,7 @@ export default class MarketOutcomeCandlestick extends Component {
     console.log('marketPriceHistory -- ', props.priceTimeSeries)
 
     // this.drawChart = this.drawChart.bind(this)
-    this.updateCandlestickData = this.updateCandlestickData.bind(this)
+    // this.updateCandlestickData = this.updateCandlestickData.bind(this)
   }
 
   componentDidMount() {
@@ -47,12 +60,12 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (
-      !isEqual(this.props.priceTimeSeries, nextProps.priceTimeSeries) ||
-      !isEqual(this.props.selectedPeriod, nextProps.selectedPeriod)
-    ) {
-      this.updateCandlestickData(nextProps.priceTimeSeries, nextProps.selectedPeriod)
-    }
+    // if (
+    //   !isEqual(this.props.priceTimeSeries, nextProps.priceTimeSeries) ||
+    //   !isEqual(this.props.selectedPeriod, nextProps.selectedPeriod)
+    // ) {
+    //   this.updateCandlestickData(nextProps.priceTimeSeries, nextProps.selectedPeriod)
+    // }
 
     // if (!isEqual(this.props.hoveredPrice, nextProps.hoveredPrice)) updateHoveredPriceCrosshair(this.props.hoveredPrice, this.state.yScale, this.state.chartWidth)
   }
@@ -60,10 +73,10 @@ export default class MarketOutcomeCandlestick extends Component {
   componentWillUnmount() {
     // window.removeEventListener('resize', this.drawChart)
   }
-
-  updateCandlestickData() {
-    this.drawChart()
-  }
+  //
+  // updateCandlestickData() {
+  //   // this.drawChart()
+  // }
 
   // drawChart() {
   // console.log('draw dat chart')
