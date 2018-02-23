@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import Styles from './single-slice-pie-graph.styles'
 
-export default function SingleSlicePieGraph({ radius, percentage }) {
+export default function SingleSlicePieGraph({ radius = 45, percentage }) {
   const arcLength = (2 * Math.PI) * percentage
 
   const x = (Math.cos(arcLength) * radius) + radius
@@ -25,6 +25,6 @@ export default function SingleSlicePieGraph({ radius, percentage }) {
 }
 
 SingleSlicePieGraph.propTypes = {
-  radius: PropTypes.number.isRequired,
+  radius: PropTypes.number,
   percentage: PropTypes.number.isRequired,
 }
