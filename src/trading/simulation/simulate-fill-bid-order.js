@@ -16,6 +16,7 @@ function simulateFillBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
   var makerTokensDepleted = ZERO;
   var takerSharesDepleted = ZERO;
   var takerTokensDepleted = ZERO;
+  var sharesFilled = ZERO;
   matchingSortedBids.forEach(function (matchingBid) {
     var takerDesiredSharesForThisOrder = BigNumber.min(new BigNumber(matchingBid.amount, 10), sharesToCover);
     var orderDisplayPrice = new BigNumber(matchingBid.fullPrecisionPrice, 10);
@@ -23,7 +24,8 @@ function simulateFillBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
     var sharePriceLong = orderDisplayPrice.minus(minPrice);
     var makerSharesEscrowed = BigNumber.min(new BigNumber(matchingBid.sharesEscrowed, 10), sharesToCover);
     sharesToCover = sharesToCover.minus(takerDesiredSharesForThisOrder);
-    var takerSharesAvailable = BigNumber.min(takerDesiredSharesForThisOrder, shareBalances[outcome]);
+    var takerSharesAvailable = BigNumber.min(takerDesiredSharesForThisOrder, shareBalances[outcome].minus(takerSharesDepleted));
+    sharesFilled = sharesFilled.plus(takerDesiredSharesForThisOrder);
 
     // maker is closing a short, taker is closing a long: complete sets sold
     if (makerSharesEscrowed.gt(PRECISION.zero) && takerSharesAvailable.gt(PRECISION.zero)) {
@@ -65,6 +67,7 @@ function simulateFillBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
   });
   shareBalances[outcome] = shareBalances[outcome].minus(takerSharesDepleted);
   return {
+    sharesFilled: sharesFilled,
     sharesToCover: sharesToCover,
     settlementFees: settlementFees,
     worstCaseFees: settlementFees,

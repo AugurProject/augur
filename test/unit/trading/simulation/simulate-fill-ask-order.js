@@ -39,6 +39,7 @@ describe("trading/simulation/simulate-fill-ask-order", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
+        sharesFilled: new BigNumber("2", 10),
         sharesToCover: new BigNumber("1", 10),
         settlementFees: new BigNumber("0.006", 10),
         worstCaseFees: new BigNumber("0.006", 10),
@@ -68,6 +69,7 @@ describe("trading/simulation/simulate-fill-ask-order", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
+        sharesFilled: new BigNumber("2", 10),
         sharesToCover: ZERO,
         settlementFees: ZERO,
         worstCaseFees: ZERO,
@@ -97,6 +99,7 @@ describe("trading/simulation/simulate-fill-ask-order", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
+        sharesFilled: new BigNumber("1.5", 10),
         sharesToCover: ZERO,
         settlementFees: ZERO,
         worstCaseFees: ZERO,
@@ -126,6 +129,7 @@ describe("trading/simulation/simulate-fill-ask-order", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
+        sharesFilled: new BigNumber("2", 10),
         sharesToCover: ZERO,
         settlementFees: ZERO,
         worstCaseFees: ZERO,

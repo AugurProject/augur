@@ -90,6 +90,10 @@ describe("trading/get-trade-amount-remaining", function () {
                 signature: "ORDER_FILLED_SIGNATURE",
                 inputs: orderFilledInputs,
               },
+              OrderCreated: {
+                signature: "ORDER_CREATED_SIGNATURE",
+                inputs: orderFilledInputs,
+              },
             },
           },
         },
@@ -126,6 +130,10 @@ describe("trading/get-trade-amount-remaining", function () {
             Augur: {
               OrderFilled: {
                 signature: "ORDER_FILLED_SIGNATURE",
+              },
+              OrderCreated: {
+                signature: "ORDER_CREATED_SIGNATURE",
+                inputs: orderFilledInputs,
               },
             },
           },

@@ -40,6 +40,7 @@ describe("trading/simulation/simulate-buy", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
+        sharesFilled: new BigNumber("2", 10),
         settlementFees: new BigNumber("0.006", 10),
         worstCaseFees: new BigNumber("0.009", 10),
         gasFees: ZERO,
@@ -76,6 +77,7 @@ describe("trading/simulation/simulate-buy", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
+        sharesFilled: new BigNumber("0", 10),
         settlementFees: ZERO,
         worstCaseFees: new BigNumber("0.009", 10),
         gasFees: ZERO,
@@ -119,6 +121,7 @@ describe("trading/simulation/simulate-buy", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
+        sharesFilled: new BigNumber("3", 10),
         settlementFees: new BigNumber("0.011", 10),
         worstCaseFees: new BigNumber("0.011", 10),
         gasFees: ZERO,
