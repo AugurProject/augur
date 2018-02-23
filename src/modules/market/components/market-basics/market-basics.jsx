@@ -20,7 +20,7 @@ const MarketBasics = p => (
     <div className={classNames(CommonStyles.MarketCommon__topcontent, { [`${CommonStyles['single-card']}`]: p.cardStyle === 'single-card' })}>
       <div className={CommonStyles.MarketCommon__header}>
         <ul className={Styles.MarketBasics__tags}>
-          {p.tags.length > 1 &&
+          {p.tags && p.tags.length > 1 &&
             <li>Tags</li>
           }
           {(p.tags || []).map((tag, i) => i !== 0 &&

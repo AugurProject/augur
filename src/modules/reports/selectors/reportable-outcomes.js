@@ -19,22 +19,22 @@ export const selectReportableOutcomes = (type, outcomes) => {
   }
 }
 
-export function selectOutcomeName(outcomeID, marketType, marketOutcomesData = {}) {
+export function selectOutcomeName(outcomeId, marketType, marketOutcomesData = {}) {
   let outcomeName
   if (marketType === BINARY) {
-    if (outcomeID === '1') {
+    if (outcomeId === '1') {
       outcomeName = BINARY_NO_OUTCOME_NAME
-    } else if (outcomeID === '2') {
+    } else if (outcomeId === '2') {
       outcomeName = BINARY_YES_OUTCOME_NAME
     } else {
       outcomeName = INDETERMINATE_OUTCOME_NAME
     }
-  } else if (outcomeID === CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID) {
+  } else if (outcomeId === CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID) {
     outcomeName = INDETERMINATE_OUTCOME_NAME
   } else if (marketType === SCALAR) {
-    outcomeName = outcomeID
+    outcomeName = outcomeId
   } else {
-    outcomeName = marketOutcomesData[outcomeID] ? marketOutcomesData[outcomeID].name : outcomeID
+    outcomeName = marketOutcomesData[outcomeId] ? marketOutcomesData[outcomeId].name : outcomeId
   }
   return outcomeName
 }

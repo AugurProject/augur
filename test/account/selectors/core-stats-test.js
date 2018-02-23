@@ -41,7 +41,7 @@ describe('modules/account/selectors/core-stats', () => {
     })
 
     test({
-      description: `should return null when 'outcomeID' is undefined`,
+      description: `should return null when 'outcomeId' is undefined`,
       assertions: () => {
         const actual = selectOutcomeLastPrice({}, undefined)
 

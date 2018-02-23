@@ -6,15 +6,15 @@ import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account'
 
 describe(`modules/trade/reducers/trade-in-progress.js`, () => {
   const testState = {
-    MarketID: {
-      MarketID: 'testStateMarketID',
-      OutcomeID: {
+    MarketId: {
+      MarketId: 'testStateMarketId',
+      OutcomeId: {
         test: 1
       }
     },
     MarketID2: {
       MarketID2: 'testStateMarketID2',
-      OutcomeID: {
+      OutcomeId: {
         test: 2
       }
     }
@@ -34,8 +34,8 @@ describe(`modules/trade/reducers/trade-in-progress.js`, () => {
     const testAction = {
       type: UPDATE_TRADE_IN_PROGRESS,
       data: {
-        marketID: 'MarketID',
-        outcomeID: 'OutcomeID',
+        marketId: 'MarketId',
+        outcomeId: 'OutcomeId',
         details: {
           details: 'something here'
         }
@@ -43,15 +43,15 @@ describe(`modules/trade/reducers/trade-in-progress.js`, () => {
     }
 
     const expectedState = {
-      MarketID: {
-        MarketID: 'testStateMarketID',
-        OutcomeID: {
+      MarketId: {
+        MarketId: 'testStateMarketId',
+        OutcomeId: {
           details: 'something here'
         }
       },
       MarketID2: {
         MarketID2: 'testStateMarketID2',
-        OutcomeID: {
+        OutcomeId: {
           test: 2
         }
       }
@@ -63,13 +63,13 @@ describe(`modules/trade/reducers/trade-in-progress.js`, () => {
   it(`should be able to clear a trade in progress`, () => {
     const testAction = {
       type: CLEAR_TRADE_IN_PROGRESS,
-      marketID: 'MarketID2',
+      marketId: 'MarketID2',
     }
 
     const expectedState = {
-      MarketID: {
-        MarketID: 'testStateMarketID',
-        OutcomeID: {
+      MarketId: {
+        MarketId: 'testStateMarketId',
+        OutcomeId: {
           test: 1
         }
       },

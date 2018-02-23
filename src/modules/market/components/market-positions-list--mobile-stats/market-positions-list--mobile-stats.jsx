@@ -10,7 +10,7 @@ import Styles from 'modules/market/components/market-positions-list--mobile-stat
 import CommonStyles from 'modules/market/components/market-positions-list--mobile/market-positions-list--mobile.styles'
 
 const MobileStats = (p) => {
-  const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${p.marketID}`)
+  const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${p.marketId}`)
 
   const topBidShares = setShareDenomination(getValue(p, 'outcome.topBid.shares.formatted'), selectedShareDenomination)
   const topAskShares = setShareDenomination(getValue(p, 'outcome.topAsk.shares.formatted'), selectedShareDenomination)

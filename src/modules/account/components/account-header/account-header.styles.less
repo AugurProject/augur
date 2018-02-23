@@ -1,95 +1,35 @@
 @import (reference) '~assets/styles/shared';
 
 .AccountHeader {
-  align-content: flex-start;
-  align-items: normal;
   color: white;
   display: flex;
-  flex: 0 0 auto;
-  flex-flow: row nowrap;
-  padding: 3rem 4rem 0;
-
-  @media @breakpoint-mobile {
-    flex: 1 0 auto;
-    margin: 0;
-    padding: 0;
-  }
+  margin: 10rem 4.625rem 1.75rem;
 }
 
 .AccountHeader__Currency {
-  align-items: flex-end;
-  display: flex;
-  flex: 1 1 22rem;
-  flex-flow: row nowrap;
-  font-size: @font-size-rather-large;
-  justify-content: center;
-  margin: 0 2rem 1.5rem 0;
-}
+  font-weight: 200;
+  letter-spacing: 0.004em;
 
-.AccountHeader__Currency-value {
-  transform-origin: bottom;
+  &:not(:first-child) {
+    margin-left: 0.4em;
+  }
 }
 
 .AccountHeader__Currency-label {
-  font-size: 0.5rem;
+  font-size: 0.33em;
+  font-weight: 500;
+  letter-spacing: 0.001em;
   text-transform: uppercase;
-}
-
-.AccountHeader__Charts {
-  display: flex;
-  flex: 2 1 auto;
-  flex-wrap: wrap;
-  margin: 0 0 3rem;
-}
-
-.AccountHeader__Chart {
-  flex: 1 1 auto;
-  margin: 0 auto;
-  max-width: 20rem;
-  width: 33%;
 }
 
 @media @breakpoint-mobile {
   .AccountHeader {
-    align-content: flex-start;
-    align-items: normal;
-    color: white;
-    display: flex;
-    padding: 0;
+    display: block;
+    margin: 4rem 2.25rem 3.2rem;
   }
 
-  .AccountHeader__Currency {
-    align-items: flex-end;
-    align-self: flex-end;
-    display: flex;
-    flex-flow: row nowrap;
-    margin: 0;
-    padding-bottom: 5rem;
-    position: absolute;
-    width: 100vw;
-    z-index: @above-all-content;
-  }
-
-  .AccountHeader__Currency-value {
-    flex: 0 0 auto;
-    margin: 0 auto;
-  }
-
-  .AccountHeader__Currency-label {
-    font-size: @font-size-small;
-    text-transform: uppercase;
-  }
-
-  .AccountHeader__Charts {
-    align-items: flex-end;
-    margin: 0;
-    width: 100vw;
-  }
-
-  .AccountHeader__Chart {
-    display: flex;
-    flex: 0 0 auto;
-    max-width: 100%;
-    width: 100vw;
+  .AccountHeader__Currency:not(:first-child) {
+    margin-left: 0;
+    margin-top: 0.2em;
   }
 }

@@ -133,8 +133,8 @@ export default class MarketView extends Component {
 //   static propTypes = {
 //     isConnected: PropTypes.bool.isRequired,
 //     location: PropTypes.object.isRequired,
-//     updateSelectedMarketID: PropTypes.func.isRequired,
-//     clearSelectedMarketID: PropTypes.func.isRequired,
+//     updateSelectedMarketId: PropTypes.func.isRequired,
+//     clearSelectedMarketId: PropTypes.func.isRequired,
 //     loadFullMarket: PropTypes.func.isRequired,
 //     market: PropTypes.object.isRequired
 //   }
@@ -152,7 +152,7 @@ export default class MarketView extends Component {
 //   componentWillMount() {
 //     const marketId = speedomatic.formatInt256(parseQuery(this.props.location.search)[MARKET_ID_PARAM_NAME])
 //
-//     this.props.updateSelectedMarketID(marketId)
+//     this.props.updateSelectedMarketId(marketId)
 //     this.setState({ marketId })
 //
 //     if (this.props.isConnected && getValue(this.props, 'universe.id') && marketId) this.props.loadFullMarket(marketId)
@@ -179,7 +179,7 @@ export default class MarketView extends Component {
 //   }
 //
 //   componentWillUnmount() {
-//     this.props.clearSelectedMarketID()
+//     this.props.clearSelectedMarketId()
 //   }
 //
 //   render() {

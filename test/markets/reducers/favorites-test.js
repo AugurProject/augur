@@ -37,7 +37,7 @@ describe(`modules/markets/reducers/favorites.js`, () => {
     }
     const action = {
       type: TOGGLE_FAVORITE,
-      marketID: 'test2'
+      marketId: 'test2'
     }
 
     assert.isDefined(reducer(undefined, action).test2, `cannot toggle a favorite that doesn't exist.`)

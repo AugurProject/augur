@@ -9,25 +9,25 @@ const DEFAULT_STATE = {}
 export default function (transactionsData = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_TRANSACTIONS_DATA:
-      return Object.keys(action.transactionsData).reduce((p, transactionID) => {
-        p[transactionID] = {
-          ...transactionsData[transactionID],
-          ...action.transactionsData[transactionID],
-          id: transactionID
+      return Object.keys(action.transactionsData).reduce((p, transactionId) => {
+        p[transactionId] = {
+          ...transactionsData[transactionId],
+          ...action.transactionsData[transactionId],
+          id: transactionId
         }
         return p
       }, { ...transactionsData })
     case DELETE_TRANSACTION:
-      return Object.keys(transactionsData).reduce((p, transactionID) => {
-        if (action.transactionID !== transactionID) {
-          p[transactionID] = transactionsData[transactionID]
+      return Object.keys(transactionsData).reduce((p, transactionId) => {
+        if (action.transactionId !== transactionId) {
+          p[transactionId] = transactionsData[transactionId]
         }
         return p
       }, {})
     case CLEAR_TRANSACTION_DATA:
-      return Object.keys(transactionsData).reduce((p, transactionID) => {
-        if (transactionsData[transactionID].status === PENDING) {
-          p[transactionID] = transactionsData[transactionID]
+      return Object.keys(transactionsData).reduce((p, transactionId) => {
+        if (transactionsData[transactionId].status === PENDING) {
+          p[transactionId] = transactionsData[transactionId]
         }
         return p
       }, {})

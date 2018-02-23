@@ -24,7 +24,7 @@ export const loadMarketsToReportOn = (options, callback = logError) => (dispatch
     designatedReporting: next => augur.markets.getMarkets(designatedReportingQuery, next),
     openReporting: next => augur.markets.getMarkets(openReportingQuery, next),
     reporting: next => augur.markets.getMarkets(reportingQuery, next),
-  }, (err, marketsToReportOn) => { // marketsToReportOn: {designatedReporting: [marketIDs], allReporting: [marketIDs], limitedReporting: [marketIDs]}
+  }, (err, marketsToReportOn) => { // marketsToReportOn: {designatedReporting: [marketIds], allReporting: [marketIds], limitedReporting: [marketIds]}
     if (err) return callback(err)
     // TODO we have market IDs *only*, so we need to check if the market's data is already loaded (and call loadMarketsData if not)
     dispatch(updateMarketsData(marketsToReportOn))

@@ -8,11 +8,11 @@ export default function (accountPositions = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_ACCOUNT_POSITIONS_DATA:
       if (action.data) {
-        if (action.marketID) {
+        if (action.marketId) {
           return {
             ...accountPositions,
-            [action.marketID]: {
-              ...action.data[action.marketID]
+            [action.marketId]: {
+              ...action.data[action.marketId]
             }
           }
         }

@@ -86,8 +86,8 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
     selectMarket: () => {},
     selectMarketReport: () => {}
   }
-  sinon.stub(mockMarket, 'selectMarket').callsFake((marketID, market, priceHistory, isMarketOpen, isMarketExpired, favorite, outcomes, reports, accountTrades, tradesInProgress, endYear, endMonth, endDate, isBlockchainReportPhase, marketOrderBook, orderCancellation, loginAccount, dispatch) => market)
-  sinon.stub(mockMarket, 'selectMarketReport').callsFake((marketID, universeReports) => ({}))
+  sinon.stub(mockMarket, 'selectMarket').callsFake((marketId, market, priceHistory, isMarketOpen, isMarketExpired, favorite, outcomes, reports, accountTrades, tradesInProgress, endYear, endMonth, endDate, isBlockchainReportPhase, marketOrderBook, orderCancellation, loginAccount, dispatch) => market)
+  sinon.stub(mockMarket, 'selectMarketReport').callsFake((marketId, universeReports) => ({}))
 
   const selector = proxyquire('../../../src/modules/markets/selectors/markets-all.js', {
     '../../market/selectors/market': mockMarket,

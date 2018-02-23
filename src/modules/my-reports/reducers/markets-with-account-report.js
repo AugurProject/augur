@@ -7,8 +7,8 @@ const DEFAULT_STATE = {}
 export default function (marketsWithAccountReport = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_MARKETS_WITH_ACCOUNT_REPORT_DATA: {
-      const updatedMarkets = Object.keys(action.data).reduce((p, marketID) => {
-        p[marketID] = { ...marketsWithAccountReport[marketID], ...action.data[marketID] }
+      const updatedMarkets = Object.keys(action.data).reduce((p, marketId) => {
+        p[marketId] = { ...marketsWithAccountReport[marketId], ...action.data[marketId] }
         return p
       }, {})
 

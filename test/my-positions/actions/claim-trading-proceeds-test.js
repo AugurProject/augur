@@ -33,8 +33,8 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
         store.dispatch({ type: 'CLAIM_MARKETS_TRADING_PROCEEDS', markets: p.markets })
         p.onSuccess(p.markets)
       })
-      sinon.stub(LoadMarketsInfo, 'loadMarketsInfo').callsFake((marketIDs, callback) => (dispatch, getState) => {
-        dispatch({ type: 'LOAD_MARKETS_INFO', marketIDs })
+      sinon.stub(LoadMarketsInfo, 'loadMarketsInfo').callsFake((marketIds, callback) => (dispatch, getState) => {
+        dispatch({ type: 'LOAD_MARKETS_INFO', marketIds })
         callback(null)
       })
       UpdateAssets.updateAssets = sinon.stub().returns({ type: 'UPDATE_ASSETS' })
@@ -97,7 +97,7 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
         type: 'UPDATE_ASSETS'
       }, {
         type: 'LOAD_MARKETS_INFO',
-        marketIDs: ['0xa1'],
+        marketIds: ['0xa1'],
       }])
     }
   })
@@ -166,7 +166,7 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
         type: 'UPDATE_ASSETS'
       }, {
         type: 'LOAD_MARKETS_INFO',
-        marketIDs: ['0xa2'],
+        marketIds: ['0xa2'],
       }])
     }
   })
@@ -218,10 +218,10 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
         type: 'UPDATE_ASSETS'
       }, {
         type: 'LOAD_MARKETS_INFO',
-        marketIDs: ['0xa2'],
+        marketIds: ['0xa2'],
       }, {
         type: 'LOAD_MARKETS_INFO',
-        marketIDs: ['0xa3'],
+        marketIds: ['0xa3'],
       }])
     }
   })
@@ -269,7 +269,7 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
         type: 'UPDATE_ASSETS'
       }, {
         type: 'LOAD_MARKETS_INFO',
-        marketIDs: ['0xa3'],
+        marketIds: ['0xa3'],
       }])
     }
   })

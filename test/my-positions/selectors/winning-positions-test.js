@@ -51,7 +51,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           isOpen: false,
           description: 'test market 1',
           consensus: {
-            outcomeID: '2',
+            outcomeId: '2',
             isIndeterminate: false
           }
         }]
@@ -86,7 +86,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           isOpen: false,
           description: 'test market 1',
           consensus: {
-            outcomeID: '2',
+            outcomeId: '2',
             isIndeterminate: true
           }
         }]
@@ -122,7 +122,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           type: SCALAR,
           consensus: {
-            outcomeID: '0.5',
+            outcomeId: '0.5',
             isIndeterminate: false
           }
         }]
@@ -157,7 +157,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           isOpen: false,
           description: 'test market 1',
           consensus: {
-            outcomeID: '0.5',
+            outcomeId: '0.5',
             isIndeterminate: true
           }
         }]
@@ -193,7 +193,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           isOpen: false,
           description: 'test market 1',
           consensus: {
-            outcomeID: '1.23456',
+            outcomeId: '1.23456',
             isIndeterminate: false
           }
         }]
@@ -229,7 +229,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           isOpen: false,
           description: 'test market 1',
           consensus: {
-            outcomeID: '1.23456',
+            outcomeId: '1.23456',
             isIndeterminate: true
           }
         }]
@@ -265,7 +265,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           isOpen: false,
           description: 'test market 1',
           consensus: {
-            outcomeID: '1.23456',
+            outcomeId: '1.23456',
             isIndeterminate: false
           }
         }]
@@ -324,7 +324,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           isOpen: false,
           description: 'test market 2',
           consensus: {
-            outcomeID: '2',
+            outcomeId: '2',
             isIndeterminate: false
           }
         }]
@@ -370,7 +370,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           isOpen: false,
           description: 'test market 2',
           consensus: {
-            outcomeID: '2',
+            outcomeId: '2',
             isIndeterminate: false
           }
         }, {
@@ -378,7 +378,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           isOpen: false,
           description: 'test market 3',
           consensus: {
-            outcomeID: '2',
+            outcomeId: '2',
             isIndeterminate: false
           }
         }]
@@ -432,7 +432,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           isOpen: false,
           description: 'test market 3',
           consensus: {
-            outcomeID: '2',
+            outcomeId: '2',
             isIndeterminate: false
           }
         }]

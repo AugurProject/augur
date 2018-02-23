@@ -183,7 +183,7 @@ describe('init-augur', () => {
       }
     })
     test({
-      description: 'Should InitAugur successfully, not logged in, unexpectedNetworkID',
+      description: 'Should InitAugur successfully, not logged in, unexpectedNetworkId',
       assertions: (done) => {
         ReWireModule.__Rewire__('AugurJS', {
           connect: (env, cb) => {

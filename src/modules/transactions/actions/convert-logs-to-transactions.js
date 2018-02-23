@@ -6,19 +6,19 @@ import { updateMarketsData } from 'modules/markets/actions/update-markets-data'
 import { constructTransaction, constructTradingTransaction, constructBasicTransaction } from 'modules/transactions/actions/construct-transaction'
 import logError from 'utils/log-error'
 
-export function convertTradeLogToTransaction(label, data, marketID) {
+export function convertTradeLogToTransaction(label, data, marketId) {
   return (dispatch, getState) => {
     console.log('convertTradeLogToTransaction', label)
     console.log(data)
-    const outcomeIDs = Object.keys(data[marketID])
-    const numOutcomes = outcomeIDs.length
+    const outcomeIds = Object.keys(data[marketId])
+    const numOutcomes = outcomeIds.length
     for (let j = 0; j < numOutcomes; ++j) {
-      const outcomeID = outcomeIDs[j]
-      const numTrades = data[marketID][outcomeID].length
+      const outcomeId = outcomeIds[j]
+      const numTrades = data[marketId][outcomeId].length
       if (numTrades) {
         for (let k = 0; k < numTrades; ++k) {
-          const trade = data[marketID][outcomeID][k]
-          const transaction = dispatch(constructTradingTransaction(label, trade, marketID, outcomeID, SUCCESS))
+          const trade = data[marketId][outcomeId][k]
+          const transaction = dispatch(constructTradingTransaction(label, trade, marketId, outcomeId, SUCCESS))
           if (transaction) dispatch(updateTransactionsData(transaction))
         }
       }
@@ -26,23 +26,23 @@ export function convertTradeLogToTransaction(label, data, marketID) {
   }
 }
 
-export function convertTradeLogsToTransactions(label, data, marketID) {
+export function convertTradeLogsToTransactions(label, data, marketId) {
   return (dispatch, getState) => {
     const { marketsData } = getState()
-    async.forEachOfSeries(data, (marketTrades, marketID, next) => {
-      if (marketsData[marketID] != null && marketsData[marketID].id != null) {
-        dispatch(convertTradeLogToTransaction(label, data, marketID))
+    async.forEachOfSeries(data, (marketTrades, marketId, next) => {
+      if (marketsData[marketId] != null && marketsData[marketId].id != null) {
+        dispatch(convertTradeLogToTransaction(label, data, marketId))
         return next()
       }
-      console.log('getting market info for', marketID)
-      augur.markets.getMarketsInfo({ marketIDs: [marketID] }, (err, marketsInfo) => {
+      console.log('getting market info for', marketId)
+      augur.markets.getMarketsInfo({ marketIds: [marketId] }, (err, marketsInfo) => {
         if (!marketsInfo || marketsInfo.error || !Array.isArray(marketsInfo) || !marketsInfo.length || !marketsInfo[0]) {
           if (marketsInfo && marketsInfo.error) console.error('augur.markets.getMarketsInfo:', marketsInfo)
-          return next(`[${label}] couldn't load market info for market ${marketID}: ${JSON.stringify(data)}`)
+          return next(`[${label}] couldn't load market info for market ${marketId}: ${JSON.stringify(data)}`)
         }
         const marketInfo = marketsInfo[0]
-        dispatch(updateMarketsData({ [marketID]: marketInfo }))
-        dispatch(convertTradeLogToTransaction(label, data, marketID))
+        dispatch(updateMarketsData({ [marketId]: marketInfo }))
+        dispatch(convertTradeLogToTransaction(label, data, marketId))
         next()
       })
     }, err => (err && console.error('convertTradeLogsToTransactions:', err)))

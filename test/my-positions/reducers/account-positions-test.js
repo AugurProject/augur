@@ -45,7 +45,7 @@ describe('modules/my-positions/reducers/account-positions.js', () => {
               test: 'test'
             }
           },
-          marketID: '0xMARKETID1'
+          marketId: '0xMARKETID1'
         }
       )
       const expected = {
@@ -77,7 +77,7 @@ describe('modules/my-positions/reducers/account-positions.js', () => {
               test: 'test'
             }
           },
-          marketID: '0xMARKETID1'
+          marketId: '0xMARKETID1'
         }
       )
       const expected = {

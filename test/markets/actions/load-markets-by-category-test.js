@@ -62,7 +62,7 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
   })
 
   test({
-    description: 'should dispatch the expected actions with no error + no marketIDs returned',
+    description: 'should dispatch the expected actions with no error + no marketIds returned',
     toTest: 'null-markets',
     assertions: (actions) => {
       const expected = [
@@ -81,7 +81,7 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
   })
 
   test({
-    description: 'should dispatch the expected actions with no error + array of returned marketIDs',
+    description: 'should dispatch the expected actions with no error + array of returned marketIds',
     toTest: 'array',
     assertions: (actions, loadMarketsInfo) => {
       const expected = [
@@ -97,7 +97,7 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
   })
 
   test({
-    description: 'should dispatch the expected actions with no error + an empty array of marketIDs',
+    description: 'should dispatch the expected actions with no error + an empty array of marketIds',
     toTest: 'empty-array',
     assertions: (actions, loadMarketsInfo) => {
       const expected = [

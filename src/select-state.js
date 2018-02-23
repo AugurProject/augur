@@ -17,7 +17,7 @@ export const selectOutcomesDataState = state => state.outcomesData
 export const selectFavoritesState = state => state.favorites
 export const selectReportsState = state => state.reports
 export const selectHasLoadedReportsState = state => state.hasLoadedReports
-export const selectSelectedMarketIDState = state => state.selectedMarketID
+export const selectSelectedMarketIDState = state => state.selectedMarketId
 export const selectSelectedMarketsSubsetState = state => state.selectedMarketsSubset
 export const selectSelectedMarketsHeaderState = state => state.selectedMarketsHeader
 export const selectTagsState = state => state.tags

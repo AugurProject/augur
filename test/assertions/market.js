@@ -120,9 +120,9 @@ export default function (market) {
           assert.isString(outcome.name)
         })
 
-        it(`market.outcomes[${i}].marketID`, () => {
-          assert.isDefined(outcome.marketID)
-          assert.isString(outcome.marketID)
+        it(`market.outcomes[${i}].marketId`, () => {
+          assert.isDefined(outcome.marketId)
+          assert.isString(outcome.marketId)
         })
 
         it(`market.outcomes[${i}].lastPrice`, () => {
@@ -221,9 +221,9 @@ export default function (market) {
             assert.isObject(openOrder.id)
           })
 
-          it(`market.outcomes[${i}].userOpenOrders[${j}].marketID`, () => {
-            assert.isDefined(openOrder.marketID)
-            assert.isString(openOrder.marketID)
+          it(`market.outcomes[${i}].userOpenOrders[${j}].marketId`, () => {
+            assert.isDefined(openOrder.marketId)
+            assert.isString(openOrder.marketId)
           })
 
           it(`market.outcomes[${i}].userOpenOrders[${j}].outcomeName`, () => {
@@ -324,14 +324,14 @@ export default function (market) {
         assert.isObject(trade.data)
       })
 
-      it(`market.tradeSummary.tradeOrders${i}.data.marketID`, () => {
-        assert.isDefined(trade.data.marketID)
-        assert.isString(trade.data.marketID)
+      it(`market.tradeSummary.tradeOrders${i}.data.marketId`, () => {
+        assert.isDefined(trade.data.marketId)
+        assert.isString(trade.data.marketId)
       })
 
-      it(`market.tradeSummary.tradeOrders${i}.data.outcomeID`, () => {
-        assert.isDefined(trade.data.outcomeID)
-        assert.isString(trade.data.outcomeID)
+      it(`market.tradeSummary.tradeOrders${i}.data.outcomeId`, () => {
+        assert.isDefined(trade.data.outcomeId)
+        assert.isString(trade.data.outcomeId)
       })
 
       it(`market.tradeSummary.tradeOrders${i}.description`, () => {

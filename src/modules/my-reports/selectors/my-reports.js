@@ -12,26 +12,26 @@ export default function () {
   }
 
   const reports = Object.keys(marketsWithAccountReport)
-    .map((marketID) => {
-      const expirationDate = marketsWithAccountReport[marketID].expirationDate || null
-      const isFinal = marketsWithAccountReport[marketID].isFinal || null
-      const description = marketsWithAccountReport[marketID].description || null
-      const formattedDescription = marketsWithAccountReport[marketID].formattedDescription || null
-      const outcome = marketsWithAccountReport[marketID].marketOutcome || null
-      const outcomePercentage = (marketsWithAccountReport[marketID].proportionCorrect && formatPercent(new BigNumber(marketsWithAccountReport[marketID].proportionCorrect, 10).times(100))) || null
-      const reported = marketsWithAccountReport[marketID].accountReport || null
+    .map((marketId) => {
+      const expirationDate = marketsWithAccountReport[marketId].expirationDate || null
+      const isFinal = marketsWithAccountReport[marketId].isFinal || null
+      const description = marketsWithAccountReport[marketId].description || null
+      const formattedDescription = marketsWithAccountReport[marketId].formattedDescription || null
+      const outcome = marketsWithAccountReport[marketId].marketOutcome || null
+      const outcomePercentage = (marketsWithAccountReport[marketId].proportionCorrect && formatPercent(new BigNumber(marketsWithAccountReport[marketId].proportionCorrect, 10).times(100))) || null
+      const reported = marketsWithAccountReport[marketId].accountReport || null
       const isReportEqual = (outcome != null && reported != null && outcome === reported) || null // Can be done here
-      const feesEarned = calculateFeesEarned(marketsWithAccountReport[marketID])
-      const repEarned = (marketsWithAccountReport[marketID].repEarned && formatRep(marketsWithAccountReport[marketID].repEarned)) || null
+      const feesEarned = calculateFeesEarned(marketsWithAccountReport[marketId])
+      const repEarned = (marketsWithAccountReport[marketId].repEarned && formatRep(marketsWithAccountReport[marketId].repEarned)) || null
       const endDate = (expirationDate && formatDate(expirationDate)) || null
-      const isChallenged = marketsWithAccountReport[marketID].isChallenged || null
+      const isChallenged = marketsWithAccountReport[marketId].isChallenged || null
       const isChallengeable = isFinal != null && isChallenged != null && !isFinal && !isChallenged
-      const period = marketsWithAccountReport[marketID].period || null
-      const { isSubmitted } = marketsWithAccountReport[marketID]
+      const period = marketsWithAccountReport[marketId].period || null
+      const { isSubmitted } = marketsWithAccountReport[marketId]
 
       return {
-        ...marketsData[marketID] || {}, // TODO -- clean up this object
-        marketID,
+        ...marketsData[marketId] || {}, // TODO -- clean up this object
+        marketId,
         description,
         formattedDescription,
         outcome,

@@ -32,11 +32,11 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
   const mockConvertTradeLogsToTransactions = {
     convertTradeLogsToTransactions: () => { }
   }
-  sinon.stub(mockConvertTradeLogsToTransactions, 'convertTradeLogsToTransactions').callsFake((logType, data, marketID) => ({
+  sinon.stub(mockConvertTradeLogsToTransactions, 'convertTradeLogsToTransactions').callsFake((logType, data, marketId) => ({
     type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_DATA,
     logType,
     data,
-    marketID
+    marketId
   }))
   const mockUpdateOrders = {
     updateOrders: () => { }
@@ -101,7 +101,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
                 }
               ]
             },
-            marketID: '0xMARKETID'
+            marketId: '0xMARKETID'
           },
           {
             type: MOCK_ACTION_TYPES.UPDATE_ORDERS,
@@ -160,7 +160,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             data: {
               '0xMARKETID': {}
             },
-            marketID: '0xMARKETID'
+            marketId: '0xMARKETID'
           },
           {
             type: MOCK_ACTION_TYPES.UPDATE_ORDERS,
@@ -201,7 +201,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             data: {
               '0xMARKETID': {}
             },
-            marketID: '0xMARKETID'
+            marketId: '0xMARKETID'
           },
           { type: MOCK_ACTION_TYPES.LOAD_BIDS_ASKS_HISTORY, data: {} },
           {
@@ -233,7 +233,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             data: {
               '0xMARKETID': {}
             },
-            marketID: '0xMARKETID'
+            marketId: '0xMARKETID'
           }
         ]
 

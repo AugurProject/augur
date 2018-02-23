@@ -68,8 +68,8 @@ export function listenToUpdates(history) {
           // if this is the user's order, then add it to the transaction display
           if (log.sender === getState().loginAccount.address) {
             dispatch(updateAccountCancelsData({
-              [log.marketID]: { [log.outcome]: [log] }
-            }, log.marketID))
+              [log.marketId]: { [log.outcome]: [log] }
+            }, log.marketId))
             dispatch(removeCanceledOrder(log.orderId))
             dispatch(updateAssets())
           }
@@ -82,10 +82,10 @@ export function listenToUpdates(history) {
           // if this is the user's order, then add it to the transaction display
           if (log.sender === getState().loginAccount.address) {
             dispatch(updateAccountBidsAsksData({
-              [log.marketID]: {
+              [log.marketId]: {
                 [log.outcome]: [log]
               }
-            }, log.marketID))
+            }, log.marketId))
             dispatch(updateAssets())
           }
         }
@@ -94,18 +94,18 @@ export function listenToUpdates(history) {
         if (err) return console.error('OrderFilled:', err)
         if (log) {
           console.log('OrderFilled:', log)
-          dispatch(updateOutcomePrice(log.marketID, log.outcome, new BigNumber(log.price, 10)))
+          dispatch(updateOutcomePrice(log.marketId, log.outcome, new BigNumber(log.price, 10)))
           dispatch(updateMarketCategoryPopularity(log.market, log.amount))
           const { address } = getState().loginAccount
           if (log.sender === address || log.owner === address) {
             // dispatch(convertLogsToTransactions(TYPES.FILL_ORDER, [log]))
             updateAccountTradesData(updateAccountTradesData({
-              [log.marketID]: {
+              [log.marketId]: {
                 [log.outcome]: [log]
               }
-            }, log.marketID))
+            }, log.marketId))
             dispatch(updateAccountPositionsData({
-              [log.marketID]: {
+              [log.marketId]: {
                 [log.outcome]: [{
                   ...log,
                   maker: log.creator === address
@@ -113,7 +113,7 @@ export function listenToUpdates(history) {
               }
             }))
             dispatch(updateAssets())
-            dispatch(loadMarketsInfo([log.marketID]))
+            dispatch(loadMarketsInfo([log.marketId]))
             console.log('MSG -- ', log)
           }
         }
@@ -166,9 +166,9 @@ export function listenToUpdates(history) {
           console.log('MarketFinalized:', log)
           const { universe, loginAccount } = getState()
           if (universe.id === log.universe) {
-            dispatch(loadMarketsInfo([log.marketID], () => {
-              const { volume, author, description } = getState().marketsData[log.marketID]
-              dispatch(updateMarketCategoryPopularity(log.marketID, new BigNumber(volume, 10).neg().toNumber()))
+            dispatch(loadMarketsInfo([log.marketId], () => {
+              const { volume, author, description } = getState().marketsData[log.marketId]
+              dispatch(updateMarketCategoryPopularity(log.marketId, new BigNumber(volume, 10).neg().toNumber()))
               if (loginAccount.address === author) {
                 dispatch(addNotification({
                   id: log.hash,

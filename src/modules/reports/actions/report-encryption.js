@@ -10,14 +10,14 @@ export const encryptReport = (report, salt) => (dispatch, getState) => {
   return encrypted
 }
 
-export const decryptReport = (branchID, period, eventID, callback) => (dispatch, getState) => {
+export const decryptReport = (branchId, period, eventId, callback) => (dispatch, getState) => {
   const { address, derivedKey } = getState().loginAccount
   if (!derivedKey) return callback(null)
-  augur.reporting.crypto.getAndDecryptReport(branchID, period, address, eventID, { derivedKey }, (plaintext) => {
+  augur.reporting.crypto.getAndDecryptReport(branchId, period, address, eventId, { derivedKey }, (plaintext) => {
     if (!plaintext) return callback('getAndDecryptReport failed')
     if (!plaintext.report || plaintext.error) return callback(plaintext)
     callback(null, {
-      reportedOutcomeID: !parseInt(plaintext.report, 16) ? null : plaintext.report,
+      reportedOutcomeId: !parseInt(plaintext.report, 16) ? null : plaintext.report,
       salt: parseInt(plaintext.salt, 16) === 0 ? null : plaintext.salt,
       isUnethical: parseInt(plaintext.ethics, 16) === 0
     })

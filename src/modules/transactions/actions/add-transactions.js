@@ -29,10 +29,10 @@ export function addTradeTransactions(trades) {
   return (dispatch, getState) => {
     const { marketsData } = getState()
     const transactions = {}
-    const sorted = groupByMethod(trades, 'tradeGroupID')
+    const sorted = groupByMethod(trades, 'tradeGroupId')
     // todo: need fallback if groupBy fails and groups aren't created
     each(sorted, (group) => {
-      if (group[0].tradeGroupID === undefined) {
+      if (group[0].tradeGroupId === undefined) {
         each(group, (trade) => {
           const header = buildTradeTransaction(trade, marketsData)
           transactions[header.hash] = header
@@ -69,11 +69,11 @@ function buildTradeTransactionGroup(group, marketsData) {
 }
 
 function buildTradeTransaction(trade, marketsData) {
-  const thisMarketDataID = getMarketById(marketsData, trade.marketID)
-  const transaction = { ...trade, market: thisMarketDataID }
+  const thisMarketDataId = getMarketById(marketsData, trade.marketId)
+  const transaction = { ...trade, market: thisMarketDataId }
   transaction.status = SUCCESS
   // todo: should have a unique id for each trade
-  transaction.id = transaction.marketID + transaction.timestamp
+  transaction.id = transaction.marketId + transaction.timestamp
   const header = buildHeader(transaction, TRADE)
   const meta = {}
   meta.type = TRADE
@@ -150,15 +150,15 @@ export function addMarketCreationTransactions(marketsCreated) {
   return (dispatch, getState) => {
     const marketCreationData = {}
     const { loginAccount, marketsData } = getState()
-    each(marketsCreated, (marketID) => {
-      const market = getMarketById(marketsData, marketID)
-      const transaction = { marketID, market }
+    each(marketsCreated, (marketId) => {
+      const market = getMarketById(marketsData, marketId)
+      const transaction = { marketId, market }
       transaction.timestamp = transaction.creationTime
       transaction.createdBy = loginAccount.address
-      transaction.id = marketID
+      transaction.id = marketId
       transaction.timestamp = market.creationTime
       const meta = {}
-      meta.market = transaction.marketID
+      meta.market = transaction.marketId
       meta['creation fee'] = transaction.hasOwnProperty('creationFee') && transaction.creationFee !== undefined ? transaction.creationFee : 0
       meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
 
@@ -181,15 +181,15 @@ export function addOpenOrderTransactions(openOrders) {
     // flatten open orders
     const transactions = {}
     let index = 100
-    eachOf(openOrders, (value, marketID) => {
-      const market = getMarketById(marketsData, marketID)
+    eachOf(openOrders, (value, marketId) => {
+      const market = getMarketById(marketsData, marketId)
       // TODO: remove index when I figure a comprehensive uique id strategy
       index += 1
       let sumBuy = 0
       let sumSell = 0
       const marketHeader = {}
       marketHeader.status = 'Market Outcome Trade'
-      marketHeader.hash = marketID + index
+      marketHeader.hash = marketId + index
       if (market !== undefined) {
         marketHeader.description = market.description
       }
@@ -199,9 +199,9 @@ export function addOpenOrderTransactions(openOrders) {
       const marketTradeTransactions = []
       eachOf(value, (value2, index) => {
         eachOf(value2, (value3, type) => {
-          eachOf(value3, (value4, outcomeID) => {
+          eachOf(value3, (value4, outcomeId) => {
             const transaction = {
-              marketID, type, outcomeID, ...value4
+              marketId, type, outcomeId, ...value4
             }
             transaction.id = transaction.transactionHash + transaction.logIndex
             transaction.message = `${transaction.orderState} - ${type} ${transaction.amount} Shares @ ${transaction.price} ETH`
@@ -209,7 +209,7 @@ export function addOpenOrderTransactions(openOrders) {
             creationTime = convertUnixToFormattedDate(transaction.creationTime)
             meta.txhash = transaction.transactionHash
             meta.timestamp = creationTime.full
-            meta.outcome = outcomeID // need to get payNumerators ?
+            meta.outcome = outcomeId // need to get payNumerators ?
             meta.status = transaction.orderState
             meta.amount = transaction.fullPrecisionAmount
             meta.price = transaction.fullPrecisionPrice
@@ -240,16 +240,16 @@ export function addReportingTransactions(reports) {
     const { marketsData } = getState()
     const transactions = {}
     eachOf(reports, (value, universe) => {
-      eachOf(value, (value1, marketID) => {
+      eachOf(value, (value1, marketId) => {
         eachOf(value1, (report, index) => {
-          const market = getMarketById(marketsData, marketID)
+          const market = getMarketById(marketsData, marketId)
           const transaction = {
-            universe, marketID, ...report, market
+            universe, marketId, ...report, market
           }
           transaction.id = transaction.transactionHash + transaction.logIndex
           const meta = {}
           meta.txhash = transaction.transactionHash
-          meta.marketID = transaction.marketID
+          meta.marketId = transaction.marketId
           meta.staked = `${transaction.amountStaked} REP`
           meta.numerators = JSON.stringify(transaction.payoutNumerators)
           meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
@@ -278,10 +278,10 @@ function buildHeader(item, type, status) {
   return header
 }
 
-function getMarketById(marketsData, marketID) {
-  const id = Object.keys(marketsData).find((myMarketID) => {
-    const market = marketsData[myMarketID]
-    return market.id === marketID
+function getMarketById(marketsData, marketId) {
+  const id = Object.keys(marketsData).find((myMarketId) => {
+    const market = marketsData[myMarketId]
+    return market.id === marketId
   })
   return marketsData[id]
 }

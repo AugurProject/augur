@@ -3,7 +3,7 @@ import { ZERO } from 'modules/trade/constants/numbers'
 
 /**
  *
- * @param {Object} marketOutcomesData key: outcomeID, value: outcome
+ * @param {Object} marketOutcomesData key: outcomeId, value: outcome
  * @return {Number}
  */
 export default function (marketOutcomesData) {

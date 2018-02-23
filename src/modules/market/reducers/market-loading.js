@@ -8,10 +8,10 @@ export default function (marketLoading = DEFAULT_STATE, action) {
     case ADD_MARKET_LOADING:
       return [
         ...marketLoading,
-        action.data.marketID
+        action.data.marketId
       ]
     case REMOVE_MARKET_LOADING:
-      return marketLoading.filter(market => market !== action.data.marketID)
+      return marketLoading.filter(market => market !== action.data.marketId)
     case RESET_STATE:
       return DEFAULT_STATE
     default:

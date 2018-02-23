@@ -9,11 +9,11 @@ describe('modules/bids-asks/reducers/order-cancellation.js', () => {
 
     const newState = orderCancellationReducer(currentState, {
       type: UPDATE_ORDER_STATUS,
-      orderID: 'an orderID',
+      orderId: 'an orderId',
       status: 'a status'
     })
 
-    assert.deepEqual(newState, { 'an orderID': 'a status' })
+    assert.deepEqual(newState, { 'an orderId': 'a status' })
     assert.notStrictEqual(currentState, newState)
   })
 })
