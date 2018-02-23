@@ -15,7 +15,7 @@ interface FeeWindowIdRow {
 }
 
 const overrideTimestamps = Array<number>();
-let blockHeadTimestamp = 0;
+let blockHeadTimestamp: number = 0;
 
 export function getCurrentTime(): number {
   return getOverrideTimestamp() || blockHeadTimestamp;
@@ -149,7 +149,7 @@ function advanceMarketReachingEndTime(db: Knex, augur: Augur, blockNumber: numbe
 
 function advanceMarketMissingDesignatedReport(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
   const marketsMissingDesignatedReport = getMarketsWithReportingState(db, ["markets.marketId"])
-    .where("endTime", "<", timestamp + augur.constants.CONTRACT_INTERVAL.DESIGNATED_REPORTING_DURATION_SECONDS)
+    .where("endTime", "<", timestamp - augur.constants.CONTRACT_INTERVAL.DESIGNATED_REPORTING_DURATION_SECONDS)
     .where("reportingState", augur.constants.REPORTING_STATE.DESIGNATED_REPORTING);
   marketsMissingDesignatedReport.asCallback((err, marketAddressRows: Array<MarketsContractAddressRow>) => {
     if (err) return callback(err);
