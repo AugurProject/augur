@@ -35,9 +35,9 @@ const MarketBasics = p => (
             </li>)}
         </ul>
 
-        <div>
-          <div className={Styles.MarketBasics__reporting}>Reporting Ends {p.endDate.formatted}</div>
-          <SingleSlicePieGraph radius={45} percentage={0.000001} />
+        <div className={Styles.MarketBasics__reportingends}>
+          <div>Reporting Ends {p.endDate.formatted}</div>
+          <SingleSlicePieGraph radius={45} percentage={0.75} />
         </div>
       </div>
       <h1 className={CommonStyles.MarketCommon__description}>
