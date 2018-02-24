@@ -148,4 +148,31 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
       })
     }
   })
+  test({
+    description: 'Unpacking pending transaction without input',
+    params: {
+      tx: {
+        hash: '0x262f96eb267a36a58a8f6d870d8c8eb7cca78dfc26860db3a8302a72a1f0acaf',
+        type: 'emergencyStop',
+        status: 'pending',
+        data: {
+          constant: false,
+          name: 'emergencyStop',
+          returns: 'null',
+          from: '0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb',
+          to: '0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885',
+          params: [],
+          send: true
+        },
+        response: {
+          callReturn: null
+        }
+      }
+    },
+    assertions: (output) => {
+      assert.deepEqual(output, {
+        type: 'emergencyStop'
+      })
+    }
+  })
 })
