@@ -11,7 +11,7 @@ ${process.argv[2] ? colors.title(`== Running Test: ${colors.notice(process.argv[
 `);
 
 const tests = new Promise((resolve, reject) => {
-  shell.exec(`mocha ${process.argv[2] || `"./{,!(node_modules)/**/}*[-\.]test.js?(x)"`} --timeout 10000`, (code, stdout, stderr) => {
+  shell.exec(`mocha ${process.argv[2] || `"{src/**/*[-\.]test,test/**/*}.js?(x)"`} --timeout 10000`, (code, stdout, stderr) => {
     if (code !== 0) {
       reject(new Error());
       shell.exit(code);
