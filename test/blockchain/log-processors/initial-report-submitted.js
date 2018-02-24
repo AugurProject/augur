@@ -23,10 +23,13 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
           processInitialReportSubmittedLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getReportingState(trx, t.params, (err, records) => {
+              assert.isNull(err);
               t.assertions.onAdded(err, records);
               getInitialReport(trx, t.params, (err, records) => {
+                assert.isNull(err);
                 t.assertions.onAddedInitialReport(err, records);
                 processInitialReportSubmittedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                  assert.isNull(err);
                   getReportingState(trx, t.params, (err, records) => {
                     t.assertions.onRemoved(err, records);
                     done();
@@ -71,7 +74,7 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
         assert.isNull(err);
         assert.deepEqual(records, {
           initialReportSize: 2829,
-          reportingState: "DESIGNATED_REPORTING",
+          reportingState: "AWAITING_NEXT_WINDOW",
         });
       },
       onAddedInitialReport: (err, records) => {

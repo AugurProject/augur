@@ -6,7 +6,7 @@ import { updateMarketState, insertPayout } from "./database";
 import { augurEmitter } from "../../events";
 
 export function processInitialReportSubmittedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  updateMarketState( db, log.market, log.blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_DISPUTE, (err: Error|null): void => {
+  updateMarketState( db, log.market, log.blockNumber, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW, (err: Error|null): void => {
     insertPayout( db, log.market, log.payoutNumerators, log.invalid, true, (err, payoutId) => {
       const reportToInsert = {
         marketId: log.market,
@@ -39,7 +39,7 @@ export function processInitialReportSubmittedLogRemoval(db: Knex, augur: Augur, 
   parallel(
     {
       marketState: (next: AsyncCallback) => {
-        db("market_state").delete().where({marketId: log.market, reportingState: augur.constants.REPORTING_STATE.DESIGNATED_DISPUTE}).asCallback((err: Error|null): void => {
+        db("market_state").delete().where({marketId: log.market, reportingState: augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW}).asCallback((err: Error|null): void => {
           if (err) return callback(err);
           db("market_state").max("marketStateId as previousMarketStateId").first().where({marketId: log.market}).asCallback((err: Error|null, {previousMarketStateId }: {previousMarketStateId: number}): void => {
             if (err) return callback(err);
