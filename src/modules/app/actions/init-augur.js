@@ -25,8 +25,7 @@ function pollForAccount(dispatch, getState) {
     AugurJS.augur.rpc.eth.accounts((accounts) => {
       if (account !== accounts[0]) {
         account = accounts[0]
-
-        if (account && env.autoLogin) {
+        if (account && env['auto-login']) {
           dispatch(useUnlockedAccount(account))
         } else {
           dispatch(logout())
