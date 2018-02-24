@@ -3,7 +3,7 @@ import { updateIsLoggedAndLoadAccountData } from 'modules/auth/actions/update-is
 import isMetaMask from 'modules/auth/helpers/is-meta-mask'
 import logError from 'utils/log-error'
 
-const ACCOUNT_TYPES = augur.rpc.constants.ACCOUNT_TYPES
+const { ACCOUNT_TYPES } = augur.rpc.constants
 
 // Use unlocked local account or MetaMask account
 export const useUnlockedAccount = (unlockedAddress, callback = logError) => (dispatch) => {

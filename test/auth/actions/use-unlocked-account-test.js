@@ -35,7 +35,7 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
     sinon.stub(AugurJS.augur.rpc, 'isUnlocked').callsFake((address, callback) => {
       t.stub.augur.rpc.isUnlocked(address, (isUnlocked) => {
         store.dispatch({ type: 'AUGURJS_RPC_IS_UNLOCKED', data: { isUnlocked } })
-        callback(isUnlocked);
+        callback(isUnlocked)
       })
     })
     sinon.stub(UpdateIsLoggedAndLoadAccountData, 'updateIsLoggedAndLoadAccountData').callsFake((unlockedAccount, accountType) => ({
@@ -50,8 +50,8 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
     store.dispatch(action.useUnlockedAccount(t.params.unlockedAddress, (err) => {
       t.assertions(err, store.getActions())
       store.clearActions()
-      done();
-    }));
+      done()
+    }))
   })
   test({
     description: 'no address',
@@ -77,7 +77,7 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       isMetaMask: () => false
     },
     assertions: (err, actions) => {
-      assert.deepEqual(err, MOCK_ERROR);
+      assert.deepEqual(err, MOCK_ERROR)
       assert.deepEqual(actions, [{
         type: 'IS_META_MASK',
         data: { isMetaMask: false }
