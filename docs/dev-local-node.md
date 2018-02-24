@@ -2,7 +2,7 @@
 
 This is for developers already familiar with the code repositories and who want to run a private local node and do end-to-end testing.  
 This process uses a docker container to upload the smart contracts, point to the local augur-node and spin up the augur client.  
-The document is organized into setup per layer: core, middleware, and UI.  
+The document is organized into setup per layer: augur.js (middleware), augur-node, and augur (UI).  
 Calls to execute smart contracts are made through the middleware.
 
 ## Requirements
