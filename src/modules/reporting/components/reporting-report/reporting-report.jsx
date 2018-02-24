@@ -103,6 +103,7 @@ export default class ReportingReport extends Component {
             history={p.history}
             cardStyle="single-card"
             buttonText="View"
+            showDetails
           />
         }
         { !isEmpty(p.market) &&
