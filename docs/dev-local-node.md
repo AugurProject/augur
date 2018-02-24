@@ -9,7 +9,7 @@ Calls to execute smart contracts are made through the middleware.
 
 You'll need to clone the following repositories prior to starting:
 
-* [augur-.js](https://github.com/AugurProject/augur.js)
+* [augur.js](https://github.com/AugurProject/augur.js)
 * [augur-node](https://github.com/AugurProject/augur-node)
 * [augur](https://github.com/AugurProject/augur)
 
