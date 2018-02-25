@@ -377,9 +377,9 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
-augur-core@0.12.0-17:
-  version "0.12.0-17"
-  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-0.12.0-17.tgz#e88aa5adb37accbca8f9faa03b3869dd286754ee"
+augur-core@0.12.0-18:
+  version "0.12.0-18"
+  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-0.12.0-18.tgz#011a78e143cb923da5caaad17451ff6d8c391079"
   dependencies:
     "@types/chai" "4.0.4"
     "@types/chai-as-promised" "7.1.0"
@@ -407,24 +407,25 @@ augur-core@0.12.0-17:
     path "0.12.7"
     recursive-readdir "2.2.1"
 
-augur.js@v4.7.2-7:
-  version "4.7.2-7"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.7.2-7.tgz#ed38ec0f5a5cdbd395ee92fd0efd3ea22818ef66"
+augur.js@v4.7.2:
+  version "4.7.2"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.7.2.tgz#aa358d6f97f922fd0ff2be513c7db09bb2a89d77"
   dependencies:
     "@types/bignumber.js" "4.0.3"
     async "1.5.2"
-    augur-core "0.12.0-17"
+    augur-core "0.12.0-18"
     bignumber.js "2.3.0"
     clone "2.1.1"
     columnify "1.5.4"
     ethereumjs-connect "4.4.9"
-    ethrpc "4.5.12"
+    ethrpc "4.5.14"
     event-emitter "0.3.5"
     immutable-delete "1.1.0"
     keccak "1.2.0"
     keythereum "1.0.2"
     lodash.assign "4.2.0"
     lodash.isequal "4.5.0"
+    options-parser "^0.4.0"
     parrotsay-api "0.1.1"
     speedomatic "2.1.2"
     uuid "3.0.0"
@@ -1710,6 +1711,10 @@ es6-map@^0.1.3:
     es6-symbol "~3.1.1"
     event-emitter "~0.3.5"
 
+es6-promise@4.2.4:
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-4.2.4.tgz#dc4221c2b16518760bd8c39a52d8f356fc00ed29"
+
 es6-set@~0.1.5:
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/es6-set/-/es6-set-0.1.5.tgz#d2b3ec5d4d800ced818db538d28974db0a73ccb1"
@@ -2024,14 +2029,15 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@4.5.12:
-  version "4.5.12"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.5.12.tgz#3ef566b43770e749fa386f60e1e0d47290b6d671"
+ethrpc@4.5.14:
+  version "4.5.14"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.5.14.tgz#c67b259c19d78c5172a609aa462e404a258c901b"
   dependencies:
     async "1.5.2"
     bignumber.js "2.3.0"
     browser-request "0.3.3"
     clone "2.1.1"
+    es6-promise "4.2.4"
     ethereumjs-blockstream "4.0.1"
     ethereumjs-tx "1.3.1"
     immutable-delete "1.0.1"
@@ -3727,6 +3733,10 @@ optionator@^0.8.1, optionator@^0.8.2:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
     wordwrap "~1.0.0"
+
+options-parser@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/options-parser/-/options-parser-0.4.0.tgz#9ca1e7996a62399f40e63d7fb7932f1412f10b95"
 
 os-browserify@^0.3.0:
   version "0.3.0"
