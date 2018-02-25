@@ -16,7 +16,6 @@ import tradesInProgress from 'modules/trade/selectors/trade-in-progress'
 import coreStats from 'modules/account/selectors/core-stats'
 import { MARKET_DATA_NAV_ITEMS } from 'modules/market/constants/market-data-nav-items'
 import { MARKET_USER_DATA_NAV_ITEMS } from 'modules/market/constants/market-user-data-nav-items'
-import scalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
 import { OUTCOME_TRADE_NAV_ITEMS } from 'modules/outcomes/constants/outcome-trade-nav-items'
 import closePositionStatus from 'modules/my-positions/selectors/close-position-status'
 import openOrders from 'modules/user-open-orders/selectors/open-orders'
@@ -40,7 +39,6 @@ const selectors = {
   coreStats,
   marketDataNavItems: () => MARKET_DATA_NAV_ITEMS,
   marketUserDataNavItems: () => MARKET_USER_DATA_NAV_ITEMS,
-  scalarShareDenomination,
   outcomeTradeNavItems: () => OUTCOME_TRADE_NAV_ITEMS,
   closePositionStatus,
   openOrders

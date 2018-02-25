@@ -95,7 +95,6 @@ export default class MarketsView extends Component {
           filteredMarkets={p.filteredMarkets}
           location={p.location}
           history={p.history}
-          scalarShareDenomination={p.scalarShareDenomination}
           toggleFavorite={p.toggleFavorite}
           loadMarketsInfo={p.loadMarketsInfo}
           linkType={TYPE_TRADE}

@@ -1,9 +1,28 @@
 @import (reference) '~assets/styles/shared';
+@import (reference) '~modules/market/components/common/market-common.styles';
+
+.MarketBasics {
+  &__header {
+    .MarketCommon__header;
+
+    align-items: center;
+    margin-bottom: 1.625rem;
+  }
+
+  &__reportingends {
+    .label-12--dark;
+
+    align-items: center;
+    display: inline-flex;
+
+    > div {
+      padding-right: 0.4rem;
+    }
+  }
+}
 
 .MarketBasics__tags {
   &:extend(.caps--medium);
-
-  margin-bottom: 1.625rem;
 
   > li {
     display: inline-block;

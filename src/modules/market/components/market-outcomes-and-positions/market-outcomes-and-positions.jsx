@@ -10,7 +10,6 @@ const MarketOutcomesAndPositions = p => (
       <MarketOutcomesList
         marketId={p.marketId}
         outcomes={p.outcomes}
-        scalarShareDenomination={p.scalarShareDenomination}
         selectedOutcomes={p.selectedOutcomes}
         updateSelectedOutcomes={p.updateSelectedOutcomes}
         isMobile={p.isMobile}
@@ -27,7 +26,6 @@ const MarketOutcomesAndPositions = p => (
         outcome={p.outcomes.filter(outcome => outcome.id === p.selectedOutcomes[0])[0]}
         positions={p.positions.filter(position => position.id === p.selectedOutcomes[0])}
         openOrders={p.openOrders.filter(order => order.id === p.selectedOutcomes[0])}
-        scalarShareDenomination={p.scalarShareDenomination}
       />
     }
   </section>

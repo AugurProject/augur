@@ -11,15 +11,14 @@ import { PRICE, SHARE } from 'modules/order-book/constants/order-book-value-type
 import { SCALAR } from 'modules/markets/constants/market-types'
 
 import getValue from 'utils/get-value'
-import setShareDenomination from 'utils/set-share-denomination'
 
 const Outcome = (p) => {
   const selectedOutcomeId = getValue(p, 'selectedOutcome.id')
 
   const outcomeName = getValue(p, 'outcome.name')
 
-  const topBidShares = setShareDenomination(getValue(p, 'outcome.topBid.shares.formatted'), p.selectedShareDenomination)
-  const topAskShares = setShareDenomination(getValue(p, 'outcome.topAsk.shares.formatted'), p.selectedShareDenomination)
+  const topBidShares = getValue(p, 'outcome.topBid.shares.formatted')
+  const topAskShares = getValue(p, 'outcome.topAsk.shares.formatted')
 
   const topBidPrice = getValue(p, 'outcome.topBid.price.formatted')
   const topAskPrice = getValue(p, 'outcome.topAsk.price.formatted')

@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom'
 import MarketsView from 'modules/markets/components/markets-view'
 
 import getAllMarkets from 'modules/markets/selectors/markets-all'
-import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
 import { updateMarketsFilteredSorted, clearMarketsFilteredSorted } from 'modules/markets/actions/update-markets-filtered-sorted'
 
 import { toggleFavorite } from 'modules/markets/actions/update-favorites'
@@ -22,7 +21,6 @@ const mapStateToProps = state => ({
   filteredMarkets: state.marketsFilteredSorted,
   universe: state.universe,
   canLoadMarkets: !!getValue(state, 'universe.id'),
-  scalarShareDenomination: getScalarShareDenomination(),
   hasLoadedMarkets: state.hasLoadedMarkets,
   hasLoadedCategory: state.hasLoadedCategory,
   isMobile: state.isMobile,

@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom'
 import ReportingClosed from 'modules/reporting/components/reporting-closed/reporting-closed'
 
 // import getAllMarkets from 'modules/markets/selectors/markets-all'
-import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
 import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
@@ -15,7 +14,6 @@ const mapStateToProps = state => ({
   isLogged: state.isLogged,
   markets, // getAllMarkets(),
   universe: state.universe,
-  scalarShareDenomination: getScalarShareDenomination(),
   canLoadMarkets: !!getValue(state, 'universe.id'),
   hasLoadedMarkets: state.hasLoadedMarkets,
   isMobile: state.isMobile,

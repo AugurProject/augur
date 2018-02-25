@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom'
 import Watchlist from 'modules/portfolio/components/watchlist/watchlist'
 import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
-import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
 import selectAllMarkets from 'modules/markets/selectors/markets-all'
 
 const mapStateToProps = (state) => {
@@ -25,7 +24,6 @@ const mapStateToProps = (state) => {
     markets,
     filteredMarkets,
     transactionsLoading: state.transactionsLoading,
-    scalarShareDenomination: getScalarShareDenomination(),
     hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber // FIXME
   }
 }

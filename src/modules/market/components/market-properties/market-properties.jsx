@@ -8,13 +8,12 @@ import ValueDenomination from 'modules/common/components/value-denomination/valu
 import { TYPE_REPORT, TYPE_DISPUTE, TYPE_TRADE, TYPE_CLOSED } from 'modules/market/constants/link-types'
 
 import getValue from 'utils/get-value'
-import setShareDenomination from 'utils/set-share-denomination'
 import shareDenominationLabel from 'utils/share-denomination-label'
 import { dateHasPassed } from 'utils/format-date'
 import Styles from 'modules/market/components/market-properties/market-properties.styles'
 
 const MarketProperties = (p) => {
-  const shareVolumeRounded = setShareDenomination(getValue(p, 'volume.rounded'), p.selectedShareDenomination)
+  const shareVolumeRounded = getValue(p, 'volume.rounded')
   const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations)
 
   let buttonText
