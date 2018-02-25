@@ -98,7 +98,7 @@ export default class Order extends Component {
               </div>
             </div> :
             <div className={Styles['Order__confirm-details']}>
-              <p>Cancel order for { getValue(p, 'order.qtyShares.formatted') } shares of &ldquo;{ getValue(p, 'name') }&rdquo; at { getValue(p, 'order.purchasePrice.formatted') } ETH?</p>
+              <p>Cancel order for { getValue(p, 'order.unmatchedShares.formatted') } shares of &ldquo;{ getValue(p, 'name') }&rdquo; at { getValue(p, 'order.purchasePrice.formatted') } ETH?</p>
               <div className={Styles['Order__confirm-options']}>
                 <button onClick={(e) => { p.order.cancelOrder(p.order.id, p.order.marketId, p.order.outcomeId, p.order.type); this.toggleConfirm() }}>Yes</button>
                 <button onClick={this.toggleConfirm}>No</button>
