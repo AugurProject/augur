@@ -10,13 +10,13 @@ export function checkAccountAllowance(callback = logError) {
     }, (err, allowance) => {
       if (err) callback(err)
       callback(null, allowance)
-    });
+    })
   }
 }
 
 export function approveAugur(callback = logError) {
   return (dispatch, getState) => {
     const { loginAccount } = getState()
-    augur.accounts.approveAugur(loginAccount.address, loginAccount.auth, callback);
+    augur.accounts.approveAugur(loginAccount.address, loginAccount.auth, callback)
   }
 }

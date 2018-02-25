@@ -19,7 +19,7 @@ export const loadAccountData = account => (dispatch) => {
   dispatch(updateAssets())
   dispatch(checkAccountAllowance((err, allowance) => {
     if (err) return console.log(err)
-    if (allowance === "0") {
+    if (allowance === '0') {
       dispatch(updateModal({
         type: MODAL_ACCOUNT_APPROVAL
       }))
