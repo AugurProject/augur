@@ -6,8 +6,8 @@ export const updateCategories = categories => ({ type: UPDATE_CATEGORIES, catego
 export const clearCategories = () => ({ type: CLEAR_CATEGORIES })
 export const updateCategoryPopularity = (category, amount) => ({ type: UPDATE_CATEGORY_POPULARITY, category, amount })
 
-export const updateMarketCategoryPopularity = (marketID, amount) => (dispatch, getState) => {
-  const market = getState().marketsData[marketID]
+export const updateMarketCategoryPopularity = (marketId, amount) => (dispatch, getState) => {
+  const market = getState().marketsData[marketId]
   if (market != null && market.category != null) {
     dispatch(updateCategoryPopularity(market.category, Number(amount)))
   }

@@ -13,11 +13,11 @@ import { updateMarketsWithAccountReportData } from 'modules/my-reports/actions/u
 export function loadDataForMarketTransaction(label, log, isRetry, callback) {
   return (dispatch, getState) => {
     const { marketsData } = getState()
-    const marketID = log.marketID || log.market
-    const market = marketsData[marketID]
+    const marketId = log.marketId || log.market
+    const market = marketsData[marketId]
     if (!market || !market.description) {
       if (isRetry) return callback(log)
-      return dispatch(loadMarketThenRetryConversion(marketID, label, log, callback))
+      return dispatch(loadMarketThenRetryConversion(marketId, label, log, callback))
     }
     return market
   }
@@ -26,13 +26,13 @@ export function loadDataForMarketTransaction(label, log, isRetry, callback) {
 export function loadDataForReportingTransaction(label, log, isRetry, callback) {
   return (dispatch, getState) => {
     const { marketsData, outcomesData } = getState()
-    const marketID = log.market || log.marketID
-    const market = marketsData[marketID]
+    const marketId = log.market || log.marketId
+    const market = marketsData[marketId]
     if (!market || !market.description) {
       if (isRetry) return callback(log)
-      return dispatch(loadMarketThenRetryConversion(marketID, label, log, callback))
+      return dispatch(loadMarketThenRetryConversion(marketId, label, log, callback))
     }
-    return { marketID, market, outcomes: outcomesData[marketID] }
+    return { marketId, market, outcomes: outcomesData[marketId] }
   }
 }
 
@@ -94,7 +94,7 @@ export function constructCreateMarketTransaction(log, description, dispatch) {
   transaction.description = description.split('~|>')[0] // eslint-disable-line prefer-destructuring
   transaction.category = log.category
   transaction.marketCreationFee = formatEtherTokens(log.marketCreationFee)
-  transaction.data.marketID = log.marketID ? log.marketID : null
+  transaction.data.marketId = log.marketId ? log.marketId : null
   transaction.bond = { label: 'validity', value: formatEtherTokens(log.validityBond) }
   const action = log.inProgress ? 'creating' : 'created'
   transaction.message = `${action} market`
@@ -112,26 +112,26 @@ export function constructTradingProceedsClaimedTransaction(log, market, dispatch
     }]
   }
   transaction.data.shares = log.shares
-  transaction.data.marketID = log.market ? log.market : null
+  transaction.data.marketId = log.market ? log.market : null
   const action = log.inProgress ? 'closing out' : 'closed out'
   transaction.message = `${action} ${formatShares(log.shares).full}`
   return transaction
 }
 
-export function constructSubmitReportTransaction(log, marketID, market, outcomes, dispatch) {
+export function constructSubmitReportTransaction(log, marketId, market, outcomes, dispatch) {
   const transaction = { data: {} }
   transaction.type = TYPES.SUBMIT_REPORT
   transaction.description = market.description
-  transaction.data.marketID = marketID || null
+  transaction.data.marketId = marketId || null
   transaction.data.market = market
   const formattedReport = formatReportedOutcome(log.report, market.minPrice, market.maxPrice, market.type, outcomes)
-  transaction.data.reportedOutcomeID = formattedReport
+  transaction.data.reportedOutcomeId = formattedReport
   transaction.data.outcome = { name: formattedReport }
   const action = log.inProgress ? 'revealing' : 'revealed'
   transaction.message = `${action} report: ${formatReportedOutcome(log.report, market.minPrice, market.maxPrice, market.type, outcomes)}`
   if (!log.inProgress) {
     dispatch(updateMarketsWithAccountReportData({
-      [marketID]: {
+      [marketId]: {
         accountReport: formattedReport,
         isSubmitted: true
       }
@@ -162,7 +162,7 @@ export function constructTransferTransaction(log, address) {
   return transaction
 }
 
-export const constructCancelOrderTransaction = (trade, marketID, marketType, description, outcomeID, outcomeName, minPrice, maxPrice, status) => (dispatch, getState) => {
+export const constructCancelOrderTransaction = (trade, marketId, marketType, description, outcomeId, outcomeName, minPrice, maxPrice, status) => (dispatch, getState) => {
   const displayPrice = augur.trading.denormalizePrice({ normalizedPrice: trade.price, minPrice, maxPrice })
   const formattedPrice = formatEtherTokens(displayPrice)
   const formattedShares = formatShares(trade.amount)
@@ -175,9 +175,9 @@ export const constructCancelOrderTransaction = (trade, marketID, marketType, des
       data: {
         order: { type: trade.orderType, shares: formattedShares },
         marketType,
-        outcome: { name: outcomeName || outcomeID },
-        outcomeID,
-        marketID
+        outcome: { name: outcomeName || outcomeId },
+        outcomeId,
+        marketId
       },
       message: `${action} order to ${trade.orderType} ${formattedShares.full} for ${formattedPrice.full} each`,
       numShares: formattedShares,
@@ -193,7 +193,7 @@ export const constructCancelOrderTransaction = (trade, marketID, marketType, des
   }
 }
 
-export const constructCreateOrderTransaction = (trade, marketID, marketType, description, outcomeID, outcomeName, minPrice, maxPrice, settlementFee, status) => (dispatch, getState) => {
+export const constructCreateOrderTransaction = (trade, marketId, marketType, description, outcomeId, outcomeName, minPrice, maxPrice, settlementFee, status) => (dispatch, getState) => {
   let orderType
   let action
   if (trade.orderType === TYPES.BUY) {
@@ -223,9 +223,9 @@ export const constructCreateOrderTransaction = (trade, marketID, marketType, des
       description,
       data: {
         marketType,
-        outcomeName: outcomeName || outcomeID,
-        outcomeID,
-        marketID
+        outcomeName: outcomeName || outcomeId,
+        outcomeId,
+        marketId
       },
       message: `${action} ${formattedShares.full} for ${formatEtherTokens(unfix(trade.orderType === TYPES.BUY ? fxpTotalCostPerShare : fxpTotalReturnPerShare)).full} / share`,
       numShares: formattedShares,
@@ -248,11 +248,11 @@ export const constructCreateOrderTransaction = (trade, marketID, marketType, des
   }
 }
 
-export const constructFillOrderTransaction = (trade, marketID, marketType, description, outcomeID, outcomeName, minPrice, maxPrice, settlementFee, status) => (dispatch, getState) => {
+export const constructFillOrderTransaction = (trade, marketId, marketType, description, outcomeId, outcomeName, minPrice, maxPrice, settlementFee, status) => (dispatch, getState) => {
   if (!trade.amount) return null
   if (!trade.price) return null
-  const transactionID = `${trade.transactionHash}-${trade.orderId}`
-  const { tradeGroupID } = trade
+  const transactionId = `${trade.transactionHash}-${trade.orderId}`
+  const { tradeGroupId } = trade
   const displayPrice = augur.trading.denormalizePrice({ normalizedPrice: trade.price, minPrice, maxPrice })
   const formattedPrice = formatEtherTokens(displayPrice)
   const formattedShares = formatShares(trade.amount)
@@ -280,17 +280,17 @@ export const constructFillOrderTransaction = (trade, marketID, marketType, descr
   }
   const action = trade.inProgress ? orderType : perfectOrderType
   const transaction = {
-    [transactionID]: {
+    [transactionId]: {
       type: orderType,
       hash: trade.transactionHash,
-      tradeGroupID,
+      tradeGroupId,
       status,
       description,
       data: {
         marketType,
-        outcomeName: outcomeName || outcomeID,
-        outcomeID,
-        marketID
+        outcomeName: outcomeName || outcomeId,
+        outcomeId,
+        marketId
       },
       message: `${action} ${formattedShares.full} for ${formatEtherTokens(trade.orderType === TYPES.BUY ? bnTotalCostPerShare : bnTotalReturnPerShare).full} / share`,
       numShares: formattedShares,
@@ -308,28 +308,28 @@ export const constructFillOrderTransaction = (trade, marketID, marketType, descr
   return transaction
 }
 
-export const constructTradingTransaction = (label, trade, marketID, outcomeID, status) => (dispatch, getState) => {
+export const constructTradingTransaction = (label, trade, marketId, outcomeId, status) => (dispatch, getState) => {
   console.log('constructTradingTransaction:', label, trade)
   const { marketsData, outcomesData } = getState()
   const {
     marketType, description, minPrice, maxPrice, settlementFee
-  } = marketsData[marketID]
-  const marketOutcomesData = outcomesData[marketID]
+  } = marketsData[marketId]
+  const marketOutcomesData = outcomesData[marketId]
   let outcomeName
   if (marketType === BINARY || marketType === SCALAR) {
     outcomeName = null
   } else {
-    outcomeName = (marketOutcomesData ? marketOutcomesData[outcomeID] : {}).name
+    outcomeName = (marketOutcomesData ? marketOutcomesData[outcomeId] : {}).name
   }
   switch (label) {
     case TYPES.CANCEL_ORDER: {
-      return dispatch(constructCancelOrderTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, minPrice, maxPrice, status))
+      return dispatch(constructCancelOrderTransaction(trade, marketId, marketType, description, outcomeId, outcomeName, minPrice, maxPrice, status))
     }
     case TYPES.CREATE_ORDER: {
-      return dispatch(constructCreateOrderTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, minPrice, maxPrice, settlementFee, status))
+      return dispatch(constructCreateOrderTransaction(trade, marketId, marketType, description, outcomeId, outcomeName, minPrice, maxPrice, settlementFee, status))
     }
     case TYPES.FILL_ORDER: {
-      return dispatch(constructFillOrderTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, minPrice, maxPrice, settlementFee, status))
+      return dispatch(constructFillOrderTransaction(trade, marketId, marketType, description, outcomeId, outcomeName, minPrice, maxPrice, settlementFee, status))
     }
     default:
       return null
@@ -357,7 +357,7 @@ export const constructTransaction = (label, log, isRetry, callback) => (dispatch
     case TYPES.SUBMIT_REPORT: {
       const aux = dispatch(loadDataForReportingTransaction(label, log, isRetry, callback))
       if (!aux) break
-      return constructSubmitReportTransaction(log, aux.marketID, aux.market, aux.outcomes, dispatch)
+      return constructSubmitReportTransaction(log, aux.marketId, aux.market, aux.outcomes, dispatch)
     }
     default:
       return constructDefaultTransaction(label, log)

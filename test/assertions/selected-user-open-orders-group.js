@@ -11,9 +11,9 @@ export default function (selectedUserOpenOrdersGroup) {
       assert.isObject(selectedUserOpenOrdersGroup, `selectedUserOpenOrdersGroup is not object.`)
     })
 
-    describe('selectedUserOpenOrdersGroupID', () => {
+    describe('selectedUserOpenOrdersGroupId', () => {
       it('should exist', () => {
-        assert.isDefined(selectedUserOpenOrdersGroup.selectedUserOpenOrdersGroupID, `selectedUserOpenOrdersGroupID is not defined.`)
+        assert.isDefined(selectedUserOpenOrdersGroup.selectedUserOpenOrdersGroupId, `selectedUserOpenOrdersGroupId is not defined.`)
       })
     })
 

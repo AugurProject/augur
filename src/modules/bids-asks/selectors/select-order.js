@@ -1,20 +1,20 @@
 import memoize from 'memoizee'
 import selectOrderBook from 'modules/bids-asks/selectors/select-order-book'
 
-export default function (orderID, marketID, outcome, orderTypeLabel, orderBooks) {
-  return getOrder(orderID, marketID, outcome, orderTypeLabel, orderBooks)
+export default function (orderId, marketId, outcome, orderTypeLabel, orderBooks) {
+  return getOrder(orderId, marketId, outcome, orderTypeLabel, orderBooks)
 }
 
 /**
- * @param {String} orderID
- * @param {String} marketID
+ * @param {String} orderId
+ * @param {String} marketId
  * @param {int} outcome
  * @param {String} orderTypeLabel
  * @param {Object} orderBooks
  * @return {Object|null}
  */
-const getOrder = memoize((orderID, marketID, outcome, orderTypeLabel, orderBooks) => {
-  const orderBook = selectOrderBook(marketID, outcome, orderTypeLabel, orderBooks)
+const getOrder = memoize((orderId, marketId, outcome, orderTypeLabel, orderBooks) => {
+  const orderBook = selectOrderBook(marketId, outcome, orderTypeLabel, orderBooks)
   if (orderBook == null) return null
-  return orderBook[orderID] || null
+  return orderBook[orderId] || null
 }, { max: 1 })

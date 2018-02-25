@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import MarketOutcomesListOutcome from 'modules/market/components/market-outcomes-list--outcome/market-outcomes-list--outcome'
-import { ChevronDown } from 'modules/common/components/icons/icons'
+import { ChevronDown } from 'modules/common/components/icons'
 import toggleHeight from 'utils/toggle-height/toggle-height'
 
 import Styles from 'modules/market/components/market-outcomes-list/market-outcomes-list.styles'
@@ -13,7 +13,6 @@ export default class MarketOutcomesList extends Component {
   static propTypes = {
     marketId: PropTypes.string.isRequired,
     outcomes: PropTypes.array.isRequired,
-    scalarShareDenomination: PropTypes.object.isRequired,
     selectedOutcomes: PropTypes.array.isRequired,
     updateSelectedOutcomes: PropTypes.func.isRequired,
     isMobile: PropTypes.bool.isRequired,
@@ -61,7 +60,6 @@ export default class MarketOutcomesList extends Component {
                   key={outcome.id}
                   outcome={outcome}
                   marketId={p.marketId}
-                  scalarShareDenomination={p.scalarShareDenomination}
                   selectedOutcomes={p.selectedOutcomes}
                   updateSelectedOutcomes={p.updateSelectedOutcomes}
                 />

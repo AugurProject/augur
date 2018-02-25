@@ -6,7 +6,7 @@ import Notification from 'modules/notifications/components/notification'
 
 import getValue from 'utils/get-value'
 import debounce from 'utils/debounce'
-import { CloseBlack } from 'modules/common/components/icons/icons'
+import { CloseBlack } from 'modules/common/components/icons'
 
 import Styles from 'modules/notifications/components/notifications-view.styles'
 

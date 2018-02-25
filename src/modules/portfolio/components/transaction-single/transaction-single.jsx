@@ -4,7 +4,7 @@ import classNames from 'classnames'
 
 import TransactionHeader from 'modules/portfolio/components/transaction-header/transaction-header'
 import TransactionMeta from 'modules/portfolio/containers/transaction-meta'
-import { ChevronDown } from 'modules/common/components/icons/icons'
+import { ChevronDown } from 'modules/common/components/icons'
 
 import toggleHeight from 'utils/toggle-height/toggle-height'
 

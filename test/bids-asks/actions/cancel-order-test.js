@@ -34,7 +34,7 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
             id: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
             type: BID
           },
-          market: { id: 'testMarketID' },
+          market: { id: 'testMarketId' },
           outcome: {}
         }
       }
@@ -49,9 +49,9 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 
   describe('cancelOrder', () => {
     it(`shouldn't dispatch if order doesn't exist`, () => {
-      store.dispatch(cancelOrderModule.cancelOrder('nonExistingOrderID', 'testMarketID', BID))
-      store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'nonExistingMarketID', BID))
-      store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'testMarketID', ASK))
+      store.dispatch(cancelOrderModule.cancelOrder('nonExistingOrderId', 'testMarketId', BID))
+      store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'nonExistingMarketId', BID))
+      store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'testMarketId', ASK))
 
       assert.deepEqual(store.getActions(), [])
     })

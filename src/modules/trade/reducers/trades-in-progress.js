@@ -9,9 +9,9 @@ export default function (tradesInProgress = DEFAULT_STATE, action) {
     case UPDATE_TRADE_IN_PROGRESS:
       return {
         ...tradesInProgress,
-        [action.data.marketID]: {
-          ...tradesInProgress[action.data.marketID],
-          [action.data.outcomeID]: {
+        [action.data.marketId]: {
+          ...tradesInProgress[action.data.marketId],
+          [action.data.outcomeId]: {
             ...action.data.details
           }
         }
@@ -19,7 +19,7 @@ export default function (tradesInProgress = DEFAULT_STATE, action) {
     case CLEAR_TRADE_IN_PROGRESS:
       return {
         ...tradesInProgress,
-        [action.marketID]: {}
+        [action.marketId]: {}
       }
     case RESET_STATE:
     case CLEAR_LOGIN_ACCOUNT:

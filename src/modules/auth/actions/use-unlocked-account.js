@@ -1,36 +1,24 @@
 import { augur } from 'services/augurjs'
-import { loadAccountData } from 'modules/auth/actions/load-account-data'
-import { updateIsLogged } from 'modules/auth/actions/update-is-logged'
-import { loadAccountOrders } from 'modules/bids-asks/actions/load-account-orders'
+import { updateIsLoggedAndLoadAccountData } from 'modules/auth/actions/update-is-logged-and-load-account-data'
 import isMetaMask from 'modules/auth/helpers/is-meta-mask'
 import logError from 'utils/log-error'
 
-const updateIsLoggedAndLoadAccountData = unlockedAddress => (dispatch) => {
-  augur.accounts.logout() // clear ethrpc transaction history, registered callbacks, and notifications
-  console.log(`using unlocked account ${unlockedAddress}`)
-  dispatch(updateIsLogged(true))
-  dispatch(loadAccountData({
-    address: unlockedAddress,
-    meta: {
-      address: unlockedAddress,
-      signer: null,
-      accountType: augur.rpc.constants.ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE
-    },
-    isUnlocked: true
-  }, true))
-  dispatch(loadAccountOrders())
-}
+const { ACCOUNT_TYPES } = augur.rpc.constants
 
-// Use unlocked local address (if actually unlocked)
+// Use unlocked local account or MetaMask account
 export const useUnlockedAccount = (unlockedAddress, callback = logError) => (dispatch) => {
-  if (!unlockedAddress) return callback('no account address')
-  if (isMetaMask()) return dispatch(updateIsLoggedAndLoadAccountData(unlockedAddress))
+  if (unlockedAddress == null) return callback('no account address')
+  if (isMetaMask()) {
+    dispatch(updateIsLoggedAndLoadAccountData(unlockedAddress, ACCOUNT_TYPES.META_MASK))
+    return callback(null)
+  }
   augur.rpc.isUnlocked(unlockedAddress, (isUnlocked) => {
-    if (!isUnlocked || isUnlocked.error) {
+    if (isUnlocked == null || isUnlocked.error) return callback(isUnlocked || 'error calling augur.rpc.isUnlocked')
+    if (isUnlocked === false) {
       console.warn(`account ${unlockedAddress} is locked`)
       return callback(null)
     }
-    dispatch(updateIsLoggedAndLoadAccountData(unlockedAddress))
+    dispatch(updateIsLoggedAndLoadAccountData(unlockedAddress, ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE))
     callback(null)
   })
 }

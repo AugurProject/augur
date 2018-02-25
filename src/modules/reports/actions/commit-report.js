@@ -8,60 +8,60 @@ import { encryptReport } from 'modules/reports/actions/report-encryption'
 
 export const UPDATE_REPORT_COMMIT_LOCK = 'UPDATE_REPORT_COMMIT_LOCK'
 
-export const updateReportCommitLock = (eventID, isLocked) => ({ type: UPDATE_REPORT_COMMIT_LOCK, eventID, isLocked })
+export const updateReportCommitLock = (eventId, isLocked) => ({ type: UPDATE_REPORT_COMMIT_LOCK, eventId, isLocked })
 
-export const commitReport = (market, reportedOutcomeID, isUnethical, isIndeterminate, history) => (dispatch, getState) => {
+export const commitReport = (market, reportedOutcomeId, isUnethical, isIndeterminate, history) => (dispatch, getState) => {
   const { branch, loginAccount, reportCommitLock } = getState()
-  if (!loginAccount.address || !market || !reportedOutcomeID) {
-    return console.error('commitReport failed:', loginAccount.address, market, reportedOutcomeID)
+  if (!loginAccount.address || !market || !reportedOutcomeId) {
+    return console.error('commitReport failed:', loginAccount.address, market, reportedOutcomeId)
   }
-  const { eventID } = market
-  if (reportCommitLock[eventID]) {
-    return console.warn('reportCommitLock set:', eventID, reportCommitLock)
+  const { eventId } = market
+  if (reportCommitLock[eventId]) {
+    return console.warn('reportCommitLock set:', eventId, reportCommitLock)
   }
-  dispatch(updateReportCommitLock(eventID, true))
-  const branchID = branch.id
-  console.log(`committing to report ${reportedOutcomeID} on market ${market.id} event ${eventID} period ${branch.reportPeriod}...`)
+  dispatch(updateReportCommitLock(eventId, true))
+  const branchId = branch.id
+  console.log(`committing to report ${reportedOutcomeId} on market ${market.id} event ${eventId} period ${branch.reportPeriod}...`)
   const salt = bytesToHex(secureRandom(32))
-  const fixedReport = augur.reporting.format.fixReport(reportedOutcomeID, market.minValue, market.maxValue, market.type, isIndeterminate)
+  const fixedReport = augur.reporting.format.fixReport(reportedOutcomeId, market.minValue, market.maxValue, market.type, isIndeterminate)
   const report = {
-    eventID,
-    marketID: market.id,
+    eventId,
+    marketId: market.id,
     period: branch.reportPeriod,
-    reportedOutcomeID,
+    reportedOutcomeId,
     isCategorical: market.type === CATEGORICAL,
     isScalar: market.type === SCALAR,
     isUnethical,
     isIndeterminate,
     salt,
-    reportHash: augur.reporting.crypto.makeHash(salt, fixedReport, eventID, loginAccount.address),
+    reportHash: augur.reporting.crypto.makeHash(salt, fixedReport, eventId, loginAccount.address),
     isCommitted: false,
     isRevealed: false
   }
   const encrypted = encryptReport(fixedReport, salt)
-  dispatch(updateReport(branchID, eventID, { ...report }))
+  dispatch(updateReport(branchId, eventId, { ...report }))
   augur.reporting.submitReportHash({
-    event: eventID,
+    event: eventId,
     reportHash: report.reportHash,
     encryptedReport: encrypted.report,
     encryptedSalt: encrypted.salt,
     ethics: Number(!isUnethical),
-    branch: branchID,
+    branch: branchId,
     period: branch.reportPeriod,
     periodLength: branch.periodLength,
     onSent: () => {},
     onSuccess: (r) => {
-      dispatch(updateReportCommitLock(eventID, false))
-      dispatch(updateReport(branchID, eventID, {
-        ...(getState().reports[branchID] || {})[eventID],
+      dispatch(updateReportCommitLock(eventId, false))
+      dispatch(updateReport(branchId, eventId, {
+        ...(getState().reports[branchId] || {})[eventId],
         isCommitted: true
       }))
     },
     onFailed: (e) => {
       console.error('submitReportHash failed:', e)
-      dispatch(updateReportCommitLock(eventID, false))
-      dispatch(updateReport(branchID, eventID, {
-        ...(getState().reports[branchID] || {})[eventID],
+      dispatch(updateReportCommitLock(eventId, false))
+      dispatch(updateReport(branchId, eventId, {
+        ...(getState().reports[branchId] || {})[eventId],
         isCommitted: false
       }))
     }

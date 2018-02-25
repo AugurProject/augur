@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom'
 import ReportingOpen from 'modules/reporting/components/reporting-open/reporting-open'
 
 // import getAllMarkets from 'modules/markets/selectors/markets-all'
-import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
 import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
@@ -15,15 +14,14 @@ const mapStateToProps = state => ({
   isLogged: state.isLogged,
   markets, // getAllMarkets(),
   universe: state.universe,
-  scalarShareDenomination: getScalarShareDenomination(),
   canLoadMarkets: !!getValue(state, 'universe.id'),
   hasLoadedMarkets: state.hasLoadedMarkets,
   isMobile: state.isMobile,
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadMarketsInfo: marketIDs => dispatch(loadMarketsInfo(marketIDs)),
-  toggleFavorite: marketID => dispatch(toggleFavorite(marketID)),
+  loadMarketsInfo: marketIds => dispatch(loadMarketsInfo(marketIds)),
+  toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
 })
 
 const Reporting = withRouter(connect(mapStateToProps, mapDispatchToProps)(ReportingOpen))
@@ -34,7 +32,7 @@ export default Reporting
 const markets = [
   {
     id: '0xcd7b177af7a12ec3be1c7f992ec7d608959630f2113227a2cdd9db562bd01eb4',
-    branchID: '0xf69b5',
+    branchId: '0xf69b5',
     tradingPeriod: 8947,
     tradingFee: '0.025',
     makerFee: '0.0125',
@@ -69,7 +67,7 @@ const markets = [
       full: 'Sun, 30 Dec 2018 08:00:00 GMT',
       timestamp: 1546156800000
     },
-    eventID: '0xee03ff4923cb4fc8f2f2370e0f1d5cffd321342d304e221e566623616f676ba4',
+    eventId: '0xee03ff4923cb4fc8f2f2370e0f1d5cffd321342d304e221e566623616f676ba4',
     minValue: '1',
     maxValue: '2',
     numOutcomes: 2,
@@ -91,7 +89,7 @@ const markets = [
         price: '0',
         sharesPurchased: '0',
         name: 'Yes',
-        marketID: '0xcd7b177af7a12ec3be1c7f992ec7d608959630f2113227a2cdd9db562bd01eb4',
+        marketId: '0xcd7b177af7a12ec3be1c7f992ec7d608959630f2113227a2cdd9db562bd01eb4',
         lastPrice: {
           value: 0,
           formattedValue: 0,
@@ -296,7 +294,7 @@ const markets = [
   },
   {
     id: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
-    branchID: '0xf69b5',
+    branchId: '0xf69b5',
     tradingPeriod: 8738,
     tradingFee: '0.02',
     makerFee: '0.01',
@@ -330,7 +328,7 @@ const markets = [
       full: 'Sun, 05 Nov 2017 07:00:00 GMT',
       timestamp: 1509865200000
     },
-    eventID: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
+    eventId: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
     minValue: '1',
     maxValue: '2',
     numOutcomes: 2,
@@ -352,7 +350,7 @@ const markets = [
         price: '0.3',
         sharesPurchased: '0',
         name: 'Yes',
-        marketID: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
+        marketId: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
         lastPrice: {
           value: 0.3,
           formattedValue: 0.3,
@@ -556,7 +554,7 @@ const markets = [
   },
   {
     id: '0xbb8b7835162b91b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
-    branchID: '0xf69b5',
+    branchId: '0xf69b5',
     tradingPeriod: 8738,
     tradingFee: '0.02',
     makerFee: '0.01',
@@ -590,7 +588,7 @@ const markets = [
       full: 'Sun, 05 Nov 2017 07:00:00 GMT',
       timestamp: 1509865200000
     },
-    eventID: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
+    eventId: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
     minValue: '1',
     maxValue: '2',
     numOutcomes: 2,
@@ -612,7 +610,7 @@ const markets = [
         price: '0.3',
         sharesPurchased: '0',
         name: 'Yes',
-        marketID: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
+        marketId: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
         lastPrice: {
           value: 0.3,
           formattedValue: 0.3,
@@ -816,7 +814,7 @@ const markets = [
   },
   {
     id: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a566ca272',
-    branchID: '0xf69b5',
+    branchId: '0xf69b5',
     tradingPeriod: 8738,
     tradingFee: '0.02',
     makerFee: '0.01',
@@ -850,7 +848,7 @@ const markets = [
       full: 'Sun, 05 Nov 2017 07:00:00 GMT',
       timestamp: 1509865200000
     },
-    eventID: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
+    eventId: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
     minValue: '1',
     maxValue: '2',
     numOutcomes: 2,
@@ -872,7 +870,7 @@ const markets = [
         price: '0.3',
         sharesPurchased: '0',
         name: 'Yes',
-        marketID: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
+        marketId: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
         lastPrice: {
           value: 0.3,
           formattedValue: 0.3,
@@ -1076,7 +1074,7 @@ const markets = [
   },
   {
     id: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae83c73772785a666ca272',
-    branchID: '0xf69b5',
+    branchId: '0xf69b5',
     tradingPeriod: 8738,
     tradingFee: '0.02',
     makerFee: '0.01',
@@ -1110,7 +1108,7 @@ const markets = [
       full: 'Sun, 05 Nov 2017 07:00:00 GMT',
       timestamp: 1509865200000
     },
-    eventID: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
+    eventId: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
     minValue: '1',
     maxValue: '2',
     numOutcomes: 2,
@@ -1132,7 +1130,7 @@ const markets = [
         price: '0.3',
         sharesPurchased: '0',
         name: 'Yes',
-        marketID: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
+        marketId: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
         lastPrice: {
           value: 0.3,
           formattedValue: 0.3,
@@ -1336,7 +1334,7 @@ const markets = [
   },
   {
     id: '0xbb8b7835162b95b6994013cd04d1f28125c3c11c8bae84c73772785a666ca272',
-    branchID: '0xf69b5',
+    branchId: '0xf69b5',
     tradingPeriod: 8738,
     tradingFee: '0.02',
     makerFee: '0.01',
@@ -1370,7 +1368,7 @@ const markets = [
       full: 'Sun, 05 Nov 2017 07:00:00 GMT',
       timestamp: 1509865200000
     },
-    eventID: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
+    eventId: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
     minValue: '1',
     maxValue: '2',
     numOutcomes: 2,
@@ -1392,7 +1390,7 @@ const markets = [
         price: '0.3',
         sharesPurchased: '0',
         name: 'Yes',
-        marketID: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
+        marketId: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
         lastPrice: {
           value: 0.3,
           formattedValue: 0.3,
@@ -1596,7 +1594,7 @@ const markets = [
   },
   {
     id: '0xbb8b78c5162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
-    branchID: '0xf69b5',
+    branchId: '0xf69b5',
     tradingPeriod: 8738,
     tradingFee: '0.02',
     makerFee: '0.01',
@@ -1630,7 +1628,7 @@ const markets = [
       full: 'Sun, 05 Nov 2017 07:00:00 GMT',
       timestamp: 1509865200000
     },
-    eventID: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
+    eventId: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
     minValue: '1',
     maxValue: '2',
     numOutcomes: 2,
@@ -1652,7 +1650,7 @@ const markets = [
         price: '0.3',
         sharesPurchased: '0',
         name: 'Yes',
-        marketID: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
+        marketId: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
         lastPrice: {
           value: 0.3,
           formattedValue: 0.3,
@@ -1856,7 +1854,7 @@ const markets = [
   },
   {
     id: '0xbb8b7835162b95b6994013cd04c8f28125c3c11c8bae84c73772785a666ca272',
-    branchID: '0xf69b5',
+    branchId: '0xf69b5',
     tradingPeriod: 8738,
     tradingFee: '0.02',
     makerFee: '0.01',
@@ -1890,7 +1888,7 @@ const markets = [
       full: 'Sun, 05 Nov 2017 07:00:00 GMT',
       timestamp: 1509865200000
     },
-    eventID: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
+    eventId: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
     minValue: '1',
     maxValue: '2',
     numOutcomes: 2,
@@ -1912,7 +1910,7 @@ const markets = [
         price: '0.3',
         sharesPurchased: '0',
         name: 'Yes',
-        marketID: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
+        marketId: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
         lastPrice: {
           value: 0.3,
           formattedValue: 0.3,
@@ -2116,7 +2114,7 @@ const markets = [
   },
   {
     id: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae8vc73772785a666ca272',
-    branchID: '0xf69b5',
+    branchId: '0xf69b5',
     tradingPeriod: 8738,
     tradingFee: '0.02',
     makerFee: '0.01',
@@ -2150,7 +2148,7 @@ const markets = [
       full: 'Sun, 05 Nov 2017 07:00:00 GMT',
       timestamp: 1509865200000
     },
-    eventID: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
+    eventId: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
     minValue: '1',
     maxValue: '2',
     numOutcomes: 2,
@@ -2172,7 +2170,7 @@ const markets = [
         price: '0.3',
         sharesPurchased: '0',
         name: 'Yes',
-        marketID: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
+        marketId: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
         lastPrice: {
           value: 0.3,
           formattedValue: 0.3,
@@ -2376,7 +2374,7 @@ const markets = [
   },
   {
     id: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c7c772785a666ca272',
-    branchID: '0xf69b5',
+    branchId: '0xf69b5',
     tradingPeriod: 8738,
     tradingFee: '0.02',
     makerFee: '0.01',
@@ -2410,7 +2408,7 @@ const markets = [
       full: 'Sun, 05 Nov 2017 07:00:00 GMT',
       timestamp: 1509865200000
     },
-    eventID: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
+    eventId: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
     minValue: '1',
     maxValue: '2',
     numOutcomes: 2,
@@ -2432,7 +2430,7 @@ const markets = [
         price: '0.3',
         sharesPurchased: '0',
         name: 'Yes',
-        marketID: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
+        marketId: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
         lastPrice: {
           value: 0.3,
           formattedValue: 0.3,
@@ -2636,7 +2634,7 @@ const markets = [
   },
   {
     id: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ya272',
-    branchID: '0xf69b5',
+    branchId: '0xf69b5',
     tradingPeriod: 8738,
     tradingFee: '0.02',
     makerFee: '0.01',
@@ -2670,7 +2668,7 @@ const markets = [
       full: 'Sun, 05 Nov 2017 07:00:00 GMT',
       timestamp: 1509865200000
     },
-    eventID: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
+    eventId: '0x55c24b4a613d57869cfb42a640d744d2d646aaa1f30e0147c6a7da5a6a72eeb8',
     minValue: '1',
     maxValue: '2',
     numOutcomes: 2,
@@ -2692,7 +2690,7 @@ const markets = [
         price: '0.3',
         sharesPurchased: '0',
         name: 'Yes',
-        marketID: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
+        marketId: '0xbb8b7835162b95b6994013cd04d8f28125c3c11c8bae84c73772785a666ca272',
         lastPrice: {
           value: 0.3,
           formattedValue: 0.3,

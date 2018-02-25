@@ -16,10 +16,10 @@ export default function (favorites = DEFAULT_STATE, action) {
       newFavorites = {
         ...favorites
       }
-      if (newFavorites[action.marketID]) {
-        delete newFavorites[action.marketID]
+      if (newFavorites[action.marketId]) {
+        delete newFavorites[action.marketId]
       } else {
-        newFavorites[action.marketID] = Date.now()
+        newFavorites[action.marketId] = Date.now()
       }
       return newFavorites
     case RESET_STATE:

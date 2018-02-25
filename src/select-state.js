@@ -17,7 +17,7 @@ export const selectOutcomesDataState = state => state.outcomesData
 export const selectFavoritesState = state => state.favorites
 export const selectReportsState = state => state.reports
 export const selectHasLoadedReportsState = state => state.hasLoadedReports
-export const selectSelectedMarketIDState = state => state.selectedMarketID
+export const selectSelectedMarketIDState = state => state.selectedMarketId
 export const selectSelectedMarketsSubsetState = state => state.selectedMarketsSubset
 export const selectSelectedMarketsHeaderState = state => state.selectedMarketsHeader
 export const selectTagsState = state => state.tags
@@ -37,6 +37,7 @@ export const selectScalarMarketsShareDenominationState = state => state.scalarMa
 export const selectClosePositionTradeGroupsState = state => state.closePositionTradeGroups
 export const selectMarketCreatorFeesState = state => state.marketCreatorFees
 export const selectNotificationsState = state => state.notifications
+export const selectMarketReportState = state => state.marketReportState
 
 export const selectBlockchainCurrentBlockTimestamp = createSelector(
   selectBlockchainState,

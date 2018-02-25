@@ -1,3 +1,5 @@
+/* eslint jsx-a11y/label-has-for: 0 */
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
@@ -5,7 +7,7 @@ import BigNumber from 'bignumber.js'
 import Input from 'modules/common/components/input/input'
 import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'
 
-import { Withdraw } from 'modules/common/components/icons/icons'
+import { Withdraw } from 'modules/common/components/icons'
 
 import { ETH, REP } from 'modules/account/constants/asset-types'
 
@@ -122,66 +124,56 @@ export default class AccountWithdraw extends Component {
         </div>
         <div className={Styles.AccountWithdraw__main}>
           <div className={Styles.AccountWithdraw__description}>
-            <p>
-              Withdraw Ethereum or Reputation from another account into your Trading Account connected with Augur.
-            </p>
+            <p>Withdraw Ethereum or Reputation from another account into your Trading Account connected with Augur.</p>
             <a href="https://shapeshift.io/">Use Shapeshift</a>
           </div>
           <div className={Styles.AccountWithdraw__form}>
-            <div className={Styles.AccountWithdraw__formTopRow}>
-              <div className={Styles.AccountWithdraw__inputContain}>
-                <label htmlFor="currency">
-                  Select Currency
-                  <InputDropdown
-                    name="currency"
-                    className={Styles.AccountWithdraw__dropdown}
-                    label="Select Currency"
-                    options={['ETH', 'REP']}
-                    default="ETH"
-                    type="text"
-                    isMobileSmall={p.isMobileSmall}
-                    onChange={(type) => {
-                      const selectedAsset = (type === 'ETH') ? ETH : REP
-                      const upperBound = (type === 'ETH') ? p.eth.value : p.rep.value
-                      this.setState({
-                        selectedAsset,
-                        upperBound
-                      })
-                    }}
-                  />
-                </label>
+            <div className={Styles['AccountWithdraw__form-fields']}>
+              <div className={Styles['AccountWithdraw__input-wrapper']}>
+                <label htmlFor="currency">Select Currency</label>
+                <InputDropdown
+                  name="currency"
+                  className={Styles.AccountWithdraw__dropdown}
+                  label="Select Currency"
+                  options={['ETH', 'REP']}
+                  default="ETH"
+                  type="text"
+                  isMobileSmall={p.isMobileSmall}
+                  onChange={(type) => {
+                    const selectedAsset = (type === 'ETH') ? ETH : REP
+                    const upperBound = (type === 'ETH') ? p.eth.value : p.rep.value
+                    this.setState({
+                      selectedAsset,
+                      upperBound
+                    })
+                  }}
+                />
               </div>
-              <div className={Styles.AccountWithdraw__inputContain}>
-                <label htmlFor="quantity">
-                  Quantity
-                  <Input
-                    name="quantity"
-                    label="Quantity"
-                    type="number"
-                    isIncrementable
-                    incrementAmount={1}
-                    max={s.upperBound}
-                    min={0.1}
-                    value={s.amount}
-                    updateValue={amount => this.validateAmount(amount)}
-                    onChange={amount => this.validateAmount(amount)}
-                  />
-                </label>
+              <div className={Styles['AccountWithdraw__input-wrapper']}>
+                <label htmlFor="quantity">Quantity</label>
+                <Input
+                  name="quantity"
+                  label="Quantity"
+                  type="number"
+                  isIncrementable
+                  incrementAmount={1}
+                  max={s.upperBound}
+                  min={0.1}
+                  value={s.amount}
+                  updateValue={amount => this.validateAmount(amount)}
+                  onChange={amount => this.validateAmount(amount)}
+                />
               </div>
-            </div>
-            <div className={Styles.AccountWithdraw__formBottomRow}>
-              <div className={Styles.AccountWithdraw__inputContain}>
-                <label htmlFor="address">
-                  Recipient Account Address
-                  <Input
-                    name="address"
-                    label="Recipient Account Address"
-                    type="text"
-                    value={s.address}
-                    updateValue={address => this.validateAddress(address)}
-                    onChange={address => this.validateAddress(address)}
-                  />
-                </label>
+              <div className={Styles['AccountWithdraw__input-wrapper']}>
+                <label htmlFor="address">Recipient Account Address</label>
+                <Input
+                  name="address"
+                  label="Recipient Account Address"
+                  type="text"
+                  value={s.address}
+                  updateValue={address => this.validateAddress(address)}
+                  onChange={address => this.validateAddress(address)}
+                />
               </div>
             </div>
             <button

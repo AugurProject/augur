@@ -21,7 +21,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
   const mockUpdateTradesInProgress = {
     updateTradesInProgress: () => { }
   }
-  sinon.stub(mockUpdateTradesInProgress, 'updateTradesInProgress').callsFake((marketID, outcomeID, side, numShares, limitPrice, maxCost, cb) => (dispatch, getState) => cb())
+  sinon.stub(mockUpdateTradesInProgress, 'updateTradesInProgress').callsFake((marketId, outcomeId, side, numShares, limitPrice, maxCost, cb) => (dispatch, getState) => cb())
   const mockClearClosePositionOutcome = {
     clearClosePositionOutcome: sinon.stub().returns({ type: MOCK_ACTION_TYPES.CLEAR_CLOSE_POSITION_OUTCOME })
   }
@@ -34,7 +34,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
     })
   }
 
-  const loadBidsAsks = (marketID, cb) => dispatch => cb()
+  const loadBidsAsks = (marketId, cb) => dispatch => cb()
 
   const selectAllMarkets = sinon.stub().returns([
     {
@@ -72,11 +72,11 @@ describe('modules/my-positions/actions/close-position.js', () => {
       it(t.description, () => {
         const store = mockStore(t.state || {})
 
-        sinon.stub(mockPlaceTrade, 'placeTrade').callsFake((marketID, outcomeID, tradesInProgress, doNotCreateOrders, cb) => (dispatch, getState) => {
+        sinon.stub(mockPlaceTrade, 'placeTrade').callsFake((marketId, outcomeId, tradesInProgress, doNotCreateOrders, cb) => (dispatch, getState) => {
           if (t.placeTradeFails) {
             cb(true)
           } else {
-            cb(null, t.tradeGroupID)
+            cb(null, t.tradeGroupId)
           }
         })
 
@@ -87,8 +87,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
     test({
       description: `should dispatch the expected actions WITHOUT available orders`,
       state: {
-        marketID: '0xMARKETID',
-        outcomeID: '1',
+        marketId: '0xMARKETID',
+        outcomeId: '1',
         orderBooks: {
           '0xMARKETID': {
             [BUY]: {},
@@ -100,8 +100,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
         }
       },
       assertions: (store) => {
-        const { marketID, outcomeID } = store.getState()
-        store.dispatch(action.closePosition(marketID, outcomeID))
+        const { marketId, outcomeId } = store.getState()
+        store.dispatch(action.closePosition(marketId, outcomeId))
 
         const actual = store.getActions()
 
@@ -124,8 +124,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
     test({
       description: `should dispatch the expected actions WITH available orders AND placeTrade fails`,
       state: {
-        marketID: '0xMARKETID',
-        outcomeID: '1',
+        marketId: '0xMARKETID',
+        outcomeId: '1',
         orderBooks: {
           '0xMARKETID': {
             [BUY]: {
@@ -175,8 +175,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
       },
       placeTradeFails: true,
       assertions: (store) => {
-        const { marketID, outcomeID } = store.getState()
-        store.dispatch(action.closePosition(marketID, outcomeID))
+        const { marketId, outcomeId } = store.getState()
+        store.dispatch(action.closePosition(marketId, outcomeId))
 
         const actual = store.getActions()
 
@@ -196,8 +196,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
     test({
       description: `should dispatch the expected actions WITH available orders AND placeTrade succeeds`,
       state: {
-        marketID: '0xMARKETID',
-        outcomeID: '1',
+        marketId: '0xMARKETID',
+        outcomeId: '1',
         accountPositions: {
           '0xMARKETID': {
             1: '10',
@@ -239,8 +239,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
         }
       },
       assertions: (store) => {
-        const { marketID, outcomeID } = store.getState()
-        store.dispatch(action.closePosition(marketID, outcomeID))
+        const { marketId, outcomeId } = store.getState()
+        store.dispatch(action.closePosition(marketId, outcomeId))
 
         const actual = store.getActions()
 
@@ -261,7 +261,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
   describe('getBestFill', () => {
     const test = (t) => {
       it(t.description, () => {
-        const bestFill = action.getBestFill(t.state.orderBook, t.arguments.side, t.arguments.shares, t.arguments.marketID, t.arguments.outcomeID, t.arguments.userAddress)
+        const bestFill = action.getBestFill(t.state.orderBook, t.arguments.side, t.arguments.shares, t.arguments.marketId, t.arguments.outcomeId, t.arguments.userAddress)
 
         t.assertions(bestFill)
       })
@@ -275,8 +275,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
       arguments: {
         side: SELL,
         shares: new BigNumber(-1).absoluteValue(),
-        marketID: '0xMarketID1',
-        outcomeID: '1',
+        marketId: '0xMarketID1',
+        outcomeId: '1',
         userAddress: '0xUSERADDRESS'
       },
       assertions: (bestFill) => {
@@ -295,8 +295,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
       arguments: {
         side: BUY,
         shares: new BigNumber(1).absoluteValue(),
-        marketID: '0xMarketID1',
-        outcomeID: '1',
+        marketId: '0xMarketID1',
+        outcomeId: '1',
         userAddress: '0xUSERADDRESS'
       },
       assertions: (bestFill) => {
@@ -334,8 +334,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
       arguments: {
         side: BUY,
         shares: new BigNumber(10).absoluteValue(),
-        marketID: '0xMarketID1',
-        outcomeID: '1',
+        marketId: '0xMarketID1',
+        outcomeId: '1',
         userAddress: '0xUSERADDRESS'
       },
       assertions: (bestFill) => {
@@ -373,8 +373,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
       arguments: {
         side: BUY,
         shares: new BigNumber(10).absoluteValue(),
-        marketID: '0xMarketID1',
-        outcomeID: '1',
+        marketId: '0xMarketID1',
+        outcomeId: '1',
         userAddress: '0xUSERADDRESS'
       },
       assertions: (bestFill) => {
@@ -412,8 +412,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
       arguments: {
         side: SELL,
         shares: new BigNumber(-10).absoluteValue(),
-        marketID: '0xMarketID1',
-        outcomeID: '1',
+        marketId: '0xMarketID1',
+        outcomeId: '1',
         userAddress: '0xUSERADDRESS'
       },
       assertions: (bestFill) => {
@@ -451,8 +451,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
       arguments: {
         side: SELL,
         shares: new BigNumber(-10).absoluteValue(),
-        marketID: '0xMarketID1',
-        outcomeID: '1',
+        marketId: '0xMarketID1',
+        outcomeId: '1',
         userAddress: '0xUSERADDRESS'
       },
       assertions: (bestFill) => {

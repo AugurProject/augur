@@ -1,4 +1,4 @@
-import { Airbitz, uPort } from 'modules/common/components/icons/icons'
+import { Airbitz, uPort } from 'modules/common/components/icons'
 
 export const PARAMS = {
   AIRBITZ: 'airbitz',

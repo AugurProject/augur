@@ -4,7 +4,7 @@ import { UPDATE_ORDER_BOOK, updateOrderBook } from 'modules/bids-asks/actions/up
 
 describe(`modules/bids-asks/actions/update-order-book.js`, () => {
   it(`should fire the UPDATE_ORDER_BOOK action with data`, () => {
-    const marketID = 'MARKET_1'
+    const marketId = 'MARKET_1'
     const outcome = 3
     const orderTypeLabel = 'buy'
     const orderBook = {
@@ -35,11 +35,11 @@ describe(`modules/bids-asks/actions/update-order-book.js`, () => {
     }
     const expectedOutput = {
       type: UPDATE_ORDER_BOOK,
-      marketID,
+      marketId,
       outcome,
       orderTypeLabel,
       orderBook
     }
-    assert.deepEqual(updateOrderBook(marketID, outcome, orderTypeLabel, orderBook), expectedOutput, `Updating order book didn't return the correct action!`)
+    assert.deepEqual(updateOrderBook(marketId, outcome, orderTypeLabel, orderBook), expectedOutput, `Updating order book didn't return the correct action!`)
   })
 })

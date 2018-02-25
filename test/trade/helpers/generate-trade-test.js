@@ -9,7 +9,7 @@ import { formatEtherTokens, formatPercent } from 'utils/format-number'
 describe('modules/trade/helpers/generate-trade.js', () => {
   const { state } = mocks
   const { generateTrade } = require('modules/trade/helpers/generate-trade')
-  const trade = generateTrade(state.marketsData.testMarketID, state.outcomesData.testMarketID['1'], state.tradesInProgress.testMarketID, state.orderBooks.testMarketID)
+  const trade = generateTrade(state.marketsData.testMarketId, state.outcomesData.testMarketId['1'], state.tradesInProgress.testMarketId, state.orderBooks.testMarketId)
 
   it('should generate trade object', () => {
     assert.deepEqual(trade, {

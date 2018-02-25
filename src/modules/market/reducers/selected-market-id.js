@@ -3,14 +3,14 @@ import { RESET_STATE } from 'modules/app/actions/reset-state'
 
 const DEFAULT_STATE = null
 
-export default function (selectedMarketID = DEFAULT_STATE, action) {
+export default function (selectedMarketId = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_SELECTED_MARKET_ID:
-      return action.data.selectedMarketID
+      return action.data.selectedMarketId
     case RESET_STATE:
     case CLEAR_SELECTED_MARKET_ID:
       return DEFAULT_STATE
     default:
-      return selectedMarketID
+      return selectedMarketId
   }
 }

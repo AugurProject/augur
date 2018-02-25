@@ -79,10 +79,10 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, o
   }
 }, { max: 5 })
 
-const totalSharesUpToOrder = memoize((outcomeID, side, orderIndex, orderBooks) => {
+const totalSharesUpToOrder = memoize((outcomeId, side, orderIndex, orderBooks) => {
   const { orderCancellation } = store.getState()
 
-  const sideOrders = selectAggregateOrderBook(outcomeID, orderBooks, orderCancellation)[side === TRANSACTIONS_TYPES.BUY ? BIDS : ASKS]
+  const sideOrders = selectAggregateOrderBook(outcomeId, orderBooks, orderCancellation)[side === TRANSACTIONS_TYPES.BUY ? BIDS : ASKS]
 
   return sideOrders.filter((order, i) => i <= orderIndex).reduce((p, order) => p + order.shares.value, 0)
 }, { max: 5 })
@@ -116,8 +116,8 @@ export const generateTradeOrders = memoize((market, outcome, outcomeTradeInProgr
   if (!market || !outcome || !outcomeTradeInProgress || !tradeActions || !tradeActions.length) {
     return []
   }
-  const marketID = market.id
-  const outcomeID = outcome.id
+  const marketId = market.id
+  const outcomeId = outcome.id
   const marketType = market.type
   const outcomeName = outcome.name
   const { description } = market
@@ -129,7 +129,7 @@ export const generateTradeOrders = memoize((market, outcome, outcomeTradeInProgr
     return {
       type: TRANSACTIONS_TYPES[tradeAction.action],
       data: {
-        marketID, outcomeID, marketType, outcomeName
+        marketId, outcomeId, marketType, outcomeName
       },
       description,
       numShares: formatShares(tradeAction.shares),

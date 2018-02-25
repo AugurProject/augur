@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js'
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
-import { CreateMarketEdit } from 'modules/common/components/icons/icons'
+import { CreateMarketEdit } from 'modules/common/components/icons'
 
 import CreateMarketPreviewRange from 'modules/create-market/components/create-market-preview-range/create-market-preview-range'
 import CreateMarketPreviewCategorical from 'modules/create-market/components/create-market-preview-categorical/create-market-preview-categorical'

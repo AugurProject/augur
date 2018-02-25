@@ -10,10 +10,10 @@ import loadCategories from 'modules/categories/actions/load-categories'
 import { loadMarketsToReportOn } from 'modules/reports/actions/load-markets-to-report-on'
 import logError from 'utils/log-error'
 
-export const loadUniverse = (universeID, history, callback = logError) => (dispatch, getState) => {
-  const universePayload = { tx: { to: universeID } }
+export const loadUniverse = (universeId, history, callback = logError) => (dispatch, getState) => {
+  const universePayload = { tx: { to: universeId } }
   // NOTE: Temporarily added below dispatch so we atleast get universe ID set because the async calls below are going to fail without contracts...
-  dispatch(updateUniverse({ id: universeID }))
+  dispatch(updateUniverse({ id: universeId }))
   async.parallel({
     reputationTokenAddress: (next) => {
       augur.api.Universe.getReputationToken(universePayload, (err, reputationTokenAddress) => {
@@ -29,7 +29,7 @@ export const loadUniverse = (universeID, history, callback = logError) => (dispa
     }
   }, (err, staticUniverseData) => {
     if (err) return callback(err)
-    dispatch(updateUniverse({ ...staticUniverseData, id: universeID }))
+    dispatch(updateUniverse({ ...staticUniverseData, id: universeId }))
     dispatch(updateUniverse(getReportingCycle()))
     dispatch(syncBlockchain())
     dispatch(syncUniverse((err) => {

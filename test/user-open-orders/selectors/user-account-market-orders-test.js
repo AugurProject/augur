@@ -27,7 +27,7 @@ describe(`modules/user-open-orders/selectors/select-account-order-markets.js`, (
             0: {
               buy: {
                 order1: {
-                  orderID: 'order1',
+                  orderId: 'order1',
                   price: '10',
                   amount: '1',
                   owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
@@ -72,7 +72,7 @@ describe(`modules/user-open-orders/selectors/select-account-order-markets.js`, (
             0: {
               buy: {
                 order1: {
-                  orderID: 'order1',
+                  orderId: 'order1',
                   price: '10',
                   amount: '1',
                   owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
@@ -85,7 +85,7 @@ describe(`modules/user-open-orders/selectors/select-account-order-markets.js`, (
             1: {
               sell: {
                 order3: {
-                  orderID: 'order3',
+                  orderId: 'order3',
                   price: '100',
                   amount: '22'
                 }
@@ -113,7 +113,7 @@ describe(`modules/user-open-orders/selectors/select-account-order-markets.js`, (
             0: {
               buy: {
                 order1: {
-                  orderID: 'order1',
+                  orderId: 'order1',
                   price: '10',
                   amount: '1',
                   owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
@@ -126,7 +126,7 @@ describe(`modules/user-open-orders/selectors/select-account-order-markets.js`, (
             1: {
               sell: {
                 order3: {
-                  orderID: 'order3',
+                  orderId: 'order3',
                   price: '100',
                   amount: '22'
                 }

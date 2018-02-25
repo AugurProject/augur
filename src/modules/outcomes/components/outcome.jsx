@@ -11,15 +11,14 @@ import { PRICE, SHARE } from 'modules/order-book/constants/order-book-value-type
 import { SCALAR } from 'modules/markets/constants/market-types'
 
 import getValue from 'utils/get-value'
-import setShareDenomination from 'utils/set-share-denomination'
 
 const Outcome = (p) => {
-  const selectedOutcomeID = getValue(p, 'selectedOutcome.id')
+  const selectedOutcomeId = getValue(p, 'selectedOutcome.id')
 
   const outcomeName = getValue(p, 'outcome.name')
 
-  const topBidShares = setShareDenomination(getValue(p, 'outcome.topBid.shares.formatted'), p.selectedShareDenomination)
-  const topAskShares = setShareDenomination(getValue(p, 'outcome.topAsk.shares.formatted'), p.selectedShareDenomination)
+  const topBidShares = getValue(p, 'outcome.topBid.shares.formatted')
+  const topAskShares = getValue(p, 'outcome.topAsk.shares.formatted')
 
   const topBidPrice = getValue(p, 'outcome.topBid.price.formatted')
   const topAskPrice = getValue(p, 'outcome.topAsk.price.formatted')
@@ -28,9 +27,9 @@ const Outcome = (p) => {
   const lastPricePercent = getValue(p, 'outcome.lastPricePercent.rounded')
 
   return (
-    <article className={classNames('outcome', { selected: selectedOutcomeID === p.outcome.id })}>
+    <article className={classNames('outcome', { selected: selectedOutcomeId === p.outcome.id })}>
       <a
-        className={classNames('unstlyed outcome-row-full', { selected: selectedOutcomeID === p.outcome.id })}
+        className={classNames('unstlyed outcome-row-full', { selected: selectedOutcomeId === p.outcome.id })}
         onClick={() => { p.updateSelectedOutcome(p.outcome) }}
       >
         {p.marketType === SCALAR ?
@@ -72,7 +71,7 @@ const Outcome = (p) => {
         <ValueDenomination formatted={lastPrice} />
       </a>
       <a
-        className={classNames('unstlyed outcome-row-condensed', { selected: selectedOutcomeID === p.outcome.id })}
+        className={classNames('unstlyed outcome-row-condensed', { selected: selectedOutcomeId === p.outcome.id })}
         onClick={() => { p.updateSelectedOutcome(p.outcome) }}
       >
         {p.marketType === SCALAR ?

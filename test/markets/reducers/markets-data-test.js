@@ -21,7 +21,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKET_CATEGORY',
-        marketID: undefined,
+        marketId: undefined,
         category: 'potent potables'
       },
       assertions: (reducedData) => {
@@ -51,7 +51,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKET_CATEGORY',
-        marketID: '0xa1',
+        marketId: '0xa1',
         category: 'potent potables'
       },
       assertions: (reducedData) => {
@@ -81,7 +81,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKET_CATEGORY',
-        marketID: '0xa1',
+        marketId: '0xa1',
         category: undefined
       },
       assertions: (reducedData) => {
@@ -111,7 +111,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKET_CATEGORY',
-        marketID: '0xa1',
+        marketId: '0xa1',
         category: 'potent potables'
       },
       assertions: (reducedData) => {
@@ -146,7 +146,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKETS_LOADING_STATUS',
-        marketIDs: [],
+        marketIds: [],
         isLoading: true
       },
       assertions: (reducedData) => {
@@ -172,7 +172,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKETS_LOADING_STATUS',
-        marketIDs: ['0xa1'],
+        marketIds: ['0xa1'],
         isLoading: true
       },
       assertions: (reducedData) => {
@@ -194,7 +194,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKETS_LOADING_STATUS',
-        marketIDs: ['0xa1'],
+        marketIds: ['0xa1'],
         isLoading: true
       },
       assertions: (reducedData) => {
@@ -216,7 +216,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKETS_LOADING_STATUS',
-        marketIDs: ['0xa1'],
+        marketIds: ['0xa1'],
         isLoading: true
       },
       assertions: (reducedData) => {
@@ -238,7 +238,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKETS_LOADING_STATUS',
-        marketIDs: ['0xa1'],
+        marketIds: ['0xa1'],
         isLoading: false
       },
       assertions: (reducedData) => {
@@ -264,7 +264,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKETS_LOADING_STATUS',
-        marketIDs: ['0xa1'],
+        marketIds: ['0xa1'],
         isLoading: true
       },
       assertions: (reducedData) => {
@@ -294,7 +294,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKETS_LOADING_STATUS',
-        marketIDs: ['0xa1'],
+        marketIds: ['0xa1'],
         isLoading: false
       },
       assertions: (reducedData) => {
@@ -329,7 +329,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKETS_LOADING_STATUS',
-        marketIDs: ['0xa1', '0xa3'],
+        marketIds: ['0xa1', '0xa3'],
         isLoading: true
       },
       assertions: (reducedData) => {
@@ -367,7 +367,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: 'UPDATE_MARKETS_LOADING_STATUS',
-        marketIDs: ['0xa2', '0xa3'],
+        marketIds: ['0xa2', '0xa3'],
         isLoading: false
       },
       assertions: (reducedData) => {
@@ -393,7 +393,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       const marketsData = {
         '0x04be50f6303babc4e5400a6ebfaa77a8a76f620dd9f6394466e552842f585801': {
           id: 2,
-          outcomeID: 'someoutcome',
+          outcomeId: 'someoutcome',
           details: {
             example: 'test'
           }
@@ -402,14 +402,14 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       const marketsData2 = {
         '0x0131d98e878803e113e2accc457ad57f5b97a87910be31d60e931c08ca4d5ef1': {
           id: 1,
-          outcomeID: 'an outcomeID',
+          outcomeId: 'an outcomeId',
           details: {
             test: 'example'
           }
         },
         '0x04be50f6303babc4e5400a6ebfaa77a8a76f620dd9f6394466e552842f585801': {
           id: 2,
-          outcomeID: 'someoutcome',
+          outcomeId: 'someoutcome',
           details: {
             example: 'test'
           }
@@ -418,7 +418,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       const curMarketsData1 = {
         '0x0131d98e878803e113e2accc457ad57f5b97a87910be31d60e931c08ca4d5ef1': {
           id: 1,
-          outcomeID: 'an outcomeID',
+          outcomeId: 'an outcomeId',
           hasLoadedMarketInfo: false,
           details: {
             test: 'example'
@@ -428,7 +428,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       const curMarketsData2 = {
         '0x0131d98e878803e113e2accc457ad57f5b97a87910be31d60e931c08ca4d5ef1': {
           id: 1,
-          outcomeID: 'an outcomeID',
+          outcomeId: 'an outcomeId',
           hasLoadedMarketInfo: false,
           details: {
             test: 'example'
@@ -436,7 +436,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
         },
         '0x04be50f6303babc4e5400a6ebfaa77a8a76f620dd9f6394466e552842f585801': {
           id: 2,
-          outcomeID: 'a different outcome',
+          outcomeId: 'a different outcome',
           details: {
             example: 'test2'
           }
@@ -445,7 +445,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       const expectedOutput = {
         '0x0131d98e878803e113e2accc457ad57f5b97a87910be31d60e931c08ca4d5ef1': {
           id: 1,
-          outcomeID: 'an outcomeID',
+          outcomeId: 'an outcomeId',
           hasLoadedMarketInfo: false,
           details: {
             test: 'example'
@@ -453,7 +453,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
         },
         '0x04be50f6303babc4e5400a6ebfaa77a8a76f620dd9f6394466e552842f585801': {
           id: 2,
-          outcomeID: 'someoutcome',
+          outcomeId: 'someoutcome',
           hasLoadedMarketInfo: false,
           details: {
             example: 'test'

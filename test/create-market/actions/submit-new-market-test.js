@@ -549,20 +549,20 @@ describe('modules/create-market/actions/submit-new-market', () => {
       const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market')
 
       // const mockUpdateTradesInProgress = sinon.stub().yields({});
-      __RewireAPI__.__Rewire__('updateTradesInProgress', (callReturn, outcomeID, type, quantity, price, nogo, cb) => {
+      __RewireAPI__.__Rewire__('updateTradesInProgress', (callReturn, outcomeId, type, quantity, price, nogo, cb) => {
         cb({})
         return {
           type: 'updateTradesInProgress',
-          outcomeID
+          outcomeId
         }
       })
 
       // const mockPlaceTrade = sinon.stub().yields();
-      __RewireAPI__.__Rewire__('placeTrade', (callReturn, outcomeID, tradeToExecute, nogo, cb) => {
+      __RewireAPI__.__Rewire__('placeTrade', (callReturn, outcomeId, tradeToExecute, nogo, cb) => {
         cb()
         return {
           type: 'placeTrade',
-          outcomeID
+          outcomeId
         }
       })
 
@@ -581,99 +581,99 @@ describe('modules/create-market/actions/submit-new-market', () => {
 
       const expected = [
         {
-          outcomeID: 1,
+          outcomeId: 1,
           type: 'placeTrade'
         },
         {
-          outcomeID: 1,
+          outcomeId: 1,
           type: 'updateTradesInProgress'
         },
         {
-          outcomeID: 1,
+          outcomeId: 1,
           type: 'placeTrade'
         },
         {
-          outcomeID: 1,
+          outcomeId: 1,
           type: 'updateTradesInProgress'
         },
         {
-          outcomeID: 1,
+          outcomeId: 1,
           type: 'placeTrade'
         },
         {
-          outcomeID: 1,
+          outcomeId: 1,
           type: 'updateTradesInProgress'
         },
         {
-          outcomeID: 1,
+          outcomeId: 1,
           type: 'placeTrade'
         },
         {
-          outcomeID: 1,
+          outcomeId: 1,
           type: 'updateTradesInProgress'
         },
         {
-          outcomeID: 1,
+          outcomeId: 1,
           type: 'placeTrade'
         },
         {
-          outcomeID: 1,
+          outcomeId: 1,
           type: 'updateTradesInProgress'
         },
         {
-          outcomeID: 1,
+          outcomeId: 1,
           type: 'placeTrade'
         },
         {
-          outcomeID: 1,
+          outcomeId: 1,
           type: 'updateTradesInProgress'
         },
         {
-          outcomeID: 0,
+          outcomeId: 0,
           type: 'placeTrade'
         },
         {
-          outcomeID: 0,
+          outcomeId: 0,
           type: 'updateTradesInProgress'
         },
         {
-          outcomeID: 0,
+          outcomeId: 0,
           type: 'placeTrade'
         },
         {
-          outcomeID: 0,
+          outcomeId: 0,
           type: 'updateTradesInProgress'
         },
         {
-          outcomeID: 0,
+          outcomeId: 0,
           type: 'placeTrade'
         },
         {
-          outcomeID: 0,
+          outcomeId: 0,
           type: 'updateTradesInProgress'
         },
         {
-          outcomeID: 0,
+          outcomeId: 0,
           type: 'placeTrade'
         },
         {
-          outcomeID: 0,
+          outcomeId: 0,
           type: 'updateTradesInProgress'
         },
         {
-          outcomeID: 0,
+          outcomeId: 0,
           type: 'placeTrade'
         },
         {
-          outcomeID: 0,
+          outcomeId: 0,
           type: 'updateTradesInProgress'
         },
         {
-          outcomeID: 0,
+          outcomeId: 0,
           type: 'placeTrade'
         },
         {
-          outcomeID: 0,
+          outcomeId: 0,
           type: 'updateTradesInProgress'
         }
       ]

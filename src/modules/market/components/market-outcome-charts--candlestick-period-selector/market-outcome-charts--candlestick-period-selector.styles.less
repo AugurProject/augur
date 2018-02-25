@@ -1,0 +1,77 @@
+@import (reference) '~assets/styles/shared';
+
+.PeriodSelector {
+  position: relative;
+}
+
+.PeriodSelector__button {
+  background-color: transparent;
+  display: flex;
+
+  svg {
+    min-height: 1em;
+    min-width: 1em;
+  }
+}
+
+.PeriodSelector__modal {
+  background-color: @color-selection-modal-background;
+  box-shadow: @box-shadow-small-modal;
+  display: none;
+  position: absolute;
+  width: 192px;
+}
+
+.PeriodSelector__modal--active {
+  display: flex;
+}
+
+.PeriodSelector__column {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  &:first-of-type {
+    h1 {
+      margin: 12px 0 8px 16px;
+    }
+  }
+
+  &:last-of-type {
+    h1 {
+      margin: 12px 0 8px 16px;
+    }
+  }
+
+  h1 {
+    &:extend(.caps--small);
+  }
+
+  ul {
+    & li:last-of-type {
+      padding-bottom: 12px;
+    }
+  }
+}
+
+.PeriodSelector__value {
+  button {
+    font-size: @font-size-small;
+    height: 100%;
+    padding: 4px 0 4px 16px;
+    text-align: left;
+    width: 100%;
+
+    &:hover:not(.PeriodSelector__value--disabled) {
+      background-color: @color-lightergray;
+    }
+  }
+}
+
+// .PeriodSelector__value--active {
+//
+// }
+//
+// .PeriodSelector__value--disabled {
+//
+// }

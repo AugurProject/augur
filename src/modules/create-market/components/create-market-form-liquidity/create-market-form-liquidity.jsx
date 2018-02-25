@@ -8,7 +8,7 @@ import BigNumber from 'bignumber.js'
 import { augur } from 'services/augurjs'
 
 import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'
-import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons/icons'
+import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 
 import { BID, ASK } from 'modules/transactions/constants/types'
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'

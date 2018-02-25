@@ -75,12 +75,11 @@
   }
 }
 
-.button--white {
+.button--white--short {
   .button;
 
   background-color: @color-white;
   color: @color-text-dark;
-  padding: 1.1em 2em;
 
   &:hover {
     background-color: @color-lightpurple;
@@ -93,4 +92,10 @@
     color: @color-lightergray;
     cursor: auto;
   }
+}
+
+.button--white {
+  .button--white--short;
+
+  padding: 1.1em 2em;
 }

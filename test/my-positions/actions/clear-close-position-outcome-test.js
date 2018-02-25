@@ -7,21 +7,21 @@ describe('modules/my-positions/actions/clear-close-position-outcome.js', () => {
   describe('clearClosePositionTradeGroup', () => {
     const test = (t) => {
       it(t.description, () => {
-        t.assertions(clearClosePositionOutcome(t.arguments.marketID, t.arguments.outcomeID))
+        t.assertions(clearClosePositionOutcome(t.arguments.marketId, t.arguments.outcomeId))
       })
     }
 
     test({
       description: 'should return the expected object',
       arguments: {
-        marketID: '0xMarketID',
-        outcomeID: '1'
+        marketId: '0xMarketId',
+        outcomeId: '1'
       },
       assertions: (res) => {
         assert.deepEqual(res, {
           type: CLEAR_CLOSE_POSITION_OUTCOME,
-          marketID: '0xMarketID',
-          outcomeID: '1'
+          marketId: '0xMarketId',
+          outcomeId: '1'
         })
       }
     })

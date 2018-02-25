@@ -12,13 +12,11 @@ import Styles from 'modules/market/components/market-outcome-charts--depth/marke
 export default class MarketOutcomeDepth extends Component {
   static propTypes = {
     marketDepth: PropTypes.object.isRequired,
-    orderBookMin: PropTypes.number.isRequired,
-    orderBookMid: PropTypes.number.isRequired,
-    orderBookMax: PropTypes.number.isRequired,
+    orderBookKeys: PropTypes.object.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
-    hoveredPrice: PropTypes.any,
     updateHoveredPrice: PropTypes.func.isRequired,
-    updateHoveredDepth: PropTypes.func.isRequired
+    updateHoveredDepth: PropTypes.func.isRequired,
+    hoveredPrice: PropTypes.any
   }
 
   constructor(props) {
@@ -101,16 +99,16 @@ export default class MarketOutcomeDepth extends Component {
       const allowedFloat = 2 // TODO -- set this to the precision
 
       // Determine bounding diff
-      const maxDiff = Math.abs(this.props.orderBookMid - this.props.orderBookMax)
-      const minDiff = Math.abs(this.props.orderBookMid - this.props.orderBookMin)
+      const maxDiff = Math.abs(this.props.orderBookKeys.mid - this.props.orderBookKeys.max)
+      const minDiff = Math.abs(this.props.orderBookKeys.mid - this.props.orderBookKeys.min)
       const boundDiff = (maxDiff > minDiff ? maxDiff : minDiff)
 
       // Set interval step
       const step = boundDiff / ((intervals - 1) / 2)
 
       const yDomain = new Array(intervals).fill(null).reduce((p, _unused, i) => {
-        if (i === 0) return [Number((this.props.orderBookMid - boundDiff).toFixed(allowedFloat))]
-        if (i + 1 === Math.round(intervals / 2)) return [...p, this.props.orderBookMid]
+        if (i === 0) return [Number((this.props.orderBookKeys.mid - boundDiff).toFixed(allowedFloat))]
+        if (i + 1 === Math.round(intervals / 2)) return [...p, this.props.orderBookKeys.mid]
         return [...p, Number((p[i - 1] + step).toFixed(allowedFloat))]
       }, [])
 
@@ -215,13 +213,13 @@ export default class MarketOutcomeDepth extends Component {
           return (this.props.hoveredPrice < p[1] && this.props.hoveredPrice > order[1]) ? order : p
         }, null)
 
-        // TODO -- this is actually pushing a TON of extra sides into the array...initial look confused me, moving on, will circle back
-        fillingSideOrder.push(side)
-
-        // We actually infer the side based on proximity
         if (p === null) return fillingSideOrder
+
+        fillingSideOrder.push(side)
         return Math.abs(this.props.hoveredPrice - p[1]) < Math.abs(this.props.hoveredPrice - fillingSideOrder[1]) ? p : fillingSideOrder
       }, null)
+
+      if (nearestCompletelyFillingOrder === null) return
 
       this.props.updateHoveredDepth(nearestCompletelyFillingOrder)
 

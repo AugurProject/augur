@@ -18,7 +18,6 @@ export default class MarketPortfolioCard extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
     closePositionStatus: PropTypes.object.isRequired,
-    scalarShareDenomination: PropTypes.object.isRequired,
     linkType: PropTypes.string,
     positionsDefault: PropTypes.bool,
     claimTradingProceeds: PropTypes.func,
@@ -188,7 +187,7 @@ export default class MarketPortfolioCard extends Component {
             <div className={PositionStyles['MarketPositionsList__table-body']}>
               { this.state.tableOpen.myPositions && (myPositionOutcomes || []).filter(outcome => outcome.position).map(outcome => (
                 <MarketPositionsListPosition
-                  key={outcome.id + outcome.marketID}
+                  key={outcome.id + outcome.marketId}
                   name={outcome.name}
                   position={outcome.position}
                   openOrders={outcome.userOpenOrders ? outcome.userOpenOrders.filter(order => order.id === outcome.position.id && order.pending === true) : []}

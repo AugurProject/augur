@@ -14,25 +14,32 @@ const ReportingReportConfirm = p => (
           <ul className={ConfirmStyles['Confirm__list--left-align']}>
             <li>
               <span>Market</span>
-              <span>{ p.isMarketValid ? 'Valid' : 'Invalid' }</span>
+              <span>{ p.isMarketInValid ? 'Invalid' : 'Valid' }</span>
             </li>
-            { p.isMarketValid &&
+            { !p.isMarketInValid &&
               <li>
                 <span>Outcome</span>
                 <span>{ p.selectedOutcome }</span>
               </li>
             }
+            { !p.isOpenReporting &&
             <li>
               <span>Stake</span>
               <span>{ p.stake instanceof BigNumber ? p.stake.toNumber() : p.stake } REP</span>
             </li>
+            }
             <li>
               <span>Gas</span>
-              <span>0.0023 ETH (2.8%)</span>
+              <span>-- ETH</span>
             </li>
           </ul>
         </div>
       </div>
+      { p.isOpenReporting && p.designatedReportNoShowReputationBond && p.reporterGasCost &&
+        <div className={ConfirmStyles.Confirm__note_text}>
+        If your report is accepted as the winning outcome, you will receive at least {p.designatedReportNoShowReputationBond.formatted} REP and {p.reporterGasCost.formatted} ETH
+        </div>
+      }
     </div>
   </article>
 )
@@ -41,7 +48,10 @@ ReportingReportConfirm.propTypes = {
   market: PropTypes.object.isRequired,
   selectedOutcome: PropTypes.string.isRequired,
   stake: PropTypes.string.isRequired,
-  isMarketValid: PropTypes.bool,
+  isMarketInValid: PropTypes.bool,
+  isOpenReporting: PropTypes.bool.isRequired,
+  designatedReportNoShowReputationBond: PropTypes.object,
+  reporterGasCost: PropTypes.object,
 }
 
 export default ReportingReportConfirm

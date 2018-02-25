@@ -10,7 +10,7 @@ describe(`modules/trade/selectors/trade-in-progress.js`, () => {
   const middlewares = [thunk]
   const mockStore = configureMockStore(middlewares)
   const testState = {
-    selectedMarketID: 'testmarket',
+    selectedMarketId: 'testmarket',
     tradesInProgress: {
       testmarket: 'this is a test'
     }
@@ -21,11 +21,11 @@ describe(`modules/trade/selectors/trade-in-progress.js`, () => {
     '../../../store': store
   })
 
-  it(`should return tradesInProgress[selectedMarketID] if available`, () => {
+  it(`should return tradesInProgress[selectedMarketId] if available`, () => {
     assert.equal(selector.default(), 'this is a test', `selector.default() is not 'this is a test'`)
   })
 
-  it(`should return undefined if tradesInProgress[selectedMarketID] doesn't exist`, () => {
+  it(`should return undefined if tradesInProgress[selectedMarketId] doesn't exist`, () => {
     assert.isUndefined(realSelector(), `isn't undefined as expected with blank state`)
   })
 })

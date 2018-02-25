@@ -33,7 +33,7 @@ import NavAccountIcon from 'modules/common/components/nav-account-icon'
 import NavCreateIcon from 'modules/common/components/nav-create-icon'
 import NavMarketsIcon from 'modules/common/components/nav-markets-icon'
 import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon'
-import { AlertCircle, NavReportingIcon } from 'modules/common/components/icons/icons'
+import { AlertCircle, NavReportingIcon } from 'modules/common/components/icons'
 
 import parsePath from 'modules/routes/helpers/parse-path'
 import makePath from 'modules/routes/helpers/make-path'

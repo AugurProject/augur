@@ -2,65 +2,64 @@
 
 .AccountDeposit {
   background: white;
-  padding: 5.625rem 0 3rem 4.375rem;
-  width: 100%;
+  padding: 5.5rem 4.625rem 7rem;
 }
 
 .AccountDeposit__heading {
-  margin-bottom: 40px;
-  width: 100%;
+  margin-bottom: 2.5rem;
 
-  h1 {
+  > h1 {
     color: @color-darkpurple;
+    display: inline-block;
     font-size: 1.875rem;
     font-weight: 500;
     letter-spacing: 0.14rem;
+    margin-bottom: 0;
     margin-right: 1rem;
     text-transform: uppercase;
-  }
-
-  > * {
-    display: inline-block;
   }
 }
 
 .AccountDeposit__main {
   display: flex;
-  flex-flow: row wrap;
-  width: 100%;
+  max-width: @max-width;
+
+  > div {
+    padding-left: 5%;
+    padding-right: 5%;
+
+    &:first-child {
+      padding-left: 0;
+      width: 33%;
+    }
+
+    &:nth-child(2) {
+      width: 47%;
+    }
+
+    &:last-child {
+      padding-right: 0;
+      width: 20%;
+    }
+
+    &:not(:first-child) {
+      border-left: 1px solid @color-lightergray;
+    }
+  }
 }
 
 .AccountDeposit__description {
-  border-right: 1px solid @color-lightergray;
-  flex: 0 0 auto;
-  width: 26.25rem;
-
-  p {
-    font-size: 1.125rem;
+  > p {
+    font-size: @font-size-large;
+    line-height: 1.5rem;
     margin: 0 0 1.5rem;
   }
 
-  a {
+  > a {
+    &:extend(.caps--large);
+
     color: @color-purple;
-    font-size: 1.125rem;
     font-weight: 500;
-    text-transform: uppercase;
-  }
-}
-
-.AccountDeposit__qrZone {
-  border-right: 1px solid @color-lightergray;
-  display: flex;
-  flex: 1 auto;
-  justify-content: center;
-}
-
-.AccountDeposit__address {
-  flex: 1 0 26.25rem;
-  margin-left: 2.56rem;
-
-  > * {
-    display: inline-block;
   }
 }
 
@@ -69,16 +68,14 @@
 }
 
 .AccountDeposit__addressLabel {
+  &:extend(.caps);
+
   color: @color-lightgray;
-  display: block;
-  font-size: 1rem;
-  margin-bottom: 0.75rem;
-  text-transform: uppercase;
-  width: 100%;
+  font-size: @font-size-normal;
+  margin-bottom: 0.625rem;
 }
 
 .AccountDeposit__addressString {
-  font-size: 0.75rem;
   margin-right: 0.5rem;
   vertical-align: text-top;
 }
@@ -118,11 +115,6 @@
     a {
       font-size: 1.125rem;
     }
-  }
-
-  .AccountDeposit__qrZone {
-    border: none;
-    margin-bottom: 2rem;
   }
 
   .AccountDeposit__address {
