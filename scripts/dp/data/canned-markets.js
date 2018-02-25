@@ -113,7 +113,7 @@ module.exports = [{
 }, {
   marketType: "binary",
   _description: "Will antibiotics be outlawed for agricultural use in China by the end of " + nextYear + "?",
-  _endTime: parseInt(new Date("1-1-" + parseInt(nextYear, 10) + 1).getTime() / 1000, 10),
+  _endTime: parseInt(new Date("1-1-" + (parseInt(nextYear, 10) + 1)).getTime() / 1000, 10),
   _topic: "agriculture",
   _extraInfo: {
     tags: ["antibiotics", "China"],
