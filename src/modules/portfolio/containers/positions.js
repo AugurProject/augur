@@ -6,7 +6,6 @@ import Positions from 'modules/portfolio/components/positions/positions'
 import getLoginAccountPositions from 'modules/my-positions/selectors/login-account-positions'
 import getOpenOrders from 'modules/user-open-orders/selectors/open-orders'
 import getClosePositionStatus from 'modules/my-positions/selectors/close-position-status'
-import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination'
 import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades'
 import { triggerTransactionsExport } from 'modules/transactions/actions/trigger-transactions-export'
 import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
@@ -39,7 +38,6 @@ const mapStateToProps = (state) => {
     reportingMarkets,
     closedMarkets,
     closePositionStatus: getClosePositionStatus(),
-    scalarShareDenomination: getScalarShareDenomination(),
     transactionsLoading: state.transactionsLoading,
     hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber,
     registerBlockNumber: state.loginAccount.registerBlockNumber,
