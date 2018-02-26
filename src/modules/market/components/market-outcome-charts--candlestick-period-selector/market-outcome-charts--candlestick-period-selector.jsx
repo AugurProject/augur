@@ -23,8 +23,8 @@ export default class PeriodSelector extends Component {
     super(props)
 
     this.state = {
-      selectedPeriod: null,
-      selectedRange: null,
+      selectedPeriod: -1,
+      selectedRange: -1,
       permissibleRanges: [],
       permissiblePeriods: [],
       isModalActive: false
@@ -47,13 +47,15 @@ export default class PeriodSelector extends Component {
     }
   }
 
-  updatePermissibleValues(priceTimeSeries, selectedPeriod, selectedRange) {
+  updatePermissibleValues(priceTimeSeries, selectedPeriod = 86400000, selectedRange) {
     // NOTE --  fundamental assumption is that the RANGES and PERIODS arrays have
     //          the same number of values that also directly correspond to each other
 
-    const seriesRange = !isEmpty(priceTimeSeries) ?
-      priceTimeSeries[priceTimeSeries.length - 1][0] - priceTimeSeries[0][0] :
-      null
+    // const seriesRange = !isEmpty(priceTimeSeries) ?
+    //   priceTimeSeries[priceTimeSeries.length - 1][0] - priceTimeSeries[0][0] :
+    //   null
+
+    const seriesRange = 31557600001
 
     console.log('seriesRange -- ', seriesRange)
 
@@ -63,7 +65,7 @@ export default class PeriodSelector extends Component {
     if (seriesRange !== null) {
       // Going to do this in two steps (easier to reason about)
 
-      // Permissible based on series range
+      // Permissible ranges based on series
       permissibleRanges = RANGES.reduce((p, currentRange, i) => {
         const updatedPermissibleRange = p
 
@@ -75,10 +77,8 @@ export default class PeriodSelector extends Component {
           return updatedPermissibleRange
         }
 
-        console.log(currentRange.range, seriesRange, currentRange.range <= seriesRange)
-
         // Upper Bound
-        if (currentRange.range === null) { // Null is a special case that denotes 'Full Range'
+        if (currentRange.range === null) { // null is a special case that denotes 'Full range'
           if (seriesRange > RANGES[i - 1].range) updatedPermissibleRange[1] = currentRange.range
         } else if (currentRange.range <= seriesRange) {
           updatedPermissibleRange[1] = currentRange.range
@@ -87,7 +87,18 @@ export default class PeriodSelector extends Component {
         return updatedPermissibleRange
       }, [])
 
-      // Permissible based on selection
+      // Permissible ranges based on selection
+      console.log(selectedPeriod, permissibleRanges[1])
+      if (selectedPeriod !== null && selectedPeriod !== -1) { // null here denotes 'Every block'
+        RANGES.find((range, i) => {
+          if (selectedPeriod === range.range) {
+            permissibleRanges[0] = RANGES[i + 1].range
+            return true
+          }
+
+          return false
+        })
+      }
     }
 
     console.log('updatedValues -- ', permissibleRanges, permissiblePeriods)
