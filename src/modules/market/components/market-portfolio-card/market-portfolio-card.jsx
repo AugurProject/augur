@@ -139,7 +139,12 @@ export default class MarketPortfolioCard extends Component {
         </section>
         <section className={Styles.MarketCard__tablesection}>
           {(myPositionOutcomes || []).filter(outcome => outcome.position).length !== 0 &&
-            <div className={Styles.MarketCard__headingcontainer}>
+            <div
+              className={Styles.MarketCard__headingcontainer}
+              role="button"
+              tabIndex="0"
+              onClick={() => this.toggleTable('myPositions')}
+            >
               <h1 className={Styles.MarketCard__tableheading}>
                 My Positions
               </h1>
@@ -201,7 +206,12 @@ export default class MarketPortfolioCard extends Component {
         <section className={Styles.MarketCard__tablesection}>
           <div className={PositionStyles.MarketPositionsList__table}>
             {this.props.market.outcomes[0] && this.props.market.outcomes[0].userOpenOrders && this.props.market.outcomes[0].userOpenOrders.length !== 0 &&
-              <div className={Styles.MarketCard__headingcontainer}>
+              <div
+                className={Styles.MarketCard__headingcontainer}
+                role="button"
+                tabIndex="0"
+                onClick={() => this.toggleTable('openOrders')}
+              >
                 <h1 className={Styles.MarketCard__tableheading}>
                   Open Orders
                 </h1>
