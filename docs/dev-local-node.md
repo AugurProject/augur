@@ -159,7 +159,7 @@ A few caveats about pushing time: `augur-node` maintains a state machine, so onc
     ** change time
     node scripts/flash push-time PUSH,+3d       # pushes time by adding 3 days
     node scripts/flash push-time SET,CURRENT    # sets contract time to your local time
-    node scripts/flash push-time SET,1546322400 # sets the contract time to unit timestamp
+    node scripts/flash push-time SET,1546322400 # sets the contract time to unix timestamp
 
     ** do initial reporter
     node scripts/flash designate-report <market id>,<market outcome>,<invalid> # uses ETHEREUM_PRIVATE_KEY as designated reporter

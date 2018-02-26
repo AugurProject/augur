@@ -5,13 +5,12 @@ import { syncBlockchain } from 'modules/app/actions/sync-blockchain'
 import syncUniverse from 'modules/universe/actions/sync-universe'
 import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
+import { loadFullMarket } from 'modules/market/actions/load-full-market'
 import { updateOutcomePrice } from 'modules/markets/actions/update-outcome-price'
 import { removeCanceledOrder } from 'modules/bids-asks/actions/update-order-status'
-// import { fillOrder } from 'modules/bids-asks/actions/update-market-order-book'
 import { updateMarketCategoryPopularity } from 'modules/categories/actions/update-categories'
 import { updateAccountTradesData, updateAccountBidsAsksData, updateAccountCancelsData, updateAccountPositionsData } from 'modules/my-positions/actions/update-account-trades-data'
 import { addNotification } from 'modules/notifications/actions/update-notifications'
-// import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
 import makePath from 'modules/routes/helpers/make-path'
 import * as TYPES from 'modules/transactions/constants/types'
 import { MY_MARKETS, DEFAULT_VIEW } from 'modules/routes/constants/views'
@@ -55,7 +54,7 @@ export function listenToUpdates(history) {
         if (log) {
           console.log('TokensTransferred:', log)
           const { address } = getState().loginAccount
-          if (log._from === address || log._to === address) {
+          if (log.from === address || log.to === address) {
             dispatch(updateAssets())
             dispatch(convertLogsToTransactions(TYPES.TRANSFER, [log]))
           }
@@ -96,6 +95,7 @@ export function listenToUpdates(history) {
           console.log('OrderFilled:', log)
           dispatch(updateOutcomePrice(log.marketId, log.outcome, new BigNumber(log.price, 10)))
           dispatch(updateMarketCategoryPopularity(log.market, log.amount))
+          dispatch(loadFullMarket(log.marketId))
           const { address } = getState().loginAccount
           if (log.filler === address || log.creator === address) {
             // dispatch(convertLogsToTransactions(TYPES.FILL_ORDER, [log]))
@@ -113,7 +113,6 @@ export function listenToUpdates(history) {
               }
             }))
             dispatch(updateAssets())
-            dispatch(loadMarketsInfo([log.marketId]))
             console.log('MSG -- ', log)
           }
         }
