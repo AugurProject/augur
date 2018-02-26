@@ -9,16 +9,17 @@ import { MODAL_ACCOUNT_APPROVAL } from 'modules/modal/constants/modal-types'
 import { updateModal } from 'modules/modal/actions/update-modal'
 
 import getValue from 'utils/get-value'
+import logError from 'utils/log-error'
 
-export const loadAccountData = account => (dispatch) => {
+export const loadAccountData = (account, callback = logError) => (dispatch) => {
   const address = getValue(account, 'address')
-  if (!address) return console.error('account address required')
+  if (!address) return callback('account address required')
   dispatch(loadAccountDataFromLocalStorage(account.address))
   dispatch(updateLoginAccount(account))
   dispatch(loadAccountPositions())
   dispatch(updateAssets())
   dispatch(checkAccountAllowance((err, allowance) => {
-    if (err) return console.log(err)
+    if (err) return callback(err)
     if (allowance === '0') {
       dispatch(updateModal({
         type: MODAL_ACCOUNT_APPROVAL
