@@ -598,9 +598,9 @@ augur-core@0.12.0-18:
     path "0.12.7"
     recursive-readdir "2.2.1"
 
-augur.js@4.7.2-14:
-  version "4.7.2-14"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.7.2-14.tgz#611bff29c09207abfa5f2686fd096e7a422ba843"
+augur.js@4.7.3-0:
+  version "4.7.3-0"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.7.3-0.tgz#ca2a4d3eace3e0ff48e09596d8ea8348406f99eb"
   dependencies:
     "@types/bignumber.js" "4.0.3"
     async "1.5.2"
@@ -609,7 +609,7 @@ augur.js@4.7.2-14:
     clone "2.1.1"
     columnify "1.5.4"
     ethereumjs-connect "4.4.9"
-    ethrpc "4.5.12"
+    ethrpc "4.5.14"
     event-emitter "0.3.5"
     immutable-delete "1.1.0"
     keccak "1.2.0"
@@ -3617,6 +3617,10 @@ es6-map@^0.1.3:
     es6-symbol "~3.1.1"
     event-emitter "~0.3.5"
 
+es6-promise@4.2.4:
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-4.2.4.tgz#dc4221c2b16518760bd8c39a52d8f356fc00ed29"
+
 es6-set@~0.1.5:
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/es6-set/-/es6-set-0.1.5.tgz#d2b3ec5d4d800ced818db538d28974db0a73ccb1"
@@ -4050,14 +4054,15 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@4.5.12:
-  version "4.5.12"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.5.12.tgz#3ef566b43770e749fa386f60e1e0d47290b6d671"
+ethrpc@4.5.14:
+  version "4.5.14"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.5.14.tgz#c67b259c19d78c5172a609aa462e404a258c901b"
   dependencies:
     async "1.5.2"
     bignumber.js "2.3.0"
     browser-request "0.3.3"
     clone "2.1.1"
+    es6-promise "4.2.4"
     ethereumjs-blockstream "4.0.1"
     ethereumjs-tx "1.3.1"
     immutable-delete "1.0.1"
