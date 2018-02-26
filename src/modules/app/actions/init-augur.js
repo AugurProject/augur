@@ -3,7 +3,7 @@ import { updateEnv } from 'modules/app/actions/update-env'
 import { updateConnectionStatus, updateAugurNodeConnectionStatus } from 'modules/app/actions/update-connection'
 import { updateContractAddresses } from 'modules/contracts/actions/update-contract-addresses'
 import { updateFunctionsAPI, updateEventsAPI } from 'modules/contracts/actions/update-contract-api'
-import { setLoginAccount } from 'modules/auth/actions/set-login-account'
+import { useUnlockedAccount } from 'modules/auth/actions/use-unlocked-account'
 import { logout } from 'modules/auth/actions/logout'
 import { loadUniverse } from 'modules/app/actions/load-universe'
 import { registerTransactionRelay } from 'modules/transactions/actions/register-transaction-relay'
@@ -18,15 +18,15 @@ import { MODAL_NETWORK_MISMATCH } from 'modules/modal/constants/modal-types'
 const POLL_INTERVAL_DURATION = 250
 
 function pollForAccount(dispatch, getState) {
+  const { env } = getState()
   let account
 
   setInterval(() => {
     AugurJS.augur.rpc.eth.accounts((accounts) => {
       if (account !== accounts[0]) {
         account = accounts[0]
-
-        if (account) {
-          dispatch(setLoginAccount(true, account))
+        if (account && env['auto-login']) {
+          dispatch(useUnlockedAccount(account))
         } else {
           dispatch(logout())
         }

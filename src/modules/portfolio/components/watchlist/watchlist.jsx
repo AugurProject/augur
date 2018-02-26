@@ -16,7 +16,6 @@ class WatchList extends Component {
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
-    scalarShareDenomination: PropTypes.object.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
     loadMarketsInfo: PropTypes.func.isRequired,
     isMobile: PropTypes.bool,
@@ -100,7 +99,6 @@ class WatchList extends Component {
           filteredMarkets={p.filteredMarkets}
           location={p.location}
           history={p.history}
-          scalarShareDenomination={p.scalarShareDenomination}
           toggleFavorite={p.toggleFavorite}
           loadMarketsInfo={p.loadMarketsInfo}
           linkType={TYPE_TRADE}

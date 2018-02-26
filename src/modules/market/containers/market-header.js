@@ -13,7 +13,7 @@ const mergeProps = (sP, dP, oP) => {
   return {
     ...oP,
     description: market.description,
-    details: market.extraInfo,
+    details: market.extraInfo || '',
     resolutionSource: market.resolutionSource,
     coreProperties: {
       volume: getValue(market, 'volume.formatted'),

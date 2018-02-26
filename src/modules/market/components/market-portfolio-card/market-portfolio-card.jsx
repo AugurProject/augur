@@ -18,7 +18,6 @@ export default class MarketPortfolioCard extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
     closePositionStatus: PropTypes.object.isRequired,
-    scalarShareDenomination: PropTypes.object.isRequired,
     linkType: PropTypes.string,
     positionsDefault: PropTypes.bool,
     claimTradingProceeds: PropTypes.func,

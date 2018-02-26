@@ -204,7 +204,7 @@ export default class MarketOutcomeDepth extends Component {
       this.props.updateHoveredDepth([])
     } else {
       const nearestCompletelyFillingOrder = Object.keys(this.props.marketDepth).reduce((p, side) => {
-        const fillingSideOrder = this.props.marketDepth[side].reduce((p, order) => {
+        let fillingSideOrder = this.props.marketDepth[side].reduce((p, order) => {
           if (p === null) return order
           if (side === ASKS) {
             return (this.props.hoveredPrice > p[1] && this.props.hoveredPrice < order[1]) ? order: p
@@ -215,7 +215,11 @@ export default class MarketOutcomeDepth extends Component {
 
         if (p === null) return fillingSideOrder
 
-        fillingSideOrder.push(side)
+        if (fillingSideOrder == null) {
+          fillingSideOrder = [side]
+        } else {
+          fillingSideOrder.push(side)
+        }
         return Math.abs(this.props.hoveredPrice - p[1]) < Math.abs(this.props.hoveredPrice - fillingSideOrder[1]) ? p : fillingSideOrder
       }, null)
 

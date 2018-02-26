@@ -7,6 +7,7 @@ import BigNumber from 'bignumber.js'
 
 import { MARKET, LIMIT } from 'modules/transactions/constants/types'
 import { SCALAR } from 'modules/markets/constants/market-types'
+import { isEqual } from 'lodash'
 
 import Styles from 'modules/market/components/market-trading--form/market-trading--form.styles'
 
@@ -25,16 +26,16 @@ class MarketTradingForm extends Component {
     isMobile: PropTypes.bool.isRequired,
     minPrice: PropTypes.number.isRequired,
     maxPrice: PropTypes.number.isRequired,
-    availableFunds: PropTypes.instanceOf(BigNumber).isRequied
+    availableFunds: PropTypes.instanceOf(BigNumber).isRequired
   }
 
   constructor(props) {
     super(props)
 
     this.INPUT_TYPES = {
-      QUANTITY: 'QUANTITY',
-      PRICE: 'PRICE',
-      MARKET_ORDER_SIZE: 'MARKET_ORDER_SIZE'
+      QUANTITY: 'orderQuantity',
+      PRICE: 'orderPrice',
+      MARKET_ORDER_SIZE: 'marketOrderTotal'
     }
 
     this.state = {
@@ -46,64 +47,144 @@ class MarketTradingForm extends Component {
         [this.INPUT_TYPES.PRICE]: [],
         [this.INPUT_TYPES.MARKET_ORDER_SIZE]: [],
       },
-      isOrderValid: true
+      isOrderValid: false
     }
+    this.orderValidation = this.orderValidation.bind(this)
+    this.testQuantity = this.testQuantity.bind(this)
+    this.testPrice = this.testPrice.bind(this)
+    this.updateTrade = this.updateTrade.bind(this)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const newStateInfo = {
+      [this.INPUT_TYPES.QUANTITY]: nextProps[this.INPUT_TYPES.QUANTITY],
+      [this.INPUT_TYPES.PRICE]: nextProps[this.INPUT_TYPES.PRICE],
+      [this.INPUT_TYPES.MARKET_ORDER_SIZE]: nextProps[this.INPUT_TYPES.MARKET_ORDER_SIZE],
+    }
+    const currentStateInfo = {
+      [this.INPUT_TYPES.QUANTITY]: this.state[this.INPUT_TYPES.QUANTITY],
+      [this.INPUT_TYPES.PRICE]: this.state[this.INPUT_TYPES.PRICE],
+      [this.INPUT_TYPES.MARKET_ORDER_SIZE]: this.state[this.INPUT_TYPES.MARKET_ORDER_SIZE],
+    }
+    const newOrderInfo = {
+      orderEstimate: nextProps.orderEstimate,
+      selectedNav: nextProps.selectedNav,
+      ...newStateInfo,
+    }
+    const currentOrderInfo = {
+      orderEstimate: this.props.orderEstimate,
+      selectedNav: this.props.selectedNav,
+      ...currentStateInfo,
+    }
+
+    if (!isEqual(newOrderInfo, currentOrderInfo)) {
+      // trade has changed, lets update trade.
+      this.updateTrade(newStateInfo, nextProps)
+
+      const nextTradePrice = nextProps.selectedOutcome.trade.limitPrice
+      const prevTradePrice = this.props.selectedOutcome.trade.limitPrice
+      // limitPrice is being defaulted and we had no value in the input box
+      const priceChange = (prevTradePrice === null && nextTradePrice !== null)
+      // limitPrice is being updated in the background, but we have no limitPrice input set.
+      const forcePriceUpdate = (prevTradePrice === nextTradePrice) && (nextTradePrice !== null) && isNaN(new BigNumber(this.state[this.INPUT_TYPES.PRICE])) && isNaN(new BigNumber(nextProps[this.INPUT_TYPES.PRICE]))
+
+      if ((priceChange || forcePriceUpdate)) {
+        // if limitPrice input hasn't been changed and we have defaulted the limitPrice, populate the field so as to not confuse the user as to where estimates are coming from.
+        this.props.updateState(this.INPUT_TYPES.PRICE, new BigNumber(nextTradePrice))
+      }
+
+      // orderValidation
+      const { isOrderValid, errors } = this.orderValidation(newStateInfo, nextProps)
+      // update state
+      this.setState({ ...newStateInfo, errors, isOrderValid })
+    }
+  }
+
+  testQuantity(value, errors, isOrderValid) {
+    let errorCount = 0
+    let passedTest = !!isOrderValid
+    if (isNaN(value)) return { isOrderValid: false, errors, errorCount }
+    if (value.lt(0)) {
+      errorCount += 1
+      passedTest = false
+      errors[this.INPUT_TYPES.QUANTITY].push('Quantity must be greater than 0')
+    }
+    return { isOrderValid: passedTest, errors, errorCount }
+  }
+
+  testPrice(value, errors, isOrderValid) {
+    let errorCount = 0
+    let passedTest = !!isOrderValid
+    if (isNaN(value)) return { isOrderValid: false, errors, errorCount }
+    if (value.lt(this.props.minPrice) || value.gt(this.props.maxPrice)) {
+      errorCount += 1
+      passedTest = false
+      errors[this.INPUT_TYPES.PRICE].push(`Price must be between ${this.props.minPrice} - ${this.props.maxPrice}`)
+    }
+    return { isOrderValid: passedTest, errors, errorCount }
+  }
+
+  orderValidation(order) {
+    let errors = {
+      [this.INPUT_TYPES.QUANTITY]: [],
+      [this.INPUT_TYPES.PRICE]: [],
+      [this.INPUT_TYPES.MARKET_ORDER_SIZE]: [],
+    }
+    let isOrderValid = true
+    let errorCount = 0
+
+    let value = new BigNumber(order[this.INPUT_TYPES.QUANTITY])
+    const { isOrderValid: quantityValid, errors: quantityErrors, errorCount: quantityErrorCount } = this.testQuantity(value, errors, isOrderValid)
+    isOrderValid = quantityValid
+    errorCount += quantityErrorCount
+    errors = { ...errors, ...quantityErrors }
+
+    value = new BigNumber(order[this.INPUT_TYPES.PRICE])
+    const { isOrderValid: priceValid, errors: priceErrors, errorCount: priceErrorCount } = this.testPrice(value, errors, isOrderValid)
+    isOrderValid = priceValid
+    errorCount += priceErrorCount
+    errors = { ...errors, ...priceErrors }
+
+    return { isOrderValid, errors, errorCount }
+  }
+
+  updateTrade(updatedState, propsToUse) {
+    let { props } = this
+    if (propsToUse) props = propsToUse
+    const side = props.selectedNav
+    const limitPrice = updatedState[this.INPUT_TYPES.PRICE]
+    let shares = updatedState[this.INPUT_TYPES.QUANTITY]
+    if (shares === null || shares === undefined) {
+      shares = '0'
+    }
+    props.selectedOutcome.trade.updateTradeOrder(shares, limitPrice, side, null)
   }
 
   validateForm(property, rawValue) {
     let value = rawValue
     if (!(value instanceof BigNumber) && value !== '') value = new BigNumber(value)
-
-    const errors = {}
-
-    // TODO --
-    // Update trade summary if valid
-
-    if (property === this.INPUT_TYPES.PRICE) {
-      errors[this.INPUT_TYPES.PRICE] = []
-      if (
-        rawValue !== '' &&
-        (value.lt(this.props.minPrice) || value.gt(this.props.maxPrice))
-      ) {
-        errors[this.INPUT_TYPES.PRICE].push(`Price must be between ${this.props.minPrice} - ${this.props.maxPrice}`)
-      }
+    const updatedState = {
+      ...this.state,
+      [property]: value
     }
+    const { isOrderValid, errors, errorCount } = this.orderValidation(updatedState, this.props)
+    // update the state of the parent component to reflect new property/value
+    // only update the trade if there were no errors detected.
+    this.props.updateState(property, value)
 
-    if (property === this.INPUT_TYPES.QUANTITY) {
-      errors[this.INPUT_TYPES.QUANTITY] = []
-      if (
-        rawValue !== '' &&
-        (value.lt(0))
-      ) {
-        errors[this.INPUT_TYPES.QUANTITY].push('Quantity must be greater than 0')
-      }
+    if (errorCount === 0) {
+      this.updateTrade(updatedState)
     }
-
-    if (property === this.INPUT_TYPES.MARKET_ORDER_SIZE) {
-      errors[this.INPUT_TYPES.MARKET_ORDER_SIZE] = []
-      if (rawValue !== '') {
-        if (
-          value.gt(this.props.availableFunds)
-        ) {
-          errors[this.INPUT_TYPES.MARKET_ORDER_SIZE].push(`Cannot exceed account ETH balance of ${this.props.availableFunds.toNumber()}`)
-        }
-        if (
-          value.lt(0)
-        ) {
-          errors[this.INPUT_TYPES.MARKET_ORDER_SIZE].push(`Cannot be a negative number`)
-        }
-      }
-    }
-
+    // update the local state of this form
     this.setState({
       errors: {
         ...this.state.errors,
         ...errors
       },
-      [property]: value
+      [property]: value,
+      isOrderValid
     })
   }
-
   render() {
     const p = this.props
     const s = this.state
@@ -113,22 +194,7 @@ class MarketTradingForm extends Component {
 
     return (
       <ul className={Styles['TradingForm__form-body']}>
-        <li>
-          <label>Order Type</label>
-          <div className={Styles.TradingForm__type}>
-            <button
-              className={classNames({ [`${Styles.active}`]: p.orderType === MARKET })}
-              onClick={() => p.updateState('orderType', MARKET)}
-            >Market
-            </button>
-            <button
-              className={classNames({ [`${Styles.active}`]: p.orderType === LIMIT })}
-              onClick={() => p.updateState('orderType', LIMIT)}
-            >Limit
-            </button>
-          </div>
-        </li>
-        { p.orderType === LIMIT && !p.isMobile && p.market.marketType !== SCALAR &&
+        { !p.isMobile && p.market.marketType !== SCALAR &&
           <li>
             <label>Outcome</label>
             <div className={Styles['TradingForm__static-field']}>{ p.selectedOutcome.name }</div>
@@ -195,8 +261,8 @@ class MarketTradingForm extends Component {
         }
         <li className={Styles['TradingForm__button--review']}>
           <button
-            disabled={!s.isOrderValid}
-            onClick={p.isOrderValid && p.nextPage}
+            disabled={(!s.isOrderValid)}
+            onClick={s.isOrderValid ? p.nextPage : undefined}
           >Review
           </button>
         </li>

@@ -20,7 +20,7 @@ export const loginWithAirbitzEthereumWallet = (airbitzAccount, ethereumWallet, h
     },
     name: airbitzAccount.username,
     airbitzAccount
-  }, true))
+  }))
 }
 
 // Create an ethereum wallet if one doesn't exist
