@@ -21,7 +21,7 @@ export const generateOutcomePositionSummary = memoize((adjustedPosition) => {
     return null
   }
   const outcomePositions = Array.isArray(adjustedPosition) ? adjustedPosition.length : 1
-  const qtyShares = accumulate(adjustedPosition, 'numSharesAdjustedForUserIntention')
+  const qtyShares = accumulate(adjustedPosition, 'numSharesAdjusted')
   const realized = accumulate(adjustedPosition, 'realizedProfitLoss')
   const unrealized = accumulate(adjustedPosition, 'unrealizedProfitLoss')
   // todo: check if this calculation is correct for UI

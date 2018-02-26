@@ -48,7 +48,7 @@ const findBounds = memoize((outcome = {}) => {
 })
 
 const orderAndAssignCumulativeShares = memoize((orderBook) => {
-  const rawBids = (orderBook[BIDS] || []).slice()
+  const rawBids = ((orderBook || {})[BIDS] || []).slice()
   const bids = rawBids
     .sort((a, b) => b.price.value - a.price.value)
     .reduce((p, order, i, orders) => [
@@ -60,7 +60,7 @@ const orderAndAssignCumulativeShares = memoize((orderBook) => {
       }
     ], [])
 
-  const rawAsks = (orderBook[ASKS] || []).slice()
+  const rawAsks = ((orderBook || {})[ASKS] || []).slice()
   const asks = rawAsks
     .sort((a, b) => a.price.value - b.price.value)
     .reduce((p, order, i, orders) => [
@@ -80,10 +80,10 @@ const orderAndAssignCumulativeShares = memoize((orderBook) => {
 })
 
 const orderForMarketDepth = memoize((orderBook) => {
-  const rawBids = (orderBook[BIDS] || []).slice()
+  const rawBids = ((orderBook || {})[BIDS] || []).slice()
   const bids = rawBids
     .reduce((p, order) => [...p, [order.cumulativeShares, order.price.value, order.shares.value]], [])
-  const rawAsks = (orderBook[ASKS] || []).slice()
+  const rawAsks = ((orderBook || {})[ASKS] || []).slice()
   const asks = rawAsks
     .sort((a, b) => a.price.value - b.price.value)
     .reduce((p, order) => [...p, [order.cumulativeShares, order.price.value, order.shares.value]], [])
@@ -126,7 +126,7 @@ const getOrderBookKeys = memoize((marketDepth) => {
 
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId)
-  const outcome = market.outcomes.find(outcome => outcome.id === ownProps.selectedOutcome) || {}
+  const outcome = (market.outcomes || []).find(outcome => outcome.id === ownProps.selectedOutcome) || {}
   const priceTimeSeries = outcome.priceTimeSeries || []
   const cumulativeOrderBook = orderAndAssignCumulativeShares(outcome.orderBook)
   const marketDepth = orderForMarketDepth(cumulativeOrderBook)

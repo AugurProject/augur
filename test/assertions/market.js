@@ -27,9 +27,9 @@ export default function (market) {
       assert.isString(market.author)
     })
 
-    it('market.type', () => {
-      assert.isDefined(market.type)
-      assert.isString(market.type)
+    it('market.marketType', () => {
+      assert.isDefined(market.marketType)
+      assert.isString(market.marketType)
     })
 
     it('market.description', () => {

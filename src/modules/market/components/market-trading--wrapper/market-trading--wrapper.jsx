@@ -22,12 +22,13 @@ class MarketTradingWrapper extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
     isLogged: PropTypes.bool.isRequired,
-    selectedOutcomes: PropTypes.array.isRequired,
-    selectedOutcome: PropTypes.object.isRequired,
+    selectedOutcome: PropTypes.object,
     initialMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
-    availableFunds: PropTypes.instanceOf(BigNumber).isRequied,
+    availableFunds: PropTypes.instanceOf(BigNumber).isRequired,
     isMobile: PropTypes.bool.isRequired,
     toggleForm: PropTypes.func.isRequired,
+    toggleShowOrderPlaced: PropTypes.func.isRequired,
+    clearTradeInProgress: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -39,7 +40,7 @@ class MarketTradingWrapper extends Component {
       orderQuantity: '',
       orderEstimate: '',
       marketOrderTotal: '',
-      marketQuantity: '8.0219',
+      marketQuantity: '',
       selectedNav: BUY,
       currentPage: 0,
     }
@@ -47,17 +48,18 @@ class MarketTradingWrapper extends Component {
     this.prevPage = this.prevPage.bind(this)
     this.nextPage = this.nextPage.bind(this)
     this.updateState = this.updateState.bind(this)
+    this.clearOrderForm = this.clearOrderForm.bind(this)
     this.updateOrderEstimate = this.updateOrderEstimate.bind(this)
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (this.state.orderQuantity !== nextState.orderQuantity || this.state.orderPrice !== nextState.orderPrice) {
-      let orderEstimate = ''
-      if (nextState.orderQuantity instanceof BigNumber && nextState.orderPrice instanceof BigNumber) {
-        orderEstimate = `${nextState.orderQuantity.times(nextState.orderPrice).toNumber()} ETH`
-      }
-
-      this.updateOrderEstimate(orderEstimate)
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.selectedOutcome || !nextProps.selectedOutcome.trade) return
+    const nextTotalCost = new BigNumber(nextProps.selectedOutcome.trade.totalCost.value)
+    if (`${nextTotalCost.abs().toString()} ETH` !== this.state.orderEstimate) {
+      const orderEstimate = (isNaN(nextTotalCost) || nextTotalCost.abs().eq(0)) ? '' : `${nextTotalCost.abs().toString()} ETH`
+      this.setState({
+        orderEstimate
+      })
     }
   }
 
@@ -73,6 +75,18 @@ class MarketTradingWrapper extends Component {
 
   updateState(property, value) {
     this.setState({ [property]: value })
+  }
+
+  clearOrderForm() {
+    this.props.clearTradeInProgress(this.props.market.id)
+    this.setState({
+      orderPrice: '',
+      orderQuantity: '',
+      orderEstimate: '',
+      marketOrderTotal: '',
+      marketQuantity: '',
+      currentPage: 0,
+    })
   }
 
   updateOrderEstimate(orderEstimate) {
@@ -152,6 +166,8 @@ class MarketTradingWrapper extends Component {
             prevPage={this.prevPage}
             trade={p.selectedOutcome.trade}
             isMobile={p.isMobile}
+            clearOrderForm={this.clearOrderForm}
+            toggleShowOrderPlaced={p.toggleShowOrderPlaced}
           />
         }
       </section>

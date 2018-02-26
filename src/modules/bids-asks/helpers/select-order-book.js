@@ -12,7 +12,7 @@ import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-stat
 
 import { has } from 'lodash'
 
-import { formatShares, formatEtherTokens } from 'utils/format-number'
+import { formatShares, formatEther } from 'utils/format-number'
 
 /**
  * @param {String} outcomeId
@@ -95,7 +95,9 @@ const selectAggregatePricePoints = memoize((outcomeId, side, orders, orderCancel
       const obj = {
         isOfCurrentUser: shareCountPerPrice[price].isOfCurrentUser,
         shares: formatShares(shareCountPerPrice[price].shares),
-        price: formatEtherTokens(parseFloat(price))
+        price: formatEther(price),
+        sharesEscrowed: formatShares(shareCountPerPrice[price].sharesEscrowed),
+        tokensEscrowed: formatEther(shareCountPerPrice[price].tokensEscrowed),
       }
       return obj
     })
@@ -107,15 +109,19 @@ const selectAggregatePricePoints = memoize((outcomeId, side, orders, orderCancel
  * @return {Object} aggregateOrdersPerPrice
  */
 function reduceSharesCountByPrice(aggregateOrdersPerPrice, order) {
-  if (order && order.price && order.amount) {
-    const key = new BigNumber(order.price, 10).toFixed()
+  if (order && !isNaN(order.fullPrecisionPrice) && !isNaN(order.fullPrecisionAmount)) {
+    const key = new BigNumber(order.fullPrecisionPrice, 10).toFixed()
     if (aggregateOrdersPerPrice[key] == null) {
       aggregateOrdersPerPrice[key] = {
         shares: ZERO,
-        isOfCurrentUser: false
+        sharesEscrowed: ZERO,
+        tokensEscrowed: ZERO,
+        isOfCurrentUser: false,
       }
     }
-    aggregateOrdersPerPrice[key].shares = aggregateOrdersPerPrice[key].shares.plus(new BigNumber(order.amount, 10))
+    aggregateOrdersPerPrice[key].shares = aggregateOrdersPerPrice[key].shares.plus(new BigNumber(order.fullPrecisionAmount, 10))
+    aggregateOrdersPerPrice[key].sharesEscrowed = aggregateOrdersPerPrice[key].sharesEscrowed.plus(new BigNumber(order.sharesEscrowed, 10))
+    aggregateOrdersPerPrice[key].tokensEscrowed = aggregateOrdersPerPrice[key].tokensEscrowed.plus(new BigNumber(order.tokensEscrowed, 10))
     aggregateOrdersPerPrice[key].isOfCurrentUser = aggregateOrdersPerPrice[key].isOfCurrentUser || order.isOfCurrentUser // TODO -- we need to segregate orders @ the same price that are of user
   } else {
     console.debug('reduceSharesCountByPrice:', order)

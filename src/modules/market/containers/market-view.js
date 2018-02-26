@@ -13,6 +13,7 @@ const mapStateToProps = state => ({
   isConnected: state.connection.isConnected,
   universe: state.universe,
   marketsData: state.marketsData,
+  orderBooks: state.orderBooks,
   isMobile: state.isMobile,
 })
 
@@ -22,13 +23,15 @@ const mapDispatchToProps = dispatch => ({
 
 const mergeProps = (sP, dP, oP) => {
   const marketId = parseQuery(oP.location.search)[MARKET_ID_PARAM_NAME]
+  const isMarketLoaded = ((sP.marketsData[marketId] != null) && (sP.orderBooks[marketId] !== undefined))
 
   return {
     ...oP,
     marketId,
+    marketType: isMarketLoaded ? sP.marketsData[marketId].marketType : null,
     isLogged: sP.isLogged,
     isConnected: sP.isConnected && getValue(sP, 'universe.id') != null,
-    isMarketLoaded: sP.marketsData[marketId] != null,
+    isMarketLoaded,
     loadFullMarket: () => dP.loadFullMarket(marketId)
   }
 }
