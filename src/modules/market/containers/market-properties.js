@@ -15,11 +15,8 @@ const mapDispatchToProps = dispatch => ({
 })
 
 const mergeProps = (sP, dP, oP) => {
-  console.log(sP.linkType);
-  console.log(oP);
-  console.log(oP.linkType);
-  const linkType = oP.linkType || selectMarketLinkType(oP.id, sP.loginAccount)
-  console.log(linkType);
+
+  const linkType = oP.linkType || determineMarketLinkType(oP.id, sP.loginAccount)
 
   return {
     ...sP,

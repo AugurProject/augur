@@ -91,7 +91,7 @@ export default class ReportingReport extends Component {
   render() {
     const s = this.state
     const p = this.props
-console.log('viewing ', TYPE_VIEW);
+
     return (
       <section>
         <Helmet>
