@@ -181,6 +181,7 @@ export default class CreateMarketResolution extends Component {
               { p.newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC &&
                 <input
                   className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: designatedReporterError })}
+                  type="text"
                   value={p.newMarket.designatedReporterAddress}
                   placeholder="Designated Reporter Address"
                   onChange={e => this.validateDesignatedReporterAddress(e.target.value)}
