@@ -70,7 +70,7 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
           } else {
             dispatchJsonRpcRequest(db, message as JsonRpcRequest, augur, (err: Error|null, result?: any): void => {
               if (websocket.readyState !== WebSocket.OPEN ) {
-                console.log("Client disconnected during request, ignoring response");
+                console.warn("Client disconnected during request, ignoring response");
                 return;
               }
               if (err) {
