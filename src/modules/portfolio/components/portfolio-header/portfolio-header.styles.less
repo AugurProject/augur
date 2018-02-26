@@ -1,8 +1,10 @@
 @import (reference) '~assets/styles/shared';
 
 .PortfolioHeader {
-  color: white;
   .view();
+
+  color: white;
+  padding-top: 7rem;
 }
 
 .PortfolioHeader__export {
@@ -21,6 +23,11 @@
   }
 }
 
+.PortfolioHeader__graph {
+  position: relative;
+  top: -0.75rem;
+}
+
 .PortfolioHeader__header {
   align-items: flex-end;
   display: flex;
@@ -29,6 +36,7 @@
 }
 
 .PortfolioHeader__title {
+  font-weight: 500;
   margin-bottom: 0;
   text-transform: uppercase;
 }
