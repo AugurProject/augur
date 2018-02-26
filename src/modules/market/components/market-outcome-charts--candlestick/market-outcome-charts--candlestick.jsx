@@ -37,7 +37,7 @@ export default class MarketOutcomeCandlestick extends Component {
     console.log('marketPriceHistory -- ', props.priceTimeSeries)
 
     // this.drawChart = this.drawChart.bind(this)
-    this.updateCandlestickData = this.updateCandlestickData.bind(this)
+    // this.updateCandlestickData = this.updateCandlestickData.bind(this)
   }
 
   componentDidMount() {
@@ -51,7 +51,7 @@ export default class MarketOutcomeCandlestick extends Component {
       !isEqual(this.props.priceTimeSeries, nextProps.priceTimeSeries) ||
       !isEqual(this.props.selectedPeriod, nextProps.selectedPeriod)
     ) {
-      this.updateCandlestickData(nextProps.priceTimeSeries, nextProps.selectedPeriod)
+      // this.updateCandlestickData(nextProps.priceTimeSeries, nextProps.selectedPeriod)
     }
 
     // if (!isEqual(this.props.hoveredPrice, nextProps.hoveredPrice)) updateHoveredPriceCrosshair(this.props.hoveredPrice, this.state.yScale, this.state.chartWidth)
@@ -62,7 +62,7 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   updateCandlestickData() {
-    this.drawChart()
+    // this.drawChart()
   }
 
   // drawChart() {
