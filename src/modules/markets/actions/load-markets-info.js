@@ -9,7 +9,7 @@ export const loadMarketsInfo = (marketIds, callback = logError) => (dispatch, ge
   augur.markets.getMarketsInfo({ marketIds }, (err, marketsDataArray) => {
     if (err) return callback(err)
 
-    const marketsData = marketsDataArray.reduce((p, marketData) => ({
+    const marketsData = marketsDataArray.filter(it => it).reduce((p, marketData) => ({
       ...p,
       [marketData.id]: marketData
     }), {})

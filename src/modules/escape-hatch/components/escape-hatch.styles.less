@@ -1,0 +1,103 @@
+@import (reference) "~assets/styles/shared";
+
+.EscapeHatch {
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+
+  h1,
+  div {
+    color: @color-white;
+  }
+
+  h1 {
+    .caps--extra-large();
+
+    letter-spacing: 0.75px;
+  }
+}
+
+.EscapeHatch_AlertHeader {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.EscapeHatch_ReviewHeader {
+  margin-bottom: 2.5rem;
+}
+
+.EscapeHatch_Text {
+  font-size: 1.25em;
+  font-weight: 300;
+  margin-top: 3rem;
+}
+
+.EscapeHatch_ConfirmButton {
+  &:extend(.button--white);
+
+  margin-top: 2.5rem;
+  padding: 0 0.4em 0.166em;
+}
+
+.EscapeHatch_WithdrawButton {
+  &:extend(.button--white);
+
+  display: block;
+  font-size: 1.25em;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 4rem;
+  padding: 1.25em 2em;
+}
+
+.EscapeHatch_LandingContainer {
+  margin-bottom: 5rem;
+  width: 40%;
+}
+
+.EscapeHatch_ReviewContainer {
+  margin-bottom: 5rem;
+  width: 60%;
+}
+
+.EscapeHatch_ReviewSummary {
+  & > div {
+    display: flex;
+    margin: 1em;
+
+    & > span:first-child {
+      flex: 1;
+    }
+
+    & > span {
+      display: flex;
+      flex: 5;
+
+      .value-denomination {
+        display: flex;
+        flex: 2;
+        justify-content: flex-end;
+
+        & + span {
+          flex: 1;
+          padding-left: 1em;
+        }
+      }
+    }
+  }
+}
+
+.EscapeHatch_LabelCell {
+  font-weight: bold;
+  text-transform: uppercase;
+  width: 20%;
+}
+
+.EscapeHatch_AlertIcon {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 8rem;
+}

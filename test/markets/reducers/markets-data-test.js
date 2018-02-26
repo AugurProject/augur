@@ -1,6 +1,7 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
 import reducer from 'modules/markets/reducers/markets-data'
+import { UPDATE_MARKET_REP_BALANCE } from 'src/modules/markets/actions/update-markets-data'
 
 describe(`modules/markets/reducers/markets-data.js`, () => {
   describe('UPDATE_MARKET_CATEGORY', () => {
@@ -388,6 +389,21 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       }
     })
   })
+  describe('UPDATE_MARKET_REP_BALANCE', () => {
+    it('should add repBalance attribute to market data', () => {
+      const result = reducer({
+        '0xa2': {},
+      }, {
+        type: UPDATE_MARKET_REP_BALANCE,
+        marketId: '0xa2',
+        repBalance: 0.3496805826822917
+      })
+
+      const d = result['0xa2']
+      assert.propertyVal(d, 'repBalance', 0.3496805826822917)
+    })
+  })
+
   describe('UPDATE_MARKETS_DATA', () => {
     it('should update markets data', () => {
       const marketsData = {
