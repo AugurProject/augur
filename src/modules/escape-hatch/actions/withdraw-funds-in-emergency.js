@@ -8,7 +8,7 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
   return (dispatch, getState) => {
 
     const {
-      partcipationTokens, initialReporters, disputeCrowdsourcers, loginAccount
+      partcipationTokens, initialReporters, disputeCrowdsourcers = {}, loginAccount
     } = getState()
 
     each(ownedMarkets, (market) => {

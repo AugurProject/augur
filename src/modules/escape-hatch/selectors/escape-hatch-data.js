@@ -17,7 +17,7 @@ export const getEscapeHatchData = createSelector(
   selectParticipationTokens,
   selectInitialReporters,
   selectDisputeCrowdsourcerTokens,
-  (marketsData, myMarkets, accountPositions, partcipationTokens, initialReporters, disputeCrowdsourcers) => {
+  (marketsData, myMarkets, accountPositions, partcipationTokens, initialReporters, disputeCrowdsourcers = {}) => {
     const data = {
       eth: 0,
       rep: 0,
