@@ -31,7 +31,7 @@ export const RANGES = [
 
 export const PERIODS = [
   {
-    range: null,
+    period: null,
     label: 'Every block'
   },
   {
