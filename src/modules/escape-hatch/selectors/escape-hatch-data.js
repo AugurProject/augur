@@ -38,8 +38,8 @@ export const getEscapeHatchData = createSelector(
     })
 
     // Shares escape hatch
-    Object.keys(accountPositions).forEach((marketID) => {
-      const market = marketsData[marketID]
+    Object.keys(accountPositions).forEach((marketId) => {
+      const market = marketsData[marketId]
       if (market.frozenSharesValue > 0) {
         data.eth += market.frozenSharesValue
         data.gas += market.tradingEscapeHatchGasCost

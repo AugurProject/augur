@@ -6,7 +6,7 @@ import { updateMarketRepBalance, updateMarketFrozenSharesValue, updateMarketEsca
 import noop from 'utils/noop'
 import logError from 'utils/log-error'
 
-export default function (marketIDs, callback = logError) {
+export default function (marketIds, callback = logError) {
   return (dispatch, getState) => {
     const { accountPositions, marketsData, universe } = getState()
     const universeID = universe.id || UNIVERSE_ID
@@ -14,14 +14,14 @@ export default function (marketIDs, callback = logError) {
     // Update all owned market REP balances
     augur.api.Universe.getReputationToken({ tx: { to: universeID } }, (err, reputationTokenAddress) => {
       if (err) return callback(err)
-      each(marketIDs, (marketID) => {
-        doUpdateMarketRepBalance(marketsData[marketID], reputationTokenAddress, dispatch, callback)
+      each(marketIds, (marketId) => {
+        doUpdateMarketRepBalance(marketsData[marketId], reputationTokenAddress, dispatch, callback)
       })
     })
 
     // Update all markets with their frozen shares value
-    Object.keys(accountPositions).forEach((marketID) => {
-      doUpdateShareFrozenValue(marketsData[marketID], dispatch, callback)
+    Object.keys(accountPositions).forEach((marketId) => {
+      doUpdateShareFrozenValue(marketsData[marketId], dispatch, callback)
     })
   }
 }
