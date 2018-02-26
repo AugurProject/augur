@@ -184,5 +184,5 @@ describe("server/getters/get-user-trading-positions", () => {
       assert.isNull(err);
       assert.deepEqual(userTradingPositions, []);
     },
-  })
+  });
 });
