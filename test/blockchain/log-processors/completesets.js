@@ -69,7 +69,7 @@ describe("blockchain/log-processors/completesets", () => {
       onUpdated: (err, positions) => {
         assert.isNull(err);
         assert.deepEqual(positions, [{
-          positionId: 17,
+          positionId: 21,
           account: "0x0000000000000000000000000000000000000b0b",
           marketId: "0x0000000000000000000000000000000000000002",
           outcome: 0,
@@ -80,7 +80,7 @@ describe("blockchain/log-processors/completesets", () => {
           averagePrice: 0,
           lastUpdated: positions[0].lastUpdated,
         }, {
-          positionId: 18,
+          positionId: 22,
           account: "0x0000000000000000000000000000000000000b0b",
           marketId: "0x0000000000000000000000000000000000000002",
           outcome: 1,
@@ -91,7 +91,7 @@ describe("blockchain/log-processors/completesets", () => {
           averagePrice: 0,
           lastUpdated: positions[0].lastUpdated,
         }, {
-          positionId: 19,
+          positionId: 23,
           account: "0x0000000000000000000000000000000000000b0b",
           marketId: "0x0000000000000000000000000000000000000002",
           outcome: 2,
@@ -102,7 +102,7 @@ describe("blockchain/log-processors/completesets", () => {
           averagePrice: 0,
           lastUpdated: positions[0].lastUpdated,
         }, {
-          positionId: 20,
+          positionId: 24,
           account: "0x0000000000000000000000000000000000000b0b",
           marketId: "0x0000000000000000000000000000000000000002",
           outcome: 3,
@@ -113,7 +113,7 @@ describe("blockchain/log-processors/completesets", () => {
           averagePrice: 0,
           lastUpdated: positions[0].lastUpdated,
         }, {
-          positionId: 21,
+          positionId: 25,
           account: "0x0000000000000000000000000000000000000b0b",
           marketId: "0x0000000000000000000000000000000000000002",
           outcome: 4,
@@ -124,7 +124,7 @@ describe("blockchain/log-processors/completesets", () => {
           averagePrice: 0,
           lastUpdated: positions[0].lastUpdated,
         }, {
-          positionId: 22,
+          positionId: 26,
           account: "0x0000000000000000000000000000000000000b0b",
           marketId: "0x0000000000000000000000000000000000000002",
           outcome: 5,
@@ -135,7 +135,7 @@ describe("blockchain/log-processors/completesets", () => {
           averagePrice: 0,
           lastUpdated: positions[0].lastUpdated,
         }, {
-          positionId: 23,
+          positionId: 27,
           account: "0x0000000000000000000000000000000000000b0b",
           marketId: "0x0000000000000000000000000000000000000002",
           outcome: 6,
@@ -146,7 +146,7 @@ describe("blockchain/log-processors/completesets", () => {
           averagePrice: 0,
           lastUpdated: positions[0].lastUpdated,
         }, {
-          positionId: 24,
+          positionId: 28,
           account: "0x0000000000000000000000000000000000000b0b",
           marketId: "0x0000000000000000000000000000000000000002",
           outcome: 7,

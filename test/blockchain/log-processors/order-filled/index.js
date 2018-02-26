@@ -171,7 +171,7 @@ describe("blockchain/log-processors/order-filled", () => {
           popularity: 3.3333333333333335,
         });
         assert.deepEqual(records.positions, [{
-          positionId: 17,
+          positionId: 21,
           account: "FILLER_ADDRESS",
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 0,
@@ -182,7 +182,7 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionId: 18,
+          positionId: 22,
           account: "FILLER_ADDRESS",
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 1,
@@ -193,7 +193,7 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionId: 19,
+          positionId: 23,
           account: "FILLER_ADDRESS",
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 2,
@@ -204,7 +204,7 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionId: 20,
+          positionId: 24,
           account: "FILLER_ADDRESS",
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 3,
@@ -215,7 +215,7 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionId: 21,
+          positionId: 25,
           account: "FILLER_ADDRESS",
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 4,
@@ -226,7 +226,7 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionId: 22,
+          positionId: 26,
           account: "FILLER_ADDRESS",
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 5,
@@ -237,7 +237,7 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionId: 23,
+          positionId: 27,
           account: "FILLER_ADDRESS",
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 6,
@@ -248,7 +248,7 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionId: 24,
+          positionId: 28,
           account: "FILLER_ADDRESS",
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 7,
@@ -301,7 +301,7 @@ describe("blockchain/log-processors/order-filled", () => {
           popularity: 0,
         });
         assert.deepEqual(records.positions, [{
-          positionId: 17,
+          positionId: 21,
           account: "FILLER_ADDRESS",
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 0,
@@ -312,7 +312,7 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionId: 18,
+          positionId: 22,
           account: "FILLER_ADDRESS",
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 1,
@@ -323,7 +323,7 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionId: 19,
+          positionId: 23,
           account: "FILLER_ADDRESS",
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 2,
@@ -334,7 +334,7 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionId: 20,
+          positionId: 24,
           account: "FILLER_ADDRESS",
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 3,
@@ -345,7 +345,7 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionId: 21,
+          positionId: 25,
           account: "FILLER_ADDRESS",
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 4,
@@ -356,7 +356,7 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionId: 22,
+          positionId: 26,
           account: "FILLER_ADDRESS",
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 5,
@@ -367,7 +367,7 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionId: 23,
+          positionId: 27,
           account: "FILLER_ADDRESS",
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 6,
@@ -378,7 +378,7 @@ describe("blockchain/log-processors/order-filled", () => {
           averagePrice: 0,
           lastUpdated: records.positions[0].lastUpdated,
         }, {
-          positionId: 24,
+          positionId: 28,
           account: "FILLER_ADDRESS",
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 7,
