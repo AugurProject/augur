@@ -5,7 +5,7 @@
     "ws": null
   },
   "network-id": 3,
-  "auto-login": false,
+  "auto-login": true,
   "universe": null,
   "bug-bounty": false,
   "bug-bounty-address": null,

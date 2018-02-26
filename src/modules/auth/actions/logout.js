@@ -4,7 +4,7 @@ import { clearLoginAccount } from 'modules/auth/actions/update-login-account'
 export function logout() {
   return (dispatch, getState) => {
     const localStorageRef = typeof window !== 'undefined' && window.localStorage
-    augur.accounts.logout()
+    augur.rpc.clear()
     if (localStorageRef && localStorageRef.removeItem) {
       localStorageRef.removeItem('airbitz.current_user')
       localStorageRef.removeItem('airbitz.users')

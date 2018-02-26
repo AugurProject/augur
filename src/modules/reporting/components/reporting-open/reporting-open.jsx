@@ -14,7 +14,6 @@ export default class ReportingOpen extends Component {
     markets: PropTypes.array.isRequired,
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
-    scalarShareDenomination: PropTypes.object.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
     loadMarketsInfo: PropTypes.func.isRequired,
     isLogged: PropTypes.bool.isRequired,
@@ -52,7 +51,6 @@ export default class ReportingOpen extends Component {
             filteredMarkets={s.filteredMarketsDispute}
             location={p.location}
             history={p.history}
-            scalarShareDenomination={p.scalarShareDenomination}
             toggleFavorite={p.toggleFavorite}
             loadMarketsInfo={p.loadMarketsInfo}
             linkType={TYPE_REPORT}
@@ -66,7 +64,6 @@ export default class ReportingOpen extends Component {
           filteredMarkets={s.filteredMarketsReporting}
           location={p.location}
           history={p.history}
-          scalarShareDenomination={p.scalarShareDenomination}
           toggleFavorite={p.toggleFavorite}
           loadMarketsInfo={p.loadMarketsInfo}
           linkType={TYPE_REPORT}

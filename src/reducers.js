@@ -38,6 +38,7 @@ import functionsAPI from 'modules/contracts/reducers/functions-api'
 import eventsAPI from 'modules/contracts/reducers/events-api'
 import notifications from 'modules/notifications/reducers/notifications'
 import reportingWindowStats from 'modules/reporting/reducers/reporting-window-stats'
+import marketReportState from 'modules/reporting/reducers/market-report-state'
 import modal from 'modules/modal/reducers/modal'
 
 export function createReducer() {
@@ -81,6 +82,7 @@ export function createReducer() {
     eventsAPI,
     notifications,
     reportingWindowStats,
+    marketReportState,
     modal
   }
 }

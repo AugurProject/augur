@@ -73,9 +73,9 @@ export default class MarketOutcomeCandlestick extends Component {
   componentWillUnmount() {
     // window.removeEventListener('resize', this.drawChart)
   }
-  //
+
   // updateCandlestickData() {
-  //   // this.drawChart()
+  //   this.drawChart()
   // }
 
   // drawChart() {
