@@ -14,8 +14,6 @@ export const loadFullMarket = (marketId, callback = logError) => (dispatch, getS
   // if the basic data is already loaded, just load the details
   if (marketsData[marketId]) return dispatch(loadMarketDetails(marketId))
 
-  console.log('here')
-
   // if the basic data hasn't loaded yet, load it first
   dispatch(loadMarketsInfo([marketId], (err) => {
     if (err) return callback(err)
