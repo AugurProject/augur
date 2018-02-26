@@ -7,11 +7,11 @@ import ValueDenomination from 'modules/common/components/value-denomination/valu
 
 import { TYPE_REPORT, TYPE_DISPUTE, TYPE_TRADE, TYPE_CLOSED } from 'modules/market/constants/link-types'
 
-import MarketAddtionalDetails from 'modules/market/components/market-additional-details/market-additional-details'
 import getValue from 'utils/get-value'
 import shareDenominationLabel from 'utils/share-denomination-label'
 import { dateHasPassed } from 'utils/format-date'
 import Styles from 'modules/market/components/market-properties/market-properties.styles'
+import CaretDropdown from 'modules/common/components/caret-dropdown/caret-dropdown'
 
 const MarketProperties = (p) => {
   const shareVolumeRounded = getValue(p, 'volume.rounded')
@@ -91,13 +91,18 @@ const MarketProperties = (p) => {
           }
         </div>
       </section>
-      { p.showDetails &&
+      { p.showAdditionalDetailsToggle &&
         <section>
-          <div>
-            <MarketAddtionalDetails
-              details={p.extraInfo}
-              resolutionSource={p.resolutionSource}
-            />
+          <div className={Styles[`MarketProperties__button-wrapper`]}>
+            <div>
+              additional details
+              <button
+                className={Styles[`MarketProperties__details-button`]}
+                onClick={() => p.toggleDetails()}
+              >
+                <CaretDropdown flipped={p.showingDetails} />
+              </button>
+            </div>
           </div>
         </section>
       }
@@ -108,6 +113,9 @@ const MarketProperties = (p) => {
 MarketProperties.propTypes = {
   linkType: PropTypes.string,
   buttonText: PropTypes.string,
+  showAdditionalDetailsToggle: PropTypes.bool,
+  showingDetails: PropTypes.bool,
+  toggleDetails: PropTypes.func,
 }
 
 export default MarketProperties
