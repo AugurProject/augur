@@ -5,12 +5,12 @@ import Styles from 'modules/modal/components/modal-approval/modal-approval.style
 const ModalApproval = p => (
   <section className={Styles.ModalApproval}>
     <h1>Approve Augur</h1>
-    <span>In order to trade on Augur you must first approve the Augur Contracts to move your Ether on your behalf. Please Click the &quot;Approve Augur&quot; button below approve the Augur Contracts.</span>
+    <span>In order to trade on Augur you must first approve the Augur Contracts to move your Ether on your behalf. Please Click the &quot;Approve Augur&quot; button below to approve the Augur Contracts. You will not be able to to trade until approval has been completed.</span>
     <div className={Styles.ModalApproval__ActionButtons}>
       <button
         onClick={(e) => {
           e.preventDefault()
-          p.approveAugur()
+          p.approveAccount(p.modal.approveCallback)
           p.closeModal()
         }}
       >
