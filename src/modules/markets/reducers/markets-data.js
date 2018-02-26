@@ -31,38 +31,38 @@ export default function (marketsData = DEFAULT_STATE, action) {
         }
       }
     case UPDATE_MARKET_REP_BALANCE:
-      if (!action.marketID) return marketsData
+      if (!action.marketId) return marketsData
       return {
         ...marketsData,
-        [action.marketID]: {
-          ...marketsData[action.marketID],
+        [action.marketId]: {
+          ...marketsData[action.marketId],
           repBalance: action.repBalance
         }
       }
     case UPDATE_MARKET_FROZEN_SHARES_VALUE:
-      if (!action.marketID) return marketsData
+      if (!action.marketId) return marketsData
       return {
         ...marketsData,
-        [action.marketID]: {
-          ...marketsData[action.marketID],
+        [action.marketId]: {
+          ...marketsData[action.marketId],
           frozenSharesValue: action.frozenSharesValue
         }
       }
     case UPDATE_MARKET_ESCAPE_HATCH_GAS_COST:
-      if (!action.marketID) return marketsData
+      if (!action.marketId) return marketsData
       return {
         ...marketsData,
-        [action.marketID]: {
-          ...marketsData[action.marketID],
+        [action.marketId]: {
+          ...marketsData[action.marketId],
           escapeHatchGasCost: action.escapeHatchGasCost
         }
       }
     case UPDATE_MARKET_TRADING_ESCAPE_HATCH_GAS_COST:
-      if (!action.marketID) return marketsData
+      if (!action.marketId) return marketsData
       return {
         ...marketsData,
-        [action.marketID]: {
-          ...marketsData[action.marketID],
+        [action.marketId]: {
+          ...marketsData[action.marketId],
           tradingEscapeHatchGasCost: action.tradingEscapeHatchGasCost
         }
       }
@@ -85,7 +85,7 @@ function processMarketsData(newMarketsData, existingMarketsData) {
     marketData.hasLoadedMarketInfo = !!marketData.cumulativeScale
 
     // save market (without outcomes)
-    // p[normalizedMarketId] = marketData
+    // p[normalizedmarketId] = marketData
     p[marketId] = marketData
 
     return p
