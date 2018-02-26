@@ -21,7 +21,7 @@ export function getUserTradingPositions(db: Knex, universe: Address|null, accoun
   queryModifier(query, "outcome", "asc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, positionsRows?: Array<PositionsRowWithMarketType>): void => {
     if (err) return callback(err);
-    if (!positionsRows) return callback(new Error("positions not found"));
+    if (!positionsRows) return callback(new Error("Internal error retrieving positions"));
     const positionsRowsWithNumSharesAdjusted: Array<PositionsRowWithNumSharesAdjusted> = positionsRows.map((positionsRow: PositionsRowWithMarketType): PositionsRowWithNumSharesAdjusted => {
       let numSharesAdjusted;
       if (positionsRow.marketType === "categorical" || positionsRow.outcome === 0) {
