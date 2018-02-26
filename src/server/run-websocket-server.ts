@@ -69,6 +69,10 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
             websocket.send(makeJsonRpcResponse(message.id, true));
           } else {
             dispatchJsonRpcRequest(db, message as JsonRpcRequest, augur, (err: Error|null, result?: any): void => {
+              if (websocket.readyState !== WebSocket.OPEN ) {
+                console.log("Client disconnected during request, ignoring response");
+                return;
+              }
               if (err) {
                 console.error("getter error: ", err);
                 websocket.send(makeJsonRpcError(message.id, JsonRpcErrorCode.InvalidParams, err.message, false));
