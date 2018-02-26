@@ -10,8 +10,9 @@
 
 var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
-var constants = require("../../../src/constants");
 var proxyquire = require("proxyquire").noPreserveCache();
+var constants = require("../../../src/constants");
+var noop = require("../../../src/utils/noop");
 
 describe("accounts/approve-augur", function () {
   var test = function (t) {
@@ -20,17 +21,24 @@ describe("accounts/approve-augur", function () {
         "../augur-node": Object.assign({}, t.mock.augurNode),
         "../api": function () { return Object.assign({}, t.mock.api); },
       });
-      approveAugur(t.params.address, t.params.auth, function (err, res) {
-        t.assertions(err, res);
-        done();
-      });
+      approveAugur(Object.assign({}, t.params, {
+        onSent: noop,
+        onSuccess: function (res) {
+          t.assertions(null, res);
+          done();
+        },
+        onFailed: function (err) {
+          t.assertions(err);
+          done();
+        },
+      }));
     });
   };
   test({
     description: "Should handle an account that needs to have approval",
     params: {
       address: "0xa11ce",
-      auth: {
+      meta: {
         privateKey: "0x0",
       },
     },
@@ -73,7 +81,7 @@ describe("accounts/approve-augur", function () {
     description: "Should handle an account that has approval",
     params: {
       address: "0xa11ce",
-      auth: {
+      meta: {
         privateKey: "0x0",
       },
     },
@@ -111,7 +119,7 @@ describe("accounts/approve-augur", function () {
     description: "Should return an error object if one is returned from augurNode.getContractAddresses",
     params: {
       address: "0xa11ce",
-      auth: {
+      meta: {
         privateKey: "0x0",
       },
     },
@@ -142,7 +150,7 @@ describe("accounts/approve-augur", function () {
     description: "Should handle an error from Cash.allowance",
     params: {
       address: "0xa11ce",
-      auth: {
+      meta: {
         privateKey: "0x0",
       },
     },
@@ -180,7 +188,7 @@ describe("accounts/approve-augur", function () {
     description: "Should handle an onFailed error from Cash.approve",
     params: {
       address: "0xa11ce",
-      auth: {
+      meta: {
         privateKey: "0x0",
       },
     },
