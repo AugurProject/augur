@@ -7,6 +7,6 @@ describe('modules/market/selectors/helpers/get-outstanding-shares.js', () => {
   it('should return outstanding shares', () => {
     const outstandingShares = getOutstandingShares(mocks.state.outcomesData.testMarketId)
 
-    assert.strictEqual(outstandingShares, 372)
+    assert.strictEqual(outstandingShares, 203, `Expected outstanding shares (${outstandingShares}) to equal 203.`)
   })
 })

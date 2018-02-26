@@ -1,5 +1,4 @@
 import React from 'react'
-import BigNumber from 'bignumber.js'
 
 import { CreateMarketEdit } from 'modules/common/components/icons'
 
@@ -12,8 +11,10 @@ import { MARKET, LIMIT } from 'modules/transactions/constants/types'
 import Styles from 'modules/market/components/market-trading--confirm/market-trading--confirm.styles'
 
 const MarketTradingConfirm = (p) => {
-  const tradingFees = '0.0023'
-  const feePercent = '2.8'
+  const numShares = getValue(p, 'trade.numShares')
+  const limitPrice = getValue(p, 'trade.limitPrice')
+  const tradingFees = getValue(p, 'trade.totalFee')
+  const feePercent = getValue(p, 'trade.totalFeePercent')
   const potentialEthProfit = getValue(p, 'trade.potentialEthProfit')
   const potentialProfitPercent = getValue(p, 'trade.potentialProfitPercent')
   const potentialEthLoss = getValue(p, 'trade.potentialEthLoss')
@@ -36,32 +37,31 @@ const MarketTradingConfirm = (p) => {
         { p.orderType === MARKET &&
           <li>
             <span>Total Cost</span>
-            <span>{ p.marketOrderTotal instanceof BigNumber ? p.marketOrderTotal.toNumber() : p.marketOrderTotal } ETH</span>
+            <span><ValueDenomination formatted={totalCost ? totalCost.formatted : '0'} /> ETH</span>
           </li>
         }
         { p.orderType === LIMIT &&
           <li>
             <span>Quantity</span>
-            <span>{ p.orderQuantity instanceof BigNumber ? p.orderQuantity.toNumber() : p.orderQuantity } Shares</span>
+            <span>{ numShares } Shares</span>
           </li>
         }
         { p.orderType === LIMIT &&
           <li>
             <span>Limit Price</span>
-            <span>{ p.orderPrice instanceof BigNumber ? p.orderPrice.toNumber() : p.orderPrice } ETH</span>
+            <span>{ limitPrice } ETH</span>
           </li>
-
         }
         <li>
           <span>Fee</span>
-          <span>{tradingFees} <span>ETH ({feePercent}%)</span></span>
+          <span>{tradingFees ? tradingFees.formattedValue : '0'} <span>ETH ({feePercent ? feePercent.formattedValue : '0'}%)</span></span>
         </li>
       </ul>
       { p.orderType === LIMIT &&
         <ul className={Styles.TradingConfirm__total}>
           <li>
             <span>Total Cost</span>
-            <span><ValueDenomination formatted={totalCost.formatted} /> <span>ETH</span></span>
+            <span><ValueDenomination formatted={totalCost ? totalCost.formatted : '0'} /> <span>ETH</span></span>
           </li>
         </ul>
       }
@@ -76,11 +76,11 @@ const MarketTradingConfirm = (p) => {
       <ul className={Styles.TradingConfirm__potential}>
         <li>
           <span>Potential Profit</span>
-          <span><ValueDenomination formatted={potentialEthProfit.formatted} /> <span>ETH ({potentialProfitPercent.formatted}%)</span></span>
+          <span><ValueDenomination formatted={potentialEthProfit ? potentialEthProfit.formatted : '0'} /> <span>ETH ({potentialProfitPercent ? potentialProfitPercent.formatted : '0'}%)</span></span>
         </li>
         <li>
           <span>Potential Loss</span>
-          <span><span><ValueDenomination formatted={potentialEthLoss.formatted} /> <span>ETH ({potentialLossPercent.formatted}%)</span></span></span>
+          <span><span><ValueDenomination formatted={potentialEthLoss ? potentialEthLoss.formatted : '0'} /> <span>ETH ({potentialLossPercent ? potentialLossPercent.formatted : '0'}%)</span></span></span>
         </li>
       </ul>
       <div className={Styles.TradingConfirmation__actions}>
@@ -91,7 +91,16 @@ const MarketTradingConfirm = (p) => {
         </button>
         <button
           className={Styles['TradingConfirmation__button--submit']}
-          onClick={e => console.log('submit order')}
+          onClick={(e) => {
+            p.market.onSubmitPlaceTrade(p.selectedOutcome.id, (err, tradeGroupID) => {
+              // onSent/onFailed CB
+              if (!err) p.toggleShowOrderPlaced()
+            }, (res) => {
+              // onComplete CB
+            })
+            p.clearOrderForm()
+            p.prevPage()
+          }}
         >Confirm
         </button>
       </div>

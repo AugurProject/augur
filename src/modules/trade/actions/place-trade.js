@@ -15,6 +15,7 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
     meta: loginAccount.meta,
     amount: tradeInProgress.numShares,
     limitPrice: tradeInProgress.limitPrice,
+    estimatedCost: tradeInProgress.totalCost,
     minPrice: market.minPrice,
     maxPrice: market.maxPrice,
     tickSize: market.tickSize,
@@ -25,10 +26,10 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
     _tradeGroupId: tradeInProgress.tradeGroupId,
     doNotCreateOrders,
     onSent: () => callback(null, tradeInProgress.tradeGroupId),
-    onFailed: callback
-  }, (err) => {
-    if (err) return callback(err)
-    onComplete(err)
+    onFailed: callback,
+    onSuccess: (tradeOnChainAmountRemaining) => {
+      onComplete(tradeOnChainAmountRemaining)
+    }
   })
   dispatch(clearTradeInProgress(marketId))
 }

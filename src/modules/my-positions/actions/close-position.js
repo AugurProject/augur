@@ -23,7 +23,7 @@ export function closePosition(marketId, outcomeId) {
       const { orderBooks, loginAccount } = getState()
       const markets = selectAllMarkets()
       const market = markets.length ? markets.find(market => market.id === marketId) : null
-      const positionOutcome = market ? market.outcomes.find(outcome => parseInt(outcome.id, 10) === parseInt(outcomeId, 10)) : null
+      const positionOutcome = market ? (market.outcomes || []).find(outcome => parseInt(outcome.id, 10) === parseInt(outcomeId, 10)) : null
       const positionShares = new BigNumber(getValue(positionOutcome, 'position.qtyShares.value') || '0')
       const orderBook = orderBooks[marketId]
       const userAddress = loginAccount && loginAccount.address
