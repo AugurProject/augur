@@ -169,4 +169,20 @@ describe("server/getters/get-user-trading-positions", () => {
       }]);
     },
   });
+  test({
+    description: "get a user's position where they have no position",
+    params: {
+      account: "0x0000000000000000000000000000000000nobody",
+      marketId: "0x0000000000000000000000000000000000000002",
+      outcome: 1,
+      sortBy: null,
+      isSortDescending: null,
+      limit: null,
+      offset: null,
+    },
+    assertions: (err, userTradingPositions) => {
+      assert.isNull(err);
+      assert.deepEqual(userTradingPositions, []);
+    },
+  });
 });
