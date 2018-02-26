@@ -132,6 +132,38 @@ exports.seed = async (knex: Knex): Promise<any> => {
       numSharesAdjustedForUserIntention: "0",
       realizedProfitLoss: "0",
       unrealizedProfitLoss: "0",
+    }, {
+      account: "0x000000000000000000000000000000000000deed",
+      marketId: "0x0000000000000000000000000000000000000002",
+      outcome: 0,
+      numShares: "7",
+      numSharesAdjustedForUserIntention: "0",
+      realizedProfitLoss: "0",
+      unrealizedProfitLoss: "0",
+    }, {
+      account: "0x000000000000000000000000000000000000deed",
+      marketId: "0x0000000000000000000000000000000000000002",
+      outcome: 1,
+      numShares: "0",
+      numSharesAdjustedForUserIntention: "-7",
+      realizedProfitLoss: "0",
+      unrealizedProfitLoss: "0",
+    }, {
+      account: "0x0000000000000000000000000000000000000b1b",
+      marketId: "0x0000000000000000000000000000000000000002",
+      outcome: 0,
+      numShares: "0",
+      numSharesAdjustedForUserIntention: "0",
+      realizedProfitLoss: "0",
+      unrealizedProfitLoss: "0",
+    }, {
+      account: "0x0000000000000000000000000000000000000b1b",
+      marketId: "0x0000000000000000000000000000000000000002",
+      outcome: 1,
+      numShares: "42",
+      numSharesAdjustedForUserIntention: "42",
+      realizedProfitLoss: "0",
+      unrealizedProfitLoss: "0",
     }];
     return knex.batchInsert("positions", seedData, seedData.length);
   });

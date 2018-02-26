@@ -21,7 +21,7 @@ describe("server/getters/get-user-trading-positions", () => {
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       account: "0x000000000000000000000000000000000000d00d",
-      marketId: null,
+      marketId: "0x0000000000000000000000000000000000000001",
       outcome: null,
       sortBy: null,
       isSortDescending: null,
@@ -34,7 +34,7 @@ describe("server/getters/get-user-trading-positions", () => {
         "marketId": "0x0000000000000000000000000000000000000001",
         "outcome": 0,
         "numShares": 0.2,
-        "numSharesAdjustedForUserIntention": 0.2,
+        "numSharesAdjusted": 0.2,
         "realizedProfitLoss": 0,
         "unrealizedProfitLoss": 11,
         "averagePrice": 0,
@@ -42,7 +42,7 @@ describe("server/getters/get-user-trading-positions", () => {
         "marketId": "0x0000000000000000000000000000000000000001",
         "outcome": 1,
         "numShares": 0,
-        "numSharesAdjustedForUserIntention": 0,
+        "numSharesAdjusted": 0,
         "realizedProfitLoss": 0,
         "unrealizedProfitLoss": 0,
         "averagePrice": 0,
@@ -50,7 +50,7 @@ describe("server/getters/get-user-trading-positions", () => {
         "marketId": "0x0000000000000000000000000000000000000001",
         "outcome": 2,
         "numShares": 0,
-        "numSharesAdjustedForUserIntention": 0,
+        "numSharesAdjusted": 0,
         "realizedProfitLoss": 0,
         "unrealizedProfitLoss": 0,
         "averagePrice": 0,
@@ -58,7 +58,7 @@ describe("server/getters/get-user-trading-positions", () => {
         "marketId": "0x0000000000000000000000000000000000000001",
         "outcome": 3,
         "numShares": 0,
-        "numSharesAdjustedForUserIntention": 0,
+        "numSharesAdjusted": 0,
         "realizedProfitLoss": 0,
         "unrealizedProfitLoss": 0,
         "averagePrice": 0,
@@ -66,7 +66,7 @@ describe("server/getters/get-user-trading-positions", () => {
         "marketId": "0x0000000000000000000000000000000000000001",
         "outcome": 4,
         "numShares": 0,
-        "numSharesAdjustedForUserIntention": 0,
+        "numSharesAdjusted": 0,
         "realizedProfitLoss": 0,
         "unrealizedProfitLoss": 0,
         "averagePrice": 0,
@@ -74,7 +74,7 @@ describe("server/getters/get-user-trading-positions", () => {
         "marketId": "0x0000000000000000000000000000000000000001",
         "outcome": 5,
         "numShares": 0,
-        "numSharesAdjustedForUserIntention": 0,
+        "numSharesAdjusted": 0,
         "realizedProfitLoss": 0,
         "unrealizedProfitLoss": 0,
         "averagePrice": 0,
@@ -82,7 +82,7 @@ describe("server/getters/get-user-trading-positions", () => {
         "marketId": "0x0000000000000000000000000000000000000001",
         "outcome": 6,
         "numShares": 0,
-        "numSharesAdjustedForUserIntention": 0,
+        "numSharesAdjusted": 0,
         "realizedProfitLoss": 0,
         "unrealizedProfitLoss": 0,
         "averagePrice": 0,
@@ -90,7 +90,7 @@ describe("server/getters/get-user-trading-positions", () => {
         "marketId": "0x0000000000000000000000000000000000000001",
         "outcome": 7,
         "numShares": 0,
-        "numSharesAdjustedForUserIntention": 0,
+        "numSharesAdjusted": 0,
         "realizedProfitLoss": 0,
         "unrealizedProfitLoss": 0,
         "averagePrice": 0,
@@ -98,7 +98,7 @@ describe("server/getters/get-user-trading-positions", () => {
     },
   });
   test({
-    description: "get a user's position in one outcome of one market",
+    description: "get a user's position in one outcome of a categorical market",
     params: {
       account: "0x000000000000000000000000000000000000d00d",
       marketId: "0x0000000000000000000000000000000000000001",
@@ -114,7 +114,55 @@ describe("server/getters/get-user-trading-positions", () => {
         "marketId": "0x0000000000000000000000000000000000000001",
         "outcome": 4,
         "numShares": 0,
-        "numSharesAdjustedForUserIntention": 0,
+        "numSharesAdjusted": 0,
+        "realizedProfitLoss": 0,
+        "unrealizedProfitLoss": 0,
+        "averagePrice": 0,
+      }]);
+    },
+  });
+  test({
+    description: "get a user's position in one outcome of a binary market where the user is long",
+    params: {
+      account: "0x0000000000000000000000000000000000000b1b",
+      marketId: "0x0000000000000000000000000000000000000002",
+      outcome: 1,
+      sortBy: null,
+      isSortDescending: null,
+      limit: null,
+      offset: null,
+    },
+    assertions: (err, userTradingPositions) => {
+      assert.isNull(err);
+      assert.deepEqual(userTradingPositions, [{
+        "marketId": "0x0000000000000000000000000000000000000002",
+        "outcome": 1,
+        "numShares": 42,
+        "numSharesAdjusted": "42",
+        "realizedProfitLoss": 0,
+        "unrealizedProfitLoss": 0,
+        "averagePrice": 0,
+      }]);
+    },
+  });
+  test({
+    description: "get a user's position in one outcome of a binary market where the user is short",
+    params: {
+      account: "0x000000000000000000000000000000000000deed",
+      marketId: "0x0000000000000000000000000000000000000002",
+      outcome: 1,
+      sortBy: null,
+      isSortDescending: null,
+      limit: null,
+      offset: null,
+    },
+    assertions: (err, userTradingPositions) => {
+      assert.isNull(err);
+      assert.deepEqual(userTradingPositions, [{
+        "marketId": "0x0000000000000000000000000000000000000002",
+        "outcome": 1,
+        "numShares": 0,
+        "numSharesAdjusted": "-7",
         "realizedProfitLoss": 0,
         "unrealizedProfitLoss": 0,
         "averagePrice": 0,
