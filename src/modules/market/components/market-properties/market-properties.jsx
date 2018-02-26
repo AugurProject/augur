@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
-import { TYPE_REPORT, TYPE_DISPUTE, TYPE_TRADE, TYPE_CLOSED } from 'modules/market/constants/link-types'
+import { TYPE_CLOSED } from 'modules/market/constants/link-types'
 
 import getValue from 'utils/get-value'
 import shareDenominationLabel from 'utils/share-denomination-label'
@@ -15,22 +15,6 @@ import Styles from 'modules/market/components/market-properties/market-propertie
 const MarketProperties = (p) => {
   const shareVolumeRounded = getValue(p, 'volume.rounded')
   const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations)
-
-  let buttonText
-
-  switch (p.linkType) {
-    case TYPE_REPORT:
-      buttonText = 'Report'
-      break
-    case TYPE_DISPUTE:
-      buttonText = 'Dispute'
-      break
-    case TYPE_TRADE:
-      buttonText = 'Trade'
-      break
-    default:
-      buttonText = 'View'
-  }
 
   return (
     <article className={Styles.MarketProperties}>
@@ -76,7 +60,7 @@ const MarketProperties = (p) => {
             formattedDescription={p.formattedDescription}
             linkType={p.linkType}
           >
-            { p.buttonText || buttonText }
+            { p.linkType || 'view'}
           </MarketLink>
         }
         { p.linkType && p.linkType === TYPE_CLOSED &&

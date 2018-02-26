@@ -9,6 +9,8 @@ import MarketPreview from 'modules/market/components/market-preview/market-previ
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 import ReportingReportForm from 'modules/reporting/components/reporting-report-form/reporting-report-form'
 import ReportingReportConfirm from 'modules/reporting/components/reporting-report-confirm/reporting-report-confirm'
+import { TYPE_VIEW } from 'modules/market/constants/link-types'
+
 import { isEmpty } from 'lodash'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-report/reporting-report.styles'
@@ -89,7 +91,7 @@ export default class ReportingReport extends Component {
   render() {
     const s = this.state
     const p = this.props
-
+console.log('viewing ', TYPE_VIEW);
     return (
       <section>
         <Helmet>
@@ -102,7 +104,7 @@ export default class ReportingReport extends Component {
             location={p.location}
             history={p.history}
             cardStyle="single-card"
-            buttonText="View"
+            linkType={TYPE_VIEW}
           />
         }
         { !isEmpty(p.market) &&

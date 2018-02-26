@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import BasicStyles from 'modules/market/components/market-basics/market-basics.styles'
-import MarketProperties from 'modules/market/components/market-properties/market-properties'
+import MarketProperties from 'modules/market/containers/market-properties'
 import Styles from 'modules/reporting/components/dispute-market-card/dispute-market-card.style'
 
 import { TYPE_DISPUTE } from 'modules/market/constants/link-types'
@@ -19,13 +19,6 @@ export default class DisputeMarketCard extends Component {
     market: PropTypes.object.isRequired,
     isMobile: PropTypes.bool,
     disputeRound: PropTypes.number.isRequired,
-  }
-
-  constructor(props) {
-    super(props)
-    this.state = {
-      linkType: TYPE_DISPUTE
-    }
   }
 
   render() {
@@ -63,10 +56,7 @@ export default class DisputeMarketCard extends Component {
           </h1>
         </div>
         <div className={CommonStyles.MarketCommon__footer}>
-          <MarketProperties
-            {...p.market}
-            linkType={s.linkType}
-          />
+          <MarketProperties {...p.market} />
         </div>
       </article>
     )
