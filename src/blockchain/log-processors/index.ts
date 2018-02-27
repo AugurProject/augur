@@ -1,11 +1,13 @@
-import { LogProcessors } from "../../types";
+import * as Knex from "knex";
+import Augur from "augur.js";
+import { ErrorCallback, EventLogProcessor, FormattedEventLog, LogProcessors } from "../../types";
 import { processMarketCreatedLog, processMarketCreatedLogRemoval } from "./market-created";
 import { processTokensTransferredLog, processTokensTransferredLogRemoval } from "./tokens-transferred";
 import { processOrderCanceledLog, processOrderCanceledLogRemoval } from "./order-canceled";
 import { processOrderCreatedLog, processOrderCreatedLogRemoval } from "./order-created";
 import { processOrderFilledLog, processOrderFilledLogRemoval } from "./order-filled";
 import { processTradingProceedsClaimedLog, processTradingProceedsClaimedLogRemoval } from "./trading-proceeds-claimed";
-import { processWinningsRedeemedLog, processWinningsRedeemedLogRemoval } from "./winnings-redeemed";
+import { processDisputeCrowdsourcerRedeemedLog, processDisputeCrowdsourcerRedeemedLogRemoval } from "./crowdsourcer";
 import { processDisputeCrowdsourcerCreatedLog, processDisputeCrowdsourcerCreatedLogRemoval } from "./crowdsourcer";
 import { processDisputeCrowdsourcerContributionLog, processDisputeCrowdsourcerContributionLogRemoval } from "./crowdsourcer";
 import { processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompletedLogRemoval } from "./crowdsourcer";
@@ -13,14 +15,24 @@ import { processInitialReportSubmittedLog, processInitialReportSubmittedLogRemov
 import { processMarketFinalizedLog, processMarketFinalizedLogRemoval } from "./market-finalized";
 import { processUniverseCreatedLog, processUniverseCreatedLogRemoval } from "./universe-created";
 import { processFeeWindowCreatedLog, processFeeWindowCreatedLogRemoval } from "./fee-window-created";
+import { processFeeWindowRedeemedLog, processFeeWindowRedeemedLogRemoval } from "./fee-window-redeemed";
 import { processApprovalLog, processApprovalLogRemoval } from "./token/approval";
 import { processMintLog, processMintLogRemoval } from "./token/mint";
 import { processBurnLog, processBurnLogRemoval } from "./token/burn";
-import { processFundedAccountLog } from "./token/funded-account";
 import { processTimestampSetLog, processTimestampSetLogRemoval } from "./timestamp-set";
 import { processCompleteSetsPurchasedOrSoldLog, processCompleteSetsPurchasedOrSoldLogRemoval } from "./completesets";
 import { processInitialReporterRedeemedLog, processInitialReporterRedeemedLogRemoval } from "./initial-report-redeemed";
 import { processInitialReporterTransferredLog, processInitialReporterTransferredLogRemoval } from "./initial-report-transferred";
+
+function noop(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback) {
+  callback(null);
+}
+
+const ignoreLog: EventLogProcessor = {
+  add: noop,
+  remove: noop,
+  noAutoEmit: true,
+};
 
 export const logProcessors: LogProcessors = {
   Augur: {
@@ -36,7 +48,7 @@ export const logProcessors: LogProcessors = {
       add: processInitialReporterRedeemedLog,
       remove: processInitialReporterRedeemedLogRemoval,
     },
-    InitialReporterTransferred: {
+    InitialReporterTransfered: {
       add: processInitialReporterTransferredLog,
       remove: processInitialReporterTransferredLogRemoval,
     },
@@ -94,9 +106,13 @@ export const logProcessors: LogProcessors = {
       add: processUniverseCreatedLog,
       remove: processUniverseCreatedLogRemoval,
     },
-    WinningsRedeemed: {
-      add: processWinningsRedeemedLog,
-      remove: processWinningsRedeemedLogRemoval,
+    FeeWindowRedeemed: {
+      add: processFeeWindowRedeemedLog,
+      remove: processFeeWindowRedeemedLogRemoval,
+    },
+    DisputeCrowdsourcerRedeemed: {
+      add: processDisputeCrowdsourcerRedeemedLog,
+      remove: processDisputeCrowdsourcerRedeemedLogRemoval,
     },
     TimestampSet: {
       add: processTimestampSetLog,
@@ -110,6 +126,9 @@ export const logProcessors: LogProcessors = {
       add: processCompleteSetsPurchasedOrSoldLog,
       remove: processCompleteSetsPurchasedOrSoldLogRemoval,
     },
+    WhitelistAddition: ignoreLog,
+    RegistryAddition: ignoreLog,
+    UniverseForked: ignoreLog,
   },
   LegacyReputationToken: {
     Transfer: {
@@ -124,10 +143,7 @@ export const logProcessors: LogProcessors = {
       add: processMintLog,
       remove: processMintLogRemoval,
     },
-    FundedAccount: {
-      add: processFundedAccountLog,
-      remove: processFundedAccountLog,
-    },
+    FundedAccount: ignoreLog,
   },
   Cash: {
     Transfer: {
