@@ -1,9 +1,10 @@
 import { augur } from 'services/augurjs'
-import noop from 'utils/noop'
+import { REPORTING_REPORTING } from 'modules/routes/constants/views'
+import makePath from 'modules/routes/helpers/make-path'
 import logError from 'utils/log-error'
 import { getPayoutNumerators } from 'modules/reporting/selectors/get-payout-numerators'
 
-export const submitInitialReport = (marketId, selectedOutcome, invalid, callback = logError) => (dispatch, getState) => {
+export const submitInitialReport = (marketId, selectedOutcome, invalid, history, callback = logError) => (dispatch, getState) => {
   const { loginAccount, marketsData } = getState()
   const outcome = parseInt(selectedOutcome, 10)
 
@@ -17,7 +18,9 @@ export const submitInitialReport = (marketId, selectedOutcome, invalid, callback
       tx: { to: marketId },
       _invalid: invalid,
       _payoutNumerators: payoutNumerators,
-      onSent: noop,
+      onSent: () => {
+        history.push(makePath(REPORTING_REPORTING))
+      },
       onSuccess: () => callback(null),
       onFailed: (err) => {
         callback(err)

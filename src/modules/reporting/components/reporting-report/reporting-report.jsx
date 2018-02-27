@@ -16,6 +16,7 @@ import Styles from 'modules/reporting/components/reporting-report/reporting-repo
 export default class ReportingReport extends Component {
 
   static propTypes = {
+    history: PropTypes.object.isRequired,
     market: PropTypes.object.isRequired,
     isOpenReporting: PropTypes.bool.isRequired,
     universe: PropTypes.string.isRequired,
@@ -168,7 +169,7 @@ export default class ReportingReport extends Component {
               { s.currentStep === 1 &&
               <button
                 className={FormStyles.Form__submit}
-                onClick={() => p.submitInitialReport(p.market.id, s.selectedOutcome, s.isMarketInValid)}
+                onClick={() => p.submitInitialReport(p.market.id, s.selectedOutcome, s.isMarketInValid, p.history)}
               >Submit
               </button>
               }
