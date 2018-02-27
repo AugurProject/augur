@@ -33,12 +33,14 @@ export default class ReportingReport extends Component {
 
     this.state = {
       currentStep: 0,
+      showingDetails: true,
+      showToggleDetails: this.props.market && this.props.market.extraInfo,
       isMarketInValid: null,
       selectedOutcome: '',
       selectedOutcomeName: '',
       // need to get value from augur-node for
       // designated reporter or initial reporter (open reporting)
-      stake: '',
+      stake: '0',
       validations: {
         selectedOutcome: null,
       },
@@ -49,6 +51,7 @@ export default class ReportingReport extends Component {
     this.prevPage = this.prevPage.bind(this)
     this.nextPage = this.nextPage.bind(this)
     this.updateState = this.updateState.bind(this)
+    this.toggleDetails = this.toggleDetails.bind(this)
   }
 
   componentWillMount() {
@@ -71,6 +74,10 @@ export default class ReportingReport extends Component {
     this.setState(newState)
   }
 
+  toggleDetails() {
+    this.setState({ showingDetails: !this.state.showingDetails })
+  }
+
   calculateMarketCreationCosts() {
     // TODO: might have short-cut, reporter gas cost (creationFee) and designatedReportStake is on market from augur-node
     augur.createMarket.getMarketCreationCostBreakdown({ universe: this.props.universe }, (err, marketCreationCostBreakdown) => {
@@ -81,7 +88,7 @@ export default class ReportingReport extends Component {
       this.setState({
         designatedReportNoShowReputationBond: repAmount,
         reporterGasCost: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
-        stake: this.props.isOpenReporting ? 0 : repAmount.formatted,
+        stake: this.props.isOpenReporting ? '0' : repAmount.formatted,
       })
 
 
@@ -105,7 +112,26 @@ export default class ReportingReport extends Component {
             history={p.history}
             cardStyle="single-card"
             linkType={TYPE_VIEW}
+            buttonText="View"
+            showAdditionalDetailsToggle={s.showToggleDetails}
+            showingDetails={s.showingDetails}
+            toggleDetails={this.toggleDetails}
           />
+        }
+        { !isEmpty(p.market) && s.showingDetails &&
+          <div className={Styles[`ReportingReportMarket__details-container-wrapper`]}>
+            <div className={Styles[`ReportingReportMarket__details-container`]}>
+              <div className={Styles.ReportingReportMarket__details}>
+                <span>
+                  {p.market.extraInfo}
+                </span>
+              </div>
+              <div className={Styles[`ReportingReportMarket__resolution-source`]}>
+                <h4>Resolution Source:</h4>
+                <span>{p.market.resolutionSource || 'Outcome will be determined by news media'}</span>
+              </div>
+            </div>
+          </div>
         }
         { !isEmpty(p.market) &&
           <article className={FormStyles.Form}>

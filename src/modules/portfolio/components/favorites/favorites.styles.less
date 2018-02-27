@@ -1,12 +1,12 @@
 @import (reference) '~assets/styles/shared';
 
-.WatchList {
+.Favorites {
   align-items: center;
   text-align: left;
   width: 100%;
 }
 
-.WatchList__SortBar {
+.Favorites__SortBar {
   align-items: baseline;
   display: flex;
   flex-flow: row nowrap;
@@ -14,27 +14,28 @@
   width: 100%;
 }
 
-.WatchList__SortBar-title {
+.Favorites__SortBar-title {
+  &:extend(.caps--large);
+
   color: @color-white;
-  font-size: @font-size-extra-large;
 }
 
-.WatchList__SortBar-sort {
+.Favorites__SortBar-sort {
   display: flex;
   flex: 1;
   margin-left: 1rem;
 }
 
-.WatchList__SortBar-filter {
+.Favorites__SortBar-filter {
   display: flex;
 }
 
 @media @breakpoint-mobile {
-  .WatchList__SortBar {
+  .Favorites__SortBar {
     padding: 0 1rem;
   }
 
-  .WatchList__SortBar-title {
+  .Favorites__SortBar-title {
     font-size: @font-size-large;
   }
 }

@@ -3,7 +3,7 @@
 .ReportingHeader {
   color: @color-white;
   margin-bottom: 2.125rem;
-  padding-top: 6em;
+  padding: 4.5rem 2rem 2rem;
 }
 
 .ReportingHeader__dispute-graph {
@@ -59,7 +59,7 @@
 }
 
 .ReportingHeader__heading {
-  margin: 1rem 0;
+  margin: 0 0 1rem;
   text-transform: uppercase;
 
   &:extend(.h1--heavy);
@@ -84,6 +84,7 @@
 
   border-bottom: 1px solid @color-white;
   padding-bottom: 2px;
+  white-space: nowrap;
 }
 
 .ReportingHeader__stake {
@@ -94,9 +95,11 @@
   padding-left: 1rem;
 }
 
-@media @breakpoint-mobile-medium {
+@media @breakpoint-mobile {
   .ReportingHeader {
-    padding-top: 2em;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 3.25rem;
   }
 }
 

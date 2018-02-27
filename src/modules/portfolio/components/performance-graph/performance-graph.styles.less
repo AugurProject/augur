@@ -4,6 +4,8 @@
   :global {
     .highcharts-container {
       min-width: 100%;
+      position: relative;
+      top: -0.65rem;
 
       > svg {
         width: 100%;
@@ -20,15 +22,19 @@
 }
 
 .PerformanceGraph__SortBar-title {
+  &:extend(.caps--small);
+
   flex: 1;
+  font-weight: 500;
 }
 
 .PerformanceGraph__SortBar-dropdowns {
   display: flex;
-}
 
-@media @breakpoint-mobile {
-  .PerformanceGraph {
-    padding: 0 1rem;
+  > div > button:first-child {
+    &:extend(.caps--small);
+
+    color: @color-white;
+    font-weight: 500;
   }
 }

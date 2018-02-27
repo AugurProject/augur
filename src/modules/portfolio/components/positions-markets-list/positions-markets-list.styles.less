@@ -2,7 +2,7 @@
 
 .PositionsMarketsList {
   align-items: center;
-  padding: 0 2rem 2rem 0;
+  padding-bottom: 2rem;
   text-align: left;
   width: 100%;
 
@@ -29,13 +29,13 @@
 }
 
 .PositionsMarketsList__SortBar-title {
+  &:extend(.caps--large);
+
   color: @color-white;
-  font-size: @font-size-large;
-  font-weight: bold;
-  text-transform: uppercase;
 }
 
 .PositionsMarketsList__SortBar-sort {
+  align-items: baseline;
   display: flex;
   flex: 1;
   margin-left: 1rem;

@@ -4,3 +4,43 @@
   color: @color-lightgray;
   margin-top: 5rem;
 }
+
+.ReportingReportMarket__details {
+  color: @color-lightgray;
+  display: inline-block;
+  margin-left: 1.2rem;
+  max-height: 200px;
+  max-width: 62.75rem;
+  overflow-y: auto;
+  padding: 1em 1em 0;
+}
+
+.ReportingReportMarket__details-container-wrapper {
+  background-color: @color-darkpurple;
+}
+
+.ReportingReportMarket__details-container {
+  font-size: @font-size-small;
+  line-height: @font-size-medium;
+  margin: auto;
+  max-width: 62.75rem;
+  overflow: auto;
+  transition: height @animation-speed-normal @animation-default-type;
+}
+
+.ReportingReportMarket__resolution-source {
+  &:extend(.caps--small);
+
+  color: @color-lightgray;
+  margin-left: 1.2rem;
+  padding: 1em;
+
+  h4 {
+    display: inline-block;
+    padding-right: 0.5em;
+  }
+
+  span {
+    color: @color-white;
+  }
+}

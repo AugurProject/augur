@@ -6,13 +6,13 @@ import AuthenticatedRoute from 'modules/routes/components/authenticated-route/au
 import PortfolioHeader from 'modules/portfolio/containers/portfolio-header'
 import MyPositions from 'modules/portfolio/containers/positions'
 import MyMarkets from 'modules/portfolio/containers/markets'
-import Watchlist from 'modules/portfolio/containers/watchlist'
+import Favorites from 'modules/portfolio/containers/favorites'
 import Transactions from 'modules/portfolio/containers/transactions'
 import Reports from 'modules/portfolio/containers/reports'
 
 import makePath from 'modules/routes/helpers/make-path'
 
-import { MY_POSITIONS, MY_MARKETS, WATCHLIST, PORTFOLIO_TRANSACTIONS, PORTFOLIO_REPORTS } from 'modules/routes/constants/views'
+import { MY_POSITIONS, MY_MARKETS, FAVORITES, PORTFOLIO_TRANSACTIONS, PORTFOLIO_REPORTS } from 'modules/routes/constants/views'
 
 const PortfolioView = p => (
   <section>
@@ -20,7 +20,7 @@ const PortfolioView = p => (
     <Switch>
       <AuthenticatedRoute path={makePath(MY_POSITIONS)} component={MyPositions} />
       <AuthenticatedRoute path={makePath(MY_MARKETS)} component={MyMarkets} />
-      <AuthenticatedRoute path={makePath(WATCHLIST)} component={Watchlist} />
+      <AuthenticatedRoute path={makePath(FAVORITES)} component={Favorites} />
       <AuthenticatedRoute path={makePath(PORTFOLIO_TRANSACTIONS)} component={Transactions} />
       <AuthenticatedRoute path={makePath(PORTFOLIO_REPORTS)} component={Reports} />
     </Switch>
