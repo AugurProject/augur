@@ -37,7 +37,7 @@ export default class PeriodSelector extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     if (
-      !isEqual(this.props.priceTimeSeries, nextProps.priceTimeSeries) ||
+      this.props.priceTimeSeries.length !== nextProps.priceTimeSeries.length ||
       this.state.selectedRange !== nextState.selectedRange ||
       this.state.selectedPeriod !== nextState.selectedPeriod
     ) {
@@ -76,17 +76,17 @@ export default class PeriodSelector extends Component {
 
       // Permissible ranges based on selection
       if (selectedPeriod !== null && selectedPeriod !== -1) { // null denotes 'Every block'
-        let rangesToRemove = 0
+        let startIndex = 0
 
         permissibleRanges.find((range, i) => {
           if (selectedPeriod === range) {
-            rangesToRemove = i + 1
+            startIndex = i + 1
             return true
           }
           return false
         })
 
-        permissibleRanges.splice(0, rangesToRemove)
+        permissibleRanges = permissibleRanges.slice(startIndex)
       }
 
       // Permissible periods based on series
@@ -108,7 +108,11 @@ export default class PeriodSelector extends Component {
       }, [])
 
       // Permissible periods based on selection
-      if (selectedRange !== null && selectedRange !== -1) { // null denotes 'Full range'
+      if (
+        selectedRange !== null &&
+        selectedRange !== -1 &&
+        permissiblePeriods.indexOf(selectedRange) !== -1
+      ) { // null denotes 'Full range'
         let startIndex = 0
 
         permissiblePeriods.find((period, i) => {
@@ -119,7 +123,7 @@ export default class PeriodSelector extends Component {
           return false
         })
 
-        permissiblePeriods.splice(startIndex)
+        permissiblePeriods = permissiblePeriods.slice(0, startIndex)
       }
     }
 
