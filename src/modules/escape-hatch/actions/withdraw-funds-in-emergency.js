@@ -5,7 +5,7 @@ import noop from 'utils/noop'
 import { updateMarketRepBalance, updateMarketFrozenSharesValue } from 'modules/markets/actions/update-markets-data'
 import { updateParticipationTokenBalance } from 'modules/my-participation-tokens/actions/update-participation-tokens'
 import { updateInitialReporterRepBalance } from 'modules/my-initial-reporters/actions/update-initial-reporters'
-import { updateDisputeCrowdsourcerBalance } from 'modules/my-dispute-crowdsourcer-tokens/actions/update-dispute-crowdsourcer-tokens'
+import { updateDisputeCrowdsourcersBalance } from 'modules/my-dispute-crowdsourcer-tokens/actions/update-dispute-crowdsourcer-tokens'
 
 export default function (ownedMarkets, marketsWithShares, callback = logError) {
   return (dispatch, getState) => {
@@ -48,7 +48,7 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
           onSent: noop,
           onSuccess: (res) => {
             console.log('DisputeCrowdsourcer.withdrawInEmergency', res)
-            dispatch(updateDisputeCrowdsourcerBalance(disputeCrowdsourcerID, 0))
+            dispatch(updateDisputeCrowdsourcersBalance(disputeCrowdsourcerID, 0))
           },
           onFailed: callback
         })
