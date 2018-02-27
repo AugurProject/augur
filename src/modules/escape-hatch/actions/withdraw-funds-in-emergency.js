@@ -3,6 +3,9 @@ import { each } from 'async'
 import logError from 'utils/log-error'
 import noop from 'utils/noop'
 import { updateMarketRepBalance, updateMarketFrozenSharesValue, updateDisputeCrowdsourcerBalance, updateInitialReporterRepBalance, updateParticipationTokenBalance } from 'modules/markets/actions/update-markets-data'
+import { updateParticipationTokenBalance } from 'modules/my-participation-tokens/actions/update-participation-tokens'
+import { updateInitialReporterRepBalance } from 'modules/my-initial-reporters/actions/update-initial-reporters'
+import { updateDisputeCrowdsourcerBalance } from 'modules/my-dispute-crowdsourcers/actions/update-dispute-crowdsourcers'
 
 export default function (ownedMarkets, marketsWithShares, callback = logError) {
   return (dispatch, getState) => {
