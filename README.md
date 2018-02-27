@@ -1,5 +1,5 @@
 # augur | client
-[![Build Status](https://travis-ci.org/AugurProject/augur.svg?branch=v3)](https://travis-ci.org/AugurProject/augur)
+[![Build Status](https://travis-ci.org/AugurProject/augur.svg?branch=seadragon)](https://travis-ci.org/AugurProject/augur)
 [![Coverage Status](https://coveralls.io/repos/github/AugurProject/augur/badge.svg?branch=seadragon)](https://coveralls.io/github/AugurProject/augur?branch=seadragon)
 
 Augur is a decentralized prediction market platform built on Ethereum.  
