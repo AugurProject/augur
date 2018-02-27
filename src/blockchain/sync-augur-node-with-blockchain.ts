@@ -75,7 +75,7 @@ export function syncAugurNodeWithBlockchain(db: Knex, augur: Augur, network: Net
           if (err) return callback(err);
           db.insert({ highestBlockNumber }).into("blockchain_sync_history").asCallback(callback);
           console.log(`Finished batch load from ${fromBlock} to ${highestBlockNumber}`);
-          startAugurListeners(db, augur, highestBlockNumber);
+          startAugurListeners(db, augur, highestBlockNumber, callback);
         });
       });
     });
