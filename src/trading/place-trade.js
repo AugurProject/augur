@@ -13,6 +13,7 @@ var normalizePrice = require("./normalize-price");
  * @param {string} p.estimatedCost Total cost (in ETH) of this trade, as a base-10 string.
  * @param {string} p.minPrice The minimum display (non-normalized) price for this market, as a base-10 string.
  * @param {string} p.maxPrice The maximum display (non-normalized) price for this market, as a base-10 string.
+ * @param {string} p.numTicks The number of ticks for this market.
  * @param {string} p.tickSize The tick size (interval) for this market.
  * @param {number} p._direction Order type (0 for "buy", 1 for "sell").
  * @param {string} p._market Market in which to trade, as a hex string.
