@@ -96,7 +96,8 @@ describe('init-augur', () => {
             rpc: {
               getNetworkID: () => 4,
               eth: { accounts: cb => cb(['0xa11ce']) },
-            }
+            },
+            api: { Controller: { stopped: () => {} } }
           }
         })
 
@@ -150,7 +151,8 @@ describe('init-augur', () => {
             rpc: {
               getNetworkID: () => 4,
               eth: { accounts: cb => cb([]) },
-            }
+            },
+            api: { Controller: { stopped: () => {} } }
           }
         })
 
@@ -209,7 +211,8 @@ describe('init-augur', () => {
             rpc: {
               getNetworkID: () => 3,
               eth: { accounts: cb => cb([]) },
-            }
+            },
+            api: { Controller: { stopped: () => {} } }
           }
         })
 
@@ -310,7 +313,8 @@ describe('init-augur', () => {
             rpc: {
               getNetworkID: () => 4,
               eth: { accounts: cb => cb(['0xa11ce']) },
-            }
+            },
+            api: { Controller: { stopped: () => {} } }
           }
         })
 
@@ -357,7 +361,8 @@ describe('init-augur', () => {
             rpc: {
               getNetworkID: () => 4,
               eth: { accounts: cb => cb([]) },
-            }
+            },
+            api: { Controller: { stopped: () => {} } }
           }
         })
 

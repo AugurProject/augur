@@ -37,7 +37,7 @@ export default class MarketsList extends Component {
     this.state = {
       lowerBound: this.props.showPagination ? null : 1,
       boundedLength: this.props.showPagination ? null : this.props.filteredMarkets.length,
-      marketIDsMissingInfo: [] // This is ONLY the currently displayed markets that are missing info
+      marketIdsMissingInfo: [] // This is ONLY the currently displayed markets that are missing info
     }
 
     this.setSegment = this.setSegment.bind(this)
@@ -58,7 +58,7 @@ export default class MarketsList extends Component {
       this.setMarketIDsMissingInfo(nextProps.markets, nextProps.filteredMarkets, nextState.lowerBound, nextState.boundedLength)
     }
 
-    if (!isEqual(this.state.marketIDsMissingInfo, nextState.marketIDsMissingInfo)) this.loadMarketsInfo(nextState.marketIDsMissingInfo)
+    if (!isEqual(this.state.marketIdsMissingInfo, nextState.marketIdsMissingInfo)) this.loadMarketsInfo(nextState.marketIdsMissingInfo)
   }
 
   setSegment(lowerBound, upperBound, boundedLength) {
@@ -66,21 +66,21 @@ export default class MarketsList extends Component {
   }
 
   setMarketIDsMissingInfo(markets, filteredMarkets, lowerBound, boundedLength) {
-    const marketIDsMissingInfo = []
+    const marketIdsMissingInfo = []
     if (filteredMarkets.length && boundedLength) {
       [...Array(boundedLength)].forEach((unused, i) => {
         const item = filteredMarkets[(lowerBound - 1) + i]
         const market = markets.find(market => market.id === item)
-        if (market && !market.hasLoadedMarketInfo) marketIDsMissingInfo.push(market.id)
+        if (market && !market.hasLoadedMarketInfo) marketIdsMissingInfo.push(market.id)
       })
     }
 
-    this.setState({ marketIDsMissingInfo })
+    this.setState({ marketIdsMissingInfo })
   }
 
   // debounced call
   loadMarketsInfo() {
-    this.props.loadMarketsInfo(this.state.marketIDsMissingInfo)
+    this.props.loadMarketsInfo(this.state.marketIdsMissingInfo)
   }
 
   // NOTE -- You'll notice the odd method used for rendering the previews, this is done for optimization reasons
