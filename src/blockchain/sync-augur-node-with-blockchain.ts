@@ -7,6 +7,8 @@ import { downloadAugurLogs } from "./download-augur-logs";
 import { setOverrideTimestamp } from "./process-block";
 import { NetworkConfiguration } from "augur-core";
 
+const BLOCKSTREAM_HANDOFF_BLOCKS = 5;
+
 interface HighestBlockNumberRow {
   highestBlockNumber: number;
 }
@@ -63,7 +65,7 @@ export function syncAugurNodeWithBlockchain(db: Knex, augur: Augur, network: Net
         if (err) return callback(err);
         const lastSyncBlockNumber: number|null = row!.highestBlockNumber;
         const uploadBlockNumber: number = augur.contracts.uploadBlockNumbers[networkId] || 0;
-        const highestBlockNumber: number = parseInt(augur.rpc.getCurrentBlock().number, 16) - 1;
+        const highestBlockNumber: number = parseInt(augur.rpc.getCurrentBlock().number, 16);
         let fromBlock: number;
         if (uploadBlockNumber > highestBlockNumber) {
           console.log(`Synchronization started at (${uploadBlockNumber}), which exceeds the current block from the ethereum node (${highestBlockNumber}), starting from 0 instead`);
@@ -71,11 +73,21 @@ export function syncAugurNodeWithBlockchain(db: Knex, augur: Augur, network: Net
         } else {
           fromBlock = lastSyncBlockNumber == null ? uploadBlockNumber : lastSyncBlockNumber + 1;
         }
-        downloadAugurLogs(db, augur, fromBlock, highestBlockNumber, (err?: Error|null): void => {
+        let handoffBlockNumber = highestBlockNumber - BLOCKSTREAM_HANDOFF_BLOCKS;
+        if (handoffBlockNumber < fromBlock) {
+          handoffBlockNumber = fromBlock + 1;
+          if (handoffBlockNumber > highestBlockNumber) {
+            return callback(new Error(`Not enough blocks to start blockstream reliably, wait at least ${BLOCKSTREAM_HANDOFF_BLOCKS} from ${fromBlock}`));
+          }
+          console.warn(`Not leaving at least ${BLOCKSTREAM_HANDOFF_BLOCKS} between batch download and blockstream hand off during re-org can cause data quality issues`);
+        }
+        downloadAugurLogs(db, augur, fromBlock, handoffBlockNumber, (err?: Error|null): void => {
           if (err) return callback(err);
-          db.insert({ highestBlockNumber }).into("blockchain_sync_history").asCallback(callback);
-          console.log(`Finished batch load from ${fromBlock} to ${highestBlockNumber}`);
-          startAugurListeners(db, augur, highestBlockNumber, callback);
+          db.insert({ highestBlockNumber }).into("blockchain_sync_history").asCallback((err: Error|null) => {
+            if (err) return callback(err);
+            console.log(`Finished batch load from ${fromBlock} to ${highestBlockNumber}`);
+            startAugurListeners(db, augur, handoffBlockNumber + 1, callback);
+          });
         });
       });
     });
