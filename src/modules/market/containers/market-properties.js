@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom'
 
 import { determineMarketLinkType } from 'modules/market/helpers/determine-market-link-type'
 import MarketProperties from 'modules/market/components/market-properties/market-properties'
+import { selectMarket } from 'modules/market/selectors/market'
 
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
@@ -15,8 +16,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 const mergeProps = (sP, dP, oP) => {
-
-  const linkType = oP.linkType || determineMarketLinkType(oP.id, sP.loginAccount)
+  const linkType = oP.linkType || determineMarketLinkType(selectMarket(oP.id), sP.loginAccount)
 
   return {
     ...sP,
