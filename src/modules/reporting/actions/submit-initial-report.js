@@ -2,6 +2,7 @@ import { augur } from 'services/augurjs'
 import { REPORTING_REPORTING } from 'modules/routes/constants/views'
 import makePath from 'modules/routes/helpers/make-path'
 import logError from 'utils/log-error'
+import noop from 'utils/noop'
 import { getPayoutNumerators } from 'modules/reporting/selectors/get-payout-numerators'
 
 export const submitInitialReport = (marketId, selectedOutcome, invalid, history, callback = logError) => (dispatch, getState) => {
