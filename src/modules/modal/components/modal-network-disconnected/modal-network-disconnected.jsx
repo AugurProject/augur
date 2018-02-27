@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import { AugurLoadingLogo } from 'modules/common/components/icons'
 import Styles from 'modules/modal/components/modal-network-disconnected/modal-network-disconnected.styles'
 
+import getValue from 'utils/get-value'
+
 export default class ModalNetworkDisconnected extends Component {
   static propTypes = {
     modal: PropTypes.shape({
@@ -11,6 +13,7 @@ export default class ModalNetworkDisconnected extends Component {
       connection: PropTypes.object.isRequired,
     }),
     updateEnv: PropTypes.func.isRequired,
+    updateIsReconnectionPaused: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -31,6 +34,8 @@ export default class ModalNetworkDisconnected extends Component {
   showForm(e) {
     e.preventDefault()
     this.setState({ showEnvForm: !this.state.showEnvForm })
+    // if the form is going to be shown, we pass true to pause reconnection
+    this.props.updateIsReconnectionPaused(!this.state.showEnvForm)
   }
 
   submitForm(e, ...args) {
@@ -43,6 +48,8 @@ export default class ModalNetworkDisconnected extends Component {
         ws: this.state.ethereumNodeWs
       },
     })
+    // unpause reconnection
+    this.props.updateIsReconnectionPaused(false)
     this.setState({ showEnvForm: false })
   }
 
@@ -51,15 +58,32 @@ export default class ModalNetworkDisconnected extends Component {
   }
 
   render() {
+    const p = this.props
     const s = this.state
+    const connectionStatus = getValue(p, 'modal.connection')
+    let nodeTitleText = ''
+    let nodeDescriptionText = ''
+    if ((connectionStatus.isConnected && !connectionStatus.isConnectedToAugurNode)) {
+      // augurNode disconnected only
+      nodeTitleText = ' to Augur Node'
+      nodeDescriptionText = ' from your Augur Node'
+    }
+    if ((!connectionStatus.isConnected && connectionStatus.isConnectedToAugurNode)) {
+      // ethereumNode disconnected only
+      nodeTitleText = ' to Ethereum Node'
+      nodeDescriptionText = ' from your Ethereum Node'
+    }
+    // assemble the text based on disconnections
+    const titleText = `Reconnecting${nodeTitleText}`
+    const descriptionText = `You have been disconnected${nodeDescriptionText}. Please wait while we try to reconnect you, or update your node addresses `
 
     return (
       <section className={Styles.ModalNetworkDisconnected}>
         <div className={Styles.ModalNetworkDisconnected__AugurLogo}>
           {AugurLoadingLogo}
         </div>
-        <h1>Reconnecting to Augur Node</h1>
-        <span>You have been disconnected from your Augur Node. Please wait while we try to reconnect you, or update your node addresses <a href="#" onClick={this.showForm}>here.</a></span>
+        <h1>{titleText}</h1>
+        <span>{descriptionText}<a href="#" onClick={this.showForm}>here.</a></span>
         {s.showEnvForm &&
           <form
             className={Styles.ModalNetworkDisconnected__form}

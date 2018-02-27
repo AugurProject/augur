@@ -16,6 +16,7 @@ import * as TYPES from 'modules/transactions/constants/types'
 import { MY_MARKETS, DEFAULT_VIEW } from 'modules/routes/constants/views'
 import { resetState } from 'modules/app/actions/reset-state'
 import { connectAugur } from 'modules/app/actions/init-augur'
+import { updateConnectionStatus, updateAugurNodeConnectionStatus } from 'modules/app/actions/update-connection'
 import { updateModal } from 'modules/modal/actions/update-modal'
 import { MODAL_NETWORK_DISCONNECTED } from 'modules/modal/constants/modal-types'
 import debounce from 'utils/debounce'
@@ -195,13 +196,19 @@ export function listenToUpdates(history) {
 
       const retry = (cb) => {
         const { connection, env } = getState()
-        if (!connection.isConnected) {
+        if (!connection.isConnected || !connection.isConnectedToAugurNode) {
           dispatch(updateModal({
             type: MODAL_NETWORK_DISCONNECTED,
             connection,
             env
           }))
-          dispatch(connectAugur(history, env, false, cb))
+          if (connection.pauseReconnection) {
+            // reconnection has been set to paused, recursive call instead
+            cb(connection.pauseReconnection)
+          } else {
+            // reconnection isn't paused, retry connectAugur
+            dispatch(connectAugur(history, env, false, cb))
+          }
         }
       }
 
@@ -220,9 +227,13 @@ export function listenToUpdates(history) {
 
     augur.events.nodes.augur.on('disconnect', () => {
       const { connection, env } = getState()
-      if (connection.isConnected) {
+      if (connection.isConnectedToAugurNode) {
         // if we were connected when disconnect occured, then resetState and redirect.
         dispatch(resetState())
+        // if we were connected to ethereumNode, make sure connection still reflects that
+        if (connection.isConnected) {
+          dispatch(updateConnectionStatus(true))
+        }
         dispatch(updateModal({
           type: MODAL_NETWORK_DISCONNECTED,
           connection: getState().connection,
@@ -238,6 +249,10 @@ export function listenToUpdates(history) {
       if (connection.isConnected) {
         // if we were connected when disconnect occured, then resetState and redirect.
         dispatch(resetState())
+        // if we were connected to augurNode, make sure connection still reflects that
+        if (connection.isConnectedToAugurNode) {
+          dispatch(updateAugurNodeConnectionStatus(true))
+        }
         dispatch(updateModal({
           type: MODAL_NETWORK_DISCONNECTED,
           connection: getState().connection,
