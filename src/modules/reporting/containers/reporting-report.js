@@ -21,7 +21,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
-  submitInitialReport: (marketId, outcomeValue, invalid) => dispatch(submitInitialReport(marketId, outcomeValue, invalid)),
+  submitInitialReport: (marketId, outcomeValue, invalid, history) => dispatch(submitInitialReport(marketId, outcomeValue, invalid, history)),
   estimateSubmitInitialReport: (marketId, callback) => dispatch(estimateSubmitInitialReport(marketId, callback)),
 })
 
@@ -41,7 +41,7 @@ const mergeProps = (sP, dP, oP) => {
     isMarketLoaded: sP.marketsData[marketId] != null,
     market,
     loadFullMarket: () => dP.loadFullMarket(marketId),
-    submitInitialReport: (marketId, selectedOutcome, invalid) => dP.submitInitialReport(marketId, selectedOutcome, invalid),
+    submitInitialReport: (marketId, selectedOutcome, invalid, history) => dP.submitInitialReport(marketId, selectedOutcome, invalid, history),
     estimateSubmitInitialReport: (marketId, callback) => dP.estimateSubmitInitialReport(marketId, callback),
   }
 }

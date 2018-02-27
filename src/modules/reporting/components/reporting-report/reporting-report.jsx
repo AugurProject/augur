@@ -17,6 +17,7 @@ import BigNumber from 'bignumber.js'
 export default class ReportingReport extends Component {
 
   static propTypes = {
+    history: PropTypes.object.isRequired,
     market: PropTypes.object.isRequired,
     isOpenReporting: PropTypes.bool.isRequired,
     universe: PropTypes.string.isRequired,
@@ -34,7 +35,6 @@ export default class ReportingReport extends Component {
     this.state = {
       currentStep: 0,
       showingDetails: true,
-      showToggleDetails: this.props.market && this.props.market.extraInfo,
       isMarketInValid: null,
       selectedOutcome: '',
       selectedOutcomeName: '',
@@ -127,7 +127,7 @@ export default class ReportingReport extends Component {
             history={p.history}
             cardStyle="single-card"
             buttonText="View"
-            showAdditionalDetailsToggle={s.showToggleDetails}
+            showAdditionalDetailsToggle
             showingDetails={s.showingDetails}
             toggleDetails={this.toggleDetails}
           />
@@ -187,7 +187,7 @@ export default class ReportingReport extends Component {
               { s.currentStep === 1 &&
               <button
                 className={FormStyles.Form__submit}
-                onClick={() => p.submitInitialReport(p.market.id, s.selectedOutcome, s.isMarketInValid)}
+                onClick={() => p.submitInitialReport(p.market.id, s.selectedOutcome, s.isMarketInValid, p.history)}
               >Submit
               </button>
               }
