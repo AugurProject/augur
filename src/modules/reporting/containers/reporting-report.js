@@ -7,7 +7,7 @@ import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names'
 import { selectMarket } from 'modules/market/selectors/market'
 import parseQuery from 'modules/routes/helpers/parse-query'
 import getValue from 'utils/get-value'
-import { submitInitialReport } from 'modules/reporting/actions/submit-initial-report'
+import { submitInitialReport, estimateSubmitInitialReport } from 'modules/reporting/actions/submit-initial-report'
 import { constants } from 'services/augurjs'
 
 const mapStateToProps = state => ({
@@ -22,6 +22,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
   submitInitialReport: (marketId, outcomeValue, invalid) => dispatch(submitInitialReport(marketId, outcomeValue, invalid)),
+  estimateSubmitInitialReport: (marketId, callback) => dispatch(estimateSubmitInitialReport(marketId, callback)),
 })
 
 
@@ -40,7 +41,8 @@ const mergeProps = (sP, dP, oP) => {
     isMarketLoaded: sP.marketsData[marketId] != null,
     market,
     loadFullMarket: () => dP.loadFullMarket(marketId),
-    submitInitialReport: (marketId, selectedOutcome, invalid) => dP.submitInitialReport(marketId, selectedOutcome, invalid)
+    submitInitialReport: (marketId, selectedOutcome, invalid) => dP.submitInitialReport(marketId, selectedOutcome, invalid),
+    estimateSubmitInitialReport: (marketId, callback) => dP.estimateSubmitInitialReport(marketId, callback),
   }
 }
 
