@@ -104,7 +104,6 @@ export default class MarketsList extends Component {
                   key={`${market.id} - ${market.outcomes}`}
                   isLogged={p.isLogged}
                   toggleFavorite={p.toggleFavorite}
-                  linkType={p.linkType}
                   location={p.location}
                   history={p.history}
                   outstandingReturns={p.outstandingReturns}
