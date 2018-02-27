@@ -10,9 +10,6 @@ import { RANGES, PERIODS } from 'modules/market/constants/permissible-periods'
 
 import Styles from 'modules/market/components/market-outcome-charts--candlestick-period-selector/market-outcome-charts--candlestick-period-selector.styles'
 
-// TODO --
-// Select/Update period selection
-
 export default class PeriodSelector extends Component {
   static propTypes = {
     priceTimeSeries: PropTypes.array.isRequired,
@@ -52,13 +49,9 @@ export default class PeriodSelector extends Component {
     // NOTE --  fundamental assumption is that the RANGES and PERIODS arrays have
     //          the same number of values that also directly correspond to each other
 
-    // const seriesRange = !isEmpty(priceTimeSeries) ?
-    //   priceTimeSeries[priceTimeSeries.length - 1][0] - priceTimeSeries[0][0] :
-    //   null
-
-    const seriesRange = 31557600001
-
-    // console.log('seriesRange -- ', seriesRange)
+    const seriesRange = !isEmpty(priceTimeSeries) ?
+      priceTimeSeries[priceTimeSeries.length - 1][0] - priceTimeSeries[0][0] :
+      null
 
     let permissibleRanges = []
     let permissiblePeriods = []
@@ -126,13 +119,9 @@ export default class PeriodSelector extends Component {
           return false
         })
 
-        console.log('startIndex -- ', startIndex)
-
         permissiblePeriods.splice(startIndex)
       }
     }
-
-    console.log('permissible -- ', permissibleRanges, permissiblePeriods)
 
     this.setState({
       permissibleRanges,
@@ -143,53 +132,55 @@ export default class PeriodSelector extends Component {
   validateAndUpdateSelection(permissibleRanges, permissiblePeriods, selectedRange, selectedPeriod) {
     // All we're doing here is validating selections relative to each other + setting defaults
     // Establishment of permissible bounds happens elsewhere
-    console.log('validateAndUpdateSelection -- ', permissibleRanges, permissiblePeriods, selectedRange, selectedPeriod)
+    let updatedSelectedRange
+    let updatedSelectedPeriod
 
     // No valid options to select
     if (isEmpty(permissibleRanges) || isEmpty(permissiblePeriods)) {
-      return this.setState({
-        selectedRange: -1,
-        selectedPeriod: -1
-      })
+      updatedSelectedRange = -1
+      updatedSelectedPeriod = -1
+    } else {
+      // Update Range Selection
+      // Trying to determine whether or not selectedRange is out of permissible bounds
+      if (
+        selectedRange === -1 ||
+        selectedRange === null ||
+        (
+          selectedPeriod !== -1 &&
+          selectedPeriod !== null &&
+          selectedRange <= selectedPeriod
+        )
+      ) {
+        updatedSelectedRange = permissibleRanges[permissibleRanges.length - 1]
+      } else {
+        updatedSelectedRange = selectedRange
+      }
+      //
+      // Update Period Selection
+      if (
+        selectedPeriod === -1 ||
+        (
+          selectedRange !== -1 &&
+          selectedRange !== null &&
+          selectedPeriod >= selectedRange
+        )
+
+      ) {
+        updatedSelectedPeriod = permissiblePeriods[permissiblePeriods.length - 1]
+      } else {
+        updatedSelectedPeriod = selectedPeriod
+      }
     }
 
-    // Update Range Selection
-    // Trying to detemrine whether or not selectedRange is out of permissible bounds
-    if (
-      selectedRange === -1 ||
-      selectedRange === null ||
-      (
-        selectedPeriod !== -1 &&
-        selectedPeriod !== null &&
-        selectedRange <= selectedPeriod
-      )
-    ) {
-      this.setState({
-        selectedRange: permissibleRanges[permissibleRanges.length - 1],
-      })
-    } else {
-      this.setState({ selectedRange })
-    }
-    //
-    // Update Period Selection
-    if (
-      selectedPeriod === -1 ||
-      selectedPeriod === null ||
-      (
-        selectedRange !== -1 &&
-        selectedRange !== null &&
-        selectedPeriod >= selectedRange
-      )
+    this.setState({
+      selectedRange: updatedSelectedRange,
+      selectedPeriod: updatedSelectedPeriod
+    })
 
-    ) {
-      this.setState({
-        selectedPeriod: permissiblePeriods[permissiblePeriods.length - 1]
-      })
-    } else {
-      this.setState({
-        selectedPeriod
-      })
-    }
+    this.updateSelectedPeriod({
+      selectedRange: updatedSelectedRange,
+      selectedPeriod: updatedSelectedPeriod
+    })
   }
 
   render() {
