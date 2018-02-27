@@ -57,58 +57,49 @@ export default class PeriodSelector extends Component {
     //   priceTimeSeries[priceTimeSeries.length - 1][0] - priceTimeSeries[0][0] :
     //   null
 
-    const seriesRange = 31557600001
+    const seriesRange = 604800018
 
     let permissibleRanges = []
     let permissiblePeriods = []
 
     if (seriesRange !== null) {
-      // Going to do this in two steps (easier to reason about)
-
       // Permissible ranges based on series
       permissibleRanges = RANGES.reduce((p, currentRange, i) => {
-        const updatedPermissibleRange = p
-
         // Lower Bound + initial upper
         if (i === 0) {
-          updatedPermissibleRange[0] = currentRange.range
-          updatedPermissibleRange[1] = currentRange.range
-
-          return updatedPermissibleRange
+          return [currentRange]
         }
 
         // Upper Bound
         if (currentRange.range === null) { // null is a special case that denotes 'Full range'
-          if (seriesRange > RANGES[i - 1].range) updatedPermissibleRange[1] = currentRange.range
+          if (seriesRange > RANGES[i - 1].range) return [...p, currentRange]
         } else if (currentRange.range <= seriesRange) {
-          updatedPermissibleRange[1] = currentRange.range
+          return [...p, currentRange]
         }
 
-        return updatedPermissibleRange
+        return p
       }, [])
 
       // Permissible ranges based on selection
       if (selectedPeriod !== null && selectedPeriod !== -1) { // null denotes 'Every block'
-        RANGES.find((range, i) => {
+        let rangesToRemove = 0
+
+        permissibleRanges.find((range, i) => {
           if (selectedPeriod === range.range) {
-            permissibleRanges[0] = RANGES[i + 1].range
+            rangesToRemove = i + 1
             return true
           }
-
           return false
         })
+
+        permissibleRanges.splice(0, rangesToRemove)
       }
 
       // Permissible periods based on series
       permissiblePeriods = PERIODS.reduce((p, currentPeriod, i) => {
-        const updatedPermissiblePeriod = p
-
         // Lower Bound + initial upper
         if (i === 0) {
-          updatedPermissiblePeriod[0] = currentPeriod.period
-          updatedPermissiblePeriod[1] = currentPeriod.period
-
-          return updatedPermissiblePeriod
+          return [currentPeriod]
         }
 
         // Upper Bound
@@ -116,22 +107,25 @@ export default class PeriodSelector extends Component {
           currentPeriod.period !== null &&
           currentPeriod.period <= seriesRange
         ) {
-          updatedPermissiblePeriod[1] = currentPeriod.period
+          return [...p, currentPeriod]
         }
 
-        return updatedPermissiblePeriod
+        return p
       }, [])
 
       // Permissible periods based on selection
       if (selectedRange !== null && selectedRange !== -1) { // null denotes 'Full range'
-        PERIODS.find((period, i) => {
-          if (selectedRange === period.period) {
-            permissiblePeriods[1] = PERIODS[i - 1].period
+        let periodsToRemove = 0
+
+        permissiblePeriods.find((period, i) => {
+          if (selectedPeriod === period.period) {
+            periodsToRemove = permissiblePeriods.length - i
             return true
           }
-
           return false
         })
+
+        permissibleRanges.splice(-periodsToRemove, periodsToRemove)
       }
     }
 
@@ -270,7 +264,7 @@ export default class PeriodSelector extends Component {
 }
 
 function isRangeDisabled(range, permissibleRanges) {
-  console.log('isRangeDisabled -- ', range)
+  // console.log('isRangeDisabled -- ', range)
 
   // between range
 
