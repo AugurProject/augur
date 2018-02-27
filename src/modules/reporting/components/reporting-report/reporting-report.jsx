@@ -13,7 +13,6 @@ import { isEmpty } from 'lodash'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-report/reporting-report.styles'
 import BigNumber from 'bignumber.js'
-import speedomatic from 'speedomatic'
 
 export default class ReportingReport extends Component {
 
