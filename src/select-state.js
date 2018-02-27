@@ -38,6 +38,9 @@ export const selectClosePositionTradeGroupsState = state => state.closePositionT
 export const selectMarketCreatorFeesState = state => state.marketCreatorFees
 export const selectNotificationsState = state => state.notifications
 export const selectMarketReportState = state => state.marketReportState
+export const selectParticipationTokens = state => state.participationTokens
+export const selectInitialReporters = state => state.initialReporters
+export const selectDisputeCrowdsourcerTokens = state => state.disputeCrowdsourcerTokens
 
 export const selectBlockchainCurrentBlockTimestamp = createSelector(
   selectBlockchainState,

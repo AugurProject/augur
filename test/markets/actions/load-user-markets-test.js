@@ -103,9 +103,9 @@ describe('modules/markets/actions/load-user-markets.js', () => {
           type: ACTIONS.UPDATE_MARKETS_DATA,
           data: {
             marketsData: {
-              '0xabc1': { id: '0xabc1' },
-              '0xabc2': { id: '0xabc2' },
-              '0xabc3': { id: '0xabc3' },
+              '0xabc1': { author: '0xtester1', id: '0xabc1' },
+              '0xabc2': { author: '0xtester1', id: '0xabc2' },
+              '0xabc3': { author: '0xtester1', id: '0xabc3' },
             }
           }
         }]

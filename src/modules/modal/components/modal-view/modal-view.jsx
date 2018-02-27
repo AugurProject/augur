@@ -8,11 +8,12 @@ import ModalUport from 'modules/modal/components/modal-uport/modal-uport'
 import ModalNetworkMismatch from 'modules/modal/components/modal-network-mismatch/modal-network-mismatch'
 import ModalNetworkDisconnected from 'modules/modal/components/modal-network-disconnected/modal-network-disconnected'
 import ModalApproval from 'modules/modal/components/modal-approval/modal-approval'
+import ModalEscapeHatch from 'modules/modal/components/modal-escape-hatch/modal-escape-hatch'
 
 import debounce from 'utils/debounce'
 import getValue from 'utils/get-value'
 
-import { MODAL_LEDGER, MODAL_UPORT, MODAL_NETWORK_MISMATCH, MODAL_NETWORK_DISCONNECTED, MODAL_ACCOUNT_APPROVAL } from 'modules/modal/constants/modal-types'
+import { MODAL_LEDGER, MODAL_UPORT, MODAL_NETWORK_MISMATCH, MODAL_NETWORK_DISCONNECTED, MODAL_ACCOUNT_APPROVAL, MODAL_ESCAPE_HATCH } from 'modules/modal/constants/modal-types'
 
 import Styles from 'modules/modal/components/modal-view/modal-view.styles'
 
@@ -77,6 +78,9 @@ export default class ModalView extends Component {
           }
           {p.modal.type === MODAL_ACCOUNT_APPROVAL &&
             <ModalApproval {...p} />
+          }
+          {p.modal.type === MODAL_ESCAPE_HATCH &&
+            <ModalEscapeHatch {...p} />
           }
           {p.modal.canClose && p.modal.type !== MODAL_ACCOUNT_APPROVAL &&
             <button

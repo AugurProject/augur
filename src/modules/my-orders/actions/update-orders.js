@@ -20,8 +20,8 @@ function dispatchOrderUpdates(marketOrderData, isAddition, dispatch, getState) {
   Object.keys(marketOrderData).forEach((outcome) => {
     marketOrderData[outcome].forEach((orderLog) => {
       const { orderBooks } = getState()
-      const orderBook = orderBooks[orderLog.marketID]
-      dispatch(updateOrderBook(orderLog.marketID, outcome, orderLog.orderType, orderBook))
+      const orderBook = orderBooks[orderLog.marketId]
+      dispatch(updateOrderBook(orderLog.marketId, outcome, orderLog.orderType, orderBook))
     })
   })
 }
