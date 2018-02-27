@@ -37,6 +37,7 @@ export default class MarketOutcomeCharts extends Component {
     this.updateHoveredPrice = this.updateHoveredPrice.bind(this)
     this.updatePrecision = this.updatePrecision.bind(this)
     this.updateHoveredDepth = this.updateHoveredDepth.bind(this)
+    this.updateSelectedPeriod = this.updateSelectedPeriod.bind(this)
   }
 
   componentWillUpdate(nextProps, nextState) {

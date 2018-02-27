@@ -177,7 +177,7 @@ export default class PeriodSelector extends Component {
       selectedPeriod: updatedSelectedPeriod
     })
 
-    this.updateSelectedPeriod({
+    this.props.updateSelectedPeriod({
       selectedRange: updatedSelectedRange,
       selectedPeriod: updatedSelectedPeriod
     })
@@ -211,7 +211,10 @@ export default class PeriodSelector extends Component {
             <h1>Period</h1>
             <ul>
               {PERIODS.map(period => (
-                <li className={Styles.PeriodSelector__value}>
+                <li
+                  key={period.period}
+                  className={Styles.PeriodSelector__value}
+                >
                   <button
                     className={
                       classNames({
@@ -235,7 +238,10 @@ export default class PeriodSelector extends Component {
             <h1>Range</h1>
             <ul>
               {RANGES.map(range => (
-                <li className={Styles.PeriodSelector__value}>
+                <li
+                  key={range.range}
+                  className={Styles.PeriodSelector__value}
+                >
                   <button
                     className={
                       classNames({
