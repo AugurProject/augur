@@ -32,7 +32,6 @@ export default class ReportingReport extends Component {
     this.state = {
       currentStep: 0,
       showingDetails: true,
-      showToggleDetails: this.props.market && this.props.market.extraInfo,
       isMarketInValid: null,
       selectedOutcome: '',
       selectedOutcomeName: '',
@@ -110,7 +109,7 @@ export default class ReportingReport extends Component {
             history={p.history}
             cardStyle="single-card"
             buttonText="View"
-            showAdditionalDetailsToggle={s.showToggleDetails}
+            showAdditionalDetailsToggle
             showingDetails={s.showingDetails}
             toggleDetails={this.toggleDetails}
           />
