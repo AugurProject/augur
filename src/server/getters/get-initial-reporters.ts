@@ -1,7 +1,6 @@
 import * as Knex from "knex";
 import Augur from "augur.js";
 import { Address } from "../../types";
-import { queryModifier } from "./database";
 import { InitialReportersRow, UIInitialReporters } from "../../types";
 
 export function getInitialReporters(db: Knex, augur: Augur, reporter: Address, redeemed: boolean|null|undefined, withRepBalance: boolean|null|undefined, callback: (err: Error|null, result?: any) => void): void {
