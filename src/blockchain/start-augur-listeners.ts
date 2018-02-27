@@ -1,44 +1,23 @@
 import Augur from "augur.js";
+import * as _ from "lodash";
 import * as Knex from "knex";
 import { BlockDetail } from "../types";
 import { makeLogListener } from "./make-log-listener";
 import { processBlock, processBlockRemoval } from "./process-block";
+import { logProcessors } from "./log-processors";
 
 export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: number): void {
-  augur.events.startBlockchainEventListeners({
-    Augur: {
-      MarketCreated: makeLogListener(augur, "Augur", "MarketCreated"),
-      TokensTransferred: makeLogListener(augur, "Augur", "TokensTransferred"),
-      TokensMinted: makeLogListener(augur, "Augur", "TokensMinted"),
-      TokensBurned: makeLogListener(augur, "Augur", "TokensBurned"),
-      OrderCanceled: makeLogListener(augur, "Augur", "OrderCanceled"),
-      OrderCreated: makeLogListener(augur, "Augur", "OrderCreated"),
-      OrderFilled: makeLogListener(augur, "Augur", "OrderFilled"),
-      TradingProceedsClaimed: makeLogListener(augur, "Augur", "TradingProceedsClaimed"),
-      DesignatedReportSubmitted: makeLogListener(augur, "Augur", "DesignatedReportSubmitted"),
-      ReportSubmitted: makeLogListener(augur, "Augur", "ReportSubmitted"),
-      WinningTokensRedeemed: makeLogListener(augur, "Augur", "WinningTokensRedeemed"),
-      ReportsDisputed: makeLogListener(augur, "Augur", "ReportsDisputed"),
-      MarketFinalized: makeLogListener(augur, "Augur", "MarketFinalized"),
-      FeeWindowCreated: makeLogListener(augur, "Augur", "FeeWindowCreated"),
-      UniverseForked: makeLogListener(augur, "Augur", "UniverseForked"),
-      TimestampSet: makeLogListener(augur, "Augur", "TimestampSet"),
-      InitialReportSubmitted: makeLogListener(augur, "Augur", "InitialReportSubmitted"),
-      InitialReporterRedeemed: makeLogListener(augur, "Augur", "InitialReporterRedeemed"),
-      InitialReporterTransferred: makeLogListener(augur, "Augur", "InitialReporterTransferred"),
-      DisputeCrowdsourcerCreated: makeLogListener(augur, "Augur", "DisputeCrowdsourcerCreated"),
-      DisputeCrowdsourcerContribution: makeLogListener(augur, "Augur", "DisputeCrowdsourcerContribution"),
-      DisputeCrowdsourcerCompleted: makeLogListener(augur, "Augur", "DisputeCrowdsourcerCompleted"),
-
-    },
-    LegacyReputationToken: {
-      Transfer: makeLogListener(augur, "LegacyReputationToken", "Transfer"),
-      Approval: makeLogListener(augur, "LegacyReputationToken", "Approval"),
-    },
-  }, highestBlockNumber, (err: Error) => {
-    augur.events.startBlockListeners({
-      onAdded: (block: BlockDetail): void => processBlock(db, augur, block),
-      onRemoved: (block: BlockDetail): void => processBlockRemoval(db, block),
-    });
+  const eventCallbacks = _.mapValues(logProcessors, (contractEvents, contractName) => {
+    return _.mapValues(contractEvents, (eventFunctions, eventName) => makeLogListener(augur, contractName, eventName));
   });
+  augur.events.startBlockchainEventListeners(
+    eventCallbacks,
+    highestBlockNumber,
+    (err: Error) => {
+      augur.events.startBlockListeners({
+        onAdded: (block: BlockDetail): void => processBlock(db, augur, block),
+        onRemoved: (block: BlockDetail): void => processBlockRemoval(db, block),
+      });
+    },
+  );
 }
