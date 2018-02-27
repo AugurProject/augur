@@ -53,7 +53,7 @@ export function getDisputeInfo(db: Knex, marketIds: Array<Address>, account: Add
     )).groupBy("marketId", "payoutId");
 
   // select crowdsourcers.marketId, crowdsourcers.payoutId, crowdsourcers.completed, sum(balances.balance) from crowdsourcers JOIN balances ON balances.token = crowdsourcers.crowdsourcerId;
-  const accountStake = db.select(["crowdsourcers.marketId", "crowdsourcers.payoutId"]).sum("balances.balance as amountStaked")
+  const accountStake = db.select(["crowdsourcers.marketId", "balances.owner", "crowdsourcers.payoutId"]).sum("balances.balance as amountStaked")
     .from("crowdsourcers").join("balances", "balances.token", "crowdsourcers.crowdsourcerId")
     .whereIn("marketId", marketIds)
     .where("balances.owner", account || "");
@@ -120,11 +120,11 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
       currentAmounts = {
         size: new BigNumber(activeCrowdsourcer.size).toFixed(),
         currentStake: new BigNumber(activeCrowdsourcer.amountStaked).toFixed(),
-        accountStakeIncomplete: new BigNumber(accountStakeIncomplete || 0).toFixed(),
+        accountStakeIncomplete: new BigNumber(accountStakeIncomplete === undefined ? 0 : accountStakeIncomplete.amountStaked ).toFixed(),
       };
     }
 
-    currentAmounts.accountStakeComplete = new BigNumber(accountStakeComplete || 0).toFixed();
+    currentAmounts.accountStakeComplete = new BigNumber(accountStakeComplete === undefined ? 0 : accountStakeComplete.amountStaked).toFixed();
     return Object.assign({},
       normalizePayouts(payout),
       currentAmounts,
