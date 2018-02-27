@@ -40,6 +40,9 @@ import notifications from 'modules/notifications/reducers/notifications'
 import reportingWindowStats from 'modules/reporting/reducers/reporting-window-stats'
 import marketReportState from 'modules/reporting/reducers/market-report-state'
 import modal from 'modules/modal/reducers/modal'
+import participationTokens from 'modules/my-participation-tokens/reducers/participation-token-data'
+import initialReporters from 'modules/my-initial-reporters/reducers/initial-reporters-data'
+import disputeCrowdsourcerTokens from 'modules/my-dispute-crowdsourcer-tokens/reducers/dispute-crowdsourcer-data'
 
 export function createReducer() {
   return {
@@ -83,6 +86,9 @@ export function createReducer() {
     notifications,
     reportingWindowStats,
     marketReportState,
-    modal
+    modal,
+    participationTokens,
+    initialReporters,
+    disputeCrowdsourcerTokens
   }
 }

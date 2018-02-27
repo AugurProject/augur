@@ -356,7 +356,7 @@ export default class CreateMarketOutcome extends Component {
             </div>
             <div>
               <label htmlFor="cm__input--ticksize">
-                <span>Tick size</span>
+                <span>Precision</span>
               </label>
               <input
                 id="cm__input--ticksize"
