@@ -139,7 +139,10 @@ export default class MarketPortfolioCard extends Component {
         </section>
         <section className={Styles.MarketCard__tablesection}>
           {(myPositionOutcomes || []).filter(outcome => outcome.position).length !== 0 &&
-            <div className={Styles.MarketCard__headingcontainer}>
+            <button
+              className={Styles.MarketCard__headingcontainer}
+              onClick={() => this.toggleTable('myPositions')}
+            >
               <h1 className={Styles.MarketCard__tableheading}>
                 My Positions
               </h1>
@@ -149,27 +152,7 @@ export default class MarketPortfolioCard extends Component {
               >
                 <CaretDropdown flipped={this.state.tableOpen.myPositions} />
               </button>
-              {p.linkType && p.linkType !== TYPE_CLAIM_PROCEEDS &&
-                <MarketLink
-                  key={p.market.id}
-                  className={Styles.MarketCard__action}
-                  id={p.market.id}
-                  formattedDescription={p.market.description}
-                  linkType={p.linkType}
-                >
-                  { p.buttonText || buttonText }
-                </MarketLink>
-              }
-              {p.linkType && p.linkType === TYPE_CLAIM_PROCEEDS && (myPositionOutcomes && myPositionOutcomes.filter(outcome => outcome.position).length > 0 && myPositionOutcomes.filter(outcome => outcome.position && outcome.position.unrealizedNet.formattedValue > 0).length > 0) &&
-                <button
-                  className={Styles.MarketCard__action}
-                  onClick={() => p.claimTradingProceeds([p.market.id])
-                  }
-                >
-                  { p.buttonText || buttonText }
-                </button>
-              }
-            </div>
+            </button>
           }
           <div className={PositionStyles.MarketPositionsList__table}>
             { this.state.tableOpen.myPositions && (myPositionOutcomes || []).filter(outcome => outcome.position).length > 0 &&
@@ -201,7 +184,10 @@ export default class MarketPortfolioCard extends Component {
         <section className={Styles.MarketCard__tablesection}>
           <div className={PositionStyles.MarketPositionsList__table}>
             {this.props.market.outcomes[0] && this.props.market.outcomes[0].userOpenOrders && this.props.market.outcomes[0].userOpenOrders.length !== 0 &&
-              <div className={Styles.MarketCard__headingcontainer}>
+              <button
+                className={Styles.MarketCard__headingcontainer}
+                onClick={() => this.toggleTable('openOrders')}
+              >
                 <h1 className={Styles.MarketCard__tableheading}>
                   Open Orders
                 </h1>
@@ -211,7 +197,7 @@ export default class MarketPortfolioCard extends Component {
                 >
                   <CaretDropdown flipped={this.state.tableOpen.openOrders} />
                 </button>
-              </div>
+              </button>
             }
             <div className={PositionStyles.MarketPositionsList__table}>
               { this.state.tableOpen.openOrders &&

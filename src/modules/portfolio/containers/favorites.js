@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import Watchlist from 'modules/portfolio/components/watchlist/watchlist'
+import Favorites from 'modules/portfolio/components/favorites/favorites'
 import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import selectAllMarkets from 'modules/markets/selectors/markets-all'
@@ -33,6 +33,6 @@ const mapDispatchToProps = dispatch => ({
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
 })
 
-const WatchListContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(Watchlist))
+const FavoritesContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(Favorites))
 
-export default WatchListContainer
+export default FavoritesContainer

@@ -1,5 +1,5 @@
 import BaseInnerNav from 'modules/app/components/inner-nav/base-inner-nav'
-import { MY_POSITIONS, MY_MARKETS, WATCHLIST, PORTFOLIO_TRANSACTIONS, PORTFOLIO_REPORTS } from 'modules/routes/constants/views'
+import { MY_POSITIONS, MY_MARKETS, FAVORITES, PORTFOLIO_TRANSACTIONS, PORTFOLIO_REPORTS } from 'modules/routes/constants/views'
 
 export default class PorfolioInnerNav extends BaseInnerNav {
   getMainMenuData() {
@@ -21,11 +21,11 @@ export default class PorfolioInnerNav extends BaseInnerNav {
         }
       },
       {
-        label: 'Watching',
+        label: 'Favorites',
         visible: true,
-        isSelected: (this.props.currentBasePath === WATCHLIST),
+        isSelected: (this.props.currentBasePath === FAVORITES),
         link: {
-          pathname: WATCHLIST
+          pathname: FAVORITES
         }
       },
       {
