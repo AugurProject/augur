@@ -49,7 +49,6 @@ export default class PeriodSelector extends Component {
   }
 
   updatePermissibleValues(priceTimeSeries, selectedRange, selectedPeriod) {
-    console.log('updatePermissibleValues -- ', selectedRange, selectedPeriod)
     // NOTE --  fundamental assumption is that the RANGES and PERIODS arrays have
     //          the same number of values that also directly correspond to each other
 
@@ -57,7 +56,9 @@ export default class PeriodSelector extends Component {
     //   priceTimeSeries[priceTimeSeries.length - 1][0] - priceTimeSeries[0][0] :
     //   null
 
-    const seriesRange = 604800018
+    const seriesRange = 31557600001
+
+    console.log('seriesRange -- ', seriesRange)
 
     let permissibleRanges = []
     let permissiblePeriods = []
@@ -67,14 +68,14 @@ export default class PeriodSelector extends Component {
       permissibleRanges = RANGES.reduce((p, currentRange, i) => {
         // Lower Bound + initial upper
         if (i === 0) {
-          return [currentRange]
+          return [currentRange.range]
         }
 
         // Upper Bound
         if (currentRange.range === null) { // null is a special case that denotes 'Full range'
-          if (seriesRange > RANGES[i - 1].range) return [...p, currentRange]
+          if (seriesRange > RANGES[i - 1].range) return [...p, currentRange.range]
         } else if (currentRange.range <= seriesRange) {
-          return [...p, currentRange]
+          return [...p, currentRange.range]
         }
 
         return p
@@ -85,7 +86,7 @@ export default class PeriodSelector extends Component {
         let rangesToRemove = 0
 
         permissibleRanges.find((range, i) => {
-          if (selectedPeriod === range.range) {
+          if (selectedPeriod === range) {
             rangesToRemove = i + 1
             return true
           }
@@ -99,15 +100,15 @@ export default class PeriodSelector extends Component {
       permissiblePeriods = PERIODS.reduce((p, currentPeriod, i) => {
         // Lower Bound + initial upper
         if (i === 0) {
-          return [currentPeriod]
+          return [currentPeriod.period]
         }
 
         // Upper Bound
         if (
-          currentPeriod.period !== null &&
-          currentPeriod.period <= seriesRange
+          permissibleRanges[permissibleRanges.length - 1] === null ||
+          currentPeriod.period < permissibleRanges[permissibleRanges.length - 1]
         ) {
-          return [...p, currentPeriod]
+          return [...p, currentPeriod.period]
         }
 
         return p
@@ -118,18 +119,18 @@ export default class PeriodSelector extends Component {
         let periodsToRemove = 0
 
         permissiblePeriods.find((period, i) => {
-          if (selectedPeriod === period.period) {
-            periodsToRemove = permissiblePeriods.length - i
+          if (selectedPeriod === period) {
+            periodsToRemove = permissiblePeriods.length - 1 - i
             return true
           }
           return false
         })
 
-        permissibleRanges.splice(-periodsToRemove, periodsToRemove)
+        permissiblePeriods.splice(-periodsToRemove, periodsToRemove)
       }
     }
 
-    console.log(permissibleRanges, permissiblePeriods)
+    console.log('permissible -- ', permissibleRanges, permissiblePeriods)
 
     this.setState({
       permissibleRanges,
@@ -149,6 +150,7 @@ export default class PeriodSelector extends Component {
     // Update Range Selection
     if (
       selectedRange === -1 ||
+      selectedRange === null ||
       (
         selectedPeriod !== -1 &&
         selectedPeriod !== null &&
@@ -156,15 +158,16 @@ export default class PeriodSelector extends Component {
       )
     ) {
       this.setState({
-        selectedRange: permissibleRanges[1],
+        selectedRange: permissibleRanges[permissibleRanges.length - 1],
       })
     } else {
       this.setState({ selectedRange })
     }
-
+    //
     // Update Period Selection
     if (
       selectedPeriod === -1 ||
+      selectedPeriod === null ||
       (
         selectedRange !== -1 &&
         selectedRange !== null &&
@@ -173,7 +176,7 @@ export default class PeriodSelector extends Component {
 
     ) {
       this.setState({
-        selectedPeriod: permissiblePeriods[1]
+        selectedPeriod: permissiblePeriods[permissiblePeriods.length - 1]
       })
     } else {
       this.setState({
@@ -217,10 +220,7 @@ export default class PeriodSelector extends Component {
                         [Styles['PeriodSelector__value--active']]: period.period === s.selectedPeriod
                       })
                     }
-                    disabled={
-                      period.period !== s.selectedPeriod &&
-                      (period.period < s.permissiblePeriods[0] || period.period > s.permissiblePeriods[1])
-                    }
+                    disabled={s.permissiblePeriods.indexOf(period.period) === -1}
                     onClick={() => {
                       this.setState({
                         selectedPeriod: period.period === s.selectedPeriod ? -1 : period.period
@@ -244,7 +244,7 @@ export default class PeriodSelector extends Component {
                         [Styles['PeriodSelector__value--active']]: range.range === s.selectedRange
                       })
                     }
-                    disabled={isRangeDisabled(range.range, s.permissibleRanges)}
+                    disabled={s.permissibleRanges.indexOf(range.range) === -1}
                     onClick={() => {
                       this.setState({
                         selectedRange: range.range === s.selectedRange ? -1 : range.range
@@ -261,17 +261,4 @@ export default class PeriodSelector extends Component {
       </section>
     )
   }
-}
-
-function isRangeDisabled(range, permissibleRanges) {
-  // console.log('isRangeDisabled -- ', range)
-
-  // between range
-
-  // if (range === null) {
-  //   if (permissibleRanges[])
-  //   return true
-  // } else if (range ){
-  //
-  // }
 }
