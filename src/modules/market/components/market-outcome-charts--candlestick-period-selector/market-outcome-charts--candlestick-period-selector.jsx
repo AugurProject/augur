@@ -58,7 +58,7 @@ export default class PeriodSelector extends Component {
 
     const seriesRange = 31557600001
 
-    console.log('seriesRange -- ', seriesRange)
+    // console.log('seriesRange -- ', seriesRange)
 
     let permissibleRanges = []
     let permissiblePeriods = []
@@ -116,17 +116,19 @@ export default class PeriodSelector extends Component {
 
       // Permissible periods based on selection
       if (selectedRange !== null && selectedRange !== -1) { // null denotes 'Full range'
-        let periodsToRemove = 0
+        let startIndex = 0
 
         permissiblePeriods.find((period, i) => {
-          if (selectedPeriod === period) {
-            periodsToRemove = permissiblePeriods.length - 1 - i
+          if (selectedRange === period) {
+            startIndex = i
             return true
           }
           return false
         })
 
-        permissiblePeriods.splice(-periodsToRemove, periodsToRemove)
+        console.log('startIndex -- ', startIndex)
+
+        permissiblePeriods.splice(startIndex)
       }
     }
 
@@ -139,6 +141,10 @@ export default class PeriodSelector extends Component {
   }
 
   validateAndUpdateSelection(permissibleRanges, permissiblePeriods, selectedRange, selectedPeriod) {
+    // All we're doing here is validating selections relative to each other + setting defaults
+    // Establishment of permissible bounds happens elsewhere
+    console.log('validateAndUpdateSelection -- ', permissibleRanges, permissiblePeriods, selectedRange, selectedPeriod)
+
     // No valid options to select
     if (isEmpty(permissibleRanges) || isEmpty(permissiblePeriods)) {
       return this.setState({
@@ -148,6 +154,7 @@ export default class PeriodSelector extends Component {
     }
 
     // Update Range Selection
+    // Trying to detemrine whether or not selectedRange is out of permissible bounds
     if (
       selectedRange === -1 ||
       selectedRange === null ||
