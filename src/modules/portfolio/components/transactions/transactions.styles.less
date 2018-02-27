@@ -104,14 +104,18 @@
 .Transaction__data {
   align-items: baseline;
   display: flex;
-  flex-flow: row nowrap;
+  flex-wrap: nowrap;
+  margin-bottom: 1rem;
   padding: 0 2rem;
   width: 100%;
 }
 
 .Transaction__data-title {
   flex: 1;
-  padding: 0 1rem 1rem;
+
+  > h2 {
+    &:extend(.caps--large);
+  }
 }
 
 .Transactions__heading {

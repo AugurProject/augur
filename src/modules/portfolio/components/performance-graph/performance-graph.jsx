@@ -58,7 +58,8 @@ class PerformanceGraph extends Component {
         text: null
       },
       chart: {
-        backgroundColor: '#1e1a31',
+        backgroundColor: 'transparent',
+        height: '220px',
         spacingLeft: 0,
         spacingRight: 0,
       },
@@ -92,16 +93,20 @@ class PerformanceGraph extends Component {
       xAxis: {
         visible: true,
         type: 'datetime',
+        lineColor: '#686177',
         crosshair: {
           width: 4,
+          color: '#6f697e',
         },
         labels: {
           formatter() {
             return formatDate(new Date(this.value)).simpleDate
           },
           style: {
-            color: '#ffffff',
-            fontSize: '0.875rem',
+            color: '#a7a2b2',
+            fontSize: '0.625rem',
+            textTransform: 'uppercase',
+            fontWeight: '500',
           }
         },
         tickLength: 6,
@@ -116,6 +121,7 @@ class PerformanceGraph extends Component {
         visible: true,
         showFirstLabel: false,
         showLastLabel: true,
+        gridLineColor: '#686177',
         title: {
           text: null,
         },
@@ -129,8 +135,10 @@ class PerformanceGraph extends Component {
             return formatEther(this.value).full
           },
           style: {
-            color: '#ffffff',
-            fontSize: '0.875rem'
+            color: '#a7a2b2',
+            fontSize: '0.625rem',
+            textTransform: 'uppercase',
+            fontWeight: '500',
           },
         },
         tickPositioner() {
@@ -172,7 +180,9 @@ class PerformanceGraph extends Component {
         borderWidth: 0,
         headerFormat: '',
         style: {
-          fontSize: '1rem'
+          fontSize: '0.625rem',
+          color: 'white',
+          fontWeight: '700',
         },
         shadow: false,
         shape: 'none',

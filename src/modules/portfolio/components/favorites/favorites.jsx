@@ -4,10 +4,10 @@ import { Helmet } from 'react-helmet'
 
 import Dropdown from 'modules/common/components/dropdown/dropdown'
 import MarketsList from 'modules/markets/components/markets-list'
-import Styles from 'modules/portfolio/components/watchlist/watchlist.styles'
+import Styles from 'modules/portfolio/components/favorites/favorites.styles'
 import { TYPE_TRADE } from 'modules/market/constants/link-types'
 
-class WatchList extends Component {
+class Favorites extends Component {
   static propTypes = {
     markets: PropTypes.array.isRequired,
     filteredMarkets: PropTypes.array.isRequired,
@@ -70,25 +70,25 @@ class WatchList extends Component {
     const s = this.state
 
     return (
-      <section className={Styles.WatchList}>
+      <section className={Styles.Favorites}>
         <Helmet>
-          <title>Watching</title>
+          <title>Favorites</title>
         </Helmet>
         <div
-          className={Styles.WatchList__SortBar}
+          className={Styles.Favorites__SortBar}
         >
           <div
-            className={Styles['WatchList__SortBar-title']}
+            className={Styles['Favorites__SortBar-title']}
           >
-            Watching
+            Favorites
           </div>
           <div
-            className={Styles['WatchList__SortBar-sort']}
+            className={Styles['Favorites__SortBar-sort']}
           >
             <Dropdown default={s.sortDefault} options={s.sortOptions} onChange={this.changeDropdown} />
           </div>
           <div
-            className={Styles['WatchList__SortBar-filter']}
+            className={Styles['Favorites__SortBar-filter']}
           >
             <Dropdown default={s.filterDefault} options={s.filterOptions} onChange={this.changeDropdown} />
           </div>
@@ -109,4 +109,4 @@ class WatchList extends Component {
   }
 }
 
-export default WatchList
+export default Favorites

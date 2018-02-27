@@ -2,11 +2,6 @@
 
 .ReportDispute {
   color: @color-white;
-
-  & > article {
-    margin-left: 2rem;
-    margin-right: 2rem;
-  }
 }
 
 .NoMarkets__container {
@@ -23,3 +18,9 @@
   justify-content: center;
 }
 
+@media @breakpoint-mobile {
+  .NoMarkets__container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

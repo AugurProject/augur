@@ -5,21 +5,6 @@
 
 @import '_type_font-face';
 
-// TYPOGRAPHY
-// site-wide typographic rules + values
-
-h1 {
-  font-size: 1.875rem; // 30px
-  font-weight: 400;
-  line-height: 2.1875rem;
-  margin-bottom: 1.25rem;
-}
-
-.h1--heavy {
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
 //  VARS
 @din-pro: 'DINPro', sans-serif;
 
@@ -115,3 +100,23 @@ h1 {
   font-size: @font-size-rather-large;
   line-height: @font-size-rather-large;
 }
+
+// TYPOGRAPHY
+// site-wide typographic rules + values
+
+h1 {
+  font-size: @font-size-extra-large;
+  font-weight: 400;
+  line-height: 2.1875rem;
+  margin-bottom: 1.25rem;
+
+  @media @breakpoint-mobile-small {
+    font-size: @font-size-rather-large;
+    line-height: @font-size-extra-large;
+  }
+}
+
+.h1--heavy {
+  .caps;
+}
+

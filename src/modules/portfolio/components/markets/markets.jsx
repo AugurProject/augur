@@ -226,11 +226,7 @@ class MyMarkets extends Component {
           <div
             className={Styles.Markets__SortBar}
           >
-            <div
-              className={Styles['Markets__SortBar-title']}
-            >
-              Open
-            </div>
+            <h2 className={Styles['Markets__SortBar-title']}>Open</h2>
             <div
               className={Styles['Markets__SortBar-sort']}
             >
