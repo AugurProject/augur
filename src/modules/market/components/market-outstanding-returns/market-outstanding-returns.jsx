@@ -13,7 +13,7 @@ const OutstandingReturns = p => (
           p.collectMarketCreatorFees(p.id)
         }}
       >
-        Collect Returns
+        Claim
       </button>
     </div>
   </div>
