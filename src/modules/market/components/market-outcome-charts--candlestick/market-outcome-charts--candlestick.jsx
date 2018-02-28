@@ -2,10 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 // import { ChevronDown, ChevronUp } from 'modules/common/components/icons'
 
+import { dateToBlock } from 'utils/date-to-block-to-date'
+
 // import * as d3 from 'd3'
 // import ReactFauxDOM from 'react-faux-dom'
 
-// import { isEqual } from 'lodash'
+import { isEqual } from 'lodash'
 
 import Styles from 'modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick.styles'
 
@@ -13,6 +15,7 @@ export default class MarketOutcomeCandlestick extends Component {
   static propTypes = {
     priceTimeSeries: PropTypes.array.isRequired,
     selectedPeriod: PropTypes.object.isRequired,
+    currentBlock: PropTypes.number.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
     outcomeBounds: PropTypes.object.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
@@ -39,8 +42,18 @@ export default class MarketOutcomeCandlestick extends Component {
     //   }))
     //   .sort((a, b) => a.x - b.x)
 
+    this.DEFAULT_ACCUMULATION_PERIOD = {
+      period: null, // Start time of the period
+      high: null, // Highest price during that period
+      low: null, // Lowest price during that period
+      open: null, // First price in that period
+      close: null, // Last price in that period
+      volume: null // Total number of shares in that period
+    }
+
     this.state = {
       chart: null,
+      periodTimeSeries: []
       // chartWidth: 0,
       // yScale: null,
       // hoveredPeriod: {},
@@ -51,6 +64,11 @@ export default class MarketOutcomeCandlestick extends Component {
 
     // this.drawChart = this.drawChart.bind(this)
     // this.updateCandlestickData = this.updateCandlestickData.bind(this)
+    this.updatePeriodTimeSeries = this.updatePeriodTimeSeries.bind(this)
+  }
+
+  componentWillMount() {
+    this.updatePeriodTimeSeries(this.props.priceTimeSeries, this.props.selectedPeriod)
   }
 
   componentDidMount() {
@@ -60,18 +78,132 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    // if (
-    //   !isEqual(this.props.priceTimeSeries, nextProps.priceTimeSeries) ||
-    //   !isEqual(this.props.selectedPeriod, nextProps.selectedPeriod)
-    // ) {
-    //   this.updateCandlestickData(nextProps.priceTimeSeries, nextProps.selectedPeriod)
-    // }
+    // NOTE --  need to determine how we'll display time changes w/out series changes
+    //          this will inform the conditions here
+    if (
+      this.props.priceTimeSeries.length !== nextProps.priceTimeSeries.length ||
+      !isEqual(this.props.selectedPeriod, nextProps.selectedPeriod)
+    ) {
+      this.updatePeriodTimeSeries(nextProps.priceTimeSeries, nextProps.selectedPeriod, nextProps.currentBlock)
+      // this.updateCandlestickData(nextProps.priceTimeSeries, nextProps.selectedPeriod)
+    }
 
     // if (!isEqual(this.props.hoveredPrice, nextProps.hoveredPrice)) updateHoveredPriceCrosshair(this.props.hoveredPrice, this.state.yScale, this.state.chartWidth)
   }
 
   componentWillUnmount() {
     // window.removeEventListener('resize', this.drawChart)
+  }
+
+  updatePeriodTimeSeries(priceTimeSeries, selectedPeriod, currentBlock) {
+    // TODO -- move this to a helper method w/ callback
+    // NOTE -- we should move this to augur-node as this will be a performance bottleneck
+    console.log('updatedPeriodTimeSeries -- ', priceTimeSeries, selectedPeriod)
+
+    if ( // Can't do it
+      priceTimeSeries.length === 0 ||
+      selectedPeriod.selectedPeriod === undefined ||
+      selectedPeriod.selectedPeriod === -1
+    ) return []
+
+    console.log('past the default')
+
+    // Determine range first, return sliced array
+    let constrainedPriceTimeSeries = [...priceTimeSeries]
+
+    if (selectedPeriod.selectedRange !== null) {
+      constrainedPriceTimeSeries = constrainedPriceTimeSeries.reverse()
+
+      let timeOffset = 0
+      let offsetIndex = 1
+      constrainedPriceTimeSeries.find((priceTime, i) => {
+        if (i !== 0) {
+          timeOffset+= constrainedPriceTimeSeries[i - 1].timestamp - priceTime.timestamp
+        }
+
+        if (timeOffset > selectedPeriod.selectedRange) {
+          offsetIndex = i
+          return true
+        }
+
+        return false
+      })
+
+      constrainedPriceTimeSeries.splice(offsetIndex)
+      constrainedPriceTimeSeries = constrainedPriceTimeSeries.reverse()
+    }
+
+    console.log('constrainedPriceTimeSeries -- ', constrainedPriceTimeSeries)
+
+    // const marketPriceHistory = [...new Array(30)]
+    //   .map((value, index) => ({
+    //     period: startTime + (index * ((1000000000000 - 0) + 0)),
+    //     high: (Math.random()),
+    //     low: (Math.random()),
+    //     open: (Math.random()),
+    //     close: (Math.random()),
+    //     volume: (Math.random() * (1000 - 10)) + 10
+    //   }))
+    //   .sort((a, b) => a.x - b.x)
+
+    // Process priceTimeSeries by period next, update state
+    let accumulationPeriod = this.DEFAULT_ACCUMULATION_PERIOD
+    const periodTimeSeries = constrainedPriceTimeSeries.reduce((p, priceTime, i) => {
+      if (accumulationPeriod.period === null) {
+        accumulationPeriod = {
+          period: priceTime.timestamp,
+          high: priceTime.price,
+          low: priceTime.price,
+          open: priceTime.price,
+          close: priceTime.price,
+          volume: priceTime.amount
+        }
+        return p
+      }
+
+      // If new period exceeds the permissible period, return the accumulationPeriod + reset to default to prepare for the next period
+      if (
+        (
+          selectedPeriod.selectedPeriod === null && // per block
+          dateToBlock(new Date(accumulationPeriod.period), currentBlock) - dateToBlock(new Date(priceTime.timestamp), currentBlock) > 1
+        ) ||
+        priceTime.timestamp - accumulationPeriod.period > selectedPeriod.selectedPeriod
+      ) {
+        const updatedPeriodTimeSeries = [...p, accumulationPeriod]
+        accumulationPeriod = {
+          period: priceTime.timestamp,
+          high: priceTime.price,
+          low: priceTime.price,
+          open: priceTime.price,
+          close: priceTime.price,
+          volume: priceTime.amount
+        }
+        return updatedPeriodTimeSeries
+      }
+
+      // Otherwise, process as normal
+      accumulationPeriod = {
+        ...accumulationPeriod,
+        high: priceTime.price > accumulationPeriod.high ? priceTime.price : accumulationPeriod.high,
+        low: priceTime.price < accumulationPeriod.low ? priceTime.price : accumulationPeriod.low,
+        close: priceTime.price,
+        volume: accumulationPeriod.volume + priceTime.amount
+      }
+
+      // console.log('accumulation -- ', i, accumulationPeriod)
+
+      // If we've reached the end of the series, just return what has accumulated w/in the current period
+      if (priceTime.length - 1 === i) {
+        console.log('end')
+        return [...p, accumulationPeriod]
+      }
+
+      return p
+    }, [])
+
+    console.log('periodTimeSeries -- ', periodTimeSeries)
+
+    this.setState({ periodTimeSeries })
   }
 
   // updateCandlestickData() {
@@ -235,6 +367,8 @@ export default class MarketOutcomeCandlestick extends Component {
   // }
 
   render() {
+    // console.log('s -- ', this.state)
+
     return (
       <section className={Styles.MarketOutcomeCandlestick}>
         <div
