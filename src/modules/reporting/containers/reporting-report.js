@@ -7,7 +7,8 @@ import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names'
 import { selectMarket } from 'modules/market/selectors/market'
 import parseQuery from 'modules/routes/helpers/parse-query'
 import getValue from 'utils/get-value'
-import { submitInitialReport, estimateSubmitInitialReport } from 'modules/reporting/actions/submit-initial-report'
+import { submitInitialReport } from 'modules/reporting/actions/submit-initial-report'
+import { estimateSubmitInitialReport } from 'modules/reporting/actions/estimate-submit-initial-report'
 import { constants } from 'services/augurjs'
 
 const mapStateToProps = state => ({
