@@ -33,8 +33,8 @@ const testState = {
     currentReportingPeriodPercentComplete: 52
   },
   connection: {
-    isConnected: false,
-    isConnectedToAugurNode: false,
+    isConnected: true,
+    isConnectedToAugurNode: true,
     isReconnectionPaused: false
   },
   createMarketInProgress: {},

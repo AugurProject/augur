@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { augur } from 'services/augurjs'
+import { debounce } from 'lodash'
 import { updateAssets } from 'modules/auth/actions/update-assets'
 import { syncBlockchain } from 'modules/app/actions/sync-blockchain'
 import syncUniverse from 'modules/universe/actions/sync-universe'
@@ -19,8 +20,6 @@ import { connectAugur } from 'modules/app/actions/init-augur'
 import { updateConnectionStatus, updateAugurNodeConnectionStatus } from 'modules/app/actions/update-connection'
 import { updateModal } from 'modules/modal/actions/update-modal'
 import { MODAL_NETWORK_DISCONNECTED } from 'modules/modal/constants/modal-types'
-import debounce from 'utils/debounce'
-
 
 export function listenToUpdates(history) {
   return (dispatch, getState) => {
@@ -194,7 +193,7 @@ export function listenToUpdates(history) {
     const retryFunc = () => {
       const retryTimer = 3000
 
-      const retry = (cb) => {
+      const retry = (callback = cb) => {
         const { connection, env } = getState()
         if (!connection.isConnected || !connection.isConnectedToAugurNode) {
           dispatch(updateModal({
@@ -202,27 +201,26 @@ export function listenToUpdates(history) {
             connection,
             env
           }))
-          if (connection.pauseReconnection) {
+          if (connection.isReconnectionPaused) {
             // reconnection has been set to paused, recursive call instead
-            cb(connection.pauseReconnection)
+            cb(connection.isReconnectionPaused)
           } else {
             // reconnection isn't paused, retry connectAugur
-            dispatch(connectAugur(history, env, false, cb))
+            dispatch(connectAugur(history, env, false, callback))
           }
         }
       }
 
-      const debounceCall = debounce(retry, retryTimer)
+      const debounceCall = () => debounce(retry, retryTimer)
 
       const cb = (err, connection) => {
         // both args should be undefined if we are connected.
         if (!err && !connection) return
         if (err || !connection.augurNode || !connection.ethereumNode) {
-          debounceCall(cb)
+          debounceCall()
         }
       }
-
-      debounceCall(cb)
+      debounceCall()
     }
 
     augur.events.nodes.augur.on('disconnect', () => {
