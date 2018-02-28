@@ -19,7 +19,8 @@ export default class MarketOutcomeCharts extends Component {
     orderBook: PropTypes.object.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
     marketDepth: PropTypes.object.isRequired,
-    selectedOutcome: PropTypes.string.isRequired
+    selectedOutcome: PropTypes.string.isRequired,
+    currentBlock: PropTypes.number.isRequired
   }
 
   constructor(props) {
@@ -37,6 +38,7 @@ export default class MarketOutcomeCharts extends Component {
     this.updateHoveredPrice = this.updateHoveredPrice.bind(this)
     this.updatePrecision = this.updatePrecision.bind(this)
     this.updateHoveredDepth = this.updateHoveredDepth.bind(this)
+    this.updateSelectedPeriod = this.updateSelectedPeriod.bind(this)
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -108,6 +110,7 @@ export default class MarketOutcomeCharts extends Component {
           <div className={Styles.MarketOutcomeCharts__Candlestick}>
             <MarketOutcomeCandlestick
               priceTimeSeries={p.priceTimeSeries}
+              currentBlock={p.currentBlock}
               selectedPeriod={s.selectedPeriod}
               fixedPrecision={s.fixedPrecision}
               outcomeBounds={p.outcomeBounds}

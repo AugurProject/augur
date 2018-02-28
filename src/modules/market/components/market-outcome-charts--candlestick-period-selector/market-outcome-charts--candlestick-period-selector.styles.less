@@ -20,10 +20,10 @@
   display: none;
   position: absolute;
   width: 192px;
-}
 
-.PeriodSelector__modal--active {
-  display: flex;
+  &--active {
+    display: flex;
+  }
 }
 
 .PeriodSelector__column {
@@ -62,16 +62,17 @@
     text-align: left;
     width: 100%;
 
-    &:hover:not(.PeriodSelector__value--disabled) {
+    &:hover:not(:disabled) { // :p
       background-color: @color-lightergray;
+      cursor: default;
+    }
+
+    &:disabled {
+      color: @color-white;
     }
   }
-}
 
-// .PeriodSelector__value--active {
-//
-// }
-//
-// .PeriodSelector__value--disabled {
-//
-// }
+  &--active {
+    background-color: @color-lightergray;
+  }
+}
