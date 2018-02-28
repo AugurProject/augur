@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ReactTooltip from 'react-tooltip'
 
-import { formatDate } from 'utils/format-date'
+import { convertUnixToFormattedDate, getDaysRemaining } from 'utils/format-date'
 
 import Styles from 'modules/reporting/components/reporting-header/reporting-header.styles'
 import TooltipStyles from 'modules/common/less/tooltip'
@@ -21,13 +21,12 @@ export default class ReportingHeader extends Component {
   render() {
     const p = this.props
 
-    const daysLeft = (p.reportingWindowStats.endTime - (new Date().getTime() / 1000)) / 86400
-
-    const endDate = new Date(p.reportingWindowStats.endTime * 1000)
-    const formattedDate = formatDate(endDate)
+    const totalDays = getDaysRemaining(p.reportingWindowStats.endTime, p.reportingWindowStats.startTime)
+    const daysLeft = getDaysRemaining(p.reportingWindowStats.endTime)
+    const formattedDate = convertUnixToFormattedDate(p.reportingWindowStats.endTime)
 
     const currentPeriodStyle = {
-      width: `${((27 - daysLeft) / 27) * 100}%`
+      width: `${((totalDays - daysLeft) / totalDays) * 100}%`
     }
 
     return (
@@ -39,7 +38,7 @@ export default class ReportingHeader extends Component {
               <div className={Styles['ReportingHeader__dispute-wrapper']}>
                 <div className={Styles['ReportingHeader__dispute-header']}>
                   <div className={Styles['ReportingHeader__meta-wrapper']}>
-                    <span className={Styles.ReportingHeader__endDate}>Reporting cycle ends { formattedDate.formattedLocal }</span>
+                    <span className={Styles.ReportingHeader__endDate}>Dispute Window ends { formattedDate.formattedLocal }</span>
                     <span className={Styles.ReportingHeader__stake}> | </span><span className={Styles.ReportingHeader__stake}>{ p.reportingWindowStats.stake } REP Staked</span>
                   </div>
                   <span
@@ -63,14 +62,9 @@ export default class ReportingHeader extends Component {
                   <div className={Styles.ReportingHeader__graph}>
                     <div className={Styles['ReportingHeader__graph-current']}>
                       <div style={currentPeriodStyle}>
-                        <span>{ Math.floor(daysLeft) } days left</span>
+                        <span>{ daysLeft } days left</span>
                       </div>
                     </div>
-                    <div className={Styles['ReportingHeader__graph-dispute']} />
-                  </div>
-                  <div className={Styles.ReportingHeader__labels}>
-                    <span>Current Cycle</span>
-                    <span>Dispute</span>
                   </div>
                 </div>
               </div>

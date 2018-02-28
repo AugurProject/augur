@@ -79,3 +79,14 @@ export function dateHasPassed(unixTimestamp) {
 export function getCurrentDateTimestamp() {
   return Date.now() / 1000
 }
+
+export function getDaysRemaining(endTimestamp, startTimestamp) {
+  if (!endTimestamp) return 0
+  let start = startTimestamp
+  if (!startTimestamp) {
+    start = formatDate(new Date()).timestamp
+  }
+  if (start > endTimestamp) return 0
+  const remainingTicks = endTimestamp - start
+  return Math.floor(remainingTicks / 86400)
+}
