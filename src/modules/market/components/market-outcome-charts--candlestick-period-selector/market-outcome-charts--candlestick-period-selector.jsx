@@ -4,7 +4,7 @@ import classNames from 'classnames'
 
 import { ChevronUp, ChevronDown } from 'modules/common/components/icons'
 
-import { isEqual, isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 
 import { RANGES, PERIODS } from 'modules/market/constants/permissible-periods'
 
@@ -50,7 +50,7 @@ export default class PeriodSelector extends Component {
     //          the same number of values that also directly correspond to each other
 
     const seriesRange = !isEmpty(priceTimeSeries) ?
-      priceTimeSeries[priceTimeSeries.length - 1][0] - priceTimeSeries[0][0] :
+      priceTimeSeries[priceTimeSeries.length - 1].timestamp - priceTimeSeries[0].timestamp :
       null
 
     let permissibleRanges = []
