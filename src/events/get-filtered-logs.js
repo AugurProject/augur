@@ -6,8 +6,8 @@ var ethrpc = require("../rpc-interface");
 
 function getFilteredLogs(contractName, eventName, filterParams, callback) {
   var filter = parametrizeFilter(eventsAbi[eventName], filterParams || {});
-  ethrpc.getLogs(filter, function (logs) {
-    if (logs && logs.error) return callback(logs, null);
+  ethrpc.getLogs(filter, function (err, logs) {
+    if (err) return callback(err);
     if (!logs || !logs.length) return callback(null, []);
     callback(null, logs);
   });

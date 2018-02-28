@@ -23,9 +23,8 @@ function bindContractFunction(functionAbi) {
       }
       if (isFunction(params[params.length - 1])) callback = params.pop();
       if (!isFunction(callback)) return ethrpc.callContractFunction(payload);
-      return ethrpc.callContractFunction(payload, function (response) {
-        if (response == null) return callback("No response");
-        if (response.error != null) return callback(response.error);
+      return ethrpc.callContractFunction(payload, function (err, response) {
+        if (err) return callback(err);
         callback(null, response);
       });
     }

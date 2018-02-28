@@ -35,8 +35,8 @@ function getAllAugurLogs(p, callback) {
     return callback(new Error("Block range " + fromBlock + " to " + toBlock + " exceeds currentBlock " + currentBlock));
   }
   async.eachSeries(chunkBlocks(fromBlock, toBlock).reverse(), function (chunkOfBlocks, nextChunkOfBlocks) {
-    ethrpc.getLogs(assign({}, filterParams, chunkOfBlocks), function (logs) {
-      if (logs && logs.error) return nextChunkOfBlocks(logs);
+    ethrpc.getLogs(assign({}, filterParams, chunkOfBlocks), function (err, logs) {
+      if (err) return nextChunkOfBlocks(err);
       if (!Array.isArray(logs) || !logs.length) return nextChunkOfBlocks(null);
       logs.forEach(function (log) {
         if (log && Array.isArray(log.topics) && log.topics.length) {
