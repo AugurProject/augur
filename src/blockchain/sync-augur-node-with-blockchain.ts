@@ -75,7 +75,7 @@ export function syncAugurNodeWithBlockchain(db: Knex, augur: Augur, network: Net
         }
         let handoffBlockNumber = highestBlockNumber - BLOCKSTREAM_HANDOFF_BLOCKS;
         if (handoffBlockNumber < fromBlock) {
-          handoffBlockNumber = fromBlock + 1;
+          handoffBlockNumber = fromBlock;
           if (handoffBlockNumber > highestBlockNumber) {
             return callback(new Error(`Not enough blocks to start blockstream reliably, wait at least ${BLOCKSTREAM_HANDOFF_BLOCKS} from ${fromBlock}`));
           }
