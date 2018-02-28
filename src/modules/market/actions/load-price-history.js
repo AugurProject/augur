@@ -4,8 +4,6 @@ import logError from 'utils/log-error'
 
 export const loadPriceHistory = (options, callback = logError) => (dispatch, getState) => {
   augur.markets.getMarketPriceHistory({ ...options, marketId: options.market }, (err, priceHistory) => {
-    console.log('market, priceHistory -- ', options.market, priceHistory)
-
     if (err) return callback(err)
     if (priceHistory == null) return callback(null)
     dispatch(updateMarketPriceHistory(options.market, priceHistory))
