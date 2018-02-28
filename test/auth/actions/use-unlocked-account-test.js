@@ -33,7 +33,7 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       '../helpers/is-meta-mask': IsMetaMask,
     })
     sinon.stub(AugurJS.augur.rpc, 'isUnlocked').callsFake((address, callback) => {
-      t.stub.augur.rpc.isUnlocked(address, (isUnlocked) => {
+      t.stub.augur.rpc.isUnlocked(address, (err, isUnlocked) => {
         store.dispatch({ type: 'AUGURJS_RPC_IS_UNLOCKED', data: { isUnlocked } })
         callback(isUnlocked)
       })

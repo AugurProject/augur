@@ -24,7 +24,8 @@ function pollForAccount(dispatch, getState) {
   let account
 
   setInterval(() => {
-    AugurJS.augur.rpc.eth.accounts((accounts) => {
+    AugurJS.augur.rpc.eth.accounts((err, accounts) => {
+      if (err) return console.error(err)
       if (account !== accounts[0]) {
         account = accounts[0]
         if (account && env['auto-login']) {

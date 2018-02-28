@@ -9,7 +9,8 @@ export const collectMarketCreatorFees = (marketId, callback = logError) => (disp
     augur.api.Cash.getBalance({ _address: marketMailboxAddress }, (err, cashBal) => {
       if (err) return callback(err)
       const cashBalance = speedomatic.bignum(cashBal)
-      augur.rpc.eth.getBalance([marketMailboxAddress, 'latest'], (attoEthBalance) => {
+      augur.rpc.eth.getBalance([marketMailboxAddress, 'latest'], (err, attoEthBalance) => {
+        if (err) return callback(err)
         const ethBalance = speedomatic.bignum(attoEthBalance)
         const combined = speedomatic.unfix(ethBalance.add(cashBalance), 'string')
         if (combined > 0) {

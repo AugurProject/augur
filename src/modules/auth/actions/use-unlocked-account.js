@@ -12,8 +12,9 @@ export const useUnlockedAccount = (unlockedAddress, callback = logError) => (dis
     dispatch(updateIsLoggedAndLoadAccountData(unlockedAddress, ACCOUNT_TYPES.META_MASK))
     return callback(null)
   }
-  augur.rpc.isUnlocked(unlockedAddress, (isUnlocked) => {
-    if (isUnlocked == null || isUnlocked.error) return callback(isUnlocked || 'error calling augur.rpc.isUnlocked')
+  augur.rpc.isUnlocked(unlockedAddress, (err, isUnlocked) => {
+    if (err) return callback(err)
+    if (isUnlocked == null) return callback('error calling augur.rpc.isUnlocked')
     if (isUnlocked === false) {
       console.warn(`account ${unlockedAddress} is locked`)
       return callback(null)
