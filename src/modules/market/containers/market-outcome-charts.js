@@ -112,35 +112,22 @@ const getOrderBookKeys = memoize((marketDepth) => {
 })
 
 // Mock dat data
-const now = Date.now()
-const timeDiff = (now - new Date(2017, 8).getTime())
-const startTime = now - timeDiff
-const priceTimeSeries = [...new Array(1000000)].map((value, i, array) => ({
-  timestamp: startTime + (i * (timeDiff / array.length)),
-  price: Math.random(),
-  amount: (Math.random() * (10 - 1)) + 1
-}))
+// const now = Date.now()
+// const timeDiff = (now - new Date(2017, 8).getTime())
+// const startTime = now - timeDiff
+// const priceTimeSeries = [...new Array(1000000)].map((value, i, array) => ({
+//   timestamp: startTime + (i * (timeDiff / array.length)),
+//   price: Math.random(),
+//   amount: (Math.random() * (10 - 1)) + 1
+// }))
 
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId)
   const outcome = (market.outcomes || []).find(outcome => outcome.id === ownProps.selectedOutcome) || {}
-  // const priceTimeSeries = outcome.priceTimeSeries || []
+  const priceTimeSeries = outcome.priceTimeSeries || []
   const cumulativeOrderBook = orderAndAssignCumulativeShares(outcome.orderBook)
   const marketDepth = orderForMarketDepth(cumulativeOrderBook)
   const orderBookKeys = getOrderBookKeys(marketDepth)
-
-  // const startTime = new Date().getTime()
-  //
-  // const marketPriceHistory = [...new Array(30)]
-  //   .map((value, index) => ({
-  //     period: startTime + (index * ((1000000000000 - 0) + 0)),
-  //     high: (Math.random()),
-  //     low: (Math.random()),
-  //     open: (Math.random()),
-  //     close: (Math.random()),
-  //     volume: (Math.random() * (1000 - 10)) + 10
-  //   }))
-  //   .sort((a, b) => a.x - b.x)
 
   return {
     currentBlock: state.blockchain.currentBlockNumber,

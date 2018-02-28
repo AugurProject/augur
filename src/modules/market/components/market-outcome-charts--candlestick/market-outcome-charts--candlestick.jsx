@@ -249,7 +249,7 @@ export default class MarketOutcomeCandlestick extends Component {
         .attr('dy', margin.tickOffset)
         .attr('dx', 0)
         .text((d, i) => {
-          if (i && i !== yDomain.length - 1) return d.toFixed(allowedFloat)
+          if (i && i !== yDomain.length - 1) return d ? d.toFixed(allowedFloat) : ''
         })
 
       chart.selectAll('rect.candle')
