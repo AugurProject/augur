@@ -203,7 +203,7 @@ export function listenToUpdates(history) {
           }))
           if (connection.isReconnectionPaused) {
             // reconnection has been set to paused, recursive call instead
-            cb(connection.isReconnectionPaused)
+            callback(connection.isReconnectionPaused)
           } else {
             // reconnection isn't paused, retry connectAugur
             dispatch(connectAugur(history, env, false, callback))
@@ -211,16 +211,16 @@ export function listenToUpdates(history) {
         }
       }
 
-      const debounceCall = () => debounce(retry, retryTimer)
+      const debounceCall = debounce(retry, retryTimer)
 
       const cb = (err, connection) => {
         // both args should be undefined if we are connected.
         if (!err && !connection) return
         if (err || !connection.augurNode || !connection.ethereumNode) {
-          debounceCall()
+          debounceCall(cb)
         }
       }
-      debounceCall()
+      debounceCall(cb)
     }
 
     augur.events.nodes.augur.on('disconnect', () => {
