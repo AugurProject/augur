@@ -162,7 +162,7 @@ describe('listen-to-updates', () => {
         ReWireModule.__Rewire__('debounce', (func, wait) => {
           assert.deepEqual(wait, 3000)
           assert.isFunction(func)
-          func()
+          return func
         })
         ReWireModule.__Rewire__('resetState', () => {
           testState.connection.isConnectedToAugurNode = false
@@ -264,7 +264,7 @@ describe('listen-to-updates', () => {
         ReWireModule.__Rewire__('debounce', (func, wait) => {
           assert.deepEqual(wait, 3000)
           assert.isFunction(func)
-          func()
+          return func
         })
         ReWireModule.__Rewire__('resetState', () => {
           // testState.connection.isConnectedToAugurNode = false
@@ -367,9 +367,11 @@ describe('listen-to-updates', () => {
         ReWireModule.__Rewire__('debounce', (func, wait) => {
           assert.deepEqual(wait, 3000)
           assert.isFunction(func)
-          // flip the connection.isReconnectionPaused value, should go from false to true, then true to false on the 2nd call.
-          testState.connection.isReconnectionPaused = !testState.connection.isReconnectionPaused
-          func()
+          return (cb) => {
+            // flip the connection.isReconnectionPaused value, should go from false to true, then true to false on the 2nd call.
+            testState.connection.isReconnectionPaused = !testState.connection.isReconnectionPaused
+            func(cb)
+          }
         })
         ReWireModule.__Rewire__('resetState', () => {
           testState.connection.isConnectedToAugurNode = false
@@ -473,9 +475,11 @@ describe('listen-to-updates', () => {
         ReWireModule.__Rewire__('debounce', (func, wait) => {
           assert.deepEqual(wait, 3000)
           assert.isFunction(func)
-          // flip the connection.isReconnectionPaused value, should go from false to true, then true to false on the 2nd call.
-          testState.connection.isReconnectionPaused = !testState.connection.isReconnectionPaused
-          func()
+          return (cb) => {
+            // flip the connection.isReconnectionPaused value, should go from false to true, then true to false on the 2nd call.
+            testState.connection.isReconnectionPaused = !testState.connection.isReconnectionPaused
+            func(cb)
+          }
         })
         ReWireModule.__Rewire__('resetState', () => {
           // testState.connection.isConnectedToAugurNode = false
@@ -586,7 +590,7 @@ describe('listen-to-updates', () => {
         ReWireModule.__Rewire__('debounce', (func, wait) => {
           assert.deepEqual(wait, 3000)
           assert.isFunction(func)
-          func()
+          return func
         })
         ReWireModule.__Rewire__('resetState', () => {
           testState.connection.isConnectedToAugurNode = false
