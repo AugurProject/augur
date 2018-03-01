@@ -5,7 +5,12 @@ import Styles from 'modules/market/components/market-outstanding-returns/market-
 
 const OutstandingReturns = p => (
   <div className={Styles.MarketOutstandingReturns}>
-    Outstanding Returns {p.unclaimedCreatorFees.full}
+    <div className={Styles.MarketOutstandingReturns__text}>
+      Outstanding Returns
+      <span className={Styles.MarketOutstandingReturns__value}>
+        {p.unclaimedCreatorFees.full}
+      </span>
+    </div>
     <div className={Styles.MarketOutstandingReturns__actions}>
       <button
         className={Styles.MarketOutstandingReturns__collect}
@@ -13,7 +18,7 @@ const OutstandingReturns = p => (
           p.collectMarketCreatorFees(p.id)
         }}
       >
-        Collect Returns
+        Claim
       </button>
     </div>
   </div>
