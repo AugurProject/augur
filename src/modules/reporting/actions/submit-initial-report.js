@@ -26,7 +26,7 @@ export const submitInitialReport = (marketId, selectedOutcome, invalid, history,
     onSuccess: () => callback(null),
     onFailed: (err) => {
       callback(err)
-    }
+    },
   })
 
 }

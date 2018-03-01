@@ -22,7 +22,7 @@ export const estimateSubmitInitialReport = (marketId, callback = logError) => (d
       },
       onFailed: (err) => {
         callback(err)
-      }
+      },
     })
   }
 }

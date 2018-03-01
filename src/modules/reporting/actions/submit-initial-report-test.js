@@ -17,7 +17,7 @@ describe(`modules/reporting/actions/submit-initial-report.js`, () => {
 
   const callback = sinon.stub()
   const history = {
-    push: sinon.stub()
+    push: sinon.stub(),
   }
 
   afterEach(() => {
@@ -35,9 +35,9 @@ describe(`modules/reporting/actions/submit-initial-report.js`, () => {
         doInitialReport: (options) => {
           options.onSent()
           options.onSuccess()
-        }
-      }
-    }
+        },
+      },
+    },
   }
 
   const augurFailed = {
@@ -46,9 +46,9 @@ describe(`modules/reporting/actions/submit-initial-report.js`, () => {
         doInitialReport: (options) => {
           options.onSent()
           options.onFailed()
-        }
-      }
-    }
+        },
+      },
+    },
   }
 
   const getPayoutNumerators = sinon.stub().returns([10000, 0])
@@ -67,7 +67,7 @@ describe(`modules/reporting/actions/submit-initial-report.js`, () => {
         store.dispatch(submitInitialReport('testMarketId', 0, false, history, callback))
         assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
         assert(history.push.calledOnce, `Didn't call 'history' once as expected`)
-      }
+      },
     })
   })
 
@@ -79,7 +79,7 @@ describe(`modules/reporting/actions/submit-initial-report.js`, () => {
         store.dispatch(submitInitialReport(null, 0, false, history, callback))
         assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
         assert(history.push.notCalled, `Did call 'history' not expected`)
-      }
+      },
     })
   })
 
@@ -91,7 +91,7 @@ describe(`modules/reporting/actions/submit-initial-report.js`, () => {
         store.dispatch(submitInitialReport('', 0, false, history, callback))
         assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
         assert(history.push.notCalled, `Did call 'history' not expected`)
-      }
+      },
     })
   })
 
@@ -103,7 +103,7 @@ describe(`modules/reporting/actions/submit-initial-report.js`, () => {
         store.dispatch(submitInitialReport('testMarketId', 'blah', false, history, callback))
         assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
         assert(history.push.notCalled, `Did call 'history' not expected`)
-      }
+      },
     })
   })
 
@@ -116,7 +116,7 @@ describe(`modules/reporting/actions/submit-initial-report.js`, () => {
         store.dispatch(submitInitialReport('testMarketId', 0, false, history, callback))
         assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
         assert(history.push.calledOnce, `Did call 'history' not expected`)
-      }
+      },
     })
   })
 })

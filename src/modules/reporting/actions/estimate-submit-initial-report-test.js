@@ -20,9 +20,9 @@ describe(`modules/reporting/actions/estimate-submit-initial-report.js`, () => {
       Market: {
         doInitialReport: (options) => {
           options.onSuccess('gasCostValue')
-        }
-      }
-    }
+        },
+      },
+    },
   }
 
   const augurFailed = {
@@ -30,9 +30,9 @@ describe(`modules/reporting/actions/estimate-submit-initial-report.js`, () => {
       Market: {
         doInitialReport: (options) => {
           options.onFailed('Error')
-        }
-      }
-    }
+        },
+      },
+    },
   }
 
   const test = (t) => {
@@ -53,7 +53,7 @@ describe(`modules/reporting/actions/estimate-submit-initial-report.js`, () => {
         store.dispatch(estimateSubmitInitialReport('', (value) => {
           assert.deepEqual(value, 'Market not found', `Didn't value as expected`)
         }))
-      }
+      },
     })
   })
 
@@ -65,7 +65,7 @@ describe(`modules/reporting/actions/estimate-submit-initial-report.js`, () => {
         store.dispatch(estimateSubmitInitialReport(null, (value) => {
           assert.deepEqual(value, 'Market not found', `Didn't value as expected`)
         }))
-      }
+      },
     })
   })
 
@@ -77,7 +77,7 @@ describe(`modules/reporting/actions/estimate-submit-initial-report.js`, () => {
         store.dispatch(estimateSubmitInitialReport('testMarketId', (err, value) => {
           assert.deepEqual(value, 'gasCostValue', `Didn't value as expected`)
         }))
-      }
+      },
     })
   })
 
@@ -89,7 +89,7 @@ describe(`modules/reporting/actions/estimate-submit-initial-report.js`, () => {
         store.dispatch(estimateSubmitInitialReport('testMarketId', (value) => {
           assert.deepEqual(value, 'Error', `Didn't value as expected`)
         }))
-      }
+      },
     })
   })
 })

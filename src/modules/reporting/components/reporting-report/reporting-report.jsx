@@ -102,7 +102,7 @@ export default class ReportingReport extends Component {
 
       const gasPrice = augur.rpc.getGasPrice()
       this.setState({
-        gasEstimate: formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice)
+        gasEstimate: formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice),
       })
     })
   }
