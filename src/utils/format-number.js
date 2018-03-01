@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { encodeNumberAsBase10String, encodeNumberAsJSNumber } from 'speedomatic'
-import { constants } from 'services/augurjs'
+import { augur, constants } from 'services/augurjs'
 import { ZERO, TEN } from 'modules/trade/constants/numbers'
 import addCommas from 'utils/add-commas-to-number'
 
@@ -208,6 +208,13 @@ export function formatBlank() {
     denomination: '',
     full: ''
   }
+}
+
+export function formatGasCostToEther(num, opts, gasPrice) {
+  const { ETHER } = augur.rpc.constants
+  const estimatedGasCost = new BigNumber(num).times(new BigNumber(gasPrice, 16))
+  const ethGasCost = estimatedGasCost.dividedBy(ETHER) // convert to ether
+  return formatGasCost(ethGasCost, opts).rounded
 }
 
 export function formatGasCost(num, opts) {

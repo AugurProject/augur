@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import { Helmet } from 'react-helmet'
 import { augur } from 'services/augurjs'
 
-import { formatEtherEstimate, formatGasCost } from 'utils/format-number'
+import { formatEtherEstimate, formatGasCostToEther } from 'utils/format-number'
 import MarketPreview from 'modules/market/components/market-preview/market-preview'
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 import ReportingReportForm from 'modules/reporting/components/reporting-report-form/reporting-report-form'
@@ -12,7 +12,6 @@ import ReportingReportConfirm from 'modules/reporting/components/reporting-repor
 import { isEmpty } from 'lodash'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-report/reporting-report.styles'
-import BigNumber from 'bignumber.js'
 
 export default class ReportingReport extends Component {
 
@@ -98,14 +97,10 @@ export default class ReportingReport extends Component {
   calculateGasEstimates() {
     this.props.estimateSubmitInitialReport(this.props.market.id, (err, gasEstimateValue) => {
       if (err) return console.error(err)
+
       const gasPrice = augur.rpc.getGasPrice()
-
-      const estimatedGasCost = new BigNumber(gasEstimateValue).times(new BigNumber(gasPrice, 16))
-      const ethGasCost = estimatedGasCost.dividedBy(augur.rpc.constants.ETHER) // convert to ether
-      const gasEstimate = formatGasCost(ethGasCost, { decimalsRounded: 4 }).rounded
-
       this.setState({
-        gasEstimate
+        gasEstimate: formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice)
       })
     })
   }
