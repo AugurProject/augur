@@ -122,3 +122,17 @@ export function processDisputeCrowdsourcerCompletedLogRemoval(db: Knex, augur: A
     });
   });
 }
+
+// event DisputeCrowdsourcerRedeemed(address indexed universe, address indexed reporter, address indexed market, address disputeCrowdsourcer, uint256 amountRedeemed, uint256 repReceived, uint256 reportingFeesReceived, uint256[] payoutNumerators);
+export function processDisputeCrowdsourcerRedeemedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
+  console.log("TODO: DisputeCrowdsourcerRedeemed");
+  console.log(log);
+  callback(null);
+}
+
+export function processDisputeCrowdsourcerRedeemedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
+  console.log("TODO: DisputeCrowdsourcerRedeemed removal");
+  console.log(log);
+  augurEmitter.emit("DisputeCrowdsourcerRedeemed", log);
+  callback(null);
+}
