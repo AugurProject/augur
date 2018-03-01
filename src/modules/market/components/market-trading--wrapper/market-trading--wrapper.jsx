@@ -27,7 +27,7 @@ class MarketTradingWrapper extends Component {
     availableFunds: PropTypes.instanceOf(BigNumber).isRequired,
     isMobile: PropTypes.bool.isRequired,
     toggleForm: PropTypes.func.isRequired,
-    toggleShowOrderPlaced: PropTypes.func.isRequired,
+    showOrderPlaced: PropTypes.func.isRequired,
     clearTradeInProgress: PropTypes.func.isRequired,
   }
 
@@ -167,7 +167,7 @@ class MarketTradingWrapper extends Component {
             trade={p.selectedOutcome.trade}
             isMobile={p.isMobile}
             clearOrderForm={this.clearOrderForm}
-            toggleShowOrderPlaced={p.toggleShowOrderPlaced}
+            showOrderPlaced={p.showOrderPlaced}
           />
         }
       </section>

@@ -1,0 +1,26 @@
+@import (reference) "~assets/styles/shared";
+
+.ModalApproval {
+  max-width: 35rem;
+  position: relative;
+
+  h1,
+  span {
+    color: @color-white;
+  }
+
+  h1 {
+    .caps--extra-large();
+  }
+
+  button {
+    &:extend(.button--white);
+
+    margin: 2rem;
+  }
+}
+
+.ModalApproval__ActionButtons {
+  display: flex;
+  flex-direction: row;
+}
