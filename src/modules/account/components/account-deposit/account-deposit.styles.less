@@ -11,7 +11,7 @@
   > h1 {
     color: @color-darkpurple;
     display: inline-block;
-    font-size: 1.875rem;
+    font-size: @font-size-extra-large;
     font-weight: 500;
     letter-spacing: 0.14rem;
     margin-bottom: 0;
@@ -82,47 +82,59 @@
 
 @media @breakpoint-mobile {
   .AccountDeposit {
-    padding: 3.125rem 0 0;
+    padding: 3.125rem 2rem;
   }
 
-  .AccountDeposit__heading {
-    font-size: 1.5rem;
-    letter-spacing: 0.11rem;
-    margin-bottom: 0.5rem;
-    padding: 0 1rem;
+  .AccountDeposit__main {
+    flex-wrap: wrap;
 
-    h1 {
-      margin-right: 0.5rem;
+    > div:first-child {
+      width: 40%;
+    }
+
+    > div:nth-child(2) {
+      padding-right: 0;
+      width: 60%;
+    }
+
+    > div:last-child {
+      border-left: none;
+      margin: 2rem 0 0;
+      padding: 0;
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .AccountDeposit__heading {
+    margin-bottom: 1rem;
+
+    > h1 {
+      font-size: @font-size-rather-large;
     }
   }
 
   .AccountDeposit__main {
     display: block;
-    margin-bottom: 1rem;
+
+    > div:first-child,
+    > div:nth-child(2),
+    > div:last-child {
+      border-left: none;
+      margin: 0 0 2rem;
+      padding: 0;
+      width: 100%;
+    }
+
+    > div:last-child {
+      margin-bottom: 0;
+    }
   }
 
   .AccountDeposit__description {
-    border: none;
-    margin-bottom: 2rem;
-    padding: 0 1rem;
-    width: auto;
-
-    p {
-      font-size: 1rem;
-      margin-bottom: 1rem;
+    > p {
+      font-size: @font-size-normal;
+      line-height: @font-size-somewhat-large;
     }
-
-    a {
-      font-size: 1.125rem;
-    }
-  }
-
-  .AccountDeposit__address {
-    margin: 0;
-    padding: 0 1rem;
-  }
-
-  .AccountDeposit__addressString {
-    font-size: 1rem;
   }
 }

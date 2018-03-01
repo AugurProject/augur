@@ -15,11 +15,13 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       const UpdateAssets = { updateAssets: () => {} }
       const UpdateLoginAccount = { updateLoginAccount: () => {} }
       const LoadAccountPositions = { loadAccountPositions: () => {} }
+      const approveAccount = { checkAccountAllowance: () => {} }
       const action = proxyquire('../../../src/modules/auth/actions/load-account-data.js', {
         './load-account-data-from-local-storage': LoadAccountDataFromLocalStorage,
         './update-assets': UpdateAssets,
         './update-login-account': UpdateLoginAccount,
         '../../my-positions/actions/load-account-positions': LoadAccountPositions,
+        './approve-account': approveAccount
       })
       LoadAccountDataFromLocalStorage.loadAccountDataFromLocalStorage = sinon.stub().returns({ type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE' })
       sinon.stub(UpdateAssets, 'updateAssets').callsFake(callback => (dispatch) => {
@@ -31,6 +33,9 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       })
       sinon.stub(LoadAccountPositions, 'loadAccountPositions').callsFake(data => (dispatch) => {
         dispatch({ type: 'UPDATE_ACCOUNT_TRADES_DATA' })
+      })
+      sinon.stub(approveAccount, 'checkAccountAllowance').callsFake(data => (dispatch) => {
+        dispatch({ type: 'CHECK_ACCOUNT_ALLOWANCE' })
       })
       store.dispatch(action.loadAccountData(t.params.account))
       t.assertions(store.getActions())
@@ -83,6 +88,8 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         type: 'UPDATE_ACCOUNT_TRADES_DATA'
       }, {
         type: 'UPDATE_ASSETS'
+      }, {
+        type: 'CHECK_ACCOUNT_ALLOWANCE'
       }])
     }
   })
@@ -108,6 +115,8 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         type: 'UPDATE_ACCOUNT_TRADES_DATA'
       }, {
         type: 'UPDATE_ASSETS'
+      }, {
+        type: 'CHECK_ACCOUNT_ALLOWANCE'
       }])
     }
   })
@@ -133,6 +142,8 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         type: 'UPDATE_ACCOUNT_TRADES_DATA'
       }, {
         type: 'UPDATE_ASSETS'
+      }, {
+        type: 'CHECK_ACCOUNT_ALLOWANCE'
       }])
     }
   })
@@ -164,6 +175,8 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         type: 'UPDATE_ACCOUNT_TRADES_DATA'
       }, {
         type: 'UPDATE_ASSETS'
+      }, {
+        type: 'CHECK_ACCOUNT_ALLOWANCE'
       }])
     }
   })
@@ -189,6 +202,8 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         type: 'UPDATE_ACCOUNT_TRADES_DATA'
       }, {
         type: 'UPDATE_ASSETS'
+      }, {
+        type: 'CHECK_ACCOUNT_ALLOWANCE'
       }])
     }
   })

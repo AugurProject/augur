@@ -45,4 +45,30 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     store.dispatch(action.placeTrade(undefined, '1'))
     assert.deepEqual(store.getActions(), [], `Didn't fail out as expected for passing a undefined marketId to place-trade`)
   })
+  it('should handle a allowance less than estimatedCost', () => {
+    const { state, mockStore } = mocks.default
+    const testState = { ...state, ...tradeTestState }
+    testState.loginAccount = {
+      meta: { privateKey: Buffer.from('PRIVATE_KEY', 'utf8') },
+      allowance: '0'
+    }
+    const store = mockStore(testState)
+    const SelectMarket = { selectMarket: () => {} }
+    sinon.stub(SelectMarket, 'selectMarket').callsFake(marketId => store.getState().marketsData[marketId])
+    const action = proxyquire('../../../src/modules/trade/actions/place-trade.js', {
+      '../../market/selectors/market': SelectMarket
+    })
+    store.dispatch(action.placeTrade('testBinaryMarketId', '1', {
+      totalCost: '10000000'
+    }))
+    const storeActions = store.getActions()
+    const firstAction = storeActions[0]
+    assert.deepEqual(store.getActions().length, 1, 'more actions dispatched then expected')
+    assert.isObject(firstAction)
+    assert.deepEqual(firstAction.type, 'UPDATE_MODAL')
+    assert.isObject(firstAction.data)
+    assert.deepEqual(firstAction.data.type, 'MODAL_ACCOUNT_APPROVAL')
+    assert.isFunction(firstAction.data.approveCallback)
+    store.clearActions()
+  })
 })

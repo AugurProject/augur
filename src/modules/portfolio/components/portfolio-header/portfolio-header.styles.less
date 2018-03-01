@@ -2,7 +2,7 @@
 
 .PortfolioHeader {
   color: white;
-  .view();
+  padding: 4.5rem 2rem 2rem;
 }
 
 .PortfolioHeader__export {
@@ -21,6 +21,11 @@
   }
 }
 
+.PortfolioHeader__graph {
+  position: relative;
+  top: -0.75rem;
+}
+
 .PortfolioHeader__header {
   align-items: flex-end;
   display: flex;
@@ -29,8 +34,17 @@
 }
 
 .PortfolioHeader__title {
+  font-weight: 500;
   margin-bottom: 0;
   text-transform: uppercase;
+}
+
+@media @breakpoint-mobile {
+  .PortfolioHeader {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 3.25rem;
+  }
 }
 
 @media @breakpoint-mobile-medium {
@@ -40,6 +54,5 @@
 
   .PortfolioHeader__header {
     display: block;
-    padding: 2rem 1rem 0;
   }
 }

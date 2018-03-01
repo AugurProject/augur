@@ -116,8 +116,8 @@ export function connectAugur(history, env, isInitialConnection = false, callback
       if (isInitialConnection) {
         pollForAccount(dispatch, getState)
         pollForNetwork(dispatch, getState)
+        pollForEscapeHatch(dispatch, getState)
       }
-      pollForEscapeHatch(dispatch, getState)
       callback()
     })
   }

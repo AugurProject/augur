@@ -41,7 +41,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 
 import getValue from 'utils/get-value'
 
-import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, MY_MARKETS, MY_POSITIONS, WATCHLIST, PORTFOLIO_TRANSACTIONS, PORTFOLIO_REPORTS, CREATE_MARKET, CATEGORIES, REPORTING_DISPUTE, REPORTING_REPORTING, AUTHENTICATION } from 'modules/routes/constants/views'
+import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, MY_MARKETS, MY_POSITIONS, FAVORITES, PORTFOLIO_TRANSACTIONS, PORTFOLIO_REPORTS, CREATE_MARKET, CATEGORIES, REPORTING_DISPUTE, REPORTING_REPORTING, AUTHENTICATION } from 'modules/routes/constants/views'
 import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
@@ -60,7 +60,7 @@ const navTypes = {
   [MARKETS]: MarketsInnerNav,
   [MY_MARKETS]: PortfolioInnerNav,
   [MY_POSITIONS]: PortfolioInnerNav,
-  [WATCHLIST]: PortfolioInnerNav,
+  [FAVORITES]: PortfolioInnerNav,
   [PORTFOLIO_TRANSACTIONS]: PortfolioInnerNav,
   [PORTFOLIO_REPORTS]: PortfolioInnerNav,
   [ACCOUNT_DEPOSIT]: AccountInnerNav,
@@ -217,7 +217,7 @@ export default class AppView extends Component {
         case MARKETS:
         case MY_MARKETS:
         case MY_POSITIONS:
-        case WATCHLIST:
+        case FAVORITES:
         case ACCOUNT_DEPOSIT:
         case ACCOUNT_WITHDRAW:
         case REPORTING_DISPUTE:

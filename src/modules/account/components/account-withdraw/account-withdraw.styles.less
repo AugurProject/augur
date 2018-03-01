@@ -34,6 +34,7 @@
     }
 
     &:last-child {
+      overflow: hidden;
       padding-right: 0;
       width: 67%;
     }
@@ -103,67 +104,49 @@
 
 @media @breakpoint-mobile {
   .AccountWithdraw {
-    padding: 3.125rem 0 0;
+    padding: 3.125rem 2rem;
   }
 
-  .AccountWithdraw__heading {
-    font-size: 1.5rem;
-    letter-spacing: 0.11rem;
-    margin-bottom: 0.5rem;
-    padding: 0 1rem;
-
-    h1 {
-      margin-right: 0.5rem;
-    }
+  .AccountDeposit__heading {
+    margin-bottom: 1rem;
   }
 
   .AccountWithdraw__main {
     display: block;
+
+    > div:first-child,
+    > div:last-child {
+      border-left: none;
+      padding: 0;
+      width: 100%;
+    }
+
+    > div:last-child {
+      margin-top: 2rem;
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .AccountWithdraw__heading {
+    margin-bottom: 1rem;
+
+    > h1 {
+      font-size: @font-size-rather-large;
+    }
   }
 
   .AccountWithdraw__description {
-    border: none;
-    margin-bottom: 2rem;
-    padding: 0 1rem;
-
-    p {
-      font-size: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    a {
-      font-size: 1.125rem;
+    > p {
+      font-size: @font-size-normal;
+      line-height: @font-size-somewhat-large;
     }
   }
 
-  .AccountWithdraw__form {
-    margin: 0;
-    max-width: auto;
-  }
-
-  .AccountWithdraw__formTopRow {
-    display: block;
-
-    > * {
-      width: auto;
+  .AccountWithdraw__input-wrapper {
+    &:first-child,
+    &:nth-child(2) {
+      width: 100%;
     }
-  }
-
-  .AccountWithdraw__formTopRow,
-  .AccountWithdraw__formBottomRow {
-    margin: 0;
-  }
-
-  .AccountWithdraw__inputContain {
-    margin-bottom: 1.5rem;
-    padding: 0 1rem;
-    width: 100%;
-  }
-
-  .AccountWithdraw__submitButton {
-    border-radius: 0;
-    float: none;
-    margin-top: 2.25rem;
-    width: 100%;
   }
 }

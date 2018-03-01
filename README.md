@@ -1,6 +1,6 @@
 # augur | client
-[![Build Status](https://travis-ci.org/AugurProject/augur.svg?branch=v3)](https://travis-ci.org/AugurProject/augur)
-[![Coverage Status](https://coveralls.io/repos/github/AugurProject/augur/badge.svg?branch=v3)](https://coveralls.io/github/AugurProject/augur?branch=v3)
+[![Build Status](https://travis-ci.org/AugurProject/augur.svg?branch=seadragon)](https://travis-ci.org/AugurProject/augur)
+[![Coverage Status](https://coveralls.io/repos/github/AugurProject/augur/badge.svg?branch=seadragon)](https://coveralls.io/github/AugurProject/augur?branch=seadragon)
 
 Augur is a decentralized prediction market platform built on Ethereum.  
 It runs locally in your browser and communicates directly with the ethereum network, without going through intermediate servers.
@@ -60,7 +60,7 @@ yarn
 yarn dev
 ```
 
-### [Docker](https://www.docker.com/) 
+### [Docker](https://www.docker.com/)
 To run augur ui in docker map your external port (8080) to docker container port 80
 ```
 docker run -p 8080:80 augur
@@ -118,7 +118,7 @@ geth --unlock 0 --rpc --ws --rpcapi eth,net,shh,admin,txpool,web3,personal --wsa
 **Testing local geth node**
 
     curl --data '{"method":"net_version","params":[],"id":67,"jsonrpc":"2.0"}' -H "Content-Type: application/json" -X POST localhost:8545
-    
+
     returns network id: should be 4 for rinkeby
     {"jsonrpc":"2.0","id":67,"result":"4"}
 

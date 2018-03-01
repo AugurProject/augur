@@ -33,6 +33,7 @@ class MarketTrading extends Component {
 
     this.toggleForm = this.toggleForm.bind(this)
     this.toggleShowOrderPlaced = this.toggleShowOrderPlaced.bind(this)
+    this.showOrderPlaced = this.showOrderPlaced.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -53,6 +54,10 @@ class MarketTrading extends Component {
 
   toggleShowOrderPlaced() {
     this.setState({ showOrderPlaced: !this.state.showOrderPlaced })
+  }
+
+  showOrderPlaced() {
+    this.setState({ showOrderPlaced: true })
   }
 
   render() {
@@ -88,7 +93,7 @@ class MarketTrading extends Component {
             initialMessage={initialMessage}
             isMobile={p.isMobile}
             toggleForm={this.toggleForm}
-            toggleShowOrderPlaced={this.toggleShowOrderPlaced}
+            showOrderPlaced={this.showOrderPlaced}
             availableFunds={p.availableFunds}
             clearTradeInProgress={p.clearTradeInProgress}
           />
