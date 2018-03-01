@@ -725,58 +725,58 @@ module.exports={
   "LegacyReputationToken": "0x7a305d9b681fb164dc5ad628b5992177dc66aec8"
  },
  "4": {
-  "Controller": "0xbf13a4ec0b563c474ccc307c096f8487f2618547",
-  "Universe": "0xcbb78cebbb0aa4744170cffbd6ac9c091bdd2721",
-  "Augur": "0x6afece5686d6016d3a60e7732666289aff50d80e",
-  "LegacyReputationToken": "0x3e7b6aa8b74472b30d0b431ff041c2f06f17a82f",
-  "CancelOrder": "0x7d84aa1e87a60f0533ba18f5426c0938da2980c4",
-  "Cash": "0x1d3b0bf3fe5f3f5e6abc19db7a7a466010f4a84a",
-  "ClaimTradingProceeds": "0xff68a7b508ba232b62cf83d8eca5e7ce80d32c40",
-  "CompleteSets": "0xcd7e6fc5dc84d17c024a3684ef8ef24ab285c712",
-  "CreateOrder": "0x65491fa906d01a327d29f325b1b838a702457c53",
-  "FillOrder": "0x7a2d816152faa4d78c52041f70ead38ac2af711e",
-  "Order": "0x58ffc21cacac8121be39ec39c7cb85c678bc8705",
-  "Orders": "0xf8fe5c741f4bad3e371f381d3ef251c84a536d10",
-  "OrdersFetcher": "0x43a3ee2ad4b470201f97195c15c5f69d2aa300a5",
-  "ShareToken": "0xf431187f752ebe1c661b16c3626103280c72493a",
-  "Trade": "0x5308d1f62793288fe68afc7ee583632f7f5019af",
-  "TradingEscapeHatch": "0xbc53b80fbcb6d24c47c32f7b565fbabdd0c99b0b"
+  "Controller": "0x8f5fe9aa46dcc178c99c4c8b42021c9c7511fb72",
+  "Universe": "0x51783c2e8aa40b2f2b8d894851a6d69108daa9b4",
+  "Augur": "0x2d87ed602e49378a8e96b1f671e6bd48a8d89d6d",
+  "LegacyReputationToken": "0x0b4e1d2e525df4796141071115d367a49f43a725",
+  "CancelOrder": "0x1ca670ec25e4641a8d3323df5d8cd4e1a50a1aab",
+  "Cash": "0xce0974947b02303a9dde2ee66c16b349d3dd2ecc",
+  "ClaimTradingProceeds": "0xc8d8d6072e4cb7c9a8ecc3e04d391ddde616daa1",
+  "CompleteSets": "0x04b4bb7c4c82f40d3319e90468076c4fab51f614",
+  "CreateOrder": "0xec05eda149daf758b598679b9ce7dc8bd545f2fb",
+  "FillOrder": "0x986532680dc96aa554b1b7ccc8dbe2b75de626cd",
+  "Order": "0x8ff30eb7dfed0186da9baa24636065141f163413",
+  "Orders": "0x359a3568c14e30f796ff25f47a34dd125627f303",
+  "OrdersFetcher": "0x3f1bd243a2a928df7c6b84608c497e2dd7dc3e08",
+  "ShareToken": "0xdc43d0b9add25e29a2a4e119a1b34f554bed5733",
+  "Trade": "0xab21103eebeaed696dcd3413ea2690e6add4a39c",
+  "TradingEscapeHatch": "0xf46fe17b51a7db44e4b354f9f98222a1ed0a50a6"
  },
  "8995": {
-  "Controller": "0x0c923f18a4ba75cea7766b9beffaae4db6fc899c",
-  "Universe": "0xe6202e77a66298039032a483af74e9d64e5e43ef",
-  "Augur": "0xa2674a7180d786b7fbbf61acb538e7f4cb4dbdd0",
-  "LegacyReputationToken": "0x6d65afc94c8243e21b5610e9432868d4ee53982b",
-  "CancelOrder": "0xb37cad0e064e9c0a60aae52d43b4185393c82cf5",
-  "Cash": "0xfcee3f61f8c263ca3ae682baf14ac29e88bb11df",
-  "ClaimTradingProceeds": "0x7d0d87372424336f4eae9c01ddebd3e7ead8f379",
-  "CompleteSets": "0x9b94dc8f9218b47986ec2a3bdfb5b03c1e1cb0a1",
-  "CreateOrder": "0x4c1d524f8072b142de7651a90e776c5ad80b0288",
-  "FillOrder": "0xb1456860611e5aab0f5f835ce89a9417860f50e5",
-  "Order": "0x08823400a99a4482a2a783e7cdc781879fc42cd5",
-  "Orders": "0x701ffa7679f4f14e9db89e8a6300e35abe26c3bd",
-  "OrdersFetcher": "0x259569c0f3eeb3de58fa6f68ad9e2c3685267769",
-  "ShareToken": "0x0e6b2818fef0e549ffa0ba4717146928cbbeac11",
-  "Trade": "0x2946b437082fcd40b48c84880ec911c5cefd8e34",
-  "TradingEscapeHatch": "0x2273d475857f2a1943377f50d064299a456a94a6"
+  "Controller": "0x4b44d2573deb13805dda0d0d97ee35e1017f9171",
+  "Universe": "0x96a3ca6b6949d8987ad723b6d8208517a8d1fcac",
+  "Augur": "0x0bd8dafe42bdd4ea219894a783168e7310fe6706",
+  "LegacyReputationToken": "0x4ccf884feb4d2feae2d3180a7b571c9d0324579d",
+  "CancelOrder": "0x1f3a20562af6a51fd282fbd19d21fab38b21995b",
+  "Cash": "0x06564257816727a518372ed0c7061e198582bd01",
+  "ClaimTradingProceeds": "0x3e45d1f4ce5fc7f570717710e4f4acf4af47e0a0",
+  "CompleteSets": "0x60bdc51d92fff130652763cb85feb927c0a5b3d1",
+  "CreateOrder": "0x07b42648e5b857891cc1e1199740fa71324fa195",
+  "FillOrder": "0x3189e67cee85b2e51e3c4a7648583caa2d7fbc00",
+  "Order": "0x3af604d7ee9f873df3368b86178ea607513d0dfa",
+  "Orders": "0xd6403fbf6e9575f14b00a0b343190751b9dda770",
+  "OrdersFetcher": "0xf5fb32317f18c32d644cf5304d35478f3754f5f2",
+  "ShareToken": "0x6206e3b29eabf35b042a05ee0efb79c6ff135e98",
+  "Trade": "0x20a817157a5b347e1f340753afcd41b254648dd1",
+  "TradingEscapeHatch": "0x8b1782bbf60042a7fd3f5f322803ec9871cb7a2f"
  },
  "12346": {
-  "Controller": "0xa84944fbe191a84d66ad4e3ff4ad8e0938879cc5",
-  "Universe": "0xa1196d1ad7e9e9546f12110bc0bfe03982baf25f",
-  "Augur": "0x2a7f3de93672d19eb7a8c0175a29eed604fca2fa",
-  "LegacyReputationToken": "0x87a56a59f5eb31a9f3d5908e715c128a75d29ed1",
-  "CancelOrder": "0xa39cd02828c3e88aea634ac157e9f60de200df81",
-  "Cash": "0x857ba3ed57e8ca249ff44d37d5127ef70a56d7d9",
-  "ClaimTradingProceeds": "0x72f0abbef95afdcdd856d0854a81fa287562019a",
-  "CompleteSets": "0x38d358d05e93f8552448079d59d70d35ce7039ec",
-  "CreateOrder": "0xea4d0c2d4ba78adfe98d933786e6719c8ef3d639",
-  "FillOrder": "0x261e45442b5b800e80655b4a963b276bc2c1246e",
-  "Order": "0x7050cd37e00709a196ed69d6ea945c5a2c96aa1c",
-  "Orders": "0x884424f6986c9bdcdf6fc4995adbec2e52aba2ee",
-  "OrdersFetcher": "0xd7d861df266015022a69b39e8b9af5f91a73e5e2",
-  "ShareToken": "0xb45751b44f77032f3e28c648c352b0e9bd30e307",
-  "Trade": "0x6483a9384117e7a8982384cc82251fe0baa8ee83",
-  "TradingEscapeHatch": "0x27050d092e519d1ee77c517692a6cfd8f6c2fe56"
+  "Controller": "0x84141ddb3a5d159b047324b4e6352f8982f56513",
+  "Universe": "0xf91c51927edf587194a2a7a4f84ce57fdb972343",
+  "Augur": "0xda61f94b120ef2e9389c271e242ffe119ec92ea6",
+  "LegacyReputationToken": "0x129cb32070a57ee682f827e35046cd1b9afd74ed",
+  "CancelOrder": "0xc67107050ab5a1355085c7fc653892c47f006408",
+  "Cash": "0xfb04d79670d2e192db8713f66c12e12f9f751420",
+  "ClaimTradingProceeds": "0xc3b888ddac38fa4c1223de53d768811f42213820",
+  "CompleteSets": "0x18b225954e67fdbf882bb9d791aae42a13526979",
+  "CreateOrder": "0x19e8adb186f3de0388ce895224c00ba458f8bd1e",
+  "FillOrder": "0xe9952a82fc902f67bd5505764ef3c2e317f3f342",
+  "Order": "0x80ef808d5b71ed5705bc48defd5d4216f3d5ff0e",
+  "Orders": "0x4812aadca32945a678a499160c57b880735475e3",
+  "OrdersFetcher": "0x2b902530437b000a1665047f32c3b379819a8383",
+  "ShareToken": "0x8906e5b996c9a4b84dff919f30ca0f406be19710",
+  "Trade": "0x7933d1396e2538c64069ecf6b9d0fff38c712a10",
+  "TradingEscapeHatch": "0x285133729a97a11cec963d75abe659044177542c"
  }
 }
 },{}],26:[function(require,module,exports){
@@ -856,9 +856,9 @@ module.exports.reloadAddresses = function (callback) {
 };
 },{"../utils/read-json-file":130,"./addresses":25,"./generate-abi-map":26,"./upload-block-numbers":28,"augur-core":149}],28:[function(require,module,exports){
 module.exports={
-  "4": 1831214,
-  "8995": 18346,
-  "12346": 612841
+  "4": 1853593,
+  "8995": 24583,
+  "12346": 1326711
 }
 },{}],29:[function(require,module,exports){
 "use strict";
@@ -2866,6 +2866,7 @@ var normalizePrice = require("./normalize-price");
  * @param {string} p.estimatedCost Total cost (in ETH) of this trade, as a base-10 string.
  * @param {string} p.minPrice The minimum display (non-normalized) price for this market, as a base-10 string.
  * @param {string} p.maxPrice The maximum display (non-normalized) price for this market, as a base-10 string.
+ * @param {string} p.numTicks The number of ticks for this market.
  * @param {string} p.tickSize The tick size (interval) for this market.
  * @param {number} p._direction Order type (0 for "buy", 1 for "sell").
  * @param {string} p._market Market in which to trade, as a hex string.
@@ -3927,7 +3928,7 @@ module.exports = sha256;
 'use strict';
 
 // generated by genversion
-module.exports = '4.7.3-0';
+module.exports = '4.7.3';
 },{}],133:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
@@ -7512,56 +7513,6 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_from",
-					"type": "address"
-				},
-				{
-					"name": "_to",
-					"type": "address"
-				}
-			],
-			"name": "logInitialReporterTransfered",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_universe",
 					"type": "address"
 				},
@@ -8149,6 +8100,37 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_from",
+					"type": "address"
+				},
+				{
+					"name": "_to",
+					"type": "address"
+				}
+			],
+			"name": "logInitialReporterTransferred",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"name": "_key",
 					"type": "bytes32"
 				},
@@ -8302,29 +8284,6 @@ module.exports={
 				}
 			],
 			"name": "logCompleteSetsSold",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
 			"outputs": [
 				{
 					"name": "",
@@ -9145,7 +9104,7 @@ module.exports={
 					"type": "address"
 				}
 			],
-			"name": "InitialReporterTransfered",
+			"name": "InitialReporterTransferred",
 			"type": "event"
 		},
 		{
@@ -9299,29 +9258,6 @@ module.exports={
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [
 				{
@@ -9452,33 +9388,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -9714,29 +9623,6 @@ module.exports={
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_caller",
-					"type": "address"
-				},
-				{
-					"name": "_allowedCaller",
-					"type": "bytes32"
-				}
-			],
-			"name": "assertOnlySpecifiedCaller",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"inputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
@@ -9870,6 +9756,29 @@ module.exports={
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_subtractedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "decreaseApproval",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [
 				{
@@ -9915,6 +9824,29 @@ module.exports={
 				}
 			],
 			"name": "transfer",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_addedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "increaseApproval",
 			"outputs": [
 				{
 					"name": "",
@@ -10135,25 +10067,6 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_controller",
 					"type": "address"
 				}
@@ -10181,29 +10094,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		}
 	],
@@ -10257,25 +10147,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -10361,29 +10232,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -10620,7 +10468,7 @@ module.exports={
 				},
 				{
 					"name": "_numOutcomes",
-					"type": "uint8"
+					"type": "uint256"
 				},
 				{
 					"name": "_numTicks",
@@ -10678,7 +10526,7 @@ module.exports={
 				},
 				{
 					"name": "_outcome",
-					"type": "uint8"
+					"type": "uint256"
 				}
 			],
 			"name": "createShareToken",
@@ -11202,25 +11050,6 @@ module.exports={
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_outcome",
-					"type": "uint8"
-				}
-			],
-			"name": "getPayoutNumerator",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [],
 			"name": "disavow",
@@ -11304,25 +11133,6 @@ module.exports={
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "ETERNAL_APPROVAL_VALUE",
@@ -11348,6 +11158,29 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_subtractedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "decreaseApproval",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -11545,6 +11378,48 @@ module.exports={
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_addedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "increaseApproval",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getPayoutNumerator",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [
 				{
@@ -11593,29 +11468,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -11774,6 +11626,20 @@ module.exports={
 	],
 	"FeeToken": [
 		{
+			"constant": true,
+			"inputs": [],
+			"name": "name",
+			"outputs": [
+				{
+					"name": "",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -11875,22 +11741,17 @@ module.exports={
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
+			"constant": true,
+			"inputs": [],
+			"name": "decimals",
 			"outputs": [
 				{
 					"name": "",
-					"type": "bool"
+					"type": "uint8"
 				}
 			],
 			"payable": false,
-			"stateMutability": "nonpayable",
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -11905,6 +11766,29 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_subtractedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "decreaseApproval",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -11943,6 +11827,20 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "symbol",
+			"outputs": [
+				{
+					"name": "",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -12025,6 +11923,29 @@ module.exports={
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_addedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "increaseApproval",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [
 				{
@@ -12045,29 +11966,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -12221,6 +12119,20 @@ module.exports={
 	],
 	"FeeWindow": [
 		{
+			"constant": true,
+			"inputs": [],
+			"name": "name",
+			"outputs": [
+				{
+					"name": "",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -12364,6 +12276,20 @@ module.exports={
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [],
+			"name": "decimals",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint8"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [],
 			"name": "noteInitialReportingGasPrice",
@@ -12392,25 +12318,6 @@ module.exports={
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "getTotalFeeStake",
@@ -12436,6 +12343,29 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_subtractedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "decreaseApproval",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -12521,6 +12451,20 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "symbol",
+			"outputs": [
+				{
+					"name": "",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -12718,6 +12662,29 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_addedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "increaseApproval",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"name": "_attotokens",
 					"type": "uint256"
 				}
@@ -12796,29 +12763,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -12972,25 +12916,6 @@ module.exports={
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_outcome",
-					"type": "uint8"
-				}
-			],
-			"name": "getPayoutNumerator",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [],
 			"name": "liquidateLosing",
@@ -13104,25 +13029,6 @@ module.exports={
 				}
 			],
 			"name": "initialize",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
 			"outputs": [
 				{
 					"name": "",
@@ -13313,6 +13219,25 @@ module.exports={
 		},
 		{
 			"constant": true,
+			"inputs": [
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getPayoutNumerator",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [],
 			"name": "getPayoutDistributionHash",
 			"outputs": [
@@ -13337,29 +13262,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -13497,25 +13399,6 @@ module.exports={
 		},
 		{
 			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
 			"inputs": [],
 			"name": "withdrawEther",
 			"outputs": [
@@ -13598,29 +13481,6 @@ module.exports={
 				}
 			],
 			"name": "initialize",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
 			"outputs": [
 				{
 					"name": "",
@@ -13769,6 +13629,20 @@ module.exports={
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [],
+			"name": "getMarketCreatorSettlementFeeDivisor",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -13797,7 +13671,7 @@ module.exports={
 				},
 				{
 					"name": "_numOutcomes",
-					"type": "uint8"
+					"type": "uint256"
 				},
 				{
 					"name": "_numTicks",
@@ -13813,20 +13687,6 @@ module.exports={
 			],
 			"payable": true,
 			"stateMutability": "payable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getMarketCreatorSettlementFeeDivisor",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -13859,7 +13719,7 @@ module.exports={
 			"outputs": [
 				{
 					"name": "",
-					"type": "uint8"
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -13868,17 +13728,12 @@ module.exports={
 		},
 		{
 			"constant": true,
-			"inputs": [
-				{
-					"name": "_outcome",
-					"type": "uint8"
-				}
-			],
-			"name": "getShareToken",
+			"inputs": [],
+			"name": "getParticipantStake",
 			"outputs": [
 				{
 					"name": "",
-					"type": "address"
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -13926,6 +13781,25 @@ module.exports={
 				{
 					"name": "",
 					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getWinningPayoutNumerator",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -13997,25 +13871,6 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_payoutNumerators",
 					"type": "uint256[]"
 				},
@@ -14043,6 +13898,25 @@ module.exports={
 			"constant": true,
 			"inputs": [],
 			"name": "getDesignatedReporter",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getShareToken",
 			"outputs": [
 				{
 					"name": "",
@@ -14094,20 +13968,6 @@ module.exports={
 				{
 					"name": "",
 					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getTotalStake",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -14234,11 +14094,11 @@ module.exports={
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "getFinalizationTime",
+			"name": "assertBalances",
 			"outputs": [
 				{
 					"name": "",
-					"type": "uint256"
+					"type": "bool"
 				}
 			],
 			"payable": false,
@@ -14247,17 +14107,12 @@ module.exports={
 		},
 		{
 			"constant": true,
-			"inputs": [
-				{
-					"name": "_index",
-					"type": "uint8"
-				}
-			],
-			"name": "getReportingParticipant",
+			"inputs": [],
+			"name": "getFinalizationTime",
 			"outputs": [
 				{
 					"name": "",
-					"type": "address"
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -14286,6 +14141,25 @@ module.exports={
 				{
 					"name": "",
 					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_index",
+					"type": "uint256"
+				}
+			],
+			"name": "getReportingParticipant",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
 				}
 			],
 			"payable": false,
@@ -14410,29 +14284,6 @@ module.exports={
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "getInitialized",
@@ -14463,25 +14314,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_outcome",
-					"type": "uint8"
-				}
-			],
-			"name": "getWinningPayoutNumerator",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -14534,29 +14366,6 @@ module.exports={
 	],
 	"RepPriceOracle": [
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "getRepPriceInAttoEth",
@@ -14568,39 +14377,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getController",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -14621,25 +14397,6 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_controller",
-					"type": "address"
-				}
-			],
-			"name": "setController",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_repPriceInAttoEth",
 					"type": "uint256"
 				}
@@ -14649,29 +14406,6 @@ module.exports={
 				{
 					"name": "",
 					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
 				}
 			],
 			"payable": false,
@@ -14836,7 +14570,7 @@ module.exports={
 			"outputs": [
 				{
 					"name": "",
-					"type": "uint256"
+					"type": "uint8"
 				}
 			],
 			"payable": false,
@@ -14871,25 +14605,6 @@ module.exports={
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "ETERNAL_APPROVAL_VALUE",
@@ -14901,6 +14616,29 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_subtractedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "decreaseApproval",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -15171,6 +14909,29 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_addedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "increaseApproval",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"name": "_token",
 					"type": "address"
 				}
@@ -15240,29 +15001,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -15622,25 +15360,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -16442,29 +16161,6 @@ module.exports={
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "getNextFeeWindow",
@@ -16615,25 +16311,6 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_orderId",
 					"type": "bytes32"
 				}
@@ -16658,29 +16335,6 @@ module.exports={
 				}
 			],
 			"name": "setController",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
 			"outputs": [
 				{
 					"name": "",
@@ -16838,7 +16492,7 @@ module.exports={
 			"outputs": [
 				{
 					"name": "",
-					"type": "uint256"
+					"type": "uint8"
 				}
 			],
 			"payable": false,
@@ -16884,25 +16538,6 @@ module.exports={
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "ETERNAL_APPROVAL_VALUE",
@@ -16914,6 +16549,29 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_subtractedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "decreaseApproval",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -17020,6 +16678,29 @@ module.exports={
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_addedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "increaseApproval",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "getTypeName",
@@ -17054,29 +16735,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -17242,25 +16900,6 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_market",
 					"type": "address"
 				},
@@ -17307,31 +16946,8 @@ module.exports={
 					"type": "address"
 				},
 				{
-					"name": "_shareHolder",
-					"type": "address"
-				}
-			],
-			"name": "claimTradingProceeds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
 					"name": "_outcome",
-					"type": "uint8"
+					"type": "uint256"
 				},
 				{
 					"name": "_numberOfShares",
@@ -17365,15 +16981,15 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_destination",
+					"name": "_market",
 					"type": "address"
 				},
 				{
-					"name": "_token",
+					"name": "_shareHolder",
 					"type": "address"
 				}
 			],
-			"name": "extractTokens",
+			"name": "claimTradingProceeds",
 			"outputs": [
 				{
 					"name": "",
@@ -17393,7 +17009,7 @@ module.exports={
 				},
 				{
 					"name": "_outcome",
-					"type": "uint8"
+					"type": "uint256"
 				},
 				{
 					"name": "_numberOfShares",
@@ -17479,25 +17095,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -17591,29 +17188,6 @@ module.exports={
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
 		}
 	],
 	"CreateOrder": [
@@ -17630,6 +17204,86 @@ module.exports={
 				}
 			],
 			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_attoshares",
+					"type": "uint256"
+				},
+				{
+					"name": "_displayPrice",
+					"type": "uint256"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"name": "_betterOrderId",
+					"type": "bytes32"
+				},
+				{
+					"name": "_worseOrderId",
+					"type": "bytes32"
+				},
+				{
+					"name": "_tradeGroupId",
+					"type": "bytes32"
+				}
+			],
+			"name": "publicCreateOrder",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
 			"outputs": [
 				{
 					"name": "",
@@ -17665,7 +17319,7 @@ module.exports={
 				},
 				{
 					"name": "_outcome",
-					"type": "uint8"
+					"type": "uint256"
 				},
 				{
 					"name": "_betterOrderId",
@@ -17689,128 +17343,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getController",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_controller",
-					"type": "address"
-				}
-			],
-			"name": "setController",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_attoshares",
-					"type": "uint256"
-				},
-				{
-					"name": "_displayPrice",
-					"type": "uint256"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint8"
-				},
-				{
-					"name": "_betterOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_worseOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_tradeGroupId",
-					"type": "bytes32"
-				}
-			],
-			"name": "publicCreateOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": true,
-			"stateMutability": "payable",
 			"type": "function"
 		}
 	],
@@ -17887,25 +17419,6 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_controller",
 					"type": "address"
 				}
@@ -17946,29 +17459,6 @@ module.exports={
 			],
 			"payable": true,
 			"stateMutability": "payable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		}
 	],
@@ -18024,33 +17514,6 @@ module.exports={
 					"type": "uint8"
 				},
 				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_betterOrderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "assertIsNotBetterPrice",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
 					"name": "_market",
 					"type": "address"
 				},
@@ -18072,7 +17535,7 @@ module.exports={
 				},
 				{
 					"name": "_outcome",
-					"type": "uint8"
+					"type": "uint256"
 				},
 				{
 					"name": "_moneyEscrowed",
@@ -18091,7 +17554,111 @@ module.exports={
 				}
 			],
 			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"name": "_betterOrderId",
+					"type": "bytes32"
+				}
+			],
+			"name": "assertIsNotBetterPrice",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "incrementTotalEscrowed",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_orderId",
+					"type": "bytes32"
+				},
+				{
+					"name": "_sharesFilled",
+					"type": "uint256"
+				},
+				{
+					"name": "_tokensFilled",
+					"type": "uint256"
+				}
+			],
+			"name": "recordFillOrder",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"name": "_price",
+					"type": "uint256"
+				}
+			],
+			"name": "setPrice",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -18117,6 +17684,25 @@ module.exports={
 				}
 			],
 			"name": "getPrice",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "getTotalEscrowed",
 			"outputs": [
 				{
 					"name": "",
@@ -18174,52 +17760,6 @@ module.exports={
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint8"
-				}
-			],
-			"name": "getBestOrderId",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [
 				{
@@ -18258,7 +17798,7 @@ module.exports={
 			"outputs": [
 				{
 					"name": "",
-					"type": "uint8"
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -18269,27 +17809,109 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_orderId",
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
+					"type": "uint256"
+				},
+				{
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"name": "_sender",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"name": "_moneyEscrowed",
+					"type": "uint256"
+				},
+				{
+					"name": "_sharesEscrowed",
+					"type": "uint256"
+				},
+				{
+					"name": "_betterOrderId",
 					"type": "bytes32"
 				},
 				{
-					"name": "_sharesFilled",
-					"type": "uint256"
+					"name": "_worseOrderId",
+					"type": "bytes32"
 				},
 				{
-					"name": "_tokensFilled",
-					"type": "uint256"
+					"name": "_tradeGroupId",
+					"type": "bytes32"
 				}
 			],
-			"name": "fillOrder",
+			"name": "saveOrder",
 			"outputs": [
 				{
-					"name": "",
-					"type": "bool"
+					"name": "_orderId",
+					"type": "bytes32"
 				}
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getBestOrderId",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getLastOutcomePrice",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -18315,38 +17937,23 @@ module.exports={
 			"constant": true,
 			"inputs": [
 				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
 					"name": "_market",
 					"type": "address"
 				},
 				{
 					"name": "_outcome",
-					"type": "uint8"
-				}
-			],
-			"name": "getLastOutcomePrice",
-			"outputs": [
-				{
-					"name": "",
 					"type": "uint256"
 				}
 			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				}
-			],
-			"name": "getVolume",
+			"name": "getWorstOrderId",
 			"outputs": [
 				{
 					"name": "",
-					"type": "uint256"
+					"type": "bytes32"
 				}
 			],
 			"payable": false,
@@ -18395,86 +18002,23 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
 					"name": "_market",
 					"type": "address"
 				},
 				{
 					"name": "_amount",
 					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_sender",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint8"
-				},
-				{
-					"name": "_moneyEscrowed",
-					"type": "uint256"
-				},
-				{
-					"name": "_sharesEscrowed",
-					"type": "uint256"
-				},
-				{
-					"name": "_betterOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_worseOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_tradeGroupId",
-					"type": "bytes32"
 				}
 			],
-			"name": "saveOrder",
+			"name": "decrementTotalEscrowed",
 			"outputs": [
 				{
-					"name": "_orderId",
-					"type": "bytes32"
+					"name": "",
+					"type": "bool"
 				}
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint8"
-				}
-			],
-			"name": "getWorstOrderId",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -18527,33 +18071,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint8"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				}
-			],
-			"name": "setPrice",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -18619,29 +18136,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -18780,53 +18274,11 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_controller",
 					"type": "address"
 				}
 			],
 			"name": "setController",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
 			"outputs": [
 				{
 					"name": "",
@@ -19015,7 +18467,7 @@ module.exports={
 			"outputs": [
 				{
 					"name": "",
-					"type": "uint256"
+					"type": "uint8"
 				}
 			],
 			"payable": false,
@@ -19050,25 +18502,6 @@ module.exports={
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "ETERNAL_APPROVAL_VALUE",
@@ -19080,6 +18513,29 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_subtractedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "decreaseApproval",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -19162,7 +18618,7 @@ module.exports={
 			"outputs": [
 				{
 					"name": "",
-					"type": "uint8"
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -19178,29 +18634,6 @@ module.exports={
 				}
 			],
 			"name": "setController",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint8"
-				}
-			],
-			"name": "initialize",
 			"outputs": [
 				{
 					"name": "",
@@ -19280,6 +18713,29 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "initialize",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"name": "_owner",
 					"type": "address"
 				},
@@ -19289,6 +18745,29 @@ module.exports={
 				}
 			],
 			"name": "destroyShares",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_addedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "increaseApproval",
 			"outputs": [
 				{
 					"name": "",
@@ -19334,29 +18813,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -19490,12 +18946,115 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_direction",
+					"type": "uint8"
+				},
+				{
 					"name": "_market",
 					"type": "address"
 				},
 				{
 					"name": "_outcome",
-					"type": "uint8"
+					"type": "uint256"
+				},
+				{
+					"name": "_fxpAmount",
+					"type": "uint256"
+				},
+				{
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"name": "_betterOrderId",
+					"type": "bytes32"
+				},
+				{
+					"name": "_worseOrderId",
+					"type": "bytes32"
+				},
+				{
+					"name": "_tradeGroupId",
+					"type": "bytes32"
+				}
+			],
+			"name": "publicTrade",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
 				},
 				{
 					"name": "_fxpAmount",
@@ -19533,23 +19092,39 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_target",
+					"name": "_direction",
+					"type": "uint8"
+				},
+				{
+					"name": "_market",
 					"type": "address"
 				},
 				{
-					"name": "_tokens",
-					"type": "address[]"
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"name": "_fxpAmount",
+					"type": "uint256"
+				},
+				{
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"name": "_tradeGroupId",
+					"type": "bytes32"
 				}
 			],
-			"name": "suicideFunds",
+			"name": "publicTakeBestOrder",
 			"outputs": [
 				{
 					"name": "",
-					"type": "bool"
+					"type": "uint256"
 				}
 			],
-			"payable": false,
-			"stateMutability": "nonpayable",
+			"payable": true,
+			"stateMutability": "payable",
 			"type": "function"
 		},
 		{
@@ -19561,7 +19136,7 @@ module.exports={
 				},
 				{
 					"name": "_outcome",
-					"type": "uint8"
+					"type": "uint256"
 				},
 				{
 					"name": "_fxpAmount",
@@ -19593,167 +19168,6 @@ module.exports={
 			],
 			"payable": true,
 			"stateMutability": "payable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getController",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_direction",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint8"
-				},
-				{
-					"name": "_fxpAmount",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_betterOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_worseOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_tradeGroupId",
-					"type": "bytes32"
-				}
-			],
-			"name": "publicTrade",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": true,
-			"stateMutability": "payable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_controller",
-					"type": "address"
-				}
-			],
-			"name": "setController",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_direction",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint8"
-				},
-				{
-					"name": "_fxpAmount",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_tradeGroupId",
-					"type": "bytes32"
-				}
-			],
-			"name": "publicTakeBestOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": true,
-			"stateMutability": "payable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		}
 	],
@@ -19818,25 +19232,6 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_destination",
-					"type": "address"
-				}
-			],
-			"name": "extractEther",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_controller",
 					"type": "address"
 				}
@@ -19875,29 +19270,6 @@ module.exports={
 				}
 			],
 			"name": "claimSharesInUpdate",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_token",
-					"type": "address"
-				}
-			],
-			"name": "extractTokens",
 			"outputs": [
 				{
 					"name": "",
@@ -37350,7 +36722,7 @@ module.exports={
   "_args": [
     [
       "elliptic@6.4.0",
-      "/home/jack/src/augur.js"
+      "/private/tmp/augur.js"
     ]
   ],
   "_from": "elliptic@6.4.0",
@@ -37377,7 +36749,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
   "_spec": "6.4.0",
-  "_where": "/home/jack/src/augur.js",
+  "_where": "/private/tmp/augur.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
