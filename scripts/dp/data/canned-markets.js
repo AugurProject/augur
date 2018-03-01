@@ -136,9 +136,9 @@ module.exports = [{
   orderBook: {
     buy: {
       "1": [
-        { shares: "0.005", price: "20" },
-        { shares: "0.005", price: "0" },
-        { shares: "0.01", price: "-5" },
+        { shares: "0.002", price: "20" },
+        { shares: "0.001", price: "0" },
+        { shares: "0.001", price: "-5" },
       ],
     },
     sell: {
@@ -165,15 +165,15 @@ module.exports = [{
     buy: {
       "1": [
         { shares: "0.001", price: "1000" },
-        { shares: "0.005", price: "750" },
-        { shares: "0.005", price: "500" },
+        { shares: "0.001", price: "750" },
+        { shares: "0.001", price: "500" },
       ],
     },
     sell: {
       "1": [
         { shares: "0.001", price: "400" },
         { shares: "0.002", price: "350" },
-        { shares: "0.003", price: "250" },
+        { shares: "0.001", price: "250" },
       ],
     },
   },
@@ -193,9 +193,9 @@ module.exports = [{
   orderBook: {
     buy: {
       "1": [
-        { shares: "0.005", price: "1000" },
-        { shares: "0.02", price: "900" },
-        { shares: "0.3", price: "775" },
+        { shares: "0.002", price: "1000" },
+        { shares: "0.002", price: "900" },
+        { shares: "0.001", price: "775" },
       ],
     },
     sell: {
@@ -222,16 +222,16 @@ module.exports = [{
   orderBook: {
     buy: {
       "1": [
-        { shares: "0.05", price: "2" },
-        { shares: "0.02", price: "18" },
-        { shares: "0.01", price: "15" },
+        { shares: "0.001", price: "2" },
+        { shares: "0.002", price: "18" },
+        { shares: "0.001", price: "15" },
       ],
     },
     sell: {
       "1": [
-        { shares: "0.02", price: "23" },
-        { shares: "0.02", price: "26" },
-        { shares: "0.01", price: "29" },
+        { shares: "0.002", price: "23" },
+        { shares: "0.002", price: "26" },
+        { shares: "0.001", price: "29" },
       ],
     },
   },
@@ -278,25 +278,25 @@ module.exports = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "0.10", price: "0.2" },
-        { shares: "0.20", price: "0.18" },
-        { shares: "0.30", price: "0.15" },
+        { shares: "0.1", price: "0.2" },
+        { shares: "0.2", price: "0.18" },
+        { shares: "0.3", price: "0.15" },
       ],
       "1": [
-        { shares: "0.30", price: "0.48" },
+        { shares: "0.3", price: "0.48" },
         { shares: "0.15", price: "0.45" },
-        { shares: "0.20", price: "0.41" },
+        { shares: "0.2", price: "0.41" },
       ],
     },
     sell: {
       "0": [
         { shares: "0.15", price: "0.23" },
-        { shares: "0.10", price: "0.26" },
-        { shares: "0.30", price: "0.29" },
+        { shares: "0.1", price: "0.26" },
+        { shares: "0.3", price: "0.29" },
       ],
       "1": [
         { shares: "0.15", price: "0.53" },
-        { shares: "0.20", price: "0.57" },
+        { shares: "0.2", price: "0.57" },
         { shares: "0.25", price: "0.61" },
       ],
     },
@@ -315,36 +315,36 @@ module.exports = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "0.10", price: "0.2" },
-        { shares: "0.20", price: "0.18" },
-        { shares: "0.30", price: "0.15" },
+        { shares: "0.1", price: "0.2" },
+        { shares: "0.2", price: "0.18" },
+        { shares: "0.3", price: "0.15" },
       ],
       "1": [
-        { shares: "0.30", price: "0.48" },
+        { shares: "0.3", price: "0.48" },
         { shares: "0.15", price: "0.45" },
-        { shares: "0.20", price: "0.41" },
+        { shares: "0.2", price: "0.41" },
       ],
       "2": [
         { shares: "0.15", price: "0.18" },
         { shares: "0.25", price: "0.15" },
-        { shares: "0.20", price: "0.12" },
+        { shares: "0.2", price: "0.12" },
       ],
     },
     sell: {
       "0": [
         { shares: "0.15", price: "0.23" },
-        { shares: "0.10", price: "0.26" },
-        { shares: "0.30", price: "0.29" },
+        { shares: "0.1", price: "0.26" },
+        { shares: "0.3", price: "0.29" },
       ],
       "1": [
         { shares: "0.15", price: "0.53" },
-        { shares: "0.20", price: "0.57" },
+        { shares: "0.2", price: "0.57" },
         { shares: "0.25", price: "0.61" },
       ],
       "2": [
-        { shares: "0.10", price: "0.21" },
-        { shares: "0.10", price: "0.24" },
-        { shares: "0.20", price: "0.27" },
+        { shares: "0.1", price: "0.21" },
+        { shares: "0.1", price: "0.24" },
+        { shares: "0.2", price: "0.27" },
       ],
     },
   },
@@ -362,51 +362,51 @@ module.exports = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "0.10", price: "0.2" },
-        { shares: "0.20", price: "0.18" },
-        { shares: "0.30", price: "0.15" },
+        { shares: "0.1", price: "0.2" },
+        { shares: "0.2", price: "0.18" },
+        { shares: "0.3", price: "0.15" },
       ],
       "1": [
-        { shares: "0.30", price: "0.48" },
+        { shares: "0.3", price: "0.48" },
         { shares: "0.15", price: "0.45" },
-        { shares: "0.20", price: "0.41" },
+        { shares: "0.2", price: "0.41" },
       ],
       "2": [
         { shares: "0.15", price: "0.18" },
         { shares: "0.25", price: "0.15" },
-        { shares: "0.20", price: "0.12" },
+        { shares: "0.2", price: "0.12" },
       ],
       "3": [
-        { shares: "0.10", price: "0.13" },
+        { shares: "0.1", price: "0.13" },
         { shares: "0.15", price: "0.1" },
-        { shares: "0.20", price: "0.08" },
+        { shares: "0.2", price: "0.08" },
       ],
       "4": [
-        { shares: "0.10", price: "0.2" },
-        { shares: "0.20", price: "0.18" },
-        { shares: "0.30", price: "0.15" },
+        { shares: "0.1", price: "0.2" },
+        { shares: "0.2", price: "0.18" },
+        { shares: "0.3", price: "0.15" },
       ],
       "5": [
-        { shares: "0.10", price: "0.2" },
-        { shares: "0.20", price: "0.18" },
-        { shares: "0.30", price: "0.15" },
+        { shares: "0.1", price: "0.2" },
+        { shares: "0.2", price: "0.18" },
+        { shares: "0.3", price: "0.15" },
       ],
     },
     sell: {
       "0": [
         { shares: "0.15", price: "0.23" },
-        { shares: "0.10", price: "0.26" },
-        { shares: "0.30", price: "0.29" },
+        { shares: "0.1", price: "0.26" },
+        { shares: "0.3", price: "0.29" },
       ],
       "1": [
         { shares: "0.15", price: "0.53" },
-        { shares: "0.20", price: "0.57" },
+        { shares: "0.2", price: "0.57" },
         { shares: "0.25", price: "0.61" },
       ],
       "2": [
-        { shares: "0.10", price: "0.21" },
-        { shares: "0.10", price: "0.24" },
-        { shares: "0.20", price: "0.27" },
+        { shares: "0.1", price: "0.21" },
+        { shares: "0.1", price: "0.24" },
+        { shares: "0.2", price: "0.27" },
       ],
       "3": [
         { shares: "0.15", price: "0.17" },
@@ -415,13 +415,13 @@ module.exports = [{
       ],
       "4": [
         { shares: "0.15", price: "0.23" },
-        { shares: "0.10", price: "0.26" },
-        { shares: "0.30", price: "0.29" },
+        { shares: "0.1", price: "0.26" },
+        { shares: "0.3", price: "0.29" },
       ],
       "5": [
         { shares: "0.15", price: "0.23" },
-        { shares: "0.10", price: "0.26" },
-        { shares: "0.30", price: "0.29" },
+        { shares: "0.1", price: "0.26" },
+        { shares: "0.3", price: "0.29" },
       ],
     },
   },
@@ -437,61 +437,61 @@ module.exports = [{
   orderBook: {
     buy: {
       "0": [
-        { shares: "0.10", price: "0.2" },
-        { shares: "0.20", price: "0.18" },
-        { shares: "0.30", price: "0.15" },
+        { shares: "0.1", price: "0.2" },
+        { shares: "0.2", price: "0.18" },
+        { shares: "0.3", price: "0.15" },
       ],
       "1": [
-        { shares: "0.30", price: "0.48" },
+        { shares: "0.3", price: "0.48" },
         { shares: "0.15", price: "0.45" },
-        { shares: "0.20", price: "0.41" },
+        { shares: "0.2", price: "0.41" },
       ],
       "2": [
         { shares: "0.15", price: "0.18" },
         { shares: "0.25", price: "0.15" },
-        { shares: "0.20", price: "0.12" },
+        { shares: "0.2", price: "0.12" },
       ],
       "3": [
-        { shares: "0.10", price: "0.13" },
+        { shares: "0.1", price: "0.13" },
         { shares: "0.15", price: "0.1" },
-        { shares: "0.20", price: "0.08" },
+        { shares: "0.2", price: "0.08" },
       ],
       "4": [
-        { shares: "0.10", price: "0.2" },
-        { shares: "0.20", price: "0.18" },
-        { shares: "0.30", price: "0.15" },
+        { shares: "0.1", price: "0.2" },
+        { shares: "0.2", price: "0.18" },
+        { shares: "0.3", price: "0.15" },
       ],
       "5": [
-        { shares: "0.10", price: "0.2" },
-        { shares: "0.20", price: "0.18" },
-        { shares: "0.30", price: "0.15" },
+        { shares: "0.1", price: "0.2" },
+        { shares: "0.2", price: "0.18" },
+        { shares: "0.3", price: "0.15" },
       ],
       "6": [
-        { shares: "0.10", price: "0.13" },
+        { shares: "0.1", price: "0.13" },
         { shares: "0.15", price: "0.1" },
-        { shares: "0.20", price: "0.08" },
+        { shares: "0.2", price: "0.08" },
       ],
       "7": [
-        { shares: "0.10", price: "0.13" },
+        { shares: "0.1", price: "0.13" },
         { shares: "0.15", price: "0.1" },
-        { shares: "0.20", price: "0.08" },
+        { shares: "0.2", price: "0.08" },
       ],
     },
     sell: {
       "0": [
         { shares: "0.15", price: "0.23" },
-        { shares: "0.10", price: "0.26" },
-        { shares: "0.30", price: "0.29" },
+        { shares: "0.1", price: "0.26" },
+        { shares: "0.3", price: "0.29" },
       ],
       "1": [
         { shares: "0.15", price: "0.53" },
-        { shares: "0.20", price: "0.57" },
+        { shares: "0.2", price: "0.57" },
         { shares: "0.25", price: "0.61" },
       ],
       "2": [
-        { shares: "0.10", price: "0.21" },
-        { shares: "0.10", price: "0.24" },
-        { shares: "0.20", price: "0.27" },
+        { shares: "0.1", price: "0.21" },
+        { shares: "0.1", price: "0.24" },
+        { shares: "0.2", price: "0.27" },
       ],
       "3": [
         { shares: "0.15", price: "0.17" },
@@ -500,13 +500,13 @@ module.exports = [{
       ],
       "4": [
         { shares: "0.15", price: "0.23" },
-        { shares: "0.10", price: "0.26" },
-        { shares: "0.30", price: "0.29" },
+        { shares: "0.1", price: "0.26" },
+        { shares: "0.3", price: "0.29" },
       ],
       "5": [
         { shares: "0.15", price: "0.23" },
-        { shares: "0.10", price: "0.26" },
-        { shares: "0.30", price: "0.29" },
+        { shares: "0.1", price: "0.26" },
+        { shares: "0.3", price: "0.29" },
       ],
       "6": [
         { shares: "0.15", price: "0.17" },
