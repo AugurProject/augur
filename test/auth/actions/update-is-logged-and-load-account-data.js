@@ -16,7 +16,7 @@ describe(`modules/auth/actions/update-is-logged-and-load-account-data.js`, () =>
     const action = proxyquire('../../../src/modules/auth/actions/update-is-logged-and-load-account-data.js', {
       '../../../services/augurjs': AugurJS,
       '../../bids-asks/actions/load-account-orders': LoadAccountOrders,
-      './load-account-data': LoadAccountData
+      './load-account-data': LoadAccountData,
     })
     sinon.stub(AugurJS.augur.rpc, 'clear').callsFake(() => store.dispatch({ type: 'AUGURJS_RPC_CLEAR' }))
     sinon.stub(LoadAccountData, 'loadAccountData').callsFake(account => ({ type: 'LOAD_ACCOUNT_DATA', account }))
@@ -29,14 +29,14 @@ describe(`modules/auth/actions/update-is-logged-and-load-account-data.js`, () =>
     description: 'unlocked ethereum node',
     params: {
       unlockedAddress: '0xb0b',
-      accountType: 'unlockedEthereumNode'
+      accountType: 'unlockedEthereumNode',
     },
     assertions: actions => assert.deepEqual(actions, [
       {
-        type: 'AUGURJS_RPC_CLEAR'
+        type: 'AUGURJS_RPC_CLEAR',
       }, {
         type: 'UPDATE_IS_LOGGED',
-        data: { isLogged: true }
+        data: { isLogged: true },
       }, {
         type: 'LOAD_ACCOUNT_DATA',
         account: {
@@ -44,27 +44,27 @@ describe(`modules/auth/actions/update-is-logged-and-load-account-data.js`, () =>
           meta: {
             accountType: 'unlockedEthereumNode',
             address: '0xb0b',
-            signer: null
-          }
-        }
+            signer: null,
+          },
+        },
       }, {
         type: 'LOAD_ACCOUNT_ORDERS',
-        data: {}
-      }
-    ])
+        data: {},
+      },
+    ]),
   })
   test({
     description: 'metamask',
     params: {
       unlockedAddress: '0xb0b',
-      accountType: 'metaMask'
+      accountType: 'metaMask',
     },
     assertions: actions => assert.deepEqual(actions, [
       {
-        type: 'AUGURJS_RPC_CLEAR'
+        type: 'AUGURJS_RPC_CLEAR',
       }, {
         type: 'UPDATE_IS_LOGGED',
-        data: { isLogged: true }
+        data: { isLogged: true },
       }, {
         type: 'LOAD_ACCOUNT_DATA',
         account: {
@@ -72,13 +72,13 @@ describe(`modules/auth/actions/update-is-logged-and-load-account-data.js`, () =>
           meta: {
             accountType: 'metaMask',
             address: '0xb0b',
-            signer: null
-          }
-        }
+            signer: null,
+          },
+        },
       }, {
         type: 'LOAD_ACCOUNT_ORDERS',
-        data: {}
-      }
-    ])
+        data: {},
+      },
+    ]),
   })
 })

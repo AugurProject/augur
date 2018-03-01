@@ -11,37 +11,37 @@ export const FILTER_TYPE_CLOSED = 'closed'
 export const SELECT_TYPE_OPTIONS = [
   {
     label: 'Open',
-    value: FILTER_TYPE_OPEN
+    value: FILTER_TYPE_OPEN,
   },
   {
     label: 'Reporting',
-    value: FILTER_TYPE_REPORTING
+    value: FILTER_TYPE_REPORTING,
   },
   {
     label: 'Closed',
-    value: FILTER_TYPE_CLOSED
-  }
+    value: FILTER_TYPE_CLOSED,
+  },
 ]
 
 export const SELECT_SORT_OPTIONS = [
   {
     label: 'Volume',
-    value: 'volume'
+    value: 'volume',
   },
   {
     label: 'Newest',
-    value: 'creationTime'
+    value: 'creationTime',
   },
   {
     label: 'Expiration',
-    value: 'endDate'
+    value: 'endDate',
   },
   {
     label: 'Settlement Fee',
-    value: 'settlementFeePercent'
-  }
+    value: 'settlementFeePercent',
+  },
 ]
 
 export const SELECT_ORDER_OPTIONS = {
-  isDesc: true
+  isDesc: true,
 }

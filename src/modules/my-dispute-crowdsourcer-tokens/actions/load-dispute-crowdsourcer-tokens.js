@@ -20,7 +20,7 @@ export default (callback = logError) => (dispatch, getState) => {
           const gasCost = speedomatic.encodeNumberAsJSNumber(attoGasCost)
           dispatch(updateDisputeCrowdsourcersEscapeHatchGasCost(disputeCrowdsourcerID, gasCost))
         },
-        onFailed: callback
+        onFailed: callback,
       })
     })
     callback(null, disputeCrowdsourcerTokens)

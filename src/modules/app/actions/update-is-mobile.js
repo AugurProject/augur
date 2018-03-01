@@ -5,8 +5,8 @@ export function updateIsMobile(isMobile) {
   return {
     type: UPDATE_IS_MOBILE,
     data: {
-      isMobile
-    }
+      isMobile,
+    },
   }
 }
 
@@ -14,7 +14,7 @@ export function updateIsMobileSmall(isMobileSmall) {
   return {
     type: UPDATE_IS_MOBILE_SMALL,
     data: {
-      isMobileSmall
-    }
+      isMobileSmall,
+    },
   }
 }

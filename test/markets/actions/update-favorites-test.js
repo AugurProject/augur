@@ -8,7 +8,7 @@ describe(`modules/markets/actions/update-favorites.js`, () => {
     const marketId = 'market123'
     const expectedOutput = {
       type: actions.TOGGLE_FAVORITE,
-      marketId
+      marketId,
     }
     assert.deepEqual(actions.toggleFavorite(marketId), expectedOutput, `toggle favorite action didn't return the correct object`)
   })
@@ -17,7 +17,7 @@ describe(`modules/markets/actions/update-favorites.js`, () => {
     const favorites = ['some favorite', 'another favorite']
     const expectedOutput = {
       type: actions.UPDATE_FAVORITES,
-      favorites
+      favorites,
     }
     assert.deepEqual(actions.updateFavorites(favorites), expectedOutput, `update favorites didn't return the correct object`)
   })

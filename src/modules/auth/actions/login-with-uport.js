@@ -11,8 +11,8 @@ export default function loginWithUport(account, signingFunction) {
       meta: {
         address: account.address,
         signer: txObj => uPortSigner(txObj, dispatch),
-        accountType: augur.rpc.constants.ACCOUNT_TYPES.U_PORT
-      }
+        accountType: augur.rpc.constants.ACCOUNT_TYPES.U_PORT,
+      },
     }))
   }
 }

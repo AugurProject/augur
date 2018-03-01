@@ -9,7 +9,7 @@ import { clearTransactions } from 'modules/transactions/actions/delete-transacti
 export const loadAccountHistory = (beginDate, endDate) => (dispatch, getState) => {
   const options = {
     earliestCreationTime: beginDate,
-    latestCreationTime: endDate
+    latestCreationTime: endDate,
   }
 
   loadTransactions(dispatch, getState, options, () => {
@@ -36,7 +36,7 @@ function loadTransactions(dispatch, getState, options, cb) {
     next => dispatch(loadReportingHistory(options, (err) => {
       if (err) next(err)
       next(null)
-    }))
+    })),
   ], (err) => {
     if (err) return console.error('ERROR loadTransactions: ', err)
     cb(dispatch, getState, options)

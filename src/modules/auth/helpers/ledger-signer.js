@@ -7,7 +7,7 @@ import { MODAL_LEDGER } from 'modules/modal/constants/modal-types'
 
 const ledgerSigner = async (rawTxArgs, ledgerLib, dispatch) => {
   dispatch(updateModal({
-    type: MODAL_LEDGER
+    type: MODAL_LEDGER,
   }))
 
   const tx = rawTxArgs[0]
@@ -35,7 +35,7 @@ const ledgerSigner = async (rawTxArgs, ledgerLib, dispatch) => {
       dispatch(updateModal({
         type: MODAL_LEDGER,
         error: `Failed to Sign with "${err}"`,
-        canClose: true
+        canClose: true,
       }))
     })
 }

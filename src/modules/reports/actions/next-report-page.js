@@ -19,8 +19,8 @@ export function nextReportPage(history) {
       pathname: makePath(MARKET),
       search: makeQuery({
         [MARKET_DESCRIPTION_PARAM_NAME]: nextPendingReportMarket.formattedDescription,
-        [MARKET_ID_PARAM_NAME]: nextPendingReportMarket.id
-      })
+        [MARKET_ID_PARAM_NAME]: nextPendingReportMarket.id,
+      }),
     })
   }
 }

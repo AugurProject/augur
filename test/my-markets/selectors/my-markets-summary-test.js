@@ -10,7 +10,7 @@ describe('modules/my-markets/selectors/my-markets-summary', () => {
   let actual
   const { store } = mockStore.default
   const {
-    loginAccount, allMarkets, marketTrades, priceHistory, marketCreatorFees
+    loginAccount, allMarkets, marketTrades, priceHistory, marketCreatorFees,
   } = store.getState()
 
   const MarketsAll = () => allMarkets
@@ -19,24 +19,24 @@ describe('modules/my-markets/selectors/my-markets-summary', () => {
     selectLoginAccountAddress: () => loginAccount.address,
     selectMarketTradesState: () => marketTrades,
     selectPriceHistoryState: () => priceHistory,
-    selectMarketCreatorFeesState: () => marketCreatorFees
+    selectMarketCreatorFeesState: () => marketCreatorFees,
   }
 
   const proxiedMyMarkets = proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
     '../../markets/selectors/markets-all': MarketsAll,
     '../../../select-state': SelectState,
-    '../../../store': store
+    '../../../store': store,
   })
 
   const spiedMyMarkets = sinon.spy(proxiedMyMarkets, 'default')
 
   const proxiedSelector = proxyquire('../../../src/modules/my-markets/selectors/my-markets-summary', {
-    './my-markets': proxiedMyMarkets
+    './my-markets': proxiedMyMarkets,
   })
 
   const expected = {
     numMarkets: 2,
-    totalValue: 21
+    totalValue: 21,
   }
 
   before(() => {

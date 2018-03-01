@@ -60,7 +60,7 @@ OutcomeOptions.propTypes = {
   reportedOutcomeId: PropTypes.string,
   isReported: PropTypes.bool,
   isIndeterminate: PropTypes.bool,
-  onOutcomeChange: PropTypes.func
+  onOutcomeChange: PropTypes.func,
 }
 
 export default OutcomeOptions

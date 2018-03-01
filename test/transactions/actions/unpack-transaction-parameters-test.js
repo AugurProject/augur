@@ -19,7 +19,7 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
         data: {
           events: [
             'CreateOrder',
-            'sentCash'
+            'sentCash',
           ],
           gas: 725202,
           inputs: [
@@ -28,7 +28,7 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
             'market',
             'outcome',
             'minimumTradeSize',
-            'tradeGroupId'
+            'tradeGroupId',
           ],
           label: 'Bid',
           name: 'buy',
@@ -40,7 +40,7 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
             'int256',
             'int256',
             'int256',
-            'int256'
+            'int256',
           ],
           to: '0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3',
           from: '0xdceb761b558e202c993f447b470a89cec2a3b6e9',
@@ -50,15 +50,15 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
             '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
             '2',
             '0x2386f26fc10000',
-            '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-          ]
+            '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
+          ],
         },
         response: {
           hash: '0x5bde43fc683d39c9f449424760401b2de067c8bda09acbf4c61dc923c0c98878',
           txHash: '0x5bde43fc683d39c9f449424760401b2de067c8bda09acbf4c61dc923c0c98878',
-          callReturn: null
-        }
-      }
+          callReturn: null,
+        },
+      },
     },
     assertions: (output) => {
       assert.deepEqual(output, {
@@ -68,9 +68,9 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
         outcome: '2',
         minimumTradeSize: '0x2386f26fc10000',
         tradeGroupId: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-        type: 'Bid'
+        type: 'Bid',
       })
-    }
+    },
   })
   test({
     description: 'unpack successful transaction parameters (buy)',
@@ -81,7 +81,7 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
         data: {
           events: [
             'CreateOrder',
-            'sentCash'
+            'sentCash',
           ],
           gas: 725202,
           inputs: [
@@ -90,7 +90,7 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
             'market',
             'outcome',
             'minimumTradeSize',
-            'tradeGroupId'
+            'tradeGroupId',
           ],
           label: 'Bid',
           name: 'buy',
@@ -102,7 +102,7 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
             'int256',
             'int256',
             'int256',
-            'int256'
+            'int256',
           ],
           to: '0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3',
           from: '0xdceb761b558e202c993f447b470a89cec2a3b6e9',
@@ -112,8 +112,8 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
             '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
             '2',
             '0x2386f26fc10000',
-            '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-          ]
+            '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
+          ],
         },
         response: {
           blockHash: '0xc7dbd9d454ca4ff9d846f1850c8c6c4f53ec92562b4076d415f1d68b89d278f7',
@@ -132,9 +132,9 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
           s: '0x71565aa9a50e71c8a445ff734bf54382d0fa1733fb941c4616165fff6063180',
           timestamp: 1484208293,
           callReturn: '0x4a330392e495bdca39dd7d8617397502a21e5c6d975364471adfe76aea4b2ce7',
-          gasFees: '0.00651868'
-        }
-      }
+          gasFees: '0.00651868',
+        },
+      },
     },
     assertions: (output) => {
       assert.deepEqual(output, {
@@ -144,9 +144,9 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
         outcome: '2',
         minimumTradeSize: '0x2386f26fc10000',
         tradeGroupId: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-        type: 'Bid'
+        type: 'Bid',
       })
-    }
+    },
   })
   test({
     description: 'Unpacking pending transaction without input',
@@ -162,17 +162,17 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
           from: '0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb',
           to: '0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885',
           params: [],
-          send: true
+          send: true,
         },
         response: {
-          callReturn: null
-        }
-      }
+          callReturn: null,
+        },
+      },
     },
     assertions: (output) => {
       assert.deepEqual(output, {
-        type: 'emergencyStop'
+        type: 'emergencyStop',
       })
-    }
+    },
   })
 })

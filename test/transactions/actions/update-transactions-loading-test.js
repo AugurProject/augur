@@ -15,12 +15,12 @@ describe('modules/transactions/actions/update-transactinos-loading.js', () => {
         const expected = {
           type: updateTransactionsLoading.UPDATE_TRANSACTIONS_LOADING,
           data: {
-            isLoading: 'testing'
-          }
+            isLoading: 'testing',
+          },
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      }
+      },
     })
   })
 })

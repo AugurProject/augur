@@ -22,7 +22,7 @@ export const selectPortfolioNavItems = () => {
       leadingValueNull: 'No Positions',
       trailingTitle: 'Total Profit/Loss',
       trailingValue: (positionsSummary && positionsSummary.totalNet) || 0,
-      trailingValueNull: 'No Profit/Loss'
+      trailingValueNull: 'No Profit/Loss',
     },
     {
       label: 'Markets',
@@ -32,7 +32,7 @@ export const selectPortfolioNavItems = () => {
       leadingValueNull: 'No Markets',
       trailingTitle: 'Total Gain/Loss',
       trailingValue: formatEtherTokens(((marketsSummary && marketsSummary.totalValue) || 0)),
-      trailingValueNull: 'No Gain/Loss'
+      trailingValueNull: 'No Gain/Loss',
     },
     {
       label: 'Reports',
@@ -42,7 +42,7 @@ export const selectPortfolioNavItems = () => {
       leadingValueNull: 'No Reports',
       trailingTitle: 'Total Gain/Loss',
       trailingValue: formatRep((reportsSummary && reportsSummary.netRep)),
-      trailingValueNull: 'No Gain/Loss'
-    }
+      trailingValueNull: 'No Gain/Loss',
+    },
   ]
 }

@@ -20,7 +20,7 @@ export default class ModalNetworkDisconnected extends Component {
       showEnvForm: false,
       augurNode: props.modal.env['augur-node'],
       ethereumNodeHttp: props.modal.env['ethereum-node'].http,
-      ethereumNodeWs: props.modal.env['ethereum-node'].ws
+      ethereumNodeWs: props.modal.env['ethereum-node'].ws,
     }
 
     this.showForm = this.showForm.bind(this)
@@ -40,7 +40,7 @@ export default class ModalNetworkDisconnected extends Component {
       'augur-node': this.state.augurNode,
       'ethereum-node': {
         http: this.state.ethereumNodeHttp,
-        ws: this.state.ethereumNodeWs
+        ws: this.state.ethereumNodeWs,
       },
     })
     this.setState({ showEnvForm: false })

@@ -14,7 +14,7 @@ export default class ProfitLossChart extends Component {
     title: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
     totalValue: PropTypes.string.isRequired,
-    isMobile: PropTypes.bool.isRequired
+    isMobile: PropTypes.bool.isRequired,
   };
 
   constructor(props) {
@@ -28,8 +28,8 @@ export default class ProfitLossChart extends Component {
 
     Highcharts.setOptions({
       lang: {
-        thousandsSep: ','
-      }
+        thousandsSep: ',',
+      },
     })
 
     const containerId = 'profit_loss_chart_container' + this.props.id
@@ -45,7 +45,7 @@ export default class ProfitLossChart extends Component {
 
     this.profitLossChart = new Highcharts.Chart(chartId, {
       title: {
-        text: null
+        text: null,
       },
       chart: {
         backgroundColor: '#1e1a31',
@@ -55,14 +55,14 @@ export default class ProfitLossChart extends Component {
         marginRight: horizontalMargins,
       },
       lang: {
-        noData: 'No price history'
+        noData: 'No price history',
       },
       rangeSelector: { selected: 1 },
       xAxis: {
-        visible: false
+        visible: false,
       },
       yAxis: {
-        visible: false
+        visible: false,
       },
       plotOptions: {
         series: {
@@ -72,21 +72,21 @@ export default class ProfitLossChart extends Component {
             stops: [
               [0, Highcharts.Color('#dbdae1').setOpacity(0.5).get('rgba')],
               [0.8, Highcharts.Color('#dbdae1').setOpacity(0.25).get('rgba')],
-              [1, Highcharts.Color('#dbdae1').setOpacity(0).get('rgba')]
-            ]
-          }
-        }
+              [1, Highcharts.Color('#dbdae1').setOpacity(0).get('rgba')],
+            ],
+          },
+        },
       },
       legend: {
-        enabled: false
+        enabled: false,
       },
       tooltip: {
         pointFormat: '<span style="color: #372e4b;">{series.name}</span>: <b>{point.y} ETH Tokens</b><br/>',
-        valueDecimals: 2
+        valueDecimals: 2,
       },
       credits: {
-        enabled: false
-      }
+        enabled: false,
+      },
     })
 
     window.addEventListener('resize', this.updateChart)
@@ -114,7 +114,7 @@ export default class ProfitLossChart extends Component {
             lineColor: 'white',
           },
           name: series.name,
-          data: series.data
+          data: series.data,
         }, false)
       } else {
         this.profitLossChart.series[i].setData(series.data, false)

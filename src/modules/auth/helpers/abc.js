@@ -8,7 +8,7 @@ const selectABCUIContext = () => makeABCUIContext({
   assetPath: '/abcui/assets/', // NOTE -- this is only here until the lib fixes this bug (PR submitted)
   assetsPath: '/abcui/assets/',
   vendorName: 'Augur',
-  vendorImageUrl: 'https://airbitz.co/go/wp-content/uploads/2016/08/augur_logo_100.png'
+  vendorImageUrl: 'https://airbitz.co/go/wp-content/uploads/2016/08/augur_logo_100.png',
 })
 
 export default selectABCUIContext

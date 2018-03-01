@@ -16,7 +16,7 @@ export const selectTransactionsTotals = createSelector(
       numComplete: 0,
       numWorkingAndPending: 0,
       numTotal: 0,
-      title: ''
+      title: '',
     }
 
     o.transactions = transactions.forEach((transaction) => {
@@ -42,5 +42,5 @@ export const selectTransactionsTotals = createSelector(
     }
 
     return o
-  }
+  },
 )

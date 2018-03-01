@@ -14,7 +14,7 @@ export default function (tag, location, history) {
 
     return history.push({
       ...location,
-      search: searchParams
+      search: searchParams,
     })
   }
 
@@ -36,6 +36,6 @@ export default function (tag, location, history) {
 
   history.push({
     ...location,
-    search: searchParams
+    search: searchParams,
   })
 }

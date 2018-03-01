@@ -78,7 +78,7 @@ MarketBasics.propTypes = {
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   isLogged: PropTypes.bool.isRequired,
-  toggleFavorite: PropTypes.func
+  toggleFavorite: PropTypes.func,
 }
 
 export default MarketBasics

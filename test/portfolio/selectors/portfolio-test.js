@@ -12,13 +12,13 @@ describe('modules/portfolio/selectors/portfolio', () => {
 
   const selectors = {
     selectPortfolioNavItems: () => {},
-    selectPortfolioTotals: () => {}
+    selectPortfolioTotals: () => {},
   }
 
   const stubbedPortfolioTotals = sinon.stub(selectors, 'selectPortfolioTotals')
 
   const proxiedSelector = proxyquire('../../../src/modules/portfolio/selectors/portfolio', {
-    './portfolio-totals': stubbedPortfolioTotals
+    './portfolio-totals': stubbedPortfolioTotals,
   })
 
   before(() => {

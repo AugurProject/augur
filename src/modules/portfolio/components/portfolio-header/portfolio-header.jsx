@@ -52,7 +52,7 @@ function getTitle(path) {
 PortfolioHeader.propTypes = {
   triggerTransactionsExport: PropTypes.func.isRequired,
   location: PropTypes.object,
-  match: PropTypes.object
+  match: PropTypes.object,
 }
 
 export default PortfolioHeader

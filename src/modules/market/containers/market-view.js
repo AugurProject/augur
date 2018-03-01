@@ -32,7 +32,7 @@ const mergeProps = (sP, dP, oP) => {
     isLogged: sP.isLogged,
     isConnected: sP.isConnected && getValue(sP, 'universe.id') != null,
     isMarketLoaded,
-    loadFullMarket: () => dP.loadFullMarket(marketId)
+    loadFullMarket: () => dP.loadFullMarket(marketId),
   }
 }
 

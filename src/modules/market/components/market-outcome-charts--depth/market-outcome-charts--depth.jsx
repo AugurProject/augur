@@ -16,7 +16,7 @@ export default class MarketOutcomeDepth extends Component {
     fixedPrecision: PropTypes.number.isRequired,
     updateHoveredPrice: PropTypes.func.isRequired,
     updateHoveredDepth: PropTypes.func.isRequired,
-    hoveredPrice: PropTypes.any
+    hoveredPrice: PropTypes.any,
   }
 
   constructor(props) {
@@ -27,7 +27,7 @@ export default class MarketOutcomeDepth extends Component {
       chartWidth: 0,
       chartHeight: 0,
       yScale: null,
-      xScale: null
+      xScale: null,
     }
 
     this.drawChart = this.drawChart.bind(this)
@@ -78,7 +78,7 @@ export default class MarketOutcomeDepth extends Component {
         bottom: 30,
         left: 0,
         stick: 5,
-        tickOffset: 10
+        tickOffset: 10,
       }
 
       const { marketDepth } = this.props
@@ -192,7 +192,7 @@ export default class MarketOutcomeDepth extends Component {
         xScale,
         chart: fauxDiv.toReact(),
         chartWidth: width,
-        chartHeight: height
+        chartHeight: height,
       })
     }
   }

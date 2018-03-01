@@ -55,5 +55,5 @@ export default function AuthCreate(p) {
 AuthCreate.propTypes = {
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
-  isMobile: PropTypes.bool.isRequired
+  isMobile: PropTypes.bool.isRequired,
 }

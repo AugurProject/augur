@@ -24,7 +24,7 @@ const mergeProps = (sP, dP, oP) => {
     ...sP,
     ...dP,
     ...oP,
-    market
+    market,
   }
 }
 

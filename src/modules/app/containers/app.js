@@ -26,13 +26,13 @@ const mapStateToProps = state => ({
   marketsFilteredSorted: state.marketsFilteredSorted,
   categories: selectCategories(state),
   selectedCategory: state.selectedCategory,
-  modal: state.modal
+  modal: state.modal,
 })
 
 const mapDispatchToProps = dispatch => ({
   updateIsMobile: isMobile => dispatch(updateIsMobile(isMobile)),
   updateIsMobileSmall: isMobileSmall => dispatch(updateIsMobileSmall(isMobileSmall)),
-  initAugur: history => dispatch(initAugur(history))
+  initAugur: history => dispatch(initAugur(history)),
 })
 
 const AppContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(App))

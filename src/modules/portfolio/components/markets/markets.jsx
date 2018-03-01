@@ -56,7 +56,7 @@ class MyMarkets extends Component {
         { label: 'Volume', value: 'volume' },
         { label: 'Newest', value: 'newest' },
         { label: 'Fees', value: 'fees' },
-        { label: 'Expiring Soon', value: 'expiring' }
+        { label: 'Expiring Soon', value: 'expiring' },
       ],
       sortDefaultOpen: 'volume',
       sortTypeOpen: 'volume',
@@ -73,7 +73,7 @@ class MyMarkets extends Component {
         { label: 'Volume', value: 'volume' },
         { label: 'Newest', value: 'newest' },
         { label: 'Fees', value: 'fees' },
-        { label: 'Expiring Soon', value: 'expiring' }
+        { label: 'Expiring Soon', value: 'expiring' },
       ],
       sortDefaultReporting: 'volume',
       sortTypeReporting: 'volume',
@@ -90,7 +90,7 @@ class MyMarkets extends Component {
         { label: 'Volume', value: 'volume' },
         { label: 'Newest', value: 'newest' },
         { label: 'Fees', value: 'fees' },
-        { label: 'Expiring Soon', value: 'expiring' }
+        { label: 'Expiring Soon', value: 'expiring' },
       ],
       sortDefaultFinal: 'volume',
       sortTypeFinal: 'volume',
@@ -108,7 +108,7 @@ class MyMarkets extends Component {
       finalMarkets,
       filteredMarketsOpen,
       filteredMarketsReporting,
-      filteredMarketsFinal
+      filteredMarketsFinal,
     }
 
     this.changeDropdown = this.changeDropdown.bind(this)
@@ -149,7 +149,7 @@ class MyMarkets extends Component {
         filteredMarketsReporting,
         reportingMarkets,
         filteredMarketsFinal,
-        finalMarkets
+        finalMarkets,
       })
     }
   }
@@ -162,7 +162,7 @@ class MyMarkets extends Component {
       sortTypeReporting,
       filterTypeReporting,
       sortTypeFinal,
-      filterTypeFinal
+      filterTypeFinal,
     } = this.state
 
     this.state.sortOptionsOpen.forEach((type, ind) => {

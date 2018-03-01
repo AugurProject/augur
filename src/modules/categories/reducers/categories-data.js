@@ -8,12 +8,12 @@ export default function (categories = DEFAULT_STATE, action) {
     case UPDATE_CATEGORIES:
       return {
         ...categories,
-        ...action.categories
+        ...action.categories,
       }
     case UPDATE_CATEGORY_POPULARITY:
       return {
         ...categories,
-        [action.category]: !categories[action.category] ? action.amount : categories[action.category] + action.amount
+        [action.category]: !categories[action.category] ? action.amount : categories[action.category] + action.amount,
       }
     case RESET_STATE:
     case CLEAR_CATEGORIES:

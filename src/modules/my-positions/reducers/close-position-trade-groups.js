@@ -14,8 +14,8 @@ export default function (closePositionTradeGroups = DEFAULT_STATE, action) {
         ...closePositionTradeGroups,
         [action.marketId]: {
           ...closePositionTradeGroups[action.marketId],
-          [action.outcomeId]: updatedTradeGroups
-        }
+          [action.outcomeId]: updatedTradeGroups,
+        },
       }
     }
     case CLEAR_CLOSE_POSITION_OUTCOME: {
@@ -32,7 +32,7 @@ export default function (closePositionTradeGroups = DEFAULT_STATE, action) {
       if (Object.keys(updatedOutcomes).length) {
         updatedClosePositionTradeGroups = {
           ...closePositionTradeGroups,
-          [action.marketId]: updatedOutcomes
+          [action.marketId]: updatedOutcomes,
         }
       } else {
         updatedClosePositionTradeGroups = Object.keys(closePositionTradeGroups).reduce((p, marketId) => {

@@ -46,7 +46,7 @@ export default class Position extends Component {
   toggleConfirm() {
     let {
       confirmHeight,
-      confirmMargin
+      confirmMargin,
     } = this.state
 
     if (!this.state.showConfirm) {

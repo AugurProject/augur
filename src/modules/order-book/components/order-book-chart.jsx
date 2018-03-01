@@ -10,7 +10,7 @@ import getValue from 'utils/get-value'
 
 export default class OrderBookChart extends Component {
   static propTypes = {
-    orderBookSeries: PropTypes.object
+    orderBookSeries: PropTypes.object,
   }
 
   constructor(props) {
@@ -24,53 +24,53 @@ export default class OrderBookChart extends Component {
 
     Highcharts.setOptions({
       lang: {
-        thousandsSep: ','
-      }
+        thousandsSep: ',',
+      },
     })
 
     this.orderBookChart = new Highcharts.Chart('order_book_chart', {
       title: {
-        text: null
+        text: null,
       },
       chart: {
-        height: 300 // mirror this height in css container height declaration
+        height: 300, // mirror this height in css container height declaration
       },
       lang: {
         thousandsSep: ',',
-        noData: 'No orders to display'
+        noData: 'No orders to display',
       },
       yAxis: {
         title: {
-          text: 'Shares'
-        }
+          text: 'Shares',
+        },
       },
       xAxis: {
         title: {
-          text: 'ETH Tokens'
-        }
+          text: 'ETH Tokens',
+        },
       },
       series: [
         {
           type: 'area',
           name: 'Bids',
           step: 'right',
-          data: []
+          data: [],
         },
         {
           type: 'area',
           name: 'Asks',
           step: 'left',
-          data: []
-        }
+          data: [],
+        },
       ],
       tooltip: {
         headerFormat: null,
         pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} Shares @ {point.x} ETH Tokens</b><br/>',
-        valueDecimals: 2
+        valueDecimals: 2,
       },
       credits: {
-        enabled: false
-      }
+        enabled: false,
+      },
     })
 
     window.addEventListener('resize', this.updateChart)

@@ -8,7 +8,7 @@ export function checkAccountAllowance(callback = logError) {
     const { loginAccount } = getState()
     augur.api.Cash.allowance({
       _owner: loginAccount.address,
-      _spender: augur.contracts.addresses[augur.rpc.getNetworkID()].Augur
+      _spender: augur.contracts.addresses[augur.rpc.getNetworkID()].Augur,
     }, (err, allowance) => {
       if (err) callback(err)
       dispatch(updateLoginAccount({ allowance }))

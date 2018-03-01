@@ -24,7 +24,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
         assert(stubbedSelectLoginAccount.calledOnce, `didn't call 'selectLoginAccount' once as expected`)
 
         done()
-      }
+      },
     })
   })
 
@@ -36,9 +36,9 @@ describe(`modules/auth/selectors/login-account.js`, () => {
       loginAccountRewireAPI.__Rewire__('augur', {
         accounts: {
           account: {
-            keystore: ''
-          }
-        }
+            keystore: '',
+          },
+        },
       })
     })
 
@@ -67,14 +67,14 @@ describe(`modules/auth/selectors/login-account.js`, () => {
         const expected = {
           accountName: null,
           rep: formatRep(undefined),
-          eth: formatEther(undefined)
+          eth: formatEther(undefined),
         }
 
         assert.deepEqual(actual, expected, `didn't return the expected object`)
         assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`)
 
         done()
-      }
+      },
     })
 
     test({
@@ -84,7 +84,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           address: '0xAccountAddress',
           loginId: '123ThisIsALoginId',
           eth: '10',
-          rep: '12'
+          rep: '12',
         }
         const accountName = 'testing'
 
@@ -102,7 +102,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
         assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`)
 
         done()
-      }
+      },
     })
 
     test({
@@ -130,7 +130,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
         assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`)
 
         done()
-      }
+      },
     })
 
     test({
@@ -141,7 +141,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           loginId: '123ThisIsALoginId',
           eth: '10',
           rep: '12',
-          isUnlocked: true
+          isUnlocked: true,
         }
         const accountName = 'testing'
 
@@ -160,7 +160,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
         assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`)
 
         done()
-      }
+      },
     })
 
     test({
@@ -172,7 +172,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           loginId: '123ThisIsALoginId',
           eth: '10',
           rep: '12',
-          isUnlocked: true
+          isUnlocked: true,
         }
         const accountName = 'testing'
 
@@ -192,7 +192,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
         assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`)
 
         done()
-      }
+      },
     })
   })
 })

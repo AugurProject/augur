@@ -89,6 +89,6 @@ export function createReducer() {
     modal,
     participationTokens,
     initialReporters,
-    disputeCrowdsourcerTokens
+    disputeCrowdsourcerTokens,
   }
 }

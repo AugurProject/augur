@@ -46,7 +46,7 @@ function render(Root) {
         </HashRouter>
       </AppContainer>
     </Provider>,
-    document.getElementById('app')
+    document.getElementById('app'),
   )
 }
 
@@ -58,11 +58,11 @@ if (module.hot) {
       './selectors-raw',
       './modules/app/actions/init-augur',
       './modules/app/containers/app',
-      './select-state'
+      './select-state',
     ],
     () => {
       handleRender()
-    }
+    },
   )
 }
 

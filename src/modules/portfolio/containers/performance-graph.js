@@ -9,7 +9,7 @@ const mapStateToProps = (state) => {
   const newSeries = () => [{
     data: randomData(),
     name: 'Total',
-    color: '#553580'
+    color: '#553580',
   }]
 
   const performanceData = {
@@ -17,24 +17,24 @@ const mapStateToProps = (state) => {
       day: newSeries(),
       week: newSeries(),
       month: newSeries(),
-      all: newSeries()
+      all: newSeries(),
     },
     Unrealized: {
       day: newSeries(),
       week: newSeries(),
       month: newSeries(),
-      all: newSeries()
+      all: newSeries(),
     },
     Total: {
       day: newSeries(),
       week: newSeries(),
       month: newSeries(),
-      all: newSeries()
-    }
+      all: newSeries(),
+    },
   }
 
   return {
-    performanceData
+    performanceData,
   }
 }
 

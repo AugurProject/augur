@@ -9,7 +9,7 @@ const parsePath = (stringPath) => {
         p :
         [...p, path]
     ),
-    []
+    [],
   )
 
   return sanitizedPaths

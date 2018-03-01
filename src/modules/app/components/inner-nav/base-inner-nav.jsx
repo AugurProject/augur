@@ -15,7 +15,7 @@ export default class BaseInnerNav extends Component {
     history: PropTypes.object.isRequired,
     isMobile: PropTypes.bool.isRequired,
     mobileMenuState: PropTypes.number.isRequired,
-    subMenuScalar: PropTypes.number.isRequired
+    subMenuScalar: PropTypes.number.isRequired,
   }
 
   getMainMenuData() {
@@ -60,14 +60,14 @@ export default class BaseInnerNav extends Component {
       <aside
         className={classNames(
           Styles.InnerNav,
-          { [Styles.mobileShow]: showMainMenu }
+          { [Styles.mobileShow]: showMainMenu },
         )}
       >
         <ul
           className={classNames(
             Styles.InnerNav__menu,
             Styles['InnerNav__menu--submenu'],
-            { [Styles['InnerNav__menu--submenu--mobileshow']]: showSubMenu }
+            { [Styles['InnerNav__menu--submenu--mobileshow']]: showSubMenu },
           )}
           style={subMenuAnimatedStyle}
         >

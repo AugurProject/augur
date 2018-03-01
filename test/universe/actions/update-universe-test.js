@@ -18,7 +18,7 @@ describe(`modules/universe/actions/update-universe.js`, () => {
       currentPeriodProgress: 52,
       isReportRevealPhase: true,
       reportPeriod: 18,
-      periodLength: 900
+      periodLength: 900,
     }))
     assert.deepEqual(store.getActions(), [{
       type: 'UPDATE_UNIVERSE',
@@ -27,8 +27,8 @@ describe(`modules/universe/actions/update-universe.js`, () => {
         currentPeriodProgress: 52,
         isReportRevealPhase: true,
         reportPeriod: 18,
-        periodLength: 900
-      }
+        periodLength: 900,
+      },
     }])
     store.clearActions()
   })

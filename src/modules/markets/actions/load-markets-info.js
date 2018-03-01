@@ -11,7 +11,7 @@ export const loadMarketsInfo = (marketIds, callback = logError) => (dispatch, ge
 
     const marketsData = marketsDataArray.filter(it => it).reduce((p, marketData) => ({
       ...p,
-      [marketData.id]: marketData
+      [marketData.id]: marketData,
     }), {})
     if (marketsData == null || !isObject(marketsData)) {
       return callback(`no markets data received`)
@@ -29,7 +29,7 @@ export const loadMarketsInfoOnly = (marketIds, callback = logError) => (dispatch
     const marketInfoIds = Object.keys(marketsDataArray)
     const marketsData = marketsDataArray.reduce((p, marketData) => ({
       ...p,
-      [marketData.id]: marketData
+      [marketData.id]: marketData,
     }), {})
     if (!marketInfoIds.length) return callback(null)
     dispatch(updateMarketsData(marketsData))

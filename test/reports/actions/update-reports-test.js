@@ -26,24 +26,24 @@ describe(`modules/reports/actions/update-reports.js`, () => {
       reports: {
         test: {
           _id: 'test',
-          data: 'test'
+          data: 'test',
         },
         test2: {
           _id: 'test2',
-          data: 'example'
-        }
-      }
+          data: 'example',
+        },
+      },
     }]
 
     const test = {
       test: {
         _id: 'test',
-        data: 'test'
+        data: 'test',
       },
       test2: {
         _id: 'test2',
-        data: 'example'
-      }
+        data: 'example',
+      },
     }
 
     store.dispatch(action.updateReports(test))
@@ -53,7 +53,7 @@ describe(`modules/reports/actions/update-reports.js`, () => {
 
   it(`should return a clear reports action`, () => {
     out = [{
-      type: 'CLEAR_REPORTS'
+      type: 'CLEAR_REPORTS',
     }]
     store.dispatch(action.clearReports())
     assert.deepEqual(store.getActions(), out, `Didn't dispatch a CLEAR REPORTS action`)

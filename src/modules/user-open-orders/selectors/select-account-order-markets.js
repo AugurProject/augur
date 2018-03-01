@@ -19,5 +19,5 @@ export const selectAllUserOpenOrderMarkets = createSelector(
         .filter(outcome => Object.keys(orderBooks[marketId][outcome])
           .filter(type => Object.keys(orderBooks[marketId][outcome][type])
             .filter(hash => orderBooks[marketId][outcome][type][hash].owner === loginAccountAddress))))
-  }
+  },
 )

@@ -28,7 +28,7 @@ const syncUniverse = (callback = logError) => (dispatch, getState) => {
         if (err) return next(err)
         next(null, nextFeeWindowAddress)
       })
-    }
+    },
   }, (err, universeReportingWindowData) => {
     if (err) return callback(err)
     dispatch(updateUniverse(universeReportingWindowData))

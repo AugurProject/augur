@@ -5,7 +5,7 @@ export default class OutcomeTradeAction extends Component {
     super(props)
 
     this.state = {
-      isConfirming: false
+      isConfirming: false,
     }
   }
 

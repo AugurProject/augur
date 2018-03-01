@@ -20,7 +20,7 @@ describe('modules/my-positions/reducers/account-positions.js', () => {
       const expected = {}
 
       assert.deepEqual(actual, expected, `Didn't return the expected value`)
-    }
+    },
   })
 
   test({
@@ -30,7 +30,7 @@ describe('modules/my-positions/reducers/account-positions.js', () => {
       const expected = {}
 
       assert.deepEqual(actual, expected, `Didn't return the expected value`)
-    }
+    },
   })
 
   test({
@@ -42,20 +42,20 @@ describe('modules/my-positions/reducers/account-positions.js', () => {
           type: UPDATE_ACCOUNT_POSITIONS_DATA,
           data: {
             '0xMARKETID1': {
-              test: 'test'
-            }
+              test: 'test',
+            },
           },
-          marketId: '0xMARKETID1'
-        }
+          marketId: '0xMARKETID1',
+        },
       )
       const expected = {
         '0xMARKETID1': {
-          test: 'test'
-        }
+          test: 'test',
+        },
       }
 
       assert.deepEqual(actual, expected, `Didn't return the expected value`)
-    }
+    },
   })
 
   test({
@@ -64,32 +64,32 @@ describe('modules/my-positions/reducers/account-positions.js', () => {
       const actual = accountPositions(
         {
           '0xMARKETID2': {
-            testing: 'testing'
+            testing: 'testing',
           },
           '0xMARKETID1': {
-            old: 'state'
-          }
+            old: 'state',
+          },
         },
         {
           type: UPDATE_ACCOUNT_POSITIONS_DATA,
           data: {
             '0xMARKETID1': {
-              test: 'test'
-            }
+              test: 'test',
+            },
           },
-          marketId: '0xMARKETID1'
-        }
+          marketId: '0xMARKETID1',
+        },
       )
       const expected = {
         '0xMARKETID2': {
-          testing: 'testing'
+          testing: 'testing',
         },
         '0xMARKETID1': {
-          test: 'test'
-        }
+          test: 'test',
+        },
       }
 
       assert.deepEqual(actual, expected, `Didn't return the expected value`)
-    }
+    },
   })
 })

@@ -24,5 +24,5 @@ const MobileNavHamburgerIcon = p => (
 export default MobileNavHamburgerIcon
 
 MobileNavHamburgerIcon.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
 }

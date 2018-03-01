@@ -33,7 +33,7 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
     onFailed: callback,
     onSuccess: (tradeOnChainAmountRemaining) => {
       onComplete(tradeOnChainAmountRemaining)
-    }
+    },
   }
   if (new BigNumber(allowance).lte(new BigNumber(tradeInProgress.totalCost))) {
     dispatch(updateModal({
@@ -42,7 +42,7 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
         if (err) return callback(err)
         augur.trading.placeTrade(placeTradeParams)
         dispatch(clearTradeInProgress(marketId))
-      }
+      },
     }))
   } else {
     augur.trading.placeTrade(placeTradeParams)

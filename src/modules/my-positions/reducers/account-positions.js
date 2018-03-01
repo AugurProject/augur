@@ -12,13 +12,13 @@ export default function (accountPositions = DEFAULT_STATE, action) {
           return {
             ...accountPositions,
             [action.marketId]: {
-              ...action.data[action.marketId]
-            }
+              ...action.data[action.marketId],
+            },
           }
         }
         return {
           ...accountPositions,
-          ...action.data
+          ...action.data,
         }
       }
       return accountPositions

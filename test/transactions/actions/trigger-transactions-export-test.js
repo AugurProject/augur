@@ -30,13 +30,13 @@ describe(`modules/transactions/actions/trigger-transactions-export.js`, () => {
     description: 'should trigger a download if transactionsLoading is false',
     state: {
       transactions: [{ id: 1, text: 'a transaction' }, { id: 2, text: 'another transaction' }],
-      transactionsLoading: false
+      transactionsLoading: false,
     },
     transactionsSelector: {
-      selectTransactions: state => state.transactions
+      selectTransactions: state => state.transactions,
     },
     loadAccountHistory: {
-      loadAccountHistory: (loadAll, cb) => ({ type: 'LOAD_ACCOUNT_HISTORY', loadAll })
+      loadAccountHistory: (loadAll, cb) => ({ type: 'LOAD_ACCOUNT_HISTORY', loadAll }),
     },
     document: {
       createElement: (type) => {
@@ -52,35 +52,35 @@ describe(`modules/transactions/actions/trigger-transactions-export.js`, () => {
                 return assert.isFalse(true, 'call to setAttribute with unexpected values')
             }
           },
-          click: () => {}
+          click: () => {},
         }
-      }
+      },
     },
     expectedOutput: [],
     assertions: (storeActions, expected) => {
       assert.deepEqual(storeActions, expected, 'Did not produce the expected actions')
-    }
+    },
   })
   test({
     description: 'should dispatch a loadAccountHistory action if transactionsLoading is true',
     state: {
       transactions: [{ id: 1, text: 'a transaction' }, { id: 2, text: 'another transaction' }],
       transactionsLoading: true,
-      transactionsOldestLoadedBlock: 150
+      transactionsOldestLoadedBlock: 150,
     },
     transactionsSelector: {
-      selectTransactions: state => state.transactions
+      selectTransactions: state => state.transactions,
     },
     loadAccountHistory: {
       loadAccountHistory: (loadAll, cb) => {
         assert.isTrue(loadAll, 'loadAll passed to loadAccountHistory should be true')
         assert.isFunction(cb, 'cb passed to loadAccountHistory should be a function')
         return { type: 'LOAD_ACCOUNT_HISTORY', loadAll }
-      }
+      },
     },
     expectedOutput: [{ type: 'LOAD_ACCOUNT_HISTORY', loadAll: true }],
     assertions: (storeActions, expected) => {
       assert.deepEqual(storeActions, expected, 'Did not produce the expected actions')
-    }
+    },
   })
 })

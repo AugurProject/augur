@@ -16,8 +16,8 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
       const Speedomatic = { bignum: () => {} }
       const AugurJS = {
         augur: {
-          trading: { claimMarketsTradingProceeds: () => {} }
-        }
+          trading: { claimMarketsTradingProceeds: () => {} },
+        },
       }
       const LoadMarketsInfo = { loadMarketsInfo: () => {} }
       const UpdateAssets = {}
@@ -26,7 +26,7 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
         '../../../services/augurjs': AugurJS,
         '../../markets/actions/load-markets-info': LoadMarketsInfo,
         '../../auth/actions/update-assets': UpdateAssets,
-        '../selectors/winning-positions': WinningPositions
+        '../selectors/winning-positions': WinningPositions,
       }).default
       sinon.stub(Speedomatic, 'bignum').callsFake(n => new BigNumber(n, 10))
       sinon.stub(AugurJS.augur.trading, 'claimMarketsTradingProceeds').callsFake((p) => {
@@ -49,19 +49,19 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
     state: {
       universe: {
         id: '0xb1',
-        currentReportingWindowAddress: 7
+        currentReportingWindowAddress: 7,
       },
       loginAccount: {
-        address: '0xb0b'
+        address: '0xb0b',
       },
-      outcomesData: {}
+      outcomesData: {},
     },
     selectors: {
-      winningPositions: []
+      winningPositions: [],
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [])
-    }
+    },
   })
 
   test({
@@ -69,37 +69,37 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
     state: {
       universe: {
         id: '0xb1',
-        currentReportingWindowAddress: 7
+        currentReportingWindowAddress: 7,
       },
       loginAccount: {
-        address: '0xb0b'
+        address: '0xb0b',
       },
       outcomesData: {
         '0xa1': {
           2: {
-            sharesPurchased: '1'
-          }
-        }
-      }
+            sharesPurchased: '1',
+          },
+        },
+      },
     },
     selectors: {
       winningPositions: [{
         id: '0xa1',
         description: 'test market 1',
-        shares: '1'
-      }]
+        shares: '1',
+      }],
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'CLAIM_MARKETS_TRADING_PROCEEDS',
-        markets: ['0xa1']
+        markets: ['0xa1'],
       }, {
-        type: 'UPDATE_ASSETS'
+        type: 'UPDATE_ASSETS',
       }, {
         type: 'LOAD_MARKETS_INFO',
         marketIds: ['0xa1'],
       }])
-    }
+    },
   })
 
   test({
@@ -107,25 +107,25 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
     state: {
       universe: {
         id: '0xb1',
-        currentReportingWindowAddress: 7
+        currentReportingWindowAddress: 7,
       },
       loginAccount: {
-        address: '0xb0b'
+        address: '0xb0b',
       },
       outcomesData: {
         '0xa1': {
           2: {
-            sharesPurchased: '1'
-          }
-        }
-      }
+            sharesPurchased: '1',
+          },
+        },
+      },
     },
     selectors: {
-      winningPositions: []
+      winningPositions: [],
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [])
-    }
+    },
   })
 
   test({
@@ -133,42 +133,42 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
     state: {
       universe: {
         id: '0xb1',
-        currentReportingWindowAddress: 7
+        currentReportingWindowAddress: 7,
       },
       loginAccount: {
-        address: '0xb0b'
+        address: '0xb0b',
       },
       outcomesData: {
         '0xa1': {
           2: {
-            sharesPurchased: '1'
-          }
+            sharesPurchased: '1',
+          },
         },
         '0xa2': {
           2: {
-            sharesPurchased: '1'
-          }
-        }
-      }
+            sharesPurchased: '1',
+          },
+        },
+      },
     },
     selectors: {
       winningPositions: [{
         id: '0xa2',
         description: 'test market 2',
-        shares: '1'
-      }]
+        shares: '1',
+      }],
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'CLAIM_MARKETS_TRADING_PROCEEDS',
-        markets: ['0xa2']
+        markets: ['0xa2'],
       }, {
-        type: 'UPDATE_ASSETS'
+        type: 'UPDATE_ASSETS',
       }, {
         type: 'LOAD_MARKETS_INFO',
         marketIds: ['0xa2'],
       }])
-    }
+    },
   })
 
   test({
@@ -176,46 +176,46 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
     state: {
       universe: {
         id: '0xb1',
-        currentReportingWindowAddress: 7
+        currentReportingWindowAddress: 7,
       },
       loginAccount: {
-        address: '0xb0b'
+        address: '0xb0b',
       },
       outcomesData: {
         '0xa1': {
           2: {
-            sharesPurchased: '1'
-          }
+            sharesPurchased: '1',
+          },
         },
         '0xa2': {
           2: {
-            sharesPurchased: '1'
-          }
+            sharesPurchased: '1',
+          },
         },
         '0xa3': {
           2: {
-            sharesPurchased: '1'
-          }
-        }
-      }
+            sharesPurchased: '1',
+          },
+        },
+      },
     },
     selectors: {
       winningPositions: [{
         id: '0xa2',
         description: 'test market 2',
-        shares: '1'
+        shares: '1',
       }, {
         id: '0xa3',
         description: 'test market 3',
-        shares: '1'
-      }]
+        shares: '1',
+      }],
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'CLAIM_MARKETS_TRADING_PROCEEDS',
-        markets: ['0xa2', '0xa3']
+        markets: ['0xa2', '0xa3'],
       }, {
-        type: 'UPDATE_ASSETS'
+        type: 'UPDATE_ASSETS',
       }, {
         type: 'LOAD_MARKETS_INFO',
         marketIds: ['0xa2'],
@@ -223,7 +223,7 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
         type: 'LOAD_MARKETS_INFO',
         marketIds: ['0xa3'],
       }])
-    }
+    },
   })
 
   test({
@@ -231,46 +231,46 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
     state: {
       universe: {
         id: '0xb1',
-        currentReportingWindowAddress: 7
+        currentReportingWindowAddress: 7,
       },
       loginAccount: {
-        address: '0xb0b'
+        address: '0xb0b',
       },
       outcomesData: {
         '0xa1': {
           2: {
-            sharesPurchased: '1'
-          }
+            sharesPurchased: '1',
+          },
         },
         '0xa2': {
           2: {
-            sharesPurchased: '1'
-          }
+            sharesPurchased: '1',
+          },
         },
         '0xa3': {
           2: {
-            sharesPurchased: '1'
-          }
-        }
-      }
+            sharesPurchased: '1',
+          },
+        },
+      },
     },
     selectors: {
       winningPositions: [{
         id: '0xa3',
         description: 'test market 3',
-        shares: '1'
-      }]
+        shares: '1',
+      }],
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'CLAIM_MARKETS_TRADING_PROCEEDS',
-        markets: ['0xa3']
+        markets: ['0xa3'],
       }, {
-        type: 'UPDATE_ASSETS'
+        type: 'UPDATE_ASSETS',
       }, {
         type: 'LOAD_MARKETS_INFO',
         marketIds: ['0xa3'],
       }])
-    }
+    },
   })
 })

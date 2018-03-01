@@ -10,5 +10,5 @@ export default function () {
 export const selectIsWorking = createSelector(
   selectTransactionsDataState,
   transactionsData => Object.keys(transactionsData || {}).some(id =>
-    [PENDING, SUCCESS, FAILED, INTERRUPTED].indexOf(transactionsData[id].status) < 0)
+    [PENDING, SUCCESS, FAILED, INTERRUPTED].indexOf(transactionsData[id].status) < 0),
 )

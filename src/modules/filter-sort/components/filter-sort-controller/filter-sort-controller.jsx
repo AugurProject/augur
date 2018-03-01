@@ -17,7 +17,7 @@ export default class FilterSortController extends Component {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     items: PropTypes.array.isRequired,
-    updateFilteredItems: PropTypes.func.isRequired
+    updateFilteredItems: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -29,7 +29,7 @@ export default class FilterSortController extends Component {
       // Aggregated Items
       combinedFiltered: null,
       // Children Components
-      children: null
+      children: null,
     }
 
     this.injectChildren = this.injectChildren.bind(this)
@@ -92,7 +92,7 @@ export default class FilterSortController extends Component {
 
     this.updateIndices({
       type: CATEGORY_PARAM_NAME,
-      indices: filterByCategory(category, items)
+      indices: filterByCategory(category, items),
     })
   }
 
@@ -101,7 +101,7 @@ export default class FilterSortController extends Component {
 
     this.updateIndices({
       type: TAGS_PARAM_NAME,
-      indices: filterByTags(tagsArray, items)
+      indices: filterByTags(tagsArray, items),
     })
   }
 
@@ -116,11 +116,11 @@ export default class FilterSortController extends Component {
 
     this.updateSortedFiltered(
       results[`filter-sort-results--${SORT_MARKET_PARAM}`] || null,
-      combinedFiltered
+      combinedFiltered,
     )
 
     this.setState({
-      combinedFiltered
+      combinedFiltered,
     })
   }
 
@@ -133,7 +133,7 @@ export default class FilterSortController extends Component {
 
   updateIndices(options) {
     this.setState({
-      [`filter-sort-results--${options.type}`]: options.indices // NOTE -- done this way to prevent race conditions since multiple filters/sorts could call this method simultaneously
+      [`filter-sort-results--${options.type}`]: options.indices, // NOTE -- done this way to prevent race conditions since multiple filters/sorts could call this method simultaneously
     })
   }
 
@@ -157,7 +157,7 @@ export default class FilterSortController extends Component {
         ) {
           subChildProps = {
             updateIndices: this.updateIndices,
-            items: this.props.items
+            items: this.props.items,
           }
         }
 
@@ -167,7 +167,7 @@ export default class FilterSortController extends Component {
         ) {
           subChildProps = {
             ...subChildProps,
-            combinedFiltered
+            combinedFiltered,
           }
         }
       }
@@ -183,7 +183,7 @@ export default class FilterSortController extends Component {
     const updatedChildren = React.Children.map(children, traverseChildren)
 
     this.setState({
-      children: updatedChildren
+      children: updatedChildren,
     })
   }
 

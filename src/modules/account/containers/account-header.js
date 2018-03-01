@@ -12,17 +12,17 @@ const mapStateToProps = (state) => {
   const totalPLSeries = [{
     data: randomData(),
     name: 'Total',
-    color: '#553580'
+    color: '#553580',
   }]
   const totalPLMonthSeries = [{
     data: randomData(),
     name: 'Total',
-    color: '#553580'
+    color: '#553580',
   }]
   const totalPLDaySeries = [{
     data: randomData(),
     name: 'Total',
-    color: '#553580'
+    color: '#553580',
   }]
 
   const series = { totalPLSeries, totalPLMonthSeries, totalPLDaySeries }

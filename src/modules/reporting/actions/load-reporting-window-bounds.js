@@ -8,15 +8,15 @@ export const loadReportingWindowBounds = (callback = logError) => (dispatch, get
     'getFeeWindowCurrent',
     {
       universe: universe.id,
-      reporter: loginAccount.address
+      reporter: loginAccount.address,
     }, (err, result) => {
       if (err) return callback(err)
 
       dispatch(updateReportingWindowStats({
         startTime: result.startTime,
         endTime: result.endTime,
-        stake: result.totalStake || 0
+        stake: result.totalStake || 0,
       }))
-    }
+    },
   )
 }

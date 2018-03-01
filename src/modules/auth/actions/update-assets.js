@@ -16,7 +16,7 @@ export function updateAssets(callback = logError) {
       if (err) return callback(err)
       augur.api.ReputationToken.getBalance({
         tx: { to: reputationTokenAddress },
-        _address: loginAccount.address
+        _address: loginAccount.address,
       }, (err, attoRepBalance) => {
         if (err) return callback(err)
         const repBalance = speedomatic.unfix(attoRepBalance, 'string')

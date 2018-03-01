@@ -27,7 +27,7 @@ Universe.propTypes = {
   id: PropTypes.string,
   reportingPeriodDurationInSeconds: PropTypes.number,
   reportingCycleTimeRemaining: PropTypes.string,
-  currentReportingPeriodPercentComplete: PropTypes.number
+  currentReportingPeriodPercentComplete: PropTypes.number,
 }
 
 export default Universe

@@ -4,7 +4,7 @@ export function updateTransactionsOldestLoadedBlock(block) {
   return {
     type: UPDATE_TRANSACTIONS_OLDEST_LOADED_BLOCK,
     data: {
-      block
-    }
+      block,
+    },
   }
 }

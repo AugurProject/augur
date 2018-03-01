@@ -2,7 +2,7 @@ import { describe, it } from 'mocha'
 import { assert } from 'chai'
 import testState from 'test/testState'
 import {
-  UPDATE_BLOCKCHAIN
+  UPDATE_BLOCKCHAIN,
 } from 'modules/app/actions/update-blockchain'
 import reducer from 'modules/app/reducers/blockchain'
 
@@ -13,8 +13,8 @@ describe(`modules/app/reducers/blockchain.js`, () => {
     const action = {
       type: UPDATE_BLOCKCHAIN,
       data: {
-        currentBlockNumber: 833340
-      }
+        currentBlockNumber: 833340,
+      },
     }
     const expectedOutput = Object.assign({}, thisTestState.blockchain, action.data)
     assert.deepEqual(reducer(thisTestState.blockchain, action), expectedOutput, `Didn't update the blockchain information`)

@@ -8,7 +8,7 @@ export default function (marketsData = DEFAULT_STATE, action) {
     case UPDATE_MARKETS_DATA: // TODO -- allow for the consumption of partial market objects
       return {
         ...marketsData,
-        ...processMarketsData(action.marketsData, marketsData)
+        ...processMarketsData(action.marketsData, marketsData),
       }
     case UPDATE_MARKETS_LOADING_STATUS:
       return {
@@ -16,10 +16,10 @@ export default function (marketsData = DEFAULT_STATE, action) {
         ...action.marketIds.reduce((p, marketId) => {
           p[marketId] = {
             ...marketsData[marketId],
-            isLoading: action.isLoading
+            isLoading: action.isLoading,
           }
           return p
-        }, {})
+        }, {}),
       }
     case UPDATE_MARKET_CATEGORY:
       if (!action.marketId) return marketsData
@@ -27,8 +27,8 @@ export default function (marketsData = DEFAULT_STATE, action) {
         ...marketsData,
         [action.marketId]: {
           ...marketsData[action.marketId],
-          category: action.category
-        }
+          category: action.category,
+        },
       }
     case UPDATE_MARKET_REP_BALANCE:
       if (!action.marketId) return marketsData
@@ -36,8 +36,8 @@ export default function (marketsData = DEFAULT_STATE, action) {
         ...marketsData,
         [action.marketId]: {
           ...marketsData[action.marketId],
-          repBalance: action.repBalance
-        }
+          repBalance: action.repBalance,
+        },
       }
     case UPDATE_MARKET_FROZEN_SHARES_VALUE:
       if (!action.marketId) return marketsData
@@ -45,8 +45,8 @@ export default function (marketsData = DEFAULT_STATE, action) {
         ...marketsData,
         [action.marketId]: {
           ...marketsData[action.marketId],
-          frozenSharesValue: action.frozenSharesValue
-        }
+          frozenSharesValue: action.frozenSharesValue,
+        },
       }
     case UPDATE_MARKET_ESCAPE_HATCH_GAS_COST:
       if (!action.marketId) return marketsData
@@ -54,8 +54,8 @@ export default function (marketsData = DEFAULT_STATE, action) {
         ...marketsData,
         [action.marketId]: {
           ...marketsData[action.marketId],
-          escapeHatchGasCost: action.escapeHatchGasCost
-        }
+          escapeHatchGasCost: action.escapeHatchGasCost,
+        },
       }
     case UPDATE_MARKET_TRADING_ESCAPE_HATCH_GAS_COST:
       if (!action.marketId) return marketsData
@@ -63,8 +63,8 @@ export default function (marketsData = DEFAULT_STATE, action) {
         ...marketsData,
         [action.marketId]: {
           ...marketsData[action.marketId],
-          tradingEscapeHatchGasCost: action.tradingEscapeHatchGasCost
-        }
+          tradingEscapeHatchGasCost: action.tradingEscapeHatchGasCost,
+        },
       }
     case RESET_STATE:
     case CLEAR_MARKETS_DATA:
@@ -78,7 +78,7 @@ function processMarketsData(newMarketsData, existingMarketsData) {
   return Object.keys(newMarketsData).reduce((p, marketId) => {
     const marketData = {
       ...existingMarketsData[marketId],
-      ...newMarketsData[marketId]
+      ...newMarketsData[marketId],
     }
 
     // mark whether details have been loaded

@@ -15,7 +15,7 @@ export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS'
 export function updateTradesInProgress(marketId, outcomeId, side, numShares, limitPrice, maxCost, callback = logError) {
   return (dispatch, getState) => {
     const {
-      tradesInProgress, marketsData, loginAccount, orderBooks, orderCancellation
+      tradesInProgress, marketsData, loginAccount, orderBooks, orderCancellation,
     } = getState()
     const outcomeTradeInProgress = (tradesInProgress && tradesInProgress[marketId] && tradesInProgress[marketId][outcomeId]) || {}
     const market = marketsData[marketId]
@@ -35,9 +35,9 @@ export function updateTradesInProgress(marketId, outcomeId, side, numShares, lim
           details: {
             side: cleanSide,
             numShares: '',
-            limitPrice: outcomeTradeInProgress.limitPrice
-          }
-        }
+            limitPrice: outcomeTradeInProgress.limitPrice,
+          },
+        },
       })
     }
     if ((limitPrice === '' || (parseFloat(limitPrice) === 0 && market.marketType !== SCALAR)) && numShares === null) { // limitPrice cleared
@@ -50,8 +50,8 @@ export function updateTradesInProgress(marketId, outcomeId, side, numShares, lim
             side: cleanSide,
             limitPrice: '',
             numShares: outcomeTradeInProgress.numShares,
-          }
-        }
+          },
+        },
       })
     }
     // find top order to default limit price to
@@ -103,7 +103,7 @@ export function updateTradesInProgress(marketId, outcomeId, side, numShares, lim
       numShares: cleanNumShares === '0' ? undefined : cleanNumShares,
       limitPrice: cleanLimitPrice,
       totalFee: '0',
-      totalCost: '0'
+      totalCost: '0',
     }
 
     // trade actions
@@ -112,7 +112,7 @@ export function updateTradesInProgress(marketId, outcomeId, side, numShares, lim
         if (err) {
           return dispatch({
             type: UPDATE_TRADE_IN_PROGRESS,
-            data: { marketId, outcomeId, details: newTradeDetails }
+            data: { marketId, outcomeId, details: newTradeDetails },
           })
         }
         const cleanAccountPositions = []
@@ -136,7 +136,7 @@ export function updateTradesInProgress(marketId, outcomeId, side, numShares, lim
           marketCreatorFeeRate: market.settlementFee,
           singleOutcomeOrderBook: (orderBooks && orderBooks[marketId] && orderBooks[marketId][outcomeId]) || {},
           shouldCollectReportingFees: !market.isDisowned,
-          reportingFeeRate: market.reportingFeeRate
+          reportingFeeRate: market.reportingFeeRate,
         })
         const totalFee = new BigNumber(simulatedTrade.settlementFees, 10).plus(new BigNumber(simulatedTrade.gasFees, 10))
         newTradeDetails.totalFee = totalFee.toFixed()
@@ -145,14 +145,14 @@ export function updateTradesInProgress(marketId, outcomeId, side, numShares, lim
         if (isNaN(newTradeDetails.feePercent)) newTradeDetails.feePercent = '0'
         dispatch({
           type: UPDATE_TRADE_IN_PROGRESS,
-          data: { marketId, outcomeId, details: { ...newTradeDetails, ...simulatedTrade } }
+          data: { marketId, outcomeId, details: { ...newTradeDetails, ...simulatedTrade } },
         })
         callback(null, { ...newTradeDetails, ...simulatedTrade })
       }))
     } else {
       dispatch({
         type: UPDATE_TRADE_IN_PROGRESS,
-        data: { marketId, outcomeId, details: newTradeDetails }
+        data: { marketId, outcomeId, details: newTradeDetails },
       })
       callback(null)
     }

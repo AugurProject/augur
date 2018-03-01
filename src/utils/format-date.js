@@ -4,15 +4,18 @@ const months = [
   'January', 'February', 'March',
   'April', 'May', 'June',
   'July', 'August', 'September',
-  'October', 'November', 'December'
+  'October', 'November', 'December',
 ]
 
 const shortMonths = [
   'Jan', 'Feb', 'Mar',
   'Apr', 'May', 'Jun',
   'Jul', 'Aug', 'Sept',
-  'Oct', 'Nov', 'Dec'
+  'Oct', 'Nov', 'Dec',
 ]
+
+const NUMBER_OF_SECONDS_IN_A_DAY = 86400
+
 export function formatDate(d) {
   const date = (d instanceof Date) ? d : new Date(0)
 
@@ -35,7 +38,7 @@ export function formatDate(d) {
     formattedLocal: `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(':')} ${localAMPM} (UTC ${localOffset})`, // local time
     formattedLocalShort: `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} (UTC ${localOffset})`, // local time
     full: date.toUTCString(),
-    timestamp: date.getTime() / 1000
+    timestamp: date.getTime() / 1000,
   }
 }
 
@@ -78,4 +81,15 @@ export function dateHasPassed(unixTimestamp) {
 /** timestamps are always in seconds */
 export function getCurrentDateTimestamp() {
   return Date.now() / 1000
+}
+
+export function getDaysRemaining(endTimestamp, startTimestamp) {
+  if (!endTimestamp) return 0
+  let start = startTimestamp
+  if (!startTimestamp) {
+    start = formatDate(new Date()).timestamp
+  }
+  if (start > endTimestamp) return 0
+  const remainingTicks = endTimestamp - start
+  return Math.floor(remainingTicks / NUMBER_OF_SECONDS_IN_A_DAY)
 }

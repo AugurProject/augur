@@ -12,7 +12,7 @@ import {
   ADD_ORDER_TO_NEW_MARKET,
   REMOVE_ORDER_FROM_NEW_MARKET,
   UPDATE_NEW_MARKET,
-  CLEAR_NEW_MARKET
+  CLEAR_NEW_MARKET,
 } from 'modules/create-market/actions/update-new-market'
 
 // import { NEW_MARKET_REVIEW } from 'modules/create-market/constants/new-market-creation-steps'
@@ -39,13 +39,13 @@ describe('modules/create-market/actions/update-new-market.js', () => {
         {
           type: UPDATE_NEW_MARKET,
           data: {
-            isValid: false
-          }
-        }
+            isValid: false,
+          },
+        },
       ]
 
       assert.deepEqual(actions, expectedActions, `Didn't dispatch the expected actions`)
-    }
+    },
   })
 
   test({
@@ -56,12 +56,12 @@ describe('modules/create-market/actions/update-new-market.js', () => {
       const expected = {
         type: ADD_ORDER_TO_NEW_MARKET,
         data: {
-          test: 'test'
-        }
+          test: 'test',
+        },
       }
 
       assert.deepEqual(action, expected, `Didn't return the expected object`)
-    }
+    },
   })
 
   test({
@@ -72,12 +72,12 @@ describe('modules/create-market/actions/update-new-market.js', () => {
       const expected = {
         type: REMOVE_ORDER_FROM_NEW_MARKET,
         data: {
-          test: 'test'
-        }
+          test: 'test',
+        },
       }
 
       assert.deepEqual(action, expected, `Didn't return the expected object`)
-    }
+    },
   })
 
   test({
@@ -88,12 +88,12 @@ describe('modules/create-market/actions/update-new-market.js', () => {
       const expected = {
         type: UPDATE_NEW_MARKET,
         data: {
-          test: 'test'
-        }
+          test: 'test',
+        },
       }
 
       assert.deepEqual(action, expected, `Didn't return the expected object`)
-    }
+    },
   })
 
   test({
@@ -102,10 +102,10 @@ describe('modules/create-market/actions/update-new-market.js', () => {
       const action = clearNewMarket()
 
       const expected = {
-        type: CLEAR_NEW_MARKET
+        type: CLEAR_NEW_MARKET,
       }
 
       assert.deepEqual(action, expected, `Didn't return the expected object`)
-    }
+    },
   })
 })

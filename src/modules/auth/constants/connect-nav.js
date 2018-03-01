@@ -4,7 +4,7 @@ export const PARAMS = {
   AIRBITZ: 'airbitz',
   UPORT: 'uport',
   LEDGER: 'ledger',
-  METAMASK: 'metamask'
+  METAMASK: 'metamask',
 }
 
 export const ITEMS = [
@@ -12,21 +12,21 @@ export const ITEMS = [
     param: PARAMS.AIRBITZ,
     title: 'Airbitz',
     icon: Airbitz,
-    default: true
+    default: true,
   },
   {
     param: PARAMS.METAMASK,
     title: 'MetaMask',
-    icon: MetaMask
+    icon: MetaMask,
   },
   {
     param: PARAMS.UPORT,
     title: 'uPort',
-    icon: uPort
+    icon: uPort,
   },
   {
     param: PARAMS.LEDGER,
     title: 'Ledger',
-    icon: Ledger
-  }
+    icon: Ledger,
+  },
 ]

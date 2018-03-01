@@ -16,14 +16,14 @@ describe(`modules/bids-asks/actions/clear-order-book-on-first-chunk.js`, () => {
     params: {
       marketId: 'MARKET_0',
       outcome: 2,
-      orderTypeLabel: 'buy'
+      orderTypeLabel: 'buy',
     },
     mock: {
       state: {
         isFirstOrderBookChunkLoaded: {
-          MARKET_0: { 2: { buy: false } }
-        }
-      }
+          MARKET_0: { 2: { buy: false } },
+        },
+      },
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
@@ -31,32 +31,32 @@ describe(`modules/bids-asks/actions/clear-order-book-on-first-chunk.js`, () => {
         marketId: 'MARKET_0',
         outcome: 2,
         orderTypeLabel: 'buy',
-        isLoaded: true
+        isLoaded: true,
       }, {
         type: 'CLEAR_ORDER_BOOK',
         marketId: 'MARKET_0',
         outcome: 2,
-        orderTypeLabel: 'buy'
+        orderTypeLabel: 'buy',
       }])
-    }
+    },
   })
   test({
     description: 'first order book chunk already loaded: do not clear order book',
     params: {
       marketId: 'MARKET_0',
       outcome: 2,
-      orderTypeLabel: 'buy'
+      orderTypeLabel: 'buy',
     },
     mock: {
       state: {
         isFirstOrderBookChunkLoaded: {
           MARKET_0: { 2: { buy: true } },
-          MARKET_1: { 1: { buy: false } }
-        }
-      }
+          MARKET_1: { 1: { buy: false } },
+        },
+      },
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [])
-    }
+    },
   })
 })

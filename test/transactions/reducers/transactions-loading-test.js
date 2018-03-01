@@ -16,7 +16,7 @@ describe('modules/transactions/reducers/transactions-loading', () => {
       const expected = false
 
       assert.strictEqual(actual, expected, `Didn't return the expected value`)
-    }
+    },
   })
 
   test({
@@ -25,13 +25,13 @@ describe('modules/transactions/reducers/transactions-loading', () => {
       const actual = transactionsLoading(false, {
         type: UPDATE_TRANSACTIONS_LOADING,
         data: {
-          isLoading: true
-        }
+          isLoading: true,
+        },
       })
 
       const expected = true
 
       assert.strictEqual(actual, expected, `Didn't return the expected value`)
-    }
+    },
   })
 })

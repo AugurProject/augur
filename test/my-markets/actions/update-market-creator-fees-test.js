@@ -10,7 +10,7 @@ describe('modules/my-markets/actions/update-market-creator-fees.js', () => {
 
   const expected = {
     type: UPDATE_MARKET_CREATOR_FEES,
-    data
+    data,
   }
 
   it('should return the expected object', () => {

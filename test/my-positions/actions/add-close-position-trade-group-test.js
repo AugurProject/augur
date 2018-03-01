@@ -16,16 +16,16 @@ describe('modules/my-positions/actions/add-close-position-trade-group.js', () =>
       arguments: {
         marketId: '0xMarketId',
         outcomeId: '1',
-        tradeGroupId: '0x00000TradeGroupId'
+        tradeGroupId: '0x00000TradeGroupId',
       },
       assertions: (res) => {
         assert.deepEqual(res, {
           type: ADD_CLOSE_POSITION_TRADE_GROUP,
           marketId: '0xMarketId',
           outcomeId: '1',
-          tradeGroupId: '0x00000TradeGroupId'
+          tradeGroupId: '0x00000TradeGroupId',
         })
-      }
+      },
     })
   })
 })

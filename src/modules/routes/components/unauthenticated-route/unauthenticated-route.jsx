@@ -20,11 +20,11 @@ const UnauthenticatedRoute = ({ component: Component, isLogged, ...rest }) => (
 
 UnauthenticatedRoute.propTypes = {
   component: PropTypes.any, // TODO
-  isLogged: PropTypes.bool.isRequired
+  isLogged: PropTypes.bool.isRequired,
 }
 
 const mapStateToProps = state => ({
-  isLogged: state.isLogged
+  isLogged: state.isLogged,
 })
 
 export default connect(mapStateToProps)(UnauthenticatedRoute)

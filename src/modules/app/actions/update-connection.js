@@ -8,7 +8,7 @@ export const UPDATE_AUGUR_NODE_CONNECTION_STATUS = 'UPDATE_AUGUR_NODE_CONNECTION
 export function updateConnectionStatus(isConnected) {
   return {
     type: UPDATE_CONNECTION_STATUS,
-    isConnected
+    isConnected,
   }
 }
 
@@ -19,6 +19,6 @@ export function updateConnectionStatus(isConnected) {
 export function updateAugurNodeConnectionStatus(isConnected) {
   return {
     type: UPDATE_AUGUR_NODE_CONNECTION_STATUS,
-    isConnected
+    isConnected,
   }
 }

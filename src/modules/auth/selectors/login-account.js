@@ -19,5 +19,5 @@ export const selectLoginAccount = createSelector(
     accountName,
     rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 1 }),
     eth: formatEther(loginAccount.eth, { zeroStyled: false, decimalsRounded: 2 }),
-  })
+  }),
 )

@@ -30,7 +30,7 @@ describe('modules/user-open-orders/selectors/positions-plus-asks', () => {
         const expected = 'selectPositionsPlusAsks'
 
         assert.strictEqual(actual, expected, `Didn't call the expected method`)
-      }
+      },
     })
   })
 
@@ -42,7 +42,7 @@ describe('modules/user-open-orders/selectors/positions-plus-asks', () => {
     test({
       description: `should return the expected value with no positions`,
       state: {
-        loginAccount: {}
+        loginAccount: {},
       },
       assertions: (store) => {
         const actual = positionsPlusAsks.selectPositionsPlusAsks(store.getState())
@@ -50,7 +50,7 @@ describe('modules/user-open-orders/selectors/positions-plus-asks', () => {
         const expected = null
 
         assert.strictEqual(actual, expected, `Didn't return the expected value`)
-      }
+      },
     })
 
     test({
@@ -58,19 +58,19 @@ describe('modules/user-open-orders/selectors/positions-plus-asks', () => {
       state: {
         loginAccount: {},
         accountPositions: {
-          '0xMARKETID': {}
+          '0xMARKETID': {},
         },
-        orderBooks: {}
+        orderBooks: {},
       },
       assertions: (store) => {
         const actual = positionsPlusAsks.selectPositionsPlusAsks(store.getState())
 
         const expected = {
-          '0xMARKETID': {}
+          '0xMARKETID': {},
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      }
+      },
     })
 
     test({
@@ -78,25 +78,25 @@ describe('modules/user-open-orders/selectors/positions-plus-asks', () => {
       state: {
         loginAccount: {},
         accountPositions: {
-          '0xMARKETID': {}
+          '0xMARKETID': {},
         },
         orderBooks: {
           '0xMARKETID': {
             sell: [
-              {}
-            ]
-          }
-        }
+              {},
+            ],
+          },
+        },
       },
       assertions: (store) => {
         const actual = positionsPlusAsks.selectPositionsPlusAsks(store.getState())
 
         const expected = {
-          '0xMARKETID': 'selectMarketPositionPlusAsks'
+          '0xMARKETID': 'selectMarketPositionPlusAsks',
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      }
+      },
     })
   })
 
@@ -113,7 +113,7 @@ describe('modules/user-open-orders/selectors/positions-plus-asks', () => {
         const expected = {}
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      }
+      },
     })
 
     test({
@@ -122,11 +122,11 @@ describe('modules/user-open-orders/selectors/positions-plus-asks', () => {
         const actual = positionsPlusAsks.selectMarketPositionPlusAsks(null, { 1: '1' }, {})
 
         const expected = {
-          1: '2'
+          1: '2',
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      }
+      },
     })
   })
 
@@ -141,7 +141,7 @@ describe('modules/user-open-orders/selectors/positions-plus-asks', () => {
         const expected = ZERO
 
         assert.deepEqual(actual, expected, `Didn't return the expected value`)
-      }
+      },
     })
 
     test({
@@ -152,7 +152,7 @@ describe('modules/user-open-orders/selectors/positions-plus-asks', () => {
         const expected = ZERO
 
         assert.deepEqual(actual, expected, `Didn't return the expected value`)
-      }
+      },
     })
 
     test({
@@ -162,29 +162,29 @@ describe('modules/user-open-orders/selectors/positions-plus-asks', () => {
           '0xORDER1': {
             owner: '0xUSERADDRESS',
             outcome: 1,
-            amount: '1'
+            amount: '1',
           },
           '0xORDER2': {
             owner: '0xNOTUSERADDRESS',
             outcome: 1,
-            amount: '1'
+            amount: '1',
           },
           '0xORDER3': {
             owner: '0xUSERADDRESS',
             outcome: 2,
-            amount: '1'
+            amount: '1',
           },
           '0xORDER4': {
             owner: '0xUSERADDRESS',
             outcome: 1,
-            amount: '1'
-          }
+            amount: '1',
+          },
         })
 
         const expected = new BigNumber('2')
 
         assert.deepEqual(actual, expected, `Didn't return the expected value`)
-      }
+      },
     })
   })
 })

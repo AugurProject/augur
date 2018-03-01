@@ -15,9 +15,9 @@ describe(`utils/base-58.js`, () => {
       assertions: (decoded) => {
         assert.deepEqual(decoded, {
           hello: 'world',
-          description: 'this is a test object'
+          description: 'this is a test object',
         })
-      }
+      },
     })
   })
   describe('base58Encode', () => {
@@ -28,11 +28,11 @@ describe(`utils/base-58.js`, () => {
     test({
       object: {
         hello: 'world',
-        description: 'this is a test object'
+        description: 'this is a test object',
       },
       assertions: (encoded) => {
         assert.deepEqual(encoded, 'kpXKnbi9Czht5bSPbpf7QoYiDWDF8UWZzmWiCrM7xoE4rbkZ7WmpM4dq9WLki1F8Qhg4bcBYtE8')
-      }
+      },
     })
   })
 })

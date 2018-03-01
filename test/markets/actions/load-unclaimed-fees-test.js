@@ -17,7 +17,7 @@ describe('modules/markets/actions/load-unclaimed-fees.js', () => {
     const { loadUnclaimedFees, __RewireAPI__ } = require('modules/markets/actions/load-unclaimed-fees')
 
     const ACTIONS = {
-      UPDATE_MARKETS_DATA: 'UPDATE_MARKETS_DATA'
+      UPDATE_MARKETS_DATA: 'UPDATE_MARKETS_DATA',
     }
 
     __RewireAPI__.__Rewire__('augur', {
@@ -27,20 +27,20 @@ describe('modules/markets/actions/load-unclaimed-fees.js', () => {
           if (!p.marketIds) return cb({ error: 'must include marketIds parameter' })
           if (p.marketIds.length === 0) return cb(null, {})
           cb(null, { '0xabc1': 0, '0xabc2': 0, '0xabc3': 0 })
-        }
-      }
+        },
+      },
     })
     __RewireAPI__.__Rewire__('updateMarketsData', marketsData => ({
       type: ACTIONS.UPDATE_MARKETS_DATA,
       data: {
-        marketsData
-      }
+        marketsData,
+      },
     }))
 
     test({
       description: `should dispatch the expected actions when no user markets are passed`,
       state: {
-        marketsData: {}
+        marketsData: {},
       },
       assertions: (store) => {
         // use default MarketIds, which is []
@@ -54,18 +54,18 @@ describe('modules/markets/actions/load-unclaimed-fees.js', () => {
         const expected = [{
           type: ACTIONS.UPDATE_MARKETS_DATA,
           data: {
-            marketsData: {}
-          }
+            marketsData: {},
+          },
         }]
 
         assert.deepEqual(actual, expected, `Dispatched unexpected actions.`)
-      }
+      },
     })
 
     test({
       description: `should handle errors from getUnclaimedMarketCreatorFees`,
       state: {
-        marketsData: {}
+        marketsData: {},
       },
       assertions: (store) => {
         // force an error
@@ -81,20 +81,20 @@ describe('modules/markets/actions/load-unclaimed-fees.js', () => {
         const expected = []
 
         assert.deepEqual(actual, expected, `Dispatched unexpected actions.`)
-      }
+      },
     })
 
     test({
       description: `should handle an error due to missing data`,
       state: {
-        marketsData: {}
+        marketsData: {},
       },
       assertions: (store) => {
         store.dispatch(loadUnclaimedFees(['0xabc1', '0xabc2', '0xabc3'], (err, unclaimedFees) => {
           const expectedUnclaimedFees = {
             '0xabc1': 0,
             '0xabc2': 0,
-            '0xabc3': 0
+            '0xabc3': 0,
           }
 
           assert.isNull(err, `Didn't return null for error as expected`)
@@ -109,13 +109,13 @@ describe('modules/markets/actions/load-unclaimed-fees.js', () => {
             marketsData: {
               '0xabc1': { unclaimedCreatorFees: 0 },
               '0xabc2': { unclaimedCreatorFees: 0 },
-              '0xabc3': { unclaimedCreatorFees: 0 }
-            }
-          }
+              '0xabc3': { unclaimedCreatorFees: 0 },
+            },
+          },
         }]
 
         assert.deepEqual(actual, expected, `Dispatched unexpected Actions.`)
-      }
+      },
     })
   })
 })

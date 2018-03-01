@@ -26,7 +26,7 @@ export default class ReportingReportForm extends Component {
     super(props)
 
     this.state = {
-      outcomes: []
+      outcomes: [],
     }
 
     this.state.outcomes = this.props.market ? this.props.market.outcomes.slice() : []

@@ -12,7 +12,7 @@ import { isEmpty } from 'lodash'
 const findBounds = memoize((outcome = {}) => {
   const DEFAULT_BOUNDS = {
     min: null,
-    max: null
+    max: null,
   }
 
   if (isEmpty(outcome)) return DEFAULT_BOUNDS
@@ -23,13 +23,13 @@ const findBounds = memoize((outcome = {}) => {
     if (i === 0) {
       return {
         min: currentItem,
-        max: currentItem
+        max: currentItem,
       }
     }
 
     return {
       min: currentItem < p.min ? currentItem : p.min,
-      max: currentItem > p.max ? currentItem : p.max
+      max: currentItem > p.max ? currentItem : p.max,
     }
   }, DEFAULT_BOUNDS)
 })
@@ -43,8 +43,8 @@ const orderAndAssignCumulativeShares = memoize((orderBook) => {
       {
         price: order.price,
         shares: order.shares,
-        cumulativeShares: p[i - 1] != null ? p[i - 1].cumulativeShares + order.shares.value : 0
-      }
+        cumulativeShares: p[i - 1] != null ? p[i - 1].cumulativeShares + order.shares.value : 0,
+      },
     ], [])
 
   const rawAsks = ((orderBook || {})[ASKS] || []).slice()
@@ -55,14 +55,14 @@ const orderAndAssignCumulativeShares = memoize((orderBook) => {
       {
         price: order.price,
         shares: order.shares,
-        cumulativeShares: p[i - 1] != null ? p[i - 1].cumulativeShares + order.shares.value : 0
-      }
+        cumulativeShares: p[i - 1] != null ? p[i - 1].cumulativeShares + order.shares.value : 0,
+      },
     ], [])
     .sort((a, b) => b.price.value - a.price.value)
 
   return {
     bids,
-    asks
+    asks,
   }
 })
 
@@ -77,7 +77,7 @@ const orderForMarketDepth = memoize((orderBook) => {
 
   return {
     [BIDS]: bids,
-    [ASKS]: asks
+    [ASKS]: asks,
   }
 })
 
@@ -107,7 +107,7 @@ const getOrderBookKeys = memoize((marketDepth) => {
   return {
     min,
     mid: mid(),
-    max
+    max,
   }
 })
 
@@ -137,7 +137,7 @@ const mapStateToProps = (state, ownProps) => {
     orderBook: cumulativeOrderBook,
     priceTimeSeries,
     marketDepth,
-    orderBookKeys
+    orderBookKeys,
   }
 }
 

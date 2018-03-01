@@ -15,7 +15,7 @@ export function fundNewAccount(callback = LogError) {
           dispatch(updateAssets())
           callback(null)
         },
-        onFailed: callback
+        onFailed: callback,
       })
     }
   }

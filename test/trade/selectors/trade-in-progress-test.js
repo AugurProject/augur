@@ -12,13 +12,13 @@ describe(`modules/trade/selectors/trade-in-progress.js`, () => {
   const testState = {
     selectedMarketId: 'testmarket',
     tradesInProgress: {
-      testmarket: 'this is a test'
-    }
+      testmarket: 'this is a test',
+    },
   }
   const store = mockStore(testState)
 
   const selector = proxyquire('../../../src/modules/trade/selectors/trade-in-progress', {
-    '../../../store': store
+    '../../../store': store,
   })
 
   it(`should return tradesInProgress[selectedMarketId] if available`, () => {

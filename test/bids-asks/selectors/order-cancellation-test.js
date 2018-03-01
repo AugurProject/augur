@@ -8,7 +8,7 @@ describe('modules/bids-asks/selectors/order-cancellation.js', () => {
 
   const { store } = mocks
   const orderCancellationSelector = proxyquire('../../../src/modules/bids-asks/selectors/order-cancellation', {
-    '../../../store': store
+    '../../../store': store,
   }).default
 
   it('should select correct values', () => {

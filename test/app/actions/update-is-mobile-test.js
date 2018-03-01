@@ -12,7 +12,7 @@ describe('modules/app/actions/update-is-mobile.js', () => {
       const expected = 'UPDATE_IS_MOBILE'
 
       assert.strictEqual(UPDATE_IS_MOBILE, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   describe(`updateIsMobile`, () => {
@@ -24,12 +24,12 @@ describe('modules/app/actions/update-is-mobile.js', () => {
         const expected = {
           type: UPDATE_IS_MOBILE,
           data: {
-            isMobile: false
-          }
+            isMobile: false,
+          },
         }
 
         assert.deepEqual(actual, expected, `didn't return the expected object`)
-      }
+      },
     })
   })
 })

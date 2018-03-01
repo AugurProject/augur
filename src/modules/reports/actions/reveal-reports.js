@@ -55,12 +55,12 @@ export function revealReports(cb) {
               revealReportLock[eventId] = false
               dispatch(updateReports({
                 [branch.id]: {
-                  [eventId]: { ...report, isRevealed: true }
-                }
+                  [eventId]: { ...report, isRevealed: true },
+                },
               }))
               nextReport()
             },
-            onFailed: e => nextReport(e)
+            onFailed: e => nextReport(e),
           })
         }, e => callback(e))
       }

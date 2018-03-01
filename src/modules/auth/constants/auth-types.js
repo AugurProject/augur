@@ -8,7 +8,7 @@ export const AUTH_TYPES = {
   [REGISTER]: REGISTER,
   [LOGIN]: LOGIN,
   [IMPORT]: IMPORT,
-  [LOGOUT]: LOGOUT
+  [LOGOUT]: LOGOUT,
 }
 
 export const DEFAULT_AUTH_TYPE = REGISTER

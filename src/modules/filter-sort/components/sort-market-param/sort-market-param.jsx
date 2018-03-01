@@ -21,7 +21,7 @@ export default class SortMarketParam extends Component {
     history: PropTypes.object.isRequired,
     items: PropTypes.array.isRequired,
     updateIndices: PropTypes.func.isRequired,
-    combinedFiltered: PropTypes.array
+    combinedFiltered: PropTypes.array,
   }
 
   constructor(props) {
@@ -33,25 +33,25 @@ export default class SortMarketParam extends Component {
     this.marketSortParams = [
       {
         label: 'Volume',
-        value: PARAMS.MARKET_VOLUME
+        value: PARAMS.MARKET_VOLUME,
       },
       {
         label: 'Newest',
-        value: PARAMS.MARKET_CREATION_TIME
+        value: PARAMS.MARKET_CREATION_TIME,
       },
       {
         label: 'Expiration',
-        value: PARAMS.MARKET_END_DATE
+        value: PARAMS.MARKET_END_DATE,
       },
       {
         label: 'Settlement Fee',
-        value: 'settlementFeePercent'
-      }
+        value: 'settlementFeePercent',
+      },
     ]
 
     this.state = {
       selectedMarketParam: this.defaultMarketParam,
-      selectedSort: this.defaultSort
+      selectedSort: this.defaultSort,
     }
   }
 
@@ -67,7 +67,7 @@ export default class SortMarketParam extends Component {
     if (!selectedMarketParam || !selectedSort) {
       this.props.updateIndices({
         indices: sortByMarketParam(this.state.selectedMarketParam, this.state.selectedSort, this.props.items, this.props.combinedFiltered),
-        type: SORT_MARKET_PARAM
+        type: SORT_MARKET_PARAM,
       })
     }
   }
@@ -88,7 +88,7 @@ export default class SortMarketParam extends Component {
     ) {
       this.props.updateIndices({
         indices: sortByMarketParam(nextState.selectedMarketParam, nextState.selectedSort, nextProps.items, nextProps.combinedFiltered),
-        type: SORT_MARKET_PARAM
+        type: SORT_MARKET_PARAM,
       })
     }
   }
@@ -112,7 +112,7 @@ export default class SortMarketParam extends Component {
 
     this.props.history.push({
       ...location,
-      search: updatedSearch
+      search: updatedSearch,
     })
   }
 
