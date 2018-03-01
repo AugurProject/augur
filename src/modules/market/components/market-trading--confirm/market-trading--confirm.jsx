@@ -94,11 +94,12 @@ const MarketTradingConfirm = (p) => {
           onClick={(e) => {
             p.market.onSubmitPlaceTrade(p.selectedOutcome.id, (err, tradeGroupID) => {
               // onSent/onFailed CB
-              if (!err) p.toggleShowOrderPlaced()
+              if (!err) {
+                p.showOrderPlaced()
+              }
             }, (res) => {
               // onComplete CB
             })
-            p.clearOrderForm()
             p.prevPage()
           }}
         >Confirm
