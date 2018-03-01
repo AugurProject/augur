@@ -13,6 +13,9 @@ const shortMonths = [
   'Jul', 'Aug', 'Sept',
   'Oct', 'Nov', 'Dec'
 ]
+
+const NUMBER_OF_SECONDS_IN_A_DAY = 86400
+
 export function formatDate(d) {
   const date = (d instanceof Date) ? d : new Date(0)
 
@@ -88,5 +91,5 @@ export function getDaysRemaining(endTimestamp, startTimestamp) {
   }
   if (start > endTimestamp) return 0
   const remainingTicks = endTimestamp - start
-  return Math.floor(remainingTicks / 86400)
+  return Math.floor(remainingTicks / NUMBER_OF_SECONDS_IN_A_DAY)
 }

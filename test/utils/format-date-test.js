@@ -6,6 +6,11 @@ import { dateHasPassed, getDaysRemaining } from 'utils/format-date'
 
 describe('utils/format-date', () => {
   const test = t => it(t.description, () => t.assertions())
+  let clock
+
+  afterEach(() => {
+    if (clock !== undefined) clock.restore()
+  })
 
   test({
     description: `should return false`,
@@ -64,7 +69,7 @@ describe('utils/format-date', () => {
   test({
     description: `days should be floored to fake today`,
     assertions: () => {
-      sinon.useFakeTimers(new Date(1519849696000))
+      clock = sinon.useFakeTimers(new Date(1519849696000))
       const actual = getDaysRemaining(1520300344)
 
       assert.strictEqual(actual, 5, `didn't return 5 as expected`)
@@ -74,7 +79,7 @@ describe('utils/format-date', () => {
   test({
     description: `current time after end time return 0`,
     assertions: () => {
-      sinon.useFakeTimers(new Date(1539849696000))
+      clock = sinon.useFakeTimers(new Date(1539849696000))
       const actual = getDaysRemaining(1520300344)
 
       assert.strictEqual(actual, 0, `didn't return 0 as expected`)
