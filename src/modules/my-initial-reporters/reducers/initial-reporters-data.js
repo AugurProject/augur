@@ -13,7 +13,7 @@ export default function (initialReportersData = DEFAULT_STATE, action) {
 
       return {
         ...initialReportersData,
-        ...updatedInitialReporters
+        ...updatedInitialReporters,
       }
     }
     case UPDATE_INITIAL_REPORTERS_ESCAPE_HATCH_GAS_COST: {
@@ -22,8 +22,8 @@ export default function (initialReportersData = DEFAULT_STATE, action) {
         ...initialReportersData,
         [action.initialReporterID]: {
           ...initialReportersData[action.initialReporterID],
-          escapeHatchGasCost: action.escapeHatchGasCost
-        }
+          escapeHatchGasCost: action.escapeHatchGasCost,
+        },
       }
     }
     case UPDATE_INITIAL_REPORTER_REP_BALANCE: {
@@ -32,8 +32,8 @@ export default function (initialReportersData = DEFAULT_STATE, action) {
         ...initialReportersData,
         [action.initialReporterID]: {
           ...initialReportersData[action.initialReporterID],
-          repBalance: action.repBalance
-        }
+          repBalance: action.repBalance,
+        },
       }
     }
     case RESET_STATE:

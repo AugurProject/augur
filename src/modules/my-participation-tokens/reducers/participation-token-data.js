@@ -13,7 +13,7 @@ export default function (participationTokensData = DEFAULT_STATE, action) {
 
       return {
         ...participationTokensData,
-        ...updatedParticipationTokens
+        ...updatedParticipationTokens,
       }
     }
     case UPDATE_PARTICIPATION_TOKENS_ESCAPE_HATCH_GAS_COST: {
@@ -22,8 +22,8 @@ export default function (participationTokensData = DEFAULT_STATE, action) {
         ...participationTokensData,
         [action.feeWindowID]: {
           ...participationTokensData[action.feeWindowID],
-          escapeHatchGasCost: action.escapeHatchGasCost
-        }
+          escapeHatchGasCost: action.escapeHatchGasCost,
+        },
       }
     }
     case UPDATE_PARTICIPATION_TOKENS_BALANCE: {
@@ -32,8 +32,8 @@ export default function (participationTokensData = DEFAULT_STATE, action) {
         ...participationTokensData,
         [action.feeWindowID]: {
           ...participationTokensData[action.feeWindowID],
-          balance: action.balance
-        }
+          balance: action.balance,
+        },
       }
     }
     case RESET_STATE:

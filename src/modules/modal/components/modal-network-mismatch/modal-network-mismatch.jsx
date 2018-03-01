@@ -12,7 +12,7 @@ const ModalNetworkMismatch = p => (
 )
 
 ModalNetworkMismatch.propTypes = {
-  expectedNetwork: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
+  expectedNetwork: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 }
 
 export default ModalNetworkMismatch

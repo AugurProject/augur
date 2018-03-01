@@ -8,7 +8,7 @@ export default function (denominations = DEFAULT_STATE, action) {
     case (UPDATE_SCALAR_MARKET_SHARE_DENOMINATION):
       return {
         ...denominations,
-        [action.data.marketId]: action.data.denomination
+        [action.data.marketId]: action.data.denomination,
       }
     case RESET_STATE:
       return DEFAULT_STATE

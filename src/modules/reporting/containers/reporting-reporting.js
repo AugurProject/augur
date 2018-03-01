@@ -7,11 +7,11 @@ import { selectMarketsToReport } from 'src/modules/reporting/selectors'
 
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
-  markets: selectMarketsToReport(state)
+  markets: selectMarketsToReport(state),
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadReporting: () => dispatch(loadReporting())
+  loadReporting: () => dispatch(loadReporting()),
 })
 
 const ReportingReportingContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(ReportingReporting))

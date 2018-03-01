@@ -29,7 +29,7 @@ export default function (marketIds, callback = logError) {
 function doUpdateMarketRepBalance(market, reputationTokenAddress, dispatch, callback) {
   augur.api.ReputationToken.getBalance({
     tx: { to: reputationTokenAddress },
-    _address: market.id
+    _address: market.id,
   }, (err, attoRepBalance) => {
     if (err) return callback(err)
     const repBalance = speedomatic.unfix(attoRepBalance, 'number')
@@ -43,7 +43,7 @@ function doUpdateMarketRepBalance(market, reputationTokenAddress, dispatch, call
             const gasCost = speedomatic.encodeNumberAsJSNumber(attoGasCost)
             dispatch(updateMarketEscapeHatchGasCost(market.id, gasCost))
           },
-          onFailed: callback
+          onFailed: callback,
         })
       }
     }
@@ -68,7 +68,7 @@ function doUpdateShareFrozenValue(market, dispatch, callback) {
             const gasCost = speedomatic.unfix(attoGasCost, 'number')
             dispatch(updateMarketTradingEscapeHatchGasCost(market.id, gasCost))
           },
-          onFailed: callback
+          onFailed: callback,
         })
       }
     }

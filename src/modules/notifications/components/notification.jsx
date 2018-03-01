@@ -22,15 +22,15 @@ export default class Notification extends Component {
     checkSeen: PropTypes.bool.isRequired,
     linkPath: PropTypes.oneOfType([
       PropTypes.string,
-      PropTypes.object
-    ])
+      PropTypes.object,
+    ]),
   };
 
   constructor(props) {
     super(props)
 
     this.state = {
-      notificationBounds: {}
+      notificationBounds: {},
     }
 
     this.updateNotificationBoundingBox = debounce(this.updateNotificationBoundingBox.bind(this), 100)

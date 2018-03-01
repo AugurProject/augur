@@ -28,7 +28,7 @@ export default class Input extends Component {
     shouldMatchValue: PropTypes.bool,
     comparisonValue: PropTypes.string,
     isSearch: PropTypes.bool,
-    placeholder: PropTypes.string
+    placeholder: PropTypes.string,
   };
 
   constructor(props) {
@@ -36,7 +36,7 @@ export default class Input extends Component {
 
     this.state = {
       value: this.props.value || '',
-      isHiddenContentVisible: false
+      isHiddenContentVisible: false,
     }
 
     this.handleOnChange = this.handleOnChange.bind(this)
@@ -85,7 +85,7 @@ export default class Input extends Component {
 
   updateIsHiddenContentVisible(isHiddenContentVisible) {
     this.setState({
-      isHiddenContentVisible
+      isHiddenContentVisible,
     })
   }
 

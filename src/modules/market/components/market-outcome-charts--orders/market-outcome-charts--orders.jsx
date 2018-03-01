@@ -13,7 +13,7 @@ export default class MarketOutcomeOrderbook extends Component {
     updateHoveredPrice: PropTypes.func.isRequired,
     selectedOutcome: PropTypes.any,
     hoveredPrice: PropTypes.any,
-    marketMidpoint: PropTypes.any
+    marketMidpoint: PropTypes.any,
   }
 
   constructor(props) {
@@ -21,7 +21,7 @@ export default class MarketOutcomeOrderbook extends Component {
 
     this.state = {
       hoveredOrderIndex: null,
-      hoveredSide: null
+      hoveredSide: null,
     }
   }
 
@@ -48,22 +48,22 @@ export default class MarketOutcomeOrderbook extends Component {
                   {
                     [Styles['MarketOutcomeOrderBook__row--head']]: i === p.orderBook.asks.length - 1,
                     [Styles['MarketOutcomeOrderBook__row--hover']]: i === s.hoveredOrderIndex && s.hoveredSide === ASKS,
-                    [Styles['MarketOutcomeOrderbook__row--hover-encompassed']]: s.hoveredOrderIndex !== null && s.hoveredSide === ASKS && i > s.hoveredOrderIndex
-                  }
+                    [Styles['MarketOutcomeOrderbook__row--hover-encompassed']]: s.hoveredOrderIndex !== null && s.hoveredSide === ASKS && i > s.hoveredOrderIndex,
+                  },
                 )
               }
               onMouseEnter={() => {
                 p.updateHoveredPrice(order.price.value)
                 this.setState({
                   hoveredOrderIndex: i,
-                  hoveredSide: ASKS
+                  hoveredSide: ASKS,
                 })
               }}
               onMouseLeave={() => {
                 p.updateHoveredPrice(null)
                 this.setState({
                   hoveredOrderIndex: null,
-                  hoveredSide: null
+                  hoveredSide: null,
                 })
               }}
             >
@@ -95,22 +95,22 @@ export default class MarketOutcomeOrderbook extends Component {
                   {
                     [Styles['MarketOutcomeOrderBook__row--head']]: i === 0,
                     [Styles['MarketOutcomeOrderBook__row--hover']]: i === s.hoveredOrderIndex && s.hoveredSide === BIDS,
-                    [Styles['MarketOutcomeOrderbook__row--hover-encompassed']]: s.hoveredOrderIndex !== null && s.hoveredSide === BIDS && i < s.hoveredOrderIndex
-                  }
+                    [Styles['MarketOutcomeOrderbook__row--hover-encompassed']]: s.hoveredOrderIndex !== null && s.hoveredSide === BIDS && i < s.hoveredOrderIndex,
+                  },
                 )
               }
               onMouseEnter={() => {
                 p.updateHoveredPrice(order.price.value)
                 this.setState({
                   hoveredOrderIndex: i,
-                  hoveredSide: BIDS
+                  hoveredSide: BIDS,
                 })
               }}
               onMouseLeave={() => {
                 p.updateHoveredPrice(null)
                 this.setState({
                   hoveredOrderIndex: null,
-                  hoveredSide: null
+                  hoveredSide: null,
                 })
               }}
             >

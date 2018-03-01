@@ -58,7 +58,7 @@ class MarketTradingWrapper extends Component {
     if (`${nextTotalCost.abs().toString()} ETH` !== this.state.orderEstimate) {
       const orderEstimate = (isNaN(nextTotalCost) || nextTotalCost.abs().eq(0)) ? '' : `${nextTotalCost.abs().toString()} ETH`
       this.setState({
-        orderEstimate
+        orderEstimate,
       })
     }
   }
@@ -91,7 +91,7 @@ class MarketTradingWrapper extends Component {
 
   updateOrderEstimate(orderEstimate) {
     this.setState({
-      orderEstimate
+      orderEstimate,
     })
   }
 

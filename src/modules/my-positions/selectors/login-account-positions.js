@@ -7,6 +7,6 @@ export default function () {
 
   return {
     markets,
-    summary
+    summary,
   }
 }

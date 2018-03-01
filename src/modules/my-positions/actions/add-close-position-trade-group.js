@@ -5,6 +5,6 @@ export function addClosePositionTradeGroup(marketId, outcomeId, tradeGroupId) {
     type: ADD_CLOSE_POSITION_TRADE_GROUP,
     marketId,
     outcomeId,
-    tradeGroupId
+    tradeGroupId,
   }
 }

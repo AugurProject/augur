@@ -12,7 +12,7 @@ const MarketPreviewRange = (p) => {
 
   const {
     scalarSmallNum,
-    scalarBigNum
+    scalarBigNum,
   } = p.newMarket
 
   if (p.newMarket.type === SCALAR) {

@@ -19,7 +19,7 @@ const MarketOutcomes = (p) => {
   }
 
   const currentValuePosition = {
-    left: calculatePosition()
+    left: calculatePosition(),
   }
 
   const minValue = p.min && p.type !== BINARY ? p.min : '0%'
@@ -53,7 +53,7 @@ MarketOutcomes.propTypes = {
   outcomes: PropTypes.array.isRequired,
   max: PropTypes.string,
   min: PropTypes.string,
-  type: PropTypes.string
+  type: PropTypes.string,
 }
 
 export default MarketOutcomes

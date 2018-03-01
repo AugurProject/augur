@@ -22,7 +22,7 @@ export default class OutcomeTrade extends Component {
     minLimitPrice: PropTypes.string,
     maxLimitPrice: PropTypes.string,
     submitTrade: PropTypes.func,
-    tradeSummary: PropTypes.object
+    tradeSummary: PropTypes.object,
   };
 
   constructor(props) {
@@ -37,7 +37,7 @@ export default class OutcomeTrade extends Component {
       maxLimitPrice: props.marketType && props.marketType === SCALAR ? props.maxLimitPrice : 1,
       isSharesValueValid: true,
       isLimitPriceValueValid: true,
-      incrementAmount: 0.1
+      incrementAmount: 0.1,
     }
 
     this.updateTimestamp = this.updateTimestamp.bind(this)
@@ -51,7 +51,7 @@ export default class OutcomeTrade extends Component {
     if (this.props.marketType !== nextProps.marketType) {
       this.setState({
         minLimitPrice: nextProps.marketType && nextProps.marketType === SCALAR ? nextProps.minLimitPrice : 0,
-        maxLimitPrice: nextProps.marketType && nextProps.marketType === SCALAR ? nextProps.maxLimitPrice : 1
+        maxLimitPrice: nextProps.marketType && nextProps.marketType === SCALAR ? nextProps.maxLimitPrice : 1,
       })
     }
 
@@ -62,7 +62,7 @@ export default class OutcomeTrade extends Component {
       this.setState({
         shareInputPlaceholder: generateShareInputPlaceholder(nextProps.selectedShareDenomination),
         // maxSharesDenominated: denominateShares(getValue(nextProps, 'selectedOutcome.trade.maxNumShares.value', SHARE, nextProps.selectedShareDenomination)),
-        sharesDenominated: denominateShares(getValue(nextProps, 'selectedOutcome.trade.numShares'), SHARE, nextProps.selectedShareDenomination) || ''
+        sharesDenominated: denominateShares(getValue(nextProps, 'selectedOutcome.trade.numShares'), SHARE, nextProps.selectedShareDenomination) || '',
       })
     }
 

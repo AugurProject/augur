@@ -11,7 +11,7 @@ export default function (tradeCommitment = DEFAULT_STATE, action) {
       }
       return {
         ...tradeCommitment,
-        ...action.tradeCommitment
+        ...action.tradeCommitment,
       }
     }
     case RESET_STATE:

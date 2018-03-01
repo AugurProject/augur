@@ -18,6 +18,6 @@ const selectUserOpenOrdersSummary = memoize((outcomes, loginAccount) => {
   ), 0)
 
   return {
-    openOrdersCount: formatNumber(openOrdersCount, { denomination: 'Open Orders' })
+    openOrdersCount: formatNumber(openOrdersCount, { denomination: 'Open Orders' }),
   }
 }, { max: 10 })

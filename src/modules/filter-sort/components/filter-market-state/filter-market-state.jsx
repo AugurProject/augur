@@ -19,7 +19,7 @@ export default class FilterMarketState extends Component {
     history: PropTypes.object.isRequired,
     items: PropTypes.array.isRequired,
     updateIndices: PropTypes.func.isRequired,
-    currentReportingPeriod: PropTypes.number
+    currentReportingPeriod: PropTypes.number,
   }
 
   constructor(props) {
@@ -28,22 +28,22 @@ export default class FilterMarketState extends Component {
     this.marketStateOptions = [
       {
         label: 'Open',
-        value: STATES.MARKET_OPEN
+        value: STATES.MARKET_OPEN,
       },
       {
         label: 'Reporting',
-        value: STATES.MARKET_REPORTING
+        value: STATES.MARKET_REPORTING,
       },
       {
         label: 'Closed',
-        value: STATES.MARKET_CLOSED
-      }
+        value: STATES.MARKET_CLOSED,
+      },
     ]
 
     this.defaultMarketState = this.marketStateOptions[0].value
 
     this.state = {
-      selectedMarketState: this.defaultMarketState
+      selectedMarketState: this.defaultMarketState,
     }
 
     this.updateQuery = this.updateQuery.bind(this)
@@ -56,7 +56,7 @@ export default class FilterMarketState extends Component {
     } else {
       this.props.updateIndices({
         indices: filterByMarketState(this.state.selectedMarketState, this.props.currentReportingPeriod, this.props.items),
-        type: FILTER_MARKET_STATE_PARAM
+        type: FILTER_MARKET_STATE_PARAM,
       })
     }
   }
@@ -66,14 +66,14 @@ export default class FilterMarketState extends Component {
       this.updateQuery(nextState.selectedMarketState, nextProps.location)
       this.props.updateIndices({
         indices: filterByMarketState(nextState.selectedMarketState, nextProps.currentReportingPeriod, nextProps.items),
-        type: FILTER_MARKET_STATE_PARAM
+        type: FILTER_MARKET_STATE_PARAM,
       })
     }
 
     if (!isEqual(this.props.items, nextProps.items)) {
       this.props.updateIndices({
         indices: filterByMarketState(nextState.selectedMarketState, nextProps.currentReportingPeriod, nextProps.items),
-        type: FILTER_MARKET_STATE_PARAM
+        type: FILTER_MARKET_STATE_PARAM,
       })
     }
   }
@@ -91,7 +91,7 @@ export default class FilterMarketState extends Component {
 
     this.props.history.push({
       ...location,
-      search: updatedSearch
+      search: updatedSearch,
     })
   }
 

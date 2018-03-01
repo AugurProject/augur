@@ -8,7 +8,7 @@ export default function (hasLoadedCategory = DEFAULT_STATE, action) {
     case UPDATE_HAS_LOADED_CATEGORY:
       return ({
         ...hasLoadedCategory,
-        ...action.hasLoadedCategory
+        ...action.hasLoadedCategory,
       })
     case RESET_STATE:
       return DEFAULT_STATE

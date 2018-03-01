@@ -11,43 +11,43 @@ describe(`modules/bids-asks/reducers/is-first-order-book-chunk-loaded.js`, () =>
     description: 'Should set isFirstOrderBookChunkLoaded to false',
     params: {
       isFirstOrderBookLoaded: {
-        MARKET_1: { 1: { buy: false } }
+        MARKET_1: { 1: { buy: false } },
       },
       action: {
         type: UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED,
         marketId: 'MARKET_0',
         outcome: 3,
         orderTypeLabel: 'buy',
-        isLoaded: false
-      }
+        isLoaded: false,
+      },
     },
     assertions: (output) => {
       assert.deepEqual(output, {
         MARKET_0: { 3: { buy: false } },
-        MARKET_1: { 1: { buy: false } }
+        MARKET_1: { 1: { buy: false } },
       })
-    }
+    },
   })
   test({
     description: 'Should change isFirstOrderBookChunkLoaded to true',
     params: {
       isFirstOrderBookLoaded: {
         MARKET_0: { 3: { buy: false } },
-        MARKET_1: { 1: { buy: false } }
+        MARKET_1: { 1: { buy: false } },
       },
       action: {
         type: UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED,
         marketId: 'MARKET_0',
         outcome: 3,
         orderTypeLabel: 'buy',
-        isLoaded: true
-      }
+        isLoaded: true,
+      },
     },
     assertions: (output) => {
       assert.deepEqual(output, {
         MARKET_0: { 3: { buy: true } },
-        MARKET_1: { 1: { buy: false } }
+        MARKET_1: { 1: { buy: false } },
       })
-    }
+    },
   })
 })

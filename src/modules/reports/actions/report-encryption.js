@@ -19,7 +19,7 @@ export const decryptReport = (branchId, period, eventId, callback) => (dispatch,
     callback(null, {
       reportedOutcomeId: !parseInt(plaintext.report, 16) ? null : plaintext.report,
       salt: parseInt(plaintext.salt, 16) === 0 ? null : plaintext.salt,
-      isUnethical: parseInt(plaintext.ethics, 16) === 0
+      isUnethical: parseInt(plaintext.ethics, 16) === 0,
     })
   })
 }

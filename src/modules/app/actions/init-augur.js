@@ -63,7 +63,7 @@ function pollForNetwork(dispatch, getState) {
 
         dispatch(updateModal({
           type: MODAL_NETWORK_MISMATCH,
-          expectedNetwork: getNetworkName()
+          expectedNetwork: getNetworkName(),
         }))
       } else if (modal.type === MODAL_NETWORK_MISMATCH) {
         dispatch(closeModal())
@@ -87,7 +87,7 @@ function pollForEscapeHatch(dispatch, getState) {
           disputeBonds: [],
           initialReports: [],
           shares: [],
-          participationTokens: []
+          participationTokens: [],
         }))
       } else if (!stopped && modalShowing) {
         dispatch(closeModal())

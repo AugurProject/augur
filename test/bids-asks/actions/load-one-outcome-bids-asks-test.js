@@ -9,7 +9,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-asks.js`, () => {
   const test = t => it(t.description, (done) => {
     const store = configureMockStore([thunk])({})
     const loadOneOutcomeBidsAsks = proxyquire('../../../src/modules/bids-asks/actions/load-one-outcome-bids-asks', {
-      './load-one-outcome-bids-or-asks': t.stub.loadOneOutcomeBidsOrAsks
+      './load-one-outcome-bids-or-asks': t.stub.loadOneOutcomeBidsOrAsks,
     }).default
     store.dispatch(loadOneOutcomeBidsAsks(t.params.marketId, t.params.outcome, (err) => {
       t.assertions(err, store.getActions())
@@ -21,39 +21,39 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-asks.js`, () => {
     description: 'short-circuit if market ID not provided',
     params: {
       marketId: null,
-      outcome: 3
+      outcome: 3,
     },
     stub: {
       loadOneOutcomeBidsOrAsks: {
-        default: () => () => assert.fail()
-      }
+        default: () => () => assert.fail(),
+      },
     },
     assertions: (err, actions) => {
       assert.strictEqual(err, 'must specify market ID and outcome: null 3')
       assert.deepEqual(actions, [])
-    }
+    },
   })
   test({
     description: 'short-circuit if outcome not provided',
     params: {
       marketId: 'MARKET_0',
-      outcome: null
+      outcome: null,
     },
     stub: {
       loadOneOutcomeBidsOrAsks: {
-        default: () => () => assert.fail()
-      }
+        default: () => () => assert.fail(),
+      },
     },
     assertions: (err, actions) => {
       assert.strictEqual(err, 'must specify market ID and outcome: MARKET_0 null')
       assert.deepEqual(actions, [])
-    }
+    },
   })
   test({
     description: 'load bids and asks for single outcome',
     params: {
       marketId: 'MARKET_0',
-      outcome: 3
+      outcome: 3,
     },
     stub: {
       loadOneOutcomeBidsOrAsks: {
@@ -62,11 +62,11 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-asks.js`, () => {
             type: 'LOAD_ONE_OUTCOME_BIDS_OR_ASKS',
             marketId,
             outcome,
-            orderTypeLabel
+            orderTypeLabel,
           })
           callback(null)
-        }
-      }
+        },
+      },
     },
     assertions: (err, actions) => {
       assert.isNull(err)
@@ -74,20 +74,20 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-asks.js`, () => {
         type: 'LOAD_ONE_OUTCOME_BIDS_OR_ASKS',
         marketId: 'MARKET_0',
         outcome: 3,
-        orderTypeLabel: 'buy'
+        orderTypeLabel: 'buy',
       }, {
         type: 'LOAD_ONE_OUTCOME_BIDS_OR_ASKS',
         marketId: 'MARKET_0',
         outcome: 3,
-        orderTypeLabel: 'sell'
+        orderTypeLabel: 'sell',
       }])
-    }
+    },
   })
   test({
     description: 'propagate loadOneOutcomeBidsOrAsks error',
     params: {
       marketId: 'MARKET_0',
-      outcome: 3
+      outcome: 3,
     },
     stub: {
       loadOneOutcomeBidsOrAsks: {
@@ -96,11 +96,11 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-asks.js`, () => {
             type: 'LOAD_ONE_OUTCOME_BIDS_OR_ASKS',
             marketId,
             outcome,
-            orderTypeLabel
+            orderTypeLabel,
           })
           callback('ERROR_MESSAGE')
-        }
-      }
+        },
+      },
     },
     assertions: (err, actions) => {
       assert.strictEqual(err, 'ERROR_MESSAGE')
@@ -108,8 +108,8 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-asks.js`, () => {
         type: 'LOAD_ONE_OUTCOME_BIDS_OR_ASKS',
         marketId: 'MARKET_0',
         outcome: 3,
-        orderTypeLabel: 'buy'
+        orderTypeLabel: 'buy',
       }])
-    }
+    },
   })
 })

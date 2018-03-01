@@ -12,7 +12,7 @@ const Collapse = p => (
 Collapse.propTypes = {
   isOpen: PropTypes.bool,
   component: PropTypes.any,
-  children: PropTypes.any
+  children: PropTypes.any,
 }
 
 export default Collapse

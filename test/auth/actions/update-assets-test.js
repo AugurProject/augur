@@ -13,7 +13,7 @@ describe('modules/auth/actions/update-assets.js', () => {
   const mockStore = configureMockStore([thunk])
 
   const stubbedUpdateLoginAccount = sinon.stub().returns({
-    type: 'updateLoginAccount'
+    type: 'updateLoginAccount',
   })
 
   updateAssetsRewireAPI.__Rewire__('updateLoginAccount', stubbedUpdateLoginAccount)
@@ -32,7 +32,7 @@ describe('modules/auth/actions/update-assets.js', () => {
     description: `should dispatch 'updateLoginAccount' if a user is unlogged`,
     state: {
       loginAccount: {},
-      universe: { id: 'blah' }
+      universe: { id: 'blah' },
     },
     assertions: (store, done) => {
       store.dispatch(updateAssets())
@@ -40,7 +40,7 @@ describe('modules/auth/actions/update-assets.js', () => {
       assert(stubbedUpdateLoginAccount.calledOnce, `didn't call 'updateLoginAccount' once as expected`)
 
       done()
-    }
+    },
   })
 
   describe('loadAssets callbacks', () => {
@@ -54,12 +54,12 @@ describe('modules/auth/actions/update-assets.js', () => {
           description: `should call the callback with the expected error`,
           state: {
             loginAccount: {
-              address: '0xtest'
+              address: '0xtest',
             },
             universe: {
-              id: '0xuniverse'
+              id: '0xuniverse',
             },
-            address: '0xtest'
+            address: '0xtest',
           },
           assertions: (store, done) => {
             const ERR = { error: `${asset}-failure` }
@@ -69,25 +69,25 @@ describe('modules/auth/actions/update-assets.js', () => {
                 eth: {
                   getBalance: (value, callback) => {
                     callback(ERR, '1000')
-                  }
-                }
+                  },
+                },
               },
               api: {
                 Universe: {
                   getReputationToken: (value, callback) => {
                     callback(ERR, '10000')
-                  }
+                  },
                 },
                 ReputationToken: {
                   getBalance: (value, callback) => {
                     callback(ERR, '10000')
-                  }
-                }
-              }
+                  },
+                },
+              },
             })
 
             const callbackStub = {
-              callback: () => { }
+              callback: () => { },
             }
 
             sinon.stub(callbackStub, 'callback').callsFake(err => assert.deepEqual(err, ERR, `didn't call the callback with the expected error`))
@@ -95,7 +95,7 @@ describe('modules/auth/actions/update-assets.js', () => {
             store.dispatch(updateAssets(callbackStub.callback))
 
             done()
-          }
+          },
         })
 
         test({
@@ -103,8 +103,8 @@ describe('modules/auth/actions/update-assets.js', () => {
           state: {
             loginAccount: {},
             universe: {
-              id: 'myId'
-            }
+              id: 'myId',
+            },
           },
           assertions: (store, done) => {
             updateAssetsRewireAPI.__Rewire__('augur', {})
@@ -114,18 +114,18 @@ describe('modules/auth/actions/update-assets.js', () => {
             assert(stubbedUpdateLoginAccount.calledOnce, `didn't call 'updateLoginAccount' once as expected`)
 
             done()
-          }
+          },
         })
 
         test({
           description: `should dispatch 'updateLoginAccount' if value is present but doesn't equal updated value`,
           state: {
             loginAccount: {
-              [`${asset}`]: '11'
+              [`${asset}`]: '11',
             },
             universe: {
-              id: 'myId'
-            }
+              id: 'myId',
+            },
           },
           assertions: (store, done) => {
             updateAssetsRewireAPI.__Rewire__('augur', {
@@ -137,7 +137,7 @@ describe('modules/auth/actions/update-assets.js', () => {
             assert(stubbedUpdateLoginAccount.calledOnce, `didn't call 'updateLoginAccount' once as expected`)
 
             done()
-          }
+          },
         })
 
         test({
@@ -147,47 +147,47 @@ describe('modules/auth/actions/update-assets.js', () => {
               address: '0xtest',
               ethTokens: '10',
               eth: '10',
-              rep: '10'
+              rep: '10',
             },
             universe: {
-              id: '0xuniverse'
-            }
+              id: '0xuniverse',
+            },
           },
           assertions: (store, done) => {
             const speedomatic =
               {
-                unfix: (value, str) => { }
+                unfix: (value, str) => { },
               }
             sinon.stub(speedomatic, 'unfix').returnsArg(0)
             updateAssetsRewireAPI.__Rewire__('speedomatic', speedomatic)
             const testValue = {
               eth: 10,
-              rep: 20
+              rep: 20,
             }
             updateAssetsRewireAPI.__Rewire__('augur', {
               api: {
                 Universe: {
                   getReputationToken: (value, callback) => {
                     callback(null, '0xtestx0')
-                  }
+                  },
                 },
                 ReputationToken: {
                   getBalance: (value, callback) => {
                     callback(null, testValue.rep)
-                  }
-                }
+                  },
+                },
               },
               rpc: {
                 eth: {
                   getBalance: (value, callback) => {
                     callback(testValue.eth)
-                  }
-                }
-              }
+                  },
+                },
+              },
             })
 
             const callbackStub = {
-              callback: () => { }
+              callback: () => { },
             }
             sinon.stub(callbackStub, 'callback').callsFake((err, balances) => {
               assert.isNull(err, `didn't call the callback with the expected error`)
@@ -197,7 +197,7 @@ describe('modules/auth/actions/update-assets.js', () => {
             store.dispatch(updateAssets(callbackStub.callback))
 
             done()
-          }
+          },
         })
       })
     }

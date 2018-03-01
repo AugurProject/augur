@@ -16,7 +16,7 @@ export default class NotificationsView extends Component {
     updateNotification: PropTypes.func.isRequired,
     removeNotification: PropTypes.func.isRequired,
     clearNotifications: PropTypes.func.isRequired,
-    toggleNotifications: PropTypes.func.isRequired
+    toggleNotifications: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -24,7 +24,7 @@ export default class NotificationsView extends Component {
 
     this.state = {
       notificationsBounds: {},
-      checkSeen: false
+      checkSeen: false,
     }
 
     this.updateNotificationsBoundingBox = this.updateNotificationsBoundingBox.bind(this)

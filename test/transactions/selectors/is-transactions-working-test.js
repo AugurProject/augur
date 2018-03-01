@@ -11,7 +11,7 @@ describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
 
   const { state, store } = mockStore.default
   const selector = proxyquire('../../../src/modules/transactions/selectors/is-transactions-working', {
-    '../../../store': store
+    '../../../store': store,
   })
 
   it(`should check if a transaction is working`, () => {
@@ -23,8 +23,8 @@ describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
     transactionsData = {
       testtransaction12345: {
         id: 'testtransaction12345',
-        status: SUCCESS
-      }
+        status: SUCCESS,
+      },
     }
     actual = selector.selectIsWorking({ transactionsData })
     assert.isFalse(actual, `Didn't mark the transaction as not working when status was ${SUCCESS}.`)
@@ -32,8 +32,8 @@ describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
     transactionsData = {
       testtransaction12345: {
         id: 'testtransaction12345',
-        status: PENDING
-      }
+        status: PENDING,
+      },
     }
     actual = selector.selectIsWorking({ transactionsData })
     assert.isFalse(actual, `Didn't mark the transaction as not working when status was ${PENDING}.`)
@@ -41,8 +41,8 @@ describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
     transactionsData = {
       testtransaction12345: {
         id: 'testtransaction12345',
-        status: INTERRUPTED
-      }
+        status: INTERRUPTED,
+      },
     }
     actual = selector.selectIsWorking({ transactionsData })
     assert.isFalse(actual, `Didn't mark the transaction as not working when status was ${INTERRUPTED}.`)
@@ -50,8 +50,8 @@ describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
     transactionsData = {
       testtransaction12345: {
         id: 'testtransaction12345',
-        status: 'test'
-      }
+        status: 'test',
+      },
     }
     actual = selector.selectIsWorking({ transactionsData })
 

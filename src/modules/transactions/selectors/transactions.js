@@ -42,7 +42,7 @@ export const selectTransactions = createSelector(
       .sort((a, b) => a.sortOrder - b.sortOrder)
 
     return formattedTransactions
-  }
+  },
 )
 
 export function formatTransaction(transaction) {
@@ -52,7 +52,7 @@ export function formatTransaction(transaction) {
     gas: transaction.gas && formatEther(transaction.gas),
     ethTokens: transaction.etherWithoutGas && formatEtherTokens(transaction.etherWithoutGas),
     shares: transaction.sharesChange && formatShares(transaction.sharesChange),
-    rep: transaction.repChange && formatRep(transaction.repChange)
+    rep: transaction.repChange && formatRep(transaction.repChange),
   }
 }
 
@@ -76,6 +76,6 @@ export function formatGroupedTransactions(transactions) {
     message: `${formattedTransactions[0].type === BUY ? 'Buy' : 'Sell'} ${totalShares.toNumber()} shares of ${formattedTransactions[0].data.outcomeName}`,
     description: formattedTransactions[0].description,
     timestamp: formattedTransactions[formattedTransactions.length - 1].timestamp,
-    transactions: formattedTransactions
+    transactions: formattedTransactions,
   }
 }

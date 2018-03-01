@@ -4,7 +4,7 @@ import { RESET_STATE } from 'modules/app/actions/reset-state'
 const DEFAULT_STATE = {
   startTime: null,
   endTime: null,
-  stake: null
+  stake: null,
 }
 
 export default function (reportingWindowStats = DEFAULT_STATE, action) {
@@ -12,7 +12,7 @@ export default function (reportingWindowStats = DEFAULT_STATE, action) {
     case UPDATE_REPORTING_WINDOW_STATS:
       return {
         ...reportingWindowStats,
-        ...action.data
+        ...action.data,
       }
     case RESET_STATE:
       return DEFAULT_STATE

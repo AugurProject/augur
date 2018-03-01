@@ -15,18 +15,18 @@ describe(`modules/transactions/actions/add-transactions.js`, () => {
   const store = mockStore(state)
   const mockUpdateTrans = {}
   mockUpdateTrans.updateTransactionsData = sinon.stub().returns({
-    type: 'UPDATE_TRANSACTIONS_DATA'
+    type: 'UPDATE_TRANSACTIONS_DATA',
   })
 
   const action = proxyquire('../../../src/modules/transactions/actions/add-transactions.js', {
-    './update-transactions-data': mockUpdateTrans
+    './update-transactions-data': mockUpdateTrans,
   })
 
   beforeEach(() => {
     store.clearActions()
     global.window = {}
     global.window.performance = {
-      now: () => Date.now()
+      now: () => Date.now(),
     }
   })
 
@@ -37,16 +37,16 @@ describe(`modules/transactions/actions/add-transactions.js`, () => {
 
   it(`should add transactions`, () => {
     out = [{
-      type: 'UPDATE_TRANSACTIONS_DATA'
+      type: 'UPDATE_TRANSACTIONS_DATA',
     }]
     const transactionsArray = [{
       test1: {
-        status: 'pending'
-      }
+        status: 'pending',
+      },
     }, {
       test2: {
-        status: 'pending'
-      }
+        status: 'pending',
+      },
     }]
     store.dispatch(action.addTransactions(transactionsArray))
     assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action`)

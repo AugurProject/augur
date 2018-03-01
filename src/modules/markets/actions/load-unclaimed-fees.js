@@ -12,8 +12,8 @@ export const loadUnclaimedFees = (marketIds = [], callback = logError) => (dispa
       ...p,
       [market]: {
         ...marketsData[market],
-        unclaimedCreatorFees: marketsUnclaimedFees[market]
-      }
+        unclaimedCreatorFees: marketsUnclaimedFees[market],
+      },
     }), {})
 
     dispatch(updateMarketsData(updatedMarketsData))

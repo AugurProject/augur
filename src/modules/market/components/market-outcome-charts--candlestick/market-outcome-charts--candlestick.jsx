@@ -114,7 +114,7 @@ export default class MarketOutcomeCandlestick extends Component {
       low: null, // Lowest price during that period
       open: null, // First price in that period
       close: null, // Last price in that period
-      volume: null // Total number of shares in that period
+      volume: null, // Total number of shares in that period
     }
 
     const periodTimeSeries = constrainedPriceTimeSeries.reduce((p, priceTime, i) => {
@@ -125,7 +125,7 @@ export default class MarketOutcomeCandlestick extends Component {
           low: priceTime.price,
           open: priceTime.price,
           close: priceTime.price,
-          volume: priceTime.amount
+          volume: priceTime.amount,
         }
         return p
       }
@@ -145,7 +145,7 @@ export default class MarketOutcomeCandlestick extends Component {
           low: priceTime.price,
           open: priceTime.price,
           close: priceTime.price,
-          volume: priceTime.amount
+          volume: priceTime.amount,
         }
         return updatedPeriodTimeSeries
       }
@@ -156,7 +156,7 @@ export default class MarketOutcomeCandlestick extends Component {
         high: priceTime.price > accumulationPeriod.high ? priceTime.price : accumulationPeriod.high,
         low: priceTime.price < accumulationPeriod.low ? priceTime.price : accumulationPeriod.low,
         close: priceTime.price,
-        volume: accumulationPeriod.volume + priceTime.amount
+        volume: accumulationPeriod.volume + priceTime.amount,
       }
 
       // If we've reached the end of the series, just return what has accumulated w/in the current period
@@ -187,7 +187,7 @@ export default class MarketOutcomeCandlestick extends Component {
         bottom: 30,
         left: 50,
         stick: 5,
-        tickOffset: 10
+        tickOffset: 10,
       }
 
       const width = this.candlestickChart.clientWidth
@@ -324,7 +324,7 @@ export default class MarketOutcomeCandlestick extends Component {
       this.setState({
         yScale,
         chartWidth: width,
-        chart: fauxDiv.toReact()
+        chart: fauxDiv.toReact(),
       })
     }
   }

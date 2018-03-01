@@ -1,61 +1,61 @@
 export const RANGES = [
   {
     range: 60000,
-    label: 'Past minute'
+    label: 'Past minute',
   },
   {
     range: 3600000,
-    label: 'Past hour'
+    label: 'Past hour',
   },
   {
     range: 86400000,
-    label: 'Past day'
+    label: 'Past day',
   },
   {
     range: 604800017,
-    label: 'Past week'
+    label: 'Past week',
   },
   {
     range: 2629800000,
-    label: 'Past month'
+    label: 'Past month',
   },
   {
     range: 31557600000,
-    label: 'Past year'
+    label: 'Past year',
   },
   {
     range: null,
-    label: 'Full range'
-  }
+    label: 'Full range',
+  },
 ]
 
 export const PERIODS = [
   {
     period: null,
-    label: 'Every block'
+    label: 'Every block',
   },
   {
     period: 60000,
-    label: 'Every minute'
+    label: 'Every minute',
   },
   {
     period: 3600000,
-    label: 'Hourly'
+    label: 'Hourly',
   },
   {
     period: 86400000,
-    label: 'Daily'
+    label: 'Daily',
   },
   {
     period: 604800017,
-    label: 'Weekly'
+    label: 'Weekly',
   },
   {
     period: 2629800000,
-    label: 'Monthly'
+    label: 'Monthly',
   },
   {
     period: 31557600000,
-    label: 'Yearly'
-  }
+    label: 'Yearly',
+  },
 ]

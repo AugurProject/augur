@@ -13,7 +13,7 @@ describe(`modules/auth/actions/update-login-account.js`, () => {
       const store = mockStore(t.state)
       const UpdateFromAddress = { updateFromAddress: () => {} }
       const action = proxyquire('../../../src/modules/auth/actions/update-login-account.js', {
-        '../../contracts/actions/update-contract-api': UpdateFromAddress
+        '../../contracts/actions/update-contract-api': UpdateFromAddress,
       })
       sinon.stub(UpdateFromAddress, 'updateFromAddress').callsFake(address => ({ type: 'UPDATE_FROM_ADDRESS', address }))
       store.dispatch(action[t.method](t.param))
@@ -30,14 +30,14 @@ describe(`modules/auth/actions/update-login-account.js`, () => {
       const output = [{
         type: 'UPDATE_LOGIN_ACCOUNT',
         data: {
-          address: '0xb0b'
-        }
+          address: '0xb0b',
+        },
       }, {
         type: 'UPDATE_FROM_ADDRESS',
-        address: '0xb0b'
+        address: '0xb0b',
       }]
       assert.deepEqual(actions, output, `The action fired incorrectly`)
-    }
+    },
   })
   test({
     description: 'should fire a CLEAR_LOGIN_ACCOUNT action type',
@@ -46,9 +46,9 @@ describe(`modules/auth/actions/update-login-account.js`, () => {
     param: { address: '0xb0b' },
     assertions: (actions) => {
       const output = [{
-        type: 'CLEAR_LOGIN_ACCOUNT'
+        type: 'CLEAR_LOGIN_ACCOUNT',
       }]
       assert.deepEqual(actions, output, `The action fired incorrectly`)
-    }
+    },
   })
 })

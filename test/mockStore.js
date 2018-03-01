@@ -15,10 +15,10 @@ const store = mockStore(state)
  */
 function actionCreator() {
   return sinon.stub().returns({
-    type: 'MOCK_ACTION'
+    type: 'MOCK_ACTION',
   })
 }
 
 export default {
-  store, state, mockStore, actionCreator
+  store, state, mockStore, actionCreator,
 }

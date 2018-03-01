@@ -40,7 +40,7 @@ const mergeProps = (sP, dP, oP) => {
     isMarketLoaded: sP.marketsData[marketId] != null,
     market,
     loadFullMarket: () => dP.loadFullMarket(marketId),
-    submitInitialReport: (marketId, selectedOutcome, invalid, history) => dP.submitInitialReport(marketId, selectedOutcome, invalid, history)
+    submitInitialReport: (marketId, selectedOutcome, invalid, history) => dP.submitInitialReport(marketId, selectedOutcome, invalid, history),
   }
 }
 

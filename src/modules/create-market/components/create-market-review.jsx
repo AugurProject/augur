@@ -24,7 +24,7 @@ export default class CreateMarketReview extends Component {
     initialLiquidityFees: PropTypes.instanceOf(BigNumber).isRequired,
     settlementFee: PropTypes.oneOfType([
       PropTypes.string,
-      PropTypes.number
+      PropTypes.number,
     ]).isRequired,
   };
 
@@ -40,7 +40,7 @@ export default class CreateMarketReview extends Component {
       // },
       formattedInitialLiquidityEth: formatEtherTokensEstimate(this.props.initialLiquidityEth),
       formattedInitialLiquidityGas: formatEtherEstimate(this.props.initialLiquidityGas),
-      formattedInitialLiquidityFees: formatEtherTokensEstimate(this.props.initialLiquidityFees)
+      formattedInitialLiquidityFees: formatEtherTokensEstimate(this.props.initialLiquidityFees),
     }
   }
 
@@ -64,13 +64,13 @@ export default class CreateMarketReview extends Component {
     const self = this
     augur.createMarket.getMarketCreationCostBreakdown({
       universe: this.props.universe.id,
-      _endTime: this.props.endDate.timestamp
+      _endTime: this.props.endDate.timestamp,
     }, (err, marketCreationCostBreakdown) => {
       if (err) return console.error(err)
       self.setState({
         gasCost: formatEtherEstimate(0), // FIXME real gas cost lookup
         creationFee: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
-        validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond)
+        validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond),
       })
     })
   }

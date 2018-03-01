@@ -13,7 +13,7 @@ class Dropdown extends Component {
     this.state = {
       label: (defaultOption && defaultOption.label) || props.options[0].label,
       value: (defaultOption && defaultOption.value) || props.options[0].value,
-      showList: false
+      showList: false,
     }
 
     this.dropdownSelect = this.dropdownSelect.bind(this)
@@ -33,7 +33,7 @@ class Dropdown extends Component {
     if (value !== this.state.value) {
       this.setState({
         label,
-        value
+        value,
       })
       this.props.onChange(value)
       this.toggleList()
@@ -96,7 +96,7 @@ class Dropdown extends Component {
 Dropdown.propTypes = {
   onChange: PropTypes.func.isRequired,
   default: PropTypes.string.isRequired,
-  options: PropTypes.array.isRequired
+  options: PropTypes.array.isRequired,
 }
 
 export default Dropdown

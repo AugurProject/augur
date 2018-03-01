@@ -15,7 +15,7 @@ import Styles from 'modules/auth/components/uport-create/uport-create.styles'
 export default class UportCreate extends Component {
   static propTypes = {
     isMobile: PropTypes.bool.isRequired,
-    login: PropTypes.func.isRequired
+    login: PropTypes.func.isRequired,
   }
 
   constructor() {
@@ -24,13 +24,13 @@ export default class UportCreate extends Component {
     this.uPort = new Connect(
       'AUGUR -- DEV',
       {
-        clientId: '2ofGiHuZhhpDMAQeDxjoDhEsUQd1MayECgd'
-      }
+        clientId: '2ofGiHuZhhpDMAQeDxjoDhEsUQd1MayECgd',
+      },
     )
 
     this.state = {
       uri: '',
-      qrSize: 0
+      qrSize: 0,
     }
 
     this.uPortURIHandler = this.uPortURIHandler.bind(this)
@@ -41,9 +41,9 @@ export default class UportCreate extends Component {
   componentWillMount() {
     this.uPort.requestCredentials(
       {
-        notifcations: true
+        notifcations: true,
       },
-      this.uPortURIHandler
+      this.uPortURIHandler,
     )
       .then((account) => {
         this.props.login(decode(account.address), this.uPort.sendTransaction)

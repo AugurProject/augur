@@ -10,7 +10,7 @@ describe('modules/my-markets/reducers/market-creator-fees.js', () => {
 
   const action = {
     type: UPDATE_MARKET_CREATOR_FEES,
-    data: null
+    data: null,
   }
 
   it('should return the default parameter state', () => {
@@ -19,11 +19,11 @@ describe('modules/my-markets/reducers/market-creator-fees.js', () => {
 
   it('should return an object with a first update', () => {
     action.data = {
-      '0xtest1': 'a big num'
+      '0xtest1': 'a big num',
     }
 
     expected = {
-      ...action.data
+      ...action.data,
     }
 
     assert.deepEqual(reducer(state, action), expected, `didn't return the expected initially update object`)
@@ -33,12 +33,12 @@ describe('modules/my-markets/reducers/market-creator-fees.js', () => {
     state = action.data
 
     action.data = {
-      '0xtest2': 'a big num'
+      '0xtest2': 'a big num',
     }
 
     expected = {
       ...state,
-      ...action.data
+      ...action.data,
     }
 
     assert.deepEqual(reducer(state, action), expected, `didn't return the expected object with a second update`)
@@ -48,12 +48,12 @@ describe('modules/my-markets/reducers/market-creator-fees.js', () => {
     state = expected
 
     action.data = {
-      '0xtest1': 'a different big num'
+      '0xtest1': 'a different big num',
     }
 
     expected = {
       ...state,
-      ...action.data
+      ...action.data,
     }
 
     assert.deepEqual(reducer(state, action), expected, `didn't return the expected object with an updated value`)

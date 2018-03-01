@@ -14,7 +14,7 @@ export default class SnitchForm extends Component {
       salt: '',
       isIndeterminate: false,
       isUnethical: false,
-      isReported: false
+      isReported: false,
     }
   }
 

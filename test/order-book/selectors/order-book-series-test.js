@@ -22,7 +22,7 @@ describe('modules/order-book/selectors/order-book-series', () => {
       const expected = { [BIDS]: [], [ASKS]: [] }
 
       assert.deepEqual(actual, expected, `Didn't return the expected orderBookSeries`)
-    }
+    },
   })
 
   test({
@@ -32,45 +32,45 @@ describe('modules/order-book/selectors/order-book-series', () => {
         [BIDS]: [
           {
             price: formatEtherTokens(0.2),
-            shares: formatShares(10)
+            shares: formatShares(10),
           },
           {
             price: formatEtherTokens(0.1),
-            shares: formatShares(10)
+            shares: formatShares(10),
           },
           {
             price: formatEtherTokens(0.1),
-            shares: formatShares(10)
-          }
+            shares: formatShares(10),
+          },
         ],
         [ASKS]: [
           {
             price: formatEtherTokens(0.5),
-            shares: formatShares(10)
+            shares: formatShares(10),
           },
           {
             price: formatEtherTokens(0.5),
-            shares: formatShares(10)
+            shares: formatShares(10),
           },
           {
             price: formatEtherTokens(0.6),
-            shares: formatShares(10)
-          }
-        ]
+            shares: formatShares(10),
+          },
+        ],
       })
 
       const expected = {
         [BIDS]: [
           [0.1, 30],
-          [0.2, 10]
+          [0.2, 10],
         ],
         [ASKS]: [
           [0.5, 20],
-          [0.6, 30]
-        ]
+          [0.6, 30],
+        ],
       }
 
       assert.deepEqual(actual, expected, `Didn't return the expected orderBookSeries`)
-    }
+    },
   })
 })

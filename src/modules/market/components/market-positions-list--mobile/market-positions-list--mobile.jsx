@@ -21,7 +21,7 @@ export default class MarketPositionsListMobile extends Component {
 
     this.state = {
       showViewMore: props.openOrders.length > 3,
-      visibleOrders: props.openOrders.length > 3 ? 3 : props.openOrders.length
+      visibleOrders: props.openOrders.length > 3 ? 3 : props.openOrders.length,
     }
   }
 

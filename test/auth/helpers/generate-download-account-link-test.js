@@ -11,7 +11,7 @@ describe('modules/auth/helpers/generate-download-account-link.js', () => {
     description: `should return the expected values + call the expected methods`,
     assertions: () => {
       const Speedomatic = {
-        byteArrayToHexString: () => {}
+        byteArrayToHexString: () => {},
       }
       sinon.stub(Speedomatic, 'byteArrayToHexString').callsFake(privateKey => privateKey)
       linkRewireAPI.__Rewire__('speedomatic', Speedomatic)
@@ -19,14 +19,14 @@ describe('modules/auth/helpers/generate-download-account-link.js', () => {
       const augur = {
         accounts: {
           account: {
-            privateKey: '123privatekey'
-          }
-        }
+            privateKey: '123privatekey',
+          },
+        },
       }
       linkRewireAPI.__Rewire__('augur', augur)
 
       const keythereum = {
-        generateKeystoreFilename: () => {}
+        generateKeystoreFilename: () => {},
       }
       sinon.stub(keythereum, 'generateKeystoreFilename').callsFake(address => address)
       linkRewireAPI.__Rewire__('keythereum', keythereum)
@@ -36,12 +36,12 @@ describe('modules/auth/helpers/generate-download-account-link.js', () => {
       const expected = {
         accountPrivateKey: '123privatekey',
         downloadAccountDataString: 'data:,%7B%22keystore%22%3A%22object%22%7D',
-        downloadAccountFileName: '0xtest'
+        downloadAccountFileName: '0xtest',
       }
 
       assert.deepEqual(actual, expected, `didn't return the expected object`)
       assert(Speedomatic.byteArrayToHexString.calledOnce, `didn't call 'speedomatic.byteArrayToHexString' once as exptected`)
       assert(keythereum.generateKeystoreFilename.calledOnce, `didn't call 'keythereum.generateKeystoreFilename' once as expected`)
-    }
+    },
   })
 })

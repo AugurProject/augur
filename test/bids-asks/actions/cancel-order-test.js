@@ -12,16 +12,16 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
   const augur = {
     api: {
       CancelOrder: {
-        cancelOrder: sinon.stub()
-      }
-    }
+        cancelOrder: sinon.stub(),
+      },
+    },
   }
   const updateOrderStatus = actionCreator()
   const cancelOrderModule = proxyquire('../../../src/modules/bids-asks/actions/cancel-order', {
     '../../../services/augurjs': {
       augur,
     },
-    '../../bids-asks/actions/update-order-status': { updateOrderStatus }
+    '../../bids-asks/actions/update-order-status': { updateOrderStatus },
   })
 
   const store = mockStore({
@@ -32,13 +32,13 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
         data: {
           order: {
             id: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
-            type: BID
+            type: BID,
           },
           market: { id: 'testMarketId' },
-          outcome: {}
-        }
-      }
-    }
+          outcome: {},
+        },
+      },
+    },
   })
 
   afterEach(() => {

@@ -7,7 +7,7 @@ import { updateEnv } from 'modules/app/actions/update-env'
 import { approveAccount } from 'modules/auth/actions/approve-account'
 
 const mapStateToProps = state => ({
-  modal: state.modal
+  modal: state.modal,
 })
 
 const mapDispatchToProps = dispatch => ({

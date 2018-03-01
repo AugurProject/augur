@@ -9,8 +9,8 @@ const Spinner = p => (
       classNames(
         Styles.Spinner__icon,
         {
-          [Styles[`Spinner__icon--light`]]: p.light
-        }
+          [Styles[`Spinner__icon--light`]]: p.light,
+        },
       )}
     />
   </article>

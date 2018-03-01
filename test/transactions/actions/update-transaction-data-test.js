@@ -17,11 +17,11 @@ describe(`modules/transactions/actions/update-transactions-data.js`, () => {
     out = [{
       type: 'UPDATE_TRANSACTIONS_DATA',
       transactionsData: {
-        test: 'testTransactionData'
-      }
+        test: 'testTransactionData',
+      },
     }]
     store.dispatch(action.updateTransactionsData({
-      test: 'testTransactionData'
+      test: 'testTransactionData',
     }))
     assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actions`)
   })

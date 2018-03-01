@@ -22,13 +22,13 @@ export const selectAggregateOrderBook = memoize((outcomeId, marketOrderBook, ord
   if (marketOrderBook == null) {
     return {
       [BIDS]: [],
-      [ASKS]: []
+      [ASKS]: [],
     }
   }
 
   return {
     [BIDS]: selectAggregatePricePoints(outcomeId, BUY, marketOrderBook, orderCancellation).sort(sortPricePointsByPriceDesc),
-    [ASKS]: selectAggregatePricePoints(outcomeId, SELL, marketOrderBook, orderCancellation).sort(sortPricePointsByPriceAsc)
+    [ASKS]: selectAggregatePricePoints(outcomeId, SELL, marketOrderBook, orderCancellation).sort(sortPricePointsByPriceAsc),
   }
 }, { max: 100 })
 
@@ -86,7 +86,7 @@ const selectAggregatePricePoints = memoize((outcomeId, side, orders, orderCancel
     .filter(order => orderCancellation[order.orderId] !== CLOSE_DIALOG_CLOSING)
     .map(order => ({
       ...order,
-      isOfCurrentUser: isOrderOfUser(order, currentUserAddress)
+      isOfCurrentUser: isOrderOfUser(order, currentUserAddress),
     }))
     .reduce(reduceSharesCountByPrice, {})
 

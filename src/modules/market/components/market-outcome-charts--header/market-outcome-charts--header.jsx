@@ -52,5 +52,5 @@ MarketOutcomeChartsHeader.propTypes = {
   hoveredDepth: PropTypes.array.isRequired,
   fixedPrecision: PropTypes.number.isRequired,
   updatePrecision: PropTypes.func.isRequired,
-  updateSelectedPeriod: PropTypes.func.isRequired
+  updateSelectedPeriod: PropTypes.func.isRequired,
 }

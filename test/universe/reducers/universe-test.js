@@ -11,8 +11,8 @@ describe(`modules/universe/reducers/universe.js`, () => {
       type: UPDATE_UNIVERSE,
       universe: {
         description: 'testing!',
-        reportingPeriodDurationInSeconds: '12345'
-      }
+        reportingPeriodDurationInSeconds: '12345',
+      },
     }
     const expectedOutput = Object.assign({}, thisTestState.universe, action.universe)
     assert.deepEqual(reducer(thisTestState.universe, action), expectedOutput, `Didn't update the universe object correctly`)

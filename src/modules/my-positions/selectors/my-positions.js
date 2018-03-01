@@ -15,5 +15,5 @@ export const selectPositionsMarkets = createSelector(
       return []
     }
     return markets.filter(market => positions[market.id] != null)
-  }
+  },
 )

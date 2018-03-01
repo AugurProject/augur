@@ -24,7 +24,7 @@ const validateIsMarketValid = (validations, updateState, isMarketValid) => {
 
   updateState({
     validations: updatedValidations,
-    isMarketValid
+    isMarketValid,
   })
 }
 
@@ -34,7 +34,7 @@ const validateOutcome = (validations, updateState, selectedOutcome) => {
 
   updateState({
     validations: updatedValidations,
-    selectedOutcome
+    selectedOutcome,
   })
 }
 
@@ -58,7 +58,7 @@ const validateNumber = (validations, updateState, fieldName, value, humanName, m
 
   updateState({
     validations: updatedValidations,
-    [fieldName]: value
+    [fieldName]: value,
   })
 }
 
@@ -90,7 +90,7 @@ const validateStake = (p, rawStake) => {
 
   p.updateState({
     validations: updatedValidations,
-    stake
+    stake,
   })
 }
 
@@ -129,7 +129,7 @@ export default class ReportingDisputeForm extends Component {
     if (ReportingDisputeForm.calcIsStakeRequired(this.props)) {
       this.props.updateState({
         stakeIsRequired: true,
-        validations: { ...this.props.validations, stake: false }
+        validations: { ...this.props.validations, stake: false },
       })
     }
   }

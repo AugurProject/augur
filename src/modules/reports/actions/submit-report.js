@@ -20,7 +20,7 @@ export const submitReport = (market, reportedOutcomeId, amountToStake, isIndeter
     isCategorical: market.type === CATEGORICAL,
     isScalar: market.type === SCALAR,
     isIndeterminate,
-    isSubmitted: false
+    isSubmitted: false,
   }
   dispatch(updateReport(universeId, market.id, { ...report }))
   augur.reporting.submitReport({
@@ -38,7 +38,7 @@ export const submitReport = (market, reportedOutcomeId, amountToStake, isIndeter
       const { reports } = getState()
       dispatch(updateReport(universeId, market.id, { ...(reports[universeId] || {})[market.id], isSubmitted: false }))
       callback(err)
-    }
+    },
   })
   dispatch(nextReportPage(history))
 }

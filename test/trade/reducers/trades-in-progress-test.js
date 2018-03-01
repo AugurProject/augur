@@ -9,20 +9,20 @@ describe(`modules/trade/reducers/trade-in-progress.js`, () => {
     MarketId: {
       MarketId: 'testStateMarketId',
       OutcomeId: {
-        test: 1
-      }
+        test: 1,
+      },
     },
     MarketID2: {
       MarketID2: 'testStateMarketID2',
       OutcomeId: {
-        test: 2
-      }
-    }
+        test: 2,
+      },
+    },
   }
 
   it(`should clear the login account `, () => {
     const testAction = {
-      type: CLEAR_LOGIN_ACCOUNT
+      type: CLEAR_LOGIN_ACCOUNT,
     }
 
     const expectedState = {}
@@ -37,24 +37,24 @@ describe(`modules/trade/reducers/trade-in-progress.js`, () => {
         marketId: 'MarketId',
         outcomeId: 'OutcomeId',
         details: {
-          details: 'something here'
-        }
-      }
+          details: 'something here',
+        },
+      },
     }
 
     const expectedState = {
       MarketId: {
         MarketId: 'testStateMarketId',
         OutcomeId: {
-          details: 'something here'
-        }
+          details: 'something here',
+        },
       },
       MarketID2: {
         MarketID2: 'testStateMarketID2',
         OutcomeId: {
-          test: 2
-        }
-      }
+          test: 2,
+        },
+      },
     }
 
     assert.deepEqual(reducer(testState, testAction), expectedState, `reducer doesn't produce the expected state`)
@@ -70,10 +70,10 @@ describe(`modules/trade/reducers/trade-in-progress.js`, () => {
       MarketId: {
         MarketId: 'testStateMarketId',
         OutcomeId: {
-          test: 1
-        }
+          test: 1,
+        },
       },
-      MarketID2: {}
+      MarketID2: {},
     }
 
     assert.deepEqual(reducer(testState, testAction), expectedState, `reducer doesn't produce the expected state`)

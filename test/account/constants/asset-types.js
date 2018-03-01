@@ -12,7 +12,7 @@ describe('modules/account/constants/asset-types.js', () => {
       const expected = 'ETH'
 
       assert.strictEqual(ETH, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -21,6 +21,6 @@ describe('modules/account/constants/asset-types.js', () => {
       const expected = 'REP'
 
       assert.strictEqual(REP, expected, `didn't return the expected string`)
-    }
+    },
   })
 })

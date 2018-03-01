@@ -85,7 +85,7 @@ export const selectClosePositionStatus = createSelector(
     }, {})
 
     return statuses
-  }
+  },
 )
 
 // waits, then clears orderIds from closePositionTradeGroups

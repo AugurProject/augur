@@ -13,20 +13,20 @@ describe(`modules/app/actions/sync-blockchain.js`, function () { // eslint-disab
     blockchain: {
       currentBlockMillisSinceEpoch: 12344,
       currentBlockTimestamp: 4886718335,
-      currentBlockNumber: 9999
-    }
+      currentBlockNumber: 9999,
+    },
   })
   const dataReturned = {
     currentBlockNumber: 0x10000,
     currentBlockTimestamp: 0x4886718345,
-    currentBlockMillisSinceEpoch: 12345
+    currentBlockMillisSinceEpoch: 12345,
   }
   const store = mockStore(state)
   const AugurJS = {
     rpc: {
       getCurrentBlock: () => ({ number: 10000, timestamp: 4886718345 }),
-      block: { number: 10000, timestamp: 4886718345 }
-    }
+      block: { number: 10000, timestamp: 4886718345 },
+    },
   }
 
   const updateBlockchain = data => ({ type: 'UPDATE_BLOCKCHAIN', data })
@@ -45,7 +45,7 @@ describe(`modules/app/actions/sync-blockchain.js`, function () { // eslint-disab
     AugurJS.rpc.block = { number: 10000, timestamp: '0x123456789' }
     const out = [{
       type: 'UPDATE_BLOCKCHAIN',
-      data: dataReturned
+      data: dataReturned,
     }]
     store.dispatch(syncBlockchain())
     assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected actions`)

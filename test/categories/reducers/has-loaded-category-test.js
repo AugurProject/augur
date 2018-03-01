@@ -20,7 +20,7 @@ describe('modules/categories/reducers/has-loaded-category.js', () => {
       const expected = {}
 
       assert.deepEqual(actual, expected, `Didn't return the expected default value`)
-    }
+    },
   })
 
   test({
@@ -31,7 +31,7 @@ describe('modules/categories/reducers/has-loaded-category.js', () => {
       const expected = { category: true }
 
       assert.deepEqual(actual, expected, `Didn't return the expected existing value`)
-    }
+    },
   })
 
   test({
@@ -41,16 +41,16 @@ describe('modules/categories/reducers/has-loaded-category.js', () => {
         type: UPDATE_HAS_LOADED_CATEGORY,
         hasLoadedCategory: {
           category: false,
-          category2: true
-        }
+          category2: true,
+        },
       })
 
       const expected = {
         category: false,
-        category2: true
+        category2: true,
       }
 
       assert.deepEqual(actual, expected, `Didn't return the expected updated value`)
-    }
+    },
   })
 })

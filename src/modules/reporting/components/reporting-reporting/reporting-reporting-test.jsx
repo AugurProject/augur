@@ -30,11 +30,11 @@ describe('reporting-reporting', () => {
     describe('when items array is not empty', () => {
       it('should render no markets found component', () => {
         const items = [{
-          id: 1
+          id: 1,
         }, {
-          id: 2
+          id: 2,
         }, {
-          id: 3
+          id: 3,
         }]
 
         cmp = shallow(<ReportSection title={exampleTitle} items={items} />)

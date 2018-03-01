@@ -14,19 +14,19 @@ export default function (marketReportState = DEFAULT_STATE, action) {
     case UPDATE_DESIGNATED_REPORTING_MARKETS:
       return {
         ...marketReportState,
-        designated: action.data
+        designated: action.data,
       }
 
     case UPDATE_OPEN_REPORTING_MARKETS:
       return {
         ...marketReportState,
-        open: action.data
+        open: action.data,
       }
 
     case UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS:
       return {
         ...marketReportState,
-        upcoming: action.data
+        upcoming: action.data,
       }
 
     case RESET_STATE:

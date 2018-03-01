@@ -70,5 +70,5 @@ MarketOutcomeCandlestickHeader.propTypes = {
   open: PropTypes.number,
   high: PropTypes.number,
   low: PropTypes.number,
-  close: PropTypes.number
+  close: PropTypes.number,
 }

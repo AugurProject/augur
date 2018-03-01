@@ -24,7 +24,7 @@ describe('modules/account/selectors/core-stats', () => {
         CoreStatsRewireAPI.__ResetDependency__('selectCoreStats')
 
         assert(stubbedSelectCoreStats.calledOnce, `didn't call 'selectCoreStats' once as expected`)
-      }
+      },
     })
   })
 
@@ -37,7 +37,7 @@ describe('modules/account/selectors/core-stats', () => {
         const expected = null
 
         assert.strictEqual(actual, expected, `didn't return null as expected`)
-      }
+      },
     })
 
     test({
@@ -48,7 +48,7 @@ describe('modules/account/selectors/core-stats', () => {
         const expected = null
 
         assert.strictEqual(actual, expected, `didn't return null as expected`)
-      }
+      },
     })
 
     test({
@@ -59,7 +59,7 @@ describe('modules/account/selectors/core-stats', () => {
         const expected = '0.1'
 
         assert.strictEqual(actual, expected, `didn't return the expected price`)
-      }
+      },
     })
 
     test({
@@ -70,7 +70,7 @@ describe('modules/account/selectors/core-stats', () => {
         const expected = undefined
 
         assert.strictEqual(actual, expected, `didn't return the expected price`)
-      }
+      },
     })
   })
 
@@ -91,7 +91,7 @@ describe('modules/account/selectors/core-stats', () => {
         const expected = null
 
         assert.strictEqual(actual, expected, `didn't return null as expected`)
-      }
+      },
     })
 
     test({
@@ -106,7 +106,7 @@ describe('modules/account/selectors/core-stats', () => {
         const expected = null
 
         assert.strictEqual(actual, expected, `didn't return null as expected`)
-      }
+      },
     })
 
     test({
@@ -118,29 +118,29 @@ describe('modules/account/selectors/core-stats', () => {
           '0xMarketID1': {
             1: [
               {
-                blockNumber: 90000
+                blockNumber: 90000,
               },
               {
-                blockNumber: 90001
-              }
+                blockNumber: 90001,
+              },
             ],
             2: [
               {
-                blockNumber: 90000
+                blockNumber: 90000,
               },
               {
-                blockNumber: 90001
-              }
-            ]
-          }
+                blockNumber: 90001,
+              },
+            ],
+          },
         }
 
         const blockchain = {
-          currentBlockNumber: 100000
+          currentBlockNumber: 100000,
         }
 
         const outcomesData = {
-          '0xMarketID1': {}
+          '0xMarketID1': {},
         }
 
         const selector = createPeriodPLSelector(1)
@@ -150,7 +150,7 @@ describe('modules/account/selectors/core-stats', () => {
         const expected = ZERO
 
         assert.deepEqual(actual, expected, `didn't return the expected value`)
-      }
+      },
     })
 
     test({
@@ -162,29 +162,29 @@ describe('modules/account/selectors/core-stats', () => {
           '0xMarketID1': {
             1: [
               {
-                blockNumber: 95000
+                blockNumber: 95000,
               },
               {
-                blockNumber: 96000
-              }
+                blockNumber: 96000,
+              },
             ],
             2: [
               {
-                blockNumber: 95000
+                blockNumber: 95000,
               },
               {
-                blockNumber: 96000
-              }
-            ]
-          }
+                blockNumber: 96000,
+              },
+            ],
+          },
         }
 
         const blockchain = {
-          currentBlockNumber: 100000
+          currentBlockNumber: 100000,
         }
 
         const outcomesData = {
-          '0xMarketID1': {}
+          '0xMarketID1': {},
         }
 
         CoreStatsRewireAPI.__Rewire__('selectOutcomeLastPrice', () => '0.2')
@@ -192,9 +192,9 @@ describe('modules/account/selectors/core-stats', () => {
           trading: {
             calculateProfitLoss: () => ({
               realized: '-1',
-              unrealized: '2'
-            })
-          }
+              unrealized: '2',
+            }),
+          },
         })
 
         const selector = createPeriodPLSelector(1)
@@ -207,7 +207,7 @@ describe('modules/account/selectors/core-stats', () => {
         CoreStatsRewireAPI.__ResetDependency__('augur')
 
         assert.deepEqual(actual, expected, `didn't return the expected value`)
-      }
+      },
     })
   })
 
@@ -218,12 +218,12 @@ describe('modules/account/selectors/core-stats', () => {
         const loginAccount = {
           ethTokens: formatEtherTokens(10),
           eth: formatEther(10),
-          rep: formatRep(10)
+          rep: formatRep(10),
         }
         const loginAccountPositions = {
           summary: {
-            totalNet: formatEtherTokens(10)
-          }
+            totalNet: formatEtherTokens(10),
+          },
         }
         const periodPL = new BigNumber('10')
 
@@ -234,40 +234,40 @@ describe('modules/account/selectors/core-stats', () => {
             totalEth: {
               label: 'ETH Tokens',
               title: 'Ether Tokens -- outcome trading currency',
-              value: { ...loginAccount.ethTokens, denomination: null }
+              value: { ...loginAccount.ethTokens, denomination: null },
             },
             totalRealEth: {
               label: 'ETH',
               title: 'Ether -- pays transaction gas fees',
-              value: { ...loginAccount.eth, denomination: null }
+              value: { ...loginAccount.eth, denomination: null },
             },
             totalRep: {
               label: 'REP',
               title: 'Reputation -- event voting currency',
-              value: { ...loginAccount.rep, denomination: null }
-            }
+              value: { ...loginAccount.rep, denomination: null },
+            },
           },
           {
             totalPL: {
               label: 'Total P/L',
               title: 'Profit/Loss -- net of all trades',
-              value: loginAccountPositions.summary.totalNet
+              value: loginAccountPositions.summary.totalNet,
             },
             totalPLMonth: {
               label: '30 Day P/L',
               title: 'Profit/Loss -- net of all trades over the last 30 days',
-              value: formatEtherTokens(periodPL)
+              value: formatEtherTokens(periodPL),
             },
             totalPLDay: {
               label: '1 Day P/L',
               title: 'Profit/Loss -- net of all trades over the last day',
-              value: formatEtherTokens(periodPL)
-            }
-          }
+              value: formatEtherTokens(periodPL),
+            },
+          },
         ]
 
         assert.deepEqual(actual, expected, `didn't return the expected array`)
-      }
+      },
     })
   })
 })

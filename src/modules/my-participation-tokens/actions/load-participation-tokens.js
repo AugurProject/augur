@@ -20,7 +20,7 @@ export default (includeCurrent = true, callback = logError) => (dispatch, getSta
           const gasCost = speedomatic.encodeNumberAsJSNumber(attoGasCost)
           dispatch(updateParticipationTokensEscapeHatchGasCost(feeWindowID, gasCost))
         },
-        onFailed: callback
+        onFailed: callback,
       })
     })
     callback(null, feeWindowsWithUnclaimedTokens)

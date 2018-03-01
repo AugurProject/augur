@@ -16,10 +16,10 @@ describe('modules/markets/actions/update-has-loaded-markets.js', () => {
     assertions: (action) => {
       const expected = {
         type: UPDATE_HAS_LOADED_MARKETS,
-        hasLoadedMarkets: true
+        hasLoadedMarkets: true,
       }
 
       assert.deepEqual(action, expected, `Didn't return the expected object`)
-    }
+    },
   })
 })

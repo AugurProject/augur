@@ -14,11 +14,11 @@ describe('modules/modal/actions/update-modal', () => {
       const expected = {
         type: UPDATE_MODAL,
         data: {
-          test: 'TEST'
-        }
+          test: 'TEST',
+        },
       }
 
       assert(actual, expected, `didn't return the expected object`)
-    }
+    },
   })
 })

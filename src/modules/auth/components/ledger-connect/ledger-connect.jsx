@@ -12,7 +12,7 @@ export default class Ledger extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     loginWithLedger: PropTypes.func.isRequired,
-    networkId: PropTypes.number.isRequired
+    networkId: PropTypes.number.isRequired,
   }
 
   constructor(props) {
@@ -24,14 +24,14 @@ export default class Ledger extends Component {
       OPEN_APP: 'OPEN_APP',
       SWITCH_MODE: 'SWITCH_MODE',
       ENABLE_CONTRACT_SUPPORT: 'ENABLE_CONTRACT_SUPPORT',
-      OTHER_ISSUE: 'OTHER_ISSUE'
+      OTHER_ISSUE: 'OTHER_ISSUE',
     }
 
     this.LedgerEthereum = null
 
     this.state = {
       ledgerState: null,
-      displayInstructions: false
+      displayInstructions: false,
     }
 
     this.connectLedger = this.connectLedger.bind(this)
@@ -56,25 +56,25 @@ export default class Ledger extends Component {
   //          but potentially the other will at a later point
   async onConnectLedgerRequest() {
     this.setState({
-      ledgerState: this.LEDGER_STATES.CONNECT_LEDGER
+      ledgerState: this.LEDGER_STATES.CONNECT_LEDGER,
     })
   }
 
   async onOpenEthereumAppRequest() {
     this.setState({
-      ledgerState: this.LEDGER_STATES.OPEN_APP
+      ledgerState: this.LEDGER_STATES.OPEN_APP,
     })
   }
 
   async onSwitchLedgerModeRequest() {
     this.setState({
-      ledgerState: this.LEDGER_STATES.SWITCH_MODE
+      ledgerState: this.LEDGER_STATES.SWITCH_MODE,
     })
   }
 
   async onEnableContractSupportRequest() {
     this.setState({
-      ledgerState: this.LEDGER_STATES.ENABLE_CONTRACT_SUPPORT
+      ledgerState: this.LEDGER_STATES.ENABLE_CONTRACT_SUPPORT,
     })
   }
 
@@ -87,7 +87,7 @@ export default class Ledger extends Component {
       this.onConnectLedgerRequest,
       this.onOpenEthereumAppRequest,
       this.onSwitchLedgerModeRequest,
-      this.onEnableContractSupportRequest
+      this.onEnableContractSupportRequest,
     )
 
     const address = await ledgerEthereum.getAddressByBip44Index()

@@ -26,7 +26,7 @@ class MarketTradingForm extends Component {
     isMobile: PropTypes.bool.isRequired,
     minPrice: PropTypes.number.isRequired,
     maxPrice: PropTypes.number.isRequired,
-    availableFunds: PropTypes.instanceOf(BigNumber).isRequired
+    availableFunds: PropTypes.instanceOf(BigNumber).isRequired,
   }
 
   constructor(props) {
@@ -35,7 +35,7 @@ class MarketTradingForm extends Component {
     this.INPUT_TYPES = {
       QUANTITY: 'orderQuantity',
       PRICE: 'orderPrice',
-      MARKET_ORDER_SIZE: 'marketOrderTotal'
+      MARKET_ORDER_SIZE: 'marketOrderTotal',
     }
 
     this.state = {
@@ -47,7 +47,7 @@ class MarketTradingForm extends Component {
         [this.INPUT_TYPES.PRICE]: [],
         [this.INPUT_TYPES.MARKET_ORDER_SIZE]: [],
       },
-      isOrderValid: false
+      isOrderValid: false,
     }
     this.orderValidation = this.orderValidation.bind(this)
     this.testQuantity = this.testQuantity.bind(this)
@@ -165,7 +165,7 @@ class MarketTradingForm extends Component {
     if (!(value instanceof BigNumber) && value !== '') value = new BigNumber(value)
     const updatedState = {
       ...this.state,
-      [property]: value
+      [property]: value,
     }
     const { isOrderValid, errors, errorCount } = this.orderValidation(updatedState, this.props)
     // update the state of the parent component to reflect new property/value
@@ -179,10 +179,10 @@ class MarketTradingForm extends Component {
     this.setState({
       errors: {
         ...this.state.errors,
-        ...errors
+        ...errors,
       },
       [property]: value,
-      isOrderValid
+      isOrderValid,
     })
   }
   render() {

@@ -8,7 +8,7 @@ export default function (reportCommitLock = DEFAULT_STATE, action) {
     case UPDATE_REPORT_COMMIT_LOCK:
       return {
         ...reportCommitLock,
-        [action.eventId]: action.isLocked
+        [action.eventId]: action.isLocked,
       }
     case RESET_STATE:
       return DEFAULT_STATE

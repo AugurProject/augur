@@ -9,7 +9,7 @@ const TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS = 3000
 
 export const cancelOrder = (orderId, marketId, outcome, orderTypeLabel, callback = logError) => (dispatch, getState) => {
   const {
-    loginAccount, orderBooks, outcomesData, marketsData
+    loginAccount, orderBooks, outcomesData, marketsData,
   } = getState()
   const order = selectOrder(orderId, marketId, outcome, orderTypeLabel, orderBooks)
   const market = marketsData[marketId]
@@ -24,7 +24,7 @@ export const cancelOrder = (orderId, marketId, outcome, orderTypeLabel, callback
         dispatch(updateOrderStatus(orderId, CLOSE_DIALOG_FAILED, marketId, outcome, orderTypeLabel))
         setTimeout(() => dispatch(updateOrderStatus(orderId, null, marketId, outcome, orderTypeLabel)), TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS)
         callback(err)
-      }
+      },
     })
   }
 }

@@ -13,7 +13,7 @@ import {
   selectOrderBooksState,
   selectOrderCancellationState,
   selectSmallestPositionsState,
-  selectLoginAccountState
+  selectLoginAccountState,
 } from 'src/select-state'
 import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks'
 
@@ -44,5 +44,5 @@ export const selectMarkets = createSelector(
       if (!marketId || !marketsData[marketId]) return {}
       return selectMarket(marketId)
     })
-  }
+  },
 )

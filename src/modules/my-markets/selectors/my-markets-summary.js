@@ -10,6 +10,6 @@ export default function () {
 
   return {
     numMarkets,
-    totalValue
+    totalValue,
   }
 }

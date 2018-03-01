@@ -6,7 +6,7 @@ import FilterMarketState from 'modules/filter-sort/components/filter-market-stat
 import getValue from 'utils/get-value'
 
 const mapStateToProps = state => ({
-  currentReportingPeriod: getValue(state, 'universe.reportPeriod')
+  currentReportingPeriod: getValue(state, 'universe.reportPeriod'),
 })
 
 export default withRouter(connect(mapStateToProps)(FilterMarketState))

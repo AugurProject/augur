@@ -4,7 +4,7 @@ export const updateIsLogged = isLogged => (
   {
     type: UPDATE_IS_LOGGED,
     data: {
-      isLogged
-    }
+      isLogged,
+    },
   }
 )

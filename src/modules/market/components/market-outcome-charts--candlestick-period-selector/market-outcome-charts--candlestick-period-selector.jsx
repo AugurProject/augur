@@ -13,7 +13,7 @@ import Styles from 'modules/market/components/market-outcome-charts--candlestick
 export default class PeriodSelector extends Component {
   static propTypes = {
     priceTimeSeries: PropTypes.array.isRequired,
-    updateSelectedPeriod: PropTypes.func.isRequired
+    updateSelectedPeriod: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -24,7 +24,7 @@ export default class PeriodSelector extends Component {
       selectedPeriod: -1,
       permissibleRanges: [],
       permissiblePeriods: [],
-      isModalActive: false
+      isModalActive: false,
     }
 
     this.updatePermissibleValues = this.updatePermissibleValues.bind(this)
@@ -129,7 +129,7 @@ export default class PeriodSelector extends Component {
 
     this.setState({
       permissibleRanges,
-      permissiblePeriods
+      permissiblePeriods,
     }, () => this.validateAndUpdateSelection(permissibleRanges, permissiblePeriods, selectedRange, selectedPeriod))
   }
 
@@ -178,12 +178,12 @@ export default class PeriodSelector extends Component {
 
     this.setState({
       selectedRange: updatedSelectedRange,
-      selectedPeriod: updatedSelectedPeriod
+      selectedPeriod: updatedSelectedPeriod,
     })
 
     this.props.updateSelectedPeriod({
       selectedRange: updatedSelectedRange,
-      selectedPeriod: updatedSelectedPeriod
+      selectedPeriod: updatedSelectedPeriod,
     })
   }
 
@@ -206,8 +206,8 @@ export default class PeriodSelector extends Component {
           className={classNames(
             Styles.PeriodSelector__modal,
             {
-              [Styles['PeriodSelector__modal--active']]: s.isModalActive
-            }
+              [Styles['PeriodSelector__modal--active']]: s.isModalActive,
+            },
           )
           }
         >
@@ -222,13 +222,13 @@ export default class PeriodSelector extends Component {
                   <button
                     className={
                       classNames({
-                        [Styles['PeriodSelector__value--active']]: period.period === s.selectedPeriod
+                        [Styles['PeriodSelector__value--active']]: period.period === s.selectedPeriod,
                       })
                     }
                     disabled={s.permissiblePeriods.indexOf(period.period) === -1}
                     onClick={() => {
                       this.setState({
-                        selectedPeriod: period.period === s.selectedPeriod ? -1 : period.period
+                        selectedPeriod: period.period === s.selectedPeriod ? -1 : period.period,
                       })
                     }}
                   >
@@ -249,13 +249,13 @@ export default class PeriodSelector extends Component {
                   <button
                     className={
                       classNames({
-                        [Styles['PeriodSelector__value--active']]: range.range === s.selectedRange
+                        [Styles['PeriodSelector__value--active']]: range.range === s.selectedRange,
                       })
                     }
                     disabled={s.permissibleRanges.indexOf(range.range) === -1}
                     onClick={() => {
                       this.setState({
-                        selectedRange: range.range === s.selectedRange ? -1 : range.range
+                        selectedRange: range.range === s.selectedRange ? -1 : range.range,
                       })
                     }}
                   >

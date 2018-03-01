@@ -36,7 +36,7 @@ export const commitReport = (market, reportedOutcomeId, isUnethical, isIndetermi
     salt,
     reportHash: augur.reporting.crypto.makeHash(salt, fixedReport, eventId, loginAccount.address),
     isCommitted: false,
-    isRevealed: false
+    isRevealed: false,
   }
   const encrypted = encryptReport(fixedReport, salt)
   dispatch(updateReport(branchId, eventId, { ...report }))
@@ -54,7 +54,7 @@ export const commitReport = (market, reportedOutcomeId, isUnethical, isIndetermi
       dispatch(updateReportCommitLock(eventId, false))
       dispatch(updateReport(branchId, eventId, {
         ...(getState().reports[branchId] || {})[eventId],
-        isCommitted: true
+        isCommitted: true,
       }))
     },
     onFailed: (e) => {
@@ -62,9 +62,9 @@ export const commitReport = (market, reportedOutcomeId, isUnethical, isIndetermi
       dispatch(updateReportCommitLock(eventId, false))
       dispatch(updateReport(branchId, eventId, {
         ...(getState().reports[branchId] || {})[eventId],
-        isCommitted: false
+        isCommitted: false,
       }))
-    }
+    },
   })
   dispatch(nextReportPage(history))
 }

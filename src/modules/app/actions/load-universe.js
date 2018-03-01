@@ -26,7 +26,7 @@ export const loadUniverse = (universeId, history, callback = logError) => (dispa
         if (err) return next(err)
         next(null, new BigNumber(disputeRoundDurationInSeconds, 16).toFixed())
       })
-    }
+    },
   }, (err, staticUniverseData) => {
     if (err) return callback(err)
     dispatch(updateUniverse({ ...staticUniverseData, id: universeId }))

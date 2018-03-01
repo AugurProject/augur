@@ -17,8 +17,8 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
       const store = mockStore(state)
       const AugurJS = {
         augur: {
-          markets: { getMarkets: () => {} }
-        }
+          markets: { getMarkets: () => {} },
+        },
       }
 
       const mockLoadMarketsInfo = {}
@@ -33,7 +33,7 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
 
       const action = proxyquire('../../../src/modules/markets/actions/load-markets-by-category', {
         '../../../services/augurjs': AugurJS,
-        './load-markets-info': mockLoadMarketsInfo
+        './load-markets-info': mockLoadMarketsInfo,
       })
 
       store.dispatch(action.loadMarketsByCategory())
@@ -49,16 +49,16 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
       const expected = [
         {
           type: 'UPDATE_HAS_LOADED_CATEGORY',
-          hasLoadedCategory: { 'fail-err': true }
+          hasLoadedCategory: { 'fail-err': true },
         },
         {
           type: 'UPDATE_HAS_LOADED_CATEGORY',
-          hasLoadedCategory: { 'fail-err': false }
-        }
+          hasLoadedCategory: { 'fail-err': false },
+        },
       ]
 
       assert(actions, expected, 'error was not handled as expected')
-    }
+    },
   })
 
   test({
@@ -68,16 +68,16 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
       const expected = [
         {
           type: 'UPDATE_HAS_LOADED_CATEGORY',
-          hasLoadedCategory: { 'fail-err': true }
+          hasLoadedCategory: { 'fail-err': true },
         },
         {
           type: 'UPDATE_HAS_LOADED_CATEGORY',
-          hasLoadedCategory: { 'fail-err': false }
-        }
+          hasLoadedCategory: { 'fail-err': false },
+        },
       ]
 
       assert(actions, expected, 'error was not handled as expected')
-    }
+    },
   })
 
   test({
@@ -87,13 +87,13 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
       const expected = [
         {
           type: 'UPDATE_HAS_LOADED_CATEGORY',
-          hasLoadedCategory: { 'fail-err': true }
-        }
+          hasLoadedCategory: { 'fail-err': true },
+        },
       ]
 
       assert(actions, expected, 'returned array was not handled as expected')
       assert.isTrue(loadMarketsInfo.calledOnce)
-    }
+    },
   })
 
   test({
@@ -103,12 +103,12 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
       const expected = [
         {
           type: 'UPDATE_HAS_LOADED_CATEGORY',
-          hasLoadedCategory: { 'fail-err': true }
-        }
+          hasLoadedCategory: { 'fail-err': true },
+        },
       ]
 
       assert(actions, expected, 'empty array was not handled as expected')
       assert.isFalse(loadMarketsInfo.called)
-    }
+    },
   })
 })

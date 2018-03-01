@@ -6,7 +6,7 @@ import FilterSortController from 'modules/filter-sort/components/filter-sort-con
 import getValue from 'utils/get-value'
 
 const mapStateToProps = state => ({
-  currentReportingPeriod: getValue(state, 'universe.currentReportingWindowAddress')
+  currentReportingPeriod: getValue(state, 'universe.currentReportingWindowAddress'),
 })
 
 const FilterSort = withRouter(connect(mapStateToProps)(FilterSortController))

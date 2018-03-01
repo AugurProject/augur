@@ -14,6 +14,6 @@ export default function () {
 
   return {
     numReports,
-    netRep
+    netRep,
   }
 }

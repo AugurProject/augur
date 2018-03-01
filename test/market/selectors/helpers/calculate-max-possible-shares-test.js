@@ -36,6 +36,6 @@ describe('<whatever>', () => {
     description: '<todo test>',
     assertions: (result) => {
       assert.deepEqual(true, true, 'need better test')
-    }
+    },
   })
 })

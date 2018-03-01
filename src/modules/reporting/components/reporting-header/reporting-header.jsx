@@ -27,7 +27,7 @@ export default class ReportingHeader extends Component {
     const currentPercentage = ((totalDays - daysLeft) / totalDays) * 100
 
     const currentPeriodStyle = {
-      width: `${((totalDays - daysLeft) / totalDays) * 100}%`
+      width: `${((totalDays - daysLeft) / totalDays) * 100}%`,
     }
 
     return (

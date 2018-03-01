@@ -42,7 +42,7 @@ export const selectPositionsPlusAsks = createBigCacheSelector(10)(
     }
 
     return positionsPlusAsks
-  }
+  },
 )
 
 /**

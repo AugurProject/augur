@@ -5,11 +5,11 @@ import loginWithUport from 'modules/auth/actions/login-with-uport'
 
 const mapStateToProps = state => ({
   isMobile: state.isMobile,
-  isMobileSmall: state.isMobileSmall
+  isMobileSmall: state.isMobileSmall,
 })
 
 const mapDispatchToProps = dispatch => ({
-  login: (account, signingFunction) => dispatch(loginWithUport(account, signingFunction))
+  login: (account, signingFunction) => dispatch(loginWithUport(account, signingFunction)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UportConnect)

@@ -16,11 +16,11 @@ class Paginator extends Component {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     setSegment: PropTypes.func.isRequired,
-    pageParam: PropTypes.string
+    pageParam: PropTypes.string,
   }
 
   static defaultProps = {
-    pageParam: PAGINATION_PARAM_NAME
+    pageParam: PAGINATION_PARAM_NAME,
   }
 
   constructor(props) {
@@ -33,7 +33,7 @@ class Paginator extends Component {
       upperBound: null,
       backQuery: null,
       forwardQuery: null,
-      totalItems: null
+      totalItems: null,
     }
 
     this.setCurrentSegment = this.setCurrentSegment.bind(this)
@@ -49,7 +49,7 @@ class Paginator extends Component {
       location: this.props.location,
       history: this.props.history,
       setSegment: this.props.setSegment,
-      pageParam: this.props.pageParam
+      pageParam: this.props.pageParam,
     })
   }
 
@@ -68,7 +68,7 @@ class Paginator extends Component {
         location: nextProps.location,
         history: nextProps.history,
         setSegment: nextProps.setSegment,
-        pageParam: this.props.pageParam
+        pageParam: this.props.pageParam,
       })
     }
   }
@@ -126,7 +126,7 @@ class Paginator extends Component {
 
       options.history.replace({
         ...options.location,
-        search: updatedSearch
+        search: updatedSearch,
       })
       return
     }
@@ -196,7 +196,7 @@ class Paginator extends Component {
       backQuery,
       forwardQuery,
       totalItems,
-      lastPage
+      lastPage,
     })
 
     options.setSegment(lowerBound, upperBound, boundedLength)
@@ -215,7 +215,7 @@ class Paginator extends Component {
                 className={Styles.Paginator__button}
                 to={{
                   ...p.location,
-                  search: s.backQuery
+                  search: s.backQuery,
                 }}
               >
                 <i className="fa fa-angle-left" />
@@ -235,7 +235,7 @@ class Paginator extends Component {
                 className={Styles.Paginator__button}
                 to={{
                   ...p.location,
-                  search: s.forwardQuery
+                  search: s.forwardQuery,
                 }}
               >
                 <i className="fa fa-angle-right" />

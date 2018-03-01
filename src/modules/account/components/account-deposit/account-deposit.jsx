@@ -10,7 +10,7 @@ import Styles from 'modules/account/components/account-deposit/account-deposit.s
 
 export default class AccountDeposit extends Component {
   static propTypes = {
-    address: PropTypes.string.isRequired
+    address: PropTypes.string.isRequired,
   }
 
   componentDidMount() {

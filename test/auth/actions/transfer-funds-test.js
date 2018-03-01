@@ -25,8 +25,8 @@ describe('modules/auth/actions/transfer-funds.js', () => {
     description: `should return the expected console error from the default switch`,
     state: {
       loginAccount: {
-        address: '0xtest'
-      }
+        address: '0xtest',
+      },
     },
     assertions: (done, store) => {
       const origConErr = console.error
@@ -39,23 +39,23 @@ describe('modules/auth/actions/transfer-funds.js', () => {
 
       console.error = origConErr
       done()
-    }
+    },
   })
 
   test({
     description: `should call the 'sendEther' method of augur when currency is ETH`,
     state: {
       loginAccount: {
-        address: '0xtest'
-      }
+        address: '0xtest',
+      },
     },
     assertions: (done, store) => {
       const sendEther = sinon.stub()
 
       transferFundsReqireAPI.__Rewire__('augur', {
         assets: {
-          sendEther
-        }
+          sendEther,
+        },
       })
 
       store.dispatch(transferFunds(10, ETH, '0xtest2'))
@@ -63,26 +63,26 @@ describe('modules/auth/actions/transfer-funds.js', () => {
       assert(sendEther.calledOnce, `didn't call 'Cash.send' once as expected`)
 
       done()
-    }
+    },
   })
 
   test({
     description: `should call the 'REP' method of augur when currency is REP`,
     state: {
       loginAccount: {
-        address: '0xtest'
+        address: '0xtest',
       },
       universe: {
-        id: '0xuniverse'
-      }
+        id: '0xuniverse',
+      },
     },
     assertions: (done, store) => {
       const sendReputation = sinon.stub()
 
       transferFundsReqireAPI.__Rewire__('augur', {
         assets: {
-          sendReputation
-        }
+          sendReputation,
+        },
       })
 
       store.dispatch(transferFunds(10, REP, '0xtest2'))
@@ -90,33 +90,33 @@ describe('modules/auth/actions/transfer-funds.js', () => {
       assert(sendReputation.calledOnce, `didn't call 'Cash.send' once as expected`)
 
       done()
-    }
+    },
   })
 
   test({
     description: `should dispatch the 'updateAssets' and 'addNotification' method from the 'onSuccess' callback of 'sendEther`,
     state: {
       loginAccount: {
-        address: '0xtest'
-      }
+        address: '0xtest',
+      },
     },
     assertions: (done, store) => {
       const assets = {
         sendEther: (options) => {
           options.onSuccess({ hash: '0xtest' })
-        }
+        },
       }
 
       const updateAssets = sinon.stub().returns({
-        type: 'updateAssets'
+        type: 'updateAssets',
       })
 
       const addNotification = sinon.stub().returns({
-        type: 'addNotification'
+        type: 'addNotification',
       })
 
       transferFundsReqireAPI.__Rewire__('augur', {
-        assets
+        assets,
       })
       transferFundsReqireAPI.__Rewire__('updateAssets', updateAssets)
       transferFundsReqireAPI.__Rewire__('addNotification', addNotification)
@@ -127,32 +127,32 @@ describe('modules/auth/actions/transfer-funds.js', () => {
       assert(updateAssets.calledOnce, `didn't call 'updateAssets' once as expected`)
 
       done()
-    }
+    },
   })
 
   test({
     description: `should dispatch the 'updateAssets' method from the 'onSuccess' callback of 'sendReputation`,
     state: {
       loginAccount: {
-        address: '0xtest'
+        address: '0xtest',
       },
       universe: {
-        id: '0xuniverse'
-      }
+        id: '0xuniverse',
+      },
     },
     assertions: (done, store) => {
       const assets = {
         sendReputation: (options) => {
           options.onSuccess()
-        }
+        },
       }
 
       const updateAssets = sinon.stub().returns({
-        type: 'updateAssets'
+        type: 'updateAssets',
       })
 
       transferFundsReqireAPI.__Rewire__('augur', {
-        assets
+        assets,
       })
       transferFundsReqireAPI.__Rewire__('updateAssets', updateAssets)
 
@@ -161,6 +161,6 @@ describe('modules/auth/actions/transfer-funds.js', () => {
       assert(updateAssets.calledOnce, `didn't call 'updateAssets' once as expected`)
 
       done()
-    }
+    },
   })
 })

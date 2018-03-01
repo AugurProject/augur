@@ -20,7 +20,7 @@ export const selectOpenOrdersMarkets = createSelector(
       }
     }
     return openOrdersMarkets
-  }
+  },
 )
 
 const hasOpenOrdersInMarket = (market) => {

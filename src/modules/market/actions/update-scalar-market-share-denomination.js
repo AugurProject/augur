@@ -5,7 +5,7 @@ export function updateScalarMarketShareDenomination(marketId, denomination) {
     type: UPDATE_SCALAR_MARKET_SHARE_DENOMINATION,
     data: {
       marketId,
-      denomination
-    }
+      denomination,
+    },
   }
 }

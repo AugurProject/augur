@@ -23,7 +23,7 @@ export const constructRelayTransaction = tx => (dispatch, getState) => {
       title: `${unpackedParams.type} - ${status}`,
       description: unpackedParams._description || '',
       linkPath: makePath(TRANSACTIONS),
-      seen: false // Manually set to false to ensure notification
+      seen: false, // Manually set to false to ensure notification
     }))
   } else {
     dispatch(addNotification({
@@ -33,10 +33,10 @@ export const constructRelayTransaction = tx => (dispatch, getState) => {
       blockNumber,
       title: `${unpackedParams.type} - ${status}`,
       description: unpackedParams._description || '',
-      linkPath: makePath(TRANSACTIONS)
+      linkPath: makePath(TRANSACTIONS),
     }))
   }
   return {
-    [hash]: dispatch(constructBasicTransaction(hash, status, blockNumber, timestamp, tx.response.gasFees))
+    [hash]: dispatch(constructBasicTransaction(hash, status, blockNumber, timestamp, tx.response.gasFees)),
   }
 }

@@ -16,7 +16,7 @@ export default class OrderBook extends Component {
     selectedShareDenomination: PropTypes.string,
     selectedTradeSide: PropTypes.object.isRequired,
     updateTradeFromSelectedOrder: PropTypes.func.isRequired,
-    outcome: PropTypes.object
+    outcome: PropTypes.object,
   };
 
   constructor(props) {
@@ -24,15 +24,15 @@ export default class OrderBook extends Component {
 
     this.navItems = {
       [ORDER_BOOK_TABLE]: {
-        label: 'Table'
+        label: 'Table',
       },
       [ORDER_BOOK_CHART]: {
-        label: 'Chart'
-      }
+        label: 'Chart',
+      },
     }
 
     this.state = {
-      selectedNav: ORDER_BOOK_TABLE
+      selectedNav: ORDER_BOOK_TABLE,
     }
   }
 
