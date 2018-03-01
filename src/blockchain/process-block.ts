@@ -49,7 +49,8 @@ export function processBlockRemoval(db: Knex, block: BlockDetail): void {
 }
 
 export function processBlockByNumber(db: Knex, augur: Augur, blockNumber: number, callback: ErrorCallback): void {
-  augur.rpc.eth.getBlockByNumber([blockNumber, false], (block: BlockDetail): void => {
+  augur.rpc.eth.getBlockByNumber([blockNumber, false], (err: Error|null, block: BlockDetail): void => {
+    if (err) return callback(err);
     _processBlock(db, augur, block, callback);
   });
 }
