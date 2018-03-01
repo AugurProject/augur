@@ -15,5 +15,5 @@ export const selectMarketsInDispute = createSelector(
       return []
     }
     return markets.filter(market => market.reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE)
-  }
+  },
 )

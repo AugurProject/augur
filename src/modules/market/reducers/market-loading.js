@@ -8,7 +8,7 @@ export default function (marketLoading = DEFAULT_STATE, action) {
     case ADD_MARKET_LOADING:
       return [
         ...marketLoading,
-        action.data.marketId
+        action.data.marketId,
       ]
     case REMOVE_MARKET_LOADING:
       return marketLoading.filter(market => market !== action.data.marketId)

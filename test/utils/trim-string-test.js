@@ -14,7 +14,7 @@ describe('utils/trim-string', () => {
       const expected = null
 
       assert.strictEqual(actual, expected, `didn't return 'null' as expected`)
-    }
+    },
   })
 
   test({
@@ -25,6 +25,6 @@ describe('utils/trim-string', () => {
       const expected = 'stri...mmed'
 
       assert.strictEqual(actual, expected, `didn't return the expected trimmed string`)
-    }
+    },
   })
 })

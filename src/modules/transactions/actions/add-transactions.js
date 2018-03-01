@@ -124,7 +124,7 @@ export function addNewMarketCreationTransactions(market) {
       market,
       timestamp: market._endTime,
       createdBy: loginAccount.address,
-      id: market.hash
+      id: market.hash,
     }
     const meta = {
       market: market.hash,
@@ -138,7 +138,7 @@ export function addNewMarketCreationTransactions(market) {
       ...buildHeader(transaction, MARKET_CREATION, PENDING),
       message: 'Market Creation',
       description: market._description,
-      transactions: [transaction]
+      transactions: [transaction],
     }
 
     marketCreationData[transaction.id] = header
@@ -201,7 +201,7 @@ export function addOpenOrderTransactions(openOrders) {
         eachOf(value2, (value3, type) => {
           eachOf(value3, (value4, outcomeId) => {
             const transaction = {
-              marketId, type, outcomeId, ...value4
+              marketId, type, outcomeId, ...value4,
             }
             transaction.id = transaction.transactionHash + transaction.logIndex
             transaction.message = `${transaction.orderState} - ${type} ${transaction.amount} Shares @ ${transaction.price} ETH`
@@ -244,7 +244,7 @@ export function addReportingTransactions(reports) {
         eachOf(value1, (report, index) => {
           const market = getMarketById(marketsData, marketId)
           const transaction = {
-            universe, marketId, ...report, market
+            universe, marketId, ...report, market,
           }
           transaction.id = transaction.transactionHash + transaction.logIndex
           const meta = {}

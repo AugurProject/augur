@@ -12,14 +12,14 @@ export default function (tradesInProgress = DEFAULT_STATE, action) {
         [action.data.marketId]: {
           ...tradesInProgress[action.data.marketId],
           [action.data.outcomeId]: {
-            ...action.data.details
-          }
-        }
+            ...action.data.details,
+          },
+        },
       }
     case CLEAR_TRADE_IN_PROGRESS:
       return {
         ...tradesInProgress,
-        [action.marketId]: {}
+        [action.marketId]: {},
       }
     case RESET_STATE:
     case CLEAR_LOGIN_ACCOUNT:

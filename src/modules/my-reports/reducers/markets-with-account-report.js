@@ -14,7 +14,7 @@ export default function (marketsWithAccountReport = DEFAULT_STATE, action) {
 
       return {
         ...marketsWithAccountReport,
-        ...updatedMarkets
+        ...updatedMarkets,
       }
     }
     case RESET_STATE:

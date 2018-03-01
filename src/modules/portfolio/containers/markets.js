@@ -20,7 +20,7 @@ const mapStateToProps = state =>
     myMarkets: getMyMarkets(),
     transactionsLoading: state.transactionsLoading,
     isMobile: state.isMobile,
-    hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber // FIXME
+    hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber, // FIXME
   })
 
 const mapDispatchToProps = dispatch => ({

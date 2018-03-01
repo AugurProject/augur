@@ -7,7 +7,7 @@ import {
   ADD_ORDER_TO_NEW_MARKET,
   REMOVE_ORDER_FROM_NEW_MARKET,
   UPDATE_NEW_MARKET,
-  CLEAR_NEW_MARKET
+  CLEAR_NEW_MARKET,
 } from 'modules/create-market/actions/update-new-market'
 
 import BigNumber from 'bignumber.js'
@@ -75,11 +75,11 @@ describe('modules/create-market/reducers/new-market.js', () => {
             settlementFee: true,
           },
         ],
-        creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.'
+        creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.',
       }
 
       assert.deepEqual(actual, expected, `Didn't return the expected default value`)
-    }
+    },
   })
 
   test({
@@ -90,7 +90,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
       const expected = 'testing'
 
       assert.equal(actual, expected, `Didn't return the expected existing value`)
-    }
+    },
   })
 
   test({
@@ -98,7 +98,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
     assertions: () => {
       const newMarketState = {
         test: 'test',
-        orderBook: {}
+        orderBook: {},
       }
 
       const actual = newMarket(newMarketState, {
@@ -107,8 +107,8 @@ describe('modules/create-market/reducers/new-market.js', () => {
           outcome: 'Outcome1',
           type: 'bid',
           price: new BigNumber(0.5),
-          quantity: new BigNumber(1)
-        }
+          quantity: new BigNumber(1),
+        },
       })
 
       const expected = {
@@ -118,14 +118,14 @@ describe('modules/create-market/reducers/new-market.js', () => {
             {
               type: 'bid',
               price: new BigNumber(0.5),
-              quantity: new BigNumber(1)
-            }
-          ]
-        }
+              quantity: new BigNumber(1),
+            },
+          ],
+        },
       }
 
       assert.deepEqual(actual, expected, `Didn't return the expected orderBook object`)
-    }
+    },
   })
 
   test({
@@ -138,15 +138,15 @@ describe('modules/create-market/reducers/new-market.js', () => {
             {
               type: 'bid',
               price: new BigNumber(0.8),
-              quantity: new BigNumber(1)
+              quantity: new BigNumber(1),
             },
             {
               type: 'ask',
               price: new BigNumber(0.9),
-              quantity: new BigNumber(1)
-            }
-          ]
-        }
+              quantity: new BigNumber(1),
+            },
+          ],
+        },
       }
 
       const actual = newMarket(newMarketState, {
@@ -155,8 +155,8 @@ describe('modules/create-market/reducers/new-market.js', () => {
           outcome: 'Outcome1',
           type: 'bid',
           price: new BigNumber(0.5),
-          quantity: new BigNumber(1)
-        }
+          quantity: new BigNumber(1),
+        },
       })
 
       const expected = {
@@ -166,24 +166,24 @@ describe('modules/create-market/reducers/new-market.js', () => {
             {
               type: 'bid',
               price: new BigNumber(0.8),
-              quantity: new BigNumber(1)
+              quantity: new BigNumber(1),
             },
             {
               type: 'ask',
               price: new BigNumber(0.9),
-              quantity: new BigNumber(1)
+              quantity: new BigNumber(1),
             },
             {
               type: 'bid',
               price: new BigNumber(0.5),
-              quantity: new BigNumber(1)
-            }
-          ]
-        }
+              quantity: new BigNumber(1),
+            },
+          ],
+        },
       }
 
       assert.deepEqual(actual, expected, `Didn't return the expected orderBook object`)
-    }
+    },
   })
 
   test({
@@ -196,23 +196,23 @@ describe('modules/create-market/reducers/new-market.js', () => {
             {
               type: 'bid',
               price: new BigNumber(0.8),
-              quantity: new BigNumber(1)
+              quantity: new BigNumber(1),
             },
             {
               type: 'ask',
               price: new BigNumber(0.9),
-              quantity: new BigNumber(1)
-            }
-          ]
-        }
+              quantity: new BigNumber(1),
+            },
+          ],
+        },
       }
 
       const actual = newMarket(newMarketState, {
         type: REMOVE_ORDER_FROM_NEW_MARKET,
         data: {
           outcome: 'Outcome1',
-          index: 0
-        }
+          index: 0,
+        },
       })
 
       const expected = {
@@ -222,14 +222,14 @@ describe('modules/create-market/reducers/new-market.js', () => {
             {
               type: 'ask',
               price: new BigNumber(0.9),
-              quantity: new BigNumber(1)
-            }
-          ]
-        }
+              quantity: new BigNumber(1),
+            },
+          ],
+        },
       }
 
       assert.deepEqual(actual, expected, `Didn't return the expected orderBook object`)
-    }
+    },
   })
 
   test({
@@ -239,27 +239,27 @@ describe('modules/create-market/reducers/new-market.js', () => {
         test: 'test',
         anotherTest: [
           'test1',
-          'test2'
-        ]
+          'test2',
+        ],
       }
 
       const actual = newMarket(newMarketState, {
         type: UPDATE_NEW_MARKET,
         data: {
-          test: 'updated test'
-        }
+          test: 'updated test',
+        },
       })
 
       const expected = {
         test: 'updated test',
         anotherTest: [
           'test1',
-          'test2'
-        ]
+          'test2',
+        ],
       }
 
       assert.deepEqual(actual, expected, `Didn't return the expected newMarket object`)
-    }
+    },
   })
 
   test({
@@ -269,12 +269,12 @@ describe('modules/create-market/reducers/new-market.js', () => {
         test: 'test',
         anotherTest: [
           'test1',
-          'test2'
-        ]
+          'test2',
+        ],
       }
 
       const actual = newMarket(newMarketState, {
-        type: CLEAR_NEW_MARKET
+        type: CLEAR_NEW_MARKET,
       })
 
       const expected = {
@@ -328,10 +328,10 @@ describe('modules/create-market/reducers/new-market.js', () => {
             settlementFee: true,
           },
         ],
-        creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.'
+        creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.',
       }
 
       assert.deepEqual(actual, expected, `Didn't return the expected newMarket object`)
-    }
+    },
   })
 })

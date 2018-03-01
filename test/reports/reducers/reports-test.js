@@ -24,16 +24,16 @@ describe(`modules/reports/reducers/reports.js`, () => {
               marketId: 'test',
               example: 'example',
               isScalar: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             example: {
               marketId: 'example',
               test: 'test',
               isScalar: false,
-              isIndeterminate: false
-            }
-          }
-        }
+              isIndeterminate: false,
+            },
+          },
+        },
       }
       const out = {
         [testState.universe.id]: {
@@ -41,21 +41,21 @@ describe(`modules/reports/reducers/reports.js`, () => {
             marketId: 'test',
             example: 'example',
             isScalar: false,
-            isIndeterminate: false
+            isIndeterminate: false,
           },
           example: {
             marketId: 'example',
             test: 'test',
             isScalar: false,
-            isIndeterminate: false
+            isIndeterminate: false,
           },
           testMarketId: {
             marketId: 'testMarketId',
             isScalar: false,
             isSubmitted: false,
-            isIndeterminate: false
-          }
-        }
+            isIndeterminate: false,
+          },
+        },
       }
       test = reducer(state.reports, action)
       assert.deepEqual(test, out, `Didn't update report information`)
@@ -67,46 +67,46 @@ describe(`modules/reports/reducers/reports.js`, () => {
       type: 'UPDATE_REPORT',
       universeId: t.params.universeId,
       marketId: t.params.marketId,
-      report: t.params.report
+      report: t.params.report,
     })))
     test({
       description: 'no report data',
       params: {
         universeId: '0xb1',
         marketId: '0xe3',
-        report: {}
+        report: {},
       },
       state: {
         reports: {
           '0xb1': {
             '0xe1': {
               marketId: '0xe1',
-              period: 6
+              period: 6,
             },
             '0xe2': {
               marketId: '0xe2',
-              period: 7
-            }
-          }
-        }
+              period: 7,
+            },
+          },
+        },
       },
       assertions: (reduced) => {
         assert.deepEqual(reduced, {
           '0xb1': {
             '0xe1': {
               marketId: '0xe1',
-              period: 6
+              period: 6,
             },
             '0xe2': {
               marketId: '0xe2',
-              period: 7
+              period: 7,
             },
             '0xe3': {
-              marketId: '0xe3'
-            }
-          }
+              marketId: '0xe3',
+            },
+          },
         })
-      }
+      },
     })
     test({
       description: 'insert new report',
@@ -114,41 +114,41 @@ describe(`modules/reports/reducers/reports.js`, () => {
         universeId: '0xb1',
         marketId: '0xe3',
         report: {
-          period: 7
-        }
+          period: 7,
+        },
       },
       state: {
         reports: {
           '0xb1': {
             '0xe1': {
               marketId: '0xe1',
-              period: 6
+              period: 6,
             },
             '0xe2': {
               marketId: '0xe2',
-              period: 7
-            }
-          }
-        }
+              period: 7,
+            },
+          },
+        },
       },
       assertions: (reduced) => {
         assert.deepEqual(reduced, {
           '0xb1': {
             '0xe1': {
               marketId: '0xe1',
-              period: 6
+              period: 6,
             },
             '0xe2': {
               marketId: '0xe2',
-              period: 7
+              period: 7,
             },
             '0xe3': {
               marketId: '0xe3',
-              period: 7
-            }
-          }
+              period: 7,
+            },
+          },
         })
-      }
+      },
     })
     test({
       description: 'update existing report',
@@ -157,38 +157,38 @@ describe(`modules/reports/reducers/reports.js`, () => {
         marketId: '0xe2',
         report: {
           period: 8,
-          reportedOutcomeId: '2'
-        }
+          reportedOutcomeId: '2',
+        },
       },
       state: {
         reports: {
           '0xb1': {
             '0xe1': {
               marketId: '0xe1',
-              period: 6
+              period: 6,
             },
             '0xe2': {
               marketId: '0xe2',
-              period: 7
-            }
-          }
-        }
+              period: 7,
+            },
+          },
+        },
       },
       assertions: (reduced) => {
         assert.deepEqual(reduced, {
           '0xb1': {
             '0xe1': {
               marketId: '0xe1',
-              period: 6
+              period: 6,
             },
             '0xe2': {
               marketId: '0xe2',
               period: 8,
-              reportedOutcomeId: '2'
-            }
-          }
+              reportedOutcomeId: '2',
+            },
+          },
         })
-      }
+      },
     })
     test({
       description: 'insert first report on universe',
@@ -196,22 +196,22 @@ describe(`modules/reports/reducers/reports.js`, () => {
         universeId: '0xb1',
         marketId: '0xe1',
         report: {
-          period: 7
-        }
+          period: 7,
+        },
       },
       state: {
-        reports: {}
+        reports: {},
       },
       assertions: (reduced) => {
         assert.deepEqual(reduced, {
           '0xb1': {
             '0xe1': {
               marketId: '0xe1',
-              period: 7
-            }
-          }
+              period: 7,
+            },
+          },
         })
-      }
+      },
     })
   })
 
@@ -219,14 +219,14 @@ describe(`modules/reports/reducers/reports.js`, () => {
     const test = t => it(t.description, () => t.assertions(reducer(t.state.reports, {
       type: 'CLEAR_OLD_REPORTS',
       universeId: t.state.universe.id,
-      currentReportingWindowAddress: t.state.universe.currentReportingWindowAddress
+      currentReportingWindowAddress: t.state.universe.currentReportingWindowAddress,
     })))
     test({
       description: 'one old and one current report',
       state: {
         universe: {
           id: '0xb1',
-          currentReportingWindowAddress: 7
+          currentReportingWindowAddress: 7,
         },
         reports: {
           '0xb1': {
@@ -236,7 +236,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: '2',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe2': {
               marketId: '0xe2',
@@ -244,10 +244,10 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: '2',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
-            }
-          }
-        }
+              isIndeterminate: false,
+            },
+          },
+        },
       },
       assertions: (reduced) => {
         assert.deepEqual(reduced, {
@@ -258,18 +258,18 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: '2',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
-            }
-          }
+              isIndeterminate: false,
+            },
+          },
         })
-      }
+      },
     })
     test({
       description: 'one old and one current report, both uncommitted',
       state: {
         universe: {
           id: '0xb1',
-          currentReportingWindowAddress: 7
+          currentReportingWindowAddress: 7,
         },
         reports: {
           '0xb1': {
@@ -279,7 +279,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe2': {
               marketId: '0xe2',
@@ -287,10 +287,10 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
-            }
-          }
-        }
+              isIndeterminate: false,
+            },
+          },
+        },
       },
       assertions: (reduced) => {
         assert.deepEqual(reduced, {
@@ -301,18 +301,18 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
-            }
-          }
+              isIndeterminate: false,
+            },
+          },
         })
-      }
+      },
     })
     test({
       description: 'one old and one current report, old report committed',
       state: {
         universe: {
           id: '0xb1',
-          currentReportingWindowAddress: 7
+          currentReportingWindowAddress: 7,
         },
         reports: {
           '0xb1': {
@@ -322,7 +322,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: '2',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe2': {
               marketId: '0xe2',
@@ -330,10 +330,10 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
-            }
-          }
-        }
+              isIndeterminate: false,
+            },
+          },
+        },
       },
       assertions: (reduced) => {
         assert.deepEqual(reduced, {
@@ -344,18 +344,18 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
-            }
-          }
+              isIndeterminate: false,
+            },
+          },
         })
-      }
+      },
     })
     test({
       description: 'one old and one current report, old report committed and revealed',
       state: {
         universe: {
           id: '0xb1',
-          currentReportingWindowAddress: 7
+          currentReportingWindowAddress: 7,
         },
         reports: {
           '0xb1': {
@@ -365,7 +365,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: '2',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe2': {
               marketId: '0xe2',
@@ -373,10 +373,10 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
-            }
-          }
-        }
+              isIndeterminate: false,
+            },
+          },
+        },
       },
       assertions: (reduced) => {
         assert.deepEqual(reduced, {
@@ -387,18 +387,18 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
-            }
-          }
+              isIndeterminate: false,
+            },
+          },
         })
-      }
+      },
     })
     test({
       description: 'two old reports',
       state: {
         universe: {
           id: '0xb1',
-          currentReportingWindowAddress: 7
+          currentReportingWindowAddress: 7,
         },
         reports: {
           '0xb1': {
@@ -408,7 +408,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: '2',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe2': {
               marketId: '0xe2',
@@ -416,23 +416,23 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
-            }
-          }
-        }
+              isIndeterminate: false,
+            },
+          },
+        },
       },
       assertions: (reduced) => {
         assert.deepEqual(reduced, {
-          '0xb1': {}
+          '0xb1': {},
         })
-      }
+      },
     })
     test({
       description: 'two current reports',
       state: {
         universe: {
           id: '0xb1',
-          currentReportingWindowAddress: 7
+          currentReportingWindowAddress: 7,
         },
         reports: {
           '0xb1': {
@@ -442,7 +442,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: '2',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe2': {
               marketId: '0xe2',
@@ -450,10 +450,10 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
-            }
-          }
-        }
+              isIndeterminate: false,
+            },
+          },
+        },
       },
       assertions: (reduced) => {
         assert.deepEqual(reduced, {
@@ -464,7 +464,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: '2',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe2': {
               marketId: '0xe2',
@@ -472,18 +472,18 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
-            }
-          }
+              isIndeterminate: false,
+            },
+          },
         })
-      }
+      },
     })
     test({
       description: 'two current reports and two old reports',
       state: {
         universe: {
           id: '0xb1',
-          currentReportingWindowAddress: 7
+          currentReportingWindowAddress: 7,
         },
         reports: {
           '0xb1': {
@@ -493,7 +493,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: '2',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe2': {
               marketId: '0xe2',
@@ -501,7 +501,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe3': {
               marketId: '0xe3',
@@ -509,7 +509,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: '2',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe4': {
               marketId: '0xe4',
@@ -517,10 +517,10 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
-            }
-          }
-        }
+              isIndeterminate: false,
+            },
+          },
+        },
       },
       assertions: (reduced) => {
         assert.deepEqual(reduced, {
@@ -531,7 +531,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: '2',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe4': {
               marketId: '0xe4',
@@ -539,18 +539,18 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
-            }
-          }
+              isIndeterminate: false,
+            },
+          },
         })
-      }
+      },
     })
     test({
       description: 'two current reports and two old reports on universe 1, one current report and three old reports on universe 2',
       state: {
         universe: {
           id: '0xb1',
-          currentReportingWindowAddress: 7
+          currentReportingWindowAddress: 7,
         },
         reports: {
           '0xb1': {
@@ -560,7 +560,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: '2',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe2': {
               marketId: '0xe2',
@@ -568,7 +568,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe3': {
               marketId: '0xe3',
@@ -576,7 +576,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: '2',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe4': {
               marketId: '0xe4',
@@ -584,8 +584,8 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
-            }
+              isIndeterminate: false,
+            },
           },
           '0xb2': {
             '0xe5': {
@@ -594,7 +594,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: '2',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe6': {
               marketId: '0xe6',
@@ -602,7 +602,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe7': {
               marketId: '0xe7',
@@ -610,7 +610,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: '2',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe8': {
               marketId: '0xe8',
@@ -618,10 +618,10 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
-            }
-          }
-        }
+              isIndeterminate: false,
+            },
+          },
+        },
       },
       assertions: (reduced) => {
         assert.deepEqual(reduced, {
@@ -632,7 +632,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: '2',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe4': {
               marketId: '0xe4',
@@ -640,8 +640,8 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
-            }
+              isIndeterminate: false,
+            },
           },
           '0xb2': {
             '0xe5': {
@@ -650,7 +650,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: '2',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe6': {
               marketId: '0xe6',
@@ -658,7 +658,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe7': {
               marketId: '0xe7',
@@ -666,7 +666,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: '2',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
+              isIndeterminate: false,
             },
             '0xe8': {
               marketId: '0xe8',
@@ -674,18 +674,18 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeId: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false
-            }
-          }
+              isIndeterminate: false,
+            },
+          },
         })
-      }
+      },
     })
   })
 
   describe(`CLEAR_REPORTS`, () => {
     it('should clear all reports', () => {
       action = {
-        type: CLEAR_REPORTS
+        type: CLEAR_REPORTS,
       }
       const fakeState = {
         [testState.universe.id]: {
@@ -693,15 +693,15 @@ describe(`modules/reports/reducers/reports.js`, () => {
             marketId: 'test',
             example: 'example',
             isScalar: false,
-            isIndeterminate: false
+            isIndeterminate: false,
           },
           example: {
             marketId: 'example',
             test: 'test',
             isScalar: false,
-            isIndeterminate: false
-          }
-        }
+            isIndeterminate: false,
+          },
+        },
       }
       test = reducer(fakeState, action)
       assert.deepEqual(test, {}, `Didn't clear reports correctly`)

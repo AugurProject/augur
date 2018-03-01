@@ -8,7 +8,7 @@ export const tradeTestState = {
     localNode: false,
     eth: '5',
     ethTokens: '10000',
-    rep: '50.0'
+    rep: '50.0',
   },
   selectedMarketId: 'testBinaryMarketId',
   marketsData: {
@@ -34,7 +34,7 @@ export const tradeTestState = {
       tradingPeriod: 8653,
       marketType: 'binary',
       volume: '3030',
-      isDisowned: false
+      isDisowned: false,
     },
     testCategoricalMarketId: {
       author: 'testAuthor2',
@@ -60,7 +60,7 @@ export const tradeTestState = {
       tradingPeriod: 11959,
       marketType: 'categorical',
       volume: '0',
-      isDisowned: false
+      isDisowned: false,
     },
     testScalarMarketId: {
       author: 'testAuthor3',
@@ -85,7 +85,7 @@ export const tradeTestState = {
       tradingPeriod: 8544,
       marketType: 'scalar',
       volume: '0',
-      isDisowned: false
+      isDisowned: false,
     },
   },
   outcomesData: {
@@ -95,41 +95,41 @@ export const tradeTestState = {
         name: 'Yes',
         outstandingShares: '1005',
         price: '0.5',
-        sharesPurchased: '0'
+        sharesPurchased: '0',
       },
       0: {
         id: 0,
         name: 'No',
         outstandingShares: '2025',
         price: '0.5',
-        sharesPurchased: '0'
-      }
+        sharesPurchased: '0',
+      },
     },
     testCategoricalMarketId: {
       0: {
         name: 'Democratic',
         outstandingShares: '0',
         price: '0',
-        sharesPurchased: '0'
+        sharesPurchased: '0',
       },
       1: {
         name: 'Republican',
         outstandingShares: '0',
         price: '0',
-        sharesPurchased: '0'
+        sharesPurchased: '0',
       },
       2: {
         name: 'Libertarian',
         outstandingShares: '0',
         price: '0',
-        sharesPurchased: '0'
+        sharesPurchased: '0',
       },
       3: {
         name: 'Other',
         outstandingShares: '0',
         price: '0',
-        sharesPurchased: '0'
-      }
+        sharesPurchased: '0',
+      },
     },
     testScalarMarketId: {
       0: {
@@ -137,15 +137,15 @@ export const tradeTestState = {
         name: '',
         outstandingShares: '0',
         price: '50',
-        sharesPurchased: '0'
+        sharesPurchased: '0',
       },
       1: {
         id: 1,
         name: '',
         outstandingShares: '0',
         price: '50',
-        sharesPurchased: '0'
-      }
+        sharesPurchased: '0',
+      },
     },
   },
   orderBooks: {
@@ -160,7 +160,7 @@ export const tradeTestState = {
             fullPrecisionPrice: '0.5',
             owner: '0xsomeoneElse',
             sharesEscrowed: '0',
-            tokensEscrowed: '5'
+            tokensEscrowed: '5',
           },
           orderId2: {
             orderId: 'orderId2',
@@ -170,7 +170,7 @@ export const tradeTestState = {
             fullPrecisionPrice: '0.45',
             owner: '0xsomeoneElse',
             sharesEscrowed: '10',
-            tokensEscrowed: '0'
+            tokensEscrowed: '0',
           },
           orderId3: {
             orderId: 'orderId3',
@@ -180,7 +180,7 @@ export const tradeTestState = {
             fullPrecisionPrice: '0.42',
             owner: '0xsomeoneElse',
             sharesEscrowed: '0',
-            tokensEscrowed: '0.42'
+            tokensEscrowed: '0.42',
           },
         },
         sell: {
@@ -192,7 +192,7 @@ export const tradeTestState = {
             fullPrecisionPrice: '0.65',
             owner: '0xsomeoneElse',
             sharesEscrowed: '0',
-            tokensEscrowed: '0.175'
+            tokensEscrowed: '0.175',
           },
           orderId5: {
             orderId: 'orderId5',
@@ -202,7 +202,7 @@ export const tradeTestState = {
             fullPrecisionPrice: '0.7',
             owner: '0xsomeoneElse',
             sharesEscrowed: '0.005',
-            tokensEscrowed: '0'
+            tokensEscrowed: '0',
           },
           orderId6: {
             orderId: 'orderId6',
@@ -212,10 +212,10 @@ export const tradeTestState = {
             fullPrecisionPrice: '0.73',
             owner: '0xsomeoneElse',
             sharesEscrowed: '12',
-            tokensEscrowed: '0'
+            tokensEscrowed: '0',
           },
-        }
-      }
+        },
+      },
     },
     testCategoricalMarketId: {
       1: {
@@ -228,7 +228,7 @@ export const tradeTestState = {
             fullPrecisionPrice: '0.5',
             owner: '0xsomeoneElse',
             sharesEscrowed: '0',
-            tokensEscrowed: '5'
+            tokensEscrowed: '5',
           },
           orderId2: {
             orderId: 'orderId2',
@@ -238,7 +238,7 @@ export const tradeTestState = {
             fullPrecisionPrice: '0.42',
             owner: '0xsomeoneElse',
             sharesEscrowed: '0',
-            tokensEscrowed: '0.42'
+            tokensEscrowed: '0.42',
           },
         },
         sell: {
@@ -250,7 +250,7 @@ export const tradeTestState = {
             fullPrecisionPrice: '0.7',
             owner: '0xsomeoneElse',
             sharesEscrowed: '0.005',
-            tokensEscrowed: '0'
+            tokensEscrowed: '0',
           },
           orderId4: {
             orderId: 'orderId4',
@@ -260,10 +260,10 @@ export const tradeTestState = {
             fullPrecisionPrice: '0.73',
             owner: '0xsomeoneElse',
             sharesEscrowed: '12',
-            tokensEscrowed: '0'
+            tokensEscrowed: '0',
           },
-        }
-      }
+        },
+      },
     },
     testScalarMarketId: {
       1: {
@@ -276,7 +276,7 @@ export const tradeTestState = {
             fullPrecisionPrice: '50',
             owner: '0xsomeoneElse',
             sharesEscrowed: '0',
-            tokensEscrowed: '90'
+            tokensEscrowed: '90',
           },
           orderId2: {
             orderId: 'orderId2',
@@ -286,7 +286,7 @@ export const tradeTestState = {
             fullPrecisionPrice: '25',
             owner: '0xsomeoneElse',
             sharesEscrowed: '0',
-            tokensEscrowed: '175'
+            tokensEscrowed: '175',
           },
           orderId3: {
             orderId: 'orderId3',
@@ -296,7 +296,7 @@ export const tradeTestState = {
             fullPrecisionPrice: '0',
             owner: '0xsomeoneElse',
             sharesEscrowed: '0',
-            tokensEscrowed: '35'
+            tokensEscrowed: '35',
           },
           orderId4: {
             orderId: 'orderId4',
@@ -306,7 +306,7 @@ export const tradeTestState = {
             fullPrecisionPrice: '-5',
             owner: '0xsomeoneElse',
             sharesEscrowed: '0',
-            tokensEscrowed: '50'
+            tokensEscrowed: '50',
           },
           orderId5: {
             orderId: 'orderId5',
@@ -316,7 +316,7 @@ export const tradeTestState = {
             fullPrecisionPrice: '-5',
             owner: '0xsomeoneElse',
             sharesEscrowed: '10',
-            tokensEscrowed: '0'
+            tokensEscrowed: '0',
           },
         },
         sell: {
@@ -328,7 +328,7 @@ export const tradeTestState = {
             fullPrecisionPrice: '55',
             owner: '0xsomeoneElse',
             sharesEscrowed: '0',
-            tokensEscrowed: '27.5'
+            tokensEscrowed: '27.5',
           },
           orderId7: {
             orderId: 'orderId7',
@@ -338,7 +338,7 @@ export const tradeTestState = {
             fullPrecisionPrice: '70',
             owner: '0xsomeoneElse',
             sharesEscrowed: '0',
-            tokensEscrowed: '300'
+            tokensEscrowed: '300',
           },
           orderId8: {
             orderId: 'orderId8',
@@ -348,7 +348,7 @@ export const tradeTestState = {
             fullPrecisionPrice: '70',
             owner: '0xsomeoneElse',
             sharesEscrowed: '2.5',
-            tokensEscrowed: '0'
+            tokensEscrowed: '0',
           },
           orderId9: {
             orderId: 'orderId9',
@@ -358,7 +358,7 @@ export const tradeTestState = {
             fullPrecisionPrice: '100',
             owner: '0xsomeoneElse',
             sharesEscrowed: '0',
-            tokensEscrowed: '20'
+            tokensEscrowed: '20',
           },
           orderId10: {
             orderId: 'orderId10',
@@ -368,11 +368,11 @@ export const tradeTestState = {
             fullPrecisionPrice: '105',
             owner: '0xsomeoneElse',
             sharesEscrowed: '0',
-            tokensEscrowed: '67.5'
+            tokensEscrowed: '67.5',
           },
-        }
-      }
-    }
+        },
+      },
+    },
   },
   tradesInProgress: {},
   transactionsData: {
@@ -382,11 +382,11 @@ export const tradeTestState = {
         outcomeId: 1,
         marketType: 'binary',
         marketDescription: 'test binary market',
-        outcomeName: 'YES'
+        outcomeName: 'YES',
       },
       feePercent: {
-        value: '0.199203187250996016'
-      }
+        value: '0.199203187250996016',
+      },
     },
     trans2: {
       data: {
@@ -394,11 +394,11 @@ export const tradeTestState = {
         outcomeId: 0,
         marketType: 'categorical',
         marketDescription: 'test categorical market',
-        outcomeName: 'Democratic'
+        outcomeName: 'Democratic',
       },
       feePercent: {
-        value: '0.099800399201596707'
-      }
+        value: '0.099800399201596707',
+      },
     },
     trans3: {
       data: {
@@ -406,11 +406,11 @@ export const tradeTestState = {
         outcomeId: 0,
         marketType: 'scalar',
         marketDescription: 'test scalar market',
-        outcomeName: ''
+        outcomeName: '',
       },
       feePercent: {
-        value: '0.95763203714451532'
-      }
-    }
+        value: '0.95763203714451532',
+      },
+    },
   },
 }

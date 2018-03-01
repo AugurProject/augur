@@ -6,7 +6,7 @@ import {
   addOrderToNewMarket,
   removeOrderFromNewMarket,
   updateNewMarket,
-  clearNewMarket
+  clearNewMarket,
 } from 'modules/create-market/actions/update-new-market'
 import CreateMarketView from 'modules/create-market/components/create-market-view/create-market-view'
 
@@ -28,7 +28,7 @@ const mapDispatchToProps = dispatch => ({
   removeOrderFromNewMarket: data => dispatch(removeOrderFromNewMarket(data)),
   updateNewMarket: data => dispatch(updateNewMarket(data)),
   clearNewMarket: () => dispatch(clearNewMarket()),
-  submitNewMarket: (data, history) => dispatch(submitNewMarket(data, history))
+  submitNewMarket: (data, history) => dispatch(submitNewMarket(data, history)),
 })
 
 const CreateMarket = withRouter(connect(mapStateToProps, mapDispatchToProps)(CreateMarketView))

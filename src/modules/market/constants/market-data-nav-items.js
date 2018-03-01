@@ -2,24 +2,24 @@ import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_ORDERS, MARKET_DATA_NAV_CHARTS, M
 
 export const MARKET_DATA_NAV_ITEMS = {
   [MARKET_DATA_NAV_OUTCOMES]: {
-    label: 'Outcomes'
+    label: 'Outcomes',
   },
   [MARKET_DATA_ORDERS]: {
     label: 'Order Book',
-    isMobile: true
+    isMobile: true,
   },
   [MARKET_DATA_NAV_CHARTS]: {
-    label: 'Charts'
+    label: 'Charts',
   },
   [MARKET_DATA_NAV_DETAILS]: {
-    label: 'Details'
+    label: 'Details',
   },
   [MARKET_DATA_NAV_REPORT]: {
     label: 'Report',
-    isReportTabVisible: true
+    isReportTabVisible: true,
   },
   [MARKET_DATA_NAV_SNITCH]: {
     label: 'Snitch',
-    isSnitchTabVisible: true
-  }
+    isSnitchTabVisible: true,
+  },
 }

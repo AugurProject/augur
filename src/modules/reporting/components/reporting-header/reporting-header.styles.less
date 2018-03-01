@@ -32,10 +32,10 @@
 }
 
 .ReportingHeader__graph-current {
-  width: 78%;
+  width: 100%;
 
   > div {
-    background-image: linear-gradient(-270deg, rgba(216, 216, 216, 0) 6%, rgba(238, 238, 238, 0.5) 95%);
+    background-image: linear-gradient(-90deg, rgba(155, 139, 245, 0.5) 3%, rgba(155, 139, 245, 0) 96%);
     border-right: 2px solid @color-white;
     height: 100%;
     position: relative;
@@ -53,9 +53,26 @@
   }
 }
 
-.ReportingHeader__graph-dispute {
-  background-color: @color-gray;
-  width: 22%;
+.ReportingHeader__graph-current-90 {
+  width: 100%;
+
+  > div {
+    background-image: linear-gradient(-90deg, rgba(155, 139, 245, 0.5) 3%, rgba(155, 139, 245, 0) 96%);
+    border-right: 2px solid @color-white;
+    height: 100%;
+    position: relative;
+
+    > span {
+      font-size: 0.625rem;
+      line-height: 0.625rem;
+      margin-right: 0.5rem;
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      white-space: nowrap;
+    }
+  }
 }
 
 .ReportingHeader__heading {

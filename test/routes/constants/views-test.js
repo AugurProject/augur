@@ -12,7 +12,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'categories'
 
       assert.strictEqual(views.DEFAULT_VIEW, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -21,7 +21,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'market'
 
       assert.strictEqual(views.MARKET, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -30,7 +30,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'markets'
 
       assert.strictEqual(views.MARKETS, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -39,7 +39,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'create-market'
 
       assert.strictEqual(views.CREATE_MARKET, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -48,7 +48,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'transactions'
 
       assert.strictEqual(views.TRANSACTIONS, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -57,7 +57,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'account'
 
       assert.strictEqual(views.ACCOUNT, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -66,7 +66,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'authentication'
 
       assert.strictEqual(views.AUTHENTICATION, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -75,7 +75,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'categories'
 
       assert.strictEqual(views.CATEGORIES, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -84,7 +84,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'authentication'
 
       assert.strictEqual(views.AUTHENTICATION, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -93,7 +93,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'my-positions'
 
       assert.strictEqual(views.MY_POSITIONS, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -102,7 +102,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'my-markets'
 
       assert.strictEqual(views.MY_MARKETS, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -111,7 +111,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'reporting'
 
       assert.strictEqual(views.REPORTING, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -120,7 +120,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'outcomes'
 
       assert.strictEqual(views.MARKET_DATA_NAV_OUTCOMES, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -129,7 +129,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'orders'
 
       assert.strictEqual(views.MARKET_DATA_ORDERS, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -138,7 +138,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'charts'
 
       assert.strictEqual(views.MARKET_DATA_NAV_CHARTS, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -147,7 +147,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'details'
 
       assert.strictEqual(views.MARKET_DATA_NAV_DETAILS, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -156,7 +156,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'report'
 
       assert.strictEqual(views.MARKET_DATA_NAV_REPORT, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -165,7 +165,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'snitch'
 
       assert.strictEqual(views.MARKET_DATA_NAV_SNITCH, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -174,7 +174,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'positions'
 
       assert.strictEqual(views.MARKET_USER_DATA_NAV_POSITIONS, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -183,7 +183,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'open-orders'
 
       assert.strictEqual(views.MARKET_USER_DATA_NAV_OPEN_ORDERS, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -192,7 +192,7 @@ describe('modules/app/constants/views', () => {
       const expected = 'deposit-funds'
 
       assert.strictEqual(views.ACCOUNT_DEPOSIT, expected, `didn't return the expected string`)
-    }
+    },
   })
 
   test({
@@ -201,6 +201,6 @@ describe('modules/app/constants/views', () => {
       const expected = 'transfer-funds'
 
       assert.strictEqual(views.ACCOUNT_TRANSFER, expected, `didn't return the expected string`)
-    }
+    },
   })
 })

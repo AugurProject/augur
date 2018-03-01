@@ -8,7 +8,7 @@ export default function (blockchain = DEFAULT_STATE, action) {
     case UPDATE_BLOCKCHAIN:
       return {
         ...blockchain,
-        ...action.data
+        ...action.data,
       }
     case RESET_STATE:
       return DEFAULT_STATE

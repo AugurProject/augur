@@ -26,7 +26,7 @@ export function loadReport(branchId, period, eventId, marketId, callback) {
           salt: null,
           isUnethical: false,
           isRevealed: true,
-          isCommitted: true
+          isCommitted: true,
         }))
         return callback(null)
       }
@@ -34,7 +34,7 @@ export function loadReport(branchId, period, eventId, marketId, callback) {
         branch: branchId,
         expDateIndex: period,
         reporter: loginAccount.address,
-        event: eventId
+        event: eventId,
       }, (reportHash) => {
         if (!reportHash || reportHash.error || !parseInt(reportHash, 16)) {
           console.log('reportHash:', reportHash)
@@ -46,7 +46,7 @@ export function loadReport(branchId, period, eventId, marketId, callback) {
             isUnethical: false,
             reportHash: null,
             isRevealed: false,
-            isCommitted: false
+            isCommitted: false,
           }))
           return callback(null)
         }
@@ -58,7 +58,7 @@ export function loadReport(branchId, period, eventId, marketId, callback) {
               decryptedReport.reportedOutcomeId,
               market.minValue,
               market.maxValue,
-              market.type
+              market.type,
             )
             decryptedReport.reportedOutcomeId = report
             decryptedReport.isIndeterminate = isIndeterminate
@@ -70,7 +70,7 @@ export function loadReport(branchId, period, eventId, marketId, callback) {
             reportHash,
             isUnethical: false,
             isRevealed: false,
-            isCommitted: true
+            isCommitted: true,
           }))
           callback(null)
         }))

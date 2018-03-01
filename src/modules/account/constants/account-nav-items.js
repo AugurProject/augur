@@ -2,9 +2,9 @@ import { ACCOUNT_DEPOSIT, ACCOUNT_TRANSFER } from 'modules/routes/constants/view
 
 export const ACCOUNT_NAV_ITEMS = {
   [ACCOUNT_DEPOSIT]: {
-    label: 'Deposit'
+    label: 'Deposit',
   },
   [ACCOUNT_TRANSFER]: {
-    label: 'Transfer'
+    label: 'Transfer',
   },
 }

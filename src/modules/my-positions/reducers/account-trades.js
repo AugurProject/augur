@@ -19,16 +19,16 @@ export default function (accountTrades = DEFAULT_STATE, action) {
           ...p,
           [outcome]: [
             ...((!!accountTrades[action.market] && accountTrades[action.market][outcome]) || []),
-            ...filteredTrades
-          ]
+            ...filteredTrades,
+          ],
         }
       }, (accountTrades[action.market] || {}))
 
       return {
         ...accountTrades,
         [action.market]: {
-          ...updatedMarketOutcomes
-        }
+          ...updatedMarketOutcomes,
+        },
       }
     }
     case RESET_STATE:

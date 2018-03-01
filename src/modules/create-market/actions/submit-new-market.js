@@ -33,8 +33,8 @@ export function submitNewMarket(newMarket, history) {
         marketType: newMarket.type,
         longDescription: newMarket.detailsText,
         resolutionSource: newMarket.expirySource,
-        tags
-      }
+        tags,
+      },
     }
 
     // Type Specific Properties
@@ -73,7 +73,7 @@ export function submitNewMarket(newMarket, history) {
 
               dispatch(updateTradesInProgress(marketId, outcomeId, order.type === BUY ? BUY : SELL, order.quantity, order.price, null, (tradingActions) => {
                 const tradeToExecute = {
-                  [outcomeId]: tradingActions
+                  [outcomeId]: tradingActions,
                 }
 
                 if (tradeToExecute) {
@@ -98,7 +98,7 @@ export function submitNewMarket(newMarket, history) {
         console.error('ERROR create market failed:', err)
 
         dispatch(invalidateMarketCreation(err.message))
-      }
+      },
     })
   }
 }

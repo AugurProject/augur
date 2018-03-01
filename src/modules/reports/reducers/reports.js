@@ -25,9 +25,9 @@ export default function (reports = DEFAULT_STATE, action) {
           ...universeReports,
           [action.marketId]: {
             ...(universeReports[action.marketId] || { marketId: action.marketId }),
-            ...action.report
-          }
-        }
+            ...action.report,
+          },
+        },
       }
     }
     case CLEAR_OLD_REPORTS: {
@@ -39,7 +39,7 @@ export default function (reports = DEFAULT_STATE, action) {
             p[marketId] = universeReports[marketId]
           }
           return p
-        }, {})
+        }, {}),
       }
     }
     case RESET_STATE:

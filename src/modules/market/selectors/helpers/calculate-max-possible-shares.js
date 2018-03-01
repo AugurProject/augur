@@ -42,7 +42,7 @@ export const calculateMaxPossibleShares = memoize((loginAccount, orders, makerFe
       new BigNumber(fullPrecisionPrice, 10),
       tradingFee,
       makerProportionOfFee,
-      range
+      range,
     )
     updatedRunningCost = order.type === 'buy' ?
       runningCost.plus(orderCost.fee.abs()) :

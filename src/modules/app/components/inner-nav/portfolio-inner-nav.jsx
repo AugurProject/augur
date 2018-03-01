@@ -9,41 +9,41 @@ export default class PorfolioInnerNav extends BaseInnerNav {
         visible: true,
         isSelected: (this.props.currentBasePath === MY_POSITIONS),
         link: {
-          pathname: MY_POSITIONS
-        }
+          pathname: MY_POSITIONS,
+        },
       },
       {
         label: 'My Markets',
         visible: true,
         isSelected: (this.props.currentBasePath === MY_MARKETS),
         link: {
-          pathname: MY_MARKETS
-        }
+          pathname: MY_MARKETS,
+        },
       },
       {
         label: 'Favorites',
         visible: true,
         isSelected: (this.props.currentBasePath === FAVORITES),
         link: {
-          pathname: FAVORITES
-        }
+          pathname: FAVORITES,
+        },
       },
       {
         label: 'Transactions',
         visible: true,
         isSelected: (this.props.currentBasePath === PORTFOLIO_TRANSACTIONS),
         link: {
-          pathname: PORTFOLIO_TRANSACTIONS
-        }
+          pathname: PORTFOLIO_TRANSACTIONS,
+        },
       },
       {
         label: 'Reporting',
         visible: true,
         isSelected: (this.props.currentBasePath === PORTFOLIO_REPORTS),
         link: {
-          pathname: PORTFOLIO_REPORTS
-        }
-      }
+          pathname: PORTFOLIO_REPORTS,
+        },
+      },
     ]
   }
 }

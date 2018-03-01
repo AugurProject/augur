@@ -4,7 +4,7 @@ export function updateTransactionsLoading(isLoading) {
   return {
     type: UPDATE_TRANSACTIONS_LOADING,
     data: {
-      isLoading
-    }
+      isLoading,
+    },
   }
 }

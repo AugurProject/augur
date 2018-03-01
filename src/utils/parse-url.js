@@ -10,7 +10,7 @@ export function makeLocation(searchParams = {}) {
   }
   return {
     searchParams,
-    url
+    url,
   }
 }
 

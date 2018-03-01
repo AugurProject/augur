@@ -12,7 +12,7 @@ export default function (functionsAPI = DEFAULT_STATE, action) {
         p[contractName] = Object.keys(functionsAPI[contractName]).reduce((q, functionName) => {
           q[functionName] = {
             ...functionsAPI[contractName][functionName],
-            from: action.fromAddress
+            from: action.fromAddress,
           }
           return q
         }, {})

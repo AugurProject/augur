@@ -11,7 +11,7 @@ export default function (outcomesData = DEFAULT_STATE, action) {
     case UPDATE_MARKETS_DATA:
       return {
         ...outcomesData,
-        ...parseOutcomes(action.marketsData, outcomesData)
+        ...parseOutcomes(action.marketsData, outcomesData),
       }
     case UPDATE_OUTCOME_PRICE:
       if (!outcomesData || !outcomesData[action.marketId] || !outcomesData[action.marketId][action.outcomeId]) {
@@ -23,9 +23,9 @@ export default function (outcomesData = DEFAULT_STATE, action) {
           ...outcomesData[action.marketId],
           [action.outcomeId]: {
             ...outcomesData[action.marketId][action.outcomeId],
-            price: action.price
-          }
-        }
+            price: action.price,
+          },
+        },
       }
     case RESET_STATE:
       return DEFAULT_STATE
@@ -46,21 +46,21 @@ function parseOutcomes(newMarketsData, outcomesData) {
       case BINARY:
         p[marketId] = {
           ...outcomesData[marketId],
-          ...parseBinaryOutcomes(marketData)
+          ...parseBinaryOutcomes(marketData),
         }
         return p
 
       case CATEGORICAL:
         p[marketId] = {
           ...outcomesData[marketId],
-          ...parseCategoricalOutcomes(marketData, marketId)
+          ...parseCategoricalOutcomes(marketData, marketId),
         }
         return p
 
       case SCALAR:
         p[marketId] = {
           ...outcomesData[marketId],
-          ...parseScalarOutcomes(marketData, marketId)
+          ...parseScalarOutcomes(marketData, marketId),
         }
         return p
 

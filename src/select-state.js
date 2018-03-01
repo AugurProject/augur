@@ -44,20 +44,20 @@ export const selectDisputeCrowdsourcerTokens = state => state.disputeCrowdsource
 
 export const selectBlockchainCurrentBlockTimestamp = createSelector(
   selectBlockchainState,
-  blockchain => blockchain.currentBlockTimestamp
+  blockchain => blockchain.currentBlockTimestamp,
 )
 
 export const selectUniverseReportingPeriodDurationInSeconds = createSelector(
   selectUniverseState,
-  universe => universe.reportingPeriodDurationInSeconds
+  universe => universe.reportingPeriodDurationInSeconds,
 )
 
 export const selectUniverseReportPeriod = createSelector(
   selectUniverseState,
-  universe => universe.currentReportingWindowAddress
+  universe => universe.currentReportingWindowAddress,
 )
 
 export const selectLoginAccountAddress = createSelector(
   selectLoginAccountState,
-  loginAccount => loginAccount.address
+  loginAccount => loginAccount.address,
 )

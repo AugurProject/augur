@@ -30,13 +30,13 @@ export const selectClosedMarketsWithWinningShares = createSelector(
           closedMarketsWithWinningShares.push({
             id: marketId,
             description: market.description,
-            shares: winningShares.toFixed()
+            shares: winningShares.toFixed(),
           })
         }
       }
     }
     return closedMarketsWithWinningShares
-  }
+  },
 )
 
 export const selectTotalSharesInMarket = (market, marketOutcomesData) => {

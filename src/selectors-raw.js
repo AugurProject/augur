@@ -41,7 +41,7 @@ const selectors = {
   marketUserDataNavItems: () => MARKET_USER_DATA_NAV_ITEMS,
   outcomeTradeNavItems: () => OUTCOME_TRADE_NAV_ITEMS,
   closePositionStatus,
-  openOrders
+  openOrders,
 }
 
 export default selectors

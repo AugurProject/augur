@@ -28,18 +28,19 @@ class MarketTrading extends Component {
     this.state = {
       showForm: false,
       showOrderPlaced: false,
-      selectedOutcome: (props.selectedOutcomes.length && props.market.outcomes) ? props.market.outcomes.find(outcome => outcome.id === props.selectedOutcomes[0]) : null
+      selectedOutcome: (props.selectedOutcomes.length && props.market.outcomes) ? props.market.outcomes.find(outcome => outcome.id === props.selectedOutcomes[0]) : null,
     }
 
     this.toggleForm = this.toggleForm.bind(this)
     this.toggleShowOrderPlaced = this.toggleShowOrderPlaced.bind(this)
+    this.showOrderPlaced = this.showOrderPlaced.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
     if ((!isEqual(this.props.selectedOutcomes, nextProps.selectedOutcomes) || (!!this.state.selectedOutcome && !isEqual(this.state.selectedOutcome.id, nextProps.selectedOutcomes[0])) || !isEqual(this.props.market.outcomes, nextProps.market.outcomes)) && (nextProps.market && nextProps.market.outcomes)) {
       if (nextProps.selectedOutcomes.length === 1) {
         this.setState({
-          selectedOutcome: nextProps.market.outcomes.find(outcome => outcome.id === nextProps.selectedOutcomes[0])
+          selectedOutcome: nextProps.market.outcomes.find(outcome => outcome.id === nextProps.selectedOutcomes[0]),
         })
       } else {
         this.setState({ selectedOutcome: null })
@@ -53,6 +54,10 @@ class MarketTrading extends Component {
 
   toggleShowOrderPlaced() {
     this.setState({ showOrderPlaced: !this.state.showOrderPlaced })
+  }
+
+  showOrderPlaced() {
+    this.setState({ showOrderPlaced: true })
   }
 
   render() {
@@ -88,7 +93,7 @@ class MarketTrading extends Component {
             initialMessage={initialMessage}
             isMobile={p.isMobile}
             toggleForm={this.toggleForm}
-            toggleShowOrderPlaced={this.toggleShowOrderPlaced}
+            showOrderPlaced={this.showOrderPlaced}
             availableFunds={p.availableFunds}
             clearTradeInProgress={p.clearTradeInProgress}
           />

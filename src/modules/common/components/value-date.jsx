@@ -11,7 +11,7 @@ const ValueDate = p => (
 ValueDate.propTypes = {
   className: PropTypes.string,
   value: PropTypes.object,
-  formatted: PropTypes.string
+  formatted: PropTypes.string,
 }
 
 export default ValueDate

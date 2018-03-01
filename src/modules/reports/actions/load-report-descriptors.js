@@ -7,7 +7,7 @@ import { updateReports } from 'modules/reports/actions/update-reports'
 export function loadReportDescriptors(callback) {
   return (dispatch, getState) => {
     const {
-      branch, loginAccount, marketsData, reports
+      branch, loginAccount, marketsData, reports,
     } = getState()
     const branchReports = { ...reports[branch.id] }
     async.forEachOfSeries(branchReports, (report, eventId, nextReport) => {
@@ -30,7 +30,7 @@ export function loadReportDescriptors(callback) {
         branch: branch.id,
         period: branch.reportPeriod,
         event: eventId,
-        sender: loginAccount.address
+        sender: loginAccount.address,
       }, (ethics) => {
         // ethics values: 0=unethical, 1=ethical
         report.isUnethical = ethics === '0'

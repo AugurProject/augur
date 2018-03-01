@@ -21,7 +21,7 @@ describe('modules/trade/helpers/generate-trade.js', () => {
         minimized: '',
         rounded: '',
         roundedValue: 0,
-        value: 0
+        value: 0,
       },
       limitPrice: '0.50',
       numShares: 5000,
@@ -33,7 +33,7 @@ describe('modules/trade/helpers/generate-trade.js', () => {
         minimized: '0',
         rounded: '0',
         roundedValue: 0,
-        value: 0
+        value: 0,
       },
       potentialEthProfit: formatEther(2500),
       potentialEthLoss: formatEther(2500),
@@ -50,7 +50,7 @@ describe('modules/trade/helpers/generate-trade.js', () => {
         minimized: '',
         rounded: '',
         roundedValue: 0,
-        value: 0
+        value: 0,
       },
       totalFeePercent: {
         denomination: '',
@@ -60,7 +60,7 @@ describe('modules/trade/helpers/generate-trade.js', () => {
         minimized: '',
         rounded: '',
         roundedValue: 0,
-        value: 0
+        value: 0,
       },
       tradeSummary: {
         totalGas: {
@@ -71,19 +71,19 @@ describe('modules/trade/helpers/generate-trade.js', () => {
           minimized: '0',
           rounded: '0.0000',
           roundedValue: 0,
-          value: 0
+          value: 0,
         },
-        tradeOrders: []
+        tradeOrders: [],
       },
       tradeTypeOptions: [
         {
           label: 'buy',
-          value: 'buy'
+          value: 'buy',
         },
         {
           label: 'sell',
-          value: 'sell'
-        }
+          value: 'sell',
+        },
       ],
       totalSharesUpToOrder: trade.totalSharesUpToOrder,
       updateTradeOrder: trade.updateTradeOrder, // self reference for function

@@ -17,7 +17,7 @@ const MarketsSearch = p => (
 MarketsSearch.propTypes = {
   className: PropTypes.string,
   tags: PropTypes.string,
-  onChangeTags: PropTypes.func
+  onChangeTags: PropTypes.func,
 }
 
 export default MarketsSearch

@@ -25,7 +25,7 @@ export default class SideNav extends Component {
     super()
     this.state = {
       selectedItem: null,
-      selectedKey: null
+      selectedKey: null,
     }
   }
 
@@ -69,7 +69,7 @@ export default class SideNav extends Component {
       isMobile,
       isLogged,
       toggleNotifications,
-      unseenCount
+      unseenCount,
     } = this.props
 
     const accessFilteredMenu = this.props.menuData.filter(item => !(item.requireLogin && !isLogged))

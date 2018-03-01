@@ -7,10 +7,10 @@ export const selectReportableOutcomes = (type, outcomes) => {
     case BINARY:
       return [{
         id: `${BINARY_NO_ID}`,
-        name: BINARY_NO_OUTCOME_NAME
+        name: BINARY_NO_OUTCOME_NAME,
       }, {
         id: `${BINARY_YES_ID}`,
-        name: BINARY_YES_OUTCOME_NAME
+        name: BINARY_YES_OUTCOME_NAME,
       }]
     case CATEGORICAL:
       return outcomes.slice()

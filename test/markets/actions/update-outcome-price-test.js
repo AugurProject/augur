@@ -11,7 +11,7 @@ describe(`modules/markets/actions/update-outcome-price.js`, () => {
       type: action.UPDATE_OUTCOME_PRICE,
       marketId,
       outcomeId,
-      price
+      price,
     }
     assert.deepEqual(action.updateOutcomePrice(marketId, outcomeId, price), expectedOutput, `action didn't return the correct object`)
   })

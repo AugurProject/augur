@@ -18,12 +18,12 @@ describe('modules/market/actions/update-market-loading.js', () => {
         const expected = {
           type: ADD_MARKET_LOADING,
           data: {
-            marketId: '0xMARKETID'
-          }
+            marketId: '0xMARKETID',
+          },
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      }
+      },
     })
   })
 
@@ -35,12 +35,12 @@ describe('modules/market/actions/update-market-loading.js', () => {
         const expected = {
           type: REMOVE_MARKET_LOADING,
           data: {
-            marketId: '0xMARKETID'
-          }
+            marketId: '0xMARKETID',
+          },
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      }
+      },
     })
   })
 })

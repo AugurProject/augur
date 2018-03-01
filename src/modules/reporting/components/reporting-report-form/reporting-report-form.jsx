@@ -26,7 +26,7 @@ export default class ReportingReportForm extends Component {
     super(props)
 
     this.state = {
-      outcomes: []
+      outcomes: [],
     }
 
     this.state.outcomes = this.props.market ? this.props.market.outcomes.slice() : []
@@ -142,7 +142,7 @@ export default class ReportingReportForm extends Component {
               </li>
               <li>
                 { p.validations.hasOwnProperty('err') &&
-                  <span className={FormStyles.From__error_left_align}>
+                  <span className={FormStyles.Form__error}>
                     {InputErrorIcon}{ p.validations.err }
                   </span>
                 }

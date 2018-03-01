@@ -45,7 +45,7 @@ ValueDenomination.propTypes = {
   hidePostfix: PropTypes.bool,
   prefix: PropTypes.string,
   postfix: PropTypes.string,
-  hideDenomination: PropTypes.bool
+  hideDenomination: PropTypes.bool,
 }
 
 export default ValueDenomination

@@ -8,12 +8,12 @@ export default function (hasLoadedReports = DEFAULT_STATE, action) {
     case UPDATE_HAS_LOADED_REPORTS:
       return {
         ...hasLoadedReports,
-        reports: action.hasLoadedReports
+        reports: action.hasLoadedReports,
       }
     case UPDATE_HAS_LOADED_MARKETS_TO_REPORT_ON:
       return {
         ...hasLoadedReports,
-        marketsToReportOn: action.hasLoadedMarketsToReportOn
+        marketsToReportOn: action.hasLoadedMarketsToReportOn,
       }
     case RESET_STATE:
       return DEFAULT_STATE

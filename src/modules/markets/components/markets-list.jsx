@@ -37,7 +37,7 @@ export default class MarketsList extends Component {
     this.state = {
       lowerBound: this.props.showPagination ? null : 1,
       boundedLength: this.props.showPagination ? null : this.props.filteredMarkets.length,
-      marketIdsMissingInfo: [] // This is ONLY the currently displayed markets that are missing info
+      marketIdsMissingInfo: [], // This is ONLY the currently displayed markets that are missing info
     }
 
     this.setSegment = this.setSegment.bind(this)
@@ -104,7 +104,6 @@ export default class MarketsList extends Component {
                   key={`${market.id} - ${market.outcomes}`}
                   isLogged={p.isLogged}
                   toggleFavorite={p.toggleFavorite}
-                  linkType={p.linkType}
                   location={p.location}
                   history={p.history}
                   outstandingReturns={p.outstandingReturns}

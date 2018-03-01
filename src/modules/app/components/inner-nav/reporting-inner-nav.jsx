@@ -9,16 +9,16 @@ export default class ReportingInnerNav extends BaseInnerNav {
         visible: true,
         isSelected: (this.props.currentBasePath === REPORTING_DISPUTE),
         link: {
-          pathname: REPORTING_DISPUTE
-        }
+          pathname: REPORTING_DISPUTE,
+        },
       },
       {
         label: 'Reporting',
         visible: true,
         isSelected: (this.props.currentBasePath === REPORTING_REPORTING),
         link: {
-          pathname: REPORTING_REPORTING
-        }
+          pathname: REPORTING_REPORTING,
+        },
       },
     ]
   }

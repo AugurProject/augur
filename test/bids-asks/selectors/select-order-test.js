@@ -22,11 +22,11 @@ describe('modules/bids-asks/selectors/select-order.js', () => {
               sharesEscrowed: '0',
               betterOrderId: '0x000000000000000000000000000000000000000000000000000000000000000a',
               worseOrderId: '0x000000000000000000000000000000000000000000000000000000000000000b',
-              gasPrice: '20000000000'
-            }
-          }
-        }
-      }
+              gasPrice: '20000000000',
+            },
+          },
+        },
+      },
     })
     assert.deepEqual(order, {
       amount: '1.1111',
@@ -38,7 +38,7 @@ describe('modules/bids-asks/selectors/select-order.js', () => {
       sharesEscrowed: '0',
       betterOrderId: '0x000000000000000000000000000000000000000000000000000000000000000a',
       worseOrderId: '0x000000000000000000000000000000000000000000000000000000000000000b',
-      gasPrice: '20000000000'
+      gasPrice: '20000000000',
     })
   })
 })

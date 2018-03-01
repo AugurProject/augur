@@ -13,7 +13,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       const SelectLoginAccountPositions = () => t.selectors.loginAccountPositions
       const selector = proxyquire('../../../src/modules/my-positions/selectors/winning-positions.js', {
         speedomatic: Speedomatic,
-        './login-account-positions': SelectLoginAccountPositions
+        './login-account-positions': SelectLoginAccountPositions,
       })
       sinon.stub(Speedomatic, 'bignum').callsFake(n => new BigNumber(n, 10))
       t.assertions(selector.selectClosedMarketsWithWinningShares(t.state))
@@ -22,16 +22,16 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
   test({
     description: 'no positions',
     state: {
-      outcomesData: {}
+      outcomesData: {},
     },
     selectors: {
       loginAccountPositions: {
-        markets: []
-      }
+        markets: [],
+      },
     },
     assertions: (selection) => {
       assert.deepEqual(selection, [])
-    }
+    },
   })
   test({
     description: '1 position in closed market',
@@ -39,10 +39,10 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       outcomesData: {
         '0xa1': {
           2: {
-            sharesPurchased: '1'
-          }
-        }
-      }
+            sharesPurchased: '1',
+          },
+        },
+      },
     },
     selectors: {
       loginAccountPositions: {
@@ -52,18 +52,18 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           consensus: {
             outcomeId: '2',
-            isIndeterminate: false
-          }
-        }]
-      }
+            isIndeterminate: false,
+          },
+        }],
+      },
     },
     assertions: (selection) => {
       assert.deepEqual(selection, [{
         id: '0xa1',
         description: 'test market 1',
-        shares: '1'
+        shares: '1',
       }])
-    }
+    },
   })
   test({
     description: '1 position in closed indeterminate market',
@@ -71,13 +71,13 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       outcomesData: {
         '0xa1': {
           1: {
-            sharesPurchased: '2'
+            sharesPurchased: '2',
           },
           2: {
-            sharesPurchased: '1'
-          }
-        }
-      }
+            sharesPurchased: '1',
+          },
+        },
+      },
     },
     selectors: {
       loginAccountPositions: {
@@ -87,18 +87,18 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           consensus: {
             outcomeId: '2',
-            isIndeterminate: true
-          }
-        }]
-      }
+            isIndeterminate: true,
+          },
+        }],
+      },
     },
     assertions: (selection) => {
       assert.deepEqual(selection, [{
         id: '0xa1',
         description: 'test market 1',
-        shares: '3'
+        shares: '3',
       }])
-    }
+    },
   })
   test({
     description: '1 position in closed unethical market',
@@ -106,13 +106,13 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       outcomesData: {
         '0xa1': {
           1: {
-            sharesPurchased: '2'
+            sharesPurchased: '2',
           },
           2: {
-            sharesPurchased: '1'
-          }
-        }
-      }
+            sharesPurchased: '1',
+          },
+        },
+      },
     },
     selectors: {
       loginAccountPositions: {
@@ -123,18 +123,18 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           type: SCALAR,
           consensus: {
             outcomeId: '0.5',
-            isIndeterminate: false
-          }
-        }]
-      }
+            isIndeterminate: false,
+          },
+        }],
+      },
     },
     assertions: (selection) => {
       assert.deepEqual(selection, [{
         id: '0xa1',
         description: 'test market 1',
-        shares: '3'
+        shares: '3',
       }])
-    }
+    },
   })
   test({
     description: '1 position in closed indeterminate and unethical market',
@@ -142,13 +142,13 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       outcomesData: {
         '0xa1': {
           1: {
-            sharesPurchased: '2'
+            sharesPurchased: '2',
           },
           2: {
-            sharesPurchased: '1'
-          }
-        }
-      }
+            sharesPurchased: '1',
+          },
+        },
+      },
     },
     selectors: {
       loginAccountPositions: {
@@ -158,18 +158,18 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           consensus: {
             outcomeId: '0.5',
-            isIndeterminate: true
-          }
-        }]
-      }
+            isIndeterminate: true,
+          },
+        }],
+      },
     },
     assertions: (selection) => {
       assert.deepEqual(selection, [{
         id: '0xa1',
         description: 'test market 1',
-        shares: '3'
+        shares: '3',
       }])
-    }
+    },
   })
   test({
     description: '1 position in closed scalar market',
@@ -177,13 +177,13 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       outcomesData: {
         '0xa1': {
           1: {
-            sharesPurchased: '2'
+            sharesPurchased: '2',
           },
           2: {
-            sharesPurchased: '1'
-          }
-        }
-      }
+            sharesPurchased: '1',
+          },
+        },
+      },
     },
     selectors: {
       loginAccountPositions: {
@@ -194,18 +194,18 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           consensus: {
             outcomeId: '1.23456',
-            isIndeterminate: false
-          }
-        }]
-      }
+            isIndeterminate: false,
+          },
+        }],
+      },
     },
     assertions: (selection) => {
       assert.deepEqual(selection, [{
         id: '0xa1',
         description: 'test market 1',
-        shares: '3'
+        shares: '3',
       }])
-    }
+    },
   })
   test({
     description: '1 position in closed scalar indeterminate market',
@@ -213,13 +213,13 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       outcomesData: {
         '0xa1': {
           1: {
-            sharesPurchased: '2'
+            sharesPurchased: '2',
           },
           2: {
-            sharesPurchased: '1'
-          }
-        }
-      }
+            sharesPurchased: '1',
+          },
+        },
+      },
     },
     selectors: {
       loginAccountPositions: {
@@ -230,18 +230,18 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           consensus: {
             outcomeId: '1.23456',
-            isIndeterminate: true
-          }
-        }]
-      }
+            isIndeterminate: true,
+          },
+        }],
+      },
     },
     assertions: (selection) => {
       assert.deepEqual(selection, [{
         id: '0xa1',
         description: 'test market 1',
-        shares: '3'
+        shares: '3',
       }])
-    }
+    },
   })
   test({
     description: '1 position in closed scalar unethical market',
@@ -249,13 +249,13 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       outcomesData: {
         '0xa1': {
           1: {
-            sharesPurchased: '2'
+            sharesPurchased: '2',
           },
           2: {
-            sharesPurchased: '1'
-          }
-        }
-      }
+            sharesPurchased: '1',
+          },
+        },
+      },
     },
     selectors: {
       loginAccountPositions: {
@@ -266,36 +266,36 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           consensus: {
             outcomeId: '1.23456',
-            isIndeterminate: false
-          }
-        }]
-      }
+            isIndeterminate: false,
+          },
+        }],
+      },
     },
     assertions: (selection) => {
       assert.deepEqual(selection, [{
         id: '0xa1',
         description: 'test market 1',
-        shares: '3'
+        shares: '3',
       }])
-    }
+    },
   })
   test({
     description: '1 position in open market',
     state: {
-      outcomesData: {}
+      outcomesData: {},
     },
     selectors: {
       loginAccountPositions: {
         markets: [{
           id: '0xa1',
           isOpen: true,
-          consensus: null
-        }]
-      }
+          consensus: null,
+        }],
+      },
     },
     assertions: (selection) => {
       assert.deepEqual(selection, [])
-    }
+    },
   })
   test({
     description: '1 position in open market, 1 position in closed market',
@@ -303,40 +303,40 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       outcomesData: {
         '0xa1': {
           2: {
-            sharesPurchased: '1'
-          }
+            sharesPurchased: '1',
+          },
         },
         '0xa2': {
           2: {
-            sharesPurchased: '1'
-          }
-        }
-      }
+            sharesPurchased: '1',
+          },
+        },
+      },
     },
     selectors: {
       loginAccountPositions: {
         markets: [{
           id: '0xa1',
           isOpen: true,
-          consensus: null
+          consensus: null,
         }, {
           id: '0xa2',
           isOpen: false,
           description: 'test market 2',
           consensus: {
             outcomeId: '2',
-            isIndeterminate: false
-          }
-        }]
-      }
+            isIndeterminate: false,
+          },
+        }],
+      },
     },
     assertions: (selection) => {
       assert.deepEqual(selection, [{
         id: '0xa2',
         description: 'test market 2',
-        shares: '1'
+        shares: '1',
       }])
-    }
+    },
   })
   test({
     description: '1 position in open market, 2 positions in closed markets',
@@ -344,57 +344,57 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       outcomesData: {
         '0xa1': {
           2: {
-            sharesPurchased: '1'
-          }
+            sharesPurchased: '1',
+          },
         },
         '0xa2': {
           2: {
-            sharesPurchased: '1'
-          }
+            sharesPurchased: '1',
+          },
         },
         '0xa3': {
           2: {
-            sharesPurchased: '1'
-          }
-        }
-      }
+            sharesPurchased: '1',
+          },
+        },
+      },
     },
     selectors: {
       loginAccountPositions: {
         markets: [{
           id: '0xa1',
           isOpen: true,
-          consensus: null
+          consensus: null,
         }, {
           id: '0xa2',
           isOpen: false,
           description: 'test market 2',
           consensus: {
             outcomeId: '2',
-            isIndeterminate: false
-          }
+            isIndeterminate: false,
+          },
         }, {
           id: '0xa3',
           isOpen: false,
           description: 'test market 3',
           consensus: {
             outcomeId: '2',
-            isIndeterminate: false
-          }
-        }]
-      }
+            isIndeterminate: false,
+          },
+        }],
+      },
     },
     assertions: (selection) => {
       assert.deepEqual(selection, [{
         id: '0xa2',
         description: 'test market 2',
-        shares: '1'
+        shares: '1',
       }, {
         id: '0xa3',
         description: 'test market 3',
-        shares: '1'
+        shares: '1',
       }])
-    }
+    },
   })
   test({
     description: '2 position in open markets, 1 position in closed market',
@@ -402,48 +402,48 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       outcomesData: {
         '0xa1': {
           2: {
-            sharesPurchased: '1'
-          }
+            sharesPurchased: '1',
+          },
         },
         '0xa2': {
           2: {
-            sharesPurchased: '1'
-          }
+            sharesPurchased: '1',
+          },
         },
         '0xa3': {
           2: {
-            sharesPurchased: '1'
-          }
-        }
-      }
+            sharesPurchased: '1',
+          },
+        },
+      },
     },
     selectors: {
       loginAccountPositions: {
         markets: [{
           id: '0xa1',
           isOpen: true,
-          consensus: null
+          consensus: null,
         }, {
           id: '0xa2',
           isOpen: true,
-          consensus: null
+          consensus: null,
         }, {
           id: '0xa3',
           isOpen: false,
           description: 'test market 3',
           consensus: {
             outcomeId: '2',
-            isIndeterminate: false
-          }
-        }]
-      }
+            isIndeterminate: false,
+          },
+        }],
+      },
     },
     assertions: (selection) => {
       assert.deepEqual(selection, [{
         id: '0xa3',
         description: 'test market 3',
-        shares: '1'
+        shares: '1',
       }])
-    }
+    },
   })
 })

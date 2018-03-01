@@ -11,7 +11,7 @@ export const loadUserMarkets = (callback = logError) => (dispatch, getState) => 
 
     const marketsData = marketsArray.reduce((p, id) => ({
       ...p,
-      [id]: { id, author: loginAccount.address }
+      [id]: { id, author: loginAccount.address },
     }), {})
     dispatch(updateMarketsData(marketsData))
     callback(null, marketsArray)

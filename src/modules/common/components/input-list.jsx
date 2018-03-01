@@ -17,7 +17,7 @@ export default class InputList extends Component {
     // listMaxElements: PropTypes.number,
     // itemMaxLength: PropTypes.number,
     onChange: PropTypes.func,
-    warnings: PropTypes.array
+    warnings: PropTypes.array,
   };
 
   constructor(props) {
@@ -25,7 +25,7 @@ export default class InputList extends Component {
 
     this.state = {
       list: this.fillMinElements(this.props.list, this.props.listMinElements),
-      warnings: []
+      warnings: [],
     }
 
     this.clearWarnings = debounce(this.clearWarnings.bind(this), 3000)
@@ -91,7 +91,7 @@ export default class InputList extends Component {
           <div
             key={i}
             className={classNames('item', {
-              'new-item': i === list.length - 1 && (!item || !item.length)
+              'new-item': i === list.length - 1 && (!item || !item.length),
             })}
           >
             <Input
@@ -103,7 +103,7 @@ export default class InputList extends Component {
             <span
               className={classNames({
                 'has-errors': p.errors && p.errors[i] && p.errors[i].length,
-                'has-warnings': s.warnings && s.warnings[i] && s.warnings[i].length
+                'has-warnings': s.warnings && s.warnings[i] && s.warnings[i].length,
               })}
             >
               {p.errors && p.errors[i]}

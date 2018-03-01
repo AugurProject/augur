@@ -31,18 +31,18 @@ describe(`modules/user-open-orders/selectors/select-account-order-markets.js`, (
                   price: '10',
                   amount: '1',
                   owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
-                  outcome: '2'
-                }
-              }
-            }
-          }
-        }
+                  outcome: '2',
+                },
+              },
+            },
+          },
+        },
       },
       assertions: (store) => {
         const userOpenOrderMarkets = selectAllUserOpenOrderMarkets(store.getState())
         assert.lengthOf(userOpenOrderMarkets, 1)
         assert.deepEqual(userOpenOrderMarkets, ['bobMarket'])
-      }
+      },
     })
   })
 
@@ -51,12 +51,12 @@ describe(`modules/user-open-orders/selectors/select-account-order-markets.js`, (
     test({
       description: `should return no open order markets`,
       state: {
-        loginAccount: { address: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c' }
+        loginAccount: { address: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c' },
       },
       assertions: (store) => {
         const userOpenOrderMarkets = selectAllUserOpenOrderMarkets(store.getState())
         assert.lengthOf(userOpenOrderMarkets, 0)
-      }
+      },
     })
     assert.lengthOf(selectAllUserOpenOrderMarkets, [])
   })
@@ -76,10 +76,10 @@ describe(`modules/user-open-orders/selectors/select-account-order-markets.js`, (
                   price: '10',
                   amount: '1',
                   owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
-                  outcome: '2'
-                }
-              }
-            }
+                  outcome: '2',
+                },
+              },
+            },
           },
           leeroyMarket: {
             1: {
@@ -87,18 +87,18 @@ describe(`modules/user-open-orders/selectors/select-account-order-markets.js`, (
                 order3: {
                   orderId: 'order3',
                   price: '100',
-                  amount: '22'
-                }
-              }
-            }
-          }
-        }
+                  amount: '22',
+                },
+              },
+            },
+          },
+        },
       },
       assertions: (store) => {
         const userOpenOrderMarkets = selectAllUserOpenOrderMarkets()
         assert.lengthOf(userOpenOrderMarkets, 1)
         assert.deepEqual(userOpenOrderMarkets, ['bobMarket'])
-      }
+      },
     })
   })
 
@@ -117,10 +117,10 @@ describe(`modules/user-open-orders/selectors/select-account-order-markets.js`, (
                   price: '10',
                   amount: '1',
                   owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
-                  outcome: '2'
-                }
-              }
-            }
+                  outcome: '2',
+                },
+              },
+            },
           },
           leeroyMarket: {
             1: {
@@ -128,17 +128,17 @@ describe(`modules/user-open-orders/selectors/select-account-order-markets.js`, (
                 order3: {
                   orderId: 'order3',
                   price: '100',
-                  amount: '22'
-                }
-              }
-            }
-          }
-        }
+                  amount: '22',
+                },
+              },
+            },
+          },
+        },
       },
       assertions: (store) => {
         const userOpenOrderMarkets = selectAllUserOpenOrderMarkets()
         assert.lengthOf(userOpenOrderMarkets, 0)
-      }
+      },
     })
   })
 })

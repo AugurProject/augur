@@ -10,9 +10,9 @@ export function addNotification(notification) {
       data: {
         notification: {
           seen: false,
-          ...notification
-        }
-      }
+          ...notification,
+        },
+      },
     }
   }
 }
@@ -20,7 +20,7 @@ export function addNotification(notification) {
 export function removeNotification(id) {
   return {
     type: REMOVE_NOTIFICATION,
-    data: id
+    data: id,
   }
 }
 
@@ -29,13 +29,13 @@ export function updateNotification(id, notification) {
     type: UPDATE_NOTIFICATION,
     data: {
       id,
-      notification
-    }
+      notification,
+    },
   }
 }
 
 export function clearNotifications() {
   return {
-    type: CLEAR_NOTIFICATIONS
+    type: CLEAR_NOTIFICATIONS,
   }
 }

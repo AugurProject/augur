@@ -19,7 +19,7 @@ NoMarketsFound.propTypes = {
 }
 
 export const ReportSection = ({
-  title, items, buttonText='Report', emptyMessage
+  title, items, buttonText='Report', emptyMessage,
 }) => {
   let theChildren
   if (items.length === 0) {

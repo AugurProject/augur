@@ -8,7 +8,7 @@ export default function (loginAccount = DEFAULT_STATE, action) {
     case UPDATE_LOGIN_ACCOUNT:
       return {
         ...loginAccount,
-        ...action.data || {}
+        ...action.data || {},
       }
     case RESET_STATE:
     case CLEAR_LOGIN_ACCOUNT:

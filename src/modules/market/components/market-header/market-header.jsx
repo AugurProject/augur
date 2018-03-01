@@ -16,14 +16,14 @@ export default class MarketHeader extends Component {
     details: PropTypes.string.isRequired,
     coreProperties: PropTypes.object.isRequired,
     resolutionSource: PropTypes.any,
-    selectedOutcomes: PropTypes.any
+    selectedOutcomes: PropTypes.any,
   }
 
   constructor(props) {
     super(props)
 
     this.state = {
-      areMarketDetailsVisible: false
+      areMarketDetailsVisible: false,
     }
   }
 
@@ -72,7 +72,7 @@ export default class MarketHeader extends Component {
             className={Styles[`MarketHeader__details-button`]}
             onClick={() => toggleHeight(this.marketDetails, s.areMarketDetailsVisible, () => this.setState({ areMarketDetailsVisible: !s.areMarketDetailsVisible }))}
           >
-            additional details {s.areMarketDetailsVisible ? ChevronUp : ChevronDown}
+            additional details {s.areMarketDetailsVisible ? <ChevronUp /> : <ChevronDown />}
           </button>
           <div
             ref={(marketDetails) => { this.marketDetails = marketDetails }}

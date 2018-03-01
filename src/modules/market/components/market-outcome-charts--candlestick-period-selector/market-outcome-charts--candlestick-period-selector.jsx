@@ -4,102 +4,200 @@ import classNames from 'classnames'
 
 import { ChevronUp, ChevronDown } from 'modules/common/components/icons'
 
-// import { isEqual, isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 
-// import { RANGE_STEPS } from 'modules/market/constants/permissible-periods'
+import { RANGES, PERIODS } from 'modules/market/constants/permissible-periods'
 
 import Styles from 'modules/market/components/market-outcome-charts--candlestick-period-selector/market-outcome-charts--candlestick-period-selector.styles'
-
-// TODO --
-// Select/Update period selection
 
 export default class PeriodSelector extends Component {
   static propTypes = {
     priceTimeSeries: PropTypes.array.isRequired,
-    updateSelectedPeriod: PropTypes.func.isRequired
+    updateSelectedPeriod: PropTypes.func.isRequired,
   }
 
   constructor(props) {
     super(props)
 
-    this.RANGES = [
-      'Past minute',
-      'Past hour',
-      'Past day',
-      'Past week',
-      'Past month',
-      'Past year',
-      'Full range'
-    ]
-
-    this.PERIODS = [
-      'Every block',
-      'Every minute',
-      'Hourly',
-      'Daily',
-      'Weekly',
-      'Monthly',
-      'Yearly'
-    ]
-
     this.state = {
-      // selectedPeriod: null,
-      // selectedRange: null,
-      // permissibleValues: [],
-      isModalActive: false
+      selectedRange: -1,
+      selectedPeriod: -1,
+      permissibleRanges: [],
+      permissiblePeriods: [],
+      isModalActive: false,
     }
 
-    // this.updatePermissibleRange = this.updatePermissibleRange.bind(this)
+    this.updatePermissibleValues = this.updatePermissibleValues.bind(this)
+    this.validateAndUpdateSelection = this.validateAndUpdateSelection.bind(this)
   }
 
   componentWillMount() {
-    // this.updatePermissibleRange(this.props.priceTimeSeries)
+    this.updatePermissibleValues(this.props.priceTimeSeries, this.state.selectedRange, this.state.selectedPeriod)
   }
 
-  componentWillUpdate(nextProps) {
-    // if (!isEqual(this.props.priceTimeSeries, nextProps.priceTimeSeries)) this.updatePermissibleRange(nextProps.priceTimeSeries)
+  componentWillUpdate(nextProps, nextState) {
+    if (
+      this.props.priceTimeSeries.length !== nextProps.priceTimeSeries.length ||
+      this.state.selectedRange !== nextState.selectedRange ||
+      this.state.selectedPeriod !== nextState.selectedPeriod
+    ) {
+      this.updatePermissibleValues(nextProps.priceTimeSeries, nextState.selectedRange, nextState.selectedPeriod)
+    }
   }
 
-  // updatePermissibleRange(priceTimeSeries, selectedPeriod, selectedRange) {
-  //   // NOTE --  fundamental assumption is that the RANGES and PERIODS arrays have
-  //   //          the same number of values that also directly correspond to each other
-  //
-  //   const seriesRange = !isEmpty(priceTimeSeries) ? priceTimeSeries[priceTimeSeries.length - 1][0] - priceTimeSeries[0][0] : null
-  //
-  //   const permissibleValues = RANGE_STEPS.reduce((p, currentRange, i) => {
-  //     if (i === 0) return i
-  //
-  //     if (currentRange === null) {
-  //       if (seriesRange >= RANGE_STEPS[i - 1]) return i
-  //
-  //       return p
-  //     }
-  //
-  //     if (seriesRange >= RANGE_STEPS[i - 1] && seriesRange < currentRange) {
-  //       return i
-  //     }
-  //
-  //     return p
-  //   }, [])
-  //
-  //   this.setState({ permissibleValues })
-  // }
+  updatePermissibleValues(priceTimeSeries, selectedRange, selectedPeriod) {
+    // NOTE --  fundamental assumption is that the RANGES and PERIODS arrays have
+    //          the same number of values that also directly correspond to each other
+
+    const seriesRange = !isEmpty(priceTimeSeries) ?
+      priceTimeSeries[priceTimeSeries.length - 1].timestamp - priceTimeSeries[0].timestamp :
+      null
+
+    let permissibleRanges = []
+    let permissiblePeriods = []
+
+    if (seriesRange !== null) {
+      // Permissible ranges based on series
+      permissibleRanges = RANGES.reduce((p, currentRange, i) => {
+        // Lower Bound + initial upper
+        if (i === 0) {
+          return [currentRange.range]
+        }
+
+        // Upper Bound
+        if (currentRange.range === null) { // null is a special case that denotes 'Full range'
+          if (seriesRange > RANGES[i - 1].range) return [...p, currentRange.range]
+        } else if (currentRange.range <= seriesRange) {
+          return [...p, currentRange.range]
+        }
+
+        return p
+      }, [])
+
+      // Permissible ranges based on selection
+      if (selectedPeriod !== null && selectedPeriod !== -1) { // null denotes 'Every block'
+        let startIndex = 0
+
+        permissibleRanges.find((range, i) => {
+          if (selectedPeriod === range) {
+            startIndex = i + 1
+            return true
+          }
+          return false
+        })
+
+        permissibleRanges = permissibleRanges.slice(startIndex)
+      }
+
+      // Permissible periods based on series
+      permissiblePeriods = PERIODS.reduce((p, currentPeriod, i) => {
+        // Lower Bound + initial upper
+        if (i === 0) {
+          return [currentPeriod.period]
+        }
+
+        // Upper Bound
+        if (
+          permissibleRanges[permissibleRanges.length - 1] === null ||
+          currentPeriod.period < permissibleRanges[permissibleRanges.length - 1]
+        ) {
+          return [...p, currentPeriod.period]
+        }
+
+        return p
+      }, [])
+
+      // Permissible periods based on selection
+      if (
+        selectedRange !== null &&
+        selectedRange !== -1 &&
+        permissiblePeriods.indexOf(selectedRange) !== -1
+      ) { // null denotes 'Full range'
+        let startIndex = 0
+
+        permissiblePeriods.find((period, i) => {
+          if (selectedRange === period) {
+            startIndex = i
+            return true
+          }
+          return false
+        })
+
+        permissiblePeriods = permissiblePeriods.slice(0, startIndex)
+      }
+    }
+
+    this.setState({
+      permissibleRanges,
+      permissiblePeriods,
+    }, () => this.validateAndUpdateSelection(permissibleRanges, permissiblePeriods, selectedRange, selectedPeriod))
+  }
+
+  validateAndUpdateSelection(permissibleRanges, permissiblePeriods, selectedRange, selectedPeriod) {
+    // All we're doing here is validating selections relative to each other + setting defaults
+    // Establishment of permissible bounds happens elsewhere
+    let updatedSelectedRange
+    let updatedSelectedPeriod
+
+    // No valid options to select
+    if (isEmpty(permissibleRanges) || isEmpty(permissiblePeriods)) {
+      updatedSelectedRange = -1
+      updatedSelectedPeriod = -1
+    } else {
+      // Update Range Selection
+      // Trying to determine whether or not selectedRange is out of permissible bounds
+      if (
+        selectedRange === -1 ||
+        selectedRange === null ||
+        (
+          selectedPeriod !== -1 &&
+          selectedPeriod !== null &&
+          selectedRange <= selectedPeriod
+        )
+      ) {
+        updatedSelectedRange = permissibleRanges[permissibleRanges.length - 1]
+      } else {
+        updatedSelectedRange = selectedRange
+      }
+      //
+      // Update Period Selection
+      if (
+        selectedPeriod === -1 ||
+        (
+          selectedRange !== -1 &&
+          selectedRange !== null &&
+          selectedPeriod >= selectedRange
+        )
+
+      ) {
+        updatedSelectedPeriod = permissiblePeriods[permissiblePeriods.length - 1]
+      } else {
+        updatedSelectedPeriod = selectedPeriod
+      }
+    }
+
+    this.setState({
+      selectedRange: updatedSelectedRange,
+      selectedPeriod: updatedSelectedPeriod,
+    })
+
+    this.props.updateSelectedPeriod({
+      selectedRange: updatedSelectedRange,
+      selectedPeriod: updatedSelectedPeriod,
+    })
+  }
 
   render() {
-    // TODO
-    // Display/Hide options (define allowable items via index (can do conditional on render))
-    // Can use min/max math functions or some array method...probably...need to ref the docs
-
     const s = this.state
 
     return (
       <section className={Styles.PeriodSelector}>
         <button
           className={Styles.PeriodSelector__button}
-          onClick={() => this.setState({ active: !s.active })}
+          onClick={() => this.setState({ isModalActive: !s.isModalActive })}
         >
           <span>Period|Range</span>
-          {s.active ?
+          {s.isModalActive ?
             <ChevronUp /> :
             <ChevronDown />
           }
@@ -108,49 +206,63 @@ export default class PeriodSelector extends Component {
           className={classNames(
             Styles.PeriodSelector__modal,
             {
-              [Styles['PeriodSelector__modal--active']]: s.isModalActive
-            }
+              [Styles['PeriodSelector__modal--active']]: s.isModalActive,
+            },
           )
           }
         >
           <div className={Styles.PeriodSelector__column}>
             <h1>Period</h1>
             <ul>
-              <li className={Styles.PeriodSelector__value}>
-                <button>TODO</button>
-              </li>
-              <li className={Styles.PeriodSelector__value}>
-                <button>TODO</button>
-              </li>
-              <li className={Styles.PeriodSelector__value}>
-                <button>TODO</button>
-              </li>
-              <li className={Styles.PeriodSelector__value}>
-                <button>TODO</button>
-              </li>
-              <li className={Styles.PeriodSelector__value}>
-                <button>TODO</button>
-              </li>
+              {PERIODS.map(period => (
+                <li
+                  key={period.period}
+                  className={Styles.PeriodSelector__value}
+                >
+                  <button
+                    className={
+                      classNames({
+                        [Styles['PeriodSelector__value--active']]: period.period === s.selectedPeriod,
+                      })
+                    }
+                    disabled={s.permissiblePeriods.indexOf(period.period) === -1}
+                    onClick={() => {
+                      this.setState({
+                        selectedPeriod: period.period === s.selectedPeriod ? -1 : period.period,
+                      })
+                    }}
+                  >
+                    {period.label}
+                  </button>
+                </li>
+              ))}
             </ul>
           </div>
           <div className={Styles.PeriodSelector__column}>
             <h1>Range</h1>
             <ul>
-              <li className={Styles.PeriodSelector__value}>
-                <button>TODO</button>
-              </li>
-              <li className={Styles.PeriodSelector__value}>
-                <button>TODO</button>
-              </li>
-              <li className={Styles.PeriodSelector__value}>
-                <button>TODO</button>
-              </li>
-              <li className={Styles.PeriodSelector__value}>
-                <button>TODO</button>
-              </li>
-              <li className={Styles.PeriodSelector__value}>
-                <button>TODO</button>
-              </li>
+              {RANGES.map(range => (
+                <li
+                  key={range.range}
+                  className={Styles.PeriodSelector__value}
+                >
+                  <button
+                    className={
+                      classNames({
+                        [Styles['PeriodSelector__value--active']]: range.range === s.selectedRange,
+                      })
+                    }
+                    disabled={s.permissibleRanges.indexOf(range.range) === -1}
+                    onClick={() => {
+                      this.setState({
+                        selectedRange: range.range === s.selectedRange ? -1 : range.range,
+                      })
+                    }}
+                  >
+                    {range.label}
+                  </button>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -158,22 +270,3 @@ export default class PeriodSelector extends Component {
     )
   }
 }
-
-// {
-//   this.PERIODS.map((period, i) => {
-//     return (
-//       <li
-//         className={
-//           classNames(
-//             Styles.PeriodSelector__value,
-//             {
-//               [Styles['PeriodSelector__value--disabled']]: i >= s.permissibleValues
-//             }
-//           )
-//         }
-//       >
-//         <button>TODO</button>
-//       </li>
-//     )
-//   })
-// }

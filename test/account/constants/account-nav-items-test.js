@@ -13,14 +13,14 @@ describe('modules/account/constants/account-nav-items.js', () => {
     assertions: () => {
       const expected = {
         [ACCOUNT_DEPOSIT]: {
-          label: 'Deposit'
+          label: 'Deposit',
         },
         [ACCOUNT_TRANSFER]: {
-          label: 'Transfer'
+          label: 'Transfer',
         },
       }
 
       assert.deepEqual(ACCOUNT_NAV_ITEMS, expected, `Didn't return the expected constants`)
-    }
+    },
   })
 })

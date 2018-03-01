@@ -18,6 +18,6 @@ describe('modules/auth/helpers/abc.js', () => {
       assert(makeABCUIContext.calledOnce, `didn't call 'makeABCUIContext' once as expected`)
 
       done()
-    }
+    },
   })
 })

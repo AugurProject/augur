@@ -39,7 +39,7 @@ export const generateOutcomePositionSummary = memoize((adjustedPosition) => {
     isClosable,
     closePosition: (marketId, outcomeId) => {
       store.dispatch(closePosition(marketId, outcomeId))
-    }
+    },
   }
 }, { max: 50 })
 
@@ -65,7 +65,7 @@ export const generateMarketsPositionsSummary = memoize((markets) => {
   const positionsSummary = generatePositionsSummary(positionOutcomes.length, qtyShares, 0, totalRealizedNet, totalUnrealizedNet)
   return {
     ...positionsSummary,
-    positionOutcomes
+    positionOutcomes,
   }
 }, { max: 50 })
 
@@ -77,13 +77,13 @@ export const generatePositionsSummary = memoize((numPositions, qtyShares, meanTr
       decimalsRounded: 0,
       denomination: 'Positions',
       positiveSign: false,
-      zeroStyled: false
+      zeroStyled: false,
     }),
     qtyShares: formatShares(qtyShares),
     purchasePrice: formatEtherTokens(meanTradePrice),
     realizedNet: formatEtherTokens(realizedNet),
     unrealizedNet: formatEtherTokens(unrealizedNet),
-    totalNet: formatEtherTokens(totalNet)
+    totalNet: formatEtherTokens(totalNet),
   }
 }, { max: 20 })
 

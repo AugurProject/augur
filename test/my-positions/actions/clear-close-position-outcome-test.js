@@ -15,15 +15,15 @@ describe('modules/my-positions/actions/clear-close-position-outcome.js', () => {
       description: 'should return the expected object',
       arguments: {
         marketId: '0xMarketId',
-        outcomeId: '1'
+        outcomeId: '1',
       },
       assertions: (res) => {
         assert.deepEqual(res, {
           type: CLEAR_CLOSE_POSITION_OUTCOME,
           marketId: '0xMarketId',
-          outcomeId: '1'
+          outcomeId: '1',
         })
-      }
+      },
     })
   })
 })

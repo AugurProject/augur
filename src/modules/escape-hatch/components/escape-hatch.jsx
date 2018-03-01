@@ -20,7 +20,7 @@ export default class EscapeHatchView extends Component {
 
     this.state = {
       fundsAvailableForWithdrawl: false,
-      onEscapeHatchLanding: true
+      onEscapeHatchLanding: true,
     }
 
     this.withdraw = this.withdraw.bind(this)

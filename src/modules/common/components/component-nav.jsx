@@ -24,7 +24,7 @@ ComponentNav.propTypes = {
   fullWidth: PropTypes.bool,
   navItems: PropTypes.object.isRequired,
   selectedNav: PropTypes.string.isRequired,
-  updateSelectedNav: PropTypes.func.isRequired
+  updateSelectedNav: PropTypes.func.isRequired,
 }
 
 export default ComponentNav

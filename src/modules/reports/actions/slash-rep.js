@@ -18,6 +18,6 @@ export const slashRep = (market, salt, report, reporter, isIndeterminate, isUnet
       console.debug('slashRep success:', r)
       dispatch(updateAssets())
     },
-    onFailed: e => console.error('slashRep failed:', e)
+    onFailed: e => console.error('slashRep failed:', e),
   })
 )

@@ -19,7 +19,7 @@ describe('loadReporting action', () => {
       id: universeAddress,
     },
     loginAccount: {
-      address: loginAccountAddress
+      address: loginAccountAddress,
     },
   }
 
@@ -41,8 +41,8 @@ describe('loadReporting action', () => {
   beforeEach(() => {
     mockAugur = {
       augurNode: {
-        submitRequest: () => {}
-      }
+        submitRequest: () => {},
+      },
     }
 
     submitRequestStub = stub(mockAugur.augurNode, 'submitRequest')
@@ -65,13 +65,13 @@ describe('loadReporting action', () => {
       const c = submitRequestStub.getCall(callIndex)
       assert.ok(c.calledWith(method, {
         reportingState,
-        ...expectedParams
+        ...expectedParams,
       }))
       c.args[2](null, callbackArgs)
     }
 
     checkCall(0, 'getMarkets', constants.REPORTING_STATE.PRE_REPORTING, [
-      '1111'
+      '1111',
     ])
     checkCall(1, 'getMarkets', constants.REPORTING_STATE.DESIGNATED_REPORTING, [
       '2222',

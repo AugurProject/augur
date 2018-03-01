@@ -9,7 +9,7 @@ export default class Airbitz extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     airbitzLoginLink: PropTypes.func.isRequired,
-    airbitzOnLoad: PropTypes.func.isRequired
+    airbitzOnLoad: PropTypes.func.isRequired,
   }
 
   componentWillMount() {
@@ -29,7 +29,7 @@ export default class Airbitz extends Component {
             classNames(
               Styles.button,
               Styles[`button--purple`],
-              Styles.Airbitz__button
+              Styles.Airbitz__button,
             )
           }
           onClick={() => p.airbitzLoginLink(p.history)}

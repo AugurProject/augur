@@ -2,7 +2,7 @@ import {
   ADD_NOTIFICATION,
   REMOVE_NOTIFICATION,
   UPDATE_NOTIFICATION,
-  CLEAR_NOTIFICATIONS
+  CLEAR_NOTIFICATIONS,
 } from 'modules/notifications/actions/update-notifications'
 import { RESET_STATE } from 'modules/app/actions/reset-state'
 import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account'
@@ -29,7 +29,7 @@ export default function (notifications = DEFAULT_STATE, action) {
 
       return [
         ...notifications,
-        action.data.notification
+        action.data.notification,
       ]
     }
     case REMOVE_NOTIFICATION:
@@ -42,7 +42,7 @@ export default function (notifications = DEFAULT_STATE, action) {
 
         return {
           ...notification,
-          ...action.data.notification
+          ...action.data.notification,
         }
       })
     case RESET_STATE:

@@ -12,26 +12,26 @@ describe('modules/market/reducers/market-loading', () => {
     description: 'should return the default state, existing state undefined',
     assertions: () => {
       const actual = marketLoading(undefined, {
-        type: null
+        type: null,
       })
 
       const expected = []
 
       assert.deepEqual(actual, expected, `Didn't return the expected array`)
-    }
+    },
   })
 
   test({
     description: 'should return the existing state, existing state defined',
     assertions: () => {
       const actual = marketLoading(['testing'], {
-        type: null
+        type: null,
       })
 
       const expected = ['testing']
 
       assert.deepEqual(actual, expected, `Didn't return the expected array`)
-    }
+    },
   })
 
   test({
@@ -40,14 +40,14 @@ describe('modules/market/reducers/market-loading', () => {
       const actual = marketLoading([], {
         type: ADD_MARKET_LOADING,
         data: {
-          marketId: '0xMARKETID'
-        }
+          marketId: '0xMARKETID',
+        },
       })
 
       const expected = ['0xMARKETID']
 
       assert.deepEqual(actual, expected, `Didn't return the expected array`)
-    }
+    },
   })
 
   test({
@@ -56,13 +56,13 @@ describe('modules/market/reducers/market-loading', () => {
       const actual = marketLoading(['0xMARKETID1', '0xMARKETID2'], {
         type: REMOVE_MARKET_LOADING,
         data: {
-          marketId: '0xMARKETID1'
-        }
+          marketId: '0xMARKETID1',
+        },
       })
 
       const expected = ['0xMARKETID2']
 
       assert.deepEqual(actual, expected, `Didn't return the expected array`)
-    }
+    },
   })
 })

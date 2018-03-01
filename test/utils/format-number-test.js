@@ -17,8 +17,8 @@ describe('utils/format-number.js', () => {
         rounded: '1,000.1000',
         minimized: '1,000.1',
         denomination: ' ETH Tokens',
-        full: '1,000.1000 ETH Tokens'
-      }
+        full: '1,000.1000 ETH Tokens',
+      },
     },
     {
       func: 'formatEther',
@@ -31,8 +31,8 @@ describe('utils/format-number.js', () => {
         rounded: '1,000.1000',
         minimized: '1,000.1',
         denomination: ' ETH',
-        full: '1,000.1000 ETH'
-      }
+        full: '1,000.1000 ETH',
+      },
     },
     {
       func: 'formatEtherTokensEstimate',
@@ -45,8 +45,8 @@ describe('utils/format-number.js', () => {
         rounded: '1,000.1000',
         minimized: '1,000.1',
         denomination: ' ETH Tokens (estimated)',
-        full: '1,000.1000 ETH Tokens (estimated)'
-      }
+        full: '1,000.1000 ETH Tokens (estimated)',
+      },
     },
     {
       func: 'formatEtherEstimate',
@@ -59,8 +59,8 @@ describe('utils/format-number.js', () => {
         rounded: '1,000.1000',
         minimized: '1,000.1',
         denomination: ' ETH (estimated)',
-        full: '1,000.1000 ETH (estimated)'
-      }
+        full: '1,000.1000 ETH (estimated)',
+      },
     },
     {
       func: 'formatPercent',
@@ -73,8 +73,8 @@ describe('utils/format-number.js', () => {
         rounded: '1,000',
         minimized: '1,000.1',
         denomination: '%',
-        full: '1,000.1%'
-      }
+        full: '1,000.1%',
+      },
     },
     {
       func: 'formatShares',
@@ -87,8 +87,8 @@ describe('utils/format-number.js', () => {
         rounded: '1,000.10',
         minimized: '1,000.1',
         denomination: ' shares',
-        full: '1,000.1 shares'
-      }
+        full: '1,000.1 shares',
+      },
     },
     {
       func: 'formatShares',
@@ -102,8 +102,8 @@ describe('utils/format-number.js', () => {
         rounded: '1.00',
         minimized: '1',
         denomination: ' share',
-        full: '1 share'
-      }
+        full: '1 share',
+      },
     },
     {
       func: 'formatRep',
@@ -116,9 +116,9 @@ describe('utils/format-number.js', () => {
         rounded: '1,000',
         minimized: '1,000.1',
         denomination: ' REP',
-        full: '1,000.10 REP'
-      }
-    }
+        full: '1,000.10 REP',
+      },
+    },
   ]
 
   utils.forEach((currentUtil) => {
@@ -127,7 +127,7 @@ describe('utils/format-number.js', () => {
         assert.deepEqual(
           formatNumber[`${currentUtil.func}`](currentUtil.num || num),
           currentUtil.out,
-          'returned formatted number is not correctly formatted'
+          'returned formatted number is not correctly formatted',
         )
       })
     })
@@ -143,7 +143,7 @@ describe('utils/format-number.js', () => {
         rounded: '-',
         minimized: '-',
         denomination: '',
-        full: '-'
+        full: '-',
       }
 
       assert.deepEqual(formatNumber.formatNone(), out, 'returned `none` formatted number object was not correct formatted')

@@ -12,9 +12,9 @@ export default function (isFirstOrderBookChunkLoaded = DEFAULT_STATE, action) {
           ...(isFirstOrderBookChunkLoaded[action.marketId] || {}),
           [action.outcome]: {
             ...((isFirstOrderBookChunkLoaded[action.marketId] || {})[action.outcome] || {}),
-            [action.orderTypeLabel]: action.isLoaded
-          }
-        }
+            [action.orderTypeLabel]: action.isLoaded,
+          },
+        },
       }
     case RESET_STATE:
       return DEFAULT_STATE

@@ -70,7 +70,7 @@ function getUserOpenOrders(marketId, orders, orderType, outcomeId, userId, order
         unmatchedShares: formatShares(order.amount),
         cancelOrder: (orderId, marketId, outcome, type) => {
           store.dispatch(cancelOrder(orderId, marketId, outcome, type))
-        }
+        },
       }
     ))
 }

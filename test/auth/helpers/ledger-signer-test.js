@@ -23,7 +23,7 @@ describe('modules/auth/helpers/ledger-signer', () => {
 
   beforeEach(() => {
     ledgerLib = {
-      signTransactionByBip44Index: sinon.stub()
+      signTransactionByBip44Index: sinon.stub(),
     }
 
     store.clearActions()
@@ -35,11 +35,11 @@ describe('modules/auth/helpers/ledger-signer', () => {
       let actual
       const expected = [
         {
-          type: 'stubbedUpdateModal'
+          type: 'stubbedUpdateModal',
         },
         {
-          type: 'stubbedCloseModal'
-        }
+          type: 'stubbedCloseModal',
+        },
       ]
 
       ledgerLib.signTransactionByBip44Index.resolves({ r: 'blah', s: 'test', v: 'bob' })
@@ -54,7 +54,7 @@ describe('modules/auth/helpers/ledger-signer', () => {
 
       assert.deepEqual(actual, expected, `didn't dispatch the expected actions`)
 
-    }
+    },
   })
 
   test({
@@ -63,11 +63,11 @@ describe('modules/auth/helpers/ledger-signer', () => {
       let actual
       const expected = [
         {
-          type: 'stubbedUpdateModal'
+          type: 'stubbedUpdateModal',
         },
         {
-          type: 'stubbedUpdateModal'
-        }
+          type: 'stubbedUpdateModal',
+        },
       ]
 
       ledgerLib.signTransactionByBip44Index.rejects()
@@ -81,6 +81,6 @@ describe('modules/auth/helpers/ledger-signer', () => {
         })
 
       assert.deepEqual(actual, expected, `didn't dispatch the expected actions`)
-    }
+    },
   })
 })

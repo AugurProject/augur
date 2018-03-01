@@ -24,7 +24,7 @@ const loadMarkets = (callback = logError) => (dispatch, getState) => {
 
     const marketsData = marketsArray.reduce((p, id) => ({
       ...p,
-      [id]: { id }
+      [id]: { id },
     }), {})
     // dispatch(clearMarketsData())
     dispatch(updateHasLoadedMarkets(true))

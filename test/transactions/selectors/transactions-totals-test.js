@@ -11,10 +11,10 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
 
   it(`should return the transaction totals for a blank state`, () => {
     const Transactions = {
-      selectTransactions: () => []
+      selectTransactions: () => [],
     }
     const selector = proxyquire('../../../src/modules/transactions/selectors/transactions-totals', {
-      './transactions': Transactions
+      './transactions': Transactions,
     })
     actual = selector.selectTransactionsTotals({})
     expected = {
@@ -25,7 +25,7 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
       numTotal: 0,
       title: '0 Transactions',
       transactions: undefined,
-      shortTitle: '0 Total'
+      shortTitle: '0 Total',
     }
     assert.deepEqual(actual, expected, `Didn't properly handle an empty state`)
   })
@@ -34,20 +34,20 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
     const Transactions = {
       selectTransactions: () => [{
         id: 'fake',
-        status: PENDING
+        status: PENDING,
       }, {
         id: 'example',
-        status: SUCCESS
+        status: SUCCESS,
       }, {
         id: 'test',
-        status: FAILED
+        status: FAILED,
       }, {
         id: 'mock',
-        status: INTERRUPTED
-      }]
+        status: INTERRUPTED,
+      }],
     }
     const selector = proxyquire('../../../src/modules/transactions/selectors/transactions-totals', {
-      './transactions': Transactions
+      './transactions': Transactions,
     })
     actual = selector.selectTransactionsTotals({})
     expected = {
@@ -58,7 +58,7 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
       numTotal: 4,
       title: 'Transaction Working',
       transactions: undefined,
-      shortTitle: '1 Working'
+      shortTitle: '1 Working',
     }
     transactionsTotalsAssertions(actual)
     assert.deepEqual(actual, expected, `Didn't return total info on transactions`)

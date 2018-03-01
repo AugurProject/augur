@@ -5,8 +5,8 @@ export function addMarketLoading(marketId) {
   return {
     type: ADD_MARKET_LOADING,
     data: {
-      marketId
-    }
+      marketId,
+    },
   }
 }
 
@@ -14,7 +14,7 @@ export function removeMarketLoading(marketId) {
   return {
     type: REMOVE_MARKET_LOADING,
     data: {
-      marketId
-    }
+      marketId,
+    },
   }
 }

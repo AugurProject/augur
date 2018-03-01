@@ -30,7 +30,7 @@ class PositionsMarketsList extends Component {
         { label: 'Volume', value: 'volume' },
         { label: 'Newest', value: 'newest' },
         { label: 'Expiring Soon', value: 'expiring' },
-        { label: 'Fees', value: 'fees' }
+        { label: 'Fees', value: 'fees' },
       ],
     }
 

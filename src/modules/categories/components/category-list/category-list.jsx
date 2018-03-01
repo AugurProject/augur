@@ -35,7 +35,7 @@ const CategoryList = (p) => {
 CategoryList.propTypes = {
   categories: PropTypes.array.isRequired,
   lowerBound: PropTypes.number,
-  boundedLength: PropTypes.number
+  boundedLength: PropTypes.number,
 }
 
 export default CategoryList

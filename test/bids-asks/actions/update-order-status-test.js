@@ -26,7 +26,7 @@ describe('modules/bids-asks/actions/update-order-status.js', () => {
         orderId: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
         status: CLOSE_DIALOG_CLOSING,
         marketId: 'testMarketId',
-        orderType: BUY
+        orderType: BUY,
       }])
     })
   })

@@ -33,11 +33,11 @@ export default function NavPanel(p) {
                 {
                   [Styles['NavPanel__control--active']]: p.selectedNav != null ?
                     item.param === p.selectedNav :
-                    item.default
-                }
+                    item.default,
+                },
               )}
               to={{
-                search: makeSearch(p.location, p.param, item.param, item.default)
+                search: makeSearch(p.location, p.param, item.param, item.default),
               }}
             >
               <div className={Styles.NavPanel__icon}>
@@ -56,5 +56,5 @@ NavPanel.propTypes = {
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   items: PropTypes.array.isRequired,
-  param: PropTypes.string.isRequired
+  param: PropTypes.string.isRequired,
 }

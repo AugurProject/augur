@@ -44,7 +44,7 @@ export default function () {
         isChallenged,
         isChallengeable,
         period,
-        isSubmitted
+        isSubmitted,
       }
     })
     .sort((a, b) => {

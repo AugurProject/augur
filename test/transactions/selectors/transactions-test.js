@@ -32,7 +32,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
       const expected = 'selectTransactions'
 
       assert.strictEqual(actual, expected, `Didn't call the expected method`)
-    }
+    },
   })
 
   test({
@@ -42,7 +42,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
         '0xTRANS0': {
           data: {
             id: '0xMARKETID',
-            outcomeName: 'test outcome'
+            outcomeName: 'test outcome',
           },
           status: INTERRUPTED,
           id: '0xTRANS0',
@@ -52,12 +52,12 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
           gas: '1',
           etherWithoutGas: '2',
           sharesChange: '4',
-          repChange: '5'
+          repChange: '5',
         },
         '0xTRANS1': {
           data: {
             id: '0xMARKETID',
-            outcomeName: 'test outcome'
+            outcomeName: 'test outcome',
           },
           status: SUBMITTED,
           id: '0xTRANS1',
@@ -68,12 +68,12 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
           gas: '1',
           etherWithoutGas: '2',
           sharesChange: '4',
-          repChange: '5'
+          repChange: '5',
         },
         '0xTRANS2': {
           data: {
             id: '0xMARKETID',
-            outcomeName: 'test outcome'
+            outcomeName: 'test outcome',
           },
           status: PENDING,
           id: '0xTRANS2',
@@ -83,13 +83,13 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
           gas: '1',
           etherWithoutGas: '2',
           sharesChange: '4',
-          repChange: '5'
+          repChange: '5',
         },
         '0xTRANS3': {
           data: {
             id: '0xMARKETID',
             description: 'test description',
-            outcomeName: 'test outcome'
+            outcomeName: 'test outcome',
           },
           status: SUCCESS,
           id: '0xTRANS3',
@@ -99,12 +99,12 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
           gas: '1',
           etherWithoutGas: '2',
           sharesChange: '4',
-          repChange: '5'
+          repChange: '5',
         },
         '0xTRANS4': {
           data: {
             id: '0xMARKETID',
-            outcomeName: 'test outcome'
+            outcomeName: 'test outcome',
           },
           status: FAILED,
           description: 'test description',
@@ -115,12 +115,12 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
           gas: '1',
           etherWithoutGas: '2',
           sharesChange: '4',
-          repChange: '5'
+          repChange: '5',
         },
         '0xTRANS5': {
           data: {
             id: '0xMARKETID',
-            outcomeName: 'test outcome'
+            outcomeName: 'test outcome',
           },
           status: SUBMITTED,
           description: 'test description',
@@ -131,9 +131,9 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
           gas: '1',
           etherWithoutGas: '2',
           sharesChange: '4',
-          repChange: '5'
-        }
-      }
+          repChange: '5',
+        },
+      },
     },
     assertions: (store) => {
       const transactions = require('../../../src/modules/transactions/selectors/transactions')
@@ -144,7 +144,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
         {
           data: {
             id: '0xMARKETID',
-            outcomeName: 'test outcome'
+            outcomeName: 'test outcome',
           },
           status: PENDING,
           id: '0xTRANS2',
@@ -157,12 +157,12 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
           repChange: '5',
           ethTokens: formatEtherTokens(2),
           shares: formatShares(4),
-          rep: formatRep(5)
+          rep: formatRep(5),
         },
         {
           data: {
             id: '0xMARKETID',
-            outcomeName: 'test outcome'
+            outcomeName: 'test outcome',
           },
           status: SUBMITTED,
           id: '0xTRANS1',
@@ -176,7 +176,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
           repChange: '5',
           ethTokens: formatEtherTokens(2),
           shares: formatShares(4),
-          rep: formatRep(5)
+          rep: formatRep(5),
         },
         {
           status: 'failed',
@@ -187,7 +187,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
             {
               data: {
                 id: '0xMARKETID',
-                outcomeName: 'test outcome'
+                outcomeName: 'test outcome',
               },
               status: FAILED,
               id: '0xTRANS4',
@@ -201,12 +201,12 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
               repChange: '5',
               ethTokens: formatEtherTokens(2),
               shares: formatShares(4),
-              rep: formatRep(5)
+              rep: formatRep(5),
             },
             {
               data: {
                 id: '0xMARKETID',
-                outcomeName: 'test outcome'
+                outcomeName: 'test outcome',
               },
               status: SUBMITTED,
               id: '0xTRANS5',
@@ -220,13 +220,13 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
               repChange: '5',
               ethTokens: formatEtherTokens(2),
               shares: formatShares(4),
-              rep: formatRep(5)
+              rep: formatRep(5),
             },
             {
               data: {
                 id: '0xMARKETID',
                 outcomeName: 'test outcome',
-                description: 'test description'
+                description: 'test description',
               },
               status: SUCCESS,
               id: '0xTRANS3',
@@ -239,14 +239,14 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
               repChange: '5',
               ethTokens: formatEtherTokens(2),
               shares: formatShares(4),
-              rep: formatRep(5)
-            }
-          ]
+              rep: formatRep(5),
+            },
+          ],
         },
         {
           data: {
             id: '0xMARKETID',
-            outcomeName: 'test outcome'
+            outcomeName: 'test outcome',
           },
           status: INTERRUPTED,
           id: '0xTRANS0',
@@ -259,11 +259,11 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
           repChange: '5',
           ethTokens: formatEtherTokens(2),
           shares: formatShares(4),
-          rep: formatRep(5)
-        }
+          rep: formatRep(5),
+        },
       ]
 
       assert.deepEqual(actual, expected, `Didn't return the expected object`)
-    }
+    },
   })
 })

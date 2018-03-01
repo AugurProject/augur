@@ -42,7 +42,7 @@ export const createPeriodPLSelector = period => createSelector(
 
       return p.plus(accumulatedPL)
     }, ZERO)
-  }
+  },
 )
 
 export const selectCoreStats = createSelector(
@@ -59,18 +59,18 @@ export const selectCoreStats = createSelector(
       totalEth: {
         label: 'ETH Tokens',
         title: 'Ether Tokens -- outcome trading currency',
-        value: { ...loginAccount.ethTokens, denomination: null }
+        value: { ...loginAccount.ethTokens, denomination: null },
       },
       totalRealEth: {
         label: 'ETH',
         title: 'Ether -- pays transaction gas fees',
-        value: { ...loginAccount.eth, denomination: null }
+        value: { ...loginAccount.eth, denomination: null },
       },
       totalRep: {
         label: 'REP',
         title: 'Reputation -- event voting currency',
-        value: { ...loginAccount.rep, denomination: null }
-      }
+        value: { ...loginAccount.rep, denomination: null },
+      },
     },
     // Group 2
     // NOTE -- group two is excluded for now due to not having all OPEN orders available without calling against every market
@@ -91,18 +91,18 @@ export const selectCoreStats = createSelector(
       totalPL: {
         label: 'Total P/L',
         title: 'Profit/Loss -- net of all trades',
-        value: getValue(loginAccountPositions, 'summary.totalNet')
+        value: getValue(loginAccountPositions, 'summary.totalNet'),
       },
       totalPLMonth: {
         label: '30 Day P/L',
         title: 'Profit/Loss -- net of all trades over the last 30 days',
-        value: formatEtherTokens(totalPLMonth)
+        value: formatEtherTokens(totalPLMonth),
       },
       totalPLDay: {
         label: '1 Day P/L',
         title: 'Profit/Loss -- net of all trades over the last day',
-        value: formatEtherTokens(totalPLDay)
-      }
-    }
-  ]
+        value: formatEtherTokens(totalPLDay),
+      },
+    },
+  ],
 )

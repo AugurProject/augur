@@ -5,14 +5,14 @@ export const MICRO_SHARE = 'micro-share'
 export const DENOMINATIONS = [
   {
     label: 'Shares',
-    value: SHARE
+    value: SHARE,
   },
   {
     label: 'mShares',
-    value: MILLI_SHARE
+    value: MILLI_SHARE,
   },
   {
     label: 'μShares',
-    value: MICRO_SHARE
-  }
+    value: MICRO_SHARE,
+  },
 ]

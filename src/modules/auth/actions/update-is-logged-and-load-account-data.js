@@ -8,7 +8,7 @@ export const updateIsLoggedAndLoadAccountData = (unlockedAddress, accountType) =
   console.log(`using ${accountType} account ${unlockedAddress}`)
   const loginAccount = {
     address: unlockedAddress,
-    meta: { accountType, address: unlockedAddress, signer: null }
+    meta: { accountType, address: unlockedAddress, signer: null },
   }
   dispatch(updateIsLogged(true))
   dispatch(loadAccountData(loginAccount))

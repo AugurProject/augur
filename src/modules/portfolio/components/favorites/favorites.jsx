@@ -29,7 +29,7 @@ class Favorites extends Component {
         { label: 'Volume', value: 'volume' },
         { label: 'Newest', value: 'newest' },
         { label: 'Fees', value: 'fees' },
-        { label: 'Expiring Soon', value: 'expiring' }
+        { label: 'Expiring Soon', value: 'expiring' },
       ],
       sortDefault: 'volume',
       sortType: 'volume',
@@ -37,7 +37,7 @@ class Favorites extends Component {
         { label: 'Cryptocurrency', value: 'cryptocurrency' },
         { label: 'Blockchain', value: 'blockchain' },
         { label: 'Bitcoin', value: 'bitcoin' },
-        { label: 'Ethereum', value: 'ethereum' }
+        { label: 'Ethereum', value: 'ethereum' },
       ],
       filterDefault: 'cryptocurrency',
       filterType: 'cryptocurrency',

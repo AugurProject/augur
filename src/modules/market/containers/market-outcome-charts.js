@@ -8,24 +8,11 @@ import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
 import { selectMarket } from 'modules/market/selectors/market'
 import { isEmpty } from 'lodash'
 
-// const startTime = new Date().getTime()
-//
-// const marketPriceHistory = [...new Array(30)]
-//   .map((value, index) => ({
-//     period: startTime + (index * ((1000000000000 - 0) + 0)),
-//     high: (Math.random()),
-//     low: (Math.random()),
-//     open: (Math.random()),
-//     close: (Math.random()),
-//     volume: (Math.random() * (1000 - 10)) + 10
-//   }))
-//   .sort((a, b) => a.x - b.x)
-
 // outcome specific trading price range
 const findBounds = memoize((outcome = {}) => {
   const DEFAULT_BOUNDS = {
     min: null,
-    max: null
+    max: null,
   }
 
   if (isEmpty(outcome)) return DEFAULT_BOUNDS
@@ -36,13 +23,13 @@ const findBounds = memoize((outcome = {}) => {
     if (i === 0) {
       return {
         min: currentItem,
-        max: currentItem
+        max: currentItem,
       }
     }
 
     return {
       min: currentItem < p.min ? currentItem : p.min,
-      max: currentItem > p.max ? currentItem : p.max
+      max: currentItem > p.max ? currentItem : p.max,
     }
   }, DEFAULT_BOUNDS)
 })
@@ -56,8 +43,8 @@ const orderAndAssignCumulativeShares = memoize((orderBook) => {
       {
         price: order.price,
         shares: order.shares,
-        cumulativeShares: p[i - 1] != null ? p[i - 1].cumulativeShares + order.shares.value : 0
-      }
+        cumulativeShares: p[i - 1] != null ? p[i - 1].cumulativeShares + order.shares.value : 0,
+      },
     ], [])
 
   const rawAsks = ((orderBook || {})[ASKS] || []).slice()
@@ -68,14 +55,14 @@ const orderAndAssignCumulativeShares = memoize((orderBook) => {
       {
         price: order.price,
         shares: order.shares,
-        cumulativeShares: p[i - 1] != null ? p[i - 1].cumulativeShares + order.shares.value : 0
-      }
+        cumulativeShares: p[i - 1] != null ? p[i - 1].cumulativeShares + order.shares.value : 0,
+      },
     ], [])
     .sort((a, b) => b.price.value - a.price.value)
 
   return {
     bids,
-    asks
+    asks,
   }
 })
 
@@ -90,7 +77,7 @@ const orderForMarketDepth = memoize((orderBook) => {
 
   return {
     [BIDS]: bids,
-    [ASKS]: asks
+    [ASKS]: asks,
   }
 })
 
@@ -112,7 +99,7 @@ const getOrderBookKeys = memoize((marketDepth) => {
     return (marketDepth[ASKS][0][1] + marketDepth[BIDS][0][1]) / 2
   }
 
-  const max = marketDepth[BIDS].reduce((p, order, i) => {
+  const max = marketDepth[ASKS].reduce((p, order, i) => {
     if (i === 0) return order[1]
     return order[1] > p ? order[1] : p
   }, null)
@@ -120,9 +107,19 @@ const getOrderBookKeys = memoize((marketDepth) => {
   return {
     min,
     mid: mid(),
-    max
+    max,
   }
 })
+
+// Mock dat data
+// const now = Date.now()
+// const timeDiff = (now - new Date(2017, 8).getTime())
+// const startTime = now - timeDiff
+// const priceTimeSeries = [...new Array(1000000)].map((value, i, array) => ({
+//   timestamp: startTime + (i * (timeDiff / array.length)),
+//   price: Math.random(),
+//   amount: (Math.random() * (10 - 1)) + 1
+// }))
 
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId)
@@ -133,13 +130,14 @@ const mapStateToProps = (state, ownProps) => {
   const orderBookKeys = getOrderBookKeys(marketDepth)
 
   return {
+    currentBlock: state.blockchain.currentBlockNumber,
     minPrice: market.minPrice,
     maxPrice: market.maxPrice,
     outcomeBounds: findBounds(outcome),
     orderBook: cumulativeOrderBook,
     priceTimeSeries,
     marketDepth,
-    orderBookKeys
+    orderBookKeys,
   }
 }
 

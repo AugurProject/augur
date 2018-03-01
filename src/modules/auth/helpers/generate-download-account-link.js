@@ -5,6 +5,6 @@ export default function (address, keystore, privateKey) {
   return {
     accountPrivateKey: speedomatic.byteArrayToHexString(privateKey || ''),
     downloadAccountDataString: `data:,${encodeURIComponent(JSON.stringify(keystore))}`,
-    downloadAccountFileName: keythereum.generateKeystoreFilename(address)
+    downloadAccountFileName: keythereum.generateKeystoreFilename(address),
   }
 }

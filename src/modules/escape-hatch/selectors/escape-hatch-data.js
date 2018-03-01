@@ -74,5 +74,5 @@ export const getEscapeHatchData = createSelector(
     data.fundsAvailableForWithdrawl = data.rep + data.eth > 0
 
     return data
-  }
+  },
 )

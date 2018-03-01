@@ -15,8 +15,8 @@ describe('modules/my-positions/reducers/close-position-trade-groups.js', () => {
         } else {
           const existingClosePositionTradeGroups = t.existingClosePositionTradeGroups || {
             '0xMarketID1': {
-              0: ['0x00000TradeGroupID1', '0x00000TradeGroupID2']
-            }
+              0: ['0x00000TradeGroupID1', '0x00000TradeGroupID2'],
+            },
           }
 
           t.assertions(closePositionTradeGroups.default(existingClosePositionTradeGroups, t.action))
@@ -30,7 +30,7 @@ describe('modules/my-positions/reducers/close-position-trade-groups.js', () => {
       defaultState: true,
       assertions: (res) => {
         assert.deepEqual(res, {})
-      }
+      },
     })
 
     test({
@@ -39,10 +39,10 @@ describe('modules/my-positions/reducers/close-position-trade-groups.js', () => {
       assertions: (res) => {
         assert.deepEqual(res, {
           '0xMarketID1': {
-            0: ['0x00000TradeGroupID1', '0x00000TradeGroupID2']
-          }
+            0: ['0x00000TradeGroupID1', '0x00000TradeGroupID2'],
+          },
         })
-      }
+      },
     })
 
     test({
@@ -51,15 +51,15 @@ describe('modules/my-positions/reducers/close-position-trade-groups.js', () => {
         type: ADD_CLOSE_POSITION_TRADE_GROUP,
         marketId: '0xMarketID1',
         outcomeId: '0',
-        tradeGroupId: '0x00000TradeGroupID3'
+        tradeGroupId: '0x00000TradeGroupID3',
       },
       assertions: (res) => {
         assert.deepEqual(res, {
           '0xMarketID1': {
-            0: ['0x00000TradeGroupID1', '0x00000TradeGroupID2', '0x00000TradeGroupID3']
-          }
+            0: ['0x00000TradeGroupID1', '0x00000TradeGroupID2', '0x00000TradeGroupID3'],
+          },
         })
-      }
+      },
     })
 
     test({
@@ -67,25 +67,25 @@ describe('modules/my-positions/reducers/close-position-trade-groups.js', () => {
       existingClosePositionTradeGroups: {
         '0xMarketID1': {
           0: ['0x00000TradeGroupID1', '0x00000TradeGroupID2'],
-          1: ['0x00000TradeGroupID3']
+          1: ['0x00000TradeGroupID3'],
         },
         '0xMarketID2': {
-          3: ['0x00000TradeGroupID4']
-        }
+          3: ['0x00000TradeGroupID4'],
+        },
       },
       action: {
         type: CLEAR_CLOSE_POSITION_OUTCOME,
         marketId: '0xMarketID2',
-        outcomeId: '3'
+        outcomeId: '3',
       },
       assertions: (res) => {
         assert.deepEqual(res, {
           '0xMarketID1': {
             0: ['0x00000TradeGroupID1', '0x00000TradeGroupID2'],
-            1: ['0x00000TradeGroupID3']
-          }
+            1: ['0x00000TradeGroupID3'],
+          },
         })
-      }
+      },
     })
 
     test({
@@ -93,27 +93,27 @@ describe('modules/my-positions/reducers/close-position-trade-groups.js', () => {
       existingClosePositionTradeGroups: {
         '0xMarketID1': {
           0: ['0x00000TradeGroupID1', '0x00000TradeGroupID2'],
-          1: ['0x00000TradeGroupID3']
+          1: ['0x00000TradeGroupID3'],
         },
         '0xMarketID2': {
-          3: ['0x00000TradeGroupID4']
-        }
+          3: ['0x00000TradeGroupID4'],
+        },
       },
       action: {
         type: CLEAR_CLOSE_POSITION_OUTCOME,
         marketId: '0xMarketID1',
-        outcomeId: '0'
+        outcomeId: '0',
       },
       assertions: (res) => {
         assert.deepEqual(res, {
           '0xMarketID1': {
-            1: ['0x00000TradeGroupID3']
+            1: ['0x00000TradeGroupID3'],
           },
           '0xMarketID2': {
-            3: ['0x00000TradeGroupID4']
-          }
+            3: ['0x00000TradeGroupID4'],
+          },
         })
-      }
+      },
     })
   })
 })

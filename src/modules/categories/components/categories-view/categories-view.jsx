@@ -27,7 +27,7 @@ export default class CategoriesView extends Component {
     isMobile: PropTypes.bool.isRequired,
     categories: PropTypes.array,
     universe: PropTypes.object,
-    loginAccount: PropTypes.object
+    loginAccount: PropTypes.object,
   }
 
   constructor(props) {
@@ -38,7 +38,7 @@ export default class CategoriesView extends Component {
       boundedLength: null,
       itemsPerPage: 9,
       heroCategoryIndex: null,
-      heroCategoryOpacity: 0
+      heroCategoryOpacity: 0,
     }
 
     this.setSegment = this.setSegment.bind(this)
@@ -65,7 +65,7 @@ export default class CategoriesView extends Component {
   setSegment(lowerBound, upperBound, boundedLength) {
     this.setState({
       lowerBound,
-      boundedLength
+      boundedLength,
     })
   }
 
@@ -79,7 +79,7 @@ export default class CategoriesView extends Component {
       easing: 'easeOutQuad',
       step: (stepObj) => {
         this.setState({ heroCategoryOpacity: stepObj.value })
-      }
+      },
     }).then(cb)
 
     const waitThenChange = () => {
@@ -125,8 +125,8 @@ export default class CategoriesView extends Component {
                   to={{
                     pathname: makePath(MARKETS),
                     search: makeQuery({
-                      [CATEGORY_PARAM_NAME]: heroCategory.category
-                    })
+                      [CATEGORY_PARAM_NAME]: heroCategory.category,
+                    }),
                   }}
                 >
                   {heroCategory.category}

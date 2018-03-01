@@ -15,14 +15,14 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
       const { openOrders } = t
       const cancelOpenOrdersInClosedMarkets = proxyquire('../../../src/modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.js', {
         '../../bids-asks/actions/cancel-order': CancelOrder,
-        '../selectors/open-orders': openOrders
+        '../selectors/open-orders': openOrders,
       }).default
       sinon.stub(CancelOrder, 'cancelOrder').callsFake((orderId, marketId, outcome, type) => (dispatch, getState) => {
         dispatch({
           type: 'CANCEL_ORDER',
           params: {
-            orderId, marketId, outcome, type
-          }
+            orderId, marketId, outcome, type,
+          },
         })
       })
       store.dispatch(cancelOpenOrdersInClosedMarkets())
@@ -35,7 +35,7 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
     openOrders: [],
     assertions: (actions) => {
       assert.deepEqual(actions, [])
-    }
+    },
   })
   test({
     description: '1 open order in 1 open market',
@@ -46,13 +46,13 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
         id: '0xc1',
         userOpenOrders: [{
           id: '0xd1',
-          type: 'buy'
-        }]
-      }]
+          type: 'buy',
+        }],
+      }],
     }],
     assertions: (actions) => {
       assert.deepEqual(actions, [])
-    }
+    },
   })
   test({
     description: '1 open order in 1 closed market',
@@ -63,9 +63,9 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
         id: '0xc1',
         userOpenOrders: [{
           id: '0xd1',
-          type: 'buy'
-        }]
-      }]
+          type: 'buy',
+        }],
+      }],
     }],
     assertions: (actions) => {
       assert.deepEqual(actions, [{
@@ -74,10 +74,10 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
           orderId: '0xd1',
           marketId: '0xa1',
           outcome: '0xc1',
-          type: 'buy'
-        }
+          type: 'buy',
+        },
       }])
-    }
+    },
   })
   test({
     description: '2 open orders in 1 closed market',
@@ -88,12 +88,12 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
         id: '0xc1',
         userOpenOrders: [{
           id: '0xd1',
-          type: 'buy'
+          type: 'buy',
         }, {
           id: '0xd2',
-          type: 'sell'
-        }]
-      }]
+          type: 'sell',
+        }],
+      }],
     }],
     assertions: (actions) => {
       assert.deepEqual(actions, [{
@@ -102,18 +102,18 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
           orderId: '0xd1',
           marketId: '0xa1',
           outcome: '0xc1',
-          type: 'buy'
-        }
+          type: 'buy',
+        },
       }, {
         type: 'CANCEL_ORDER',
         params: {
           orderId: '0xd2',
           marketId: '0xa1',
           outcome: '0xc1',
-          type: 'sell'
-        }
+          type: 'sell',
+        },
       }])
-    }
+    },
   })
   test({
     description: '2 open orders each in 2 closed markets',
@@ -124,12 +124,12 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
         id: '0xc1',
         userOpenOrders: [{
           id: '0xd1',
-          type: 'buy'
+          type: 'buy',
         }, {
           id: '0xd2',
-          type: 'sell'
-        }]
-      }]
+          type: 'sell',
+        }],
+      }],
     }, {
       id: '0xa2',
       isOpen: false,
@@ -137,12 +137,12 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
         id: '0xc1',
         userOpenOrders: [{
           id: '0xd3',
-          type: 'buy'
+          type: 'buy',
         }, {
           id: '0xd4',
-          type: 'buy'
-        }]
-      }]
+          type: 'buy',
+        }],
+      }],
     }],
     assertions: (actions) => {
       assert.deepEqual(actions, [{
@@ -151,34 +151,34 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
           orderId: '0xd1',
           marketId: '0xa1',
           outcome: '0xc1',
-          type: 'buy'
-        }
+          type: 'buy',
+        },
       }, {
         type: 'CANCEL_ORDER',
         params: {
           orderId: '0xd2',
           marketId: '0xa1',
           outcome: '0xc1',
-          type: 'sell'
-        }
+          type: 'sell',
+        },
       }, {
         type: 'CANCEL_ORDER',
         params: {
           orderId: '0xd3',
           marketId: '0xa2',
           outcome: '0xc1',
-          type: 'buy'
-        }
+          type: 'buy',
+        },
       }, {
         type: 'CANCEL_ORDER',
         params: {
           orderId: '0xd4',
           marketId: '0xa2',
           outcome: '0xc1',
-          type: 'buy'
-        }
+          type: 'buy',
+        },
       }])
-    }
+    },
   })
   test({
     description: '2 open orders each in 1 closed and 1 open markets',
@@ -189,12 +189,12 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
         id: '0xc1',
         userOpenOrders: [{
           id: '0xd1',
-          type: 'buy'
+          type: 'buy',
         }, {
           id: '0xd2',
-          type: 'sell'
-        }]
-      }]
+          type: 'sell',
+        }],
+      }],
     }, {
       id: '0xa2',
       isOpen: true,
@@ -202,12 +202,12 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
         id: '0xc1',
         userOpenOrders: [{
           id: '0xd3',
-          type: 'buy'
+          type: 'buy',
         }, {
           id: '0xd4',
-          type: 'buy'
-        }]
-      }]
+          type: 'buy',
+        }],
+      }],
     }],
     assertions: (actions) => {
       assert.deepEqual(actions, [{
@@ -216,17 +216,17 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
           orderId: '0xd1',
           marketId: '0xa1',
           outcome: '0xc1',
-          type: 'buy'
-        }
+          type: 'buy',
+        },
       }, {
         type: 'CANCEL_ORDER',
         params: {
           orderId: '0xd2',
           marketId: '0xa1',
           outcome: '0xc1',
-          type: 'sell'
-        }
+          type: 'sell',
+        },
       }])
-    }
+    },
   })
 })

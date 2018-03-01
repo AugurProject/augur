@@ -8,7 +8,7 @@ const CaretDropdown = p => (
   <svg
     className={classNames(
       Styles.CaretDropdown,
-      p.className
+      p.className,
     )}
     transform={p.flipped ? 'rotate(180), translate(0, 4)' : ''}
   >
@@ -24,7 +24,7 @@ const CaretDropdown = p => (
 
 CaretDropdown.propTypes = {
   className: PropTypes.string,
-  flipped: PropTypes.bool
+  flipped: PropTypes.bool,
 }
 
 export default CaretDropdown

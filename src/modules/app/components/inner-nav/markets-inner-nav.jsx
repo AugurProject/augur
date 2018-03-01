@@ -19,7 +19,7 @@ export default class MarketsInnerNav extends BaseInnerNav {
     markets: PropTypes.array.isRequired,
     marketsFilteredSorted: PropTypes.array.isRequired,
     location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired,
   }
 
   constructor() {
@@ -27,7 +27,7 @@ export default class MarketsInnerNav extends BaseInnerNav {
     this.state = {
       actualCurrentTags: [],
       visibleTags: {},
-      selectedTags: []
+      selectedTags: [],
     }
   }
 
@@ -109,7 +109,7 @@ export default class MarketsInnerNav extends BaseInnerNav {
 
       return this.props.history.push({
         ...this.props.location,
-        search: searchParams
+        search: searchParams,
       })
     }
 
@@ -131,7 +131,7 @@ export default class MarketsInnerNav extends BaseInnerNav {
 
     this.props.history.push({
       ...this.props.location,
-      search: searchParams
+      search: searchParams,
     })
   }
 
@@ -148,9 +148,9 @@ export default class MarketsInnerNav extends BaseInnerNav {
       link: {
         pathname: makePath(MARKETS),
         search: makeQuery({
-          [CATEGORY_PARAM_NAME]: item.category
-        })
-      }
+          [CATEGORY_PARAM_NAME]: item.category,
+        }),
+      },
     }))
   }
 
@@ -159,7 +159,7 @@ export default class MarketsInnerNav extends BaseInnerNav {
       label: tag,
       isSelected: (this.state.selectedTags.indexOf(tag) > -1),
       onClick: () => this.toggleTag(tag),
-      visible: tagState.visible
+      visible: tagState.visible,
     }))
   }
 }

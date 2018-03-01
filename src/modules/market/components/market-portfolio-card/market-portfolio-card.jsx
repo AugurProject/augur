@@ -33,8 +33,8 @@ export default class MarketPortfolioCard extends Component {
     this.state = {
       tableOpen: {
         myPositions: this.props.positionsDefault,
-        openOrders: false
-      }
+        openOrders: false,
+      },
     }
   }
 
@@ -67,13 +67,13 @@ export default class MarketPortfolioCard extends Component {
         <section
           className={classNames(
             CommonStyles.MarketCommon__topcontent,
-            Styles.MarketCard__topcontent
+            Styles.MarketCard__topcontent,
           )}
         >
           <div
             className={classNames(
               CommonStyles.MarketCommon__header,
-              Styles.MarketCard__header
+              Styles.MarketCard__header,
             )}
           >
             <div className={Styles.MarketCard__headertext}>
@@ -146,12 +146,11 @@ export default class MarketPortfolioCard extends Component {
               <h1 className={Styles.MarketCard__tableheading}>
                 My Positions
               </h1>
-              <button
+              <div
                 className={Styles.MarketCard__tabletoggle}
-                onClick={() => this.toggleTable('myPositions')}
               >
                 <CaretDropdown flipped={this.state.tableOpen.myPositions} />
-              </button>
+              </div>
             </button>
           }
           <div className={PositionStyles.MarketPositionsList__table}>
@@ -191,12 +190,11 @@ export default class MarketPortfolioCard extends Component {
                 <h1 className={Styles.MarketCard__tableheading}>
                   Open Orders
                 </h1>
-                <button
+                <div
                   className={Styles.MarketCard__tabletoggle}
-                  onClick={() => this.toggleTable('openOrders')}
                 >
                   <CaretDropdown flipped={this.state.tableOpen.openOrders} />
-                </button>
+                </div>
               </button>
             }
             <div className={PositionStyles.MarketPositionsList__table}>

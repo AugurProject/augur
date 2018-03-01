@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import MarketBasics from 'modules/market/components/market-basics/market-basics'
-import MarketProperties from 'modules/market/components/market-properties/market-properties'
+import MarketProperties from 'modules/market/containers/market-properties'
 import OutstandingReturns from 'modules/market/components/market-outstanding-returns/market-outstanding-returns'
 
 import CommonStyles from 'modules/market/components/common/market-common.styles'
@@ -16,7 +16,7 @@ const MarketPreview = p => (
       <MarketProperties {...p} />
     </div>
     {p.outstandingReturns && p.unclaimedCreatorFees.value > 0 &&
-      <div className={classNames(Styles.MarketPreview__footer, { [`${Styles['single-card']}`]: p.cardStyle === 'single-card' })}>
+      <div className={classNames(Styles.MarketPreview__returns, { [`${Styles['single-card']}`]: p.cardStyle === 'single-card' })}>
         <OutstandingReturns
           id={p.id}
           unclaimedCreatorFees={p.unclaimedCreatorFees}

@@ -46,14 +46,14 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     const store = mockStore(state)
     const mockSelectMarket = {}
     const mockLoadAccountPositions = {
-      loadAccountPositions: (options, callback) => dispatch => callback(null, [])
+      loadAccountPositions: (options, callback) => dispatch => callback(null, []),
     }
     mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testBinaryMarketId)
 
     const action = proxyquire('../../../src/modules/trade/actions/update-trades-in-progress', {
       '../../../store': store,
       '../../my-positions/actions/load-account-positions': mockLoadAccountPositions,
-      '../../market/selectors/market': mockSelectMarket
+      '../../market/selectors/market': mockSelectMarket,
     })
 
     beforeEach(() => {
@@ -90,9 +90,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '5',
             shareBalances: ['0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
     })
 
@@ -122,9 +122,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '5',
             shareBalances: ['0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
     })
 
@@ -140,9 +140,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: undefined,
             limitPrice: '0.5',
             totalFee: '0',
-            totalCost: '0'
-          }
-        }
+            totalCost: '0',
+          },
+        },
       }, `Didn't clear the tradeDetails object`)
     })
 
@@ -158,9 +158,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: undefined,
             limitPrice: '0.5',
             totalFee: '0',
-            totalCost: '0'
-          }
-        }
+            totalCost: '0',
+          },
+        },
       }, `Didn't return the correct tradeDetails object based on input`)
     })
 
@@ -175,9 +175,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             totalFee: '0.01',
             totalCost: '-5.01',
             feePercent: '0.2',
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }
       store.dispatch(action.updateTradesInProgress('testBinaryMarketId', 0, BUY, undefined, '0.15', undefined))
       assert.deepEqual(store.getActions()[0], {
@@ -199,9 +199,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '1.5',
             shareBalances: ['0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, `Didn't update the tradeDetails object to the new calcs given new limit`)
     })
 
@@ -227,9 +227,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '0',
             shareBalances: ['0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, "Didn't produce the expected tradeDetails object")
     })
 
@@ -254,9 +254,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '12.5',
             shareBalances: ['0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, "Didn't produce the expected tradeDetails object")
     })
 
@@ -281,9 +281,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '12.5',
             shareBalances: ['0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, "Didn't produce the expected tradeDetails object")
     })
   })
@@ -295,7 +295,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     const state = Object.assign({}, testState, tradeTestState)
     const store = mockStore(state)
     const mockLoadAccountPositions = {
-      loadAccountPositions: (options, callback) => dispatch => callback(null, [])
+      loadAccountPositions: (options, callback) => dispatch => callback(null, []),
     }
     const mockSelectMarket = {}
     mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testCategoricalMarketId)
@@ -303,7 +303,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     const action = proxyquire('../../../src/modules/trade/actions/update-trades-in-progress', {
       '../../../store': store,
       '../../my-positions/actions/load-account-positions': mockLoadAccountPositions,
-      '../../market/selectors/market': mockSelectMarket
+      '../../market/selectors/market': mockSelectMarket,
     })
 
     beforeEach(() => {
@@ -340,9 +340,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '7',
             shareBalances: ['0', '0', '0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
     })
 
@@ -372,9 +372,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '5',
             shareBalances: ['0', '0', '0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
     })
 
@@ -390,9 +390,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: undefined,
             limitPrice: '0.5',
             totalFee: '0',
-            totalCost: '0'
-          }
-        }
+            totalCost: '0',
+          },
+        },
       }, `Didn't clear the tradeDetails object`)
     })
 
@@ -408,9 +408,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: undefined,
             limitPrice: '0.5',
             totalFee: '0',
-            totalCost: '0'
-          }
-        }
+            totalCost: '0',
+          },
+        },
       }, `Didn't return the correct tradeDetails object based on input`)
     })
 
@@ -433,14 +433,14 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
                 feePercent: '0.0999999999999999',
                 costEth: '-5.004999999999999995',
                 avgPrice: '0.500499999999999999',
-                noFeePrice: '0.5'
-              }
+                noFeePrice: '0.5',
+              },
             ],
             tradingFeesEth: '0.004999999999999995',
             gasFeesRealEth: '0.01450404',
-            feePercent: '0.099800399201596707'
-          }
-        }
+            feePercent: '0.099800399201596707',
+          },
+        },
       }
       store.dispatch(action.updateTradesInProgress('testCategoricalMarketId', 0, BUY, undefined, '0.15', undefined))
       assert.deepEqual(store.getActions()[0], {
@@ -462,9 +462,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '1.5',
             shareBalances: ['0', '0', '0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, `Didn't update the tradeDetails object to the new calcs given new limit`)
     })
 
@@ -489,9 +489,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '0',
             shareBalances: ['0', '0', '0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, "Didn't produce the expected tradeDetails object")
     })
 
@@ -516,9 +516,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '12.5',
             shareBalances: ['0', '0', '0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, "Didn't produce the expected tradeDetails object")
     })
 
@@ -543,9 +543,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '12.5',
             shareBalances: ['0', '0', '0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, "Didn't produce the expected tradeDetails object")
     })
   })
@@ -557,7 +557,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     const state = Object.assign({}, testState, tradeTestState)
     const store = mockStore(state)
     const mockLoadAccountPositions = {
-      loadAccountPositions: (options, callback) => dispatch => callback(null, ['0', '0'])
+      loadAccountPositions: (options, callback) => dispatch => callback(null, ['0', '0']),
     }
     const mockSelectMarket = {}
     mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testScalarMarketId)
@@ -565,7 +565,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     const action = proxyquire('../../../src/modules/trade/actions/update-trades-in-progress', {
       '../../../store': store,
       '../../my-positions/actions/load-account-positions': mockLoadAccountPositions,
-      '../../market/selectors/market': mockSelectMarket
+      '../../market/selectors/market': mockSelectMarket,
     })
 
     beforeEach(() => {
@@ -602,9 +602,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '650',
             shareBalances: ['0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
     })
 
@@ -634,9 +634,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '600',
             shareBalances: ['0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
     })
 
@@ -652,9 +652,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: undefined,
             limitPrice: '50',
             totalFee: '0',
-            totalCost: '0'
-          }
-        }
+            totalCost: '0',
+          },
+        },
       }, `Didn't clear the tradeDetails object`)
     })
 
@@ -670,9 +670,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: undefined,
             limitPrice: '65',
             totalFee: '0',
-            totalCost: '0'
-          }
-        }
+            totalCost: '0',
+          },
+        },
       }, `Didn't clear the tradeDetails object`)
     })
 
@@ -686,9 +686,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             limitPrice: '55',
             totalFee: '5.36982248520710025',
             totalCost: '-555.36982248520710025',
-            feePercent: '0.9763313609467455'
-          }
-        }
+            feePercent: '0.9763313609467455',
+          },
+        },
       }
       store.dispatch(action.updateTradesInProgress('testScalarMarketId', 0, BUY, undefined, '70', undefined))
       assert.deepEqual(store.getActions()[0], {
@@ -710,9 +710,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '800',
             shareBalances: ['0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, `Didn't update the tradeDetails object to the new calcs given new limit`)
     })
 
@@ -737,9 +737,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '100',
             shareBalances: ['0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
     })
 
@@ -764,9 +764,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '1625',
             shareBalances: ['0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, `Didn't update the tradeDetails object to the new calcs given new limit`)
     })
 
@@ -791,9 +791,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '1625',
             shareBalances: ['0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, `Didn't update the tradeDetails object to the new calcs given new limit`)
     })
 
@@ -818,9 +818,9 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             otherSharesDepleted: '0',
             tokensDepleted: '50',
             shareBalances: ['0', '0'],
-            worstCaseFees: '0'
-          }
-        }
+            worstCaseFees: '0',
+          },
+        },
       }, `Didn't update the tradeDetails object to the new calcs given new limit`)
     })
   })

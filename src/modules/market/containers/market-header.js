@@ -18,8 +18,8 @@ const mergeProps = (sP, dP, oP) => {
     coreProperties: {
       volume: getValue(market, 'volume.formatted'),
       fee: getValue(market, 'settlementFeePercent.formatted'), // FIXME -- right now really small fees display as 0.0
-      expires: getValue(market, 'endDate.formattedLocal')
-    }
+      expires: getValue(market, 'endDate.formattedLocal'),
+    },
   }
 }
 
