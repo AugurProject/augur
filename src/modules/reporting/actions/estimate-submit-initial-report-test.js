@@ -41,6 +41,10 @@ describe(`modules/reporting/actions/estimate-submit-initial-report.js`, () => {
     })
   }
 
+  after(() => {
+    estimateSubmitInitialReportReqireAPI.__ResetDependency__('augur')
+  })
+
   describe('empty marketId', () => {
     test({
       description: `should call the expected method`,

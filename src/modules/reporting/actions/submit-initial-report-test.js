@@ -25,6 +25,10 @@ describe(`modules/reporting/actions/submit-initial-report.js`, () => {
     callback.reset()
   })
 
+  after(() => {
+    submitInitialReportReqireAPI.__ResetDependency__('getPayoutNumerators')
+  })
+
   const augurSuccess = {
     api: {
       Market: {
