@@ -16,7 +16,7 @@ import CaretDropdown from 'modules/common/components/caret-dropdown/caret-dropdo
 const MarketProperties = (p) => {
   const shareVolumeRounded = getValue(p, 'volume.rounded')
   const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations)
-
+  console.log('mp,p', p);
   return (
     <article>
       <section className={Styles.MarketProperties}>
