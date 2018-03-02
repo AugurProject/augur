@@ -7,7 +7,6 @@ var displayTime = require("./display-time");
 
 function listMarketsInternal(augur, universe, callback) {
   augur.api.Controller.getTimestamp(function (err, timestamp) {
-    displayTime("Current Time", timestamp);
     var currentTime = new Date(timestamp * 1000);
     augur.markets.getMarkets({ universe: universe, sortBy: "endDate", isSortDescending: true }, function (err, marketIds) {
       if (!marketIds || marketIds.length === 0) {
@@ -30,6 +29,7 @@ function listMarketsInternal(augur, universe, callback) {
           console.log(chalk.cyan("endDate:"), chalk.cyan(endDate), chalk.red(date), ended ? chalk.yellow(ended) : chalk.red(ended), chalk.blue(marketInfo.reportingState), chalk.red(marketInfo.designatedReporter));
           console.log(chalk.green.dim(marketInfo.id), chalk.green(marketInfo.description));
         });
+        displayTime("Current Time", timestamp);
         callback(null);
       });
     });
@@ -37,7 +37,7 @@ function listMarketsInternal(augur, universe, callback) {
 }
 
 function help(callback) {
-  console.log(chalk.red("params syntax --> -p  no params needed"));
+  console.log(chalk.red("params syntax --> no params needed"));
   callback(null);
 }
 
