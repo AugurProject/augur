@@ -16,15 +16,15 @@ describe(`modules/universe/actions/update-universe.js`, () => {
     store.dispatch(action.updateUniverse({
       currentReportingPeriodPercentComplete: 52,
       currentReportingWindowAddress: 18,
-      reportingPeriodDurationInSeconds: 900
+      reportingPeriodDurationInSeconds: 900,
     }))
     assert.deepEqual(store.getActions(), [{
       type: 'UPDATE_UNIVERSE',
       universe: {
         currentReportingPeriodPercentComplete: 52,
         currentReportingWindowAddress: 18,
-        reportingPeriodDurationInSeconds: 900
-      }
+        reportingPeriodDurationInSeconds: 900,
+      },
     }])
     store.clearActions()
   })

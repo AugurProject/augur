@@ -5,7 +5,7 @@ import {
   ADD_NOTIFICATION,
   REMOVE_NOTIFICATION,
   UPDATE_NOTIFICATION,
-  CLEAR_NOTIFICATIONS
+  CLEAR_NOTIFICATIONS,
 } from 'modules/notifications/actions/update-notifications'
 
 import notifications from 'modules/notifications/reducers/notifications'
@@ -23,7 +23,7 @@ describe('modules/notifications/reducers/notifications', () => {
       const actual = notifications(undefined, {})
       const expected = []
       assert.deepEqual(actual, expected, `Didn't return the expected array`)
-    }
+    },
   })
 
   test({
@@ -33,17 +33,17 @@ describe('modules/notifications/reducers/notifications', () => {
         type: ADD_NOTIFICATION,
         data: {
           notification: {
-            id: '0xTEST'
-          }
-        }
+            id: '0xTEST',
+          },
+        },
       })
       const expected = [
         {
-          id: '0xTEST'
-        }
+          id: '0xTEST',
+        },
       ]
       assert.deepEqual(actual, expected, `Didn't return the expected array`)
-    }
+    },
   })
 
   test({
@@ -51,17 +51,17 @@ describe('modules/notifications/reducers/notifications', () => {
     assertions: () => {
       const actual = notifications([
         {
-          id: '0xTEST'
-        }
+          id: '0xTEST',
+        },
       ], {
         type: REMOVE_NOTIFICATION,
-        data: '0xTEST'
+        data: '0xTEST',
       })
 
       const expected = []
 
       assert.deepEqual(actual, expected, `Didn't return the expected array`)
-    }
+    },
   })
 
   test({
@@ -69,34 +69,34 @@ describe('modules/notifications/reducers/notifications', () => {
     assertions: () => {
       const actual = notifications([
         {
-          id: '0xTEST0'
+          id: '0xTEST0',
         },
         {
           id: '0xTest1',
-          testing: 'old object'
-        }
+          testing: 'old object',
+        },
       ], {
         type: UPDATE_NOTIFICATION,
         data: {
           id: '0xTest1',
           notification: {
-            testing: 'new object'
-          }
-        }
+            testing: 'new object',
+          },
+        },
       })
 
       const expected = [
         {
-          id: '0xTEST0'
+          id: '0xTEST0',
         },
         {
           id: '0xTest1',
-          testing: 'new object'
-        }
+          testing: 'new object',
+        },
       ]
 
       assert.deepEqual(actual, expected, `Didn't return the expected array`)
-    }
+    },
   })
 
   test({
@@ -104,15 +104,15 @@ describe('modules/notifications/reducers/notifications', () => {
     assertions: () => {
       const actual = notifications([
         {
-          id: '0xTEST'
-        }
+          id: '0xTEST',
+        },
       ], {
-        type: CLEAR_NOTIFICATIONS
+        type: CLEAR_NOTIFICATIONS,
       })
 
       const expected = []
 
       assert.deepEqual(actual, expected, `Didn't return the expected array`)
-    }
+    },
   })
 })

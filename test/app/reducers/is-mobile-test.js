@@ -15,7 +15,7 @@ describe('modules/app/reducers/is-mobile.js', () => {
       const expected = false
 
       assert.strictEqual(actual, expected, `didn't return the expected value`)
-    }
+    },
   })
 
   test({
@@ -24,13 +24,13 @@ describe('modules/app/reducers/is-mobile.js', () => {
       const actual = isMobileReducer(undefined, {
         type: UPDATE_IS_MOBILE,
         data: {
-          isMobile: false
-        }
+          isMobile: false,
+        },
       })
 
       const expected = false
 
       assert.strictEqual(actual, expected, `didn't return the expected value`)
-    }
+    },
   })
 })

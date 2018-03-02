@@ -19,53 +19,53 @@ describe('modules/portfolio/selectors/nav-items', () => {
         label: 'test',
         link: {
           href: 'test',
-          onClick: 'fake function'
+          onClick: 'fake function',
         },
-        page: 'test'
+        page: 'test',
       },
       myMarketsLink: {
         label: 'test',
         link: {
           href: 'test',
-          onClick: 'fake function'
+          onClick: 'fake function',
         },
-        page: 'test'
+        page: 'test',
       },
       myReportsLink: {
         label: 'test',
         link: {
           href: 'test',
-          onClick: 'fake function'
+          onClick: 'fake function',
         },
-        page: 'test'
-      }
-    }
+        page: 'test',
+      },
+    },
   }
 
   const selectors = {
     selectMyPositionsSummary: () => {},
     selectMyMarketsSummary: () => {},
     selectMyReportsSummary: () => {},
-    selectLinks: () => {}
+    selectLinks: () => {},
   }
 
   const stubbedMyPositionsSummary = sinon.stub(selectors, 'selectMyPositionsSummary').callsFake(() => (
     {
       numPositions: formatNumber(10, { denomination: 'positions' }),
-      totalNet: formatEtherTokens(2)
+      totalNet: formatEtherTokens(2),
     }
   ))
   const stubbedMyMarketsSummary = sinon.stub(selectors, 'selectMyMarketsSummary').callsFake(() => (
     {
       numMarkets: 30,
-      totalValue: 10
+      totalValue: 10,
     }
   ))
 
   const stubbedMyReportsSummary = sinon.stub(selectors, 'selectMyReportsSummary').callsFake(() => (
     {
       numReports: 10,
-      netRep: 5
+      netRep: 5,
     }
   ))
 
@@ -73,7 +73,7 @@ describe('modules/portfolio/selectors/nav-items', () => {
     '../../my-positions/selectors/my-positions-summary': stubbedMyPositionsSummary,
     '../../my-markets/selectors/my-markets-summary': stubbedMyMarketsSummary,
     '../../my-reports/selectors/my-reports-summary': stubbedMyReportsSummary,
-    '../../../selectors': stubbedSelectors
+    '../../../selectors': stubbedSelectors,
   })
 
   const expected = [
@@ -85,7 +85,7 @@ describe('modules/portfolio/selectors/nav-items', () => {
       leadingValueNull: 'No Positions',
       trailingTitle: 'Total Profit/Loss',
       trailingValue: formatEtherTokens(2),
-      trailingValueNull: 'No Profit/Loss'
+      trailingValueNull: 'No Profit/Loss',
     },
     {
       label: 'Markets',
@@ -95,7 +95,7 @@ describe('modules/portfolio/selectors/nav-items', () => {
       leadingValueNull: 'No Markets',
       trailingTitle: 'Total Gain/Loss',
       trailingValue: formatEtherTokens(10),
-      trailingValueNull: 'No Gain/Loss'
+      trailingValueNull: 'No Gain/Loss',
     },
     {
       label: 'Reports',
@@ -105,8 +105,8 @@ describe('modules/portfolio/selectors/nav-items', () => {
       leadingValueNull: 'No Reports',
       trailingTitle: 'Total Gain/Loss',
       trailingValue: formatRep(5, { denomination: ' REP' }),
-      trailingValueNull: 'No Gain/Loss'
-    }
+      trailingValueNull: 'No Gain/Loss',
+    },
   ]
 
   before(() => {

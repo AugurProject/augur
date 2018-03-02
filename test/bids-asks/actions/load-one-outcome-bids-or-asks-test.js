@@ -14,7 +14,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
     const store = configureMockStore([thunk])({ ...t.mock.state })
     const loadOneOutcomeBidsOrAsks = proxyquire('../../../src/modules/bids-asks/actions/load-one-outcome-bids-or-asks', {
       '../../../services/augurjs': t.stub.augurjs,
-      './insert-order-book-chunk-to-order-book': t.stub.insertOrderBookChunkToOrderBook
+      './insert-order-book-chunk-to-order-book': t.stub.insertOrderBookChunkToOrderBook,
     }).default
     store.dispatch(loadOneOutcomeBidsOrAsks(t.params.marketId, t.params.outcome, t.params.orderTypeLabel, (err) => {
       t.assertions(err, store.getActions())
@@ -27,118 +27,118 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
     params: {
       marketId: undefined,
       outcome: 3,
-      orderTypeLabel: 'sell'
+      orderTypeLabel: 'sell',
     },
     mock: {
-      state: { marketsData }
+      state: { marketsData },
     },
     stub: {
       augurjs: {
         augur: {
           trading: {
-            getOrders: () => assert.fail()
-          }
-        }
+            getOrders: () => assert.fail(),
+          },
+        },
       },
       insertOrderBookChunkToOrderBook: {
-        default: () => () => assert.fail()
-      }
+        default: () => () => assert.fail(),
+      },
     },
     assertions: (err, actions) => {
       assert.strictEqual(err, 'must specify market ID, outcome, and order type: undefined 3 sell')
       assert.deepEqual(actions, [])
-    }
+    },
   })
   test({
     description: 'short-circuit if outcome not provided',
     params: {
       marketId: 'MARKET_0',
       outcome: undefined,
-      orderTypeLabel: 'sell'
+      orderTypeLabel: 'sell',
     },
     mock: {
-      state: { marketsData }
+      state: { marketsData },
     },
     stub: {
       augurjs: {
         augur: {
           trading: {
-            getOrders: () => assert.fail()
-          }
-        }
+            getOrders: () => assert.fail(),
+          },
+        },
       },
       insertOrderBookChunkToOrderBook: {
-        default: () => () => assert.fail()
-      }
+        default: () => () => assert.fail(),
+      },
     },
     assertions: (err, actions) => {
       assert.strictEqual(err, 'must specify market ID, outcome, and order type: MARKET_0 undefined sell')
       assert.deepEqual(actions, [])
-    }
+    },
   })
   test({
     description: 'short-circuit if orderType not provided',
     params: {
       marketId: 'MARKET_0',
       outcome: 3,
-      orderType: undefined
+      orderType: undefined,
     },
     mock: {
-      state: { marketsData }
+      state: { marketsData },
     },
     stub: {
       augurjs: {
         augur: {
           trading: {
-            getOrders: () => assert.fail()
-          }
-        }
+            getOrders: () => assert.fail(),
+          },
+        },
       },
       insertOrderBookChunkToOrderBook: {
-        default: () => () => assert.fail()
-      }
+        default: () => () => assert.fail(),
+      },
     },
     assertions: (err, actions) => {
       assert.strictEqual(err, 'must specify market ID, outcome, and order type: MARKET_0 3 undefined')
       assert.deepEqual(actions, [])
-    }
+    },
   })
   test({
     description: 'short-circuit if market data not found',
     params: {
       marketId: 'MARKET_0',
       outcome: 3,
-      orderTypeLabel: 'sell'
+      orderTypeLabel: 'sell',
     },
     mock: {
-      state: { marketsData: {} }
+      state: { marketsData: {} },
     },
     stub: {
       augurjs: {
         augur: {
           trading: {
-            getOrders: () => assert.fail()
-          }
-        }
+            getOrders: () => assert.fail(),
+          },
+        },
       },
       insertOrderBookChunkToOrderBook: {
-        default: () => () => assert.fail()
-      }
+        default: () => () => assert.fail(),
+      },
     },
     assertions: (err, actions) => {
       assert.strictEqual(err, 'market MARKET_0 data not found')
       assert.deepEqual(actions, [])
-    }
+    },
   })
   test({
     description: 'no orders found',
     params: {
       marketId: 'MARKET_0',
       outcome: 3,
-      orderTypeLabel: 'sell'
+      orderTypeLabel: 'sell',
     },
     mock: {
-      state: { marketsData }
+      state: { marketsData },
     },
     stub: {
       augurjs: {
@@ -146,9 +146,9 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
           trading: {
             getOrders: (p, callback) => {
               callback(null, {})
-            }
-          }
-        }
+            },
+          },
+        },
       },
       insertOrderBookChunkToOrderBook: {
         default: (marketId, outcome, orderTypeLabel, orderBookChunk) => dispatch => dispatch({
@@ -156,9 +156,9 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
           marketId,
           outcome,
           orderTypeLabel,
-          orderBookChunk
-        })
-      }
+          orderBookChunk,
+        }),
+      },
     },
     assertions: (err, actions) => {
       assert.isNull(err)
@@ -167,25 +167,25 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
         marketId: 'MARKET_0',
         outcome: 3,
         orderTypeLabel: 'sell',
-        isLoaded: false
+        isLoaded: false,
       }, {
         type: 'INSERT_ORDER_BOOK_CHUNK_TO_ORDER_BOOK',
         marketId: 'MARKET_0',
         outcome: 3,
         orderTypeLabel: 'sell',
-        orderBookChunk: {}
+        orderBookChunk: {},
       }])
-    }
+    },
   })
   test({
     description: 'load two orders',
     params: {
       marketId: 'MARKET_0',
       outcome: 3,
-      orderTypeLabel: 'sell'
+      orderTypeLabel: 'sell',
     },
     mock: {
-      state: { marketsData }
+      state: { marketsData },
     },
     stub: {
       augurjs: {
@@ -197,14 +197,14 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
                   3: {
                     sell: {
                       '0x1': order1,
-                      '0x2': order2
-                    }
-                  }
-                }
+                      '0x2': order2,
+                    },
+                  },
+                },
               })
-            }
-          }
-        }
+            },
+          },
+        },
       },
       insertOrderBookChunkToOrderBook: {
         default: (marketId, outcome, orderTypeLabel, orderBookChunk) => dispatch => dispatch({
@@ -212,9 +212,9 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
           marketId,
           outcome,
           orderTypeLabel,
-          orderBookChunk
-        })
-      }
+          orderBookChunk,
+        }),
+      },
     },
     assertions: (err, actions) => {
       assert.isNull(err)
@@ -223,14 +223,14 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
         marketId: 'MARKET_0',
         outcome: 3,
         orderTypeLabel: 'sell',
-        isLoaded: false
+        isLoaded: false,
       }, {
         type: 'INSERT_ORDER_BOOK_CHUNK_TO_ORDER_BOOK',
         marketId: 'MARKET_0',
         outcome: 3,
         orderTypeLabel: 'sell',
-        orderBookChunk: { '0x1': order1, '0x2': order2 }
+        orderBookChunk: { '0x1': order1, '0x2': order2 },
       }])
-    }
+    },
   })
 })

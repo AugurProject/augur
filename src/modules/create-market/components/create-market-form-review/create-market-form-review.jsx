@@ -14,7 +14,7 @@ export default class CreateMarketReview extends Component {
   static propTypes = {
     newMarket: PropTypes.object.isRequired,
     universe: PropTypes.object.isRequired,
-    meta: PropTypes.object
+    meta: PropTypes.object,
   }
 
   constructor(props) {
@@ -31,7 +31,7 @@ export default class CreateMarketReview extends Component {
       // },
       formattedInitialLiquidityEth: formatEtherTokensEstimate(this.props.newMarket.initialLiquidityEth),
       formattedInitialLiquidityGas: formatEtherEstimate(this.props.newMarket.initialLiquidityGas),
-      formattedInitialLiquidityFees: formatEtherTokensEstimate(this.props.newMarket.initialLiquidityFees)
+      formattedInitialLiquidityFees: formatEtherTokensEstimate(this.props.newMarket.initialLiquidityFees),
     }
 
     this.calculateMarketCreationCosts = this.calculateMarketCreationCosts.bind(this)
@@ -55,7 +55,7 @@ export default class CreateMarketReview extends Component {
         gasCost: formatEtherEstimate(0), // FIXME real gas cost lookup
         designatedReportNoShowReputationBond: formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond),
         creationFee: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
-        validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond)
+        validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond),
       })
     })
   }

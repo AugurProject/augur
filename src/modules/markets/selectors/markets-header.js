@@ -14,6 +14,6 @@ export const selectMarketsHeader = createSelector(
     selectedMarketsHeader,
     numMarkets: marketsTotals.numFiltered,
     numFavorites: marketsTotals.numFavorites,
-    numPendingReports: marketsTotals.numPendingReports
-  })
+    numPendingReports: marketsTotals.numPendingReports,
+  }),
 )

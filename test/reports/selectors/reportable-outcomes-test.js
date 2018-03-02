@@ -15,12 +15,12 @@ describe('modules/reports/selectors/reportable-outcomes.js', () => {
     expected = [
       {
         id: `${BINARY_NO_ID}`,
-        name: BINARY_NO_OUTCOME_NAME
+        name: BINARY_NO_OUTCOME_NAME,
       },
       {
         id: `${BINARY_YES_ID}`,
-        name: BINARY_YES_OUTCOME_NAME
-      }
+        name: BINARY_YES_OUTCOME_NAME,
+      },
     ]
 
     assert.deepEqual(actual, expected, `expected array for a BINARY market was not returned`)
@@ -31,32 +31,32 @@ describe('modules/reports/selectors/reportable-outcomes.js', () => {
     const outcomes = [
       {
         id: '3',
-        name: 'out3'
+        name: 'out3',
       },
       {
         id: '1',
-        name: 'out1'
+        name: 'out1',
       },
       {
         id: '2',
-        name: 'out2'
-      }
+        name: 'out2',
+      },
     ]
 
     actual = selectReportableOutcomes(CATEGORICAL, outcomes)
     expected = [
       {
         id: '3',
-        name: 'out3'
+        name: 'out3',
       },
       {
         id: '1',
-        name: 'out1'
+        name: 'out1',
       },
       {
         id: '2',
-        name: 'out2'
-      }
+        name: 'out2',
+      },
     ]
 
     assert.deepEqual(actual, expected, `expected array for a CATEGORICAL market was not returned`)

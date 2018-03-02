@@ -20,7 +20,7 @@ describe('modules/markets/reducers/has-loaded-markets.js', () => {
       const expected = false
 
       assert.equal(actual, expected, `Didn't return the expected default value`)
-    }
+    },
   })
 
   test({
@@ -31,7 +31,7 @@ describe('modules/markets/reducers/has-loaded-markets.js', () => {
       const expected = true
 
       assert.equal(actual, expected, `Didn't return the expected existing value`)
-    }
+    },
   })
 
   test({
@@ -39,12 +39,12 @@ describe('modules/markets/reducers/has-loaded-markets.js', () => {
     assertions: () => {
       const actual = hasLoadedMarkets(true, {
         type: UPDATE_HAS_LOADED_MARKETS,
-        hasLoadedMarkets: false
+        hasLoadedMarkets: false,
       })
 
       const expected = false
 
       assert.equal(actual, expected, `Didn't return the expected updated value`)
-    }
+    },
   })
 })

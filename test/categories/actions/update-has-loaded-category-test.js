@@ -16,10 +16,10 @@ describe('modules/categories/actions/update-has-loaded-category.js', () => {
     assertions: (action) => {
       const expected = {
         type: UPDATE_HAS_LOADED_CATEGORY,
-        hasLoadedCategory: true
+        hasLoadedCategory: true,
       }
 
       assert.deepEqual(action, expected, `Didn't return the expected object`)
-    }
+    },
   })
 })

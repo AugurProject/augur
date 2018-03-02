@@ -24,7 +24,7 @@ describe(`modules/my-positions/selectors/my-positions.js`, () => {
         const expected = 'selectPositionsMarkets'
 
         assert.strictEqual(actual, expected, `Didn't call the expected method`)
-      }
+      },
     })
   })
 
@@ -36,43 +36,43 @@ describe(`modules/my-positions/selectors/my-positions.js`, () => {
           selectMarkets: () => (
             [
               {
-                id: '0xMARKETID1'
+                id: '0xMARKETID1',
               },
               {
-                id: '0xMARKETID2'
+                id: '0xMARKETID2',
               },
               {
-                id: '0xMARKETID3'
-              }
+                id: '0xMARKETID3',
+              },
             ]
-          )
+          ),
         }
         const mockSelectState = {
           selectAccountPositionsState: () => (
             {
               '0xMARKETID1': {},
-              '0xMARKETID3': {}
+              '0xMARKETID3': {},
             }
           ),
         }
         const selector = proxyquire('../../../src/modules/my-positions/selectors/my-positions.js', {
           '../../markets/selectors/markets-all': mockMarketsAll,
-          '../../../select-state': mockSelectState
+          '../../../select-state': mockSelectState,
         })
 
         const actual = selector.selectPositionsMarkets()
 
         const expected = [
           {
-            id: '0xMARKETID1'
+            id: '0xMARKETID1',
           },
           {
-            id: '0xMARKETID3'
-          }
+            id: '0xMARKETID3',
+          },
         ]
 
         assert.deepEqual(actual, expected, `Didn't return the expected array`)
-      }
+      },
     })
   })
 })

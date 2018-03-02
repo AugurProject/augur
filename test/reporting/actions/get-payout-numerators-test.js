@@ -46,7 +46,7 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
         const expected = [2500, 7500]
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
         assert.deepEqual(expected[0] + expected[1], marketScalar.numTicks)
-      }
+      },
     })
   })
 
@@ -58,7 +58,7 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
         const expected = [5000, 5000]
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
         assert.deepEqual(expected[0] + expected[1], marketScalar.numTicks)
-      }
+      },
     })
   })
 
@@ -70,7 +70,7 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
         const expected = [7500, 2500]
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
         assert.deepEqual(expected[0] + expected[1], marketScalar.numTicks)
-      }
+      },
     })
   })
 
@@ -82,7 +82,7 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
         const expected = [5499, 4501]
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
         assert.deepEqual(expected[0] + expected[1], marketScalar.numTicks)
-      }
+      },
     })
   })
 
@@ -94,7 +94,7 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
         const expected = [5000, 5000]
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
         assert.deepEqual(expected[0] + expected[1], marketScalar.numTicks)
-      }
+      },
     })
   })
 
@@ -105,7 +105,7 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
         const actual = getPayoutNumerators(marketBinary, 0, false)
         const expected = [10000, 0]
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
-      }
+      },
     })
   })
 
@@ -116,7 +116,7 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
         const actual = getPayoutNumerators(marketBinary, 1, false)
         const expected = [0, 10000]
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
-      }
+      },
     })
   })
 
@@ -127,7 +127,7 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
         const actual = getPayoutNumerators(marketBinary, 1, true)
         const expected = [5000, 5000]
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
-      }
+      },
     })
   })
 
@@ -138,7 +138,7 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
         const actual = getPayoutNumerators(marketCategorical, 0, false)
         const expected = [10003, 0, 0, 0, 0, 0, 0]
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
-      }
+      },
     })
   })
 
@@ -149,7 +149,7 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
         const actual = getPayoutNumerators(marketCategorical, 3, false)
         const expected = [0, 0, 0, 10003, 0, 0, 0]
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
-      }
+      },
     })
   })
 
@@ -160,7 +160,7 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
         const actual = getPayoutNumerators(marketCategorical, 6, false)
         const expected = [0, 0, 0, 0, 0, 0, 10003]
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
-      }
+      },
     })
   })
 
@@ -171,7 +171,7 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
         const actual = getPayoutNumerators(marketCategorical, 0, true)
         const expected = [1429, 1429, 1429, 1429, 1429, 1429, 1429]
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
-      }
+      },
     })
   })
 

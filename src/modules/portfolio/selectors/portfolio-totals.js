@@ -12,6 +12,6 @@ export default function () {
 
   return {
     totalValue,
-    netChange
+    netChange,
   }
 }

@@ -5,6 +5,6 @@ export const clearOldReports = () => (dispatch, getState) => {
   dispatch({
     type: CLEAR_OLD_REPORTS,
     universeId: universe.id,
-    currentReportingWindowAddress: universe.currentReportingWindowAddress
+    currentReportingWindowAddress: universe.currentReportingWindowAddress,
   })
 }

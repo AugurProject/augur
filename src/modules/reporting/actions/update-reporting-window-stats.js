@@ -4,7 +4,7 @@ export function updateReportingWindowStats(windowStats) {
   return {
     type: UPDATE_REPORTING_WINDOW_STATS,
     data: {
-      ...windowStats
-    }
+      ...windowStats,
+    },
   }
 }

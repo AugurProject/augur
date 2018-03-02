@@ -20,7 +20,7 @@ export default class AccountWithdraw extends Component {
     isMobileSmall: PropTypes.bool.isRequired,
     eth: PropTypes.object.isRequired,
     rep: PropTypes.object.isRequired,
-    transferFunds: PropTypes.func.isRequired
+    transferFunds: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -34,7 +34,7 @@ export default class AccountWithdraw extends Component {
       address: '',
       isValid: null,
       isAmountValid: null,
-      isAddressValid: null
+      isAddressValid: null,
     }
 
     this.state = this.DEFAULT_STATE
@@ -51,7 +51,7 @@ export default class AccountWithdraw extends Component {
     if (isNaN(parseFloat(sanitizedAmount)) || !isFinite(sanitizedAmount) || (sanitizedAmount > this.state.upperBound || sanitizedAmount <= 0)) {
       this.setState({
         amount: sanitizedAmount,
-        isAmountValid: false
+        isAmountValid: false,
       })
 
       this.validateForm(false, this.state.isAddressValid)
@@ -61,7 +61,7 @@ export default class AccountWithdraw extends Component {
 
     this.setState({
       amount: sanitizedAmount,
-      isAmountValid: true
+      isAmountValid: true,
     })
 
     this.validateForm(true, this.state.isAddressValid)
@@ -73,7 +73,7 @@ export default class AccountWithdraw extends Component {
     if (!isAddress(sanitizedAddress)) {
       this.setState({
         address: sanitizedAddress,
-        isAddressValid: false
+        isAddressValid: false,
       })
 
       this.validateForm(this.state.isAmountValid, false)
@@ -83,7 +83,7 @@ export default class AccountWithdraw extends Component {
 
     this.setState({
       address: sanitizedAddress,
-      isAddressValid: true
+      isAddressValid: true,
     })
 
     this.validateForm(this.state.isAmountValid, true)
@@ -92,11 +92,11 @@ export default class AccountWithdraw extends Component {
   validateForm(isAmountValid, isAddressValid) {
     if (isAmountValid && isAddressValid) {
       this.setState({
-        isValid: true
+        isValid: true,
       })
     } else {
       this.setState({
-        isValid: false
+        isValid: false,
       })
     }
   }
@@ -144,7 +144,7 @@ export default class AccountWithdraw extends Component {
                     const upperBound = (type === 'ETH') ? p.eth.value : p.rep.value
                     this.setState({
                       selectedAsset,
-                      upperBound
+                      upperBound,
                     })
                   }}
                 />

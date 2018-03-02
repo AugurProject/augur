@@ -24,7 +24,7 @@ const claimTradingProceeds = (marketIds, callback = logError) => (dispatch, getS
           dispatch(loadMarketsInfo([marketId], nextMarketId))
         }, err => callback(err))
       },
-      onFailed: err => callback(err)
+      onFailed: err => callback(err),
     })
   }
   // has claimed proceeds on all finalized markets so close open orders

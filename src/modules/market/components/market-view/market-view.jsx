@@ -17,14 +17,14 @@ export default class MarketView extends Component {
     marketType: PropTypes.string,
     isConnected: PropTypes.bool.isRequired,
     isMarketLoaded: PropTypes.bool.isRequired,
-    loadFullMarket: PropTypes.func.isRequired
+    loadFullMarket: PropTypes.func.isRequired,
   }
 
   constructor(props) {
     super(props)
 
     this.state = {
-      selectedOutcomes: props.marketType === CATEGORICAL ? [] : ['1']
+      selectedOutcomes: props.marketType === CATEGORICAL ? [] : ['1'],
     }
 
     this.updateSelectedOutcomes = this.updateSelectedOutcomes.bind(this)

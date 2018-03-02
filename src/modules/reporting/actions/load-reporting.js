@@ -10,7 +10,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
   const args = {
     universe: universe.id,
-    designatedReporter: loginAccount.address
+    designatedReporter: loginAccount.address,
   }
 
   augur.augurNode.submitRequest(
@@ -27,7 +27,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
       loadMarketsInfo(result)(dispatch, getState)
 
       dispatch(updateUpcomingDesignatedReportingMarkets(result))
-    }
+    },
   )
 
   augur.augurNode.submitRequest(
@@ -44,7 +44,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
       loadMarketsInfo(result)(dispatch, getState)
 
       dispatch(updateDesignatedReportingMarkets(result))
-    }
+    },
   )
 
   augur.augurNode.submitRequest(
@@ -61,6 +61,6 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
       loadMarketsInfo(result)(dispatch, getState)
 
       dispatch(updateOpenMarkets(result))
-    }
+    },
   )
 }

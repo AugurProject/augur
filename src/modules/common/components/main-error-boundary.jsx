@@ -3,14 +3,14 @@ import PropTypes from 'prop-types'
 
 export default class MainErrorBoundary extends Component {
   static propTypes = {
-    children: PropTypes.element
+    children: PropTypes.element,
   }
 
   constructor(props) {
     super(props)
 
     this.state = {
-      hasError: false
+      hasError: false,
     }
   }
 
@@ -34,14 +34,14 @@ export default class MainErrorBoundary extends Component {
             flexDirection: 'column',
             height: '100%',
             justifyContent: 'center',
-            width: '100%'
+            width: '100%',
           }}
         >
           <h1
             style={{
               fontSize: '5rem',
               lineHeight: '5rem',
-              marginBottom: '2rem'
+              marginBottom: '2rem',
             }}
           >
             (ノಠ益ಠ)ノ彡┻━┻

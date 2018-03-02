@@ -7,7 +7,7 @@ export default options => (
       super(props)
 
       this.state = {
-        Component: null
+        Component: null,
       }
 
       this.loadAsyncComponent = this.loadAsyncComponent.bind(this)

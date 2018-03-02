@@ -13,7 +13,7 @@ export default function (transactionsData = DEFAULT_STATE, action) {
         p[transactionId] = {
           ...transactionsData[transactionId],
           ...action.transactionsData[transactionId],
-          id: transactionId
+          id: transactionId,
         }
         return p
       }, { ...transactionsData })

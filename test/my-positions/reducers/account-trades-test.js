@@ -21,7 +21,7 @@ describe('modules/my-positions/reducers/account-trades.js', () => {
       const expected = {}
 
       assert.deepEqual(actual, expected, `Didn't return the expected value`)
-    }
+    },
   })
 
   test({
@@ -31,7 +31,7 @@ describe('modules/my-positions/reducers/account-trades.js', () => {
       const expected = {}
 
       assert.deepEqual(actual, expected, `Didn't return the expected value`)
-    }
+    },
   })
 
   test({
@@ -41,7 +41,7 @@ describe('modules/my-positions/reducers/account-trades.js', () => {
       const expected = {}
 
       assert.deepEqual(actual, expected, `Didn't return the expected value`)
-    }
+    },
   })
 
   test({
@@ -54,25 +54,25 @@ describe('modules/my-positions/reducers/account-trades.js', () => {
           data: {
             1: [
               {
-                transactionHash: '0xTRANSACTIONHASH1'
-              }
-            ]
+                transactionHash: '0xTRANSACTIONHASH1',
+              },
+            ],
           },
-          market: '0xMARKETID1'
-        }
+          market: '0xMARKETID1',
+        },
       )
       const expected = {
         '0xMARKETID1': {
           1: [
             {
-              transactionHash: '0xTRANSACTIONHASH1'
-            }
-          ]
-        }
+              transactionHash: '0xTRANSACTIONHASH1',
+            },
+          ],
+        },
       }
 
       assert.deepEqual(actual, expected, `Didn't return the expected value`)
-    }
+    },
   })
 
   test({
@@ -83,61 +83,61 @@ describe('modules/my-positions/reducers/account-trades.js', () => {
           '0xMARKETID2': {
             2: [
               {
-                transactionHash: '0x2TRANSACTIONHASH2'
+                transactionHash: '0x2TRANSACTIONHASH2',
               },
               {
-                transactionHash: '0x2TRANSACTIONHASH1'
-              }
-            ]
+                transactionHash: '0x2TRANSACTIONHASH1',
+              },
+            ],
           },
           '0xMARKETID1': {
             1: [
               {
-                transactionHash: '0xTRANSACTIONHASH2'
+                transactionHash: '0xTRANSACTIONHASH2',
               },
               {
-                transactionHash: '0xTRANSACTIONHASH1'
-              }
-            ]
-          }
+                transactionHash: '0xTRANSACTIONHASH1',
+              },
+            ],
+          },
         },
         {
           type: UPDATE_ACCOUNT_TRADES_DATA,
           data: {
             1: [
               {
-                transactionHash: '0xTRANSACTIONHASH1'
-              }
-            ]
+                transactionHash: '0xTRANSACTIONHASH1',
+              },
+            ],
           },
-          market: '0xMARKETID1'
-        }
+          market: '0xMARKETID1',
+        },
       )
       const expected = {
         '0xMARKETID2': {
           2: [
             {
-              transactionHash: '0x2TRANSACTIONHASH2'
+              transactionHash: '0x2TRANSACTIONHASH2',
             },
             {
-              transactionHash: '0x2TRANSACTIONHASH1'
-            }
-          ]
+              transactionHash: '0x2TRANSACTIONHASH1',
+            },
+          ],
         },
         '0xMARKETID1': {
           1: [
             {
-              transactionHash: '0xTRANSACTIONHASH2'
+              transactionHash: '0xTRANSACTIONHASH2',
             },
             {
-              transactionHash: '0xTRANSACTIONHASH1'
-            }
-          ]
-        }
+              transactionHash: '0xTRANSACTIONHASH1',
+            },
+          ],
+        },
       }
 
       assert.deepEqual(actual, expected, `Didn't return the expected value`)
-    }
+    },
   })
 
   test({
@@ -148,63 +148,63 @@ describe('modules/my-positions/reducers/account-trades.js', () => {
           '0xMARKETID2': {
             2: [
               {
-                transactionHash: '0x2TRANSACTIONHASH2'
+                transactionHash: '0x2TRANSACTIONHASH2',
               },
               {
-                transactionHash: '0x2TRANSACTIONHASH1'
-              }
-            ]
+                transactionHash: '0x2TRANSACTIONHASH1',
+              },
+            ],
           },
           '0xMARKETID1': {
             1: [
               {
-                transactionHash: '0xTRANSACTIONHASH2'
+                transactionHash: '0xTRANSACTIONHASH2',
               },
               {
-                transactionHash: '0xTRANSACTIONHASH1'
-              }
-            ]
-          }
+                transactionHash: '0xTRANSACTIONHASH1',
+              },
+            ],
+          },
         },
         {
           type: UPDATE_ACCOUNT_TRADES_DATA,
           data: {
             1: [
               {
-                transactionHash: '0xTRANSACTIONHASH3'
-              }
-            ]
+                transactionHash: '0xTRANSACTIONHASH3',
+              },
+            ],
           },
-          market: '0xMARKETID1'
-        }
+          market: '0xMARKETID1',
+        },
       )
       const expected = {
         '0xMARKETID2': {
           2: [
             {
-              transactionHash: '0x2TRANSACTIONHASH2'
+              transactionHash: '0x2TRANSACTIONHASH2',
             },
             {
-              transactionHash: '0x2TRANSACTIONHASH1'
-            }
-          ]
+              transactionHash: '0x2TRANSACTIONHASH1',
+            },
+          ],
         },
         '0xMARKETID1': {
           1: [
             {
-              transactionHash: '0xTRANSACTIONHASH2'
+              transactionHash: '0xTRANSACTIONHASH2',
             },
             {
-              transactionHash: '0xTRANSACTIONHASH1'
+              transactionHash: '0xTRANSACTIONHASH1',
             },
             {
-              transactionHash: '0xTRANSACTIONHASH3'
+              transactionHash: '0xTRANSACTIONHASH3',
             },
-          ]
-        }
+          ],
+        },
       }
 
       assert.deepEqual(actual, expected, `Didn't return the expected value`)
-    }
+    },
   })
 })

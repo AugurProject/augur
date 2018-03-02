@@ -13,24 +13,24 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 
   const state = {
     loginAccount: {
-      address: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c'
+      address: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
     },
     orderCancellation: {
-      order8: CLOSE_DIALOG_CLOSING
-    }
+      order8: CLOSE_DIALOG_CLOSING,
+    },
   }
   const store = mockStore(state)
   const { selectUserOpenOrders } = proxyquire('../../../src/modules/user-open-orders/selectors/user-open-orders', {
-    '../../../store': store
+    '../../../store': store,
   })
 
   it(`should return no user open orders for not logged-in user`, () => {
     const state = {
-      loginAccount: {}
+      loginAccount: {},
     }
     const store = mockStore(state)
     const { selectUserOpenOrders } = proxyquire('../../../src/modules/user-open-orders/selectors/user-open-orders', {
-      '../../../store': store
+      '../../../store': store,
     })
 
     const orderBooks = {
@@ -42,8 +42,8 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
               price: '10',
               amount: '1',
               owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
-              outcome: '1'
-            }
+              outcome: '1',
+            },
           },
           sell: {
             order4: {
@@ -51,11 +51,11 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
               price: '40',
               amount: '4',
               owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
-              outcome: '1'
-            }
-          }
-        }
-      }
+              outcome: '1',
+            },
+          },
+        },
+      },
     }
 
     assert.lengthOf(selectUserOpenOrders('1', orderBooks), 0)
@@ -75,22 +75,22 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
               price: '10',
               amount: '1',
               owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
-              outcome: '2'
+              outcome: '2',
             },
             order2: {
               orderId: 'order2',
               price: '20',
               amount: '2',
               owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
-              outcome: '3'
+              outcome: '3',
             },
             order3: {
               orderId: 'order3',
               price: '30',
               amount: '3',
               owner: 'some other address',
-              outcome: '1'
-            }
+              outcome: '1',
+            },
           },
           sell: {
             order7: {
@@ -98,18 +98,18 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
               price: '70',
               amount: '7',
               owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
-              outcome: '3'
+              outcome: '3',
             },
             order8: {
               orderId: 'order8',
               price: '80',
               amount: '8',
               owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
-              outcome: '1'
-            }
-          }
-        }
-      }
+              outcome: '1',
+            },
+          },
+        },
+      },
     }
     assert.lengthOf(selectUserOpenOrders('1', orderBooks), 0)
   })
@@ -124,7 +124,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
             amount: '2',
             owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
             orderState: 'OPEN',
-            outcome: '1'
+            outcome: '1',
           },
           order14: {
             orderId: 'order14',
@@ -132,7 +132,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
             amount: '1',
             owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
             orderState: 'OPEN',
-            outcome: '1'
+            outcome: '1',
           },
           order12: {
             orderId: 'order12',
@@ -140,7 +140,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
             amount: '4',
             owner: 'some other address',
             orderState: 'OPEN',
-            outcome: '1'
+            outcome: '1',
           },
           order11: {
             orderId: 'order11',
@@ -148,8 +148,8 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
             amount: '6',
             owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
             orderState: 'OPEN',
-            outcome: '1'
-          }
+            outcome: '1',
+          },
         },
         sell: {
           order2: {
@@ -158,7 +158,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
             amount: '7',
             owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
             orderState: 'OPEN',
-            outcome: '1'
+            outcome: '1',
           },
           order1: {
             orderId: 'order1',
@@ -166,7 +166,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
             amount: '10',
             owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
             orderState: 'OPEN',
-            outcome: '1'
+            outcome: '1',
           },
           order3: {
             orderId: 'order3',
@@ -174,7 +174,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
             amount: '10',
             owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
             orderState: 'OPEN',
-            outcome: '1'
+            outcome: '1',
           },
           order4: {
             orderId: 'order11',
@@ -183,10 +183,10 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
             amount: '11',
             owner: 'different owner',
             orderState: 'OPEN',
-            outcome: '1'
-          }
-        }
-      }
+            outcome: '1',
+          },
+        },
+      },
     }
 
     const userOpenOrders = selectUserOpenOrders('MARKET_ID', '1', orderBooks)
@@ -201,7 +201,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       unmatchedShares: formatShares('10'),
       marketId: 'MARKET_ID',
       outcomeId: '1',
-      cancelOrder: () => { }
+      cancelOrder: () => { },
     }, {
       id: 'order2',
       avgPrice: formatEtherTokens('70'),
@@ -211,7 +211,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       unmatchedShares: formatShares('7'),
       marketId: 'MARKET_ID',
       outcomeId: '1',
-      cancelOrder: () => { }
+      cancelOrder: () => { },
     }, {
       id: 'order3',
       avgPrice: formatEtherTokens('10'),
@@ -221,7 +221,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       unmatchedShares: formatShares('10'),
       marketId: 'MARKET_ID',
       outcomeId: '1',
-      cancelOrder: () => { }
+      cancelOrder: () => { },
     }, {
       id: 'order11',
       avgPrice: formatEtherTokens('60'),
@@ -231,7 +231,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       unmatchedShares: formatShares('6'),
       marketId: 'MARKET_ID',
       outcomeId: '1',
-      cancelOrder: () => { }
+      cancelOrder: () => { },
     }, {
       id: 'order13',
       avgPrice: formatEtherTokens('20'),
@@ -241,7 +241,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       unmatchedShares: formatShares('2'),
       marketId: 'MARKET_ID',
       outcomeId: '1',
-      cancelOrder: () => { }
+      cancelOrder: () => { },
     }, {
       id: 'order14',
       avgPrice: formatEtherTokens('10'),
@@ -251,7 +251,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       unmatchedShares: formatShares('1'),
       marketId: 'MARKET_ID',
       outcomeId: '1',
-      cancelOrder: () => { }
+      cancelOrder: () => { },
     }]
 
     for (let i = 0; i < results.length; i++) {

@@ -8,17 +8,17 @@ describe(`modules/markets/reducers/favorites.js`, () => {
     const someDate = Date.now()
     const anotherDate = Date.now()
     const favorites = {
-      fav1: anotherDate
+      fav1: anotherDate,
     }
     const currentFavorites = {
-      fav1: someDate
+      fav1: someDate,
     }
     const testAction = {
       type: UPDATE_FAVORITES,
-      favorites
+      favorites,
     }
     const expectedOutput = {
-      fav1: anotherDate
+      fav1: anotherDate,
     }
     assert.deepEqual(reducer(currentFavorites, testAction), expectedOutput, `Reducer didn't update correctly given favorites`)
     assert.deepEqual(reducer(undefined, testAction), expectedOutput, `Reducer didn't output correctly given empty favorites`)
@@ -29,15 +29,15 @@ describe(`modules/markets/reducers/favorites.js`, () => {
     const currFavorites = {
       test: someDate,
       test2: someDate,
-      test3: someDate
+      test3: someDate,
     }
     const expectedOutput = {
       test: someDate,
-      test3: someDate
+      test3: someDate,
     }
     const action = {
       type: TOGGLE_FAVORITE,
-      marketId: 'test2'
+      marketId: 'test2',
     }
 
     assert.isDefined(reducer(undefined, action).test2, `cannot toggle a favorite that doesn't exist.`)

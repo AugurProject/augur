@@ -17,7 +17,7 @@ describe('modules/modal/reducers/modal', () => {
       const expected = {}
 
       assert.deepEqual(actual, expected, `didn't return the expected object`)
-    }
+    },
   })
 
   test({
@@ -26,11 +26,11 @@ describe('modules/modal/reducers/modal', () => {
       const actual = reducer({ test: 'TEST' }, { type: null })
 
       const expected = {
-        test: 'TEST'
+        test: 'TEST',
       }
 
       assert.deepEqual(actual, expected, `didn't return the expected object`)
-    }
+    },
   })
 
   test({
@@ -39,11 +39,11 @@ describe('modules/modal/reducers/modal', () => {
       const actual = reducer({ test: 'TEST' }, { type: UPDATE_MODAL, data: { test: 'NEW' } })
 
       const expected = {
-        test: 'NEW'
+        test: 'NEW',
       }
 
       assert.deepEqual(actual, expected, `didn't return the expected object`)
-    }
+    },
   })
 
   test({
@@ -54,6 +54,6 @@ describe('modules/modal/reducers/modal', () => {
       const expected = {}
 
       assert.deepEqual(actual, expected, `didn't return the expected object`)
-    }
+    },
   })
 })

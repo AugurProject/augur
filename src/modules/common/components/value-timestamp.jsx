@@ -10,7 +10,7 @@ const ValueTimestamp = p => (
 
 ValueTimestamp.propTypes = {
   className: PropTypes.string,
-  full: PropTypes.string
+  full: PropTypes.string,
 }
 
 export default ValueTimestamp

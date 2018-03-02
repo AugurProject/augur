@@ -13,7 +13,7 @@ export default function (disputeCrowdsourcersData = DEFAULT_STATE, action) {
 
       return {
         ...disputeCrowdsourcersData,
-        ...updatedDisputeCrowdsourcers
+        ...updatedDisputeCrowdsourcers,
       }
     }
     case UPDATE_DISPUTE_CROWDSOURCERS_ESCAPE_HATCH_GAS_COST: {
@@ -22,8 +22,8 @@ export default function (disputeCrowdsourcersData = DEFAULT_STATE, action) {
         ...disputeCrowdsourcersData,
         [action.disputeCrowdsourcerID]: {
           ...disputeCrowdsourcersData[action.disputeCrowdsourcerID],
-          escapeHatchGasCost: action.escapeHatchGasCost
-        }
+          escapeHatchGasCost: action.escapeHatchGasCost,
+        },
       }
     }
     case UPDATE_DISPUTE_CROWDSOURCERS_BALANCE: {
@@ -32,8 +32,8 @@ export default function (disputeCrowdsourcersData = DEFAULT_STATE, action) {
         ...disputeCrowdsourcersData,
         [action.disputeCrowdsourcerID]: {
           ...disputeCrowdsourcersData[action.disputeCrowdsourcerID],
-          balance: action.balance
-        }
+          balance: action.balance,
+        },
       }
     }
     case RESET_STATE:

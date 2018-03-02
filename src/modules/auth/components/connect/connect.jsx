@@ -63,5 +63,5 @@ export default function AuthConnect(p) {
 AuthConnect.propTypes = {
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
-  isMobile: PropTypes.bool.isRequired
+  isMobile: PropTypes.bool.isRequired,
 }

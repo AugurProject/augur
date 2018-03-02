@@ -12,10 +12,10 @@ describe('modules/modal/actions/close-modal', () => {
       const actual = closeModal()
 
       const expected = {
-        type: CLOSE_MODAL
+        type: CLOSE_MODAL,
       }
 
       assert(actual, expected, `didn't return the expected object`)
-    }
+    },
   })
 })

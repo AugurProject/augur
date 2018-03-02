@@ -4,6 +4,6 @@ export function clearClosePositionOutcome(marketId, outcomeId) {
   return {
     type: CLEAR_CLOSE_POSITION_OUTCOME,
     marketId,
-    outcomeId
+    outcomeId,
   }
 }

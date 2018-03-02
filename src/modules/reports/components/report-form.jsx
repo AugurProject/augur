@@ -17,7 +17,7 @@ export default class ReportForm extends Component {
     amountToStake: PropTypes.any,
     isIndeterminate: PropTypes.bool,
     isReported: PropTypes.bool,
-    onClickSubmit: PropTypes.func
+    onClickSubmit: PropTypes.func,
   };
 
   constructor(props) {
@@ -26,7 +26,7 @@ export default class ReportForm extends Component {
       reportedOutcomeId: props.reportedOutcomeId,
       amountToStake: props.amountToStake,
       isIndeterminate: props.isIndeterminate,
-      isReported: props.isReported
+      isReported: props.isReported,
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleOutcomeChange = this.handleOutcomeChange.bind(this)
@@ -79,7 +79,7 @@ export default class ReportForm extends Component {
             isChecked={!!s.isIndeterminate}
             onClick={(!s.isReported && (() => this.setState({
               isIndeterminate: !s.isIndeterminate,
-              reportedOutcomeId: indeterminateValue
+              reportedOutcomeId: indeterminateValue,
             }))) || undefined}
           />
         </div>

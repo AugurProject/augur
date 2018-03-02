@@ -7,7 +7,7 @@ import thunk from 'redux-thunk'
 
 import {
   UPDATE_ACCOUNT_POSITIONS_DATA,
-  updateAccountPositionsData
+  updateAccountPositionsData,
 } from 'modules/my-positions/actions/update-account-trades-data'
 
 describe('modules/my-positions/actions/update-account-trades-data.js', () => {
@@ -19,40 +19,40 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
   const MOCK_ACTION_TYPES = {
     UPDATE_TRANSACTIONS_DATA: 'UPDATE_TRANSACTIONS_DATA',
     UPDATE_ORDERS: 'UPDATE_ORDERS',
-    LOAD_BIDS_ASKS_HISTORY: 'LOAD_BIDS_ASKS_HISTORY'
+    LOAD_BIDS_ASKS_HISTORY: 'LOAD_BIDS_ASKS_HISTORY',
   }
   const mockAddTradeTransactions = {
-    addTradeTransactions: (data) => { }
+    addTradeTransactions: (data) => { },
   }
   mockAddTradeTransactions.addTradeTransactions = sinon.stub().returns({ type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_DATA })
   const mockloadAccountPositions = {
-    loadAccountPositions: () => { }
+    loadAccountPositions: () => { },
   }
   mockloadAccountPositions.loadAccountPositions = sinon.stub().returns({ type: 'LOAD_ACCOUNT_POSITIONS' })
   const mockConvertTradeLogsToTransactions = {
-    convertTradeLogsToTransactions: () => { }
+    convertTradeLogsToTransactions: () => { },
   }
   sinon.stub(mockConvertTradeLogsToTransactions, 'convertTradeLogsToTransactions').callsFake((logType, data, marketId) => ({
     type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_DATA,
     logType,
     data,
-    marketId
+    marketId,
   }))
   const mockUpdateOrders = {
-    updateOrders: () => { }
+    updateOrders: () => { },
   }
   sinon.stub(mockUpdateOrders, 'updateOrders').callsFake((data, isAddition) => ({
     type: MOCK_ACTION_TYPES.UPDATE_ORDERS,
     data,
-    isAddition
+    isAddition,
   }))
 
   const mockLoadBidsAsksHistory = {
-    loadAccountOrders: () => { }
+    loadAccountOrders: () => { },
   }
   sinon.stub(mockLoadBidsAsksHistory, 'loadAccountOrders').callsFake(market => ({
     type: MOCK_ACTION_TYPES.LOAD_BIDS_ASKS_HISTORY,
-    data: { ...market }
+    data: { ...market },
   }))
 
   const test = (t) => {
@@ -68,14 +68,14 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
       description: `should dispatch the expected actions WITH updateAccountBidsAsksData returning an error`,
       state: {
         loginAccount: {
-          address: '0xUSERID'
+          address: '0xUSERID',
         },
         universe: {
-          id: '0x12345'
+          id: '0x12345',
         },
         env: {
-          'augur-node': 'blah.com'
-        }
+          'augur-node': 'blah.com',
+        },
       },
       assertions: (store) => {
 
@@ -83,7 +83,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
           '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
           '../../my-orders/actions/update-orders': mockUpdateOrders,
           '../../bids-asks/actions/load-open-orders': mockLoadBidsAsksHistory,
-          './load-account-positions': mockloadAccountPositions
+          './load-account-positions': mockloadAccountPositions,
         })
 
         store.dispatch(action.updateAccountBidsAsksData({ market: [{ '0xMARKETID': {} }] }, '0xMARKETID'))
@@ -97,48 +97,48 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             data: {
               market: [
                 {
-                  '0xMARKETID': {}
-                }
-              ]
+                  '0xMARKETID': {},
+                },
+              ],
             },
-            marketId: '0xMARKETID'
+            marketId: '0xMARKETID',
           },
           {
             type: MOCK_ACTION_TYPES.UPDATE_ORDERS,
             data: {
               market: [
                 {
-                  '0xMARKETID': {}
-                }
-              ]
+                  '0xMARKETID': {},
+                },
+              ],
             },
-            isAddition: true
+            isAddition: true,
           },
           {
-            type: 'LOAD_ACCOUNT_POSITIONS'
-          }
+            type: 'LOAD_ACCOUNT_POSITIONS',
+          },
         ]
 
         assert.deepEqual(actual, expected, `Didn't dispatch the expect action, getPositionInMarket`)
-      }
+      },
     })
 
     test({
       description: `should dispatch the expected actions WITHOUT getPositionInMarket returning an error`,
       state: {
         loginAccount: {
-          address: '0xUSERID'
-        }
+          address: '0xUSERID',
+        },
       },
       assertions: (store) => {
         const mockAugur = {
           augur: {
             api: {
               MarketFetcher: {
-                getPositionInMarket: () => { }
-              }
-            }
-          }
+                getPositionInMarket: () => { },
+              },
+            },
+          },
         }
         sinon.stub(mockAugur.augur.api.MarketFetcher, 'getPositionInMarket').callsFake(({ _account: account, _market: market }, callback) => callback({}))
 
@@ -146,7 +146,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
           '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
           '../../my-orders/actions/update-orders': mockUpdateOrders,
           '../../../services/augurjs': mockAugur,
-          './load-account-positions': mockloadAccountPositions
+          './load-account-positions': mockloadAccountPositions,
         })
 
         store.dispatch(action.updateAccountBidsAsksData({ '0xMARKETID': {} }, '0xMARKETID'))
@@ -158,24 +158,24 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_DATA,
             logType: 'CreateOrder',
             data: {
-              '0xMARKETID': {}
+              '0xMARKETID': {},
             },
-            marketId: '0xMARKETID'
+            marketId: '0xMARKETID',
           },
           {
             type: MOCK_ACTION_TYPES.UPDATE_ORDERS,
             data: {
-              '0xMARKETID': {}
+              '0xMARKETID': {},
             },
-            isAddition: true
+            isAddition: true,
           },
           {
-            type: 'LOAD_ACCOUNT_POSITIONS'
-          }
+            type: 'LOAD_ACCOUNT_POSITIONS',
+          },
         ]
 
         assert.deepEqual(actual, expected, `Didn't dispatch the expect action for getPositionInMarket`)
-      }
+      },
     })
   })
 
@@ -187,7 +187,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
           '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
           '../../my-orders/actions/update-orders': mockUpdateOrders,
           './load-account-positions': mockloadAccountPositions,
-          '../../bids-asks/actions/load-account-orders': mockLoadBidsAsksHistory
+          '../../bids-asks/actions/load-account-orders': mockLoadBidsAsksHistory,
         })
 
         store.dispatch(action.updateAccountCancelsData({ '0xMARKETID': {} }, '0xMARKETID'))
@@ -199,23 +199,23 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_DATA,
             logType: 'CancelOrder',
             data: {
-              '0xMARKETID': {}
+              '0xMARKETID': {},
             },
-            marketId: '0xMARKETID'
+            marketId: '0xMARKETID',
           },
           { type: MOCK_ACTION_TYPES.LOAD_BIDS_ASKS_HISTORY, data: {} },
           {
             type: MOCK_ACTION_TYPES.UPDATE_ORDERS,
             data: {
-              '0xMARKETID': {}
+              '0xMARKETID': {},
             },
-            isAddition: false
-          }
+            isAddition: false,
+          },
         ]
         console.log(actual)
         assert.lengthOf(actual, 3)
         assert.deepEqual(actual, expected, `Didn't dispatch the expect action, cancel order`)
-      }
+      },
     })
   })
 
@@ -231,14 +231,14 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
           {
             type: UPDATE_ACCOUNT_POSITIONS_DATA,
             data: {
-              '0xMARKETID': {}
+              '0xMARKETID': {},
             },
-            marketId: '0xMARKETID'
-          }
+            marketId: '0xMARKETID',
+          },
         ]
 
         assert.deepEqual(actual, expected, `Didn't dispatch the expect action`)
-      }
+      },
     })
   })
 })

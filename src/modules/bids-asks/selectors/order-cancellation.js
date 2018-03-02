@@ -8,6 +8,6 @@ export default () => {
     ...orderCancellation,
     cancelOrder: (orderId, marketId, type) => {
       store.dispatch(cancelOrder(orderId, marketId, type))
-    }
+    },
   }
 }

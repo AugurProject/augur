@@ -22,15 +22,15 @@ describe(`modules/reports/actions/clear-old-reports.js`, () => {
     state: {
       universe: {
         id: '0xb1',
-        currentReportingWindowAddress: 7
-      }
+        currentReportingWindowAddress: 7,
+      },
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'CLEAR_OLD_REPORTS',
         universeId: '0xb1',
-        currentReportingWindowAddress: 7
+        currentReportingWindowAddress: 7,
       }])
-    }
+    },
   })
 })

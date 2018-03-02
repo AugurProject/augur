@@ -15,12 +15,12 @@ describe('modules/transactions/actions/update-transactinos-oldest-loaded-block.j
         const expected = {
           type: updateTransactionsOldestLoadedBlock.UPDATE_TRANSACTIONS_OLDEST_LOADED_BLOCK,
           data: {
-            block: 123
-          }
+            block: 123,
+          },
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      }
+      },
     })
   })
 })

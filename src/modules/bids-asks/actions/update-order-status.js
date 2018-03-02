@@ -20,7 +20,7 @@ export const updateOrderStatus = (orderId, status, marketId, outcome, orderTypeL
     orderId,
     status,
     marketId,
-    orderType: orderTypeLabel
+    orderType: orderTypeLabel,
   })
 }
 

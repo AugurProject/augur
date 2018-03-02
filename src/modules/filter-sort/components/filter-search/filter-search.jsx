@@ -19,14 +19,14 @@ export default class FilterSearch extends Component {
     items: PropTypes.array.isRequired,
     updateIndices: PropTypes.func.isRequired,
     searchKeys: PropTypes.array.isRequired,
-    searchPlaceholder: PropTypes.string
+    searchPlaceholder: PropTypes.string,
   }
 
   constructor(props) {
     super(props)
 
     this.state = {
-      search: ''
+      search: '',
     }
 
     this.updateQuery = this.updateQuery.bind(this)
@@ -43,14 +43,14 @@ export default class FilterSearch extends Component {
 
       nextProps.updateIndices({
         indices: filterBySearch(nextState.search, nextProps.searchKeys, nextProps.items),
-        type: FILTER_SEARCH_PARAM
+        type: FILTER_SEARCH_PARAM,
       })
     }
 
     if (!isEqual(this.props.items, nextProps.items)) {
       nextProps.updateIndices({
         indices: filterBySearch(nextState.search, nextProps.searchKeys, nextProps.items),
-        type: FILTER_SEARCH_PARAM
+        type: FILTER_SEARCH_PARAM,
       })
     }
   }
@@ -68,7 +68,7 @@ export default class FilterSearch extends Component {
 
     this.props.history.push({
       ...location,
-      search: updatedSearch
+      search: updatedSearch,
     })
   }
 

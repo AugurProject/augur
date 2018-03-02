@@ -10,7 +10,7 @@ const offsetPoint = (point, offsetPoint) => (
 export default class Origami extends Component {
   static propTypes = {
     isMobile: PropTypes.bool.isRequired,
-    menuScalar: PropTypes.number.isRequired
+    menuScalar: PropTypes.number.isRequired,
   };
 
   componentWillMount() {
@@ -28,14 +28,14 @@ export default class Origami extends Component {
       tl: [85 + sidebarWidth, topbarHeight],
       tr: [222 + sidebarWidth, topbarHeight],
       bl: [0 + sidebarWidth, topbarHeight * 2],
-      br: [110 + sidebarWidth, topbarHeight * 2]
+      br: [110 + sidebarWidth, topbarHeight * 2],
     }
 
     this.mobilePlgram = {
       tl: [94, mobileTopbarHeight],
       tr: [200, mobileTopbarHeight],
       bl: [60, mobileTopbarHeight + 20],
-      br: [110, mobileTopbarHeight + 20]
+      br: [110, mobileTopbarHeight + 20],
     }
 
     this.xOffsetMax = 110
@@ -58,8 +58,8 @@ export default class Origami extends Component {
           [this.sidebarWidth + (85 * 2), 0],
           this.plgram.tl,
           this.plgram.br,
-          this.plgram.bl
-        ])
+          this.plgram.bl,
+        ]),
       },
       {
         color: '#553580',
@@ -68,24 +68,24 @@ export default class Origami extends Component {
           this.plgram.tl,
           applySecondaryOffset(this.plgram.tr),
           applySecondaryOffset([this.sidebarWidth + (85 * 2) + 130, 0]),
-        ])
+        ]),
       },
       {
         color: '#9592A4',
         points: ([
           this.plgram.tl,
           this.plgram.bl,
-          this.plgram.br
-        ]).map(applyMainOffset)
+          this.plgram.br,
+        ]).map(applyMainOffset),
       },
       {
         color: '#C5C3CD',
         points: ([
           this.plgram.tl,
           this.plgram.tr,
-          this.plgram.br
-        ]).map(applyMainOffset)
-      }
+          this.plgram.br,
+        ]).map(applyMainOffset),
+      },
     ]
 
     if (this.props.menuScalar > 0) {
@@ -95,7 +95,7 @@ export default class Origami extends Component {
           this.plgram.tl,
           applyMainOffset(this.plgram.bl),
           applyMainOffset(this.plgram.tl),
-        ]
+        ],
       })
     }
 
@@ -111,8 +111,8 @@ export default class Origami extends Component {
           [190, 0],
           this.mobilePlgram.tl,
           this.mobilePlgram.bl,
-          [0, 60]
-        ])
+          [0, 60],
+        ]),
       },
       {
         color: '#553580',
@@ -121,24 +121,24 @@ export default class Origami extends Component {
           this.mobilePlgram.tl,
           this.mobilePlgram.tr,
           [257, 0],
-        ])
+        ]),
       },
       {
         color: '#9592A4',
         points: ([
           this.mobilePlgram.tl,
           this.mobilePlgram.bl,
-          this.mobilePlgram.br
-        ])
+          this.mobilePlgram.br,
+        ]),
       },
       {
         color: '#C5C3CD',
         points: ([
           this.mobilePlgram.tl,
           this.mobilePlgram.tr,
-          this.mobilePlgram.br
-        ])
-      }
+          this.mobilePlgram.br,
+        ]),
+      },
     ]
 
     return shapes

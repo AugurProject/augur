@@ -33,8 +33,8 @@ export default class MarketPortfolioCard extends Component {
     this.state = {
       tableOpen: {
         myPositions: this.props.positionsDefault,
-        openOrders: false
-      }
+        openOrders: false,
+      },
     }
   }
 
@@ -67,13 +67,13 @@ export default class MarketPortfolioCard extends Component {
         <section
           className={classNames(
             CommonStyles.MarketCommon__topcontent,
-            Styles.MarketCard__topcontent
+            Styles.MarketCard__topcontent,
           )}
         >
           <div
             className={classNames(
               CommonStyles.MarketCommon__header,
-              Styles.MarketCard__header
+              Styles.MarketCard__header,
             )}
           >
             <div className={Styles.MarketCard__headertext}>

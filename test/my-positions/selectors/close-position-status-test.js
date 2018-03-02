@@ -31,7 +31,7 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
 
       const selector = proxyquire('../../../src/modules/my-positions/selectors/close-position-status', {
         '../../../store': store,
-        '../../my-positions/actions/clear-close-position-outcome': mockClearClosePositionOutcome
+        '../../my-positions/actions/clear-close-position-outcome': mockClearClosePositionOutcome,
       })
 
       t.assertions(selector.default(), store, this.clock)
@@ -43,24 +43,24 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
     state: {
       closePositionTradeGroups: {
         '0xMarketID1': {
-          0: ['0x00000TradeGroupID1']
-        }
+          0: ['0x00000TradeGroupID1'],
+        },
       },
       transactionsData: {
         '0xUnrelatedTransactionId': {
-          tradeGroupId: '0x00000UnrelatedTradeGroupId'
-        }
-      }
+          tradeGroupId: '0x00000UnrelatedTradeGroupId',
+        },
+      },
     },
     assertions: (res) => {
       const expected = {
         '0xMarketID1': {
-          0: CLOSE_DIALOG_CLOSING
-        }
+          0: CLOSE_DIALOG_CLOSING,
+        },
       }
 
       assert.deepEqual(res, expected, `Didn't return the expected object`)
-    }
+    },
   })
 
   test({
@@ -68,27 +68,27 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
     state: {
       closePositionTradeGroups: {
         '0xMarketID1': {
-          0: ['0x00000TradeGroupID1']
-        }
+          0: ['0x00000TradeGroupID1'],
+        },
       },
       transactionsData: {
         '0xUnrelatedTransactionId': {
-          tradeGroupId: '0x00000UnrelatedTradeGroupId'
+          tradeGroupId: '0x00000UnrelatedTradeGroupId',
         },
         '0xTargetTransactionId': {
-          tradeGroupId: '0x00000TradeGroupID1'
-        }
-      }
+          tradeGroupId: '0x00000TradeGroupID1',
+        },
+      },
     },
     assertions: (res) => {
       const expected = {
         '0xMarketID1': {
-          0: CLOSE_DIALOG_CLOSING
-        }
+          0: CLOSE_DIALOG_CLOSING,
+        },
       }
 
       assert.deepEqual(res, expected, `Didn't return the expected object`)
-    }
+    },
   })
 
   test({
@@ -96,20 +96,20 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
     state: {
       closePositionTradeGroups: {
         '0xMarketID1': {
-          0: [CLOSE_DIALOG_FAILED]
-        }
+          0: [CLOSE_DIALOG_FAILED],
+        },
       },
       transactionsData: {
         '0xUnrelatedTransactionId': {
-          tradeGroupId: '0x00000UnrelatedTradeGroupId'
-        }
-      }
+          tradeGroupId: '0x00000UnrelatedTradeGroupId',
+        },
+      },
     },
     assertions: (res, store, clock) => {
       let expected = {
         '0xMarketID1': {
-          0: CLOSE_DIALOG_FAILED
-        }
+          0: CLOSE_DIALOG_FAILED,
+        },
       }
 
       assert.deepEqual(res, expected, `Didn't return the expected object`)
@@ -121,11 +121,11 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
       expected = [{
         type: CLEAR_CLOSE_POSITION_OUTCOME,
         marketId: '0xMarketID1',
-        outcomeId: '0'
+        outcomeId: '0',
       }]
 
       assert.deepEqual(actual, expected, `Didn't return the expected actions`)
-    }
+    },
   })
 
   test({
@@ -133,28 +133,28 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
     state: {
       closePositionTradeGroups: {
         '0xMarketID1': {
-          0: ['0x00000TradeGroupID1']
-        }
+          0: ['0x00000TradeGroupID1'],
+        },
       },
       transactionsData: {
         '0xUnrelatedTransactionId': {
-          tradeGroupId: '0x00000UnrelatedTradeGroupId'
+          tradeGroupId: '0x00000UnrelatedTradeGroupId',
         },
         '0xTargetTransactionID1': {
           tradeGroupId: '0x00000TradeGroupID1',
-          status: FAILED
+          status: FAILED,
         },
         '0xTargetTransactionID2': {
           tradeGroupId: '0x00000TradeGroupID1',
-          status: FAILED
-        }
-      }
+          status: FAILED,
+        },
+      },
     },
     assertions: (res, store, clock) => {
       let expected = {
         '0xMarketID1': {
-          0: CLOSE_DIALOG_FAILED
-        }
+          0: CLOSE_DIALOG_FAILED,
+        },
       }
 
       assert.deepEqual(res, expected, `Didn't return the expected object`)
@@ -166,11 +166,11 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
       expected = [{
         type: CLEAR_CLOSE_POSITION_OUTCOME,
         marketId: '0xMarketID1',
-        outcomeId: '0'
+        outcomeId: '0',
       }]
 
       assert.deepEqual(actual, expected, `Didn't return the expected actions`)
-    }
+    },
   })
 
   test({
@@ -178,28 +178,28 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
     state: {
       closePositionTradeGroups: {
         '0xMarketID1': {
-          0: ['0x00000TradeGroupID1']
-        }
+          0: ['0x00000TradeGroupID1'],
+        },
       },
       transactionsData: {
         '0xUnrelatedTransactionId': {
-          tradeGroupId: '0x00000UnrelatedTradeGroupId'
+          tradeGroupId: '0x00000UnrelatedTradeGroupId',
         },
         '0xTargetTransactionID1': {
           tradeGroupId: '0x00000TradeGroupID1',
-          status: FAILED
+          status: FAILED,
         },
         '0xTargetTransactionID2': {
           tradeGroupId: '0x00000TradeGroupID1',
-          status: SUCCESS
-        }
-      }
+          status: SUCCESS,
+        },
+      },
     },
     assertions: (res, store, clock) => {
       let expected = {
         '0xMarketID1': {
-          0: CLOSE_DIALOG_PARTIALLY_FAILED
-        }
+          0: CLOSE_DIALOG_PARTIALLY_FAILED,
+        },
       }
 
       assert.deepEqual(res, expected, `Didn't return the expected object`)
@@ -211,11 +211,11 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
       expected = [{
         type: CLEAR_CLOSE_POSITION_OUTCOME,
         marketId: '0xMarketID1',
-        outcomeId: '0'
+        outcomeId: '0',
       }]
 
       assert.deepEqual(actual, expected, `Didn't return the expected actions`)
-    }
+    },
   })
 
   test({
@@ -223,31 +223,31 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
     state: {
       closePositionTradeGroups: {
         '0xMarketID1': {
-          0: ['0x00000TradeGroupID1']
-        }
+          0: ['0x00000TradeGroupID1'],
+        },
       },
       transactionsData: {
         '0xUnrelatedTransactionId': {
-          tradeGroupId: '0x00000UnrelatedTradeGroupId'
+          tradeGroupId: '0x00000UnrelatedTradeGroupId',
         },
         '0xTargetTransactionID1': {
           tradeGroupId: '0x00000TradeGroupID1',
-          status: FAILED
+          status: FAILED,
         },
         '0xTargetTransactionID2': {
-          tradeGroupId: '0x00000TradeGroupID1'
-        }
-      }
+          tradeGroupId: '0x00000TradeGroupID1',
+        },
+      },
     },
     assertions: (res) => {
       const expected = {
         '0xMarketID1': {
-          0: CLOSE_DIALOG_PARTIALLY_FAILED
-        }
+          0: CLOSE_DIALOG_PARTIALLY_FAILED,
+        },
       }
 
       assert.deepEqual(res, expected, `Didn't return the expected object`)
-    }
+    },
   })
 
   test({
@@ -255,28 +255,28 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
     state: {
       closePositionTradeGroups: {
         '0xMarketID1': {
-          0: ['0x00000TradeGroupID1']
-        }
+          0: ['0x00000TradeGroupID1'],
+        },
       },
       transactionsData: {
         '0xUnrelatedTransactionId': {
-          tradeGroupId: '0x00000UnrelatedTradeGroupId'
+          tradeGroupId: '0x00000UnrelatedTradeGroupId',
         },
         '0xTargetTransactionID1': {
           tradeGroupId: '0x00000TradeGroupID1',
-          status: SUCCESS
+          status: SUCCESS,
         },
         '0xTargetTransactionID2': {
           tradeGroupId: '0x00000TradeGroupID1',
-          status: SUCCESS
-        }
-      }
+          status: SUCCESS,
+        },
+      },
     },
     assertions: (res, store, clock) => {
       let expected = {
         '0xMarketID1': {
-          0: CLOSE_DIALOG_SUCCESS
-        }
+          0: CLOSE_DIALOG_SUCCESS,
+        },
       }
 
       assert.deepEqual(res, expected, `Didn't return the expected object`)
@@ -288,11 +288,11 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
       expected = [{
         type: CLEAR_CLOSE_POSITION_OUTCOME,
         marketId: '0xMarketID1',
-        outcomeId: '0'
+        outcomeId: '0',
       }]
 
       assert.deepEqual(actual, expected, `Didn't return the expected actions`)
-    }
+    },
   })
 
   test({
@@ -300,20 +300,20 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
     state: {
       closePositionTradeGroups: {
         '0xMarketID1': {
-          0: [CLOSE_DIALOG_NO_ORDERS]
-        }
+          0: [CLOSE_DIALOG_NO_ORDERS],
+        },
       },
       transactionsData: {
         '0xUnrelatedTransactionId': {
-          tradeGroupId: '0x00000UnrelatedTradeGroupId'
-        }
-      }
+          tradeGroupId: '0x00000UnrelatedTradeGroupId',
+        },
+      },
     },
     assertions: (res, store, clock) => {
       let expected = {
         '0xMarketID1': {
-          0: CLOSE_DIALOG_NO_ORDERS
-        }
+          0: CLOSE_DIALOG_NO_ORDERS,
+        },
       }
 
       assert.deepEqual(res, expected, `Didn't return the expected object`)
@@ -325,10 +325,10 @@ describe('modules/my-positions/selectors/close-position-status', function () { /
       expected = [{
         type: CLEAR_CLOSE_POSITION_OUTCOME,
         marketId: '0xMarketID1',
-        outcomeId: '0'
+        outcomeId: '0',
       }]
 
       assert.deepEqual(actual, expected, `Didn't return the expected actions`)
-    }
+    },
   })
 })

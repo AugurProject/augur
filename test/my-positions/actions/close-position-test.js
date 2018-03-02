@@ -16,22 +16,22 @@ describe('modules/my-positions/actions/close-position.js', () => {
 
   const MOCK_ACTION_TYPES = {
     CLEAR_CLOSE_POSITION_OUTCOME: 'CLEAR_CLOSE_POSITION_OUTCOME',
-    ADD_CLOSE_POSITION_TRADE_GROUP: 'ADD_CLOSE_POSITION_TRADE_GROUP'
+    ADD_CLOSE_POSITION_TRADE_GROUP: 'ADD_CLOSE_POSITION_TRADE_GROUP',
   }
   const mockUpdateTradesInProgress = {
-    updateTradesInProgress: () => { }
+    updateTradesInProgress: () => { },
   }
   sinon.stub(mockUpdateTradesInProgress, 'updateTradesInProgress').callsFake((marketId, outcomeId, side, numShares, limitPrice, maxCost, cb) => (dispatch, getState) => cb())
   const mockClearClosePositionOutcome = {
-    clearClosePositionOutcome: sinon.stub().returns({ type: MOCK_ACTION_TYPES.CLEAR_CLOSE_POSITION_OUTCOME })
+    clearClosePositionOutcome: sinon.stub().returns({ type: MOCK_ACTION_TYPES.CLEAR_CLOSE_POSITION_OUTCOME }),
   }
   const mockPlaceTrade = {
-    placeTrade: () => { }
+    placeTrade: () => { },
   }
   const mockAddClosePositionTradeGroup = {
     addClosePositionTradeGroup: sinon.stub().returns({
-      type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
-    })
+      type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP,
+    }),
   }
 
   const loadBidsAsks = (marketId, cb) => dispatch => cb()
@@ -44,12 +44,12 @@ describe('modules/my-positions/actions/close-position.js', () => {
           id: '1',
           position: {
             qtyShares: {
-              value: 10
-            }
-          }
-        }
-      ]
-    }
+              value: 10,
+            },
+          },
+        },
+      ],
+    },
   ])
 
   const action = proxyquire('../../../src/modules/my-positions/actions/close-position.js', {
@@ -58,7 +58,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
     './add-close-position-trade-group': mockAddClosePositionTradeGroup,
     './clear-close-position-outcome': mockClearClosePositionOutcome,
     '../../bids-asks/actions/load-bids-asks': loadBidsAsks,
-    '../../markets/selectors/markets-all': selectAllMarkets
+    '../../markets/selectors/markets-all': selectAllMarkets,
   })
 
   describe('closePosition', () => {
@@ -92,12 +92,12 @@ describe('modules/my-positions/actions/close-position.js', () => {
         orderBooks: {
           '0xMARKETID': {
             [BUY]: {},
-            [SELL]: {}
-          }
+            [SELL]: {},
+          },
         },
         loginAccount: {
-          address: '0xUSERADDRESS'
-        }
+          address: '0xUSERADDRESS',
+        },
       },
       assertions: (store) => {
         const { marketId, outcomeId } = store.getState()
@@ -107,18 +107,18 @@ describe('modules/my-positions/actions/close-position.js', () => {
 
         const expected = [
           {
-            type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
+            type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP,
           },
           {
-            type: MOCK_ACTION_TYPES.CLEAR_CLOSE_POSITION_OUTCOME
+            type: MOCK_ACTION_TYPES.CLEAR_CLOSE_POSITION_OUTCOME,
           },
           {
-            type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
-          }
+            type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP,
+          },
         ]
 
         assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
-      }
+      },
     })
 
     test({
@@ -132,31 +132,31 @@ describe('modules/my-positions/actions/close-position.js', () => {
               '0xORDERID1': {
                 outcome: '1',
                 fullPrecisionAmount: '2',
-                fullPrecisionPrice: '0.3'
+                fullPrecisionPrice: '0.3',
               },
               '0xORDERID2': {
                 outcome: '1',
                 fullPrecisionAmount: '13',
-                fullPrecisionPrice: '0.31'
+                fullPrecisionPrice: '0.31',
               },
               '0xORDERID3': {
                 outcome: '2',
                 fullPrecisionAmount: '11',
-                fullPrecisionPrice: '0.7'
+                fullPrecisionPrice: '0.7',
               },
               '0xORDERID4': {
                 outcome: '1',
                 fullPrecisionAmount: '11',
                 fullPrecisionPrice: '0.8',
-                owner: '0xUSERADDRESS'
-              }
+                owner: '0xUSERADDRESS',
+              },
             },
-            [SELL]: {}
-          }
+            [SELL]: {},
+          },
         },
         tradesInProgress: {},
         loginAccount: {
-          address: '0xUSERADDRESS'
+          address: '0xUSERADDRESS',
         },
         marketsData: {
           '0xMARKETID': {
@@ -165,13 +165,13 @@ describe('modules/my-positions/actions/close-position.js', () => {
                 id: '1',
                 position: {
                   qtyShares: {
-                    value: 10
-                  }
-                }
-              }
-            ]
-          }
-        }
+                    value: 10,
+                  },
+                },
+              },
+            ],
+          },
+        },
       },
       placeTradeFails: true,
       assertions: (store) => {
@@ -182,15 +182,15 @@ describe('modules/my-positions/actions/close-position.js', () => {
 
         const expected = [
           {
-            type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
+            type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP,
           },
           {
-            type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
-          }
+            type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP,
+          },
         ]
 
         assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
-      }
+      },
     })
 
     test({
@@ -202,8 +202,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
           '0xMARKETID': {
             1: '10',
             2: '0',
-            3: '0'
-          }
+            3: '0',
+          },
         },
         orderBooks: {
           '0xMARKETID': {
@@ -211,32 +211,32 @@ describe('modules/my-positions/actions/close-position.js', () => {
               '0xORDERID1': {
                 outcome: '1',
                 fullPrecisionAmount: '2',
-                fullPrecisionPrice: '0.3'
+                fullPrecisionPrice: '0.3',
               },
               '0xORDERID2': {
                 outcome: '1',
                 fullPrecisionAmount: '13',
-                fullPrecisionPrice: '0.31'
+                fullPrecisionPrice: '0.31',
               },
               '0xORDERID3': {
                 outcome: '2',
                 fullPrecisionAmount: '11',
-                fullPrecisionPrice: '0.7'
+                fullPrecisionPrice: '0.7',
               },
               '0xORDERID4': {
                 outcome: '1',
                 fullPrecisionAmount: '11',
                 fullPrecisionPrice: '0.8',
-                owner: '0xUSERADDRESS'
-              }
+                owner: '0xUSERADDRESS',
+              },
             },
-            [SELL]: {}
-          }
+            [SELL]: {},
+          },
         },
         tradesInProgress: {},
         loginAccount: {
-          address: '0xUSERADDRESS'
-        }
+          address: '0xUSERADDRESS',
+        },
       },
       assertions: (store) => {
         const { marketId, outcomeId } = store.getState()
@@ -246,15 +246,15 @@ describe('modules/my-positions/actions/close-position.js', () => {
 
         const expected = [
           {
-            type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
+            type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP,
           },
           {
-            type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
-          }
+            type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP,
+          },
         ]
 
         assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
-      }
+      },
     })
   })
 
@@ -270,41 +270,41 @@ describe('modules/my-positions/actions/close-position.js', () => {
     test({
       description: `-1 share position, empty order book`,
       state: {
-        orderBook: {}
+        orderBook: {},
       },
       arguments: {
         side: SELL,
         shares: new BigNumber(-1).absoluteValue(),
         marketId: '0xMarketID1',
         outcomeId: '1',
-        userAddress: '0xUSERADDRESS'
+        userAddress: '0xUSERADDRESS',
       },
       assertions: (bestFill) => {
         assert.deepEqual(bestFill, {
           amountOfShares: new BigNumber(0),
-          price: new BigNumber(0)
+          price: new BigNumber(0),
         })
-      }
+      },
     })
 
     test({
       description: `1 share position, empty order book`,
       state: {
-        orderBook: {}
+        orderBook: {},
       },
       arguments: {
         side: BUY,
         shares: new BigNumber(1).absoluteValue(),
         marketId: '0xMarketID1',
         outcomeId: '1',
-        userAddress: '0xUSERADDRESS'
+        userAddress: '0xUSERADDRESS',
       },
       assertions: (bestFill) => {
         assert.deepEqual(bestFill, {
           amountOfShares: new BigNumber(0),
-          price: new BigNumber(0)
+          price: new BigNumber(0),
         })
-      }
+      },
     })
 
     test({
@@ -315,35 +315,35 @@ describe('modules/my-positions/actions/close-position.js', () => {
             '0xOrderID1': {
               fullPrecisionAmount: '2',
               fullPrecisionPrice: '0.11',
-              outcome: '1'
+              outcome: '1',
             },
             '0xOrderID2': {
               fullPrecisionAmount: '8',
               fullPrecisionPrice: '0.2',
-              outcome: '1'
+              outcome: '1',
             },
             '0xOrderID3': {
               fullPrecisionAmount: '8',
               fullPrecisionPrice: '0.8',
               outcome: '1',
-              owner: '0xUSERADDRESS'
-            }
-          }
-        }
+              owner: '0xUSERADDRESS',
+            },
+          },
+        },
       },
       arguments: {
         side: BUY,
         shares: new BigNumber(10).absoluteValue(),
         marketId: '0xMarketID1',
         outcomeId: '1',
-        userAddress: '0xUSERADDRESS'
+        userAddress: '0xUSERADDRESS',
       },
       assertions: (bestFill) => {
         assert.deepEqual(bestFill, {
           amountOfShares: new BigNumber(10),
-          price: new BigNumber(0.11)
+          price: new BigNumber(0.11),
         })
-      }
+      },
     })
 
     test({
@@ -354,35 +354,35 @@ describe('modules/my-positions/actions/close-position.js', () => {
             '0xOrderID1': {
               fullPrecisionAmount: '2',
               fullPrecisionPrice: '0.11',
-              outcome: '1'
+              outcome: '1',
             },
             '0xOrderID2': {
               fullPrecisionAmount: '1',
               fullPrecisionPrice: '0.10',
-              outcome: '1'
+              outcome: '1',
             },
             '0xOrderID3': {
               fullPrecisionAmount: '8',
               fullPrecisionPrice: '0.8',
               outcome: '1',
-              owner: '0xUSERADDRESS'
-            }
-          }
-        }
+              owner: '0xUSERADDRESS',
+            },
+          },
+        },
       },
       arguments: {
         side: BUY,
         shares: new BigNumber(10).absoluteValue(),
         marketId: '0xMarketID1',
         outcomeId: '1',
-        userAddress: '0xUSERADDRESS'
+        userAddress: '0xUSERADDRESS',
       },
       assertions: (bestFill) => {
         assert.deepEqual(bestFill, {
           amountOfShares: new BigNumber(3),
-          price: new BigNumber(0.10)
+          price: new BigNumber(0.10),
         })
-      }
+      },
     })
 
     test({
@@ -393,35 +393,35 @@ describe('modules/my-positions/actions/close-position.js', () => {
             '0xOrderID1': {
               fullPrecisionAmount: '2',
               fullPrecisionPrice: '0.11',
-              outcome: '1'
+              outcome: '1',
             },
             '0xOrderID2': {
               fullPrecisionAmount: '8',
               fullPrecisionPrice: '0.2',
-              outcome: '1'
+              outcome: '1',
             },
             '0xOrderID3': {
               fullPrecisionAmount: '8',
               fullPrecisionPrice: '0.01',
               outcome: '1',
-              owner: '0xUSERADDRESS'
-            }
-          }
-        }
+              owner: '0xUSERADDRESS',
+            },
+          },
+        },
       },
       arguments: {
         side: SELL,
         shares: new BigNumber(-10).absoluteValue(),
         marketId: '0xMarketID1',
         outcomeId: '1',
-        userAddress: '0xUSERADDRESS'
+        userAddress: '0xUSERADDRESS',
       },
       assertions: (bestFill) => {
         assert.deepEqual(bestFill, {
           amountOfShares: new BigNumber(10),
-          price: new BigNumber(0.2)
+          price: new BigNumber(0.2),
         })
-      }
+      },
     })
 
     test({
@@ -432,35 +432,35 @@ describe('modules/my-positions/actions/close-position.js', () => {
             '0xOrderID1': {
               fullPrecisionAmount: '2',
               fullPrecisionPrice: '0.11',
-              outcome: '1'
+              outcome: '1',
             },
             '0xOrderID2': {
               fullPrecisionAmount: '1',
               fullPrecisionPrice: '0.10',
-              outcome: '1'
+              outcome: '1',
             },
             '0xOrderID3': {
               fullPrecisionAmount: '8',
               fullPrecisionPrice: '0.01',
               outcome: '1',
-              owner: '0xUSERADDRESS'
-            }
-          }
-        }
+              owner: '0xUSERADDRESS',
+            },
+          },
+        },
       },
       arguments: {
         side: SELL,
         shares: new BigNumber(-10).absoluteValue(),
         marketId: '0xMarketID1',
         outcomeId: '1',
-        userAddress: '0xUSERADDRESS'
+        userAddress: '0xUSERADDRESS',
       },
       assertions: (bestFill) => {
         assert.deepEqual(bestFill, {
           amountOfShares: new BigNumber(3),
-          price: new BigNumber(0.11)
+          price: new BigNumber(0.11),
         })
-      }
+      },
     })
   })
 })

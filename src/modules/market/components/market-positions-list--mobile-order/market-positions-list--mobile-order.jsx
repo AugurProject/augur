@@ -30,7 +30,7 @@ export default class MobileOrders extends Component {
   toggleConfirm() {
     let {
       confirmHeight,
-      confirmMargin
+      confirmMargin,
     } = this.state
 
     if (!this.state.showConfirm) {

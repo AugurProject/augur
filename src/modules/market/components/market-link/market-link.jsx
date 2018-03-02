@@ -33,8 +33,8 @@ const MarketLink = (p) => {
               pathname: path,
               search: makeQuery({
                 [MARKET_DESCRIPTION_PARAM_NAME]: p.formattedDescription,
-                [MARKET_ID_PARAM_NAME]: p.id
-              })
+                [MARKET_ID_PARAM_NAME]: p.id,
+              }),
             }}
           >
             {p.children}

@@ -22,5 +22,5 @@ const NavCreateIcon = p => (
 export default NavCreateIcon
 
 NavCreateIcon.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
 }

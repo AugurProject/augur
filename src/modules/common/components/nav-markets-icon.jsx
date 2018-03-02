@@ -21,5 +21,5 @@ const NavMarketsIcon = p => (
 export default NavMarketsIcon
 
 NavMarketsIcon.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
 }

@@ -15,7 +15,7 @@ export default class UportConnect extends Component {
   static propTypes = {
     isMobile: PropTypes.bool.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
-    login: PropTypes.func.isRequired
+    login: PropTypes.func.isRequired,
   }
 
   constructor() {
@@ -24,13 +24,13 @@ export default class UportConnect extends Component {
     this.uPort = new Connect(
       'AUGUR -- DEV',
       {
-        clientId: '2ofGiHuZhhpDMAQeDxjoDhEsUQd1MayECgd'
-      }
+        clientId: '2ofGiHuZhhpDMAQeDxjoDhEsUQd1MayECgd',
+      },
     )
 
     this.state = {
       uri: '',
-      qrSize: 0
+      qrSize: 0,
     }
 
     this.uPortURIHandler = this.uPortURIHandler.bind(this)
@@ -40,7 +40,7 @@ export default class UportConnect extends Component {
 
   componentWillMount() {
     this.uPort.requestCredentials({
-      notifcations: true
+      notifcations: true,
     }, this.uPortURIHandler).then((account) => {
       const signingMethod = this.uPort.getWeb3().eth.sendTransaction
       this.props.login(decode(account.address), signingMethod)

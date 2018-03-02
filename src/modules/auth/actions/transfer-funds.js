@@ -50,7 +50,7 @@ export function transferFunds(amount, currency, toAddress) {
               description: `${amount} ETH -> ${trimString(to)}`,
               timestamp: getCurrentDateTimestamp(),
             }))
-          }
+          },
         })
       case REP:
         return augur.assets.sendReputation({
@@ -60,7 +60,7 @@ export function transferFunds(amount, currency, toAddress) {
           _to: to,
           onSent,
           onSuccess,
-          onFailed
+          onFailed,
         })
       default:
         console.error('transferFunds: unknown currency', currency)

@@ -20,7 +20,7 @@ import Styles from 'modules/modal/components/modal-view/modal-view.styles'
 export default class ModalView extends Component {
   static propTypes = {
     modal: PropTypes.object.isRequired,
-    closeModal: PropTypes.func.isRequired
+    closeModal: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -28,7 +28,7 @@ export default class ModalView extends Component {
 
     this.state = {
       modalWidth: 0,
-      modalHeight: 0
+      modalHeight: 0,
     }
 
     this.updateModalDimensions = this.updateModalDimensions.bind(this)
@@ -44,7 +44,7 @@ export default class ModalView extends Component {
   updateModalDimensions() {
     this.setState({
       modalWidth: getValue(this, 'modal.clientWidth') || 0,
-      modalHeight: getValue(this, 'modal.clientHeight') || 0
+      modalHeight: getValue(this, 'modal.clientHeight') || 0,
     })
   }
 

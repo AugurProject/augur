@@ -9,13 +9,13 @@ export default function uPortSigner(txObj, dispatch) {
   new Connect(
     'AUGUR -- DEV',
     {
-      clientId: '2ofGiHuZhhpDMAQeDxjoDhEsUQd1MayECgd'
-    }
+      clientId: '2ofGiHuZhhpDMAQeDxjoDhEsUQd1MayECgd',
+    },
   )
     .sendTransaction(txObj, (uri) => {
       dispatch(updateModal({
         type: MODAL_UPORT,
-        uri
+        uri,
       }))
     })
     .then(() => dispatch(closeModal()))
@@ -23,7 +23,7 @@ export default function uPortSigner(txObj, dispatch) {
       dispatch(updateModal({
         type: MODAL_UPORT,
         error: `Failed to Sign with "${err}"`,
-        canClose: true
+        canClose: true,
       }))
     })
 }

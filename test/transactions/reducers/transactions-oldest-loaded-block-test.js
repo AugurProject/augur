@@ -17,7 +17,7 @@ describe('modules/transactions/reducers/transactions-oldest-loaded-block', () =>
       const expected = null
 
       assert.strictEqual(actual, expected, `Didn't return the expected value`)
-    }
+    },
   })
 
   test({
@@ -26,26 +26,26 @@ describe('modules/transactions/reducers/transactions-oldest-loaded-block', () =>
       const actual = transactionsOldestLoadedBlock(10000, {
         type: UPDATE_TRANSACTIONS_OLDEST_LOADED_BLOCK,
         data: {
-          block: 1
-        }
+          block: 1,
+        },
       })
 
       const expected = 1
 
       assert.strictEqual(actual, expected, `Didn't return the expected value`)
-    }
+    },
   })
 
   test({
     description: `should return the expected value for case CLEAR_LOGIN_ACCOUNT`,
     assertions: () => {
       const actual = transactionsOldestLoadedBlock(10000, {
-        type: CLEAR_LOGIN_ACCOUNT
+        type: CLEAR_LOGIN_ACCOUNT,
       })
 
       const expected = null
 
       assert.strictEqual(actual, expected, `Didn't return the expected value`)
-    }
+    },
   })
 })

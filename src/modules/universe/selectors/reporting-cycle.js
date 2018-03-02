@@ -19,7 +19,7 @@ export const selectReportingCycle = createSelector(
     const secondsRemaining = ONE.minus(new BigNumber(currentReportingPeriodPercentComplete, 10).dividedBy(100)).times(bnReportingPeriodDurationInSeconds)
     return {
       currentReportingPeriodPercentComplete,
-      reportingCycleTimeRemaining: moment.duration(secondsRemaining.toNumber(), 'seconds').humanize(true)
+      reportingCycleTimeRemaining: moment.duration(secondsRemaining.toNumber(), 'seconds').humanize(true),
     }
-  }
+  },
 )

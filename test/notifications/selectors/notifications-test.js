@@ -25,7 +25,7 @@ describe('modules/notifications/selectors/notifications', () => {
       const expected = 'selectNotificationsAndSeenCount'
 
       assert.strictEqual(actual, expected, `Didn't call the expected method`)
-    }
+    },
   })
 
   describe('selectNotificationsAndSeenCount', () => {
@@ -36,19 +36,19 @@ describe('modules/notifications/selectors/notifications', () => {
           {
             seen: false,
             id: '0xTEST0',
-            timestamp: 1
+            timestamp: 1,
           },
           {
             seen: true,
             id: '0xTEST1',
-            timestamp: 3
+            timestamp: 3,
           },
           {
             seen: false,
             id: '0xTEST2',
-            timestamp: 2
-          }
-        ]
+            timestamp: 2,
+          },
+        ],
       },
       assertions: (store) => {
         const { selectNotificationsAndSeenCount } = require('modules/notifications/selectors/notifications')
@@ -62,25 +62,25 @@ describe('modules/notifications/selectors/notifications', () => {
               seen: true,
               id: '0xTEST1',
               timestamp: 3,
-              index: 1
+              index: 1,
             },
             {
               seen: false,
               id: '0xTEST2',
               timestamp: 2,
-              index: 2
+              index: 2,
             },
             {
               seen: false,
               id: '0xTEST0',
               timestamp: 1,
-              index: 0
-            }
-          ]
+              index: 0,
+            },
+          ],
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      }
+      },
     })
   })
 })

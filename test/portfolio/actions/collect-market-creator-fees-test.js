@@ -18,7 +18,7 @@ describe('modules/portfolio/actions/collect-market-creator-fees.js', () => {
     const { collectMarketCreatorFees, __RewireAPI__ } = require('modules/portfolio/actions/collect-market-creator-fees.js')
 
     const ACTIONS = {
-      UPDATE_MARKETS_DATA: 'UPDATE_MARKETS_DATA'
+      UPDATE_MARKETS_DATA: 'UPDATE_MARKETS_DATA',
     }
     const MailboxAddresses = ['0xmailbox01', '0xmailbox02']
     const MarketIds = ['0xmyMarket01', '0xmyMarket02']
@@ -34,7 +34,7 @@ describe('modules/portfolio/actions/collect-market-creator-fees.js', () => {
             } else {
               cb(null, 0)
             }
-          }
+          },
         },
         Market: {
           getMarketCreatorMailbox: (params, cb) => {
@@ -45,15 +45,15 @@ describe('modules/portfolio/actions/collect-market-creator-fees.js', () => {
             } else {
               cb(null, MailboxAddresses[1])
             }
-          }
+          },
         },
         Mailbox: {
           withdrawEther: (params, cb) => {
             // this should only ever get called by that first Market Mailbox, and not the second.
             assert.deepEqual(params, { tx: { to: MailboxAddresses[0] } }, `Attempted to call withdrawEther with unexpected params`)
             assert.isFunction(cb, `callback provided to withdrawEther isn't a function.`)
-          }
-        }
+          },
+        },
       },
       rpc: {
         eth: {
@@ -66,15 +66,15 @@ describe('modules/portfolio/actions/collect-market-creator-fees.js', () => {
             } else {
               cb(0)
             }
-          }
-        }
-      }
+          },
+        },
+      },
     })
     __RewireAPI__.__Rewire__('loadMarketsInfo', marketIds => ({
       type: ACTIONS.UPDATE_MARKETS_DATA,
       data: {
-        marketIds
-      }
+        marketIds,
+      },
     }))
 
     test({
@@ -90,12 +90,12 @@ describe('modules/portfolio/actions/collect-market-creator-fees.js', () => {
         const expected = [{
           type: ACTIONS.UPDATE_MARKETS_DATA,
           data: {
-            marketIds: [MarketIds[0]]
-          }
+            marketIds: [MarketIds[0]],
+          },
         }]
 
         assert.deepEqual(actual, expected, `Dispatched unexpected actions.`)
-      }
+      },
     })
 
     test({
@@ -111,7 +111,7 @@ describe('modules/portfolio/actions/collect-market-creator-fees.js', () => {
         const expected = []
 
         assert.deepEqual(actual, expected, `Dispatched unexpected actions.`)
-      }
+      },
     })
   })
 })

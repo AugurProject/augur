@@ -43,7 +43,7 @@ export default class MarketsView extends Component {
       loadMarkets: this.props.loadMarkets,
       loadMarketsByCategory: this.props.loadMarketsByCategory,
       hasLoadedMarkets: this.props.hasLoadedMarkets,
-      hasLoadedCategory: this.props.hasLoadedCategory
+      hasLoadedCategory: this.props.hasLoadedCategory,
     })
   }
 
@@ -60,7 +60,7 @@ export default class MarketsView extends Component {
         loadMarkets: nextProps.loadMarkets,
         loadMarketsByCategory: nextProps.loadMarketsByCategory,
         hasLoadedMarkets: this.props.hasLoadedMarkets,
-        hasLoadedCategory: this.props.hasLoadedCategory
+        hasLoadedCategory: this.props.hasLoadedCategory,
       })
     }
   }

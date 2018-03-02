@@ -8,7 +8,7 @@ export default function (universe = DEFAULT_STATE, action) {
     case UPDATE_UNIVERSE:
       return {
         ...universe,
-        ...action.universe
+        ...action.universe,
       }
     case RESET_STATE:
       return DEFAULT_STATE

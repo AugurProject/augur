@@ -34,7 +34,7 @@ export function listenToUpdates(history) {
       onRemoved: (block) => {
         dispatch(syncBlockchain())
         dispatch(syncUniverse())
-      }
+      },
     })
     augur.events.startAugurNodeEventListeners({
       MarketCreated: (err, log) => {
@@ -67,7 +67,7 @@ export function listenToUpdates(history) {
           // if this is the user's order, then add it to the transaction display
           if (log.orderCreator === getState().loginAccount.address) {
             dispatch(updateAccountCancelsData({
-              [log.marketId]: { [log.outcome]: [log] }
+              [log.marketId]: { [log.outcome]: [log] },
             }, log.marketId))
             dispatch(removeCanceledOrder(log.orderId))
             dispatch(updateAssets())
@@ -82,8 +82,8 @@ export function listenToUpdates(history) {
           if (log.orderCreator === getState().loginAccount.address) {
             dispatch(updateAccountBidsAsksData({
               [log.marketId]: {
-                [log.outcome]: [log]
-              }
+                [log.outcome]: [log],
+              },
             }, log.marketId))
             dispatch(updateAssets())
           }
@@ -101,16 +101,16 @@ export function listenToUpdates(history) {
             // dispatch(convertLogsToTransactions(TYPES.FILL_ORDER, [log]))
             updateAccountTradesData(updateAccountTradesData({
               [log.marketId]: {
-                [log.outcome]: [log]
-              }
+                [log.outcome]: [log],
+              },
             }, log.marketId))
             dispatch(updateAccountPositionsData({
               [log.marketId]: {
                 [log.outcome]: [{
                   ...log,
-                  maker: log.creator === address
-                }]
-              }
+                  maker: log.creator === address,
+                }],
+              },
             }))
             dispatch(updateAssets())
             console.log('MSG -- ', log)
@@ -175,7 +175,7 @@ export function listenToUpdates(history) {
                   blockNumber: log.blockNumber,
                   title: `Collect Fees`,
                   description: `Market Finalized: "${description}"`,
-                  linkPath: makePath(MY_MARKETS)
+                  linkPath: makePath(MY_MARKETS),
                 }))
               }
             }))
@@ -199,7 +199,7 @@ export function listenToUpdates(history) {
           dispatch(updateModal({
             type: MODAL_NETWORK_DISCONNECTED,
             connection,
-            env
+            env,
           }))
           if (connection.isReconnectionPaused) {
             // reconnection has been set to paused, recursive call instead
@@ -235,7 +235,7 @@ export function listenToUpdates(history) {
         dispatch(updateModal({
           type: MODAL_NETWORK_DISCONNECTED,
           connection: getState().connection,
-          env
+          env,
         }))
         history.push(makePath(DEFAULT_VIEW))
       }
@@ -254,7 +254,7 @@ export function listenToUpdates(history) {
         dispatch(updateModal({
           type: MODAL_NETWORK_DISCONNECTED,
           connection: getState().connection,
-          env
+          env,
         }))
         history.push(makePath(DEFAULT_VIEW))
       }

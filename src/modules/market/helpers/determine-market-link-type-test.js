@@ -22,7 +22,7 @@ describe(`modules/market/helpers/determine-market-link-type.js`, () => {
         const market = {}
         const actual = determineMarketLinkType(market, account)
         assert.deepEqual(actual, TYPE_VIEW, `Didn't call the expected method`)
-      }
+      },
     })
   })
 
@@ -33,7 +33,7 @@ describe(`modules/market/helpers/determine-market-link-type.js`, () => {
         const market = { reportingState: constants.REPORTING_STATE.PRE_REPORTING }
         const actual = determineMarketLinkType(market, {})
         assert.deepEqual(actual, TYPE_VIEW, `Didn't call the expected method`)
-      }
+      },
     })
   })
 
@@ -44,7 +44,7 @@ describe(`modules/market/helpers/determine-market-link-type.js`, () => {
         const market = null
         const actual = determineMarketLinkType(market, account)
         assert.deepEqual(actual, TYPE_VIEW, `Didn't call the expected method`)
-      }
+      },
     })
   })
 
@@ -55,7 +55,7 @@ describe(`modules/market/helpers/determine-market-link-type.js`, () => {
         const market = { reportingState: constants.REPORTING_STATE.PRE_REPORTING }
         const actual = determineMarketLinkType(market, account)
         assert.deepEqual(actual, TYPE_TRADE, `Didn't call the expected method`)
-      }
+      },
     })
   })
 
@@ -66,7 +66,7 @@ describe(`modules/market/helpers/determine-market-link-type.js`, () => {
         const market = { reportingState: constants.REPORTING_STATE.DESIGNATED_REPORTING, designatedReporter: account.address }
         const actual = determineMarketLinkType(market, account)
         assert.deepEqual(actual, TYPE_REPORT, `Didn't call the expected method`)
-      }
+      },
     })
   })
 
@@ -77,7 +77,7 @@ describe(`modules/market/helpers/determine-market-link-type.js`, () => {
         const market = { reportingState: constants.REPORTING_STATE.DESIGNATED_REPORTING, designatedReporter: 'snuggles' }
         const actual = determineMarketLinkType(market, account)
         assert.deepEqual(actual, TYPE_VIEW, `Didn't call the expected method`)
-      }
+      },
     })
   })
 
@@ -88,7 +88,7 @@ describe(`modules/market/helpers/determine-market-link-type.js`, () => {
         const market = { reportingState: constants.REPORTING_STATE.OPEN_REPORTING }
         const actual = determineMarketLinkType(market, account)
         assert.deepEqual(actual, TYPE_REPORT, `Didn't call the expected method`)
-      }
+      },
     })
   })
 
@@ -99,7 +99,7 @@ describe(`modules/market/helpers/determine-market-link-type.js`, () => {
         const market = { reportingState: constants.REPORTING_STATE.CROWDSOURCING_DISPUTE }
         const actual = determineMarketLinkType(market, account)
         assert.deepEqual(actual, TYPE_DISPUTE, `Didn't call the expected method`)
-      }
+      },
     })
   })
 })

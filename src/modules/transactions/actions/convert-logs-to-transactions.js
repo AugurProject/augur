@@ -65,8 +65,8 @@ export const convertLogToTransaction = (label, log, status, isRetry, callback = 
       dispatch(updateTransactionsData({
         [hash]: {
           ...dispatch(constructBasicTransaction(hash, status, log.blockNumber, log.timestamp, gasFees)),
-          ...transaction
-        }
+          ...transaction,
+        },
       }))
       return callback()
     }

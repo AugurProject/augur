@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import {
   generateOutcomePositionSummary,
   generateMarketsPositionsSummary,
-  generatePositionsSummary
+  generatePositionsSummary,
 } from 'modules/my-positions/selectors/my-positions-summary'
 
 import { formatEtherTokens, formatShares, formatNumber } from 'utils/format-number'
@@ -27,7 +27,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
         const mockSelectMyPositions = sinon.stub().returns([])
 
         const selector = proxyquire('../../../src/modules/my-positions/selectors/my-positions-summary', {
-          './my-positions': mockSelectMyPositions
+          './my-positions': mockSelectMyPositions,
         })
 
         const actual = selector.default()
@@ -35,7 +35,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
         const expected = null
 
         assert.strictEqual(actual, expected, `Didn't return the expect object`)
-      }
+      },
     })
 
     test({
@@ -50,20 +50,20 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
                 decimalsRounded: 0,
                 denomination: 'Positions',
                 positiveSign: false,
-                zeroStyled: false
+                zeroStyled: false,
               }),
               qtyShares: formatShares(1),
               purchasePrice: formatEtherTokens(0.2),
               realizedNet: formatEtherTokens(0),
               unrealizedNet: formatEtherTokens(0),
-              totalNet: formatEtherTokens(0)
+              totalNet: formatEtherTokens(0),
             },
-            outcomes: [{}]
-          }
+            outcomes: [{}],
+          },
         ])
 
         const selector = proxyquire('../../../src/modules/my-positions/selectors/my-positions-summary', {
-          './my-positions': mockSelectMyPositions
+          './my-positions': mockSelectMyPositions,
         })
 
         const actual = selector.default()
@@ -74,18 +74,18 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             decimalsRounded: 0,
             denomination: 'Positions',
             positiveSign: false,
-            zeroStyled: false
+            zeroStyled: false,
           }),
           qtyShares: formatShares(0),
           purchasePrice: formatEtherTokens(0),
           realizedNet: formatEtherTokens(0),
           unrealizedNet: formatEtherTokens(0),
           totalNet: formatEtherTokens(0),
-          positionOutcomes: []
+          positionOutcomes: [],
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expect object`)
-      }
+      },
     })
   })
 
@@ -107,7 +107,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
         const expected = null
 
         assert.strictEqual(actual, expected, `Didn't return the expected value`)
-      }
+      },
     })
 
     test({
@@ -122,14 +122,14 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             decimalsRounded: 0,
             denomination: 'Positions',
             positiveSign: false,
-            zeroStyled: false
+            zeroStyled: false,
           }),
           qtyShares: formatShares(0),
           purchasePrice: formatEtherTokens(0),
           realizedNet: formatEtherTokens(0),
           unrealizedNet: formatEtherTokens(0),
           totalNet: formatEtherTokens(0),
-          isClosable: false
+          isClosable: false,
         }
 
         // More verbose since a `deepEqual` can't properly check equality w/ objects containing functions
@@ -141,7 +141,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
         assert.deepEqual(actual.totalNet, expected.totalNet, `totalNet Didn't return the expected object`)
         assert.strictEqual(actual.isClosable, expected.isClosable, `isClosable Didn't return the expected value`)
         assert.isFunction(actual.closePosition, `closePosition Didn't return a function as expected`)
-      }
+      },
     })
 
     test({
@@ -155,7 +155,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
           numSharesAdjusted: 10,
           outcome: 3,
           realizedProfitLoss: 0.1,
-          unrealizedProfitLoss: 0.5
+          unrealizedProfitLoss: 0.5,
         }])
 
         const expected = {
@@ -164,14 +164,14 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             decimalsRounded: 0,
             denomination: 'Positions',
             positiveSign: false,
-            zeroStyled: false
+            zeroStyled: false,
           }),
           qtyShares: formatShares(10),
           purchasePrice: formatEtherTokens(0.2),
           realizedNet: formatEtherTokens(0.1),
           unrealizedNet: formatEtherTokens(0.5),
           totalNet: formatEtherTokens(0.6),
-          isClosable: true
+          isClosable: true,
         }
 
         // More verbose since a `deepEqual` can't properly check equality w/ objects containing functions
@@ -183,7 +183,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
         assert.deepEqual(actual.totalNet, expected.totalNet, `totalNet Didn't return the expected object`)
         assert.strictEqual(actual.isClosable, expected.isClosable, `isClosable Didn't return the expected value`)
         assert.isFunction(actual.closePosition, `closePosition Didn't return a function as expected`)
-      }
+      },
     })
   })
 
@@ -202,7 +202,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
         const expected = null
 
         assert.strictEqual(actual, expected, `Didn't return the expected value`)
-      }
+      },
     })
 
     test({
@@ -217,16 +217,16 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
                 decimalsRounded: 0,
                 denomination: 'Positions',
                 positiveSign: false,
-                zeroStyled: false
+                zeroStyled: false,
               }),
               qtyShares: formatShares(1),
               purchasePrice: formatEtherTokens(0.2),
               realizedNet: formatEtherTokens(0),
               unrealizedNet: formatEtherTokens(0),
-              totalNet: formatEtherTokens(0)
+              totalNet: formatEtherTokens(0),
             },
-            outcomes: [{}]
-          }
+            outcomes: [{}],
+          },
         ])
 
         const expected = {
@@ -235,18 +235,18 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             decimalsRounded: 0,
             denomination: 'Positions',
             positiveSign: false,
-            zeroStyled: false
+            zeroStyled: false,
           }),
           qtyShares: formatShares(0),
           purchasePrice: formatEtherTokens(0),
           realizedNet: formatEtherTokens(0),
           unrealizedNet: formatEtherTokens(0),
           totalNet: formatEtherTokens(0),
-          positionOutcomes: []
+          positionOutcomes: [],
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expect object`)
-      }
+      },
     })
 
     test({
@@ -261,13 +261,13 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
                 decimalsRounded: 0,
                 denomination: 'Positions',
                 positiveSign: false,
-                zeroStyled: false
+                zeroStyled: false,
               }),
               qtyShares: formatShares(1),
               purchasePrice: formatEtherTokens(0.2),
               realizedNet: formatEtherTokens(0),
               unrealizedNet: formatEtherTokens(0),
-              totalNet: formatEtherTokens(0)
+              totalNet: formatEtherTokens(0),
             },
             outcomes: [
               {
@@ -277,18 +277,18 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
                     decimalsRounded: 0,
                     denomination: 'Positions',
                     positiveSign: false,
-                    zeroStyled: false
+                    zeroStyled: false,
                   }),
                   qtyShares: formatShares(1),
                   purchasePrice: formatEtherTokens(0.2),
                   realizedNet: formatEtherTokens(10),
                   unrealizedNet: formatEtherTokens(-1),
                   totalNet: formatEtherTokens(9),
-                  isClosable: true
-                }
-              }
-            ]
-          }
+                  isClosable: true,
+                },
+              },
+            ],
+          },
         ])
 
         const expected = {
@@ -297,7 +297,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             decimalsRounded: 0,
             denomination: 'Positions',
             positiveSign: false,
-            zeroStyled: false
+            zeroStyled: false,
           }),
           qtyShares: formatShares(1),
           purchasePrice: formatEtherTokens(0),
@@ -312,21 +312,21 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
                   decimalsRounded: 0,
                   denomination: 'Positions',
                   positiveSign: false,
-                  zeroStyled: false
+                  zeroStyled: false,
                 }),
                 qtyShares: formatShares(1),
                 purchasePrice: formatEtherTokens(0.2),
                 realizedNet: formatEtherTokens(10),
                 unrealizedNet: formatEtherTokens(-1),
                 totalNet: formatEtherTokens(9),
-                isClosable: true
-              }
-            }
-          ]
+                isClosable: true,
+              },
+            },
+          ],
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      }
+      },
     })
   })
 
@@ -348,17 +348,17 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             decimalsRounded: 0,
             denomination: 'Positions',
             positiveSign: false,
-            zeroStyled: false
+            zeroStyled: false,
           }),
           qtyShares: formatShares(2),
           purchasePrice: formatEtherTokens(0.2),
           realizedNet: formatEtherTokens(10),
           unrealizedNet: formatEtherTokens(-1),
-          totalNet: formatEtherTokens(9)
+          totalNet: formatEtherTokens(9),
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expected value`)
-      }
+      },
     })
   })
 })

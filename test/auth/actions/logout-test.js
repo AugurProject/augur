@@ -13,12 +13,12 @@ describe(`modules/auth/actions/logout.js`, () => {
   const store = mockStore(testState)
   fakeAugurJS.augur.rpc.clear = () => {}
   const action = proxyquire('../../../src/modules/auth/actions/logout', {
-    '../../../services/augurjs': fakeAugurJS
+    '../../../services/augurjs': fakeAugurJS,
   })
 
   it(`should logout of the logged in account`, () => {
     const expectedOutput = [{
-      type: 'CLEAR_LOGIN_ACCOUNT'
+      type: 'CLEAR_LOGIN_ACCOUNT',
     }]
     store.dispatch(action.logout())
     assert.deepEqual(store.getActions(), expectedOutput, `It didn't logout as expected`)

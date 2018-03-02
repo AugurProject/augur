@@ -29,7 +29,7 @@ const localStorageMiddleware = store => next => (action) => {
       scalarMarketsShareDenomination: state.scalarMarketsShareDenomination,
       favorites: state.favorites,
       reports: state.reports,
-      accountName: state.accountName
+      accountName: state.accountName,
     }))
   }
 }
@@ -50,14 +50,14 @@ if (process.env.NODE_ENV !== 'production') {
 }
 // middleware
 const store = createStore(combineReducers({
-  ...createReducer()
+  ...createReducer(),
 }), middleware)
 
 if (module.hot) {
   module.hot.accept('./reducers', (changed) => {
     const nextReducers = require('src/reducers')
     store.replaceReducer(combineReducers({
-      ...nextReducers.createReducer()
+      ...nextReducers.createReducer(),
     }))
   })
 }

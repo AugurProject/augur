@@ -15,14 +15,14 @@ import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 export default class Category extends Component {
   static propTypes = {
-    popularity: PropTypes.number
+    popularity: PropTypes.number,
   }
 
   constructor(props) {
     super(props)
 
     this.state = {
-      popularityChange: null
+      popularityChange: null,
     }
 
     this.updatePopularity = this.updatePopularity.bind(this)
@@ -56,8 +56,8 @@ export default class Category extends Component {
         to={{
           pathname: makePath(MARKETS),
           search: makeQuery({
-            [CATEGORY_PARAM_NAME]: p.category
-          })
+            [CATEGORY_PARAM_NAME]: p.category,
+          }),
         }}
         className={isNullCategory ? Styles['Category__link-hidden'] : Styles.Category__link}
       >
@@ -74,7 +74,7 @@ export default class Category extends Component {
             <span
               className={classNames({
                 'bounce-up-and-flash': s.popularityChange === CATEGORY_VOLUME_INCREASED,
-                'bounce-down-and-flash': s.popularityChange === CATEGORY_VOLUME_DECREASED
+                'bounce-down-and-flash': s.popularityChange === CATEGORY_VOLUME_DECREASED,
               })}
               data-tip
               data-for="category-volume-tooltip"

@@ -14,7 +14,7 @@ describe(`modules/market/selectors/market.js`, () => {
 
   const stubbedAugurJS = {
     getMarketCreatorFeesCollected: () => {},
-    abi: { bignum: n => n }
+    abi: { bignum: n => n },
   }
   sinon.stub(stubbedAugurJS, 'getMarketCreatorFeesCollected').callsFake(() => 10)
 
@@ -22,12 +22,12 @@ describe(`modules/market/selectors/market.js`, () => {
     '../../../store': store,
     // make selectors/user-open-orders-summary use the same store as selectors/market.js
     '../../user-open-orders/selectors/user-open-orders-summary': proxyquire('../../../src/modules/user-open-orders/selectors/user-open-orders-summary', {
-      '../../../store': store
+      '../../../store': store,
     }),
     '../../../modules/my-markets/selectors/my-markets': proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
       '../../../services/augurjs': stubbedAugurJS,
-      '../../../selectors': stubbedSelectors
-    })
+      '../../../selectors': stubbedSelectors,
+    }),
   })
 
   beforeEach(() => {

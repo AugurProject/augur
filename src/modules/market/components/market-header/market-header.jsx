@@ -16,14 +16,14 @@ export default class MarketHeader extends Component {
     details: PropTypes.string.isRequired,
     coreProperties: PropTypes.object.isRequired,
     resolutionSource: PropTypes.any,
-    selectedOutcomes: PropTypes.any
+    selectedOutcomes: PropTypes.any,
   }
 
   constructor(props) {
     super(props)
 
     this.state = {
-      areMarketDetailsVisible: false
+      areMarketDetailsVisible: false,
     }
   }
 

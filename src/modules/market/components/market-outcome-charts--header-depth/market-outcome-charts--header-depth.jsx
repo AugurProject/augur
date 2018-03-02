@@ -44,5 +44,5 @@ export default MarketOutcomeDepthHeader
 
 MarketOutcomeDepthHeader.propTypes = {
   hoveredDepth: PropTypes.array.isRequired,
-  fixedPrecision: PropTypes.number.isRequired
+  fixedPrecision: PropTypes.number.isRequired,
 }

@@ -52,7 +52,7 @@ export default class MarketOutcomesChart extends Component {
         top: 20,
         right: 0,
         bottom: 30,
-        left: 50
+        left: 50,
       }
 
       const width = this.outcomesChart.clientWidth

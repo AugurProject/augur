@@ -8,7 +8,7 @@ describe('modules/markets/actions/load-user-markets.js', () => {
   const mockStore = configureMockStore(middlewares)
   const mockEnv = {
     'bug-bounty': false,
-    'network-id': 4
+    'network-id': 4,
   }
 
   const test = t => it(t.description, () => {
@@ -22,7 +22,7 @@ describe('modules/markets/actions/load-user-markets.js', () => {
     const { loadUserMarkets, __RewireAPI__ } = require('modules/markets/actions/load-user-markets')
 
     const ACTIONS = {
-      UPDATE_MARKETS_DATA: 'UPDATE_MARKETS_DATA'
+      UPDATE_MARKETS_DATA: 'UPDATE_MARKETS_DATA',
     }
 
     __RewireAPI__.__Rewire__('augur', {
@@ -31,21 +31,21 @@ describe('modules/markets/actions/load-user-markets.js', () => {
           if (!p.universe || !p.creator) return cb({ error: 'error message' })
           if (p.universe === 'noUserMarketsUniverse') return cb(null)
           cb(null, ['0xabc1', '0xabc2', '0xabc3'])
-        }
-      }
+        },
+      },
     })
     __RewireAPI__.__Rewire__('updateMarketsData', marketsData => ({
       type: ACTIONS.UPDATE_MARKETS_DATA,
       data: {
-        marketsData
-      }
+        marketsData,
+      },
     }))
 
     test({
       description: `should dispatch the expected actions when no user markets are in universe`,
       state: {
         universe: { id: 'noUserMarketsUniverse' },
-        loginAccount: { address: '0xtester1' }
+        loginAccount: { address: '0xtester1' },
       },
       assertions: (store) => {
         store.dispatch(loadUserMarkets((err, marketsArray) => {
@@ -58,14 +58,14 @@ describe('modules/markets/actions/load-user-markets.js', () => {
         const expected = []
 
         assert.deepEqual(actual, expected, `Dispatched Actions when none should have been.`)
-      }
+      },
     })
 
     test({
       description: `should handle an error due to missing data`,
       state: {
         universe: {},
-        loginAccount: { address: '0xtester1' }
+        loginAccount: { address: '0xtester1' },
       },
       assertions: (store) => {
         store.dispatch(loadUserMarkets((err, marketsArray) => {
@@ -80,14 +80,14 @@ describe('modules/markets/actions/load-user-markets.js', () => {
         const expected = []
 
         assert.deepEqual(actual, expected, `Dispatched Actions when none should have been.`)
-      }
+      },
     })
 
     test({
       description: `should handle markets data`,
       state: {
         universe: { id: '0xb0b' },
-        loginAccount: { address: '0xtester1' }
+        loginAccount: { address: '0xtester1' },
       },
       assertions: (store) => {
         store.dispatch(loadUserMarkets((err, marketsArray) => {
@@ -106,12 +106,12 @@ describe('modules/markets/actions/load-user-markets.js', () => {
               '0xabc1': { author: '0xtester1', id: '0xabc1' },
               '0xabc2': { author: '0xtester1', id: '0xabc2' },
               '0xabc3': { author: '0xtester1', id: '0xabc3' },
-            }
-          }
+            },
+          },
         }]
 
         assert.deepEqual(actual, expected, `Dispatched Actions when none should have been.`)
-      }
+      },
     })
   })
 })

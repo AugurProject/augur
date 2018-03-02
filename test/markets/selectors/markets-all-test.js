@@ -19,79 +19,79 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
       test: {
         endDate: parseInt(new Date('01/01/3000').getTime() / 1000, 10),
         outcomes: {
-          test: {}
+          test: {},
         },
         volume: {
-          value: 5
-        }
+          value: 5,
+        },
       },
       test2: {
         endDate: parseInt(new Date('01/01/3000').getTime() / 1000, 10),
         outcomes: {
-          test2: {}
+          test2: {},
         },
         volume: {
-          value: 10
-        }
+          value: 10,
+        },
       },
       test3: {
         endDate: parseInt(new Date('01/01/3000').getTime() / 1000, 10),
         outcomes: {
-          test3: {}
+          test3: {},
         },
         volume: {
-          value: 7
-        }
-      }
+          value: 7,
+        },
+      },
     },
     priceHistory: {
       test: {},
       test2: {},
-      test3: {}
+      test3: {},
     },
     favorites: {
       test: true,
       test2: true,
-      test3: false
+      test3: false,
     },
     reports: {
       testEvent: {
-        id: 'testEvent'
+        id: 'testEvent',
       },
       testEvent2: {
-        id: 'testEvent2'
+        id: 'testEvent2',
       },
       testEvent3: {
-        id: 'testEvent2'
-      }
+        id: 'testEvent2',
+      },
     },
     accountTrades: {
       test: {},
       test2: {},
-      test3: {}
+      test3: {},
     },
     orderBooks: {
       test: {},
       test2: {},
-      test3: {}
+      test3: {},
     },
     tradesInProgress: {
       test: {},
       test2: {},
-      test3: {}
-    }
+      test3: {},
+    },
   })
   const store = mockStore(state)
   const mockMarket = {
     selectMarket: () => {},
-    selectMarketReport: () => {}
+    selectMarketReport: () => {},
   }
   sinon.stub(mockMarket, 'selectMarket').callsFake((marketId, market, priceHistory, isMarketOpen, isMarketExpired, favorite, outcomes, reports, accountTrades, tradesInProgress, endYear, endMonth, endDate, isBlockchainReportPhase, marketOrderBook, orderCancellation, loginAccount, dispatch) => market)
   sinon.stub(mockMarket, 'selectMarketReport').callsFake((marketId, universeReports) => ({}))
 
   const selector = proxyquire('../../../src/modules/markets/selectors/markets-all.js', {
     '../../market/selectors/market': mockMarket,
-    '../../../store': store
+    '../../../store': store,
   })
 
   allMarkets = selector.default

@@ -50,7 +50,7 @@ export const mobileMenuStates = {
   CLOSED: 0,
   SIDEBAR_OPEN: 1,
   FIRSTMENU_OPEN: 2,
-  SUBMENU_OPEN: 3
+  SUBMENU_OPEN: 3,
 }
 
 const SUB_MENU = 'subMenu'
@@ -81,7 +81,7 @@ export default class AppView extends Component {
     initAugur: PropTypes.func.isRequired,
     modal: PropTypes.object.isRequired,
     selectedCategory: PropTypes.string,
-    url: PropTypes.string
+    url: PropTypes.string,
   }
 
   constructor(props) {
@@ -93,7 +93,7 @@ export default class AppView extends Component {
       mobileMenuState: mobileMenuStates.CLOSED,
       currentBasePath: null,
       currentInnerNavType: null,
-      isNotificationsVisible: false
+      isNotificationsVisible: false,
     }
 
     this.sideNavMenuData = [
@@ -101,14 +101,14 @@ export default class AppView extends Component {
         title: 'Markets',
         icon: NavMarketsIcon,
         mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
-        route: MARKETS
+        route: MARKETS,
       },
       {
         title: 'Create',
         iconName: 'nav-create-icon',
         icon: NavCreateIcon,
         route: CREATE_MARKET,
-        requireLogin: true
+        requireLogin: true,
       },
       {
         title: 'Portfolio',
@@ -116,22 +116,22 @@ export default class AppView extends Component {
         icon: NavPortfolioIcon,
         mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
         route: MY_POSITIONS,
-        requireLogin: true
+        requireLogin: true,
       },
       {
         title: 'Reporting',
         iconName: 'nav-reporting-icon',
         icon: NavReportingIcon,
         route: REPORTING_DISPUTE,
-        requireLogin: true
+        requireLogin: true,
       },
       {
         title: 'Account',
         iconName: 'nav-account-icon',
         icon: NavAccountIcon,
         mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
-        route: ACCOUNT_DEPOSIT
-      }
+        route: ACCOUNT_DEPOSIT,
+      },
     ]
 
     this.shouldComponentUpdate = shouldComponentUpdatePure
@@ -162,7 +162,7 @@ export default class AppView extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.isMobile !== nextProps.isMobile) {
       this.setState({
-        mobileMenuState: mobileMenuStates.CLOSED
+        mobileMenuState: mobileMenuStates.CLOSED,
       })
     }
 
@@ -259,8 +259,8 @@ export default class AppView extends Component {
       this.setState({
         [menuKey]: {
           ...this.state[menuKey],
-          ...newState
-        }
+          ...newState,
+        },
       })
     }
 
@@ -277,7 +277,7 @@ export default class AppView extends Component {
         easing: 'easeOutQuad',
         step: (newState) => {
           setMenuState(Object.assign({}, baseMenuState, { scalar: newState.value }))
-        }
+        },
       }).then(() => {
         if (cb && (typeof cb) === 'function') cb()
         setMenuState({ locked: false, currentTween: null })
@@ -384,8 +384,8 @@ export default class AppView extends Component {
           className={classNames(
             Styles.App,
             {
-              [Styles[`App--blur`]]: Object.keys(p.modal).length !== 0
-            }
+              [Styles[`App--blur`]]: Object.keys(p.modal).length !== 0,
+            },
           )}
         >
           <section className={Styles.SideBar}>

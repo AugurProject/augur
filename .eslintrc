@@ -20,7 +20,6 @@
   },
   "rules": { # 0 = disabled, 1 = warn, 2 = error
     # Disabled
-    "comma-dangle": 0,
     "no-eq-null": 0,
     "no-console": 0,
     "no-tabs": 0,
@@ -43,6 +42,7 @@
       "aspects": [ "noHref" ]
     }],
     # Errors
+    "comma-dangle": 2,
     "import/extensions": [
       2,
       "never",

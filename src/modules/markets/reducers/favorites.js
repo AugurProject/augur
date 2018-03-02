@@ -10,11 +10,11 @@ export default function (favorites = DEFAULT_STATE, action) {
     case UPDATE_FAVORITES:
       return {
         ...favorites,
-        ...action.favorites
+        ...action.favorites,
       }
     case TOGGLE_FAVORITE:
       newFavorites = {
-        ...favorites
+        ...favorites,
       }
       if (newFavorites[action.marketId]) {
         delete newFavorites[action.marketId]

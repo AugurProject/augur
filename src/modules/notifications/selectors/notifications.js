@@ -13,7 +13,7 @@ export const selectNotificationsAndSeenCount = createSelector(
   (notifications) => {
     const sortedNotifications = notifications.map((notification, i) => ({
       ...notification,
-      index: i
+      index: i,
     })).sort((a, b) => getValue(b, 'timestamp') - getValue(a, 'timestamp'))
 
     const unseenCount = sortedNotifications.reduce((p, notification) => {
@@ -23,7 +23,7 @@ export const selectNotificationsAndSeenCount = createSelector(
 
     return {
       unseenCount,
-      notifications: sortedNotifications
+      notifications: sortedNotifications,
     }
-  }
+  },
 )

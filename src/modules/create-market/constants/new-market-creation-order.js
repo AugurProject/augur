@@ -9,7 +9,7 @@ import {
   NEW_MARKET_TAGS,
   NEW_MARKET_FEES,
   NEW_MARKET_ORDER_BOOK,
-  NEW_MARKET_REVIEW
+  NEW_MARKET_REVIEW,
 } from 'modules/create-market/constants/new-market-creation-steps'
 
 // Rearrange the array to change market creation progression
@@ -24,5 +24,5 @@ export default [
   NEW_MARKET_TAGS,
   NEW_MARKET_FEES,
   NEW_MARKET_ORDER_BOOK,
-  NEW_MARKET_REVIEW
+  NEW_MARKET_REVIEW,
 ]

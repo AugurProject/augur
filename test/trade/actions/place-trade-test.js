@@ -15,18 +15,18 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     const SelectMarket = { selectMarket: () => {} }
     sinon.stub(SelectMarket, 'selectMarket').callsFake(marketId => store.getState().marketsData[marketId])
     const action = proxyquire('../../../src/modules/trade/actions/place-trade.js', {
-      '../../market/selectors/market': SelectMarket
+      '../../market/selectors/market': SelectMarket,
     })
     store.dispatch(action.placeTrade('testBinaryMarketId', null))
     assert.deepEqual(store.getActions(), [{
       type: 'CLEAR_TRADE_IN_PROGRESS',
-      marketId: 'testBinaryMarketId'
+      marketId: 'testBinaryMarketId',
     }], `Didn't produce the expected actions for passing a null outcomeId to place-trade`)
     store.clearActions()
     store.dispatch(action.placeTrade('testBinaryMarketId', undefined))
     assert.deepEqual(store.getActions(), [{
       type: 'CLEAR_TRADE_IN_PROGRESS',
-      marketId: 'testBinaryMarketId'
+      marketId: 'testBinaryMarketId',
     }], `Didn't produce the expected actions for passing a undefined outcomeId to place-trade`)
   })
   it('should handle a null/undefined marketId', () => {
@@ -37,7 +37,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     const SelectMarket = { selectMarket: () => {} }
     sinon.stub(SelectMarket, 'selectMarket').callsFake(marketId => store.getState().marketsData[marketId])
     const action = proxyquire('../../../src/modules/trade/actions/place-trade.js', {
-      '../../market/selectors/market': SelectMarket
+      '../../market/selectors/market': SelectMarket,
     })
     store.dispatch(action.placeTrade(null, '1'))
     assert.deepEqual(store.getActions(), [], `Didn't fail out as expected for passing a null marketId to place-trade`)
@@ -50,16 +50,16 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     const testState = { ...state, ...tradeTestState }
     testState.loginAccount = {
       meta: { privateKey: Buffer.from('PRIVATE_KEY', 'utf8') },
-      allowance: '0'
+      allowance: '0',
     }
     const store = mockStore(testState)
     const SelectMarket = { selectMarket: () => {} }
     sinon.stub(SelectMarket, 'selectMarket').callsFake(marketId => store.getState().marketsData[marketId])
     const action = proxyquire('../../../src/modules/trade/actions/place-trade.js', {
-      '../../market/selectors/market': SelectMarket
+      '../../market/selectors/market': SelectMarket,
     })
     store.dispatch(action.placeTrade('testBinaryMarketId', '1', {
-      totalCost: '10000000'
+      totalCost: '10000000',
     }))
     const storeActions = store.getActions()
     const firstAction = storeActions[0]

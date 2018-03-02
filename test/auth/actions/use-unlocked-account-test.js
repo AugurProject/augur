@@ -18,12 +18,12 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
           constants: {
             ACCOUNT_TYPES: {
               UNLOCKED_ETHEREUM_NODE: 'unlockedEthereumNode',
-              META_MASK: 'metaMask'
-            }
+              META_MASK: 'metaMask',
+            },
           },
-          isUnlocked: () => {}
-        }
-      }
+          isUnlocked: () => {},
+        },
+      },
     }
     const UpdateIsLoggedAndLoadAccountData = { updateIsLoggedAndLoadAccountData: () => {} }
     const IsMetaMask = { default: () => {} }
@@ -40,7 +40,7 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
     })
     sinon.stub(UpdateIsLoggedAndLoadAccountData, 'updateIsLoggedAndLoadAccountData').callsFake((unlockedAccount, accountType) => ({
       type: 'UPDATE_IS_LOGGED_AND_LOAD_ACCOUNT_DATA',
-      data: { unlockedAccount, accountType }
+      data: { unlockedAccount, accountType },
     }))
     sinon.stub(IsMetaMask, 'default').callsFake(() => {
       const isMetaMask = t.stub.isMetaMask()
@@ -56,103 +56,103 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
   test({
     description: 'no address',
     params: {
-      unlockedAddress: undefined
+      unlockedAddress: undefined,
     },
     stub: {
       augur: { rpc: { isUnlocked: (address, callback) => callback(null) } },
-      isMetaMask: () => assert.fail()
+      isMetaMask: () => assert.fail(),
     },
     assertions: (err, actions) => {
       assert.strictEqual(err, 'no account address')
       assert.deepEqual(actions, [])
-    }
+    },
   })
   test({
     description: 'isUnlocked error',
     params: {
-      unlockedAddress: '0xb0b'
+      unlockedAddress: '0xb0b',
     },
     stub: {
       augur: { rpc: { isUnlocked: (address, callback) => callback(MOCK_ERROR) } },
-      isMetaMask: () => false
+      isMetaMask: () => false,
     },
     assertions: (err, actions) => {
       assert.deepEqual(err, MOCK_ERROR)
       assert.deepEqual(actions, [{
         type: 'IS_META_MASK',
-        data: { isMetaMask: false }
+        data: { isMetaMask: false },
       }, {
         type: 'AUGURJS_RPC_IS_UNLOCKED',
-        data: { isUnlocked: MOCK_ERROR }
+        data: { isUnlocked: MOCK_ERROR },
       }])
-    }
+    },
   })
   test({
     description: 'locked address',
     params: {
-      unlockedAddress: '0xb0b'
+      unlockedAddress: '0xb0b',
     },
     stub: {
       augur: { rpc: { isUnlocked: (address, callback) => callback(false) } },
-      isMetaMask: () => false
+      isMetaMask: () => false,
     },
     assertions: (err, actions) => {
       assert.isNull(err)
       assert.deepEqual(actions, [{
         type: 'IS_META_MASK',
-        data: { isMetaMask: false }
+        data: { isMetaMask: false },
       }, {
         type: 'AUGURJS_RPC_IS_UNLOCKED',
-        data: { isUnlocked: false }
+        data: { isUnlocked: false },
       }])
-    }
+    },
   })
   test({
     description: 'using metamask',
     params: {
-      unlockedAddress: '0xb0b'
+      unlockedAddress: '0xb0b',
     },
     stub: {
       augur: { rpc: { isUnlocked: (address, callback) => assert.fail() } },
-      isMetaMask: () => true
+      isMetaMask: () => true,
     },
     assertions: (err, actions) => {
       assert.isNull(err)
       assert.deepEqual(actions, [{
         type: 'IS_META_MASK',
-        data: { isMetaMask: true }
+        data: { isMetaMask: true },
       }, {
         type: 'UPDATE_IS_LOGGED_AND_LOAD_ACCOUNT_DATA',
         data: {
           unlockedAccount: '0xb0b',
-          accountType: 'metaMask'
-        }
+          accountType: 'metaMask',
+        },
       }])
-    }
+    },
   })
   test({
     description: 'unlocked local account',
     params: {
-      unlockedAddress: '0xb0b'
+      unlockedAddress: '0xb0b',
     },
     stub: {
       augur: { rpc: { isUnlocked: (address, callback) => callback(true) } },
-      isMetaMask: () => false
+      isMetaMask: () => false,
     },
     assertions: (err, actions) => {
       assert.deepEqual(actions, [{
         type: 'IS_META_MASK',
-        data: { isMetaMask: false }
+        data: { isMetaMask: false },
       }, {
         type: 'AUGURJS_RPC_IS_UNLOCKED',
-        data: { isUnlocked: true }
+        data: { isUnlocked: true },
       }, {
         type: 'UPDATE_IS_LOGGED_AND_LOAD_ACCOUNT_DATA',
         data: {
           unlockedAccount: '0xb0b',
-          accountType: 'unlockedEthereumNode'
-        }
+          accountType: 'unlockedEthereumNode',
+        },
       }])
-    }
+    },
   })
 })

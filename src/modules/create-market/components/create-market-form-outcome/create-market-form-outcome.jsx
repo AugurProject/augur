@@ -11,7 +11,7 @@ import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-ty
 import {
   CATEGORICAL_OUTCOMES_MIN_NUM,
   CATEGORICAL_OUTCOMES_MAX_NUM,
-  CATEGORICAL_OUTCOME_MAX_LENGTH
+  CATEGORICAL_OUTCOME_MAX_LENGTH,
 } from 'modules/create-market/constants/new-market-constraints'
 
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
@@ -44,7 +44,7 @@ export default class CreateMarketOutcome extends Component {
       outcomeFieldCount: CreateMarketOutcome.calculateOutcomeFieldCount(this.props),
       showAddOutcome: CreateMarketOutcome.calculateOutcomeFieldCount(this.props) < 8,
       scalarMin: speedomatic.unfix(speedomatic.constants.INT256_MIN_VALUE).round(18, BigNumber.ROUND_DOWN),
-      scalarMax: speedomatic.unfix(speedomatic.constants.INT256_MAX_VALUE).round(18, BigNumber.ROUND_DOWN)
+      scalarMax: speedomatic.unfix(speedomatic.constants.INT256_MAX_VALUE).round(18, BigNumber.ROUND_DOWN),
     }
 
     this.handleAddOutcomeClick = this.handleAddOutcomeClick.bind(this)
@@ -59,7 +59,7 @@ export default class CreateMarketOutcome extends Component {
       const showAddOutcome = nextProps.isMobileSmall ? !(outcomeFieldCount >= nextProps.newMarket.outcomes.length) : false
       this.setState({
         outcomeFieldCount,
-        showAddOutcome
+        showAddOutcome,
       })
     }
   }
@@ -70,7 +70,7 @@ export default class CreateMarketOutcome extends Component {
     const showAddOutcome = !(outcomeFieldCount >= totalOutcomes)
     this.setState({
       outcomeFieldCount,
-      showAddOutcome
+      showAddOutcome,
     })
   }
 
@@ -81,7 +81,7 @@ export default class CreateMarketOutcome extends Component {
 
     const updatedValidations = Object.keys(validations).reduce((p, key) => (validations[key] === true ? {
       ...p,
-      [key]: true
+      [key]: true,
     } : p), {})
 
     // Reset tickSize as it only applies to 'scalar' markets and we are 'defaulting' the value in the componenet.

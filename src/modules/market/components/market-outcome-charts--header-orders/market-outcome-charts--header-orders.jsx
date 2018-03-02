@@ -44,5 +44,5 @@ export default MarketOutcomeChartsHeaderOrders
 
 MarketOutcomeChartsHeaderOrders.propTypes = {
   fixedPrecision: PropTypes.number.isRequired,
-  updatePrecision: PropTypes.func.isRequired
+  updatePrecision: PropTypes.func.isRequired,
 }

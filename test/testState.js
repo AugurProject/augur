@@ -12,25 +12,25 @@ const testState = {
   accountTrades: {
     testMarketId: {
       testoutcomeId: [
-        { type: 1, price: '0.5', amount: '50' }
-      ]
-    }
+        { type: 1, price: '0.5', amount: '50' },
+      ],
+    },
   },
   auth: {
     err: null,
-    selectedAuthType: 'register'
+    selectedAuthType: 'register',
   },
   blockchain: {
     currentBlockMillisSinceEpoch: 1461774253983,
     currentBlockTimestamp: 1461774253,
-    currentBlockNumber: 833339
+    currentBlockNumber: 833339,
   },
   universe: {
     id: '0xf69b5',
     description: 'root universe',
     reportingPeriodDurationInSeconds: 4000,
     currentReportingWindowAddress: 19,
-    currentReportingPeriodPercentComplete: 52
+    currentReportingPeriodPercentComplete: 52,
   },
   connection: {
     isConnected: true,
@@ -39,7 +39,7 @@ const testState = {
   },
   createMarketInProgress: {},
   favorites: {
-    testMarketId: true
+    testMarketId: true,
   },
   env,
   loginAccount: {
@@ -49,7 +49,7 @@ const testState = {
     privateKey: Buffer.from('0000000000000000000000000000000000000000000000000000000000000001', 'hex'),
     derivedKey: Buffer.from('0000000000000000000000000000000000000000000000000000000000000002', 'hex'),
     keystore: {
-      address: '0x0000000000000000000000000000000000000001'
+      address: '0x0000000000000000000000000000000000000001',
     },
     localNode: false,
     prettyAddress: '0xte...t123',
@@ -58,7 +58,7 @@ const testState = {
     ethTokens: 0,
     ether: 0,
     realEther: 0,
-    rep: 0
+    rep: 0,
   },
   tags: 'test testtag',
   marketsData: {
@@ -82,7 +82,7 @@ const testState = {
       settlementFee: '0.000100000001193046',
       reportingFeeRate: 0.0001,
       creationFee: 0.025,
-      marketCreatorFeeRate: 0.00000000001193046
+      marketCreatorFeeRate: 0.00000000001193046,
     },
     testMarketId2: {
       id: 'testMarketId2',
@@ -104,8 +104,8 @@ const testState = {
       settlementFee: '0.000100000001193046',
       reportingFeeRate: 0.0001,
       creationFee: 0.025,
-      marketCreatorFeeRate: 0.00000000001193046
-    }
+      marketCreatorFeeRate: 0.00000000001193046,
+    },
   },
   orderBooks: {
     testMarketId: {
@@ -138,8 +138,8 @@ const testState = {
             fullPrecisionPrice: '0.42',
             sharesEscrowed: '0',
             tokensEscrowed: '4.2',
-          }
-        }
+          },
+        },
       },
       1: {
         buy: {
@@ -170,7 +170,7 @@ const testState = {
             fullPrecisionPrice: '0.44',
             sharesEscrowed: '0',
             tokensEscrowed: '4.4',
-          }
+          },
         },
         sell: {
           '0x8ef100c8aad3c4f7b65a055643d54db7b9a506a542b1270047a314da931e37fb': {
@@ -200,13 +200,13 @@ const testState = {
             fullPrecisionPrice: '0.59',
             sharesEscrowed: '0',
             tokensEscrowed: '8.2',
-          }
-        }
-      }
-    }
+          },
+        },
+      },
+    },
   },
   orderCancellation: {
-    'an orderId': 'a status'
+    'an orderId': 'a status',
   },
   outcomesData: {
     testMarketId: {
@@ -214,41 +214,41 @@ const testState = {
         id: '1',
         outstandingShares: '47',
         name: 'testOutcome',
-        price: '0.5'
+        price: '0.5',
       },
       2: {
         id: '2',
         outstandingShares: '156',
         name: 'testOutcome 2',
-        price: '0.5'
-      }
-    }
+        price: '0.5',
+      },
+    },
   },
   pagination: {
     numPerPage: 10,
-    selectedPageNum: 1
+    selectedPageNum: 1,
   },
   priceHistory: {
     testMarketId: {},
     '0xMARKET1': {
       0: [
         { amount: 10 },
-        { amount: 20 }
+        { amount: 20 },
       ],
       1: [
         { amount: 10 },
-        { amount: 20 }
-      ]
+        { amount: 20 },
+      ],
     },
     '0xMARKET2': {
       0: [
         { amount: 10 },
-        { amount: 20 }
+        { amount: 20 },
       ],
       1: [
         { amount: 10 },
-        { amount: 20 }
-      ]
+        { amount: 20 },
+      ],
     },
   },
   reports: {
@@ -257,24 +257,24 @@ const testState = {
         marketId: 'testMarketId',
         isScalar: false,
         isIndeterminate: false,
-        isSubmitted: false
-      }
-    }
+        isSubmitted: false,
+      },
+    },
   },
   selectedMarketId: 'testMarketId',
   selectedMarketsHeader: 'testMarketHeader',
   selectedFilterSort: {
     type: 'open',
     sort: 'volume',
-    isDesc: true
+    isDesc: true,
   },
   selectedTags: {
     testtag: {
-      name: 'testtag'
+      name: 'testtag',
     },
     tag: {
-      name: 'tag'
-    }
+      name: 'tag',
+    },
   },
   tradesInProgress: {
     testMarketId: {
@@ -284,9 +284,9 @@ const testState = {
         totalCost: '2500',
         type: 'binary',
         side: BUY,
-        sharesFilled: 5000
-      }
-    }
+        sharesFilled: 5000,
+      },
+    },
   },
   transactionsData: {
     testtransaction12345: {
@@ -294,11 +294,11 @@ const testState = {
       message: 'CORS request rejected: https://faucet.augur.net/faucet/0x0000000000000000000000000000000000000001',
       status: 'failed',
       type: 'register',
-      data: {}
-    }
+      data: {},
+    },
   },
   marketCreatorFees: {
-    '0xMARKET1': 21
+    '0xMARKET1': 21,
   },
   allMarkets: [
     {
@@ -312,43 +312,43 @@ const testState = {
           orderBook: {
             bid: [
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
             ],
             ask: [
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
-            ]
-          }
+            ],
+          },
         },
         {
           orderBook: {
             bid: [
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
             ],
             ask: [
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
-            ]
-          }
-        }
-      ]
+            ],
+          },
+        },
+      ],
     },
     {
       id: '0xMARKET2',
@@ -361,53 +361,53 @@ const testState = {
           orderBook: {
             bid: [
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
             ],
             ask: [
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
-            ]
-          }
+            ],
+          },
         },
         {
           orderBook: {
             bid: [
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
             ],
             ask: [
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
-            ]
-          }
-        }
-      ]
+            ],
+          },
+        },
+      ],
     },
     {
       id: '0xMARKET3',
-      author: '0xtest456'
+      author: '0xtest456',
     },
     {
       id: '0xMARKET4',
-      author: '0xtest456'
-    }
-  ]
+      author: '0xtest456',
+    },
+  ],
 }
 
 export default testState

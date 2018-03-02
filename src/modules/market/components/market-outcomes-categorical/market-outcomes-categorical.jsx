@@ -34,7 +34,7 @@ class MarketOutcomesCategorical extends Component {
 
     this.setState({
       outcomeWrapperHeight,
-      isOpen: !this.state.isOpen
+      isOpen: !this.state.isOpen,
     })
   }
 
@@ -46,7 +46,7 @@ class MarketOutcomesCategorical extends Component {
     const showMoreText = this.state.isOpen ? `- ${totalOutcomes - 3} less` : `+ ${totalOutcomes - 3} more`
 
     const outcomeWrapperStyle = {
-      minHeight: this.state.outcomeWrapperHeight
+      minHeight: this.state.outcomeWrapperHeight,
     }
 
     return (
@@ -62,7 +62,7 @@ class MarketOutcomesCategorical extends Component {
         }
         <div
           className={classNames(Styles['MarketOutcomesCategorical__outcomes-container'], {
-            [`${Styles['show-more']}`]: displayShowMore
+            [`${Styles['show-more']}`]: displayShowMore,
           })}
         >
           { displayShowMore &&
@@ -91,12 +91,12 @@ class MarketOutcomesCategorical extends Component {
 }
 
 MarketOutcomesCategorical.propTypes = {
-  outcomes: PropTypes.array.isRequired
+  outcomes: PropTypes.array.isRequired,
 }
 
 CategoricalOutcome.propTypes = {
   outcome: PropTypes.object.isRequired,
-  className: PropTypes.string
+  className: PropTypes.string,
 }
 
 export default MarketOutcomesCategorical

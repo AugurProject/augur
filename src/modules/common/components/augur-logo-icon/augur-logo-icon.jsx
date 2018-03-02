@@ -18,5 +18,5 @@ const AugurLogoIcon = p => (
 export default AugurLogoIcon
 
 AugurLogoIcon.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
 }

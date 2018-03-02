@@ -78,10 +78,10 @@ export function constructCollectedFeesTransaction(log) {
   if (log.cashFeesCollected !== undefined && log.repGain !== undefined) {
     transaction.data.balances = [{
       change: formatEtherTokens(log.cashFeesCollected, { positiveSign: true }),
-      balance: formatEtherTokens(log.newCashBalance)
+      balance: formatEtherTokens(log.newCashBalance),
     }, {
       change: formatRep(log.repGain, { positiveSign: true }),
-      balance: formatRep(log.newRepBalance)
+      balance: formatRep(log.newRepBalance),
     }]
   }
   transaction.bond = { label: 'reporting', value: formatEther(log.notReportingBond) }
@@ -108,7 +108,7 @@ export function constructTradingProceedsClaimedTransaction(log, market, dispatch
   if (log.payoutTokens) {
     transaction.data.balances = [{
       change: formatEtherTokens(log.payoutTokens, { positiveSign: true }),
-      balance: formatEtherTokens(log.tokenBalance)
+      balance: formatEtherTokens(log.tokenBalance),
     }]
   }
   transaction.data.shares = log.shares
@@ -133,8 +133,8 @@ export function constructSubmitReportTransaction(log, marketId, market, outcomes
     dispatch(updateMarketsWithAccountReportData({
       [marketId]: {
         accountReport: formattedReport,
-        isSubmitted: true
-      }
+        isSubmitted: true,
+      },
     }))
   }
   return transaction
@@ -147,14 +147,14 @@ export function constructTransferTransaction(log, address) {
     transaction.type = 'Send Tokens'
     transaction.description = `Send tokens to ${strip0xPrefix(log._to)}`
     transaction.data.balances = [{
-      change: formatRep(new BigNumber(log._value, 10).neg(), { positiveSign: true })
+      change: formatRep(new BigNumber(log._value, 10).neg(), { positiveSign: true }),
     }]
     action = log.inProgress ? 'sending' : 'sent'
   } else if (log._to === address) {
     transaction.type = 'Receive Tokens'
     transaction.description = `Receive tokens from ${strip0xPrefix(log._from)}`
     transaction.data.balances = [{
-      change: formatRep(log._value, { positiveSign: true })
+      change: formatRep(log._value, { positiveSign: true }),
     }]
     action = log.inProgress ? 'receiving' : 'received'
   }
@@ -177,7 +177,7 @@ export const constructCancelOrderTransaction = (trade, marketId, marketType, des
         marketType,
         outcome: { name: outcomeName || outcomeId },
         outcomeId,
-        marketId
+        marketId,
       },
       message: `${action} order to ${trade.orderType} ${formattedShares.full} for ${formattedPrice.full} each`,
       numShares: formattedShares,
@@ -188,8 +188,8 @@ export const constructCancelOrderTransaction = (trade, marketId, marketType, des
       totalReturn: trade.inProgress ? null : formatEtherTokens(trade.cashRefund),
       gasFees: trade.gasFees && new BigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
       blockNumber: trade.blockNumber,
-      orderId: trade.orderId
-    }
+      orderId: trade.orderId,
+    },
   }
 }
 
@@ -225,7 +225,7 @@ export const constructCreateOrderTransaction = (trade, marketId, marketType, des
         marketType,
         outcomeName: outcomeName || outcomeId,
         outcomeId,
-        marketId
+        marketId,
       },
       message: `${action} ${formattedShares.full} for ${formatEtherTokens(unfix(trade.orderType === TYPES.BUY ? fxpTotalCostPerShare : fxpTotalReturnPerShare)).full} / share`,
       numShares: formattedShares,
@@ -233,7 +233,7 @@ export const constructCreateOrderTransaction = (trade, marketId, marketType, des
       freeze: {
         verb: trade.inProgress ? 'freezing' : 'froze',
         noFeeCost: orderType === TYPES.SELL ? undefined : formatEtherTokens(unfix(fxpNoFeeCost)),
-        settlementFee: formatEtherTokens(settlementFee)
+        settlementFee: formatEtherTokens(settlementFee),
       },
       avgPrice: formattedPrice,
       timestamp: formatDate(new Date(trade.timestamp * 1000)),
@@ -243,8 +243,8 @@ export const constructCreateOrderTransaction = (trade, marketId, marketType, des
       totalReturn: orderType === TYPES.SELL ? formatEtherTokens(unfix(fxpTotalReturn)) : undefined,
       gasFees: trade.gasFees && new BigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
       blockNumber: trade.blockNumber,
-      orderId: trade.orderId
-    }
+      orderId: trade.orderId,
+    },
   }
 }
 
@@ -290,7 +290,7 @@ export const constructFillOrderTransaction = (trade, marketId, marketType, descr
         marketType,
         outcomeName: outcomeName || outcomeId,
         outcomeId,
-        marketId
+        marketId,
       },
       message: `${action} ${formattedShares.full} for ${formatEtherTokens(trade.orderType === TYPES.BUY ? bnTotalCostPerShare : bnTotalReturnPerShare).full} / share`,
       numShares: formattedShares,
@@ -302,8 +302,8 @@ export const constructFillOrderTransaction = (trade, marketId, marketType, descr
       totalCost: formattedTotalCost,
       totalReturn: formattedTotalReturn,
       gasFees: trade.gasFees && new BigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
-      blockNumber: trade.blockNumber
-    }
+      blockNumber: trade.blockNumber,
+    },
   }
   return transaction
 }
@@ -312,7 +312,7 @@ export const constructTradingTransaction = (label, trade, marketId, outcomeId, s
   console.log('constructTradingTransaction:', label, trade)
   const { marketsData, outcomesData } = getState()
   const {
-    marketType, description, minPrice, maxPrice, settlementFee
+    marketType, description, minPrice, maxPrice, settlementFee,
   } = marketsData[marketId]
   const marketOutcomesData = outcomesData[marketId]
   let outcomeName

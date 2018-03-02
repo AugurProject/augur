@@ -11,7 +11,7 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
   return (dispatch, getState) => {
 
     const {
-      partcipationTokens, initialReporters, disputeCrowdsourcers = {}, loginAccount
+      partcipationTokens, initialReporters, disputeCrowdsourcers = {}, loginAccount,
     } = getState()
 
     each(ownedMarkets, (market) => {
@@ -23,7 +23,7 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
           console.log('Market.withdrawInEmergency', res)
           dispatch(updateMarketRepBalance(market.id, 0))
         },
-        onFailed: callback
+        onFailed: callback,
       })
     })
 
@@ -36,7 +36,7 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
           console.log('TradingEscapeHatch.claimSharesInUpdate', res)
           dispatch(updateMarketFrozenSharesValue(market.id, 0))
         },
-        onFailed: callback
+        onFailed: callback,
       })
     })
 
@@ -50,7 +50,7 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
             console.log('DisputeCrowdsourcer.withdrawInEmergency', res)
             dispatch(updateDisputeCrowdsourcersBalance(disputeCrowdsourcerID, 0))
           },
-          onFailed: callback
+          onFailed: callback,
         })
       }
     })
@@ -65,7 +65,7 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
             console.log('InitialReporter.withdrawInEmergency', res)
             dispatch(updateInitialReporterRepBalance(initialReporterID, 0))
           },
-          onFailed: callback
+          onFailed: callback,
         })
       }
     })
@@ -80,7 +80,7 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
             console.log('FeeWindow.withdrawInEmergency', res)
             dispatch(updateParticipationTokenBalance(participationTokenID, 0))
           },
-          onFailed: callback
+          onFailed: callback,
         })
       }
     })

@@ -8,12 +8,12 @@ export default function (connection = DEFAULT_STATE, action) {
     case UPDATE_CONNECTION_STATUS:
       return {
         ...connection,
-        isConnected: action.isConnected
+        isConnected: action.isConnected,
       }
     case UPDATE_AUGUR_NODE_CONNECTION_STATUS:
       return {
         ...connection,
-        isConnectedToAugurNode: action.isConnected
+        isConnectedToAugurNode: action.isConnected,
       }
     case UPDATE_IS_RECONNECTION_PAUSED:
       return {

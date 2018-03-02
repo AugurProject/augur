@@ -27,6 +27,17 @@
   }
 }
 
+.MarketPreview__returns {
+  background-color: @color-lightgray-2;
+  border-top: 1px solid @color-lightest-gray;
+  padding: 0.625rem 2rem;
+
+  &.single-card {
+    margin: auto;
+    max-width: 62.75rem;
+  }
+}
+
 .MarketPreview__outcomes {
   .border(true, @border-left);
 
@@ -40,7 +51,8 @@
 }
 
 @media @breakpoint-mobile-medium {
-  .MarketPreview__footer {
+  .MarketPreview__footer,
+  .MarketPreview__returns {
     padding-left: 1rem;
     padding-right: 1rem;
   }

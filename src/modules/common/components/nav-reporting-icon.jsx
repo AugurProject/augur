@@ -18,5 +18,5 @@ const NavReportingIcon = p => (
 export default NavReportingIcon
 
 NavReportingIcon.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
 }

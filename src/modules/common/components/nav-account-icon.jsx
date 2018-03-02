@@ -23,5 +23,5 @@ const NavAccountIcon = p => (
 export default NavAccountIcon
 
 NavAccountIcon.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
 }

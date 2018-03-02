@@ -24,7 +24,7 @@ const mapStateToProps = (state) => {
     markets,
     filteredMarkets,
     transactionsLoading: state.transactionsLoading,
-    hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber // FIXME
+    hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber, // FIXME
   }
 }
 

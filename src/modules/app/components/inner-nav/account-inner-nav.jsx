@@ -7,7 +7,7 @@ import { ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW } from 'modules/routes/constants/view
 export default class AccountInnerNav extends BaseInnerNav {
   static propTypes = {
     ...BaseInnerNav.propTypes,
-    privateKey: PropTypes.string
+    privateKey: PropTypes.string,
   }
 
   getMainMenuData() {
@@ -17,16 +17,16 @@ export default class AccountInnerNav extends BaseInnerNav {
         visible: true,
         isSelected: (this.props.currentBasePath === ACCOUNT_DEPOSIT),
         link: {
-          pathname: ACCOUNT_DEPOSIT
-        }
+          pathname: ACCOUNT_DEPOSIT,
+        },
       },
       {
         label: 'Withdraw',
         visible: true,
         isSelected: (this.props.currentBasePath === ACCOUNT_WITHDRAW),
         link: {
-          pathname: ACCOUNT_WITHDRAW
-        }
+          pathname: ACCOUNT_WITHDRAW,
+        },
       },
     ]
   }

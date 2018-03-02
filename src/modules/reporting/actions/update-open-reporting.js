@@ -8,6 +8,6 @@ export const UPDATE_OPEN_REPORTING_MARKETS = 'UPDATE_OPEN_REPORTING_MARKETS'
 export default function updateOpenMarkets(marketIds) {
   return {
     type: UPDATE_OPEN_REPORTING_MARKETS,
-    data: marketIds
+    data: marketIds,
   }
 }

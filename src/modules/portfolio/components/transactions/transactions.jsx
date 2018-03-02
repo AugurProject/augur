@@ -28,9 +28,9 @@ export default class Transactions extends Component {
         { label: 'Past 24hrs', value: 'day' },
         { label: 'Past Week', value: 'week' },
         { label: 'Past Month', value: 'month' },
-        { label: 'All', value: 'all' }
+        { label: 'All', value: 'all' },
       ],
-      transactionPeriodDefault: 'day'
+      transactionPeriodDefault: 'day',
     }
 
     this.setSegment = this.setSegment.bind(this)

@@ -18,7 +18,7 @@ describe('modules/notifications/actions/update-notifications', () => {
         const expected = undefined
 
         assert.strictEqual(actual, expected, `Didn't return the expected result`)
-      }
+      },
     })
 
     test({
@@ -30,13 +30,13 @@ describe('modules/notifications/actions/update-notifications', () => {
           type: updateNotifications.ADD_NOTIFICATION,
           data: {
             notification: {
-              seen: false
-            }
-          }
+              seen: false,
+            },
+          },
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expected result`)
-      }
+      },
     })
   })
 
@@ -48,11 +48,11 @@ describe('modules/notifications/actions/update-notifications', () => {
 
         const expected = {
           type: updateNotifications.REMOVE_NOTIFICATION,
-          data: 1
+          data: 1,
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      }
+      },
     })
   })
 
@@ -61,7 +61,7 @@ describe('modules/notifications/actions/update-notifications', () => {
       description: `should return the expected object`,
       assertions: () => {
         const actual = updateNotifications.updateNotification(1, {
-          testing: 'test'
+          testing: 'test',
         })
 
         const expected = {
@@ -69,13 +69,13 @@ describe('modules/notifications/actions/update-notifications', () => {
           data: {
             id: 1,
             notification: {
-              testing: 'test'
-            }
-          }
+              testing: 'test',
+            },
+          },
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      }
+      },
     })
   })
 
@@ -90,7 +90,7 @@ describe('modules/notifications/actions/update-notifications', () => {
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      }
+      },
     })
   })
 })
