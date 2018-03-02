@@ -34,6 +34,7 @@ export function logQueuePop(blockHash: string): Array<LogProcessCallback> {
 
 export function logQueueProcess(db: Knex, blockHash: string, callback: ErrorCallback): void {
   const logCallbacks = logQueuePop(blockHash);
+  if (logCallbacks.length > 0) console.log(`Processing ${logCallbacks.length} logs`);
   async.eachSeries(logCallbacks,
     (logCallback: LogProcessCallback, next: ErrorCallback) => logCallback(db, (err) => next(err)),
     callback);
