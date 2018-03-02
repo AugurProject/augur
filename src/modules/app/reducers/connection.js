@@ -18,7 +18,7 @@ export default function (connection = DEFAULT_STATE, action) {
     case UPDATE_IS_RECONNECTION_PAUSED:
       return {
         ...connection,
-        isReconnectionPaused: action.isReconnectionPaused
+        isReconnectionPaused: action.isReconnectionPaused,
       }
     case RESET_STATE:
       return DEFAULT_STATE

@@ -8,7 +8,7 @@ describe('listen-to-updates', () => {
   const test = t => it(t.description, done => t.assertions(done))
   const { store, state } = mockStore
   const mockHistory = {
-    push: arg => assert.deepEqual(arg, '/categories')
+    push: arg => assert.deepEqual(arg, '/categories'),
   }
   afterEach(() => {
     store.clearActions()
@@ -58,17 +58,17 @@ describe('listen-to-updates', () => {
                   assert.deepEqual(label, 'disconnect', `expected the disconnect label to be passed to augur.nodes.augur.on`)
                   assert.isFunction(func, `Expected augur.nodes.augur.on to have a function passed as the second argument.`)
                   store.dispatch(ACTIONS.NODES_AUGUR_ON_SET)
-                }
+                },
               },
               ethereum: {
                 on: (label, func) => {
                   assert.deepEqual(label, 'disconnect', `expected the disconnect label to be passed to augur.nodes.ethereum.on`)
                   assert.isFunction(func, `Expected augur.nodes.ethereum.on to have a function passed as the second argument.`)
                   store.dispatch(ACTIONS.NODES_ETHEREUM_ON_SET)
-                }
-              }
-            }
-          }
+                },
+              },
+            },
+          },
         })
         store.dispatch(listenToUpdates(mockHistory))
         assert.deepEqual(store.getActions(), [
@@ -81,7 +81,7 @@ describe('listen-to-updates', () => {
           ACTIONS.NODES_ETHEREUM_ON_SET,
         ], `Didn't get the expected actions emitted.`)
         done()
-      }
+      },
     })
   })
 
@@ -94,7 +94,7 @@ describe('listen-to-updates', () => {
             ...state.connection,
             isConnected: true,
             isConnectedToAugurNode: true,
-          }
+          },
         })
         const testStore = mockStore.mockStore(testState)
         const ACTIONS = {
@@ -107,19 +107,19 @@ describe('listen-to-updates', () => {
           RESET_STATE: { type: 'RESET_STATE' },
           UPDATE_CONNECTION_STATUS: {
             type: 'UPDATE_CONNECTION_STATUS',
-            isConnected: true
+            isConnected: true,
           },
           UPDATE_AUGUR_NODE_CONNECTION_STATUS: {
             type: 'UPDATE_AUGUR_NODE_CONNECTION_STATUS',
-            isConnected: true
+            isConnected: true,
           },
           UPDATE_MODAL: {
             type: 'UPDATE_MODAL',
             data: {
               type: 'MODAL_NETWORK_DISCONNECTED',
               connection: testState.connection,
-              env: testState.env
-            }
+              env: testState.env,
+            },
           },
           NODES_ETHEREUM_ON_SET: { type: 'NODES_ETHEREUM_ON_SET' },
           CONNECT_AUGUR: { type: 'CONNECT_AUGUR' },
@@ -141,15 +141,15 @@ describe('listen-to-updates', () => {
                 on: (label, func) => {
                   testStore.dispatch(ACTIONS.NODES_AUGUR_ON_SET)
                   func()
-                }
+                },
               },
               ethereum: {
                 on: (label, func) => {
                   testStore.dispatch(ACTIONS.NODES_ETHEREUM_ON_SET)
-                }
-              }
-            }
-          }
+                },
+              },
+            },
+          },
         })
         ReWireModule.__Rewire__('connectAugur', (history, env, isInitialConnection, cb) => {
           assert.deepEqual(history, mockHistory)
@@ -185,7 +185,7 @@ describe('listen-to-updates', () => {
           ACTIONS.NODES_ETHEREUM_ON_SET,
         ], `Didn't recieve the expected actions`)
         done()
-      }
+      },
     })
 
     test({
@@ -196,7 +196,7 @@ describe('listen-to-updates', () => {
             ...state.connection,
             isConnected: true,
             isConnectedToAugurNode: true,
-          }
+          },
         })
         const testStore = mockStore.mockStore(testState)
         const ACTIONS = {
@@ -209,19 +209,19 @@ describe('listen-to-updates', () => {
           RESET_STATE: { type: 'RESET_STATE' },
           UPDATE_AUGUR_NODE_CONNECTION_STATUS: {
             type: 'UPDATE_AUGUR_NODE_CONNECTION_STATUS',
-            isConnected: true
+            isConnected: true,
           },
           UPDATE_CONNECTION_STATUS: {
             type: 'UPDATE_CONNECTION_STATUS',
-            isConnected: true
+            isConnected: true,
           },
           UPDATE_MODAL: {
             type: 'UPDATE_MODAL',
             data: {
               type: 'MODAL_NETWORK_DISCONNECTED',
               connection: testState.connection,
-              env: testState.env
-            }
+              env: testState.env,
+            },
           },
           NODES_ETHEREUM_ON_SET: { type: 'NODES_ETHEREUM_ON_SET' },
           CONNECT_AUGUR: { type: 'CONNECT_AUGUR' },
@@ -242,16 +242,16 @@ describe('listen-to-updates', () => {
               augur: {
                 on: (label, func) => {
                   testStore.dispatch(ACTIONS.NODES_AUGUR_ON_SET)
-                }
+                },
               },
               ethereum: {
                 on: (label, func) => {
                   testStore.dispatch(ACTIONS.NODES_ETHEREUM_ON_SET)
                   func()
-                }
-              }
-            }
-          }
+                },
+              },
+            },
+          },
         })
         ReWireModule.__Rewire__('connectAugur', (history, env, isInitialConnection, cb) => {
           assert.deepEqual(history, mockHistory)
@@ -287,7 +287,7 @@ describe('listen-to-updates', () => {
           ACTIONS.CONNECT_AUGUR,
         ], `Didn't recieve the expected actions`)
         done()
-      }
+      },
     })
 
     test({
@@ -299,7 +299,7 @@ describe('listen-to-updates', () => {
             isConnected: true,
             isConnectedToAugurNode: true,
             isReconnectionPaused: false,
-          }
+          },
         })
         const testStore = mockStore.mockStore(testState)
         const ACTIONS = {
@@ -312,19 +312,19 @@ describe('listen-to-updates', () => {
           RESET_STATE: { type: 'RESET_STATE' },
           UPDATE_CONNECTION_STATUS: {
             type: 'UPDATE_CONNECTION_STATUS',
-            isConnected: true
+            isConnected: true,
           },
           UPDATE_AUGUR_NODE_CONNECTION_STATUS: {
             type: 'UPDATE_AUGUR_NODE_CONNECTION_STATUS',
-            isConnected: true
+            isConnected: true,
           },
           UPDATE_MODAL: {
             type: 'UPDATE_MODAL',
             data: {
               type: 'MODAL_NETWORK_DISCONNECTED',
               connection: testState.connection,
-              env: testState.env
-            }
+              env: testState.env,
+            },
           },
           NODES_ETHEREUM_ON_SET: { type: 'NODES_ETHEREUM_ON_SET' },
           CONNECT_AUGUR: { type: 'CONNECT_AUGUR' },
@@ -346,15 +346,15 @@ describe('listen-to-updates', () => {
                 on: (label, func) => {
                   testStore.dispatch(ACTIONS.NODES_AUGUR_ON_SET)
                   func()
-                }
+                },
               },
               ethereum: {
                 on: (label, func) => {
                   testStore.dispatch(ACTIONS.NODES_ETHEREUM_ON_SET)
-                }
-              }
-            }
-          }
+                },
+              },
+            },
+          },
         })
         ReWireModule.__Rewire__('connectAugur', (history, env, isInitialConnection, cb) => {
           assert.deepEqual(history, mockHistory)
@@ -395,7 +395,7 @@ describe('listen-to-updates', () => {
           ACTIONS.NODES_ETHEREUM_ON_SET,
         ], `Didn't recieve the expected actions`)
         done()
-      }
+      },
     })
 
     test({
@@ -407,7 +407,7 @@ describe('listen-to-updates', () => {
             isConnected: true,
             isConnectedToAugurNode: true,
             isReconnectionPaused: false,
-          }
+          },
         })
         const testStore = mockStore.mockStore(testState)
         const ACTIONS = {
@@ -420,19 +420,19 @@ describe('listen-to-updates', () => {
           RESET_STATE: { type: 'RESET_STATE' },
           UPDATE_CONNECTION_STATUS: {
             type: 'UPDATE_CONNECTION_STATUS',
-            isConnected: true
+            isConnected: true,
           },
           UPDATE_AUGUR_NODE_CONNECTION_STATUS: {
             type: 'UPDATE_AUGUR_NODE_CONNECTION_STATUS',
-            isConnected: true
+            isConnected: true,
           },
           UPDATE_MODAL: {
             type: 'UPDATE_MODAL',
             data: {
               type: 'MODAL_NETWORK_DISCONNECTED',
               connection: testState.connection,
-              env: testState.env
-            }
+              env: testState.env,
+            },
           },
           NODES_ETHEREUM_ON_SET: { type: 'NODES_ETHEREUM_ON_SET' },
           CONNECT_AUGUR: { type: 'CONNECT_AUGUR' },
@@ -453,16 +453,16 @@ describe('listen-to-updates', () => {
               augur: {
                 on: (label, func) => {
                   testStore.dispatch(ACTIONS.NODES_AUGUR_ON_SET)
-                }
+                },
               },
               ethereum: {
                 on: (label, func) => {
                   testStore.dispatch(ACTIONS.NODES_ETHEREUM_ON_SET)
                   func()
-                }
-              }
-            }
-          }
+                },
+              },
+            },
+          },
         })
         ReWireModule.__Rewire__('connectAugur', (history, env, isInitialConnection, cb) => {
           assert.deepEqual(history, mockHistory)
@@ -503,7 +503,7 @@ describe('listen-to-updates', () => {
           ACTIONS.CONNECT_AUGUR,
         ], `Didn't recieve the expected actions`)
         done()
-      }
+      },
     })
 
     test({
@@ -516,7 +516,7 @@ describe('listen-to-updates', () => {
             isConnected: true,
             isConnectedToAugurNode: true,
             isReconnectionPaused: false,
-          }
+          },
         })
         const testStore = mockStore.mockStore(testState)
         const ACTIONS = {
@@ -529,19 +529,19 @@ describe('listen-to-updates', () => {
           RESET_STATE: { type: 'RESET_STATE' },
           UPDATE_CONNECTION_STATUS: {
             type: 'UPDATE_CONNECTION_STATUS',
-            isConnected: true
+            isConnected: true,
           },
           UPDATE_AUGUR_NODE_CONNECTION_STATUS: {
             type: 'UPDATE_AUGUR_NODE_CONNECTION_STATUS',
-            isConnected: true
+            isConnected: true,
           },
           UPDATE_MODAL: {
             type: 'UPDATE_MODAL',
             data: {
               type: 'MODAL_NETWORK_DISCONNECTED',
               connection: testState.connection,
-              env: testState.env
-            }
+              env: testState.env,
+            },
           },
           NODES_ETHEREUM_ON_SET: { type: 'NODES_ETHEREUM_ON_SET' },
           CONNECT_AUGUR: { type: 'CONNECT_AUGUR' },
@@ -563,15 +563,15 @@ describe('listen-to-updates', () => {
                 on: (label, func) => {
                   testStore.dispatch(ACTIONS.NODES_AUGUR_ON_SET)
                   func()
-                }
+                },
               },
               ethereum: {
                 on: (label, func) => {
                   testStore.dispatch(ACTIONS.NODES_ETHEREUM_ON_SET)
-                }
-              }
-            }
-          }
+                },
+              },
+            },
+          },
         })
         ReWireModule.__Rewire__('connectAugur', (history, env, isInitialConnection, cb) => {
           connectAugurCallCount += 1
@@ -619,7 +619,7 @@ describe('listen-to-updates', () => {
           ACTIONS.NODES_ETHEREUM_ON_SET,
         ], `Didn't recieve the expected actions`)
         done()
-      }
+      },
     })
   })
 })

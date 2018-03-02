@@ -31,6 +31,6 @@ export function updateAugurNodeConnectionStatus(isConnected) {
 export function updateIsReconnectionPaused(isReconnectionPaused) {
   return {
     type: UPDATE_IS_RECONNECTION_PAUSED,
-    isReconnectionPaused
+    isReconnectionPaused,
   }
 }
