@@ -34,6 +34,8 @@ const testState = {
   },
   connection: {
     isConnected: true,
+    isConnectedToAugurNode: true,
+    isReconnectionPaused: false,
   },
   createMarketInProgress: {},
   favorites: {
