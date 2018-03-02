@@ -1,5 +1,5 @@
 import Augur from "augur.js";
-import { parallel } from "async";
+import { eachSeries, parallel } from "async";
 import * as Knex from "knex";
 import { each } from "async";
 import { augurEmitter } from "../events";
@@ -182,7 +182,10 @@ function advanceFeeWindowActive(db: Knex, blockNumber: number, timestamp: number
       advanceIncompleteCrowdsourcers(db, blockNumber, timestamp, (err: Error|null) => {
         if (err) return callback(err);
         augurEmitter.emit("FeeWindowClosed", { feeWindowId: feeWindowRow.feeWindowId, blockNumber, timestamp });
-        callback(null);
+        advanceAwaitingNextFeeWindow(db, blockNumber, timestamp, (err: Error|null) => {
+          if (err) return callback(err);
+          callback(null);
+        });
       });
     });
   });
