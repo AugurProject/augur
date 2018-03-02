@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 import { Address, ReportingState, AsyncCallback } from "../../types";
 
-export function updateMarketState(db: Knex, marketId: Address, blockNumber: number, reportingState: ReportingState , callback: AsyncCallback) {
+export function updateMarketState(db: Knex, marketId: Address, blockNumber: number, reportingState: ReportingState, callback: AsyncCallback) {
   const marketStateDataToInsert = { marketId, reportingState, blockNumber };
   db.insert(marketStateDataToInsert).returning("marketStateId").into("market_state").asCallback((err: Error|null, marketStateId?: Array<number>): void => {
     if (err) return callback(err);
