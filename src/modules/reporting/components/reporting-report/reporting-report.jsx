@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import { Helmet } from 'react-helmet'
 import { augur } from 'services/augurjs'
 
-import { formatEtherEstimate } from 'utils/format-number'
+import { formatEtherEstimate, formatGasCostToEther } from 'utils/format-number'
 import MarketPreview from 'modules/market/components/market-preview/market-preview'
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 import ReportingReportForm from 'modules/reporting/components/reporting-report-form/reporting-report-form'
@@ -27,6 +27,7 @@ export default class ReportingReport extends Component {
     isMarketLoaded: PropTypes.bool.isRequired,
     loadFullMarket: PropTypes.func.isRequired,
     submitInitialReport: PropTypes.func.isRequired,
+    estimateSubmitInitialReport: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -46,6 +47,7 @@ export default class ReportingReport extends Component {
       },
       reporterGasCost: null,
       designatedReportNoShowReputationBond: 0,
+      gasEstimate: '0',
     }
 
     this.prevPage = this.prevPage.bind(this)
@@ -57,6 +59,7 @@ export default class ReportingReport extends Component {
   componentWillMount() {
     // needed for both DR and open reporting
     this.calculateMarketCreationCosts()
+    this.calculateGasEstimates()
     if (this.props.isConnected && !this.props.isMarketLoaded) {
       this.props.loadFullMarket()
     }
@@ -90,8 +93,17 @@ export default class ReportingReport extends Component {
         reporterGasCost: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
         stake: this.props.isOpenReporting ? '0' : repAmount.formatted,
       })
+    })
+  }
 
+  calculateGasEstimates() {
+    this.props.estimateSubmitInitialReport(this.props.market.id, (err, gasEstimateValue) => {
+      if (err) return console.error(err)
 
+      const gasPrice = augur.rpc.getGasPrice()
+      this.setState({
+        gasEstimate: formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice),
+      })
     })
   }
 
@@ -155,6 +167,7 @@ export default class ReportingReport extends Component {
                 designatedReportNoShowReputationBond={s.designatedReportNoShowReputationBond}
                 reporterGasCost={s.reporterGasCost}
                 isOpenReporting={p.isOpenReporting}
+                gasEstimate={s.gasEstimate}
               />
             }
             <div className={FormStyles.Form__navigation}>

@@ -30,7 +30,7 @@ const ReportingReportConfirm = p => (
             }
             <li>
               <span>Gas</span>
-              <span>-- ETH</span>
+              <span>{ p.gasEstimate } ETH</span>
             </li>
           </ul>
         </div>
@@ -48,6 +48,7 @@ ReportingReportConfirm.propTypes = {
   market: PropTypes.object.isRequired,
   selectedOutcome: PropTypes.string.isRequired,
   stake: PropTypes.string.isRequired,
+  gasEstimate: PropTypes.string.isRequired,
   isMarketInValid: PropTypes.bool,
   isOpenReporting: PropTypes.bool.isRequired,
   designatedReportNoShowReputationBond: PropTypes.object,

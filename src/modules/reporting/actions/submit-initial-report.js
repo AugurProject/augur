@@ -8,23 +8,25 @@ export const submitInitialReport = (marketId, selectedOutcome, invalid, history,
   const { loginAccount, marketsData } = getState()
   const outcome = parseInt(selectedOutcome, 10)
 
-  if (marketId && (invalid || outcome > -1)) {
-    const market = marketsData[marketId]
-    if (!market) return callback('Market not found')
-    const payoutNumerators = getPayoutNumerators(market, selectedOutcome, invalid)
+  if (!marketId || isNaN(outcome)) return callback(null)
+  if (!invalid && outcome < 0) return callback(null)
 
-    augur.api.Market.doInitialReport({
-      meta: loginAccount.meta,
-      tx: { to: marketId },
-      _invalid: invalid,
-      _payoutNumerators: payoutNumerators,
-      onSent: () => {
-        history.push(makePath(REPORTING_REPORTING))
-      },
-      onSuccess: () => callback(null),
-      onFailed: (err) => {
-        callback(err)
-      },
-    })
-  }
+  const market = marketsData[marketId]
+  if (!market) return callback('Market not found')
+  const payoutNumerators = getPayoutNumerators(market, selectedOutcome, invalid)
+
+  augur.api.Market.doInitialReport({
+    meta: loginAccount.meta,
+    tx: { to: marketId },
+    _invalid: invalid,
+    _payoutNumerators: payoutNumerators,
+    onSent: () => {
+      history.push(makePath(REPORTING_REPORTING))
+    },
+    onSuccess: () => callback(null),
+    onFailed: (err) => {
+      callback(err)
+    },
+  })
+
 }
