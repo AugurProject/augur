@@ -4,7 +4,7 @@ import * as Knex from "knex";
 import { each } from "async";
 import { augurEmitter } from "../events";
 import { logError } from "../utils/log-error";
-import { BlockDetail, BlocksRow, AsyncCallback, ErrorCallback, MarketsContractAddressRow } from "../types";
+import { BlockDetail, BlocksRow, AsyncCallback, ErrorCallback, MarketsContractAddressRow, ReportingState } from "../types";
 import { updateMarketState } from "./log-processors/database";
 import { processQueue, logQueueProcess } from "./process-queue";
 import { QueryBuilder } from "knex";
@@ -178,6 +178,21 @@ function advanceFeeWindowActive(db: Knex, blockNumber: number, timestamp: number
       });
     });
   });
+}
+
+function advanceAwaitingNextFeeWindow(db: Knex, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+  getMarketsWithReportingState(db, ["markets.marketId"])
+    .where("reportingState", ReportingState.AWAITING_NEXT_WINDOW)
+    .asCallback((err: Error|null, marketIds: Array<MarketsContractAddressRow>) => {
+      if (err) return callback(err);
+      each(marketIds, (marketIdRow, nextMarketIdRow: ErrorCallback) => {
+        updateMarketState(db, marketIdRow.marketId, blockNumber, ReportingState.CROWDSOURCING_DISPUTE, nextMarketIdRow);
+        augurEmitter.emit("MarketState", {
+          marketId: marketIdRow.marketId,
+          reportingState: ReportingState.CROWDSOURCING_DISPUTE,
+        });
+      }, callback);
+    });
 }
 
 function advanceIncompleteCrowdsourcers(db: Knex, blockNumber: number, timestamp: number, callback: AsyncCallback) {
