@@ -108,15 +108,23 @@ function _processBlockRemoval(db: Knex, block: BlockDetail, callback: ErrorCallb
   const blockNumber = parseInt(block.number, 16);
   console.log("block removed:", blockNumber);
   db.transaction((trx: Knex.Transaction): void => {
-    db("blocks").transacting(trx).where({ blockNumber }).del().asCallback((err: Error|null): void => {
-      if (err) {
+    const blockHash = block.hash;
+    logQueueProcess(trx, blockHash, (err: Error|null) => {
+      if (err != null) {
         trx.rollback(err);
-        logError(err);
-        callback(err);
-      } else {
-        trx.commit();
-        callback(null);
+        return callback(err);
       }
+      // TODO: un-advance time
+      db("blocks").transacting(trx).where({ blockNumber }).del().asCallback((err: Error|null): void => {
+        if (err) {
+          trx.rollback(err);
+          logError(err);
+          callback(err);
+        } else {
+          trx.commit();
+          callback(null);
+        }
+      });
     });
   });
 }
