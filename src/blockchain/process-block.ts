@@ -4,7 +4,7 @@ import * as Knex from "knex";
 import { each } from "async";
 import { augurEmitter } from "../events";
 import { logError } from "../utils/log-error";
-import { BlockDetail, BlocksRow, AsyncCallback, ErrorCallback, MarketsContractAddressRow } from "../types";
+import { BlockDetail, BlocksRow, AsyncCallback, ErrorCallback, MarketsContractAddressRow, ReportingState } from "../types";
 import { updateMarketState } from "./log-processors/database";
 import { processQueue, logQueueProcess } from "./process-queue";
 import { QueryBuilder } from "knex";
@@ -174,10 +174,30 @@ function advanceFeeWindowActive(db: Knex, blockNumber: number, timestamp: number
       advanceIncompleteCrowdsourcers(db, blockNumber, timestamp, (err: Error|null) => {
         if (err) return callback(err);
         augurEmitter.emit("FeeWindowClosed", { feeWindowId: feeWindowRow.feeWindowId, blockNumber, timestamp });
-        callback(null);
+        advanceAwaitingNextFeeWindow(db, blockNumber, timestamp, (err: Error|null) => {
+          if (err) return callback(err);
+          callback(null);
+        });
       });
     });
   });
+}
+
+function advanceAwaitingNextFeeWindow(db: Knex, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+  // Finds crowdsourcers rows that we don't know the completion of, but are attached to feeWindows that have ended
+  // They did not reach their goal, so set completed to 0.
+  getMarketsWithReportingState(db, ["marketID"])
+    .where("reportingState", ReportingState.AWAITING_NEXT_WINDOW)
+    .asCallback((err: Error|null, marketIds: Array<MarketsContractAddressRow>) => {
+      if (err) return callback(err);
+      each(marketIds, (marketIdRow, nextMarketIdRow: ErrorCallback) => {
+        updateMarketState(db, marketIdRow.marketId, blockNumber, ReportingState.CROWDSOURCING_DISPUTE, nextMarketIdRow);
+        augurEmitter.emit("MarketState", {
+          marketId: marketIdRow.marketId,
+          reportingState: ReportingState.CROWDSOURCING_DISPUTE,
+        });
+      }, callback);
+    });
 }
 
 function advanceIncompleteCrowdsourcers(db: Knex, blockNumber: number, timestamp: number, callback: AsyncCallback) {
