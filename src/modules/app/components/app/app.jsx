@@ -80,6 +80,7 @@ export default class AppView extends Component {
     updateIsMobileSmall: PropTypes.func.isRequired,
     initAugur: PropTypes.func.isRequired,
     modal: PropTypes.object.isRequired,
+    connection: PropTypes.object.isRequired,
     selectedCategory: PropTypes.string,
     url: PropTypes.string,
   }
@@ -142,7 +143,9 @@ export default class AppView extends Component {
   }
 
   componentWillMount() {
-    this.props.initAugur(this.props.history)
+    const { connection } = this.props
+    if (!connection.isConnected || !connection.isConnectedToAugurNode) this.props.initAugur(this.props.history)
+
     const currentPath = parsePath(this.props.location.pathname)[0]
     this.setState({ currentBasePath: currentPath })
 
