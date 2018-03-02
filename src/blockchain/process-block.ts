@@ -200,7 +200,6 @@ function advanceAwaitingNextFeeWindow(db: Knex, blockNumber: number, timestamp: 
     });
 }
 
-
 function advanceIncompleteCrowdsourcers(db: Knex, blockNumber: number, timestamp: number, callback: AsyncCallback) {
   // Finds crowdsourcers rows that we don't know the completion of, but are attached to feeWindows that have ended
   // They did not reach their goal, so set completed to 0.
