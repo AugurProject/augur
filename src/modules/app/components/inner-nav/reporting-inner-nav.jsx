@@ -1,5 +1,5 @@
 import BaseInnerNav from 'modules/app/components/inner-nav/base-inner-nav'
-import { REPORTING_DISPUTE, REPORTING_REPORTING } from 'modules/routes/constants/views'
+import { REPORTING_DISPUTE, REPORTING_REPORTING, REPORTING_RESOLVED } from 'modules/routes/constants/views'
 
 export default class ReportingInnerNav extends BaseInnerNav {
   getMainMenuData() {
@@ -18,6 +18,14 @@ export default class ReportingInnerNav extends BaseInnerNav {
         isSelected: (this.props.currentBasePath === REPORTING_REPORTING),
         link: {
           pathname: REPORTING_REPORTING,
+        },
+      },
+      {
+        label: 'Resolved',
+        visible: true,
+        isSelected: (this.props.currentBasePath === REPORTING_RESOLVED),
+        link: {
+          pathname: REPORTING_RESOLVED,
         },
       },
     ]

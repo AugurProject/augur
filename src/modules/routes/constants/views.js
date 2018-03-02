@@ -43,6 +43,7 @@ export const ACCOUNT_WITHDRAW = 'withdraw-funds'
 export const REPORTING_DISPUTE = 'reporting-dispute'
 export const REPORTING_REPORTING = 'reporting-reporting'
 export const REPORTING_REPORT = 'reporting-report' // NOTE -- Not currently used...but will be shortly
+export const REPORTING_RESOLVED = 'reporting-resolved'
 
 // Dev only
 export const STYLE_SANDBOX = 'style-sandbox'
