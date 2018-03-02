@@ -1,5 +1,5 @@
 import { augur } from 'services/augurjs'
-import { REPORTING_REPORTING } from 'modules/routes/constants/views'
+import { REPORTING_REPORT_MARKETS } from 'modules/routes/constants/views'
 import makePath from 'modules/routes/helpers/make-path'
 import logError from 'utils/log-error'
 import { getPayoutNumerators } from 'modules/reporting/selectors/get-payout-numerators'
@@ -21,12 +21,11 @@ export const submitInitialReport = (marketId, selectedOutcome, invalid, history,
     _invalid: invalid,
     _payoutNumerators: payoutNumerators,
     onSent: () => {
-      history.push(makePath(REPORTING_REPORTING))
+      history.push(makePath(REPORTING_REPORT_MARKETS))
     },
     onSuccess: () => callback(null),
     onFailed: (err) => {
       callback(err)
     },
   })
-
 }

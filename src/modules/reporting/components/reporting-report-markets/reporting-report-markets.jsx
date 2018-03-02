@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import MarketPreview from 'src/modules/reporting/containers/market-preview'
 import MarketsHeaderStyles from 'modules/markets/components/markets-header/markets-header.styles'
 
-import Styles from './reporting-reporting.styles'
+import Styles from './reporting-report-markets.styles'
 
 export const NoMarketsFound = ({ message }) => (
   <article className={Styles.NoMarketsFound}>
