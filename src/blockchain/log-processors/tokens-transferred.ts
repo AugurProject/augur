@@ -37,9 +37,11 @@ export function processTokensTransferredLogRemoval(db: Knex, augur: Augur, log: 
   db.from("transfers").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del().asCallback((err: Error|null): void => {
     if (err) return callback(err);
     augurEmitter.emit("TokensTransferred", log);
+    const token = log.token || log.address;
+    const value = log.value || log.amount;
     parallel([
-      (next: AsyncCallback): void => increaseTokenBalance(db, augur, log.token, log.from, Number(log.value), next),
-      (next: AsyncCallback): void => decreaseTokenBalance(db, augur, log.token, log.to, Number(log.value), next),
+      (next: AsyncCallback): void => increaseTokenBalance(db, augur, token, log.from, Number(value), next),
+      (next: AsyncCallback): void => decreaseTokenBalance(db, augur, token, log.to, Number(value), next),
     ], (err: Error|null): void => {
       if (err) return callback(err);
       handleShareTokenTransfer(db, augur, log, callback);
