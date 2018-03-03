@@ -149,4 +149,16 @@ describe('utils/format-number.js', () => {
       assert.deepEqual(formatNumber.formatNone(), out, 'returned `none` formatted number object was not correct formatted')
     })
   })
+
+  describe('format gas cost', () => {
+    it('should return a properly formatted gas cost number', () => {
+      assert.deepEqual(formatNumber.formatGasCostToEther('0x632ea0', { decimalsRounded: 4 }, 1000000), '0.0001', 'returned gas cost formated in ether')
+    })
+  })
+
+  describe('format gas cost different gas', () => {
+    it('should return a properly formatted gas cost number', () => {
+      assert.deepEqual(formatNumber.formatGasCostToEther('0x632ea0', { decimalsRounded: 8 }, 2000000), '0.00021810', 'returned gas cost formated in ether given gas price')
+    })
+  })
 })

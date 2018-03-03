@@ -2,11 +2,15 @@ import { RESET_STATE } from 'modules/app/actions/reset-state'
 import { UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS } from 'src/modules/reporting/actions/update-upcoming-designated-reporting'
 import { UPDATE_DESIGNATED_REPORTING_MARKETS } from 'src/modules/reporting/actions/update-designated-reporting'
 import { UPDATE_OPEN_REPORTING_MARKETS } from 'src/modules/reporting/actions/update-open-reporting'
+import { UPDATE_AWAITING_DISPUTE_MARKETS } from 'modules/reporting/actions/update-awaiting-dispute'
+import { UPDATE_CROWD_DISPUTE_MARKETS } from 'modules/reporting/actions/update-crowd-dispute'
 
 const DEFAULT_STATE = {
   designated: [],
   open: [],
   upcoming: [],
+  awaiting: [],
+  dispute: [],
 }
 
 export default function (marketReportState = DEFAULT_STATE, action) {
@@ -27,6 +31,18 @@ export default function (marketReportState = DEFAULT_STATE, action) {
       return {
         ...marketReportState,
         upcoming: action.data,
+      }
+
+    case UPDATE_AWAITING_DISPUTE_MARKETS:
+      return {
+        ...marketReportState,
+        awaiting: action.data,
+      }
+
+    case UPDATE_CROWD_DISPUTE_MARKETS:
+      return {
+        ...marketReportState,
+        dispute: action.data,
       }
 
     case RESET_STATE:

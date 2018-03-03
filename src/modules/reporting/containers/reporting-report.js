@@ -8,6 +8,7 @@ import { selectMarket } from 'modules/market/selectors/market'
 import parseQuery from 'modules/routes/helpers/parse-query'
 import getValue from 'utils/get-value'
 import { submitInitialReport } from 'modules/reporting/actions/submit-initial-report'
+import { estimateSubmitInitialReport } from 'modules/reporting/actions/estimate-submit-initial-report'
 import { constants } from 'services/augurjs'
 
 const mapStateToProps = state => ({
@@ -22,6 +23,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
   submitInitialReport: (marketId, outcomeValue, invalid, history) => dispatch(submitInitialReport(marketId, outcomeValue, invalid, history)),
+  estimateSubmitInitialReport: (marketId, callback) => dispatch(estimateSubmitInitialReport(marketId, callback)),
 })
 
 
@@ -41,6 +43,7 @@ const mergeProps = (sP, dP, oP) => {
     market,
     loadFullMarket: () => dP.loadFullMarket(marketId),
     submitInitialReport: (marketId, selectedOutcome, invalid, history) => dP.submitInitialReport(marketId, selectedOutcome, invalid, history),
+    estimateSubmitInitialReport: (marketId, callback) => dP.estimateSubmitInitialReport(marketId, callback),
   }
 }
 

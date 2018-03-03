@@ -1,0 +1,27 @@
+@import (reference) '~assets/styles/shared';
+
+.MainErrorBoundary {
+  align-items: center;
+  color: @color-white;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+}
+
+.MainErrorBoundary__header {
+  color: @color-white;
+  font-size: @font-size-massive;
+  line-height: @font-size-massive;
+}
+
+.MainErrorBoundary__description {
+  color: @color-white;
+  margin-bottom: 4rem;
+  padding: 0 2rem;
+}
+
+.MainErrorBoundary__button {
+  &:extend(.button--white);
+}

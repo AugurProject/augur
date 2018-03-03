@@ -4,10 +4,10 @@ import { describe, it } from 'mocha'
 import { assert } from 'chai'
 
 import { shallow } from 'enzyme'
-import { NoMarketsFound, ReportSection } from 'src/modules/reporting/components/reporting-reporting/reporting-reporting'
+import { NoMarketsFound, ReportSection } from 'src/modules/reporting/components/reporting-report-markets/reporting-report-markets'
 import ConnectedMarketPreview from 'src/modules/reporting/containers/market-preview'
 
-describe('reporting-reporting', () => {
+describe('reporting-report-markets', () => {
   describe('props', () => {
     let cmp
     let exampleTitle

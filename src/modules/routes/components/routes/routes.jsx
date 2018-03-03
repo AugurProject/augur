@@ -20,6 +20,7 @@ const Routes = p => (
     <Route path={makePath(VIEWS.MARKET)} component={COMPONENTS.Market} />
     <Route path={makePath(VIEWS.CONNECT)} component={COMPONENTS.Connect} />
     <Route path={makePath(VIEWS.CREATE)} component={COMPONENTS.Create} />
+    <AuthenticatedRoute path={makePath(VIEWS.DISPUTE)} component={COMPONENTS.Dispute} />
     <AuthenticatedRoute path={makePath(VIEWS.REPORT)} component={COMPONENTS.Report} />
     <AuthenticatedRoute path={makePath(VIEWS.MY_POSITIONS)} component={COMPONENTS.Portfolio} />
     <AuthenticatedRoute path={makePath(VIEWS.MY_MARKETS)} component={COMPONENTS.Portfolio} />
@@ -30,8 +31,8 @@ const Routes = p => (
     <AuthenticatedRoute path={makePath(VIEWS.ACCOUNT_DEPOSIT)} component={COMPONENTS.Account} />
     <AuthenticatedRoute path={makePath(VIEWS.ACCOUNT_WITHDRAW)} component={COMPONENTS.Account} />
     <AuthenticatedRoute path={makePath(VIEWS.CREATE_MARKET)} component={COMPONENTS.CreateMarket} />
-    <AuthenticatedRoute path={makePath(VIEWS.REPORTING_DISPUTE)} component={COMPONENTS.Reporting} />
-    <AuthenticatedRoute path={makePath(VIEWS.REPORTING_REPORTING)} component={COMPONENTS.Reporting} />
+    <AuthenticatedRoute path={makePath(VIEWS.REPORTING_DISPUTE_MARKETS)} component={COMPONENTS.Reporting} />
+    <AuthenticatedRoute path={makePath(VIEWS.REPORTING_REPORT_MARKETS)} component={COMPONENTS.Reporting} />
     <UnauthenticatedRoute path={makePath(VIEWS.AUTHENTICATION)} component={COMPONENTS.Auth} />
     <Redirect to={makePath(VIEWS.CATEGORIES)} />
   </Switch>

@@ -8,7 +8,7 @@ import { HashRouter } from 'react-router-dom'
 import { initAugur, connectAugur } from 'modules/app/actions/init-augur' // eslint-disable-line
 
 import App from 'modules/app/containers/app'
-import MainErrorBoundary from 'modules/common/components/main-error-boundary'
+import MainErrorBoundary from 'modules/common/components/main-error-boundary/main-error-boundary'
 
 import store from 'src/store'
 
