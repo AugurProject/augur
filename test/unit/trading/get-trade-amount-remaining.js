@@ -100,7 +100,7 @@ describe("trading/get-trade-amount-remaining", function () {
       },
       ethrpc: {
         getTransactionReceipt: function (transactionHash, callback) {
-          callback({
+          callback(null, {
             logs: [{
               topics: ["MAKE_ORDER_SIGNATURE"],
             }, {
@@ -141,12 +141,12 @@ describe("trading/get-trade-amount-remaining", function () {
       },
       ethrpc: {
         getTransactionReceipt: function (transactionHash, callback) {
-          callback({});
+          callback(null, {});
         },
       },
     },
     assertions: function (err, tradeAmountRemaining) {
-      assert.strictEqual(err, "logs not found");
+      assert.strictEqual(err.message, "logs not found");
       assert.isUndefined(tradeAmountRemaining);
     },
   });

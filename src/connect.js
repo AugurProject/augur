@@ -20,7 +20,7 @@ var DEFAULT_NETWORK_ID = require("./constants").DEFAULT_NETWORK_ID;
 function connect(connectOptions, callback) {
   if (!isFunction(callback)) callback = noop;
   if (!isObject(connectOptions)) {
-    return callback("Connection info required, e.g. { ethereumNode: { http: \"http://ethereum.node.url\", ws: \"ws://ethereum.node.websocket\" }, augurNode: \"ws://augur.node.websocket\" }");
+    return callback(new Error("Connection info required, e.g. { ethereumNode: { http: \"http://ethereum.node.url\", ws: \"ws://ethereum.node.websocket\" }, augurNode: \"ws://augur.node.websocket\" }"));
   }
   var self = this;
   var ethereumNodeConnectOptions = {

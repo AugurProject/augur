@@ -180,7 +180,7 @@ export interface SimulatedTrade {
 export interface RpcInterface {
   errors: any; // TODO define RPC errors object
   eth: {
-    [jsonRpcMethodName: string]: (params?: any, callback?: (response: any) => void) => string|number|null;
+    [jsonRpcMethodName: string]: (params?: any, callback?: (err: Error|null, response: any) => void) => string|number|null;
   };
   createRpcInterface(): RpcInterface;
   clear(): void;
@@ -189,12 +189,12 @@ export interface RpcInterface {
   getCurrentBlock(): any; // TODO define block type
   getGasPrice(): number;
   getNetworkID(): string;
-  getLogs(filter: any, callback: (logs: Array<EventLog>) => void): Array<string>|null; // TODO define log filter type
-  getTransactionReceipt(transactionHash: Bytes32, callback?: (transactionReceipt: any) => void): any; // TODO define transaction receipt type
-  isUnlocked(account: Address, callback?: (isUnlocked: boolean) => void): boolean|void;
+  getLogs(filter: any, callback: (err: Error|null, logs: Array<EventLog>) => void): Array<string>|null; // TODO define log filter type
+  getTransactionReceipt(transactionHash: Bytes32, callback?: (err: Error|null, transactionReceipt: any) => void): any; // TODO define transaction receipt type
+  isUnlocked(account: Address, callback?: (err: Error|null, isUnlocked: boolean) => void): boolean|void;
   sendEther(to: Address, value: string|number, from: Address, onSent: (result: any) => void, onSuccess: (result: any) => void, onFailed: (err: any) => void): any;
-  packageAndSubmitRawTransaction(payload: any, address: Address, privateKeyOrSigner: Buffer|null, callback: (transactionHash: Bytes32|Error) => void): void; // TODO define payload type
-  callContractFunction(payload: any, callback: (returnValue: Bytes32|Error) => void): Bytes32|void;
+  packageAndSubmitRawTransaction(payload: any, address: Address, privateKeyOrSigner: Buffer|null, callback: (err: Error|null, transactionHash: Bytes32|Error) => void): void; // TODO define payload type
+  callContractFunction(payload: any, callback: (err: Error|null, returnValue: Bytes32|Error) => void): Bytes32|void;
   transact(payload: any, privateKeyOrSigner: Buffer|null, onSent: (result: any) => void, onSuccess: (result: any) => void, onFailed: (err: any) => void): void;
   excludeFromTransactionRelay(method: string): void;
   registerTransactionRelay(relayer: any): void; // TODO define relayer type

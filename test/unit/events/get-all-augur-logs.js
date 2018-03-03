@@ -58,7 +58,7 @@ describe("events/get-all-augur-logs", function () {
         getLogs: function (p, callback) {
           assert.deepEqual(p.address, ["0x000000000000000000000000000000000000000c"]);
           if (p.fromBlock === 10) {
-            callback([{
+            callback(null, [{
               address: "0x000000000000000000000000000000000000000c",
               topics: [
                 "0x1000000000000000000000000000000000000000000000000000000000000000",
@@ -73,7 +73,7 @@ describe("events/get-all-augur-logs", function () {
               removed: false,
             }]);
           } else {
-            callback([{
+            callback(null, [{
               address: "0x000000000000000000000000000000000000000c",
               topics: [
                 "0x1000000000000000000000000000000000000000000000000000000000000000",

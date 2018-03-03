@@ -9,25 +9,22 @@ var isObject = require("../utils/is-object");
 function bindContractFunction(functionAbi) {
   return function () {
     var payload = assign({}, functionAbi);
-    if (!arguments || !arguments.length) {
-      if (payload.constant) return ethrpc.callContractFunction(payload);
-      return ethrpc.transact(payload);
-    }
-    var params = Array.prototype.slice.call(arguments);
-    if (payload.constant || (params[0] && params[0].tx && params[0].tx.send === false)) {
-      var callback;
-      if (params && isObject(params[0])) {
-        payload.params = encodeTransactionInputs(params[0], payload.inputs, payload.signature);
-        if (isObject(params[0].meta) && params[0].meta.address) assign(payload, { from: params[0].meta.address });
-        if (isObject(params[0].tx)) assign(payload, { from: (params[0].meta || {}).address }, params[0].tx);
+    if (arguments && arguments.length) {
+      var params = Array.prototype.slice.call(arguments);
+      if (payload.constant || (params[0] && params[0].tx && params[0].tx.send === false)) {
+        if (params && isObject(params[0])) {
+          payload.params = encodeTransactionInputs(params[0], payload.inputs, payload.signature);
+          if (isObject(params[0].meta) && params[0].meta.address) assign(payload, { from: params[0].meta.address });
+          if (isObject(params[0].tx)) assign(payload, { from: (params[0].meta || {}).address }, params[0].tx);
+        }
+        if (!isFunction(params[params.length - 1])) return console.error("Callback required");
+        var callback = params.pop();
+        return ethrpc.callContractFunction(payload, function (err, response) {
+          if (err) return callback(err);
+          if (response == null) return callback(new Error("Null eth_call response"));
+          callback(null, response);
+        });
       }
-      if (isFunction(params[params.length - 1])) callback = params.pop();
-      if (!isFunction(callback)) return ethrpc.callContractFunction(payload);
-      return ethrpc.callContractFunction(payload, function (response) {
-        if (response == null) return callback("No response");
-        if (response.error != null) return callback(response.error);
-        callback(null, response);
-      });
     }
     var onSent, onSuccess, onFailed, signer, accountType;
     if (params && isObject(params[0])) {

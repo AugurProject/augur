@@ -18,10 +18,10 @@ function calculateTotalFill(numShares, numTokens, priceNumTicksRepresentation) {
 function getTradeAmountRemaining(p, callback) {
   var tradeOnChainAmountRemaining = new BigNumber(p.startingOnChainAmount, 16);
   // console.log("remaining:", tradeOnChainAmountRemaining.toFixed());
-  ethrpc.getTransactionReceipt(p.transactionHash, function (transactionReceipt) {
-    if (!transactionReceipt || transactionReceipt.error || !Array.isArray(transactionReceipt.logs) || !transactionReceipt.logs.length) {
-      return callback("logs not found");
-    }
+  ethrpc.getTransactionReceipt(p.transactionHash, function (err, transactionReceipt) {
+    if (err) return callback(new Error("getTransactionReceipt failed"));
+    if (!transactionReceipt) return callback(new Error("transaction receipt not found"));
+    if (!Array.isArray(transactionReceipt.logs) || !transactionReceipt.logs.length) return callback(new Error("logs not found"));
     // console.log("logs:", transactionReceipt.logs);
     var orderFilledEventSignature = eventsAbi.Augur.OrderFilled.signature;
     var orderCreatedEventSignature = eventsAbi.Augur.OrderCreated.signature;
