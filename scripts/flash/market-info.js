@@ -47,7 +47,7 @@ function marketInfoInternal(augur, marketId, universe, callback) {
 }
 
 function help(callback) {
-  console.log(chalk.red("params syntax --> -p marketId"));
+  console.log(chalk.red("params syntax --> marketId"));
   callback(null);
 }
 
