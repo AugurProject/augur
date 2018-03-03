@@ -22,6 +22,7 @@ augur.connect(connectionEndpoints, function (err) {
       var cashBalance = speedomatic.bignum(cashBal);
       augur.rpc.eth.getBalance([marketMailboxAddress, "latest"], function (err, attoEthBalance) {
         if (err) return console.error(err);
+        if (attoEthBalance == null) return console.error("rpc.eth.getBalance failed");
         var ethBalance = speedomatic.bignum(attoEthBalance);
         var combined = speedomatic.unfix(ethBalance.add(cashBalance), "string");
         console.log(chalk.green.dim("Total balance:"), chalk.green(combined));
