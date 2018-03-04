@@ -14,7 +14,6 @@ export const useUnlockedAccount = (unlockedAddress, callback = logError) => (dis
   }
   augur.rpc.isUnlocked(unlockedAddress, (err, isUnlocked) => {
     if (err) return callback(err)
-    if (isUnlocked == null) return callback('error calling augur.rpc.isUnlocked')
     if (isUnlocked === false) {
       console.warn(`account ${unlockedAddress} is locked`)
       return callback(null)
