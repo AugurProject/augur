@@ -27,8 +27,8 @@ export function updateAssets(callback = logError) {
         if (allAssetsLoaded(balances)) callback(null, balances)
       })
     })
-    augur.rpc.eth.getBalance([loginAccount.address, 'latest'], (attoEthBalance) => {
-      if (!attoEthBalance || attoEthBalance.error) return callback(attoEthBalance)
+    augur.rpc.eth.getBalance([loginAccount.address, 'latest'], (err, attoEthBalance) => {
+      if (err) return callback(err)
       const ethBalance = speedomatic.unfix(attoEthBalance, 'string')
       balances.eth = ethBalance
       if (!loginAccount.eth || loginAccount.eth !== ethBalance) {
