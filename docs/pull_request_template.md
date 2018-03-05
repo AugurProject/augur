@@ -1,13 +1,11 @@
-## Link to story
-[story](https://app.clubhouse.io/augur/story/enterstorynumberhere)
-
-## Steps to Reproduce (Okay if in story)
-
-## Screenshots (if applicable)
+[Clubhouse Story](https://app.clubhouse.io/augur/story/ENTER_STORY_NUMBER_HERE)
 
 ## Submitter checklist
 - [ ] Test covering functionality added/fixed in
- 
+- Check the linked story includes the following:
+  - [ ] Steps to reproduce
+  - [ ] Screenshot (If applicable)
+
 ## Reviewer Checklist
 - [ ] Test/lint pass 
 - [ ] Post merge, story marked complete 
