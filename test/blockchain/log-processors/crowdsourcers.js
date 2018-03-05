@@ -28,11 +28,11 @@ const getCrowdsourcerAndMarket  = (db, params, callback) => {
   getCrowdsourcer(db, params, (err, crowdsourcer) => {
     if (err) return callback(err);
 
-    getMarketsWithReportingState(db).where({ "markets.marketId": crowdsourcer.marketId })
-      .asCallback((err, markets) => {
+    getMarketsWithReportingState(db).first().where({ "markets.marketId": crowdsourcer.marketId })
+      .asCallback((err, market) => {
         if (err) return callback(err);
 
-        callback(null, { market: markets[0], crowdsourcer });
+        callback(null, { market, crowdsourcer });
       });
   });
 };
