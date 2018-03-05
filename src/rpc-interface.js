@@ -15,7 +15,6 @@ var createRpcInterface = function (ethrpc) {
     getLogs: ethrpc.getLogs,
     getTransactionReceipt: ethrpc.getTransactionReceipt,
     isUnlocked: ethrpc.isUnlocked,
-    sendEther: ethrpc.sendEther,
     packageAndSubmitRawTransaction: ethrpc.packageAndSubmitRawTransaction,
     callContractFunction: ethrpc.callContractFunction,
     transact: ethrpc.transact,

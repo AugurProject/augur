@@ -80,7 +80,7 @@ module.exports = [{
   orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
-  _description: "Will Ethereum trade at $1000 or higher before the end of " + thisYear + "?",
+  _description: "Will Ethereum trade at $2000 or higher before the end of " + thisYear + "?",
   _endTime: parseInt(new Date("1/1/" + nextYear).getTime() / 1000, 10),
   _topic: "crypto",
   _extraInfo: {
