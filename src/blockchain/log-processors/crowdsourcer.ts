@@ -30,6 +30,12 @@ function updateTentativeWinningPayout(db: Knex, marketId: Address, callback: Err
   });
 }
 
+function updateMarketReportingRoundsCompleted(db: Knex, marketId: Address, callback: ErrorCallback) {
+  db("markets").update({
+    reportingRoundsCompleted: db.count("* as completedRounds").from("crowdsourcers").where({ completed: 1, marketId }),
+  }).where({ marketId }).asCallback(callback);
+}
+
 export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   insertPayout(db, log.market, log.payoutNumerators, log.invalid, false, (err, payoutId) => {
     if (err) return callback(err);
@@ -104,7 +110,10 @@ export function processDisputeCrowdsourcerContributionLogRemoval(db: Knex, augur
 export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   db("crowdsourcers").update({ completed: 1 }).where({ crowdsourcerId: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    updateTentativeWinningPayout(db, log.market, (err: Error|null): void => {
+    parallel([
+      (next: AsyncCallback) => updateTentativeWinningPayout(db, log.market, next),
+      (next: AsyncCallback) => updateMarketReportingRoundsCompleted(db, log.market, next),
+    ], (err: Error|null) => {
       if (err) return callback(err);
       augurEmitter.emit("DisputeCrowdsourcerCompleted", log);
       callback(null);
@@ -115,7 +124,10 @@ export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, l
 export function processDisputeCrowdsourcerCompletedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   db("crowdsourcers").update({ completed: null }).where({ crowdsourcerId: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    updateTentativeWinningPayout(db, log.market, (err: Error|null): void => {
+    parallel([
+      (next: AsyncCallback) => updateTentativeWinningPayout(db, log.market, next),
+      (next: AsyncCallback) => updateMarketReportingRoundsCompleted(db, log.market, next),
+    ], (err: Error|null) => {
       if (err) return callback(err);
       augurEmitter.emit("DisputeCrowdsourcerCompleted", log);
       callback(null);
