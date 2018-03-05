@@ -50,7 +50,7 @@ describe(`modules/reporting/actions/estimate-submit-market-contribute.js`, () =>
       description: `should call the expected method`,
       assertions: () => {
         estimateSubmitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
-        store.dispatch(estimateSubmitMarketContribute('', (value) => {
+        store.dispatch(estimateSubmitMarketContribute('', 1000, (value) => {
           assert.deepEqual(value, 'Market not found', `Didn't value as expected`)
         }))
       },
@@ -62,7 +62,7 @@ describe(`modules/reporting/actions/estimate-submit-market-contribute.js`, () =>
       description: `should call the expected method`,
       assertions: () => {
         estimateSubmitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
-        store.dispatch(estimateSubmitMarketContribute(null, (value) => {
+        store.dispatch(estimateSubmitMarketContribute(null, 1000, (value) => {
           assert.deepEqual(value, 'Market not found', `Didn't value as expected`)
         }))
       },
@@ -74,7 +74,7 @@ describe(`modules/reporting/actions/estimate-submit-market-contribute.js`, () =>
       description: `should call the expected method`,
       assertions: () => {
         estimateSubmitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
-        store.dispatch(estimateSubmitMarketContribute('testMarketId', (err, value) => {
+        store.dispatch(estimateSubmitMarketContribute('testMarketId', 1000, (err, value) => {
           assert.deepEqual(value, 'gasCostValue', `Didn't value as expected`)
         }))
       },
@@ -86,7 +86,7 @@ describe(`modules/reporting/actions/estimate-submit-market-contribute.js`, () =>
       description: `should call the expected method`,
       assertions: () => {
         estimateSubmitMarketContributeReqireAPI.__Rewire__('augur', augurFailed)
-        store.dispatch(estimateSubmitMarketContribute('testMarketId', (value) => {
+        store.dispatch(estimateSubmitMarketContribute('testMarketId', 1000, (value) => {
           assert.deepEqual(value, 'Error', `Didn't value as expected`)
         }))
       },

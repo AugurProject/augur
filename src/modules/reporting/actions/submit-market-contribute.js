@@ -4,7 +4,7 @@ import makePath from 'modules/routes/helpers/make-path'
 import logError from 'utils/log-error'
 import { getPayoutNumerators } from 'modules/reporting/selectors/get-payout-numerators'
 
-export const submitMarketContribute = (marketId, selectedOutcome, invalid, history, callback = logError) => (dispatch, getState) => {
+export const submitMarketContribute = (marketId, selectedOutcome, invalid, amount, history, callback = logError) => (dispatch, getState) => {
   const { loginAccount, marketsData } = getState()
   const outcome = parseInt(selectedOutcome, 10)
 
@@ -20,6 +20,7 @@ export const submitMarketContribute = (marketId, selectedOutcome, invalid, histo
     tx: { to: marketId },
     _invalid: invalid,
     _payoutNumerators: payoutNumerators,
+    _amount: amount,
     onSent: () => {
       history.push(makePath(REPORTING_DISPUTE_MARKETS))
     },
