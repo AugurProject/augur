@@ -16,6 +16,7 @@ import CaretDropdown from 'modules/common/components/caret-dropdown/caret-dropdo
 const MarketProperties = (p) => {
   const shareVolumeRounded = getValue(p, 'volume.rounded')
   const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations)
+  const consensus = getValue(p, 'consensus.outcomeName')
 
   return (
     <article>
@@ -40,6 +41,12 @@ const MarketProperties = (p) => {
               formatted={p.marketCreatorFeesCollected.rounded}
               denomination={p.marketCreatorFeesCollected.denomination}
             />
+          </li>
+          }
+          {consensus &&
+          <li>
+            <span>Winning Outcome</span>
+            {consensus}
           </li>
           }
         </ul>
