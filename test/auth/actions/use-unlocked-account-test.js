@@ -33,9 +33,10 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       '../helpers/is-meta-mask': IsMetaMask,
     })
     sinon.stub(AugurJS.augur.rpc, 'isUnlocked').callsFake((address, callback) => {
-      t.stub.augur.rpc.isUnlocked(address, (isUnlocked) => {
-        store.dispatch({ type: 'AUGURJS_RPC_IS_UNLOCKED', data: { isUnlocked } })
-        callback(isUnlocked)
+      t.stub.augur.rpc.isUnlocked(address, (err, isUnlocked) => {
+        store.dispatch({ type: 'AUGURJS_RPC_IS_UNLOCKED', data: { isUnlocked: err || isUnlocked } })
+        if (err) return callback(err)
+        callback(null, isUnlocked)
       })
     })
     sinon.stub(UpdateIsLoggedAndLoadAccountData, 'updateIsLoggedAndLoadAccountData').callsFake((unlockedAccount, accountType) => ({
@@ -59,7 +60,7 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       unlockedAddress: undefined,
     },
     stub: {
-      augur: { rpc: { isUnlocked: (address, callback) => callback(null) } },
+      augur: { rpc: { isUnlocked: (address, callback) => callback(null, null) } },
       isMetaMask: () => assert.fail(),
     },
     assertions: (err, actions) => {
@@ -93,7 +94,7 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       unlockedAddress: '0xb0b',
     },
     stub: {
-      augur: { rpc: { isUnlocked: (address, callback) => callback(false) } },
+      augur: { rpc: { isUnlocked: (address, callback) => callback(null, false) } },
       isMetaMask: () => false,
     },
     assertions: (err, actions) => {
@@ -136,7 +137,7 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       unlockedAddress: '0xb0b',
     },
     stub: {
-      augur: { rpc: { isUnlocked: (address, callback) => callback(true) } },
+      augur: { rpc: { isUnlocked: (address, callback) => callback(null, true) } },
       isMetaMask: () => false,
     },
     assertions: (err, actions) => {

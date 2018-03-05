@@ -180,7 +180,7 @@ describe('modules/auth/actions/update-assets.js', () => {
               rpc: {
                 eth: {
                   getBalance: (value, callback) => {
-                    callback(testValue.eth)
+                    callback(null, testValue.eth)
                   },
                 },
               },

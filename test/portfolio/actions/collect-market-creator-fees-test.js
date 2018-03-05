@@ -62,9 +62,9 @@ describe('modules/portfolio/actions/collect-market-creator-fees.js', () => {
             assert.isFunction(cb, `Callback provided isn't a function`)
             // allows to test against mailboxes with currency and without.
             if (params[0] === MailboxAddresses[0]) {
-              cb(speedomatic.fix(10.5, 'string'))
+              cb(null, speedomatic.fix(10.5, 'string'))
             } else {
-              cb(0)
+              cb(null, 0)
             }
           },
         },

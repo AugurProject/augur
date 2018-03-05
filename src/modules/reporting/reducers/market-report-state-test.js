@@ -3,9 +3,11 @@ import * as ActionTypes from 'redux'
 import { assert } from 'chai'
 
 import { RESET_STATE } from 'modules/app/actions/reset-state'
-import { UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS } from 'modules/reporting/actions/update-upcoming-designated-reporting'
-import { UPDATE_DESIGNATED_REPORTING_MARKETS } from 'modules/reporting/actions/update-designated-reporting'
-import { UPDATE_OPEN_REPORTING_MARKETS } from 'modules/reporting/actions/update-open-reporting'
+import { UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS } from 'src/modules/reporting/actions/update-upcoming-designated-reporting'
+import { UPDATE_DESIGNATED_REPORTING_MARKETS } from 'src/modules/reporting/actions/update-designated-reporting'
+import { UPDATE_OPEN_REPORTING_MARKETS } from 'src/modules/reporting/actions/update-open-reporting'
+import { UPDATE_AWAITING_DISPUTE_MARKETS } from 'modules/reporting/actions/update-awaiting-dispute'
+import { UPDATE_CROWD_DISPUTE_MARKETS } from 'modules/reporting/actions/update-crowd-dispute'
 import { UPDATE_RESOLVED_REPORTING_MARKETS } from 'modules/reporting/actions/update-resolved-reporting'
 
 import reducer from './market-report-state'
@@ -16,6 +18,8 @@ describe('market report state', () => {
     designated: [],
     open: [],
     upcoming: [],
+    awaiting: [],
+    dispute: [],
     resolved: [],
   }
 
@@ -40,6 +44,8 @@ describe('market report state', () => {
           designated: [],
           open: [],
           upcoming: payload,
+          awaiting: [],
+          dispute: [],
           resolved: [],
         }, result)
       })
@@ -52,6 +58,8 @@ describe('market report state', () => {
           designated: payload,
           open: [],
           upcoming: [],
+          awaiting: [],
+          dispute: [],
           resolved: [],
         }, result)
       })
@@ -64,7 +72,37 @@ describe('market report state', () => {
           designated: [],
           open: payload,
           upcoming: [],
+          awaiting: [],
+          dispute: [],
           resolved: [],
+        }, result)
+      })
+    })
+
+    describe('UPDATE_AWAITING_DISPUTE_MARKETS', () => {
+      it('should replace open attribute with data payload', () => {
+        const result = reducer(defaultState, { type: UPDATE_AWAITING_DISPUTE_MARKETS, data: payload })
+        assert.deepEqual({
+          designated: [],
+          open: [],
+          upcoming: [],
+          resolved: [],
+          awaiting: payload,
+          dispute: [],
+        }, result)
+      })
+    })
+
+    describe('UPDATE_CROWD_DISPUTE_MARKETS', () => {
+      it('should replace open attribute with data payload', () => {
+        const result = reducer(defaultState, { type: UPDATE_CROWD_DISPUTE_MARKETS, data: payload })
+        assert.deepEqual({
+          designated: [],
+          open: [],
+          upcoming: [],
+          resolved: [],
+          awaiting: [],
+          dispute: payload,
         }, result)
       })
     })
@@ -77,6 +115,8 @@ describe('market report state', () => {
           open: [],
           upcoming: [],
           resolved: payload,
+          awaiting: [],
+          dispute: [],
         }, result)
       })
     })

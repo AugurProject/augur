@@ -6,7 +6,7 @@ import makePath from 'modules/routes/helpers/make-path'
 import makeQuery from 'modules/routes/helpers/make-query'
 
 import { TYPE_REPORT, TYPE_DISPUTE } from 'modules/market/constants/link-types'
-import { MARKET, REPORT, REPORTING_DISPUTE } from 'modules/routes/constants/views'
+import { MARKET, REPORT, DISPUTE } from 'modules/routes/constants/views'
 import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/routes/constants/param-names'
 
 const MarketLink = (p) => {
@@ -17,7 +17,7 @@ const MarketLink = (p) => {
       path = makePath(REPORT)
       break
     case TYPE_DISPUTE:
-      path = makePath(REPORTING_DISPUTE)
+      path = makePath(DISPUTE)
       break
     default:
       path = makePath(MARKET)

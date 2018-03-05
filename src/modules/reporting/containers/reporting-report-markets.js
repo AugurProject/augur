@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import ReportingReporting from 'modules/reporting/components/reporting-reporting/reporting-reporting'
+import ReportingReporting from 'modules/reporting/components/reporting-report-markets/reporting-report-markets'
 import { loadReporting } from 'src/modules/reporting/actions/load-reporting'
 import { selectMarketsToReport } from 'src/modules/reporting/selectors'
 
