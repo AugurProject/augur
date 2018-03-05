@@ -64,16 +64,15 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
       dispatch(updateOpenMarkets(result))
     },
   )
-  // TODO: switch back to REPORTING.FINALIZED
+
   augur.augurNode.submitRequest(
     'getMarkets',
     {
-      reportingState: constants.REPORTING_STATE.PRE_REPORTING,
+      reportingState: constants.REPORTING_STATE.FINALIZED,
       sortBy: 'endDate',
       ...args,
     },
     (err, result) => {
-      console.log('loadResolved returned', err, result);
       if (err) return callback(err)
 
       // Load the associated market data

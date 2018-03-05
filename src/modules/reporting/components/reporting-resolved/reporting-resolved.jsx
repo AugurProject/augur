@@ -8,6 +8,15 @@ import { TYPE_VIEW } from 'modules/market/constants/link-types'
 
 import Styles from 'modules/reporting/components/reporting-resolved/reporting-resolved.styles'
 
+
+function getMarketIds(markets) {
+  const filteredMarkets = []
+  markets.map(market => {
+    filteredMarkets.push(market.id)
+  })
+  return filteredMarkets
+}
+
 export default class ReportingResolved extends Component {
   static propTypes = {
   }
@@ -25,23 +34,16 @@ export default class ReportingResolved extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps', nextProps);
-    // TODO: clean this up so it actaully works.
-    if (nextProps.markets.resolved.length > 0 && this.state.filteredMarkets.length === 0) {
-      const filter = []
-      for (var i = 0; i < 10; i++) {
-        if (nextProps.markets.resolved[i] && nextProps.markets.resolved[i].id)
-          filter.push(nextProps.markets.resolved[i].id)
-      }
-      this.setState({ filteredMarkets: filter })
+    if (nextProps.markets.length > 0 && nextProps.markets !== this.props.markets) {
+      const filteredMarkets = getMarketIds(nextProps.markets)
+      this.setState({ filteredMarkets })
     }
   }
 
   render() {
     const p = this.props
     const s = this.state
-    console.log(p.markets.resolved.length);
-    console.log(s);
+
     return (
       <section>
         <Helmet>
@@ -53,7 +55,7 @@ export default class ReportingResolved extends Component {
         <h2 className={Styles.ReportingResolved__heading}>Resolved</h2>
         <MarketsList
           isLogged={p.isLogged}
-          markets={p.markets.resolved}
+          markets={p.markets}
           filteredMarkets={s.filteredMarkets}
           location={p.location}
           history={p.history}

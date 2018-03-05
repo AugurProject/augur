@@ -8,9 +8,11 @@ import { selectMarketsToReport } from 'src/modules/reporting/selectors'
 import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 
+import getValue from 'utils/get-value'
+
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
-  markets: selectMarketsToReport(state),
+  markets: getValue(selectMarketsToReport(state), 'resolved'),
 })
 
 const mapDispatchToProps = dispatch => ({
