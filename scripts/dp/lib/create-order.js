@@ -33,7 +33,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
     bnCost = bnOnChainShares.times(new BigNumber(numTicks, 10).minus(bnPrice));
   }
   if (debugOptions.cannedMarkets) console.log(chalk.cyan.dim("cost:"), chalk.cyan(speedomatic.unfix(bnCost, "string")));
-  var params = {
+  augur.api.CreateOrder.publicCreateOrder({
     meta: auth,
     tx: { value: "0x" + bnCost.toString(16), gas: augur.constants.CREATE_ORDER_GAS },
     _type: orderTypeCode,
@@ -63,9 +63,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
       }
       callback(err);
     },
-  };
-  if (debugOptions.cannedMarkets) console.log(chalk.cyan.dim("createOrder params:"), params);
-  augur.api.CreateOrder.publicCreateOrder(params);
+  });
 }
 
 module.exports = createOrder;

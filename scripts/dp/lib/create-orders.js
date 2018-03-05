@@ -3,26 +3,24 @@
 var async = require("async");
 var chalk = require("chalk");
 var createOrderBook = require("./create-order-book");
-var cannedMarketsData = require("../data/canned-markets");
+var selectCannedMarket = require("./select-canned-market");
+var debugOptions = require("../../debug-options");
 
 function createOrders(augur, marketIds, auth, callback) {
   augur.markets.getMarketsInfo({ marketIds: marketIds }, function (err, marketsInfo) {
     if (err) return callback(err);
-    console.log(chalk.cyan("Creating orders..."));
     async.eachSeries(marketsInfo, function (marketInfo, nextMarket) {
+      if (debugOptions.cannedMarkets) console.log(chalk.cyan("Creating orders for market"), chalk.green(marketInfo.id), chalk.cyan.dim(marketInfo.description));
       if (!marketInfo || !marketInfo.id) {
-        console.log("marketInfo:", marketInfo);
+        console.warn(chalk.yellow.bold("marketInfo not found:"), marketInfo);
         return nextMarket();
       }
-      console.log(chalk.green(marketInfo.id), chalk.cyan.dim(marketInfo.description));
-      var cannedMarket = cannedMarketsData.find(function (cannedMarketData) {
-        return cannedMarketData._description === marketInfo.description && cannedMarketData.marketType === marketInfo.marketType;
-      });
-      if (!cannedMarket || !cannedMarket.orderBook) return nextMarket();
-      createOrderBook(augur, marketInfo.id, marketInfo.numOutcomes, marketInfo.maxPrice, marketInfo.minPrice, marketInfo.numTicks, cannedMarket.orderBook, auth, function (err) {
-        if (err) return nextMarket(err);
-        nextMarket();
-      });
+      var cannedMarket = selectCannedMarket(marketInfo.description, marketInfo.marketType);
+      if (!cannedMarket || !cannedMarket.orderBook) {
+        console.warn(chalk.yellow.bold("Canned market data not found for market"), chalk.green(marketInfo.id), chalk.cyan.dim(JSON.stringify(marketInfo, null, 2)));
+        return nextMarket();
+      }
+      createOrderBook(augur, marketInfo.id, marketInfo.numOutcomes, marketInfo.maxPrice, marketInfo.minPrice, marketInfo.numTicks, cannedMarket.orderBook, auth, nextMarket);
     }, callback);
   });
 }
