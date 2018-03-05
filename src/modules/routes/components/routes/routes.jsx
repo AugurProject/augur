@@ -33,7 +33,7 @@ const Routes = p => (
     <AuthenticatedRoute path={makePath(VIEWS.CREATE_MARKET)} component={COMPONENTS.CreateMarket} />
     <AuthenticatedRoute path={makePath(VIEWS.REPORTING_DISPUTE_MARKETS)} component={COMPONENTS.Reporting} />
     <AuthenticatedRoute path={makePath(VIEWS.REPORTING_REPORT_MARKETS)} component={COMPONENTS.Reporting} />
-    <AuthenticatedRoute path={makePath(VIEWS.REPORTING_RESOLVED)} component={COMPONENTS.Reporting} />
+    <AuthenticatedRoute path={makePath(VIEWS.REPORTING_RESOLVED_MARKETS)} component={COMPONENTS.Reporting} />
     <UnauthenticatedRoute path={makePath(VIEWS.AUTHENTICATION)} component={COMPONENTS.Auth} />
     <Redirect to={makePath(VIEWS.CATEGORIES)} />
   </Switch>

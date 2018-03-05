@@ -1,5 +1,5 @@
 import BaseInnerNav from 'modules/app/components/inner-nav/base-inner-nav'
-import { REPORTING_DISPUTE_MARKETS, REPORTING_REPORT_MARKETS, REPORTING_RESOLVED } from 'modules/routes/constants/views'
+import { REPORTING_DISPUTE_MARKETS, REPORTING_REPORT_MARKETS, REPORTING_RESOLVED_MARKETS } from 'modules/routes/constants/views'
 
 export default class ReportingInnerNav extends BaseInnerNav {
   getMainMenuData() {
@@ -23,9 +23,9 @@ export default class ReportingInnerNav extends BaseInnerNav {
       {
         label: 'Resolved',
         visible: true,
-        isSelected: (this.props.currentBasePath === REPORTING_RESOLVED),
+        isSelected: (this.props.currentBasePath === REPORTING_RESOLVED_MARKETS),
         link: {
-          pathname: REPORTING_RESOLVED,
+          pathname: REPORTING_RESOLVED_MARKETS,
         },
       },
     ]

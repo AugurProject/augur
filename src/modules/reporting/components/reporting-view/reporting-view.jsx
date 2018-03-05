@@ -7,14 +7,14 @@ import ReportingReporting from 'modules/reporting/containers/reporting-report-ma
 import ReportingResolved from 'modules/reporting/containers/reporting-resolved'
 import makePath from 'modules/routes/helpers/make-path'
 
-import { REPORTING_DISPUTE_MARKETS, REPORTING_REPORT_MARKETS, REPORTING_RESOLVED } from 'modules/routes/constants/views'
+import { REPORTING_DISPUTE_MARKETS, REPORTING_REPORT_MARKETS, REPORTING_RESOLVED_MARKETS } from 'modules/routes/constants/views'
 
 const ReportingView = p => (
   <section>
     <Switch>
       <AuthenticatedRoute path={makePath(REPORTING_DISPUTE_MARKETS)} component={ReportingDisputeMarkets} />
       <AuthenticatedRoute path={makePath(REPORTING_REPORT_MARKETS)} component={ReportingReporting} />
-      <AuthenticatedRoute path={makePath(REPORTING_RESOLVED)} component={ReportingResolved} />
+      <AuthenticatedRoute path={makePath(REPORTING_RESOLVED_MARKETS)} component={ReportingResolved} />
     </Switch>
   </section>
 )
