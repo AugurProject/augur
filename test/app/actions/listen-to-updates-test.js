@@ -38,6 +38,8 @@ describe('listen-to-updates', () => {
               store.dispatch(ACTIONS.START_BLOCK_LISTENERS)
             },
             startAugurNodeEventListeners: (args) => {
+              assert.isFunction(args.MarketState, `Didn't pass a function to startAugurNodeListeners.MarketState as expected.`)
+              assert.isFunction(args.InitialReportSubmitted, `Didn't pass a function to startAugurNodeListeners.InitialReportSubmitted as expected.`)
               assert.isFunction(args.MarketCreated, `Didn't pass a function to startAugurNodeListeners.MarketCreated as expected.`)
               assert.isFunction(args.TokensTransferred, `Didn't pass a function to startAugurNodeListeners.TokensTransferred as expected.`)
               assert.isFunction(args.OrderCanceled, `Didn't pass a function to startAugurNodeListeners.OrderCanceled as expected.`)
@@ -621,5 +623,155 @@ describe('listen-to-updates', () => {
         done()
       },
     })
+
+    test({
+      description: 'it should handle calling market state change',
+      assertions: (done) => {
+        const testState = Object.assign({}, state, {
+          connection: {
+            ...state.connection,
+            isConnected: true,
+            isConnectedToAugurNode: true,
+            isReconnectionPaused: false,
+          },
+        })
+        const testStore = mockStore.mockStore(testState)
+        const ACTIONS = {
+          LOAD_MARKETS_INFO: { type: 'LOAD_MARKETS_INFO' },
+        }
+
+        ReWireModule.__Rewire__('augur', {
+          events: {
+            stopBlockListeners: () => { },
+            stopAugurNodeEventListeners: () => { },
+            stopBlockchainEventListeners: () => { },
+            startBlockListeners: (args) => { },
+            startAugurNodeEventListeners: (args) => {
+              args.MarketState(null, { log: { marketId: 'marketId' } })
+            },
+            nodes: {
+              augur: {
+                on: (label, func) => { },
+              },
+              ethereum: {
+                on: (label, func) => { },
+              },
+            },
+          },
+        })
+        ReWireModule.__Rewire__('connectAugur', (history, env, isInitialConnection, cb) => { })
+        ReWireModule.__Rewire__('debounce', (func, wait) => { })
+        ReWireModule.__Rewire__('resetState', () => { })
+        ReWireModule.__Rewire__('loadMarketsInfo', () => ACTIONS.LOAD_MARKETS_INFO)
+
+        testStore.dispatch(listenToUpdates(mockHistory))
+        assert.deepEqual(testStore.getActions(), [
+          ACTIONS.LOAD_MARKETS_INFO,
+        ], `Didn't recieve the expected actions`)
+        done()
+      },
+    })
+
+
+    test({
+      description: 'it should handle calling initial report not designated reporter',
+      assertions: (done) => {
+        const testState = Object.assign({}, state, {
+          connection: {
+            ...state.connection,
+            isConnected: true,
+            isConnectedToAugurNode: true,
+            isReconnectionPaused: false,
+          },
+        })
+        const testStore = mockStore.mockStore(testState)
+        const ACTIONS = {
+          LOAD_MARKETS_INFO: { type: 'LOAD_MARKETS_INFO' },
+        }
+
+        ReWireModule.__Rewire__('augur', {
+          events: {
+            stopBlockListeners: () => { },
+            stopAugurNodeEventListeners: () => { },
+            stopBlockchainEventListeners: () => { },
+            startBlockListeners: (args) => { },
+            startAugurNodeEventListeners: (args) => {
+              args.InitialReportSubmitted(null, { log: { marketId: 'marketId' }, reporter: 'bob' })
+            },
+            nodes: {
+              augur: {
+                on: (label, func) => { },
+              },
+              ethereum: {
+                on: (label, func) => { },
+              },
+            },
+          },
+        })
+        ReWireModule.__Rewire__('connectAugur', (history, env, isInitialConnection, cb) => { })
+        ReWireModule.__Rewire__('debounce', (func, wait) => { })
+        ReWireModule.__Rewire__('resetState', () => { })
+        ReWireModule.__Rewire__('loadMarketsInfo', () => ACTIONS.LOAD_MARKETS_INFO)
+
+        testStore.dispatch(listenToUpdates(mockHistory))
+        assert.deepEqual(testStore.getActions(), [
+          ACTIONS.LOAD_MARKETS_INFO,
+        ], `Didn't recieve the expected actions`)
+        done()
+      },
+    })
+
+
+    test({
+      description: 'it should handle calling initial report IS designated reporter',
+      assertions: (done) => {
+        const testState = Object.assign({}, state, {
+          connection: {
+            ...state.connection,
+            isConnected: true,
+            isConnectedToAugurNode: true,
+            isReconnectionPaused: false,
+          },
+        })
+        const testStore = mockStore.mockStore(testState)
+        const ACTIONS = {
+          LOAD_MARKETS_INFO: { type: 'LOAD_MARKETS_INFO' },
+          UPDATE_ASSETS: { type: 'UPDATE_ASSETS' },
+        }
+
+        ReWireModule.__Rewire__('augur', {
+          events: {
+            stopBlockListeners: () => { },
+            stopAugurNodeEventListeners: () => { },
+            stopBlockchainEventListeners: () => { },
+            startBlockListeners: (args) => { },
+            startAugurNodeEventListeners: (args) => {
+              args.InitialReportSubmitted(null, { log: { marketId: 'marketId' }, reporter: '0x0000000000000000000000000000000000000001' })
+            },
+            nodes: {
+              augur: {
+                on: (label, func) => { },
+              },
+              ethereum: {
+                on: (label, func) => { },
+              },
+            },
+          },
+        })
+        ReWireModule.__Rewire__('connectAugur', (history, env, isInitialConnection, cb) => { })
+        ReWireModule.__Rewire__('debounce', (func, wait) => { })
+        ReWireModule.__Rewire__('loadMarketsInfo', () => ACTIONS.LOAD_MARKETS_INFO)
+        ReWireModule.__Rewire__('updateAssets', () => ACTIONS.UPDATE_ASSETS)
+
+        testStore.dispatch(listenToUpdates(mockHistory))
+        assert.deepEqual(testStore.getActions(), [
+          ACTIONS.LOAD_MARKETS_INFO,
+          ACTIONS.UPDATE_ASSETS,
+        ], `Didn't recieve the expected actions`)
+        done()
+      },
+    })
+
+
   })
 })
