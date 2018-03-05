@@ -20,6 +20,7 @@ class MarketTrading extends Component {
     isLogged: PropTypes.bool.isRequired,
     selectedOutcomes: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
+    selectedOrderProperties: PropTypes.object.isRequired,
   }
 
   constructor(props) {
@@ -90,6 +91,7 @@ class MarketTrading extends Component {
             market={p.market}
             isLogged={p.isLogged}
             selectedOutcome={s.selectedOutcome}
+            selectedOrderProperties={p.selectedOrderProperties}
             initialMessage={initialMessage}
             isMobile={p.isMobile}
             toggleForm={this.toggleForm}
