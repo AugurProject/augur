@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 
 import NavPanel from 'modules/common/components/nav-panel/nav-panel'
-import Help from 'modules/auth/components/help/help'
 import Airbitz from 'modules/auth/containers/airbitz-create'
 import UportCreate from 'modules/auth/containers/uport-create'
 
@@ -43,9 +42,6 @@ export default function AuthCreate(p) {
               <UportCreate />
             }
           </div>
-        </div>
-        <div className={Styles.Auth__faq}>
-          <Help />
         </div>
       </div>
     </div>
