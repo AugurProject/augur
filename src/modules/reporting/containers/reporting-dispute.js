@@ -7,7 +7,11 @@ import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names'
 import { selectMarket } from 'modules/market/selectors/market'
 import parseQuery from 'modules/routes/helpers/parse-query'
 import getValue from 'utils/get-value'
-import { submitInitialReport } from 'modules/reporting/actions/submit-initial-report'
+
+// TODO: use market contribute when get's merged up
+import { submitMarketContribute } from 'modules/reporting/actions/submit-initial-report'
+import { estimateSubmitMarketContribute } from 'modules/reporting/actions/estimate-submit-initial-report'
+import { getDisputeInfo } from 'modules/reporting/actions/get-dispute-info'
 import { constants } from 'services/augurjs'
 
 const mapStateToProps = state => ({
@@ -21,26 +25,28 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
-  submitInitialReport: (marketId, outcomeValue, invalid, history) => dispatch(submitInitialReport(marketId, outcomeValue, invalid, history)),
+  submitMarketContribute: (marketId, outcomeValue, amount, invalid, history) => dispatch(submitMarketContribute(marketId, outcomeValue, amount, invalid, history)),
+  estimateSubmitMarketContribute: (marketId, outcomeValue, amount, invalid, history) => dispatch(estimateSubmitMarketContribute(marketId, outcomeValue, amount, invalid, history)),
+  getDisputeInfo: marketId => dispatch(getDisputeInfo(marketId)),
 })
 
 
 const mergeProps = (sP, dP, oP) => {
   const marketId = parseQuery(oP.location.search)[MARKET_ID_PARAM_NAME]
   const market = selectMarket(marketId)
-  const isOpenReporting = market.reportingState === constants.REPORTING_STATE.OPEN_REPORTING
 
   return {
     ...oP,
     ...sP,
     marketId,
-    isOpenReporting,
     isLogged: sP.isLogged,
     isConnected: sP.isConnected && getValue(sP, 'universe.id') != null,
     isMarketLoaded: sP.marketsData[marketId] != null,
     market,
     loadFullMarket: () => dP.loadFullMarket(marketId),
-    submitInitialReport: (marketId, selectedOutcome, invalid, history) => dP.submitInitialReport(marketId, selectedOutcome, invalid, history),
+    submitMarketContribute: (marketId, selectedOutcome, invalid, amount, history) => dP.submitMarketContribute(marketId, selectedOutcome, invalid, amount, history),
+    estimateSubmitMarketContribute: (marketId, selectedOutcome, invalid, amount, history) => dP.estimateSubmitMarketContribute(marketId, selectedOutcome, invalid, amount, history),
+    getDisputeInfo: marketId => dP.getDisputeInfo(marketId),
   }
 }
 

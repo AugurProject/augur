@@ -21,7 +21,14 @@ export default class ReportingDispute extends Component {
     isConnected: PropTypes.bool.isRequired,
     isMarketsLoaded: PropTypes.bool.isRequired,
     loadMarkets: PropTypes.func.isRequired,
-    disputeRound: PropTypes.number.isRequired,
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      disputeRound: 1,
+    }
   }
 
   componentWillMount() {
@@ -32,6 +39,8 @@ export default class ReportingDispute extends Component {
 
   render() {
     const p = this.props
+    const s = this.state
+
     return (
       <section>
         <Helmet>
@@ -54,7 +63,7 @@ export default class ReportingDispute extends Component {
               (<DisputeMarketCard
                 key={market.id}
                 market={market}
-                disputeRound={p.disputeRound}
+                disputeRound={s.disputeRound}
                 isMobile={p.isMobile}
                 location={p.location}
                 history={p.history}
