@@ -16,8 +16,8 @@ interface DisputesResult {
   markets: Array<MarketsRowWithCreationTime>;
   completedStakes: Array<StakeRow>;
   activeCrowdsourcer: Array<ActiveCrowdsourcer>;
-  accountStakeComplete: Array<any>;
-  accountStakeIncomplete: Array<any>;
+  accountStakeComplete: Array<StakeRow>;
+  accountStakeIncomplete: Array<StakeRow>;
   payouts: Array<PayoutRow>;
   disputeRound: Array<DisputeRound>;
 }
@@ -30,6 +30,13 @@ interface StakeRow extends Payout {
 
 interface ActiveCrowdsourcer extends StakeRow {
   size: number;
+}
+
+interface StakeSizes {
+  size?: string;
+  currentStake?: string;
+  accountStakeComplete?: string;
+  accountStakeIncomplete?: string;
 }
 
 const activeMarketStates = ["CROWDSOURCING_DISPUTE", "AWAITING_NEXT_WINDOW", "FORKING", "AWAITING_FORK_MIGRATION"];
@@ -76,13 +83,6 @@ export function getDisputeInfo(db: Knex, marketIds: Array<Address>, account: Add
       );
     callback(null, _.map(disputeDetailsByMarket, reshapeStakeRowToUIStakeInfo));
   });
-}
-
-interface StakeSizes {
-  size?: string;
-  currentStake?: string;
-  accountStakeComplete?: string;
-  accountStakeIncomplete?: string;
 }
 
 function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|null {
