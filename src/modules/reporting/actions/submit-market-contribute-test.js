@@ -1,6 +1,5 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
-import proxyquire from 'proxyquire'
 import sinon from 'sinon'
 import testState from 'test/testState'
 import configureMockStore from 'redux-mock-store'
@@ -8,10 +7,7 @@ import thunk from 'redux-thunk'
 import { submitMarketContribute, __RewireAPI__ as submitMarketContributeReqireAPI } from 'modules/reporting/actions/submit-market-contribute'
 
 describe(`modules/reporting/actions/submit-market-contribute.js`, () => {
-  proxyquire.noPreserveCache().noCallThru()
   const state = Object.assign({}, testState)
-  const mockSelectMarket = {}
-  mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testMarketId)
   const mockStore = configureMockStore([thunk])
   const store = mockStore(state)
 
@@ -53,6 +49,7 @@ describe(`modules/reporting/actions/submit-market-contribute.js`, () => {
 
   const getPayoutNumerators = sinon.stub().returns([10000, 0])
   submitMarketContributeReqireAPI.__Rewire__('getPayoutNumerators', getPayoutNumerators)
+
   const test = (t) => {
     it(t.description, () => {
       t.assertions()
@@ -96,12 +93,21 @@ describe(`modules/reporting/actions/submit-market-contribute.js`, () => {
   })
 
   describe('non number outcome', () => {
+    beforeEach(() => {
+      submitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
+      store.dispatch(submitMarketContribute('testMarketId', 'blah', false, 1000, history, callback))
+    })
+
     test({
-      description: `should call the expected method`,
+      description: `should call callback`,
       assertions: () => {
-        submitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
-        store.dispatch(submitMarketContribute('testMarketId', 'blah', false, 1000, history, callback))
         assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
+      },
+    })
+
+    test({
+      description: `should not call histor`,
+      assertions: () => {
         assert(history.push.notCalled, `Did call 'history' not expected`)
       },
     })

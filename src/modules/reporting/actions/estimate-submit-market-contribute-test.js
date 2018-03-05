@@ -1,17 +1,12 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
-import proxyquire from 'proxyquire'
-import sinon from 'sinon'
 import testState from 'test/testState'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import { estimateSubmitMarketContribute, __RewireAPI__ as estimateSubmitMarketContributeReqireAPI } from 'modules/reporting/actions/estimate-submit-market-contribute'
 
 describe(`modules/reporting/actions/estimate-submit-market-contribute.js`, () => {
-  proxyquire.noPreserveCache().noCallThru()
   const state = Object.assign({}, testState)
-  const mockSelectMarket = {}
-  mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testMarketId)
   const mockStore = configureMockStore([thunk])
   const store = mockStore(state)
 
