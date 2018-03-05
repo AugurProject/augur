@@ -10,7 +10,7 @@ describe("server/getters/get-dispute-info", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getDisputeInfo(db, t.params.marketIds, (err, disputeInfo) => {
+        getDisputeInfo(db, t.params.marketIds, t.params.account, (err, disputeInfo) => {
           t.assertions(err, disputeInfo);
           done();
         });
@@ -18,12 +18,13 @@ describe("server/getters/get-dispute-info", () => {
     });
   };
   test({
-    description: "get dispute info from 2 markets",
+    description: "get dispute info from 2 markets for user 0x21",
     params: {
       marketIds: [
         "0x0000000000000000000000000000000000000211",
         "0x0000000000000000000000000000000000000011",
       ],
+      account: "0x0000000000000000000000000000000000000021",
     },
     assertions: (err, disputeInfo) => {
       assert.isNull(err);
@@ -37,6 +38,8 @@ describe("server/getters/get-dispute-info", () => {
                 10000,
                 0,
               ],
+              accountStakeComplete: "0",
+              accountStakeIncomplete: "0",
               totalStake: "0",
               completedStake: "0",
               size: "204",
@@ -49,6 +52,7 @@ describe("server/getters/get-dispute-info", () => {
                 0,
                 10000,
               ],
+              accountStakeComplete: "0",
               totalStake: "102",
               completedStake: "102",
               tentativeWinning: true,
@@ -59,6 +63,8 @@ describe("server/getters/get-dispute-info", () => {
                 5000,
                 5000,
               ],
+              accountStakeComplete: "0",
+              accountStakeIncomplete: "0",
               totalStake: "20",
               completedStake: "0",
               size: "204",
@@ -77,6 +83,8 @@ describe("server/getters/get-dispute-info", () => {
                 0,
                 2,
               ],
+              accountStakeComplete: "0",
+              accountStakeIncomplete: "17",
               totalStake: "40102",
               completedStake: "102",
               size: "60000",
@@ -89,6 +97,7 @@ describe("server/getters/get-dispute-info", () => {
                 1,
                 1,
               ],
+              accountStakeComplete: "500",
               totalStake: "20000",
               completedStake: "20000",
               tentativeWinning: true,
@@ -121,6 +130,8 @@ describe("server/getters/get-dispute-info", () => {
                 10000,
                 0,
               ],
+              accountStakeComplete: "0",
+              accountStakeIncomplete: "0",
               totalStake: "0",
               completedStake: "0",
               size: "204",
@@ -133,6 +144,7 @@ describe("server/getters/get-dispute-info", () => {
                 0,
                 10000,
               ],
+              accountStakeComplete: "0",
               totalStake: "102",
               completedStake: "102",
               tentativeWinning: true,
@@ -143,6 +155,8 @@ describe("server/getters/get-dispute-info", () => {
                 5000,
                 5000,
               ],
+              accountStakeComplete: "0",
+              accountStakeIncomplete: "0",
               totalStake: "20",
               completedStake: "0",
               size: "204",
@@ -176,6 +190,8 @@ describe("server/getters/get-dispute-info", () => {
                 0,
                 2,
               ],
+              accountStakeComplete: "0",
+              accountStakeIncomplete: "0",
               totalStake: "40102",
               completedStake: "102",
               size: "60000",
@@ -188,6 +204,7 @@ describe("server/getters/get-dispute-info", () => {
                 1,
                 1,
               ],
+              accountStakeComplete: "0",
               totalStake: "20000",
               completedStake: "20000",
               tentativeWinning: true,
@@ -204,6 +221,8 @@ describe("server/getters/get-dispute-info", () => {
                 10000,
                 0,
               ],
+              accountStakeComplete: "0",
+              accountStakeIncomplete: "0",
               totalStake: "0",
               completedStake: "0",
               size: "204",
@@ -216,6 +235,7 @@ describe("server/getters/get-dispute-info", () => {
                 0,
                 10000,
               ],
+              accountStakeComplete: "0",
               totalStake: "102",
               completedStake: "102",
               tentativeWinning: true,
@@ -226,6 +246,8 @@ describe("server/getters/get-dispute-info", () => {
                 5000,
                 5000,
               ],
+              accountStakeComplete: "0",
+              accountStakeIncomplete: "0",
               totalStake: "20",
               completedStake: "0",
               size: "204",
