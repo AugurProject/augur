@@ -6,8 +6,8 @@
 ## Screenshots (if applicable)
 
 ## Submitter checklist
-- [] Test covering functionality added/fixed in
+- [ ] Test covering functionality added/fixed in
  
 ## Reviewer Checklist
-- [] Test/lint pass 
-- [] Post merge, story marked complete 
+- [ ] Test/lint pass 
+- [ ] Post merge, story marked complete 
