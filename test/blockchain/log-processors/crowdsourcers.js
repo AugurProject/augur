@@ -6,6 +6,7 @@ const { processDisputeCrowdsourcerCreatedLog, processDisputeCrowdsourcerCreatedL
   processDisputeCrowdsourcerContributionLog, processDisputeCrowdsourcerContributionLogRemoval,
   processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompletedLogRemoval }
   = require("../../../build/blockchain/log-processors/crowdsourcer");
+const { getMarketsWithReportingState }  = require("../../../build/server/getters/database");
 
 const getCrowdsourcer = (db, params, callback) => {
   db("crowdsourcers").first(
@@ -26,12 +27,12 @@ const getDisputesFromCrowdsourcer = (db, params, callback) => {
 const getCrowdsourcerAndMarket  = (db, params, callback) => {
   getCrowdsourcer(db, params, (err, crowdsourcer) => {
     if (err) return callback(err);
-    db("markets").first(["marketId", "reportingRoundsCompleted"])
-      .where({ marketId: crowdsourcer.marketId })
-      .asCallback((err, market) => {
+
+    getMarketsWithReportingState(db).where({ "markets.marketId": crowdsourcer.marketId })
+      .asCallback((err, markets) => {
         if (err) return callback(err);
 
-        callback(null, { market, crowdsourcer });
+        callback(null, { market: markets[0], crowdsourcer });
       });
   });
 };
@@ -131,8 +132,40 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         });
 
         assert.deepEqual(records.market, {
+          category: "test category",
+          consensusPayoutId: null,
+          creationBlockNumber: 1400000,
+          creationFee: 10,
+          creationTime: 1506473474,
+          designatedReportStake: 10,
+          designatedReporter: "0x0000000000000000000000000000000000000b0b",
+          endTime: 1506573470,
+          feeWindow: "0x1000000000000000000000000000000000000000",
+          finalizationTime: null,
+          initialReportSize: null,
+          isInvalid: null,
+          longDescription: null,
+          marketCreator: "0x0000000000000000000000000000000000000b0b",
+          marketCreatorFeeRate: 0.01,
+          marketCreatorFeesClaimed: 0,
+          marketCreatorFeesCollected: 0,
           marketId: "0x0000000000000000000000000000000000000001",
+          marketStateId: 1,
+          marketType: "categorical",
+          maxPrice: 1,
+          minPrice: 0,
+          numOutcomes: 8,
+          numTicks: 10000,
+          reportingFeeRate: 0.02,
           reportingRoundsCompleted: 1,
+          reportingState: "DESIGNATED_REPORTING",
+          resolutionSource: "http://www.trusted-third-party.com",
+          sharesOutstanding: 0,
+          shortDescription: "This is a categorical test market created by b0b.",
+          tag1: "test tag 1",
+          tag2: "test tag 2",
+          universe: "0x000000000000000000000000000000000000000b",
+          volume: 0,
         });
       },
       onCompletedRemoved: (err, records) => {
@@ -147,8 +180,40 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         });
 
         assert.deepEqual(records.market, {
+          category: "test category",
+          consensusPayoutId: null,
+          creationBlockNumber: 1400000,
+          creationFee: 10,
+          creationTime: 1506473474,
+          designatedReportStake: 10,
+          designatedReporter: "0x0000000000000000000000000000000000000b0b",
+          endTime: 1506573470,
+          feeWindow: "0x1000000000000000000000000000000000000000",
+          finalizationTime: null,
+          initialReportSize: null,
+          isInvalid: null,
+          longDescription: null,
+          marketCreator: "0x0000000000000000000000000000000000000b0b",
+          marketCreatorFeeRate: 0.01,
+          marketCreatorFeesClaimed: 0,
+          marketCreatorFeesCollected: 0,
           marketId: "0x0000000000000000000000000000000000000001",
+          marketStateId: 1,
+          marketType: "categorical",
+          maxPrice: 1,
+          minPrice: 0,
+          numOutcomes: 8,
+          numTicks: 10000,
+          reportingFeeRate: 0.02,
           reportingRoundsCompleted: 0,
+          reportingState: "DESIGNATED_REPORTING",
+          resolutionSource: "http://www.trusted-third-party.com",
+          sharesOutstanding: 0,
+          shortDescription: "This is a categorical test market created by b0b.",
+          tag1: "test tag 1",
+          tag2: "test tag 2",
+          universe: "0x000000000000000000000000000000000000000b",
+          volume: 0,
         });
       },
     },
