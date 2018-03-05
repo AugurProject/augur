@@ -27,7 +27,7 @@ describe("create-market/get-market-from-create-market-receipt", function () {
       ethrpc: {
         getTransactionReceipt: function (transactionHash, callback) {
           assert.strictEqual(transactionHash, "TRANSACTION_HASH");
-          callback({
+          callback(null, {
             blockHash: "0xd859203d97bdfe8c41605b9041d52fad3c4bd5c8324cafc8109cd4fba3518b78",
             blockNumber: "0x149eb3",
             contractAddress: null,
