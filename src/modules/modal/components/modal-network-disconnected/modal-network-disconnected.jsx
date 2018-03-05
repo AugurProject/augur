@@ -79,11 +79,17 @@ export default class ModalNetworkDisconnected extends Component {
 
     return (
       <section className={Styles.ModalNetworkDisconnected}>
-        <div className={Styles.ModalNetworkDisconnected__AugurLogo}>
-          {AugurLoadingLogo}
-        </div>
-        <h1>{titleText}</h1>
-        <span>{descriptionText}<a href="#" onClick={this.showForm}>here.</a></span>
+        {!s.showEnvForm &&
+          <div className={Styles.ModalNetworkDisconnected__AugurLogo}>
+            {AugurLoadingLogo}
+          </div>
+        }
+        {!s.showEnvForm &&
+          <div>
+            <h1>{titleText}</h1>
+            <span>{descriptionText}<a href="#" onClick={this.showForm}>here.</a></span>
+          </div>
+        }
         {s.showEnvForm &&
           <form
             className={Styles.ModalNetworkDisconnected__form}
