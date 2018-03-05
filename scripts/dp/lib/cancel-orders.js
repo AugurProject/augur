@@ -2,29 +2,8 @@
 
 var async = require("async");
 var chalk = require("chalk");
+var cancelOrder = require("./cancel-order");
 var debugOptions = require("../../debug-options");
-
-function cancelOrder(augur, orderId, orderType, marketId, outcome, auth, callback) {
-  augur.api.Orders.getAmount({ _orderId: orderId }, function (err, amount) {
-    if (err) return callback(err);
-    if (amount === "0") return callback(null);
-    augur.api.CancelOrder.cancelOrder({
-      meta: auth,
-      tx: { gas: augur.constants.CANCEL_ORDER_GAS },
-      _orderId: orderId,
-      onSent: function () {},
-      onSuccess: function () {
-        if (debugOptions.cannedMarkets) console.log(chalk.green(marketId + " " + outcome + " ") + chalk.red.bold(orderType) + chalk.green(" " + orderId));
-        callback(null);
-      },
-      onFailed: function (err) {
-        // log the failure to the console and continue canceling orders
-        console.error(chalk.red(marketId + " " + outcome + " ") + chalk.red.bold(orderType) + chalk.green(" " + orderId), err);
-        callback(null);
-      },
-    });
-  });
-}
 
 function cancelOrders(augur, creator, universe, auth, callback) {
   console.log(chalk.cyan("Canceling orders for"), chalk.green(creator), chalk.cyan("in universe"), chalk.green(universe));
