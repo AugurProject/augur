@@ -16,6 +16,9 @@ describe(`modules/reporting/actions/estimate-submit-initial-report.js`, () => {
   const store = mockStore(state)
 
   const augurSuccess = {
+    constants: {
+      DEFAULT_MAX_GAS: '0x0000',
+    },
     api: {
       Market: {
         doInitialReport: (options) => {
@@ -26,6 +29,9 @@ describe(`modules/reporting/actions/estimate-submit-initial-report.js`, () => {
   }
 
   const augurFailed = {
+    constants: {
+      DEFAULT_MAX_GAS: '0x0000',
+    },
     api: {
       Market: {
         doInitialReport: (options) => {

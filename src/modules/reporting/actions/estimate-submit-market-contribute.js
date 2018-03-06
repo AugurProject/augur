@@ -12,7 +12,7 @@ export const estimateSubmitMarketContribute = (marketId, amount, callback = logE
 
   augur.api.Market.contribute({
     meta: loginAccount.meta,
-    tx: { to: marketId, estimateGas: true, gas: '0x632ea0' },
+    tx: { to: marketId, estimateGas: true, gas: augur.constants.DEFAULT_MAX_GAS },
     _invalid: false,
     _payoutNumerators: payoutNumerators,
     _amount: amount,

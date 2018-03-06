@@ -11,6 +11,9 @@ describe(`modules/reporting/actions/estimate-submit-market-contribute.js`, () =>
   const store = mockStore(state)
 
   const augurSuccess = {
+    constants: {
+      DEFAULT_MAX_GAS: '0x0000',
+    },
     api: {
       Market: {
         contribute: (options) => {
@@ -21,6 +24,9 @@ describe(`modules/reporting/actions/estimate-submit-market-contribute.js`, () =>
   }
 
   const augurFailed = {
+    constants: {
+      DEFAULT_MAX_GAS: '0x0000',
+    },
     api: {
       Market: {
         contribute: (options) => {
