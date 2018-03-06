@@ -87,6 +87,13 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
         logIndex: 0,
       },
+      augur: {
+        constants: {
+          REPORTING_STATE: {
+            AWAITING_NEXT_WINDOW: "AWAITING_NEXT_WINDOW",
+          },
+        },
+      },
     },
     assertions: {
       onCreated: (err, records) => {
@@ -150,7 +157,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           marketCreatorFeesClaimed: 0,
           marketCreatorFeesCollected: 0,
           marketId: "0x0000000000000000000000000000000000000001",
-          marketStateId: 1,
+          marketStateId: 17,
           marketType: "categorical",
           maxPrice: 1,
           minPrice: 0,
@@ -158,7 +165,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           numTicks: 10000,
           reportingFeeRate: 0.02,
           reportingRoundsCompleted: 1,
-          reportingState: "DESIGNATED_REPORTING",
+          reportingState: "AWAITING_NEXT_WINDOW",
           resolutionSource: "http://www.trusted-third-party.com",
           sharesOutstanding: 0,
           shortDescription: "This is a categorical test market created by b0b.",
