@@ -53,7 +53,12 @@ export default class ReportingDisputeForm extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.currentOutcome) {
-      this.state.outcomes = this.state.outcomes.filter(outcome => outcome.id !== nextProps.currentOutcome.outcome)
+      this.state.outcomes = this.state.outcomes.filter(outcome => outcome.id !== nextProps.currentOutcome.id)
+    }
+    if (nextProps.otherOutcomes) {
+      if (this.props.market.marketType === SCALAR) {
+        nextProps.otherOutcomes.reduce(outcome => [...this.state.outcomes, outcome])
+      }
     }
   }
 
@@ -79,7 +84,6 @@ export default class ReportingDisputeForm extends Component {
       stake: stake ? stake.toNumber() : 0,
     })
   }
-
 
   validateOutcome(validations, selectedOutcome, selectedOutcomeName, isMarketInValid) {
     const updatedValidations = { ...validations }
