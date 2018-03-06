@@ -2,7 +2,7 @@ import Augur from "augur.js";
 import * as Knex from "knex";
 import { FormattedEventLog, ErrorCallback, Address, AsyncCallback } from "../../types";
 import { augurEmitter } from "../../events";
-import { insertPayout } from "./database";
+import { updateMarketState, rollbackMarketState, insertPayout } from "./database";
 import { QueryBuilder } from "knex";
 import { parallel } from "async";
 
@@ -111,6 +111,7 @@ export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, l
   db("crowdsourcers").update({ completed: 1 }).where({ crowdsourcerId: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
     if (err) return callback(err);
     parallel([
+      (next: AsyncCallback) => updateMarketState(db, log.market, log.blockNumber, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW, next),
       (next: AsyncCallback) => updateTentativeWinningPayout(db, log.market, next),
       (next: AsyncCallback) => updateMarketReportingRoundsCompleted(db, log.market, next),
     ], (err: Error|null) => {
@@ -125,6 +126,7 @@ export function processDisputeCrowdsourcerCompletedLogRemoval(db: Knex, augur: A
   db("crowdsourcers").update({ completed: null }).where({ crowdsourcerId: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
     if (err) return callback(err);
     parallel([
+      (next: AsyncCallback) => rollbackMarketState(db, log.market, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW, next),
       (next: AsyncCallback) => updateTentativeWinningPayout(db, log.market, next),
       (next: AsyncCallback) => updateMarketReportingRoundsCompleted(db, log.market, next),
     ], (err: Error|null) => {
