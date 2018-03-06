@@ -13,7 +13,12 @@ const loadOneOutcomeBidsOrAsks = (marketId, outcome, orderTypeLabel, callback = 
   const market = marketsData[marketId]
   if (!market) return callback(`market ${marketId} data not found`)
   dispatch(updateIsFirstOrderBookChunkLoaded(marketId, outcome, orderTypeLabel, false))
-  augur.trading.getOrders({ marketId, outcome, orderType: orderTypeLabel }, (err, orders) => {
+  augur.trading.getOrders({
+    marketId,
+    outcome,
+    orderType: orderTypeLabel,
+    orderState: augur.constants.ORDER_STATE.OPEN,
+  }, (err, orders) => {
     if (err) return callback(err)
     if (orders != null) {
       dispatch(insertOrderBookChunkToOrderBook(marketId, outcome, orderTypeLabel, has(orders, [marketId, outcome, orderTypeLabel]) ? orders[marketId][outcome][orderTypeLabel] : {}))
