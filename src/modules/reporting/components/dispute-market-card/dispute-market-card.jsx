@@ -5,6 +5,7 @@ import MarketLink from 'modules/market/components/market-link/market-link'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import BasicStyles from 'modules/market/components/market-basics/market-basics.styles'
 import MarketProperties from 'modules/market/containers/market-properties'
+import MarketReportingPayouts from 'modules/reporting/components/reporting-payouts/reporting-payouts'
 import Styles from 'modules/reporting/components/dispute-market-card/dispute-market-card.style'
 
 import { MARKETS } from 'modules/routes/constants/views'
@@ -40,6 +41,15 @@ const DisputeMarketCard = p => (
           {p.market.description}
         </MarketLink>
       </h1>
+
+      <MarketReportingPayouts outcomes={[
+        {id: 1, name: "Outcome 1", totalRep: 500, userRep: 250, goal: 1000},
+        {id: 2, name: "Outcome 2", totalRep: 200, userRep: 0, goal: 1000},
+        {id: 3, name: "Outcome 3", totalRep: 300, userRep: 0, goal: 1000},
+        {id: 4, name: "Outcome 4", totalRep: 400, userRep: 0, goal: 1000},
+        {id: 5, name: "Outcome 5", totalRep: 100, userRep: 0, goal: 1000}
+      ]} />
+
     </div>
     <div className={CommonStyles.MarketCommon__footer}>
       <MarketProperties {...p.market} />
