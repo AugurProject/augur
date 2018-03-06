@@ -19,7 +19,7 @@ function finalizeMarket(p) {
     if (parseInt(isFinalized, 16) === 1) return p.onSuccess(true);
     api().Market.finalize(assign({}, marketPayload, { tx: assign({}, marketPayload.tx, { send: false }) }), function (err, readyToFinalize) {
       if (err) return p.onFailed(err);
-      if (parseInt(readyToFinalize, 16) !== 1) return p.onSuccess(false);
+      if (readyToFinalize !== true) return p.onSuccess(false);
       api().Market.finalize(assign({}, immutableDelete(p, "market"), marketPayload));
     });
   });
