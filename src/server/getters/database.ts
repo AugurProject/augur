@@ -21,12 +21,12 @@ export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow): UIO
   };
 }
 
-export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime, outcomesInfo: Array<UIOutcomeInfo>): UIMarketInfo {
-  let consensus: UIConsensusInfo|null;
-  if (row.consensusPayoutId === null) {
+export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime, outcomesInfo: Array<UIOutcomeInfo>, winningPayoutRow: any|null): UIMarketInfo {
+  let consensus: any|null;
+  if (winningPayoutRow == null) {
     consensus = null;
   } else {
-    consensus = { outcomeId: row.consensusPayoutId, isInvalid: row.isInvalid } as UIConsensusInfo;
+    consensus = normalizePayouts(winningPayoutRow);
   }
   return {
     id: row.marketId,
