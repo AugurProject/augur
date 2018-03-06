@@ -42,6 +42,11 @@ const DisputeMarketCard = p => (
         </MarketLink>
       </h1>
 
+      {/*
+      Binary: Tenative, others (Yes, No, Invalid)
+      Categorical: Tentative, others (others + Invalid)
+      Scalar: Tentative -> outcomes I currently have stake in -> outcomes that have current stake -> outcomes that have stake + ( Invalid promissed last spot)
+      */}
       <MarketReportingPayouts outcomes={[
         {id: 1, name: "Outcome 1", totalRep: 500, userRep: 250, goal: 1000},
         {id: 2, name: "Outcome 2", totalRep: 450, userRep: 250, goal: 1000},
