@@ -292,7 +292,7 @@ export function assembleMarket(
 
       market.marketCreatorFeesCollected = formatEther(marketData.marketCreatorFeesCollected || 0)
 
-      market.reportableOutcomes = selectReportableOutcomes(market.type, market.outcomes)
+      market.reportableOutcomes = selectReportableOutcomes(market.marketType, market.outcomes)
       const indeterminateOutcomeId = market.type === BINARY ? BINARY_INDETERMINATE_OUTCOME_ID : CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID
       market.reportableOutcomes.push({ id: indeterminateOutcomeId, name: INDETERMINATE_OUTCOME_NAME })
 
@@ -315,7 +315,9 @@ export function assembleMarket(
       if (marketData.consensus) {
         market.consensus = { ...marketData.consensus }
         if (market.type !== SCALAR && market.reportableOutcomes.length) {
-          const marketOutcome = market.reportableOutcomes.find(outcome => outcome.id === market.consensus.outcomeId)
+          const winningOutcome = calculateWinningOutcome(market)
+          const marketOutcome = market.reportableOutcomes.find(outcome => outcome.id === winningOutcome)
+          console.log('marketOutcome', marketOutcome);
           if (marketOutcome) market.consensus.outcomeName = marketOutcome.name
         }
         if (market.consensus.proportionCorrect) {
@@ -348,4 +350,10 @@ export const selectScalarMinimum = (market) => {
   const scalarMinimum = {}
   if (market && market.type === SCALAR) scalarMinimum.minPrice = market.minPrice
   return scalarMinimum
+}
+
+function calculateWinningOutcome(market) {
+  if (market.consensus.isInvalid) return "0.5"
+  const winningOutcomeIndex = market.consensus.payout.indexOf(market.numTicks).toString()
+  return winningOutcomeIndex
 }
