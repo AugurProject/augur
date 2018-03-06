@@ -2,7 +2,7 @@ import React from 'react'
 import { Switch } from 'react-router-dom'
 
 import AuthenticatedRoute from 'modules/routes/components/authenticated-route/authenticated-route'
-import ReportingDisputeMarkets from 'modules/reporting/containers/reporting-dispute-markets'
+import ReportingDisputeMarkets from 'modules/reporting/containers/reporting-dispute'
 import ReportingReportMarkets from 'modules/reporting/containers/reporting-report-markets'
 import makePath from 'modules/routes/helpers/make-path'
 
