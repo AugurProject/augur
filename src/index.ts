@@ -8,7 +8,7 @@ import { runServer } from "./server/run-server";
 import { NetworkConfiguration } from "augur-core";
 
 // tslint:disable-next-line:no-var-requires
-const {augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers } = require("../config");
+const { augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers } = require("../config");
 
 let db: Knex;
 if (process.env.DATABASE_URL) {
@@ -36,11 +36,10 @@ const augur: Augur = new Augur();
 
 augur.rpc.setDebugOptions({ broadcast: false });
 augur.events.nodes.ethereum.on("disconnect", () => {
-  console.log(("Disconnected from eth node"));
-  process.exit(1);
+  throw new Error("Disconnected from eth node");
 });
 
-const { app, servers }  = runServer(db, augur);
+const { app, servers } = runServer(db, augur);
 
 checkAugurDbSetup(db, (err?: Error|null): void => {
   if (err) {
