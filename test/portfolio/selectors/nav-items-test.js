@@ -43,13 +43,14 @@ describe('modules/portfolio/selectors/nav-items', () => {
   }
 
   const selectors = {
-    selectMyPositionsSummary: () => {},
+    generateMarketsPositionsSummary: () => {},
     selectMyMarketsSummary: () => {},
     selectMyReportsSummary: () => {},
+    selectAllMarkets: () => {},
     selectLinks: () => {},
   }
 
-  const stubbedMyPositionsSummary = sinon.stub(selectors, 'selectMyPositionsSummary').callsFake(() => (
+  const stubbedGenerateMarketsPositionsSummary = sinon.stub(selectors, 'generateMarketsPositionsSummary').callsFake(() => (
     {
       numPositions: formatNumber(10, { denomination: 'positions' }),
       totalNet: formatEtherTokens(2),
@@ -69,10 +70,13 @@ describe('modules/portfolio/selectors/nav-items', () => {
     }
   ))
 
+  const stubbedMarketsAll = sinon.stub(selectors, 'selectAllMarkets').returns([])
+
   const proxiedSelector = proxyquire('../../../src/modules/portfolio/selectors/portfolio-nav-items', {
-    '../../my-positions/selectors/my-positions-summary': stubbedMyPositionsSummary,
+    '../../my-positions/selectors/my-positions-summary': { generateMarketsPositionsSummary: stubbedGenerateMarketsPositionsSummary },
     '../../my-markets/selectors/my-markets-summary': stubbedMyMarketsSummary,
     '../../my-reports/selectors/my-reports-summary': stubbedMyReportsSummary,
+    '../../markets/selectors/markets-all': stubbedMarketsAll,
     '../../../selectors': stubbedSelectors,
   })
 
@@ -114,7 +118,7 @@ describe('modules/portfolio/selectors/nav-items', () => {
   })
 
   it(`should call 'selectMyPositionsSummary' once`, () => {
-    assert(stubbedMyPositionsSummary.calledOnce, `Didn't call 'selectMyPositionsSummary' once as expected`)
+    assert(stubbedGenerateMarketsPositionsSummary.calledOnce, `Didn't call 'generateMarketsPositionsSummary' once as expected`)
   })
 
   it(`should call 'selectMyMarketsSummary' once`, () => {

@@ -1,4 +1,5 @@
-import selectMyPositionsSummary from 'modules/my-positions/selectors/my-positions-summary'
+import { generateMarketsPositionsSummary } from 'modules/my-positions/selectors/my-positions-summary'
+import selectAllMarkets from 'modules/markets/selectors/markets-all'
 import selectMyMarketsSummary from 'modules/my-markets/selectors/my-markets-summary'
 import selectMyReportsSummary from 'modules/my-reports/selectors/my-reports-summary'
 
@@ -10,7 +11,8 @@ export default function () {
 }
 
 export const selectPortfolioNavItems = () => {
-  const positionsSummary = selectMyPositionsSummary()
+  const markets = selectAllMarkets()
+  const positionsSummary = generateMarketsPositionsSummary(markets)
   const marketsSummary = selectMyMarketsSummary()
   const reportsSummary = selectMyReportsSummary()
   return [
