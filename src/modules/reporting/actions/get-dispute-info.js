@@ -11,7 +11,7 @@ export const getDisputeInfo = (marketId, callback = logError) => (dispatch, getS
     }, (err, result) => {
       if (err) return callback(err)
 
-      callback(result)
+      callback(result[0])
     },
   )
 }

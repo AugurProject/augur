@@ -14,7 +14,7 @@ const ReportingDisputeConfirm = p => (
           <ul className={ConfirmStyles['Confirm__list--left-align']}>
             <li>
               <span>Current Outcome</span>
-              <span>{ p.market.currentOutcome.name }</span>
+              <span>{ p.currentOutcome.name }</span>
             </li>
             <li>
               <span>Proposed Outcome</span>
@@ -27,12 +27,12 @@ const ReportingDisputeConfirm = p => (
             { p.stake &&
               <li>
                 <span>Stake</span>
-                <span>{ p.stake instanceof BigNumber ? p.stake.toNumber() : p.stake } REP</span>
+                <span>{ p.stake } REP</span>
               </li>
             }
             <li>
               <span>Gas</span>
-              <span>0.0023 ETH (2.8%)</span>
+              <span>{ p.gasEstimate } ETH</span>
             </li>
           </ul>
         </div>
@@ -43,8 +43,10 @@ const ReportingDisputeConfirm = p => (
 
 ReportingDisputeConfirm.propTypes = {
   market: PropTypes.object.isRequired,
+  currentOutcome: PropTypes.object.isRequired,
   selectedOutcome: PropTypes.string.isRequired,
-  stake: PropTypes.string.isRequired,
+  stake: PropTypes.number.isRequired,
+  gasEstimate: PropTypes.string.isRequired,
   isMarketValid: PropTypes.bool,
 }
 

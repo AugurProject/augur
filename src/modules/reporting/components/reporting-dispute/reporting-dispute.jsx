@@ -1,78 +1,241 @@
 import React, { Component } from 'react'
-import { Helmet } from 'react-helmet'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import { Helmet } from 'react-helmet'
+import { augur } from 'services/augurjs'
 
-import ReportingHeader from 'modules/reporting/containers/reporting-header'
-import ReportDisputeNoRepState from 'src/modules/reporting/components/reporting-dispute-no-rep-state/reporting-dispute-no-rep-state'
+import { formatEtherEstimate, formatGasCostToEther } from 'utils/format-number'
+import MarketPreview from 'modules/market/components/market-preview/market-preview'
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
-import DisputeMarketCard from 'modules/reporting/components/dispute-market-card/dispute-market-card'
+import ReportingDisputeForm from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form'
+import ReportingDisputeConfirm from 'modules/reporting/components/reporting-dispute-confirm/reporting-dispute-confirm'
+import { TYPE_VIEW } from 'modules/market/constants/link-types'
+import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 
-const Styles = require('./reporting-dispute.styles')
+import { isEmpty } from 'lodash'
+import FormStyles from 'modules/common/less/form'
+import Styles from 'modules/reporting/components/reporting-report/reporting-report.styles'
 
 export default class ReportingDispute extends Component {
+
   static propTypes = {
-    location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    doesUserHaveRep: PropTypes.bool.isRequired,
-    markets: PropTypes.array.isRequired,
-    marketsCount: PropTypes.number.isRequired,
-    isMobile: PropTypes.bool,
-    navigateToAccountDepositHandler: PropTypes.func.isRequired,
+    market: PropTypes.object.isRequired,
+    universe: PropTypes.string.isRequired,
+    marketId: PropTypes.string.isRequired,
     isConnected: PropTypes.bool.isRequired,
-    isMarketsLoaded: PropTypes.bool.isRequired,
-    loadMarkets: PropTypes.func.isRequired,
+    isMarketLoaded: PropTypes.bool.isRequired,
+    loadFullMarket: PropTypes.func.isRequired,
+    //submitMarketContribute: PropTypes.func.isRequired,
+    //estimateSubmitMarketContribute: PropTypes.func.isRequired,
+    getDisputeInfo: PropTypes.func.isRequired,
   }
 
   constructor(props) {
     super(props)
 
     this.state = {
-      disputeRound: 1,
+      currentStep: 0,
+      showingDetails: true,
+      isMarketInValid: null,
+      selectedOutcome: '',
+      selectedOutcomeName: '',
+      // need to get value from augur-node for
+      // designated reporter or initial reporter (open reporting)
+      stake: 0,
+      validations: {
+        stake: false,
+        selectedOutcome: null,
+      },
+      reporterGasCost: null,
+      designatedReportNoShowReputationBond: 0,
+      gasEstimate: '0',
+      disputeBond: '0',
+      disputeRound: 0,
+      currentOutcome: {},
+      otherOutcomes: [],
+      stakes: [],
     }
+
+    this.prevPage = this.prevPage.bind(this)
+    this.nextPage = this.nextPage.bind(this)
+    this.updateState = this.updateState.bind(this)
+    this.toggleDetails = this.toggleDetails.bind(this)
   }
 
   componentWillMount() {
-    if (this.props.isConnected && !this.props.isMarketsLoaded) {
-      this.props.loadMarkets()
+    this.getDisputeInfo()
+    if (this.props.isConnected && !this.props.isMarketLoaded) {
+      this.props.loadFullMarket()
     }
   }
 
+  getDisputeInfo() {
+    this.props.getDisputeInfo(this.props.marketId, (disputeInfo) => {
+
+      // calculate currentOutcome
+      disputeInfo.stakes.map(stake => this.calculateOutcome(stake))
+      const outcome = disputeInfo.stakes.find(item => item.tentativeWinning) || {}
+      const other = disputeInfo.stakes.filter(item => !item.tentativeWinning) || []
+
+      this.setState({
+        disputeRound: disputeInfo.disputeRound || 0,
+        stakes: disputeInfo.stakes,
+        currentOutcome: outcome,
+        otherOutcomes: other,
+      })
+    })
+  }
+
+  // todo move this to selector
+  calculateOutcome(stake) {
+    if (!stake) return {}
+    if (stake.payout.length === 0) return {}
+    if (stake.invalid === true) return stake
+
+    const { minPrice, maxPrice, numTicks } = this.props.market
+    if (this.props.market.marketType === SCALAR) {
+      const reportNormalizedToZero = stake.payout[0] + minPrice
+      const priceRange = maxPrice - minPrice
+      stake.outcome = (reportNormalizedToZero / numTicks) * priceRange
+      stake.name = stake.outcome
+    } else {
+      stake.outcome = stake.payout.findIndex(item => item > 0)
+      stake.name = this.props.market.outcomes[stake.outcome]
+      if (this.props.market.marketType === BINARY && stake.outcome === 0) stake.name = 'No'
+    }
+    return stake
+  }
+
+  prevPage() {
+    this.setState({ currentStep: this.state.currentStep <= 0 ? 0 : this.state.currentStep - 1 })
+  }
+
+  nextPage() {
+    this.setState({ currentStep: this.state.currentStep >= 1 ? 1 : this.state.currentStep + 1 })
+  }
+
+  updateState(newState) {
+    // calculate gas estimate if REP value changes
+    console.log('update state')
+    this.setState(newState)
+  }
+
+  toggleDetails() {
+    this.setState({ showingDetails: !this.state.showingDetails })
+  }
+
+  calculateGasEstimates() {
+    // TODO: format stake
+/*
+    this.props.estimateSubmitMarketContribute(this.props.market.id, this.props.stake, (err, gasEstimateValue) => {
+      if (err) return console.error(err)
+
+      const gasPrice = augur.rpc.getGasPrice()
+      this.setState({
+        gasEstimate: formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice),
+      })
+    })
+    */
+  }
+
   render() {
-    const p = this.props
     const s = this.state
+    const p = this.props
 
     return (
       <section>
         <Helmet>
-          <title>Dispute</title>
+          <title>Submit Dispute</title>
         </Helmet>
-        <section className={Styles.ReportDispute}>
-          <ReportingHeader
-            heading="Dispute"
-            showReportingEndDate
-          />
-          { !p.doesUserHaveRep &&
-          <ReportDisputeNoRepState
-            btnText="Add Funds"
-            message="You have 0 REP available. Add funds to dispute markets or purchase participation tokens."
-            onClickHandler={p.navigateToAccountDepositHandler}
-          />}
-        </section>
-        { p.marketsCount > 0 &&
-            p.markets.map(market =>
-              (<DisputeMarketCard
-                key={market.id}
-                market={market}
-                disputeRound={s.disputeRound}
-                isMobile={p.isMobile}
-                location={p.location}
-                history={p.history}
-              />))
+        { !isEmpty(p.market) &&
+        <MarketPreview
+          {...p.market}
+          isLogged={p.isLogged}
+          location={p.location}
+          history={p.history}
+          cardStyle="single-card"
+          linkType={TYPE_VIEW}
+          buttonText="View"
+          showAdditionalDetailsToggle
+          showingDetails={s.showingDetails}
+          toggleDetails={this.toggleDetails}
+          disputeRound={s.disputeRound}
+        />
         }
-        { p.marketsCount === 0 &&
-          <NullStateMessage
-            message="There are currently no markets available for dispute."
-          />
+        { !isEmpty(p.market) && s.showingDetails &&
+          <div className={Styles[`ReportingReportMarket__details-container-wrapper`]}>
+            <div className={Styles[`ReportingReportMarket__details-container`]}>
+              <div className={Styles.ReportingReportMarket__details}>
+                <span>
+                  {p.market.extraInfo}
+                </span>
+              </div>
+              <div className={Styles[`ReportingReportMarket__resolution-source`]}>
+                <h4>Resolution Source:</h4>
+                <span>{p.market.resolutionSource || 'Outcome will be determined by news media'}</span>
+              </div>
+            </div>
+          </div>
+        }
+        { !isEmpty(p.market) &&
+          <article className={FormStyles.Form}>
+            { s.currentStep === 0 &&
+              <ReportingDisputeForm
+                market={p.market}
+                updateState={this.updateState}
+                isMarketInValid={s.isMarketInValid}
+                selectedOutcome={s.selectedOutcome}
+                stake={s.stake}
+                validations={s.validations}
+                disputeBond={s.disputeBond}
+                currentOutcome={s.currentOutcome}
+                otherOutcomes={s.otherOutcomes}
+                stakes={s.stakes}
+              />
+            }
+            { s.currentStep === 1 &&
+              <ReportingDisputeConfirm
+                market={p.market}
+                isMarketInValid={s.isMarketInValid}
+                selectedOutcome={s.selectedOutcomeName}
+                stake={s.stake}
+                designatedReportNoShowReputationBond={s.designatedReportNoShowReputationBond}
+                reporterGasCost={s.reporterGasCost}
+                isOpenReporting={p.isOpenReporting}
+                currentOutcome={s.currentOutcome}
+                gasEstimate={s.gasEstimate}
+              />
+            }
+            <div className={FormStyles.Form__navigation}>
+              <button
+                className={classNames(FormStyles.Form__prev, { [`${FormStyles['hide-button']}`]: s.currentStep === 0 })}
+                onClick={this.prevPage}
+              >Previous
+              </button>
+              <button
+                className={classNames(FormStyles.Form__next, { [`${FormStyles['hide-button']}`]: s.currentStep === 1 })}
+                disabled={!Object.keys(s.validations).every(key => s.validations[key] === true)}
+                onClick={Object.keys(s.validations).every(key => s.validations[key] === true) ? this.nextPage : undefined}
+              >Report
+              </button>
+              { s.currentStep === 1 &&
+              <button
+                className={FormStyles.Form__submit}
+                onClick={() => p.submitMarketContribute(p.market.id, s.selectedOutcome, s.isMarketInValid, p.history)}
+              >Submit
+              </button>
+              }
+            </div>
+          </article>
+        }
+        { isEmpty(p.market) &&
+          <div className={Styles.NullState}>
+            <NullStateMessage
+              message="Market not found"
+              className={Styles.NullState}
+            />
+          </div>
         }
       </section>
     )

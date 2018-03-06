@@ -9,8 +9,8 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 import getValue from 'utils/get-value'
 
 // TODO: use market contribute when get's merged up
-import { submitMarketContribute } from 'modules/reporting/actions/submit-initial-report'
-import { estimateSubmitMarketContribute } from 'modules/reporting/actions/estimate-submit-initial-report'
+//import { submitMarketContribute } from 'modules/reporting/actions/submit-market-contribute'
+//import { estimateSubmitMarketContribute } from 'modules/reporting/actions/estimate-submit-market-contribute'
 import { getDisputeInfo } from 'modules/reporting/actions/get-dispute-info'
 import { constants } from 'services/augurjs'
 
@@ -25,9 +25,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
-  submitMarketContribute: (marketId, outcomeValue, amount, invalid, history) => dispatch(submitMarketContribute(marketId, outcomeValue, amount, invalid, history)),
-  estimateSubmitMarketContribute: (marketId, outcomeValue, amount, invalid, history) => dispatch(estimateSubmitMarketContribute(marketId, outcomeValue, amount, invalid, history)),
-  getDisputeInfo: marketId => dispatch(getDisputeInfo(marketId)),
+  //submitMarketContribute: (marketId, outcomeValue, amount, invalid, history) => dispatch(submitMarketContribute(marketId, outcomeValue, amount, invalid, history)),
+  //estimateSubmitMarketContribute: (marketId, outcomeValue, amount, invalid, history) => dispatch(estimateSubmitMarketContribute(marketId, outcomeValue, amount, invalid, history)),
+  getDisputeInfo: (marketId, callback) => dispatch(getDisputeInfo(marketId, callback)),
 })
 
 
@@ -44,9 +44,9 @@ const mergeProps = (sP, dP, oP) => {
     isMarketLoaded: sP.marketsData[marketId] != null,
     market,
     loadFullMarket: () => dP.loadFullMarket(marketId),
-    submitMarketContribute: (marketId, selectedOutcome, invalid, amount, history) => dP.submitMarketContribute(marketId, selectedOutcome, invalid, amount, history),
-    estimateSubmitMarketContribute: (marketId, selectedOutcome, invalid, amount, history) => dP.estimateSubmitMarketContribute(marketId, selectedOutcome, invalid, amount, history),
-    getDisputeInfo: marketId => dP.getDisputeInfo(marketId),
+    //submitMarketContribute: (marketId, selectedOutcome, invalid, amount, history) => dP.submitMarketContribute(marketId, selectedOutcome, invalid, amount, history),
+    //estimateSubmitMarketContribute: (marketId, selectedOutcome, invalid, amount, history) => dP.estimateSubmitMarketContribute(marketId, selectedOutcome, invalid, amount, history),
+    getDisputeInfo: (marketId, callback) => dP.getDisputeInfo(marketId, callback),
   }
 }
 
