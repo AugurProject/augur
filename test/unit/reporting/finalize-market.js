@@ -87,7 +87,7 @@ describe("reporting/finalize-market", function () {
             },
             finalize: function (payload, callback) {
               assert.strictEqual(payload.tx.to, "MARKET_CONTRACT_ADDRESS");
-              if (payload.tx.send === false) return callback(null, "0x1");
+              if (payload.tx.send === false) return callback(null, true);
               assert.strictEqual(payload.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.isFunction(payload.onSent);
               assert.isFunction(payload.onSuccess);
