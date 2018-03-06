@@ -40,7 +40,7 @@ describe(`modules/reporting/actions/estimate-submit-market-contribute.js`, () =>
     estimateSubmitMarketContributeReqireAPI.__ResetDependency__('augur')
   })
 
-  it(`should call the expected method`, () => {
+  it(`should get error for market id empty`, () => {
     estimateSubmitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
     store.dispatch(estimateSubmitMarketContribute('', 1000, (value) => {
       assert.deepEqual(value, 'Market not found', `Didn't value as expected`)
@@ -48,14 +48,14 @@ describe(`modules/reporting/actions/estimate-submit-market-contribute.js`, () =>
   })
 
 
-  it(`should call the expected method`, () => {
+  it(`should get error for market id is null`, () => {
     estimateSubmitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
     store.dispatch(estimateSubmitMarketContribute(null, 1000, (value) => {
       assert.deepEqual(value, 'Market not found', `Didn't value as expected`)
     }))
   })
 
-  it(`should call the expected method`, () => {
+  it(`should get gas cost value`, () => {
     estimateSubmitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
     store.dispatch(estimateSubmitMarketContribute('testMarketId', 1000, (err, value) => {
       assert.deepEqual(value, 'gasCostValue', `Didn't value as expected`)
@@ -63,7 +63,7 @@ describe(`modules/reporting/actions/estimate-submit-market-contribute.js`, () =>
   })
 
 
-  it(`should call the expected method`, () => {
+  it(`should get error from failed`, () => {
     estimateSubmitMarketContributeReqireAPI.__Rewire__('augur', augurFailed)
     store.dispatch(estimateSubmitMarketContribute('testMarketId', 1000, (value) => {
       assert.deepEqual(value, 'Error', `Didn't value as expected`)

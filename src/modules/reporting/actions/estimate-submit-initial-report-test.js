@@ -45,16 +45,15 @@ describe(`modules/reporting/actions/estimate-submit-initial-report.js`, () => {
     estimateSubmitInitialReportReqireAPI.__ResetDependency__('augur')
   })
 
-  describe('empty marketId', () => {
-    it(`should call the expected method`, () => {
-      estimateSubmitInitialReportReqireAPI.__Rewire__('augur', augurSuccess)
-      store.dispatch(estimateSubmitInitialReport('', (value) => {
-        assert.deepEqual(value, 'Market not found', `Didn't value as expected`)
-      }))
-    })
+  it(`should call the expected method`, () => {
+    estimateSubmitInitialReportReqireAPI.__Rewire__('augur', augurSuccess)
+    store.dispatch(estimateSubmitInitialReport('', (value) => {
+      assert.deepEqual(value, 'Market not found', `Didn't value as expected`)
+    }))
   })
 
-  describe(`should call the expected method`, () => {
+
+  it(`should get error back`, () => {
     estimateSubmitInitialReportReqireAPI.__Rewire__('augur', augurSuccess)
     store.dispatch(estimateSubmitInitialReport(null, (value) => {
       assert.deepEqual(value, 'Market not found', `Didn't value as expected`)
@@ -62,7 +61,7 @@ describe(`modules/reporting/actions/estimate-submit-initial-report.js`, () => {
   })
 
 
-  describe(`should call the expected method`, () => {
+  it(`should get gas cost value back`, () => {
     estimateSubmitInitialReportReqireAPI.__Rewire__('augur', augurSuccess)
     store.dispatch(estimateSubmitInitialReport('testMarketId', (err, value) => {
       assert.deepEqual(value, 'gasCostValue', `Didn't value as expected`)
@@ -70,7 +69,7 @@ describe(`modules/reporting/actions/estimate-submit-initial-report.js`, () => {
   })
 
 
-  describe(`should call the expected method`, () => {
+  it(`should get error from failed`, () => {
     estimateSubmitInitialReportReqireAPI.__Rewire__('augur', augurFailed)
     store.dispatch(estimateSubmitInitialReport('testMarketId', (value) => {
       assert.deepEqual(value, 'Error', `Didn't value as expected`)
