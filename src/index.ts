@@ -50,6 +50,7 @@ checkAugurDbSetup(db, (err?: Error|null): void => {
   syncAugurNodeWithBlockchain(db, augur, networkConfig, uploadBlockNumbers, (err?: Error|null): void => {
     if (err) {
       console.error("syncAugurNodeWithBlockchain:", err);
+      console.error(err.stack);
       servers.forEach((websocketServer) => websocketServer.close());
       process.exit(1);
     }
