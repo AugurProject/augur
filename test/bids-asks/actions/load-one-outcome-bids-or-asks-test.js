@@ -7,6 +7,7 @@ import configureMockStore from 'redux-mock-store'
 const order1 = { amount: '1' }
 const order2 = { amount: '1.2' }
 const marketsData = { MARKET_0: { minPrice: '0', maxPrice: '1' } }
+const constants = { ORDER_STATE: { OPEN: 'OPEN' } }
 
 describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
   proxyquire.noPreserveCache()
@@ -35,6 +36,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
     stub: {
       augurjs: {
         augur: {
+          constants,
           trading: {
             getOrders: () => assert.fail(),
           },
@@ -62,6 +64,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
     stub: {
       augurjs: {
         augur: {
+          constants,
           trading: {
             getOrders: () => assert.fail(),
           },
@@ -89,6 +92,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
     stub: {
       augurjs: {
         augur: {
+          constants,
           trading: {
             getOrders: () => assert.fail(),
           },
@@ -116,6 +120,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
     stub: {
       augurjs: {
         augur: {
+          constants,
           trading: {
             getOrders: () => assert.fail(),
           },
@@ -143,6 +148,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
     stub: {
       augurjs: {
         augur: {
+          constants,
           trading: {
             getOrders: (p, callback) => {
               callback(null, {})
@@ -190,6 +196,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
     stub: {
       augurjs: {
         augur: {
+          constants,
           trading: {
             getOrders: (p, callback) => {
               callback(null, {
