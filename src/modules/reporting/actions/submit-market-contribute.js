@@ -8,7 +8,7 @@ export const submitMarketContribute = (marketId, selectedOutcome, invalid, amoun
   const { loginAccount, marketsData } = getState()
   const outcome = parseInt(selectedOutcome, 10)
 
-  if (!marketId || isNaN(outcome)) return callback(null)
+  if (!marketId || (isNaN(outcome) && !invalid)) return callback(null)
   if (!invalid && outcome < 0) return callback(null)
 
   const market = marketsData[marketId]

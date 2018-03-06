@@ -50,79 +50,42 @@ describe(`modules/reporting/actions/submit-market-contribute.js`, () => {
   const getPayoutNumerators = sinon.stub().returns([10000, 0])
   submitMarketContributeReqireAPI.__Rewire__('getPayoutNumerators', getPayoutNumerators)
 
-  const test = (t) => {
-    it(t.description, () => {
-      t.assertions()
-    })
-  }
-
-  describe('history is called', () => {
-    test({
-      description: `should call the expected method`,
-      assertions: () => {
-        submitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
-        store.dispatch(submitMarketContribute('testMarketId', 0, false, 1000, history, callback))
-        assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
-        assert(history.push.calledOnce, `Didn't call 'history' once as expected`)
-      },
-    })
+  it(`should call the expected method`, () => {
+    submitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
+    store.dispatch(submitMarketContribute('testMarketId', 0, false, 1000, history, callback))
+    assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
+    assert(history.push.calledOnce, `Didn't call 'history' once as expected`)
   })
 
-  describe('null marketId', () => {
-    test({
-      description: `should call the expected method`,
-      assertions: () => {
-        submitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
-        store.dispatch(submitMarketContribute(null, 0, false, 1000, history, callback))
-        assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
-        assert(history.push.notCalled, `Did call 'history' not expected`)
-      },
-    })
+  it(`should call the expected method`, () => {
+    submitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
+    store.dispatch(submitMarketContribute(null, 0, false, 1000, history, callback))
+    assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
+    assert(history.push.notCalled, `Did call 'history' not expected`)
   })
 
-  describe('empty marketId', () => {
-    test({
-      description: `should call the expected method`,
-      assertions: () => {
-        submitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
-        store.dispatch(submitMarketContribute('', 0, false, 1000, history, callback))
-        assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
-        assert(history.push.notCalled, `Did call 'history' not expected`)
-      },
-    })
+
+  it(`should call the expected method`, () => {
+    submitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
+    store.dispatch(submitMarketContribute('', 0, false, 1000, history, callback))
+    assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
+    assert(history.push.notCalled, `Did call 'history' not expected`)
   })
 
-  describe('non number outcome', () => {
-    beforeEach(() => {
-      submitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
-      store.dispatch(submitMarketContribute('testMarketId', 'blah', false, 1000, history, callback))
-    })
 
-    test({
-      description: `should call callback`,
-      assertions: () => {
-        assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
-      },
-    })
-
-    test({
-      description: `should not call histor`,
-      assertions: () => {
-        assert(history.push.notCalled, `Did call 'history' not expected`)
-      },
-    })
+  it('non number outcome', () => {
+    submitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
+    store.dispatch(submitMarketContribute('testMarketId', 'blah', false, 1000, history, callback))
+    assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
+    assert(history.push.notCalled, `Did call 'history' not expected`)
   })
 
-  describe('onFail from server', () => {
-    test({
-      description: `should call the expected method`,
-      stub: sinon.stub().throws(),
-      assertions: () => {
-        submitMarketContributeReqireAPI.__Rewire__('augur', augurFailed)
-        store.dispatch(submitMarketContribute('testMarketId', 0, false, 1000, history, callback))
-        assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
-        assert(history.push.calledOnce, `Did call 'history' not expected`)
-      },
-    })
+
+  it(`should call the expected method`, () => {
+    submitMarketContributeReqireAPI.__Rewire__('augur', augurFailed)
+    store.dispatch(submitMarketContribute('testMarketId', 0, false, 1000, history, callback))
+    assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
+    assert(history.push.calledOnce, `Did call 'history' not expected`)
   })
+
 })
