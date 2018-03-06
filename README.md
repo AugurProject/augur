@@ -8,11 +8,6 @@ Augur Node is designed to be a standalone application, including a local
 database setup that supports sqlite as well as postgresql. We use knex to
 manage the local migrations and schema changes.
 
-## Deployment
-If you just wanna get up an running quickly there is a one-click heroku deployment option.
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=http://github.com/AugurProject/augur-node/tree/feature/3862_heroku&env[ENDPOINT_HTTP]=PUT_YOUR_ENDPOINT_IN_YOUR_CONFIG)
-
 ## Building
 This project uses typescript and can be safely built via: `npm run build` or directly with `tsc`
 
