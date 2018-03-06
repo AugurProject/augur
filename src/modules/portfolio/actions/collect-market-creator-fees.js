@@ -1,6 +1,7 @@
 import speedomatic from 'speedomatic'
 import { augur } from 'services/augurjs'
 import logError from 'utils/log-error'
+import noop from 'utils/noop'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 
 export const collectMarketCreatorFees = (marketId, callback = logError) => (dispatch, getState) => {
@@ -16,11 +17,20 @@ export const collectMarketCreatorFees = (marketId, callback = logError) => (disp
         const bnAttoEthBalance = speedomatic.bignum(attoEthBalance)
         const combined = speedomatic.unfix(bnAttoEthBalance.add(bnCashBalance), 'string')
         if (combined > 0) {
-          augur.api.Mailbox.withdrawEther({ tx: { to: marketMailboxAddress } }, logError) // TODO should be sendTransaction?
-          dispatch(loadMarketsInfo([marketId])) // TODO should loadMarketsInfo be called after withdrawEther finishes?
+          // something to collect? sendTransaction to withdrawEther
+          augur.api.Mailbox.withdrawEther({
+            tx: { to: marketMailboxAddress },
+            onSent: noop,
+            onSuccess: (res) => {
+              dispatch(loadMarketsInfo([marketId]))
+              callback(null, combined)
+            },
+            onFailed: err => callback(err),
+          })
+        } else {
+          // else callback to let the callback know there is 0 to collect.
+          callback(null, combined)
         }
-        // TODO should callback be called after sending withdrawEther?
-        callback(null, combined)
       })
     })
   })

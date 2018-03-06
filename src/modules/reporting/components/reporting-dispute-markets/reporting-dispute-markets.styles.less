@@ -1,0 +1,38 @@
+@import (reference) '~assets/styles/shared';
+
+.ReportSection {
+  margin-bottom: 3.75rem;
+}
+
+.ReportSection__heading {
+  &:extend(.caps--large);
+
+  color: @color-white;
+  margin-bottom: 1rem;
+  padding: 0 2rem;
+}
+
+.NoMarketsFound {
+  border-bottom: 1px rgba(151, 151, 151, 0.31) solid;
+  margin-left: 2em;
+  margin-right: 2em;
+}
+
+.NoMarketsFound__message {
+  color: @color-lightgray;
+  font-size: @font-size-large;
+  letter-spacing: 0;
+  padding-bottom: 3.75rem;
+}
+
+@media @breakpoint-mobile {
+  .ReportSection__heading {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .NoMarketsFound {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+}
