@@ -6,7 +6,7 @@ var isObject = require("../utils/is-object");
 
 function getMarketFromCreateMarketReceipt(transactionHash, callback) {
   ethrpc.getTransactionReceipt(transactionHash, function (err, receipt) {
-    if (err) return callback(new Error("getTransactionReceipt failed:", err));
+    if (err) return callback(err);
     if (!isObject(receipt)) return callback(new Error("Transaction receipt not found for " + transactionHash));
     var marketCreatedLogs = findEventLogsInLogArray("Augur", "MarketCreated", receipt.logs);
     if (marketCreatedLogs == null || !marketCreatedLogs.length || marketCreatedLogs[0] == null || marketCreatedLogs[0].market == null) {
