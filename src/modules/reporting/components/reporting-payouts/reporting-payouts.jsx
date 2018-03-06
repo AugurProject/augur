@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import ReactTooltip from 'react-tooltip'
 
 import getValue from 'utils/get-value'
 
 import Styles from 'modules/reporting/components/reporting-payouts/reporting-payouts.styles'
+import TooltipStyles from 'modules/common/less/tooltip'
 
 const Outcome = ({ className, outcome }) => (
   <div className={className || Styles.MarketReportingPayouts__outcome}>
@@ -18,12 +20,28 @@ const Outcome = ({ className, outcome }) => (
     }
     { outcome.id !== 1 &&
       <div>
-        <div className={Styles["MarketReportingPayouts__progress-bar"]}>
-          <div className={Styles["MarketReportingPayouts__progress-bar-percentage-user"]} style={{width: String(outcome.userRep / outcome.goal * 100) + '%'}}></div>
-          <div className={Styles["MarketReportingPayouts__progress-bar-percentage"]} style={{width: String(outcome.totalRep / outcome.goal * 100) + '%'}}></div>
+        <div
+          className={Styles["MarketReportingPayouts__progress-bar-container"]}
+          data-tip
+          data-for={"tooltip--rep-progress-"+outcome.id}
+        >
+          <div className={Styles["MarketReportingPayouts__progress-bar"]}>
+            <div className={Styles["MarketReportingPayouts__progress-bar-percentage-user"]} style={{width: String(outcome.userRep * 100 / outcome.goal ) + '%'}}></div>
+            <div className={Styles["MarketReportingPayouts__progress-bar-percentage"]} style={{width: String(outcome.totalRep * 100 / outcome.goal) + '%'}}></div>
+          </div>
+          <span className={Styles['MarketReportingPayouts__progress-bar-total-rep-text']}>{outcome.totalRep}</span>
+          <span className={Styles['MarketReportingPayouts__progress-bar-goal-text']}> &#124; {outcome.goal} REP</span>
         </div>
-        <span className={Styles['MarketReportingPayouts__progress-bar-text']}>{outcome.totalRep}</span>
-        <span className={Styles['MarketReportingPayouts__progress-bar-text']}> &#124; {outcome.goal}</span>
+        <ReactTooltip
+          id={"tooltip--rep-progress-"+outcome.id}
+          className={TooltipStyles.Tooltip}
+          effect="solid"
+          place="top"
+          offset={{left: 70, top: 6}}
+          type="light"
+        >
+          <p>{outcome.userRep} REP Staked</p>
+        </ReactTooltip>
       </div>
     }
   </div>

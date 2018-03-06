@@ -51,7 +51,7 @@ const MarketBasics = (p) => {
                 </button>
               </li>)}
           </ul>
-          <ReportEndingIndicator />
+          { ReportEndingIndicator }
         </div>
         <h1 className={CommonStyles.MarketCommon__description}>
           <MarketLink
