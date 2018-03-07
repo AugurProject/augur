@@ -8,12 +8,12 @@ export const estimateSubmitInitialReport = (marketId, callback = logError) => (d
   if (marketId) {
     const market = marketsData[marketId]
     if (!market) return callback('Market not found')
-    const payoutNumerators = Array(market.numOutcomes).fill(0)
+    const payoutNumerators = (new Array(market.numOutcomes).fill(0))
     payoutNumerators[0] = market.numTicks
 
     augur.api.Market.doInitialReport({
       meta: loginAccount.meta,
-      tx: { to: marketId, estimateGas: true, gas: '0x632ea0' },
+      tx: { to: marketId, estimateGas: true, gas: augur.constants.DEFAULT_MAX_GAS },
       _invalid: false,
       _payoutNumerators: payoutNumerators,
       onSent: noop,

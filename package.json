@@ -33,7 +33,7 @@
   "dependencies": {
     "airbitz-core-js-ui": "0.1.7",
     "async": "2.6.0",
-    "augur.js": "4.8.2",
+    "augur.js": "4.8.4",
     "bignumber.js": "5.0.0",
     "bs58": "4.0.1",
     "classnames": "2.2.5",
@@ -50,7 +50,7 @@
     "lodash": "4.17.4",
     "memoizee": "0.4.11",
     "mnid": "0.1.1",
-    "moment": "2.19.2",
+    "moment": "2.21.0",
     "prop-types": "15.6.0",
     "qrcode.react": "0.7.2",
     "react": "16.2.0",

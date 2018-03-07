@@ -38,7 +38,7 @@ export default class MarketOutcomesList extends Component {
         >
           <h2>Outcomes</h2>
           { !p.isMobile &&
-            <span className={classNames({ [`${Styles['is-open']}`]: s.isOpen })}>{ ChevronDown }</span>
+            <span className={classNames({ [`${Styles['is-open']}`]: s.isOpen })}><ChevronDown /></span>
           }
         </button>
         <div

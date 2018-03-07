@@ -1,6 +1,5 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
-import sinon from 'sinon'
 
 import {
   generateOutcomePositionSummary,
@@ -11,84 +10,6 @@ import {
 import { formatEtherTokens, formatShares, formatNumber } from 'utils/format-number'
 
 describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
-  describe('default', () => {
-    const proxyquire = require('proxyquire')
-    proxyquire.noPreserveCache().noCallThru()
-
-    const test = (t) => {
-      it(t.description, () => {
-        t.assertions()
-      })
-    }
-
-    test({
-      description: `should return null if there ARE NO markets with positions`,
-      assertions: (store) => {
-        const mockSelectMyPositions = sinon.stub().returns([])
-
-        const selector = proxyquire('../../../src/modules/my-positions/selectors/my-positions-summary', {
-          './my-positions': mockSelectMyPositions,
-        })
-
-        const actual = selector.default()
-
-        const expected = null
-
-        assert.strictEqual(actual, expected, `Didn't return the expect object`)
-      },
-    })
-
-    test({
-      description: `should return the expected object if there ARE markets with positions AND no outcomes have position object`,
-      assertions: (store) => {
-        const mockSelectMyPositions = sinon.stub().returns([
-          {
-            id: '0xMARKETID1',
-            myPositionsSummary: {
-              numPositions: formatNumber(1, {
-                decimals: 0,
-                decimalsRounded: 0,
-                denomination: 'Positions',
-                positiveSign: false,
-                zeroStyled: false,
-              }),
-              qtyShares: formatShares(1),
-              purchasePrice: formatEtherTokens(0.2),
-              realizedNet: formatEtherTokens(0),
-              unrealizedNet: formatEtherTokens(0),
-              totalNet: formatEtherTokens(0),
-            },
-            outcomes: [{}],
-          },
-        ])
-
-        const selector = proxyquire('../../../src/modules/my-positions/selectors/my-positions-summary', {
-          './my-positions': mockSelectMyPositions,
-        })
-
-        const actual = selector.default()
-
-        const expected = {
-          numPositions: formatNumber(0, {
-            decimals: 0,
-            decimalsRounded: 0,
-            denomination: 'Positions',
-            positiveSign: false,
-            zeroStyled: false,
-          }),
-          qtyShares: formatShares(0),
-          purchasePrice: formatEtherTokens(0),
-          realizedNet: formatEtherTokens(0),
-          unrealizedNet: formatEtherTokens(0),
-          totalNet: formatEtherTokens(0),
-          positionOutcomes: [],
-        }
-
-        assert.deepEqual(actual, expected, `Didn't return the expect object`)
-      },
-    })
-  })
-
   describe('generateOutcomePositionSummary', () => {
     const proxyquire = require('proxyquire')
     proxyquire.noPreserveCache().callThru()

@@ -6,6 +6,7 @@ import makePath from 'src/modules/routes/helpers/make-path'
 import { ACCOUNT_DEPOSIT } from 'src/modules/routes/constants/views'
 import { selectLoginAccount } from 'src/modules/auth/selectors/login-account'
 import disputeMarkets from 'modules/reporting/selectors/select-dispute-markets'
+import awaitingDisputeMarkets from 'modules/reporting/selectors/select-awaiting-dispute-markets'
 import loadMarkets from 'modules/markets/actions/load-markets'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import logError from 'utils/log-error'
@@ -14,6 +15,7 @@ const mapStateToProps = (state, { history }) => {
 
   const loginAccount = selectLoginAccount(state)
   const disputableMarkets = disputeMarkets() || []
+  const upcomingDisputableMarkets = awaitingDisputeMarkets() || []
 
   return ({
     isLogged: state.isLogged,
@@ -21,7 +23,9 @@ const mapStateToProps = (state, { history }) => {
     isMarketsLoaded: state.hasLoadedMarkets,
     doesUserHaveRep: (loginAccount.rep.value > 0),
     markets: disputableMarkets,
+    upcomingMarkets: upcomingDisputableMarkets,
     marketsCount: disputableMarkets.length,
+    upcomingMarketsCount: upcomingDisputableMarkets.length,
     isMobile: state.isMobile,
     disputeRound: 1,
     navigateToAccountDepositHandler: () => history.push(makePath(ACCOUNT_DEPOSIT)),

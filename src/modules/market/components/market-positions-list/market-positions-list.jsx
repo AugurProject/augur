@@ -37,7 +37,7 @@ export default class MarketPositionsList extends Component {
           onClick={() => { toggleHeight(this.outcomeList, s.isOpen, () => { this.setState({ isOpen: !s.isOpen }) }) }}
         >
           <h2>My Positions</h2>
-          <span className={classNames({ [`${Styles['is-open']}`]: s.isOpen })}>{ ChevronDown }</span>
+          <span className={classNames({ [`${Styles['is-open']}`]: s.isOpen })}><ChevronDown /></span>
         </button>
         <div
           ref={(outcomeList) => { this.outcomeList = outcomeList }}

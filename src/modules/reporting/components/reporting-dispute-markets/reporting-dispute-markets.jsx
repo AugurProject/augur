@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import ReportingHeader from 'modules/reporting/containers/reporting-header'
 import MarketPreview from 'src/modules/reporting/containers/market-preview'
 
-import Styles from './reporting-report-markets.styles'
+import Styles from './reporting-dispute-markets.styles'
 
 export const NoMarketsFound = ({ message }) => (
   <article className={Styles.NoMarketsFound}>
@@ -45,7 +45,7 @@ ReportSection.propTypes = {
   items: PropTypes.arrayOf(PropTypes.object),
 }
 
-class ReportingReporting extends React.Component {
+class ReportingDisputeMarkets extends React.Component {
   componentDidMount() {
     this.props.loadReporting()
   }
@@ -73,9 +73,9 @@ class ReportingReporting extends React.Component {
   }
 }
 
-ReportingReporting.propTypes = {
+ReportingDisputeMarkets.propTypes = {
   markets: PropTypes.object.isRequired,
   loadReporting: PropTypes.func.isRequired,
 }
 
-export default ReportingReporting
+export default ReportingDisputeMarkets

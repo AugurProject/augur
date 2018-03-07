@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import { ASKS, BIDS } from 'modules/order-book/constants/order-book-order-types'
+import { BUY, SELL } from 'modules/transactions/constants/types'
 
 import Styles from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders.styles'
 
@@ -11,6 +12,7 @@ export default class MarketOutcomeOrderbook extends Component {
     orderBook: PropTypes.object.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
     updateHoveredPrice: PropTypes.func.isRequired,
+    updateSeletedOrderProperties: PropTypes.func.isRequired,
     selectedOutcome: PropTypes.any,
     hoveredPrice: PropTypes.any,
     marketMidpoint: PropTypes.any,
@@ -67,15 +69,35 @@ export default class MarketOutcomeOrderbook extends Component {
                 })
               }}
             >
-              <div className={Styles.MarketOutcomeOrderBook__RowItem}>
-                <span>{order.price.value.toFixed(p.fixedPrecision).toString()}</span>
-              </div>
-              <div className={Styles.MarketOutcomeOrderBook__RowItem}>
+              <button
+                className={Styles.MarketOutcomeOrderBook__RowItem}
+                onClick={() => p.updateSeletedOrderProperties({
+                  orderPrice: order.price.value.toString(),
+                  orderQuantity: order.cumulativeShares.toString(),
+                  selectedNav: BUY,
+                })}
+              >
                 <span>{order.shares.value.toFixed(p.fixedPrecision).toString()}</span>
-              </div>
-              <div className={Styles.MarketOutcomeOrderBook__RowItem}>
+              </button>
+              <button
+                className={Styles.MarketOutcomeOrderBook__RowItem}
+                onClick={() => p.updateSeletedOrderProperties({
+                  orderPrice: order.price.value.toString(),
+                  selectedNav: BUY,
+                })}
+              >
+                <span>{order.price.value.toFixed(p.fixedPrecision).toString()}</span>
+              </button>
+              <button
+                className={Styles.MarketOutcomeOrderBook__RowItem}
+                onClick={() => p.updateSeletedOrderProperties({
+                  orderPrice: order.price.value.toString(),
+                  orderQuantity: order.cumulativeShares.toString(),
+                  selectedNav: BUY,
+                })}
+              >
                 <span>{order.cumulativeShares.toFixed(p.fixedPrecision).toString()}</span>
-              </div>
+              </button>
             </div>
           ))}
         </div>
@@ -114,15 +136,35 @@ export default class MarketOutcomeOrderbook extends Component {
                 })
               }}
             >
-              <div className={Styles.MarketOutcomeOrderBook__RowItem}>
-                <span>{order.price.value.toFixed(p.fixedPrecision).toString()}</span>
-              </div>
-              <div className={Styles.MarketOutcomeOrderBook__RowItem}>
+              <button
+                className={Styles.MarketOutcomeOrderBook__RowItem}
+                onClick={() => p.updateSeletedOrderProperties({
+                  orderPrice: order.price.value.toString(),
+                  orderQuantity: order.cumulativeShares.toString(),
+                  selectedNav: SELL,
+                })}
+              >
                 <span>{order.shares.value.toFixed(p.fixedPrecision).toString()}</span>
-              </div>
-              <div className={Styles.MarketOutcomeOrderBook__RowItem}>
+              </button>
+              <button
+                className={Styles.MarketOutcomeOrderBook__RowItem}
+                onClick={() => p.updateSeletedOrderProperties({
+                  orderPrice: order.price.value.toString(),
+                  selectedNav: SELL,
+                })}
+              >
+                <span>{order.price.value.toFixed(p.fixedPrecision).toString()}</span>
+              </button>
+              <button
+                className={Styles.MarketOutcomeOrderBook__RowItem}
+                onClick={() => p.updateSeletedOrderProperties({
+                  orderPrice: order.price.value.toString(),
+                  orderQuantity: order.cumulativeShares.toString(),
+                  selectedNav: SELL,
+                })}
+              >
                 <span>{order.cumulativeShares.toFixed(p.fixedPrecision).toString()}</span>
-              </div>
+              </button>
             </div>
           ))}
         </div>

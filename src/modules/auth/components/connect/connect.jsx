@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 
 import NavPanel from 'modules/common/components/nav-panel/nav-panel'
-import Help from 'modules/auth/components/help/help'
 import Airbitz from 'modules/auth/containers/airbitz-connect'
 import LedgerConnect from 'modules/auth/containers/ledger-connect'
 import UportConnect from 'modules/auth/containers/uport-connect'
@@ -51,9 +50,6 @@ export default function AuthConnect(p) {
               <MetaMaskConnect />
             }
           </div>
-        </div>
-        <div className={Styles.Auth__faq}>
-          <Help />
         </div>
       </div>
     </div>

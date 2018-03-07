@@ -48,10 +48,13 @@ describe('modules/portfolio/actions/collect-market-creator-fees.js', () => {
           },
         },
         Mailbox: {
-          withdrawEther: (params, cb) => {
+          withdrawEther: (p) => {
             // this should only ever get called by that first Market Mailbox, and not the second.
-            assert.deepEqual(params, { tx: { to: MailboxAddresses[0] } }, `Attempted to call withdrawEther with unexpected params`)
-            assert.isFunction(cb, `callback provided to withdrawEther isn't a function.`)
+            assert.deepEqual(p.tx, { to: MailboxAddresses[0] }, `Attempted to call withdrawEther with unexpected params`)
+            assert.isFunction(p.onSent, `onSent provided to withdrawEther isn't a function.`)
+            assert.isFunction(p.onSuccess, `onSuccess provided to withdrawEther isn't a function.`)
+            assert.isFunction(p.onFailed, `onFailed provided to withdrawEther isn't a function.`)
+            p.onSuccess()
           },
         },
       },

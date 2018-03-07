@@ -7,9 +7,12 @@ import { getDaysRemaining, convertUnixToFormattedDate } from 'utils/format-date'
 import Styles from 'modules/reporting/components/reporting-header/reporting-header.styles'
 import TooltipStyles from 'modules/common/less/tooltip'
 
+import { Participate } from 'modules/common/components/icons'
+
 export default class ReportingHeader extends Component {
   static propTypes = {
     heading: PropTypes.string.isRequired,
+    isMobile: PropTypes.bool.isRequired,
     loadReportingWindowBounds: PropTypes.func.isRequired,
     reportingWindowStats: PropTypes.object.isRequired,
   }
@@ -46,18 +49,26 @@ export default class ReportingHeader extends Component {
                     className={Styles.ReportingHeader__participationTokens}
                     data-tip
                     data-for="tooltip--participation-tokens"
-                  >Example Tooltip
-                  </span>
-                  <ReactTooltip
-                    id="tooltip--participation-tokens"
-                    className={TooltipStyles.Tooltip}
-                    effect="solid"
-                    place="left"
-                    type="light"
                   >
-                    <h4>Don&apos;t see any markets that need to be disputed?</h4>
-                    <p>Purchase participation tokens to earn a share of the reporting fees collected during this dispute window.</p>
-                  </ReactTooltip>
+                    {Participate()}
+                    <span
+                      className={Styles['ReportingHeader__participationTokens--text']}
+                    >
+                      participate
+                    </span>
+                  </span>
+                  {!p.isMobile &&
+                    <ReactTooltip
+                      id="tooltip--participation-tokens"
+                      className={TooltipStyles.Tooltip}
+                      effect="solid"
+                      place="left"
+                      type="light"
+                    >
+                      <h4>Don&apos;t see any markets that need to be disputed?</h4>
+                      <p>Purchase participation tokens to earn a share of the reporting fees collected during this dispute window.</p>
+                    </ReactTooltip>
+                  }
                 </div>
                 <div className={Styles['ReportingHeader__dispute-graph']}>
                   <div className={Styles.ReportingHeader__graph}>
