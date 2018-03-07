@@ -1,5 +1,7 @@
 "use strict";
 
+const ReportingState = require("../../../build/types").ReportingState;
+
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { getMarkets } = require("../../../build/server/getters/get-markets");
@@ -279,6 +281,7 @@ describe("server/getters/get-markets", () => {
     description: "get all markets awaiting designated reporting, sorted ascending by volume",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
+      reportingState: ReportingState.DESIGNATED_REPORTING,
       sortBy: "volume",
       isSortDescending: false,
     },
@@ -324,6 +327,7 @@ describe("server/getters/get-markets", () => {
     description: "get all markets upcoming designated reporting, sorted ascending by volume",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
+      reportingState: ReportingState.PRE_REPORTING,
       sortBy: "volume",
       isSortDescending: false,
     },
@@ -338,6 +342,7 @@ describe("server/getters/get-markets", () => {
     description: "get all markets upcoming designated reporting by b0b",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
+      reportingState: ReportingState.PRE_REPORTING,
       designatedReporter: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, marketsInfo) => {
