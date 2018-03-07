@@ -1,7 +1,7 @@
 "use strict";
 
 var async = require("async");
-var ethereumConnector = require("ethereumjs-connect");
+// var ethereumConnector = require("ethereumjs-connect");
 var ethrpc = require("ethrpc");
 var contracts = require("./contracts");
 var api = require("./api");
@@ -24,7 +24,6 @@ function connect(connectOptions, callback) {
   }
   var self = this;
   var ethereumNodeConnectOptions = {
-    rpc: ethrpc,
     contracts: contracts.addresses,
     startBlockStreamOnConnect: connectOptions.startBlockStreamOnConnect,
     abi: contracts.abi,
@@ -74,7 +73,7 @@ function connect(connectOptions, callback) {
     ethereumNode: function (next) {
       console.log("connecting to ethereum-node:", JSON.stringify(connectOptions.ethereumNode));
       if (!connectOptions.ethereumNode) return next(null);
-      ethereumConnector.connect(ethereumNodeConnectOptions, function (err, ethereumConnectionInfo) {
+      ethereumConnector.connect(ethrpc, ethereumNodeConnectOptions, function (err, ethereumConnectionInfo) {
         if (err) {
           console.warn("could not connect to ethereum-node at", JSON.stringify(connectOptions.ethereumNode), err);
           return next(null);
@@ -82,7 +81,8 @@ function connect(connectOptions, callback) {
         console.log("connected to ethereum");
         ethereumConnectionInfo.contracts = ethereumConnectionInfo.contracts || contracts.addresses[DEFAULT_NETWORK_ID];
         self.api = api.generateContractApi(ethereumConnectionInfo.abi.functions);
-        self.rpc = rpcInterface.createRpcInterface(ethereumConnectionInfo.rpc);
+        self.rpc = rpcInterface.createRpcInterface(ethrpc);
+        // self.rpc = rpcInterface.createRpcInterface(ethereumConnectionInfo.rpc);
         ethereumConnectionInfo.rpc.getTransport().addReconnectListener(function () {
           events.nodes.ethereum.emit("reconnect");
         });
