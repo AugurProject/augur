@@ -630,5 +630,22 @@ export const GooglePlayStore = () => (
       </g>
     </g>
   </svg>
+)
 
+export const Participate = () => (
+  <svg width="32px" height="34px" viewBox="0 0 32 34">
+    <defs />
+    <g id="Reporting_1228" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g id="Reporting_TokenBuy_Pop-up" transform="translate(-1261.000000, -163.000000)" stroke="#FFFFFF">
+        <g id="Participate-Icon" transform="translate(1262.000000, 164.000000)">
+          <path d="M24.9113288,32 C24.9694022,31.6058031 25,31.2029362 25,30.7937113 C25,25.9373447 20.7469024,22 15.4996878,22 C10.2530976,22 6,25.9373447 6,30.7937113 C6,31.1879082 6.02810004,31.5757471 6.08242679,31.9560719" id="Stroke-4" />
+          <path d="M0.357142857,32 L29.6428571,32" id="Line" strokeLinecap="round" />
+          <g id="Group-2" transform="translate(8.500000, 0.000000)" strokeLinecap="round">
+            <polyline id="Stroke-8" strokeLinejoin="round" points="0 10.625 6.42662749 17 13 10.625" />
+            <path d="M6.5,16.1019345 L6.5,0.164434524" id="Line-Copy" />
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
 )

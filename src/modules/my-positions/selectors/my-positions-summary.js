@@ -3,18 +3,12 @@ import BigNumber from 'bignumber.js'
 
 import store from 'src/store'
 
-import selectMyPositions from 'modules/my-positions/selectors/my-positions'
 import { closePosition } from 'modules/my-positions/actions/close-position'
 
 import { ZERO } from 'modules/trade/constants/numbers'
 
 // import { augur } from 'services/augurjs'
 import { formatEtherTokens, formatShares, formatNumber } from 'utils/format-number'
-
-export default function () {
-  const myPositions = selectMyPositions()
-  return generateMarketsPositionsSummary(myPositions)
-}
 
 export const generateOutcomePositionSummary = memoize((adjustedPosition) => {
   if (!adjustedPosition) {

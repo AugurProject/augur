@@ -96,9 +96,19 @@
 }
 
 .ReportingHeader__participationTokens {
+  align-items: flex-end;
+  cursor: pointer;
+  display: inline-flex;
+  padding-bottom: 2px;
+  white-space: nowrap;
+}
+
+.ReportingHeader__participationTokens--text {
   &:extend(.caps);
 
   border-bottom: 1px solid @color-white;
+  cursor: pointer;
+  margin-left: 0.5rem;
   padding-bottom: 2px;
   white-space: nowrap;
 }
@@ -112,6 +122,10 @@
 }
 
 @media @breakpoint-mobile {
+  .ReportingHeader__dispute-header {
+    flex-flow: column-reverse nowrap;
+  }
+
   .ReportingHeader {
     padding-left: 1rem;
     padding-right: 1rem;

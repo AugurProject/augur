@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import { Helmet } from 'react-helmet'
 import { augur } from 'services/augurjs'
 
-import { formatEtherEstimate, formatGasCostToEther } from 'utils/format-number'
+import { formatGasCostToEther } from 'utils/format-number'
 import MarketPreview from 'modules/market/components/market-preview/market-preview'
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 import ReportingDisputeForm from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form'
@@ -26,8 +26,8 @@ export default class ReportingDispute extends Component {
     isConnected: PropTypes.bool.isRequired,
     isMarketLoaded: PropTypes.bool.isRequired,
     loadFullMarket: PropTypes.func.isRequired,
-    //submitMarketContribute: PropTypes.func.isRequired,
-    //estimateSubmitMarketContribute: PropTypes.func.isRequired,
+    submitMarketContribute: PropTypes.func.isRequired,
+    estimateSubmitMarketContribute: PropTypes.func.isRequired,
     getDisputeInfo: PropTypes.func.isRequired,
   }
 
@@ -127,9 +127,7 @@ export default class ReportingDispute extends Component {
   }
 
   calculateGasEstimates() {
-    // TODO: format stake
-/*
-    this.props.estimateSubmitMarketContribute(this.props.market.id, this.props.stake, (err, gasEstimateValue) => {
+    this.props.estimateSubmitMarketContribute(this.props.market.id, this.state.stake, (err, gasEstimateValue) => {
       if (err) return console.error(err)
 
       const gasPrice = augur.rpc.getGasPrice()
@@ -137,7 +135,6 @@ export default class ReportingDispute extends Component {
         gasEstimate: formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice),
       })
     })
-    */
   }
 
   render() {
