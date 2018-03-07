@@ -1,81 +1,93 @@
-import React from 'react'
-
+import React, { Component } from 'react'
 import { Helmet } from 'react-helmet'
 import PropTypes from 'prop-types'
 
 import ReportingHeader from 'modules/reporting/containers/reporting-header'
-import MarketPreview from 'src/modules/reporting/containers/market-preview'
+import ReportDisputeNoRepState from 'src/modules/reporting/components/reporting-dispute-no-rep-state/reporting-dispute-no-rep-state'
+import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
+import DisputeMarketCard from 'modules/reporting/components/dispute-market-card/dispute-market-card'
+import MarketsHeaderStyles from 'modules/markets/components/markets-header/markets-header.styles'
 
-import Styles from './reporting-dispute-markets.styles'
+const Styles = require('./reporting-dispute-markets.styles')
 
-export const NoMarketsFound = ({ message }) => (
-  <article className={Styles.NoMarketsFound}>
-    <section className={Styles.NoMarketsFound__message}>{message}</section>
-  </article>
-)
-
-NoMarketsFound.propTypes = {
-  message: PropTypes.string.isRequired,
-}
-
-export const ReportSection = ({
-  title, items, buttonText='Report', emptyMessage,
-}) => {
-  let theChildren
-  if (items.length === 0) {
-    theChildren = <NoMarketsFound message={emptyMessage} />
-  } else {
-    theChildren = items.map(item => (<MarketPreview key={item.id} buttonText={buttonText} {...item} />))
+export default class ReportingDisputeMarkets extends Component {
+  static propTypes = {
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+    doesUserHaveRep: PropTypes.bool.isRequired,
+    markets: PropTypes.array.isRequired,
+    upcomingMarkets: PropTypes.array.isRequired,
+    marketsCount: PropTypes.number.isRequired,
+    upcomingMarketsCount: PropTypes.number.isRequired,
+    isMobile: PropTypes.bool,
+    navigateToAccountDepositHandler: PropTypes.func.isRequired,
+    isConnected: PropTypes.bool.isRequired,
+    isMarketsLoaded: PropTypes.bool.isRequired,
+    loadMarkets: PropTypes.func.isRequired,
+    disputeRound: PropTypes.number.isRequired,
   }
 
-  return (
-    <article className={Styles.ReportSection}>
-      <h4 className={Styles.ReportSection__heading}>{title}</h4>
-      <section>
-        {theChildren}
-      </section>
-    </article>
-  )
-}
-
-ReportSection.propTypes = {
-  buttonText: PropTypes.string,
-  emptyMessage: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  items: PropTypes.arrayOf(PropTypes.object),
-}
-
-class ReportingDisputeMarkets extends React.Component {
-  componentDidMount() {
-    this.props.loadReporting()
+  componentWillMount() {
+    if (this.props.isConnected && !this.props.isMarketsLoaded) {
+      this.props.loadMarkets()
+    }
   }
 
   render() {
-    const {
-      designated,
-      open,
-      upcoming,
-    } = this.props.markets
-
+    const p = this.props
     return (
       <section>
         <Helmet>
-          <title>Reporting: Markets</title>
+          <title>Dispute</title>
         </Helmet>
-        <ReportingHeader
-          heading="Markets"
-        />
-        <ReportSection title="Designated Reporting" items={designated} emptyMessage="There are no markets available for you to report on. " />
-        <ReportSection title="Open Reporting" items={open} emptyMessage="There are no markets in Open Reporting." />
-        <ReportSection title="Upcoming Reporting" items={upcoming} buttonText="View" emptyMessage="There are no upcoming markets for you to report on." />
+        <section className={Styles.ReportDispute}>
+          <ReportingHeader
+            heading="Dispute"
+            showReportingEndDate
+          />
+          { !p.doesUserHaveRep &&
+          <ReportDisputeNoRepState
+            btnText="Add Funds"
+            message="You have 0 REP available. Add funds to dispute markets or purchase participation tokens."
+            onClickHandler={p.navigateToAccountDepositHandler}
+          />}
+        </section>
+        { p.marketsCount > 0 &&
+            p.markets.map(market =>
+              (<DisputeMarketCard
+                key={market.id}
+                market={market}
+                disputeRound={p.disputeRound}
+                isMobile={p.isMobile}
+                location={p.location}
+                history={p.history}
+              />))
+        }
+        { p.marketsCount === 0 &&
+          <NullStateMessage
+            message="There are currently no markets available for dispute."
+          />
+        }
+        <article className={MarketsHeaderStyles.MarketsHeader}>
+          <h4 className={MarketsHeaderStyles.MarketsHeader__subheading}>Upcoming Dispute Window</h4>
+        </article>
+        {p.upcomingMarketsCount > 0 &&
+            p.upcomingMarkets.map(market =>
+              (<DisputeMarketCard
+                key={market.id}
+                market={market}
+                disputeRound={p.disputeRound}
+                isMobile={p.isMobile}
+                location={p.location}
+                history={p.history}
+              />))
+        }
+        { p.upcomingMarketsCount === 0 &&
+          <NullStateMessage
+            message="There are currently no markets slated for the upcoming dispute window."
+          />
+        }
       </section>
     )
   }
 }
-
-ReportingDisputeMarkets.propTypes = {
-  markets: PropTypes.object.isRequired,
-  loadReporting: PropTypes.func.isRequired,
-}
-
-export default ReportingDisputeMarkets
