@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import ReportingDispute from 'modules/reporting/components/reporting-dispute/reporting-dispute'
+import ReportingDisputeMarkets from 'modules/reporting/components/reporting-dispute-markets/reporting-dispute-markets'
 import makePath from 'src/modules/routes/helpers/make-path'
 import { ACCOUNT_DEPOSIT } from 'src/modules/routes/constants/views'
 import { selectLoginAccount } from 'src/modules/auth/selectors/login-account'
@@ -39,6 +39,6 @@ const mapDispatchToProps = dispatch => ({
   })),
 })
 
-const ReportingDisputeContainer = connect(mapStateToProps, mapDispatchToProps)(withRouter(ReportingDispute))
+const ReportingDisputeContainer = connect(mapStateToProps, mapDispatchToProps)(withRouter(ReportingDisputeMarkets))
 
 export default ReportingDisputeContainer
