@@ -11,7 +11,7 @@ import Styles from 'modules/reporting/components/reporting-resolved/reporting-re
 
 function getMarketIds(markets) {
   const filteredMarkets = []
-  markets.map(market => {
+  markets.forEach((market) => {
     filteredMarkets.push(market.id)
   })
   return filteredMarkets
@@ -19,6 +19,8 @@ function getMarketIds(markets) {
 
 export default class ReportingResolved extends Component {
   static propTypes = {
+    markets: PropTypes.object,
+    loadReporting: PropTypes.func.isRequired,
   }
 
   constructor(props) {

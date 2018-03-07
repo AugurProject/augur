@@ -317,7 +317,6 @@ export function assembleMarket(
         if (market.type !== SCALAR && market.reportableOutcomes.length) {
           const winningOutcome = calculateWinningOutcome(market)
           const marketOutcome = market.reportableOutcomes.find(outcome => outcome.id === winningOutcome)
-          console.log('marketOutcome', marketOutcome);
           if (marketOutcome) market.consensus.outcomeName = marketOutcome.name
         }
         if (market.consensus.proportionCorrect) {
@@ -353,7 +352,7 @@ export const selectScalarMinimum = (market) => {
 }
 
 function calculateWinningOutcome(market) {
-  if (market.consensus.isInvalid) return "0.5"
+  if (market.consensus.isInvalid) return '0.5'
   const winningOutcomeIndex = market.consensus.payout.indexOf(market.numTicks).toString()
   return winningOutcomeIndex
 }
