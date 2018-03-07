@@ -18,7 +18,6 @@ describe('init-augur', () => {
   const mockEnv = {
     'augur-node': augurNodeWS,
     'ethereum-node': ethereumNodeConnectionInfo,
-    'network-id': 4,
   }
   const realSetInterval = global.setInterval
   const store = mockStore({
@@ -49,6 +48,7 @@ describe('init-augur', () => {
   ReWireModule.__Rewire__('registerTransactionRelay', () => ACTIONS.REGISTER_TRANSACTION_RELAY)
   ReWireModule.__Rewire__('setLoginAccount', () => ACTIONS.SET_LOGIN_ACCOUNT)
   ReWireModule.__Rewire__('loadUniverse', () => ACTIONS.LOAD_UNIVERSE)
+  ReWireModule.__Rewire__('verifyMatchingNetworkIds', callback => callback(null, true))
 
   beforeEach(() => {
     global.XMLHttpRequest = sinon.useFakeXMLHttpRequest()
