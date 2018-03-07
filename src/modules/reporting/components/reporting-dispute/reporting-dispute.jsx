@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import { Helmet } from 'react-helmet'
 import { augur } from 'services/augurjs'
 
+import speedomatic from 'speedomatic'
 import { formatGasCostToEther } from 'utils/format-number'
 import MarketPreview from 'modules/market/components/market-preview/market-preview'
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
@@ -114,11 +115,11 @@ export default class ReportingDispute extends Component {
 
   nextPage() {
     this.setState({ currentStep: this.state.currentStep >= 1 ? 1 : this.state.currentStep + 1 })
+    // estimate gas, user is moving to confirm
+    this.calculateGasEstimates()
   }
 
   updateState(newState) {
-    // calculate gas estimate if REP value changes
-    console.log('update state')
     this.setState(newState)
   }
 
@@ -127,14 +128,17 @@ export default class ReportingDispute extends Component {
   }
 
   calculateGasEstimates() {
-    this.props.estimateSubmitMarketContribute(this.props.market.id, this.state.stake, (err, gasEstimateValue) => {
-      if (err) return console.error(err)
+    if (this.state.stake > 0) {
+      const amount = speedomatic.fix(this.state.stake, 'hex')
+      this.props.estimateSubmitMarketContribute(this.props.market.id, amount, (err, gasEstimateValue) => {
+        if (err) return console.error(err)
 
-      const gasPrice = augur.rpc.getGasPrice()
-      this.setState({
-        gasEstimate: formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice),
+        const gasPrice = augur.rpc.getGasPrice()
+        this.setState({
+          gasEstimate: formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice),
+        })
       })
-    })
+    }
   }
 
   render() {
@@ -220,7 +224,7 @@ export default class ReportingDispute extends Component {
               { s.currentStep === 1 &&
               <button
                 className={FormStyles.Form__submit}
-                onClick={() => p.submitMarketContribute(p.market.id, s.selectedOutcome, s.isMarketInValid, p.history)}
+                onClick={() => p.submitMarketContribute(p.market.id, s.selectedOutcome, speedomatic.fix(s.stake, 'hex'), s.isMarketInValid, p.history)}
               >Submit
               </button>
               }

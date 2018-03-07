@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import BigNumber from 'bignumber.js'
 
 import FormStyles from 'modules/common/less/form'
 import ConfirmStyles from 'modules/common/less/confirm-table'
@@ -18,7 +17,7 @@ const ReportingDisputeConfirm = p => (
             </li>
             <li>
               <span>Proposed Outcome</span>
-              <span>{ p.isMarketValid ? p.selectedOutcome : 'Invalid' }</span>
+              <span>{ !p.isMarketInValid ? p.selectedOutcome : 'Invalid' }</span>
             </li>
             <li>
               <span>Dispute Bond</span>
@@ -47,7 +46,7 @@ ReportingDisputeConfirm.propTypes = {
   selectedOutcome: PropTypes.string.isRequired,
   stake: PropTypes.number.isRequired,
   gasEstimate: PropTypes.string.isRequired,
-  isMarketValid: PropTypes.bool,
+  isMarketInValid: PropTypes.bool,
 }
 
 export default ReportingDisputeConfirm

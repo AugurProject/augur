@@ -22,7 +22,7 @@ export default class ReportingDisputeForm extends Component {
     otherOutcomes: PropTypes.array.isRequired,
     stakes: PropTypes.array.isRequired,
     stake: PropTypes.number,
-    isMarketValid: PropTypes.bool,
+    isMarketInValid: PropTypes.bool,
   }
 
   static checkStake(stake, updatedValidations) {
@@ -48,7 +48,7 @@ export default class ReportingDisputeForm extends Component {
     }
 
     this.state.outcomes.sort((a, b) => a.name - b.name)
-
+    if (this.props.stake) this.state.inputStake = this.props.stake.toString()
   }
 
   componentWillReceiveProps(nextProps) {
