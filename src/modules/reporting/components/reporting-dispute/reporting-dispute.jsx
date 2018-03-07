@@ -93,12 +93,13 @@ export default class ReportingDispute extends Component {
     if (stake.payout.length === 0) return {}
     if (stake.invalid === true) return stake
 
+    // use reportableOutcomes
     const { minPrice, maxPrice, numTicks } = this.props.market
     if (this.props.market.marketType === SCALAR) {
       const reportNormalizedToZero = stake.payout[0] + minPrice
       const priceRange = maxPrice - minPrice
       stake.id = (reportNormalizedToZero / numTicks) * priceRange
-      stake.name = stake.outcome
+      stake.name = stake.id
     } else {
       stake.id = stake.payout.findIndex(item => item > 0)
       stake.name = this.props.market.outcomes.find(outcome => outcome.id === stake.id)

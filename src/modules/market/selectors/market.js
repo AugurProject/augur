@@ -292,7 +292,7 @@ export function assembleMarket(
 
       market.marketCreatorFeesCollected = formatEther(marketData.marketCreatorFeesCollected || 0)
 
-      market.reportableOutcomes = selectReportableOutcomes(market.type, market.outcomes)
+      market.reportableOutcomes = selectReportableOutcomes(market.marketType, market.outcomes)
       const indeterminateOutcomeId = market.type === BINARY ? BINARY_INDETERMINATE_OUTCOME_ID : CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID
       market.reportableOutcomes.push({ id: indeterminateOutcomeId, name: INDETERMINATE_OUTCOME_NAME })
 

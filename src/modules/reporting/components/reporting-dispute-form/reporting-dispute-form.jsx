@@ -55,7 +55,7 @@ export default class ReportingDisputeForm extends Component {
     if (nextProps.currentOutcome) {
       this.state.outcomes = this.state.outcomes.filter(outcome => outcome.id !== nextProps.currentOutcome.id)
     }
-    if (nextProps.otherOutcomes) {
+    if (nextProps.otherOutcomes && nextProps.otherOutcomes.length > 0) {
       if (this.props.market.marketType === SCALAR) {
         nextProps.otherOutcomes.reduce(outcome => [...this.state.outcomes, outcome])
       }
