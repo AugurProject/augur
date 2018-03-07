@@ -16,8 +16,8 @@ import { isEmpty } from 'lodash'
 
 import { MODAL_NETWORK_MISMATCH, MODAL_ESCAPE_HATCH } from 'modules/modal/constants/modal-types'
 
-const POLL_INTERVAL_DURATION = 250
-const ESCAPE_HATCH_POLL_INTERVAL_DURATION = 1000
+const POLL_INTERVAL_DURATION = 3000
+const ESCAPE_HATCH_POLL_INTERVAL_DURATION = 30000
 
 function pollForAccount(dispatch, getState) {
   const { env } = getState()

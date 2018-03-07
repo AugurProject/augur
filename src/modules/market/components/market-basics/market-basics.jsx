@@ -26,7 +26,7 @@ const MarketBasics = (p) => {
     const endDate = moment(p.endDate.value).add(constants.CONTRACT_INTERVAL.DESIGNATED_REPORTING_DURATION_SECONDS, 'seconds').toDate()
     const displayDate = formatDate(endDate)
 
-    ReportEndingIndicator = (
+    ReportEndingIndicator = () => (
       <div className={Styles.MarketBasics__reportingends}>
         <div>Reporting Ends {displayDate.formattedShort}</div>
         <WrappedGraph startDate={p.endDate.value} endDate={endDate} />
