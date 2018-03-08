@@ -9,7 +9,7 @@ import { MARKET, LIMIT } from 'modules/transactions/constants/types'
 import { SCALAR } from 'modules/markets/constants/market-types'
 import { isEqual } from 'lodash'
 
-import Styles from 'modules/market/components/market-trading--form/market-trading--form.styles'
+import Styles from 'modules/trade/components/trading--form/trading--form.styles'
 
 class MarketTradingForm extends Component {
   static propTypes = {

@@ -111,14 +111,14 @@ const getOrderBookKeys = memoize((marketDepth) => {
   }
 })
 
-// Mock dat data
+// Mock priceTimeSeries Data
 // const now = Date.now()
 // const timeDiff = (now - new Date(2017, 8).getTime())
 // const startTime = now - timeDiff
 // const priceTimeSeries = [...new Array(1000000)].map((value, i, array) => ({
 //   timestamp: startTime + (i * (timeDiff / array.length)),
 //   price: Math.random(),
-//   amount: (Math.random() * (10 - 1)) + 1
+//   amount: (Math.random() * (10 - 1)) + 1,
 // }))
 
 const mapStateToProps = (state, ownProps) => {

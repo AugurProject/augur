@@ -74,57 +74,18 @@ export default class PeriodSelector extends Component {
         return p
       }, [])
 
-      // Permissible ranges based on selection
-      if (selectedPeriod !== null && selectedPeriod !== -1) { // null denotes 'Every block'
-        let startIndex = 0
-
-        permissibleRanges.find((range, i) => {
-          if (selectedPeriod === range) {
-            startIndex = i + 1
-            return true
-          }
-          return false
-        })
-
-        permissibleRanges = permissibleRanges.slice(startIndex)
-      }
-
       // Permissible periods based on series
       permissiblePeriods = PERIODS.reduce((p, currentPeriod, i) => {
-        // Lower Bound + initial upper
-        if (i === 0) {
-          return [currentPeriod.period]
-        }
+        if (permissibleRanges.indexOf(selectedRange) === 0) {
+          if (i === 0) return [currentPeriod.period]
 
-        // Upper Bound
-        if (
-          permissibleRanges[permissibleRanges.length - 1] === null ||
-          currentPeriod.period < permissibleRanges[permissibleRanges.length - 1]
-        ) {
-          return [...p, currentPeriod.period]
+          return p
+        } else if (currentPeriod.period === selectedRange) {
+          return [PERIODS[i - 2].period, PERIODS[i - 1].period]
         }
 
         return p
       }, [])
-
-      // Permissible periods based on selection
-      if (
-        selectedRange !== null &&
-        selectedRange !== -1 &&
-        permissiblePeriods.indexOf(selectedRange) !== -1
-      ) { // null denotes 'Full range'
-        let startIndex = 0
-
-        permissiblePeriods.find((period, i) => {
-          if (selectedRange === period) {
-            startIndex = i
-            return true
-          }
-          return false
-        })
-
-        permissiblePeriods = permissiblePeriods.slice(0, startIndex)
-      }
     }
 
     this.setState({
@@ -140,35 +101,26 @@ export default class PeriodSelector extends Component {
     let updatedSelectedPeriod
 
     // No valid options to select
-    if (isEmpty(permissibleRanges) || isEmpty(permissiblePeriods)) {
+    if (isEmpty(permissibleRanges)) {
       updatedSelectedRange = -1
       updatedSelectedPeriod = -1
     } else {
       // Update Range Selection
-      // Trying to determine whether or not selectedRange is out of permissible bounds
       if (
-        selectedRange === -1 ||
-        selectedRange === null ||
-        (
-          selectedPeriod !== -1 &&
-          selectedPeriod !== null &&
-          selectedRange <= selectedPeriod
-        )
+        selectedRange === -1
       ) {
         updatedSelectedRange = permissibleRanges[permissibleRanges.length - 1]
       } else {
         updatedSelectedRange = selectedRange
       }
-      //
+
       // Update Period Selection
       if (
-        selectedPeriod === -1 ||
         (
-          selectedRange !== -1 &&
-          selectedRange !== null &&
-          selectedPeriod >= selectedRange
-        )
-
+          selectedPeriod === -1 &&
+          permissiblePeriods.length !== 0
+        ) ||
+        permissiblePeriods.indexOf(selectedPeriod) === -1
       ) {
         updatedSelectedPeriod = permissiblePeriods[permissiblePeriods.length - 1]
       } else {
@@ -190,13 +142,22 @@ export default class PeriodSelector extends Component {
   render() {
     const s = this.state
 
+    const selectedPeriodLabel = (PERIODS.find(period => period.period === s.selectedPeriod) || {}).label || null
+    const selectedRangeLabel = (RANGES.find(range => range.range === s.selectedRange) || {}).label || null
+
     return (
       <section className={Styles.PeriodSelector}>
         <button
           className={Styles.PeriodSelector__button}
           onClick={() => this.setState({ isModalActive: !s.isModalActive })}
         >
-          <span>Period|Range</span>
+          <span>
+            {
+              selectedRangeLabel && selectedPeriodLabel ?
+                `${selectedRangeLabel}, ${selectedPeriodLabel}` :
+                'Range, Period'
+            }
+          </span>
           {s.isModalActive ?
             <ChevronUp /> :
             <ChevronDown />
@@ -211,33 +172,6 @@ export default class PeriodSelector extends Component {
           )
           }
         >
-          <div className={Styles.PeriodSelector__column}>
-            <h1>Period</h1>
-            <ul>
-              {PERIODS.map(period => (
-                <li
-                  key={period.period}
-                  className={Styles.PeriodSelector__value}
-                >
-                  <button
-                    className={
-                      classNames({
-                        [Styles['PeriodSelector__value--active']]: period.period === s.selectedPeriod,
-                      })
-                    }
-                    disabled={s.permissiblePeriods.indexOf(period.period) === -1}
-                    onClick={() => {
-                      this.setState({
-                        selectedPeriod: period.period === s.selectedPeriod ? -1 : period.period,
-                      })
-                    }}
-                  >
-                    {period.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
           <div className={Styles.PeriodSelector__column}>
             <h1>Range</h1>
             <ul>
@@ -260,6 +194,33 @@ export default class PeriodSelector extends Component {
                     }}
                   >
                     {range.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className={Styles.PeriodSelector__column}>
+            <h1>Period</h1>
+            <ul>
+              {PERIODS.map(period => (
+                <li
+                  key={period.period}
+                  className={Styles.PeriodSelector__value}
+                >
+                  <button
+                    className={
+                      classNames({
+                        [Styles['PeriodSelector__value--active']]: period.period === s.selectedPeriod,
+                      })
+                    }
+                    disabled={s.permissiblePeriods.indexOf(period.period) === -1}
+                    onClick={() => {
+                      this.setState({
+                        selectedPeriod: period.period === s.selectedPeriod ? -1 : period.period,
+                      })
+                    }}
+                  >
+                    {period.label}
                   </button>
                 </li>
               ))}

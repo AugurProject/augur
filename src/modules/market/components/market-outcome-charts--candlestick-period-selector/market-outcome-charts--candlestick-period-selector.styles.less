@@ -5,10 +5,16 @@
 }
 
 .PeriodSelector__button {
+  &:extend(.caps--small);
+
   background-color: transparent;
+  color: @color-lightgray;
   display: flex;
+  margin-bottom: 0.66em;
+  white-space: nowrap;
 
   svg {
+    margin-left: 0.1875em;
     min-height: 1em;
     min-width: 1em;
   }
@@ -19,6 +25,7 @@
   box-shadow: @box-shadow-small-modal;
   display: none;
   position: absolute;
+  right: 0;
   width: 192px;
 
   &--active {

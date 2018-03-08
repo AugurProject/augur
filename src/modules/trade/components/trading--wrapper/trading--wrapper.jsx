@@ -4,8 +4,8 @@ import classNames from 'classnames'
 import { Link } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
 
-import MarketTradingForm from 'modules/market/components/market-trading--form/market-trading--form'
-import MarketTradingConfirm from 'modules/market/components/market-trading--confirm/market-trading--confirm'
+import MarketTradingForm from 'modules/trade/components/trading--form/trading--form'
+import MarketTradingConfirm from 'modules/trade/components/trading--confirm/trading--confirm'
 import { Close } from 'modules/common/components/icons'
 
 import makePath from 'modules/routes/helpers/make-path'
@@ -17,7 +17,7 @@ import { isEqual } from 'lodash'
 import { BUY, SELL, LIMIT } from 'modules/transactions/constants/types'
 import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views'
 
-import Styles from 'modules/market/components/market-trading--wrapper/market-trading--wrapper.styles'
+import Styles from 'modules/trade/components/trading--wrapper/trading--wrapper.styles'
 
 class MarketTradingWrapper extends Component {
   static propTypes = {
