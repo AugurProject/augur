@@ -19,7 +19,7 @@ function getMarketIds(markets) {
 
 export default class ReportingResolved extends Component {
   static propTypes = {
-    markets: PropTypes.object,
+    markets: PropTypes.array.isRequired,
     loadReporting: PropTypes.func.isRequired,
   }
 
