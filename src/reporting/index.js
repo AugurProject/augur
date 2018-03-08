@@ -1,13 +1,14 @@
 "use strict";
 
 module.exports = {
-  getReportingHistory: require("./get-reporting-history"),
-  getStakeTokens: require("./get-stake-tokens"),
-  getReportingSummary: require("./get-reporting-summary"),
-  getFeeWindowsWithUnclaimedFees: require("./get-fee-windows-with-unclaimed-fees"),
-  getFeeWindowCurrent: require("./get-fee-window-current"),
-  getDisputeInfo: require("./get-dispute-info"),
-  getStakeRequiredForDesignatedReporter: require("./get-stake-required-for-designated-reporter"),
-  getCurrentPeriodProgress: require("./get-current-period-progress"),
   finalizeMarket: require("./finalize-market"),
+  getCurrentPeriodProgress: require("./get-current-period-progress"),
+  getDisputeInfo: require("./get-dispute-info"),
+  getDisputeTokens: require("./get-dispute-tokens"),
+  getFeeWindowCurrent: require("./get-fee-window-current"),
+  getFeeWindows: require("./get-fee-windows"),
+  getInitialReporters: require("./get-initial-reporters"),
+  getReportingHistory: require("./get-reporting-history"),
+  getReportingSummary: require("./get-reporting-summary"),
+  getStakeRequiredForDesignatedReporter: require("./get-stake-required-for-designated-reporter"),
 };
