@@ -9,6 +9,7 @@ import { updateModal } from 'modules/modal/actions/update-modal'
 const mapStateToProps = state => ({
   reportingWindowStats: state.reportingWindowStats,
   isMobile: state.isMobile,
+  repBalance: state.loginAccount.rep,
 })
 
 const mapDispatchToProps = dispatch => ({
