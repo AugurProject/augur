@@ -37,7 +37,6 @@ function updateMarketReportingRoundsCompleted(db: Knex, marketId: Address, callb
 }
 
 export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  JSON.stringify(log);
   insertPayout(db, log.market, log.payoutNumerators, log.invalid, false, (err, payoutId) => {
     if (err) return callback(err);
     db("fee_windows").select(["feeWindow"]).first()

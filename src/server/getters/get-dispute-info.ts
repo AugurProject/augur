@@ -137,7 +137,7 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
   });
   const disputeRound = totalCompletedStakeOnAllPayouts.equals(0) ? null : stakeRows.disputeRound[0] == null ? 0 : stakeRows.disputeRound[0].disputeRound;
   return {
-    marketId: stakeRows.markets[0].marketId,
+    marketId: marketRow.marketId,
     stakes: stakeResults,
     disputeRound,
   };

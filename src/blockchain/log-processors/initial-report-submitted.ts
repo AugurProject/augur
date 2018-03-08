@@ -6,8 +6,8 @@ import { updateMarketState, rollbackMarketState, insertPayout } from "./database
 import { augurEmitter } from "../../events";
 
 export function processInitialReportSubmittedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  JSON.stringify(log);
   updateMarketState( db, log.market, log.blockNumber, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW, (err: Error|null): void => {
+    if (err) return callback(err);
     insertPayout( db, log.market, log.payoutNumerators, log.invalid, true, (err, payoutId) => {
       const reportToInsert = {
         marketId: log.market,

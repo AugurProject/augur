@@ -245,7 +245,6 @@ export interface StakeDetails extends Payout {
   completedStake: string;
   size?: string;
   currentStake?: string;
-  initialReport: boolean;
   tentativeWinning: boolean;
 }
 

@@ -2,7 +2,7 @@ import * as Knex from "knex";
 import * as _ from "lodash";
 import BigNumber from "bignumber.js";
 import { sortDirection } from "../../utils/sort-direction";
-import { MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIConsensusInfo, UIOutcomeInfo, DisputeTokensRowWithTokenState, UIDisputeTokenInfo } from "../../types";
+import { MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIConsensusInfo, UIOutcomeInfo, DisputeTokensRowWithTokenState, UIDisputeTokenInfo, PayoutRow, Payout } from "../../types";
 import { convertNumTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 
 export function queryModifier(query: Knex.QueryBuilder, defaultSortBy: string, defaultSortOrder: string, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined): Knex.QueryBuilder {
@@ -82,13 +82,13 @@ export function getMarketsWithReportingState(db: Knex, selectColumns?: Array<str
     .leftJoin("blocks", "markets.creationBlockNumber", "blocks.blockNumber");
 }
 
-export function normalizePayouts(payoutRow: any) {
+export function normalizePayouts(payoutRow: PayoutRow): Payout {
   const payoutResponse: any = {
     isInvalid: !!payoutRow.isInvalid,
   };
   payoutResponse.payout = [];
   for (let i = 0; i < 8; i++) {
-    const payoutNumerator = payoutRow["payout" + i];
+    const payoutNumerator = payoutRow["payout" + i as keyof PayoutRow];
     if (payoutNumerator == null) break;
     payoutResponse.payout.push(payoutNumerator);
   }

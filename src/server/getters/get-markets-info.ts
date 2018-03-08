@@ -1,13 +1,13 @@
 import { parallel } from "async";
 import * as Knex from "knex";
 import * as _ from "lodash";
-import { Address, MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIMarketsInfo, UIOutcomeInfo, AsyncCallback} from "../../types";
+import { Address, MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIMarketsInfo, UIOutcomeInfo, AsyncCallback, PayoutRow } from "../../types";
 import { reshapeOutcomesRowToUIOutcomeInfo, reshapeMarketsRowToUIMarketInfo, getMarketsWithReportingState } from "./database";
 
 interface MarketOutcomeResult {
   marketsRows: Array<MarketsRowWithCreationTime>;
   outcomesRows: Array<OutcomesRow>;
-  winningPayoutRows: Array<any>;
+  winningPayoutRows: Array<PayoutRow>;
 }
 
 export function getMarketsInfo(db: Knex, marketIds: Array<Address>, callback: (err: Error|null, result?: UIMarketsInfo) => void): void {
