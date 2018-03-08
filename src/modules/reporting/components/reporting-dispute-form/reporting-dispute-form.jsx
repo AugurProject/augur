@@ -17,9 +17,9 @@ export default class ReportingDisputeForm extends Component {
     updateState: PropTypes.func.isRequired,
     validations: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    disputeBond: PropTypes.string.isRequired,
     currentOutcome: PropTypes.object.isRequired,
-    otherOutcomes: PropTypes.array.isRequired,
+    disputeBond: PropTypes.string.isRequired,
+    disputeOutcomes: PropTypes.array.isRequired,
     stakes: PropTypes.array.isRequired,
     stake: PropTypes.number,
     isMarketInValid: PropTypes.bool,
@@ -52,13 +52,10 @@ export default class ReportingDisputeForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.currentOutcome) {
-      this.state.outcomes = this.state.outcomes.filter(outcome => outcome.id !== nextProps.currentOutcome.id)
-    }
-    if (nextProps.otherOutcomes && nextProps.otherOutcomes.length > 0) {
-      if (this.props.market.marketType === SCALAR) {
-        nextProps.otherOutcomes.reduce(outcome => [...this.state.outcomes, outcome])
-      }
+    if (nextProps.disputeOutcomes && nextProps.disputeOutcomes.length > 0) {
+      this.state.outcomes = nextProps.disputeOutcomes.filter(item => !item.tentativeWinning) || []
+      const outcome = this.state.outcomes.find(o => o.name === 'Indeterminate')
+      if (outcome) outcome.name = 'Market Is Invalid'
     }
   }
 
@@ -89,6 +86,10 @@ export default class ReportingDisputeForm extends Component {
     const updatedValidations = { ...validations }
     updatedValidations.selectedOutcome = true
     delete updatedValidations.err
+    let isInvalid = isMarketInValid
+
+    // outcome with id of .5 means invalid
+    if (selectedOutcome === '0.5') isInvalid = true
 
     ReportingDisputeForm.checkStake(this.props.stake, updatedValidations)
 
@@ -96,7 +97,7 @@ export default class ReportingDisputeForm extends Component {
       validations: updatedValidations,
       selectedOutcome,
       selectedOutcomeName,
-      isMarketInValid,
+      isMarketInValid: isInvalid,
     })
   }
 
@@ -151,7 +152,7 @@ export default class ReportingDisputeForm extends Component {
           <label>
             <span>Tentative Winning Outcome</span>
           </label>
-          <p>{p.currentOutcome.name}</p>
+          <p>{p.currentOutcome.isInvalid ? 'Invalid' : p.currentOutcome.name }</p>
         </li>
         <li>
           <label>
@@ -171,13 +172,6 @@ export default class ReportingDisputeForm extends Component {
                 </li>
               ))
               }
-              <li className={FormStyles['Form__radio-buttons--per-line']}>
-                <button
-                  className={classNames({ [`${FormStyles.active}`]: p.isMarketInValid === true })}
-                  onClick={(e) => { this.validateOutcome(p.validations, '', '', true) }}
-                >Market is invalid
-                </button>
-              </li>
             </ul>
           </li>
         }
@@ -207,13 +201,6 @@ export default class ReportingDisputeForm extends Component {
                     {InputErrorIcon}{ p.validations.err }
                   </span>
                 }
-              </li>
-              <li className={FormStyles['Form__radio-buttons--per-line']}>
-                <button
-                  className={classNames({ [`${FormStyles.active}`]: p.isMarketInValid === true })}
-                  onClick={(e) => { this.validateScalar('', '', p.market.minPrice, p.market.maxPrice, true) }}
-                >Market is invalid
-                </button>
               </li>
             </ul>
           </li>

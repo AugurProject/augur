@@ -11,11 +11,11 @@ import NullStateMessage from 'modules/common/components/null-state-message/null-
 import ReportingDisputeForm from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form'
 import ReportingDisputeConfirm from 'modules/reporting/components/reporting-dispute-confirm/reporting-dispute-confirm'
 import { TYPE_VIEW } from 'modules/market/constants/link-types'
-import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 
 import { isEmpty } from 'lodash'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-report/reporting-report.styles'
+import selectDisputeOutcomes from 'modules/reporting/selectors/select-dispute-outcomes'
 
 export default class ReportingDispute extends Component {
 
@@ -53,9 +53,9 @@ export default class ReportingDispute extends Component {
       gasEstimate: '0',
       disputeBond: '0',
       disputeRound: 0,
-      currentOutcome: {},
-      otherOutcomes: [],
+      disputeOutcomes: [],
       stakes: [],
+      currentOutcome: {},
     }
 
     this.prevPage = this.prevPage.bind(this)
@@ -74,39 +74,16 @@ export default class ReportingDispute extends Component {
   getDisputeInfo() {
     this.props.getDisputeInfo(this.props.marketId, (disputeInfo) => {
 
-      // calculate currentOutcome
-      disputeInfo.stakes.map(stake => this.calculateOutcome(stake))
-      const outcome = disputeInfo.stakes.find(item => item.tentativeWinning) || {}
-      const other = disputeInfo.stakes.filter(item => !item.tentativeWinning) || []
+      const disputeOutcomes = selectDisputeOutcomes(this.props.market, disputeInfo.stakes)
+      const currentOutcome = disputeOutcomes.find(item => item.tentativeWinning) || {}
 
       this.setState({
-        disputeRound: disputeInfo.disputeRound || 0,
+        disputeRound: disputeInfo.disputeRound || 1,
         stakes: disputeInfo.stakes,
-        currentOutcome: outcome,
-        otherOutcomes: other,
+        disputeOutcomes,
+        currentOutcome,
       })
     })
-  }
-
-  // todo move this to selector
-  calculateOutcome(stake) {
-    if (!stake) return {}
-    if (stake.payout.length === 0) return {}
-    if (stake.invalid === true) return stake
-
-    // use reportableOutcomes
-    const { minPrice, maxPrice, numTicks } = this.props.market
-    if (this.props.market.marketType === SCALAR) {
-      const reportNormalizedToZero = stake.payout[0] + minPrice
-      const priceRange = maxPrice - minPrice
-      stake.id = (reportNormalizedToZero / numTicks) * priceRange
-      stake.name = stake.id
-    } else {
-      stake.id = stake.payout.findIndex(item => item > 0)
-      stake.name = this.props.market.outcomes.find(outcome => outcome.id === stake.id)
-      if (this.props.market.marketType === BINARY && stake.id === 0) stake.name = 'No'
-    }
-    return stake
   }
 
   prevPage() {
@@ -191,9 +168,9 @@ export default class ReportingDispute extends Component {
                 stake={s.stake}
                 validations={s.validations}
                 disputeBond={s.disputeBond}
-                currentOutcome={s.currentOutcome}
-                otherOutcomes={s.otherOutcomes}
                 stakes={s.stakes}
+                disputeOutcomes={s.disputeOutcomes}
+                currentOutcome={s.currentOutcome}
               />
             }
             { s.currentStep === 1 &&
@@ -224,7 +201,7 @@ export default class ReportingDispute extends Component {
               { s.currentStep === 1 &&
               <button
                 className={FormStyles.Form__submit}
-                onClick={() => p.submitMarketContribute(p.market.id, s.selectedOutcome, speedomatic.fix(s.stake, 'hex'), s.isMarketInValid, p.history)}
+                onClick={() => p.submitMarketContribute(p.market.id, s.selectedOutcome, s.isMarketInValid, speedomatic.fix(s.stake, 'hex'), p.history)}
               >Submit
               </button>
               }
