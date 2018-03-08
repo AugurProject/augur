@@ -3,11 +3,13 @@ import PropTypes from 'prop-types'
 
 import { Participate } from 'modules/common/components/icons'
 import Styles from 'modules/modal/components/modal-participate/modal-participate.styles'
+import Input from 'modules/common/components/input/input'
 
 export default class ModalParticipate extends Component {
   static propTypes = {
     modal: PropTypes.object.isRequired,
     closeModal: PropTypes.func.isRequired,
+    rep: PropTypes.string.isRequired,
   }
 
   constructor(props) {
@@ -18,6 +20,7 @@ export default class ModalParticipate extends Component {
     }
 
     this.submitForm = this.submitForm.bind(this)
+    this.handleMaxClick = this.handleMaxClick.bind(this)
   }
 
   submitForm(e, ...args) {
@@ -27,6 +30,10 @@ export default class ModalParticipate extends Component {
 
   updateField(field, value, ...args) {
     this.setState({ [field]: value })
+  }
+
+  handleMaxClick() {
+    this.setState({ quantity: this.props.rep })
   }
 
   render() {
@@ -43,18 +50,20 @@ export default class ModalParticipate extends Component {
         >
           <label htmlFor="modal__participate-quantity">
             Quantity (1 token @ 1 REP)
-            <input
+            <Input
               id="modal__participate-quantity"
               type="text"
               className={Styles.ModalParticipate__input}
               value={s.quantity}
               placeholder="0.0"
-              onChange={e => this.updateField('quantity', e.target.value)}
+              onChange={value => this.updateField('quantity', value)}
+              maxButton
+              onMaxButtonClick={() => this.handleMaxClick()}
             />
           </label>
           <div className={Styles['ModalParticipate__form-actions']}>
-            <button onClick={() => p.closeModal()}>Cancel</button>
-            <button type="submit">Review</button>
+            <button className={Styles.ModalParticipate__button} onClick={() => p.closeModal()}>Cancel</button>
+            <button className={Styles.ModalParticipate__button} type="submit">Review</button>
           </div>
         </form>
       </section>

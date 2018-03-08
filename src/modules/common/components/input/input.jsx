@@ -29,6 +29,8 @@ export default class Input extends Component {
     comparisonValue: PropTypes.string,
     isSearch: PropTypes.bool,
     placeholder: PropTypes.string,
+    maxButton: PropTypes.bool,
+    onMaxButtonClick: PropTypes.func,
   };
 
   constructor(props) {
@@ -91,7 +93,7 @@ export default class Input extends Component {
 
   render() {
     const {
-      isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, min, max, ...p
+      isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, min, max, maxButton, onMaxButtonClick, ...p
     } = this.props // eslint-disable-line no-unused-vars
     const s = this.state
 
@@ -141,6 +143,16 @@ export default class Input extends Component {
               <i className="fa fa-eye-slash" /> :
               <i className="fa fa-eye" />
             }
+          </button>
+        }
+
+        {maxButton &&
+          <button
+            type="button"
+            className={Styles.Input__max}
+            onClick={onMaxButtonClick}
+          >
+            max
           </button>
         }
 
