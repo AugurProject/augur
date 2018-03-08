@@ -46,12 +46,7 @@
     width: 100%;
   }
 
-  :global {
-    #outcomes_chart {
-      height: 100%;
-      width: 100%;
-    }
-
+  :local {
     .outcome-line {
       fill: none;
 
@@ -100,5 +95,12 @@
         stroke: @color-lightgray;
       }
     }
+  }
+}
+
+:global {
+  #outcomes_chart {
+    height: 100%;
+    width: 100%;
   }
 }
