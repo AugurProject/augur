@@ -35,6 +35,7 @@ const testState = {
   connection: {
     isConnected: true,
     isConnectedToAugurNode: true,
+    augurNodeNetworkId: '4',
     isReconnectionPaused: false,
   },
   createMarketInProgress: {},

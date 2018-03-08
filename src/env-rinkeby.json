@@ -4,7 +4,6 @@
     "http": "https://rinkeby.ethereum.nodes.augur.net",
     "ws": "wss://websocket-rinkeby.ethereum.nodes.augur.net"
   },
-  "network-id": 4,
   "auto-login": true,
   "universe": null,
   "bug-bounty": false,

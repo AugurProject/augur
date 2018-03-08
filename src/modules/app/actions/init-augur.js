@@ -5,6 +5,7 @@ import { updateContractAddresses } from 'modules/contracts/actions/update-contra
 import { updateFunctionsAPI, updateEventsAPI } from 'modules/contracts/actions/update-contract-api'
 import { useUnlockedAccount } from 'modules/auth/actions/use-unlocked-account'
 import { logout } from 'modules/auth/actions/logout'
+import { verifyMatchingNetworkIds } from 'modules/app/actions/verify-matching-network-ids'
 import { loadUniverse } from 'modules/app/actions/load-universe'
 import { registerTransactionRelay } from 'modules/transactions/actions/register-transaction-relay'
 import { updateModal } from 'modules/modal/actions/update-modal'
@@ -16,13 +17,19 @@ import { isEmpty } from 'lodash'
 
 import { MODAL_NETWORK_MISMATCH, MODAL_ESCAPE_HATCH } from 'modules/modal/constants/modal-types'
 
-const POLL_INTERVAL_DURATION = 3000
+const ACCOUNTS_POLL_INTERVAL_DURATION = 3000
+const NETWORK_ID_POLL_INTERVAL_DURATION = 3000
 const ESCAPE_HATCH_POLL_INTERVAL_DURATION = 30000
+
+const NETWORK_NAMES = {
+  1: 'Mainnet',
+  4: 'Rinkeby',
+  12346: 'Private',
+}
 
 function pollForAccount(dispatch, getState) {
   const { env } = getState()
   let account
-
   setInterval(() => {
     AugurJS.augur.rpc.eth.accounts((err, accounts) => {
       if (err) return console.error(err)
@@ -35,51 +42,30 @@ function pollForAccount(dispatch, getState) {
         }
       }
     })
-  }, POLL_INTERVAL_DURATION)
+  }, ACCOUNTS_POLL_INTERVAL_DURATION)
 }
 
 function pollForNetwork(dispatch, getState) {
-  let networkId
-
   setInterval(() => {
-    const { modal, env } = getState()
-    const expectedNetwork = env['network-id']
-
-    if (parseInt(AugurJS.augur.rpc.getNetworkID(), 10) !== networkId) {
-      networkId = parseInt(AugurJS.augur.rpc.getNetworkID(), 10)
-
-      if (networkId !== expectedNetwork && isEmpty(modal)) {
-        const getNetworkName = () => {
-          switch (expectedNetwork) {
-            case 1:
-              return 'Mainnet'
-            case 4:
-              return 'Rinkeby'
-            case 12346:
-              return 'Private'
-            default:
-              return expectedNetwork
-          }
-        }
-
+    const { modal } = getState()
+    dispatch(verifyMatchingNetworkIds((err, expectedNetworkId) => {
+      if (err) return console.error('pollForNetwork failed', err)
+      if (expectedNetworkId != null && isEmpty(modal)) {
         dispatch(updateModal({
           type: MODAL_NETWORK_MISMATCH,
-          expectedNetwork: getNetworkName(),
+          expectedNetwork: NETWORK_NAMES[expectedNetworkId] || expectedNetworkId,
         }))
-      } else if (modal.type === MODAL_NETWORK_MISMATCH) {
+      } else if (expectedNetworkId == null && modal.type === MODAL_NETWORK_MISMATCH) {
         dispatch(closeModal())
       }
-    }
-  }, POLL_INTERVAL_DURATION)
+    }))
+  }, NETWORK_ID_POLL_INTERVAL_DURATION)
 }
 
 function pollForEscapeHatch(dispatch, getState) {
-
   setInterval(() => {
     const { modal } = getState()
-
     const modalShowing = !!modal.type && modal.type === MODAL_ESCAPE_HATCH
-
     AugurJS.augur.api.Controller.stopped((err, stopped) => {
       if (stopped && !modalShowing) {
         dispatch(updateModal({
@@ -94,7 +80,6 @@ function pollForEscapeHatch(dispatch, getState) {
         dispatch(closeModal())
       }
     })
-
   }, ESCAPE_HATCH_POLL_INTERVAL_DURATION)
 }
 
