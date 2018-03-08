@@ -63,6 +63,7 @@ class MarketTradingWrapper extends Component {
         orderEstimate,
       })
     }
+
     // Updates from chart clicks
     if (!isEqual(this.props.selectedOrderProperties, nextProps.selectedOrderProperties)) this.setState({ ...nextProps.selectedOrderProperties })
   }
