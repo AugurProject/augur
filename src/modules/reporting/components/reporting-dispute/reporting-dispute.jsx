@@ -35,6 +35,7 @@ export default class ReportingDispute extends Component {
 
   render() {
     const p = this.props
+
     return (
       <section>
         <Helmet>

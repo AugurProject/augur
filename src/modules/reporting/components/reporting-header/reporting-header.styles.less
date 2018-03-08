@@ -103,6 +103,25 @@
   white-space: nowrap;
 }
 
+.ReportingHeader__participationTokens--disabled {
+  &:extend(.ReportingHeader__participationTokens);
+
+  color: @color-gray;
+  cursor: not-allowed;
+
+  > .ReportingHeader__participationTokens--text {
+    border-color: @color-gray;
+    color: @color-gray;
+    cursor: not-allowed;
+  }
+
+  > svg,
+  path,
+  g {
+    stroke: @color-gray;
+  }
+}
+
 .ReportingHeader__participationTokens--text {
   &:extend(.caps);
 

@@ -1,0 +1,55 @@
+@import (reference) "~assets/styles/shared";
+
+.ModalParticipate {
+  max-width: 35rem;
+  padding: 1rem;
+  position: relative;
+}
+
+.ModalParticipate__heading {
+  .caps--extra-large();
+
+  color: @color-white;
+}
+
+.ModalParticipate__helperText {
+  color: @color-white;
+  display: none;
+}
+
+.ModalParticipate__form {
+  width: 100%;
+
+  h1,
+  input,
+  label {
+    margin-top: 1rem;
+  }
+
+  input::placeholder {
+    color: @color-gray;
+  }
+
+  button {
+    &:extend(.button--white);
+
+    margin-top: 2rem;
+  }
+}
+
+.ModalParticipate__form-actions {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+@media @breakpoint-mobile {
+  .ModalParticipate__helperText {
+    display: block;
+  }
+
+  .ModalParticipate__heading {
+    font-size: @font-size-somewhat-large;
+    line-height: @font-size-somewhat-large;
+  }
+}
