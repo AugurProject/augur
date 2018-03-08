@@ -15,8 +15,8 @@ export const verifyMatchingNetworkIds = (callback = logError) => {
     }
     if (new Set(networkIdValues).size > 1) {
       console.error(`Network ID mismatch: ${JSON.stringify(networkIds)}`)
-      return callback(null, false)
+      return callback(null, augurNodeNetworkId) // augur-node's network id is the expected network id
     }
-    callback(null, true)
+    callback(null)
   })
 }

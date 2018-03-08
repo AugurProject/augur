@@ -8,8 +8,8 @@ describe('modules/auth/actions/verify-matching-network-ids.js', () => {
     __RewireAPI__.__Rewire__('getAugurNodeNetworkId', t.stub.getAugurNodeNetworkId)
     __RewireAPI__.__Rewire__('getMetaMaskNetworkId', t.stub.getMetaMaskNetworkId)
     __RewireAPI__.__Rewire__('augur', t.stub.augur)
-    verifyMatchingNetworkIds((err, isMatchingNetworkIds) => {
-      t.assertions(err, isMatchingNetworkIds)
+    verifyMatchingNetworkIds((err, expectedNetworkId) => {
+      t.assertions(err, expectedNetworkId)
       done()
     })
   })
@@ -21,9 +21,9 @@ describe('modules/auth/actions/verify-matching-network-ids.js', () => {
       getMetaMaskNetworkId: () => '4',
       augur: { rpc: { getNetworkID: () => '4' } },
     },
-    assertions: (err, isMatchingNetworkIds) => {
+    assertions: (err, expectedNetworkId) => {
       assert.isNull(err)
-      assert.isTrue(isMatchingNetworkIds)
+      assert.isUndefined(expectedNetworkId)
     },
   })
   test({
@@ -34,9 +34,9 @@ describe('modules/auth/actions/verify-matching-network-ids.js', () => {
       getMetaMaskNetworkId: () => '1',
       augur: { rpc: { getNetworkID: () => '4' } },
     },
-    assertions: (err, isMatchingNetworkIds) => {
+    assertions: (err, expectedNetworkId) => {
       assert.isNull(err)
-      assert.isFalse(isMatchingNetworkIds)
+      assert.strictEqual(expectedNetworkId, '4')
     },
   })
   test({
@@ -47,9 +47,9 @@ describe('modules/auth/actions/verify-matching-network-ids.js', () => {
       getMetaMaskNetworkId: () => '4',
       augur: { rpc: { getNetworkID: () => '1' } },
     },
-    assertions: (err, isMatchingNetworkIds) => {
+    assertions: (err, expectedNetworkId) => {
       assert.isNull(err)
-      assert.isFalse(isMatchingNetworkIds)
+      assert.strictEqual(expectedNetworkId, '4')
     },
   })
   test({
@@ -60,22 +60,22 @@ describe('modules/auth/actions/verify-matching-network-ids.js', () => {
       getMetaMaskNetworkId: () => assert.fail(),
       augur: { rpc: { getNetworkID: () => '4' } },
     },
-    assertions: (err, isMatchingNetworkIds) => {
+    assertions: (err, expectedNetworkId) => {
       assert.isNull(err)
-      assert.isTrue(isMatchingNetworkIds)
+      assert.isUndefined(expectedNetworkId)
     },
   })
   test({
-    description: 'not using metamask, middleware on 1, augur-node on 4',
+    description: 'not using metamask, middleware on 4, augur-node on 1',
     stub: {
       isMetaMask: () => false,
-      getAugurNodeNetworkId: callback => callback(null, '4'),
+      getAugurNodeNetworkId: callback => callback(null, '1'),
       getMetaMaskNetworkId: () => assert.fail(),
-      augur: { rpc: { getNetworkID: () => '1' } },
+      augur: { rpc: { getNetworkID: () => '4' } },
     },
-    assertions: (err, isMatchingNetworkIds) => {
+    assertions: (err, expectedNetworkId) => {
       assert.isNull(err)
-      assert.isFalse(isMatchingNetworkIds)
+      assert.strictEqual(expectedNetworkId, '1')
     },
   })
   test({
@@ -86,9 +86,9 @@ describe('modules/auth/actions/verify-matching-network-ids.js', () => {
       getMetaMaskNetworkId: () => assert.fail(),
       augur: { rpc: { getNetworkID: () => null } },
     },
-    assertions: (err, isMatchingNetworkIds) => {
+    assertions: (err, expectedNetworkId) => {
       assert.strictEqual(err, 'One or more network IDs not found: {"augurNode":"4","middleware":null}')
-      assert.isUndefined(isMatchingNetworkIds)
+      assert.isUndefined(expectedNetworkId)
     },
   })
 })

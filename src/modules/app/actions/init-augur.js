@@ -48,15 +48,14 @@ function pollForAccount(dispatch, getState) {
 function pollForNetwork(dispatch, getState) {
   setInterval(() => {
     const { modal } = getState()
-    verifyMatchingNetworkIds((err, isMatchingNetworkIds) => {
+    verifyMatchingNetworkIds((err, expectedNetworkId) => {
       if (err) return console.error('pollForNetwork failed', err)
-      if (isMatchingNetworkIds === false && isEmpty(modal)) {
-        const expectedNetworkId = AugurJS.augur.rpc.getNetworkID()
+      if (expectedNetworkId != null && isEmpty(modal)) {
         dispatch(updateModal({
           type: MODAL_NETWORK_MISMATCH,
           expectedNetwork: NETWORK_NAMES[expectedNetworkId] || expectedNetworkId,
         }))
-      } else if (isMatchingNetworkIds === true && modal.type === MODAL_NETWORK_MISMATCH) {
+      } else if (expectedNetworkId == null && modal.type === MODAL_NETWORK_MISMATCH) {
         dispatch(closeModal())
       }
     })
