@@ -1,12 +1,10 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
-import proxyquire from 'proxyquire'
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
-import { getPayoutNumerators } from 'modules/reporting/selectors/get-payout-numerators'
+import { calculatePayoutNumeratorsValue } from 'utils/calculate-payout-numerators-value'
 
-describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
-  proxyquire.noPreserveCache().noCallThru()
+describe(`modules/reporting/actions/calculate-payout-numerators-value.js`, () => {
 
   const test = (t) => {
     it(t.description, () => {
@@ -50,47 +48,42 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
-        const actual = getPayoutNumerators(marketScalar, 75, false)
-        const expected = [2500, 7500]
+        const actual = calculatePayoutNumeratorsValue(marketScalar, [2500, 7500], false)
+        const expected = 75
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
-        assert.deepEqual(expected[0] + expected[1], marketScalar.numTicks)
       },
     })
   })
 
-  describe('scalar 75 sub 0 Min', () => {
+  describe('scalar sub 0 Min 75', () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
-        const actual = getPayoutNumerators(marketScalarMin, 75, false)
-        const expected = [450, 850]
+        const actual = calculatePayoutNumeratorsValue(marketScalarMin, [450, 850], false)
+        const expected = 75
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
-        assert.deepEqual(expected[0] + expected[1], marketScalarMin.numTicks)
       },
     })
   })
 
-  describe('scalar 25 sub 0 Min', () => {
+  describe('scalar sub 0 Min 25', () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
-        const actual = getPayoutNumerators(marketScalarMin, 25, false)
-        const expected = [950, 350]
+        const actual = calculatePayoutNumeratorsValue(marketScalarMin, [950, 350], false)
+        const expected = 25
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
-        assert.deepEqual(expected[0] + expected[1], marketScalarMin.numTicks)
       },
     })
   })
-
 
   describe('scalar 50', () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
-        const actual = getPayoutNumerators(marketScalar, 50, false)
-        const expected = [5000, 5000]
+        const actual = calculatePayoutNumeratorsValue(marketScalar, [5000, 5000], false)
+        const expected = 50
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
-        assert.deepEqual(expected[0] + expected[1], marketScalar.numTicks)
       },
     })
   })
@@ -99,10 +92,9 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
-        const actual = getPayoutNumerators(marketScalar, 25, false)
-        const expected = [7500, 2500]
+        const actual = calculatePayoutNumeratorsValue(marketScalar, [7500, 2500], false)
+        const expected = 25
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
-        assert.deepEqual(expected[0] + expected[1], marketScalar.numTicks)
       },
     })
   })
@@ -111,10 +103,9 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
-        const actual = getPayoutNumerators(marketScalar, 45.01, false)
-        const expected = [5499, 4501]
+        const actual = calculatePayoutNumeratorsValue(marketScalar, [5499, 4501], false)
+        const expected = 45.01
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
-        assert.deepEqual(expected[0] + expected[1], marketScalar.numTicks)
       },
     })
   })
@@ -123,10 +114,9 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
-        const actual = getPayoutNumerators(marketScalar, 0, true)
-        const expected = [5000, 5000]
+        const actual = calculatePayoutNumeratorsValue(marketScalar, [5000, 5000], true)
+        const expected = null
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
-        assert.deepEqual(expected[0] + expected[1], marketScalar.numTicks)
       },
     })
   })
@@ -135,8 +125,8 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
-        const actual = getPayoutNumerators(marketBinary, 0, false)
-        const expected = [10000, 0]
+        const actual = calculatePayoutNumeratorsValue(marketBinary, [10000, 0], false)
+        const expected = 0
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
       },
     })
@@ -146,8 +136,8 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
-        const actual = getPayoutNumerators(marketBinary, 1, false)
-        const expected = [0, 10000]
+        const actual = calculatePayoutNumeratorsValue(marketBinary, [0, 10000], false)
+        const expected = 1
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
       },
     })
@@ -157,8 +147,8 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
-        const actual = getPayoutNumerators(marketBinary, 1, true)
-        const expected = [5000, 5000]
+        const actual = calculatePayoutNumeratorsValue(marketBinary, [5000, 5000], true)
+        const expected = null
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
       },
     })
@@ -168,8 +158,8 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
-        const actual = getPayoutNumerators(marketCategorical, 0, false)
-        const expected = [10003, 0, 0, 0, 0, 0, 0]
+        const actual = calculatePayoutNumeratorsValue(marketCategorical, [10003, 0, 0, 0, 0, 0, 0], false)
+        const expected = 0
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
       },
     })
@@ -179,8 +169,8 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
-        const actual = getPayoutNumerators(marketCategorical, 3, false)
-        const expected = [0, 0, 0, 10003, 0, 0, 0]
+        const actual = calculatePayoutNumeratorsValue(marketCategorical, [0, 0, 0, 10003, 0, 0, 0], false)
+        const expected = 3
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
       },
     })
@@ -190,8 +180,8 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
-        const actual = getPayoutNumerators(marketCategorical, 6, false)
-        const expected = [0, 0, 0, 0, 0, 0, 10003]
+        const actual = calculatePayoutNumeratorsValue(marketCategorical, [0, 0, 0, 0, 0, 0, 10003], false)
+        const expected = 6
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
       },
     })
@@ -201,8 +191,8 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
-        const actual = getPayoutNumerators(marketCategorical, 0, true)
-        const expected = [1429, 1429, 1429, 1429, 1429, 1429, 1429]
+        const actual = calculatePayoutNumeratorsValue(marketCategorical, [1429, 1429, 1429, 1429, 1429, 1429, 1429], true)
+        const expected = null
         assert.deepEqual(actual, expected, `Didn't call the expected method`)
       },
     })
