@@ -1,17 +1,27 @@
+import { verifyMatchingNetworkIds, __RewireAPI__ } from 'modules/app/actions/verify-matching-network-ids'
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
 
-describe('modules/auth/actions/verify-matching-network-ids.js', () => {
-  const { verifyMatchingNetworkIds, __RewireAPI__ } = require('modules/auth/actions/verify-matching-network-ids')
+describe('modules/app/actions/verify-matching-network-ids.js', () => {
+  const store = configureMockStore([thunk])({})
+  afterEach(() => {
+    store.clearActions()
+    __RewireAPI__.__ResetDependency__('isMetaMask')
+    __RewireAPI__.__ResetDependency__('getAugurNodeNetworkId')
+    __RewireAPI__.__ResetDependency__('getMetaMaskNetworkId')
+    __RewireAPI__.__ResetDependency__('augur')
+  })
   const test = t => it(t.description, (done) => {
     __RewireAPI__.__Rewire__('isMetaMask', t.stub.isMetaMask)
     __RewireAPI__.__Rewire__('getAugurNodeNetworkId', t.stub.getAugurNodeNetworkId)
     __RewireAPI__.__Rewire__('getMetaMaskNetworkId', t.stub.getMetaMaskNetworkId)
     __RewireAPI__.__Rewire__('augur', t.stub.augur)
-    verifyMatchingNetworkIds((err, expectedNetworkId) => {
+    store.dispatch(verifyMatchingNetworkIds((err, expectedNetworkId) => {
       t.assertions(err, expectedNetworkId)
       done()
-    })
+    }))
   })
   test({
     description: 'using metamask, network ids all equal to 4',

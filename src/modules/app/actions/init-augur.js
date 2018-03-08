@@ -5,7 +5,7 @@ import { updateContractAddresses } from 'modules/contracts/actions/update-contra
 import { updateFunctionsAPI, updateEventsAPI } from 'modules/contracts/actions/update-contract-api'
 import { useUnlockedAccount } from 'modules/auth/actions/use-unlocked-account'
 import { logout } from 'modules/auth/actions/logout'
-import { verifyMatchingNetworkIds } from 'modules/auth/actions/verify-matching-network-ids'
+import { verifyMatchingNetworkIds } from 'modules/app/actions/verify-matching-network-ids'
 import { loadUniverse } from 'modules/app/actions/load-universe'
 import { registerTransactionRelay } from 'modules/transactions/actions/register-transaction-relay'
 import { updateModal } from 'modules/modal/actions/update-modal'
@@ -48,7 +48,7 @@ function pollForAccount(dispatch, getState) {
 function pollForNetwork(dispatch, getState) {
   setInterval(() => {
     const { modal } = getState()
-    verifyMatchingNetworkIds((err, expectedNetworkId) => {
+    dispatch(verifyMatchingNetworkIds((err, expectedNetworkId) => {
       if (err) return console.error('pollForNetwork failed', err)
       if (expectedNetworkId != null && isEmpty(modal)) {
         dispatch(updateModal({
@@ -58,7 +58,7 @@ function pollForNetwork(dispatch, getState) {
       } else if (expectedNetworkId == null && modal.type === MODAL_NETWORK_MISMATCH) {
         dispatch(closeModal())
       }
-    })
+    }))
   }, NETWORK_ID_POLL_INTERVAL_DURATION)
 }
 

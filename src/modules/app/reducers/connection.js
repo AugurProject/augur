@@ -1,7 +1,12 @@
-import { UPDATE_CONNECTION_STATUS, UPDATE_AUGUR_NODE_CONNECTION_STATUS, UPDATE_IS_RECONNECTION_PAUSED } from 'modules/app/actions/update-connection'
+import { UPDATE_CONNECTION_STATUS, UPDATE_AUGUR_NODE_CONNECTION_STATUS, UPDATE_IS_RECONNECTION_PAUSED, UPDATE_AUGUR_NODE_NETWORK_ID } from 'modules/app/actions/update-connection'
 import { RESET_STATE } from 'modules/app/actions/reset-state'
 
-const DEFAULT_STATE = { isConnected: false, isConnectedToAugurNode: false, isReconnectionPaused: false }
+const DEFAULT_STATE = {
+  isConnected: false,
+  isConnectedToAugurNode: false,
+  augurNodeNetworkId: null,
+  isReconnectionPaused: false,
+}
 
 export default function (connection = DEFAULT_STATE, action) {
   switch (action.type) {
@@ -15,6 +20,12 @@ export default function (connection = DEFAULT_STATE, action) {
         ...connection,
         isConnectedToAugurNode: action.isConnected,
       }
+    case UPDATE_AUGUR_NODE_NETWORK_ID: {
+      return {
+        ...connection,
+        augurNodeNetworkId: action.augurNodeNetworkId,
+      }
+    }
     case UPDATE_IS_RECONNECTION_PAUSED:
       return {
         ...connection,
