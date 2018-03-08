@@ -9,11 +9,12 @@ import ModalNetworkMismatch from 'modules/modal/components/modal-network-mismatc
 import ModalNetworkDisconnected from 'modules/modal/components/modal-network-disconnected/modal-network-disconnected'
 import ModalApproval from 'modules/modal/components/modal-approval/modal-approval'
 import ModalEscapeHatch from 'modules/modal/components/modal-escape-hatch/modal-escape-hatch'
+import ModalParticipate from 'modules/modal/components/modal-participate/modal-participate'
 
 import debounce from 'utils/debounce'
 import getValue from 'utils/get-value'
 
-import { MODAL_LEDGER, MODAL_UPORT, MODAL_NETWORK_MISMATCH, MODAL_NETWORK_DISCONNECTED, MODAL_ACCOUNT_APPROVAL, MODAL_ESCAPE_HATCH } from 'modules/modal/constants/modal-types'
+import * as TYPES from 'modules/modal/constants/modal-types'
 
 import Styles from 'modules/modal/components/modal-view/modal-view.styles'
 
@@ -60,29 +61,32 @@ export default class ModalView extends Component {
         <div
           className={Styles.ModalView__content}
         >
-          {p.modal.type === MODAL_LEDGER &&
+          {p.modal.type === TYPES.MODAL_LEDGER &&
             <ModalLedger {...p.modal} />
           }
-          {p.modal.type === MODAL_UPORT &&
+          {p.modal.type === TYPES.MODAL_UPORT &&
             <ModalUport
               {...p.modal}
               modalWidth={s.modalWidth}
               modalHeight={s.modalHeight}
             />
           }
-          {p.modal.type === MODAL_NETWORK_MISMATCH &&
+          {p.modal.type === TYPES.MODAL_PARTICIPATE &&
+            <ModalParticipate {...p} />
+          }
+          {p.modal.type === TYPES.MODAL_NETWORK_MISMATCH &&
             <ModalNetworkMismatch {...p.modal} />
           }
-          {p.modal.type === MODAL_NETWORK_DISCONNECTED &&
+          {p.modal.type === TYPES.MODAL_NETWORK_DISCONNECTED &&
             <ModalNetworkDisconnected {...p} />
           }
-          {p.modal.type === MODAL_ACCOUNT_APPROVAL &&
+          {p.modal.type === TYPES.MODAL_ACCOUNT_APPROVAL &&
             <ModalApproval {...p} />
           }
-          {p.modal.type === MODAL_ESCAPE_HATCH &&
+          {p.modal.type === TYPES.MODAL_ESCAPE_HATCH &&
             <ModalEscapeHatch {...p} />
           }
-          {p.modal.canClose && p.modal.type !== MODAL_ACCOUNT_APPROVAL &&
+          {p.modal.canClose && p.modal.type !== TYPES.MODAL_ACCOUNT_APPROVAL &&
             <button
               className={Styles.ModalView__button}
               onClick={p.closeModal}
