@@ -25,7 +25,7 @@ export function getMarketsInfo(db: Knex, marketIds: Array<Address>, callback: (e
     if (!marketsRows) return callback(null);
     const marketsRowsByMarket = _.keyBy(marketsRows, (r: MarketsRowWithCreationTime): string => r.marketId);
     const outcomesRowsByMarket = _.groupBy(outcomesRows, (r: OutcomesRow): string => r.marketId);
-    const winningPayoutByMarket = _.keyBy(winningPayoutRows, (r: MarketsContractAddressRow): string => r.marketId);
+    const winningPayoutByMarket = _.keyBy(winningPayoutRows, (r: PayoutRow & MarketsContractAddressRow): string => r.marketId);
 
     const marketsInfo: UIMarketsInfo = _.map(marketIds, (marketId: string): UIMarketInfo|null => {
       const market = marketsRowsByMarket[marketId];
