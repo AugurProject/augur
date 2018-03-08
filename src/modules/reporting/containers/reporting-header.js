@@ -4,6 +4,8 @@ import ReportingHeader from 'modules/reporting/components/reporting-header/repor
 
 import { loadReportingWindowBounds } from 'modules/reporting/actions/load-reporting-window-bounds'
 
+import { updateModal } from 'modules/modal/actions/update-modal'
+
 const mapStateToProps = state => ({
   reportingWindowStats: state.reportingWindowStats,
   isMobile: state.isMobile,
@@ -12,6 +14,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   loadReportingWindowStake: () => { /* TODO */ },
   loadReportingWindowBounds: () => dispatch(loadReportingWindowBounds()),
+  updateModal: modal => dispatch(updateModal(modal)),
 })
 
 const mergeProps = (sP, dP, oP) => ({
