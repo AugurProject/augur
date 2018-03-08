@@ -47,9 +47,9 @@ function isActiveMarketState(reportingState: ReportingState|null|undefined) {
 }
 
 function calculateBondSize(totalCompletedStakeOnAllPayouts: BigNumber, completedStakeAmount: BigNumber): BigNumber {
-  return new BigNumber(totalCompletedStakeOnAllPayouts.times(2))
+  return new BigNumber(totalCompletedStakeOnAllPayouts.times(2).toString())
     .minus(
-      new BigNumber(completedStakeAmount).times(3));
+      new BigNumber(completedStakeAmount).times(3).toString());
 }
 
 export function getDisputeInfo(db: Knex, marketIds: Array<Address>, account: Address|null, callback: (err: Error|null, result?: Array<UIStakeInfo|null>) => void): void {
@@ -91,7 +91,7 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
     return null;
   }
   const totalCompletedStakeOnAllPayouts = new BigNumber(
-    _.sum(_.map(stakeRows.completedStakes, (completedStake) => completedStake.amountStaked)));
+    _.sum(_.map(stakeRows.completedStakes, (completedStake) => completedStake.amountStaked)).toString());
 
   const completedStakeByPayout: { [payoutId: number]: StakeRow } = _.keyBy(stakeRows.completedStakes, "payoutId");
   const activeCrowdsourcerByPayout: { [payoutId: number]: ActiveCrowdsourcer } = _.keyBy(stakeRows.activeCrowdsourcer, "payoutId");
@@ -104,8 +104,8 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
     const accountStakeComplete = accountStakeCompleteByPayout[payout.payoutId];
     const accountStakeIncomplete = accountStakeIncompleteByPayout[payout.payoutId];
 
-    const completedStakeAmount = new BigNumber(completedStakes == null ? 0 : completedStakes.amountStaked);
-    const totalStakeOnPayout = completedStakeAmount.add(new BigNumber(activeCrowdsourcer == null ? 0 : activeCrowdsourcer.amountStaked));
+    const completedStakeAmount = new BigNumber(completedStakes == null ? 0 : completedStakes.amountStaked.toString());
+    const totalStakeOnPayout = completedStakeAmount.add(new BigNumber(activeCrowdsourcer == null ? 0 : activeCrowdsourcer.amountStaked.toString()));
 
     let currentAmounts: StakeSizes;
     if (payout.tentativeWinning === 1 || !isActiveMarketState(marketRow.reportingState)) {
@@ -118,13 +118,13 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
       };
     } else {
       currentAmounts = {
-        size: new BigNumber(activeCrowdsourcer.size).toFixed(),
-        currentStake: new BigNumber(activeCrowdsourcer.amountStaked).toFixed(),
-        accountStakeIncomplete: new BigNumber(accountStakeIncomplete === undefined ? 0 : accountStakeIncomplete.amountStaked ).toFixed(),
+        size: new BigNumber(activeCrowdsourcer.size.toString()).toFixed(),
+        currentStake: new BigNumber(activeCrowdsourcer.amountStaked.toString()).toFixed(),
+        accountStakeIncomplete: new BigNumber(accountStakeIncomplete === undefined ? 0 : accountStakeIncomplete.amountStaked.toString() ).toFixed(),
       };
     }
 
-    currentAmounts.accountStakeComplete = new BigNumber(accountStakeComplete === undefined ? 0 : accountStakeComplete.amountStaked).toFixed();
+    currentAmounts.accountStakeComplete = new BigNumber(accountStakeComplete === undefined ? 0 : accountStakeComplete.amountStaked.toString()).toFixed();
     return Object.assign({},
       normalizePayouts(payout),
       currentAmounts,
