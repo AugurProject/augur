@@ -93,8 +93,11 @@
     }
 
     p {
-      color: @color-lightgray;
-      margin-top: 0;
+      color: @color-white;
+      font-size: @font-size-large;
+      line-height: @font-size-large;
+      margin-top: 1.075rem;
+      text-transform: capitalize;
 
       &:last-child {
         margin-bottom: 2rem;
@@ -233,6 +236,11 @@
   > li:not(:first-child) {
     margin-left: 0;
     margin-top: 1rem;
+
+    &.field--inline {
+      display: block;
+      max-width: 21rem;
+    }
   }
 }
 

@@ -1,5 +1,5 @@
 import { BINARY } from 'modules/markets/constants/market-types'
-import { revertPayoutNumerators } from 'utils/revert-payout-numerators'
+import { calculatePayoutNumeratorsValue } from 'utils/calculate-payout-numerators-value'
 
 export default function (market, disputeStakes) {
   const stakes = disputeStakes.sort((a, b) => a.totalStake > b.totalStake)
@@ -8,14 +8,26 @@ export default function (market, disputeStakes) {
   const { marketType, reportableOutcomes } = market
   const outcomes = reportableOutcomes.slice()
   const disputeOutcomes = stakes.map(stake => populateNameId(marketType, outcomes, market, stake))
-  const finishedOutcomes = outcomes.reduce(fillInOutcomes, disputeOutcomes)
-  return finishedOutcomes
+  const tentativeWinner = disputeOutcomes.find(stake => stake.tentativeWinning)
+  const uniqueStakes = disputeOutcomes.reduce((p, stake) => {
+    if (!p.find(o => o.id === stake.id)) {
+      if (stake.id === tentativeWinner.id) {
+        return [...p, tentativeWinner]
+      }
+      return [...p, stake]
+    }
+    return p
+  }, [])
+    .reduce(fillInOutcomes, outcomes)
+  return uniqueStakes
 }
 
 const fillInOutcomes = (collection, outcome) => {
-  if (!collection.find(item => item.id.toString() === outcome.id)) {
+  const index = collection.map(e => e.id).indexOf(outcome.id)
+  if (index === -1) {
     return [...collection, outcome]
   }
+  collection[index] = outcome
   return collection
 }
 
@@ -23,12 +35,16 @@ const populateNameId = (marketType, outcomes, market, stake) => {
   if (!stake) return {}
   if (stake.payout.length === 0) return {}
 
-  // TODO: issue with falsy in augur-node isInvalid returning incorrectly
-  // if (stake.isInvalid === true) return stake
-  // TODO: stake.invalid needs to be sent to revert payout numerators
-  stake.id = revertPayoutNumerators(market, stake.payout, false)
-  stake.name = stake.id
-  let outcome = outcomes.find(outcome => outcome.id === stake.id.toString())
+  let outcome
+  if (stake.isInvalid) {
+    // '0.5' is the indetermine/invalid id from reportable outcomes
+    outcome = outcomes.find(outcome => outcome.id === '0.5')
+  } else {
+    stake.id = calculatePayoutNumeratorsValue(market, stake.payout, stake.isInvalid)
+    stake.name = stake.id
+    outcome = outcomes.find(outcome => outcome.id === stake.id.toString())
+  }
+
   if (outcome) {
     outcome = { ...stake, ...outcome }
   } else {

@@ -43,7 +43,7 @@ const ReportingDisputeConfirm = p => (
 ReportingDisputeConfirm.propTypes = {
   market: PropTypes.object.isRequired,
   currentOutcome: PropTypes.object.isRequired,
-  selectedOutcome: PropTypes.string.isRequired,
+  selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   stake: PropTypes.number.isRequired,
   gasEstimate: PropTypes.string.isRequired,
   isMarketInValid: PropTypes.bool,

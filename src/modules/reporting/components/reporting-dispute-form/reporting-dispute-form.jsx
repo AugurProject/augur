@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import BigNumber from 'bignumber.js'
 
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles'
@@ -40,6 +40,7 @@ export default class ReportingDisputeForm extends Component {
     this.state = {
       outcomes: [],
       inputStake: '',
+      inputSelectedOutcome: '',
     }
 
     this.state.outcomes = this.props.market ? this.props.market.outcomes.slice() : []
@@ -49,6 +50,8 @@ export default class ReportingDisputeForm extends Component {
 
     this.state.outcomes.sort((a, b) => a.name - b.name)
     if (this.props.stake) this.state.inputStake = this.props.stake.toString()
+
+    this.componentWillReceiveProps(this.props)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -56,6 +59,12 @@ export default class ReportingDisputeForm extends Component {
       this.state.outcomes = nextProps.disputeOutcomes.filter(item => !item.tentativeWinning) || []
       const outcome = this.state.outcomes.find(o => o.name === 'Indeterminate')
       if (outcome) outcome.name = 'Market Is Invalid'
+
+      if (nextProps.selectedOutcome) {
+        if (!this.state.outcomes.find(o => o.id === nextProps.selectedOutcome)) {
+          this.state.inputSelectedOutcome = nextProps.selectedOutcome
+        }
+      }
     }
   }
 
@@ -159,52 +168,50 @@ export default class ReportingDisputeForm extends Component {
             <span>Proposed Outcome</span>
           </label>
         </li>
-        { (p.market.marketType === BINARY || p.market.marketType === CATEGORICAL) &&
-          <li>
-            <ul className={FormStyles['Form__radio-buttons--per-line']}>
-              { s.outcomes.map(outcome => (
-                <li key={outcome.id}>
-                  <button
-                    className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.id })}
-                    onClick={(e) => { this.validateOutcome(p.validations, outcome.id, outcome.name, false) }}
-                  >{outcome.name}
-                  </button>
-                </li>
-              ))
-              }
-            </ul>
-          </li>
-        }
-        { p.market.marketType === SCALAR &&
-          <li className={FormStyles['field--short']}>
-            <ul className={FormStyles['Form__radio-buttons--per-line']}>
-              <li>
+        <li>
+          <ul className={FormStyles['Form__radio-buttons--per-line']}>
+            { s.outcomes.map(outcome => (
+              <li key={outcome.id}>
                 <button
-                  className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome !== '' })}
-                  onClick={(e) => { this.validateScalar(0, 'selectedOutcome', p.market.minPrice, p.market.maxPrice, false) }}
-                />
-                <input
-                  id="sr__input--outcome-scalar"
-                  type="number"
-                  min={p.market.minPrice}
-                  max={p.market.maxPrice}
-                  step={p.market.tickSize}
-                  placeholder={p.market.minPrice}
-                  value={p.selectedOutcome}
-                  className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('err') && p.validations.selectedOutcome })}
-                  onChange={(e) => { this.validateScalar(e.target.value, 'outcome', p.market.minPrice, p.market.maxPrice, false) }}
-                />
+                  className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.id })}
+                  onClick={(e) => { this.validateOutcome(p.validations, outcome.id, outcome.name, false) }}
+                >{outcome.name}
+                </button>
               </li>
-              <li>
-                { p.validations.hasOwnProperty('err') &&
-                  <span className={FormStyles.Form__error}>
-                    {InputErrorIcon}{ p.validations.err }
-                  </span>
-                }
+            ))
+            }
+            { p.market.marketType === SCALAR &&
+              <li className={FormStyles['field--inline']}>
+                <ul className={FormStyles['Form__radio-buttons--per-line']}>
+                  <li>
+                    <button
+                      className={classNames({ [`${FormStyles.active}`]: s.inputSelectedOutcome !== '' })}
+                      onClick={(e) => { this.validateScalar(0, 'selectedOutcome', p.market.minPrice, p.market.maxPrice, false) }}
+                    />
+                    <input
+                      id="sr__input--outcome-scalar"
+                      type="number"
+                      min={p.market.minPrice}
+                      max={p.market.maxPrice}
+                      step={p.market.tickSize}
+                      placeholder={p.market.minPrice}
+                      value={s.inputSelectedOutcome}
+                      className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('err') && p.validations.selectedOutcome })}
+                      onChange={(e) => { this.validateScalar(e.target.value, 'outcome', p.market.minPrice, p.market.maxPrice, false) }}
+                    />
+                  </li>
+                  <li>
+                    { p.validations.hasOwnProperty('err') &&
+                      <span className={FormStyles.Form__error}>
+                        {InputErrorIcon}{ p.validations.err }
+                      </span>
+                    }
+                  </li>
+                </ul>
               </li>
-            </ul>
-          </li>
-        }
+            }
+          </ul>
+        </li>
         <li className={FormStyles['field--short']}>
           <label>
             <span htmlFor="sr__input--stake">Deposit Stake</span>
