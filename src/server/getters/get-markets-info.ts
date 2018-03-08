@@ -1,13 +1,13 @@
 import { parallel } from "async";
 import * as Knex from "knex";
 import * as _ from "lodash";
-import { Address, MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIMarketsInfo, UIOutcomeInfo, AsyncCallback, PayoutRow } from "../../types";
+import { Address, MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIMarketsInfo, UIOutcomeInfo, AsyncCallback, PayoutRow, MarketsContractAddressRow } from "../../types";
 import { reshapeOutcomesRowToUIOutcomeInfo, reshapeMarketsRowToUIMarketInfo, getMarketsWithReportingState } from "./database";
 
 interface MarketOutcomeResult {
   marketsRows: Array<MarketsRowWithCreationTime>;
   outcomesRows: Array<OutcomesRow>;
-  winningPayoutRows: Array<PayoutRow>;
+  winningPayoutRows: Array<PayoutRow & MarketsContractAddressRow>;
 }
 
 export function getMarketsInfo(db: Knex, marketIds: Array<Address>, callback: (err: Error|null, result?: UIMarketsInfo) => void): void {
@@ -25,7 +25,7 @@ export function getMarketsInfo(db: Knex, marketIds: Array<Address>, callback: (e
     if (!marketsRows) return callback(null);
     const marketsRowsByMarket = _.keyBy(marketsRows, (r: MarketsRowWithCreationTime): string => r.marketId);
     const outcomesRowsByMarket = _.groupBy(outcomesRows, (r: OutcomesRow): string => r.marketId);
-    const winningPayoutByMarket = _.keyBy(winningPayoutRows, (r: any): string => r.marketId);
+    const winningPayoutByMarket = _.keyBy(winningPayoutRows, (r: MarketsContractAddressRow): string => r.marketId);
 
     const marketsInfo: UIMarketsInfo = _.map(marketIds, (marketId: string): UIMarketInfo|null => {
       const market = marketsRowsByMarket[marketId];

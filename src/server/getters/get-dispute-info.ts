@@ -95,8 +95,8 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
 
   const completedStakeByPayout: { [payoutId: number]: StakeRow } = _.keyBy(stakeRows.completedStakes, "payoutId");
   const activeCrowdsourcerByPayout: { [payoutId: number]: ActiveCrowdsourcer } = _.keyBy(stakeRows.activeCrowdsourcer, "payoutId");
-  const accountStakeCompleteByPayout: { [payoutId: number]: any } = _.keyBy(stakeRows.accountStakeComplete, "payoutId");
-  const accountStakeIncompleteByPayout: { [payoutId: number]: any } = _.keyBy(stakeRows.accountStakeIncomplete, "payoutId");
+  const accountStakeCompleteByPayout: { [payoutId: number]: StakeRow } = _.keyBy(stakeRows.accountStakeComplete, "payoutId");
+  const accountStakeIncompleteByPayout: { [payoutId: number]: StakeRow } = _.keyBy(stakeRows.accountStakeIncomplete, "payoutId");
 
   const stakeResults = _.map(stakeRows.payouts, (payout: PayoutRow) => {
     const completedStakes = completedStakeByPayout[payout.payoutId];
