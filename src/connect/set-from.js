@@ -1,11 +1,10 @@
 "use strict";
 
 function setFrom(functionsAbi, fromAddress) {
-  var contract, method;
   if (!fromAddress || !functionsAbi) return functionsAbi;
-  for (contract in functionsAbi) {
+  for (var contract in functionsAbi) {
     if (functionsAbi.hasOwnProperty(contract)) {
-      for (method in functionsAbi[contract]) {
+      for (var method in functionsAbi[contract]) {
         if (functionsAbi[contract].hasOwnProperty(method)) {
           functionsAbi[contract][method].from = fromAddress;
         }

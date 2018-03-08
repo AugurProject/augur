@@ -3,9 +3,9 @@
 "use strict";
 
 var assert = require("chai").assert;
-var createEthrpcConfiguration = require("../../../src/connector/create-ethrpc-configuration");
+var createEthrpcConfiguration = require("../../../src/connect/create-ethrpc-configuration");
 
-describe("connector/create-ethrpc-configuration", function () {
+describe("connect/create-ethrpc-configuration", function () {
   var test = function (t) {
     it(t.description, function () {
       t.assertions(createEthrpcConfiguration(t.params.configuration));
@@ -22,13 +22,13 @@ describe("connector/create-ethrpc-configuration", function () {
         contracts: { 3: { contract1: "0xc1", contract2: "0xc2" } },
         httpAddresses: ["http://somewhere:1234"],
         wsAddresses: ["ws://somewhere.else:5678"],
-        ipcAddresses: []
-      }
+        ipcAddresses: [],
+      },
     },
     assertions: function (ethrpcConfiguration) {
       assert.deepEqual(ethrpcConfiguration.httpAddresses, ["http://somewhere:1234"]);
       assert.deepEqual(ethrpcConfiguration.wsAddresses, ["ws://somewhere.else:5678"]);
       assert.deepEqual(ethrpcConfiguration.ipcAddresses, []);
-    }
+    },
   });
 });

@@ -3,9 +3,9 @@
 "use strict";
 
 var assert = require("chai").assert;
-var createConfiguration = require("../src/create-configuration");
+var createConfiguration = require("../../../src/connect/create-configuration");
 
-describe("create-configuration", function () {
+describe("connect/create-configuration", function () {
   var test = function (t) {
     it(t.description, function () {
       t.assertions(createConfiguration(t.params.options));
@@ -19,8 +19,8 @@ describe("create-configuration", function () {
         ws: null,
         ipc: null,
         api: { events: null, functions: null },
-        contracts: { 3: { contract1: "0xc1", contract2: "0xc2" } }
-      }
+        contracts: { 3: { contract1: "0xc1", contract2: "0xc2" } },
+      },
     },
     assertions: function (configuration) {
       assert.deepEqual(configuration, {
@@ -31,9 +31,9 @@ describe("create-configuration", function () {
         contracts: { 3: { contract1: "0xc1", contract2: "0xc2" } },
         httpAddresses: ["http://somewhere:1234"],
         wsAddresses: [],
-        ipcAddresses: []
+        ipcAddresses: [],
       });
-    }
+    },
   });
   test({
     description: "http-only with api",
@@ -46,15 +46,15 @@ describe("create-configuration", function () {
           events: {
             event1: { contract: "contract1" },
             event2: { contract: "contract1" },
-            event3: { contract: "contract2" }
+            event3: { contract: "contract2" },
           },
           functions: {
             contract1: { method1: {}, method2: {} },
-            contract2: { method1: {} }
-          }
+            contract2: { method1: {} },
+          },
         },
-        contracts: { 3: { contract1: "0xc1", contract2: "0xc2" } }
-      }
+        contracts: { 3: { contract1: "0xc1", contract2: "0xc2" } },
+      },
     },
     assertions: function (configuration) {
       assert.deepEqual(configuration, {
@@ -65,19 +65,19 @@ describe("create-configuration", function () {
           events: {
             event1: { contract: "contract1" },
             event2: { contract: "contract1" },
-            event3: { contract: "contract2" }
+            event3: { contract: "contract2" },
           },
           functions: {
             contract1: { method1: {}, method2: {} },
-            contract2: { method1: {} }
-          }
+            contract2: { method1: {} },
+          },
         },
         contracts: { 3: { contract1: "0xc1", contract2: "0xc2" } },
         httpAddresses: ["http://127.0.0.1:8545"],
         wsAddresses: [],
-        ipcAddresses: []
+        ipcAddresses: [],
       });
-    }
+    },
   });
   test({
     description: "http and websockets with api",
@@ -90,15 +90,15 @@ describe("create-configuration", function () {
           events: {
             event1: { contract: "contract1" },
             event2: { contract: "contract1" },
-            event3: { contract: "contract2" }
+            event3: { contract: "contract2" },
           },
           functions: {
             contract1: { method1: {}, method2: {} },
-            contract2: { method1: {} }
-          }
+            contract2: { method1: {} },
+          },
         },
-        contracts: { 3: { contract1: "0xc1", contract2: "0xc2" } }
-      }
+        contracts: { 3: { contract1: "0xc1", contract2: "0xc2" } },
+      },
     },
     assertions: function (configuration) {
       assert.deepEqual(configuration, {
@@ -109,19 +109,19 @@ describe("create-configuration", function () {
           events: {
             event1: { contract: "contract1" },
             event2: { contract: "contract1" },
-            event3: { contract: "contract2" }
+            event3: { contract: "contract2" },
           },
           functions: {
             contract1: { method1: {}, method2: {} },
-            contract2: { method1: {} }
-          }
+            contract2: { method1: {} },
+          },
         },
         contracts: { 3: { contract1: "0xc1", contract2: "0xc2" } },
         httpAddresses: ["http://127.0.0.1:8545"],
         wsAddresses: ["ws://127.0.0.1:8546"],
-        ipcAddresses: []
+        ipcAddresses: [],
       });
-    }
+    },
   });
   test({
     description: "http, websockets, and ipc with api",
@@ -134,15 +134,15 @@ describe("create-configuration", function () {
           events: {
             event1: { contract: "contract1" },
             event2: { contract: "contract1" },
-            event3: { contract: "contract2" }
+            event3: { contract: "contract2" },
           },
           functions: {
             contract1: { method1: {}, method2: {} },
-            contract2: { method1: {} }
-          }
+            contract2: { method1: {} },
+          },
         },
-        contracts: { 3: { contract1: "0xc1", contract2: "0xc2" } }
-      }
+        contracts: { 3: { contract1: "0xc1", contract2: "0xc2" } },
+      },
     },
     assertions: function (configuration) {
       assert.deepEqual(configuration, {
@@ -153,18 +153,18 @@ describe("create-configuration", function () {
           events: {
             event1: { contract: "contract1" },
             event2: { contract: "contract1" },
-            event3: { contract: "contract2" }
+            event3: { contract: "contract2" },
           },
           functions: {
             contract1: { method1: {}, method2: {} },
-            contract2: { method1: {} }
-          }
+            contract2: { method1: {} },
+          },
         },
         contracts: { 3: { contract1: "0xc1", contract2: "0xc2" } },
         httpAddresses: ["http://127.0.0.1:8545"],
         wsAddresses: ["ws://127.0.0.1:8546"],
-        ipcAddresses: ["/home/jack/.ethereum/geth.ipc"]
+        ipcAddresses: ["/home/jack/.ethereum/geth.ipc"],
       });
-    }
+    },
   });
 });
