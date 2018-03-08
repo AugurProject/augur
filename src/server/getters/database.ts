@@ -2,7 +2,17 @@ import * as Knex from "knex";
 import * as _ from "lodash";
 import BigNumber from "bignumber.js";
 import { sortDirection } from "../../utils/sort-direction";
-import { MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIConsensusInfo, UIOutcomeInfo, DisputeTokensRowWithTokenState, UIDisputeTokenInfo } from "../../types";
+import {
+  MarketsRowWithCreationTime,
+  OutcomesRow,
+  UIMarketInfo,
+  UIOutcomeInfo,
+  DisputeTokensRowWithTokenState,
+  UIDisputeTokenInfo,
+  PayoutRow,
+  NormalizedPayout,
+  NormalizedPayoutNumerators,
+} from "../../types";
 import { convertNumTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 
 export function queryModifier(query: Knex.QueryBuilder, defaultSortBy: string, defaultSortOrder: string, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined): Knex.QueryBuilder {
@@ -21,12 +31,12 @@ export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow): UIO
   };
 }
 
-export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime, outcomesInfo: Array<UIOutcomeInfo>): UIMarketInfo {
-  let consensus: UIConsensusInfo|null;
-  if (row.consensusPayoutId === null) {
+export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime, outcomesInfo: Array<UIOutcomeInfo>, winningPayoutRow: PayoutRow|null): UIMarketInfo {
+  let consensus: NormalizedPayout|null;
+  if (winningPayoutRow == null) {
     consensus = null;
   } else {
-    consensus = { outcomeId: row.consensusPayoutId, isInvalid: row.isInvalid } as UIConsensusInfo;
+    consensus = normalizePayouts(winningPayoutRow);
   }
   return {
     id: row.marketId,
@@ -67,9 +77,9 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
 
 export function reshapeDisputeTokensRowToUIDisputeTokenInfo(disputeTokenRow: DisputeTokensRowWithTokenState): UIDisputeTokenInfo {
   return Object.assign(_.omit(disputeTokenRow, ["payoutId", "winning"]) as DisputeTokensRowWithTokenState, {
-      isInvalid: !!disputeTokenRow.isInvalid,
-      claimed: !!disputeTokenRow.claimed,
-      winningToken: (disputeTokenRow.winning == null) ? null : !!disputeTokenRow.winning,
+    isInvalid: !!disputeTokenRow.isInvalid,
+    claimed: !!disputeTokenRow.claimed,
+    winningToken: (disputeTokenRow.winning == null) ? null : !!disputeTokenRow.winning,
   });
 }
 
@@ -82,15 +92,16 @@ export function getMarketsWithReportingState(db: Knex, selectColumns?: Array<str
     .leftJoin("blocks", "markets.creationBlockNumber", "blocks.blockNumber");
 }
 
-export function normalizePayouts(payoutRow: any) {
-  const payoutResponse: any = {
-    isInvalid: !!payoutRow.isInvalid,
-  };
-  payoutResponse.payout = [];
+export function normalizePayouts(payoutRow: PayoutRow): NormalizedPayout {
+  const payout = [];
   for (let i = 0; i < 8; i++) {
-    const payoutNumerator = payoutRow["payout" + i];
+    const payoutNumerator = payoutRow["payout" + i as keyof PayoutRow];
     if (payoutNumerator == null) break;
-    payoutResponse.payout.push(payoutNumerator);
+    payout.push(payoutNumerator);
   }
-  return payoutResponse;
+  return Object.assign(
+    {},
+    { payout } as NormalizedPayoutNumerators,
+    { isInvalid: !!payoutRow.isInvalid },
+  );
 }

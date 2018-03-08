@@ -4,7 +4,7 @@ const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { processUniverseCreatedLog, processUniverseCreatedLogRemoval } = require("../../../build/blockchain/log-processors/universe-created");
 
-describe("blockchain/log-processors/market-finalized", () => {
+describe("blockchain/log-processors/universe-created", () => {
   const test = (t) => {
     const getUniverse = (db, params, callback) => db("universes").first().where({ universe: params.log.childUniverse }).asCallback(callback);
     it(t.description, (done) => {
@@ -16,6 +16,7 @@ describe("blockchain/log-processors/market-finalized", () => {
             getUniverse(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processUniverseCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.isNull(err);
                 getUniverse(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();

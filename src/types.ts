@@ -1,7 +1,7 @@
 import { Augur, FormattedEventLog } from "augur.js";
-export { BlockDetail, FormattedEventLog } from "augur.js";
-
 import * as Knex from "knex";
+
+export { BlockDetail, FormattedEventLog } from "augur.js";
 
 export enum ReportingState {
   PRE_REPORTING = "PRE_REPORTING",
@@ -215,7 +215,7 @@ export interface PayoutRow extends Payout {
   tentativeWinning: number;
 }
 
-export interface Payout {
+export interface PayoutNumerators {
   payout0: string|number;
   payout1: string|number;
   payout2: string|number|null;
@@ -224,6 +224,17 @@ export interface Payout {
   payout5: string|number|null;
   payout6: string|number|null;
   payout7: string|number|null;
+}
+
+export interface Payout extends PayoutNumerators {
+  isInvalid: boolean|number;
+}
+
+export interface NormalizedPayoutNumerators {
+  payout: Array<number|string>;
+}
+
+export interface NormalizedPayout extends NormalizedPayoutNumerators {
   isInvalid: boolean|number;
 }
 
@@ -240,12 +251,11 @@ export interface UIDisputeTokens {
   [stakeToken: string]: UIDisputeTokenInfo;
 }
 
-export interface StakeDetails extends Payout {
+export interface StakeDetails extends NormalizedPayout {
   totalStake: string;
   completedStake: string;
   size?: string;
   currentStake?: string;
-  initialReport: boolean;
   tentativeWinning: boolean;
 }
 
@@ -316,7 +326,7 @@ export interface UIMarketInfo {
   resolutionSource?: string|null;
   numTicks: string|number;
   tickSize: string|number;
-  consensus: UIConsensusInfo|null;
+  consensus: NormalizedPayout|null;
   outcomes: Array<UIOutcomeInfo>;
 }
 
