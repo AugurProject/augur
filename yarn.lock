@@ -578,9 +578,9 @@ augur-core@0.12.1:
     path "0.12.7"
     recursive-readdir "2.2.1"
 
-augur.js@^4.8.5-4:
-  version "4.8.5-4"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.8.5-4.tgz#892495101788acf9cbdd056132fe5ccda790bfad"
+augur.js@4.8.5-5:
+  version "4.8.5-5"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.8.5-5.tgz#8a2816f0086f6387dfed7279dcf709e99cae3900"
   dependencies:
     "@types/bignumber.js" "4.0.3"
     async "1.5.2"
@@ -589,7 +589,6 @@ augur.js@^4.8.5-4:
     clone "2.1.1"
     columnify "1.5.4"
     ethereumjs-blockstream "4.0.1"
-    ethereumjs-connect "4.5.2"
     ethrpc "5.1.0"
     event-emitter "0.3.5"
     immutable-delete "1.1.0"
@@ -3841,14 +3840,6 @@ ethereumjs-blockstream@4.0.1:
     immutable "3.8.2"
     source-map-support "0.4.14"
     uuid "3.0.1"
-
-ethereumjs-connect@4.5.2:
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.5.2.tgz#c8940815cd3c413231eeb301bf1acfd7b3efc14b"
-  dependencies:
-    async "1.5.2"
-    clone "2.1.1"
-    ethrpc "5.1.0"
 
 ethereumjs-ledger@2.1.4:
   version "2.1.4"
