@@ -28,28 +28,28 @@ cd ../;
 
 echo "Building augur.js";
 pushd augur.js;
-# rm -rf node_modules;
-npm i;
-npm run build;
-npm link;
+rm -rf node_modules;
+yarn;
+yarn run build;
+yarn link;
+$SHOULD_SETUP_MARKETS && yarn run deploy:environment;
 
 popd;
 
 echo "Start augur-node";
 pushd augur-node;
-# rm -rf node_modules;
-npm install;
-npm link augur.js;
-$SHOULD_SETUP_MARKETS && npm explore augur.js -- npm run deploy:environment;
-npm run clean-start &
+rm -rf node_modules;
+yarn install;
+yarn link augur.js;
+yarn run clean-start &
 
 popd;
 
 echo "Start augur (UI)";
 pushd augur;
-# rm -rf node_modules;
+rm -rf node_modules;
 yarn;
-npm link augur.js;
-npm run dev &
+yarn link augur.js;
+yarn run dev &
 
 wait
