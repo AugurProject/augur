@@ -1,5 +1,6 @@
 import * as Knex from "knex";
 import { Address, ReportingState, AsyncCallback } from "../../types";
+import { BigNumber } from "bignumber.js";
 
 function queryCurrentMarketStateId(db: Knex, marketId: Address) {
   return db("market_state").max("marketStateId as latestMarketStateId").first().where({ marketId });
@@ -36,17 +37,21 @@ export function insertPayout(db: Knex, marketId: Address, payoutNumerators: Arra
   const payoutRow: { [index: string]: string|number|boolean|null } = {
     marketId,
     isInvalid: invalid,
-    tentativeWinning,
   };
-  payoutNumerators.forEach((value: number, i: number): void => {
-    payoutRow["payout" + i] = value;
+  payoutNumerators.forEach((value, i): void => {
+    if (value == null) return;
+    payoutRow["payout" + i] = new BigNumber(value, 10).toFixed();
   });
   db.select("payoutId").from("payouts").where(payoutRow).first().asCallback( (err: Error|null, payoutIdRow?: {payoutId: number}|null): void => {
     if (err) return callback(err);
     if (payoutIdRow != null) {
       return callback(null, payoutIdRow.payoutId);
     } else {
-      db.insert(payoutRow).returning("payoutId").into("payouts").asCallback((err: Error|null, payoutIdRow?: Array<number>): void => {
+      const payoutRowWithTentativeWinning = Object.assign( {},
+        payoutRow,
+        {tentativeWinning},
+        );
+      db.insert(payoutRowWithTentativeWinning).returning("payoutId").into("payouts").asCallback((err: Error|null, payoutIdRow?: Array<number>): void => {
         if (err) callback(err);
         if (!payoutIdRow || !payoutIdRow.length) return callback(new Error("No payoutId returned"));
         callback(err, payoutIdRow[0]);
