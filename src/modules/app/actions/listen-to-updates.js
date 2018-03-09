@@ -159,16 +159,6 @@ export function listenToUpdates(history) {
           }
         }
       },
-      WinningTokensRedeemed: (err, log) => {
-        if (err) return console.error('WinningTokensRedeemed:', err)
-        if (log) {
-          console.log('WinningTokensRedeemed:', log)
-          if (log.reporter === getState().loginAccount.address) {
-            dispatch(updateAssets())
-            dispatch(convertLogsToTransactions(TYPES.REDEEM_WINNING_TOKENS, [log]))
-          }
-        }
-      },
       ReportsDisputed: (err, log) => {
         if (err) return console.error('ReportsDisputed:', err)
         if (log) {
@@ -202,6 +192,84 @@ export function listenToUpdates(history) {
         if (err) return console.error('UniverseForked:', err)
         if (log) {
           console.log('UniverseForked:', log)
+        }
+      },
+      CompleteSetsPurchased: (err, log) => {
+        if (err) return console.error('CompleteSetsPurchased:', err)
+        if (log) {
+          console.log('CompleteSetsPurchased:', log)
+        }
+      },
+      CompleteSetsSold: (err, log) => {
+        if (err) return console.error('CompleteSetsSold:', err)
+        if (log) {
+          console.log('CompleteSetsSold:', log)
+        }
+      },
+      TokensMinted: (err, log) => {
+        if (err) return console.error('TokensMinted:', err)
+        if (log) {
+          console.log('TokensMinted:', log)
+        }
+      },
+      TokensBurned: (err, log) => {
+        if (err) return console.error('TokensBurned:', err)
+        if (log) {
+          console.log('TokensBurned:', log)
+        }
+      },
+      FeeWindowCreated: (err, log) => {
+        if (err) return console.error('FeeWindowCreated:', err)
+        if (log) {
+          console.log('FeeWindowCreated:', log)
+        }
+      },
+      InitialReporterTransferred: (err, log) => {
+        if (err) return console.error('InitialReporterTransferred:', err)
+        if (log) {
+          console.log('InitialReporterTransferred:', log)
+        }
+      },
+      TimestampSet: (err, log) => {
+        if (err) return console.error('TimestampSet:', err)
+        if (log) {
+          console.log('TimestampSet:', log)
+        }
+      },
+      DisputeCrowdsourcerCreated: (err, log) => {
+        if (err) return console.error('DisputeCrowdsourcerCreated:', err)
+        if (log) {
+          console.log('DisputeCrowdsourcerCreated:', log)
+        }
+      },
+      DisputeCrowdsourcerContribution: (err, log) => {
+        if (err) return console.error('DisputeCrowdsourcerContribution:', err)
+        if (log) {
+          console.log('DisputeCrowdsourcerContribution:', log)
+        }
+      },
+      InitialReporterRedeemed: (err, log) => {
+        if (err) return console.error('InitialReporterRedeemed:', err)
+        if (log) {
+          console.log('InitialReporterRedeemed:', log)
+        }
+      },
+      DisputeCrowdsourcerRedeemed: (err, log) => {
+        if (err) return console.error('DisputeCrowdsourcerRedeemed:', err)
+        if (log) {
+          console.log('DisputeCrowdsourcerRedeemed:', log)
+        }
+      },
+      FeeWindowRedeemed: (err, log) => {
+        if (err) return console.error('FeeWindowRedeemed:', err)
+        if (log) {
+          console.log('FeeWindowRedeemed:', log)
+        }
+      },
+      UniverseCreated: (err, log) => {
+        if (err) return console.error('UniverseCreated:', err)
+        if (log) {
+          console.log('UniverseCreated:', log)
         }
       },
     }, err => console.log(err || 'Listening for events'))
