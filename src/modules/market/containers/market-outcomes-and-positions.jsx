@@ -4,14 +4,9 @@ import { withRouter } from 'react-router-dom'
 import MarketOutcomesAndPositions from 'modules/market/components/market-outcomes-and-positions/market-outcomes-and-positions'
 import { selectMarket } from 'modules/market/selectors/market'
 import { sortOpenOrders } from 'modules/user-open-orders/selectors/open-orders'
-// import getValue from 'utils/get-value'
 
-const mapStateToProps = state => ({
-  isMobile: state.isMobile,
-})
-
-const mergeProps = (sP, dP, oP) => {
-  const market = selectMarket(oP.marketId)
+const mapStateToProps = (state, ownProps) => {
+  const market = selectMarket(ownProps.marketId)
 
   let openOrders = []
   let positions = []
@@ -31,14 +26,13 @@ const mergeProps = (sP, dP, oP) => {
     }, [])
   }
   return {
-    ...sP,
-    ...oP,
-    outcomes: market.outcomes,
+    isMobile: state.isMobile,
+    outcomes: market.outcomes || [],
     positions,
     openOrders,
   }
 }
 
-const MarketOutcomesAndPositionsContainer = withRouter(connect(mapStateToProps, null, mergeProps)(MarketOutcomesAndPositions))
+const MarketOutcomesAndPositionsContainer = withRouter(connect(mapStateToProps)(MarketOutcomesAndPositions))
 
 export default MarketOutcomesAndPositionsContainer

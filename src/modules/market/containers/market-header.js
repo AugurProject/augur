@@ -7,12 +7,11 @@ import { selectMarket } from 'modules/market/selectors/market'
 
 import getValue from 'utils/get-value'
 
-const mergeProps = (sP, dP, oP) => {
-  const market = selectMarket(oP.marketId)
+const mapStateToProps = (state, ownProps) => {
+  const market = selectMarket(ownProps.marketId)
 
   return {
-    ...oP,
-    description: market.description,
+    description: market.description || '',
     details: market.extraInfo || '',
     marketType: market.marketType,
     resolutionSource: market.resolutionSource,
@@ -24,6 +23,6 @@ const mergeProps = (sP, dP, oP) => {
   }
 }
 
-const MarketHeaderContainer = withRouter(connect(null, null, mergeProps)(MarketHeader))
+const MarketHeaderContainer = withRouter(connect(mapStateToProps)(MarketHeader))
 
 export default MarketHeaderContainer
