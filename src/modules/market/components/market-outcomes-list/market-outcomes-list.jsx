@@ -13,9 +13,9 @@ export default class MarketOutcomesList extends Component {
   static propTypes = {
     marketId: PropTypes.string.isRequired,
     outcomes: PropTypes.array.isRequired,
-    selectedOutcomes: PropTypes.array.isRequired,
-    updateSelectedOutcomes: PropTypes.func.isRequired,
+    updateSelectedOutcome: PropTypes.func.isRequired,
     isMobile: PropTypes.bool.isRequired,
+    selectedOutcome: PropTypes.any,
   }
 
   constructor(props) {
@@ -60,8 +60,8 @@ export default class MarketOutcomesList extends Component {
                   key={outcome.id}
                   outcome={outcome}
                   marketId={p.marketId}
-                  selectedOutcomes={p.selectedOutcomes}
-                  updateSelectedOutcomes={p.updateSelectedOutcomes}
+                  selectedOutcome={p.selectedOutcome}
+                  updateSelectedOutcome={p.updateSelectedOutcome}
                 />
               ))}
             </div>

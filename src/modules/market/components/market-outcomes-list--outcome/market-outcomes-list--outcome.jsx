@@ -23,8 +23,8 @@ const Outcome = (p) => {
 
   return (
     <ul
-      className={classNames(Styles.Outcome, { [`${Styles.active}`]: p.selectedOutcomes.indexOf(p.outcome.id) > -1 })}
-      onClick={e => p.updateSelectedOutcomes(p.outcome.id)}
+      className={classNames(Styles.Outcome, { [`${Styles.active}`]: p.selectedOutcome === p.outcome.id })}
+      onClick={e => p.updateSelectedOutcome(p.outcome.id)}
       role="menu"
     >
       <li>{outcomeName} <span className={Styles.Outcome__percent}>{lastPricePercent}</span></li>

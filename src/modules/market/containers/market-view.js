@@ -23,7 +23,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     isConnected: connection.isConnected && universe.id != null,
-    marketType: getValue(market, `${marketId}.marketType`),
+    marketType: market.marketType,
     description: market.description || '',
     loadingState: market.loadingState || null,
     isLogged,
