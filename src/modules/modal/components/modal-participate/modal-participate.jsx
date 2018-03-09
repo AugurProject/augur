@@ -20,7 +20,7 @@ export default class ModalParticipate extends Component {
 
     this.state = {
       quantity: '',
-      currentPage: 1,
+      page: 1,
       isValid: false,
       errors: [],
     }
@@ -28,12 +28,13 @@ export default class ModalParticipate extends Component {
     this.triggerReview = this.triggerReview.bind(this)
     this.submitForm = this.submitForm.bind(this)
     this.handleMaxClick = this.handleMaxClick.bind(this)
+    this.handleKeyDown = this.handleKeyDown.bind(this)
     this.switchPages = this.switchPages.bind(this)
   }
 
   triggerReview(e, ...args) {
     e.preventDefault()
-    this.setState({ currentPage: 2 })
+    if (this.state.isValid) this.setState({ page: 2 })
   }
 
   submitForm(e, ...args) {
@@ -76,12 +77,20 @@ export default class ModalParticipate extends Component {
   }
 
   switchPages() {
-    const nextPage = this.state.currentPage === 1 ? 2 : 1
-    this.setState({ currentPage: nextPage })
+    const nextPage = this.state.page === 1 ? 2 : 1
+    this.setState({ page: nextPage })
   }
 
   handleMaxClick() {
     this.setState({ quantity: this.props.rep })
+  }
+
+  handleKeyDown(e) {
+    // if enter is pressed, lets handle this so we don't close modal
+    if (e.keyCode === 13) {
+      e.preventDefault()
+      if (this.state.isValid) this.triggerReview(e)
+    }
   }
 
   render() {
@@ -91,7 +100,7 @@ export default class ModalParticipate extends Component {
 
     return (
       <section className={Styles.ModalParticipate}>
-        {s.currentPage === 1 &&
+        {s.page === 1 &&
           <form
             className={Styles.ModalParticipate__form}
             onSubmit={this.triggerReview}
@@ -107,6 +116,7 @@ export default class ModalParticipate extends Component {
                 value={s.quantity}
                 placeholder="0.0"
                 onChange={value => this.updateQuantity(value)}
+                onKeyDown={e => this.handleKeyDown(e)}
                 maxButton
                 onMaxButtonClick={() => this.handleMaxClick()}
               />
@@ -138,12 +148,11 @@ export default class ModalParticipate extends Component {
             </div>
           </form>
         }
-        {s.currentPage === 2 &&
+        {s.page === 2 &&
           <ModalParticipateReview
             quantity={s.quantity}
             onSubmit={this.submitForm}
             switchPages={this.switchPages}
-            closeModal={p.closeModal}
             gasEstimate="0.0023"
           />
         }

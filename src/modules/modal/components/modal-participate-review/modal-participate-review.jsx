@@ -28,12 +28,21 @@ const ModalParticipateReview = (p) => {
           <li>{formatEther(p.gasEstimate).full}</li>
         </ul>
       </div>
-      <button
-        className={Styles.ModalParticipate__button}
-        type="submit"
-      >
-        submit
-      </button>
+      <div className={Styles.ModalParticipateReview__actions}>
+        <button
+          className={Styles.ModalParticipateReview__button}
+          type="button"
+          onClick={p.switchPages}
+        >
+          Back
+        </button>
+        <button
+          className={Styles.ModalParticipateReview__button}
+          type="submit"
+        >
+          submit
+        </button>
+      </div>
     </form>
   )
 }
@@ -42,6 +51,7 @@ ModalParticipateReview.propTypes = {
   quantity: PropTypes.string.isRequired,
   gasEstimate: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  switchPages: PropTypes.func.isRequired,
 }
 
 export default ModalParticipateReview
