@@ -13,12 +13,12 @@ const Outcome = ({ className, outcome }) => (
     <div className={Styles['MarketReportingPayouts__outcome-name']}>
       {outcome.name}
     </div>
-    { outcome.id === 1 &&
+    { outcome.id === 0 &&
       <div className={Styles['MarketReportingPayouts__winning-outcome-message']}>
         tentative winning outcome
       </div>
     }
-    { outcome.id !== 1 &&
+    { outcome.id !== 0 &&
       <div>
         <div
           className={Styles["MarketReportingPayouts__progress-bar-container"]}

@@ -25,11 +25,13 @@ export default class ReportingDispute extends Component {
     isMarketsLoaded: PropTypes.bool.isRequired,
     loadMarkets: PropTypes.func.isRequired,
     disputeRound: PropTypes.number.isRequired,
+    outcomes: PropTypes.object.isRequired,
+    account: PropTypes.string.isRequired,
   }
 
   componentWillMount() {
     if (this.props.isConnected && !this.props.isMarketsLoaded) {
-      this.props.loadMarkets()
+      this.props.loadMarkets(this.props.account)
     }
   }
 
@@ -62,6 +64,7 @@ export default class ReportingDispute extends Component {
                 isMobile={p.isMobile}
                 location={p.location}
                 history={p.history}
+                outcomes={p.outcomes}
               />))
         }
         { p.marketsCount === 0 &&

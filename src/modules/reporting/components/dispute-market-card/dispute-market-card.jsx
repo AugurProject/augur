@@ -41,24 +41,7 @@ const DisputeMarketCard = p => (
           {p.market.description}
         </MarketLink>
       </h1>
-
-      {/*
-      Binary: Tenative, others (Yes, No, Invalid)
-      Categorical: Tentative, others (others + Invalid)
-      Scalar: Tentative -> outcomes I currently have stake in -> outcomes that have current stake -> outcomes that have stake + ( Invalid promissed last spot)
-      */}
-      <MarketReportingPayouts outcomes={[
-        {id: 1, name: "Outcome 1", totalRep: 500, userRep: 250, goal: 1000},
-        {id: 2, name: "Outcome 2", totalRep: 450, userRep: 250, goal: 1000},
-        {id: 3, name: "Outcome 3", totalRep: 300, userRep: 0, goal: 1000},
-        {id: 4, name: "Outcome 4", totalRep: 400, userRep: 0, goal: 1000},
-        {id: 5, name: "Outcome 5", totalRep: 100, userRep: 0, goal: 1000},
-        {id: 6, name: "Outcome 6", totalRep: 300, userRep: 0, goal: 1000},
-        {id: 7, name: "Outcome 7", totalRep: 400, userRep: 0, goal: 1000},
-        {id: 8, name: "Outcome 8", totalRep: 300, userRep: 0, goal: 1000},
-        {id: 9, name: "Outcome 9", totalRep: 400, userRep: 0, goal: 1000},
-      ]} />
-
+      <MarketReportingPayouts outcomes={p.outcomes[p.market.id]}/>
     </div>
     <div className={CommonStyles.MarketCommon__footer}>
       <MarketProperties {...p.market} />
