@@ -10,7 +10,7 @@ import awaitingDisputeMarkets from 'modules/reporting/selectors/select-awaiting-
 import loadMarkets from 'modules/markets/actions/load-markets'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import { loadMarketsDisputeInfo } from 'modules/markets/actions/load-markets-dispute-info'
-import selectMarketDisputeOutcomes from 'modules/reporting/selectors/select-market-dispute-outcomes'
+import marketDisputeOutcomes from 'modules/reporting/selectors/select-market-dispute-outcomes'
 import logError from 'utils/log-error'
 
 const mapStateToProps = (state, { history }) => {
@@ -18,7 +18,7 @@ const mapStateToProps = (state, { history }) => {
   const loginAccount = selectLoginAccount(state)
   const disputableMarkets = disputeMarkets() || []
   const upcomingDisputableMarkets = awaitingDisputeMarkets() || []
-  const marketDisputeOutcomes = selectMarketDisputeOutcomes() || {}
+  const disputeOutcomes = marketDisputeOutcomes() || {}
 
   return ({
     isLogged: state.isLogged,
@@ -32,13 +32,13 @@ const mapStateToProps = (state, { history }) => {
     isMobile: state.isMobile,
     disputeRound: 1,
     navigateToAccountDepositHandler: () => history.push(makePath(ACCOUNT_DEPOSIT)),
-    outcomes: marketDisputeOutcomes,
+    outcomes: disputeOutcomes,
     account: loginAccount.address,
   })
 }
 
 const mapDispatchToProps = dispatch => ({
-  loadMarkets: (account) => dispatch(loadMarkets((err, marketIds) => {
+  loadMarkets: account => dispatch(loadMarkets((err, marketIds) => {
     if (err) return logError(err)
     dispatch(loadMarketsInfo(marketIds))
     dispatch(loadMarketsDisputeInfo(marketIds, account))

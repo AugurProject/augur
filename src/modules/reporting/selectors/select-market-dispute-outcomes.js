@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { createSelector } from 'reselect'
 import { selectMarkets } from 'modules/markets/selectors/markets-all'
-import { constants } from 'services/augurjs'
+import { constants, augur } from 'services/augurjs'
 import store from 'src/store'
 import { isEmpty } from 'lodash'
 import { formatRepTokens } from 'utils/format-number'
@@ -28,10 +28,10 @@ export const selectMarketDisputeOutcomes = createSelector(
     const disputeOutcomes = {}
     disputeMarkets.forEach((marketData) => {
       disputeOutcomes[marketData.id] = []
-      if (!marketData.stakes) return;
+      if (!marketData.stakes) return
       disputeOutcomes[marketData.id] = marketData.stakes.reduce((p, stakeData, index) => {
-        const name = getOutcomeName(marketData, stakeData);
-        if (name === "") return p;
+        const name = getOutcomeName(marketData, stakeData)
+        if (name === '') return p
         p.push({
           id: index,
           name: getOutcomeName(marketData, stakeData),
@@ -41,23 +41,23 @@ export const selectMarketDisputeOutcomes = createSelector(
         })
         return p
       }, [])
-    });
-    console.log(disputeOutcomes);
-    return disputeOutcomes;
-  }
+    })
+    console.log(disputeOutcomes)
+    return disputeOutcomes
+  },
 )
 
 function getOutcomeName(marketData, stakeData) {
   // TODO when string bug fixed:
-  // if (stakeData.isInvalid) return "Invalid"
+  // if (stakeData.isInvalid) return 'Invalid'
 
   if (marketData.marketType === BINARY) {
-    if (stakeData.payout[0] === marketData.numTicks) return "No"
-    if (stakeData.payout[1] === marketData.numTicks) return "Yes"
+    if (stakeData.payout[0] === marketData.numTicks) return 'No'
+    if (stakeData.payout[1] === marketData.numTicks) return 'Yes'
   }
 
   if (marketData.marketType === CATEGORICAL) {
-    for (var i = 0; i < stakeData.payout.length; i++) {
+    for (let i = 0; i < stakeData.payout.length; i++) {
       if (stakeData.payout[i] === marketData.numTicks) return marketData.outcomes[i].description
     }
   }
@@ -66,5 +66,5 @@ function getOutcomeName(marketData, stakeData) {
     return new BigNumber(stakeData.payout[1]).mul(new BigNumber(marketData.tickSize)).add(marketData.minPrice).toString()
   }
 
-  return ""
+  return ''
 }

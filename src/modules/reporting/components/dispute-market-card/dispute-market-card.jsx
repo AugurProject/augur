@@ -41,7 +41,7 @@ const DisputeMarketCard = p => (
           {p.market.description}
         </MarketLink>
       </h1>
-      <MarketReportingPayouts outcomes={p.outcomes[p.market.id]}/>
+      <MarketReportingPayouts outcomes={p.outcomes[p.market.id]} />
     </div>
     <div className={CommonStyles.MarketCommon__footer}>
       <MarketProperties {...p.market} />

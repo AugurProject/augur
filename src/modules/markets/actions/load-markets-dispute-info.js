@@ -1,6 +1,5 @@
 import { augur } from 'services/augurjs'
 import { updateMarketsDisputeInfo } from 'modules/markets/actions/update-markets-data'
-import isObject from 'utils/is-object'
 import logError from 'utils/log-error'
 
 export const loadMarketsDisputeInfo = (marketIds, account, callback = logError) => (dispatch, getState) => {
