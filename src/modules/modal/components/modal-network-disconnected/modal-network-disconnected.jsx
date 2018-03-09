@@ -87,7 +87,7 @@ export default class ModalNetworkDisconnected extends Component {
         {!s.showEnvForm &&
           <div>
             <h1>{titleText}</h1>
-            <span>{descriptionText}<a href="#" onClick={this.showForm}>here.</a></span>
+            <span>{descriptionText}<button onClick={this.showForm}>here</button>.</span>
           </div>
         }
         {s.showEnvForm &&
