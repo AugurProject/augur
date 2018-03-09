@@ -84,6 +84,7 @@ export default class ReportingDispute extends Component {
                 isMobile={p.isMobile}
                 location={p.location}
                 history={p.history}
+                outcomes={p.outcomes}
               />))
         }
         { p.upcomingMarketsCount === 0 &&

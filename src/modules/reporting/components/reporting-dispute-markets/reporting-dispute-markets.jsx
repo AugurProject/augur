@@ -25,6 +25,8 @@ export default class ReportingDisputeMarkets extends Component {
     isMarketsLoaded: PropTypes.bool.isRequired,
     loadMarkets: PropTypes.func.isRequired,
     disputeRound: PropTypes.number.isRequired,
+    outcomes: PropTypes.object.isRequired,
+    account: PropTypes.string.isRequired,
   }
 
   componentWillMount() {
@@ -61,6 +63,7 @@ export default class ReportingDisputeMarkets extends Component {
                 isMobile={p.isMobile}
                 location={p.location}
                 history={p.history}
+                outcomes={p.outcomes}
               />))
         }
         { p.marketsCount === 0 &&
@@ -80,6 +83,7 @@ export default class ReportingDisputeMarkets extends Component {
                 isMobile={p.isMobile}
                 location={p.location}
                 history={p.history}
+                outcomes={p.outcomes}
               />))
         }
         { p.upcomingMarketsCount === 0 &&
