@@ -31,7 +31,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       "designatedReporter" varchar(66) NOT NULL,
       "designatedReportStake" numeric,
       "resolutionSource" text,
-      "numTicks" integer NOT NULL,
+      "numTicks" varchar(18) NOT NULL,
       "consensusPayoutId" integer,
       "reportingRoundsCompleted" integer NOT NULL DEFAULT 0,
       "isInvalid" boolean
