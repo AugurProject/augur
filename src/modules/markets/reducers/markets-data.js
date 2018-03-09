@@ -1,4 +1,4 @@
-import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKET_CATEGORY, UPDATE_MARKETS_LOADING_STATUS, UPDATE_MARKET_REP_BALANCE, UPDATE_MARKET_FROZEN_SHARES_VALUE, UPDATE_MARKET_ESCAPE_HATCH_GAS_COST, UPDATE_MARKET_TRADING_ESCAPE_HATCH_GAS_COST } from 'modules/markets/actions/update-markets-data'
+import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKET_CATEGORY, UPDATE_MARKET_REP_BALANCE, UPDATE_MARKET_FROZEN_SHARES_VALUE, UPDATE_MARKET_ESCAPE_HATCH_GAS_COST, UPDATE_MARKET_TRADING_ESCAPE_HATCH_GAS_COST } from 'modules/markets/actions/update-markets-data'
 import { RESET_STATE } from 'modules/app/actions/reset-state'
 
 const DEFAULT_STATE = {}
@@ -9,17 +9,6 @@ export default function (marketsData = DEFAULT_STATE, action) {
       return {
         ...marketsData,
         ...processMarketsData(action.marketsData, marketsData),
-      }
-    case UPDATE_MARKETS_LOADING_STATUS:
-      return {
-        ...marketsData,
-        ...action.marketIds.reduce((p, marketId) => {
-          p[marketId] = {
-            ...marketsData[marketId],
-            isLoading: action.isLoading,
-          }
-          return p
-        }, {}),
       }
     case UPDATE_MARKET_CATEGORY:
       if (!action.marketId) return marketsData
@@ -81,11 +70,6 @@ function processMarketsData(newMarketsData, existingMarketsData) {
       ...newMarketsData[marketId],
     }
 
-    // mark whether details have been loaded
-    marketData.hasLoadedMarketInfo = !!marketData.cumulativeScale
-
-    // save market (without outcomes)
-    // p[normalizedmarketId] = marketData
     p[marketId] = marketData
 
     return p

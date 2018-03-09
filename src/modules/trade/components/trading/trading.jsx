@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
-import MarketTradingWrapper from 'modules/market/components/market-trading--wrapper/market-trading--wrapper'
+import MarketTradingWrapper from 'modules/trade/components/trading--wrapper/trading--wrapper'
 import { Check, Close } from 'modules/common/components/icons'
 import { isEqual } from 'lodash'
 import makePath from 'modules/routes/helpers/make-path'
@@ -11,7 +11,7 @@ import BigNumber from 'bignumber.js'
 
 import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views'
 
-import Styles from 'modules/market/components/market-trading/market-trading.styles'
+import Styles from 'modules/trade/components/trading/trading.styles'
 
 class MarketTrading extends Component {
   static propTypes = {

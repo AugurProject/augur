@@ -8,7 +8,6 @@ describe('modules/markets/actions/load-user-markets.js', () => {
   const mockStore = configureMockStore(middlewares)
   const mockEnv = {
     'bug-bounty': false,
-    'network-id': 4,
   }
 
   const test = t => it(t.description, () => {

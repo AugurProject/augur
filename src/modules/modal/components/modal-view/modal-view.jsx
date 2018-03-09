@@ -9,7 +9,7 @@ import ModalNetworkMismatch from 'modules/modal/components/modal-network-mismatc
 import ModalNetworkDisconnected from 'modules/modal/components/modal-network-disconnected/modal-network-disconnected'
 import ModalApproval from 'modules/modal/components/modal-approval/modal-approval'
 import ModalEscapeHatch from 'modules/modal/components/modal-escape-hatch/modal-escape-hatch'
-import ModalParticipate from 'modules/modal/components/modal-participate/modal-participate'
+import ModalParticipate from 'modules/modal/containers/modal-participate'
 
 import debounce from 'utils/debounce'
 import getValue from 'utils/get-value'

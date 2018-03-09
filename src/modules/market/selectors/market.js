@@ -88,7 +88,7 @@ export const selectMarket = (marketId) => {
   return assembleMarket(
     marketId,
     marketsData[marketId],
-    marketLoading.indexOf(marketId) !== -1,
+    marketLoading[marketId] || null,
     priceHistory[marketId],
     isMarketDataOpen(marketsData[marketId]),
     isMarketDataExpired(marketsData[marketId], getCurrentDateTimestamp()),
@@ -121,7 +121,7 @@ const assembledMarketsCache = {}
 export function assembleMarket(
   marketId,
   marketData,
-  isMarketLoading,
+  marketLoading,
   marketPriceHistory,
   isOpen,
   isExpired,
@@ -146,7 +146,7 @@ export function assembleMarket(
     assembledMarketsCache[marketId] = memoize((
       marketId,
       marketData,
-      isMarketLoading,
+      marketLoading,
       marketPriceHistory,
       isOpen,
       isExpired,
@@ -196,7 +196,7 @@ export function assembleMarket(
           break
       }
 
-      market.isMarketLoading = isMarketLoading
+      market.loadingState = marketLoading !== null ? marketLoading.state : marketLoading
 
       market.endDate = (endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay))) || null
       market.endDateLabel = (market.endDate < now) ? 'ended' : 'ends'

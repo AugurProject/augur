@@ -6,7 +6,7 @@ import MarketHeader from 'modules/market/containers/market-header'
 import MarketOutcomesChart from 'modules/market/containers/market-outcomes-chart'
 import MarketOutcomeCharts from 'modules/market/containers/market-outcome-charts'
 import MarketOutcomesAndPositions from 'modules/market/containers/market-outcomes-and-positions'
-import MarketTrading from 'modules/market/containers/market-trading'
+import MarketTrading from 'modules/trade/containers/trading'
 
 import parseMarketTitle from 'modules/market/helpers/parse-market-title'
 
@@ -19,9 +19,10 @@ export default class MarketView extends Component {
   static propTypes = {
     marketId: PropTypes.string.isRequired,
     isConnected: PropTypes.bool.isRequired,
-    isMarketLoaded: PropTypes.bool.isRequired,
     loadFullMarket: PropTypes.func.isRequired,
+    description: PropTypes.string.isRequired,
     marketType: PropTypes.string,
+    loadingState: PropTypes.any,
   }
 
   constructor(props) {
@@ -44,17 +45,28 @@ export default class MarketView extends Component {
   }
 
   componentWillMount() {
-    if (this.props.isConnected && !this.props.isMarketLoaded) {
-      this.props.loadFullMarket()
+    if (
+      this.props.isConnected &&
+      this.props.loadingState === null &&
+      !!this.props.marketId
+    ) {
+      this.props.loadFullMarket(this.props.marketId)
     }
   }
 
   componentWillUpdate(nextProps, nextState) {
     if (
-      (this.props.isConnected === false && nextProps.isConnected === true) &&
-      !!nextProps.marketId
+      (
+        this.props.isConnected !== nextProps.isConnected ||
+        this.props.loadingState !== nextProps.loadingState
+      ) &&
+      (
+        nextProps.isConnected &&
+        nextProps.loadingState === null &&
+        !!nextProps.marketId
+      )
     ) {
-      nextProps.loadFullMarket()
+      nextProps.loadFullMarket(this.props.marketId)
     }
   }
 

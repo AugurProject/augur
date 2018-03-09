@@ -4,7 +4,6 @@
     "http": "https://clique.ethereum.nodes.augur.net",
     "ws": null
   },
-  "network-id": 12346,
   "auto-login": false,
   "universe": null,
   "bug-bounty": false,

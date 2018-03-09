@@ -9,7 +9,7 @@ import { MARKET, LIMIT } from 'modules/transactions/constants/types'
 import { SCALAR } from 'modules/markets/constants/market-types'
 import { isEqual } from 'lodash'
 
-import Styles from 'modules/market/components/market-trading--form/market-trading--form.styles'
+import Styles from 'modules/trade/components/trading--form/trading--form.styles'
 
 class MarketTradingForm extends Component {
   static propTypes = {
@@ -17,8 +17,8 @@ class MarketTradingForm extends Component {
     marketType: PropTypes.string.isRequired,
     selectedNav: PropTypes.string.isRequired,
     orderType: PropTypes.string.isRequired,
-    orderPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-    orderQuantity: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+    orderPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]).isRequired,
+    orderQuantity: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]).isRequired,
     orderEstimate: PropTypes.string.isRequired,
     selectedOutcome: PropTypes.object.isRequired,
     nextPage: PropTypes.func.isRequired,
