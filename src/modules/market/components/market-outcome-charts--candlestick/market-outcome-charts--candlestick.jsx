@@ -10,6 +10,7 @@ import ReactFauxDOM from 'react-faux-dom'
 import { isEqual } from 'lodash'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
+import { MILLIS_PER_BLOCK } from 'modules/app/constants/network'
 
 import Styles from 'modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick.styles'
 
@@ -110,6 +111,14 @@ export default class MarketOutcomeCandlestick extends Component {
       constrainedPriceTimeSeries = constrainedPriceTimeSeries.reverse()
     }
 
+    // Determine the first period start time (derived from epoch)
+    let firstPeriodStartTime
+    if (selectedPeriod.selectedPeriod === null) {
+      firstPeriodStartTime = Math.floor(constrainedPriceTimeSeries[0].timestamp / MILLIS_PER_BLOCK) * MILLIS_PER_BLOCK
+    } else {
+      firstPeriodStartTime = Math.floor(constrainedPriceTimeSeries[0].timestamp / selectedPeriod.selectedPeriod) * selectedPeriod.selectedPeriod
+    }
+
     // Process priceTimeSeries by period next, update state
     let accumulationPeriod = {
       period: null, // Start time of the period
@@ -123,7 +132,7 @@ export default class MarketOutcomeCandlestick extends Component {
     const periodTimeSeries = constrainedPriceTimeSeries.reduce((p, priceTime, i) => {
       if (accumulationPeriod.period === null) {
         accumulationPeriod = {
-          period: priceTime.timestamp,
+          period: firstPeriodStartTime,
           high: priceTime.price,
           low: priceTime.price,
           open: priceTime.price,
@@ -137,7 +146,7 @@ export default class MarketOutcomeCandlestick extends Component {
       if (
         (
           selectedPeriod.selectedPeriod === null && // per block
-          dateToBlock(new Date(accumulationPeriod.period), currentBlock) - dateToBlock(new Date(priceTime.timestamp), currentBlock) > 1
+          dateToBlock(new Date(accumulationPeriod.period), currentBlock) - dateToBlock(new Date(priceTime.timestamp), currentBlock) >= 1
         ) ||
         priceTime.timestamp - accumulationPeriod.period > selectedPeriod.selectedPeriod
       ) {
