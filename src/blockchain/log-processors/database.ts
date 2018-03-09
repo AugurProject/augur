@@ -1,5 +1,6 @@
 import * as Knex from "knex";
 import { Address, ReportingState, AsyncCallback } from "../../types";
+import { BigNumber } from "bignumber.js";
 
 function queryCurrentMarketStateId(db: Knex, marketId: Address) {
   return db("market_state").max("marketStateId as latestMarketStateId").first().where({ marketId });
@@ -38,7 +39,7 @@ export function insertPayout(db: Knex, marketId: Address, payoutNumerators: Arra
     isInvalid: invalid,
   };
   payoutNumerators.forEach((value: string, i: number): void => {
-    payoutRow["payout" + i] = parseInt(value, 10);
+    payoutRow["payout" + i] = new BigNumber(value, 10).toFixed();
   });
   db.select("payoutId").from("payouts").where(payoutRow).first().asCallback( (err: Error|null, payoutIdRow?: {payoutId: number}|null): void => {
     if (err) return callback(err);
