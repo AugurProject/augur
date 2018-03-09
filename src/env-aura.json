@@ -4,7 +4,6 @@
     "http": "https://aura.ethereum.nodes.augur.net",
     "ws": null
   },
-  "network-id": 8995,
   "auto-login": false,
   "universe": null,
   "bug-bounty": false,

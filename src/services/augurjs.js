@@ -5,7 +5,6 @@ export const connect = (env, callback = logError) => {
   const connectOptions = {
     augurNode: env['augur-node'],
     ethereumNode: env['ethereum-node'],
-    networkId: env['network-id'],
   }
   if (env.debug) augur.rpc.setDebugOptions(env.debug)
   augur.connect(connectOptions, (err, connectionInfo) => {

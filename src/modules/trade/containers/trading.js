@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
 
 import { selectMarket } from 'modules/market/selectors/market'
-import MarketTrading from 'modules/market/components/market-trading/market-trading'
+import MarketTrading from 'modules/trade/components/trading/trading'
 import { clearTradeInProgress } from 'modules/trade/actions/update-trades-in-progress'
 
 const mapStateToProps = state => ({

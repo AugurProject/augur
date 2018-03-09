@@ -42,6 +42,10 @@
 
     .tick-line {
       stroke: @color-gray;
+
+      &--midpoint {
+        stroke-width: 2px;
+      }
     }
 
     .tick-value {
@@ -84,6 +88,10 @@
     .period-hover {
       fill: none;
       pointer-events: visible;
+    }
+
+    #candlestick_crosshairs {
+      pointer-events: none;
     }
   }
 }

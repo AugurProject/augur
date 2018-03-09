@@ -21,6 +21,15 @@ describe('modules/app/actions/update-connection.js', () => {
     assert.deepEqual(test, out, `Didn't produce the expected action object`)
   })
 
+  it(`should update the augur node network id`, () => {
+    const test = action.updateAugurNodeNetworkId('4')
+    const out = {
+      type: action.UPDATE_AUGUR_NODE_NETWORK_ID,
+      augurNodeNetworkId: '4',
+    }
+    assert.deepEqual(test, out, `Didn't produce the expected action object`)
+  })
+
   it(`should update the isReconnectionPaused variable`, () => {
     const test = action.updateIsReconnectionPaused(true)
     const out = {

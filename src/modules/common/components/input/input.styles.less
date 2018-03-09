@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .Input {
-  .border(false);
+  .border(true, @border-all, @color-transparent, @border-width-2);
 
   background-color: @color-input-background;
   display: flex;
@@ -16,6 +16,14 @@
 
     display: flex;
     flex: 1;
+  }
+
+  input:focus {
+    .border(false);
+  }
+
+  &:focus-within {
+    .border(true, @border-all, @color-input-border, @border-width-2);
   }
 
   .fa-search {
@@ -36,8 +44,15 @@
   }
 }
 
+.Input__max {
+  .caps--small();
+
+  color: @color-purple;
+  padding: 0 1rem;
+}
+
 .Input__Incremental {
-  .border(false);
+  .border(true, @border-all, @color-transparent, @border-width-2);
 
   background-color: @color-input-background;
   display: flex;
@@ -62,6 +77,14 @@
 
     display: flex;
     flex: 1 1 auto;
+  }
+
+  input:focus {
+    .border(false);
+  }
+
+  &:focus-within {
+    .border(true, @border-all, @color-input-border, @border-width-2);
   }
 
   input[type='number'] {

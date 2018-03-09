@@ -4,7 +4,6 @@
     "http": "https://ropsten.ethereum.nodes.augur.net",
     "ws": null
   },
-  "network-id": 3,
   "auto-login": true,
   "universe": null,
   "bug-bounty": false,
