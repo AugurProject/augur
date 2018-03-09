@@ -47,7 +47,7 @@ export function insertPayout(db: Knex, marketId: Address, payoutNumerators: Arra
     } else {
       const payoutRowWithTentativeWinning = Object.assign( {},
         payoutRow,
-        {tentativeWinning}
+        {tentativeWinning},
         );
       db.insert(payoutRowWithTentativeWinning).returning("payoutId").into("payouts").asCallback((err: Error|null, payoutIdRow?: Array<number>): void => {
         if (err) callback(err);
