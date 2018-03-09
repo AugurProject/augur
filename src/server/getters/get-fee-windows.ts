@@ -12,9 +12,9 @@ export function getFeeWindows(db: Knex, augur: Augur, universe: Address, account
     .leftJoin("token_supply AS fee_token", "fee_token.token", "fee_windows.feeToken")
     .leftJoin("balances AS cash", function () {
       this
-        .on("cash.token", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash)
         .on("cash.owner", db.raw("fee_windows.feeWindow"));
       })
+    .where("cash.token", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash)
     .where("fee_windows.universe", universe)
     .where("balances.balance", ">", 0)
     .where("balances.owner", account);

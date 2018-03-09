@@ -42,7 +42,7 @@ export function getReportingHistory(db: Knex, reporter: Address, universe: Addre
   if (feeWindow != null) query.where("feeWindow", feeWindow);
   if (earliestCreationTime != null) query.where("creationTime", ">=", earliestCreationTime);
   if (latestCreationTime != null) query.where("creationTime", "<=", latestCreationTime);
-  queryModifier(query, "reportId", "asc", sortBy, isSortDescending, limit, offset);
+  queryModifier(query, "disputes.disputeId", "asc", sortBy, isSortDescending, limit, offset);
   query.asCallback((err: Error|null, joinedReportsMarketsRows?: Array<JoinedReportsMarketsRow>): void => {
     if (err) return callback(err);
     if (!joinedReportsMarketsRows) return callback(new Error("Internal error retrieving reporting history"));
