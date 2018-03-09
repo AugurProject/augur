@@ -26,7 +26,7 @@
   display: none;
   position: absolute;
   right: 0;
-  width: 192px;
+  width: 12rem;
 
   &--active {
     display: flex;
@@ -40,13 +40,13 @@
 
   &:first-of-type {
     h1 {
-      margin: 12px 0 8px 16px;
+      margin: 1em 0 0.75em 1.33em;
     }
   }
 
   &:last-of-type {
     h1 {
-      margin: 12px 0 8px 16px;
+      margin: 1em 0 0.75em 1.33em;
     }
   }
 
@@ -56,7 +56,7 @@
 
   ul {
     & li:last-of-type {
-      padding-bottom: 12px;
+      padding-bottom: 1.33em;
     }
   }
 }
@@ -65,11 +65,11 @@
   button {
     font-size: @font-size-small;
     height: 100%;
-    padding: 4px 0 4px 16px;
+    padding: 0.25em 0 0.5em 1.33em;
     text-align: left;
     width: 100%;
 
-    &:hover:not(:disabled) { // :p
+    &:hover:not(:disabled) {
       background-color: @color-lightergray;
       cursor: default;
     }
