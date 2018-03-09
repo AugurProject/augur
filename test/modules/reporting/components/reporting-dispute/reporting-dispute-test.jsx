@@ -5,7 +5,7 @@ import { assert } from 'chai'
 
 import { spy } from 'sinon'
 import { shallow } from 'enzyme'
-import ReportingDispute from 'src/modules/reporting/components/reporting-dispute/reporting-dispute'
+import ReportingDispute from 'src/modules/reporting/components/reporting-dispute-markets/reporting-dispute-markets'
 
 describe('report dispute component', () => {
   describe('props', () => {
@@ -17,7 +17,7 @@ describe('report dispute component', () => {
         location: {},
         markets: [],
         marketsCount: 0,
-        navigateToAccountDepositHandler: spy()
+        navigateToAccountDepositHandler: spy(),
       }
     })
 
