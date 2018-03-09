@@ -11,8 +11,7 @@ const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-// const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-// NOTE -- removed uglify temporarily as the git link was broken + we don't currently use this lib
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const PATHS = {
   BUILD: path.resolve(__dirname, 'build'),
@@ -296,12 +295,11 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
           from: path.resolve(PATHS.APP, 'env-production.json'),
           to: path.resolve(PATHS.BUILD, 'config/env.json')
         },
-      ])
-      // new UglifyESPlugin({
-      //   comments: false,
-      //   dropConsole: true,
-      //   sourceMap: true
-      // })
+      ]),
+      new UglifyJSPlugin({
+        parallel: true,
+        sourceMap: true,
+      })
     ]
   });
 }
