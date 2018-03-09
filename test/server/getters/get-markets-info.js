@@ -58,7 +58,7 @@ describe("server/getters/get-markets-info", () => {
           designatedReporter: "0x0000000000000000000000000000000000000b0b",
           designatedReportStake: 10,
           resolutionSource: "http://www.trusted-third-party.com",
-          numTicks: 10000,
+          numTicks: "10000",
           tickSize: "0.0001",
           consensus: null,
           outcomes: [{
@@ -133,7 +133,7 @@ describe("server/getters/get-markets-info", () => {
           designatedReporter: "0x0000000000000000000000000000000000000b0b",
           designatedReportStake: 10,
           resolutionSource: "http://www.trusted-third-party.com",
-          numTicks: 10000,
+          numTicks: "10000",
           tickSize: "0.0001",
           consensus: null,
           outcomes: [{
@@ -193,7 +193,7 @@ describe("server/getters/get-markets-info", () => {
           designatedReporter: "0x0000000000000000000000000000000000000b0b",
           designatedReportStake: 10,
           resolutionSource: "http://www.trusted-third-party.com",
-          numTicks: 10000,
+          numTicks: "10000",
           tickSize: "0.0001",
           consensus: null,
           outcomes: [{
@@ -269,7 +269,7 @@ describe("server/getters/get-markets-info", () => {
           designatedReporter: "0x0000000000000000000000000000000000000b0b",
           designatedReportStake: 10,
           resolutionSource: "http://www.trusted-third-party.com",
-          numTicks: 10000,
+          numTicks: "10000",
           tickSize: "0.0001",
           consensus: null,
           outcomes: [{
@@ -328,7 +328,7 @@ describe("server/getters/get-markets-info", () => {
           designatedReporter: "0x0000000000000000000000000000000000000b0b",
           designatedReportStake: 10,
           resolutionSource: "http://www.trusted-third-party.com",
-          numTicks: 10000,
+          numTicks: "10000",
           tickSize: "0.0001",
           consensus: null,
           outcomes: [{
@@ -373,7 +373,7 @@ describe("server/getters/get-markets-info", () => {
           designatedReporter: "0x0000000000000000000000000000000000000b0b",
           designatedReportStake: 10,
           resolutionSource: "http://www.trusted-third-party.com",
-          numTicks: 10000,
+          numTicks: "10000",
           tickSize: "0.0001",
           consensus: null,
           outcomes: [{
@@ -464,7 +464,7 @@ describe("server/getters/get-markets-info", () => {
           designatedReporter: "0x0000000000000000000000000000000000000b0b",
           designatedReportStake: 10,
           resolutionSource: "http://www.trusted-third-party.com",
-          numTicks: 10000,
+          numTicks: "10000",
           tickSize: "0.0001",
           consensus: {
             isInvalid: false,

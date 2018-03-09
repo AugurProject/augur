@@ -78,12 +78,14 @@ const fieldNames: Mapping = (() => {
   return namesonly;
 })();
 
+console.error(chalk.green("FIELD NAMES: "), fieldNames);
+
 // We're converting these values in place isntead of cloning the whole object
 function convertToBigNumber(row: any) {
-  if (row == null || typeof row == 'object') return row;
+  if (row == null || typeof row != 'object') return row;
 
   for (var key in row) {
-    if (row.hasOwnProperty(row) && fieldNames[key] === true && typeof row[key] == 'string') {
+    if (row.hasOwnProperty(key) && fieldNames[key] === true && typeof row[key] == 'string') {
       row[key] = new BigNumber(row[key], 10) 
       console.log(chalk.green("CONVERTED DATABASE RESULT:"), key, row[key]);
     }
