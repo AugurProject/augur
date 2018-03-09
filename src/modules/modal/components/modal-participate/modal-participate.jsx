@@ -82,7 +82,7 @@ export default class ModalParticipate extends Component {
   }
 
   handleMaxClick() {
-    this.setState({ quantity: this.props.rep })
+    this.setState({ quantity: this.props.rep, isValid: true, errors: [] })
   }
 
   handleKeyDown(e) {
@@ -117,6 +117,7 @@ export default class ModalParticipate extends Component {
                 placeholder="0.0"
                 onChange={value => this.updateQuantity(value)}
                 onKeyDown={e => this.handleKeyDown(e)}
+                autocomplete="off"
                 maxButton
                 onMaxButtonClick={() => this.handleMaxClick()}
               />
