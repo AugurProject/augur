@@ -1,8 +1,8 @@
 "use strict";
 
-function setContracts(networkID, allContracts) {
-  if (!allContracts.hasOwnProperty(networkID)) return {};
-  return allContracts[networkID];
+function setContracts(networkId, allContracts) {
+  if (!allContracts.hasOwnProperty(networkId)) return {};
+  return allContracts[networkId];
 }
 
 module.exports = setContracts;
