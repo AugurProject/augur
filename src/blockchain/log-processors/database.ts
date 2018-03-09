@@ -41,10 +41,10 @@ export function insertPayout(db: Knex, marketId: Address, payoutNumerators: Arra
   payoutNumerators.forEach((value: number, i: number): void => {
     payoutRow["payout" + i] = value;
   });
-  db.select("payoutId").from("payouts").where(payoutRow).first().asCallback( (err: Error|null, payoutId?: number|null): void => {
+  db.select("payoutId").from("payouts").where(payoutRow).first().asCallback( (err: Error|null, payoutIdRow?: {payoutId: number}|null): void => {
     if (err) return callback(err);
-    if (payoutId != null) {
-      return callback(null, payoutId);
+    if (payoutIdRow != null) {
+      return callback(null, payoutIdRow.payoutId);
     } else {
       db.insert(payoutRow).returning("payoutId").into("payouts").asCallback((err: Error|null, payoutIdRow?: Array<number>): void => {
         if (err) callback(err);

@@ -8,12 +8,12 @@ import { parallel } from "async";
 
 function updateTentativeWinningPayout(db: Knex, marketId: Address, callback: ErrorCallback) {
   const query = db.first(["payoutId", "amountStaked"]).from((builder: QueryBuilder) =>
-    builder.from("crowdsourcers").select("payoutId", "amountStaked").where({
+    builder.from("crowdsourcers").select(["payoutId", "amountStaked"]).where({
       completed: 1,
       marketId,
     }).union((builder: QueryBuilder) =>
       builder.select(["payoutId", "amountStaked"]).from("initial_reports").where("marketId", marketId),
-    )).orderBy("sum(amountStaked)", "desc").groupBy("payoutId");
+    )).orderByRaw("sum(amountStaked) desc").groupBy("payoutId");
   query.asCallback((err: Error|null, mostStakedPayoutId) => {
     if (err) return callback(err);
     parallel([
