@@ -38,7 +38,8 @@ export function insertPayout(db: Knex, marketId: Address, payoutNumerators: Arra
     marketId,
     isInvalid: invalid,
   };
-  payoutNumerators.forEach((value: string, i: number): void => {
+  payoutNumerators.forEach((value, i): void => {
+    if (value == null) return;
     payoutRow["payout" + i] = new BigNumber(value, 10).toFixed();
   });
   db.select("payoutId").from("payouts").where(payoutRow).first().asCallback( (err: Error|null, payoutIdRow?: {payoutId: number}|null): void => {
