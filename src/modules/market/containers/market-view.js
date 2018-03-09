@@ -5,7 +5,6 @@ import { loadFullMarket } from 'modules/market/actions/load-full-market'
 import { selectMarket } from 'modules/market/selectors/market'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
-import getValue from 'utils/get-value'
 
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names'
 
