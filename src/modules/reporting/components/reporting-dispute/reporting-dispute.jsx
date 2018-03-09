@@ -76,9 +76,10 @@ export default class ReportingDispute extends Component {
 
       const disputeOutcomes = selectDisputeOutcomes(this.props.market, disputeInfo.stakes)
       const currentOutcome = disputeOutcomes.find(item => item.tentativeWinning) || {}
+      const round = parseInt(disputeInfo.disputeRound || -1, 10) + 1
 
       this.setState({
-        disputeRound: disputeInfo.disputeRound || 1,
+        disputeRound: round,
         stakes: disputeInfo.stakes,
         disputeOutcomes,
         currentOutcome,

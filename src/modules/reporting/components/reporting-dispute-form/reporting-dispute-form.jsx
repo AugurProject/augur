@@ -141,6 +141,8 @@ export default class ReportingDisputeForm extends Component {
 
     ReportingDisputeForm.checkStake(this.props.stake, updatedValidations)
 
+    this.state.inputSelectedOutcome = value
+
     this.props.updateState({
       validations: updatedValidations,
       selectedOutcome: value,
@@ -182,7 +184,7 @@ export default class ReportingDisputeForm extends Component {
             }
             { p.market.marketType === SCALAR &&
               <li className={FormStyles['field--inline']}>
-                <ul className={FormStyles['Form__radio-buttons--per-line']}>
+                <ul className={FormStyles['Form__radio-buttons--per-line-long']}>
                   <li>
                     <button
                       className={classNames({ [`${FormStyles.active}`]: s.inputSelectedOutcome !== '' })}
