@@ -2,11 +2,11 @@ import chalk from "chalk";
 import BigNumber from "bignumber.js";
 
 interface Mapping {
-  [key: string]: boolean
-};
+  [key: string]: boolean;
+}
 
 interface Whitelist {
-  [class_name: string]: Mapping
+  [className: string]: Mapping;
 }
 
 const whitelist: Whitelist = {
@@ -43,7 +43,7 @@ const whitelist: Whitelist = {
   },
   trades: {
     numCreatorTokens: true,
-    numCreatorShares: true, 
+    numCreatorShares: true,
     numFillerTokens: true,
     numFillerShares: true,
     reporterFees: true,
@@ -67,26 +67,28 @@ const whitelist: Whitelist = {
   trading_proceeds: {
     numShares: true,
     numPayoutTokens: true,
-  }
+  },
 };
 
-const fieldNames: Mapping = (() => {
-  var namesonly: Mapping = {};
-  for(var key in whitelist) {
-    Object.assign(namesonly, whitelist[key]);
+const FIELD_NAMES: Mapping = (() => {
+  const namesonly: Mapping = {};
+  for (const key in whitelist) {
+    if (whitelist.hasOwnProperty(key)) {
+      Object.assign(namesonly, whitelist[key]);
+    }
   }
   return namesonly;
 })();
 
-console.error(chalk.green("FIELD NAMES: "), fieldNames);
+console.error(chalk.green("FIELD NAMES: "), FIELD_NAMES);
 
 // We're converting these values in place isntead of cloning the whole object
 function convertToBigNumber(row: any) {
-  if (row == null || typeof row != 'object') return row;
+  if (row === null || typeof row !== "object") return row;
 
-  for (var key in row) {
-    if (row.hasOwnProperty(key) && fieldNames[key] === true && typeof row[key] == 'string') {
-      row[key] = new BigNumber(row[key], 10) 
+  for (const key in row) {
+    if (row.hasOwnProperty(key) && FIELD_NAMES[key] === true && typeof row[key] === "string") {
+      row[key] = new BigNumber(row[key], 10);
       console.log(chalk.green("CONVERTED DATABASE RESULT:"), key, row[key]);
     }
   }
