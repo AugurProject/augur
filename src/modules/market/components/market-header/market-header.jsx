@@ -6,6 +6,8 @@ import toggleHeight from 'utils/toggle-height/toggle-height'
 
 import { ChevronLeft, ChevronDown, ChevronUp } from 'modules/common/components/icons'
 
+import { CATEGORICAL } from 'modules/markets/constants/market-types'
+
 import Styles from 'modules/market/components/market-header/market-header.styles'
 import ToggleHeightStyles from 'utils/toggle-height/toggle-height.styles'
 
@@ -15,6 +17,7 @@ export default class MarketHeader extends Component {
     description: PropTypes.string.isRequired,
     details: PropTypes.string.isRequired,
     coreProperties: PropTypes.object.isRequired,
+    marketType: PropTypes.string,
     resolutionSource: PropTypes.any,
     selectedOutcome: PropTypes.any,
   }
@@ -34,18 +37,18 @@ export default class MarketHeader extends Component {
     return (
       <section className={Styles.MarketHeader}>
         <div className={Styles.MarketHeader__nav}>
-          {p.selectedOutcome === null ?
-            <button
-              className={Styles[`MarketHeader__back-button`]}
-              onClick={() => p.history.goBack()}
-            >
-              {ChevronLeft}<span> back</span>
-            </button> :
+          {p.selectedOutcome !== null && p.marketType === CATEGORICAL ?
             <button
               className={Styles[`MarketHeader__back-button`]}
               onClick={() => p.clearSelectedOutcome()}
             >
               {ChevronLeft}<span> view all outcomes</span>
+            </button> :
+            <button
+              className={Styles[`MarketHeader__back-button`]}
+              onClick={() => p.history.goBack()}
+            >
+              {ChevronLeft}<span> back</span>
             </button>
           }
         </div>
