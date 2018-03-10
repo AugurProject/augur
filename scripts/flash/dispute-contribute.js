@@ -114,7 +114,7 @@ function disputeContribute(augur, params, auth, callback) {
     var userAuth = null;
     if (process.env.REPORTER_PRIVATE_KEY) {
       userAuth = getPrivateKeyFromString(process.env.REPORTER_PRIVATE_KEY);
-    } else if (paramArray[2] !== undefined) {
+    } else if (paramArray[2] && paramArray[2].length > 0) {
       userAuth = getPrivateKeyFromString(paramArray[2]);
     }
     if (!userAuth) {
