@@ -85,13 +85,4 @@ module.exports = {
 
   // maximum number of transactions to auto-submit in parallel
   PARALLEL_LIMIT: 5,
-
-  // keythereum crypto parameters
-  KDF: "pbkdf2",
-  ROUNDS: 65536,
-  // KDF: "scrypt",
-  // ROUNDS: 4096,
-  KEYSIZE: 32,
-  IVSIZE: 16,
-
 };
