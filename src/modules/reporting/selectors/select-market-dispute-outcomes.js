@@ -11,11 +11,7 @@ export default function () {
   return selectMarketDisputeOutcomes(store.getState())
 }
 
-/*
-  Binary: Tenative, others (Yes, No, Invalid)
-  Categorical: Tentative, others (others + Invalid)
-  Scalar: Tentative -> outcomes I currently have stake in -> outcomes that have current stake -> outcomes that have stake + ( Invalid promissed last spot)
-*/
+// We expect to receive all staked current outcomes ordered by user stake then by total stake limited to 9 results
 
 export const selectMarketDisputeOutcomes = createSelector(
   selectMarkets,
@@ -28,28 +24,72 @@ export const selectMarketDisputeOutcomes = createSelector(
     const disputeOutcomes = {}
     disputeMarkets.forEach((marketData) => {
       disputeOutcomes[marketData.id] = []
+      if (!marketData.numTicks) return
       if (!marketData.stakes) return
+
+      // Tracking structures
+      const tentativeWinningOutcome = []
+      const normalPayouts = getNormalPayouts(marketData)
+
+      // Add all human-valid outcome payout to the list. We ignore "strange" payouts by checking if they have a human readable name. If a "strange" payout is the tentative winner however we let it through since we have to display that.
       disputeOutcomes[marketData.id] = marketData.stakes.reduce((p, stakeData, index) => {
         const name = getOutcomeName(marketData, stakeData)
-        if (name === '') return p
-        p.push({
+        if (name === '' && !stakeData.isTentativeWiningOutcome) return p
+
+        const outcomeData = {
           id: index,
-          name: getOutcomeName(marketData, stakeData),
+          name: name || ('Partial payout: ' + stakeData.payout),
           totalRep: formatRepTokens(new BigNumber(stakeData.totalStake).dividedBy(ETHER)).formattedValue,
           userRep: formatRepTokens(new BigNumber(stakeData.accountStakeIncomplete).dividedBy(ETHER)).formattedValue,
           goal: formatRepTokens(new BigNumber(stakeData.size).dividedBy(ETHER)).formattedValue,
-        })
+        }
+
+        if (stakeData.isTentativeWiningOutcome) {
+          tentativeWinningOutcome.push(outcomeData)
+        } else {
+          p.push(outcomeData)
+        }
+
+        if (normalPayouts[stakeData.payout] !== undefined) normalPayouts[stakeData.payout] = true
+        if (stakeData.isInvalid) normalPayouts.invalid = true
+
         return p
       }, [])
+
+      // Append any unstaked "normal" payouts
+      Object.keys(normalPayouts).forEach((payout, index) => {
+        if (normalPayouts[payout]) return
+        if (payout === 'invalid') return
+        disputeOutcomes[marketData.id].push({
+          id: 10 + index,
+          name: getOutcomeName(marketData, { payout: JSON.parse('['+payout+']') }),
+          totalRep: 0,
+          userRep: 0,
+          goal: 0,
+        })
+      })
+
+      // Append Invalid if not staked
+      if (!normalPayouts.invalid) {
+        disputeOutcomes[marketData.id].push({
+          id: 100,
+          name: 'Invalid',
+          totalRep: 0,
+          userRep: 0,
+          goal: 0,
+        })
+      }
+
+      // Make the tentative winning outcome come first
+      disputeOutcomes[marketData.id] = tentativeWinningOutcome.concat(disputeOutcomes[marketData.id])
     })
-    console.log(disputeOutcomes)
+
     return disputeOutcomes
   },
 )
 
 function getOutcomeName(marketData, stakeData) {
-  // TODO when string bug fixed:
-  // if (stakeData.isInvalid) return 'Invalid'
+  if (stakeData.isInvalid) return 'Invalid'
 
   if (marketData.marketType === BINARY) {
     if (stakeData.payout[0] === marketData.numTicks) return 'No'
@@ -67,4 +107,19 @@ function getOutcomeName(marketData, stakeData) {
   }
 
   return ''
+}
+
+function getNormalPayouts(marketData) {
+  const payouts = {
+    invalid: false,
+  }
+
+  if (marketData.marketType === SCALAR) return payouts
+
+  for (let i = 0; i < marketData.numOutcomes; i++) {
+    const payout = Array(marketData.numOutcomes).fill(0)
+    payout[i] = marketData.numTicks
+    payouts[payout] = false
+  }
+  return payouts
 }
