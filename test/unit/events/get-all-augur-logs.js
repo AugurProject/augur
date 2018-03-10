@@ -19,10 +19,10 @@ describe("events/get-all-augur-logs", function () {
     });
   };
   test({
-    description: "from block 10 to block 200, 2 chunks, 3 event logs",
+    description: "from block 10 to block 21, 2 chunks, 3 event logs",
     params: {
       fromBlock: 10,
-      toBlock: 200,
+      toBlock: 21,
     },
     mock: {
       contracts: {
