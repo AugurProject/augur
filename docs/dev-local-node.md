@@ -62,11 +62,6 @@ Link augur.js:
     npm install
     yarn link augur.js
 
-The `env-dev.json` file points to the local node by default, the networkId needs to change:
-    
-  #### Important 
-  The default NetworkId is 4, `Rinkeby` this needs to be `12346` to match local node networkId or else you will get the Network Mismatch modal:
-
 Start the augur development server:
 
     yarn dev
