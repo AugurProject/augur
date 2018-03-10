@@ -6,17 +6,12 @@
 "use strict";
 
 var BigNumber = require("bignumber.js");
-var keythereum = require("keythereum");
-var ROUNDS = require("./constants").ROUNDS;
 var version = require("./version");
 
 BigNumber.config({
   MODULO_MODE: BigNumber.EUCLID,
   ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN,
 });
-
-keythereum.constants.pbkdf2.c = ROUNDS;
-keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
   this.version = version;
