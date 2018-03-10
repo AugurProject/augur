@@ -35,8 +35,9 @@ const networkConfig = NetworkConfiguration.create(networkName);
 const augur: Augur = new Augur();
 
 augur.rpc.setDebugOptions({ broadcast: false });
-augur.events.nodes.ethereum.on("disconnect", () => {
-  throw new Error("Disconnected from eth node");
+augur.events.nodes.ethereum.on("disconnect", (event) => {
+  console.warn("Disconnected from Ethereum node", event);
+  throw new Error("Disconnected from Ethereum node");
 });
 
 const { app, servers } = runServer(db, augur);
