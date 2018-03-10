@@ -76,7 +76,7 @@ module.exports = {
   CREATE_ORDER_GAS: "0x5b8d80",
   TRADE_GAS: "0x632ea0",
 
-  BLOCKS_PER_CHUNK: 100,
+  BLOCKS_PER_CHUNK: 10,
 
   AUGUR_UPLOAD_BLOCK_NUMBER: "0x1",
 
