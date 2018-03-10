@@ -73,7 +73,7 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
       onAdded: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, {
-          initialReportSize: 2829,
+          initialReportSize: "2829",
           reportingState: "AWAITING_NEXT_WINDOW",
         });
       },

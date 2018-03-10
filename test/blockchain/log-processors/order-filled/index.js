@@ -154,18 +154,18 @@ describe("blockchain/log-processors/order-filled", () => {
           tradeGroupId: "TRADE_GROUP_ID",
         }]);
         assert.deepEqual(records.markets, {
-          volume: 3.3333333333333335,
-          sharesOutstanding: 2,
+          volume: "3.33333333333333",
+          sharesOutstanding: "2",
         });
         assert.deepEqual(records.outcomes, [
-          { price: 0.7, volume: 103.3333333333333335 },
-          { price: 0.125, volume: 100 },
-          { price: 0.125, volume: 100 },
-          { price: 0.125, volume: 100 },
-          { price: 0.125, volume: 100 },
-          { price: 0.125, volume: 100 },
-          { price: 0.125, volume: 100 },
-          { price: 0.125, volume: 100 },
+          { price: 0.7, volume: "103.333333333333" },
+          { price: 0.125, volume: "100" },
+          { price: 0.125, volume: "100" },
+          { price: 0.125, volume: "100" },
+          { price: 0.125, volume: "100" },
+          { price: 0.125, volume: "100" },
+          { price: 0.125, volume: "100" },
+          { price: 0.125, volume: "100" },
         ]);
         assert.deepEqual(records.categories, {
           popularity: 3.3333333333333335,
@@ -284,18 +284,18 @@ describe("blockchain/log-processors/order-filled", () => {
         }]);
         assert.deepEqual(records.trades, []);
         assert.deepEqual(records.markets, {
-          volume: 0,
-          sharesOutstanding: 2,
+          volume: "0",
+          sharesOutstanding: "2",
         });
         assert.deepEqual(records.outcomes, [
-          { price: 0.7, volume: 100 },
-          { price: 0.125, volume: 100 },
-          { price: 0.125, volume: 100 },
-          { price: 0.125, volume: 100 },
-          { price: 0.125, volume: 100 },
-          { price: 0.125, volume: 100 },
-          { price: 0.125, volume: 100 },
-          { price: 0.125, volume: 100 },
+          { price: 0.7, volume: "100" },
+          { price: 0.125, volume: "100" },
+          { price: 0.125, volume: "100" },
+          { price: 0.125, volume: "100" },
+          { price: 0.125, volume: "100" },
+          { price: 0.125, volume: "100" },
+          { price: 0.125, volume: "100" },
+          { price: 0.125, volume: "100" },
         ]);
         assert.deepEqual(records.categories, {
           popularity: 0,
