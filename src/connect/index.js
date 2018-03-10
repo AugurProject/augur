@@ -63,8 +63,8 @@ function connect(connectOptions, callback) {
         transport.addReconnectListener(function () {
           events.nodes.augur.emit("reconnect");
         });
-        transport.addDisconnectListener(function () {
-          events.nodes.augur.emit("disconnect");
+        transport.addDisconnectListener(function (event) {
+          events.nodes.augur.emit("disconnect", event);
         });
         console.log("connected to augur");
         next(null, connectOptions.augurNode);
@@ -84,8 +84,8 @@ function connect(connectOptions, callback) {
         ethrpc.getTransport().addReconnectListener(function () {
           events.nodes.ethereum.emit("reconnect");
         });
-        ethrpc.getTransport().addDisconnectListener(function () {
-          events.nodes.ethereum.emit("disconnect");
+        ethrpc.getTransport().addDisconnectListener(function (event) {
+          events.nodes.ethereum.emit("disconnect", event);
         });
         next(null, {
           contracts: contracts || contractsForAllNetworks.addresses[DEFAULT_NETWORK_ID],
