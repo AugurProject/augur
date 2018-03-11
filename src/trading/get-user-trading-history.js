@@ -17,7 +17,7 @@
  * @property {number} outcome Outcome being bought/sold.
  * @property {string} shareToken Contract address of the share token that was bought or sold, as a hexadecimal string.
  * @property {number} timestamp Description pending.
- * @property {number|null} tradeGroupId Description pending.
+ * @property {number|null} tradeGroupId ID logged with each trade transaction (can be used to group trades client-side), as a hex string.
  */
 
 var augurNode = require("../augur-node");
