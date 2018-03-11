@@ -58,7 +58,7 @@ function tradeUntilAmountIsZero(p) {
           if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining);
           return p.onFailed("Trade completed but amount of trade unchanged");
         }
-        var updatedEstimatedCost = p.estimatedCost == null ? null : cost.minus(speedomatic.unfix(res.value)).toFixed();
+        var updatedEstimatedCost = p.estimatedCost == null ? null : speedomatic.unfix(cost.minus(new BigNumber(res.value, 16)), "string");
         console.log("updated estimated cost:", updatedEstimatedCost);
         tradeUntilAmountIsZero(assign({}, p, {
           estimatedCost: updatedEstimatedCost,
