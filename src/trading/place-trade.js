@@ -39,8 +39,8 @@ function placeTrade(p) {
     tradeUntilAmountIsZero(assign({}, immutableDelete(p, ["limitPrice", "amount", "minPrice", "maxPrice"]), {
       _price: normalizedPrice,
       _fxpAmount: p.amount,
-      _betterOrderId: betterWorseOrders.betterOrderId,
-      _worseOrderId: betterWorseOrders.worseOrderId,
+      _betterOrderId: (betterWorseOrders || {}).betterOrderId || "0x0",
+      _worseOrderId: (betterWorseOrders || {}).worseOrderId || "0x0",
     }));
   });
 }

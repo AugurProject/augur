@@ -33,7 +33,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
       outcome: outcome,
       price: order.price,
     }, function (err, betterWorseOrders) {
-      if (err) betterWorseOrders = { betterOrderId: 0, worseOrderId: 0 };
+      if (err) betterWorseOrders = { betterOrderId: "0x0", worseOrderId: "0x0" };
       augur.api.CreateOrder.publicCreateOrder({
         meta: auth,
         tx: { value: tradeCost.cost, gas: augur.constants.CREATE_ORDER_GAS },
@@ -42,9 +42,9 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
         _displayPrice: tradeCost.priceNumTicksRepresentation,
         _market: marketId,
         _outcome: outcome,
-        _betterOrderId: (betterWorseOrders || {}).betterOrderId || 0,
-        _worseOrderId: (betterWorseOrders || {}).worseOrderId || 0,
-        _tradeGroupId: 0,
+        _betterOrderId: (betterWorseOrders || {}).betterOrderId || "0x0",
+        _worseOrderId: (betterWorseOrders || {}).worseOrderId || "0x0",
+        _tradeGroupId: tradeGroupId,
         onSent: function (res) {
           if (debugOptions.cannedMarkets) {
             console.log(chalk.green.dim("publicCreateOrder sent:"), chalk.green(res.hash), chalk.cyan.dim(JSON.stringify(order)));
@@ -71,7 +71,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
       meta: auth,
       amount: order.shares,
       limitPrice: order.price,
-      estimatedCost: tradeCost.cost,
+      estimatedCost: speedomatic.unfix(tradeCost.cost, "string"),
       minPrice: minPrice,
       maxPrice: maxPrice,
       tickSize: tickSize,
@@ -79,7 +79,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
       _direction: orderTypeCode,
       _market: marketId,
       _outcome: outcome,
-      _tradeGroupId: 0,
+      _tradeGroupId: tradeGroupId,
       doNotCreateOrders: false,
       onSent: function (res) {
         if (debugOptions.cannedMarkets) console.log(chalk.green.dim("placeTrade sent:"), res);

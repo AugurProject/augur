@@ -34,7 +34,7 @@ function tradeUntilAmountIsZero(p) {
   var maxCost = new BigNumber(tradeCost.cost, 16);
   var amountNumTicksRepresentation = tradeCost.amountNumTicksRepresentation;
   var priceNumTicksRepresentation = tradeCost.priceNumTicksRepresentation;
-  var cost = p.estimatedCost != null ? speedomatic.fix(p.estimatedCost) : maxCost;
+  var cost = p.estimatedCost != null && new BigNumber(p.estimatedCost, 10).gt(constants.ZERO) ? speedomatic.fix(p.estimatedCost) : maxCost;
   console.log("cost:", speedomatic.unfix(cost, "string"), "ETH");
   if (maxCost.lt(constants.PRECISION.zero)) {
     console.log("tradeUntilAmountIsZero complete: only dust remaining");

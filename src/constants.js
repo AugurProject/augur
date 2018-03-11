@@ -84,7 +84,7 @@ module.exports = {
   GET_LOGS_DEFAULT_TO_BLOCK: "latest",
 
   // maximum number of transactions to auto-submit in parallel
-  PARALLEL_LIMIT: 5,
+  PARALLEL_LIMIT: 10,
 
   TRADE_GROUP_ID_NUM_BYTES: 32,
 };
