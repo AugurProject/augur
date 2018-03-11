@@ -43,15 +43,14 @@ export default class ReportingDispute extends Component {
       isMarketInValid: null,
       selectedOutcome: '',
       selectedOutcomeName: '',
-      // need to get value from augur-node for
-      // designated reporter or initial reporter (open reporting)
       stake: 0,
       validations: {
         stake: false,
         selectedOutcome: null,
       },
       gasEstimate: '0',
-      disputeBond: 0,
+      disputeBondFormatted: '0',
+      disputeBondValue: 0,
       disputeRound: 0,
       disputeOutcomes: [],
       stakes: [],
@@ -94,7 +93,8 @@ export default class ReportingDispute extends Component {
 
       this.setState({
         disputeRound: round,
-        disputeBond: formatAttoRep(disputeBond, { decimals: 4, denomination: ' REP' }).formatted,
+        disputeBondValue: parseInt(disputeBond, 10),
+        disputeBondFormatted: formatAttoRep(disputeBond, { decimals: 4, denomination: ' REP' }).formatted,
         stakes: disputeInfo.stakes,
         disputeOutcomes,
         currentOutcome,
@@ -186,6 +186,7 @@ export default class ReportingDispute extends Component {
                 stakes={s.stakes}
                 disputeOutcomes={s.disputeOutcomes}
                 currentOutcome={s.currentOutcome}
+                disputeBondValue={s.disputeBondValue}
               />
             }
             { s.currentStep === 1 &&
@@ -196,7 +197,7 @@ export default class ReportingDispute extends Component {
                 stake={s.stake}
                 currentOutcome={s.currentOutcome}
                 gasEstimate={s.gasEstimate}
-                disputeBond={s.disputeBond}
+                disputeBondFormatted={s.disputeBondFormatted}
               />
             }
             <div className={FormStyles.Form__navigation}>

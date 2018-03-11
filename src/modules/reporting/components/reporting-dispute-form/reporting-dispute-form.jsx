@@ -21,6 +21,7 @@ export default class ReportingDisputeForm extends Component {
     currentOutcome: PropTypes.object.isRequired,
     disputeOutcomes: PropTypes.array.isRequired,
     stakes: PropTypes.array.isRequired,
+    disputeBondValue: PropTypes.number.isRequired,
     stake: PropTypes.number,
     isMarketInValid: PropTypes.bool,
   }
@@ -194,6 +195,10 @@ export default class ReportingDisputeForm extends Component {
                   percentageComplete={outcome.percentageComplete}
                   remainingRep={outcome.remainingRep}
                   accountPercentage={outcome.accountPercentage}
+                  tentativeStake={p.stake}
+                  disputeBondValue={p.disputeBondValue}
+                  currentStake={parseInt(outcome.currentStake, 10)}
+                  isSelected={p.selectedOutcome === outcome.id}
                 />
               </li>
             ))
