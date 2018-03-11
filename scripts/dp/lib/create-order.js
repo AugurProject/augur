@@ -6,7 +6,7 @@ var speedomatic = require("speedomatic");
 var printTransactionStatus = require("./print-transaction-status");
 var debugOptions = require("../../debug-options");
 
-var USE_PUBLIC_CREATE_ORDER = false; // set to true to test CreateOrder.publicCreateOrder endpoint
+var USE_PUBLIC_CREATE_ORDER = true; // set to false to test trading.placeTrade endpoint
 
 function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, numTicks, orderType, order, tradeGroupId, auth, callback) {
   var normalizedPrice = augur.trading.normalizePrice({ price: order.price, maxPrice: maxPrice, minPrice: minPrice });
@@ -33,10 +33,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
       outcome: outcome,
       price: order.price,
     }, function (err, betterWorseOrders) {
-      if (err) {
-        console.error("*************getBetterWorseOrders failed:", err, betterWorseOrders);
-        return callback(err);
-      }
+      if (err) betterWorseOrders = { betterOrderId: 0, worseOrderId: 0 };
       augur.api.CreateOrder.publicCreateOrder({
         meta: auth,
         tx: { value: tradeCost.cost, gas: augur.constants.CREATE_ORDER_GAS },
