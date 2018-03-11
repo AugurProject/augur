@@ -161,4 +161,20 @@ describe('utils/format-number.js', () => {
       assert.deepEqual(formatNumber.formatGasCostToEther('0x632ea0', { decimalsRounded: 8 }, 2000000), '0.00021810', 'returned gas cost formated in ether given gas price')
     })
   })
+
+  describe('format attoREP', () => {
+    it('should return a properly formatted attoREP number', () => {
+      const result = formatNumber.formatAttoRep(349680582682291650, { decimals: 4 })
+      assert.deepEqual(result.formatted, '0.3497', 'returned attoREP formated to 4 decimals')
+    })
+  })
+
+  describe('format largish attoREP', () => {
+    it('should return a properly formatted attoREP number', () => {
+      const result = formatNumber.formatAttoRep(3496805826822916500000, { decimals: 4 })
+      assert.deepEqual(result.formatted, '3,496.8058', 'returned larger formatted attoREP to 4 decimals')
+    })
+  })
+
+
 })

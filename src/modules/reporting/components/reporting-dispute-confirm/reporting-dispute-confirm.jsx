@@ -46,6 +46,7 @@ ReportingDisputeConfirm.propTypes = {
   selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   stake: PropTypes.number.isRequired,
   gasEstimate: PropTypes.string.isRequired,
+  disputeBond: PropTypes.string.isRequired,
   isMarketInValid: PropTypes.bool,
 }
 
