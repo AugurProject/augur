@@ -48,7 +48,6 @@ describe('listen-to-updates', () => {
               assert.isFunction(args.TradingProceedsClaimed, `Didn't pass a function to startAugurNodeListeners.TradingProceedsClaimed as expected.`)
               assert.isFunction(args.DesignatedReportSubmitted, `Didn't pass a function to startAugurNodeListeners.DesignatedReportSubmitted as expected.`)
               assert.isFunction(args.ReportSubmitted, `Didn't pass a function to startAugurNodeListeners.ReportSubmitted as expected.`)
-              assert.isFunction(args.WinningTokensRedeemed, `Didn't pass a function to startAugurNodeListeners.WinningTokensRedeemed as expected.`)
               assert.isFunction(args.ReportsDisputed, `Didn't pass a function to startAugurNodeListeners.ReportsDisputed as expected.`)
               assert.isFunction(args.MarketFinalized, `Didn't pass a function to startAugurNodeListeners.MarketFinalized as expected.`)
               assert.isFunction(args.UniverseForked, `Didn't pass a function to startAugurNodeListeners.UniverseForked as expected.`)
