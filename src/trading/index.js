@@ -15,4 +15,6 @@ module.exports = {
   placeTrade: require("./place-trade"),
   tradeUntilAmountIsZero: require("./trade-until-amount-is-zero"),
   getOrders: require("./get-orders"),
+  calculateTradeCost: require("./calculate-trade-cost"),
+  generateTradeGroupId: require("./generate-trade-group-id"),
 };
