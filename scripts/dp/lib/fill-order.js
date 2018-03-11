@@ -5,7 +5,6 @@ var BigNumber = require("bignumber.js");
 var chalk = require("chalk");
 var getOrderToFill = require("./get-order-to-fill");
 var debugOptions = require("../../debug-options");
-var calculateTradeCost = require("../../../src/trading/calculate-trade-cost");
 
 function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade, orderType, auth, callback) {
   augur.markets.getMarkets({ universe: universe, sortBy: "creationBlock" }, function (err, marketIds) {
@@ -25,15 +24,15 @@ function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade
             price: orderToFill.fullPrecisionPrice.toString(),
           });
           var direction = orderType === "sell" ? 0 : 1;
-          var tradeCost = calculateTradeCost({
+          var tradeCost = augur.trading.calculateTradeCost({
             price: price,
             amount: sharesToTrade,
             numTicks: marketInfo.numTicks,
             tickSize: marketInfo.tickSize,
             orderType: direction,
           });
-          if (new BigNumber(tradeCost.cost, 10).gt(1)) {
-            sharesToTrade = new BigNumber(sharesToTrade, 10).dividedBy(new BigNumber(tradeCost.cost, 10)).toFixed();
+          if (new BigNumber(tradeCost.cost, 16).gt(1)) {
+            sharesToTrade = new BigNumber(sharesToTrade, 10).dividedBy(new BigNumber(tradeCost.cost, 16)).toFixed();
           }
           augur.trading.tradeUntilAmountIsZero({
             meta: auth,
@@ -44,7 +43,7 @@ function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade
             _direction: direction,
             _market: marketInfo.id,
             _outcome: outcomeToTrade,
-            _tradeGroupId: 42,
+            _tradeGroupId: augur.trading.generateTradeGroupId(),
             doNotCreateOrders: true,
             onSent: function () {},
             onSuccess: function (tradeAmountRemaining) {
