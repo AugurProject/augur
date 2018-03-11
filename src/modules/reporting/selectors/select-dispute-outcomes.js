@@ -17,7 +17,7 @@ export default function (market, disputeStakes) {
     }
     return p
   }, [])
-    .sort((a, b) => a.totalStake < b.totalStake).slice(0, 8)
+    .sort((a, b) => a.size < b.size).slice(0, 8)
     .reduce(fillInOutcomes, outcomes)
     .sort((a, b) => a.totalStake < b.totalStake)
 
