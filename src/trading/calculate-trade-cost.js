@@ -25,7 +25,7 @@ function calculateTradeCost(p) {
   var adjustedPrice = p.orderType === 0 ? new BigNumber(priceNumTicksRepresentation, 16) : new BigNumber(p.numTicks, 10).minus(new BigNumber(priceNumTicksRepresentation, 16));
   var amountNumTicksRepresentation = convertDecimalToFixedPoint(p.amount, speedomatic.fix(p.tickSize, "string"));
   return {
-    cost: "0x" + new BigNumber(amountNumTicksRepresentation, 16).times(adjustedPrice).toString(16),
+    cost: speedomatic.prefixHex(new BigNumber(amountNumTicksRepresentation, 16).times(adjustedPrice).toString(16)),
     amountNumTicksRepresentation: amountNumTicksRepresentation,
     priceNumTicksRepresentation: priceNumTicksRepresentation,
   };
