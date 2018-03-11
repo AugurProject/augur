@@ -85,4 +85,6 @@ module.exports = {
 
   // maximum number of transactions to auto-submit in parallel
   PARALLEL_LIMIT: 5,
+
+  TRADE_GROUP_ID_NUM_BYTES: 32,
 };
