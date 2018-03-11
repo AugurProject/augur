@@ -9,7 +9,6 @@ import { MODAL_ACCOUNT_APPROVAL } from 'modules/modal/constants/modal-types'
 export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrders, callback = logError, onComplete = logError) => (dispatch, getState) => {
   if (!marketId) return null
   const { loginAccount, marketsData } = getState()
-  const { allowance } = loginAccount
   const market = marketsData[marketId]
   if (!tradeInProgress || !market || outcomeId == null) {
     console.error(`trade-in-progress not found for market ${marketId} outcome ${outcomeId}`)
@@ -35,7 +34,7 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
       onComplete(tradeOnChainAmountRemaining)
     },
   }
-  if (new BigNumber(allowance).lte(new BigNumber(tradeInProgress.totalCost))) {
+  if (new BigNumber(loginAccount.allowance).lte(new BigNumber(tradeInProgress.totalCost))) {
     dispatch(updateModal({
       type: MODAL_ACCOUNT_APPROVAL,
       approveCallback: (err, res) => {
