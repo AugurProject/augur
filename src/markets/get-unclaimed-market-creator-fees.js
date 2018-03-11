@@ -12,7 +12,7 @@ var augurNode = require("../augur-node");
  * Returns information about unclaimed market creator fees. Fees are only available on finalized markets.
  * @param {Object} p Parameters object.
  * @param {string[]} p.marketIds Contract addresses of the markets for which to get details, as hexadecimal strings.
- * @returns {MarketCreatorFee[]}
+ * @return {MarketCreatorFee[]}
  */
 function getUnclaimedMarketCreatorFees(p, callback) {
   augurNode.submitRequest("getUnclaimedMarketCreatorFees", p, callback);
