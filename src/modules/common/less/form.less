@@ -18,6 +18,26 @@
   white-space: nowrap;
 }
 
+.Form__error--even {
+  color: @color-negative;
+  display: inline-block;
+  font-size: 1rem;
+  line-height: 1rem;
+  margin-left: 0;
+  margin-right: 1.5rem;
+  position: absolute;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.Form__error--even > svg,
+.Form__error--field-50 > svg {
+  margin: 0 0.2rem;
+  max-height: 1rem;
+  max-width: 1rem;
+  vertical-align: top;
+}
+
 .Form__error--field-50 {
   &:extend(.Form__error);
 
@@ -55,6 +75,7 @@
 
     &.field--short {
       max-width: 21rem;
+      padding-top: 2rem;
     }
 
     &.field--50 {
@@ -71,11 +92,14 @@
     }
 
     p {
-      color: @color-lightgray;
-      margin-top: 0;
+      color: @color-white;
+      font-size: @font-size-large;
+      line-height: @font-size-large;
+      margin-top: 1.075rem;
+      text-transform: capitalize;
 
       &:last-child {
-        margin-bottom: 0;
+        margin-bottom: 2rem;
       }
 
       &.text--field-style {
@@ -211,7 +235,18 @@
   > li:not(:first-child) {
     margin-left: 0;
     margin-top: 1rem;
+
+    &.field--inline {
+      display: block;
+      max-width: 21rem;
+    }
   }
+}
+
+.Form__radio-buttons--per-line-long {
+  &:extend(.Form__radio-buttons--per-line all);
+
+  width: 21rem;
 }
 
 @media @breakpoint-mobile {

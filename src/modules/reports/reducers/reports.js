@@ -1,5 +1,4 @@
-import { UPDATE_REPORTS, UPDATE_REPORT, CLEAR_REPORTS } from 'modules/reports/actions/update-reports'
-import { CLEAR_OLD_REPORTS } from 'modules/reports/actions/clear-old-reports'
+import { UPDATE_REPORTS, UPDATE_REPORT } from 'modules/reports/actions/update-reports'
 import { RESET_STATE } from 'modules/app/actions/reset-state'
 
 const DEFAULT_STATE = {}
@@ -7,13 +6,14 @@ const DEFAULT_STATE = {}
 export default function (reports = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_REPORTS: {
-      let universeId
-      const updatedReports = Object.assign({}, reports)
+      const updatedReports = { ...reports }
       const universeIds = Object.keys(action.reports)
       const numUniverseIds = universeIds.length
       for (let i = 0; i < numUniverseIds; ++i) {
-        universeId = universeIds[i]
-        updatedReports[universeId] = Object.assign({}, reports[universeId], action.reports[universeId])
+        updatedReports[universeIds[i]] = {
+          ...reports[universeIds[i]],
+          ...action.reports[universeIds[i]],
+        }
       }
       return updatedReports
     }
@@ -30,20 +30,7 @@ export default function (reports = DEFAULT_STATE, action) {
         },
       }
     }
-    case CLEAR_OLD_REPORTS: {
-      const universeReports = reports[action.universeId] || {}
-      return {
-        ...reports,
-        [action.universeId]: Object.keys(universeReports).reduce((p, marketId) => {
-          if (universeReports[marketId].period >= action.currentReportingWindowAddress) {
-            p[marketId] = universeReports[marketId]
-          }
-          return p
-        }, {}),
-      }
-    }
     case RESET_STATE:
-    case CLEAR_REPORTS:
       return DEFAULT_STATE
     default:
       return reports

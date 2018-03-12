@@ -14,10 +14,9 @@ import { updateAccountTradesData, updateAccountBidsAsksData, updateAccountCancel
 import { addNotification } from 'modules/notifications/actions/update-notifications'
 import makePath from 'modules/routes/helpers/make-path'
 import * as TYPES from 'modules/transactions/constants/types'
-import { MY_MARKETS, DEFAULT_VIEW } from 'modules/routes/constants/views'
-import { resetState } from 'modules/app/actions/reset-state'
+import { MY_MARKETS } from 'modules/routes/constants/views'
 import { connectAugur } from 'modules/app/actions/init-augur'
-import { updateConnectionStatus, updateAugurNodeConnectionStatus } from 'modules/app/actions/update-connection'
+import { updateAugurNodeConnectionStatus, updateConnectionStatus } from 'modules/app/actions/update-connection'
 import { updateModal } from 'modules/modal/actions/update-modal'
 import { MODAL_NETWORK_DISCONNECTED } from 'modules/modal/constants/modal-types'
 
@@ -159,16 +158,6 @@ export function listenToUpdates(history) {
           }
         }
       },
-      WinningTokensRedeemed: (err, log) => {
-        if (err) return console.error('WinningTokensRedeemed:', err)
-        if (log) {
-          console.log('WinningTokensRedeemed:', log)
-          if (log.reporter === getState().loginAccount.address) {
-            dispatch(updateAssets())
-            dispatch(convertLogsToTransactions(TYPES.REDEEM_WINNING_TOKENS, [log]))
-          }
-        }
-      },
       ReportsDisputed: (err, log) => {
         if (err) return console.error('ReportsDisputed:', err)
         if (log) {
@@ -204,11 +193,88 @@ export function listenToUpdates(history) {
           console.log('UniverseForked:', log)
         }
       },
+      CompleteSetsPurchased: (err, log) => {
+        if (err) return console.error('CompleteSetsPurchased:', err)
+        if (log) {
+          console.log('CompleteSetsPurchased:', log)
+        }
+      },
+      CompleteSetsSold: (err, log) => {
+        if (err) return console.error('CompleteSetsSold:', err)
+        if (log) {
+          console.log('CompleteSetsSold:', log)
+        }
+      },
+      TokensMinted: (err, log) => {
+        if (err) return console.error('TokensMinted:', err)
+        if (log) {
+          console.log('TokensMinted:', log)
+        }
+      },
+      TokensBurned: (err, log) => {
+        if (err) return console.error('TokensBurned:', err)
+        if (log) {
+          console.log('TokensBurned:', log)
+        }
+      },
+      FeeWindowCreated: (err, log) => {
+        if (err) return console.error('FeeWindowCreated:', err)
+        if (log) {
+          console.log('FeeWindowCreated:', log)
+        }
+      },
+      InitialReporterTransferred: (err, log) => {
+        if (err) return console.error('InitialReporterTransferred:', err)
+        if (log) {
+          console.log('InitialReporterTransferred:', log)
+        }
+      },
+      TimestampSet: (err, log) => {
+        if (err) return console.error('TimestampSet:', err)
+        if (log) {
+          console.log('TimestampSet:', log)
+        }
+      },
+      DisputeCrowdsourcerCreated: (err, log) => {
+        if (err) return console.error('DisputeCrowdsourcerCreated:', err)
+        if (log) {
+          console.log('DisputeCrowdsourcerCreated:', log)
+        }
+      },
+      DisputeCrowdsourcerContribution: (err, log) => {
+        if (err) return console.error('DisputeCrowdsourcerContribution:', err)
+        if (log) {
+          console.log('DisputeCrowdsourcerContribution:', log)
+        }
+      },
+      InitialReporterRedeemed: (err, log) => {
+        if (err) return console.error('InitialReporterRedeemed:', err)
+        if (log) {
+          console.log('InitialReporterRedeemed:', log)
+        }
+      },
+      DisputeCrowdsourcerRedeemed: (err, log) => {
+        if (err) return console.error('DisputeCrowdsourcerRedeemed:', err)
+        if (log) {
+          console.log('DisputeCrowdsourcerRedeemed:', log)
+        }
+      },
+      FeeWindowRedeemed: (err, log) => {
+        if (err) return console.error('FeeWindowRedeemed:', err)
+        if (log) {
+          console.log('FeeWindowRedeemed:', log)
+        }
+      },
+      UniverseCreated: (err, log) => {
+        if (err) return console.error('UniverseCreated:', err)
+        if (log) {
+          console.log('UniverseCreated:', log)
+        }
+      },
     }, err => console.log(err || 'Listening for events'))
 
-    const retryFunc = () => {
-      const retryTimer = 3000
-
+    const reInitAugur = () => {
+      const retryTimer = 3000 // attempt re-initAugur every 3 seconds.
       const retry = (callback = cb) => {
         const { connection, env } = getState()
         if (!connection.isConnected || !connection.isConnectedToAugurNode) {
@@ -226,9 +292,7 @@ export function listenToUpdates(history) {
           }
         }
       }
-
       const debounceCall = debounce(retry, retryTimer)
-
       const cb = (err, connection) => {
         // both args should be undefined if we are connected.
         if (!err && !connection) return
@@ -239,43 +303,32 @@ export function listenToUpdates(history) {
       debounceCall(cb)
     }
 
-    augur.events.nodes.augur.on('disconnect', () => {
+    augur.events.nodes.augur.on('disconnect', (event) => {
+      console.warn('Disconnected from augur-node', event)
       const { connection, env } = getState()
       if (connection.isConnectedToAugurNode) {
-        // if we were connected when disconnect occured, then resetState and redirect.
-        dispatch(resetState())
-        // if we were connected to ethereumNode, make sure connection still reflects that
-        if (connection.isConnected) {
-          dispatch(updateConnectionStatus(true))
-        }
         dispatch(updateModal({
           type: MODAL_NETWORK_DISCONNECTED,
-          connection: getState().connection,
+          connection,
           env,
         }))
-        history.push(makePath(DEFAULT_VIEW))
+        dispatch(updateAugurNodeConnectionStatus(false))
       }
-      // attempt re-initAugur every 3 seconds.
-      retryFunc()
+      reInitAugur()
     })
-    augur.events.nodes.ethereum.on('disconnect', () => {
+
+    augur.events.nodes.ethereum.on('disconnect', (event) => {
+      console.warn('Disconnected from Ethereum', event)
       const { connection, env } = getState()
       if (connection.isConnected) {
-        // if we were connected when disconnect occured, then resetState and redirect.
-        dispatch(resetState())
-        // if we were connected to augurNode, make sure connection still reflects that
-        if (connection.isConnectedToAugurNode) {
-          dispatch(updateAugurNodeConnectionStatus(true))
-        }
         dispatch(updateModal({
           type: MODAL_NETWORK_DISCONNECTED,
-          connection: getState().connection,
+          connection,
           env,
         }))
-        history.push(makePath(DEFAULT_VIEW))
+        dispatch(updateConnectionStatus(false))
       }
-      // attempt re-initAugur every 3 seconds.
-      retryFunc()
+      reInitAugur()
     })
   }
 }

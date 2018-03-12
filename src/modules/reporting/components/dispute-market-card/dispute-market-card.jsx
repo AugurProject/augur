@@ -16,10 +16,10 @@ const DisputeMarketCard = p => (
     <div className={CommonStyles.MarketCommon__topcontent}>
       <div className={CommonStyles.MarketCommon__header}>
         <ul className={BasicStyles.MarketBasics__tags}>
-          {p.market.tags.length > 1 &&
+          {p.market && p.market.tags.length > 1 &&
             <li>Tags</li>
           }
-          {(p.market.tags || []).map((tag, i) => i !== 0 &&
+          {p.market && (p.market.tags || []).map((tag, i) => i !== 0 &&
             <li key={p.market.id + tag}>
               <button onClick={() => toggleTag(tag, { pathname: makePath(MARKETS) }, p.history)}>
                 {tag}
@@ -42,7 +42,10 @@ const DisputeMarketCard = p => (
       </h1>
     </div>
     <div className={CommonStyles.MarketCommon__footer}>
-      <MarketProperties {...p.market} />
+      <MarketProperties
+        {...p.market}
+        {...p}
+      />
     </div>
   </article>
 )
@@ -52,8 +55,8 @@ DisputeMarketCard.propTypes = {
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   market: PropTypes.object.isRequired,
-  isMobile: PropTypes.bool,
   disputeRound: PropTypes.number.isRequired,
+  isMobile: PropTypes.bool,
 }
 
 export default DisputeMarketCard

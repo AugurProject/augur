@@ -1,6 +1,5 @@
 import { parallel } from 'async'
 import { augur } from 'services/augurjs'
-import { updateHasLoadedMarketsToReportOn } from 'modules/reports/actions/update-has-loaded-reports'
 import { updateMarketsData } from 'modules/markets/actions/update-markets-data'
 import { updateMarketsWithAccountReportData } from 'modules/my-reports/actions/update-markets-with-account-report-data'
 import logError from 'utils/log-error'
@@ -29,7 +28,6 @@ export const loadMarketsToReportOn = (options, callback = logError) => (dispatch
     // TODO we have market IDs *only*, so we need to check if the market's data is already loaded (and call loadMarketsData if not)
     dispatch(updateMarketsData(marketsToReportOn))
     dispatch(updateMarketsWithAccountReportData(marketsToReportOn))
-    dispatch(updateHasLoadedMarketsToReportOn(true))
     callback(null, marketsToReportOn)
   })
 }

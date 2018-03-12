@@ -25,8 +25,7 @@ if (process.env.NODE_ENV === 'development') {
   *******************************************
         DEVELOPMENT MODE (seadragon)
     window.app        -- root app element
-    window.state      -- raw state data
-    window.selectors  -- processed state data
+    window.state      -- state data
     window.augur      -- augur.js API methods
   -------------------------------------------
           ADDITIONAL INFORMATION
@@ -55,7 +54,6 @@ handleRender(App)
 if (module.hot) {
   module.hot.accept(
     [
-      './selectors-raw',
       './modules/app/actions/init-augur',
       './modules/app/containers/app',
       './select-state',
@@ -71,10 +69,7 @@ function handleRender() {
 
   // NOTE --  These are attached for convenience when built for development or debug
   if (process.env.NODE_ENV === 'development') {
-    const selectors = require('src/selectors-raw')
-
     window.app = UpdatedRoot
-    window.selectors = selectors
   }
 
   render(UpdatedRoot)

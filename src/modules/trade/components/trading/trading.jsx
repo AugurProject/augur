@@ -18,9 +18,9 @@ class MarketTrading extends Component {
     market: PropTypes.object.isRequired,
     availableFunds: PropTypes.instanceOf(BigNumber).isRequired,
     isLogged: PropTypes.bool.isRequired,
-    selectedOutcomes: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
     selectedOrderProperties: PropTypes.object.isRequired,
+    selectedOutcome: PropTypes.any,
   }
 
   constructor(props) {
@@ -29,7 +29,7 @@ class MarketTrading extends Component {
     this.state = {
       showForm: false,
       showOrderPlaced: false,
-      selectedOutcome: (props.selectedOutcomes.length && props.market.outcomes) ? props.market.outcomes.find(outcome => outcome.id === props.selectedOutcomes[0]) : null,
+      selectedOutcome: props.selectedOutcome !== null && props.market.outcomes ? props.market.outcomes.find(outcome => outcome.id === props.selectedOutcome) : null,
     }
 
     this.toggleForm = this.toggleForm.bind(this)
@@ -38,10 +38,16 @@ class MarketTrading extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if ((!isEqual(this.props.selectedOutcomes, nextProps.selectedOutcomes) || (!!this.state.selectedOutcome && !isEqual(this.state.selectedOutcome.id, nextProps.selectedOutcomes[0])) || !isEqual(this.props.market.outcomes, nextProps.market.outcomes)) && (nextProps.market && nextProps.market.outcomes)) {
-      if (nextProps.selectedOutcomes.length === 1) {
+    if (
+      (
+        !isEqual(this.props.selectedOutcome, nextProps.selectedOutcome) ||
+        !isEqual(this.props.market.outcomes, nextProps.market.outcomes)
+      ) &&
+      (nextProps.market && nextProps.market.outcomes)
+    ) {
+      if (nextProps.selectedOutcome !== null) {
         this.setState({
-          selectedOutcome: nextProps.market.outcomes.find(outcome => outcome.id === nextProps.selectedOutcomes[0]),
+          selectedOutcome: nextProps.market.outcomes.find(outcome => outcome.id === nextProps.selectedOutcome),
         })
       } else {
         this.setState({ selectedOutcome: null })

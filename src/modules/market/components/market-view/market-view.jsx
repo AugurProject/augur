@@ -35,13 +35,13 @@ export default class MarketView extends Component {
     }
 
     this.state = {
-      selectedOutcomes: props.marketType === CATEGORICAL ? [] : ['1'],
+      selectedOutcome: props.marketType === CATEGORICAL ? null : '1',
       selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
     }
 
-    this.updateSelectedOutcomes = this.updateSelectedOutcomes.bind(this)
+    this.updateSelectedOutcome = this.updateSelectedOutcome.bind(this)
     this.updateSeletedOrderProperties = this.updateSeletedOrderProperties.bind(this)
-    this.clearSelectedOutcomes = this.clearSelectedOutcomes.bind(this)
+    this.clearSelectedOutcome = this.clearSelectedOutcome.bind(this)
   }
 
   componentWillMount() {
@@ -70,17 +70,12 @@ export default class MarketView extends Component {
     }
   }
 
-  updateSelectedOutcomes(selectedOutcome) {
-    const newSelectedOutcomes = [...this.state.selectedOutcomes]
-    const selectedOutcomeIndex = newSelectedOutcomes.indexOf(selectedOutcome)
-
-    if (selectedOutcomeIndex !== -1) {
-      newSelectedOutcomes.splice(selectedOutcomeIndex, 1)
-    } else {
-      newSelectedOutcomes.push(selectedOutcome)
-    }
-
-    this.setState({ selectedOutcomes: newSelectedOutcomes })
+  updateSelectedOutcome(selectedOutcome) {
+    this.setState({
+      selectedOutcome: selectedOutcome === this.state.selectedOutcome && this.props.marketType === CATEGORICAL ?
+        null :
+        selectedOutcome,
+    })
   }
 
   updateSeletedOrderProperties(selectedOrderProperties) {
@@ -92,8 +87,8 @@ export default class MarketView extends Component {
     })
   }
 
-  clearSelectedOutcomes() {
-    this.setState({ selectedOutcomes: [] })
+  clearSelectedOutcome() {
+    this.setState({ selectedOutcome: null })
   }
 
   render() {
@@ -108,21 +103,21 @@ export default class MarketView extends Component {
         <div className={Styles.Market__upper}>
           <MarketHeader
             marketId={p.marketId}
-            selectedOutcomes={s.selectedOutcomes}
-            updateSelectedOutcomes={this.updateSelectedOutcomes}
-            clearSelectedOutcomes={this.clearSelectedOutcomes}
+            selectedOutcome={s.selectedOutcome}
+            updateSelectedOutcome={this.updateSelectedOutcome}
+            clearSelectedOutcome={this.clearSelectedOutcome}
           />
-          {(s.selectedOutcomes.length === 0 || s.selectedOutcomes.length !== 1) &&
+          {s.selectedOutcome === null &&
             <MarketOutcomesChart
               marketId={p.marketId}
-              selectedOutcomes={s.selectedOutcomes}
-              updateSelectedOutcomes={this.updateSelectedOutcomes}
+              selectedOutcome={s.selectedOutcome}
+              updateSelectedOutcome={this.updateSelectedOutcome}
             />
           }
-          {s.selectedOutcomes.length === 1 &&
+          {s.selectedOutcome !== null &&
             <MarketOutcomeCharts
               marketId={p.marketId}
-              selectedOutcome={s.selectedOutcomes[0]}
+              selectedOutcome={s.selectedOutcome}
               updateSeletedOrderProperties={this.updateSeletedOrderProperties}
             />
           }
@@ -131,14 +126,14 @@ export default class MarketView extends Component {
           <div className={Styles['Market__details-outcomes']}>
             <MarketOutcomesAndPositions
               marketId={p.marketId}
-              selectedOutcomes={s.selectedOutcomes}
-              updateSelectedOutcomes={this.updateSelectedOutcomes}
+              selectedOutcome={s.selectedOutcome}
+              updateSelectedOutcome={this.updateSelectedOutcome}
             />
           </div>
           <div className={Styles['Market__details-trading']}>
             <MarketTrading
               marketId={p.marketId}
-              selectedOutcomes={s.selectedOutcomes}
+              selectedOutcome={s.selectedOutcome}
               selectedOrderProperties={s.selectedOrderProperties}
             />
           </div>

@@ -130,9 +130,9 @@ const mapStateToProps = (state, ownProps) => {
   const orderBookKeys = getOrderBookKeys(marketDepth)
 
   return {
-    currentBlock: state.blockchain.currentBlockNumber,
-    minPrice: market.minPrice,
-    maxPrice: market.maxPrice,
+    currentBlock: state.blockchain.currentBlockNumber || 0,
+    minPrice: market.minPrice || 0,
+    maxPrice: market.maxPrice || 0,
     outcomeBounds: findBounds(outcome),
     orderBook: cumulativeOrderBook,
     priceTimeSeries,
