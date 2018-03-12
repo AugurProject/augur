@@ -5,7 +5,7 @@
 var chalk = require("chalk");
 var getTime = require("./get-timestamp");
 var getPrivateKeyFromString = require("../dp/lib/get-private-key").getPrivateKeyFromString;
-var repFaucet = require("../rep-faucet");
+var getRepTokens = require("./get-rep-tokens");
 var speedomatic = require("speedomatic");
 var displayTime = require("./display-time");
 var setTimestamp = require("./set-timestamp");
@@ -16,7 +16,7 @@ var doMarketContribute = require("./do-market-contribute");
 var day = 108000; // day
 
 function disputeContributeInternal(augur, marketId, outcome, amount, disputerAuth, invalid, auth, callback) {
-  repFaucet(augur, disputerAuth, function (err) {
+  getRepTokens(augur, amount, disputerAuth, function (err) {
     if (err) {
       console.log(chalk.red("Error"), chalk.red(err));
       return callback(err);
