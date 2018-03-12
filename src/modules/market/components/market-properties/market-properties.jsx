@@ -6,6 +6,7 @@ import MarketLink from 'modules/market/components/market-link/market-link'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
 import { TYPE_CLOSED } from 'modules/market/constants/link-types'
+import { SCALAR } from 'modules/markets/constants/market-types'
 
 import getValue from 'utils/get-value'
 import shareDenominationLabel from 'utils/share-denomination-label'
@@ -16,6 +17,8 @@ import CaretDropdown from 'modules/common/components/caret-dropdown/caret-dropdo
 const MarketProperties = (p) => {
   const shareVolumeRounded = getValue(p, 'volume.rounded')
   const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations)
+  const isScalar = p.marketType === SCALAR
+  const consensus = getValue(p, isScalar ? 'consensus.winningOutcome' : 'consensus.outcomeName')
 
   return (
     <article>
@@ -40,6 +43,12 @@ const MarketProperties = (p) => {
               formatted={p.marketCreatorFeesCollected.rounded}
               denomination={p.marketCreatorFeesCollected.denomination}
             />
+          </li>
+          }
+          {consensus &&
+          <li>
+            <span>Winning Outcome</span>
+            {consensus}
           </li>
           }
         </ul>
