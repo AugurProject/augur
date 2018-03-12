@@ -78,9 +78,10 @@ getPrivateKey(null, function (err, auth) {
 
           while (bidPrice < midPoint) {
             var bid = { price: bidPrice, shares: sharesPerOrder };
+            var bidTradeGroupId = augur.trading.generateTradeGroupId();
 
             console.log(chalk.yellow.dim("bid:"), chalk.yellow(JSON.stringify(bid)));
-            createOrder(augur, marketId, outcomeI, marketInfo.numOutcomes, marketInfo.maxPrice, marketInfo.minPrice, marketInfo.numTicks, "buy", bid, auth, function (err, res) {
+            createOrder(augur, marketId, outcomeI, marketInfo.numOutcomes, marketInfo.maxPrice, marketInfo.minPrice, marketInfo.numTicks, "buy", bid, bidTradeGroupId, auth, function (err, res) {
               if (err) console.error("create-orders failed:", err);
               console.log(chalk.green.dim("Order Created"), chalk.green(JSON.stringify(res)));
             });
@@ -96,9 +97,10 @@ getPrivateKey(null, function (err, auth) {
 
           while (askPrice < marketInfo.maxPrice) {
             var ask = { price: askPrice, shares: sharesPerOrder };
+            var askTradeGroupId = augur.trading.generateTradeGroupId();
 
             console.log(chalk.yellow.dim("ask:"), chalk.yellow(JSON.stringify(ask)));
-            createOrder(augur, marketId, outcomeI, marketInfo.numOutcomes, marketInfo.maxPrice, marketInfo.minPrice, marketInfo.numTicks, "sell", ask, auth, function (err, res) {
+            createOrder(augur, marketId, outcomeI, marketInfo.numOutcomes, marketInfo.maxPrice, marketInfo.minPrice, marketInfo.numTicks, "sell", ask, askTradeGroupId, auth, function (err, res) {
               if (err) console.error("create-orders failed:", err);
               console.log(chalk.green.dim("Order Created"), chalk.green(JSON.stringify(res)));
             });
