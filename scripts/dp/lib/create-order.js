@@ -53,16 +53,20 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
         onSuccess: function (res) {
           if (debugOptions.cannedMarkets) {
             console.log(chalk.green.dim("publicCreateOrder success:"), chalk.green(res.callReturn), chalk.cyan.dim(JSON.stringify(order)));
-            printTransactionStatus(augur.rpc, res.hash);
           }
-          callback(null, res);
+          printTransactionStatus(augur.rpc, (res || {}).hash, function (err) {
+            if (err) return callback(err);
+            callback(null, res);
+          });
         },
         onFailed: function (err) {
           if (debugOptions.cannedMarkets) {
-            console.error(chalk.red.bold("publicCreateOrder failed:"), err, chalk.red.dim(JSON.stringify(order)));
-            if (err != null) printTransactionStatus(augur.rpc, err.hash);
+            console.log(chalk.red.bold("publicCreateOrder failed:"), err, chalk.cyan.dim(JSON.stringify(order)));
           }
-          callback(err);
+          printTransactionStatus(augur.rpc, (err || {}).hash, function (e) {
+            if (e) return callback(e);
+            callback(err);
+          });
         },
       });
     });

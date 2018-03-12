@@ -17,7 +17,7 @@ function createOrders(augur, marketIds, auth, callback) {
       }
       var cannedMarket = selectCannedMarket(marketInfo.description, marketInfo.marketType);
       if (!cannedMarket || !cannedMarket.orderBook) {
-        console.warn(chalk.yellow.bold("Canned market data not found for market"), chalk.green(marketInfo.id), chalk.cyan.dim(JSON.stringify(marketInfo, null, 2)));
+        console.warn(chalk.yellow.bold("Canned market data not found for market"), chalk.green(marketInfo.id), chalk.cyan.dim(marketInfo.description));
         return nextMarket();
       }
       createOrderBook(augur, marketInfo.id, marketInfo.numOutcomes, marketInfo.maxPrice, marketInfo.minPrice, marketInfo.numTicks, cannedMarket.orderBook, auth, nextMarket);
