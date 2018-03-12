@@ -31,7 +31,7 @@ function createMarkets(augur, auth, callback) {
         createMarket(augur, market, auth.address, auth, function (err, marketId) {
           if (err) return nextMarket(err);
           console.log(chalk.green(marketId), chalk.cyan.dim(market._description));
-          if (process.env.NO_CREATE_ORDERS) return nextMarket();
+          if (process.env.NO_CREATE_ORDERS || market.marketType === "scalar") return nextMarket();
           var numOutcomes = Array.isArray(market._outcomes) ? market._outcomes.length : 2;
           var numTicks;
           if (market.marketType === "scalar") {
