@@ -117,7 +117,7 @@ export default class ModalParticipate extends Component {
                 placeholder="0.0"
                 onChange={value => this.updateQuantity(value)}
                 onKeyDown={e => this.handleKeyDown(e)}
-                autocomplete="off"
+                autoComplete="off"
                 maxButton
                 onMaxButtonClick={() => this.handleMaxClick()}
               />
