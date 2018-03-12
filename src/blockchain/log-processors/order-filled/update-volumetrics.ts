@@ -14,7 +14,7 @@ function incrementMarketVolume(db: Knex, marketId: Address, amount: BigNumber, c
 
     const volume = result.volume;
     const incremented = amount.plus(volume);
-    db("markets").update({ volume: incremented.toFixed() }).where({ marketId, volume: volume.toFixed() }).asCallback((err: Error|null, affectedRowsCount: number) => {
+    db("markets").update({ volume: incremented.toString() }).where({ marketId, volume: volume.toString() }).asCallback((err: Error|null, affectedRowsCount: number) => {
       if (err) return callback(err);
       if (affectedRowsCount === 0) return process.nextTick(() => incrementMarketVolume(db, marketId, amount, callback));
 
@@ -29,7 +29,7 @@ function incrementOutcomeVolume(db: Knex, marketId: Address, outcome: number, am
 
     const volume = result.volume;
     const incremented = amount.plus(volume);
-    db("outcomes").update({ volume: incremented.toFixed() }).where({ marketId, outcome, volume: volume.toFixed() }).asCallback((err: Error|null, affectedRowsCount: number) => {
+    db("outcomes").update({ volume: incremented.toString() }).where({ marketId, outcome, volume: volume.toString() }).asCallback((err: Error|null, affectedRowsCount: number) => {
       if (err) return callback(err);
       if (affectedRowsCount === 0) return process.nextTick(() => incrementOutcomeVolume(db, marketId, outcome, amount, callback));
 
@@ -44,7 +44,7 @@ function incrementCategoryPopularity(db: Knex, category: string, amount: BigNumb
 
     const popularity = result.popularity;
     const incremented = amount.plus(popularity);
-    db("categories").update({ popularity: incremented.toFixed() }).where({ category, popularity: popularity.toFixed() }).asCallback((err: Error|null, affectedRowsCount: number) => {
+    db("categories").update({ popularity: incremented.toString() }).where({ category, popularity: popularity.toString() }).asCallback((err: Error|null, affectedRowsCount: number) => {
       if (err) return callback(err);
       if (affectedRowsCount === 0) return process.nextTick(() => incrementCategoryPopularity(db, category, amount, callback));
 
