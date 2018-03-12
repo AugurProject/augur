@@ -126,8 +126,6 @@ export const logProcessors: LogProcessors = {
       add: processCompleteSetsPurchasedOrSoldLog,
       remove: processCompleteSetsPurchasedOrSoldLogRemoval,
     },
-    WhitelistAddition: ignoreLog,
-    RegistryAddition: ignoreLog,
     UniverseForked: ignoreLog,
   },
   LegacyReputationToken: {
