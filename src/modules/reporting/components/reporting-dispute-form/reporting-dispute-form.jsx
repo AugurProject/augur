@@ -9,6 +9,7 @@ import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles'
+import ReportingDisputeProgress from 'modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress'
 
 export default class ReportingDisputeForm extends Component {
 
@@ -18,9 +19,9 @@ export default class ReportingDisputeForm extends Component {
     validations: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     currentOutcome: PropTypes.object.isRequired,
-    disputeBond: PropTypes.string.isRequired,
     disputeOutcomes: PropTypes.array.isRequired,
     stakes: PropTypes.array.isRequired,
+    disputeBondValue: PropTypes.number.isRequired,
     stake: PropTypes.number,
     isMarketInValid: PropTypes.bool,
   }
@@ -41,6 +42,7 @@ export default class ReportingDisputeForm extends Component {
       outcomes: [],
       inputStake: '',
       inputSelectedOutcome: '',
+      paddingBuffer: 0,
     }
 
     this.state.outcomes = this.props.market ? this.props.market.outcomes.slice() : []
@@ -52,13 +54,21 @@ export default class ReportingDisputeForm extends Component {
     if (this.props.stake) this.state.inputStake = this.props.stake.toString()
 
     this.componentWillReceiveProps(this.props)
+
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.disputeOutcomes && nextProps.disputeOutcomes.length > 0) {
-      this.state.outcomes = nextProps.disputeOutcomes.filter(item => !item.tentativeWinning) || []
+      this.state.outcomes = (nextProps.disputeOutcomes.filter(item => !item.tentativeWinning) || [])
+        .sort((a, b) => a.name > b.name)
+        .sort((a, b) => b.percentageComplete > a.percentageComplete)
       const outcome = this.state.outcomes.find(o => o.name === 'Indeterminate')
       if (outcome) outcome.name = 'Market Is Invalid'
+
+      this.state.paddingBuffer = this.state.outcomes.reduce((p, i) => {
+        const result = i.name.length > p ? i.name.length : p
+        return result
+      }, 0)
 
       if (nextProps.selectedOutcome) {
         if (!this.state.outcomes.find(o => o.id === nextProps.selectedOutcome)) {
@@ -67,7 +77,6 @@ export default class ReportingDisputeForm extends Component {
       }
     }
   }
-
 
   validateStake(rawStake) {
     const updatedValidations = { ...this.props.validations }
@@ -179,6 +188,18 @@ export default class ReportingDisputeForm extends Component {
                   onClick={(e) => { this.validateOutcome(p.validations, outcome.id, outcome.name, false) }}
                 >{outcome.name}
                 </button>
+                <ReportingDisputeProgress
+                  key={outcome.id}
+                  {...outcome}
+                  paddingAmount={s.paddingBuffer - outcome.name.length}
+                  percentageComplete={outcome.percentageComplete}
+                  remainingRep={outcome.remainingRep}
+                  accountPercentage={outcome.accountPercentage}
+                  tentativeStake={p.stake}
+                  disputeBondValue={p.disputeBondValue}
+                  currentStake={parseInt(outcome.currentStake, 10)}
+                  isSelected={p.selectedOutcome === outcome.id}
+                />
               </li>
             ))
             }

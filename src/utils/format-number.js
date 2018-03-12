@@ -217,6 +217,12 @@ export function formatGasCostToEther(num, opts, gasPrice) {
   return formatGasCost(ethGasCost, opts).rounded
 }
 
+export function formatAttoRep(num, opts) {
+  if (!num || num === 0 || isNaN(num)) return 0
+  const { ETHER } = augur.rpc.constants
+  return formatNumber(new BigNumber(num).dividedBy(ETHER).toNumber(), opts)
+}
+
 export function formatGasCost(num, opts) {
   return formatNumber(
     num,
