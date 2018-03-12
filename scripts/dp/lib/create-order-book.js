@@ -6,12 +6,12 @@ var createOrder = require("./create-order");
 var debugOptions = require("../../debug-options");
 
 function createOrderBook(augur, marketId, numOutcomes, maxPrice, minPrice, numTicks, orderBook, auth, callback) {
-  async.forEachOf(orderBook, function (orders, orderType, nextOrderType) {
+  async.forEachOfSeries(orderBook, function (orders, orderType, nextOrderType) {
     var tradeGroupId = augur.trading.generateTradeGroupId();
     if (debugOptions.cannedMarkets) console.log(chalk.cyan.dim("Creating"), chalk.cyan(orderType), chalk.cyan.dim("orders - trade group ID"), chalk.green(tradeGroupId));
-    async.forEachOf(orders, function (outcomeOrders, outcome, nextOutcome) {
+    async.forEachOfSeries(orders, function (outcomeOrders, outcome, nextOutcome) {
       if (debugOptions.cannedMarkets) console.log(chalk.cyan.dim("Creating orders for outcome"), chalk.cyan(outcome));
-      async.each(outcomeOrders, function (order, nextOrder) {
+      async.eachSeries(outcomeOrders, function (order, nextOrder) {
         createOrder(augur, marketId, parseInt(outcome, 10), numOutcomes, maxPrice, minPrice, numTicks, orderType, order, tradeGroupId, auth, nextOrder);
       }, nextOutcome);
     }, nextOrderType);

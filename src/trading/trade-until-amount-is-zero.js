@@ -32,8 +32,8 @@ function tradeUntilAmountIsZero(p) {
   console.log("tradeUntilAmountIsZero:", JSON.stringify(immutableDelete(p, "meta"), null, 2));
   var tradeCost = calculateTradeCost({ price: p._price, amount: p._fxpAmount, numTicks: p.numTicks, tickSize: p.tickSize, orderType: p._direction });
   var maxCost = new BigNumber(tradeCost.cost, 16);
-  var amountNumTicksRepresentation = tradeCost.amountNumTicksRepresentation;
-  var priceNumTicksRepresentation = tradeCost.priceNumTicksRepresentation;
+  var onChainAmount = tradeCost.onChainAmount;
+  var adjustedPrice = tradeCost.adjustedPrice;
   var cost = p.estimatedCost != null && new BigNumber(p.estimatedCost, 10).gt(constants.ZERO) ? speedomatic.fix(p.estimatedCost) : maxCost;
   console.log("cost:", speedomatic.unfix(cost, "string"), "ETH");
   if (maxCost.lt(constants.PRECISION.zero)) {
@@ -42,19 +42,19 @@ function tradeUntilAmountIsZero(p) {
   }
   var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "tickSize", "estimatedCost"]), {
     tx: assign({ value: speedomatic.prefixHex(cost.toString(16)), gas: constants.TRADE_GAS }, p.tx),
-    _fxpAmount: amountNumTicksRepresentation,
-    _price: priceNumTicksRepresentation,
+    _fxpAmount: onChainAmount,
+    _price: speedomatic.fix(p._price, "hex"),
     onSuccess: function (res) {
       console.log("trade successful:", res);
       getTradeAmountRemaining({
         transactionHash: res.hash,
-        startingOnChainAmount: amountNumTicksRepresentation,
-        priceNumTicksRepresentation: priceNumTicksRepresentation,
+        startingOnChainAmount: onChainAmount,
+        adjustedPrice: adjustedPrice,
       }, function (err, tradeOnChainAmountRemaining) {
         if (err) return p.onFailed(err);
         console.log("starting amount: ", p._fxpAmount);
         console.log("amount remaining:", convertFixedPointToDecimal(tradeOnChainAmountRemaining, speedomatic.fix(p.tickSize, "string")));
-        if (new BigNumber(tradeOnChainAmountRemaining, 10).eq(new BigNumber(amountNumTicksRepresentation, 16))) {
+        if (new BigNumber(tradeOnChainAmountRemaining, 10).eq(new BigNumber(onChainAmount, 16))) {
           if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining);
           return p.onFailed("Trade completed but amount of trade unchanged");
         }
@@ -68,6 +68,7 @@ function tradeUntilAmountIsZero(p) {
       });
     },
   });
+  console.log("trade payload:", tradePayload);
   if (p.doNotCreateOrders) {
     api().Trade.publicTakeBestOrder(tradePayload);
   } else {

@@ -18,14 +18,14 @@ function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade
           if (err) return callback(err);
           if (orderToFill == null || new BigNumber(orderToFill.amount).eq(new BigNumber(0))) return nextMarket();
           if (debugOptions.cannedMarkets) console.log(chalk.cyan("Filling order:"), chalk.red.bold(orderType), orderToFill);
-          var price = augur.trading.normalizePrice({
+          var normalizedPrice = augur.trading.normalizePrice({
             minPrice: marketInfo.minPrice,
             maxPrice: marketInfo.maxPrice,
             price: orderToFill.fullPrecisionPrice.toString(),
           });
           var direction = orderType === "sell" ? 0 : 1;
           var tradeCost = augur.trading.calculateTradeCost({
-            price: price,
+            normalizedPrice: normalizedPrice,
             amount: sharesToTrade,
             numTicks: marketInfo.numTicks,
             tickSize: marketInfo.tickSize,
@@ -37,7 +37,7 @@ function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade
           augur.trading.tradeUntilAmountIsZero({
             meta: auth,
             _fxpAmount: sharesToTrade,
-            _price: price,
+            _price: normalizedPrice,
             numTicks: marketInfo.numTicks,
             tickSize: marketInfo.tickSize,
             _direction: direction,
