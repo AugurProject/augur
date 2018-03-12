@@ -53,6 +53,12 @@
 .ModalParticipate__button {
   .button--white();
 
+  &:disabled {
+    background-color: @color-disabled;
+    color: @color-text-disabled;
+    cursor: default;
+  }
+
   margin-top: 2rem;
 }
 
