@@ -1,0 +1,58 @@
+@import (reference) '~assets/styles/shared';
+
+.ForkingNotification {
+  background: #f12a66;
+  font-size: @font-size-medium;
+  height: 100%;
+  padding-left: 14rem;
+
+  section {
+    display: flex;
+  }
+}
+
+.ForkingNotification__message {
+  color: white;
+  font-size: 1.125rem;
+  line-height: 2.65rem;
+  margin-left: 1em;
+  text-transform: uppercase;
+}
+
+.ForkingNotification__warning-icon {
+  margin-right: 2rem;
+  vertical-align: middle;
+  width: @font-size-rather-large;
+}
+
+.ForkingNotification__AlertIcon {
+  height: 2em;
+  margin-bottom: auto;
+  margin-top: auto;
+  width: 2em;
+}
+
+.ForkingNotification__addition_details {
+  color: white;
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  text-transform: uppercase;
+}
+
+.ForkingNotification__addition_details_button {
+  margin-bottom: auto;
+  margin-right: 6em;
+  margin-top: auto;
+  text-transform: uppercase;
+}
+
+.ForkingNotification__arrow {
+  margin-left: 1em;
+}
+
+@media @breakpoint-mobile {
+  .ForkingNotification {
+    padding: 0;
+  }
+}

@@ -9,6 +9,10 @@ import logError from 'utils/log-error'
 // Synchronize front-end universe state with blockchain universe state.
 const syncUniverse = (callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
+  augur.api.Universe.isForking(universePayload, (err, isForking) => {
+    if (err) return callback(err)
+    dispatch(updateUniverse({ isForking }))
+  })
   if (!universe.reportingPeriodDurationInSeconds) return callback(null)
   dispatch(updateUniverse(getReportingCycle()))
   if (universe.currentReportingWindowAddress && !loginAccount.address) {

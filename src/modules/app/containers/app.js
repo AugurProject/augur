@@ -28,6 +28,7 @@ const mapStateToProps = state => ({
   selectedCategory: state.selectedCategory,
   modal: state.modal,
   connection: state.connection,
+  universe: state.universe,
 })
 
 const mapDispatchToProps = dispatch => ({
