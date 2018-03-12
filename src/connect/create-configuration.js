@@ -4,8 +4,7 @@ var assign = require("lodash.assign");
 
 // upgrade from old config (single address per type) to new config (array of addresses per type)
 function createConfiguration(options) {
-  var configuration = assign({}, options);
-  configuration.contracts = configuration.contracts || {};
+  var configuration = assign({}, options, { contracts: options.contracts || {} });
   if (!Array.isArray(configuration.httpAddresses)) configuration.httpAddresses = [];
   if (!Array.isArray(configuration.wsAddresses)) configuration.wsAddresses = [];
   if (!Array.isArray(configuration.ipcAddresses)) configuration.ipcAddresses = [];

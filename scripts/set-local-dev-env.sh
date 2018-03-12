@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # All of these keys are optional, and have the defaults listed here
-export USE_NORMAL_TIME="false"                # need to beable to change time manually
+# export USE_NORMAL_TIME="false"                # need to beable to change time manually
 export ETHEREUM_HOST="localhost"              # where the ethereum node is running
 export ETHEREUM_GAS_PRICE_IN_NANOETH="1"
 export ETHEREUM_HTTP=http://127.0.0.1:8545    # http endpoint scripts are going to use

@@ -54,6 +54,7 @@ module.exports = {
 
   ETERNAL_APPROVAL_VALUE: "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", // 2^256 - 1
 
+  DEFAULT_CONNECTION_TIMEOUT: 60000,
   DEFAULT_NETWORK_ID: "3",
   DEFAULT_GASPRICE: 20000000000,
   DEFAULT_MAX_GAS: "0x632ea0",

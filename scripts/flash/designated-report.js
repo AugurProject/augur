@@ -5,6 +5,7 @@
 var chalk = require("chalk");
 var getTime = require("./get-timestamp");
 var setTimestamp = require("./set-timestamp");
+var getRepTokens = require("./get-rep-tokens");
 var doInitialReport = require("./do-initial-report");
 var getPayoutNumerators = require("./get-payout-numerators");
 var getPrivateKeyFromString = require("../dp/lib/get-private-key").getPrivateKeyFromString;
@@ -13,34 +14,41 @@ var getPrivateKeyFromString = require("../dp/lib/get-private-key").getPrivateKey
  * Move time to Market end time and do initial report
  */
 function designateReportInternal(augur, marketId, outcome, userAuth, invalid, auth, callback) {
-  augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
-    var market = marketsInfo[0];
-    var marketPayload = { tx: { to: marketId } };
-    // make sure we have the correct account to report with
-    if (userAuth.address !== market.designatedReporter && auth.address === market.designatedReporter) {
-      userAuth = auth;
+  var amount = 10000;
+  getRepTokens(augur, amount, auth, function (err) {
+    if (err) {
+      console.log(chalk.red(err));
+      return callback(err);
     }
-    augur.api.Market.getEndTime(marketPayload, function (err, endTime) {
-      console.log(chalk.red.dim("Market End Time"), chalk.red(endTime));
-      getTime(augur, auth, function (err, timeResult) {
-        if (err) {
-          console.log(chalk.red(err));
-          return callback(err);
-        }
-        endTime = parseInt(endTime, 10) + 10000;
-        setTimestamp(augur, endTime, timeResult.timeAddress, auth, function (err) {
+    augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
+      var market = marketsInfo[0];
+      var marketPayload = { tx: { to: marketId } };
+      // make sure we have the correct account to report with
+      if (userAuth.address !== market.designatedReporter && auth.address === market.designatedReporter) {
+        userAuth = auth;
+      }
+      augur.api.Market.getEndTime(marketPayload, function (err, endTime) {
+        console.log(chalk.red.dim("Market End Time"), chalk.red(endTime));
+        getTime(augur, auth, function (err, timeResult) {
           if (err) {
             console.log(chalk.red(err));
             return callback(err);
           }
-          var payoutNumerators = getPayoutNumerators(market, outcome, invalid);
-
-          doInitialReport(augur, marketId, payoutNumerators, invalid, userAuth, function (err) {
+          endTime = parseInt(endTime, 10) + 10000;
+          setTimestamp(augur, endTime, timeResult.timeAddress, auth, function (err) {
             if (err) {
-              return callback("Initial Report Failed");
+              console.log(chalk.red(err));
+              return callback(err);
             }
-            console.log(chalk.green("Initial Report Done"));
-            callback(null);
+            var payoutNumerators = getPayoutNumerators(market, outcome, invalid);
+
+            doInitialReport(augur, marketId, payoutNumerators, invalid, userAuth, function (err) {
+              if (err) {
+                return callback("Initial Report Failed");
+              }
+              console.log(chalk.green("Initial Report Done"));
+              callback(null);
+            });
           });
         });
       });
