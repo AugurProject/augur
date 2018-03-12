@@ -2,6 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
+const { BigNumber } = require("bignumber.js");
 const { getOrders } = require("../../../build/server/getters/get-orders");
 
 describe("server/getters/get-orders", () => {

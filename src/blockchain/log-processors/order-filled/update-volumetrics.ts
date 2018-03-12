@@ -1,10 +1,57 @@
 import { Augur } from "augur.js";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { Address, Bytes32, TradesRow, ErrorCallback } from "../../../types";
+import { parallel } from "async";
+
+import { Address, Bytes32, TradesRow, ErrorCallback, GenericCallback } from "../../../types";
 import { calculateFillPrice } from "./calculate-fill-price";
 import { calculateNumberOfSharesTraded } from "./calculate-number-of-shares-traded";
 import { convertOnChainSharesToHumanReadableShares } from "../../../utils/convert-fixed-point-to-decimal";
+
+function incrementMarketVolume(db: Knex, marketId: Address, amount: BigNumber, callback: GenericCallback<BigNumber> ) {
+  db("markets").first("volume").where({ marketId }).asCallback((err: Error|null, result: {volume: BigNumber}) => {
+    if (err) return callback(err);
+
+    const volume = result.volume;
+    const incremented = amount.plus(volume);
+    db("markets").update({ volume: incremented.toFixed() }).where({ marketId, volume: volume.toFixed() }).asCallback((err: Error|null, affectedRowsCount: number) => {
+      if (err) return callback(err);
+      if (affectedRowsCount === 0) return process.nextTick(() => incrementMarketVolume(db, marketId, amount, callback));
+
+      callback(null, incremented);
+    });
+  });
+}
+
+function incrementOutcomeVolume(db: Knex, marketId: Address, outcome: number, amount: BigNumber, callback: GenericCallback<BigNumber> ) {
+  db("outcomes").first("volume").where({ marketId, outcome }).asCallback((err: Error|null, result: {volume: BigNumber}) => {
+    if (err) return callback(err);
+
+    const volume = result.volume;
+    const incremented = amount.plus(volume);
+    db("outcomes").update({ volume: incremented.toFixed() }).where({ marketId, outcome, volume: volume.toFixed() }).asCallback((err: Error|null, affectedRowsCount: number) => {
+      if (err) return callback(err);
+      if (affectedRowsCount === 0) return process.nextTick(() => incrementOutcomeVolume(db, marketId, outcome, amount, callback));
+
+      callback(null, incremented);
+    });
+  });
+}
+
+function incrementCategoryPopularity(db: Knex, category: string, amount: BigNumber, callback: GenericCallback<BigNumber>) {
+  db("categories").first("popularity").where({ category }).asCallback((err: Error|null, result: {popularity: BigNumber}) => {
+    if (err) return callback(err);
+
+    const popularity = result.popularity;
+    const incremented = amount.plus(popularity);
+    db("categories").update({ popularity: incremented.toFixed() }).where({ category, popularity: popularity.toFixed() }).asCallback((err: Error|null, affectedRowsCount: number) => {
+      if (err) return callback(err);
+      if (affectedRowsCount === 0) return process.nextTick(() => incrementCategoryPopularity(db, category, amount, callback));
+
+      callback(null, incremented);
+    });
+  });
+}
 
 export function updateVolumetrics(db: Knex, augur: Augur, category: string, marketId: Address, outcome: number, blockNumber: number, orderId: Bytes32, orderCreator: Address, tickSize: string, minPrice: string|number, maxPrice: string|number, isIncrease: boolean, callback: ErrorCallback): void {
   augur.api.Market.getShareToken({ _outcome: outcome, tx: { to: marketId } }, (err: Error|null, shareToken: Address): void => {
@@ -20,16 +67,13 @@ export function updateVolumetrics(db: Knex, augur: Augur, category: string, mark
           const { numCreatorShares, numCreatorTokens, price, orderType } = tradesRow;
           let amount = new BigNumber(calculateNumberOfSharesTraded(numCreatorShares!, numCreatorTokens!, calculateFillPrice(augur, price!, minPrice, maxPrice, orderType!)), 10);
           if (isIncrease !== true) amount = amount.neg();
-          db.raw(`UPDATE markets SET volume = volume + :amount WHERE "marketId" = :marketId`, { amount: amount.toFixed(), marketId }).asCallback((err: Error|null): void => {
-            if (err) return callback(err);
-            db.raw(`UPDATE outcomes SET volume = volume + :amount WHERE "marketId" = :marketId AND outcome = :outcome`, { amount: amount.toFixed(), marketId, outcome }).asCallback((err: Error|null): void => {
-              if (err) return callback(err);
-              db.raw(`UPDATE categories SET popularity = popularity + :amount WHERE category = :category`, { amount: amount.toFixed(), category }).asCallback((err: Error|null): void => {
-                if (err) return callback(err);
-                callback(null);
-              });
-            });
-          });
+
+          parallel({
+            market: (next) => incrementMarketVolume(db, marketId, amount, next),
+            outcome: (next) => incrementOutcomeVolume(db, marketId, outcome, amount, next),
+            category: (next) => incrementCategoryPopularity(db, category, amount, next),
+          }, callback);
+
         });
       });
     });

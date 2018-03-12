@@ -3,6 +3,7 @@
 const Augur = require("augur.js");
 
 const assert = require("chai").assert;
+const { BigNumber } = require("bignumber.js");
 const setupTestDb = require("../../test.database");
 const { processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval } = require("../../../build/blockchain/log-processors/initial-report-submitted");
 
@@ -73,7 +74,7 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
       onAdded: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, {
-          initialReportSize: "2829",
+          initialReportSize: new BigNumber("2829", 10),
           reportingState: "AWAITING_NEXT_WINDOW",
         });
       },

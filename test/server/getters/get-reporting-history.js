@@ -1,6 +1,7 @@
 "use strict";
 
 const assert = require("chai").assert;
+const { BigNumber } = require("bignumber.js");
 const setupTestDb = require("../../test.database");
 const { getReportingHistory } = require("../../../build/server/getters/get-reporting-history");
 
