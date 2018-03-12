@@ -10,7 +10,7 @@ import { UPDATE_AWAITING_DISPUTE_MARKETS } from 'modules/reporting/actions/updat
 import { UPDATE_CROWD_DISPUTE_MARKETS } from 'modules/reporting/actions/update-crowd-dispute'
 import { UPDATE_RESOLVED_REPORTING_MARKETS } from 'modules/reporting/actions/update-resolved-reporting'
 
-import reducer from './market-report-state'
+import reducer from 'modules/reporting/reducers/market-report-state'
 
 
 describe('market report state', () => {
