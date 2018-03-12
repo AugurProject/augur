@@ -11,8 +11,9 @@ import ModalParticipateReview from 'modules/modal/components/modal-participate-r
 export default class ModalParticipate extends Component {
   static propTypes = {
     modal: PropTypes.object.isRequired,
-    closeModal: PropTypes.func.isRequired,
     rep: PropTypes.string.isRequired,
+    closeModal: PropTypes.func.isRequired,
+    purchaseParticipationTokens: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -20,6 +21,7 @@ export default class ModalParticipate extends Component {
 
     this.state = {
       quantity: '',
+      gasEstimate: '0.0023',
       page: 1,
       isValid: false,
       errors: [],
@@ -34,13 +36,20 @@ export default class ModalParticipate extends Component {
 
   triggerReview(e, ...args) {
     e.preventDefault()
-    if (this.state.isValid) this.setState({ page: 2 })
+    if (this.state.isValid) {
+      this.props.purchaseParticipationTokens(this.state.quantity, true, (err, gasEstimate) => {
+        console.log('trigger review', err, gasEstimate)
+        if (!err && !!gasEstimate) this.setState({ gasEstimate, page: 2 })
+      })
+    }
   }
 
   submitForm(e, ...args) {
     e.preventDefault()
-    console.log('SubmitForm (NYI). closing modal...')
-    // fornow, just close the modal
+    this.props.purchaseParticipationTokens(this.state.quantity, false, (err, res) => {
+      console.log('callback for purchaseParticipationTokens', err, res)
+    })
+    // TODO: reconsider this, we may want it in the onSent handler. might need to reconsider purchaseParticipationTokens function signature.
     this.props.closeModal()
   }
 
@@ -117,7 +126,7 @@ export default class ModalParticipate extends Component {
                 placeholder="0.0"
                 onChange={value => this.updateQuantity(value)}
                 onKeyDown={e => this.handleKeyDown(e)}
-                autocomplete="off"
+                autoComplete="off"
                 maxButton
                 onMaxButtonClick={() => this.handleMaxClick()}
               />
@@ -154,7 +163,7 @@ export default class ModalParticipate extends Component {
             quantity={s.quantity}
             onSubmit={this.submitForm}
             switchPages={this.switchPages}
-            gasEstimate="0.0023"
+            gasEstimate={s.gasEstimate}
           />
         }
       </section>
