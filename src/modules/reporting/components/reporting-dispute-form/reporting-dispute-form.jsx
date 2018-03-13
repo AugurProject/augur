@@ -9,6 +9,7 @@ import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles'
+import ReportingDisputeProgress from 'modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress'
 
 export default class ReportingDisputeForm extends Component {
 
@@ -17,10 +18,12 @@ export default class ReportingDisputeForm extends Component {
     updateState: PropTypes.func.isRequired,
     validations: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    selectedOutcomeName: PropTypes.string.isRequired,
     currentOutcome: PropTypes.object.isRequired,
-    disputeBond: PropTypes.string.isRequired,
     disputeOutcomes: PropTypes.array.isRequired,
     stakes: PropTypes.array.isRequired,
+    disputeBondValue: PropTypes.number.isRequired,
+    disputeBondFormatted: PropTypes.string.isRequired,
     stake: PropTypes.number,
     isMarketInValid: PropTypes.bool,
   }
@@ -41,6 +44,8 @@ export default class ReportingDisputeForm extends Component {
       outcomes: [],
       inputStake: '',
       inputSelectedOutcome: '',
+      paddingBuffer: 0,
+      maxRep: 0,
     }
 
     this.state.outcomes = this.props.market ? this.props.market.outcomes.slice() : []
@@ -52,22 +57,29 @@ export default class ReportingDisputeForm extends Component {
     if (this.props.stake) this.state.inputStake = this.props.stake.toString()
 
     this.componentWillReceiveProps(this.props)
+
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.disputeOutcomes && nextProps.disputeOutcomes.length > 0) {
-      this.state.outcomes = nextProps.disputeOutcomes.filter(item => !item.tentativeWinning) || []
+      this.state.outcomes = (nextProps.disputeOutcomes.filter(item => !item.tentativeWinning) || [])
+        .sort((a, b) => a.name > b.name)
+        .sort((a, b) => b.percentageComplete > a.percentageComplete)
       const outcome = this.state.outcomes.find(o => o.name === 'Indeterminate')
       if (outcome) outcome.name = 'Market Is Invalid'
 
-      if (nextProps.selectedOutcome) {
+      this.state.paddingBuffer = this.state.outcomes.reduce((p, i) => {
+        const result = i.name.length > p ? i.name.length : p
+        return result
+      }, 0)
+
+      if (nextProps.selectedOutcome || typeof nextProps.selectedOutcome === 'number') {
         if (!this.state.outcomes.find(o => o.id === nextProps.selectedOutcome)) {
           this.state.inputSelectedOutcome = nextProps.selectedOutcome
         }
       }
     }
   }
-
 
   validateStake(rawStake) {
     const updatedValidations = { ...this.props.validations }
@@ -102,10 +114,13 @@ export default class ReportingDisputeForm extends Component {
 
     ReportingDisputeForm.checkStake(this.props.stake, updatedValidations)
 
+    this.state.inputSelectedOutcome = ''
+    this.state.maxRep = this.calculateMaxRep(selectedOutcome)
+
     this.props.updateState({
       validations: updatedValidations,
       selectedOutcome,
-      selectedOutcomeName,
+      selectedOutcomeName: selectedOutcomeName.toString(),
       isMarketInValid: isInvalid,
     })
   }
@@ -143,13 +158,24 @@ export default class ReportingDisputeForm extends Component {
 
     this.state.inputSelectedOutcome = value
 
+    this.state.maxRep = this.calculateMaxRep(value)
+
     this.props.updateState({
       validations: updatedValidations,
       selectedOutcome: value,
-      selectedOutcomeName: value,
+      selectedOutcomeName: value.toString(),
       isMarketInValid: isInvalid,
     })
+  }
 
+  calculateMaxRep(selectedOutcome) {
+    const outcome = this.props.disputeOutcomes.find((o) => {
+      const result = o.id === selectedOutcome
+      return result
+    })
+
+    const value = outcome ? outcome.remainingRep : this.props.disputeBondFormatted
+    return new BigNumber(value).toNumber()
   }
 
 
@@ -179,6 +205,18 @@ export default class ReportingDisputeForm extends Component {
                   onClick={(e) => { this.validateOutcome(p.validations, outcome.id, outcome.name, false) }}
                 >{outcome.name}
                 </button>
+                <ReportingDisputeProgress
+                  key={outcome.id}
+                  {...outcome}
+                  paddingAmount={s.paddingBuffer - outcome.name.length}
+                  percentageComplete={outcome.percentageComplete}
+                  remainingRep={outcome.remainingRep}
+                  accountPercentage={outcome.accountPercentage}
+                  tentativeStake={p.stake}
+                  disputeBondValue={p.disputeBondValue}
+                  currentStake={parseInt(outcome.currentStake, 10)}
+                  isSelected={p.selectedOutcome === outcome.id}
+                />
               </li>
             ))
             }
@@ -218,7 +256,7 @@ export default class ReportingDisputeForm extends Component {
           <label>
             <span htmlFor="sr__input--stake">Deposit Stake</span>
           </label>
-          <ul className={FormStyles['Form__radio-buttons--per-line']}>
+          <ul className={FormStyles['Form__radio-buttons--per-line-inline']}>
             <li>
               <input
                 id="sr__input--stake"
@@ -229,6 +267,13 @@ export default class ReportingDisputeForm extends Component {
                 className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('stake') && p.validations.selectedOutcome })}
                 onChange={(e) => { this.validateStake(e.target.value) }}
               />
+              { p.selectedOutcomeName && p.selectedOutcomeName.length > 0 &&
+                <button
+                  className={FormStyles['button--inline']}
+                  onClick={() => { this.validateStake(s.maxRep) }}
+                >MAX
+                </button>
+              }
             </li>
             <li>
               { p.validations.hasOwnProperty('stake') && p.validations.stake.length &&

@@ -243,6 +243,64 @@
   }
 }
 
+.Form__radio-buttons--per-line-inline {
+  display: block;
+
+  > li {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+
+    &:not(:first-child) {
+      margin-left: 0;
+      margin-top: 1rem;
+
+      &.field--inline {
+        display: block;
+        max-width: 21rem;
+      }
+    }
+
+    > button {
+      color: @color-white;
+      cursor: pointer;
+      display: block;
+      font-size: @font-size-small;
+      line-height: @font-size-large;
+      min-height: 1.7rem;
+      padding-left: 2.5rem;
+      position: absolute;
+      text-align: left;
+
+      &::after {
+        background-color: @color-lightgray;
+        border-radius: 100%;
+        content: "";
+        display: none;
+        height: 0.875rem;
+        left: 0.38rem;
+        margin: auto;
+        position: absolute;
+        top: 0.38rem;
+        width: 0.875rem;
+      }
+
+      &.active::after {
+        display: block;
+      }
+
+      &.button--inline {
+        background-color: transparent;
+        border: none;
+        border-radius: 0;
+        color: @color-gray;
+        display: inline-block;
+        margin-left: 75%;
+      }
+    }
+  }
+}
+
 .Form__radio-buttons--per-line-long {
   &:extend(.Form__radio-buttons--per-line all);
 

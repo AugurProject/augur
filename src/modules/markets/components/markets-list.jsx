@@ -88,7 +88,7 @@ export default class MarketsList extends Component {
     const p = this.props
     const s = this.state
 
-    const marketsLength = p.markets.length
+    const marketsLength = p.filteredMarkets.length
 
     return (
       <article className="markets-list">

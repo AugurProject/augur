@@ -21,7 +21,6 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
     estimatedCost: tradeInProgress.totalCost,
     minPrice: market.minPrice,
     maxPrice: market.maxPrice,
-    tickSize: market.tickSize,
     numTicks: market.numTicks,
     _direction: tradeInProgress.side === BUY ? 0 : 1,
     _market: marketId,

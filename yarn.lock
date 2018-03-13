@@ -514,9 +514,9 @@ augur-core@0.12.2-0:
     path "0.12.7"
     recursive-readdir "2.2.1"
 
-augur.js@4.8.5-9:
-  version "4.8.5-9"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.8.5-9.tgz#ec89310963ec0ff17a06f49e2a01dce8c8c847b0"
+augur.js@4.8.5:
+  version "4.8.5"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.8.5.tgz#d5189822fcb1303bfdb1b6664b4df8159428d67e"
   dependencies:
     "@types/bignumber.js" "4.0.3"
     async "1.5.2"
@@ -525,7 +525,7 @@ augur.js@4.8.5-9:
     clone "2.1.1"
     columnify "1.5.4"
     ethereumjs-blockstream "4.0.1"
-    ethrpc "5.1.3"
+    ethrpc "5.1.4"
     event-emitter "0.3.5"
     immutable-delete "1.1.0"
     keccak "1.2.0"
@@ -3848,9 +3848,9 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@5.1.3:
-  version "5.1.3"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.1.3.tgz#c0bd69040dee354dae0b879692561bbbc7bc6633"
+ethrpc@5.1.4:
+  version "5.1.4"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.1.4.tgz#d26dc0d954976becf019a73d9c3071a9b1ad2cc4"
   dependencies:
     async "1.5.2"
     bignumber.js "2.3.0"
