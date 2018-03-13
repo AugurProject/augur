@@ -1,9 +1,5 @@
 {
   "augurDbPath": "./augur.db",
-  "ethereumNodeEndpoints": {
-    "http": "http://localhost:8545",
-    "ws": "ws://localhost:8546"
-  },
   "websocketConfigs": {
     "pingMs": 12000,
     "ws": {

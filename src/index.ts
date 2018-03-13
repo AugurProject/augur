@@ -8,7 +8,7 @@ import { runServer } from "./server/run-server";
 import { NetworkConfiguration } from "augur-core";
 
 // tslint:disable-next-line:no-var-requires
-const { augurDbPath, ethereumNodeEndpoints, uploadBlockNumbers } = require("../config");
+const { augurDbPath, uploadBlockNumbers } = require("../config");
 
 let db: Knex;
 if (process.env.DATABASE_URL) {
