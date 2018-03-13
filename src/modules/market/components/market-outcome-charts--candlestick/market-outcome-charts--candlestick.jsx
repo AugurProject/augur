@@ -265,6 +265,13 @@ export default class MarketOutcomeCandlestick extends Component {
           if (i && i !== yDomain.length - 1) return d ? d.toFixed(allowedFloat) : ''
         })
 
+      // X Axis
+      chart.append('g')
+        .attr('id', 'candlestick-x-axis')
+        .attr('transform', `translate(0, ${height - margin.bottom})`)
+        .call(d3.axisBottom(xScale))
+        .select('path').remove()
+
       chart.selectAll('rect.candle')
         .data(priceHistory)
         .enter().append('rect')
