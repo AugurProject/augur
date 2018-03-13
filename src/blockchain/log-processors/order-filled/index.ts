@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { Augur } from "augur.js";
 import * as Knex from "knex";
 import { Address, FormattedEventLog, TokensRow, MarketsRow, OrdersRow, ErrorCallback } from "../../../types";
@@ -6,7 +7,7 @@ import { calculateNumberOfSharesTraded } from "./calculate-number-of-shares-trad
 import { updateOrdersAndPositions } from "./update-orders-and-positions";
 import { updateVolumetrics } from "./update-volumetrics";
 import { augurEmitter } from "../../../events";
-import { convertFixedPointToDecimal, convertOnChainSharesToHumanReadableShares, convertNumTicksToTickSize } from "../../../utils/convert-fixed-point-to-decimal";
+import { convertFixedPointToDecimal, convertNumTicksToTickSize } from "../../../utils/convert-fixed-point-to-decimal";
 import { WEI_PER_ETHER } from "../../../constants";
 
 interface TokensRowWithNumTicksAndCategory extends TokensRow {
@@ -41,9 +42,9 @@ export function processOrderFilledLog(db: Knex, augur: Augur, log: FormattedEven
         const price = ordersRow.fullPrecisionPrice!;
         const orderType = ordersRow.orderType!;
         const numCreatorTokens = convertFixedPointToDecimal(log.numCreatorTokens, WEI_PER_ETHER);
-        const numCreatorShares = convertOnChainSharesToHumanReadableShares(log.numCreatorShares, tickSize);
+        const numCreatorShares = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.numCreatorShares, 10), new BigNumber(tickSize, 10)).toFixed();
         const numFillerTokens = convertFixedPointToDecimal(log.numFillerTokens, WEI_PER_ETHER);
-        const numFillerShares = convertOnChainSharesToHumanReadableShares(log.numFillerShares, tickSize);
+        const numFillerShares = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.numFillerShares, 10), new BigNumber(tickSize, 10)).toFixed();
         const marketCreatorFees = convertFixedPointToDecimal(log.marketCreatorFees, WEI_PER_ETHER);
         const reporterFees = convertFixedPointToDecimal(log.reporterFees, WEI_PER_ETHER);
         const amount = calculateNumberOfSharesTraded(numCreatorShares, numCreatorTokens, calculateFillPrice(augur, price, minPrice, maxPrice, orderType));

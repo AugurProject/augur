@@ -1,8 +1,8 @@
+import BigNumber from "bignumber.js";
 import { Augur } from "augur.js";
 import { parallel } from "async";
 import * as Knex from "knex";
 import { Address, Bytes32, AsyncCallback, ErrorCallback } from "../../../types";
-import { convertOnChainSharesToHumanReadableShares } from "../../../utils/convert-fixed-point-to-decimal";
 import { formatOrderAmount } from "../../../utils/format-order";
 import { refreshPositionInMarket } from "./refresh-position-in-market";
 
@@ -18,7 +18,7 @@ export function updateOrdersAndPositions(db: Knex, augur: Augur, marketId: Addre
   }, (err: Error|null, onContractData: OrderFilledOnContractData): void => {
     if (err) return callback(err);
     const { amount } = onContractData!;
-    const fullPrecisionAmountRemainingInOrder = convertOnChainSharesToHumanReadableShares(amount, tickSize);
+    const fullPrecisionAmountRemainingInOrder = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(amount, 10), new BigNumber(tickSize, 10)).toFixed();
     const amountRemainingInOrder = formatOrderAmount(fullPrecisionAmountRemainingInOrder);
     const updateAmountsParams = { fullPrecisionAmount: fullPrecisionAmountRemainingInOrder, amount: amountRemainingInOrder };
     const updateParams = fullPrecisionAmountRemainingInOrder === "0" ? Object.assign({}, updateAmountsParams, { isRemoved: 1 }) : updateAmountsParams;

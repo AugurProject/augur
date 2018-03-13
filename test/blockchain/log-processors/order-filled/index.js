@@ -4,8 +4,9 @@ const assert = require("chai").assert;
 const { parallel } = require("async");
 const { fix } = require("speedomatic");
 const setupTestDb = require("../../../test.database");
-const { convertHumanReadableSharesToOnChainShares } = require("../../../../build/utils/convert-fixed-point-to-decimal");
 const { processOrderFilledLog, processOrderFilledLogRemoval } = require("../../../../build/blockchain/log-processors/order-filled");
+const Augur = require("augur.js");
+const augur = new Augur();
 
 describe("blockchain/log-processors/order-filled", () => {
   const test = (t) => {
@@ -21,6 +22,7 @@ describe("blockchain/log-processors/order-filled", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
+          t.params.augur.utils = augur.utils;
           processOrderFilledLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getState(trx, t.params, t.aux, (err, records) => {
@@ -46,7 +48,7 @@ describe("blockchain/log-processors/order-filled", () => {
         orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
         numCreatorShares: "0",
         numCreatorTokens: fix("1", "string"),
-        numFillerShares: convertHumanReadableSharesToOnChainShares("2", "0.0001"),
+        numFillerShares: augur.utils.convertDisplayAmountToOnChainAmount("2", "0.0001").toFixed(),
         numFillerTokens: "0",
         marketCreatorFees: "0",
         reporterFees: "0",
@@ -66,7 +68,7 @@ describe("blockchain/log-processors/order-filled", () => {
           Orders: {
             getAmount: (p, callback) => {
               assert.deepEqual(p, { _orderId: "0x1000000000000000000000000000000000000000000000000000000000000000" });
-              callback(null, convertHumanReadableSharesToOnChainShares("2", "0.0001"));
+              callback(null, augur.utils.convertDisplayAmountToOnChainAmount("2", "0.0001").toFixed());
             },
             getLastOutcomePrice: (p, callback) => {
               assert.strictEqual(p._market, "0x0000000000000000000000000000000000000001");
@@ -78,13 +80,13 @@ describe("blockchain/log-processors/order-filled", () => {
             },
             getVolume: (p, callback) => {
               assert.deepEqual(p, { _market: "0x0000000000000000000000000000000000000001" });
-              callback(null, convertHumanReadableSharesToOnChainShares("2", "0.0001"));
+              callback(null, augur.utils.convertDisplayAmountToOnChainAmount("2", "0.0001").toFixed());
             },
           },
           ShareToken: {
             totalSupply: (p, callback) => {
               assert.deepEqual(p, { tx: { to: "0x1000000000000000000000000000000000000000" } });
-              callback(null, convertHumanReadableSharesToOnChainShares("2", "0.0001"));
+              callback(null, augur.utils.convertDisplayAmountToOnChainAmount("2", "0.0001").toFixed());
             },
           },
         },

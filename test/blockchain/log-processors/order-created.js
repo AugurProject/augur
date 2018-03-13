@@ -3,8 +3,9 @@
 const assert = require("chai").assert;
 const { fix } = require("speedomatic");
 const setupTestDb = require("../../test.database");
-const { convertHumanReadableSharesToOnChainShares } = require("../../../build/utils/convert-fixed-point-to-decimal");
 const { processOrderCreatedLog, processOrderCreatedLogRemoval } = require("../../../build/blockchain/log-processors/order-created");
+const Augur = require("augur.js");
+const augur = new Augur();
 
 describe("blockchain/log-processors/order-created", () => {
   const test = (t) => {
@@ -13,6 +14,7 @@ describe("blockchain/log-processors/order-created", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
+          t.params.augur.utils = augur.utils;
           processOrderCreatedLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getState(trx, t.params, (err, records) => {
@@ -36,7 +38,7 @@ describe("blockchain/log-processors/order-created", () => {
         orderType: "0",
         shareToken: "0x1000000000000000000000000000000000000000",
         price: "7500",
-        amount: convertHumanReadableSharesToOnChainShares("3", "0.0001"),
+        amount: augur.utils.convertDisplayAmountToOnChainAmount("3", "0.0001").toFixed(),
         sharesEscrowed: "0",
         moneyEscrowed: fix("2.25", "string"),
         creator: "CREATOR_ADDRESS",
