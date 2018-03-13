@@ -244,8 +244,6 @@
 }
 
 .Form__radio-buttons--per-line-inline {
-  display: flex;
-
   display: block;
 
   > li {
@@ -254,7 +252,13 @@
     flex-wrap: nowrap;
 
     &:not(:first-child) {
-      margin-left: 4.75rem;
+      margin-left: 0;
+      margin-top: 1rem;
+
+      &.field--inline {
+        display: block;
+        max-width: 21rem;
+      }
     }
 
     > button {
@@ -265,7 +269,7 @@
       line-height: @font-size-large;
       min-height: 1.7rem;
       padding-left: 2.5rem;
-      position: relative;
+      position: absolute;
       text-align: left;
 
       &::after {
@@ -291,18 +295,8 @@
         border-radius: 0;
         color: @color-gray;
         display: inline-block;
-        margin-left: -28%;
+        margin-left: 75%;
       }
-    }
-  }
-
-  > li:not(:first-child) {
-    margin-left: 0;
-    margin-top: 1rem;
-
-    &.field--inline {
-      display: block;
-      max-width: 21rem;
     }
   }
 }

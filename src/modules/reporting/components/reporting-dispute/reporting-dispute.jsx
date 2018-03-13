@@ -182,6 +182,7 @@ export default class ReportingDispute extends Component {
                 updateState={this.updateState}
                 isMarketInValid={s.isMarketInValid}
                 selectedOutcome={s.selectedOutcome}
+                selectedOutcomeName={s.selectedOutcomeName}
                 stake={s.stake}
                 validations={s.validations}
                 stakes={s.stakes}

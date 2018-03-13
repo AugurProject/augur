@@ -18,6 +18,7 @@ export default class ReportingDisputeForm extends Component {
     updateState: PropTypes.func.isRequired,
     validations: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    selectedOutcomeName: PropTypes.string.isRequired,
     currentOutcome: PropTypes.object.isRequired,
     disputeOutcomes: PropTypes.array.isRequired,
     stakes: PropTypes.array.isRequired,
@@ -72,7 +73,7 @@ export default class ReportingDisputeForm extends Component {
         return result
       }, 0)
 
-      if (nextProps.selectedOutcome) {
+      if (nextProps.selectedOutcome || typeof nextProps.selectedOutcome === 'number') {
         if (!this.state.outcomes.find(o => o.id === nextProps.selectedOutcome)) {
           this.state.inputSelectedOutcome = nextProps.selectedOutcome
         }
@@ -119,7 +120,7 @@ export default class ReportingDisputeForm extends Component {
     this.props.updateState({
       validations: updatedValidations,
       selectedOutcome,
-      selectedOutcomeName,
+      selectedOutcomeName: selectedOutcomeName.toString(),
       isMarketInValid: isInvalid,
     })
   }
@@ -162,7 +163,7 @@ export default class ReportingDisputeForm extends Component {
     this.props.updateState({
       validations: updatedValidations,
       selectedOutcome: value,
-      selectedOutcomeName: value,
+      selectedOutcomeName: value.toString(),
       isMarketInValid: isInvalid,
     })
   }
@@ -174,7 +175,6 @@ export default class ReportingDisputeForm extends Component {
     })
 
     const value = outcome ? outcome.remainingRep : this.props.disputeBondFormatted
-    console.log('max value', value)
     return new BigNumber(value).toNumber()
   }
 
@@ -267,7 +267,7 @@ export default class ReportingDisputeForm extends Component {
                 className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('stake') && p.validations.selectedOutcome })}
                 onChange={(e) => { this.validateStake(e.target.value) }}
               />
-              { p.selectedOutcome &&
+              { p.selectedOutcomeName && p.selectedOutcomeName.length > 0 &&
                 <button
                   className={FormStyles['button--inline']}
                   onClick={() => { this.validateStake(s.maxRep) }}
