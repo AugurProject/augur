@@ -145,7 +145,15 @@ export function updateTradesInProgress(marketId, outcomeId, side, numShares, lim
         if (isNaN(newTradeDetails.feePercent)) newTradeDetails.feePercent = '0'
         dispatch({
           type: UPDATE_TRADE_IN_PROGRESS,
-          data: { marketId, outcomeId, details: { ...newTradeDetails, ...simulatedTrade } },
+          data: {
+            marketId,
+            outcomeId,
+            details: {
+              ...newTradeDetails,
+              ...simulatedTrade,
+              tradeGroupId: augur.trading.generateTradeGroupId(),
+            },
+          },
         })
         callback(null, { ...newTradeDetails, ...simulatedTrade })
       }))
