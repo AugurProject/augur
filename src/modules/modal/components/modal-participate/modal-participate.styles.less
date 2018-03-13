@@ -4,23 +4,25 @@
   max-width: 35rem;
   padding: 1rem;
   position: relative;
+  width: 100%;
 }
 
 .ModalParticipate__heading {
   .caps--extra-large();
 
   color: @color-white;
+  margin-bottom: @font-size-massive;
 }
 
 .ModalParticipate__helperText {
   color: @color-white;
   display: none;
+  margin-bottom: @font-size-rather-large;
 }
 
 .ModalParticipate__form {
   width: 100%;
 
-  h1,
   div,
   label {
     margin-top: 1rem;
@@ -31,8 +33,31 @@
   }
 }
 
+.ModalParticipate__error {
+  color: @color-red;
+  margin: 0;
+
+  > svg {
+    height: 1rem;
+    line-height: 1rem;
+    width: 1rem;
+  }
+}
+
+.ModalParticipate__error--field,
+.ModalParticipate__error--field:focus-within,
+.ModalParticipate__error--field:focus {
+  .border(true, @border-all, @color-red, @border-width-2);
+}
+
 .ModalParticipate__button {
-  &:extend(.button--white);
+  .button--white();
+
+  &:disabled {
+    background-color: @color-disabled;
+    color: @color-text-disabled;
+    cursor: default;
+  }
 
   margin-top: 2rem;
 }
@@ -51,5 +76,6 @@
   .ModalParticipate__heading {
     font-size: @font-size-somewhat-large;
     line-height: @font-size-somewhat-large;
+    margin-bottom: @font-size-rather-large;
   }
 }

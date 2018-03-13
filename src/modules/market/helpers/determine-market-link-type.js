@@ -24,6 +24,9 @@ export const determineMarketLinkType = (market, loginAccount) => {
     case constants.REPORTING_STATE.CROWDSOURCING_DISPUTE:
       return TYPE_DISPUTE
 
+    case constants.REPORTING_STATE.AWAITING_NEXT_WINDOW:
+      return TYPE_DISPUTE
+
     default:
       return TYPE_VIEW
   }

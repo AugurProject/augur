@@ -8,5 +8,6 @@ export const selectMarketsToReport = createSelector(
     designated: reportData.designated.map(selectMarket),
     open: reportData.open.map(selectMarket),
     upcoming: reportData.upcoming.map(selectMarket),
+    resolved: reportData.resolved.map(selectMarket),
   }),
 )

@@ -11,8 +11,8 @@ import Styles from 'modules/market/components/market-outcomes-chart/market-outco
 export default class MarketOutcomesChart extends Component {
   static propTypes = {
     outcomes: PropTypes.array.isRequired,
-    updateSelectedOutcomes: PropTypes.func.isRequired,
-    selectedOutcomes: PropTypes.any, // NOTE -- There is a PR in the prop-types lib to handle null values, but until then..
+    updateSelectedOutcome: PropTypes.func.isRequired,
+    selectedOutcome: PropTypes.any, // NOTE -- There is a PR in the prop-types lib to handle null values, but until then..
   }
 
   constructor(props) {

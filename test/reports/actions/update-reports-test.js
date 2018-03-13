@@ -50,13 +50,4 @@ describe(`modules/reports/actions/update-reports.js`, () => {
 
     assert.deepEqual(store.getActions(), out, `Didn't dispatch the UPDATE_REPORTS action`)
   })
-
-  it(`should return a clear reports action`, () => {
-    out = [{
-      type: 'CLEAR_REPORTS',
-    }]
-    store.dispatch(action.clearReports())
-    assert.deepEqual(store.getActions(), out, `Didn't dispatch a CLEAR REPORTS action`)
-  })
-
 })

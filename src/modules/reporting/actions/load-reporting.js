@@ -1,10 +1,11 @@
 import { augur, constants } from 'services/augurjs'
-import logError from 'src/utils/log-error'
-import { loadMarketsInfo } from 'src/modules/markets/actions/load-markets-info'
+import logError from 'utils/log-error'
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 
-import updateDesignatedReportingMarkets from 'src/modules/reporting/actions/update-designated-reporting'
-import updateUpcomingDesignatedReportingMarkets from './update-upcoming-designated-reporting'
-import updateOpenMarkets from './update-open-reporting'
+import updateDesignatedReportingMarkets from 'modules/reporting/actions/update-designated-reporting'
+import updateUpcomingDesignatedReportingMarkets from 'modules/reporting/actions/update-upcoming-designated-reporting'
+import updateOpenMarkets from 'modules/reporting/actions/update-open-reporting'
+import updateResolvedMarkets from 'modules/reporting/actions/update-resolved-reporting'
 
 export const loadReporting = (callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
@@ -61,6 +62,23 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
       loadMarketsInfo(result)(dispatch, getState)
 
       dispatch(updateOpenMarkets(result))
+    },
+  )
+
+  augur.augurNode.submitRequest(
+    'getMarkets',
+    {
+      reportingState: constants.REPORTING_STATE.FINALIZED,
+      sortBy: 'endDate',
+      ...args,
+    },
+    (err, result) => {
+      if (err) return callback(err)
+
+      // Load the associated market data
+      loadMarketsInfo(result)(dispatch, getState)
+
+      dispatch(updateResolvedMarkets(result))
     },
   )
 }

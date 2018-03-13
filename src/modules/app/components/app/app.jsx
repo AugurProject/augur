@@ -15,6 +15,7 @@ import { isEqual } from 'lodash'
 
 import Modal from 'modules/modal/containers/modal-view'
 import TopBar from 'modules/app/components/top-bar/top-bar'
+import ForkingNotification from 'modules/app/components/forking-notification/forking-notification'
 import MarketsInnerNav from 'modules/app/components/inner-nav/markets-inner-nav'
 import PortfolioInnerNav from 'modules/app/components/inner-nav/portfolio-inner-nav'
 import AccountInnerNav from 'modules/app/components/inner-nav/account-inner-nav'
@@ -41,7 +42,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 
 import getValue from 'utils/get-value'
 
-import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, MY_MARKETS, MY_POSITIONS, FAVORITES, PORTFOLIO_TRANSACTIONS, PORTFOLIO_REPORTS, CREATE_MARKET, CATEGORIES, REPORTING_DISPUTE_MARKETS, REPORTING_REPORT_MARKETS, AUTHENTICATION } from 'modules/routes/constants/views'
+import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, MY_MARKETS, MY_POSITIONS, FAVORITES, PORTFOLIO_TRANSACTIONS, PORTFOLIO_REPORTS, CREATE_MARKET, CATEGORIES, REPORTING_DISPUTE_MARKETS, REPORTING_REPORT_MARKETS, REPORTING_RESOLVED_MARKETS, AUTHENTICATION } from 'modules/routes/constants/views'
 import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
@@ -67,6 +68,7 @@ const navTypes = {
   [ACCOUNT_WITHDRAW]: AccountInnerNav,
   [REPORTING_DISPUTE_MARKETS]: ReportingInnerNav,
   [REPORTING_REPORT_MARKETS]: ReportingInnerNav,
+  [REPORTING_RESOLVED_MARKETS]: ReportingInnerNav,
 }
 
 export default class AppView extends Component {
@@ -83,6 +85,7 @@ export default class AppView extends Component {
     connection: PropTypes.object.isRequired,
     selectedCategory: PropTypes.string,
     url: PropTypes.string,
+    universe: PropTypes.object.isRequired,
   }
 
   constructor(props) {
@@ -123,6 +126,7 @@ export default class AppView extends Component {
         title: 'Reporting',
         iconName: 'nav-reporting-icon',
         icon: NavReportingIcon,
+        mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
         route: REPORTING_DISPUTE_MARKETS,
         requireLogin: true,
       },
@@ -225,6 +229,7 @@ export default class AppView extends Component {
         case ACCOUNT_WITHDRAW:
         case REPORTING_DISPUTE_MARKETS:
         case REPORTING_REPORT_MARKETS:
+        case REPORTING_RESOLVED_MARKETS:
           openNewMenu()
           break
         default:
@@ -426,6 +431,13 @@ export default class AppView extends Component {
               <NotificationsContainer
                 toggleNotifications={() => this.toggleNotifications()}
               />
+            }
+            {p.universe.isForking &&
+              <section className={Styles.TopBar}>
+                <ForkingNotification
+                  isLogged={p.isLogged}
+                />
+              </section>
             }
             <section
               className={Styles.Main__wrap}

@@ -5,27 +5,13 @@ import { determineMarketLinkType } from 'modules/market/helpers/determine-market
 import MarketProperties from 'modules/market/components/market-properties/market-properties'
 import { selectMarket } from 'modules/market/selectors/market'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, ownProps) => ({
   isLogged: state.isLogged,
   isMobile: state.isMobile,
   loginAccount: state.loginAccount,
+  linkType: ownProps.linkType || determineMarketLinkType(selectMarket(ownProps.id), state.loginAccount),
 })
 
-const mapDispatchToProps = dispatch => ({
-
-})
-
-const mergeProps = (sP, dP, oP) => {
-  const linkType = oP.linkType || determineMarketLinkType(selectMarket(oP.id), sP.loginAccount)
-
-  return {
-    ...sP,
-    ...dP,
-    ...oP,
-    linkType,
-  }
-}
-
-const MarketTradingContainer = withRouter(connect(mapStateToProps, mapDispatchToProps, mergeProps)(MarketProperties))
+const MarketTradingContainer = withRouter(connect(mapStateToProps)(MarketProperties))
 
 export default MarketTradingContainer

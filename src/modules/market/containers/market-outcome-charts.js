@@ -113,7 +113,7 @@ const getOrderBookKeys = memoize((marketDepth) => {
 
 // Mock priceTimeSeries Data
 // const now = Date.now()
-// const timeDiff = (now - new Date(2017, 8).getTime())
+// const timeDiff = (now - new Date(2017, 8).getTime()) // Can tweak this for more range
 // const startTime = now - timeDiff
 // const priceTimeSeries = [...new Array(1000000)].map((value, i, array) => ({
 //   timestamp: startTime + (i * (timeDiff / array.length)),
@@ -130,9 +130,9 @@ const mapStateToProps = (state, ownProps) => {
   const orderBookKeys = getOrderBookKeys(marketDepth)
 
   return {
-    currentBlock: state.blockchain.currentBlockNumber,
-    minPrice: market.minPrice,
-    maxPrice: market.maxPrice,
+    currentBlock: state.blockchain.currentBlockNumber || 0,
+    minPrice: market.minPrice || 0,
+    maxPrice: market.maxPrice || 0,
     outcomeBounds: findBounds(outcome),
     orderBook: cumulativeOrderBook,
     priceTimeSeries,

@@ -1,20 +1,25 @@
 import { SCALAR } from 'modules/markets/constants/market-types'
+import BigNumber from 'bignumber.js'
 
-export const calculatePayoutNumeratorsValue = (market, payoutNumerators, isInvalid) => {
-  if (!payoutNumerators) return null
-  if (payoutNumerators.length === 0) return null
-  if (isInvalid) return null
-
+export default function calculatePayoutNumeratorsValue(market, payout, isInvalid) {
   const {
-    maxPrice, minPrice, numTicks, marketType,
+    maxPrice,
+    minPrice,
+    numTicks,
+    marketType,
   } = market
   const isScalar = marketType === SCALAR
 
+  if (!payout) return null
+  if (payout.length === 0) return null
+  if (isInvalid) return null
+
   if (isScalar) {
-    const longPayout = payoutNumerators[1]
-    const priceRange = maxPrice - minPrice
-    return ((longPayout / numTicks) * priceRange) + minPrice
+    const longPayout = new BigNumber(payout[1], 10)
+    const priceRange = new BigNumber(maxPrice, 10).minus(new BigNumber(minPrice, 10))
+    // calculation: ((longPayout * priceRange) / numTicks) + minPrice
+    return ((longPayout.times(priceRange)).dividedBy(new BigNumber(numTicks, 10))).plus(new BigNumber(minPrice, 10)).toString()
   }
 
-  return payoutNumerators.findIndex(item => item > 0)
+  return payout.findIndex(item => item > 0).toString()
 }

@@ -8,8 +8,9 @@ import { UPDATE_DESIGNATED_REPORTING_MARKETS } from 'src/modules/reporting/actio
 import { UPDATE_OPEN_REPORTING_MARKETS } from 'src/modules/reporting/actions/update-open-reporting'
 import { UPDATE_AWAITING_DISPUTE_MARKETS } from 'modules/reporting/actions/update-awaiting-dispute'
 import { UPDATE_CROWD_DISPUTE_MARKETS } from 'modules/reporting/actions/update-crowd-dispute'
+import { UPDATE_RESOLVED_REPORTING_MARKETS } from 'modules/reporting/actions/update-resolved-reporting'
 
-import reducer from './market-report-state'
+import reducer from 'modules/reporting/reducers/market-report-state'
 
 
 describe('market report state', () => {
@@ -19,6 +20,7 @@ describe('market report state', () => {
     upcoming: [],
     awaiting: [],
     dispute: [],
+    resolved: [],
   }
 
   describe('default state', () => {
@@ -44,6 +46,7 @@ describe('market report state', () => {
           upcoming: payload,
           awaiting: [],
           dispute: [],
+          resolved: [],
         }, result)
       })
     })
@@ -57,6 +60,7 @@ describe('market report state', () => {
           upcoming: [],
           awaiting: [],
           dispute: [],
+          resolved: [],
         }, result)
       })
     })
@@ -70,6 +74,7 @@ describe('market report state', () => {
           upcoming: [],
           awaiting: [],
           dispute: [],
+          resolved: [],
         }, result)
       })
     })
@@ -81,6 +86,7 @@ describe('market report state', () => {
           designated: [],
           open: [],
           upcoming: [],
+          resolved: [],
           awaiting: payload,
           dispute: [],
         }, result)
@@ -94,8 +100,23 @@ describe('market report state', () => {
           designated: [],
           open: [],
           upcoming: [],
+          resolved: [],
           awaiting: [],
           dispute: payload,
+        }, result)
+      })
+    })
+
+    describe('UPDATE_RESOLVED_REPORTING_MARKETS', () => {
+      it('should replace resolved attribute with data payload', () => {
+        const result = reducer(defaultState, { type: UPDATE_RESOLVED_REPORTING_MARKETS, data: payload })
+        assert.deepEqual({
+          designated: [],
+          open: [],
+          upcoming: [],
+          resolved: payload,
+          awaiting: [],
+          dispute: [],
         }, result)
       })
     })

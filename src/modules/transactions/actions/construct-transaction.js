@@ -6,9 +6,7 @@ import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 import * as TYPES from 'modules/transactions/constants/types'
 import { formatEtherTokens, formatEther, formatPercent, formatRep, formatShares } from 'utils/format-number'
 import { formatDate } from 'utils/format-date'
-import { formatReportedOutcome } from 'modules/reports/selectors/reportable-outcomes'
 import { loadMarketThenRetryConversion } from 'modules/transactions/actions/retry-conversion'
-import { updateMarketsWithAccountReportData } from 'modules/my-reports/actions/update-markets-with-account-report-data'
 
 export function loadDataForMarketTransaction(label, log, isRetry, callback) {
   return (dispatch, getState) => {
@@ -115,28 +113,6 @@ export function constructTradingProceedsClaimedTransaction(log, market, dispatch
   transaction.data.marketId = log.market ? log.market : null
   const action = log.inProgress ? 'closing out' : 'closed out'
   transaction.message = `${action} ${formatShares(log.shares).full}`
-  return transaction
-}
-
-export function constructSubmitReportTransaction(log, marketId, market, outcomes, dispatch) {
-  const transaction = { data: {} }
-  transaction.type = TYPES.SUBMIT_REPORT
-  transaction.description = market.description
-  transaction.data.marketId = marketId || null
-  transaction.data.market = market
-  const formattedReport = formatReportedOutcome(log.report, market.minPrice, market.maxPrice, market.type, outcomes)
-  transaction.data.reportedOutcomeId = formattedReport
-  transaction.data.outcome = { name: formattedReport }
-  const action = log.inProgress ? 'revealing' : 'revealed'
-  transaction.message = `${action} report: ${formatReportedOutcome(log.report, market.minPrice, market.maxPrice, market.type, outcomes)}`
-  if (!log.inProgress) {
-    dispatch(updateMarketsWithAccountReportData({
-      [marketId]: {
-        accountReport: formattedReport,
-        isSubmitted: true,
-      },
-    }))
-  }
   return transaction
 }
 
@@ -353,11 +329,6 @@ export const constructTransaction = (label, log, isRetry, callback) => (dispatch
       const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback))
       if (!market || !market.description) break
       return constructTradingProceedsClaimedTransaction(log, market, dispatch)
-    }
-    case TYPES.SUBMIT_REPORT: {
-      const aux = dispatch(loadDataForReportingTransaction(label, log, isRetry, callback))
-      if (!aux) break
-      return constructSubmitReportTransaction(log, aux.marketId, aux.market, aux.outcomes, dispatch)
     }
     default:
       return constructDefaultTransaction(label, log)

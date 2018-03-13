@@ -1,23 +1,24 @@
-import { Ledger, Airbitz, uPort, MetaMask } from 'modules/common/components/icons'
+import { Ledger, uPort, MetaMask } from 'modules/common/components/icons'
 
 export const PARAMS = {
-  AIRBITZ: 'airbitz',
+  // AIRBITZ: 'airbitz',
   UPORT: 'uport',
   LEDGER: 'ledger',
   METAMASK: 'metamask',
 }
 
 export const ITEMS = [
-  {
-    param: PARAMS.AIRBITZ,
-    title: 'Airbitz',
-    icon: Airbitz,
-    default: true,
-  },
+  // {
+  //   param: PARAMS.AIRBITZ,
+  //   title: 'Airbitz',
+  //   icon: Airbitz,
+  //   default: true,
+  // },
   {
     param: PARAMS.METAMASK,
     title: 'MetaMask',
     icon: MetaMask,
+    default: true,
   },
   {
     param: PARAMS.UPORT,

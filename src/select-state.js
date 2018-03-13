@@ -16,7 +16,6 @@ export const selectHasLoadedMarketsState = state => state.hasLoadedMarkets
 export const selectOutcomesDataState = state => state.outcomesData
 export const selectFavoritesState = state => state.favorites
 export const selectReportsState = state => state.reports
-export const selectHasLoadedReportsState = state => state.hasLoadedReports
 export const selectSelectedMarketIDState = state => state.selectedMarketId
 export const selectSelectedMarketsSubsetState = state => state.selectedMarketsSubset
 export const selectSelectedMarketsHeaderState = state => state.selectedMarketsHeader
@@ -26,7 +25,6 @@ export const selectHasLoadedCategoryState = state => state.hasLoadedCategory
 export const selectSelectedCategoryState = state => state.selectedCategory
 export const selectPriceHistoryState = state => state.priceHistory
 export const selectTradesInProgressState = state => state.tradesInProgress
-export const selectTradeCommitmentState = state => state.tradeCommitment
 export const selectSmallestPositionsState = state => state.smallestPositions
 export const selectOrderBooksState = state => state.orderBooks
 export const selectOrderCancellationState = state => state.orderCancellation

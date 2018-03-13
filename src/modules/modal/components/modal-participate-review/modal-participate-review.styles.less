@@ -1,0 +1,58 @@
+@import (reference) "~assets/styles/shared";
+
+.ModalParticipateReview__form {
+  color: @color-white;
+  width: 100%;
+}
+
+.ModalParticipateReview__heading {
+  .caps--extra-large();
+
+  color: @color-white;
+  margin-bottom: @font-size-massive;
+}
+
+.ModalParticipateReview__details {
+  .border(true, @border-top, @color-white);
+  .border(true, @border-bottom, @color-white);
+
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  margin: 1rem 0;
+  padding: 1rem 0;
+}
+
+.ModalParticipateReview__labels {
+  flex: 0 1;
+  white-space: nowrap;
+  word-break: keep-all;
+
+  > li {
+    padding: 0.5rem 0;
+    text-transform: uppercase;
+  }
+}
+
+.ModalParticipateReview__values {
+  flex: 1 100%;
+  margin-left: 5rem;
+  white-space: nowrap;
+  word-break: keep-all;
+
+  > li {
+    padding: 0.5rem 0;
+  }
+}
+
+.ModalParticipateReview__actions {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+.ModalParticipateReview__button {
+  .button--white();
+
+  margin-top: 2rem;
+}
