@@ -51,8 +51,9 @@ getPrivateKey(null, function (err, auth) {
           console.log(chalk.yellow.dim("outcomes:"), chalk.yellow(marketInfo.outcomes));
           if (!price) { console.error("price needs to be set"); nextMarket(); }
           if (!shares) { console.error("shares needs to be set"); nextMarket(); }
+          var tradeGroupId = augur.trading.generateTradeGroupId();
           var order = {price: price, shares: shares };
-          createOrder(augur, marketId, parseInt(outcome, 10), marketInfo.numOutcomes, marketInfo.maxPrice, marketInfo.minPrice, marketInfo.numTicks, orderType, order, auth, function (err) {
+          createOrder(augur, marketId, parseInt(outcome, 10), marketInfo.numOutcomes, marketInfo.maxPrice, marketInfo.minPrice, marketInfo.numTicks, orderType, order, tradeGroupId, auth, function (err) {
             if (err) console.error("create-orders failed:", err);
             nextMarket();
           });
