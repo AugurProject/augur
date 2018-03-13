@@ -1,17 +1,21 @@
 "use strict";
 
 var chalk = require("chalk");
+var debugOptions = require("../../debug-options");
+var isFunction = require("../../../src/utils/is-function");
+var noop = require("../../../src/utils/noop");
 
-function printTransactionStatus(ethrpc, transactionHash) {
-  if (transactionHash != null) {
-    ethrpc.getTransactionReceipt(transactionHash, function (err, receipt) {
-      if (err || !receipt) {
-        console.error(chalk.red("could not get receipt for transaction"), chalk.red.bold(transactionHash));
-      } else {
-        console.log(chalk.green.dim("transaction"), chalk.green(transactionHash), chalk.cyan.dim("status"), chalk.cyan(receipt.status));
-      }
-    });
-  }
+function printTransactionStatus(ethrpc, transactionHash, callback) {
+  callback = isFunction(callback) ? callback : noop;
+  if (transactionHash == null) return callback(new Error("no transaction hash provided"));
+  ethrpc.getTransactionReceipt(transactionHash, function (err, receipt) {
+    if (err) return callback(err);
+    if (receipt == null) return callback(new Error("could not get transaction receipt"));
+    if (debugOptions.cannedMarkets) {
+      console.log(chalk.cyan("transaction"), chalk.green(transactionHash), chalk.cyan("status"), chalk.yellow(receipt.status));
+    }
+    callback(null);
+  });
 }
 
 module.exports = printTransactionStatus;

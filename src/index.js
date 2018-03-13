@@ -36,6 +36,7 @@ function Augur() {
   this.rpc = require("./rpc-interface");
   this.trading = require("./trading");
   this.augurNode = require("./augur-node");
+  this.utils = require("./utils");
 }
 
 module.exports = Augur;

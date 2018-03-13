@@ -2,6 +2,7 @@
 
 "use strict";
 
+var BigNumber = require("bignumber.js");
 var speedomatic = require("speedomatic");
 var assert = require("chai").assert;
 var proxyquire = require("proxyquire").noPreserveCache();
@@ -34,7 +35,8 @@ describe("trading/trade-until-amount-is-zero", function () {
       _price: "0.5",
       estimatedCost: "5",
       numTicks: "10000",
-      tickSize: "0.0001",
+      minPrice: "0",
+      maxPrice: "1",
       _tradeGroupId: "0x1",
       doNotCreateOrders: false,
       onSent: function (res) {
@@ -49,7 +51,7 @@ describe("trading/trade-until-amount-is-zero", function () {
     },
     mock: {
       getTradeAmountRemaining: function (p, callback) {
-        callback(null, "0");
+        callback(null, new BigNumber(0));
       },
       api: function () {
         return {
@@ -70,7 +72,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.isFunction(p.onSuccess);
               assert.isFunction(p.onFailed);
               p.onSent({ hash: "TRANSACTION_HASH" });
-              p.onSuccess({ hash: "TRANSACTION_HASH", value: speedomatic.fix("5", "number") });
+              p.onSuccess({ hash: "TRANSACTION_HASH", value: speedomatic.fix("5", "hex") });
             },
           },
         };
@@ -87,7 +89,8 @@ describe("trading/trade-until-amount-is-zero", function () {
       _fxpAmount: "10",
       _price: "0.5",
       numTicks: "10000",
-      tickSize: "0.0001",
+      minPrice: "0",
+      maxPrice: "1",
       _tradeGroupId: "0x1",
       doNotCreateOrders: false,
       onSent: function (res) {
@@ -102,7 +105,7 @@ describe("trading/trade-until-amount-is-zero", function () {
     },
     mock: {
       getTradeAmountRemaining: function (p, callback) {
-        callback(null, "0");
+        callback(null, new BigNumber(0));
       },
       api: function () {
         return {
@@ -141,7 +144,8 @@ describe("trading/trade-until-amount-is-zero", function () {
       _price: "0.5",
       estimatedCost: "5",
       numTicks: "10000",
-      tickSize: "0.0001",
+      minPrice: "0",
+      maxPrice: "1",
       _tradeGroupId: "0x1",
       doNotCreateOrders: false,
       onSent: function (res) {
@@ -158,9 +162,9 @@ describe("trading/trade-until-amount-is-zero", function () {
     mock: {
       getTradeAmountRemaining: function (p, callback) {
         if (p.transactionHash === "TRANSACTION_HASH_1") {
-          callback(null, "300000000000000");
+          callback(null, new BigNumber("300000000000000", 10));
         } else {
-          callback(null, "0");
+          callback(null, new BigNumber(0));
         }
       },
       api: function () {
@@ -175,7 +179,6 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 0);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 2);
-              console.log("amount:", p._fxpAmount);
               assert.oneOf(p._fxpAmount, ["0x38d7ea4c68000", "0x110d9316ec000"]);
               assert.strictEqual(p._price, "0x1388");
               assert.strictEqual(p._tradeGroupId, "0x1");
@@ -210,7 +213,8 @@ describe("trading/trade-until-amount-is-zero", function () {
       _price: "0.5",
       estimatedCost: "5",
       numTicks: "10000",
-      tickSize: "0.0001",
+      minPrice: "0",
+      maxPrice: "1",
       _tradeGroupId: "0x1",
       doNotCreateOrders: false,
       onSent: function (res) {
@@ -225,7 +229,7 @@ describe("trading/trade-until-amount-is-zero", function () {
     },
     mock: {
       getTradeAmountRemaining: function (p, callback) {
-        callback(null, "0");
+        callback(null, new BigNumber(0));
       },
       api: function () {
         return {
@@ -263,7 +267,8 @@ describe("trading/trade-until-amount-is-zero", function () {
       _fxpAmount: "10",
       _price: "0.5",
       numTicks: "10000",
-      tickSize: "0.0001",
+      minPrice: "0",
+      maxPrice: "1",
       _tradeGroupId: "0x1",
       doNotCreateOrders: false,
       onSent: function (res) {
@@ -278,7 +283,7 @@ describe("trading/trade-until-amount-is-zero", function () {
     },
     mock: {
       getTradeAmountRemaining: function (p, callback) {
-        callback(null, "0");
+        callback(null, new BigNumber(0));
       },
       api: function () {
         return {
@@ -317,7 +322,8 @@ describe("trading/trade-until-amount-is-zero", function () {
       _price: "0.5",
       estimatedCost: "5",
       numTicks: "10000",
-      tickSize: "0.0001",
+      minPrice: "0",
+      maxPrice: "1",
       _tradeGroupId: "0x1",
       doNotCreateOrders: true,
       onSent: function (res) {
@@ -332,7 +338,7 @@ describe("trading/trade-until-amount-is-zero", function () {
     },
     mock: {
       getTradeAmountRemaining: function (p, callback) {
-        callback(null, "0");
+        callback(null, new BigNumber(0));
       },
       api: function () {
         return {
