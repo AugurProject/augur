@@ -45,20 +45,20 @@
  },
  "12346": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
-  "Universe": "0xaac01b4aaa2ebd04a4790c85b76e1749d8ef8e13",
+  "Universe": "0x555ceb70339b2635c988527e80fddbf282f20ff7",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
   "LegacyReputationToken": "0x5e9529c5c5ac0a7e7258a18782bd31a148c55f4c",
   "CancelOrder": "0x80f8daa435a9ab4b1802ba56fe7e0abd0f8ab3d3",
-  "Cash": "0x021076fb9adafcf83869435f9d72a5873869b4ad",
-  "ClaimTradingProceeds": "0x4ddebcebe274751dfb129efc96a588a5242530ab",
+  "Cash": "0xd3a7c274e3e7b1990a9c23bec98adc2b7c448ac5",
+  "ClaimTradingProceeds": "0xdd1c4919217e409abeb699e8171a5e92c2e506fa",
   "CompleteSets": "0x3c6721551c2ba3973560aef3e11d34ce05db4047",
-  "CreateOrder": "0x204cdd1689c8a4da426894c150a0fa672a2eab4c",
-  "FillOrder": "0x905419e7a1f96a973ab8988ba19c84135c6f7122",
-  "Order": "0xebddb8f1ee6a3a041dba3a236b3d36095f96fe22",
-  "Orders": "0x56d32d583ee21e748103b029fd97621fde92248d",
-  "OrdersFetcher": "0x6c38ab26f860380a8a2367c79dda3a54afef4b1e",
-  "ShareToken": "0xf780694a2ea833fc85131b9de8af4e71f49e3e12",
-  "Trade": "0xce77d3c706e0fe6da5d71b1249756b5ea0d77202",
-  "TradingEscapeHatch": "0x5f3105cc774a5593b5e678b8536fc92db4dcd4a2"
+  "CreateOrder": "0xf5f22562ec76f33a9f114e0ca9e3916c383df041",
+  "FillOrder": "0x2adaeaf11753515a37a3d50cecb636cf72ae4854",
+  "Order": "0x257b56115544e9519fb2de5b7b99c3c2150528fb",
+  "Orders": "0x6749e370e7b1955ffa924f4f75f5f12653c7512c",
+  "OrdersFetcher": "0xac80704c80ab83512b48314bdfa82f79923c2fbe",
+  "ShareToken": "0x905419e7a1f96a973ab8988ba19c84135c6f7122",
+  "Trade": "0x635c8ef61a07dfe49b683d1a34da3547b0d6705e",
+  "TradingEscapeHatch": "0xdfef677bf5f66f3eeff481a587c04cb58e95b92a"
  }
 }
