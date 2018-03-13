@@ -1,4 +1,5 @@
 import { calculatePercentage, calculateRemainingRep } from 'modules/reporting/helpers/progress-calculations'
+import BigNumber from 'bignumber.js'
 
 export default function (disputeBond, outcome) {
   if (!outcome) return
@@ -7,7 +8,8 @@ export default function (disputeBond, outcome) {
   outcome.accountPercentage = 0
 
   // past dispute no progress, set size and remaining
-  if (outcome.size && outcome.size !== disputeBond) {
+  if (!(new BigNumber(outcome.size).equals(new BigNumber(disputeBond)))) {
+    outcome.currentStake = 0
     outcome.size = disputeBond
     outcome.remainingRep = calculateRemainingRep(disputeBond, 0)
     return outcome

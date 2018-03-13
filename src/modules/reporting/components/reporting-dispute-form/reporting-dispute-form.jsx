@@ -22,6 +22,7 @@ export default class ReportingDisputeForm extends Component {
     disputeOutcomes: PropTypes.array.isRequired,
     stakes: PropTypes.array.isRequired,
     disputeBondValue: PropTypes.number.isRequired,
+    disputeBondFormatted: PropTypes.string.isRequired,
     stake: PropTypes.number,
     isMarketInValid: PropTypes.bool,
   }
@@ -43,6 +44,7 @@ export default class ReportingDisputeForm extends Component {
       inputStake: '',
       inputSelectedOutcome: '',
       paddingBuffer: 0,
+      maxRep: 0,
     }
 
     this.state.outcomes = this.props.market ? this.props.market.outcomes.slice() : []
@@ -111,6 +113,8 @@ export default class ReportingDisputeForm extends Component {
 
     ReportingDisputeForm.checkStake(this.props.stake, updatedValidations)
 
+    this.state.maxRep = this.calculateMaxRep(selectedOutcome)
+
     this.props.updateState({
       validations: updatedValidations,
       selectedOutcome,
@@ -152,13 +156,25 @@ export default class ReportingDisputeForm extends Component {
 
     this.state.inputSelectedOutcome = value
 
+    this.state.maxRep = this.calculateMaxRep(value)
+
     this.props.updateState({
       validations: updatedValidations,
       selectedOutcome: value,
       selectedOutcomeName: value,
       isMarketInValid: isInvalid,
     })
+  }
 
+  calculateMaxRep(selectedOutcome) {
+    const outcome = this.props.disputeOutcomes.find((o) => {
+      const result = o.id === selectedOutcome
+      return result
+    })
+
+    const value = outcome ? outcome.remainingRep : this.props.disputeBondFormatted
+    console.log('max value', value)
+    return new BigNumber(value).toNumber()
   }
 
 
@@ -239,7 +255,7 @@ export default class ReportingDisputeForm extends Component {
           <label>
             <span htmlFor="sr__input--stake">Deposit Stake</span>
           </label>
-          <ul className={FormStyles['Form__radio-buttons--per-line']}>
+          <ul className={FormStyles['Form__radio-buttons--per-line-inline']}>
             <li>
               <input
                 id="sr__input--stake"
@@ -250,6 +266,13 @@ export default class ReportingDisputeForm extends Component {
                 className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('stake') && p.validations.selectedOutcome })}
                 onChange={(e) => { this.validateStake(e.target.value) }}
               />
+              { p.selectedOutcome &&
+                <button
+                  className={FormStyles['button--inline']}
+                  onClick={() => { this.validateStake(s.maxRep) }}
+                >MAX
+                </button>
+              }
             </li>
             <li>
               { p.validations.hasOwnProperty('stake') && p.validations.stake.length &&

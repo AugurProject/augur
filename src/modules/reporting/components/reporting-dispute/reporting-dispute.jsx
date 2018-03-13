@@ -72,9 +72,10 @@ export default class ReportingDispute extends Component {
 
   getDisputeInfo() {
     this.props.getDisputeInfo(this.props.marketId, (disputeInfo) => {
-
       let disputeBond = disputeInfo.stakes.reduce((p, i) => {
-        const result = i.size > p ? i.size : p
+        const size = new BigNumber(i.size).toNumber()
+        const completedStake = new BigNumber(i.completedStake || 0).toNumber()
+        const result = completedStake !== size && size > p ? size : p
         return result
       }, 0)
       if (disputeBond === 0) {
@@ -187,6 +188,7 @@ export default class ReportingDispute extends Component {
                 disputeOutcomes={s.disputeOutcomes}
                 currentOutcome={s.currentOutcome}
                 disputeBondValue={s.disputeBondValue}
+                disputeBondFormatted={s.disputeBondFormatted}
               />
             }
             { s.currentStep === 1 &&
