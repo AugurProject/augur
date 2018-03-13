@@ -66,7 +66,7 @@ function pollForEscapeHatch(dispatch, getState) {
   setInterval(() => {
     const { modal } = getState()
     const modalShowing = !!modal.type && modal.type === MODAL_ESCAPE_HATCH
-    AugurJS.augur.api.Controller.stopped((err, stopped) => {
+    AugurJS.augur.api.Controller.isStopped((err, stopped) => {
       if (stopped && !modalShowing) {
         dispatch(updateModal({
           type: MODAL_ESCAPE_HATCH,
