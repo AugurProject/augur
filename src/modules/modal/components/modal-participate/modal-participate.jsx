@@ -47,10 +47,8 @@ export default class ModalParticipate extends Component {
   submitForm(e, ...args) {
     e.preventDefault()
     this.props.purchaseParticipationTokens(this.state.quantity, false, (err, res) => {
-      console.log('callback for purchaseParticipationTokens', err, res)
+      console.log('onSuccess for purchaseParticipationTokens', err, res)
     })
-    // TODO: reconsider this, we may want it in the onSent handler. might need to reconsider purchaseParticipationTokens function signature.
-    this.props.closeModal()
   }
 
   updateQuantity(quantity) {
