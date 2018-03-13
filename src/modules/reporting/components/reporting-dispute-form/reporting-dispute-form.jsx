@@ -113,6 +113,7 @@ export default class ReportingDisputeForm extends Component {
 
     ReportingDisputeForm.checkStake(this.props.stake, updatedValidations)
 
+    this.state.inputSelectedOutcome = ''
     this.state.maxRep = this.calculateMaxRep(selectedOutcome)
 
     this.props.updateState({
