@@ -208,7 +208,7 @@ class MarketTradingForm extends Component {
               id="tr__input--total-cost"
               type="number"
               step={tickSize}
-              placeholder={`${tickSize} ETH`}
+              placeholder={`${p.marketType === SCALAR ? tickSize : '0.0001'} ETH`}
               value={s[this.INPUT_TYPES.MARKET_ORDER_SIZE] instanceof BigNumber ? s[this.INPUT_TYPES.MARKET_ORDER_SIZE].toNumber() : s[this.INPUT_TYPES.MARKET_ORDER_SIZE]}
               onChange={e => this.validateForm(this.INPUT_TYPES.MARKET_ORDER_SIZE, e.target.value)}
             />
@@ -222,7 +222,7 @@ class MarketTradingForm extends Component {
               id="tr__input--quantity"
               type="number"
               step={tickSize}
-              placeholder={`${tickSize} Shares`}
+              placeholder={`${p.marketType === SCALAR ? tickSize : '0.0001'} Shares`}
               value={s[this.INPUT_TYPES.QUANTITY] instanceof BigNumber ? s[this.INPUT_TYPES.QUANTITY].toNumber() : s[this.INPUT_TYPES.QUANTITY]}
               onChange={e => this.validateForm(this.INPUT_TYPES.QUANTITY, e.target.value)}
             />
@@ -236,7 +236,7 @@ class MarketTradingForm extends Component {
               id="tr__input--limit-price"
               type="number"
               step={tickSize}
-              placeholder={`${tickSize} ETH`}
+              placeholder={`${p.marketType === SCALAR ? tickSize : '0.0001'} ETH`}
               value={s[this.INPUT_TYPES.PRICE] instanceof BigNumber ? s[this.INPUT_TYPES.PRICE].toNumber() : s[this.INPUT_TYPES.PRICE]}
               onChange={e => this.validateForm(this.INPUT_TYPES.PRICE, e.target.value)}
             />
