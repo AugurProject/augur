@@ -34,9 +34,9 @@ interface ActiveCrowdsourcer extends StakeRow {
 
 interface StakeSizes {
   size?: string;
-  currentStake?: string;
-  accountStakeComplete?: string;
-  accountStakeIncomplete?: string;
+  stakeCurrent?: string;
+  accountStakeCompleted?: string;
+  accountStakeCurrent?: string;
 }
 
 const activeMarketStates = ["CROWDSOURCING_DISPUTE", "AWAITING_NEXT_WINDOW", "FORKING", "AWAITING_FORK_MIGRATION"];
@@ -105,7 +105,7 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
     const accountStakeIncomplete = accountStakeIncompleteByPayout[payout.payoutId];
 
     const completedStakeAmount = new BigNumber(completedStakes == null ? 0 : completedStakes.amountStaked.toString());
-    const totalStakeOnPayout = completedStakeAmount.add(new BigNumber(activeCrowdsourcer == null ? 0 : activeCrowdsourcer.amountStaked.toString()));
+    const currentStakeOnPayout = new BigNumber(activeCrowdsourcer == null ? 0 : activeCrowdsourcer.amountStaked.toString());
 
     let currentAmounts: StakeSizes;
     if (payout.tentativeWinning === 1 || !isActiveMarketState(marketRow.reportingState)) {
@@ -113,24 +113,24 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
     } else if (activeCrowdsourcer == null) {
       currentAmounts = {
         size: calculateBondSize(totalCompletedStakeOnAllPayouts, completedStakeAmount).toFixed(),
-        currentStake: ZERO.toFixed(),
-        accountStakeIncomplete: ZERO.toFixed(),
+        stakeCurrent: ZERO.toFixed(),
+        accountStakeCurrent: ZERO.toFixed(),
       };
     } else {
       currentAmounts = {
         size: new BigNumber(activeCrowdsourcer.size.toString()).toFixed(),
-        currentStake: new BigNumber(activeCrowdsourcer.amountStaked.toString()).toFixed(),
-        accountStakeIncomplete: new BigNumber(accountStakeIncomplete === undefined ? 0 : accountStakeIncomplete.amountStaked.toString() ).toFixed(),
+        stakeCurrent: new BigNumber(activeCrowdsourcer.amountStaked.toString()).toFixed(),
+        accountStakeCurrent: new BigNumber(accountStakeIncomplete === undefined ? 0 : accountStakeIncomplete.amountStaked.toString() ).toFixed(),
       };
     }
 
-    currentAmounts.accountStakeComplete = new BigNumber(accountStakeComplete === undefined ? 0 : accountStakeComplete.amountStaked.toString()).toFixed();
+    currentAmounts.accountStakeCompleted = new BigNumber(accountStakeComplete === undefined ? 0 : accountStakeComplete.amountStaked.toString()).toFixed();
     return Object.assign({},
       normalizePayouts(payout),
       currentAmounts,
       {
-        totalStake: totalStakeOnPayout.toFixed(),
-        completedStake: completedStakeAmount.toFixed(),
+        stakeCurrent: currentStakeOnPayout.toFixed(),
+        stakeCompleted: completedStakeAmount.toFixed(),
         tentativeWinning: !!payout.tentativeWinning,
       },
     );
