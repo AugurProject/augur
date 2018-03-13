@@ -578,9 +578,9 @@ augur-core@0.12.1:
     path "0.12.7"
     recursive-readdir "2.2.1"
 
-augur.js@^4.8.5-4:
-  version "4.8.5-4"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.8.5-4.tgz#892495101788acf9cbdd056132fe5ccda790bfad"
+augur.js@4.8.5-8:
+  version "4.8.5-8"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.8.5-8.tgz#5cfaeca192753dee2b5611934b1024a56fd982f3"
   dependencies:
     "@types/bignumber.js" "4.0.3"
     async "1.5.2"
@@ -589,12 +589,10 @@ augur.js@^4.8.5-4:
     clone "2.1.1"
     columnify "1.5.4"
     ethereumjs-blockstream "4.0.1"
-    ethereumjs-connect "4.5.2"
-    ethrpc "5.1.0"
+    ethrpc "5.1.3"
     event-emitter "0.3.5"
     immutable-delete "1.1.0"
     keccak "1.2.0"
-    keythereum "1.0.2"
     lodash.assign "4.2.0"
     lodash.isequal "4.5.0"
     options-parser "^0.4.0"
@@ -3842,14 +3840,6 @@ ethereumjs-blockstream@4.0.1:
     source-map-support "0.4.14"
     uuid "3.0.1"
 
-ethereumjs-connect@4.5.2:
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.5.2.tgz#c8940815cd3c413231eeb301bf1acfd7b3efc14b"
-  dependencies:
-    async "1.5.2"
-    clone "2.1.1"
-    ethrpc "5.1.0"
-
 ethereumjs-ledger@2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/ethereumjs-ledger/-/ethereumjs-ledger-2.1.4.tgz#8201e72111bbb25c3c65bb2926d7b807a62eae61"
@@ -4011,9 +4001,9 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.1.0.tgz#8d61a6017da2da9c39c59d2ff2f740b77f4af541"
+ethrpc@5.1.3:
+  version "5.1.3"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.1.3.tgz#c0bd69040dee354dae0b879692561bbbc7bc6633"
   dependencies:
     async "1.5.2"
     bignumber.js "2.3.0"

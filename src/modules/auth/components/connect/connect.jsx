@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 
 import NavPanel from 'modules/common/components/nav-panel/nav-panel'
-import Airbitz from 'modules/auth/containers/airbitz-connect'
+// import Airbitz from 'modules/auth/containers/airbitz-connect'
 import LedgerConnect from 'modules/auth/containers/ledger-connect'
 import UportConnect from 'modules/auth/containers/uport-connect'
 import MetaMaskConnect from 'modules/auth/components/metamask/metamask'
@@ -37,17 +37,14 @@ export default function AuthConnect(p) {
             selectedNav={selectedNav}
           />
           <div className={Styles.Auth__connections}>
-            {selectedNav == null &&
-              <Airbitz />
+            {(selectedNav == null || selectedNav === PARAMS.METAMASK) &&
+              <MetaMaskConnect />
             }
             {selectedNav === PARAMS.LEDGER &&
               <LedgerConnect />
             }
             {selectedNav === PARAMS.UPORT &&
               <UportConnect />
-            }
-            {selectedNav === PARAMS.METAMASK &&
-              <MetaMaskConnect />
             }
           </div>
         </div>

@@ -11,6 +11,8 @@ import ModalApproval from 'modules/modal/components/modal-approval/modal-approva
 import ModalEscapeHatch from 'modules/modal/components/modal-escape-hatch/modal-escape-hatch'
 import ModalParticipate from 'modules/modal/containers/modal-participate'
 
+import { Close } from 'modules/common/components/icons'
+
 import debounce from 'utils/debounce'
 import getValue from 'utils/get-value'
 
@@ -52,6 +54,8 @@ export default class ModalView extends Component {
   render() {
     const s = this.state
     const p = this.props
+    // in place to keep big Cancel button func for ledger/uport
+    const showBigCancel = p.modal.canClose && (p.modal.type === TYPES.MODAL_LEDGER || p.modal.type === TYPES.MODAL_UPORT)
 
     return (
       <section
@@ -61,6 +65,14 @@ export default class ModalView extends Component {
         <div
           className={Styles.ModalView__content}
         >
+          {p.modal.canClose && !showBigCancel &&
+            <button
+              className={Styles.ModalView__close}
+              onClick={p.closeModal}
+            >
+              {Close}
+            </button>
+          }
           {p.modal.type === TYPES.MODAL_LEDGER &&
             <ModalLedger {...p.modal} />
           }
@@ -86,7 +98,7 @@ export default class ModalView extends Component {
           {p.modal.type === TYPES.MODAL_ESCAPE_HATCH &&
             <ModalEscapeHatch {...p} />
           }
-          {p.modal.canClose && p.modal.type !== TYPES.MODAL_ACCOUNT_APPROVAL &&
+          {showBigCancel &&
             <button
               className={Styles.ModalView__button}
               onClick={p.closeModal}
