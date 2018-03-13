@@ -5,17 +5,19 @@ import { Helmet } from 'react-helmet'
 import { augur } from 'services/augurjs'
 
 import speedomatic from 'speedomatic'
-import { formatGasCostToEther } from 'utils/format-number'
+import { formatAttoRep, formatGasCostToEther } from 'utils/format-number'
 import MarketPreview from 'modules/market/components/market-preview/market-preview'
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 import ReportingDisputeForm from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form'
 import ReportingDisputeConfirm from 'modules/reporting/components/reporting-dispute-confirm/reporting-dispute-confirm'
 import { TYPE_VIEW } from 'modules/market/constants/link-types'
+import BigNumber from 'bignumber.js'
 
 import { isEmpty } from 'lodash'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-report/reporting-report.styles'
 import selectDisputeOutcomes from 'modules/reporting/selectors/select-dispute-outcomes'
+import fillDisputeOutcomeProgress from 'modules/reporting/selectors/fill-dispute-outcome-progress'
 
 export default class ReportingDispute extends Component {
 
@@ -41,17 +43,14 @@ export default class ReportingDispute extends Component {
       isMarketInValid: null,
       selectedOutcome: '',
       selectedOutcomeName: '',
-      // need to get value from augur-node for
-      // designated reporter or initial reporter (open reporting)
       stake: 0,
       validations: {
         stake: false,
         selectedOutcome: null,
       },
-      reporterGasCost: null,
-      designatedReportNoShowReputationBond: 0,
       gasEstimate: '0',
-      disputeBond: '0',
+      disputeBondFormatted: '0',
+      disputeBondValue: 0,
       disputeRound: 0,
       disputeOutcomes: [],
       stakes: [],
@@ -74,15 +73,31 @@ export default class ReportingDispute extends Component {
   getDisputeInfo() {
     this.props.getDisputeInfo(this.props.marketId, (disputeInfo) => {
 
+      let disputeBond = disputeInfo.stakes.reduce((p, i) => {
+        const result = i.size > p ? i.size : p
+        return result
+      }, 0)
+      if (disputeBond === 0) {
+        const completedStake = disputeInfo.stakes.reduce((p, i) => {
+          const result = i.completedStake > p ? i.completedStake : p
+          return result
+        }, 0)
+        // calculate new dispute bond if one isn't active. TODO: should get for augur-node
+        disputeBond = new BigNumber(completedStake).times(2).toNumber()
+      }
       const disputeOutcomes = selectDisputeOutcomes(this.props.market, disputeInfo.stakes)
+        .map(o => fillDisputeOutcomeProgress(disputeBond, o))
       const currentOutcome = disputeOutcomes.find(item => item.tentativeWinning) || {}
-      const round = parseInt(disputeInfo.disputeRound || -1, 10) + 1
+      // disputeRound signifies round completed
+      const round = parseInt(disputeInfo.disputeRound, 10)
 
       this.setState({
         disputeRound: round,
         stakes: disputeInfo.stakes,
         disputeOutcomes,
         currentOutcome,
+        disputeBondValue: parseInt(disputeBond, 10),
+        disputeBondFormatted: formatAttoRep(disputeBond, { decimals: 4, denomination: ' REP' }).formatted,
       })
     })
   }
@@ -168,10 +183,10 @@ export default class ReportingDispute extends Component {
                 selectedOutcome={s.selectedOutcome}
                 stake={s.stake}
                 validations={s.validations}
-                disputeBond={s.disputeBond}
                 stakes={s.stakes}
                 disputeOutcomes={s.disputeOutcomes}
                 currentOutcome={s.currentOutcome}
+                disputeBondValue={s.disputeBondValue}
               />
             }
             { s.currentStep === 1 &&
@@ -180,11 +195,9 @@ export default class ReportingDispute extends Component {
                 isMarketInValid={s.isMarketInValid}
                 selectedOutcome={s.selectedOutcomeName}
                 stake={s.stake}
-                designatedReportNoShowReputationBond={s.designatedReportNoShowReputationBond}
-                reporterGasCost={s.reporterGasCost}
-                isOpenReporting={p.isOpenReporting}
                 currentOutcome={s.currentOutcome}
                 gasEstimate={s.gasEstimate}
+                disputeBondFormatted={s.disputeBondFormatted}
               />
             }
             <div className={FormStyles.Form__navigation}>
