@@ -38,19 +38,8 @@ function incrementOutcomeVolume(db: Knex, marketId: Address, outcome: number, am
   });
 }
 
-function incrementCategoryPopularity(db: Knex, category: string, amount: BigNumber, callback: GenericCallback<BigNumber>) {
-  db("categories").first("popularity").where({ category }).asCallback((err: Error|null, result: {popularity: BigNumber}) => {
-    if (err) return callback(err);
-
-    const popularity = result.popularity;
-    const incremented = amount.plus(popularity);
-    db("categories").update({ popularity: incremented.toString() }).where({ category, popularity: popularity.toString() }).asCallback((err: Error|null, affectedRowsCount: number) => {
-      if (err) return callback(err);
-      if (affectedRowsCount === 0) return process.nextTick(() => incrementCategoryPopularity(db, category, amount, callback));
-
-      callback(null, incremented);
-    });
-  });
+function incrementCategoryPopularity(db: Knex, category: string, amount: BigNumber, callback: ErrorCallback) {
+  db.raw(`UPDATE categories SET popularity = popularity + :amount WHERE category = :category`, { amount: amount.toFixed(), category }).asCallback(callback);
 }
 
 export function updateVolumetrics(db: Knex, augur: Augur, category: string, marketId: Address, outcome: number, blockNumber: number, orderId: Bytes32, orderCreator: Address, tickSize: string, minPrice: string|number, maxPrice: string|number, isIncrease: boolean, callback: ErrorCallback): void {

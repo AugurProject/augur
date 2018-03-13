@@ -155,11 +155,11 @@ describe("blockchain/log-processors/order-filled", () => {
           tradeGroupId: "TRADE_GROUP_ID",
         }]);
         assert.deepEqual(records.markets, {
-          volume: new BigNumber("3.33333333333333", 10),
+          volume: new BigNumber("3.33333333333333333333", 10),
           sharesOutstanding: new BigNumber("2", 10),
         });
         assert.deepEqual(records.outcomes, [
-          { price: 0.7, volume: new BigNumber("103.333333333333", 10) },
+          { price: 0.7, volume: new BigNumber("103.33333333333333333333", 10) },
           { price: 0.125, volume: new BigNumber("100", 10) },
           { price: 0.125, volume: new BigNumber("100", 10) },
           { price: 0.125, volume: new BigNumber("100", 10) },
