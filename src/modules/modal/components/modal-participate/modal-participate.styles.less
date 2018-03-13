@@ -2,7 +2,6 @@
 
 .ModalParticipate {
   max-width: 35rem;
-  padding: 1rem;
   position: relative;
   width: 100%;
 }
@@ -35,11 +34,14 @@
 
 .ModalParticipate__error {
   color: @color-red;
+  display: inline-flex;
   margin: 0;
+  width: 100%;
 
   > svg {
     height: 1rem;
     line-height: 1rem;
+    margin-right: 0.3rem;
     width: 1rem;
   }
 }
@@ -53,12 +55,6 @@
 .ModalParticipate__button {
   .button--white();
 
-  &:disabled {
-    background-color: @color-disabled;
-    color: @color-text-disabled;
-    cursor: default;
-  }
-
   margin-top: 2rem;
 }
 
@@ -69,13 +65,58 @@
 }
 
 @media @breakpoint-mobile {
+  .ModalParticipate {
+    margin-top: -3.625rem;
+  }
+
+  .ModalParticipate__form {
+    p,
+    label {
+      padding: 0 1rem;
+    }
+  }
+
   .ModalParticipate__helperText {
     display: block;
+    padding: 0 1rem;
   }
 
   .ModalParticipate__heading {
     font-size: @font-size-somewhat-large;
     line-height: @font-size-somewhat-large;
     margin-bottom: @font-size-rather-large;
+    padding: 0 1rem;
+  }
+
+  .ModalParticipate__form-actions {
+    bottom: 0;
+    flex-flow: column nowrap;
+    position: fixed;
+    width: 100%;
+
+    > button {
+      border-radius: 0;
+      margin: 0;
+
+      &:first-child {
+        order: 2;
+      }
+
+      &:last-child {
+        background-color: @color-lightpurple;
+        color: @color-white;
+        order: 1;
+
+        &:disabled {
+          background-color: @color-lightgray;
+          color: @color-lightergray;
+          cursor: default;
+        }
+      }
+    }
+  }
+
+  .ModalParticipate__button {
+    width: 100%;
   }
 }
