@@ -1,12 +1,11 @@
 import { augur } from 'services/augurjs'
 import BigNumber from 'bignumber.js'
-import speedomatic from 'speedomatic'
 import logError from 'utils/log-error'
 import noop from 'utils/noop'
 import { formatGasCostToEther } from 'utils/format-number'
 
 export const purchaseParticipationTokens = (amount, estimateGas = false, callback = logError) => (dispatch, getState) => {
-  const { loginAccount, universe } = getState()
+  const { universe } = getState()
   augur.reporting.getFeeWindowCurrent({ universe: universe.id }, (err, currFeeWindowInfo) => {
     if (err) return callback(err)
     const feeWindowAddress = currFeeWindowInfo.feeWindow
@@ -26,7 +25,7 @@ export const purchaseParticipationTokens = (amount, estimateGas = false, callbac
         // if not a gas estimate, just return res.
         return callback(null, res)
       },
-      onFailed: (err) => callback(err),
+      onFailed: err => callback(err),
     })
   })
 }

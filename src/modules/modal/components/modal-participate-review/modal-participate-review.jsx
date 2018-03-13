@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { SigningPen } from 'modules/common/components/icons'
-import { formatRep, formatEther, formatGasCostToEther } from 'utils/format-number'
+import { formatRep, formatEther } from 'utils/format-number'
 import Styles from 'modules/modal/components/modal-participate-review/modal-participate-review.styles'
 
 const ModalParticipateReview = (p) => {

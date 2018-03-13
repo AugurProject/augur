@@ -71,7 +71,7 @@ export default class ModalParticipate extends Component {
     const bnQuantity = new BigNumber(quantity, 10)
 
     if (bnQuantity.lte(0)) {
-      errors.push('Quantity must be a value greater than 0.')
+      errors.push('Quantity must greater than 0.')
       isValid = false
       // exit early, as the other check doesn't matter.
       return ({ errors, isValid })
