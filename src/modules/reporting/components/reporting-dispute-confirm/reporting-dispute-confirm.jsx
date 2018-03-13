@@ -47,6 +47,7 @@ ReportingDisputeConfirm.propTypes = {
   stake: PropTypes.number.isRequired,
   gasEstimate: PropTypes.string.isRequired,
   disputeBondFormatted: PropTypes.string.isRequired,
+  disputeBond: PropTypes.string.isRequired,
   isMarketInValid: PropTypes.bool,
 }
 

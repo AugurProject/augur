@@ -111,6 +111,8 @@ export default class ReportingDisputeForm extends Component {
 
     ReportingDisputeForm.checkStake(this.props.stake, updatedValidations)
 
+    this.state.inputSelectedOutcome = ''
+
     this.props.updateState({
       validations: updatedValidations,
       selectedOutcome,

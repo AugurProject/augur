@@ -52,6 +52,7 @@ import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from 
 import { selectReportableOutcomes } from 'modules/reports/selectors/reportable-outcomes'
 
 import { listWordsUnderLength } from 'utils/list-words-under-length'
+import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 
 export default function () {
   return selectSelectedMarket(store.getState())
@@ -314,8 +315,12 @@ export function assembleMarket(
       //   - the percentage of correct reports (for binaries only)
       if (marketData.consensus) {
         market.consensus = { ...marketData.consensus }
-        if (market.type !== SCALAR && market.reportableOutcomes.length) {
-          const marketOutcome = market.reportableOutcomes.find(outcome => outcome.id === market.consensus.outcomeId)
+        if (market.reportableOutcomes.length) {
+          const { payout, isInvalid } = market.consensus
+          const winningOutcome = calculatePayoutNumeratorsValue(market, payout, isInvalid)
+          // for scalars, we will just use the winningOutcome for display
+          market.consensus.winningOutcome = winningOutcome
+          const marketOutcome = market.reportableOutcomes.find(outcome => outcome.id === winningOutcome)
           if (marketOutcome) market.consensus.outcomeName = marketOutcome.name
         }
         if (market.consensus.proportionCorrect) {

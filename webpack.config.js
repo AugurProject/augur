@@ -119,10 +119,6 @@ let config = {
         to: path.resolve(PATHS.BUILD, 'assets/images')
       },
       {
-        from: path.resolve(__dirname, 'node_modules/airbitz-core-js-ui/assets'),
-        to: path.resolve(PATHS.BUILD, 'abcui/assets')
-      },
-      {
         from: path.resolve(PATHS.APP, 'sitemap.xml'),
         to: PATHS.BUILD
       },
