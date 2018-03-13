@@ -18,28 +18,27 @@ function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade
           if (err) return callback(err);
           if (orderToFill == null || new BigNumber(orderToFill.amount).eq(new BigNumber(0))) return nextMarket();
           if (debugOptions.cannedMarkets) console.log(chalk.cyan("Filling order:"), chalk.red.bold(orderType), orderToFill);
-          var normalizedPrice = augur.trading.normalizePrice({
-            minPrice: marketInfo.minPrice,
-            maxPrice: marketInfo.maxPrice,
-            price: orderToFill.fullPrecisionPrice.toString(),
-          });
+          var displayPrice = orderToFill.fullPrecisionPrice.toString();
+          var displayAmount = sharesToTrade;
           var direction = orderType === "sell" ? 0 : 1;
           var tradeCost = augur.trading.calculateTradeCost({
-            normalizedPrice: normalizedPrice,
-            amount: sharesToTrade,
+            displayPrice: displayPrice,
+            displayAmount: displayAmount,
             numTicks: marketInfo.numTicks,
-            tickSize: marketInfo.tickSize,
             orderType: direction,
+            minDisplayPrice: marketInfo.minPrice,
+            maxDisplayPrice: marketInfo.maxPrice,
           });
           if (new BigNumber(tradeCost.cost, 16).gt(1)) {
             sharesToTrade = new BigNumber(sharesToTrade, 10).dividedBy(new BigNumber(tradeCost.cost, 16)).toFixed();
           }
           augur.trading.tradeUntilAmountIsZero({
             meta: auth,
-            _fxpAmount: sharesToTrade,
-            _price: normalizedPrice,
+            _fxpAmount: displayAmount,
+            _price: displayPrice,
             numTicks: marketInfo.numTicks,
-            tickSize: marketInfo.tickSize,
+            minPrice: marketInfo.minPrice,
+            maxPrice: marketInfo.maxPrice,
             _direction: direction,
             _market: marketInfo.id,
             _outcome: outcomeToTrade,

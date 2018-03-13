@@ -2,6 +2,7 @@
 
 "use strict";
 
+var BigNumber = require("bignumber.js");
 var assert = require("chai").assert;
 var proxyquire = require("proxyquire").noPreserveCache().noCallThru();
 
@@ -68,8 +69,8 @@ describe("trading/get-trade-amount-remaining", function () {
         "../contracts": t.mock.contracts,
         "../rpc-interface": t.mock.ethrpc,
       });
-      getTradeAmountRemaining(t.params, function (err, tradeAmountRemaining) {
-        t.assertions(err, tradeAmountRemaining);
+      getTradeAmountRemaining(t.params, function (err, tradeOnChainAmountRemaining) {
+        t.assertions(err, tradeOnChainAmountRemaining);
         done();
       });
     });
@@ -78,8 +79,8 @@ describe("trading/get-trade-amount-remaining", function () {
     description: "get trade amount remaining using transaction hash",
     params: {
       transactionHash: "TRANSACTION_HASH",
-      startingOnChainAmount: "0x5af3107a4000", // 1
-      priceNumTicksRepresentation: "0x1500", // 0.0276
+      startingOnChainAmount: new BigNumber("0x5af3107a4000", 16), // 1
+      onChainPrice: new BigNumber("0x1500", 16), // 0.0276
     },
     mock: {
       contracts: {
@@ -111,17 +112,17 @@ describe("trading/get-trade-amount-remaining", function () {
         },
       },
     },
-    assertions: function (err, tradeAmountRemaining) {
+    assertions: function (err, tradeOnChainAmountRemaining) {
       assert.isNull(err);
-      assert.strictEqual(tradeAmountRemaining, "82812500000000");
+      assert.strictEqual(tradeOnChainAmountRemaining.toFixed(), "82812500000000");
     },
   });
   test({
     description: "logs not present in receipt",
     params: {
       transactionHash: "TRANSACTION_HASH",
-      startingOnChainAmount: "0x5af3107a4000",
-      priceNumTicksRepresentation: "0x1500",
+      startingOnChainAmount: new BigNumber("0x5af3107a4000", 16),
+      onChainPrice: new BigNumber("0x1500", 16),
     },
     mock: {
       contracts: {
@@ -145,9 +146,9 @@ describe("trading/get-trade-amount-remaining", function () {
         },
       },
     },
-    assertions: function (err, tradeAmountRemaining) {
+    assertions: function (err, tradeOnChainAmountRemaining) {
       assert.strictEqual(err.message, "logs not found");
-      assert.isUndefined(tradeAmountRemaining);
+      assert.isUndefined(tradeOnChainAmountRemaining);
     },
   });
 });

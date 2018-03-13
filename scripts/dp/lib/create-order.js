@@ -1,44 +1,44 @@
 "use strict";
 
-var BigNumber = require("bignumber.js");
 var chalk = require("chalk");
 var speedomatic = require("speedomatic");
 var printTransactionStatus = require("./print-transaction-status");
 var debugOptions = require("../../debug-options");
 
-var USE_PUBLIC_CREATE_ORDER = false; // set to false to test trading.placeTrade endpoint
+var USE_PUBLIC_CREATE_ORDER = true; // set to false to test trading.placeTrade endpoint
 
 function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, numTicks, orderType, order, tradeGroupId, auth, callback) {
-  var normalizedPrice = augur.trading.normalizePrice({ price: order.price, maxPrice: maxPrice, minPrice: minPrice });
-  var tickSize = (new BigNumber(maxPrice, 10).minus(new BigNumber(minPrice, 10))).dividedBy(new BigNumber(numTicks, 10)).toFixed();
+  var displayPrice = order.price;
+  var displayAmount = order.shares;
   var orderTypeCode = orderType === "buy" ? 0 : 1;
   var tradeCost = augur.trading.calculateTradeCost({
-    normalizedPrice: normalizedPrice,
-    amount: order.shares,
-    tickSize: tickSize,
+    displayPrice: displayPrice,
+    displayAmount: displayAmount,
     numTicks: numTicks,
     orderType: orderTypeCode,
+    minDisplayPrice: minPrice,
+    maxDisplayPrice: maxPrice,
   });
   if (debugOptions.cannedMarkets) {
-    console.log("price:", order.price, normalizedPrice, tradeCost.adjustedPrice);
+    console.log("price:", displayPrice, tradeCost.onChainPrice.toFixed());
+    console.log("amount:", displayAmount, tradeCost.onChainAmount.toFixed());
     console.log("numTicks:", numTicks);
-    console.log("on chain shares:", new BigNumber(tradeCost.onChainAmount, 16).toFixed());
-    console.log(chalk.green.bold("cost:"), chalk.cyan(speedomatic.unfix(new BigNumber(tradeCost.cost, 16), "string")), chalk.cyan.dim("ETH"));
+    console.log(chalk.green.bold("cost:"), chalk.cyan(speedomatic.unfix(tradeCost.cost, "string")), chalk.cyan.dim("ETH"));
   }
   if (USE_PUBLIC_CREATE_ORDER) {
     augur.trading.getBetterWorseOrders({
       orderType: orderType,
       marketId: marketId,
       outcome: outcome,
-      price: order.price,
+      price: displayPrice,
     }, function (err, betterWorseOrders) {
       if (err) betterWorseOrders = { betterOrderId: "0x0", worseOrderId: "0x0" };
       var publicCreateOrderPayload = {
         meta: auth,
-        tx: { value: tradeCost.cost, gas: augur.constants.CREATE_ORDER_GAS },
+        tx: { value: augur.utils.convertBigNumberToHexString(tradeCost.cost), gas: augur.constants.CREATE_ORDER_GAS },
         _type: orderTypeCode,
-        _attoshares: tradeCost.onChainAmount,
-        _displayPrice: tradeCost.adjustedPrice,
+        _attoshares: augur.utils.convertBigNumberToHexString(tradeCost.onChainAmount),
+        _displayPrice: augur.utils.convertBigNumberToHexString(tradeCost.onChainPrice),
         _market: marketId,
         _outcome: outcome,
         _betterOrderId: (betterWorseOrders || {}).betterOrderId || "0x0",
@@ -74,12 +74,11 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
   } else {
     var placeTradeParams = {
       meta: auth,
-      amount: order.shares,
-      limitPrice: order.price,
+      amount: displayAmount,
+      limitPrice: displayPrice,
       // estimatedCost: speedomatic.unfix(tradeCost.cost, "string"),
       minPrice: minPrice,
       maxPrice: maxPrice,
-      tickSize: tickSize,
       numTicks: numTicks,
       _direction: orderTypeCode,
       _market: marketId,

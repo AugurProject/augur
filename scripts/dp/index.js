@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
 var path = require("path");
+var assign = require("lodash.assign");
 var Augur = require("../../src");
 var debugOptions = require("../debug-options");
+var connectionEndpoints = require("../connection-endpoints");
 var core = require("augur-core");
 var getPrivateKeyFromString = require("./lib/get-private-key").getPrivateKeyFromString;
 var parrotSay = require("parrotsay-api");
@@ -97,6 +99,7 @@ function runCannedData(command, networks, callback) {
     augur.rpc.setDebugOptions(debugOptions);
 
     var auth = getPrivateKeyFromString(network.privateKey);
+    var ethereumNode = assign({}, connectionEndpoints.ethereumNode, { http: network.http });
     switch (command) {
       case "upload": {
         core.ContractDeployer.deployToNetwork(network, deployerConfiguration).then(function () {
@@ -106,7 +109,7 @@ function runCannedData(command, networks, callback) {
       }
 
       case "rep-faucet": {
-        augur.connect({ ethereumNode: { http: network.http } }, function (err) {
+        augur.connect({ ethereumNode: ethereumNode }, function (err) {
           if (err) return callback(err);
 
           repFaucet(augur, 100000, auth, callback);
@@ -115,7 +118,7 @@ function runCannedData(command, networks, callback) {
       }
 
       case "create-markets": {
-        augur.connect({ ethereumNode: { http: network.http } }, function (err) {
+        augur.connect({ ethereumNode: ethereumNode }, function (err) {
           if (err) return callback(err);
           repFaucet(augur, 100000, auth, function (err) {
             if (err) return callback(err);
@@ -144,7 +147,7 @@ function runCannedData(command, networks, callback) {
           augur.contracts.reloadAddresses(function (err) {
             if (err) return callback(err);
 
-            augur.connect({ ethereumNode: { http: network.http } }, function (err) {
+            augur.connect({ ethereumNode: ethereumNode }, function (err) {
               if (err) return callback(err);
               repFaucet(augur, 100000, auth, function (err) {
                 if (err) return callback(err);

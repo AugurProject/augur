@@ -71,7 +71,7 @@ if (require.main === module) {
     getPrivateKey(keystoreFilePath, function (err, auth) {
       if (err) return console.log("Error: ", err);
 
-      repFaucet(augur, 1000000, auth, function (err) {
+      repFaucet(augur, "10000000000000000000000000000", auth, function (err) {
         if (err) {
           console.log("Error: ", err);
           process.exit(1);
