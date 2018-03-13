@@ -104,15 +104,15 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
     const accountStakeCompleted = accountStakeCompletedByPayout[payout.payoutId];
     const accountStakeCurrent = accountStakeCurrentByPayout[payout.payoutId];
 
-    const completedStakeAmount = new BigNumber(stakeCompleted == null ? 0 : stakeCompleted.amountStaked.toString());
-    const currentStakeOnPayout = new BigNumber(stakeCurrent == null ? 0 : stakeCurrent.amountStaked.toString());
+    const stakeCompletedAmount = new BigNumber(stakeCompleted == null ? 0 : stakeCompleted.amountStaked.toString());
+    const stakeCurrentOnPayout = new BigNumber(stakeCurrent == null ? 0 : stakeCurrent.amountStaked.toString());
 
     let currentAmounts: StakeSizes;
     if (payout.tentativeWinning === 1 || !isActiveMarketState(marketRow.reportingState)) {
       currentAmounts = {};
     } else if (stakeCurrent == null) {
       currentAmounts = {
-        size: calculateBondSize(totalCompletedStakeOnAllPayouts, completedStakeAmount).toFixed(),
+        size: calculateBondSize(totalCompletedStakeOnAllPayouts, stakeCompletedAmount).toFixed(),
         stakeCurrent: ZERO.toFixed(),
         accountStakeCurrent: ZERO.toFixed(),
       };
@@ -129,8 +129,8 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
       normalizePayouts(payout),
       currentAmounts,
       {
-        stakeCurrent: currentStakeOnPayout.toFixed(),
-        stakeCompleted: completedStakeAmount.toFixed(),
+        stakeCurrent: stakeCurrentOnPayout.toFixed(),
+        stakeCompleted: stakeCompletedAmount.toFixed(),
         tentativeWinning: !!payout.tentativeWinning,
       },
     );
