@@ -90,7 +90,7 @@ export default class ReportingDispute extends Component {
         .map(o => fillDisputeOutcomeProgress(disputeBond, o))
       const currentOutcome = disputeOutcomes.find(item => item.tentativeWinning) || {}
       // disputeRound signifies round completed
-      const round = parseInt(disputeInfo.disputeRound || -1, 10) + 1
+      const round = parseInt(disputeInfo.disputeRound, 10)
 
       this.setState({
         disputeRound: round,

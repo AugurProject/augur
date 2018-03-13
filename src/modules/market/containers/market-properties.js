@@ -9,7 +9,7 @@ const mapStateToProps = (state, ownProps) => ({
   isLogged: state.isLogged,
   isMobile: state.isMobile,
   loginAccount: state.loginAccount,
-  linktype: ownProps.linkType || determineMarketLinkType(selectMarket(ownProps.id), state.loginAccount),
+  linkType: ownProps.linkType || determineMarketLinkType(selectMarket(ownProps.id), state.loginAccount),
 })
 
 const MarketTradingContainer = withRouter(connect(mapStateToProps)(MarketProperties))
