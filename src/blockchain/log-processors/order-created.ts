@@ -1,8 +1,9 @@
+import BigNumber from "bignumber.js";
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { Address, Bytes32, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, OrderState, ErrorCallback} from "../../types";
 import { augurEmitter } from "../../events";
-import { convertFixedPointToDecimal, convertOnChainSharesToHumanReadableShares, convertNumTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
+import { convertNumTicksToTickSize, convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
 import { denormalizePrice } from "../../utils/denormalize-price";
 import { formatOrderAmount, formatOrderPrice } from "../../utils/format-order";
 import { WEI_PER_ETHER} from "../../constants";
@@ -38,8 +39,8 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEve
       const maxPrice = marketsRow.maxPrice!;
       const numTicks = marketsRow.numTicks!;
       const tickSize = convertNumTicksToTickSize(numTicks, minPrice, maxPrice);
-      const fullPrecisionAmount = convertOnChainSharesToHumanReadableShares(amount, tickSize);
-      const fullPrecisionPrice = denormalizePrice(minPrice, maxPrice, convertFixedPointToDecimal(price, numTicks));
+      const fullPrecisionAmount = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(amount, 10), new BigNumber(tickSize, 10)).toFixed();
+      const fullPrecisionPrice = augur.utils.convertOnChainPriceToDisplayPrice(new BigNumber(price, 10), new BigNumber(minPrice, 10), new BigNumber(tickSize, 10)).toFixed();
       const orderTypeLabel = orderType === "0" ? "buy" : "sell";
       const orderData: OrdersRow = {
         marketId,
@@ -57,7 +58,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEve
         fullPrecisionPrice,
         fullPrecisionAmount,
         tokensEscrowed: convertFixedPointToDecimal(moneyEscrowed, WEI_PER_ETHER),
-        sharesEscrowed: convertOnChainSharesToHumanReadableShares(sharesEscrowed, tickSize),
+        sharesEscrowed: augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(sharesEscrowed, 10), new BigNumber(tickSize, 10)).toFixed(),
       };
       const orderId = { orderId: log.orderId };
       db.select("marketId").from("orders").where(orderId).asCallback((err: Error|null, ordersRows?: Array<Partial<OrdersRow>>): void => {
