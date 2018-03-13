@@ -28,7 +28,6 @@ describe("trading/place-trade", function () {
       limitPrice: "2",
       minPrice: "1",
       maxPrice: "3",
-      tickSize: "0.0001",
       _direction: 0,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
@@ -61,7 +60,7 @@ describe("trading/place-trade", function () {
         assert.strictEqual(p._market, "MARKET_ADDRESS");
         assert.strictEqual(p._outcome, 2);
         assert.strictEqual(p._fxpAmount, "10");
-        assert.strictEqual(p._price, "0.5");
+        assert.strictEqual(p._price, "2");
         assert.strictEqual(p._tradeGroupId, "0x1");
         assert.strictEqual(p._betterOrderId, "0x0");
         assert.strictEqual(p._worseOrderId, "0x0");
@@ -81,7 +80,6 @@ describe("trading/place-trade", function () {
       limitPrice: "2",
       minPrice: "1",
       maxPrice: "3",
-      tickSize: "0.0001",
       _direction: 0,
       _market: "MARKET_ADDRESS",
       _outcome: 2,
@@ -114,7 +112,7 @@ describe("trading/place-trade", function () {
         assert.strictEqual(p._market, "MARKET_ADDRESS");
         assert.strictEqual(p._outcome, 2);
         assert.strictEqual(p._fxpAmount, "10");
-        assert.strictEqual(p._price, "0.5");
+        assert.strictEqual(p._price, "2");
         assert.strictEqual(p._tradeGroupId, "0x1");
         assert.strictEqual(p._betterOrderId, "BETTER_ORDER_ID");
         assert.strictEqual(p._worseOrderId, "WORSE_ORDER_ID");

@@ -1,5 +1,6 @@
 "use strict";
 
+var assign = require("lodash.assign");
 var async = require("async");
 var ethrpc = require("ethrpc");
 var connectToEthereum = require("./connect-to-ethereum");
@@ -11,7 +12,7 @@ var augurNode = require("../augur-node");
 var isFunction = require("../utils/is-function");
 var isObject = require("../utils/is-object");
 var noop = require("../utils/noop");
-var DEFAULT_NETWORK_ID = require("../constants").DEFAULT_NETWORK_ID;
+var constants = require("../constants");
 
 /**
  * @param {ethereumNode, augurNode} connectOptions
@@ -23,14 +24,14 @@ function connect(connectOptions, callback) {
     return callback(new Error("Connection info required, e.g. { ethereumNode: { http: \"http://ethereum.node.url\", ws: \"ws://ethereum.node.websocket\" }, augurNode: \"ws://augur.node.websocket\" }"));
   }
   var self = this;
-  var ethereumNodeConnectOptions = {
+  var ethereumNodeConnectOptions = assign({}, connectOptions.ethereumNode || {}, {
     contracts: contractsForAllNetworks.addresses,
-    startBlockStreamOnConnect: connectOptions.startBlockStreamOnConnect,
+    startBlockStreamOnConnect: (connectOptions.ethereumNode || {}).startBlockStreamOnConnect || connectOptions.startBlockStreamOnConnect,
     abi: contractsForAllNetworks.abi,
     httpAddresses: [],
     wsAddresses: [],
     ipcAddresses: [],
-  };
+  });
   if (isObject(connectOptions.ethereumNode)) {
     if (connectOptions.ethereumNode.http) {
       ethereumNodeConnectOptions.httpAddresses = [connectOptions.ethereumNode.http];
@@ -49,6 +50,9 @@ function connect(connectOptions, callback) {
     }
     if (connectOptions.ethereumNode.networkId) {
       ethereumNodeConnectOptions.networkId = connectOptions.ethereumNode.networkId;
+    }
+    if (!connectOptions.ethereumNode.connectionTimeout) {
+      ethereumNodeConnectOptions.connectionTimeout = constants.DEFAULT_CONNECTION_TIMEOUT;
     }
   }
   async.parallel({
@@ -88,7 +92,7 @@ function connect(connectOptions, callback) {
           events.nodes.ethereum.emit("disconnect", event);
         });
         next(null, {
-          contracts: contracts || contractsForAllNetworks.addresses[DEFAULT_NETWORK_ID],
+          contracts: contracts || contractsForAllNetworks.addresses[constants.DEFAULT_NETWORK_ID],
           abi: { functions: functionsAbi, events: eventsAbi },
         });
       });

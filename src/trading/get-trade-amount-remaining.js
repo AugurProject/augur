@@ -5,18 +5,19 @@ var eventsAbi = require("../contracts").abi.events;
 var ethrpc = require("../rpc-interface");
 var parseLogMessage = require("../events/parse-message/parse-log-message");
 
-function calculateTotalFill(numShares, numTokens, priceNumTicksRepresentation) {
-  return new BigNumber(numShares, 10).plus(new BigNumber(numTokens, 10).dividedBy(new BigNumber(priceNumTicksRepresentation, 16)));
+function calculateTotalFill(numShares, numTokens, onChainPrice) {
+  return new BigNumber(numShares, 10).plus(new BigNumber(numTokens, 10).dividedBy(onChainPrice));
 }
 
 /**
  * @param {Object} p Parameters object.
  * @param {string} p.transactionHash Transaction hash to look up a receipt for.
- * @param {string} p.startingOnChainAmount Amount remaining in the trade prior to this transaction (base-16).
- * @param {string} p.priceNumTicksRepresentation Price in its numTicks representation (base-16).
+ * @param {BigNumber} p.startingOnChainAmount Amount remaining in the trade prior to this transaction.
+ * @param {BigNumber} p.onChainPrice On-chain price.
+ * @return {BigNumber} Number of shares remaining.
  */
 function getTradeAmountRemaining(p, callback) {
-  var tradeOnChainAmountRemaining = new BigNumber(p.startingOnChainAmount, 16);
+  var tradeOnChainAmountRemaining = p.startingOnChainAmount;
   // console.log("remaining:", tradeOnChainAmountRemaining.toFixed());
   ethrpc.getTransactionReceipt(p.transactionHash, function (err, transactionReceipt) {
     if (err) return callback(new Error("getTransactionReceipt failed"));
@@ -29,7 +30,7 @@ function getTradeAmountRemaining(p, callback) {
     for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
       if (logs[i].topics[0] === orderFilledEventSignature) {
         var orderFilledLog = parseLogMessage("Augur", "OrderFilled", logs[i], eventsAbi.Augur.OrderFilled.inputs);
-        var totalFill = calculateTotalFill(orderFilledLog.numCreatorShares, orderFilledLog.numCreatorTokens, p.priceNumTicksRepresentation);
+        var totalFill = calculateTotalFill(orderFilledLog.numCreatorShares, orderFilledLog.numCreatorTokens, p.onChainPrice);
         // console.log("fill:", totalFill.toFixed());
         tradeOnChainAmountRemaining = tradeOnChainAmountRemaining.minus(totalFill);
         // console.log("remaining:", tradeOnChainAmountRemaining.toFixed());
@@ -37,7 +38,7 @@ function getTradeAmountRemaining(p, callback) {
         tradeOnChainAmountRemaining = new BigNumber(0);
       }
     }
-    callback(null, tradeOnChainAmountRemaining.toFixed());
+    callback(null, tradeOnChainAmountRemaining);
   });
 }
 

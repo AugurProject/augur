@@ -6,7 +6,8 @@ var speedomatic = require("speedomatic");
 var immutableDelete = require("immutable-delete");
 var calculateTradeCost = require("./calculate-trade-cost");
 var getTradeAmountRemaining = require("./get-trade-amount-remaining");
-var convertFixedPointToDecimal = require("../utils/convert-fixed-point-to-decimal");
+var convertBigNumberToHexString = require("../utils/convert-big-number-to-hex-string");
+var convertOnChainAmountToDisplayAmount = require("../utils/convert-on-chain-amount-to-display-amount");
 var api = require("../api");
 var noop = require("../utils/noop");
 var constants = require("../constants");
@@ -16,10 +17,11 @@ var constants = require("../constants");
  * @param {string} p._price Normalized limit price for this trade, as a base-10 string.
  * @param {string} p._fxpAmount Number of shares to trade, as a base-10 string.
  * @param {string} p.numTicks The number of ticks for this market.
- * @param {string} p.tickSize The tick size (interval) for this market.
  * @param {number} p._direction Order type (0 for "buy", 1 for "sell").
  * @param {string} p._market Market in which to trade, as a hex string.
  * @param {number} p._outcome Outcome ID to trade, must be an integer value on [0, 7].
+ * @param {string} p.minPrice The minimum display price for this market, as a base-10 string.
+ * @param {string} p.maxPrice The maximum display price for this market, as a base-10 string.
  * @param {string=} p.estimatedCost Total cost (in ETH) of this trade, as a base-10 string.
  * @param {string=} p._tradeGroupId ID logged with each trade transaction (can be used to group trades client-side), as a hex string.
  * @param {boolean=} p.doNotCreateOrders If set to true, this trade will only take existing orders off the book, not create new ones (default: false).
@@ -30,39 +32,49 @@ var constants = require("../constants");
  */
 function tradeUntilAmountIsZero(p) {
   console.log("tradeUntilAmountIsZero:", JSON.stringify(immutableDelete(p, "meta"), null, 2));
-  var tradeCost = calculateTradeCost({ price: p._price, amount: p._fxpAmount, numTicks: p.numTicks, tickSize: p.tickSize, orderType: p._direction });
-  var maxCost = new BigNumber(tradeCost.cost, 16);
-  var amountNumTicksRepresentation = tradeCost.amountNumTicksRepresentation;
-  var priceNumTicksRepresentation = tradeCost.priceNumTicksRepresentation;
-  var cost = p.estimatedCost != null && new BigNumber(p.estimatedCost, 10).gt(constants.ZERO) ? speedomatic.fix(p.estimatedCost) : maxCost;
+  var displayAmount = p._fxpAmount;
+  var displayPrice = p._price;
+  var tradeCost = calculateTradeCost({
+    displayPrice: displayPrice,
+    displayAmount: displayAmount,
+    numTicks: p.numTicks,
+    orderType: p._direction,
+    minDisplayPrice: p.minPrice,
+    maxDisplayPrice: p.maxPrice,
+  });
+  var maxCost = tradeCost.cost;
+  var onChainAmount = tradeCost.onChainAmount;
+  var onChainPrice = tradeCost.onChainPrice;
+  var cost = (p.estimatedCost != null && new BigNumber(p.estimatedCost, 10).gt(constants.ZERO)) ? speedomatic.fix(p.estimatedCost) : maxCost;
   console.log("cost:", speedomatic.unfix(cost, "string"), "ETH");
   if (maxCost.lt(constants.PRECISION.zero)) {
-    console.log("tradeUntilAmountIsZero complete: only dust remaining");
+    console.info("tradeUntilAmountIsZero complete: only dust remaining");
     return p.onSuccess(null);
   }
-  var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "tickSize", "estimatedCost"]), {
-    tx: assign({ value: speedomatic.prefixHex(cost.toString(16)), gas: constants.TRADE_GAS }, p.tx),
-    _fxpAmount: amountNumTicksRepresentation,
-    _price: priceNumTicksRepresentation,
+  var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "estimatedCost", "minPrice", "maxPrice"]), {
+    tx: assign({ value: convertBigNumberToHexString(cost), gas: constants.TRADE_GAS }, p.tx),
+    _fxpAmount: convertBigNumberToHexString(onChainAmount),
+    _price: convertBigNumberToHexString(onChainPrice),
     onSuccess: function (res) {
       console.log("trade successful:", res);
       getTradeAmountRemaining({
         transactionHash: res.hash,
-        startingOnChainAmount: amountNumTicksRepresentation,
-        priceNumTicksRepresentation: priceNumTicksRepresentation,
+        startingOnChainAmount: onChainAmount,
+        onChainPrice: onChainPrice,
       }, function (err, tradeOnChainAmountRemaining) {
         if (err) return p.onFailed(err);
-        console.log("starting amount: ", p._fxpAmount);
-        console.log("amount remaining:", convertFixedPointToDecimal(tradeOnChainAmountRemaining, speedomatic.fix(p.tickSize, "string")));
-        if (new BigNumber(tradeOnChainAmountRemaining, 10).eq(new BigNumber(amountNumTicksRepresentation, 16))) {
+        console.log("starting amount: ", displayAmount);
+        var tickSize = new BigNumber(p.maxPrice, 10).minus(new BigNumber(p.minPrice, 10)).dividedBy(new BigNumber(p.numTicks, 10));
+        console.log("amount remaining:", onChainAmount.toFixed(), convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toFixed());
+        if (new BigNumber(tradeOnChainAmountRemaining, 10).eq(new BigNumber(onChainAmount, 16))) {
           if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining);
-          return p.onFailed("Trade completed but amount of trade unchanged");
+          return p.onFailed(new Error("Trade completed but amount of trade unchanged"));
         }
         var updatedEstimatedCost = p.estimatedCost == null ? null : speedomatic.unfix(cost.minus(new BigNumber(res.value, 16)), "string");
         console.log("updated estimated cost:", updatedEstimatedCost);
         tradeUntilAmountIsZero(assign({}, p, {
           estimatedCost: updatedEstimatedCost,
-          _fxpAmount: convertFixedPointToDecimal(tradeOnChainAmountRemaining, speedomatic.fix(p.tickSize, "string")),
+          _fxpAmount: convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(),
           onSent: noop, // so that p.onSent only fires when the first transaction is sent
         }));
       });
