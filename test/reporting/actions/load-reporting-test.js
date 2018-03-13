@@ -8,7 +8,7 @@ import thunk from 'redux-thunk'
 
 import { constants } from 'src/services/augurjs'
 
-import { loadReporting, __RewireAPI__ as loadReportingRewire } from './load-reporting'
+import { loadReporting, __RewireAPI__ as loadReportingRewire } from 'modules/reporting/actions/load-reporting'
 
 describe('loadReporting action', () => {
   const loginAccountAddress = '22222222'

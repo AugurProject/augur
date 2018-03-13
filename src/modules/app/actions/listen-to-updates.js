@@ -39,236 +39,340 @@ export function listenToUpdates(history) {
       MarketState: (err, log) => {
         if (err) return console.error('MarketState:', err)
         if (log) {
-          console.log('MarketState:', log)
-          dispatch(loadMarketsInfo([log.marketId]))
+          if (log.removed) {
+            console.log('MarketState removed:', log)
+          } else {
+            console.log('MarketState:', log)
+            dispatch(loadMarketsInfo([log.marketId]))
+          }
         }
       },
       InitialReportSubmitted: (err, log) => {
         if (err) return console.error('InitialReportSubmitted:', err)
         if (log) {
-          dispatch(loadMarketsInfo([log.market]))
-          if (log.reporter === getState().loginAccount.address) {
-            dispatch(updateAssets())
+          if (log.removed) {
+            console.log('InitialReportSubmitted removed:', log)
+          } else {
+            dispatch(loadMarketsInfo([log.market]))
+            if (log.reporter === getState().loginAccount.address) {
+              dispatch(updateAssets())
+            }
           }
         }
       },
       MarketCreated: (err, log) => {
         if (err) return console.error('MarketCreated:', err)
         if (log) {
-          console.log('MarketCreated:', log)
-          // augur-node emitting log.market from raw contract logs.
-          dispatch(loadMarketsInfo([log.market]))
-          if (log.marketCreator === getState().loginAccount.address) {
-            dispatch(updateAssets())
-            dispatch(convertLogsToTransactions(TYPES.CREATE_MARKET, [log]))
+          if (log.removed) {
+            console.log('MarketCreated removed:', log)
+          } else {
+            console.log('MarketCreated:', log)
+            // augur-node emitting log.market from raw contract logs.
+            dispatch(loadMarketsInfo([log.market]))
+            if (log.marketCreator === getState().loginAccount.address) {
+              dispatch(updateAssets())
+              dispatch(convertLogsToTransactions(TYPES.CREATE_MARKET, [log]))
+            }
           }
         }
       },
       TokensTransferred: (err, log) => {
         if (err) return console.error('TokensTransferred:', err)
         if (log) {
-          console.log('TokensTransferred:', log)
-          const { address } = getState().loginAccount
-          if (log.from === address || log.to === address) {
-            dispatch(updateAssets())
-            dispatch(convertLogsToTransactions(TYPES.TRANSFER, [log]))
+          if (log.removed) {
+            console.log('TokensTransferred removed:', log)
+          } else {
+            console.log('TokensTransferred:', log)
+            const { address } = getState().loginAccount
+            if (log.from === address || log.to === address) {
+              dispatch(updateAssets())
+              dispatch(convertLogsToTransactions(TYPES.TRANSFER, [log]))
+            }
           }
         }
       },
       OrderCanceled: (err, log) => {
         if (err) return console.error('OrderCanceled:', err)
         if (log) {
-          console.log('OrderCanceled:', log)
-          // if this is the user's order, then add it to the transaction display
-          if (log.orderCreator === getState().loginAccount.address) {
-            dispatch(updateAccountCancelsData({
-              [log.marketId]: { [log.outcome]: [log] },
-            }, log.marketId))
-            dispatch(removeCanceledOrder(log.orderId))
-            dispatch(updateAssets())
+          if (log.removed) {
+            console.log('OrderCanceled removed:', log)
+          } else {
+            console.log('OrderCanceled:', log)
+            // if this is the user's order, then add it to the transaction display
+            if (log.orderCreator === getState().loginAccount.address) {
+              dispatch(updateAccountCancelsData({
+                [log.marketId]: { [log.outcome]: [log] },
+              }, log.marketId))
+              dispatch(removeCanceledOrder(log.orderId))
+              dispatch(updateAssets())
+            }
           }
         }
       },
       OrderCreated: (err, log) => {
         if (err) return console.error('OrderCreated:', err)
         if (log) {
-          console.log('OrderCreated:', log)
-          // if this is the user's order, then add it to the transaction display
-          if (log.orderCreator === getState().loginAccount.address) {
-            dispatch(updateAccountBidsAsksData({
-              [log.marketId]: {
-                [log.outcome]: [log],
-              },
-            }, log.marketId))
-            dispatch(updateAssets())
+          if (log.removed) {
+            console.log('OrderCreated removed:', log)
+          } else {
+            console.log('OrderCreated:', log)
+            // if this is the user's order, then add it to the transaction display
+            if (log.orderCreator === getState().loginAccount.address) {
+              dispatch(updateAccountBidsAsksData({
+                [log.marketId]: {
+                  [log.outcome]: [log],
+                },
+              }, log.marketId))
+              dispatch(updateAssets())
+            }
           }
         }
       },
       OrderFilled: (err, log) => {
         if (err) return console.error('OrderFilled:', err)
         if (log) {
-          console.log('OrderFilled:', log)
-          dispatch(updateOutcomePrice(log.marketId, log.outcome, new BigNumber(log.price, 10)))
-          dispatch(updateMarketCategoryPopularity(log.market, log.amount))
-          dispatch(loadFullMarket(log.marketId))
-          const { address } = getState().loginAccount
-          if (log.filler === address || log.creator === address) {
-            // dispatch(convertLogsToTransactions(TYPES.FILL_ORDER, [log]))
-            updateAccountTradesData(updateAccountTradesData({
-              [log.marketId]: {
-                [log.outcome]: [log],
-              },
-            }, log.marketId))
-            dispatch(updateAccountPositionsData({
-              [log.marketId]: {
-                [log.outcome]: [{
-                  ...log,
-                  maker: log.creator === address,
-                }],
-              },
-            }))
-            dispatch(updateAssets())
-            console.log('MSG -- ', log)
+          if (log.removed) {
+            console.log('OrderFilled removed:', log)
+          } else {
+            console.log('OrderFilled:', log)
+            dispatch(updateOutcomePrice(log.marketId, log.outcome, new BigNumber(log.price, 10)))
+            dispatch(updateMarketCategoryPopularity(log.market, log.amount))
+            dispatch(loadFullMarket(log.marketId))
+            const { address } = getState().loginAccount
+            if (log.filler === address || log.creator === address) {
+              // dispatch(convertLogsToTransactions(TYPES.FILL_ORDER, [log]))
+              updateAccountTradesData(updateAccountTradesData({
+                [log.marketId]: {
+                  [log.outcome]: [log],
+                },
+              }, log.marketId))
+              dispatch(updateAccountPositionsData({
+                [log.marketId]: {
+                  [log.outcome]: [{
+                    ...log,
+                    maker: log.creator === address,
+                  }],
+                },
+              }))
+              dispatch(updateAssets())
+              console.log('MSG -- ', log)
+            }
           }
         }
       },
       TradingProceedsClaimed: (err, log) => {
         if (err) return console.error('TradingProceedsClaimed:', err)
         if (log) {
-          console.log('TradingProceedsClaimed:', log)
-          if (log.sender === getState().loginAccount.address) {
-            dispatch(updateAssets())
-            dispatch(convertLogsToTransactions(TYPES.PAYOUT, [log]))
+          if (log.removed) {
+            console.log('TradingProceedsClaimed removed:', log)
+          } else {
+            console.log('TradingProceedsClaimed:', log)
+            if (log.sender === getState().loginAccount.address) {
+              dispatch(updateAssets())
+              dispatch(convertLogsToTransactions(TYPES.PAYOUT, [log]))
+            }
           }
         }
       },
       DesignatedReportSubmitted: (err, log) => {
         if (err) return console.error('DesignatedReportSubmitted:', err)
         if (log) {
-          console.log('DesignatedReportSubmitted:', log)
+          if (log.removed) {
+            console.log('DesignatedReportSubmitted removed:', log)
+          } else {
+            console.log('DesignatedReportSubmitted:', log)
+          }
         }
       },
       ReportSubmitted: (err, log) => {
         if (err) return console.error('ReportSubmitted:', err)
         if (log) {
-          console.log('ReportSubmitted:', log)
-          if (log.reporter === getState().loginAccount.address) {
-            dispatch(updateAssets())
-            dispatch(convertLogsToTransactions(TYPES.SUBMIT_REPORT, [log]))
+          if (log.removed) {
+            console.log('ReportSubmitted removed:', log)
+          } else {
+            console.log('ReportSubmitted:', log)
+            if (log.reporter === getState().loginAccount.address) {
+              dispatch(updateAssets())
+              dispatch(convertLogsToTransactions(TYPES.SUBMIT_REPORT, [log]))
+            }
           }
         }
       },
       ReportsDisputed: (err, log) => {
         if (err) return console.error('ReportsDisputed:', err)
         if (log) {
-          console.log('ReportsDisputed:', log)
+          if (log.removed) {
+            console.log('ReportsDisputed removed:', log)
+          } else {
+            console.log('ReportsDisputed:', log)
+          }
         }
       },
       MarketFinalized: (err, log) => {
         if (err) return console.error('MarketFinalized:', err)
         if (log) {
-          console.log('MarketFinalized:', log)
-          const { universe, loginAccount } = getState()
-          if (universe.id === log.universe) {
-            dispatch(loadMarketsInfo([log.marketId], () => {
-              const { volume, author, description } = getState().marketsData[log.marketId]
-              dispatch(updateMarketCategoryPopularity(log.marketId, new BigNumber(volume, 10).neg().toNumber()))
-              if (loginAccount.address === author) {
-                dispatch(addNotification({
-                  id: log.hash,
-                  timestamp: log.timestamp,
-                  blockNumber: log.blockNumber,
-                  title: `Collect Fees`,
-                  description: `Market Finalized: "${description}"`,
-                  linkPath: makePath(MY_MARKETS),
-                }))
-              }
-            }))
+          if (log.removed) {
+            console.log('MarketFinalized removed:', log)
+          } else {
+            console.log('MarketFinalized:', log)
+            const { universe, loginAccount } = getState()
+            if (universe.id === log.universe) {
+              dispatch(loadMarketsInfo([log.marketId], () => {
+                const { volume, author, description } = getState().marketsData[log.marketId]
+                dispatch(updateMarketCategoryPopularity(log.marketId, new BigNumber(volume, 10).neg().toNumber()))
+                if (loginAccount.address === author) {
+                  dispatch(addNotification({
+                    id: log.hash,
+                    timestamp: log.timestamp,
+                    blockNumber: log.blockNumber,
+                    title: `Collect Fees`,
+                    description: `Market Finalized: "${description}"`,
+                    linkPath: makePath(MY_MARKETS),
+                  }))
+                }
+              }))
+            }
           }
         }
       },
       UniverseForked: (err, log) => {
         if (err) return console.error('UniverseForked:', err)
         if (log) {
-          console.log('UniverseForked:', log)
+          if (log.removed) {
+            console.log('UniverseForked removed:', log)
+          } else {
+            console.log('UniverseForked:', log)
+          }
         }
       },
       CompleteSetsPurchased: (err, log) => {
         if (err) return console.error('CompleteSetsPurchased:', err)
         if (log) {
-          console.log('CompleteSetsPurchased:', log)
+          if (log.removed) {
+            console.log('CompleteSetsPurchased removed:', log)
+          } else {
+            console.log('CompleteSetsPurchased:', log)
+          }
         }
       },
       CompleteSetsSold: (err, log) => {
         if (err) return console.error('CompleteSetsSold:', err)
         if (log) {
-          console.log('CompleteSetsSold:', log)
+          if (log.removed) {
+            console.log('CompleteSetsSold removed:', log)
+          } else {
+            console.log('CompleteSetsSold:', log)
+          }
         }
       },
       TokensMinted: (err, log) => {
         if (err) return console.error('TokensMinted:', err)
         if (log) {
-          console.log('TokensMinted:', log)
+          if (log.removed) {
+            console.log('TokensMinted removed:', log)
+          } else {
+            console.log('TokensMinted:', log)
+          }
         }
       },
       TokensBurned: (err, log) => {
         if (err) return console.error('TokensBurned:', err)
         if (log) {
-          console.log('TokensBurned:', log)
+          if (log.removed) {
+            console.log('TokensBurned removed:', log)
+          } else {
+            console.log('TokensBurned:', log)
+          }
         }
       },
       FeeWindowCreated: (err, log) => {
         if (err) return console.error('FeeWindowCreated:', err)
         if (log) {
-          console.log('FeeWindowCreated:', log)
+          if (log.removed) {
+            console.log('FeeWindowCreated removed:', log)
+          } else {
+            console.log('FeeWindowCreated:', log)
+          }
         }
       },
       InitialReporterTransferred: (err, log) => {
         if (err) return console.error('InitialReporterTransferred:', err)
         if (log) {
-          console.log('InitialReporterTransferred:', log)
+          if (log.removed) {
+            console.log('InitialReporterTransferred removed:', log)
+          } else {
+            console.log('InitialReporterTransferred:', log)
+          }
         }
       },
       TimestampSet: (err, log) => {
         if (err) return console.error('TimestampSet:', err)
         if (log) {
-          console.log('TimestampSet:', log)
+          if (log.removed) {
+            console.log('TimestampSet removed:', log)
+          } else {
+            console.log('TimestampSet:', log)
+          }
         }
       },
       DisputeCrowdsourcerCreated: (err, log) => {
         if (err) return console.error('DisputeCrowdsourcerCreated:', err)
         if (log) {
-          console.log('DisputeCrowdsourcerCreated:', log)
+          if (log.removed) {
+            console.log('DisputeCrowdsourcerCreated removed:', log)
+          } else {
+            console.log('DisputeCrowdsourcerCreated:', log)
+          }
         }
       },
       DisputeCrowdsourcerContribution: (err, log) => {
         if (err) return console.error('DisputeCrowdsourcerContribution:', err)
         if (log) {
-          console.log('DisputeCrowdsourcerContribution:', log)
+          if (log.removed) {
+            console.log('DisputeCrowdsourcerContribution removed:', log)
+          } else {
+            console.log('DisputeCrowdsourcerContribution:', log)
+          }
         }
       },
       InitialReporterRedeemed: (err, log) => {
         if (err) return console.error('InitialReporterRedeemed:', err)
         if (log) {
-          console.log('InitialReporterRedeemed:', log)
+          if (log.removed) {
+            console.log('InitialReporterRedeemed removed:', log)
+          } else {
+            console.log('InitialReporterRedeemed:', log)
+          }
         }
       },
       DisputeCrowdsourcerRedeemed: (err, log) => {
         if (err) return console.error('DisputeCrowdsourcerRedeemed:', err)
         if (log) {
-          console.log('DisputeCrowdsourcerRedeemed:', log)
+          if (log.removed) {
+            console.log('DisputeCrowdsourcerRedeemed removed:', log)
+          } else {
+            console.log('DisputeCrowdsourcerRedeemed:', log)
+          }
         }
       },
       FeeWindowRedeemed: (err, log) => {
         if (err) return console.error('FeeWindowRedeemed:', err)
         if (log) {
-          console.log('FeeWindowRedeemed:', log)
+          if (log.removed) {
+            console.log('FeeWindowRedeemed removed:', log)
+          } else {
+            console.log('FeeWindowRedeemed:', log)
+          }
         }
       },
       UniverseCreated: (err, log) => {
         if (err) return console.error('UniverseCreated:', err)
         if (log) {
-          console.log('UniverseCreated:', log)
+          if (log.removed) {
+            console.log('UniverseCreated removed:', log)
+          } else {
+            console.log('UniverseCreated:', log)
+          }
         }
       },
     }, err => console.log(err || 'Listening for events'))

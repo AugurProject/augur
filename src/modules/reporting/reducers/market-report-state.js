@@ -4,6 +4,7 @@ import { UPDATE_DESIGNATED_REPORTING_MARKETS } from 'src/modules/reporting/actio
 import { UPDATE_OPEN_REPORTING_MARKETS } from 'src/modules/reporting/actions/update-open-reporting'
 import { UPDATE_AWAITING_DISPUTE_MARKETS } from 'modules/reporting/actions/update-awaiting-dispute'
 import { UPDATE_CROWD_DISPUTE_MARKETS } from 'modules/reporting/actions/update-crowd-dispute'
+import { UPDATE_RESOLVED_REPORTING_MARKETS } from 'modules/reporting/actions/update-resolved-reporting'
 
 const DEFAULT_STATE = {
   designated: [],
@@ -11,6 +12,7 @@ const DEFAULT_STATE = {
   upcoming: [],
   awaiting: [],
   dispute: [],
+  resolved: [],
 }
 
 export default function (marketReportState = DEFAULT_STATE, action) {
@@ -44,7 +46,11 @@ export default function (marketReportState = DEFAULT_STATE, action) {
         ...marketReportState,
         dispute: action.data,
       }
-
+    case UPDATE_RESOLVED_REPORTING_MARKETS:
+      return {
+        ...marketReportState,
+        resolved: action.data,
+      }
     case RESET_STATE:
       return DEFAULT_STATE
     default:

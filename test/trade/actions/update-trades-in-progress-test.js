@@ -91,6 +91,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '5',
             shareBalances: ['0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
@@ -123,6 +124,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '5',
             shareBalances: ['0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
@@ -200,6 +202,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '1.5',
             shareBalances: ['0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, `Didn't update the tradeDetails object to the new calcs given new limit`)
@@ -228,6 +231,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '0',
             shareBalances: ['0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, "Didn't produce the expected tradeDetails object")
@@ -255,6 +259,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '12.5',
             shareBalances: ['0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, "Didn't produce the expected tradeDetails object")
@@ -282,6 +287,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '12.5',
             shareBalances: ['0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, "Didn't produce the expected tradeDetails object")
@@ -341,6 +347,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '7',
             shareBalances: ['0', '0', '0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
@@ -373,6 +380,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '5',
             shareBalances: ['0', '0', '0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
@@ -463,6 +471,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '1.5',
             shareBalances: ['0', '0', '0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, `Didn't update the tradeDetails object to the new calcs given new limit`)
@@ -490,6 +499,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '0',
             shareBalances: ['0', '0', '0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, "Didn't produce the expected tradeDetails object")
@@ -517,6 +527,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '12.5',
             shareBalances: ['0', '0', '0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, "Didn't produce the expected tradeDetails object")
@@ -544,6 +555,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '12.5',
             shareBalances: ['0', '0', '0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, "Didn't produce the expected tradeDetails object")
@@ -603,6 +615,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '650',
             shareBalances: ['0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
@@ -635,6 +648,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '600',
             shareBalances: ['0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
@@ -711,6 +725,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '800',
             shareBalances: ['0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, `Didn't update the tradeDetails object to the new calcs given new limit`)
@@ -738,6 +753,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '100',
             shareBalances: ['0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
@@ -765,6 +781,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '1625',
             shareBalances: ['0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, `Didn't update the tradeDetails object to the new calcs given new limit`)
@@ -792,6 +809,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '1625',
             shareBalances: ['0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, `Didn't update the tradeDetails object to the new calcs given new limit`)
@@ -819,6 +837,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             tokensDepleted: '50',
             shareBalances: ['0', '0'],
             worstCaseFees: '0',
+            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
           },
         },
       }, `Didn't update the tradeDetails object to the new calcs given new limit`)

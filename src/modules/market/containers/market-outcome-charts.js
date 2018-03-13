@@ -113,7 +113,7 @@ const getOrderBookKeys = memoize((marketDepth) => {
 
 // Mock priceTimeSeries Data
 // const now = Date.now()
-// const timeDiff = (now - new Date(2017, 8).getTime())
+// const timeDiff = (now - new Date(2017, 8).getTime()) // Can tweak this for more range
 // const startTime = now - timeDiff
 // const priceTimeSeries = [...new Array(1000000)].map((value, i, array) => ({
 //   timestamp: startTime + (i * (timeDiff / array.length)),
