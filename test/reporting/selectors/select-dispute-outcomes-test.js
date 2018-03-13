@@ -12,7 +12,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
     })
   }
 
-  afterEach(() => {
+  after(() => {
     RewireAPI.__ResetDependency__('calculatePayoutNumeratorsValue')
   })
 
@@ -53,7 +53,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
     reportableOutcomes: [{ id: '0.5', name: 'Indeterminate' }],
   }
 
-  const calculatePayoutNumeratorsValueStubb = sinon.stub()
+  const calculatePayoutNumeratorsValueStubb = sinon.stub().returns(null)
   calculatePayoutNumeratorsValueStubb.withArgs(marketBinary, [10000, 0], false).returns('0')
   calculatePayoutNumeratorsValueStubb.withArgs(marketBinary, [0, 10000], false).returns('1')
   calculatePayoutNumeratorsValueStubb.withArgs(marketBinary, [5000, 5000], true).returns(null)
@@ -425,5 +425,4 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
     },
   })
-
 })

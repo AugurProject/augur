@@ -31,7 +31,6 @@
     "docker:push": "docker push augurproject/augur:latest"
   },
   "dependencies": {
-    "airbitz-core-js-ui": "0.1.7",
     "async": "2.6.0",
     "augur.js": "4.8.5-9",
     "bignumber.js": "5.0.0",

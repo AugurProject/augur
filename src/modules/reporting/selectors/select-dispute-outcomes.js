@@ -1,5 +1,5 @@
 import { SCALAR } from 'modules/markets/constants/market-types'
-import { calculatePayoutNumeratorsValue } from 'utils/calculate-payout-numerators-value'
+import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 import { isEmpty } from 'lodash'
 
 export default function (market, disputeStakes) {

@@ -632,7 +632,7 @@ export const GooglePlayStore = () => (
   </svg>
 )
 
-export const Participate = () => (
+export const Participate = (
   <svg width="32px" height="34px" viewBox="0 0 32 34">
     <defs />
     <g id="Reporting_1228" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
@@ -645,6 +645,17 @@ export const Participate = () => (
             <path d="M6.5,16.1019345 L6.5,0.164434524" id="Line-Copy" />
           </g>
         </g>
+      </g>
+    </g>
+  </svg>
+)
+
+export const SigningPen = (
+  <svg width="24px" height="24px" viewBox="0 0 24 24">
+    <defs />
+    <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinejoin="round">
+      <g id="Icon/Edit-White" fillRule="nonzero" stroke="#FFFFFF">
+        <path d="M1,18.4173032 L1,23 L5.58269685,23 L18.2857143,10.4285714 L13.7030174,5.84587458 L1,18.4173032 Z M22.6425496,5.9401472 C23.1191501,5.46354673 23.1191501,4.69365366 22.6425496,4.21705319 L19.7829468,1.35745035 C19.3063463,0.880849882 18.5364533,0.880849882 18.0598528,1.35745035 L15.8234967,3.59380642 L20.4061936,8.17650326 L22.6425496,5.9401472 Z" id="Shape" />
       </g>
     </g>
   </svg>

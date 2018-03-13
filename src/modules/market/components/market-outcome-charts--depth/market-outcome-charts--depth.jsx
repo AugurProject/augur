@@ -199,7 +199,7 @@ export default class MarketOutcomeDepth extends Component {
         .on('click', () => {
           const mouse = d3.mouse(d3.select('#outcome_depth').node())
           const orderPrice = this.state.yScale.invert(mouse[1]).toFixed(this.props.fixedPrecision)
-          const nearestOrder = nearestCompletelyFillingOrder(orderPrice, marketDepth)
+          const nearestFillingOrder = nearestCompletelyFillingOrder(orderPrice, marketDepth)
 
           if (
             orderPrice > this.props.marketMin &&
@@ -207,8 +207,8 @@ export default class MarketOutcomeDepth extends Component {
           ) {
             this.props.updateSeletedOrderProperties({
               selectedNav: orderPrice > orderBookKeys.mid ? BUY : SELL,
-              orderPrice: nearestOrder[1],
-              orderQuantity: nearestOrder[0],
+              orderPrice: nearestFillingOrder[1],
+              orderQuantity: nearestFillingOrder[0],
             })
           }
         })
@@ -224,33 +224,35 @@ export default class MarketOutcomeDepth extends Component {
   }
 
   drawCrosshairs(price, marketDepth) {
-    if (this.props.hoveredPrice == null) {
+    if (price == null) {
       d3.select('#crosshairs').style('display', 'none')
       d3.select('#hovered_price_label').text('')
       this.props.updateHoveredDepth([])
     } else {
       const nearestFillingOrder = nearestCompletelyFillingOrder(price, marketDepth)
 
-      if (nearestCompletelyFillingOrder === null) return
+      if (nearestFillingOrder === null) return
 
       this.props.updateHoveredDepth(nearestFillingOrder)
 
       d3.select('#crosshairs').style('display', null)
+
+      d3.select('#crosshairY')
+        .attr('x1', 0)
+        .attr('y1', this.state.yScale(price))
+        .attr('x2', this.state.chartWidth)
+        .attr('y2', this.state.yScale(price))
+
+      d3.select('#hovered_price_label')
+        .attr('x', 0)
+        .attr('y', this.state.yScale(price) + 12)
+        .text(price)
 
       d3.select('#crosshairX')
         .attr('x1', this.state.xScale(nearestFillingOrder[0]))
         .attr('y1', 0)
         .attr('x2', this.state.xScale(nearestFillingOrder[0]))
         .attr('y2', this.state.chartHeight)
-      d3.select('#crosshairY')
-        .attr('x1', 0)
-        .attr('y1', this.state.yScale(price))
-        .attr('x2', this.state.chartWidth)
-        .attr('y2', this.state.yScale(price))
-      d3.select('#hovered_price_label')
-        .attr('x', 0)
-        .attr('y', this.state.yScale(price) + 12)
-        .text(price)
     }
   }
 
