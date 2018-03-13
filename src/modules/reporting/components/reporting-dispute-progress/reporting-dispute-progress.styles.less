@@ -3,7 +3,7 @@
 .ReportingDisputeProgress__dispute-wrapper {
   display: flex;
   justify-content: flex-start;
-  width: 30rem;
+  width: 100%;
 }
 
 .ReportingDisputeProgress__dispute-graph {
@@ -31,6 +31,14 @@
   white-space: nowrap;
 }
 
+.ReportingDisputeProgress__dispute-tentative {
+  &:extend(.ReportingDisputeProgress__dispute-label);
+
+  color: @color-lighter-purple;
+  margin-left: 1.5rem;
+  text-transform: uppercase;
+}
+
 .ReportingDisputeProgress__graph-current {
   width: 15rem;
 
@@ -39,5 +47,17 @@
     border-right: 2px solid @color-white;
     height: 100%;
     position: relative;
+  }
+}
+
+.ReportingDisputeProgress__graph-current-user {
+  width: 15rem;
+
+  > div {
+    background-image: linear-gradient(-90deg, #9b8bf5 100%, rgba(155, 139, 245, 0) 100%);
+    border-right: 2px solid @color-white;
+    height: 100%;
+    position: relative;
+    transition: width 1s ease-in-out;
   }
 }

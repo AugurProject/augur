@@ -21,7 +21,7 @@ const ReportingDisputeConfirm = p => (
             </li>
             <li>
               <span>Dispute Bond</span>
-              <span>{ p.disputeBond } REP</span>
+              <span>{ p.disputeBondFormatted } REP</span>
             </li>
             { p.stake &&
               <li>
@@ -46,6 +46,7 @@ ReportingDisputeConfirm.propTypes = {
   selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   stake: PropTypes.number.isRequired,
   gasEstimate: PropTypes.string.isRequired,
+  disputeBondFormatted: PropTypes.string.isRequired,
   disputeBond: PropTypes.string.isRequired,
   isMarketInValid: PropTypes.bool,
 }
