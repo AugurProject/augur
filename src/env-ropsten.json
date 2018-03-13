@@ -2,7 +2,10 @@
   "augur-node": "wss://ropsten.augur.nodes.augur.net",
   "ethereum-node": {
     "http": "https://ropsten.ethereum.nodes.augur.net",
-    "ws": null
+    "ws": null,
+    "pollingIntervalMilliseconds": 10000,
+    "blockRetention": 100,
+    "connectionTimeout": 60000
   },
   "auto-login": true,
   "universe": null,

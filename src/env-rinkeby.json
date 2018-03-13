@@ -2,7 +2,10 @@
   "augur-node": "wss://rinkeby.augur.nodes.augur.net",
   "ethereum-node": {
     "http": "https://rinkeby.ethereum.nodes.augur.net",
-    "ws": "wss://websocket-rinkeby.ethereum.nodes.augur.net"
+    "ws": "wss://websocket-rinkeby.ethereum.nodes.augur.net",
+    "pollingIntervalMilliseconds": 10000,
+    "blockRetention": 100,
+    "connectionTimeout": 60000
   },
   "auto-login": true,
   "universe": null,
