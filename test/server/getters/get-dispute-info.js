@@ -31,6 +31,7 @@ describe("server/getters/get-dispute-info", () => {
       assert.deepEqual(disputeInfo, [
         {
           marketId: "0x0000000000000000000000000000000000000211",
+          stakeCompletedTotal: "102",
           stakes: [
             {
               payout: [
@@ -76,6 +77,7 @@ describe("server/getters/get-dispute-info", () => {
         },
         {
           marketId: "0x0000000000000000000000000000000000000011",
+          stakeCompletedTotal: "20102",
           stakes: [
             {
               payout: [
@@ -123,6 +125,7 @@ describe("server/getters/get-dispute-info", () => {
         null,
         {
           marketId: "0x0000000000000000000000000000000000000211",
+          stakeCompletedTotal: "102",
           stakes: [
             {
               payout: [
@@ -183,6 +186,7 @@ describe("server/getters/get-dispute-info", () => {
       assert.deepEqual(disputeInfo, [
         {
           marketId: "0x0000000000000000000000000000000000000011",
+          stakeCompletedTotal: "20102",
           stakes: [
             {
               payout: [
@@ -214,6 +218,7 @@ describe("server/getters/get-dispute-info", () => {
         },
         {
           marketId: "0x0000000000000000000000000000000000000211",
+          stakeCompletedTotal: "102",
           stakes: [
             {
               payout: [
