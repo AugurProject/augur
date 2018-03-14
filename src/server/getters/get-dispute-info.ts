@@ -33,11 +33,13 @@ interface ActiveCrowdsourcer extends StakeRow {
 }
 
 interface StakeSizes {
-  size?: string;
+  bondSizeCurrent?: string;
+  bondSizeTotal?: string;
   stakeCurrent?: string;
   stakeRemaining?: string;
   accountStakeCompleted?: string;
   accountStakeCurrent?: string;
+  accountStakeTotal?: string;
 }
 
 const activeMarketStates = ["CROWDSOURCING_DISPUTE", "AWAITING_NEXT_WINDOW", "FORKING", "AWAITING_FORK_MIGRATION"];
@@ -48,9 +50,9 @@ function isActiveMarketState(reportingState: ReportingState|null|undefined) {
 }
 
 function calculateBondSize(totalCompletedStakeOnAllPayouts: BigNumber, completedStakeAmount: BigNumber): BigNumber {
-  return new BigNumber(totalCompletedStakeOnAllPayouts.times(2).toString())
+  return new BigNumber(totalCompletedStakeOnAllPayouts.times(2))
     .minus(
-      new BigNumber(completedStakeAmount).times(3).toString());
+      new BigNumber(completedStakeAmount).times(3));
 }
 
 export function getDisputeInfo(db: Knex, marketIds: Array<Address>, account: Address|null, callback: (err: Error|null, result?: Array<UIStakeInfo|null>) => void): void {
@@ -105,40 +107,43 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
     const accountStakeCompletedRow = accountStakeCompletedByPayout[payout.payoutId];
     const accountStakeCurrentRow = accountStakeCurrentByPayout[payout.payoutId];
 
-    const stakeCompletedAmount = new BigNumber(stakeCompletedRow == null ? 0 : stakeCompletedRow.amountStaked.toString());
+    const stakeCompleted = new BigNumber(stakeCompletedRow == null ? 0 : stakeCompletedRow.amountStaked.toString());
     const stakeCurrentOnPayout = new BigNumber(stakeCurrentRow == null ? 0 : stakeCurrentRow.amountStaked.toString());
 
     let currentAmounts: StakeSizes;
+    const accountStakeCompleted = new BigNumber(accountStakeCompletedRow === undefined ? 0 : accountStakeCompletedRow.amountStaked);
     if (payout.tentativeWinning === 1 || !isActiveMarketState(marketRow.reportingState)) {
       currentAmounts = {};
     } else {
-      let size: BigNumber;
+      let bondSizeCurrent: BigNumber;
       let stakeCurrent: BigNumber;
       let accountStakeCurrent: BigNumber;
       if (stakeCurrentRow == null) {
-          size = calculateBondSize(totalCompletedStakeOnAllPayouts, stakeCompletedAmount);
+          bondSizeCurrent = calculateBondSize(totalCompletedStakeOnAllPayouts, stakeCompleted);
           stakeCurrent = ZERO;
           accountStakeCurrent = ZERO;
       } else {
-          size = new BigNumber(stakeCurrentRow.size.toString());
+          bondSizeCurrent = new BigNumber(stakeCurrentRow.size.toString());
           stakeCurrent = new BigNumber(stakeCurrentRow.amountStaked.toString());
           accountStakeCurrent = new BigNumber(accountStakeCurrentRow === undefined ? 0 : accountStakeCurrentRow.amountStaked.toString());
       }
       currentAmounts = {
-        size: size.toFixed(),
+        bondSizeCurrent: bondSizeCurrent.toFixed(),
         stakeCurrent: stakeCurrent.toFixed(),
         accountStakeCurrent: accountStakeCurrent.toFixed(),
-        stakeRemaining: size.minus(stakeCurrent).toFixed(),
+        accountStakeTotal: accountStakeCurrent.plus(accountStakeCompleted).toFixed(),
+        stakeRemaining: bondSizeCurrent.minus(stakeCurrent).toFixed(),
+        bondSizeTotal: bondSizeCurrent.plus(stakeCompleted).toFixed(),
       };
     }
+    currentAmounts.accountStakeCompleted = accountStakeCompleted.toFixed();
 
-    currentAmounts.accountStakeCompleted = new BigNumber(accountStakeCompletedRow === undefined ? 0 : accountStakeCompletedRow.amountStaked.toString()).toFixed();
     return Object.assign({},
       normalizePayouts(payout),
       currentAmounts,
       {
         stakeCurrent: stakeCurrentOnPayout.toFixed(),
-        stakeCompleted: stakeCompletedAmount.toFixed(),
+        stakeCompleted: stakeCompleted.toFixed(),
         tentativeWinning: !!payout.tentativeWinning,
       },
     );
@@ -147,7 +152,7 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
   return {
     marketId: marketRow.marketId,
     stakeCompletedTotal: totalCompletedStakeOnAllPayouts.toFixed(),
-    sizeOfNewStake: totalCompletedStakeOnAllPayouts.times(2).toFixed(),
+    bondSizeOfNewStake: totalCompletedStakeOnAllPayouts.times(2).toFixed(),
     stakes: stakeResults,
     disputeRound,
   };

@@ -262,7 +262,7 @@ export interface UIStakeInfo {
   marketId: Address;
   disputeRound: number|null;
   stakeCompletedTotal: string;
-  sizeOfNewStake: string;
+  bondSizeOfNewStake: string;
   stakes: Array<StakeDetails>;
 }
 
