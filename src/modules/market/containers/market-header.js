@@ -16,8 +16,8 @@ const mapStateToProps = (state, ownProps) => {
     marketType: market.marketType,
     resolutionSource: market.resolutionSource,
     coreProperties: {
-      volume: getValue(market, 'volume.formatted'),
-      fee: getValue(market, 'settlementFeePercent.formatted'), // FIXME -- right now really small fees display as 0.0
+      volume: getValue(market, 'volume.full'),
+      fee: getValue(market, 'settlementFeePercent.full'),
       expires: getValue(market, 'endDate.formattedLocal'),
     },
   }

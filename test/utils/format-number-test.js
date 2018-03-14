@@ -41,11 +41,11 @@ describe('utils/format-number.js', () => {
         value: 1000.1,
         formattedValue: 1000.1,
         roundedValue: 1000,
-        formatted: '1,000.1',
+        formatted: '1,000.10',
         rounded: '1,000',
         minimized: '1,000.1',
         denomination: '%',
-        full: '1,000.1%',
+        full: '1,000.10%',
       },
     },
     {
