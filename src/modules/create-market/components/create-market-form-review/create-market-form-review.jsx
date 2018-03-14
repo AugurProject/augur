@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { augur } from 'services/augurjs'
 // import BigNumber from 'bignumber.js'
 
-import { formatEtherEstimate, formatEtherTokensEstimate } from 'utils/format-number'
+import { formatEtherEstimate } from 'utils/format-number'
 import { EXPIRY_SOURCE_GENERIC } from 'modules/create-market/constants/new-market-constraints'
 
 import Styles from 'modules/create-market/components/create-market-form-review/create-market-form-review.styles'
@@ -29,9 +29,9 @@ export default class CreateMarketReview extends Component {
       // gas: null,
       // fees: null
       // },
-      formattedInitialLiquidityEth: formatEtherTokensEstimate(this.props.newMarket.initialLiquidityEth),
+      formattedInitialLiquidityEth: formatEtherEstimate(this.props.newMarket.initialLiquidityEth),
       formattedInitialLiquidityGas: formatEtherEstimate(this.props.newMarket.initialLiquidityGas),
-      formattedInitialLiquidityFees: formatEtherTokensEstimate(this.props.newMarket.initialLiquidityFees),
+      formattedInitialLiquidityFees: formatEtherEstimate(this.props.newMarket.initialLiquidityFees),
     }
 
     this.calculateMarketCreationCosts = this.calculateMarketCreationCosts.bind(this)
@@ -42,9 +42,9 @@ export default class CreateMarketReview extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.newMarket.initialLiquidityEth !== nextProps.newMarket.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherTokensEstimate(nextProps.newMarket.initialLiquidityEth) })
+    if (this.props.newMarket.initialLiquidityEth !== nextProps.newMarket.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherEstimate(nextProps.newMarket.initialLiquidityEth) })
     if (this.props.newMarket.initialLiquidityGas !== nextProps.newMarket.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(nextProps.newMarket.initialLiquidityGas) })
-    if (this.props.newMarket.initialLiquidityFees !== nextProps.newMarket.initialLiquidityFees) this.setState({ formattedInitialLiquidityFees: formatEtherTokensEstimate(nextProps.newMarket.initialLiquidityFees) })
+    if (this.props.newMarket.initialLiquidityFees !== nextProps.newMarket.initialLiquidityFees) this.setState({ formattedInitialLiquidityFees: formatEtherEstimate(nextProps.newMarket.initialLiquidityFees) })
   }
 
   calculateMarketCreationCosts() {

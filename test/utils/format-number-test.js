@@ -7,20 +7,6 @@ describe('utils/format-number.js', () => {
   const	num = 1000.100
   const utils = [
     {
-      func: 'formatEtherTokens',
-      denom: 'ETH Tokens',
-      out: {
-        value: 1000.1,
-        formattedValue: 1000.1,
-        roundedValue: 1000.1,
-        formatted: '1,000.1000',
-        rounded: '1,000.1000',
-        minimized: '1,000.1',
-        denomination: ' ETH Tokens',
-        full: '1,000.1000 ETH Tokens',
-      },
-    },
-    {
       func: 'formatEther',
       denom: 'ETH',
       out: {
@@ -32,20 +18,6 @@ describe('utils/format-number.js', () => {
         minimized: '1,000.1',
         denomination: ' ETH',
         full: '1,000.1000 ETH',
-      },
-    },
-    {
-      func: 'formatEtherTokensEstimate',
-      denom: 'ETH Tokens (estimated)',
-      out: {
-        value: 1000.1,
-        formattedValue: 1000.1,
-        roundedValue: 1000.1,
-        formatted: '1,000.1000',
-        rounded: '1,000.1000',
-        minimized: '1,000.1',
-        denomination: ' ETH Tokens (estimated)',
-        full: '1,000.1000 ETH Tokens (estimated)',
       },
     },
     {

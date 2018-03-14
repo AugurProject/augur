@@ -7,7 +7,7 @@ import {
   generatePositionsSummary,
 } from 'modules/my-positions/selectors/my-positions-summary'
 
-import { formatEtherTokens, formatShares, formatNumber } from 'utils/format-number'
+import { formatEther, formatShares, formatNumber } from 'utils/format-number'
 
 describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
   describe('generateOutcomePositionSummary', () => {
@@ -46,10 +46,10 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             zeroStyled: false,
           }),
           qtyShares: formatShares(0),
-          purchasePrice: formatEtherTokens(0),
-          realizedNet: formatEtherTokens(0),
-          unrealizedNet: formatEtherTokens(0),
-          totalNet: formatEtherTokens(0),
+          purchasePrice: formatEther(0),
+          realizedNet: formatEther(0),
+          unrealizedNet: formatEther(0),
+          totalNet: formatEther(0),
           isClosable: false,
         }
 
@@ -88,10 +88,10 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             zeroStyled: false,
           }),
           qtyShares: formatShares(10),
-          purchasePrice: formatEtherTokens(0.2),
-          realizedNet: formatEtherTokens(0.1),
-          unrealizedNet: formatEtherTokens(0.5),
-          totalNet: formatEtherTokens(0.6),
+          purchasePrice: formatEther(0.2),
+          realizedNet: formatEther(0.1),
+          unrealizedNet: formatEther(0.5),
+          totalNet: formatEther(0.6),
           isClosable: true,
         }
 
@@ -141,10 +141,10 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
                 zeroStyled: false,
               }),
               qtyShares: formatShares(1),
-              purchasePrice: formatEtherTokens(0.2),
-              realizedNet: formatEtherTokens(0),
-              unrealizedNet: formatEtherTokens(0),
-              totalNet: formatEtherTokens(0),
+              purchasePrice: formatEther(0.2),
+              realizedNet: formatEther(0),
+              unrealizedNet: formatEther(0),
+              totalNet: formatEther(0),
             },
             outcomes: [{}],
           },
@@ -159,10 +159,10 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             zeroStyled: false,
           }),
           qtyShares: formatShares(0),
-          purchasePrice: formatEtherTokens(0),
-          realizedNet: formatEtherTokens(0),
-          unrealizedNet: formatEtherTokens(0),
-          totalNet: formatEtherTokens(0),
+          purchasePrice: formatEther(0),
+          realizedNet: formatEther(0),
+          unrealizedNet: formatEther(0),
+          totalNet: formatEther(0),
           positionOutcomes: [],
         }
 
@@ -185,10 +185,10 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
                 zeroStyled: false,
               }),
               qtyShares: formatShares(1),
-              purchasePrice: formatEtherTokens(0.2),
-              realizedNet: formatEtherTokens(0),
-              unrealizedNet: formatEtherTokens(0),
-              totalNet: formatEtherTokens(0),
+              purchasePrice: formatEther(0.2),
+              realizedNet: formatEther(0),
+              unrealizedNet: formatEther(0),
+              totalNet: formatEther(0),
             },
             outcomes: [
               {
@@ -201,10 +201,10 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
                     zeroStyled: false,
                   }),
                   qtyShares: formatShares(1),
-                  purchasePrice: formatEtherTokens(0.2),
-                  realizedNet: formatEtherTokens(10),
-                  unrealizedNet: formatEtherTokens(-1),
-                  totalNet: formatEtherTokens(9),
+                  purchasePrice: formatEther(0.2),
+                  realizedNet: formatEther(10),
+                  unrealizedNet: formatEther(-1),
+                  totalNet: formatEther(9),
                   isClosable: true,
                 },
               },
@@ -221,10 +221,10 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             zeroStyled: false,
           }),
           qtyShares: formatShares(1),
-          purchasePrice: formatEtherTokens(0),
-          realizedNet: formatEtherTokens(10),
-          unrealizedNet: formatEtherTokens(-1),
-          totalNet: formatEtherTokens(9),
+          purchasePrice: formatEther(0),
+          realizedNet: formatEther(10),
+          unrealizedNet: formatEther(-1),
+          totalNet: formatEther(9),
           positionOutcomes: [
             {
               position: {
@@ -236,10 +236,10 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
                   zeroStyled: false,
                 }),
                 qtyShares: formatShares(1),
-                purchasePrice: formatEtherTokens(0.2),
-                realizedNet: formatEtherTokens(10),
-                unrealizedNet: formatEtherTokens(-1),
-                totalNet: formatEtherTokens(9),
+                purchasePrice: formatEther(0.2),
+                realizedNet: formatEther(10),
+                unrealizedNet: formatEther(-1),
+                totalNet: formatEther(9),
                 isClosable: true,
               },
             },
@@ -272,10 +272,10 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             zeroStyled: false,
           }),
           qtyShares: formatShares(2),
-          purchasePrice: formatEtherTokens(0.2),
-          realizedNet: formatEtherTokens(10),
-          unrealizedNet: formatEtherTokens(-1),
-          totalNet: formatEtherTokens(9),
+          purchasePrice: formatEther(0.2),
+          realizedNet: formatEther(10),
+          unrealizedNet: formatEther(-1),
+          totalNet: formatEther(9),
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expected value`)

@@ -3,7 +3,7 @@ import { assert } from 'chai'
 import proxyquire from 'proxyquire'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import { formatEtherTokens, formatShares, formatNone } from 'utils/format-number'
+import { formatEther, formatShares, formatNone } from 'utils/format-number'
 import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status'
 
 describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
@@ -194,7 +194,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 
     const results =[{
       id: 'order1',
-      avgPrice: formatEtherTokens('100'),
+      avgPrice: formatEther('100'),
       type: 'sell',
       matchedShares: formatNone(),
       originalShares: formatNone(),
@@ -204,7 +204,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       cancelOrder: () => { },
     }, {
       id: 'order2',
-      avgPrice: formatEtherTokens('70'),
+      avgPrice: formatEther('70'),
       type: 'sell',
       matchedShares: formatNone(),
       originalShares: formatNone(),
@@ -214,7 +214,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       cancelOrder: () => { },
     }, {
       id: 'order3',
-      avgPrice: formatEtherTokens('10'),
+      avgPrice: formatEther('10'),
       type: 'sell',
       matchedShares: formatNone(),
       originalShares: formatNone(),
@@ -224,7 +224,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       cancelOrder: () => { },
     }, {
       id: 'order11',
-      avgPrice: formatEtherTokens('60'),
+      avgPrice: formatEther('60'),
       type: 'buy',
       matchedShares: formatNone(),
       originalShares: formatNone(),
@@ -234,7 +234,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       cancelOrder: () => { },
     }, {
       id: 'order13',
-      avgPrice: formatEtherTokens('20'),
+      avgPrice: formatEther('20'),
       type: 'buy',
       matchedShares: formatNone(),
       originalShares: formatNone(),
@@ -244,7 +244,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       cancelOrder: () => { },
     }, {
       id: 'order14',
-      avgPrice: formatEtherTokens('10'),
+      avgPrice: formatEther('10'),
       type: 'buy',
       matchedShares: formatNone(),
       originalShares: formatNone(),

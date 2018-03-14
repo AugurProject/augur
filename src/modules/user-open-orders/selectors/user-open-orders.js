@@ -7,7 +7,7 @@ import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
 
-import { formatNone, formatEtherTokens, formatShares } from 'utils/format-number'
+import { formatNone, formatEther, formatShares } from 'utils/format-number'
 import { cancelOrder } from 'modules/bids-asks/actions/cancel-order'
 /**
  * Pulls off existing order book in state
@@ -65,7 +65,7 @@ function getUserOpenOrders(marketId, orders, orderType, outcomeId, userId, order
         outcomeId,
         pending: orderCancellation[order.orderId],
         originalShares: formatNone(),
-        avgPrice: formatEtherTokens(order.price),
+        avgPrice: formatEther(order.price),
         matchedShares: formatNone(),
         unmatchedShares: formatShares(order.amount),
         cancelOrder: (orderId, marketId, outcome, type) => {

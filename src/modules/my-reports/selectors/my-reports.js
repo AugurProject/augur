@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { formatEtherTokens, formatPercent, formatRep } from 'utils/format-number'
+import { formatEther, formatPercent, formatRep } from 'utils/format-number'
 import { formatDate } from 'utils/format-date'
 import { TWO } from 'modules/trade/constants/numbers'
 import store from 'src/store'
@@ -59,7 +59,7 @@ export default function () {
 
 export const calculateFeesEarned = (market) => {
   if (!market.marketFees || !market.repBalance || !market.marketWeight) return null
-  return formatEtherTokens(new BigNumber(market.marketFees, 10)
+  return formatEther(new BigNumber(market.marketFees, 10)
     .times(new BigNumber(market.repBalance, 10))
     .dividedBy(TWO)
     .dividedBy(new BigNumber(market.marketWeight, 10)))

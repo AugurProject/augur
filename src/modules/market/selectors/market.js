@@ -22,7 +22,7 @@ This is true for all selectors, but especially important for this one.
 
 import BigNumber from 'bignumber.js'
 import memoize from 'memoizee'
-import { formatShares, formatEtherTokens, formatEther, formatPercent, formatNumber } from 'utils/format-number'
+import { formatShares, formatEther, formatPercent, formatNumber } from 'utils/format-number'
 import { formatDate, getCurrentDateTimestamp, convertUnixToFormattedDate } from 'utils/format-date'
 import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open'
 
@@ -233,7 +233,7 @@ export function assembleMarket(
           ...outcomeData,
           id: outcomeId,
           marketId,
-          lastPrice: formatEtherTokens(outcomeData.price || 0, { positiveSign: false }),
+          lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false }),
         }
 
         if (market.isScalar) {
