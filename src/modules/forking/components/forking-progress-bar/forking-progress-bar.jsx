@@ -8,9 +8,9 @@ import Styles from 'modules/forking/components/forking-progress-bar/forking-prog
 const SECONDS_PER_DAY = 3600 * 24
 
 const ForkingProgressBar = (p) => {
-  const forkingPeriodInDays = augur.rpc.constants.CONTRACT_INTERVAL.FORK_DURATION_SECONDS / SECONDS_PER_DAY
+  const forkingPeriodInDays = augur.constants.CONTRACT_INTERVAL.FORK_DURATION_SECONDS / SECONDS_PER_DAY
 
-  const daysRemaining = getDaysRemaining(this.props.forkEndTime, this.props.currentTime)
+  const daysRemaining = getDaysRemaining(p.forkEndTime, p.currentTime)
 
   const percentagePassed = (100 * (forkingPeriodInDays - daysRemaining)) / forkingPeriodInDays
 

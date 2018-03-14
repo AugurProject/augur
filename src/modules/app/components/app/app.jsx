@@ -433,7 +433,7 @@ export default class AppView extends Component {
                 toggleNotifications={() => this.toggleNotifications()}
               />
             }
-            {p.universe.forkEndTime &&
+            {p.universe.forkEndTime != "0" &&
               <section className={Styles.TopBar}>
                 <ForkingNotification
                   forkEndTime={p.universe.forkEndTime}
