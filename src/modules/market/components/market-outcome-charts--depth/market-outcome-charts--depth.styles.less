@@ -40,9 +40,22 @@
       stroke: @color-white;
     }
 
+    .bounding-line,
+    .tick-line,
+    .tick-line--midpoint {
+      stroke: @color-gray;
+      stroke-width: 2px;
+    }
+
     .depth-line {
       fill: none;
       stroke: @color-lighter-purple;
+    }
+
+    .tick-value {
+      &:extend(.caps--extra-small all);
+
+      stroke: @color-lightgray;
     }
 
     .stop-left {
@@ -67,6 +80,16 @@
     .overlay {
       fill: none;
       pointer-events: visible;
+    }
+
+    #depth-x-axis {
+      line {
+        stroke: @color-lightgray;
+      }
+
+      text {
+        fill: @color-lightgray;
+      }
     }
   }
 }

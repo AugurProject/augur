@@ -105,8 +105,11 @@ export default class MarketOutcomeDepth extends Component {
 
       const xDomain = Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[0]], [])], [])
 
+      // TODO --
+      // Make intervals shared between charts
+
       // Ensure yDomain always has midmarket price at the center
-      // TODO -- can probably clean this up...is a copy/paste from an older implementation
+      // TODO -- can def clean this up...
       // Can only use odd numbered intervals so midpoint is always centered
       const intervals = 5
       const allowedFloat = 2 // TODO -- set this to the precision
@@ -124,6 +127,15 @@ export default class MarketOutcomeDepth extends Component {
         if (i + 1 === Math.round(intervals / 2)) return [...p, orderBookKeys.mid]
         return [...p, Number((p[i - 1] + step).toFixed(allowedFloat))]
       }, [])
+      console.log('yDomain -- ', yDomain)
+
+      const yDomainBounds = yDomain.length ? [yDomain[0], yDomain[yDomain.length - 1]] : []
+
+      // const offsetYDomain = new Array(2).fill(null).reduce((p, _unused, i) => {
+      //   if (i === 0) return [Number((orderBookKeys.mid - boundDiff).toFixed(allowedFloat))]
+      //   if (i + 1 === Math.round(intervals / 2)) return [...p, orderBookKeys.mid]
+      //   return [...p, Number((p[i - 1] + step).toFixed(allowedFloat))]
+      // }, [])
 
       // const yDomain = Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[1]], [])], [])
 
@@ -139,6 +151,40 @@ export default class MarketOutcomeDepth extends Component {
         .curve(d3.curveStepAfter)
         .x(d => xScale(d[0]))
         .y(d => yScale(d[1]))
+
+      // Y Axis
+      //  Chart Bounds
+      chart.selectAll('line')
+        .data(new Array(2))
+        .enter()
+        .append('line')
+        .attr('class', 'bounding-line')
+        .attr('x1', 0)
+        .attr('x2', width)
+        .attr('y1', (d, i) => ((height - margin.bottom) / 1) * i)
+        .attr('y2', (d, i) => ((height - margin.bottom) / 1) * i)
+      //  Midpoint
+      //  Offset Axis
+
+      chart.selectAll('text')
+        .data(yDomain.sort((a, b) => (b - a)))
+        .enter()
+        .append('text')
+        .attr('class', 'tick-value')
+        .attr('x', 0)
+        .attr('y', (d, i) => ((height - margin.bottom) / 4) * i)
+        .attr('dy', margin.tickOffset)
+        .attr('dx', 0)
+        .text((d, i) => {
+          if (i && i !== yDomain.length - 1) return d ? d.toFixed(allowedFloat) : ''
+        })
+
+      // X Axis
+      chart.append('g')
+        .attr('id', 'depth-x-axis')
+        .attr('transform', `translate(0, ${height - margin.bottom})`)
+        .call(d3.axisBottom(xScale))
+        .select('path').remove()
 
       Object.keys(marketDepth).forEach((side) => {
         chart.append('path')
