@@ -5,6 +5,8 @@ import classNames from 'classnames'
 import { ASKS, BIDS } from 'modules/order-book/constants/order-book-order-types'
 import { BUY, SELL } from 'modules/transactions/constants/types'
 
+import { isEqual, isEmpty } from 'lodash'
+
 import Styles from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders.styles'
 
 export default class MarketOutcomeOrderbook extends Component {
@@ -29,6 +31,15 @@ export default class MarketOutcomeOrderbook extends Component {
 
   componentDidMount() {
     this.asks.scrollTo(0, (this.asks.scrollHeight || 0))
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      isEmpty(prevProps.orderBook.asks) &&
+      !isEqual(prevProps.orderBook.asks, this.props.orderBook.asks)
+    ) {
+      this.asks.scrollTo(0, (this.asks.scrollHeight || 0))
+    }
   }
 
   render() {

@@ -192,7 +192,7 @@ export default class MarketOutcomeDepth extends Component {
       const rangeBounds = chart.append('g')
         .attr('id', 'depth_range_bounds')
 
-      if (yDomain[0] < orderBookKeys.min) {
+      if (yDomain[0] < this.props.marketMin) {
         rangeBounds.append('line')
           .attr('class', 'tick-line')
           .attr('x1', 0)
@@ -215,7 +215,7 @@ export default class MarketOutcomeDepth extends Component {
           .attr('height', drawHeight - yScale(orderBookKeys.min))
           .attr('width', width)
 
-      } else if (yDomain[yDomain.length - 1] > orderBookKeys.max) {
+      } else if (yDomain[yDomain.length - 1] > this.props.marketMax) {
         rangeBounds.append('line')
           .attr('class', 'tick-line')
           .attr('x1', 0)
@@ -273,12 +273,13 @@ export default class MarketOutcomeDepth extends Component {
         .attr('class', 'line')
         .attr('style', { display: 'none' })
 
-      // create horizontal line
+      // X Crosshair
       crosshair.append('line')
         .attr('id', 'crosshairX')
         .attr('class', 'crosshair')
+        .attr('style', { display: 'none' })
 
-      // create vertical line
+      // Y Crosshair
       crosshair.append('line')
         .attr('id', 'crosshairY')
         .attr('class', 'crosshair')
@@ -341,6 +342,21 @@ export default class MarketOutcomeDepth extends Component {
 
       d3.select('#crosshairs').style('display', null)
 
+      if (
+        price > this.props.marketMin &&
+        price < this.props.marketMax
+      ) {
+        d3.select('#crosshairX')
+          .attr('x1', this.state.xScale(nearestFillingOrder[0]))
+          .attr('y1', 0)
+          .attr('x2', this.state.xScale(nearestFillingOrder[0]))
+          .attr('y2', this.state.chartHeight)
+          .style('display', null)
+      } else {
+        d3.select('#crosshairX')
+          .style('display', 'none')
+      }
+
       d3.select('#crosshairY')
         .attr('x1', 0)
         .attr('y1', this.state.yScale(price))
@@ -351,12 +367,6 @@ export default class MarketOutcomeDepth extends Component {
         .attr('x', 0)
         .attr('y', this.state.yScale(price) + 12)
         .text(price)
-
-      d3.select('#crosshairX')
-        .attr('x1', this.state.xScale(nearestFillingOrder[0]))
-        .attr('y1', 0)
-        .attr('x2', this.state.xScale(nearestFillingOrder[0]))
-        .attr('y2', this.state.chartHeight)
     }
   }
 
