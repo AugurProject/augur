@@ -20,6 +20,24 @@
     &:last-child { border: none; }
   }
 
+  .disabled {
+    pointer-events: none;
+
+    > li,
+    > a,
+    > button {
+      span {
+        color: @color-gray;
+      }
+
+      svg {
+        g {
+          stroke: @color-gray;
+        }
+      }
+    }
+  }
+
   > li a,
   > li button {
     background: none;

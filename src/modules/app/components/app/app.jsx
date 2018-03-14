@@ -115,6 +115,7 @@ export default class AppView extends Component {
         icon: NavCreateIcon,
         route: CREATE_MARKET,
         requireLogin: true,
+        disabled: this.props.universe.isForking,
       },
       {
         title: 'Portfolio',

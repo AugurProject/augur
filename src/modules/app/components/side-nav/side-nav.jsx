@@ -93,12 +93,13 @@ export default class SideNav extends Component {
 
             return (
               <li
-                className={classNames({ [Styles['SideNav__item--selected']]: selected })}
+                className={classNames({ [Styles['SideNav__item--selected']]: selected }, item.disabled ? Styles.disabled : '')}
                 key={item.title}
               >
                 <Link
                   to={item.route ? makePath(item.route) : null}
                   onClick={linkClickHandler}
+                  disabled={item.disabled}
                 >
                   <Icon />
                   <span className={Styles['item-title']}>{item.title}</span>
