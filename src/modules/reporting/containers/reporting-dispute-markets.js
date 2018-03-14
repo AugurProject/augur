@@ -29,6 +29,9 @@ const mapStateToProps = (state, { history }) => {
     isMobile: state.isMobile,
     disputeRound: 1,
     navigateToAccountDepositHandler: () => history.push(makePath(ACCOUNT_DEPOSIT)),
+    isForking: state.universe.forkEndTime && state.universe.forkEndTime !== '0',
+    forkEndTime: state.universe.forkEndTime,
+    currentTime: state.blockchain.currentAugurTimestamp,
   })
 }
 

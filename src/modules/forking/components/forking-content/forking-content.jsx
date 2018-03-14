@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 import { convertUnixToFormattedDate } from 'utils/format-date'
 import ForkingProgressBar from 'modules/forking/components/forking-progress-bar/forking-progress-bar'
 
@@ -23,8 +24,8 @@ class ForkingContent extends Component {
     const unixFormattedDate = convertUnixToFormattedDate(this.props.forkEndTime)
 
     return (
-      <section className={Styles.ForkingContent}>
-        <div className={Styles.ForkingContent__container}>
+      <section className={classNames(Styles.ForkingContent, this.props.expanded ? Styles.expanded : '')}>
+        <div className={classNames(Styles.ForkingContent__container, this.props.expanded ? Styles.expanded : '')}>
           <h4>
             Forking window ends {unixFormattedDate.formattedLocal}
           </h4>
@@ -45,6 +46,7 @@ class ForkingContent extends Component {
 ForkingContent.propTypes = {
   forkEndTime: PropTypes.string.isRequired,
   currentTime: PropTypes.number.isRequired,
+  expanded: PropTypes.bool.isRequired,
 }
 
 export default ForkingContent

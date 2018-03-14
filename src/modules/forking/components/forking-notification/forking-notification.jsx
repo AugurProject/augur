@@ -50,6 +50,7 @@ class ForkingNotification extends Component {
           <ForkingContent
             forkEndTime={this.props.forkEndTime}
             currentTime={this.props.currentTime}
+            expanded
           />
         }
       </section>

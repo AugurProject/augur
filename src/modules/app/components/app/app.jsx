@@ -436,7 +436,7 @@ export default class AppView extends Component {
                 toggleNotifications={() => this.toggleNotifications()}
               />
             }
-            {p.universe.forkEndTime !== '0' &&
+            {p.universe.forkEndTime && p.universe.forkEndTime !== '0' && p.blockchain && p.blockchain.currentAugurTimestamp &&
               <section className={Styles.TopBar}>
                 <ForkingNotification
                   forkEndTime={p.universe.forkEndTime}

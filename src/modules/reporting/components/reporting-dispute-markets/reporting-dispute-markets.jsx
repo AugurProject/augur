@@ -25,6 +25,9 @@ export default class ReportingDisputeMarkets extends Component {
     isMarketsLoaded: PropTypes.bool.isRequired,
     loadMarkets: PropTypes.func.isRequired,
     disputeRound: PropTypes.number.isRequired,
+    isForking: PropTypes.bool.isRequired,
+    forkEndTime: PropTypes.string,
+    currentTime: PropTypes.number.isRequired,
   }
 
   componentWillMount() {
@@ -43,9 +46,11 @@ export default class ReportingDisputeMarkets extends Component {
         <section className={Styles.ReportDispute}>
           <ReportingHeader
             heading="Dispute"
-            showReportingEndDate
+            isForking={p.isForking}
+            forkEndTime={p.forkEndTime}
+            currentTime={p.currentTime}
           />
-          { !p.doesUserHaveRep &&
+          { !p.doesUserHaveRep && !p.forkEndTime &&
           <ReportDisputeNoRepState
             btnText="Add Funds"
             message="You have 0 REP available. Add funds to dispute markets or purchase participation tokens."
