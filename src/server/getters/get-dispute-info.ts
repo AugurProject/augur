@@ -111,7 +111,7 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
     const stakeCurrentOnPayout = new BigNumber(stakeCurrentRow == null ? 0 : stakeCurrentRow.amountStaked.toString());
 
     let currentAmounts: StakeSizes;
-    const accountStakeCompleted = new BigNumber(accountStakeCompletedRow === undefined ? 0 : accountStakeCompletedRow.amountStaked);
+    const accountStakeCompleted = new BigNumber(accountStakeCompletedRow === undefined ? 0 : accountStakeCompletedRow.amountStaked.toString());
     if (payout.tentativeWinning === 1 || !isActiveMarketState(marketRow.reportingState)) {
       currentAmounts = {};
     } else {
