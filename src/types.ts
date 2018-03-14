@@ -261,6 +261,8 @@ export interface StakeDetails extends NormalizedPayout {
 export interface UIStakeInfo {
   marketId: Address;
   disputeRound: number|null;
+  stakeCompletedTotal: string;
+  bondSizeOfNewStake: string;
   stakes: Array<StakeDetails>;
 }
 

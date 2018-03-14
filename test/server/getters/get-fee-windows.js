@@ -46,7 +46,7 @@ describe("server/getters/get-fee-windows", () => {
       assert.deepEqual(feeWindows, {
         "0x1000000000000000000000000000000000000000": {
           startTime: 1506473473,
-          endTime: 1509065473,
+          endTime: 1506473515,
           balance: 100,
           expectedFees: 100 * 1000 / 300,
         },
@@ -85,7 +85,7 @@ describe("server/getters/get-fee-windows", () => {
       assert.deepEqual(feeWindows, {
         "0x1000000000000000000000000000000000000000": {
           startTime: 1506473473,
-          endTime: 1509065473,
+          endTime: 1506473515,
           balance: 100,
           expectedFees: 100 * 1000 / 300,
         },
