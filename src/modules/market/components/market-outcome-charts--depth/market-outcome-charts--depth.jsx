@@ -133,7 +133,7 @@ export default class MarketOutcomeDepth extends Component {
       // Y Axis
       //  Chart Bounds
       chart.append('g')
-        .attr('id', 'chart_bounding_lines')
+        .attr('id', 'depth_chart_bounds')
         .selectAll('line')
         .data(new Array(2))
         .enter()
@@ -188,19 +188,48 @@ export default class MarketOutcomeDepth extends Component {
         .attr('dy', margin.tickOffset)
         .text(d => d.toFixed(allowedFloat))
 
-      //  Labels
-      // chart.selectAll('text')
-      //   .data(yDomain.sort((a, b) => (b - a)))
-      //   .enter()
-      //   .append('text')
-      //   .attr('class', 'tick-value')
-      //   .attr('x', 0)
-      //   .attr('y', (d, i) => ((height - margin.bottom) / (intervals - 1)) * i)
-      //   .attr('dy', margin.tickOffset)
-      //   .attr('dx', 0)
-      //   .text((d, i) => {
-      //     if (i && i !== yDomain.length - 1) return d ? d.toFixed(allowedFloat) : ''
-      //   })
+      //  Min/Max Boundary Lines
+      const rangeBounds = chart.append('g')
+        .attr('id', 'depth_range_bounds')
+
+      if (yDomain[0] < orderBookKeys.min) {
+        rangeBounds.append('line')
+          .attr('class', 'tick-line')
+          .attr('x1', 0)
+          .attr('x2', width)
+          .attr('y1', () => yScale(orderBookKeys.min))
+          .attr('y2', () => yScale(orderBookKeys.min))
+
+        rangeBounds.append('text')
+          .attr('class', 'tick-value')
+          .attr('x', 0)
+          .attr('y', d => yScale(orderBookKeys.min))
+          .attr('dx', 0)
+          .attr('dy', margin.tickOffset)
+          .text('min')
+
+        rangeBounds.append('rect')
+          .attr('class', 'bounding-box')
+          .attr('x', 0)
+          .attr('y', () => yScale(orderBookKeys.min))
+          .attr('height', drawHeight - yScale(orderBookKeys.min))
+          .attr('width', width)
+
+      } else if (yDomain[yDomain.length - 1] > orderBookKeys.max) {
+        rangeBounds.append('line')
+          .attr('class', 'tick-line')
+          .attr('x1', 0)
+          .attr('x2', width)
+          .attr('y1', () => yScale(orderBookKeys.max))
+          .attr('y2', () => yScale(orderBookKeys.max))
+        rangeBounds.append('text')
+          .attr('class', 'tick-value')
+          .attr('x', 0)
+          .attr('y', d => yScale(orderBookKeys.max))
+          .attr('dx', 0)
+          .attr('dy', margin.tickOffset)
+          .text('max')
+      }
 
       // X Axis
       chart.append('g')

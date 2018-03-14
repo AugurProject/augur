@@ -40,6 +40,13 @@
       stroke: @color-white;
     }
 
+    #depth_range_bounds {
+      .bounding-box {
+        fill: @color-white;
+        opacity: 0.05;
+      }
+    }
+
     .bounding-line,
     .midpoint-line,
     .tick-line,
@@ -60,7 +67,7 @@
     .tick-value {
       &:extend(.caps--extra-small all);
 
-      stroke: @color-lightgray;
+      fill: @color-lightgray;
     }
 
     .stop-left {
