@@ -30,7 +30,6 @@ const mapStateToProps = (state, { history }) => {
     marketsCount: disputableMarkets.length,
     upcomingMarketsCount: upcomingDisputableMarkets.length,
     isMobile: state.isMobile,
-    disputeRound: 1,
     navigateToAccountDepositHandler: () => history.push(makePath(ACCOUNT_DEPOSIT)),
     outcomes: disputeOutcomes,
     account: loginAccount.address,

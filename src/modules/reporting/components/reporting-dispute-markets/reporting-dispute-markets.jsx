@@ -24,7 +24,6 @@ export default class ReportingDisputeMarkets extends Component {
     isConnected: PropTypes.bool.isRequired,
     isMarketsLoaded: PropTypes.bool.isRequired,
     loadMarkets: PropTypes.func.isRequired,
-    disputeRound: PropTypes.number.isRequired,
     outcomes: PropTypes.object.isRequired,
     account: PropTypes.string.isRequired,
   }
@@ -59,7 +58,6 @@ export default class ReportingDisputeMarkets extends Component {
               (<DisputeMarketCard
                 key={market.id}
                 market={market}
-                disputeRound={p.disputeRound}
                 isMobile={p.isMobile}
                 location={p.location}
                 history={p.history}
@@ -79,7 +77,6 @@ export default class ReportingDisputeMarkets extends Component {
               (<DisputeMarketCard
                 key={market.id}
                 market={market}
-                disputeRound={p.disputeRound}
                 isMobile={p.isMobile}
                 location={p.location}
                 history={p.history}

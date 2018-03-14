@@ -24,6 +24,13 @@ export const calculateTentativeStakePercentage = (size, totalStake, tentativeSta
   return result
 }
 
+export const calculateAddedTentativeStakePercentage = (size, totalStake, accountStakeCurrent, tentativeStake) => {
+  const addedAccountStake = new BigNumber(accountStakeCurrent).plus(new BigNumber(tentativeStake))
+  const attoRep = convertRepToAttoRep(addedAccountStake)
+  const result = calculatePercentage(size, new BigNumber(totalStake).plus(new BigNumber(attoRep)).toNumber())
+  return result
+}
+
 export const calculateTentativeRemainingRep = (size, totalStake, tentativeStake) => {
   const attoRep = convertRepToAttoRep(tentativeStake)
   const result = calculateRemainingValue(size, new BigNumber(totalStake).plus(new BigNumber(attoRep)).toNumber())

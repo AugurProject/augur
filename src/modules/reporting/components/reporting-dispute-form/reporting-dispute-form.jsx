@@ -216,6 +216,7 @@ export default class ReportingDisputeForm extends Component {
                   disputeBondValue={p.disputeBondValue}
                   currentStake={parseInt(outcome.currentStake, 10)}
                   isSelected={p.selectedOutcome === outcome.id}
+                  accountStakeCurrent={outcome.accountStakeCurrent}
                 />
               </li>
             ))

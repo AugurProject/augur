@@ -25,7 +25,7 @@ const mapDispatchToProps = dispatch => ({
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
   submitMarketContribute: (marketId, outcomeValue, amount, invalid, history) => dispatch(submitMarketContribute(marketId, outcomeValue, amount, invalid, history)),
   estimateSubmitMarketContribute: (marketId, outcomeValue, amount, invalid, history) => dispatch(estimateSubmitMarketContribute(marketId, outcomeValue, amount, invalid, history)),
-  getDisputeInfo: (marketId, callback) => dispatch(getDisputeInfo(marketId, callback)),
+  getDisputeInfo: (marketIds, callback) => dispatch(getDisputeInfo(marketIds, callback)),
 })
 
 
@@ -44,7 +44,7 @@ const mergeProps = (sP, dP, oP) => {
     loadFullMarket: () => dP.loadFullMarket(marketId),
     submitMarketContribute: (marketId, selectedOutcome, invalid, amount, history) => dP.submitMarketContribute(marketId, selectedOutcome, invalid, amount, history),
     estimateSubmitMarketContribute: (marketId, selectedOutcome, invalid, amount, history) => dP.estimateSubmitMarketContribute(marketId, selectedOutcome, invalid, amount, history),
-    getDisputeInfo: (marketId, callback) => dP.getDisputeInfo(marketId, callback),
+    getDisputeInfo: (marketIds, callback) => dP.getDisputeInfo(marketIds, callback),
   }
 }
 

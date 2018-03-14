@@ -71,7 +71,9 @@ export default class ReportingDispute extends Component {
   }
 
   getDisputeInfo() {
-    this.props.getDisputeInfo(this.props.marketId, (disputeInfo) => {
+    this.props.getDisputeInfo([this.props.marketId], (err, disputeInfos) => {
+      if (err) return console.error(err)
+      const disputeInfo = disputeInfos[0]
       let disputeBond = disputeInfo.stakes.reduce((p, i) => {
         const size = new BigNumber(i.size).toNumber()
         const completedStake = new BigNumber(i.completedStake || 0).toNumber()

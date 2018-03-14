@@ -1,20 +1,25 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Styles from 'modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress.styles'
-import { calculateTentativeStakePercentage, calculateTentativeRemainingRep } from 'modules/reporting/helpers/progress-calculations'
+import { calculateTentativeStakePercentage, calculateTentativeRemainingRep, calculatePercentage } from 'modules/reporting/helpers/progress-calculations'
 
 const ReportingDisputeProgress = (p) => {
   let remainingRepFormatted = p.remainingRep
-  let totalPercentageComplete = p.percentageComplete
+  let currentPercentageComplete = p.percentageComplete || 0
+  let totalPercentageComplete = p.percentageComplete || 0
+  let userPercentage = p.accountPercentage || 0
   const userStaked = p.tentativeStake > 0 && p.isSelected
 
   if (userStaked) {
-    totalPercentageComplete = calculateTentativeStakePercentage(p.disputeBondValue, p.currentStake, p.tentativeStake)
+    userPercentage = calculateAddedTentativeStakePercentage(p.disputeBondValue, p.currentStake, p.accountStakeCurrent, p.tentativeStake)
     remainingRepFormatted = calculateTentativeRemainingRep(p.disputeBondValue, p.currentStake, p.tentativeStake)
+    totalPercentageComplete = currentPercentageComplete + userPercentage
   }
-
+  const percentageAccount = {
+    width: `${userPercentage}%`
+  }
   const percentageComplete = {
-    width: `${totalPercentageComplete}%`,
+    width: `${currentPercentageComplete - userPercentage}%`,
   }
 
   // using magic number to align dispute bars
@@ -27,7 +32,8 @@ const ReportingDisputeProgress = (p) => {
       <section className={Styles['ReportingDisputeProgress__dispute-wrapper']}>
         <div className={Styles['ReportingDisputeProgress__dispute-graph']} style={paddingValue}>
           <div className={Styles.ReportingDisputeProgress__graph}>
-            <div className={userStaked ? Styles['ReportingDisputeProgress__graph-current-user'] : Styles['ReportingDisputeProgress__graph-current']}>
+            <div className={Styles['ReportingDisputeProgress__graph-current']}>
+              <div style={percentageAccount} />
               <div style={percentageComplete} />
             </div>
           </div>
@@ -50,6 +56,7 @@ ReportingDisputeProgress.propTypes = {
   tentativeStake: PropTypes.number,
   disputeBondValue: PropTypes.number,
   currentStake: PropTypes.number,
+  accountStakeCurrent: PropTypes.number,
 }
 
 export default ReportingDisputeProgress

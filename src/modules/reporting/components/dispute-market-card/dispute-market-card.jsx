@@ -29,7 +29,7 @@ const DisputeMarketCard = p => (
         </ul>
         <div className={Styles['DisputeMarket__round-number']}>
           <span className={Styles['DisptueMarket__round-label']}>Dispute Round</span>
-          <span className={Styles['DisptueMarket__round-text']}>{p.disputeRound}</span>
+          <span className={Styles['DisptueMarket__round-text']}>{p.market.disputeRound}</span>
         </div>
       </div>
 
@@ -41,7 +41,7 @@ const DisputeMarketCard = p => (
           {p.market.description}
         </MarketLink>
       </h1>
-      <MarketReportingPayouts outcomes={p.outcomes[p.market.id]} />
+      <MarketReportingPayouts outcomes={p.outcomes[p.market.id] || []} />
     </div>
     <div className={CommonStyles.MarketCommon__footer}>
       <MarketProperties
