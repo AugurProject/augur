@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import * as d3 from 'd3'
 import ReactFauxDOM from 'react-faux-dom'
 
-import { isEqual } from 'lodash'
+import { isEqual, isEmpty } from 'lodash'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
 import { ASKS } from 'modules/order-book/constants/order-book-order-types'
@@ -97,6 +97,7 @@ export default class MarketOutcomeDepth extends Component {
 
       const width = this.depthChart.clientWidth
       const height = this.depthChart.clientHeight
+      const drawHeight = height - margin.top - margin.bottom
 
       chart.attr('id', 'outcome_depth')
 
@@ -104,9 +105,6 @@ export default class MarketOutcomeDepth extends Component {
       chart.attr('height', height)
 
       const xDomain = Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[0]], [])], [])
-
-      // TODO --
-      // Make intervals shared between charts
 
       // Ensure yDomain always has midmarket price at the center
       // TODO -- can def clean this up...
@@ -119,22 +117,10 @@ export default class MarketOutcomeDepth extends Component {
       const minDiff = Math.abs(orderBookKeys.mid - orderBookKeys.min)
       const boundDiff = (maxDiff > minDiff ? maxDiff : minDiff)
 
-      // Set interval step
-      const step = boundDiff / ((intervals - 1) / 2)
-
-      const yDomain = new Array(intervals).fill(null).reduce((p, _unused, i) => {
-        if (i === 0) return [Number((orderBookKeys.mid - boundDiff).toFixed(allowedFloat))]
-        if (i + 1 === Math.round(intervals / 2)) return [...p, orderBookKeys.mid]
-        return [...p, Number((p[i - 1] + step).toFixed(allowedFloat))]
-      }, [])
-
-      // const offsetYDomain = new Array(2).fill(null).reduce((p, _unused, i) => {
-      //   if (i === 0) return [Number((orderBookKeys.mid - boundDiff).toFixed(allowedFloat))]
-      //   if (i + 1 === Math.round(intervals / 2)) return [...p, orderBookKeys.mid]
-      //   return [...p, Number((p[i - 1] + step).toFixed(allowedFloat))]
-      // }, [])
-
-      // const yDomain = Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[1]], [])], [])
+      const yDomain = [
+        Number((orderBookKeys.mid - boundDiff).toFixed(allowedFloat)),
+        Number((orderBookKeys.mid + boundDiff).toFixed(allowedFloat)),
+      ]
 
       const xScale = d3.scaleLinear()
         .domain(d3.extent(xDomain))
@@ -144,14 +130,11 @@ export default class MarketOutcomeDepth extends Component {
         .domain(d3.extent(yDomain))
         .range([height - margin.bottom, margin.top])
 
-      const depthLine = d3.line()
-        .curve(d3.curveStepAfter)
-        .x(d => xScale(d[0]))
-        .y(d => yScale(d[1]))
-
       // Y Axis
       //  Chart Bounds
-      chart.selectAll('line')
+      chart.append('g')
+        .attr('id', 'chart_bounding_lines')
+        .selectAll('line')
         .data(new Array(2))
         .enter()
         .append('line')
@@ -166,18 +149,44 @@ export default class MarketOutcomeDepth extends Component {
         .attr('class', 'midpoint-line')
         .attr('x1', 0)
         .attr('x2', width)
-        .attr('y1', (d, i) => yScale(orderBookKeys.mid))
-        .attr('y2', (d, i) => yScale(orderBookKeys.mid))
+        .attr('y1', () => yScale(orderBookKeys.mid))
+        .attr('y2', () => yScale(orderBookKeys.mid))
       chart.append('text')
         .attr('class', 'tick-value')
         .attr('x', 0)
         .attr('y', yScale(orderBookKeys.mid))
         .attr('dx', 0)
         .attr('dy', margin.tickOffset)
-        .text(orderBookKeys.mid.toFixed(allowedFloat))
+        .text(orderBookKeys.mid && orderBookKeys.mid.toFixed(allowedFloat))
 
-      //  Offset Axis
+      //  Offset Ticks
+      const offsetTicks = yDomain.map((d, i) => { // Assumes yDomain is [min, max]
+        if (i === 0) return d + (boundDiff / 4)
+        return d - (boundDiff / 4)
+      })
 
+      const yTicks = chart.append('g')
+        .attr('id', 'depth_y_ticks')
+
+      yTicks.selectAll('line')
+        .data(offsetTicks)
+        .enter()
+        .append('line')
+        .attr('class', 'tick-line')
+        .attr('x1', 0)
+        .attr('x2', width)
+        .attr('y1', d => yScale(d))
+        .attr('y2', d => yScale(d))
+      yTicks.selectAll('text')
+        .data(offsetTicks)
+        .enter()
+        .append('text')
+        .attr('class', 'tick-value')
+        .attr('x', 0)
+        .attr('y', d => yScale(d))
+        .attr('dx', 0)
+        .attr('dy', margin.tickOffset)
+        .text(d => d.toFixed(allowedFloat))
 
       //  Labels
       // chart.selectAll('text')
@@ -199,6 +208,12 @@ export default class MarketOutcomeDepth extends Component {
         .attr('transform', `translate(0, ${height - margin.bottom})`)
         .call(d3.axisBottom(xScale))
         .select('path').remove()
+
+      // Depth Line
+      const depthLine = d3.line()
+        .curve(d3.curveStepAfter)
+        .x(d => xScale(d[0]))
+        .y(d => yScale(d[1]))
 
       Object.keys(marketDepth).forEach((side) => {
         chart.append('path')
