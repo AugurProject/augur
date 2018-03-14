@@ -14,18 +14,25 @@ describe(`modules/app/actions/sync-blockchain.js`, function () { // eslint-disab
       currentBlockMillisSinceEpoch: 12344,
       currentBlockTimestamp: 4886718335,
       currentBlockNumber: 9999,
+      currentAugurTimestamp: 42,
     },
   })
   const dataReturned = {
     currentBlockNumber: 0x10000,
     currentBlockTimestamp: 0x4886718345,
     currentBlockMillisSinceEpoch: 12345,
+    currentAugurTimestamp: 42,
   }
   const store = mockStore(state)
   const AugurJS = {
     rpc: {
       getCurrentBlock: () => ({ number: 10000, timestamp: 4886718345 }),
       block: { number: 10000, timestamp: 4886718345 },
+    },
+    api: {
+      Controller: {
+        getTimestamp: (callback) => { callback(null, 42) },
+      },
     },
   }
 

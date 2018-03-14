@@ -15,7 +15,7 @@ import { isEqual } from 'lodash'
 
 import Modal from 'modules/modal/containers/modal-view'
 import TopBar from 'modules/app/components/top-bar/top-bar'
-import ForkingNotification from 'modules/app/components/forking-notification/forking-notification'
+import ForkingNotification from 'modules/forking/components/forking-notification/forking-notification'
 import MarketsInnerNav from 'modules/app/components/inner-nav/markets-inner-nav'
 import PortfolioInnerNav from 'modules/app/components/inner-nav/portfolio-inner-nav'
 import AccountInnerNav from 'modules/app/components/inner-nav/account-inner-nav'
@@ -86,6 +86,7 @@ export default class AppView extends Component {
     selectedCategory: PropTypes.string,
     url: PropTypes.string,
     universe: PropTypes.object.isRequired,
+    blockchain: PropTypes.object.isRequired,
   }
 
   constructor(props) {
@@ -432,10 +433,11 @@ export default class AppView extends Component {
                 toggleNotifications={() => this.toggleNotifications()}
               />
             }
-            {p.universe.isForking &&
+            {p.universe.forkEndTime !== '0' &&
               <section className={Styles.TopBar}>
                 <ForkingNotification
-                  isLogged={p.isLogged}
+                  forkEndTime={p.universe.forkEndTime}
+                  currentTime={p.blockchain.currentAugurTimestamp}
                 />
               </section>
             }

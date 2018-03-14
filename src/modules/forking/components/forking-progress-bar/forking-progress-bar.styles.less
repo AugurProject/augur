@@ -1,0 +1,29 @@
+@import (reference) '~assets/styles/shared';
+
+.ForkingProgressBar {
+  display: flex;
+  justify-content: flex-start;
+  padding-bottom: 0.5em;
+  padding-top: 1em;
+  width: 100%;
+}
+
+.ForkingProgressBar__background {
+  background: #342a4e;
+  height: 1.5em;
+  position: relative;
+  width: 100%;
+}
+
+.ForkingProgressBar__progress {
+  background-image: linear-gradient(-90deg, #846cb3 40%, rgba(155, 139, 245, 0) 100%);
+  float: left;
+  height: 100%;
+  text-align: center;
+}
+
+.ForkingProgressBar__days_left_label {
+  font-size: small;
+  padding-left: 2em;
+  padding-top: 0.4em;
+}
