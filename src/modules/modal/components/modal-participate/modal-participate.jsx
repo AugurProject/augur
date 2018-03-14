@@ -11,8 +11,9 @@ import ModalParticipateReview from 'modules/modal/components/modal-participate-r
 export default class ModalParticipate extends Component {
   static propTypes = {
     modal: PropTypes.object.isRequired,
-    closeModal: PropTypes.func.isRequired,
     rep: PropTypes.string.isRequired,
+    closeModal: PropTypes.func.isRequired,
+    purchaseParticipationTokens: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -20,6 +21,7 @@ export default class ModalParticipate extends Component {
 
     this.state = {
       quantity: '',
+      gasEstimate: '0.0023',
       page: 1,
       isValid: false,
       errors: [],
@@ -34,14 +36,19 @@ export default class ModalParticipate extends Component {
 
   triggerReview(e, ...args) {
     e.preventDefault()
-    if (this.state.isValid) this.setState({ page: 2 })
+    if (this.state.isValid) {
+      this.props.purchaseParticipationTokens(this.state.quantity, true, (err, gasEstimate) => {
+        console.log('trigger review', err, gasEstimate)
+        if (!err && !!gasEstimate) this.setState({ gasEstimate, page: 2 })
+      })
+    }
   }
 
   submitForm(e, ...args) {
     e.preventDefault()
-    console.log('SubmitForm (NYI). closing modal...')
-    // fornow, just close the modal
-    this.props.closeModal()
+    this.props.purchaseParticipationTokens(this.state.quantity, false, (err, res) => {
+      console.log('onSuccess for purchaseParticipationTokens', err, res)
+    })
   }
 
   updateQuantity(quantity) {
@@ -62,7 +69,7 @@ export default class ModalParticipate extends Component {
     const bnQuantity = new BigNumber(quantity, 10)
 
     if (bnQuantity.lte(0)) {
-      errors.push('Quantity must be a value greater than 0.')
+      errors.push('Quantity must greater than 0.')
       isValid = false
       // exit early, as the other check doesn't matter.
       return ({ errors, isValid })
@@ -154,7 +161,7 @@ export default class ModalParticipate extends Component {
             quantity={s.quantity}
             onSubmit={this.submitForm}
             switchPages={this.switchPages}
-            gasEstimate="0.0023"
+            gasEstimate={s.gasEstimate}
           />
         }
       </section>

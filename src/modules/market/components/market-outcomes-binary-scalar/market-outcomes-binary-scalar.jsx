@@ -14,16 +14,16 @@ const MarketOutcomes = (p) => {
     if (p.type === BINARY) {
       return lastPrice
     }
-
-    return `${(lastPrice / (p.max - p.min)) * 100}%`
+    // TODO: add scalar denomination to end of this template string
+    return `${(lastPrice / (p.max - p.min)) * 100}`
   }
 
   const currentValuePosition = {
     left: calculatePosition(),
   }
 
-  const minValue = p.min && p.type !== BINARY ? p.min : '0%'
-  const maxValue = p.min && p.type !== BINARY ? p.max : '100%'
+  const minValue = !isNaN(p.min) && p.type !== BINARY ? p.min : '0%'
+  const maxValue = !isNaN(p.max) && p.type !== BINARY ? p.max : '100%'
 
   return (
     <div className={Styles.MarketOutcomes}>
@@ -51,8 +51,8 @@ const MarketOutcomes = (p) => {
 
 MarketOutcomes.propTypes = {
   outcomes: PropTypes.array.isRequired,
-  max: PropTypes.string,
-  min: PropTypes.string,
+  max: PropTypes.number,
+  min: PropTypes.number,
   type: PropTypes.string,
 }
 
