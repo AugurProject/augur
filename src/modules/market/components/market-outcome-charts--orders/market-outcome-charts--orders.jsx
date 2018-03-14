@@ -112,12 +112,15 @@ export default class MarketOutcomeOrderbook extends Component {
             </div>
           ))}
         </div>
-        <span className={Styles.MarketOutcomeOrderBook__Midmarket}>
+        <div className={Styles.MarketOutcomeOrderBook__Midmarket}>
           {p.marketMidpoint === null ?
-            'No Orders' :
-            `${p.marketMidpoint.toFixed(p.fixedPrecision).toString()} ETH`
+            <span>No Orders</span> :
+            <div>
+              <hr />
+              <span>{p.marketMidpoint.toFixed(p.fixedPrecision).toString()} ETH</span>
+            </div>
           }
-        </span>
+        </div>
         <div className={Styles.MarketOutcomeOrderBook__Side} >
           {(p.orderBook.bids || []).map((order, i) => (
             <div
