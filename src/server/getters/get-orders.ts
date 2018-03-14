@@ -1,9 +1,10 @@
 import * as _ from "lodash";
 import * as Knex from "knex";
+import { BigNumber } from "bignumber.js";
 import { Address, OrdersRow, OrderState, UIOrders } from "../../types";
 import { queryModifier } from "./database";
 
-interface OrdersRowWithCreationTime extends OrdersRow {
+interface OrdersRowWithCreationTime extends OrdersRow<BigNumber> {
   creationTime: number;
 }
 
@@ -43,12 +44,12 @@ export function getOrders(db: Knex, universe: Address|null, marketId: Address|nu
         owner: row.orderCreator,
         creationTime: row.creationTime,
         orderState: row.orderState,
-        price: row.price,
-        amount: row.amount,
-        fullPrecisionPrice: row.fullPrecisionPrice,
-        fullPrecisionAmount: row.fullPrecisionAmount,
-        tokensEscrowed: row.tokensEscrowed,
-        sharesEscrowed: row.sharesEscrowed,
+        price: row.price.toFixed(),
+        amount: row.amount.toFixed(),
+        fullPrecisionPrice: row.fullPrecisionPrice.toFixed(),
+        fullPrecisionAmount: row.fullPrecisionAmount.toFixed(),
+        tokensEscrowed: row.tokensEscrowed.toFixed(),
+        sharesEscrowed: row.sharesEscrowed.toFixed(),
       };
     });
     callback(null, orders);

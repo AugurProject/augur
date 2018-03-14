@@ -1,9 +1,9 @@
-import BigNumber from "bignumber.js";
+import { BigNumber } from "bignumber.js";
 import * as Knex from "knex";
 import { Address, TradesRow, UITrade } from "../../types";
 import { queryModifier } from "./database";
 
-interface TradingHistoryRow extends TradesRow {
+interface TradingHistoryRow extends TradesRow<BigNumber> {
   timestamp: number;
 }
 
@@ -45,11 +45,11 @@ export function getUserTradingHistory(db: Knex|Knex.Transaction, universe: Addre
       transactionHash: trade.transactionHash,
       logIndex: trade.logIndex,
       type: trade.orderType!,
-      price: trade.price!,
-      amount: trade.amount!,
+      price: trade.price!.toFixed(),
+      amount: trade.amount!.toFixed(),
       maker: account === trade.creator!,
-      marketCreatorFees: trade.marketCreatorFees!,
-      reporterFees: trade.reporterFees!,
+      marketCreatorFees: trade.marketCreatorFees!.toFixed(),
+      reporterFees: trade.reporterFees!.toFixed(),
       settlementFees: new BigNumber(trade.reporterFees!, 10).plus(new BigNumber(trade.marketCreatorFees!, 10)).toFixed(),
       marketId: trade.marketId!,
       outcome: trade.outcome!,

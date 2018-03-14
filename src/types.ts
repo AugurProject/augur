@@ -1,3 +1,4 @@
+import { BigNumber } from "bignumber.js";
 import { Augur, FormattedEventLog } from "augur.js";
 import * as Knex from "knex";
 
@@ -132,25 +133,25 @@ export interface MarketsContractAddressRow {
   marketId: string;
 }
 
-export interface MarketsRow {
+export interface MarketsRow<BigNumberType> {
   marketId: Address;
   universe: Address;
   marketType: string;
   numOutcomes: number;
-  minPrice: string|number;
-  maxPrice: string|number;
+  minPrice: BigNumberType;
+  maxPrice: BigNumberType;
   marketCreator: Address;
   creationBlockNumber: number;
-  creationFee: string|number;
-  reportingFeeRate: string|number;
-  marketCreatorFeeRate: string|number;
-  marketCreatorFeesCollected: string|number|null;
-  initialReportSize: string|number|null;
+  creationFee: BigNumberType;
+  reportingFeeRate: BigNumberType;
+  marketCreatorFeeRate: BigNumberType;
+  marketCreatorFeesCollected: BigNumberType|null;
+  initialReportSize: BigNumberType|null;
   category: string;
   tag1: string|null;
   tag2: string|null;
-  volume: string|number;
-  sharesOutstanding: string|number;
+  volume: BigNumberType;
+  sharesOutstanding: BigNumberType;
   marketStateId: number;
   feeWindow: Address;
   endTime: number;
@@ -159,9 +160,9 @@ export interface MarketsRow {
   shortDescription: string;
   longDescription?: string|null;
   designatedReporter: Address;
-  designatedReportStake: string|number;
+  designatedReportStake: BigNumberType;
   resolutionSource?: string|null;
-  numTicks: number;
+  numTicks: BigNumberType;
   consensusPayoutId?: number|null;
   isInvalid?: boolean|null;
 }
@@ -362,7 +363,7 @@ export interface UIOrders {
   };
 }
 
-export interface OrdersRow extends BaseTransactionRow {
+export interface OrdersRow<BigNumberType> extends BaseTransactionRow {
   orderId?: Bytes32;
   marketId: Address;
   outcome: number;
@@ -370,12 +371,12 @@ export interface OrdersRow extends BaseTransactionRow {
   orderType: string;
   orderCreator: Address;
   orderState: OrderState;
-  price: string;
-  amount: string;
-  fullPrecisionPrice: string;
-  fullPrecisionAmount: string;
-  tokensEscrowed: string;
-  sharesEscrowed: string;
+  price: BigNumberType;
+  amount: BigNumberType;
+  fullPrecisionPrice: BigNumberType;
+  fullPrecisionAmount: BigNumberType;
+  tokensEscrowed: BigNumberType;
+  sharesEscrowed: BigNumberType;
   tradeGroupId: Bytes32|null;
 }
 
@@ -396,7 +397,7 @@ export interface UITrade {
   tradeGroupId: Bytes32|null;
 }
 
-export interface TradesRow extends BaseTransactionRow {
+export interface TradesRow<BigNumberType> extends BaseTransactionRow {
   orderId: Bytes32;
   marketId: Address;
   outcome: number;
@@ -404,14 +405,14 @@ export interface TradesRow extends BaseTransactionRow {
   orderType: string;
   creator: Address;
   filler: Address;
-  numCreatorTokens: string;
-  numCreatorShares: string;
-  numFillerTokens: string;
-  numFillerShares: string;
-  price: string;
-  amount: string;
-  marketCreatorFees: string;
-  reporterFees: string;
+  numCreatorTokens: BigNumberType;
+  numCreatorShares: BigNumberType;
+  numFillerTokens: BigNumberType;
+  numFillerShares: BigNumberType;
+  price: BigNumberType;
+  amount: BigNumberType;
+  marketCreatorFees: BigNumberType;
+  reporterFees: BigNumberType;
   tradeGroupId: Bytes32|null;
 }
 
@@ -425,7 +426,7 @@ export interface MarketPriceHistory {
   [outcome: number]: Array<TimestampedPriceAmount>;
 }
 
-export interface MarketsRowWithCreationTime extends MarketsRow {
+export interface MarketsRowWithCreationTime extends MarketsRow<BigNumber> {
   creationTime: number;
 }
 

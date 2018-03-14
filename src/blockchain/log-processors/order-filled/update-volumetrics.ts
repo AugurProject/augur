@@ -6,7 +6,7 @@ import { parallel } from "async";
 import { Address, Bytes32, TradesRow, ErrorCallback, GenericCallback } from "../../../types";
 import { calculateFillPrice } from "./calculate-fill-price";
 import { calculateNumberOfSharesTraded } from "./calculate-number-of-shares-traded";
-import { convertOnChainSharesToHumanReadableShares } from "../../../utils/convert-fixed-point-to-decimal";
+import { onChainSharesToHumanReadableShares } from "../../../utils/convert-fixed-point-to-decimal";
 
 function incrementMarketVolume(db: Knex, marketId: Address, amount: BigNumber, callback: GenericCallback<BigNumber> ) {
   db("markets").first("volume").where({ marketId }).asCallback((err: Error|null, result: {volume: BigNumber}) => {
@@ -42,19 +42,19 @@ function incrementCategoryPopularity(db: Knex, category: string, amount: BigNumb
   db.raw(`UPDATE categories SET popularity = popularity + :amount WHERE category = :category`, { amount: amount.toFixed(), category }).asCallback(callback);
 }
 
-export function updateVolumetrics(db: Knex, augur: Augur, category: string, marketId: Address, outcome: number, blockNumber: number, orderId: Bytes32, orderCreator: Address, tickSize: string, minPrice: string|number, maxPrice: string|number, isIncrease: boolean, callback: ErrorCallback): void {
+export function updateVolumetrics(db: Knex, augur: Augur, category: string, marketId: Address, outcome: number, blockNumber: number, orderId: Bytes32, orderCreator: Address, tickSize: BigNumber, minPrice: BigNumber, maxPrice: BigNumber, isIncrease: boolean, callback: ErrorCallback): void {
   augur.api.Market.getShareToken({ _outcome: outcome, tx: { to: marketId } }, (err: Error|null, shareToken: Address): void => {
     if (err) return callback(err);
     const shareTokenPayload = { tx: { to: shareToken } };
-    augur.api.ShareToken.totalSupply(shareTokenPayload, (err: Error|null, sharesOutstanding?: any): void => {
+    augur.api.ShareToken.totalSupply(shareTokenPayload, (err: Error|null, sharesOutstanding: string): void => {
       if (err) return callback(err);
-      db("markets").where({ marketId }).update({ sharesOutstanding: convertOnChainSharesToHumanReadableShares(sharesOutstanding, tickSize) }).asCallback((err: Error|null): void => {
+      db("markets").where({ marketId }).update({ sharesOutstanding: onChainSharesToHumanReadableShares(new BigNumber(sharesOutstanding, 10), tickSize).toFixed() }).asCallback((err: Error|null): void => {
         if (err) return callback(err);
-        db.first("numCreatorShares", "numCreatorTokens", "price", "orderType").from("trades").where({ marketId, outcome, orderId, blockNumber }).asCallback((err: Error|null, tradesRow?: Partial<TradesRow>): void => {
+        db.first("numCreatorShares", "numCreatorTokens", "price", "orderType").from("trades").where({ marketId, outcome, orderId, blockNumber }).asCallback((err: Error|null, tradesRow?: Partial<TradesRow<BigNumber>>): void => {
           if (err) return callback(err);
           if (!tradesRow) return callback(new Error("trade not found"));
           const { numCreatorShares, numCreatorTokens, price, orderType } = tradesRow;
-          let amount = new BigNumber(calculateNumberOfSharesTraded(numCreatorShares!, numCreatorTokens!, calculateFillPrice(augur, price!, minPrice, maxPrice, orderType!)), 10);
+          let amount = calculateNumberOfSharesTraded(numCreatorShares!, numCreatorTokens!, calculateFillPrice(augur, price!, minPrice, maxPrice, orderType!));
           if (isIncrease !== true) amount = amount.neg();
 
           parallel({

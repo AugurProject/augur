@@ -13,12 +13,12 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.specificType("orderType", "varchar(4) NOT NULL CONSTRAINT enumOrderTypes CHECK (\"orderType\" = 'buy' OR \"orderType\" = 'sell')");
       table.string("orderCreator", 42).notNullable();
       table.specificType("orderState", "varchar(9) NOT NULL CONSTRAINT enumOrderStates CHECK (\"orderState\" = 'OPEN' OR \"orderState\" = 'CLOSED' OR \"orderState\" = 'CANCELED')");
-      table.specificType("fullPrecisionPrice", "NUMERIC").notNullable();
-      table.specificType("fullPrecisionAmount", "NUMERIC").notNullable();
-      table.specificType("price", "NUMERIC").notNullable();
-      table.specificType("amount", "numeric NOT NULL CONSTRAINT nonnegativeAmount CHECK (\"amount\" >= 0)").notNullable();
-      table.specificType("tokensEscrowed", "numeric NOT NULL CONSTRAINT nonnegativeTokensEscrowed CHECK (\"tokensEscrowed\" >= 0)").notNullable();
-      table.specificType("sharesEscrowed", "numeric NOT NULL CONSTRAINT nonnegativeSharesEscrowed CHECK (\"sharesEscrowed\" >= 0)").notNullable();
+      table.string("fullPrecisionPrice", 255).notNullable();
+      table.string("fullPrecisionAmount", 255).notNullable();
+      table.string("price", 255).notNullable();
+      table.string("amount", 255).notNullable();
+      table.string("tokensEscrowed", 255).notNullable();
+      table.string("sharesEscrowed", 255).notNullable();
       table.string("tradeGroupId", 42);
       table.integer("isRemoved").nullable();
     });

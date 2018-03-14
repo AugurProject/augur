@@ -20,7 +20,8 @@ export const PRECISION: Precision = {
 
 export const MINIMUM_TRADE_SIZE = "0.01";
 
-export const WEI_PER_ETHER: string = new BigNumber(10, 10).toPower(18).toFixed();
+export const BN_WEI_PER_ETHER: BigNumber = new BigNumber(10, 10).toPower(18);
+export const WEI_PER_ETHER: string = BN_WEI_PER_ETHER.toFixed();
 
 export const ZERO = new BigNumber(0);
 

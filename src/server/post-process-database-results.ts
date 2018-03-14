@@ -27,8 +27,10 @@ const whitelist: Whitelist = {
     designatedReportStake: true,
   },
   orders: {
-    designatedReportStake: true,
+    price: true,
     amount: true,
+    fullPrecisionAmount: true,
+    fullPrecisionPrice: true,
     tokensEscrowed: true,
     sharesEscrowed: true,
   },
