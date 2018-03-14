@@ -127,9 +127,6 @@ export default class MarketOutcomeDepth extends Component {
         if (i + 1 === Math.round(intervals / 2)) return [...p, orderBookKeys.mid]
         return [...p, Number((p[i - 1] + step).toFixed(allowedFloat))]
       }, [])
-      console.log('yDomain -- ', yDomain)
-
-      const yDomainBounds = yDomain.length ? [yDomain[0], yDomain[yDomain.length - 1]] : []
 
       // const offsetYDomain = new Array(2).fill(null).reduce((p, _unused, i) => {
       //   if (i === 0) return [Number((orderBookKeys.mid - boundDiff).toFixed(allowedFloat))]
@@ -161,23 +158,40 @@ export default class MarketOutcomeDepth extends Component {
         .attr('class', 'bounding-line')
         .attr('x1', 0)
         .attr('x2', width)
-        .attr('y1', (d, i) => ((height - margin.bottom) / 1) * i)
-        .attr('y2', (d, i) => ((height - margin.bottom) / 1) * i)
-      //  Midpoint
-      //  Offset Axis
+        .attr('y1', (d, i) => ((height - margin.bottom)) * i)
+        .attr('y2', (d, i) => ((height - margin.bottom)) * i)
 
-      chart.selectAll('text')
-        .data(yDomain.sort((a, b) => (b - a)))
-        .enter()
-        .append('text')
+      //  Midpoint
+      chart.append('line')
+        .attr('class', 'midpoint-line')
+        .attr('x1', 0)
+        .attr('x2', width)
+        .attr('y1', (d, i) => yScale(orderBookKeys.mid))
+        .attr('y2', (d, i) => yScale(orderBookKeys.mid))
+      chart.append('text')
         .attr('class', 'tick-value')
         .attr('x', 0)
-        .attr('y', (d, i) => ((height - margin.bottom) / 4) * i)
-        .attr('dy', margin.tickOffset)
+        .attr('y', yScale(orderBookKeys.mid))
         .attr('dx', 0)
-        .text((d, i) => {
-          if (i && i !== yDomain.length - 1) return d ? d.toFixed(allowedFloat) : ''
-        })
+        .attr('dy', margin.tickOffset)
+        .text(orderBookKeys.mid.toFixed(allowedFloat))
+
+      //  Offset Axis
+
+
+      //  Labels
+      // chart.selectAll('text')
+      //   .data(yDomain.sort((a, b) => (b - a)))
+      //   .enter()
+      //   .append('text')
+      //   .attr('class', 'tick-value')
+      //   .attr('x', 0)
+      //   .attr('y', (d, i) => ((height - margin.bottom) / (intervals - 1)) * i)
+      //   .attr('dy', margin.tickOffset)
+      //   .attr('dx', 0)
+      //   .text((d, i) => {
+      //     if (i && i !== yDomain.length - 1) return d ? d.toFixed(allowedFloat) : ''
+      //   })
 
       // X Axis
       chart.append('g')
