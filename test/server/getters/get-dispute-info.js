@@ -32,6 +32,7 @@ describe("server/getters/get-dispute-info", () => {
         {
           marketId: "0x0000000000000000000000000000000000000211",
           stakeCompletedTotal: "102",
+          sizeOfNewStake: "204",
           stakes: [
             {
               payout: [
@@ -78,6 +79,7 @@ describe("server/getters/get-dispute-info", () => {
         {
           marketId: "0x0000000000000000000000000000000000000011",
           stakeCompletedTotal: "20102",
+          sizeOfNewStake: "40204",
           stakes: [
             {
               payout: [
@@ -126,6 +128,7 @@ describe("server/getters/get-dispute-info", () => {
         {
           marketId: "0x0000000000000000000000000000000000000211",
           stakeCompletedTotal: "102",
+          sizeOfNewStake: "204",
           stakes: [
             {
               payout: [
@@ -187,6 +190,7 @@ describe("server/getters/get-dispute-info", () => {
         {
           marketId: "0x0000000000000000000000000000000000000011",
           stakeCompletedTotal: "20102",
+          sizeOfNewStake: "40204",
           stakes: [
             {
               payout: [
@@ -219,6 +223,7 @@ describe("server/getters/get-dispute-info", () => {
         {
           marketId: "0x0000000000000000000000000000000000000211",
           stakeCompletedTotal: "102",
+          sizeOfNewStake: "204",
           stakes: [
             {
               payout: [

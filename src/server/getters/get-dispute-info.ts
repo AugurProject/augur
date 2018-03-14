@@ -147,6 +147,7 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
   return {
     marketId: marketRow.marketId,
     stakeCompletedTotal: totalCompletedStakeOnAllPayouts.toFixed(),
+    sizeOfNewStake: totalCompletedStakeOnAllPayouts.times(2).toFixed(),
     stakes: stakeResults,
     disputeRound,
   };
