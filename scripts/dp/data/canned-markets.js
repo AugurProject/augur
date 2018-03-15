@@ -132,6 +132,7 @@ module.exports = [{
     resolutionSource: "https://www.wunderground.com/history/airport/KSFO/" + [today.getUTCFullYear(), today.getUTCMonth() + 1, today.getUTCDate()].join("/") + "/DailyHistory.html",
     tags: ["weather", "SFO"],
     longDescription: "https://www.penny-arcade.com/comic/2001/12/12",
+    _scalarDenomination: "degrees Fahrenheit",
   },
   orderBook: {
     buy: {
@@ -189,6 +190,7 @@ module.exports = [{
     resolutionSource: "EPA",
     tags: ["climate", "atmosphere"],
     longDescription: "Vast quantities of methane are normally locked into the Earth's crust on the continental plateaus in one of the many deposits consisting of compounds of methane hydrate, a solid precipitated combination of methane and water much like ice. Because the methane hydrates are unstable, except at cool temperatures and high (deep) pressures, scientists have observed smaller \"burps\" due to tectonic events. Studies suggest the huge release of natural gas could be a major climatological trigger, methane itself being a greenhouse gas many times more powerful than carbon dioxide. References: https://en.wikipedia.org/wiki/Anoxic_event, https://en.wikipedia.org/wiki/Atmospheric_methane, https://en.wikipedia.org/wiki/Clathrate_gun_hypothesis",
+    _scalarDenomination: "parts-per-billion",
   },
   orderBook: {
     buy: {
@@ -247,6 +249,7 @@ module.exports = [{
     resolutionSource: "http://omnichest.info/lookupadd.aspx?address=3MbYQMMmSkC3AgWkj9FMo5LsPTW1zBTwXL",
     tags: ["Tether", "trading"],
     longDescription: "The curious tale of Tethers: https://hackernoon.com/the-curious-tale-of-tethers-6b0031eead87",
+    _scalarDenomination: "Tether",
   },
   orderBook: {
     buy: {
