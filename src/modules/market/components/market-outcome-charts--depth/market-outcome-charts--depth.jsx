@@ -222,6 +222,7 @@ export default class MarketOutcomeDepth extends Component {
           .attr('x2', width)
           .attr('y1', () => yScale(orderBookKeys.max))
           .attr('y2', () => yScale(orderBookKeys.max))
+
         rangeBounds.append('text')
           .attr('class', 'tick-value')
           .attr('x', 0)
@@ -229,6 +230,13 @@ export default class MarketOutcomeDepth extends Component {
           .attr('dx', 0)
           .attr('dy', margin.tickOffset)
           .text('max')
+
+        rangeBounds.append('rect')
+          .attr('class', 'bounding-box')
+          .attr('x', 0)
+          .attr('y', 0)
+          .attr('height', yScale(orderBookKeys.max))
+          .attr('width', width)
       }
 
       // X Axis
