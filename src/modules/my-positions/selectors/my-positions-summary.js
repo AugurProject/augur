@@ -8,7 +8,7 @@ import { closePosition } from 'modules/my-positions/actions/close-position'
 import { ZERO } from 'modules/trade/constants/numbers'
 
 // import { augur } from 'services/augurjs'
-import { formatEtherTokens, formatShares, formatNumber } from 'utils/format-number'
+import { formatEther, formatShares, formatNumber } from 'utils/format-number'
 
 export const generateOutcomePositionSummary = memoize((adjustedPosition) => {
   if (!adjustedPosition) {
@@ -74,10 +74,10 @@ export const generatePositionsSummary = memoize((numPositions, qtyShares, meanTr
       zeroStyled: false,
     }),
     qtyShares: formatShares(qtyShares),
-    purchasePrice: formatEtherTokens(meanTradePrice),
-    realizedNet: formatEtherTokens(realizedNet),
-    unrealizedNet: formatEtherTokens(unrealizedNet),
-    totalNet: formatEtherTokens(totalNet),
+    purchasePrice: formatEther(meanTradePrice),
+    realizedNet: formatEther(realizedNet),
+    unrealizedNet: formatEther(unrealizedNet),
+    totalNet: formatEther(totalNet),
   }
 }, { max: 20 })
 

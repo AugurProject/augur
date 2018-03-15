@@ -29,6 +29,7 @@ const mapStateToProps = state => ({
   modal: state.modal,
   connection: state.connection,
   universe: state.universe,
+  blockchain: state.blockchain,
 })
 
 const mapDispatchToProps = dispatch => ({

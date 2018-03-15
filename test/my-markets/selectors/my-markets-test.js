@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js'
 
 import * as mockStore from 'test/mockStore'
 
-import { formatNumber, formatEtherTokens, formatShares } from 'utils/format-number'
+import { formatNumber, formatEther, formatShares } from 'utils/format-number'
 import { formatDate } from 'utils/format-date'
 
 describe('modules/portfolio/selectors/login-account-markets', () => {
@@ -37,7 +37,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
       endDate: formatDate(new Date('2017/12/12')),
       repBalance: undefined,
       volume: formatNumber(100),
-      fees: formatEtherTokens(new BigNumber('10', 10)),
+      fees: formatEther(new BigNumber('10', 10)),
       numberOfTrades: formatNumber(4),
       averageTradeSize: formatNumber(15),
       openVolume: formatNumber(80),
@@ -91,7 +91,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
       endDate: formatDate(new Date('2017/12/12')),
       repBalance: undefined,
       volume: formatNumber(100),
-      fees: formatEtherTokens(new BigNumber('11', 10)),
+      fees: formatEther(new BigNumber('11', 10)),
       numberOfTrades: formatNumber(4),
       averageTradeSize: formatNumber(15),
       openVolume: formatNumber(80),

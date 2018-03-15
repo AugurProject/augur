@@ -6,7 +6,7 @@ import proxyquire from 'proxyquire'
 
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/routes/constants/views'
 
-import { formatNumber, formatEtherTokens, formatRep } from 'utils/format-number'
+import { formatNumber, formatEther, formatRep } from 'utils/format-number'
 
 describe('modules/portfolio/selectors/nav-items', () => {
   proxyquire.noPreserveCache().noCallThru()
@@ -53,7 +53,7 @@ describe('modules/portfolio/selectors/nav-items', () => {
   const stubbedGenerateMarketsPositionsSummary = sinon.stub(selectors, 'generateMarketsPositionsSummary').callsFake(() => (
     {
       numPositions: formatNumber(10, { denomination: 'positions' }),
-      totalNet: formatEtherTokens(2),
+      totalNet: formatEther(2),
     }
   ))
   const stubbedMyMarketsSummary = sinon.stub(selectors, 'selectMyMarketsSummary').callsFake(() => (
@@ -88,7 +88,7 @@ describe('modules/portfolio/selectors/nav-items', () => {
       leadingValue: formatNumber(10, { denomination: 'positions' }),
       leadingValueNull: 'No Positions',
       trailingTitle: 'Total Profit/Loss',
-      trailingValue: formatEtherTokens(2),
+      trailingValue: formatEther(2),
       trailingValueNull: 'No Profit/Loss',
     },
     {
@@ -98,7 +98,7 @@ describe('modules/portfolio/selectors/nav-items', () => {
       leadingValue: formatNumber(30, { denomination: 'Markets' }),
       leadingValueNull: 'No Markets',
       trailingTitle: 'Total Gain/Loss',
-      trailingValue: formatEtherTokens(10),
+      trailingValue: formatEther(10),
       trailingValueNull: 'No Gain/Loss',
     },
     {

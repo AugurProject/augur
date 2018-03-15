@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Styles from 'modules/escape-hatch/components/escape-hatch.styles'
-import { formatGasCost, formatEtherTokensEstimate } from 'utils/format-number'
+import { formatGasCost, formatEtherEstimate } from 'utils/format-number'
 import PropTypes from 'prop-types'
 
 export default class EscapeHatchView extends Component {
@@ -94,11 +94,11 @@ export default class EscapeHatchView extends Component {
             </div>
             <div>
               <span className={Styles.EscapeHatch_LabelCell}>REP</span>
-              <span>{formatEtherTokensEstimate(p.escapeHatchData.rep).rounded}</span>
+              <span>{formatEtherEstimate(p.escapeHatchData.rep).rounded}</span>
             </div>
             <div>
               <span className={Styles.EscapeHatch_LabelCell}>ETH</span>
-              <span>{formatEtherTokensEstimate(p.escapeHatchData.eth).rounded}</span>
+              <span>{formatEtherEstimate(p.escapeHatchData.eth).rounded}</span>
             </div>
             <div>
               <span className={Styles.EscapeHatch_LabelCell}>GAS</span>

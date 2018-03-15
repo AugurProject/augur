@@ -5,7 +5,7 @@ import store from 'src/store'
 import { selectLoginAccountAddress, selectPriceHistoryState, selectMarketCreatorFeesState } from 'src/select-state'
 import selectAllMarkets from 'modules/markets/selectors/markets-all'
 import { ZERO } from 'modules/trade/constants/numbers'
-import { formatNumber, formatEtherTokens } from 'utils/format-number'
+import { formatNumber, formatEther } from 'utils/format-number'
 
 export default function () {
   return selectLoginAccountMarkets(store.getState())
@@ -28,7 +28,7 @@ export const selectLoginAccountMarkets = createSelector(
     if (!authorOwnedMarkets) return []
     const markets = []
     authorOwnedMarkets.forEach((market) => {
-      const fees = formatEtherTokens(marketCreatorFees[market.id] || 0)
+      const fees = formatEther(marketCreatorFees[market.id] || 0)
       const numberOfTrades = formatNumber(selectNumberOfTrades(priceHistory[market.id]))
       const averageTradeSize = formatNumber(selectAverageTradeSize(priceHistory[market.id]))
       const openVolume = formatNumber(selectOpenVolume(market))

@@ -12,6 +12,10 @@ const syncUniverse = (callback = logError) => (dispatch, getState) => {
   augur.api.Universe.isForking(universePayload, (err, isForking) => {
     if (err) return callback(err)
     dispatch(updateUniverse({ isForking }))
+    augur.api.Universe.getForkEndTime(universePayload, (err, forkEndTime) => {
+      if (err) return callback(err)
+      dispatch(updateUniverse({ forkEndTime }))
+    })
   })
   if (!universe.reportingPeriodDurationInSeconds) return callback(null)
   dispatch(updateUniverse(getReportingCycle()))
