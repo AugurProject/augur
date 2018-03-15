@@ -2,7 +2,10 @@
   "augur-node": "wss://clique.augur.nodes.augur.net",
   "ethereum-node": {
     "http": "https://clique.ethereum.nodes.augur.net",
-    "ws": null
+    "ws": null,
+    "pollingIntervalMilliseconds": 1000,
+    "blockRetention": 100,
+    "connectionTimeout": 60000
   },
   "auto-login": false,
   "universe": null,
