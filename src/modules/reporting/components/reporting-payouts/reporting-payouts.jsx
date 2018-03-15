@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import ReactTooltip from 'react-tooltip'
 import { formatAttoRep } from 'utils/format-number'
-import BigNumber from 'bignumber.js'
 import Styles from 'modules/reporting/components/reporting-payouts/reporting-payouts.styles'
 import TooltipStyles from 'modules/common/less/tooltip'
 

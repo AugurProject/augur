@@ -2,7 +2,7 @@ import { describe, it } from 'mocha'
 import { assert } from 'chai'
 import { calculatePercentage, calculateTentativeRemainingRep, calculateAddedStakePercentage, __RewireAPI__ as RewireAPI } from 'modules/reporting/helpers/progress-calculations'
 
-describe.only(`modules/reporting/helpers/progress-calculations.js`, () => {
+describe(`modules/reporting/helpers/progress-calculations.js`, () => {
   const test = (t) => {
     it(t.description, () => {
       t.assertions()
