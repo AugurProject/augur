@@ -6,11 +6,11 @@ import { reshapeOutcomesRowToUIOutcomeInfo, reshapeMarketsRowToUIMarketInfo, get
 
 interface MarketOutcomeResult {
   marketsRows: Array<MarketsRowWithCreationTime>;
-  outcomesRows: Array<OutcomesRow>;
+  outcomesRows: Array<OutcomesRow<BigNumber>>;
   winningPayoutRows: Array<PayoutRow & MarketsContractAddressRow>;
 }
 
-export function getMarketsInfo(db: Knex, marketIds: Array<Address>, callback: (err: Error|null, result?: UIMarketsInfo) => void): void {
+export function getMarketsInfo(db: Knex, marketIds: Array<Address>, callback: (err: Error|null, result?: UIMarketsInfo<string>) => void): void {
   let marketsQuery: Knex.QueryBuilder = getMarketsWithReportingState(db);
   if (marketIds == null) return callback(new Error("must include marketIds parameter"));
   marketsQuery = marketsQuery.whereIn("markets.marketId", marketIds);
@@ -24,15 +24,14 @@ export function getMarketsInfo(db: Knex, marketIds: Array<Address>, callback: (e
     const { marketsRows, outcomesRows, winningPayoutRows } = marketOutcomeResult;
     if (!marketsRows) return callback(null);
     const marketsRowsByMarket = _.keyBy(marketsRows, (r: MarketsRowWithCreationTime): string => r.marketId);
-    const outcomesRowsByMarket = _.groupBy(outcomesRows, (r: OutcomesRow): string => r.marketId);
+    const outcomesRowsByMarket = _.groupBy(outcomesRows, (r: OutcomesRow<BigNumber>): string => r.marketId);
     const winningPayoutByMarket = _.keyBy(winningPayoutRows, (r: PayoutRow & MarketsContractAddressRow): string => r.marketId);
-
-    const marketsInfo: UIMarketsInfo = _.map(marketIds, (marketId: string): UIMarketInfo|null => {
+    const marketsInfo: UIMarketsInfo<string> = _.map(marketIds, (marketId: string): UIMarketInfo<string>|null => {
       const market = marketsRowsByMarket[marketId];
       if ( !market ) {
         return null;
       }
-      const outcomes = _.map(outcomesRowsByMarket[marketId], (outcomesRow: OutcomesRow): UIOutcomeInfo => reshapeOutcomesRowToUIOutcomeInfo(outcomesRow));
+      const outcomes = _.map(outcomesRowsByMarket[marketId], (outcomesRow: OutcomesRow<BigNumber>): UIOutcomeInfo<string> => reshapeOutcomesRowToUIOutcomeInfo(outcomesRow));
       return reshapeMarketsRowToUIMarketInfo(market, outcomes, winningPayoutByMarket[marketId]);
     });
 

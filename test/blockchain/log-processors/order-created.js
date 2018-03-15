@@ -3,6 +3,7 @@
 const assert = require("chai").assert;
 const { fix } = require("speedomatic");
 const setupTestDb = require("../../test.database");
+const { BigNumber } = require("bignumber.js");
 const { convertHumanReadableSharesToOnChainShares } = require("../../../build/utils/convert-fixed-point-to-decimal");
 const { processOrderCreatedLog, processOrderCreatedLogRemoval } = require("../../../build/blockchain/log-processors/order-created");
 

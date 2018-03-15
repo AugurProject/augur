@@ -2,6 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
+const { BigNumber } = require("bignumber.js");
 const { processOrderCanceledLog, processOrderCanceledLogRemoval } = require("../../../build/blockchain/log-processors/order-canceled");
 
 describe("blockchain/log-processors/order-canceled", () => {

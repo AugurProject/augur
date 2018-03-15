@@ -2,6 +2,7 @@ import * as Knex from "knex";
 import * as _ from "lodash";
 import BigNumber from "bignumber.js";
 import { sortDirection } from "../../utils/sort-direction";
+import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import {
   MarketsRowWithCreationTime,
   OutcomesRow,
@@ -22,43 +23,43 @@ export function queryModifier(query: Knex.QueryBuilder, defaultSortBy: string, d
   return query;
 }
 
-export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow): UIOutcomeInfo {
-  return {
+export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow<BigNumber>): UIOutcomeInfo<string> {
+  return formatBigNumberAsFixed<UIOutcomeInfo<BigNumber>, UIOutcomeInfo<string>>({
     id: outcomesRow.outcome,
     volume: outcomesRow.volume,
     price: outcomesRow.price,
     description: outcomesRow.description,
-  };
+  });
 }
 
-export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime, outcomesInfo: Array<UIOutcomeInfo>, winningPayoutRow: PayoutRow|null): UIMarketInfo {
+export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime, outcomesInfo: Array<UIOutcomeInfo<string>>, winningPayoutRow: PayoutRow|null): UIMarketInfo<string> {
   let consensus: NormalizedPayout|null;
   if (winningPayoutRow == null) {
     consensus = null;
   } else {
     consensus = normalizePayouts(winningPayoutRow);
   }
-  return {
+  return formatBigNumberAsFixed<UIMarketInfo<BigNumber>, UIMarketInfo<string>>({
     id: row.marketId,
     universe: row.universe,
     marketType: row.marketType,
     numOutcomes: row.numOutcomes,
-    minPrice: row.minPrice.toFixed(),
-    maxPrice: row.maxPrice.toFixed(),
-    cumulativeScale: row.maxPrice.minus(row.minPrice).toFixed(),
+    minPrice: row.minPrice,
+    maxPrice: row.maxPrice,
+    cumulativeScale: row.maxPrice.minus(row.minPrice),
     author: row.marketCreator,
     creationTime: row.creationTime,
     creationBlock: row.creationBlockNumber,
-    creationFee: row.creationFee.toFixed(),
-    settlementFee: row.reportingFeeRate.plus(row.marketCreatorFeeRate).toFixed(),
-    reportingFeeRate: row.reportingFeeRate.toFixed(),
-    marketCreatorFeeRate: row.marketCreatorFeeRate.toFixed(),
-    marketCreatorFeesCollected: row.marketCreatorFeesCollected!.toFixed(),
-    initialReportSize: row.initialReportSize!.toFixed(),
+    creationFee: row.creationFee,
+    settlementFee: row.reportingFeeRate.plus(row.marketCreatorFeeRate),
+    reportingFeeRate: row.reportingFeeRate,
+    marketCreatorFeeRate: row.marketCreatorFeeRate,
+    marketCreatorFeesCollected: row.marketCreatorFeesCollected!,
+    initialReportSize: row.initialReportSize,
     category: row.category,
     tags: [row.tag1, row.tag2],
-    volume: row.volume.toFixed(),
-    outstandingShares: row.sharesOutstanding.toFixed(),
+    volume: row.volume,
+    outstandingShares: row.sharesOutstanding,
     feeWindow: row.feeWindow,
     endDate: row.endTime,
     finalizationTime: row.finalizationTime,
@@ -66,13 +67,13 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
     description: row.shortDescription,
     extraInfo: row.longDescription,
     designatedReporter: row.designatedReporter,
-    designatedReportStake: row.designatedReportStake!.toString(),
+    designatedReportStake: row.designatedReportStake!,
     resolutionSource: row.resolutionSource,
-    numTicks: row.numTicks.toFixed(),
-    tickSize: numTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice).toFixed(),
+    numTicks: row.numTicks,
+    tickSize: numTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice),
     consensus,
     outcomes: outcomesInfo,
-  };
+  });
 }
 
 export function reshapeDisputeTokensRowToUIDisputeTokenInfo(disputeTokenRow: DisputeTokensRowWithTokenState): UIDisputeTokenInfo {

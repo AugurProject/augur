@@ -19,6 +19,8 @@ const whitelist: Whitelist = {
     minPrice: true,
     maxPrice: true,
     creationFee: true,
+    reportingFeeRate: true,
+    marketCreatorFeeRate: true,
     marketCreatorFeesClaimed: true,
     marketCreatorFeesCollected: true,
     initialReportSize: true,
@@ -91,7 +93,6 @@ function convertToBigNumber(row: any) {
   for (const key in row) {
     if (row.hasOwnProperty(key) && FIELD_NAMES[key] === true && typeof row[key] === "string") {
       row[key] = new BigNumber(row[key], 10);
-      console.log(chalk.green("CONVERTED DATABASE RESULT:"), key, row[key]);
     }
   }
 

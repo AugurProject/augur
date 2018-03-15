@@ -1,16 +1,18 @@
 import * as Knex from "knex";
-import { Address, MarketPriceHistory } from "../../types";
+import { BigNumber } from "bignumber.js";
+import { Address, MarketPriceHistory, TimestampedPriceAmount } from "../../types";
+import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 
 interface MarketPriceHistoryRow {
-  outcome: number;
-  price: string|number;
   timestamp: number;
-  amount: number;
+  outcome: number;
+  price: BigNumber;
+  amount: BigNumber;
 }
 
 // Input: MarketId
 // Output: { outcome: [{ price, timestamp }] }
-export function getMarketPriceHistory(db: Knex, marketId: Address, callback: (err: Error|null, result?: MarketPriceHistory) => void): void {
+export function getMarketPriceHistory(db: Knex, marketId: Address, callback: (err: Error|null, result?: MarketPriceHistory<string>) => void): void {
   db.select([
     "trades.outcome",
     "trades.price",
@@ -20,14 +22,14 @@ export function getMarketPriceHistory(db: Knex, marketId: Address, callback: (er
   .asCallback((err: Error|null, tradesRows?: Array<MarketPriceHistoryRow>): void => {
     if (err) return callback(err);
     if (!tradesRows) return callback(new Error("Internal error retrieving market price history"));
-    const marketPriceHistory: MarketPriceHistory = {};
+    const marketPriceHistory: MarketPriceHistory<string> = {};
     tradesRows.forEach((trade: MarketPriceHistoryRow): void => {
       if (!marketPriceHistory[trade.outcome]) marketPriceHistory[trade.outcome] = [];
-      marketPriceHistory[trade.outcome].push({
+      marketPriceHistory[trade.outcome].push(formatBigNumberAsFixed<TimestampedPriceAmount<BigNumber>, TimestampedPriceAmount<string>>({
         price: trade.price,
         timestamp: trade.timestamp,
         amount: trade.amount,
-      });
+      }));
     });
     callback(null, marketPriceHistory);
   });

@@ -1,12 +1,13 @@
 import { Augur } from "augur.js";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
-import { Address, FormattedEventLog, TokensRow, MarketsRow, OrdersRow, ErrorCallback } from "../../../types";
+import { Address, FormattedEventLog, TradesRow, TokensRow, MarketsRow, OrdersRow, ErrorCallback } from "../../../types";
 import { calculateFillPrice } from "./calculate-fill-price";
 import { calculateNumberOfSharesTraded } from "./calculate-number-of-shares-traded";
 import { updateOrdersAndPositions } from "./update-orders-and-positions";
 import { updateVolumetrics } from "./update-volumetrics";
 import { augurEmitter } from "../../../events";
+import { formatBigNumberAsFixed } from "../../../utils/format-big-number-as-fixed";
 import { fixedPointToDecimal, onChainSharesToHumanReadableShares, numTicksToTickSize } from "../../../utils/convert-fixed-point-to-decimal";
 import { BN_WEI_PER_ETHER } from "../../../constants";
 
@@ -41,14 +42,14 @@ export function processOrderFilledLog(db: Knex, augur: Augur, log: FormattedEven
         const orderCreator = ordersRow.orderCreator!;
         const price = ordersRow.fullPrecisionPrice!;
         const orderType = ordersRow.orderType!;
-        const numCreatorTokens = fixedPointToDecimal(log.numCreatorTokens, BN_WEI_PER_ETHER);
-        const numCreatorShares = onChainSharesToHumanReadableShares(log.numCreatorShares, tickSize);
-        const numFillerTokens = fixedPointToDecimal(log.numFillerTokens, BN_WEI_PER_ETHER);
-        const numFillerShares = onChainSharesToHumanReadableShares(log.numFillerShares, tickSize);
-        const marketCreatorFees = fixedPointToDecimal(log.marketCreatorFees, BN_WEI_PER_ETHER);
-        const reporterFees = fixedPointToDecimal(log.reporterFees, BN_WEI_PER_ETHER);
+        const numCreatorTokens = fixedPointToDecimal(new BigNumber(log.numCreatorTokens, 10), BN_WEI_PER_ETHER);
+        const numCreatorShares = onChainSharesToHumanReadableShares(new BigNumber(log.numCreatorShares, 10), tickSize);
+        const numFillerTokens = fixedPointToDecimal(new BigNumber(log.numFillerTokens, 10), BN_WEI_PER_ETHER);
+        const numFillerShares = onChainSharesToHumanReadableShares(new BigNumber(log.numFillerShares, 10), tickSize);
+        const marketCreatorFees = fixedPointToDecimal(new BigNumber(log.marketCreatorFees, 10), BN_WEI_PER_ETHER);
+        const reporterFees = fixedPointToDecimal(new BigNumber(log.reporterFees, 10), BN_WEI_PER_ETHER);
         const amount = calculateNumberOfSharesTraded(numCreatorShares, numCreatorTokens, calculateFillPrice(augur, price, minPrice, maxPrice, orderType));
-        const tradeData = {
+        const tradeData = formatBigNumberAsFixed<TradesRow<BigNumber>, TradesRow<string>>({
           marketId,
           outcome,
           orderId,
@@ -68,7 +69,7 @@ export function processOrderFilledLog(db: Knex, augur: Augur, log: FormattedEven
           amount,
           marketCreatorFees,
           reporterFees,
-        };
+        });
         augurEmitter.emit("OrderFilled", tradeData);
         db.insert(tradeData).into("trades").asCallback((err: Error|null): void => {
           if (err) return callback(err);

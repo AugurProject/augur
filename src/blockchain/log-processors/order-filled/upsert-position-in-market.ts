@@ -18,7 +18,7 @@ export function upsertPositionInMarket(db: Knex, augur: Augur, account: Address,
     forEachOf(positionInMarket, (numShares: string, outcome: number, nextOutcome: AsyncCallback): void => {
       augur.api.Orders.getLastOutcomePrice({ _market: marketId, _outcome: outcome }, (err: Error|null, lastOutcomePrice: Int256): void => {
         if (err) return callback(err);
-        const price = fixedPointToDecimal(new BigNumber(lastOutcomePrice, 10), numTicks);
+        const price = fixedPointToDecimal(new BigNumber(lastOutcomePrice, 10), numTicks).toFixed();
         db("outcomes").where({ marketId, outcome }).update({ price }).asCallback((err: Error|null): void => {
           if (err) return callback(err);
           calculateProfitLossInOutcome(db, augur, account, marketId, outcome, (err: Error|null, profitLossInOutcome?: CalculatedProfitLoss): void => {

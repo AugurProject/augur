@@ -177,11 +177,11 @@ export interface PositionsRow {
   numSharesAdjustedForUserIntention?: string|number;
 }
 
-export interface OutcomesRow {
+export interface OutcomesRow<BigNumberType> {
   marketId: Address;
   outcome: number;
-  price: string|number;
-  volume: string|number;
+  price: BigNumberType;
+  volume: BigNumberType;
   description: string|null;
 }
 
@@ -290,34 +290,34 @@ export interface UIConsensusInfo {
   isInvalid: boolean;
 }
 
-export interface UIOutcomeInfo {
+export interface UIOutcomeInfo<BigNumberType> {
   id: number;
-  volume: string|number;
-  price: string|number;
+  volume: BigNumberType;
+  price: BigNumberType;
   description: string|null;
 }
 
-export interface UIMarketInfo {
+export interface UIMarketInfo<BigNumberType> {
   id: Address;
   universe: Address;
   marketType: string;
   numOutcomes: number;
-  minPrice: string|number;
-  maxPrice: string|number;
-  cumulativeScale: string|number;
+  minPrice: BigNumberType;
+  maxPrice: BigNumberType;
+  cumulativeScale: BigNumberType;
   author: Address;
   creationTime: number;
   creationBlock: number;
-  creationFee: string|number;
-  settlementFee: string;
-  reportingFeeRate: string|number;
-  marketCreatorFeeRate: string|number;
-  marketCreatorFeesCollected: string|number|null;
-  initialReportSize: string|number|null;
+  creationFee: BigNumberType;
+  settlementFee: BigNumberType;
+  reportingFeeRate: BigNumberType;
+  marketCreatorFeeRate: BigNumberType;
+  marketCreatorFeesCollected: BigNumberType|null;
+  initialReportSize: BigNumberType|null;
   category: string;
   tags: Array<string|null>;
-  volume: string|number;
-  outstandingShares: string|number;
+  volume: BigNumberType;
+  outstandingShares: BigNumberType;
   feeWindow: Address;
   endDate: number;
   finalizationTime?: number|null;
@@ -325,18 +325,18 @@ export interface UIMarketInfo {
   description: string;
   extraInfo?: string|null;
   designatedReporter: Address;
-  designatedReportStake: string|number;
+  designatedReportStake: BigNumberType;
   resolutionSource?: string|null;
-  numTicks: string|number;
-  tickSize: string|number;
+  numTicks: BigNumberType;
+  tickSize: BigNumberType;
   consensus: NormalizedPayout|null;
-  outcomes: Array<UIOutcomeInfo>;
+  outcomes: Array<UIOutcomeInfo<string>>;
 }
 
-export type UIMarketsInfo = Array<UIMarketInfo|null>;
+export type UIMarketsInfo<BigNumberType> = Array<UIMarketInfo<BigNumberType>|null>;
 
 // Does not extend BaseTransaction since UI is expecting "creationBlockNumber"
-export interface UIOrder {
+export interface UIOrder<BigNumberType> {
   orderId: Bytes32;
   transactionHash: Bytes32;
   logIndex: number;
@@ -345,19 +345,19 @@ export interface UIOrder {
   creationTime: number;
   creationBlockNumber: number;
   orderState: OrderState;
-  price: number|string;
-  amount: number|string;
-  fullPrecisionPrice: number|string;
-  fullPrecisionAmount: number|string;
-  tokensEscrowed: number|string;
-  sharesEscrowed: number|string;
+  price: BigNumberType;
+  amount: BigNumberType;
+  fullPrecisionPrice: BigNumberType;
+  fullPrecisionAmount: BigNumberType;
+  tokensEscrowed: BigNumberType;
+  sharesEscrowed: BigNumberType;
 }
 
-export interface UIOrders {
+export interface UIOrders<BigNumberType> {
   [marketId: string]: {
     [outcome: number]: {
       [orderType: string]: {
-        [orderId: string]: UIOrder;
+        [orderId: string]: UIOrder<BigNumberType>;
       };
     };
   };
@@ -416,14 +416,14 @@ export interface TradesRow<BigNumberType> extends BaseTransactionRow {
   tradeGroupId: Bytes32|null;
 }
 
-export interface TimestampedPriceAmount {
-  price: string|number;
-  amount: string|number;
+export interface TimestampedPriceAmount<BigNumberType> {
+  price: BigNumberType;
+  amount: BigNumberType;
   timestamp: number;
 }
 
-export interface MarketPriceHistory {
-  [outcome: number]: Array<TimestampedPriceAmount>;
+export interface MarketPriceHistory<BigNumberType> {
+  [outcome: number]: Array<TimestampedPriceAmount<BigNumberType>>;
 }
 
 export interface MarketsRowWithCreationTime extends MarketsRow<BigNumber> {

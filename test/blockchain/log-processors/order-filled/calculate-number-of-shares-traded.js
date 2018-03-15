@@ -1,6 +1,7 @@
 "use strict";
 
 const assert = require("chai").assert;
+const { BigNumber } = require("bignumber.js");
 const { calculateNumberOfSharesTraded } = require("../../../../build/blockchain/log-processors/order-filled/calculate-number-of-shares-traded");
 
 describe("blockchain/log-processors/order-filled/calculate-number-of-shares-traded", () => {
@@ -12,23 +13,23 @@ describe("blockchain/log-processors/order-filled/calculate-number-of-shares-trad
   test({
     description: "shares only",
     params: {
-      numShares: "1.2",
-      numTokens: "0",
-      price: "0.2",
+      numShares: new BigNumber("1.2", 10),
+      numTokens: new BigNumber("0", 10),
+      price: new BigNumber("0.2", 10),
     },
     assertions: (numberOfSharesTraded) => {
-      assert.strictEqual(numberOfSharesTraded, "1.2");
+      assert.strictEqual(numberOfSharesTraded.toFixed(), "1.2");
     },
   });
   test({
     description: "tokens only",
     params: {
-      numShares: "0",
-      numTokens: "2.1",
-      price: "0.2",
+      numShares: new BigNumber("0", 10),
+      numTokens: new BigNumber("2.1", 10),
+      price: new BigNumber("0.2", 10),
     },
     assertions: (numberOfSharesTraded) => {
-      assert.strictEqual(numberOfSharesTraded, "10.5");
+      assert.strictEqual(numberOfSharesTraded.toFixed(), "10.5");
     },
   });
 });

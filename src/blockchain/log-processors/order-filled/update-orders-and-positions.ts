@@ -6,6 +6,7 @@ import { Address, Bytes32, AsyncCallback, ErrorCallback } from "../../../types";
 import { ZERO } from "../../../constants";
 import { onChainSharesToHumanReadableShares } from "../../../utils/convert-fixed-point-to-decimal";
 import { formatOrderAmount } from "../../../utils/format-order";
+import { formatBigNumberAsFixed } from "../../../utils/format-big-number-as-fixed";
 import { refreshPositionInMarket } from "./refresh-position-in-market";
 
 interface OrderFilledOnContractData {
@@ -24,6 +25,6 @@ export function updateOrdersAndPositions(db: Knex, augur: Augur, marketId: Addre
     const amountRemainingInOrder = formatOrderAmount(fullPrecisionAmountRemainingInOrder);
     const updateAmountsParams = { fullPrecisionAmount: fullPrecisionAmountRemainingInOrder, amount: amountRemainingInOrder };
     const updateParams = fullPrecisionAmountRemainingInOrder.eq(ZERO) ? Object.assign({}, updateAmountsParams, { isRemoved: 1 }) : updateAmountsParams;
-    db("orders").where({ orderId }).update(updateParams).asCallback(callback);
+    db("orders").where({ orderId }).update(formatBigNumberAsFixed(updateParams)).asCallback(callback);
   });
 }

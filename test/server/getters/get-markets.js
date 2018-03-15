@@ -2,7 +2,6 @@
 
 const ReportingState = require("../../../build/types").ReportingState;
 const assert = require("chai").assert;
-const { BigNumber } = require("bignumber.js");
 const setupTestDb = require("../../test.database");
 const { getMarkets } = require("../../../build/server/getters/get-markets");
 

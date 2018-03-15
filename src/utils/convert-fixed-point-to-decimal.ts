@@ -18,11 +18,11 @@ export function convertDecimalToFixedPoint(decimalValue: string|number, conversi
 }
 
 export function onChainSharesToHumanReadableShares(onChainShares: BigNumber, tickSize: BigNumber): BigNumber {
-  return fixedPointToDecimal(onChainShares, tickSize);
+  return fixedPointToDecimal(onChainShares, fix(tickSize) as BigNumber);
 }
 
 export function convertOnChainSharesToHumanReadableShares(onChainShares: string|number, tickSize: string|number): string {
-  return onChainSharesToHumanReadableShares(new BigNumber(onChainShares, 10), fix(tickSize) as BigNumber).toFixed();
+  return onChainSharesToHumanReadableShares(new BigNumber(onChainShares, 10), new BigNumber(tickSize, 10)).toFixed();
 }
 
 export function humanReadableSharesToOnChainShares(humanReadableShares: BigNumber, tickSize: BigNumber): BigNumber {

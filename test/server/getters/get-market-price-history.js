@@ -29,8 +29,8 @@ describe("server/getters/get-market-price-history", () => {
       assert.isNull(err);
       assert.deepEqual(marketPriceHistory, {
         0: [{
-          price: new BigNumber("5.5", 10),
-          amount: new BigNumber("0.2", 10),
+          price: "5.5",
+          amount: "0.2",
           timestamp: 1506474500,
         }],
       });

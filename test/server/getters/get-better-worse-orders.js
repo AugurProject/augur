@@ -2,7 +2,6 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { BigNumber } = require("bignumber.js");
 const { getBetterWorseOrders } = require("../../../build/server/getters/get-better-worse-orders");
 
 describe("server/getters/get-better-worse-orders", () => {
@@ -23,7 +22,7 @@ describe("server/getters/get-better-worse-orders", () => {
       marketId: "0x00000000000000000000000000000fffffffff11",
       outcome: 1,
       orderType: "buy",
-      price: new BigNumber("2", 10),
+      price: "2",
     },
     assertions: (err, betterWorseOrders) => {
       assert.isNull(err);
@@ -39,7 +38,7 @@ describe("server/getters/get-better-worse-orders", () => {
       marketId: "0x0000000000000000000000000000000000000001",
       outcome: 0,
       orderType: "buy",
-      price: new BigNumber("0.4", 10),
+      price: "0.4",
     },
     assertions: (err, betterWorseOrders) => {
       assert.isNull(err);
@@ -55,7 +54,7 @@ describe("server/getters/get-better-worse-orders", () => {
       marketId: "0x0000000000000000000000000000000000000001",
       outcome: 0,
       orderType: "buy",
-      price: new BigNumber("0.99", 10),
+      price: "0.99",
     },
     assertions: (err, betterWorseOrders) => {
       assert.isNull(err);
@@ -71,7 +70,7 @@ describe("server/getters/get-better-worse-orders", () => {
       marketId: "0x0000000000000000000000000000000000000001",
       outcome: 0,
       orderType: "buy",
-      price: new BigNumber("0.65", 10),
+      price: "0.65",
     },
     assertions: (err, betterWorseOrders) => {
       assert.isNull(err);
