@@ -58,15 +58,11 @@ export default class MarketOutcomeMidpoint extends Component {
         ])
 
       chart.append('line')
+        .attr('id', 'midpoint_line')
         .attr('x1', 0)
         .attr('x2', width)
         .attr('y1', () => yScale(0.5))
         .attr('y2', () => yScale(0.5))
-
-      chart.append('rect')
-        .attr('class', 'yah')
-        .attr('width', width)
-        .attr('height', height - chartMargins.top - chartMargins.bottom)
 
       return this.setState({
         midpointChart: fauxDiv.toReact(),

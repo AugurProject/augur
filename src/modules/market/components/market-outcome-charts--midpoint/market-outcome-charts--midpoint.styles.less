@@ -1,7 +1,14 @@
+@import (reference) "~assets/styles/shared";
+
 .MarketOutcomeCharts__midpoint-chart {
-  background-color: red;
   height: 100%;
-  opacity: 0.2;
   position: absolute;
   width: 100%;
+
+  :global {
+    #midpoint_line {
+      stroke: @color-gray;
+      stroke-width: 2px;
+    }
+  }
 }
