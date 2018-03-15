@@ -33,12 +33,18 @@ export default function (market, disputeStakes, newOutcomeDisputeBond) {
     return p
   }, [])
     .reduce(fillInOutcomes, addDefaultStakeOutcomes)
-    .filter(o => !o.tentativeWinner)
-    .sort((a, b) => new BigNumber(a.stakeRemaining).gt(new BigNumber(b.stakeRemaining)))
-    .sort((a, b) => new BigNumber(a.stakeCurrent).lt(new BigNumber(b.stakeCurrent))).slice(0, 8)
+    .filter(o => !o.tentativeWinning)
+    .sort((a, b) => sortOutcomes(a, b)).slice(0, 8)
   return [tentativeWinner, ...filteredOutcomes]
 }
 
+const sortOutcomes = (a, b) => {
+  const stakeSort = new BigNumber(a.stakeRemaining).gt(new BigNumber(b.stakeRemaining))
+  const currentSort = new BigNumber(a.stakeCurrent).lt(new BigNumber(b.stakeCurrent))
+  if (stakeSort) return 1
+  if (!stakeSort && currentSort) return 1
+  if (!stakeSort) return -1
+}
 const fillInOutcomes = (collection, outcome) => {
   const index = collection.map(e => e.id).indexOf(outcome.id.toString())
   if (index === -1) {
