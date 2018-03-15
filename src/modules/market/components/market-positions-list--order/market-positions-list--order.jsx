@@ -68,11 +68,7 @@ export default class Order extends Component {
           }
         </li>
         <li>
-<<<<<<< Updated upstream
-          { p.order.type === 'sell' ? <span>-</span> : <span>+</span> } { getValue(p, 'order.unmatchedShares.formatted') }
-=======
           { p.type === SELL ? <span>-</span> : <span>+</span> } { getValue(p, 'order.unmatchedShares.formatted') }
->>>>>>> Stashed changes
         </li>
         <li>
           { getValue(p, 'order.avgPrice.formatted') }
