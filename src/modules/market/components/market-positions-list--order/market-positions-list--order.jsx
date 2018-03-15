@@ -5,6 +5,8 @@ import classNames from 'classnames'
 
 import getValue from 'utils/get-value'
 import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status'
+import { SELL } from 'modules/trade/constants/types'
+
 import Styles from 'modules/market/components/market-positions-list--order/market-positions-list--order.styles'
 
 export default class Order extends Component {
@@ -66,7 +68,11 @@ export default class Order extends Component {
           }
         </li>
         <li>
+<<<<<<< Updated upstream
           { p.order.type === 'sell' ? <span>-</span> : <span>+</span> } { getValue(p, 'order.unmatchedShares.formatted') }
+=======
+          { p.type === SELL ? <span>-</span> : <span>+</span> } { getValue(p, 'order.unmatchedShares.formatted') }
+>>>>>>> Stashed changes
         </li>
         <li>
           { getValue(p, 'order.avgPrice.formatted') }
