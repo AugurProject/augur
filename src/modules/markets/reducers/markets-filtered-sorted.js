@@ -4,6 +4,7 @@ import { RESET_STATE } from 'modules/app/actions/reset-state'
 const DEFAULT_STATE = []
 
 export default function (marketsFilteredSorted = DEFAULT_STATE, action) {
+
   switch (action.type) {
     case UPDATE_MARKETS_FILTERED_SORTED:
       return action.data.marketsFilteredSorted

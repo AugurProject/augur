@@ -5,7 +5,7 @@ import getValue from 'utils/get-value'
 // If ANY match is found, the item is included in the returned array
 export default function (search, keys, items) {
   if (search == null || search === '') return null
-
+  // console.log('in default fiter-by-search', search, keys, items)
   const searchArray = parseStringToArray(decodeURIComponent(search))
 
   const checkStringMatch = (value, search) => value.toLowerCase().indexOf(search) !== -1
@@ -33,7 +33,7 @@ export default function (search, keys, items) {
       }))
 
     if (matchedSearch) {
-      return [...p, i]
+      return [...p, items[i].id]
     }
 
     return p

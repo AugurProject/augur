@@ -7,13 +7,13 @@ import MarketsList from 'modules/markets/components/markets-list'
 
 // import getValue from 'utils/get-value'
 import parseQuery from 'modules/routes/helpers/parse-query'
-// import isEqual from 'lodash/isEqual'
+import isEqual from 'lodash/isEqual'
 
 // import parsePath from 'modules/routes/helpers/parse-path'
 // import makePath from 'modules/routes/helpers/make-path'
 
 // import { FAVORITES, MARKETS } from 'modules/routes/constants/views'
-import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
+import { CATEGORY_PARAM_NAME, FILTER_SEARCH_PARAM } from 'modules/filter-sort/constants/param-names'
 import { TYPE_TRADE } from 'modules/market/constants/link-types'
 
 export default class MarketsView extends Component {
@@ -61,6 +61,7 @@ export default class MarketsView extends Component {
         loadMarketsByCategory: nextProps.loadMarketsByCategory,
         hasLoadedMarkets: this.props.hasLoadedMarkets,
         hasLoadedCategory: this.props.hasLoadedCategory,
+        filteredMarketsEqual: isEqual(this.props.filteredMarkets, nextProps.filteredMarkets),
       })
     }
   }
@@ -108,7 +109,8 @@ export default class MarketsView extends Component {
 function loadMarkets(options) {
   if (options.canLoadMarkets) {
     const category = parseQuery(options.location.search)[CATEGORY_PARAM_NAME]
-
+    const search = parseQuery(options.location.search)[FILTER_SEARCH_PARAM]
+    console.log('cat, search, equal', category, search, options.filteredMarketsEqual)
     if (category && !options.hasLoadedCategory[category]) {
       options.loadMarketsByCategory(category)
     } else if (!category) {
