@@ -5,7 +5,7 @@ var speedomatic = require("speedomatic");
 var printTransactionStatus = require("./print-transaction-status");
 var debugOptions = require("../../debug-options");
 
-var USE_PUBLIC_CREATE_ORDER = true; // set to false to test trading.placeTrade endpoint
+var USE_PUBLIC_CREATE_ORDER = false; // set to false to test trading.placeTrade endpoint
 
 function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, numTicks, orderType, order, tradeGroupId, auth, callback) {
   var displayPrice = order.price;
@@ -72,11 +72,11 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
       augur.api.CreateOrder.publicCreateOrder(publicCreateOrderPayload);
     });
   } else {
-    var placeTradeParams = {
+    var placeTradePayload = {
       meta: auth,
       amount: displayAmount,
       limitPrice: displayPrice,
-      // estimatedCost: speedomatic.unfix(tradeCost.cost, "string"),
+      estimatedCost: speedomatic.unfix(tradeCost.cost, "string"),
       minPrice: minPrice,
       maxPrice: maxPrice,
       numTicks: numTicks,
@@ -97,8 +97,8 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
         callback(err);
       },
     };
-    if (debugOptions.cannedMarkets) console.log("create-order placeTradeParams:", placeTradeParams);
-    augur.trading.placeTrade(placeTradeParams);
+    if (debugOptions.cannedMarkets) console.log("create-order placeTradePayload:", placeTradePayload);
+    augur.trading.placeTrade(placeTradePayload);
   }
 }
 
