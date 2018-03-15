@@ -63,6 +63,7 @@ export interface MarketCreatedLogExtraInfo {
   outcomeNames?: Array<string|number|null>;
   description?: string;
   longDescription?: string|null;
+  _scalarDenomination?: string|null;
   resolutionSource?: string|null;
   marketType?: string;
 }
@@ -156,6 +157,7 @@ export interface MarketsRow {
   reportingState?: ReportingState|null;
   shortDescription: string;
   longDescription?: string|null;
+  scalarDenomination?: string|null;
   designatedReporter: Address;
   designatedReportStake: string|number;
   resolutionSource?: string|null;
@@ -321,7 +323,8 @@ export interface UIMarketInfo {
   finalizationTime?: number|null;
   reportingState?: ReportingState|null;
   description: string;
-  extraInfo?: string|null;
+  details?: string|null;
+  scalarDenomination?: string|null;
   designatedReporter: Address;
   designatedReportStake: string|number;
   resolutionSource?: string|null;

@@ -51,6 +51,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           tag1:                       (extraInfo!.tags && extraInfo!.tags!.length) ? extraInfo!.tags![0] : null,
           tag2:                       (extraInfo!.tags && extraInfo!.tags!.length > 1) ? extraInfo!.tags![1] : null,
           longDescription:            extraInfo!.longDescription || null,
+          scalarDenomination:         extraInfo!._scalarDenomination || null,
           resolutionSource:           extraInfo!.resolutionSource || null,
           universe:                   onMarketContractData!.universe,
           numOutcomes,
