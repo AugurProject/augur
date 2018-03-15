@@ -12,6 +12,7 @@ import Styles from 'modules/market/components/market-outcome-charts--depth/marke
 
 export default class MarketOutcomeDepth extends Component {
   static propTypes = {
+    sharedChartMargins: PropTypes.object.isRequired,
     marketDepth: PropTypes.object.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
@@ -87,9 +88,8 @@ export default class MarketOutcomeDepth extends Component {
         .attr('offset', '1')
 
       const margin = {
-        top: 0,
+        ...this.props.sharedChartMargins, // top, bottom
         right: 0,
-        bottom: 30,
         left: 0,
         stick: 5,
         tickOffset: 10,
@@ -98,8 +98,6 @@ export default class MarketOutcomeDepth extends Component {
       const width = this.depthChart.clientWidth
       const height = this.depthChart.clientHeight
       const drawHeight = height - margin.top - margin.bottom
-
-      chart.attr('id', 'outcome_depth')
 
       chart.attr('width', width)
       chart.attr('height', height)

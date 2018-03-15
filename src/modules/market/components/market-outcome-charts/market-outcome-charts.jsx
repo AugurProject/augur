@@ -5,10 +5,9 @@ import MarketOutcomeChartsHeader from 'modules/market/components/market-outcome-
 import MarketOutcomeCandlestick from 'modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick'
 import MarketOutcomeDepth from 'modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth'
 import MarketOutcomeOrderBook from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders'
+import MarketOutcomeMidpoint from 'modules/market/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint'
 
 import Styles from 'modules/market/components/market-outcome-charts/market-outcome-charts.styles'
-
-// import { isEqual } from 'lodash'
 
 export default class MarketOutcomeCharts extends Component {
   static propTypes = {
@@ -33,6 +32,10 @@ export default class MarketOutcomeCharts extends Component {
       hoveredDepth: [],
       hoveredPrice: null,
       fixedPrecision: 4,
+      sharedChartMargins: {
+        top: 0,
+        bottom: 30,
+      },
     }
 
     this.updateHoveredPeriod = this.updateHoveredPeriod.bind(this)
@@ -108,8 +111,13 @@ export default class MarketOutcomeCharts extends Component {
           updateSelectedPeriod={this.updateSelectedPeriod}
         />
         <div className={Styles.MarketOutcomeCharts__Charts}>
+          <MarketOutcomeMidpoint
+            orderBookKeys={p.orderBookKeys}
+            sharedChartMargins={s.sharedChartMargins}
+          />
           <div className={Styles.MarketOutcomeCharts__Candlestick}>
             <MarketOutcomeCandlestick
+              sharedChartMargins={s.sharedChartMargins}
               priceTimeSeries={p.priceTimeSeries}
               currentBlock={p.currentBlock}
               selectedPeriod={s.selectedPeriod}
@@ -124,28 +132,31 @@ export default class MarketOutcomeCharts extends Component {
               updateSeletedOrderProperties={p.updateSeletedOrderProperties}
             />
           </div>
-          <div className={Styles.MarketOutcomeCharts__Depth}>
-            <MarketOutcomeDepth
-              fixedPrecision={s.fixedPrecision}
-              orderBookKeys={p.orderBookKeys}
-              marketDepth={p.marketDepth}
-              marketMax={p.maxPrice}
-              marketMin={p.minPrice}
-              hoveredPrice={s.hoveredPrice}
-              updateHoveredPrice={this.updateHoveredPrice}
-              updateHoveredDepth={this.updateHoveredDepth}
-              updateSeletedOrderProperties={p.updateSeletedOrderProperties}
-            />
-          </div>
           <div className={Styles.MarketOutcomeCharts__Orders}>
-            <MarketOutcomeOrderBook
-              fixedPrecision={s.fixedPrecision}
-              orderBook={p.orderBook}
-              marketMidpoint={p.orderBookKeys.mid}
-              hoveredPrice={s.hoveredPrice}
-              updateHoveredPrice={this.updateHoveredPrice}
-              updateSeletedOrderProperties={p.updateSeletedOrderProperties}
-            />
+            <div className={Styles.MarketOutcomeCharts__Depth}>
+              <MarketOutcomeDepth
+                sharedChartMargins={s.sharedChartMargins}
+                fixedPrecision={s.fixedPrecision}
+                orderBookKeys={p.orderBookKeys}
+                marketDepth={p.marketDepth}
+                marketMax={p.maxPrice}
+                marketMin={p.minPrice}
+                hoveredPrice={s.hoveredPrice}
+                updateHoveredPrice={this.updateHoveredPrice}
+                updateHoveredDepth={this.updateHoveredDepth}
+                updateSeletedOrderProperties={p.updateSeletedOrderProperties}
+              />
+            </div>
+            <div className={Styles.MarketOutcomeCharts__Orderbook}>
+              <MarketOutcomeOrderBook
+                fixedPrecision={s.fixedPrecision}
+                orderBook={p.orderBook}
+                marketMidpoint={p.orderBookKeys.mid}
+                hoveredPrice={s.hoveredPrice}
+                updateHoveredPrice={this.updateHoveredPrice}
+                updateSeletedOrderProperties={p.updateSeletedOrderProperties}
+              />
+            </div>
           </div>
         </div>
       </section>

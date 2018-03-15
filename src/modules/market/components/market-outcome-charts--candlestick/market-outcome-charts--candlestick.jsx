@@ -16,6 +16,7 @@ import Styles from 'modules/market/components/market-outcome-charts--candlestick
 
 export default class MarketOutcomeCandlestick extends Component {
   static propTypes = {
+    sharedChartMargins: PropTypes.object.isRequired,
     priceTimeSeries: PropTypes.array.isRequired,
     selectedPeriod: PropTypes.object.isRequired,
     currentBlock: PropTypes.number.isRequired,
@@ -189,14 +190,15 @@ export default class MarketOutcomeCandlestick extends Component {
   drawChart(periodTimeSeries) {
     if (this.candlestickChart) {
       const fauxDiv = new ReactFauxDOM.Element('div')
-      const chart = d3.select(fauxDiv).append('svg')
+      const chart = d3.select(fauxDiv)
+        .append('svg')
+        .attr('id', 'outcome_candlestick')
 
       const priceHistory = periodTimeSeries
 
       const margin = {
-        top: 20,
+        ...this.props.sharedChartMargins, // top, bottom
         right: 0,
-        bottom: 30,
         left: 50,
         stick: 5,
         tickOffset: 10,
@@ -204,8 +206,6 @@ export default class MarketOutcomeCandlestick extends Component {
 
       const width = this.candlestickChart.clientWidth
       const height = this.candlestickChart.clientHeight
-
-      chart.attr('id', 'outcome_candlestick')
 
       chart.attr('width', width)
       chart.attr('height', height)
