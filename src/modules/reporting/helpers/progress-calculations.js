@@ -18,17 +18,6 @@ export const calculateNonAccountPercentage = (size, stakeCurrent, accountStakeCu
   return result
 }
 
-export const calculateRemainingRep = (size, totalStake) => {
-  const remaining = calculateRemainingValue(size, totalStake)
-  return formatAttoRep(remaining, { decimals: 4, denomination: ' REP' }).formatted
-}
-
-export const calculateTentativeStakePercentage = (size, totalStake, tentativeStake) => {
-  const attoRep = convertRepToAttoRep(tentativeStake)
-  const result = calculatePercentage(size, new BigNumber(totalStake).plus(new BigNumber(attoRep)).toNumber())
-  return result
-}
-
 export const calculateAddedStakePercentage = (size, accountStake, addedStake) => {
   const attoRep = convertRepToAttoRep(addedStake)
   const addedAccountStake = new BigNumber(accountStake).plus(new BigNumber(attoRep))
