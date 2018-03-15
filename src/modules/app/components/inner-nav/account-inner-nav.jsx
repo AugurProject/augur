@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 
 import BaseInnerNav from 'modules/app/components/inner-nav/base-inner-nav'
 
-import { ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW } from 'modules/routes/constants/views'
+import { ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_LEGACY_REP } from 'modules/routes/constants/views'
 
 export default class AccountInnerNav extends BaseInnerNav {
   static propTypes = {
@@ -26,6 +26,14 @@ export default class AccountInnerNav extends BaseInnerNav {
         isSelected: (this.props.currentBasePath === ACCOUNT_WITHDRAW),
         link: {
           pathname: ACCOUNT_WITHDRAW,
+        },
+      },
+      {
+        label: 'Legacy REP',
+        visible: true,
+        isSelected: (this.props.currentBasePath === ACCOUNT_LEGACY_REP),
+        link: {
+          pathname: ACCOUNT_LEGACY_REP,
         },
       },
     ]

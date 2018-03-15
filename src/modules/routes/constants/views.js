@@ -39,6 +39,7 @@ export const MARKET_USER_DATA_NAV_OPEN_ORDERS = 'open-orders'
 export const ACCOUNT_DEPOSIT = 'deposit-funds'
 export const ACCOUNT_TRANSFER = 'transfer-funds'
 export const ACCOUNT_WITHDRAW = 'withdraw-funds'
+export const ACCOUNT_LEGACY_REP = 'legacy-rep'
 
 // Reporting
 export const REPORTING_DISPUTE_MARKETS = 'reporting-dispute-markets'

@@ -36,5 +36,16 @@ export function updateAssets(callback = logError) {
       }
       if (allAssetsLoaded(balances)) callback(null, balances)
     })
+    augur.api.LegacyReputationToken.getBalance({
+      _address: loginAccount.address,
+    }, (err, attoLegacyRepBalance) => {
+      if (err) return callback(err)
+      const legacyRepBalance = speedomatic.unfix(attoLegacyRepBalance, 'string')
+      balances.legacyRep = legacyRepBalance
+      if (!loginAccount.legacyRep || loginAccount.legacyRep !== legacyRepBalance) {
+        dispatch(updateLoginAccount({ legacyRep: legacyRepBalance }))
+      }
+      if (allAssetsLoaded(balances)) callback(null, balances)
+    })
   }
 }
