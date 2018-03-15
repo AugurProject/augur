@@ -80,8 +80,6 @@ export default class ReportingDispute extends Component {
       // disputeRound signifies round completed
       const round = parseInt(disputeInfo.disputeRound, 10)
 
-      console.log(JSON.stringify(disputeOutcomes))
-
       this.setState({
         disputeRound: round,
         stakes: disputeInfo.stakes,
