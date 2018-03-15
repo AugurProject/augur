@@ -96,9 +96,7 @@ export default class ReportingReportForm extends Component {
           <label>
             <span>Outcome</span>
           </label>
-        </li>
-        { (p.market.marketType === BINARY || p.market.marketType === CATEGORICAL) &&
-          <li>
+          { (p.market.marketType === BINARY || p.market.marketType === CATEGORICAL) &&
             <ul className={FormStyles['Form__radio-buttons--per-line']}>
               { s.outcomes.map(outcome => (
                 <li key={outcome.id}>
@@ -118,12 +116,10 @@ export default class ReportingReportForm extends Component {
                 </button>
               </li>
             </ul>
-          </li>
-        }
-        { p.market.marketType === SCALAR &&
-          <li className={FormStyles['field--short']}>
+          }
+          { p.market.marketType === SCALAR &&
             <ul className={FormStyles['Form__radio-buttons--per-line']}>
-              <li>
+              <li className={FormStyles['field--short']}>
                 <button
                   className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome !== '' })}
                   onClick={(e) => { this.validateScalar(p.validations, 0, 'selectedOutcome', p.market.minPrice, p.market.maxPrice, false) }}
@@ -140,13 +136,13 @@ export default class ReportingReportForm extends Component {
                   onChange={(e) => { this.validateScalar(p.validations, e.target.value, 'outcome', p.market.minPrice, p.market.maxPrice, false) }}
                 />
               </li>
-              <li>
-                { p.validations.hasOwnProperty('err') &&
+              { p.validations.hasOwnProperty('err') &&
+                <li>
                   <span className={FormStyles.Form__error}>
                     {InputErrorIcon}{ p.validations.err }
                   </span>
-                }
-              </li>
+                </li>
+              }
               <li className={FormStyles['Form__radio-buttons--per-line']}>
                 <button
                   className={classNames({ [`${FormStyles.active}`]: p.isMarketInValid === true })}
@@ -155,8 +151,8 @@ export default class ReportingReportForm extends Component {
                 </button>
               </li>
             </ul>
-          </li>
-        }
+          }
+        </li>
         { !p.isOpenReporting &&
         <li>
           <ul>
@@ -164,9 +160,7 @@ export default class ReportingReportForm extends Component {
               <label htmlFor="sr__input--stake">
                 <span>Required Stake</span>
               </label>
-            </li>
-            <li className={Styles.ReportingReport__RepAmount}>
-              <span>{p.stake} REP</span>
+              <p>{p.stake} REP</p>
             </li>
           </ul>
         </li>
