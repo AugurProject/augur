@@ -176,6 +176,10 @@ export default class AppView extends Component {
       })
     }
 
+    if (!isEqual(this.props.universe.isForking, nextProps.universe.isForking)) {
+      this.sideNavMenuData[1].disabled = nextProps.universe.isForking
+    }
+
     if (!isEqual(this.props.location, nextProps.location)) {
       const lastBasePath = parsePath(this.props.location.pathname)[0]
       const nextBasePath = parsePath(nextProps.location.pathname)[0]
