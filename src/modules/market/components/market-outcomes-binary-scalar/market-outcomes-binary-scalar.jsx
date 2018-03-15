@@ -8,22 +8,24 @@ import getValue from 'utils/get-value'
 import Styles from 'modules/market/components/market-outcomes-binary-scalar/market-outcomes-binary-scalar.styles'
 
 const MarketOutcomes = (p) => {
+  const scalarDenomination = !p.scalarDenomination ? '' : p.scalarDenomination
   const calculatePosition = () => {
     const lastPrice = getValue(p.outcomes[0], 'lastPricePercent.full')
 
     if (p.type === BINARY) {
       return lastPrice
     }
-    // TODO: add scalar denomination to end of this template string
-    return `${(lastPrice / (p.max - p.min)) * 100}`
+    return `${(lastPrice / (p.max - p.min)) * 100} ${scalarDenomination}`
   }
 
   const currentValuePosition = {
     left: calculatePosition(),
   }
 
-  const minValue = !isNaN(p.min) && p.type !== BINARY ? p.min : '0%'
-  const maxValue = !isNaN(p.max) && p.type !== BINARY ? p.max : '100%'
+  const minValue = !isNaN(p.min) && p.type !== BINARY ? `${p.min}${scalarDenomination}` : '0%'
+  const maxValue = !isNaN(p.max) && p.type !== BINARY ? `${p.max}${scalarDenomination}` : '100%'
+
+  const lastPriceDenomination = p.type !== BINARY ? scalarDenomination : getValue(p.outcomes[0], 'lastPricePercent.denomination')
 
   return (
     <div className={Styles.MarketOutcomes}>
@@ -42,7 +44,7 @@ const MarketOutcomes = (p) => {
           {getValue(p.outcomes[0], 'lastPricePercent.formatted')}
         </span>
         <span className={Styles['MarketOutcomes__current-denomination']}>
-          {getValue(p.outcomes[0], 'lastPricePercent.denomination')}
+          {lastPriceDenomination}
         </span>
       </span>
     </div>
@@ -54,6 +56,7 @@ MarketOutcomes.propTypes = {
   max: PropTypes.number,
   min: PropTypes.number,
   type: PropTypes.string,
+  scalarDenomination: PropTypes.string,
 }
 
 export default MarketOutcomes

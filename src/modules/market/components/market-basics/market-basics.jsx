@@ -10,7 +10,7 @@ import MarketLink from 'modules/market/components/market-link/market-link'
 
 import toggleTag from 'modules/routes/helpers/toggle-tag'
 import { formatDate } from 'utils/format-date'
-import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
+import { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types'
 
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-basics/market-basics.styles'
@@ -72,11 +72,11 @@ const MarketBasics = (p) => {
         </h1>
 
         {(p.marketType === BINARY || p.marketType === SCALAR) &&
-        <MarketOutcomesBinaryScalar outcomes={p.outcomes} min={p.minPrice} max={p.maxPrice} type={p.marketType} />
+          <MarketOutcomesBinaryScalar outcomes={p.outcomes} min={p.minPrice} max={p.maxPrice} type={p.marketType} scalarDenomination={p.scalarDenomination} />
         }
 
-        {p.marketType === 'categorical' &&
-        <MarketOutcomesCategorical outcomes={p.outcomes} />
+        {p.marketType === CATEGORICAL &&
+          <MarketOutcomesCategorical outcomes={p.outcomes} />
         }
       </div>
     </article>
