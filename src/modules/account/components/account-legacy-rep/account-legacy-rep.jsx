@@ -10,15 +10,22 @@ export default class AccountLegacyRep extends Component {
     address: PropTypes.string.isRequired,
     rep: PropTypes.string.isRequired,
     legacyRep: PropTypes.string.isRequired,
+    legacyRepAllowance: PropTypes.string,
     legacyRepFaucet: PropTypes.func.isRequired,
+    legacyRepApprove: PropTypes.func.isRequired,
     migrateRep: PropTypes.func.isRequired,
   }
 
   constructor(props) {
     super(props)
 
+    this.legacyRepApprove = this.legacyRepApprove.bind(this)
     this.legacyRepFaucet = this.legacyRepFaucet.bind(this)
     this.migrateRep = this.migrateRep.bind(this)
+  }
+
+  legacyRepApprove(e, ...args) {
+    this.props.legacyRepApprove()
   }
 
   legacyRepFaucet(e, ...args) {
@@ -53,8 +60,18 @@ export default class AccountLegacyRep extends Component {
           </div>
           <div className={Styles.AccountLegacyRep__description}>
             <h2>Migrate Legacy REP</h2>
-            <p>This will convert your Legacy REP into usable REP on the deployed Augur platform</p>
-            <button onClick={this.migrateRep} className={Styles.AccountLegacyRep__button}>Migrate REP</button>
+            {p.legacyRepAllowance && p.legacyRepAllowance !== '0' &&
+              <div>
+                <p>This will convert your Legacy REP into usable REP on the deployed Augur platform.</p>
+                <button onClick={this.migrateRep} className={Styles.AccountLegacyRep__button}>Migrate REP</button>
+              </div>
+            }
+            {!p.legacyRepAllowance || p.legacyRepAllowance === '0' &&
+              <div>
+                <p>Before migrating your legacy REP you need to approve the new REP token to migrate your existing balance.</p>
+                <button onClick={this.legacyRepApprove} className={Styles.AccountLegacyRep__button}>Approve REP</button>
+              </div>
+            }
           </div>
         </div>
       </section>

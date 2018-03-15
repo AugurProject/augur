@@ -26,6 +26,13 @@ export function updateAssets(callback = logError) {
         }
         if (allAssetsLoaded(balances)) callback(null, balances)
       })
+      augur.api.LegacyReputationToken.allowance({
+        _owner: loginAccount.address,
+        _spender: reputationTokenAddress,
+      }, (err, legacyRepAllowance) => {
+        if (err) callback(err)
+        dispatch(updateLoginAccount({ legacyRepAllowance }))
+      })
     })
     augur.rpc.eth.getBalance([loginAccount.address, 'latest'], (err, attoEthBalance) => {
       if (err) return callback(err)

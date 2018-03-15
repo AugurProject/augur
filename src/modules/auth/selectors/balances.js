@@ -11,5 +11,5 @@ export const allAccountBalancesZero = balances => (
 )
 
 export const allAssetsLoaded = assets => (
-  assets.eth !== undefined && assets.rep !== undefined && assets.legacyRep !== undefined
+  assets.eth !== undefined && assets.rep !== undefined && assets.legacyRep !== undefined && assets.legacyRepAllowance !== undefined
 )
