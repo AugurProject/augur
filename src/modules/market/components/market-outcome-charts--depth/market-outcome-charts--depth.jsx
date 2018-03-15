@@ -142,13 +142,7 @@ export default class MarketOutcomeDepth extends Component {
         .attr('y1', (d, i) => ((height - margin.bottom)) * i)
         .attr('y2', (d, i) => ((height - margin.bottom)) * i)
 
-      //  Midpoint
-      chart.append('line')
-        .attr('class', 'midpoint-line')
-        .attr('x1', 0)
-        .attr('x2', width)
-        .attr('y1', () => yScale(orderBookKeys.mid))
-        .attr('y2', () => yScale(orderBookKeys.mid))
+      //  Midpoint Label
       chart.append('text')
         .attr('class', 'tick-value')
         .attr('x', 0)

@@ -11,6 +11,7 @@ import Styles from 'modules/market/components/market-outcome-charts--orders/mark
 
 export default class MarketOutcomeOrderbook extends Component {
   static propTypes = {
+    sharedChartMargins: PropTypes.object.isRequired,
     orderBook: PropTypes.object.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
     updateHoveredPrice: PropTypes.func.isRequired,
@@ -47,7 +48,10 @@ export default class MarketOutcomeOrderbook extends Component {
     const s = this.state
 
     return (
-      <section className={Styles.MarketOutcomeOrderBook}>
+      <section
+        className={Styles.MarketOutcomeOrderBook}
+        style={{ paddingBottom: p.sharedChartMargins.bottom }}
+      >
         <div
           ref={(asks) => { this.asks = asks }}
           className={Styles.MarketOutcomeOrderBook__Side}
@@ -112,15 +116,7 @@ export default class MarketOutcomeOrderbook extends Component {
             </div>
           ))}
         </div>
-        <div className={Styles.MarketOutcomeOrderBook__Midmarket}>
-          {p.marketMidpoint === null ?
-            <span>No Orders</span> :
-            <div>
-              <hr />
-              <span>{p.marketMidpoint.toFixed(p.fixedPrecision).toString()} ETH</span>
-            </div>
-          }
-        </div>
+        <div className={Styles.MarketOutcomeOrderBook__Midmarket} />
         <div className={Styles.MarketOutcomeOrderBook__Side} >
           {(p.orderBook.bids || []).map((order, i) => (
             <div

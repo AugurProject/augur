@@ -53,7 +53,7 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   componentDidMount() {
-    this.drawChart(this.state.periodTimeSeries)
+    this.drawChart(this.state.periodTimeSeries, this.props.orderBookKeys)
 
     window.addEventListener('resize', this.drawCandlestickOnResize)
   }
@@ -68,7 +68,12 @@ export default class MarketOutcomeCandlestick extends Component {
       this.updatePeriodTimeSeries(nextProps.priceTimeSeries, nextProps.selectedPeriod, nextProps.currentBlock)
     }
 
-    if (!isEqual(this.state.periodTimeSeries, nextState.periodTimeSeries)) this.drawChart(nextState.periodTimeSeries)
+    if (
+      !isEqual(this.state.periodTimeSeries, nextState.periodTimeSeries) ||
+      !isEqual(this.props.orderBookKeys, nextProps.orderBookKeys)
+    ) {
+      this.drawChart(nextState.periodTimeSeries, nextProps.orderBookKeys)
+    }
 
     if (!isEqual(this.props.hoveredPrice, nextProps.hoveredPrice)) updateHoveredPriceCrosshair(this.props.hoveredPrice, this.state.yScale, this.state.chartWidth)
   }
@@ -183,11 +188,8 @@ export default class MarketOutcomeCandlestick extends Component {
     this.setState({ periodTimeSeries })
   }
 
-  drawCandlestickOnResize() {
-    this.drawChart(this.state.periodTimeSeries)
-  }
-
-  drawChart(periodTimeSeries) {
+  drawChart(periodTimeSeries, orderBookKeys) {
+    console.log('orderBookKeys -- ', orderBookKeys)
     if (this.candlestickChart) {
       const fauxDiv = new ReactFauxDOM.Element('div')
       const chart = d3.select(fauxDiv)
@@ -226,11 +228,16 @@ export default class MarketOutcomeCandlestick extends Component {
       // Set interval step
       const step = boundDiff / ((intervals - 1) / 2)
 
-      const yDomain = new Array(intervals).fill(null).reduce((p, _unused, i) => {
-        if (i === 0) return [Number((this.props.orderBookKeys.mid - boundDiff).toFixed(allowedFloat))]
-        if (i + 1 === Math.round(intervals / 2)) return [...p, this.props.orderBookKeys.mid]
-        return [...p, Number((p[i - 1] + step).toFixed(allowedFloat))]
-      }, [])
+      // const yDomain = new Array(intervals).fill(null).reduce((p, _unused, i) => {
+      //   if (i === 0) return [Number((this.props.orderBookKeys.mid - boundDiff).toFixed(allowedFloat))]
+      //   if (i + 1 === Math.round(intervals / 2)) return [...p, this.props.orderBookKeys.mid]
+      //   return [...p, Number((p[i - 1] + step).toFixed(allowedFloat))]
+      // }, [])
+
+      const yDomain = [
+        Number((orderBookKeys.mid - boundDiff).toFixed(allowedFloat)),
+        Number((orderBookKeys.mid + boundDiff).toFixed(allowedFloat)),
+      ]
 
       // Candlesticks
       const xScale = d3.scaleTime()
@@ -241,29 +248,67 @@ export default class MarketOutcomeCandlestick extends Component {
         .domain(d3.extent(yDomain))
         .range([height - margin.bottom, margin.top])
 
-      chart.selectAll('line')
-        .data(yDomain)
+      // Y axis
+      //  Chart Bounds
+      chart.append('g')
+        .attr('id', 'candlestick_bounds')
+        .selectAll('line')
+        .data(new Array(2))
+        .enter()
+        .append('line')
+        .attr('class', 'bounding-line')
+        .attr('x1', 0)
+        .attr('x2', width)
+        .attr('y1', (d, i) => ((height - margin.bottom)) * i)
+        .attr('y2', (d, i) => ((height - margin.bottom)) * i)
+
+      //  Midpoint Label
+      chart.append('text')
+        .attr('class', 'tick-value')
+        .attr('x', 0)
+        .attr('y', yScale(orderBookKeys.mid))
+        .attr('dx', 0)
+        .attr('dy', margin.tickOffset)
+        .text(orderBookKeys.mid && orderBookKeys.mid.toFixed(allowedFloat))
+
+      // Conditional midpoint tick
+      if (orderBookKeys.mid == null) {
+        chart.append('line')
+          .attr('class', 'tick-line tick-line--midpoint')
+          .attr('x1', margin.tickOffset)
+          .attr('x2', width)
+          .attr('y1', () => yScale(orderBookKeys.mid))
+          .attr('y2', () => yScale(orderBookKeys.mid))
+      }
+
+      //  Ticks
+      const offsetTicks = yDomain.map((d, i) => { // Assumes yDomain is [min, max]
+        if (i === 0) return d + (boundDiff / 2)
+        return d - (boundDiff / 2)
+      })
+
+      const yTicks = chart.append('g')
+        .attr('id', 'depth_y_ticks')
+
+      yTicks.selectAll('line')
+        .data(offsetTicks)
         .enter()
         .append('line')
         .attr('class', 'tick-line')
-        .classed('tick-line--midpoint', (d, i) => i === (Math.floor(intervals/2)))
-        .attr('x1', (d, i) => (i === (Math.floor(intervals/2)) ? margin.tickOffset : 0))
+        .attr('x1', 0)
         .attr('x2', width)
-        .attr('y1', (d, i) => ((height - margin.bottom) / 4) * i)
-        .attr('y2', (d, i) => ((height - margin.bottom) / 4) * i)
-
-      chart.selectAll('text')
-        .data(yDomain.sort((a, b) => (b - a)))
+        .attr('y1', d => yScale(d))
+        .attr('y2', d => yScale(d))
+      yTicks.selectAll('text')
+        .data(offsetTicks)
         .enter()
         .append('text')
         .attr('class', 'tick-value')
         .attr('x', 0)
-        .attr('y', (d, i) => ((height - margin.bottom) / 4) * i)
-        .attr('dy', margin.tickOffset)
+        .attr('y', d => yScale(d))
         .attr('dx', 0)
-        .text((d, i) => {
-          if (i && i !== yDomain.length - 1) return d ? d.toFixed(allowedFloat) : ''
-        })
+        .attr('dy', margin.tickOffset)
+        .text(d => d.toFixed(allowedFloat))
 
       // X Axis
       chart.append('g')
@@ -361,6 +406,10 @@ export default class MarketOutcomeCandlestick extends Component {
         chart: fauxDiv.toReact(),
       })
     }
+  }
+
+  drawCandlestickOnResize() {
+    this.drawChart(this.state.periodTimeSeries, this.props.orderBookKeys)
   }
 
   render() {

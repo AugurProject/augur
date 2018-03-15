@@ -18,30 +18,52 @@ export default class MarketOutcomeMidpoint extends Component {
     super(props)
 
     this.state = {
+      midpointLabelWidth: 0,
       midpointChart: null,
     }
 
     this.drawMidpoint = this.drawMidpoint.bind(this)
+    this.getMidpointLabelWidth = this.getMidpointLabelWidth.bind(this)
   }
 
   componentDidMount() {
-    this.drawMidpoint(this.props.orderBookKeys, this.props.sharedChartMargins)
+    this.drawMidpoint(this.props.orderBookKeys, this.props.sharedChartMargins, this.state.midpointLabelWidth)
   }
 
   componentWillUpdate(nextProps, nextState) {
     if (
       !isEqual(this.props.orderBookKeys, nextProps.orderBookKeys) ||
-      !isEqual(this.props.sharedChartMargins, nextProps.sharedChartMargins)
-    ) this.drawMidpoint(nextProps.orderBookKeys, nextProps.sharedChartMargins)
+      !isEqual(this.props.sharedChartMargins, nextProps.sharedChartMargins) ||
+      !isEqual(this.state.midpointLabelWidth, nextState.midpointLabelWidth)
+    ) {
+      this.drawMidpoint(nextProps.orderBookKeys, nextProps.sharedChartMargins, nextState.midpointLabelWidth)
+    }
   }
 
-  drawMidpoint(orderBookKeys, chartMargins) {
+  componentDidUpdate(prevProps, prevState) {
+    if (!isEqual(prevState.midpointChart, this.state.midpointChart)) this.getMidpointLabelWidth()
+
+
+  }
+
+  getMidpointLabelWidth() { // necessary due to the use of reactFauxDom
+    const midpointLabelWidth = document.getElementById('midpoint_label')
+
+    this.setState({ midpointLabelWidth: midpointLabelWidth != null ? midpointLabelWidth.getBBox().width : 0 })
+  }
+
+  drawMidpoint(orderBookKeys, chartMargins, midpointLabelWidth) {
     if (this.midpointChart) {
       // Chart Element
       const fauxDiv = new ReactFauxDOM.Element('div')
       const chart = d3.select(fauxDiv)
         .append('svg')
         .attr('id', 'market_midpoint')
+
+      const margin = {
+        ...chartMargins,
+        right: 10,
+      }
 
       // Dimensions
       const width = this.midpointChart.clientWidth
@@ -60,9 +82,18 @@ export default class MarketOutcomeMidpoint extends Component {
       chart.append('line')
         .attr('id', 'midpoint_line')
         .attr('x1', 0)
-        .attr('x2', width)
+        .attr('x2', width - midpointLabelWidth - margin.right)
         .attr('y1', () => yScale(0.5))
         .attr('y2', () => yScale(0.5))
+
+      //  Midpoint Label
+      chart.append('text')
+        .attr('id', 'midpoint_label')
+        .attr('x', width)
+        .attr('y', yScale(0.5))
+        .attr('text-anchor', 'end')
+        .attr('dominant-baseline', 'central')
+        .text(`${orderBookKeys.mid} ETH`)
 
       return this.setState({
         midpointChart: fauxDiv.toReact(),

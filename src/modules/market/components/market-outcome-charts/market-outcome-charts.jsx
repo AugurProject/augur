@@ -149,6 +149,7 @@ export default class MarketOutcomeCharts extends Component {
             </div>
             <div className={Styles.MarketOutcomeCharts__Orderbook}>
               <MarketOutcomeOrderBook
+                sharedChartMargins={s.sharedChartMargins}
                 fixedPrecision={s.fixedPrecision}
                 orderBook={p.orderBook}
                 marketMidpoint={p.orderBookKeys.mid}
