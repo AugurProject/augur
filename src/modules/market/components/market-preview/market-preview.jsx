@@ -42,6 +42,7 @@ MarketPreview.propTypes = {
   tags: PropTypes.array,
   onClickToggleFavorite: PropTypes.func,
   cardStyle: PropTypes.string,
+  hideReportEndingIndicator: PropTypes.bool,
   linkType: PropTypes.string,
   outstandingReturns: PropTypes.bool,
   collectMarketCreatorFees: PropTypes.func,

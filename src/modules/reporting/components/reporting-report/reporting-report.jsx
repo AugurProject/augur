@@ -123,6 +123,7 @@ export default class ReportingReport extends Component {
             location={p.location}
             history={p.history}
             cardStyle="single-card"
+            hideReportEndingIndicator
             linkType={TYPE_VIEW}
             buttonText="View"
             showAdditionalDetailsToggle
