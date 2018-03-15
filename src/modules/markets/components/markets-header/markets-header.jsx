@@ -86,7 +86,7 @@ export default class MarketsHeader extends Component {
             searchKeys={[
               'description',
               ['outcomes', 'name'],
-              ['tags', 'name']
+              ['tags', 'name'],
             ]}
           />
         </div>

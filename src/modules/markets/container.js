@@ -29,8 +29,10 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   loadMarkets: () => dispatch(loadMarkets()),
   loadMarketsByCategory: category => dispatch(loadMarketsByCategory(category)),
-  updateMarketsFilteredSorted: filteredMarkets => { console.log('update from marketsContainer');
-  dispatch(updateMarketsFilteredSorted(filteredMarkets))},
+  updateMarketsFilteredSorted: (filteredMarkets) => {
+    console.log('update from marketsContainer')
+    dispatch(updateMarketsFilteredSorted(filteredMarkets))
+  },
   clearMarketsFilteredSorted: () => dispatch(clearMarketsFilteredSorted()),
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
   loadMarketsInfo: marketIds => dispatch(loadMarketsInfo(marketIds)),
