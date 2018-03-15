@@ -5,19 +5,19 @@ export default class ReportingInnerNav extends BaseInnerNav {
   getMainMenuData() {
     return [
       {
-        label: 'Dispute',
-        visible: true,
-        isSelected: (this.props.currentBasePath === REPORTING_DISPUTE_MARKETS),
-        link: {
-          pathname: REPORTING_DISPUTE_MARKETS,
-        },
-      },
-      {
         label: 'Reporting',
         visible: true,
         isSelected: (this.props.currentBasePath === REPORTING_REPORT_MARKETS),
         link: {
           pathname: REPORTING_REPORT_MARKETS,
+        },
+      },
+      {
+        label: 'Dispute',
+        visible: true,
+        isSelected: (this.props.currentBasePath === REPORTING_DISPUTE_MARKETS),
+        link: {
+          pathname: REPORTING_DISPUTE_MARKETS,
         },
       },
       {
