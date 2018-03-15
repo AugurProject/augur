@@ -1,0 +1,14 @@
+@import (reference) '~assets/styles/shared';
+
+.ChevronFlip {
+  transition: transform 0.3s ease;
+  width: 1rem;
+
+  &.pointDown {
+    transform: rotate(-180deg);
+  }
+
+  > polyline {
+    fill: @color-lightgray;
+  }
+}

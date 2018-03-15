@@ -6,7 +6,7 @@ import getValue from 'utils/get-value'
 
 import MarketPositionsListPosition from 'modules/market/components/market-positions-list--position/market-positions-list--position'
 import MarketPositionsListOrder from 'modules/market/components/market-positions-list--order/market-positions-list--order'
-import CaretDropdown from 'modules/common/components/caret-dropdown/caret-dropdown'
+import ChevronFlip from 'modules/common/components/chevron-flip/chevron-flip'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import { TYPE_REPORT, TYPE_DISPUTE, TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import { dateHasPassed } from 'utils/format-date'
@@ -149,7 +149,7 @@ export default class MarketPortfolioCard extends Component {
               <div
                 className={Styles.MarketCard__tabletoggle}
               >
-                <CaretDropdown flipped={this.state.tableOpen.myPositions} />
+                <ChevronFlip pointDown={this.state.tableOpen.myPositions} />
               </div>
             </button>
           }
@@ -193,7 +193,7 @@ export default class MarketPortfolioCard extends Component {
                 <div
                   className={Styles.MarketCard__tabletoggle}
                 >
-                  <CaretDropdown flipped={this.state.tableOpen.openOrders} />
+                  <ChevronFlip pointDown={this.state.tableOpen.openOrders} />
                 </div>
               </button>
             }
