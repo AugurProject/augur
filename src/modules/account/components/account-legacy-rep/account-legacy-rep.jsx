@@ -40,6 +40,7 @@ export default class AccountLegacyRep extends Component {
     const p = this.props
 
     const showFaucetButton = parseInt(augur.rpc.getNetworkID(), 10) !== 1
+    const legacyRepApproved = p.legacyRepAllowance && p.legacyRepAllowance !== '0'
 
     return (
       <section className={Styles.AccountLegacyRep}>
@@ -60,13 +61,13 @@ export default class AccountLegacyRep extends Component {
           </div>
           <div className={Styles.AccountLegacyRep__description}>
             <h2>Migrate Legacy REP</h2>
-            {p.legacyRepAllowance && p.legacyRepAllowance !== '0' &&
+            {legacyRepApproved &&
               <div>
                 <p>This will convert your Legacy REP into usable REP on the deployed Augur platform.</p>
                 <button onClick={this.migrateRep} className={Styles.AccountLegacyRep__button}>Migrate REP</button>
               </div>
             }
-            {!p.legacyRepAllowance || p.legacyRepAllowance === '0' &&
+            {!legacyRepApproved &&
               <div>
                 <p>Before migrating your legacy REP you need to approve the new REP token to migrate your existing balance.</p>
                 <button onClick={this.legacyRepApprove} className={Styles.AccountLegacyRep__button}>Approve REP</button>
