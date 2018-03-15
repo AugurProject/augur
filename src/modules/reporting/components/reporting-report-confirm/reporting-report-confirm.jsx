@@ -11,15 +11,9 @@ const ReportingReportConfirm = p => (
       <div className={ConfirmStyles.Confirm__creation}>
         <ul className={ConfirmStyles['Confirm__list--left-align']}>
           <li>
-            <span>Market</span>
-            <span>{ p.isMarketInValid ? 'Invalid' : 'Valid' }</span>
+            <span>Outcome</span>
+            <span>{ p.isMarketInValid ? 'Market is Invalid' : p.selectedOutcome }</span>
           </li>
-          { !p.isMarketInValid &&
-            <li>
-              <span>Outcome</span>
-              <span>{ p.selectedOutcome }</span>
-            </li>
-          }
           { !p.isOpenReporting &&
           <li>
             <span>Stake</span>
