@@ -1,6 +1,7 @@
 import { SCALAR } from 'modules/markets/constants/market-types'
 import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 import { isEmpty } from 'lodash'
+import BigNumber from 'bignumber.js'
 
 export default function (market, disputeStakes, newOutcomeDisputeBond) {
   if (isEmpty(disputeStakes)) return market.reportableOutcomes
@@ -22,7 +23,7 @@ export default function (market, disputeStakes, newOutcomeDisputeBond) {
 
   const disputeOutcomes = disputeStakes.map(stake => populateFromOutcome(marketType, addDefaultStakeOutcomes, market, stake, newOutcomeDisputeBond))
   const tentativeWinner = disputeOutcomes.find(stake => stake.tentativeWinning)
-  return disputeOutcomes.reduce((p, stake) => {
+  const filteredOutcomes = disputeOutcomes.reduce((p, stake) => {
     if (!p.find(o => o.id === stake.id)) {
       if (stake.id === tentativeWinner.id) {
         return [...p, tentativeWinner]
@@ -32,6 +33,10 @@ export default function (market, disputeStakes, newOutcomeDisputeBond) {
     return p
   }, [])
     .reduce(fillInOutcomes, addDefaultStakeOutcomes)
+    .filter(o => !o.tentativeWinner)
+    .sort((a, b) => new BigNumber(a.stakeRemaining).gt(new BigNumber(b.stakeRemaining)))
+    .sort((a, b) => new BigNumber(a.stakeCurrent).lt(new BigNumber(b.stakeCurrent))).slice(0, 8)
+  return [tentativeWinner, ...filteredOutcomes]
 }
 
 const fillInOutcomes = (collection, outcome) => {

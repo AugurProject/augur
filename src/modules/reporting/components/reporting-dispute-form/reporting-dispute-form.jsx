@@ -62,8 +62,7 @@ export default class ReportingDisputeForm extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.disputeOutcomes && nextProps.disputeOutcomes.length > 0) {
       this.state.outcomes = (nextProps.disputeOutcomes.filter(item => !item.tentativeWinning) || [])
-        .sort((a, b) => a.name > b.name)
-        .sort((a, b) => new BigNumber(a.stakeRemaining).gt(new BigNumber(b.stakeRemaining))).slice(0, 8)
+
       const outcome = this.state.outcomes.find(o => o.name === 'Indeterminate')
       if (outcome) outcome.name = 'Market Is Invalid'
 

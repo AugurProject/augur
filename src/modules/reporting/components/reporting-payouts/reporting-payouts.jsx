@@ -78,12 +78,8 @@ class MarketReportingPayouts extends Component {
 
   render() {
     const { outcomes } = this.props
-    const winning = outcomes.find(o => o.tentativeWinning)
-    const filteredOutcomes = outcomes.filter(o => !o.tentativeWinning)
-      .sort((a, b) => new BigNumber(a.stakeCurrent).lt(new BigNumber(b.stakeCurrent))).slice(0, 7)
 
-    const disputeOutcomes = [winning, ...filteredOutcomes]
-    const totalOutcomes = disputeOutcomes.length
+    const totalOutcomes = outcomes.length
     const displayShowMore = totalOutcomes > 3
     const showMoreText = this.state.isOpen ? `- ${totalOutcomes - 3} less` : `+ ${totalOutcomes - 3} more`
 
@@ -96,10 +92,10 @@ class MarketReportingPayouts extends Component {
         className={Styles.MarketReportingPayouts}
         style={outcomeWrapperStyle}
       >
-        { disputeOutcomes.length > 0 &&
+        { outcomes.length > 0 &&
           <Outcome
             className={Styles['MarketReportingPayouts__height-sentinel']}
-            outcome={disputeOutcomes[0]}
+            outcome={outcomes[0]}
           />
         }
         <div
@@ -119,7 +115,7 @@ class MarketReportingPayouts extends Component {
             ref={(outcomeTable) => { this.outcomeTable = outcomeTable }}
             className={Styles.MarketReportingPayouts__outcomes}
           >
-            {disputeOutcomes.length > 0 && disputeOutcomes.map(outcome => (
+            {outcomes.length > 0 && outcomes.map(outcome => (
               <Outcome
                 key={outcome.id}
                 outcome={outcome}
