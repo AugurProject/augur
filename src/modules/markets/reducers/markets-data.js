@@ -85,7 +85,7 @@ function processMarketsDisputeInfo(newMarketsDisputeInfo, existingMarketsData) {
   return Object.keys(newMarketsDisputeInfo).reduce((p, marketId) => {
     const marketData = {
       ...existingMarketsData[marketId],
-      ...newMarketsDisputeInfo[marketId],
+      disputeInfo: { ...newMarketsDisputeInfo[marketId] },
     }
 
     p[marketId] = marketData

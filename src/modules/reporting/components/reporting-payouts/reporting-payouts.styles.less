@@ -123,22 +123,22 @@
 }
 
 .MarketReportingPayouts__progress-bar {
-  background: #cccccc;
+  background: @color-lightergray;
+  display: flex;
   min-width: 11em;
   position: relative;
-}
+  white-space: nowrap;
+  width: 15rem;
 
-.MarketReportingPayouts__progress-bar-percentage {
-  background: #281b48;
-  height: 100%;
-  text-align: center;
-}
+  > div:first-child {
+    background: @color-lighter-purple;
+    height: 100%;
+  }
 
-.MarketReportingPayouts__progress-bar-percentage-user {
-  background: #9d93d0;
-  float: left;
-  height: 100%;
-  text-align: center;
+  > div:last-child {
+    background: @color-darkpurple;
+    height: 100%;
+  }
 }
 
 .MarketReportingPayouts__progress-bar-total-rep-text {

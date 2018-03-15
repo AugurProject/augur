@@ -37,10 +37,10 @@ const mapStateToProps = (state, { history }) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  loadMarkets: account => dispatch(loadMarkets((err, marketIds) => {
+  loadMarkets: () => dispatch(loadMarkets((err, marketIds) => {
     if (err) return logError(err)
     dispatch(loadMarketsInfo(marketIds))
-    dispatch(loadMarketsDisputeInfo(marketIds, account))
+    dispatch(loadMarketsDisputeInfo(marketIds))
   })),
 })
 

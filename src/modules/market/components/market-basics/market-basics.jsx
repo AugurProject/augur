@@ -54,10 +54,10 @@ const MarketBasics = (p) => {
           {p.disputeRound != null &&
             <div className={Styles['MarketBasics__round-number']}>
               <span className={Styles['MarketBasics__round-label']}>Dispute Round</span>
-              <span className={Styles['MarketBasics__round-text']}>{p.disputeRound}</span>
+              <span className={Styles['MarketBasics__round-text']}>{p.disputeRound || 0}</span>
             </div>
           }
-          { ReportEndingIndicator }
+          <ReportEndingIndicator />
         </div>
         <h1 className={CommonStyles.MarketCommon__description}>
           <MarketLink

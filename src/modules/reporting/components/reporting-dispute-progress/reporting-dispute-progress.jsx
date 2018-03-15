@@ -1,25 +1,27 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { formatAttoRep } from 'utils/format-number'
 import Styles from 'modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress.styles'
-import { calculateTentativeStakePercentage, calculateTentativeRemainingRep, calculatePercentage } from 'modules/reporting/helpers/progress-calculations'
+import { calculateTentativeRemainingRep, calculateAddedStakePercentage } from 'modules/reporting/helpers/progress-calculations'
 
 const ReportingDisputeProgress = (p) => {
-  let remainingRepFormatted = p.remainingRep
-  let currentPercentageComplete = p.percentageComplete || 0
   let totalPercentageComplete = p.percentageComplete || 0
-  let userPercentage = p.accountPercentage || 0
+  let userPercentage = p.percentageAccount || 0
+  const currentPercentageComplete = p.percentageComplete || 0
   const userStaked = p.tentativeStake > 0 && p.isSelected
+  let remainingRepFormatted = formatAttoRep(p.stakeRemaining, { decimals: 4, roundUp: true }).formatted
 
   if (userStaked) {
-    userPercentage = calculateAddedTentativeStakePercentage(p.disputeBondValue, p.currentStake, p.accountStakeCurrent, p.tentativeStake)
-    remainingRepFormatted = calculateTentativeRemainingRep(p.disputeBondValue, p.currentStake, p.tentativeStake)
+    userPercentage = calculateAddedStakePercentage(p.bondSizeCurrent, p.accountStakeCurrent, p.tentativeStake)
+    remainingRepFormatted = calculateTentativeRemainingRep(p.bondSizeCurrent, p.stakeCurrent, p.tentativeStake)
     totalPercentageComplete = currentPercentageComplete + userPercentage
   }
+
   const percentageAccount = {
-    width: `${userPercentage}%`
+    width: `${userPercentage}%`,
   }
   const percentageComplete = {
-    width: `${currentPercentageComplete - userPercentage}%`,
+    width: `${currentPercentageComplete}%`,
   }
 
   // using magic number to align dispute bars
@@ -50,13 +52,13 @@ const ReportingDisputeProgress = (p) => {
 ReportingDisputeProgress.propTypes = {
   isSelected: PropTypes.bool.isRequired,
   paddingAmount: PropTypes.number,
+  stakeRemaining: PropTypes.string,
   percentageComplete: PropTypes.number,
-  remainingRep: PropTypes.string,
-  accountPercentage: PropTypes.number,
+  percentageAccount: PropTypes.number,
   tentativeStake: PropTypes.number,
-  disputeBondValue: PropTypes.number,
-  currentStake: PropTypes.number,
-  accountStakeCurrent: PropTypes.number,
+  bondSizeCurrent: PropTypes.string,
+  stakeCurrent: PropTypes.string,
+  accountStakeCurrent: PropTypes.string,
 }
 
 export default ReportingDisputeProgress

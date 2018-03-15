@@ -29,7 +29,10 @@ const DisputeMarketCard = p => (
         </ul>
         <div className={Styles['DisputeMarket__round-number']}>
           <span className={Styles['DisptueMarket__round-label']}>Dispute Round</span>
-          <span className={Styles['DisptueMarket__round-text']}>{p.market.disputeRound}</span>
+          <span className={Styles['DisptueMarket__round-text']}>{p.market && p.market.disputeInfo &&
+              p.market.disputeInfo.disputeRound
+          }
+          </span>
         </div>
       </div>
 
@@ -57,7 +60,6 @@ DisputeMarketCard.propTypes = {
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   market: PropTypes.object.isRequired,
-  disputeRound: PropTypes.number.isRequired,
   isMobile: PropTypes.bool,
 }
 
