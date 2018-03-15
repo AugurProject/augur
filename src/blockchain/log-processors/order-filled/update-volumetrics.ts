@@ -6,7 +6,6 @@ import { parallel } from "async";
 import { Address, Bytes32, TradesRow, ErrorCallback, GenericCallback } from "../../../types";
 import { calculateFillPrice } from "./calculate-fill-price";
 import { calculateNumberOfSharesTraded } from "./calculate-number-of-shares-traded";
-import { onChainSharesToHumanReadableShares } from "../../../utils/convert-fixed-point-to-decimal";
 
 function incrementMarketVolume(db: Knex, marketId: Address, amount: BigNumber, callback: GenericCallback<BigNumber> ) {
   db("markets").first("volume").where({ marketId }).asCallback((err: Error|null, result: {volume: BigNumber}) => {
@@ -48,7 +47,7 @@ export function updateVolumetrics(db: Knex, augur: Augur, category: string, mark
     const shareTokenPayload = { tx: { to: shareToken } };
     augur.api.ShareToken.totalSupply(shareTokenPayload, (err: Error|null, sharesOutstanding: string): void => {
       if (err) return callback(err);
-      db("markets").where({ marketId }).update({ sharesOutstanding: onChainSharesToHumanReadableShares(new BigNumber(sharesOutstanding, 10), tickSize).toFixed() }).asCallback((err: Error|null): void => {
+      db("markets").where({ marketId }).update({ sharesOutstanding: augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(sharesOutstanding, 10), tickSize).toFixed() }).asCallback((err: Error|null): void => {
         if (err) return callback(err);
         db.first("numCreatorShares", "numCreatorTokens", "price", "orderType").from("trades").where({ marketId, outcome, orderId, blockNumber }).asCallback((err: Error|null, tradesRow?: Partial<TradesRow<BigNumber>>): void => {
           if (err) return callback(err);

@@ -255,16 +255,17 @@ export interface UIDisputeTokens {
 }
 
 export interface StakeDetails extends NormalizedPayout {
-  totalStake: string;
-  completedStake: string;
+  stakeCompleted: string;
   size?: string;
-  currentStake?: string;
+  stakeCurrent?: string;
   tentativeWinning: boolean;
 }
 
 export interface UIStakeInfo {
   marketId: Address;
   disputeRound: number|null;
+  stakeCompletedTotal: string;
+  bondSizeOfNewStake: string;
   stakes: Array<StakeDetails>;
 }
 

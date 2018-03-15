@@ -1,6 +1,7 @@
 import { parallel } from "async";
 import * as Knex from "knex";
 import * as _ from "lodash";
+import { BigNumber } from "bignumber.js";
 import { Address, MarketsRowWithCreationTime, OutcomesRow, UIMarketInfo, UIMarketsInfo, UIOutcomeInfo, AsyncCallback, PayoutRow, MarketsContractAddressRow } from "../../types";
 import { reshapeOutcomesRowToUIOutcomeInfo, reshapeMarketsRowToUIMarketInfo, getMarketsWithReportingState } from "./database";
 

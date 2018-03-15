@@ -14,10 +14,10 @@ interface DisputeRound {
 
 interface DisputesResult {
   markets: Array<MarketsRowWithCreationTime>;
-  completedStakes: Array<StakeRow>;
-  activeCrowdsourcer: Array<ActiveCrowdsourcer>;
-  accountStakeComplete: Array<StakeRow>;
-  accountStakeIncomplete: Array<StakeRow>;
+  stakesCompleted: Array<StakeRow>;
+  stakesCurrent: Array<ActiveCrowdsourcer>;
+  accountStakesCompleted: Array<StakeRow>;
+  accountStakesCurrent: Array<StakeRow>;
   payouts: Array<PayoutRow>;
   disputeRound: Array<DisputeRound>;
 }
@@ -33,10 +33,13 @@ interface ActiveCrowdsourcer extends StakeRow {
 }
 
 interface StakeSizes {
-  size?: string;
-  currentStake?: string;
-  accountStakeComplete?: string;
-  accountStakeIncomplete?: string;
+  bondSizeCurrent?: string;
+  bondSizeTotal?: string;
+  stakeCurrent?: string;
+  stakeRemaining?: string;
+  accountStakeCompleted?: string;
+  accountStakeCurrent?: string;
+  accountStakeTotal?: string;
 }
 
 const activeMarketStates = ["CROWDSOURCING_DISPUTE", "AWAITING_NEXT_WINDOW", "FORKING", "AWAITING_FORK_MIGRATION"];
@@ -47,9 +50,9 @@ function isActiveMarketState(reportingState: ReportingState|null|undefined) {
 }
 
 function calculateBondSize(totalCompletedStakeOnAllPayouts: BigNumber, completedStakeAmount: BigNumber): BigNumber {
-  return new BigNumber(totalCompletedStakeOnAllPayouts.times(2).toString())
+  return new BigNumber(totalCompletedStakeOnAllPayouts.times(2))
     .minus(
-      new BigNumber(completedStakeAmount).times(3).toString());
+      new BigNumber(completedStakeAmount).times(3));
 }
 
 export function getDisputeInfo(db: Knex, marketIds: Array<Address>, account: Address|null, callback: (err: Error|null, result?: Array<UIStakeInfo|null>) => void): void {
@@ -60,18 +63,19 @@ export function getDisputeInfo(db: Knex, marketIds: Array<Address>, account: Add
     )).groupBy("marketId", "payoutId");
 
   // select crowdsourcers.marketId, crowdsourcers.payoutId, crowdsourcers.completed, sum(balances.balance) from crowdsourcers JOIN balances ON balances.token = crowdsourcers.crowdsourcerId;
-  const accountStake = db.select(["crowdsourcers.marketId", "balances.owner", "crowdsourcers.payoutId"]).sum("balances.balance as amountStaked")
+  const accountStake = db.select(["crowdsourcers.marketId", "crowdsourcers.payoutId"]).sum("balances.balance as amountStaked")
     .from("crowdsourcers").join("balances", "balances.token", "crowdsourcers.crowdsourcerId")
     .whereIn("marketId", marketIds)
-    .where("balances.owner", account || "");
+    .where("balances.owner", account || "")
+    .groupBy("crowdsourcers.marketId", "crowdsourcers.payoutId");
 
   parallel({
     markets: (next: AsyncCallback) => getMarketsWithReportingState(db).whereIn("markets.marketId", marketIds).asCallback(next),
     payouts: (next: AsyncCallback) => db("payouts").whereIn("marketId", marketIds).asCallback(next),
-    completedStakes: (next: AsyncCallback) => completedStake.asCallback(next),
-    activeCrowdsourcer: (next: AsyncCallback) => db("crowdsourcers").select(["marketId", "payoutId"]).sum("amountStaked as amountStaked").sum("size as size").groupBy(["crowdsourcers.marketId", "payoutId"]).whereNull("completed").whereIn("crowdsourcers.marketId", marketIds).asCallback(next),
-    accountStakeIncomplete: (next: AsyncCallback) => accountStake.clone().whereNull("crowdsourcers.completed").asCallback(next),
-    accountStakeComplete: (next: AsyncCallback) => accountStake.clone().where("crowdsourcers.completed", 1).asCallback(next),
+    stakesCompleted: (next: AsyncCallback) => completedStake.asCallback(next),
+    stakesCurrent: (next: AsyncCallback) => db("crowdsourcers").select(["marketId", "payoutId"]).sum("amountStaked as amountStaked").sum("size as size").groupBy(["crowdsourcers.marketId", "payoutId"]).whereNull("completed").whereIn("crowdsourcers.marketId", marketIds).asCallback(next),
+    accountStakesCurrent: (next: AsyncCallback) => accountStake.clone().whereNull("crowdsourcers.completed").asCallback(next),
+    accountStakesCompleted: (next: AsyncCallback) => accountStake.clone().where("crowdsourcers.completed", 1).asCallback(next),
     disputeRound: (next: AsyncCallback) => db("crowdsourcers").select("marketId").count("* as disputeRound").groupBy("crowdsourcers.marketId").where("crowdsourcers.completed", 1).whereIn("crowdsourcers.marketId", marketIds).asCallback(next),
   }, (err: Error|null, stakeResults: DisputesResult): void => {
     if (err) return callback(err);
@@ -91,46 +95,56 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
     return null;
   }
   const totalCompletedStakeOnAllPayouts = new BigNumber(
-    _.sum(_.map(stakeRows.completedStakes, (completedStake) => completedStake.amountStaked)).toString());
+    _.sum(_.map(stakeRows.stakesCompleted, (completedStake) => completedStake.amountStaked)).toString());
 
-  const completedStakeByPayout: { [payoutId: number]: StakeRow } = _.keyBy(stakeRows.completedStakes, "payoutId");
-  const activeCrowdsourcerByPayout: { [payoutId: number]: ActiveCrowdsourcer } = _.keyBy(stakeRows.activeCrowdsourcer, "payoutId");
-  const accountStakeCompleteByPayout: { [payoutId: number]: StakeRow } = _.keyBy(stakeRows.accountStakeComplete, "payoutId");
-  const accountStakeIncompleteByPayout: { [payoutId: number]: StakeRow } = _.keyBy(stakeRows.accountStakeIncomplete, "payoutId");
+  const stakeCompletedByPayout: { [payoutId: number]: StakeRow } = _.keyBy(stakeRows.stakesCompleted, "payoutId");
+  const stakeCurrentByPayout: { [payoutId: number]: ActiveCrowdsourcer } = _.keyBy(stakeRows.stakesCurrent, "payoutId");
+  const accountStakeCompletedByPayout: { [payoutId: number]: StakeRow } = _.keyBy(stakeRows.accountStakesCompleted, "payoutId");
+  const accountStakeCurrentByPayout: { [payoutId: number]: StakeRow } = _.keyBy(stakeRows.accountStakesCurrent, "payoutId");
 
   const stakeResults = _.map(stakeRows.payouts, (payout: PayoutRow) => {
-    const completedStakes = completedStakeByPayout[payout.payoutId];
-    const activeCrowdsourcer = activeCrowdsourcerByPayout[payout.payoutId];
-    const accountStakeComplete = accountStakeCompleteByPayout[payout.payoutId];
-    const accountStakeIncomplete = accountStakeIncompleteByPayout[payout.payoutId];
+    const stakeCompletedRow = stakeCompletedByPayout[payout.payoutId];
+    const stakeCurrentRow = stakeCurrentByPayout[payout.payoutId];
+    const accountStakeCompletedRow = accountStakeCompletedByPayout[payout.payoutId];
+    const accountStakeCurrentRow = accountStakeCurrentByPayout[payout.payoutId];
 
-    const completedStakeAmount = new BigNumber(completedStakes == null ? 0 : completedStakes.amountStaked.toString());
-    const totalStakeOnPayout = completedStakeAmount.add(new BigNumber(activeCrowdsourcer == null ? 0 : activeCrowdsourcer.amountStaked.toString()));
+    const stakeCompleted = new BigNumber(stakeCompletedRow == null ? 0 : stakeCompletedRow.amountStaked.toString());
+    const stakeCurrentOnPayout = new BigNumber(stakeCurrentRow == null ? 0 : stakeCurrentRow.amountStaked.toString());
 
     let currentAmounts: StakeSizes;
+    const accountStakeCompleted = new BigNumber(accountStakeCompletedRow === undefined ? 0 : accountStakeCompletedRow.amountStaked.toString());
     if (payout.tentativeWinning === 1 || !isActiveMarketState(marketRow.reportingState)) {
       currentAmounts = {};
-    } else if (activeCrowdsourcer == null) {
-      currentAmounts = {
-        size: calculateBondSize(totalCompletedStakeOnAllPayouts, completedStakeAmount).toFixed(),
-        currentStake: ZERO.toFixed(),
-        accountStakeIncomplete: ZERO.toFixed(),
-      };
     } else {
+      let bondSizeCurrent: BigNumber;
+      let stakeCurrent: BigNumber;
+      let accountStakeCurrent: BigNumber;
+      if (stakeCurrentRow == null) {
+          bondSizeCurrent = calculateBondSize(totalCompletedStakeOnAllPayouts, stakeCompleted);
+          stakeCurrent = ZERO;
+          accountStakeCurrent = ZERO;
+      } else {
+          bondSizeCurrent = new BigNumber(stakeCurrentRow.size.toString());
+          stakeCurrent = new BigNumber(stakeCurrentRow.amountStaked.toString());
+          accountStakeCurrent = new BigNumber(accountStakeCurrentRow === undefined ? 0 : accountStakeCurrentRow.amountStaked.toString());
+      }
       currentAmounts = {
-        size: new BigNumber(activeCrowdsourcer.size.toString()).toFixed(),
-        currentStake: new BigNumber(activeCrowdsourcer.amountStaked.toString()).toFixed(),
-        accountStakeIncomplete: new BigNumber(accountStakeIncomplete === undefined ? 0 : accountStakeIncomplete.amountStaked.toString() ).toFixed(),
+        bondSizeCurrent: bondSizeCurrent.toFixed(),
+        stakeCurrent: stakeCurrent.toFixed(),
+        accountStakeCurrent: accountStakeCurrent.toFixed(),
+        accountStakeTotal: accountStakeCurrent.plus(accountStakeCompleted).toFixed(),
+        stakeRemaining: bondSizeCurrent.minus(stakeCurrent).toFixed(),
+        bondSizeTotal: bondSizeCurrent.plus(stakeCompleted).toFixed(),
       };
     }
+    currentAmounts.accountStakeCompleted = accountStakeCompleted.toFixed();
 
-    currentAmounts.accountStakeComplete = new BigNumber(accountStakeComplete === undefined ? 0 : accountStakeComplete.amountStaked.toString()).toFixed();
     return Object.assign({},
       normalizePayouts(payout),
       currentAmounts,
       {
-        totalStake: totalStakeOnPayout.toFixed(),
-        completedStake: completedStakeAmount.toFixed(),
+        stakeCurrent: stakeCurrentOnPayout.toFixed(),
+        stakeCompleted: stakeCompleted.toFixed(),
         tentativeWinning: !!payout.tentativeWinning,
       },
     );
@@ -138,6 +152,8 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo|nu
   const disputeRound = totalCompletedStakeOnAllPayouts.equals(0) ? null : stakeRows.disputeRound[0] == null ? 0 : stakeRows.disputeRound[0].disputeRound;
   return {
     marketId: marketRow.marketId,
+    stakeCompletedTotal: totalCompletedStakeOnAllPayouts.toFixed(),
+    bondSizeOfNewStake: totalCompletedStakeOnAllPayouts.times(2).toFixed(),
     stakes: stakeResults,
     disputeRound,
   };

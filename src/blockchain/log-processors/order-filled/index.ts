@@ -8,7 +8,7 @@ import { updateOrdersAndPositions } from "./update-orders-and-positions";
 import { updateVolumetrics } from "./update-volumetrics";
 import { augurEmitter } from "../../../events";
 import { formatBigNumberAsFixed } from "../../../utils/format-big-number-as-fixed";
-import { fixedPointToDecimal, onChainSharesToHumanReadableShares, numTicksToTickSize } from "../../../utils/convert-fixed-point-to-decimal";
+import { fixedPointToDecimal, numTicksToTickSize } from "../../../utils/convert-fixed-point-to-decimal";
 import { BN_WEI_PER_ETHER } from "../../../constants";
 
 interface TokensRowWithNumTicksAndCategory extends TokensRow {
@@ -43,9 +43,9 @@ export function processOrderFilledLog(db: Knex, augur: Augur, log: FormattedEven
         const price = ordersRow.fullPrecisionPrice!;
         const orderType = ordersRow.orderType!;
         const numCreatorTokens = fixedPointToDecimal(new BigNumber(log.numCreatorTokens, 10), BN_WEI_PER_ETHER);
-        const numCreatorShares = onChainSharesToHumanReadableShares(new BigNumber(log.numCreatorShares, 10), tickSize);
+        const numCreatorShares = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.numCreatorShares, 10), tickSize);
         const numFillerTokens = fixedPointToDecimal(new BigNumber(log.numFillerTokens, 10), BN_WEI_PER_ETHER);
-        const numFillerShares = onChainSharesToHumanReadableShares(new BigNumber(log.numFillerShares, 10), tickSize);
+        const numFillerShares = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.numFillerShares, 10), tickSize);
         const marketCreatorFees = fixedPointToDecimal(new BigNumber(log.marketCreatorFees, 10), BN_WEI_PER_ETHER);
         const reporterFees = fixedPointToDecimal(new BigNumber(log.reporterFees, 10), BN_WEI_PER_ETHER);
         const amount = calculateNumberOfSharesTraded(numCreatorShares, numCreatorTokens, calculateFillPrice(augur, price, minPrice, maxPrice, orderType));

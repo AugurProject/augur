@@ -3,7 +3,7 @@ import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
 import { Address, Bytes32, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, OrderState, ErrorCallback} from "../../types";
 import { augurEmitter } from "../../events";
-import { fixedPointToDecimal, onChainSharesToHumanReadableShares, numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
+import { fixedPointToDecimal, numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { denormalizePrice } from "../../utils/denormalize-price";
 import { formatOrderAmount, formatOrderPrice } from "../../utils/format-order";
 import { BN_WEI_PER_ETHER} from "../../constants";
@@ -39,8 +39,8 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEve
       const maxPrice = marketsRow.maxPrice!;
       const numTicks = marketsRow.numTicks!;
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-      const fullPrecisionAmount = onChainSharesToHumanReadableShares(amount, tickSize);
-      const fullPrecisionPrice = denormalizePrice(minPrice, maxPrice, fixedPointToDecimal(price, numTicks));
+      const fullPrecisionAmount = augur.utils.convertOnChainAmountToDisplayAmount(amount, tickSize);
+      const fullPrecisionPrice = augur.utils.convertOnChainPriceToDisplayPrice(price, minPrice, tickSize);
       const orderTypeLabel = orderType === "0" ? "buy" : "sell";
       const orderData: OrdersRow<string> = {
         marketId,
@@ -58,7 +58,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEve
         fullPrecisionPrice: fullPrecisionPrice.toFixed(),
         fullPrecisionAmount: fullPrecisionAmount.toFixed(),
         tokensEscrowed: fixedPointToDecimal(moneyEscrowed, BN_WEI_PER_ETHER).toFixed(),
-        sharesEscrowed: onChainSharesToHumanReadableShares(sharesEscrowed, tickSize).toFixed(),
+        sharesEscrowed: augur.utils.convertOnChainAmountToDisplayAmount(sharesEscrowed, tickSize).toFixed(),
       };
       const orderId = { orderId: log.orderId };
       db.select("marketId").from("orders").where(orderId).asCallback((err: Error|null, ordersRows?: Array<Partial<OrdersRow<BigNumber>>>): void => {
