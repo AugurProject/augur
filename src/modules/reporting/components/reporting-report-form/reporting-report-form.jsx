@@ -134,7 +134,7 @@ export default class ReportingReportForm extends Component {
                   min={p.market.minPrice}
                   max={p.market.maxPrice}
                   step={p.market.tickSize}
-                  placeholder={p.market.minPrice}
+                  placeholder={p.market.scalarDenomination}
                   value={p.selectedOutcome}
                   className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('err') && p.validations.selectedOutcome })}
                   onChange={(e) => { this.validateScalar(p.validations, e.target.value, 'outcome', p.market.minPrice, p.market.maxPrice, false) }}
