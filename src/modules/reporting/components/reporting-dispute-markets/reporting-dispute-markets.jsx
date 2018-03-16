@@ -26,7 +26,6 @@ export default class ReportingDisputeMarkets extends Component {
     loadMarkets: PropTypes.func.isRequired,
     outcomes: PropTypes.object.isRequired,
     account: PropTypes.string.isRequired,
-    disputeRound: PropTypes.number.isRequired,
     isForking: PropTypes.bool.isRequired,
     forkEndTime: PropTypes.string,
     currentTime: PropTypes.number.isRequired,
