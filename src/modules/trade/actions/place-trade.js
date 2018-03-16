@@ -4,6 +4,7 @@ import { clearTradeInProgress } from 'modules/trade/actions/update-trades-in-pro
 import logError from 'utils/log-error'
 import BigNumber from 'bignumber.js'
 import { updateModal } from 'modules/modal/actions/update-modal'
+import { checkAccountAllowance } from 'modules/auth/actions/approve-account'
 import { MODAL_ACCOUNT_APPROVAL } from 'modules/modal/constants/modal-types'
 
 export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrders, callback = logError, onComplete = logError) => (dispatch, getState) => {
@@ -14,6 +15,9 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
     console.error(`trade-in-progress not found for market ${marketId} outcome ${outcomeId}`)
     return dispatch(clearTradeInProgress(marketId))
   }
+  const bnAllowance = new BigNumber(loginAccount.allowance)
+  // try and make sure that we actually have an updated allowance.
+  if (bnAllowance.lte(0)) dispatch(checkAccountAllowance())
   const placeTradeParams = {
     meta: loginAccount.meta,
     amount: tradeInProgress.numShares,
@@ -33,7 +37,8 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
       onComplete(tradeOnChainAmountRemaining)
     },
   }
-  if (new BigNumber(loginAccount.allowance).lte(new BigNumber(tradeInProgress.totalCost))) {
+  // use getState to get the latest version of allowance.
+  if (new BigNumber(getState().loginAccount.allowance).lte(new BigNumber(tradeInProgress.totalCost))) {
     dispatch(updateModal({
       type: MODAL_ACCOUNT_APPROVAL,
       approveCallback: (err, res) => {

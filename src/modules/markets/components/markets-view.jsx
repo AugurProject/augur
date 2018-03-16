@@ -13,7 +13,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 // import makePath from 'modules/routes/helpers/make-path'
 
 // import { FAVORITES, MARKETS } from 'modules/routes/constants/views'
-import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
+import { CATEGORY_PARAM_NAME, FILTER_SEARCH_PARAM } from 'modules/filter-sort/constants/param-names'
 import { TYPE_TRADE } from 'modules/market/constants/link-types'
 
 export default class MarketsView extends Component {
@@ -108,10 +108,13 @@ export default class MarketsView extends Component {
 function loadMarkets(options) {
   if (options.canLoadMarkets) {
     const category = parseQuery(options.location.search)[CATEGORY_PARAM_NAME]
-
+    const search = parseQuery(options.location.search)[FILTER_SEARCH_PARAM]
+    // Expected behavior is to load a specific category if one is present
+    // else, if we aren't searching (which is a local market data search)
+    // then load markets (loads all markets)
     if (category && !options.hasLoadedCategory[category]) {
       options.loadMarketsByCategory(category)
-    } else if (!category) {
+    } else if (!category && !search) {
       options.loadMarkets()
     }
   }

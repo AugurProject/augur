@@ -85,7 +85,7 @@ export function formatPercent(num, opts) {
   return formatNumber(
     encodeNumberAsJSNumber(num),
     {
-      decimals: 1,
+      decimals: 2,
       decimalsRounded: 0,
       denomination: '%',
       positiveSign: false,

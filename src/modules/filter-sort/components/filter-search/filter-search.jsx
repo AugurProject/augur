@@ -82,6 +82,7 @@ export default class FilterSearch extends Component {
           className={Styles.FilterSearch__input}
           isSearch
           isClearable
+          noFocus
           placeholder={p.searchPlaceholder || 'Search'}
           value={s.search}
           onChange={search => this.setState({ search })}

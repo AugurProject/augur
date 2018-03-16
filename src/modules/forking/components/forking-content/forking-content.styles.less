@@ -1,10 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .ForkingContent {
-  background: #494057;
   color: white;
-  position: absolute;
-  right: 0;
   width: 100%;
 
   h4 {
@@ -15,14 +12,24 @@
     font-size: 0.8em;
     line-height: 1.5em;
   }
+
+  &.expanded {
+    background: #494057;
+    position: absolute;
+    right: 0;
+  }
 }
 
 .ForkingContent__container {
-  margin-left: 15%;
-  margin-right: 5%;
-  padding-bottom: 2em;
-  padding-top: 2em;
-  width: 80%;
+  padding-top: 1em;
+
+  &.expanded {
+    margin-left: 15%;
+    margin-right: 5%;
+    padding-bottom: 2em;
+    padding-top: 2em;
+    width: 80%;
+  }
 }
 
 .ForkingContent__migrate_rep_button {

@@ -33,6 +33,9 @@ const mapStateToProps = (state, { history }) => {
     navigateToAccountDepositHandler: () => history.push(makePath(ACCOUNT_DEPOSIT)),
     outcomes: disputeOutcomes,
     account: loginAccount.address,
+    isForking: state.universe.forkEndTime && state.universe.forkEndTime !== '0',
+    forkEndTime: state.universe.forkEndTime,
+    currentTime: state.blockchain.currentAugurTimestamp,
   })
 }
 
