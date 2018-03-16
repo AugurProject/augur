@@ -111,10 +111,6 @@ export default class MarketOutcomeCharts extends Component {
           updateSelectedPeriod={this.updateSelectedPeriod}
         />
         <div className={Styles.MarketOutcomeCharts__Charts}>
-          <MarketOutcomeMidpoint
-            orderBookKeys={p.orderBookKeys}
-            sharedChartMargins={s.sharedChartMargins}
-          />
           <div className={Styles.MarketOutcomeCharts__Candlestick}>
             <MarketOutcomeCandlestick
               sharedChartMargins={s.sharedChartMargins}
@@ -159,6 +155,10 @@ export default class MarketOutcomeCharts extends Component {
               />
             </div>
           </div>
+          <MarketOutcomeMidpoint
+            orderBookKeys={p.orderBookKeys}
+            sharedChartMargins={s.sharedChartMargins}
+          />
         </div>
       </section>
     )
