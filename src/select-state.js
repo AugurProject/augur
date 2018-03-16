@@ -10,6 +10,7 @@ export const selectLoginAccountState = state => state.loginAccount
 export const selectAccountNameState = state => state.accountName
 export const selectActiveViewState = state => state.activeView
 export const selectNewMarketState = state => state.newMarket
+export const selectAccountDisputes = state => state.accountDisputes
 export const selectMarketsDataState = state => state.marketsData
 export const selectMarketLoadingState = state => state.marketLoading
 export const selectHasLoadedMarketsState = state => state.hasLoadedMarkets
