@@ -4,7 +4,7 @@ import store from 'src/store'
 import { selectAccountTradesState, selectBlockchainState, selectOutcomesDataState } from 'src/select-state'
 import { augur } from 'services/augurjs'
 import { dateToBlock } from 'utils/date-to-block-to-date'
-import { formatEtherTokens } from 'utils/format-number'
+import { formatEther } from 'utils/format-number'
 import { ZERO } from 'modules/trade/constants/numbers'
 import { selectLoginAccount } from 'modules/auth/selectors/login-account'
 import selectLoginAccountPositions from 'modules/my-positions/selectors/login-account-positions'
@@ -96,12 +96,12 @@ export const selectCoreStats = createSelector(
       totalPLMonth: {
         label: '30 Day P/L',
         title: 'Profit/Loss -- net of all trades over the last 30 days',
-        value: formatEtherTokens(totalPLMonth),
+        value: formatEther(totalPLMonth),
       },
       totalPLDay: {
         label: '1 Day P/L',
         title: 'Profit/Loss -- net of all trades over the last day',
-        value: formatEtherTokens(totalPLDay),
+        value: formatEther(totalPLDay),
       },
     },
   ],

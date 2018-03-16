@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { augur } from 'services/augurjs'
 import BigNumber from 'bignumber.js'
 
-import { formatEtherEstimate, formatEtherTokensEstimate } from 'utils/format-number'
+import { formatEtherEstimate } from 'utils/format-number'
 import getValue from 'utils/get-value'
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
@@ -38,9 +38,9 @@ export default class CreateMarketReview extends Component {
       // gas: null,
       // fees: null
       // },
-      formattedInitialLiquidityEth: formatEtherTokensEstimate(this.props.initialLiquidityEth),
+      formattedInitialLiquidityEth: formatEtherEstimate(this.props.initialLiquidityEth),
       formattedInitialLiquidityGas: formatEtherEstimate(this.props.initialLiquidityGas),
-      formattedInitialLiquidityFees: formatEtherTokensEstimate(this.props.initialLiquidityFees),
+      formattedInitialLiquidityFees: formatEtherEstimate(this.props.initialLiquidityFees),
     }
   }
 
@@ -55,9 +55,9 @@ export default class CreateMarketReview extends Component {
       this.calculateMarketCreationCosts()
     }
 
-    if (this.props.initialLiquidityEth !== nextProps.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherTokensEstimate(nextProps.initialLiquidityEth) })
+    if (this.props.initialLiquidityEth !== nextProps.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherEstimate(nextProps.initialLiquidityEth) })
     if (this.props.initialLiquidityGas !== nextProps.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(nextProps.initialLiquidityGas) })
-    if (this.props.initialLiquidityFees !== nextProps.initialLiquidityFees) this.setState({ formattedInitialLiquidityFees: formatEtherTokensEstimate(nextProps.initialLiquidityFees) })
+    if (this.props.initialLiquidityFees !== nextProps.initialLiquidityFees) this.setState({ formattedInitialLiquidityFees: formatEtherEstimate(nextProps.initialLiquidityFees) })
   }
 
   calculateMarketCreationCosts() {

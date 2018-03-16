@@ -4,7 +4,7 @@ import selectMyMarketsSummary from 'modules/my-markets/selectors/my-markets-summ
 import selectMyReportsSummary from 'modules/my-reports/selectors/my-reports-summary'
 
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/routes/constants/views'
-import { formatNumber, formatEtherTokens, formatRep } from 'utils/format-number'
+import { formatNumber, formatEther, formatRep } from 'utils/format-number'
 
 export default function () {
   return selectPortfolioNavItems()
@@ -33,7 +33,7 @@ export const selectPortfolioNavItems = () => {
       leadingValue: formatNumber(((marketsSummary && marketsSummary.numMarkets) || 0), { denomination: 'Markets' }),
       leadingValueNull: 'No Markets',
       trailingTitle: 'Total Gain/Loss',
-      trailingValue: formatEtherTokens(((marketsSummary && marketsSummary.totalValue) || 0)),
+      trailingValue: formatEther(((marketsSummary && marketsSummary.totalValue) || 0)),
       trailingValueNull: 'No Gain/Loss',
     },
     {

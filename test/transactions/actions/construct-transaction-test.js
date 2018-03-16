@@ -11,7 +11,7 @@ import { strip0xPrefix } from 'speedomatic'
 
 import * as TYPES from 'modules/transactions/constants/types'
 
-import { formatEther, formatEtherTokens, formatPercent, formatRep, formatShares } from 'utils/format-number'
+import { formatEther, formatPercent, formatRep, formatShares } from 'utils/format-number'
 import { formatDate } from 'utils/format-date'
 
 import {
@@ -570,8 +570,8 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatEtherTokens(log.cashFeesCollected, { positiveSign: true }),
-                balance: formatEtherTokens(log.newCashBalance),
+                change: formatEther(log.cashFeesCollected, { positiveSign: true }),
+                balance: formatEther(log.newCashBalance),
               },
               {
                 change: formatRep(repGain, { positiveSign: true }),
@@ -743,10 +743,10 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           type: TYPES.CREATE_MARKET,
           description: 'test description',
           category: 'Testing',
-          marketCreationFee: formatEtherTokens(log.marketCreationFee),
+          marketCreationFee: formatEther(log.marketCreationFee),
           bond: {
             label: 'validity',
-            value: formatEtherTokens(log.validityBond),
+            value: formatEther(log.validityBond),
           },
           message: 'created market',
         }
@@ -776,10 +776,10 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           type: TYPES.CREATE_MARKET,
           description: 'test description',
           category: 'Testing',
-          marketCreationFee: formatEtherTokens(log.marketCreationFee),
+          marketCreationFee: formatEther(log.marketCreationFee),
           bond: {
             label: 'validity',
-            value: formatEtherTokens(log.validityBond),
+            value: formatEther(log.validityBond),
           },
           message: 'creating market',
         }
@@ -871,8 +871,8 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
             marketId: '0xMARKETID',
             balances: [
               {
-                change: formatEtherTokens(log.payoutTokens, { positiveSign: true }),
-                balance: formatEtherTokens(log.tokenBalance),
+                change: formatEther(log.payoutTokens, { positiveSign: true }),
+                balance: formatEther(log.tokenBalance),
               },
             ],
           },
@@ -936,15 +936,15 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
               outcomeId: '1',
               marketId: '0xMARKETID',
             },
-            message: 'sold 2 shares for 0.1050 ETH Tokens / share',
+            message: 'sold 2 shares for 0.1050 ETH / share',
             numShares: formatShares('2'),
-            noFeePrice: formatEtherTokens('0.1'),
+            noFeePrice: formatEther('0.1'),
             timestamp: formatDate(new Date(order.timestamp * 1000)),
-            settlementFee: formatEtherTokens('0.01'),
+            settlementFee: formatEther('0.01'),
             feePercent: formatPercent('4.761904761904762'),
-            totalReturn: formatEtherTokens('0.19'),
+            totalReturn: formatEther('0.19'),
             gasFees: formatEther('0.001'),
-            avgPrice: formatEtherTokens('0.1'),
+            avgPrice: formatEther('0.1'),
             totalCost: undefined,
             blockNumber: 123456,
           },
@@ -988,14 +988,14 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
               outcomeId: '1',
               marketId: '0xMARKETID',
             },
-            message: 'bought 2 shares for 0.0950 ETH Tokens / share',
+            message: 'bought 2 shares for 0.0950 ETH / share',
             numShares: formatShares('2'),
-            avgPrice: formatEtherTokens('0.1'),
+            avgPrice: formatEther('0.1'),
             timestamp: formatDate(new Date(order.timestamp * 1000)),
-            noFeePrice: formatEtherTokens('0.1'),
-            totalCost: formatEtherTokens('0.21'),
+            noFeePrice: formatEther('0.1'),
+            totalCost: formatEther('0.21'),
             totalReturn: undefined,
-            settlementFee: formatEtherTokens('0.01'),
+            settlementFee: formatEther('0.01'),
             feePercent: formatPercent('4.761904761904762'),
             gasFees: formatEther('0.001'),
             blockNumber: 123456,
@@ -1040,14 +1040,14 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
               outcomeId: '1',
               marketId: '0xMARKETID',
             },
-            message: 'bought 2 shares for 0.1050 ETH Tokens / share',
+            message: 'bought 2 shares for 0.1050 ETH / share',
             numShares: formatShares('2'),
-            avgPrice: formatEtherTokens('0.1'),
-            noFeePrice: formatEtherTokens('0.1'),
+            avgPrice: formatEther('0.1'),
+            noFeePrice: formatEther('0.1'),
             timestamp: formatDate(new Date(order.timestamp * 1000)),
-            settlementFee: formatEtherTokens('0.01'),
+            settlementFee: formatEther('0.01'),
             feePercent: formatPercent('4.761904761904762'),
-            totalCost: formatEtherTokens('0.21'),
+            totalCost: formatEther('0.21'),
             totalReturn: undefined,
             gasFees: formatEther('0.001'),
             blockNumber: 123456,
@@ -1092,15 +1092,15 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
               outcomeId: '1',
               marketId: '0xMARKETID',
             },
-            message: 'sold 2 shares for 0.0950 ETH Tokens / share',
+            message: 'sold 2 shares for 0.0950 ETH / share',
             numShares: formatShares('2'),
-            avgPrice: formatEtherTokens('0.1'),
-            noFeePrice: formatEtherTokens('0.1'),
+            avgPrice: formatEther('0.1'),
+            noFeePrice: formatEther('0.1'),
             timestamp: formatDate(new Date(order.timestamp * 1000)),
-            settlementFee: formatEtherTokens('0.01'),
+            settlementFee: formatEther('0.01'),
             feePercent: formatPercent('4.761904761904762'),
             totalCost: undefined,
-            totalReturn: formatEtherTokens('0.19'),
+            totalReturn: formatEther('0.19'),
             gasFees: formatEther('0.001'),
             blockNumber: 123456,
           },
@@ -1157,19 +1157,19 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
                 outcomeId: '1',
                 marketId: '0xMARKETID',
               },
-              message: 'bid 2 shares for 0.1250 ETH Tokens / share',
+              message: 'bid 2 shares for 0.1250 ETH / share',
               numShares: formatShares('2'),
-              avgPrice: formatEtherTokens('0.1'),
-              noFeePrice: formatEtherTokens('0.1'),
+              avgPrice: formatEther('0.1'),
+              noFeePrice: formatEther('0.1'),
               freeze: {
-                noFeeCost: formatEtherTokens('0.2'),
-                settlementFee: formatEtherTokens('0.05'),
+                noFeeCost: formatEther('0.2'),
+                settlementFee: formatEther('0.05'),
                 verb: 'froze',
               },
               timestamp: formatDate(new Date(order.timestamp * 1000)),
               hash: '0xHASH',
               feePercent: formatPercent('20'),
-              totalCost: formatEtherTokens('0.25'),
+              totalCost: formatEther('0.25'),
               totalReturn: undefined,
               gasFees: formatEther('0.001'),
               blockNumber: 123456,
@@ -1197,20 +1197,20 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
                 outcomeId: '1',
                 marketId: '0xMARKETID',
               },
-              message: 'ask 2 shares for 0.0750 ETH Tokens / share',
+              message: 'ask 2 shares for 0.0750 ETH / share',
               numShares: formatShares('2'),
-              noFeePrice: formatEtherTokens('0.1'),
-              avgPrice: formatEtherTokens('0.1'),
+              noFeePrice: formatEther('0.1'),
+              avgPrice: formatEther('0.1'),
               freeze: {
                 noFeeCost: undefined,
-                settlementFee: formatEtherTokens('0.05'),
+                settlementFee: formatEther('0.05'),
                 verb: 'froze',
               },
               timestamp: formatDate(new Date(order.timestamp * 1000)),
               hash: '0xHASH',
               feePercent: formatPercent('20'),
               totalCost: undefined,
-              totalReturn: formatEtherTokens('0.15'),
+              totalReturn: formatEther('0.15'),
               gasFees: formatEther('0.001'),
               blockNumber: 123456,
               orderId: '0xORDERID',
@@ -1256,7 +1256,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
       assertions: (store) => {
         const actual = store.dispatch(action.constructCancelOrderTransaction(trade, marketId, marketType, description, outcomeId, null, minPrice, maxPrice, status))
 
-        const price = formatEtherTokens(trade.price)
+        const price = formatEther(trade.price)
         const shares = formatShares(trade.amount)
 
         const expected = {
@@ -1282,7 +1282,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
             avgPrice: price,
             timestamp: formatDate(new Date(trade.timestamp * 1000)),
             hash: trade.transactionHash,
-            totalReturn: formatEtherTokens(trade.cashRefund),
+            totalReturn: formatEther(trade.cashRefund),
             gasFees: formatEther(trade.gasFees),
             blockNumber: trade.blockNumber,
             orderId: trade.orderId,
@@ -1303,7 +1303,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
 
         const actual = store.dispatch(action.constructCancelOrderTransaction(trade, marketId, marketType, description, outcomeId, null, minPrice, maxPrice, status))
 
-        const price = formatEtherTokens(trade.price)
+        const price = formatEther(trade.price)
         const shares = formatShares(trade.amount)
 
         const expected = {

@@ -26,6 +26,13 @@ export function updateAssets(callback = logError) {
         }
         if (allAssetsLoaded(balances)) callback(null, balances)
       })
+      augur.api.LegacyReputationToken.allowance({
+        _owner: loginAccount.address,
+        _spender: reputationTokenAddress,
+      }, (err, legacyRepAllowance) => {
+        if (err) callback(err)
+        dispatch(updateLoginAccount({ legacyRepAllowance }))
+      })
     })
     augur.rpc.eth.getBalance([loginAccount.address, 'latest'], (err, attoEthBalance) => {
       if (err) return callback(err)
@@ -33,6 +40,17 @@ export function updateAssets(callback = logError) {
       balances.eth = ethBalance
       if (!loginAccount.eth || loginAccount.eth !== ethBalance) {
         dispatch(updateLoginAccount({ eth: ethBalance }))
+      }
+      if (allAssetsLoaded(balances)) callback(null, balances)
+    })
+    augur.api.LegacyReputationToken.getBalance({
+      _address: loginAccount.address,
+    }, (err, attoLegacyRepBalance) => {
+      if (err) return callback(err)
+      const legacyRepBalance = speedomatic.unfix(attoLegacyRepBalance, 'string')
+      balances.legacyRep = legacyRepBalance
+      if (!loginAccount.legacyRep || loginAccount.legacyRep !== legacyRepBalance) {
+        dispatch(updateLoginAccount({ legacyRep: legacyRepBalance }))
       }
       if (allAssetsLoaded(balances)) callback(null, balances)
     })

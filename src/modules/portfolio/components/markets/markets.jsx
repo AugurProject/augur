@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom'
 
 import makePath from 'modules/routes/helpers/make-path'
 
-import Dropdown from 'modules/common/components/dropdown/dropdown'
 import MarketsList from 'modules/markets/components/markets-list'
 import Styles from 'modules/portfolio/components/markets/markets.styles'
 import PortfolioStyles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles'
@@ -39,7 +38,7 @@ class MyMarkets extends Component {
     this.reportingStates = constants.REPORTING_STATE
 
     this.props.myMarkets.forEach((market, index) => {
-      if (market.reportingState === this.reportingStates.DESIGNATED_REPORTING) {
+      if (market.reportingState === this.reportingStates.PRE_REPORTING) {
         openMarkets.push(market)
         filteredMarketsOpen.push(market.id)
       } else if (market.reportingState === this.reportingStates.FINALIZED) {
@@ -52,57 +51,6 @@ class MyMarkets extends Component {
     })
 
     this.state = {
-      sortOptionsOpen: [
-        { label: 'Volume', value: 'volume' },
-        { label: 'Newest', value: 'newest' },
-        { label: 'Fees', value: 'fees' },
-        { label: 'Expiring Soon', value: 'expiring' },
-      ],
-      sortDefaultOpen: 'volume',
-      sortTypeOpen: 'volume',
-      filterOptionsOpen: [
-        { label: 'Sports', value: 'sports' },
-        { label: 'Finance', value: 'finance' },
-        { label: 'Healthcare', value: 'healthcare' },
-        { label: 'Politics', value: 'politics' },
-        { label: 'Environment', value: 'environment' },
-      ],
-      filterDefaultOpen: 'finance',
-      filterTypeOpen: 'finance',
-      sortOptionsReporting: [
-        { label: 'Volume', value: 'volume' },
-        { label: 'Newest', value: 'newest' },
-        { label: 'Fees', value: 'fees' },
-        { label: 'Expiring Soon', value: 'expiring' },
-      ],
-      sortDefaultReporting: 'volume',
-      sortTypeReporting: 'volume',
-      filterOptionsReporting: [
-        { label: 'Sports', value: 'sports' },
-        { label: 'Finance', value: 'finance' },
-        { label: 'Healthcare', value: 'healthcare' },
-        { label: 'Politics', value: 'politics' },
-        { label: 'Environment', value: 'environment' },
-      ],
-      filterDefaultReporting: 'sports',
-      filterTypeReporting: 'sports',
-      sortOptionsFinal: [
-        { label: 'Volume', value: 'volume' },
-        { label: 'Newest', value: 'newest' },
-        { label: 'Fees', value: 'fees' },
-        { label: 'Expiring Soon', value: 'expiring' },
-      ],
-      sortDefaultFinal: 'volume',
-      sortTypeFinal: 'volume',
-      filterOptionsFinal: [
-        { label: 'Sports', value: 'sports' },
-        { label: 'Finance', value: 'finance' },
-        { label: 'Healthcare', value: 'healthcare' },
-        { label: 'Politics', value: 'politics' },
-        { label: 'Environment', value: 'environment' },
-      ],
-      filterDefaultFinal: 'healthcare',
-      filterTypeFinal: 'healthcare',
       openMarkets,
       reportingMarkets,
       finalMarkets,
@@ -110,8 +58,6 @@ class MyMarkets extends Component {
       filteredMarketsReporting,
       filteredMarketsFinal,
     }
-
-    this.changeDropdown = this.changeDropdown.bind(this)
   }
 
   componentWillMount() {
@@ -144,72 +90,14 @@ class MyMarkets extends Component {
       })
 
       this.setState({
-        filteredMarketsOpen,
         openMarkets,
-        filteredMarketsReporting,
         reportingMarkets,
-        filteredMarketsFinal,
         finalMarkets,
+        filteredMarketsOpen,
+        filteredMarketsReporting,
+        filteredMarketsFinal,
       })
     }
-  }
-
-  // TODO -- clean up this method
-  changeDropdown(value) {
-    let {
-      sortTypeOpen,
-      filterTypeOpen,
-      sortTypeReporting,
-      filterTypeReporting,
-      sortTypeFinal,
-      filterTypeFinal,
-    } = this.state
-
-    this.state.sortOptionsOpen.forEach((type, ind) => {
-      if (type.value === value) {
-        sortTypeOpen = value
-      }
-    })
-
-    this.state.filterOptionsOpen.forEach((type, ind) => {
-      if (type.value === value) {
-        filterTypeOpen = value
-      }
-    })
-
-    this.state.sortOptionsReporting.forEach((type, ind) => {
-      if (type.value === value) {
-        sortTypeReporting = value
-      }
-    })
-
-    this.state.filterOptionsReporting.forEach((type, ind) => {
-      if (type.value === value) {
-        filterTypeReporting = value
-      }
-    })
-
-    this.state.sortOptionsFinal.forEach((type, ind) => {
-      if (type.value === value) {
-        sortTypeFinal = value
-      }
-    })
-
-    this.state.filterOptionsFinal.forEach((type, ind) => {
-      if (type.value === value) {
-        filterTypeFinal = value
-      }
-    })
-
-
-    this.setState({
-      sortTypeOpen,
-      filterTypeOpen,
-      sortTypeReporting,
-      filterTypeReporting,
-      sortTypeFinal,
-      filterTypeFinal,
-    })
   }
 
   render() {
@@ -227,16 +115,6 @@ class MyMarkets extends Component {
             className={Styles.Markets__SortBar}
           >
             <h2 className={Styles['Markets__SortBar-title']}>Open</h2>
-            <div
-              className={Styles['Markets__SortBar-sort']}
-            >
-              <Dropdown default={s.sortDefaultOpen} options={s.sortOptionsOpen} onChange={this.changeDropdown} />
-            </div>
-            <div
-              className={Styles['Markets__SortBar-filter']}
-            >
-              <Dropdown default={s.filterDefaultOpen} options={s.filterOptionsOpen} onChange={this.changeDropdown} />
-            </div>
           </div>
         }
         {haveMarkets &&
@@ -265,16 +143,6 @@ class MyMarkets extends Component {
             >
               In Reporting
             </div>
-            <div
-              className={Styles['Markets__SortBar-sort']}
-            >
-              <Dropdown default={s.sortDefaultReporting} options={s.sortOptionsReporting} onChange={this.changeDropdown} />
-            </div>
-            <div
-              className={Styles['Markets__SortBar-filter']}
-            >
-              <Dropdown default={s.filterDefaultReporting} options={s.filterOptionsReporting} onChange={this.changeDropdown} />
-            </div>
           </div>
         }
         {haveMarkets &&
@@ -302,16 +170,6 @@ class MyMarkets extends Component {
               className={Styles['Markets__SortBar-title']}
             >
               Finalized
-            </div>
-            <div
-              className={Styles.Markets__SortBar}
-            >
-              <Dropdown default={s.sortDefaultFinal} options={s.sortOptionsFinal} onChange={this.changeDropdown} />
-            </div>
-            <div
-              className={Styles['Markets__SortBar-filter']}
-            >
-              <Dropdown default={s.filterDefaultFinal} options={s.filterOptionsFinal} onChange={this.changeDropdown} />
             </div>
           </div>
         }

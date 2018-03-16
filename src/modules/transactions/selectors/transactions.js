@@ -7,7 +7,7 @@ import { BUY } from 'modules/transactions/constants/types'
 import { PENDING, SUCCESS, FAILED, SUBMITTED, INTERRUPTED } from 'modules/transactions/constants/statuses'
 
 import getValue from 'utils/get-value'
-import { formatShares, formatEtherTokens, formatEther, formatRep } from 'utils/format-number'
+import { formatShares, formatEther, formatRep } from 'utils/format-number'
 
 export default function () {
   return selectTransactions(store.getState())
@@ -50,7 +50,7 @@ export function formatTransaction(transaction) {
     ...transaction,
     data: transaction.data,
     gas: transaction.gas && formatEther(transaction.gas),
-    ethTokens: transaction.etherWithoutGas && formatEtherTokens(transaction.etherWithoutGas),
+    ethTokens: transaction.etherWithoutGas && formatEther(transaction.etherWithoutGas),
     shares: transaction.sharesChange && formatShares(transaction.sharesChange),
     rep: transaction.repChange && formatRep(transaction.repChange),
   }
