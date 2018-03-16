@@ -65,6 +65,7 @@ const testState = {
   marketsData: {
     testMarketId: {
       id: 'testMarketId',
+      consensus: null,
       author: '0x0000000000000000000000000000000000000001',
       name: 'testMarket',
       description: 'some test description',
@@ -87,6 +88,7 @@ const testState = {
     },
     testMarketId2: {
       id: 'testMarketId2',
+      consensus: null,
       author: '0x0000000000000000000000000000000000000001',
       name: 'testMarket2',
       description: 'some test description',
