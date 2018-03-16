@@ -27,6 +27,7 @@ export default class ReportingReportForm extends Component {
 
     this.state = {
       outcomes: [],
+      inputSelectedOutcome: undefined,
     }
 
     this.state.outcomes = this.props.market ? this.props.market.outcomes.slice() : []
@@ -41,6 +42,7 @@ export default class ReportingReportForm extends Component {
     updatedValidations.selectedOutcome = true
     delete updatedValidations.err
 
+    this.state.inputSelectedOutcome = undefined
     this.props.updateState({
       validations: updatedValidations,
       selectedOutcome,
@@ -78,10 +80,12 @@ export default class ReportingReportForm extends Component {
       }
     }
 
+    this.state.inputSelectedOutcome = value
+
     this.props.updateState({
       validations: updatedValidations,
       selectedOutcome: value,
-      selectedOutcomeName: value,
+      selectedOutcomeName: value ? value.toString() : '',
       isMarketInValid: isInvalid,
     })
   }
@@ -125,8 +129,8 @@ export default class ReportingReportForm extends Component {
             <ul className={FormStyles['Form__radio-buttons--per-line']}>
               <li>
                 <button
-                  className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome !== '' })}
-                  onClick={(e) => { this.validateScalar(p.validations, 0, 'selectedOutcome', p.market.minPrice, p.market.maxPrice, false) }}
+                  className={classNames({ [`${FormStyles.active}`]: s.inputSelectedOutcome !== undefined })}
+                  onClick={(e) => { this.validateScalar(p.validations, '', 'selectedOutcome', p.market.minPrice, p.market.maxPrice, false) }}
                 />
                 <input
                   id="sr__input--outcome-scalar"
@@ -135,7 +139,7 @@ export default class ReportingReportForm extends Component {
                   max={p.market.maxPrice}
                   step={p.market.tickSize}
                   placeholder={p.market.scalarDenomination}
-                  value={p.selectedOutcome}
+                  value={s.inputSelectedOutcome}
                   className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('err') && p.validations.selectedOutcome })}
                   onChange={(e) => { this.validateScalar(p.validations, e.target.value, 'outcome', p.market.minPrice, p.market.maxPrice, false) }}
                 />
@@ -150,7 +154,7 @@ export default class ReportingReportForm extends Component {
               <li className={FormStyles['Form__radio-buttons--per-line']}>
                 <button
                   className={classNames({ [`${FormStyles.active}`]: p.isMarketInValid === true })}
-                  onClick={(e) => { this.validateScalar(p.validations, '', '', p.market.minPrice, p.market.maxPrice, true) }}
+                  onClick={(e) => { this.validateScalar(p.validations, undefined, '', p.market.minPrice, p.market.maxPrice, true) }}
                 >Market is invalid
                 </button>
               </li>
