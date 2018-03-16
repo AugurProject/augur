@@ -25,7 +25,7 @@ const MarketOutcomes = (p) => {
   const minValue = !isNaN(p.min) && p.type !== BINARY ? `${p.min} ${scalarDenomination}` : '0 %'
   const maxValue = !isNaN(p.max) && p.type !== BINARY ? `${p.max} ${scalarDenomination}` : '100 %'
 
-  // const lastPriceDenomination = p.type !== BINARY ? scalarDenomination : getValue(p.outcomes[0], 'lastPricePercent.denomination')
+  const lastPriceDenomination = p.type !== BINARY ? '' : getValue(p.outcomes[0], 'lastPricePercent.denomination')
 
   return (
     <div className={Styles.MarketOutcomes}>
@@ -43,13 +43,14 @@ const MarketOutcomes = (p) => {
         <span className={Styles['MarketOutcomes__current-value']}>
           {getValue(p.outcomes[0], 'lastPricePercent.formatted')}
         </span>
+        <span className={Styles['MarketOutcomes__current-denomination']}>
+          {lastPriceDenomination}
+        </span>
       </span>
     </div>
   )
 }
-// <span className={Styles['MarketOutcomes__current-denomination']}>
-//   {lastPriceDenomination}
-// </span>
+
 MarketOutcomes.propTypes = {
   outcomes: PropTypes.array.isRequired,
   max: PropTypes.number,
