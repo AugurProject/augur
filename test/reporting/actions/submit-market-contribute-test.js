@@ -23,6 +23,7 @@ describe(`modules/reporting/actions/submit-market-contribute.js`, () => {
 
   after(() => {
     submitMarketContributeReqireAPI.__ResetDependency__('getPayoutNumerators')
+    submitMarketContributeReqireAPI.__ResetDependency__('removeAccountDispute')
   })
 
   const augurSuccess = {
@@ -48,7 +49,9 @@ describe(`modules/reporting/actions/submit-market-contribute.js`, () => {
   }
 
   const getPayoutNumerators = sinon.stub().returns([10000, 0])
+  const removeAccountDispute = sinon.spy()
   submitMarketContributeReqireAPI.__Rewire__('getPayoutNumerators', getPayoutNumerators)
+  submitMarketContributeReqireAPI.__Rewire__('removeAccountDispute', removeAccountDispute)
 
   it(`should call callback and history with good data`, () => {
     submitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
