@@ -44,7 +44,7 @@ function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade
             _market: marketInfo.id,
             _outcome: outcomeToTrade,
             _tradeGroupId: augur.trading.generateTradeGroupId(),
-            doNotCreateOrders: false,
+            doNotCreateOrders: true,
             onSent: function () {},
             onSuccess: function (tradeAmountRemaining) {
               if (debugOptions.cannedMarkets) {
