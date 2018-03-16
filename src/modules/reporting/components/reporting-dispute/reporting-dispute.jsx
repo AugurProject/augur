@@ -30,7 +30,9 @@ export default class ReportingDispute extends Component {
     loadFullMarket: PropTypes.func.isRequired,
     submitMarketContribute: PropTypes.func.isRequired,
     estimateSubmitMarketContribute: PropTypes.func.isRequired,
+    addUpdateAccountDispute: PropTypes.func.isRequired,
     getDisputeInfo: PropTypes.func.isRequired,
+    accountDisputeData: PropTypes.object,
   }
 
   constructor(props) {
@@ -40,7 +42,7 @@ export default class ReportingDispute extends Component {
       currentStep: 0,
       showingDetails: true,
       isMarketInValid: null,
-      selectedOutcome: '',
+      selectedOutcome: undefined,
       selectedOutcomeName: '',
       stake: 0,
       validations: {
@@ -54,6 +56,14 @@ export default class ReportingDispute extends Component {
       currentOutcome: {},
       disputeBondFormatted: '0',
       disputeBondValue: 0,
+    }
+
+    if (this.props.accountDisputeData) {
+      const { accountDisputeData } = this.props
+      this.state.isMarketInValid = accountDisputeData.isMarketInValid ? accountDisputeData.isMarketInValid : null
+      this.state.selectedOutcome = accountDisputeData.selectedOutcome ? accountDisputeData.selectedOutcome : ''
+      this.state.selectedOutcomeName = accountDisputeData.selectedOutcomeName ? accountDisputeData.selectedOutcomeName : ''
+      this.state.validations = accountDisputeData.validations ? accountDisputeData.validations : { stake: false, selectedOutcome: null }
     }
 
     this.prevPage = this.prevPage.bind(this)
@@ -178,6 +188,7 @@ export default class ReportingDispute extends Component {
                 currentOutcome={s.currentOutcome}
                 disputeBondValue={s.disputeBondValue}
                 disputeBondFormatted={s.disputeBondFormatted}
+                addUpdateAccountDispute={p.addUpdateAccountDispute}
               />
             }
             { s.currentStep === 1 &&

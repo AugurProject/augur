@@ -11,6 +11,7 @@ import getValue from 'utils/get-value'
 import { submitMarketContribute } from 'modules/reporting/actions/submit-market-contribute'
 import { estimateSubmitMarketContribute } from 'modules/reporting/actions/estimate-submit-market-contribute'
 import { getDisputeInfo } from 'modules/reporting/actions/get-dispute-info'
+import { addUpdateAccountDispute } from 'modules/reporting/actions/update-account-disputes'
 
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
@@ -19,19 +20,22 @@ const mapStateToProps = state => ({
   universe: state.universe.id,
   marketsData: state.marketsData,
   isMobile: state.isMobile,
+  accountDisputeState: state.accountDisputes,
 })
 
 const mapDispatchToProps = dispatch => ({
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
   submitMarketContribute: (marketId, outcomeValue, amount, invalid, history) => dispatch(submitMarketContribute(marketId, outcomeValue, amount, invalid, history)),
   estimateSubmitMarketContribute: (marketId, outcomeValue, amount, invalid, history) => dispatch(estimateSubmitMarketContribute(marketId, outcomeValue, amount, invalid, history)),
-  getDisputeInfo: (marketIds, callback) => dispatch(getDisputeInfo(marketIds, callback)),
+  getDisputeInfo: (marketId, callback) => dispatch(getDisputeInfo(marketId, callback)),
+  addUpdateAccountDispute: data => dispatch(addUpdateAccountDispute(data)),
 })
 
 
 const mergeProps = (sP, dP, oP) => {
   const marketId = parseQuery(oP.location.search)[MARKET_ID_PARAM_NAME]
   const market = selectMarket(marketId)
+  const accountDisputeData = sP.accountDisputeState[marketId]
 
   return {
     ...oP,
@@ -41,10 +45,12 @@ const mergeProps = (sP, dP, oP) => {
     isConnected: sP.isConnected && getValue(sP, 'universe.id') != null,
     isMarketLoaded: sP.marketsData[marketId] != null,
     market,
+    accountDisputeData,
     loadFullMarket: () => dP.loadFullMarket(marketId),
     submitMarketContribute: (marketId, selectedOutcome, invalid, amount, history) => dP.submitMarketContribute(marketId, selectedOutcome, invalid, amount, history),
     estimateSubmitMarketContribute: (marketId, selectedOutcome, invalid, amount, history) => dP.estimateSubmitMarketContribute(marketId, selectedOutcome, invalid, amount, history),
-    getDisputeInfo: (marketIds, callback) => dP.getDisputeInfo(marketIds, callback),
+    getDisputeInfo: (marketId, callback) => dP.getDisputeInfo(marketId, callback),
+    addUpdateAccountDispute: data => dP.addUpdateAccountDispute(data),
   }
 }
 

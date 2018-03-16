@@ -3,6 +3,7 @@ import { REPORTING_DISPUTE_MARKETS } from 'modules/routes/constants/views'
 import makePath from 'modules/routes/helpers/make-path'
 import logError from 'utils/log-error'
 import { getPayoutNumerators } from 'modules/reporting/selectors/get-payout-numerators'
+import { removeAccountDispute } from 'modules/reporting/actions/update-account-disputes'
 
 export const submitMarketContribute = (marketId, selectedOutcome, invalid, amount, history, callback = logError) => (dispatch, getState) => {
   const { loginAccount, marketsData } = getState()
@@ -24,7 +25,10 @@ export const submitMarketContribute = (marketId, selectedOutcome, invalid, amoun
     onSent: () => {
       history.push(makePath(REPORTING_DISPUTE_MARKETS))
     },
-    onSuccess: () => callback(null),
+    onSuccess: () => {
+      removeAccountDispute({ marketId })
+      callback(null)
+    },
     onFailed: (err) => {
       callback(err)
     },
