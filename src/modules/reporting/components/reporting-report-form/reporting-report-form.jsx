@@ -35,6 +35,13 @@ export default class ReportingReportForm extends Component {
       this.state.outcomes.push({ id: 0, name: 'No' })
     }
     this.state.outcomes.sort((a, b) => a.name - b.name)
+
+    this.focusTextInput = this.focusTextInput.bind(this)
+    this.validateOnBlur = this.validateOnBlur.bind(this)
+  }
+
+  focusTextInput() {
+    this.textInput.focus()
   }
 
   validateOutcome(validations, selectedOutcome, selectedOutcomeName, isMarketInValid) {
@@ -51,7 +58,26 @@ export default class ReportingReportForm extends Component {
     })
   }
 
-  validateScalar(validations, value, humanName, min, max, isInvalid) {
+  validateOnBlur() {
+    this.validateScalar(this.props.validations, this.state.inputSelectedOutcome, 'outcome', this.props.market.minPrice, this.props.market.maxPrice, this.props.isMarketInValid, true)
+  }
+
+  validateScalar(validations, value, humanName, min, max, isInvalid, onBlur) {
+
+    if (value === '' && !onBlur) {
+      this.props.updateState({
+        isMarketInValid: isInvalid,
+      })
+      if (isInvalid) {
+        delete updatedValidations.err
+        updatedValidations.selectedOutcome = true
+        return
+      }
+
+      this.state.inputSelectedOutcome = value
+      this.focusTextInput()
+      return
+    }
     const updatedValidations = { ...validations }
 
     if (isInvalid) {
@@ -135,6 +161,7 @@ export default class ReportingReportForm extends Component {
                 <input
                   id="sr__input--outcome-scalar"
                   type="number"
+                  ref={(input) => { this.textInput = input }}
                   min={p.market.minPrice}
                   max={p.market.maxPrice}
                   step={p.market.tickSize}
@@ -142,6 +169,7 @@ export default class ReportingReportForm extends Component {
                   value={s.inputSelectedOutcome}
                   className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('err') && p.validations.selectedOutcome })}
                   onChange={(e) => { this.validateScalar(p.validations, e.target.value, 'outcome', p.market.minPrice, p.market.maxPrice, false) }}
+                  onBlur={this.validateOnBlur}
                 />
               </li>
               <li>
