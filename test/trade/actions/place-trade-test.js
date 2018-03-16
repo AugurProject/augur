@@ -76,4 +76,41 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     assert.isFunction(approvalAction.data.approveCallback)
     store.clearActions()
   })
+  it('should handle a allowance greater than estimatedCost (no approval needed.)', () => {
+    const { state, mockStore } = mocks.default
+    const testState = { ...state, ...tradeTestState }
+    testState.loginAccount = {
+      meta: { privateKey: Buffer.from('PRIVATE_KEY', 'utf8') },
+      allowance: '10000000000000000000000000000000000000000000',
+    }
+    const store = mockStore(testState)
+    const CheckAccountAllowance = { checkAccountAllowance: () => {} }
+    const SelectMarket = { selectMarket: () => {} }
+    const AugurJS = { augur: { trading: { placeTrade: () => {} } } }
+    const checkAllownaceActionObject = { type: 'UPDATE_LOGIN_ACCOUNT', allowance: '10000000000000000000000000000000000000000000' }
+    sinon.stub(SelectMarket, 'selectMarket').callsFake(marketId => store.getState().marketsData[marketId])
+    sinon.stub(CheckAccountAllowance, 'checkAccountAllowance').callsFake(() => checkAllownaceActionObject)
+    sinon.stub(AugurJS.augur.trading, `placeTrade`).callsFake((params) => {
+      assert.isObject(params)
+      assert.isFunction(params.onSent)
+      assert.isFunction(params.onSuccess)
+      assert.isFunction(params.onFailed)
+    })
+    const action = proxyquire('../../../src/modules/trade/actions/place-trade.js', {
+      '../../market/selectors/market': SelectMarket,
+      '../../auth/actions/approve-account': CheckAccountAllowance,
+      '../../../services/augurjs': AugurJS,
+    })
+    store.dispatch(action.placeTrade('testBinaryMarketId', '1', {
+      totalCost: '10000000',
+    }))
+    const storeActions = store.getActions()
+    assert.deepEqual(storeActions.length, 1, 'more actions dispatched then expected')
+    const Expected = [{
+      type: 'CLEAR_TRADE_IN_PROGRESS',
+      marketId: 'testBinaryMarketId',
+    }]
+    assert.deepEqual(storeActions, Expected, `Only Action should be to clear trade in progress`)
+    store.clearActions()
+  })
 })
