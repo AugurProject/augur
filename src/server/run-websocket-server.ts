@@ -15,6 +15,14 @@ import * as fs from "fs";
 import * as https from "https";
 import * as http from "http";
 
+function safeSend( websocket: WebSocket, payload: string) {
+  if (websocket.readyState !== WebSocket.OPEN ) {
+    console.warn("Client disconnected during request, ignoring response");
+    return;
+  }
+  websocket.send(payload);
+}
+
 export function runWebsocketServer(db: Knex, app: express.Application, augur: Augur, webSocketConfigs: WebSocketConfigs): Array<WebSocket.Server> {
 
   const servers: Array<WebSocket.Server> = [];
@@ -48,7 +56,7 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
           message = JSON.parse(data as string, addressFormatReviver);
           if (!isJsonRpcRequest(message)) return console.error("bad json rpc message received:", message);
         } catch (exc) {
-          return websocket.send(makeJsonRpcError("-1", JsonRpcErrorCode.ParseError, "Bad JSON RPC Message Received", { originalText: data as string }));
+          return safeSend(websocket, makeJsonRpcError("-1", JsonRpcErrorCode.ParseError, "Bad JSON RPC Message Received", { originalText: data as string }));
         }
 
         try {
@@ -57,32 +65,28 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
 
             try {
               const subscription: string = subscriptions.subscribe(eventName, message.params, (data: {}): void => {
-                websocket.send(makeJsonRpcResponse(null, { subscription, result: data }));
+                safeSend(websocket, makeJsonRpcResponse(null, { subscription, result: data }));
               });
-              websocket.send(makeJsonRpcResponse(message.id, { subscription }));
+              safeSend(websocket, makeJsonRpcResponse(message.id, { subscription }));
             } catch (exc) {
-              websocket.send(makeJsonRpcError(message.id, JsonRpcErrorCode.MethodNotFound, exc.toString(), false));
+              safeSend(websocket, makeJsonRpcError(message.id, JsonRpcErrorCode.MethodNotFound, exc.toString(), false));
             }
           } else if (message.method === "unsubscribe") {
             const subscription: string = message.params.shift();
             subscriptions.unsubscribe(subscription);
-            websocket.send(makeJsonRpcResponse(message.id, true));
+            safeSend(websocket, makeJsonRpcResponse(message.id, true));
           } else {
             dispatchJsonRpcRequest(db, message as JsonRpcRequest, augur, (err: Error|null, result?: any): void => {
-              if (websocket.readyState !== WebSocket.OPEN ) {
-                console.warn("Client disconnected during request, ignoring response");
-                return;
-              }
               if (err) {
                 console.error("getter error: ", err);
-                websocket.send(makeJsonRpcError(message.id, JsonRpcErrorCode.InvalidParams, err.message, false));
+                safeSend(websocket, makeJsonRpcError(message.id, JsonRpcErrorCode.InvalidParams, err.message, false));
               } else {
-                websocket.send(makeJsonRpcResponse(message.id, result || null));
+                safeSend(websocket, makeJsonRpcResponse(message.id, result || null));
               }
             });
           }
         } catch (exc) {
-          websocket.send(makeJsonRpcError(message.id, JsonRpcErrorCode.ServerError, exc.toString(), exc));
+          safeSend(websocket, makeJsonRpcError(message.id, JsonRpcErrorCode.ServerError, exc.toString(), exc));
         }
       });
 
