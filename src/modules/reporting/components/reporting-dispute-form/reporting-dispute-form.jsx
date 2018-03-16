@@ -190,7 +190,7 @@ export default class ReportingDisputeForm extends Component {
             <span>Tentative Winning Outcome</span>
           </label>
           <p>{p.currentOutcome.isInvalid ? 'Invalid' : p.currentOutcome.name }
-            {p.market.marketType === SCALAR &&
+            {p.market.marketType === SCALAR && !p.currentOutcome.isInvalid &&
               <label>{p.market.scalarDenomination}</label>
             }
           </p>
