@@ -18,7 +18,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
     numTicks: (next: AsyncCallback): void => augur.api.Market.getNumTicks(marketPayload, next),
     universe: (next: AsyncCallback): void => augur.api.Market.getUniverse(marketPayload, next),
     marketCreatorSettlementFeeDivisor: (next: AsyncCallback): void => augur.api.Market.getMarketCreatorSettlementFeeDivisor(marketPayload, next),
-  }, (err?: any, onMarketContractData?: any): void => {
+  }, (err: Error|null, onMarketContractData?: any): void => {
     if (err) return callback(err);
     const universePayload: {} = { tx: { to: onMarketContractData.universe, send: false } };
     parallel({
@@ -51,6 +51,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           tag1:                       (extraInfo!.tags && extraInfo!.tags!.length) ? extraInfo!.tags![0] : null,
           tag2:                       (extraInfo!.tags && extraInfo!.tags!.length > 1) ? extraInfo!.tags![1] : null,
           longDescription:            extraInfo!.longDescription || null,
+          scalarDenomination:         extraInfo!._scalarDenomination || null,
           resolutionSource:           extraInfo!.resolutionSource || null,
           universe:                   onMarketContractData!.universe,
           numOutcomes,
