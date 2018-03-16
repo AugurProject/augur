@@ -189,7 +189,12 @@ export default class ReportingDisputeForm extends Component {
           <label>
             <span>Tentative Winning Outcome</span>
           </label>
-          <p>{p.currentOutcome.isInvalid ? 'Invalid' : p.currentOutcome.name }</p>
+          <p>{p.currentOutcome.isInvalid ? 'Invalid' : p.currentOutcome.name }
+            {p.market.marketType === SCALAR &&
+              <label>{p.market.scalarDenomination}</label>
+            }
+          </p>
+
         </li>
         <li>
           <label>
@@ -234,7 +239,7 @@ export default class ReportingDisputeForm extends Component {
                       min={p.market.minPrice}
                       max={p.market.maxPrice}
                       step={p.market.tickSize}
-                      placeholder={p.market.minPrice}
+                      placeholder={p.market.scalarDenomination}
                       value={s.inputSelectedOutcome}
                       className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('err') && p.validations.selectedOutcome })}
                       onChange={(e) => { this.validateScalar(e.target.value, 'outcome', p.market.minPrice, p.market.maxPrice, false) }}
