@@ -46,7 +46,7 @@ function tradeUntilAmountIsZero(p) {
   var onChainAmount = tradeCost.onChainAmount;
   var onChainPrice = tradeCost.onChainPrice;
   var cost = (p.estimatedCost != null && new BigNumber(p.estimatedCost, 10).gt(constants.ZERO)) ? speedomatic.fix(p.estimatedCost) : maxCost;
-  console.log("cost:", speedomatic.unfix(cost, "string"), "ETH");
+  console.log("cost:            ", cost.toFixed(), "wei", speedomatic.unfix(cost, "string"), "eth");
   if (maxCost.lt(constants.PRECISION.zero)) {
     console.info("tradeUntilAmountIsZero complete: only dust remaining");
     return p.onSuccess(null);
@@ -56,22 +56,26 @@ function tradeUntilAmountIsZero(p) {
     _fxpAmount: convertBigNumberToHexString(onChainAmount),
     _price: convertBigNumberToHexString(onChainPrice),
     onSuccess: function (res) {
-      console.log("trade successful:", res);
       getTradeAmountRemaining({
         transactionHash: res.hash,
         startingOnChainAmount: onChainAmount,
         onChainPrice: onChainPrice,
       }, function (err, tradeOnChainAmountRemaining) {
         if (err) return p.onFailed(err);
-        console.log("starting amount: ", displayAmount);
         var tickSize = new BigNumber(p.maxPrice, 10).minus(new BigNumber(p.minPrice, 10)).dividedBy(new BigNumber(p.numTicks, 10));
-        console.log("amount remaining:", onChainAmount.toFixed(), convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toFixed());
-        if (new BigNumber(tradeOnChainAmountRemaining, 10).eq(new BigNumber(onChainAmount, 16))) {
+        console.log("starting amount: ", onChainAmount.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toFixed(), "shares");
+        console.log("remaining amount:", tradeOnChainAmountRemaining.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(), "shares");
+        if (new BigNumber(tradeOnChainAmountRemaining, 10).eq(onChainAmount)) {
           if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining);
           return p.onFailed(new Error("Trade completed but amount of trade unchanged"));
         }
         var updatedEstimatedCost = p.estimatedCost == null ? null : speedomatic.unfix(cost.minus(new BigNumber(res.value, 16)), "string");
-        console.log("updated estimated cost:", updatedEstimatedCost);
+        console.log("actual cost:     ", cost.toFixed(), "wei", speedomatic.unfix(cost, "string"), "eth");
+        if (updatedEstimatedCost != null) {
+          console.log("estimated cost:     ", speedomatic.fix(p.estimatedCost, "string"), "wei", p.estimatedCost, "eth");
+          console.log("value of last trade:", new BigNumber(res.value, 16).toFixed(), "wei", speedomatic.unfix(res.value, "string"), "eth");
+          console.log("updated estimated cost:", speedomatic.fix(updatedEstimatedCost, "string"), "wei", updatedEstimatedCost, "eth");
+        }
         tradeUntilAmountIsZero(assign({}, p, {
           estimatedCost: updatedEstimatedCost,
           _fxpAmount: convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(),
