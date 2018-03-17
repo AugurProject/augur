@@ -2,7 +2,6 @@
 
 "use strict";
 
-var async = require("async");
 var chalk = require("chalk");
 var Augur = require("../../src");
 var fundAccounts = require("./lib/fund-accounts");
