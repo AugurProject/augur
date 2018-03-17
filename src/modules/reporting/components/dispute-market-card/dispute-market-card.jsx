@@ -5,6 +5,7 @@ import MarketLink from 'modules/market/components/market-link/market-link'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import BasicStyles from 'modules/market/components/market-basics/market-basics.styles'
 import MarketProperties from 'modules/market/containers/market-properties'
+import MarketReportingPayouts from 'modules/reporting/components/reporting-payouts/reporting-payouts'
 import Styles from 'modules/reporting/components/dispute-market-card/dispute-market-card.style'
 
 import { MARKETS } from 'modules/routes/constants/views'
@@ -28,7 +29,10 @@ const DisputeMarketCard = p => (
         </ul>
         <div className={Styles['DisputeMarket__round-number']}>
           <span className={Styles['DisptueMarket__round-label']}>Dispute Round</span>
-          <span className={Styles['DisptueMarket__round-text']}>{p.disputeRound}</span>
+          <span className={Styles['DisptueMarket__round-text']}>{p.market && p.market.disputeInfo &&
+              p.market.disputeInfo.disputeRound
+          }
+          </span>
         </div>
       </div>
 
@@ -40,6 +44,7 @@ const DisputeMarketCard = p => (
           {p.market.description}
         </MarketLink>
       </h1>
+      <MarketReportingPayouts outcomes={p.outcomes[p.market.id] || []} />
     </div>
     <div className={CommonStyles.MarketCommon__footer}>
       <MarketProperties
@@ -55,7 +60,6 @@ DisputeMarketCard.propTypes = {
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   market: PropTypes.object.isRequired,
-  disputeRound: PropTypes.number.isRequired,
   isMobile: PropTypes.bool,
 }
 

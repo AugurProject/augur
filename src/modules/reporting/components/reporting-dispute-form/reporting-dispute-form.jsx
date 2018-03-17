@@ -6,6 +6,7 @@ import classNames from 'classnames'
 import BigNumber from 'bignumber.js'
 
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
+import { formatAttoRep } from 'utils/format-number'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles'
@@ -21,7 +22,6 @@ export default class ReportingDisputeForm extends Component {
     selectedOutcomeName: PropTypes.string.isRequired,
     currentOutcome: PropTypes.object.isRequired,
     disputeOutcomes: PropTypes.array.isRequired,
-    stakes: PropTypes.array.isRequired,
     disputeBondValue: PropTypes.number.isRequired,
     disputeBondFormatted: PropTypes.string.isRequired,
     addUpdateAccountDispute: PropTypes.func.isRequired,
@@ -70,8 +70,7 @@ export default class ReportingDisputeForm extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.disputeOutcomes && nextProps.disputeOutcomes.length > 0) {
       this.state.outcomes = (nextProps.disputeOutcomes.filter(item => !item.tentativeWinning) || [])
-        .sort((a, b) => a.name > b.name)
-        .sort((a, b) => b.percentageComplete > a.percentageComplete)
+
       const outcome = this.state.outcomes.find(o => o.name === 'Indeterminate')
       if (outcome) outcome.name = 'Market Is Invalid'
 
@@ -199,8 +198,9 @@ export default class ReportingDisputeForm extends Component {
       return result
     })
 
-    const value = outcome ? outcome.remainingRep : this.props.disputeBondFormatted
-    return new BigNumber(value).toNumber()
+    const value = outcome ? outcome.stakeRemaining : this.props.disputeBondValue
+    const BNValue = new BigNumber(value)
+    return formatAttoRep(BNValue.toNumber(), { decimals: 4, roundUp: true }).formattedValue
   }
 
 
@@ -238,14 +238,15 @@ export default class ReportingDisputeForm extends Component {
                 <ReportingDisputeProgress
                   key={outcome.id}
                   {...outcome}
-                  paddingAmount={s.paddingBuffer - outcome.name.length}
-                  percentageComplete={outcome.percentageComplete}
-                  remainingRep={outcome.remainingRep}
-                  accountPercentage={outcome.accountPercentage}
-                  tentativeStake={p.stake}
-                  disputeBondValue={p.disputeBondValue}
-                  currentStake={parseInt(outcome.currentStake, 10)}
                   isSelected={p.selectedOutcome === outcome.id}
+                  paddingAmount={s.paddingBuffer - outcome.name.length}
+                  stakeRemaining={outcome.stakeRemaining}
+                  percentageComplete={outcome.percentageComplete}
+                  percentageAccount={outcome.percentageAccount}
+                  tentativeStake={p.stake}
+                  bondSizeCurrent={outcome.bondSizeCurrent}
+                  stakeCurrent={outcome.stakeCurrent}
+                  accountStakeCurrent={outcome.accountStakeCurrent}
                 />
               </li>
             ))

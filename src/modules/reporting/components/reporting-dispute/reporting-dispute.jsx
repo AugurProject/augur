@@ -11,7 +11,6 @@ import NullStateMessage from 'modules/common/components/null-state-message/null-
 import ReportingDisputeForm from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form'
 import ReportingDisputeConfirm from 'modules/reporting/components/reporting-dispute-confirm/reporting-dispute-confirm'
 import { TYPE_VIEW } from 'modules/market/constants/link-types'
-import BigNumber from 'bignumber.js'
 
 import { isEmpty } from 'lodash'
 import FormStyles from 'modules/common/less/form'
@@ -51,12 +50,12 @@ export default class ReportingDispute extends Component {
         selectedOutcome: null,
       },
       gasEstimate: '0',
-      disputeBondFormatted: '0',
-      disputeBondValue: 0,
       disputeRound: 0,
       disputeOutcomes: [],
       stakes: [],
       currentOutcome: {},
+      disputeBondFormatted: '0',
+      disputeBondValue: 0,
     }
 
     if (this.props.accountDisputeData) {
@@ -81,23 +80,12 @@ export default class ReportingDispute extends Component {
   }
 
   getDisputeInfo() {
-    this.props.getDisputeInfo(this.props.marketId, (disputeInfo) => {
-      let disputeBond = disputeInfo.stakes.reduce((p, i) => {
-        const size = new BigNumber(i.size).toNumber()
-        const completedStake = new BigNumber(i.completedStake || 0).toNumber()
-        const result = completedStake !== size && size > p ? size : p
-        return result
-      }, 0)
-      if (disputeBond === 0) {
-        const completedStake = disputeInfo.stakes.reduce((p, i) => {
-          const result = i.completedStake > p ? i.completedStake : p
-          return result
-        }, 0)
-        // calculate new dispute bond if one isn't active. TODO: should get for augur-node
-        disputeBond = new BigNumber(completedStake).times(2).toNumber()
-      }
-      const disputeOutcomes = selectDisputeOutcomes(this.props.market, disputeInfo.stakes)
-        .map(o => fillDisputeOutcomeProgress(disputeBond, o))
+    this.props.getDisputeInfo([this.props.marketId], (err, disputeInfos) => {
+      if (err) return console.error(err)
+      const disputeInfo = disputeInfos[0]
+      const { bondSizeOfNewStake } = disputeInfo
+      const disputeOutcomes = selectDisputeOutcomes(this.props.market, disputeInfo.stakes, bondSizeOfNewStake)
+        .map(o => fillDisputeOutcomeProgress(bondSizeOfNewStake, o))
       const currentOutcome = disputeOutcomes.find(item => item.tentativeWinning) || {}
       // disputeRound signifies round completed
       const round = parseInt(disputeInfo.disputeRound, 10)
@@ -107,8 +95,8 @@ export default class ReportingDispute extends Component {
         stakes: disputeInfo.stakes,
         disputeOutcomes,
         currentOutcome,
-        disputeBondValue: parseInt(disputeBond, 10),
-        disputeBondFormatted: formatAttoRep(disputeBond, { decimals: 4, denomination: ' REP' }).formatted,
+        disputeBondValue: parseInt(bondSizeOfNewStake, 10),
+        disputeBondFormatted: formatAttoRep(bondSizeOfNewStake, { decimals: 4, denomination: ' REP' }).formatted,
       })
     })
   }
@@ -224,7 +212,7 @@ export default class ReportingDispute extends Component {
                 className={classNames(FormStyles.Form__next, { [`${FormStyles['hide-button']}`]: s.currentStep === 1 })}
                 disabled={!Object.keys(s.validations).every(key => s.validations[key] === true)}
                 onClick={Object.keys(s.validations).every(key => s.validations[key] === true) ? this.nextPage : undefined}
-              >Report
+              >Review
               </button>
               { s.currentStep === 1 &&
               <button
