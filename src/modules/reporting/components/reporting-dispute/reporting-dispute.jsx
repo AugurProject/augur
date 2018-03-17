@@ -5,18 +5,17 @@ import { Helmet } from 'react-helmet'
 import { augur } from 'services/augurjs'
 
 import speedomatic from 'speedomatic'
-import { formatAttoRep, formatGasCostToEther } from 'utils/format-number'
+import { formatGasCostToEther } from 'utils/format-number'
 import MarketPreview from 'modules/market/components/market-preview/market-preview'
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
-import ReportingDisputeForm from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form'
+import ReportingDisputeForm from 'modules/reporting/containers/reporting-dispute-form'
 import ReportingDisputeConfirm from 'modules/reporting/components/reporting-dispute-confirm/reporting-dispute-confirm'
 import { TYPE_VIEW } from 'modules/market/constants/link-types'
 
 import { isEmpty } from 'lodash'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-report/reporting-report.styles'
-import selectDisputeOutcomes from 'modules/reporting/selectors/select-dispute-outcomes'
-import fillDisputeOutcomeProgress from 'modules/reporting/selectors/fill-dispute-outcome-progress'
+
 
 export default class ReportingDispute extends Component {
 
@@ -30,9 +29,6 @@ export default class ReportingDispute extends Component {
     loadFullMarket: PropTypes.func.isRequired,
     submitMarketContribute: PropTypes.func.isRequired,
     estimateSubmitMarketContribute: PropTypes.func.isRequired,
-    addUpdateAccountDispute: PropTypes.func.isRequired,
-    getDisputeInfo: PropTypes.func.isRequired,
-    accountDisputeData: PropTypes.object,
   }
 
   constructor(props) {
@@ -41,29 +37,16 @@ export default class ReportingDispute extends Component {
     this.state = {
       currentStep: 0,
       showingDetails: true,
+      gasEstimate: '0',
+      disputeBondFormatted: '0',
       isMarketInValid: null,
-      selectedOutcome: undefined,
+      selectedOutcome: '',
       selectedOutcomeName: '',
       stake: 0,
       validations: {
         stake: false,
         selectedOutcome: null,
       },
-      gasEstimate: '0',
-      disputeRound: 0,
-      disputeOutcomes: [],
-      stakes: [],
-      currentOutcome: {},
-      disputeBondFormatted: '0',
-      disputeBondValue: 0,
-    }
-
-    if (this.props.accountDisputeData) {
-      const { accountDisputeData } = this.props
-      this.state.isMarketInValid = accountDisputeData.isMarketInValid ? accountDisputeData.isMarketInValid : null
-      this.state.selectedOutcome = accountDisputeData.selectedOutcome ? accountDisputeData.selectedOutcome : ''
-      this.state.selectedOutcomeName = accountDisputeData.selectedOutcomeName ? accountDisputeData.selectedOutcomeName : ''
-      this.state.validations = accountDisputeData.validations ? accountDisputeData.validations : { stake: false, selectedOutcome: null }
     }
 
     this.prevPage = this.prevPage.bind(this)
@@ -73,32 +56,9 @@ export default class ReportingDispute extends Component {
   }
 
   componentWillMount() {
-    this.getDisputeInfo()
     if (this.props.isConnected && !this.props.isMarketLoaded) {
       this.props.loadFullMarket()
     }
-  }
-
-  getDisputeInfo() {
-    this.props.getDisputeInfo([this.props.marketId], (err, disputeInfos) => {
-      if (err) return console.error(err)
-      const disputeInfo = disputeInfos[0]
-      const { bondSizeOfNewStake } = disputeInfo
-      const disputeOutcomes = selectDisputeOutcomes(this.props.market, disputeInfo.stakes, bondSizeOfNewStake)
-        .map(o => fillDisputeOutcomeProgress(bondSizeOfNewStake, o))
-      const currentOutcome = disputeOutcomes.find(item => item.tentativeWinning) || {}
-      // disputeRound signifies round completed
-      const round = parseInt(disputeInfo.disputeRound, 10)
-
-      this.setState({
-        disputeRound: round,
-        stakes: disputeInfo.stakes,
-        disputeOutcomes,
-        currentOutcome,
-        disputeBondValue: parseInt(bondSizeOfNewStake, 10),
-        disputeBondFormatted: formatAttoRep(bondSizeOfNewStake, { decimals: 4, denomination: ' REP' }).formatted,
-      })
-    })
   }
 
   prevPage() {
@@ -154,7 +114,6 @@ export default class ReportingDispute extends Component {
           showAdditionalDetailsToggle
           showingDetails={s.showingDetails}
           toggleDetails={this.toggleDetails}
-          disputeRound={s.disputeRound}
         />
         }
         { !isEmpty(p.market) && s.showingDetails &&
@@ -178,17 +137,6 @@ export default class ReportingDispute extends Component {
               <ReportingDisputeForm
                 market={p.market}
                 updateState={this.updateState}
-                isMarketInValid={s.isMarketInValid}
-                selectedOutcome={s.selectedOutcome}
-                selectedOutcomeName={s.selectedOutcomeName}
-                stake={s.stake}
-                validations={s.validations}
-                stakes={s.stakes}
-                disputeOutcomes={s.disputeOutcomes}
-                currentOutcome={s.currentOutcome}
-                disputeBondValue={s.disputeBondValue}
-                disputeBondFormatted={s.disputeBondFormatted}
-                addUpdateAccountDispute={p.addUpdateAccountDispute}
               />
             }
             { s.currentStep === 1 &&
