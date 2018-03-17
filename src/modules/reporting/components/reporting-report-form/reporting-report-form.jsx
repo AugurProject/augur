@@ -22,12 +22,17 @@ export default class ReportingReportForm extends Component {
     isMarketInValid: PropTypes.bool,
   }
 
+  static BUTTONS = {
+    MARKET_IS_INVALID: 'MARKET_IS_INVALID',
+    SCALAR_VALUE: 'SCALAR_VALUE',
+  }
   constructor(props) {
     super(props)
 
     this.state = {
       outcomes: [],
-      inputSelectedOutcome: undefined,
+      inputSelectedOutcome: '',
+      activeButton: '',
     }
 
     this.state.outcomes = this.props.market ? this.props.market.outcomes.slice() : []
@@ -37,7 +42,22 @@ export default class ReportingReportForm extends Component {
     this.state.outcomes.sort((a, b) => a.name - b.name)
 
     this.focusTextInput = this.focusTextInput.bind(this)
-    this.validateOnBlur = this.validateOnBlur.bind(this)
+  }
+
+  setActiveScalarButton(buttonName) {
+    this.state.activeButton = buttonName
+    if (buttonName === ReportingReportForm.BUTTONS.MARKET_IS_INVALID) {
+      const updatedValidations = { ...this.props.validations }
+      delete updatedValidations.err
+      updatedValidations.selectedOutcome = true
+      this.state.inputSelectedOutcome = ''
+      this.props.updateState({
+        isMarketInValid: true,
+        validations: updatedValidations,
+      })
+    } else {
+      this.focusTextInput()
+    }
   }
 
   focusTextInput() {
@@ -49,7 +69,7 @@ export default class ReportingReportForm extends Component {
     updatedValidations.selectedOutcome = true
     delete updatedValidations.err
 
-    this.state.inputSelectedOutcome = undefined
+    this.state.inputSelectedOutcome = ''
     this.props.updateState({
       validations: updatedValidations,
       selectedOutcome,
@@ -58,52 +78,27 @@ export default class ReportingReportForm extends Component {
     })
   }
 
-  validateOnBlur() {
-    this.validateScalar(this.props.validations, this.state.inputSelectedOutcome, 'outcome', this.props.market.minPrice, this.props.market.maxPrice, this.props.isMarketInValid, true)
-  }
-
   validateScalar(validations, value, humanName, min, max, isInvalid, onBlur) {
+    const updatedValidations = { ...validations }
+    this.state.activeButton = ReportingReportForm.BUTTONS.SCALAR_VALUE
+    const minValue = parseFloat(min)
+    const maxValue = parseFloat(max)
+    const valueValue = parseFloat(value)
 
-    if (value === '' && !onBlur) {
-      this.props.updateState({
-        isMarketInValid: isInvalid,
-      })
-      if (isInvalid) {
+    switch (true) {
+      case value === '':
+        updatedValidations.err = `The ${humanName} field is required.`
+        break
+      case isNaN(valueValue):
+        updatedValidations.err = `The ${humanName} field is a number.`
+        break
+      case (valueValue > maxValue || valueValue < minValue):
+        updatedValidations.err = `Please enter a ${humanName} between ${min} and ${max}.`
+        break
+      default:
         delete updatedValidations.err
         updatedValidations.selectedOutcome = true
-        return
-      }
-
-      this.state.inputSelectedOutcome = value
-      this.focusTextInput()
-      return
-    }
-    const updatedValidations = { ...validations }
-
-    if (isInvalid) {
-      delete updatedValidations.err
-      updatedValidations.selectedOutcome = true
-
-    } else {
-      const minValue = parseFloat(min)
-      const maxValue = parseFloat(max)
-      const valueValue = parseFloat(value)
-
-      switch (true) {
-        case value === '':
-          updatedValidations.err = `The ${humanName} field is required.`
-          break
-        case isNaN(valueValue):
-          updatedValidations.err = `The ${humanName} field is a number.`
-          break
-        case (valueValue > maxValue || valueValue < minValue):
-          updatedValidations.err = `Please enter a ${humanName} between ${min} and ${max}.`
-          break
-        default:
-          delete updatedValidations.err
-          updatedValidations.selectedOutcome = true
-          break
-      }
+        break
     }
 
     this.state.inputSelectedOutcome = value
@@ -155,8 +150,8 @@ export default class ReportingReportForm extends Component {
             <ul className={FormStyles['Form__radio-buttons--per-line']}>
               <li>
                 <button
-                  className={classNames({ [`${FormStyles.active}`]: s.inputSelectedOutcome !== undefined })}
-                  onClick={(e) => { this.validateScalar(p.validations, '', 'selectedOutcome', p.market.minPrice, p.market.maxPrice, false) }}
+                  className={classNames({ [`${FormStyles.active}`]: s.activeButton === ReportingReportForm.BUTTONS.SCALAR_VALUE })}
+                  onClick={(e) => { this.setActiveScalarButton(ReportingReportForm.BUTTONS.SCALAR_VALUE) }}
                 />
                 <input
                   id="sr__input--outcome-scalar"
@@ -169,7 +164,6 @@ export default class ReportingReportForm extends Component {
                   value={s.inputSelectedOutcome}
                   className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('err') && p.validations.selectedOutcome })}
                   onChange={(e) => { this.validateScalar(p.validations, e.target.value, 'outcome', p.market.minPrice, p.market.maxPrice, false) }}
-                  onBlur={this.validateOnBlur}
                 />
               </li>
               <li>
@@ -181,8 +175,8 @@ export default class ReportingReportForm extends Component {
               </li>
               <li className={FormStyles['Form__radio-buttons--per-line']}>
                 <button
-                  className={classNames({ [`${FormStyles.active}`]: p.isMarketInValid === true })}
-                  onClick={(e) => { this.validateScalar(p.validations, undefined, '', p.market.minPrice, p.market.maxPrice, true) }}
+                  className={classNames({ [`${FormStyles.active}`]: s.activeButton === ReportingReportForm.BUTTONS.MARKET_IS_INVALID })}
+                  onClick={(e) => { this.setActiveScalarButton(ReportingReportForm.BUTTONS.MARKET_IS_INVALID) }}
                 >Market is invalid
                 </button>
               </li>
