@@ -48,7 +48,7 @@ export default class ReportingReportForm extends Component {
     this.focusTextInput = this.focusTextInput.bind(this)
   }
 
-  setActiveScalarButton(buttonName) {
+  setMarketInvalid(buttonName) {
     this.state.activeButton = buttonName
     if (buttonName === ReportingReportForm.BUTTONS.MARKET_IS_INVALID) {
       const updatedValidations = { ...this.props.validations }
@@ -58,6 +58,7 @@ export default class ReportingReportForm extends Component {
       this.props.updateState({
         isMarketInValid: true,
         validations: updatedValidations,
+        selectedOutcome: '',
       })
     }
   }
@@ -144,7 +145,7 @@ export default class ReportingReportForm extends Component {
               <li className={FormStyles['Form__radio-buttons--per-line']}>
                 <button
                   className={classNames({ [`${FormStyles.active}`]: p.isMarketInValid === true })}
-                  onClick={(e) => { this.validateOutcome(p.validations, '', '', true) }}
+                  onClick={(e) => { this.setMarketInvalid(ReportingReportForm.BUTTONS.MARKET_IS_INVALID) }}
                 >Market is invalid
                 </button>
               </li>
@@ -182,7 +183,7 @@ export default class ReportingReportForm extends Component {
               <li className={FormStyles['Form__radio-buttons--per-line']}>
                 <button
                   className={classNames({ [`${FormStyles.active}`]: s.activeButton === ReportingReportForm.BUTTONS.MARKET_IS_INVALID })}
-                  onClick={(e) => { this.setActiveScalarButton(ReportingReportForm.BUTTONS.MARKET_IS_INVALID) }}
+                  onClick={(e) => { this.setMarketInvalid(ReportingReportForm.BUTTONS.MARKET_IS_INVALID) }}
                 >Market is invalid
                 </button>
               </li>
