@@ -26,7 +26,7 @@ getPrivateKey(keystoreFilePath, function (err, auth) {
     console.log(chalk.green.dim("universe:"), chalk.green(universe));
     approveAugurEternalApprovalValue(augur, fillerAddress, auth, function (err) {
       if (err) return console.error(err);
-      var outcomeToFill = process.env.OUTCOME_TO_FILL || 0;
+      var outcomeToFill = process.env.OUTCOME_TO_FILL || 1;
       var sharesToFill = process.env.SHARES_TO_FILL || "1";
       fillBothOrderTypes(augur, universe, fillerAddress, outcomeToFill, sharesToFill, auth, function (err) {
         if (err) console.error("fillBothOrderTypes failed:", err);

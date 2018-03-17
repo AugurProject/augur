@@ -6,6 +6,7 @@ var chalk = require("chalk");
 var speedomatic = require("speedomatic");
 var getOrderToFill = require("./get-order-to-fill");
 var debugOptions = require("../../debug-options");
+var noop = require("../../../src/utils/noop");
 
 function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade, orderType, auth, callback) {
   augur.markets.getMarkets({ universe: universe, sortBy: "creationBlock" }, function (err, marketIds) {
@@ -17,7 +18,7 @@ function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade
       async.eachSeries(marketsInfo, function (marketInfo, nextMarket) {
         getOrderToFill(augur, marketInfo.id, outcomeToTrade, orderType, fillerAddress, function (err, orderToFill) {
           if (err) return callback(err);
-          if (orderToFill == null || new BigNumber(orderToFill.amount).eq(new BigNumber(0))) return nextMarket();
+          if (orderToFill == null || new BigNumber(orderToFill.fullPrecisionAmount.toString()).eq(new BigNumber(0))) return nextMarket();
           if (debugOptions.cannedMarkets) console.log(chalk.cyan("Filling order:"), chalk.red.bold(orderType), orderToFill);
           var displayPrice = orderToFill.fullPrecisionPrice.toString();
           var direction = orderType === "sell" ? 0 : 1;
@@ -32,11 +33,10 @@ function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade
           if (speedomatic.unfix(tradeCost.cost).gt(1)) {
             sharesToTrade = new BigNumber(sharesToTrade, 10).dividedBy(tradeCost.cost).toFixed();
           }
-          var placeTradePayload = {
+          augur.trading.placeTrade({
             meta: auth,
             amount: sharesToTrade,
             limitPrice: displayPrice,
-            estimatedCost: speedomatic.unfix(tradeCost.cost, "string"),
             numTicks: marketInfo.numTicks,
             minPrice: marketInfo.minPrice,
             maxPrice: marketInfo.maxPrice,
@@ -45,7 +45,7 @@ function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade
             _outcome: outcomeToTrade,
             _tradeGroupId: augur.trading.generateTradeGroupId(),
             doNotCreateOrders: true,
-            onSent: function () {},
+            onSent: noop,
             onSuccess: function (tradeAmountRemaining) {
               if (debugOptions.cannedMarkets) {
                 console.log(chalk.cyan("Trade completed,"), chalk.red.bold(orderType), chalk.green(tradeAmountRemaining), chalk.cyan.dim("shares remaining"));
@@ -53,9 +53,7 @@ function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade
               nextMarket(true);
             },
             onFailed: nextMarket,
-          };
-          if (debugOptions.cannedMarkets) console.log("placeTrade payload:", placeTradePayload);
-          augur.trading.placeTrade(placeTradePayload);
+          });
         });
       }, function (errorOrTrue) {
         if (errorOrTrue !== true) return callback(errorOrTrue);

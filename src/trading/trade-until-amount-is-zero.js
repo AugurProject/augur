@@ -42,12 +42,11 @@ function tradeUntilAmountIsZero(p) {
     minDisplayPrice: p.minPrice,
     maxDisplayPrice: p.maxPrice,
   });
-  console.log("tradeCost:", JSON.stringify(tradeCost));
   var maxCost = tradeCost.cost;
   var onChainAmount = tradeCost.onChainAmount;
   var onChainPrice = tradeCost.onChainPrice;
   var cost = (p.estimatedCost != null && new BigNumber(p.estimatedCost, 10).gt(constants.ZERO)) ? speedomatic.fix(p.estimatedCost) : maxCost;
-  console.log("cost:", speedomatic.unfix(cost, "string"), "ETH");
+  console.log("cost:            ", cost.toFixed(), "wei", speedomatic.unfix(cost, "string"), "eth");
   if (maxCost.lt(constants.PRECISION.zero)) {
     console.info("tradeUntilAmountIsZero complete: only dust remaining");
     return p.onSuccess(null);
@@ -57,7 +56,6 @@ function tradeUntilAmountIsZero(p) {
     _fxpAmount: convertBigNumberToHexString(onChainAmount),
     _price: convertBigNumberToHexString(onChainPrice),
     onSuccess: function (res) {
-      console.log("trade successful:", res);
       getTradeAmountRemaining({
         transactionHash: res.hash,
         startingOnChainAmount: onChainAmount,
@@ -65,17 +63,19 @@ function tradeUntilAmountIsZero(p) {
       }, function (err, tradeOnChainAmountRemaining) {
         if (err) return p.onFailed(err);
         var tickSize = new BigNumber(p.maxPrice, 10).minus(new BigNumber(p.minPrice, 10)).dividedBy(new BigNumber(p.numTicks, 10));
-        console.log("starting amount: ", onChainAmount.toFixed(), "wei", convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toFixed(), "eth");
-        console.log("remaining amount:", tradeOnChainAmountRemaining.toFixed(), "wei", convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(), "eth");
+        console.log("starting amount: ", onChainAmount.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toFixed(), "shares");
+        console.log("remaining amount:", tradeOnChainAmountRemaining.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(), "shares");
         if (new BigNumber(tradeOnChainAmountRemaining, 10).eq(onChainAmount)) {
           if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining);
           return p.onFailed(new Error("Trade completed but amount of trade unchanged"));
         }
-        console.log("estimated cost:     ", speedomatic.fix(p.estimatedCost, "string"), "wei", p.estimatedCost, "eth");
-        console.log("actual cost:        ", cost.toFixed(), "wei", speedomatic.unfix(cost, "string"), "eth");
-        console.log("value of last trade:", new BigNumber(res.value, 16).toFixed(), "wei", speedomatic.unfix(res.value, "string"), "eth");
         var updatedEstimatedCost = p.estimatedCost == null ? null : speedomatic.unfix(cost.minus(new BigNumber(res.value, 16)), "string");
-        console.log("updated estimated cost:", speedomatic.fix(updatedEstimatedCost, "string"), "wei", updatedEstimatedCost, "eth");
+        console.log("actual cost:     ", cost.toFixed(), "wei", speedomatic.unfix(cost, "string"), "eth");
+        if (updatedEstimatedCost != null) {
+          console.log("estimated cost:     ", speedomatic.fix(p.estimatedCost, "string"), "wei", p.estimatedCost, "eth");
+          console.log("value of last trade:", new BigNumber(res.value, 16).toFixed(), "wei", speedomatic.unfix(res.value, "string"), "eth");
+          console.log("updated estimated cost:", speedomatic.fix(updatedEstimatedCost, "string"), "wei", updatedEstimatedCost, "eth");
+        }
         tradeUntilAmountIsZero(assign({}, p, {
           estimatedCost: updatedEstimatedCost,
           _fxpAmount: convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(),
@@ -85,18 +85,8 @@ function tradeUntilAmountIsZero(p) {
     },
   });
   if (p.doNotCreateOrders) {
-    console.log("\n");
-    console.log("*****************************************");
-    console.log("* Calling api.Trade.publicTakeBestOrder *");
-    console.log("*****************************************");
-    console.log(JSON.stringify(immutableDelete(tradePayload, "meta"), null, 2));
     api().Trade.publicTakeBestOrder(tradePayload);
   } else {
-    console.log("\n");
-    console.log("*********************************");
-    console.log("* Calling api.Trade.publicTrade *");
-    console.log("*********************************");
-    console.log(JSON.stringify(immutableDelete(tradePayload, "meta"), null, 2));
     api().Trade.publicTrade(tradePayload);
   }
 }

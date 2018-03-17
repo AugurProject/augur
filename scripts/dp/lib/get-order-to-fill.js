@@ -11,7 +11,7 @@ function getOrderToFill(augur, marketId, outcomeToTrade, orderType, fillerAddres
     }
     var orders = orderBook[marketId][outcomeToTrade][orderType];
     var orderIDToFill = Object.keys(orders).find(function (orderId) {
-      return orders[orderId].orderState !== "CANCELED" && orders[orderId].owner !== fillerAddress && new BigNumber(orders[orderId].fullPrecisionAmount, 10).gt(new BigNumber(0));
+      return orders[orderId].orderState !== "CANCELED" && orders[orderId].owner !== fillerAddress && new BigNumber(orders[orderId].fullPrecisionAmount.toString(), 10).gt(new BigNumber(0));
     });
     if (orderIDToFill == null) return callback(null);
     if (debugOptions.cannedMarkets) console.log("orderToFill:", orderType, orderIDToFill, orders[orderIDToFill]);
