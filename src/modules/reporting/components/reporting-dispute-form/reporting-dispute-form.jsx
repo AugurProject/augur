@@ -44,7 +44,7 @@ export default class ReportingDisputeForm extends Component {
     this.state = {
       outcomes: [],
       inputStake: '',
-      inputSelectedOutcome: undefined,
+      inputSelectedOutcome: '',
       paddingBuffer: 0,
       maxRep: 0,
     }
@@ -57,6 +57,7 @@ export default class ReportingDisputeForm extends Component {
     this.state.outcomes.sort((a, b) => a.name - b.name)
     if (this.props.stake) this.state.inputStake = this.props.stake.toString()
 
+    this.focusTextInput = this.focusTextInput.bind(this)
     this.componentWillReceiveProps(this.props)
 
     if (this.props.selectedOutcome !== undefined) {
@@ -98,7 +99,7 @@ export default class ReportingDisputeForm extends Component {
   }
 
   validateSavedValues() {
-    if (this.props.market.marketType === SCALAR && this.state.inputSelectedOutcome !== undefined) {
+    if (this.props.market.marketType === SCALAR && this.state.inputSelectedOutcome !== '') {
       this.validateScalar(this.state.inputSelectedOutcome, 'outcome', this.props.market.minPrice, this.props.market.maxPrice, this.props.isMarketInValid)
     } else {
       this.validateOutcome(this.props.validations, this.props.selectedOutcome, this.props.selectedOutcomeName, this.props.isMarketInValid)
@@ -138,7 +139,7 @@ export default class ReportingDisputeForm extends Component {
 
     ReportingDisputeForm.checkStake(this.props.stake, updatedValidations)
 
-    this.state.inputSelectedOutcome = undefined
+    this.state.inputSelectedOutcome = ''
     this.state.maxRep = this.calculateMaxRep(selectedOutcome)
 
     this.props.updateState({
@@ -149,8 +150,15 @@ export default class ReportingDisputeForm extends Component {
     })
   }
 
+  focusTextInput() {
+    this.textInput.focus()
+  }
+
   validateScalar(value, humanName, min, max, isInvalid) {
     const updatedValidations = { ...this.props.validations }
+    if (value === '') {
+      this.focusTextInput()
+    }
 
     if (isInvalid) {
       delete updatedValidations.err
@@ -256,12 +264,13 @@ export default class ReportingDisputeForm extends Component {
                 <ul className={FormStyles['Form__radio-buttons--per-line-long']}>
                   <li>
                     <button
-                      className={classNames({ [`${FormStyles.active}`]: s.inputSelectedOutcome !== undefined })}
+                      className={classNames({ [`${FormStyles.active}`]: s.inputSelectedOutcome !== '' })}
                       onClick={(e) => { this.validateScalar('', 'selectedOutcome', p.market.minPrice, p.market.maxPrice, false) }}
                     />
                     <input
                       id="sr__input--outcome-scalar"
                       type="number"
+                      ref={(input) => { this.textInput = input }}
                       min={p.market.minPrice}
                       max={p.market.maxPrice}
                       step={p.market.tickSize}

@@ -31,8 +31,12 @@ export default class ReportingReportForm extends Component {
 
     this.state = {
       outcomes: [],
-      inputSelectedOutcome: '',
+      inputSelectedOutcome: this.props.market.marketType === SCALAR && this.props.selectedOutcome ? this.props.selectedOutcome : '',
       activeButton: '',
+    }
+
+    if (this.props.market.marketType === SCALAR && this.props.selectedOutcome) {
+      this.state.activeButton = this.props.isMarketInValid ? ReportingReportForm.BUTTONS.MARKET_IS_INVALID : ReportingReportForm.BUTTONS.SCALAR_VALUE
     }
 
     this.state.outcomes = this.props.market ? this.props.market.outcomes.slice() : []
@@ -55,8 +59,6 @@ export default class ReportingReportForm extends Component {
         isMarketInValid: true,
         validations: updatedValidations,
       })
-    } else {
-      this.focusTextInput()
     }
   }
 
@@ -78,12 +80,16 @@ export default class ReportingReportForm extends Component {
     })
   }
 
-  validateScalar(validations, value, humanName, min, max, isInvalid, onBlur) {
+  validateScalar(validations, value, humanName, min, max, isInvalid) {
     const updatedValidations = { ...validations }
     this.state.activeButton = ReportingReportForm.BUTTONS.SCALAR_VALUE
     const minValue = parseFloat(min)
     const maxValue = parseFloat(max)
     const valueValue = parseFloat(value)
+
+    if (value === '') {
+      this.focusTextInput()
+    }
 
     switch (true) {
       case value === '':
@@ -151,7 +157,7 @@ export default class ReportingReportForm extends Component {
               <li>
                 <button
                   className={classNames({ [`${FormStyles.active}`]: s.activeButton === ReportingReportForm.BUTTONS.SCALAR_VALUE })}
-                  onClick={(e) => { this.setActiveScalarButton(ReportingReportForm.BUTTONS.SCALAR_VALUE) }}
+                  onClick={(e) => { this.validateScalar(p.validations, '', 'selectedOutcome', p.market.minPrice, p.market.maxPrice, false) }}
                 />
                 <input
                   id="sr__input--outcome-scalar"
