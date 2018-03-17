@@ -64,11 +64,10 @@ function tradeUntilAmountIsZero(p) {
         onChainPrice: onChainPrice,
       }, function (err, tradeOnChainAmountRemaining) {
         if (err) return p.onFailed(err);
-        console.log("starting amount: ", displayAmount);
         var tickSize = new BigNumber(p.maxPrice, 10).minus(new BigNumber(p.minPrice, 10)).dividedBy(new BigNumber(p.numTicks, 10));
         console.log("starting amount: ", onChainAmount.toFixed(), "wei", convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toFixed(), "eth");
         console.log("remaining amount:", tradeOnChainAmountRemaining.toFixed(), "wei", convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(), "eth");
-        if (new BigNumber(tradeOnChainAmountRemaining, 10).eq(new BigNumber(onChainAmount, 16))) {
+        if (new BigNumber(tradeOnChainAmountRemaining, 10).eq(onChainAmount)) {
           if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining);
           return p.onFailed(new Error("Trade completed but amount of trade unchanged"));
         }
