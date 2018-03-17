@@ -12,7 +12,6 @@ function faucetInAndMigrate(augur, universe, amount, auth, callback) {
   augur.api.Universe.getReputationToken({ tx: { to: universe } }, function (err, reputationToken) {
     if (err) return callback(err);
     if (debugOptions.cannedMarkets) console.log("reputationToken:", reputationToken);
-
     augur.api.LegacyReputationToken.faucet({
       meta: auth,
       _amount: speedomatic.fix(amount, "hex"),
@@ -54,9 +53,9 @@ function faucetInAndMigrate(augur, universe, amount, auth, callback) {
 function repFaucet(augur, amount, auth, callback) {
   var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
   console.log(chalk.green.dim("universe:"), chalk.green(universe));
-
   faucetInAndMigrate(augur, universe, amount, auth, callback);
 }
+
 module.exports = repFaucet;
 
 if (require.main === module) {
@@ -64,19 +63,16 @@ if (require.main === module) {
   var augur = new Augur();
   augur.rpc.setDebugOptions(debugOptions);
   var keystoreFilePath = process.argv[2];
-
-  augur.connect(connectionEndpoints, function (err) {
+  augur.connect({ ethereumNode: connectionEndpoints.ethereumNode }, function (err) {
     if (err) return console.error(err);
     console.log(chalk.cyan.dim("networkId:"), chalk.cyan(augur.rpc.getNetworkID()));
     getPrivateKey(keystoreFilePath, function (err, auth) {
       if (err) return console.log("Error: ", err);
-
-      repFaucet(augur, "10000000000000000000000000000", auth, function (err) {
+      repFaucet(augur, 100000, auth, function (err) {
         if (err) {
           console.log("Error: ", err);
           process.exit(1);
         }
-
         console.log("Rep Faucet Success");
         process.exit(0);
       });
