@@ -5,6 +5,8 @@ var BigNumber = require("bignumber.js");
 var speedomatic = require("speedomatic");
 var immutableDelete = require("immutable-delete");
 var calculateTradeCost = require("./calculate-trade-cost");
+var calculateTickSize = require("./calculate-tick-size");
+var calculateOnChainFillPrice = require("./calculate-on-chain-fill-price");
 var getTradeAmountRemaining = require("./get-trade-amount-remaining");
 var convertBigNumberToHexString = require("../utils/convert-big-number-to-hex-string");
 var convertOnChainAmountToDisplayAmount = require("../utils/convert-on-chain-amount-to-display-amount");
@@ -34,11 +36,12 @@ function tradeUntilAmountIsZero(p) {
   console.log("tradeUntilAmountIsZero:", JSON.stringify(immutableDelete(p, "meta"), null, 2));
   var displayAmount = p._fxpAmount;
   var displayPrice = p._price;
+  var orderType = p._direction;
   var tradeCost = calculateTradeCost({
     displayPrice: displayPrice,
     displayAmount: displayAmount,
     numTicks: p.numTicks,
-    orderType: p._direction,
+    orderType: orderType,
     minDisplayPrice: p.minPrice,
     maxDisplayPrice: p.maxPrice,
   });
@@ -46,7 +49,7 @@ function tradeUntilAmountIsZero(p) {
   var onChainAmount = tradeCost.onChainAmount;
   var onChainPrice = tradeCost.onChainPrice;
   var cost = (p.estimatedCost != null && new BigNumber(p.estimatedCost, 10).gt(constants.ZERO)) ? speedomatic.fix(p.estimatedCost) : maxCost;
-  console.log("cost:            ", cost.toFixed(), "wei", speedomatic.unfix(cost, "string"), "eth");
+  console.log("cost:", cost.toFixed(), "wei", speedomatic.unfix(cost, "string"), "eth");
   if (maxCost.lt(constants.PRECISION.zero)) {
     console.info("tradeUntilAmountIsZero complete: only dust remaining");
     return p.onSuccess(null);
@@ -56,13 +59,15 @@ function tradeUntilAmountIsZero(p) {
     _fxpAmount: convertBigNumberToHexString(onChainAmount),
     _price: convertBigNumberToHexString(onChainPrice),
     onSuccess: function (res) {
+      var tickSize = calculateTickSize(p.numTicks, p.minPrice, p.maxPrice);
+      var onChainFillPrice = calculateOnChainFillPrice(orderType, onChainPrice, p.numTicks);
       getTradeAmountRemaining({
         transactionHash: res.hash,
         startingOnChainAmount: onChainAmount,
-        onChainPrice: onChainPrice,
+        onChainFillPrice: onChainFillPrice,
+        tickSize: tickSize,
       }, function (err, tradeOnChainAmountRemaining) {
         if (err) return p.onFailed(err);
-        var tickSize = new BigNumber(p.maxPrice, 10).minus(new BigNumber(p.minPrice, 10)).dividedBy(new BigNumber(p.numTicks, 10));
         console.log("starting amount: ", onChainAmount.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toFixed(), "shares");
         console.log("remaining amount:", tradeOnChainAmountRemaining.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(), "shares");
         if (new BigNumber(tradeOnChainAmountRemaining, 10).eq(onChainAmount)) {

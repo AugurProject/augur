@@ -85,16 +85,10 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
       _tradeGroupId: tradeGroupId,
       doNotCreateOrders: false,
       onSent: function (res) {
-        if (debugOptions.cannedMarkets) console.log(chalk.green.dim("placeTrade sent:"), res);
+        if (debugOptions.cannedMarkets) console.log(chalk.green.dim("placeTrade sent:"), res.hash);
       },
-      onSuccess: function (tradeOnChainAmountRemaining) {
-        if (debugOptions.cannedMarkets) console.log(chalk.green.dim("placeTrade success:"), tradeOnChainAmountRemaining);
-        callback(null);
-      },
-      onFailed: function (err) {
-        if (debugOptions.cannedMarkets) console.error(chalk.red.bold("placeTrade failed:"), err);
-        callback(err);
-      },
+      onSuccess: function () { callback(null); },
+      onFailed: callback,
     };
     if (debugOptions.cannedMarkets) console.log("create-order placeTradePayload:", placeTradePayload);
     augur.trading.placeTrade(placeTradePayload);

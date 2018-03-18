@@ -80,7 +80,8 @@ describe("trading/get-trade-amount-remaining", function () {
     params: {
       transactionHash: "TRANSACTION_HASH",
       startingOnChainAmount: new BigNumber("0x5af3107a4000", 16), // 1
-      onChainPrice: new BigNumber("0x1500", 16), // 0.0276
+      onChainFillPrice: new BigNumber("0x1500", 16), // 0.0276
+      tickSize: new BigNumber("0.0001", 10),
     },
     mock: {
       contracts: {
@@ -122,7 +123,8 @@ describe("trading/get-trade-amount-remaining", function () {
     params: {
       transactionHash: "TRANSACTION_HASH",
       startingOnChainAmount: new BigNumber("0x5af3107a4000", 16),
-      onChainPrice: new BigNumber("0x1500", 16),
+      onChainFillPrice: new BigNumber("0x1500", 16),
+      tickSize: new BigNumber("0.0001", 10),
     },
     mock: {
       contracts: {
