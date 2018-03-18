@@ -50,7 +50,7 @@ module.exports = {
     zero: new BigNumber(1, 10).dividedBy(multiple),
     multiple: multiple,
   },
-  MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
+  MINIMUM_TRADE_SIZE: new BigNumber("0.0001", 10),
 
   ETERNAL_APPROVAL_VALUE: "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", // 2^256 - 1
 
