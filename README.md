@@ -5,14 +5,58 @@
 Augur is a decentralized prediction market platform built on Ethereum.  
 It runs locally in your browser and communicates directly with the ethereum network, without going through intermediate servers.
 
-There are several ways to run it:
+There are several configurations to run it on testnet:
 
 * Easiest: **visit [dev.augur.net](http://dev.augur.net)**  
-* Best: [run ethereum locally](#eth_local)
+* Partial Local: [run ethereum client locally](#eth_local)
+* Full Local: [run everything locally](#totally_local)
+* Production: [current status](https://github.com/AugurProject/augur/blob/seadragon/docs/production.md)
 
-## Requirements
-[Git](https://git-scm.com/)  
-[Node](https://nodejs.org/) or [Docker](https://www.docker.com/)
+For production configuration:
+
+* IPFS: instructions TBD
+* Docker: instructions TBD
+
+
+***
+
+## Rinkeby Ethereum Account
+
+In the following configurations we use rinkeby testnet, here is how to get an account:
+
+* You also can use Metamask to create a rinkeby account (easiest)
+  After you install Metamask web browser plugin, you can change the Network to Rinkeby and choose the `create account` menu option
+
+* Download geth and create rinkeby account
+  (download geth)[https://www.ethereum.org/cli]
+  (geth account commands)[https://github.com/ethereum/go-ethereum/wiki/Managing-your-accounts]
+  ```
+  geth --rinkeby account new
+  ```
+  After putting in your passphrase you will get your address. You can get your secret/private key and import into metamask and connect to augur UI. Location of keystore file depends on os. ie. ~/Library/Ethereum/rinkeby/keystore/<'UTC--timestamp--account hash'>. This file can be used to extract private key. Instructions are beyond the scope of this readme.
+
+***
+
+## Easiest:
+
+### overview
+
+We are hosting the UI for testnets, dev.augur.net points to rinkeby ethereum testnet node
+The configuration can be seen [here](https://dev.augur.net/config/env.json), the augur-node is hosted in the cloud.
+
+Simply point your web browser to  [dev.augur.net](http://dev.augur.net)
+
+***
+
+## Partial Local <a name="eth_local"></a>
+
+### overview
+We'll run the UI locally and use the rinkeby augur-node. We will build and host the UI locally and use the same env.json configuration as the 'Easiest' section.
+
+### Requirements
+* [Git](https://git-scm.com/) 
+* [Node](https://nodejs.org/)
+* [Docker](https://www.docker.com/) 
 
 *A Note to Windows 10 Users:*  
 Turn on `Developer Mode` and also enable `Windows Subsystem For Linux` so that you have access to bash.  
@@ -26,110 +70,48 @@ git clone https://github.com/AugurProject/augur.git
 cd augur
 ```
 
-### NPM
+### npm
 ```
 npm i
 npm run build
 ```
 
-### [Yarn](https://yarnpkg.com/)
+### [yarn](https://yarnpkg.com/)
 ```
 yarn
 yarn build
 ```
 
-### [Docker](https://www.docker.com/)
-```
-docker build -t augur .
-```
-
 This will create a `build` folder inside of the `augur` directory with all the files necessary to run the client.
 Simply copy these files to your web server of choice.
 
-## Develop
-
-### NPM
-```
-npm i
-npm run dev
-```
-
-### [Yarn](https://yarnpkg.com/)
-```
-yarn
-yarn dev
-```
 
 ### [Docker](https://www.docker.com/)
-To run augur ui in docker map your external port (8080) to docker container port 80
+after git cloning UI source let docker build UI and create a docker image. Then run the docker container (from just built image) that will host augur UI locally and usings rinkeby augur-node and rinkeby ethereum node
 ```
-docker run -p 8080:80 augur
+docker build -t augur .
 ```
-
-Visit [http://localhost:8080](http://localhost:8080)
-
-
-## Run Ethereum Locally <a name="eth_local"></a>
-
-There are a number of ways to go about running an Ethereum local node against Augur, described below is the CLI method using [geth](https://github.com/ethereum/go-ethereum/wiki/geth).
-
-Start off by [installing geth](https://github.com/ethereum/go-ethereum/wiki/Building-Ethereum).
-
-Depending on how you'll be running Augur (Development OR Production), follow the corresponding steps below:
-
-*NOTE --* Unless you have a specific reason for doing so, generally you should not simultaneously run geth and another Ethereum client (such as Mist or Parity).
-
-See more detail notes to run augur UI on local ethereum node and augur-node [dev-local-node](https://github.com/AugurProject/augur/blob/seadragon/docs/dev-local-node.md)
-
-### Development -- Testnet (Rinkeby)
-
-Create an Ethereum account (if needed):
+This runs the built docker container and maps external port (8080) to docker container port 80. The RUN_LOCAL_ONLY disables hosting UI in IPFS, not need in this configuration
 ```
-geth --rinkeby account new
-```
-Be sure to securely store your password and remember the account address (displayed after account creation).
-
-Start geth:  
-```
-geth --rinkeby --unlock 0 --rpc --ws --rpcapi eth,net,shh,admin,txpool,web3,personal --wsapi eth,net,shh,web3,admin,txpool,personal --rpccorsdomain '*' --wsorigins '*' --cache 2048 console
+docker run -e RUN_LOCAL_ONLY=true -p 8080:80 augur
 ```
 
-Additional points of note:  
-* The value supplied to `--unlock` should correspond to the account you'd like to be using for Augur transactions.  
-  * To get a list of accounts and their numerical value run `geth account list`.
+*** 
 
-### Production -- Main Network
+## Run everything Locally <a name="totally_local"></a>
+These instructions go through running local ethereum node, augur-node and augur UI. This will create a local environment contracts loaded with canned data.
 
-Important note: the Augur contracts have **not** yet been uploaded to the live Ethereum network, and therefore Augur is not yet available on the mainnet.  The following instructions are here as a placeholder for when our contracts are uploaded to the mainnet.
+Full instructions are here [dev-local-node](https://github.com/AugurProject/augur/blob/seadragon/docs/dev-local-node.md)
 
-Create an Ethereum account (if needed):
-```
-geth --rinkeby account new
-```
-Be sure to securely store your password and remember the account address (displayed after account creation).
 
-Start geth:  
-**Important** -- The following command will be using **real Eth (Main Network)** and is potentially more permissive than necessary for your use case.  
-**DO** educate yourself surrounding the arguments and determine which are appropriate for your specific use case.
-```
-geth --unlock 0 --rpc --ws --rpcapi eth,net,shh,admin,txpool,web3,personal --wsapi eth,net,shh,web3,admin,txpool,personal --rpccorsdomain '<domain of server>' --wsorigins '<domain of server>' --cache 2048 console
-```
 
-**Testing local geth node**
 
-    curl --data '{"method":"net_version","params":[],"id":67,"jsonrpc":"2.0"}' -H "Content-Type: application/json" -X POST localhost:8545
 
-    returns network id: should be 4 for rinkeby
-    {"jsonrpc":"2.0","id":67,"result":"4"}
 
-Additional resources:  
+# Additional resources:  
 [JSON RPC API Documentation](https://github.com/ethereum/wiki/wiki/JSON-RPC)  
 [Javascript Console](https://github.com/ethereum/go-ethereum/wiki/JavaScript-Console#web3)  
 
-Additional points of note:
-* The value supplied to `--unlock` should correspond to the account you'd like to be using for Augur transactions.  
-  * To get a list of accounts and their numerical value run `geth account list`.
-* The values supplied to `--rpccorsdomain` and `--wsorigins` should correspond to the server's domain which is running the instance of Augur.  **BE SPECIFIC + DO NOT USE A WILDCARD**
 
 ## Documentation
 
@@ -138,13 +120,21 @@ Additional points of note:
 
 ## Development Tips
 
-**#1: Search the project filenames for whatever you are looking for before thinking about it too much.**
+### #1: Search the project filenames for whatever you are looking for before thinking about it too much.**
 
 Since our code is structured in many small files that are named the same as the state/functionality they represent, rather than try to follow and reverse engineer code paths, just blindly search all filenames for whatever it is you are looking for. More often than not, you will find what you need.
 
 Want to know where the css for pagination is? Don't bother tracing where/how they're included, just search your files for `pag` >>>and `pagination.less` will pop up.
 
 Want to see how the login account gets updated? Search the files for `login` >>> and `update-login-account.js` will appear.
+
+
+## #2: Verify endpoints the UI is connected to
+
+To verify the ethereum node and augur-node the UI is connected see the Configuration at:  `http://localhost:8080/config/env.json`
+
+
+
 
 ## Sponsorships
 
