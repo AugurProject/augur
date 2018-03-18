@@ -40,6 +40,7 @@ export default class ReportingDispute extends Component {
       gasEstimate: '0',
       disputeBondFormatted: '0',
       isMarketInValid: null,
+      currentOutcome: {},
       selectedOutcome: '',
       selectedOutcomeName: '',
       stake: 0,
@@ -137,6 +138,7 @@ export default class ReportingDispute extends Component {
               <ReportingDisputeForm
                 market={p.market}
                 updateState={this.updateState}
+                stake={s.stake}
               />
             }
             { s.currentStep === 1 &&

@@ -20,14 +20,14 @@ const mapDispatchToProps = dispatch => ({
 
 
 const mergeProps = (sP, dP, oP) => {
-  const accountDisputeData = sP.accountDisputeState[sP.marketId]
+  const accountDisputeData = sP.accountDisputeState[sP.market.id]
 
   return {
     ...oP,
     ...sP,
     accountDisputeData,
-    getDisputeInfo: (marketId, callback) => getDisputeInfo(marketId, callback),
-    addUpdateAccountDispute: data => addUpdateAccountDispute(data),
+    getDisputeInfo: (marketId, callback) => dP.getDisputeInfo(marketId, callback),
+    addUpdateAccountDispute: data => dP.addUpdateAccountDispute(data),
   }
 }
 
