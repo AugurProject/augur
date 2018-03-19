@@ -119,6 +119,7 @@ export default class CreateMarketResolution extends Component {
   render() {
     const p = this.props
     const validations = p.newMarket.validations[p.newMarket.currentStep]
+    const { utcLocalOffset } = formatDate(new Date(p.currentTimestamp))
 
     const designatedReporterError = p.newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC && validations.designatedReporterAddress && !!validations.designatedReporterAddress.length
 
@@ -208,7 +209,7 @@ export default class CreateMarketResolution extends Component {
         </li>
         <li>
           <label htmlFor="cm__input--time">
-            <span>Expiration Time</span>
+            <span>Expiration Time (UTC { utcLocalOffset })</span>
             { p.newMarket.validations[p.newMarket.currentStep].hour.length &&
               <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].hour }</span>
             }
