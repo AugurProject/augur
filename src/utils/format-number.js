@@ -136,6 +136,22 @@ export function formatRep(num, opts) {
   )
 }
 
+export function formatRepTokens(num, opts) {
+  return formatNumber(
+    encodeNumberAsJSNumber(num),
+    {
+      decimals: 2,
+      decimalsRounded: 2,
+      denomination: ' REP Tokens',
+      positiveSign: false,
+      zeroStyled: false,
+      blankZero: false,
+      bigUnitPostfix: false,
+      ...opts,
+    },
+  )
+}
+
 export function formatConfirmations(num, opts) {
   return formatNumber(
     Math.max(num, 0),

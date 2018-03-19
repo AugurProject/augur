@@ -5,19 +5,17 @@ import { Helmet } from 'react-helmet'
 import { augur } from 'services/augurjs'
 
 import speedomatic from 'speedomatic'
-import { formatAttoRep, formatGasCostToEther } from 'utils/format-number'
+import { formatGasCostToEther } from 'utils/format-number'
 import MarketPreview from 'modules/market/components/market-preview/market-preview'
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
-import ReportingDisputeForm from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form'
+import ReportingDisputeForm from 'modules/reporting/containers/reporting-dispute-form'
 import ReportingDisputeConfirm from 'modules/reporting/components/reporting-dispute-confirm/reporting-dispute-confirm'
 import { TYPE_VIEW } from 'modules/market/constants/link-types'
-import BigNumber from 'bignumber.js'
 
 import { isEmpty } from 'lodash'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-report/reporting-report.styles'
-import selectDisputeOutcomes from 'modules/reporting/selectors/select-dispute-outcomes'
-import fillDisputeOutcomeProgress from 'modules/reporting/selectors/fill-dispute-outcome-progress'
+
 
 export default class ReportingDispute extends Component {
 
@@ -31,7 +29,6 @@ export default class ReportingDispute extends Component {
     loadFullMarket: PropTypes.func.isRequired,
     submitMarketContribute: PropTypes.func.isRequired,
     estimateSubmitMarketContribute: PropTypes.func.isRequired,
-    getDisputeInfo: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -40,7 +37,10 @@ export default class ReportingDispute extends Component {
     this.state = {
       currentStep: 0,
       showingDetails: true,
+      gasEstimate: '0',
+      disputeBondFormatted: '0',
       isMarketInValid: null,
+      currentOutcome: {},
       selectedOutcome: '',
       selectedOutcomeName: '',
       stake: 0,
@@ -48,13 +48,6 @@ export default class ReportingDispute extends Component {
         stake: false,
         selectedOutcome: null,
       },
-      gasEstimate: '0',
-      disputeBondFormatted: '0',
-      disputeBondValue: 0,
-      disputeRound: 0,
-      disputeOutcomes: [],
-      stakes: [],
-      currentOutcome: {},
     }
 
     this.prevPage = this.prevPage.bind(this)
@@ -64,43 +57,9 @@ export default class ReportingDispute extends Component {
   }
 
   componentWillMount() {
-    this.getDisputeInfo()
     if (this.props.isConnected && !this.props.isMarketLoaded) {
       this.props.loadFullMarket()
     }
-  }
-
-  getDisputeInfo() {
-    this.props.getDisputeInfo(this.props.marketId, (disputeInfo) => {
-      let disputeBond = disputeInfo.stakes.reduce((p, i) => {
-        const size = new BigNumber(i.size).toNumber()
-        const completedStake = new BigNumber(i.completedStake || 0).toNumber()
-        const result = completedStake !== size && size > p ? size : p
-        return result
-      }, 0)
-      if (disputeBond === 0) {
-        const completedStake = disputeInfo.stakes.reduce((p, i) => {
-          const result = i.completedStake > p ? i.completedStake : p
-          return result
-        }, 0)
-        // calculate new dispute bond if one isn't active. TODO: should get for augur-node
-        disputeBond = new BigNumber(completedStake).times(2).toNumber()
-      }
-      const disputeOutcomes = selectDisputeOutcomes(this.props.market, disputeInfo.stakes)
-        .map(o => fillDisputeOutcomeProgress(disputeBond, o))
-      const currentOutcome = disputeOutcomes.find(item => item.tentativeWinning) || {}
-      // disputeRound signifies round completed
-      const round = parseInt(disputeInfo.disputeRound, 10)
-
-      this.setState({
-        disputeRound: round,
-        stakes: disputeInfo.stakes,
-        disputeOutcomes,
-        currentOutcome,
-        disputeBondValue: parseInt(disputeBond, 10),
-        disputeBondFormatted: formatAttoRep(disputeBond, { decimals: 4, denomination: ' REP' }).formatted,
-      })
-    })
   }
 
   prevPage() {
@@ -156,7 +115,6 @@ export default class ReportingDispute extends Component {
           showAdditionalDetailsToggle
           showingDetails={s.showingDetails}
           toggleDetails={this.toggleDetails}
-          disputeRound={s.disputeRound}
         />
         }
         { !isEmpty(p.market) && s.showingDetails &&
@@ -180,16 +138,7 @@ export default class ReportingDispute extends Component {
               <ReportingDisputeForm
                 market={p.market}
                 updateState={this.updateState}
-                isMarketInValid={s.isMarketInValid}
-                selectedOutcome={s.selectedOutcome}
-                selectedOutcomeName={s.selectedOutcomeName}
                 stake={s.stake}
-                validations={s.validations}
-                stakes={s.stakes}
-                disputeOutcomes={s.disputeOutcomes}
-                currentOutcome={s.currentOutcome}
-                disputeBondValue={s.disputeBondValue}
-                disputeBondFormatted={s.disputeBondFormatted}
               />
             }
             { s.currentStep === 1 &&
@@ -213,7 +162,7 @@ export default class ReportingDispute extends Component {
                 className={classNames(FormStyles.Form__next, { [`${FormStyles['hide-button']}`]: s.currentStep === 1 })}
                 disabled={!Object.keys(s.validations).every(key => s.validations[key] === true)}
                 onClick={Object.keys(s.validations).every(key => s.validations[key] === true) ? this.nextPage : undefined}
-              >Report
+              >Review
               </button>
               { s.currentStep === 1 &&
               <button

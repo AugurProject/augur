@@ -12,10 +12,6 @@
   max-width: 13.7rem;
   padding: 1rem 1.5rem !important;
 
-  &::after {
-    border-left-color: @color-lightergray !important;
-  }
-
   > h4 {
     font-weight: 500;
     margin-bottom: 0.75rem;
@@ -36,11 +32,18 @@
       opacity: 1 !important;
     }
 
+    &.place-top {
+      &.type-light::after {
+        border-top-color: @color-lightergray !important;
+      }
+    }
+
     &.place-left {
       margin-left: -14px;
       margin-top: -5px;
 
       &::after {
+        border-left-color: @color-lightergray !important;
         right: -10px !important;
       }
 

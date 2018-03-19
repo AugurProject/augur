@@ -20,39 +20,56 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
     description: `get remaining rep`,
     assertions: () => {
       const outcome = {
-        size: 12588500976562500000,
+        bondSizeCurrent: 12588500976562500000,
         completedStake: '0',
-        currentStake: '1699361165364583300',
-        accountStakeComplete: '0',
+        stakeCurrent: '1699361165364583300',
+        accountStakeCurrent: '0',
       }
       const disputeBond = 12588500976562500000
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
       const expected = {
         ...outcome,
         percentageComplete: 13,
-        remainingRep: '10889139811197917000',
-        accountPercentage: 0,
+        percentageAccount: 0,
       }
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
     },
   })
 
   test({
-    description: `mismatch bond and size, old dispute value`,
+    description: `big numbers completed % both non and account`,
     assertions: () => {
       const outcome = {
-        size: 2098083496093750000,
-        currentStake: '0',
-        completedStake: '2098083496093750000',
-        accountStakeComplete: '103333582682291650',
+        bondSizeCurrent: 2098083496093750000,
+        stakeCurrent: '2098083496093750000',
+        accountStakeCurrent: '1098083496093750000',
       }
       const disputeBond = 6294250488281250000
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
       const expected = {
         ...outcome,
-        percentageComplete: 0,
-        remainingRep: '6294250488281250000',
-        accountPercentage: 0,
+        percentageComplete: 48,
+        percentageAccount: 52,
+      }
+      assert.deepEqual(actual, expected, `Didn't call the expected method`)
+    },
+  })
+
+
+  test({
+    description: `big numbers non account complete%`,
+    assertions: () => {
+      const outcome = {
+        bondSizeCurrent: 2098083496093750000,
+        stakeCurrent: '1098083496093750000',
+        accountStakeCurrent: '0',
+      }
+      const disputeBond = 6294250488281250000
+      const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
+      const expected = {
+        ...outcome,
+        percentageComplete: 52,
+        percentageAccount: 0,
       }
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
     },
@@ -62,18 +79,17 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
     description: `big numbers account % complete, rounding up`,
     assertions: () => {
       const outcome = {
-        size: 6294250488281250000,
-        currentStake: '349680582682291650',
+        bondSizeCurrent: 6294250488281250000,
+        stakeCurrent: '349680582682291650',
         completedStake: '0',
-        accountStakeComplete: '133333582682291650',
+        accountStakeCurrent: '133333582682291650',
       }
       const disputeBond = 6294250488281250000
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
       const expected = {
         ...outcome,
-        percentageComplete: 6,
-        remainingRep: '5944569905598959000',
-        accountPercentage: 2,
+        percentageComplete: 3,
+        percentageAccount: 2,
       }
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
     },
@@ -83,18 +99,17 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
     description: `big numbers account % complete, 10, total 50 complete `,
     assertions: () => {
       const outcome = {
-        size: 20000000000000000000,
-        currentStake: '10000000000000000000',
+        bondSizeCurrent: 20000000000000000000,
+        stakeCurrent: '12000000000000000000',
         completedStake: '0',
-        accountStakeComplete: '2000000000000000000',
+        accountStakeCurrent: '2000000000000000000',
       }
       const disputeBond = 20000000000000000000
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
       const expected = {
         ...outcome,
         percentageComplete: 50,
-        remainingRep: '10000000000000000000',
-        accountPercentage: 10,
+        percentageAccount: 10,
       }
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
     },
@@ -104,18 +119,17 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
     description: `big numbers account % complete, 50 `,
     assertions: () => {
       const outcome = {
-        size: 2000000000000000000,
-        currentStake: '1000000000000000000',
+        bondSizeCurrent: 4000000000000000000,
+        stakeCurrent: '2000000000000000000',
         completedStake: '0',
-        accountStakeComplete: '1000000000000000000',
+        accountStakeCurrent: '2000000000000000000',
       }
       const disputeBond = 2000000000000000000
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
       const expected = {
         ...outcome,
-        percentageComplete: 50,
-        remainingRep: '1000000000000000000',
-        accountPercentage: 50,
+        percentageComplete: 0,
+        percentageAccount: 50,
       }
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
     },
@@ -125,18 +139,17 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
     description: `big numbers % complete, 50 `,
     assertions: () => {
       const outcome = {
-        size: 2000000000000000000,
+        bondSizeCurrent: 2000000000000000000,
         completedStake: '0',
-        currentStake: '1000000000000000000',
-        accountStakeComplete: 0,
+        stakeCurrent: '1000000000000000000',
+        accountStakeCurrent: 0,
       }
       const disputeBond = 2000000000000000000
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
       const expected = {
         ...outcome,
         percentageComplete: 50,
-        remainingRep: '1000000000000000000',
-        accountPercentage: 0,
+        percentageAccount: 0,
       }
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
     },
@@ -146,18 +159,17 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
     description: `% complete, 75 `,
     assertions: () => {
       const outcome = {
-        size: 10,
-        currentStake: '7.5',
+        bondSizeCurrent: 10,
+        stakeCurrent: '7.5',
         completedStake: '0',
-        accountStakeComplete: '0',
+        accountStakeCurrent: '0',
       }
       const disputeBond = 10
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
       const expected = {
         ...outcome,
         percentageComplete: 75,
-        remainingRep: '2.5',
-        accountPercentage: 0,
+        percentageAccount: 0,
       }
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
     },
@@ -167,18 +179,17 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
     description: `% complete, 50 `,
     assertions: () => {
       const outcome = {
-        size: 10,
-        currentStake: '5',
+        bondSizeCurrent: 10,
+        stakeCurrent: '5',
         completedStake: '0',
-        accountStakeComplete: '0',
+        accountStakeCurrent: '0',
       }
       const disputeBond = 10
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
       const expected = {
         ...outcome,
         percentageComplete: 50,
-        remainingRep: '5',
-        accountPercentage: 0,
+        percentageAccount: 0,
       }
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
     },
@@ -188,18 +199,17 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
     description: `all zeros`,
     assertions: () => {
       const outcome = {
-        size: 0,
-        currentStake: '0',
+        bondSizeCurrent: 0,
+        stakeCurrent: '0',
         completedStake: '0',
-        accountStakeComplete: '0',
+        accountStakeCurrent: '0',
       }
       const disputeBond = 0
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
       const expected = {
         ...outcome,
         percentageComplete: 0,
-        remainingRep: '0',
-        accountPercentage: 0,
+        percentageAccount: 0,
       }
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
     },
@@ -212,11 +222,8 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
       const disputeBond = 10
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
       const expected = {
-        size: 10,
         percentageComplete: 0,
-        remainingRep: '10',
-        currentStake: 0,
-        accountPercentage: 0,
+        percentageAccount: 0,
       }
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
     },
@@ -229,11 +236,8 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
       const disputeBond = 0
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
       const expected = {
-        size: 0,
         percentageComplete: 0,
-        currentStake: 0,
-        remainingRep: '0',
-        accountPercentage: 0,
+        percentageAccount: 0,
       }
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
     },

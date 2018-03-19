@@ -22,11 +22,21 @@ export default class ReportingReportForm extends Component {
     isMarketInValid: PropTypes.bool,
   }
 
+  static BUTTONS = {
+    MARKET_IS_INVALID: 'MARKET_IS_INVALID',
+    SCALAR_VALUE: 'SCALAR_VALUE',
+  }
   constructor(props) {
     super(props)
 
     this.state = {
       outcomes: [],
+      inputSelectedOutcome: this.props.market.marketType === SCALAR && this.props.selectedOutcome ? this.props.selectedOutcome : '',
+      activeButton: '',
+    }
+
+    if (this.props.market.marketType === SCALAR && this.props.selectedOutcome) {
+      this.state.activeButton = this.props.isMarketInValid ? ReportingReportForm.BUTTONS.MARKET_IS_INVALID : ReportingReportForm.BUTTONS.SCALAR_VALUE
     }
 
     this.state.outcomes = this.props.market ? this.props.market.outcomes.slice() : []
@@ -34,6 +44,27 @@ export default class ReportingReportForm extends Component {
       this.state.outcomes.push({ id: 0, name: 'No' })
     }
     this.state.outcomes.sort((a, b) => a.name - b.name)
+
+    this.focusTextInput = this.focusTextInput.bind(this)
+  }
+
+  setMarketInvalid(buttonName) {
+    this.state.activeButton = buttonName
+    if (buttonName === ReportingReportForm.BUTTONS.MARKET_IS_INVALID) {
+      const updatedValidations = { ...this.props.validations }
+      delete updatedValidations.err
+      updatedValidations.selectedOutcome = true
+      this.state.inputSelectedOutcome = ''
+      this.props.updateState({
+        isMarketInValid: true,
+        validations: updatedValidations,
+        selectedOutcome: '',
+      })
+    }
+  }
+
+  focusTextInput() {
+    this.textInput.focus()
   }
 
   validateOutcome(validations, selectedOutcome, selectedOutcomeName, isMarketInValid) {
@@ -41,6 +72,7 @@ export default class ReportingReportForm extends Component {
     updatedValidations.selectedOutcome = true
     delete updatedValidations.err
 
+    this.state.inputSelectedOutcome = ''
     this.props.updateState({
       validations: updatedValidations,
       selectedOutcome,
@@ -51,37 +83,37 @@ export default class ReportingReportForm extends Component {
 
   validateScalar(validations, value, humanName, min, max, isInvalid) {
     const updatedValidations = { ...validations }
+    this.state.activeButton = ReportingReportForm.BUTTONS.SCALAR_VALUE
+    const minValue = parseFloat(min)
+    const maxValue = parseFloat(max)
+    const valueValue = parseFloat(value)
 
-    if (isInvalid) {
-      delete updatedValidations.err
-      updatedValidations.selectedOutcome = true
-
-    } else {
-      const minValue = parseFloat(min)
-      const maxValue = parseFloat(max)
-      const valueValue = parseFloat(value)
-
-      switch (true) {
-        case value === '':
-          updatedValidations.err = `The ${humanName} field is required.`
-          break
-        case isNaN(valueValue):
-          updatedValidations.err = `The ${humanName} field is a number.`
-          break
-        case (valueValue > maxValue || valueValue < minValue):
-          updatedValidations.err = `Please enter a ${humanName} between ${min} and ${max}.`
-          break
-        default:
-          delete updatedValidations.err
-          updatedValidations.selectedOutcome = true
-          break
-      }
+    if (value === '') {
+      this.focusTextInput()
     }
+
+    switch (true) {
+      case value === '':
+        updatedValidations.err = `The ${humanName} field is required.`
+        break
+      case isNaN(valueValue):
+        updatedValidations.err = `The ${humanName} field is a number.`
+        break
+      case (valueValue > maxValue || valueValue < minValue):
+        updatedValidations.err = `Please enter a ${humanName} between ${min} and ${max}.`
+        break
+      default:
+        delete updatedValidations.err
+        updatedValidations.selectedOutcome = true
+        break
+    }
+
+    this.state.inputSelectedOutcome = value
 
     this.props.updateState({
       validations: updatedValidations,
       selectedOutcome: value,
-      selectedOutcomeName: value,
+      selectedOutcomeName: value ? value.toString() : '',
       isMarketInValid: isInvalid,
     })
   }
@@ -111,7 +143,7 @@ export default class ReportingReportForm extends Component {
               <li className={FormStyles['Form__radio-buttons--per-line']}>
                 <button
                   className={classNames({ [`${FormStyles.active}`]: p.isMarketInValid === true })}
-                  onClick={(e) => { this.validateOutcome(p.validations, '', '', true) }}
+                  onClick={(e) => { this.setMarketInvalid(ReportingReportForm.BUTTONS.MARKET_IS_INVALID) }}
                 >Market is invalid
                 </button>
               </li>
@@ -121,17 +153,18 @@ export default class ReportingReportForm extends Component {
             <ul className={FormStyles['Form__radio-buttons--per-line']}>
               <li className={FormStyles['field--short']}>
                 <button
-                  className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome !== '' })}
-                  onClick={(e) => { this.validateScalar(p.validations, 0, 'selectedOutcome', p.market.minPrice, p.market.maxPrice, false) }}
+                  className={classNames({ [`${FormStyles.active}`]: s.activeButton === ReportingReportForm.BUTTONS.SCALAR_VALUE })}
+                  onClick={(e) => { this.validateScalar(p.validations, '', 'selectedOutcome', p.market.minPrice, p.market.maxPrice, false) }}
                 />
                 <input
                   id="sr__input--outcome-scalar"
                   type="number"
+                  ref={(input) => { this.textInput = input }}
                   min={p.market.minPrice}
                   max={p.market.maxPrice}
                   step={p.market.tickSize}
-                  placeholder={p.market.minPrice}
-                  value={p.selectedOutcome}
+                  placeholder={p.market.scalarDenomination}
+                  value={s.inputSelectedOutcome}
                   className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('err') && p.validations.selectedOutcome })}
                   onChange={(e) => { this.validateScalar(p.validations, e.target.value, 'outcome', p.market.minPrice, p.market.maxPrice, false) }}
                 />
@@ -145,8 +178,8 @@ export default class ReportingReportForm extends Component {
               }
               <li className={FormStyles['Form__radio-buttons--per-line']}>
                 <button
-                  className={classNames({ [`${FormStyles.active}`]: p.isMarketInValid === true })}
-                  onClick={(e) => { this.validateScalar(p.validations, '', '', p.market.minPrice, p.market.maxPrice, true) }}
+                  className={classNames({ [`${FormStyles.active}`]: s.activeButton === ReportingReportForm.BUTTONS.MARKET_IS_INVALID })}
+                  onClick={(e) => { this.setMarketInvalid(ReportingReportForm.BUTTONS.MARKET_IS_INVALID) }}
                 >Market is invalid
                 </button>
               </li>

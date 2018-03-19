@@ -1,4 +1,4 @@
-import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKET_CATEGORY, UPDATE_MARKET_REP_BALANCE, UPDATE_MARKET_FROZEN_SHARES_VALUE, UPDATE_MARKET_ESCAPE_HATCH_GAS_COST, UPDATE_MARKET_TRADING_ESCAPE_HATCH_GAS_COST } from 'modules/markets/actions/update-markets-data'
+import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKET_CATEGORY, UPDATE_MARKET_REP_BALANCE, UPDATE_MARKET_FROZEN_SHARES_VALUE, UPDATE_MARKET_ESCAPE_HATCH_GAS_COST, UPDATE_MARKET_TRADING_ESCAPE_HATCH_GAS_COST, UPDATE_MARKETS_DISPUTE_INFO } from 'modules/markets/actions/update-markets-data'
 import { RESET_STATE } from 'modules/app/actions/reset-state'
 
 const DEFAULT_STATE = {}
@@ -9,6 +9,11 @@ export default function (marketsData = DEFAULT_STATE, action) {
       return {
         ...marketsData,
         ...processMarketsData(action.marketsData, marketsData),
+      }
+    case UPDATE_MARKETS_DISPUTE_INFO:
+      return {
+        ...marketsData,
+        ...processMarketsDisputeInfo(action.marketsDisputeInfo, marketsData),
       }
     case UPDATE_MARKET_CATEGORY:
       if (!action.marketId) return marketsData
@@ -68,6 +73,19 @@ function processMarketsData(newMarketsData, existingMarketsData) {
     const marketData = {
       ...existingMarketsData[marketId],
       ...newMarketsData[marketId],
+    }
+
+    p[marketId] = marketData
+
+    return p
+  }, {})
+}
+
+function processMarketsDisputeInfo(newMarketsDisputeInfo, existingMarketsData) {
+  return Object.keys(newMarketsDisputeInfo).reduce((p, marketId) => {
+    const marketData = {
+      ...existingMarketsData[marketId],
+      disputeInfo: { ...newMarketsDisputeInfo[marketId] },
     }
 
     p[marketId] = marketData

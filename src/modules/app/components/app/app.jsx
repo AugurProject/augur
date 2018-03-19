@@ -115,6 +115,7 @@ export default class AppView extends Component {
         icon: NavCreateIcon,
         route: CREATE_MARKET,
         requireLogin: true,
+        disabled: this.props.universe.isForking,
       },
       {
         title: 'Portfolio',
@@ -173,6 +174,10 @@ export default class AppView extends Component {
       this.setState({
         mobileMenuState: mobileMenuStates.CLOSED,
       })
+    }
+
+    if (!isEqual(this.props.universe.isForking, nextProps.universe.isForking)) {
+      this.sideNavMenuData[1].disabled = nextProps.universe.isForking
     }
 
     if (!isEqual(this.props.location, nextProps.location)) {
@@ -435,7 +440,7 @@ export default class AppView extends Component {
                 toggleNotifications={() => this.toggleNotifications()}
               />
             }
-            {p.universe.forkEndTime !== '0' &&
+            {p.universe.forkEndTime && p.universe.forkEndTime !== '0' && p.blockchain && p.blockchain.currentAugurTimestamp &&
               <section className={Styles.TopBar}>
                 <ForkingNotification
                   forkEndTime={p.universe.forkEndTime}

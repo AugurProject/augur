@@ -3,24 +3,25 @@ import BigNumber from 'bignumber.js'
 import { augur } from 'services/augurjs'
 
 export const calculatePercentage = (size, totalStake) => {
-  if (size === 0) throw Error('Can not divide by 0')
-  if (size === null || totalStake === null) throw Error('Can not use null values')
-  if (isNaN(size) || isNaN(totalStake)) throw Error('Can not use NaN for calculations')
-  if (size < 0 || totalStake < 0) throw Error('Can not have negative percentage')
+  if (size === 0) return 0
+  if (size === null || totalStake === null) return 0
   const BNSize = new BigNumber(size)
   const BNtotalStake = new BigNumber(totalStake)
+  if (BNSize.lt(0) || BNtotalStake.lt(0)) return 0
+  if (BNtotalStake.equals(0)) return 0
   const ratio = BNSize.minus(BNtotalStake).dividedBy(BNSize)
-  return Math.round(new BigNumber(1).minus(ratio).times(new BigNumber(100)).toNumber())
+  return (new BigNumber(1).minus(ratio).times(new BigNumber(100))).round(0).toNumber()
 }
 
-export const calculateRemainingRep = (size, totalStake) => {
-  const remaining = calculateRemainingValue(size, totalStake)
-  return formatAttoRep(remaining, { decimals: 4, denomination: ' REP' }).formatted
+export const calculateNonAccountPercentage = (size, stakeCurrent, accountStakeCurrent) => {
+  const result = calculatePercentage(size, new BigNumber(stakeCurrent).minus(new BigNumber(accountStakeCurrent)))
+  return result
 }
 
-export const calculateTentativeStakePercentage = (size, totalStake, tentativeStake) => {
-  const attoRep = convertRepToAttoRep(tentativeStake)
-  const result = calculatePercentage(size, new BigNumber(totalStake).plus(new BigNumber(attoRep)).toNumber())
+export const calculateAddedStakePercentage = (size, accountStake, addedStake) => {
+  const attoRep = convertRepToAttoRep(addedStake)
+  const addedAccountStake = new BigNumber(accountStake).plus(new BigNumber(attoRep))
+  const result = calculatePercentage(size, new BigNumber(addedAccountStake).toNumber())
   return result
 }
 

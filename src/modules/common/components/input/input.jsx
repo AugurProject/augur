@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import BigNumber from 'bignumber.js'
 
-import { IconSearch } from 'modules/common/components/icons'
+import { IconSearch, Close } from 'modules/common/components/icons'
 
 import debounce from 'utils/debounce'
 
@@ -31,6 +31,7 @@ export default class Input extends Component {
     placeholder: PropTypes.string,
     maxButton: PropTypes.bool,
     onMaxButtonClick: PropTypes.func,
+    noFocus: PropTypes.bool,
   };
 
   constructor(props) {
@@ -93,12 +94,12 @@ export default class Input extends Component {
 
   render() {
     const {
-      isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, min, max, maxButton, onMaxButtonClick, ...p
+      isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, min, max, maxButton, onMaxButtonClick, noFocus, ...p
     } = this.props // eslint-disable-line no-unused-vars
     const s = this.state
 
     return (
-      <div className={classNames(isIncrementable ? Styles.Input__Incremental : Styles.Input, p.className, { 'can-toggle-visibility': canToggleVisibility })} >
+      <div className={classNames(isIncrementable ? Styles.Input__Incremental : Styles.Input, p.className, { 'can-toggle-visibility': canToggleVisibility, [`${Styles.noFocus}`]: noFocus })} >
         {isSearch && IconSearch}
         {!p.isMultiline &&
           <input
@@ -125,10 +126,10 @@ export default class Input extends Component {
         {isClearable && !p.isMultiline && !!s.value &&
           <button
             type="button"
-            className="button--text-only"
+            className={Styles.close}
             onClick={this.handleClear}
           >
-            <i className="fa fa-close" />
+            {Close}
           </button>
         }
 

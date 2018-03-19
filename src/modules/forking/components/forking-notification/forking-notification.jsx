@@ -23,6 +23,8 @@ class ForkingNotification extends Component {
   }
 
   render() {
+    const forkWindowActive = Number(this.props.forkEndTime) > this.props.currentTime
+
     return (
       <section>
         <header className={Styles.ForkingNotification}>
@@ -32,9 +34,16 @@ class ForkingNotification extends Component {
               alt="Alert"
               src="../../assets/images/alert-icon.svg"
             />
-            <div className={Styles.ForkingNotification__message}>
-              A Fork has been initiated. This universe is now locked.
-            </div>
+            {forkWindowActive &&
+              <div className={Styles.ForkingNotification__message}>
+                A Fork has been initiated. This universe is now locked.
+              </div>
+            }
+            {!forkWindowActive &&
+              <div className={Styles.ForkingNotification__message}>
+                A Fork has occurred. This universe is now locked.
+              </div>
+            }
             <div className={Styles.ForkingNotification__addition_details}>
               <button
                 className={Styles.ForkingNotification__addition_details_button}
@@ -50,6 +59,7 @@ class ForkingNotification extends Component {
           <ForkingContent
             forkEndTime={this.props.forkEndTime}
             currentTime={this.props.currentTime}
+            expanded
           />
         }
       </section>

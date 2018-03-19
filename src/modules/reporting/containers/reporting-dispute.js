@@ -10,7 +10,6 @@ import getValue from 'utils/get-value'
 
 import { submitMarketContribute } from 'modules/reporting/actions/submit-market-contribute'
 import { estimateSubmitMarketContribute } from 'modules/reporting/actions/estimate-submit-market-contribute'
-import { getDisputeInfo } from 'modules/reporting/actions/get-dispute-info'
 
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
@@ -25,7 +24,6 @@ const mapDispatchToProps = dispatch => ({
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
   submitMarketContribute: (marketId, outcomeValue, amount, invalid, history) => dispatch(submitMarketContribute(marketId, outcomeValue, amount, invalid, history)),
   estimateSubmitMarketContribute: (marketId, outcomeValue, amount, invalid, history) => dispatch(estimateSubmitMarketContribute(marketId, outcomeValue, amount, invalid, history)),
-  getDisputeInfo: (marketId, callback) => dispatch(getDisputeInfo(marketId, callback)),
 })
 
 
@@ -44,7 +42,6 @@ const mergeProps = (sP, dP, oP) => {
     loadFullMarket: () => dP.loadFullMarket(marketId),
     submitMarketContribute: (marketId, selectedOutcome, invalid, amount, history) => dP.submitMarketContribute(marketId, selectedOutcome, invalid, amount, history),
     estimateSubmitMarketContribute: (marketId, selectedOutcome, invalid, amount, history) => dP.estimateSubmitMarketContribute(marketId, selectedOutcome, invalid, amount, history),
-    getDisputeInfo: (marketId, callback) => dP.getDisputeInfo(marketId, callback),
   }
 }
 

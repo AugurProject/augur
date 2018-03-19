@@ -17,6 +17,7 @@ import * as TYPES from 'modules/transactions/constants/types'
 import { MY_MARKETS } from 'modules/routes/constants/views'
 import { connectAugur } from 'modules/app/actions/init-augur'
 import { updateAugurNodeConnectionStatus, updateConnectionStatus } from 'modules/app/actions/update-connection'
+import { loadMarketsDisputeInfo } from 'modules/markets/actions/load-markets-dispute-info'
 import { updateModal } from 'modules/modal/actions/update-modal'
 import { MODAL_NETWORK_DISCONNECTED } from 'modules/modal/constants/modal-types'
 
@@ -322,6 +323,8 @@ export function listenToUpdates(history) {
             console.log('DisputeCrowdsourcerCreated removed:', log)
           } else {
             console.log('DisputeCrowdsourcerCreated:', log)
+            const marketId = log.market
+            dispatch(loadMarketsDisputeInfo([marketId]))
           }
         }
       },
@@ -332,6 +335,8 @@ export function listenToUpdates(history) {
             console.log('DisputeCrowdsourcerContribution removed:', log)
           } else {
             console.log('DisputeCrowdsourcerContribution:', log)
+            const marketId = log.market
+            dispatch(loadMarketsDisputeInfo([marketId]))
           }
         }
       },
@@ -352,6 +357,8 @@ export function listenToUpdates(history) {
             console.log('DisputeCrowdsourcerRedeemed removed:', log)
           } else {
             console.log('DisputeCrowdsourcerRedeemed:', log)
+            const marketId = log.market
+            dispatch(loadMarketsDisputeInfo([marketId]))
           }
         }
       },
