@@ -26,6 +26,7 @@ export default class CreateMarketForm extends Component {
     universe: PropTypes.object.isRequired,
     meta: PropTypes.object,
     isBugBounty: PropTypes.bool.isRequired,
+    currentTimestamp: PropTypes.number,
   }
 
   constructor(props) {
@@ -156,6 +157,7 @@ export default class CreateMarketForm extends Component {
                 validateNumber={this.validateNumber}
                 isValid={this.isValid}
                 isMobileSmall={p.isMobileSmall}
+                currentTimestamp={p.currentTimestamp}
               />
             }
             { p.newMarket.currentStep === 3 &&

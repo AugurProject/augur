@@ -41,6 +41,11 @@ export const selectParticipationTokens = state => state.participationTokens
 export const selectInitialReporters = state => state.initialReporters
 export const selectDisputeCrowdsourcerTokens = state => state.disputeCrowdsourcerTokens
 
+export const selectCurrentTimestamp = createSelector(
+  selectBlockchainState,
+  blockchain => blockchain.currentAugurTimestamp * 1000,
+)
+
 export const selectBlockchainCurrentBlockTimestamp = createSelector(
   selectBlockchainState,
   blockchain => blockchain.currentBlockTimestamp,

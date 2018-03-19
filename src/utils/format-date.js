@@ -39,6 +39,7 @@ export function formatDate(d) {
     formattedLocalShort: `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} (UTC ${localOffset})`, // local time
     full: date.toUTCString(),
     timestamp: date.getTime() / 1000,
+    utcLocalOffset: localOffset,
   }
 }
 
