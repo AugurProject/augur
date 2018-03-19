@@ -87,7 +87,7 @@ Simply copy these files to your web server of choice.
 
 
 ### [Docker](https://www.docker.com/)
-after git cloning UI source let docker build UI and create a docker image. Then run the docker container (from just built image) that will host augur UI locally and usings rinkeby augur-node and rinkeby ethereum node
+After git cloning UI source let docker build UI and create a docker image. Then run the docker container (from just built image) that will host augur UI locally and usings rinkeby augur-node and rinkeby ethereum node
 ```
 docker build -t augur .
 ```
