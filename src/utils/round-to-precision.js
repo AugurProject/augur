@@ -1,6 +1,9 @@
 "use strict";
 
-var ROUND_DOWN = require("bignumber.js").ROUND_DOWN;
+var BigNumber = require("bignumber.js");
+var ROUND_DOWN = BigNumber.ROUND_DOWN;
+var ROUND_CEIL = BigNumber.ROUND_CEIL;
+var ROUND_FLOOR = BigNumber.ROUND_FLOOR;
 var PRECISION = require("../constants").PRECISION;
 
 function roundToPrecision(value, minimum, round, roundingMode) {
@@ -9,7 +12,12 @@ function roundToPrecision(value, minimum, round, roundingMode) {
   if (absValue.lt(PRECISION.limit)) {
     value = value.toPrecision(PRECISION.decimals, roundingMode || ROUND_DOWN);
   } else {
-    value = value.times(PRECISION.multiple)[round || "floor"]().dividedBy(PRECISION.multiple).toFixed();
+    if (round === "ceil") {
+      roundingMode = ROUND_CEIL;
+    } else if (round === "floor") {
+      roundingMode = ROUND_FLOOR;
+    }
+    value = value.times(PRECISION.multiple).integerValue(roundingMode).dividedBy(PRECISION.multiple).toFixed();
   }
   return value;
 }

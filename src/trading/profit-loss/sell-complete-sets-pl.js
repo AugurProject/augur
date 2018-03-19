@@ -19,11 +19,11 @@ function sellCompleteSetsPL(PL, shares, price) {
     if (shares.gt(ZERO) && updatedPL.tradeQueue && updatedPL.tradeQueue.length) {
       while (updatedPL.tradeQueue.length) {
         if (updatedPL.tradeQueue[0].shares.gt(shares)) {
-          updatedPL.realized = updateRealizedPL(updatedPL.tradeQueue[0].meanOpenPrice, updatedPL.realized, shares.neg(), updatedPL.tradeQueue[0].price);
+          updatedPL.realized = updateRealizedPL(updatedPL.tradeQueue[0].meanOpenPrice, updatedPL.realized, shares.negated(), updatedPL.tradeQueue[0].price);
           updatedPL.tradeQueue[0].shares = updatedPL.tradeQueue[0].shares.minus(shares);
           break;
         } else {
-          updatedPL.realized = updateRealizedPL(updatedPL.tradeQueue[0].meanOpenPrice, updatedPL.realized, updatedPL.tradeQueue[0].shares.neg(), updatedPL.tradeQueue[0].price);
+          updatedPL.realized = updateRealizedPL(updatedPL.tradeQueue[0].meanOpenPrice, updatedPL.realized, updatedPL.tradeQueue[0].shares.negated(), updatedPL.tradeQueue[0].price);
           updatedPL.tradeQueue.splice(0, 1);
         }
       }

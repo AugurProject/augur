@@ -34,14 +34,14 @@ function calculateTradeCost(p) {
   var onChainAmount = convertDisplayAmountToOnChainAmount(displayAmount, tickSize);
   var cost;
   if (p.orderType === 0) {
-    onChainPrice = onChainPrice.ceil();
+    onChainPrice = onChainPrice.integerValue(BigNumber.ROUND_CEIL);
     cost = calculateBidCost(onChainPrice, onChainAmount);
   } else {
-    onChainPrice = onChainPrice.floor();
+    onChainPrice = onChainPrice.integerValue(BigNumber.ROUND_FLOOR);
     cost = calculateAskCost(onChainPrice, onChainAmount, numTicks);
   }
   console.log(JSON.stringify({ cost: cost, onChainAmount: onChainAmount, onChainPrice: onChainPrice }));
-  return { cost: cost.ceil(), onChainAmount: onChainAmount.floor(), onChainPrice: onChainPrice };
+  return { cost: cost.integerValue(BigNumber.ROUND_CEIL), onChainAmount: onChainAmount.integerValue(BigNumber.ROUND_FLOOR), onChainPrice: onChainPrice };
 }
 
 module.exports = calculateTradeCost;

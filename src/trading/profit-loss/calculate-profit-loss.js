@@ -37,7 +37,7 @@ function calculateProfitLoss(p) {
       // console.log("Trade queue:", JSON.stringify(PL.tradeQueue));
       for (var i = 0, n = PL.tradeQueue.length; i < n; ++i) {
         queuedShares = queuedShares.plus(PL.tradeQueue[i].shares);
-        PL.queued = updateRealizedPL(PL.tradeQueue[i].meanOpenPrice, PL.queued, PL.tradeQueue[i].shares.neg(), PL.tradeQueue[i].price);
+        PL.queued = updateRealizedPL(PL.tradeQueue[i].meanOpenPrice, PL.queued, PL.tradeQueue[i].shares.negated(), PL.tradeQueue[i].price);
       }
     }
     // console.log("Queued shares:", queuedShares.toFixed());
