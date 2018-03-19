@@ -15,8 +15,8 @@ export default class ModalNetworkConnect extends Component {
 
     this.state = {
       augurNode: props.env['augur-node'] || '',
-      ethereumNodeHttp: props.env['ethereum-node'] && props.env['ethereum-node'].http || '',
-      ethereumNodeWs: props.env['ethereum-node'] && props.env['ethereum-node'].ws || '',
+      ethereumNodeHttp: (props.env['ethereum-node'] && props.env['ethereum-node'].http) || '',
+      ethereumNodeWs: (props.env['ethereum-node'] && props.env['ethereum-node'].ws) || '',
     }
 
     this.submitForm = this.submitForm.bind(this)

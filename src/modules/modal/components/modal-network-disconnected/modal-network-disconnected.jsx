@@ -39,7 +39,6 @@ export default class ModalNetworkDisconnected extends Component {
 
   submitForm(e, env) {
     e.preventDefault()
-    console.log(e, env);
     this.props.updateEnv(env)
     // unpause reconnection
     this.props.updateIsReconnectionPaused(false)

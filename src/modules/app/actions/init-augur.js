@@ -86,7 +86,6 @@ function pollForEscapeHatch(dispatch, getState) {
 export function connectAugur(history, env, isInitialConnection = false, callback = logError) {
   return (dispatch, getState) => {
     AugurJS.connect(env, (err, ConnectionInfo) => {
-      console.log('In Connect', isInitialConnection, err, ConnectionInfo);
       if (err || !ConnectionInfo.augurNode || !ConnectionInfo.ethereumNode) {
         return callback(err, ConnectionInfo)
       }
@@ -122,7 +121,7 @@ export function initAugur(history, callback = logError) {
             if (err) {
               dispatch(updateModal({
                 type: MODAL_NETWORK_CONNECT,
-                isInitialConnection: true
+                isInitialConnection: true,
               }))
             }
             callback(err, res)
