@@ -4,9 +4,14 @@ import noop from 'utils/noop'
 import { updateAssets } from 'modules/auth/actions/update-assets'
 
 export default function (callback = logError) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const { loginAccount } = getState()
+
+    console.log('loginAccount -- ', loginAccount)
+
     augur.api.LegacyReputationToken.faucet({
       _amount: 0,
+      meta: loginAccount.meta,
       onSent: noop,
       onSuccess: (res) => {
         dispatch(updateAssets())
