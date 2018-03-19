@@ -120,7 +120,7 @@ Full instructions are here [dev-local-node](https://github.com/AugurProject/augu
 
 ## Development Tips
 
-### #1: Search the project filenames for whatever you are looking for before thinking about it too much.**
+### #1: Search the project filenames for whatever you are looking for before thinking about it too much.
 
 Since our code is structured in many small files that are named the same as the state/functionality they represent, rather than try to follow and reverse engineer code paths, just blindly search all filenames for whatever it is you are looking for. More often than not, you will find what you need.
 
