@@ -6,7 +6,7 @@ import { closeModal } from 'modules/modal/actions/close-modal'
 import { MODAL_UPORT } from 'modules/modal/constants/modal-types'
 
 export default function uPortSigner(txObj, dispatch) {
-  new Connect(
+  const uPortSigner = new Connect(
     'AUGUR -- DEV',
     {
       clientId: '2ofGiHuZhhpDMAQeDxjoDhEsUQd1MayECgd',
@@ -18,7 +18,10 @@ export default function uPortSigner(txObj, dispatch) {
         uri,
       }))
     })
-    .then(() => dispatch(closeModal()))
+
+  uPortSigner.then((res) => {
+    dispatch(closeModal())
+  })
     .catch((err) => {
       dispatch(updateModal({
         type: MODAL_UPORT,
@@ -26,4 +29,6 @@ export default function uPortSigner(txObj, dispatch) {
         canClose: true,
       }))
     })
+
+  return uPortSigner
 }
