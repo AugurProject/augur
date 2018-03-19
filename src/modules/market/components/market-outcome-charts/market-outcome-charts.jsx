@@ -35,6 +35,7 @@ export default class MarketOutcomeCharts extends Component {
       sharedChartMargins: {
         top: 0,
         bottom: 30,
+        gap: 12.5, // Respective gap between charts horizontally when on desktop
       },
     }
 
