@@ -1,0 +1,34 @@
+@import (reference) "~assets/styles/shared";
+
+.ModalNetworkConnect__form {
+  max-width: 35rem;
+  padding: 1rem;
+  position: relative;
+  width: 100%;
+
+  h1,
+  input,
+  label {
+    margin-top: 1rem;
+  }
+
+  h1,
+  span {
+    color: @color-white;
+  }
+
+  h1 {
+    .caps--extra-large();
+  }
+
+  input::placeholder {
+    color: @color-lightergray-2;
+    font-family: @din-pro;
+  }
+
+  button {
+    &:extend(.button--white);
+
+    margin-top: 2rem;
+  }
+}

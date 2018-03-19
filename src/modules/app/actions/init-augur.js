@@ -15,7 +15,7 @@ import logError from 'utils/log-error'
 
 import { isEmpty } from 'lodash'
 
-import { MODAL_NETWORK_MISMATCH, MODAL_ESCAPE_HATCH } from 'modules/modal/constants/modal-types'
+import { MODAL_NETWORK_MISMATCH, MODAL_ESCAPE_HATCH, MODAL_NETWORK_CONNECT } from 'modules/modal/constants/modal-types'
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 3000
 const NETWORK_ID_POLL_INTERVAL_DURATION = 3000
@@ -86,6 +86,7 @@ function pollForEscapeHatch(dispatch, getState) {
 export function connectAugur(history, env, isInitialConnection = false, callback = logError) {
   return (dispatch, getState) => {
     AugurJS.connect(env, (err, ConnectionInfo) => {
+      console.log('In Connect', isInitialConnection, err, ConnectionInfo);
       if (err || !ConnectionInfo.augurNode || !ConnectionInfo.ethereumNode) {
         return callback(err, ConnectionInfo)
       }
@@ -117,7 +118,15 @@ export function initAugur(history, callback = logError) {
         if (xhttp.status === 200) {
           const env = JSON.parse(xhttp.responseText)
           dispatch(updateEnv(env))
-          connectAugur(history, env, true, callback)(dispatch, getState)
+          connectAugur(history, env, true, (err, res) => {
+            if (err) {
+              dispatch(updateModal({
+                type: MODAL_NETWORK_CONNECT,
+                isInitialConnection: true
+              }))
+            }
+            callback(err, res)
+          })(dispatch, getState)
         } else {
           callback(xhttp.statusText)
         }

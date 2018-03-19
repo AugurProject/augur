@@ -10,6 +10,7 @@ import ModalNetworkDisconnected from 'modules/modal/components/modal-network-dis
 import ModalApproval from 'modules/modal/components/modal-approval/modal-approval'
 import ModalEscapeHatch from 'modules/modal/components/modal-escape-hatch/modal-escape-hatch'
 import ModalParticipate from 'modules/modal/containers/modal-participate'
+import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect'
 
 import { Close } from 'modules/common/components/icons'
 
@@ -88,6 +89,9 @@ export default class ModalView extends Component {
           }
           {p.modal.type === TYPES.MODAL_NETWORK_MISMATCH &&
             <ModalNetworkMismatch {...p.modal} />
+          }
+          {p.modal.type === TYPES.MODAL_NETWORK_CONNECT &&
+            <ModalNetworkConnect />
           }
           {p.modal.type === TYPES.MODAL_NETWORK_DISCONNECTED &&
             <ModalNetworkDisconnected {...p} />
