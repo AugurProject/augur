@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import BigNumber from 'bignumber.js'
 
 import coreStats, { selectOutcomeLastPrice, createPeriodPLSelector, selectCoreStats, __RewireAPI__ as CoreStatsRewireAPI } from 'modules/account/selectors/core-stats'
-import { formatEther, formatRep, formatEtherTokens } from 'utils/format-number'
+import { formatEther, formatRep } from 'utils/format-number'
 
 import { ZERO } from 'modules/trade/constants/numbers'
 
@@ -216,13 +216,13 @@ describe('modules/account/selectors/core-stats', () => {
       description: `should return the expected object`,
       assertions: () => {
         const loginAccount = {
-          ethTokens: formatEtherTokens(10),
+          ethTokens: formatEther(10),
           eth: formatEther(10),
           rep: formatRep(10),
         }
         const loginAccountPositions = {
           summary: {
-            totalNet: formatEtherTokens(10),
+            totalNet: formatEther(10),
           },
         }
         const periodPL = new BigNumber('10')
@@ -256,12 +256,12 @@ describe('modules/account/selectors/core-stats', () => {
             totalPLMonth: {
               label: '30 Day P/L',
               title: 'Profit/Loss -- net of all trades over the last 30 days',
-              value: formatEtherTokens(periodPL),
+              value: formatEther(periodPL),
             },
             totalPLDay: {
               label: '1 Day P/L',
               title: 'Profit/Loss -- net of all trades over the last day',
-              value: formatEtherTokens(periodPL),
+              value: formatEther(periodPL),
             },
           },
         ]

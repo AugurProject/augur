@@ -4,7 +4,7 @@ import { augur } from 'services/augurjs'
 import { ZERO, TEN_TO_THE_EIGHTEENTH_POWER } from 'modules/trade/constants/numbers'
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 import * as TYPES from 'modules/transactions/constants/types'
-import { formatEtherTokens, formatEther, formatPercent, formatRep, formatShares } from 'utils/format-number'
+import { formatEther, formatPercent, formatRep, formatShares } from 'utils/format-number'
 import { formatDate } from 'utils/format-date'
 import { loadMarketThenRetryConversion } from 'modules/transactions/actions/retry-conversion'
 
@@ -75,8 +75,8 @@ export function constructCollectedFeesTransaction(log) {
   transaction.description = `Reporting cycle #${log.period}`
   if (log.cashFeesCollected !== undefined && log.repGain !== undefined) {
     transaction.data.balances = [{
-      change: formatEtherTokens(log.cashFeesCollected, { positiveSign: true }),
-      balance: formatEtherTokens(log.newCashBalance),
+      change: formatEther(log.cashFeesCollected, { positiveSign: true }),
+      balance: formatEther(log.newCashBalance),
     }, {
       change: formatRep(log.repGain, { positiveSign: true }),
       balance: formatRep(log.newRepBalance),
@@ -91,9 +91,9 @@ export function constructCreateMarketTransaction(log, description, dispatch) {
   transaction.type = TYPES.CREATE_MARKET
   transaction.description = description.split('~|>')[0] // eslint-disable-line prefer-destructuring
   transaction.category = log.category
-  transaction.marketCreationFee = formatEtherTokens(log.marketCreationFee)
+  transaction.marketCreationFee = formatEther(log.marketCreationFee)
   transaction.data.marketId = log.marketId ? log.marketId : null
-  transaction.bond = { label: 'validity', value: formatEtherTokens(log.validityBond) }
+  transaction.bond = { label: 'validity', value: formatEther(log.validityBond) }
   const action = log.inProgress ? 'creating' : 'created'
   transaction.message = `${action} market`
   return transaction
@@ -105,8 +105,8 @@ export function constructTradingProceedsClaimedTransaction(log, market, dispatch
   transaction.description = market.description
   if (log.payoutTokens) {
     transaction.data.balances = [{
-      change: formatEtherTokens(log.payoutTokens, { positiveSign: true }),
-      balance: formatEtherTokens(log.tokenBalance),
+      change: formatEther(log.payoutTokens, { positiveSign: true }),
+      balance: formatEther(log.tokenBalance),
     }]
   }
   transaction.data.shares = log.shares
@@ -140,7 +140,7 @@ export function constructTransferTransaction(log, address) {
 
 export const constructCancelOrderTransaction = (trade, marketId, marketType, description, outcomeId, outcomeName, minPrice, maxPrice, status) => (dispatch, getState) => {
   const displayPrice = augur.trading.denormalizePrice({ normalizedPrice: trade.price, minPrice, maxPrice })
-  const formattedPrice = formatEtherTokens(displayPrice)
+  const formattedPrice = formatEther(displayPrice)
   const formattedShares = formatShares(trade.amount)
   const action = trade.inProgress ? 'canceling' : 'canceled'
   return {
@@ -161,7 +161,7 @@ export const constructCancelOrderTransaction = (trade, marketId, marketType, des
       avgPrice: formattedPrice,
       timestamp: formatDate(new Date(trade.timestamp * 1000)),
       hash: trade.transactionHash,
-      totalReturn: trade.inProgress ? null : formatEtherTokens(trade.cashRefund),
+      totalReturn: trade.inProgress ? null : formatEther(trade.cashRefund),
       gasFees: trade.gasFees && new BigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
       blockNumber: trade.blockNumber,
       orderId: trade.orderId,
@@ -180,7 +180,7 @@ export const constructCreateOrderTransaction = (trade, marketId, marketType, des
     action = trade.inProgress ? 'asking' : 'ask'
   }
   const displayPrice = augur.trading.denormalizePrice({ normalizedPrice: trade.price, minPrice, maxPrice })
-  const formattedPrice = formatEtherTokens(displayPrice)
+  const formattedPrice = formatEther(displayPrice)
   const formattedShares = formatShares(trade.amount)
   const fxpShares = fix(trade.amount)
   const fxpPrice = fix(trade.price)
@@ -203,20 +203,20 @@ export const constructCreateOrderTransaction = (trade, marketId, marketType, des
         outcomeId,
         marketId,
       },
-      message: `${action} ${formattedShares.full} for ${formatEtherTokens(unfix(trade.orderType === TYPES.BUY ? fxpTotalCostPerShare : fxpTotalReturnPerShare)).full} / share`,
+      message: `${action} ${formattedShares.full} for ${formatEther(unfix(trade.orderType === TYPES.BUY ? fxpTotalCostPerShare : fxpTotalReturnPerShare)).full} / share`,
       numShares: formattedShares,
-      noFeePrice: formatEtherTokens(displayPrice),
+      noFeePrice: formatEther(displayPrice),
       freeze: {
         verb: trade.inProgress ? 'freezing' : 'froze',
-        noFeeCost: orderType === TYPES.SELL ? undefined : formatEtherTokens(unfix(fxpNoFeeCost)),
-        settlementFee: formatEtherTokens(settlementFee),
+        noFeeCost: orderType === TYPES.SELL ? undefined : formatEther(unfix(fxpNoFeeCost)),
+        settlementFee: formatEther(settlementFee),
       },
       avgPrice: formattedPrice,
       timestamp: formatDate(new Date(trade.timestamp * 1000)),
       hash: trade.transactionHash,
       feePercent: formatPercent(unfix(fxpSettlementFee.dividedBy(fxpTotalCost).times(TEN_TO_THE_EIGHTEENTH_POWER).floor()).times(100)),
-      totalCost: orderType === TYPES.BUY ? formatEtherTokens(unfix(fxpTotalCost)) : undefined,
-      totalReturn: orderType === TYPES.SELL ? formatEtherTokens(unfix(fxpTotalReturn)) : undefined,
+      totalCost: orderType === TYPES.BUY ? formatEther(unfix(fxpTotalCost)) : undefined,
+      totalReturn: orderType === TYPES.SELL ? formatEther(unfix(fxpTotalReturn)) : undefined,
       gasFees: trade.gasFees && new BigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
       blockNumber: trade.blockNumber,
       orderId: trade.orderId,
@@ -230,7 +230,7 @@ export const constructFillOrderTransaction = (trade, marketId, marketType, descr
   const transactionId = `${trade.transactionHash}-${trade.orderId}`
   const { tradeGroupId } = trade
   const displayPrice = augur.trading.denormalizePrice({ normalizedPrice: trade.price, minPrice, maxPrice })
-  const formattedPrice = formatEtherTokens(displayPrice)
+  const formattedPrice = formatEther(displayPrice)
   const formattedShares = formatShares(trade.amount)
   const bnShares = new BigNumber(trade.amount, 10)
   const bnPrice = new BigNumber(trade.price, 10)
@@ -246,13 +246,13 @@ export const constructFillOrderTransaction = (trade, marketId, marketType, descr
   if (trade.isMaker) {
     orderType = trade.orderType === TYPES.SELL ? TYPES.MATCH_BID : TYPES.MATCH_ASK
     perfectOrderType = trade.orderType === TYPES.SELL ? 'bought' : 'sold'
-    formattedTotalCost = trade.orderType === TYPES.SELL ? formatEtherTokens(bnTotalCost) : undefined
-    formattedTotalReturn = trade.orderType === TYPES.BUY ? formatEtherTokens(bnTotalReturn) : undefined
+    formattedTotalCost = trade.orderType === TYPES.SELL ? formatEther(bnTotalCost) : undefined
+    formattedTotalReturn = trade.orderType === TYPES.BUY ? formatEther(bnTotalReturn) : undefined
   } else {
     orderType = trade.orderType === TYPES.BUY ? TYPES.BUY : TYPES.SELL
     perfectOrderType = trade.orderType === TYPES.BUY ? 'bought' : 'sold'
-    formattedTotalCost = trade.orderType === TYPES.BUY ? formatEtherTokens(bnTotalCost) : undefined
-    formattedTotalReturn = trade.orderType === TYPES.SELL ? formatEtherTokens(bnTotalReturn) : undefined
+    formattedTotalCost = trade.orderType === TYPES.BUY ? formatEther(bnTotalCost) : undefined
+    formattedTotalReturn = trade.orderType === TYPES.SELL ? formatEther(bnTotalReturn) : undefined
   }
   const action = trade.inProgress ? orderType : perfectOrderType
   const transaction = {
@@ -268,12 +268,12 @@ export const constructFillOrderTransaction = (trade, marketId, marketType, descr
         outcomeId,
         marketId,
       },
-      message: `${action} ${formattedShares.full} for ${formatEtherTokens(trade.orderType === TYPES.BUY ? bnTotalCostPerShare : bnTotalReturnPerShare).full} / share`,
+      message: `${action} ${formattedShares.full} for ${formatEther(trade.orderType === TYPES.BUY ? bnTotalCostPerShare : bnTotalReturnPerShare).full} / share`,
       numShares: formattedShares,
       noFeePrice: formattedPrice,
       avgPrice: formattedPrice,
       timestamp: formatDate(new Date(trade.timestamp * 1000)),
-      settlementFee: formatEtherTokens(settlementFee),
+      settlementFee: formatEther(settlementFee),
       feePercent: formatPercent(bnSettlementFee.dividedBy(bnTotalCost).times(100)),
       totalCost: formattedTotalCost,
       totalReturn: formattedTotalReturn,

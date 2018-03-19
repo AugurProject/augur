@@ -1,0 +1,116 @@
+@import (reference) '~assets/styles/shared';
+
+.AccountLegacyRep {
+  background: white;
+  padding: 5.5rem 4.625rem 7rem;
+}
+
+.AccountLegacyRep__heading {
+  margin-bottom: 2.5rem;
+
+  > h1 {
+    color: @color-darkpurple;
+    display: inline-block;
+    font-size: @font-size-extra-large;
+    font-weight: 500;
+    letter-spacing: 0.14rem;
+    margin-bottom: 0;
+    margin-right: 1rem;
+    text-transform: uppercase;
+  }
+}
+
+.AccountLegacyRep__main {
+  display: flex;
+  max-width: @max-width;
+
+  > div {
+    padding-left: 5%;
+    padding-right: 5%;
+
+    &:first-child {
+      padding-left: 0;
+      width: 40%;
+    }
+
+    &:last-child {
+      padding-right: 0;
+      width: 60%;
+    }
+
+    &:not(:first-child) {
+      border-left: 1px solid @color-lightergray;
+    }
+  }
+}
+
+.AccountLegacyRep__description {
+  > a {
+    &:extend(.caps--large);
+
+    color: @color-purple;
+    font-weight: 500;
+  }
+}
+
+.AccountLegacyRep__button {
+  &:extend(.button--purple all);
+}
+
+.AccountLegacyRep__legacyRep {
+  font-weight: bold;
+}
+
+@media @breakpoint-mobile {
+  .AccountLegacyRep {
+    padding: 3.125rem 2rem;
+  }
+
+  .AccountLegacyRep__main {
+    flex-wrap: wrap;
+
+    > div:first-child {
+      width: 40%;
+    }
+
+    > div:last-child {
+      border-left: none;
+      margin: 2rem 0 0;
+      padding: 0;
+      width: 60%;
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .AccountLegacyRep__heading {
+    margin-bottom: 1rem;
+
+    > h1 {
+      font-size: @font-size-rather-large;
+    }
+  }
+
+  .AccountLegacyRep__main {
+    display: block;
+
+    > div:first-child,
+    > div:last-child {
+      border-left: none;
+      margin: 0 0 2rem;
+      padding: 0;
+      width: 100%;
+    }
+
+    > div:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .AccountLegacyRep__description {
+    > p {
+      font-size: @font-size-normal;
+      line-height: @font-size-somewhat-large;
+    }
+  }
+}

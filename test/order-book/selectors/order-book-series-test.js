@@ -5,7 +5,7 @@ import orderBookSeries from 'modules/order-book/selectors/order-book-series'
 
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
 
-import { formatEtherTokens, formatShares } from 'utils/format-number'
+import { formatEther, formatShares } from 'utils/format-number'
 
 describe('modules/order-book/selectors/order-book-series', () => {
   const test = (t) => {
@@ -31,29 +31,29 @@ describe('modules/order-book/selectors/order-book-series', () => {
       const actual = orderBookSeries({
         [BIDS]: [
           {
-            price: formatEtherTokens(0.2),
+            price: formatEther(0.2),
             shares: formatShares(10),
           },
           {
-            price: formatEtherTokens(0.1),
+            price: formatEther(0.1),
             shares: formatShares(10),
           },
           {
-            price: formatEtherTokens(0.1),
+            price: formatEther(0.1),
             shares: formatShares(10),
           },
         ],
         [ASKS]: [
           {
-            price: formatEtherTokens(0.5),
+            price: formatEther(0.5),
             shares: formatShares(10),
           },
           {
-            price: formatEtherTokens(0.5),
+            price: formatEther(0.5),
             shares: formatShares(10),
           },
           {
-            price: formatEtherTokens(0.6),
+            price: formatEther(0.6),
             shares: formatShares(10),
           },
         ],

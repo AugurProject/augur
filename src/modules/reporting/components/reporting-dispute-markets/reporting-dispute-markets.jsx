@@ -24,7 +24,11 @@ export default class ReportingDisputeMarkets extends Component {
     isConnected: PropTypes.bool.isRequired,
     isMarketsLoaded: PropTypes.bool.isRequired,
     loadMarkets: PropTypes.func.isRequired,
-    disputeRound: PropTypes.number.isRequired,
+    outcomes: PropTypes.object.isRequired,
+    account: PropTypes.string.isRequired,
+    isForking: PropTypes.bool.isRequired,
+    forkEndTime: PropTypes.string,
+    currentTime: PropTypes.number.isRequired,
   }
 
   componentWillMount() {
@@ -43,9 +47,11 @@ export default class ReportingDisputeMarkets extends Component {
         <section className={Styles.ReportDispute}>
           <ReportingHeader
             heading="Dispute"
-            showReportingEndDate
+            isForking={p.isForking}
+            forkEndTime={p.forkEndTime}
+            currentTime={p.currentTime}
           />
-          { !p.doesUserHaveRep &&
+          { !p.doesUserHaveRep && !p.forkEndTime &&
           <ReportDisputeNoRepState
             btnText="Add Funds"
             message="You have 0 REP available. Add funds to dispute markets or purchase participation tokens."
@@ -57,10 +63,10 @@ export default class ReportingDisputeMarkets extends Component {
               (<DisputeMarketCard
                 key={market.id}
                 market={market}
-                disputeRound={p.disputeRound}
                 isMobile={p.isMobile}
                 location={p.location}
                 history={p.history}
+                outcomes={p.outcomes}
               />))
         }
         { p.marketsCount === 0 &&
@@ -76,10 +82,10 @@ export default class ReportingDisputeMarkets extends Component {
               (<DisputeMarketCard
                 key={market.id}
                 market={market}
-                disputeRound={p.disputeRound}
                 isMobile={p.isMobile}
                 location={p.location}
                 history={p.history}
+                outcomes={p.outcomes}
               />))
         }
         { p.upcomingMarketsCount === 0 &&

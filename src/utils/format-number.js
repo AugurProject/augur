@@ -8,7 +8,7 @@ import addCommas from 'utils/add-commas-to-number'
   Produces a formatted number object used for display and calculations
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-The main function is `formatNumber`, however there are top-level functions that wrap for common cases like `formatEtherTokens`, `formatShares`, etc.
+The main function is `formatNumber`, however there are top-level functions that wrap for common cases like `formatEther`, `formatShares`, etc.
 
 A formatted number generally has three parts: the sign (+ or -), the stylized number, and a denomination (Eth, Rep, %, etc.)
 
@@ -49,22 +49,6 @@ if 1.1 + 1.4 = 2.6. If perfect precision isn't necessary, consider adding them u
 
 */
 
-export function formatEtherTokens(num, opts) {
-  return formatNumber(
-    encodeNumberAsJSNumber(num),
-    {
-      decimals: constants.PRECISION.decimals,
-      decimalsRounded: constants.PRECISION.decimals,
-      denomination: ' ETH Tokens',
-      positiveSign: false,
-      zeroStyled: false,
-      blankZero: false,
-      bigUnitPostfix: false,
-      ...opts,
-    },
-  )
-}
-
 export function formatEther(num, opts) {
   return formatNumber(
     encodeNumberAsJSNumber(num),
@@ -72,22 +56,6 @@ export function formatEther(num, opts) {
       decimals: constants.PRECISION.decimals,
       decimalsRounded: constants.PRECISION.decimals,
       denomination: ' ETH',
-      positiveSign: false,
-      zeroStyled: false,
-      blankZero: false,
-      bigUnitPostfix: false,
-      ...opts,
-    },
-  )
-}
-
-export function formatEtherTokensEstimate(num, opts) {
-  return formatNumber(
-    encodeNumberAsJSNumber(num),
-    {
-      decimals: constants.PRECISION.decimals,
-      decimalsRounded: constants.PRECISION.decimals,
-      denomination: ' ETH Tokens (estimated)',
       positiveSign: false,
       zeroStyled: false,
       blankZero: false,
@@ -117,7 +85,7 @@ export function formatPercent(num, opts) {
   return formatNumber(
     encodeNumberAsJSNumber(num),
     {
-      decimals: 1,
+      decimals: 2,
       decimalsRounded: 0,
       denomination: '%',
       positiveSign: false,
@@ -159,6 +127,22 @@ export function formatRep(num, opts) {
       decimals: 2,
       decimalsRounded: 0,
       denomination: ' REP',
+      positiveSign: false,
+      zeroStyled: false,
+      blankZero: false,
+      bigUnitPostfix: false,
+      ...opts,
+    },
+  )
+}
+
+export function formatRepTokens(num, opts) {
+  return formatNumber(
+    encodeNumberAsJSNumber(num),
+    {
+      decimals: 2,
+      decimalsRounded: 2,
+      denomination: ' REP Tokens',
       positiveSign: false,
       zeroStyled: false,
       blankZero: false,

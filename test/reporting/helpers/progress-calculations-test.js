@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
-import { calculatePercentage, calculateRemainingRep, calculateTentativeRemainingRep, calculateTentativeStakePercentage, __RewireAPI__ as RewireAPI } from 'modules/reporting/helpers/progress-calculations'
+import { calculatePercentage, calculateTentativeRemainingRep, calculateAddedStakePercentage, __RewireAPI__ as RewireAPI } from 'modules/reporting/helpers/progress-calculations'
 
 describe(`modules/reporting/helpers/progress-calculations.js`, () => {
   const test = (t) => {
@@ -17,20 +17,6 @@ describe(`modules/reporting/helpers/progress-calculations.js`, () => {
   RewireAPI.__Rewire__('formatAttoRep', formatAttoRepStubb)
 
   test({
-    description: `large value tentative stake percentage`,
-    assertions: () => {
-      assert.deepEqual(calculateTentativeStakePercentage(6294250488281250000, 349680582682291650, 2), 37, `Didn't return expected`)
-    },
-  })
-
-  test({
-    description: `value tentative stake percentage`,
-    assertions: () => {
-      assert.deepEqual(calculateTentativeStakePercentage(62000000000000000000, 34000000000000000000, 1), 56, `Didn't return expected`)
-    },
-  })
-
-  test({
     description: `value remaining tentative stake REP`,
     assertions: () => {
       assert.deepEqual(calculateTentativeRemainingRep(62000000000000000000, 34000000000000000000, 1), '27000000000000000000', `Didn't return expected`)
@@ -45,44 +31,37 @@ describe(`modules/reporting/helpers/progress-calculations.js`, () => {
   })
 
   test({
-    description: `large value remaining REP`,
+    description: `add REP stake get percentage`,
     assertions: () => {
-      assert.deepEqual(calculateRemainingRep(6294250488281250000, 349680582682291650), '5944569905598959000', `Didn't return expected`)
+      assert.deepEqual(calculateAddedStakePercentage(10000000000000000000, 0, 1), 10, `Didn't return expected`)
     },
   })
 
   test({
-    description: `positive remaining REP`,
+    description: `add REP stake get percentage`,
     assertions: () => {
-      assert.deepEqual(calculateRemainingRep(10, 5), '5', `Didn't return expected`)
-    },
-  })
-
-  test({
-    description: `negative remaining`,
-    assertions: () => {
-      assert.deepEqual(calculateRemainingRep(0, 5), '-5', `Didn't return as expected`)
+      assert.deepEqual(calculateAddedStakePercentage(10000000000000000000, 1000000000000000000, 1), 20, `Didn't return expected`)
     },
   })
 
   test({
     description: `0 numbers, percentage calculation`,
     assertions: () => {
-      assert.throws(() => { calculatePercentage(0, 5) }, Error, 'Can not divide by 0', `Didn't throw error as expected`)
+      assert.deepEqual(calculatePercentage(0, 5), 0, `Didn't throw error as expected`)
     },
   })
 
   test({
     description: `null numbers, percentage calculation`,
     assertions: () => {
-      assert.throws(() => { calculatePercentage(null, 5) }, Error, 'Can not use null values', `Didn't call the expected method`)
+      assert.deepEqual(calculatePercentage(null, 5), 0, `Didn't throw error as expected`)
     },
   })
 
   test({
     description: `negative numbers, percentage calculation`,
     assertions: () => {
-      assert.throws(() => { calculatePercentage(-10, 5) }, Error, 'Can not have negative percentag', `Didn't call the expected method`)
+      assert.deepEqual(calculatePercentage(-10, 5), 0, `Didn't throw error as expected`)
     },
   })
 

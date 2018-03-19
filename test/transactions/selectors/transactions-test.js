@@ -6,7 +6,7 @@ import thunk from 'redux-thunk'
 
 import { SUCCESS, FAILED, PENDING, SUBMITTED, INTERRUPTED } from 'modules/transactions/constants/statuses'
 
-import { formatShares, formatEther, formatEtherTokens, formatRep } from 'utils/format-number'
+import { formatShares, formatEther, formatRep } from 'utils/format-number'
 import { formatDate } from 'utils/format-date'
 
 describe(`modules/transactions/selectors/transactions.js`, () => {
@@ -155,7 +155,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
           etherWithoutGas: '2',
           sharesChange: '4',
           repChange: '5',
-          ethTokens: formatEtherTokens(2),
+          ethTokens: formatEther(2),
           shares: formatShares(4),
           rep: formatRep(5),
         },
@@ -174,7 +174,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
           etherWithoutGas: '2',
           sharesChange: '4',
           repChange: '5',
-          ethTokens: formatEtherTokens(2),
+          ethTokens: formatEther(2),
           shares: formatShares(4),
           rep: formatRep(5),
         },
@@ -199,7 +199,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
               etherWithoutGas: '2',
               sharesChange: '4',
               repChange: '5',
-              ethTokens: formatEtherTokens(2),
+              ethTokens: formatEther(2),
               shares: formatShares(4),
               rep: formatRep(5),
             },
@@ -218,7 +218,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
               etherWithoutGas: '2',
               sharesChange: '4',
               repChange: '5',
-              ethTokens: formatEtherTokens(2),
+              ethTokens: formatEther(2),
               shares: formatShares(4),
               rep: formatRep(5),
             },
@@ -237,7 +237,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
               etherWithoutGas: '2',
               sharesChange: '4',
               repChange: '5',
-              ethTokens: formatEtherTokens(2),
+              ethTokens: formatEther(2),
               shares: formatShares(4),
               rep: formatRep(5),
             },
@@ -257,7 +257,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
           etherWithoutGas: '2',
           sharesChange: '4',
           repChange: '5',
-          ethTokens: formatEtherTokens(2),
+          ethTokens: formatEther(2),
           shares: formatShares(4),
           rep: formatRep(5),
         },

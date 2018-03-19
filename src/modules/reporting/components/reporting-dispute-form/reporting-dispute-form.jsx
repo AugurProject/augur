@@ -5,27 +5,24 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import BigNumber from 'bignumber.js'
 
-import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
+import { SCALAR } from 'modules/markets/constants/market-types'
+import { formatAttoRep } from 'utils/format-number'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles'
 import ReportingDisputeProgress from 'modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress'
+import selectDisputeOutcomes from 'modules/reporting/selectors/select-dispute-outcomes'
+import fillDisputeOutcomeProgress from 'modules/reporting/selectors/fill-dispute-outcome-progress'
 
 export default class ReportingDisputeForm extends Component {
 
   static propTypes = {
     market: PropTypes.object.isRequired,
     updateState: PropTypes.func.isRequired,
-    validations: PropTypes.object.isRequired,
-    selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    selectedOutcomeName: PropTypes.string.isRequired,
-    currentOutcome: PropTypes.object.isRequired,
-    disputeOutcomes: PropTypes.array.isRequired,
-    stakes: PropTypes.array.isRequired,
-    disputeBondValue: PropTypes.number.isRequired,
-    disputeBondFormatted: PropTypes.string.isRequired,
-    stake: PropTypes.number,
-    isMarketInValid: PropTypes.bool,
+    stake: PropTypes.number.isRequired,
+    addUpdateAccountDispute: PropTypes.func.isRequired,
+    getDisputeInfo: PropTypes.func.isRequired,
+    accountDisputeData: PropTypes.object,
   }
 
   static checkStake(stake, updatedValidations) {
@@ -42,47 +39,111 @@ export default class ReportingDisputeForm extends Component {
 
     this.state = {
       outcomes: [],
-      inputStake: '',
+      inputStake: this.props.stake > 0 ? this.props.stake : '',
       inputSelectedOutcome: '',
       paddingBuffer: 0,
-      maxRep: 0,
+      selectedOutcome: '',
+      selectedOutcomeName: '',
+      isMarketInValid: false,
+      validations: {
+        stake: false,
+        selectedOutcome: null,
+      },
+      currentOutcome: {},
+      scalarInputChoosen: false,
     }
 
-    this.state.outcomes = this.props.market ? this.props.market.outcomes.slice() : []
-    if (this.props.market && this.props.market.marketType === BINARY && this.props.market.outcomes.length === 1) {
-      this.state.outcomes.push({ id: 0, name: 'No' })
+    this.focusTextInput = this.focusTextInput.bind(this)
+
+    if (this.props.accountDisputeData) {
+      this.setAccountDisputeData(this.props.accountDisputeData)
     }
-
-    this.state.outcomes.sort((a, b) => a.name - b.name)
-    if (this.props.stake) this.state.inputStake = this.props.stake.toString()
-
-    this.componentWillReceiveProps(this.props)
 
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.disputeOutcomes && nextProps.disputeOutcomes.length > 0) {
-      this.state.outcomes = (nextProps.disputeOutcomes.filter(item => !item.tentativeWinning) || [])
-        .sort((a, b) => a.name > b.name)
-        .sort((a, b) => b.percentageComplete > a.percentageComplete)
-      const outcome = this.state.outcomes.find(o => o.name === 'Indeterminate')
-      if (outcome) outcome.name = 'Market Is Invalid'
+  componentWillMount() {
+    this.getDisputeInfo()
+  }
+
+  componentDidUpdate() {
+    this.getDisputeInfo()
+  }
+
+  componentWillUnmount() {
+    if (this.state.selectedOutcome !== '' || this.state.isMarketInValid) {
+      this.props.addUpdateAccountDispute({
+        marketId: this.props.market.id,
+        selectedOutcome: this.state.selectedOutcome,
+        selectedOutcomeName: this.state.selectedOutcomeName,
+        isMarketInValid: this.state.isMarketInValid,
+        validations: this.state.validations,
+      })
+    }
+  }
+
+  getDisputeInfo() {
+    this.props.getDisputeInfo([this.props.market.id], (err, disputeInfos) => {
+      if (err) return console.error(err)
+      const disputeInfo = disputeInfos[0]
+      const { bondSizeOfNewStake } = disputeInfo
+      const disputeOutcomes = selectDisputeOutcomes(this.props.market, disputeInfo.stakes, bondSizeOfNewStake)
+        .map(o => fillDisputeOutcomeProgress(bondSizeOfNewStake, o))
+
+      this.state.outcomes = disputeOutcomes.filter(item => !item.tentativeWinning) || []
+      this.state.currentOutcome = disputeOutcomes.find(item => item.tentativeWinning) || {}
 
       this.state.paddingBuffer = this.state.outcomes.reduce((p, i) => {
         const result = i.name.length > p ? i.name.length : p
         return result
       }, 0)
 
-      if (nextProps.selectedOutcome || typeof nextProps.selectedOutcome === 'number') {
-        if (!this.state.outcomes.find(o => o.id === nextProps.selectedOutcome)) {
-          this.state.inputSelectedOutcome = nextProps.selectedOutcome
-        }
+      this.state.disputeBondValue = parseInt(bondSizeOfNewStake, 10)
+      this.state.disputeBondFormatted = formatAttoRep(bondSizeOfNewStake, { decimals: 4, denomination: ' REP' }).formatted
+
+      this.props.updateState({
+        disputeBondFormatted: this.state.disputeBondFormatted,
+        currentOutcome: this.state.currentOutcome,
+      })
+      // outcomes need to be populated before validating saved data
+      if (this.props.accountDisputeData) {
+        this.validateSavedValues()
       }
+    })
+  }
+
+  setAccountDisputeData(accountDisputeData) {
+    if (this.props.stake > 0) {
+      delete accountDisputeData.validations.stake
+    }
+    this.state.isMarketInValid = accountDisputeData.isMarketInValid ? accountDisputeData.isMarketInValid : null
+    this.state.selectedOutcome = accountDisputeData.selectedOutcome ? accountDisputeData.selectedOutcome : ''
+    this.state.selectedOutcomeName = accountDisputeData.selectedOutcomeName ? accountDisputeData.selectedOutcomeName : ''
+    this.state.validations = accountDisputeData.validations
+
+    this.props.updateState({
+      isMarketInValid: this.state.isMarketInValid,
+      selectedOutcome: this.state.selectedOutcome,
+      selectedOutcomeName: this.state.selectedOutcomeName,
+      validations: this.state.validations,
+    })
+  }
+
+  setMAXStake() {
+    this.validateStake(this.calculateMaxRep(this.state.selectedOutcome))
+  }
+
+  validateSavedValues() {
+    if (this.props.market.marketType === SCALAR) {
+      if (!this.state.outcomes.find(o => o.id === this.state.selectedOutcome)) {
+        this.validateScalar(this.state.selectedOutcome, 'outcome', this.props.market.minPrice, this.props.market.maxPrice, this.state.isMarketInValid)
+      }
+    } else {
+      this.validateOutcome(this.state.validations, this.state.selectedOutcome, this.state.selectedOutcomeName, this.state.isMarketInValid)
     }
   }
 
   validateStake(rawStake) {
-    const updatedValidations = { ...this.props.validations }
+    const updatedValidations = { ...this.state.validations }
 
     let stake = rawStake
 
@@ -95,6 +156,7 @@ export default class ReportingDisputeForm extends Component {
 
     this.setState({
       inputStake: stake ? stake.toNumber() : stake,
+      validations: updatedValidations,
     })
 
     this.props.updateState({
@@ -115,7 +177,14 @@ export default class ReportingDisputeForm extends Component {
     ReportingDisputeForm.checkStake(this.props.stake, updatedValidations)
 
     this.state.inputSelectedOutcome = ''
-    this.state.maxRep = this.calculateMaxRep(selectedOutcome)
+    this.state.scalarInputChoosen = false
+
+    this.setState({
+      validations: updatedValidations,
+      selectedOutcome,
+      selectedOutcomeName: selectedOutcomeName.toString(),
+      isMarketInValid: isInvalid,
+    })
 
     this.props.updateState({
       validations: updatedValidations,
@@ -125,8 +194,16 @@ export default class ReportingDisputeForm extends Component {
     })
   }
 
+  focusTextInput() {
+    this.textInput.focus()
+  }
+
   validateScalar(value, humanName, min, max, isInvalid) {
-    const updatedValidations = { ...this.props.validations }
+    const updatedValidations = { ...this.state.validations }
+    this.state.scalarInputChoosen = true
+    if (value === '') {
+      this.focusTextInput()
+    }
 
     if (isInvalid) {
       delete updatedValidations.err
@@ -147,6 +224,9 @@ export default class ReportingDisputeForm extends Component {
         case (valueValue > maxValue || valueValue < minValue):
           updatedValidations.err = `Please enter a ${humanName} between ${min} and ${max}.`
           break
+        case value === this.state.currentOutcome.id:
+          updatedValidations.err = `Current tentative winning outcome.`
+          break
         default:
           delete updatedValidations.err
           updatedValidations.selectedOutcome = true
@@ -156,26 +236,31 @@ export default class ReportingDisputeForm extends Component {
 
     ReportingDisputeForm.checkStake(this.props.stake, updatedValidations)
 
-    this.state.inputSelectedOutcome = value
-
-    this.state.maxRep = this.calculateMaxRep(value)
+    this.setState({
+      inputSelectedOutcome: value,
+      validations: updatedValidations,
+      selectedOutcome: value,
+      selectedOutcomeName: value ? value.toString() : '',
+      isMarketInValid: isInvalid,
+    })
 
     this.props.updateState({
       validations: updatedValidations,
       selectedOutcome: value,
-      selectedOutcomeName: value.toString(),
+      selectedOutcomeName: value ? value.toString() : '',
       isMarketInValid: isInvalid,
     })
   }
 
   calculateMaxRep(selectedOutcome) {
-    const outcome = this.props.disputeOutcomes.find((o) => {
+    const outcome = this.state.outcomes.find((o) => {
       const result = o.id === selectedOutcome
       return result
     })
 
-    const value = outcome ? outcome.remainingRep : this.props.disputeBondFormatted
-    return new BigNumber(value).toNumber()
+    const value = outcome ? outcome.stakeRemaining : this.state.disputeBondValue
+    const BNValue = new BigNumber(value)
+    return formatAttoRep(BNValue.toNumber(), { decimals: 4, roundUp: true }).formattedValue
   }
 
 
@@ -189,7 +274,12 @@ export default class ReportingDisputeForm extends Component {
           <label>
             <span>Tentative Winning Outcome</span>
           </label>
-          <p>{p.currentOutcome.isInvalid ? 'Invalid' : p.currentOutcome.name }</p>
+          <p>{s.currentOutcome.isInvalid ? 'Invalid' : s.currentOutcome.name }
+            {p.market.marketType === SCALAR && !s.currentOutcome.isInvalid &&
+              <label>{p.market.scalarDenomination}</label>
+            }
+          </p>
+
         </li>
         <li>
           <label>
@@ -201,21 +291,22 @@ export default class ReportingDisputeForm extends Component {
             { s.outcomes.map(outcome => (
               <li key={outcome.id}>
                 <button
-                  className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.id })}
-                  onClick={(e) => { this.validateOutcome(p.validations, outcome.id, outcome.name, false) }}
-                >{outcome.name}
+                  className={classNames({ [`${FormStyles.active}`]: s.selectedOutcome === outcome.id })}
+                  onClick={(e) => { this.validateOutcome(s.validations, outcome.id, outcome.name, false) }}
+                >{outcome.name === 'Indeterminate' ? 'Market Is Invalid' : outcome.name}
                 </button>
                 <ReportingDisputeProgress
                   key={outcome.id}
                   {...outcome}
+                  isSelected={s.selectedOutcome === outcome.id}
                   paddingAmount={s.paddingBuffer - outcome.name.length}
+                  stakeRemaining={outcome.stakeRemaining}
                   percentageComplete={outcome.percentageComplete}
-                  remainingRep={outcome.remainingRep}
-                  accountPercentage={outcome.accountPercentage}
+                  percentageAccount={outcome.percentageAccount}
                   tentativeStake={p.stake}
-                  disputeBondValue={p.disputeBondValue}
-                  currentStake={parseInt(outcome.currentStake, 10)}
-                  isSelected={p.selectedOutcome === outcome.id}
+                  bondSizeCurrent={outcome.bondSizeCurrent}
+                  stakeCurrent={outcome.stakeCurrent}
+                  accountStakeCurrent={outcome.accountStakeCurrent}
                 />
               </li>
             ))
@@ -225,25 +316,26 @@ export default class ReportingDisputeForm extends Component {
                 <ul className={FormStyles['Form__radio-buttons--per-line-long']}>
                   <li>
                     <button
-                      className={classNames({ [`${FormStyles.active}`]: s.inputSelectedOutcome !== '' })}
-                      onClick={(e) => { this.validateScalar(0, 'selectedOutcome', p.market.minPrice, p.market.maxPrice, false) }}
+                      className={classNames({ [`${FormStyles.active}`]: s.scalarInputChoosen })}
+                      onClick={(e) => { this.validateScalar('', 'selectedOutcome', p.market.minPrice, p.market.maxPrice, false) }}
                     />
                     <input
                       id="sr__input--outcome-scalar"
                       type="number"
+                      ref={(input) => { this.textInput = input }}
                       min={p.market.minPrice}
                       max={p.market.maxPrice}
                       step={p.market.tickSize}
-                      placeholder={p.market.minPrice}
+                      placeholder={p.market.scalarDenomination}
                       value={s.inputSelectedOutcome}
-                      className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('err') && p.validations.selectedOutcome })}
+                      className={classNames({ [`${FormStyles['Form__error--field']}`]: s.validations.hasOwnProperty('err') && s.validations.selectedOutcome })}
                       onChange={(e) => { this.validateScalar(e.target.value, 'outcome', p.market.minPrice, p.market.maxPrice, false) }}
                     />
                   </li>
                   <li>
-                    { p.validations.hasOwnProperty('err') &&
+                    { s.validations.hasOwnProperty('err') &&
                       <span className={FormStyles.Form__error}>
-                        {InputErrorIcon}{ p.validations.err }
+                        {InputErrorIcon}{ s.validations.err }
                       </span>
                     }
                   </li>
@@ -264,21 +356,21 @@ export default class ReportingDisputeForm extends Component {
                 min="0"
                 placeholder="0.0000 REP"
                 value={s.inputStake}
-                className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('stake') && p.validations.selectedOutcome })}
+                className={classNames({ [`${FormStyles['Form__error--field']}`]: s.validations.hasOwnProperty('stake') && s.validations.selectedOutcome })}
                 onChange={(e) => { this.validateStake(e.target.value) }}
               />
-              { p.selectedOutcomeName && p.selectedOutcomeName.length > 0 &&
+              { s.selectedOutcomeName && s.selectedOutcomeName.length > 0 &&
                 <button
                   className={FormStyles['button--inline']}
-                  onClick={() => { this.validateStake(s.maxRep) }}
+                  onClick={() => { this.setMAXStake() }}
                 >MAX
                 </button>
               }
             </li>
             <li>
-              { p.validations.hasOwnProperty('stake') && p.validations.stake.length &&
+              { s.validations.hasOwnProperty('stake') && s.validations.stake.length &&
                 <span className={FormStyles['Form__error--even']}>
-                  {InputErrorIcon}{ p.validations.stake }
+                  {InputErrorIcon}{ s.validations.stake }
                 </span>
               }
             </li>

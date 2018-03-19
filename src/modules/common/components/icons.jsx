@@ -436,8 +436,6 @@ export const Copy = (
 
 export const Close = (
   <svg viewBox="0 0 24 24">
-    <title>Icon/Close</title>
-    <desc>Created with Sketch.</desc>
     <defs />
     <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round">
       <g id="Icon/Close" stroke="#F6F6F8">
@@ -450,8 +448,6 @@ export const Close = (
 
 export const CloseBlack = (
   <svg viewBox="0 0 24 24">
-    <title>Icon/Close</title>
-    <desc>Created with Sketch.</desc>
     <defs />
     <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round">
       <g id="Icon/Close" stroke="#000000">
@@ -464,8 +460,6 @@ export const CloseBlack = (
 
 export const Notifications = unseenCount => (
   <svg viewBox="0 0 24 24">
-    <title>Icon/Notification</title>
-    <desc>Created with Sketch.</desc>
     <defs />
     <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <g id="Icon/Notification">
@@ -489,8 +483,6 @@ export const Notifications = unseenCount => (
 
 export const AlertCircle = (Styling, fill = '#FFFFFF') => (
   <svg viewBox="0 0 24 24" className={Styling}>
-    <title>Icon/AlertCircle</title>
-    <desc>Created with Sketch.</desc>
     <defs />
     <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <g id="Group-14" transform="translate(1.000000, 2.000000)">

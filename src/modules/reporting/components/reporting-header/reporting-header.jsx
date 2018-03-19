@@ -7,6 +7,7 @@ import { getDaysRemaining, convertUnixToFormattedDate } from 'utils/format-date'
 import Styles from 'modules/reporting/components/reporting-header/reporting-header.styles'
 import TooltipStyles from 'modules/common/less/tooltip'
 import { MODAL_PARTICIPATE } from 'modules/modal/constants/modal-types'
+import ForkingContent from 'modules/forking/components/forking-content/forking-content'
 
 import { Participate } from 'modules/common/components/icons'
 
@@ -18,6 +19,9 @@ export default class ReportingHeader extends Component {
     reportingWindowStats: PropTypes.object.isRequired,
     repBalance: PropTypes.string.isRequired,
     updateModal: PropTypes.func.isRequired,
+    isForking: PropTypes.bool.isRequired,
+    forkEndTime: PropTypes.string,
+    currentTime: PropTypes.number.isRequired,
   }
 
   componentWillMount() {
@@ -41,7 +45,14 @@ export default class ReportingHeader extends Component {
         <div className={Styles.ReportingHeader__header}>
           <div>
             <h1 className={Styles.ReportingHeader__heading}>Reporting: {p.heading}</h1>
-            { p.heading === 'Dispute' &&
+            { p.heading === 'Dispute' && p.isForking &&
+              <ForkingContent
+                forkEndTime={this.props.forkEndTime}
+                currentTime={this.props.currentTime}
+                expanded={false}
+              />
+            }
+            { p.heading === 'Dispute' && !p.isForking &&
               <div className={Styles['ReportingHeader__dispute-wrapper']}>
                 <div className={Styles['ReportingHeader__dispute-header']}>
                   <div className={Styles['ReportingHeader__meta-wrapper']}>
