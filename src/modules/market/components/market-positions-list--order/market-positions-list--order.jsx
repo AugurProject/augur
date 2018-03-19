@@ -51,7 +51,7 @@ export default class Order extends Component {
       height: s.confirmHeight,
       marginTop: s.confirmMargin,
     }
-
+    // if (p.order.outcomeId === "1" && p.order.type === 'sell') console.log('or', p.order);
     return (
       <ul
         ref={(order) => { this.order = order }}
@@ -68,7 +68,7 @@ export default class Order extends Component {
           }
         </li>
         <li>
-          { p.type === SELL ? <span>-</span> : <span>+</span> } { getValue(p, 'order.unmatchedShares.formatted') }
+          { p.order.type === SELL ? <span>-</span> : <span>+</span> } { getValue(p, 'order.unmatchedShares.formatted') }
         </li>
         <li>
           { getValue(p, 'order.avgPrice.formatted') }
