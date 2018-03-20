@@ -8,7 +8,6 @@ import PropTypes from 'prop-types'
 export default function TimeRemainingIndicatorWrapper(BaseCmp) {
   const TimeRemainingIndicator = (props) => {
     const { startDate, endDate, ...otherProps } = props
-
     const duration = endDate.getTime() - startDate.getTime()
     // Render null if given invalid input
     if (duration < 0) {
@@ -16,7 +15,8 @@ export default function TimeRemainingIndicatorWrapper(BaseCmp) {
     }
 
     const currentOffsetFromStart = Date.now() - startDate.getTime()
-    let percentageElapsed = (currentOffsetFromStart / duration)
+    // make sure not to divide a negative or else we are always going to be 0 for time elapsed.
+    let percentageElapsed = Math.abs(currentOffsetFromStart / duration)
 
     percentageElapsed = (percentageElapsed > 1) ? 1 : percentageElapsed
     percentageElapsed = (percentageElapsed < 0) ? 0 : percentageElapsed
