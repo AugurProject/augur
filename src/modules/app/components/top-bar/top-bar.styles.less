@@ -21,9 +21,9 @@
 }
 
 .TopBar__stat {
+  align-items: center;
   display: flex;
   letter-spacing: 0.05em;
-  line-height: 2.6rem;
   margin: 0 1.5rem;
 }
 
@@ -43,9 +43,10 @@
 }
 
 .TopBar__stat-label {
-  color: fadeout(@color-white, 75);
+  color: @color-white;
   display: inline;
-  margin-right: 0.25rem;
+  font-weight: 500;
+  margin-right: 0.5rem;
 }
 
 .TopBar__stat-value {
