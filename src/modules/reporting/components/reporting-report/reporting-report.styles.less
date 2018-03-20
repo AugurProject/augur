@@ -15,32 +15,36 @@
   padding: 1em 1em 0;
 }
 
-.ReportingReportMarket__details-container-wrapper {
+.ReportingReportMarket__details-wrapper {
   background-color: @color-darkpurple;
 }
 
 .ReportingReportMarket__details-container {
+  color: @color-white;
   font-size: @font-size-small;
   line-height: @font-size-medium;
   margin: auto;
   max-width: 62.75rem;
   overflow: auto;
+  padding: 1.875rem 2rem;
   transition: height @animation-speed-normal @animation-default-type;
-}
 
-.ReportingReportMarket__resolution-source {
-  &:extend(.caps--small);
+  > p {
+    margin: 0 0 1.5rem;
+  }
 
-  color: @color-lightgray;
-  margin-left: 1.2rem;
-  padding: 1em;
+  > h4 {
+    &:extend(.caps--small);
 
-  h4 {
+    color: @color-lightgray;
     display: inline-block;
     padding-right: 0.5em;
   }
+}
 
-  span {
-    color: @color-white;
+@media @breakpoint-mobile-medium {
+  .ReportingReportMarket__details-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }

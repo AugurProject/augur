@@ -69,14 +69,9 @@
   padding: 0 2rem;
 
   > li {
-    margin-bottom: 1.7rem;
+    margin-bottom: 3.7rem;
     position: relative;
     width: 100%;
-
-    &.field--short {
-      max-width: 21rem;
-      padding-top: 2rem;
-    }
 
     &.field--50 {
       width: 48%;
@@ -84,6 +79,7 @@
 
     > label {
       display: inline-block;
+      margin-bottom: 1rem;
       position: relative;
 
       > span:first-child {
@@ -95,18 +91,8 @@
       color: @color-white;
       font-size: @font-size-large;
       line-height: @font-size-large;
-      margin-top: 1.075rem;
+      margin: 0;
       text-transform: capitalize;
-
-      > label {
-        display: inline-block;
-        margin-left: 0.75rem;
-        position: relative;
-      }
-
-      &:last-child {
-        margin-bottom: 2rem;
-      }
 
       &.text--field-style {
         color: @color-white;
@@ -142,6 +128,10 @@
       padding-top: 1rem;
     }
   }
+}
+
+li.field--short {
+  max-width: 21rem;
 }
 
 .Form__navigation {
