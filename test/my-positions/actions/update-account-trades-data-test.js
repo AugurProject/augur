@@ -92,18 +92,6 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
 
         const expected = [
           {
-            type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_DATA,
-            logType: 'CreateOrder',
-            data: {
-              market: [
-                {
-                  '0xMARKETID': {},
-                },
-              ],
-            },
-            marketId: '0xMARKETID',
-          },
-          {
             type: MOCK_ACTION_TYPES.UPDATE_ORDERS,
             data: {
               market: [
@@ -155,14 +143,6 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
 
         const expected = [
           {
-            type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_DATA,
-            logType: 'CreateOrder',
-            data: {
-              '0xMARKETID': {},
-            },
-            marketId: '0xMARKETID',
-          },
-          {
             type: MOCK_ACTION_TYPES.UPDATE_ORDERS,
             data: {
               '0xMARKETID': {},
@@ -195,14 +175,6 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
         const actual = store.getActions()
 
         const expected = [
-          {
-            type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_DATA,
-            logType: 'CancelOrder',
-            data: {
-              '0xMARKETID': {},
-            },
-            marketId: '0xMARKETID',
-          },
           { type: MOCK_ACTION_TYPES.LOAD_BIDS_ASKS_HISTORY, data: {} },
           {
             type: MOCK_ACTION_TYPES.UPDATE_ORDERS,
@@ -212,8 +184,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             isAddition: false,
           },
         ]
-        console.log(actual)
-        assert.lengthOf(actual, 3)
+        assert.lengthOf(actual, 2)
         assert.deepEqual(actual, expected, `Didn't dispatch the expect action, cancel order`)
       },
     })

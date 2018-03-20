@@ -93,8 +93,7 @@ export const constructCancelOrderTransaction = (log, marketId, marketType, descr
   const action = log.inProgress ? 'canceling' : 'canceled'
   const transaction = {
     [log.transactionHash]: {
-      type: 'Cancel Order',
-      id: log.transactionHash,
+      type: TYPES.CANCEL_ORDER,
       status,
       description,
       data: {
