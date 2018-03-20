@@ -1,7 +1,7 @@
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import logError from 'utils/log-error'
 
-export const loadDataForMarketTransaction(eventName, log, callback = logError) => (dispatch, getState) => {
+export const loadDataForMarketTransaction = (eventName, log, callback = logError) => (dispatch, getState) => {
   const marketId = log.marketId || log.market
   if (marketId == null) return callback(`no market ID found in log ${JSON.stringify(log)}`)
   const market = getState().marketsData[marketId]

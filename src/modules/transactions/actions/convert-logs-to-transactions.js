@@ -1,7 +1,5 @@
-import { augur } from 'services/augurjs'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { deleteTransactionsWithTransactionHash } from 'modules/transactions/actions/delete-transaction'
-import { updateMarketsData } from 'modules/markets/actions/update-markets-data'
 import { constructTransaction, constructBasicTransaction } from 'modules/transactions/actions/construct-transaction'
 import logError from 'utils/log-error'
 
@@ -18,7 +16,7 @@ export const addLogToTransactions = (eventName, log, callback = logError) => (di
     if (transaction) {
       dispatch(updateTransactionsData({
         [transaction.id || hash]: {
-          ...dispatch(constructBasicTransaction(hash, log.blockNumber, log.timestamp, gasFees)),
+          ...dispatch(constructBasicTransaction(hash, log.blockNumber, log.timestamp)),
           ...transaction,
         },
       }))

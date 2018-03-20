@@ -266,7 +266,7 @@ export const constructTransaction = (eventName, log, callback = logError) => (di
         switch (eventName) {
           case TYPES.CREATE_MARKET:
             return callback(null, constructCreateMarketTransaction(log, market.description, dispatch))
-          case case TYPES.CLAIM_TRADING_PROCEEDS:
+          case TYPES.CLAIM_TRADING_PROCEEDS:
             return callback(null, constructTradingProceedsClaimedTransaction(log, market, dispatch))
           default:
             callback(null, constructTradingTransaction(eventName, log, market, getOutcomeName(market.marketType, market.id, log.outcome, getState().outcomesData[market.id])))

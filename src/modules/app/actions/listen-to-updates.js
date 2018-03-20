@@ -454,7 +454,7 @@ export function listenToUpdates(history) {
       OrderFilled: (err, log) => dispatch(handleOrderFilledLog(err, log)),
       TradingProceedsClaimed: (err, log) => dispatch(handleTradingProceedsClaimedLog(err, log)),
       InitialReportSubmitted: (err, log) => dispatch(handleInitialReportSubmittedLog(err, log)),
-      DesignatedReportSubmitted: (err, log) => dispatch(handleDesignedReportSubmittedLog(err, log)),
+      DesignatedReportSubmitted: (err, log) => dispatch(handleDesignatedReportSubmittedLog(err, log)),
       ReportSubmitted: (err, log) => dispatch(handleReportSubmittedLog(err, log)),
       ReportsDisputed: (err, log) => dispatch(handleReportsDisputedLog(err, log)),
       MarketFinalized: (err, log) => dispatch(handleMarketFinalizedLog(err, log)),

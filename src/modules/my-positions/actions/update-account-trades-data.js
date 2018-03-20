@@ -1,6 +1,5 @@
 import { loadAccountPositions } from 'modules/my-positions/actions/load-account-positions'
 import { updateOrders } from 'modules/my-orders/actions/update-orders'
-import { CREATE_ORDER, CANCEL_ORDER, FILL_ORDER } from 'modules/transactions/constants/types'
 import logError from 'utils/log-error'
 import { loadAccountOrders } from '../../bids-asks/actions/load-account-orders'
 
