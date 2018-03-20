@@ -9,7 +9,7 @@ import Styles from 'modules/app/components/top-bar/top-bar.styles'
 const TopBar = props => (
   <header className={Styles.TopBar}>
     {props.isLogged &&
-      <section>
+      <div>
         <div className={Styles.TopBar__stats}>
           <div className={Styles.TopBar__stat}>
             <span className={Styles['TopBar__stat-label']}>ETH</span>
@@ -58,7 +58,7 @@ const TopBar = props => (
             {Notifications(props.unseenCount)}
           </button>
         </div>
-      </section>
+      </div>
     }
     <span className={Styles['TopBar__logo-text']}>Augur</span>
   </header>
