@@ -13,9 +13,9 @@ const ChevronFlip = p => (
     )}
     viewBox="0 0 16 16"
   >
-    <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
-      <g id="Icon/Dropdown" stroke="#A7A2B2">
-        <polyline id="Stroke-3" transform="translate(8.156854, 11.156854) scale(1, -1) rotate(-225.000000) translate(-8.156854, -11.156854) " points="3.65685425 6.65685425 12.6568542 6.65685425 12.6568542 15.6568542" />
+    <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
+      <g stroke="#A7A2B2">
+        <polyline transform="translate(8.156854, 11.156854) scale(1, -1) rotate(-225.000000) translate(-8.156854, -11.156854) " points="3.65685425 6.65685425 12.6568542 6.65685425 12.6568542 15.6568542" />
       </g>
     </g>
   </svg>
