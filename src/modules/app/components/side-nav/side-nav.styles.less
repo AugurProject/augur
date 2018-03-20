@@ -115,21 +115,22 @@
   }
 
   .SideNav__stat-label {
-    color: fadeout(@color-white, 75);
+    color: @color-white;
+    font-weight: 500;
+    max-width: 100%;
+    overflow: hidden;
     padding-bottom: 0.5rem;
+    text-overflow: ellipsis;
   }
 
   .SideNav__stat-value {
     color: @color-white;
-    max-width: 120px;
-    overflow: hidden;
+    font-weight: 400;
     padding-left: 0.5rem;
-    text-overflow: ellipsis;
-    vertical-align: top;
   }
 
   .SideName__placement {
-    padding: 20% 0 20% 20%;
+    padding: 1.5rem;
   }
 
   .SideNav__amt {
@@ -137,13 +138,6 @@
     font-size: 0.925rem;
     margin-top: auto;
     width: 100%;
-
-    span {
-      display: inline-block;
-      font-weight: 500;
-      position: static;
-      text-align: left;
-    }
   }
 
   .SideNav__nav {
