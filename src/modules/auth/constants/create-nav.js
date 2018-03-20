@@ -1,21 +1,21 @@
-import { uPort } from 'modules/common/components/icons'
+import { Edge, uPort } from 'modules/common/components/icons'
 
 export const PARAMS = {
-  // AIRBITZ: 'airbitz',
+  EDGE: 'edge',
   UPORT: 'uport',
+  KEYSTORE: 'keystore',
 }
 
 export const ITEMS = [
-  // {
-  //   param: PARAMS.AIRBITZ,
-  //   title: 'Airbitz',
-  //   icon: Airbitz,
-  //   default: true,
-  // },
+  {
+    param: PARAMS.EDGE,
+    title: 'Edge',
+    icon: Edge,
+    default: true,
+  },
   {
     param: PARAMS.UPORT,
     title: 'uPort',
     icon: uPort,
-    default: true,
   },
 ]

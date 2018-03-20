@@ -55,7 +55,7 @@ export const Ledger = (
   </svg>
 )
 
-export const Airbitz = (
+export const Edge = (
   <svg id="5146e58a-82e2-4f67-a236-2c765e0c2589" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.5 22.01">
     <defs>
       <style>
@@ -86,9 +86,9 @@ export const Airbitz = (
         </g>
       </mask>
     </defs>
-    <title>Airbitz</title>
+    <title>Edge</title>
     <g id="4781732b-1826-4bd2-8a8f-03decdc48e6d" data-name="Symbols">
-      <g id="8ed932e2-05f5-4ddf-882c-ad49993aded6" data-name="Icon/Airbitz">
+      <g id="8ed932e2-05f5-4ddf-882c-ad49993aded6" data-name="Icon/Edge">
         <g id="98e1bbc2-eee8-4a8e-8f94-2e8f97a9b718" data-name="Page-1">
           <g id="d83155ee-0e75-4d4d-bc06-12db352f3101" data-name="Group-3">
             <g className="1a8ae57d-82b4-49dc-abba-7ff178064742">
