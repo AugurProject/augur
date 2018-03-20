@@ -7,7 +7,7 @@ import { closeModal } from 'modules/modal/actions/close-modal'
 import { updateEnv } from 'modules/app/actions/update-env'
 // import { updateModal } from 'modules/modal/actions/update-modal'
 // import { MODAL_NETWORK_CONNECT } from 'modules/modal/constants/modal-types'
-import { updateIsReconnectionPaused } from 'modules/app/actions/update-connection'
+// import { updateIsReconnectionPaused } from 'modules/app/actions/update-connection'
 import { connectAugur } from 'modules/app/actions/init-augur'
 
 const mapStateToProps = state => ({
@@ -17,18 +17,13 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  submitForm: (e, env) => {
-    e.preventDefault()
-    dispatch(updateEnv(env))
-    dispatch(updateIsReconnectionPaused(false))
-  },
-  connectAugur: (history, env, isInitialConnection) => dispatch(connectAugur(history, env, isInitialConnection, (err, res) => {
-    // console.log('back from connect', err, res);
+  submitForm: e => e.preventDefault(),
+  updateEnv: env => dispatch(updateEnv(env)),
+  closeModal: () => dispatch(closeModal()),
+  connectAugur: (history, env, isInitialConnection, cb) => dispatch(connectAugur(history, env, isInitialConnection, (err, res) => {
+    if (cb) cb(err, res)
     // TODO: error handling will go in here, going to need to handle both connect and disconnect currently.
     // TODO: consider wether we show reconnection if this isn't initialConnection.
-    if (!err && !res) {
-      dispatch(closeModal())
-    }
   })),
 })
 
