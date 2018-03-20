@@ -6,14 +6,18 @@ var BigNumber = require("bignumber.js");
 var speedomatic = require("speedomatic");
 var assert = require("chai").assert;
 var proxyquire = require("proxyquire").noPreserveCache();
+var constants = require("../../../src/constants");
+var convertBigNumberToHexString = require("../../../src/utils/convert-big-number-to-hex-string");
 
 var counter = 0;
+var GAS_PRICE = convertBigNumberToHexString(new BigNumber(constants.DEFAULT_GASPRICE, 10));
 
 describe("trading/trade-until-amount-is-zero", function () {
   var test = function (t) {
     it(t.description, function (done) {
       var tradeUntilAmountIsZero = proxyquire("../../../src/trading/trade-until-amount-is-zero", {
         "./get-trade-amount-remaining": t.mock.getTradeAmountRemaining,
+        "../rpc-interface": t.mock.rpcInterface,
         "../api": t.mock.api,
       });
       tradeUntilAmountIsZero(Object.assign({}, t.params, {
@@ -52,6 +56,13 @@ describe("trading/trade-until-amount-is-zero", function () {
     mock: {
       getTradeAmountRemaining: function (p, callback) {
         callback(null, new BigNumber(0));
+      },
+      rpcInterface: {
+        eth: {
+          gasPrice: function (p, callback) {
+            callback(null, GAS_PRICE);
+          },
+        },
       },
       api: function () {
         return {
@@ -106,6 +117,13 @@ describe("trading/trade-until-amount-is-zero", function () {
     mock: {
       getTradeAmountRemaining: function (p, callback) {
         callback(null, new BigNumber(0));
+      },
+      rpcInterface: {
+        eth: {
+          gasPrice: function (p, callback) {
+            callback(null, GAS_PRICE);
+          },
+        },
       },
       api: function () {
         return {
@@ -166,6 +184,13 @@ describe("trading/trade-until-amount-is-zero", function () {
         } else {
           callback(null, new BigNumber(0));
         }
+      },
+      rpcInterface: {
+        eth: {
+          gasPrice: function (p, callback) {
+            callback(null, GAS_PRICE);
+          },
+        },
       },
       api: function () {
         return {
@@ -231,6 +256,13 @@ describe("trading/trade-until-amount-is-zero", function () {
       getTradeAmountRemaining: function (p, callback) {
         callback(null, new BigNumber(0));
       },
+      rpcInterface: {
+        eth: {
+          gasPrice: function (p, callback) {
+            callback(null, GAS_PRICE);
+          },
+        },
+      },
       api: function () {
         return {
           Trade: {
@@ -284,6 +316,13 @@ describe("trading/trade-until-amount-is-zero", function () {
     mock: {
       getTradeAmountRemaining: function (p, callback) {
         callback(null, new BigNumber(0));
+      },
+      rpcInterface: {
+        eth: {
+          gasPrice: function (p, callback) {
+            callback(null, GAS_PRICE);
+          },
+        },
       },
       api: function () {
         return {
@@ -339,6 +378,13 @@ describe("trading/trade-until-amount-is-zero", function () {
     mock: {
       getTradeAmountRemaining: function (p, callback) {
         callback(null, new BigNumber(0));
+      },
+      rpcInterface: {
+        eth: {
+          gasPrice: function (p, callback) {
+            callback(null, GAS_PRICE);
+          },
+        },
       },
       api: function () {
         return {
